@@ -2,74 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AA819CAD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 22:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99CC19CAE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 22:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389199AbgDBUQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 16:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730837AbgDBUQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 16:16:08 -0400
-Received: from localhost (mobile-166-170-223-166.mycingular.net [166.170.223.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFB8420678;
-        Thu,  2 Apr 2020 20:16:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585858568;
-        bh=vRDaO7ScVc229V31QF7SuQbcUJkQRXGo5xDwf7t6Rgo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=y/f3RgNVI6crhzIS7qSj1VQ++zuo/g/C8ZdK9hF7pR0IU0jJtMEtdm+iKaoFo8TVI
-         hxkeqpP35YRS7gjYGEzUSvUKAeP5jnWTnmjigNd5LXNnrNlypIcYcM0Qxl5VBL4XG8
-         cmnEakssPXoj0UZVVybmIhuSyxDWzj7fOPDDxCPc=
-Date:   Thu, 2 Apr 2020 15:16:05 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>, bjorn@helgaas.com,
-        andy@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [Linux-kernel-mentees] [PATCH v1] gpio: ml: ioh: Convert to
- dev_pm_ops
-Message-ID: <20200402201605.GA74927@google.com>
+        id S2389328AbgDBUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 16:16:56 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:57134 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729123AbgDBUQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 16:16:55 -0400
+Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 02 Apr 2020 13:16:55 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg03-sd.qualcomm.com with ESMTP; 02 Apr 2020 13:16:54 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 67DD14BDB; Thu,  2 Apr 2020 13:16:54 -0700 (PDT)
+Date:   Thu, 2 Apr 2020 13:16:54 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        David Collins <collinsd@codeaurora.org>
+Subject: Re: [PATCH v11 06/12] pwm: imx27: Use 64-bit division macro and
+ function
+Message-ID: <20200402201654.GA9191@codeaurora.org>
+References: <cover.1584667964.git.gurus@codeaurora.org>
+ <5aae102e21c0e63ad2588ae1e174b48b06d25e96.1584667964.git.gurus@codeaurora.org>
+ <CAK8P3a0qUMMMDmbp2FM-7D-U0Ys_zv0paYguFeyifafZurndEw@mail.gmail.com>
+ <20200330204359.GB5107@codeaurora.org>
+ <CAK8P3a1VC6+0Tydm=BoK2NvHB1ZCPjE1Gfi-sTE5O-xnu3Ya3A@mail.gmail.com>
+ <20200331202058.GB25781@codeaurora.org>
+ <20200331204929.GC2954599@ulmo>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VcYSaAYx5qy7S0ppb77afgz=Ma=7=opfgSMCBnnjmoWfw@mail.gmail.com>
+In-Reply-To: <20200331204929.GC2954599@ulmo>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 09:33:46PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 2, 2020 at 6:52 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
-> >
-> > Convert the legacy callback .suspend() and .resume()
-> > to the generic ones.
+On Tue, Mar 31, 2020 at 10:49:29PM +0200, Thierry Reding wrote:
+> On Tue, Mar 31, 2020 at 01:20:58PM -0700, Guru Das Srinagesh wrote:
+> > On Tue, Mar 31, 2020 at 05:24:52PM +0200, Arnd Bergmann wrote:
+> > > On Mon, Mar 30, 2020 at 10:44 PM Guru Das Srinagesh
+> > > <gurus@codeaurora.org> wrote:
+> > > >
+> > > > On Fri, Mar 20, 2020 at 06:09:39PM +0100, Arnd Bergmann wrote:
+> > > > > On Fri, Mar 20, 2020 at 2:42 AM Guru Das Srinagesh <gurus@codeaurora.org> wrote:
+> > > > >
+> > > > > > @@ -240,8 +240,7 @@ static int pwm_imx27_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> > > > > >
+> > > > > >         period_cycles /= prescale;
+> > > > > >         c = (unsigned long long)period_cycles * state->duty_cycle;
+> > > > > > -       do_div(c, state->period);
+> > > > > > -       duty_cycles = c;
+> > > > > > +       duty_cycles = div64_u64(c, state->period);
+> > > > > >
+> > > > >
+> > > > > This change looks fine, but I wonder if the code directly above it
+> > > > >
+> > > > >         c = clk_get_rate(imx->clk_per);
+> > > > >         c *= state->period;
+> > > > >         do_div(c, 1000000000);
+> > > > >         period_cycles = c;
+> > > > >
+> > > > > might run into an overflow when both the clock rate and the period
+> > > > > are large numbers.
+> > > >
+> > > > Hmm. Seems to me like addressing this would be outside the scope of this
+> > > > patch series.
+> > > 
+> > > I think it should be part of the same series, addressing bugs that
+> > > were introduced
+> > > by the change to 64-bit period. If it's not getting fixed along with
+> > > the other regressions,
+> > > I fear nobody is going to go back and fix it later.
+> > 
+> > Makes sense, I agree. Would this be an acceptable fix?
+> > 
+> > Instead of multiplying c and state->period first and then dividing by
+> > 10^9, first divide state->period by 10^9 and then multiply the quotient
+> > of that division with c and assign it to period_cycles. Like so:
+> > 
+> > 	c = clk_get_rate(imx->clk_per);
+> > 	c *= div_u64(state->period, 1000000000);
+> > 	period_cycles = c;
+> > 
+> > This should take care of overflow not happening because state->period is
+> > converted from nanoseconds to seconds early on and so becomes a small
+> > number.
 > 
-> Thank you for the patch.
-> 
-> Rather then doing this I think  the best approach is to unify gpio-pch
-> and gpio-ml-ioh together.
-> Under umbrella of the task, the clean ups like above are highly appreciated.
+> Doesn't that mean that anything below a 1 second period will be clamped
+> to just 0?
 
-I'd be all in favor of that, but what Vaibhav is working toward is
-eliminating use of legacy PM in PCI drivers.  I think unifying drivers
-is really out of scope for that project.
+True. How about this then?
 
-If you'd rather leave gpio-ml-ioh.c alone for now, I suggest that
-Vaibhav move on to other PCI drivers that use legacy PM.  If we
-convert all the others away from legacy PM and gpio-ml-ioh.c is the
-only one remaining, then I guess we can revisit this :)
+int pwm_imx27_calc_period_cycles(struct pwm_state state,
+				 unsigned long clk_rate,
+				 unsigned long *period_cycles)
+{
+	u64 c1, c2;
 
-Or, maybe converting gpio-ml-ioh.c now, along the lines of
-226e6b866d74 ("gpio: pch: Convert to dev_pm_ops"), would be one small
-step towards the eventual unification, by making gpio-pch and
-gpio-ml-ioh a little more similar.
+	c1 = clk_rate;
+	c2 = state->period;
+	if (c2 > c1) {
+		c2 = c1;
+		c1 = state->period;
+	}
 
-Bjorn
+	if (!c1 || !c2) {
+		pr_err("clk rate and period should be nonzero\n");
+		return -EINVAL;
+	}
+
+	if (c2 <= div64_u64(U64_MAX, c1)) {
+		c = c1 * c2;
+		do_div(c, 1000000000);
+	} else if (c2 <= div64_u64(U64_MAX, div64_u64(c1, 1000))) {
+		do_div(c1, 1000);
+		c = c1 * c2;
+		do_div(c, 1000000);
+	} else if (c2 <= div64_u64(U64_MAX, div64_u64(c1, 1000000))) {
+		do_div(c1, 1000000);
+		c = c1 * c2;
+		do_div(c, 1000);
+	} else if (c2 <= div64_u64(U64_MAX, div64_u64(c1, 1000000000))) {
+		do_div(c1, 1000000000);
+		c = c1 * c2;
+	}
+
+	*period_cycles = c;
+
+	return 0;
+}
+
+...
+
+ret = pwm_imx27_calc_period_cycles(state, clk_get_rate(imx->clk_per),
+				   &period_cycles);
+if (ret)
+	return ret;
+
+I unit tested this logic out by calculating period_cycles using both the
+existing logic and the proposed one, and the results are as below.
+
+--------------------------------------------------------------------------------
+ clk_rate		period		  existing 	      proposed
+--------------------------------------------------------------------------------
+1000000000	18446744073709551615	 18446744072 	18446744073000000000
+                      (U64_MAX)
+--------------------------------------------------------------------------------
+1000000000	     4294967291		 4294967291	    4294967291
+--------------------------------------------------------------------------------
+
+Overflow occurs in the first case with the existing logic, whereas the
+proposed logic handles it correctly. As for the second case where there are
+more typical values of period, the proposed logic handles that correctly
+too.
+
+Thank you.
+
+Guru Das.
