@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DAD519C7C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A408519C7CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388952AbgDBRRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:17:47 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:43237 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727412AbgDBRRq (ORCPT
+        id S2389021AbgDBRUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:20:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38714 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388669AbgDBRUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:17:46 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=localhost)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1jK3TK-00033z-JL; Thu, 02 Apr 2020 19:17:42 +0200
-Message-ID: <bed38c9d9d5ba71d26fce8a17cfbbe9c0e807300.camel@pengutronix.de>
-Subject: Re: [PATCH v4.19.y, v4.14.y, v4.9.y] drm/etnaviv: Backport fix for
- mmu flushing
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     bob.beckett@collabora.com,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Date:   Thu, 02 Apr 2020 19:17:40 +0200
-In-Reply-To: <20200402170758.8315-1-bob.beckett@collabora.com>
-References: <20200402170758.8315-1-bob.beckett@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 2 Apr 2020 13:20:18 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jK3VJ-000060-0D; Thu, 02 Apr 2020 19:19:45 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 361B9100D52; Thu,  2 Apr 2020 19:19:44 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     x86@kernel.org, "Kenneth R . Crudup" <kenny@panix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] KVM: VMX: Extend VMX's #AC interceptor to handle split lock #AC in guest
+In-Reply-To: <20200402155554.27705-4-sean.j.christopherson@intel.com>
+References: <20200402124205.334622628@linutronix.de> <20200402155554.27705-1-sean.j.christopherson@intel.com> <20200402155554.27705-4-sean.j.christopherson@intel.com>
+Date:   Thu, 02 Apr 2020 19:19:44 +0200
+Message-ID: <87sghln6tr.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, den 02.04.2020, 18:07 +0100 schrieb Robert Beckett:
-> commit 4900dda90af2cb13bc1d4c12ce94b98acc8fe64e upstream
-> 
-> Due to async need_flush updating via other buffer mapping, checking
-> gpu->need_flush in 3 places within etnaviv_buffer_queue can cause GPU
-> hangs.
-> 
-> This occurs due to need_flush being false for the first 2 checks in that
-> function, so that the extra dword does not get accounted for, but by the
-> time we come to check for the third time, gpu->mmu->need_flish is true,
-> which outputs the flush instruction. This causes the prefetch during the
-> final link to be off by 1. This causes GPU hangs.
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> @@ -4623,6 +4623,12 @@ static int handle_machine_check(struct kvm_vcpu *vcpu)
+>  	return 1;
+>  }
+>  
+> +static inline bool guest_cpu_alignment_check_enabled(struct kvm_vcpu *vcpu)
 
-Yep, there should have been a READ_ONCE on this state. :/
+I used a different function name intentionally so the check for 'guest
+want's split lock #AC' can go there as well once it's sorted.
 
-> It causes the ring to contain patterns like this:
-> 
-> 0x40000005, /* LINK (8) PREFETCH=0x5,OP=LINK */                                                      
-> 0x70040010, /*   ADDRESS *0x70040010 */                                                              
-> 0x40000002, /* LINK (8) PREFETCH=0x2,OP=LINK */                                                      
-> 0x70040000, /*   ADDRESS *0x70040000 */                                                              
-> 0x08010e04, /* LOAD_STATE (1) Base: 0x03810 Size: 1 Fixp: 0 */                                       
-> 0x0000001f, /*   GL.FLUSH_MMU := FLUSH_FEMMU=1,FLUSH_UNK1=1,FLUSH_UNK2=1,FLUSH_PEMMU=1,FLUSH_UNK4=1 */
-> 0x08010e03, /* LOAD_STATE (1) Base: 0x0380C Size: 1 Fixp: 0 */                                       
-> 0x00000000, /*   GL.FLUSH_CACHE := DEPTH=0,COLOR=0,TEXTURE=0,PE2D=0,TEXTUREVS=0,SHADER_L1=0,SHADER_L2=0,UNK10=0,UNK11=0,DESCRIPTOR_UNK12=0,DESCRIPTOR_UNK13=0 */
-> 0x08010e02, /* LOAD_STATE (1) Base: 0x03808 Size: 1 Fixp: 0 */                                       
-> 0x00000701, /*   GL.SEMAPHORE_TOKEN := FROM=FE,TO=PE,UNK28=0x0 */                                    
-> 0x48000000, /* STALL (9) OP=STALL */                                                                 
-> 0x00000701, /*   TOKEN FROM=FE,TO=PE,UNK28=0x0 */                                                    
-> 0x08010e00, /* LOAD_STATE (1) Base: 0x03800 Size: 1 Fixp: 0 */                                       
-> 0x00000000, /*   GL.PIPE_SELECT := PIPE=PIPE_3D */                                                   
-> 0x40000035, /* LINK (8) PREFETCH=0x35,OP=LINK */                                                     
-> 0x70041000, /*   ADDRESS *0x70041000 */
-> 
-> Here we see a link with prefetch of 5 dwords starting with the 3rd
-> instruction. It only loads the 5 dwords up and including the final
-> LOAD_STATE. It needs to include the final LINK instruction.
-> 
-> This was seen on imx6q, and the fix is confirmed to stop the GPU hangs.
-> 
-> The commit referenced inadvertently fixed this issue by checking
-> gpu->mmu->need_flush once at the start of the function.
-> Given that this commit is independant, and useful for all version, it
-> seems sensible to backport it to the stable branches.
+> +{
+> +	return vmx_get_cpl(vcpu) == 3 && kvm_read_cr0_bits(vcpu, X86_CR0_AM) &&
+> +	       (kvm_get_rflags(vcpu) & X86_EFLAGS_AC);
+> +}
+> +
+>  static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> @@ -4688,9 +4694,6 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>  		return handle_rmode_exception(vcpu, ex_no, error_code);
+>  
+>  	switch (ex_no) {
+> -	case AC_VECTOR:
+> -		kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
+> -		return 1;
+>  	case DB_VECTOR:
+>  		dr6 = vmcs_readl(EXIT_QUALIFICATION);
+>  		if (!(vcpu->guest_debug &
+> @@ -4719,6 +4722,27 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+>  		kvm_run->debug.arch.pc = vmcs_readl(GUEST_CS_BASE) + rip;
+>  		kvm_run->debug.arch.exception = ex_no;
+>  		break;
+> +	case AC_VECTOR:
+> +		/*
+> +		 * Reflect #AC to the guest if it's expecting the #AC, i.e. has
+> +		 * legacy alignment check enabled.  Pre-check host split lock
+> +		 * turned on to avoid the VMREADs needed to check legacy #AC,
+> +		 * i.e. reflect the #AC if the only possible source is legacy
+> +		 * alignment checks.
+> +		 */
+> +		if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) ||
 
-I agree. Without shared MMUs this doesn't really need to be sequence,
-but better just to backport this change, which has seen quite some
-testing, than creating yet another, slightly different, version of this
-function in the stable branches.
+I think the right thing to do here is to make this really independent of
+that feature, i.e. inject the exception if
 
-Regards,
-Lucas
+ (CPL==3 && CR0.AM && EFLAGS.AC) || (FUTURE && (GUEST_TEST_CTRL & SLD))
+
+iow. when its really clear that the guest asked for it. If there is an
+actual #AC with SLD disabled and !(CPL==3 && CR0.AM && EFLAGS.AC) then
+something is badly wrong and the thing should just die. That's why I
+separated handle_guest_split_lock() and tell about that case.
+
+Thanks,
+
+        tglx
+
 
