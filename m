@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD8E19CCA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EDB919CCA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389427AbgDBWAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 18:00:40 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:34835 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726963AbgDBWAk (ORCPT
+        id S2389342AbgDBWHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 18:07:15 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:50854 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388218AbgDBWHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:00:40 -0400
-Received: by mail-lf1-f68.google.com with SMTP id r17so518618lff.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 15:00:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eB+l1j4dO52z3YbtfHoJHZT4ToBoHZLUTUnUIBUmjJM=;
-        b=aJqgPyE0TgD3LkLpm+0uIkcZOYtF3HI6kRDeJNKsNDJv5fVW1VWp1gJ0o+0C2J2ry8
-         6758MJF7Qp/b8OgvWKaKDtbZtpEodTkPdwOlflYuxIlQO2Vum1ycLmVLx7ED2JzgxXJn
-         nzabIxe49Gc9la8vY2W1J5LdRpKl8iUVGktT4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eB+l1j4dO52z3YbtfHoJHZT4ToBoHZLUTUnUIBUmjJM=;
-        b=R7bSlcaI5Ec1IREL3aqTwmTuUSuiLeYM9mkNhd6E31p+t4FtBiw0vsCFR5RITHZ942
-         DgMGyYVYi1jezy4MnHgcND2lmWb8E+UVqR9KGPBQlYuF/Gk1jVtISYwgoawn/fhcI3qb
-         KnfiRtRSpiOSnZ3I/esBonCHq49VQmV1rsQlnHtPe2gAyAVXCHQneJFDaAHQ7tQTwe69
-         Se1wf0dxWfV+XcArvC30He6KosBSDijiRggIQThxORLqysbnOPG/ICozhlqYfd02eHTk
-         F4BLlLUiaoPsVm+TRW0JKP0BWzFW2EJDolcT7RvFBulH6kbIXwbIz9Se630rR653SG/y
-         ogNw==
-X-Gm-Message-State: AGi0Pua5E9kXQ2jJU/T15jaH1U85CxjTqDiA9lc5GjUEUX1k1FAMjqL0
-        W1Sgbq6uU/Y0Q2IfF8PPYTYC+cstTuQ=
-X-Google-Smtp-Source: APiQypK1VKacWu43z6+w6VvUs3lOOamfMGbFMMxbjNTwsm4mCK/usFpoIPsGbsiZNMYFuUjDUnB84w==
-X-Received: by 2002:a19:2d1d:: with SMTP id k29mr3353262lfj.46.1585864838394;
-        Thu, 02 Apr 2020 15:00:38 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id c22sm4622431lfi.41.2020.04.02.15.00.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 15:00:37 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id f20so4972070ljm.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 15:00:37 -0700 (PDT)
-X-Received: by 2002:a2e:7c1a:: with SMTP id x26mr2934399ljc.209.1585864836977;
- Thu, 02 Apr 2020 15:00:36 -0700 (PDT)
+        Thu, 2 Apr 2020 18:07:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=c7P1sjhcLrqTERzpZ2hp0UyJvWxyjDALLe/X2lyoUd4=; b=DgiJiXSGdO6QvpCrNzwR24b0b9
+        gBxqGSm0Gh4iWk2wIHsAtrzp3lbdavPaRXVtGmqYTo60KAyDAviiedxdgBTleLW4nRhIfKW7YVtak
+        a4MtXweCyv0KgRmM1d2rPjddV0CIfaz3f0A2bXSiHdI44DjaW72L7a6BAgSKA3yzNC4UOKDZ7CqXe
+        QCvDXAyrxuvrgllT3HIeZbeJ3UtwG+KK+w1WIAsJ+4VBOOu0h+nvRfX0RKj+vJmHZIFIHbjW2A5Tv
+        wcVDIij1hD/7A3uO4yRYaU30whbPnBLrLW08l6wRPoCaZipDaE/cU9fGEZ2O3hOAul2vCUfq40M7T
+        7raP7/rg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jK7zV-0007vq-2y; Thu, 02 Apr 2020 22:07:13 +0000
+Date:   Thu, 2 Apr 2020 15:07:13 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Aslan Bakirov <aslan@fb.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@fb.com, riel@surriel.com,
+        guro@fb.com, mhocko@kernel.org, hannes@cmpxchg.org
+Subject: Re: [PATCH v2] mm: cma: NUMA node interface
+Message-ID: <20200402220713.GO21484@bombadil.infradead.org>
+References: <20200402215810.1898270-1-aslan@fb.com>
 MIME-Version: 1.0
-References: <20200402095125.GA21592@gmail.com>
-In-Reply-To: <20200402095125.GA21592@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Apr 2020 15:00:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whAz1T9+NENL-yH1oPk=H22T6-BRhOMHAv-hAhfGACbcg@mail.gmail.com>
-Message-ID: <CAHk-=whAz1T9+NENL-yH1oPk=H22T6-BRhOMHAv-hAhfGACbcg@mail.gmail.com>
-Subject: Re: [GIT PULL] x86 fix
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200402215810.1898270-1-aslan@fb.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 2:51 AM Ingo Molnar <mingo@kernel.org> wrote:
->
-> The only slightly annoying part for the scripting was to extract the
-> contents of the signed tag into the draft email, which I did with this
-> rather inelegant hack:
->
->  git tag -l --format='%(contents)' $TAG | gawk '/-----BEGIN PGP SIGNATURE-----/{exit;}//{print $0;}' | head -n -1
->
-> ... but I couldn't find a better way.
+On Thu, Apr 02, 2020 at 02:58:10PM -0700, Aslan Bakirov wrote:
+> I've noticed that there is no interfaces exposed by CMA which would let me
+> to declare contigous memory on particular NUMA node.
 
-Yeah, you're supposed to use the existing code, but I guess your
-approach works too.
+Do you have a user for this functionality?
 
-I think git request-pull just uses "git cat-file" instead to show the
-tag contents, but yes, I guess you can use "git tag -l --format" too.
+> +++ b/include/linux/cma.h
+> @@ -24,10 +24,20 @@ extern phys_addr_t cma_get_base(const struct cma *cma);
+>  extern unsigned long cma_get_size(const struct cma *cma);
+>  extern const char *cma_get_name(const struct cma *cma);
+>  
+> -extern int __init cma_declare_contiguous(phys_addr_t base,
+> +extern int __init cma_declare_contiguous_nid(phys_addr_t base,
+>  			phys_addr_t size, phys_addr_t limit,
+>  			phys_addr_t alignment, unsigned int order_per_bit,
+> -			bool fixed, const char *name, struct cma **res_cma);
+> +			bool fixed, const char *name, struct cma **res_cma,
+> +			int nid);
+> +static inline int __init cma_declare_contiguous(phys_addr_t base,
+> +			phys_addr_t size, phys_addr_t limit,
+> +			phys_addr_t alignment, unsigned int order_per_bit,
+> +			bool fixed, const char *name, struct cma **res_cma)
+> +			{
+> +				return cma_declare_contiguous_nid(base, size,
+> +						limit, alignment, order_per_bit,
+> +						fixed, name, res_cma, NUMA_NO_NODE);
+> +			}
 
-[ Goes and looks up ]
+... what even is this indentation?
 
-This is what git-request-pull does:
+> +phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
+> +					  phys_addr_t align, phys_addr_t start,
+> +					  phys_addr_t end, int nid, bool exact_nid);
 
-        git cat-file tag "$head" |
-        sed -n -e '1,/^$/d' -e '/^-----BEGIN PGP /q' -e p
+>80 columns.  checkpatch should warn you of nits like this.
 
-but admittedly "get cat-file" is a really low-level plumbing thing.
-It's basically how you get the raw data out of any git object.
+>  		if (base < highmem_start && limit > highmem_start) {
+> -			addr = memblock_phys_alloc_range(size, alignment,
+> -							 highmem_start, limit);
+> +			addr = memblock_alloc_range_nid(size, alignment,
+> +							 highmem_start, limit, nid, false);
 
-                 Linus
+The deep indentation makes it hard to add new parameters.  I'd do it as:
+			addr = memblock_alloc_range_nid(size, alignment,
+					highmem_start, limit, nid, false);
+
