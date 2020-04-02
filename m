@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BDE19C837
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C6819C833
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390105AbgDBRkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:40:35 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:45674 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390038AbgDBRke (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:40:34 -0400
-Received: by mail-lf1-f67.google.com with SMTP id f8so2098801lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 10:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iY33WSfg2+BlLBCqLu07xUtOQLPOpN5N3YeHbBLhx6Y=;
-        b=Z9aqKjRrEZJDXaLqeHtV64B35CP0RfSJY4EO4dTHgnslpuruJgfXRVmNjFuOU+cnx5
-         kVHsuGSL9vWvZVUuZGGoaD+Vlqt/9NiqpCmlveSSLT0zXxtt7ray80snXoylzmqvGnmt
-         ISwuXHaK7OoOpyIaDwJv27rjW/l2js7AFLlrU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iY33WSfg2+BlLBCqLu07xUtOQLPOpN5N3YeHbBLhx6Y=;
-        b=anh9ymCz/YCGEW9i8iLN67/EBGNJ3YdIdqf9+9Fyv1VgK5+hqDfVJItK+q+CNHZ4+p
-         sbd6M9TtwY+PbKRwuaRHiWFf8YF6s3gYMM+AQs2rsl4xBj9asISlnHw+61+ci3kV9pU9
-         +iMUwGxRRUIAFCpINthSkok8t8vdvUL6/NCStQooel74QR12uN6lykGa1jOwiVATX3KW
-         YvbSHhRurfNzQdKxwgG3WWy7NNF6XanVo4tbXJ+e3OohpAca7VTzV+P2TgJarF183xiy
-         OFgmt9IMCh0EzxWprh+pBGwMN41CfSeLvQt/he6sv0mK8EsPwh9aZSexuAdEPguD+uu6
-         YDjw==
-X-Gm-Message-State: AGi0PuaPMdS2kOk3YvX6euHHzNrZr9TIAtXpxSj0r171MQQnwTkm0JUm
-        YGWasLmxv7lM1muYm6MDt0B46BvLnIE=
-X-Google-Smtp-Source: APiQypJChM7iNXEdL0HeHhJLCJpgPWsFM5mL+4IaGJC7nn081Xnsgl3ZwAxJi+UZmKiv8x/hiL2+UQ==
-X-Received: by 2002:ac2:4199:: with SMTP id z25mr2848134lfh.90.1585849231483;
-        Thu, 02 Apr 2020 10:40:31 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id i190sm4601676lfi.7.2020.04.02.10.40.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 10:40:30 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id f8so2098719lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 10:40:30 -0700 (PDT)
-X-Received: by 2002:ac2:4a72:: with SMTP id q18mr2883556lfp.10.1585849230229;
- Thu, 02 Apr 2020 10:40:30 -0700 (PDT)
+        id S2390055AbgDBRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:40:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388677AbgDBRkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 13:40:18 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2019E2077D;
+        Thu,  2 Apr 2020 17:40:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585849217;
+        bh=zDhAbgFiBp5xgrOISRQg46E+lTmZmLpU/ycGZY6jzxE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FYDqKJINHdC/NYXhdznGWU7wTiqkm0Zt3X+fEenD2pDhhwR1QGFXdvtylrcpJUXr6
+         p9kS6iFq/Cg9YSv0vfNnc12fDk5kbZVFL2C0PCz4G9nfzhEvmViS56tNTTiWgLT2jf
+         7d+VouGnELeJCDLGDx1P2duksAMWXYGoU43aim9M=
+Date:   Thu, 2 Apr 2020 19:40:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dirk Mueller <dmueller@suse.com>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 4.9 061/102] scripts/dtc: Remove redundant YYLOC global
+ declaration
+Message-ID: <20200402174015.GA3221004@kroah.com>
+References: <20200401161530.451355388@linuxfoundation.org>
+ <20200401161543.380204082@linuxfoundation.org>
+ <20200401212553.GA43588@ubuntu-m2-xlarge-x86>
 MIME-Version: 1.0
-References: <20200331080111.GA20569@gmail.com> <CAHk-=wjpBohNkBSxyPfC7w8165usbU5TuLohdbPs+D0bUYqJhQ@mail.gmail.com>
- <CAHk-=wijWvUfEkqUZRpvo9FCaJNsioS_qZT+iNWUdqQ6eO8Ozw@mail.gmail.com>
- <87v9mioj5r.fsf@nanos.tec.linutronix.de> <CAHk-=wh3_WTKeR=TTbPpbJYjC8DOPcDPJhhoopTVs3WJimsT=A@mail.gmail.com>
- <20200402134051.GC9352@zn.tnic> <CAHk-=whCw-WFbHhq6uYZcXrMEoi4y_FhZk48adf4JePxBzmFsg@mail.gmail.com>
- <20200402172443.GG9352@zn.tnic>
-In-Reply-To: <20200402172443.GG9352@zn.tnic>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Apr 2020 10:40:14 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whhJmgbBaz9s=+OPgBVRyYOweLB=4n42snqSRJ7WePwFw@mail.gmail.com>
-Message-ID: <CAHk-=whhJmgbBaz9s=+OPgBVRyYOweLB=4n42snqSRJ7WePwFw@mail.gmail.com>
-Subject: Re: [GIT PULL] x86 cleanups for v5.7
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Matz <matz@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200401212553.GA43588@ubuntu-m2-xlarge-x86>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 10:24 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> But, TBH, I have myself wondered a couple of times, "dang, if that
-> asm goto only had outputs" so I'm thinking if gcc guys are bored and
-> wondering what to put in gcc11, why not this. :-)
+On Wed, Apr 01, 2020 at 02:25:53PM -0700, Nathan Chancellor wrote:
+> On Wed, Apr 01, 2020 at 06:18:04PM +0200, Greg Kroah-Hartman wrote:
+> > From: Dirk Mueller <dmueller@suse.com>
+> > 
+> > commit e33a814e772cdc36436c8c188d8c42d019fda639 upstream.
+> > 
+> > gcc 10 will default to -fno-common, which causes this error at link
+> > time:
+> > 
+> >   (.text+0x0): multiple definition of `yylloc'; dtc-lexer.lex.o (symbol from plugin):(.text+0x0): first defined here
+> > 
+> > This is because both dtc-lexer as well as dtc-parser define the same
+> > global symbol yyloc. Before with -fcommon those were merged into one
+> > defintion. The proper solution would be to to mark this as "extern",
+> > however that leads to:
+> > 
+> >   dtc-lexer.l:26:16: error: redundant redeclaration of 'yylloc' [-Werror=redundant-decls]
+> >    26 | extern YYLTYPE yylloc;
+> >       |                ^~~~~~
+> > In file included from dtc-lexer.l:24:
+> > dtc-parser.tab.h:127:16: note: previous declaration of 'yylloc' was here
+> >   127 | extern YYLTYPE yylloc;
+> >       |                ^~~~~~
+> > cc1: all warnings being treated as errors
+> > 
+> > which means the declaration is completely redundant and can just be
+> > dropped.
+> > 
+> > Signed-off-by: Dirk Mueller <dmueller@suse.com>
+> > Signed-off-by: David Gibson <david@gibson.dropbear.id.au>
+> > [robh: cherry-pick from upstream]
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > 
+> > ---
+> >  scripts/dtc/dtc-lexer.l |    1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > --- a/scripts/dtc/dtc-lexer.l
+> > +++ b/scripts/dtc/dtc-lexer.l
+> > @@ -38,7 +38,6 @@ LINECOMMENT	"//".*\n
+> >  #include "srcpos.h"
+> >  #include "dtc-parser.tab.h"
+> >  
+> > -YYLTYPE yylloc;
+> >  extern bool treesource_error;
+> >  
+> >  /* CAUTION: this will stop working if we ever use yyless() or yyunput() */
+> > 
+> > 
+> 
+> Hi Greg,
+> 
+> Please see my email on the 5.5 version of this patch:
+> 
+> https://lore.kernel.org/stable/20200331192515.GA39354@ubuntu-m2-xlarge-x86/
+> 
+> As it stands how, this version of the patch does nothing.
 
-Yeah. And there are other places where we might want to use it.
+I have picked those up now, sorry for the delay.
 
-Yes, it happens to be particularly useful for exception handling where
-it avoids some register pressure (that can be a bigger deal than the
-trivial extra instructions) and gets rid of the fixup code in a
-different segment.
-
-But it's potentially very useful for alternatives code too (where a
-fallback alternatives could be "jump out-of-line to different code
-entirely").
-
-I originally wanted it for things like cmpxchg, but getting the
-condition codes out of the asm and letting the compiler generate the
-jump was even better.
-
-            Linus
+greg k-h
