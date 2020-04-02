@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9B019C718
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:31:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D1219C720
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388192AbgDBQbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 12:31:38 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:44666 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732569AbgDBQbi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 12:31:38 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 0D2C6297DC3
-Message-ID: <530189e1af69fb04168cf1237aa2990895e471dd.camel@collabora.com>
-Subject: Re: [PATCH 1/3] rkisp1: Get rid of unused variable warning
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Robin Murphy <robin.murphy@arm.com>, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>, kernel@collabora.com
-Date:   Thu, 02 Apr 2020 13:31:27 -0300
-In-Reply-To: <b994a6fe-865b-d5c4-7f3f-ed6b1815f37f@arm.com>
-References: <20200401213721.24173-1-ezequiel@collabora.com>
-         <20200401213721.24173-2-ezequiel@collabora.com>
-         <b994a6fe-865b-d5c4-7f3f-ed6b1815f37f@arm.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.0-1 
+        id S2388555AbgDBQd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 12:33:26 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:43112 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732412AbgDBQd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 12:33:26 -0400
+Received: from comp-core-i7-2640m-0182e6 (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 19CEB2052E;
+        Thu,  2 Apr 2020 16:32:51 +0000 (UTC)
+Date:   Thu, 2 Apr 2020 18:32:46 +0200
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Security Module <linux-security-module@vger.kernel.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Djalal Harouni <tixxdz@gmail.com>,
+        "Dmitry V . Levin" <ldv@altlinux.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@poochiereds.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v10 2/9] proc: allow to mount many instances of proc in
+ one pid namespace
+Message-ID: <20200402163246.7kfzujkku65belrw@comp-core-i7-2640m-0182e6>
+References: <20200327172331.418878-1-gladkov.alexey@gmail.com>
+ <20200327172331.418878-3-gladkov.alexey@gmail.com>
+ <87eet5lx97.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eet5lx97.fsf@x220.int.ebiederm.org>
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Thu, 02 Apr 2020 16:33:23 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-04-02 at 10:47 +0100, Robin Murphy wrote:
-> On 2020-04-01 10:37 pm, Ezequiel Garcia wrote:
-> > If CONFIG_OF is not selected, the compiler will complain:
-> > 
-> > drivers/staging/media/rkisp1/rkisp1-dev.c: In function ‘rkisp1_probe’:
-> > drivers/staging/media/rkisp1/rkisp1-dev.c:457:22: warning: unused variable ‘node’ [-Wunused-variable]
-> >    457 |  struct device_node *node = pdev->dev.of_node;
-> > 
-> > Rework the code slightly and make the compiler happy.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > ---
-> >   drivers/staging/media/rkisp1/rkisp1-dev.c | 3 +--
-> >   1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/rkisp1/rkisp1-dev.c b/drivers/staging/media/rkisp1/rkisp1-dev.c
-> > index b1b3c058e957..5e7e797aad71 100644
-> > --- a/drivers/staging/media/rkisp1/rkisp1-dev.c
-> > +++ b/drivers/staging/media/rkisp1/rkisp1-dev.c
-> > @@ -454,7 +454,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
-> >   
-> >   static int rkisp1_probe(struct platform_device *pdev)
-> >   {
-> > -	struct device_node *node = pdev->dev.of_node;
-> >   	const struct rkisp1_match_data *clk_data;
-> >   	const struct of_device_id *match;
-> >   	struct device *dev = &pdev->dev;
-> > @@ -463,7 +462,7 @@ static int rkisp1_probe(struct platform_device *pdev)
-> >   	unsigned int i;
-> >   	int ret, irq;
-> >   
-> > -	match = of_match_node(rkisp1_of_match, node);
-> > +	match = of_match_node(rkisp1_of_match, pdev->dev.of_node);
+On Thu, Apr 02, 2020 at 10:31:48AM -0500, Eric W. Biederman wrote:
 > 
-> FWIW you could clean up "match" too by using of_device_get_match_data().
+> > diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
+> > index 40a7982b7285..5920a4ecd71b 100644
+> > --- a/include/linux/proc_fs.h
+> > +++ b/include/linux/proc_fs.h
+> > @@ -27,6 +27,17 @@ struct proc_ops {
+> >  	unsigned long (*proc_get_unmapped_area)(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
+> >  };
+> >  
+> > +struct proc_fs_info {
+> > +	struct pid_namespace *pid_ns;
+> > +	struct dentry *proc_self;        /* For /proc/self */
+> > +	struct dentry *proc_thread_self; /* For /proc/thread-self */
+> > +};
 > 
+> Minor nit.
+> 
+> I have not seen a patch where you remove proc_self and proc_thread_self
+> from struct pid_namepace.
+> 
+> Ideally it would have been in this patch.  But as it won't break
+> anyone's bisection can you please have a follow up patch that removes
+> those fields?
 
-Ah, that's nicer.
+Yep. I miss that. I will make v11 to address this and other nits.
 
-Thanks,
-Ezequiel
+-- 
+Rgrds, legion
 
