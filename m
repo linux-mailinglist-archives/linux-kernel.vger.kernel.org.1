@@ -2,208 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3407519C3DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C1EB19C3EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732950AbgDBOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:21:23 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:27361 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732546AbgDBOVW (ORCPT
+        id S1732263AbgDBOXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:23:45 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:36235 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgDBOXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:21:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585837281;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Rz5cHS4VTwbzrEglnf6iJdvfJeJuFYnGpHx5cg1Sn5I=;
-        b=gi6NENtWOrb96CP0TkJ/8XjaDI4LbE9IysYnfHS6pTfqYFS8Wjpd05T1ihEbZqY9hsaf3r
-        4a+Y1GFzGUXfACyRZ9kAICFhtMyY4ofgYuTjOB1sfNA5eOMi5APoX+/NRXRStBXCwjcFfl
-        PV1t5vvRAG8Qa2/6rUG/yB1Oi1daW10=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-EBVCtGpVPMW_QfhaVWx5Tg-1; Thu, 02 Apr 2020 10:21:20 -0400
-X-MC-Unique: EBVCtGpVPMW_QfhaVWx5Tg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1E6EA0CC2;
-        Thu,  2 Apr 2020 14:21:18 +0000 (UTC)
-Received: from [10.72.12.172] (ovpn-12-172.pek2.redhat.com [10.72.12.172])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BFBA0391;
-        Thu,  2 Apr 2020 14:21:13 +0000 (UTC)
-Subject: Re: [PATCH v2] virtio/test: fix up after IOTLB changes
-To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?Q?Eugenio_P=c3=a9rez?= <eperezma@redhat.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org
-References: <20200402125406.9275-1-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <9e71c603-300a-e13f-dcef-bc4f9386ac0e@redhat.com>
-Date:   Thu, 2 Apr 2020 22:21:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200402125406.9275-1-mst@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Content-Transfer-Encoding: quoted-printable
+        Thu, 2 Apr 2020 10:23:44 -0400
+Received: by mail-wr1-f68.google.com with SMTP id 31so4453894wrs.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 07:23:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=ji2Ku2ZH1WW9DKlxO4woetZ//ek7SsL6L8u0hVrXXuo=;
+        b=uDxWJD1+e5A+13EgYs9zhFRoYydcLXaG9+KU75+MWWlTqI/smjoP8BYlAcotejfyLg
+         wtu7NIoEdkzyc6NZYnBRh1jdwMrJFY04p2j/Oo4NM+dgGJ2pSmjMHrOJNSlvpzuPJDak
+         UTwnemuXW8W12yCSX0lnqA90fG7Ri0s57uj00YNP9sBIuL63RdA4el0mAefXD6SPaz2S
+         iCDJhAY7Ooe3dTi4iN075ckoXBXNnRpQfM11lJ9LuSR3waxPVFUyCQnAoxTrfNagPd+1
+         qOWUqGblOYUR8cjCy0YPAMJXUYvon7R2k0nYF98htJNYMgclA7sMResIH74b8s6zqSZA
+         nvrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=ji2Ku2ZH1WW9DKlxO4woetZ//ek7SsL6L8u0hVrXXuo=;
+        b=dNgC9p17fU3W2xLTv8AwrdScmqAX8YSh2fSgBRyCXjnh+Q2rjznAjASMKPG+P31e5m
+         Z5Enf6B1K1BONGUMc63GJ83lwqgnW0ZDfDHBMLNcNEvlIdwhlLfNkGIjXqi2WOsUwz7G
+         krXTV7F1WqnF/Aree6mj92J8Gd9bRkXYuFzsgM02boNcvbHHm+WrLqxhLQdxbHjcApwY
+         N3BUnB0znkf9dGOYIczy6muHYsoffA1+QJor/+HpGtGW1dFoeJxFXUzTANitMaTNyNJg
+         +DeAqTEPrq16393oHKODjthSaGkn2ZhXcDWocyOnHmA/0b5G+BNDofHS7EiMNdvywm1+
+         ZRPw==
+X-Gm-Message-State: AGi0PubNg5K/mdVcIMgPVTdWbIij3nzQ+hAo4A7yxOpsd1ScGrRLDZ9S
+        Ya0Yzp4s6uQLfKUnipjkjQLaug==
+X-Google-Smtp-Source: APiQypJF86iX+9FGY7/V9HXAMzna8j3EKU+Y+3rBQFK/ogLyrcLPa0jPk7CbGNhpCsejVuKqa1bj/Q==
+X-Received: by 2002:adf:afdb:: with SMTP id y27mr3871899wrd.208.1585837421424;
+        Thu, 02 Apr 2020 07:23:41 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e34:ed2f:f020:2db3:bc11:ecac:6375])
+        by smtp.gmail.com with ESMTPSA id 9sm7096295wmm.6.2020.04.02.07.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 07:23:40 -0700 (PDT)
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
+Cc:     amit.kucheria@verdurent.com, vincent.whitchurch@axis.com,
+        linux-pm@vger.kernel.org (open list:THERMAL),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] thermal: core: Send a sysfs notification on trip points
+Date:   Thu,  2 Apr 2020 16:21:15 +0200
+Message-Id: <20200402142116.22869-1-daniel.lezcano@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <a7e8287d-72be-7ab0-697a-9de40eb3f81f@linaro.org>
+References: <a7e8287d-72be-7ab0-697a-9de40eb3f81f@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Currently the userspace has no easy way to get notified when a
+specific trip point was crossed. There are a couple of approaches:
 
-On 2020/4/2 =E4=B8=8B=E5=8D=888:55, Michael S. Tsirkin wrote:
-> Allow building vringh without IOTLB (that's the case for userspace
-> builds, will be useful for CAIF/VOD down the road too).
-> Update for API tweaks.
-> Don't include vringh with userspace builds.
->
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Eugenio P=C3=A9rez <eperezma@redhat.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
->
-> changes from v1:
-> 	use IS_REACHEABLE to fix error reported by build bot
+- the userspace polls the sysfs temperature with usually an
+  unacceptable delay between the trip temperature point crossing and
+  the moment it is detected, or a high polling rate with an
+  unacceptable number of wakeup events.
 
+- the thermal zone is set to be managed by an userspace governor in
+  order to receive the uevent even if the thermal zone needs to be
+  managed by another governor.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+These changes allow to send a sysfs notification on the
+trip_point_*_temp when the temperature is getting higher than the trip
+point temperature. By this way, the userspace can be notified
+everytime when the trip point is crossed, this is useful for the
+thermal Android HAL or for notification to be sent via d-bus.
 
+That allows the userspace to manage the applications based on specific
+alerts on different thermal zones to mitigate the skin temperature,
+letting the kernel governors handle the high temperature for hardware
+like the CPU, the GPU or the modem.
 
+The temperature can be oscillating around a trip point and the event
+will be sent multiple times. It is up to the userspace to deal with
+this situation.
 
->
->   drivers/vhost/test.c              | 4 ++--
->   drivers/vhost/vringh.c            | 5 +++++
->   include/linux/vringh.h            | 6 ++++++
->   tools/virtio/Makefile             | 5 +++--
->   tools/virtio/generated/autoconf.h | 0
->   5 files changed, 16 insertions(+), 4 deletions(-)
->   create mode 100644 tools/virtio/generated/autoconf.h
->
-> diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
-> index 394e2e5c772d..9a3a09005e03 100644
-> --- a/drivers/vhost/test.c
-> +++ b/drivers/vhost/test.c
-> @@ -120,7 +120,7 @@ static int vhost_test_open(struct inode *inode, str=
-uct file *f)
->   	vqs[VHOST_TEST_VQ] =3D &n->vqs[VHOST_TEST_VQ];
->   	n->vqs[VHOST_TEST_VQ].handle_kick =3D handle_vq_kick;
->   	vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV,
-> -		       VHOST_TEST_PKT_WEIGHT, VHOST_TEST_WEIGHT);
-> +		       VHOST_TEST_PKT_WEIGHT, VHOST_TEST_WEIGHT, NULL);
->  =20
->   	f->private_data =3D n;
->  =20
-> @@ -225,7 +225,7 @@ static long vhost_test_reset_owner(struct vhost_tes=
-t *n)
->   {
->   	void *priv =3D NULL;
->   	long err;
-> -	struct vhost_umem *umem;
-> +	struct vhost_iotlb *umem;
->  =20
->   	mutex_lock(&n->dev.mutex);
->   	err =3D vhost_dev_check_owner(&n->dev);
-> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-> index ee0491f579ac..ba8e0d6cfd97 100644
-> --- a/drivers/vhost/vringh.c
-> +++ b/drivers/vhost/vringh.c
-> @@ -13,9 +13,11 @@
->   #include <linux/uaccess.h>
->   #include <linux/slab.h>
->   #include <linux/export.h>
-> +#if IS_REACHABLE(CONFIG_VHOST_IOTLB)
->   #include <linux/bvec.h>
->   #include <linux/highmem.h>
->   #include <linux/vhost_iotlb.h>
-> +#endif
->   #include <uapi/linux/virtio_config.h>
->  =20
->   static __printf(1,2) __cold void vringh_bad(const char *fmt, ...)
-> @@ -1059,6 +1061,8 @@ int vringh_need_notify_kern(struct vringh *vrh)
->   }
->   EXPORT_SYMBOL(vringh_need_notify_kern);
->  =20
-> +#if IS_REACHABLE(CONFIG_VHOST_IOTLB)
-> +
->   static int iotlb_translate(const struct vringh *vrh,
->   			   u64 addr, u64 len, struct bio_vec iov[],
->   			   int iov_size, u32 perm)
-> @@ -1416,5 +1420,6 @@ int vringh_need_notify_iotlb(struct vringh *vrh)
->   }
->   EXPORT_SYMBOL(vringh_need_notify_iotlb);
->  =20
-> +#endif
->  =20
->   MODULE_LICENSE("GPL");
-> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
-> index bd0503ca6f8f..9e2763d7c159 100644
-> --- a/include/linux/vringh.h
-> +++ b/include/linux/vringh.h
-> @@ -14,8 +14,10 @@
->   #include <linux/virtio_byteorder.h>
->   #include <linux/uio.h>
->   #include <linux/slab.h>
-> +#if IS_REACHABLE(CONFIG_VHOST_IOTLB)
->   #include <linux/dma-direction.h>
->   #include <linux/vhost_iotlb.h>
-> +#endif
->   #include <asm/barrier.h>
->  =20
->   /* virtio_ring with information needed for host access. */
-> @@ -254,6 +256,8 @@ static inline __virtio64 cpu_to_vringh64(const stru=
-ct vringh *vrh, u64 val)
->   	return __cpu_to_virtio64(vringh_is_little_endian(vrh), val);
->   }
->  =20
-> +#if IS_REACHABLE(CONFIG_VHOST_IOTLB)
-> +
->   void vringh_set_iotlb(struct vringh *vrh, struct vhost_iotlb *iotlb);
->  =20
->   int vringh_init_iotlb(struct vringh *vrh, u64 features,
-> @@ -284,4 +288,6 @@ void vringh_notify_disable_iotlb(struct vringh *vrh=
-);
->  =20
->   int vringh_need_notify_iotlb(struct vringh *vrh);
->  =20
-> +#endif /* CONFIG_VHOST_IOTLB */
-> +
->   #endif /* _LINUX_VRINGH_H */
-> diff --git a/tools/virtio/Makefile b/tools/virtio/Makefile
-> index f33f32f1d208..b587b9a7a124 100644
-> --- a/tools/virtio/Makefile
-> +++ b/tools/virtio/Makefile
-> @@ -4,7 +4,7 @@ test: virtio_test vringh_test
->   virtio_test: virtio_ring.o virtio_test.o
->   vringh_test: vringh_test.o vringh.o virtio_ring.o
->  =20
-> -CFLAGS +=3D -g -O2 -Werror -Wall -I. -I../include/ -I ../../usr/includ=
-e/ -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-commo=
-n -MMD -U_FORTIFY_SOURCE
-> +CFLAGS +=3D -g -O2 -Werror -Wall -I. -I../include/ -I ../../usr/includ=
-e/ -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-commo=
-n -MMD -U_FORTIFY_SOURCE -include ../../include/linux/kconfig.h
->   vpath %.c ../../drivers/virtio ../../drivers/vhost
->   mod:
->   	${MAKE} -C `pwd`/../.. M=3D`pwd`/vhost_test V=3D${V}
-> @@ -22,7 +22,8 @@ OOT_CONFIGS=3D\
->   	CONFIG_VHOST=3Dm \
->   	CONFIG_VHOST_NET=3Dn \
->   	CONFIG_VHOST_SCSI=3Dn \
-> -	CONFIG_VHOST_VSOCK=3Dn
-> +	CONFIG_VHOST_VSOCK=3Dn \
-> +	CONFIG_VHOST_RING=3Dn
->   OOT_BUILD=3DKCFLAGS=3D"-I "${OOT_VHOST} ${MAKE} -C ${OOT_KSRC} V=3D${=
-V}
->   oot-build:
->   	echo "UNSUPPORTED! Don't use the resulting modules in production!"
-> diff --git a/tools/virtio/generated/autoconf.h b/tools/virtio/generated=
-/autoconf.h
-> new file mode 100644
-> index 000000000000..e69de29bb2d1
+The following userspace program allows to monitor those events:
+
+struct trip_data {
+       int fd;
+       int temperature;
+       const char *path;
+};
+
+int main(int argc, char *argv[])
+{
+	int efd, i;
+	struct trip_data *td;
+	struct epoll_event epe;
+
+	if (argc < 2) {
+		fprintf(stderr, "%s <trip1> ... <tripn>\n", argv[0]);
+		return 1;
+	}
+
+	if (argc > MAX_TRIPS) {
+		fprintf(stderr, "Max trip points supported: %d\n", MAX_TRIPS);
+		return 1;
+	}
+
+	efd = epoll_create(MAX_TRIPS);
+	if (efd <  0) {
+		fprintf(stderr, "epoll_create failed: %d\n", errno);
+		return 1;
+	}
+
+	for (i = 0; i < argc - 1; i++) {
+
+		FILE *f;
+		int temperature;
+
+		f = fopen(argv[i + 1], "r");
+		if (!f) {
+			fprintf(stderr, "Failed to open '%s': %d\n", argv[i + 1], errno);
+			return 1;
+		}
+
+		td = malloc(sizeof(*td));
+		if (!td) {
+			fprintf(stderr, "Failed to allocate trip_data\n");
+			return 1;
+		}
+
+		fscanf(f, "%d\n", &temperature);
+		rewind(f);
+
+		td->fd = fileno(f);
+		td->path = argv[i + 1];
+		td->temperature = temperature;
+
+		epe.events = EPOLLIN | EPOLLET;
+		epe.data.ptr = td;
+
+		if (epoll_ctl(efd, EPOLL_CTL_ADD, td->fd, &epe)) {
+			fprintf(stderr, "Failed to epoll_ctl: %d\n", errno);
+			return 1;
+		}
+
+		printf("Set '%s' for temperature '%d'\n",
+		       td->path, td->temperature);
+	}
+
+	while(1) {
+
+		if (epoll_wait(efd, &epe, 1, -1) < 0) {
+			fprintf(stderr, "Failed to epoll_wait: %d\n", errno);
+			return 1;
+		}
+
+		td = epe.data.ptr;
+
+		printf("The trip point '%s' crossed the temperature '%d'\n",
+		       td->path, td->temperature);
+	}
+
+	return 0;
+}
+
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+---
+ drivers/thermal/thermal_core.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index c06550930979..3cbdd20252ab 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -407,6 +407,19 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
+ 	}
+ }
+ 
++static int thermal_trip_crossed(struct thermal_zone_device *tz, int trip)
++{
++	int trip_temp;
++
++	tz->ops->get_trip_temp(tz, trip, &trip_temp);
++
++	if (tz->last_temperature == THERMAL_TEMP_INVALID)
++		return 0;
++
++	return ((tz->last_temperature < trip_temp)) &&
++		(tz->temperature >= trip_temp));
++}
++
+ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+ {
+ 	enum thermal_trip_type type;
+@@ -417,6 +430,16 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+ 
+ 	tz->ops->get_trip_type(tz, trip, &type);
+ 
++	/*
++	 * This condition will be true everytime the temperature is
++	 * greater than the trip point and the previous temperature
++	 * was below. In this case notify the userspace via a sysfs
++	 * event on the trip point.
++	 */
++	if (thermal_trip_crossed(tz, trip))
++		sysfs_notify(&tz->device.kobj, NULL,
++			     tz->trip_temp_attrs[trip].attr.attr.name);
++
+ 	if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
+ 		handle_critical_trips(tz, trip, type);
+ 	else
+-- 
+2.17.1
 
