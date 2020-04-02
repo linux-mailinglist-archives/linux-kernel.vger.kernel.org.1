@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3077E19CCAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48DD19CCBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389626AbgDBWOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 18:14:31 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:34952 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389402AbgDBWOb (ORCPT
+        id S2389725AbgDBWUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 18:20:04 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40818 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726963AbgDBWUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:14:31 -0400
-Received: by mail-wm1-f66.google.com with SMTP id i19so5517340wmb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 15:14:29 -0700 (PDT)
+        Thu, 2 Apr 2020 18:20:03 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 19so4946854ljj.7;
+        Thu, 02 Apr 2020 15:20:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=55th5sY/tJDdmgw47Yk8n/xwE+j1OiKzwjzTyfprGYQ=;
+        b=d+G7a3ZUzsJ8J4aJMaGwf1PsqRYWjI8ODyaI3P5Pb7vr+xgeR7mklVJE7Fize23iTv
+         7e31Sxr4kCfJiEOMo6KpoinpO7DR0jvucQpDBtsnnrqpSW2oc4o4Ut7KODBnTJXqbjri
+         vg5PFTJL2hwCYFCkUWA29FnsZLFTmV9Ac8MrCTc6Flpj1xhURmFzrkWgtB+DcBiPz+Ra
+         VOMiwENpcagifJ7Olatk1k64I9E+Q4FYrlb5QLODiVZVbJJyP5+SMidLprX9rvDjUc+t
+         14LTedDIpw+SACHn0azr+L5fiJLedjBpHkxH0qtspDEFC26pdm/gzBug0vTsaDvYDVe7
+         PjvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=fPUE5Ux6t1ZmXWbn6Wue8riIBLccyrWYZrJD4d05O54=;
-        b=YHfxXZ/YE9EU4X7s6JYTgyhLrfTyBHfxbtnZSWUPHNdkdHqXkwtdghjziXnJmBB9rs
-         JIDTR+hNOzCieeL3RyQLhLsFePR04J4rMpOcQSMkDIEZmqvpqTDxevq4YYWsZSBO0l4l
-         0c2S39JqfLaQu9rV8NXZHMM1En04RL+0Jx5qcuWBsJfkgxHLYYcyMLZieKb1MFKvQvqu
-         neGsqQe8XALRgu50eXjyhQlF2A2PUrdaV8CpjfdenLEy9KFpL2Bw4FuLp0XHrWLgrphr
-         a0nruGn4/40FlcuOq1JQEWOg2XSgtQtnisNiCfZWmxyE9NzkCuQCs47sURiBu+bzXMJg
-         Z4Ww==
-X-Gm-Message-State: AGi0PuakBFXy1OPtbnaenb1+ESo0aJHJBWgMpCDqQxvI5Shm/Y4O2pJO
-        Mnha4prgZMuK9qFJdmu2tN0yMxDN
-X-Google-Smtp-Source: APiQypI/XnKREPGfpJgJh9NMJG3NsY/n4DXqC18f+gjOyWgDV3yrb3YLGJymAcfZxGyGKJi3hKWQ8A==
-X-Received: by 2002:a1c:f213:: with SMTP id s19mr5375822wmc.116.1585865669036;
-        Thu, 02 Apr 2020 15:14:29 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:9069:e334:a021:3782? ([2601:647:4802:9070:9069:e334:a021:3782])
-        by smtp.gmail.com with ESMTPSA id n2sm9516018wro.25.2020.04.02.15.14.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Apr 2020 15:14:28 -0700 (PDT)
-Subject: Re: [PATCH] nvmet: add revalidation support to bdev and file backed
- namespaces
-To:     Anthony Iliopoulos <ailiop@suse.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200402193052.19935-1-ailiop@suse.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <d6a3bf25-70c1-2501-2e8f-222135ebe9b8@grimberg.me>
-Date:   Thu, 2 Apr 2020 15:14:25 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Firefox/60.0 Thunderbird/60.9.0
+        bh=55th5sY/tJDdmgw47Yk8n/xwE+j1OiKzwjzTyfprGYQ=;
+        b=T8AxnZhyR9hWP5xk50gDbHfEv29c3JfWG/P/EgqOjtCoFdNB2dYK60leJE2l+ylwmp
+         /PDy+A0MApN6bo6vUulwnRt49UCH6f1wr4bf5nYqU+yh4KBd9WSwt7sxtFv8ZbkzrKjb
+         b5zdqeAe2+QQ5r9u9tRgi4dTsEbTcrR0j7/mg/oBg1xNHWU9uUWzIZqz8t6o1vebX+Up
+         HHXK9KSPuMNtiGCazQEIV9RxoLUM7Rt95+1Gw/Ij5wATlJ5PuvjqLm6pXKVanBbL2vA7
+         IiVO8fvSMGo/2zbTToX1sL4qkZjUkzqslmyLh3Xe1qkp0bEuywX6J7tz5y83/88T2Zha
+         iR+A==
+X-Gm-Message-State: AGi0PuZfYZCrYjPezOHH/mPQzpW6aTP1D286ONOLLNQNl/b/ct8lwfa2
+        1NCUTrhbqPM6jCcB+qsi+p4=
+X-Google-Smtp-Source: APiQypKZDrsGOKzHLNWdA6sf763EVRlnf4o8ombxUNU7YjIjeV0UEaGDTkXwH0Ny0Tv/9eS0gklNIg==
+X-Received: by 2002:a2e:6c0a:: with SMTP id h10mr3077105ljc.195.1585865999798;
+        Thu, 02 Apr 2020 15:19:59 -0700 (PDT)
+Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.gmail.com with ESMTPSA id v10sm4645712lfb.61.2020.04.02.15.19.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 15:19:59 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] PM / devfreq: tegra: Add Dmitry as a maintainer
+Date:   Fri,  3 Apr 2020 01:17:23 +0300
+Message-Id: <20200402221723.6064-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200402193052.19935-1-ailiop@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I was contributing to the NVIDIA Tegra20+ devfreq drivers recently and
+want to help keep them working and evolving in the future.
 
-> +void nvmet_bdev_ns_revalidate(struct nvmet_ns *ns)
-> +{
-> +	loff_t size;
-> +
-> +	size = i_size_read(ns->bdev->bd_inode);
-> +
-> +	if (ns->size != size)
-> +		ns->size = size;
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
 
-Why is the if useful?
+Changelog:
 
-> +}
-> +
->   static u16 blk_to_nvme_status(struct nvmet_req *req, blk_status_t blk_sts)
->   {
->   	u16 status = NVME_SC_SUCCESS;
-> diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
-> index cd5670b83118..c102437db72a 100644
-> --- a/drivers/nvme/target/io-cmd-file.c
-> +++ b/drivers/nvme/target/io-cmd-file.c
-> @@ -80,6 +80,20 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
->   	return ret;
->   }
->   
-> +void nvmet_file_ns_revalidate(struct nvmet_ns *ns)
-> +{
-> +	struct kstat stat;
-> +
-> +	if (!ns->file)
-> +		return;
+v2: - Addressed review comments made by Chanwoo Choi to v1 by correcting
+      git's address, making this patch standalone and adding Rafael Wysocki
+      to the list of email recipients.
 
-When is !ns->file expected?
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 245a96316636..0a694e20ea19 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10922,6 +10922,15 @@ F:	include/linux/memblock.h
+ F:	mm/memblock.c
+ F:	Documentation/core-api/boot-time-mm.rst
+ 
++MEMORY FREQUENCY SCALING DRIVERS FOR NVIDIA TEGRA
++M:	Dmitry Osipenko <digetx@gmail.com>
++L:	linux-pm@vger.kernel.org
++L:	linux-tegra@vger.kernel.org
++T:	git git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git
++S:	Maintained
++F:	drivers/devfreq/tegra20-devfreq.c
++F:	drivers/devfreq/tegra30-devfreq.c
++
+ MEMORY MANAGEMENT
+ M:	Andrew Morton <akpm@linux-foundation.org>
+ L:	linux-mm@kvack.org
+-- 
+2.25.1
+
