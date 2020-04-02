@@ -2,82 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A28319C927
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E8619C92E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389123AbgDBSwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 14:52:02 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:54048 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732214AbgDBSwB (ORCPT
+        id S2389774AbgDBSxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 14:53:23 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43444 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732214AbgDBSxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 14:52:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qd5xuLJzU3mBucxLenFQ+oj6WqOdCWeIJKMVqEffaug=; b=Y44LYPWRj75Go9ZxA68YxS4Gtw
-        DBiWZDq0vpo/K4QQ0jt5Cv1oJJzXXMjeV6OF6dFoCvpS9kqMleo8IoVOCWR+ACk6L1T+iCa2AVH/3
-        u0Kiuji5tF1syj0LkhhGqJQ5ATiJNU5fk6ydylozSVTyjTWeZzIKmtu4Cr7Pl19A3oPkX7jeFgfzE
-        nNwVtsvUx67GITe+EVx+axOqM1FfrHnzcMTFtu8509UAKQNL29Lhvg868KAQ6T0FWi5bA3IBhbZ7S
-        zbik+HgiQpJiKJ+w57A5CUcVBnZ8fDQCSjASAVIFBr7ZsUREMoHjTcJyjTdT1BbYqITJAE2tIRxkJ
-        HVv4aEIA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jK4wQ-0003xo-FQ; Thu, 02 Apr 2020 18:51:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A175A305E45;
-        Thu,  2 Apr 2020 20:51:48 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5A3D82B12094D; Thu,  2 Apr 2020 20:51:48 +0200 (CEST)
-Date:   Thu, 2 Apr 2020 20:51:48 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [patch v2 1/2] x86,module: Detect VMX modules and disable
- Split-Lock-Detect
-Message-ID: <20200402185148.GL20730@hirez.programming.kicks-ass.net>
-References: <20200402123258.895628824@linutronix.de>
- <20200402124205.242674296@linutronix.de>
- <20200402152340.GL20713@hirez.programming.kicks-ass.net>
- <725ca48f-8194-658e-0296-65d4368803b5@intel.com>
- <20200402162548.GH20730@hirez.programming.kicks-ass.net>
- <2d2140c4-712a-2f8d-cde7-b3e64c28b204@intel.com>
- <87pncpn650.fsf@nanos.tec.linutronix.de>
- <20200402175127.GJ13879@linux.intel.com>
+        Thu, 2 Apr 2020 14:53:23 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id E08941C30CA; Thu,  2 Apr 2020 20:53:21 +0200 (CEST)
+Date:   Thu, 2 Apr 2020 20:53:21 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Maciej =?utf-8?Q?=C5=BBenczykowski?= <maze@google.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Alexander Potapenko <glider@google.com>,
+        Alistair Delva <adelva@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>
+Subject: Re: [PATCH 4.19 105/116] bpf: Explicitly memset the bpf_attr
+ structure
+Message-ID: <20200402185320.GA8077@duo.ucw.cz>
+References: <20200401161542.669484650@linuxfoundation.org>
+ <20200401161555.630698707@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="+HP7ph2BbKc20aGI"
 Content-Disposition: inline
-In-Reply-To: <20200402175127.GJ13879@linux.intel.com>
+In-Reply-To: <20200401161555.630698707@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 10:51:28AM -0700, Sean Christopherson wrote:
-> On Thu, Apr 02, 2020 at 07:34:35PM +0200, Thomas Gleixner wrote:
-> > Aside of that I'm still against the attempt of proliferating crap,
-> > i.e. disabling it because the host is triggering it and then exposing it
-> > to guests. The above does not change my mind in any way. This proposal
-> > is still wrong.
-> 
-> Eh, I still think the "off in host, on in guest" is a legit scenario for
-> debug/development/testing, but I agree that the added complexity doesn't
-> justify the minimal benefits versus sld_warn.
 
-Off in host on in guest seems utterly insane to me. Why do you care
-about that?
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-That's like building a bridge with rotten timber.
+Hi!
+
+> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>=20
+> commit 8096f229421f7b22433775e928d506f0342e5907 upstream.
+>=20
+> For the bpf syscall, we are relying on the compiler to properly zero out
+> the bpf_attr union that we copy userspace data into. Unfortunately that
+> doesn't always work properly, padding and other oddities might not be
+> correctly zeroed, and in some tests odd things have been found when the
+> stack is pre-initialized to other values.
+>=20
+> Fix this by explicitly memsetting the structure to 0 before using
+> it.
+
+Is not that a gcc bug? I mean, that's seriously unhelpful behaviour
+=66rom security perspective.
+
+Is there any reason to believe this is not causing problems elsewhere?
+
+$ grep -ri "=3D {}" . | wc -l
+2152
+
+I'm pretty sure many of these are before return to userspace... I
+picked one at random:
+
+=2E/drivers/media/cec/cec-api.c-static long cec_adap_g_caps(struct cec_adap=
+ter *adap,
+=2E/drivers/media/cec/cec-api.c-                      struct cec_caps __use=
+r *parg)
+=2E/drivers/media/cec/cec-api.c-{
+=2E/drivers/media/cec/cec-api.c:  struct cec_caps caps =3D {};
+=2E/drivers/media/cec/cec-api.c-
+=2E/drivers/media/cec/cec-api.c-  strscpy(caps.driver, adap->devnode.dev.pa=
+rent->driver->name,
+=2E/drivers/media/cec/cec-api.c-          sizeof(caps.driver));
+=2E/drivers/media/cec/cec-api.c-  strscpy(caps.name, adap->name, sizeof(cap=
+s.name));
+=2E/drivers/media/cec/cec-api.c-  caps.available_log_addrs =3D adap->availa=
+ble_log_addrs;
+=2E/drivers/media/cec/cec-api.c-  caps.capabilities =3D adap->capabilities;
+=2E/drivers/media/cec/cec-api.c-  caps.version =3D LINUX_VERSION_CODE;
+=2E/drivers/media/cec/cec-api.c-  if (copy_to_user(parg, &caps, sizeof(caps=
+)))
+=2E/drivers/media/cec/cec-api.c-          return -EFAULT;
+=2E/drivers/media/cec/cec-api.c-  return 0;
+=2E/drivers/media/cec/cec-api.c-}
+
+Should we fix gcc, instead?
+
+Best regards,
+								Pavel
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--+HP7ph2BbKc20aGI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXoY0oAAKCRAw5/Bqldv6
+8jBPAKCO1CPqb2VuZvn3ff2zklH3fQ078ACfTyBx2FZF/flzA/HwPuDghMC7+pg=
+=skZm
+-----END PGP SIGNATURE-----
+
+--+HP7ph2BbKc20aGI--
