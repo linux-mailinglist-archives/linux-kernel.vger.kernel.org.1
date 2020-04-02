@@ -2,143 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B480D19C0D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7171419C0E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388384AbgDBMMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:12:24 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:46489 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388344AbgDBMMW (ORCPT
+        id S2388055AbgDBMN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 08:13:29 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:42322 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387722AbgDBMN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:12:22 -0400
-Received: by mail-ed1-f65.google.com with SMTP id cf14so3744598edb.13;
-        Thu, 02 Apr 2020 05:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jpfK5CYxI8iAPFcZqyQcL5PaZpDr+KrVab+ErVI0E9A=;
-        b=uVKjtr9Z2nepMqEDTiTNNduDfcQJhvvNnmcyS8yfwHjpDvWzEIMZz0lRCYqqz8EoQh
-         MSmE0pl+mSAZNhfA9/7nz32tzqB3NOdIlvpeqtbwPGqFbk4pX1MyiMo2zFL2v/H6dEFB
-         cPJyWiU3Wqu6OFboT+zFQj3b/26oTBr5026kW601iqMQh1wuc+LdDb4xenB5wHhgXOBx
-         cTPErLGCyz6VGn/uTIOlXVvAV/0JR2N7jNnl0wr8rWJsIBGMEJ+JNhFNVLNOOwvjx5jb
-         0Pp2KFAlPvZs1D+EWdph5/O5Jx661nzq3sKTvehAq6nOvmqh2Ua936zmS58Ku64XQvn8
-         Hf/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jpfK5CYxI8iAPFcZqyQcL5PaZpDr+KrVab+ErVI0E9A=;
-        b=W2pew44VtueUFF6FzjeByfHzvx70hu2Ciz56ckwzgwZfzLQhUItyhAN9dTO5ZunpBK
-         yKYg0Oki1iqF7fYhibbcYbluCKqlsDPeSgULrY40UGr02NkTxbKwsdvlcvlYcVeyfcs4
-         95dIEZXe/xka65jwVCuTTII1b0ziFfolEXH2wbVANSA3t0RlZN1JTZAA/KRnzGAWgpy2
-         WPf8i/4j6RksMYaC0Dupvyjvx1oym4+6rdVIOBOtvqxvAVSeegSN8ue4IdieQiUfxV1P
-         NJU24yPhr/tutWA/bOI065dSBXAIdv/CkQCiSSEofLqIFF+KRZ2RPts3KyroTF+YwV0N
-         77iA==
-X-Gm-Message-State: AGi0PuZUS4A+cXrQ/oMtV/zRPZgaAfcQsFall4oberEZCgOygEXU+bHZ
-        Gb4nHaoCsQDb4SwBqVWoUaU=
-X-Google-Smtp-Source: APiQypIPnU/+DrVqHsBOAMuaMwGL5dXkm117kJM04jvdu64bzzV0k35KALXEyjji5Vk3p5vPMd/48A==
-X-Received: by 2002:a17:907:aab:: with SMTP id bz11mr2764943ejc.311.1585829540059;
-        Thu, 02 Apr 2020 05:12:20 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (host250-251-dynamic.250-95-r.retail.telecomitalia.it. [95.250.251.250])
-        by smtp.googlemail.com with ESMTPSA id w20sm1083611ejv.40.2020.04.02.05.12.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 05:12:18 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andy Gross <agross@kernel.org>
-Cc:     Sham Muthayyan <smuthayy@codeaurora.org>,
-        Ansuel Smith <ansuelsmth@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 10/10] PCIe: qcom: add Force GEN1 support
-Date:   Thu,  2 Apr 2020 14:11:47 +0200
-Message-Id: <20200402121148.1767-11-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200402121148.1767-1-ansuelsmth@gmail.com>
-References: <20200402121148.1767-1-ansuelsmth@gmail.com>
+        Thu, 2 Apr 2020 08:13:29 -0400
+Received: from [IPv6:2a00:5f00:102:0:1862:4eff:fe91:4534] (unknown [IPv6:2a00:5f00:102:0:1862:4eff:fe91:4534])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: gtucker)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 4FC87297C2F;
+        Thu,  2 Apr 2020 13:13:27 +0100 (BST)
+Subject: Re: [PATCH] ARM: exynos: update l2c_aux_mask to fix alert message
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <b29f34870380093e6268c11d3033033d6def61b7.1585756648.git.guillaume.tucker@collabora.com>
+ <20200401163101.GV25745@shell.armlinux.org.uk>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <35c7cf4b-e6b8-43aa-d934-4a1c2e738372@collabora.com>
+Date:   Thu, 2 Apr 2020 13:13:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200401163101.GV25745@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sham Muthayyan <smuthayy@codeaurora.org>
+On 01/04/2020 17:31, Russell King - ARM Linux admin wrote:
+> On Wed, Apr 01, 2020 at 05:08:03PM +0100, Guillaume Tucker wrote:
+>> Allow setting the number of cycles for RAM reads in the pl310 cache
+>> controller L2 auxiliary control register mask (bits 0-2) since it
+>> needs to be changed in software.  This only affects exynos4210 and
+>> exynos4412 as they use the pl310 cache controller.
+>>
+>> With the mask used until now, the following warnings were generated,
+>> the 2nd one being a pr_alert():
+>>
+>>   L2C: platform modifies aux control register: 0x02070000 -> 0x3e470001
+>>   L2C: platform provided aux values permit register corruption.
+>>
+>> This latency cycles value has always been set in software in spite of
+>> the warnings.  Keep it this way but clear the alert message about
+>> register corruption to acknowledge it is a valid thing to do.
+> 
+> This is telling you that you are doing something you should not be
+> doing.  The L2C controller should be configured by board firmware
+> first and foremost, because if, for example, u-boot makes use of the
+> L2 cache, or any other pre-main kernel code (in other words,
+> decompressor) the setup of the L2 controller will be wrong.
+> 
+> So, NAK.
 
-Add Force GEN1 support needed in some ipq806x board
-that needs to limit some pcie line to gen1 for some
-hardware limitation.
-This is set by the max-link-speed dts entry and needed
-by some soc based on ipq806x. (for example Netgear R7800
-router)
+OK thanks, I guess I misinterpreted the meaning of the error
+message.  It's really saying that the register value was not the
+right one before the kernel tried to change it.  Next step for me
+is to look into U-Boot.
 
-Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+Guillaume
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 8047ac7dc8c7..2212e9498b91 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -27,6 +27,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- 
-+#include "../../pci.h"
- #include "pcie-designware.h"
- 
- #define PCIE20_PARF_SYS_CTRL			0x00
-@@ -99,6 +100,8 @@
- #define PCIE20_v3_PARF_SLV_ADDR_SPACE_SIZE	0x358
- #define SLV_ADDR_SPACE_SZ			0x10000000
- 
-+#define PCIE20_LNK_CONTROL2_LINK_STATUS2        0xA0
-+
- #define DEVICE_TYPE_RC				0x4
- 
- #define QCOM_PCIE_2_1_0_MAX_SUPPLY	3
-@@ -199,6 +202,7 @@ struct qcom_pcie {
- 	struct phy *phy;
- 	struct gpio_desc *reset;
- 	const struct qcom_pcie_ops *ops;
-+	bool force_gen1;
- };
- 
- #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
-@@ -441,6 +445,11 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
- 
- 	/* wait for clock acquisition */
- 	usleep_range(1000, 1500);
-+	if (pcie->force_gen1) {
-+		writel_relaxed((readl_relaxed(
-+		  pcie->pci->dbi_base + PCIE20_LNK_CONTROL2_LINK_STATUS2) | 1),
-+		  pcie->pci->dbi_base + PCIE20_LNK_CONTROL2_LINK_STATUS2);
-+	}
- 
- 
- 	/* Set the Max TLP size to 2K, instead of using default of 4K */
-@@ -1440,6 +1449,10 @@ static int qcom_pcie_probe(struct platform_device *pdev)
- 		goto err_pm_runtime_put;
- 	}
- 
-+	ret = of_pci_get_max_link_speed(pdev->dev.of_node);
-+	if (ret == 1)
-+		pcie->force_gen1 = true;
-+
- 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "parf");
- 	pcie->parf = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(pcie->parf)) {
--- 
-2.25.1
+>> Tested on exynos4412-odroid-x2.
+>>
+>> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+>> Reported-by: "kernelci.org bot" <bot@kernelci.org>
+>> ---
+>>  arch/arm/mach-exynos/exynos.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm/mach-exynos/exynos.c b/arch/arm/mach-exynos/exynos.c
+>> index 7a8d1555db40..ed1bba49210d 100644
+>> --- a/arch/arm/mach-exynos/exynos.c
+>> +++ b/arch/arm/mach-exynos/exynos.c
+>> @@ -194,7 +194,7 @@ static void __init exynos_dt_fixup(void)
+>>  
+>>  DT_MACHINE_START(EXYNOS_DT, "Samsung Exynos (Flattened Device Tree)")
+>>  	.l2c_aux_val	= 0x3c400001,
+>> -	.l2c_aux_mask	= 0xc20fffff,
+>> +	.l2c_aux_mask	= 0xc20ffff8,
+>>  	.smp		= smp_ops(exynos_smp_ops),
+>>  	.map_io		= exynos_init_io,
+>>  	.init_early	= exynos_firmware_init,
+>> -- 
+>> 2.20.1
+>>
+>>
+> 
 
