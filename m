@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CF819C521
+	by mail.lfdr.de (Postfix) with ESMTP id 39C3E19C520
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389038AbgDBO6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2388986AbgDBO6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 2 Apr 2020 10:58:32 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:34283 "EHLO rere.qmqm.pl"
+Received: from rere.qmqm.pl ([91.227.64.183]:30174 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388781AbgDBO6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:58:32 -0400
+        id S2388782AbgDBO6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 10:58:31 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 48tR5d74hQz9j;
-        Thu,  2 Apr 2020 16:58:29 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 48tR5f2JwnzHd;
+        Thu,  2 Apr 2020 16:58:30 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1585839510; bh=mhzH+hs9VaIQNtzqoeiD4OEdNou6DjDUexIsXN1p4N4=;
-        h=Date:From:Subject:To:Cc:From;
-        b=SG60aV3ALJHzHpCditgd8BB4fbR/C5GdN9sfO7m1ovjcE7p7iHHdaem/lx/mfDNki
-         oF3ppN6w9U28aCGuYJdLm1GjodP4VCeqdqibIlOx4chQLKW2ivb9Yb0Lo+ThYhEDQ1
-         7/TxaEQBtiOqsFuVw7BdSSPeGbDEinRZ8ER5GGHiFZyOKWwNXIxMF6zk0z91ommQ50
-         S7zSgl6eqEIXASuiifPXbgpFiAMn/TZdRxz5YWxnOfQG8eyub2odtht6jqOVtrhDAj
-         /SZjM7fgtX2KE6VaiCGjon3IjO0YdSo9OF2RmB8i+/4SqbyaoF+SBLXj4Yg4PLrg2C
-         0xyHMyTbcjFZg==
+        t=1585839510; bh=9+54rd/b9MFSvGJ5H7aKdvK4EyDceTpr1Ul1xvO7tH8=;
+        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
+        b=fD/KixoETC6wnb4NjFzbS6rBcLYkFUzKnwIkEyAe6Em1zr5q5CVSS+omMZrenu4wB
+         9gImfXsp7eBG31v9jil0QotWAGe4jOqX4osO83JizCqVi+rFrkMkUxVOvTTIYgdCQy
+         vbtF/wb8veaKNQLTItLia9uJ6p1sg3dyAgr7+TUV/9e9g3kDnglnbRhBybLMjBcRQI
+         RJggPu9dwNVAHpFANsoNVnmBA+qw3eCLxgpxsDAS+MHAGyQCO5zjEkkoDRXWqO0DlF
+         gYv6pCw1Ph0Tq5JkOmvWoCESQTr0TV3B0JQLYPVMn/TY6SidF96tSsoqtdA52Ba/vL
+         C1Lv2PNRjZCHA==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Thu, 02 Apr 2020 16:58:29 +0200
-Message-Id: <cover.1585838678.git.mirq-linux@rere.qmqm.pl>
+Date:   Thu, 02 Apr 2020 16:58:30 +0200
+Message-Id: <6a0db93bd3345ed634f489e93526f3317fbefe31.1585838678.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1585838678.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1585838678.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 00/14] power: supply: bq25890: fix and extend
+Subject: [PATCH 01/14] power: supply: bq25890: remove redundant I2C bus check
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series consists of a set of fixes and enchancements to bq25890
-driver. This is tested on a board using bq25896 as battery controller.
+regmap initialization will check I2C adapter functionality.
+Remove redundant check in the driver.
 
-Patches 1-6 are fixes and cleanups, patches 7-14 update and extend
-property support.
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+ drivers/power/supply/bq25890_charger.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-Series depends on core extensions from earlier series [1].
-
-[1] https://lore.kernel.org/linux-pm/cover.1585837575.git.mirq-linux@rere.qmqm.pl/
-
-Michał Mirosław (14):
-  power: supply: bq25890: remove redundant I2C bus check
-  power: supply: bq25890: simplify chip name property getter
-  power: supply: bq25890: make property table const
-  power: supply: bq25890: protect view of the chip's state
-  power: supply: bq25890: fix ADC mode configuration
-  power: supply: bq25890: update state on property read
-  power: supply: bq25890: implement CHARGE_TYPE property
-  power: supply: bq25890: implement PRECHARGE_CURRENT property
-  power: supply: bq25890: implement INPUT_CURRENT_LIMIT property
-  power: supply: bq25890: use proper CURRENT_NOW property for I_BAT
-  power: supply: bq25890: show measured VBUS
-  power: supply: bq25890: show VSYS as output voltage
-  power: supply: bq25890: show VBAT as VOLTAGE_NOW
-  power: supply: bq25890: support IBAT compensation
-
- drivers/power/supply/bq25890_charger.c | 261 +++++++++++++++----------
- 1 file changed, 154 insertions(+), 107 deletions(-)
-
+diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
+index aebd1253dbc9..c642519ef7b2 100644
+--- a/drivers/power/supply/bq25890_charger.c
++++ b/drivers/power/supply/bq25890_charger.c
+@@ -881,17 +881,11 @@ static int bq25890_fw_probe(struct bq25890_device *bq)
+ static int bq25890_probe(struct i2c_client *client,
+ 			 const struct i2c_device_id *id)
+ {
+-	struct i2c_adapter *adapter = client->adapter;
+ 	struct device *dev = &client->dev;
+ 	struct bq25890_device *bq;
+ 	int ret;
+ 	int i;
+ 
+-	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA)) {
+-		dev_err(dev, "No support for SMBUS_BYTE_DATA\n");
+-		return -ENODEV;
+-	}
+-
+ 	bq = devm_kzalloc(dev, sizeof(*bq), GFP_KERNEL);
+ 	if (!bq)
+ 		return -ENOMEM;
 -- 
 2.20.1
 
