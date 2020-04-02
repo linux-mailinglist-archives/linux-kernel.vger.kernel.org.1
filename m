@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83BF719C7E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7257B19C7EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389558AbgDBRYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:24:49 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55608 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388815AbgDBRYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:24:49 -0400
-Received: from zn.tnic (p200300EC2F0A0E00F19031BC22499B7D.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e00:f190:31bc:2249:9b7d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 430A31EC0591;
-        Thu,  2 Apr 2020 19:24:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1585848288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6Q6GiElcQkq+dZDwC5PRKZy++E6fBbkRBQ4bpalCpiE=;
-        b=f5nfhowC1u72b2wdBBiCPL//sSUnmTuc5gnAA5075MX4UzuaXhc3++02D93MUJ4dT7zYUy
-        8+17/RTZ0HSXgCZv0FXv8AyMcO8irtTqz790pZERh5+HcHkxZjiiJnse1Afg/qrBsOhCAC
-        JQuJ8khcskAo8bWV2+tfaYCt/w7Go44=
-Date:   Thu, 2 Apr 2020 19:24:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Matz <matz@suse.de>
-Subject: Re: [GIT PULL] x86 cleanups for v5.7
-Message-ID: <20200402172443.GG9352@zn.tnic>
-References: <20200331080111.GA20569@gmail.com>
- <CAHk-=wjpBohNkBSxyPfC7w8165usbU5TuLohdbPs+D0bUYqJhQ@mail.gmail.com>
- <CAHk-=wijWvUfEkqUZRpvo9FCaJNsioS_qZT+iNWUdqQ6eO8Ozw@mail.gmail.com>
- <87v9mioj5r.fsf@nanos.tec.linutronix.de>
- <CAHk-=wh3_WTKeR=TTbPpbJYjC8DOPcDPJhhoopTVs3WJimsT=A@mail.gmail.com>
- <20200402134051.GC9352@zn.tnic>
- <CAHk-=whCw-WFbHhq6uYZcXrMEoi4y_FhZk48adf4JePxBzmFsg@mail.gmail.com>
+        id S2389762AbgDBRZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:25:18 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:33938 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388815AbgDBRZR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 13:25:17 -0400
+Received: by mail-ot1-f65.google.com with SMTP id m2so4310287otr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 10:25:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LmdhmlzF1awyNvgI8DSIF40xEnxKcPlPBIva59dgFRc=;
+        b=gB9z3S6U8yPzVvzHJqOYA+/pgRoORRtIeBPmqtTNy2Im5pkDobU/hyg0SWw5n/CkZg
+         bdv3Epc67zhDaNsJKk94F59sFCCjo5nXJAYHDmPcaVcwA1t3zA/1cjSJKsoukTyEYh4H
+         yOhfAxRYkhXROdlOCqT9QDi5hSi7zFg2CAkq0zaJoCHtBBw4YWBvkqR/o8QsKrBiicAB
+         YpAQUZwukGF+Mx98hiEqJ1LrqZBuc2Ueqd/LSjU3spfVKTkcq4WBCz+Nd7gqLSI6LK0e
+         ZJYRn6opAIP+nz8LUqCdjI4D0m1lF1gObX+zf/VRrH+mj94gU6qFRYtoarRtVsisA8aP
+         5UHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LmdhmlzF1awyNvgI8DSIF40xEnxKcPlPBIva59dgFRc=;
+        b=SaFIKeCEZnnyYgFIaSvgVRMqojF9n20o19fxemy8VlQRkT47ZKhv7L7L6hSUh7N4nr
+         cZ8NpDW430a4RyhnBkoHE4LsKSQkno0r+YZFGo00wYGItawZ951gaWqJYUKM1yLZWP5z
+         Tlw53AelYmXTc9dNrvJd/ze/HlOKPxsas0d7cEB9KnOOFUS1oHqUme+fPTtqFiKlGVSX
+         r7eP7/8UseRSr8PF5+ixZFStnGalBz6KoVgj4+e5BFd0TDBSMpAKmb87e7AxTrxCYN1x
+         t9JCwtwgruH2qp+nAV6yRZWtSObRKgT1WseVXMHLUwJ4SSkkinUphHQ6CnIM4BA2Rcrg
+         tGaQ==
+X-Gm-Message-State: AGi0PuYxnjPVp+qXgbXd733mSkQVrLtoI5WGNeR+kgt7YeEMODHkTiXI
+        uVUKDp8+z75tJDCL6C8gZsAI50dQ7szF0/XT+J20v2jmZ4E=
+X-Google-Smtp-Source: APiQypLanmT1yHgkvL9VMdPGJyPqdbGag32XXaBkghgppBRQanGxtbbuBPenVD5CjGuiuzBeknvhcPnGmgNJSFPJ6gw=
+X-Received: by 2002:a9d:344:: with SMTP id 62mr3486852otv.102.1585848316842;
+ Thu, 02 Apr 2020 10:25:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whCw-WFbHhq6uYZcXrMEoi4y_FhZk48adf4JePxBzmFsg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Thu, 2 Apr 2020 10:25:05 -0700
+Message-ID: <CALAqxLWopjCkiM=NR868DTcX-apPc1MPnONJMppm1jzCboAheg@mail.gmail.com>
+Subject: Re: How to fix WARN from drivers/base/dd.c in next-20200401 if CONFIG_MODULES=y?
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 10:00:26AM -0700, Linus Torvalds wrote:
-> But while I love looking at small things like this, and I'd like to
-> have all compilers support it, I have to admit that it's not likely to
-> really _matter_ much.
+On Thu, Apr 2, 2020 at 3:17 AM Yoshihiro Shimoda
+<yoshihiro.shimoda.uh@renesas.com> wrote:
+>
+> I found an issue after applied the following patches:
+> ---
+> 64c775f driver core: Rename deferred_probe_timeout and make it global
+> 0e9f8d0 driver core: Remove driver_deferred_probe_check_state_continue()
+> bec6c0e pinctrl: Remove use of driver_deferred_probe_check_state_continue()
+> e2cec7d driver core: Set deferred_probe_timeout to a longer default if CONFIG_MODULES is set
+> c8c43ce driver core: Fix driver_deferred_probe_check_state() logic
+> ---
+>
+> Before these patches, on my environment [1], some device drivers
+> which has iommus property output the following message when probing:
+>
+> [    3.222205] ravb e6800000.ethernet: ignoring dependency for device, assuming no driver
+> [    3.257174] ravb e6800000.ethernet eth0: Base address at 0xe6800000, 2e:09:0a:02:eb:2d, IRQ 117.
+>
+> So, since ravb driver is probed within 4 seconds, we can use NFS rootfs correctly.
+>
+> However, after these patches are applied, since the patches are always waiting for 30 seconds
+> for of_iommu_configure() when IOMMU hardware is disabled, drivers/base/dd.c output WARN.
+> Also, since ravb cannot be probed for 30 seconds, we cannot use NFS rootfs anymore.
+> JFYI, I copied the kernel log to the end of this email.
 
-Yap, doesn't look like it.
+Hey,
+  Terribly sorry for the trouble. So as Robin mentioned I have a patch
+to remove the WARN messages, but I'm a bit more concerned about why
+after the 30 second delay, the ethernet driver loads:
+  [   36.218666] ravb e6800000.ethernet eth0: Base address at
+0xe6800000, 2e:09:0a:02:eb:2d, IRQ 117.
+but NFS fails.
 
-But, TBH, I have myself wondered a couple of times, "dang, if that
-asm goto only had outputs" so I'm thinking if gcc guys are bored and
-wondering what to put in gcc11, why not this. :-)
+Is it just that the 30 second delay is too long and NFS gives up?
 
--- 
-Regards/Gruss,
-    Boris.
+Does booting with deferred_probe_timeout=0 work?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+thanks
+-john
