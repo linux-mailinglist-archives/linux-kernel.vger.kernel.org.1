@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9372619C1DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407E919C1E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388498AbgDBNOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:14:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31004 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726252AbgDBNOX (ORCPT
+        id S2388535AbgDBNO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:14:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40925 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgDBNO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:14:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585833261;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J9FuKbcOCIQ0O+Rl7vW1Ij7o4TeHhbGc3orwS32PT6s=;
-        b=DLX9J2dtTKnYN8eyNe+g8Qx/1Rhj2JxBcFZ0l0oUSq6tDBx90Tt9MVKCEkm8DQ17rKlzTu
-        9RikTnYBYHK9nfkpMz4cq/PdXvwY2SmO2cwbR68CGqt+9K4gWlrbuafZkL/8YedO88XS0M
-        KPnW9cflDl5pxofihapeDyrAfdSdotk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-FYqlg-CaNtyLk5WwxpC9Lw-1; Thu, 02 Apr 2020 09:14:20 -0400
-X-MC-Unique: FYqlg-CaNtyLk5WwxpC9Lw-1
-Received: by mail-wr1-f72.google.com with SMTP id q14so1459556wro.7
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 06:14:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J9FuKbcOCIQ0O+Rl7vW1Ij7o4TeHhbGc3orwS32PT6s=;
-        b=DT+tHC+aR0ZjOAI4K5FxtKGOidESM+VM7jSjtlJ45xwA0lfy3+5Fz/t4JB7IJE3FHo
-         N39rFgWWKyxTCRMHSOEZyarIwYRsj5LPH0NRByIDFejAqkbRxcitlV9IUhNr373UkXO1
-         F4Q83y2/AKeNk/GEtWRSnTMOHBeYtWuqIjfpHqN/lsQIJG3QaaCUgFiYfMiQK+HOcfJL
-         HkrOnQ4frKg8UioKWcmp3VMuQAQgoiNc73omg+rXsmTxtqVtcodrVtGgN/CEf+rbHS7+
-         S6+6TcIRJfU2O37CiRkiuz4r99iJXU4xfG0WcTq66+Nd3z6Urt/l4LJBZplARvMY/OeD
-         +FxQ==
-X-Gm-Message-State: AGi0PuY640e8qpfvlUzWqNRr32k09ELVEzMqBy0ZYCgbAHhcSwhN9aqq
-        4Pf9QgahHpYnNrYm4NcFVEAC/gIhg+5ifLBTTllMMLtZeNyfrXeSbPSr7/f2vBG0lo3HNrLkXCh
-        ArnjA8fzJHdACvTkuZ7GZBz4V
-X-Received: by 2002:a5d:5547:: with SMTP id g7mr3554476wrw.263.1585833258970;
-        Thu, 02 Apr 2020 06:14:18 -0700 (PDT)
-X-Google-Smtp-Source: APiQypI6k2QkqeuadeBDwoBX1mA29lsWnnh3S3biMkaPwrc+qKUDw5ZbTEGE7lIu1FwSZ2l6+wHQnA==
-X-Received: by 2002:a5d:5547:: with SMTP id g7mr3554452wrw.263.1585833258726;
-        Thu, 02 Apr 2020 06:14:18 -0700 (PDT)
-Received: from xz-x1 (CPEf81d0fb19163-CMf81d0fb19160.cpe.net.fido.ca. [72.137.123.47])
-        by smtp.gmail.com with ESMTPSA id j6sm7902869wrb.4.2020.04.02.06.14.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 06:14:18 -0700 (PDT)
-Date:   Thu, 2 Apr 2020 09:14:14 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ming Lei <ming.lei@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Luiz Capitulino <lcapitulino@redhat.com>
-Subject: Re: [PATCH] sched/isolation: Allow "isolcpus=" to skip unknown
- sub-parameters
-Message-ID: <20200402131414.GH7174@xz-x1>
-References: <20200204161639.267026-1-peterx@redhat.com>
- <87d08rosof.fsf@nanos.tec.linutronix.de>
- <20200401230105.GF648829@xz-x1>
- <87wo6yokdx.fsf@nanos.tec.linutronix.de>
- <20200402005003.GF7174@xz-x1>
- <87pncqnuum.fsf@nanos.tec.linutronix.de>
+        Thu, 2 Apr 2020 09:14:59 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jJzg9-0005VX-I1; Thu, 02 Apr 2020 13:14:41 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        linux-rtc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] rtc: ds1307: check for failed memory allocation on wdt
+Date:   Thu,  2 Apr 2020 14:14:41 +0100
+Message-Id: <20200402131441.539088-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87pncqnuum.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 10:40:49AM +0200, Thomas Gleixner wrote:
-> Peter Xu <peterx@redhat.com> writes:
-> > On Thu, Apr 02, 2020 at 01:29:14AM +0200, Thomas Gleixner wrote:
-> >> Peter Xu <peterx@redhat.com> writes:
-> >> >> +		/*
-> >> >> +		 * Skip unknown sub-parameter and validate that it is not
-> >> >> +		 * containing an invalid character.
-> >> >> +		 */
-> >> >> +		for (par = str, len = 0; isalpha(*str); str++, len++);
-> >> >> +		if (*str != ',') {
-> >> >> +			pr_warn("isolcpus: Invalid flag %*s\n", len, par);
-> >> >
-> >> > ... this will dump "isolcpus: Invalid flag domain1,3,5", is this what
-> >> > we wanted?  Maybe only dumps "domain1"?
-> >> 
-> >> No, it will dump: "domain1" at least if my understanding of is_alpha()
-> >> and the '%*s' format option is halfways correct
-> >
-> > It will dump "isolcpus: Invalid flag domain1,3,5". Do you mean "%.*s"
-> > instead?
-> 
-> Obviously.
-> 
-> > Another issue is even if to use "%.*s" it'll only dump "domain".  How
-> > about something like (declare "illegal" as bool):
-> >
-> > 		/*
-> > 		 * Skip unknown sub-parameter and validate that it is not
-> > 		 * containing an invalid character.
-> > 		 */
-> > 		for (par = str, len = 0; *str && *str != ','; str++, len++)
-> > 			if (!isalpha(*str))
-> > 				illegal = true;
-> >
-> > 		if (illegal) {
-> > 			pr_warn("isolcpus: Invalid flag %.*s\n", len, par);
-> 
-> You can achieve the same thing without the illegal indirection with
-> 
-> 	pr_warn("....", len + 1, par);
+From: Colin Ian King <colin.king@canonical.com>
 
-I think it will stop working with "isolcpus=nohz,domain11,12,13".
+Currently a failed memory allocation will lead to a null pointer
+dereference on point wdt.  Fix this by checking for a failed allocation
+and adding error return handling to function ds1307_wdt_register.
 
-I'll repost soon.  Thanks,
+Addresses-Coverity: ("Dereference null return")
+Fixes: fd90d48db037 ("rtc: ds1307: add support for watchdog timer on ds1388")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/rtc/rtc-ds1307.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
+index fad042118862..95c5b6facc59 100644
+--- a/drivers/rtc/rtc-ds1307.c
++++ b/drivers/rtc/rtc-ds1307.c
+@@ -1665,14 +1665,16 @@ static const struct watchdog_ops ds1388_wdt_ops = {
+ 
+ };
+ 
+-static void ds1307_wdt_register(struct ds1307 *ds1307)
++static int ds1307_wdt_register(struct ds1307 *ds1307)
+ {
+ 	struct watchdog_device	*wdt;
+ 
+ 	if (ds1307->type != ds_1388)
+-		return;
++		return 0;
+ 
+ 	wdt = devm_kzalloc(ds1307->dev, sizeof(*wdt), GFP_KERNEL);
++	if (!wdt)
++		return -ENOMEM;
+ 
+ 	wdt->info = &ds1388_wdt_info;
+ 	wdt->ops = &ds1388_wdt_ops;
+@@ -1683,10 +1685,13 @@ static void ds1307_wdt_register(struct ds1307 *ds1307)
+ 	watchdog_init_timeout(wdt, 0, ds1307->dev);
+ 	watchdog_set_drvdata(wdt, ds1307);
+ 	devm_watchdog_register_device(ds1307->dev, wdt);
++
++	return 0;
+ }
+ #else
+-static void ds1307_wdt_register(struct ds1307 *ds1307)
++static int ds1307_wdt_register(struct ds1307 *ds1307)
+ {
++	return 0;
+ }
+ #endif /* CONFIG_WATCHDOG_CORE */
+ 
+@@ -1979,9 +1984,9 @@ static int ds1307_probe(struct i2c_client *client,
+ 
+ 	ds1307_hwmon_register(ds1307);
+ 	ds1307_clks_register(ds1307);
+-	ds1307_wdt_register(ds1307);
++	err = ds1307_wdt_register(ds1307);
+ 
+-	return 0;
++	return err;
+ 
+ exit:
+ 	return err;
 -- 
-Peter Xu
+2.25.1
 
