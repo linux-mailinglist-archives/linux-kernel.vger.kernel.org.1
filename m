@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F070619CCE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EC819CCF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389956AbgDBWd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 18:33:27 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33435 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731842AbgDBWd1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:33:27 -0400
-Received: by mail-wr1-f68.google.com with SMTP id a25so6253586wrd.0;
-        Thu, 02 Apr 2020 15:33:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4SOzz1DmBA7mljFUWMggCDnfrvoqqdJY//N8mPAQhYE=;
-        b=t1HKdcbKty17TKBnfpHl9npkiUav5NHVZLIc1xKNUBA5d7dKzmU/xIGPzs5ednbGGd
-         XBAWp+f+UzLLgxY0lGOe63/h5U4+ZjL74YC4CLYQpwgekrVMBrdc48g/LMuCvAohXz8i
-         2H2b7sueZ57tIvgGVF27yr7Vmf94+RdRcJXkveoqt89D75MzkbuysqCcFLwIm3NrfH2M
-         jcJcLvsi/FyfidJB56IDME0T3gXtqOxFqDoGEEtyqR9GNeLxaxz70REq7bfKRbbioGN0
-         AemGYKtlsIZjDw5GDhGwbs5S5bs8r5wE5Ho0at2yPap3x/klIjCWLzA4lDgdi0sZWyn4
-         6w5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=4SOzz1DmBA7mljFUWMggCDnfrvoqqdJY//N8mPAQhYE=;
-        b=o3kkWLRiUNcLiGPou8aB05CHbNVfWs5FKA0yAc+0vW7c5Q0sUCsjxHxcb6N66iEwMF
-         MJgkIeonyiTQOcPPAr82yMxCklKDI5O6JxguvICDMGUYotg3hciqiVbBUxZzyb2IqnOy
-         8L1ZijjqtKflIZSKQQpPW83iksVbZYO6QnSZwJGXXuXiQYmTeF9Lv2v88rLppBbGemwJ
-         6pzNTmhypCH6UR0ZHAQGR0vlnZTvmJkZNfQIyxsNnijoOaWOTR/GFJM1qtpkcVxuw8WO
-         iWNUuuxkDNMOzGDMONKufjHEpkuvfRsuOGCAq/2ydSAAr5RHRXczKkbpLw7CCspWNgrw
-         zHjQ==
-X-Gm-Message-State: AGi0Pual5lX4NOGTwRPwRpUSjzlOOwOLSIDAiNKp6Mnzmim0kQxKOswT
-        P1qBkx3Z9o15DBRJvSoWHQ5D3oXf
-X-Google-Smtp-Source: APiQypIZt8F4WTEtOcpr3GqFL8NVQOdrHJWExW7CZcX1Qg3fbPjjurB+yXpmAacN7vVbPadI4hsFJw==
-X-Received: by 2002:a5d:45c7:: with SMTP id b7mr5291373wrs.44.1585866805442;
-        Thu, 02 Apr 2020 15:33:25 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id g186sm9267729wmg.36.2020.04.02.15.33.24
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Apr 2020 15:33:24 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     jacob-chen@iotwrt.com
-Cc:     ezequiel@collabora.com, mchehab@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/2] dt-bindings: media: rockchip-rga: add power-domains property
-Date:   Fri,  3 Apr 2020 00:33:15 +0200
-Message-Id: <20200402223315.12260-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200402223315.12260-1-jbx6244@gmail.com>
-References: <20200402223315.12260-1-jbx6244@gmail.com>
+        id S2389442AbgDBWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 18:38:46 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64196 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729549AbgDBWiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 18:38:46 -0400
+IronPort-SDR: 8aP+kFMHG2NbOSUqrxqX4eOmPgtC/GFRtLsD9AhVn3A3HJCR6ZqB1ZXR1Oh3cq2HdmWvAAw3Uz
+ H5oDM6+dggUw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 15:38:45 -0700
+IronPort-SDR: LNIqXv5RqfuX6hbRiyE0+KsHS6NZfbSVjV2o6Ii+z5t+RDEf7+l2XE9UlNinHrVzG7hZ/Np0KY
+ ZFzYqcrywAEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,337,1580803200"; 
+   d="scan'208";a="295781172"
+Received: from perezpri-desk0.jf.intel.com ([134.134.159.53])
+  by FMSMGA003.fm.intel.com with ESMTP; 02 Apr 2020 15:38:45 -0700
+From:   Bernardo Perez Priego <bernardo.perez.priego@intel.com>
+To:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Nick Crews <ncrews@chromium.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Daniel Campello <campello@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] platform/chrome: wilco_ec: Provide correct output format to 'h1_gpio' file
+Date:   Thu,  2 Apr 2020 15:33:30 -0700
+Message-Id: <20200402223331.28300-1-bernardo.perez.priego@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200313232720.22364-1-bernardo.perez.priego@intel.com>
+References: <20200313232720.22364-1-bernardo.perez.priego@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the old txt situation we add/describe only properties that are used
-by the driver/hardware itself. With yaml it also filters things in a
-node that are used by other drivers like 'power-domains' for rk3399,
-so add it to 'rockchip-rga.yaml'.
+Function 'h1_gpio_get' is receiving 'val' parameter of type u64,
+this is being passed to 'send_ec_cmd' as type u8, thus, result
+is stored in least significant byte. Due to output format,
+the whole 'val' value was being displayed when any of the most
+significant bytes are different than zero.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+This fix will make sure only least significant byte is displayed
+regardless of remaining bytes value.
+
+Signed-off-by: Bernardo Perez Priego <bernardo.perez.priego@intel.com>
 ---
- Documentation/devicetree/bindings/media/rockchip-rga.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
+Changes in v2:
+- Keep original format and apply mask instead to resolve warning
 
-diff --git a/Documentation/devicetree/bindings/media/rockchip-rga.yaml b/Documentation/devicetree/bindings/media/rockchip-rga.yaml
-index 3b110b574..dd645ddcc 100644
---- a/Documentation/devicetree/bindings/media/rockchip-rga.yaml
-+++ b/Documentation/devicetree/bindings/media/rockchip-rga.yaml
-@@ -39,6 +39,9 @@ properties:
-       - const: hclk
-       - const: sclk
- 
-+  power-domains:
-+    maxItems: 1
+ drivers/platform/chrome/wilco_ec/debugfs.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/platform/chrome/wilco_ec/debugfs.c b/drivers/platform/chrome/wilco_ec/debugfs.c
+index df5a5f6c3ec6..a812788a0bdc 100644
+--- a/drivers/platform/chrome/wilco_ec/debugfs.c
++++ b/drivers/platform/chrome/wilco_ec/debugfs.c
+@@ -208,7 +208,12 @@ static int send_ec_cmd(struct wilco_ec_device *ec, u8 sub_cmd, u8 *out_val)
+  */
+ static int h1_gpio_get(void *arg, u64 *val)
+ {
+-	return send_ec_cmd(arg, SUB_CMD_H1_GPIO, (u8 *)val);
++	int ret;
 +
-   resets:
-     maxItems: 3
++	ret = send_ec_cmd(arg, SUB_CMD_H1_GPIO, (u8 *)val);
++	if (ret == 0)
++		*val &= 0xFF;
++	return ret;
+ }
  
-@@ -63,6 +66,7 @@ examples:
-   - |
-     #include <dt-bindings/clock/rk3399-cru.h>
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/power/rk3399-power.h>
-     rga: rga@ff680000 {
-       compatible = "rockchip,rk3399-rga";
-       reg = <0xff680000 0x10000>;
-@@ -71,6 +75,7 @@ examples:
-                <&cru HCLK_RGA>,
-                <&cru SCLK_RGA_CORE>;
-       clock-names = "aclk", "hclk", "sclk";
-+      power-domains = <&power RK3399_PD_RGA>;
-       resets = <&cru SRST_RGA_CORE>,
-                <&cru SRST_A_RGA>,
-                <&cru SRST_H_RGA>;
+ DEFINE_DEBUGFS_ATTRIBUTE(fops_h1_gpio, h1_gpio_get, NULL, "0x%02llx\n");
 -- 
-2.11.0
+2.17.1
 
