@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A0819C69D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1C519C6A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389603AbgDBP6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:58:16 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:42518 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389318AbgDBP6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:58:15 -0400
-Received: from zn.tnic (p200300EC2F0A0E00E5DA45869CAED91E.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e00:e5da:4586:9cae:d91e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 525451EC0469;
-        Thu,  2 Apr 2020 17:58:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1585843094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KN71Axi3R2DOnnEsCnv9ks/tbfgC0G4SVUAhgahUx30=;
-        b=otzYCRNxzjG3bT5gHzs421cwgrbkrbyBFIs+WVi8Zd5uA9EZuHNh9AT7nyW/NqiI7y2akZ
-        VAfqjkZdx1gBj/wVPL4UKMkbmiBf5Y2u+HOrx9bwHAxiwiJACS0cXKW0/oiHb+c3dROiBK
-        3aWKW7D3xW+VVbzVKAdAkj2UTZy/wSc=
-Date:   Thu, 2 Apr 2020 17:58:10 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     Nick Terrell <nickrterrell@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chris Mason <clm@fb.com>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Petr Malat <oss@malat.biz>, Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Patrick Williams <patrickw3@fb.com>,
-        Michael van der Westhuizen <rmikey@fb.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        Patrick Williams <patrick@stwcx.xyz>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: Re: [PATCH v4 6/8] x86: bump ZO_z_extra_bytes margin for zstd
-Message-ID: <20200402155810.GD9352@zn.tnic>
-References: <20200401053913.216783-1-nickrterrell@gmail.com>
- <20200401053913.216783-7-nickrterrell@gmail.com>
- <20200401093310.GA13748@zn.tnic>
- <D45F637D-6BB0-4F08-BEBE-FAB9B56F36F6@fb.com>
+        id S2389655AbgDBQAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 12:00:55 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:33062 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389294AbgDBQAy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 12:00:54 -0400
+Received: by mail-qv1-f67.google.com with SMTP id p19so1940774qve.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 09:00:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vKSTzD5dMKe9JHrU8ejHD98lW61dePVyTdM4k9M5OSQ=;
+        b=gssMYD3taQrgq42MSopWQLhxwn+NVZvrDC8e9+8k14Gb0ulm9JFGt8qVUpaqmvbeck
+         epY2+iK7j28ukl79wFOo5MO6tEuHdnfqZVp78zzQjw7NZato5d8hujjdEd9ibLnYOJCz
+         bLCwF7NZnoZailFJXB/p6Ps/CgAibOrGsA4YVtwnPKNZA/3dRBGTfW3mrBtjYapNNQbk
+         OsTrrXA11UtGjbtmqd1h1b9m0uN8igLTZZU8Ao6hp0yG/yJNj3qctPmgoCK9kJjUTe+o
+         E3qy6rDDhEXmzdgg9L3vnxatJ91ftOBS9Je03YiPfWSzKgxIcjyagsnbhFq7QzUfONeD
+         CnJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vKSTzD5dMKe9JHrU8ejHD98lW61dePVyTdM4k9M5OSQ=;
+        b=ai+vw+lpoDtVKM/giBEhiEdQt/p0GfcWLbxZqT7L9dFx9kkpFFttrSn0mWPRtLKLqC
+         Ma8qZ0b8S5XJEf000slBvOdLzCPoO3WF9HUJI44ZeCd7YIlySo/KHHO4GeTxfGlOzaM9
+         Y2liooFhLbRMJsO/XAMBPQsO4BEMCzzOP1Oz+Ug5AyJdqYR4rVgovytLdHUzeK/48D9s
+         JYtOSNVe4CuXQ1gpJlPvW+0nz2FoKh9gJeWF2xqRts2qWF4qZS/Fm8/ovaGcaCc628Cn
+         ComOYp2Fde4sOf7JQir+AMoaHyo6uHEB69+uIgqX/s46r+ilpoUDdxr23gqH+lKXqYQ/
+         lNZw==
+X-Gm-Message-State: AGi0PuYrn65WOMajr1EdlD9UAeXlK7zbo+GOEx+No64r4vzen8+S9D7/
+        uJz9FLWO/X57vAmPQ2KDsil16T4B++w=
+X-Google-Smtp-Source: APiQypJuZCnyPTKHV3Xm5aX1YvvSGF0C/iRW2RHjQQhe+b5D++0AUS/he4eZnDknZdAv4GO1z3j4VQ==
+X-Received: by 2002:a0c:e610:: with SMTP id z16mr4003834qvm.49.1585843252420;
+        Thu, 02 Apr 2020 09:00:52 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id q7sm3736077qkn.118.2020.04.02.09.00.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 09:00:51 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C255D409A3; Thu,  2 Apr 2020 13:00:49 -0300 (-03)
+Date:   Thu, 2 Apr 2020 13:00:49 -0300
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>, peterz@infradead.org,
+        mingo@redhat.com, linux-kernel@vger.kernel.org,
+        namhyung@kernel.org, adrian.hunter@intel.com,
+        mathieu.poirier@linaro.org, ravi.bangoria@linux.ibm.com,
+        alexey.budankov@linux.intel.com, vitaly.slobodskoy@intel.com,
+        pavel.gerasimov@intel.com, mpe@ellerman.id.au, eranian@google.com,
+        ak@linux.intel.com
+Subject: Re: [PATCH V4 00/17] Stitch LBR call stack (Perf Tools)
+Message-ID: <20200402160049.GE8736@kernel.org>
+References: <20200319202517.23423-1-kan.liang@linux.intel.com>
+ <20200323111311.GH1534489@krava>
+ <e2887d1f-e963-66b4-f0cb-fa23986565a2@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <D45F637D-6BB0-4F08-BEBE-FAB9B56F36F6@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <e2887d1f-e963-66b4-f0cb-fa23986565a2@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 05:33:03PM +0000, Nick Terrell wrote:
-> The code is currently written so that all the compression algorithms use the
-> same ZO_z_extra_bytes. It is taken to be the maximum of the growth rate
-> plus the maximum fixed overhead. Just a few lines above is the comment:
+Em Thu, Apr 02, 2020 at 11:34:18AM -0400, Liang, Kan escreveu:
 > 
-> # … Hence safety
-> # margin should be updated to cover all decompressors so that we don't
-> # need to deal with each of them separately. Please check
-> # the description in lib/decompressor_xxx.c for specific information.
 > 
-> So I was been following the guidance in the comments.
+> On 3/23/2020 7:13 AM, Jiri Olsa wrote:
+> > On Thu, Mar 19, 2020 at 01:25:00PM -0700, kan.liang@linux.intel.com wrote:
+> > > From: Kan Liang <kan.liang@linux.intel.com>
+> > > 
+> > > Changes since V3:
+> > > - There is no dependency among the 'capabilities'. If perf fails to read
+> > >    one, it should not impact others. Continue to parse the rest of caps.
+> > >    (Patch 1)
+> > > - Use list_for_each_entry() to replace perf_pmu__scan_caps() (Patch 1 &
+> > >    2)
+> > > - Combine the declaration plus assignment when possible (Patch 1 & 2)
+> > > - Add check for script/report/c2c.. (Patch 13, 14 & 16)
+> > 
+> > it's all black magic to me, but looks ok ;-)
+> > 
+> > Acked-by: Jiri Olsa <jolsa@redhat.com>
+> > 
+> 
+> Thanks Jirka.
+> 
+> Hi Arnaldo,
+> 
+> Any comments for the series?
 
-Please state that in the commit message when you send your next
-revision.
+I need to test it, hope to do it soon, but I'm a bit backlogged, sorry.
 
-> Does it matter? I’m not an expert here,
-
-Huh, you're only sending the code then? Or what do you mean with not
-being an expert?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+- Arnaldo
