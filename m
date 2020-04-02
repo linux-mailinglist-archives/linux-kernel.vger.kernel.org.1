@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9710619C6A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EC619C383
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389633AbgDBP7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:59:50 -0400
-Received: from [103.51.140.103] ([103.51.140.103]:38114 "EHLO
-        E6440.gar.corp.intel.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389321AbgDBP7u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:59:50 -0400
-Received: from E6440.gar.corp.intel.com (localhost [127.0.0.1])
-        by E6440.gar.corp.intel.com (Postfix) with ESMTP id 53F40C0195;
-        Thu,  2 Apr 2020 21:42:44 +0800 (CST)
-From:   Harry Pan <harry.pan@intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     gs0622@gmail.com, Harry Pan <harry.pan@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Subject: [PATCH] perf/x86/cstate: Add Jasper Lake CPU support
-Date:   Thu,  2 Apr 2020 21:42:42 +0800
-Message-Id: <20200402214239.1.Ic02e891daac41303aed1f2fc6c64f6110edd27bd@changeid>
-X-Mailer: git-send-email 2.24.1
+        id S2388510AbgDBOBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:01:48 -0400
+Received: from l2mail1.panix.com ([166.84.1.75]:64870 "EHLO l2mail1.panix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726617AbgDBOBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 10:01:47 -0400
+X-Greylist: delayed 1105 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Apr 2020 10:01:47 EDT
+Received: from mailbackend.panix.com (mailbackend.panix.com [166.84.1.89])
+        by l2mail1.panix.com (Postfix) with ESMTPS id 48tPQz2JSzzDS3
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Apr 2020 09:43:23 -0400 (EDT)
+Received: from xps-7390 (c-73-241-154-233.hsd1.ca.comcast.net [73.241.154.233])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 48tPQw5R8rz1P23;
+        Thu,  2 Apr 2020 09:43:20 -0400 (EDT)
+Date:   Thu, 2 Apr 2020 06:43:19 -0700 (PDT)
+From:   "Kenneth R. Crudup" <kenny@panix.com>
+Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [patch 0/2] x86: Prevent Split-Lock-Detection wreckage on VMX
+ hypervisors
+In-Reply-To: <20200402123258.895628824@linutronix.de>
+Message-ID: <alpine.DEB.2.21.2004020641470.7052@xps-7390>
+References: <20200402123258.895628824@linutronix.de>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jasper Lake processor is Tremont microarchitecture, we can
-reuse the glm_cstates table of Goldmont and Goldmont Plus
-to enable the C-states residency profiling.
 
-Signed-off-by: Harry Pan <harry.pan@intel.com>
+On Thu, 2 Apr 2020, Thomas Gleixner wrote:
 
----
+> As Peter and myself don't have access to a SLD enabled machine, the
+> KVM/VMX part is untested. The module scan part works.
 
- arch/x86/events/intel/cstate.c | 1 +
- 1 file changed, 1 insertion(+)
+I just applied both of these patches to my (Linus' tip) tree, and unfortunately
+VMWare still hangs if split_lock_detect= is set to anything but "off".
 
-diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
-index e4aa20c0426f..442e1ed4acd4 100644
---- a/arch/x86/events/intel/cstate.c
-+++ b/arch/x86/events/intel/cstate.c
-@@ -643,6 +643,7 @@ static const struct x86_cpu_id intel_cstates_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_PLUS,	&glm_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&glm_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,	&glm_cstates),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	&glm_cstates),
- 
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_cstates),
+Was there anything else I'd needed to do?
+
+	-Kenny
+
 -- 
-2.24.1
-
+Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Silicon Valley
