@@ -2,268 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5E819C1FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05BD619C299
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388520AbgDBNWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:22:46 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36444 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732262AbgDBNWp (ORCPT
+        id S2388580AbgDBN0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:26:23 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:40984 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388497AbgDBN0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:22:45 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032DHaUA194867;
-        Thu, 2 Apr 2020 13:22:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=97q0GJq02Y3cTkJ43xeNk4ZuJbYRdLn9mQpITNd9EJ0=;
- b=FUY3WrumcUlQ0eO+nfvj/ElHdvLg38zWKrT0pLj7jdrQnIVmVHY8IdPgg9E8L9Rdseb6
- d2CwSjrilwIohGgKBo8z7C8XLE9xo3sSLXPLrnU1bHce5RGfwWNbqoySj4q5KfNbMbE7
- UwyoZivToKHQgv0CZd5EoxGJ1BmCyTOcneun+gA2o46BcSqNoq1U2jvf9LVUVYjOoVmN
- 31nO0vaPz+KvjcON6rIvT7TLXdUQv/x6hnzHWfg+KgJywfP2UfFWJX/uw/EiAIRRKhGo
- 2e1iUPoV7knzz+f4F43tyF4pN86SZDh6XgWLc2ReO7O29uM+amxhwI23XoW2dpRsBGia cQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 303yundy7d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 13:22:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032DISAn162820;
-        Thu, 2 Apr 2020 13:20:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 302g4vhma7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 13:20:27 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032DKRJ3015760;
-        Thu, 2 Apr 2020 13:20:27 GMT
-Received: from linux-1.home (/10.175.46.241)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 06:20:26 -0700
-Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
-To:     Julien Thierry <jthierry@redhat.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-4-alexandre.chartre@oracle.com>
- <db508586-258a-0616-d649-e76e95df9611@redhat.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <4e779423-395d-5e2e-b641-5604902bf096@oracle.com>
-Date:   Thu, 2 Apr 2020 15:24:45 +0200
+        Thu, 2 Apr 2020 09:26:22 -0400
+Received: by mail-wr1-f66.google.com with SMTP id h9so4189293wrc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 06:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Sg3BFMvbkYhuGt8JDCouyvaKony0UkIee4Kjr1v63Rs=;
+        b=IM5tKm/WxrF1lMZBLXwcUfxJnM66c1GzABUefbOCymlAJeJtD9EKTwAo+vVKNXAHDi
+         n2rT7CNA7vH6ZFPQsapxGSyOjOkBRy9ciegr6fH2M/O0rkRM/43ZmP/pJWjci2Qj2yaF
+         pvSvfz/s8fd0RrCJewitsvYlV9OKeDLsYRK0tbks/IVQK2jm2sqbtCp5SzvsJ88lYclx
+         wu8T/GKdjcaSDJffSwJkiMWmtDx3GBQrLhWCtHHrdHctNlBv9TnmHVlzy8iWVDDjuJ09
+         iDNXLnDkIZtEUK8oBNrJ/H9su0ekAC8YDRwIIjdeH5sNSFfMNsgIDDDK4igiWw4I83lv
+         XRNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Sg3BFMvbkYhuGt8JDCouyvaKony0UkIee4Kjr1v63Rs=;
+        b=HB1chNL8omAfxxosAKOFcnXrlJLz/gAlBzQiOr2kscMMPTHIP07Ric63fzVK0pJEMV
+         pRRqEXSblO42a0iWUS7U9MVa3wCduM321tFrhpmAd0AEuPHpNxsnJ/4SZ4UWHcFGokKi
+         /Xl2qeiLoiu1WDYL1mDOxssuKGZ0bOFBapHUViCLxiu2QfbpJ5s9V5jeE65h1s8k09uL
+         MHJv/V0FPJlH7iUAO7bIypygX+YCXkGLnfoPOBNq2NvnyzCWsn+ANmKgpYVKRy8hk7Qi
+         qrYp8+4Ye6TfahzIbGdty7NRuo6izHccqO1zC9HbunRGJSG6AeieCBUOFP3Ko53JDHFe
+         Fgpw==
+X-Gm-Message-State: AGi0PuZx9Neicw3DLKL1BE0bchGo8LUWbjufZtxJiDtwDH4tzl7AnbXS
+        s87T0SLwnMr/1cANRCnE8u4wLHFvtvkNnA==
+X-Google-Smtp-Source: APiQypImH3XJYx4cNKN80+n6qbX2HDEhrqBKfogONqezN+xr1wKcK/lefeAd8HShf/36jQzgTVw/jg==
+X-Received: by 2002:adf:dfc6:: with SMTP id q6mr3247742wrn.325.1585833980604;
+        Thu, 02 Apr 2020 06:26:20 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:5c5f:613e:f775:b6a2? ([2a01:e35:2ec0:82b0:5c5f:613e:f775:b6a2])
+        by smtp.gmail.com with ESMTPSA id j11sm7500644wrt.14.2020.04.02.06.26.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Apr 2020 06:26:19 -0700 (PDT)
+Subject: Re: [PATCH] crypto:amlogic - use platform_get_irq_optional()
+To:     Tang Bin <tangbin@cmss.chinamobile.com>, clabbe@baylibre.com,
+        herbert@gondor.apana.org.au, davem@davemloft.net
+Cc:     linux-amlogic@lists.infradead.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200402113344.16772-1-tangbin@cmss.chinamobile.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKE5laWwgQXJtc3Ryb25nIDxuYXJtc3Ryb25nQGJheWxpYnJlLmNvbT7CwHsEEwEKACUC
+ GyMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheABQJXDO2CAhkBAAoJEBaat7Gkz/iubGIH/iyk
+ RqvgB62oKOFlgOTYCMkYpm2aAOZZLf6VKHKc7DoVwuUkjHfIRXdslbrxi4pk5VKU6ZP9AKsN
+ NtMZntB8WrBTtkAZfZbTF7850uwd3eU5cN/7N1Q6g0JQihE7w4GlIkEpQ8vwSg5W7hkx3yQ6
+ 2YzrUZh/b7QThXbNZ7xOeSEms014QXazx8+txR7jrGF3dYxBsCkotO/8DNtZ1R+aUvRfpKg5
+ ZgABTC0LmAQnuUUf2PHcKFAHZo5KrdO+tyfL+LgTUXIXkK+tenkLsAJ0cagz1EZ5gntuheLD
+ YJuzS4zN+1Asmb9kVKxhjSQOcIh6g2tw7vaYJgL/OzJtZi6JlIXOwU0EVid/pAEQAND7AFhr
+ 5faf/EhDP9FSgYd/zgmb7JOpFPje3uw7jz9wFb28Cf0Y3CcncdElYoBNbRlesKvjQRL8mozV
+ 9RN+IUMHdUx1akR/A4BPXNdL7StfzKWOCxZHVS+rIQ/fE3Qz/jRmT6t2ZkpplLxVBpdu95qJ
+ YwSZjuwFXdC+A7MHtQXYi3UfCgKiflj4+/ITcKC6EF32KrmIRqamQwiRsDcUUKlAUjkCLcHL
+ CQvNsDdm2cxdHxC32AVm3Je8VCsH7/qEPMQ+cEZk47HOR3+Ihfn1LEG5LfwsyWE8/JxsU2a1
+ q44LQM2lcK/0AKAL20XDd7ERH/FCBKkNVzi+svYJpyvCZCnWT0TRb72mT+XxLWNwfHTeGALE
+ +1As4jIS72IglvbtONxc2OIid3tR5rX3k2V0iud0P7Hnz/JTdfvSpVj55ZurOl2XAXUpGbq5
+ XRk5CESFuLQV8oqCxgWAEgFyEapI4GwJsvfl/2Er8kLoucYO1Id4mz6N33+omPhaoXfHyLSy
+ dxD+CzNJqN2GdavGtobdvv/2V0wukqj86iKF8toLG2/Fia3DxMaGUxqI7GMOuiGZjXPt/et/
+ qeOySghdQ7Sdpu6fWc8CJXV2mOV6DrSzc6ZVB4SmvdoruBHWWOR6YnMz01ShFE49pPucyU1h
+ Av4jC62El3pdCrDOnWNFMYbbon3vABEBAAHCwn4EGAECAAkFAlYnf6QCGwICKQkQFpq3saTP
+ +K7BXSAEGQECAAYFAlYnf6QACgkQd9zb2sjISdGToxAAkOjSfGxp0ulgHboUAtmxaU3viucV
+ e2Hl1BVDtKSKmbIVZmEUvx9D06IijFaEzqtKD34LXD6fjl4HIyDZvwfeaZCbJbO10j3k7FJE
+ QrBtpdVqkJxme/nYlGOVzcOiKIepNkwvnHVnuVDVPcXyj2wqtsU7VZDDX41z3X4xTQwY3SO1
+ 9nRO+f+i4RmtJcITgregMa2PcB0LvrjJlWroI+KAKCzoTHzSTpCXMJ1U/dEqyc87bFBdc+DI
+ k8mWkPxsccdbs4t+hH0NoE3Kal9xtAl56RCtO/KgBLAQ5M8oToJVatxAjO1SnRYVN1EaAwrR
+ xkHdd97qw6nbg9BMcAoa2NMc0/9MeiaQfbgW6b0reIz/haHhXZ6oYSCl15Knkr4t1o3I2Bqr
+ Mw623gdiTzotgtId8VfLB2Vsatj35OqIn5lVbi2ua6I0gkI6S7xJhqeyrfhDNgzTHdQVHB9/
+ 7jnM0ERXNy1Ket6aDWZWCvM59dTyu37g3VvYzGis8XzrX1oLBU/tTXqo1IFqqIAmvh7lI0Se
+ gCrXz7UanxCwUbQBFjzGn6pooEHJYRLuVGLdBuoApl/I4dLqCZij2AGa4CFzrn9W0cwm3HCO
+ lR43gFyz0dSkMwNUd195FrvfAz7Bjmmi19DnORKnQmlvGe/9xEEfr5zjey1N9+mt3//geDP6
+ clwKBkq0JggA+RTEAELzkgPYKJ3NutoStUAKZGiLOFMpHY6KpItbbHjF2ZKIU1whaRYkHpB2
+ uLQXOzZ0d7x60PUdhqG3VmFnzXSztA4vsnDKk7x2xw0pMSTKhMafpxaPQJf494/jGnwBHyi3
+ h3QGG1RjfhQ/OMTX/HKtAUB2ct3Q8/jBfF0hS5GzT6dYtj0Ci7+8LUsB2VoayhNXMnaBfh+Q
+ pAhaFfRZWTjUFIV4MpDdFDame7PB50s73gF/pfQbjw5Wxtes/0FnqydfId95s+eej+17ldGp
+ lMv1ok7K0H/WJSdr7UwDAHEYU++p4RRTJP6DHWXcByVlpNQ4SSAiivmWiwOt490+Ac7ATQRN
+ WQbPAQgAvIoM384ZRFocFXPCOBir5m2J+96R2tI2XxMgMfyDXGJwFilBNs+fpttJlt2995A8
+ 0JwPj8SFdm6FBcxygmxBBCc7i/BVQuY8aC0Z/w9Vzt3Eo561r6pSHr5JGHe8hwBQUcNPd/9l
+ 2ynP57YTSE9XaGJK8gIuTXWo7pzIkTXfN40Wh5jeCCspj4jNsWiYhljjIbrEj300g8RUT2U0
+ FcEoiV7AjJWWQ5pi8lZJX6nmB0lc69Jw03V6mblgeZ/1oTZmOepkagwy2zLDXxihf0GowUif
+ GphBDeP8elWBNK+ajl5rmpAMNRoKxpN/xR4NzBg62AjyIvigdywa1RehSTfccQARAQABwsBf
+ BBgBAgAJBQJNWQbPAhsMAAoJEBaat7Gkz/iuteIH+wZuRDqK0ysAh+czshtG6JJlLW6eXJJR
+ Vi7dIPpgFic2LcbkSlvB8E25Pcfz/+tW+04Urg4PxxFiTFdFCZO+prfd4Mge7/OvUcwoSub7
+ ZIPo8726ZF5/xXzajahoIu9/hZ4iywWPAHRvprXaim5E/vKjcTeBMJIqZtS4u/UK3EpAX59R
+ XVxVpM8zJPbk535ELUr6I5HQXnihQm8l6rt9TNuf8p2WEDxc8bPAZHLjNyw9a/CdeB97m2Tr
+ zR8QplXA5kogS4kLe/7/JmlDMO8Zgm9vKLHSUeesLOrjdZ59EcjldNNBszRZQgEhwaarfz46
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <c43b85f8-2bc9-7b19-6b86-953246c88d2c@baylibre.com>
+Date:   Thu, 2 Apr 2020 15:26:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <db508586-258a-0616-d649-e76e95df9611@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20200402113344.16772-1-tangbin@cmss.chinamobile.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=0
- mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020121
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-
-On 4/2/20 2:53 PM, Julien Thierry wrote:
-> Hi Alexandre,
+On 02/04/2020 13:33, Tang Bin wrote:
+> In order to simply code,because platform_get_irq() already has
+> dev_err() message.
 > 
-> I ran into the limitation of intra-function call for the arm64
-> support but didn't take the time to make a clean patch to support
-> them properly.
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> ---
+>  drivers/crypto/amlogic/amlogic-gxl-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Nice to see you've gone through that work :) .
+> diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
+> index 9d4ead2f7..37901bd81 100644
+> --- a/drivers/crypto/amlogic/amlogic-gxl-core.c
+> +++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
+> @@ -252,7 +252,7 @@ static int meson_crypto_probe(struct platform_device *pdev)
+>  
+>  	mc->irqs = devm_kcalloc(mc->dev, MAXFLOW, sizeof(int), GFP_KERNEL);
+>  	for (i = 0; i < MAXFLOW; i++) {
+> -		mc->irqs[i] = platform_get_irq(pdev, i);
+> +		mc->irqs[i] = platform_get_irq_optional(pdev, i);
+>  		if (mc->irqs[i] < 0) {
+>  			dev_err(mc->dev, "Cannot get IRQ for flow %d\n", i);
+>  			return mc->irqs[i];
 > 
-> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
->> Change objtool to support intra-function calls. An intra-function call
->> is represented in objtool as a push onto the stack (of the return
-> 
-> I have to disagree a bit with that. The push onto the stack is true
-> on x86, but other architectures might not have that (arm/arm64 have a
-> link register that gets set by "bl" instructions and do not modify
-> the stack).
 
-Correct, this is x86 specific.
+NACK, the irq is not optional, I don't see why platform_get_irq_optional() should be used here
+and how it could "simply code".
 
-> 
->> address), and a jump to the destination address. That way the stack
->> information is correctly updated and the call flow is still accurate.
->>
->> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
->> ---
->>   tools/objtool/check.c | 73 ++++++++++++++++++++++++++++++++++++++++++-
->>   tools/objtool/check.h |  1 +
->>   2 files changed, 73 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
->> index 214809ac2776..0cec91291d46 100644
->> --- a/tools/objtool/check.c
->> +++ b/tools/objtool/check.c
->> @@ -657,6 +657,18 @@ static int add_call_destinations(struct objtool_file *file)
->>           if (insn->type != INSN_CALL)
->>               continue;
->> +        if (insn->intra_function_call) {
->> +            dest_off = insn->offset + insn->len + insn->immediate;
->> +            insn->jump_dest = find_insn(file, insn->sec, dest_off);
->> +            if (insn->jump_dest)
->> +                continue;
->> +
->> +            WARN_FUNC("can't find call dest at %s+0x%lx",
->> +                  insn->sec, insn->offset,
->> +                  insn->sec->name, dest_off);
->> +            return -1;
->> +        }
->> +
->>           rela = find_rela_by_dest_range(insn->sec, insn->offset,
->>                              insn->len);
->>           if (!rela) {
->> @@ -1289,6 +1301,49 @@ static int read_retpoline_hints(struct objtool_file *file)
->>       return 0;
->>   }
->> +static int read_intra_function_call(struct objtool_file *file)
->> +{
->> +    struct section *sec;
->> +    struct instruction *insn;
->> +    struct rela *rela;
->> +
->> +    sec = find_section_by_name(file->elf,
->> +                   ".rela.discard.intra_function_call");
-> 
-> I'm wondering, do we really need to annotate the intra_function_call
-> and group the in a section?
-> 
-> Would it be a problem to consider all (static) call instructions with
-> a destination that is not the start offset of a symbol to be an
-> intra-function call (and set insn->intra_function_call and
-> insn->jump_dest accordingly)?
-
-Correct, we could automatically detect intra-function calls instead of
-having to annotate them. However, I choose to annotate them because I don't
-think that's not an expected construct in a "normal" code flow (at least
-on x86). So objtool would still issue a warning on intra-function calls
-by default, and you can annotate them to indicate if they are expected.
-
-If intra-function calls are frequent on arm then I can add an option to
-objtool so it automatically detects them. This way, we won't use the option
-on x86 and we have to annotate intra-function call on x86, and you can
-use it on arm to automatically detect intra-function calls.
-
-
-> Other than that the logic would stay the same.
-> 
->> +    if (!sec)
->> +        return 0;
->> +
->> +    list_for_each_entry(rela, &sec->rela_list, list) {
->> +        if (rela->sym->type != STT_SECTION) {
->> +            WARN("unexpected relocation symbol type in %s",
->> +                 sec->name);
->> +            return -1;
->> +        }
->> +
->> +        insn = find_insn(file, rela->sym->sec, rela->addend);
->> +        if (!insn) {
->> +            WARN("bad .discard.intra_function_call entry");
->> +            return -1;
->> +        }
->> +
->> +        if (insn->type != INSN_CALL) {
->> +            WARN_FUNC("intra_function_call not a call",
->> +                  insn->sec, insn->offset);
-> 
-> Nit: This could be slightly confusing with INSN_CALL_DYNAMIC. Maybe just:
->      "unsupported instruction for intra-function call " ?
-
-Right, I will change that: "intra_function_call not a direct call"
-
->> +            return -1;
->> +        }
->> +
->> +        insn->intra_function_call = true;
->> +        /*
->> +         * For the impact on the stack, make an intra-function
->> +         * call behaves like a push of an immediate value (the
->> +         * return address).
->> +         */
->> +        insn->stack_op.src.type = OP_SRC_CONST;
->> +        insn->stack_op.dest.type = OP_DEST_PUSH;
-> 
-> As commented above, this should be arch dependent.
-
-I will add a arch dependent call. I will also do that for the return
-trampoline call case (patch 4).
-
-Thanks,
-
-alex.
-
->> +    }
->> +
->> +    return 0;
->> +}
->> +
->>   static void mark_rodata(struct objtool_file *file)
->>   {
->>       struct section *sec;
->> @@ -1344,6 +1399,10 @@ static int decode_sections(struct objtool_file *file)
->>       if (ret)
->>           return ret;
->> +    ret = read_intra_function_call(file);
->> +    if (ret)
->> +        return ret;
->> +
->>       ret = add_call_destinations(file);
->>       if (ret)
->>           return ret;
->> @@ -2092,7 +2151,8 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>                   return ret;
->>               if (!no_fp && func && !is_fentry_call(insn) &&
->> -                !has_valid_stack_frame(&state)) {
->> +                !has_valid_stack_frame(&state) &&
->> +                !insn->intra_function_call) {
->>                   WARN_FUNC("call without frame pointer save/setup",
->>                         sec, insn->offset);
->>                   return 1;
->> @@ -2101,6 +2161,17 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>               if (dead_end_function(file, insn->call_dest))
->>                   return 0;
->> +            if (insn->intra_function_call) {
->> +                update_insn_state(insn, &state);
->> +                ret = validate_branch(file, func, insn,
->> +                              insn->jump_dest, state);
->> +                if (ret) {
->> +                    if (backtrace)
->> +                        BT_FUNC("(intra-call)", insn);
->> +                    return ret;
->> +                }
->> +            }
->> +
->>               break;
->>           case INSN_JUMP_CONDITIONAL:
->> diff --git a/tools/objtool/check.h b/tools/objtool/check.h
->> index cffb23d81782..2bd6d2f46baa 100644
->> --- a/tools/objtool/check.h
->> +++ b/tools/objtool/check.h
->> @@ -35,6 +35,7 @@ struct instruction {
->>       unsigned long immediate;
->>       unsigned int alt_group;
->>       bool dead_end, ignore, hint, save, restore, ignore_alts;
->> +    bool intra_function_call;
->>       bool retpoline_safe;
->>       u8 visited;
->>       struct symbol *call_dest;
->>
-> 
-> Thanks,
-> 
+Neil
