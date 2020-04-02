@@ -2,96 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A1119C789
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC18619C78B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389996AbgDBRC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:02:26 -0400
-Received: from mout.gmx.net ([212.227.17.21]:58937 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732625AbgDBRC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:02:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1585846936;
-        bh=8UWypK5pgVcYcqIwFlJJIKU66AJRcAaCGYCCv5rqHSc=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=kz5/1BLakRSoXGwoWbzj0G2RsRakRC3O083MpECK0lcusQNnUBrcvbBKK3RDqcJin
-         K7dUMj5WTR471Ftf/q0RbDgXdzM0CFakZoCYpRUPJ+Yx++hOCSIMrQ5sXXG7ZKsoe9
-         DWftEnWe1HekBoC3HXKCAMV7RonuRGQ756ByiSzE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MqJqN-1ixvlT1b4l-00nPcN; Thu, 02 Apr 2020 19:02:16 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Oscar Carter <oscar.carter@gmx.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>
-Subject: [PATCH v2] staging: vt6656: Define EnCFG_BBType_MASK as OR between previous defines
-Date:   Thu,  2 Apr 2020 19:01:03 +0200
-Message-Id: <20200402170103.22520-1-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
+        id S1732482AbgDBRCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:02:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38678 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732625AbgDBRCn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 13:02:43 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jK3E5-0008K9-3R; Thu, 02 Apr 2020 19:01:57 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 81E1F100D52; Thu,  2 Apr 2020 19:01:56 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     x86@kernel.org, "Kenneth R . Crudup" <kenny@panix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] x86/split_lock: Refactor and export handle_user_split_lock() for KVM
+In-Reply-To: <20200402155554.27705-3-sean.j.christopherson@intel.com>
+References: <20200402124205.334622628@linutronix.de> <20200402155554.27705-1-sean.j.christopherson@intel.com> <20200402155554.27705-3-sean.j.christopherson@intel.com>
+Date:   Thu, 02 Apr 2020 19:01:56 +0200
+Message-ID: <87v9mhn7nf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:92r1pGjCMbrGkXpHcqtHjCNU/M4fbFzS1R86MSFEIhWrF4H/JMF
- QemgjEJ4zbeOHAsxeXaaeTRQRiLIvKb60mA/Yd/ylGNPEBNj8muDZHsC79ZuoneZVb5DXY9
- b+HJBhz6t9R95in47coyaiolMD+vEBbQ3rnujgtm30qDo5Qtye+8KhtNNtsliMkdAt8HOjB
- wIU71B12rn5896tXfXZNg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lHToelEcjb4=:B1oScJRzOkmBzLG0RFEIvy
- /I6B8VNsZHjt6h+W5K1Y7eAaYKfTbRobNsysN2MepWDF1HtRSl9bN1zXj0EFWbUzJG2i1efTy
- ZMhzJHncqJFwydMF2XoibrOE++9YuFiyx0s77jVyXW2SI1u7V3MaQUz8OZWDAT7M6pWb9ZrL4
- dlwxh9PrfDXb+mK+0QT+lx1QswBSVEG/EPqfMxAraa/+lMDrtob0N4gsrL9JeR4kTamH3OzxE
- e4I5DjUrDlxkJJjiR9Ux2E0pRb8OD1hE3GlWbFrLd3cNvUHMKY4X5PNXGjbC4BKfsSvNtmZTs
- j16IDXQixAbLHBJiWbYZrqXlZJ+Bs5by1dg+bkhm9I7CgeKigJadNnwzAkfP27mjDG0juNnh6
- IfpPAVEPOZ7lwPIQ4EA/rjM9KD5B5aIrcjXRSuy9IKpRt3gNcRD15esP8yfb8mOMLtvnVzAaM
- Ck87DhuL4+mD1khLNL5yjzUvHOf2nECIvCFaKOcutsEROXx/clkQC633MFOzlVdlD9N/DMl22
- ip1EfV9iBJ5jYr4mNxeJe/qIzmjwseMuxhZ2uxZEmTeiItQprwdyZnOHHQlqiWuvvXSO23woT
- cC3YkGD3dPBN9/jm7yAsFgGTkr110YifGBoxnlMqOJOu/EGm5g/DT/DUtaGEpKjJyoO0Dkug9
- kcCmpn11uJkd7L2Uxn6kKBi7F2bsinGED+aOLtlr4bJP2W6zKLhlwJErlxHNE0uW4kZmnD+5A
- O50qfHsaaDgVmnmtiHWaSpcGqqiFQWHDvwVwmswWDTsRTTD/QardBDoXPUk8n9wl1Ay1vYE7S
- lkOFSlS2oLGOmAN+aSHLrDRfF3xosSslMeYqR8FRZln7di9nEmubiyysVhnrBaBAlEWV8YyXd
- pTLhCWH2XdiGNjAfhgA0qxV73pjGRe5rvA75pZ+IvsRTkF1AvOqfsgOFW7Beg7gknqFDUq/sS
- j++7Hirrx3Shep/1NW8TXGYlLo5AMsTsJwK/QquFUjUIM9Xh4iYBd+1PEMq2+pSXWNh+F9QGN
- O5v861QMyTaCIBfDBjQfOFy3wg6pgUlrSz7/szWi7ZYT6JGPLhIHe9zfUHq2PmFvh8+pr9tj1
- wCFyViMe+eWIvR6gfl8otWogem457GbD2jzFdgQYWb4Aq1C4bgnaHQeULV6t84Yk1/saOigl8
- p70HSeyhUdqTaPyg9ugGu7+hfDccSlPXaHFyVBZ3KtpwSztWcaW/316EQcWGrF8nqDzkvL2cW
- hUk4t4xb906JZax70
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define the EnCFG_BBType_MASK bit as an OR operation between two previous
-defines instead of using the OR between two new BIT macros. Thus, the
-code is more clear.
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> From: Xiaoyao Li <xiaoyao.li@intel.com>
+>
+> In the future, KVM will use handle_user_split_lock() to handle #AC
+> caused by split lock in guest. Due to the fact that KVM doesn't have
+> a @regs context and will pre-check EFLAGS.AC, move the EFLAGS.AC check
+> to do_alignment_check().
+>
+> Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/include/asm/cpu.h  | 4 ++--
+>  arch/x86/kernel/cpu/intel.c | 7 ++++---
+>  arch/x86/kernel/traps.c     | 2 +-
+>  3 files changed, 7 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+> index ff6f3ca649b3..ff567afa6ee1 100644
+> --- a/arch/x86/include/asm/cpu.h
+> +++ b/arch/x86/include/asm/cpu.h
+> @@ -43,11 +43,11 @@ unsigned int x86_stepping(unsigned int sig);
+>  #ifdef CONFIG_CPU_SUP_INTEL
+>  extern void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c);
+>  extern void switch_to_sld(unsigned long tifn);
+> -extern bool handle_user_split_lock(struct pt_regs *regs, long error_code);
+> +extern bool handle_user_split_lock(unsigned long ip);
+>  #else
+>  static inline void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c) {}
+>  static inline void switch_to_sld(unsigned long tifn) {}
+> -static inline bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+> +static inline bool handle_user_split_lock(unsigned long ip)
 
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Quentin Deslandes <quentin.deslandes@itdev.co.uk>
-=2D--
-Changelog v1 -> v2
-- Remove the "Fixes:" tag line.
-- Add "Reviewed-by: Quentin Deslandes"
+This is necessary because VMX can be compiled without CPU_SUP_INTEL?
 
- drivers/staging/vt6656/mac.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  {
+>  	return false;
+>  }
+> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+> index 9a26e972cdea..7688f51aabdb 100644
+> --- a/arch/x86/kernel/cpu/intel.c
+> +++ b/arch/x86/kernel/cpu/intel.c
+> @@ -1066,13 +1066,13 @@ static void split_lock_init(void)
+>  	split_lock_verify_msr(sld_state != sld_off);
+>  }
+>  
+> -bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+> +bool handle_user_split_lock(unsigned long ip)
+>  {
+> -	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
+> +	if (sld_state == sld_fatal)
+>  		return false;
+>  
+>  	pr_warn_ratelimited("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
+> -			    current->comm, current->pid, regs->ip);
+> +			    current->comm, current->pid, ip);
 
-diff --git a/drivers/staging/vt6656/mac.h b/drivers/staging/vt6656/mac.h
-index c532b27de37f..b01d9ee8677e 100644
-=2D-- a/drivers/staging/vt6656/mac.h
-+++ b/drivers/staging/vt6656/mac.h
-@@ -177,7 +177,7 @@
- #define EnCFG_BBType_a		0x00
- #define EnCFG_BBType_b		BIT(0)
- #define EnCFG_BBType_g		BIT(1)
--#define EnCFG_BBType_MASK	(BIT(0) | BIT(1))
-+#define EnCFG_BBType_MASK	(EnCFG_BBType_b | EnCFG_BBType_g)
- #define EnCFG_ProtectMd		BIT(5)
+So this returns true even in the case that sld_state == off.
 
- /* Bits in the EnhanceCFG_1 register */
-=2D-
-2.20.1
+Should never happen, but I rather have an extra check and be both
+verbose and correct. See the variant I did.
+
+Thanks,
+
+        tglx
+
 
