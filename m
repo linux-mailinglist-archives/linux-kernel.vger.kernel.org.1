@@ -2,112 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE60519C52C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4AD19C543
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389096AbgDBO6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:58:44 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:36003 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389058AbgDBO6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:58:38 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 48tR5m5G7TzHd;
-        Thu,  2 Apr 2020 16:58:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1585839516; bh=NtMCc186Ug9cBLzwsJyjA0kM4Gsfruxf11Rj7KVafeI=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=KfaNHBU3d1npBIHJjyQTNrCNQ3KQkTDOztK0zUrUTz6ZFiLDYk0aJiqOB6/Icguh5
-         4GaL3VEq1Vw2KH0sUvy7Bpxt8SymotQsXqS4Xsmp5eK1H67X6F8MAQ5RSO1CSHk/NF
-         Bo6yhIVoBJjWg9ECvjllRTkWJNzjlzz5dbX56GqUTsXKYvy9KvYZ9+7mIxbQYv3zFl
-         T1/BfWyf2CLsqKfxy8ywMg6AiTqBpYJyE32E4NpRmJZpysbWv0JVm16k3yckeRmyfE
-         YG4ZOFZ9SgPDrZLvTjcR0xtheqZpitJvr0RsprnkTGYBijRUaIPNlRJUUSkG0X7/aG
-         1JcD4K0FKZdyw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Thu, 02 Apr 2020 16:58:36 +0200
-Message-Id: <695c9066c94ce73ffe9330e0342194980d581122.1585838679.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1585838678.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1585838678.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 13/14] power: supply: bq25890: show VBAT as VOLTAGE_NOW
+        id S2389179AbgDBO7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:59:40 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35170 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388782AbgDBO7k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 10:59:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585839579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Yqap4whYtfmJejxzuBxb/FdAQnMsGBhBjZtdGx1iIUk=;
+        b=RRn91FPfKVirv7wPkWNQxQXmgbFuAnYqnP5sHAFIDVRhmvh1usHNBA+cfjF0d40x4Tfa+X
+        tc47JNu9Bh53pZxULSoNs58hk/jiuQo3H51s9EC0okJiwBmWrS8reNGiPQrLaRyV4hDXp/
+        2zvTGsQ0hPeq695Quk3xykctwyTP68M=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-RAU6iGq9NS-vzIWr7BGaNw-1; Thu, 02 Apr 2020 10:59:38 -0400
+X-MC-Unique: RAU6iGq9NS-vzIWr7BGaNw-1
+Received: by mail-wr1-f70.google.com with SMTP id v17so1580072wro.21
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 07:59:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yqap4whYtfmJejxzuBxb/FdAQnMsGBhBjZtdGx1iIUk=;
+        b=GyF9058hMj/owJBzkEBQldfmbChGfLdhrKqNgRp2NGt1ZTJvDPyKAOMT26s1dnPBzm
+         cc7Mte/H98KLIfHLkGNwyAdjLtw7HMR/4xuosHNS/FwEsfxGRKsHwib8Lm/t9b4H5cHl
+         ++O1gx4Rzy+A4tFVpEvPGdtB/bFtQonjfienKOdnojhOHyLxGiluF7MtN8qMUJZYkSAI
+         96pstt6QIkO+2Xur5bMNr9Qz4uyKLDATVuMbkESCEqbt/3lz58BAAAHwKDw2UFsyhBac
+         QMcBmIO7OBgGoiFu3Gyt9+B72H+0hM2bYiJL0esS+BUqZxa7J/dGnk+QSjw8aC8SPBEy
+         etoA==
+X-Gm-Message-State: AGi0PuZBPf/ML+PHmubhbZUqWrtQjaTZZighE19CpIhCCrbyGPVy3feg
+        LltueTG+KCdxDHWsod1NzwylCjiLn6+X2r4TPLauDBWGlNmjpo0b+64HZ8wViLplFvu7CuCkW/P
+        0N2dSvbPBehbC/IVatDxQ0ISA
+X-Received: by 2002:adf:e744:: with SMTP id c4mr3767379wrn.133.1585839573538;
+        Thu, 02 Apr 2020 07:59:33 -0700 (PDT)
+X-Google-Smtp-Source: APiQypK3Oo6MLesIzVPde3UkEXepI21m0scERK4nlg2Qpodmma+whmcrF38HqppY2MVQPBGZT11SRw==
+X-Received: by 2002:adf:e744:: with SMTP id c4mr3767358wrn.133.1585839573260;
+        Thu, 02 Apr 2020 07:59:33 -0700 (PDT)
+Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
+        by smtp.gmail.com with ESMTPSA id r17sm588857wrg.71.2020.04.02.07.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 07:59:32 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterx@redhat.com, Ming Lei <ming.lei@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v2] sched/isolation: Allow "isolcpus=" to skip unknown sub-parameters
+Date:   Thu,  2 Apr 2020 10:59:29 -0400
+Message-Id: <20200402145929.102587-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONSTANT_CHARGE_VOLTAGE is a currently programmed CC voltage limit
-and not instaneous reading of a VBAT. Move the measurement to correct
-property. !online check is removed, as it is useful to read the voltage
-when not charging.
+The "isolcpus=" parameter allows sub-parameters to exist before the
+cpulist is specified, and if it sees unknown sub-parameters the whole
+parameter will be ignored.  This design is incompatible with itself
+when we add more sub-parameters to "isolcpus=", because the old
+kernels will not recognize the new "isolcpus=" sub-parameters, then it
+will invalidate the whole parameter so the CPU isolation will not
+really take effect if we start to use the new sub-parameters while
+later we reboot into an old kernel. Instead we will see this when
+booting the old kernel:
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+    isolcpus: Error, unknown flag
+
+The better and compatible way is to allow "isolcpus=" to skip unknown
+sub-parameters, so that even if we add new sub-parameters to it the
+old kernel will still be able to behave as usual even if with the new
+sub-parameter is specified.
+
+Ideally this patch should be there when we introduce the first
+sub-parameter for "isolcpus=", so it's already a bit late.  However
+late is better than nothing.
+
+CC: Ming Lei <ming.lei@redhat.com>
+CC: Ingo Molnar <mingo@redhat.com>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Juri Lelli <juri.lelli@redhat.com>
+CC: Luiz Capitulino <lcapitulino@redhat.com>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- drivers/power/supply/bq25890_charger.c | 25 ++++++++++---------------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+v2:
+- only allow isalpha() for sub-parameters [tglx]
+---
+ kernel/sched/isolation.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
-index 6c277f2dbae2..a61eab6a4552 100644
---- a/drivers/power/supply/bq25890_charger.c
-+++ b/drivers/power/supply/bq25890_charger.c
-@@ -472,20 +472,6 @@ static int bq25890_power_supply_get_property(struct power_supply *psy,
- 		val->intval = bq25890_find_val(bq->init_data.ichg, TBL_ICHG);
- 		break;
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 008d6ac2342b..c2e8b4a778d6 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -149,6 +149,9 @@ __setup("nohz_full=", housekeeping_nohz_full_setup);
+ static int __init housekeeping_isolcpus_setup(char *str)
+ {
+ 	unsigned int flags = 0;
++	char *par;
++	int len;
++	bool illegal = false;
  
--	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE:
--		if (!state.online) {
--			val->intval = 0;
--			break;
--		}
--
--		ret = bq25890_field_read(bq, F_BATV); /* read measured value */
--		if (ret < 0)
--			return ret;
--
--		/* converted_val = 2.304V + ADC_val * 20mV (table 10.3.15) */
--		val->intval = 2304000 + ret * 20000;
--		break;
--
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX:
- 		val->intval = bq25890_find_val(bq->init_data.vreg, TBL_VREG);
- 		break;
-@@ -537,6 +523,15 @@ static int bq25890_power_supply_get_property(struct power_supply *psy,
- 		val->intval = bq25890_find_val(bq->init_data.sysvmin, TBL_SYSVMIN);
- 		break;
+ 	while (isalpha(*str)) {
+ 		if (!strncmp(str, "nohz,", 5)) {
+@@ -169,8 +172,21 @@ static int __init housekeeping_isolcpus_setup(char *str)
+ 			continue;
+ 		}
  
-+	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
-+		ret = bq25890_field_read(bq, F_BATV); /* read measured value */
-+		if (ret < 0)
-+			return ret;
+-		pr_warn("isolcpus: Error, unknown flag\n");
+-		return 0;
++		/*
++		 * Skip unknown sub-parameter and validate that it is not
++		 * containing an invalid character.
++		 */
++		for (par = str, len = 0; *str && *str != ','; str++, len++)
++			if (!isalpha(*str))
++				illegal = true;
 +
-+		/* converted_val = 2.304V + ADC_val * 20mV (table 10.3.15) */
-+		val->intval = 2304000 + ret * 20000;
-+		break;
++		if (illegal) {
++			pr_warn("isolcpus: Invalid flag %.*s\n", len, par);
++			return 0;
++		}
 +
- 	case POWER_SUPPLY_PROP_CURRENT_NOW:
- 		ret = bq25890_field_read(bq, F_ICHGR); /* read measured value */
- 		if (ret < 0)
-@@ -722,7 +717,6 @@ static const enum power_supply_property bq25890_power_supply_props[] = {
- 	POWER_SUPPLY_PROP_ONLINE,
- 	POWER_SUPPLY_PROP_HEALTH,
- 	POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX,
--	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE,
- 	POWER_SUPPLY_PROP_CONSTANT_CHARGE_VOLTAGE_MAX,
- 	POWER_SUPPLY_PROP_PRECHARGE_CURRENT,
- 	POWER_SUPPLY_PROP_CHARGE_TERM_CURRENT,
-@@ -730,6 +724,7 @@ static const enum power_supply_property bq25890_power_supply_props[] = {
- 	POWER_SUPPLY_PROP_INPUT_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_OUTPUT_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_OUTPUT_VOLTAGE_MIN,
-+	POWER_SUPPLY_PROP_VOLTAGE_NOW,
- 	POWER_SUPPLY_PROP_CURRENT_NOW,
- };
++		pr_info("isolcpus: Skipped unknown flag %.*s\n", len, par);
++		str++;
+ 	}
  
+ 	/* Default behaviour for isolcpus without flags */
 -- 
-2.20.1
+2.24.1
 
