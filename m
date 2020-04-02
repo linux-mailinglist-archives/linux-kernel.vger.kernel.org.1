@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0356B19C121
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EEE019C123
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387931AbgDBMdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:33:06 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:46638 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729213AbgDBMdG (ORCPT
+        id S2388164AbgDBMdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 08:33:10 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:46639 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729213AbgDBMdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:33:06 -0400
-Received: by mail-lj1-f195.google.com with SMTP id r7so2975945ljg.13;
-        Thu, 02 Apr 2020 05:33:04 -0700 (PDT)
+        Thu, 2 Apr 2020 08:33:08 -0400
+Received: by mail-lj1-f194.google.com with SMTP id r7so2976001ljg.13;
+        Thu, 02 Apr 2020 05:33:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l3xG+lzh6Q2m2bU1b/cZLY6stz0OrJ21NrAPdv3f5lI=;
-        b=YdCj68CoIGNm8klzekN6UwRYTOMrJXNAezwvbdvUizysC4JClKGycqepTK+P7kMSvz
-         uwVO0pWBAXIY1nFRiH8r9VGbzeOqyH9dKdPayLKVc+dWktRsc/A/1Sov+46ZtTtRdUB/
-         xUJNK1/Gz3eateO4IDozVXnf1oN0EuAtjmu4VOSsRljrle+pIg2MY1gNdURCin4zU6/k
-         SWHI1+MuowwyS8UwE8c8lJi2kBSm5o++E57IM3Er2yNVdlacfF/ktRO8zJygZVEjM92l
-         tQHJkbf5Mij5Ekw+QVL+Gt0PzXldNxNVNJ3WuoTmVy3hWs8vAndrvhY6XDAQ5mGgF4yv
-         5pUg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=tB5Om8/vjXd8Shhy7gccK+1zsTKo1F5yn1ziCQxk5RE=;
+        b=apIxOOpuaj9CeJortfeXXN6+I17U1oEqokkNyJAsVBVGMa6nppSAZGqaceFNoA5DyN
+         mJ5BX0CkvUDnryB6tLnWnaMqc2qvr+8SrhRfxGh4X0/zL09hnSY6lvbqx3Hytd6DRhUr
+         dmVvZKXwg5WHyazfygIy2Nmu+P+LiXRXuWu9gsgTLsDHEftEtc+8DaEWlErsbG2zdXkc
+         lz9b+iMZLp9Hk08KqdoPktOwMF6FlfXAACsmReS3C74IFR5022ZHRbgyt4RubRnwt73n
+         EbG1sEZ0AgzGX3Ij9FrTuE4CfG2V+v1IqRvMP0T4FEyOE+1vWVyGmf0s0GgNgV4FtPcc
+         VWVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=l3xG+lzh6Q2m2bU1b/cZLY6stz0OrJ21NrAPdv3f5lI=;
-        b=G+wVldXzC35//9/Y4ma0LnzCfBYx/39PMU07+SMC2iH2u6AOSW4XNNr1iV/+6cdN32
-         1r2x74kRNG+aB1Is6HgRduCfxOFFXE3XKbxszD10XHTJOdA3fLfHoLNESr6vdyvLlxru
-         XYfFnzOEF39qq3a1syqQnHSjc7Rr0NCTcx+lcdiiWAsfGVDbcyJlWphwyUkWaY816dXG
-         SUC1swHDY3FJeR2IEAcpa0KFEYH+LSYA2rrVgld/krtvNwIFInqVX/RHnrLnLQRLL4o7
-         FxpBaZQZXj2QHgmvt+kR5V1Oh6K0b9vZaqoMWx9lbCw2Q/Pfv1s7QmLIyc7boxzUJgT4
-         k+1Q==
-X-Gm-Message-State: AGi0PuZHBOLB3ETdtdUioiYWOIU5tB13lFzehKdJuppeItlW34Nb5b9m
-        QlUzc698aRXtbLoMUaZx7Z29ZTwIpqQ=
-X-Google-Smtp-Source: APiQypL/TMoPg1xpQz/u+DpsCIjhLMV4V4JUwSAbK/9BffhqsJD2f8okxquuS6KlEyeqFYyh6hqOaQ==
-X-Received: by 2002:a2e:8887:: with SMTP id k7mr1909764lji.193.1585830783082;
-        Thu, 02 Apr 2020 05:33:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tB5Om8/vjXd8Shhy7gccK+1zsTKo1F5yn1ziCQxk5RE=;
+        b=lJgh/CDNSwZRiYqcZynl89Qdf3ZkWEAbf4PThIgUAwSFZfwb3I8y8jtk+XCmWTZ6W9
+         roeMmKS4Pi7TAPl/NToTlZPSOuvkgEMzYFuEI1DP61VctL9xDkI3zqmqAC1j4nl24IWt
+         nseqftG3nbPQbGhyGcj7ymIrMfxLlwkmb5lROc/u1zr7XPdm0m76wNpX+IzC27BfTeLZ
+         TcnBJI9Vyd4vjGWA/Hugn1rSyUrBbNOUsfUbBG0D0AB9LTL3UqjZ+f5V3gSSTyCy8o+S
+         jaHRHPfymS4wKqIjdTA7zUxONxXbpMOQOm/SZVyFZfkYefqUpiGs+e9ANlZ3o7IklDnf
+         5Bcg==
+X-Gm-Message-State: AGi0PubXy69Yho0ge3srAMx9RN8LglBCchnW4ygc0MzhvxuIxyiecbcW
+        a0bZ6Ce75PDtc0TYvaJ7cpfHOxP8hbg=
+X-Google-Smtp-Source: APiQypIcS/0ZJG7YlW+OPjmQzK2ZO8973RyK3GGEQvRKxPf6FN91uLJ6txbYJd0fY/sqwIBF0bVUeA==
+X-Received: by 2002:a2e:854b:: with SMTP id u11mr1868755ljj.75.1585830784175;
+        Thu, 02 Apr 2020 05:33:04 -0700 (PDT)
 Received: from pc636.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id u25sm3833494lfo.71.2020.04.02.05.33.00
+        by smtp.gmail.com with ESMTPSA id u25sm3833494lfo.71.2020.04.02.05.33.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 05:33:01 -0700 (PDT)
+        Thu, 02 Apr 2020 05:33:03 -0700 (PDT)
 From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 To:     LKML <linux-kernel@vger.kernel.org>,
         "Paul E . McKenney" <paulmck@kernel.org>,
@@ -54,10 +54,12 @@ Cc:     RCU <rcu@vger.kernel.org>, linux-mm@kvack.org,
         Uladzislau Rezki <urezki@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 1/3] rcu/tree: use more permissive parameters when attaching a head
-Date:   Thu,  2 Apr 2020 14:32:51 +0200
-Message-Id: <20200402123253.10382-1-urezki@gmail.com>
+Subject: [PATCH 2/3] rcu/tree: move locking/unlocking to separate functions
+Date:   Thu,  2 Apr 2020 14:32:52 +0200
+Message-Id: <20200402123253.10382-2-urezki@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200402123253.10382-1-urezki@gmail.com>
+References: <20200402123253.10382-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -65,83 +67,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is documneted that a headless object can be reclaimed from
-might_sleep() context only. Because of that when a head is
-dynamically attached it makes sense to drop the lock and do
-an allocation with much more permissve flags comparing if it
-is done from atomic context.
-
-That is why use GFP_KERNEL flag plus some extra ones which
-would make an allocation most likely to be succeed. The big
-advantage of doing so is a direct reclaim process.
-
-Tested such approach on my local tiny system with 145MB of
-ram(the minimum amount the KVM system is capable of booting)
-and 4xCPUs. For stressing the rcuperf module was used. During
-tests with difference combinations i did not observe any hit
-of our last emergency case, when synchronize_rcu() is involved.
-
-Please note, the "dynamically attaching" path was enabled only,
-apart of that all types of objects were considered as headless
-variant during testing.
+Introduce two helpers to lock and unlock an access to the
+per-cpu "kfree_rcu_cpu" structure. The reason is to make
+kvfree_call_rcu() function to be more readable.
 
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- kernel/rcu/tree.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ kernel/rcu/tree.c | 39 +++++++++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6172e6296dd7..24f620a06219 100644
+index 24f620a06219..5e26145e9ead 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3148,13 +3148,10 @@ static inline struct rcu_head *attach_rcu_head_to_object(void *obj)
- {
- 	unsigned long *ptr;
+@@ -3159,6 +3159,27 @@ static inline struct rcu_head *attach_rcu_head_to_object(void *obj)
+ 	return ((struct rcu_head *) ++ptr);
+ }
  
-+	/* Try hard to get the memory. */
- 	ptr = kmalloc(sizeof(unsigned long *) +
--			sizeof(struct rcu_head), GFP_NOWAIT | __GFP_NOWARN);
--
--	if (!ptr)
--		ptr = kmalloc(sizeof(unsigned long *) +
--				sizeof(struct rcu_head), GFP_ATOMIC | __GFP_NOWARN);
--
-+		sizeof(struct rcu_head), GFP_KERNEL |
-+			__GFP_ATOMIC | __GFP_HIGH | __GFP_RETRY_MAYFAIL);
- 	if (!ptr)
- 		return NULL;
++static inline struct kfree_rcu_cpu *
++krc_this_cpu_lock(unsigned long *flags)
++{
++	struct kfree_rcu_cpu *krcp;
++
++	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
++	krcp = this_cpu_ptr(&krc);
++	if (likely(krcp->initialized))
++		spin_lock(&krcp->lock);
++
++	return krcp;
++}
++
++static inline void
++krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
++{
++	if (likely(krcp->initialized))
++		spin_unlock(&krcp->lock);
++	local_irq_restore(flags);
++}
++
+ /*
+  * Queue a request for lazy invocation of appropriate free routine after a
+  * grace period. Please note there are three paths are maintained, two are the
+@@ -3195,10 +3216,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		ptr = (unsigned long *) func;
+ 	}
  
-@@ -3222,9 +3219,20 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	if (!success) {
+-	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+-	krcp = this_cpu_ptr(&krc);
+-	if (krcp->initialized)
+-		spin_lock(&krcp->lock);
++	krcp = krc_this_cpu_lock(&flags);
+ 
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+@@ -3220,19 +3238,14 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
  		/* Is headless object? */
  		if (head == NULL) {
-+			/* Drop the lock. */
-+			if (krcp->initialized)
-+				spin_unlock(&krcp->lock);
-+			local_irq_restore(flags);
-+
+ 			/* Drop the lock. */
+-			if (krcp->initialized)
+-				spin_unlock(&krcp->lock);
+-			local_irq_restore(flags);
++			krc_this_cpu_unlock(krcp, flags);
+ 
  			head = attach_rcu_head_to_object(ptr);
  			if (head == NULL)
--				goto unlock_return;
-+				goto inline_return;
-+
-+			/* Take it back. */
-+			local_irq_save(flags);
-+			krcp = this_cpu_ptr(&krc);
-+			if (krcp->initialized)
-+				spin_lock(&krcp->lock);
+ 				goto inline_return;
+ 
+ 			/* Take it back. */
+-			local_irq_save(flags);
+-			krcp = this_cpu_ptr(&krc);
+-			if (krcp->initialized)
+-				spin_lock(&krcp->lock);
++			krcp = krc_this_cpu_lock(&flags);
  
  			/*
  			 * Tag the headless object. Such objects have a back-pointer
-@@ -3263,6 +3271,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 		spin_unlock(&krcp->lock);
- 	local_irq_restore(flags);
+@@ -3267,9 +3280,7 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	}
  
-+inline_return:
+ unlock_return:
+-	if (krcp->initialized)
+-		spin_unlock(&krcp->lock);
+-	local_irq_restore(flags);
++	krc_this_cpu_unlock(krcp, flags);
+ 
+ inline_return:
  	/*
- 	 * High memory pressure, so inline kvfree() after
- 	 * synchronize_rcu(). We can do it from might_sleep()
 -- 
 2.20.1
 
