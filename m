@@ -2,131 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00BF619CA9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A86119CAB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388482AbgDBTxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 15:53:12 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:43005 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgDBTxL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 15:53:11 -0400
-Received: by mail-lj1-f193.google.com with SMTP id q19so4534732ljp.9
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 12:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1M4Ag+S0nZJij93THMq7bbkrnw/fgLQVfhHEAPg0zJg=;
-        b=C3f5PUXk+JZIZCZcNR0ar1vubzZ5yFkVQ8SIF5yLetsxkbpN4qR9j+r642h2EHOVcp
-         Zhp+esPwciqbodVQcDiIbMK1aUHC7IR7Zor/6HqPjnXt4wzG439ETqAuwfeIUqpkEqDx
-         f5mlJ9AKWuYcxkphaEsikpSSNS5RgS4z/p36Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1M4Ag+S0nZJij93THMq7bbkrnw/fgLQVfhHEAPg0zJg=;
-        b=nc6nLeZU7fjWPZx+NxGHPC7A4BCOgAWFGW3tt2QD58I1DSuDX1hqzmZpwp3rXEr5mp
-         dJ/55w5VUr/BoHvThgXLtWohM4XCWqx0zeI8qRuFtjitj6MMw9IIjS8zx8RX+n5JNrLs
-         yj3Nu134xT7ma68Fw31SY2a+VS4kaDJME+vm48J1uB0obUr+cDH4i7iXP2bGXSvjI+Ni
-         CmZuFKwUxqGskJkYsusKMz9D+JQIOlyWLOXxUG4k3exFYjaCLzUcia0IFCGtFNX2KD8I
-         tL1shvlk43s2QOJDNz41adDPZ8+fNUE1cLfFOFvPHssWP/BzEmklnBHTgvBPuJHoqOp/
-         dzeA==
-X-Gm-Message-State: AGi0PuYQfBd0D8vqFX7/c0UEkhDwhgDik+FtLj1sP8vbAPGbXzA4uGGL
-        y4khxdWsy0QYnMt4jH8EfmM/VmobIA0=
-X-Google-Smtp-Source: APiQypITI+bTxmZOe2u/VGzYTdo1PlgTowUF70/B4CbxuiUv2JzHk1eAjs5MrBXHqaD5GT0Zv6X7Sg==
-X-Received: by 2002:a2e:914b:: with SMTP id q11mr2872557ljg.291.1585857188566;
-        Thu, 02 Apr 2020 12:53:08 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id y26sm4502490lfl.95.2020.04.02.12.53.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 12:53:07 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id k21so4628160ljh.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 12:53:07 -0700 (PDT)
-X-Received: by 2002:a2e:7c1a:: with SMTP id x26mr2700792ljc.209.1585857186793;
- Thu, 02 Apr 2020 12:53:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <87blobnq02.fsf@x220.int.ebiederm.org> <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
- <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Apr 2020 12:52:50 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
-Message-ID: <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2388755AbgDBT6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 15:58:40 -0400
+Received: from mga05.intel.com ([192.55.52.43]:30535 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731823AbgDBT6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 15:58:40 -0400
+IronPort-SDR: Lbrtsiv91lgAA92Oyj0IK/4HGNqvNhBMkz38nwYp0kfunSSzaUAzINiTRuppX4F34mOfEYQCRc
+ Gd9H//bCVyMg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 12:58:39 -0700
+IronPort-SDR: tU6/jNkdsiiuD0tN4eL4XnBH7DbpSk0m1u9YbpcpV3Gwe8RxufSjalUvJp5iwtdWw5vd8W3NfU
+ pdOF6xKKJ6cQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
+   d="scan'208";a="328936909"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
+  by orsmga001.jf.intel.com with ESMTP; 02 Apr 2020 12:58:39 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH V2] perf/x86/intel/uncore: Add Comet Lake support
+Date:   Thu,  2 Apr 2020 12:52:59 -0700
+Message-Id: <1585857179-180207-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 12:31 PM Bernd Edlinger
-<bernd.edlinger@hotmail.de> wrote:
->
-> This is at least what is my impression how the existing mutexes are used,
-> a mutex called "cred_guard_mutex" is a not very good self explaining name,
-> in my opinion, it is totally unclear what it does "guard", and why.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-Oh, I absolutely agree that cred_guard_mutex is a horrible lock.
+The uncore subsystem on Comet Lake is similar to Sky Lake.
+The only difference is the new PCI IDs for IMC.
 
-It actually _used_ to be a lot more understandable, and the name used
-to make more sense in the context it was used.
+Share the perf code with Sky Lake.
+Add new PCI IDs in the table.
 
-See commit
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
 
-  a2a8474c3fff ("exec: do not sleep in TASK_TRACED under ->cred_guard_mutex")
+Changes since V1:
+- Rebase on top of tip.git perf/core branch
+  commit 629b3df7ecb0 ("Merge branch 'x86/cpu' into perf/core, to resolve conflict")
 
-for when it changed from "somewhat understandable" to "really hard to follow".
+ arch/x86/events/intel/uncore.c     |  2 ++
+ arch/x86/events/intel/uncore_snb.c | 66 ++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 68 insertions(+)
 
-Don't get me wrong - that commit has a very good reason for it, but it
-does make the locking really hard to understand.
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index cf76d66..b9c2876 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -1514,6 +1514,8 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(SKYLAKE_X,		&skx_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE_L,		&skl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(KABYLAKE,		&skl_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&skl_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&skl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_NNPI,	&icl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_uncore_init),
+diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
+index 3de1065..5c40367 100644
+--- a/arch/x86/events/intel/uncore_snb.c
++++ b/arch/x86/events/intel/uncore_snb.c
+@@ -42,6 +42,17 @@
+ #define PCI_DEVICE_ID_INTEL_WHL_UQ_IMC		0x3ed0
+ #define PCI_DEVICE_ID_INTEL_WHL_4_UQ_IMC	0x3e34
+ #define PCI_DEVICE_ID_INTEL_WHL_UD_IMC		0x3e35
++#define PCI_DEVICE_ID_INTEL_CML_H1_IMC		0x9b44
++#define PCI_DEVICE_ID_INTEL_CML_H2_IMC		0x9b54
++#define PCI_DEVICE_ID_INTEL_CML_H3_IMC		0x9b64
++#define PCI_DEVICE_ID_INTEL_CML_U1_IMC		0x9b51
++#define PCI_DEVICE_ID_INTEL_CML_U2_IMC		0x9b61
++#define PCI_DEVICE_ID_INTEL_CML_U3_IMC		0x9b71
++#define PCI_DEVICE_ID_INTEL_CML_S1_IMC		0x9b33
++#define PCI_DEVICE_ID_INTEL_CML_S2_IMC		0x9b43
++#define PCI_DEVICE_ID_INTEL_CML_S3_IMC		0x9b53
++#define PCI_DEVICE_ID_INTEL_CML_S4_IMC		0x9b63
++#define PCI_DEVICE_ID_INTEL_CML_S5_IMC		0x9b73
+ #define PCI_DEVICE_ID_INTEL_ICL_U_IMC		0x8a02
+ #define PCI_DEVICE_ID_INTEL_ICL_U2_IMC		0x8a12
+ #define PCI_DEVICE_ID_INTEL_TGL_U1_IMC		0x9a02
+@@ -771,6 +782,50 @@ static const struct pci_device_id skl_uncore_pci_ids[] = {
+ 		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_WHL_UD_IMC),
+ 		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
+ 	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_H1_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_H2_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_H3_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_U1_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_U2_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_U3_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S1_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S2_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S3_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S4_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
++	{ /* IMC */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CML_S5_IMC),
++		.driver_data = UNCORE_PCI_DEV_DATA(SNB_PCI_UNCORE_IMC, 0),
++	},
+ 	{ /* end: all zeroes */ },
+ };
+ 
+@@ -863,6 +918,17 @@ static const struct imc_uncore_pci_dev desktop_imc_pci_ids[] = {
+ 	IMC_DEV(WHL_UQ_IMC, &skl_uncore_pci_driver),	/* 8th Gen Core U Mobile Quad Core */
+ 	IMC_DEV(WHL_4_UQ_IMC, &skl_uncore_pci_driver),	/* 8th Gen Core U Mobile Quad Core */
+ 	IMC_DEV(WHL_UD_IMC, &skl_uncore_pci_driver),	/* 8th Gen Core U Mobile Dual Core */
++	IMC_DEV(CML_H1_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_H2_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_H3_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_U1_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_U2_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_U3_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_S1_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_S2_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_S3_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_S4_IMC, &skl_uncore_pci_driver),
++	IMC_DEV(CML_S5_IMC, &skl_uncore_pci_driver),
+ 	IMC_DEV(ICL_U_IMC, &icl_uncore_pci_driver),	/* 10th Gen Core Mobile */
+ 	IMC_DEV(ICL_U2_IMC, &icl_uncore_pci_driver),	/* 10th Gen Core Mobile */
+ 	{  /* end marker */ }
+-- 
+2.7.4
 
-It all used to be in one function - do_execve() - and it was holding
-the lock over a fairly obvious range, starting at
-
-    bprm->cred = prepare_exec_creds();
-
-and ending at basically "we're done with execve()".
-
-So basically, cred_guard_mutex ends up being the thing that is held
-all the way from the "before execve looks at the old creds" to "execve
-is done, and has changed the creds".
-
-The reason it's needed is exactly that there are some nasty situations
-where execve() itself does things with creds to determine that the new
-creds are ok. And it uses the old creds to do that, but it also uses
-the task->flags and task->ptrace.
-
-So think of cred_guard_mutex as a lock around not just the creds, but
-the combination of creds and the task flags/ptrace.
-
-Anybody who changes the task ptrace setting needs to serialize with
-execve(). Or anybody who tests for "dumpable()", for example.
-
-If *all* you care about is just the creds, then you don't need it.
-It's really only users that do more checks than just credentials.
-"dumpable()" is I think the common one.
-
-And that's why cred_guard_mutex has that big range - it starts when we
-read the original creds (because it will use those creds to determine
-how the *new* creds will affect dumpability etc), and it ends when it
-has updated not only to the new creds, but it has set all those other
-flags too.
-
-So I'm not at all against splitting the lock up, and trying to make it
-more directed and specific.
-
-My complaints were about how the new lock wasn't much better. It was
-still completely incomprehensible, the conditional unlocking was hard
-to follow, and it really wasn't obvious that the converted users were
-fine.
-
-See?
-
-               Linus
