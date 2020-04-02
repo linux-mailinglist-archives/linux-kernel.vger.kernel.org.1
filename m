@@ -2,64 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB3D19C036
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3C919C041
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388109AbgDBLcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 07:32:39 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8814 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388029AbgDBLci (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 07:32:38 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.15]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65e85cd40f51-5deb7; Thu, 02 Apr 2020 19:32:18 +0800 (CST)
-X-RM-TRANSID: 2ee65e85cd40f51-5deb7
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee85e85cd3fb73-bb11b;
-        Thu, 02 Apr 2020 19:32:17 +0800 (CST)
-X-RM-TRANSID: 2ee85e85cd3fb73-bb11b
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     clabbe@baylibre.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] crypto:amlogic - use platform_get_irq_optional()
-Date:   Thu,  2 Apr 2020 19:33:44 +0800
-Message-Id: <20200402113344.16772-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S2388115AbgDBLe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 07:34:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53938 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388001AbgDBLe0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 07:34:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 2EE3DAAB8;
+        Thu,  2 Apr 2020 11:34:25 +0000 (UTC)
+Subject: Re: [PATCH] bcache: remove redundant variables i and n
+To:     Colin King <colin.king@canonical.com>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200402111903.514146-1-colin.king@canonical.com>
+From:   Coly Li <colyli@suse.de>
+Organization: SUSE Labs
+Message-ID: <de88ae08-1200-285b-cd1b-cfd723d2da56@suse.de>
+Date:   Thu, 2 Apr 2020 19:34:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200402111903.514146-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to simply code,because platform_get_irq() already has
-dev_err() message.
+On 2020/4/2 7:19 下午, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Variables i and n are being assigned but are never used. They are
+> redundant and can be removed.
+> 
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
- drivers/crypto/amlogic/amlogic-gxl-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Colin,
 
-diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
-index 9d4ead2f7..37901bd81 100644
---- a/drivers/crypto/amlogic/amlogic-gxl-core.c
-+++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
-@@ -252,7 +252,7 @@ static int meson_crypto_probe(struct platform_device *pdev)
- 
- 	mc->irqs = devm_kcalloc(mc->dev, MAXFLOW, sizeof(int), GFP_KERNEL);
- 	for (i = 0; i < MAXFLOW; i++) {
--		mc->irqs[i] = platform_get_irq(pdev, i);
-+		mc->irqs[i] = platform_get_irq_optional(pdev, i);
- 		if (mc->irqs[i] < 0) {
- 			dev_err(mc->dev, "Cannot get IRQ for flow %d\n", i);
- 			return mc->irqs[i];
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Thanks, I will submit this patch in Linux 5.7-rc series.
+
+> ---
+>  drivers/md/bcache/btree.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+> index 72856e5f23a3..114d0d73d909 100644
+> --- a/drivers/md/bcache/btree.c
+> +++ b/drivers/md/bcache/btree.c
+> @@ -1907,10 +1907,8 @@ static int bch_btree_check_thread(void *arg)
+>  	struct btree_iter iter;
+>  	struct bkey *k, *p;
+>  	int cur_idx, prev_idx, skip_nr;
+> -	int i, n;
+>  
+>  	k = p = NULL;
+> -	i = n = 0;
+>  	cur_idx = prev_idx = 0;
+>  	ret = 0;
+>  
+> 
+
+
 -- 
-2.20.1.windows.1
 
-
-
+Coly Li
