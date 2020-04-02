@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C240D19C0FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0418519C105
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388075AbgDBMSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:18:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387730AbgDBMSR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:18:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17AF2206F8;
-        Thu,  2 Apr 2020 12:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585829896;
-        bh=71Iog+U1Pf2i1tJM4b6pe3IqJ3VZB7yjNL9XljQ9Nps=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e1F5KeO+jy4p7cBCOJqFbIgpbLxMud2IDkNuX1BGWM3NDmjRVu3ZyASftbQdYMqdw
-         gYAC+C2X6iuPq8qY5+RKjOnd9MYnz1dgdrN2ZFRjCoNqOpzHbtWIASnYtN/h2yS3CY
-         jVjA+k+4dOmuHMUT7Zj+kGGvaqn/gEY98CUUcw5A=
-Date:   Thu, 2 Apr 2020 14:18:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hyunki Koo <hyunki00.koo@samsung.com>
-Cc:     krzk@kernel.org, Kukjin Kim <kgene@kernel.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] tty: samsung_tty: 32-bit access for TX/RX hold
- registers
-Message-ID: <20200402121814.GA2773800@kroah.com>
-References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
- <CGME20200402110609epcas2p4a5ec1fb3a5eaa3b12c20cfc2060162f3@epcas2p4.samsung.com>
- <20200402110430.31156-1-hyunki00.koo@samsung.com>
+        id S2387699AbgDBM0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 08:26:20 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12673 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726252AbgDBM0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 08:26:20 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id E461D2164003D8894B6D;
+        Thu,  2 Apr 2020 20:26:16 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 2 Apr 2020 20:26:09 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sudeep.holla@arm.com>, <jeremy.linton@arm.com>,
+        <linuxarm@huawei.com>, <wanghuiqiang@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH] ACPI: PPTT: Inform user that table offset used for Physical processor node ID
+Date:   Thu, 2 Apr 2020 20:22:25 +0800
+Message-ID: <1585830145-208714-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402110430.31156-1-hyunki00.koo@samsung.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 08:04:29PM +0900, Hyunki Koo wrote:
-> Support 32-bit access for the TX/RX hold registers UTXH and URXH.
-> 
-> This is required for some newer SoCs.
-> 
-> Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
-> ---
->  drivers/tty/serial/samsung_tty.c | 78 +++++++++++++++++++++++++++++++++-------
->  1 file changed, 66 insertions(+), 12 deletions(-)
+If the the Processor ID valid is not set for a Physical Processor Package
+node, then the node table offset is used as a substitute. As such, we
+may get info like this from sysfs:
 
-What changed from v1?  Always put that under the --- line, as documented
-to do so.
+root@(none)$ pwd
+/sys/devices/system/cpu/cpu0/topology
+root@(none)$ more physical_package_id
+56
 
-Please make a v3 with that information.
+Inform the user of this in the bootlog, as it is much less than ideal, and
+they can remedy this in their FW.
 
-thanks,
+This topic was originally discussed in:
+https://lore.kernel.org/linux-acpi/c325cfe2-7dbf-e341-7f0f-081b6545e890@huawei.com/T/#m0ec18637d8586f832084a8a6af22580e6174669a
 
-greg k-h
+Signed-off-by: John Garry <john.garry@huawei.com>
+
+diff --git a/drivers/acpi/pptt.c b/drivers/acpi/pptt.c
+index 4ae93350b70d..b4ed3c818e00 100644
+--- a/drivers/acpi/pptt.c
++++ b/drivers/acpi/pptt.c
+@@ -515,6 +515,8 @@ static int topology_get_acpi_cpu_tag(struct acpi_table_header *table,
+ 		if (level == 0 ||
+ 		    cpu_node->flags & ACPI_PPTT_ACPI_PROCESSOR_ID_VALID)
+ 			return cpu_node->acpi_processor_id;
++		if (level == PPTT_ABORT_PACKAGE)
++			pr_notice_once("Physical package node Processor ID valid not set, will use table offset as substitute\n");
+ 		return ACPI_PTR_DIFF(cpu_node, table);
+ 	}
+ 	pr_warn_once("PPTT table found, but unable to locate core %d (%d)\n",
+-- 
+2.16.4
+
