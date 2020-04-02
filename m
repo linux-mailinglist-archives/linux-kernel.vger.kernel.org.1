@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C4319C411
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273B419C41B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388393AbgDBO23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:28:29 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:51332 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387732AbgDBO22 (ORCPT
+        id S2388425AbgDBO2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:28:46 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31752 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732263AbgDBO2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:28:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=j/8a96fqeZAuiVy6S5hR0dB16EbF/5r64jo0EgfpZqw=; b=nBAHwiN9U4ETGo8K3sVmLBS5Zh
-        i49IKbjJ8/jWrEkVatZcsAWpm2rveMNK7/35SB+klm33JYaqGf8+13FlGBZlfTmgrcw21ZvwfpPPr
-        cM77QfLIQyKzgzRCurRv289EruAkgJcxrnd4LC2Nxcp7KRe0rnSCgY2WCwg/j6C3jYh/gnN3MR4WK
-        gdP0Sgy4UfOpfyqHTvh1KEorBu/IFzOvHMelc5aZkE5W+OI/5KADrYP0qtH2pWrKdmO1dRlqPTfs+
-        Nkm7Pp24wAEvHJA+lxltBPwx+SKSlLLOnz25u2dcrInG5TnV/e81bjXcXNc7f1QYd4ntob7EWIC+h
-        fFQSXz+Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jK0pU-0003C3-H6; Thu, 02 Apr 2020 14:28:24 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD50F307062;
-        Thu,  2 Apr 2020 16:28:21 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8FF0C2B0D8F6B; Thu,  2 Apr 2020 16:28:21 +0200 (CEST)
-Date:   Thu, 2 Apr 2020 16:28:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Miroslav Benes <mbenes@suse.cz>,
-        Julien Thierry <jthierry@redhat.com>
-Subject: Re: [PATCH 0/5] objtool fixes
-Message-ID: <20200402142821.GI20713@hirez.programming.kicks-ass.net>
-References: <cover.1585761021.git.jpoimboe@redhat.com>
+        Thu, 2 Apr 2020 10:28:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585837724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q6/Zdn4PdxHJ91S/7dMf7deMcEC4jxiYXpkPo4ursOU=;
+        b=az2hfEOT1gaR7Cyb+qVzmLfq3r47CaxZo/Xigd9H8D7ra7q+ScDz8F2VUNfKRob+MatdER
+        CEGSrRzkGPOSEEkPuJ7VlfLWqqYoqZ+FijqNAVRNgSW0MYtOHFIOfWpB7a1i+t6+h6Ig/u
+        76y9LYtUOj0v3WUH/PK6MLj48XgOPIY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-339-enE41F3_PCCPc9ZZekUOcg-1; Thu, 02 Apr 2020 10:28:42 -0400
+X-MC-Unique: enE41F3_PCCPc9ZZekUOcg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2FF0118C43F9;
+        Thu,  2 Apr 2020 14:28:32 +0000 (UTC)
+Received: from [10.72.12.172] (ovpn-12-172.pek2.redhat.com [10.72.12.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 668BD26172;
+        Thu,  2 Apr 2020 14:28:30 +0000 (UTC)
+Subject: Re: [PATCH] vhost: drop vring dependency on iotlb
+To:     "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20200402141207.32628-1-mst@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <afe230b9-708f-02a1-c3af-51e9d4fdd212@redhat.com>
+Date:   Thu, 2 Apr 2020 22:28:28 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1585761021.git.jpoimboe@redhat.com>
+In-Reply-To: <20200402141207.32628-1-mst@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 01:23:24PM -0500, Josh Poimboeuf wrote:
-> Some objtool fixes related to CONFIG_UBSAN_TRAP, Clang assembler, and
-> more...
-> 
-> Josh Poimboeuf (5):
->   objtool: Fix CONFIG_UBSAN_TRAP unreachable warnings
->   objtool: Support Clang non-section symbols in ORC dump
->   objtool: Support Clang non-section symbols in ORC generation
->   objtool: Fix switch table detection in .text.unlikely
->   objtool: Make BP scratch register warning more robust
-> 
->  tools/objtool/check.c    | 26 ++++++++++++++++--------
->  tools/objtool/orc_dump.c | 44 ++++++++++++++++++++++++----------------
->  tools/objtool/orc_gen.c  | 33 +++++++++++++++++++++++-------
->  3 files changed, 71 insertions(+), 32 deletions(-)
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On 2020/4/2 =E4=B8=8B=E5=8D=8810:12, Michael S. Tsirkin wrote:
+> vringh can now be built without IOTLB.
+> Select IOTLB directly where it's used.
+>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
+>
+> This is on top of my previous patch (in vhost tree now).
+>
+>   drivers/vdpa/Kconfig  | 1 +
+>   drivers/vhost/Kconfig | 1 -
+>   2 files changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> index 7db1460104b7..08b615f2da39 100644
+> --- a/drivers/vdpa/Kconfig
+> +++ b/drivers/vdpa/Kconfig
+> @@ -17,6 +17,7 @@ config VDPA_SIM
+>   	depends on RUNTIME_TESTING_MENU
+>   	select VDPA
+>   	select VHOST_RING
+> +	select VHOST_IOTLB
+>   	default n
+>   	help
+>   	  vDPA networking device simulator which loop TX traffic back
+> diff --git a/drivers/vhost/Kconfig b/drivers/vhost/Kconfig
+> index 21feea0d69c9..bdd270fede26 100644
+> --- a/drivers/vhost/Kconfig
+> +++ b/drivers/vhost/Kconfig
+> @@ -6,7 +6,6 @@ config VHOST_IOTLB
+>  =20
+>   config VHOST_RING
+>   	tristate
+> -	select VHOST_IOTLB
+>   	help
+>   	  This option is selected by any driver which needs to access
+>   	  the host side of a virtio ring.
+
+
+Do we need to mention driver need to select VHOST_IOTLB by itself here?
+
+Thanks
+
+
+
