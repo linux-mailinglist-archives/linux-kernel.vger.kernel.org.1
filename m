@@ -2,234 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF14519C025
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA55819C032
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388101AbgDBL2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 07:28:04 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:36061 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388029AbgDBL2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 07:28:04 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48tLQm15kFz9sQt;
-        Thu,  2 Apr 2020 22:28:00 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1585826880;
-        bh=2maxqirMAdfGWnzmoaa6OOtiptHYwQlsC8pMIxyqg2Q=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZpA3sU1KMKWa93mUZns4lsgqvOgN9l/hyNwKu+DqRaotT5XPACFP0KYbfalrdMbUo
-         nhqzWA4CNLLrkoc7ARYaFjZXMshRW1JT3iqhZN/xA366OgtBg3/fReEaqUqUxuTxaF
-         GUiZP2KXkbElZXBiNMLQkGio1Xl7J9BxMpex7tqrixKV1ZI1iETVFxz65i/1Xzd04g
-         AY3XFMeWV8Vp2yrdY/xsXnLfs5NoCnPy556kH5ib2gXw9JjBYnpYeUbLCewB/x1qQ1
-         svN6Qg43JA+fvdM1WOoCXUgSuf+fFPSRmFCj9ipjR9YwsgmN0FmdxctgAhbPuNbED1
-         AIK33NIOHRMcQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Leonardo Bras <leonardo@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Enrico Weigelt <info@metux.net>,
-        Leonardo Bras <leonardo@linux.ibm.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        peterz@infradead.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] ppc/crash: Reset spinlocks during crash
-In-Reply-To: <20200401000020.590447-1-leonardo@linux.ibm.com>
-References: <20200401000020.590447-1-leonardo@linux.ibm.com>
-Date:   Thu, 02 Apr 2020 22:28:09 +1100
-Message-ID: <871rp6t9di.fsf@mpe.ellerman.id.au>
+        id S2388115AbgDBLa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 07:30:59 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36888 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388086AbgDBLa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 07:30:59 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032BSIpE015369;
+        Thu, 2 Apr 2020 11:30:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=7o0FVYwJwkPoxE1Cw1mXQzPgG4H99LYFk/EWX3dnUwI=;
+ b=A2OPctM+5Z1X/yUJSCs71WpzoQHomIEDXP8QxdOvr7R9DuTiAsgMq7/zyiilSl/iKSFC
+ 5T6LIrZRb68xqMI5bAHGBa592kG5L3hNAAHNTNlV7geGahDiJXtp8GNmX9iygrh2IXwV
+ xJoR5K3kRMYDo+F+duejELE4bgbaGEN0DZroe49TuYOcfQCRaDgG6YYjYUDNo6Jsu9o7
+ PNRb9npVQ5l+CTI9+urhh4HkgvWoGnbQ/tkk7lYYdCDpfUCwYIHSkuBdV+LvavyRcKqo
+ 8me7wmjoDXM/I33zVyHtEN1sUjbLJjqcjuTcD5u0I7QH3Me4t/k8zEsDX/128qartOur Eg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 303yundc29-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 11:30:53 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032BQvwn147884;
+        Thu, 2 Apr 2020 11:28:52 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 302g2jd5wu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 11:28:52 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032BSmYq009917;
+        Thu, 2 Apr 2020 11:28:48 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Apr 2020 04:28:48 -0700
+Date:   Thu, 2 Apr 2020 14:28:41 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Jan Engelhardt <jengelh@inai.de>
+Cc:     kbuild-all@lists.01.org, rafael.j.wysocki@intel.com,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] acpica: clear global_lock bits at FACS initialization
+Message-ID: <20200402112712.GN2001@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200330085852.31328-1-jengelh@inai.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Leonardo Bras <leonardo@linux.ibm.com> writes:
-> During a crash, there is chance that the cpus that handle the NMI IPI
-> are holding a spin_lock. If this spin_lock is needed by crashing_cpu it
-> will cause a deadlock. (rtas.lock and printk logbuf_lock as of today)
->
-> This is a problem if the system has kdump set up, given if it crashes
-> for any reason kdump may not be saved for crash analysis.
->
-> After NMI IPI is sent to all other cpus, force unlock all spinlocks
-> needed for finishing crash routine.
+Hi Jan,
 
-I'm not convinced this is the right approach.
+url:    https://github.com/0day-ci/linux/commits/Jan-Engelhardt/acpica-clear-global_lock-bits-at-FACS-initialization/20200330-183705
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
 
-Busting locks is risky, it could easily cause a crash if data structures
-are left in some inconsistent state.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-I think we need to make this code more careful about what it's doing.
-There's a clue at the top of default_machine_crash_shutdown(), which
-calls crash_kexec_prepare_cpus():
+smatch warnings:
+drivers/acpi/acpica/tbutils.c:60 acpi_tb_initialize_facs() error: uninitialized symbol 'facs'.
 
-	 * This function is only called after the system
-	 * has panicked or is otherwise in a critical state.
-	 * The minimum amount of code to allow a kexec'd kernel
-	 * to run successfully needs to happen here.
+# https://github.com/0day-ci/linux/commit/cc0fd9e263391ff230ac700aa76dbcf7195c8c42
+git remote add linux-review https://github.com/0day-ci/linux
+git remote update linux-review
+git checkout cc0fd9e263391ff230ac700aa76dbcf7195c8c42
+vim +/facs +60 drivers/acpi/acpica/tbutils.c
 
+009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  35  acpi_status acpi_tb_initialize_facs(void)
+009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  36  {
+7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  37  	struct acpi_table_facs *facs;
+009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  38  
+22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  39  	/* If Hardware Reduced flag is set, there is no FACS */
+22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  40  
+22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  41  	if (acpi_gbl_reduced_hardware) {
+22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  42  		acpi_gbl_FACS = NULL;
+22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  43  		return (AE_OK);
+8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  44  	} else if (acpi_gbl_FADT.Xfacs &&
+8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  45  		   (!acpi_gbl_FADT.facs
+8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  46  		    || !acpi_gbl_use32_bit_facs_addresses)) {
+8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  47  		(void)acpi_get_table_by_index(acpi_gbl_xfacs_index,
+c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  48  					      ACPI_CAST_INDIRECT_PTR(struct
+c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  49  								     acpi_table_header,
+7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  50  								     &facs));
+7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  51  		acpi_gbl_FACS = facs;
+8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  52  	} else if (acpi_gbl_FADT.facs) {
+                                                                                  ^^^^^^^
 
-You said the "IPI complete" message was the cause of one lockup:
+8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  53  		(void)acpi_get_table_by_index(acpi_gbl_facs_index,
+009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  54  					      ACPI_CAST_INDIRECT_PTR(struct
+009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  55  								     acpi_table_header,
+7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  56  								     &facs));
+7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  57  		acpi_gbl_FACS = facs;
+c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  58  	}
 
-  #0  arch_spin_lock 
-  #1  do_raw_spin_lock 
-  #2  __raw_spin_lock 
-  #3  _raw_spin_lock 
-  #4  vprintk_emit 
-  #5  vprintk_func
-  #7  crash_kexec_prepare_cpus 
-  #8  default_machine_crash_shutdown
-  #9  machine_crash_shutdown 
-  #10 __crash_kexec
-  #11 crash_kexec
-  #12 oops_end
+There is no else path, only else if paths.
 
-TBH I think we could just drop that printk() entirely.
+cc0fd9e263391f drivers/acpi/acpica/tbutils.c Jan Engelhardt 2020-03-30  59  	/* Clear potential garbage from the initial FACS table. */
+cc0fd9e263391f drivers/acpi/acpica/tbutils.c Jan Engelhardt 2020-03-30 @60  	if (facs != NULL)
+cc0fd9e263391f drivers/acpi/acpica/tbutils.c Jan Engelhardt 2020-03-30  61  		facs->global_lock &= ~0x3;
+c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  62  
+f06147f9fbf134 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  63  	/* If there is no FACS, just continue. There was already an error msg */
+f06147f9fbf134 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  64  
+c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  65  	return (AE_OK);
+009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  66  }
 
-Or we could tell printk() that we're in NMI context so that it uses the
-percpu buffers.
-
-We should probably do the latter anyway, in case there's any other code
-we call that inadvertently calls printk().
-
-
-The RTAS trace you sent was:
-
-  #0 arch_spin_lock
-  #1  lock_rtas () 
-  #2  rtas_call (token=8204, nargs=1, nret=1, outputs=0x0)
-  #3  ics_rtas_mask_real_irq (hw_irq=4100) 
-  #4  machine_kexec_mask_interrupts
-  #5  default_machine_crash_shutdown
-  #6  machine_crash_shutdown 
-  #7  __crash_kexec
-  #8  crash_kexec
-  #9  oops_end
-
-
-Which doesn't make it clear who holds the RTAS lock. We really shouldn't
-be crashing while holding the RTAS lock, but I guess it could happen.
-Can you get a full backtrace?
-
-
-PAPR says we are not allowed to have multiple CPUs calling RTAS at once,
-except for a very small list of RTAS calls. So if we bust the RTAS lock
-there's a risk we violate that part of PAPR and crash even harder.
-
-Also it's not specific to kdump, we can't even get through a normal
-reboot if we crash with the RTAS lock held.
-
-Anyway here's a patch with some ideas. That allows me to get from a
-crash with the RTAS lock held through kdump into the 2nd kernel. But it
-only works if it's the crashing CPU that holds the RTAS lock.
-
-cheers
-
-diff --git a/arch/powerpc/kernel/rtas.c b/arch/powerpc/kernel/rtas.c
-index c5fa251b8950..44ce74966d60 100644
---- a/arch/powerpc/kernel/rtas.c
-+++ b/arch/powerpc/kernel/rtas.c
-@@ -25,6 +25,7 @@
- #include <linux/reboot.h>
- #include <linux/syscalls.h>
- 
-+#include <asm/debugfs.h>
- #include <asm/prom.h>
- #include <asm/rtas.h>
- #include <asm/hvcall.h>
-@@ -65,6 +66,8 @@ unsigned long rtas_rmo_buf;
- void (*rtas_flash_term_hook)(int);
- EXPORT_SYMBOL(rtas_flash_term_hook);
- 
-+static int rtas_lock_holder = -1;
-+
- /* RTAS use home made raw locking instead of spin_lock_irqsave
-  * because those can be called from within really nasty contexts
-  * such as having the timebase stopped which would lockup with
-@@ -76,7 +79,20 @@ static unsigned long lock_rtas(void)
- 
- 	local_irq_save(flags);
- 	preempt_disable();
--	arch_spin_lock(&rtas.lock);
-+
-+	if (!arch_spin_trylock(&rtas.lock)) {
-+		// Couldn't get the lock, do we already hold it?
-+		if (rtas_lock_holder == smp_processor_id())
-+			// Yes, so we would have deadlocked on ourself. Assume
-+			// we're crashing and continue on hopefully ...
-+			return flags;
-+
-+		// No, wait on the lock
-+		arch_spin_lock(&rtas.lock);
-+	}
-+
-+	rtas_lock_holder = smp_processor_id();
-+
- 	return flags;
- }
- 
-@@ -85,6 +101,8 @@ static void unlock_rtas(unsigned long flags)
- 	arch_spin_unlock(&rtas.lock);
- 	local_irq_restore(flags);
- 	preempt_enable();
-+
-+	rtas_lock_holder = -1;
- }
- 
- /*
-@@ -1263,3 +1281,24 @@ void rtas_take_timebase(void)
- 	timebase = 0;
- 	arch_spin_unlock(&timebase_lock);
- }
-+
-+static int rtas_crash_set(void *data, u64 val)
-+{
-+	printk("%s: Taking RTAS lock and then crashing ...\n", __func__);
-+	lock_rtas();
-+
-+	*((volatile int *) 0) = 0;
-+
-+	return 0;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_rtas_crash, NULL, rtas_crash_set, "%llu\n");
-+
-+static __init int rtas_crash_debugfs_init(void)
-+{
-+	debugfs_create_file_unsafe("crash_in_rtas", 0200,
-+				   powerpc_debugfs_root, NULL,
-+				   &fops_rtas_crash);
-+	return 0;
-+}
-+device_initcall(rtas_crash_debugfs_init);
-diff --git a/arch/powerpc/kexec/crash.c b/arch/powerpc/kexec/crash.c
-index d488311efab1..4c52cb58e889 100644
---- a/arch/powerpc/kexec/crash.c
-+++ b/arch/powerpc/kexec/crash.c
-@@ -15,6 +15,7 @@
- #include <linux/crash_dump.h>
- #include <linux/delay.h>
- #include <linux/irq.h>
-+#include <linux/printk.h>
- #include <linux/types.h>
- 
- #include <asm/processor.h>
-@@ -311,6 +312,8 @@ void default_machine_crash_shutdown(struct pt_regs *regs)
- 	unsigned int i;
- 	int (*old_handler)(struct pt_regs *regs);
- 
-+	printk_nmi_enter();
-+
- 	/*
- 	 * This function is only called after the system
- 	 * has panicked or is otherwise in a critical state.
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
