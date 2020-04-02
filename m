@@ -2,162 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C0919CD21
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3AC19CD42
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 01:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390148AbgDBWvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 18:51:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48070 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387919AbgDBWvv (ORCPT
+        id S2390073AbgDBXCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 19:02:36 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37964 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389944AbgDBXCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:51:51 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 032MWWBM055450;
-        Thu, 2 Apr 2020 18:51:43 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 304gstv9jj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 18:51:43 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 032MoZfK018464;
-        Thu, 2 Apr 2020 22:51:42 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma03dal.us.ibm.com with ESMTP id 301x787df2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 22:51:42 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 032MpfGF46530938
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Apr 2020 22:51:41 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7DE45283F3;
-        Thu,  2 Apr 2020 22:51:41 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 650A0283FB;
-        Thu,  2 Apr 2020 22:51:41 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Apr 2020 22:51:41 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     linux-integrity@vger.kernel.org, jarkko.sakkinen@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v4 2/2] tpm: Add support for event log pointer found in TPM2 ACPI table
-Date:   Thu,  2 Apr 2020 18:51:40 -0400
-Message-Id: <20200402225140.922789-3-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200402225140.922789-1-stefanb@linux.vnet.ibm.com>
-References: <20200402225140.922789-1-stefanb@linux.vnet.ibm.com>
+        Thu, 2 Apr 2020 19:02:36 -0400
+Received: by mail-qt1-f195.google.com with SMTP id z12so4997614qtq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 16:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ok4wGTvzCTXydODevfiQEyG5yYpGPlaZ9o6pHHlLTpk=;
+        b=AWWeCU4hDYBU+OF5Y1ceaY6RIGtjixFYMB6CHk1om2doQr/qKmzNCgXSJraZDzZfSR
+         Q3KjibosDCnp2LuIKlLoDoqs0C+fmtZlLp/2UoNaSRGfDjVSvofs9p+Yl6XJbvxIbkoT
+         blGSyQI2wo3Vm9+IiP6WpSEAODiHqUPilerQM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ok4wGTvzCTXydODevfiQEyG5yYpGPlaZ9o6pHHlLTpk=;
+        b=G2WE3/dg3ylWzSHDqoICMkOo3hjd6L+OeuN3pNMHRvOQyYigf+Ra9GPd8qWXVRhTMD
+         48/skFSV2cFipT16xN75pNcFAq9+gwJXktgABJ6/y3aYG0uw/ss3plv8OVOV3t3QgCP1
+         zQKVFJ+JyORlt3EV1NSG7RGQGA7TBfvITQZ2+pC4hUhIb4VXDrQs/NxmFofvoCb8oBgy
+         EEGWNcUSmDCuVwpNOlQua4H/7lSqrglY3OZM6NF8vAGy7khIbS9gXjKkZNZmodGsYiXI
+         NqXuYUTL3RpYJiFu1EgkhIAQ5tPduGyzeqMEvsZw9gselMJjWOYoibov/Byxfw63qlxJ
+         krPw==
+X-Gm-Message-State: AGi0PuZoT+Q4GbYIhXMgQhhReHlNygY5/3gbSAFC4stvPHKmpvhZhDWa
+        67ojeVD9R9Xa1Mh2G9sv9qLydOTm/6E=
+X-Google-Smtp-Source: APiQypIpiB/k0e0QV1rBnlnkamwjL0Blo69DJVRgleQGLtOnfbUj+DDsAO+12R6Bm+uGI7+zMcqtUA==
+X-Received: by 2002:ac8:7448:: with SMTP id h8mr5426504qtr.51.1585868554578;
+        Thu, 02 Apr 2020 16:02:34 -0700 (PDT)
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com. [209.85.219.54])
+        by smtp.gmail.com with ESMTPSA id x14sm4629443qkj.66.2020.04.02.16.02.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Apr 2020 16:02:34 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id ef12so2681478qvb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 16:02:34 -0700 (PDT)
+X-Received: by 2002:a67:1e46:: with SMTP id e67mr4469905vse.106.1585868185329;
+ Thu, 02 Apr 2020 15:56:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-02_12:2020-04-02,2020-04-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 lowpriorityscore=0
- phishscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004020164
+References: <CANcMJZCr646jav3h14K0xV=ANMxXg=U20wvSB546qrLX3TECBg@mail.gmail.com>
+ <20200402223723.7150-1-john.stultz@linaro.org>
+In-Reply-To: <20200402223723.7150-1-john.stultz@linaro.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 2 Apr 2020 15:56:14 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VGT75c4_ErQAJgNtcCd2Jzv0A2KpfEkS637GqOhamj9Q@mail.gmail.com>
+Message-ID: <CAD=FV=VGT75c4_ErQAJgNtcCd2Jzv0A2KpfEkS637GqOhamj9Q@mail.gmail.com>
+Subject: Re: [PATCH] phy: qcom-qusb2: Re add "qcom,sdm845-qusb2-phy" compat string
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
+Hi,
 
-In case a TPM2 is attached, search for a TPM2 ACPI table when trying
-to get the event log from ACPI. If one is found, use it to get the
-start and length of the log area. This allows non-UEFI systems, such
-as SeaBIOS, to pass an event log when using a TPM2.
+On Thu, Apr 2, 2020 at 3:37 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> In commit 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2
+> PHY support"), the change was made to add "qcom,qusb2-v2-phy"
+> as a generic compat string. However the change also removed
+> the "qcom,sdm845-qusb2-phy" compat string, which is documented
+> in the binding and already in use.
+>
+> This patch re-adds the "qcom,sdm845-qusb2-phy" compat string
+> which allows the driver to continue to work with existing dts
+> entries such as found on the db845c.
+>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Doug Anderson <dianders@chromium.org>
+> Cc: Manu Gautam <mgautam@codeaurora.org>
+> Cc: Sandeep Maheswaram <sanm@codeaurora.org>
+> Cc: Matthias Kaehlcke <mka@chromium.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Fixes: 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2 PHY support")
+> Reported-by: YongQin Liu <yongqin.liu@linaro.org>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qusb2.c | 3 +++
+>  1 file changed, 3 insertions(+)
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- drivers/char/tpm/eventlog/acpi.c | 56 +++++++++++++++++++++++++---------------
- 1 file changed, 35 insertions(+), 21 deletions(-)
+Do you have an out-of-tree dts file?  If not, I'd prefer that the fix
+was for this patch to land instead:
 
-diff --git a/drivers/char/tpm/eventlog/acpi.c b/drivers/char/tpm/eventlog/acpi.c
-index 63ada5e53f13..e714a2bd0423 100644
---- a/drivers/char/tpm/eventlog/acpi.c
-+++ b/drivers/char/tpm/eventlog/acpi.c
-@@ -49,9 +49,8 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	void __iomem *virt;
- 	u64 len, start;
- 	struct tpm_bios_log *log;
--
--	if (chip->flags & TPM_CHIP_FLAG_TPM2)
--		return -ENODEV;
-+	struct acpi_table_tpm2 *tbl;
-+	int format;
- 
- 	log = &chip->log;
- 
-@@ -61,23 +60,38 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	if (!chip->acpi_dev_handle)
- 		return -ENODEV;
- 
--	/* Find TCPA entry in RSDT (ACPI_LOGICAL_ADDRESSING) */
--	status = acpi_get_table(ACPI_SIG_TCPA, 1,
--				(struct acpi_table_header **)&buff);
--
--	if (ACPI_FAILURE(status))
--		return -ENODEV;
--
--	switch(buff->platform_class) {
--	case BIOS_SERVER:
--		len = buff->server.log_max_len;
--		start = buff->server.log_start_addr;
--		break;
--	case BIOS_CLIENT:
--	default:
--		len = buff->client.log_max_len;
--		start = buff->client.log_start_addr;
--		break;
-+	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-+		status = acpi_get_table("TPM2", 1,
-+					(struct acpi_table_header **)&tbl);
-+		if (ACPI_FAILURE(status))
-+			return -ENODEV;
-+		if (tbl->header.length < sizeof(*tbl))
-+			return -ENODEV;
-+		len = tbl->log_area_minimum_length;
-+		start = tbl->log_area_start_address;
-+		if (!start || !len)
-+			return -ENODEV;
-+		format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
-+	} else {
-+		/* Find TCPA entry in RSDT (ACPI_LOGICAL_ADDRESSING) */
-+		status = acpi_get_table(ACPI_SIG_TCPA, 1,
-+					(struct acpi_table_header **)&buff);
-+
-+		if (ACPI_FAILURE(status))
-+			return -ENODEV;
-+
-+		switch (buff->platform_class) {
-+		case BIOS_SERVER:
-+			len = buff->server.log_max_len;
-+			start = buff->server.log_start_addr;
-+			break;
-+		case BIOS_CLIENT:
-+		default:
-+			len = buff->client.log_max_len;
-+			start = buff->client.log_start_addr;
-+			break;
-+		}
-+		format = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
- 	}
- 	if (!len) {
- 		dev_warn(&chip->dev, "%s: TCPA log area empty\n", __func__);
-@@ -98,7 +112,7 @@ int tpm_read_log_acpi(struct tpm_chip *chip)
- 	memcpy_fromio(log->bios_event_log, virt, len);
- 
- 	acpi_os_unmap_iomem(virt, len);
--	return EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
-+	return format;
- 
- err:
- 	kfree(log->bios_event_log);
--- 
-2.14.5
+https://lore.kernel.org/r/1583747589-17267-9-git-send-email-sanm@codeaurora.org
 
+While we can land your patch if someone needs it for supporting an
+out-of-tree dts, it gives people supporting future SoCs the idea that
+they need to add themselves to this table too.  That's now discouraged
+unless there's a specific quirk that needs to be handled just for this
+SoC.
+
+-Doug
