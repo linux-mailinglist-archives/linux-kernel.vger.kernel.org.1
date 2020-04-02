@@ -2,139 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A69219C7A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598BE19C7AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388669AbgDBRJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:09:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45830 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731608AbgDBRJW (ORCPT
+        id S2388830AbgDBRLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:11:16 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28908 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727412AbgDBRLQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:09:22 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 032H2gAF092153;
-        Thu, 2 Apr 2020 13:08:55 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 303wrynd13-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 13:08:55 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 032H3mV1095632;
-        Thu, 2 Apr 2020 13:08:54 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 303wrynd0m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 13:08:54 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 032H0Lwx011743;
-        Thu, 2 Apr 2020 17:08:53 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04dal.us.ibm.com with ESMTP id 301x775361-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 17:08:53 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 032H8p0B48628054
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Apr 2020 17:08:52 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E2FCCBE04F;
-        Thu,  2 Apr 2020 17:08:51 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D2FABBE051;
-        Thu,  2 Apr 2020 17:08:41 +0000 (GMT)
-Received: from LeoBras (unknown [9.85.174.86])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Apr 2020 17:08:41 +0000 (GMT)
-Message-ID: <f55a7b65a43cc9dc7b22385cf9960f8b11d5ce2e.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH v2 1/1] powerpc/kernel: Enables memory hot-remove
- after reboot on pseries guests
-From:   Leonardo Bras <leonardo@linux.ibm.com>
-To:     Bharata B Rao <bharata.rao@gmail.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Anderson <andmike@linux.ibm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Claudio Carvalho <cclaudio@linux.ibm.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Bharata B Rao <bharata.rao@in.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 02 Apr 2020 14:08:33 -0300
-In-Reply-To: <CAGZKiBp7qjH1gMOzRuPgX=qcrJs4b7UgBbfxjgzAEpQPZ0nhHQ@mail.gmail.com>
-References: <20200305233231.174082-1-leonardo@linux.ibm.com>
-         <33333c2ffe9fedbee252a1731d7c10cd3308252b.camel@linux.ibm.com>
-         <CAGZKiBp7qjH1gMOzRuPgX=qcrJs4b7UgBbfxjgzAEpQPZ0nhHQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-i8f4uvi3v90YnGQFml2x"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-02_06:2020-04-02,2020-04-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 bulkscore=0 malwarescore=0 suspectscore=0
- phishscore=0 priorityscore=1501 spamscore=0 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020133
+        Thu, 2 Apr 2020 13:11:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585847475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=umWPoQrI980x5zzMSW5/7VpEhYybv0fVnNUHzVpWWpc=;
+        b=cuhcJ+o5NJbfNcwiTlCY852ldIQV10cRyJ2GDbxSquo6z/z58FnYypW1NHhKnhBt6bsNdY
+        nKcVwqfRRvps5kFvqxv+Y5vsU7CQsM8MdDmuvNs8XsUHRQRSbqoTfWMmO/SFrJqi2PJFuq
+        Fe6EiFPJXjrsIdxUSz4fVwPQ8Qcfito=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-hPib8IDRP_WmKbz_ATvcTw-1; Thu, 02 Apr 2020 13:11:11 -0400
+X-MC-Unique: hPib8IDRP_WmKbz_ATvcTw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B160192D788;
+        Thu,  2 Apr 2020 17:11:10 +0000 (UTC)
+Received: from llong.com (ovpn-112-134.rdu2.redhat.com [10.10.112.134])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D7F855C3F8;
+        Thu,  2 Apr 2020 17:11:05 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH] kernfs: Change kernfs_node lockdep name to "kn->active"
+Date:   Thu,  2 Apr 2020 13:10:56 -0400
+Message-Id: <20200402171056.27871-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The kernfs_node lockdep tracking is being done on kn->active, the
+active reference count. The other reference count (kn->count) is not
+tracked by lockdep. So change the lockdep name to reflect what it is
+tracking.
 
---=-i8f4uvi3v90YnGQFml2x
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ fs/kernfs/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hello Bharata, thank you for reviewing and testing!
-
-During review of this new flag, it was suggested to change it's name to
-a better one (on platform's viewpoint).=20
-
-So I will have to change the flag name from DRCONF_MEM_HOTPLUGGED to
-DRCONF_MEM_HOTREMOVABLE.
-
-Everything should work the same as today.
-
-Best regards,
-Leonardo
-
-On Thu, 2020-04-02 at 14:44 +0530, Bharata B Rao wrote:
-> Looks good to me, also tested with PowerKVM guests.
->=20
-> Reviewed-by: Bharata B Rao <bharata@linux.ibm.com>
->=20
-> Regards,
-> Bharata.
-
---=-i8f4uvi3v90YnGQFml2x
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEMdeUgIzgjf6YmUyOlQYWtz9SttQFAl6GHBEACgkQlQYWtz9S
-ttQyYQ/+NdgBvAI56SOX8dvJKl/WTvp1YhbL7cxesekY7fO6l7forA9sloAou3nc
-lWl+m7utEqscJBpWY8zTNynIRxeFGjDX8eYLf7+kQj1KWow3PMuKsF2B67vny/G6
-ge7wXd+xoPWXcuaaVIJ6p+ObHHRVdb7+fLDz+6DmbNvBn7d6+Q6BgLSRYSbm5eSm
-y9wNpBrm7zBdSZ7cc5Ti+umbbMTwdyoatm6FDBKlDDFIP5sSIMoL4mmAOqgLnUsp
-cqsafpvekvRsLy7/MUFHCPze4vyw046gbjqmqM8Ek+hUhXpKDm3/Sfy7whiaIzlx
-bn5qRi7dZruQvY5FPM30EuOofNc8VLaE+mEZQKhf/DS5InWaiIcr315yd4ccTJ93
-WoOTJgGfMgcteXY/GZ95VTajm2k52In92C9aT7kPseYcIvVhpj+o3VNCW+mTKFgI
-sj4Wny1+beDCPZR/INod8Mdb5H3FeKfwPnrT8BbizSK9PW1WkeWCAFujznzjYo/j
-R+mQ8yrv2i3YQFt+AU4OC9u7eaIBkY4HVwaiuyaD6RmiRR0yC1k6gD7sMaJwCo95
-tRtZL2fpZUBhDhzD9oIgAsmUfYk0hw1cXKkbH6sCLycg75aza9aMilf1JEEcliH7
-A59SBjaIPPhrf8BXKi3eHjLB6qbTEloeZoxRHPWB/3pNSfQXSwU=
-=k2jJ
------END PGP SIGNATURE-----
-
---=-i8f4uvi3v90YnGQFml2x--
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 34366db3620d..fd6ddfe4cd94 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -1010,7 +1010,7 @@ struct kernfs_node *__kernfs_create_file(struct kernfs_node *parent,
+ 
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ 	if (key) {
+-		lockdep_init_map(&kn->dep_map, "kn->count", key, 0);
++		lockdep_init_map(&kn->dep_map, "kn->active", key, 0);
+ 		kn->flags |= KERNFS_LOCKDEP;
+ 	}
+ #endif
+-- 
+2.18.1
 
