@@ -2,114 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 923C919C96A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5157F19C9CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388940AbgDBTIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 15:08:01 -0400
-Received: from mail-bn8nam11on2050.outbound.protection.outlook.com ([40.107.236.50]:34238
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        id S2389353AbgDBTRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 15:17:30 -0400
+Received: from mail-mw2nam12on2055.outbound.protection.outlook.com ([40.107.244.55]:17967
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732598AbgDBTIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 15:08:01 -0400
+        id S1726963AbgDBTR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 15:17:29 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=llIc3YCjZkmyNN5o0aNvQfN+osYIbIWsu2Upyi6+V9y7u4jLR/6iqoEmg44owMYvHHzpb/KHD4fNXENlmShXk/PYRIUGNzbdiQO0wKvU78GRoz3wcEar41dW+4Yy4+zFQ54kZBlFBAx+Rax1Sk6hXhx6ZNmCnMhKOTCa/5RxI9g+Hg5hmdXOZXP6TH8585g/YHtUBYO+6YR3dbPEY2ZuwazeWVPMjhItw92OIcsu9BAYcjfCoOJBr+x2LOSI4wYQ/+5nI4o57kW8tNA03CDcBwl2nwIzi1Ihh0zqWr9H9Neny/eHpDyIKNrbhEHg813Z70VaTTZZoDoVv157gvo5yw==
+ b=eJ04VtWHeSNau6vMFLpCYdzDogGJRGseecq0JrbkhmHenJkrSH4dn11wlj2hPOzchcWkb2PNgh+cYxvGEJCgM9diTS/797a3t2IcubxSvpOqZk9eDQMzAEZTeHKT98QPo7tKnUnEbLNurSEGhaQLwYiXk57GUQ+wwSUcmj9dYiouL0UH9MLsgBDXPZxJ+2AuMAWFXAd5B3A6h4FrJVCeKo5LWgWY7/r4u474TAxJBA92uEuFAv01/4rDiSQm53zr/7Pja9cGUmf3+eWGHPF34A0S86RZU3fHvrfZXuLd/lTxFYj2jD0WGyPv+/GwoJ87mMBtX9qHiUMSzufXQ34Zbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VNEe0beCXYSDjfBtQ3gndhOngMgyAESRPXxPNqsukK0=;
- b=DE+/OIp253OVORfSUehSShup79KW4V+7QOEmyj//sVfqA+Sgnj2Dw27PrJllazRzsXpB13LFvKe0y/maa1GeX9bCzqWS1yTql/HBdCrWrt+yVYoY/1/y4uVyuyx1EJ7Gcp7Sg0Kk5YVW5uwPK3Ih5ZZ+qi6wc8Y22wsV15zlAbXFNwtbODKtsrDvmQSVk838cF+YyrqE6mjZ3uHAyqMtUg5gOyk6lTs3K1XvNnX1hunhrKkpjACoauqs1zTNi9vb4mHJFgZ2rUO/PFaDqEobAxEIkuIQOabPxAocJUDGFlmNlgxPgPlwe865fMvd/UAKQmD3itQ1okW6W/KFlq1Cow==
+ bh=Lq8EWO13RqX43qR371MsSf+REL4UESkrNJ1dLG6jgWs=;
+ b=ll5PyDALAOexUz/Jf8hiioESuTzLmBIBLDyKrtsdwbUUqKlRhZkRbxER8CY9fABX3GaVxuSTIIT8f46U4wk/A4RUMw6FI++G1efdHvDKjywU8gHRVvm6eoEuG2EtkytS7fCgDWuiOc8MDKVsks9mhFYHaIB9Z4cUQnD771Aa7V4PbHWUTs+SRkJLtJlztpcqLmE9puFQ1KKcFLwYVgW9zkFwKDWeSIwUvH/0+//0elRg/F8pLzpgI9BX3iK+sm1DHCU9PNIyPKfo1BgaVhrijI1wtATq+siok76nS+eDhIIwvsNtLsuNcOVIrPf3uJ+hdqTYKZYmQo3rPIZh+ZXzVw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
  header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VNEe0beCXYSDjfBtQ3gndhOngMgyAESRPXxPNqsukK0=;
- b=MqSe8fIWCUDRpkqSD3PBruMcqk0AJeF5Z9I+IuFUtJqR7KxKfNJZywEAi1j7fn8cKB2sQyuu8Qdtx3nzm/+icE1w9Cfv6CCMZqCGt12aQOt/mrJvGgfVvvhWP/4chS4zA2WZvOfMOysx2wk5YJ1VqUFDs++UT3jttRKs42lWl/E=
+ bh=Lq8EWO13RqX43qR371MsSf+REL4UESkrNJ1dLG6jgWs=;
+ b=rfImJMOC9UD0VpZU5M1JmlUlL57VenIvo1FoCdxTo0eunGbV0GlG6JvP+7mQIqUPOb9jeXLOB86uz3/d66C6+SLcNC+RsZxnTxmDFt5gTWBonDrG7NzYER4TPwCN+nE6YMD6AdFcuGMktC25Wh/8zNyvLRIMaopnr+jwgVB0GJE=
 Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=kim.phillips@amd.com; 
-Received: from SN6PR12MB2845.namprd12.prod.outlook.com (2603:10b6:805:75::33)
- by SN6PR12MB2750.namprd12.prod.outlook.com (2603:10b6:805:77::29) with
+ smtp.mailfrom=brijesh.singh@amd.com; 
+Received: from SA0PR12MB4400.namprd12.prod.outlook.com (2603:10b6:806:95::13)
+ by SA0PR12MB4349.namprd12.prod.outlook.com (2603:10b6:806:98::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.19; Thu, 2 Apr
- 2020 19:07:57 +0000
-Received: from SN6PR12MB2845.namprd12.prod.outlook.com
- ([fe80::654c:5d93:fd49:88b3]) by SN6PR12MB2845.namprd12.prod.outlook.com
- ([fe80::654c:5d93:fd49:88b3%4]) with mapi id 15.20.2878.017; Thu, 2 Apr 2020
- 19:07:56 +0000
-Subject: Re: [PATCH] perf script report: fix segfault when using DWARF mode
-To:     Andreas Gerstmayr <agerstmayr@redhat.com>,
-        linux-perf-users@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-References: <05e0d633-54b4-fb3b-3d08-8963271017ea@amd.com>
- <20200402125417.422232-1-agerstmayr@redhat.com>
-From:   Kim Phillips <kim.phillips@amd.com>
-Message-ID: <6a098ce1-1981-dcff-ea62-af5fc07ec7fb@amd.com>
-Date:   Thu, 2 Apr 2020 14:07:51 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-In-Reply-To: <20200402125417.422232-1-agerstmayr@redhat.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16; Thu, 2 Apr
+ 2020 19:17:24 +0000
+Received: from SA0PR12MB4400.namprd12.prod.outlook.com
+ ([fe80::60d9:da58:71b4:35f3]) by SA0PR12MB4400.namprd12.prod.outlook.com
+ ([fe80::60d9:da58:71b4:35f3%7]) with mapi id 15.20.2856.019; Thu, 2 Apr 2020
+ 19:17:24 +0000
+Cc:     brijesh.singh@amd.com, Ashish Kalra <Ashish.Kalra@amd.com>,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rientjes@google.com,
+        srutherford@google.com, luto@kernel.org
+Subject: Re: [PATCH v6 01/14] KVM: SVM: Add KVM_SEV SEND_START command
+To:     Venu Busireddy <venu.busireddy@oracle.com>
+References: <cover.1585548051.git.ashish.kalra@amd.com>
+ <3f90333959fd49bed184d45a761cc338424bf614.1585548051.git.ashish.kalra@amd.com>
+ <20200402062726.GA647295@vbusired-dt>
+ <89a586e4-8074-0d32-f384-a4597975d129@amd.com>
+ <20200402163717.GA653926@vbusired-dt>
+ <8b1b4874-11a8-1422-5ea1-ed665f41ab5c@amd.com>
+ <20200402185706.GA655878@vbusired-dt>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <6ced22f7-cbe5-a698-e650-7716566d4d8a@amd.com>
+Date:   Thu, 2 Apr 2020 14:17:26 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
+In-Reply-To: <20200402185706.GA655878@vbusired-dt>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BN6PR1201CA0006.namprd12.prod.outlook.com
- (2603:10b6:405:4c::16) To SN6PR12MB2845.namprd12.prod.outlook.com
- (2603:10b6:805:75::33)
+Content-Language: en-US
+X-ClientProxiedBy: SN4PR0501CA0120.namprd05.prod.outlook.com
+ (2603:10b6:803:42::37) To SA0PR12MB4400.namprd12.prod.outlook.com
+ (2603:10b6:806:95::13)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.0.18] (165.204.84.11) by BN6PR1201CA0006.namprd12.prod.outlook.com (2603:10b6:405:4c::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2856.20 via Frontend Transport; Thu, 2 Apr 2020 19:07:54 +0000
-X-Originating-IP: [165.204.84.11]
+Received: from Brijeshs-MacBook-Pro.local (165.204.77.11) by SN4PR0501CA0120.namprd05.prod.outlook.com (2603:10b6:803:42::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.6 via Frontend Transport; Thu, 2 Apr 2020 19:17:22 +0000
+X-Originating-IP: [165.204.77.11]
 X-MS-PublicTrafficType: Email
 X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 47d680ef-08c5-4504-d337-08d7d7392708
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2750:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB2750BD125BC8483BBE13511A87C60@SN6PR12MB2750.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Office365-Filtering-Correlation-Id: 1eda7630-cb20-4f0e-01cf-08d7d73a79ab
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4349:|SA0PR12MB4349:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4349EE03349D23486172E193E5C60@SA0PR12MB4349.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-Forefront-PRVS: 0361212EA8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2845.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(376002)(136003)(346002)(366004)(396003)(39860400002)(6666004)(54906003)(6486002)(66556008)(4744005)(66476007)(478600001)(66946007)(16576012)(2906002)(5660300002)(8676002)(31696002)(36756003)(956004)(86362001)(4326008)(81156014)(16526019)(31686004)(81166006)(316002)(7416002)(53546011)(52116002)(44832011)(26005)(186003)(8936002)(2616005);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR12MB4400.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(376002)(396003)(366004)(136003)(346002)(7416002)(6486002)(2616005)(6916009)(6512007)(6506007)(36756003)(66946007)(31696002)(53546011)(8936002)(66476007)(956004)(81156014)(81166006)(8676002)(52116002)(86362001)(44832011)(5660300002)(2906002)(4326008)(16526019)(186003)(66556008)(31686004)(478600001)(26005)(316002);DIR:OUT;SFP:1101;
 Received-SPF: None (protection.outlook.com: amd.com does not designate
  permitted sender hosts)
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GOp7OrvVtCVG5TuxQVu4f+MbBtovrXrpaSqV4yGsl6xNa3/OH7w/zgtlSI8z9XVAk6Tyl3LRHWa70sVDhQogNybgA+dj1jP3PDTe0U6He3WGvOig9Um0SEx7Zuj4ojZs1A1rhjXTIhHgQA6k1n9ReKBnMU9bZRW9n4hnVVR6B63JnfvaSGIFfNjdbKH38n/DyCC+FmeS8U7/48WtKzNDt0WVpkF9z7W3D8uSWnuOR8cVX+MwIpPFkP1m8zvhRU0Hm1XFr3NSd5r4FXokoOjx3DfKibzbyeXm9MC/fviHofMp0uOX2x8HzZK8VaM5ifpRAiciaFMGFcMOKyqDdtVfDr5hTy/IpYXYrdHUD+G29j3wdzCpsEDivay4/jy7kTF+U6MWrZM3Jy31FSaFbsWzqmxPk0VU8VULPO1xqTsubmKbk5RLWZklG3oSORqoV27j
-X-MS-Exchange-AntiSpam-MessageData: /DIshPDhnKNhgp7WP2RgziDCP8SLJCjnSq/9PvMxARf/rMMoXA+KyT8alnHRh+5Cm37WAG/4bfOU+CxttQM0m6uDwscr7f/gS9iyrCDEyVBnHYgUidG3uzAtSkp24qM5PbystuLpBT+D/M7dv1KKhw==
+X-Microsoft-Antispam-Message-Info: OXt8vEFTSSp8/RS/yEkk9tZ2+svoePvVkW4TTZD1/gMetdpSUukd0eR3XpYqzTrhzquANA31AtprNNDTgmqgokxCChNM31peAGHRBXGpzw2cNifnbN29SOllbSB4H+Ce4hQPaPd0d1huF7pOgd7GjBkA957vAupX0vMbQZ+I+31gyRPyFQt5v2WEk1mqPiX+VpOb85lh6048YmQc7WmbDFCdUwnzj3jZ0xStNSM/0AV9mK7iusrN4jRizuE9mnBRujj0pVP0pQCAxSVQ80YS+B/zgFvXuUbb9VnLT8y6WlaxJc4rC3/e0qbGrHkWdFw/59Gok5fFaa4JYkJPLPUeX8xh0ua6lDtxrOIGFHHn2hreXn5waedmTtGoDetWBgLXw0sjxkfEDmWbnt/KH4HUqj5CW29s3pCYonoMtYEkCvhbJ1PEyOyg7lijghmBc580
+X-MS-Exchange-AntiSpam-MessageData: WJvC5WEfzIKKn/NkQHY6Tq8JVOvYeYx4pLv9FZTGPkvGge2b77GK4RLBHOe9WEpLh+wvy0W1Mg5CxHJN9MQWQcoVsvBdoiVoisaN2qY7DJqLbdoytkKuN5fhGC5RtfNqNetqIBtFnBWV+eZS95FTIQ==
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47d680ef-08c5-4504-d337-08d7d7392708
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2020 19:07:56.7570
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1eda7630-cb20-4f0e-01cf-08d7d73a79ab
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2020 19:17:24.7750
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eGt0ftC/GSCO67a+NvQvOQ5PfgPnNe0UfIE+X509lupyCq9n8zMDrH7TQVDBHdsMbLRul88ATEauCDecCsM0mA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2750
+X-MS-Exchange-CrossTenant-UserPrincipalName: hB2R8IYolXLJOTedJWw0vLe+Eh/wIYiiQlqXIZ3Fg3GChrZoSaHTptYJfCgFfoauV2xE2JwJJWs/LfElueY64w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4349
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/20 7:54 AM, Andreas Gerstmayr wrote:
-> When running perf script report with a Python script and a callgraph in
-> DWARF mode, intr_regs->regs can be 0 and therefore crashing the regs_map
-> function.
-> 
-> Added a check for this condition (same check as in builtin-script.c:595).
-> 
-> Signed-off-by: Andreas Gerstmayr <agerstmayr@redhat.com>
-> ---
 
-Tested-by: Kim Phillips <kim.phillips@amd.com>
+On 4/2/20 1:57 PM, Venu Busireddy wrote:
+[snip]...
 
-Thanks,
+>> The question is, how does a userspace know the session length ? One
+>> method is you can precalculate a value based on your firmware version
+>> and have userspace pass that, or another approach is set
+>> params.session_len = 0 and query it from the FW. The FW spec allow to
+>> query the length, please see the spec. In the qemu patches I choose
+>> second approach. This is because session blob can change from one FW
+>> version to another and I tried to avoid calculating or hardcoding the
+>> length for a one version of the FW. You can certainly choose the first
+>> method. We want to ensure that kernel interface works on the both cases.
+> I like the fact that you have already implemented the functionality to
+> facilitate the user space to obtain the session length from the firmware
+> (by setting params.session_len to 0). However, I am trying to address
+> the case where the user space sets the params.session_len to a size
+> smaller than the size needed.
+>
+> Let me put it differently. Let us say that the session blob needs 128
+> bytes, but the user space sets params.session_len to 16. That results
+> in us allocating a buffer of 16 bytes, and set data->session_len to 16.
+>
+> What does the firmware do now?
+>
+> Does it copy 128 bytes into data->session_address, or, does it copy
+> 16 bytes?
+>
+> If it copies 128 bytes, we most certainly will end up with a kernel crash.
+>
+> If it copies 16 bytes, then what does it set in data->session_len? 16,
+> or 128? If 16, everything is good. If 128, we end up causing memory
+> access violation for the user space.
 
-Kim
+My interpretation of the spec is, if user provided length is smaller
+than the FW expected length then FW will reports an error with
+data->session_len set to the expected length. In other words, it should
+*not* copy anything into the session buffer in the event of failure. If
+FW is touching memory beyond what is specified in the session_len then
+its FW bug and we can't do much from kernel. Am I missing something ?
+
+
+>
+> Perhaps, this can be dealt a little differently? Why not always call
+> sev_issue_cmd(kvm, SEV_CMD_SEND_START, ...) with zeroed out data? Then,
+> if the user space has set params.session_len to 0, we return with the
+> needed params.session_len. Otherwise, we check if params.session_len is
+> large enough, and if not, we return -EINVAL?
+
