@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFDB19C5ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:33:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDBE919C5F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389245AbgDBPdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:33:47 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:57420 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388744AbgDBPdq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:33:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QAB4FKmrAwMSXS3bFgkS7qXE7ubZhAEmx+ZEk9qYg0s=; b=d74Z+4+mRIMe2s36Wy2LEQt48U
-        1h5Jf3ygWPQqdrwI+h0kaAoqYbmbHQJNAoHM5GZBZ3yMHA0D9IfACk/Ba56zbpVq/UvgW8AzE3cOg
-        zWi0kCQyONwF9LLWdTyOpycmh/BIvxKMmxTPD10zDXQbkO0E6MrnR9nqMxmjV22KTQO4Nr9wASALT
-        sSF3zuSfkXdSiK65xNpskImIu5ehqqTbAjmv9909CO2w3thudN5HiZ+fwre5fXVNy/AvuMIKMoAZe
-        X2paHr38fcO4FMsr+1Ljqkud+BE9BwkSZUojlzTnYDy0Kxl+QS3/3hB7fqPTu1qTmyXHKthbB/N+0
-        bi9mHZig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jK1qI-00066Z-Cg; Thu, 02 Apr 2020 15:33:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 343263010BC;
-        Thu,  2 Apr 2020 17:33:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 147CB2B0DECD2; Thu,  2 Apr 2020 17:33:16 +0200 (CEST)
-Date:   Thu, 2 Apr 2020 17:33:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     hejingxian <hejingxian@huawei.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        Hushiyuan <hushiyuan@huawei.com>,
-        "hewenliang (C)" <hewenliang4@huawei.com>
-Subject: Re: [PATCH] fair sched: Fix signed integer overflow problem in fair
- sched
-Message-ID: <20200402153316.GF20730@hirez.programming.kicks-ass.net>
-References: <1D850B2B2FDCCD4EAD93967D2CFC56B113ABAB1E@dggemm501-mbs.china.huawei.com>
+        id S2389309AbgDBPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:34:41 -0400
+Received: from pub.regulars.win ([89.163.144.234]:35722 "EHLO pub.regulars.win"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732754AbgDBPek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 11:34:40 -0400
+From:   Slava Bacherikov <slava@bacher09.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bacher09.org;
+        s=reg; t=1585841677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bKUf/bnAONFPXaf6zoV9Cn+HIIIIoYflCpB+vjMGW18=;
+        b=HNrpNMyRlD90A3TMwMZHALy+ta+0ynQ+1oVhRvwwGsCPTvsRtsjf4Ds9ztmBRuq3sAOWKK
+        RG/VAG3HXogrMUbFpmqA/WQufGMoqj4Bg663lFurWifyDKMZQ7p3Vc/RXS0Jch/uOh7pJ3
+        0zhAfPmaMV+DII6Y5Ggr0RlbXON+Y9A=
+To:     keescook@chromium.org
+Cc:     andriin@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jannh@google.com, alexei.starovoitov@gmail.com,
+        daniel@iogearbox.net, kernel-hardening@lists.openwall.com,
+        liuyd.fnst@cn.fujitsu.com, kpsingh@google.com,
+        Slava Bacherikov <slava@bacher09.org>
+Subject: [PATCH v4 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
+Date:   Thu,  2 Apr 2020 18:33:36 +0300
+Message-Id: <20200402153335.38447-1-slava@bacher09.org>
+In-Reply-To: <202004010849.CC7E9412@keescook>
+References: <202004010849.CC7E9412@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1D850B2B2FDCCD4EAD93967D2CFC56B113ABAB1E@dggemm501-mbs.china.huawei.com>
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 02:52:40PM +0000, hejingxian wrote:
-> During execution applications in my arm64 virtual machine with UBSAN, the UBSAN error message is showed:
-> UBSAN: Undefined behaviour in kernel/sched/fair.c
-> signed integer overflow:
-> 166982794708445 * 64885 cannot be represented in type 'long int'
-> CPU: 40 PID: 4134072 Comm: stress-ng-sched Kdump: loaded Tainted: G    B   W  OE     4.19.95-vhulk2002.1.0.0041.eulerosv2r8.aarch64 #1
-> Hardware name: Huawei TaiShan 2280 V2/BC82AMDD, BIOS 0.98 08/25/2019
-> Call trace:
->         dump_backtrace+0x0/0x310
->         show_stack+0x28/0x38
->         dump_stack+0xd8/0x108
->         ubsan_epilogue+0x1c/0x94
->         handle_overflow+0x14c/0x19c
->         __ubsan_handle_mul_overflow+0x34/0x44
->         task_numa_find_cpu+0xdec/0x1058
->         task_numa_migrate+0x3ac/0x12d0
->         task_numa_fault+0x4f0/0x5f0
->         do_numa_page+0x480/0x848
->         __handle_mm_fault+0x8d8/0x9b0
->         handle_mm_fault+0x280/0x460
->         do_page_fault+0x3ec/0x890
->         do_translation_fault+0xe4/0x100
->         do_mem_abort+0xc0/0x1b0
->         el0_da+0x24/0x28
-> 
-> The multiplication of signed long integers in load_too_imbalanced may
-> occur overflow, then we use unsigned long integers instead of signed integers.
+Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
+enabled will produce invalid btf file, since gen_btf function in
+link-vmlinux.sh script doesn't handle *.dwo files.
 
-NAK, UBSAN is smoking dope, and you patch is actively wrong.
+Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
+using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
+
+Signed-off-by: Slava Bacherikov <slava@bacher09.org>
+Reported-by: Jann Horn <jannh@google.com>
+Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
+Acked-by: KP Singh <kpsingh@google.com>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
+---
+ lib/Kconfig.debug | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index f61d834e02fe..b94227be2d62 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -222,7 +222,9 @@ config DEBUG_INFO_DWARF4
+ 
+ config DEBUG_INFO_BTF
+ 	bool "Generate BTF typeinfo"
+-	depends on DEBUG_INFO
++	depends on DEBUG_INFO || COMPILE_TEST
++	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
++	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+ 	help
+ 	  Generate deduplicated BTF type information from DWARF debug info.
+ 	  Turning this on expects presence of pahole tool, which will convert
