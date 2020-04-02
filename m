@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B6819C33B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC23F19C343
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732261AbgDBNxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35924 "EHLO mail.kernel.org"
+        id S1732532AbgDBNyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:54:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:43028 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726425AbgDBNxa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:53:30 -0400
-Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2767E2073B;
-        Thu,  2 Apr 2020 13:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585835610;
-        bh=e2mD8+QaUawKZUIdArDDRCxzyP8fJnIv/2Fv/9jRSbc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aFK8PuE53AAEurbQ6VeYnOyh1G1pTUhbgyXsdRg2MbipOPO+gI+JyCrvqROJ7R9rS
-         zV8JP+Cg4wd7in8MVjarXIHfQ+KYx9XwXc/A/QoFB+R6f4ATHc5wTAdHiWi5Uz7zjx
-         Vb0Bim6QH05Wpi4bYe/MGDPagBZszEj1kfYIgaQ4=
-Date:   Thu, 2 Apr 2020 15:53:23 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hverkuil@xs4all.nl,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        laurent.pinchart@ideasonboard.com,
+        id S1731780AbgDBNyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 09:54:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB18B30E;
+        Thu,  2 Apr 2020 06:54:35 -0700 (PDT)
+Received: from [10.57.59.199] (unknown [10.57.59.199])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CC60E3F52E;
+        Thu,  2 Apr 2020 06:54:33 -0700 (PDT)
+Subject: Re: [PATCH] driver core: Use dev_warn() instead of dev_WARN() for
+ deferred_probe_timeout warnings
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 1/1] lib/vsprintf: Add support for printing V4L2 and DRM
- fourccs
-Message-ID: <20200402155323.6866b5c9@coco.lan>
-In-Reply-To: <87eet6mgk7.fsf@intel.com>
-References: <20200401140522.966-1-sakari.ailus@linux.intel.com>
-        <87eet6mgk7.fsf@intel.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Basil Eljuse <Basil.Eljuse@arm.com>,
+        Ferry Toth <fntoth@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>
+References: <20200330202715.86609-1-john.stultz@linaro.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <63eb5197-a683-2103-9b7b-246949601ffd@arm.com>
+Date:   Thu, 2 Apr 2020 14:54:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200330202715.86609-1-john.stultz@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 02 Apr 2020 11:34:48 +0300
-Jani Nikula <jani.nikula@linux.intel.com> escreveu:
-
-> On Wed, 01 Apr 2020, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
-> > Add a printk modifier %ppf (for pixel format) for printing V4L2 and DRM
-> > pixel formats denoted by 4ccs. The 4cc encoding is the same for both so
-> > the same implementation can be used.  
+On 2020-03-30 9:27 pm, John Stultz wrote:
+> In commit c8c43cee29f6 ("driver core: Fix
+> driver_deferred_probe_check_state() logic") and following
+> changes the logic was changes slightly so that if there is no
+> driver to match whats found in the dtb, we wait 30 seconds
+> for modules to be loaded by userland, and then timeout, where
+> as previously we'd print "ignoring dependency for device,
+> assuming no driver" and immediately return -ENODEV after
+> initcall_done.
 > 
-> I'm not going to take a strong stand in one way or the other regarding
-> the patch at hand, but I do think at some point we have to draw a line
-> what should be included in printk formats. Arguably they should be
-> reserved to things that are generally useful across large parts of the
-> kernel, right?
+> However, in the timeout case (which previously existed but was
+> practicaly un-used without a boot argument), the timeout message
+> uses dev_WARN(). This means folks are now seeing a big backtrace
+> in their boot logs if there a entry in their dts that doesn't
+> have a driver.
+
+I had always figured that timeout case somehow represented more of a 
+definite failure than others, but if not then great! :)
+
+> To fix this, lets use dev_warn(), instead of dev_WARN() to match
+> the previous error path.
+
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+However, I do now wonder if we really need these two separate cases with 
+subtly different messages - after all, giving up at init vs. giving up 
+30 seconds later still represents some kind of timeout out either way. 
+Given that there are at least 5 underlying situations with varying 
+levels of certainty and severity:
+
+- No driver loaded for dependency (yet, if CONFIG_MODULES)
+- Driver present and dependency will be probed at some point in future
+- Driver present but dependency will not be probed (e.g. disabled in DT)
+- Dependency itself is deferred but will be re-probed at some point
+- Dependency probed, explicitly failed and will not be retried
+
+then I'm not sure there's much value in having two slightly different 
+ways of saying "any of those may have happened".
+
+Robin.
+
+> Cc: Robin Murphy <robin.murphy@arm.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Sudeep Holla <sudeep.holla@arm.com>
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Basil Eljuse <Basil.Eljuse@arm.com>
+> Cc: Ferry Toth <fntoth@gmail.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Anders Roxell <anders.roxell@linaro.org>
+> Fixes: c8c43cee29f6 ("driver core: Fix driver_deferred_probe_check_state() logic")
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> ---
+>   drivers/base/dd.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I think the more specialized you get, the more you should think about
-> just using the plain old %s, and your own helpers.
-
-As I suggested it, from my side, I'd like to have it inside printk :-)
-
-There is a subset of formats that are subsystem-specific anyway at
-printk, like the network ones. We use extensively fourcc along the
-media subsystem (and you probably also use fourcc at DRM). Even some input
-devices nowadays may be using V4L2 core (some multi-sensor touching
-devices), with depends on it.
-
-So, those fourcc codes are pretty common. Having it at the printk
-infra makes a lot easier for people to use them.
-
-> Because frankly, the
-> kernel printk specifiers also start getting more than a little obscure.
-
-I liked one of the suggestions of using "%p4cc" (or maybe something
-similar, if having a number there is a problem, like "%pAcc" or "%pfcc")
-for this printk. This would be very easy for people to identify and 
-remember about its meaning.
-
-> Or could we conceive of a way to make this locally extensible yet safe,
-> letting callers use something like %{foo}, as well as providing a
-> locally relevant function to do the conversion?
-
-That's something that it makes sense to be implemented in the future,
-for things that would be self-contained inside an specific subsystem.
-
-Thanks,
-Mauro
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 06ec0e851fa1..ca1652221c1a 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -267,7 +267,7 @@ int driver_deferred_probe_check_state(struct device *dev)
+>   	}
+>   
+>   	if (!driver_deferred_probe_timeout) {
+> -		dev_WARN(dev, "deferred probe timeout, ignoring dependency");
+> +		dev_warn(dev, "deferred probe timeout, ignoring dependency");
+>   		return -ETIMEDOUT;
+>   	}
+>   
+> 
