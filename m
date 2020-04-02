@@ -2,404 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1174A19C379
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00A319C374
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387652AbgDBOBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:01:03 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:25876 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726425AbgDBOBC (ORCPT
+        id S2388254AbgDBOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:00:20 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:33944 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731861AbgDBOAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:01:02 -0400
+        Thu, 2 Apr 2020 10:00:20 -0400
+Received: by mail-qk1-f196.google.com with SMTP id i6so3999530qke.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 07:00:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1585836060; x=1617372060;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=JJOleugy6YYI1QEgrmRVgpAnJjeGFcBiu5/H6ZBTL40=;
-  b=TEMVoatZELN+X8Wnjnqv9zyJ53rn1qecSb+ima6dTgIW7X7D1Ovolbk/
-   fYEqs9UaEQGhnF67taNEDXXIicj4u5+GAemP754F8PzXK1tss96iBT/+3
-   xs3OfcGQkgm68/aSMBlS3GZAF/ZPdlyJW/fVV21bKrV2GG9N9OcHpMKrN
-   Y=;
-IronPort-SDR: rSyems/IbJNfwUI6TlUTlK35mTBitFWPqs6/IseEePG4Lo1Fnvt9ut5B1lTG34ql+M3DhgM3D0
- pFtHukuh7yXg==
-X-IronPort-AV: E=Sophos;i="5.72,335,1580774400"; 
-   d="scan'208";a="34887686"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 02 Apr 2020 14:00:55 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-303d0b0e.us-east-1.amazon.com (Postfix) with ESMTPS id 892CAA29E0;
-        Thu,  2 Apr 2020 14:00:45 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 2 Apr 2020 14:00:44 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.162.241) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 2 Apr 2020 14:00:30 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     SeongJae Park <sjpark@amazon.com>
-CC:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        <akpm@linux-foundation.org>, SeongJae Park <sjpark@amazon.de>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
-        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
-        <dwmw@amazon.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: Re: Re: [PATCH v7 04/15] mm/damon: Implement region based sampling
-Date:   Thu, 2 Apr 2020 15:59:59 +0200
-Message-ID: <20200402135959.26336-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200401082222.21242-1-sjpark@amazon.com> (raw)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.241]
-X-ClientProxiedBy: EX13D27UWB003.ant.amazon.com (10.43.161.195) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=cUYfx1/T0rN3mmFSrP/uDZKg64qpxAJKitWtdbfwY10=;
+        b=omxUUzlycbm6U7R5rMbWth+4jjmtiEhYEoR12fCOy1sdDWnOAPSIIXJh7R+Efn+Cbd
+         Uu4Tk+98wjCUIb6CuNDLH+rHr+IfybHi88VPNxjzsjVQG/lw1BoPZHvObgC01Zb306kc
+         QCrQRFggKQoNhju4vvOowe+CK3eu+f9xXw28+KRtXT0HBgUZyTEPN9UxVWqFvvC8DXh1
+         sShoPU1V/0lTskUfYlEPg/9He/pHE7q6DCHREq5C9PSzS/rLs7zsQ0YKm+5rn5qH4Mel
+         Iu6R+KKVMIKYaITbA4KU4Qs7BVAy+px6435a8IJ53LCGfSAv/gP7L3NwV+MHCN6SRXlq
+         jGoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=cUYfx1/T0rN3mmFSrP/uDZKg64qpxAJKitWtdbfwY10=;
+        b=gR/R+6DDQshFsSCBBITRxEmExsPJ+hWPy5A8nfUuIcmG5nfG8y6OtFQAM4vLHcqDZ4
+         t9andQ931NcLFJhXfUjOsosJTrejJj5syNlFmnfXSq4uk85c/MV8KhmMN/sDUvHx610p
+         1EY9ESC9iy/dCdmqIFI7mAwmVvd73gHw6Nvk7mWSuCldsIRuCiJbCjMkrZPlulsubmRm
+         1KRANBKG9wtSdytFus/rG+YEZ2B75Wmu+tLIH6ULUUxIJImvxkcMgsbZ2nQ73d4T2TtP
+         gLWQFOMFHWkbR0C47CV++KjOvbmmHauIbLgo1kLyEwrc2JInvMsJQTwDN9DPjMqwqdXR
+         hJ/A==
+X-Gm-Message-State: AGi0PuZylzU2HQRNoN9/5ZFa8eHmc8BJBEmXWPWSbw47kd2zQ3tST1/+
+        huOva6bLqjuSuWkUee1erjuh1A==
+X-Google-Smtp-Source: APiQypIVFhJKX2ObXQDsmXbTYI41ob/mLqs87vmhRlymjY4OyVQ61SbpuN1/XLuJmTuJdRxUNBIjnQ==
+X-Received: by 2002:a37:a93:: with SMTP id 141mr3601217qkk.244.1585836018508;
+        Thu, 02 Apr 2020 07:00:18 -0700 (PDT)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id 206sm704735qkd.122.2020.04.02.07.00.16
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 Apr 2020 07:00:17 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH v2] sched/core: fix illegal RCU from offline CPUs
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <87369mt9kf.fsf@mpe.ellerman.id.au>
+Date:   Thu, 2 Apr 2020 10:00:16 -0400
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        paulmck@kernel.org, tglx@linutronix.de,
+        "James.Bottomley@hansenpartnership.com" 
+        <James.Bottomley@HansenPartnership.com>, deller@gmx.de,
+        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nicholas Piggin <npiggin@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C0F26F4C-77A0-41DF-856A-B7E29C56A4B6@lca.pw>
+References: <20200401214033.8448-1-cai@lca.pw>
+ <87369mt9kf.fsf@mpe.ellerman.id.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Apr 2020 10:22:22 +0200 SeongJae Park <sjpark@amazon.com> wrote:
-
-> On Tue, 31 Mar 2020 17:02:33 +0100 Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> 
-> > On Wed, 18 Mar 2020 12:27:11 +0100
-> > SeongJae Park <sjpark@amazon.com> wrote:
-> > 
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > > 
-> > > This commit implements DAMON's basic access check and region based
-> > > sampling mechanisms.  This change would seems make no sense, mainly
-> > > because it is only a part of the DAMON's logics.  Following two commits
-> > > will make more sense.
-> > > 
-> > > Basic Access Check
-> > > ------------------
-> > > 
-> > > DAMON basically reports what pages are how frequently accessed.  Note
-> > > that the frequency is not an absolute number of accesses, but a relative
-> > > frequency among the pages of the target workloads.
-> > > 
-> > > Users can control the resolution of the reports by setting two time
-> > > intervals, ``sampling interval`` and ``aggregation interval``.  In
-> > > detail, DAMON checks access to each page per ``sampling interval``,
-> > > aggregates the results (counts the number of the accesses to each page),
-> > > and reports the aggregated results per ``aggregation interval``.  For
-> > > the access check of each page, DAMON uses the Accessed bits of PTEs.
-> > > 
-> > > This is thus similar to common periodic access checks based access
-> > > tracking mechanisms, which overhead is increasing as the size of the
-> > > target process grows.
-> > > 
-> > > Region Based Sampling
-> > > ---------------------
-> > > 
-> > > To avoid the unbounded increase of the overhead, DAMON groups a number
-> > > of adjacent pages that assumed to have same access frequencies into a
-> > > region.  As long as the assumption (pages in a region have same access
-> > > frequencies) is kept, only one page in the region is required to be
-> > > checked.  Thus, for each ``sampling interval``, DAMON randomly picks one
-> > > page in each region and clears its Accessed bit.  After one more
-> > > ``sampling interval``, DAMON reads the Accessed bit of the page and
-> > > increases the access frequency of the region if the bit has set
-> > > meanwhile.  Therefore, the monitoring overhead is controllable by
-> > > setting the number of regions.
-> > > 
-> > > Nonetheless, this scheme cannot preserve the quality of the output if
-> > > the assumption is not kept.  Following commit will introduce how we can
-> > > make the guarantee with best effort.
-> > > 
-> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Hi.
-> > 
-> > A few comments inline.
-> > 
-> > I've still not replicated your benchmarks so may well have some more
-> > feedback once I've managed that on one of our servers.
-> 
-> Appreciate your comments.  If you need any help for the replication, please let
-> me know.  I basically use my parsec3 wrapper scripts[1] to run parsec3 and
-> splash2x workloads and `damo` tool, which resides in the kernel tree at
-> `/tools/damon/`.
-> 
-> For example, below commands will reproduce ethp applied splash2x/fft run.
->     
->     $ echo "2M      null    5       null    null    null    hugepage
->     2M      null    null    5       1s      null    nohugepage" > ethp
->     $ parsec3_on_ubuntu/run.sh splash2x.fft
->     $ linux/tools/damon/damo schemes -c ethp `pidof fft`
-> 
-> [1] https://github.com/sjp38/parsec3_on_ubuntu
-> 
-> > 
-> > Thanks,
-> > 
-> > Jonathan
-> > 
-> > > ---
-> > >  include/linux/damon.h |  24 ++
-> > >  mm/damon.c            | 553 ++++++++++++++++++++++++++++++++++++++++++
-> > >  2 files changed, 577 insertions(+)
-> > > 
-> [...]
-> > > diff --git a/mm/damon.c b/mm/damon.c
-> > > index d7e6226ab7f1..018016793555 100644
-> > > --- a/mm/damon.c
-> > > +++ b/mm/damon.c
-> > > @@ -10,8 +10,14 @@
-> > >  #define pr_fmt(fmt) "damon: " fmt
-> > >  
-> > >  #include <linux/damon.h>
-> > > +#include <linux/delay.h>
-> > > +#include <linux/kthread.h>
-> > >  #include <linux/mm.h>
-> > >  #include <linux/module.h>
-> > > +#include <linux/page_idle.h>
-> > > +#include <linux/random.h>
-> > > +#include <linux/sched/mm.h>
-> > > +#include <linux/sched/task.h>
-> > >  #include <linux/slab.h>
-> > >  
-> [...]
-> > > +/*
-> > > + * Size-evenly split a region into 'nr_pieces' small regions
-> > > + *
-> > > + * Returns 0 on success, or negative error code otherwise.
-> > > + */
-> > > +static int damon_split_region_evenly(struct damon_ctx *ctx,
-> > > +		struct damon_region *r, unsigned int nr_pieces)
-> > > +{
-> > > +	unsigned long sz_orig, sz_piece, orig_end;
-> > > +	struct damon_region *piece = NULL, *next;
-> > > +	unsigned long start;
-> > > +
-> > > +	if (!r || !nr_pieces)
-> > > +		return -EINVAL;
-> > > +
-> > > +	orig_end = r->vm_end;
-> > > +	sz_orig = r->vm_end - r->vm_start;
-> > > +	sz_piece = sz_orig / nr_pieces;
-> > > +
-> > > +	if (!sz_piece)
-> > > +		return -EINVAL;
-> > > +
-> > > +	r->vm_end = r->vm_start + sz_piece;
-> > > +	next = damon_next_region(r);
-> > > +	for (start = r->vm_end; start + sz_piece <= orig_end;
-> > > +			start += sz_piece) {
-> > > +		piece = damon_new_region(ctx, start, start + sz_piece);
-> > piece may be n
-> 
-> Yes, that name is short and more intuitive.  I will rename so.
-> 
-> > > +		damon_insert_region(piece, r, next);
-> > > +		r = piece;
-> > > +	}
-> > > +	/* complement last region for possible rounding error */
-> > > +	if (piece)
-> > > +		piece->vm_end = orig_end;
-> > 
-> > Update the sampling address to ensure it's in the region?
-> 
-> I think `piece->vm_end` should be equal or smaller than `orig_end` and
-> therefore the sampling address of `piece` will be still in the region.
-> 
-> > 
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> [...]
-> > > +static void damon_pte_pmd_mkold(pte_t *pte, pmd_t *pmd)
-> > > +{
-> > > +	if (pte) {
-> > > +		if (pte_young(*pte)) {
-> > > +			clear_page_idle(pte_page(*pte));
-> > > +			set_page_young(pte_page(*pte));
-> > > +		}
-> > > +		*pte = pte_mkold(*pte);
-> > > +		return;
-> > > +	}
-> > > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > > +	if (pmd) {
-> > > +		if (pmd_young(*pmd)) {
-> > > +			clear_page_idle(pmd_page(*pmd));
-> > > +			set_page_young(pmd_page(*pmd));
-> > > +		}
-> > > +		*pmd = pmd_mkold(*pmd);
-> > > +	}
-> > > +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-> > 
-> > No need to flush the TLBs?
-> 
-> Good point!
-> 
-> I have intentionally skipped TLB flushing here to minimize the performance
-> effect to the target workload.  I also thought this might not degrade the
-> monitoring accuracy so much because we are targetting for the DRAM level
-> accesses of memory-intensive workloads, which might make TLB flood frequently.
-> 
-> However, your comment makes me thinking differently now.  By flushing the TLB
-> here, we will increase up to `number_of_regions` TLB misses for sampling
-> interval.  This might be not a huge overhead.  Also, improving the monitoring
-> accuracy makes no harm at all.  I even didn't measured the overhead.
-> 
-> I will test the overhead and if it is not significant, I will make this code to
-> flush TLB, in the next spin.
-
-Hmm, it seems like 'page_idle.c' is also modifying the Accessed bit but doesn't
-flush related TLB entries.  If I'm not missing something here, I would like to
-leave this part as is to make the behavior consistent.
 
 
-Thanks,
-SeongJae Park
+> On Apr 2, 2020, at 7:24 AM, Michael Ellerman <mpe@ellerman.id.au> =
+wrote:
+>=20
+> Qian Cai <cai@lca.pw> writes:
+>> From: Peter Zijlstra <peterz@infradead.org>
+>>=20
+>> In the CPU-offline process, it calls mmdrop() after idle entry and =
+the
+>> subsequent call to cpuhp_report_idle_dead(). Once execution passes =
+the
+>> call to rcu_report_dead(), RCU is ignoring the CPU, which results in
+>> lockdep complaining when mmdrop() uses RCU from either memcg or
+>> debugobjects below.
+>>=20
+>> Fix it by cleaning up the active_mm state from BP instead. Every arch
+>> which has CONFIG_HOTPLUG_CPU should have already called =
+idle_task_exit()
+>> from AP. The only exception is parisc because it switches them to
+>> &init_mm unconditionally (see smp_boot_one_cpu() and smp_cpu_init()),
+>> but the patch will still work there because it calls mmgrab(&init_mm) =
+in
+>> smp_cpu_init() and then should call mmdrop(&init_mm) in finish_cpu().
+>=20
+> Thanks for debugging this. How did you hit it in the first place?
 
-> 
-> > 
-> > > +}
-> > > +
-> [...]
-> > > +/*
-> > > + * The monitoring daemon that runs as a kernel thread
-> > > + */
-> > > +static int kdamond_fn(void *data)
-> > > +{
-> > > +	struct damon_ctx *ctx = data;
-> > > +	struct damon_task *t;
-> > > +	struct damon_region *r, *next;
-> > > +	struct mm_struct *mm;
-> > > +
-> > > +	pr_info("kdamond (%d) starts\n", ctx->kdamond->pid);
-> > > +	kdamond_init_regions(ctx);
-> > 
-> > We haven't called mkold on the initial regions so first check will
-> > get us fairly random state.
-> 
-> Yes, indeed.  However, the early results will not be accurate anyway because
-> the adaptive regions adjustment algorithm will not take effect yet.  I would
-> like to leave this part as is but add some comments about this point to keep
-> the code simple.
-> 
-> > 
-> > > +	while (!kdamond_need_stop(ctx)) {
-> > > +		damon_for_each_task(ctx, t) {
-> > > +			mm = damon_get_mm(t);
-> > > +			if (!mm)
-> > > +				continue;
-> > > +			damon_for_each_region(r, t)
-> > > +				kdamond_check_access(ctx, mm, r);
-> > > +			mmput(mm);
-> > > +		}
-> > > +
-> > > +		if (kdamond_aggregate_interval_passed(ctx))
-> > > +			kdamond_reset_aggregated(ctx);
-> > > +
-> > > +		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
-> > > +	}
-> > > +	damon_for_each_task(ctx, t) {
-> > > +		damon_for_each_region_safe(r, next, t)
-> > > +			damon_destroy_region(r);
-> > > +	}
-> > > +	pr_debug("kdamond (%d) finishes\n", ctx->kdamond->pid);
-> > > +	mutex_lock(&ctx->kdamond_lock);
-> > > +	ctx->kdamond = NULL;
-> > > +	mutex_unlock(&ctx->kdamond_lock);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> [...]
-> > > +/*
-> > > + * Start or stop the kdamond
-> > > + *
-> > > + * Returns 0 if success, negative error code otherwise.
-> > > + */
-> > > +static int damon_turn_kdamond(struct damon_ctx *ctx, bool on)
-> > > +{
-> > > +	int err = -EBUSY;
-> > > +
-> > > +	mutex_lock(&ctx->kdamond_lock);
-> > > +	if (!ctx->kdamond && on) {
-> > 
-> > Given there is very little shared code between on and off, I would
-> > suggest just splitting it into two functions.
-> 
-> Good point, I will do so in next spin.
-> 
-> > 
-> > > +		err = 0;
-> > > +		ctx->kdamond = kthread_run(kdamond_fn, ctx, "kdamond");
-> > > +		if (IS_ERR(ctx->kdamond))
-> > > +			err = PTR_ERR(ctx->kdamond);
-> > > +	} else if (ctx->kdamond && !on) {
-> > > +		mutex_unlock(&ctx->kdamond_lock);
-> > > +		kthread_stop(ctx->kdamond);
-> > > +		while (damon_kdamond_running(ctx))
-> > > +			usleep_range(ctx->sample_interval,
-> > > +					ctx->sample_interval * 2);
-> > > +		return 0;
-> > > +	}
-> > > +	mutex_unlock(&ctx->kdamond_lock);
-> > > +
-> > > +	return err;
-> > > +}
-> > > +
-> [...]
-> > > +
-> > > +/*
-> > 
-> > Why not make these actual kernel-doc?  That way you can use the
-> > kernel-doc scripts to sanity check them.
-> 
-> Oops, I just forgot that it should start with '/**'.  Will fix it in next spin.
-> 
-> 
-> Thanks,
-> SeongJae Park
-> 
-> > 
-> > /**
-> > 
-> > > + * damon_set_attrs() - Set attributes for the monitoring.
-> > > + * @ctx:		monitoring context
-> > > + * @sample_int:		time interval between samplings
-> > > + * @aggr_int:		time interval between aggregations
-> > > + * @min_nr_reg:		minimal number of regions
-> > > + *
-> > > + * This function should not be called while the kdamond is running.
-> > > + * Every time interval is in micro-seconds.
-> > > + *
-> > > + * Return: 0 on success, negative error code otherwise.
-> > > + */
-> > > +int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
-> > > +		unsigned long aggr_int, unsigned long min_nr_reg)
-> > > +{
-> > > +	if (min_nr_reg < 3) {
-> > > +		pr_err("min_nr_regions (%lu) should be bigger than 2\n",
-> > > +				min_nr_reg);
-> > > +		return -EINVAL;
-> > > +	}
-> > > +
-> > > +	ctx->sample_interval = sample_int;
-> > > +	ctx->aggr_interval = aggr_int;
-> > > +	ctx->min_nr_regions = min_nr_reg;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > >  static int __init damon_init(void)
-> > >  {
-> > >  	return 0;
-> > 
+Just repeatedly offline/online CPUs which will eventually cause an idle =
+thread
+refcount goes to 0 and trigger __mmdrop() and of course it needs to =
+enable
+lockdep (PROVE_RCU?) as well as having luck to hit the cgroup, workqueue
+or debugobject code paths to call RCU.
+
+>=20
+> A link to the original thread would have helped me:
+>=20
+>  https://lore.kernel.org/lkml/20200113190331.12788-1-cai@lca.pw/
+>=20
+>> WARNING: suspicious RCU usage
+>> -----------------------------
+>> kernel/workqueue.c:710 RCU or wq_pool_mutex should be held!
+>>=20
+>> other info that might help us debug this:
+>>=20
+>> RCU used illegally from offline CPU!
+>> Call Trace:
+>> dump_stack+0xf4/0x164 (unreliable)
+>> lockdep_rcu_suspicious+0x140/0x164
+>> get_work_pool+0x110/0x150
+>> __queue_work+0x1bc/0xca0
+>> queue_work_on+0x114/0x120
+>> css_release+0x9c/0xc0
+>> percpu_ref_put_many+0x204/0x230
+>> free_pcp_prepare+0x264/0x570
+>> free_unref_page+0x38/0xf0
+>> __mmdrop+0x21c/0x2c0
+>> idle_task_exit+0x170/0x1b0
+>> pnv_smp_cpu_kill_self+0x38/0x2e0
+>> cpu_die+0x48/0x64
+>> arch_cpu_idle_dead+0x30/0x50
+>> do_idle+0x2f4/0x470
+>> cpu_startup_entry+0x38/0x40
+>> start_secondary+0x7a8/0xa80
+>> start_secondary_resume+0x10/0x14
+>=20
+> Do we know when this started happening? ie. can we determine a Fixes
+> tag?
+
+I don=E2=80=99t know. I looked at some commits that it seems the code =
+was like that
+even 10-year ago. It must be nobody who cares to run lockdep =
+(PROVE_RCU?)
+with CPU hotplug very regularly.
+
+>=20
+>> <Peter to sign off here>
+>> Signed-off-by: Qian Cai <cai@lca.pw>
+>> ---
+>> arch/powerpc/platforms/powernv/smp.c |  1 -
+>> include/linux/sched/mm.h             |  2 ++
+>> kernel/cpu.c                         | 18 +++++++++++++++++-
+>> kernel/sched/core.c                  |  5 +++--
+>> 4 files changed, 22 insertions(+), 4 deletions(-)
+>>=20
+>> diff --git a/arch/powerpc/platforms/powernv/smp.c =
+b/arch/powerpc/platforms/powernv/smp.c
+>> index 13e251699346..b2ba3e95bda7 100644
+>> --- a/arch/powerpc/platforms/powernv/smp.c
+>> +++ b/arch/powerpc/platforms/powernv/smp.c
+>> @@ -167,7 +167,6 @@ static void pnv_smp_cpu_kill_self(void)
+>> 	/* Standard hot unplug procedure */
+>>=20
+>> 	idle_task_exit();
+>> -	current->active_mm =3D NULL; /* for sanity */
+>=20
+> If I'm reading it right, we'll now be running with active_mm =3D=3D =
+init_mm
+> in the offline loop.
+>=20
+> I guess that's fine, I can't think of any reason it would matter, and =
+it
+> seems like we were NULL'ing it out just for paranoia's sake not =
+because
+> of any actual problem.
+>=20
+> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+>=20
+>=20
+> cheers
+>=20
+>> diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+>> index c49257a3b510..a132d875d351 100644
+>> --- a/include/linux/sched/mm.h
+>> +++ b/include/linux/sched/mm.h
+>> @@ -49,6 +49,8 @@ static inline void mmdrop(struct mm_struct *mm)
+>> 		__mmdrop(mm);
+>> }
+>>=20
+>> +void mmdrop(struct mm_struct *mm);
+>> +
+>> /*
+>>  * This has to be called after a get_task_mm()/mmget_not_zero()
+>>  * followed by taking the mmap_sem for writing before modifying the
+>> diff --git a/kernel/cpu.c b/kernel/cpu.c
+>> index 2371292f30b0..244d30544377 100644
+>> --- a/kernel/cpu.c
+>> +++ b/kernel/cpu.c
+>> @@ -3,6 +3,7 @@
+>>  *
+>>  * This code is licenced under the GPL.
+>>  */
+>> +#include <linux/sched/mm.h>
+>> #include <linux/proc_fs.h>
+>> #include <linux/smp.h>
+>> #include <linux/init.h>
+>> @@ -564,6 +565,21 @@ static int bringup_cpu(unsigned int cpu)
+>> 	return bringup_wait_for_ap(cpu);
+>> }
+>>=20
+>> +static int finish_cpu(unsigned int cpu)
+>> +{
+>> +	struct task_struct *idle =3D idle_thread_get(cpu);
+>> +	struct mm_struct *mm =3D idle->active_mm;
+>> +
+>> +	/*
+>> +	 * idle_task_exit() will have switched to &init_mm, now
+>> +	 * clean up any remaining active_mm state.
+>> +	 */
+>> +	if (mm !=3D &init_mm)
+>> +		idle->active_mm =3D &init_mm;
+>> +	mmdrop(mm);
+>> +	return 0;
+>> +}
+>> +
+>> /*
+>>  * Hotplug state machine related functions
+>>  */
+>> @@ -1549,7 +1565,7 @@ static struct cpuhp_step cpuhp_hp_states[] =3D =
+{
+>> 	[CPUHP_BRINGUP_CPU] =3D {
+>> 		.name			=3D "cpu:bringup",
+>> 		.startup.single		=3D bringup_cpu,
+>> -		.teardown.single	=3D NULL,
+>> +		.teardown.single	=3D finish_cpu,
+>> 		.cant_stop		=3D true,
+>> 	},
+>> 	/* Final state before CPU kills itself */
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index a2694ba82874..8787958339d5 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -6200,13 +6200,14 @@ void idle_task_exit(void)
+>> 	struct mm_struct *mm =3D current->active_mm;
+>>=20
+>> 	BUG_ON(cpu_online(smp_processor_id()));
+>> +	BUG_ON(current !=3D this_rq()->idle);
+>>=20
+>> 	if (mm !=3D &init_mm) {
+>> 		switch_mm(mm, &init_mm, current);
+>> -		current->active_mm =3D &init_mm;
+>> 		finish_arch_post_lock_switch();
+>> 	}
+>> -	mmdrop(mm);
+>> +
+>> +	/* finish_cpu(), as ran on the BP, will clean up the active_mm =
+state */
+>> }
+>>=20
+>> /*
+>> --=20
+>> 2.21.0 (Apple Git-122.2)
+
