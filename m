@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD81E19C685
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC7F19C651
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389589AbgDBPyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:54:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49427 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388677AbgDBPyo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:54:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585842883;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Hgr1szwPzLJm+lu6P65U6An0uZy5Dnb2dNnfpMioOSk=;
-        b=URcYYJoFGkHNvp3xSZNoDsJxdUhvttRFO2/mS+9w55V382Ra5XD3lctF/eHM2vk1Um9+qY
-        cWVcVQqfVG4Bss0wE8B5+VJziHAfV8ThBUGGh8pX5kly4nBdFohDwF9V27duQgaxbehSlz
-        K0ATr2kSYiyfzfxxnRgmuZNbJUn/ZNg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-DNu9NLHiNjmr8LkkHduC1A-1; Thu, 02 Apr 2020 11:54:41 -0400
-X-MC-Unique: DNu9NLHiNjmr8LkkHduC1A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B1C6107ACCC;
-        Thu,  2 Apr 2020 15:54:40 +0000 (UTC)
-Received: from treble (ovpn-118-100.rdu2.redhat.com [10.10.118.100])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C738F5D9CD;
-        Thu,  2 Apr 2020 15:54:38 +0000 (UTC)
-Date:   Thu, 2 Apr 2020 10:54:36 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Julien Thierry <jthierry@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
-Message-ID: <20200402155436.q6qbuezmmarr24qp@treble>
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-4-alexandre.chartre@oracle.com>
- <db508586-258a-0616-d649-e76e95df9611@redhat.com>
- <4e779423-395d-5e2e-b641-5604902bf096@oracle.com>
- <20200402150407.GD20730@hirez.programming.kicks-ass.net>
+        id S2389464AbgDBPsv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Apr 2020 11:48:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:37901 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388677AbgDBPsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 11:48:51 -0400
+IronPort-SDR: H982esY7z4C51MWKu7UzxnVZmuPDLnrp88z7d/saxkgo/29XNXC3R0AnqwQ3790uid28x6j9I2
+ ifCRoNW5fPyw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 08:48:50 -0700
+IronPort-SDR: KEe169meLIkf/vdOOwURi2neV19Ws31MpLRpkg89lEXup7r2SGjaTaWNXhMRk0b2QZoFy4X97l
+ /vpNoWLNO2bQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
+   d="scan'208";a="249872084"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga003.jf.intel.com with ESMTP; 02 Apr 2020 08:48:50 -0700
+Date:   Thu, 2 Apr 2020 08:54:38 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V10 08/11] iommu/vt-d: Add svm/sva invalidate function
+Message-ID: <20200402085438.38d7bd80@jacob-builder>
+In-Reply-To: <d1cd2852-876a-b072-8576-962a6e61b9a9@redhat.com>
+References: <1584746861-76386-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1584746861-76386-9-git-send-email-jacob.jun.pan@linux.intel.com>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D7FA0AB@SHSMSX104.ccr.corp.intel.com>
+        <3215b83c-81f7-a30f-fe82-a51f29d7b874@redhat.com>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D800D67@SHSMSX104.ccr.corp.intel.com>
+        <20200331135807.4e9976ab@jacob-builder>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D803C33@SHSMSX104.ccr.corp.intel.com>
+        <A2975661238FB949B60364EF0F2C25743A21D52E@SHSMSX104.ccr.corp.intel.com>
+        <d1cd2852-876a-b072-8576-962a6e61b9a9@redhat.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200402150407.GD20730@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 05:04:07PM +0200, Peter Zijlstra wrote:
-> On Thu, Apr 02, 2020 at 03:24:45PM +0200, Alexandre Chartre wrote:
-> > On 4/2/20 2:53 PM, Julien Thierry wrote:
-> > > On 4/2/20 9:22 AM, Alexandre Chartre wrote:
->=20
-> > > > +=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0 sec =3D find_section_by_nam=
-e(file->elf,
-> > > > +=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=
-=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=
-=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=C3=82=C2=A0=
- ".rela.discard.intra_function_call");
-> > >=20
-> > > I'm wondering, do we really need to annotate the intra_function_cal=
-l
-> > > and group the in a section?
-> > >=20
-> > > Would it be a problem to consider all (static) call instructions wi=
-th
-> > > a destination that is not the start offset of a symbol to be an
-> > > intra-function call (and set insn->intra_function_call and
-> > > insn->jump_dest accordingly)?
-> >=20
-> > Correct, we could automatically detect intra-function calls instead o=
-f
-> > having to annotate them. However, I choose to annotate them because I=
- don't
-> > think that's not an expected construct in a "normal" code flow (at le=
-ast
-> > on x86). So objtool would still issue a warning on intra-function cal=
-ls
-> > by default, and you can annotate them to indicate if they are expecte=
-d.
->=20
-> I wondered the same thing when reading the patch. I'm confliected on
-> this. On the one hand auto-detecting this seems like an excellent idea.
->=20
-> If/when the compiler generates them, they had better be okay too.
->=20
-> Josh?
+On Wed, 1 Apr 2020 09:32:37 +0200
+Auger Eric <eric.auger@redhat.com> wrote:
 
-In general I prefer to keep it simple, and keep the annotations to a
-minimum.  And I don't think this warning has ever found anything useful.
-So I'd be inclined to say just allow them and automatically detect them.
+> > I didn’t read through all comments. Here is a concern with this 2-D
+> > table, the iommu cache type is defined as below. I suppose there is
+> > a problem here. If I'm using IOMMU_CACHE_INV_TYPE_PASID, it will
+> > beyond the 2-D table.
+> > 
+> > /* IOMMU paging structure cache */
+> > #define IOMMU_CACHE_INV_TYPE_IOTLB      (1 << 0) /* IOMMU IOTLB */
+> > #define IOMMU_CACHE_INV_TYPE_DEV_IOTLB  (1 << 1) /* Device IOTLB */
+> > #define IOMMU_CACHE_INV_TYPE_PASID      (1 << 2) /* PASID cache */
+> > #define IOMMU_CACHE_INV_TYPE_NR         (3)  
+> oups indeed
 
-However the fact that arm64 asm actually uses them worries me a bit.
+I think it is not an issue, since we use bit position not the raw cache
+type as index into the 2D array. Right?
 
-So for me it kind of hinges on whether arm64 has a legitimate use case
-for them, or if the warning actually points to smelly code.
+for_each_set_bit(cache_type, 
 
---=20
-Josh
+ ret = to_vtd_granularity(cache_type, inv_info->granularity, &
 
+static inline int to_vtd_granularity(int type, int granu, int *vtd_granu)
+{
+
+	*vtd_granu = inv_type_granu_table[type][granu];
