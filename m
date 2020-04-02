@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 697F819CCA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3077E19CCAD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:14:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389477AbgDBWLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 18:11:21 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:39474 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726963AbgDBWLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:11:21 -0400
-Received: from zn.tnic (p200300EC2F0A0E00AC3E2C93ADB62CA9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:e00:ac3e:2c93:adb6:2ca9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F0CA41EC0BF2;
-        Fri,  3 Apr 2020 00:11:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1585865480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=61DkwClXCHZinnBsHgcGNiaGAnBYPU+s2tSXg6FKgFo=;
-        b=f8AKwBzNXodUakPNBjyiZ2GRUvx9OJmXfDgdmtC2p1hlyRsafTGyc8LScKiijzJwZduZGz
-        OeU3XfSVP8WRLlq5XVe75cY+lnYwJx/r4+r5XS4HXI1rRr5sQjmS0bbGy1fP7U7Pmblv5l
-        a5rKNSbcAjwKAR0Si0kXAdKMmde3nws=
-Date:   Fri, 3 Apr 2020 00:11:09 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Balbir Singh <sblbir@amazon.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        tony.luck@intel.com, keescook@chromium.org, x86@kernel.org,
-        benh@kernel.crashing.org, dave.hansen@intel.com
-Subject: Re: [PATCH 3/3] arch/x86: Optionally flush L1D on context switch
-Message-ID: <20200402221109.GJ9352@zn.tnic>
-References: <20200402062401.29856-1-sblbir@amazon.com>
- <20200402062401.29856-4-sblbir@amazon.com>
+        id S2389626AbgDBWOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 18:14:31 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:34952 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389402AbgDBWOb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 18:14:31 -0400
+Received: by mail-wm1-f66.google.com with SMTP id i19so5517340wmb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 15:14:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fPUE5Ux6t1ZmXWbn6Wue8riIBLccyrWYZrJD4d05O54=;
+        b=YHfxXZ/YE9EU4X7s6JYTgyhLrfTyBHfxbtnZSWUPHNdkdHqXkwtdghjziXnJmBB9rs
+         JIDTR+hNOzCieeL3RyQLhLsFePR04J4rMpOcQSMkDIEZmqvpqTDxevq4YYWsZSBO0l4l
+         0c2S39JqfLaQu9rV8NXZHMM1En04RL+0Jx5qcuWBsJfkgxHLYYcyMLZieKb1MFKvQvqu
+         neGsqQe8XALRgu50eXjyhQlF2A2PUrdaV8CpjfdenLEy9KFpL2Bw4FuLp0XHrWLgrphr
+         a0nruGn4/40FlcuOq1JQEWOg2XSgtQtnisNiCfZWmxyE9NzkCuQCs47sURiBu+bzXMJg
+         Z4Ww==
+X-Gm-Message-State: AGi0PuakBFXy1OPtbnaenb1+ESo0aJHJBWgMpCDqQxvI5Shm/Y4O2pJO
+        Mnha4prgZMuK9qFJdmu2tN0yMxDN
+X-Google-Smtp-Source: APiQypI/XnKREPGfpJgJh9NMJG3NsY/n4DXqC18f+gjOyWgDV3yrb3YLGJymAcfZxGyGKJi3hKWQ8A==
+X-Received: by 2002:a1c:f213:: with SMTP id s19mr5375822wmc.116.1585865669036;
+        Thu, 02 Apr 2020 15:14:29 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:9069:e334:a021:3782? ([2601:647:4802:9070:9069:e334:a021:3782])
+        by smtp.gmail.com with ESMTPSA id n2sm9516018wro.25.2020.04.02.15.14.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 Apr 2020 15:14:28 -0700 (PDT)
+Subject: Re: [PATCH] nvmet: add revalidation support to bdev and file backed
+ namespaces
+To:     Anthony Iliopoulos <ailiop@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200402193052.19935-1-ailiop@suse.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <d6a3bf25-70c1-2501-2e8f-222135ebe9b8@grimberg.me>
+Date:   Thu, 2 Apr 2020 15:14:25 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Firefox/60.0 Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200402062401.29856-4-sblbir@amazon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200402193052.19935-1-ailiop@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 05:24:01PM +1100, Balbir Singh wrote:
-> +int enable_l1d_flush_for_task(struct task_struct *tsk)
+
+> +void nvmet_bdev_ns_revalidate(struct nvmet_ns *ns)
 > +{
-> +	struct page *page;
-> +	int ret = 0;
+> +	loff_t size;
 > +
-> +	if (static_cpu_has(X86_FEATURE_FLUSH_L1D))
-> +		goto done;
+> +	size = i_size_read(ns->bdev->bd_inode);
 > +
-> +	page = READ_ONCE(l1d_flush_pages);
-> +	if (unlikely(!page)) {
-> +		mutex_lock(&l1d_flush_mutex);
-> +		if (!l1d_flush_pages) {
-> +			l1d_flush_pages = alloc_l1d_flush_pages();
-> +			if (!l1d_flush_pages)
-> +				return -ENOMEM;
+> +	if (ns->size != size)
+> +		ns->size = size;
 
-Do I see it correctly that you'll return here with l1d_flush_mutex still
-held?
+Why is the if useful?
 
-> +		}
-> +		mutex_unlock(&l1d_flush_mutex);
-> +	}
-> +	/* I don't think we need to worry about KSM */
+> +}
+> +
+>   static u16 blk_to_nvme_status(struct nvmet_req *req, blk_status_t blk_sts)
+>   {
+>   	u16 status = NVME_SC_SUCCESS;
+> diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
+> index cd5670b83118..c102437db72a 100644
+> --- a/drivers/nvme/target/io-cmd-file.c
+> +++ b/drivers/nvme/target/io-cmd-file.c
+> @@ -80,6 +80,20 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
+>   	return ret;
+>   }
+>   
+> +void nvmet_file_ns_revalidate(struct nvmet_ns *ns)
+> +{
+> +	struct kstat stat;
+> +
+> +	if (!ns->file)
+> +		return;
 
-Pls use passive voice: no "we" or "I", etc.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+When is !ns->file expected?
