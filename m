@@ -2,181 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA79819C7AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A69219C7A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388815AbgDBRJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:09:49 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:45154 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388750AbgDBRJs (ORCPT
+        id S2388669AbgDBRJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:09:22 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:45830 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731608AbgDBRJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:09:48 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: bbeckett)
-        with ESMTPSA id 76B35297E47
-From:   Robert Beckett <bob.beckett@collabora.com>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
-        Robert Beckett <bob.beckett@collabora.com>
-Subject: [PATCH v4.9.y] drm/etnaviv: replace MMU flush marker with flush sequence
-Date:   Thu,  2 Apr 2020 18:07:59 +0100
-Message-Id: <20200402170758.8315-4-bob.beckett@collabora.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200402170758.8315-1-bob.beckett@collabora.com>
-References: <20200402170758.8315-1-bob.beckett@collabora.com>
-Reply-To: <bob.beckett@collabora.com>
+        Thu, 2 Apr 2020 13:09:22 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 032H2gAF092153;
+        Thu, 2 Apr 2020 13:08:55 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 303wrynd13-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Apr 2020 13:08:55 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 032H3mV1095632;
+        Thu, 2 Apr 2020 13:08:54 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 303wrynd0m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Apr 2020 13:08:54 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 032H0Lwx011743;
+        Thu, 2 Apr 2020 17:08:53 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma04dal.us.ibm.com with ESMTP id 301x775361-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 02 Apr 2020 17:08:53 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 032H8p0B48628054
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 2 Apr 2020 17:08:52 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E2FCCBE04F;
+        Thu,  2 Apr 2020 17:08:51 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2FABBE051;
+        Thu,  2 Apr 2020 17:08:41 +0000 (GMT)
+Received: from LeoBras (unknown [9.85.174.86])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  2 Apr 2020 17:08:41 +0000 (GMT)
+Message-ID: <f55a7b65a43cc9dc7b22385cf9960f8b11d5ce2e.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH v2 1/1] powerpc/kernel: Enables memory hot-remove
+ after reboot on pseries guests
+From:   Leonardo Bras <leonardo@linux.ibm.com>
+To:     Bharata B Rao <bharata.rao@gmail.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Anderson <andmike@linux.ibm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Claudio Carvalho <cclaudio@linux.ibm.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Bharata B Rao <bharata.rao@in.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Thu, 02 Apr 2020 14:08:33 -0300
+In-Reply-To: <CAGZKiBp7qjH1gMOzRuPgX=qcrJs4b7UgBbfxjgzAEpQPZ0nhHQ@mail.gmail.com>
+References: <20200305233231.174082-1-leonardo@linux.ibm.com>
+         <33333c2ffe9fedbee252a1731d7c10cd3308252b.camel@linux.ibm.com>
+         <CAGZKiBp7qjH1gMOzRuPgX=qcrJs4b7UgBbfxjgzAEpQPZ0nhHQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-i8f4uvi3v90YnGQFml2x"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-02_06:2020-04-02,2020-04-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1015 bulkscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 priorityscore=1501 spamscore=0 adultscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020133
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lucas Stach <l.stach@pengutronix.de>
 
-commit 4900dda90af2cb13bc1d4c12ce94b98acc8fe64e upstream
+--=-i8f4uvi3v90YnGQFml2x
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If a MMU is shared between multiple GPUs, all of them need to flush their
-TLBs, so a single marker that gets reset on the first flush won't do.
-Replace the flush marker with a sequence number, so that it's possible to
-check if the TLB is in sync with the current page table state for each GPU.
+Hello Bharata, thank you for reviewing and testing!
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-Reviewed-by: Guido Günther <agx@sigxcpu.org>
-Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
----
- drivers/gpu/drm/etnaviv/etnaviv_buffer.c | 10 ++++++----
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c    |  2 +-
- drivers/gpu/drm/etnaviv/etnaviv_gpu.h    |  1 +
- drivers/gpu/drm/etnaviv/etnaviv_mmu.c    |  6 +++---
- drivers/gpu/drm/etnaviv/etnaviv_mmu.h    |  2 +-
- 5 files changed, 12 insertions(+), 9 deletions(-)
+During review of this new flag, it was suggested to change it's name to
+a better one (on platform's viewpoint).=20
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_buffer.c b/drivers/gpu/drm/etnaviv/etnaviv_buffer.c
-index d9230132dfbc..d71fa2d9a196 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_buffer.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_buffer.c
-@@ -257,6 +257,8 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
- 	unsigned int waitlink_offset = buffer->user_size - 16;
- 	u32 return_target, return_dwords;
- 	u32 link_target, link_dwords;
-+	unsigned int new_flush_seq = READ_ONCE(gpu->mmu->flush_seq);
-+	bool need_flush = gpu->flush_seq != new_flush_seq;
- 
- 	if (drm_debug & DRM_UT_DRIVER)
- 		etnaviv_buffer_dump(gpu, buffer, 0, 0x50);
-@@ -269,14 +271,14 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
- 	 * need to append a mmu flush load state, followed by a new
- 	 * link to this buffer - a total of four additional words.
- 	 */
--	if (gpu->mmu->need_flush || gpu->switch_context) {
-+	if (need_flush || gpu->switch_context) {
- 		u32 target, extra_dwords;
- 
- 		/* link command */
- 		extra_dwords = 1;
- 
- 		/* flush command */
--		if (gpu->mmu->need_flush) {
-+		if (need_flush) {
- 			if (gpu->mmu->version == ETNAVIV_IOMMU_V1)
- 				extra_dwords += 1;
- 			else
-@@ -289,7 +291,7 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
- 
- 		target = etnaviv_buffer_reserve(gpu, buffer, extra_dwords);
- 
--		if (gpu->mmu->need_flush) {
-+		if (need_flush) {
- 			/* Add the MMU flush */
- 			if (gpu->mmu->version == ETNAVIV_IOMMU_V1) {
- 				CMD_LOAD_STATE(buffer, VIVS_GL_FLUSH_MMU,
-@@ -309,7 +311,7 @@ void etnaviv_buffer_queue(struct etnaviv_gpu *gpu, unsigned int event,
- 					SYNC_RECIPIENT_PE);
- 			}
- 
--			gpu->mmu->need_flush = false;
-+			gpu->flush_seq = new_flush_seq;
- 		}
- 
- 		if (gpu->switch_context) {
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index a336754698f8..dba0d769d17a 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -1313,7 +1313,7 @@ int etnaviv_gpu_submit(struct etnaviv_gpu *gpu,
- 	gpu->active_fence = submit->fence;
- 
- 	if (gpu->lastctx != cmdbuf->ctx) {
--		gpu->mmu->need_flush = true;
-+		gpu->mmu->flush_seq++;
- 		gpu->switch_context = true;
- 		gpu->lastctx = cmdbuf->ctx;
- 	}
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-index 73c278dc3706..416940b254a6 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-@@ -135,6 +135,7 @@ struct etnaviv_gpu {
- 	int irq;
- 
- 	struct etnaviv_iommu *mmu;
-+	unsigned int flush_seq;
- 
- 	/* Power Control: */
- 	struct clk *clk_bus;
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_mmu.c b/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-index fe0e85b41310..ef9df6158dc1 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_mmu.c
-@@ -134,7 +134,7 @@ static int etnaviv_iommu_find_iova(struct etnaviv_iommu *mmu,
- 		 */
- 		if (mmu->last_iova) {
- 			mmu->last_iova = 0;
--			mmu->need_flush = true;
-+			mmu->flush_seq++;
- 			continue;
- 		}
- 
-@@ -197,7 +197,7 @@ static int etnaviv_iommu_find_iova(struct etnaviv_iommu *mmu,
- 		 * associated commit requesting this mapping, and retry the
- 		 * allocation one more time.
- 		 */
--		mmu->need_flush = true;
-+		mmu->flush_seq++;
- 	}
- 
- 	return ret;
-@@ -354,7 +354,7 @@ u32 etnaviv_iommu_get_cmdbuf_va(struct etnaviv_gpu *gpu,
- 		 * that the FE MMU prefetch won't load invalid entries.
- 		 */
- 		mmu->last_iova = buf->vram_node.start + buf->size + SZ_64K;
--		gpu->mmu->need_flush = true;
-+		mmu->flush_seq++;
- 		mutex_unlock(&mmu->lock);
- 
- 		return (u32)buf->vram_node.start;
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_mmu.h b/drivers/gpu/drm/etnaviv/etnaviv_mmu.h
-index e787e49c9693..5bdc5f5601b1 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_mmu.h
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_mmu.h
-@@ -44,7 +44,7 @@ struct etnaviv_iommu {
- 	struct list_head mappings;
- 	struct drm_mm mm;
- 	u32 last_iova;
--	bool need_flush;
-+	unsigned int flush_seq;
- };
- 
- struct etnaviv_gem_object;
--- 
-2.20.1
+So I will have to change the flag name from DRCONF_MEM_HOTPLUGGED to
+DRCONF_MEM_HOTREMOVABLE.
+
+Everything should work the same as today.
+
+Best regards,
+Leonardo
+
+On Thu, 2020-04-02 at 14:44 +0530, Bharata B Rao wrote:
+> Looks good to me, also tested with PowerKVM guests.
+>=20
+> Reviewed-by: Bharata B Rao <bharata@linux.ibm.com>
+>=20
+> Regards,
+> Bharata.
+
+--=-i8f4uvi3v90YnGQFml2x
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEMdeUgIzgjf6YmUyOlQYWtz9SttQFAl6GHBEACgkQlQYWtz9S
+ttQyYQ/+NdgBvAI56SOX8dvJKl/WTvp1YhbL7cxesekY7fO6l7forA9sloAou3nc
+lWl+m7utEqscJBpWY8zTNynIRxeFGjDX8eYLf7+kQj1KWow3PMuKsF2B67vny/G6
+ge7wXd+xoPWXcuaaVIJ6p+ObHHRVdb7+fLDz+6DmbNvBn7d6+Q6BgLSRYSbm5eSm
+y9wNpBrm7zBdSZ7cc5Ti+umbbMTwdyoatm6FDBKlDDFIP5sSIMoL4mmAOqgLnUsp
+cqsafpvekvRsLy7/MUFHCPze4vyw046gbjqmqM8Ek+hUhXpKDm3/Sfy7whiaIzlx
+bn5qRi7dZruQvY5FPM30EuOofNc8VLaE+mEZQKhf/DS5InWaiIcr315yd4ccTJ93
+WoOTJgGfMgcteXY/GZ95VTajm2k52In92C9aT7kPseYcIvVhpj+o3VNCW+mTKFgI
+sj4Wny1+beDCPZR/INod8Mdb5H3FeKfwPnrT8BbizSK9PW1WkeWCAFujznzjYo/j
+R+mQ8yrv2i3YQFt+AU4OC9u7eaIBkY4HVwaiuyaD6RmiRR0yC1k6gD7sMaJwCo95
+tRtZL2fpZUBhDhzD9oIgAsmUfYk0hw1cXKkbH6sCLycg75aza9aMilf1JEEcliH7
+A59SBjaIPPhrf8BXKi3eHjLB6qbTEloeZoxRHPWB/3pNSfQXSwU=
+=k2jJ
+-----END PGP SIGNATURE-----
+
+--=-i8f4uvi3v90YnGQFml2x--
 
