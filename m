@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6805E19C6AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8971019C6B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389695AbgDBQEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 12:04:06 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44506 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389366AbgDBQEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 12:04:05 -0400
-Received: by mail-wr1-f67.google.com with SMTP id m17so4832105wrw.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 09:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qBVTjaLThJfumgo5ABo1WV3ZM7MbrBwLw7tmH+TZCSg=;
-        b=kwmzilWpIVyO9RPctO+cX7UWmlcn0TxAF4fL+FpQSQJURfsVu2xLot/+y9d15PTkQE
-         XWMzw1q9PtSSWuH9hxOuPR1bWKbxlAjy69znqTsRccXjq82wBemkSMvkxPHtF2AABG7x
-         ifDlbdzrutQIByLyb8Q+EJi0TOXk1u4qnssc8dTMeGuJ8eBHvjw8jsPKyI873qd1/dVS
-         WIb9YjrgdHF/Ad2SPQUNMwuU3WP8RY14JiuOpvT1Sbj1+5lKxYieQCum3oFl+CjmWv6j
-         TM7pbWWr1WdE/1fxPqwC6FOpQl2s5X7KHFl8XJnarjar5fqrhf/6Ic+/57zKk8hqQx3Q
-         frmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qBVTjaLThJfumgo5ABo1WV3ZM7MbrBwLw7tmH+TZCSg=;
-        b=fWATWY16PIwnNnCVGUDMpwgiRZAJKSLCir03G71t4JM36dvM20vceaOFEvRGoqUD27
-         p8SJsYHfysMd/5iB9wKjFNa5SPc28fh8GrLBJ8FhgozOGY63/RxemgLTEHP0oF0kTUtC
-         7T6nu/koknLgsTJyGQqP1z1vxIW86g5qCW/X93ZjRtyCn8YF0X9FdDWZcSUnzMXAig2t
-         BH5pQz7Y7z+laP02CeVx6Pm9pdER1Zzj92rMZElYRpZ68FgF4YPnUq9cu0RQZx+zkZf/
-         jQan24rOh+yoRo3+BNW5IZAsjTGg6j+53V69yzllrWPER/EIKD5JLIC1FZ/jNlHfKyQc
-         ARdQ==
-X-Gm-Message-State: AGi0PuaSZvOiu1Ek3aXpinNeFYu2LUN6rPkE2ABkqvHhcgaYWJusDKr6
-        m+/tEAVeK/B64J87bdj42trAsILjpG4S5Q==
-X-Google-Smtp-Source: APiQypKxE40isqGXPYBa29scB1z8vPhNWxo1K4pgf8KCxsrh4y/cdK44Lrxa6WgqgtI8QdSesWLArg==
-X-Received: by 2002:a5d:4602:: with SMTP id t2mr4567354wrq.347.1585843444033;
-        Thu, 02 Apr 2020 09:04:04 -0700 (PDT)
-Received: from arch-thunder.localdomain (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
-        by smtp.gmail.com with ESMTPSA id y16sm7988816wrp.78.2020.04.02.09.04.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 09:04:03 -0700 (PDT)
-Date:   Thu, 2 Apr 2020 17:04:00 +0100
-From:   Rui Miguel Silva <rmfrfs@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     devel@driverdev.osuosl.org, elder@kernel.org,
-        Chen Zhou <chenzhou10@huawei.com>, gregkh@linuxfoundation.org,
-        johan@kernel.org, linux-kernel@vger.kernel.org,
-        greybus-dev@lists.linaro.org
-Subject: Re: [PATCH -next] staging: greybus: fix a missing-check bug in
- gb_lights_light_config()
-Message-ID: <20200402160400.cvgvd3da75x2f4qe@arch-thunder.localdomain>
-References: <20200401030017.100274-1-chenzhou10@huawei.com>
- <20200402122228.GP2001@kadam>
- <20200402131618.653dkeuz7c2vuujf@arch-thunder.localdomain>
- <20200402142237.GT2001@kadam>
+        id S2389729AbgDBQFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 12:05:02 -0400
+Received: from mout.web.de ([217.72.192.78]:36207 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389695AbgDBQFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 12:05:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1585843462;
+        bh=3PgLAuydRT+5g+YRJ444jnYc6a+b6obBiBVvaNlIt9k=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=jO1PJYr95pm59lNOTfYZWq3+76tKjlD8E1fu0gWSfZoGqjKQKzlCEiPUWDcZcyvzy
+         HD9yqnvIAAoBmkJNXVEvvY67ogCugZNtFjK/6dLBJF2h8pAWR5G4B9wgxj1KTzVd8F
+         zbdbKZmXzHlXSHK8DE37wYOErpuTTEtNjyVuaKBE=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.49.187.28]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0M3jwL-1j2v150pf7-00rKRS; Thu, 02
+ Apr 2020 18:04:22 +0200
+Subject: Re: ARM: zx: Remove duplicate error message
+To:     tangbin@cmss.chinamobile.com, Jun Nie <jun.nie@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+References: <2b9c1939-ffa6-1ad1-5927-5cc4468ef846@web.de>
+ <2020040222473842104710@cmss.chinamobile.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <7d9b076a-3530-3540-6bf8-408b2db3c75b@web.de>
+Date:   Thu, 2 Apr 2020 18:04:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402142237.GT2001@kadam>
+In-Reply-To: <2020040222473842104710@cmss.chinamobile.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Kc1ku/5UmXZEzCU5NCrLXQ0ArdzkSzaAPdhomasz/VEMhJRbqmP
+ T971OUN2Io0HmJ97Rvt6EduEguHkyZSXGYPfD58GCi2bHoaGLWSmN8yhoKxWUXkwC7QCGTx
+ 1uinOpuj1Aa0ST7AN9XL9MZTzQ1B2tvLYvinv1egNIsmisWvYLG9Q0HjST/RIuJArABIitM
+ qwl/XaGr9f0MP0k2x1GBw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FWdcy/eI6dw=:e5gEEur2o4711gcuDItZGT
+ p0JpeV+noG12M6RhA/V+1ZZQAXaDFkVAuTxVQ5jtM4mSjdhVnRYYfl3bXwpa0Phu1SQDu997L
+ DhY8708d+bbV5q2YVik1XlLh++25bNrG/VelmE9USb5FfpLIOWd8JBxVBKzzeQuqJK2DjvhBh
+ QpZH4DfQHSUJ59WG48Z56scXUAEUMYKsMCmATXK7uM6giuCCMXNQx2smrhuj93cokzWWgctkO
+ LoEFzi/S3SnwHDbeRUiQ6YmFU7PTnbABMFJzJXaTCVrVZDYPGTghAmhTZXVpzsX++q9f8mDmP
+ u9Zpxpz4f4lS6uktCKZb6aPNxJG/fH2kCyyu8DjrlNdYPKyKUjgdY+Xx+qlr7sfsC5H3wuSb3
+ ef9fxtiA7XOJD6yN6kfkaR0M90yqBG3U40x1MUj/PxVBm7XcOwR12FUigwD6aNxwDcrkoRiPs
+ waVs7iy3u01BmEGW4GOa6Fr95gusuLNxSJfqpw4NPvHhF6OMnLGZ7iOLqcLEHZQ6ejICkkhhk
+ DDxvEDcR0NnL3KYhIgTyJKzkC/tdEAu1inEJ03pbIfbzIee/rJ/ImcqmXnnwUmOgFeePPXLe6
+ J/clAx+m8VsbxWkf6RLFAQRtgdbOm8SSvFXf9ozy1uf3lTdohw6F1S7Kszno6J+OW03bIfMPp
+ Pt8+MFNkBQn9JiYiQpsl0w6Y4VSkhjVP6/MXH86lM9Z0v05N9nthLF0k8Nnbp3NtxXTe/JDa0
+ KkzDpw2j/tbVGBgAgmDymxKSKlB/ATJb8Ock8YrEka0RV3pq7zIamSvtwmyjMYvAk7B6YEAOI
+ ImYIEQwJeSG8A4cqhuMEEhYVaiAzXE3YzszzNLGaSFvLq49KK/KP1I+6jtfmv2YZRXAan6L3k
+ Si9+unCLB9AOQcy4zGP1rf/ndoVUoBK+VI2Rv/fsWWSyON4cbJKIMr29anh5j6D8yANIHMwwa
+ 34b5EudFBiHrjaUOYZbAhes6PqgsoDsUYui/8PBCmOScrdPbYt0UIPNEqPFaEpPDzCAFduq20
+ crIUsj0R97izAHjJ6I7CsM8+P63QhZUEMz9D8VCWj/9wvPxTNk0Al+G4xF7y40UvVgCpD4NHV
+ nm0QCePvl0I8x8/Cz3uicIKQTEikHQSQXotXvr+ufKkFj1fJLbZlmaH+FtGE8SIk7Mv9ZO2sG
+ PLYmkoOj/I5GQ/En/438klrWlmC1wXTUowYrSJ/Icuw3S/qptMjWTcPfPPkNRzH8wtEYF4QkJ
+ BhLXF5XY7gzisoiTO
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Thu, Apr 02, 2020 at 05:22:37PM +0300, Dan Carpenter wrote:
-> On Thu, Apr 02, 2020 at 02:16:18PM +0100, Rui Miguel Silva wrote:
-> > > > --- a/drivers/staging/greybus/light.c
-> > > > +++ b/drivers/staging/greybus/light.c
-> > > > @@ -1026,7 +1026,8 @@ static int gb_lights_light_config(struct gb_lights *glights, u8 id)
-> > > >  
-> > > >  	light->channels_count = conf.channel_count;
-> > > >  	light->name = kstrndup(conf.name, NAMES_MAX, GFP_KERNEL);
-> > > > -
-> > > > +	if (!light->name)
-> > > > +		return -ENOMEM;
-> > > >  	light->channels = kcalloc(light->channels_count,
-> > > >  				  sizeof(struct gb_channel), GFP_KERNEL);
-> > > >  	if (!light->channels)
-> > > 
-> > > The clean up in this function is non-existant.  :(
-> > 
-> > Yeah, this have a central point to do the cleanups, gb_lights_release,
-> > since we may have other lights already configured at this point, we
-> > could cleanup this specific one here, but than would need to make sure
-> > all other already configure got clean also.
-> 
-> Central clean up functions never work correctly.
+> Thank you for your replay=E3=80=82
 
-I agree.
+I hope that you interpret my reply as another constructive patch review.
 
-> 
-> For example, we allocate "cdev->name" in gb_lights_channel_config()
-> before we register the channel later in gb_lights_register_all(glights);.
-> Now imagine that the register fails.  Then when we're freeing it in
-> __gb_lights_led_unregister() we see that the ->is_registered is false
-> so we don't kfree(cdev->name).
-> 
-> That's just a small memory leak.  But there are going to be tons of
-> little bugs like that.
 
-Yeah, when I have some cycles I'll go over that error codes paths and
-mitigate this kind of issues.
+> I'm a newer here
 
-> 
-> Anyway it doesn't affect this patch so it's fine.
+The possibilities for further contributions are interesting, aren't they?
 
-Yeah, thanks.
 
-------
-Cheers,
-     Rui
+> and I don't receive any suggestion for this patch,
+
+You got a positive tag by Jun Nie.
+
+
+> so maybe the committer think it is useless=E3=80=82
+
+The proposed change is generally helpful.
+
+* Additional dependencies might be relevant for the software evolution.
+
+* Please improve also the spelling for the commit message.
+
+Regards,
+Markus
