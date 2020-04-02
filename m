@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD26619C544
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:00:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C8319C4C1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389189AbgDBO7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:59:49 -0400
-Received: from [103.51.140.103] ([103.51.140.103]:37766 "EHLO
-        E6440.gar.corp.intel.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388782AbgDBO7t (ORCPT
+        id S2388801AbgDBOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:51:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:43473 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388689AbgDBOv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:59:49 -0400
-X-Greylist: delayed 499 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Apr 2020 10:59:48 EDT
-Received: from E6440.gar.corp.intel.com (localhost [127.0.0.1])
-        by E6440.gar.corp.intel.com (Postfix) with ESMTP id 31FF9C05C7;
-        Thu,  2 Apr 2020 22:48:07 +0800 (CST)
-From:   Harry Pan <harry.pan@intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     gs0622@gmail.com, Harry Pan <harry.pan@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Subject: [PATCH] perf/x86/cstate: Add Jasper Lake CPU support
-Date:   Thu,  2 Apr 2020 22:48:05 +0800
-Message-Id: <20200402224802.1.Ic02e891daac41303aed1f2fc6c64f6110edd27bd@changeid>
-X-Mailer: git-send-email 2.24.1
+        Thu, 2 Apr 2020 10:51:26 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jK19H-0003mR-HP; Thu, 02 Apr 2020 14:48:51 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Jiri Pirko <jiri@mellanox.com>, Ido Schimmel <idosch@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] mlxsw: spectrum_trap: fix unintention integer overflow on left shift
+Date:   Thu,  2 Apr 2020 15:48:51 +0100
+Message-Id: <20200402144851.565983-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jasper Lake processor is Tremont microarchitecture, we can
-reuse the glm_cstates table of Goldmont and Goldmont Plus
-to enable the C-states residency profiling.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Harry Pan <harry.pan@intel.com>
+Shifting the integer value 1 is evaluated using 32-bit
+arithmetic and then used in an expression that expects a 64-bit
+value, so there is potentially an integer overflow. Fix this
+by using the BIT_ULL macro to perform the shift and avoid the
+overflow.
 
+Addresses-Coverity: ("Unintentional integer overflow")
+Fixes: 13f2e64b94ea ("mlxsw: spectrum_trap: Add devlink-trap policer support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_trap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- arch/x86/events/intel/cstate.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
-index e4aa20c0426f..442e1ed4acd4 100644
---- a/arch/x86/events/intel/cstate.c
-+++ b/arch/x86/events/intel/cstate.c
-@@ -643,6 +643,7 @@ static const struct x86_cpu_id intel_cstates_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_GOLDMONT_PLUS,	&glm_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&glm_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT,	&glm_cstates),
-+	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_L,	&glm_cstates),
+diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_trap.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_trap.c
+index 9096ffd89e50..fbf714d027d8 100644
+--- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_trap.c
++++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_trap.c
+@@ -643,7 +643,7 @@ static int mlxsw_sp_trap_policer_bs(u64 burst, u8 *p_burst_size,
+ {
+ 	int bs = fls64(burst) - 1;
  
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_cstates),
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_cstates),
+-	if (burst != (1 << bs)) {
++	if (burst != (BIT_ULL(bs))) {
+ 		NL_SET_ERR_MSG_MOD(extack, "Policer burst size is not power of two");
+ 		return -EINVAL;
+ 	}
 -- 
-2.24.1
+2.25.1
 
