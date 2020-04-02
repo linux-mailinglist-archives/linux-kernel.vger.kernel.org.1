@@ -2,64 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F34EB19C393
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9622E19C398
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388282AbgDBOEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:04:31 -0400
-Received: from m12-14.163.com ([220.181.12.14]:58870 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731608AbgDBOEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:04:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=vB8A8
-        ILNdgZfe8OOTGN8Sb7fekELRPDOFvkYmENO0aY=; b=UtV1sTlHURVujv7oHHexk
-        YmiQZrrrxOwlL5KXNSYxbKFR1+MoofMU0ljcaLziv4C5+XFEdnEzZY2frSy76LhM
-        VDI6w514bFxH0WTcj7/btBHfEDm2zt4C11j1YilrBMFeaSgZamRx+BS5iPTc1kX1
-        CD0WOFRNrI0Bl3UrWJ5O8Y=
-Received: from localhost.localdomain (unknown [125.82.11.8])
-        by smtp10 (Coremail) with SMTP id DsCowACnU53U8IVefkTICQ--.23777S4;
-        Thu, 02 Apr 2020 22:04:05 +0800 (CST)
-From:   Hu Haowen <xianfengting221@163.com>
-To:     jdelvare@suse.com
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hu Haowen <xianfengting221@163.com>
-Subject: [PATCH] i2c: piix4: remove an empty and redundant comment line
-Date:   Thu,  2 Apr 2020 22:03:59 +0800
-Message-Id: <20200402140359.22017-1-xianfengting221@163.com>
-X-Mailer: git-send-email 2.20.1
+        id S2388572AbgDBOF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:05:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53728 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387798AbgDBOF1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 10:05:27 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032E3ctj138529;
+        Thu, 2 Apr 2020 14:05:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Ms8xH/kkDNV/mYEGuuCn0BeytjCFnFwImg1lHQcydx0=;
+ b=Qj+MGh2QVdt0s1zM3nqOOUeFIFmKlgQV0gGRoc2uA7QEhsVL7ExBiFNFPs5YeuLCld3J
+ GwXgNCQ9Ov4GDChQOpwtumQ8Zf1dfUbWctqbZyOaGB4ne0ViQn7TIAgF38HRL9idgCav
+ q9S5PzQEyo/Ax0oCGRGbHgg5szy7PK3lvEKJ0bH/xvrZS9tCqAhUArIoOR4svusGxhgB
+ jEZP6Auxi+enX34+x3yWqG9JLaXAIs7tGXVkcCe8JpiHLXTMx3KN6cBSExHJLPtco3vp
+ v7gNcQ04ZQE1u2NrhIL1tt1qKpex39ytZpIaBhqcoegZ9gm0TR9b1ae6pxZy/norO1aa oA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 303yune7kd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 14:05:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032E2Ktx023326;
+        Thu, 2 Apr 2020 14:05:00 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 302g4vkty5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 14:05:00 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 032E4wSg013635;
+        Thu, 2 Apr 2020 14:04:58 GMT
+Received: from [10.159.243.67] (/10.159.243.67)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Apr 2020 07:04:58 -0700
+Subject: Re: qemu-x86: kernel panic when host is loaded
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        qemu-discuss@nongnu.org, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200402093132.GA15839@Red>
+ <87eet6nra7.fsf@nanos.tec.linutronix.de>
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+Message-ID: <18354be1-8dba-84f1-bdf5-6821a5013d78@oracle.com>
+Date:   Thu, 2 Apr 2020 07:04:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowACnU53U8IVefkTICQ--.23777S4
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU5cTQUUUUU
-X-Originating-IP: [125.82.11.8]
-X-CM-SenderInfo: h0ld0wxhqj3xtqjsjii6rwjhhfrp/1tbiDxX5AFUMSHNuKAAAsH
+In-Reply-To: <87eet6nra7.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020127
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This line in the comment is empty and redundant, so removed it.
-
-Signed-off-by: Hu Haowen <xianfengting221@163.com>
----
- drivers/i2c/busses/i2c-piix4.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/drivers/i2c/busses/i2c-piix4.c b/drivers/i2c/busses/i2c-piix4.c
-index 30ded6422e7b..8bdb1d4abac5 100644
---- a/drivers/i2c/busses/i2c-piix4.c
-+++ b/drivers/i2c/busses/i2c-piix4.c
-@@ -2,7 +2,6 @@
- /*
-     Copyright (c) 1998 - 2002 Frodo Looijaard <frodol@dds.nl> and
-     Philip Edelbrock <phil@netroedge.com>
--
- */
- 
- /*
--- 
-2.20.1
 
 
+On 4/2/20 2:57 AM, Thomas Gleixner wrote:
+> Corentin,
+> 
+> Corentin Labbe <clabbe.montjoie@gmail.com> writes:
+>> On our kernelci lab, each qemu worker pass an healtcheck job each day and after each job failure, so it is heavily used.
+>> The healtcheck job is a Linux boot with a stable release.
+>>
+>> Since we upgraded our worker to buster, the qemu x86_64 healthcheck randomly panic with:
+>> <0>[    0.009000] Kernel panic - not syncing: IO-APIC + timer doesn't work!  Boot with apic=debug and send a report.  Then try booting with the 'noapic' option.
+>>
+>> After some test I found the source of this kernel panic, the host is
+>> loaded and qemu run "slower".  Simply renicing all qemu removed this
+>> behavour.
+>>
+>> So now what can I do ?
+>> Appart renicing qemu process, does something could be done ?
+> 
+> As the qemu timer/ioapic routing is actually sane, you might try to add
+> "no_timer_check" to the kernel command line.
+> 
+
+The no_timer_check is already permanently disabled in below commit?
+
+commit a90ede7b17d1 ("KVM: x86: paravirt skip pit-through-ioapic boot check")
+
+In addition, hyperv and vmware also disabled that:
+
+commit ca3ba2a2f4a4 ("x86, hyperv: Bypass the timer_irq_works() check").
+
+commit 854dd54245f7 ("x86/vmware: Skip timer_irq_works() check on VMware")
+
+Dongli Zhang
