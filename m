@@ -2,259 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5522C19C13E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCEF19C12A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388309AbgDBMhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:37:23 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44728 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729213AbgDBMhW (ORCPT
+        id S2388154AbgDBMeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 08:34:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:46406 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387866AbgDBMeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:37:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585831041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z83ZFN7U6iOT0EPOREo66Rtq033CFmiu/su55XugOps=;
-        b=XHSvVe8kGfeUTcKC1dODE8gKohFTfGq3A0I70xaU5tBbEDwuFauMF+RVm4aqFArj3PByxv
-        9Gg8bSLWGwmbRcoUXjK05IioKdaHlhe81KxzwQbKhzbvSGMgdUbQUa0izvWJ6ZaJjql11I
-        rWU3CYZEUDTmldWCtVOWv8MkiTQlZE4=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-24hSVt0xOYaed2VmhgIdSA-1; Thu, 02 Apr 2020 08:37:20 -0400
-X-MC-Unique: 24hSVt0xOYaed2VmhgIdSA-1
-Received: by mail-qv1-f70.google.com with SMTP id f4so2514638qvu.19
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 05:37:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=z83ZFN7U6iOT0EPOREo66Rtq033CFmiu/su55XugOps=;
-        b=Vue8d4JMznDBj7BQ607ogLyx115kdIQq7BdbRKAOIPi9IZd5An5fOtnxVZTnranitL
-         qlFhShiyvQ64zZ5Zf5Wf8DLlk72Z4ZG4TR2Kd+UxfrJrtdNPweEJJlvxs1qkttqGHouD
-         +MKMS/vgCj0HDO9Zm6NPgTu/xMMYOlU7cHFzVjue1Y/KhmXxrU+FcCbMo8zLMaDj03n2
-         N1ftFix1q0hRTJgWNslVvK078K3OwUe2x/u9AzxQqpfOh0MeJhZq0dvPi84g8dZfMlis
-         6Yqqej8ocmxh2rMmK8BTDg+MwGIgebAViimLTlIbL1nqgWo20vl1UIr1Gnn/yYa6mJ8t
-         7wFA==
-X-Gm-Message-State: AGi0PuYnET++J0jnmTJ6/RBNhOShDBSDqnOI4ZSHpLXD+6uN1+wEx6u8
-        fzBwC3etBJmmxdtPEQMPf6EQntYGMLMmwHErk06zVQ/lGjoVuj/gNhRoRyW7SO+BiQVmWTI0SCe
-        dJx2GXGJ9mZVGtlG84hBaN3X6
-X-Received: by 2002:a37:a7cd:: with SMTP id q196mr2960688qke.447.1585831039544;
-        Thu, 02 Apr 2020 05:37:19 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJ0I00cVKswz3vNdf6Dr0WhRrTlZgEbT2Br3s+aMGt4SrYp5fv90+mvLN93pvzAK4++FO8L4w==
-X-Received: by 2002:a37:a7cd:: with SMTP id q196mr2960665qke.447.1585831039221;
-        Thu, 02 Apr 2020 05:37:19 -0700 (PDT)
-Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id 68sm3343978qkh.75.2020.04.02.05.37.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 05:37:17 -0700 (PDT)
-Date:   Thu, 2 Apr 2020 08:37:12 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     teawater <teawaterz@linux.alibaba.com>
-Cc:     David Hildenbrand <david@redhat.com>, Hui Zhu <teawater@gmail.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, pagupta@redhat.com,
-        mojha@codeaurora.org, namit@vmware.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, qemu-devel@nongnu.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Subject: Re: [RFC for Linux] virtio_balloon: Add VIRTIO_BALLOON_F_THP_ORDER
- to handle THP spilt issue
-Message-ID: <20200402083630-mutt-send-email-mst@kernel.org>
-References: <20200326031817-mutt-send-email-mst@kernel.org>
- <C4C6BAF7-C040-403D-997C-48C7AB5A7D6B@redhat.com>
- <20200326054554-mutt-send-email-mst@kernel.org>
- <f26dc94a-7296-90c9-56cd-4586b78bc03d@redhat.com>
- <20200331091718-mutt-send-email-mst@kernel.org>
- <02a393ce-c4b4-ede9-7671-76fa4c19097a@redhat.com>
- <20200331093300-mutt-send-email-mst@kernel.org>
- <b69796e0-fa41-a219-c3e5-a11e9f5f18bf@redhat.com>
- <20200331100359-mutt-send-email-mst@kernel.org>
- <02745FD3-E30D-453B-8664-94B8EBF3B313@linux.alibaba.com>
+        Thu, 2 Apr 2020 08:34:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032CWgBl062989;
+        Thu, 2 Apr 2020 12:34:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=FUx8aszrN4C315i/ZX2S0P6CNuyjM5fDzhdzVL0wFF0=;
+ b=G66hxWE0THjIVMHoWnMfPaSOgysiCbasphyI2kf2djeFyly2uomhekgLoAaJoPd02O0Z
+ UJLjlzwA6G2k7T06x01/6VjO11J60z2m9WWC+EzQz0NJIPEpOLK9HMSvuXtJw8KAeDpa
+ 6E7Ebt3DBVNtty6IXDQVBW/5tBwH1sZmpO7nejGzev7Gs/0Z3ufZQ7betFsEsZ/ZLDow
+ Bxud3CliWKsVtAan4QkvdfAs49vskOcExgAqWC4ycJ4BNb81R3LloowKxUpCTnTPrOt/
+ 1m0Q0lGxQXOyH0pwhhpmP43Z7cEXnvOC5/252oeUIGAv6WXZqmtbbolg/jIdzOGVqMMR tw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 303aqhuhwx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 12:34:02 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032CWwfn067590;
+        Thu, 2 Apr 2020 12:34:02 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 302g2jggrb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 12:34:02 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 032CXxTa001912;
+        Thu, 2 Apr 2020 12:33:59 GMT
+Received: from linux-1.home (/10.175.46.241)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Apr 2020 05:33:59 -0700
+Subject: Re: [PATCH 2/7] objtool: Allow branches within the same alternative.
+To:     Julien Thierry <jthierry@redhat.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        peterz@infradead.org, tglx@linutronix.de
+References: <20200402082220.808-1-alexandre.chartre@oracle.com>
+ <20200402082220.808-3-alexandre.chartre@oracle.com>
+ <50e8a5d8-7cb4-f25c-9657-eb11038bd0b5@redhat.com>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <0824494b-15a9-f810-e81e-003d3d3b85cd@oracle.com>
+Date:   Thu, 2 Apr 2020 14:38:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <50e8a5d8-7cb4-f25c-9657-eb11038bd0b5@redhat.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <02745FD3-E30D-453B-8664-94B8EBF3B313@linux.alibaba.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020114
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 04:00:05PM +0800, teawater wrote:
-> 
-> 
-> > 2020å¹´3æœˆ31æ—¥ 22:07ï¼ŒMichael S. Tsirkin <mst@redhat.com> å†™é“ï¼š
-> > 
-> > On Tue, Mar 31, 2020 at 04:03:18PM +0200, David Hildenbrand wrote:
-> >> On 31.03.20 15:37, Michael S. Tsirkin wrote:
-> >>> On Tue, Mar 31, 2020 at 03:32:05PM +0200, David Hildenbrand wrote:
-> >>>> On 31.03.20 15:24, Michael S. Tsirkin wrote:
-> >>>>> On Tue, Mar 31, 2020 at 12:35:24PM +0200, David Hildenbrand wrote:
-> >>>>>> On 26.03.20 10:49, Michael S. Tsirkin wrote:
-> >>>>>>> On Thu, Mar 26, 2020 at 08:54:04AM +0100, David Hildenbrand wrote:
-> >>>>>>>> 
-> >>>>>>>> 
-> >>>>>>>>> Am 26.03.2020 um 08:21 schrieb Michael S. Tsirkin <mst@redhat.com>:
-> >>>>>>>>> 
-> >>>>>>>>> ï»¿On Thu, Mar 12, 2020 at 09:51:25AM +0100, David Hildenbrand wrote:
-> >>>>>>>>>>> On 12.03.20 09:47, Michael S. Tsirkin wrote:
-> >>>>>>>>>>> On Thu, Mar 12, 2020 at 09:37:32AM +0100, David Hildenbrand wrote:
-> >>>>>>>>>>>> 2. You are essentially stealing THPs in the guest. So the fastest
-> >>>>>>>>>>>> mapping (THP in guest and host) is gone. The guest won't be able to make
-> >>>>>>>>>>>> use of THP where it previously was able to. I can imagine this implies a
-> >>>>>>>>>>>> performance degradation for some workloads. This needs a proper
-> >>>>>>>>>>>> performance evaluation.
-> >>>>>>>>>>> 
-> >>>>>>>>>>> I think the problem is more with the alloc_pages API.
-> >>>>>>>>>>> That gives you exactly the given order, and if there's
-> >>>>>>>>>>> a larger chunk available, it will split it up.
-> >>>>>>>>>>> 
-> >>>>>>>>>>> But for balloon - I suspect lots of other users,
-> >>>>>>>>>>> we do not want to stress the system but if a large
-> >>>>>>>>>>> chunk is available anyway, then we could handle
-> >>>>>>>>>>> that more optimally by getting it all in one go.
-> >>>>>>>>>>> 
-> >>>>>>>>>>> 
-> >>>>>>>>>>> So if we want to address this, IMHO this calls for a new API.
-> >>>>>>>>>>> Along the lines of
-> >>>>>>>>>>> 
-> >>>>>>>>>>> struct page *alloc_page_range(gfp_t gfp, unsigned int min_order,
-> >>>>>>>>>>>                 unsigned int max_order, unsigned int *order)
-> >>>>>>>>>>> 
-> >>>>>>>>>>> the idea would then be to return at a number of pages in the given
-> >>>>>>>>>>> range.
-> >>>>>>>>>>> 
-> >>>>>>>>>>> What do you think? Want to try implementing that?
-> >>>>>>>>>> 
-> >>>>>>>>>> You can just start with the highest order and decrement the order until
-> >>>>>>>>>> your allocation succeeds using alloc_pages(), which would be enough for
-> >>>>>>>>>> a first version. At least I don't see the immediate need for a new
-> >>>>>>>>>> kernel API.
-> >>>>>>>>> 
-> >>>>>>>>> OK I remember now.  The problem is with reclaim. Unless reclaim is
-> >>>>>>>>> completely disabled, any of these calls can sleep. After it wakes up,
-> >>>>>>>>> we would like to get the larger order that has become available
-> >>>>>>>>> meanwhile.
-> >>>>>>>>> 
-> >>>>>>>> 
-> >>>>>>>> Yes, but thatâ€˜s a pure optimization IMHO.
-> >>>>>>>> So I think we should do a trivial implementation first and then see what we gain from a new allocator API. Then we might also be able to justify it using real numbers.
-> >>>>>>>> 
-> >>>>>>> 
-> >>>>>>> Well how do you propose implement the necessary semantics?
-> >>>>>>> I think we are both agreed that alloc_page_range is more or
-> >>>>>>> less what's necessary anyway - so how would you approximate it
-> >>>>>>> on top of existing APIs?
-> >>>>>> diff --git a/include/linux/balloon_compaction.h b/include/linux/balloon_compaction.h
-> >>> 
-> >>> .....
-> >>> 
-> >>> 
-> >>>>>> diff --git a/mm/balloon_compaction.c b/mm/balloon_compaction.c
-> >>>>>> index 26de020aae7b..067810b32813 100644
-> >>>>>> --- a/mm/balloon_compaction.c
-> >>>>>> +++ b/mm/balloon_compaction.c
-> >>>>>> @@ -112,23 +112,35 @@ size_t balloon_page_list_dequeue(struct balloon_dev_info *b_dev_info,
-> >>>>>> EXPORT_SYMBOL_GPL(balloon_page_list_dequeue);
-> >>>>>> 
-> >>>>>> /*
-> >>>>>> - * balloon_page_alloc - allocates a new page for insertion into the balloon
-> >>>>>> - *			page list.
-> >>>>>> + * balloon_pages_alloc - allocates a new page (of at most the given order)
-> >>>>>> + * 			 for insertion into the balloon page list.
-> >>>>>> *
-> >>>>>> * Driver must call this function to properly allocate a new balloon page.
-> >>>>>> * Driver must call balloon_page_enqueue before definitively removing the page
-> >>>>>> * from the guest system.
-> >>>>>> *
-> >>>>>> + * Will fall back to smaller orders if allocation fails. The order of the
-> >>>>>> + * allocated page is stored in page->private.
-> >>>>>> + *
-> >>>>>> * Return: struct page for the allocated page or NULL on allocation failure.
-> >>>>>> */
-> >>>>>> -struct page *balloon_page_alloc(void)
-> >>>>>> +struct page *balloon_pages_alloc(int order)
-> >>>>>> {
-> >>>>>> -	struct page *page = alloc_page(balloon_mapping_gfp_mask() |
-> >>>>>> -				       __GFP_NOMEMALLOC | __GFP_NORETRY |
-> >>>>>> -				       __GFP_NOWARN);
-> >>>>>> -	return page;
-> >>>>>> +	struct page *page;
-> >>>>>> +
-> >>>>>> +	while (order >= 0) {
-> >>>>>> +		page = alloc_pages(balloon_mapping_gfp_mask() |
-> >>>>>> +				   __GFP_NOMEMALLOC | __GFP_NORETRY |
-> >>>>>> +				   __GFP_NOWARN, order);
-> >>>>>> +		if (page) {
-> >>>>>> +			set_page_private(page, order);
-> >>>>>> +			return page;
-> >>>>>> +		}
-> >>>>>> +		order--;
-> >>>>>> +	}
-> >>>>>> +	return NULL;
-> >>>>>> }
-> >>>>>> -EXPORT_SYMBOL_GPL(balloon_page_alloc);
-> >>>>>> +EXPORT_SYMBOL_GPL(balloon_pages_alloc);
-> >>>>>> 
-> >>>>>> /*
-> >>>>>> * balloon_page_enqueue - inserts a new page into the balloon page list.
-> >>>>> 
-> >>>>> 
-> >>>>> I think this will try to invoke direct reclaim from the first iteration
-> >>>>> to free up the max order.
-> >>>> 
-> >>>> %__GFP_NORETRY: The VM implementation will try only very lightweight
-> >>>> memory direct reclaim to get some memory under memory pressure (thus it
-> >>>> can sleep). It will avoid disruptive actions like OOM killer.
-> >>>> 
-> >>>> Certainly good enough for a first version I would say, no?
-> >>> 
-> >>> Frankly how well that behaves would depend a lot on the workload.
-> >>> Can regress just as well.
-> >>> 
-> >>> For the 1st version I'd prefer something that is the least disruptive,
-> >>> and that IMHO means we only trigger reclaim at all in the same configuration
-> >>> as now - when we can't satisfy the lowest order allocation.
-> >> 
-> >> Agreed.
-> >> 
-> >>> 
-> >>> Anything else would be a huge amount of testing with all kind of
-> >>> workloads.
-> >>> 
-> >> 
-> >> So doing a "& ~__GFP_RECLAIM" in case order > 0? (as done in
-> >> GFP_TRANSHUGE_LIGHT)
-> > 
-> > That will improve the situation when reclaim is not needed, but leave
-> > the problem in place for when it's needed: if reclaim does trigger, we
-> > can get a huge free page and immediately break it up.
-> > 
-> > So it's ok as a first step but it will make the second step harder as
-> > we'll need to test with reclaim :).
-> 
-> 
-> I worry that will increases the allocation failure rate for large pages.
-> 
-> I tried alloc 2M memory without __GFP_RECLAIM when I wrote the VIRTIO_BALLOON_F_THP_ORDER first version.
-> It will fail when I use usemem punch-holes function generates 400m fragmentation pages in the guest kernel.
-> 
-> What about add another option to balloon to control with __GFP_RECLAIM or without it?
-> 
-> Best,
-> Hui
 
-That is why I suggested a new API so we do not fragment memory.
+On 4/2/20 2:03 PM, Julien Thierry wrote:
+> Hi Alexandre,
+> 
+> I ran into the same issue for the arm64 work:
+> https://lkml.org/lkml/2020/1/9/656
 
-> > 
-> > 
-> >> -- 
-> >> Thanks,
-> >> 
-> >> David / dhildenb
+Thanks for the reference, I didn't notice that change, but I saw a more
+recent one where you were just removing the branch to alternative check
+(https://lkml.org/lkml/2020/3/25/151).
 
+> Your solution seems nicer however.
+> 
+> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
+>> Currently objtool prevents any branch to an alternative. While preventing
+>> branching from the outside to the middle of an alternative makes perfect
+>> sense, branching within the same alternative should be allowed. To do so,
+>> identify each alternative and check that a branch to an alternative comes
+>> from the same alternative.
+>>
+>> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+>> ---
+>>   tools/objtool/check.c | 19 +++++++++++++------
+>>   tools/objtool/check.h |  3 ++-
+>>   2 files changed, 15 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+>> index 708562fb89e1..214809ac2776 100644
+>> --- a/tools/objtool/check.c
+>> +++ b/tools/objtool/check.c
+>> @@ -712,7 +712,9 @@ static int handle_group_alt(struct objtool_file *file,
+>>                   struct instruction *orig_insn,
+>>                   struct instruction **new_insn)
+>>   {
+>> +    static unsigned int alt_group_next_index = 1;
+>>       struct instruction *last_orig_insn, *last_new_insn, *insn, *fake_jump = NULL;
+>> +    unsigned int alt_group = alt_group_next_index++;
+>>       unsigned long dest_off;
+>>       last_orig_insn = NULL;
+>> @@ -721,7 +723,7 @@ static int handle_group_alt(struct objtool_file *file,
+>>           if (insn->offset >= special_alt->orig_off + special_alt->orig_len)
+>>               break;
+>> -        insn->alt_group = true;
+>> +        insn->alt_group = alt_group;
+>>           last_orig_insn = insn;
+>>       }
+>> @@ -1942,6 +1944,7 @@ static int validate_sibling_call(struct instruction *insn, struct insn_state *st
+>>    * tools/objtool/Documentation/stack-validation.txt.
+>>    */
+>>   static int validate_branch(struct objtool_file *file, struct symbol *func,
+>> +               struct instruction *from,
+> 
+> Maybe instead of passing a new instruction pointer, just the
+> alt_group could be passed? 0 Meaning it was not in an alt group> 
+>>                  struct instruction *first, struct insn_state state)
+>>   {
+>>       struct alternative *alt;
+>> @@ -1953,7 +1956,9 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+>>       insn = first;
+>>       sec = insn->sec;
+>> -    if (insn->alt_group && list_empty(&insn->alts)) {
+>> +    if (insn->alt_group &&
+>> +        (!from || from->alt_group != insn->alt_group) &&
+>> +        list_empty(&insn->alts)) {
+> 
+> This would become
+> 
+>      if (insn->alt_group != alt_group && list_empty(&insn->alts))
+> 
+> And the recursive validate_branch() calls would just take
+> insn->alt_group as parameter (and the calls in validate_functions()
+> and validate_unwind_hints() would take 0).
+> 
+> Any opinions on that?
+
+Yes, that would work too. I choose to pass the instruction pointer because
+I was thinking that having the "from" instruction might be useful in the
+future if there's a need to do additional check about the origin of the
+branch.
+
+alex.
+
+
+>>           WARN_FUNC("don't know how to handle branch to middle of alternative instruction group",
+>>                 sec, insn->offset);
+>>           return 1;
+>> @@ -2035,7 +2040,8 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+>>                   if (alt->skip_orig)
+>>                       skip_orig = true;
+>> -                ret = validate_branch(file, func, alt->insn, state);
+>> +                ret = validate_branch(file, func,
+>> +                              NULL, alt->insn, state);
+>>                   if (ret) {
+>>                       if (backtrace)
+>>                           BT_FUNC("(alt)", insn);
+>> @@ -2105,7 +2111,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+>>                       return ret;
+>>               } else if (insn->jump_dest) {
+>> -                ret = validate_branch(file, func,
+>> +                ret = validate_branch(file, func, insn,
+>>                                 insn->jump_dest, state);
+>>                   if (ret) {
+>>                       if (backtrace)
+>> @@ -2236,7 +2242,8 @@ static int validate_unwind_hints(struct objtool_file *file)
+>>       for_each_insn(file, insn) {
+>>           if (insn->hint && !insn->visited) {
+>> -            ret = validate_branch(file, insn->func, insn, state);
+>> +            ret = validate_branch(file, insn->func,
+>> +                          NULL, insn, state);
+>>               if (ret && backtrace)
+>>                   BT_FUNC("<=== (hint)", insn);
+>>               warnings += ret;
+>> @@ -2377,7 +2384,7 @@ static int validate_functions(struct objtool_file *file)
+>>               state.uaccess = func->uaccess_safe;
+>> -            ret = validate_branch(file, func, insn, state);
+>> +            ret = validate_branch(file, func, NULL, insn, state);
+>>               if (ret && backtrace)
+>>                   BT_FUNC("<=== (func)", insn);
+>>               warnings += ret;
+>> diff --git a/tools/objtool/check.h b/tools/objtool/check.h
+>> index 6d875ca6fce0..cffb23d81782 100644
+>> --- a/tools/objtool/check.h
+>> +++ b/tools/objtool/check.h
+>> @@ -33,7 +33,8 @@ struct instruction {
+>>       unsigned int len;
+>>       enum insn_type type;
+>>       unsigned long immediate;
+>> -    bool alt_group, dead_end, ignore, hint, save, restore, ignore_alts;
+>> +    unsigned int alt_group;
+>> +    bool dead_end, ignore, hint, save, restore, ignore_alts;
+>>       bool retpoline_safe;
+>>       u8 visited;
+>>       struct symbol *call_dest;
+>>
+> 
+> Cheers,
+> 
