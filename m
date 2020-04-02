@@ -2,221 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CFC19C8C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E912319C8E1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389497AbgDBSaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 14:30:25 -0400
-Received: from mga05.intel.com ([192.55.52.43]:24013 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732330AbgDBSaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 14:30:24 -0400
-IronPort-SDR: omhPczE8fkRiywNkoNgqmNiRQesdxgqSw+oaexWOPEsG6/kVjjhJhykVrkERRCpG5PgjYv/oyp
- gctXKxuGhMcA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 11:30:19 -0700
-IronPort-SDR: zqJzYA6dGkhFERQaIAyWgdTw9MM29qZMm8rA5Jiipso4HL4tm6farxkAQzHxiJ9wpC61r86TrM
- sJ772uIj1wEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
-   d="scan'208";a="238619753"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga007.jf.intel.com with ESMTP; 02 Apr 2020 11:30:16 -0700
-Date:   Thu, 2 Apr 2020 11:36:04 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v2 1/3] iommu/uapi: Define uapi version and capabilities
-Message-ID: <20200402113604.6eea1e6f@jacob-builder>
-In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
-References: <1585178227-17061-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1585178227-17061-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200326092316.GA31648@infradead.org>
-        <20200326094442.5be042ce@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D7ECB45@SHSMSX104.ccr.corp.intel.com>
-        <20200327074702.GA27959@infradead.org>
-        <20200327165335.397f24a3@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D7FE150@SHSMSX104.ccr.corp.intel.com>
-        <20200330090746.23c5599c@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D8011A9@SHSMSX104.ccr.corp.intel.com>
-        <20200331085444.44bee0bb@jacob-builder>
-        <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S2389794AbgDBShT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 14:37:19 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:36481 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388218AbgDBShT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 14:37:19 -0400
+Received: by mail-qv1-f66.google.com with SMTP id z13so2262426qvw.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 11:37:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lmMCnIaWLMxPeNPdwy16aNNyDu6aJ69/b+gnwYoZieg=;
+        b=BVarEG+RmPgBZkz3a9UHK6XvUgxLdCFACXHR56aRHxCZW9gRJ5TIRrg4PH6FkpeFGJ
+         UjBF0opobDxERsNB0h7zZIGJP7VN/Lx9aewkXmSegY87IT1TlMBtguqWjqh5tm+NqIw+
+         gwmXQD9n2lRycQsHPOcVy9idXaTaumJaukGLVKhK+9heEXrDqVjC61H4s1x6Q6PCCw4w
+         9k1s/vWG5QmGC2M8KJyR0qopRBjuGOZcSjmfBjdq+9rNvtuFEH2ISPXIBHCS6xL3Oeou
+         MCP3Y/2kBtY7x3ij8z2WNnxQ86LdLDRQGjuZA/TPwiMm7sKTKIbJrhL16iNxqF/LuHbl
+         gkqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lmMCnIaWLMxPeNPdwy16aNNyDu6aJ69/b+gnwYoZieg=;
+        b=qJXWZxZ6VLvMWAgarAkUxs+OqMq73mJeN9AnPt3Y7YLEVbXir0pycO/TI+oS103Mg7
+         3DAHWUKfQxLTv8HTX90loUNMuPjPweEsXlNqwJhiAq7GXQONyY2uygFuXuhdeRVCkNx1
+         ifsi2Ahgh2nH1keN31j38CgcYirdHy1k0oym5kQbjvo8hzaZ6mJO6uu5bAr7U6AVmHNZ
+         N1zt1JVxGR5HrcgL2dZB5cQmatCZO6/FfG739kSG99lbe1VwX9bVPT9IHvV56J5CfY+9
+         ZiElb3JH9WpcNOcDC2mjiayFxubKBCZlN6EV3LbIxuD5XYLQdsGJhHTJoyEZNkEt0uLF
+         0dIA==
+X-Gm-Message-State: AGi0PuYnqyFw6tnB3yLFZnuUhN5cAU1F1J1lBf1KSTheV25qxK+OYX2R
+        VOF+dzosjm2sLtuEmL28J6A=
+X-Google-Smtp-Source: APiQypLeQWFGkC9i4V0W0AJZCpG4PndJIEUG/inUR78lCnnfJv/qAisPBogKlae5rDb1M/0rZAPQnA==
+X-Received: by 2002:a05:6214:b0a:: with SMTP id u10mr4744990qvj.45.1585852638236;
+        Thu, 02 Apr 2020 11:37:18 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id t53sm4244081qth.70.2020.04.02.11.37.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 11:37:17 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6880A409A3; Thu,  2 Apr 2020 15:37:15 -0300 (-03)
+Date:   Thu, 2 Apr 2020 15:37:15 -0300
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf tools: Add file-handle feature test
+Message-ID: <20200402183715.GF8736@kernel.org>
+References: <CAM9d7cgtEXGZL+GZeLy1RmoU=jB4BfLApbsV9F=iDx6cqMh_5A@mail.gmail.com>
+ <20200402015249.3800462-1-namhyung@kernel.org>
+ <20200402153748.GC8736@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200402153748.GC8736@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Apr 2020 05:32:21 +0000
-"Tian, Kevin" <kevin.tian@intel.com> wrote:
-
-> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > Sent: Tuesday, March 31, 2020 11:55 PM
-> > 
-> > On Tue, 31 Mar 2020 06:06:38 +0000
-> > "Tian, Kevin" <kevin.tian@intel.com> wrote:
-> >   
-> > > > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > > > Sent: Tuesday, March 31, 2020 12:08 AM
-> > > >
-> > > > On Mon, 30 Mar 2020 05:40:40 +0000
-> > > > "Tian, Kevin" <kevin.tian@intel.com> wrote:
-> > > >  
-> > > > > > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > > > > > Sent: Saturday, March 28, 2020 7:54 AM
-> > > > > >
-> > > > > > On Fri, 27 Mar 2020 00:47:02 -0700
-> > > > > > Christoph Hellwig <hch@infradead.org> wrote:
-> > > > > >  
-> > > > > > > On Fri, Mar 27, 2020 at 02:49:55AM +0000, Tian, Kevin
-> > > > > > > wrote:  
-> > > > > > > > If those API calls are inter-dependent for composing a
-> > > > > > > > feature (e.g. SVA), shouldn't we need a way to check
-> > > > > > > > them together before exposing the feature to the guest,
-> > > > > > > > e.g. through a iommu_get_uapi_capabilities interface?  
-> > > > > > >
-> > > > > > > Yes, that makes sense.  The important bit is to have a
-> > > > > > > capability flags and not version numbers.  
-> > > > > >
-> > > > > > The challenge is that there are two consumers in the kernel
-> > > > > > for this. 1. VFIO only look for compatibility, and size of
-> > > > > > each data struct such that it can copy_from_user.
-> > > > > >
-> > > > > > 2. IOMMU driver, the "real consumer" of the content.
-> > > > > >
-> > > > > > For 2, I agree and we do plan to use the capability flags to
-> > > > > > check content and maintain backward compatibility etc.
-> > > > > >
-> > > > > > For VFIO, it is difficult to do size look up based on
-> > > > > > capability flags.  
-> > > > >
-> > > > > Can you elaborate the difficulty in VFIO? if, as Christoph
-> > > > > Hellwig pointed out, version number is already avoided
-> > > > > everywhere, it is interesting to know whether this work
-> > > > > becomes a real exception or just requires a different mindset.
-> > > > >  
-> > > > From VFIO p.o.v. the IOMMU UAPI data is opaque, it only needs
-> > > > to do two things:
-> > > > 1. is the UAPI compatible?
-> > > > 2. what is the size to copy?
-> > > >
-> > > > If you look at the version number, this is really a "version as
-> > > > size" lookup, as provided by the helper function in this patch.
-> > > > An example can be the newly introduced clone3 syscall.
-> > > > https://lwn.net/Articles/792628/
-> > > > In clone3, new version must have new size. The slight difference
-> > > > here is that, unlike clone3, we have multiple data structures
-> > > > instead of a single struct clone_args {}. And each struct has
-> > > > flags to enumerate its contents besides size.  
-> > >
-> > > Thanks for providing that link. However clone3 doesn't include a
-> > > version field to do "version as size" lookup. Instead, as you
-> > > said, it includes a size parameter which sounds like the option 3
-> > > (argsz) listed below.
-> > >  
-> > Right, there is no version in clone3. size = version. I view this as
-> > a 1:1 lookup.
-> >   
-> > > >
-> > > > Besides breaching data abstraction, if VFIO has to check IOMMU
-> > > > flags to determine the sizes, it has many combinations.
-> > > >
-> > > > We also separate the responsibilities into two parts
-> > > > 1. compatibility - version, size by VFIO
-> > > > 2. sanity check - capability flags - by IOMMU  
-> > >
-> > > I feel argsz+flags approach can perfectly meet above requirement.
-> > > The userspace set the size and flags for whatever capabilities it
-> > > uses, and VFIO simply copies the parameters by size and pass to
-> > > IOMMU for further sanity check. Of course the assumption is that
-> > > we do provide an interface for userspace to enumerate all
-> > > supported capabilities. 
-> > You cannot trust user for argsz. the size to be copied from user
-> > must be based on knowledge in kernel. That is why we have this
-> > version to size lookup.
-> > 
-> > In VFIO, the size to copy is based on knowledge of each VFIO UAPI
-> > structures and VFIO flags. But here the flags are IOMMU UAPI flags.
-> > As you pointed out in another thread, VFIO is one user.  
+Em Thu, Apr 02, 2020 at 12:37:48PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Thu, Apr 02, 2020 at 10:52:49AM +0900, Namhyung Kim escreveu:
+> > The file handle (FHANDLE) support is configurable so some systems might
+> > not have it.  So add a config feature item to check it on build time
+> > and reject cgroup tracking based on that.
 > 
-> If that is the case, can we let VFIO only copy its own UAPI fields
-> while simply passing the user pointer of IOMMU UAPI structure to IOMMU
-> driver for further size check and copy? Otherwise we are entering a
-> dead end that VFIO doesn't want to parse a structure which is not
-> defined by him while using version to represent the black box size
-> is considered as a discarded scheme and doesn't scale well...
-> 
-I think this could be an other viable option. Let me try to summarize
-since this has been a long discussion since the original version.
+> Ok, I'll break this patch in two, add the feature test first, then fold
+> the usage of HAVE_FILE_HANDLE with the patch that uses it, so that we
+> keep the codebase bisectable,
 
-Problem statements:
-1. When launching vIOMMU in the guest, how can we ensure the host has
-compatible support upfront? as compared to fail later.
+> > +++ b/tools/build/feature/test-file-handle.c
+> > @@ -0,0 +1,14 @@
+> > +#define _GNU_SOURCE
+> > +#include <sys/types.h>
+> > +#include <sys/stat.h>
+> > +#include <fcntl.h>
+> > +
+> > +int main(void)
+> > +{
+> > +	struct file_handle fh;
+> > +	int mount_id;
+> > +
+> > +	name_to_handle_at(AT_FDCWD, "/", &fh, &mount_id, 0);
+> > +	return 0;
 
-2. As UAPI data gets extended (both in size and flags), how can we know
-the size to copy
+Also had to do it just like you use in your patches, see patch below, to
+cover this case as well:
 
-3. Maintain backward compatibility while allowing extensions?
-
-I think we all agreed that using flags (capability or types) is the way
-to address #3. As Christoph pointed out, version number should not be
-used for this purpose.
-
-So for problem 1 & 2, we have the following options:
-1. Have a version-size mapping as proposed in this set. VFIO copies from
-user the correct size based on version-type lookup. Processing of the
-data is based on flags in IOMMU driver.
-
-2. VFIO copy its own minsz then pass the user pointer to IOMMU driver
-for further copy_from_user based on flags. (by Kevin)
-
-3. Adopt VFIO argsz scheme, caller fills in argsz for the offset the
-variable size union. VFIO do not check argsz in that it requires IOMMU
-specific knowledge. IOMMU driver Use flags to handle the variable
-size.(by Alex). I think this what we have in Yi's VFIO & QEMU patch.
-argsz filled by QEMU includes bind_data.
-
-4. Do not use a unified version, have a fixed size of all UAPI
-structures, padding in struct and union. (Wasteful, not preferred per
-V1 discussion)
-
-For both 2 & 3, a unified version is not used, each API
-treated separately. vIOMMU will be launched w/o assurance of
-compatibility of all APIs. Fault handling may be more complex in normal
-operations.
-
-Appreciate everyone's input. Joerg and Alex, could you help to make a
-decision here?
+  CC       /tmp/build/perf/util/synthetic-events.o
+  CC       /tmp/build/perf/util/data.o
+  CC       /tmp/build/perf/util/tsc.o
+  CC       /tmp/build/perf/util/cloexec.o
+util/synthetic-events.c:428:22: error: field 'fh' with   CC       /tmp/build/perf/util/call-path.o
+variable sized type 'struct file_handle' not at the end of a struct or class is a GNU
+      extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+                struct file_handle fh;
+                                   ^
+1 error generated.
+mv: can't rename '/tmp/build/perf/util/.synthetic-events.o.tmp': No such file or directory
+make[4]: *** [/git/linux/tools/build/Makefile.build:97: /tmp/build/perf/util/synthetic-events.o] Error 1
+make[4]: *** Waiting for unfinished jobs....
 
 
-Thanks,
+This is on Alpine Linux 3.11 onwards, musl libc.
 
-Jacob
+- Arnaldo
 
-> >   
->  [...]  
->  [...]  
->  [...]  
-> > > >
-> > > > [Jacob Pan]  
-> > 
-> > [Jacob Pan]  
-> 
-> Thanks
-> Kevin
 
-[Jacob Pan]
+diff --git a/tools/build/feature/test-file-handle.c b/tools/build/feature/test-file-handle.c
+index e325b2a060ed..bed871e3978d 100644
+--- a/tools/build/feature/test-file-handle.c
++++ b/tools/build/feature/test-file-handle.c
+@@ -5,9 +5,12 @@
+ 
+ int main(void)
+ {
+-	struct file_handle fh;
++        struct {
++                struct file_handle fh;
++                uint64_t cgroup_id;
++        } handle;
+ 	int mount_id;
+ 
+-	name_to_handle_at(AT_FDCWD, "/", &fh, &mount_id, 0);
++	name_to_handle_at(AT_FDCWD, "/", &handle.fh, &mount_id, 0);
+ 	return 0;
+ }
