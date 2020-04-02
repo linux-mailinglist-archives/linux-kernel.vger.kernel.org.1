@@ -2,186 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F214B19C674
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEE119C668
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389604AbgDBPwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:52:23 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:43626 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389458AbgDBPwX (ORCPT
+        id S2389419AbgDBPvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:51:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43883 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389125AbgDBPvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:52:23 -0400
-Received: by mail-pl1-f194.google.com with SMTP id v23so1476624ply.10;
-        Thu, 02 Apr 2020 08:52:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YDQwK1TXt5sWyVygN27BJPsqEZEizoEJ06ZdjMc3obs=;
-        b=rH5FCmzfe6B+QtmKjBaCdfYPRFdbe2UG3anSu/9XKBOcO78EwTu5Q3KoAkp1A4N21N
-         zxRFMchWx+9jfDcNq+3FRmv9JkK2AVl64iiYq1QisrweuDrI+3qF9sX7MKYUOlDhNKTm
-         1k/dr2SM0CoP/E8sj2fKAEsly1E4gXzWfp4ydzYZzFJlvvf9NjMt4nDeNULejlUFEnsh
-         JZjEt/GEyI1PmaO9vMd66pSZUWyoPz6ntuobG45NcSuB0eaxs70Y4It4p9gJuUsWfWDF
-         q4mbRa6IgOVHBKQBpX9xtaFZSz7ZB6EnJNToidczW3QE1FKrG+Xy088zZSdoidh4BWhJ
-         Wa8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YDQwK1TXt5sWyVygN27BJPsqEZEizoEJ06ZdjMc3obs=;
-        b=bxX+ViKEGobN2z9Xm5aIl8xSZT0Fp+LJj/ReWU+9N2G/qj/8uiiwUFjSdhcYrBcjhX
-         0i5JAVy0R9f7ZRb/GwhqBj6t1e9bTSLc9Ic4W3J3G7EEwUbzycEaWkgvbMM3MvpJB2Nr
-         fgEASoYkrcmF0YC3xfyF4bYNl+EbbnwzCtRZ2ASei0XbmrjGogrt8KN9LpW59YbseC6c
-         jzjQxBtqMMFIYEms/2sN65JwcBtMcX0hlStMiOwn/ZUun5l+SdDflo4KjKlqLtxhlxIk
-         9Px1KPg6lpzAoTQnbawXqaPW+sraW5owmoinILQJiXZZn/+eYnXhkzV0FNmIf/mwy9M1
-         5UTg==
-X-Gm-Message-State: AGi0PuZCnX82/P8m3Lng5G61Li7cqHqp0EN9dZaan6h6yE/BWKToNbfi
-        IPOt65KgSv/ZyX1gnoQrQ2WQwfpLZ1iNvQ==
-X-Google-Smtp-Source: APiQypI3uFZr08x4KA3MmKiD9YqKQdV7UWSih4YpgxRNM2nRujlRgRxuIASbzfGrUs8KztbEX7s1Fw==
-X-Received: by 2002:a17:90a:218b:: with SMTP id q11mr4431693pjc.163.1585842741171;
-        Thu, 02 Apr 2020 08:52:21 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.63])
-        by smtp.gmail.com with ESMTPSA id y4sm4051489pfo.39.2020.04.02.08.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 08:52:20 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, bjorn@helgaas.com, andy@kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        rjw@rjwysocki.net
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Subject: [Linux-kernel-mentees] [PATCH v1] gpio: ml: ioh: Convert to dev_pm_ops
-Date:   Thu,  2 Apr 2020 21:20:58 +0530
-Message-Id: <20200402155057.30667-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.26.0
+        Thu, 2 Apr 2020 11:51:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585842695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1HCpqSlzajINZsk0DkaLvB/z3fLDfmMkm60HaIOE1X0=;
+        b=BEuc48KfKXUzDnZY4IyaiXJ2ClsugpNBfSP9uDEle9RZ12BM6Kp+EnBRyX7U2NFdHFkVTn
+        ome/QynnMA86AaXiMLtOFfWT76x5bmL0jj37hGoQe2SlBs5t3Mhhr7ThM296Zwnb281p2t
+        7G+xhhmefCU/2kqBPC318ClYxZl73mg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-TVZFGSG7MIauQmriGk2ZVg-1; Thu, 02 Apr 2020 11:51:33 -0400
+X-MC-Unique: TVZFGSG7MIauQmriGk2ZVg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 889508017CE;
+        Thu,  2 Apr 2020 15:51:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-114-243.ams2.redhat.com [10.36.114.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4AB8099DFA;
+        Thu,  2 Apr 2020 15:51:28 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20200402152831.GA31612@gardel-login>
+References: <20200402152831.GA31612@gardel-login> <1445647.1585576702@warthog.procyon.org.uk> <2418286.1585691572@warthog.procyon.org.uk> <20200401144109.GA29945@gardel-login> <CAJfpegs3uDzFTE4PCjZ7aZsEh8b=iy_LqO1DBJoQzkP+i4aBmw@mail.gmail.com> <2590640.1585757211@warthog.procyon.org.uk> <CAJfpegsXqxizOGwa045jfT6YdUpMxpXET-yJ4T8qudyQbCGkHQ@mail.gmail.com> <36e45eae8ad78f7b8889d9d03b8846e78d735d28.camel@themaw.net> <CAJfpegsCDWehsTRQ9UJYuQnghnE=M8L0_bJBTTPA+Upu87t90w@mail.gmail.com> <20200402143623.GB31529@gardel-login> <CAJfpegtRi9epdxAeoVbm+7UxkZfzC6XmD4K_5dg=RKADxy_TVA@mail.gmail.com>
+To:     Lennart Poettering <mzxreary@0pointer.de>
+Cc:     dhowells@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
+        Ian Kent <raven@themaw.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>, andres@anarazel.de,
+        keyrings@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>
+Subject: Re: Upcoming: Notifications, FS notifications and fsinfo()
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3072810.1585842687.1@warthog.procyon.org.uk>
+Date:   Thu, 02 Apr 2020 16:51:27 +0100
+Message-ID: <3072811.1585842687@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the legacy callback .suspend() and .resume()
-to the generic ones.
+Lennart Poettering <mzxreary@0pointer.de> wrote:
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/gpio/gpio-ml-ioh.c | 47 +++++++++-----------------------------
- 1 file changed, 11 insertions(+), 36 deletions(-)
+> systemd cares about all mount points in PID1's mount namespace.
+> 
+> The fact that mount tables can grow large is why we want something
+> better than constantly reparsing the whole /proc/self/mountinfo. But
+> filtering subsets of that is something we don't really care about.
 
-diff --git a/drivers/gpio/gpio-ml-ioh.c b/drivers/gpio/gpio-ml-ioh.c
-index 92b6e958cfed..bb71dccac315 100644
---- a/drivers/gpio/gpio-ml-ioh.c
-+++ b/drivers/gpio/gpio-ml-ioh.c
-@@ -155,11 +155,10 @@ static int ioh_gpio_direction_input(struct gpio_chip *gpio, unsigned nr)
- 	return 0;
- }
- 
--#ifdef CONFIG_PM
- /*
-  * Save register configuration and disable interrupts.
-  */
--static void ioh_gpio_save_reg_conf(struct ioh_gpio *chip)
-+static void __maybe_unused ioh_gpio_save_reg_conf(struct ioh_gpio *chip)
- {
- 	int i;
- 
-@@ -185,7 +184,7 @@ static void ioh_gpio_save_reg_conf(struct ioh_gpio *chip)
- /*
-  * This function restores the register configuration of the GPIO device.
-  */
--static void ioh_gpio_restore_reg_conf(struct ioh_gpio *chip)
-+static void __maybe_unused ioh_gpio_restore_reg_conf(struct ioh_gpio *chip)
- {
- 	int i;
- 
-@@ -207,7 +206,6 @@ static void ioh_gpio_restore_reg_conf(struct ioh_gpio *chip)
- 				  &chip->reg->ioh_sel_reg[i]);
- 	}
- }
--#endif
- 
- static int ioh_gpio_to_irq(struct gpio_chip *gpio, unsigned offset)
- {
-@@ -522,10 +520,9 @@ static void ioh_gpio_remove(struct pci_dev *pdev)
- 	kfree(chip);
- }
- 
--#ifdef CONFIG_PM
--static int ioh_gpio_suspend(struct pci_dev *pdev, pm_message_t state)
-+static int __maybe_unused ioh_gpio_suspend(struct device *dev)
- {
--	s32 ret;
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct ioh_gpio *chip = pci_get_drvdata(pdev);
- 	unsigned long flags;
- 
-@@ -533,36 +530,15 @@ static int ioh_gpio_suspend(struct pci_dev *pdev, pm_message_t state)
- 	ioh_gpio_save_reg_conf(chip);
- 	spin_unlock_irqrestore(&chip->spinlock, flags);
- 
--	ret = pci_save_state(pdev);
--	if (ret) {
--		dev_err(&pdev->dev, "pci_save_state Failed-%d\n", ret);
--		return ret;
--	}
--	pci_disable_device(pdev);
--	pci_set_power_state(pdev, PCI_D0);
--	ret = pci_enable_wake(pdev, PCI_D0, 1);
--	if (ret)
--		dev_err(&pdev->dev, "pci_enable_wake Failed -%d\n", ret);
--
- 	return 0;
- }
- 
--static int ioh_gpio_resume(struct pci_dev *pdev)
-+static int __maybe_unused ioh_gpio_resume(struct device *dev)
- {
--	s32 ret;
-+	struct pci_dev *pdev = to_pci_dev(dev);
- 	struct ioh_gpio *chip = pci_get_drvdata(pdev);
- 	unsigned long flags;
- 
--	ret = pci_enable_wake(pdev, PCI_D0, 0);
--
--	pci_set_power_state(pdev, PCI_D0);
--	ret = pci_enable_device(pdev);
--	if (ret) {
--		dev_err(&pdev->dev, "pci_enable_device Failed-%d ", ret);
--		return ret;
--	}
--	pci_restore_state(pdev);
--
- 	spin_lock_irqsave(&chip->spinlock, flags);
- 	iowrite32(0x01, &chip->reg->srst);
- 	iowrite32(0x00, &chip->reg->srst);
-@@ -571,10 +547,8 @@ static int ioh_gpio_resume(struct pci_dev *pdev)
- 
- 	return 0;
- }
--#else
--#define ioh_gpio_suspend NULL
--#define ioh_gpio_resume NULL
--#endif
-+
-+static SIMPLE_DEV_PM_OPS(ioh_gpio_pm_ops, ioh_gpio_suspend, ioh_gpio_resume);
- 
- static const struct pci_device_id ioh_gpio_pcidev_id[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_ROHM, 0x802E) },
-@@ -587,8 +561,9 @@ static struct pci_driver ioh_gpio_driver = {
- 	.id_table = ioh_gpio_pcidev_id,
- 	.probe = ioh_gpio_probe,
- 	.remove = ioh_gpio_remove,
--	.suspend = ioh_gpio_suspend,
--	.resume = ioh_gpio_resume
-+	.driver = {
-+		.pm = &ioh_gpio_pm_ops,
-+	},
- };
- 
- module_pci_driver(ioh_gpio_driver);
--- 
-2.26.0
+With the notifications stuff I've done, you can do, for example:
+
+	pipe2(pipefd, O_NOTIFICATION_PIPE);
+	ioctl(pipefd[0], IOC_WATCH_QUEUE_SET_SIZE, 256);
+	watch_mount(AT_FDCWD, "/", 0, pipefd[0], 0x02);
+
+And that will catch all mount object changes in the subtree rooted at the
+given path, in this case "/".
+
+If you want to limit it to just the notifications on that mount, you would
+need to install a filter:
+
+	struct watch_notification_filter filter = {
+		.nr_filters	= 1,
+		.filters = {
+			[0]	= {
+				.type		= WATCH_TYPE_MOUNT_NOTIFY,
+				.subtype_filter[0]= UINT_MAX,
+				.info_mask	= NOTIFY_MOUNT_IS_RECURSIVE,
+				.info_filter	= 0,
+			},
+		},
+	};
+	ioctl(fd, IOC_WATCH_QUEUE_SET_FILTER, &filter);
+
+Note that this doesn't monitor for superblock changes and events.  They must
+be watched individually with something like:
+
+	watch_sb(AT_FDCWD, "/afs", AT_NO_AUTOMOUNT, pipefd[0], 0x27);
+
+David
 
