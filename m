@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB3B19C94A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D3B19C9AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389888AbgDBS7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 14:59:53 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:49315 "EHLO
+        id S2388288AbgDBTPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 15:15:35 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:47785 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388843AbgDBS7w (ORCPT
+        with ESMTP id S1729549AbgDBTPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 14:59:52 -0400
+        Thu, 2 Apr 2020 15:15:35 -0400
 Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1M9Evp-1jN5Cy2EWl-006M1M for <linux-kernel@vger.kernel.org>; Thu, 02 Apr
- 2020 20:59:51 +0200
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MMY9X-1jaNm746x5-00JbXk for <linux-kernel@vger.kernel.org>; Thu, 02 Apr
+ 2020 21:15:33 +0200
 Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
-        by mail.cetitecgmbh.com (Postfix) with ESMTP id 48C9D650882
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Apr 2020 18:59:51 +0000 (UTC)
+        by mail.cetitecgmbh.com (Postfix) with ESMTP id B0B22650ABC
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Apr 2020 19:15:32 +0000 (UTC)
 X-Virus-Scanned: amavisd-new at cetitec.com
 Received: from mail.cetitecgmbh.com ([127.0.0.1])
         by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id nHh8dFzWV-7J for <linux-kernel@vger.kernel.org>;
-        Thu,  2 Apr 2020 20:59:51 +0200 (CEST)
+        with ESMTP id 1EtFsO8tfmKN for <linux-kernel@vger.kernel.org>;
+        Thu,  2 Apr 2020 21:15:32 +0200 (CEST)
 Received: from pfwsexchange.corp.cetitec.com (unknown [10.10.1.99])
-        by mail.cetitecgmbh.com (Postfix) with ESMTPS id 04D1864F1C0
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Apr 2020 20:59:51 +0200 (CEST)
+        by mail.cetitecgmbh.com (Postfix) with ESMTPS id 49C4D64E13E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Apr 2020 21:15:32 +0200 (CEST)
 Received: from pflmari.corp.cetitec.com (10.8.5.12) by
  PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 2 Apr 2020 20:59:50 +0200
+ id 15.0.1497.2; Thu, 2 Apr 2020 21:14:24 +0200
 Received: by pflmari.corp.cetitec.com (Postfix, from userid 1000)
-        id 2CFF680504; Thu,  2 Apr 2020 20:34:59 +0200 (CEST)
-Date:   Thu, 2 Apr 2020 20:34:59 +0200
+        id 34C0C80505; Thu,  2 Apr 2020 20:35:06 +0200 (CEST)
+Date:   Thu, 2 Apr 2020 20:35:06 +0200
 From:   Alex Riesen <alexander.riesen@cetitec.com>
 To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
 CC:     Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -45,9 +45,9 @@ CC:     Geert Uytterhoeven <geert@linux-m68k.org>,
         <devel@driverdev.osuosl.org>, <linux-media@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-renesas-soc@vger.kernel.org>
-Subject: [PATCH v5 7/9] media: adv748x: only activate DAI if it is described
- in device tree
-Message-ID: <c3c8ece14c0fbc987dc201c9b61dd22d98f83056.1585852001.git.alexander.riesen@cetitec.com>
+Subject: [PATCH v5 8/9] dt-bindings: adv748x: add information about serial
+ audio interface (I2S/TDM)
+Message-ID: <337b689519806178458ab77385c8ac6f510cb0da.1585852001.git.alexander.riesen@cetitec.com>
 Mail-Followup-To: Alex Riesen <alexander.riesen@cetitec.com>,
         Kieran Bingham <kieran.bingham@ideasonboard.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
@@ -70,56 +70,98 @@ X-ClientProxiedBy: PFWSEXCHANGE.corp.cetitec.com (10.10.1.99) To
  PFWSEXCHANGE.corp.cetitec.com (10.10.1.99)
 X-EsetResult: clean, is OK
 X-EsetId: 37303A290D7F536A6C7266
-X-Provags-ID: V03:K1:CrZEFR+GucID9tM025VcU/nhwJUP+Vtw43ksPJSquq8OqDY9+xQ
- MItsuyMXFj/GDE5d5nhwbR8sBfgd0AS6AKi+XR4ITtx0DgQLlG6FdgTE3TuF3v4V7iB3E+i
- EpA4kZMJu0aUXWrE2c8RmzR7cQ9A3MkQMV84eIW0QEPFrvV275j+nSxEKubeivuTST9+mLg
- HoofiCUpysPOJ70pqKCVg==
+X-Provags-ID: V03:K1:ASp/WQ4zZ9JtiAH1QSffzJoWPWN31FwwaYAYnmm+3jywy4UBN2k
+ r5OTJtnGmzMWahzRyv2qwP5VXNI7js+Yiz7MXkJJIFMPvNMyiGUZdEGOHWKClpY3GVE8iWV
+ dxmM+3IYa93fZth60nh37oVdA7Gh/BJVGHlrAs2jCo06WOWnvnrJSGOeoqjW13BvbYgv8CE
+ VuFepbUZgyaTP/f8LMexA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WTXxiun4S3A=:IGLic9rgFrXVjiJMbtu7lD
- V+MYLFD92b+TDExVgybfbpDbtVw6YlwsXQAvYoPTe+gzT4sHOvgx6I/KrJxvdOAxykAqVKt0B
- UO7mvaNi8dS4KAINhBpaeqr7uHDyqYuLpuctb24qIc4UqWbyfbt7XvKbVfOv9M5SE2KoVnM2t
- IsVst3vhEWjQ6IUv2QJKCqeax5m0x8XIx6WJR8otJnLKs6EIBnn/Ugaq+KoNjD6YCTH7ZCqgk
- JD7ru4SsqxuqoJ0LBAB9Xbr62DV30D6ZkW7gyN0+xijsRcWDingCIkXBoEQMgxiHVSnqW35nE
- JCbW2ML7Csj55il3sn7lPxz6geUZmHIZ4YwSAEiFTcbnitg+eAB6eBIRmOfwrqRy8Gt9+3YCq
- 5NLWS0TNblZmKHgWHnMJsU2bXVehWhBPgJNGYRpnt10zR3wgbgeXL8s6opk1M89eQIAh9BCfM
- JbmQPWZ5vOWfpoEf9eQUYFOGNhUBfOgR06AEdPTP169n8TbHll7+4Yy+UGqq6Fj64qyt4Z8L7
- gGppbGoQKHN9gmBvwH3W0BshfJtHF4JXd0AY4VuInVKfWD5W+cU1/TpnMLjfTvhp3QZVuJmwY
- 42slOuKzNjbrJJfyIaNLPIAuaRicn3WmCL+J2NPbPr7BR2PA/isaZBDQaXteQNAnCDRY+tMYe
- XBeVAxgkcH09gMurV5pU4x0dAmUfk3ZvGm8jfT2nYH1/lu18qepwKYMhsm8zUvFGvXkZ9Fm35
- ake3VZNRd8hmY8II0ygZUlFld241sQMnN2ZxwV23ywicURJ2WwNNQC/Rt4dXOmBFAAIRhN7gy
- 3r06QOyxZfkoeG2bVnA3S8zIDnO3k6QBKyzELwPGWoWjBxl5JoD0BKxh0nXLU69ULbHZXSn
+X-UI-Out-Filterresults: notjunk:1;V03:K0:74Zyjf8pC34=:+rZltLK+SAQ5kb7qXOx0ce
+ k9reRyzShX7iVvJTp0JlBU+DQbs0SMkRc/xnueaLdNxBn1Cbr0E+ZHK1batlUxjT05dN3SBof
+ fI08oAuCP9lPR12+EI0RaPIuV3DJtBtY1iGJeDwryrxPijL9qtfaaNgho14LmHSGBkqNUyszE
+ k1YKfkV29hVMBsHDXWQQZFS8xo3nBlUCr7/N0ZohcKX7/I1FSe9OV8Kgj3AtOAERJcFk0JXHK
+ e2qRQ76tRP773k6IiOB6cnKvby5EA9n5tmLLAeglMhiCFltuU7iFzdrij2vIrL+TBcgCdJgNQ
+ NGLyWUTuRATLM9kgMlbfUca65VuIWIMU6NPoqZ95yfPZEHjMgGP4jyM2JxDDfcLx39+tBzRKJ
+ jMioJ+mTdsTTibn5PxBY0WajzVQ++uIZzW8a1rNBLGfswQ5D9kUA0PQSYecBLEbitH4zSaB67
+ s7TJkpsX+Tf9naX5NmG3INkVmiZ2qFkRQXiHU7W7mgh33XqS3ddL3r1YxTEbLsLdVST49mtTc
+ vWb47WiaDDu7WZ3BM8EvQOcBXp1WDQ+cXBN/XbccDam+PU4Fd209ufGd0cybEhRnFg1qRMzzE
+ MXJo7Rkv8+WkBxHEGMqud38l9zW3fObfKsch1+Opf6WyoRA3OG28D1pf8Q7itPDVt+PVPaaK1
+ wWpfOOssDPTbhP2mx2cr6YY6Bnp7LvuXCxkxbC1oig4SYKwKqnHyg8nEdGP3q8U+JanaWjQAc
+ nwag9232bN67H8vFHOTl+s1OuNZWcwYjjeDUZj8mCtb9FCBWR9XcBkItW5IZ9vek//saEmegj
+ bwX4Xcvz3rhKyYtTvdGpfhGcNy9Ga4jLgbmQ/CeuhvToXoYMfv2xI+jJarNuZwITVsfoGdK
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid setting it up even if the hardware is not actually connected
-to anything physically.
-
-Besides, the bindings explicitly notes that port definitions are
-"optional if they are not connected to anything at the hardware level".
+As the driver has some support for the audio interface of the device,
+the bindings file should mention it.
 
 Signed-off-by: Alexander Riesen <alexander.riesen@cetitec.com>
----
- drivers/media/i2c/adv748x/adv748x-dai.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-diff --git a/drivers/media/i2c/adv748x/adv748x-dai.c b/drivers/media/i2c/adv748x/adv748x-dai.c
-index 185f78023e91..f9cc47fa9ad1 100644
---- a/drivers/media/i2c/adv748x/adv748x-dai.c
-+++ b/drivers/media/i2c/adv748x/adv748x-dai.c
-@@ -216,6 +216,11 @@ int adv748x_dai_init(struct adv748x_dai *dai)
- 	int ret;
- 	struct adv748x_state *state = adv748x_dai_to_state(dai);
+--
+
+v3: remove optionality off MCLK clock cell to ensure the description
+    matches the hardware no matter if the line is connected.
+    Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ .../devicetree/bindings/media/i2c/adv748x.txt    | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/media/i2c/adv748x.txt b/Documentation/devicetree/bindings/media/i2c/adv748x.txt
+index 4f91686e54a6..50a753189b81 100644
+--- a/Documentation/devicetree/bindings/media/i2c/adv748x.txt
++++ b/Documentation/devicetree/bindings/media/i2c/adv748x.txt
+@@ -2,7 +2,9 @@
  
-+	if (!state->endpoints[ADV748X_PORT_I2S]) {
-+		adv_info(state, "no I2S port, DAI disabled\n");
-+		ret = 0;
-+		goto fail;
-+	}
- 	dai->mclk_name = kasprintf(GFP_KERNEL, "%s.%s-i2s-mclk",
- 				   state->dev->driver->name,
- 				   dev_name(state->dev));
+ The ADV7481 and ADV7482 are multi format video decoders with an integrated
+ HDMI receiver. They can output CSI-2 on two independent outputs TXA and TXB
+-from three input sources HDMI, analog and TTL.
++from three input sources HDMI, analog and TTL. There is also support for an
++I2S-compatible interface connected to the audio processor of the HDMI decoder.
++The interface has TDM capability (8 slots, 32 bits, left or right justified).
+ 
+ Required Properties:
+ 
+@@ -16,6 +18,8 @@ Required Properties:
+     slave device on the I2C bus. The main address is mandatory, others are
+     optional and remain at default values if not specified.
+ 
++  - #clock-cells: must be <0>
++
+ Optional Properties:
+ 
+   - interrupt-names: Should specify the interrupts as "intrq1", "intrq2" and/or
+@@ -47,6 +51,7 @@ are numbered as follows.
+ 	  TTL		sink		9
+ 	  TXA		source		10
+ 	  TXB		source		11
++	  I2S		source		12
+ 
+ The digital output port nodes, when present, shall contain at least one
+ endpoint. Each of those endpoints shall contain the data-lanes property as
+@@ -72,6 +77,7 @@ Example:
+ 
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
++		#clock-cells = <0>;
+ 
+ 		interrupt-parent = <&gpio6>;
+ 		interrupt-names = "intrq1", "intrq2";
+@@ -113,4 +119,12 @@ Example:
+ 				remote-endpoint = <&csi20_in>;
+ 			};
+ 		};
++
++		port@c {
++			reg = <12>;
++
++			adv7482_i2s: endpoint {
++				remote-endpoint = <&i2s_in>;
++			};
++		};
+ 	};
 -- 
 2.25.1.25.g9ecbe7eb18
 
