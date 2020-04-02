@@ -2,194 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0D819C376
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F087719C37B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388316AbgDBOAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:00:36 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:37513 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732584AbgDBOAf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:00:35 -0400
-Received: by mail-lj1-f195.google.com with SMTP id r24so3352889ljd.4;
-        Thu, 02 Apr 2020 07:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1COw4xtpJzyEyy08P/9YeupGs7pYzVvbIXcIk4QAQbo=;
-        b=lmjbCP579ap4n2+okLhUGf3g3Ia/uhv7BgSZ/CmSq7U0NNBoJweoL4gYha2Dq9MD4b
-         axNlZFj0TGqOgC75wS9QBz1G3aJQ6ttLFmmjoJmCIZxg9/owmqzr9hxI4OtfYATePHef
-         IZUWeyNsYJ8HPdJ5J9ONZG51KVW+xH/wTIreabhx5FeeprVVjJ+f/UDZdGFxboREenAz
-         ZRoiX4+aFiuzrXyaDTOlRE1mqSxjzvc32VO1GELZiv5dLbJL3F21k/w/CfozRIpX/A/M
-         wCjBD75LWF6En6JVMHkxl9LXV8SoMyzdVZgC1N3Fk9h380agE/eAWUO8dnPti63kGKze
-         SJaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1COw4xtpJzyEyy08P/9YeupGs7pYzVvbIXcIk4QAQbo=;
-        b=rFG+Y0PNJNq/77aShOCIY2mD9F/vtA84ZpJJfwwbwxKJGa6c8GLLtUWFEAvYPZdV8q
-         U2tdQugMdkih7qYwu1jrxQ4x4zq9ew5dxcZhVSpVrt0sTc+T3z2iSJHK1HbO7GtkakBZ
-         njwZYyKgRRRxtceqnO4AP+iC+i28PqS+WugTWoFttCTgdOvMWeJ9WEttN7jUwBfFyiLo
-         PPtjgGXVcfWgQ8cdAgYb3MTpirfMqJ/8UmuUbTw7QgLGYiYFY1aAQFLgKkdtMrFtQI4x
-         42rBjyGO2v0OJM2cn5lUfPPPfdr2lYAxxN9q9Ko1HXQQwbBF2Pb3tu88niENd3x1bLue
-         Stlg==
-X-Gm-Message-State: AGi0PuaFJ7IlCGLNt/58Ze5Pp6pA1ItZcq1u2VG/jg4g8oyHgVnj0UTj
-        8EEliLTVKitje7LZWq054Zuc4dBv
-X-Google-Smtp-Source: APiQypI+JRPmK/AI2g7Yoq4b21h4ZM7i9skLGwXFv4pucpbY+01YCB51KwdcjRHp2Uu53ovZuQZH6g==
-X-Received: by 2002:a2e:82d0:: with SMTP id n16mr2144729ljh.174.1585836032524;
-        Thu, 02 Apr 2020 07:00:32 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id o4sm3843565lfl.62.2020.04.02.07.00.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 07:00:31 -0700 (PDT)
-Subject: Re: [PATCH v10 54/55] Input: atmel_mxt_ts: Implement synchronization
- during various operation
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     "Wang, Jiada" <jiada_wang@mentor.com>, nick@shmanahar.org,
-        dmitry.torokhov@gmail.com, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, bsz@semihalf.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
-References: <20200331105051.58896-1-jiada_wang@mentor.com>
- <20200331105051.58896-55-jiada_wang@mentor.com>
- <c53637ef-8e5d-3243-7236-5da360021f21@gmail.com>
- <b06c7915-562f-ec68-766a-2118cfe57a0f@mentor.com>
- <b9a8865c-7754-16f7-8f66-9cd70dc42d3c@gmail.com>
-Message-ID: <c5e7dc2d-08c7-e55e-352d-b9b0d86fe63e@gmail.com>
-Date:   Thu, 2 Apr 2020 17:00:30 +0300
+        id S2387700AbgDBOB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:01:29 -0400
+Received: from mout.web.de ([212.227.17.12]:48963 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726425AbgDBOB3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 10:01:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1585836046;
+        bh=RnDZqNfFSBFOf+KJb/Ls04WWYH/zkvws0gtnPykEYFQ=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=Cb9vLyvlRV1/BRnDKN0QR/kcZJU/6fL3JBhycKZWyTHUM78Mbd+kTloBXQJ+LnuDc
+         x9XVe5cn8OkTxSyGmbuDLEL71L1koKr8RKljkr8wVhrl/Fxc5P5BxbS2h4qFOrFneF
+         8e/GPfVU/SD6Iuqy79IpgMwJcCXqT2HtkgydqkCI=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.49.187.28]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0LiUC0-1ilmde1Cl2-00chVO; Thu, 02
+ Apr 2020 16:00:46 +0200
+To:     tangbin@cmss.chinamobile.com, Jun Nie <jun.nie@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_ARM=3a_zx=ef=bc=9a_Remove_duplicate_err?=
+ =?UTF-8?Q?or_message?=
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <2b9c1939-ffa6-1ad1-5927-5cc4468ef846@web.de>
+Date:   Thu, 2 Apr 2020 16:00:36 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <b9a8865c-7754-16f7-8f66-9cd70dc42d3c@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pa4kwPKglTVXYeRd3uFuvLpkI8HRuyzACTJVjEVyvz/p+6l3axI
+ od64DbaOsOCj7J9WhQdcXNDrDmZF17mEmdNTlFXVTuos8/8ACxNUMTODReJf6pww4YI2blW
+ prRNt82S+xw6dLQ7sCTEFp1/NOXHOmOa9DRUvkCmDUsNbrHWXPjubrEHxIyRwT1ZPbgSrWI
+ 0fGONbECqbJPmN7oLUrOw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:AKK5ULPWAmk=:tdjZM4v7VpmisprRV8kQLm
+ vJ5HVmHsDlkP9aPvMLVey62gQ6I5fny9+HUh8yfiC6O0XfdDfUTbT/HlyPH1rhF+k45mbJu8J
+ wuf7RGrhR9z3zbyFFr95pDO/2b/lpJl/ezhmO6agWHXBuww9Tmoqvjbn6xz+Jrhf5V8Q0BkvA
+ 0oKf86CzGqHZphHbNm52eI9VoleW5v8xFeGh84YslNPsTMeoXBqvwUEBlhnFU2pb+i+WkBOxs
+ 9zA6dNeLtU++bdanaVbpFYArsGq8pFs/uvJwrwitYeJluP5Wvm4Yt9He2b0utVPPIwMHseWlw
+ OTnXuHePS4VMEW6jIJepX4c7+67bBSwy/xDgUYcrM9nXygDWK8YjyYyOO4Za3EO73cGjsrnjS
+ YFpmIYmQFybsKVbZaiz0d0hvMl+OLmXepBkYwyXKMIlVSEYJhtNPQvwdNBOVUnUo1UJoms/1P
+ N2WZ1yiFX/rttTPDlXqhrQqSg1yGBTmGpJ8n2cZ7SOofsZ68wFXgQIAFNZ7KnKgKX/mGKOCAS
+ IMhs3AgkD+5BzEvKt841Am3Kv3qgbkCo2ruhqMX2ejxtJPIRGLJnRuXxZX7vc9Q/gpPuyH9nC
+ 1u9VqqUU/MN/5tXUQ1yG9aqbdr+ByZiW3WMkJ1iMm32GQwpHHEV9l3yYaNJv7dwZw2lx8xpyh
+ qf92FRRsx9f75S0r4eLq25ihF9OUDHy6Jf8CmCetCYEtgH1MDyDW1CmJ5bfKn/CuLO9JOqnki
+ oRaVOoQ88BhN0vAJfvXUIi7uhTToFzN9/M5Nti4MtE3pEGyst3du6Z4nRpHf4b/lDBBqWZQZy
+ 3MhEH6B+Lcchh6K4awyi6Sgx3ZtJz3UlX1/ak0VH9KSERzChBvB/6TRQwjMXO0SUoPXK941d+
+ HiiranTLxC4AVrS2aw8LNC7J9liZYgVhfY3q4wMeD70k3E7vYbAieLmOLLkys0bTcWuP140zB
+ Gr0dUizne2JnfgEeQR2ofFD47/wTFg8Vx1T3vPnUHEf/iNaRvXiqsqwdHnNu++4ItHI6notQF
+ PVWctctwNgfFAvJnHhnwxM4UPhrLVXCgSHNF19z1kB+ZJETpLnaQraEJ72hLLnw2aymFIROyI
+ WwEKt0aM9tRzMP4EDQgZC+9dMxYdVIJZO2BP8rh2QidNqM9eygdYqfDvQw+6kDP0xWolxjlUt
+ CvoigRI7+o+vbCrOg9klTtDdroigQ9Wq1fNmjQ7Dlm+3bdUI/q825P/K9bPrnqZnuay9kNgOv
+ YBNdRcm0ztlNcpHES
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-02.04.2020 16:24, Dmitry Osipenko пишет:
-> 02.04.2020 14:50, Wang, Jiada пишет:
->> Hi Dmitry
->>
->> On 2020/04/02 1:04, Dmitry Osipenko wrote:
->>> 31.03.2020 13:50, Jiada Wang пишет:
->>>> From: Sanjeev Chugh <sanjeev_chugh@mentor.com>
->>>>
->>>> There could be scope of race conditions when sysfs is being handled
->>>> and at the same time, device removal is occurring. For example,
->>>> we don't want the device removal to begin if the Atmel device
->>>> cfg update is going on or firmware update is going on. In such
->>>> cases, wait for device update to be completed before the removal
->>>> continues.
->>>>
->>>>      Thread                                          Thread 2:
->>>> =========================                      
->>>> =========================
->>>> mxt_update_fw_store()                           mxt_remove()
->>>> mutex_lock(&data->lock)                         ...
->>>> mxt_initialize()                                //Tries to acquire lock
->>>>    request_firmware_nowait()                     mutex_lock(&data->lock)
->>>> ...                                             ==>waits for lock()
->>>> ...                                             .
->>>> ...                                             .
->>>> mutex_unlock(&data->lock)                       .
->>>>                                                  //Gets lock and
->>>> proceeds
->>>>                                                 
->>>> mxt_free_input_device();
->>>>                                                  ...
->>>>                                                 
->>>> mutex_unlock(&data->lock)
->>>>                                                  //Frees atmel driver
->>>> data
->>>>                                                  kfree(data)
->>>>
->>>> If the request_firmware_nowait() completes after the driver removal,
->>>> and callback is triggered. But kernel crashes since the module is
->>>> already removed.
->>>>
->>>> This commit adds state machine to serialize such scenarios.
->>>
->>> Won't it be easier to bump driver's module use-count by __module_get()
->>> while firmware is updating? Or remove sysfs during of mxt_remove()? >
->>
->> thanks for your inspiration, I will replace state machine with module
->> use-count.
-> 
-> I'm actually now thinking that the suggestion about the module-count
-> wasn't very correct because this won't really help in regards to
-> mxt_update_fw_store() / mxt_remove() racing.
-> 
-> I see that mxt_remove() already invokes the mxt_sysfs_remove(), which
-> should block until mxt_update_fw_store() is completed, shouldn't it?
-> 
-> I guess the kfree(data) isn't the real cause of the problem and
-> something like this should help:
-> 
-> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c
-> b/drivers/input/touchscreen/atmel_mxt_ts.c
-> index b2edf51e1595..4e66106feeb9 100644
-> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
-> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-> @@ -4254,6 +4254,7 @@ static void mxt_sysfs_remove(struct mxt_data *data)
->  	struct i2c_client *client = data->client;
-> 
->  	sysfs_remove_group(&client->dev.kobj, &mxt_attr_group);
-> +	sysfs_remove_group(&client->dev.kobj, &mxt_fw_attr_group);
->  }
-> 
->  static void mxt_reset_slots(struct mxt_data *data)
-> @@ -4649,31 +4650,19 @@ static int mxt_remove(struct i2c_client *client)
->  {
->  	struct mxt_data *data = i2c_get_clientdata(client);
-> 
-> -	mutex_lock(&data->lock);
-> -	if (data->e_state == MXT_STATE_UPDATING_CONFIG_ASYNC ||
-> -	    data->e_state == MXT_STATE_UPDATING_CONFIG) {
-> -		data->e_state = MXT_STATE_GOING_AWAY;
-> -		mutex_unlock(&data->lock);
-> -		mxt_wait_for_completion(data, &data->update_cfg_completion,
-> -					MXT_CONFIG_TIMEOUT);
-> -	} else {
-> -		data->e_state = MXT_STATE_GOING_AWAY;
-> -		mutex_unlock(&data->lock);
-> -	}
-> +	mxt_sysfs_remove(data);
-> 
-> -	disable_irq(data->irq);
-> -	sysfs_remove_group(&client->dev.kobj, &mxt_fw_attr_group);
->  	if (data->reset_gpio) {
->  		sysfs_remove_link(&client->dev.kobj, "reset");
->  		gpiod_unexport(data->reset_gpio);
->  	}
-> +
->  	mxt_debug_msg_remove(data);
-> -	mxt_sysfs_remove(data);
->  	mxt_free_input_device(data);
->  	mxt_free_object_table(data);
-> 
-> 	if (debug_state)
-> 		cancel_delayed_work_sync(&data->watchdog_work);
-> +	disable_irq(data->irq);
-> 
->  	return 0;
->  }
-> 
+> remove duplicate dev_err message, because of
+> devm_ioremap_resource, which has already contains.
 
-I'm looking at this again and the original tear-down order of the
-mxt_remove() looks okay, so no need to change it.
+I suggest to reconsider the wording for the final commit message.
 
-Reading the commit message, it says that request_firmware_nowait() races
-with kfree(data), but that can't happen because the data is
-resource-managed and request_firmware_nowait() bumps device's use-count.
 
-https://elixir.bootlin.com/linux/v5.6.2/source/drivers/base/firmware_loader/main.c#L1043
+Will the previous update suggestion =E2=80=9CARM: zx: Use devm_platform_io=
+remap_resource()
+in zx296702_pd_probe()=E2=80=9D get also a bit more software development a=
+ttention?
+https://lore.kernel.org/linux-arm-kernel/30b6c588-6c4b-c8ff-6414-a3fc53867=
+bfe@web.de/
+https://lore.kernel.org/patchwork/patch/1128530/
+https://lkml.org/lkml/2019/9/18/50
 
-I think this patch was ported from some very old kernel version and it's
-simply not applicable to the upstream anymore.
+Regards,
+Markus
