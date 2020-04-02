@@ -2,153 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D396B19C3F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:25:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1316219C3FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732692AbgDBOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:24:32 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:50571 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729275AbgDBOYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:24:31 -0400
-Received: by mail-wm1-f65.google.com with SMTP id t128so3620098wma.0;
-        Thu, 02 Apr 2020 07:24:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=n3PDnctBOZZXWd2LbmIwxNVKZxM3wgowDyh1vzhpv5A=;
-        b=DNJyYXWg7yUdzW8pIUDDFIiyrkbhbOckIO6REVwXspjhoeCVg3srHfqGEHFzeo0Q7M
-         Fgwv/O+XO2zwhGiq5khGVY9sRsAt6Roi+eqFweXFTKwvNlKvYtZNxdYCb3j5U/kJ+q8R
-         02I9d52piEPczGyjfsG+4klfsXnEA6cyg0gkNQ0D2/C4VAenTEZSDnMYv6akCYNVPR8o
-         eVkfzB1Q+1dfxTLY79MaFr9eRRH8eeqQ2+x89bVSJ0X2ugYXsepKpi+2DuIvHB5HfMsz
-         GijCm8E+RY4JRVudpKwL49c16q/6HCaFfPwck3ZrWj5hHpaSZ5Te5C2+DrwwBILMIgcK
-         wyPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=n3PDnctBOZZXWd2LbmIwxNVKZxM3wgowDyh1vzhpv5A=;
-        b=i39LLYjVmKhTO+/C8G+RbqnFYHb86Eh/EJ1cTvuVW2FeiUnEsXalM50XO88p6YeK3G
-         AqxSIZKsKniPO1T5SuDdH4/WuH3SbiC75IaOzKmqn85DKbyzH2MewANDydFyvJiTFmkA
-         dDqIjpjyBUqm8KH16Y1f30Kw7Gvg7JlGkyyed95ddTO7FLKEcf0wrwa0SxfLYiXsBwcS
-         KLPoRkS0lZ8R9F+OdC8Tx3AAsW+cl0QpQY4F/TUCAGkiRB5qczSG0vmlFqzpsPVd6D/x
-         H/nnZtwKKD+bjTMtN5mlLgDNDnbrStmMGHya4BKNHSGbfeKTc8gTh3YQixOgW+oeCbn+
-         1j9A==
-X-Gm-Message-State: AGi0Pua+XPk1Ik5Z3J4mHQRsiZCzXDMYuvU2eC0bD4WuJXWgQvWIMAZO
-        sOrcXsgECUMjKs7l5USNB4PpWkEzLIHoqQDpctM=
-X-Google-Smtp-Source: APiQypIaJ5gs4ylgjiRxYhODKUqObmPaRUdDE22IcihJRWPT5lFNvkU8mUAjpMf20D4GOAug9/x5Iv9JvGDNmCH3QpM=
-X-Received: by 2002:a7b:c850:: with SMTP id c16mr3895360wml.163.1585837469897;
- Thu, 02 Apr 2020 07:24:29 -0700 (PDT)
+        id S1732404AbgDBO12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:27:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46222 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726368AbgDBO12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 10:27:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 81969AC44;
+        Thu,  2 Apr 2020 14:27:25 +0000 (UTC)
+Message-ID: <47c543e2144d5247743548b00d1931e9fc217f43.camel@suse.de>
+Subject: Re: [PATCH v6 3/4] PCI: brcmstb: Wait for Raspberry Pi's firmware
+ when present
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        linux-usb@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        tim.gover@raspberrypi.org, linux-pci@vger.kernel.org,
+        wahrenst@gmx.net, sergei.shtylyov@cogentembedded.com
+Date:   Thu, 02 Apr 2020 16:27:23 +0200
+In-Reply-To: <20200401204149.GA131584@google.com>
+References: <20200401204149.GA131584@google.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-UbnwTZ/sE1EQtQ8St3GX"
+User-Agent: Evolution 3.34.2 
 MIME-Version: 1.0
-References: <202004020117.6E434C035@keescook>
-In-Reply-To: <202004020117.6E434C035@keescook>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Thu, 2 Apr 2020 16:24:36 +0200
-Message-ID: <CA+icZUW0R9LDGJ1YjJAB2oWkcEQxCO79xYmdVEoh=P8Fy_AL1A@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: mkcompile_h: Include $LD version in /proc/version
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kbuild@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 10:18 AM Kees Cook <keescook@chromium.org> wrote:
->
-> When doing Clang builds of the kernel, it is possible to link with
-> either ld.bfd (binutils) or ld.lld (LLVM), but it is not possible to
-> discover this from a running kernel. Add the "$LD -v" output to
-> /proc/version.
->
-> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Hi Kees,
+--=-UbnwTZ/sE1EQtQ8St3GX
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-this patch is really really a good one!
+Hi Bjorn,
 
-I use Clang and LLD to build my Linux-kernels.
+On Wed, 2020-04-01 at 15:41 -0500, Bjorn Helgaas wrote:
+> On Tue, Mar 24, 2020 at 07:28:11PM +0100, Nicolas Saenz Julienne wrote:
+> > xHCI's PCI fixup, run at the end of pcie-brcmstb's probe, depends on
+>=20
+> Is there a function name for this fixup that you can mention?
 
-For archiving important informations of my latest build I did:
+Yes, rpi_firmware_init_vl805(), I'll update the description.
 
-cd linux
-readelf -p .comment vmlinux > ../archives/readelf-p-comment_vmlinux.txt
-...or...
-readelf -p .comment arch/x86/boot/compressed/vmlinux >
-../archives/readelf-p-comment_vmlinux-compressed.txt
+> > RPi4's VideoCore firmware interface to be up and running. It's possible
+> > for both initializations to race, so make sure it's available prior to
+> > starting.
+>=20
+> I guess "both initializations" means brcm_pcie_probe() and something
+> else?  It'd be nice to include that function name here, too.
 
-The output looks like:
+Noted, I'll be more explicit on the next version of the series. More in dep=
+th
+explanation below.
 
-String dump of section '.comment':
-  [     0]  Linker: LLD 10.0.0
-  [    14]  clang version 10.0.0-1
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> > ---
+> >  drivers/pci/controller/pcie-brcmstb.c | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> >=20
+> > diff --git a/drivers/pci/controller/pcie-brcmstb.c
+> > b/drivers/pci/controller/pcie-brcmstb.c
+> > index 3a10e678c7f4..a3d3070a5832 100644
+> > --- a/drivers/pci/controller/pcie-brcmstb.c
+> > +++ b/drivers/pci/controller/pcie-brcmstb.c
+> > @@ -28,6 +28,8 @@
+> >  #include <linux/string.h>
+> >  #include <linux/types.h>
+> > =20
+> > +#include <soc/bcm2835/raspberrypi-firmware.h>
+> > +
+> >  #include "../pci.h"
+> > =20
+> >  /* BRCM_PCIE_CAP_REGS - Offset for the mandatory capability config reg=
+s */
+> > @@ -917,11 +919,24 @@ static int brcm_pcie_probe(struct platform_device
+> > *pdev)
+> >  {
+> >  	struct device_node *np =3D pdev->dev.of_node, *msi_np;
+> >  	struct pci_host_bridge *bridge;
+> > +	struct device_node *fw_np;
+> >  	struct brcm_pcie *pcie;
+> >  	struct pci_bus *child;
+> >  	struct resource *res;
+> >  	int ret;
+> > =20
+> > +	/*
+> > +	 * We have to wait for the Raspberry Pi's firmware interface to be up
+> > +	 * as some PCI fixups depend on it.
+>=20
+> It'd be nice to know the nature of this dependency between the
+> firmware interface and the fixups.  This may be useful for future
+> maintenance.  E.g., if PCI config access doesn't work until the
+> firmware interface is up, that would affect almost everything.  But
+> you say "some PCI fixups", so I suppose the actual dependency is
+> probably something else.
 
-With my next linux-kernel build I will include this one.
+Sorry it wasn't clear enough, I'll redo this comment. Also note that the PC=
+Ie
+bus and the XHCI chip are hardwired, so that's the only device that'll ever=
+ be
+available on the bus.
 
-Feel free to add any appropriate credits.
+VIA805's XHCI firmware has to be loaded trough RPi's firmware mailbox in
+between the PCIe bus probe and the subsequent USB probe. Note that a PCI re=
+set
+clears the firmware. The only mechanism available in between the two operat=
+ions
+are PCI Fixups. These are limited in their own way, as I can't return
+-EPROBE_DEFER if the firmware interface isn't available yet. Hence the need=
+ for
+an explicit dependency between pcie-brcmstb and raspberrypi's firmware mail=
+box
+device.
 
-Thanks.
+Your concern here showcases this series' limitations. From a high level
+perspective it's not clear to me who should be responsible for downloading =
+the
+firmware. And I get the feeling I'm abusing PCI fixups. I haven't found any
+smart way to deal with this three way dependency of platform/non-platform
+devices. I even looked into adding -EPROBE_DEFER support to fixups, but I f=
+ear
+that would entail moving them into the core device definition.
 
 Regards,
-- Sedat -
+Nicolas
 
-> ---
->  init/Makefile       | 2 +-
->  scripts/mkcompile_h | 8 ++++++--
->  2 files changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/init/Makefile b/init/Makefile
-> index 6246a06364d0..82c15bdb42d7 100644
-> --- a/init/Makefile
-> +++ b/init/Makefile
-> @@ -35,4 +35,4 @@ include/generated/compile.h: FORCE
->         @$($(quiet)chk_compile.h)
->         $(Q)$(CONFIG_SHELL) $(srctree)/scripts/mkcompile_h $@   \
->         "$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT)"    \
-> -       "$(CONFIG_PREEMPT_RT)" "$(CC) $(KBUILD_CFLAGS)"
-> +       "$(CONFIG_PREEMPT_RT)" "$(LD)" "$(CC) $(KBUILD_CFLAGS)"
-> diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
-> index 3a5a4b210c86..f98c07709370 100755
-> --- a/scripts/mkcompile_h
-> +++ b/scripts/mkcompile_h
-> @@ -6,7 +6,8 @@ ARCH=$2
->  SMP=$3
->  PREEMPT=$4
->  PREEMPT_RT=$5
-> -CC=$6
-> +LD=$6
-> +CC=$7
->
->  vecho() { [ "${quiet}" = "silent_" ] || echo "$@" ; }
->
-> @@ -72,7 +73,10 @@ UTS_VERSION="$(echo $UTS_VERSION $CONFIG_FLAGS $TIMESTAMP | cut -b -$UTS_LEN)"
->    printf '#define LINUX_COMPILE_BY "%s"\n' "$LINUX_COMPILE_BY"
->    echo \#define LINUX_COMPILE_HOST \"$LINUX_COMPILE_HOST\"
->
-> -  echo \#define LINUX_COMPILER \"`$CC -v 2>&1 | grep ' version ' | sed 's/[[:space:]]*$//'`\"
-> +  CC_VERSION=$($CC -v 2>&1 | grep ' version ' | sed 's/[[:space:]]*$//')
-> +  LD_VERSION=$($LD -v | head -n1 | sed 's/(compatible with [^)]*)//' \
-> +                     | sed 's/[[:space:]]*$//')
-> +  printf '#define LINUX_COMPILER "%s"\n' "$CC_VERSION, $LD_VERSION"
->  } > .tmpcompile
->
->  # Only replace the real compile.h if the new one is different,
-> --
-> 2.20.1
->
->
-> --
-> Kees Cook
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/202004020117.6E434C035%40keescook.
+
+--=-UbnwTZ/sE1EQtQ8St3GX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6F9ksACgkQlfZmHno8
+x/7wXQf9GeRwGPIeI/wbeH0RFkXsyiFyaYxhvRtWla25hLtNxPLBoPWmR9sR5YP3
+8ZM10ZELD5DqgwBhBeWqJk43ZzNYnJACp97N2fe7wZBVXFx9fCtlG1VmcqG02CiT
+JkIgFDeAAq5tjbgWfKEBtTiLXch+C66Ja+7H7XOAm0RhEdVDqhrCI9lZecoHYWev
+0TarGDoABp25KqujbYb/TXFzg4LPMEA39tNdvt8slPf28Z5En4IdPUpogXQ6+fA6
+WbbY64G1WCnBQBlnB/XFRX+cuVRcwX+FImDSzSowaEZHeuMyC1qXQcmMHkym59KP
+0cMQjaZhNNzZpO26RCF2+eJSzDzS5Q==
+=jbBy
+-----END PGP SIGNATURE-----
+
+--=-UbnwTZ/sE1EQtQ8St3GX--
+
