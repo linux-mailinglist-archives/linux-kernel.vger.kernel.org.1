@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C3619C37D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EB019C37E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388386AbgDBOBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:01:33 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:42313 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726425AbgDBOBc (ORCPT
+        id S2388441AbgDBOBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:01:38 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27510 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388395AbgDBOBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:01:32 -0400
+        Thu, 2 Apr 2020 10:01:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585836091;
+        s=mimecast20190719; t=1585836096;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=l3Lz3/NpN+EM4WUox3xNHgHxlnh2gL9sfw46cjDTFYo=;
-        b=GkgzCMmcrl11zMhqlQAJks8flJVjd8Pe2NYc2sC/B0oF6ypFsWK87xLE2BMzHWZHZQ9pOO
-        35Auox2xeLwvRgnJqBaqBbF6M0PufMhhTTZSuGr5kXTi+6opVKebx2aGYEK4Yw9JidSA6L
-        veFaJ5l4vv2k1yJTMVpkl6NlJRlpXfE=
+        bh=O7EMuney8gEiJb0wo0noEWCYTocW+RKYyaMoY0nHgzo=;
+        b=jJzbc3Ku4iYkltLvdGGmtpeVelK9u6Zl0kSQq8QAo1JnrB7bOhfX5solwzD4yHtVCUzlGG
+        SS4Jhoxrs+trpyKh0//PsY20JPcYx+scKS+L+v3U1Vt2myoacz9sEdtgO2n1ta+JC5bsPP
+        Z/dDyDCTVvLpML08Wc+6CO3GB46ZiKM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-RqFGssjRM9WbdfHG0PcDXg-1; Thu, 02 Apr 2020 10:01:27 -0400
-X-MC-Unique: RqFGssjRM9WbdfHG0PcDXg-1
+ us-mta-413-YWpRpI3-MdO32gPxYsTtuw-1; Thu, 02 Apr 2020 10:01:31 -0400
+X-MC-Unique: YWpRpI3-MdO32gPxYsTtuw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 049C9DB64;
-        Thu,  2 Apr 2020 14:01:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4036C107ACC4;
+        Thu,  2 Apr 2020 14:01:29 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-36.pek2.redhat.com [10.72.12.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 389B260BF1;
-        Thu,  2 Apr 2020 14:01:22 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CB9E60BF1;
+        Thu,  2 Apr 2020 14:01:26 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
         iamjoonsoo.kim@lge.com, mhocko@kernel.org, bhe@redhat.com,
         mgorman@techsingularity.net, rientjes@google.com
-Subject: [PATCH v2 2/3] mm/page_alloc.c: clear out zone->lowmem_reserve[] if the zone is empty
-Date:   Thu,  2 Apr 2020 22:01:12 +0800
-Message-Id: <20200402140113.3696-3-bhe@redhat.com>
+Subject: [PATCH v2 3/3] mm/vmstat.c: do not show lowmem reserve protection information of empty zone
+Date:   Thu,  2 Apr 2020 22:01:13 +0800
+Message-Id: <20200402140113.3696-4-bhe@redhat.com>
 In-Reply-To: <20200402140113.3696-1-bhe@redhat.com>
 References: <20200402140113.3696-1-bhe@redhat.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
@@ -48,67 +48,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When requesting memory allocation from a specific zone is not satisfied,
-it will fall to lower zone to try allocating memory. In this case,
-lower zone's ->lowmem_reserve[] will help protect its own memory resource.
-The higher the relevant ->lowmem_reserve[] is, the harder the upper zone
-can get memory from this lower zone.
+Because the lowmem reserve protection of a zone can't tell anything if
+the zone is empty, except of adding one more line in /proc/zoneinfo.
 
-However, this protection mechanism should be applied to populated zone,
-but not an empty zone. So filling ->lowmem_reserve[] for empty zone is
-not necessary, and may mislead people that it's valid data in that zone.
-
-Node 2, zone      DMA
-  pages free     0
-        min      0
-        low      0
-        high     0
-        spanned  0
-        present  0
-        managed  0
-        protection: (0, 0, 1024, 1024)
-Node 2, zone    DMA32
-  pages free     0
-        min      0
-        low      0
-        high     0
-        spanned  0
-        present  0
-        managed  0
-        protection: (0, 0, 1024, 1024)
-Node 2, zone   Normal
-  per-node stats
-      nr_inactive_anon 0
-      nr_active_anon 143
-      nr_inactive_file 0
-      nr_active_file 0
-      nr_unevictable 0
-      nr_slab_reclaimable 45
-      nr_slab_unreclaimable 254
-
-Here clear out zone->lowmem_reserve[] if zone is empty.
+Let's remove it from that zone's showing.
 
 Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- mm/page_alloc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ mm/vmstat.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index c0c788798d8b..138a56c0f48f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7840,8 +7840,10 @@ static void setup_per_zone_lowmem_reserve(void)
- 				idx--;
- 				lower_zone = pgdat->node_zones + idx;
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 96d21a792b57..6fd1407f4632 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1590,6 +1590,12 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		   zone->present_pages,
+ 		   zone_managed_pages(zone));
  
--				if (!sysctl_lowmem_reserve_ratio[idx]) {
-+				if (!sysctl_lowmem_reserve_ratio[idx] ||
-+				    !zone_managed_pages(lower_zone)) {
- 					lower_zone->lowmem_reserve[j] = 0;
-+					continue;
- 				} else {
- 					lower_zone->lowmem_reserve[j] =
- 						managed_pages / sysctl_lowmem_reserve_ratio[idx];
++	/* If unpopulated, no other information is useful */
++	if (!populated_zone(zone)) {
++		seq_putc(m, '\n');
++		return;
++	}
++
+ 	seq_printf(m,
+ 		   "\n        protection: (%ld",
+ 		   zone->lowmem_reserve[0]);
+@@ -1597,12 +1603,6 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
+ 		seq_printf(m, ", %ld", zone->lowmem_reserve[i]);
+ 	seq_putc(m, ')');
+ 
+-	/* If unpopulated, no other information is useful */
+-	if (!populated_zone(zone)) {
+-		seq_putc(m, '\n');
+-		return;
+-	}
+-
+ 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
+ 		seq_printf(m, "\n      %-12s %lu", zone_stat_name(i),
+ 			   zone_page_state(zone, i));
 -- 
 2.17.2
 
