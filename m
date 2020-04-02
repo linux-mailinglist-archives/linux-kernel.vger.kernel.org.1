@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB8819C493
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3961419C49A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388650AbgDBOnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:43:17 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:39808 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388629AbgDBOnQ (ORCPT
+        id S2388686AbgDBOon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:44:43 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:56573 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388668AbgDBOon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:43:16 -0400
-Received: by mail-qk1-f196.google.com with SMTP id b62so4140861qkf.6;
-        Thu, 02 Apr 2020 07:43:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Sf8xIW95po41MsNtorwWl8pTLbgWf5KTPswmS5tTSsU=;
-        b=UOetwqE1YsTb0QB80/0e41jqYfMjdLnehYJEBfvCd3AyR29SN7tdb9iZ1q3HN0uKq/
-         U+aZStQsg17w3pc7sJH4xcW0d+WXax7gyVx3h4I0bjIuxwVQyDQATkBjSf1Dru5PBwTl
-         NvhMDtcwX1ywpEgCLp/N73e71lVslaq8DnDUtvnIJeygEEbUj4Den18/8iW7jYVUByTp
-         7kOazrs+Q/emmpQOPOPcCVKKE9Sf5wGiUb+PKnEZr+hqiuoHbkzUmVGW2oBESQO8LQgL
-         4eOhdM12Gh5DV9HSn0CfigjoQNC36KjS3p1/kSiV8ITspIhK7SYpbxHogU7QepgZN0ae
-         IwSw==
-X-Gm-Message-State: AGi0Pua8fCW7q2DZE/pNRMV91ybxTJMheXyFLJZ4DTTKEhFtsN9/2Sw8
-        e8nquEv0wljDLt4TQA9SEyQ=
-X-Google-Smtp-Source: APiQypLgY4tJeyyCC6GdSOIL8CordFKveXDU9v51XGmiU1NOSceqRS3uwwpK4nCiEdIek1LdlDKtRg==
-X-Received: by 2002:a37:4648:: with SMTP id t69mr3604208qka.299.1585838595746;
-        Thu, 02 Apr 2020 07:43:15 -0700 (PDT)
-Received: from ?IPv6:2804:431:e7cc:11ff:4f80:3de:e2b2:5c1d? ([2804:431:e7cc:11ff:4f80:3de:e2b2:5c1d])
-        by smtp.gmail.com with ESMTPSA id l7sm3630805qkb.47.2020.04.02.07.43.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 07:43:14 -0700 (PDT)
-Subject: Re: [PATCH 3/4] arm64: dts: rockchip: add rx0 mipi-phy for rk3399
-To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Johan Jonker <jbx6244@gmail.com>
-Cc:     helen.koike@collabora.com, dafna.hirschfeld@collabora.com,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
-        karthik.poduval@gmail.com, kernel@collabora.com,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, mark.rutland@arm.com,
-        robh+dt@kernel.org
-References: <20200402000234.226466-4-helen.koike@collabora.com>
- <970b9e48-e38f-7e7a-3472-7dc5a4737e58@gmail.com> <105956984.FXDh2DO4ZE@diego>
-From:   Helen Koike <helen@koikeco.de>
-Message-ID: <2fa1b497-509a-d02f-b893-058639655133@koikeco.de>
-Date:   Thu, 2 Apr 2020 11:43:08 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        Thu, 2 Apr 2020 10:44:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585838682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TMHlFOxjLmTTxfH+GAjNPgGZ5VoYA74W6D+Nq8wo4cs=;
+        b=YLeaJDTD62gIkraOJnwLEfZotKqpPDAqaSkGuzTjuO7TCWvo2bkB7eQoS3B9UWMUSktXDu
+        O4ZB3I9B5b4DyGJHn5HNXHDw5KylZrGnBumHdp0v+SriBXQ3F9dR9sXXdFfJoq5mnU77Gr
+        NEAJjhGeLGeY3ArDMCIiXHdjCRYGmGk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-bQDUJto2Ota_85vMO6-Ncg-1; Thu, 02 Apr 2020 10:44:38 -0400
+X-MC-Unique: bQDUJto2Ota_85vMO6-Ncg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3CE0A800D53;
+        Thu,  2 Apr 2020 14:44:37 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6A73360BF3;
+        Thu,  2 Apr 2020 14:44:29 +0000 (UTC)
+Date:   Thu, 2 Apr 2020 16:44:26 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Wainer dos Santos Moschetta <wainersm@redhat.com>
+Cc:     kvm@vger.kernel.org, pbonzini@redhat.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        david@redhat.com
+Subject: Re: [PATCH 2/2] selftests: kvm: Add mem_slot_test test
+Message-ID: <20200402144426.okukaw6af7olpn5f@kamzik.brq.redhat.com>
+References: <20200330204310.21736-1-wainersm@redhat.com>
+ <20200330204310.21736-3-wainersm@redhat.com>
+ <20200402090029.pc6w6iqikgthflhq@kamzik.brq.redhat.com>
+ <e6676068-3214-f9bf-832b-889facc8b091@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <105956984.FXDh2DO4ZE@diego>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6676068-3214-f9bf-832b-889facc8b091@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Apr 02, 2020 at 10:56:18AM -0300, Wainer dos Santos Moschetta wrote:
+> 
+> On 4/2/20 6:00 AM, Andrew Jones wrote:
+> > On Mon, Mar 30, 2020 at 05:43:10PM -0300, Wainer dos Santos Moschetta wrote:
+> > > This patch introduces the mem_slot_test test which checks
+> > > an VM can have added memory slots up to the limit defined in
+> > > KVM_CAP_NR_MEMSLOTS. Then attempt to add one more slot to
+> > > verify it fails as expected.
+> > > 
+> > > Signed-off-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
+> > > ---
+> > >   tools/testing/selftests/kvm/.gitignore      |  1 +
+> > >   tools/testing/selftests/kvm/Makefile        |  3 +
+> > >   tools/testing/selftests/kvm/mem_slot_test.c | 92 +++++++++++++++++++++
+> > >   3 files changed, 96 insertions(+)
+> > >   create mode 100644 tools/testing/selftests/kvm/mem_slot_test.c
+> > > 
+> > BTW, in kvm/queue we also now have
+> > 
+> > x86_64/set_memory_region_test.c
+> > 
+> > I wonder if we shouldn't try to make x86_64/set_memory_region_test.c
+> > arch-neutral and then integrate this new test with it.
+> 
+> When I started work on this test I called it "add_max_mem_slots" but then I
+> realized it could be rather a suite for other tests, so it was renamed. So
+> yes, I think we can try to merge those memory region tests altogether.
+> 
+> I'm about to send a v2 where I address all your comments and hopefully we
+> can use as the base for such as integration. Makes sense?
 
-On 4/2/20 11:31 AM, Heiko Stübner wrote:
-> Am Donnerstag, 2. April 2020, 15:48:02 CEST schrieb Johan Jonker:
->> Hi Helen,
->>
->>> From: Helen Koike <helen.koike@collabora.com>
->>
->>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->>> index 33cc21fcf4c10..fc0295d2a65a1 100644
->>> --- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->>> +++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
->>> @@ -1394,6 +1394,17 @@ io_domains: io-domains {
->>>  			status = "disabled";
->>>  		};
->>>  
->>
->>> +		mipi_dphy_rx0: mipi-dphy-rx0 {
->>
->> For Heiko sort syscon@ff770000 subnodes alphabetical or reg value first?
-> 
-> Similar to main nodes ... so things without reg alphabetical,
-> the rest by reg address
-> 
-> 
->>
->>> +			compatible = "rockchip,rk3399-mipi-dphy-rx0";
->>> +			clocks = <&cru SCLK_MIPIDPHY_REF>,
->>
->>> +				<&cru SCLK_DPHY_RX0_CFG>,
->>> +				<&cru PCLK_VIO_GRF>;
->>
->> Align                            ^
+OK, but there's no rush (at least for me) for v2. If you want to look at
+integration for v2 and send it later, then I'm fine with waiting.
 
-ack.
+Thanks,
+drew
+> 
+> Thanks!
+> 
+> - Wainer
+> 
+> 
+> > 
+> > Thanks,
+> > drew
+> 
 
-Thanks
-Helen
-
->>
->>> +			clock-names = "dphy-ref", "dphy-cfg", "grf";
->>> +			power-domains = <&power RK3399_PD_VIO>;
->>> +			#phy-cells = <0>;
->>> +			status = "disabled";
->>> +		};
->>> +
->>>  		u2phy0: usb2-phy@e450 {
->>>  			compatible = "rockchip,rk3399-usb2phy";
->>>  			reg = <0xe450 0x10>;
->>
->>
-> 
-> 
-> 
-> 
