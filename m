@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E066119C2C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AA519C2C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388690AbgDBNfH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Apr 2020 09:35:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:37931 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387752AbgDBNfG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:35:06 -0400
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jJzzr-0004mg-Ab; Thu, 02 Apr 2020 15:35:03 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id B9B9D100D52; Thu,  2 Apr 2020 15:35:02 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     "Michael Kerrisk \(man-pages\)" <mtk.manpages@gmail.com>
-Cc:     mtk.manpages@gmail.com, linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, arul.jeniston@gmail.com,
-        "devi R.K" <devi.feb27@gmail.com>,
-        Marc Lehmann <debian-reportbug@plan9.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>
-Subject: Re: timer_settime() and ECANCELED
-In-Reply-To: <8ae32d2f-e4a8-240f-c7bd-580c26bba2d0@gmail.com>
-References: <87pncrf6gd.fsf@nanos.tec.linutronix.de> <4c557b44-4e4e-a689-a17b-f95e6c5ee4b0@gmail.com> <87mu7unugh.fsf@nanos.tec.linutronix.de> <8ae32d2f-e4a8-240f-c7bd-580c26bba2d0@gmail.com>
-Date:   Thu, 02 Apr 2020 15:35:02 +0200
-Message-ID: <87bloanh89.fsf@nanos.tec.linutronix.de>
+        id S2388638AbgDBNfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:35:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387752AbgDBNfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 09:35:55 -0400
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9067920784
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Apr 2020 13:35:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585834554;
+        bh=uAmdNWARr1zvbILl9dUIq13b5ZCkuxPovxTpcde9KHo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LUFN/0N8l+/Y0yi+ECu2yLRLlyMzd2I5BDGEjg0wH2fK8LOXOjCxjg3phhh0kTd5u
+         Njj5u/15heBFxq4Me9UV36sx+yIylp5Rn3qAgASWdOzKj2zy5LXv4AXbHFQr9yOIRZ
+         i9IzU1eof1QFBlC5gVFKItrJHPK5qIYKZAsrlIXs=
+Received: by mail-qk1-f178.google.com with SMTP id u4so3802003qkj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 06:35:54 -0700 (PDT)
+X-Gm-Message-State: AGi0Pua4/zJ/ogfPRzKohd6xO3B3BH/az0TQ0izSqKADLYndG+8q5b7Z
+        IeGaphP1tgfHFdXDX04dRCZ+QqaIBp7Nwl/ahA==
+X-Google-Smtp-Source: APiQypJC0IUfpiZoDOhBhaVQIVgV+X1sdemcV9zsqlUAS73jp31au9BoJRb+Kuy/+LjKTLYx6G87MWh9ivgWxe6MSog=
+X-Received: by 2002:a37:4a85:: with SMTP id x127mr3600485qka.152.1585834553670;
+ Thu, 02 Apr 2020 06:35:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200402033640.12465-1-f.fainelli@gmail.com> <20200402081346.GA2548@willie-the-truck>
+In-Reply-To: <20200402081346.GA2548@willie-the-truck>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 2 Apr 2020 07:35:41 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+uSdk9YNbUW35yjN3q8-3FDobrxHmBpy=4RKmCfnB0KQ@mail.gmail.com>
+Message-ID: <CAL_Jsq+uSdk9YNbUW35yjN3q8-3FDobrxHmBpy=4RKmCfnB0KQ@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: dt-bindings: Document 'rng-seed' for /chosen
+To:     Will Deacon <will@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com> writes:
-> NOTES
->        Suppose  the  following scenario for CLOCK_REALTIME or CLOCK_REAL‐
->        TIME_ALARM timer that was created with timerfd_create():
+On Thu, Apr 2, 2020 at 2:13 AM Will Deacon <will@kernel.org> wrote:
 >
->        (a) The  timer  has  been  started  (timerfd_settime())  with  the
->            TFD_TIMER_ABSTIME and TFD_TIMER_CANCEL_ON_SET flags;
+> Hi Florian,
 >
->        (b) A discontinuous change (e.g.  settimeofday(2)) is subsequently
->            made to the CLOCK_REALTIME clock; and
+> On Wed, Apr 01, 2020 at 08:36:40PM -0700, Florian Fainelli wrote:
+> > The /chosen node can have a 'rng-seed' property read as a u32 quantity
+> > which would contain a random number provided by the boot agent. This is
+> > useful in configurations where the kernel does not have access to a
+> > random number generator.
+> >
+> > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/chosen.txt | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
 >
->        (c) the caller once more  calls  timerfd_settime()  to  rearm  the
->            timer (without first doing a read(2) on the file descriptor).
->
->        In this case the following occurs:
->
->        · The  timerfd_settime()  returns  -1 with errno set to ECANCELED.
->          (This enables the caller to know that  the  previous  timer  was
->          affected by a discontinuous change to the clock.)
->
->        · The  timer is successfully rearmed with the settings provided in
->          the second timerfd_settime() call.  (This was probably an imple‐
->          mentation  accident,  but  won't be fixed now, in case there are
->          applications that depend on this behaviour.)
+> Thanks for doing this; I realised it was undocumented the other day when I
+> tried to look it up myself.
 
-Clear enough.
+Already documented here[1]. I've been meaning to delete chosen.txt so
+that's a bit more obvious.
 
-Thanks Michael!
+I realize it's a bit harder to find what's documented where. Long term
+we'd like to generate documentation from the schema and integrate as
+part of the spec. Short term, it would be quite trivial to make a 'am
+I documented' utility.
+
+Rob
+
+[1] https://github.com/devicetree-org/dt-schema/blob/master/schemas/chosen.yaml
