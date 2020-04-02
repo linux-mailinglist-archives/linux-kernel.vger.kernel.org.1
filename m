@@ -2,127 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE2919CBC6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 22:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3AD919CBEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 22:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388571AbgDBUmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 16:42:12 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:34192 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgDBUmL (ORCPT
+        id S2389188AbgDBUtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 16:49:09 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37302 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732218AbgDBUtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 16:42:11 -0400
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 04F1620B46F0; Thu,  2 Apr 2020 13:42:10 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 04F1620B46F0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1585860130;
-        bh=T7M811vVoO8LHYy+OccoE+fza63+weNdKO1rucXW+T4=;
-        h=From:To:Cc:Subject:Date:Reply-To:From;
-        b=F3CHGz/rYb1cNT869Csn98lvD2yLrx7hJ8tKWAjWcZtzOy8+NhsYkI52KR413hW/Q
-         MLYPu5KzCG6P/hwB+UFpdVxVXYTLtsvrqb8zKZNYuW2Jl1PAL7TyKWGSvB03RcKpsv
-         peb8i9FKM1vutcerJsv4Y6rJzGKVNJvFpcOPqGoc=
-From:   longli@linuxonhyperv.com
-To:     Steve French <sfrench@samba.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>
-Subject: [Patch v2] cifs: smbd: Update receive credits before sending and deal with credits roll back on failure before sending
-Date:   Thu,  2 Apr 2020 13:42:06 -0700
-Message-Id: <1585860126-72170-1-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-Reply-To: longli@microsoft.com
+        Thu, 2 Apr 2020 16:49:09 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 032Kn3W4073301;
+        Thu, 2 Apr 2020 15:49:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1585860543;
+        bh=i0zZWsX8Dx0G+gTcXcXXsM/jVSV5ZMUFyTOimYeZOdY=;
+        h=From:To:CC:Subject:Date;
+        b=Et7I2mQGyNJeI+KTFpykkXeOqctH5LShsWnFKS+EH5ELrE2RYQ6PzhDPgmklvP/Db
+         nntj6D8IvUjHA68PM9HWHTvwtoEX2sbmnwuWoEfRaa/K2nbBzU/65Ycmdji5nBcJ3M
+         2Ez+t69Tza7sM74F3rfQDiSa0hGRDrlqG3iJK5aU=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 032Kn31O083684
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 2 Apr 2020 15:49:03 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 2 Apr
+ 2020 15:49:03 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Thu, 2 Apr 2020 15:49:03 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 032Kn3VS113492;
+        Thu, 2 Apr 2020 15:49:03 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
+CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v19 00/18] Multicolor Framework (array edition)
+Date:   Thu, 2 Apr 2020 15:42:53 -0500
+Message-ID: <20200402204311.14998-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+This is the multi color LED framework.   This framework presents clustered
+colored LEDs into an array and allows the user space to adjust the brightness
+of the cluster using a single file write.  The individual colored LEDs
+intensities are controlled via a single file that is an array of LEDs
 
-Recevie credits should be updated before sending the packet, not
-before a work is scheduled. Also, the value needs roll back if
-something fails and cannot send.
+A design alternative to having files that have multiple values written to a
+single file is here:
 
-Signed-off-by: Long Li <longli@microsoft.com>
-Reported-by: kbuild test robot <lkp@intel.com>
----
+https://lore.kernel.org/patchwork/patch/1186194/*
 
-change in v2: fixed sparse errors reported by kbuild test robot
+Dan
 
- fs/cifs/smbdirect.c | 25 ++++++++++++++++++-------
- 1 file changed, 18 insertions(+), 7 deletions(-)
+Dan Murphy (18):
+  dt: bindings: Add multicolor class dt bindings documention
+  dt-bindings: leds: Add multicolor ID to the color ID list
+  leds: Add multicolor ID to the color ID list
+  leds: multicolor: Introduce a multicolor class definition
+  dt: bindings: lp50xx: Introduce the lp50xx family of RGB drivers
+  leds: lp50xx: Add the LP50XX family of the RGB LED driver
+  dt: bindings: lp55xx: Be consistent in the document with LED acronym
+  dt: bindings: lp55xx: Update binding for Multicolor Framework
+  ARM: dts: n900: Add reg property to the LP5523 channel node
+  ARM: dts: imx6dl-yapp4: Add reg property to the lp5562 channel node
+  ARM: dts: ste-href: Add reg property to the LP5521 channel nodes
+  leds: lp55xx: Convert LED class registration to devm_*
+  leds: lp55xx: Add multicolor framework support to lp55xx
+  leds: lp5523: Update the lp5523 code to add multicolor brightness
+    function
+  leds: lp5521: Add multicolor framework multicolor brightness support
+  leds: lp55xx: Fix checkpatch file permissions issues
+  leds: lp5523: Fix checkpatch issues in the code
+  dt: bindings: Update lp55xx binding to recommended LED naming
 
-diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-index c7ef2d7ce0ef..fa52bf3e0236 100644
---- a/fs/cifs/smbdirect.c
-+++ b/fs/cifs/smbdirect.c
-@@ -450,8 +450,6 @@ static void smbd_post_send_credits(struct work_struct *work)
- 	info->new_credits_offered += ret;
- 	spin_unlock(&info->lock_new_credits_offered);
- 
--	atomic_add(ret, &info->receive_credits);
--
- 	/* Check if we can post new receive and grant credits to peer */
- 	check_and_send_immediate(info);
- }
-@@ -822,6 +820,7 @@ static int smbd_create_header(struct smbd_connection *info,
- 	struct smbd_request *request;
- 	struct smbd_data_transfer *packet;
- 	int header_length;
-+	int new_credits;
- 	int rc;
- 
- 	/* Wait for send credits. A SMBD packet needs one credit */
-@@ -840,7 +839,7 @@ static int smbd_create_header(struct smbd_connection *info,
- 	request = mempool_alloc(info->request_mempool, GFP_KERNEL);
- 	if (!request) {
- 		rc = -ENOMEM;
--		goto err;
-+		goto err_alloc;
- 	}
- 
- 	request->info = info;
-@@ -848,8 +847,11 @@ static int smbd_create_header(struct smbd_connection *info,
- 	/* Fill in the packet header */
- 	packet = smbd_request_payload(request);
- 	packet->credits_requested = cpu_to_le16(info->send_credit_target);
--	packet->credits_granted =
--		cpu_to_le16(manage_credits_prior_sending(info));
-+
-+	new_credits = manage_credits_prior_sending(info);
-+	atomic_add(new_credits, &info->receive_credits);
-+	packet->credits_granted = cpu_to_le16(new_credits);
-+
- 	info->send_immediate = false;
- 
- 	packet->flags = 0;
-@@ -887,7 +889,7 @@ static int smbd_create_header(struct smbd_connection *info,
- 	if (ib_dma_mapping_error(info->id->device, request->sge[0].addr)) {
- 		mempool_free(request, info->request_mempool);
- 		rc = -EIO;
--		goto err;
-+		goto err_dma;
- 	}
- 
- 	request->sge[0].length = header_length;
-@@ -896,8 +898,17 @@ static int smbd_create_header(struct smbd_connection *info,
- 	*request_out = request;
- 	return 0;
- 
--err:
-+err_dma:
-+	/* roll back receive credits */
-+	spin_lock(&info->lock_new_credits_offered);
-+	info->new_credits_offered += new_credits;
-+	spin_unlock(&info->lock_new_credits_offered);
-+	atomic_sub(new_credits, &info->receive_credits);
-+
-+err_alloc:
-+	/* roll back send credits */
- 	atomic_inc(&info->send_credits);
-+
- 	return rc;
- }
- 
+ .../ABI/testing/sysfs-class-led-multicolor    |  42 +
+ .../bindings/leds/leds-class-multicolor.txt   |  98 +++
+ .../devicetree/bindings/leds/leds-lp50xx.txt  | 148 ++++
+ .../devicetree/bindings/leds/leds-lp55xx.txt  | 163 +++-
+ Documentation/leds/index.rst                  |   1 +
+ Documentation/leds/leds-class-multicolor.rst  |  95 +++
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi    |  14 +-
+ arch/arm/boot/dts/omap3-n900.dts              |  29 +-
+ arch/arm/boot/dts/ste-href.dtsi               |  22 +-
+ drivers/leds/Kconfig                          |  22 +
+ drivers/leds/Makefile                         |   2 +
+ drivers/leds/led-class-multicolor.c           | 206 +++++
+ drivers/leds/led-core.c                       |   1 +
+ drivers/leds/leds-lp50xx.c                    | 795 ++++++++++++++++++
+ drivers/leds/leds-lp5521.c                    |  43 +-
+ drivers/leds/leds-lp5523.c                    |  62 +-
+ drivers/leds/leds-lp5562.c                    |  22 +-
+ drivers/leds/leds-lp55xx-common.c             | 204 +++--
+ drivers/leds/leds-lp55xx-common.h             |  13 +-
+ drivers/leds/leds-lp8501.c                    |  23 +-
+ include/dt-bindings/leds/common.h             |   3 +-
+ include/linux/led-class-multicolor.h          | 121 +++
+ include/linux/platform_data/leds-lp55xx.h     |   8 +
+ 23 files changed, 1979 insertions(+), 158 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-led-multicolor
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-class-multicolor.txt
+ create mode 100644 Documentation/devicetree/bindings/leds/leds-lp50xx.txt
+ create mode 100644 Documentation/leds/leds-class-multicolor.rst
+ create mode 100644 drivers/leds/led-class-multicolor.c
+ create mode 100644 drivers/leds/leds-lp50xx.c
+ create mode 100644 include/linux/led-class-multicolor.h
+
 -- 
-2.17.1
+2.25.1
 
