@@ -2,102 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2A519C103
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5033919C106
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387580AbgDBMXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:23:12 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:36806 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbgDBMXL (ORCPT
+        id S2387937AbgDBM0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 08:26:45 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:54258 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgDBM0p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:23:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032CMh9N054207;
-        Thu, 2 Apr 2020 12:22:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=wjPa325Z3IV06jAmrRHNcUJXKnsUHgOW0tGCxhUva8k=;
- b=F58+0VBWEdhx898J5cgm3FeHG2fbyZcLUVIn+gsdigqtxTpYYBUqCp3y+KAYd8D7M1ix
- EMBzfmBWUyn4FU9nF26A7g6rpmlPHetcG1mb6Qmb3AplJC1GSlYXi3Pc3mSCnjHFzTI+
- TyGym3pG9j7ON7ce1m0ZlYT569vaP0Li03AIybR6ZudYXipt18R+uic5gLvb2jwEeXGs
- ynHhvaD9221S9t6FQmX63NP1bYDI1AwdhF4f/kCJW2RjO2khFQLHGWgOTFXDHTl8JeyJ
- /6N/cn/AFX0xb2+AJjPYM3NcsdL9MCi+rITP+FtZoXTPBqXTF405uaGklSk3yHiXqJrk SA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 303aqhug3v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 12:22:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032CM8r1135759;
-        Thu, 2 Apr 2020 12:22:42 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 302ga2b2tp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 12:22:42 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 032CMeXK029118;
-        Thu, 2 Apr 2020 12:22:40 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 05:22:39 -0700
-Date:   Thu, 2 Apr 2020 15:22:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     rmfrfs@gmail.com, johan@kernel.org, elder@kernel.org,
-        gregkh@linuxfoundation.org, greybus-dev@lists.linaro.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] staging: greybus: fix a missing-check bug in
- gb_lights_light_config()
-Message-ID: <20200402122228.GP2001@kadam>
-References: <20200401030017.100274-1-chenzhou10@huawei.com>
+        Thu, 2 Apr 2020 08:26:45 -0400
+Received: by mail-wm1-f68.google.com with SMTP id d77so3188968wmd.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 05:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=a1sowiBfL15GLUed5KqQt2eL3Z7cOMMJ+ue7eLAAHpg=;
+        b=OLQx/qjWoQWRSw516BMzPOE1maQgDDkZFxu4vMVff/9zatoOlCrH6HQyzA7PilAPiA
+         nW7HDTWuDWrxUn43ZxAIHTNdk32KCKKKu1mh3LwM+4vBQNRWwMUmvNT+kATwUClneRpp
+         SnbEePOwxCsce8d0dvjUpga8yl9suc6/DZyGpvOadTMNU5xJ1y1ioeHR9VGsAb1nAqnF
+         vVPX7jwPjfDcEMAUkt5GzU8QxMbFV0UUjLPBRpuCeaZYBynSoQHmRLxiZJy/v5oJPqa7
+         Q8JCxSJ2sjuSWL29vbVBU7zGkA8FTerCFk6LypaQh3QC3JPd0V8daW1Hg0Mz53i5dS47
+         vrEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=a1sowiBfL15GLUed5KqQt2eL3Z7cOMMJ+ue7eLAAHpg=;
+        b=r7t7CfhSuaIRNuoKBQXt9Eufy0T6JP9WEywlZ82/I5YTvB4PYj1UkFocg0gNFvGRyU
+         KdgbvpM+WcNi33QT7XdUW8sZxe9AKZugkOJVoqw1RmImPJ04WUiL5CGe+G2fLpOceE9i
+         hDh26T3peCNJ6CcyE4io028wcrv6eqSR5VcfyAGhbrR9nFvFpagR8k/oKCBXJgrspTCV
+         1RmDj2ptNadK6MHtdCNXX7sBidoX2B56A25FwlF8ev/zxRE/jZf8oZOcB9ddHdFXrXmV
+         86JsM5gjb6DVZ6gbaDlQLYQszrB7Vzc6YfzZGW3sX9TP2WRJzQqXpI7W5h9auaEf6BNn
+         hWjA==
+X-Gm-Message-State: AGi0PuY9cszFUVbse9ZVHDqx+lEy2fdY8cgAgJCYQ8JLLuy6ENzQ1y41
+        fwdyytfvEW1ayJ69Svp4eTeHvw==
+X-Google-Smtp-Source: APiQypKLB8kIej+i6vxcTdo7MIDhbttMQUjbDGR2mwfdqghm1yadCsQgBUQwfJoG/TYMaslo/zOe4A==
+X-Received: by 2002:a1c:2506:: with SMTP id l6mr3158093wml.44.1585830402901;
+        Thu, 02 Apr 2020 05:26:42 -0700 (PDT)
+Received: from myrica ([2001:171b:226b:54a0:6097:1406:6470:33b5])
+        by smtp.gmail.com with ESMTPSA id y4sm846109wma.20.2020.04.02.05.26.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 05:26:42 -0700 (PDT)
+Date:   Thu, 2 Apr 2020 14:26:33 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>,
+        "Wu, Hao" <hao.wu@intel.com>
+Subject: Re: [PATCH 00/10] IOASID extensions for guest SVA
+Message-ID: <20200402122633.GC1176452@myrica>
+References: <1585158931-1825-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <20200401140301.GJ882512@myrica>
+ <20200401163842.09c8e1a6@jacob-builder>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200401030017.100274-1-chenzhou10@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004020113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 clxscore=1011
- malwarescore=0 impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020113
+In-Reply-To: <20200401163842.09c8e1a6@jacob-builder>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 11:00:17AM +0800, Chen Zhou wrote:
-> In gb_lights_light_config(), 'light->name' is allocated by kstrndup().
-> It returns NULL when fails, add check for it.
+On Wed, Apr 01, 2020 at 04:38:42PM -0700, Jacob Pan wrote:
+> On Wed, 1 Apr 2020 16:03:01 +0200
+> Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
 > 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> ---
->  drivers/staging/greybus/light.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> > Hi Jacob,
+> > 
+> > On Wed, Mar 25, 2020 at 10:55:21AM -0700, Jacob Pan wrote:
+> > > IOASID was introduced in v5.5 as a generic kernel allocator service
+> > > for both PCIe Process Address Space ID (PASID) and ARM SMMU's Sub
+> > > Stream ID. In addition to basic ID allocation, ioasid_set was
+> > > introduced as a token that is shared by a group of IOASIDs. This
+> > > set token can be used for permission checking but lack of some
+> > > features needed by guest Shared Virtual Address (SVA). In addition,
+> > > IOASID support for life cycle management is needed among multiple
+> > > users.
+> > > 
+> > > This patchset introduces two extensions to the IOASID code,
+> > > 1. IOASID set operations
+> > > 2. Notifications for IOASID state synchronization  
+> > 
+> > My main concern with this series is patch 7 changing the spinlock to a
+> > mutex, which prevents SVA from calling ioasid_free() from the RCU
+> > callback of MMU notifiers. Could we use atomic notifiers, or do the
+> > FREE notification another way?
+> > 
+> Maybe I am looking at the wrong code, I thought
+> mmu_notifier_ops.free_notifier() is called outside spinlock with
+> call_srcu(), which will be invoked in the thread context.
+> in mmu_notifier.c mmu_notifier_put()
+> 	spin_unlock(&mm->notifier_subscriptions->lock);
 > 
-> diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-> index d6ba25f..d2672b6 100644
-> --- a/drivers/staging/greybus/light.c
-> +++ b/drivers/staging/greybus/light.c
-> @@ -1026,7 +1026,8 @@ static int gb_lights_light_config(struct gb_lights *glights, u8 id)
->  
->  	light->channels_count = conf.channel_count;
->  	light->name = kstrndup(conf.name, NAMES_MAX, GFP_KERNEL);
-> -
-> +	if (!light->name)
-> +		return -ENOMEM;
->  	light->channels = kcalloc(light->channels_count,
->  				  sizeof(struct gb_channel), GFP_KERNEL);
->  	if (!light->channels)
+> 	call_srcu(&srcu, &subscription->rcu, mmu_notifier_free_rcu);
 
-The clean up in this function is non-existant.  :(
+free_notifier() is called from RCU callback, and according to
+Documentation/RCU/checklist.txt:
 
-regards,
-dan carpenter
+5.      If call_rcu() or call_srcu() is used, the callback function will
+        be called from softirq context.  In particular, it cannot block.
+
+When applying the patch I get the sleep-in-atomic warning:
+
+[   87.861793] BUG: sleeping function called from invalid context at kernel/locking/mutex.c:935
+[   87.863293] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 74, name: kworker/6:1
+[   87.863993] 2 locks held by kworker/6:1/74:
+[   87.864493]  #0: ffffff885ac12538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x740/0x1880
+[   87.865593]  #1: ffffff88591efd30 ((work_completion)(&sdp->work)){+.+.}-{0:0}, at: process_one_work+0x740/0x1880
+[   87.866993] CPU: 6 PID: 74 Comm: kworker/6:1 Not tainted 5.6.0-next-20200331+ #121
+[   87.867393] Hardware name: FVP Base (DT)
+[   87.867893] Workqueue: rcu_gp srcu_invoke_callbacks
+[   87.868393] Call trace:
+[   87.868793]  dump_backtrace+0x0/0x310
+[   87.869293]  show_stack+0x14/0x20
+[   87.869693]  dump_stack+0x124/0x180
+[   87.870193]  ___might_sleep+0x2ac/0x428
+[   87.870693]  __might_sleep+0x88/0x168
+[   87.871094]  __mutex_lock+0xa0/0x1270
+[   87.871593]  mutex_lock_nested+0x1c/0x28
+[   87.872093]  ioasid_free+0x28/0x48
+[   87.872493]  io_mm_free+0x1d0/0x608
+[   87.872993]  mmu_notifier_free_rcu+0x74/0xe8
+[   87.873393]  srcu_invoke_callbacks+0x1d0/0x2c8
+[   87.873893]  process_one_work+0x858/0x1880
+[   87.874393]  worker_thread+0x314/0xcd0
+[   87.874793]  kthread+0x318/0x400
+[   87.875293]  ret_from_fork+0x10/0x18
+
+> 
+> Anyway, if we have to use atomic. I tried atomic notifier first, there
+> are two subscribers to the free event on x86.
+> 1. IOMMU
+> 2. KVM
+> 
+> For #1, the problem is that in the free operation, VT-d driver
+> needs to do a lot of clean up in thread context.
+> - hold a mutex to traverse a list of devices
+> - clear PASID entry and flush cache
+> 
+> For #2, KVM might be able to deal with spinlocks for updating VMCS
+> PASID translation table. +Hao
+> 
+> Perhaps two solutions I can think of:
+> 1. Use a cyclic IOASID allocator. The main reason of clean up at free
+> is to prevent race with IOASID alloc. Similar to PID, 2M IOASID
+> will take long time overflow. Then we can use atomic notifier and a
+> deferred workqueue to do IOMMU cleanup. The downside is a large and
+> growing PASID table, may not be a performance issue since it has TLB.
+
+That might be a problem for SMMU, which has 1024 * 64kB leaf PASID tables,
+for a total of 64MB per endpoint if there is too much fragmentation in
+the IOASID space.
+
+> 2. Let VFIO ensure free always happen after unbind. Then there is no
+> need to do cleanup. But that requires VFIO to keep track of all the
+> PASIDs within each VM. When the VM terminates, VFIO is responsible for
+> the clean up. That was Yi's original proposal. I also tried to provide
+> an IOASID set iterator for VFIO to free the IOASIDs within each VM/set,
+> but the private data belongs to IOMMU driver.
+
+Not really my place to comment on this, but I find it nicer to use the
+same gpasid_unbind() path when VFIO frees a PASID as when the guest
+explicitly unbinds before freeing. 
+
+Thanks,
+Jean
 
