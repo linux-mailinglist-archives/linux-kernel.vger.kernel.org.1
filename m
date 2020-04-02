@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D78EF19CAA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BF619CA9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732950AbgDBTyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 15:54:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55646 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727412AbgDBTyg (ORCPT
+        id S2388482AbgDBTxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 15:53:12 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:43005 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgDBTxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 15:54:36 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 032JYRpS054016;
-        Thu, 2 Apr 2020 15:54:14 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 304swt8py7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 15:54:13 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 032JoFxb023346;
-        Thu, 2 Apr 2020 19:54:11 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02dal.us.ibm.com with ESMTP id 301x77p7mc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 19:54:11 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 032JsAt251708222
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Apr 2020 19:54:10 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C6892AE060;
-        Thu,  2 Apr 2020 19:54:10 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75A51AE05C;
-        Thu,  2 Apr 2020 19:54:01 +0000 (GMT)
-Received: from LeoBras.aus.stglabs.ibm.com (unknown [9.85.174.86])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Apr 2020 19:54:01 +0000 (GMT)
-From:   Leonardo Bras <leonardo@linux.ibm.com>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Leonardo Bras <leonardo@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Allison Randal <allison@lohutok.net>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Claudio Carvalho <cclaudio@linux.ibm.com>,
-        Hari Bathini <hbathini@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/1] powerpc/kernel: Enables memory hot-remove after reboot on pseries guests
-Date:   Thu,  2 Apr 2020 16:51:57 -0300
-Message-Id: <20200402195156.626430-1-leonardo@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 2 Apr 2020 15:53:11 -0400
+Received: by mail-lj1-f193.google.com with SMTP id q19so4534732ljp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 12:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1M4Ag+S0nZJij93THMq7bbkrnw/fgLQVfhHEAPg0zJg=;
+        b=C3f5PUXk+JZIZCZcNR0ar1vubzZ5yFkVQ8SIF5yLetsxkbpN4qR9j+r642h2EHOVcp
+         Zhp+esPwciqbodVQcDiIbMK1aUHC7IR7Zor/6HqPjnXt4wzG439ETqAuwfeIUqpkEqDx
+         f5mlJ9AKWuYcxkphaEsikpSSNS5RgS4z/p36Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1M4Ag+S0nZJij93THMq7bbkrnw/fgLQVfhHEAPg0zJg=;
+        b=nc6nLeZU7fjWPZx+NxGHPC7A4BCOgAWFGW3tt2QD58I1DSuDX1hqzmZpwp3rXEr5mp
+         dJ/55w5VUr/BoHvThgXLtWohM4XCWqx0zeI8qRuFtjitj6MMw9IIjS8zx8RX+n5JNrLs
+         yj3Nu134xT7ma68Fw31SY2a+VS4kaDJME+vm48J1uB0obUr+cDH4i7iXP2bGXSvjI+Ni
+         CmZuFKwUxqGskJkYsusKMz9D+JQIOlyWLOXxUG4k3exFYjaCLzUcia0IFCGtFNX2KD8I
+         tL1shvlk43s2QOJDNz41adDPZ8+fNUE1cLfFOFvPHssWP/BzEmklnBHTgvBPuJHoqOp/
+         dzeA==
+X-Gm-Message-State: AGi0PuYQfBd0D8vqFX7/c0UEkhDwhgDik+FtLj1sP8vbAPGbXzA4uGGL
+        y4khxdWsy0QYnMt4jH8EfmM/VmobIA0=
+X-Google-Smtp-Source: APiQypITI+bTxmZOe2u/VGzYTdo1PlgTowUF70/B4CbxuiUv2JzHk1eAjs5MrBXHqaD5GT0Zv6X7Sg==
+X-Received: by 2002:a2e:914b:: with SMTP id q11mr2872557ljg.291.1585857188566;
+        Thu, 02 Apr 2020 12:53:08 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id y26sm4502490lfl.95.2020.04.02.12.53.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Apr 2020 12:53:07 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id k21so4628160ljh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 12:53:07 -0700 (PDT)
+X-Received: by 2002:a2e:7c1a:: with SMTP id x26mr2700792ljc.209.1585857186793;
+ Thu, 02 Apr 2020 12:53:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-02_09:2020-04-02,2020-04-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- bulkscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=999 phishscore=0
- adultscore=0 impostorscore=0 malwarescore=0 priorityscore=1501 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020142
+References: <87blobnq02.fsf@x220.int.ebiederm.org> <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+ <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Apr 2020 12:52:50 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+Message-ID: <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While providing guests, it's desirable to resize it's memory on demand.
+On Thu, Apr 2, 2020 at 12:31 PM Bernd Edlinger
+<bernd.edlinger@hotmail.de> wrote:
+>
+> This is at least what is my impression how the existing mutexes are used,
+> a mutex called "cred_guard_mutex" is a not very good self explaining name,
+> in my opinion, it is totally unclear what it does "guard", and why.
 
-By now, it's possible to do so by creating a guest with a small base
-memory, hot-plugging all the rest, and using 'movable_node' kernel
-command-line parameter, which puts all hot-plugged memory in
-ZONE_MOVABLE, allowing it to be removed whenever needed.
+Oh, I absolutely agree that cred_guard_mutex is a horrible lock.
 
-But there is an issue regarding guest reboot:
-If memory is hot-plugged, and then the guest is rebooted, all hot-plugged
-memory goes to ZONE_NORMAL, which offers no guaranteed hot-removal.
-It usually prevents this memory to be hot-removed from the guest.
+It actually _used_ to be a lot more understandable, and the name used
+to make more sense in the context it was used.
 
-It's possible to use device-tree information to fix that behavior, as
-it stores flags for LMB ranges on ibm,dynamic-memory-vN.
-It involves marking each memblock with the correct flags as hotpluggable
-memory, which mm/memblock.c puts in ZONE_MOVABLE during boot if
-'movable_node' is passed.
+See commit
 
-For carrying such information, the new flag DRCONF_MEM_HOTREMOVABLE was
-proposed and accepted into Power Architecture documentation.
-This flag should be:
-- true (b=1) if the hypervisor may want to hot-remove it later, and
-- false (b=0) if it does not care.
+  a2a8474c3fff ("exec: do not sleep in TASK_TRACED under ->cred_guard_mutex")
 
-During boot, guest kernel reads the device-tree, early_init_drmem_lmb()
-is called for every added LMBs. Here, checking for this new flag and
-marking memblocks as hotplugable memory is enough to get the desirable
-behavior.
+for when it changed from "somewhat understandable" to "really hard to follow".
 
-This should cause no change if 'movable_node' parameter is not passed
-in kernel command-line.
+Don't get me wrong - that commit has a very good reason for it, but it
+does make the locking really hard to understand.
 
-Signed-off-by: Leonardo Bras <leonardo@linux.ibm.com>
-Reviewed-by: Bharata B Rao <bharata@linux.ibm.com>
+It all used to be in one function - do_execve() - and it was holding
+the lock over a fairly obvious range, starting at
 
----
+    bprm->cred = prepare_exec_creds();
 
-Changes since v2:
-- New flag name changed from DRCONF_MEM_HOTPLUGGED to
-	DRCONF_MEM_HOTREMOVABLE
+and ending at basically "we're done with execve()".
 
-Changes since v1:
-- Adds new flag, so PowerVM is compatible with the change.
-- Fixes mistakes in code
----
- arch/powerpc/include/asm/drmem.h | 1 +
- arch/powerpc/kernel/prom.c       | 9 +++++++--
- 2 files changed, 8 insertions(+), 2 deletions(-)
+So basically, cred_guard_mutex ends up being the thing that is held
+all the way from the "before execve looks at the old creds" to "execve
+is done, and has changed the creds".
 
-diff --git a/arch/powerpc/include/asm/drmem.h b/arch/powerpc/include/asm/drmem.h
-index 3d76e1c388c2..ad99e27e5b65 100644
---- a/arch/powerpc/include/asm/drmem.h
-+++ b/arch/powerpc/include/asm/drmem.h
-@@ -65,6 +65,7 @@ struct of_drconf_cell_v2 {
- #define DRCONF_MEM_ASSIGNED	0x00000008
- #define DRCONF_MEM_AI_INVALID	0x00000040
- #define DRCONF_MEM_RESERVED	0x00000080
-+#define DRCONF_MEM_HOTREMOVABLE	0x00000100
- 
- static inline u32 drmem_lmb_size(void)
- {
-diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-index 6620f37abe73..abc9b04d03ce 100644
---- a/arch/powerpc/kernel/prom.c
-+++ b/arch/powerpc/kernel/prom.c
-@@ -515,9 +515,14 @@ static void __init early_init_drmem_lmb(struct drmem_lmb *lmb,
- 				size = 0x80000000ul - base;
- 		}
- 
-+		if (!validate_mem_limit(base, &size))
-+			continue;
-+
- 		DBG("Adding: %llx -> %llx\n", base, size);
--		if (validate_mem_limit(base, &size))
--			memblock_add(base, size);
-+		memblock_add(base, size);
-+
-+		if (lmb->flags & DRCONF_MEM_HOTREMOVABLE)
-+			memblock_mark_hotplug(base, size);
- 	} while (--rngs);
- }
- #endif /* CONFIG_PPC_PSERIES */
--- 
-2.25.1
+The reason it's needed is exactly that there are some nasty situations
+where execve() itself does things with creds to determine that the new
+creds are ok. And it uses the old creds to do that, but it also uses
+the task->flags and task->ptrace.
 
+So think of cred_guard_mutex as a lock around not just the creds, but
+the combination of creds and the task flags/ptrace.
+
+Anybody who changes the task ptrace setting needs to serialize with
+execve(). Or anybody who tests for "dumpable()", for example.
+
+If *all* you care about is just the creds, then you don't need it.
+It's really only users that do more checks than just credentials.
+"dumpable()" is I think the common one.
+
+And that's why cred_guard_mutex has that big range - it starts when we
+read the original creds (because it will use those creds to determine
+how the *new* creds will affect dumpability etc), and it ends when it
+has updated not only to the new creds, but it has set all those other
+flags too.
+
+So I'm not at all against splitting the lock up, and trying to make it
+more directed and specific.
+
+My complaints were about how the new lock wasn't much better. It was
+still completely incomprehensible, the conditional unlocking was hard
+to follow, and it really wasn't obvious that the converted users were
+fine.
+
+See?
+
+               Linus
