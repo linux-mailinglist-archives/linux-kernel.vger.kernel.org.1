@@ -2,141 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33BC719C8DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CFC19C8C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389753AbgDBSgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 14:36:00 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:46559 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389564AbgDBSgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 14:36:00 -0400
-Received: by mail-pg1-f194.google.com with SMTP id k191so2213203pgc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 11:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MBBRhcWlTmLjshW9NwjTAABOEAhTDX32vhb9ox45OjU=;
-        b=IEfTzILKyLkhfpwHgMwKAHNo0SXkWWQIbDRvPlZWRptpe05omv5tLovfYlECAnyWcE
-         tiE4YcdCHVMysKGnFUGnEjP0YzlOl8lC/YVB5X+cGbPq+ubht5zYup99LDWEVEf37kzF
-         V2Lm4oZXPYl9YKd/oMwN6nHggdELP0qetvbBw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MBBRhcWlTmLjshW9NwjTAABOEAhTDX32vhb9ox45OjU=;
-        b=I8DYuKBxfmSLxqQSfjDzs0bhl17lF+kfewkOxGdbfP1fdhapLv1thZHj8YuwF5ovDI
-         QKeaA316xqQ34a+NGDfTIqzG1/7spto/5MWjh3EFWCG2elctbBZkeGSz5bGJD0drLHZy
-         Mdwu6Tfv49y88YGyazSi3kr7mGDsu0yh+zDC6zZPco6RwGhzWy1buBtN7XBDUgaWmh2E
-         ySsrSwq0gFCoaDmx31hIn6exgNap7wV9iJ0ysnIonkrFxkaAQYtJW9FvjbpC2ZS3q2B7
-         jw6dBeG8JmZlYZTSf76iJnNp7LtcIVEF5/hIZ9dIsi//ZhHPmwir3AZmD2o8SdaAUQ+4
-         yEKg==
-X-Gm-Message-State: AGi0PuYXzg8cs4HVHwae95EBikXZsuUWrrO2hLn3ThxVdc7KtK/menP2
-        tKzIu3/NIGGzuCPNgw4LGaWm8Gr5bt4=
-X-Google-Smtp-Source: APiQypL88WhZOnrTMVmaoC4rwp7riCtTsgSSYjJzsJsGIRi1RUlgzkKuTBBp5rtjR5K09Q2BMk3zag==
-X-Received: by 2002:a65:62ce:: with SMTP id m14mr56221pgv.174.1585852559728;
-        Thu, 02 Apr 2020 11:35:59 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h198sm4203102pfe.76.2020.04.02.11.35.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 11:35:58 -0700 (PDT)
-Date:   Thu, 2 Apr 2020 11:35:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, airlied@linux.ie,
-        daniel@ffwll.ch, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: Re: [PATCH RESEND 1/4] uaccess: Add user_read_access_begin/end and
- user_write_access_begin/end
-Message-ID: <202004021132.813F8E88@keescook>
-References: <27106d62fdbd4ffb47796236050e418131cb837f.1585811416.git.christophe.leroy@c-s.fr>
- <20200402162942.GG23230@ZenIV.linux.org.uk>
- <67e21b65-0e2d-7ca5-7518-cec1b7abc46c@c-s.fr>
- <20200402175032.GH23230@ZenIV.linux.org.uk>
+        id S2389497AbgDBSaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 14:30:25 -0400
+Received: from mga05.intel.com ([192.55.52.43]:24013 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732330AbgDBSaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 14:30:24 -0400
+IronPort-SDR: omhPczE8fkRiywNkoNgqmNiRQesdxgqSw+oaexWOPEsG6/kVjjhJhykVrkERRCpG5PgjYv/oyp
+ gctXKxuGhMcA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 11:30:19 -0700
+IronPort-SDR: zqJzYA6dGkhFERQaIAyWgdTw9MM29qZMm8rA5Jiipso4HL4tm6farxkAQzHxiJ9wpC61r86TrM
+ sJ772uIj1wEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
+   d="scan'208";a="238619753"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007.jf.intel.com with ESMTP; 02 Apr 2020 11:30:16 -0700
+Date:   Thu, 2 Apr 2020 11:36:04 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v2 1/3] iommu/uapi: Define uapi version and capabilities
+Message-ID: <20200402113604.6eea1e6f@jacob-builder>
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
+References: <1585178227-17061-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1585178227-17061-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <20200326092316.GA31648@infradead.org>
+        <20200326094442.5be042ce@jacob-builder>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D7ECB45@SHSMSX104.ccr.corp.intel.com>
+        <20200327074702.GA27959@infradead.org>
+        <20200327165335.397f24a3@jacob-builder>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D7FE150@SHSMSX104.ccr.corp.intel.com>
+        <20200330090746.23c5599c@jacob-builder>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D8011A9@SHSMSX104.ccr.corp.intel.com>
+        <20200331085444.44bee0bb@jacob-builder>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D803AFF@SHSMSX104.ccr.corp.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402175032.GH23230@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 06:50:32PM +0100, Al Viro wrote:
-> On Thu, Apr 02, 2020 at 07:03:28PM +0200, Christophe Leroy wrote:
-> 
-> > user_access_begin() grants both read and write.
-> > 
-> > This patch adds user_read_access_begin() and user_write_access_begin() but
-> > it doesn't remove user_access_begin()
-> 
-> Ouch...  So the most generic name is for the rarest case?
->  
-> > > What should we do about that?  Do we prohibit such blocks outside
-> > > of arch?
-> > > 
-> > > What should we do about arm and s390?  There we want a cookie passed
-> > > from beginning of block to its end; should that be a return value?
-> > 
-> > That was the way I implemented it in January, see
-> > https://patchwork.ozlabs.org/patch/1227926/
-> > 
-> > There was some discussion around that and most noticeable was:
-> > 
-> > H. Peter (hpa) said about it: "I have *deep* concern with carrying state in
-> > a "key" variable: it's a direct attack vector for a crowbar attack,
-> > especially since it is by definition live inside a user access region."
-> 
-> > This patch minimises the change by just adding user_read_access_begin() and
-> > user_write_access_begin() keeping the same parameters as the existing
-> > user_access_begin().
-> 
-> Umm...  What about the arm situation?  The same concerns would apply there,
-> wouldn't they?  Currently we have
-> static __always_inline unsigned int uaccess_save_and_enable(void)
-> {
-> #ifdef CONFIG_CPU_SW_DOMAIN_PAN
->         unsigned int old_domain = get_domain();
-> 
->         /* Set the current domain access to permit user accesses */
->         set_domain((old_domain & ~domain_mask(DOMAIN_USER)) |
->                    domain_val(DOMAIN_USER, DOMAIN_CLIENT));
-> 
->         return old_domain;
-> #else
->         return 0;
-> #endif
-> }
-> and
-> static __always_inline void uaccess_restore(unsigned int flags)
-> {
-> #ifdef CONFIG_CPU_SW_DOMAIN_PAN
->         /* Restore the user access mask */
->         set_domain(flags);
-> #endif
-> }
-> 
-> How much do we need nesting on those, anyway?  rmk?
+On Wed, 1 Apr 2020 05:32:21 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-Yup, I think it's a weakness of the ARM implementation and I'd like to
-not extend it further. AFAIK we should never nest, but I would not be
-surprised at all if we did.
+> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > Sent: Tuesday, March 31, 2020 11:55 PM
+> > 
+> > On Tue, 31 Mar 2020 06:06:38 +0000
+> > "Tian, Kevin" <kevin.tian@intel.com> wrote:
+> >   
+> > > > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > > Sent: Tuesday, March 31, 2020 12:08 AM
+> > > >
+> > > > On Mon, 30 Mar 2020 05:40:40 +0000
+> > > > "Tian, Kevin" <kevin.tian@intel.com> wrote:
+> > > >  
+> > > > > > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > > > > Sent: Saturday, March 28, 2020 7:54 AM
+> > > > > >
+> > > > > > On Fri, 27 Mar 2020 00:47:02 -0700
+> > > > > > Christoph Hellwig <hch@infradead.org> wrote:
+> > > > > >  
+> > > > > > > On Fri, Mar 27, 2020 at 02:49:55AM +0000, Tian, Kevin
+> > > > > > > wrote:  
+> > > > > > > > If those API calls are inter-dependent for composing a
+> > > > > > > > feature (e.g. SVA), shouldn't we need a way to check
+> > > > > > > > them together before exposing the feature to the guest,
+> > > > > > > > e.g. through a iommu_get_uapi_capabilities interface?  
+> > > > > > >
+> > > > > > > Yes, that makes sense.  The important bit is to have a
+> > > > > > > capability flags and not version numbers.  
+> > > > > >
+> > > > > > The challenge is that there are two consumers in the kernel
+> > > > > > for this. 1. VFIO only look for compatibility, and size of
+> > > > > > each data struct such that it can copy_from_user.
+> > > > > >
+> > > > > > 2. IOMMU driver, the "real consumer" of the content.
+> > > > > >
+> > > > > > For 2, I agree and we do plan to use the capability flags to
+> > > > > > check content and maintain backward compatibility etc.
+> > > > > >
+> > > > > > For VFIO, it is difficult to do size look up based on
+> > > > > > capability flags.  
+> > > > >
+> > > > > Can you elaborate the difficulty in VFIO? if, as Christoph
+> > > > > Hellwig pointed out, version number is already avoided
+> > > > > everywhere, it is interesting to know whether this work
+> > > > > becomes a real exception or just requires a different mindset.
+> > > > >  
+> > > > From VFIO p.o.v. the IOMMU UAPI data is opaque, it only needs
+> > > > to do two things:
+> > > > 1. is the UAPI compatible?
+> > > > 2. what is the size to copy?
+> > > >
+> > > > If you look at the version number, this is really a "version as
+> > > > size" lookup, as provided by the helper function in this patch.
+> > > > An example can be the newly introduced clone3 syscall.
+> > > > https://lwn.net/Articles/792628/
+> > > > In clone3, new version must have new size. The slight difference
+> > > > here is that, unlike clone3, we have multiple data structures
+> > > > instead of a single struct clone_args {}. And each struct has
+> > > > flags to enumerate its contents besides size.  
+> > >
+> > > Thanks for providing that link. However clone3 doesn't include a
+> > > version field to do "version as size" lookup. Instead, as you
+> > > said, it includes a size parameter which sounds like the option 3
+> > > (argsz) listed below.
+> > >  
+> > Right, there is no version in clone3. size = version. I view this as
+> > a 1:1 lookup.
+> >   
+> > > >
+> > > > Besides breaching data abstraction, if VFIO has to check IOMMU
+> > > > flags to determine the sizes, it has many combinations.
+> > > >
+> > > > We also separate the responsibilities into two parts
+> > > > 1. compatibility - version, size by VFIO
+> > > > 2. sanity check - capability flags - by IOMMU  
+> > >
+> > > I feel argsz+flags approach can perfectly meet above requirement.
+> > > The userspace set the size and flags for whatever capabilities it
+> > > uses, and VFIO simply copies the parameters by size and pass to
+> > > IOMMU for further sanity check. Of course the assumption is that
+> > > we do provide an interface for userspace to enumerate all
+> > > supported capabilities. 
+> > You cannot trust user for argsz. the size to be copied from user
+> > must be based on knowledge in kernel. That is why we have this
+> > version to size lookup.
+> > 
+> > In VFIO, the size to copy is based on knowledge of each VFIO UAPI
+> > structures and VFIO flags. But here the flags are IOMMU UAPI flags.
+> > As you pointed out in another thread, VFIO is one user.  
+> 
+> If that is the case, can we let VFIO only copy its own UAPI fields
+> while simply passing the user pointer of IOMMU UAPI structure to IOMMU
+> driver for further size check and copy? Otherwise we are entering a
+> dead end that VFIO doesn't want to parse a structure which is not
+> defined by him while using version to represent the black box size
+> is considered as a discarded scheme and doesn't scale well...
+> 
+I think this could be an other viable option. Let me try to summarize
+since this has been a long discussion since the original version.
 
-If we were looking at a design goal for all architectures, I'd like
-to be doing what the public PaX patchset did for their memory access
-switching, which is to alarm if calling into "enable" found the access
-already enabled, etc. Such a condition would show an unexpected nesting
-(like we've seen with similar constructs with set_fs() not getting reset
-during an exception handler, etc etc).
+Problem statements:
+1. When launching vIOMMU in the guest, how can we ensure the host has
+compatible support upfront? as compared to fail later.
 
--- 
-Kees Cook
+2. As UAPI data gets extended (both in size and flags), how can we know
+the size to copy
+
+3. Maintain backward compatibility while allowing extensions?
+
+I think we all agreed that using flags (capability or types) is the way
+to address #3. As Christoph pointed out, version number should not be
+used for this purpose.
+
+So for problem 1 & 2, we have the following options:
+1. Have a version-size mapping as proposed in this set. VFIO copies from
+user the correct size based on version-type lookup. Processing of the
+data is based on flags in IOMMU driver.
+
+2. VFIO copy its own minsz then pass the user pointer to IOMMU driver
+for further copy_from_user based on flags. (by Kevin)
+
+3. Adopt VFIO argsz scheme, caller fills in argsz for the offset the
+variable size union. VFIO do not check argsz in that it requires IOMMU
+specific knowledge. IOMMU driver Use flags to handle the variable
+size.(by Alex). I think this what we have in Yi's VFIO & QEMU patch.
+argsz filled by QEMU includes bind_data.
+
+4. Do not use a unified version, have a fixed size of all UAPI
+structures, padding in struct and union. (Wasteful, not preferred per
+V1 discussion)
+
+For both 2 & 3, a unified version is not used, each API
+treated separately. vIOMMU will be launched w/o assurance of
+compatibility of all APIs. Fault handling may be more complex in normal
+operations.
+
+Appreciate everyone's input. Joerg and Alex, could you help to make a
+decision here?
+
+
+Thanks,
+
+Jacob
+
+> >   
+>  [...]  
+>  [...]  
+>  [...]  
+> > > >
+> > > > [Jacob Pan]  
+> > 
+> > [Jacob Pan]  
+> 
+> Thanks
+> Kevin
+
+[Jacob Pan]
