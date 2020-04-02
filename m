@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D8519C736
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB0F819C73B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389108AbgDBQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 12:39:22 -0400
-Received: from mail-eopbgr770089.outbound.protection.outlook.com ([40.107.77.89]:24213
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388555AbgDBQjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 12:39:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lcDi/zrkpBD4UFidjdwVSs8o4giqMZRJTY1jaFeEtAWbL3umXHxwwmtMXxYO+GybojGlm5FAeL4Dy+Lr+CpcmA4Tm7l50+2L/xaoOmJ1xRD9AimS5WRq5kc2zGBPqSmIsu5WrQOsbJPHu9RSY2D7EJXLqnUWfxdlQStxaLKiccmGLj0z6xtSUFkcYwfrUu7nX7sOrExXf2wJFcpRa5q/F8+Q6jimOZG4nFibkuZlwGRPSBSKk5SsgjAAtDFkFsZcqhIVRext+N0KgWfGxQ2xwVvjV5SpG9b71J9Jp9ceKQpRpKQX/twuvVxxoqtE6t6vzuGOLGlyHc0o/jfaUT4fyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SVSRk8upYMu7m8OeTU0MBq/QMOy+80EagZDbCxosWU8=;
- b=PcDmXfdTwLIIERzuNFGa3vTDwmZ5BGezKEoOXyZfGSpW28GlxN5wHv17AF9nILP4BOaTXBxbFG87ZK4QVksYNZjlD/r/cvVPWAvehI+pQ+ppofFZgy0fPMKHSf0QdEpprhLxwlKvFdUwtPNMLHiMhW3S/JkarafOD13V0RBSmvCOUTZpZE2oZI20yPggQgoeOMFhPbigwB6CFBDj2q8EKiLGdIlRTTap7VrKqybYxhdnPOXkE/IZOFWYhZux2e3tTt6V9pGaGn3+J4sR0SCFzDfJYSLf2smlqYkwlXk0R2iIdwb67wyrc2GefYbz7QRwTpiPAp5WKcS6z5Ru76dSUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SVSRk8upYMu7m8OeTU0MBq/QMOy+80EagZDbCxosWU8=;
- b=ImB+/xKju2voLT4VtAxzAuHCmMD/xmxn4/kI9kzsNHstZaACVrU2HXtR6CDcDh1znHX9uDKx2VlSCenOWxEJgLbRmrr6+XIsqnfBwlclUCQBiM+DySOxwjdgSZ6UiWkl9F5LdtoZniFea07IWbIQINWEkxFaRHap3wriLMoZ+Fw=
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
- by BYAPR05MB4181.namprd05.prod.outlook.com (2603:10b6:a02:87::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Thu, 2 Apr
- 2020 16:39:12 +0000
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::7c65:25af:faf7:5331]) by BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::7c65:25af:faf7:5331%2]) with mapi id 15.20.2878.014; Thu, 2 Apr 2020
- 16:39:11 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [patch v2 1/2] x86,module: Detect VMX modules and disable
- Split-Lock-Detect
-Thread-Topic: [patch v2 1/2] x86,module: Detect VMX modules and disable
- Split-Lock-Detect
-Thread-Index: AQHWCQK4rBR9ssiUhkC+D5sFyAvl1ahmAyEAgAABlQCAAAO9gA==
-Date:   Thu, 2 Apr 2020 16:39:11 +0000
-Message-ID: <A86B173C-857C-4B7B-A543-BE967F9A1868@vmware.com>
-References: <20200402123258.895628824@linutronix.de>
- <20200402124205.242674296@linutronix.de>
- <20200402152340.GL20713@hirez.programming.kicks-ass.net>
- <725ca48f-8194-658e-0296-65d4368803b5@intel.com>
- <20200402162548.GH20730@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200402162548.GH20730@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=namit@vmware.com; 
-x-originating-ip: [2601:647:4700:9b2:1153:aafd:5246:5949]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 65e2cfd2-6d6d-44f6-6f73-08d7d7245fa7
-x-ms-traffictypediagnostic: BYAPR05MB4181:|BYAPR05MB4181:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR05MB4181F333C8D378FB1A5DED55D0C60@BYAPR05MB4181.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 0361212EA8
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(346002)(376002)(396003)(366004)(136003)(316002)(36756003)(81166006)(6916009)(54906003)(2906002)(8676002)(6486002)(81156014)(8936002)(186003)(86362001)(2616005)(4744005)(33656002)(5660300002)(6506007)(53546011)(66446008)(66556008)(71200400001)(478600001)(66476007)(76116006)(66946007)(6512007)(64756008)(4326008)(7416002);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jBOLEzFxKwxJnKbGJpCY52BBU0DOzuiP50go/xS1a0JOs/fGlnDtER6Qvc+rcdvSPvi/SWwSlXZqywO3swmKT3c0cHg4wqGC3evo04OKDRV0eqGBo3NENBsWBLkQ5IVttZPl/4usfv8pFdWnV8BPQrNnscsyLckUMLQxyjEITa0uOUkpCZqMQBhg/o5qnmZrnepK02bmc/wCyHTLDiw8i3amvWX6xhBp6cMym/6Bv1p+PTBWSOzDHEBoYAY5d2du4c7ar6B1rxSBUChDUH0tTusCjU2zdvr8TV9TQeXnLKUUwT7u4kqYZSBjHonVx97oJcpQwV91uOqDqwzkz9huFKAC1rdiflQor8cWmZLjZLfudpgQ2uaAjrpkCgMZkR+IYhCQvbfY7BFQaQ2MNsfIzpqcpLB3daDS9TJU8wR5BAQp1iRxV7QrmgYnG7DYFFB8
-x-ms-exchange-antispam-messagedata: 6v/W1Y/JoCsx0SJRnnGXs3MnP1nFWYdC32B2jZacq2CWxtpOmb+6UmRqTtiP0iatZaZx6nu7AimspNRlMMk+XVM6+QKTEFfg0S4Fwq/H5H4I75DwEz8ja/XEuh6sC11Z6EZXD3ZmOMBxL7fO1WsXIUmrDZ7ngjc8dYb9AhsrbelpNR/TGi8YOycU/ouz0FpSS8aHFhPAPvN8PsWfXzR2KQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <79B9730BAD75E64E89D6907626A0E497@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S2389876AbgDBQkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 12:40:03 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:34210 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389072AbgDBQkC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 12:40:02 -0400
+Received: by mail-pf1-f196.google.com with SMTP id 23so2017942pfj.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 09:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=P5P7+32EPNiTA9W/bPQnunX4XIHQIJgt5gQH7DdKhy0=;
+        b=fH8o+GZDZ1xdsVdHSi6MAupKO7i5SOOdhKbMy9EC42AcredyeAYuEr60QU+fttr6C7
+         M2hu1qmBT0E9kEN76oM60aZ/2lEdUGRNSJhnMJgML3APaBmfOp6cNgas0HOFLn7YCJ9t
+         RwvAvDwKlwACh5Y2WaH8SYappE+KxFzPYG22EvIPo0pYp4eYGp52pNwS8JUBHX39jpGn
+         KyyV+sycOit5HZK8sukkfuVL/Bfn0cBmW79zilVLgTeAKHW5n0VQGehTG0J11yLPVzKS
+         JdSyKtBiFPzQ7ho0Qfjc201wn6fV1KNo4fb4K4jM1Jya+7jxx7diX9cQyFo2tgDVbssA
+         TyQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P5P7+32EPNiTA9W/bPQnunX4XIHQIJgt5gQH7DdKhy0=;
+        b=fybLpQvstKuiPLVZXPTpgKmobQ3Ap844yHt/9iZzEv5GnXr2QoCd4SxB3bS/gIm44T
+         bYQZn0r3mhDH8puw4maItcn0rHKzwA+QIDfBzkY5LMwVKZiS2wRa5LEK9xs6/CCVW3bK
+         O8pS4FZ//bTRTGI3o+ZXFXZZXSQUg3+koy/rlta2ndP4GUT77HP1wAJlWtuljk6gjuNZ
+         bMqO0NwdtVzgaELPRQYOFLbkXV9AP1pbdehb+MRg0mIlQuoUjv8CwCAukX7DKRjsd+oa
+         Efb22OmrTtNnVL/1yddTzLot327mGBU4QJCQNP2mymDGNJSCGrbMZYm6PhaCRq8afdFl
+         09rw==
+X-Gm-Message-State: AGi0PuYE3rEsKoM+z1xoyR631Xrttc9f5jiAvd1wS7LZ16CnxAAxd+hk
+        qc4+A3IgL74hQBZmkPqKucudUA==
+X-Google-Smtp-Source: APiQypKH0DXiDCoSWxCJ+loJoi3QVtbfhkTZ6FkNR9ShOim7iSVt2e1XqX4CIaEPQbwY6vh2ItkDDg==
+X-Received: by 2002:a05:6a00:c8:: with SMTP id e8mr3777718pfj.131.1585845601274;
+        Thu, 02 Apr 2020 09:40:01 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id ci18sm4102094pjb.23.2020.04.02.09.40.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 09:40:00 -0700 (PDT)
+Date:   Thu, 2 Apr 2020 09:39:57 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     'Nick Desaulniers' via Clang Built Linux 
+        <clang-built-linux@googlegroups.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sandeep Patil <sspatil@google.com>
+Subject: Re: [PATCH v2] Makefile.llvm: simplify LLVM build
+Message-ID: <20200402163957.lqgr3tpc4z7ish5e@google.com>
+References: <20200317215515.226917-1-ndesaulniers@google.com>
+ <20200327224246.GA12350@ubuntu-m2-xlarge-x86>
+ <CAK7LNAShb1gWuZyycLAGWm19EWn17zeNcmdPyqu1o=K9XrfJbg@mail.gmail.com>
+ <CAK7LNAQ3=jUu4aa=JQB8wErUGDd-Vr=cX_yZSdP_uAP6kWZ=pw@mail.gmail.com>
+ <CAKwvOd=5AG1ARw6JUXmkuiftuShuYHKLk0ZnueuLhvOdMr5dOA@mail.gmail.com>
+ <20200330190312.GA32257@ubuntu-m2-xlarge-x86>
+ <CAK7LNAT1HoV5wUZRdeU0+P1nYAm2xQ4tpOG+7UtT4947QByakg@mail.gmail.com>
+ <CAKwvOd==U6NvvYz8aUz8fUNdvz27pKrn8X5205rFadpGXzRC-Q@mail.gmail.com>
+ <CAK7LNAR0PPxibFVC5F07mytz4J2BbwQkpHcquH56j7=S_Mqj2g@mail.gmail.com>
+ <CAKwvOdnYXXcfxWT6bOZXCX9-ac8tb=p2J53W+T-_gOfUu9vvSg@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65e2cfd2-6d6d-44f6-6f73-08d7d7245fa7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2020 16:39:11.8718
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NDelQuJsGLzTxzJP8no+Jk9Stww6Podm/sfzm8O9EFSNH3VcWrhzNVTnHcZ6Ni3iJw5FdRK01WOJ7L0TOpdw7g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4181
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdnYXXcfxWT6bOZXCX9-ac8tb=p2J53W+T-_gOfUu9vvSg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Apr 2, 2020, at 9:25 AM, Peter Zijlstra <peterz@infradead.org> wrote:
->=20
->=20
-> Learn to trim your replies already!
->=20
-> On Fri, Apr 03, 2020 at 12:20:08AM +0800, Xiaoyao Li wrote:
->> On 4/2/2020 11:23 PM, Peter Zijlstra wrote:
->=20
->>> +bad_module:
->>> +	pr_warn("disabled due to VMX in module: %s\n", me->name);
->>> +	sld_state =3D sld_off;
->>=20
->> shouldn't we remove the __ro_after_init of sld_state?
->=20
-> Oh, that's probably a good idea. I can't actually test this due to no
-> hardware.
 
-Just wondering, since I lack hardware as well: can the performance counter
-LOCK_CYCLES.SPLIT_LOCK_UC_LOCK_DURATION be used to detect split-locks
-similarly to SLD (although it would be after the split-lock event)?
+On 2020-04-01, 'Nick Desaulniers' via Clang Built Linux wrote:
+>On Tue, Mar 31, 2020 at 11:11 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>>
+>> On Wed, Apr 1, 2020 at 3:39 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>> >
+>> > On Mon, Mar 30, 2020 at 11:25 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>> > >
+>> > > Having both LLVM_DIR and LLVM_SUFFIX seems verbose.
+>> >
+>> > I agree, so maybe just LLVM=y, and we can support both non-standard
+>> > locations and debian suffixes via modifications to PATH.
+>>
+>>
+>>
+>> OK, so we will start with the boolean switch 'LLVM'.
+>>
+>> People can use PATH to cope with directory path and suffixes.
+>
+>Sounds good, we will modify our CI to use PATH modifications rather
+>than suffixes. We can even do that before such a patch to Makefile
+>exists.
 
+The proposed LLVM=1 + PATH scheme looks good to me.
+
+
+There seems to be one issue.
+OBJSIZE=llvm-objsize added in
+commit fcf1b6a35c16ac500fa908a4022238e5d666eabf "Documentation/llvm: add documentation on building w/ Clang/LLVM"
+is wrong.
+
+The tool is named llvm-size. OBJSIZE is only used once:
+
+   arch/s390/scripts/Makefile.chkbss
+   14:     if ! $(OBJSIZE) --common $< | $(AWK) 'END { if ($$3) exit 1 }'; then \
