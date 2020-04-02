@@ -2,109 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF4B19C1A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BABC19C1AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388242AbgDBNEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:04:42 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35054 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388174AbgDBNEl (ORCPT
+        id S2388485AbgDBNHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:07:46 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48762 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388322AbgDBNHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:04:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585832679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oT4Uo1Yp60nG/JqRSBwCHQqcnmWJYfv2TpClsO2iQGA=;
-        b=Y5RW5c7abtW4vf4qBVJi4gmtY5gxJkwbo3ks5MQZehO+FkuHuhkQSw8CVCjVq2jWkqEM1T
-        EORZyajUFTdGNh2hTscpGn0rCtfGvInzfQ1eVxUIymTj7+L6E3SGJyizLmFKMq3ACDNHoi
-        5g3Lp1nVeRQ0xvp/hhLwkspNgZnMoNU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-502-Csuf1Xb4OAeqfRrgeyCEkA-1; Thu, 02 Apr 2020 09:04:36 -0400
-X-MC-Unique: Csuf1Xb4OAeqfRrgeyCEkA-1
-Received: by mail-wr1-f69.google.com with SMTP id h95so1442483wrh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 06:04:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oT4Uo1Yp60nG/JqRSBwCHQqcnmWJYfv2TpClsO2iQGA=;
-        b=Q5m2xl0CDSHyjcg/xzcY3aRn1xKAGSZiNIK2R7G8pDEySbiFlmThF2an9sxSzxzbUS
-         B9DuTV+uzkSHzSs808nYKZo99cTmy79soLJaUptjeXqJjCXC84Aqbta/gQBcXQsXiPtv
-         AcQBafAV5zKhd6enLmSp6evVpgjIFdvFTRze4+h9Cf7/ZN12P12Ne69GIoeVIyrviMZp
-         D/ZQNumdr8iVrk64X/QmJB1YtYWW0boiwyhC82LUYVX58dPYDSIQ3Oa/Zb1c6GBFSSQc
-         T3plDDHyIDRLe+qOiaple4Jj5imt6KkP61p8sCFX/G0epN2Kw35/sx1IoobLiAu9DmLc
-         gf0A==
-X-Gm-Message-State: AGi0PuZEwhZwjdqB6UQut5e2Ny4qYOMjRm7E7C/coIHNS23mHkOpaMrI
-        ECdbJCq0qCgWCMeXBPHkCmwOzfPdqlPBuUj47sw1NnqJeEFlVYZYs/3WqK7mmOJxuZ2DlrqLX/Y
-        4fhYp98mzaYTrCS2VnxwFHeQB
-X-Received: by 2002:adf:800e:: with SMTP id 14mr3328747wrk.369.1585832674539;
-        Thu, 02 Apr 2020 06:04:34 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIe/nCBpsjbXD1D5gjLIkOslPVlF6W7YKWIfNby8hSlxW5unstzr92So9V03fZyrhMVK3yV1A==
-X-Received: by 2002:adf:800e:: with SMTP id 14mr3328714wrk.369.1585832674308;
-        Thu, 02 Apr 2020 06:04:34 -0700 (PDT)
-Received: from ?IPv6:2a02:8388:7c1:1280:a281:9dab:554b:2fdc? (2a02-8388-07c1-1280-a281-9dab-554b-2fdc.cable.dynamic.v6.surfer.at. [2a02:8388:7c1:1280:a281:9dab:554b:2fdc])
-        by smtp.gmail.com with ESMTPSA id z12sm7627688wrt.27.2020.04.02.06.04.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 06:04:33 -0700 (PDT)
-Subject: Re: [PATCH] perf script: add flamegraph.py script
-To:     Kim Phillips <kim.phillips@amd.com>,
-        linux-perf-users@vger.kernel.org
-Cc:     Martin Spier <mspier@netflix.com>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20200320151355.66302-1-agerstmayr@redhat.com>
- <7176b535-f95b-bf6d-c181-6ccb91425f96@amd.com>
- <21c81775-876a-4dd2-f52f-42645963350f@redhat.com>
- <05e0d633-54b4-fb3b-3d08-8963271017ea@amd.com>
-From:   Andreas Gerstmayr <agerstmayr@redhat.com>
-Message-ID: <833a5e74-645a-130c-ceab-068880e0c69a@redhat.com>
-Date:   Thu, 2 Apr 2020 15:04:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 2 Apr 2020 09:07:45 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032D3YoG195959;
+        Thu, 2 Apr 2020 13:07:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=oW8EUs27voZDgUzLsb6d6q3EuFOz24ejqeKT2dTfZOA=;
+ b=I8vVgLzqdQAz1IIYt3+SEnRZu1bVXicIN7Wgz3nL1S/ofQjEf0KV1kEwqHkf9Sw7YQ0l
+ 8lzfA+K7uSmvdB5BewIrxxnZAFzYmSmeFAm1ZiQhe24y+yoTXVKfWGLz64by5kR7aYSg
+ I7PxRODynHvrpx/Vt/f2OG1IFrZURfQI3pIo/xYqdzbk2H9cVJt4hYI2QeyrxxA38jC2
+ iIF/J8QUvu/kCVSj+xSnmU1MDjMRz2yrqSz49Y69HdZ6Niiil8TBOjY6ROYhNFu6OkFC
+ 8mxKwry3nL0n64tx/4LLPa+iIxKpOgokn+kv74DerIxS30XnYFsBguoFTJbT9nNCJlv3 kQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 303cevb9bg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 13:07:38 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032CwKj4054938;
+        Thu, 2 Apr 2020 13:05:37 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 302g4vgwvh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 13:05:37 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032D5YVo018468;
+        Thu, 2 Apr 2020 13:05:34 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Apr 2020 06:05:33 -0700
+Date:   Thu, 2 Apr 2020 16:05:26 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 04/32] staging: wfx: remove "burst" mechanism
+Message-ID: <20200402130526.GR2001@kadam>
+References: <20200401110405.80282-1-Jerome.Pouiller@silabs.com>
+ <20200401110405.80282-5-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-In-Reply-To: <05e0d633-54b4-fb3b-3d08-8963271017ea@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200401110405.80282-5-Jerome.Pouiller@silabs.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020118
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020119
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.03.20 20:04, Kim Phillips wrote:
-> I now get a SIGSEGV when executing perf script report flamegraph.
+On Wed, Apr 01, 2020 at 01:03:37PM +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > 
-> Here's a trace:
+> In the old days, the driver tried to reorder frames in order to send
+> frames from the same queue grouped to the firmware. However, the
+> firmware is able to do the job internally for a long time. There is no
+> reasons to keep this mechanism.
 > 
-> #0  0x000055555590a9b2 in regs_map (regs=0x7fffffffbfc8, mask=16715775,
->      bf=0x7fffffffba60 "", size=512) at util/scripting-engines/trace-event-python.c:696
-> #1  0x000055555590ab03 in set_regs_in_dict (dict=0x7ffff61dd500, sample=0x7fffffffbf20,
->      evsel=0x555555d7a700) at util/scripting-engines/trace-event-python.c:718
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> ---
+>  drivers/staging/wfx/queue.c | 23 -----------------------
+>  drivers/staging/wfx/sta.c   |  2 --
+>  drivers/staging/wfx/wfx.h   |  1 -
+>  3 files changed, 26 deletions(-)
+> 
+> diff --git a/drivers/staging/wfx/queue.c b/drivers/staging/wfx/queue.c
+> index e3aa1e346c70..712ac783514b 100644
+> --- a/drivers/staging/wfx/queue.c
+> +++ b/drivers/staging/wfx/queue.c
+> @@ -363,8 +363,6 @@ static bool hif_handle_tx_data(struct wfx_vif *wvif, struct sk_buff *skb,
+>  static int wfx_get_prio_queue(struct wfx_vif *wvif,
+>  				 u32 tx_allowed_mask, int *total)
+>  {
+> -	static const int urgent = BIT(WFX_LINK_ID_AFTER_DTIM) |
+> -		BIT(WFX_LINK_ID_UAPSD);
+>  	const struct ieee80211_tx_queue_params *edca;
+>  	unsigned int score, best = -1;
+                            ^^^^^^^^^
+Not related to this this patch but this confused me initially.  UINT_MAX
+would be more readable.
 
-This error seems unrelated to flamegraph.py (occurs also with the 
-stackcollapse.py script).
+The other unrelated question I had about this function was:
 
-Looks like the intr_regs->regs can be 0 when running in DWARF mode (this 
-error doesn't occur in the default mode). I've added a check and sent a 
-patch. While at it, valgrind reported an invalid read in a different 
-code path, which is fixed by the other patch I just sent a few minutes ago.
+   402          /* search for a winner using edca params */
+   403          for (i = 0; i < IEEE80211_NUM_ACS; ++i) {
+                                ^^^^^^^^^^^^^^^^^
+IEEE80211_NUM_ACS is 4.
 
-Can you please test again and report if there are any other issues?
+   404                  int queued;
+   405  
+   406                  edca = &wvif->edca_params[i];
+   407                  queued = wfx_tx_queue_get_num_queued(&wvif->wdev->tx_queue[i],
+   408                                  tx_allowed_mask);
+   409                  if (!queued)
+   410                          continue;
+   411                  *total += queued;
+   412                  score = ((edca->aifs + edca->cw_min) << 16) +
+   413                          ((edca->cw_max - edca->cw_min) *
+   414                           (get_random_int() & 0xFFFF));
+   415                  if (score < best && (winner < 0 || i != 3)) {
+                                                           ^^^^^^
 
+Why do we not want winner to be 3?  It's unrelated to the patch but
+there should be a comment next to that code probably.
 
-Cheers,
-Andreas
+   416                          best = score;
+   417                          winner = i;
+   418                  }
+   419          }
+
+regards,
+dan carpenter
 
