@@ -2,65 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D41919C150
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6168419C159
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388312AbgDBMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:43:12 -0400
-Received: from mout02.posteo.de ([185.67.36.66]:48973 "EHLO mout02.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387654AbgDBMnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:43:12 -0400
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 68BE0240101
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Apr 2020 14:43:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1585831390; bh=rrIDGUgOnKqtMc3GZAlKewSN2vPe/6rhqt+UH1hcTrE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YSQRxLCWTBVEhOADfjkeXIukI0EziMGQzBshvPJAx+uOGct8XLNOb0LeyXxcUxrU2
-         /JcKlQ7ImGqOrIg1PeaJ5X0PJuQdFRzi6fp+E3oxKAWLy+uylAZRB5PC8jVBhxT/1X
-         mIyImiiJ1mDoxaic3jpCgpMbzRexYzFZroLSBz8hCJWcBHSfL44wOlgEMVFX+OADtS
-         7sXb/5NyxNZjv5IsWwvRpLtn5zn5wu98+ujsrFMMsV9O4m+8g4oTtapdbP8GcSi9zl
-         fxxvJrvH2ecguBijWLODOqTmTKjQ0r/ltK6p+uJ50tChg58TAS3bwFIY+BLw7eh7fg
-         gPtuGBVeRpD7g==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 48tN5T6y1bz9rxQ;
-        Thu,  2 Apr 2020 14:43:09 +0200 (CEST)
-From:   Benjamin Thiel <b.thiel@posteo.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Benjamin Thiel <b.thiel@posteo.de>
-Subject: [PATCH] x86/mm/mmap: Fix -Wmissing-prototypes warnings
-Date:   Thu,  2 Apr 2020 14:43:07 +0200
-Message-Id: <20200402124307.10857-1-b.thiel@posteo.de>
-X-Mailer: git-send-email 2.17.1
+        id S2388339AbgDBMpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 08:45:02 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53574 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726252AbgDBMpC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 08:45:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585831501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OInt6TYyVUeXDP+gHo+3FOpp7iB6V9mt8Oc+n4QQb2g=;
+        b=GqzuSD2YGn9xJe4K05RiICQoEvEXYjszK03rb+PPrJsxQPZ96v/B4DnSbh22NAi1kPXPdc
+        9J3oYsMSv2M+TDLuapnXuKBzQlunhA+gTOut0X2tnjVgT1+SjoG6W8nbu6/ut0r4Q//Fgy
+        TvyteOYL1TvuTrgohTcXZ0KoFetK7Po=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-vzawzjhbNH-JDy1zvz7j1w-1; Thu, 02 Apr 2020 08:44:59 -0400
+X-MC-Unique: vzawzjhbNH-JDy1zvz7j1w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F171800D53;
+        Thu,  2 Apr 2020 12:44:58 +0000 (UTC)
+Received: from agerstmayr-thinkpad.redhat.com (unknown [10.40.192.105])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 188915C1B0;
+        Thu,  2 Apr 2020 12:44:52 +0000 (UTC)
+From:   Andreas Gerstmayr <agerstmayr@redhat.com>
+To:     linux-perf-users@vger.kernel.org
+Cc:     Andreas Gerstmayr <agerstmayr@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf script: fix invalid read
+Date:   Thu,  2 Apr 2020 14:43:38 +0200
+Message-Id: <20200402124337.419456-1-agerstmayr@redhat.com>
+In-Reply-To: <05e0d633-54b4-fb3b-3d08-8963271017ea@amd.com>
+References: <05e0d633-54b4-fb3b-3d08-8963271017ea@amd.com>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add includes for the prototypes of valid_phys_addr_range(),
-arch_mmap_rnd() and valid_mmap_phys_addr_range() in order to fix
--Wmissing-prototypes warnings.
+closedir(lang_dir) frees the memory of script_dirent->d_name, which
+gets accessed in the next line in a call to scnprintf().
 
-Signed-off-by: Benjamin Thiel <b.thiel@posteo.de>
+Valgrind report:
+
+Invalid read of size 1
+=3D=3D413557=3D=3D    at 0x483CBE6: strlen (vg_replace_strmem.c:461)
+=3D=3D413557=3D=3D    by 0x4DD45FD: __vfprintf_internal (vfprintf-interna=
+l.c:1688)
+=3D=3D413557=3D=3D    by 0x4DE6679: __vsnprintf_internal (vsnprintf.c:114=
+)
+=3D=3D413557=3D=3D    by 0x53A037: vsnprintf (stdio2.h:80)
+=3D=3D413557=3D=3D    by 0x53A037: scnprintf (vsprintf.c:21)
+=3D=3D413557=3D=3D    by 0x435202: get_script_path (builtin-script.c:3223=
+)
+=3D=3D413557=3D=3D  Address 0x52e7313 is 1,139 bytes inside a block of si=
+ze 32,816 free'd
+=3D=3D413557=3D=3D    at 0x483AA0C: free (vg_replace_malloc.c:540)
+=3D=3D413557=3D=3D    by 0x4E303C0: closedir (closedir.c:50)
+=3D=3D413557=3D=3D    by 0x4351DC: get_script_path (builtin-script.c:3222=
+)
+
+Signed-off-by: Andreas Gerstmayr <agerstmayr@redhat.com>
 ---
- arch/x86/mm/mmap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/perf/builtin-script.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/mm/mmap.c b/arch/x86/mm/mmap.c
-index cb91eccc4960..c90c20904a60 100644
---- a/arch/x86/mm/mmap.c
-+++ b/arch/x86/mm/mmap.c
-@@ -18,7 +18,9 @@
- #include <linux/sched/signal.h>
- #include <linux/sched/mm.h>
- #include <linux/compat.h>
-+#include <linux/elf-randomize.h>
- #include <asm/elf.h>
-+#include <asm/io.h>
- 
- #include "physaddr.h"
- 
--- 
-2.17.1
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 656b347f6dd8..170af13b4d53 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -3218,10 +3218,10 @@ static char *get_script_path(const char *script_r=
+oot, const char *suffix)
+ 			__script_root =3D get_script_root(script_dirent, suffix);
+ 			if (__script_root && !strcmp(script_root, __script_root)) {
+ 				free(__script_root);
+-				closedir(lang_dir);
+ 				closedir(scripts_dir);
+ 				scnprintf(script_path, MAXPATHLEN, "%s/%s",
+ 					  lang_path, script_dirent->d_name);
++				closedir(lang_dir);
+ 				return strdup(script_path);
+ 			}
+ 			free(__script_root);
+--=20
+2.25.1
 
