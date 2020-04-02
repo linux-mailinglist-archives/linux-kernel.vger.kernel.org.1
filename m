@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C0719C835
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D1E19C83A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390080AbgDBRkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:40:24 -0400
-Received: from mga04.intel.com ([192.55.52.120]:58433 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388677AbgDBRkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:40:24 -0400
-IronPort-SDR: opsy7vuXbQnhtgdzGyq/p+etPe9stVLPT+VBEL4k7rxAVcjAW2FO+ItxT7uTL0bA4QhHdjcD/r
- WAW9YcNnNUng==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 10:40:23 -0700
-IronPort-SDR: DwsXJGbh+AAuswdYAzSTlcqUcw8FrYYYi+l9EiZsKyQU8zHTwwwBotq3rHUvaSuc7Ja76dH59J
- ZcE4FrUI7asw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
-   d="scan'208";a="240887686"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by fmsmga007.fm.intel.com with ESMTP; 02 Apr 2020 10:40:23 -0700
-Date:   Thu, 2 Apr 2020 10:40:23 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     x86@kernel.org, "Kenneth R . Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] KVM: VMX: Extend VMX's #AC interceptor to handle
- split lock #AC in guest
-Message-ID: <20200402174023.GI13879@linux.intel.com>
-References: <20200402124205.334622628@linutronix.de>
- <20200402155554.27705-1-sean.j.christopherson@intel.com>
- <20200402155554.27705-4-sean.j.christopherson@intel.com>
- <87sghln6tr.fsf@nanos.tec.linutronix.de>
+        id S2390122AbgDBRko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:40:44 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34658 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390107AbgDBRko (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 13:40:44 -0400
+Received: by mail-pj1-f66.google.com with SMTP id q16so54600pje.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 10:40:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nNj9UWy+adV8xUYOhsOn+0IPS9HHD1PHgo+3YUVx5tE=;
+        b=j9d3nGYO+vImn9Ah56bhXrZY5ohVu3dkH9USmRV2WScjAPCWH8zRCrBp1U5+hzFaP1
+         +CSS6P7LMyN8Bx0wBTHJz52pxR+7g4ZZGMU6wAvQKH38g3SvuAynX7g/hO7bHvL85grU
+         MAQZnqjpjGOyuoyyW85+/dINzwUUZ4oKynDPOkWVbSuOflXn9ojlm0ut9LnLil6QK7oD
+         g5TjrdMsBZhZMuIhUGzyGlJU+n0WWz/mmkVUawuY2ILtjQjGfRrASKzHVIFV+SFLrstI
+         XyFqwz98+8hl8qMrm1y12zUCHZNBtbpErPSeWXs5iE3CCdUoSMyeslHSNMbW3SGO1Nxt
+         0Hfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nNj9UWy+adV8xUYOhsOn+0IPS9HHD1PHgo+3YUVx5tE=;
+        b=AdnEMp8K8wXYb6HOXJpuATUCWbZQfil9GAPTJlZDV0qp72+uBjd7UZ7UbkCULMYRCH
+         rTKAOpLOQahTORBG0v7gVVEU6FuY4eu3/ef5/m0OzqPdZw/p+y1SnhiFGQJTwG/IoytY
+         1Dq2ta0ryP0WSot3u8EI7g2I31oZnsZiWh+c71Z9U62ca2dAJFyYmsWu2QStMnv7iTV+
+         GExoDfJLQKZZxf2ITaNRElL0E+MTQGxKmc2mfB2qmrwr59SMBVxqAlT4orRJM1p0OkJq
+         CrOzlMllcjXrGm0Q0vAVl8M7tAq9xXwVEiLHLQl5vnMEpOnHahChNBQH39C7/lP3FJ+A
+         PJew==
+X-Gm-Message-State: AGi0PuatoRsLRpW+bHVzgsyDpo5BCzvQxDXr6Avro6FiNTNpd2hYT6bn
+        E4GqtS+TgRnwmZNqu+SN0d2EVqDkToMfvxlTIx1W6w==
+X-Google-Smtp-Source: APiQypIdxa1oDQwUT8/HPtN0SsfP+74JHOVfIUEAdwj3kA0JfxTpxqsmYGp3noybOOAdNmZl81K8fAcmMCRbTmK/Pk4=
+X-Received: by 2002:a17:90a:8085:: with SMTP id c5mr4564376pjn.186.1585849242863;
+ Thu, 02 Apr 2020 10:40:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sghln6tr.fsf@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20200402173842.96013-1-maskray@google.com>
+In-Reply-To: <20200402173842.96013-1-maskray@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 2 Apr 2020 10:40:31 -0700
+Message-ID: <CAKwvOdkHugeJW8GOa_8Pf+axPnhFiy+4t0fsOyzp2hxaDE1NAw@mail.gmail.com>
+Subject: Re: [PATCH] Documentation/llvm: fix the name of llvm-size
+To:     Fangrui Song <maskray@google.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 07:19:44PM +0200, Thomas Gleixner wrote:
-> Sean Christopherson <sean.j.christopherson@intel.com> writes:
-> > @@ -4623,6 +4623,12 @@ static int handle_machine_check(struct kvm_vcpu *vcpu)
-> >  	return 1;
-> >  }
-> >  
-> > +static inline bool guest_cpu_alignment_check_enabled(struct kvm_vcpu *vcpu)
-> 
-> I used a different function name intentionally so the check for 'guest
-> want's split lock #AC' can go there as well once it's sorted.
+On Thu, Apr 2, 2020 at 10:38 AM 'Fangrui Song' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
+>
+> The tool is called llvm-size, not llvm-objsize.
+>
+> Fixes: fcf1b6a35c16 ("Documentation/llvm: add documentation on building w/ Clang/LLVM")
+> Signed-off-by: Fangrui Song <maskray@google.com>
+> ---
+>  Documentation/kbuild/llvm.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> index d6c79eb4e23e..eefbdfa3e4d9 100644
+> --- a/Documentation/kbuild/llvm.rst
+> +++ b/Documentation/kbuild/llvm.rst
+> @@ -51,7 +51,7 @@ LLVM has substitutes for GNU binutils utilities. These can be invoked as
+>  additional parameters to `make`.
+>
+>         make CC=clang AS=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \\
+> -         OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-objsize \\
+> +         OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size \\
+>           READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \\
+>           HOSTLD=ld.lld
+>
+> --
 
-Heh, IIRC, I advised Xiaoyao to do the opposite so that the injection logic
-in the #AC case statement was more or less complete without having to dive
-into the helper, e.g. the resulting code looks like this once split-lock is
-exposed to the guest:
+OBJCOPY -> llvm-objcopy
+OBJDUMP -> llvm-objdump
+OBJSIZE -> llvm-size
 
-	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) ||
-	    guest_cpu_alignment_check_enabled(vcpu) ||
-	    guest_cpu_sld_on(vmx)) {
-		kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
-		return 1;
-	}
+Oops, thanks for the patch.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-> > +{
-> > +	return vmx_get_cpl(vcpu) == 3 && kvm_read_cr0_bits(vcpu, X86_CR0_AM) &&
-> > +	       (kvm_get_rflags(vcpu) & X86_EFLAGS_AC);
-> > +}
-> > +
-> >  static int handle_exception_nmi(struct kvm_vcpu *vcpu)
-> >  {
-> >  	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> > @@ -4688,9 +4694,6 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
-> >  		return handle_rmode_exception(vcpu, ex_no, error_code);
-> >  
-> >  	switch (ex_no) {
-> > -	case AC_VECTOR:
-> > -		kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
-> > -		return 1;
-> >  	case DB_VECTOR:
-> >  		dr6 = vmcs_readl(EXIT_QUALIFICATION);
-> >  		if (!(vcpu->guest_debug &
-> > @@ -4719,6 +4722,27 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
-> >  		kvm_run->debug.arch.pc = vmcs_readl(GUEST_CS_BASE) + rip;
-> >  		kvm_run->debug.arch.exception = ex_no;
-> >  		break;
-> > +	case AC_VECTOR:
-> > +		/*
-> > +		 * Reflect #AC to the guest if it's expecting the #AC, i.e. has
-> > +		 * legacy alignment check enabled.  Pre-check host split lock
-> > +		 * turned on to avoid the VMREADs needed to check legacy #AC,
-> > +		 * i.e. reflect the #AC if the only possible source is legacy
-> > +		 * alignment checks.
-> > +		 */
-> > +		if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT) ||
-> 
-> I think the right thing to do here is to make this really independent of
-> that feature, i.e. inject the exception if
-> 
->  (CPL==3 && CR0.AM && EFLAGS.AC) || (FUTURE && (GUEST_TEST_CTRL & SLD))
-> 
-> iow. when its really clear that the guest asked for it. If there is an
-> actual #AC with SLD disabled and !(CPL==3 && CR0.AM && EFLAGS.AC) then
-> something is badly wrong and the thing should just die. That's why I
-> separated handle_guest_split_lock() and tell about that case.
-
-That puts KVM in a weird spot if/when intercepting #AC is no longer
-necessary, e.g. "if" future CPUs happen to gain a feature that traps into
-the hypervisor (KVM) if a potential near-infinite ucode loop is detected.
-
-The only reason KVM intercepts #AC (before split-lock) is to prevent a
-malicious guest from executing a DoS attack on the host by putting the #AC
-handler in ring 3.  Current CPUs will get stuck in ucode vectoring #AC
-faults more or less indefinitely, e.g. long enough to trigger watchdogs in
-the host.
-
-Injecting #AC if and only if KVM is 100% certain the guest wants the #AC
-would lead to divergent behavior if KVM chose to not intercept #AC, e.g.
-some theoretical unknown #AC source would conditionally result in exits to
-userspace depending on whether or not KVM wanted to intercept #AC for
-other reasons.
-
-That's why we went with the approach of reflecting #AC unless KVM detected
-that the #AC was host-induced.
+-- 
+Thanks,
+~Nick Desaulniers
