@@ -2,101 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A65419C4B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A69EB19C4CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388742AbgDBOus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:50:48 -0400
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:43459 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729549AbgDBOus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:50:48 -0400
-Received: by mail-lj1-f177.google.com with SMTP id g27so3489097ljn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 07:50:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=0qdeGekIQvzSZQ/bchGHqOPc0D8b8p/R5z9ULmhHISQ=;
-        b=arhfmja5XpBIHDuFu7oNorGl4wxrU0DpZmvk3vHpL0QOXMDs1U44LN6ygn3MBJ/eR3
-         3wLXRbPkBU+NCWdir2hE0fYj+xCGAf31wkRp7hNMxDnwTg3711UfFAbMQIBv8rl0gnzS
-         6zF+2Rbql09DPKB+8obYRkfmSPme12s2Kds2gbdUQxcs6t0y0mRwoEjxEm0rTT/uX5kR
-         NNRtmJkZuVEVGSLeq191W5Hbi2hNkc/+mLCYkevKLXtKekdZt6pKC3QFksb7rD6s4dE6
-         v2wHRLKK3slv+B7Va2Jr0nwgP5poY2NSI6ZEJmImTZ9gAcKu3XNK9O+8dChhnTt63LcN
-         UFxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=0qdeGekIQvzSZQ/bchGHqOPc0D8b8p/R5z9ULmhHISQ=;
-        b=JIqZczd9fI0xA3ach3APJtTu9nAuLBM1/tuXdgqCRAUMwDE4TADuLiix1pa86Aa7nc
-         MiquM1fEyz/3Ug5U+FSIzcwenccI+gYxXI+2c9UypVZWReTMdU1dmPKCv0RtkRkV1HSp
-         6QzccqFcocPEPpwaHFI+C02L6INfXw87qVETxzicsN3bFGQJGeXdT69znP+gu63UdBQM
-         e2Mt9xSxPtVzAm5lUVd71XY4quKX/jnaCNSXtd0n7sdl2jHiM3b/60w7njUCUmvUCvL4
-         SOtFprnoAm161ZjezvLOHZLgPM97aOI4hNJrtp/ediMCveuncNhYuoI2Wss4q2ZHcJOA
-         Ikiw==
-X-Gm-Message-State: AGi0PuaXmjGiMFHGYmjLtjfnKakNXQeYddFXKBDHkwcqLotqEe5yfzGi
-        qBY50Tck2HoPbcol+hkcVFMjBc1OCL6QlQClZVUYZw==
-X-Google-Smtp-Source: APiQypK+T2KMF7eZlc/bzKtEy+1N95v/ZTucX9SRvM+kNdBq97blBB+uE/UoYTni754wd6YAZlQUSWnSxRjy3C1jCUk=
-X-Received: by 2002:a2e:5048:: with SMTP id v8mr2060638ljd.99.1585839045709;
- Thu, 02 Apr 2020 07:50:45 -0700 (PDT)
+        id S2388811AbgDBOwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:52:07 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2632 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732598AbgDBOwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 10:52:07 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 57434B94BE28AFBA3846;
+        Thu,  2 Apr 2020 15:52:05 +0100 (IST)
+Received: from [127.0.0.1] (10.47.6.242) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Thu, 2 Apr 2020
+ 15:52:03 +0100
+Subject: Re: [PATCH] ACPI: PPTT: Inform user that table offset used for
+ Physical processor node ID
+To:     Jeremy Linton <jeremy.linton@arm.com>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sudeep.holla@arm.com>, <linuxarm@huawei.com>,
+        <wanghuiqiang@huawei.com>
+References: <1585830145-208714-1-git-send-email-john.garry@huawei.com>
+ <89f68a3c-264a-5d1b-e63a-d1147ea07320@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <0244dcc3-6006-2a67-e861-d2bcce4360f6@huawei.com>
+Date:   Thu, 2 Apr 2020 15:51:44 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <CAG48ez2Sx4ELkM94aD_h_J7K7KBOeuGmvZLKRkg3n_f2WoZ_cg@mail.gmail.com>
- <4c5fe55d-9db9-2f61-59b2-1fb2e1b45ed0@amd.com> <CAG48ez1nHt2BRApHPp2S6rd4kr3P2kFsgHvStUsW7rqHSJprgg@mail.gmail.com>
- <87k12yns9z.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87k12yns9z.fsf@nanos.tec.linutronix.de>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 2 Apr 2020 16:50:19 +0200
-Message-ID: <CAG48ez1esuROQU1J1L4Zrt91vRX4GYwzrfAs+K5mr-_TLq3saQ@mail.gmail.com>
-Subject: Re: AMD DC graphics display code enables -mhard-float, -msse, -msse2
- without any visible FPU state protection
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <89f68a3c-264a-5d1b-e63a-d1147ea07320@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.6.242]
+X-ClientProxiedBy: lhreml729-chm.china.huawei.com (10.201.108.80) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 11:36 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> Jann Horn <jannh@google.com> writes:
-> > On Thu, Apr 2, 2020 at 9:34 AM Christian K=C3=B6nig <christian.koenig@a=
-md.com> wrote:
-> >> Am 02.04.20 um 04:34 schrieb Jann Horn:
-> >> > [x86 folks in CC so that they can chime in on the precise rules for
-> >> > this stuff]
->
-> They are pretty simple.
->
-> Any code using FPU needs to be completely isolated from regular code
-> either by using inline asm or by moving it to a different compilation
-> unit. The invocations need fpu_begin/end() of course.
-[...]
-> We really need objtool support to validate that.
->
-> Peter, now that we know how to do it (noinstr, clac/stac) we can emit
-> annotations (see patch below) and validate that any FPU instruction is
-> inside a safe region. Hmm?
+On 02/04/2020 14:55, Jeremy Linton wrote:
+> Hi,
+> 
+> On 4/2/20 7:22 AM, John Garry wrote:
+>> If the the Processor ID valid is not set for a Physical Processor Package
+>> node, then the node table offset is used as a substitute. As such, we
+>> may get info like this from sysfs:
+>>
+>> root@(none)$ pwd
+>> /sys/devices/system/cpu/cpu0/topology
+>> root@(none)$ more physical_package_id
+>> 56
+>>
+>> Inform the user of this in the bootlog, as it is much less than ideal, 
+>> and
+>> they can remedy this in their FW.
+>>
+>> This topic was originally discussed in:
+>> https://lore.kernel.org/linux-acpi/c325cfe2-7dbf-e341-7f0f-081b6545e890@huawei.com/T/#m0ec18637d8586f832084a8a6af22580e6174669a 
+>>
+>>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>>
+>> diff --git a/drivers/acpi/pptt.c b/drivers/acpi/pptt.c
+>> index 4ae93350b70d..b4ed3c818e00 100644
+>> --- a/drivers/acpi/pptt.c
+>> +++ b/drivers/acpi/pptt.c
+>> @@ -515,6 +515,8 @@ static int topology_get_acpi_cpu_tag(struct 
+>> acpi_table_header *table,
+>>           if (level == 0 ||
+>>               cpu_node->flags & ACPI_PPTT_ACPI_PROCESSOR_ID_VALID)
+>>               return cpu_node->acpi_processor_id;
+>> +        if (level == PPTT_ABORT_PACKAGE)
+>> +            pr_notice_once("Physical package node Processor ID valid 
+>> not set, will use table offset as substitute\n");
 
-One annoying aspect is that for the "move it to a different
-compilation unit" method, objtool needs to know at compile time
-(before linking) which functions are in FPU-enabled object files,
-right? So we'd need to have some sort of function annotation that gets
-plumbed from the function declaration in a header file through the
-compiler into the ELF file, and then let objtool verify that calls to
-FPU-enabled methods occur only when the FPU is available? (Ideally
-something that covers indirect calls... but this would probably get
-really complicated unless we can get the compiler to include that
-annotation in its type checking.)
+Hi Jeremy,
+
+> 
+> What happens in the find_acpi_cpu_topology_hetro_id() case, if the last 
+> IDENTICAL node isn't a socket/etc. Are we expecting to warn of a missing 
+> processor container there as well?
+
+ok, I could just use this then:
+
+if (flags & ACPI_PPTT_PHYSCIAL_PACKAGE)
+	pr_notice_once("Physical package node Processor ID ...")
+
+As I recall, this tag for hetro id is not exposed to userspace (yet).
+
+Thanks,
+John
