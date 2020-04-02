@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2A219C293
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFFC19C298
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388574AbgDBNYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:24:32 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:36858 "EHLO huawei.com"
+        id S2388595AbgDBNYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:24:47 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:37574 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387752AbgDBNYc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:24:32 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CB7631D94BBBEF6722B3;
-        Thu,  2 Apr 2020 21:23:58 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 2 Apr 2020
- 21:23:48 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <davem@davemloft.net>, <yuehaibing@huawei.com>,
-        <nishadkamdar@gmail.com>, <nico@fluxnic.net>,
-        <masahiroy@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <gakula@marvell.com>
-Subject: [PATCH net] net: cavium: Fix build errors due to 'imply CAVIUM_PTP'
-Date:   Thu, 2 Apr 2020 21:23:44 +0800
-Message-ID: <20200402132344.37864-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S2387752AbgDBNYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 09:24:46 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 161D3C4E1BD1255181A0;
+        Thu,  2 Apr 2020 21:24:43 +0800 (CST)
+Received: from [127.0.0.1] (10.177.223.23) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 2 Apr 2020
+ 21:24:35 +0800
+Subject: Re: [PATCH] ACPI: PPTT: Inform user that table offset used for
+ Physical processor node ID
+To:     John Garry <john.garry@huawei.com>, <rjw@rjwysocki.net>,
+        <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sudeep.holla@arm.com>, <jeremy.linton@arm.com>,
+        <linuxarm@huawei.com>, <wanghuiqiang@huawei.com>
+References: <1585830145-208714-1-git-send-email-john.garry@huawei.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <1fb8515d-a0ec-42bc-a9bc-4790dc3ee1c3@huawei.com>
+Date:   Thu, 2 Apr 2020 21:24:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.173.223.234]
+In-Reply-To: <1585830145-208714-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.177.223.23]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If CAVIUM_PTP is m and THUNDER_NIC_VF is y, build fails:
+On 2020/4/2 20:22, John Garry wrote:
+> If the the Processor ID valid is not set for a Physical Processor Package
+> node, then the node table offset is used as a substitute. As such, we
+> may get info like this from sysfs:
+> 
+> root@(none)$ pwd
+> /sys/devices/system/cpu/cpu0/topology
+> root@(none)$ more physical_package_id
+> 56
+> 
+> Inform the user of this in the bootlog, as it is much less than ideal, and
+> they can remedy this in their FW.
+> 
+> This topic was originally discussed in:
+> https://lore.kernel.org/linux-acpi/c325cfe2-7dbf-e341-7f0f-081b6545e890@huawei.com/T/#m0ec18637d8586f832084a8a6af22580e6174669a
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> 
+> diff --git a/drivers/acpi/pptt.c b/drivers/acpi/pptt.c
+> index 4ae93350b70d..b4ed3c818e00 100644
+> --- a/drivers/acpi/pptt.c
+> +++ b/drivers/acpi/pptt.c
+> @@ -515,6 +515,8 @@ static int topology_get_acpi_cpu_tag(struct acpi_table_header *table,
+>  		if (level == 0 ||
+>  		    cpu_node->flags & ACPI_PPTT_ACPI_PROCESSOR_ID_VALID)
+>  			return cpu_node->acpi_processor_id;
+> +		if (level == PPTT_ABORT_PACKAGE)
+> +			pr_notice_once("Physical package node Processor ID valid not set, will use table offset as substitute\n");
+>  		return ACPI_PTR_DIFF(cpu_node, table);
+>  	}
+>  	pr_warn_once("PPTT table found, but unable to locate core %d (%d)\n",
 
-drivers/net/ethernet/cavium/thunder/nicvf_main.o: In function 'nicvf_remove':
-nicvf_main.c:(.text+0x1f0): undefined reference to 'cavium_ptp_put'
-drivers/net/ethernet/cavium/thunder/nicvf_main.o: In function `nicvf_probe':
-nicvf_main.c:(.text+0x557c): undefined reference to 'cavium_ptp_get'
+Looks good to me,
 
-THUNDER_NIC_VF imply CAVIUM_PTP, which allow the config now,
-Use IS_REACHABLE() to avoid the vmlinux link error for this case.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: def2fbffe62c ("kconfig: allow symbols implied by y to become m")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/ethernet/cavium/common/cavium_ptp.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/cavium/common/cavium_ptp.h b/drivers/net/ethernet/cavium/common/cavium_ptp.h
-index a04eccbc78e8..1e0ffe8f4152 100644
---- a/drivers/net/ethernet/cavium/common/cavium_ptp.h
-+++ b/drivers/net/ethernet/cavium/common/cavium_ptp.h
-@@ -24,7 +24,7 @@ struct cavium_ptp {
- 	struct ptp_clock *ptp_clock;
- };
- 
--#if IS_ENABLED(CONFIG_CAVIUM_PTP)
-+#if IS_REACHABLE(CONFIG_CAVIUM_PTP)
- 
- struct cavium_ptp *cavium_ptp_get(void);
- void cavium_ptp_put(struct cavium_ptp *ptp);
--- 
-2.17.1
-
+Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
 
