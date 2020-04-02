@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E858119C64F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56BFB19C653
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389521AbgDBPsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:48:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40392 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388677AbgDBPsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:48:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id B3A6DAEAF;
-        Thu,  2 Apr 2020 15:48:02 +0000 (UTC)
-Subject: Re: [PATCH 1/2] mm: cma: NUMA node interface
-To:     Aslan Bakirov <aslan@fb.com>, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel-team@fb.com, riel@surriel.com, guro@fb.com,
-        mhocko@kernel.org, hannes@cmpxchg.org
-References: <20200326212718.3798742-1-aslan@fb.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <65164fdb-38b0-e239-84cc-ab22b92214c5@suse.cz>
-Date:   Thu, 2 Apr 2020 17:48:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2389542AbgDBPtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:49:06 -0400
+Received: from mail-db8eur05on2068.outbound.protection.outlook.com ([40.107.20.68]:6113
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388677AbgDBPtG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 11:49:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b8JlcvwPLXZPF6nkm6aJgtLSTFLb4Dc4AhXplWRt9frSMwg3dXaVWeL5tU1rYIqB2YtlNq/2a7VaTj/LRP+yeKkh/R5RXDHZfxFdswmSz4Q0jQXVyy2655fib11IisFurWN9QtQLuv8Dk1pwsslQy2pY0ssrZx5DgpW6feh2zLGkhkx4c+ZhZD/Fw/lBNk5f1Z5LVFolQWl1dxD8pRnXZ8uv2Bf0tcYYzvanlCMji4f+n8cSfxjfoMaCcR9bq153TvyRnDBuv0gt3s8TXNAeG9DObyJ44WGlRnz9tDmCfQILqDcIgEeXlf+GEL9wrQKm8ED38mtaMpui7Jhh4MA24g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dM1njvNuj5MYoQN/7crNJrmQMm0TVzz6JbiASOUJ2ms=;
+ b=FynMCkMcVyz4t8ifyWbsfpMTMxqx2RacSD5pueyxuwsybAmAYQpvhGknByEM8jRs5BQLm/93+dkdOPhmRMvOBIHA5ucCrx7xBx1f9VhttgiibmD68/XGAn5LkoC3W6cmHuOxbaw0D64Gae8KOoNV2ojiIZfR5pkRm7KIOqIZrAF8glOdx9kBjbyu1lCt0OtFAs8fOhOzHsa1OE12mBcQzZZkPAA5RdV3eZEmVTQebP0I6TqauFip4C7MMc5fSEwm/a5IEa59/fYAKKLrIOx+is4QABsgUHsw/YqRqfvHVYI9mqMfnwaDfp9DLIlaLH1iF7XYC1GbPJ1KMeJcQ2kOXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mellanox.com; dmarc=pass action=none header.from=mellanox.com;
+ dkim=pass header.d=mellanox.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Mellanox.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dM1njvNuj5MYoQN/7crNJrmQMm0TVzz6JbiASOUJ2ms=;
+ b=RQ23Q4apLoi8FyOxsWd4sbyd6hoz0Bb1J1UErL9fXsqTMxpb80ML0bmSEXjaMgW7bJGkf36VglWkfdUFtPMqB9C2L/HyV+iChDFclivjAQAz2OUt5ET/h3UuhTO/jAlHgvqxnkpN1ovwdsoqV0pT09NzL+mtHXQAFZCSQe/FqHo=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=idosch@mellanox.com; 
+Received: from AM0PR05MB6754.eurprd05.prod.outlook.com (10.186.174.71) by
+ AM0PR05MB5105.eurprd05.prod.outlook.com (20.178.19.89) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2856.18; Thu, 2 Apr 2020 15:49:02 +0000
+Received: from AM0PR05MB6754.eurprd05.prod.outlook.com
+ ([fe80::6923:aafd:c994:bfa5]) by AM0PR05MB6754.eurprd05.prod.outlook.com
+ ([fe80::6923:aafd:c994:bfa5%7]) with mapi id 15.20.2835.025; Thu, 2 Apr 2020
+ 15:49:02 +0000
+Date:   Thu, 2 Apr 2020 18:48:59 +0300
+From:   Ido Schimmel <idosch@mellanox.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Jiri Pirko <jiri@mellanox.com>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mlxsw: spectrum_trap: fix unintention integer
+ overflow on left shift
+Message-ID: <20200402154859.GA2453139@splinter>
+References: <20200402144851.565983-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200402144851.565983-1-colin.king@canonical.com>
+X-ClientProxiedBy: AM0PR02CA0041.eurprd02.prod.outlook.com
+ (2603:10a6:208:d2::18) To AM0PR05MB6754.eurprd05.prod.outlook.com
+ (2603:10a6:20b:15a::7)
 MIME-Version: 1.0
-In-Reply-To: <20200326212718.3798742-1-aslan@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (79.181.132.191) by AM0PR02CA0041.eurprd02.prod.outlook.com (2603:10a6:208:d2::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15 via Frontend Transport; Thu, 2 Apr 2020 15:49:02 +0000
+X-Originating-IP: [79.181.132.191]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: c26e05d9-1dd7-4e0e-ab95-08d7d71d5db5
+X-MS-TrafficTypeDiagnostic: AM0PR05MB5105:|AM0PR05MB5105:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR05MB51051753337067C649D2872BBFC60@AM0PR05MB5105.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-Forefront-PRVS: 0361212EA8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR05MB6754.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(7916004)(4636009)(366004)(346002)(376002)(396003)(39860400002)(136003)(2906002)(81166006)(33716001)(33656002)(52116002)(316002)(81156014)(1076003)(6666004)(478600001)(8936002)(6496006)(8676002)(4326008)(4744005)(54906003)(5660300002)(186003)(86362001)(66476007)(956004)(6486002)(6916009)(66946007)(26005)(16526019)(9686003)(66556008);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: mellanox.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TBc2Hj25d5QQzyXaFcuPR47MoAojWiY5FkelZgy+aeTuxvMYPJU/4muC/d5MPB9FZLwIXWwiF0esBeC0KxWF2qqjSj5CrIxqtcvGVgQ99g6cA0rZbxmmPHmoq12ED/CIIo+9bFW4Z+GEBoCY/5BEtDp419mQg/SbO7dGpKky0NlSjWWJl13b532Cw9BhBBiM1WUYuXsfNpNNhB5rCAFuvkczvKAt+CyQDcsmTK/NvJ2nK4575RL2aw/9LbcWoeSHT5XwABZj60ROP3MoQ7tgs31zk29ouPG/8rZnPFJrEZPAZpWfuHfGW7Lz+BCdy6mk+bAouueI6fJ5AUlKXdKybJKeByqk9U5i19lUvBrZEnVf1gLQxY2slhmt6gyjkHPVce6Qa3V4LtHbMvknA5GqwQeG7orn50Mg0dyoG78R4WE73YpiAGbtKItS1qqT8XKo
+X-MS-Exchange-AntiSpam-MessageData: Of4PgLZZDO3+aVY4NZGgPSvE96Q+iRLXhhXaT2ijJ7NuofafcnUYKVVmgzsgc4VUcOIr10h0B3ejQBknYFDTxe3pbyAB2p0jXjEv5ik4R+5V6MoB+qf6hFk5xLLIdFAvWJMsXWd8toMIMrA6zyD4PA==
+X-OriginatorOrg: Mellanox.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c26e05d9-1dd7-4e0e-ab95-08d7d71d5db5
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Apr 2020 15:49:02.4296
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a652971c-7d2e-4d9b-a6a4-d149256f461b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZMBHS1xsAz+vmvUox2UDthpBrgDL2/RwznwkfJlv5WmB+gX7MUTyA06m17pqankXkuBipl7roAD8R1XQeWm7sQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR05MB5105
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/26/20 10:27 PM, Aslan Bakirov wrote:
-> I've noticed that there is no interfaces exposed by CMA which would let me
-> to declare contigous memory on particular NUMA node.
+On Thu, Apr 02, 2020 at 03:48:51PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> This patchset adds the ability to try to allocate contiguous memory on
-> specific node.
+> Shifting the integer value 1 is evaluated using 32-bit
+> arithmetic and then used in an expression that expects a 64-bit
+> value, so there is potentially an integer overflow. Fix this
+> by using the BIT_ULL macro to perform the shift and avoid the
+> overflow.
+> 
+> Addresses-Coverity: ("Unintentional integer overflow")
+> Fixes: 13f2e64b94ea ("mlxsw: spectrum_trap: Add devlink-trap policer support")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I would say more explicitly that 'try' here means it will fallback to other
-nodes if the specific one doesn't work. At least AFAICS that's what it does by
-calling memblock_alloc_range_nid() with exact_nid=false.
+For net:
 
-> Implement a new method for declaring contigous memory on particular node
-> and keep cma_declare_contiguous() as a wrapper.
+Reviewed-by: Ido Schimmel <idosch@mellanox.com>
+Tested-by: Ido Schimmel <idosch@mellanox.com>
 
-Should there be also support for using this node spcification in the cma=X boot
-param?
-
-> Signed-off-by: Aslan Bakirov <aslan@fb.com>
-
-...
-
-> --- a/mm/cma.c
-> +++ b/mm/cma.c
-> @@ -220,7 +220,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->  }
->  
->  /**
-> - * cma_declare_contiguous() - reserve custom contiguous area
-> + * cma_declare_contiguous_nid() - reserve custom contiguous area
->   * @base: Base address of the reserved area optional, use 0 for any
->   * @size: Size of the reserved area (in bytes),
->   * @limit: End address of the reserved memory (optional, 0 for any).
-> @@ -229,6 +229,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->   * @fixed: hint about where to place the reserved area
->   * @name: The name of the area. See function cma_init_reserved_mem()
->   * @res_cma: Pointer to store the created cma region.
-> + * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
-
-The bit about fallback should be also specified here.
-
->   *
->   * This function reserves memory from early allocator. It should be
->   * called by arch specific code once the early allocator (memblock or bootmem)
-> @@ -238,10 +239,10 @@ int __init cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
->   * If @fixed is true, reserve contiguous area at exactly @base.  If false,
->   * reserve in range from @base to @limit.
->   */
-> -int __init cma_declare_contiguous(phys_addr_t base,
-> +int __init cma_declare_contiguous_nid(phys_addr_t base,
->  			phys_addr_t size, phys_addr_t limit,
->  			phys_addr_t alignment, unsigned int order_per_bit,
-> -			bool fixed, const char *name, struct cma **res_cma)
-> +			bool fixed, const char *name, struct cma **res_cma, int nid)
->  {
->  	phys_addr_t memblock_end = memblock_end_of_DRAM();
->  	phys_addr_t highmem_start;
+Thanks
