@@ -2,228 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2535719C66E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6879119C675
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389593AbgDBPwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:52:10 -0400
-Received: from mail-pf1-f178.google.com ([209.85.210.178]:34142 "EHLO
-        mail-pf1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389469AbgDBPwI (ORCPT
+        id S2389616AbgDBPwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:52:35 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:1098 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389458AbgDBPwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:52:08 -0400
-Received: by mail-pf1-f178.google.com with SMTP id 23so1954322pfj.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 08:52:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7Q3jBwdmyUkdTL07RQ4evpZO2DzG9gMebwuAt0SZP0k=;
-        b=oXd2fQ64qrNWa66OlP7Ra3x06XYTxk19Ian0YyjvHZj5/xAdfi6Rn+rhULcFiJJkFA
-         xrhIx+PkuvI+401s9kuz3pEQfYye0k4XFNSTEoyu5ksbpOWYrAuxoYBh5NHO6bQjYIPH
-         MVgOr6xCzmp/PtPuWeAYDTYLg0N6T5ue/nISU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7Q3jBwdmyUkdTL07RQ4evpZO2DzG9gMebwuAt0SZP0k=;
-        b=eHo7CqPyZpV06cMUIjesUjXZw0KUdn5Uh/GOYqWpmcltM5UzTzsuIicAo0kvZtHssR
-         xCbzJWYRhK5zy3BYz2yKOYnruhrkqqzS96ihhmu+yTf0ycKFAdQyZkxPUuLJ4y7vU8e2
-         xpmc9UQSPSC710ir/rs3xPVbg1+Awr65sSUNFBLvREdL119Jm1XeD6NyOePBP6E1UzTT
-         md37WyDCG2tSFfQIzzh7fZDv1tHBOCK+6TWAkcvssEqnflktOQ6E//A0IHnTOWlJ0Old
-         SkoYkxuvKBn6Ji8hsXLoFENP2f2xK1TQoNK19iSrbUbwfbdma4ArJOmOteafSJzyAwm3
-         fAgA==
-X-Gm-Message-State: AGi0PubRf5e9Ks8gKoJUVkSoJR4hcat6CTSXemv8RUWgOHUJNGfirZJQ
-        B9ggeDQ7tlyAZOwpUZJd23o/Pg==
-X-Google-Smtp-Source: APiQypLIOJvFZ3n8tsGjP8rKreVP3/DZYTDGeAQSmvs04KJAkllBKQ3g3zeXbEbSSbGmDvAMgnIiOw==
-X-Received: by 2002:aa7:9dc1:: with SMTP id g1mr3832763pfq.308.1585842726489;
-        Thu, 02 Apr 2020 08:52:06 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id x68sm2578815pfb.5.2020.04.02.08.52.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 08:52:05 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     axboe@kernel.dk, jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     paolo.valente@linaro.org, sqazi@google.com,
-        linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
-        Ming Lei <ming.lei@redhat.com>, groeck@chromium.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Ajay Joshi <ajay.joshi@wdc.com>, Arnd Bergmann <arnd@arndb.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Hou Tao <houtao1@huawei.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] blk-mq: Rerun dispatching in the case of budget contention
-Date:   Thu,  2 Apr 2020 08:51:30 -0700
-Message-Id: <20200402085050.v2.2.I28278ef8ea27afc0ec7e597752a6d4e58c16176f@changeid>
-X-Mailer: git-send-email 2.26.0.rc2.310.g2932bb562d-goog
-In-Reply-To: <20200402155130.8264-1-dianders@chromium.org>
-References: <20200402155130.8264-1-dianders@chromium.org>
+        Thu, 2 Apr 2020 11:52:35 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TuR6onf_1585842736;
+Received: from US-143344MP.local(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0TuR6onf_1585842736)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 02 Apr 2020 23:52:19 +0800
+Subject: Re: [PATCH -V2] /proc/PID/smaps: Add PMD migration entry parsing
+To:     Michal Hocko <mhocko@kernel.org>,
+        "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        =?UTF-8?B?Su+/vXLvv71tZSBHbGlzc2U=?= <jglisse@redhat.com>
+References: <20200402020031.1611223-1-ying.huang@intel.com>
+ <20200402064437.GC22681@dhcp22.suse.cz> <87zhbufjyc.fsf@yhuang-dev.intel.com>
+ <20200402074411.GH22681@dhcp22.suse.cz>
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+Message-ID: <30321c02-6dc4-889f-142c-532b47a67f66@linux.alibaba.com>
+Date:   Thu, 2 Apr 2020 08:52:12 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
+ Gecko/20100101 Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200402074411.GH22681@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible for two threads to be running
-blk_mq_do_dispatch_sched() at the same time with the same "hctx".
-This is because there can be more than one caller to
-__blk_mq_run_hw_queue() with the same "hctx" and hctx_lock() doesn't
-prevent more than one thread from entering.
 
-If more than one thread is running blk_mq_do_dispatch_sched() at the
-same time with the same "hctx", they may have contention acquiring
-budget.  The blk_mq_get_dispatch_budget() can eventually translate
-into scsi_mq_get_budget().  If the device's "queue_depth" is 1 (not
-uncommon) then only one of the two threads will be the one to
-increment "device_busy" to 1 and get the budget.
 
-The losing thread will break out of blk_mq_do_dispatch_sched() and
-will stop dispatching requests.  The assumption is that when more
-budget is available later (when existing transactions finish) the
-queue will be kicked again, perhaps in scsi_end_request().
+On 4/2/20 12:44 AM, Michal Hocko wrote:
+> On Thu 02-04-20 15:03:23, Huang, Ying wrote:
+>> Michal Hocko <mhocko@kernel.org> writes:
+>>
+>>> On Thu 02-04-20 10:00:31, Huang, Ying wrote:
+>>>> From: Huang Ying <ying.huang@intel.com>
+>>>>
+>>>> Now, when read /proc/PID/smaps, the PMD migration entry in page table is simply
+>>>> ignored.  To improve the accuracy of /proc/PID/smaps, its parsing and processing
+>>>> is added.
+>>>>
+>>>> Before the patch, for a fully populated 400 MB anonymous VMA, sometimes some THP
+>>>> pages under migration may be lost as follows.
+>>> Interesting. How did you reproduce this?
+>>> [...]
+>> I run the pmbench in background to eat memory, then run
+>> `/usr/bin/migratepages` and `cat /proc/PID/smaps` every second.  The
+>> issue can be reproduced within 60 seconds.
+> Please add that information to the changelog. I was probably too
+> optimistic about the migration duration because I found it highly
+> unlikely to be visible. I was clearly wrong here.
 
-The winning thread now has budget and can go on to call
-dispatch_request().  If dispatch_request() returns NULL here then we
-have a potential problem.  Specifically we'll now call
-blk_mq_put_dispatch_budget() which translates into
-scsi_mq_put_budget().  That will mark the device as no longer busy but
-doesn't do anything to kick the queue.  This violates the assumption
-that the queue would be kicked when more budget was available.
+I believe that depends on the page is shared by how many processes. If 
+it is not shared then it should just take dozens micro seconds in my 
+test FYI.
 
-Pictorially:
-
-Thread A                          Thread B
-================================= ==================================
-blk_mq_get_dispatch_budget() => 1
-dispatch_request() => NULL
-                                  blk_mq_get_dispatch_budget() => 0
-                                  // because Thread A marked
-                                  // "device_busy" in scsi_device
-blk_mq_put_dispatch_budget()
-
-The above case was observed in reboot tests and caused a task to hang
-forever waiting for IO to complete.  Traces showed that in fact two
-tasks were running blk_mq_do_dispatch_sched() at the same time with
-the same "hctx".  The task that got the budget did in fact see
-dispatch_request() return NULL.  Both tasks returned and the system
-went on for several minutes (until the hung task delay kicked in)
-without the given "hctx" showing up again in traces.
-
-Let's attempt to fix this problem by detecting if there was contention
-for the budget in the case where we put the budget without dispatching
-anything.  If we saw contention we kick all hctx's associated with the
-queue where there was contention.  We do this without any locking by
-adding a double-check for budget and accepting a small amount of faux
-contention if the 2nd check gives us budget but then we don't dispatch
-anything (we'll look like we contended with ourselves).
-
-A few extra notes:
-
-- This whole thing is only a problem due to the inexact nature of
-  has_work().  Specifically if has_work() always guaranteed that a
-  "true" return meant that dispatch_request() would return non-NULL
-  then we wouldn't have this problem.  That's because we only grab the
-  budget if has_work() returned true.  If we had the non-NULL
-  guarantee then at least one of the threads would actually dispatch
-  work and when the work was done then queues would be kicked
-  normally.
-
-- One specific I/O scheduler that trips this problem quite a bit is
-  BFQ which definitely returns "true" for has_work() in cases where it
-  wouldn't dispatch.  Making BFQ's has_work() more exact requires that
-  has_work() becomes a much heavier function, including figuring out
-  how to acquire spinlocks in has_work() without tripping circular
-  lock dependencies.  This is prototyped but it's unclear if it's
-  really the way to go when the problem can be solved with a
-  relatively lightweight contention detection mechanism.
-
-- Because this problem only trips with inexact has_work() it's
-  believed that blk_mq_do_dispatch_ctx() does not need a similar
-  change.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
-Changes in v2:
-- Replace ("scsi: core: Fix stall...") w/ ("blk-mq: Rerun dispatch...")
-
- block/blk-mq-sched.c   | 26 ++++++++++++++++++++++++--
- block/blk-mq.c         |  3 +++
- include/linux/blkdev.h |  2 ++
- 3 files changed, 29 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-index 74cedea56034..0195d75f5f96 100644
---- a/block/blk-mq-sched.c
-+++ b/block/blk-mq-sched.c
-@@ -97,12 +97,34 @@ static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
- 		if (e->type->ops.has_work && !e->type->ops.has_work(hctx))
- 			break;
- 
--		if (!blk_mq_get_dispatch_budget(hctx))
--			break;
-+
-+		if (!blk_mq_get_dispatch_budget(hctx)) {
-+			/*
-+			 * We didn't get budget so set contention.  If
-+			 * someone else had the budget but didn't dispatch
-+			 * they'll kick everything.  NOTE: we check one
-+			 * extra time _after_ setting contention to fully
-+			 * close the race.  If we don't actually dispatch
-+			 * we'll detext faux contention (with ourselves)
-+			 * but that should be rare.
-+			 */
-+			atomic_set(&q->budget_contention, 1);
-+
-+			if (!blk_mq_get_dispatch_budget(hctx))
-+				break;
-+		}
- 
- 		rq = e->type->ops.dispatch_request(hctx);
- 		if (!rq) {
- 			blk_mq_put_dispatch_budget(hctx);
-+
-+			/*
-+			 * We've released the budget but us holding it might
-+			 * have prevented someone else from dispatching.
-+			 * Detect that case and run all queues again.
-+			 */
-+			if (atomic_read(&q->budget_contention))
-+				blk_mq_run_hw_queues(q, true);
- 			break;
- 		}
- 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 2cd8d2b49ff4..6163c43ceca5 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -1528,6 +1528,9 @@ void blk_mq_run_hw_queues(struct request_queue *q, bool async)
- 	struct blk_mq_hw_ctx *hctx;
- 	int i;
- 
-+	/* We're running the queues, so clear the contention detector */
-+	atomic_set(&q->budget_contention, 0);
-+
- 	queue_for_each_hw_ctx(q, hctx, i) {
- 		if (blk_mq_hctx_stopped(hctx))
- 			continue;
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index f629d40c645c..07f21e45d993 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -583,6 +583,8 @@ struct request_queue {
- 
- #define BLK_MAX_WRITE_HINTS	5
- 	u64			write_hints[BLK_MAX_WRITE_HINTS];
-+
-+	atomic_t		budget_contention;
- };
- 
- #define QUEUE_FLAG_STOPPED	0	/* queue is stopped */
--- 
-2.26.0.rc2.310.g2932bb562d-goog
+>
+>>>> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+>>>> index 8d382d4ec067..9c72f9ce2dd8 100644
+>>>> --- a/fs/proc/task_mmu.c
+>>>> +++ b/fs/proc/task_mmu.c
+>>>> @@ -546,10 +546,19 @@ static void smaps_pmd_entry(pmd_t *pmd, unsigned long addr,
+>>>>   	struct mem_size_stats *mss = walk->private;
+>>>>   	struct vm_area_struct *vma = walk->vma;
+>>>>   	bool locked = !!(vma->vm_flags & VM_LOCKED);
+>>>> -	struct page *page;
+>>>> +	struct page *page = NULL;
+>>>>   
+>>>> -	/* FOLL_DUMP will return -EFAULT on huge zero page */
+>>>> -	page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP);
+>>>> +	if (pmd_present(*pmd)) {
+>>>> +		/* FOLL_DUMP will return -EFAULT on huge zero page */
+>>>> +		page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP);
+>>>> +	} else if (unlikely(thp_migration_supported() && is_swap_pmd(*pmd))) {
+>>>> +		swp_entry_t entry = pmd_to_swp_entry(*pmd);
+>>>> +
+>>>> +		if (is_migration_entry(entry))
+>>>> +			page = migration_entry_to_page(entry);
+>>>> +		else
+>>>> +			VM_WARN_ON_ONCE(1);
+>>> Could you explain why do we need this WARN_ON? I haven't really checked
+>>> the swap support for THP but cannot we have normal swap pmd entries?
+>> I have some patches to add the swap pmd entry support, but they haven't
+>> been merged yet.
+>>
+>> Similar checks are for all THP migration code paths, so I follow the
+>> same style.
+> I haven't checked other migration code paths but what is the reason to
+> add the warning here? Even if this shouldn't happen, smaps is perfectly
+> fine to ignore that situation, no?
 
