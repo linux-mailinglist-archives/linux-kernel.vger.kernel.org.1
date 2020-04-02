@@ -2,86 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA1319C40C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C4319C411
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388266AbgDBO2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:28:18 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:35684 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388126AbgDBO2M (ORCPT
+        id S2388393AbgDBO23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:28:29 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:51332 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387732AbgDBO22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:28:12 -0400
-Received: by mail-wr1-f68.google.com with SMTP id g3so2159934wrx.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 07:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=0yL1w5+JWaXNihGaTzT6saNdFzgGKd/d3GiibbTk4FI=;
-        b=Tgny2VVk+APSF6iZvl9xqCiKBh+PaEW7ArlCg1cSjsRXQSTQ5Yd8ToRlbKatb4fc+O
-         DgnfDXJ6PZTB4djmgmI+pQ4aRtJHr2MG7Ep0lQUyNohXdOu5cDLB+HRvoZZ6EZh4+C6j
-         zHx+MRDpy7Yslqc+HNi5TKkLi9djfrdg386zxVtm1ZHkrrAP8RC8c2X9FsZlVPG9OIjF
-         l7CKHzmpeIyARD8mLMyDR598kq6m5+lTwMkg0g0BDNKAQ0VU7rxaH+kWuMEG7Ex57Lfn
-         N2ReeB2iWjtX9QsfXz1S0iRjexW/DUMI72AxmH/xeVAb8K+NggZwgJVhnHhs3CqIrGvg
-         giXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=0yL1w5+JWaXNihGaTzT6saNdFzgGKd/d3GiibbTk4FI=;
-        b=fSdXn5bSsbA/qn1XAajGYTbX0T30qw4CEZTJtrt2ltd9XYwragwkjLoaxfVcein1dF
-         QHuYgVWgN1YVTRcZN73Bxi72t75UKYlmvYvMrWXs+ihzKVI2JcDg9o9f3s2oTyNMwNyF
-         clbyiTL4iMO+BAO2FqQe1HU9njR+bVeZNezs/uy4qMAWFfQbS2gf27gc/6M00QCQ6Jyt
-         7l1Z53yUz34ylKd69iVedYeC9bXbtt+llWGSws1t97PCDy+WXt16P/Es2mLnExvOdV+8
-         OvK11L0n5B40iQ8fgHkAR59KWgy4RZdniG4CIWkdh5nEwoOhHE4TlS6nTnD8emKMdXOR
-         eAHw==
-X-Gm-Message-State: AGi0PuawyzrBcUnY1Rf5w+C6OYCVFqOTlej9qaKq+g5qbH1dWyY+eupM
-        SIPrqJIrAuSxCMY7zp6mp4RqOw==
-X-Google-Smtp-Source: APiQypLhb4JxPDxJ1toEh0FNeaz9TM9nX/Zm+7qSIKRBmPBmdRaKUsoz+enVMUHIfk/h1R1UPepDkA==
-X-Received: by 2002:adf:ea8f:: with SMTP id s15mr3738685wrm.393.1585837691388;
-        Thu, 02 Apr 2020 07:28:11 -0700 (PDT)
-Received: from mai.imgcgcw.net ([2a01:e34:ed2f:f020:4b2:e366:e86f:261a])
-        by smtp.gmail.com with ESMTPSA id a7sm7045186wmm.34.2020.04.02.07.28.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 07:28:10 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-To:     daniel.lezcano@linaro.org, rui.zhang@intel.com
-Cc:     amit.kucheria@verdurent.com,
-        linux-pm@vger.kernel.org (open list:THERMAL),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V2 9/9] thermal: Remove thermal_zone_device_update() stub
-Date:   Thu,  2 Apr 2020 16:27:47 +0200
-Message-Id: <20200402142747.8307-9-daniel.lezcano@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200402142747.8307-1-daniel.lezcano@linaro.org>
-References: <20200402142747.8307-1-daniel.lezcano@linaro.org>
+        Thu, 2 Apr 2020 10:28:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=j/8a96fqeZAuiVy6S5hR0dB16EbF/5r64jo0EgfpZqw=; b=nBAHwiN9U4ETGo8K3sVmLBS5Zh
+        i49IKbjJ8/jWrEkVatZcsAWpm2rveMNK7/35SB+klm33JYaqGf8+13FlGBZlfTmgrcw21ZvwfpPPr
+        cM77QfLIQyKzgzRCurRv289EruAkgJcxrnd4LC2Nxcp7KRe0rnSCgY2WCwg/j6C3jYh/gnN3MR4WK
+        gdP0Sgy4UfOpfyqHTvh1KEorBu/IFzOvHMelc5aZkE5W+OI/5KADrYP0qtH2pWrKdmO1dRlqPTfs+
+        Nkm7Pp24wAEvHJA+lxltBPwx+SKSlLLOnz25u2dcrInG5TnV/e81bjXcXNc7f1QYd4ntob7EWIC+h
+        fFQSXz+Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jK0pU-0003C3-H6; Thu, 02 Apr 2020 14:28:24 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AD50F307062;
+        Thu,  2 Apr 2020 16:28:21 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8FF0C2B0D8F6B; Thu,  2 Apr 2020 16:28:21 +0200 (CEST)
+Date:   Thu, 2 Apr 2020 16:28:21 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Miroslav Benes <mbenes@suse.cz>,
+        Julien Thierry <jthierry@redhat.com>
+Subject: Re: [PATCH 0/5] objtool fixes
+Message-ID: <20200402142821.GI20713@hirez.programming.kicks-ass.net>
+References: <cover.1585761021.git.jpoimboe@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1585761021.git.jpoimboe@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All users of the function depends on THERMAL, no stub is
-needed. Remove it.
+On Wed, Apr 01, 2020 at 01:23:24PM -0500, Josh Poimboeuf wrote:
+> Some objtool fixes related to CONFIG_UBSAN_TRAP, Clang assembler, and
+> more...
+> 
+> Josh Poimboeuf (5):
+>   objtool: Fix CONFIG_UBSAN_TRAP unreachable warnings
+>   objtool: Support Clang non-section symbols in ORC dump
+>   objtool: Support Clang non-section symbols in ORC generation
+>   objtool: Fix switch table detection in .text.unlikely
+>   objtool: Make BP scratch register warning more robust
+> 
+>  tools/objtool/check.c    | 26 ++++++++++++++++--------
+>  tools/objtool/orc_dump.c | 44 ++++++++++++++++++++++++----------------
+>  tools/objtool/orc_gen.c  | 33 +++++++++++++++++++++++-------
+>  3 files changed, 71 insertions(+), 32 deletions(-)
 
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
----
- include/linux/thermal.h | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index 7b3dbfe15b59..216185bb3014 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -426,9 +426,6 @@ static inline struct thermal_zone_device *thermal_zone_device_register(
- static inline void thermal_zone_device_unregister(
- 	struct thermal_zone_device *tz)
- { }
--static inline void thermal_zone_device_update(struct thermal_zone_device *tz,
--					      enum thermal_notify_event event)
--{ }
- static inline struct thermal_cooling_device *
- thermal_cooling_device_register(char *type, void *devdata,
- 	const struct thermal_cooling_device_ops *ops)
--- 
-2.17.1
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
