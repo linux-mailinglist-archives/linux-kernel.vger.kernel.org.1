@@ -2,234 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC8E519C4C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDF719C514
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388704AbgDBOv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:51:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:48316 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732598AbgDBOv7 (ORCPT
+        id S2389008AbgDBO5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:57:15 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:50221 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388994AbgDBO5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:51:59 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EdbqJ085526;
-        Thu, 2 Apr 2020 14:51:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=lfWQ1seaU/IAiXka8+vc6MT9iskGioeScSsheiFp/eM=;
- b=HCYMxy00RiEKwAAMTq3O71H4HPJHIMEZlgADDxKBoTsp5+gkgW52CoiqNpT6bOzbro+P
- E1C31lNliN9gPXs6eGnQLHlxPBR9VgYy3+d4aROCs3V1GuSSQ5sS2Vw7T9PHY53Q0LNL
- mGA1y9V/eac5YrRjqXuEMZay9PsUNfnEPKBgj75gBhfDa4djEjGsBz+ZP1oh2tHLiDxR
- UETKomZOXfVbWAc8fEM8Lk0SHCIwSurzJYlatcowXAP8cNMiNch/Ca6kI83bAnGXagJN
- fg0LJkVBLtJjGaZnWpkpLZhn8E+x23PvJmnsESJtXCmKNXtPUUPbUGRfnUHUMb8uNjSQ Pg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 303yunehg8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 14:51:44 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EcGld072351;
-        Thu, 2 Apr 2020 14:51:43 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 302ga2jnpf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 14:51:43 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 032Epgid007765;
-        Thu, 2 Apr 2020 14:51:42 GMT
-Received: from linux-1.home (/10.175.46.241)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 07:51:41 -0700
-Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
-To:     Julien Thierry <jthierry@redhat.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-4-alexandre.chartre@oracle.com>
- <db508586-258a-0616-d649-e76e95df9611@redhat.com>
- <4e779423-395d-5e2e-b641-5604902bf096@oracle.com>
- <fb382993-ca80-5d77-db99-93d30753e6f4@redhat.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <a30d5b03-3338-3d6c-0968-242d85144028@oracle.com>
-Date:   Thu, 2 Apr 2020 16:56:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 2 Apr 2020 10:57:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585839432;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cX0Ayw3Xz460+4fTWlRmLhPI5M2rPACv0FEFSZR57aI=;
+        b=enmUMHiOL0eHNGvk4GxUEgRZIhlvqamZvDif2k0X9bGVjBvNOwXqkDPA2enbgezwHEe2LT
+        f89LlT3/D5DZWO1USg4axbvSeC0gfwps/ar5uhASKo3uYSbndX47f2a1/KRgvJVujAvon3
+        Q92fVIMVTNNvHR3igtG9WWZfbHTNdvg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-271-R8hW2wg4N8W25ULrh6t8nQ-1; Thu, 02 Apr 2020 10:57:11 -0400
+X-MC-Unique: R8hW2wg4N8W25ULrh6t8nQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1D92C1084431;
+        Thu,  2 Apr 2020 14:57:08 +0000 (UTC)
+Received: from [10.72.12.172] (ovpn-12-172.pek2.redhat.com [10.72.12.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 058341147CD;
+        Thu,  2 Apr 2020 14:56:46 +0000 (UTC)
+Subject: Re: [PATCH V9 1/9] vhost: refine vhost and vringh kconfig
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        jgg@mellanox.com, maxime.coquelin@redhat.com,
+        cunming.liang@intel.com, zhihong.wang@intel.com,
+        rob.miller@broadcom.com, xiao.w.wang@intel.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        parav@mellanox.com, kevin.tian@intel.com, stefanha@redhat.com,
+        rdunlap@infradead.org, hch@infradead.org, aadam@redhat.com,
+        jiri@mellanox.com, shahafs@mellanox.com, hanand@xilinx.com,
+        mhabets@solarflare.com, gdawar@xilinx.com, saugatm@xilinx.com,
+        vmireyno@marvell.com, zhangweining@ruijie.com.cn
+References: <20200326140125.19794-1-jasowang@redhat.com>
+ <20200326140125.19794-2-jasowang@redhat.com>
+ <20200401092004-mutt-send-email-mst@kernel.org>
+ <6b4d169a-9962-6014-5423-1507059343e9@redhat.com>
+ <20200401100954-mutt-send-email-mst@kernel.org>
+ <3dd3b7e7-e3d9-dba4-00fc-868081f95ab7@redhat.com>
+ <20200401120643-mutt-send-email-mst@kernel.org>
+ <c11c2195-88eb-2096-af47-40f2da5b389f@redhat.com>
+ <20200402100257-mutt-send-email-mst@kernel.org>
+ <279ed96c-5331-9da6-f9c1-b49e87d49c31@redhat.com>
+ <20200402103813-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <a050b02a-cb4f-2821-393e-35e3f5920192@redhat.com>
+Date:   Thu, 2 Apr 2020 22:56:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <fb382993-ca80-5d77-db99-93d30753e6f4@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20200402103813-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004020131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020131
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 4/2/20 3:38 PM, Julien Thierry wrote:
-> 
-> 
-> On 4/2/20 2:24 PM, Alexandre Chartre wrote:
->>
->>
->> On 4/2/20 2:53 PM, Julien Thierry wrote:
->>> Hi Alexandre,
->>>
->>> I ran into the limitation of intra-function call for the arm64
->>> support but didn't take the time to make a clean patch to support
->>> them properly.
->>>
->>> Nice to see you've gone through that work :) .
->>>
->>> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
->>>> Change objtool to support intra-function calls. An intra-function call
->>>> is represented in objtool as a push onto the stack (of the return
->>>
->>> I have to disagree a bit with that. The push onto the stack is true
->>> on x86, but other architectures might not have that (arm/arm64 have a
->>> link register that gets set by "bl" instructions and do not modify
->>> the stack).
->>
->> Correct, this is x86 specific.
->>
->>>
->>>> address), and a jump to the destination address. That way the stack
->>>> information is correctly updated and the call flow is still accurate.
+On 2020/4/2 =E4=B8=8B=E5=8D=8810:38, Michael S. Tsirkin wrote:
+> On Thu, Apr 02, 2020 at 10:23:59PM +0800, Jason Wang wrote:
+>> On 2020/4/2 =E4=B8=8B=E5=8D=8810:03, Michael S. Tsirkin wrote:
+>>> On Thu, Apr 02, 2020 at 11:22:57AM +0800, Jason Wang wrote:
+>>>> On 2020/4/2 =E4=B8=8A=E5=8D=8812:08, Michael S. Tsirkin wrote:
+>>>>> On Wed, Apr 01, 2020 at 10:29:32PM +0800, Jason Wang wrote:
+>>>>>> >From 9b3a5d23b8bf6b0a11e65e688335d782f8e6aa5c Mon Sep 17 00:00:00=
+ 2001
+>>>>>> From: Jason Wang <jasowang@redhat.com>
+>>>>>> Date: Wed, 1 Apr 2020 22:17:27 +0800
+>>>>>> Subject: [PATCH] vhost: let CONFIG_VHOST to be selected by drivers
+>>>>>>
+>>>>>> The defconfig on some archs enable vhost_net or vhost_vsock by
+>>>>>> default. So instead of adding CONFIG_VHOST=3Dm to all of those fil=
+es,
+>>>>>> simply letting CONFIG_VHOST to be selected by all of the vhost
+>>>>>> drivers. This fixes the build on the archs with CONFIG_VHOST_NET=3D=
+m in
+>>>>>> their defconfig.
+>>>>>>
+>>>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>>>>>> ---
+>>>>>>     drivers/vhost/Kconfig | 15 +++++++++++----
+>>>>>>     1 file changed, 11 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/vhost/Kconfig b/drivers/vhost/Kconfig
+>>>>>> index 2523a1d4290a..362b832f5338 100644
+>>>>>> --- a/drivers/vhost/Kconfig
+>>>>>> +++ b/drivers/vhost/Kconfig
+>>>>>> @@ -11,19 +11,23 @@ config VHOST_RING
+>>>>>>     	  This option is selected by any driver which needs to access
+>>>>>>     	  the host side of a virtio ring.
+>>>>>> -menuconfig VHOST
+>>>>>> -	tristate "Host kernel accelerator for virtio (VHOST)"
+>>>>>> -	depends on EVENTFD
+>>>>>> +config VHOST
+>>>>>> +	tristate
+>>>>>>     	select VHOST_IOTLB
+>>>>>>     	help
+>>>>>>     	  This option is selected by any driver which needs to access
+>>>>>>     	  the core of vhost.
+>>>>>> -if VHOST
+>>>>>> +menuconfig VHOST_MENU
+>>>>>> +	bool "VHOST drivers"
+>>>>>> +	default y
+>>>>>> +
+>>>>>> +if VHOST_MENU
+>>>>>>     config VHOST_NET
+>>>>>>     	tristate "Host kernel accelerator for virtio net"
+>>>>>>     	depends on NET && EVENTFD && (TUN || !TUN) && (TAP || !TAP)
+>>>>>> +	select VHOST
+>>>>>>     	---help---
+>>>>>>     	  This kernel module can be loaded in host kernel to accelera=
+te
+>>>>>>     	  guest networking with virtio_net. Not to be confused with v=
+irtio_net
+>>>>>> @@ -35,6 +39,7 @@ config VHOST_NET
+>>>>>>     config VHOST_SCSI
+>>>>>>     	tristate "VHOST_SCSI TCM fabric driver"
+>>>>>>     	depends on TARGET_CORE && EVENTFD
+>>>>>> +	select VHOST
+>>>>>>     	default n
+>>>>>>     	---help---
+>>>>>>     	Say M here to enable the vhost_scsi TCM fabric module
+>>>>>> @@ -43,6 +48,7 @@ config VHOST_SCSI
+>>>>>>     config VHOST_VSOCK
+>>>>>>     	tristate "vhost virtio-vsock driver"
+>>>>>>     	depends on VSOCKETS && EVENTFD
+>>>>>> +	select VHOST
+>>>>>>     	select VIRTIO_VSOCKETS_COMMON
+>>>>>>     	default n
+>>>>>>     	---help---
+>>>>>> @@ -56,6 +62,7 @@ config VHOST_VSOCK
+>>>>>>     config VHOST_VDPA
+>>>>>>     	tristate "Vhost driver for vDPA-based backend"
+>>>>>>     	depends on EVENTFD
+>>>>>> +	select VHOST
+>>>> This part is not squashed.
 >>>>
->>>> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
->>>> ---
->>>>   tools/objtool/check.c | 73 ++++++++++++++++++++++++++++++++++++++++++-
->>>>   tools/objtool/check.h |  1 +
->>>>   2 files changed, 73 insertions(+), 1 deletion(-)
 >>>>
->>>> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
->>>> index 214809ac2776..0cec91291d46 100644
->>>> --- a/tools/objtool/check.c
->>>> +++ b/tools/objtool/check.c
->>>> @@ -657,6 +657,18 @@ static int add_call_destinations(struct objtool_file *file)
->>>>           if (insn->type != INSN_CALL)
->>>>               continue;
->>>> +        if (insn->intra_function_call) {
->>>> +            dest_off = insn->offset + insn->len + insn->immediate;
->>>> +            insn->jump_dest = find_insn(file, insn->sec, dest_off);
->>>> +            if (insn->jump_dest)
->>>> +                continue;
->>>> +
->>>> +            WARN_FUNC("can't find call dest at %s+0x%lx",
->>>> +                  insn->sec, insn->offset,
->>>> +                  insn->sec->name, dest_off);
->>>> +            return -1;
->>>> +        }
->>>> +
->>>>           rela = find_rela_by_dest_range(insn->sec, insn->offset,
->>>>                              insn->len);
->>>>           if (!rela) {
->>>> @@ -1289,6 +1301,49 @@ static int read_retpoline_hints(struct objtool_file *file)
->>>>       return 0;
->>>>   }
->>>> +static int read_intra_function_call(struct objtool_file *file)
->>>> +{
->>>> +    struct section *sec;
->>>> +    struct instruction *insn;
->>>> +    struct rela *rela;
->>>> +
->>>> +    sec = find_section_by_name(file->elf,
->>>> +                   ".rela.discard.intra_function_call");
->>>
->>> I'm wondering, do we really need to annotate the intra_function_call
->>> and group the in a section?
->>>
->>> Would it be a problem to consider all (static) call instructions with
->>> a destination that is not the start offset of a symbol to be an
->>> intra-function call (and set insn->intra_function_call and
->>> insn->jump_dest accordingly)?
+>>>>>>     	select VDPA
+>>>>>>     	help
+>>>>>>     	  This kernel module can be loaded in host kernel to accelera=
+te
+>>>>> OK so I squashed this into the original buggy patch.
+>>>>> Could you please play with vhost branch of my tree on various
+>>>>> arches? If it looks ok to you let me know I'll push
+>>>>> this to next.
+>>>> With the above part squashed. I've tested all the archs whose defcon=
+fig have
+>>>> VHOST_NET or VHOST_VSOCK enabled.
+>>>>
+>>>> All looks fine.
+>>>>
+>>>> Thanks
+>>> I'm a bit confused. So is the next tag in my tree ok now?
 >>
->> Correct, we could automatically detect intra-function calls instead of
->> having to annotate them. However, I choose to annotate them because I don't
->> think that's not an expected construct in a "normal" code flow (at least
->> on x86). So objtool would still issue a warning on intra-function calls
->> by default, and you can annotate them to indicate if they are expected.
+>> Still need to select CONFIG_VHOST for=C2=A0 CONFIG_VHOST_VDPA. Others =
+are ok.
 >>
->> If intra-function calls are frequent on arm then I can add an option to
->> objtool so it automatically detects them. This way, we won't use the option
->> on x86 and we have to annotate intra-function call on x86, and you can
->> use it on arm to automatically detect intra-function calls.
->>
-> 
-> That makes sense. Maybe we can just allow them in !file->c_file, I
-> don't think gcc generates such call on arm64, so I think we'd only
-> have that in assembly.
-
-We can have also intra-function call in C file with the asm directive, for
-example with retpoline. Actually I think I forgot to check that as this is
-only on 32bit on x86.
-
-> If people prefer to keep the annotation, would you mind having a
-> "ANNOTATE_INTRA_FUNCTION_CALL" macro in include/linux/frame.h to add
-> the label and the reference to the right section?
+>> Thanks
 >
-> This way it could be reused for other archs.
+> Oh like this then?
+>
+> diff --git a/drivers/vhost/Kconfig b/drivers/vhost/Kconfig
+> index bdd270fede26..cb6b17323eb2 100644
+> --- a/drivers/vhost/Kconfig
+> +++ b/drivers/vhost/Kconfig
+> @@ -61,6 +63,7 @@ config VHOST_VSOCK
+>   config VHOST_VDPA
+>   	tristate "Vhost driver for vDPA-based backend"
+>   	depends on EVENTFD
+> +	select VHOST
+>   	select VDPA
+>   	help
+>   	  This kernel module can be loaded in host kernel to accelerate
 
-Sure, I will do that.
 
-alex.
-  
->>
->>> Other than that the logic would stay the same.
->>>
->>>> +    if (!sec)
->>>> +        return 0;
->>>> +
->>>> +    list_for_each_entry(rela, &sec->rela_list, list) {
->>>> +        if (rela->sym->type != STT_SECTION) {
->>>> +            WARN("unexpected relocation symbol type in %s",
->>>> +                 sec->name);
->>>> +            return -1;
->>>> +        }
->>>> +
->>>> +        insn = find_insn(file, rela->sym->sec, rela->addend);
->>>> +        if (!insn) {
->>>> +            WARN("bad .discard.intra_function_call entry");
->>>> +            return -1;
->>>> +        }
->>>> +
->>>> +        if (insn->type != INSN_CALL) {
->>>> +            WARN_FUNC("intra_function_call not a call",
->>>> +                  insn->sec, insn->offset);
->>>
->>> Nit: This could be slightly confusing with INSN_CALL_DYNAMIC. Maybe just:
->>>      "unsupported instruction for intra-function call " ?
->>
->> Right, I will change that: "intra_function_call not a direct call"
->>
->>>> +            return -1;
->>>> +        }
->>>> +
->>>> +        insn->intra_function_call = true;
->>>> +        /*
->>>> +         * For the impact on the stack, make an intra-function
->>>> +         * call behaves like a push of an immediate value (the
->>>> +         * return address).
->>>> +         */
->>>> +        insn->stack_op.src.type = OP_SRC_CONST;
->>>> +        insn->stack_op.dest.type = OP_DEST_PUSH;
->>>
->>> As commented above, this should be arch dependent.
->>
->> I will add a arch dependent call. I will also do that for the return
->> trampoline call case (patch 4).
->>
-> 
-> Thank you!
-> 
+Yes.
+
+Thanks
+
+
+>
+
