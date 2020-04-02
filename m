@@ -2,487 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9EF319C3C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040A919C556
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732302AbgDBOQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:16:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63065 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726425AbgDBOQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:16:35 -0400
-IronPort-SDR: d1MsRC7ROMMmQJka7buFkcKVWUiWVL6IUtNhZkg6lhz5+iuTLBnVr7I16lUaHv5NEoYrY3HqLc
- SNt4tTcSVW8Q==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 07:16:34 -0700
-IronPort-SDR: QcElm/xU0iQf6/kgR9+sI9A2AgJBz8gJNYz7V87X917hU05Gdrnq3q+KPSUOZN+RE00WJBaZ9k
- AK9lAkFpJhzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,335,1580803200"; 
-   d="scan'208";a="450945000"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.87])
-  by fmsmga006.fm.intel.com with ESMTP; 02 Apr 2020 07:16:32 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf script: Simplify auxiliary event printing functions
-Date:   Thu,  2 Apr 2020 17:15:48 +0300
-Message-Id: <20200402141548.21283-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S2389094AbgDBPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:03:25 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:57337 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388744AbgDBPDZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 11:03:25 -0400
+Received: from mail.cetitecgmbh.com ([87.190.42.90]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis)
+ id 1MybX9-1j7PZQ1xzp-00z00b; Thu, 02 Apr 2020 17:03:09 +0200
+Received: from pflvmailgateway.corp.cetitec.com (unknown [127.0.0.1])
+        by mail.cetitecgmbh.com (Postfix) with ESMTP id 097A0650AA7;
+        Thu,  2 Apr 2020 15:03:08 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at cetitec.com
+Received: from mail.cetitecgmbh.com ([127.0.0.1])
+        by pflvmailgateway.corp.cetitec.com (pflvmailgateway.corp.cetitec.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qP8o4QmZzMyZ; Thu,  2 Apr 2020 17:03:07 +0200 (CEST)
+Received: from pflmari.corp.cetitec.com (unknown [10.8.5.56])
+        by mail.cetitecgmbh.com (Postfix) with ESMTPS id 9404064C938;
+        Thu,  2 Apr 2020 17:03:07 +0200 (CEST)
+Received: by pflmari.corp.cetitec.com (Postfix, from userid 1000)
+        id 68B12804FB; Thu,  2 Apr 2020 16:16:54 +0200 (CEST)
+Date:   Thu, 2 Apr 2020 16:16:54 +0200
+From:   Alex Riesen <alexander.riesen@cetitec.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Subject: Re: [PATCH v4 9/9] arm64: dts: renesas: salvator: add a connection
+ from adv748x codec (HDMI input) to the R-Car SoC
+Message-ID: <20200402141654.GB4291@pflmari>
+Mail-Followup-To: Alex Riesen <alexander.riesen@cetitec.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS <devicetree@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+References: <cover.1585218857.git.alexander.riesen@cetitec.com>
+ <ad15f80df51c95a7c24498bb0bd3a46f55fbb62e.1585218857.git.alexander.riesen@cetitec.com>
+ <CAMuHMdV+joeNWJotKySVPHNW9OoT8+iODBwhK5fACspq2SX_eg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdV+joeNWJotKySVPHNW9OoT8+iODBwhK5fACspq2SX_eg@mail.gmail.com>
+X-Provags-ID: V03:K1:Is5uJxMg3JOTXfihWmw/yAJXlIzEj/786Ut3euQGsigzUph1yio
+ H5V1cBF7XgZEEeI7WsFwuZTxP2E6Hj6azmNrJh9qwFSuXDZ+zCCP81RCQlmSPJla0Sr6IY6
+ QSzQfPaUUl+mZtQjwdOV8zhedWfwf9gToq+Iv9Gat4KWV8g7VMTdPkti9uvTMfDtvqBdOTd
+ PDGuW+kIr2pCE6T9+kHjg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FPfBvf1WZKE=:2e0MwuWr49u0npND5T8YEM
+ fXabhm3nmxL2DQkHlFFAFd/AZJcQQiHJROAR+13cGIK/BQ/5L5fhbKsr7QiYNSbpyhGhT1ZXC
+ DruPJmtG+lW129VEWTRpAKIV5wDbNozyUjfNELnMLoLiIgZrFxhzuYtOI4hT+pTegAreOtXuY
+ YfcTsBxuvY4dba3wKL2aYMR5m8DUoCn2hdNWbACXx4muJNO+uRItRcQSWagsMF3DlswZ5+Us2
+ B0+yMDRs7PtQd3w0V3y33k3JPgrBXnZ4w558yfeHQLg4kIWRIHpFhFo8ChpuzQWXxM2F0vQlv
+ HtSDfCZITzq7skt8OyjiMW/jnep2ho+Z9HY1Lxic6ZaS/c1oKGfmYEsa5yjLRoTRUFPiYRFGS
+ 4eWSizLGLgXzJCKL4UZjwwOQQo8F9tKigOvvEkmQqZszuPk2XWOxoop+EHnYkilEOa1eCL4sN
+ axL1Vs/QBvg0L3KWDLUSBXyuPLu1Rafzc9r5rXt+ffN/w75EG6YkVVacAiZC3sBbn4PsgddkC
+ uqAdlMvF1MSmd8W8OaNN1yeN3JuYYF4XRosNbKHSTjriS7k/zZvLxcWpWaZSh+szMs62045IH
+ 8VBAbwU/Wxez46XOtQkuodomLlPQ/dUWP7rllc2j8+g4nBltzexHbEmghcrGNssSjZT/zum//
+ 2jEC3qaNRVnKT06kQAI/jRiueES0WlRUmPhUre8tZGmxjSssxMHxNw5UWej9WOECkNcm3p8u4
+ Yl88JIj+7JtrYyzm88d18pAMmJkOZHw1SaJDqUVASOi5RnYxHDytRQaYe/XrkIqzmlwid6o0T
+ NeU6XqJ/1T6H0LTy6Lk4ke+UK68Rywv87xDbbBW0VOB/RHYoGHeNaIxr4Dl/Nmq4ENHwMYk
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This simplifies the print functions for the following perf script
-options:
+Hi Geert,
 
-	--show-task-events
-	--show-namespace-events
-	--show-cgroup-events
-	--show-mmap-events
-	--show-switch-events
-	--show-lost-events
-	--show-bpf-events
+I'm sorry for late reply. Some unrelated happenings here in south Germany.
 
-Example:
-	# perf record --switch-events -a -e cycles -c 10000 sleep 1
- Before:
-	# perf script --show-task-events --show-namespace-events --show-cgroup-events --show-mmap-events --show-switch-events --show-lost-events --show-bpf-events >out-before.txt
- After:
-	# perf script --show-task-events --show-namespace-events --show-cgroup-events --show-mmap-events --show-switch-events --show-lost-events --show-bpf-events >out-after.txt
-	# diff -s out-before.txt out-after.txt
-	Files out-before.txt and out-after.tx are identical
+Geert Uytterhoeven, Mon, Mar 30, 2020 10:32:47 +0200:
+> On Thu, Mar 26, 2020 at 11:55 AM Alex Riesen <alexander.riesen@cetitec.com> wrote:
+> > --- a/arch/arm64/boot/dts/renesas/salvator-common.dtsi
+> > +++ b/arch/arm64/boot/dts/renesas/salvator-common.dtsi
+> > @@ -510,6 +511,15 @@ adv7482_txb: endpoint {
+> >                                 remote-endpoint = <&csi20_in>;
+> >                         };
+> >                 };
+> > +
+> > +               port@c {
+> > +                       reg = <12>;
+> > +
+> > +                       adv7482_i2s: endpoint {
+> > +                               remote-endpoint = <&rsnd_endpoint3>;
+> > +                               system-clock-direction-out;
+> > +                       };
+> > +               };
+> 
+> As the adv748x driver just ignores "invalid" endpoints...
+> 
+> > @@ -758,8 +769,19 @@ &rcar_sound {
+> >                  <&cpg CPG_MOD 1020>, <&cpg CPG_MOD 1021>,
+> >                  <&cpg CPG_MOD 1019>, <&cpg CPG_MOD 1018>,
+> >                  <&audio_clk_a>, <&cs2000>,
+> > -                <&audio_clk_c>,
+> > +                <&adv7482_hdmi_in>,
+> >                  <&cpg CPG_CORE CPG_AUDIO_CLK_I>;
+> 
+> ... and the rsnd driver ignores nonexistent-clocks, the DT change has no
+> hard dependency on the driver change, and won't introduce regressions
+> when included, right?
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/builtin-script.c | 304 ++++++++----------------------------
- 1 file changed, 66 insertions(+), 238 deletions(-)
+Well, it maybe won't, but isn't it a little ... implicit?
+And I'm no haste to include the changes, if you mean I can (or should) submit
+the device tree patch separately.
 
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 186ebf827fa1..348fec9743a4 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2040,7 +2040,7 @@ static int cleanup_scripting(void)
- 
- static bool filter_cpu(struct perf_sample *sample)
- {
--	if (cpu_list)
-+	if (cpu_list && sample->cpu != (u32)-1)
- 		return !test_bit(sample->cpu, cpu_bitmap);
- 	return false;
- }
-@@ -2138,41 +2138,59 @@ static int process_attr(struct perf_tool *tool, union perf_event *event,
- 	return err;
- }
- 
--static int process_comm_event(struct perf_tool *tool,
--			      union perf_event *event,
--			      struct perf_sample *sample,
--			      struct machine *machine)
-+static int print_event_with_time(struct perf_tool *tool,
-+				 union perf_event *event,
-+				 struct perf_sample *sample,
-+				 struct machine *machine,
-+				 pid_t pid, pid_t tid, u64 timestamp)
- {
--	struct thread *thread;
- 	struct perf_script *script = container_of(tool, struct perf_script, tool);
- 	struct perf_session *session = script->session;
- 	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--	int ret = -1;
-+	struct thread *thread = NULL;
- 
--	thread = machine__findnew_thread(machine, event->comm.pid, event->comm.tid);
--	if (thread == NULL) {
--		pr_debug("problem processing COMM event, skipping it.\n");
--		return -1;
-+	if (evsel && !evsel->core.attr.sample_id_all) {
-+		sample->cpu = 0;
-+		sample->time = timestamp;
-+		sample->pid = pid;
-+		sample->tid = tid;
- 	}
- 
--	if (perf_event__process_comm(tool, event, sample, machine) < 0)
--		goto out;
-+	if (filter_cpu(sample))
-+		return 0;
- 
--	if (!evsel->core.attr.sample_id_all) {
--		sample->cpu = 0;
--		sample->time = 0;
--		sample->tid = event->comm.tid;
--		sample->pid = event->comm.pid;
--	}
--	if (!filter_cpu(sample)) {
-+	if (tid != -1)
-+		thread = machine__findnew_thread(machine, pid, tid);
-+
-+	if (thread && evsel) {
- 		perf_sample__fprintf_start(sample, thread, evsel,
--				   PERF_RECORD_COMM, stdout);
--		perf_event__fprintf(event, stdout);
-+					   event->header.type, stdout);
- 	}
--	ret = 0;
--out:
-+
-+	perf_event__fprintf(event, stdout);
-+
- 	thread__put(thread);
--	return ret;
-+
-+	return 0;
-+}
-+
-+static int print_event(struct perf_tool *tool, union perf_event *event,
-+		       struct perf_sample *sample, struct machine *machine,
-+		       pid_t pid, pid_t tid)
-+{
-+	return print_event_with_time(tool, event, sample, machine, pid, tid, 0);
-+}
-+
-+static int process_comm_event(struct perf_tool *tool,
-+			      union perf_event *event,
-+			      struct perf_sample *sample,
-+			      struct machine *machine)
-+{
-+	if (perf_event__process_comm(tool, event, sample, machine) < 0)
-+		return -1;
-+
-+	return print_event(tool, event, sample, machine, event->comm.pid,
-+			   event->comm.tid);
- }
- 
- static int process_namespaces_event(struct perf_tool *tool,
-@@ -2180,37 +2198,11 @@ static int process_namespaces_event(struct perf_tool *tool,
- 				    struct perf_sample *sample,
- 				    struct machine *machine)
- {
--	struct thread *thread;
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--	int ret = -1;
--
--	thread = machine__findnew_thread(machine, event->namespaces.pid,
--					 event->namespaces.tid);
--	if (thread == NULL) {
--		pr_debug("problem processing NAMESPACES event, skipping it.\n");
--		return -1;
--	}
--
- 	if (perf_event__process_namespaces(tool, event, sample, machine) < 0)
--		goto out;
-+		return -1;
- 
--	if (!evsel->core.attr.sample_id_all) {
--		sample->cpu = 0;
--		sample->time = 0;
--		sample->tid = event->namespaces.tid;
--		sample->pid = event->namespaces.pid;
--	}
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_NAMESPACES, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--	ret = 0;
--out:
--	thread__put(thread);
--	return ret;
-+	return print_event(tool, event, sample, machine, event->namespaces.pid,
-+			   event->namespaces.tid);
- }
- 
- static int process_cgroup_event(struct perf_tool *tool,
-@@ -2218,34 +2210,11 @@ static int process_cgroup_event(struct perf_tool *tool,
- 				struct perf_sample *sample,
- 				struct machine *machine)
- {
--	struct thread *thread;
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--	int ret = -1;
--
--	thread = machine__findnew_thread(machine, sample->pid, sample->tid);
--	if (thread == NULL) {
--		pr_debug("problem processing CGROUP event, skipping it.\n");
--		return -1;
--	}
--
- 	if (perf_event__process_cgroup(tool, event, sample, machine) < 0)
--		goto out;
-+		return -1;
- 
--	if (!evsel->core.attr.sample_id_all) {
--		sample->cpu = 0;
--		sample->time = 0;
--	}
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_CGROUP, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--	ret = 0;
--out:
--	thread__put(thread);
--	return ret;
-+	return print_event(tool, event, sample, machine, sample->pid,
-+			    sample->tid);
- }
- 
- static int process_fork_event(struct perf_tool *tool,
-@@ -2253,69 +2222,24 @@ static int process_fork_event(struct perf_tool *tool,
- 			      struct perf_sample *sample,
- 			      struct machine *machine)
- {
--	struct thread *thread;
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--
- 	if (perf_event__process_fork(tool, event, sample, machine) < 0)
- 		return -1;
- 
--	thread = machine__findnew_thread(machine, event->fork.pid, event->fork.tid);
--	if (thread == NULL) {
--		pr_debug("problem processing FORK event, skipping it.\n");
--		return -1;
--	}
--
--	if (!evsel->core.attr.sample_id_all) {
--		sample->cpu = 0;
--		sample->time = event->fork.time;
--		sample->tid = event->fork.tid;
--		sample->pid = event->fork.pid;
--	}
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_FORK, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--	thread__put(thread);
--
--	return 0;
-+	return print_event_with_time(tool, event, sample, machine,
-+				     event->fork.pid, event->fork.tid,
-+				     event->fork.time);
- }
- static int process_exit_event(struct perf_tool *tool,
- 			      union perf_event *event,
- 			      struct perf_sample *sample,
- 			      struct machine *machine)
- {
--	int err = 0;
--	struct thread *thread;
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--
--	thread = machine__findnew_thread(machine, event->fork.pid, event->fork.tid);
--	if (thread == NULL) {
--		pr_debug("problem processing EXIT event, skipping it.\n");
-+	/* Print before 'exit' deletes anything */
-+	if (print_event_with_time(tool, event, sample, machine, event->fork.pid,
-+				  event->fork.tid, event->fork.time))
- 		return -1;
--	}
--
--	if (!evsel->core.attr.sample_id_all) {
--		sample->cpu = 0;
--		sample->time = 0;
--		sample->tid = event->fork.tid;
--		sample->pid = event->fork.pid;
--	}
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_EXIT, stdout);
--		perf_event__fprintf(event, stdout);
--	}
- 
--	if (perf_event__process_exit(tool, event, sample, machine) < 0)
--		err = -1;
--
--	thread__put(thread);
--	return err;
-+	return perf_event__process_exit(tool, event, sample, machine);
- }
- 
- static int process_mmap_event(struct perf_tool *tool,
-@@ -2323,33 +2247,11 @@ static int process_mmap_event(struct perf_tool *tool,
- 			      struct perf_sample *sample,
- 			      struct machine *machine)
- {
--	struct thread *thread;
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--
- 	if (perf_event__process_mmap(tool, event, sample, machine) < 0)
- 		return -1;
- 
--	thread = machine__findnew_thread(machine, event->mmap.pid, event->mmap.tid);
--	if (thread == NULL) {
--		pr_debug("problem processing MMAP event, skipping it.\n");
--		return -1;
--	}
--
--	if (!evsel->core.attr.sample_id_all) {
--		sample->cpu = 0;
--		sample->time = 0;
--		sample->tid = event->mmap.tid;
--		sample->pid = event->mmap.pid;
--	}
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_MMAP, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--	thread__put(thread);
--	return 0;
-+	return print_event(tool, event, sample, machine, event->mmap.pid,
-+			   event->mmap.tid);
- }
- 
- static int process_mmap2_event(struct perf_tool *tool,
-@@ -2357,33 +2259,11 @@ static int process_mmap2_event(struct perf_tool *tool,
- 			      struct perf_sample *sample,
- 			      struct machine *machine)
- {
--	struct thread *thread;
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--
- 	if (perf_event__process_mmap2(tool, event, sample, machine) < 0)
- 		return -1;
- 
--	thread = machine__findnew_thread(machine, event->mmap2.pid, event->mmap2.tid);
--	if (thread == NULL) {
--		pr_debug("problem processing MMAP2 event, skipping it.\n");
--		return -1;
--	}
--
--	if (!evsel->core.attr.sample_id_all) {
--		sample->cpu = 0;
--		sample->time = 0;
--		sample->tid = event->mmap2.tid;
--		sample->pid = event->mmap2.pid;
--	}
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_MMAP2, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--	thread__put(thread);
--	return 0;
-+	return print_event(tool, event, sample, machine, event->mmap2.pid,
-+			   event->mmap2.tid);
- }
- 
- static int process_switch_event(struct perf_tool *tool,
-@@ -2391,10 +2271,7 @@ static int process_switch_event(struct perf_tool *tool,
- 				struct perf_sample *sample,
- 				struct machine *machine)
- {
--	struct thread *thread;
- 	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
- 
- 	if (perf_event__process_switch(tool, event, sample, machine) < 0)
- 		return -1;
-@@ -2405,20 +2282,8 @@ static int process_switch_event(struct perf_tool *tool,
- 	if (!script->show_switch_events)
- 		return 0;
- 
--	thread = machine__findnew_thread(machine, sample->pid,
--					 sample->tid);
--	if (thread == NULL) {
--		pr_debug("problem processing SWITCH event, skipping it.\n");
--		return -1;
--	}
--
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_SWITCH, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--	thread__put(thread);
--	return 0;
-+	return print_event(tool, event, sample, machine, sample->pid,
-+			   sample->tid);
- }
- 
- static int
-@@ -2427,23 +2292,8 @@ process_lost_event(struct perf_tool *tool,
- 		   struct perf_sample *sample,
- 		   struct machine *machine)
- {
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--	struct thread *thread;
--
--	thread = machine__findnew_thread(machine, sample->pid,
--					 sample->tid);
--	if (thread == NULL)
--		return -1;
--
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   PERF_RECORD_LOST, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--	thread__put(thread);
--	return 0;
-+	return print_event(tool, event, sample, machine, sample->pid,
-+			   sample->tid);
- }
- 
- static int
-@@ -2462,33 +2312,11 @@ process_bpf_events(struct perf_tool *tool __maybe_unused,
- 		   struct perf_sample *sample,
- 		   struct machine *machine)
- {
--	struct thread *thread;
--	struct perf_script *script = container_of(tool, struct perf_script, tool);
--	struct perf_session *session = script->session;
--	struct evsel *evsel = perf_evlist__id2evsel(session->evlist, sample->id);
--
- 	if (machine__process_ksymbol(machine, event, sample) < 0)
- 		return -1;
- 
--	if (!evsel->core.attr.sample_id_all) {
--		perf_event__fprintf(event, stdout);
--		return 0;
--	}
--
--	thread = machine__findnew_thread(machine, sample->pid, sample->tid);
--	if (thread == NULL) {
--		pr_debug("problem processing MMAP event, skipping it.\n");
--		return -1;
--	}
--
--	if (!filter_cpu(sample)) {
--		perf_sample__fprintf_start(sample, thread, evsel,
--					   event->header.type, stdout);
--		perf_event__fprintf(event, stdout);
--	}
--
--	thread__put(thread);
--	return 0;
-+	return print_event(tool, event, sample, machine, sample->pid,
-+			   sample->tid);
- }
- 
- static void sig_handler(int sig __maybe_unused)
--- 
-2.17.1
+> > @@ -777,6 +799,21 @@ rsnd_endpoint0: endpoint {
+> >                                 capture  = <&ssi1 &src1 &dvc1>;
+> >                         };
+> >                 };
+> > +               rsnd_port3: port@3 {
+> > +                       reg = <3>;
+> > +                       rsnd_endpoint3: endpoint {
+> > +                               remote-endpoint = <&adv7482_i2s>;
+> > +
+> > +                               dai-tdm-slot-num = <8>;
+> > +                               dai-tdm-slot-width = <32>;
+> > +                               dai-format = "left_j";
+> > +                               mclk-fs = <256>;
+> > +                               bitclock-master = <&adv7482_i2s>;
+> > +                               frame-master = <&adv7482_i2s>;
+> > +
+> > +                               capture = <&ssi4>;
+> > +                       };
+> > +               };
+> >         };
+> >  };
+> 
+> However, as salvator-common.dtsi is shared by all Salvator-X(S) variants,
+> you'll have to add a dummy ssi4 node to r8a77961.dtsi first.
+
+I see. There are even two dummy SSI nodes already. I would prefer to submit
+the change together with other Salvator device tree changes. Is that alright?
+
+Regards,
+Alex
 
