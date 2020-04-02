@@ -2,63 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D919019CD7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 01:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065A619CD77
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 01:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390198AbgDBXaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 19:30:02 -0400
-Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:42506 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390160AbgDBXaC (ORCPT
+        id S2390182AbgDBX2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 19:28:24 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41038 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387919AbgDBX2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 19:30:02 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 1E662180115BA;
-        Thu,  2 Apr 2020 23:30:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1561:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3871:4321:5007:6120:6742:7901:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21611:21627:30034:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: ear56_1ce45487cda0f
-X-Filterd-Recvd-Size: 1599
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Thu,  2 Apr 2020 23:29:58 +0000 (UTC)
-Message-ID: <f8847ea6b8af08eaa49f142bbefefe7a8e2229eb.camel@perches.com>
-Subject: Re: [PATCH 1/1] lib/vsprintf: Add support for printing V4L2 and DRM
- fourccs
-From:   Joe Perches <joe@perches.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hverkuil@xs4all.nl,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        laurent.pinchart@ideasonboard.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>
-Date:   Thu, 02 Apr 2020 16:28:02 -0700
-In-Reply-To: <20200402155323.6866b5c9@coco.lan>
-References: <20200401140522.966-1-sakari.ailus@linux.intel.com>
-         <87eet6mgk7.fsf@intel.com> <20200402155323.6866b5c9@coco.lan>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Thu, 2 Apr 2020 19:28:23 -0400
+Received: by mail-lj1-f193.google.com with SMTP id n17so5102251lji.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 16:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=27Eq33tzm0rwxrqYtQSqbizdJYHHnYSaU0MAG8gpLzU=;
+        b=CfTBY7xc1tiuPYtHEJoigkNy6ECHxmqNNJtfajsajw5CbJZRZPLrGU/rk4vJo9ix26
+         abrgDQ+uFBTyTnl4yYkkq16ZlRI/cZ1V7eMVlzB1WFePzfq2eXWPusgbU45dPLtmBD35
+         BdRd7O/NjpQ1pgDxt+SYe8xxgLc6alEqsqeOY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=27Eq33tzm0rwxrqYtQSqbizdJYHHnYSaU0MAG8gpLzU=;
+        b=fdbbhYs517f7WAC+I/jC1xwiGxLiNqJPbC2RcLRoRL3tzAy2Vq10s2mNl0eEnxetTi
+         8SMRRoSXJF8a7V5OlSMM8AJfZc+L1Zy3LMam+qsvl6pQxwcYQOstZwMrpNBchJNtphlf
+         u/0aEqYOSFg+Ta0RbWHEwv6xi9jomf0r787RarjvuW6YDvruLRy6x1B7aJyDU8G0jLpv
+         JR4jDCU0ddMVHZbLi+G4ePpNndnnSE9bWh5xI7DmKZd3faqbYaJLqaZEcplPk0wAlljF
+         ZqHl5j8dKH6p8xOKCayrLIGBhty7Q0fwieQunHH/P5Aa2SqEYVqjoxpyr2wDZJ2NsXBi
+         du5Q==
+X-Gm-Message-State: AGi0PuZFRbLMzw0554YgvcybtF7L8hXSD3JGr8hKBv571KEwWXu1UfXA
+        lL49gL1JOO9Xm/0kwwddIqJfPN747dU=
+X-Google-Smtp-Source: APiQypKsZy02Y3fCVgV2EKSS42KCzQCiYl01g7j2yPyz18kaxcR9+jpLUrT1BeButJKT9jG0BWB6Jg==
+X-Received: by 2002:a2e:8ec2:: with SMTP id e2mr3218476ljl.252.1585870100775;
+        Thu, 02 Apr 2020 16:28:20 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id r13sm2442569lfc.74.2020.04.02.16.28.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Apr 2020 16:28:19 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id q19so5064134ljp.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 16:28:19 -0700 (PDT)
+X-Received: by 2002:a2e:b4cb:: with SMTP id r11mr3432765ljm.201.1585870099332;
+ Thu, 02 Apr 2020 16:28:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200402112500.GJ72691@vkoul-mobl>
+In-Reply-To: <20200402112500.GJ72691@vkoul-mobl>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Apr 2020 16:28:03 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi81+9roQMgf7n0YRxJ0rqK3W0ghB3tS3kngSikC7cOig@mail.gmail.com>
+Message-ID: <CAHk-=wi81+9roQMgf7n0YRxJ0rqK3W0ghB3tS3kngSikC7cOig@mail.gmail.com>
+Subject: Re: [GIT PULL]: dmaengine updates for v5.7-rc1
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-04-02 at 15:53 +0200, Mauro Carvalho Chehab wrote:
+On Thu, Apr 2, 2020 at 4:25 AM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> Here are the changes for this cycle. SFR has told me that you might see
+> a merge conflict, but I am sure you would be okay with it :)
 
-> I liked one of the suggestions of using "%p4cc" (or maybe something
-> similar, if having a number there is a problem, like "%pAcc" or "%pfcc")
+It looked trivial enough. That said, it's in the TI_K3_UDMA driver,
+which I can't build. The driver is marked as COMPILE_TEST, but it also
+has
 
-Using a number is not a problem.
+        depends on TI_SCI_PROTOCOL
+        depends on TI_SCI_INTA_IRQCHIP
 
+which means that it depends on TI_MESSAGE_MANAGER, which in turn has a
 
+        depends on ARCH_KEYSTONE || ARCH_K3
+
+so it may be *marked* for build testing, but it doesn't actually get
+any outside of those builds.
+
+So I did the resolution that looked trivial, but mistakes happen, and
+I can't even build-test that driver..
+
+Just a heads-up. It does look like it was _meant_ to be build-tested,
+but that intent didn't work out.
+
+Adding a COMPILE_TEST option to TI_MESSAGE_MANAGER gets things a bit
+further, but even then it doesn't actually build that driver because
+that TI_SCI_INTA_IRQCHIP dependency needs to be enabled too.
+
+And that one doesn't even have a question, it's just a plain bool, and
+expects to be selected. Which the arm64 platform does.
+
+Anyway, to make a long story short: "the COMPILE_TEST marker is a lie".
+
+So somebody should actually test my merge.
+
+                  Linus
