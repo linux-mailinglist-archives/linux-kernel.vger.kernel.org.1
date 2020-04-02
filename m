@@ -2,75 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBE919C5F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B8B19C5EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389309AbgDBPel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:34:41 -0400
-Received: from pub.regulars.win ([89.163.144.234]:35722 "EHLO pub.regulars.win"
+        id S2389264AbgDBPeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:34:23 -0400
+Received: from mga12.intel.com ([192.55.52.136]:36459 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732754AbgDBPek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:34:40 -0400
-From:   Slava Bacherikov <slava@bacher09.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bacher09.org;
-        s=reg; t=1585841677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bKUf/bnAONFPXaf6zoV9Cn+HIIIIoYflCpB+vjMGW18=;
-        b=HNrpNMyRlD90A3TMwMZHALy+ta+0ynQ+1oVhRvwwGsCPTvsRtsjf4Ds9ztmBRuq3sAOWKK
-        RG/VAG3HXogrMUbFpmqA/WQufGMoqj4Bg663lFurWifyDKMZQ7p3Vc/RXS0Jch/uOh7pJ3
-        0zhAfPmaMV+DII6Y5Ggr0RlbXON+Y9A=
-To:     keescook@chromium.org
-Cc:     andriin@fb.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jannh@google.com, alexei.starovoitov@gmail.com,
-        daniel@iogearbox.net, kernel-hardening@lists.openwall.com,
-        liuyd.fnst@cn.fujitsu.com, kpsingh@google.com,
-        Slava Bacherikov <slava@bacher09.org>
-Subject: [PATCH v4 bpf] kbuild: fix dependencies for DEBUG_INFO_BTF
-Date:   Thu,  2 Apr 2020 18:33:36 +0300
-Message-Id: <20200402153335.38447-1-slava@bacher09.org>
-In-Reply-To: <202004010849.CC7E9412@keescook>
-References: <202004010849.CC7E9412@keescook>
+        id S2388744AbgDBPeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 11:34:23 -0400
+IronPort-SDR: LjHVpc44cDPIIbHA/jQKgi5DeTvzER4O8aOaSMo1nPEKjAJ40uDIV1syGZxHq3cCXh/SWg+fA7
+ 5VeUS1H3jWvQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 08:34:22 -0700
+IronPort-SDR: qYBCXvjvLcqu1xTxylYhG0fN/1UhsMkFcaFmOhvpqLp/6bXrSp8UXe/6/Z+gHlesqnhJuR5nSK
+ gUfMfrMc7PPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
+   d="scan'208";a="253037256"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 02 Apr 2020 08:34:21 -0700
+Received: from [10.251.7.210] (kliang2-mobl.ccr.corp.intel.com [10.251.7.210])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 467825802C8;
+        Thu,  2 Apr 2020 08:34:20 -0700 (PDT)
+Subject: Re: [PATCH V4 00/17] Stitch LBR call stack (Perf Tools)
+To:     Jiri Olsa <jolsa@redhat.com>, acme@kernel.org
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org, namhyung@kernel.org,
+        adrian.hunter@intel.com, mathieu.poirier@linaro.org,
+        ravi.bangoria@linux.ibm.com, alexey.budankov@linux.intel.com,
+        vitaly.slobodskoy@intel.com, pavel.gerasimov@intel.com,
+        mpe@ellerman.id.au, eranian@google.com, ak@linux.intel.com
+References: <20200319202517.23423-1-kan.liang@linux.intel.com>
+ <20200323111311.GH1534489@krava>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <e2887d1f-e963-66b4-f0cb-fa23986565a2@linux.intel.com>
+Date:   Thu, 2 Apr 2020 11:34:18 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+In-Reply-To: <20200323111311.GH1534489@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently turning on DEBUG_INFO_SPLIT when DEBUG_INFO_BTF is also
-enabled will produce invalid btf file, since gen_btf function in
-link-vmlinux.sh script doesn't handle *.dwo files.
 
-Enabling DEBUG_INFO_REDUCED will also produce invalid btf file, and
-using GCC_PLUGIN_RANDSTRUCT with BTF makes no sense.
 
-Signed-off-by: Slava Bacherikov <slava@bacher09.org>
-Reported-by: Jann Horn <jannh@google.com>
-Reported-by: Liu Yiding <liuyd.fnst@cn.fujitsu.com>
-Acked-by: KP Singh <kpsingh@google.com>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Fixes: e83b9f55448a ("kbuild: add ability to generate BTF type info for vmlinux")
----
- lib/Kconfig.debug | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+On 3/23/2020 7:13 AM, Jiri Olsa wrote:
+> On Thu, Mar 19, 2020 at 01:25:00PM -0700, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> Changes since V3:
+>> - There is no dependency among the 'capabilities'. If perf fails to read
+>>    one, it should not impact others. Continue to parse the rest of caps.
+>>    (Patch 1)
+>> - Use list_for_each_entry() to replace perf_pmu__scan_caps() (Patch 1 &
+>>    2)
+>> - Combine the declaration plus assignment when possible (Patch 1 & 2)
+>> - Add check for script/report/c2c.. (Patch 13, 14 & 16)
+> 
+> it's all black magic to me, but looks ok ;-)
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+>
 
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index f61d834e02fe..b94227be2d62 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -222,7 +222,9 @@ config DEBUG_INFO_DWARF4
- 
- config DEBUG_INFO_BTF
- 	bool "Generate BTF typeinfo"
--	depends on DEBUG_INFO
-+	depends on DEBUG_INFO || COMPILE_TEST
-+	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
-+	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
- 	help
- 	  Generate deduplicated BTF type information from DWARF debug info.
- 	  Turning this on expects presence of pahole tool, which will convert
+Thanks Jirka.
+
+Hi Arnaldo,
+
+Any comments for the series?
+
+Thanks,
+Kan
