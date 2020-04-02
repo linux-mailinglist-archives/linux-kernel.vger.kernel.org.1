@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0B219C79B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3AC19C7A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387865AbgDBRG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:06:56 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:21197 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731608AbgDBRG4 (ORCPT
+        id S2388561AbgDBRIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:08:25 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:45112 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731608AbgDBRIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:06:56 -0400
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 032H6RMZ030643;
-        Fri, 3 Apr 2020 02:06:27 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 032H6RMZ030643
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1585847188;
-        bh=0Hu/kDIGL0VuCr3HG+sv9MGZq47PrIgCMrWOfepWzGY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o04n6qWEfkKrsbp5AwD5sTZg2P6LXAtsr/Kya4LataMVEHa+ZcYLYYhiSVBeQ0d/D
-         qfyEwFwgYpQ2ifjXBbFjkrBWRlHKZEGZLXz5Wd6T/HeTILHpdPXGdrI+JCoF5PEVAY
-         eGM4hrej0NV1j/jq6I71Vc7g3C7SR1VMFRe1X9sRtCGbQUS1SPyk+KacU4DLZqXKsf
-         MCn38xLXv7MXLINHCvPqoLdH/mQr/r7Dmq4splusj0xzzKQRmtYOhTw9yfUTWCQnGw
-         s5caF72usT58d0A/0TUuJ87np9Kma8PYzo3FYNOmJbfxQWpRdg6tebup2mf8u9t3LC
-         ektICVF8GqfaA==
-X-Nifty-SrcIP: [209.85.221.175]
-Received: by mail-vk1-f175.google.com with SMTP id f63so1134399vkh.0;
-        Thu, 02 Apr 2020 10:06:27 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYkkqFAaUnw5U5pFBrQ7bxWkGTTLDzb7hugTneruWX7hkbyoB+b
-        GyYeo4HLnDJ3Tm6O4ynpWyuV/y9cPToaORxLFLU=
-X-Google-Smtp-Source: APiQypJF3Ke0+SW6brBoT+I7M6euOWu205ToQ0Ev9frjeBnq3BfsIK3p1EjjGNj9Z/i4VjbTQ/yD/qDjvZEYLYbqub4=
-X-Received: by 2002:a1f:32cf:: with SMTP id y198mr3063123vky.96.1585847186520;
- Thu, 02 Apr 2020 10:06:26 -0700 (PDT)
+        Thu, 2 Apr 2020 13:08:24 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: bbeckett)
+        with ESMTPSA id 5C6E3297E43
+From:   Robert Beckett <bob.beckett@collabora.com>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH v4.19.y, v4.14.y, v4.9.y] drm/etnaviv: Backport fix for mmu flushing
+Date:   Thu,  2 Apr 2020 18:07:55 +0100
+Message-Id: <20200402170758.8315-1-bob.beckett@collabora.com>
+X-Mailer: git-send-email 2.20.1
+Reply-To: <bob.beckett@collabora.com>
 MIME-Version: 1.0
-References: <20200326194155.29107-1-natechancellor@gmail.com>
- <CAK7LNAQ8uHtuhd7DiGGOLbkEX524rPjfUuWAHjU-_92Ow3_1Pg@mail.gmail.com>
- <20200331101122.GA6292@ubuntu-m2-xlarge-x86> <CAKwvOdkkpnkLwtNctSnebXTwumfprEQtLiuM5_4e-UBFTYBUxg@mail.gmail.com>
- <20200331192637.GA54270@ubuntu-m2-xlarge-x86>
-In-Reply-To: <20200331192637.GA54270@ubuntu-m2-xlarge-x86>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 3 Apr 2020 02:05:50 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASPt4c-Vt9UzdKjSvPSYqXd4AFLNqKXfxnmqmfzk3Zi_A@mail.gmail.com>
-Message-ID: <CAK7LNASPt4c-Vt9UzdKjSvPSYqXd4AFLNqKXfxnmqmfzk3Zi_A@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: Enable -Wtautological-compare
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 1, 2020 at 4:26 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Tue, Mar 31, 2020 at 09:02:19AM -0700, 'Nick Desaulniers' via Clang Built Linux wrote:
-> > On Tue, Mar 31, 2020 at 3:11 AM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > > Just a follow up, those two patches have been picked up and should be in
-> > > this coming release:
-> > >
-> > > https://git.kernel.org/balbi/usb/c/58582220d2d34228e5a1e1585e41b735713988bb
-> > > https://git.kernel.org/rostedt/linux-trace/c/bf2cbe044da275021b2de5917240411a19e5c50d
-> > >
-> > > As of next-20200331, with the former applied (because it is not there
-> > > yet) along with this patch, I see no warnings on arm, arm64, x86_64
-> > > all{mod,yes}config.
-> >
-> > kbuild test robot is testing more arch's than that with Clang so it
-> > may report if it finds more instances of that warning in those.
-> >
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
-> >
->
-> I'll keep an eye out. Hopefully not too many more are lurking but we
-> have definitely caught some bad behavior with this warning already so
-> getting it turned on so that all CI systems can benefit from it is
-> important.
->
-> Cheers,
-> Nathan
+commit 4900dda90af2cb13bc1d4c12ce94b98acc8fe64e upstream
+
+Due to async need_flush updating via other buffer mapping, checking
+gpu->need_flush in 3 places within etnaviv_buffer_queue can cause GPU
+hangs.
+
+This occurs due to need_flush being false for the first 2 checks in that
+function, so that the extra dword does not get accounted for, but by the
+time we come to check for the third time, gpu->mmu->need_flish is true,
+which outputs the flush instruction. This causes the prefetch during the
+final link to be off by 1. This causes GPU hangs.
+
+It causes the ring to contain patterns like this:
+
+0x40000005, /* LINK (8) PREFETCH=0x5,OP=LINK */                                                      
+0x70040010, /*   ADDRESS *0x70040010 */                                                              
+0x40000002, /* LINK (8) PREFETCH=0x2,OP=LINK */                                                      
+0x70040000, /*   ADDRESS *0x70040000 */                                                              
+0x08010e04, /* LOAD_STATE (1) Base: 0x03810 Size: 1 Fixp: 0 */                                       
+0x0000001f, /*   GL.FLUSH_MMU := FLUSH_FEMMU=1,FLUSH_UNK1=1,FLUSH_UNK2=1,FLUSH_PEMMU=1,FLUSH_UNK4=1 */
+0x08010e03, /* LOAD_STATE (1) Base: 0x0380C Size: 1 Fixp: 0 */                                       
+0x00000000, /*   GL.FLUSH_CACHE := DEPTH=0,COLOR=0,TEXTURE=0,PE2D=0,TEXTUREVS=0,SHADER_L1=0,SHADER_L2=0,UNK10=0,UNK11=0,DESCRIPTOR_UNK12=0,DESCRIPTOR_UNK13=0 */
+0x08010e02, /* LOAD_STATE (1) Base: 0x03808 Size: 1 Fixp: 0 */                                       
+0x00000701, /*   GL.SEMAPHORE_TOKEN := FROM=FE,TO=PE,UNK28=0x0 */                                    
+0x48000000, /* STALL (9) OP=STALL */                                                                 
+0x00000701, /*   TOKEN FROM=FE,TO=PE,UNK28=0x0 */                                                    
+0x08010e00, /* LOAD_STATE (1) Base: 0x03800 Size: 1 Fixp: 0 */                                       
+0x00000000, /*   GL.PIPE_SELECT := PIPE=PIPE_3D */                                                   
+0x40000035, /* LINK (8) PREFETCH=0x35,OP=LINK */                                                     
+0x70041000, /*   ADDRESS *0x70041000 */
+
+Here we see a link with prefetch of 5 dwords starting with the 3rd
+instruction. It only loads the 5 dwords up and including the final
+LOAD_STATE. It needs to include the final LINK instruction.
+
+This was seen on imx6q, and the fix is confirmed to stop the GPU hangs.
+
+The commit referenced inadvertently fixed this issue by checking
+gpu->mmu->need_flush once at the start of the function.
+Given that this commit is independant, and useful for all version, it
+seems sensible to backport it to the stable branches.
 
 
-
-Applied to linux-kbuild.
-
-I will rebase my branch during this MW,
-so the commit ID will be unstable.
-Please do not record it until it lands in Linus' tree.
-
--- 
-Best Regards
-Masahiro Yamada
