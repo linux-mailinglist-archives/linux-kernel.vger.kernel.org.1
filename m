@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E84D219C7EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:26:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0913519C7EA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389796AbgDBRZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:25:36 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:45843 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388815AbgDBRZf (ORCPT
+        id S2389697AbgDBRZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:25:15 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45410 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388815AbgDBRZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:25:35 -0400
-Received: by mail-lj1-f193.google.com with SMTP id t17so4062243ljc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 10:25:34 -0700 (PDT)
+        Thu, 2 Apr 2020 13:25:15 -0400
+Received: by mail-qk1-f196.google.com with SMTP id o18so2026222qko.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 10:25:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DWDIFfRAlavtGE6jzeO9w72h52shtO0U/BlvUQ46yTw=;
-        b=AJ09pXU1cbCg/KYUK/vQ0KXm0OirYEwq1UWHn37t1f4TkH4rFF7Zle+QFSzIVhm20f
-         cosGkPli4R/y/O67SxHfZKHbBkDvO3xFB01goqDwqtQKOGoooZCxzvHNRShE7OZFsgP+
-         n7LdB5wIMGLIvGMshYm0RUvnXkGc8OJy1/5/3Zxd3j8Hf7e1QBHkuBPl1tQpZAUzsY5g
-         YYeI4Hny+AT6OQwvWAE/JUuOS00ikV7PSk7TxhoVMYALuvYJvnFdYF2RKHSSBSz8yvkr
-         qhQbowgf6gG4LTN6jE7lY4UqNZN2R6ONntxB9TIzm+Cj6OS0p79cGNzUVUAV9iAOSmgW
-         hHUg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6WBUfQ/+fIDsHhEOpEGrPSe1wUkAcmhPnGh7PNBMqZ8=;
+        b=on3MeeRBhIDQJd/lSuhVMxACzWiXfKKQMAM6+lmyOwhg/wOrDShohL/5MhJduAAf/i
+         pZ+Ksw1Zqgqnn9cMugsZVhB0GUEsYZiyV16qdkwxpABuIQLVfzT/wW5bPNhEK37WOcvU
+         fnwKQ61nKKCmOVsOiYVXRoVmErJ2QI55vHw+AgMxEvKbGVlu7vKneAy9nmjTe3ZGVdOy
+         EOl72Kfy8i7Qd1hL2Z8EWXS+vorQrD7BfHmtYTQ8XOLAh1nwsD/Y+KCbYJp/3tBOQcP1
+         ulyEa1E4OwXN4YasvaOUhold/pvhIP6cYpt0HAJCQ5I/rNe+k9+sJRe2NEtZNQn3jycf
+         emWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DWDIFfRAlavtGE6jzeO9w72h52shtO0U/BlvUQ46yTw=;
-        b=g4RJJfX0ryj9qN8Ww+fBMIm0/Kxf6DGtgZZOaRCJFl/JsQPEb9Qps8y0kTr5uz4/t0
-         gP/veqpvF1rYGXGppiFKcIWOw92jtpPh4deiXFPRBxzlDFjAtvhJVTHlZHqaa10Yldyn
-         LORsoxlCOYD+lZ0BKNSuD2xNGWiZLXq0LVGq+P5e8hPcWMXDorlnxGWII22Kr81ocWPe
-         FlC3ibRzrnzq+6xldq8lcoWLK1TENl3VzElAP/8IkYxNR2ol2lM8dXCXaKurdxKIkUf7
-         qcVf0gAdhJ1aJFNEfFuQ0kzKwsUvE8yj6d461/2GmQ7buARblDUMUE7I8gDRa+Y+cK8c
-         mejg==
-X-Gm-Message-State: AGi0PuZtzQe1CFWPOcBn4v5LEM/WYF3BVCPx2sK16qMeRHxFMx27XAIC
-        UehNdUvUHUFj/5yGZYZgCUPUL6Zz
-X-Google-Smtp-Source: APiQypKRQ+xKvImDHJ86Vvq4FiUdNDvcmifjwhm6ZayIDq0fwGt5xX3GkfJaLUCwImnZwlZC4Vsl+A==
-X-Received: by 2002:a2e:8146:: with SMTP id t6mr2635555ljg.236.1585848333112;
-        Thu, 02 Apr 2020 10:25:33 -0700 (PDT)
-Received: from localhost.localdomain (h-4-68-234.A785.priv.bahnhof.se. [155.4.68.234])
-        by smtp.gmail.com with ESMTPSA id y23sm3613286ljh.42.2020.04.02.10.25.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6WBUfQ/+fIDsHhEOpEGrPSe1wUkAcmhPnGh7PNBMqZ8=;
+        b=pNGXi/oTvch5VLH5kH9eXclIeBh7mct23qKAWDkeitt73J6M3UyAh1lkcxG6VRWl6I
+         5DEYPRvbyDUnDVP0B2ETq0uzhhKNC0FrStyivvz5PdUS29ZoLA1rW/8+vnELi+PmsSoN
+         XYxig54cYWPpRKTp2v7TxGQguEoR9ToLu50FDlx37C2YbjAeUFnowr1tFIm0zBJ/iWj9
+         c49jrA2qFtVoM10wDbQq2EOPWTjULEnjhZWU0Xmw9jh32zi7v/lSeBJh2DhpQ7H8y29O
+         VESrs0ZD6aEJ4YALEsSbwpLczp+ssN/4tQ2v8xTty8+PjCTJXylSB0LnBNzM7ASneoku
+         pulQ==
+X-Gm-Message-State: AGi0PuakZT4yMI50IQpS01sGCdGZBG0LBUSuTG5+aXYRWJXR5rV35OrF
+        FvICdYZ/DywO//SYzQ5UTbQ=
+X-Google-Smtp-Source: APiQypJyqVBwEyz5ZpPSJoB7TsgMB2KmVdfjh9o+es+bpJO6E/HvYk9OKPlbkaTzgPZOxuHBtMii+Q==
+X-Received: by 2002:a37:2e42:: with SMTP id u63mr4180762qkh.181.1585848313784;
+        Thu, 02 Apr 2020 10:25:13 -0700 (PDT)
+Received: from smtp.gmail.com (179-193-254-9.user3g.veloxzone.com.br. [179.193.254.9])
+        by smtp.gmail.com with ESMTPSA id u15sm4224971qte.91.2020.04.02.10.25.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 10:25:32 -0700 (PDT)
-From:   Jimmy Assarsson <jimmyassarsson@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jimmy Assarsson <jimmyassarsson@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
-Subject: [PATCH] x86/mpx: remove MPX leftovers
-Date:   Thu,  2 Apr 2020 19:25:07 +0200
-Message-Id: <20200402172507.2786-1-jimmyassarsson@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 02 Apr 2020 10:25:13 -0700 (PDT)
+Date:   Thu, 2 Apr 2020 14:25:10 -0300
+From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de
+Subject: Re: [RFC] genirq: prevent allocated_irqs from being smaller than
+ NR_IRQS
+Message-ID: <20200402172510.GA8242@smtp.gmail.com>
+References: <20200402150820.GB5886@smtp.gmail.com>
+ <66fabdd6-7815-1ede-9a45-45fdb2b6d5b2@metafoo.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66fabdd6-7815-1ede-9a45-45fdb2b6d5b2@metafoo.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove leftovers from x86/mpx.
+On 04/02, Lars-Peter Clausen wrote:
+> On 4/2/20 5:08 PM, Marcelo Schmitt wrote:
+> > Hi,
+> > 
+> > I was trying to understand IRQ initialization when suddenly got
+> > intrigued about the declaration of the "allocated_irqs" bitmap at
+> > kernel/irq/irqdesc.c. The size of allocated_irqs is defined by
+> > IRQ_BITMAP_BITS, which in turn is passed to BITS_TO_LONGS to calculate
+> > the actual number of IRQs the system may have. If I got it right, there
+> > should be one entry at allocated_irqs for each possible IRQ line. At
+> > kernel/irq/internals.h, IRQ_BITMAP_BITS is defined to be NR_IRQS (or
+> > NR_IRQS plus a high constant in the case of sparse IRQs), which most
+> > architectures seem to define as being the actual number of IRQs a board
+> > has.
+> > 
+> > #ifdef CONFIG_SPARSE_IRQ
+> > # define IRQ_BITMAP_BITS (NR_IRQS + 8196)
+> > #else
+> > # define IRQ_BITMAP_BITS NR_IRQS
+> > #endif
+> > 
+> > The thing I'm troubled about is that BITS_TO_LONGS divides
+> > IRQ_BITMAP_BITS by sizeof(long) * 8, which makes it possible for the
+> > size of allocated_irqs to be smaller than NR_IRQS.
+> > 
+> > For instance, if !CONFIG_SPARSE_IRQ, sizeof(long) == 8, and NR_IRQS is
+> > defined as 16, then IRQ_BITMAP_BITS would be equal to
+> > (16 + 64 - 1)/64 = 1. Even if CONFIG_SPARSE_IRQ is defined, a device
+> > with a large number of IRQ lines would end up with a small bitmap for
+> > allocated_irqs.
+> > 
+> > I thought NR_IRQS would be multiplied by the number of bits it uses.
+> > Something like:
+> > 
+> > #ifdef CONFIG_SPARSE_IRQ
+> > # define IRQ_BITMAP_BITS (NR_IRQS * BITS_PER_TYPE(long) + 8196)
+> > #else
+> > # define IRQ_BITMAP_BITS (NR_IRQS * BITS_PER_TYPE(long))
+> > #endif
+> > 
+> > Anyhow, IRQ_BITMAP_BITS is also used to limit the maximum number of IRQs
+> > at irqdesc.c. If my understanding of nr_irqs is correct, it would make
+> > sense to change some sanity checks at early_irq_init() too.
+> > 
+> > Does anyone mind giving me some advice on how allocated_irqs is
+> > initialized with a suitable size to support the number of interrupt
+> > lines a board may have?
+> 
+> Maybe I'm missing something, but allocated_irqs is a bitmap. This means each
+> bit corresponds to one IRQ. if sizeof(long) is 8 and allocated_irqs is sized
+> to be one long that means it is large enough for 64 IRQs.
 
-Fixes: 45fc24e89b7c ("x86/mpx: remove MPX from arch/x86")
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: x86@kernel.org
-Signed-off-by: Jimmy Assarsson <jimmyassarsson@gmail.com>
----
- fs/proc/task_mmu.c | 3 ---
- include/linux/mm.h | 7 -------
- 2 files changed, 10 deletions(-)
+Probably that's what I was missing about the allocated_irqs use.
+This explains a lot.
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 3ba9ae83bff5..53dce43fdd9a 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -652,9 +652,6 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
- 		[ilog2(VM_GROWSDOWN)]	= "gd",
- 		[ilog2(VM_PFNMAP)]	= "pf",
- 		[ilog2(VM_DENYWRITE)]	= "dw",
--#ifdef CONFIG_X86_INTEL_MPX
--		[ilog2(VM_MPX)]		= "mp",
--#endif
- 		[ilog2(VM_LOCKED)]	= "lo",
- 		[ilog2(VM_IO)]		= "io",
- 		[ilog2(VM_SEQ_READ)]	= "sr",
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index c54fb96cb1e6..70717ae2be7f 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -328,13 +328,6 @@ extern unsigned int kobjsize(const void *objp);
- # define VM_MAPPED_COPY	VM_ARCH_1	/* T if mapped copy of data (nommu mmap) */
- #endif
- 
--#if defined(CONFIG_X86_INTEL_MPX)
--/* MPX specific bounds table or bounds directory */
--# define VM_MPX		VM_HIGH_ARCH_4
--#else
--# define VM_MPX		VM_NONE
--#endif
--
- #ifndef VM_GROWSUP
- # define VM_GROWSUP	VM_NONE
- #endif
--- 
-2.26.0
+Many thanks,
 
+Marcelo
+
+> 
+> - Lars
+> 
