@@ -2,65 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB2519C088
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 355AE19C08B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388146AbgDBLy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 07:54:57 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:57265 "EHLO rere.qmqm.pl"
+        id S2388189AbgDBLzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 07:55:01 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:53370 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387722AbgDBLy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388036AbgDBLy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Apr 2020 07:54:56 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 48tM1p09thz9j;
-        Thu,  2 Apr 2020 13:54:53 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 48tM1q2kCPzHd;
+        Thu,  2 Apr 2020 13:54:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1585828495; bh=SUZOg/tdo/PI/jczvgr7ZOhvxU+amuVx28JA0/7SYOQ=;
-        h=Date:From:Subject:To:Cc:From;
-        b=YpVB3Y0Ew1pROTQ2fQHIls1smJnMniRdywu9QNwke2+AA2git5jCCmMilOtF78E2z
-         wr1B7bLsRS9IAlWZbulnUKLVQaOs55Q5zc9Tl4gldMHHl/+6ZMaPmp239MwtI4Y8QY
-         Vm7t1Ri0KfV+1/hhu9fGSs4s0cgLIyHPaEZVys1vaXXpNIRB3m41Vi0P9jVRrUx8HI
-         U+bfYJgDTG1Eb2zvVQEXwkkO3916m3388AU732dnIrpVGBBROlRHSftibYQavam2yk
-         9KCwVPq79KUrXkp289+XqZ29LgfzCgpRzfw1jye1E8PvUdIojuRzYk5ro/01rRjmm/
-         6Pu6TJY90ujXA==
+        t=1585828495; bh=1uCh1WDcEq7ykZh83IGYF9lRjbZGbC9UBX1/WwembVU=;
+        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
+        b=LkH/JJNwkiGvEKfhcKQ7pBaFC/o9ZRHOB3W8piHiJ89mdz60D3bMGYEd6gSV1s/2i
+         Tzfuw2tG4HmgdWqKvl7goizWrQrLzrqfvpbV620+HGtJDFsshUabhsgziWlcXO2qEr
+         vbFFy5IjUaVFV7OkXJmVPYVjuF69INx+Hg0PUxvA7HznNloxcjd9LJ5N7gfMFZhtkU
+         iGb9ZbzA5OCYJsfgc7zoJjToofTs0gMrxdehjB5IzviherTlbz6HtPdNdk1lEvaRWc
+         M3c55IoazFXZ2XVY1IKdYa0aKTMkXBhYkht1ZvY45mU502TSlWwxH07Wzzl5UbDyMZ
+         qJL/YpwI5BPDA==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Thu, 02 Apr 2020 13:54:53 +0200
-Message-Id: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+Date:   Thu, 02 Apr 2020 13:54:55 +0200
+Message-Id: <23c3fe72b0ff0eabdbf3a45023a76da1b18a7e90.1585827904.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 0/7] SDHCI clock handling fixes and cleanups
+Subject: [PATCH 1/7] mmc: sdhci: fix base clock usage in preset value
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 To:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Kevin Liu <kliu5@marvell.com>,
         Michal Simek <michal.simek@xilinx.com>,
-        Suneel Garapati <suneel.garapati@xilinx.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+        Suneel Garapati <suneel.garapati@xilinx.com>
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set combines a few of code improvements for SDHCI clock handling.
-Besides small fixes, most value comes from simplifying the code, so it's
-easier to understand.
+Fixed commit added an unnecessary read of CLOCK_CONTROL. The value read
+is overwritten for programmable clock preset, but is carried over for
+divided clock preset. This can confuse sdhci_enable_clk() if the register
+has enable bits set for some reason at time time of clock calculation.
+value to be ORed with enable flags. Remove the read.
 
-Michał Mirosław (7):
-  mmc: sdhci: fix base clock usage in preset value
-  mmc: sdhci: fix programmable clock config from preset value
-  mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
-  mmc: sdhci: move SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN frequency limit
-  mmc: sdhci: simplify clock frequency calculation
-  mmc: sdhci: squash v2/v3+ clock calculation differences
-  mmc: sdhci: respect non-zero div quirk in programmable clock mode
+Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+ drivers/mmc/host/sdhci.c | 1 -
+ 1 file changed, 1 deletion(-)
 
- drivers/mmc/host/sdhci-of-arasan.c |   7 +-
- drivers/mmc/host/sdhci.c           | 126 +++++++++++++----------------
- drivers/mmc/host/sdhci.h           |   4 +-
- 3 files changed, 64 insertions(+), 73 deletions(-)
-
+diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+index 3f716466fcfd..9aa3af5826df 100644
+--- a/drivers/mmc/host/sdhci.c
++++ b/drivers/mmc/host/sdhci.c
+@@ -1765,7 +1765,6 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+ 		if (host->preset_enabled) {
+ 			u16 pre_val;
+ 
+-			clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL);
+ 			pre_val = sdhci_get_preset_value(host);
+ 			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
+ 			if (host->clk_mul &&
 -- 
 2.20.1
 
