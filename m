@@ -2,120 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8021519C1E1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B24A19C1D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:12:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388526AbgDBNO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:14:28 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:49380 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388504AbgDBNO2 (ORCPT
+        id S2388517AbgDBNLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:11:47 -0400
+Received: from pandora.armlinux.org.uk ([78.32.30.218]:45202 "EHLO
+        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732262AbgDBNLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:14:28 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        Thu, 2 Apr 2020 09:11:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=neWmpBaTCRzgvC5RnHDeEfc0nV2vBJLslYFOXDTjpJk=; b=GfXyZcO31CeVTBTHHUjISz2Ra
+        1/sk9nlEYINhahrMXRnJtAmOi+G9s+/5oL4lZEq28ZOhN/plLQpoklP53VIs73rSrcgMzvjESrQeD
+        rgieyxpA50KCE7oIbhMZpFKY3hevMHDxSgQvM1AtsHaaX0VzJVpMCNXi+Xh8NVjlAPIED4rWJ2Ypx
+        PU8XVxxQFN69FxfXJLUc/1KcTIt/bPPH+Fmt10GdUv/CQuutOKv8nKvyNYn04CrMhDEfasjdZ+WU0
+        1bpaIluTJrrCicy+RXmjeUWbNRXvOIwOfIiXDOOBYTLwA7+tI0Fi0CN0MWdqI6CnaMPahTWwLEuE1
+        lbVJtjkpg==;
+Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:40558)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jJzfp-00075I-T0; Thu, 02 Apr 2020 07:14:21 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jJzfj-00021V-6R; Thu, 02 Apr 2020 07:14:21 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jann Horn <jannh@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        Adam Zabrocki <pi3@pi3.com.pl>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <20200324215049.GA3710@pi3.com.pl> <202003291528.730A329@keescook>
-        <87zhbvlyq7.fsf_-_@x220.int.ebiederm.org>
-        <CAG48ez3nYr7dj340Rk5-QbzhsFq0JTKPf2MvVJ1-oi1Zug1ftQ@mail.gmail.com>
-        <CAHk-=wjz0LEi68oGJSQzZ--3JTFF+dX2yDaXDRKUpYxtBB=Zfw@mail.gmail.com>
-        <CAHk-=wgM3qZeChs_1yFt8p8ye1pOaM_cX57BZ_0+qdEPcAiaCQ@mail.gmail.com>
-        <CAG48ez1f82re_V=DzQuRHpy7wOWs1iixrah4GYYxngF1v-moZw@mail.gmail.com>
-        <CAHk-=whks0iE1f=Ka0_vo2PYg774P7FA8Y30YrOdUBGRH-ch9A@mail.gmail.com>
-Date:   Thu, 02 Apr 2020 08:11:31 -0500
-In-Reply-To: <CAHk-=whks0iE1f=Ka0_vo2PYg774P7FA8Y30YrOdUBGRH-ch9A@mail.gmail.com>
-        (Linus Torvalds's message of "Wed, 1 Apr 2020 19:05:59 -0700")
-Message-ID: <877dyym3r0.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jJzdH-0003Nj-RU; Thu, 02 Apr 2020 14:11:44 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jJzdH-0001ij-A8; Thu, 02 Apr 2020 14:11:43 +0100
+Date:   Thu, 2 Apr 2020 14:11:43 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>, kernel@collabora.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: exynos: update l2c_aux_mask to fix alert message
+Message-ID: <20200402131143.GZ25745@shell.armlinux.org.uk>
+References: <b29f34870380093e6268c11d3033033d6def61b7.1585756648.git.guillaume.tucker@collabora.com>
+ <20200401163101.GV25745@shell.armlinux.org.uk>
+ <35c7cf4b-e6b8-43aa-d934-4a1c2e738372@collabora.com>
+ <20200402130352.GY25745@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jJzfj-00021V-6R;;;mid=<877dyym3r0.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/aAgD/0VF7hya1cN9dZdOTpz/w8uomdK0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa01.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,NO_DNS_FOR_FROM,T_TM2_M_HEADER_IN_MSG
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4987]
-        *  0.0 NO_DNS_FOR_FROM DNS: Envelope sender has no MX or A DNS records
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa01 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa01 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 6259 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 4.6 (0.1%), b_tie_ro: 3.2 (0.1%), parse: 1.03
-        (0.0%), extract_message_metadata: 11 (0.2%), get_uri_detail_list: 0.70
-        (0.0%), tests_pri_-1000: 4.0 (0.1%), tests_pri_-950: 1.01 (0.0%),
-        tests_pri_-900: 0.88 (0.0%), tests_pri_-90: 83 (1.3%), check_bayes: 82
-        (1.3%), b_tokenize: 5 (0.1%), b_tok_get_all: 6 (0.1%), b_comp_prob:
-        1.59 (0.0%), b_tok_touch_all: 66 (1.0%), b_finish: 0.79 (0.0%),
-        tests_pri_0: 6143 (98.1%), check_dkim_signature: 0.51 (0.0%),
-        check_dkim_adsp: 5997 (95.8%), poll_dns_idle: 5993 (95.7%),
-        tests_pri_10: 1.70 (0.0%), tests_pri_500: 6 (0.1%), rewrite_mail: 0.00
-        (0.0%)
-Subject: Re: [PATCH] signal: Extend exec_id to 64bits
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200402130352.GY25745@shell.armlinux.org.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Thu, Apr 02, 2020 at 02:03:52PM +0100, Russell King - ARM Linux admin wrote:
+> On Thu, Apr 02, 2020 at 01:13:24PM +0100, Guillaume Tucker wrote:
+> > On 01/04/2020 17:31, Russell King - ARM Linux admin wrote:
+> > > On Wed, Apr 01, 2020 at 05:08:03PM +0100, Guillaume Tucker wrote:
+> > >> Allow setting the number of cycles for RAM reads in the pl310 cache
+> > >> controller L2 auxiliary control register mask (bits 0-2) since it
+> > >> needs to be changed in software.  This only affects exynos4210 and
+> > >> exynos4412 as they use the pl310 cache controller.
+> > >>
+> > >> With the mask used until now, the following warnings were generated,
+> > >> the 2nd one being a pr_alert():
+> > >>
+> > >>   L2C: platform modifies aux control register: 0x02070000 -> 0x3e470001
+> > >>   L2C: platform provided aux values permit register corruption.
+> > >>
+> > >> This latency cycles value has always been set in software in spite of
+> > >> the warnings.  Keep it this way but clear the alert message about
+> > >> register corruption to acknowledge it is a valid thing to do.
+> > > 
+> > > This is telling you that you are doing something you should not be
+> > > doing.  The L2C controller should be configured by board firmware
+> > > first and foremost, because if, for example, u-boot makes use of the
+> > > L2 cache, or any other pre-main kernel code (in other words,
+> > > decompressor) the setup of the L2 controller will be wrong.
+> > > 
+> > > So, NAK.
+> > 
+> > OK thanks, I guess I misinterpreted the meaning of the error
+> > message.  It's really saying that the register value was not the
+> > right one before the kernel tried to change it.  Next step for me
+> > is to look into U-Boot.
+> 
+> The message "L2C: platform provided aux values permit register
+> corruption." means that bits are set in both the mask and the value
+> fields.  Since the new value is calculated as:
+> 
+> 	old = register value;
+> 	new = old & mask;
+> 	new |= val;
+> 
+> If bits are set in both "mask" and "val" for a multi-bit field, the
+> value ending up in the field may not be what is intended.  Consider
+> a 5-bit field set initially to 10101, and the requested value is
+> 01000 with a mask of 11111.  What you end up with is not 01000, but
+> 11101.  Hence, register corruption.  It is not possible to easily
+> tell whether the mask and values refer to a multi-bit field or not,
+> so the mere fact that bits are set in both issues the alert.
+> 
+> The message "L2C: platform modifies aux control register ..." means
+> that you're trying to modify the value of the auxiliary control
+> register, which brings with it the problems I stated in my previous
+> email; platform configuration of the L2C must be done by firmware and
+> not the kernel for the reasons I've set out.
 
-> tasklist_lock is aboue the hottest lock there is in all of the kernel.
+Actually, looking at the values there:
 
-Do you know code paths you see tasklist_lock being hot?
+        .l2c_aux_val    = 0x3c400001,
+-       .l2c_aux_mask   = 0xc20fffff,
++       .l2c_aux_mask   = 0xc20ffff8,
 
-I am looking at some of the exec/signal/ptrace code paths because they
-get subtle corner case wrong like a threaded exec deadlocking when
-straced.
+Bit 0 is L310_AUX_CTRL_FULL_LINE_ZERO feature bit, which platforms have
+no business fiddling with - it is a Cortex-A9/L2C310 specific feature
+that needs both ends to be configured correctly to work.  The L2C code
+knows this and will deal with it.  So, .l2c_aux_val should drop setting
+bit 0.
 
-If the performance problems are in the same neighbourhood I might be
-able to fix those problems while I am in the code.
+It's also setting L310_AUX_CTRL_NS_LOCKDOWN, which the kernel already
+deals with - this bit should be dropped as well.
 
-Eric
+It's clearing L310_AUX_CTRL_CACHE_REPLACE_RR - this should be setup by
+firmware.
 
+For the prefetching, I thought there were DT properties for that.
+Please look at that, and see whether you can eliminate most of the
+.l2c_aux_val field set bits, and the .l2c_aux_mask clear bits.
 
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
