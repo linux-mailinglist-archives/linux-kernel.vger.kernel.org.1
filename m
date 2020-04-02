@@ -2,57 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4759919C344
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3455F19C34D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:55:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732697AbgDBNys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:54:48 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:46954 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729123AbgDBNyr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:54:47 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 07B9F128A0375;
-        Thu,  2 Apr 2020 06:54:46 -0700 (PDT)
-Date:   Thu, 02 Apr 2020 06:54:46 -0700 (PDT)
-Message-Id: <20200402.065446.2295152097236024797.davem@davemloft.net>
-To:     yuehaibing@huawei.com
-Cc:     ayush.sawal@chelsio.com, vinay.yadav@chelsio.com,
-        rohitm@chelsio.com, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net] crypto: chtls - Fix build error without IPV6
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200402014323.36492-1-yuehaibing@huawei.com>
-References: <20200402014323.36492-1-yuehaibing@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-7
-Content-Transfer-Encoding: base64
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 02 Apr 2020 06:54:47 -0700 (PDT)
+        id S1732823AbgDBNzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:55:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:43052 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732349AbgDBNzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 09:55:39 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19C6230E;
+        Thu,  2 Apr 2020 06:55:39 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4DBC3F52E;
+        Thu,  2 Apr 2020 06:55:38 -0700 (PDT)
+Subject: Re: [PATCH] ACPI: PPTT: Inform user that table offset used for
+ Physical processor node ID
+To:     John Garry <john.garry@huawei.com>, rjw@rjwysocki.net,
+        lenb@kernel.org
+Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sudeep.holla@arm.com, linuxarm@huawei.com, wanghuiqiang@huawei.com
+References: <1585830145-208714-1-git-send-email-john.garry@huawei.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <89f68a3c-264a-5d1b-e63a-d1147ea07320@arm.com>
+Date:   Thu, 2 Apr 2020 08:55:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <1585830145-208714-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogWXVlSGFpYmluZyA8eXVlaGFpYmluZ0BodWF3ZWkuY29tPg0KRGF0ZTogVGh1LCAyIEFw
-ciAyMDIwIDA5OjQzOjIzICswODAwDQoNCj4gSWYgSVBWNiBpcyBub3Qgc2V0LCBidWlsZCBmYWls
-czoNCj4gDQo+IGRyaXZlcnMvY3J5cHRvL2NoZWxzaW8vY2hjcl9rdGxzLmM6IEluIGZ1bmN0aW9u
-IKFjaGNyX2t0bHNfYWN0X29wZW5fcmVxNqI6DQo+IC4vaW5jbHVkZS9uZXQvc29jay5oOjM4MDoz
-NzogZXJyb3I6IKFzdHJ1Y3Qgc29ja19jb21tb26iIGhhcyBubyBtZW1iZXIgbmFtZWQgoXNrY192
-Nl9yY3Zfc2FkZHKiOyBkaWQgeW91IG1lYW4goXNrY19yY3Zfc2FkZHKiPw0KPiAgI2RlZmluZSBz
-a192Nl9yY3Zfc2FkZHIgX19za19jb21tb24uc2tjX3Y2X3Jjdl9zYWRkcg0KPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgXg0KPiBkcml2ZXJzL2NyeXB0by9jaGVsc2lvL2No
-Y3Jfa3Rscy5jOjI1ODozNzogbm90ZTogaW4gZXhwYW5zaW9uIG9mIG1hY3JvIKFza192Nl9yY3Zf
-c2FkZHKiDQo+ICAgY3BsLT5sb2NhbF9pcF9oaSA9ICooX19iZTY0ICopJnNrLT5za192Nl9yY3Zf
-c2FkZHIuaW42X3UudTZfYWRkcjhbMF07DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBefn5+fn5+fn5+fn5+fn4NCj4gDQo+IEFkZCBJUFY2IGRlcGVuZGVuY3kgdG8gZml4
-IHRoaXMuDQo+IA0KPiBSZXBvcnRlZC1ieTogSHVsayBSb2JvdCA8aHVsa2NpQGh1YXdlaS5jb20+
-DQo+IEZpeGVzOiA2MjM3MGE0ZjM0NmQgKCJjeGdiNC9jaGNyOiBBZGQgaXB2NiBzdXBwb3J0IGFu
-ZCBzdGF0aXN0aWNzIikNCj4gU2lnbmVkLW9mZi1ieTogWXVlSGFpYmluZyA8eXVlaGFpYmluZ0Bo
-dWF3ZWkuY29tPg0KDQpUaGlzIGlzIGEgaGFyZCBoYW1tZXIsIGFuZCBJIHRoaW5rIHByb3BlciBD
-UFAgdGVzdGluZyBzaG91bGQgYmUgYWRkZWQgdG8gdGhlDQpkcml2ZXIgY29kZSBpbnN0ZWFkLg0K
+Hi,
+
+On 4/2/20 7:22 AM, John Garry wrote:
+> If the the Processor ID valid is not set for a Physical Processor Package
+> node, then the node table offset is used as a substitute. As such, we
+> may get info like this from sysfs:
+> 
+> root@(none)$ pwd
+> /sys/devices/system/cpu/cpu0/topology
+> root@(none)$ more physical_package_id
+> 56
+> 
+> Inform the user of this in the bootlog, as it is much less than ideal, and
+> they can remedy this in their FW.
+> 
+> This topic was originally discussed in:
+> https://lore.kernel.org/linux-acpi/c325cfe2-7dbf-e341-7f0f-081b6545e890@huawei.com/T/#m0ec18637d8586f832084a8a6af22580e6174669a
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> 
+> diff --git a/drivers/acpi/pptt.c b/drivers/acpi/pptt.c
+> index 4ae93350b70d..b4ed3c818e00 100644
+> --- a/drivers/acpi/pptt.c
+> +++ b/drivers/acpi/pptt.c
+> @@ -515,6 +515,8 @@ static int topology_get_acpi_cpu_tag(struct acpi_table_header *table,
+>   		if (level == 0 ||
+>   		    cpu_node->flags & ACPI_PPTT_ACPI_PROCESSOR_ID_VALID)
+>   			return cpu_node->acpi_processor_id;
+> +		if (level == PPTT_ABORT_PACKAGE)
+> +			pr_notice_once("Physical package node Processor ID valid not set, will use table offset as substitute\n");
+
+What happens in the find_acpi_cpu_topology_hetro_id() case, if the last 
+IDENTICAL node isn't a socket/etc. Are we expecting to warn of a missing 
+processor container there as well?
+
+
+
+>   		return ACPI_PTR_DIFF(cpu_node, table);
+>   	}
+>   	pr_warn_once("PPTT table found, but unable to locate core %d (%d)\n",
+> 
+
