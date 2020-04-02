@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0432C19CB03
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 22:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE01919CB08
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 22:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389471AbgDBUXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 16:23:23 -0400
-Received: from mga04.intel.com ([192.55.52.120]:5932 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389346AbgDBUXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 16:23:22 -0400
-IronPort-SDR: 5nwEN14NT9HmGHE88iK6Ryl617VZ4KoUediYIXQSnajn+c/oEldRTqT5a7l4KEwREcfig/Ceqw
- pYbiK2m7744w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 13:23:22 -0700
-IronPort-SDR: n/l1aennqb4MnuHqZrcmZbZt1UqGcxHReyElOaCBGCVzw218WLfCFq/TSGZ0TJr5WM+Td7ECqr
- GhINnGPyCVbg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
-   d="scan'208";a="449771833"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by fmsmga005.fm.intel.com with ESMTP; 02 Apr 2020 13:23:21 -0700
-Date:   Thu, 2 Apr 2020 13:23:21 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [patch v2 1/2] x86,module: Detect VMX modules and disable
- Split-Lock-Detect
-Message-ID: <20200402202321.GL13879@linux.intel.com>
-References: <20200402123258.895628824@linutronix.de>
- <20200402124205.242674296@linutronix.de>
- <20200402152340.GL20713@hirez.programming.kicks-ass.net>
- <725ca48f-8194-658e-0296-65d4368803b5@intel.com>
- <20200402162548.GH20730@hirez.programming.kicks-ass.net>
- <2d2140c4-712a-2f8d-cde7-b3e64c28b204@intel.com>
- <87pncpn650.fsf@nanos.tec.linutronix.de>
- <20200402175127.GJ13879@linux.intel.com>
- <20200402185148.GL20730@hirez.programming.kicks-ass.net>
+        id S2389603AbgDBUXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 16:23:41 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:39762 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389589AbgDBUXl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 16:23:41 -0400
+Received: by mail-pl1-f193.google.com with SMTP id k18so1776506pll.6;
+        Thu, 02 Apr 2020 13:23:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TyQdsQSbBekp4Tdk1LegDdgAtaR9xk0x84j7nnBO4Kw=;
+        b=XgwsxnStrGVZljq9SxBCE9sZD3SzpuVDfCZcZGyeTerRmyBZ7Ye3fIj1J6qq1DnDme
+         cKLLxHm5g/RCFeHqs1PZ7aFVrG+CqT2Hbi2w4hB68Xhmb09P3zzs1FQuNOqOpaBbZ48X
+         xm4BhkUdu1MNzujbKWsFIUUjyGEBgYA+jlt6tOxXV32nisrkGJmkaWTYM0ZQbMwzuJng
+         BzZyTcY/SQgBojOF259ApOWdN1W0gaRfieuvMOaAy/XLrIk4sJZoOmhypzdHDhsXCWek
+         1jhxQVYy8pcGGNBvdXjmdJXSSRbXxSxGy3uG1+XLINRjnSOV7wZyJikpJ9T9Cp33gEm0
+         +59w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TyQdsQSbBekp4Tdk1LegDdgAtaR9xk0x84j7nnBO4Kw=;
+        b=YIolSg5gzClcunkUoxKIdddVQOVIFzsIwdgZmOtpzF1rvad5DVsr9LdF5Sm1BERqGO
+         QOT1q3cPT2y2rpjeEJM+S75Bo1QRjmcswMn7InU1cBJUkR9SrbLn9CGJNt85J8v/0NFW
+         hTQDUelpz/rNGkeeh4sl05TO2X5QwKUsINbk8WzFXjHJ+08WXa1VHSohhStcCNsomJQc
+         82snOG0Amk4maT7YsrmSwgoFJoG2/WxSggveb/Gy4y3/sDgsGV/55DGA+oeMGu0Y2qLw
+         yBsJGUH8eRlx56NI0fqI3NzcyLEvz6mRQ0j34u2qoox/wWnewHNsyC960A2bx5akxnPM
+         Eu1w==
+X-Gm-Message-State: AGi0PuZ/3BvyH1eNRNCWyt9uY8R/NSP4HIg3jx0x5k6tW3AwMYQoUrfy
+        zrUmKeWKubetqI38AkPo5rh04kTnGv+Fme7mX2w=
+X-Google-Smtp-Source: APiQypLfuJPn0GImSHOwLx7gpgYSjhE+LbCob9VHH6QqhJQ7dg98xJ/CCAB4Et4B3KkzbJe4j6qJiJLdtfvDYUAbfP4=
+X-Received: by 2002:a17:902:5acb:: with SMTP id g11mr4727427plm.18.1585859019364;
+ Thu, 02 Apr 2020 13:23:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402185148.GL20730@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <CAHp75VcYSaAYx5qy7S0ppb77afgz=Ma=7=opfgSMCBnnjmoWfw@mail.gmail.com>
+ <20200402201605.GA74927@google.com>
+In-Reply-To: <20200402201605.GA74927@google.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 2 Apr 2020 23:23:27 +0300
+Message-ID: <CAHp75Vfpj+ENMe9u-SMKfvCsyFtOucUT9bD3qfWX+QjccZ9ZyQ@mail.gmail.com>
+Subject: Re: [Linux-kernel-mentees] [PATCH v1] gpio: ml: ioh: Convert to dev_pm_ops
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>, bjorn@helgaas.com,
+        andy@kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 08:51:48PM +0200, Peter Zijlstra wrote:
-> On Thu, Apr 02, 2020 at 10:51:28AM -0700, Sean Christopherson wrote:
-> > On Thu, Apr 02, 2020 at 07:34:35PM +0200, Thomas Gleixner wrote:
-> > > Aside of that I'm still against the attempt of proliferating crap,
-> > > i.e. disabling it because the host is triggering it and then exposing it
-> > > to guests. The above does not change my mind in any way. This proposal
-> > > is still wrong.
-> > 
-> > Eh, I still think the "off in host, on in guest" is a legit scenario for
-> > debug/development/testing, but I agree that the added complexity doesn't
-> > justify the minimal benefits versus sld_warn.
-> 
-> Off in host on in guest seems utterly insane to me. Why do you care
-> about that?
+On Thu, Apr 2, 2020 at 11:16 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, Apr 02, 2020 at 09:33:46PM +0300, Andy Shevchenko wrote:
+> > On Thu, Apr 2, 2020 at 6:52 PM Vaibhav Gupta <vaibhavgupta40@gmail.com> wrote:
+> > >
+> > > Convert the legacy callback .suspend() and .resume()
+> > > to the generic ones.
+> >
+> > Thank you for the patch.
+> >
+> > Rather then doing this I think  the best approach is to unify gpio-pch
+> > and gpio-ml-ioh together.
+> > Under umbrella of the task, the clean ups like above are highly appreciated.
+>
+> I'd be all in favor of that, but what Vaibhav is working toward is
+> eliminating use of legacy PM in PCI drivers.  I think unifying drivers
+> is really out of scope for that project.
+>
+> If you'd rather leave gpio-ml-ioh.c alone for now, I suggest that
+> Vaibhav move on to other PCI drivers that use legacy PM.  If we
+> convert all the others away from legacy PM and gpio-ml-ioh.c is the
+> only one remaining, then I guess we can revisit this :)
 
-For development/debug/testing.  Ignoring the core-scope stupidity of split
-lock, the _functional_ behavior of the host kernel and guest kernel are
-completely separate.  The host can generate split locks all it wants, but
-other than performance, its bad behavior has no impact on the guest.
+Then skip this driver for good.
 
-For example, all of the debug that was done to eliminate split locks in the
-kernel could have been done in a KVM guest, even though the host kernel
-would not have yet been split-lock free.
+> Or, maybe converting gpio-ml-ioh.c now, along the lines of
+> 226e6b866d74 ("gpio: pch: Convert to dev_pm_ops"), would be one small
+> step towards the eventual unification, by making gpio-pch and
+> gpio-ml-ioh a little more similar.
 
-It's somewhat of a moot point now that the kernel is split-lock free.  But,
-if I encountered a split lock panic on my system, the first thing I would
-do (after rebooting) would be to fire up a VM to try and reproduce and
-debug the issue.
+I think it will delay the real work here (very old code motivates
+better to get rid of it then semi-fixed one).
+Thank you for your understanding.
 
-Oftentimes it's significantly easier to "enable" a feature in KVM, i.e.
-expose a feature to the guest, than it is to actually enable it in the
-kernel.  Enabling KVM first doesn't work if there are hard dependencies on
-kernel enabling, e.g. most things that have an XSAVE component, but for a
-lot of features it's a viable strategy to enable KVM first, and then do all
-testing and debug inside a KVM guest.
+-- 
+With Best Regards,
+Andy Shevchenko
