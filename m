@@ -2,56 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0407519C78A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF1D19C793
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390006AbgDBRCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:02:30 -0400
-Received: from mga03.intel.com ([134.134.136.65]:10495 "EHLO mga03.intel.com"
+        id S2390042AbgDBRDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:03:33 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:58988 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732625AbgDBRCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:02:30 -0400
-IronPort-SDR: OfTb5TEjX/VCZZjsLjNt+rTvF1FHpNRc6quQu1Hva3Uam8HpWb5QfilUbdY8Zv/CLEZCFF8Ok/
- 7l5gB9eDYTjA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 10:02:29 -0700
-IronPort-SDR: UIsK71r9ZjEL/GLc5Y6jYtvrLITv6k0vA4LDXq7ycdUzLYfysA8XeWCRe9wzfhHl+cc2YuGvNX
- /LhXBKg9oTOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
-   d="scan'208";a="423201751"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga005.jf.intel.com with ESMTP; 02 Apr 2020 10:02:29 -0700
-Received: from [10.251.7.210] (kliang2-mobl.ccr.corp.intel.com [10.251.7.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 20C3758077B;
-        Thu,  2 Apr 2020 10:02:28 -0700 (PDT)
-Subject: Re: [PATCH V4 00/17] Stitch LBR call stack (Perf Tools)
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, peterz@infradead.org,
-        mingo@redhat.com, linux-kernel@vger.kernel.org,
-        namhyung@kernel.org, adrian.hunter@intel.com,
-        mathieu.poirier@linaro.org, ravi.bangoria@linux.ibm.com,
-        alexey.budankov@linux.intel.com, vitaly.slobodskoy@intel.com,
-        pavel.gerasimov@intel.com, mpe@ellerman.id.au, eranian@google.com,
-        ak@linux.intel.com
-References: <20200319202517.23423-1-kan.liang@linux.intel.com>
- <20200323111311.GH1534489@krava>
- <e2887d1f-e963-66b4-f0cb-fa23986565a2@linux.intel.com>
- <20200402160049.GE8736@kernel.org>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <b95adf95-2b59-5917-1dc8-f2734ea8f7e3@linux.intel.com>
-Date:   Thu, 2 Apr 2020 13:02:27 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1732218AbgDBRDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 13:03:32 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 48tTsr5rRRz9vBmV;
+        Thu,  2 Apr 2020 19:03:28 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=ACiTytRZ; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id AvlDP2sR7zTb; Thu,  2 Apr 2020 19:03:28 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 48tTsr4JmWz9vBmS;
+        Thu,  2 Apr 2020 19:03:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1585847008; bh=JzGfy64woJ08evugoWBAVtqz/vtq+HHi55dh1/1+x5A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ACiTytRZC+Xj1EuNnjHaWbbYCnJ8CD46NNiCXRQXdSw8VyzeFkJ2iXIguFAur/WXP
+         cGiaTz0jzh4b++Xtfz3FYdDzGi39XWjPpP47djmAbDbgW6+Qcumeu76BQzwby7Kadg
+         qsGptG6uO/KhtseD57NVkod6GcuUBabHLVYA7YLY=
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EDF298B93A;
+        Thu,  2 Apr 2020 19:03:29 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id IdlgMSKFOZLT; Thu,  2 Apr 2020 19:03:29 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C52AF8B925;
+        Thu,  2 Apr 2020 19:03:28 +0200 (CEST)
+Subject: Re: [PATCH RESEND 1/4] uaccess: Add user_read_access_begin/end and
+ user_write_access_begin/end
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, airlied@linux.ie,
+        daniel@ffwll.ch, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, keescook@chromium.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+References: <27106d62fdbd4ffb47796236050e418131cb837f.1585811416.git.christophe.leroy@c-s.fr>
+ <20200402162942.GG23230@ZenIV.linux.org.uk>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Message-ID: <67e21b65-0e2d-7ca5-7518-cec1b7abc46c@c-s.fr>
+Date:   Thu, 2 Apr 2020 19:03:28 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200402160049.GE8736@kernel.org>
+In-Reply-To: <20200402162942.GG23230@ZenIV.linux.org.uk>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -59,40 +72,109 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 4/2/2020 12:00 PM, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Apr 02, 2020 at 11:34:18AM -0400, Liang, Kan escreveu:
+Le 02/04/2020 à 18:29, Al Viro a écrit :
+> On Thu, Apr 02, 2020 at 07:34:16AM +0000, Christophe Leroy wrote:
+>> Some architectures like powerpc64 have the capability to separate
+>> read access and write access protection.
+>> For get_user() and copy_from_user(), powerpc64 only open read access.
+>> For put_user() and copy_to_user(), powerpc64 only open write access.
+>> But when using unsafe_get_user() or unsafe_put_user(),
+>> user_access_begin open both read and write.
 >>
+>> Other architectures like powerpc book3s 32 bits only allow write
+>> access protection. And on this architecture protection is an heavy
+>> operation as it requires locking/unlocking per segment of 256Mbytes.
+>> On those architecture it is therefore desirable to do the unlocking
+>> only for write access. (Note that book3s/32 ranges from very old
+>> powermac from the 90's with powerpc 601 processor, till modern
+>> ADSL boxes with PowerQuicc II modern processors for instance so it
+>> is still worth considering)
 >>
->> On 3/23/2020 7:13 AM, Jiri Olsa wrote:
->>> On Thu, Mar 19, 2020 at 01:25:00PM -0700, kan.liang@linux.intel.com wrote:
->>>> From: Kan Liang <kan.liang@linux.intel.com>
->>>>
->>>> Changes since V3:
->>>> - There is no dependency among the 'capabilities'. If perf fails to read
->>>>     one, it should not impact others. Continue to parse the rest of caps.
->>>>     (Patch 1)
->>>> - Use list_for_each_entry() to replace perf_pmu__scan_caps() (Patch 1 &
->>>>     2)
->>>> - Combine the declaration plus assignment when possible (Patch 1 & 2)
->>>> - Add check for script/report/c2c.. (Patch 13, 14 & 16)
->>>
->>> it's all black magic to me, but looks ok ;-)
->>>
->>> Acked-by: Jiri Olsa <jolsa@redhat.com>
->>>
+>> In order to avoid any risk based of hacking some variable parameters
+>> passed to user_access_begin/end that would allow hacking and
+>> leaving user access open or opening too much, it is preferable to
+>> use dedicated static functions that can't be overridden.
 >>
->> Thanks Jirka.
+>> Add a user_read_access_begin and user_read_access_end to only open
+>> read access.
 >>
->> Hi Arnaldo,
+>> Add a user_write_access_begin and user_write_access_end to only open
+>> write access.
 >>
->> Any comments for the series?
+>> By default, when undefined, those new access helpers default on the
+>> existing user_access_begin and user_access_end.
 > 
-> I need to test it, 
-
-Sure. Thanks for the update.
-
-Kan
-
-> hope to do it soon, but I'm a bit backlogged, sorry.
-> > - Arnaldo
+> The only problem I have is that we'd better choose the calling
+> conventions that work for other architectures as well.
 > 
+> AFAICS, aside of ppc and x86 we have (at least) this:
+> arm:
+> 	unsigned int __ua_flags = uaccess_save_and_enable();
+> 	...
+> 	uaccess_restore(__ua_flags);
+> arm64:
+> 	uaccess_enable_not_uao();
+> 	...
+> 	uaccess_disable_not_uao();
+> riscv:
+> 	__enable_user_access();
+> 	...
+> 	__disable_user_access();
+> s390/mvc:
+> 	old_fs = enable_sacf_uaccess();
+> 	...
+>          disable_sacf_uaccess(old_fs);
+> 
+> arm64 and riscv are easy - they map well on what we have now.
+> The interesting ones are ppc, arm and s390.
+> 
+> You wants to specify the kind of access; OK, but...  it's not just read
+> vs. write - there's read-write as well.  AFAICS, there are 3 users of
+> that:
+> 	* copy_in_user()
+> 	* arch_futex_atomic_op_inuser()
+> 	* futex_atomic_cmpxchg_inatomic()
+> The former is of dubious utility (all users outside of arch are in
+> the badly done compat code), but the other two are not going to go
+> away.
+
+user_access_begin() grants both read and write.
+
+This patch adds user_read_access_begin() and user_write_access_begin() 
+but it doesn't remove user_access_begin()
+
+> 
+> What should we do about that?  Do we prohibit such blocks outside
+> of arch?
+> 
+> What should we do about arm and s390?  There we want a cookie passed
+> from beginning of block to its end; should that be a return value?
+
+That was the way I implemented it in January, see 
+https://patchwork.ozlabs.org/patch/1227926/
+
+There was some discussion around that and most noticeable was:
+
+H. Peter (hpa) said about it: "I have *deep* concern with carrying state 
+in a "key" variable: it's a direct attack vector for a crowbar attack, 
+especially since it is by definition live inside a user access region."
+
+> 
+> And at least on arm that thing nests (see e.g. __clear_user_memset()
+> there), so "stash that cookie in current->something" is not a solution...
+> 
+> Folks, let's sort that out while we still have few users of that
+> interface; changing the calling conventions later will be much harder.
+> Comments?
+> 
+
+This patch minimises the change by just adding user_read_access_begin() 
+and user_write_access_begin() keeping the same parameters as the 
+existing user_access_begin().
+
+So I can come back to a mix of this patch and the January version if it 
+corresponds to everyone's view, it will also be a bit easier for powerpc 
+(especially book3s/32). But that didn't seem to be the expected 
+direction back when we discussed it in January.
+
+Christophe
