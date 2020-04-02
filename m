@@ -2,212 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCEF19C12A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5AF19C14C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388154AbgDBMeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:34:22 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:46406 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387866AbgDBMeW (ORCPT
+        id S2388303AbgDBMmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 08:42:15 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:43723 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387654AbgDBMmP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:34:22 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032CWgBl062989;
-        Thu, 2 Apr 2020 12:34:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=FUx8aszrN4C315i/ZX2S0P6CNuyjM5fDzhdzVL0wFF0=;
- b=G66hxWE0THjIVMHoWnMfPaSOgysiCbasphyI2kf2djeFyly2uomhekgLoAaJoPd02O0Z
- UJLjlzwA6G2k7T06x01/6VjO11J60z2m9WWC+EzQz0NJIPEpOLK9HMSvuXtJw8KAeDpa
- 6E7Ebt3DBVNtty6IXDQVBW/5tBwH1sZmpO7nejGzev7Gs/0Z3ufZQ7betFsEsZ/ZLDow
- Bxud3CliWKsVtAan4QkvdfAs49vskOcExgAqWC4ycJ4BNb81R3LloowKxUpCTnTPrOt/
- 1m0Q0lGxQXOyH0pwhhpmP43Z7cEXnvOC5/252oeUIGAv6WXZqmtbbolg/jIdzOGVqMMR tw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 303aqhuhwx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 12:34:02 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032CWwfn067590;
-        Thu, 2 Apr 2020 12:34:02 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 302g2jggrb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 12:34:02 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 032CXxTa001912;
-        Thu, 2 Apr 2020 12:33:59 GMT
-Received: from linux-1.home (/10.175.46.241)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 05:33:59 -0700
-Subject: Re: [PATCH 2/7] objtool: Allow branches within the same alternative.
-To:     Julien Thierry <jthierry@redhat.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-3-alexandre.chartre@oracle.com>
- <50e8a5d8-7cb4-f25c-9657-eb11038bd0b5@redhat.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <0824494b-15a9-f810-e81e-003d3d3b85cd@oracle.com>
-Date:   Thu, 2 Apr 2020 14:38:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 2 Apr 2020 08:42:15 -0400
+Received: by mail-pg1-f195.google.com with SMTP id g20so1772269pgk.10;
+        Thu, 02 Apr 2020 05:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5TKbIydpRklueBEw0/i7UhJyiz9MBbmx3hB6XV9W11U=;
+        b=O3BUPwQDQwBS+6J+YlsV09c9cKEHQLZe73JS3s7YGP2Kv64RmM45GyNeegXSiCso6R
+         mZ+hhIpJmOogGb4LTnMjOaX45KTLoMTMlb8uPz0ZqhnkADaWg9l9+oaIh5Kb/RTwT/oN
+         T641VF7lvajtaYVc7/3LDiJQKCVhDjbVQvKSaiBVi/OI5pal0oTMlbYD5vKqWb3TCRJR
+         mmpPatlwxXXaA3aqLCrPMBZ5a6/EHz7L/xPXyVcCTXfn3m5KP8Lh1eWEnRCJFdc7VOIj
+         rVRm1eLiYeq3WIVshWJ++ZN7fLuyyiOqbdVgiW3R0dr/ENKW84WmnL1Z9JGqoH1hxyIU
+         yJ+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5TKbIydpRklueBEw0/i7UhJyiz9MBbmx3hB6XV9W11U=;
+        b=cgB3zhxWW43booFZ11ckiy/ZnhbMiPblil3aYH++FpYkkbiIkQRI2dmmAPC5gb9HPc
+         tKqKjRG7SNiO5bc67hp4B7xr4vBLfte5eaadql3ojHd8adumU8n/Yf3aMUiD4iB9Ztmy
+         MGPlEhZ5u3plcTvMmZDsyUD0e9Fu4dAp+zVERjBIpeiDbez8tVwuoPG6JVHufw2Nl59X
+         eSAoe9lTx/m1453pfv1ny+k4Q2HneVQp/78MGPPxlBMAeIp2l1XX7vFssxMHkrotqeqG
+         o5uyqR21oAr646AVaTTl3WkFFwoBGLyv/yFPznuF6dM6gNNfsJ5I0YOIsn6NTnk9yQTp
+         oebg==
+X-Gm-Message-State: AGi0PuY6Hl91nZqk7HsyRw4uu+ydxEX7D2VNJQAUQaldz0ROlDk7ja5P
+        QBPXKYHVaOMkXaGtnX8Zjj6pN088NSm7Z17HLBg=
+X-Google-Smtp-Source: APiQypIyT3haLQJS3HQyLJlfdstDioiAxnqAB0Fi0gof1uU4cZvsPDlN6HR1+gsSdxg2Hdx1qT9ZUYHH+OPb+t3rYwo=
+X-Received: by 2002:a63:7b1d:: with SMTP id w29mr3120589pgc.4.1585831333750;
+ Thu, 02 Apr 2020 05:42:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <50e8a5d8-7cb4-f25c-9657-eb11038bd0b5@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020114
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020114
+References: <20200401162416.24474-1-i.mikhaylov@yadro.com> <20200401162416.24474-3-i.mikhaylov@yadro.com>
+ <CAHp75VcdDR-owtFuFMqNLFh_-L902fXODG14_6Dh416tTwjidA@mail.gmail.com> <1e2c9b590a3626abee330a28cca86cbae7affb39.camel@yadro.com>
+In-Reply-To: <1e2c9b590a3626abee330a28cca86cbae7affb39.camel@yadro.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 2 Apr 2020 15:42:02 +0300
+Message-ID: <CAHp75VdaM_pumyWyeHJxCQXrKUAW=ktJme1uYxH0w4e9an0X2A@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] iio: proximity: Add driver support for vcnl3020
+ proximity sensor
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 2, 2020 at 11:24 AM Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+>
+> On Wed, 2020-04-01 at 19:35 +0300, Andy Shevchenko wrote:
+> > On Wed, Apr 1, 2020 at 7:24 PM Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+> > > Proximity sensor driver based on light/vcnl4000.c code.
+> > > For now supports only the single on-demand measurement.
+> > >
+> > > The VCNL3020 is a fully integrated proximity sensor. Fully
+> > > integrated means that the infrared emitter is included in the
+> > > package. It has 16-bit resolution. It includes a signal
+> > > processing IC and features standard I2C communication
+> > > interface. It features an interrupt function.
+> >
+> > Thank you for an update, my comments below.
+> >
+> > ...
+> >
+> > > +static int get_and_apply_property(struct vcnl3020_data *data, const char
+> > > *prop,
+> > > +                                 u32 reg)
+> > > +{
+> > > +       int rc;
+> > > +       u32 val;
+> > > +
+> > > +       rc = device_property_read_u32(data->dev, prop, &val);
+> > > +       if (rc)
+> > > +               return 0;
+> > > +
+> > > +       rc = regmap_write(data->regmap, reg, val);
+> > > +       if (rc)
+> > > +               dev_err(data->dev, "Error (%d) setting property (%s)",
+> > > +                       rc, prop);
+> >
+> > This requires {} according to the coding style
+>
+> checkpatch.pl doesn't say anything bad on this spot. Do you mean to make
+> something like this?
+>
+> rc = regmap_write(data->regmap, reg, val);
+> if (rc) {
+>         dev_err(data->dev, "Error (%d) setting property (%s)",
+>                 rc, prop);
+> }
 
-On 4/2/20 2:03 PM, Julien Thierry wrote:
-> Hi Alexandre,
-> 
-> I ran into the same issue for the arm64 work:
-> https://lkml.org/lkml/2020/1/9/656
+Yes. Checkpatch is neither strict nor fully comprehensive tool.
 
-Thanks for the reference, I didn't notice that change, but I saw a more
-recent one where you were just removing the branch to alternative check
-(https://lkml.org/lkml/2020/3/25/151).
+> In previous notes you said to remove them.
 
-> Your solution seems nicer however.
-> 
-> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
->> Currently objtool prevents any branch to an alternative. While preventing
->> branching from the outside to the middle of an alternative makes perfect
->> sense, branching within the same alternative should be allowed. To do so,
->> identify each alternative and check that a branch to an alternative comes
->> from the same alternative.
->>
->> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
->> ---
->>   tools/objtool/check.c | 19 +++++++++++++------
->>   tools/objtool/check.h |  3 ++-
->>   2 files changed, 15 insertions(+), 7 deletions(-)
->>
->> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
->> index 708562fb89e1..214809ac2776 100644
->> --- a/tools/objtool/check.c
->> +++ b/tools/objtool/check.c
->> @@ -712,7 +712,9 @@ static int handle_group_alt(struct objtool_file *file,
->>                   struct instruction *orig_insn,
->>                   struct instruction **new_insn)
->>   {
->> +    static unsigned int alt_group_next_index = 1;
->>       struct instruction *last_orig_insn, *last_new_insn, *insn, *fake_jump = NULL;
->> +    unsigned int alt_group = alt_group_next_index++;
->>       unsigned long dest_off;
->>       last_orig_insn = NULL;
->> @@ -721,7 +723,7 @@ static int handle_group_alt(struct objtool_file *file,
->>           if (insn->offset >= special_alt->orig_off + special_alt->orig_len)
->>               break;
->> -        insn->alt_group = true;
->> +        insn->alt_group = alt_group;
->>           last_orig_insn = insn;
->>       }
->> @@ -1942,6 +1944,7 @@ static int validate_sibling_call(struct instruction *insn, struct insn_state *st
->>    * tools/objtool/Documentation/stack-validation.txt.
->>    */
->>   static int validate_branch(struct objtool_file *file, struct symbol *func,
->> +               struct instruction *from,
-> 
-> Maybe instead of passing a new instruction pointer, just the
-> alt_group could be passed? 0 Meaning it was not in an alt group> 
->>                  struct instruction *first, struct insn_state state)
->>   {
->>       struct alternative *alt;
->> @@ -1953,7 +1956,9 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>       insn = first;
->>       sec = insn->sec;
->> -    if (insn->alt_group && list_empty(&insn->alts)) {
->> +    if (insn->alt_group &&
->> +        (!from || from->alt_group != insn->alt_group) &&
->> +        list_empty(&insn->alts)) {
-> 
-> This would become
-> 
->      if (insn->alt_group != alt_group && list_empty(&insn->alts))
-> 
-> And the recursive validate_branch() calls would just take
-> insn->alt_group as parameter (and the calls in validate_functions()
-> and validate_unwind_hints() would take 0).
-> 
-> Any opinions on that?
+When it's one line, it fine, otherwise you need {} surround.
 
-Yes, that would work too. I choose to pass the instruction pointer because
-I was thinking that having the "from" instruction might be useful in the
-future if there's a need to do additional check about the origin of the
-branch.
+https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
 
-alex.
+> > > +       return rc;
+> > > +}
+> >
+> > ...
+> >
+> > > +static int vcnl3020_probe(struct i2c_client *client)
+> > > +{
+> > > +       indio_dev->name = VCNL_DRV_NAME;
+> >
+> > It's definitely not a driver name. You have to put part number here.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/light/tsl4531.c?h=v5.6#n199
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/light/max44009.c?h=v5.6#n507
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/light/vl6180.c?h=v5.6#n515
 
+Let's Jonathan speak up.
 
->>           WARN_FUNC("don't know how to handle branch to middle of alternative instruction group",
->>                 sec, insn->offset);
->>           return 1;
->> @@ -2035,7 +2040,8 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>                   if (alt->skip_orig)
->>                       skip_orig = true;
->> -                ret = validate_branch(file, func, alt->insn, state);
->> +                ret = validate_branch(file, func,
->> +                              NULL, alt->insn, state);
->>                   if (ret) {
->>                       if (backtrace)
->>                           BT_FUNC("(alt)", insn);
->> @@ -2105,7 +2111,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>                       return ret;
->>               } else if (insn->jump_dest) {
->> -                ret = validate_branch(file, func,
->> +                ret = validate_branch(file, func, insn,
->>                                 insn->jump_dest, state);
->>                   if (ret) {
->>                       if (backtrace)
->> @@ -2236,7 +2242,8 @@ static int validate_unwind_hints(struct objtool_file *file)
->>       for_each_insn(file, insn) {
->>           if (insn->hint && !insn->visited) {
->> -            ret = validate_branch(file, insn->func, insn, state);
->> +            ret = validate_branch(file, insn->func,
->> +                          NULL, insn, state);
->>               if (ret && backtrace)
->>                   BT_FUNC("<=== (hint)", insn);
->>               warnings += ret;
->> @@ -2377,7 +2384,7 @@ static int validate_functions(struct objtool_file *file)
->>               state.uaccess = func->uaccess_safe;
->> -            ret = validate_branch(file, func, insn, state);
->> +            ret = validate_branch(file, func, NULL, insn, state);
->>               if (ret && backtrace)
->>                   BT_FUNC("<=== (func)", insn);
->>               warnings += ret;
->> diff --git a/tools/objtool/check.h b/tools/objtool/check.h
->> index 6d875ca6fce0..cffb23d81782 100644
->> --- a/tools/objtool/check.h
->> +++ b/tools/objtool/check.h
->> @@ -33,7 +33,8 @@ struct instruction {
->>       unsigned int len;
->>       enum insn_type type;
->>       unsigned long immediate;
->> -    bool alt_group, dead_end, ignore, hint, save, restore, ignore_alts;
->> +    unsigned int alt_group;
->> +    bool dead_end, ignore, hint, save, restore, ignore_alts;
->>       bool retpoline_safe;
->>       u8 visited;
->>       struct symbol *call_dest;
->>
-> 
-> Cheers,
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
