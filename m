@@ -2,258 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DCB619C481
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81DEC19C4A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388591AbgDBOmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:42:07 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:37646 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387565AbgDBOmH (ORCPT
+        id S2388630AbgDBOqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:46:30 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:53426 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388516AbgDBOqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:42:07 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EdbpD085526;
-        Thu, 2 Apr 2020 14:41:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=gVIIDzXBEkOdIqFJMswdahombVaA8LnmmRPQy7mZ1/g=;
- b=om2AiJld2KPFAoxN2lmMAFH4rRuZ+zOQaLaWpZrkE96ueN4LVB14XpEhFb/NRsBBIaUh
- kqmKxnyguYc5i+WnWyHmyLmhdO9Txw/O0TOI6bB9ml43NZWm8mzufubF7SULB7jwWZWR
- VLsxEHgRWOfND1S36asMrj/E5HMfwwGEmGU/FRd5bKOQ7BAR0IzaEihT0hpAytFX8DzQ
- zp0vSjKAxrFnIAskJSv1vdQ7CcI1aXZA2U6Ph+i8bIw0O7mci52t4U8AXxJnoA/UeiBH
- I+V7RcjHa6SsgAFm/+ZQb8+vSCGuOQ1kzXYtZvdmduVl5+peow17uf0my7OckXRYq/eh pw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 303yunefgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 14:41:51 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EcTNt012106;
-        Thu, 2 Apr 2020 14:41:50 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 302g4vna3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 14:41:50 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032EfmXC003013;
-        Thu, 2 Apr 2020 14:41:48 GMT
-Received: from linux-1.home (/10.175.46.241)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 07:41:48 -0700
-Subject: Re: [PATCH 4/7] objtool: Add support for return trampoline call
-To:     Julien Thierry <jthierry@redhat.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-5-alexandre.chartre@oracle.com>
- <c0f265ed-c86b-d3f1-3894-941c25e42d0e@redhat.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <fc224792-bd1c-08ff-072f-e584740521b4@oracle.com>
-Date:   Thu, 2 Apr 2020 16:46:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Thu, 2 Apr 2020 10:46:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FD6RE/EUN36dlCHL75oNHHohhJhXaMYfinWxOVbw1CY=; b=eHVvXef8PjKYyExPlFfxyoyNjF
+        hwvfsn3JI9j8p4suyKUdfY/5O77Kb3NbGnxt709tlyIJ9iR4vB5iiK8LOveTk5NWLxYpMmjJFc2go
+        onrReXMC4xjtYntlNqA3FRskIO9oQZpx/zrnmyxrd/a5sSdl4r/aYAjM0rYz/c9wh8KFkvuVlVO03
+        4+b9x163MxRLQ3JdLiQyZX9eOgaBoR85baqXVnoGCgO0YEu0rxL0gj0ba/RY2qaoHr26c4/yjlq32
+        +ubLrUcFqIVI0fCOQ7HPCAJWtFuoLTFayZmk5t3NL6r4efR3U+2yN6qjxRRN1X2U6XKyrt0+pEUjP
+        zLy0pTCA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jK16q-0003jx-4L; Thu, 02 Apr 2020 14:46:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8C4473056DE;
+        Thu,  2 Apr 2020 16:46:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6C5D72B0D9C8F; Thu,  2 Apr 2020 16:46:18 +0200 (CEST)
+Date:   Thu, 2 Apr 2020 16:46:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Kenneth R. Crudup" <kenny@panix.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [patch 0/2] x86: Prevent Split-Lock-Detection wreckage on VMX
+ hypervisors
+Message-ID: <20200402144618.GC20730@hirez.programming.kicks-ass.net>
+References: <20200402123258.895628824@linutronix.de>
+ <alpine.DEB.2.21.2004020641470.7052@xps-7390>
+ <20200402143203.GJ20713@hirez.programming.kicks-ass.net>
+ <alpine.DEB.2.21.2004020735210.10453@xps-7390>
 MIME-Version: 1.0
-In-Reply-To: <c0f265ed-c86b-d3f1-3894-941c25e42d0e@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=0
- mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020131
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2004020735210.10453@xps-7390>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 02, 2020 at 07:41:41AM -0700, Kenneth R. Crudup wrote:
+> 
+> On Thu, 2 Apr 2020, Peter Zijlstra wrote:
+> 
+> > Hmm, you're not seeing this:
+> >   +       pr_warn("disabled due to VMLAUNCH in module: %s\n", me->name);
+> > fire when you load the vmware kernel module?
+> 
+> I just looked back at the syslog's copy of the kernel messages at the time
+> I'd tried it, and no, I don't see that message.
 
-On 4/2/20 3:26 PM, Julien Thierry wrote:
-> Hi Alexandre,
-> 
-> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
->> With retpoline, the return instruction is used to branch to an address
->> stored on the stack. So, unlike a regular return instruction, when a
->> retpoline return instruction is reached the stack has been modified
->> compared to what we have when the function was entered.
->>
->> Provide the mechanism to explicitly call-out such return instruction
->> so that objtool can correctly handle them.
->>
->> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
->> ---
->>   tools/objtool/check.c | 78 +++++++++++++++++++++++++++++++++++++++++--
->>   tools/objtool/check.h |  1 +
->>   2 files changed, 76 insertions(+), 3 deletions(-)
->>
->> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
->> index 0cec91291d46..ed8e3ea1d8da 100644
->> --- a/tools/objtool/check.c
->> +++ b/tools/objtool/check.c
->> @@ -1344,6 +1344,48 @@ static int read_intra_function_call(struct objtool_file *file)
->>       return 0;
->>   }
->> +static int read_retpoline_ret(struct objtool_file *file)
->> +{
->> +    struct section *sec;
->> +    struct instruction *insn;
->> +    struct rela *rela;
->> +
->> +    sec = find_section_by_name(file->elf, ".rela.discard.retpoline_ret");
->> +    if (!sec)
->> +        return 0;
->> +
->> +    list_for_each_entry(rela, &sec->rela_list, list) {
->> +        if (rela->sym->type != STT_SECTION) {
->> +            WARN("unexpected relocation symbol type in %s",
->> +                 sec->name);
->> +            return -1;
->> +        }
->> +
->> +        insn = find_insn(file, rela->sym->sec, rela->addend);
->> +        if (!insn) {
->> +            WARN("bad .discard.retpoline_ret entry");
->> +            return -1;
->> +        }
->> +
->> +        if (insn->type != INSN_RETURN) {
->> +            WARN_FUNC("retpoline_ret not a return",
->> +                  insn->sec, insn->offset);
->> +            return -1;
->> +        }
->> +
->> +        insn->retpoline_ret = true;
->> +        /*
->> +         * For the impact on the stack, make a return trampoline
->> +         * behaves like a pop of the return address.
->> +         */
->> +        insn->stack_op.src.type = OP_SRC_POP;
->> +        insn->stack_op.dest.type = OP_DEST_REG;
->> +        insn->stack_op.dest.reg = CFI_RA;
->> +    }
->> +
->> +    return 0;
->> +}
->> +
->>   static void mark_rodata(struct objtool_file *file)
->>   {
->>       struct section *sec;
->> @@ -1403,6 +1445,10 @@ static int decode_sections(struct objtool_file *file)
->>       if (ret)
->>           return ret;
->> +    ret = read_retpoline_ret(file);
->> +    if (ret)
->> +        return ret;
->> +
->>       ret = add_call_destinations(file);
->>       if (ret)
->>           return ret;
->> @@ -1432,7 +1478,8 @@ static bool is_fentry_call(struct instruction *insn)
->>       return false;
->>   }
->> -static bool has_modified_stack_frame(struct insn_state *state)
->> +static bool has_modified_stack_frame(struct insn_state *state,
->> +                     bool check_registers)
->>   {
->>       int i;
->> @@ -1442,6 +1489,9 @@ static bool has_modified_stack_frame(struct insn_state *state)
->>           state->drap)
->>           return true;
->> +    if (!check_registers)
->> +        return false;
->> +
->>       for (i = 0; i < CFI_NUM_REGS; i++)
->>           if (state->regs[i].base != initial_func_cfi.regs[i].base ||
->>               state->regs[i].offset != initial_func_cfi.regs[i].offset)
->> @@ -1987,7 +2037,7 @@ static int validate_call(struct instruction *insn, struct insn_state *state)
->>   static int validate_sibling_call(struct instruction *insn, struct insn_state *state)
->>   {
->> -    if (has_modified_stack_frame(state)) {
->> +    if (has_modified_stack_frame(state, true)) {
->>           WARN_FUNC("sibling call from callable instruction with modified stack frame",
->>                   insn->sec, insn->offset);
->>           return 1;
->> @@ -2009,6 +2059,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>       struct alternative *alt;
->>       struct instruction *insn, *next_insn;
->>       struct section *sec;
->> +    bool check_registers;
->>       u8 visited;
->>       int ret;
->> @@ -2130,7 +2181,28 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>                   return 1;
->>               }
->> -            if (func && has_modified_stack_frame(&state)) {
->> +            /*
->> +             * With retpoline, the return instruction is used
->> +             * to branch to an address stored on the stack.
->> +             * So when we reach the ret instruction, the stack
->> +             * frame has been modified with the address to
->> +             * branch to and we need update the stack state.
->> +             *
->> +             * The retpoline address to branch to is typically
->> +             * pushed on the stack from a register, but this
->> +             * confuses the logic which checks callee saved
->> +             * registers. So we don't check if registers have
->> +             * been modified if we have a return trampoline.
-> 
-> I think there are two different things to consider here.
-> 
-> First, the update of the stack frame which I believe should be done
-> when returning from intra_function_calls, as it undoes what the call
-> instruction did (push more stuff on the stack in the case of x86).
+Dang!
 
-The problem is that an intra-function call is not necessarily going
-to return. With retpoline (or RSB stuffing) intra-function calls are
-basically fake calls only present to fill the RSB buffer. Such calls
-won't return, the stack pointer is just adjusted to cancel the impact
-of these calls on the stack.
-
-> This might mean that intra_function_call should be part of the state
-> (as intra_function_calls pass a modified state to validate_branch()).
+> > Could you slip me a copy of that thing by private mail?
 > 
-> Second is supporting retpoline_ret which is just accepting that the
-> return address in the stack frame has changed.
-With retpoline_ret, the stack just has an extra address we are going to
-jump to (this will be like an indirect jump). If we remove that extra
-address from the stack, we should have the regular stack we have at
-the end of a function. This is precisely what the code is doing here.
+> OK, gimme a couple of days though, I've gotta get a little work done.
+> (Also, what "thing" exactly did you want?)
 
-alex.
-
->> +             */
->> +            if (insn->retpoline_ret) {
->> +                update_insn_state(insn, &state);
->> +                check_registers = false;
->> +            } else {
->> +                check_registers = true;
->> +            }
->> +
->> +            if (func && has_modified_stack_frame(&state,
->> +                                 check_registers)) {
->>                   WARN_FUNC("return with modified stack frame",
->>                         sec, insn->offset);
->>                   return 1;
->> diff --git a/tools/objtool/check.h b/tools/objtool/check.h
->> index 2bd6d2f46baa..5ecd16ad71a8 100644
->> --- a/tools/objtool/check.h
->> +++ b/tools/objtool/check.h
->> @@ -37,6 +37,7 @@ struct instruction {
->>       bool dead_end, ignore, hint, save, restore, ignore_alts;
->>       bool intra_function_call;
->>       bool retpoline_safe;
->> +    bool retpoline_ret;
->>       u8 visited;
->>       struct symbol *call_dest;
->>       struct instruction *jump_dest;
->>
-> 
-> Cheers,
-> 
+All the .ko files that come with vmware. I want to dig through them to
+see why the VMLAUNCH detection thing isn't working.
