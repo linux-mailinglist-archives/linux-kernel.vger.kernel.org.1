@@ -2,116 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 624E519CCF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9151D19CCF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389425AbgDBWhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 18:37:31 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:45097 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388959AbgDBWha (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:37:30 -0400
-Received: by mail-pg1-f195.google.com with SMTP id o26so2514659pgc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 15:37:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Bu6IDjQbNb2NPz1Fm5EK/pgWdtaCjhT3hwfgjnIqyNY=;
-        b=kq9U00PG054owKDvVaCBkGyEcbZK4fArjyVqX6i9Dka3lTJjzydu4zBGMAugaMRl3b
-         FvkvqBTKIWQPnkMAVjxRLCZ8nbCPeCF4c//wyuBQZZ7NRDiVD4xd2MMKX9c6mS/3aJbX
-         G3NkfpuyzepUDi0Hv3zN/bQBMAWBNRf9WAVWSP3qXeK2nX17ee6XpVJKu5kSj8iEPKuI
-         5pRxFCLDsPwbbnrEJaFJpH0EJipBJbxupqUBaNX/yZljp0HhojAckxHmNdZxE7fjfR+D
-         cgsizG4kPi+AXRbJGdA8B4y5E6Kc50Ge0BiSS8BBC5ZyGSr3QLFgjqkb/EL2PhWl7Bd2
-         UEnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Bu6IDjQbNb2NPz1Fm5EK/pgWdtaCjhT3hwfgjnIqyNY=;
-        b=M2sEXppuTKl/dLZ2NmegCaBmOVkzBxKIi+QOKMygctk9EZRUK1+w+a3BTgmhC+51m6
-         M2I/7iOzS6sWdjll/pi1mo0HkDKGp/vDdLMTwXGyyD6dJo3kfYuUuIz5Pl04m8uyRYaw
-         TLAPQZJW9aB3f5Ele8Njdt80V3ES5xLL1BltesFOwLfgOdQd2Yl7/gZvNPxceNE225bK
-         jWif66lWVMLgkF/BpH2z7iPU4bptlICcsGO3tV2Ey/qEQ+NeBuVeMOQFqcUU+Ot2I2Ze
-         8AvvSg+hkDqeIIZeIM+dLb/wk4Rz8jGaBlqT20DOqPCvdJSYiwB5TXGGI00GtTVzrIqp
-         xhHw==
-X-Gm-Message-State: AGi0Pubyr5T4NFoUtA1nr8GJaunH4YzJ5ixgVLBPweBmXvoutD+jClez
-        GXn+xZp+Hy9zE4HTh/uU6F2T9E9jXsM=
-X-Google-Smtp-Source: APiQypI2A0RyjcwbJvCMnhbdGWU1MNRnX/WFlq+gU61bs4LuIC6IOuf54jlv9QFrAhjxZuBS1mpayw==
-X-Received: by 2002:aa7:8ec9:: with SMTP id b9mr5185648pfr.118.1585867048645;
-        Thu, 02 Apr 2020 15:37:28 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id 71sm4508709pfv.8.2020.04.02.15.37.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 15:37:28 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Manu Gautam <mgautam@codeaurora.org>,
-        Sandeep Maheswaram <sanm@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH] phy: qcom-qusb2: Re add "qcom,sdm845-qusb2-phy" compat string
-Date:   Thu,  2 Apr 2020 22:37:23 +0000
-Message-Id: <20200402223723.7150-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CANcMJZCr646jav3h14K0xV=ANMxXg=U20wvSB546qrLX3TECBg@mail.gmail.com>
-References: <CANcMJZCr646jav3h14K0xV=ANMxXg=U20wvSB546qrLX3TECBg@mail.gmail.com>
+        id S2389517AbgDBWkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 18:40:11 -0400
+Received: from mail-dm6nam11on2041.outbound.protection.outlook.com ([40.107.223.41]:63035
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726963AbgDBWkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 18:40:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dFFqRcdA44J7Ou6aGhiJqTMFB5AQ351wvQgF/JQVfL5TZu8F6e5Un/IlZzsrj789SPqBEgETH0rb6As47XFvIXTpEzUnR7hKAI2GRkaXT3U1b80WvOAgBdinBQVrukl4uOsTxJLUkeylpzPvDk3sILeVzGEQgw1QcQmBFIftP2yR0qdxm4LIbQD7Tvw1FGV1TCTVhoK051KzL7n4tL/Cdvd37y7aDKGg3GjDWllR3RJh5DwFemB4QtMCAwnZgyuOlOL/r+JFMq4tA3J4m2KGSIXJvkVlgoaubiQcalfxtvqahLrBww5Zq16WLq4AwvkF19TGqpfIKkoual/5I2Ob1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qAp0vtzjOQpkeTIeQTGLAtuUivih67trTBGbvraGinE=;
+ b=NsdyFyEcLXKb9K8u+nvTTkXs4X9QDij9d8CSpHZ3CWbwRXlQKCY/qLGlWC/mK9US1ET8nWGsgF4QSAsGGmJoV/R9XeNEYdQOLx2ZfNxz74riFqDI358tcXqtloPopkr9kupknt3/Vo6XV+WGtaBt9Mb79or2NI6vWWdhGcONlSGiVEGM3Py45omnRuiqzZ0X7xx8RUW4Dz2zKXqffM20pOs5FKwtuTuFlvEEM6bK8laX3SW1fl5gO0cKDGqkuMPafoGsM8lBYGG7UG7N7F+IxA9Ite/kj3cL+cJQS+puXsetRn5OIpxmso4oVKuxvkanA42kT1VDEEH5dz1W4kOTIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qAp0vtzjOQpkeTIeQTGLAtuUivih67trTBGbvraGinE=;
+ b=JCgd/WJdY1amdP2dgeHKK6ee+7XTQhnAdCLLXmsizrmepZ9zzCFICI4Oa6kemvG5aNxTSPOqeF19VML4uZUVXI6nAb6IYGgz++OKLzJPvz6QmoL3MVRd+HPT/OkKlIqeN15fzGsBLQ9IsHC1kB66LzPZlQZNDeLbrSVXDJa7Yk0=
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
+ by BYAPR05MB5830.namprd05.prod.outlook.com (2603:10b6:a03:d2::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.13; Thu, 2 Apr
+ 2020 22:40:04 +0000
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::7c65:25af:faf7:5331]) by BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::7c65:25af:faf7:5331%2]) with mapi id 15.20.2878.014; Thu, 2 Apr 2020
+ 22:40:04 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86 <x86@kernel.org>, "Kenneth R . Crudup" <kenny@panix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Doug Covelli <dcovelli@vmware.com>
+Subject: Re: [PATCH 3/3] KVM: VMX: Extend VMX's #AC interceptor to handle
+ split lock #AC in guest
+Thread-Topic: [PATCH 3/3] KVM: VMX: Extend VMX's #AC interceptor to handle
+ split lock #AC in guest
+Thread-Index: AQHWCQdVCOEtAzs890KQwn8WlTwdmKhmE74AgAAFxYCAACkAgIAADE2AgAAaygCAAAOjgA==
+Date:   Thu, 2 Apr 2020 22:40:03 +0000
+Message-ID: <08D90BEB-89F6-4D94-8C2E-A21E43646938@vmware.com>
+References: <20200402124205.334622628@linutronix.de>
+ <20200402155554.27705-1-sean.j.christopherson@intel.com>
+ <20200402155554.27705-4-sean.j.christopherson@intel.com>
+ <87sghln6tr.fsf@nanos.tec.linutronix.de>
+ <20200402174023.GI13879@linux.intel.com>
+ <87h7y1mz2s.fsf@nanos.tec.linutronix.de>
+ <20200402205109.GM13879@linux.intel.com>
+ <87zhbtle15.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87zhbtle15.fsf@nanos.tec.linutronix.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=namit@vmware.com; 
+x-originating-ip: [2601:647:4700:9b2:d4d:4118:4ac2:ab78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fd30232c-d408-4ccc-f738-08d7d756c950
+x-ms-traffictypediagnostic: BYAPR05MB5830:|BYAPR05MB5830:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR05MB58303F2FB03B0CF0F7E0EE65D0C60@BYAPR05MB5830.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0361212EA8
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(346002)(376002)(396003)(136003)(366004)(186003)(6486002)(2906002)(76116006)(6916009)(478600001)(5660300002)(81156014)(8936002)(54906003)(4744005)(8676002)(36756003)(81166006)(71200400001)(316002)(64756008)(4326008)(107886003)(66946007)(2616005)(66556008)(66446008)(53546011)(66476007)(33656002)(86362001)(7416002)(6512007)(6506007);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: vmware.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: GeZkwBi6bxcUto5vaV2FD17aIMWa2b7iEckG7z4LzYqNbbXbxyrAt3A28c3brcsd+c8/BBA3dovJQw4RZkaWmPwjKi2jqF/RNV3nZ0lKKhdflUY9zb4PaWQq/XMAr0aY0sUvJKNUprnY8WV4BVlGO77XfsX4DyIE3rpqLsV/ggOfbq+z3oIrTzeuXqY9fWEJ67UgtAIs7lYEqjjPRpCRlEy+s1RefgHKbTb1sEjkJ1+aHK6hSZGbQ4BpSUEGTtFFQDYn/kw1dt1flyFlsZeJ23sJQpvbgMeytmB/XdpijHa2lOYbC3g1Z4L/3gWmpFVCHwl6i7DsDdEXLiiKTfTkh4qa0uA5Na5HNIUe/J3tTcsw73HjWpde7PLZ9qJYXS3EnyMQ1ePUcsNSj/ZamKBr2RwS+Iunzkm00A+YBC28kGVpL6VeEiHPpNAi82WAMJxJ
+x-ms-exchange-antispam-messagedata: bHmiKmkan6fIP0mav4YNVgxanjHJmvuHWea4XG5MtpfFHQRc2d0qLxlDi3TEAh/juC9sbHXo8ZKJgyP/xpFQLgr2N4Mzmr3LWAR82gIAqtqbF9TJarmnbAcCJifFC/IPq+1inAbU+FJu0lcowNUC+GU1G7j65+zluuE6ohMzf2e2Rcq043bPr6L0aFirQMiMQgOLTf636RBnKN7NFUhI7Q==
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D658E5E2E915E84C97278C728061BE14@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd30232c-d408-4ccc-f738-08d7d756c950
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2020 22:40:03.7822
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: RipGUl6VjmSJB3IeFsf/uvmeNcmcQ2WxOsyPU1nlyGRUT5qvUIo90fQNBKeiMDCNLpHxR7zeqU0+bcOAGG9UeQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB5830
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2
-PHY support"), the change was made to add "qcom,qusb2-v2-phy"
-as a generic compat string. However the change also removed
-the "qcom,sdm845-qusb2-phy" compat string, which is documented
-in the binding and already in use.
+> On Apr 2, 2020, at 3:27 PM, Thomas Gleixner <tglx@linutronix.de> wrote:
+>=20
+>  As I just verified, it's possible to load the vmware module parallel
+>  to the KVM/VMX one.
+>=20
+> So either we deal with it in some way or just decide that SLD and HV
+> modules which do not have the MOD_INFO(sld_safe) magic cannot be loaded
+> when SLD is enabled on the host. I'm fine with the latter :)
+>=20
+> What a mess.
 
-This patch re-adds the "qcom,sdm845-qusb2-phy" compat string
-which allows the driver to continue to work with existing dts
-entries such as found on the db845c.
+[ +Doug ]
 
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Doug Anderson <dianders@chromium.org>
-Cc: Manu Gautam <mgautam@codeaurora.org>
-Cc: Sandeep Maheswaram <sanm@codeaurora.org>
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Cc: Stephen Boyd <swboyd@chromium.org>
-Cc: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: linux-arm-msm@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Fixes: 8fe75cd4cddf ("phy: qcom-qusb2: Add generic QUSB2 V2 PHY support")
-Reported-by: YongQin Liu <yongqin.liu@linaro.org>
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-qusb2.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/phy/qualcomm/phy-qcom-qusb2.c b/drivers/phy/qualcomm/phy-qcom-qusb2.c
-index 3708d43b7508..ab7941ce5d3a 100644
---- a/drivers/phy/qualcomm/phy-qcom-qusb2.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qusb2.c
-@@ -815,6 +815,9 @@ static const struct of_device_id qusb2_phy_of_match_table[] = {
- 	}, {
- 		.compatible	= "qcom,msm8998-qusb2-phy",
- 		.data		= &msm8998_phy_cfg,
-+	}, {
-+		.compatible	= "qcom,sdm845-qusb2-phy",
-+		.data		= &qusb2_v2_phy_cfg,
- 	}, {
- 		.compatible	= "qcom,qusb2-v2-phy",
- 		.data		= &qusb2_v2_phy_cfg,
--- 
-2.17.1
+Just to communicate the information that was given to me: we do intend to
+fix the SLD issue in VMware and if needed to release a minor version that
+addresses it. Having said that, there are other hypervisors, such as
+virtualbox or jailhouse, which would have a similar issue.
 
