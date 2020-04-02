@@ -2,194 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 181D219C49C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCB619C481
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388707AbgDBOos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:44:48 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:35148 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388668AbgDBOos (ORCPT
+        id S2388591AbgDBOmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:42:07 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37646 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387565AbgDBOmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:44:48 -0400
-Received: by mail-pj1-f68.google.com with SMTP id g9so1602443pjp.0;
-        Thu, 02 Apr 2020 07:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a2bK05qLK+63qvi83o6srQxudDFCP37I+nPrw30dRKw=;
-        b=gQaUQvaJsvSOk390RF6XFpFQmqT5tQjQ0pDRkqxxTnbhs7uIOksO3hKT1y5/ghZ/2w
-         VJ1ZcFcJGPOpIJR9TldyzMknV+KH3cgm58zaOsgrFWt6CnsniatJei3Fsg3zdfxzlrvJ
-         jEauhBh79ePy3WvV91gg96H9YbjbtCWxO/NR4wKeYCLPJI6y8RyzK2lKWjqDoXnvuvRt
-         +37VfREoQ8Y3ICZRS77qaH/l8AhQe1/xJhe0BHf/R4Ek84RhFE6DlRQfMh1cM6cwkKly
-         oOLTNJVrZhB7ICH85H27qBlONHfU29S+ikGTCS2nOe2C6T4BKr1i9/rD6z1OXRAaYVs0
-         BPXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=a2bK05qLK+63qvi83o6srQxudDFCP37I+nPrw30dRKw=;
-        b=W7xA6S6XLNJdagDOkPZaspjqlrWVe7KaYaaWhQuQNOfZTKEA5RHaaARYqLQ3agxU8j
-         Dz3c6g3uXz+mdSe2nY5KoTN3hW4hROguMoyBZLzooNvJTOUUsf+BsGtfITr7PnrRt6UE
-         esctfFlxQoBccKRQRELwG7n6oV1qG5nVjb1/LKVHxF7RWwEuRjml3oGO4zKsV7UzA39P
-         rtrVME093siQqzpz8KJMo5QOcUUNm3HvI5S0yBfyv9fAiV05WCUtkO/kvFVQhpsXvzdy
-         3OudVuswWomgjidipdg8kwLLZZhBxN9AUMTks0fZfIVCrKrmRNjmxMTqvPynV6IfUaL4
-         dutA==
-X-Gm-Message-State: AGi0PubPb5mYhaChv48BV07xbe8F3v0272/JWHivf+1uqFXtn94mK+P7
-        KUfrUzg7nd40Gz6Xu9qM3gXVuaED
-X-Google-Smtp-Source: APiQypKOghLR6X0+iaVDSLmvhUb8sEC01IYZm62C1ZwgVod2w0xxkROlCPnimAxSfgv/G1gghxOy5A==
-X-Received: by 2002:a17:90a:af8e:: with SMTP id w14mr4105378pjq.164.1585838686046;
-        Thu, 02 Apr 2020 07:44:46 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s76sm3548943pgc.64.2020.04.02.07.44.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 07:44:45 -0700 (PDT)
-Subject: Re: [PATCH][V2][next] rtc: ds1307: check for failed memory allocation
- on wdt
-To:     Colin King <colin.king@canonical.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        linux-rtc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200402135201.548313-1-colin.king@canonical.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <c6fe9db8-3e27-b6fc-fff7-131cecad3f88@roeck-us.net>
-Date:   Thu, 2 Apr 2020 07:44:44 -0700
+        Thu, 2 Apr 2020 10:42:07 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EdbpD085526;
+        Thu, 2 Apr 2020 14:41:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=gVIIDzXBEkOdIqFJMswdahombVaA8LnmmRPQy7mZ1/g=;
+ b=om2AiJld2KPFAoxN2lmMAFH4rRuZ+zOQaLaWpZrkE96ueN4LVB14XpEhFb/NRsBBIaUh
+ kqmKxnyguYc5i+WnWyHmyLmhdO9Txw/O0TOI6bB9ml43NZWm8mzufubF7SULB7jwWZWR
+ VLsxEHgRWOfND1S36asMrj/E5HMfwwGEmGU/FRd5bKOQ7BAR0IzaEihT0hpAytFX8DzQ
+ zp0vSjKAxrFnIAskJSv1vdQ7CcI1aXZA2U6Ph+i8bIw0O7mci52t4U8AXxJnoA/UeiBH
+ I+V7RcjHa6SsgAFm/+ZQb8+vSCGuOQ1kzXYtZvdmduVl5+peow17uf0my7OckXRYq/eh pw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 303yunefgc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 14:41:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EcTNt012106;
+        Thu, 2 Apr 2020 14:41:50 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 302g4vna3q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 14:41:50 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032EfmXC003013;
+        Thu, 2 Apr 2020 14:41:48 GMT
+Received: from linux-1.home (/10.175.46.241)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Apr 2020 07:41:48 -0700
+Subject: Re: [PATCH 4/7] objtool: Add support for return trampoline call
+To:     Julien Thierry <jthierry@redhat.com>, x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        peterz@infradead.org, tglx@linutronix.de
+References: <20200402082220.808-1-alexandre.chartre@oracle.com>
+ <20200402082220.808-5-alexandre.chartre@oracle.com>
+ <c0f265ed-c86b-d3f1-3894-941c25e42d0e@redhat.com>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <fc224792-bd1c-08ff-072f-e584740521b4@oracle.com>
+Date:   Thu, 2 Apr 2020 16:46:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <20200402135201.548313-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <c0f265ed-c86b-d3f1-3894-941c25e42d0e@redhat.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020131
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/2/20 6:52 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently a failed memory allocation will lead to a null pointer
-> dereference on point wdt.  Fix this by checking for a failed allocation
-> and adding error return handling to function ds1307_wdt_register.
-> Also move the error exit label "exit" to allow a return statement to
-> be removed.
-> 
-> Addresses-Coverity: ("Dereference null return")
-> Fixes: fd90d48db037 ("rtc: ds1307: add support for watchdog timer on ds1388")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-> V2: move error exit label and remove a return statement, thanks to 
->     Walter Harms for spotting this clean up.
-> ---
->  drivers/rtc/rtc-ds1307.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/rtc/rtc-ds1307.c b/drivers/rtc/rtc-ds1307.c
-> index fad042118862..c058b02efb4d 100644
-> --- a/drivers/rtc/rtc-ds1307.c
-> +++ b/drivers/rtc/rtc-ds1307.c
-> @@ -1665,14 +1665,16 @@ static const struct watchdog_ops ds1388_wdt_ops = {
->  
->  };
->  
-> -static void ds1307_wdt_register(struct ds1307 *ds1307)
-> +static int ds1307_wdt_register(struct ds1307 *ds1307)
->  {
->  	struct watchdog_device	*wdt;
->  
->  	if (ds1307->type != ds_1388)
-> -		return;
-> +		return 0;
->  
->  	wdt = devm_kzalloc(ds1307->dev, sizeof(*wdt), GFP_KERNEL);
-> +	if (!wdt)
-> +		return -ENOMEM;
->  
->  	wdt->info = &ds1388_wdt_info;
->  	wdt->ops = &ds1388_wdt_ops;
-> @@ -1683,10 +1685,13 @@ static void ds1307_wdt_register(struct ds1307 *ds1307)
->  	watchdog_init_timeout(wdt, 0, ds1307->dev);
->  	watchdog_set_drvdata(wdt, ds1307);
->  	devm_watchdog_register_device(ds1307->dev, wdt);
-> +
-> +	return 0;
->  }
->  #else
-> -static void ds1307_wdt_register(struct ds1307 *ds1307)
-> +static int ds1307_wdt_register(struct ds1307 *ds1307)
->  {
-> +	return 0;
->  }
->  #endif /* CONFIG_WATCHDOG_CORE */
->  
-> @@ -1979,10 +1984,7 @@ static int ds1307_probe(struct i2c_client *client,
->  
->  	ds1307_hwmon_register(ds1307);
->  	ds1307_clks_register(ds1307);
-> -	ds1307_wdt_register(ds1307);
-> -
-> -	return 0;
-> -
-> +	err = ds1307_wdt_register(ds1307);
 
-Ah, sorry, missed this one. The original idea was to ignore errors on purpose.
-Same as with hwmon. If you want to change this, fine with me. Note though
-that rtc_nvmem_register() now leaks a sysfs file if I understand the code
-correctly.
-
-Guenter
-
->  exit:
->  	return err;
->  }
+On 4/2/20 3:26 PM, Julien Thierry wrote:
+> Hi Alexandre,
 > 
+> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
+>> With retpoline, the return instruction is used to branch to an address
+>> stored on the stack. So, unlike a regular return instruction, when a
+>> retpoline return instruction is reached the stack has been modified
+>> compared to what we have when the function was entered.
+>>
+>> Provide the mechanism to explicitly call-out such return instruction
+>> so that objtool can correctly handle them.
+>>
+>> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+>> ---
+>>   tools/objtool/check.c | 78 +++++++++++++++++++++++++++++++++++++++++--
+>>   tools/objtool/check.h |  1 +
+>>   2 files changed, 76 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+>> index 0cec91291d46..ed8e3ea1d8da 100644
+>> --- a/tools/objtool/check.c
+>> +++ b/tools/objtool/check.c
+>> @@ -1344,6 +1344,48 @@ static int read_intra_function_call(struct objtool_file *file)
+>>       return 0;
+>>   }
+>> +static int read_retpoline_ret(struct objtool_file *file)
+>> +{
+>> +    struct section *sec;
+>> +    struct instruction *insn;
+>> +    struct rela *rela;
+>> +
+>> +    sec = find_section_by_name(file->elf, ".rela.discard.retpoline_ret");
+>> +    if (!sec)
+>> +        return 0;
+>> +
+>> +    list_for_each_entry(rela, &sec->rela_list, list) {
+>> +        if (rela->sym->type != STT_SECTION) {
+>> +            WARN("unexpected relocation symbol type in %s",
+>> +                 sec->name);
+>> +            return -1;
+>> +        }
+>> +
+>> +        insn = find_insn(file, rela->sym->sec, rela->addend);
+>> +        if (!insn) {
+>> +            WARN("bad .discard.retpoline_ret entry");
+>> +            return -1;
+>> +        }
+>> +
+>> +        if (insn->type != INSN_RETURN) {
+>> +            WARN_FUNC("retpoline_ret not a return",
+>> +                  insn->sec, insn->offset);
+>> +            return -1;
+>> +        }
+>> +
+>> +        insn->retpoline_ret = true;
+>> +        /*
+>> +         * For the impact on the stack, make a return trampoline
+>> +         * behaves like a pop of the return address.
+>> +         */
+>> +        insn->stack_op.src.type = OP_SRC_POP;
+>> +        insn->stack_op.dest.type = OP_DEST_REG;
+>> +        insn->stack_op.dest.reg = CFI_RA;
+>> +    }
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   static void mark_rodata(struct objtool_file *file)
+>>   {
+>>       struct section *sec;
+>> @@ -1403,6 +1445,10 @@ static int decode_sections(struct objtool_file *file)
+>>       if (ret)
+>>           return ret;
+>> +    ret = read_retpoline_ret(file);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>>       ret = add_call_destinations(file);
+>>       if (ret)
+>>           return ret;
+>> @@ -1432,7 +1478,8 @@ static bool is_fentry_call(struct instruction *insn)
+>>       return false;
+>>   }
+>> -static bool has_modified_stack_frame(struct insn_state *state)
+>> +static bool has_modified_stack_frame(struct insn_state *state,
+>> +                     bool check_registers)
+>>   {
+>>       int i;
+>> @@ -1442,6 +1489,9 @@ static bool has_modified_stack_frame(struct insn_state *state)
+>>           state->drap)
+>>           return true;
+>> +    if (!check_registers)
+>> +        return false;
+>> +
+>>       for (i = 0; i < CFI_NUM_REGS; i++)
+>>           if (state->regs[i].base != initial_func_cfi.regs[i].base ||
+>>               state->regs[i].offset != initial_func_cfi.regs[i].offset)
+>> @@ -1987,7 +2037,7 @@ static int validate_call(struct instruction *insn, struct insn_state *state)
+>>   static int validate_sibling_call(struct instruction *insn, struct insn_state *state)
+>>   {
+>> -    if (has_modified_stack_frame(state)) {
+>> +    if (has_modified_stack_frame(state, true)) {
+>>           WARN_FUNC("sibling call from callable instruction with modified stack frame",
+>>                   insn->sec, insn->offset);
+>>           return 1;
+>> @@ -2009,6 +2059,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+>>       struct alternative *alt;
+>>       struct instruction *insn, *next_insn;
+>>       struct section *sec;
+>> +    bool check_registers;
+>>       u8 visited;
+>>       int ret;
+>> @@ -2130,7 +2181,28 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+>>                   return 1;
+>>               }
+>> -            if (func && has_modified_stack_frame(&state)) {
+>> +            /*
+>> +             * With retpoline, the return instruction is used
+>> +             * to branch to an address stored on the stack.
+>> +             * So when we reach the ret instruction, the stack
+>> +             * frame has been modified with the address to
+>> +             * branch to and we need update the stack state.
+>> +             *
+>> +             * The retpoline address to branch to is typically
+>> +             * pushed on the stack from a register, but this
+>> +             * confuses the logic which checks callee saved
+>> +             * registers. So we don't check if registers have
+>> +             * been modified if we have a return trampoline.
+> 
+> I think there are two different things to consider here.
+> 
+> First, the update of the stack frame which I believe should be done
+> when returning from intra_function_calls, as it undoes what the call
+> instruction did (push more stuff on the stack in the case of x86).
 
+The problem is that an intra-function call is not necessarily going
+to return. With retpoline (or RSB stuffing) intra-function calls are
+basically fake calls only present to fill the RSB buffer. Such calls
+won't return, the stack pointer is just adjusted to cancel the impact
+of these calls on the stack.
+
+> This might mean that intra_function_call should be part of the state
+> (as intra_function_calls pass a modified state to validate_branch()).
+> 
+> Second is supporting retpoline_ret which is just accepting that the
+> return address in the stack frame has changed.
+With retpoline_ret, the stack just has an extra address we are going to
+jump to (this will be like an indirect jump). If we remove that extra
+address from the stack, we should have the regular stack we have at
+the end of a function. This is precisely what the code is doing here.
+
+alex.
+
+>> +             */
+>> +            if (insn->retpoline_ret) {
+>> +                update_insn_state(insn, &state);
+>> +                check_registers = false;
+>> +            } else {
+>> +                check_registers = true;
+>> +            }
+>> +
+>> +            if (func && has_modified_stack_frame(&state,
+>> +                                 check_registers)) {
+>>                   WARN_FUNC("return with modified stack frame",
+>>                         sec, insn->offset);
+>>                   return 1;
+>> diff --git a/tools/objtool/check.h b/tools/objtool/check.h
+>> index 2bd6d2f46baa..5ecd16ad71a8 100644
+>> --- a/tools/objtool/check.h
+>> +++ b/tools/objtool/check.h
+>> @@ -37,6 +37,7 @@ struct instruction {
+>>       bool dead_end, ignore, hint, save, restore, ignore_alts;
+>>       bool intra_function_call;
+>>       bool retpoline_safe;
+>> +    bool retpoline_ret;
+>>       u8 visited;
+>>       struct symbol *call_dest;
+>>       struct instruction *jump_dest;
+>>
+> 
+> Cheers,
+> 
