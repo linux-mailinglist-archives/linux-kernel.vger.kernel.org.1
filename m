@@ -2,91 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C298A19CA86
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15AAC19CA90
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388888AbgDBTuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 15:50:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:15890 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388843AbgDBTuL (ORCPT
+        id S2389072AbgDBTuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 15:50:32 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38900 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731689AbgDBTub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 15:50:11 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 032JX7mt085028;
-        Thu, 2 Apr 2020 15:50:04 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 305emf7na8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 15:50:04 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 032JnbfC024162;
-        Thu, 2 Apr 2020 19:50:03 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma03dal.us.ibm.com with ESMTP id 301x78667g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Apr 2020 19:50:03 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 032Jo27v20185446
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Apr 2020 19:50:02 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CFA1CAE060;
-        Thu,  2 Apr 2020 19:50:02 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EF714AE067;
-        Thu,  2 Apr 2020 19:50:01 +0000 (GMT)
-Received: from ghost4.ibm.com (unknown [9.163.31.233])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Apr 2020 19:50:01 +0000 (GMT)
-From:   Eddie James <eajames@linux.ibm.com>
-To:     linux-aspeed@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        eajames@linux.ibm.com
-Subject: [PATCH v7 5/5] ARM: dts: Aspeed: AST2600: Add XDMA PCI-E root control reset
-Date:   Thu,  2 Apr 2020 14:49:55 -0500
-Message-Id: <20200402194955.16643-6-eajames@linux.ibm.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20200402194955.16643-1-eajames@linux.ibm.com>
-References: <20200402194955.16643-1-eajames@linux.ibm.com>
+        Thu, 2 Apr 2020 15:50:31 -0400
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jK5rB-0002B3-13; Thu, 02 Apr 2020 21:50:29 +0200
+Date:   Thu, 2 Apr 2020 21:50:28 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] irq_poll: Use raise_softirq_irqoff() in cpu_dead notifier
+Message-ID: <20200402195028.skpufyn4c6ktgai3@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-02_09:2020-04-02,2020-04-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=1
- mlxlogscore=855 priorityscore=1501 lowpriorityscore=0 clxscore=1015
- phishscore=0 malwarescore=0 bulkscore=0 mlxscore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004020142
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The AST2600 XDMA engine requires the PCI-E root control reset be cleared
-as well, so add a phandle to that syscon reset.
+__raise_softirq_irqoff() adds a pending sofirq mask and this is it. The
+softirq won't be invoked unless something checks for a pending softirq
+which should happen once the next interrupt fires. The CPU might go
+idle in the meantime.
 
-Signed-off-by: Eddie James <eajames@linux.ibm.com>
+Use raise_softirq_irqoff() to wake ksoftirqd() if the list has work
+items pending.
+
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- arch/arm/boot/dts/aspeed-g6.dtsi | 3 ++-
+
+Maybe preempt_check_resched() should be added to act on a possible
+need_resched flag. Otherwise it will be delayed to the next
+cond_resched() / spin_unlock().
+
+ lib/irq_poll.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index 1ffc15177b79..65e2826fddb6 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -342,7 +342,8 @@ xdma: xdma@1e6e7000 {
- 				compatible = "aspeed,ast2600-xdma";
- 				reg = <0x1e6e7000 0x100>;
- 				clocks = <&syscon ASPEED_CLK_GATE_BCLK>;
--				resets = <&syscon ASPEED_RESET_DEV_XDMA>;
-+				resets = <&syscon ASPEED_RESET_DEV_XDMA>, <&syscon ASPEED_RESET_RC_XDMA>;
-+				reset-names = "dev", "rc";
- 				interrupts-extended = <&gic GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
- 						      <&scu_ic0 2>;
- 				pcie-device = "bmc";
+diff --git a/lib/irq_poll.c b/lib/irq_poll.c
+index 2f17b488d58e1..484dbd2aa09fb 100644
+--- a/lib/irq_poll.c
++++ b/lib/irq_poll.c
+@@ -194,7 +194,8 @@ static int irq_poll_cpu_dead(unsigned int cpu)
+ 	local_irq_disable();
+ 	list_splice_init(&per_cpu(blk_cpu_iopoll, cpu),
+ 			 this_cpu_ptr(&blk_cpu_iopoll));
+-	__raise_softirq_irqoff(IRQ_POLL_SOFTIRQ);
++	if (!list_empty(this_cpu_ptr(&blk_cpu_iopoll)))
++		raise_softirq_irqoff(IRQ_POLL_SOFTIRQ);
+ 	local_irq_enable();
+ 
+ 	return 0;
 -- 
-2.24.0
+2.26.0
 
