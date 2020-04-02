@@ -2,104 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F077819C78E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A711019C786
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 19:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390035AbgDBRDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 13:03:23 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:51298 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732218AbgDBRDX (ORCPT
+        id S2389984AbgDBRBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 13:01:36 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:58726 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732625AbgDBRBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 13:03:23 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jK3FR-00058c-PG; Thu, 02 Apr 2020 11:03:21 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jK3FR-0006aV-1o; Thu, 02 Apr 2020 11:03:21 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Security Module <linux-security-module@vger.kernel.org>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Djalal Harouni <tixxdz@gmail.com>,
-        "Dmitry V . Levin" <ldv@altlinux.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@poochiereds.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <20200327172331.418878-1-gladkov.alexey@gmail.com>
-Date:   Thu, 02 Apr 2020 12:00:37 -0500
-In-Reply-To: <20200327172331.418878-1-gladkov.alexey@gmail.com> (Alexey
-        Gladkov's message of "Fri, 27 Mar 2020 18:23:22 +0100")
-Message-ID: <87y2rdj00a.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 2 Apr 2020 13:01:36 -0400
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 032H1TeJ031701;
+        Fri, 3 Apr 2020 02:01:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 032H1TeJ031701
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1585846890;
+        bh=1mH4cw2yYcVZRUVlvx7GMUbn2oki49fXdwmWN7fbBsc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rrl7k6aVw3iI8Z3PirOB6ZMA0fHnC57gsk0b2BLP+Lo8ry3278PY9LFojc2cEijdL
+         favhYLtVbKdt3pgy/ChzgY6/ofWR40HQnneX85xefvGjWsCLYAxgq+39OQpEHFaC/l
+         osspRAMc38pFIYbjtbXkvqzP2lr+6hu0Tc4yvc6kiO7KYNKCUzPTmAooT9911O1p1R
+         xxS/OHhG/OfVkPg6DcHufavsku3e/YJqEiT6VvWW7DB2MtCxpdhWeQknl4vbIrgZaZ
+         qVQxeKG7phAMWvOZOKmoJdcX3ytam+G2EEg/QFo5BZbMa2TimyVgqfI0nqQlsZPRbE
+         BEqO3N1Jlqnug==
+X-Nifty-SrcIP: [209.85.217.54]
+Received: by mail-vs1-f54.google.com with SMTP id u9so2851516vsp.6;
+        Thu, 02 Apr 2020 10:01:30 -0700 (PDT)
+X-Gm-Message-State: AGi0PubkUT6/Rcj4r7NU48cdqp0DT3rdsIwb51hFRHnG+jZ2+jDYFrU1
+        9SntwlBlmdZ+CznIOAX2ZUzEsVETYrexcnN4D08=
+X-Google-Smtp-Source: APiQypL4Rvy03M3ygmfpwsDxMy3+2fu8bl+1s8iqt4E7kRsuRDEYA0XDULMd7iH+08rmBTvCd8fPGu6VcrUOLgyYtAw=
+X-Received: by 2002:a67:33cb:: with SMTP id z194mr3175293vsz.155.1585846888868;
+ Thu, 02 Apr 2020 10:01:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jK3FR-0006aV-1o;;;mid=<87y2rdj00a.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18hSAi2LI9PMt3LObPzV1UKL1s8s/+J7FI=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.0857]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 316 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (3.7%), b_tie_ro: 10 (3.3%), parse: 1.22
-        (0.4%), extract_message_metadata: 3.2 (1.0%), get_uri_detail_list:
-        0.56 (0.2%), tests_pri_-1000: 8 (2.6%), tests_pri_-950: 1.92 (0.6%),
-        tests_pri_-900: 1.60 (0.5%), tests_pri_-90: 93 (29.6%), check_bayes:
-        91 (28.8%), b_tokenize: 11 (3.4%), b_tok_get_all: 6 (1.9%),
-        b_comp_prob: 2.6 (0.8%), b_tok_touch_all: 68 (21.6%), b_finish: 1.05
-        (0.3%), tests_pri_0: 171 (54.1%), check_dkim_signature: 0.65 (0.2%),
-        check_dkim_adsp: 2.5 (0.8%), poll_dns_idle: 0.32 (0.1%), tests_pri_10:
-        2.3 (0.7%), tests_pri_500: 9 (2.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v10 0/9] proc: modernize proc to support multiple private instances
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <202004020117.6E434C035@keescook>
+In-Reply-To: <202004020117.6E434C035@keescook>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 3 Apr 2020 02:00:52 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQGTAgtADfY4H-k8X1J9nTMeOWvo8ZFfrUSHQUbhgcLKw@mail.gmail.com>
+Message-ID: <CAK7LNAQGTAgtADfY4H-k8X1J9nTMeOWvo8ZFfrUSHQUbhgcLKw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: mkcompile_h: Include $LD version in /proc/version
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Kees,
 
-Overall this patchset looks good.
+On Thu, Apr 2, 2020 at 5:18 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> When doing Clang builds of the kernel, it is possible to link with
+> either ld.bfd (binutils) or ld.lld (LLVM), but it is not possible to
+> discover this from a running kernel. Add the "$LD -v" output to
+> /proc/version.
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  init/Makefile       | 2 +-
+>  scripts/mkcompile_h | 8 ++++++--
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/init/Makefile b/init/Makefile
+> index 6246a06364d0..82c15bdb42d7 100644
+> --- a/init/Makefile
+> +++ b/init/Makefile
+> @@ -35,4 +35,4 @@ include/generated/compile.h: FORCE
+>         @$($(quiet)chk_compile.h)
+>         $(Q)$(CONFIG_SHELL) $(srctree)/scripts/mkcompile_h $@   \
+>         "$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT)"    \
+> -       "$(CONFIG_PREEMPT_RT)" "$(CC) $(KBUILD_CFLAGS)"
+> +       "$(CONFIG_PREEMPT_RT)" "$(LD)" "$(CC) $(KBUILD_CFLAGS)"
+> diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
+> index 3a5a4b210c86..f98c07709370 100755
+> --- a/scripts/mkcompile_h
+> +++ b/scripts/mkcompile_h
+> @@ -6,7 +6,8 @@ ARCH=$2
+>  SMP=$3
+>  PREEMPT=$4
+>  PREEMPT_RT=$5
+> -CC=$6
+> +LD=$6
+> +CC=$7
 
-I have found a couple of nits.  The biggest is the potential ABI change.
-I would be surprised if someone is using the new mount ABI so changing
-that may not be a regression.  But it is worth a close look.
 
-One way or another I will ensure we get this in linux-next after the
-merge window closes.
+Just a nit.
 
-Eric
+If you just append 'LD',
+you do not need to touch the 'CC=$6' line.
+
+
+If you do not mind, I will fold the following
+on top of your patch.
+
+
+
+
+--- a/init/Makefile
++++ b/init/Makefile
+@@ -35,4 +35,4 @@ include/generated/compile.h: FORCE
+        @$($(quiet)chk_compile.h)
+        $(Q)$(CONFIG_SHELL) $(srctree)/scripts/mkcompile_h $@   \
+        "$(UTS_MACHINE)" "$(CONFIG_SMP)" "$(CONFIG_PREEMPT)"    \
+-       "$(CONFIG_PREEMPT_RT)" "$(LD)" "$(CC) $(KBUILD_CFLAGS)"
++       "$(CONFIG_PREEMPT_RT)" "$(CC) $(KBUILD_CFLAGS)" "$(LD)"
+diff --git a/scripts/mkcompile_h b/scripts/mkcompile_h
+index 8b38a96163e2..5b80a4699740 100755
+--- a/scripts/mkcompile_h
++++ b/scripts/mkcompile_h
+@@ -6,8 +6,8 @@ ARCH=$2
+ SMP=$3
+ PREEMPT=$4
+ PREEMPT_RT=$5
+-LD=$6
+-CC=$7
++CC=$6
++LD=$7
+
+
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
