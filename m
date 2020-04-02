@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9428219CA0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFB519CA00
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 21:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389108AbgDBTdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 15:33:12 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:46148 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729033AbgDBTdM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 15:33:12 -0400
-Received: by mail-ed1-f68.google.com with SMTP id cf14so5827617edb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 12:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VNVfYQcU5r7QqnygVgwbeTwWR3NWKnCIk7XJifmEK+g=;
-        b=WFRj2oMOOBQ9Ye/JZJICZujrvRy2hkbOR9uXKlMdFDvf9Q5Lq80wgWioeP0e0rs0oj
-         n0Wk/vH8ieHoUcWgLtyDYX5P7nJxjuAYNdlNyNknULgO81UVaZJ0LqdKLLefqzuqrqZf
-         RMdkwJXPuZPoAbZGgiU6xp+RQahaYFh5oXLKg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VNVfYQcU5r7QqnygVgwbeTwWR3NWKnCIk7XJifmEK+g=;
-        b=hJUbA6WWPUpTFFAEP2Kd7TpSl6r3vL5oV0fTTRf7jkKLHnA+lsxHTr05lzfjaBzDqD
-         midmDoGUVwyFK+15epjG0rmHLjRf5eg0ON7QVXvFTiElW1SCT1V7FuWBOL1wflod36J8
-         bTNXUUjaTMzbdh4jxdbvVaxgJyTAHdfx6gkeJY92d151z600Ljn8njLx8UPJHRIq+EZ2
-         QgZXrnn2sbtrODH04by/zfJwnj5j08W8qlMKdc8I5daXw455W0VsWFq9MCp8wXUNox+w
-         eZGCWwFMiJPWMywk9nfCIojoGMinLFAvygqkh+BoimqQixf0C6NxamotWlX5vOOUZMGG
-         0xpw==
-X-Gm-Message-State: AGi0Pub0fya7nc2XwaMBXW5GPwiXa8MqT5ah6MWL39BmMmE2eK0Fghd2
-        g0XFKZPF8DhJv45XbSdEGpL4XfnVhc0=
-X-Google-Smtp-Source: APiQypLxS5pFtPUKQVZk4pYmw/PxBOSX42WwV0hlHJ+biivDhGUbq1JxJ76sSchl4xOOlBuJmQgPTQ==
-X-Received: by 2002:a05:6402:17a7:: with SMTP id j7mr4646605edy.334.1585855988524;
-        Thu, 02 Apr 2020 12:33:08 -0700 (PDT)
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
-        by smtp.gmail.com with ESMTPSA id d23sm1246832ejk.26.2020.04.02.12.33.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 12:33:08 -0700 (PDT)
-Received: by mail-wr1-f47.google.com with SMTP id c7so5639304wrx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 12:33:08 -0700 (PDT)
-X-Received: by 2002:a2e:8911:: with SMTP id d17mr2938169lji.16.1585855628859;
- Thu, 02 Apr 2020 12:27:08 -0700 (PDT)
+        id S2389678AbgDBTbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 15:31:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36936 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389108AbgDBTbP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 15:31:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A8C07AEC2;
+        Thu,  2 Apr 2020 19:31:13 +0000 (UTC)
+From:   Anthony Iliopoulos <ailiop@suse.com>
+To:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nvmet: add revalidation support to bdev and file backed namespaces
+Date:   Thu,  2 Apr 2020 21:30:52 +0200
+Message-Id: <20200402193052.19935-1-ailiop@suse.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <27106d62fdbd4ffb47796236050e418131cb837f.1585811416.git.christophe.leroy@c-s.fr>
- <20200402162942.GG23230@ZenIV.linux.org.uk> <67e21b65-0e2d-7ca5-7518-cec1b7abc46c@c-s.fr>
- <20200402175032.GH23230@ZenIV.linux.org.uk> <202004021132.813F8E88@keescook>
-In-Reply-To: <202004021132.813F8E88@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Apr 2020 12:26:52 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg9cSm=AjPmkasNHBDwuW4D10jszjv6EeCKp8V9Qbx2hg@mail.gmail.com>
-Message-ID: <CAHk-=wg9cSm=AjPmkasNHBDwuW4D10jszjv6EeCKp8V9Qbx2hg@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/4] uaccess: Add user_read_access_begin/end and user_write_access_begin/end
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Anvin <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 11:36 AM Kees Cook <keescook@chromium.org> wrote:
->
-> Yup, I think it's a weakness of the ARM implementation and I'd like to
-> not extend it further. AFAIK we should never nest, but I would not be
-> surprised at all if we did.
+Add support for detecting capacity changes on nvmet blockdev and file
+backed namespaces. This allows for emulating and testing online resizing
+of nvme devices and filesystems on top.
 
-Wel, at least the user_access_begin/end() sections can't nest. objtool
-verifies and warns about that on x86.
+Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
+---
+ drivers/nvme/target/admin-cmd.c   |  5 +++++
+ drivers/nvme/target/io-cmd-bdev.c | 10 ++++++++++
+ drivers/nvme/target/io-cmd-file.c | 14 ++++++++++++++
+ drivers/nvme/target/nvmet.h       |  2 ++
+ 4 files changed, 31 insertions(+)
 
-> If we were looking at a design goal for all architectures, I'd like
-> to be doing what the public PaX patchset
+diff --git a/drivers/nvme/target/admin-cmd.c b/drivers/nvme/target/admin-cmd.c
+index 9d6f75cfa77c..4c79aa804887 100644
+--- a/drivers/nvme/target/admin-cmd.c
++++ b/drivers/nvme/target/admin-cmd.c
+@@ -486,6 +486,11 @@ static void nvmet_execute_identify_ns(struct nvmet_req *req)
+ 	if (!ns)
+ 		goto done;
+ 
++	if (ns->bdev)
++		nvmet_bdev_ns_revalidate(ns);
++	else
++		nvmet_file_ns_revalidate(ns);
++
+ 	/*
+ 	 * nuse = ncap = nsze isn't always true, but we have no way to find
+ 	 * that out from the underlying device.
+diff --git a/drivers/nvme/target/io-cmd-bdev.c b/drivers/nvme/target/io-cmd-bdev.c
+index ea0e596be15d..1f8c00d68aa9 100644
+--- a/drivers/nvme/target/io-cmd-bdev.c
++++ b/drivers/nvme/target/io-cmd-bdev.c
+@@ -75,6 +75,16 @@ void nvmet_bdev_ns_disable(struct nvmet_ns *ns)
+ 	}
+ }
+ 
++void nvmet_bdev_ns_revalidate(struct nvmet_ns *ns)
++{
++	loff_t size;
++
++	size = i_size_read(ns->bdev->bd_inode);
++
++	if (ns->size != size)
++		ns->size = size;
++}
++
+ static u16 blk_to_nvme_status(struct nvmet_req *req, blk_status_t blk_sts)
+ {
+ 	u16 status = NVME_SC_SUCCESS;
+diff --git a/drivers/nvme/target/io-cmd-file.c b/drivers/nvme/target/io-cmd-file.c
+index cd5670b83118..c102437db72a 100644
+--- a/drivers/nvme/target/io-cmd-file.c
++++ b/drivers/nvme/target/io-cmd-file.c
+@@ -80,6 +80,20 @@ int nvmet_file_ns_enable(struct nvmet_ns *ns)
+ 	return ret;
+ }
+ 
++void nvmet_file_ns_revalidate(struct nvmet_ns *ns)
++{
++	struct kstat stat;
++
++	if (!ns->file)
++		return;
++
++	if (vfs_getattr(&ns->file->f_path,
++			&stat, STATX_SIZE, AT_STATX_FORCE_SYNC))
++		return;
++
++	ns->size = stat.size;
++}
++
+ static void nvmet_file_init_bvec(struct bio_vec *bv, struct scatterlist *sg)
+ {
+ 	bv->bv_page = sg_page(sg);
+diff --git a/drivers/nvme/target/nvmet.h b/drivers/nvme/target/nvmet.h
+index 421dff3ea143..8b479d932a7b 100644
+--- a/drivers/nvme/target/nvmet.h
++++ b/drivers/nvme/target/nvmet.h
+@@ -498,6 +498,8 @@ void nvmet_file_ns_disable(struct nvmet_ns *ns);
+ u16 nvmet_bdev_flush(struct nvmet_req *req);
+ u16 nvmet_file_flush(struct nvmet_req *req);
+ void nvmet_ns_changed(struct nvmet_subsys *subsys, u32 nsid);
++void nvmet_bdev_ns_revalidate(struct nvmet_ns *ns);
++void nvmet_file_ns_revalidate(struct nvmet_ns *ns);
+ 
+ static inline u32 nvmet_rw_len(struct nvmet_req *req)
+ {
+-- 
+2.26.0
 
-We already do better than PaX ever did. Seriously. Mainline has long
-since passed their hacky garbage.
-
-Plus PaX  and grsecurity should be actively shunned. Don't look at it,
-don't use it, and tell everybody you know to not use that shit.
-
-                Linus
