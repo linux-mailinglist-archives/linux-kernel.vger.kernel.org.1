@@ -2,161 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F87C19C124
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 14:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830C619C19B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388182AbgDBMdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 08:33:12 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:45786 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729166AbgDBMdJ (ORCPT
+        id S2388457AbgDBNBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:01:25 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:37719 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729166AbgDBNBY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 08:33:09 -0400
-Received: by mail-lf1-f65.google.com with SMTP id f8so1188458lfe.12;
-        Thu, 02 Apr 2020 05:33:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3oNMXTSVy6jGvNXMWanVwf0wUd7Pg4Fz/TBszTFSFfc=;
-        b=OlZDoiBaVRrpoMJPay8t+WC3BkVs+tt0VdHzuxgyBkOT2r6MXRPRUR9UJ0//vbVKNv
-         bEWbizoTcF9IbGwXwBzEr1QZyX42bIzYKshqx8sGRId4dnGSWFNjOMFTdV+0eMME1DeS
-         lYCWaeujh92t6PK/3Saxj2ffSYTY4/ZZBTKMOL0xLNZmbDxsjz/5dRkjX5SNfaze+KzJ
-         ldQi7LMb+Vdz9SLtHsf0gYNmjpqxfasnvbKtbTT1gU9kBstPflxXVihIlY4I+vOBFCD1
-         U/iR2GDM7Evm8MoRLlRmY/qJT3D7jJ8P6GzScjGq7s1zwoZi/mj/jeDNjd0el+pgyDeT
-         gfag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3oNMXTSVy6jGvNXMWanVwf0wUd7Pg4Fz/TBszTFSFfc=;
-        b=b+P34095/3h7tbasqK2wJdrme7qW2xljOInoY8Xw0ksiyl02/Gtwi1hVHus1uUK0Nb
-         JOMwhwtEG+fkNds+gfd3q4W/hFdSIUN5XZRPIpod9sq8o5hyjG+8YDAYcOUHLnE0tvtv
-         j+LbxZTwjszE7/juOoCrvPUUldI3RetpAccyvtT+YkWKcU4u2DF6H3NiOnZLGBI1LF60
-         lrST1uFkDxGOf6m+yKS8zzA2uLZ8j6Hbfpo8p4fGXSfxEhpQ/5nOy6Qo2Ve/M0w3BDnl
-         51+EstOygCvJ3cEOt4kgMYcTtZSMFNV3MFfzbKU87BQRSRW24C1vjOHzz05MmVGTgVx5
-         85Yg==
-X-Gm-Message-State: AGi0Pua8r+3Vfsl+fHquVaF2HmimtXwh3QzsYzrAO6stxQLlWvJkIpoS
-        Qhv6YUqLgzBue5K1J33Ql+TBEWE+FRs=
-X-Google-Smtp-Source: APiQypKnYbGd+eszPt18ZrxvAEAYuoPzYQvfhiUJdasXhLB4S4rCjVPMPTpyxWOGOWWeRpXnluqc0Q==
-X-Received: by 2002:a05:6512:3f4:: with SMTP id n20mr1966754lfq.185.1585830785323;
-        Thu, 02 Apr 2020 05:33:05 -0700 (PDT)
-Received: from pc636.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id u25sm3833494lfo.71.2020.04.02.05.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 05:33:04 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     RCU <rcu@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 3/3] lib/test_vmalloc.c: introduce two new test cases
-Date:   Thu,  2 Apr 2020 14:32:53 +0200
-Message-Id: <20200402123253.10382-3-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200402123253.10382-1-urezki@gmail.com>
-References: <20200402123253.10382-1-urezki@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 2 Apr 2020 09:01:24 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jJzSt-0004Fu-Ig; Thu, 02 Apr 2020 15:00:59 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id E2104FFAA7;
+        Thu,  2 Apr 2020 15:00:58 +0200 (CEST)
+Message-Id: <20200402123258.895628824@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Thu, 02 Apr 2020 14:32:58 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Kenneth R. Crudup" <kenny@panix.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: [patch 0/2] x86: Prevent Split-Lock-Detection wreckage on VMX hypervisors
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce two more test cases which are specific for RCU
-freeing of vmalloc pointer. One test case is for object
-that has rcu_head inside and second one is for headless
-testing.
+Kenneth reported that a VMWare guest crashes in the VMWare BIOS due to a
+Split-Lock induced #AC which is injected by the VMWare hypervisor into the
+guest.
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- lib/test_vmalloc.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+While this is a good thing in principle, it's not really practical.
+That means that Split-Lock-Detection has to be disabled when any
+unprepared VMX hypervisor is loaded.
 
-diff --git a/lib/test_vmalloc.c b/lib/test_vmalloc.c
-index 8bbefcaddfe8..1734ba7fc400 100644
---- a/lib/test_vmalloc.c
-+++ b/lib/test_vmalloc.c
-@@ -15,6 +15,7 @@
- #include <linux/delay.h>
- #include <linux/rwsem.h>
- #include <linux/mm.h>
-+#include <linux/rcupdate.h>
- 
- #define __param(type, name, init, msg)		\
- 	static type name = init;				\
-@@ -43,6 +44,8 @@ __param(int, run_test_mask, INT_MAX,
- 		"\t\tid: 32,  name: random_size_align_alloc_test\n"
- 		"\t\tid: 64,  name: align_shift_alloc_test\n"
- 		"\t\tid: 128, name: pcpu_alloc_test\n"
-+		"\t\tid: 256, name: kvfree_rcu_with_head_test\n"
-+		"\t\tid: 512, name: kvfree_rcu_head_less_test\n"
- 		/* Add a new test case description here. */
- );
- 
-@@ -328,6 +331,49 @@ pcpu_alloc_test(void)
- 	return rv;
- }
- 
-+struct test_kvfree_rcu {
-+	struct rcu_head rcu;
-+	unsigned char array[100];
-+};
-+
-+static int
-+kvfree_rcu_with_head_test(void)
-+{
-+	struct test_kvfree_rcu *p;
-+	int i;
-+
-+	for (i = 0; i < test_loop_count; i++) {
-+		p = vmalloc(1 * PAGE_SIZE);
-+
-+		if (!p)
-+			return -1;
-+
-+		p->array[0] = 'a';
-+		kvfree_rcu(p, rcu);
-+	}
-+
-+	return 0;
-+}
-+
-+static int
-+kvfree_rcu_head_less_test(void)
-+{
-+	struct test_kvfree_rcu *p;
-+	int i;
-+
-+	for (i = 0; i < test_loop_count; i++) {
-+		p = vmalloc(1 * PAGE_SIZE);
-+
-+		if (!p)
-+			return -1;
-+
-+		p->array[0] = 'a';
-+		kvfree_rcu(p);
-+	}
-+
-+	return 0;
-+}
-+
- struct test_case_desc {
- 	const char *test_name;
- 	int (*test_func)(void);
-@@ -342,6 +388,8 @@ static struct test_case_desc test_case_array[] = {
- 	{ "random_size_align_alloc_test", random_size_align_alloc_test },
- 	{ "align_shift_alloc_test", align_shift_alloc_test },
- 	{ "pcpu_alloc_test", pcpu_alloc_test },
-+	{ "kvfree_rcu_with_head_test", kvfree_rcu_with_head_test },
-+	{ "kvfree_rcu_head_less_test", kvfree_rcu_head_less_test },
- 	/* Add a new test case here. */
- };
- 
--- 
-2.20.1
+As hypervisor modules are not really identifiable, the only safe solution
+we came up with is to scan the module text at load time for a VMLAUNCH
+instruction. If VMLAUNCH is found then Split-Lock-Detection is disabled on
+the host to prevent the above. If the hypervisor has at least minimal
+handling code, the module can tell the kernel by adding MOD_INFO(sld_safe,
+"Y") which disables the text scan.
+
+For KVM it's simple enough to handle it at least at the basic level by
+checking guest CR0.AM and EFLAGS.AC state and a trivial host side
+handler which depending on the SLD mode handles it gracefully or tells
+the VMX handler to deliver the #AC to user space which then can crash
+and burn itself.
+
+As Peter and myself don't have access to a SLD enabled machine, the
+KVM/VMX part is untested. The module scan part works.
+
+Alternatively we can obviously revert SLD, but that does not make the
+problem vs. out of tree hypervisors go away magically. So we can just
+get over it now.
+
+Thanks,
+
+	tglx
+
+
 
