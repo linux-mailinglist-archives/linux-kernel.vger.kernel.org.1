@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B1719C3BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEF819C3CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388377AbgDBOOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:14:44 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55497 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732446AbgDBOOn (ORCPT
+        id S1732602AbgDBOR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:17:29 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:33362 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731783AbgDBOR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:14:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585836882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jHomtIlfVWCjz0uqN5tmjf5fA1sQAGrA5th4ZK/FkAU=;
-        b=cuX86C/a120lvfm63jNnZRIB4mcW1LHqbj7OC1tbBMk6dxVYNYzk4jsONk97naTx363Wxh
-        XGKQnK7c090YpVWMi5wNXLerWGfPOQ2aIU5fKg76MPrKjNvsD6UbQCq051pHKP3j6JmIMo
-        E2+iyNeUCgMaqIWSA/3J7pcnIFqX/LQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-1BusTZ8oOt2-QFfQoMK6lw-1; Thu, 02 Apr 2020 10:14:38 -0400
-X-MC-Unique: 1BusTZ8oOt2-QFfQoMK6lw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AFCDC800D50;
-        Thu,  2 Apr 2020 14:14:34 +0000 (UTC)
-Received: from ws.net.home (unknown [10.40.194.51])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 39C1899E16;
-        Thu,  2 Apr 2020 14:14:27 +0000 (UTC)
-Date:   Thu, 2 Apr 2020 16:14:24 +0200
-From:   Karel Zak <kzak@redhat.com>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux NFS list <linux-nfs@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-ext4@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Christian Brauner <christian@brauner.io>,
-        Jann Horn <jannh@google.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Jeff Layton <jlayton@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] VFS: Filesystem information [ver #19]
-Message-ID: <20200402141424.3zyphot2kjf5vaoo@ws.net.home>
-References: <158454408854.2864823.5910520544515668590.stgit@warthog.procyon.org.uk>
- <CAJfpeguaiicjS2StY5m=8H7BCjq6PLxMsWE3Mx_jYR1foDWVTg@mail.gmail.com>
- <50caf93782ba1d66bd6acf098fb8dcb0ecc98610.camel@themaw.net>
- <CAJfpegvvMVoNp1QeXEZiNucCeuUeDP4tKqVfq2F4koQKzjKmvw@mail.gmail.com>
- <2465266.1585729649@warthog.procyon.org.uk>
- <CAJfpegsyeJmH3zJuseaAAY06fzgavSzpOtYr-1Mw8GR0cLcQbA@mail.gmail.com>
- <459876eceda4bc68212faf4ed3d4bcb8570aa105.camel@themaw.net>
+        Thu, 2 Apr 2020 10:17:28 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jK0es-0003sC-5r; Thu, 02 Apr 2020 08:17:26 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jK0en-0002Mh-AX; Thu, 02 Apr 2020 08:17:25 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Jann Horn <jannh@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Adam Zabrocki <pi3@pi3.com.pl>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable <stable@vger.kernel.org>
+References: <20200324215049.GA3710@pi3.com.pl> <202003291528.730A329@keescook>
+        <87zhbvlyq7.fsf_-_@x220.int.ebiederm.org>
+        <CAG48ez1dCPw9Dep-+GWn=SnHv1nVv4Npv1FpFxmomk6tmazB-g@mail.gmail.com>
+Date:   Thu, 02 Apr 2020 09:14:38 -0500
+In-Reply-To: <CAG48ez1dCPw9Dep-+GWn=SnHv1nVv4Npv1FpFxmomk6tmazB-g@mail.gmail.com>
+        (Jann Horn's message of "Thu, 2 Apr 2020 06:46:49 +0200")
+Message-ID: <87y2rekm9d.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <459876eceda4bc68212faf4ed3d4bcb8570aa105.camel@themaw.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-XM-SPF: eid=1jK0en-0002Mh-AX;;;mid=<87y2rekm9d.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19aHVbkFFXhJEzKOhX85KQe0ZY2f9JbahM=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4764]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Jann Horn <jannh@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4401 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 4.4 (0.1%), b_tie_ro: 3.1 (0.1%), parse: 0.99
+        (0.0%), extract_message_metadata: 12 (0.3%), get_uri_detail_list: 1.37
+        (0.0%), tests_pri_-1000: 10 (0.2%), tests_pri_-950: 0.98 (0.0%),
+        tests_pri_-900: 0.80 (0.0%), tests_pri_-90: 300 (6.8%), check_bayes:
+        298 (6.8%), b_tokenize: 4.6 (0.1%), b_tok_get_all: 224 (5.1%),
+        b_comp_prob: 1.51 (0.0%), b_tok_touch_all: 65 (1.5%), b_finish: 0.78
+        (0.0%), tests_pri_0: 166 (3.8%), check_dkim_signature: 0.37 (0.0%),
+        check_dkim_adsp: 2.2 (0.0%), poll_dns_idle: 3894 (88.5%),
+        tests_pri_10: 1.77 (0.0%), tests_pri_500: 3901 (88.7%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: [PATCH] signal: Extend exec_id to 64bits
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 09:38:20AM +0800, Ian Kent wrote:
-> I prefer the system call interface and I'm not offering justification
-> for that other than a general dislike (and on occasion outright
-> frustration) of pretty much every proc implementation I have had to
-> look at.
+Jann Horn <jannh@google.com> writes:
 
-Frankly, I'm modest, what about to have both interfaces in kernel --
-fsinfo() as well mountfs? It's nothing unusual for example for block
-devices to have attribute accessible by /sys as well as by ioctl().
+> On Wed, Apr 1, 2020 at 10:50 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>> Replace the 32bit exec_id with a 64bit exec_id to make it impossible
+>> to wrap the exec_id counter.  With care an attacker can cause exec_id
+>> wrap and send arbitrary signals to a newly exec'd parent.  This
+>> bypasses the signal sending checks if the parent changes their
+>> credentials during exec.
+>>
+>> The severity of this problem can been seen that in my limited testing
+>> of a 32bit exec_id it can take as little as 19s to exec 65536 times.
+>> Which means that it can take as little as 14 days to wrap a 32bit
+>> exec_id.  Adam Zabrocki has succeeded wrapping the self_exe_id in 7
+>> days.  Even my slower timing is in the uptime of a typical server.
+>
+> FYI, if you actually optimize this, it's more like 12s to exec 1048576
+> times according to my test, which means ~14 hours for 2^32 executions
+> (on a single core). That's on an i7-4790 (a Haswell desktop processor
+> that was launched about six years ago, in 2014).
 
-I can imagine that for complex task or performance sensitive tasks
-it's better to use fsinfo(), but in another simple use-cases (for
-example to convert mountpoint to device name in shell) is better to
-read /proc/.../<atrtr>.
+Half a day.  I am not at all surprised, but it is good to know it can
+take so little time.
 
-    Karel
-
--- 
- Karel Zak  <kzak@redhat.com>
- http://karelzak.blogspot.com
-
+Eric
