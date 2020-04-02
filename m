@@ -2,113 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD3919C3E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E826619C3F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730837AbgDBOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:23:32 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39182 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgDBOXc (ORCPT
+        id S1732530AbgDBOY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:24:29 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:48662 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731579AbgDBOY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:23:32 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EHaJY116789;
-        Thu, 2 Apr 2020 14:22:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=LchWqkCOvF0iI3Yl4nkkvqVWjHv0QHY1T2lFYjYjdcw=;
- b=Y9FN2y8MisgEEiZItb8CmzjzDaHhEqld0nB75MP1jEXtGSyK/PGbaoHOc2EnXJeuYpQW
- XBRvK28hNv4kuyWgSCGyrsm6izqD256/TC9PnwApQtovmSJBIkxvsCmbr6kvxHVJUOfD
- jiqAYfnL74d1rbPXNPeFnbL+p6jt18sK+TbbStPOdDQkwYgJDO0rGeqUypmBV5Tr23HX
- VaBbt25U5YjUq3VOvOnS6+OCEEtQW5GJLHDGJERXEzmzErY9HJ1ppHoWb3fI9iZsHJp6
- l/5aem7vJunzTzZT72GB1xG3TgLsR7PaXrZzlLkgPiUfo9eDcav1cYIRgfh11uP6eZfA ag== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 303cevbqyc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 14:22:48 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032EH9YO121714;
-        Thu, 2 Apr 2020 14:22:48 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 304sjpmpn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 14:22:47 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032EMjNn028738;
-        Thu, 2 Apr 2020 14:22:45 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 07:22:44 -0700
-Date:   Thu, 2 Apr 2020 17:22:37 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Rui Miguel Silva <rmfrfs@gmail.com>
-Cc:     devel@driverdev.osuosl.org, elder@kernel.org,
-        Chen Zhou <chenzhou10@huawei.com>, gregkh@linuxfoundation.org,
-        johan@kernel.org, linux-kernel@vger.kernel.org,
-        greybus-dev@lists.linaro.org
-Subject: Re: [PATCH -next] staging: greybus: fix a missing-check bug in
- gb_lights_light_config()
-Message-ID: <20200402142237.GT2001@kadam>
-References: <20200401030017.100274-1-chenzhou10@huawei.com>
- <20200402122228.GP2001@kadam>
- <20200402131618.653dkeuz7c2vuujf@arch-thunder.localdomain>
+        Thu, 2 Apr 2020 10:24:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585837469;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5mYSo22iWcFqA/r6k/de5Mv2kT9DwYwYj/Ezb0Wvqxk=;
+        b=Zt8tfbGGVIGMKWix3Aswo+JPqLi8w7D4sCZR3q+ZQgjzc/kvRit6kfNK1JBEo5Hpsr5KhU
+        1WHYE/tgeJTa8hMAW21CUKXXTj4O5hFJXvQGeS9iYC/Xq76UI2/WbML02Cn7x9XVaOetxF
+        JHUiCY12MKAoxFl50DOPFza0wHBuULI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-oMzpdL5KPNC8pTQTYyXmrw-1; Thu, 02 Apr 2020 10:24:24 -0400
+X-MC-Unique: oMzpdL5KPNC8pTQTYyXmrw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B17D5805733;
+        Thu,  2 Apr 2020 14:24:21 +0000 (UTC)
+Received: from [10.72.12.172] (ovpn-12-172.pek2.redhat.com [10.72.12.172])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A4675D9C9;
+        Thu,  2 Apr 2020 14:24:00 +0000 (UTC)
+Subject: Re: [PATCH V9 1/9] vhost: refine vhost and vringh kconfig
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        jgg@mellanox.com, maxime.coquelin@redhat.com,
+        cunming.liang@intel.com, zhihong.wang@intel.com,
+        rob.miller@broadcom.com, xiao.w.wang@intel.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        parav@mellanox.com, kevin.tian@intel.com, stefanha@redhat.com,
+        rdunlap@infradead.org, hch@infradead.org, aadam@redhat.com,
+        jiri@mellanox.com, shahafs@mellanox.com, hanand@xilinx.com,
+        mhabets@solarflare.com, gdawar@xilinx.com, saugatm@xilinx.com,
+        vmireyno@marvell.com, zhangweining@ruijie.com.cn
+References: <20200326140125.19794-1-jasowang@redhat.com>
+ <20200326140125.19794-2-jasowang@redhat.com>
+ <20200401092004-mutt-send-email-mst@kernel.org>
+ <6b4d169a-9962-6014-5423-1507059343e9@redhat.com>
+ <20200401100954-mutt-send-email-mst@kernel.org>
+ <3dd3b7e7-e3d9-dba4-00fc-868081f95ab7@redhat.com>
+ <20200401120643-mutt-send-email-mst@kernel.org>
+ <c11c2195-88eb-2096-af47-40f2da5b389f@redhat.com>
+ <20200402100257-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <279ed96c-5331-9da6-f9c1-b49e87d49c31@redhat.com>
+Date:   Thu, 2 Apr 2020 22:23:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402131618.653dkeuz7c2vuujf@arch-thunder.localdomain>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
- suspectscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020130
+In-Reply-To: <20200402100257-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 02:16:18PM +0100, Rui Miguel Silva wrote:
-> > > --- a/drivers/staging/greybus/light.c
-> > > +++ b/drivers/staging/greybus/light.c
-> > > @@ -1026,7 +1026,8 @@ static int gb_lights_light_config(struct gb_lights *glights, u8 id)
-> > >  
-> > >  	light->channels_count = conf.channel_count;
-> > >  	light->name = kstrndup(conf.name, NAMES_MAX, GFP_KERNEL);
-> > > -
-> > > +	if (!light->name)
-> > > +		return -ENOMEM;
-> > >  	light->channels = kcalloc(light->channels_count,
-> > >  				  sizeof(struct gb_channel), GFP_KERNEL);
-> > >  	if (!light->channels)
-> > 
-> > The clean up in this function is non-existant.  :(
-> 
-> Yeah, this have a central point to do the cleanups, gb_lights_release,
-> since we may have other lights already configured at this point, we
-> could cleanup this specific one here, but than would need to make sure
-> all other already configure got clean also.
 
-Central clean up functions never work correctly.
+On 2020/4/2 =E4=B8=8B=E5=8D=8810:03, Michael S. Tsirkin wrote:
+> On Thu, Apr 02, 2020 at 11:22:57AM +0800, Jason Wang wrote:
+>> On 2020/4/2 =E4=B8=8A=E5=8D=8812:08, Michael S. Tsirkin wrote:
+>>> On Wed, Apr 01, 2020 at 10:29:32PM +0800, Jason Wang wrote:
+>>>> >From 9b3a5d23b8bf6b0a11e65e688335d782f8e6aa5c Mon Sep 17 00:00:00 2=
+001
+>>>> From: Jason Wang <jasowang@redhat.com>
+>>>> Date: Wed, 1 Apr 2020 22:17:27 +0800
+>>>> Subject: [PATCH] vhost: let CONFIG_VHOST to be selected by drivers
+>>>>
+>>>> The defconfig on some archs enable vhost_net or vhost_vsock by
+>>>> default. So instead of adding CONFIG_VHOST=3Dm to all of those files=
+,
+>>>> simply letting CONFIG_VHOST to be selected by all of the vhost
+>>>> drivers. This fixes the build on the archs with CONFIG_VHOST_NET=3Dm=
+ in
+>>>> their defconfig.
+>>>>
+>>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>>>> ---
+>>>>    drivers/vhost/Kconfig | 15 +++++++++++----
+>>>>    1 file changed, 11 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/drivers/vhost/Kconfig b/drivers/vhost/Kconfig
+>>>> index 2523a1d4290a..362b832f5338 100644
+>>>> --- a/drivers/vhost/Kconfig
+>>>> +++ b/drivers/vhost/Kconfig
+>>>> @@ -11,19 +11,23 @@ config VHOST_RING
+>>>>    	  This option is selected by any driver which needs to access
+>>>>    	  the host side of a virtio ring.
+>>>> -menuconfig VHOST
+>>>> -	tristate "Host kernel accelerator for virtio (VHOST)"
+>>>> -	depends on EVENTFD
+>>>> +config VHOST
+>>>> +	tristate
+>>>>    	select VHOST_IOTLB
+>>>>    	help
+>>>>    	  This option is selected by any driver which needs to access
+>>>>    	  the core of vhost.
+>>>> -if VHOST
+>>>> +menuconfig VHOST_MENU
+>>>> +	bool "VHOST drivers"
+>>>> +	default y
+>>>> +
+>>>> +if VHOST_MENU
+>>>>    config VHOST_NET
+>>>>    	tristate "Host kernel accelerator for virtio net"
+>>>>    	depends on NET && EVENTFD && (TUN || !TUN) && (TAP || !TAP)
+>>>> +	select VHOST
+>>>>    	---help---
+>>>>    	  This kernel module can be loaded in host kernel to accelerate
+>>>>    	  guest networking with virtio_net. Not to be confused with virt=
+io_net
+>>>> @@ -35,6 +39,7 @@ config VHOST_NET
+>>>>    config VHOST_SCSI
+>>>>    	tristate "VHOST_SCSI TCM fabric driver"
+>>>>    	depends on TARGET_CORE && EVENTFD
+>>>> +	select VHOST
+>>>>    	default n
+>>>>    	---help---
+>>>>    	Say M here to enable the vhost_scsi TCM fabric module
+>>>> @@ -43,6 +48,7 @@ config VHOST_SCSI
+>>>>    config VHOST_VSOCK
+>>>>    	tristate "vhost virtio-vsock driver"
+>>>>    	depends on VSOCKETS && EVENTFD
+>>>> +	select VHOST
+>>>>    	select VIRTIO_VSOCKETS_COMMON
+>>>>    	default n
+>>>>    	---help---
+>>>> @@ -56,6 +62,7 @@ config VHOST_VSOCK
+>>>>    config VHOST_VDPA
+>>>>    	tristate "Vhost driver for vDPA-based backend"
+>>>>    	depends on EVENTFD
+>>>> +	select VHOST
+>>
+>> This part is not squashed.
+>>
+>>
+>>>>    	select VDPA
+>>>>    	help
+>>>>    	  This kernel module can be loaded in host kernel to accelerate
+>>> OK so I squashed this into the original buggy patch.
+>>> Could you please play with vhost branch of my tree on various
+>>> arches? If it looks ok to you let me know I'll push
+>>> this to next.
+>>
+>> With the above part squashed. I've tested all the archs whose defconfi=
+g have
+>> VHOST_NET or VHOST_VSOCK enabled.
+>>
+>> All looks fine.
+>>
+>> Thanks
+>
+> I'm a bit confused. So is the next tag in my tree ok now?
 
-For example, we allocate "cdev->name" in gb_lights_channel_config()
-before we register the channel later in gb_lights_register_all(glights);.
-Now imagine that the register fails.  Then when we're freeing it in
-__gb_lights_led_unregister() we see that the ->is_registered is false
-so we don't kfree(cdev->name).
 
-That's just a small memory leak.  But there are going to be tons of
-little bugs like that.
+Still need to select CONFIG_VHOST for=C2=A0 CONFIG_VHOST_VDPA. Others are=
+ ok.
 
-Anyway it doesn't affect this patch so it's fine.
+Thanks
 
-regards,
-dan carpenter
+
+>
 
