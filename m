@@ -2,128 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA55819C032
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B345919C037
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388115AbgDBLa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 07:30:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:36888 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388086AbgDBLa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 07:30:59 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032BSIpE015369;
-        Thu, 2 Apr 2020 11:30:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=7o0FVYwJwkPoxE1Cw1mXQzPgG4H99LYFk/EWX3dnUwI=;
- b=A2OPctM+5Z1X/yUJSCs71WpzoQHomIEDXP8QxdOvr7R9DuTiAsgMq7/zyiilSl/iKSFC
- 5T6LIrZRb68xqMI5bAHGBa592kG5L3hNAAHNTNlV7geGahDiJXtp8GNmX9iygrh2IXwV
- xJoR5K3kRMYDo+F+duejELE4bgbaGEN0DZroe49TuYOcfQCRaDgG6YYjYUDNo6Jsu9o7
- PNRb9npVQ5l+CTI9+urhh4HkgvWoGnbQ/tkk7lYYdCDpfUCwYIHSkuBdV+LvavyRcKqo
- 8me7wmjoDXM/I33zVyHtEN1sUjbLJjqcjuTcD5u0I7QH3Me4t/k8zEsDX/128qartOur Eg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 303yundc29-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 11:30:53 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032BQvwn147884;
-        Thu, 2 Apr 2020 11:28:52 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 302g2jd5wu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 11:28:52 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032BSmYq009917;
-        Thu, 2 Apr 2020 11:28:48 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 04:28:48 -0700
-Date:   Thu, 2 Apr 2020 14:28:41 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Jan Engelhardt <jengelh@inai.de>
-Cc:     kbuild-all@lists.01.org, rafael.j.wysocki@intel.com,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] acpica: clear global_lock bits at FACS initialization
-Message-ID: <20200402112712.GN2001@kadam>
+        id S2388139AbgDBLcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 07:32:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53158 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388001AbgDBLck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 07:32:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B6E05ACAE;
+        Thu,  2 Apr 2020 11:32:37 +0000 (UTC)
+Message-ID: <88456b80396331814fca9c929c2129861aaa35bd.camel@suse.de>
+Subject: Re: [PATCH v6 2/4] firmware: raspberrypi: Introduce vl805 init
+ routine
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-usb@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org,
+        tim.gover@raspberrypi.org, linux-pci@vger.kernel.org,
+        wahrenst@gmx.net, sergei.shtylyov@cogentembedded.com
+Date:   Thu, 02 Apr 2020 13:32:35 +0200
+In-Reply-To: <20200401203717.GA131226@google.com>
+References: <20200401203717.GA131226@google.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-FiRA9H8TcBeXjrnKFyig"
+User-Agent: Evolution 3.34.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200330085852.31328-1-jengelh@inai.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
- adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020104
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9578 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020104
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan,
 
-url:    https://github.com/0day-ci/linux/commits/Jan-Engelhardt/acpica-clear-global_lock-bits-at-FACS-initialization/20200330-183705
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
+--=-FiRA9H8TcBeXjrnKFyig
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Hi Bjorn,
+thanks for taking time with this.
 
-smatch warnings:
-drivers/acpi/acpica/tbutils.c:60 acpi_tb_initialize_facs() error: uninitialized symbol 'facs'.
+On Wed, 2020-04-01 at 15:37 -0500, Bjorn Helgaas wrote:
+> On Tue, Mar 24, 2020 at 07:28:10PM +0100, Nicolas Saenz Julienne wrote:
+> > On the Raspberry Pi 4, after a PCI reset, VL805's firmware may either b=
+e
+> > loaded directly from an EEPROM or, if not present, by the SoC's
+> > VideCore. The function informs VideCore that VL805 was just reset, or
+> > requests for a probe defer.
+>=20
+> Cover letter mentions both "VideCore" and "VideoCore".  I dunno which
+> is correct, but between the commit log and the comment, this patch
+> mentions "VideCore" four times.
 
-# https://github.com/0day-ci/linux/commit/cc0fd9e263391ff230ac700aa76dbcf7195c8c42
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout cc0fd9e263391ff230ac700aa76dbcf7195c8c42
-vim +/facs +60 drivers/acpi/acpica/tbutils.c
+Ouch, sorry, it's VideoCore. I have an auto complete thing, wrote it once w=
+rong
+and polluted the whole patch.
 
-009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  35  acpi_status acpi_tb_initialize_facs(void)
-009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  36  {
-7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  37  	struct acpi_table_facs *facs;
-009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  38  
-22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  39  	/* If Hardware Reduced flag is set, there is no FACS */
-22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  40  
-22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  41  	if (acpi_gbl_reduced_hardware) {
-22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  42  		acpi_gbl_FACS = NULL;
-22e5b40ab21fca drivers/acpi/acpica/tbutils.c Bob Moore      2011-11-16  43  		return (AE_OK);
-8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  44  	} else if (acpi_gbl_FADT.Xfacs &&
-8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  45  		   (!acpi_gbl_FADT.facs
-8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  46  		    || !acpi_gbl_use32_bit_facs_addresses)) {
-8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  47  		(void)acpi_get_table_by_index(acpi_gbl_xfacs_index,
-c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  48  					      ACPI_CAST_INDIRECT_PTR(struct
-c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  49  								     acpi_table_header,
-7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  50  								     &facs));
-7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  51  		acpi_gbl_FACS = facs;
-8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  52  	} else if (acpi_gbl_FADT.facs) {
-                                                                                  ^^^^^^^
+> > Based on Tim Gover's downstream implementation.
+>=20
+> Maybe a URL?
 
-8ec3f459073e67 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  53  		(void)acpi_get_table_by_index(acpi_gbl_facs_index,
-009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  54  					      ACPI_CAST_INDIRECT_PTR(struct
-009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  55  								     acpi_table_header,
-7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  56  								     &facs));
-7484619bff495c drivers/acpi/acpica/tbutils.c Lv Zheng       2015-08-25  57  		acpi_gbl_FACS = facs;
-c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  58  	}
+I was under the impression that adding links in the commit log that are lik=
+ely
+to be short-lived was frowned upon. That said I could've added it into the
+cover letter. For reference here it is:
 
-There is no else path, only else if paths.
+https://github.com/raspberrypi/linux/commit/9935b4c7e360b4494b4cb6e3ce79723=
+8a1ab78bd
 
-cc0fd9e263391f drivers/acpi/acpica/tbutils.c Jan Engelhardt 2020-03-30  59  	/* Clear potential garbage from the initial FACS table. */
-cc0fd9e263391f drivers/acpi/acpica/tbutils.c Jan Engelhardt 2020-03-30 @60  	if (facs != NULL)
-cc0fd9e263391f drivers/acpi/acpica/tbutils.c Jan Engelhardt 2020-03-30  61  		facs->global_lock &= ~0x3;
-c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  62  
-f06147f9fbf134 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  63  	/* If there is no FACS, just continue. There was already an error msg */
-f06147f9fbf134 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  64  
-c04e1fb4396d27 drivers/acpi/acpica/tbutils.c Lv Zheng       2015-07-01  65  	return (AE_OK);
-009c4cbe99bea2 drivers/acpi/tables/tbutils.c Bob Moore      2008-11-12  66  }
+> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> > Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> >=20
+> > ---
+> > Changes since v4:
+> >  - Inline function definition when RASPBERRYPI_FIRMWARE is not defined
+> >=20
+> > Changes since v1:
+> >  - Move include into .c file and add forward declaration to .h
+> >=20
+> >  drivers/firmware/raspberrypi.c             | 38 ++++++++++++++++++++++
+> >  include/soc/bcm2835/raspberrypi-firmware.h |  7 ++++
+> >  2 files changed, 45 insertions(+)
+> >=20
+> > diff --git a/drivers/firmware/raspberrypi.c b/drivers/firmware/raspberr=
+ypi.c
+> > index da26a584dca0..cbb495aff6a0 100644
+> > --- a/drivers/firmware/raspberrypi.c
+> > +++ b/drivers/firmware/raspberrypi.c
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/of_platform.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/pci.h>
+> >  #include <soc/bcm2835/raspberrypi-firmware.h>
+> > =20
+> >  #define MBOX_MSG(chan, data28)		(((data28) & ~0xf) | ((chan) &
+> > 0xf))
+> > @@ -286,6 +287,43 @@ struct rpi_firmware *rpi_firmware_get(struct
+> > device_node *firmware_node)
+> >  }
+> >  EXPORT_SYMBOL_GPL(rpi_firmware_get);
+> > =20
+> > +/*
+> > + * On the Raspberry Pi 4, after a PCI reset, VL805's firmware may eith=
+er be
+> > + * loaded directly from an EEPROM or, if not present, by the SoC's
+> > VideCore.
+> > + * Inform VideCore that VL805 was just reset, or defer xhci's probe if=
+ not
+> > yet
+> > + * joinable trough the mailbox interface.
+>=20
+> s/trough/through/
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Noted.
+
+> I don't see anything in this patch that looks like a mailbox
+> interface, but maybe that's just because I don't know anything about
+> Raspberry Pi.
+
+There are two layers to this. The bcm2835-mailbox interface, that is generi=
+c to
+all SoC users and the Raspberry Pi firmware driver, which interacts with RP=
+i's
+custom VideoCore firmware trough the bcm2835-mailbox, and provides a light
+level of abstraction. It's like that to keep a clear separation between wha=
+t's
+a SoC feature an what is RPi specific.
+
+So with a call to rpi_firmware_get() you're supposed to get a handle to the
+shared RPi firmware structure. As long as it's ready. To pass messages down=
+ the
+mailbox, you call rpi_firmware_property(), which takes care of contention,
+formating and DMA issues, before passing it into the actual mailbox interfa=
+ce
+and beyond.
+
+> > + */
+> > +int rpi_firmware_init_vl805(struct pci_dev *pdev)
+> > +{
+> > +	struct device_node *fw_np;
+> > +	struct rpi_firmware *fw;
+> > +	u32 dev_addr;
+> > +	int ret;
+> > +
+> > +	fw_np =3D of_find_compatible_node(NULL, NULL,
+> > +					"raspberrypi,bcm2835-firmware");
+> > +	if (!fw_np)
+> > +		return 0;
+> > +
+> > +	fw =3D rpi_firmware_get(fw_np);
+> > +	of_node_put(fw_np);
+> > +	if (!fw)
+> > +		return -EPROBE_DEFER;
+> > +
+> > +	dev_addr =3D pdev->bus->number << 20 | PCI_SLOT(pdev->devfn) << 15 |
+> > +		   PCI_FUNC(pdev->devfn) << 12;
+> > +
+> > +	ret =3D rpi_firmware_property(fw, RPI_FIRMWARE_NOTIFY_XHCI_RESET,
+> > +				    &dev_addr, sizeof(dev_addr));
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	dev_dbg(&pdev->dev, "loaded Raspberry Pi's VL805 firmware\n");
+> > +
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(rpi_firmware_init_vl805);
+> > +
+> >  static const struct of_device_id rpi_firmware_of_match[] =3D {
+> >  	{ .compatible =3D "raspberrypi,bcm2835-firmware", },
+> >  	{},
+
+[...]
+
+Regards,
+Nicolas
+
+
+--=-FiRA9H8TcBeXjrnKFyig
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl6FzVMACgkQlfZmHno8
+x/6XXgf+LwwO8z0fa4clCjzpoTcA+JvZSQdOPRvtwOifxzSqLxye96mRQZKIKZAD
+Y8jnve5qm42rBHx7oWm1ERhsvIq0jrgViMu7+FsYtK5IdCVz59zNbfoqIfSBquWv
+oG1iffrTx6BkAi6UJa/EAI9o+8p8XcT9YzFKqVycmaD+MqLuxsKKbMo9UiwWKDpx
+4onv+6FxitSiDehOGo+g2XksOoAbC6+I6kciwSMxUBki4YnESF64iiTlGZN46/CV
+kkRV/X2gu1AhOpV9X3xS2oHck9dG+219ehexdMnDjPuAqC3wfjSFNM4JXFmVWUfW
+VvzTdB+AhCxVAadYNjeui2F9s8ULfA==
+=E/7W
+-----END PGP SIGNATURE-----
+
+--=-FiRA9H8TcBeXjrnKFyig--
+
