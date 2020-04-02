@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4274719C3CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EEC19C3D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733068AbgDBOSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:18:02 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38260 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729213AbgDBOSC (ORCPT
+        id S2388164AbgDBOSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:18:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:42416 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1733195AbgDBOSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:18:02 -0400
+        Thu, 2 Apr 2020 10:18:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585837080;
+        s=mimecast20190719; t=1585837088;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BGk/XdTx2AmaoUi8dVZJyPw/8pIQ5+8d5IHVPpIgBvk=;
-        b=dFoewix3GVlhLi/47Sj8tyeUuiIYj7tg5x8LXA6f/g0rV1AJPVy+S42QcInjzXlOoq/sBH
-        a5CtbjhVIbvZlnrNff02jhd6KAa1wcOcpp+9sGIq9delQxSO4Oel+vvZIo+YPqT7m9TZ6x
-        /6SL0IpQpxdu2Okylu5YitU10G8+i4o=
+        bh=ivTLomq0GGE2ZnSf/cAoDjz8Ksn2aKTl1ZYroXjNbOU=;
+        b=gLySh2PV/OCGkaJqZ1nLSN7/p3QPmTZW4TCqmMKzP2EPJ+BXbXS+KyWLoPFXprRSTwXplk
+        o0FWDl9i6dTiJvHjVBUnvIk2dasY2aHt7YICEf+Wm2NMBKQW9IAzIuBWMTrPkx34rf/GQe
+        uOUYVHea5X2nQa0tOLz8uDjuFAoRJcM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-EuI1sNs8MkOs_7zZZeWt6Q-1; Thu, 02 Apr 2020 10:17:58 -0400
-X-MC-Unique: EuI1sNs8MkOs_7zZZeWt6Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-467-KK7ZybeTMGOl9dtGxwJ4cg-1; Thu, 02 Apr 2020 10:18:04 -0400
+X-MC-Unique: KK7ZybeTMGOl9dtGxwJ4cg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71861801A22;
-        Thu,  2 Apr 2020 14:17:44 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0105F802563;
+        Thu,  2 Apr 2020 14:18:03 +0000 (UTC)
 Received: from krava (unknown [10.40.194.72])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A18B999E08;
-        Thu,  2 Apr 2020 14:17:42 +0000 (UTC)
-Date:   Thu, 2 Apr 2020 16:17:40 +0200
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 272E0391;
+        Thu,  2 Apr 2020 14:18:00 +0000 (UTC)
+Date:   Thu, 2 Apr 2020 16:17:58 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Alexey Budankov <alexey.budankov@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
@@ -43,92 +43,159 @@ Cc:     Arnaldo Carvalho de Melo <acme@redhat.com>,
         Ingo Molnar <mingo@redhat.com>,
         Andi Kleen <ak@linux.intel.com>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 4/8] perf stat: implement resume and pause control
- commands handling
-Message-ID: <20200402141740.GO2518490@krava>
+Subject: Re: [PATCH v1 3/8] perf stat: introduce control descriptors and
+ --ctl-fd[-ack] options
+Message-ID: <20200402141758.GP2518490@krava>
 References: <825a5132-b58d-c0b6-b050-5a6040386ec7@linux.intel.com>
- <20afb83b-efc4-6cba-6512-eebbb4e0707a@linux.intel.com>
+ <98dfb3ce-dab9-3747-8748-fbf2777f69ba@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20afb83b-efc4-6cba-6512-eebbb4e0707a@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <98dfb3ce-dab9-3747-8748-fbf2777f69ba@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 11:48:31AM +0300, Alexey Budankov wrote:
+On Fri, Mar 27, 2020 at 11:47:40AM +0300, Alexey Budankov wrote:
+> 
+> Introduce control file descriptors and --ctl-fd[-ack] options to pass
+> control descriptors from command line. Extend --delay option with -1
+> value to start collection in paused mode to be resumed later by resume
+> command provided via control file descriptor.
 
-SNIP
-
->  
-> -	if (interval) {
-> -		ts.tv_sec  = interval / USEC_PER_MSEC;
-> -		ts.tv_nsec = (interval % USEC_PER_MSEC) * NSEC_PER_MSEC;
-> -	} else if (timeout) {
-> -		ts.tv_sec  = timeout / USEC_PER_MSEC;
-> -		ts.tv_nsec = (timeout % USEC_PER_MSEC) * NSEC_PER_MSEC;
-> -	} else {
-> -		ts.tv_sec  = 1;
-> -		ts.tv_nsec = 0;
-> -	}
-> -
->  	if (forks) {
->  		if (perf_evlist__prepare_workload(evsel_list, &target, argv, is_pipe,
->  						  workload_exec_failed_signal) < 0) {
-> @@ -688,18 +745,10 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
->  		perf_evlist__start_workload(evsel_list);
->  		enable_counters();
->  
-> -		if (interval || timeout) {
-> -			while (!waitpid(child_pid, &status, WNOHANG)) {
-> -				nanosleep(&ts, NULL);
-> -				if (timeout)
-> -					break;
-> -				process_interval();
-> -				if (interval_count && !(--times))
-> -					break;
-> -			}
-> -		}
-> -		if (child_pid != -1)
-> +		if (stat_config.ctl_fd == -1 && !interval && !timeout)
->  			wait4(child_pid, &status, 0, &stat_config.ru_data);
-> +		else
-> +			status = handle_events(child_pid, &stat_config);
->  
->  		if (workload_exec_errno) {
->  			const char *emsg = str_error_r(workload_exec_errno, msg, sizeof(msg));
-> @@ -711,18 +760,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
->  			psignal(WTERMSIG(status), argv[0]);
->  	} else {
->  		enable_counters();
-> -		while (!done) {
-> -			nanosleep(&ts, NULL);
-> -			if (!is_target_alive(&target, evsel_list->core.threads))
-> -				break;
-> -			if (timeout)
-> -				break;
-> -			if (interval) {
-> -				process_interval();
-> -				if (interval_count && !(--times))
-> -					break;
-> -			}
-> -		}
-
-could you please separate the change to have:
-  - factor out the above too loops to the new function
-  - adding control fds handling to that function
-
-so it's more obvious we don't break anything
+could you please separate those 2 changes?  also for record change
 
 thanks,
 jirka
 
-> +		handle_events(-1, &stat_config);
->  	}
+> 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/perf/builtin-stat.c | 28 ++++++++++++++++++++++++----
+>  tools/perf/util/evlist.h  |  3 +++
+>  tools/perf/util/stat.h    |  4 +++-
+>  3 files changed, 30 insertions(+), 5 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index ec053dc1e35c..0a1b79fd3f48 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -187,6 +187,8 @@ static struct perf_stat_config stat_config = {
+>  	.metric_only_len	= METRIC_ONLY_LEN,
+>  	.walltime_nsecs_stats	= &walltime_nsecs_stats,
+>  	.big_num		= true,
+> +	.ctl_fd			= -1,
+> +	.ctl_fd_ack		= -1
+>  };
 >  
->  	disable_counters();
+>  static inline void diff_timespec(struct timespec *r, struct timespec *a,
+> @@ -373,16 +375,26 @@ static void process_interval(void)
+>  
+>  static void enable_counters(void)
+>  {
+> -	if (stat_config.initial_delay)
+> +	if (stat_config.initial_delay < 0) {
+> +		pr_info(PERF_EVLIST__PAUSED_MSG);
+> +		return;
+> +	}
+> +
+> +	if (stat_config.initial_delay > 0) {
+> +		pr_info(PERF_EVLIST__PAUSED_MSG);
+>  		usleep(stat_config.initial_delay * USEC_PER_MSEC);
+> +	}
+>  
+>  	/*
+>  	 * We need to enable counters only if:
+>  	 * - we don't have tracee (attaching to task or cpu)
+>  	 * - we have initial delay configured
+>  	 */
+> -	if (!target__none(&target) || stat_config.initial_delay)
+> +	if (!target__none(&target) || stat_config.initial_delay) {
+>  		evlist__enable(evsel_list);
+> +		if (stat_config.initial_delay > 0)
+> +			pr_info(PERF_EVLIST__RESUMED_MSG);
+> +	}
+>  }
+>  
+>  static void disable_counters(void)
+> @@ -912,8 +924,8 @@ static struct option stat_options[] = {
+>  		     "aggregate counts per thread", AGGR_THREAD),
+>  	OPT_SET_UINT(0, "per-node", &stat_config.aggr_mode,
+>  		     "aggregate counts per numa node", AGGR_NODE),
+> -	OPT_UINTEGER('D', "delay", &stat_config.initial_delay,
+> -		     "ms to wait before starting measurement after program start"),
+> +	OPT_INTEGER('D', "delay", &stat_config.initial_delay,
+> +		     "ms to wait before starting measurement after program start (-1: start paused"),
+>  	OPT_CALLBACK_NOOPT(0, "metric-only", &stat_config.metric_only, NULL,
+>  			"Only print computed metrics. No raw values", enable_metric_only),
+>  	OPT_BOOLEAN(0, "topdown", &topdown_run,
+> @@ -933,6 +945,10 @@ static struct option stat_options[] = {
+>  		    "Use with 'percore' event qualifier to show the event "
+>  		    "counts of one hardware thread by sum up total hardware "
+>  		    "threads of same physical core"),
+> +	OPT_INTEGER(0, "ctl-fd", &stat_config.ctl_fd,
+> +		    "Listen on fd descriptor for command to control measurement ('r': resume, 'p': pause)"),
+> +	OPT_INTEGER(0, "ctl-fd-ack", &stat_config.ctl_fd_ack,
+> +		    "Send control command completion ('a') to fd ack descriptor"),
+>  	OPT_END()
+>  };
+>  
+> @@ -2129,6 +2145,8 @@ int cmd_stat(int argc, const char **argv)
+>  	signal(SIGALRM, skip_signal);
+>  	signal(SIGABRT, skip_signal);
+>  
+> +	perf_evlist__initialize_ctlfd(evsel_list, stat_config.ctl_fd, stat_config.ctl_fd_ack);
+> +
+>  	status = 0;
+>  	for (run_idx = 0; forever || run_idx < stat_config.run_count; run_idx++) {
+>  		if (stat_config.run_count != 1 && verbose > 0)
+> @@ -2148,6 +2166,8 @@ int cmd_stat(int argc, const char **argv)
+>  	if (!forever && status != -1 && !interval)
+>  		print_counters(NULL, argc, argv);
+>  
+> +	perf_evlist__finalize_ctlfd(evsel_list);
+> +
+>  	if (STAT_RECORD) {
+>  		/*
+>  		 * We synthesize the kernel mmap record just so that older tools
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index a94b2993fafc..c91368483074 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -369,6 +369,9 @@ enum evlist_ctl_cmd {
+>  	CTL_CMD_ACK = 'a'
+>  };
+>  
+> +#define PERF_EVLIST__RESUMED_MSG "Monitoring resumed\n"
+> +#define PERF_EVLIST__PAUSED_MSG  "Monitoring paused\n"
+> +
+>  int perf_evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
+>  int perf_evlist__finalize_ctlfd(struct evlist *evlist);
+>  int perf_evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
+> diff --git a/tools/perf/util/stat.h b/tools/perf/util/stat.h
+> index b4fdfaa7f2c0..0b0fa3a2cde2 100644
+> --- a/tools/perf/util/stat.h
+> +++ b/tools/perf/util/stat.h
+> @@ -113,7 +113,7 @@ struct perf_stat_config {
+>  	FILE			*output;
+>  	unsigned int		 interval;
+>  	unsigned int		 timeout;
+> -	unsigned int		 initial_delay;
+> +	int			 initial_delay;
+>  	unsigned int		 unit_width;
+>  	unsigned int		 metric_only_len;
+>  	int			 times;
+> @@ -130,6 +130,8 @@ struct perf_stat_config {
+>  	struct perf_cpu_map		*cpus_aggr_map;
+>  	u64			*walltime_run;
+>  	struct rblist		 metric_events;
+> +	int			 ctl_fd;
+> +	int			 ctl_fd_ack;
+>  };
+>  
+>  void update_stats(struct stats *stats, u64 val);
 > -- 
 > 2.24.1
 > 
