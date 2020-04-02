@@ -2,70 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBED519C371
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A18919C364
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 15:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388174AbgDBN7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 09:59:53 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:40164 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727412AbgDBN7w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 09:59:52 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9923666935139C50D3D6;
-        Thu,  2 Apr 2020 21:59:43 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 2 Apr 2020
- 21:59:37 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
-        <paulus@samba.org>, <gregkh@linuxfoundation.org>,
-        <christophe.leroy@c-s.fr>, <allison@lohutok.net>,
-        <armijn@tjaldur.nl>, <tglx@linutronix.de>,
-        <aneesh.kumar@linux.ibm.com>, <yuehaibing@huawei.com>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] powerpc/mm: ptdump: Add missing include <asm/vio.h>
-Date:   Thu, 2 Apr 2020 21:58:28 +0800
-Message-ID: <20200402135828.37308-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S2387798AbgDBN6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 09:58:45 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:43490 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727322AbgDBN6p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 09:58:45 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: koike)
+        with ESMTPSA id 425FA280125
+Subject: Re: [PATCH 1/3] rkisp1: Get rid of unused variable warning
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>
+References: <20200401213721.24173-1-ezequiel@collabora.com>
+ <20200401213721.24173-2-ezequiel@collabora.com>
+From:   Helen Koike <helen.koike@collabora.com>
+Message-ID: <86db2adb-d567-afc4-b675-49ad031cd75e@collabora.com>
+Date:   Thu, 2 Apr 2020 10:58:35 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200401213721.24173-2-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.173.223.234]
-X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-gcc build fails:
-
-arch/powerpc/mm/ptdump/hashpagetable.c: In function ‘pseries_find’:
-arch/powerpc/mm/ptdump/hashpagetable.c:262:18: error: ‘H_SUCCESS’ undeclared (first use in this function); did you mean ‘FL_ACCESS’?
-   if (lpar_rc != H_SUCCESS)
-                  ^~~~~~~~~
-                  FL_ACCESS
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Fixes: 65e701b2d2a8 ("powerpc/ptdump: drop non vital #ifdefs")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- arch/powerpc/mm/ptdump/hashpagetable.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/powerpc/mm/ptdump/hashpagetable.c b/arch/powerpc/mm/ptdump/hashpagetable.c
-index b6ed9578382f..8ea5f9a3b658 100644
---- a/arch/powerpc/mm/ptdump/hashpagetable.c
-+++ b/arch/powerpc/mm/ptdump/hashpagetable.c
-@@ -20,6 +20,7 @@
- #include <asm/page.h>
- #include <asm/pgalloc.h>
- #include <asm/plpar_wrappers.h>
-+#include <asm/vio.h>
- #include <linux/memblock.h>
- #include <asm/firmware.h>
- 
--- 
-2.17.1
 
 
+On 4/1/20 6:37 PM, Ezequiel Garcia wrote:
+> If CONFIG_OF is not selected, the compiler will complain:
+> 
+> drivers/staging/media/rkisp1/rkisp1-dev.c: In function ‘rkisp1_probe’:
+> drivers/staging/media/rkisp1/rkisp1-dev.c:457:22: warning: unused variable ‘node’ [-Wunused-variable]
+>   457 |  struct device_node *node = pdev->dev.of_node;
+> 
+> Rework the code slightly and make the compiler happy.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+
+Acked-by: Helen Koike <helen.koike@collabora.com>
+
+> ---
+>  drivers/staging/media/rkisp1/rkisp1-dev.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/media/rkisp1/rkisp1-dev.c b/drivers/staging/media/rkisp1/rkisp1-dev.c
+> index b1b3c058e957..5e7e797aad71 100644
+> --- a/drivers/staging/media/rkisp1/rkisp1-dev.c
+> +++ b/drivers/staging/media/rkisp1/rkisp1-dev.c
+> @@ -454,7 +454,6 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+>  
+>  static int rkisp1_probe(struct platform_device *pdev)
+>  {
+> -	struct device_node *node = pdev->dev.of_node;
+>  	const struct rkisp1_match_data *clk_data;
+>  	const struct of_device_id *match;
+>  	struct device *dev = &pdev->dev;
+> @@ -463,7 +462,7 @@ static int rkisp1_probe(struct platform_device *pdev)
+>  	unsigned int i;
+>  	int ret, irq;
+>  
+> -	match = of_match_node(rkisp1_of_match, node);
+> +	match = of_match_node(rkisp1_of_match, pdev->dev.of_node);
+>  	rkisp1 = devm_kzalloc(dev, sizeof(*rkisp1), GFP_KERNEL);
+>  	if (!rkisp1)
+>  		return -ENOMEM;
+> 
