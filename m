@@ -2,101 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2B719CD4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 01:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3773119CD50
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 01:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390145AbgDBXEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 19:04:06 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54716 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729549AbgDBXEG (ORCPT
+        id S2389507AbgDBXG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 19:06:26 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:17969 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387919AbgDBXG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 19:04:06 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032MsjJM108362;
-        Thu, 2 Apr 2020 23:03:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=BzlYfWPfjVLLViKroV5Bj/wWdp/CwSXppVCjZgXhNqQ=;
- b=BnveTbzR3ITbMbCPydFkAjSvvZUI4aHmZCki96ZoMIzopayt4MNwouLsqnMN+2qo5Ka1
- aAT4ncKFtb3wqJJwoq02Gtn48bxPbLGMB5IQxH1epEEtozIxZUYYwJ3IUx6ESG0oaV4S
- 0HU/NBhnhWb9D+r61yvkTn5/0KKGGBwdXnEwpK11T3GbqKVNXy4VxXenGtetM0dSWaNv
- XDiHigag8026jNcI4gJj4eNY7BH+z2/EcQVN1pKyBKQmfIcpSH7Eqn+TqCa7WX1LdQPv
- NEAY4pa1X3l+tCTDCqjJBECfZ31D+icT7RoKtYtHdhOZEq01jIWYZR1AoPhgq0jltJs/ mA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 303yungusu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 23:03:54 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032Mq9ed076063;
-        Thu, 2 Apr 2020 23:03:54 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 302ga3a6k0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Apr 2020 23:03:53 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032N3qvW029087;
-        Thu, 2 Apr 2020 23:03:52 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 16:03:51 -0700
-Date:   Thu, 2 Apr 2020 19:04:11 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Yang Shi <yang.shi@linux.alibaba.com>
-Cc:     kirill.shutemov@linux.intel.com, hughd@google.com,
-        aarcange@redhat.com, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: thp: don't need drain lru cache when splitting and
- mlocking THP
-Message-ID: <20200402230411.7ckwkmd6wwtqfkm2@ca-dmjordan1.us.oracle.com>
-References: <1585337380-97368-1-git-send-email-yang.shi@linux.alibaba.com>
+        Thu, 2 Apr 2020 19:06:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1585868785; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=joEfBFYVnCUn1rHziGrcFQaULpvVa2IqWI3HP0gQeC0=; b=giau6HUAQWf8cTh7Y2w1B+BJjdu4XGWnd40sQBwdJ+30ThJA8yr5XELi4wB256NaJT/hNjFd
+ GkGRSHGhcZwKbEErLSLBjZNNJcss9dlFHIC0wbVKW/YnFLDfD+2kbO3TH4ARtxM6qSQMOKXH
+ EFCWy8dcQwtYVIr68DQrVIlsx6U=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e866ff0.7f06974ecea0-smtp-out-n02;
+ Thu, 02 Apr 2020 23:06:24 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D7368C4478C; Thu,  2 Apr 2020 23:06:24 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.122.98] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EF71EC433D2;
+        Thu,  2 Apr 2020 23:06:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EF71EC433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v4 3/4] phy: qcom-qmp: Add SM8150 QMP USB3 PHY support
+To:     Manu Gautam <mgautam@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, kishon@ti.com, robh+dt@kernel.org,
+        mark.rutland@arm.com, p.zabel@pengutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Jack Pham <jackp@codeaurora.org>
+References: <1585597017-30683-1-git-send-email-wcheng@codeaurora.org>
+ <1585597017-30683-4-git-send-email-wcheng@codeaurora.org>
+ <6295c8d8-9763-be1d-9227-e61369000536@codeaurora.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <b0382fcc-d580-79a8-65d8-85afbd2047f0@codeaurora.org>
+Date:   Thu, 2 Apr 2020 16:06:22 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1585337380-97368-1-git-send-email-yang.shi@linux.alibaba.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxlogscore=929 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004020169
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=994 bulkscore=0
- suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020169
+In-Reply-To: <6295c8d8-9763-be1d-9227-e61369000536@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 28, 2020 at 03:29:40AM +0800, Yang Shi wrote:
-> Since the commit 8f182270dfec ("mm/swap.c: flush lru pvecs on compound
-> page arrival") THP would not stay in pagevec anymore.  So the
-> optimization made by commit d965432234db ("thp: increase
-> split_huge_page() success rate") doesn't make sense anymore, which tries
-> to unpin munlocked THPs from pagevec by draining pagevec.
+Hi Manu,
+
+On 4/2/2020 12:00 AM, Manu Gautam wrote:
 > 
-> And draining lru cache before isolating THP in mlock path is unnecessary
-> either.
+> On 3/31/2020 1:06 AM, Wesley Cheng wrote:
+>> From: Jack Pham <jackp@codeaurora.org>
+>>
+>> Add support for SM8150 QMP USB3 PHY with the necessary
+>> initialization sequences as well as additional QMP V4
+>> register definitions.
+>>
+>> Signed-off-by: Jack Pham <jackp@codeaurora.org>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>>  drivers/phy/qualcomm/phy-qcom-qmp.c | 153 ++++++++++++++++++++++++++++
+>>  drivers/phy/qualcomm/phy-qcom-qmp.h | 198 +++++++++++++++++++++++++++++++++++-
+>>  2 files changed, 349 insertions(+), 2 deletions(-)
+> 
+> [snip]
+> 
+>>  
+>> -/* Only for QMP V4 PHY - PCS registers */
+>> +/* Only for QMP V4 PHY - UFS PCS registers */
+>>  #define QPHY_V4_PHY_START				0x000
+>>  #define QPHY_V4_POWER_DOWN_CONTROL			0x004
+>>  #define QPHY_V4_SW_RESET				0x008
+>> @@ -409,4 +446,161 @@
+>>  #define QPHY_V4_TX_MID_TERM_CTRL1			0x1d8
+>>  #define QPHY_V4_MULTI_LANE_CTRL1			0x1e0
+>>  
+>> +/* Only for QMP V4 PHY - USB/PCIe PCS registers */
+>> +#define QPHY_V4_PCS_SW_RESET				0x000
+> 
+> It is a mess not given that UFS wrapper uses different PCS register layout:
+> E.g. UFS uses - QPHY_V4_SW_RESET 0x008
+> 
+> Would it help to add UFS prefix for UFS specific registers to avoid confusion and typos.
+> E.g. rename QPHY_V4_SW_RESET to QPHY_V4_UFS_PCS_SW_RESET ?
+> 
 
-Can we get some of that nice history in this part too?
+I think we can follow your suggestion.  The UFS PHY has a significantly
+different set of PCS registers versus USB/PCIe, so it will be good to
+differentiate them.  I will add a patch to rename the defines and add it
+to the patch series.
 
-Draining lru cache before isolating THP in mlock path is also unnecessary.
-b676b293fb48 ("mm, thp: fix mapped pages avoiding unevictable list on mlock")
-added it and 9a73f61bdb8a ("thp, mlock: do not mlock PTE-mapped file huge
-pages") accidentally carried it over after the above optimization went in.
+>> +#define QPHY_V4_PCS_REVISION_ID0			0x004
+>> +#define QPHY_V4_PCS_REVISION_ID1			0x008
+>> +#define QPHY_V4_PCS_REVISION_ID2			0x00c
+>> +#define QPHY_V4_PCS_REVISION_ID3			0x010
+>> +#define QPHY_V4_PCS_PCS_STATUS1				0x014
+>> +#define QPHY_V4_PCS_PCS_STATUS2				0x018
+>> +#define QPHY_V4_PCS_PCS_STATUS3				0x01c
+>> +#define QPHY_V4_PCS_PCS_STATUS4				0x020
+>> +#define QPHY_V4_PCS_PCS_STATUS5				0x024
+>> +#define QPHY_V4_PCS_PCS_STATUS6				0x028
+>> +#define QPHY_V4_PCS_PCS_STATUS7				0x02c
+>> +#define QPHY_V4_PCS_DEBUG_BUS_0_STATUS			0x030
+>> +#define QPHY_V4_PCS_DEBUG_BUS_1_STATUS			0x034
+>> +#define QPHY_V4_PCS_DEBUG_BUS_2_STATUS			0x038
+>> +#define QPHY_V4_PCS_DEBUG_BUS_3_STATUS			0x03c
+>> +#define QPHY_V4_PCS_POWER_DOWN_CONTROL			0x040
+>> +#define QPHY_V4_PCS_START_CONTROL			0x044
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL1			0x048
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL2			0x04c
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL3			0x050
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL4			0x054
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL5			0x058
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL6			0x05c
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL7			0x060
+>> +#define QPHY_V4_PCS_INSIG_SW_CTRL8			0x064
+>> +#define QPHY_V4_PCS_INSIG_MX_CTRL1			0x068
+>> +#define QPHY_V4_PCS_INSIG_MX_CTRL2			0x06c
+>> +#define QPHY_V4_PCS_INSIG_MX_CTRL3			0x070
+>> +#define QPHY_V4_PCS_INSIG_MX_CTRL4			0x074
+>> +#define QPHY_V4_PCS_INSIG_MX_CTRL5			0x078
+>> +#define QPHY_V4_PCS_INSIG_MX_CTRL7			0x07c
+>> +#define QPHY_V4_PCS_INSIG_MX_CTRL8			0x080
+>> +#define QPHY_V4_PCS_OUTSIG_SW_CTRL1			0x084
+>> +#define QPHY_V4_PCS_OUTSIG_MX_CTRL1			0x088
+>> +#define QPHY_V4_PCS_CLAMP_ENABLE			0x08c
+>> +#define QPHY_V4_PCS_POWER_STATE_CONFIG1			0x090
+>> +#define QPHY_V4_PCS_POWER_STATE_CONFIG2			0x094
+>> +#define QPHY_V4_PCS_FLL_CNTRL1				0x098
+>> +#define QPHY_V4_PCS_FLL_CNTRL2				0x09c
+>> +#define QPHY_V4_PCS_FLL_CNT_VAL_L			0x0a0
+>> +#define QPHY_V4_PCS_FLL_CNT_VAL_H_TOL			0x0a4
+>> +#define QPHY_V4_PCS_FLL_MAN_CODE			0x0a8
+>> +#define QPHY_V4_PCS_TEST_CONTROL1			0x0ac
+>> +#define QPHY_V4_PCS_TEST_CONTROL2			0x0b0
+>> +#define QPHY_V4_PCS_TEST_CONTROL3			0x0b4
+>> +#define QPHY_V4_PCS_TEST_CONTROL4			0x0b8
+>> +#define QPHY_V4_PCS_TEST_CONTROL5			0x0bc
+>> +#define QPHY_V4_PCS_TEST_CONTROL6			0x0c0
+>> +#define QPHY_V4_PCS_LOCK_DETECT_CONFIG1			0x0c4
+>> +#define QPHY_V4_PCS_LOCK_DETECT_CONFIG2			0x0c8
+>> +#define QPHY_V4_PCS_LOCK_DETECT_CONFIG3			0x0cc
+>> +#define QPHY_V4_PCS_LOCK_DETECT_CONFIG4			0x0d0
+>> +#define QPHY_V4_PCS_LOCK_DETECT_CONFIG5			0x0d4
+>> +#define QPHY_V4_PCS_LOCK_DETECT_CONFIG6			0x0d8
+>> +#define QPHY_V4_PCS_REFGEN_REQ_CONFIG1			0x0dc
+>> +#define QPHY_V4_PCS_REFGEN_REQ_CONFIG2			0x0e0
+>> +#define QPHY_V4_PCS_REFGEN_REQ_CONFIG3			0x0e4
+>> +#define QPHY_V4_PCS_BIST_CTRL				0x0e8
+>> +#define QPHY_V4_PCS_PRBS_POLY0				0x0ec
+>> +#define QPHY_V4_PCS_PRBS_POLY1				0x0f0
+>> +#define QPHY_V4_PCS_FIXED_PAT0				0x0f4
+>> +#define QPHY_V4_PCS_FIXED_PAT1				0x0f8
+>> +#define QPHY_V4_PCS_FIXED_PAT2				0x0fc
+>> +#define QPHY_V4_PCS_FIXED_PAT3				0x100
+>> +#define QPHY_V4_PCS_FIXED_PAT4				0x104
+>> +#define QPHY_V4_PCS_FIXED_PAT5				0x108
+>> +#define QPHY_V4_PCS_FIXED_PAT6				0x10c
+>> +#define QPHY_V4_PCS_FIXED_PAT7				0x110
+>> +#define QPHY_V4_PCS_FIXED_PAT8				0x114
+>> +#define QPHY_V4_PCS_FIXED_PAT9				0x118
+>> +#define QPHY_V4_PCS_FIXED_PAT10				0x11c
+>> +#define QPHY_V4_PCS_FIXED_PAT11				0x120
+>> +#define QPHY_V4_PCS_FIXED_PAT12				0x124
+>> +#define QPHY_V4_PCS_FIXED_PAT13				0x128
+>> +#define QPHY_V4_PCS_FIXED_PAT14				0x12c
+>> +#define QPHY_V4_PCS_FIXED_PAT15				0x130
+>> +#define QPHY_V4_PCS_TXMGN_CONFIG			0x134
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V0			0x138
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V1			0x13c
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V2			0x140
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V3			0x144
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V4			0x148
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V0_RS			0x14c
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V1_RS			0x150
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V2_RS			0x154
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V3_RS			0x158
+>> +#define QPHY_V4_PCS_G12S1_TXMGN_V4_RS			0x15c
+>> +#define QPHY_V4_PCS_G3S2_TXMGN_MAIN			0x160
+>> +#define QPHY_V4_PCS_G3S2_TXMGN_MAIN_RS			0x164
+>> +#define QPHY_V4_PCS_G12S1_TXDEEMPH_M6DB			0x168
+>> +#define QPHY_V4_PCS_G12S1_TXDEEMPH_M3P5DB		0x16c
+>> +#define QPHY_V4_PCS_G3S2_PRE_GAIN			0x170
+>> +#define QPHY_V4_PCS_G3S2_POST_GAIN			0x174
+>> +#define QPHY_V4_PCS_G3S2_PRE_POST_OFFSET		0x178
+>> +#define QPHY_V4_PCS_G3S2_PRE_GAIN_RS			0x17c
+>> +#define QPHY_V4_PCS_G3S2_POST_GAIN_RS			0x180
+>> +#define QPHY_V4_PCS_G3S2_PRE_POST_OFFSET_RS		0x184
+>> +#define QPHY_V4_PCS_RX_SIGDET_LVL			0x188
+>> +#define QPHY_V4_PCS_RX_SIGDET_DTCT_CNTRL		0x18c
+>> +#define QPHY_V4_PCS_RCVR_DTCT_DLY_P1U2_L		0x190
+>> +#define QPHY_V4_PCS_RCVR_DTCT_DLY_P1U2_H		0x194
+>> +#define QPHY_V4_PCS_RATE_SLEW_CNTRL1			0x198
+>> +#define QPHY_V4_PCS_RATE_SLEW_CNTRL2			0x19c
+>> +#define QPHY_V4_PCS_PWRUP_RESET_DLY_TIME_AUXCLK		0x1a0
+>> +#define QPHY_V4_PCS_P2U3_WAKEUP_DLY_TIME_AUXCLK_L	0x1a4
+>> +#define QPHY_V4_PCS_P2U3_WAKEUP_DLY_TIME_AUXCLK_H	0x1a8
+>> +#define QPHY_V4_PCS_TSYNC_RSYNC_TIME			0x1ac
+>> +#define QPHY_V4_PCS_CDR_RESET_TIME			0x1b0
+>> +#define QPHY_V4_PCS_TSYNC_DLY_TIME			0x1b4
+>> +#define QPHY_V4_PCS_ELECIDLE_DLY_SEL			0x1b8
+>> +#define QPHY_V4_PCS_CMN_ACK_OUT_SEL			0x1bc
+>> +#define QPHY_V4_PCS_ALIGN_DETECT_CONFIG1		0x1c0
+>> +#define QPHY_V4_PCS_ALIGN_DETECT_CONFIG2		0x1c4
+>> +#define QPHY_V4_PCS_ALIGN_DETECT_CONFIG3		0x1c8
+>> +#define QPHY_V4_PCS_ALIGN_DETECT_CONFIG4		0x1cc
+>> +#define QPHY_V4_PCS_PCS_TX_RX_CONFIG			0x1d0
+>> +#define QPHY_V4_PCS_RX_IDLE_DTCT_CNTRL			0x1d4
+>> +#define QPHY_V4_PCS_RX_DCC_CAL_CONFIG			0x1d8
+>> +#define QPHY_V4_PCS_EQ_CONFIG1				0x1dc
+>> +#define QPHY_V4_PCS_EQ_CONFIG2				0x1e0
+>> +#define QPHY_V4_PCS_EQ_CONFIG3				0x1e4
+>> +#define QPHY_V4_PCS_EQ_CONFIG4				0x1e8
+>> +#define QPHY_V4_PCS_EQ_CONFIG5				0x1ec
+>> +#define QPHY_V4_PCS_USB3_POWER_STATE_CONFIG1		0x300
+>> +#define QPHY_V4_PCS_USB3_AUTONOMOUS_MODE_STATUS		0x304
+>> +#define QPHY_V4_PCS_USB3_AUTONOMOUS_MODE_CTRL		0x308
+>> +#define QPHY_V4_PCS_USB3_AUTONOMOUS_MODE_CTRL2		0x30c
+>> +#define QPHY_V4_PCS_USB3_LFPS_RXTERM_IRQ_SOURCE_STATUS	0x310
+>> +#define QPHY_V4_PCS_USB3_LFPS_RXTERM_IRQ_CLEAR		0x314
+>> +#define QPHY_V4_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL	0x318
+>> +#define QPHY_V4_PCS_USB3_LFPS_TX_ECSTART		0x31c
+>> +#define QPHY_V4_PCS_USB3_LFPS_PER_TIMER_VAL		0x320
+>> +#define QPHY_V4_PCS_USB3_LFPS_TX_END_CNT_U3_START	0x324
+>> +#define QPHY_V4_PCS_USB3_RXEQTRAINING_LOCK_TIME		0x328
+>> +#define QPHY_V4_PCS_USB3_RXEQTRAINING_WAIT_TIME		0x32c
+>> +#define QPHY_V4_PCS_USB3_RXEQTRAINING_CTLE_TIME		0x330
+>> +#define QPHY_V4_PCS_USB3_RXEQTRAINING_WAIT_TIME_S2	0x334
+>> +#define QPHY_V4_PCS_USB3_RXEQTRAINING_DFE_TIME_S2	0x338
+>> +#define QPHY_V4_PCS_USB3_RCVR_DTCT_DLY_U3_L		0x33c
+>> +#define QPHY_V4_PCS_USB3_RCVR_DTCT_DLY_U3_H		0x340
+>> +#define QPHY_V4_PCS_USB3_ARCVR_DTCT_EN_PERIOD		0x344
+>> +#define QPHY_V4_PCS_USB3_ARCVR_DTCT_CM_DLY		0x348
+>> +#define QPHY_V4_PCS_USB3_TXONESZEROS_RUN_LENGTH		0x34c
+>> +#define QPHY_V4_PCS_USB3_ALFPS_DEGLITCH_VAL		0x350
+>> +#define QPHY_V4_PCS_USB3_SIGDET_STARTUP_TIMER_VAL	0x354
+>> +#define QPHY_V4_PCS_USB3_TEST_CONTROL			0x358
+>> +
+>> +/* Only for QMP V4 PHY - PCS_MISC registers */
+>> +#define QPHY_V4_PCS_MISC_TYPEC_CTRL			0x00
+>> +#define QPHY_V4_PCS_MISC_TYPEC_PWRDN_CTRL		0x04
+>> +#define QPHY_V4_PCS_MISC_PCS_MISC_CONFIG1		0x08
+>> +#define QPHY_V4_PCS_MISC_CLAMP_ENABLE			0x0c
+>> +#define QPHY_V4_PCS_MISC_TYPEC_STATUS			0x10
+>> +#define QPHY_V4_PCS_MISC_PLACEHOLDER_STATUS		0x14
+>> +
+>>  #endif
+> 
 
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-
-Since we don't mlock pte-mapped THP, it seems these huge pages wouldn't ever be
-in the pagevecs if I'm understanding it all.
-
-Saves lines and some amount of overhead and lru contention, so looks good.
-
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
