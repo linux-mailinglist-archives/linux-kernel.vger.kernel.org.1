@@ -2,250 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D03C19C5EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F266419C5F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389268AbgDBPbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:31:13 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26922 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389125AbgDBPbM (ORCPT
+        id S2389290AbgDBPeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:34:37 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:50552 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732754AbgDBPeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:31:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585841470;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8go+XmW7aV++71D9Zfcx9rh3RfL3DnAWTnY8WVwCfu0=;
-        b=YvFbM7CpzdN0kbT+SFNn/mFukuZwAvQNW7nR5Y8m1h3wDSKUcev1MlP/YF4Z6OmUWQqBMs
-        c9rd4mPnecWDxjNgj2oUQ4NlO6amKpiCf1nFx7ua9bj08z2ZPf+4oYQBoRv2UNrA10v9TO
-        NSomxJbOPD+4inGqLkqRnxCo5XkNIXI=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-311-6h0Sq0ZAMae-mK0FHN3q3Q-1; Thu, 02 Apr 2020 11:31:08 -0400
-X-MC-Unique: 6h0Sq0ZAMae-mK0FHN3q3Q-1
-Received: by mail-wr1-f70.google.com with SMTP id y1so1629602wrn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 08:31:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8go+XmW7aV++71D9Zfcx9rh3RfL3DnAWTnY8WVwCfu0=;
-        b=GU3oOWjcXX4WdgvMeZ8j+4v8W8GjI9uPgumEYSpS0ZhFFYE5Cv/oIX/n2rw4n8Umfp
-         Ly4u6pzD1S1a+6borWrjtvVYgWVmMTKCWvc33naOMcWtqDwz/2x55kNKhgmdh1eTufi5
-         PA/QbSyHNEn8a5zQAtkS36L6V1lyAlKrZb6Pe+AzpfSxcbtkfxJafRbVK5++HGddaBtL
-         xX+/KZcQMYt1pYXAe5EC1MUA2rgrn/kg3q9c3CnxH01qwUZYnDehflq1EDCFGyAd1H0V
-         X5t0uW9FjiaP7930+RMBNWoMj916qG+vX8Y86KOBOZSylYDUI2TLN/9M9vZ3KEuY9uLT
-         10Eg==
-X-Gm-Message-State: AGi0Puar0U3rVxFfu3Er01xO+J6adP7err1cygjoxsMLdhrVVPwIESs2
-        axo8b3Hg0JQOeX0q4RrdIhpwvUsQIMrH056QjnQp8X2YlA20s2UUvFQYyRPz4IVGFktK5ZRoe+9
-        kci+5SjJvA+VQJC6ZxTN8PrBx
-X-Received: by 2002:a5d:6847:: with SMTP id o7mr4003921wrw.274.1585841467760;
-        Thu, 02 Apr 2020 08:31:07 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLmW+n29VyWMNvUZC3b0K01TfQQRNymQo6XGLC96/B0VA0Qj/dhPdQ6IzB/bNFcQPQVQ1/XKw==
-X-Received: by 2002:a5d:6847:: with SMTP id o7mr4003903wrw.274.1585841467485;
-        Thu, 02 Apr 2020 08:31:07 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
-        by smtp.gmail.com with ESMTPSA id a7sm7245427wmm.34.2020.04.02.08.31.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Apr 2020 08:31:06 -0700 (PDT)
-Subject: Re: [PATCH 4/7] objtool: Add support for return trampoline call
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>, x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-5-alexandre.chartre@oracle.com>
- <c0f265ed-c86b-d3f1-3894-941c25e42d0e@redhat.com>
- <fc224792-bd1c-08ff-072f-e584740521b4@oracle.com>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <a250f29d-969a-b704-6dd6-c6cc7b84f526@redhat.com>
-Date:   Thu, 2 Apr 2020 16:31:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Thu, 2 Apr 2020 11:34:37 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jK1rW-0005mQ-8t; Thu, 02 Apr 2020 09:34:34 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jK1rV-0007tb-0b; Thu, 02 Apr 2020 09:34:33 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Security Module <linux-security-module@vger.kernel.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Djalal Harouni <tixxdz@gmail.com>,
+        "Dmitry V . Levin" <ldv@altlinux.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@poochiereds.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <20200327172331.418878-1-gladkov.alexey@gmail.com>
+        <20200327172331.418878-3-gladkov.alexey@gmail.com>
+Date:   Thu, 02 Apr 2020 10:31:48 -0500
+In-Reply-To: <20200327172331.418878-3-gladkov.alexey@gmail.com> (Alexey
+        Gladkov's message of "Fri, 27 Mar 2020 18:23:24 +0100")
+Message-ID: <87eet5lx97.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <fc224792-bd1c-08ff-072f-e584740521b4@oracle.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1jK1rV-0007tb-0b;;;mid=<87eet5lx97.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18bJm/P/P+XAlq1t04hxE6W/8b8KDRYe10=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4209]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 664 ms - load_scoreonly_sql: 0.35 (0.1%),
+        signal_user_changed: 13 (2.0%), b_tie_ro: 11 (1.6%), parse: 1.62
+        (0.2%), extract_message_metadata: 4.4 (0.7%), get_uri_detail_list:
+        0.91 (0.1%), tests_pri_-1000: 7 (1.0%), tests_pri_-950: 1.60 (0.2%),
+        tests_pri_-900: 1.25 (0.2%), tests_pri_-90: 366 (55.2%), check_bayes:
+        364 (54.9%), b_tokenize: 10 (1.5%), b_tok_get_all: 143 (21.5%),
+        b_comp_prob: 2.8 (0.4%), b_tok_touch_all: 205 (30.9%), b_finish: 1.12
+        (0.2%), tests_pri_0: 198 (29.9%), check_dkim_signature: 0.66 (0.1%),
+        check_dkim_adsp: 2.6 (0.4%), poll_dns_idle: 0.90 (0.1%), tests_pri_10:
+        2.2 (0.3%), tests_pri_500: 57 (8.6%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v10 2/9] proc: allow to mount many instances of proc in one pid namespace
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
+> index 40a7982b7285..5920a4ecd71b 100644
+> --- a/include/linux/proc_fs.h
+> +++ b/include/linux/proc_fs.h
+> @@ -27,6 +27,17 @@ struct proc_ops {
+>  	unsigned long (*proc_get_unmapped_area)(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
+>  };
+>  
+> +struct proc_fs_info {
+> +	struct pid_namespace *pid_ns;
+> +	struct dentry *proc_self;        /* For /proc/self */
+> +	struct dentry *proc_thread_self; /* For /proc/thread-self */
+> +};
 
-On 4/2/20 3:46 PM, Alexandre Chartre wrote:
-> 
-> On 4/2/20 3:26 PM, Julien Thierry wrote:
->> Hi Alexandre,
->>
->> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
->>> With retpoline, the return instruction is used to branch to an address
->>> stored on the stack. So, unlike a regular return instruction, when a
->>> retpoline return instruction is reached the stack has been modified
->>> compared to what we have when the function was entered.
->>>
->>> Provide the mechanism to explicitly call-out such return instruction
->>> so that objtool can correctly handle them.
->>>
->>> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
->>> ---
->>>   tools/objtool/check.c | 78 +++++++++++++++++++++++++++++++++++++++++--
->>>   tools/objtool/check.h |  1 +
->>>   2 files changed, 76 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
->>> index 0cec91291d46..ed8e3ea1d8da 100644
->>> --- a/tools/objtool/check.c
->>> +++ b/tools/objtool/check.c
->>> @@ -1344,6 +1344,48 @@ static int read_intra_function_call(struct 
->>> objtool_file *file)
->>>       return 0;
->>>   }
->>> +static int read_retpoline_ret(struct objtool_file *file)
->>> +{
->>> +    struct section *sec;
->>> +    struct instruction *insn;
->>> +    struct rela *rela;
->>> +
->>> +    sec = find_section_by_name(file->elf, 
->>> ".rela.discard.retpoline_ret");
->>> +    if (!sec)
->>> +        return 0;
->>> +
->>> +    list_for_each_entry(rela, &sec->rela_list, list) {
->>> +        if (rela->sym->type != STT_SECTION) {
->>> +            WARN("unexpected relocation symbol type in %s",
->>> +                 sec->name);
->>> +            return -1;
->>> +        }
->>> +
->>> +        insn = find_insn(file, rela->sym->sec, rela->addend);
->>> +        if (!insn) {
->>> +            WARN("bad .discard.retpoline_ret entry");
->>> +            return -1;
->>> +        }
->>> +
->>> +        if (insn->type != INSN_RETURN) {
->>> +            WARN_FUNC("retpoline_ret not a return",
->>> +                  insn->sec, insn->offset);
->>> +            return -1;
->>> +        }
->>> +
->>> +        insn->retpoline_ret = true;
->>> +        /*
->>> +         * For the impact on the stack, make a return trampoline
->>> +         * behaves like a pop of the return address.
->>> +         */
->>> +        insn->stack_op.src.type = OP_SRC_POP;
->>> +        insn->stack_op.dest.type = OP_DEST_REG;
->>> +        insn->stack_op.dest.reg = CFI_RA;
->>> +    }
->>> +
->>> +    return 0;
->>> +}
->>> +
->>>   static void mark_rodata(struct objtool_file *file)
->>>   {
->>>       struct section *sec;
->>> @@ -1403,6 +1445,10 @@ static int decode_sections(struct objtool_file 
->>> *file)
->>>       if (ret)
->>>           return ret;
->>> +    ret = read_retpoline_ret(file);
->>> +    if (ret)
->>> +        return ret;
->>> +
->>>       ret = add_call_destinations(file);
->>>       if (ret)
->>>           return ret;
->>> @@ -1432,7 +1478,8 @@ static bool is_fentry_call(struct instruction 
->>> *insn)
->>>       return false;
->>>   }
->>> -static bool has_modified_stack_frame(struct insn_state *state)
->>> +static bool has_modified_stack_frame(struct insn_state *state,
->>> +                     bool check_registers)
->>>   {
->>>       int i;
->>> @@ -1442,6 +1489,9 @@ static bool has_modified_stack_frame(struct 
->>> insn_state *state)
->>>           state->drap)
->>>           return true;
->>> +    if (!check_registers)
->>> +        return false;
->>> +
->>>       for (i = 0; i < CFI_NUM_REGS; i++)
->>>           if (state->regs[i].base != initial_func_cfi.regs[i].base ||
->>>               state->regs[i].offset != initial_func_cfi.regs[i].offset)
->>> @@ -1987,7 +2037,7 @@ static int validate_call(struct instruction 
->>> *insn, struct insn_state *state)
->>>   static int validate_sibling_call(struct instruction *insn, struct 
->>> insn_state *state)
->>>   {
->>> -    if (has_modified_stack_frame(state)) {
->>> +    if (has_modified_stack_frame(state, true)) {
->>>           WARN_FUNC("sibling call from callable instruction with 
->>> modified stack frame",
->>>                   insn->sec, insn->offset);
->>>           return 1;
->>> @@ -2009,6 +2059,7 @@ static int validate_branch(struct objtool_file 
->>> *file, struct symbol *func,
->>>       struct alternative *alt;
->>>       struct instruction *insn, *next_insn;
->>>       struct section *sec;
->>> +    bool check_registers;
->>>       u8 visited;
->>>       int ret;
->>> @@ -2130,7 +2181,28 @@ static int validate_branch(struct objtool_file 
->>> *file, struct symbol *func,
->>>                   return 1;
->>>               }
->>> -            if (func && has_modified_stack_frame(&state)) {
->>> +            /*
->>> +             * With retpoline, the return instruction is used
->>> +             * to branch to an address stored on the stack.
->>> +             * So when we reach the ret instruction, the stack
->>> +             * frame has been modified with the address to
->>> +             * branch to and we need update the stack state.
->>> +             *
->>> +             * The retpoline address to branch to is typically
->>> +             * pushed on the stack from a register, but this
->>> +             * confuses the logic which checks callee saved
->>> +             * registers. So we don't check if registers have
->>> +             * been modified if we have a return trampoline.
->>
->> I think there are two different things to consider here.
->>
->> First, the update of the stack frame which I believe should be done
->> when returning from intra_function_calls, as it undoes what the call
->> instruction did (push more stuff on the stack in the case of x86).
-> 
-> The problem is that an intra-function call is not necessarily going
-> to return. With retpoline (or RSB stuffing) intra-function calls are
-> basically fake calls only present to fill the RSB buffer. Such calls
-> won't return, the stack pointer is just adjusted to cancel the impact
-> of these calls on the stack.
-> 
+Minor nit.
 
-Right, but running into an intra-function call will start a validate 
-branch with a modified stack frame.
+I have not seen a patch where you remove proc_self and proc_thread_self
+from struct pid_namepace.
 
-So, starting from an intra-function call, if we run into a return, I 
-guess objtool will complain about a return with modified stack frame.
+Ideally it would have been in this patch.  But as it won't break
+anyone's bisection can you please have a follow up patch that removes
+those fields?
 
-My understanding is that once you find an intra-function call, either 
-you hit a return, ending the branch, so the return should undo the 
-modification the intra-function call did (whether is it a retpoline 
-return or not). Otherwise, the intra-function call branch will need to 
-reach an end in some way (e.g. hitting a CONTEXT_SWITCH instruction, 
-calling a dead_end_function).
+Thank you,
+Eric
 
-Am I missing something?
 
--- 
-Julien Thierry
 
+> +
+> +static inline struct proc_fs_info *proc_sb_info(struct super_block *sb)
+> +{
+> +	return sb->s_fs_info;
+> +}
+> +
+>  #ifdef CONFIG_PROC_FS
+>  
+>  typedef int (*proc_write_t)(struct file *, char *, size_t);
+> @@ -161,6 +172,7 @@ int open_related_ns(struct ns_common *ns,
+>  /* get the associated pid namespace for a file in procfs */
+>  static inline struct pid_namespace *proc_pid_ns(const struct inode *inode)
+>  {
+> +	return proc_sb_info(inode->i_sb)->pid_ns;
+>  	return inode->i_sb->s_fs_info;
+>  }
