@@ -2,96 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FADE19C911
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E2A19C91E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 20:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390069AbgDBSsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 14:48:43 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:41407 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390010AbgDBSsk (ORCPT
+        id S2390090AbgDBSts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 14:49:48 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:44207 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388875AbgDBSts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 14:48:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585853319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=v7Q48lYxslciByEQ33ox9gAR58LiX+bslgB2j4RAZZg=;
-        b=DuErtYTM+PQ7RkBZwhDtUPc960ubSlNRe3A//sZywqkvV8tYadsioHYcaTcTflhfV/hZeu
-        KFio+MfLQAdKff8XfTDDLyOOP1Ea7H73d6oJ0FMVOjaFjQn/Pe+fo5IWdbMN4VfcT20hVF
-        15wqSMsb/JiBneo04eLekiGq3VNlhtc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-129-tcmxRi3mOCKRGGysVKZOQQ-1; Thu, 02 Apr 2020 14:48:38 -0400
-X-MC-Unique: tcmxRi3mOCKRGGysVKZOQQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6BDD7107ACC4;
-        Thu,  2 Apr 2020 18:48:36 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-29.ams2.redhat.com [10.36.114.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8801460BF3;
-        Thu,  2 Apr 2020 18:48:34 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v1 5/5] KVM: s390: vsie: gmap_table_walk() simplifications
-Date:   Thu,  2 Apr 2020 20:48:19 +0200
-Message-Id: <20200402184819.34215-6-david@redhat.com>
-In-Reply-To: <20200402184819.34215-1-david@redhat.com>
-References: <20200402184819.34215-1-david@redhat.com>
+        Thu, 2 Apr 2020 14:49:48 -0400
+Received: by mail-qv1-f68.google.com with SMTP id ef12so2252726qvb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 11:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rXwjyGP26101Wo2WQdFwUCHoIS6KXBVoETEpWKnCfK8=;
+        b=PhPOkxvfnB+/LyyTLyyYkDJFzSiz58JYMfIQuD27iuBC4Agaqr2Bdgq/LhWUwuHfMU
+         BbkiZMFtqahR2A7VCPESi5XOF26AXlZG3K/Tnh7/2ofgd9Sh9Z0qkJxZB1lNyNrcKovH
+         9o5x5QbX4SpplFP8gcnjroNsmuMSLj6IGoOzQ5a+sboV4O95pSYIhUmKa8sg4iEWdaAt
+         y/oW+F8ntE3stVH4oO6itG3hMKUiPZAybWJBOWVQE7Su2pgSXWLgKNEtQ9rQk8ZqrGly
+         pNnP2SjdcYhjj/N/BIaxVoJjrQaMBy7/8ov+DEWHzf/HVRDIOE+9lXiVxV63v9Nii+RI
+         OiQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rXwjyGP26101Wo2WQdFwUCHoIS6KXBVoETEpWKnCfK8=;
+        b=E7V0oupVWxlEUrJsn9Z6IQGRdb8jir0IyuxPJO2Sn7D/a9mesulh4qPUCxxpcTxlhv
+         64+PqewRyL5+JKom+WBVYu8Hij7Wa2fMRrTpqE8eohx29jUbwBWx8Y+g6hrovi/3QiZ/
+         /y9MkUqL9tt7prlc6nnDU+09L1n/owYBPPD2E/iUbyvwimJ2hft3Wb25wk8Q6NiMxps8
+         IG1krQlBBwrqmOKaBG8PCUzfa1LFV+1GcYFohA1ON+177ojRkp8GI43de5bfPc9NiyXL
+         6GYkeDu7owJGQQrpHYHXQuxs5PbG4saziVTv+Gs9V3qNAfZONStukSvKewoiiFZriNXD
+         HJ1Q==
+X-Gm-Message-State: AGi0Pubtz8TsBIQHhRDD5GVoJnU2HgVmYA+HGrIF2ih5volbtKvOhWzv
+        aKYuxFa2/RUgvb/61CAMBUY=
+X-Google-Smtp-Source: APiQypLg0Xklb0CFHc8Os353L1E5TNDD8P1Y73ggQdvSJC5oXSHHm4XnLJDHRiHXk6c2cWIcjH6N+g==
+X-Received: by 2002:a0c:ea42:: with SMTP id u2mr4696263qvp.226.1585853386337;
+        Thu, 02 Apr 2020 11:49:46 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id c8sm4268858qke.90.2020.04.02.11.49.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 11:49:45 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 158CF409A3; Thu,  2 Apr 2020 15:49:43 -0300 (-03)
+Date:   Thu, 2 Apr 2020 15:49:43 -0300
+To:     Daniel Shaulov <daniel.shaulov@gmail.com>
+Cc:     Daniel Shaulov <daniel.shaulov@granulate.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] perf probe: Add support for DW_OP_call_frame_cfa vars
+Message-ID: <20200402184943.GB23243@kernel.org>
+References: <20200401161954.44640-1-daniel.shaulov@granulate.io>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200401161954.44640-1-daniel.shaulov@granulate.io>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use asce_type where applicable. Also, simplify our sanity check for
-valid table levels and convert it into a WARN_ON_ONCE(). Check if we even
-have a valid gmap shadow as the very first step.
+Em Wed, Apr 01, 2020 at 07:19:52PM +0300, Daniel Shaulov escreveu:
+> Add support for probes on variables with DW_OP_call_frame_cfa
+> as the dwarf operation in the debug info.
+> 
+> Some compilers (specifically Golang compiler) output
+> DW_OP_call_frame_cfa instead of DW_OP_fbreg for variables
+> on the stack. If DW_OP_call_frame_cfa is the only expression
+> than it is the same as DW_OP_fbreg with an offset of zero.
+> In the case of the Golang compiler, DW_OP_call_frame_cfa may
+> be followed by DW_OP_consts, with a number and than DW_OP_plus.
+> This trio is the same as DW_OP_fbreg with the number from
+> DW_OP_consts as the offset.
+> 
+> With this change, probing on functions in Golang with variables works.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- arch/s390/mm/gmap.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Masami, can I have your Reviewed-by, please?
 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index fd32ab566f57..3c801dae7988 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -790,17 +790,18 @@ static inline unsigned long *gmap_table_walk(struct=
- gmap *gmap,
- 	const int asce_type =3D gmap->asce & _ASCE_TYPE_MASK;
- 	unsigned long *table;
-=20
--	if ((gmap->asce & _ASCE_TYPE_MASK) + 4 < (level * 4))
--		return NULL;
- 	if (gmap_is_shadow(gmap) && gmap->removed)
- 		return NULL;
-=20
-+	if (WARN_ON_ONCE(level > (asce_type >> 2) + 1))
-+		return NULL;
-+
- 	if (WARN_ON_ONCE(asce_type !=3D _ASCE_TYPE_REGION1) &&
- 			 gaddr & (-1UL << (31 + (asce_type >> 2) * 11)))
- 		return NULL;
-=20
- 	table =3D gmap->table;
--	switch (gmap->asce & _ASCE_TYPE_MASK) {
-+	switch (asce_type) {
- 	case _ASCE_TYPE_REGION1:
- 		table +=3D (gaddr & _REGION1_INDEX) >> _REGION1_SHIFT;
- 		if (level =3D=3D 4)
---=20
-2.25.1
+Daniel, next time please consider providing precise steps to show what
+wasn't working and then how the patch solves the problem, i.e. get some
+go program, show the command lines used to build, probe, etc.
 
+- Arnaldo
+ 
+> Signed-off-by: Daniel Shaulov <daniel.shaulov@granulate.io>
+> ---
+>  tools/perf/util/probe-finder.c | 16 ++++++++++++++--
+>  1 file changed, 14 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/probe-finder.c b/tools/perf/util/probe-finder.c
+> index e4cff49384f4..866b17aea263 100644
+> --- a/tools/perf/util/probe-finder.c
+> +++ b/tools/perf/util/probe-finder.c
+> @@ -240,11 +240,23 @@ static int convert_variable_location(Dwarf_Die *vr_die, Dwarf_Addr addr,
+>  	}
+>  
+>  	/* If this is based on frame buffer, set the offset */
+> -	if (op->atom == DW_OP_fbreg) {
+> +	if (op->atom == DW_OP_fbreg || op->atom == DW_OP_call_frame_cfa) {
+>  		if (fb_ops == NULL)
+>  			return -ENOTSUP;
+>  		ref = true;
+> -		offs = op->number;
+> +		if (op->atom == DW_OP_fbreg) {
+> +			offs = op->number;
+> +		} else if (nops == 3) {
+> +			/*
+> +			 * In the case of DW_OP_call_frame_cfa, we either have
+> +			 * an offset of 0 or we have two more expressions that
+> +			 * add a const
+> +			 */
+> +			if ((op + 1)->atom != DW_OP_consts ||
+> +			    (op + 2)->atom != DW_OP_plus)
+> +				return -ENOTSUP;
+> +			offs = (op + 1)->number;
+> +		}
+>  		op = &fb_ops[0];
+>  	}
+>  
+> -- 
+> 2.22.0
+> 
+
+-- 
+
+- Arnaldo
