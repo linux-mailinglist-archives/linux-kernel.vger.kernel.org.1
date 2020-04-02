@@ -2,238 +2,449 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD3E19C726
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBAD19C731
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 18:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388583AbgDBQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 12:35:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37148 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732404AbgDBQfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 12:35:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 989D8ABAD;
-        Thu,  2 Apr 2020 16:35:01 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 19D641E11F4; Thu,  2 Apr 2020 18:35:01 +0200 (CEST)
-Date:   Thu, 2 Apr 2020 18:35:01 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] MM: replace PF_LESS_THROTTLE with PF_LOCAL_THROTTLE
-Message-ID: <20200402163501.GC9751@quack2.suse.cz>
-References: <87tv2b7q72.fsf@notabene.neil.brown.name>
- <87v9miydai.fsf@notabene.neil.brown.name>
- <87sghmyd8v.fsf@notabene.neil.brown.name>
+        id S2389859AbgDBQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 12:37:55 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45984 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388555AbgDBQhy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 12:37:54 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032G9bNx186492;
+        Thu, 2 Apr 2020 16:37:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=nmnGr+7vh57uubOAYOuLY5ehia4gG0WmAEb8+bA6Isk=;
+ b=T8dE2Z0OuKOSl6plVr3FyesLNmzeg2aQsek4QbjkLHWsvUBDr1lTXDdgm+fwe5PPIAFy
+ 0B4w7CA+JetsPf+NHhcnRUdEaSFvcWPtJzCrMOh1iUloxd2BRzuJnOpIK3CKsW2ug1+9
+ 4AcoOvVG7cUPVXe9r80Ondhnz2j6FHX98NP5V9lH6Lk8HrTMFwp278XVtLP01KrB/vN0
+ UgmVeU5hC5Wt1XiB26taNJDSIKLu561zgYaNBYoPbpNSnE3lc0wiS9I6vh9MYrsS/3Xg
+ gPQmxJEbkKq4HLHqAbREjHOC757iABu33KyjErw8n0GSz3ZCyoK6XHikRRnhuKqMxvES 7g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 303yunf6bc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 16:37:27 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032G8GiF159126;
+        Thu, 2 Apr 2020 16:37:27 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 302ga2qp6m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Apr 2020 16:37:26 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 032GbM9Y019905;
+        Thu, 2 Apr 2020 16:37:22 GMT
+Received: from vbusired-dt (/10.154.166.66)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 02 Apr 2020 09:37:21 -0700
+Date:   Thu, 2 Apr 2020 11:37:17 -0500
+From:   Venu Busireddy <venu.busireddy@oracle.com>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rientjes@google.com, srutherford@google.com, luto@kernel.org
+Subject: Re: [PATCH v6 01/14] KVM: SVM: Add KVM_SEV SEND_START command
+Message-ID: <20200402163717.GA653926@vbusired-dt>
+References: <cover.1585548051.git.ashish.kalra@amd.com>
+ <3f90333959fd49bed184d45a761cc338424bf614.1585548051.git.ashish.kalra@amd.com>
+ <20200402062726.GA647295@vbusired-dt>
+ <89a586e4-8074-0d32-f384-a4597975d129@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <87sghmyd8v.fsf@notabene.neil.brown.name>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <89a586e4-8074-0d32-f384-a4597975d129@amd.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=5 malwarescore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004020131
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
+ suspectscore=5 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004020131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 02-04-20 10:53:20, NeilBrown wrote:
+On 2020-04-02 07:59:54 -0500, Brijesh Singh wrote:
+> Hi Venu,
 > 
-> PF_LESS_THROTTLE exists for loop-back nfsd, and a similar need in the
-> loop block driver, where a daemon needs to write to one bdi in
-> order to free up writes queued to another bdi.
+> Thanks for the feedback.
 > 
-> The daemon sets PF_LESS_THROTTLE and gets a larger allowance of dirty
-> pages, so that it can still dirty pages after other processses have been
-> throttled.
+> On 4/2/20 1:27 AM, Venu Busireddy wrote:
+> > On 2020-03-30 06:19:59 +0000, Ashish Kalra wrote:
+> >> From: Brijesh Singh <Brijesh.Singh@amd.com>
+> >>
+> >> The command is used to create an outgoing SEV guest encryption context.
+> >>
+> >> Cc: Thomas Gleixner <tglx@linutronix.de>
+> >> Cc: Ingo Molnar <mingo@redhat.com>
+> >> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> >> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> >> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+> >> Cc: Joerg Roedel <joro@8bytes.org>
+> >> Cc: Borislav Petkov <bp@suse.de>
+> >> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> >> Cc: x86@kernel.org
+> >> Cc: kvm@vger.kernel.org
+> >> Cc: linux-kernel@vger.kernel.org
+> >> Reviewed-by: Steve Rutherford <srutherford@google.com>
+> >> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> >> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> >> ---
+> >>  .../virt/kvm/amd-memory-encryption.rst        |  27 ++++
+> >>  arch/x86/kvm/svm.c                            | 128 ++++++++++++++++++
+> >>  include/linux/psp-sev.h                       |   8 +-
+> >>  include/uapi/linux/kvm.h                      |  12 ++
+> >>  4 files changed, 171 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/Documentation/virt/kvm/amd-memory-encryption.rst b/Documentation/virt/kvm/amd-memory-encryption.rst
+> >> index c3129b9ba5cb..4fd34fc5c7a7 100644
+> >> --- a/Documentation/virt/kvm/amd-memory-encryption.rst
+> >> +++ b/Documentation/virt/kvm/amd-memory-encryption.rst
+> >> @@ -263,6 +263,33 @@ Returns: 0 on success, -negative on error
+> >>                  __u32 trans_len;
+> >>          };
+> >>  
+> >> +10. KVM_SEV_SEND_START
+> >> +----------------------
+> >> +
+> >> +The KVM_SEV_SEND_START command can be used by the hypervisor to create an
+> >> +outgoing guest encryption context.
+> >> +
+> >> +Parameters (in): struct kvm_sev_send_start
+> >> +
+> >> +Returns: 0 on success, -negative on error
+> >> +
+> >> +::
+> >> +        struct kvm_sev_send_start {
+> >> +                __u32 policy;                 /* guest policy */
+> >> +
+> >> +                __u64 pdh_cert_uaddr;         /* platform Diffie-Hellman certificate */
+> >> +                __u32 pdh_cert_len;
+> >> +
+> >> +                __u64 plat_certs_uadr;        /* platform certificate chain */
+> > Could this please be changed to plat_certs_uaddr, as it is referred to
+> > in the rest of the code?
+> >
+> >> +                __u32 plat_certs_len;
+> >> +
+> >> +                __u64 amd_certs_uaddr;        /* AMD certificate */
+> >> +                __u32 amd_cert_len;
+> > Could this please be changed to amd_certs_len, as it is referred to in
+> > the rest of the code?
+> >
+> >> +
+> >> +                __u64 session_uaddr;          /* Guest session information */
+> >> +                __u32 session_len;
+> >> +        };
+> >> +
+> >>  References
+> >>  ==========
+> >>  
+> >> diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
+> >> index 50d1ebafe0b3..63d172e974ad 100644
+> >> --- a/arch/x86/kvm/svm.c
+> >> +++ b/arch/x86/kvm/svm.c
+> >> @@ -7149,6 +7149,131 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> >>  	return ret;
+> >>  }
+> >>  
+> >> +/* Userspace wants to query session length. */
+> >> +static int
+> >> +__sev_send_start_query_session_length(struct kvm *kvm, struct kvm_sev_cmd *argp,
+> >> +				      struct kvm_sev_send_start *params)
+> >> +{
+> >> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> >> +	struct sev_data_send_start *data;
+> >> +	int ret;
+> >> +
+> >> +	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> >> +	if (data == NULL)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	data->handle = sev->handle;
+> >> +	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_START, data, &argp->error);
+> >> +
+> >> +	params->session_len = data->session_len;
+> >> +	if (copy_to_user((void __user *)(uintptr_t)argp->data, params,
+> >> +				sizeof(struct kvm_sev_send_start)))
+> >> +		ret = -EFAULT;
+> >> +
+> >> +	kfree(data);
+> >> +	return ret;
+> >> +}
+> >> +
+> >> +static int sev_send_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+> >> +{
+> >> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> >> +	struct sev_data_send_start *data;
+> >> +	struct kvm_sev_send_start params;
+> >> +	void *amd_certs, *session_data;
+> >> +	void *pdh_cert, *plat_certs;
+> >> +	int ret;
+> >> +
+> >> +	if (!sev_guest(kvm))
+> >> +		return -ENOTTY;
+> >> +
+> >> +	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
+> >> +				sizeof(struct kvm_sev_send_start)))
+> >> +		return -EFAULT;
+> >> +
+> >> +	/* if session_len is zero, userspace wants to query the session length */
+> >> +	if (!params.session_len)
+> >> +		return __sev_send_start_query_session_length(kvm, argp,
+> >> +				&params);
+> >> +
+> >> +	/* some sanity checks */
+> >> +	if (!params.pdh_cert_uaddr || !params.pdh_cert_len ||
+> >> +	    !params.session_uaddr || params.session_len > SEV_FW_BLOB_MAX_SIZE)
+> >> +		return -EINVAL;
+> >> +
+> >> +	/* allocate the memory to hold the session data blob */
+> >> +	session_data = kmalloc(params.session_len, GFP_KERNEL_ACCOUNT);
+> >> +	if (!session_data)
+> >> +		return -ENOMEM;
+> >> +
+> >> +	/* copy the certificate blobs from userspace */
+> >> +	pdh_cert = psp_copy_user_blob(params.pdh_cert_uaddr,
+> >> +				params.pdh_cert_len);
+> >> +	if (IS_ERR(pdh_cert)) {
+> >> +		ret = PTR_ERR(pdh_cert);
+> >> +		goto e_free_session;
+> >> +	}
+> >> +
+> >> +	plat_certs = psp_copy_user_blob(params.plat_certs_uaddr,
+> >> +				params.plat_certs_len);
+> >> +	if (IS_ERR(plat_certs)) {
+> >> +		ret = PTR_ERR(plat_certs);
+> >> +		goto e_free_pdh;
+> >> +	}
+> >> +
+> >> +	amd_certs = psp_copy_user_blob(params.amd_certs_uaddr,
+> >> +				params.amd_certs_len);
+> >> +	if (IS_ERR(amd_certs)) {
+> >> +		ret = PTR_ERR(amd_certs);
+> >> +		goto e_free_plat_cert;
+> >> +	}
+> >> +
+> >> +	data = kzalloc(sizeof(*data), GFP_KERNEL_ACCOUNT);
+> >> +	if (data == NULL) {
+> >> +		ret = -ENOMEM;
+> >> +		goto e_free_amd_cert;
+> >> +	}
+> >> +
+> >> +	/* populate the FW SEND_START field with system physical address */
+> >> +	data->pdh_cert_address = __psp_pa(pdh_cert);
+> >> +	data->pdh_cert_len = params.pdh_cert_len;
+> >> +	data->plat_certs_address = __psp_pa(plat_certs);
+> >> +	data->plat_certs_len = params.plat_certs_len;
+> >> +	data->amd_certs_address = __psp_pa(amd_certs);
+> >> +	data->amd_certs_len = params.amd_certs_len;
+> >> +	data->session_address = __psp_pa(session_data);
+> >> +	data->session_len = params.session_len;
+> >> +	data->handle = sev->handle;
+> >> +
+> >> +	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_START, data, &argp->error);
+> >> +
+> >> +	if (ret)
+> >> +		goto e_free;
+> >> +
+> >> +	if (copy_to_user((void __user *)(uintptr_t) params.session_uaddr,
+> >> +			session_data, params.session_len)) {
+> >> +		ret = -EFAULT;
+> >> +		goto e_free;
+> >> +	}
+> > To optimize the amount of data being copied to user space, could the
+> > above section of code changed as follows?
+> >
+> > 	params.session_len = data->session_len;
+> > 	if (copy_to_user((void __user *)(uintptr_t) params.session_uaddr,
+> > 			session_data, params.session_len)) {
+> > 		ret = -EFAULT;
+> > 		goto e_free;
+> > 	}
 > 
-> This approach was designed when all threads were blocked equally,
-> independently on which device they were writing to, or how fast it was.
-> Since that time the writeback algorithm has changed substantially with
-> different threads getting different allowances based on non-trivial
-> heuristics.  This means the simple "add 25%" heuristic is no longer
-> reliable.
 > 
-> This patch changes the heuristic to ignore the global limits and
-> consider only the limit relevant to the bdi being written to.  This
-> approach is already available for BDI_CAP_STRICTLIMIT users (fuse) and
-> should not introduce surprises.  This has the desired result of
-> protecting the task from the consequences of large amounts of dirty data
-> queued for other devices.
-> 
-> This approach of "only consider the target bdi" is consistent with the
-> other use of PF_LESS_THROTTLE in current_may_throttle(), were it causes
-> attention to be focussed only on the target bdi.
-> 
-> So this patch
->  - renames PF_LESS_THROTTLE to PF_LOCAL_THROTTLE,
->  - remove the 25% bonus that that flag gives, and
->  - imposes 'strictlimit' handling for any process with PF_LOCAL_THROTTLE
->    set.
-> 
-> Note that previously realtime threads were treated the same as
-> PF_LESS_THROTTLE threads.  This patch does *not* change the behvaiour for
-> real-time threads, so it is now different from the behaviour of nfsd and
-> loop tasks.  I don't know what is wanted for realtime.
-> 
-> Signed-off-by: NeilBrown <neilb@suse.de>
+> We should not be using the data->session_len, it will cause -EFAULT when
+> user has not allocated enough space in the session_uaddr. Lets consider
+> the case where user passes session_len=10 but firmware thinks the
+> session length should be 64. In that case the data->session_len will
+> contains a value of 64 but userspace has allocated space for 10 bytes
+> and copy_to_user() will fail. If we are really concern about the amount
+> of data getting copied to userspace then use min_t(size_t,
+> params.session_len, data->session_len).
 
-This makes sense to me and the patch looks good. You can add:
+We are allocating a buffer of params.session_len size and passing that
+buffer, and that length via data->session_len, to the firmware. Why would
+the firmware set data->session_len to a larger value, in spite of telling
+it that the buffer is only params.session_len long? I thought that only
+the reverse is possible, that is, the user sets the params.session_len
+to the MAX, but the session data is actually smaller than that size.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Also, if for whatever reason the firmware sets data->session_len to
+a larger value than what is passed, what is the user space expected
+to do when the call returns? If the user space tries to access
+params.session_len amount of data, it will possibly get a memory access
+violation, because it did not originally allocate that large a buffer.
 
-Thanks.
+If we do go with using min_t(size_t, params.session_len,
+data->session_len), then params.session_len should also be set to the
+smaller of the two, right?
 
-								Honza
-
-> ---
->  drivers/block/loop.c  |  2 +-
->  fs/nfsd/vfs.c         |  9 +++++----
->  include/linux/sched.h |  2 +-
->  kernel/sys.c          |  2 +-
->  mm/page-writeback.c   | 10 ++++++----
->  mm/vmscan.c           |  4 ++--
->  6 files changed, 16 insertions(+), 13 deletions(-)
+> >> +
+> >> +	params.policy = data->policy;
+> >> +	params.session_len = data->session_len;
+> >> +	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params,
+> >> +				sizeof(struct kvm_sev_send_start)))
+> >> +		ret = -EFAULT;
+> > Since the only fields that are changed in the kvm_sev_send_start structure
+> > are session_len and policy, why do we need to copy the entire structure
+> > back to the user? Why not just those two values? Please see the changes
+> > proposed to kvm_sev_send_start structure further below to accomplish this.
 > 
-> diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-> index 739b372a5112..2c59371ce936 100644
-> --- a/drivers/block/loop.c
-> +++ b/drivers/block/loop.c
-> @@ -897,7 +897,7 @@ static void loop_unprepare_queue(struct loop_device *lo)
->  
->  static int loop_kthread_worker_fn(void *worker_ptr)
->  {
-> -	current->flags |= PF_LESS_THROTTLE | PF_MEMALLOC_NOIO;
-> +	current->flags |= PF_LOCAL_THROTTLE | PF_MEMALLOC_NOIO;
->  	return kthread_worker_fn(worker_ptr);
->  }
->  
-> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-> index 0aa02eb18bd3..c3fbab1753ec 100644
-> --- a/fs/nfsd/vfs.c
-> +++ b/fs/nfsd/vfs.c
-> @@ -979,12 +979,13 @@ nfsd_vfs_write(struct svc_rqst *rqstp, struct svc_fh *fhp, struct nfsd_file *nf,
->  
->  	if (test_bit(RQ_LOCAL, &rqstp->rq_flags))
->  		/*
-> -		 * We want less throttling in balance_dirty_pages()
-> -		 * and shrink_inactive_list() so that nfs to
-> +		 * We want throttling in balance_dirty_pages()
-> +		 * and shrink_inactive_list() to only consider
-> +		 * the backingdev we are writing to, so that nfs to
->  		 * localhost doesn't cause nfsd to lock up due to all
->  		 * the client's dirty pages or its congested queue.
->  		 */
-> -		current->flags |= PF_LESS_THROTTLE;
-> +		current->flags |= PF_LOCAL_THROTTLE;
->  
->  	exp = fhp->fh_export;
->  	use_wgather = (rqstp->rq_vers == 2) && EX_WGATHER(exp);
-> @@ -1037,7 +1038,7 @@ nfsd_vfs_write(struct svc_rqst *rqstp, struct svc_fh *fhp, struct nfsd_file *nf,
->  		nfserr = nfserrno(host_err);
->  	}
->  	if (test_bit(RQ_LOCAL, &rqstp->rq_flags))
-> -		current_restore_flags(pflags, PF_LESS_THROTTLE);
-> +		current_restore_flags(pflags, PF_LOCAL_THROTTLE);
->  	return nfserr;
->  }
->  
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 04278493bf15..5dcd27abc8cd 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1473,7 +1473,7 @@ extern struct pid *cad_pid;
->  #define PF_KSWAPD		0x00020000	/* I am kswapd */
->  #define PF_MEMALLOC_NOFS	0x00040000	/* All allocation requests will inherit GFP_NOFS */
->  #define PF_MEMALLOC_NOIO	0x00080000	/* All allocation requests will inherit GFP_NOIO */
-> -#define PF_LESS_THROTTLE	0x00100000	/* Throttle me less: I clean memory */
-> +#define PF_LOCAL_THROTTLE	0x00100000	/* Throttle me less: I clean memory */
->  #define PF_KTHREAD		0x00200000	/* I am a kernel thread */
->  #define PF_RANDOMIZE		0x00400000	/* Randomize virtual address space */
->  #define PF_SWAPWRITE		0x00800000	/* Allowed to write to swap */
-> diff --git a/kernel/sys.c b/kernel/sys.c
-> index d325f3ab624a..180a2fa33f7f 100644
-> --- a/kernel/sys.c
-> +++ b/kernel/sys.c
-> @@ -2262,7 +2262,7 @@ int __weak arch_prctl_spec_ctrl_set(struct task_struct *t, unsigned long which,
->  	return -EINVAL;
->  }
->  
-> -#define PR_IO_FLUSHER (PF_MEMALLOC_NOIO | PF_LESS_THROTTLE)
-> +#define PR_IO_FLUSHER (PF_MEMALLOC_NOIO | PF_LOCAL_THROTTLE)
->  
->  SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
->  		unsigned long, arg4, unsigned long, arg5)
-> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 2caf780a42e7..2afb09fa2fe0 100644
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -387,8 +387,7 @@ static unsigned long global_dirtyable_memory(void)
->   * Calculate @dtc->thresh and ->bg_thresh considering
->   * vm_dirty_{bytes|ratio} and dirty_background_{bytes|ratio}.  The caller
->   * must ensure that @dtc->avail is set before calling this function.  The
-> - * dirty limits will be lifted by 1/4 for PF_LESS_THROTTLE (ie. nfsd) and
-> - * real-time tasks.
-> + * dirty limits will be lifted by 1/4 for real-time tasks.
->   */
->  static void domain_dirty_limits(struct dirty_throttle_control *dtc)
->  {
-> @@ -436,7 +435,7 @@ static void domain_dirty_limits(struct dirty_throttle_control *dtc)
->  	if (bg_thresh >= thresh)
->  		bg_thresh = thresh / 2;
->  	tsk = current;
-> -	if (tsk->flags & PF_LESS_THROTTLE || rt_task(tsk)) {
-> +	if (rt_task(tsk)) {
->  		bg_thresh += bg_thresh / 4 + global_wb_domain.dirty_limit / 32;
->  		thresh += thresh / 4 + global_wb_domain.dirty_limit / 32;
->  	}
-> @@ -486,7 +485,7 @@ static unsigned long node_dirty_limit(struct pglist_data *pgdat)
->  	else
->  		dirty = vm_dirty_ratio * node_memory / 100;
->  
-> -	if (tsk->flags & PF_LESS_THROTTLE || rt_task(tsk))
-> +	if (rt_task(tsk))
->  		dirty += dirty / 4;
->  
->  	return dirty;
-> @@ -1580,6 +1579,9 @@ static void balance_dirty_pages(struct bdi_writeback *wb,
->  	bool strictlimit = bdi->capabilities & BDI_CAP_STRICTLIMIT;
->  	unsigned long start_time = jiffies;
->  
-> +	if (current->flags & PF_LOCAL_THROTTLE)
-> +		/* This task must only be throttled by its own writeback */
-> +		strictlimit = true;
->  	for (;;) {
->  		unsigned long now = jiffies;
->  		unsigned long dirty, thresh, bg_thresh;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 876370565455..c5cf25938c56 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1880,13 +1880,13 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  
->  /*
->   * If a kernel thread (such as nfsd for loop-back mounts) services
-> - * a backing device by writing to the page cache it sets PF_LESS_THROTTLE.
-> + * a backing device by writing to the page cache it sets PF_LOCAL_THROTTLE.
->   * In that case we should only throttle if the backing device it is
->   * writing to is congested.  In other cases it is safe to throttle.
->   */
->  static int current_may_throttle(void)
->  {
-> -	return !(current->flags & PF_LESS_THROTTLE) ||
-> +	return !(current->flags & PF_LOCAL_THROTTLE) ||
->  		current->backing_dev_info == NULL ||
->  		bdi_write_congested(current->backing_dev_info);
->  }
-> -- 
-> 2.26.0
+> I think we also need to consider the code readability while saving the
+> CPU cycles. This is very small structure. By duplicating into two calls
+> #1 copy params.policy and #2 copy params.session_len we will add more
+> CPU cycle. And, If we get creative and rearrange the structure then code
+> readability is lost because now the copy will depend on how the
+> structure is layout in the memory.
+
+I was not recommending splitting that call into two. That would certainly
+be more expensive, than copying the entire structure. That is the reason
+why I suggested reordering the members of kvm_sev_send_start. Isn't
+there plenty of code where structures are defined in a way to keep the
+data movement efficient? :-)
+
+Please see my other comment below.
+
 > 
+> >
+> > 	params.policy = data->policy;
+> > 	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params,
+> > 			sizeof(params.policy) + sizeof(params.session_len))
+> > 		ret = -EFAULT;
+> >> +
+> >> +e_free:
+> >> +	kfree(data);
+> >> +e_free_amd_cert:
+> >> +	kfree(amd_certs);
+> >> +e_free_plat_cert:
+> >> +	kfree(plat_certs);
+> >> +e_free_pdh:
+> >> +	kfree(pdh_cert);
+> >> +e_free_session:
+> >> +	kfree(session_data);
+> >> +	return ret;
+> >> +}
+> >> +
+> >>  static int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+> >>  {
+> >>  	struct kvm_sev_cmd sev_cmd;
+> >> @@ -7193,6 +7318,9 @@ static int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+> >>  	case KVM_SEV_LAUNCH_SECRET:
+> >>  		r = sev_launch_secret(kvm, &sev_cmd);
+> >>  		break;
+> >> +	case KVM_SEV_SEND_START:
+> >> +		r = sev_send_start(kvm, &sev_cmd);
+> >> +		break;
+> >>  	default:
+> >>  		r = -EINVAL;
+> >>  		goto out;
+> >> diff --git a/include/linux/psp-sev.h b/include/linux/psp-sev.h
+> >> index 5167bf2bfc75..9f63b9d48b63 100644
+> >> --- a/include/linux/psp-sev.h
+> >> +++ b/include/linux/psp-sev.h
+> >> @@ -323,11 +323,11 @@ struct sev_data_send_start {
+> >>  	u64 pdh_cert_address;			/* In */
+> >>  	u32 pdh_cert_len;			/* In */
+> >>  	u32 reserved1;
+> >> -	u64 plat_cert_address;			/* In */
+> >> -	u32 plat_cert_len;			/* In */
+> >> +	u64 plat_certs_address;			/* In */
+> >> +	u32 plat_certs_len;			/* In */
+> >>  	u32 reserved2;
+> >> -	u64 amd_cert_address;			/* In */
+> >> -	u32 amd_cert_len;			/* In */
+> >> +	u64 amd_certs_address;			/* In */
+> >> +	u32 amd_certs_len;			/* In */
+> >>  	u32 reserved3;
+> >>  	u64 session_address;			/* In */
+> >>  	u32 session_len;			/* In/Out */
+> >> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> >> index 4b95f9a31a2f..17bef4c245e1 100644
+> >> --- a/include/uapi/linux/kvm.h
+> >> +++ b/include/uapi/linux/kvm.h
+> >> @@ -1558,6 +1558,18 @@ struct kvm_sev_dbg {
+> >>  	__u32 len;
+> >>  };
+> >>  
+> >> +struct kvm_sev_send_start {
+> >> +	__u32 policy;
+> >> +	__u64 pdh_cert_uaddr;
+> >> +	__u32 pdh_cert_len;
+> >> +	__u64 plat_certs_uaddr;
+> >> +	__u32 plat_certs_len;
+> >> +	__u64 amd_certs_uaddr;
+> >> +	__u32 amd_certs_len;
+> >> +	__u64 session_uaddr;
+> >> +	__u32 session_len;
+> >> +};
+> > Redo this structure as below:
+> >
+> > struct kvm_sev_send_start {
+> > 	__u32 policy;
+> > 	__u32 session_len;
+> > 	__u64 session_uaddr;
+> > 	__u64 pdh_cert_uaddr;
+> > 	__u32 pdh_cert_len;
+> > 	__u64 plat_certs_uaddr;
+> > 	__u32 plat_certs_len;
+> > 	__u64 amd_certs_uaddr;
+> > 	__u32 amd_certs_len;
+> > };
+> >
+> > Or as below, just to make it look better.
+> >
+> > struct kvm_sev_send_start {
+> > 	__u32 policy;
+> > 	__u32 session_len;
+> > 	__u64 session_uaddr;
+> > 	__u32 pdh_cert_len;
+> > 	__u64 pdh_cert_uaddr;
+> > 	__u32 plat_certs_len;
+> > 	__u64 plat_certs_uaddr;
+> > 	__u32 amd_certs_len;
+> > 	__u64 amd_certs_uaddr;
+> > };
+> >
+> 
+> Wherever applicable, I tried  best to not divert from the SEV spec
+> structure layout. Anyone who is reading the SEV FW spec  will see a
+> similar structure layout in the KVM/PSP header files. I would prefer to
+> stick to that approach.
 
+This structure is in uapi, and is anyway different from the
+sev_data_send_start, right? Does it really need to stay close to the
+firmware structure layout? Just because the firmware folks thought of
+a structure layout, that should not prevent our code to be efficient.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 
+> 
+> >> +
+> >>  #define KVM_DEV_ASSIGN_ENABLE_IOMMU	(1 << 0)
+> >>  #define KVM_DEV_ASSIGN_PCI_2_3		(1 << 1)
+> >>  #define KVM_DEV_ASSIGN_MASK_INTX	(1 << 2)
+> >> -- 
+> >> 2.17.1
+> >>
