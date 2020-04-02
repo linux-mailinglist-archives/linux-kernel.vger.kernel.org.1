@@ -2,147 +2,646 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C048819C630
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4964E19C677
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389453AbgDBPoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:44:06 -0400
-Received: from mail-bn7nam10on2046.outbound.protection.outlook.com ([40.107.92.46]:8028
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389413AbgDBPoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:44:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CjUy8rPCAvA6Q/aZy3GgJjKpBrWVymZ/xWTZme4xOimsP+A/4vzC7XdXmT1PKNGpV8eq4d+M7aufxS9bjcxcRMF7ct/vfLuizMRehJmugIlTWwBG3DXpun74HcKDtmdYOWEPfmFnpywj5cuyuXLqGv+Wq5azOqPu5ZiM6fVsSRtgG51HI54BC39L9T7ui3r1Y+GOAcSGiIPe581EGHgI89ZSpnBU1V8bpgM4skvDAnsadRLcc91cT0LQ/ZFh1hWtr31WHGezB4DFQHP/MgNa6aPdV3OFvfxI/wXMqjGVqVY4BRlIcdwaopqq/TbXFdh/KTaGbgK5Uc44eDT6UUftvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=urZ1Z5Zws6vHH2QwFUM5KbN7S6ite+SjOd8q6/FgyJo=;
- b=H9gNOTUMCAZtHAnN52r6Tm2BlTm8Vl0lJ7gq82jAjAeUgl7S25MTPu3v+vYeIspPimnzbQJh8jxBimVZ5luLo1z566vgMFyEATI/aD0CWbec71wRGp81WeoaWjWiOuT5tEw0du1IegS2U+qOIN1mqJkspOk88Rbvq3WeL4Hxd9L4PKCWW7hUnc7xrDrR1YDsLwohbwr2F1Pp7/wMliN5rzrsljIgDtCvgp2rTzLKAL7P7NhnO/kUyi3Q8LJEykW0Bz9qgmh6wqKiteqohcbLOyM0SsFZPwc6bGOEoA04UgmbLs6yfPI77jLxBAPTuBOGr+4hoW1TrftAyRzRMmG8HA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=urZ1Z5Zws6vHH2QwFUM5KbN7S6ite+SjOd8q6/FgyJo=;
- b=zzzgCgv9t7cXt5lT0Iw6JvhNRh+8VPU5o7jQcZfmyuTEmEaBfg+cf+6ahovDd/s1LQ/40C6s72pnUovxI8QPlcY4WWfDVn+qMHTVezFr8DqBr1EliuyxoNj2FwR5F9hyiuWoLYrv4UkJ10W2tYwmRJxcj2YuqeSu7FGnIEdSXjw=
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com (2603:10b6:a03:4a::18)
- by BYAPR05MB4376.namprd05.prod.outlook.com (2603:10b6:a02:f7::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.12; Thu, 2 Apr
- 2020 15:44:00 +0000
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::7c65:25af:faf7:5331]) by BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::7c65:25af:faf7:5331%2]) with mapi id 15.20.2878.014; Thu, 2 Apr 2020
- 15:44:00 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [patch 2/2] x86/kvm/vmx: Prevent split lock detection induced #AC
- wreckage
-Thread-Topic: [patch 2/2] x86/kvm/vmx: Prevent split lock detection induced
- #AC wreckage
-Thread-Index: AQHWCO7TQEdzxFpLhEGvPpyBQxsUlqhl9XCAgAADv4A=
-Date:   Thu, 2 Apr 2020 15:44:00 +0000
-Message-ID: <18758F52-BB97-4F47-9481-F66AF4465A06@vmware.com>
-References: <20200402123258.895628824@linutronix.de>
- <20200402124205.334622628@linutronix.de>
- <20200402153035.GA13879@linux.intel.com>
-In-Reply-To: <20200402153035.GA13879@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=namit@vmware.com; 
-x-originating-ip: [2601:647:4700:9b2:1153:aafd:5246:5949]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9de6861a-f2fb-45d3-5ea6-08d7d71ca9e1
-x-ms-traffictypediagnostic: BYAPR05MB4376:|BYAPR05MB4376:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR05MB4376A519DF49F212802A6595D0C60@BYAPR05MB4376.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0361212EA8
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(346002)(136003)(366004)(376002)(39860400002)(7416002)(966005)(36756003)(6916009)(81156014)(66476007)(76116006)(66446008)(66556008)(81166006)(8676002)(66946007)(8936002)(64756008)(5660300002)(6486002)(71200400001)(4326008)(478600001)(86362001)(54906003)(2906002)(186003)(33656002)(53546011)(2616005)(6506007)(316002)(6512007);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: vmware.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nIBaSNhF3zlLjF13xy5gYcrsaavGkf5XDIXm/mwKmF2r8p12VrduhFddqqfENRh0N2OYdRzIOtBeMdoXx4dE9M9wMSj2Re0Qd2yEUuoDgnr1lLdhR6Y88+JSx4LPagvzBqLpJuv6BH6CtWFu3cFzKmp+1A84mRItnI2jOckOlAgvj+1ARni2XuCV2c+r/npdt1DTlLyWlDcmdxJ/iOOBJfM0TZqVViOBf39xseR72zaPg5EQNPG8YR6XXZp816XSDVBKHoHaNKOecFb1Y4xlPtEgyzLtcIoY4Ro0EsLacB5ck2+tocblfUOQe3x3/i0l1kYbbcYpxUpy8mFBrGylwnaBVFYgsw9EyHKaz3qQO29/FEa28iLsl3PvF0PdBPMW0afz9zPbS5BbtNt+3mAzA5WaMVoU0ra6Yp6ySjK0qZ4rXFxj3LrxO6cCJpVhS7YZnpH0rPJ1+kHR9hT342MXWrj7d5ZvvXB+IKdDuldsuR3/YmqqS3v8jrIm1Vbn0IvW0b8JzkQJXoVun/7x5qd1Pg==
-x-ms-exchange-antispam-messagedata: 17HJsqsoaPIf7Nf6EqiIHTrEZC1LKdBY7OriGN0NnLl54SwANnyfNk8TtoQrGe1p3ukUr/0gxepVZ9rhVgVfdRhtFQ64zcYdQyrbLSe+qCsl14R4H/hc8IHw5jm21SxLtrZKXr/n5oXjVxtPvHlecRbPIlIs0vN/mLpQg8peU+4MRQrmtyE83AcQ3NYleouYYzzfX0YzLT5b2s4Xkm5XNg==
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <748CE06D1F28FB468C86DF2FF95EBBD8@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9de6861a-f2fb-45d3-5ea6-08d7d71ca9e1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Apr 2020 15:44:00.4380
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: f/7bAuHDyOzgsZTRPq+vIdUHfRzsZRJYaUka1is7jRjACsDxzeMrj3m6KsLOHj+DJYunj72F8aBKWwOlWq8RgQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4376
+        id S2389630AbgDBPwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:52:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:24469 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389498AbgDBPwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 11:52:45 -0400
+IronPort-SDR: cgMrw/BWXLAo+k6e8vcJcquauLz1eWZ3+hC8seAcdrQp+b2LPYcdx96UJswS4eAE2W7kSTQMBu
+ gXfyWfFyP+Rg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 08:52:44 -0700
+IronPort-SDR: otFb8Ztafoi51BChSGTbxIIPBNw9ASi+wDNsekaOeS27dbc/PZlBYLc8BbiDCM/PunQkjffQhb
+ 7EUBSdP2mhNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,336,1580803200"; 
+   d="scan'208";a="253043835"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
+  by orsmga006.jf.intel.com with ESMTP; 02 Apr 2020 08:52:44 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     eranian@google.com, ak@linux.intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH] perf/x86/intel/uncore: Add Ice Lake server uncore support
+Date:   Thu,  2 Apr 2020 08:46:51 -0700
+Message-Id: <1585842411-150452-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Apr 2, 2020, at 8:30 AM, Sean Christopherson <sean.j.christopherson@in=
-tel.com> wrote:
->=20
-> On Thu, Apr 02, 2020 at 02:33:00PM +0200, Thomas Gleixner wrote:
->> Without at least minimal handling for split lock detection induced #AC, =
-VMX
->> will just run into the same problem as the VMWare hypervisor, which was
->> reported by Kenneth.
->>=20
->> It will inject the #AC blindly into the guest whether the guest is prepa=
-red
->> or not.
->>=20
->> Add the minimal required handling for it:
->>=20
->>  - Check guest state whether CR0.AM is enabled and EFLAGS.AC is set.  If
->>    so, then the #AC originated from CPL3 and the guest has is prepared t=
-o
->>    handle it. In this case it does not matter whether the #AC is due to =
-a
->>    split lock or a regular unaligned check.
->>=20
->> - Invoke a minimal split lock detection handler. If the host SLD mode is
->>   sld_warn, then handle it in the same way as user space handling works:
->>   Emit a warning, disable SLD and mark the current task with TIF_SLD.
->>   With that resume the guest without injecting #AC.
->>=20
->>   If the host mode is sld_fatal or sld_off, emit a warning and deliver
->>   the exception to user space which can crash and burn itself.
->>=20
->> Mark the module with MOD_INFO(sld_safe, "Y") so the module loader does n=
-ot
->> force SLD off.
->=20
-> Some comments below.  But, any objection to taking Xiaoyao's patches that
-> do effectively the same things, minus the MOD_INFO()?  I'll repost them i=
-n
-> reply to this thread.
+From: Kan Liang <kan.liang@linux.intel.com>
 
-IIUC they also deal with emulated split-lock accesses in the host, during
-instruction emulation [1]. This seems also to be required, although I am no=
-t
-sure the approach that he took once emulation encounters a split-lock is
-robust.
+The uncore subsystem in Ice Lake server is similar to previous server.
+There are some differences in config register encoding and pci device
+IDs. The uncore PMON units in Ice Lake server include Ubox, Chabox, IIO,
+IRP, M2PCIE, PCU, M2M, PCIE3 and IMC.
 
-[1] https://lore.kernel.org/lkml/20200324151859.31068-5-xiaoyao.li@intel.co=
-m/=
+- For CHA, filter 1 register has been removed. The filter 0 register can
+  be used by and of CHA events to be filterd by Thread/Core-ID. To do
+  so, the control register's tid_en bit must be set to 1.
+- For IIO, there are some changes on event constraints. The MSR address
+  and MSR offsets among counters are also changed.
+- For IRP, the MSR address and MSR offsets among counters are changed.
+- For M2PCIE, the counters are accessed by MSR now. Add new MSR address
+  and MSR offsets. Change event constraints.
+- To determine the number of CHAs, have to read CAPID6(Low) and CAPID7
+  (High) now.
+- For M2M, update the PCICFG address and Device ID.
+- For UPI, update the PCICFG address, Device ID and counter address.
+- For M3UPI, update the PCICFG address, Device ID, counter address and
+  event constraints.
+- For IMC, update the formular to calculate MMIO BAR address, which is
+  MMIO_BASE + specific MEM_BAR offset.
+
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/uncore.c       |   8 +
+ arch/x86/events/intel/uncore.h       |   3 +
+ arch/x86/events/intel/uncore_snbep.c | 511 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 522 insertions(+)
+
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 1ba72c5..cf76d66 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -1476,6 +1476,12 @@ static const struct intel_uncore_init_fun tgl_l_uncore_init __initconst = {
+ 	.mmio_init = tgl_l_uncore_mmio_init,
+ };
+ 
++static const struct intel_uncore_init_fun icx_uncore_init __initconst = {
++	.cpu_init = icx_uncore_cpu_init,
++	.pci_init = icx_uncore_pci_init,
++	.mmio_init = icx_uncore_mmio_init,
++};
++
+ static const struct intel_uncore_init_fun snr_uncore_init __initconst = {
+ 	.cpu_init = snr_uncore_cpu_init,
+ 	.pci_init = snr_uncore_pci_init,
+@@ -1511,6 +1517,8 @@ static const struct x86_cpu_id intel_uncore_match[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_L,		&icl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_NNPI,	&icl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE,		&icl_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_D,		&icx_uncore_init),
++	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&icx_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE_L,		&tgl_l_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		&tgl_uncore_init),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ATOM_TREMONT_D,	&snr_uncore_init),
+diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
+index b30429f..0da4a46 100644
+--- a/arch/x86/events/intel/uncore.h
++++ b/arch/x86/events/intel/uncore.h
+@@ -550,6 +550,9 @@ void skx_uncore_cpu_init(void);
+ int snr_uncore_pci_init(void);
+ void snr_uncore_cpu_init(void);
+ void snr_uncore_mmio_init(void);
++int icx_uncore_pci_init(void);
++void icx_uncore_cpu_init(void);
++void icx_uncore_mmio_init(void);
+ 
+ /* uncore_nhmex.c */
+ void nhmex_uncore_cpu_init(void);
+diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+index 01023f0..07652fa 100644
+--- a/arch/x86/events/intel/uncore_snbep.c
++++ b/arch/x86/events/intel/uncore_snbep.c
+@@ -382,6 +382,42 @@
+ #define SNR_IMC_MMIO_MEM0_OFFSET		0xd8
+ #define SNR_IMC_MMIO_MEM0_MASK			0x7FF
+ 
++/* ICX CHA */
++#define ICX_C34_MSR_PMON_CTR0			0xb68
++#define ICX_C34_MSR_PMON_CTL0			0xb61
++#define ICX_C34_MSR_PMON_BOX_CTL		0xb60
++#define ICX_C34_MSR_PMON_BOX_FILTER0		0xb65
++
++/* ICX IIO */
++#define ICX_IIO_MSR_PMON_CTL0			0xa58
++#define ICX_IIO_MSR_PMON_CTR0			0xa51
++#define ICX_IIO_MSR_PMON_BOX_CTL		0xa50
++
++/* ICX IRP */
++#define ICX_IRP0_MSR_PMON_CTL0			0xa4d
++#define ICX_IRP0_MSR_PMON_CTR0			0xa4b
++#define ICX_IRP0_MSR_PMON_BOX_CTL		0xa4a
++
++/* ICX M2PCIE */
++#define ICX_M2PCIE_MSR_PMON_CTL0		0xa46
++#define ICX_M2PCIE_MSR_PMON_CTR0		0xa41
++#define ICX_M2PCIE_MSR_PMON_BOX_CTL		0xa40
++
++/* ICX UPI */
++#define ICX_UPI_PCI_PMON_CTL0			0x350
++#define ICX_UPI_PCI_PMON_CTR0			0x320
++#define ICX_UPI_PCI_PMON_BOX_CTL		0x318
++#define ICX_UPI_CTL_UMASK_EXT			0xffffff
++
++/* ICX M3UPI*/
++#define ICX_M3UPI_PCI_PMON_CTL0			0xd8
++#define ICX_M3UPI_PCI_PMON_CTR0			0xa8
++#define ICX_M3UPI_PCI_PMON_BOX_CTL		0xa0
++
++/* ICX IMC */
++#define ICX_NUMBER_IMC_CHN			2
++#define ICX_IMC_MEM_STRIDE			0x4
++
+ DEFINE_UNCORE_FORMAT_ATTR(event, event, "config:0-7");
+ DEFINE_UNCORE_FORMAT_ATTR(event2, event, "config:0-6");
+ DEFINE_UNCORE_FORMAT_ATTR(event_ext, event, "config:0-7,21");
+@@ -390,6 +426,7 @@ DEFINE_UNCORE_FORMAT_ATTR(umask, umask, "config:8-15");
+ DEFINE_UNCORE_FORMAT_ATTR(umask_ext, umask, "config:8-15,32-43,45-55");
+ DEFINE_UNCORE_FORMAT_ATTR(umask_ext2, umask, "config:8-15,32-57");
+ DEFINE_UNCORE_FORMAT_ATTR(umask_ext3, umask, "config:8-15,32-39");
++DEFINE_UNCORE_FORMAT_ATTR(umask_ext4, umask, "config:8-15,32-55");
+ DEFINE_UNCORE_FORMAT_ATTR(qor, qor, "config:16");
+ DEFINE_UNCORE_FORMAT_ATTR(edge, edge, "config:18");
+ DEFINE_UNCORE_FORMAT_ATTR(tid_en, tid_en, "config:19");
+@@ -4551,3 +4588,477 @@ void snr_uncore_mmio_init(void)
+ }
+ 
+ /* end of SNR uncore support */
++
++/* ICX uncore support */
++
++static unsigned icx_cha_msr_offsets[] = {
++	0x2a0, 0x2ae, 0x2bc, 0x2ca, 0x2d8, 0x2e6, 0x2f4, 0x302, 0x310,
++	0x31e, 0x32c, 0x33a, 0x348, 0x356, 0x364, 0x372, 0x380, 0x38e,
++	0x3aa, 0x3b8, 0x3c6, 0x3d4, 0x3e2, 0x3f0, 0x3fe, 0x40c, 0x41a,
++	0x428, 0x436, 0x444, 0x452, 0x460, 0x46e, 0x47c, 0x0,   0xe,
++	0x1c,  0x2a,  0x38,  0x46,
++};
++
++static int icx_cha_hw_config(struct intel_uncore_box *box, struct perf_event *event)
++{
++	struct hw_perf_event_extra *reg1 = &event->hw.extra_reg;
++	bool tie_en = !!(event->hw.config & SNBEP_CBO_PMON_CTL_TID_EN);
++
++	if (tie_en) {
++		reg1->reg = ICX_C34_MSR_PMON_BOX_FILTER0 +
++			    icx_cha_msr_offsets[box->pmu->pmu_idx];
++		reg1->config = event->attr.config1 & SKX_CHA_MSR_PMON_BOX_FILTER_TID;
++		reg1->idx = 0;
++	}
++
++	return 0;
++}
++
++static struct intel_uncore_ops icx_uncore_chabox_ops = {
++	.init_box		= ivbep_uncore_msr_init_box,
++	.disable_box		= snbep_uncore_msr_disable_box,
++	.enable_box		= snbep_uncore_msr_enable_box,
++	.disable_event		= snbep_uncore_msr_disable_event,
++	.enable_event		= snr_cha_enable_event,
++	.read_counter		= uncore_msr_read_counter,
++	.hw_config		= icx_cha_hw_config,
++};
++
++static struct intel_uncore_type icx_uncore_chabox = {
++	.name			= "cha",
++	.num_counters		= 4,
++	.perf_ctr_bits		= 48,
++	.event_ctl		= ICX_C34_MSR_PMON_CTL0,
++	.perf_ctr		= ICX_C34_MSR_PMON_CTR0,
++	.box_ctl		= ICX_C34_MSR_PMON_BOX_CTL,
++	.msr_offsets		= icx_cha_msr_offsets,
++	.event_mask		= HSWEP_S_MSR_PMON_RAW_EVENT_MASK,
++	.event_mask_ext		= SNR_CHA_RAW_EVENT_MASK_EXT,
++	.constraints		= skx_uncore_chabox_constraints,
++	.ops			= &icx_uncore_chabox_ops,
++	.format_group		= &snr_uncore_chabox_format_group,
++};
++
++static unsigned icx_msr_offsets[] = {
++	0x0, 0x20, 0x40, 0x90, 0xb0, 0xd0,
++};
++
++static struct event_constraint icx_uncore_iio_constraints[] = {
++	UNCORE_EVENT_CONSTRAINT(0x02, 0x3),
++	UNCORE_EVENT_CONSTRAINT(0x03, 0x3),
++	UNCORE_EVENT_CONSTRAINT(0x83, 0x3),
++	UNCORE_EVENT_CONSTRAINT(0xc0, 0xc),
++	UNCORE_EVENT_CONSTRAINT(0xc5, 0xc),
++	EVENT_CONSTRAINT_END
++};
++
++static struct intel_uncore_type icx_uncore_iio = {
++	.name			= "iio",
++	.num_counters		= 4,
++	.num_boxes		= 6,
++	.perf_ctr_bits		= 48,
++	.event_ctl		= ICX_IIO_MSR_PMON_CTL0,
++	.perf_ctr		= ICX_IIO_MSR_PMON_CTR0,
++	.event_mask		= SNBEP_PMON_RAW_EVENT_MASK,
++	.event_mask_ext		= SNR_IIO_PMON_RAW_EVENT_MASK_EXT,
++	.box_ctl		= ICX_IIO_MSR_PMON_BOX_CTL,
++	.msr_offsets		= icx_msr_offsets,
++	.constraints		= icx_uncore_iio_constraints,
++	.ops			= &skx_uncore_iio_ops,
++	.format_group		= &snr_uncore_iio_format_group,
++};
++
++static struct intel_uncore_type icx_uncore_irp = {
++	.name			= "irp",
++	.num_counters		= 2,
++	.num_boxes		= 6,
++	.perf_ctr_bits		= 48,
++	.event_ctl		= ICX_IRP0_MSR_PMON_CTL0,
++	.perf_ctr		= ICX_IRP0_MSR_PMON_CTR0,
++	.event_mask		= SNBEP_PMON_RAW_EVENT_MASK,
++	.box_ctl		= ICX_IRP0_MSR_PMON_BOX_CTL,
++	.msr_offsets		= icx_msr_offsets,
++	.ops			= &ivbep_uncore_msr_ops,
++	.format_group		= &ivbep_uncore_format_group,
++};
++
++static struct event_constraint icx_uncore_m2pcie_constraints[] = {
++	UNCORE_EVENT_CONSTRAINT(0x14, 0x3),
++	UNCORE_EVENT_CONSTRAINT(0x23, 0x3),
++	UNCORE_EVENT_CONSTRAINT(0x2d, 0x3),
++	EVENT_CONSTRAINT_END
++};
++
++static struct intel_uncore_type icx_uncore_m2pcie = {
++	.name		= "m2pcie",
++	.num_counters	= 4,
++	.num_boxes	= 6,
++	.perf_ctr_bits	= 48,
++	.event_ctl	= ICX_M2PCIE_MSR_PMON_CTL0,
++	.perf_ctr	= ICX_M2PCIE_MSR_PMON_CTR0,
++	.box_ctl	= ICX_M2PCIE_MSR_PMON_BOX_CTL,
++	.msr_offsets	= icx_msr_offsets,
++	.constraints	= icx_uncore_m2pcie_constraints,
++	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.ops		= &ivbep_uncore_msr_ops,
++	.format_group	= &ivbep_uncore_format_group,
++};
++
++enum perf_uncore_icx_iio_freerunning_type_id {
++	ICX_IIO_MSR_IOCLK,
++	ICX_IIO_MSR_BW_IN,
++
++	ICX_IIO_FREERUNNING_TYPE_MAX,
++};
++
++static unsigned icx_iio_clk_freerunning_box_offsets[] = {
++	0x0, 0x20, 0x40, 0x90, 0xb0, 0xd0,
++};
++
++static unsigned icx_iio_bw_freerunning_box_offsets[] = {
++	0x0, 0x10, 0x20, 0x90, 0xa0, 0xb0,
++};
++
++static struct freerunning_counters icx_iio_freerunning[] = {
++	[ICX_IIO_MSR_IOCLK]	= { 0xa55, 0x1, 0x20, 1, 48, icx_iio_clk_freerunning_box_offsets },
++	[ICX_IIO_MSR_BW_IN]	= { 0xaa0, 0x1, 0x10, 8, 48, icx_iio_bw_freerunning_box_offsets },
++};
++
++static struct uncore_event_desc icx_uncore_iio_freerunning_events[] = {
++	/* Free-Running IIO CLOCKS Counter */
++	INTEL_UNCORE_EVENT_DESC(ioclk,			"event=0xff,umask=0x10"),
++	/* Free-Running IIO BANDWIDTH IN Counters */
++	INTEL_UNCORE_EVENT_DESC(bw_in_port0,		"event=0xff,umask=0x20"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port0.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port0.unit,	"MiB"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port1,		"event=0xff,umask=0x21"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port1.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port1.unit,	"MiB"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port2,		"event=0xff,umask=0x22"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port2.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port2.unit,	"MiB"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port3,		"event=0xff,umask=0x23"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port3.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port3.unit,	"MiB"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port4,		"event=0xff,umask=0x24"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port4.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port4.unit,	"MiB"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port5,		"event=0xff,umask=0x25"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port5.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port5.unit,	"MiB"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port6,		"event=0xff,umask=0x26"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port6.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port6.unit,	"MiB"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port7,		"event=0xff,umask=0x27"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port7.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(bw_in_port7.unit,	"MiB"),
++	{ /* end: all zeroes */ },
++};
++
++static struct intel_uncore_type icx_uncore_iio_free_running = {
++	.name			= "iio_free_running",
++	.num_counters		= 9,
++	.num_boxes		= 6,
++	.num_freerunning_types	= ICX_IIO_FREERUNNING_TYPE_MAX,
++	.freerunning		= icx_iio_freerunning,
++	.ops			= &skx_uncore_iio_freerunning_ops,
++	.event_descs		= icx_uncore_iio_freerunning_events,
++	.format_group		= &skx_uncore_iio_freerunning_format_group,
++};
++
++static struct intel_uncore_type *icx_msr_uncores[] = {
++	&skx_uncore_ubox,
++	&icx_uncore_chabox,
++	&icx_uncore_iio,
++	&icx_uncore_irp,
++	&icx_uncore_m2pcie,
++	&skx_uncore_pcu,
++	&icx_uncore_iio_free_running,
++	NULL,
++};
++
++/*
++ * To determine the number of CHAs, it should read CAPID6(Low) and CAPID7 (High)
++ * registers which located at Device 30, Function 3
++ */
++#define ICX_CAPID6		0x9c
++#define ICX_CAPID7		0xa0
++
++static u64 icx_count_chabox(void)
++{
++	struct pci_dev *dev = NULL;
++	u64 caps = 0;
++
++	dev = pci_get_device(PCI_VENDOR_ID_INTEL, 0x345b, dev);
++	if (!dev)
++		goto out;
++
++	pci_read_config_dword(dev, ICX_CAPID6, (u32 *)&caps);
++	pci_read_config_dword(dev, ICX_CAPID7, (u32 *)&caps + 1);
++out:
++	pci_dev_put(dev);
++	return hweight64(caps);
++}
++
++void icx_uncore_cpu_init(void)
++{
++	u64 num_boxes = icx_count_chabox();
++
++	if (WARN_ON(num_boxes > ARRAY_SIZE(icx_cha_msr_offsets)))
++		return;
++	icx_uncore_chabox.num_boxes = num_boxes;
++	uncore_msr_uncores = icx_msr_uncores;
++}
++
++static struct intel_uncore_type icx_uncore_m2m = {
++	.name		= "m2m",
++	.num_counters   = 4,
++	.num_boxes	= 4,
++	.perf_ctr_bits	= 48,
++	.perf_ctr	= SNR_M2M_PCI_PMON_CTR0,
++	.event_ctl	= SNR_M2M_PCI_PMON_CTL0,
++	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.box_ctl	= SNR_M2M_PCI_PMON_BOX_CTL,
++	.ops		= &snr_m2m_uncore_pci_ops,
++	.format_group	= &skx_uncore_format_group,
++};
++
++static struct attribute *icx_upi_uncore_formats_attr[] = {
++	&format_attr_event.attr,
++	&format_attr_umask_ext4.attr,
++	&format_attr_edge.attr,
++	&format_attr_inv.attr,
++	&format_attr_thresh8.attr,
++	NULL,
++};
++
++static const struct attribute_group icx_upi_uncore_format_group = {
++	.name = "format",
++	.attrs = icx_upi_uncore_formats_attr,
++};
++
++static struct intel_uncore_type icx_uncore_upi = {
++	.name		= "upi",
++	.num_counters   = 4,
++	.num_boxes	= 3,
++	.perf_ctr_bits	= 48,
++	.perf_ctr	= ICX_UPI_PCI_PMON_CTR0,
++	.event_ctl	= ICX_UPI_PCI_PMON_CTL0,
++	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.event_mask_ext = ICX_UPI_CTL_UMASK_EXT,
++	.box_ctl	= ICX_UPI_PCI_PMON_BOX_CTL,
++	.ops		= &skx_upi_uncore_pci_ops,
++	.format_group	= &icx_upi_uncore_format_group,
++};
++
++static struct event_constraint icx_uncore_m3upi_constraints[] = {
++	UNCORE_EVENT_CONSTRAINT(0x1c, 0x1),
++	UNCORE_EVENT_CONSTRAINT(0x1d, 0x1),
++	UNCORE_EVENT_CONSTRAINT(0x1e, 0x1),
++	UNCORE_EVENT_CONSTRAINT(0x1f, 0x1),
++	UNCORE_EVENT_CONSTRAINT(0x40, 0x7),
++	UNCORE_EVENT_CONSTRAINT(0x4e, 0x7),
++	UNCORE_EVENT_CONSTRAINT(0x4f, 0x7),
++	UNCORE_EVENT_CONSTRAINT(0x50, 0x7),
++	EVENT_CONSTRAINT_END
++};
++
++static struct intel_uncore_type icx_uncore_m3upi = {
++	.name		= "m3upi",
++	.num_counters   = 4,
++	.num_boxes	= 3,
++	.perf_ctr_bits	= 48,
++	.perf_ctr	= ICX_M3UPI_PCI_PMON_CTR0,
++	.event_ctl	= ICX_M3UPI_PCI_PMON_CTL0,
++	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.box_ctl	= ICX_M3UPI_PCI_PMON_BOX_CTL,
++	.constraints	= icx_uncore_m3upi_constraints,
++	.ops		= &ivbep_uncore_pci_ops,
++	.format_group	= &skx_uncore_format_group,
++};
++
++enum {
++	ICX_PCI_UNCORE_M2M,
++	ICX_PCI_UNCORE_UPI,
++	ICX_PCI_UNCORE_M3UPI,
++};
++
++static struct intel_uncore_type *icx_pci_uncores[] = {
++	[ICX_PCI_UNCORE_M2M]		= &icx_uncore_m2m,
++	[ICX_PCI_UNCORE_UPI]		= &icx_uncore_upi,
++	[ICX_PCI_UNCORE_M3UPI]		= &icx_uncore_m3upi,
++	NULL,
++};
++
++static const struct pci_device_id icx_uncore_pci_ids[] = {
++	{ /* M2M 0 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x344a),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(12, 0, ICX_PCI_UNCORE_M2M, 0),
++	},
++	{ /* M2M 1 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x344a),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(13, 0, ICX_PCI_UNCORE_M2M, 1),
++	},
++	{ /* M2M 2 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x344a),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(14, 0, ICX_PCI_UNCORE_M2M, 2),
++	},
++	{ /* M2M 3 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x344a),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(15, 0, ICX_PCI_UNCORE_M2M, 3),
++	},
++	{ /* UPI Link 0 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3441),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(2, 1, ICX_PCI_UNCORE_UPI, 0),
++	},
++	{ /* UPI Link 1 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3441),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(3, 1, ICX_PCI_UNCORE_UPI, 1),
++	},
++	{ /* UPI Link 2 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3441),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(4, 1, ICX_PCI_UNCORE_UPI, 2),
++	},
++	{ /* M3UPI Link 0 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3446),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(5, 1, ICX_PCI_UNCORE_M3UPI, 0),
++	},
++	{ /* M3UPI Link 1 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3446),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(6, 1, ICX_PCI_UNCORE_M3UPI, 1),
++	},
++	{ /* M3UPI Link 2 */
++		PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x3446),
++		.driver_data = UNCORE_PCI_DEV_FULL_DATA(7, 1, ICX_PCI_UNCORE_M3UPI, 2),
++	},
++	{ /* end: all zeroes */ }
++};
++
++static struct pci_driver icx_uncore_pci_driver = {
++	.name		= "icx_uncore",
++	.id_table	= icx_uncore_pci_ids,
++};
++
++int icx_uncore_pci_init(void)
++{
++	/* ICX UBOX DID */
++	int ret = snbep_pci2phy_map_init(0x3450, SKX_CPUNODEID,
++					 SKX_GIDNIDMAP, true);
++
++	if (ret)
++		return ret;
++
++	uncore_pci_uncores = icx_pci_uncores;
++	uncore_pci_driver = &icx_uncore_pci_driver;
++	return 0;
++}
++
++static void icx_uncore_imc_init_box(struct intel_uncore_box *box)
++{
++	unsigned int box_ctl = box->pmu->type->box_ctl +
++			       box->pmu->type->mmio_offset * (box->pmu->pmu_idx % ICX_NUMBER_IMC_CHN);
++	int mem_offset = (box->pmu->pmu_idx / ICX_NUMBER_IMC_CHN) * ICX_IMC_MEM_STRIDE +
++			 SNR_IMC_MMIO_MEM0_OFFSET;
++
++	__snr_uncore_mmio_init_box(box, box_ctl, mem_offset);
++}
++
++static struct intel_uncore_ops icx_uncore_mmio_ops = {
++	.init_box	= icx_uncore_imc_init_box,
++	.exit_box	= uncore_mmio_exit_box,
++	.disable_box	= snr_uncore_mmio_disable_box,
++	.enable_box	= snr_uncore_mmio_enable_box,
++	.disable_event	= snr_uncore_mmio_disable_event,
++	.enable_event	= snr_uncore_mmio_enable_event,
++	.read_counter	= uncore_mmio_read_counter,
++};
++
++static struct intel_uncore_type icx_uncore_imc = {
++	.name		= "imc",
++	.num_counters   = 4,
++	.num_boxes	= 8,
++	.perf_ctr_bits	= 48,
++	.fixed_ctr_bits	= 48,
++	.fixed_ctr	= SNR_IMC_MMIO_PMON_FIXED_CTR,
++	.fixed_ctl	= SNR_IMC_MMIO_PMON_FIXED_CTL,
++	.event_descs	= hswep_uncore_imc_events,
++	.perf_ctr	= SNR_IMC_MMIO_PMON_CTR0,
++	.event_ctl	= SNR_IMC_MMIO_PMON_CTL0,
++	.event_mask	= SNBEP_PMON_RAW_EVENT_MASK,
++	.box_ctl	= SNR_IMC_MMIO_PMON_BOX_CTL,
++	.mmio_offset	= SNR_IMC_MMIO_OFFSET,
++	.ops		= &icx_uncore_mmio_ops,
++	.format_group	= &skx_uncore_format_group,
++};
++
++enum perf_uncore_icx_imc_freerunning_type_id {
++	ICX_IMC_DCLK,
++	ICX_IMC_DDR,
++	ICX_IMC_DDRT,
++
++	ICX_IMC_FREERUNNING_TYPE_MAX,
++};
++
++static struct freerunning_counters icx_imc_freerunning[] = {
++	[ICX_IMC_DCLK]	= { 0x22b0, 0x0, 0, 1, 48 },
++	[ICX_IMC_DDR]	= { 0x2290, 0x8, 0, 2, 48 },
++	[ICX_IMC_DDRT]	= { 0x22a0, 0x8, 0, 2, 48 },
++};
++
++static struct uncore_event_desc icx_uncore_imc_freerunning_events[] = {
++	INTEL_UNCORE_EVENT_DESC(dclk,			"event=0xff,umask=0x10"),
++
++	INTEL_UNCORE_EVENT_DESC(read,			"event=0xff,umask=0x20"),
++	INTEL_UNCORE_EVENT_DESC(read.scale,		"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(read.unit,		"MiB"),
++	INTEL_UNCORE_EVENT_DESC(write,			"event=0xff,umask=0x21"),
++	INTEL_UNCORE_EVENT_DESC(write.scale,		"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(write.unit,		"MiB"),
++
++	INTEL_UNCORE_EVENT_DESC(ddrt_read,		"event=0xff,umask=0x30"),
++	INTEL_UNCORE_EVENT_DESC(ddrt_read.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(ddrt_read.unit,		"MiB"),
++	INTEL_UNCORE_EVENT_DESC(ddrt_write,		"event=0xff,umask=0x31"),
++	INTEL_UNCORE_EVENT_DESC(ddrt_write.scale,	"3.814697266e-6"),
++	INTEL_UNCORE_EVENT_DESC(ddrt_write.unit,	"MiB"),
++	{ /* end: all zeroes */ },
++};
++
++static void icx_uncore_imc_freerunning_init_box(struct intel_uncore_box *box)
++{
++	int mem_offset = box->pmu->pmu_idx * ICX_IMC_MEM_STRIDE +
++			 SNR_IMC_MMIO_MEM0_OFFSET;
++
++	__snr_uncore_mmio_init_box(box, uncore_mmio_box_ctl(box), mem_offset);
++}
++
++static struct intel_uncore_ops icx_uncore_imc_freerunning_ops = {
++	.init_box	= icx_uncore_imc_freerunning_init_box,
++	.exit_box	= uncore_mmio_exit_box,
++	.read_counter	= uncore_mmio_read_counter,
++	.hw_config	= uncore_freerunning_hw_config,
++};
++
++static struct intel_uncore_type icx_uncore_imc_free_running = {
++	.name			= "imc_free_running",
++	.num_counters		= 5,
++	.num_boxes		= 4,
++	.num_freerunning_types	= ICX_IMC_FREERUNNING_TYPE_MAX,
++	.freerunning		= icx_imc_freerunning,
++	.ops			= &icx_uncore_imc_freerunning_ops,
++	.event_descs		= icx_uncore_imc_freerunning_events,
++	.format_group		= &skx_uncore_iio_freerunning_format_group,
++};
++
++static struct intel_uncore_type *icx_mmio_uncores[] = {
++	&icx_uncore_imc,
++	&icx_uncore_imc_free_running,
++	NULL,
++};
++
++void icx_uncore_mmio_init(void)
++{
++	uncore_mmio_uncores = icx_mmio_uncores;
++}
++
++/* end of ICX uncore support */
+-- 
+2.7.4
+
