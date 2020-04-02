@@ -2,74 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5190419C68D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26BD119C69A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389517AbgDBP4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:56:47 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25090 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389290AbgDBP4q (ORCPT
+        id S2389704AbgDBP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:57:14 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:46580 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389318AbgDBP5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:56:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585843005;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=REwcyHpaosKkRkByGvVIKqyhXGWuC4Yt/J236FEw2Ls=;
-        b=YKeTJEnWrtUWGlgXgtHJEiZXtCxKc6O8DPbb8G6olPXq3DQMPcpNSv8em5lzSpA6u4Kko/
-        sdrBGPvVhL2lCbQWbcGo1GmvsG8XXobodHCkexeVLuZOK8ARIWgJyVnu/TSs9fPGUfGCpW
-        GnyRnA+R62xRNjD23JuHNErIAlxShgY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-ozDIPbVPMpaD38-kQwEaPQ-1; Thu, 02 Apr 2020 11:56:44 -0400
-X-MC-Unique: ozDIPbVPMpaD38-kQwEaPQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F14E5800D50;
-        Thu,  2 Apr 2020 15:56:42 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-114-243.ams2.redhat.com [10.36.114.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D91E519756;
-        Thu,  2 Apr 2020 15:56:39 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <3072811.1585842687@warthog.procyon.org.uk>
-References: <3072811.1585842687@warthog.procyon.org.uk> <20200402152831.GA31612@gardel-login> <1445647.1585576702@warthog.procyon.org.uk> <2418286.1585691572@warthog.procyon.org.uk> <20200401144109.GA29945@gardel-login> <CAJfpegs3uDzFTE4PCjZ7aZsEh8b=iy_LqO1DBJoQzkP+i4aBmw@mail.gmail.com> <2590640.1585757211@warthog.procyon.org.uk> <CAJfpegsXqxizOGwa045jfT6YdUpMxpXET-yJ4T8qudyQbCGkHQ@mail.gmail.com> <36e45eae8ad78f7b8889d9d03b8846e78d735d28.camel@themaw.net> <CAJfpegsCDWehsTRQ9UJYuQnghnE=M8L0_bJBTTPA+Upu87t90w@mail.gmail.com> <20200402143623.GB31529@gardel-login> <CAJfpegtRi9epdxAeoVbm+7UxkZfzC6XmD4K_5dg=RKADxy_TVA@mail.gmail.com>
-To:     Lennart Poettering <mzxreary@0pointer.de>
-Cc:     dhowells@redhat.com, Miklos Szeredi <miklos@szeredi.hu>,
-        Ian Kent <raven@themaw.net>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, dray@redhat.com,
-        Karel Zak <kzak@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>, andres@anarazel.de,
-        keyrings@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: Upcoming: Notifications, FS notifications and fsinfo()
+        Thu, 2 Apr 2020 11:57:14 -0400
+Received: by mail-pf1-f196.google.com with SMTP id q3so1919051pff.13
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 08:57:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+f7ztlhRO8KaQ2k4S8l5uJ9SeBU7fnG5Wf7hP3kHn5I=;
+        b=t/FWoThdyFUJcn5JyvLffbYUxmclqELwOEsrwOd2uo7tYHH4mWliWdd529c/gCoqTl
+         DasIyU8bEjLQVPkGwY/CfG5j1lNOaqqPfnvDh8lf8KXX3uWf2SUGFx0Uesy5lZGlwhNv
+         JUm9o7hlcqm5Kxd8tQxwAxgT9xv1FN1J1SPskxdeUnxLsReMUoXXbg2tggHm3Sw1CzfM
+         ZubsHrvBIe3AR54sJqMwg8q/zDViiTW/3ftJGMZ6sbYsAgfSkPnucgkD0q0fKGJuTPhu
+         BFoNFt2MqauRK8lW0MK+FI2yBcCHPbHaH0DK0geP/L7zSjYAWmLxuVHiclbaBkH/HRB/
+         vphA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+f7ztlhRO8KaQ2k4S8l5uJ9SeBU7fnG5Wf7hP3kHn5I=;
+        b=Nw/O1SkXhtRkAURVS+K77wnGibLgt2tZdyIhLgtoZ2fMClmqIaDhd1Gi384C8Ztzj6
+         9mzDPxW3eCOKRRvx76/rSTZahiBgQz0XtH3pANz10h+KgIe9anp+ztu5lJ3Cp7pZsfpS
+         jx9+EJAhlCJwb7AsonZD7rzu7+lRzDQTgx21CC7oNUlCvKvUlQIG554u9AOSn9pxMKd0
+         iIP9WGpTQ/7iF7Oo+dvI+i4lUUUYo5DvPL6eqIZTlzTukcVp7eJ1K9yTGvFJqJJF7Lkw
+         xFwOikLME9QMtOcUG0oM9X3rsfQLf0mZ9EaNCCKLWbwPXFbtS0nmVOkUuMd8V2BStT4A
+         Yyjg==
+X-Gm-Message-State: AGi0PuZPJWtfCpUdOlcdpb1hGl57saMJAG2yyuy7tzFJ7MfXMHiDiR/0
+        mtbGAEljDs2Efw4a0KJMGbD8qrNAd9I2l1Dcbows0g==
+X-Google-Smtp-Source: APiQypIhP5QcwIz3sGFRAXhXluVx9mRCbbCvr8u6mvQedlVnjNdfX1RFcNXG1rVCWGnm8fwdhv0VxysfCl6L7qILleI=
+X-Received: by 2002:a63:f411:: with SMTP id g17mr3872394pgi.440.1585843031627;
+ Thu, 02 Apr 2020 08:57:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3073172.1585842999.1@warthog.procyon.org.uk>
-Date:   Thu, 02 Apr 2020 16:56:39 +0100
-Message-ID: <3073173.1585842999@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <Pine.LNX.4.44L0.2004021133440.13377-100000@netrider.rowland.org> <000000000000c3793205a250cb6a@google.com>
+In-Reply-To: <000000000000c3793205a250cb6a@google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 2 Apr 2020 17:57:00 +0200
+Message-ID: <CAAeHK+wpZ3t-1WFr9Tyt51HFP+m=umFz_=EKcNAGif1Ekyf=gQ@mail.gmail.com>
+Subject: Re: WARNING in usbhid_raw_request/usb_submit_urb (3)
+To:     syzbot <syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        ingrassia@epigenesys.com, LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: multipart/mixed; boundary="00000000000092a98705a250dae5"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+--00000000000092a98705a250dae5
+Content-Type: text/plain; charset="UTF-8"
 
-> 				.info_mask	= NOTIFY_MOUNT_IS_RECURSIVE,
+On Thu, Apr 2, 2020 at 5:53 PM syzbot
+<syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot has tested the proposed patch and the reproducer did not trigger crash:
+>
+> Reported-and-tested-by: syzbot+db339689b2101f6f6071@syzkaller.appspotmail.com
+>
+> Tested on:
+>
+> commit:         0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
+> git tree:       https://github.com/google/kasan.git
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6b9c154b0c23aecf
+> dashboard link: https://syzkaller.appspot.com/bug?extid=db339689b2101f6f6071
+> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> patch:          https://syzkaller.appspot.com/x/patch.diff?x=143c2c63e00000
+>
+> Note: testing is done by a robot and is best-effort only.
 
-Sorry, I meant NOTIFY_MOUNT_IN_SUBTREE; NOTIFY_MOUNT_IS_RECURSIVE indicates
-that the operation was recursive in nature.
+Let's try this once again, maybe the reproducer is extremely unreliable.
 
-David
+#syz test: https://github.com/google/kasan.git 0fa84af8
 
+--00000000000092a98705a250dae5
+Content-Type: text/x-patch; charset="US-ASCII"; name="usb.patch"
+Content-Disposition: attachment; filename="usb.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k8ixzckk0>
+X-Attachment-Id: f_k8ixzckk0
+
+SW5kZXg6IHVzYi1kZXZlbC9kcml2ZXJzL3VzYi9jb3JlL3VyYi5jCj09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIHVz
+Yi1kZXZlbC5vcmlnL2RyaXZlcnMvdXNiL2NvcmUvdXJiLmMKKysrIHVzYi1kZXZlbC9kcml2ZXJz
+L3VzYi9jb3JlL3VyYi5jCkBAIC00NzUsOCArNDc1LDkgQEAgaW50IHVzYl9zdWJtaXRfdXJiKHN0
+cnVjdCB1cmIgKnVyYiwgZ2ZwXwogCiAJLyogQ2hlY2sgdGhhdCB0aGUgcGlwZSdzIHR5cGUgbWF0
+Y2hlcyB0aGUgZW5kcG9pbnQncyB0eXBlICovCiAJaWYgKHVzYl91cmJfZXBfdHlwZV9jaGVjayh1
+cmIpKQotCQlkZXZfV0FSTigmZGV2LT5kZXYsICJCT0dVUyB1cmIgeGZlciwgcGlwZSAleCAhPSB0
+eXBlICV4XG4iLAotCQkJdXNiX3BpcGV0eXBlKHVyYi0+cGlwZSksIHBpcGV0eXBlc1t4ZmVydHlw
+ZV0pOworCQlkZXZfV0FSTigmZGV2LT5kZXYsICJCT0dVUyB1cmIgeGZlciwgcGlwZSAleCAhPSB0
+eXBlICV4LCBlcCBhZGRyIDB4JTAyeCwgcGlwZSAweCV4LCB4ZmVydHlwZSAlZFxuIiwKKwkJCXVz
+Yl9waXBldHlwZSh1cmItPnBpcGUpLCBwaXBldHlwZXNbeGZlcnR5cGVdLAorCQkJZXAtPmRlc2Mu
+YkVuZHBvaW50QWRkcmVzcywgdXJiLT5waXBlLCB4ZmVydHlwZSk7CiAKIAkvKiBDaGVjayBhZ2Fp
+bnN0IGEgc2ltcGxlL3N0YW5kYXJkIHBvbGljeSAqLwogCWFsbG93ZWQgPSAoVVJCX05PX1RSQU5T
+RkVSX0RNQV9NQVAgfCBVUkJfTk9fSU5URVJSVVBUIHwgVVJCX0RJUl9NQVNLIHwK
+--00000000000092a98705a250dae5--
