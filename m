@@ -2,87 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB41C19C65D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F214B19C674
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389577AbgDBPu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:50:26 -0400
-Received: from gardel.0pointer.net ([85.214.157.71]:51122 "EHLO
-        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388677AbgDBPu0 (ORCPT
+        id S2389604AbgDBPwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:52:23 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:43626 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389458AbgDBPwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:50:26 -0400
-Received: from gardel-login.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by gardel.0pointer.net (Postfix) with ESMTP id 8DB8FE80148;
-        Thu,  2 Apr 2020 17:50:23 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id 5B840160337; Thu,  2 Apr 2020 17:50:20 +0200 (CEST)
-Date:   Thu, 2 Apr 2020 17:50:20 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, dray@redhat.com,
-        Karel Zak <kzak@redhat.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Jeff Layton <jlayton@redhat.com>, andres@anarazel.de,
-        keyrings@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>
-Subject: Re: Upcoming: Notifications, FS notifications and fsinfo()
-Message-ID: <20200402155020.GA31715@gardel-login>
-References: <20200401144109.GA29945@gardel-login>
- <CAJfpegs3uDzFTE4PCjZ7aZsEh8b=iy_LqO1DBJoQzkP+i4aBmw@mail.gmail.com>
- <2590640.1585757211@warthog.procyon.org.uk>
- <CAJfpegsXqxizOGwa045jfT6YdUpMxpXET-yJ4T8qudyQbCGkHQ@mail.gmail.com>
- <36e45eae8ad78f7b8889d9d03b8846e78d735d28.camel@themaw.net>
- <CAJfpegsCDWehsTRQ9UJYuQnghnE=M8L0_bJBTTPA+Upu87t90w@mail.gmail.com>
- <20200402143623.GB31529@gardel-login>
- <CAJfpegtRi9epdxAeoVbm+7UxkZfzC6XmD4K_5dg=RKADxy_TVA@mail.gmail.com>
- <20200402152831.GA31612@gardel-login>
- <CAJfpegum_PsCfnar8+V2f_VO3k8CJN1LOFJV5OkHRDbQKR=EHg@mail.gmail.com>
+        Thu, 2 Apr 2020 11:52:23 -0400
+Received: by mail-pl1-f194.google.com with SMTP id v23so1476624ply.10;
+        Thu, 02 Apr 2020 08:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YDQwK1TXt5sWyVygN27BJPsqEZEizoEJ06ZdjMc3obs=;
+        b=rH5FCmzfe6B+QtmKjBaCdfYPRFdbe2UG3anSu/9XKBOcO78EwTu5Q3KoAkp1A4N21N
+         zxRFMchWx+9jfDcNq+3FRmv9JkK2AVl64iiYq1QisrweuDrI+3qF9sX7MKYUOlDhNKTm
+         1k/dr2SM0CoP/E8sj2fKAEsly1E4gXzWfp4ydzYZzFJlvvf9NjMt4nDeNULejlUFEnsh
+         JZjEt/GEyI1PmaO9vMd66pSZUWyoPz6ntuobG45NcSuB0eaxs70Y4It4p9gJuUsWfWDF
+         q4mbRa6IgOVHBKQBpX9xtaFZSz7ZB6EnJNToidczW3QE1FKrG+Xy088zZSdoidh4BWhJ
+         Wa8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YDQwK1TXt5sWyVygN27BJPsqEZEizoEJ06ZdjMc3obs=;
+        b=bxX+ViKEGobN2z9Xm5aIl8xSZT0Fp+LJj/ReWU+9N2G/qj/8uiiwUFjSdhcYrBcjhX
+         0i5JAVy0R9f7ZRb/GwhqBj6t1e9bTSLc9Ic4W3J3G7EEwUbzycEaWkgvbMM3MvpJB2Nr
+         fgEASoYkrcmF0YC3xfyF4bYNl+EbbnwzCtRZ2ASei0XbmrjGogrt8KN9LpW59YbseC6c
+         jzjQxBtqMMFIYEms/2sN65JwcBtMcX0hlStMiOwn/ZUun5l+SdDflo4KjKlqLtxhlxIk
+         9Px1KPg6lpzAoTQnbawXqaPW+sraW5owmoinILQJiXZZn/+eYnXhkzV0FNmIf/mwy9M1
+         5UTg==
+X-Gm-Message-State: AGi0PuZCnX82/P8m3Lng5G61Li7cqHqp0EN9dZaan6h6yE/BWKToNbfi
+        IPOt65KgSv/ZyX1gnoQrQ2WQwfpLZ1iNvQ==
+X-Google-Smtp-Source: APiQypI3uFZr08x4KA3MmKiD9YqKQdV7UWSih4YpgxRNM2nRujlRgRxuIASbzfGrUs8KztbEX7s1Fw==
+X-Received: by 2002:a17:90a:218b:: with SMTP id q11mr4431693pjc.163.1585842741171;
+        Thu, 02 Apr 2020 08:52:21 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.63])
+        by smtp.gmail.com with ESMTPSA id y4sm4051489pfo.39.2020.04.02.08.52.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 08:52:20 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, bjorn@helgaas.com, andy@kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        rjw@rjwysocki.net
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Subject: [Linux-kernel-mentees] [PATCH v1] gpio: ml: ioh: Convert to dev_pm_ops
+Date:   Thu,  2 Apr 2020 21:20:58 +0530
+Message-Id: <20200402155057.30667-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJfpegum_PsCfnar8+V2f_VO3k8CJN1LOFJV5OkHRDbQKR=EHg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Do, 02.04.20 17:35, Miklos Szeredi (miklos@szeredi.hu) wrote:
+Convert the legacy callback .suspend() and .resume()
+to the generic ones.
 
-> > systemd cares about all mount points in PID1's mount namespace.
-> >
-> > The fact that mount tables can grow large is why we want something
-> > better than constantly reparsing the whole /proc/self/mountinfo. But
-> > filtering subsets of that is something we don't really care about.
->
-> I can accept that, but you haven't given a reason why that's so.
->
-> What does it do with the fact that an automount point was crossed, for
-> example?  How does that affect the operation of systemd?
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/gpio/gpio-ml-ioh.c | 47 +++++++++-----------------------------
+ 1 file changed, 11 insertions(+), 36 deletions(-)
 
-We don't care how a mount point came to be. If it's autofs or
-something else, we don't care. We don't access these mount points
-ourselves ever, we just watch their existance.
+diff --git a/drivers/gpio/gpio-ml-ioh.c b/drivers/gpio/gpio-ml-ioh.c
+index 92b6e958cfed..bb71dccac315 100644
+--- a/drivers/gpio/gpio-ml-ioh.c
++++ b/drivers/gpio/gpio-ml-ioh.c
+@@ -155,11 +155,10 @@ static int ioh_gpio_direction_input(struct gpio_chip *gpio, unsigned nr)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+ /*
+  * Save register configuration and disable interrupts.
+  */
+-static void ioh_gpio_save_reg_conf(struct ioh_gpio *chip)
++static void __maybe_unused ioh_gpio_save_reg_conf(struct ioh_gpio *chip)
+ {
+ 	int i;
+ 
+@@ -185,7 +184,7 @@ static void ioh_gpio_save_reg_conf(struct ioh_gpio *chip)
+ /*
+  * This function restores the register configuration of the GPIO device.
+  */
+-static void ioh_gpio_restore_reg_conf(struct ioh_gpio *chip)
++static void __maybe_unused ioh_gpio_restore_reg_conf(struct ioh_gpio *chip)
+ {
+ 	int i;
+ 
+@@ -207,7 +206,6 @@ static void ioh_gpio_restore_reg_conf(struct ioh_gpio *chip)
+ 				  &chip->reg->ioh_sel_reg[i]);
+ 	}
+ }
+-#endif
+ 
+ static int ioh_gpio_to_irq(struct gpio_chip *gpio, unsigned offset)
+ {
+@@ -522,10 +520,9 @@ static void ioh_gpio_remove(struct pci_dev *pdev)
+ 	kfree(chip);
+ }
+ 
+-#ifdef CONFIG_PM
+-static int ioh_gpio_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused ioh_gpio_suspend(struct device *dev)
+ {
+-	s32 ret;
++	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct ioh_gpio *chip = pci_get_drvdata(pdev);
+ 	unsigned long flags;
+ 
+@@ -533,36 +530,15 @@ static int ioh_gpio_suspend(struct pci_dev *pdev, pm_message_t state)
+ 	ioh_gpio_save_reg_conf(chip);
+ 	spin_unlock_irqrestore(&chip->spinlock, flags);
+ 
+-	ret = pci_save_state(pdev);
+-	if (ret) {
+-		dev_err(&pdev->dev, "pci_save_state Failed-%d\n", ret);
+-		return ret;
+-	}
+-	pci_disable_device(pdev);
+-	pci_set_power_state(pdev, PCI_D0);
+-	ret = pci_enable_wake(pdev, PCI_D0, 1);
+-	if (ret)
+-		dev_err(&pdev->dev, "pci_enable_wake Failed -%d\n", ret);
+-
+ 	return 0;
+ }
+ 
+-static int ioh_gpio_resume(struct pci_dev *pdev)
++static int __maybe_unused ioh_gpio_resume(struct device *dev)
+ {
+-	s32 ret;
++	struct pci_dev *pdev = to_pci_dev(dev);
+ 	struct ioh_gpio *chip = pci_get_drvdata(pdev);
+ 	unsigned long flags;
+ 
+-	ret = pci_enable_wake(pdev, PCI_D0, 0);
+-
+-	pci_set_power_state(pdev, PCI_D0);
+-	ret = pci_enable_device(pdev);
+-	if (ret) {
+-		dev_err(&pdev->dev, "pci_enable_device Failed-%d ", ret);
+-		return ret;
+-	}
+-	pci_restore_state(pdev);
+-
+ 	spin_lock_irqsave(&chip->spinlock, flags);
+ 	iowrite32(0x01, &chip->reg->srst);
+ 	iowrite32(0x00, &chip->reg->srst);
+@@ -571,10 +547,8 @@ static int ioh_gpio_resume(struct pci_dev *pdev)
+ 
+ 	return 0;
+ }
+-#else
+-#define ioh_gpio_suspend NULL
+-#define ioh_gpio_resume NULL
+-#endif
++
++static SIMPLE_DEV_PM_OPS(ioh_gpio_pm_ops, ioh_gpio_suspend, ioh_gpio_resume);
+ 
+ static const struct pci_device_id ioh_gpio_pcidev_id[] = {
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_ROHM, 0x802E) },
+@@ -587,8 +561,9 @@ static struct pci_driver ioh_gpio_driver = {
+ 	.id_table = ioh_gpio_pcidev_id,
+ 	.probe = ioh_gpio_probe,
+ 	.remove = ioh_gpio_remove,
+-	.suspend = ioh_gpio_suspend,
+-	.resume = ioh_gpio_resume
++	.driver = {
++		.pm = &ioh_gpio_pm_ops,
++	},
+ };
+ 
+ module_pci_driver(ioh_gpio_driver);
+-- 
+2.26.0
 
-I mean, it's not just about startup it's also about shutdown. At
-shutdown we need to unmount everything from the leaves towards the
-root so that all file systems are in a clean state. And that means
-*all* mounts, even autofs ones, even udisks ones, or whatever else
-established them, we don't care. I mean, the autofs daemon can die any
-time, we still must be able to sensibly shutdown, and thus unmount all
-mounts inside some autofs hierarchy at the right time, before
-unmounting the autofs top-level dir and then what might be further up
-the tree.
-
-systemd needs to know the whole tree, to figure out deps properly for
-things like that, hence we aren't interested in filtering, we are
-interested in minimizing what we do when something changes.
-
-Lennart
-
---
-Lennart Poettering, Berlin
