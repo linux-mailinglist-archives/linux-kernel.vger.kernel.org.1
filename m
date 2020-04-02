@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A3519C095
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56D219C093
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 13:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388242AbgDBLzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 07:55:18 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:2730 "EHLO rere.qmqm.pl"
+        id S2388174AbgDBLy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 07:54:59 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:25271 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387722AbgDBLy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2387988AbgDBLy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Apr 2020 07:54:58 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 48tM1r1CxvzqB;
-        Thu,  2 Apr 2020 13:54:56 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 48tM1q4wR6zpX;
+        Thu,  2 Apr 2020 13:54:55 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1585828496; bh=+s4mWBHcT/yU7fnAxvETRm8Us7IU85To0TkAkXM8nKo=;
+        t=1585828495; bh=8B8kq1VKlq4SBlVvHVGlJ4PmNNXHAOiZiONRej4jb3Q=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=oZTOjt/qsWu+92DRj2VN61RxUCSurDrb27f7n19fTpulzeiwKEQQUZwANbvN8m0Hq
-         WKZ3s2NpA6asVVTQT3uU61K/T5xZRrSCE0w3Q30O+1wDMTkFl9yHT/PLhYPeXuv25E
-         mqcrITJ/EUOpMWwphdW0iJQlei8G/EpBH0+ZF/rh7pcRXI+STS+TZA+x7jTAIoU9Q/
-         q9CMu4bg+juzXqv6Ol0dR0PakA6Jyd3IRRlahx6saQfvVlMqduo2JtzY+UfezcuIbv
-         Dij8fIa9BYAkroQkj3bkyoIcwYGn+8uLo40tAIjbU608NxsUftCP794mkwERgnLbIe
-         fnFz5QXJu5f2Q==
+        b=b8lt+tkv83BaIkNxaetnNQ/mWk/8T1qO+TUUTGQ4cnIm4LiojnPSQHA3MgzCWutjG
+         8X0yB0A2q68LALhJk7w5VWP5QZAE7gVC3UGNmAW4+6iKoCsXBqZm1Yrqiu1Ls4C4rK
+         NXTZhExHIWOE9jy6FBe7m+nPd8JxDX8GlhoEj43ioxAhxuaQ3qC62ZIeQoE3nXaCMa
+         RFMUTmYmVmxkABz3xLbbupYzVu/oAZ1A3Vvomcio5YdCqHk2a6+7WtpKwsSZ/wUqRK
+         QRydDwJJ0daSGRI0faDXj5tQaflQ2nKPPESe0bIVUSeI79jZJj4VXlxUYCJTVhyFwD
+         oBBAy1kIEKaWA==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.2 at mail
 Date:   Thu, 02 Apr 2020 13:54:55 +0200
-Message-Id: <eb105eedaa387ced14bb687e38d3aa33d4fcf70a.1585827904.git.mirq-linux@rere.qmqm.pl>
+Message-Id: <0077b8bc2a4da024a3b985dd622674ebebe5b71b.1585827904.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
 References: <cover.1585827904.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 3/7] mmc: sdhci: fix SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN
+Subject: [PATCH 2/7] mmc: sdhci: fix programmable clock config from preset
+ value
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     Suneel Garapati <suneel.garapati@xilinx.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+To:     Adrian Hunter <adrian.hunter@intel.com>,
         Kevin Liu <kliu5@marvell.com>,
         Michal Simek <michal.simek@xilinx.com>,
+        Suneel Garapati <suneel.garapati@xilinx.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
 Cc:     linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
@@ -45,44 +46,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix returned clock rate for SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN case.
+When host controller uses programmable clock presets but doesn't
+advertise programmable clock support, we can only guess what frequency
+it generates. Let's at least return correct SDHCI_PROG_CLOCK_MODE bit
+value in this case.
 
+Fixes: 52983382c74f ("mmc: sdhci: enhance preset value function")
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Cc: stable@kernel.vger.org
-Fixes: d1955c3a9a1d ("mmc: sdhci: add quirk SDHCI_QUIRK_CLOCK_DIV_ZERO_BROKEN")
 ---
- drivers/mmc/host/sdhci.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mmc/host/sdhci.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index b2dc4f1cfa5c..a043bf5e3565 100644
+index 9aa3af5826df..b2dc4f1cfa5c 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
-@@ -1807,9 +1807,12 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+@@ -1767,11 +1767,10 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
  
- 		if (!host->clk_mul || switch_base_clk) {
- 			/* Version 3.00 divisors must be a multiple of 2. */
--			if (host->max_clk <= clock)
-+			if (host->max_clk <= clock) {
- 				div = 1;
--			else {
-+				if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
-+					&& host->max_clk <= 25000000)
-+					div = 2;
-+			} else {
- 				for (div = 2; div < SDHCI_MAX_DIV_SPEC_300;
- 				     div += 2) {
- 					if ((host->max_clk / div) <= clock)
-@@ -1818,9 +1821,6 @@ u16 sdhci_calc_clk(struct sdhci_host *host, unsigned int clock,
+ 			pre_val = sdhci_get_preset_value(host);
+ 			div = FIELD_GET(SDHCI_PRESET_SDCLK_FREQ_MASK, pre_val);
+-			if (host->clk_mul &&
+-				(pre_val & SDHCI_PRESET_CLKGEN_SEL)) {
++			if (pre_val & SDHCI_PRESET_CLKGEN_SEL) {
+ 				clk = SDHCI_PROG_CLOCK_MODE;
+ 				real_div = div + 1;
+-				clk_mul = host->clk_mul;
++				clk_mul = host->clk_mul ?: 1;
+ 			} else {
+ 				real_div = max_t(int, 1, div << 1);
  			}
- 			real_div = div;
- 			div >>= 1;
--			if ((host->quirks2 & SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN)
--				&& !div && host->max_clk <= 25000000)
--				div = 1;
- 		}
- 	} else {
- 		/* Version 2.00 divisors must be a power of 2. */
 -- 
 2.20.1
 
