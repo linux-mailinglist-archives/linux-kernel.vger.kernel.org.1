@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A48DD19CCBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944B219CCB6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 00:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389725AbgDBWUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 18:20:04 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:40818 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726963AbgDBWUD (ORCPT
+        id S2389550AbgDBWTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 18:19:02 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:19888 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726963AbgDBWTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 18:20:03 -0400
-Received: by mail-lj1-f193.google.com with SMTP id 19so4946854ljj.7;
-        Thu, 02 Apr 2020 15:20:00 -0700 (PDT)
+        Thu, 2 Apr 2020 18:19:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=55th5sY/tJDdmgw47Yk8n/xwE+j1OiKzwjzTyfprGYQ=;
-        b=d+G7a3ZUzsJ8J4aJMaGwf1PsqRYWjI8ODyaI3P5Pb7vr+xgeR7mklVJE7Fize23iTv
-         7e31Sxr4kCfJiEOMo6KpoinpO7DR0jvucQpDBtsnnrqpSW2oc4o4Ut7KODBnTJXqbjri
-         vg5PFTJL2hwCYFCkUWA29FnsZLFTmV9Ac8MrCTc6Flpj1xhURmFzrkWgtB+DcBiPz+Ra
-         VOMiwENpcagifJ7Olatk1k64I9E+Q4FYrlb5QLODiVZVbJJyP5+SMidLprX9rvDjUc+t
-         14LTedDIpw+SACHn0azr+L5fiJLedjBpHkxH0qtspDEFC26pdm/gzBug0vTsaDvYDVe7
-         PjvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=55th5sY/tJDdmgw47Yk8n/xwE+j1OiKzwjzTyfprGYQ=;
-        b=T8AxnZhyR9hWP5xk50gDbHfEv29c3JfWG/P/EgqOjtCoFdNB2dYK60leJE2l+ylwmp
-         /PDy+A0MApN6bo6vUulwnRt49UCH6f1wr4bf5nYqU+yh4KBd9WSwt7sxtFv8ZbkzrKjb
-         b5zdqeAe2+QQ5r9u9tRgi4dTsEbTcrR0j7/mg/oBg1xNHWU9uUWzIZqz8t6o1vebX+Up
-         HHXK9KSPuMNtiGCazQEIV9RxoLUM7Rt95+1Gw/Ij5wATlJ5PuvjqLm6pXKVanBbL2vA7
-         IiVO8fvSMGo/2zbTToX1sL4qkZjUkzqslmyLh3Xe1qkp0bEuywX6J7tz5y83/88T2Zha
-         iR+A==
-X-Gm-Message-State: AGi0PuZfYZCrYjPezOHH/mPQzpW6aTP1D286ONOLLNQNl/b/ct8lwfa2
-        1NCUTrhbqPM6jCcB+qsi+p4=
-X-Google-Smtp-Source: APiQypKZDrsGOKzHLNWdA6sf763EVRlnf4o8ombxUNU7YjIjeV0UEaGDTkXwH0Ny0Tv/9eS0gklNIg==
-X-Received: by 2002:a2e:6c0a:: with SMTP id h10mr3077105ljc.195.1585865999798;
-        Thu, 02 Apr 2020 15:19:59 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id v10sm4645712lfb.61.2020.04.02.15.19.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 15:19:59 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] PM / devfreq: tegra: Add Dmitry as a maintainer
-Date:   Fri,  3 Apr 2020 01:17:23 +0300
-Message-Id: <20200402221723.6064-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1585865941; x=1617401941;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=go/JuGKaHOod4bhA+dQw7sF/0xVz45NyR0D/yH5ioaY=;
+  b=RfuZt35xZEsJ0WS7223nq1GRmwkHi/Ptdv3fUEH0hOyebSKhlTOYaEaa
+   K1x3+jhZMnRYJFH0Jqe+JbSAiz8RzuJnbRkHSxQ/kuf3KHWC0bU7f6TWg
+   Td2ef1aqhV4aLjW7Xpwu4PkACQPEJupEYWZZ1OtZ6QKniiSzTnwA/gWJo
+   8=;
+IronPort-SDR: 852IGI2ccF7rlZp21kgF7tJPvTK1iXpluB4qRjimsaR2uQ3AsLsKyhhVTlG5bJ7XJ2GnbflUZA
+ 0tjSgGlLDaig==
+X-IronPort-AV: E=Sophos;i="5.72,337,1580774400"; 
+   d="scan'208";a="26637487"
+Subject: Re: [PATCH 3/3] arch/x86: Optionally flush L1D on context switch
+Thread-Topic: [PATCH 3/3] arch/x86: Optionally flush L1D on context switch
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 02 Apr 2020 22:18:58 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan2.iad.amazon.com [10.40.159.162])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 90BEBA2361;
+        Thu,  2 Apr 2020 22:18:55 +0000 (UTC)
+Received: from EX13D01UWB001.ant.amazon.com (10.43.161.75) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1367.3; Thu, 2 Apr 2020 22:18:55 +0000
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13d01UWB001.ant.amazon.com (10.43.161.75) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 2 Apr 2020 22:18:54 +0000
+Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
+ EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.006;
+ Thu, 2 Apr 2020 22:18:54 +0000
+From:   "Singh, Balbir" <sblbir@amazon.com>
+To:     "bp@alien8.de" <bp@alien8.de>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Thread-Index: AQHWCLejDt1H7tG0W0uohgcqhgtMwKhmZcqAgAACKgA=
+Date:   Thu, 2 Apr 2020 22:18:54 +0000
+Message-ID: <b6655e68246bb19bd1dde17602c80dc4d9c9d2c8.camel@amazon.com>
+References: <20200402062401.29856-1-sblbir@amazon.com>
+         <20200402062401.29856-4-sblbir@amazon.com> <20200402221109.GJ9352@zn.tnic>
+In-Reply-To: <20200402221109.GJ9352@zn.tnic>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.162.171]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <481516BA7F7FA54A887902A526E7BDA6@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was contributing to the NVIDIA Tegra20+ devfreq drivers recently and
-want to help keep them working and evolving in the future.
-
-Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
-
-Changelog:
-
-v2: - Addressed review comments made by Chanwoo Choi to v1 by correcting
-      git's address, making this patch standalone and adding Rafael Wysocki
-      to the list of email recipients.
-
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 245a96316636..0a694e20ea19 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10922,6 +10922,15 @@ F:	include/linux/memblock.h
- F:	mm/memblock.c
- F:	Documentation/core-api/boot-time-mm.rst
- 
-+MEMORY FREQUENCY SCALING DRIVERS FOR NVIDIA TEGRA
-+M:	Dmitry Osipenko <digetx@gmail.com>
-+L:	linux-pm@vger.kernel.org
-+L:	linux-tegra@vger.kernel.org
-+T:	git git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/linux.git
-+S:	Maintained
-+F:	drivers/devfreq/tegra20-devfreq.c
-+F:	drivers/devfreq/tegra30-devfreq.c
-+
- MEMORY MANAGEMENT
- M:	Andrew Morton <akpm@linux-foundation.org>
- L:	linux-mm@kvack.org
--- 
-2.25.1
-
+T24gRnJpLCAyMDIwLTA0LTAzIGF0IDAwOjExICswMjAwLCBCb3Jpc2xhdiBQZXRrb3Ygd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90DQo+IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5s
+ZXNzIHlvdSBjYW4gY29uZmlybSB0aGUgc2VuZGVyIGFuZCBrbm93DQo+IHRoZSBjb250ZW50IGlz
+IHNhZmUuDQo+IA0KPiANCj4gDQo+IE9uIFRodSwgQXByIDAyLCAyMDIwIGF0IDA1OjI0OjAxUE0g
+KzExMDAsIEJhbGJpciBTaW5naCB3cm90ZToNCj4gPiAraW50IGVuYWJsZV9sMWRfZmx1c2hfZm9y
+X3Rhc2soc3RydWN0IHRhc2tfc3RydWN0ICp0c2spDQo+ID4gK3sNCj4gPiArICAgICBzdHJ1Y3Qg
+cGFnZSAqcGFnZTsNCj4gPiArICAgICBpbnQgcmV0ID0gMDsNCj4gPiArDQo+ID4gKyAgICAgaWYg
+KHN0YXRpY19jcHVfaGFzKFg4Nl9GRUFUVVJFX0ZMVVNIX0wxRCkpDQo+ID4gKyAgICAgICAgICAg
+ICBnb3RvIGRvbmU7DQo+ID4gKw0KPiA+ICsgICAgIHBhZ2UgPSBSRUFEX09OQ0UobDFkX2ZsdXNo
+X3BhZ2VzKTsNCj4gPiArICAgICBpZiAodW5saWtlbHkoIXBhZ2UpKSB7DQo+ID4gKyAgICAgICAg
+ICAgICBtdXRleF9sb2NrKCZsMWRfZmx1c2hfbXV0ZXgpOw0KPiA+ICsgICAgICAgICAgICAgaWYg
+KCFsMWRfZmx1c2hfcGFnZXMpIHsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgbDFkX2ZsdXNo
+X3BhZ2VzID0gYWxsb2NfbDFkX2ZsdXNoX3BhZ2VzKCk7DQo+ID4gKyAgICAgICAgICAgICAgICAg
+ICAgIGlmICghbDFkX2ZsdXNoX3BhZ2VzKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIHJldHVybiAtRU5PTUVNOw0KPiANCj4gRG8gSSBzZWUgaXQgY29ycmVjdGx5IHRoYXQgeW91
+J2xsIHJldHVybiBoZXJlIHdpdGggbDFkX2ZsdXNoX211dGV4IHN0aWxsDQo+IGhlbGQ/DQoNCkRh
+cm4uLiA6KA0KDQpJIGhhZCBnb3RvIGRvbmUgdG8gcmVsZWFzZSB0aGUgbXV0ZXggZWFybGllciwg
+bGV0IG1lIGZpeCB0aGF0IDopDQoNClRoYW5rcywNCkJhbGJpciBTaW5naA0KDQo+IA0KPiA+ICsg
+ICAgICAgICAgICAgfQ0KPiA+ICsgICAgICAgICAgICAgbXV0ZXhfdW5sb2NrKCZsMWRfZmx1c2hf
+bXV0ZXgpOw0KPiA+ICsgICAgIH0NCj4gPiArICAgICAvKiBJIGRvbid0IHRoaW5rIHdlIG5lZWQg
+dG8gd29ycnkgYWJvdXQgS1NNICovDQo+IA0KPiBQbHMgdXNlIHBhc3NpdmUgdm9pY2U6IG5vICJ3
+ZSIgb3IgIkkiLCBldGMuDQo+IA0KPiAtLQ0KPiBSZWdhcmRzL0dydXNzLA0KPiAgICAgQm9yaXMu
+DQo+IA0KPiBodHRwczovL3Blb3BsZS5rZXJuZWwub3JnL3RnbHgvbm90ZXMtYWJvdXQtbmV0aXF1
+ZXR0ZQ0K
