@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F266419C5F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFDB19C5ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 17:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389290AbgDBPeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 11:34:37 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:50552 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732754AbgDBPeh (ORCPT
+        id S2389245AbgDBPdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 11:33:47 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:57420 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388744AbgDBPdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 11:34:37 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jK1rW-0005mQ-8t; Thu, 02 Apr 2020 09:34:34 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jK1rV-0007tb-0b; Thu, 02 Apr 2020 09:34:33 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Alexey Gladkov <gladkov.alexey@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Security Module <linux-security-module@vger.kernel.org>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Djalal Harouni <tixxdz@gmail.com>,
-        "Dmitry V . Levin" <ldv@altlinux.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@poochiereds.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <20200327172331.418878-1-gladkov.alexey@gmail.com>
-        <20200327172331.418878-3-gladkov.alexey@gmail.com>
-Date:   Thu, 02 Apr 2020 10:31:48 -0500
-In-Reply-To: <20200327172331.418878-3-gladkov.alexey@gmail.com> (Alexey
-        Gladkov's message of "Fri, 27 Mar 2020 18:23:24 +0100")
-Message-ID: <87eet5lx97.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 2 Apr 2020 11:33:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QAB4FKmrAwMSXS3bFgkS7qXE7ubZhAEmx+ZEk9qYg0s=; b=d74Z+4+mRIMe2s36Wy2LEQt48U
+        1h5Jf3ygWPQqdrwI+h0kaAoqYbmbHQJNAoHM5GZBZ3yMHA0D9IfACk/Ba56zbpVq/UvgW8AzE3cOg
+        zWi0kCQyONwF9LLWdTyOpycmh/BIvxKMmxTPD10zDXQbkO0E6MrnR9nqMxmjV22KTQO4Nr9wASALT
+        sSF3zuSfkXdSiK65xNpskImIu5ehqqTbAjmv9909CO2w3thudN5HiZ+fwre5fXVNy/AvuMIKMoAZe
+        X2paHr38fcO4FMsr+1Ljqkud+BE9BwkSZUojlzTnYDy0Kxl+QS3/3hB7fqPTu1qTmyXHKthbB/N+0
+        bi9mHZig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jK1qI-00066Z-Cg; Thu, 02 Apr 2020 15:33:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 343263010BC;
+        Thu,  2 Apr 2020 17:33:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 147CB2B0DECD2; Thu,  2 Apr 2020 17:33:16 +0200 (CEST)
+Date:   Thu, 2 Apr 2020 17:33:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     hejingxian <hejingxian@huawei.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        Hushiyuan <hushiyuan@huawei.com>,
+        "hewenliang (C)" <hewenliang4@huawei.com>
+Subject: Re: [PATCH] fair sched: Fix signed integer overflow problem in fair
+ sched
+Message-ID: <20200402153316.GF20730@hirez.programming.kicks-ass.net>
+References: <1D850B2B2FDCCD4EAD93967D2CFC56B113ABAB1E@dggemm501-mbs.china.huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jK1rV-0007tb-0b;;;mid=<87eet5lx97.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18bJm/P/P+XAlq1t04hxE6W/8b8KDRYe10=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4209]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Alexey Gladkov <gladkov.alexey@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 664 ms - load_scoreonly_sql: 0.35 (0.1%),
-        signal_user_changed: 13 (2.0%), b_tie_ro: 11 (1.6%), parse: 1.62
-        (0.2%), extract_message_metadata: 4.4 (0.7%), get_uri_detail_list:
-        0.91 (0.1%), tests_pri_-1000: 7 (1.0%), tests_pri_-950: 1.60 (0.2%),
-        tests_pri_-900: 1.25 (0.2%), tests_pri_-90: 366 (55.2%), check_bayes:
-        364 (54.9%), b_tokenize: 10 (1.5%), b_tok_get_all: 143 (21.5%),
-        b_comp_prob: 2.8 (0.4%), b_tok_touch_all: 205 (30.9%), b_finish: 1.12
-        (0.2%), tests_pri_0: 198 (29.9%), check_dkim_signature: 0.66 (0.1%),
-        check_dkim_adsp: 2.6 (0.4%), poll_dns_idle: 0.90 (0.1%), tests_pri_10:
-        2.2 (0.3%), tests_pri_500: 57 (8.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v10 2/9] proc: allow to mount many instances of proc in one pid namespace
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1D850B2B2FDCCD4EAD93967D2CFC56B113ABAB1E@dggemm501-mbs.china.huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 02, 2020 at 02:52:40PM +0000, hejingxian wrote:
+> During execution applications in my arm64 virtual machine with UBSAN, the UBSAN error message is showed:
+> UBSAN: Undefined behaviour in kernel/sched/fair.c
+> signed integer overflow:
+> 166982794708445 * 64885 cannot be represented in type 'long int'
+> CPU: 40 PID: 4134072 Comm: stress-ng-sched Kdump: loaded Tainted: G    B   W  OE     4.19.95-vhulk2002.1.0.0041.eulerosv2r8.aarch64 #1
+> Hardware name: Huawei TaiShan 2280 V2/BC82AMDD, BIOS 0.98 08/25/2019
+> Call trace:
+>         dump_backtrace+0x0/0x310
+>         show_stack+0x28/0x38
+>         dump_stack+0xd8/0x108
+>         ubsan_epilogue+0x1c/0x94
+>         handle_overflow+0x14c/0x19c
+>         __ubsan_handle_mul_overflow+0x34/0x44
+>         task_numa_find_cpu+0xdec/0x1058
+>         task_numa_migrate+0x3ac/0x12d0
+>         task_numa_fault+0x4f0/0x5f0
+>         do_numa_page+0x480/0x848
+>         __handle_mm_fault+0x8d8/0x9b0
+>         handle_mm_fault+0x280/0x460
+>         do_page_fault+0x3ec/0x890
+>         do_translation_fault+0xe4/0x100
+>         do_mem_abort+0xc0/0x1b0
+>         el0_da+0x24/0x28
+> 
+> The multiplication of signed long integers in load_too_imbalanced may
+> occur overflow, then we use unsigned long integers instead of signed integers.
 
-> diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-> index 40a7982b7285..5920a4ecd71b 100644
-> --- a/include/linux/proc_fs.h
-> +++ b/include/linux/proc_fs.h
-> @@ -27,6 +27,17 @@ struct proc_ops {
->  	unsigned long (*proc_get_unmapped_area)(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
->  };
->  
-> +struct proc_fs_info {
-> +	struct pid_namespace *pid_ns;
-> +	struct dentry *proc_self;        /* For /proc/self */
-> +	struct dentry *proc_thread_self; /* For /proc/thread-self */
-> +};
-
-Minor nit.
-
-I have not seen a patch where you remove proc_self and proc_thread_self
-from struct pid_namepace.
-
-Ideally it would have been in this patch.  But as it won't break
-anyone's bisection can you please have a follow up patch that removes
-those fields?
-
-Thank you,
-Eric
-
-
-
-> +
-> +static inline struct proc_fs_info *proc_sb_info(struct super_block *sb)
-> +{
-> +	return sb->s_fs_info;
-> +}
-> +
->  #ifdef CONFIG_PROC_FS
->  
->  typedef int (*proc_write_t)(struct file *, char *, size_t);
-> @@ -161,6 +172,7 @@ int open_related_ns(struct ns_common *ns,
->  /* get the associated pid namespace for a file in procfs */
->  static inline struct pid_namespace *proc_pid_ns(const struct inode *inode)
->  {
-> +	return proc_sb_info(inode->i_sb)->pid_ns;
->  	return inode->i_sb->s_fs_info;
->  }
+NAK, UBSAN is smoking dope, and you patch is actively wrong.
