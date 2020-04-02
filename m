@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EB019C37E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:01:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DF719C381
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Apr 2020 16:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388441AbgDBOBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 10:01:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27510 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388395AbgDBOBh (ORCPT
+        id S2388484AbgDBOBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 10:01:47 -0400
+Received: from shards.monkeyblade.net ([23.128.96.9]:47072 "EHLO
+        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726617AbgDBOBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 10:01:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585836096;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=O7EMuney8gEiJb0wo0noEWCYTocW+RKYyaMoY0nHgzo=;
-        b=jJzbc3Ku4iYkltLvdGGmtpeVelK9u6Zl0kSQq8QAo1JnrB7bOhfX5solwzD4yHtVCUzlGG
-        SS4Jhoxrs+trpyKh0//PsY20JPcYx+scKS+L+v3U1Vt2myoacz9sEdtgO2n1ta+JC5bsPP
-        Z/dDyDCTVvLpML08Wc+6CO3GB46ZiKM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-413-YWpRpI3-MdO32gPxYsTtuw-1; Thu, 02 Apr 2020 10:01:31 -0400
-X-MC-Unique: YWpRpI3-MdO32gPxYsTtuw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4036C107ACC4;
-        Thu,  2 Apr 2020 14:01:29 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-36.pek2.redhat.com [10.72.12.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CB9E60BF1;
-        Thu,  2 Apr 2020 14:01:26 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        iamjoonsoo.kim@lge.com, mhocko@kernel.org, bhe@redhat.com,
-        mgorman@techsingularity.net, rientjes@google.com
-Subject: [PATCH v2 3/3] mm/vmstat.c: do not show lowmem reserve protection information of empty zone
-Date:   Thu,  2 Apr 2020 22:01:13 +0800
-Message-Id: <20200402140113.3696-4-bhe@redhat.com>
-In-Reply-To: <20200402140113.3696-1-bhe@redhat.com>
-References: <20200402140113.3696-1-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Thu, 2 Apr 2020 10:01:46 -0400
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B9A63128A133D;
+        Thu,  2 Apr 2020 07:01:45 -0700 (PDT)
+Date:   Thu, 02 Apr 2020 07:01:45 -0700 (PDT)
+Message-Id: <20200402.070145.1146009613887902250.davem@davemloft.net>
+To:     yuehaibing@huawei.com
+Cc:     nishadkamdar@gmail.com, nico@fluxnic.net, masahiroy@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gakula@marvell.com
+Subject: Re: [PATCH net] net: cavium: Fix build errors due to 'imply
+ CAVIUM_PTP'
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200402132344.37864-1-yuehaibing@huawei.com>
+References: <20200402132344.37864-1-yuehaibing@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 26.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 02 Apr 2020 07:01:46 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because the lowmem reserve protection of a zone can't tell anything if
-the zone is empty, except of adding one more line in /proc/zoneinfo.
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Thu, 2 Apr 2020 21:23:44 +0800
 
-Let's remove it from that zone's showing.
+> If CAVIUM_PTP is m and THUNDER_NIC_VF is y, build fails:
+> 
+> drivers/net/ethernet/cavium/thunder/nicvf_main.o: In function 'nicvf_remove':
+> nicvf_main.c:(.text+0x1f0): undefined reference to 'cavium_ptp_put'
+> drivers/net/ethernet/cavium/thunder/nicvf_main.o: In function `nicvf_probe':
+> nicvf_main.c:(.text+0x557c): undefined reference to 'cavium_ptp_get'
+> 
+> THUNDER_NIC_VF imply CAVIUM_PTP, which allow the config now,
+> Use IS_REACHABLE() to avoid the vmlinux link error for this case.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Fixes: def2fbffe62c ("kconfig: allow symbols implied by y to become m")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- mm/vmstat.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 96d21a792b57..6fd1407f4632 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1590,6 +1590,12 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
- 		   zone->present_pages,
- 		   zone_managed_pages(zone));
- 
-+	/* If unpopulated, no other information is useful */
-+	if (!populated_zone(zone)) {
-+		seq_putc(m, '\n');
-+		return;
-+	}
-+
- 	seq_printf(m,
- 		   "\n        protection: (%ld",
- 		   zone->lowmem_reserve[0]);
-@@ -1597,12 +1603,6 @@ static void zoneinfo_show_print(struct seq_file *m, pg_data_t *pgdat,
- 		seq_printf(m, ", %ld", zone->lowmem_reserve[i]);
- 	seq_putc(m, ')');
- 
--	/* If unpopulated, no other information is useful */
--	if (!populated_zone(zone)) {
--		seq_putc(m, '\n');
--		return;
--	}
--
- 	for (i = 0; i < NR_VM_ZONE_STAT_ITEMS; i++)
- 		seq_printf(m, "\n      %-12s %lu", zone_stat_name(i),
- 			   zone_page_state(zone, i));
--- 
-2.17.2
-
+Applied, thanks.
