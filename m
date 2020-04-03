@@ -2,104 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAAE19CF48
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737F219CF13
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730236AbgDCE1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:27:42 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:36207 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgDCE1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:27:41 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48tn3F11cNz9sRR;
-        Fri,  3 Apr 2020 15:27:37 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1585888059;
-        bh=P6pDV2mWC3/QGwHFGntoCWhQeeo1qFFM1tqWOPVJ5GQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Vsp7iefSuq2qUc2BqgDgoqQSz9nPDU/JrItc+oEyG61KFugv7uQPx8toJGFzcyDE9
-         fbHOnTwHuQ5nU9Y2XDcNSY0Z2d2hDCzlqQhElxnt0lWMHCdM5Xj8YLhG/Gvt02ZsjQ
-         H2QG7o77rzF7weuVSVcwCohP50hpM4jeI0X/jbE8sTucOI8vacLjjbZb6LfDQZrQvF
-         s44uAO8q4NgYv5YD8W76eyM++ks7SvH51Mshmbfai8akqeelai+Lq2HG+OMgjeqjzs
-         QWv7sKW0TVJeK8e+qAjnA0G4PeqL7511jU+g7m3hAZHA3+DqAaMDtXDp7bogX/2lG5
-         13TfLzlBAQuTQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Alastair D'Silva <alastair@d-silva.org>
-Cc:     "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mahesh Salgaonkar <mahesh@linux.vnet.ibm.com>,
-        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
-        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kurz <groug@kaod.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 03/25] powerpc/powernv: Map & release OpenCAPI LPC memory
-In-Reply-To: <f763d9d8487e77006b233bc16e0883f956850b6c.camel@kernel.crashing.org>
-References: <20200327071202.2159885-1-alastair@d-silva.org> <20200327071202.2159885-4-alastair@d-silva.org> <CAPcyv4iGEHJpZctEm+Do1-kOZBUDeKKcREr=BqcK4kCvLWhAQQ@mail.gmail.com> <f763d9d8487e77006b233bc16e0883f956850b6c.camel@kernel.crashing.org>
-Date:   Fri, 03 Apr 2020 15:27:46 +1100
-Message-ID: <87v9mhry65.fsf@mpe.ellerman.id.au>
+        id S1729987AbgDCEVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:21:48 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:32998 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgDCEVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 00:21:48 -0400
+Received: by mail-il1-f194.google.com with SMTP id k29so5989726ilg.0;
+        Thu, 02 Apr 2020 21:21:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iTvfVv9OMelL2tJNQhqCvCC3vbEtodW1DXRkZdSxEgM=;
+        b=MakQgKQ+OPkp1iYYauWme4unfCiANy7OA1fMZ4N3dVb4DpHxRL6VT2tsxKzO6NL6RM
+         SR+Z/SlKHaxvb30RBOjJVDMOo9qTurRsVXK5eghfGwjR+VG8LGNkjBglKyyDcnykyDgC
+         bKRfEKCWuofsPNp2SpzohDHOXiHXTPNi6O9pRWbHUotsBr0YeDFMXGnlYwlZQqsqVa3E
+         tQ+y/cqe71lMTU0za+7MRwVM2D5IAVs6Q3IKUYGypUs1i3F+2H1yhHNzEKIbeJR7rfuo
+         UPgsLhvJH8Kj1pFHFXCeVsOdwvI4VK4oWx26jirUUkEfqM8CfSRZ0H+mqELlZx9tNCqT
+         JymA==
+X-Gm-Message-State: AGi0PuaRKclfI0tcGeB6yF0/IKUpeJSoPXqVkrFuIkQkuHupaZ/fjxNY
+        rDAF2wU6fCtlR/F4GdP0JGNA+gp8Uc5u0fSRE0/cTAEC
+X-Google-Smtp-Source: APiQypJRG0q51HavwyEmN1v7MTc8CDalf3p/c5rurCJxhL41UfnUexRPVYAyxzfRSydkm//LE4mXKRTvNyq0dqidknQ=
+X-Received: by 2002:a92:c742:: with SMTP id y2mr6585035ilp.147.1585887706183;
+ Thu, 02 Apr 2020 21:21:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1585661608-3356-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1585661608-3356-1-git-send-email-yangtiezhu@loongson.cn>
+From:   Huacai Chen <chenhc@lemote.com>
+Date:   Fri, 3 Apr 2020 12:28:43 +0800
+Message-ID: <CAAhV-H5zKaWREreiDmmRgtAuTvOcQwEm1xvQxcCGrpdiiW7uWg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] Add basic support for Loongson 7A1000 bridge chip
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
-> On Wed, 2020-04-01 at 01:48 -0700, Dan Williams wrote:
->> > 
->> > +u64 pnv_ocxl_platform_lpc_setup(struct pci_dev *pdev, u64 size)
->> > +{
->> > +       struct pci_controller *hose = pci_bus_to_host(pdev->bus);
->> > +       struct pnv_phb *phb = hose->private_data;
->> 
->> Is calling the local variable 'hose' instead of 'host' on purpose?
+We have a rule of naming to avoid confusing: Use Loongson-3A,
+Loongson-3B, etc. to describe processor; use LS2H, LS7A, etc. to
+describe bridge. So please don't use Loongson 7A1000.
+
+Thanks,
+Huacai
+
+On Tue, Mar 31, 2020 at 9:34 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> Haha that's funny :-)
+> The Loongson 7A1000 bridge chip has been released for several years
+> since the second half of 2017, but it is not supported by the Linux
+> mainline kernel while it only works well with the Loongson internal
+> kernel version. When I update the latest version of Linux mainline
+> kernel on the Loongson 3A3000 CPU and 7A1000 bridge chip system,
+> the boot process failed and I feel depressed.
 >
-> It's an oooooooold usage that comes iirc from sparc ? or maybe alpha ?
-
-Yeah it was alpha, I found it in the history tree:
-
-  https://github.com/mpe/linux-fullhistory/blob/1928de59ba4209dc5e9f2cef63560c09ba0df73b/arch/alpha/kernel/mcpcia.c
-
-And airlied found an old manual which confirms it:
-
-  The TIOP module interfaces the AlphaServer 8000 system bus to four I/O channels, called "hoses."
-
-  https://www.hpl.hp.com/hpjournal/dtj/vol7num1/vol7num1art4.pdf
-
-
-So at least now we know where it comes from.
-
-It's also used widely in mips, microblaze, sh and a little bit in drm.
-
-cheers
+> The 7A1000 bridge chip is used a lot with 3A3000 or 3A4000 CPU in
+> the most Loongson desktop and sever products, it is important to
+> support Loongson 7A1000 bridge chip by the Linux mainline kernel.
+>
+> This patch series adds the basic support for the Loongson 7A1000
+> bridge chip, the patch about vendor ID and SATA has been merged
+> into the mainline tree, the next work is to refactor the code about
+> the interrupt controller, and then power management and some other
+> controller device drivers.
+>
+> By the way, if you want the boot process is successful (just for
+> test) on the Loongson 3A3000 CPU and 7A1000 bridge chip system,
+> you should not only apply these patches, but also need the support
+> for SATA and interrupt controller in the v1 patch series.
+>
+> This patch series is based on mips-next.
+>
+> If you have any questions and suggestions, please let me know.
+>
+> Thanks,
+>
+> Tiezhu Yang
+>
+> v2:
+>   - The split patch series about Loongson vendor ID and SATA controller
+>     has been merged into the linux-block.git by Jens Axboe [1].
+>
+>   - Think about using hierarchy IRQ domain in the patch of interrupt
+>     controller, and this maybe depend on the patch series by Jiaxun
+>     ("Modernize Loongson64 Machine"), so the patch about interrupt is
+>     not included in this v2 patch series.
+>
+> v3:
+>   - The split patch series about Loongson vendor ID and SATA controller
+>     has been merged into the mainline tree [2]
+>
+>   - Modify the macro definition and add comment to make it easy to read
+>
+>   - Move ls7a1000_pci_class_quirk() to fixup-loongson3.c
+>
+>   - Use PCI_VENDOR_ID_LOONGSON in pci_ids.h instead of 0x0014
+>
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=9acb9fe18d86
+>     https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=e49bd683e00b
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9acb9fe18d86
+>     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e49bd683e00b
+>
+> Tiezhu Yang (3):
+>   MIPS: Loongson: Get host bridge information
+>   MIPS: Loongson: Add DMA support for 7A1000
+>   MIPS: Loongson: Add PCI support for 7A1000
+>
+>  arch/mips/include/asm/mach-loongson64/boot_param.h | 20 +++++++
+>  arch/mips/loongson64/dma.c                         |  9 ++--
+>  arch/mips/loongson64/env.c                         | 22 ++++++++
+>  arch/mips/loongson64/init.c                        | 17 ++++++
+>  arch/mips/pci/fixup-loongson3.c                    | 12 +++++
+>  arch/mips/pci/ops-loongson3.c                      | 63 ++++++++++++++++++++--
+>  6 files changed, 136 insertions(+), 7 deletions(-)
+>
+> --
+> 2.1.0
+>
