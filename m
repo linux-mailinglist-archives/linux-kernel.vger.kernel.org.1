@@ -2,229 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B15619D2CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCAE119D2D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:58:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390505AbgDCI5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 04:57:22 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:36613 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727856AbgDCI5V (ORCPT
+        id S2390542AbgDCI6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 04:58:10 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44255 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390520AbgDCI6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:57:21 -0400
-Received: by mail-oi1-f194.google.com with SMTP id k18so5501120oib.3;
-        Fri, 03 Apr 2020 01:57:21 -0700 (PDT)
+        Fri, 3 Apr 2020 04:58:09 -0400
+Received: by mail-qk1-f193.google.com with SMTP id j4so7142216qkc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 01:58:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=C4Cc3e3DiPb3eBwNbjf2uE1eQf9O0o8a3T9Uq54vf3c=;
-        b=XhpBRE/wxAJ+lesMndcQLAFLKZqy37YsCBpBI+saa/A8fbn/O6jEcTPJySE0HfwYYX
-         zGxO4AxTF8P0U/NUoztaPD9a0s870qIH5E715ynnWDsSxHP28xI7gE+orX1/5ovhNhWn
-         q5hAAEwPas8wtGnIAhs0ZCeIvXdeKNJ5u06dv3kQuXPHrMCUC16nbqjba78OCFgrBQrS
-         Dhg6uXZjPF3w1z07tMmgn1MRlJYl9vb6+HZh6PGPgPeWvansvt01gUTNmjH0cQu0GTwS
-         3R/G6oXKFiyNU5DEWsVG/1CYl94KEcWn5IZyvo+x+niwZnh1S/MOS6QKBgfcEPoO8sn/
-         67eA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/fMTu9YPirg7Oe+WQpcx+ru33Csg9jun3QSGySXC/HE=;
+        b=L8fRM1d56HsWAvRUyQ5XoM0HgTTGfbtFGPC+42OW5EH8/+iUfDHiYfS4RhMquwg9lz
+         YCy1+PxlR/P3KmPM2PftfvhSoeizYab/YGf5ot+4AsJRHhQ7lhNiGyuEYqgX6SYRoAZY
+         K53iFoa0GRM+5lzSxURAILsHXR/RLyaJKc+5vHXMEvP5gFbkVm+XhYAVpMIc0wX71TBK
+         wODo96H9rSVZxsqR/y94QDkNWwBlPmKwWopBZGnbZzk2pA/4MquXODaSxdO81ClSxO1v
+         ql8SnQYEtN/NEdnEhWZEkmw6OSI+pkSetH+W61gbLYDtB7tKKTU23c7DTQhZz4LuEuH9
+         1byg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=C4Cc3e3DiPb3eBwNbjf2uE1eQf9O0o8a3T9Uq54vf3c=;
-        b=IlElZ4KHDrubQeMtFjdQ8dHddNVUoDy27Bm7Cy6UlPujqI9bJT1CxF7IqSmFC7yp4f
-         3G9t1vEEW3p5ZQM7ZQyOL2cDJ3uDMx3OYJ5Qw5ujJyzWYbMleFOXvWHLEEC1SELy7/ET
-         Dzy1iIJ5p8duldOJMBcoqRCG7i2htybuJLKQbbJrpt1WDYs84ITYqoRNtWRxMxs5yOFd
-         G0ZIGG5V/QLwKdVbzs4YGNzjT5ZWG33fvXaHmqWDxh6Qmo+GdEdaioqFaFvGwS1UYTnn
-         xQ3Q6qAu4/eD47MXnjACdvPDL4OS/kxjrQJVk2z5uicRCznX1wJCXOCjf6qt/sQJNJUM
-         V9sQ==
-X-Gm-Message-State: AGi0PuYHlolbuS67L9A2kREvn5okIMa80Lj5EG9VuX/Tq2c2YFQ4c5yO
-        j4azJ0kRSBKnQdFwmeuUG7A=
-X-Google-Smtp-Source: APiQypLUivYF4yk6PsrH1Gmc2ZiaD0Dp5rCnUH1vbaut+RNz2omE1RD7Itl+CmRYe+BIaZya8pkKng==
-X-Received: by 2002:aca:4e47:: with SMTP id c68mr2318714oib.16.1585904240942;
-        Fri, 03 Apr 2020 01:57:20 -0700 (PDT)
-Received: from ubuntu-m2-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id m20sm1966298otj.37.2020.04.03.01.57.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Apr 2020 01:57:20 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 01:57:19 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: support 'LLVM' to switch the default tools to
- Clang/LLVM
-Message-ID: <20200403085719.GA9282@ubuntu-m2-xlarge-x86>
-References: <20200403051709.22407-1-masahiroy@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/fMTu9YPirg7Oe+WQpcx+ru33Csg9jun3QSGySXC/HE=;
+        b=YmGNySCb4/AOAFX50L2qKBZKMdA04HbTvemTD/RsgMi8IkZPt1BLp+nM3gfPSgOMPL
+         mvnKESTByOUAAGiobj03O75hIIhrJPnlXim8HqiPDQ/lTz4OD9wvhokq2EL3gNVCr8W/
+         9Y66TDm1304H9rEH2ti8SI3Hz6uhur/jJLFUvWkAKd4oRobtt5Mo/xnBTvvS1+ZWB4a6
+         NKlzSfzFGbE6mwl656Cn85yDf7pRj8Z+Z8+WsC+S+V/jMZrewcQBw0LaOf2ogIDxExKC
+         mqy+xwdPnEkMFYjZPdD1VJpT4OlNCWjI4qZHlLxFbJ2kOFMxB0c9phZN6rDPvAz/a0jI
+         JXzw==
+X-Gm-Message-State: AGi0PuaqIWJtQyt+p25yiJADTGwUyA5EgLb3JvzkzrDxf3gMNBFg1STo
+        BbiafhI8MRTAZtJGuxTO2pgTnCrZpZ07FJ6HPeYzpg==
+X-Google-Smtp-Source: APiQypIKQ9Q7tDsIWkY8R8OpBoSAnP2oDbVXYV+fjPe3tON+mWT3k0wTSJXrY39iJHQ3bTEYPrCgBcewWCidMgbHh5Q=
+X-Received: by 2002:a37:6115:: with SMTP id v21mr7418908qkb.43.1585904286347;
+ Fri, 03 Apr 2020 01:58:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403051709.22407-1-masahiroy@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <000000000000ec257905a21f7415@google.com> <20200331095737.GO20730@hirez.programming.kicks-ass.net>
+ <CGME20200331101907eucas1p1ce5d3f7c49c2c724c4e85f5c19c7108d@eucas1p1.samsung.com>
+ <CACT4Y+bqBCqDPQZ1Nk8G+8y2vu8aaT2S54J4UqRPaFNUcusbYw@mail.gmail.com>
+ <7641fb29-20ec-0963-d04c-bfbf49fd3ebc@samsung.com> <CAKMK7uF5zZH3CaHueWsLR96-AzT==wP8=MpymTqx-T+SRsXWHA@mail.gmail.com>
+ <CACT4Y+Y_i86-MPG_3jo-+_5WTLvcNi6HTR=mQkVdwJb5ATqDsQ@mail.gmail.com>
+ <CAKMK7uHCZK8L_Ho3yBq-=QnKm9F60KtRTqr8pAHxVjUcFjnd_w@mail.gmail.com> <CAKMK7uH4PzdtZmg8_j91g571aXd98XPfq18mg7aN6=e9XLoDgg@mail.gmail.com>
+In-Reply-To: <CAKMK7uH4PzdtZmg8_j91g571aXd98XPfq18mg7aN6=e9XLoDgg@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 3 Apr 2020 10:57:54 +0200
+Message-ID: <CACT4Y+bhyXRF_AOOqh9D7XnU3jJT=sQR_BY69v5CXq1Getrf9g@mail.gmail.com>
+Subject: Re: INFO: trying to register non-static key in try_to_wake_up
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Matthew Garrett <mjg59@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzbot <syzbot+e84d7ebd1361da13c356@syzkaller.appspotmail.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+On Wed, Apr 1, 2020 at 11:06 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > On Tue, Mar 31, 2020 at 2:18 PM Bartlomiej Zolnierkiewicz
+> > > > <b.zolnierkie@samsung.com> wrote:
+> > > > >
+> > > > >
+> > > > > On 3/31/20 12:18 PM, Dmitry Vyukov wrote:
+> > > > > > On Tue, Mar 31, 2020 at 11:57 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > > > >>
+> > > > > >> On Mon, Mar 30, 2020 at 10:01:12PM -0700, syzbot wrote:
+> > > > > >>> Hello,
+> > > > > >>>
+> > > > > >>> syzbot found the following crash on:
+> > > > > >>>
+> > > > > >>> HEAD commit:    9420e8ad Merge tag 'for-linus' of git://git.kernel.org/pub..
+> > > > > >>> git tree:       upstream
+> > > > > >>> console output: https://protect2.fireeye.com/url?k=0756a78d-5a9a6c49-07572cc2-0cc47a314e9a-e4dc8b657d340686&u=https://syzkaller.appspot.com/x/log.txt?x=1206ed4be00000
+> > > > > >>> kernel config:  https://protect2.fireeye.com/url?k=43211072-1eeddbb6-43209b3d-0cc47a314e9a-3bd45a19932c37c8&u=https://syzkaller.appspot.com/x/.config?x=27392dd2975fd692
+> > > > > >>> dashboard link: https://protect2.fireeye.com/url?k=bf7a6153-e2b6aa97-bf7bea1c-0cc47a314e9a-c64073ee605efb7b&u=https://syzkaller.appspot.com/bug?extid=e84d7ebd1361da13c356
+> > > > > >>> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > > > > >>>
+> > > > > >>> Unfortunately, I don't have any reproducer for this crash yet.
+> > > > > >>>
+> > > > > >>> IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > > > >>> Reported-by: syzbot+e84d7ebd1361da13c356@syzkaller.appspotmail.com
+> > > > > >>>
+> > > > > >>> INFO: trying to register non-static key.
+> > > > > >>> the code is fine but needs lockdep annotation.
+> > > > > >>> turning off the locking correctness validator.
+> > > > > >>> CPU: 1 PID: 1014 Comm: syz-executor.0 Not tainted 5.6.0-rc7-syzkaller #0
+> > > > > >>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > > > >>> Call Trace:
+> > > > > >>>  <IRQ>
+> > > > > >>>  __dump_stack lib/dump_stack.c:77 [inline]
+> > > > > >>>  dump_stack+0x188/0x20d lib/dump_stack.c:118
+> > > > > >>>  assign_lock_key kernel/locking/lockdep.c:880 [inline]
+> > > > > >>>  register_lock_class+0x14c4/0x1540 kernel/locking/lockdep.c:1189
+> > > > > >>>  __lock_acquire+0xfc/0x3ca0 kernel/locking/lockdep.c:3836
+> > > > > >>>  lock_acquire+0x197/0x420 kernel/locking/lockdep.c:4484
+> > > > > >>>  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+> > > > > >>>  _raw_spin_lock_irqsave+0x8c/0xbf kernel/locking/spinlock.c:159
+> > > > > >>>  try_to_wake_up+0x9f/0x17c0 kernel/sched/core.c:2547
+> > > > > >>
+> > > > > >> That's p->pi_lock, which gets initialized in rt_mutex_init_task() in
+> > > > > >> copy_process(). This should be impossible. Very odd.
+> > > > > >
+> > > > > > The stack mentions fbdev, which is a red flag at the moment. There are
+> > > > > > a dozen of bad bugs in fbdev and around. Just few days ago Andy
+> > > > > > pointed to another "impossible" crash "general protection fault in
+> > > > > > do_syscall_64" which is related to dri:
+> > > > > > https://protect2.fireeye.com/url?k=0cb8ad06-517466c2-0cb92649-0cc47a314e9a-a20c11191483c65b&u=https://syzkaller.appspot.com/bug?id=0ec7b2602b1ff40f0d34f38baa4ba1640727c3d9
+> > > > > > https://protect2.fireeye.com/url?k=614292e3-3c8e5927-614319ac-0cc47a314e9a-aeda6d72c01a7b0e&u=https://groups.google.com/forum/#!msg/syzkaller-bugs/ePqhfYx0-8M/Q_Urt97iAAAJ
+> > > > > >
+> > > > > > There are probably more random manifestations of these bugs already,
+> > > > > > and I guess we will be getting more.
+> > > > > >
+> > > > > > +fbdev maintainers
+> > > > >
+> > > > > Thank you for the report.
+> > > > >
+> > > > > fbdev is in the maintenance mode and no new features or drivers are
+> > > > > being added so syzbot reports are not for a new bugs (regressions) and
+> > > > > are not a priority (at least to me).
+> > > >
+> > > > Yup same here, I've seen a pile of syzbot reports for fbdev (and also
+> > > > vt, or combinations of them since fbdev is linked to vt through fbcon)
+> > > > fly by. But I really don't have to deal with these, my recommendation
+> > > > to anyone who cares about security are:
+> > > > - Don't enable vt
+> > > > - Don't enable fbdev
+> > >
+> > > 1. How do we deliver this message to relevant people?
+> > >
+> > > Because:
+> > >
+> > > $ grep FBDEV syzkaller/dashboard/config/upstream-kasan.config
+> > > CONFIG_DRM_FBDEV_EMULATION=y
+> > > CONFIG_DRM_FBDEV_OVERALLOC=100
+> > > # CONFIG_DRM_FBDEV_LEAK_PHYS_SMEM is not set
+> > > CONFIG_XEN_FBDEV_FRONTEND=y
+> > >
+> > > and my current work machine:
+> > >
+> > > $ grep FBDEV /boot/config-5.2.17-1-amd64
+> > > CONFIG_DRM_FBDEV_EMULATION=y
+> > > CONFIG_DRM_FBDEV_OVERALLOC=100
+> > > # CONFIG_DRM_FBDEV_LEAK_PHYS_SMEM is not set
+> > > CONFIG_XEN_FBDEV_FRONTEND=y
+> >
+> > Yeah I know it's been like this since forever. In theory you could
+> > build a fbdev/fbcon less distro since years (the last bit for a proof
+> > of concept was kmscon/systemd-consoled), but the amount of investment
+> > into classic linux desktop is so little that it's impossible to get
+> > this funded. CrOS fixed this a while ago iirc though.
+> >
+> > I think to fix the syzbot issues all we'd need is a competent intern
+> > for a few months, that should take care of the worst stuff. Obviously
+> > wont include getting a test suite going, nor fixing any of the
+> > fundamental issues. But duct-taping over all the bugs should be
+> > possible (it's what we've been doing for well over 10 years by now in
+> > fbdev/fbocn/vt code anyway). I'd be willing to help mentoring, but
+> > that's about all I can do.
+> >
+> > Adding Matthew Garret, I have discussed with him in the past finding
+> > some funding for linux desktop stuff like this.
 
-On Fri, Apr 03, 2020 at 02:17:09PM +0900, Masahiro Yamada wrote:
-> As Documentation/kbuild/llvm.rst implies, building the kernel with a
-> full set of LLVM tools gets very verbose and unwieldy.
-> 
-> Provide a single switch 'LLVM' to use Clang and LLVM tools instead of
-> GCC and Binutils. You can pass LLVM=1 from the command line or as an
-> environment variable. Then, Kbuild will use LLVM toolchains in your
-> PATH environment.
-> 
-> Please note LLVM=1 does not turn on the LLVM integrated assembler.
-> You need to explicitly pass AS=clang to use it. When the upstream
-> kernel is ready for the integrated assembler, I think we can make
-> it default.
+I will keep this in mind. We _may_ get some interns this year who
+_may_ be interested in fixing Linux kernel bugs (but otherwise
+extending syzkaller descriptions).
 
-I agree this should be the default but I think it should probably be
-called out somewhere in the documentation as well since users might not
-expect to have to have a cross assembler installed.
+FTR, there is also some follow up on twitter re extending
+https://github.com/a13xp0p0v/kconfig-hardened-check to capture such
+recommendations:
+https://twitter.com/dvyukov/status/1245969522869309441
+https://github.com/a13xp0p0v/kconfig-hardened-check/issues/38
 
-> We discussed what we need, and we agreed to go with a simple boolean
-> switch (https://lkml.org/lkml/2020/3/28/494).
-> 
-> Some items in the discussion:
-> 
-> - LLVM_DIR
-> 
->   When multiple versions of LLVM are installed, I just thought supporting
->   LLVM_DIR=/path/to/my/llvm/bin/ might be useful.
-> 
->   CC      = $(LLVM_DIR)clang
->   LD      = $(LLVM_DIR)ld.lld
->     ...
-> 
->   However, we can handle this by modifying PATH. So, we decided to not do
->   this.
-> 
-> - LLVM_SUFFIX
-> 
->   Some distributions (e.g. Debian) package specific versions of LLVM with
->   naming conventions that use the version as a suffix.
-> 
->   CC      = clang$(LLVM_SUFFIX)
->   LD      = ld.lld(LLVM_SUFFIX)
->     ...
-> 
->   will allow a user to pass LLVM_SUFFIX=-11 to use clang-11 etc.,
->   but the suffixed versions in /usr/bin/ are symlinks to binaries in
->   /usr/lib/llvm-#/bin/, so this can also be handled by PATH.
-> 
-> - HOSTCC, HOSTCXX, etc.
-> 
->   We can switch the host compilers in the same way:
-> 
->   ifneq ($(LLVM),)
->   HOSTCC       = clang
->   HOSTCXX      = clang++
->   else
->   HOSTCC       = gcc
->   HOSTCXX      = g++
->   endif
 
-I would personally like to see this but I do not have the strongest
-opinion.
-
->   This may the right thing to do, but I could not make up my mind.
->   Because we do not frequently switch the host compiler, a counter
->   solution I had in my mind was to leave it to the default of the
->   system.
-> 
->   HOSTCC       = cc
->   HOSTCXX      = c++
-> 
->   Many distributions support update-alternatives to switch the default
->   to GCC, Clang, or whatever, but reviewers were opposed to this
->   approach. So, this commit does not touch the host tools.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  Documentation/kbuild/kbuild.rst |  5 +++++
->  Documentation/kbuild/llvm.rst   |  5 +++++
->  Makefile                        | 20 ++++++++++++++++----
->  3 files changed, 26 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
-> index 510f38d7e78a..2d1fc03d346e 100644
-> --- a/Documentation/kbuild/kbuild.rst
-> +++ b/Documentation/kbuild/kbuild.rst
-> @@ -262,3 +262,8 @@ KBUILD_BUILD_USER, KBUILD_BUILD_HOST
->  These two variables allow to override the user@host string displayed during
->  boot and in /proc/version. The default value is the output of the commands
->  whoami and host, respectively.
-> +
-> +LLVM
-> +----
-> +If this variable is set to 1, Kbuild will use Clang and LLVM utilities instead
-> +of GCC and GNU binutils to build the kernel.
-> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> index d6c79eb4e23e..4602369f6a4f 100644
-> --- a/Documentation/kbuild/llvm.rst
-> +++ b/Documentation/kbuild/llvm.rst
-> @@ -55,6 +55,11 @@ additional parameters to `make`.
->  	  READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \\
->  	  HOSTLD=ld.lld
->  
-> +You can use a single switch `LLVM=1` to use LLVM utilities by default (except
-> +for building host programs).
-> +
-> +	make LLVM=1 HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
-> +
->  Getting Help
->  ------------
->  
-> diff --git a/Makefile b/Makefile
-> index c91342953d9e..6db89ecdd942 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -409,16 +409,28 @@ KBUILD_HOSTLDFLAGS  := $(HOST_LFS_LDFLAGS) $(HOSTLDFLAGS)
->  KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
->  
->  # Make variables (CC, etc...)
-> -LD		= $(CROSS_COMPILE)ld
-> -CC		= $(CROSS_COMPILE)gcc
->  CPP		= $(CC) -E
-> +ifneq ($(LLVM),)
-> +CC		= clang
-> +LD		= ld.lld
-> +AR		= llvm-ar
-> +NM		= llvm-nm
-> +OBJCOPY		= llvm-objcopy
-> +OBJDUMP		= llvm-objdump
-> +READELF		= llvm-readelf
-> +OBJSIZE		= llvm-size
-> +STRIP		= llvm-strip
-> +else
-> +CC		= $(CROSS_COMPILE)gcc
-> +LD		= $(CROSS_COMPILE)ld
->  AR		= $(CROSS_COMPILE)ar
->  NM		= $(CROSS_COMPILE)nm
-> -STRIP		= $(CROSS_COMPILE)strip
->  OBJCOPY		= $(CROSS_COMPILE)objcopy
->  OBJDUMP		= $(CROSS_COMPILE)objdump
-> -OBJSIZE		= $(CROSS_COMPILE)size
->  READELF		= $(CROSS_COMPILE)readelf
-> +OBJSIZE		= $(CROSS_COMPILE)size
-> +STRIP		= $(CROSS_COMPILE)strip
-> +endif
->  PAHOLE		= pahole
->  LEX		= flex
->  YACC		= bison
-> -- 
-> 2.17.1
-> 
-
-I have verified that the variables get their correct value with LLVM=1
-and that they are still overridable.
-
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
+> > > 2. What do we do with fbdev testing on syzbot? Is there a way to
+> > > disable all of the unsupported stuff? But if we disable it, we don't
+> > > find any regressions as well. And in the end that's what is in the
+> > > mainline kernel and is still enabled in distros (at least in the 2
+> > > real configs I can grep now).
+> >
+> > This would be bad I agree, but it's not any worse than the state of
+> > things the past 10 years. That's roughly for as long as fbdev has been
+> > in maintainance only mode, meaning "we'll apply patches if they come".
+> > Without Bart volunteering, we wouldn't even have that much really.
+>
+> Oh wrt disabling fbdev: Make sure CONFIG_FB isn't set. Unfortunately a
+> pile of other things select that, for convenience (like
+> CONFIG_DRM_KMS_FB_HELPER).
+>
+> That should get rid of all the problematic fbdev code.
+>
+> From what I've seen in some of the syzbot mails flying by we also have
+> issues in vt and console code blowing up (not just on fbcon/fbdev, but
+> also e.g. on vgacon). That stuff you'll still hit. But maybe you can
+> trick Greg KH into fixing the vt/console.c issues, he just claimed
+> that :-P
+> -Daniel
+>
+> >
+> > > > All that code has been developed long ago, in a much more innocent
+> > > > time. If someone wants to fix this you'd not just need to fix all the
+> > > > syzbot stuff, but also ramp up a full testsuite for all the ioctl, and
+> > > > all the corner-cases. Plus also fix some of the horrendous locking in
+> > > > there, probably.
+> > > >
+> > > > Multi-year effort, easily.
+> > > >
+> > > > Regressions I'll obviously try to handle, but none of these are. It's
+> > > > just syzbot has become smarter at hitting bugs in fbdev and vt
+> > > > subsystems (or maybe the hw the virtual machines emulate has become
+> > > > more varied, some of the reports are for fun stuff like vgacon ...).
+> > > >
+> > > > Cheers, Daniel
+> > > >
+> > > > > I have only resources to review/merge pending fbdev patches from time
+> > > > > to time so any help in fixing these syzbot reports is welcomed (there
+> > > > > have been a few fbdev related syzbot reports recently).
+> > > > >
+> > > > > Also please note that fbdev is maintained through drm-misc tree so
+> > > > > patches can also be handled by other drm-misc maintainers in case I'm
+> > > > > not available / busy with other things.
+> > > > >
+> > > > > Best regards,
+> > > > > --
+> > > > > Bartlomiej Zolnierkiewicz
+> > > > > Samsung R&D Institute Poland
+> > > > > Samsung Electronics
+> > > > >
+> > > > > >>>  wake_up_worker kernel/workqueue.c:836 [inline]
+> > > > > >>>  insert_work+0x2ad/0x3a0 kernel/workqueue.c:1337
+> > > > > >>>  __queue_work+0x50d/0x1280 kernel/workqueue.c:1488
+> > > > > >>>  call_timer_fn+0x195/0x760 kernel/time/timer.c:1404
+> > > > > >>>  expire_timers kernel/time/timer.c:1444 [inline]
+> > > > > >>>  __run_timers kernel/time/timer.c:1773 [inline]
+> > > > > >>>  __run_timers kernel/time/timer.c:1740 [inline]
+> > > > > >>>  run_timer_softirq+0x412/0x1600 kernel/time/timer.c:1786
+> > > > > >>>  __do_softirq+0x26c/0x99d kernel/softirq.c:292
+> > > > > >>>  invoke_softirq kernel/softirq.c:373 [inline]
+> > > > > >>>  irq_exit+0x192/0x1d0 kernel/softirq.c:413
+> > > > > >>>  exiting_irq arch/x86/include/asm/apic.h:546 [inline]
+> > > > > >>>  smp_apic_timer_interrupt+0x19e/0x600 arch/x86/kernel/apic/apic.c:1146
+> > > > > >>>  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
+> > > > > >>>  </IRQ>
+> > > > > _______________________________________________
+> > > > > dri-devel mailing list
+> > > > > dri-devel@lists.freedesktop.org
+> > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > >
+> > > >
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
+>
+>
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> +41 (0) 79 365 57 48 - http://blog.ffwll.ch
