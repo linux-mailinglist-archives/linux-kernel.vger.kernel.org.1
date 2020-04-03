@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6971C19DBD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A8C019DBDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404589AbgDCQhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:37:22 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:47028 "EHLO
+        id S2390993AbgDCQkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:40:06 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:47212 "EHLO
         merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728357AbgDCQhW (ORCPT
+        with ESMTP id S1728381AbgDCQkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:37:22 -0400
+        Fri, 3 Apr 2020 12:40:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=g4YKikYQtnB0AnubBFeONulKSeVzYL29a8W4iHit2bY=; b=sho0d9WtMchVQg/GM9WCgcSHfa
-        HyhG4jCxXzEda1YA7ngOuXk44i6naIf0b9lB+v8zQFKec4KRrNa014NPG/390zOvTUbtB8z23dA1r
-        kyJMDqe48dACeFcDXJiFz8F4PUF/QsgIVgZzxbO1Xph4nl/GfKMPB+WDBHP/rToRhYGlAvgM8dOC2
-        PJPhrVaFiOtZkv5Yqn/IU6WOPyOyVCM3wXJt1m8a0WgPsxLWu+v+kmDCBKr6JlSyWUNm+9kqrXGG8
-        OL8LrrZU8FAv3VNgKipNSPAn8OlqtIjl4NAqxntpP+1cc8VVHK8vcoVqPDfuWqaCrzLiHRqxpxAME
-        zUewE0SQ==;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=4dF2QsJUGR4Xl/636zq9DlSyKEjw2qbunG9s4a650M8=; b=HTEn98TABr1GK/mBH+hQpcrz4+
+        u5DXndV2SMsCbsNk5LXFX7fSXOUltRHU6cVPzTkVBaWaMPfWofUJMjpnd2f9P7O5PIK3IHbv+nCLd
+        lFAEoi7NYYnOuwsk6V06cjXSXR9Q97+JOpWBBNpsIXAeovSQE9Ks1+UrDPQxsjP3AxMhRr5oNmUZe
+        u+tj1nllTMYRpB3CK8B7GnYq2naLslUIwXUwKI97FnNmIPnQPpHSURBwfbqvNuhwKo2iT/jDw3qy1
+        y5DMuTykVqNACNbXNwXtygbHbI66o4FRPf445FOBrKA2MRKwJhgYHb3jNmDU55FITJy/ykzrQHc1E
+        q7AvaIBA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jKPJm-0003Dx-91; Fri, 03 Apr 2020 16:37:18 +0000
+        id 1jKPM6-0003G4-FJ; Fri, 03 Apr 2020 16:39:42 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DD5123060FD;
-        Fri,  3 Apr 2020 18:37:16 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1FC0F3010BC;
+        Fri,  3 Apr 2020 18:39:41 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C85F22B124BED; Fri,  3 Apr 2020 18:37:16 +0200 (CEST)
-Date:   Fri, 3 Apr 2020 18:37:16 +0200
+        id 09F542B124BEE; Fri,  3 Apr 2020 18:39:41 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 18:39:41 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     jeyu@kernel.org
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        keescook@chromium.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: [PATCH] module: Harden STRICT_MODULE_RWX
-Message-ID: <20200403163716.GV20730@hirez.programming.kicks-ass.net>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Kenneth R. Crudup" <kenny@panix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "keescook@chromium.org" <keescook@chromium.org>
+Subject: Re: [patch 1/2] x86,module: Detect VMX modules and disable
+ Split-Lock-Detect
+Message-ID: <20200403163941.GW20730@hirez.programming.kicks-ass.net>
+References: <20200402123258.895628824@linutronix.de>
+ <20200402124205.242674296@linutronix.de>
+ <bc9a0c9a-7bd0-c85d-4795-ae0b4faa5e84@prevas.dk>
+ <20200403143459.GA30424@linux-8ccs>
+ <20200403152158.GR20730@hirez.programming.kicks-ass.net>
+ <20200403160156.GA2701@linux.intel.com>
+ <20200403161205.GT20730@hirez.programming.kicks-ass.net>
+ <7b83b632e41c48698ab892b07673f42d@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <7b83b632e41c48698ab892b07673f42d@AcuMS.aculab.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 03, 2020 at 04:16:38PM +0000, David Laight wrote:
+> From: Peter Zijlstra
+> > Sent: 03 April 2020 17:12
+> > On Fri, Apr 03, 2020 at 09:01:56AM -0700, Sean Christopherson wrote:
+> > > On Fri, Apr 03, 2020 at 05:21:58PM +0200, Peter Zijlstra wrote:
+> > > > On Fri, Apr 03, 2020 at 04:35:00PM +0200, Jessica Yu wrote:
+> > 
+> > > > > I wonder if it would make sense then to limit the text scans to just
+> > > > > out-of-tree modules (i.e., missing the intree modinfo flag)?
+> > > >
+> > > > It would; didn't know there was one.
+> > >
+> > > Rather than scanning modules at all, what about hooking native_write_cr4()
+> > > to kill SLD if CR4.VMXE is toggled on and the caller didn't increment a
+> > > "sld safe" counter?
+> > 
+> > And then you're hoping that the module uses that and not:
+> > 
+> >   asm volatile ("mov %0, cr4" :: "r" (val));
+> > 
+> > I think I feel safer with the scanning to be fair. Also with the intree
+> > hint on, we can extend the scanning for out-of-tree modules for more
+> > dodgy crap we really don't want modules to do, like for example the
+> > above.
+> 
+> Could you do the scanning in the last phase of the module build
+> that has to be done against the target kernel headers and with the
+> target kernel build infrastructure?
 
-We're very close to enforcing W^X memory, refuse to load modules that
-violate this principle per construction.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Jessica Yu <jeyu@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
----
- kernel/module.c |   24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -2044,9 +2044,28 @@ static void module_enable_x(const struct
- 	frob_text(&mod->core_layout, set_memory_x);
- 	frob_text(&mod->init_layout, set_memory_x);
- }
-+
-+static int module_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
-+			       char *secstrings, struct module *mod)
-+{
-+	int i;
-+
-+	for (i = 0; i < hdr->e_shnum; i++) {
-+		if (sechdrs[i].sh_flags & (SHF_EXECINSTR|SHF_WRITE))
-+			return -ENOEXEC;
-+	}
-+
-+	return 0;
-+}
-+
- #else /* !CONFIG_ARCH_HAS_STRICT_MODULE_RWX */
- static void module_enable_nx(const struct module *mod) { }
- static void module_enable_x(const struct module *mod) { }
-+static int module_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
-+			       char *secstrings, struct module *mod)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_ARCH_HAS_STRICT_MODULE_RWX */
- 
- 
-@@ -3378,6 +3397,11 @@ static struct module *layout_and_allocat
- 	if (err < 0)
- 		return ERR_PTR(err);
- 
-+	err = module_rwx_sections(info->hdr, info->sechdrs,
-+				  info->secstrings, info->mod);
-+	if (err < 0)
-+		return ERR_PTR(err);
-+
- 	/* We will do a special allocation for per-cpu sections later. */
- 	info->sechdrs[info->index.pcpu].sh_flags &= ~(unsigned long)SHF_ALLOC;
- 
+You think the binary module people care to respect our module build
+warnings?
