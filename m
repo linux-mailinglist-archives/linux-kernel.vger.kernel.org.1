@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DECD719CF6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBBA619CF7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732903AbgDCEmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:42:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
+        id S1732785AbgDCEmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732382AbgDCEmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:42:13 -0400
+        id S1732383AbgDCEmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 00:42:15 -0400
 Received: from localhost.localdomain (unknown [223.93.147.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B79E208E4;
-        Fri,  3 Apr 2020 04:42:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9390206F8;
+        Fri,  3 Apr 2020 04:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585888932;
-        bh=s0UQPMKJq3+XFTaEAnL15Z0UFEnuaZrJl5aGoqcNctY=;
+        s=default; t=1585888934;
+        bh=IlSSFdTCbto5kyJBE4f6YruWvRB+ADD1o1vAqS/skW8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WBAnJxYL0Q+YZYzwZM07dykPpVWiA9tMoR90wy5dPhm2Uale00sJgLwoba0v1OAAm
-         J3heT8p8OqqvJD7w/CKXehh+n/ZJfV99pZvv8WLIPRI+aI2gz7sljj4x21Avd07tCi
-         Z1+rjYYB1TRhXTzRCP9S6pWpaNCZxFcGJcyWafPU=
+        b=AxNKZafgB8GL4cScVWcXQFNuL4Qp8JWlU6UeoHUznZk623LNb1tX3QmqlhXYk3w18
+         xcD5zQStgqNJ25Xd0xTyW0ujNeq/ShE0p56c2ywRX5bzZ+eRMJyqbwBU0Pa2nzXqRA
+         ETlSOUAKo8tJd5AvIPgPe6jekQysRya5Fy1XylGY=
 From:   guoren@kernel.org
 To:     arnd@arndb.de
 Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH 04/11] csky: Implement ftrace with regs
-Date:   Fri,  3 Apr 2020 12:41:43 +0800
-Message-Id: <20200403044150.20562-4-guoren@kernel.org>
+Subject: [PATCH 05/11] csky/ftrace: Fixup ftrace_modify_code deadlock without CPU_HAS_ICACHE_INS
+Date:   Fri,  3 Apr 2020 12:41:44 +0800
+Message-Id: <20200403044150.20562-5-guoren@kernel.org>
 X-Mailer: git-send-email 2.17.0
 In-Reply-To: <20200403044150.20562-1-guoren@kernel.org>
 References: <20200403044150.20562-1-guoren@kernel.org>
@@ -40,234 +40,143 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-This patch implements FTRACE_WITH_REGS for csky, which allows a traced
-function's arguments (and some other registers) to be captured into a
-struct pt_regs, allowing these to be inspected and/or modified.
+If ICACHE_INS is not supported, we use IPI to sync icache on each
+core. But ftrace_modify_code is called from stop_machine from default
+implementation of arch_ftrace_update_code and stop_machine callback
+is irq_disabled. When you call ipi with irq_disabled, a deadlock will
+happen.
+
+We couldn't use icache_flush with irq_disabled, but startup make_nop
+is specific case and it needn't ipi other cores.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 ---
- arch/csky/Kconfig               |  1 +
- arch/csky/abiv2/inc/abi/entry.h | 60 +++++++++++++++++++++++++++++++++
- arch/csky/abiv2/mcount.S        | 48 ++++++++++++++++++++++++++
- arch/csky/include/asm/ftrace.h  |  2 ++
- arch/csky/kernel/asm-offsets.c  |  1 +
- arch/csky/kernel/ftrace.c       | 11 ++++++
- 6 files changed, 123 insertions(+)
+ arch/csky/kernel/ftrace.c | 31 +++++++++++++++++++++++++++
+ arch/csky/mm/cachev2.c    | 45 +++++++++++++++++++++++++++++++++------
+ 2 files changed, 70 insertions(+), 6 deletions(-)
 
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 0e9b14367fa8..6cf169a15794 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -38,6 +38,7 @@ config CSKY
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_COPY_THREAD_TLS
- 	select HAVE_DYNAMIC_FTRACE
-+	select HAVE_DYNAMIC_FTRACE_WITH_REGS
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_FUNCTION_GRAPH_TRACER
- 	select HAVE_FTRACE_MCOUNT_RECORD
-diff --git a/arch/csky/abiv2/inc/abi/entry.h b/arch/csky/abiv2/inc/abi/entry.h
-index 94a7a58765df..6a404393d0f4 100644
---- a/arch/csky/abiv2/inc/abi/entry.h
-+++ b/arch/csky/abiv2/inc/abi/entry.h
-@@ -100,6 +100,66 @@
- 	rte
- .endm
- 
-+.macro SAVE_REGS_FTRACE
-+	subi    sp, 152
-+	stw	tls, (sp, 0)
-+	stw	lr, (sp, 4)
-+
-+	mfcr	lr, psr
-+	stw	lr, (sp, 12)
-+
-+	addi    lr, sp, 152
-+	stw	lr, (sp, 16)
-+
-+	stw     a0, (sp, 20)
-+	stw     a0, (sp, 24)
-+	stw     a1, (sp, 28)
-+	stw     a2, (sp, 32)
-+	stw     a3, (sp, 36)
-+
-+	addi	sp, 40
-+	stm	r4-r13, (sp)
-+
-+	addi    sp, 40
-+	stm     r16-r30, (sp)
-+#ifdef CONFIG_CPU_HAS_HILO
-+	mfhi	lr
-+	stw	lr, (sp, 60)
-+	mflo	lr
-+	stw	lr, (sp, 64)
-+	mfcr	lr, cr14
-+	stw	lr, (sp, 68)
-+#endif
-+	subi	sp, 80
-+.endm
-+
-+.macro	RESTORE_REGS_FTRACE
-+	ldw	tls, (sp, 0)
-+	ldw	a0, (sp, 16)
-+	mtcr	a0, ss0
-+
-+#ifdef CONFIG_CPU_HAS_HILO
-+	ldw	a0, (sp, 140)
-+	mthi	a0
-+	ldw	a0, (sp, 144)
-+	mtlo	a0
-+	ldw	a0, (sp, 148)
-+	mtcr	a0, cr14
-+#endif
-+
-+	ldw     a0, (sp, 24)
-+	ldw     a1, (sp, 28)
-+	ldw     a2, (sp, 32)
-+	ldw     a3, (sp, 36)
-+
-+	addi	sp, 40
-+	ldm	r4-r13, (sp)
-+	addi    sp, 40
-+	ldm     r16-r30, (sp)
-+	addi    sp, 72
-+	mfcr	sp, ss0
-+.endm
-+
- .macro SAVE_SWITCH_STACK
- 	subi    sp, 64
- 	stm	r4-r11, (sp)
-diff --git a/arch/csky/abiv2/mcount.S b/arch/csky/abiv2/mcount.S
-index 326402e65f9e..9331c7ed5958 100644
---- a/arch/csky/abiv2/mcount.S
-+++ b/arch/csky/abiv2/mcount.S
-@@ -3,6 +3,8 @@
- 
- #include <linux/linkage.h>
- #include <asm/ftrace.h>
-+#include <abi/entry.h>
-+#include <asm/asm-offsets.h>
- 
- /*
-  * csky-gcc with -pg will put the following asm after prologue:
-@@ -44,6 +46,22 @@
- 	jmp	t1
- .endm
- 
-+.macro mcount_enter_regs
-+	subi	sp, 8
-+	stw	lr, (sp, 0)
-+	stw	r8, (sp, 4)
-+	SAVE_REGS_FTRACE
-+.endm
-+
-+.macro mcount_exit_regs
-+	RESTORE_REGS_FTRACE
-+	ldw	t1, (sp, 0)
-+	ldw	r8, (sp, 4)
-+	ldw	lr, (sp, 8)
-+	addi	sp, 12
-+	jmp	t1
-+.endm
-+
- .macro save_return_regs
- 	subi	sp, 16
- 	stw	a0, (sp, 0)
-@@ -122,6 +140,8 @@ ENTRY(ftrace_caller)
- 	ldw	a0, (sp, 16)
- 	subi	a0, 4
- 	ldw	a1, (sp, 24)
-+	lrw	a2, function_trace_op
-+	ldw	a2, (a2, 0)
- 
- 	nop
- GLOBAL(ftrace_call)
-@@ -157,3 +177,31 @@ ENTRY(return_to_handler)
- 	jmp	lr
- END(return_to_handler)
- #endif
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-+ENTRY(ftrace_regs_caller)
-+	mcount_enter_regs
-+
-+	lrw	t1, PT_FRAME_SIZE
-+	add	t1, sp
-+
-+	ldw	a0, (t1, 0)
-+	subi	a0, 4
-+	ldw	a1, (t1, 8)
-+	lrw	a2, function_trace_op
-+	ldw	a2, (a2, 0)
-+	mov	a3, sp
-+
-+	nop
-+GLOBAL(ftrace_regs_call)
-+	nop32_stub
-+
-+#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+	nop
-+GLOBAL(ftrace_graph_regs_call)
-+	nop32_stub
-+#endif
-+
-+	mcount_exit_regs
-+ENDPROC(ftrace_regs_caller)
-+#endif /* CONFIG_DYNAMIC_FTRACE */
-diff --git a/arch/csky/include/asm/ftrace.h b/arch/csky/include/asm/ftrace.h
-index ba35d93ecda2..fae72b0b1374 100644
---- a/arch/csky/include/asm/ftrace.h
-+++ b/arch/csky/include/asm/ftrace.h
-@@ -10,6 +10,8 @@
- 
- #define HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
- 
-+#define ARCH_SUPPORTS_FTRACE_OPS 1
-+
- #define MCOUNT_ADDR	((unsigned long)_mcount)
- 
- #ifndef __ASSEMBLY__
-diff --git a/arch/csky/kernel/asm-offsets.c b/arch/csky/kernel/asm-offsets.c
-index 9b48b1b1a61b..f8be348df9e4 100644
---- a/arch/csky/kernel/asm-offsets.c
-+++ b/arch/csky/kernel/asm-offsets.c
-@@ -72,6 +72,7 @@ int main(void)
- 	DEFINE(PT_RLO,            offsetof(struct pt_regs, rlo));
- #endif
- 	DEFINE(PT_USP,            offsetof(struct pt_regs, usp));
-+	DEFINE(PT_FRAME_SIZE,     sizeof(struct pt_regs));
- 
- 	/* offsets into the irq_cpustat_t struct */
- 	DEFINE(CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t,
 diff --git a/arch/csky/kernel/ftrace.c b/arch/csky/kernel/ftrace.c
-index 44f4880179b7..b4502cd2eabe 100644
+index b4502cd2eabe..44628e3f7fa6 100644
 --- a/arch/csky/kernel/ftrace.c
 +++ b/arch/csky/kernel/ftrace.c
-@@ -126,6 +126,9 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
- {
- 	int ret = ftrace_modify_code((unsigned long)&ftrace_call,
- 				(unsigned long)func, true, true);
-+	if (!ret)
-+		ret = ftrace_modify_code((unsigned long)&ftrace_regs_call,
-+				(unsigned long)func, true, true);
- 	return ret;
- }
+@@ -3,6 +3,7 @@
  
-@@ -135,6 +138,14 @@ int __init ftrace_dyn_arch_init(void)
- }
+ #include <linux/ftrace.h>
+ #include <linux/uaccess.h>
++#include <linux/stop_machine.h>
+ #include <asm/cacheflush.h>
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE
+@@ -201,5 +202,35 @@ int ftrace_disable_ftrace_graph_caller(void)
  #endif /* CONFIG_DYNAMIC_FTRACE */
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
  
-+#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-+int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
-+		       unsigned long addr)
++#ifndef CONFIG_CPU_HAS_ICACHE_INS
++struct ftrace_modify_param {
++	int command;
++	atomic_t cpu_count;
++};
++
++static int __ftrace_modify_code(void *data)
 +{
-+	return ftrace_modify_code(rec->ip, addr, true, true);
++	struct ftrace_modify_param *param = data;
++
++	if (atomic_inc_return(&param->cpu_count) == 1) {
++		ftrace_modify_all_code(param->command);
++		atomic_inc(&param->cpu_count);
++	} else {
++		while (atomic_read(&param->cpu_count) <= num_online_cpus())
++			cpu_relax();
++		local_icache_inv_all(NULL);
++	}
++
++	return 0;
++}
++
++void arch_ftrace_update_code(int command)
++{
++	struct ftrace_modify_param param = { command, ATOMIC_INIT(0) };
++
++	stop_machine(__ftrace_modify_code, &param, cpu_online_mask);
 +}
 +#endif
 +
- #ifdef CONFIG_FUNCTION_GRAPH_TRACER
- void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
- 			   unsigned long frame_pointer)
+ /* _mcount is defined in abi's mcount.S */
+ EXPORT_SYMBOL(_mcount);
+diff --git a/arch/csky/mm/cachev2.c b/arch/csky/mm/cachev2.c
+index bc419f8039d3..7a9664adce43 100644
+--- a/arch/csky/mm/cachev2.c
++++ b/arch/csky/mm/cachev2.c
+@@ -7,8 +7,12 @@
+ #include <asm/cache.h>
+ #include <asm/barrier.h>
+ 
++/* for L1-cache */
+ #define INS_CACHE		(1 << 0)
++#define DATA_CACHE		(1 << 1)
+ #define CACHE_INV		(1 << 4)
++#define CACHE_CLR		(1 << 5)
++#define CACHE_OMS		(1 << 6)
+ 
+ void local_icache_inv_all(void *priv)
+ {
+@@ -16,11 +20,6 @@ void local_icache_inv_all(void *priv)
+ 	sync_is();
+ }
+ 
+-void icache_inv_all(void)
+-{
+-	on_each_cpu(local_icache_inv_all, NULL, 1);
+-}
+-
+ #ifdef CONFIG_CPU_HAS_ICACHE_INS
+ void icache_inv_range(unsigned long start, unsigned long end)
+ {
+@@ -31,9 +30,43 @@ void icache_inv_range(unsigned long start, unsigned long end)
+ 	sync_is();
+ }
+ #else
++struct cache_range {
++	unsigned long start;
++	unsigned long end;
++};
++
++static DEFINE_SPINLOCK(cache_lock);
++
++static inline void cache_op_line(unsigned long i, unsigned int val)
++{
++	mtcr("cr22", i);
++	mtcr("cr17", val);
++}
++
++void local_icache_inv_range(void *priv)
++{
++	struct cache_range *param = priv;
++	unsigned long i = param->start & ~(L1_CACHE_BYTES - 1);
++	unsigned long flags;
++
++	spin_lock_irqsave(&cache_lock, flags);
++
++	for (; i < param->end; i += L1_CACHE_BYTES)
++		cache_op_line(i, INS_CACHE | CACHE_INV | CACHE_OMS);
++
++	spin_unlock_irqrestore(&cache_lock, flags);
++
++	sync_is();
++}
++
+ void icache_inv_range(unsigned long start, unsigned long end)
+ {
+-	icache_inv_all();
++	struct cache_range param = { start, end };
++
++	if (irqs_disabled())
++		local_icache_inv_range(&param);
++	else
++		on_each_cpu(local_icache_inv_range, &param, 1);
+ }
+ #endif
+ 
 -- 
 2.17.0
 
