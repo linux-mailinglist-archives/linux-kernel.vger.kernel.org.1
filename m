@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 238B619DD14
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D2A19DD10
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403869AbgDCRuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:50:05 -0400
-Received: from smtprelay0005.hostedemail.com ([216.40.44.5]:46942 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727882AbgDCRuF (ORCPT
+        id S2404048AbgDCRs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:48:27 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:41623 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728235AbgDCRs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:50:05 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id C898A182CED34;
-        Fri,  3 Apr 2020 17:50:03 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1461:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2110:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3870:3871:3872:3874:4321:5007:6120:6691:6742:7901:10004:10400:10848:10967:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13069:13160:13229:13311:13357:13439:14181:14659:14721:21080:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: train70_1d5dccc9e8c04
-X-Filterd-Recvd-Size: 2521
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  3 Apr 2020 17:50:01 +0000 (UTC)
-Message-ID: <2751400ae13b25d8259a8a9d7b36caf98ec2d367.camel@perches.com>
-Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-From:   Joe Perches <joe@perches.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Date:   Fri, 03 Apr 2020 10:48:04 -0700
-In-Reply-To: <20200403193242.38611906@coco.lan>
-References: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
-         <1105bfe5-88f1-040e-db40-54d7761747d5@rasmusvillemoes.dk>
-         <b1e6213ba9f67da8278dd5c5f5e4def8ab927c83.camel@perches.com>
-         <20200403193242.38611906@coco.lan>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Fri, 3 Apr 2020 13:48:27 -0400
+Received: by mail-lj1-f196.google.com with SMTP id n17so7820635lji.8
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:48:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3THBIeg1DeeQfa1qWYP5fMgyz8PG9WZarWEKIAjybzc=;
+        b=N9neCI5Qjc956nHzpT6Wv66wmcCPHy18i498AuxWNSpHcXpezXTuTKm2OG1vKqL42o
+         JtGfih0oxhGl0Bq1LQLwJPruvqzhW2QlyHd3ffmbTf6kYcGwiNvs1B3JlPdeCUi9ce4q
+         vhAhfkqRxPVn0NCUVrvl0tZmhQSEnzqjCiCsM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3THBIeg1DeeQfa1qWYP5fMgyz8PG9WZarWEKIAjybzc=;
+        b=A4tfRgWOjkRp1Pao90aKbL4SUuTAIZVbHevNyPyBuXNOVbDg5h0OYmzHGeyYw334Qx
+         sBP/sEd3L5M6N8O7VpOkyMYsTsRkfmWOeUu32zA9hXEdVvNS6ulMVn06stOLzktkDeD4
+         5JjHdDiCiGusQCqwEZ3y1FmW7W3WXAGQE50x2MLJewBziM0jfIlbospZx9JpkYw4sIdx
+         Mi1GQrVyKK4Mvmp77rwVkgIF2MB06QzPl7C/l8eiO/W8SQuPlkphgKZzzWisvgaYsjmm
+         1NasoVsY0HTXcWNUOUu2U85RA3pA+FbPlxVcmUrffmZ9rHXk6c7KwomWqr4d3OrTK73J
+         c+yw==
+X-Gm-Message-State: AGi0PuYCJEj1FuOUoaq9I+u5vqVN2gewu+68G3U6+3isF2Bm1vagr5rq
+        zlEOtQahgrlOqzgQu/ASHzNyTuBQ5Ak=
+X-Google-Smtp-Source: APiQypKfaQ4yyVVyThFc+hDpjLTMquaMbVduxq+aOdI+OCkSAtLaPFHGlnvbVpXNrVn/WQjKYtgwcA==
+X-Received: by 2002:a2e:9886:: with SMTP id b6mr5602376ljj.237.1585936104199;
+        Fri, 03 Apr 2020 10:48:24 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id x28sm5371239ljd.24.2020.04.03.10.48.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Apr 2020 10:48:23 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id h6so6516935lfp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:48:23 -0700 (PDT)
+X-Received: by 2002:ac2:46d3:: with SMTP id p19mr6173851lfo.125.1585936102736;
+ Fri, 03 Apr 2020 10:48:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200402010812.GA751391@yoga> <20200403013134.11407-1-natechancellor@gmail.com>
+In-Reply-To: <20200403013134.11407-1-natechancellor@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 3 Apr 2020 10:48:06 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whG84d5bGHU5HLOMgR59BqUcuawPTxGgVDm3JWiWJHi6A@mail.gmail.com>
+Message-ID: <CAHk-=whG84d5bGHU5HLOMgR59BqUcuawPTxGgVDm3JWiWJHi6A@mail.gmail.com>
+Subject: Re: [PATCH] remoteproc/omap: Fix set_load call in omap_rproc_request_timer
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-04-03 at 19:32 +0200, Mauro Carvalho Chehab wrote:
-> Em Fri, 03 Apr 2020 09:56:42 -0700
-> Joe Perches <joe@perches.com> escreveu:
-[]
-> > How many instances of %p4cc could there be?
-> 
-> That's hard to know... there are several places printing it
-> with different ways:
-> 
-> 	$ git grep -i -E "(dev|pr)_(warn|dbg|info)" drivers/media|grep pixf|wc -l
-> 	6
-> 	$ git grep -i -E "print" drivers/media|grep pixf|wc -l
-> 	1
-> 	$ git grep print_fourcc|wc -l
-> 	7
-> 	$ git grep -i -E "(dev|pr)_(warn|dbg|info)" drivers/media|grep pixelf|wc -l
-> 	10
-> 	$ git grep -i -E "(dev|pr|v4l)_(warn|dbg|info)" drivers/media|grep format|wc -l
-> 	60
-> 
-> I bet there are other places besides the above ones, but the thing is, as 
-> we currently lack a standard way, drivers still have their own ideas
-> about how to handle it. Each one does it differently.
+On Thu, Apr 2, 2020 at 6:32 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> This is due to commit 02e6d546e3bd ("clocksource/drivers/timer-ti-dm:
+> Enable autoreload in set_pwm") in the clockevents tree interacting with
+> commit e28edc571925 ("remoteproc/omap: Request a timer(s) for remoteproc
+> usage") from the rpmsg tree.
+>
+> This should have been fixed during the merge of the remoteproc tree
+> since it happened after the clockevents tree merge; however, it does not
+> look like my email was noticed by either maintainer and I did not pay
+> attention when the pull was sent since I was on CC.
 
-My thought was ~100 uses was a minimum, rather like %pI6c.
+Thanks, I've taken this patch directly into my tree since it was my
+merge that screwed up.
 
-That's pretty close already, so I suppose that's enough.
-
-It _might_ be useful to use a CONFIG_MEDIA_SUPPORT guard
-in lib/vsprintf for this.
-
-cheers, Joe
-
+                   Linus
