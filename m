@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE35319CEA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9DF19CE97
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390420AbgDCCZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 22:25:29 -0400
-Received: from smtp2.ustc.edu.cn ([202.38.64.46]:53068 "EHLO ustc.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389366AbgDCCZ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 22:25:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
-        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=5Ff+gzssjXpUxll6RYKKOboaCB53dA6nJFGdRslGlz4=; b=ApEJfMGE0z+pJ
-        RtGalc7lsNqR6sAUG6UzXeLk9sWZaSP52XjcwbvmYjbs5Uh3Go+6mP0rIECytAnJ
-        kbz5jlJO4baZd2EWNmf8dI/VGJUgHlInUsLqAM5RZm2D3NsCacZ+Wayvw79QfD1y
-        nbca9TJocdzNJukygO+FFUvXUx3FNs=
-Received: from xhacker (unknown [101.86.20.80])
-        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCXwXWNnoZe2NgQAA--.14355S2;
-        Fri, 03 Apr 2020 10:25:18 +0800 (CST)
-Date:   Fri, 3 Apr 2020 10:23:29 +0800
-From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: stmmac: dwmac1000: fix out-of-bounds mac address reg
- setting
-Message-ID: <20200403102329.0690d7b2@xhacker>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: LkAmygCXwXWNnoZe2NgQAA--.14355S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4fXw1xKryDGF4fKr4Durg_yoW8JFWkpF
-        47CFy5ZrZ2gr48Wa1kXwn8XFykGayUKr4UWFWIkwna9F93J3yj9F9I9ay5twsrAr4rWFy3
-        tr4jkr9rCFn0kwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyIb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
-        C2z280aVCY1x0267AKxVWxJr0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCFx2Iq
-        xVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r
-        106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AK
-        xVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7
-        xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWU
-        JVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2rcTDUUUU
-X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
+        id S2390303AbgDCCYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 22:24:09 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:26396 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389171AbgDCCYI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 22:24:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1585880648; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=DMURI7uSqquMZ4DFgynEvf92DjLWrulMRmZyai24vI4=; b=HDm78rO8nhfBStErDPfd0JEEvF6HLLzJwE4lyRU1lH/pwhM8pv3lX0gGROfmkRvj5vtWf0DX
+ eDJTte7JTnLcOTlD3bnY20vGRJkuBLiYX921Ii5aFIpFoWbPwr928BGKT9x8priwbjLS5UJ7
+ qUm2lq4nXeBtbT+iVwWWv4H7q8g=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e869e47.7f5db41e77d8-smtp-out-n03;
+ Fri, 03 Apr 2020 02:24:07 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 39234C4478F; Fri,  3 Apr 2020 02:24:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0EDA8C433D2;
+        Fri,  3 Apr 2020 02:24:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0EDA8C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        robh+dt@kernel.org, mark.rutland@arm.com, p.zabel@pengutronix.de,
+        mgautam@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v5 0/5] Add SS/HS-USB changes for Qualcomm SM8150 chipset
+Date:   Thu,  2 Apr 2020 19:23:49 -0700
+Message-Id: <1585880634-15222-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+This series adds support for the Synopsis 7nm HSPHY USB driver being
+used in QCOM chipsets.  The HSPHY register map differs compared to 
+other PHY revisions.  In addition, modifications and updates are done
+to the QMP driver to add new registers/offsets, and to update the
+initialization sequence for enabling the SSUSB path on SM8150.
 
-Commit 9463c4455900 ("net: stmmac: dwmac1000: Clear unused address
-entries") cleared the unused mac address entries, but introduced an
-out-of bounds mac address register programming bug -- After setting
-the secondary unicast mac addresses, the "reg" value has reached
-netdev_uc_count() + 1, thus we should only clear address entries
-if (addr < perfect_addr_number)
+Changes in v5:
+ - Reorganize IF check for when to use the proper PWRDOWN CTRL offset
+ - Rename UFS specific offset definitions in the QMP PHY driver to clearly
+   denote they are UFS specific
+ - Rename the phy-qcom-snps-7nm driver to phy-qcom-snps-femto-v2
 
-Fixes: 9463c4455900 ("net: stmmac: dwmac1000: Clear unused address entries")
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v4:
+ - Fix POWERDOWN offset for QMP PHY exit routine, and check for
+   has_phy_dp_com_ctrl instead of !has_phy_com_ctrl
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-index 542784300620..efc6ec1b8027 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-@@ -207,7 +207,7 @@ static void dwmac1000_set_filter(struct mac_device_info *hw,
- 			reg++;
- 		}
- 
--		while (reg <= perfect_addr_number) {
-+		while (reg < perfect_addr_number) {
- 			writel(0, ioaddr + GMAC_ADDR_HIGH(reg));
- 			writel(0, ioaddr + GMAC_ADDR_LOW(reg));
- 			reg++;
+Changes in v3:
+ - Use devm_reset_control_get_exclusive instead of referencing index for
+   reset handle
+
+Changes in v2:
+ - Fixed YAML errors caught by dt_binding_check
+
+Jack Pham (1):
+  phy: qcom-qmp: Add SM8150 QMP USB3 PHY support
+
+Wesley Cheng (4):
+  dt-bindings: phy: Add binding for qcom,usb-snps-femto-v2
+  phy: qcom-snps: Add SNPS USB PHY driver for QCOM based SOCs
+  phy: qcom-qmp: Use proper PWRDOWN offset for sm8150 USB
+  phy: qcom-qmp: Rename UFS PCS QMP v4 registers
+
+ .../bindings/phy/qcom,usb-snps-femto-v2.yaml       |  77 ++++++
+ drivers/phy/qualcomm/Kconfig                       |  10 +
+ drivers/phy/qualcomm/Makefile                      |   1 +
+ drivers/phy/qualcomm/phy-qcom-qmp.c                | 193 ++++++++++++-
+ drivers/phy/qualcomm/phy-qcom-qmp.h                | 238 +++++++++++++++--
+ drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c      | 297 +++++++++++++++++++++
+ 6 files changed, 780 insertions(+), 36 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+ create mode 100644 drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+
 -- 
-2.26.0
-
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
