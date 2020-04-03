@@ -2,128 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3161D19D577
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF27D19D586
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390687AbgDCLFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 07:05:40 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:40727 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgDCLFk (ORCPT
+        id S2390683AbgDCLIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 07:08:48 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55931 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728099AbgDCLIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 07:05:40 -0400
-Received: by mail-pg1-f196.google.com with SMTP id t24so3351151pgj.7;
-        Fri, 03 Apr 2020 04:05:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :user-agent:message-id:content-transfer-encoding;
-        bh=x9Gh9Ne5hehOj6WK8fXAryOv2SRTsZsEIVDa4lvYavs=;
-        b=QKJvx6WRjaROA10YzVatzEwmmznxq1ITVAMtYv++ze5uDv6j6xOlVP/VNt6ue3kGoY
-         RBLVfU2HTNBI9fO4q81SJ38mUb+pfV1StfjzDocjBaFe4AkswiIL76gv/peKsu2JzD0W
-         0+EINrDhU3d/1Ow/OKrXq1kcha/YwfD+6mP0Bi4AiDj2RaC1OlBu3S6+62+lfuXER/0v
-         MDVzsst4lRcxBrHTk08NVs+VpRMQcSD6TB5ad+yejWecUIOk1HJ8Z77es0Cw0/8+mgRy
-         QndZDBm44syZEy6UnKyMzdFV34SZgn0K7pRuc1ueFiMSvVy0bgyCOcwNPZBctt+rJEDr
-         VUwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:user-agent:message-id:content-transfer-encoding;
-        bh=x9Gh9Ne5hehOj6WK8fXAryOv2SRTsZsEIVDa4lvYavs=;
-        b=uFhUJHH2sQgi/IoqR6tvXR9BErVhKtknIzRF2vMc0htVwthSTfgdla9WGUBr6mHxGU
-         rPb4RlJfxPujkvHfdu4W7Xq/EFYch199WaLfAWV1iJMs21VPenLIiF5tgJGWDZ0GTx5J
-         lsdA1ehOWYsqpToZSd0QWm63tgT08m7FG1yIOqR1Se0VPtJ141qSsqmXsedsbm0BRXBL
-         3lH9GHdCBN6vIaWm9DWogLv9lpCo30axWqWHQ4U/cgJqv5hHyB/STgDbXqVzpXctKCC3
-         Q4AjXw0YsNC/LC42Ski4sNouyVC/J7Xf20E2ZKjxAPXs5z7LKta4/+7PvAgXobNJI+0s
-         81/Q==
-X-Gm-Message-State: AGi0PuaITMrO6G+JhOPBrNGki9+FJ5VjUbxxBM9IaqtU4+XVkOZd4Z+w
-        2aBnsztUInFtJGnE6bZ3acM=
-X-Google-Smtp-Source: APiQypITP86igCzfZB/PGqJtrjO/2PRknSxfizUBsnugT9boahO/Sg8qOx8MOCUdCQzhs+hzbU239A==
-X-Received: by 2002:a62:19d8:: with SMTP id 207mr8084940pfz.278.1585911937914;
-        Fri, 03 Apr 2020 04:05:37 -0700 (PDT)
-Received: from localhost (60-241-117-97.tpgi.com.au. [60.241.117.97])
-        by smtp.gmail.com with ESMTPSA id w15sm5607378pfj.28.2020.04.03.04.05.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 04:05:36 -0700 (PDT)
-Date:   Fri, 03 Apr 2020 21:05:26 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v2 1/4] powerpc/64s: implement probe_kernel_read/write
- without touching AMR
-To:     Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Fri, 3 Apr 2020 07:08:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585912125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+NAmZggX3XZCWjuUW8aBncEYEOJoNqi6G9ZgkQxDzKU=;
+        b=eQ424mFOUNgNw7GqosrLGP8Ngw4QYvtWShCPkTgTSOMZUyFpXQaiEwg70I64SYf9ygsLkc
+        q3vYgZHnQqBmkNb1SeqDrbkSDqM4t9hR5ulf82jMQXyEyocHDZddhFRqGwZwcnX3qDbcs5
+        hlrxkwyFKn4buiD6n3HykwuGv0OFVJo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-195-k5sRkw49OPuXre1ZjeIV8A-1; Fri, 03 Apr 2020 07:08:41 -0400
+X-MC-Unique: k5sRkw49OPuXre1ZjeIV8A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C91F5107ACCA;
+        Fri,  3 Apr 2020 11:08:38 +0000 (UTC)
+Received: from krava (unknown [10.40.194.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E509B5C1DC;
+        Fri,  3 Apr 2020 11:08:32 +0000 (UTC)
+Date:   Fri, 3 Apr 2020 13:08:28 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-References: <20200403093529.43587-1-npiggin@gmail.com>
-        <558b6131-60b4-98b7-dc40-25d8dacea05a@c-s.fr>
-In-Reply-To: <558b6131-60b4-98b7-dc40-25d8dacea05a@c-s.fr>
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        linux-man@vger.kernel.org
+Subject: Re: [PATCH v8 04/12] perf tool: extend Perf tool with CAP_PERFMON
+ capability support
+Message-ID: <20200403110828.GL2784502@krava>
+References: <f96f8f8a-e65c-3f36-dc85-fc3f5191e8c5@linux.intel.com>
+ <a66d5648-2b8e-577e-e1f2-1d56c017ab5e@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: astroid/0.15.0 (https://github.com/astroidmail/astroid)
-Message-Id: <1585911072.njtr9qmios.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a66d5648-2b8e-577e-e1f2-1d56c017ab5e@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy's on April 3, 2020 8:31 pm:
->=20
->=20
-> Le 03/04/2020 =C3=A0 11:35, Nicholas Piggin a =C3=A9crit=C2=A0:
->> There is no need to allow user accesses when probing kernel addresses.
->=20
-> I just discovered the following commit=20
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/?id=3D75a1a607bb7e6d918be3aca11ec2214a275392f4
->=20
-> This commit adds probe_kernel_read_strict() and probe_kernel_write_strict=
-().
->=20
-> When reading the commit log, I understand that probe_kernel_read() may=20
-> be used to access some user memory. Which will not work anymore with=20
-> your patch.
+On Thu, Apr 02, 2020 at 11:47:35AM +0300, Alexey Budankov wrote:
+> 
+> Extend error messages to mention CAP_PERFMON capability as an option
+> to substitute CAP_SYS_ADMIN capability for secure system performance
+> monitoring and observability operations. Make perf_event_paranoid_check()
+> and __cmd_ftrace() to be aware of CAP_PERFMON capability.
+> 
+> CAP_PERFMON implements the principal of least privilege for performance
+> monitoring and observability operations (POSIX IEEE 1003.1e 2.2.2.39
+> principle of least privilege: A security design principle that states
+> that a process or program be granted only those privileges (e.g.,
+> capabilities) necessary to accomplish its legitimate function, and only
+> for the time that such privileges are actually required)
+> 
+> For backward compatibility reasons access to perf_events subsystem remains
+> open for CAP_SYS_ADMIN privileged processes but CAP_SYS_ADMIN usage for
+> secure perf_events monitoring is discouraged with respect to CAP_PERFMON
+> capability.
+> 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> Reviewed-by: James Morris <jamorris@linux.microsoft.com>
 
-Hmm, I looked at _strict but obviously not hard enough. Good catch.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-I don't think probe_kernel_read() should ever access user memory,
-the comment certainly says it doesn't, but that patch sort of implies
-that they do.
+thanks,
+jirka
 
-I think it's wrong. The non-_strict maybe could return userspace data to=20
-you if you did pass a user address? I don't see why that shouldn't just=20
-be disallowed always though.
+> ---
+>  tools/perf/builtin-ftrace.c |  5 +++--
+>  tools/perf/design.txt       |  3 ++-
+>  tools/perf/util/cap.h       |  4 ++++
+>  tools/perf/util/evsel.c     | 10 +++++-----
+>  tools/perf/util/util.c      |  1 +
+>  5 files changed, 15 insertions(+), 8 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+> index d5adc417a4ca..55eda54240fb 100644
+> --- a/tools/perf/builtin-ftrace.c
+> +++ b/tools/perf/builtin-ftrace.c
+> @@ -284,10 +284,11 @@ static int __cmd_ftrace(struct perf_ftrace *ftrace, int argc, const char **argv)
+>  		.events = POLLIN,
+>  	};
+>  
+> -	if (!perf_cap__capable(CAP_SYS_ADMIN)) {
+> +	if (!(perf_cap__capable(CAP_PERFMON) ||
+> +	      perf_cap__capable(CAP_SYS_ADMIN))) {
+>  		pr_err("ftrace only works for %s!\n",
+>  #ifdef HAVE_LIBCAP_SUPPORT
+> -		"users with the SYS_ADMIN capability"
+> +		"users with the CAP_PERFMON or CAP_SYS_ADMIN capability"
+>  #else
+>  		"root"
+>  #endif
+> diff --git a/tools/perf/design.txt b/tools/perf/design.txt
+> index 0453ba26cdbd..a42fab308ff6 100644
+> --- a/tools/perf/design.txt
+> +++ b/tools/perf/design.txt
+> @@ -258,7 +258,8 @@ gets schedule to. Per task counters can be created by any user, for
+>  their own tasks.
+>  
+>  A 'pid == -1' and 'cpu == x' counter is a per CPU counter that counts
+> -all events on CPU-x. Per CPU counters need CAP_SYS_ADMIN privilege.
+> +all events on CPU-x. Per CPU counters need CAP_PERFMON or CAP_SYS_ADMIN
+> +privilege.
+>  
+>  The 'flags' parameter is currently unused and must be zero.
+>  
+> diff --git a/tools/perf/util/cap.h b/tools/perf/util/cap.h
+> index 051dc590ceee..ae52878c0b2e 100644
+> --- a/tools/perf/util/cap.h
+> +++ b/tools/perf/util/cap.h
+> @@ -29,4 +29,8 @@ static inline bool perf_cap__capable(int cap __maybe_unused)
+>  #define CAP_SYSLOG	34
+>  #endif
+>  
+> +#ifndef CAP_PERFMON
+> +#define CAP_PERFMON	38
+> +#endif
+> +
+>  #endif /* __PERF_CAP_H */
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index 816d930d774e..2696922f06bc 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -2507,14 +2507,14 @@ int perf_evsel__open_strerror(struct evsel *evsel, struct target *target,
+>  		 "You may not have permission to collect %sstats.\n\n"
+>  		 "Consider tweaking /proc/sys/kernel/perf_event_paranoid,\n"
+>  		 "which controls use of the performance events system by\n"
+> -		 "unprivileged users (without CAP_SYS_ADMIN).\n\n"
+> +		 "unprivileged users (without CAP_PERFMON or CAP_SYS_ADMIN).\n\n"
+>  		 "The current value is %d:\n\n"
+>  		 "  -1: Allow use of (almost) all events by all users\n"
+>  		 "      Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK\n"
+> -		 ">= 0: Disallow ftrace function tracepoint by users without CAP_SYS_ADMIN\n"
+> -		 "      Disallow raw tracepoint access by users without CAP_SYS_ADMIN\n"
+> -		 ">= 1: Disallow CPU event access by users without CAP_SYS_ADMIN\n"
+> -		 ">= 2: Disallow kernel profiling by users without CAP_SYS_ADMIN\n\n"
+> +		 ">= 0: Disallow ftrace function tracepoint by users without CAP_PERFMON or CAP_SYS_ADMIN\n"
+> +		 "      Disallow raw tracepoint access by users without CAP_SYS_PERFMON or CAP_SYS_ADMIN\n"
+> +		 ">= 1: Disallow CPU event access by users without CAP_PERFMON or CAP_SYS_ADMIN\n"
+> +		 ">= 2: Disallow kernel profiling by users without CAP_PERFMON or CAP_SYS_ADMIN\n\n"
+>  		 "To make this setting permanent, edit /etc/sysctl.conf too, e.g.:\n\n"
+>  		 "	kernel.perf_event_paranoid = -1\n" ,
+>  				 target->system_wide ? "system-wide " : "",
+> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+> index d707c9624dd9..37a9492edb3e 100644
+> --- a/tools/perf/util/util.c
+> +++ b/tools/perf/util/util.c
+> @@ -290,6 +290,7 @@ int perf_event_paranoid(void)
+>  bool perf_event_paranoid_check(int max_level)
+>  {
+>  	return perf_cap__capable(CAP_SYS_ADMIN) ||
+> +			perf_cap__capable(CAP_PERFMON) ||
+>  			perf_event_paranoid() <= max_level;
+>  }
+>  
+> -- 
+> 2.24.1
+> 
 
-And if the _strict version is required to be safe, then it seems like a
-bug or security issue to just allow everyone that doesn't explicitly
-override it to use the default implementation.
-
-Also, the way the weak linkage is done in that patch, means parisc and
-um archs that were previously overriding probe_kernel_read() now get
-the default probe_kernel_read_strict(), which would be wrong for them.
-
->=20
-> Isn't it probe_kernel_read_strict() and probe_kernel_write_strict() that=20
-> you want to add ?
->=20
->>=20
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> ---
->> v2:
->> - Enable for all powerpc (suggested by Christophe)
->> - Fold helper function together (Christophe)
->> - Rename uaccess.c to maccess.c to match kernel/maccess.c.
->>=20
->>   arch/powerpc/include/asm/uaccess.h | 25 +++++++++++++++-------
->>   arch/powerpc/lib/Makefile          |  2 +-
->>   arch/powerpc/lib/maccess.c         | 34 ++++++++++++++++++++++++++++++
->=20
-> x86 does it in mm/maccess.c
-
-Yeah I'll fix that up, thanks.
-
-Thanks,
-Nick
-=
