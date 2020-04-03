@@ -2,97 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D771D19CE6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 03:57:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F151F19CE6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 03:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390272AbgDCB5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 21:57:19 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:54003 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388709AbgDCB5T (ORCPT
+        id S2390345AbgDCBz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 21:55:59 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:4026 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390268AbgDCBz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 21:57:19 -0400
-Received: by mail-wm1-f67.google.com with SMTP id d77so5615263wmd.3;
-        Thu, 02 Apr 2020 18:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IM3PKdJzNHK1Q5ycu1+rnlpnfn6cknjyyldEYszSZOo=;
-        b=a+e9j9fSz7AbZHNKex7YNRjwT4uBSpxeAMRP53RKJadBT+dXgc2zLA4tmS21UZfQjM
-         hhauuyi4sgRhc1LVmZSWitM++AIwbaFs9PULb/39zKVxMGF7RvpZhRYFa2Go4vozTdJL
-         6/20XASfoUrtX5/tjunrRE7dPwojOVMoE6NZeZ+vpgP9GAsUqG76qzahJHYJp28o+dph
-         Wx46ceMsAXnqsInQ08sVE5l0rK+53aw2lUODic4jW3AMaqgVHnk5nChXLMvAmi3zRKmF
-         +hTs6wsNVukpG/YRrKXqAcJLZWET9+AI84eWLtxkbFigDrrCPlQns4GmxYgZ8UgA3+94
-         u8eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IM3PKdJzNHK1Q5ycu1+rnlpnfn6cknjyyldEYszSZOo=;
-        b=mX1i9pbPxQG5igJwQoc66pUl//MayFNDXZJn2GUlpnF5KVXJmF6zfIuNmdnUCrex8J
-         LHDmgeWeRr2Mbsg00rAayFxIVChLzcm3HCAZOV/l1jpsURABBDPqxVnr3K0fzTcG811z
-         NkyKJxjMXVLs0i1QohsQjzlILhTqcyihXxIy5blRLe2v2FW9Kid6V4PvW1qPtBH1e5TT
-         3sO9RJtuYtW6NqHgZ0fVXDuNoI5Ovl9KyBKgOsz+fxniVImLRay9V0vLQP9wkmZcybAA
-         L7SzFzUDf6Iwz/rxEPpV8xUbQ/r1SXCb7RFEabAQnm0HBeWOhFzu/Bp949YD9aDGhOt7
-         NcgQ==
-X-Gm-Message-State: AGi0Pubd+xyizoXmtHd/ECjYghtb2i83PR6m7hzGPki6JcbvijH2cdPD
-        8u03DcE1zWzPZzXrWhUp/JIhmop35B1toMR2pdY=
-X-Google-Smtp-Source: APiQypKQLjGMnznkTFu6yCPwzo2cD2A672D/LY1DyWimVDpCieb0sohBX8Opad5ypdMMixmhl9cEXtgKb3eWs3RFOzU=
-X-Received: by 2002:a05:600c:2297:: with SMTP id 23mr5830115wmf.166.1585879037215;
- Thu, 02 Apr 2020 18:57:17 -0700 (PDT)
+        Thu, 2 Apr 2020 21:55:59 -0400
+X-Greylist: delayed 37571 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Apr 2020 21:55:57 EDT
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.15]) by rmmx-syy-dmz-app09-12009 (RichMail) with SMTP id 2ee95e86979e067-67007; Fri, 03 Apr 2020 09:55:43 +0800 (CST)
+X-RM-TRANSID: 2ee95e86979e067-67007
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.25.154.146])
+        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee85e86979cea6-12f6b;
+        Fri, 03 Apr 2020 09:55:42 +0800 (CST)
+X-RM-TRANSID: 2ee85e86979cea6-12f6b
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     clabbe@baylibre.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, narmstrong@baylibre.com
+Cc:     linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH] crypto:amlogic - Delete duplicate dev_err in meson_crypto_probe()
+Date:   Fri,  3 Apr 2020 09:57:10 +0800
+Message-Id: <20200403015710.2764-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-References: <20200331104532.12698-1-chunyan.zhang@unisoc.com>
-In-Reply-To: <20200331104532.12698-1-chunyan.zhang@unisoc.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Fri, 3 Apr 2020 09:56:41 +0800
-Message-ID: <CAAfSe-vYe2LiAhYMuqJpt07VcXO_phuY8zUv5151JjHxxViB5w@mail.gmail.com>
-Subject: Re: [PATCH] clk: sprd: don't gate uart console clock
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+In this place, when something goes wrong, platform_get_irq() will
+print an error message, so in order to avoid the situation of repeat
+output，we should remove dev_err here.
 
-This is also a fix, could you please take it into clk-next as well?
+Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+---
+ drivers/crypto/amlogic/amlogic-gxl-core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks,
-Chunyan
+diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
+index 9d4ead2f7..411857fad 100644
+--- a/drivers/crypto/amlogic/amlogic-gxl-core.c
++++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
+@@ -253,10 +253,8 @@ static int meson_crypto_probe(struct platform_device *pdev)
+ 	mc->irqs = devm_kcalloc(mc->dev, MAXFLOW, sizeof(int), GFP_KERNEL);
+ 	for (i = 0; i < MAXFLOW; i++) {
+ 		mc->irqs[i] = platform_get_irq(pdev, i);
+-		if (mc->irqs[i] < 0) {
+-			dev_err(mc->dev, "Cannot get IRQ for flow %d\n", i);
++		if (mc->irqs[i] < 0)
+ 			return mc->irqs[i];
+-		}
+ 
+ 		err = devm_request_irq(&pdev->dev, mc->irqs[i], meson_irq_handler, 0,
+ 				       "gxl-crypto", mc);
+-- 
+2.20.1.windows.1
 
-On Tue, 31 Mar 2020 at 18:45, Chunyan Zhang <zhang.lyra@gmail.com> wrote:
->
-> Don't gate uart1_eb which provides console clock, gating that clock would
-> make serial stop working if serial driver didn't enable that explicitly.
->
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> ---
->  drivers/clk/sprd/sc9863a-clk.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/clk/sprd/sc9863a-clk.c b/drivers/clk/sprd/sc9863a-clk.c
-> index 24f064262814..6c6ac158ef61 100644
-> --- a/drivers/clk/sprd/sc9863a-clk.c
-> +++ b/drivers/clk/sprd/sc9863a-clk.c
-> @@ -1671,8 +1671,9 @@ static SPRD_SC_GATE_CLK_FW_NAME(i2c4_eb,  "i2c4-eb",      "ext-26m", 0x0,
->                                 0x1000, BIT(12), 0, 0);
->  static SPRD_SC_GATE_CLK_FW_NAME(uart0_eb,      "uart0-eb",     "ext-26m", 0x0,
->                                 0x1000, BIT(13), 0, 0);
-> +/* uart1_eb is for console, don't gate even if unused */
->  static SPRD_SC_GATE_CLK_FW_NAME(uart1_eb,      "uart1-eb",     "ext-26m", 0x0,
-> -                               0x1000, BIT(14), 0, 0);
-> +                               0x1000, BIT(14), CLK_IGNORE_UNUSED, 0);
->  static SPRD_SC_GATE_CLK_FW_NAME(uart2_eb,      "uart2-eb",     "ext-26m", 0x0,
->                                 0x1000, BIT(15), 0, 0);
->  static SPRD_SC_GATE_CLK_FW_NAME(uart3_eb,      "uart3-eb",     "ext-26m", 0x0,
-> --
-> 2.20.1
->
+
+
