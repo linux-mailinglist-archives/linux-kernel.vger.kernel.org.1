@@ -2,78 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F7D19DE20
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5849219DE1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391126AbgDCSka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 14:40:30 -0400
-Received: from smtprelay0024.hostedemail.com ([216.40.44.24]:43886 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728337AbgDCSka (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 14:40:30 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 232EE837F27B;
-        Fri,  3 Apr 2020 18:40:29 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2915:3138:3139:3140:3141:3142:3352:3622:3865:3866:3868:3871:4321:5007:6119:6120:6742:7901:7903:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14659:14721:21080:21627:30054:30069:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: head59_210c0a7bd8631
-X-Filterd-Recvd-Size: 2165
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  3 Apr 2020 18:40:26 +0000 (UTC)
-Message-ID: <e44e41317719727ea12aee4ff1e210dea796dd2f.camel@perches.com>
-Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-From:   Joe Perches <joe@perches.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        hverkuil@xs4all.nl, mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Date:   Fri, 03 Apr 2020 11:38:29 -0700
-In-Reply-To: <20200403104701.GC3172@kekkonen.localdomain>
-References: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
-         <20200403102449.GB4882@pendragon.ideasonboard.com>
-         <20200403104701.GC3172@kekkonen.localdomain>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S2404284AbgDCSg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 14:36:28 -0400
+Received: from mga17.intel.com ([192.55.52.151]:4672 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728066AbgDCSg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 14:36:27 -0400
+IronPort-SDR: xcQjVXWohWLBEVxt883Fi5405qyujURHVWiZNgFCBp0zUbpIpS5SrvqLkL9wBsy10LWahFwO0H
+ zIurmKGG4FmQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 11:36:27 -0700
+IronPort-SDR: miaWFJZnZ7svohocQv3RMDcQmjUNraHfVhuJGa7NDJLGtcHr2RCCYiPU/yhuVRMOXY5PJmqdux
+ i2iT3pxaaLLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; 
+   d="scan'208";a="268439804"
+Received: from jacob-builder.jf.intel.com ([10.7.199.155])
+  by orsmga002.jf.intel.com with ESMTP; 03 Apr 2020 11:36:26 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     "Lu Baolu" <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>
+Cc:     "Yi Liu" <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v11 00/10] Nested Shared Virtual Address (SVA) VT-d support
+Date:   Fri,  3 Apr 2020 11:42:04 -0700
+Message-Id: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-04-03 at 13:47 +0300, Sakari Ailus wrote:
-> On Fri, Apr 03, 2020 at 01:24:49PM +0300, Laurent Pinchart wrote:
-> > On Fri, Apr 03, 2020 at 12:11:56PM +0300, Sakari Ailus wrote:
-> > > Add a printk modifier %ppf (for pixel format) for printing V4L2 and DRM
-> > > pixel formats denoted by 4ccs. The 4cc encoding is the same for both so
-> > > the same implementation can be used.
-[]
-> > > diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-[]
-> > > +static noinline_for_stack
-> > > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
-> > > +		    struct printf_spec spec, const char *fmt)
-[]
-> > > +	if (fmt[1] != 'c' || fmt[2] != 'c')
+Shared virtual address (SVA), a.k.a, Shared virtual memory (SVM) on Intel
+platforms allow address space sharing between device DMA and applications.
+SVA can reduce programming complexity and enhance security.
+This series is intended to enable SVA virtualization, i.e. enable use of SVA
+within a guest user application.
 
-This could check outside a format string if
-the %p4 is at the end of the format string.
+This is the remaining portion of the original patchset that is based on
+Joerg's x86/vt-d branch. The preparatory and cleanup patches are merged here.
+(git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git)
 
-	printk("%p4", fourcc)
+Only IOMMU portion of the changes are included in this series. Additional
+support is needed in VFIO and QEMU (will be submitted separately) to complete
+this functionality.
 
-So this should verify
+To make incremental changes and reduce the size of each patchset. This series
+does not inlcude support for page request services.
 
-	if (!(fmt[1] == 'c' && fmt[2] == 'c'))
+In VT-d implementation, PASID table is per device and maintained in the host.
+Guest PASID table is shadowed in VMM where virtual IOMMU is emulated.
 
+    .-------------.  .---------------------------.
+    |   vIOMMU    |  | Guest process CR3, FL only|
+    |             |  '---------------------------'
+    .----------------/
+    | PASID Entry |--- PASID cache flush -
+    '-------------'                       |
+    |             |                       V
+    |             |                CR3 in GPA
+    '-------------'
+Guest
+------| Shadow |--------------------------|--------
+      v        v                          v
+Host
+    .-------------.  .----------------------.
+    |   pIOMMU    |  | Bind FL for GVA-GPA  |
+    |             |  '----------------------'
+    .----------------/  |
+    | PASID Entry |     V (Nested xlate)
+    '----------------\.------------------------------.
+    |             |   |SL for GPA-HPA, default domain|
+    |             |   '------------------------------'
+    '-------------'
+Where:
+ - FL = First level/stage one page tables
+ - SL = Second level/stage two page tables
+
+This is the remaining VT-d only portion of V5 since the uAPIs and IOASID common
+code have been applied to Joerg's IOMMU core branch.
+(https://lkml.org/lkml/2019/10/2/833)
+
+The complete set with VFIO patches are here:
+https://github.com/jacobpan/linux.git:siov_sva
+
+The complete nested SVA upstream patches are divided into three phases:
+    1. Common APIs and PCI device direct assignment
+    2. Page Request Services (PRS) support
+    3. Mediated device assignment
+
+With this set and the accompanied VFIO code, we will achieve phase #1.
+
+Thanks,
+
+Jacob
+
+ChangeLog:
+	- v11 Misc fixes and improvements based on review by Kevin & Eric
+	  - Fixed devTLB granularity conversion
+	  - Simplified VT-d granulairy lookup by replacing 2D map array
+	    with invalid entries.
+	  - Fixed locking in bind guest PASID
+	  - Added nesting domain attr check
+	  - Squashed agaw checking patch with user
+	  - Use rate limitted error message for all user originated calls
+ 
+	- v10
+	  - Addressed Eric's review in v7 and v9. Most fixes are in 3/10 and
+	    6/10. Extra condition checks and consolidation of duplicated codes.
+
+	- v9
+	  - Addressed Baolu's comments for v8 for IOTLB flush consolidation,
+	    bug fixes
+	  - Removed IOASID notifier code which will be submitted separately
+	    to address PASID life cycle management with multiple users.
+
+	- v8
+	  - Extracted cleanup patches from V7 and accepted into maintainer's
+	    tree (https://lkml.org/lkml/2019/12/2/514).
+	  - Added IOASID notifier and VT-d handler for termination of PASID
+	    IOMMU context upon free. This will ensure success of VFIO IOASID
+	    free API regardless PASID is in use.
+	    (https://lore.kernel.org/linux-iommu/1571919983-3231-1-git-send-email-yi.l.liu@intel.com/)
+
+	- V7
+	  - Respect vIOMMU PASID range in virtual command PASID/IOASID allocator
+	  - Caching virtual command capabilities to avoid runtime checks that
+	    could cause vmexits.
+
+	- V6
+	  - Rebased on top of Joerg's core branch
+	  (git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git core)
+	  - Adapt to new uAPIs and IOASID allocators
+
+	- V5
+	  Rebased on v5.3-rc4 which has some of the IOMMU fault APIs merged.
+ 	  Addressed v4 review comments from Eric Auger, Baolu Lu, and
+	    Jonathan Cameron. Specific changes are as follows:
+	  - Refined custom IOASID allocator to support multiple vIOMMU, hotplug
+	    cases.
+	  - Extracted vendor data from IOMMU guest PASID bind data, for VT-d
+	    will support all necessary guest PASID entry fields for PASID
+	    bind.
+	  - Support non-identity host-guest PASID mapping
+	  - Exception handling in various cases
+
+	- V4
+	  - Redesigned IOASID allocator such that it can support custom
+	  allocators with shared helper functions. Use separate XArray
+	  to store IOASIDs per allocator. Took advice from Eric Auger to
+	  have default allocator use the generic allocator structure.
+	  Combined into one patch in that the default allocator is just
+	  "another" allocator now. Can be built as a module in case of
+	  driver use without IOMMU.
+	  - Extended bind guest PASID data to support SMMU and non-identity
+	  guest to host PASID mapping https://lkml.org/lkml/2019/5/21/802
+	  - Rebased on Jean's sva/api common tree, new patches starts with
+	   [PATCH v4 10/22]
+
+	- V3
+	  - Addressed thorough review comments from Eric Auger (Thank you!)
+	  - Moved IOASID allocator from driver core to IOMMU code per
+	    suggestion by Christoph Hellwig
+	    (https://lkml.org/lkml/2019/4/26/462)
+	  - Rebased on top of Jean's SVA API branch and Eric's v7[1]
+	    (git://linux-arm.org/linux-jpb.git sva/api)
+	  - All IOMMU APIs are unmodified (except the new bind guest PASID
+	    call in patch 9/16)
+
+	- V2
+	  - Rebased on Joerg's IOMMU x86/vt-d branch v5.1-rc4
+	  - Integrated with Eric Auger's new v7 series for common APIs
+	  (https://github.com/eauger/linux/tree/v5.1-rc3-2stage-v7)
+	  - Addressed review comments from Andy Shevchenko and Alex Williamson on
+	    IOASID custom allocator.
+	  - Support multiple custom IOASID allocators (vIOMMUs) and dynamic
+	    registration.
+
+
+Jacob Pan (9):
+  iommu/vt-d: Move domain helper to header
+  iommu/uapi: Define a mask for bind data
+  iommu/vt-d: Use a helper function to skip agaw for SL
+  iommu/vt-d: Add nested translation helper function
+  iommu/vt-d: Add bind guest PASID support
+  iommu/vt-d: Support flushing more translation cache types
+  iommu/vt-d: Add svm/sva invalidate function
+  iommu/vt-d: Cache virtual command capability register
+  iommu/vt-d: Add custom allocator for IOASID
+
+Lu Baolu (1):
+  iommu/vt-d: Enlightened PASID allocation
+
+ drivers/iommu/dmar.c        |  37 +++++
+ drivers/iommu/intel-iommu.c | 277 ++++++++++++++++++++++++++++++++----
+ drivers/iommu/intel-pasid.c | 340 ++++++++++++++++++++++++++++++++++++++++++--
+ drivers/iommu/intel-pasid.h |  25 +++-
+ drivers/iommu/intel-svm.c   | 206 +++++++++++++++++++++++++++
+ include/linux/intel-iommu.h |  70 ++++++++-
+ include/linux/intel-svm.h   |  17 +++
+ include/uapi/linux/iommu.h  |   5 +-
+ 8 files changed, 925 insertions(+), 52 deletions(-)
+
+-- 
+2.7.4
 
