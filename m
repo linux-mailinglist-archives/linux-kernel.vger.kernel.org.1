@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A139619CDD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1A319CDE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390450AbgDCAkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 20:40:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38994 "EHLO mail.kernel.org"
+        id S2390440AbgDCAkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 20:40:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390424AbgDCAkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 20:40:17 -0400
-Subject: Re: [GIT PULL] bulk pin control changes for v5.7
+        id S2390427AbgDCAkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 20:40:18 -0400
+Subject: Re: [GIT PULL] sound updates for 5.7-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585874416;
-        bh=RJce0s6KlQxC6h2IiRV5aBM1cXm1VT+Q7PowoQ15MOs=;
+        s=default; t=1585874418;
+        bh=32vyQkWbtmdLnzwog0XtAeKbHcfoZMUaKnuIVpw96VM=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=E6J3qhLObgi1ja0yD12gYQZ285IiQ46jui+rgf44taoT37TNMf66pLQl6Z55V11DP
-         yTZoqNFXfAtDQl2/W7hNDNTnu1pZoH5RMvO892yMFfv3Ld3y8CEYk5Fg9csPLgqcpa
-         /cOJ4pyPVgGASrV182NNVPBCfGuB75LVYf/MQMDU=
+        b=UPSLLeR34DCQEv9Nj7S3hv1lhIvAWpL2MReC+IsLyb9iyWp07eZgblzOyplOsv+5Q
+         yv9LSpM3BZwz6kpTGkH+KPyRu3BvbHr1OFeU62w35LXQb0QL3uVD9Bhglvy1InJxpx
+         DE1mld+fCI8PIkQfcoqd2eCh0iYczje6M+mSOMu8=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CACRpkdbO2JBTtU-XTWzfzTkFD_x7EiPqQ-VraPcYJA7_6U-mvA@mail.gmail.com>
-References: <CACRpkdbO2JBTtU-XTWzfzTkFD_x7EiPqQ-VraPcYJA7_6U-mvA@mail.gmail.com>
+In-Reply-To: <s5htv22uso8.wl-tiwai@suse.de>
+References: <s5htv22uso8.wl-tiwai@suse.de>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CACRpkdbO2JBTtU-XTWzfzTkFD_x7EiPqQ-VraPcYJA7_6U-mvA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
- tags/pinctrl-v5.7-1
-X-PR-Tracked-Commit-Id: c42f69b4207e104229242c3d9da43b55d4b95d6d
+X-PR-Tracked-Message-Id: <s5htv22uso8.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
+ tags/sound-5.7-rc1
+X-PR-Tracked-Commit-Id: 5c6cd7021a05a02fcf37f360592d7c18d4d807fb
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bc3b3f4bfbded031a11c4284106adddbfacd05bb
-Message-Id: <158587441692.31624.3105665865723969608.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Apr 2020 00:40:16 +0000
-To:     Linus Walleij <linus.walleij@linaro.org>
+X-PR-Merge-Commit-Id: 848960e576dafc8ed54c691b2f70b92e1fdea9ba
+Message-Id: <158587441796.31624.16943011436861424361.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Apr 2020 00:40:17 +0000
+To:     Takashi Iwai <tiwai@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Apr 2020 09:38:27 +0200:
+The pull request you sent on Thu, 02 Apr 2020 11:45:59 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.7-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.7-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bc3b3f4bfbded031a11c4284106adddbfacd05bb
+https://git.kernel.org/torvalds/c/848960e576dafc8ed54c691b2f70b92e1fdea9ba
 
 Thank you!
 
