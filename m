@@ -2,73 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0710319CF4C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:29:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAAE19CF48
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730844AbgDCE3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:29:03 -0400
-Received: from m12-11.163.com ([220.181.12.11]:56664 "EHLO m12-11.163.com"
+        id S1730236AbgDCE1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:27:42 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36207 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgDCE3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:29:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Wbeh/
-        XXcF9p0H3UV40lvWAHy5eGKJ2dZMK1faGpA0Mk=; b=fuOjBSS9j4j1VOrIIr+LE
-        sHNc6E5MUFVYXC1xXTU6EuO8pRtT0tYNHvpvzGleVwha52sTyJ+1Oqy3QbX/NbdP
-        DD6Kql1AhFfTx3AAK6ppr4CrU/1aJFf0e1C1fCvYB9KTBjp5ifzhD5PoNYtnUSzV
-        KlUasBVr2jwU6MDyvE7Xlg=
-Received: from localhost.localdomain (unknown [125.82.11.124])
-        by smtp7 (Coremail) with SMTP id C8CowADH59sdu4ZePW+mCQ--.9443S4;
-        Fri, 03 Apr 2020 12:27:10 +0800 (CST)
-From:   Hu Haowen <xianfengting221@163.com>
-To:     saeedm@mellanox.com, leon@kernel.org, davem@davemloft.net
-Cc:     moshe@mellanox.com, lsahlber@redhat.com, kw@linux.com,
-        wqu@suse.com, xiubli@redhat.com, xianfengting221@163.com,
-        chris@chris-wilson.co.uk, stfrench@microsoft.com,
-        airlied@redhat.com, yamada.masahiro@socionext.com, cai@lca.pw,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net/mlx5: add the missing space character
-Date:   Fri,  3 Apr 2020 12:26:59 +0800
-Message-Id: <20200403042659.9167-1-xianfengting221@163.com>
-X-Mailer: git-send-email 2.20.1
+        id S1725851AbgDCE1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 00:27:41 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 48tn3F11cNz9sRR;
+        Fri,  3 Apr 2020 15:27:37 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1585888059;
+        bh=P6pDV2mWC3/QGwHFGntoCWhQeeo1qFFM1tqWOPVJ5GQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Vsp7iefSuq2qUc2BqgDgoqQSz9nPDU/JrItc+oEyG61KFugv7uQPx8toJGFzcyDE9
+         fbHOnTwHuQ5nU9Y2XDcNSY0Z2d2hDCzlqQhElxnt0lWMHCdM5Xj8YLhG/Gvt02ZsjQ
+         H2QG7o77rzF7weuVSVcwCohP50hpM4jeI0X/jbE8sTucOI8vacLjjbZb6LfDQZrQvF
+         s44uAO8q4NgYv5YD8W76eyM++ks7SvH51Mshmbfai8akqeelai+Lq2HG+OMgjeqjzs
+         QWv7sKW0TVJeK8e+qAjnA0G4PeqL7511jU+g7m3hAZHA3+DqAaMDtXDp7bogX/2lG5
+         13TfLzlBAQuTQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Alastair D'Silva <alastair@d-silva.org>
+Cc:     "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Anton Blanchard <anton@ozlabs.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mahesh Salgaonkar <mahesh@linux.vnet.ibm.com>,
+        Madhavan Srinivasan <maddy@linux.vnet.ibm.com>,
+        =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
+        Anju T Sudhakar <anju@linux.vnet.ibm.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kurz <groug@kaod.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v4 03/25] powerpc/powernv: Map & release OpenCAPI LPC memory
+In-Reply-To: <f763d9d8487e77006b233bc16e0883f956850b6c.camel@kernel.crashing.org>
+References: <20200327071202.2159885-1-alastair@d-silva.org> <20200327071202.2159885-4-alastair@d-silva.org> <CAPcyv4iGEHJpZctEm+Do1-kOZBUDeKKcREr=BqcK4kCvLWhAQQ@mail.gmail.com> <f763d9d8487e77006b233bc16e0883f956850b6c.camel@kernel.crashing.org>
+Date:   Fri, 03 Apr 2020 15:27:46 +1100
+Message-ID: <87v9mhry65.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowADH59sdu4ZePW+mCQ--.9443S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7GryfGr4fCr1UZrWUWw17ZFb_yoW8Jr45pF
-        s8JFZrurs7tw45Xa18ZFW8Z3s5GwsYkay09F4fC393Xrn5tr48Crn3tryYkr10kr13J3sx
-        tF9rArW7Awn8W37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jcyCJUUUUU=
-X-Originating-IP: [125.82.11.124]
-X-CM-SenderInfo: h0ld0wxhqj3xtqjsjii6rwjhhfrp/1tbiFR76AF5mI-KHKQAAs2
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 91b56d8462a9 ("net/mlx5: improve some comments") did not add
-that missing space character and this commit is used to fix it up.
+Benjamin Herrenschmidt <benh@kernel.crashing.org> writes:
+> On Wed, 2020-04-01 at 01:48 -0700, Dan Williams wrote:
+>> > 
+>> > +u64 pnv_ocxl_platform_lpc_setup(struct pci_dev *pdev, u64 size)
+>> > +{
+>> > +       struct pci_controller *hose = pci_bus_to_host(pdev->bus);
+>> > +       struct pnv_phb *phb = hose->private_data;
+>> 
+>> Is calling the local variable 'hose' instead of 'host' on purpose?
+>
+> Haha that's funny :-)
+>
+> It's an oooooooold usage that comes iirc from sparc ? or maybe alpha ?
 
-Fixes: 91b56d8462a9 ("net/mlx5: improve some comments")
-Signed-off-by: Hu Haowen <xianfengting221@163.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah it was alpha, I found it in the history tree:
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-index c9c9b479bda5..31bddb48e5c3 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
-@@ -676,7 +676,7 @@ static void mlx5_fw_tracer_handle_traces(struct work_struct *work)
- 	block_count = tracer->buff.size / TRACER_BLOCK_SIZE_BYTE;
- 	start_offset = tracer->buff.consumer_index * TRACER_BLOCK_SIZE_BYTE;
- 
--	/* Copy the block to local buffer to avoid HW override while being processed*/
-+	/* Copy the block to local buffer to avoid HW override while being processed */
- 	memcpy(tmp_trace_block, tracer->buff.log_buf + start_offset,
- 	       TRACER_BLOCK_SIZE_BYTE);
- 
--- 
-2.20.1
+  https://github.com/mpe/linux-fullhistory/blob/1928de59ba4209dc5e9f2cef63560c09ba0df73b/arch/alpha/kernel/mcpcia.c
+
+And airlied found an old manual which confirms it:
+
+  The TIOP module interfaces the AlphaServer 8000 system bus to four I/O channels, called "hoses."
+
+  https://www.hpl.hp.com/hpjournal/dtj/vol7num1/vol7num1art4.pdf
 
 
+So at least now we know where it comes from.
+
+It's also used widely in mips, microblaze, sh and a little bit in drm.
+
+cheers
