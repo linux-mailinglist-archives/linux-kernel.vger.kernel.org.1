@@ -2,159 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EB319CEA8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DD719CEAC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390416AbgDCCY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 22:24:29 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:14568 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390403AbgDCCY1 (ORCPT
+        id S2390375AbgDCC0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 22:26:15 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37664 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388951AbgDCC0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 22:24:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1585880667; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=CVKwdv1dL/6/p21AAAZ4seiEJbEjLRqpVCT2OHJoL4k=; b=QUZZLfDPz6r9YxAqsjDsKmXXgb2ciSVo+6kiURuq1x7nKPf/8RWnAO6mvGCSpPZF+x//kdz4
- G/Wb1PKERe9PGvZlHS/4tQsRNx71mqSqZes/c6bpt2NJLFHblzj/ACdRwIjLzmnASB6KTi8N
- 8BhAf9VFaD3Tt6XJ6HNmer7DaQc=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e869e4b.7f54ee157dc0-smtp-out-n03;
- Fri, 03 Apr 2020 02:24:11 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8016AC43636; Fri,  3 Apr 2020 02:24:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B8393C43637;
-        Fri,  3 Apr 2020 02:24:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B8393C43637
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        robh+dt@kernel.org, mark.rutland@arm.com, p.zabel@pengutronix.de,
-        mgautam@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH v5 5/5] phy: qcom-qmp: Rename UFS PCS QMP v4 registers
-Date:   Thu,  2 Apr 2020 19:23:54 -0700
-Message-Id: <1585880634-15222-6-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1585880634-15222-1-git-send-email-wcheng@codeaurora.org>
-References: <1585880634-15222-1-git-send-email-wcheng@codeaurora.org>
+        Thu, 2 Apr 2020 22:26:15 -0400
+Received: by mail-wr1-f65.google.com with SMTP id w10so6751066wrm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 19:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8qP4HMBtgJcP3marxCvlPQM9EFvKm/v0Fyiot+R1GsA=;
+        b=ScIMSWfMnsrla8uAenHK1uo9zA/AEmGHi707UQmAtVeQVmrHa9Qsl/p2yb0UfP5R2A
+         fm74AxgyRryOoRv+MCk2i+dBZmcBjHww2+tPdSGF+d7CgouoObzQZeFL6ecfXd4d8UqV
+         1mnIXA/V8NFYMY9oa0THwurtkBKi355Lcv2QJ9e72p55LimTZWkc+A5OKDqFUMg5hy/h
+         gIGen7WC/oY+KEGyFROi3ejILIotOdhbqWT2t42ZooFwZ1yWN/lzbpvC8sNColkimABE
+         zU9uGEzvL0Es9e7KoIrWH6gjSblkqXOXmuwbdSovIrBfO5gMzmIfWMAP4XRqahwDt97y
+         oM4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8qP4HMBtgJcP3marxCvlPQM9EFvKm/v0Fyiot+R1GsA=;
+        b=OUrbUkBRyH5spR61Ar+79e6KiobtijDZPntIID6HCrjOSoN3SIzkgi/I1TeMTDATnp
+         SNEH47pSxL5/utin8rva8Hk8CrhAAa0H8FJP/V1Qx482myMD55pRPUemPIT/ysr/f/Rz
+         L13ceoDdoDutHct1rOMfZr5zr8wy7NfYuTMLDFgaCMwWty2K00zT7M4BXPs2QRsR9Pqo
+         ZCGNDAuheloTAQOY4ngmBcLJZK6JJhzGYat3K0IBQ3Vz4pCYZopQMIcDigVExqnTndff
+         Zes/pAlftqnolKdGa4b1r4eKmcunoYhbB71Jdrs3OUbBrfsgnMiJG/E7mKt72WWUuDNk
+         V9Wg==
+X-Gm-Message-State: AGi0PubDXmuvdhXB24eRZr60QLnr376oyDtFpqTSCOLg0wDPLw67iIbP
+        iB68lvr6ZmgczY3YqBONjySSHZp/YpyYb7sHouwqRg==
+X-Google-Smtp-Source: APiQypKNqjpq5zsdm7paTTwT5mrYSRaq+pPFJWnICDZB81b6LKwVd2z7s8iLBVPLFkgKpwY0frAVE0e2jJKwM9HNlTU=
+X-Received: by 2002:a5d:5112:: with SMTP id s18mr6550112wrt.306.1585880773030;
+ Thu, 02 Apr 2020 19:26:13 -0700 (PDT)
+MIME-Version: 1.0
+References: <1583466184-7060-1-git-send-email-tiantao6@hisilicon.com> <1583466184-7060-5-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1583466184-7060-5-git-send-email-tiantao6@hisilicon.com>
+From:   Xinliang Liu <xinliang.liu@linaro.org>
+Date:   Fri, 3 Apr 2020 10:26:01 +0800
+Message-ID: <CAKoKPbwgiFdvfLHXoD9wPJvJ5yzMMrxNEEJUArSEvNdx46+m9Q@mail.gmail.com>
+Subject: Re: [PATCH 2/4] drm/hisilicon: Code cleanup for hibmc_drv_vdac
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     Chen Feng <puck.chen@hisilicon.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, tzimmermann@suse.de,
+        kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        lkml <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The UFS QMP v4 PHY has a largely different register set versus USB and
-PCIe.  Rename the register offsets to denote that the value is specific for
-the UFS PCS register.
+Hi Tao,
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- drivers/phy/qualcomm/phy-qcom-qmp.c | 20 +++++++++----------
- drivers/phy/qualcomm/phy-qcom-qmp.h | 40 ++++++++++++++++++-------------------
- 2 files changed, 30 insertions(+), 30 deletions(-)
+On Fri, 6 Mar 2020 at 11:44, Tian Tao <tiantao6@hisilicon.com> wrote:
+>
+> code cleanup for hibmc_drv_vdac.c, no actual function changes.
+>
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> Signed-off-by: Gong junjie <gongjunjie2@huawei.com>
+> ---
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 49 ++++++++----------------
+>  1 file changed, 16 insertions(+), 33 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> index 678ac2e..f0e6bb8 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+> @@ -52,32 +52,6 @@ static const struct drm_connector_funcs hibmc_connector_funcs = {
+>         .atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
+>  };
+>
+> -static struct drm_connector *
+> -hibmc_connector_init(struct hibmc_drm_private *priv)
+> -{
+> -       struct drm_device *dev = priv->dev;
+> -       struct drm_connector *connector;
+> -       int ret;
+> -
+> -       connector = devm_kzalloc(dev->dev, sizeof(*connector), GFP_KERNEL);
+> -       if (!connector) {
+> -               DRM_ERROR("failed to alloc memory when init connector\n");
+> -               return ERR_PTR(-ENOMEM);
+> -       }
+> -
+> -       ret = drm_connector_init(dev, connector,
+> -                                &hibmc_connector_funcs,
+> -                                DRM_MODE_CONNECTOR_VGA);
+> -       if (ret) {
+> -               DRM_ERROR("failed to init connector: %d\n", ret);
+> -               return ERR_PTR(ret);
+> -       }
+> -       drm_connector_helper_add(connector,
+> -                                &hibmc_connector_helper_funcs);
+> -
+> -       return connector;
+> -}
+> -
+>  static void hibmc_encoder_mode_set(struct drm_encoder *encoder,
+>                                    struct drm_display_mode *mode,
+>                                    struct drm_display_mode *adj_mode)
+> @@ -109,13 +83,6 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)
+>         struct drm_connector *connector;
+>         int ret;
+>
+> -       connector = hibmc_connector_init(priv);
+> -       if (IS_ERR(connector)) {
+> -               DRM_ERROR("failed to create connector: %ld\n",
+> -                         PTR_ERR(connector));
+> -               return PTR_ERR(connector);
+> -       }
+> -
+>         encoder = devm_kzalloc(dev->dev, sizeof(*encoder), GFP_KERNEL);
+>         if (!encoder) {
+>                 DRM_ERROR("failed to alloc memory when init encoder\n");
+> @@ -131,6 +98,22 @@ int hibmc_vdac_init(struct hibmc_drm_private *priv)
+>         }
+>
+>         drm_encoder_helper_add(encoder, &hibmc_encoder_helper_funcs);
+> +       connector = devm_kzalloc(dev->dev, sizeof(*connector), GFP_KERNEL);
+> +       if (!connector) {
+> +               DRM_ERROR("failed to alloc memory when init connector\n");
+> +               return -ENOMEM;
+> +       }
+> +
+> +       ret = drm_connector_init(dev, connector,
+> +                                &hibmc_connector_funcs,
+> +                                DRM_MODE_CONNECTOR_VGA);
+> +       if (ret) {
+> +               DRM_ERROR("failed to init connector: %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       drm_connector_helper_add(connector, &hibmc_connector_helper_funcs);
+> +       drm_connector_register(connector);
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index 5363a99..9400748 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -174,9 +174,9 @@ enum qphy_reg_layout {
- };
- 
- static const unsigned int sm8150_ufsphy_regs_layout[] = {
--	[QPHY_START_CTRL]		= QPHY_V4_PHY_START,
--	[QPHY_PCS_READY_STATUS]		= QPHY_V4_PCS_READY_STATUS,
--	[QPHY_SW_RESET]			= QPHY_V4_SW_RESET,
-+	[QPHY_START_CTRL]		= QPHY_V4_PCS_UFS_PHY_START,
-+	[QPHY_PCS_READY_STATUS]		= QPHY_V4_PCS_UFS_READY_STATUS,
-+	[QPHY_SW_RESET]			= QPHY_V4_PCS_UFS_SW_RESET,
- };
- 
- static const struct qmp_phy_init_tbl msm8996_pcie_serdes_tbl[] = {
-@@ -971,13 +971,13 @@ enum qphy_reg_layout {
- };
- 
- static const struct qmp_phy_init_tbl sm8150_ufsphy_pcs_tbl[] = {
--	QMP_PHY_INIT_CFG(QPHY_V4_RX_SIGDET_CTRL2, 0x6d),
--	QMP_PHY_INIT_CFG(QPHY_V4_TX_LARGE_AMP_DRV_LVL, 0x0a),
--	QMP_PHY_INIT_CFG(QPHY_V4_TX_SMALL_AMP_DRV_LVL, 0x02),
--	QMP_PHY_INIT_CFG(QPHY_V4_TX_MID_TERM_CTRL1, 0x43),
--	QMP_PHY_INIT_CFG(QPHY_V4_DEBUG_BUS_CLKSEL, 0x1f),
--	QMP_PHY_INIT_CFG(QPHY_V4_RX_MIN_HIBERN8_TIME, 0xff),
--	QMP_PHY_INIT_CFG(QPHY_V4_MULTI_LANE_CTRL1, 0x02),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_RX_SIGDET_CTRL2, 0x6d),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_LARGE_AMP_DRV_LVL, 0x0a),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_SMALL_AMP_DRV_LVL, 0x02),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_MID_TERM_CTRL1, 0x43),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_DEBUG_BUS_CLKSEL, 0x1f),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_RX_MIN_HIBERN8_TIME, 0xff),
-+	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_MULTI_LANE_CTRL1, 0x02),
- };
- 
- static const struct qmp_phy_init_tbl sm8150_usb3_serdes_tbl[] = {
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.h b/drivers/phy/qualcomm/phy-qcom-qmp.h
-index 22c9009..d78acbf 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.h
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.h
-@@ -425,26 +425,26 @@
- #define QSERDES_V4_RX_VTH_CODE				0x1c4
- 
- /* Only for QMP V4 PHY - UFS PCS registers */
--#define QPHY_V4_PHY_START				0x000
--#define QPHY_V4_POWER_DOWN_CONTROL			0x004
--#define QPHY_V4_SW_RESET				0x008
--#define QPHY_V4_TIMER_20US_CORECLK_STEPS_MSB		0x00c
--#define QPHY_V4_TIMER_20US_CORECLK_STEPS_LSB		0x010
--#define QPHY_V4_PLL_CNTL				0x02c
--#define QPHY_V4_TX_LARGE_AMP_DRV_LVL			0x030
--#define QPHY_V4_TX_SMALL_AMP_DRV_LVL			0x038
--#define QPHY_V4_BIST_FIXED_PAT_CTRL			0x060
--#define QPHY_V4_TX_HSGEAR_CAPABILITY			0x074
--#define QPHY_V4_RX_HSGEAR_CAPABILITY			0x0b4
--#define QPHY_V4_DEBUG_BUS_CLKSEL			0x124
--#define QPHY_V4_LINECFG_DISABLE				0x148
--#define QPHY_V4_RX_MIN_HIBERN8_TIME			0x150
--#define QPHY_V4_RX_SIGDET_CTRL2				0x158
--#define QPHY_V4_TX_PWM_GEAR_BAND			0x160
--#define QPHY_V4_TX_HS_GEAR_BAND				0x168
--#define QPHY_V4_PCS_READY_STATUS			0x180
--#define QPHY_V4_TX_MID_TERM_CTRL1			0x1d8
--#define QPHY_V4_MULTI_LANE_CTRL1			0x1e0
-+#define QPHY_V4_PCS_UFS_PHY_START				0x000
-+#define QPHY_V4_PCS_UFS_POWER_DOWN_CONTROL			0x004
-+#define QPHY_V4_PCS_UFS_SW_RESET				0x008
-+#define QPHY_V4_PCS_UFS_TIMER_20US_CORECLK_STEPS_MSB		0x00c
-+#define QPHY_V4_PCS_UFS_TIMER_20US_CORECLK_STEPS_LSB		0x010
-+#define QPHY_V4_PCS_UFS_PLL_CNTL				0x02c
-+#define QPHY_V4_PCS_UFS_TX_LARGE_AMP_DRV_LVL			0x030
-+#define QPHY_V4_PCS_UFS_TX_SMALL_AMP_DRV_LVL			0x038
-+#define QPHY_V4_PCS_UFS_BIST_FIXED_PAT_CTRL			0x060
-+#define QPHY_V4_PCS_UFS_TX_HSGEAR_CAPABILITY			0x074
-+#define QPHY_V4_PCS_UFS_RX_HSGEAR_CAPABILITY			0x0b4
-+#define QPHY_V4_PCS_UFS_DEBUG_BUS_CLKSEL			0x124
-+#define QPHY_V4_PCS_UFS_LINECFG_DISABLE				0x148
-+#define QPHY_V4_PCS_UFS_RX_MIN_HIBERN8_TIME			0x150
-+#define QPHY_V4_PCS_UFS_RX_SIGDET_CTRL2				0x158
-+#define QPHY_V4_PCS_UFS_TX_PWM_GEAR_BAND			0x160
-+#define QPHY_V4_PCS_UFS_TX_HS_GEAR_BAND				0x168
-+#define QPHY_V4_PCS_UFS_READY_STATUS			0x180
-+#define QPHY_V4_PCS_UFS_TX_MID_TERM_CTRL1			0x1d8
-+#define QPHY_V4_PCS_UFS_MULTI_LANE_CTRL1			0x1e0
- 
- /* Only for QMP V4 PHY - USB/PCIe PCS registers */
- #define QPHY_V4_PCS_SW_RESET				0x000
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+You don't need to register a non-hotplug connector as it will be
+registered at drm_dev_register automatically.
+
+See function definition:
+
+ 488 /**
+ 489  * drm_connector_register - register a connector
+ 490  * @connector: the connector to register
+ 491  *
+ 492  * Register userspace interfaces for a connector. Only call this
+for connectors
+ 493  * which can be hotplugged after drm_dev_register() has been
+called already,
+ 494  * e.g. DP MST connectors. All other connectors will be
+registered automatically
+ 495  * when calling drm_dev_register().
+ 496  *
+ 497  * Returns:
+ 498  * Zero on success, error code on failure.
+ 499  */
+ 500 int drm_connector_register(struct drm_connector *connector)
+ 501 {
+
+
+Besides, I don't think this patch cleans much things.
+
+-Xinliang
+
+>         drm_connector_attach_encoder(connector, encoder);
+>
+>         return 0;
+> --
+> 2.7.4
+>
