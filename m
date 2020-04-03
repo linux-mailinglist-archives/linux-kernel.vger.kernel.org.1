@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F248219CE27
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 03:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0B4219CE2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 03:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390250AbgDCBeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 21:34:24 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:44248 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389857AbgDCBeX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 21:34:23 -0400
-Received: by mail-ot1-f66.google.com with SMTP id a49so5645338otc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 18:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qIYcq8W/wQaQKfS0jsKTD0GfgP5XZSOsMql1SZeV8I8=;
-        b=TThcSQqFzxjcnGoBrPzGePjj9boBinqTKW5qbM/NNKEIc7LLsiunbROtFCJs4fD437
-         SxmMXNOMo4eGuijwSNVJ787GhJBHTbloiZL1Xp6xQt76ih9QsEZ9XwUN+Uo7s3iSoqti
-         TyN98rdormsnsYYlEyoA04p4x/Ov/Cv9G1FbDK/Go4W7B99p3HSFB7n03CHx8lH6iEoI
-         KLnZ4QgMqXg+BmunRK/fCp0X6PA9GPDy/LEWTqP7GuadHjiOfAhRAxrgQmEgcHr+Bh/K
-         VPRWSEyQKmX4tZrUlhEMWrUQCJCApxpEINOqoaa4aJ1DBKgS50Xynl1mosTS6X9SBO1P
-         MM0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qIYcq8W/wQaQKfS0jsKTD0GfgP5XZSOsMql1SZeV8I8=;
-        b=Vxi+of6V/m81Lgn0K5LMGUdLi4fY5IvuAeIfWAMjwPsTODXt30IOmEP3QK9hYVE1iY
-         CZ3OX0q0P/7GP1QKtN8Pr/fNMliRKG1lab2Wyz4+Ximxce9Lw33Jmf9oXOJKS5CiYJ8+
-         loJgO198xEF/3X5UFHqW1vQat1RQfHwi/Zy81U6fw++9W4p/wI67V5CCPPsoy8/aL7FD
-         J1tz8HTJ1bKtpW6u05bd5Sv4HqahE4+PQijcIsXJ1k51owoICJzG9gvboVg626MKhzfU
-         IEgznM9zMtlKuQXrAS+51RVhff/uSsaaNRJwLN7hVNzwVomHTq4RRaPWZQqmpDGA0CU2
-         995A==
-X-Gm-Message-State: AGi0PuYxhukWO1qoUOj6Y4qDz+BLzWuyGi/eF0EUNdoktRKuHTf3v1eD
-        nVSLrqnD+jp694gTZF/Iw3A=
-X-Google-Smtp-Source: APiQypLKiSm1NyuRjd4p5t7tz0TqIH1wuqzKrOCp3b2UGGucVP9oEsz1Tfa6lQ5dtIWNU1yzXue2bQ==
-X-Received: by 2002:a9d:4810:: with SMTP id c16mr4551484otf.138.1585877663188;
-        Thu, 02 Apr 2020 18:34:23 -0700 (PDT)
-Received: from ubuntu-m2-xlarge-x86 ([2604:1380:4111:8b00::1])
-        by smtp.gmail.com with ESMTPSA id 68sm1756076oon.14.2020.04.02.18.34.22
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 02 Apr 2020 18:34:22 -0700 (PDT)
-Date:   Thu, 2 Apr 2020 18:34:20 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Dave Airlie <airlied@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] drm/legacy: Fix type for drm_local_map.offset
-Message-ID: <20200403013420.GA11516@ubuntu-m2-xlarge-x86>
-References: <20200402203317.GA34560@ubuntu-m2-xlarge-x86>
- <20200402215926.30714-1-chris@chris-wilson.co.uk>
+        id S2390272AbgDCBea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 21:34:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390223AbgDCBe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 21:34:28 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 535B1206A3;
+        Fri,  3 Apr 2020 01:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1585877668;
+        bh=7b3Ysa1BLGv5if39DtngdrAT55GjsM/BtI03DHDpmQc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=BzJgVKHHx6uUXr9l6xQGm5A8oJuQelPcnLUdfdHp+0Yh/+8Yhp6F/TS/8EolPRx11
+         1pEPmSDHQ07+CocsG9XLo2FztBK8wXruCK3ANoHjUNZI8CWBlI+GGjqonAlpruJzIF
+         tchnmiRZ5guOzb0AcRCF1h+0CDJZdMbRXP80mIYY=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402215926.30714-1-chris@chris-wilson.co.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200330205647.24806-1-ansuelsmth@gmail.com>
+References: <20200330205647.24806-1-ansuelsmth@gmail.com>
+Subject: Re: [PATCH v2] ARM: qcom: Disable i2c device on gsbi4 for ipq806x
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Mathieu Olivari <mathieu@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+To:     Andy Gross <agross@kernel.org>, Ansuel Smith <ansuelsmth@gmail.com>
+Date:   Thu, 02 Apr 2020 18:34:27 -0700
+Message-ID: <158587766752.125146.7582840761926137726@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 10:59:26PM +0100, Chris Wilson wrote:
-> drm_local_map.offset is not only used for resource_size_t but also
-> dma_addr_t which may be of different sizes.
-> 
-> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> Fixes: 8e4ff9b56957 ("drm: Remove the dma_alloc_coherent wrapper for internal usage")
-> Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-> Cc: Dave Airlie <airlied@gmail.com>
-> Cc: Nathan Chancellor <natechancellor@gmail.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> ---
->  include/drm/drm_legacy.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/drm/drm_legacy.h b/include/drm/drm_legacy.h
-> index dcef3598f49e..aed382c17b26 100644
-> --- a/include/drm/drm_legacy.h
-> +++ b/include/drm/drm_legacy.h
-> @@ -136,7 +136,7 @@ struct drm_sg_mem {
->   * Kernel side of a mapping
->   */
->  struct drm_local_map {
-> -	resource_size_t offset;	 /**< Requested physical address (0 for SAREA)*/
-> +	dma_addr_t offset;	 /**< Requested physical address (0 for SAREA)*/
->  	unsigned long size;	 /**< Requested physical size (bytes) */
->  	enum drm_map_type type;	 /**< Type of memory to map */
->  	enum drm_map_flags flags;	 /**< Flags */
-> -- 
-> 2.20.1
-> 
+Quoting Ansuel Smith (2020-03-30 13:56:46)
+> diff --git a/drivers/clk/qcom/gcc-ipq806x.c b/drivers/clk/qcom/gcc-ipq806=
+x.c
+> index b0eee0903807..f7d7a2bc84c1 100644
+> --- a/drivers/clk/qcom/gcc-ipq806x.c
+> +++ b/drivers/clk/qcom/gcc-ipq806x.c
+> @@ -991,6 +991,7 @@ static struct clk_branch gsbi4_h_clk =3D {
+>                 .hw.init =3D &(struct clk_init_data){
+>                         .name =3D "gsbi4_h_clk",
+>                         .ops =3D &clk_branch_ops,
+> +                       .flags =3D CLK_IGNORE_UNUSED,
 
-Thanks for the quick fix!
+Is this necessary? Shouldn't we skip clks that are protected during the
+unused phase?
 
-I ran it through my set of build tests and nothing else seems to have
-broken (at least not any more than it already is...).
-
-Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
+>                 },
+>         },
+>  };
+> --=20
+> 2.25.1
+>
