@@ -2,191 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B52DB19DCFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8D419DD0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404161AbgDCRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:44:29 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:36548 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728341AbgDCRo2 (ORCPT
+        id S1728392AbgDCRrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:47:15 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:60190 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727882AbgDCRrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:44:28 -0400
-Received: by mail-wr1-f66.google.com with SMTP id k1so100749wrm.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:44:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3IRCSeovtJ4qPaAlDb+qJfs2WHFPBRzlCPv+uW4BVtM=;
-        b=ZhFmw4awlQGDOQvhue1HPhakCr9If5mP4CbsYz9PdBRq10pZB0yNy2sa8oERY6TFsS
-         7SQUjqfgUXFtXhOgOgLFEdZsxg8p2FhnXEUsWKXWje8Y6qG9vNLAet+PPlvYxDO3gY+A
-         6wN+GZ1AmvYoK3e3gBIWHH/pGKixIOHHFhEdu9LCm+kVUTYkSzJ3J7mKQBZ6j41woqH+
-         86DprRHCk1JOfwIONwulVpSVTb4l4U/0/pEwEhMC+MA+gn/BgypE5CtfOaYszbZ2e8Rs
-         2xLd/Tq6McgT9qmwf0Bc6vyjHTyOlXV+5OcJVNWMQ85wSN4S7yWIeEEalF6ueNoEo0B+
-         vZ4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=3IRCSeovtJ4qPaAlDb+qJfs2WHFPBRzlCPv+uW4BVtM=;
-        b=bXYAZHko9fuGeBnPoedgko67esYiJ9Vu4t6vBkVB8RxN9h4hW8UR2ETdLi0DdS3b9k
-         xPaHejXFK1vYfEF6p6UV0L3tMeGPmqvOBlr994m84tTmZeqWy7U2t+F5WugJU5b8d2ud
-         W/N6T6+dF4VAquFc9xqLrl3gtYx+hl9tYGJX1PMkVVIcMDY5QoDUL3wysOxm3Qd+yvcv
-         8/Ks94aWt2JDPqtBqd3Yj0NKN6ZkVSLXZFLVNARC5xrqUsCL46RTV1j1GExcex3r3UCJ
-         K1yRAXza5gi42rlWNMiAi87rn5g/vGDnHfvy9eCU+R4W0AWPtfthOYxPiqRXYXOX3YyL
-         CjnQ==
-X-Gm-Message-State: AGi0PubI+vs28AWy/oZfa+rHXiBUsYdOmRo2ubJpDiCvzC8NdJ5h0+ai
-        F4Ne25eC+d2QBJzSjuqDarKESg==
-X-Google-Smtp-Source: APiQypKhA0CqD87QFeE2Zs/PBK+BqNQHI+er4Gl7MSLIOo72Rqlrikz9gwnP4JJCTz7hxBOOvIKAvw==
-X-Received: by 2002:adf:f1ce:: with SMTP id z14mr10216145wro.68.1585935865740;
-        Fri, 03 Apr 2020 10:44:25 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:cc78:8018:8980:25d8? ([2a01:e34:ed2f:f020:cc78:8018:8980:25d8])
-        by smtp.googlemail.com with ESMTPSA id m21sm12083413wmc.6.2020.04.03.10.44.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 10:44:24 -0700 (PDT)
-Subject: Re: [PATCH v5 4/5] thermal: devfreq_cooling: Refactor code and switch
- to use Energy Model
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-imx@nxp.com
-Cc:     Morten.Rasmussen@arm.com, Dietmar.Eggemann@arm.com,
-        javi.merino@arm.com, cw00.choi@samsung.com,
-        b.zolnierkie@samsung.com, rjw@rjwysocki.net, sudeep.holla@arm.com,
-        viresh.kumar@linaro.org, nm@ti.com, sboyd@kernel.org,
-        rui.zhang@intel.com, amit.kucheria@verdurent.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        qperret@google.com, bsegall@google.com, mgorman@suse.de,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        kernel@pengutronix.de, khilman@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh@kernel.org,
-        matthias.bgg@gmail.com, steven.price@arm.com,
-        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
-        airlied@linux.ie, daniel@ffwll.ch, liviu.dudau@arm.com,
-        lorenzo.pieralisi@arm.com, patrick.bellasi@matbug.net,
-        orjan.eide@arm.com, rdunlap@infradead.org, mka@chromium.org
-References: <20200318114548.19916-1-lukasz.luba@arm.com>
- <20200318114548.19916-5-lukasz.luba@arm.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Autocrypt: addr=daniel.lezcano@linaro.org; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <f3e9f127-47b1-9f30-2148-3c95a5933a92@linaro.org>
-Date:   Fri, 3 Apr 2020 19:44:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 3 Apr 2020 13:47:15 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033HhbOm129525;
+        Fri, 3 Apr 2020 17:44:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=9pBTIFGFje5WBl0mCqsYZom67c7a/tLU9dKn56ZKFv8=;
+ b=LaY4J5ucPEW55ViX1m4gZk9CIkGjg7xCWh/8E53ttZ8QRUBfUuu0bWrPkempYvL1ZRMn
+ vrl1mtCAvOqnVILZEO3GTrzK8/fUdxRFYAUzFyGq/aKYD39OdF8T5JtF37nr+QX2Y4d1
+ aRfaJKB3gmgqDeN/83QzV0KkDu1ChJ0VsSlSg15tgJC1gn2gqPB033Iy/0WTD68khKiH
+ vV0lA5l8VFoa0giw+0A6PHLvjTYhbtNmAz51Uu2j90HXz/7Yeak1nkve0BlDjxIMarPW
+ aCoFw0r83jrfA3HzaDE8v55dAzgnPcLZU27Kq3ROf7uB3usqLEE4VNrvzVZszRjsCtm7 zg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 303cevjdg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 17:44:51 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033Hh4lT003225;
+        Fri, 3 Apr 2020 17:44:51 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 302g2nks9j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 17:44:51 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 033HiibL011446;
+        Fri, 3 Apr 2020 17:44:44 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Apr 2020 10:44:44 -0700
+Date:   Fri, 3 Apr 2020 13:45:00 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, LKP <lkp@lists.01.org>,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH v2] workqueue: Remove the warning in wq_worker_sleeping()
+Message-ID: <20200403174500.75rwuijdri5ewl5c@ca-dmjordan1.us.oracle.com>
+References: <20200327074308.GY11705@shao2-debian>
+ <20200327175350.rw5gex6cwum3ohnu@linutronix.de>
+ <20200327232959.rpylymw2edhtxuwr@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200318114548.19916-5-lukasz.luba@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200327232959.rpylymw2edhtxuwr@linutronix.de>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9580 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=813 spamscore=0 mlxscore=0
+ adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030146
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9580 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
+ clxscore=1011 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 impostorscore=0 mlxlogscore=879 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030146
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/2020 12:45, Lukasz Luba wrote:
-> The overhauled Energy Model (EM) framework support also devfreq devices.
-> The unified API interface of the EM can be used in the thermal subsystem to
-> not duplicate code. The power table now is taken from EM structure and
-> there is no need to maintain calculation for it locally. In case when the
-> EM is not provided by the device a simple interface for cooling device is
-> used.
+Hi Sebastian,
+
+On Sat, Mar 28, 2020 at 12:29:59AM +0100, Sebastian Andrzej Siewior wrote:
+> v1…v2: - Drop the warning instead of using cmpxchg_local().
+> 	 Tglx pointed out that wq_worker_sleeping() is already invoked
+> 	 with disabled preemption so the race described can not happen.
+
+I guess you mean this race:
+
+> However, if the interrupt occurs in wq_worker_sleeping() between reading and
+> setting `sleeping' i.e.
 > 
-> There is also an improvement in code related to enabling/disabling OPPs,
-> which prevents from race condition with devfreq governors.
+> |        if (WARN_ON_ONCE(worker->sleeping))
+> |                return;
+>  *interrupt*
+> |        worker->sleeping = 1;
 > 
-> [lkp: Reported the build warning]
-> Reported-by: kbuild test robot <lkp@intel.com>
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org> # for tracing code
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> then pool->nr_running will be decremented twice in wq_worker_sleeping()
+> but it will be incremented only once in wq_worker_running().
 
-The changes are too big, please split this patch into smaller chunks.
+Why would preemption prevent it?  Interrupts are still enabled.
 
-> ---
->  drivers/thermal/devfreq_cooling.c | 474 ++++++++++++++++--------------
->  include/linux/devfreq_cooling.h   |  39 +--
->  include/trace/events/thermal.h    |  19 +-
->  3 files changed, 277 insertions(+), 255 deletions(-)
-> 
-> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
-
-[ ... ]
-
->  struct devfreq_cooling_device {
->  	int id;
->  	struct thermal_cooling_device *cdev;
->  	struct devfreq *devfreq;
->  	unsigned long cooling_state;
-> -	u32 *power_table;
->  	u32 *freq_table;
-> -	size_t freq_table_size;
-> +	size_t max_level;
-
-Could you rename it to 'max_state' ?
-
-
-[ ... ]
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+What am I missing?  :-)
