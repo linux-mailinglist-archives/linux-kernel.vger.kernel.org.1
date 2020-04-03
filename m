@@ -2,166 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D2519CE89
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201BD19CE92
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390303AbgDCCRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 22:17:06 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:51696 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389108AbgDCCRF (ORCPT
+        id S2390337AbgDCCUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 22:20:08 -0400
+Received: from mx05.melco.co.jp ([192.218.140.145]:33920 "EHLO
+        mx05.melco.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388709AbgDCCUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 22:17:05 -0400
-Received: by mail-io1-f70.google.com with SMTP id m3so4704383ioj.18
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 19:17:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=y+8HK+h85w4Q9jlbcyJ5+b0iPhOLO2IN6ZUPUefI0x8=;
-        b=BBCiK6QdyHAICq0mn6QZiPv60Bv9OPVGUsaSeC7OEYYZ4EHfCkCKZsIlm4hTnEwYi+
-         IZvhnXLzfBZYljp9MZVZPXy/jnWSoSyomUkRJBm/CiS1CvCGIthlart4SFmbb1z6CHiC
-         tt8xoxemHIiKhnER8iyhYbrEFirVeCOppJ4u6NkRxb4Q9buaOgy4OtkvogRaoeGlgWlT
-         TQeX245X5erpsNaN/cOsHyUOe9/u/IXmpGRcOlwZOfe1cZm4V/2smntg4+F+AEREP8f1
-         HyAKwl2OvdAdlsaxmSncl6Jd8TERrOhH7YFPRyBGGdtcfzzkurvH1QDgBsu3NJXf+S75
-         Uckw==
-X-Gm-Message-State: AGi0PuYnA3KxhYpoIUR5uiKm1KhE7bAu+hrFpOyiL6kpt1SU3oohTCCa
-        4mffULCBmlrJqjdmNDIPXlq+3eD7/WO5PT1OOIliFHlxomYJ
-X-Google-Smtp-Source: APiQypICbk+thBcyxa06sEd+THmINScx39a45aYWn7GD2GqkDVfkCY8JGsq/tOFvDQ3vkhxb4NJGXFvJFgbX7u6j/nFXWIE+2keJ
+        Thu, 2 Apr 2020 22:20:08 -0400
+Received: from mr05.melco.co.jp (mr05 [133.141.98.165])
+        by mx05.melco.co.jp (Postfix) with ESMTP id 2C99D3A4299;
+        Fri,  3 Apr 2020 11:20:05 +0900 (JST)
+Received: from mr05.melco.co.jp (unknown [127.0.0.1])
+        by mr05.imss (Postfix) with ESMTP id 48tkD50hkvzRjNJ;
+        Fri,  3 Apr 2020 11:20:05 +0900 (JST)
+Received: from mf03_second.melco.co.jp (unknown [192.168.20.183])
+        by mr05.melco.co.jp (Postfix) with ESMTP id 48tkD50LSMzRkD1;
+        Fri,  3 Apr 2020 11:20:05 +0900 (JST)
+Received: from mf03.melco.co.jp (unknown [133.141.98.183])
+        by mf03_second.melco.co.jp (Postfix) with ESMTP id 48tkD46sLBzRkCp;
+        Fri,  3 Apr 2020 11:20:04 +0900 (JST)
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com (unknown [104.47.93.53])
+        by mf03.melco.co.jp (Postfix) with ESMTP id 48tkD46ZwTzRjLW;
+        Fri,  3 Apr 2020 11:20:04 +0900 (JST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SXgoj0asHBLZr9sgVsN08NS9EnRXP3PQcAbBz9xbiWCU1FpBHBVB6McH6n6SKrIDeU6mT/2/p7blLFiHCTZexWPA6EmWg+qMZ9/HjWjxZ3HOvqFejvS3aSMJzs9d29TOkBiwamlKqezkZW918R5W3x0E9AMXMtiHPUBzuecHSCfAmky18T1uXEQNnhiT81wPSJG5xXmfIPZwjycReg2yi0iZ4FRVSDkw750KQv0dnE5uREqJokDTwANNVpOqbG9o2CwhVytAVt1qQPEVNNNyb7e96EqJDi0z0l6qA1oW/jdJZBZ4emfrEfBpRHhJJ9EAblf84mgxpwWRn9IN6hXLvQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6mLdwScS+B+bnBWlSugNwQsC31R25QzafZeaKwwEugI=;
+ b=dkO+8ufG+zIcxvLIdstNrxRjSKhLvLcpD2eJuA4ZifCi5wZwUkyT0S+cTBvK2SVvJ51C6mSWLI44O/eeufQVozNHMig44lTZk8UVp+hxIIdIoQC/bci6d0yIm2QZpcKoeFdWTeQdTw8EGK23Z5LdhjMzi+ZtlScuRxyOAAc4ktB+C4DYxxzW0x7aq6mjBZKntZgyiW9eRDgHEuvt6XgInBqLHdLkuEIQNz9d/2mpAcgQ5ZbxzgpQZVrWo8wRPJloo199OSZ3dk2Jc/XETqiaUTdTFsWgVDgMlbJ4pG/kPwsj8n8ddL2HBUX/I3HcfJw07ZHYrnCWBB2fzsxeYN6Nhw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dc.mitsubishielectric.co.jp; dmarc=pass action=none
+ header.from=dc.mitsubishielectric.co.jp; dkim=pass
+ header.d=dc.mitsubishielectric.co.jp; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mitsubishielectricgroup.onmicrosoft.com;
+ s=selector2-mitsubishielectricgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6mLdwScS+B+bnBWlSugNwQsC31R25QzafZeaKwwEugI=;
+ b=ouYH1KjBg2GBoRprXjT4ClP0KBKKvkbb0lZ39UR+vJvDNc6zWuce6uxSrVUTft6V4sDDtRrGmWvOKZ+rktc6Okjtsfm6QKo/OFHVYHZPAjq7cI0YzSyeEGUlvELUo6B52Vc5CujQLeWWobFzoF+l334eNAXfjlIotvFP+ZzEh3U=
+Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com (52.133.161.22) by
+ TY1PR01MB1803.jpnprd01.prod.outlook.com (52.133.163.10) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2878.16; Fri, 3 Apr 2020 02:20:04 +0000
+Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com
+ ([fe80::c5d6:a88e:62c6:4b96]) by TY1PR01MB1578.jpnprd01.prod.outlook.com
+ ([fe80::c5d6:a88e:62c6:4b96%3]) with mapi id 15.20.2856.019; Fri, 3 Apr 2020
+ 02:20:04 +0000
+From:   "Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp" 
+        <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
+To:     "'pali@kernel.org'" <pali@kernel.org>
+CC:     "'linux-fsdevel@vger.kernel.org'" <linux-fsdevel@vger.kernel.org>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'namjae.jeon@samsung.com'" <namjae.jeon@samsung.com>,
+        "'sj1557.seo@samsung.com'" <sj1557.seo@samsung.com>,
+        "'viro@zeniv.linux.org.uk'" <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 1/4] exfat: Simplify exfat_utf8_d_hash() for code points
+ above U+FFFF
+Thread-Topic: Re: [PATCH 1/4] exfat: Simplify exfat_utf8_d_hash() for code
+ points above U+FFFF
+Thread-Index: AdYIzEE7tog7Qd/oTOqznEiEoChCSg==
+Date:   Fri, 3 Apr 2020 02:18:15 +0000
+Deferred-Delivery: Fri, 3 Apr 2020 02:20:00 +0000
+Message-ID: <TY1PR01MB15782019FA3094015950830590C70@TY1PR01MB1578.jpnprd01.prod.outlook.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-melpop: 1
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp; 
+x-originating-ip: [121.80.0.164]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9b8c56d9-f8af-4914-eb51-08d7d775855f
+x-ms-traffictypediagnostic: TY1PR01MB1803:
+x-microsoft-antispam-prvs: <TY1PR01MB180324DE235CF63556302BB790C70@TY1PR01MB1803.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0362BF9FDB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1578.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(136003)(396003)(39860400002)(346002)(376002)(366004)(52536014)(478600001)(33656002)(8936002)(64756008)(6506007)(76116006)(2906002)(66946007)(66446008)(66476007)(26005)(66556008)(71200400001)(186003)(5660300002)(55016002)(9686003)(6916009)(54906003)(81156014)(86362001)(4744005)(8676002)(81166006)(4326008)(6666004)(7696005)(316002)(491001)(95630200002);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: dc.MitsubishiElectric.co.jp does
+ not designate permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mWiV697NWfKT0Q2wApaSdN7rCngE7/ptgK4LQlp4tVgcO/yb5bO6gRCugwFVIL/moW5EUpbgab9oQUnyoyhhjCMrcpXhFFEk2Fvc+56ivLERAejlEcjZfE0pLuuQwhgdSdGb4Mo6pz8L5h4IEVI+JExc6TBX+WCr5ECVmqiXNJIlTIcZhwalyvJdvCTjM9+RkBXpuZmpo2DtndhqfC4XjSRdk5htWSsQgRS1xmyURxNkq5lug8jxaVSbFaJkJVDaqTlxDh+o3rw8YsiK/CtMhMk6/eTVZXpxFXRI8p/HwgMzXJ+/q5+znlHVIP4UPhoOBEXltyIVyuLVVHNtqJ4IfOm8ENcIlhU22Lo9r+SSxg3D2NFaoy2oEP/2Oo3PzAvnMXqZOX+fwhnvXqTsmG1WFEL1rBcyaYs1MJYd4+9ORb950AOLYTGDMtaIv153tn4SOmzQMi/0P4VRx7xlZmDclUtU8piEZcdzfMprro4f/9pz44FBM4CKeadCQq5eTwa7fQwx353d9r2377kBaZgN3Q==
+x-ms-exchange-antispam-messagedata: SNBDyTF8qeBhLsY4Xrc2qK+v1SzjTzD5AJB1mI9BGpFm8ws4KBC3BWn56Iq1+0KaGO37ZbcpwJ9h388FgwwkPDiQmcoCFasBBAoE2uKgwzmmUE/iIYEPAm4Xc6ciFVIawzmU4YJgBsOdRmRMr3FPRQ==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:c50:: with SMTP id g16mr6006572jal.99.1585880224186;
- Thu, 02 Apr 2020 19:17:04 -0700 (PDT)
-Date:   Thu, 02 Apr 2020 19:17:04 -0700
-In-Reply-To: <CADG63jCRT=gcRK4RzQ8Gv4uyMkQ4LVGfczC587GLyfkb8F7-aw@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006b48ec05a259830b@google.com>
-Subject: Re: KASAN: use-after-free Read in ath9k_wmi_ctrl_rx
-From:   syzbot <syzbot+5d338854440137ea0fef@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, anenbupt@gmail.com,
-        ath9k-devel@qca.qualcomm.com, davem@davemloft.net,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: dc.MitsubishiElectric.co.jp
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b8c56d9-f8af-4914-eb51-08d7d775855f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2020 02:20:04.4126
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c5a75b62-4bff-4c96-a720-6621ce9978e5
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ozX27wkIqJx6KPc/W0FwruhuZ/aPPN6qVF4o+plgsxwjTowJrg6wWKpLNaVLOWdp5gOWd1hcsNMbFiRGBPoyyg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1PR01MB1803
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch but the reproducer still triggered crash:
-KASAN: use-after-free Read in ath9k_wmi_ctrl_rx
+> I guess it was designed for 8bit types, not for long (64bit types) and
+> I'm not sure how effective it is even for 16bit types for which it is
+> already used.
 
-==================================================================
-BUG: KASAN: use-after-free in ath9k_wmi_ctrl_rx+0x416/0x500 drivers/net/wireless/ath/ath9k/wmi.c:229
-Read of size 1 at addr ffff8881d335b17c by task swapper/0/0
+In partial_name_hash (), when 8bit value or 16bit value is specified,=20
+upper 8-12bits tend to be 0.
 
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.6.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xef/0x16e lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xd3/0x314 mm/kasan/report.c:374
- __kasan_report.cold+0x37/0x77 mm/kasan/report.c:506
- kasan_report+0xe/0x20 mm/kasan/common.c:641
- ath9k_wmi_ctrl_rx+0x416/0x500 drivers/net/wireless/ath/ath9k/wmi.c:229
- ath9k_htc_rx_msg+0x2d9/0xac0 drivers/net/wireless/ath/ath9k/htc_hst.c:460
- ath9k_hif_usb_reg_in_cb+0x1ba/0x630 drivers/net/wireless/ath/ath9k/hif_usb.c:718
- __usb_hcd_giveback_urb+0x1f2/0x470 drivers/usb/core/hcd.c:1648
- usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1713
- dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
- call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
- expire_timers kernel/time/timer.c:1449 [inline]
- __run_timers kernel/time/timer.c:1773 [inline]
- __run_timers kernel/time/timer.c:1740 [inline]
- run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
- __do_softirq+0x21e/0x950 kernel/softirq.c:292
- invoke_softirq kernel/softirq.c:373 [inline]
- irq_exit+0x178/0x1a0 kernel/softirq.c:413
- exiting_irq arch/x86/include/asm/apic.h:546 [inline]
- smp_apic_timer_interrupt+0x141/0x540 arch/x86/kernel/apic/apic.c:1146
- apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
- </IRQ>
-RIP: 0010:default_idle+0x28/0x300 arch/x86/kernel/process.c:696
-Code: cc cc 41 56 41 55 65 44 8b 2d 04 3b 72 7a 41 54 55 53 0f 1f 44 00 00 e8 b6 27 b5 fb e9 07 00 00 00 0f 00 2d aa d0 52 00 fb f4 <65> 44 8b 2d e0 3a 72 7a 0f 1f 44 00 00 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffffffff87007d80 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
-RAX: 0000000000000007 RBX: ffffffff8702cc40 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000006 RDI: ffffffff8702d48c
-RBP: fffffbfff0e05988 R08: ffffffff8702cc40 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffffffff87e612c0 R15: 0000000000000000
- cpuidle_idle_call kernel/sched/idle.c:154 [inline]
- do_idle+0x3e0/0x500 kernel/sched/idle.c:269
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:361
- start_kernel+0xe16/0xe5a init/main.c:998
- secondary_startup_64+0xb6/0xc0 arch/x86/kernel/head_64.S:242
+> So question is, what should we do for either 21bit number (one Unicode
+> code point =3D equivalent of UTF-32) or for sequence of 16bit numbers
+> (UTF-16)?
 
-Allocated by task 169:
- save_stack+0x1b/0x80 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- __kasan_kmalloc mm/kasan/common.c:515 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:488
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- ath9k_init_wmi+0x40/0x310 drivers/net/wireless/ath/ath9k/wmi.c:95
- ath9k_htc_probe_device+0x21c/0x1d80 drivers/net/wireless/ath/ath9k/htc_drv_init.c:953
- ath9k_htc_hw_init+0x31/0x60 drivers/net/wireless/ath/ath9k/htc_hst.c:502
- ath9k_hif_usb_firmware_cb+0x26b/0x500 drivers/net/wireless/ath/ath9k/hif_usb.c:1187
- request_firmware_work_func+0x126/0x242 drivers/base/firmware_loader/main.c:976
- process_one_work+0x94b/0x1620 kernel/workqueue.c:2266
- worker_thread+0x96/0xe20 kernel/workqueue.c:2412
- kthread+0x318/0x420 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+If you want to get an unbiased hash value by specifying an 8 or 16-bit valu=
+e,
+the hash32() function is a good choice.
+ex1: Prepare by hash32 () function.
+   hash =3D partial_name_hash (hash32 (val16,32), hash);
+ex2: Use the hash32() function directly.
+   hash + =3D hash32 (val16,32);
 
-Freed by task 169:
- save_stack+0x1b/0x80 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- kasan_set_free_info mm/kasan/common.c:337 [inline]
- __kasan_slab_free+0x117/0x160 mm/kasan/common.c:476
- slab_free_hook mm/slub.c:1444 [inline]
- slab_free_freelist_hook mm/slub.c:1477 [inline]
- slab_free mm/slub.c:3034 [inline]
- kfree+0xd5/0x300 mm/slub.c:3995
- ath9k_htc_probe_device+0x278/0x1d80 drivers/net/wireless/ath/ath9k/htc_drv_init.c:970
- ath9k_htc_hw_init+0x31/0x60 drivers/net/wireless/ath/ath9k/htc_hst.c:502
- ath9k_hif_usb_firmware_cb+0x26b/0x500 drivers/net/wireless/ath/ath9k/hif_usb.c:1187
- request_firmware_work_func+0x126/0x242 drivers/base/firmware_loader/main.c:976
- process_one_work+0x94b/0x1620 kernel/workqueue.c:2266
- worker_thread+0x96/0xe20 kernel/workqueue.c:2412
- kthread+0x318/0x420 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
+> partial_name_hash(unsigned long c, unsigned long prevhash)
+> {
+>	return (prevhash + (c << 4) + (c >> 4)) * 11;
+> }
 
-The buggy address belongs to the object at ffff8881d335b000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 380 bytes inside of
- 2048-byte region [ffff8881d335b000, ffff8881d335b800)
-The buggy address belongs to the page:
-page:ffffea00074cd600 refcount:1 mapcount:0 mapping:ffff8881da00c000 index:0x0 compound_mapcount: 0
-flags: 0x200000000010200(slab|head)
-raw: 0200000000010200 dead000000000100 dead000000000122 ffff8881da00c000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+Another way may replace partial_name_hash().
 
-Memory state around the buggy address:
- ffff8881d335b000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8881d335b080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8881d335b100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                                ^
- ffff8881d335b180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8881d335b200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
-Tested on:
-
-commit:         0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
-git tree:       https://github.com/google/kasan.git usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=1666f28fe00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a782c087b1f425c6
-dashboard link: https://syzkaller.appspot.com/bug?extid=5d338854440137ea0fef
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=145bf733e00000
+	return prevhash + hash32(c,32)
 
