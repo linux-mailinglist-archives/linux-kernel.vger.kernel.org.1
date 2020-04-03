@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A99019D7E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D378519D7ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403880AbgDCNns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 09:43:48 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:40142 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390915AbgDCNnl (ORCPT
+        id S2403992AbgDCNoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 09:44:13 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:35590 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390977AbgDCNnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:43:41 -0400
-Received: by mail-wm1-f65.google.com with SMTP id a81so7731937wmf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 06:43:41 -0700 (PDT)
+        Fri, 3 Apr 2020 09:43:42 -0400
+Received: by mail-wm1-f67.google.com with SMTP id i19so7791210wmb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 06:43:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Mjzjw6acIOcM+AePCmOJ/RJwLcwwLr94rISpIdIa8zw=;
-        b=J9Im480znNJhXkZnzvuOS7V+yE/zCuJ14U7YI6QPp8WhFMRFk7nMFP/3eVVYIrFZ3y
-         0fGp6BTZY2YTSDIjejAYyVVRGyAUhwmV4cgGmIVHpviz6zaihArFXCMFGqzHN5Wn3QFX
-         PUernwfnSbqBXC688JhsS7+twR0rnCnrkRv8vwH4NN56ElniVdCac0dhTPEYYqYVeNAM
-         OglTuLoIsQAYUHl7alyyaxRZ++AdhTmcrSphUrUA+l/2GLUnBnAgvwr9Qe8rOBDvanzv
-         ykPh0mNuzNu8cz+FHccxI29LMmpKVvDouLAtIImNrqesZVEboKExvHpoerL2ngejrZJc
-         RVeQ==
+        bh=BfI+j+OMPwnvX+tZGnV9Qob9U8JYQpm4qpc+j/7ff6Q=;
+        b=A+PKm/GOAXCurfDaCAmsDeH/N1qSdsq7k37m4IUx8fpOhX8MBLSKn4w0LcfnZtJu+h
+         4trnJ3fKnJPoMml9teRjgAA3vmDe2eeT3nXkwP/rIaxX8p8+1WhfmTldf5FVNKR2HjC5
+         /XBWyqKxhB3kV2GmWcFjg60PzRoZB0qDI3z6MJmwDfvHTAdg2IJNuP6m5RHp/fxtd1TZ
+         cWo/KxlWyEfo6lqiK/rPRKW5peENiS06Enfj0oYt7VgvvC3Wd3+f7XZfEa9Qr7YHaGlV
+         j22X62gzDR7yT23V4Ir5Har1FahnLa8GiCQwptgNNOTcq1K95vix9if44ybew/fsVYxZ
+         9K1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=Mjzjw6acIOcM+AePCmOJ/RJwLcwwLr94rISpIdIa8zw=;
-        b=J3AItczObCJelJcrzl4noJNmOpOgnwJjTc7q2rS8CPiB5C7Dacu0WyQWz6aHl5l3lt
-         qIT92q6LOdV2XDdy7/xy//PT4XsdxT5ElkCV1Iv60DdhTT2N3jxqRsw8vogvm3Tt3DRC
-         G2jqtLnxlhqSWtAIb5Oh9a6pAnZ+8a1QUL/CgZZQswguWENGKPquRESFSYfycf+arJMz
-         FOwoC+jToHnFFKSCwfSoNRUbprxKJZaZVU9FEZmFVTGGBvGkJT9FoDitjITWw7jpdL8d
-         2GYunmQeHIMW4rJKOQpByzr4xCMZEvgTFt/UniSNLblR5Y2gKFyvKkBPJM3eUhQe+dBQ
-         jAWQ==
-X-Gm-Message-State: AGi0PubqIMWT32/gGsqOgwAAzS65Dv2E2ekoB6Q1MuHl7JBEXHGafJek
-        XOatROaq1YrIpDHIvB+JaHhLSXsMQvw=
-X-Google-Smtp-Source: APiQypIYiUVdFHr4ANkQs2Cpe5K050oe8MXxx624rtGsCXVMWisqQn2MZHg33zNjjdrDESzFefmz+w==
-X-Received: by 2002:a1c:2d10:: with SMTP id t16mr6066101wmt.155.1585921420433;
-        Fri, 03 Apr 2020 06:43:40 -0700 (PDT)
+        bh=BfI+j+OMPwnvX+tZGnV9Qob9U8JYQpm4qpc+j/7ff6Q=;
+        b=H3OE9tw25U+BA4EtTQK5p3TnTCT1jApu5CUtUZlTJTVSfIj2PLGV+j4idC4YJuKO0q
+         JeeUqnsGoWyDFLTITUCTrLJC+pEWDc246gDhsB6unXUhtwgVM9K6Ph+4ttqIXr1eCeZP
+         kGbC1heBNQcvKFpjXQNrCNhOOnZIo7kHt03PoubxPGc0JQ/JjcqEmGYJpua/G0+305nU
+         5aJFgGZ5KXrdVFH9aT2nu9Xkw3y7Mla9Re0sR1/YqUXyS/Rxwr51YzAI7esxX5260Z/3
+         9Hjyayh2SlRIfRcem86HpDGfXig9GYVfqZEAdXsNlPs+j1ZqLAeTEdgPxcu4BazKB6G3
+         uE+A==
+X-Gm-Message-State: AGi0PuYvKYKkOJ+EPD+ZljdfvLpB/ZVcy/1fPy6iUd+uOSt+nXDvPKs2
+        dHUHhtxGVX+K7rVRZ7taa/o=
+X-Google-Smtp-Source: APiQypIv64YNx28cwjixWZvZozH0YCj+V2aY0cXuwqnrUTFuL3qsEfLUgixdyonWPumjMQ/tHPhBHw==
+X-Received: by 2002:a1c:ed1a:: with SMTP id l26mr8787137wmh.175.1585921421483;
+        Fri, 03 Apr 2020 06:43:41 -0700 (PDT)
 Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
-        by smtp.gmail.com with ESMTPSA id f12sm12081232wrm.94.2020.04.03.06.43.39
+        by smtp.gmail.com with ESMTPSA id f12sm12081232wrm.94.2020.04.03.06.43.40
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Apr 2020 06:43:39 -0700 (PDT)
+        Fri, 03 Apr 2020 06:43:40 -0700 (PDT)
 From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 06/11] parport_mfc3: Convert DPRINTK to pr_debug
-Date:   Fri,  3 Apr 2020 14:43:20 +0100
-Message-Id: <20200403134325.11523-6-sudipm.mukherjee@gmail.com>
+Subject: [PATCH 07/11] parport_pc: Convert DPRINTK to pr_debug
+Date:   Fri,  3 Apr 2020 14:43:21 +0100
+Message-Id: <20200403134325.11523-7-sudipm.mukherjee@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20200403134325.11523-1-sudipm.mukherjee@gmail.com>
 References: <20200403134325.11523-1-sudipm.mukherjee@gmail.com>
@@ -63,90 +63,79 @@ From: Joe Perches <joe@perches.com>
 
 Use a more common logging style.
 
+Miscellanea:
+
+o One message converted from KERN_INFO to KERN_DEBUG
+
 Signed-off-by: Joe Perches <joe@perches.com>
 Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 ---
- drivers/parport/parport_mfc3.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ drivers/parport/parport_pc.c | 23 +++++++----------------
+ 1 file changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/parport/parport_mfc3.c b/drivers/parport/parport_mfc3.c
-index 3190ef0f3c81..d6bbe8446301 100644
---- a/drivers/parport/parport_mfc3.c
-+++ b/drivers/parport/parport_mfc3.c
-@@ -70,11 +70,6 @@
- #define MAX_MFC 5
+diff --git a/drivers/parport/parport_pc.c b/drivers/parport/parport_pc.c
+index ab3b04f32815..aae03b59564f 100644
+--- a/drivers/parport/parport_pc.c
++++ b/drivers/parport/parport_pc.c
+@@ -87,13 +87,6 @@
  
  #undef DEBUG
+ 
 -#ifdef DEBUG
--#define DPRINTK printk
+-#define DPRINTK  printk
 -#else
--static inline int DPRINTK(void *nothing, ...) {return 0;}
+-#define DPRINTK(stuff...)
 -#endif
+-
+-
+ #define NR_SUPERIOS 3
+ static struct superio_struct {	/* For Super-IO chips autodetection */
+ 	int io;
+@@ -118,8 +111,8 @@ static void frob_econtrol(struct parport *pb, unsigned char m,
+ 	if (m != 0xff)
+ 		ectr = inb(ECONTROL(pb));
  
- static struct parport *this_port[MAX_MFC] = {NULL, };
- static volatile int dummy; /* for trigger readds */
-@@ -84,7 +79,7 @@ static struct parport_operations pp_mfc3_ops;
+-	DPRINTK(KERN_DEBUG "frob_econtrol(%02x,%02x): %02x -> %02x\n",
+-		m, v, ectr, (ectr & ~m) ^ v);
++	pr_debug("frob_econtrol(%02x,%02x): %02x -> %02x\n",
++		 m, v, ectr, (ectr & ~m) ^ v);
  
- static void mfc3_write_data(struct parport *p, unsigned char data)
- {
--DPRINTK(KERN_DEBUG "write_data %c\n",data);
-+	pr_debug("write_data %c\n", data);
- 
- 	dummy = pia(p)->pprb; /* clears irq bit */
- 	/* Triggers also /STROBE.*/
-@@ -128,13 +123,13 @@ static unsigned char control_mfc3_to_pc(unsigned char control)
- 
- static void mfc3_write_control(struct parport *p, unsigned char control)
- {
--DPRINTK(KERN_DEBUG "write_control %02x\n",control);
-+	pr_debug("write_control %02x\n", control);
- 	pia(p)->ppra = (pia(p)->ppra & 0x1f) | control_pc_to_mfc3(control);
+ 	outb((ectr & ~m) ^ v, ECONTROL(pb));
  }
- 	
- static unsigned char mfc3_read_control( struct parport *p)
- {
--DPRINTK(KERN_DEBUG "read_control \n");
-+	pr_debug("read_control\n");
- 	return control_mfc3_to_pc(pia(p)->ppra & 0xe0);
- }
+@@ -142,7 +135,7 @@ static int change_mode(struct parport *p, int m)
+ 	unsigned char oecr;
+ 	int mode;
  
-@@ -142,7 +137,7 @@ static unsigned char mfc3_frob_control( struct parport *p, unsigned char mask, u
- {
- 	unsigned char old;
+-	DPRINTK(KERN_INFO "parport change_mode ECP-ISA to mode 0x%02x\n", m);
++	pr_debug("parport change_mode ECP-ISA to mode 0x%02x\n", m);
  
--DPRINTK(KERN_DEBUG "frob_control mask %02x, value %02x\n",mask,val);
-+	pr_debug("frob_control mask %02x, value %02x\n", mask, val);
- 	old = mfc3_read_control(p);
- 	mfc3_write_control(p, (old & ~mask) ^ val);
- 	return old;
-@@ -171,7 +166,7 @@ static unsigned char mfc3_read_status(struct parport *p)
- 	unsigned char status;
+ 	if (!priv->ecr) {
+ 		printk(KERN_DEBUG "change_mode: but there's no ECR!\n");
+@@ -2295,7 +2288,7 @@ static int sio_ite_8872_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 	int irq;
+ 	int i;
  
- 	status = status_mfc3_to_pc(pia(p)->ppra & 0x1f);
--DPRINTK(KERN_DEBUG "read_status %02x\n", status);
-+	pr_debug("read_status %02x\n", status);
- 	return status;
- }
+-	DPRINTK(KERN_DEBUG "sio_ite_8872_probe()\n");
++	pr_debug("sio_ite_8872_probe()\n");
  
-@@ -202,7 +197,7 @@ static void mfc3_disable_irq(struct parport *p)
+ 	/* make sure which one chip */
+ 	for (i = 0; i < 5; i++) {
+@@ -2360,11 +2353,9 @@ static int sio_ite_8872_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 	pci_write_config_dword(pdev, 0x9c,
+ 				ite8872set | (ite8872_irq * 0x11111));
  
- static void mfc3_data_forward(struct parport *p)
- {
--	DPRINTK(KERN_DEBUG "forward\n");
-+	pr_debug("forward\n");
- 	pia(p)->crb &= ~PIA_DDR; /* make data direction register visible */
- 	pia(p)->pddrb = 255; /* all pins output */
- 	pia(p)->crb |= PIA_DDR; /* make data register visible - default */
-@@ -210,7 +205,7 @@ static void mfc3_data_forward(struct parport *p)
+-	DPRINTK(KERN_DEBUG "ITE887x: The IRQ is %d.\n", ite8872_irq);
+-	DPRINTK(KERN_DEBUG "ITE887x: The PARALLEL I/O port is 0x%x.\n",
+-		 ite8872_lpt);
+-	DPRINTK(KERN_DEBUG "ITE887x: The PARALLEL I/O porthi is 0x%x.\n",
+-		 ite8872_lpthi);
++	pr_debug("ITE887x: The IRQ is %d\n", ite8872_irq);
++	pr_debug("ITE887x: The PARALLEL I/O port is 0x%x\n", ite8872_lpt);
++	pr_debug("ITE887x: The PARALLEL I/O porthi is 0x%x\n", ite8872_lpthi);
  
- static void mfc3_data_reverse(struct parport *p)
- {
--	DPRINTK(KERN_DEBUG "reverse\n");
-+	pr_debug("reverse\n");
- 	pia(p)->crb &= ~PIA_DDR; /* make data direction register visible */
- 	pia(p)->pddrb = 0; /* all pins input */
- 	pia(p)->crb |= PIA_DDR; /* make data register visible - default */
+ 	/* Let the user (or defaults) steer us away from interrupts */
+ 	irq = ite8872_irq;
 -- 
 2.11.0
 
