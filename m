@@ -2,77 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FBD19D05D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 08:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 305EB19D060
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 08:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388852AbgDCGld convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Apr 2020 02:41:33 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:48113 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388006AbgDCGlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 02:41:32 -0400
-Received: from marcel-macbook.fritz.box (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 133C4CECF9;
-        Fri,  3 Apr 2020 08:51:05 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 2/2] bluetooth: hci_bcm: fix freeing not-requested IRQ
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <b46b003a5984d1f178a851a5bb2f3463d695f199.1585831987.git.mirq-linux@rere.qmqm.pl>
-Date:   Fri, 3 Apr 2020 08:41:31 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Frederic Danis <frederic.danis@linux.intel.com>,
-        Guillaume La Roque <glaroque@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <8D205F06-4D72-4FD0-AB49-BDFCDADAB9A1@holtmann.org>
-References: <d01cfc2df21f016ef6c790e1ed8f3ed933cf5ad3.1585831987.git.mirq-linux@rere.qmqm.pl>
- <b46b003a5984d1f178a851a5bb2f3463d695f199.1585831987.git.mirq-linux@rere.qmqm.pl>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S2388689AbgDCGne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 02:43:34 -0400
+Received: from verein.lst.de ([213.95.11.211]:51275 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730759AbgDCGne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 02:43:34 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E9AE468B05; Fri,  3 Apr 2020 08:43:31 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 08:43:31 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Anthony Iliopoulos <ailiop@suse.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nvmet: add revalidation support to bdev and file
+ backed namespaces
+Message-ID: <20200403064331.GA23270@lst.de>
+References: <20200402193052.19935-1-ailiop@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200402193052.19935-1-ailiop@suse.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michal,
-
-> When BT module can't be initialized, but it has an IRQ, unloading
-> the driver WARNs when trying to free not-yet-requested IRQ. Fix it by
-> noting whether the IRQ was requested.
+On Thu, Apr 02, 2020 at 09:30:52PM +0200, Anthony Iliopoulos wrote:
+> Add support for detecting capacity changes on nvmet blockdev and file
+> backed namespaces. This allows for emulating and testing online resizing
+> of nvme devices and filesystems on top.
 > 
-> WARNING: CPU: 2 PID: 214 at kernel/irq/devres.c:144 devm_free_irq+0x49/0x4ca
-> [...]
-> WARNING: CPU: 2 PID: 214 at kernel/irq/manage.c:1746 __free_irq+0x8b/0x27c
-> Trying to free already-free IRQ 264
-> Modules linked in: hci_uart(-) btbcm bluetooth ecdh_generic ecc libaes
-> CPU: 2 PID: 214 Comm: rmmod Tainted: G        W         5.6.1mq-00044-ga5f9ea098318-dirty #928
-> [...]
-> [<b016aefb>] (devm_free_irq) from [<af8ba1ff>] (bcm_close+0x97/0x118 [hci_uart])
-> [<af8ba1ff>] (bcm_close [hci_uart]) from [<af8b736f>] (hci_uart_unregister_device+0x33/0x3c [hci_uart])
-> [<af8b736f>] (hci_uart_unregister_device [hci_uart]) from [<b035930b>] (serdev_drv_remove+0x13/0x20)
-> [<b035930b>] (serdev_drv_remove) from [<b037093b>] (device_release_driver_internal+0x97/0x118)
-> [<b037093b>] (device_release_driver_internal) from [<b0370a0b>] (driver_detach+0x2f/0x58)
-> [<b0370a0b>] (driver_detach) from [<b036f855>] (bus_remove_driver+0x41/0x94)
-> [<b036f855>] (bus_remove_driver) from [<af8ba8db>] (bcm_deinit+0x1b/0x740 [hci_uart])
-> [<af8ba8db>] (bcm_deinit [hci_uart]) from [<af8ba86f>] (hci_uart_exit+0x13/0x30 [hci_uart])
-> [<af8ba86f>] (hci_uart_exit [hci_uart]) from [<b01900bd>] (sys_delete_module+0x109/0x1d0)
-> [<b01900bd>] (sys_delete_module) from [<b0101001>] (ret_fast_syscall+0x1/0x5a)
-> [...]
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 6cc4396c8829 ("Bluetooth: hci_bcm: Add wake-up capability")
-> Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-> ---
-> drivers/bluetooth/hci_bcm.c | 5 ++++-
-> 1 file changed, 4 insertions(+), 1 deletion(-)
+> Signed-off-by: Anthony Iliopoulos <ailiop@suse.com>
 
-patch has been applied to bluetooth-next tree.
+I vaguely remember seeing a very similar patch before, is this a repost?
 
-Regards
+> +void nvmet_bdev_ns_revalidate(struct nvmet_ns *ns)
+> +{
+> +	loff_t size;
+> +
+> +	size = i_size_read(ns->bdev->bd_inode);
+> +
+> +	if (ns->size != size)
+> +		ns->size = size;
 
-Marcel
+This can be:
 
+	ns->size = i_size_read(ns->bdev->bd_inode);
+
+> +void nvmet_file_ns_revalidate(struct nvmet_ns *ns)
+> +{
+> +	struct kstat stat;
+> +
+> +	if (!ns->file)
+> +		return;
+
+Shouldn't this always be non-NULL?
+
+> +
+> +	if (vfs_getattr(&ns->file->f_path,
+> +			&stat, STATX_SIZE, AT_STATX_FORCE_SYNC))
+> +		return;
+
+Use up the full line:
+
+	if (vfs_getattr(&ns->file->f_path, &stat, STATX_SIZE,
+			AT_STATX_FORCE_SYNC))
+
+Also shouldn't there be error handling?  If we can't stat the file
+the namespace is toast.
