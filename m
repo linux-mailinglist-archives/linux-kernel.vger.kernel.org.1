@@ -2,95 +2,696 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA55619CDB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB64019CDC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390324AbgDCAFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 20:05:45 -0400
-Received: from mga02.intel.com ([134.134.136.20]:16264 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390294AbgDCAFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 20:05:45 -0400
-IronPort-SDR: hYSD8JtMOMCN3hYdg1ElcR55zAqDeSHR/hv13HX8k6I0hmcsiH14s5rsnfeLDAsqqGz5Frht7C
- eb78SdWKr/Jg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 17:05:44 -0700
-IronPort-SDR: GWn4OjVy3o8Dsgvo+tif0vznlxkC+i7g0zdLzzJQDEOoJ3namMfgV143OgLItGWAlNUP+H014w
- vA2lXs9pE5Dg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,337,1580803200"; 
-   d="scan'208";a="423336550"
-Received: from romley-ivt3.sc.intel.com ([172.25.110.60])
-  by orsmga005.jf.intel.com with ESMTP; 02 Apr 2020 17:05:44 -0700
-Date:   Thu, 2 Apr 2020 17:05:27 -0700
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-Cc:     tglx@linutronix.de, bp@alien8.de, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, mingo@redhat.com, babu.moger@amd.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] x86/resctrl: Support CPUID enumeration of MBM
- counter width
-Message-ID: <20200403000527.GI188393@romley-ivt3.sc.intel.com>
-References: <cover.1585763047.git.reinette.chatre@intel.com>
- <76dc65631c373e0c1c9f3e8aaa768f022a2c989c.1585763047.git.reinette.chatre@intel.com>
+        id S2390331AbgDCA0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 20:26:23 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:37756 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731842AbgDCA0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 20:26:22 -0400
+Received: by mail-ed1-f65.google.com with SMTP id de14so6997997edb.4;
+        Thu, 02 Apr 2020 17:26:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1t38OqKK1oDsPwZMakicwoBebGmi6xTL4BAIax5Vufs=;
+        b=b9EB+sDYw+cJNJP5iQSUMjDYeSShbIOWpQ0CgvjNlq6F5MPj3esd3FAj2SI34t9zT9
+         ruCErFLNlKfMydy0Keu3dFe42m/D+zjJKZXmta4I7WpKxKb7mhu5T8xHDgfagVKMso/X
+         mc6mPh9U3IRxWvbSrm31y6EpNy6YiqDRejo0GItJXjZTg3fIG4Qv1WvqwBpsF4EYRcQS
+         RUg9DSNpkNt+CiZd22pDdbabgFrljmDFkDRnqqAtJ88mXzUU4KWVMQB5J8mG00t8ztpu
+         sfOCUPR4tFtzcBuduM7RR9cm5yCKdAppEN5Voq2W4RtTvo4e3OvwmWEOHo0q9M/IdyIc
+         GBgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1t38OqKK1oDsPwZMakicwoBebGmi6xTL4BAIax5Vufs=;
+        b=IYZ6EagrzgWkBIljGA/ccN9g+aIfurzNIJoq1JOWSXbAGGPo/UO9lQ46kFgZTOq7CA
+         58da2o9KozM6FGo+Vpk0HBEV+PgwgKY3KJosDu9u1XyI/JM+vu6APiDGcBSUzeP6XXyF
+         3/l/fSPhAVAzA73jIMdtaIM04gjPIQA8pGy/nnVZZPEhxkWAHLqA+fKB2PjkbVZSYwqO
+         Pv4CooAg4f21I4WjuFFKFTBe/s8Mkw5HCk0+QXuxKKbv5qZUEEPpYwDPQ+1lIBpTqcRK
+         GtNQylveayKEmTPPNUr++6b50vmT85CDbwNpl4PJPKS0S7qRsXZ61s70QMwwYL4CiDei
+         drVQ==
+X-Gm-Message-State: AGi0PuZss2bRHHEZEjrRj4LBeureeuywxQnuBSrNyQk6UivoWdCeNoVL
+        BFyscPCoMQZH7uRNbP5/wBo=
+X-Google-Smtp-Source: APiQypLUmR2Fr6NUrw8ZcYHXTuXWF62cH4Hl06U1Jq648CpDMCCC+DAacVfh7qfRT/WBy4gvBT+NSA==
+X-Received: by 2002:aa7:dacc:: with SMTP id x12mr5478560eds.109.1585873579352;
+        Thu, 02 Apr 2020 17:26:19 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (host133-251-dynamic.52-79-r.retail.telecomitalia.it. [79.52.251.133])
+        by smtp.googlemail.com with ESMTPSA id j10sm1335981ejv.13.2020.04.02.17.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 17:26:18 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andy Gross <agross@kernel.org>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Andy Gross <agross@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH 1/2] phy: qualcomm: add qcom dwc3 phy
+Date:   Fri,  3 Apr 2020 02:26:04 +0200
+Message-Id: <20200403002608.946-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76dc65631c373e0c1c9f3e8aaa768f022a2c989c.1585763047.git.reinette.chatre@intel.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 10:51:02AM -0700, Reinette Chatre wrote:
-> The original Memory Bandwidth Monitoring (MBM) architectural
-> definition defines counters of up to 62 bits in the
-> IA32_QM_CTR MSR while the first-generation MBM implementation
-> uses statically defined 24 bit counters.
-> 
-> @@ -856,6 +856,8 @@ static void init_speculation_control(struct cpuinfo_x86 *c)
->  
->  static void init_cqm(struct cpuinfo_x86 *c)
->  {
-> +	c->x86_cache_mbm_width_offset = -1;
-> +
->  	if (!cpu_has(c, X86_FEATURE_CQM_LLC)) {
->  		c->x86_cache_max_rmid  = -1;
->  		c->x86_cache_occ_scale = -1;
-> @@ -875,6 +877,9 @@ static void init_cqm(struct cpuinfo_x86 *c)
->  
->  		c->x86_cache_max_rmid  = ecx;
->  		c->x86_cache_occ_scale = ebx;
-> +		/* EAX contents is only defined for Intel CPUs */
-> +		if (c->x86_vendor == X86_VENDOR_INTEL)
-> +			c->x86_cache_mbm_width_offset = eax & 0xff;
+This has lost in the original push for the dwc3 qcom driver.
+This is needed for ipq806x SoC as without this the usb ports
+doesn't work at all.
 
-Is it reliable to read eax which is reserved on older platforms that
-don't support the feature?
+Signed-off-by: Andy Gross <agross@codeaurora.org>
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/phy/qualcomm/Kconfig         |  12 +
+ drivers/phy/qualcomm/Makefile        |   1 +
+ drivers/phy/qualcomm/phy-qcom-dwc3.c | 578 +++++++++++++++++++++++++++
+ 3 files changed, 591 insertions(+)
+ create mode 100644 drivers/phy/qualcomm/phy-qcom-dwc3.c
 
-Seems the code assumes the reserved eax is 0 on those platforms. Is it
-reliable?
+diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
+index e46824da29f6..3d45a9156f85 100644
+--- a/drivers/phy/qualcomm/Kconfig
++++ b/drivers/phy/qualcomm/Kconfig
+@@ -91,3 +91,15 @@ config PHY_QCOM_USB_HSIC
+ 	select GENERIC_PHY
+ 	help
+ 	  Support for the USB HSIC ULPI compliant PHY on QCOM chipsets.
++
++config PHY_QCOM_DWC3
++	tristate "QCOM DWC3 USB PHY support"
++	depends on ARCH_QCOM
++	depends on HAS_IOMEM
++	depends on OF
++	select GENERIC_PHY
++	help
++	  This option enables support for the Synopsis PHYs present inside the
++	  Qualcomm USB3.0 DWC3 controller.  This driver supports both HS and SS
++	  PHY controllers.
++
+diff --git a/drivers/phy/qualcomm/Makefile b/drivers/phy/qualcomm/Makefile
+index 283251d6a5d9..04c5a8da941a 100644
+--- a/drivers/phy/qualcomm/Makefile
++++ b/drivers/phy/qualcomm/Makefile
+@@ -10,3 +10,4 @@ obj-$(CONFIG_PHY_QCOM_UFS_14NM)		+= phy-qcom-ufs-qmp-14nm.o
+ obj-$(CONFIG_PHY_QCOM_UFS_20NM)		+= phy-qcom-ufs-qmp-20nm.o
+ obj-$(CONFIG_PHY_QCOM_USB_HS) 		+= phy-qcom-usb-hs.o
+ obj-$(CONFIG_PHY_QCOM_USB_HSIC) 	+= phy-qcom-usb-hsic.o
++obj-$(CONFIG_PHY_QCOM_DWC3)		+= phy-qcom-dwc3.o
+diff --git a/drivers/phy/qualcomm/phy-qcom-dwc3.c b/drivers/phy/qualcomm/phy-qcom-dwc3.c
+new file mode 100644
+index 000000000000..f33da199ddde
+--- /dev/null
++++ b/drivers/phy/qualcomm/phy-qcom-dwc3.c
+@@ -0,0 +1,578 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2014-2015, Code Aurora Forum. All rights reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 and
++ * only version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/clk.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/phy/phy.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/regmap.h>
++#include <linux/mfd/syscon.h>
++
++/* USB QSCRATCH Hardware registers */
++#define QSCRATCH_GENERAL_CFG		(0x08)
++#define HSUSB_PHY_CTRL_REG		(0x10)
++
++/* PHY_CTRL_REG */
++#define HSUSB_CTRL_DMSEHV_CLAMP			BIT(24)
++#define HSUSB_CTRL_USB2_SUSPEND			BIT(23)
++#define HSUSB_CTRL_UTMI_CLK_EN			BIT(21)
++#define HSUSB_CTRL_UTMI_OTG_VBUS_VALID		BIT(20)
++#define HSUSB_CTRL_USE_CLKCORE			BIT(18)
++#define HSUSB_CTRL_DPSEHV_CLAMP			BIT(17)
++#define HSUSB_CTRL_COMMONONN			BIT(11)
++#define HSUSB_CTRL_ID_HV_CLAMP			BIT(9)
++#define HSUSB_CTRL_OTGSESSVLD_CLAMP		BIT(8)
++#define HSUSB_CTRL_CLAMP_EN			BIT(7)
++#define HSUSB_CTRL_RETENABLEN			BIT(1)
++#define HSUSB_CTRL_POR				BIT(0)
++
++/* QSCRATCH_GENERAL_CFG */
++#define HSUSB_GCFG_XHCI_REV		BIT(2)
++
++/* USB QSCRATCH Hardware registers */
++#define SSUSB_PHY_CTRL_REG		(0x30)
++#define SSUSB_PHY_PARAM_CTRL_1		(0x34)
++#define SSUSB_PHY_PARAM_CTRL_2		(0x38)
++#define CR_PROTOCOL_DATA_IN_REG	(0x3c)
++#define CR_PROTOCOL_DATA_OUT_REG	(0x40)
++#define CR_PROTOCOL_CAP_ADDR_REG	(0x44)
++#define CR_PROTOCOL_CAP_DATA_REG	(0x48)
++#define CR_PROTOCOL_READ_REG		(0x4c)
++#define CR_PROTOCOL_WRITE_REG		(0x50)
++
++/* PHY_CTRL_REG */
++#define SSUSB_CTRL_REF_USE_PAD		BIT(28)
++#define SSUSB_CTRL_TEST_POWERDOWN	BIT(27)
++#define SSUSB_CTRL_LANE0_PWR_PRESENT	BIT(24)
++#define SSUSB_CTRL_SS_PHY_EN		BIT(8)
++#define SSUSB_CTRL_SS_PHY_RESET		BIT(7)
++
++/* SSPHY control registers - Does this need 0x30? */
++#define SSPHY_CTRL_RX_OVRD_IN_HI(lane)	(0x1006 + 0x100 * lane)
++#define SSPHY_CTRL_TX_OVRD_DRV_LO(lane)	(0x1002 + 0x100 * lane)
++
++/* SSPHY SoC version specific values */
++#define SSPHY_RX_EQ_VALUE		4 /* Override value for rx_eq */
++/* Override value for transmit preemphasis */
++#define SSPHY_TX_DEEMPH_3_5DB		23
++#define SSPHY_MPLL_VALUE		0 /* Override value for mpll */
++
++/* QSCRATCH PHY_PARAM_CTRL1 fields */
++#define PHY_PARAM_CTRL1_TX_FULL_SWING_MASK	0x07f00000u
++#define PHY_PARAM_CTRL1_TX_DEEMPH_6DB_MASK	0x000fc000u
++#define PHY_PARAM_CTRL1_TX_DEEMPH_3_5DB_MASK	0x00003f00u
++#define PHY_PARAM_CTRL1_LOS_BIAS_MASK		0x000000f8u
++
++#define PHY_PARAM_CTRL1_MASK				\
++		(PHY_PARAM_CTRL1_TX_FULL_SWING_MASK |	\
++		 PHY_PARAM_CTRL1_TX_DEEMPH_6DB_MASK |	\
++		 PHY_PARAM_CTRL1_TX_DEEMPH_3_5DB_MASK |	\
++		 PHY_PARAM_CTRL1_LOS_BIAS_MASK)
++
++#define PHY_PARAM_CTRL1_TX_FULL_SWING(x)	\
++		(((x) << 20) & PHY_PARAM_CTRL1_TX_FULL_SWING_MASK)
++#define PHY_PARAM_CTRL1_TX_DEEMPH_6DB(x)	\
++		(((x) << 14) & PHY_PARAM_CTRL1_TX_DEEMPH_6DB_MASK)
++#define PHY_PARAM_CTRL1_TX_DEEMPH_3_5DB(x)	\
++		(((x) <<  8) & PHY_PARAM_CTRL1_TX_DEEMPH_3_5DB_MASK)
++#define PHY_PARAM_CTRL1_LOS_BIAS(x)	\
++		(((x) <<  3) & PHY_PARAM_CTRL1_LOS_BIAS_MASK)
++
++/* RX OVRD IN HI bits */
++#define RX_OVRD_IN_HI_RX_RESET_OVRD		BIT(13)
++#define RX_OVRD_IN_HI_RX_RX_RESET		BIT(12)
++#define RX_OVRD_IN_HI_RX_EQ_OVRD		BIT(11)
++#define RX_OVRD_IN_HI_RX_EQ_MASK		0x0700
++#define RX_OVRD_IN_HI_RX_EQ_SHIFT		8
++#define RX_OVRD_IN_HI_RX_EQ_EN_OVRD		BIT(7)
++#define RX_OVRD_IN_HI_RX_EQ_EN			BIT(6)
++#define RX_OVRD_IN_HI_RX_LOS_FILTER_OVRD	BIT(5)
++#define RX_OVRD_IN_HI_RX_LOS_FILTER_MASK	0x0018
++#define RX_OVRD_IN_HI_RX_RATE_OVRD		BIT(2)
++#define RX_OVRD_IN_HI_RX_RATE_MASK		0x0003
++
++/* TX OVRD DRV LO register bits */
++#define TX_OVRD_DRV_LO_AMPLITUDE_MASK	0x007F
++#define TX_OVRD_DRV_LO_PREEMPH_MASK	0x3F80
++#define TX_OVRD_DRV_LO_PREEMPH_SHIFT	7
++#define TX_OVRD_DRV_LO_EN		BIT(14)
++
++/* SS CAP register bits */
++#define SS_CR_CAP_ADDR_REG		BIT(0)
++#define SS_CR_CAP_DATA_REG		BIT(0)
++#define SS_CR_READ_REG			BIT(0)
++#define SS_CR_WRITE_REG			BIT(0)
++
++struct qcom_dwc3_usb_phy {
++	struct regmap		*base;
++	struct device		*dev;
++	struct clk		*xo_clk;
++	struct clk		*ref_clk;
++	u32			rx_eq;
++	u32			tx_deamp_3_5db;
++	u32			mpll;
++};
++
++struct qcom_dwc3_phy_drvdata {
++	struct phy_ops	ops;
++	u32		clk_rate;
++};
++
++/**
++ * Write register and read back masked value to confirm it is written
++ *
++ * @base - QCOM DWC3 PHY base virtual address.
++ * @offset - register offset.
++ * @mask - register bitmask specifying what should be updated
++ * @val - value to write.
++ */
++static inline void qcom_dwc3_phy_write_readback(
++	struct qcom_dwc3_usb_phy *phy_dwc3, u32 offset,
++	const u32 mask, u32 val)
++{
++	u32 write_val, tmp;
++
++	tmp = regmap_read(phy_dwc3->base, offset, &tmp);
++	tmp &= ~mask;		/* retain other bits */
++	write_val = tmp | val;
++
++	regmap_write(phy_dwc3->base, offset, write_val);
++
++	/* Read back to see if val was written */
++	regmap_read(phy_dwc3->base, offset, &tmp);
++	tmp &= mask;		/* clear other bits */
++
++	if (tmp != val)
++		dev_err(phy_dwc3->dev, "write: %x to QSCRATCH: %x FAILED\n",
++			val, offset);
++}
++
++static int wait_for_latch(struct regmap *base, u32 addr)
++{
++	u32 retry = 10, data;
++
++	while (true) {
++		regmap_read(base, addr, &data);
++		if (!data)
++			break;
++
++		if (--retry == 0)
++			return -ETIMEDOUT;
++
++		usleep_range(10, 20);
++	}
++
++	return 0;
++}
++
++/**
++ * Write SSPHY register
++ *
++ * @base - QCOM DWC3 PHY base virtual address.
++ * @addr - SSPHY address to write.
++ * @val - value to write.
++ */
++static int qcom_dwc3_ss_write_phycreg(struct qcom_dwc3_usb_phy *phy_dwc3,
++					u32 addr, u32 val)
++{
++	int ret;
++
++	regmap_write(phy_dwc3->base, CR_PROTOCOL_DATA_IN_REG, addr);
++	regmap_write(phy_dwc3->base, CR_PROTOCOL_CAP_ADDR_REG,
++		     SS_CR_CAP_ADDR_REG);
++
++	ret = wait_for_latch(phy_dwc3->base, CR_PROTOCOL_CAP_ADDR_REG);
++	if (ret)
++		goto err_wait;
++
++	regmap_write(phy_dwc3->base, CR_PROTOCOL_DATA_IN_REG, val);
++	regmap_write(phy_dwc3->base, CR_PROTOCOL_CAP_DATA_REG,
++		     SS_CR_CAP_DATA_REG);
++
++	ret = wait_for_latch(phy_dwc3->base, CR_PROTOCOL_CAP_DATA_REG);
++	if (ret)
++		goto err_wait;
++
++	regmap_write(phy_dwc3->base, CR_PROTOCOL_WRITE_REG, SS_CR_WRITE_REG);
++
++	ret = wait_for_latch(phy_dwc3->base, CR_PROTOCOL_WRITE_REG);
++
++err_wait:
++	if (ret)
++		dev_err(phy_dwc3->dev, "timeout waiting for latch\n");
++	return ret;
++}
++
++/**
++ * Read SSPHY register.
++ *
++ * @base - QCOM DWC3 PHY base virtual address.
++ * @addr - SSPHY address to read.
++ */
++static int qcom_dwc3_ss_read_phycreg(struct regmap *base, u32 addr, u32 *val)
++{
++	int ret;
++
++	regmap_write(base, CR_PROTOCOL_DATA_IN_REG, addr);
++	regmap_write(base, CR_PROTOCOL_CAP_ADDR_REG, SS_CR_CAP_ADDR_REG);
++
++	ret = wait_for_latch(base, CR_PROTOCOL_CAP_ADDR_REG);
++	if (ret)
++		goto err_wait;
++
++	/*
++	 * Due to hardware bug, first read of SSPHY register might be
++	 * incorrect. Hence as workaround, SW should perform SSPHY register
++	 * read twice, but use only second read and ignore first read.
++	 */
++	regmap_write(base, CR_PROTOCOL_READ_REG, SS_CR_READ_REG);
++
++	ret = wait_for_latch(base, CR_PROTOCOL_READ_REG);
++	if (ret)
++		goto err_wait;
++
++	/* throwaway read */
++	regmap_read(base, CR_PROTOCOL_DATA_OUT_REG, &ret);
++
++	regmap_write(base, CR_PROTOCOL_READ_REG, SS_CR_READ_REG);
++
++	ret = wait_for_latch(base, CR_PROTOCOL_READ_REG);
++	if (ret)
++		goto err_wait;
++
++	regmap_read(base, CR_PROTOCOL_DATA_OUT_REG, val);
++
++err_wait:
++	return ret;
++}
++
++static int qcom_dwc3_hs_phy_init(struct phy *phy)
++{
++	struct qcom_dwc3_usb_phy *phy_dwc3 = phy_get_drvdata(phy);
++	int ret;
++	u32 val;
++
++	ret = clk_prepare_enable(phy_dwc3->xo_clk);
++	if (ret)
++		return ret;
++
++	ret = clk_prepare_enable(phy_dwc3->ref_clk);
++	if (ret) {
++		clk_disable_unprepare(phy_dwc3->xo_clk);
++		return ret;
++	}
++
++	/*
++	 * HSPHY Initialization: Enable UTMI clock, select 19.2MHz fsel
++	 * enable clamping, and disable RETENTION (power-on default is ENABLED)
++	 */
++	val = HSUSB_CTRL_DPSEHV_CLAMP | HSUSB_CTRL_DMSEHV_CLAMP |
++		HSUSB_CTRL_RETENABLEN  | HSUSB_CTRL_COMMONONN |
++		HSUSB_CTRL_OTGSESSVLD_CLAMP | HSUSB_CTRL_ID_HV_CLAMP |
++		HSUSB_CTRL_DPSEHV_CLAMP | HSUSB_CTRL_UTMI_OTG_VBUS_VALID |
++		HSUSB_CTRL_UTMI_CLK_EN | HSUSB_CTRL_CLAMP_EN | 0x70;
++
++	/* use core clock if external reference is not present */
++	if (!phy_dwc3->xo_clk)
++		val |= HSUSB_CTRL_USE_CLKCORE;
++
++	regmap_write(phy_dwc3->base, HSUSB_PHY_CTRL_REG, val);
++	usleep_range(2000, 2200);
++
++	/* Disable (bypass) VBUS and ID filters */
++	regmap_write(phy_dwc3->base, QSCRATCH_GENERAL_CFG, HSUSB_GCFG_XHCI_REV);
++
++	return 0;
++}
++
++static int qcom_dwc3_hs_phy_exit(struct phy *phy)
++{
++	struct qcom_dwc3_usb_phy *phy_dwc3 = phy_get_drvdata(phy);
++
++	clk_disable_unprepare(phy_dwc3->ref_clk);
++	clk_disable_unprepare(phy_dwc3->xo_clk);
++
++	return 0;
++}
++
++static int qcom_dwc3_ss_phy_init(struct phy *phy)
++{
++	struct qcom_dwc3_usb_phy *phy_dwc3 = phy_get_drvdata(phy);
++	int ret;
++	u32 data = 0;
++
++	ret = clk_prepare_enable(phy_dwc3->xo_clk);
++	if (ret)
++		return ret;
++
++	ret = clk_prepare_enable(phy_dwc3->ref_clk);
++	if (ret) {
++		clk_disable_unprepare(phy_dwc3->xo_clk);
++		return ret;
++	}
++
++	/* reset phy */
++	regmap_read(phy_dwc3->base, SSUSB_PHY_CTRL_REG, &data);
++	regmap_write(phy_dwc3->base, SSUSB_PHY_CTRL_REG,
++		data | SSUSB_CTRL_SS_PHY_RESET);
++	usleep_range(2000, 2200);
++	regmap_write(phy_dwc3->base, SSUSB_PHY_CTRL_REG, data);
++
++	/* clear REF_PAD if we don't have XO clk */
++	if (!phy_dwc3->xo_clk)
++		data &= ~SSUSB_CTRL_REF_USE_PAD;
++	else
++		data |= SSUSB_CTRL_REF_USE_PAD;
++
++	regmap_write(phy_dwc3->base, SSUSB_PHY_CTRL_REG, data);
++
++	/* wait for ref clk to become stable, this can take up to 30ms */
++	msleep(30);
++
++	data |= SSUSB_CTRL_SS_PHY_EN | SSUSB_CTRL_LANE0_PWR_PRESENT;
++	regmap_write(phy_dwc3->base, SSUSB_PHY_CTRL_REG, data);
++
++	/*
++	 * WORKAROUND: There is SSPHY suspend bug due to which USB enumerates
++	 * in HS mode instead of SS mode. Workaround it by asserting
++	 * LANE0.TX_ALT_BLOCK.EN_ALT_BUS to enable TX to use alt bus mode
++	 */
++	ret = qcom_dwc3_ss_read_phycreg(phy_dwc3->base, 0x102D, &data);
++	if (ret)
++		goto err_phy_trans;
++
++	data |= (1 << 7);
++	ret = qcom_dwc3_ss_write_phycreg(phy_dwc3, 0x102D, data);
++	if (ret)
++		goto err_phy_trans;
++
++	ret = qcom_dwc3_ss_read_phycreg(phy_dwc3->base, 0x1010, &data);
++	if (ret)
++		goto err_phy_trans;
++
++	data &= ~0xff0;
++	data |= 0x20;
++	ret = qcom_dwc3_ss_write_phycreg(phy_dwc3, 0x1010, data);
++	if (ret)
++		goto err_phy_trans;
++
++	/*
++	 * Fix RX Equalization setting as follows
++	 * LANE0.RX_OVRD_IN_HI. RX_EQ_EN set to 0
++	 * LANE0.RX_OVRD_IN_HI.RX_EQ_EN_OVRD set to 1
++	 * LANE0.RX_OVRD_IN_HI.RX_EQ set based on SoC version
++	 * LANE0.RX_OVRD_IN_HI.RX_EQ_OVRD set to 1
++	 */
++	ret = qcom_dwc3_ss_read_phycreg(phy_dwc3->base,
++			SSPHY_CTRL_RX_OVRD_IN_HI(0), &data);
++	if (ret)
++		goto err_phy_trans;
++
++	data &= ~RX_OVRD_IN_HI_RX_EQ_EN;
++	data |= RX_OVRD_IN_HI_RX_EQ_EN_OVRD;
++	data &= ~RX_OVRD_IN_HI_RX_EQ_MASK;
++	data |= phy_dwc3->rx_eq << RX_OVRD_IN_HI_RX_EQ_SHIFT;
++	data |= RX_OVRD_IN_HI_RX_EQ_OVRD;
++	ret = qcom_dwc3_ss_write_phycreg(phy_dwc3,
++		SSPHY_CTRL_RX_OVRD_IN_HI(0), data);
++	if (ret)
++		goto err_phy_trans;
++
++	/*
++	 * Set EQ and TX launch amplitudes as follows
++	 * LANE0.TX_OVRD_DRV_LO.PREEMPH set based on SoC version
++	 * LANE0.TX_OVRD_DRV_LO.AMPLITUDE set to 110
++	 * LANE0.TX_OVRD_DRV_LO.EN set to 1.
++	 */
++	ret = qcom_dwc3_ss_read_phycreg(phy_dwc3->base,
++		SSPHY_CTRL_TX_OVRD_DRV_LO(0), &data);
++	if (ret)
++		goto err_phy_trans;
++
++	data &= ~TX_OVRD_DRV_LO_PREEMPH_MASK;
++	data |= phy_dwc3->tx_deamp_3_5db << TX_OVRD_DRV_LO_PREEMPH_SHIFT;
++	data &= ~TX_OVRD_DRV_LO_AMPLITUDE_MASK;
++	data |= 0x6E;
++	data |= TX_OVRD_DRV_LO_EN;
++	ret = qcom_dwc3_ss_write_phycreg(phy_dwc3,
++		SSPHY_CTRL_TX_OVRD_DRV_LO(0), data);
++	if (ret)
++		goto err_phy_trans;
++
++	qcom_dwc3_ss_write_phycreg(phy_dwc3, 0x30, phy_dwc3->mpll);
++
++	/*
++	 * Set the QSCRATCH PHY_PARAM_CTRL1 parameters as follows
++	 * TX_FULL_SWING [26:20] amplitude to 110
++	 * TX_DEEMPH_6DB [19:14] to 32
++	 * TX_DEEMPH_3_5DB [13:8] set based on SoC version
++	 * LOS_BIAS [7:3] to 9
++	 */
++	regmap_read(phy_dwc3->base, SSUSB_PHY_PARAM_CTRL_1, &data);
++
++	data &= ~PHY_PARAM_CTRL1_MASK;
++
++	data |= PHY_PARAM_CTRL1_TX_FULL_SWING(0x6e) |
++		PHY_PARAM_CTRL1_TX_DEEMPH_6DB(0x20) |
++		PHY_PARAM_CTRL1_TX_DEEMPH_3_5DB(phy_dwc3->tx_deamp_3_5db) |
++		PHY_PARAM_CTRL1_LOS_BIAS(0x9);
++
++	qcom_dwc3_phy_write_readback(phy_dwc3, SSUSB_PHY_PARAM_CTRL_1,
++				     PHY_PARAM_CTRL1_MASK, data);
++
++err_phy_trans:
++	return ret;
++}
++
++static int qcom_dwc3_ss_phy_exit(struct phy *phy)
++{
++	struct qcom_dwc3_usb_phy *phy_dwc3 = phy_get_drvdata(phy);
++
++	/* Sequence to put SSPHY in low power state:
++	 * 1. Clear REF_PHY_EN in PHY_CTRL_REG
++	 * 2. Clear REF_USE_PAD in PHY_CTRL_REG
++	 * 3. Set TEST_POWERED_DOWN in PHY_CTRL_REG to enable PHY retention
++	 */
++	qcom_dwc3_phy_write_readback(phy_dwc3, SSUSB_PHY_CTRL_REG,
++		SSUSB_CTRL_SS_PHY_EN, 0x0);
++	qcom_dwc3_phy_write_readback(phy_dwc3, SSUSB_PHY_CTRL_REG,
++		SSUSB_CTRL_REF_USE_PAD, 0x0);
++	qcom_dwc3_phy_write_readback(phy_dwc3, SSUSB_PHY_CTRL_REG,
++		SSUSB_CTRL_TEST_POWERDOWN, 0x0);
++
++	clk_disable_unprepare(phy_dwc3->ref_clk);
++	clk_disable_unprepare(phy_dwc3->xo_clk);
++
++	return 0;
++}
++
++static const struct qcom_dwc3_phy_drvdata qcom_dwc3_hs_drvdata = {
++	.ops = {
++		.init		= qcom_dwc3_hs_phy_init,
++		.exit		= qcom_dwc3_hs_phy_exit,
++		.owner		= THIS_MODULE,
++	},
++	.clk_rate = 60000000,
++};
++
++static const struct qcom_dwc3_phy_drvdata qcom_dwc3_ss_drvdata = {
++	.ops = {
++		.init		= qcom_dwc3_ss_phy_init,
++		.exit		= qcom_dwc3_ss_phy_exit,
++		.owner		= THIS_MODULE,
++	},
++	.clk_rate = 125000000,
++};
++
++static const struct of_device_id qcom_dwc3_phy_table[] = {
++	{ .compatible = "qcom,dwc3-hs-usb-phy", .data = &qcom_dwc3_hs_drvdata },
++	{ .compatible = "qcom,dwc3-ss-usb-phy", .data = &qcom_dwc3_ss_drvdata },
++	{ /* Sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, qcom_dwc3_phy_table);
++
++static int qcom_dwc3_phy_probe(struct platform_device *pdev)
++{
++	struct qcom_dwc3_usb_phy	*phy_dwc3;
++	struct phy_provider		*phy_provider;
++	struct phy			*generic_phy;
++	struct resource			*res;
++	const struct of_device_id *match;
++	const struct qcom_dwc3_phy_drvdata *data;
++	struct device_node *np;
++
++	phy_dwc3 = devm_kzalloc(&pdev->dev, sizeof(*phy_dwc3), GFP_KERNEL);
++	if (!phy_dwc3)
++		return -ENOMEM;
++
++	match = of_match_node(qcom_dwc3_phy_table, pdev->dev.of_node);
++	data = match->data;
++
++	phy_dwc3->dev = &pdev->dev;
++
++	phy_dwc3->base = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
++							 "regmap");
++	if (IS_ERR_OR_NULL(phy_dwc3->base))
++		return PTR_ERR_OR_ZERO(phy_dwc3->base) ? : -EINVAL;
++
++	phy_dwc3->ref_clk = devm_clk_get(phy_dwc3->dev, "ref");
++	if (IS_ERR(phy_dwc3->ref_clk)) {
++		dev_dbg(phy_dwc3->dev, "cannot get reference clock\n");
++		return PTR_ERR(phy_dwc3->ref_clk);
++	}
++
++	clk_set_rate(phy_dwc3->ref_clk, data->clk_rate);
++
++	phy_dwc3->xo_clk = devm_clk_get(phy_dwc3->dev, "xo");
++	if (IS_ERR(phy_dwc3->xo_clk)) {
++		dev_dbg(phy_dwc3->dev, "cannot get TCXO clock\n");
++		phy_dwc3->xo_clk = NULL;
++	}
++
++	/* Parse device node to probe HSIO settings */
++	np = of_node_get(pdev->dev.of_node);
++	if (!of_compat_cmp(match->compatible, "qcom,dwc3-ss-usb-phy",
++			   strlen(match->compatible))) {
++
++		if (of_property_read_u32(np, "rx_eq", &phy_dwc3->rx_eq) ||
++		    of_property_read_u32(np, "tx_deamp_3_5db",
++					 &phy_dwc3->tx_deamp_3_5db) ||
++		    of_property_read_u32(np, "mpll", &phy_dwc3->mpll)) {
++
++			dev_err(phy_dwc3->dev, "cannot get HSIO settings from device node, using default values\n");
++
++			/* Default HSIO settings */
++			phy_dwc3->rx_eq = SSPHY_RX_EQ_VALUE;
++			phy_dwc3->tx_deamp_3_5db = SSPHY_TX_DEEMPH_3_5DB;
++			phy_dwc3->mpll = SSPHY_MPLL_VALUE;
++		}
++	}
++
++	generic_phy = devm_phy_create(phy_dwc3->dev, pdev->dev.of_node,
++				      &data->ops);
++
++	if (IS_ERR(generic_phy))
++		return PTR_ERR(generic_phy);
++
++	phy_set_drvdata(generic_phy, phy_dwc3);
++	platform_set_drvdata(pdev, phy_dwc3);
++
++	phy_provider = devm_of_phy_provider_register(phy_dwc3->dev,
++			of_phy_simple_xlate);
++
++	if (IS_ERR(phy_provider))
++		return PTR_ERR(phy_provider);
++
++	return 0;
++}
++
++static struct platform_driver qcom_dwc3_phy_driver = {
++	.probe		= qcom_dwc3_phy_probe,
++	.driver		= {
++		.name	= "qcom-dwc3-usb-phy",
++		.owner	= THIS_MODULE,
++		.of_match_table = qcom_dwc3_phy_table,
++	},
++};
++
++module_platform_driver(qcom_dwc3_phy_driver);
++
++MODULE_ALIAS("platform:phy-qcom-dwc3");
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Andy Gross <agross@codeaurora.org>");
++MODULE_AUTHOR("Ivan T. Ivanov <iivanov@mm-sol.com>");
++MODULE_DESCRIPTION("DesignWare USB3 QCOM PHY driver");
+-- 
+2.25.1
 
->  int rdt_get_mon_l3_config(struct rdt_resource *r)
->  {
-> +	unsigned int mbm_offset = boot_cpu_data.x86_cache_mbm_width_offset;
->  	unsigned int cl_size = boot_cpu_data.x86_cache_size;
->  	int ret;
->  
->  	r->mon_scale = boot_cpu_data.x86_cache_occ_scale;
->  	r->num_rmid = boot_cpu_data.x86_cache_max_rmid + 1;
-> -	r->mbm_width = MBM_CNTR_WIDTH;
-> +	r->mbm_width = MBM_CNTR_WIDTH_BASE;
-> +
-> +	if (mbm_offset > 0 && mbm_offset <= MBM_CNTR_WIDTH_OFFSET_MAX)
-> +		r->mbm_width += mbm_offset;
-> +	else if (mbm_offset > MBM_CNTR_WIDTH_OFFSET_MAX)
-> +		pr_warn("Ignoring impossible MBM counter offset\n");
->  
-
-Thanks.
-
--Fenghua
