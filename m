@@ -2,128 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3B319D53A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 12:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9164C19D542
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 12:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390504AbgDCKrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 06:47:49 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:34238 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgDCKrt (ORCPT
+        id S2390664AbgDCKsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 06:48:16 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:59349 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727843AbgDCKsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 06:47:49 -0400
-Received: by mail-ed1-f66.google.com with SMTP id o1so8772487edv.1;
-        Fri, 03 Apr 2020 03:47:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/qsV5G+EWb+7XocHOBXyq0rD3eTdN0wEIFWjn6eqrw0=;
-        b=JOgZwphpxw5aJuGrV1e6NB8dnmsvnCZHsP0MfXj/8xPMZGAJAlnl/kheQHA8vxQenG
-         Fq+3K1dt7sYaIj3npRKD+xkDo50whWWgx8CZUgEkb7ZQNL8pZ/tlYSxrbYBxljOEJtC6
-         0YkFtBHcdExjM5iu/1bIvxIGk1/JjLaExKy002Sii9KIAqukh7AGc7FcS0KKjuzQ6UDE
-         yhCttF9Iwp0a7gSri5z26d5tdNkW+g/yKYJs2fygHpqmE8jBy0PhoH4GBH50+Ofb3EJ/
-         2H3JaAApDU2mCxDG3RSq3GsaAbWaPA+Xw0ik78lKwomUaH+0LGdQPa2ZxA/Xn2X4wQSA
-         qhAQ==
-X-Gm-Message-State: AGi0PuYVCj7Ob0HBNsf/NTZ4yhnOdqTypsCueR/jHaZwoyF1KrMeBPW/
-        4YxdEBldMgkI7nmQE4HdsTU=
-X-Google-Smtp-Source: APiQypL5vPUUwU2gK8AJePkOzrdpT7tRJ1mK4h7pF9JSf1Aki52IK/rhR4C/SGne9w6Yo0UNm1UZHA==
-X-Received: by 2002:a17:906:cc2:: with SMTP id l2mr7897646ejh.115.1585910866860;
-        Fri, 03 Apr 2020 03:47:46 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.125])
-        by smtp.googlemail.com with ESMTPSA id gs12sm1565340ejb.86.2020.04.03.03.47.45
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Apr 2020 03:47:46 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 12:47:44 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Hyunki Koo <hyunki00.koo@samsung.com>
-Cc:     gregkh@linuxfoundation.org, Kukjin Kim <kgene@kernel.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        Fri, 3 Apr 2020 06:48:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585910893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7ER8I6QMXmdfjnyr4lH0KXok90NchHx4EFsx0f+QgtI=;
+        b=drRH0PMYpSwepFQ1nkRzh0F6yKHN0mmNiXWerH9bkktaQiT7SpyD5OZKfOP23j37w1VnGn
+        zAL3FTn0KQEOzTvFvTa+l/v9QvWdyXSKxUdL3FMmW493E8W20Fhy8NYXYR0mBai+f6Uq2X
+        OSs8IFGVr4RTAwDNlVHzeHdvMGzsSdw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-151-l9m08IvbPE6O-r_IoC58Cw-1; Fri, 03 Apr 2020 06:48:12 -0400
+X-MC-Unique: l9m08IvbPE6O-r_IoC58Cw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0E7C9107ACC7;
+        Fri,  3 Apr 2020 10:48:11 +0000 (UTC)
+Received: from krava (unknown [10.40.194.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E61E71001B28;
+        Fri,  3 Apr 2020 10:48:07 +0000 (UTC)
+Date:   Fri, 3 Apr 2020 12:48:02 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] tty: samsung_tty: 32-bit access for TX/RX hold
- registers
-Message-ID: <20200403104744.GA29385@kozik-lap>
-References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
- <CGME20200403102049epcas2p1d1fe95160b7f37609a8b1710c196cdd8@epcas2p1.samsung.com>
- <20200403102041.22015-1-hyunki00.koo@samsung.com>
+Subject: Re: [PATCH] perf script: Simplify auxiliary event printing functions
+Message-ID: <20200403104802.GJ2784502@krava>
+References: <20200402141548.21283-1-adrian.hunter@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200403102041.22015-1-hyunki00.koo@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200402141548.21283-1-adrian.hunter@intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 07:20:41PM +0900, Hyunki Koo wrote:
-> Support 32-bit access for the TX/RX hold registers UTXH and URXH.
+On Thu, Apr 02, 2020 at 05:15:48PM +0300, Adrian Hunter wrote:
+> This simplifies the print functions for the following perf script
+> options:
 > 
-> This is required for some newer SoCs.
+> 	--show-task-events
+> 	--show-namespace-events
+> 	--show-cgroup-events
+> 	--show-mmap-events
+> 	--show-switch-events
+> 	--show-lost-events
+> 	--show-bpf-events
 > 
-> Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
-> ---
-> v3: change rd_regl to rd_reg in line 954 for backward compatibility.
-
-I cannot find this change against v2.
-
-> ---
+> Example:
+> 	# perf record --switch-events -a -e cycles -c 10000 sleep 1
+>  Before:
+> 	# perf script --show-task-events --show-namespace-events --show-cgroup-events --show-mmap-events --show-switch-events --show-lost-events --show-bpf-events >out-before.txt
+>  After:
+> 	# perf script --show-task-events --show-namespace-events --show-cgroup-events --show-mmap-events --show-switch-events --show-lost-events --show-bpf-events >out-after.txt
+> 	# diff -s out-before.txt out-after.txt
+> 	Files out-before.txt and out-after.tx are identical
 > 
->  drivers/tty/serial/samsung_tty.c | 76 +++++++++++++++++++++++++++++++++-------
->  1 file changed, 64 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index 73f951d65b93..a674a80163ed 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -154,12 +154,47 @@ struct s3c24xx_uart_port {
->  #define portaddrl(port, reg) \
->  	((unsigned long *)(unsigned long)((port)->membase + (reg)))
->  
-> -#define rd_regb(port, reg) (readb_relaxed(portaddr(port, reg)))
-> +static unsigned int rd_reg(struct uart_port *port, int reg)
+> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 
-You should return here u32 to be consistent with readl_relaxed.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-> +{
-> +	switch (port->iotype) {
-> +	case UPIO_MEM:
-> +		return readb_relaxed(portaddr(port, reg));
-> +	case UPIO_MEM32:
-> +		return readl_relaxed(portaddr(port, reg));
-> +	default:
-> +		return 0;
-> +	}
-> +	return 0;
-> +}
-> +
->  #define rd_regl(port, reg) (readl_relaxed(portaddr(port, reg)))
->  
-> -#define wr_regb(port, reg, val) writeb_relaxed(val, portaddr(port, reg))
-> +static void wr_reg(struct uart_port *port, int reg, int val)
-
-val should be u32.
-
-> +{
-> +	switch (port->iotype) {
-> +	case UPIO_MEM:
-> +		writeb_relaxed(val, portaddr(port, reg));
-> +		break;
-> +	case UPIO_MEM32:
-> +		writel_relaxed(val, portaddr(port, reg));
-> +		break;
-> +	}
-> +}
-> +
->  #define wr_regl(port, reg, val) writel_relaxed(val, portaddr(port, reg))
->  
-> +static void write_buf(struct uart_port *port, int reg, int val)
-
-buf is misleading, you do not write here any buffer. Maybe
-"wr_reg_barrier()" or "wr_reg_order()"?
-
-Best regards,
-Krzysztof
+thanks,
+jirka
 
