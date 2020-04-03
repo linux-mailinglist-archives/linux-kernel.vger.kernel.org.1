@@ -2,124 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A2519D4DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 12:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A6119D4E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 12:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390670AbgDCKNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 06:13:36 -0400
-Received: from mout.web.de ([212.227.15.4]:60845 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727928AbgDCKNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 06:13:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1585908784;
-        bh=/U+bW05Pvewq2voj1LF69LW/5jvM7rtMfQBqg8tSR2E=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=o+0Z03poM4U31FXxR/xinx7ahcOjHcaGziXpxkS+cVpIWlq+XA524EhQjZLils4sz
-         yUc9lD2mmU/pKSxfLv8uD9FcMWHh82Cl6zETQQpiCE6iFFHt3pANZbzPuMGA8sfbbJ
-         SGO6M/p9gfClWfgE8Ykrwvoe0AiaJxaPXGky35Ek=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([93.135.25.116]) by smtp.web.de (mrweb004
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0M52ju-1j7sJ40qT8-00zBi2; Fri, 03
- Apr 2020 12:13:04 +0200
-Subject: Re: mfd: asic3: Delete redundant variable definition
-To:     Lee Jones <lee.jones@linaro.org>,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <b2a0e5f6-1f07-a7bd-2f3c-c95119efe635@web.de>
- <20200403092521.GD30614@dell>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <89c74a65-3da0-ddd5-2b80-407fd3a66ec6@web.de>
-Date:   Fri, 3 Apr 2020 12:12:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2390105AbgDCKTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 06:19:18 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:41850 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727882AbgDCKTR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 06:19:17 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 033AJC1C012373
+        for <linux-kernel@vger.kernel.org>; Fri, 3 Apr 2020 03:19:16 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=cDoB0ichWZYA+VpWqPf6KR4QQ008FhSwewof75iV/qU=;
+ b=cBpmgtTFjhxzG4lSunIl1V5dpuxX/Jo14yMJHcaL11nAT7DgvU3Q56xWA7TJBopq0RZk
+ i0r8OKMR8pCo0kICyIbpb5wM1pwMg4PsYrD2A8UYKN6XBLXPJWl2I5eXtpm5N4Tu0jz1
+ krmiPPm9svU6onoGHQx2t3nCO7XIbs7V/sk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 305a6fprgu-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 03:19:16 -0700
+Received: from intmgw001.03.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 3 Apr 2020 03:19:11 -0700
+Received: by devbig020.ftw1.facebook.com (Postfix, from userid 179119)
+        id C0F7358C2D29; Fri,  3 Apr 2020 03:19:08 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Aslan Bakirov <aslan@fb.com>
+Smtp-Origin-Hostname: devbig020.ftw1.facebook.com
+To:     <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <riel@surriel.com>, <guro@fb.com>,
+        <mhocko@kernel.org>, <hannes@cmpxchg.org>,
+        Aslan Bakirov <aslan@fb.com>
+Smtp-Origin-Cluster: ftw1c07
+Subject: [PATCH 1/2] mm: cma: NUMA node interface
+Date:   Fri, 3 Apr 2020 03:18:42 -0700
+Message-ID: <20200403101843.406634-1-aslan@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-In-Reply-To: <20200403092521.GD30614@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-Provags-ID: V03:K1:WDlLIQDzCjgBF1LYn7Jo133V1B0JfwlQaoxkQlKIvM5fp6c08LT
- wqeApRwS9Cp94RUEQGQBwVgLCbiJw6EKUnKBC4KmdwowaoTEIq2gXrIrB2zgCCj8ad1bF5v
- J+EdKz0h0Pcwpv5s7GXIGWAdDJzDT8llUYlLByF9FmwKvR26dVkY6wGI2g+tGrWWmdb/EWv
- UTwGY0v/w/jU1AOTclD0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:CTbuHs7vKAQ=:yTxwslRopQ3AzDiu2MuMQ4
- Sm3jlcu9L67uW66FqSFFA06vAq4M++2qHpe7dhIz8ADTFaU5oZFNi6FWCBcMznI/Z6o8vut4i
- qfjNbiAmnH69AUDwHFwXLUR5rB7KHYL779q/+GaNx9bxKQoiDoVBs29srHojLH4H7pH8fdej2
- 0Wt2nTU3o8hm2tv1IQ/8bGOtzmifSNEzFvWp9Pf9i4XmH1ltQVpJ3rpCl9G8TL3k85kNdeeV1
- /yZ6quYhZdarW7eacSdsmDoZsusxMbTzvZXlBzqFE2CJQsWG6pgUp4ODYZo0b5WyZ63ToZ6ye
- XPImDJuZno/RRnb5+qbPTxE5s9Dz+E35T4Pv3M/i1s3rYOZ61REz8XPUO+lxZHOzu/tQEjfqF
- t39PkBp8RJoTrljcc3pnqK7VyjC6OsmH61NC6S1vOxyepx+XJkWDjADcogy1B7AXMpw4NY420
- o1vV2DYHRxuhfqorvrLZ0op2fcIghueq4rs23hdPz/IJrAVp/IuKx+l4TFAT0fpuOx+5y7yfv
- GYJdatecTsyGwfpNKBQps5b4LLGJ6IXsXhag+nRDxkKvaZHbyR0p29WNsgM7BsPKDKiZH9rbE
- Bc/4dKBng2CiIUxbJeHsy/5WVB7AL6bWIkrzz+znQgBsFz7CMXah1pNLDMQhn9jZ6GykS1bng
- tTouAC288UxMKPBKSHp8PJNZ6U6JN9UfgOwlcBdhPRHP9N3JlSrJh4w5VTozDMPr78/Z75gkJ
- gyrwn05nGQS07oAqclPYayNGcKPr2zh68769WygYvyG4XQsCeOYrNedwZLsDLiNHubOz0+fz/
- WUraimWTJAN3Ik087rVppsagpCcdRh7jowVKlH+HdqlFf8p1iuRx8zEd6S7Hy9+SGli7y6qPA
- JWBLWKPQesae1Da+F2k4L7RrN2kPJH6NyN8KmDVdv8Qj7O2eyEVAFziGyOMAX0INTquWPtupb
- SvgR5m+i1MGNU0Cf0f1E1d7/KSSCOlLDHAxfw9wBkxzG8mjYjGhAughmRYq0xds1AtSs+ypn9
- GUDP00ACIPs8mf/sccDc20K2mWT9e0JhjW3lg6sFpDtfy09m7NeB+y+s8PRmrmBmzvdkScP4c
- 8Wgyu90HAihCaKJ3eo0TShPirYJ8HcVCAVKZmS+QXduz+gdq2LHYJqJyICZC2d0DVWlNS9vxc
- yLU5v8JJ7r9Pp2ISva357SUiBXldsOunLd3xv8ePkQYa016mosTIWxrBzMY14z503CKu7ZaD+
- wXkfP0vmdtUmA9aKa
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-03_07:2020-04-02,2020-04-03 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 spamscore=0
+ impostorscore=0 malwarescore=0 priorityscore=1501 clxscore=1015
+ phishscore=0 suspectscore=1 adultscore=0 mlxlogscore=999
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004030090
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Why wasn't this sent 'in reply to'?  Something wrong with your mailer?
+I've noticed that there is no interfaces exposed by CMA which would let m=
+e
+to declare contigous memory on particular NUMA node.
 
-It seems that my mail program version contains still open issues for
-the preservation of this information after a click on a web link.
-mailto:tangbin%40cmss.chinamobile.com?In-Reply-To=%3C20200403042020.17452-1-tangbin@cmss.chinamobile.com%3E&Cc=lee.jones%40linaro.org%2Clinux-kernel%40vger.kernel.org&Subject=Re%3A%20%5BPATCH%5D%20mfd%3Aasic3%3ADelete%20redundant%20variable%20definition
+This patchset adds the ability to try to allocate contiguous memory on
+specific node. It will fallback to other nodes if the specified one
+doesn't work.
 
+Implement a new method for declaring contigous memory on particular node
+and keep cma_declare_contiguous() as a wrapper.
 
-> Now this messages is orphaned.  Floating about in my inbox on its own.
+Signed-off-by: Aslan Bakirov <aslan@fb.com>
+---
+ include/linux/cma.h      | 13 +++++++++++--
+ include/linux/memblock.h |  3 +++
+ mm/cma.c                 | 16 +++++++++-------
+ mm/memblock.c            |  2 +-
+ 4 files changed, 24 insertions(+), 10 deletions(-)
 
-This effect can be unfortunate.
+diff --git a/include/linux/cma.h b/include/linux/cma.h
+index 190184b5ff32..eae834c2162f 100644
+--- a/include/linux/cma.h
++++ b/include/linux/cma.h
+@@ -24,10 +24,19 @@ extern phys_addr_t cma_get_base(const struct cma *cma=
+);
+ extern unsigned long cma_get_size(const struct cma *cma);
+ extern const char *cma_get_name(const struct cma *cma);
+=20
+-extern int __init cma_declare_contiguous(phys_addr_t base,
++extern int __init cma_declare_contiguous_nid(phys_addr_t base,
+ 			phys_addr_t size, phys_addr_t limit,
+ 			phys_addr_t alignment, unsigned int order_per_bit,
+-			bool fixed, const char *name, struct cma **res_cma);
++			bool fixed, const char *name, struct cma **res_cma,
++			int nid);
++static inline int __init cma_declare_contiguous(phys_addr_t base,
++			phys_addr_t size, phys_addr_t limit,
++			phys_addr_t alignment, unsigned int order_per_bit,
++			bool fixed, const char *name, struct cma **res_cma)
++{
++	return cma_declare_contiguous_nid(base, size, limit, alignment,
++			order_per_bit, fixed, name, res_cma, NUMA_NO_NODE);
++}
+ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
+ 					unsigned int order_per_bit,
+ 					const char *name,
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index 079d17d96410..6bc37a731d27 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -348,6 +348,9 @@ static inline int memblock_get_region_node(const stru=
+ct memblock_region *r)
+=20
+ phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t alig=
+n,
+ 				      phys_addr_t start, phys_addr_t end);
++phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
++				      phys_addr_t align, phys_addr_t start,
++				      phys_addr_t end, int nid, bool exact_nid);
+ phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t al=
+ign, int nid);
+=20
+ static inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
+diff --git a/mm/cma.c b/mm/cma.c
+index be55d1988c67..6405af3dc118 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -220,7 +220,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, ph=
+ys_addr_t size,
+ }
+=20
+ /**
+- * cma_declare_contiguous() - reserve custom contiguous area
++ * cma_declare_contiguous_nid() - reserve custom contiguous area
+  * @base: Base address of the reserved area optional, use 0 for any
+  * @size: Size of the reserved area (in bytes),
+  * @limit: End address of the reserved memory (optional, 0 for any).
+@@ -229,6 +229,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, ph=
+ys_addr_t size,
+  * @fixed: hint about where to place the reserved area
+  * @name: The name of the area. See function cma_init_reserved_mem()
+  * @res_cma: Pointer to store the created cma region.
++ * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
+  *
+  * This function reserves memory from early allocator. It should be
+  * called by arch specific code once the early allocator (memblock or bo=
+otmem)
+@@ -238,10 +239,11 @@ int __init cma_init_reserved_mem(phys_addr_t base, =
+phys_addr_t size,
+  * If @fixed is true, reserve contiguous area at exactly @base.  If fals=
+e,
+  * reserve in range from @base to @limit.
+  */
+-int __init cma_declare_contiguous(phys_addr_t base,
++int __init cma_declare_contiguous_nid(phys_addr_t base,
+ 			phys_addr_t size, phys_addr_t limit,
+ 			phys_addr_t alignment, unsigned int order_per_bit,
+-			bool fixed, const char *name, struct cma **res_cma)
++			bool fixed, const char *name, struct cma **res_cma,
++			int nid)
+ {
+ 	phys_addr_t memblock_end =3D memblock_end_of_DRAM();
+ 	phys_addr_t highmem_start;
+@@ -336,14 +338,14 @@ int __init cma_declare_contiguous(phys_addr_t base,
+ 		 * memory in case of failure.
+ 		 */
+ 		if (base < highmem_start && limit > highmem_start) {
+-			addr =3D memblock_phys_alloc_range(size, alignment,
+-							 highmem_start, limit);
++			addr =3D memblock_alloc_range_nid(size, alignment,
++					highmem_start, limit, nid, false);
+ 			limit =3D highmem_start;
+ 		}
+=20
+ 		if (!addr) {
+-			addr =3D memblock_phys_alloc_range(size, alignment, base,
+-							 limit);
++			addr =3D memblock_alloc_range_nid(size, alignment, base,
++					alimit, nid, false);
+ 			if (!addr) {
+ 				ret =3D -ENOMEM;
+ 				goto err;
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 4d06bbaded0f..c79ba6f9920c 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1349,7 +1349,7 @@ __next_mem_pfn_range_in_zone(u64 *idx, struct zone =
+*zone,
+  * Return:
+  * Physical address of allocated memory block on success, %0 on failure.
+  */
+-static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
++phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
+ 					phys_addr_t align, phys_addr_t start,
+ 					phys_addr_t end, int nid,
+ 					bool exact_nid)
+--=20
+2.24.1
 
-
-Regards,
-Markus
