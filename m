@@ -2,316 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B1019CDB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45F319CDBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390326AbgDCAAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 20:00:55 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:51756 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390235AbgDCAAy (ORCPT
+        id S2390332AbgDCAIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 20:08:09 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:42182 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390235AbgDCAII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 20:00:54 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032NvZwk091736;
-        Fri, 3 Apr 2020 00:00:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=x53Ml8cyQklcI9PJUMJawCXgLBW3DQoGqYUbTzujAw0=;
- b=ntC1dBAnVnvlVwTk+NkzqnMnm51HAT/qShIH2UOoZF4zLCbVyqJZni5MCqSKhtpw1IsX
- 83n/w0USEM8QZ+2/gT/ElqJWTbf8V0K8Padk++ELbxbn3DfyP6BW5be/wxAH8XKHSknN
- bItgimVtZx4AounPGx/k1QbBlqRSzpCymOac6mbu5zTmXLefqSKUT97X5ILEJM/jBuKa
- ICo4sUg7B3Rgva/aTMAlT3kpTloCq05/chG0vpDnJOucSrJherPkQOLW0QX7bKiQ6ZX+
- RcoDlP2NYm2vdb1M+F7ZAnl4l/SoyeCh37Cw2FCLuGsKxBLO+FtvvRep2TRutEEwIPDt 4A== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 303ceved45-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 00:00:31 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 032NwLOq144927;
-        Fri, 3 Apr 2020 00:00:30 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 302g4wd72k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 00:00:30 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03300S9i010672;
-        Fri, 3 Apr 2020 00:00:28 GMT
-Received: from vbusired-dt (/10.154.166.66)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 02 Apr 2020 17:00:28 -0700
-Date:   Thu, 2 Apr 2020 19:00:23 -0500
-From:   Venu Busireddy <venu.busireddy@oracle.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rientjes@google.com,
-        srutherford@google.com, luto@kernel.org, brijesh.singh@amd.com
-Subject: Re: [PATCH v6 08/14] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
- hypercall
-Message-ID: <20200403000023.GA660621@vbusired-dt>
-References: <cover.1585548051.git.ashish.kalra@amd.com>
- <265ef8a0ab75f01bc673cce6ddcf7988c7623943.1585548051.git.ashish.kalra@amd.com>
+        Thu, 2 Apr 2020 20:08:08 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jK9sV-000597-3R; Thu, 02 Apr 2020 18:08:07 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jK9sU-0001GJ-4z; Thu, 02 Apr 2020 18:08:06 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+References: <87blobnq02.fsf@x220.int.ebiederm.org>
+        <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+        <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+        <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
+        <87lfnda3w3.fsf@x220.int.ebiederm.org>
+        <CAHk-=wjuv_J+2KOi+Fhr_nBKYf5CXr76DQKThA3uxXm3rCC3Uw@mail.gmail.com>
+Date:   Thu, 02 Apr 2020 19:05:23 -0500
+In-Reply-To: <CAHk-=wjuv_J+2KOi+Fhr_nBKYf5CXr76DQKThA3uxXm3rCC3Uw@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 2 Apr 2020 16:44:15 -0700")
+Message-ID: <87imih8md8.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <265ef8a0ab75f01bc673cce6ddcf7988c7623943.1585548051.git.ashish.kalra@amd.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=5
- mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020177
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
- clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
- suspectscore=5 mlxscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004020177
+Content-Type: text/plain
+X-XM-SPF: eid=1jK9sU-0001GJ-4z;;;mid=<87imih8md8.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+UA3zrmrj/p6b8R/HYq++Njt3rqPDaiwc=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: ****
+X-Spam-Status: No, score=4.6 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMGppyBdWords,
+        XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4887]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  2.5 XMGppyBdWords BODY: Gappy or l33t words
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ****;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 513 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 3.5 (0.7%), b_tie_ro: 2.3 (0.5%), parse: 0.79
+        (0.2%), extract_message_metadata: 13 (2.5%), get_uri_detail_list: 2.9
+        (0.6%), tests_pri_-1000: 20 (3.9%), tests_pri_-950: 0.99 (0.2%),
+        tests_pri_-900: 0.79 (0.2%), tests_pri_-90: 86 (16.8%), check_bayes:
+        85 (16.6%), b_tokenize: 9 (1.8%), b_tok_get_all: 12 (2.3%),
+        b_comp_prob: 2.8 (0.5%), b_tok_touch_all: 58 (11.2%), b_finish: 0.75
+        (0.1%), tests_pri_0: 378 (73.6%), check_dkim_signature: 0.43 (0.1%),
+        check_dkim_adsp: 2.2 (0.4%), poll_dns_idle: 0.85 (0.2%), tests_pri_10:
+        1.73 (0.3%), tests_pri_500: 6 (1.2%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-03-30 06:22:07 +0000, Ashish Kalra wrote:
-> From: Brijesh Singh <Brijesh.Singh@amd.com>
-> 
-> This hypercall is used by the SEV guest to notify a change in the page
-> encryption status to the hypervisor. The hypercall should be invoked
-> only when the encryption attribute is changed from encrypted -> decrypted
-> and vice versa. By default all guest pages are considered encrypted.
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: x86@kernel.org
-> Cc: kvm@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
+> On Thu, Apr 2, 2020 at 4:04 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> That is not the direction I intend to take either.
+>
+> Ahh, good. Because those kinds of "play games with dropping locks in
+> the middle based on conditionals" really have been horrible.
+>
+> Yes, we've done it, and it's almost always been asource of truly subtle bugs.
+>
+>> The exec_update_mutex is to be a strict subset of today's
+>> cred_guard_mutex.  I tried to copy cred_guard_mutex's unlock style so
+>> that was obvious and that turns out was messier than I intended.
+>
+> Yes. That is why I had no problem pulling that subset, and my worries
+> were mainly about the explanations and that flag use.
+>
+>> Since I thought I already knew what was in the patches and the worst
+>> problem was the missing unlock of cred_guard_mutex, and I know Bernd's
+>> patches had been tested I applied them.  I missed that Bernd had added
+>> the exec_mmap_called flag into my patch.  I thought he had only added
+>> the missing unlock.
+>
+> Ahh, so you meant for all of that to be entirely static refactoring,
+> rather than the conditional unlock depending on just how far we had
+> gotten.
+>
+> Good, that's generally the much superior approach.
 
-> ---
->  Documentation/virt/kvm/hypercalls.rst | 15 +++++
->  arch/x86/include/asm/kvm_host.h       |  2 +
->  arch/x86/kvm/svm.c                    | 95 +++++++++++++++++++++++++++
->  arch/x86/kvm/vmx/vmx.c                |  1 +
->  arch/x86/kvm/x86.c                    |  6 ++
->  include/uapi/linux/kvm_para.h         |  1 +
->  6 files changed, 120 insertions(+)
-> 
-> diff --git a/Documentation/virt/kvm/hypercalls.rst b/Documentation/virt/kvm/hypercalls.rst
-> index dbaf207e560d..ff5287e68e81 100644
-> --- a/Documentation/virt/kvm/hypercalls.rst
-> +++ b/Documentation/virt/kvm/hypercalls.rst
-> @@ -169,3 +169,18 @@ a0: destination APIC ID
->  
->  :Usage example: When sending a call-function IPI-many to vCPUs, yield if
->  	        any of the IPI target vCPUs was preempted.
-> +
-> +
-> +8. KVM_HC_PAGE_ENC_STATUS
-> +-------------------------
-> +:Architecture: x86
-> +:Status: active
-> +:Purpose: Notify the encryption status changes in guest page table (SEV guest)
-> +
-> +a0: the guest physical address of the start page
-> +a1: the number of pages
-> +a2: encryption attribute
-> +
-> +   Where:
-> +	* 1: Encryption attribute is set
-> +	* 0: Encryption attribute is cleared
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 98959e8cd448..90718fa3db47 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1267,6 +1267,8 @@ struct kvm_x86_ops {
->  
->  	bool (*apic_init_signal_blocked)(struct kvm_vcpu *vcpu);
->  	int (*enable_direct_tlbflush)(struct kvm_vcpu *vcpu);
-> +	int (*page_enc_status_hc)(struct kvm *kvm, unsigned long gpa,
-> +				  unsigned long sz, unsigned long mode);
->  };
->  
->  struct kvm_arch_async_pf {
-> diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-> index 7c2721e18b06..1d8beaf1bceb 100644
-> --- a/arch/x86/kvm/svm.c
-> +++ b/arch/x86/kvm/svm.c
-> @@ -136,6 +136,8 @@ struct kvm_sev_info {
->  	int fd;			/* SEV device fd */
->  	unsigned long pages_locked; /* Number of pages locked */
->  	struct list_head regions_list;  /* List of registered regions */
-> +	unsigned long *page_enc_bmap;
-> +	unsigned long page_enc_bmap_size;
->  };
->  
->  struct kvm_svm {
-> @@ -1991,6 +1993,9 @@ static void sev_vm_destroy(struct kvm *kvm)
->  
->  	sev_unbind_asid(kvm, sev->handle);
->  	sev_asid_free(sev->asid);
-> +
-> +	kvfree(sev->page_enc_bmap);
-> +	sev->page_enc_bmap = NULL;
->  }
->  
->  static void avic_vm_destroy(struct kvm *kvm)
-> @@ -7593,6 +7598,94 @@ static int sev_receive_finish(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  	return ret;
->  }
->  
-> +static int sev_resize_page_enc_bitmap(struct kvm *kvm, unsigned long new_size)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	unsigned long *map;
-> +	unsigned long sz;
-> +
-> +	if (sev->page_enc_bmap_size >= new_size)
-> +		return 0;
-> +
-> +	sz = ALIGN(new_size, BITS_PER_LONG) / 8;
-> +
-> +	map = vmalloc(sz);
-> +	if (!map) {
-> +		pr_err_once("Failed to allocate encrypted bitmap size %lx\n",
-> +				sz);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	/* mark the page encrypted (by default) */
-> +	memset(map, 0xff, sz);
-> +
-> +	bitmap_copy(map, sev->page_enc_bmap, sev->page_enc_bmap_size);
-> +	kvfree(sev->page_enc_bmap);
-> +
-> +	sev->page_enc_bmap = map;
-> +	sev->page_enc_bmap_size = new_size;
-> +
-> +	return 0;
-> +}
-> +
-> +static int svm_page_enc_status_hc(struct kvm *kvm, unsigned long gpa,
-> +				  unsigned long npages, unsigned long enc)
-> +{
-> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-> +	kvm_pfn_t pfn_start, pfn_end;
-> +	gfn_t gfn_start, gfn_end;
-> +	int ret;
-> +
-> +	if (!sev_guest(kvm))
-> +		return -EINVAL;
-> +
-> +	if (!npages)
-> +		return 0;
-> +
-> +	gfn_start = gpa_to_gfn(gpa);
-> +	gfn_end = gfn_start + npages;
-> +
-> +	/* out of bound access error check */
-> +	if (gfn_end <= gfn_start)
-> +		return -EINVAL;
-> +
-> +	/* lets make sure that gpa exist in our memslot */
-> +	pfn_start = gfn_to_pfn(kvm, gfn_start);
-> +	pfn_end = gfn_to_pfn(kvm, gfn_end);
-> +
-> +	if (is_error_noslot_pfn(pfn_start) && !is_noslot_pfn(pfn_start)) {
-> +		/*
-> +		 * Allow guest MMIO range(s) to be added
-> +		 * to the page encryption bitmap.
-> +		 */
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (is_error_noslot_pfn(pfn_end) && !is_noslot_pfn(pfn_end)) {
-> +		/*
-> +		 * Allow guest MMIO range(s) to be added
-> +		 * to the page encryption bitmap.
-> +		 */
-> +		return -EINVAL;
-> +	}
-> +
-> +	mutex_lock(&kvm->lock);
-> +	ret = sev_resize_page_enc_bitmap(kvm, gfn_end);
-> +	if (ret)
-> +		goto unlock;
-> +
-> +	if (enc)
-> +		__bitmap_set(sev->page_enc_bmap, gfn_start,
-> +				gfn_end - gfn_start);
-> +	else
-> +		__bitmap_clear(sev->page_enc_bmap, gfn_start,
-> +				gfn_end - gfn_start);
-> +
-> +unlock:
-> +	mutex_unlock(&kvm->lock);
-> +	return ret;
-> +}
-> +
->  static int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
->  {
->  	struct kvm_sev_cmd sev_cmd;
-> @@ -7995,6 +8088,8 @@ static struct kvm_x86_ops svm_x86_ops __ro_after_init = {
->  	.need_emulation_on_page_fault = svm_need_emulation_on_page_fault,
->  
->  	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
-> +
-> +	.page_enc_status_hc = svm_page_enc_status_hc,
->  };
->  
->  static int __init svm_init(void)
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 079d9fbf278e..f68e76ee7f9c 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -8001,6 +8001,7 @@ static struct kvm_x86_ops vmx_x86_ops __ro_after_init = {
->  	.nested_get_evmcs_version = NULL,
->  	.need_emulation_on_page_fault = vmx_need_emulation_on_page_fault,
->  	.apic_init_signal_blocked = vmx_apic_init_signal_blocked,
-> +	.page_enc_status_hc = NULL,
->  };
->  
->  static void vmx_cleanup_l1d_flush(void)
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index cf95c36cb4f4..68428eef2dde 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -7564,6 +7564,12 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
->  		kvm_sched_yield(vcpu->kvm, a0);
->  		ret = 0;
->  		break;
-> +	case KVM_HC_PAGE_ENC_STATUS:
-> +		ret = -KVM_ENOSYS;
-> +		if (kvm_x86_ops->page_enc_status_hc)
-> +			ret = kvm_x86_ops->page_enc_status_hc(vcpu->kvm,
-> +					a0, a1, a2);
-> +		break;
->  	default:
->  		ret = -KVM_ENOSYS;
->  		break;
-> diff --git a/include/uapi/linux/kvm_para.h b/include/uapi/linux/kvm_para.h
-> index 8b86609849b9..847b83b75dc8 100644
-> --- a/include/uapi/linux/kvm_para.h
-> +++ b/include/uapi/linux/kvm_para.h
-> @@ -29,6 +29,7 @@
->  #define KVM_HC_CLOCK_PAIRING		9
->  #define KVM_HC_SEND_IPI		10
->  #define KVM_HC_SCHED_YIELD		11
-> +#define KVM_HC_PAGE_ENC_STATUS		12
->  
->  /*
->   * hypercalls use architecture specific
-> -- 
-> 2.17.1
-> 
+Looking at it right now if I add the unlock to one code path I can
+get the flag and free_binprm out of it, and have it completely static.
+
+> I absolutely _hate_ the "drop and retake" model, unless it's a very
+> local case with a very explicit retry path.
+>
+> In contrast, the "we have a flag that shows how far we've gotten"
+> _has_ been a successful model, and while I much prefer a static "lock
+> pairs with unlock", that "I have done this, so you need to unlock" is
+> not entirely out of the question when the static rules become too
+> complex to think about.
+
+We do definitely need one of those for the point of no return.  I
+need to check if we can set it sooner.  I think we have a weird case
+where we can't set the flag because calling force_sigsegv during when
+coredumping is rude.
+
+> The vfs code has something similar in FMODE_OPENED which is basically
+> a flag saying "I actually made it all the way to the ->open()"
+> callback. We used to have a static model, but the rules for when we
+> can use fput(), and when we have to use fdrop() were too hard for
+> people.
+>
+>> I spotted the weirdness in unlocking exec_update_mutex, and because it
+>> does fix a real world deadlock with ptrace I did not back it out from my
+>> tree.
+>>
+>> I have been much laxer on the details than I like to be my apologies.
+>
+> Ok, as long as we have a sane plan..
+>
+> And
+>
+>> The plan is:
+>>         exec_udpate_mutex will cover just the subset of cred_guard_mutex
+>>         after the point of no return, and after we do any actions that
+>>         might block waiting for userspace to do anything.
+>>
+>>         So exec_update_mutex will just cover those things that exec
+>>         is updating, so if you want an atomic snapshot of them
+>>         plus the appropriate struct cred you can grab exec_update_mutex.
+>>
+>>         I added a new mutex instead of just fixing cred_guard_mutex so
+>>         that we can update or revert the individual code paths if it
+>>         is found that something is wrong.
+>>
+>>         The cred_guard_mutex also prevents other tasks from starting
+>>         to ptrace the task that is exec'ing, and other tasks from
+>>         setting no_new_privs on the task that is exec'ing.
+>>
+>>         My plan is to carefully refactor the code so it can perform
+>>         both the ptrace and no_new_privs checks after the point of
+>>         no return.
+>
+> Ok. Sounds good.
+>
+>> I have uncovered all kinds of surprises while working in that direction
+>> and I realize it is going to take a very delicate and careful touch to
+>> achieve my goal.
+>>
+>> There are silly things like normal linux exec when you are ptraced and
+>> exec changes the credentials the ordinary code will continue with the
+>> old credentials, but the an LSM enabled your process is likely to be
+>> killed instead.
+>
+> Yeah. The "continue with old credentials" is actually very traditional
+> and the original behavior, and is useful for handling the case of
+> debugging something that is suid, but doesn't necessarily _require_
+> it.
+
+If we continue with old credentials I think we are still setting
+AT_SECURE which seems odd.  Especially since it doesn't appear to be
+intentional.
+
+> But the LSM's just say yes/no.
+
+Oh I wish what the LSM's were doing was anything approaching as
+simple as merely saying yes/no during exec.
+
+> I have this dim memory that it also triggers when you do the debugging
+> as root, but that may be some medication-induced memory.
+
+I have a memory of someone fixing something like that years ago.
+If you have sufficient privileges while ptracing the current code will
+allow you to trace a suid root exec.
+
+>> There is the personal mind blowing scenario where selinux will increase
+>> your credentials upon exec but if a magic directive is supplied in it's
+>> rules will avoid setting AT_SECURE, so that userspace won't protect
+>> itself from hostile takeover from the pre credential change environment.
+>> Much to my surprise "noatsecure" is a known and documented feature of
+>> selinux.  I am not certain but I think I even spotted it in use on
+>> production.
+>
+> We have had a _ton_ of random small rules so that people could enable
+> SElinux in legacy environments.
+>
+> They are _probably_ effectively dead code in this day and age, but
+> it's hard to tell...
+
+For that specific case I attempted to look at the SELinux rules
+file on a production RHEL7 configuration and strings told me
+"noatsecure" is present.  But the whole thing is a binary blob
+and I have not spent enough time to figure out how to properly
+return it to test so I can see what that "noatsecure" means.
+It might just have been a section header in the binary file.
+
+There are a lot of things like that are either going to need comments
+from the relevant maintiners or to just be avoided for the time being.
+
+The plan is small careful patches so I get through it with setting
+off the minimal number of landmines.
+
+Eric
