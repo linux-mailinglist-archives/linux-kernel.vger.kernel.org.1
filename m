@@ -2,194 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A3719D991
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A4C19D98F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404107AbgDCOza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:55:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60436 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404068AbgDCOz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:55:28 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2404077AbgDCOzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:55:23 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:33677 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404068AbgDCOzW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 10:55:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585925721;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3R5aqOAa6cJV3ccGmaNvYRE09DuIFl70G2nLJBN8x94=;
+        b=CkM5y40/zmn+d3qJ2YjJB2xuBfOT1S6fL8lTZqWFCEL63Db3BqWtFcT72GZOTPRav+VDm6
+        IXPS0Wivj1WPJWkKq5TCHWXFYTK7wBK4oaNV4IcxETWA+xdKaRMzHn9eINgHC1/Cd3Iwqh
+        jk12QuzSN6nLiW/vNI8fkS2xv0kRtX0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-Kbxj0pLlMJePshtVQGBF3w-1; Fri, 03 Apr 2020 10:55:19 -0400
+X-MC-Unique: Kbxj0pLlMJePshtVQGBF3w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7DF0D2078C;
-        Fri,  3 Apr 2020 14:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585925728;
-        bh=JsPp7Hzk55yQAjqlH03LLJWupVqaFbp5tI//OKXbyQo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ADln7111qLeot57IzmYNVtjoOH1ZVcj1CjtBlRdLl+QhKKc/ZPo350BPsFKUcBKOc
-         BO6np1kRaqFDADhdFp6ngNoD3aCdwCl4d557Ct/ZvQQUxA3lDErU1cXfqQ7HlrGR0c
-         9uRJzrQ4v9TxgdBPsRx+sTDWIlgtnbdUP5nfxXIQ=
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-        Clark Williams <williams@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Zefan Li <lizefan@huawei.com>
-Subject: [PATCH 08/31] perf/core: Add PERF_SAMPLE_CGROUP feature
-Date:   Fri,  3 Apr 2020 11:54:20 -0300
-Message-Id: <20200403145443.24774-9-acme@kernel.org>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20200403145443.24774-1-acme@kernel.org>
-References: <20200403145443.24774-1-acme@kernel.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B94B0107ACCC;
+        Fri,  3 Apr 2020 14:55:18 +0000 (UTC)
+Received: from treble (ovpn-118-100.rdu2.redhat.com [10.10.118.100])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F7685C1BE;
+        Fri,  3 Apr 2020 14:55:17 +0000 (UTC)
+Date:   Fri, 3 Apr 2020 09:55:15 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        raphael.gault@arm.com
+Subject: Re: [PATCH v2 10/10] objtool: Support multiple stack_op per
+ instruction
+Message-ID: <20200403145515.ywubrfbg44a22orf@treble>
+References: <20200327152847.15294-1-jthierry@redhat.com>
+ <20200327152847.15294-11-jthierry@redhat.com>
+ <20200402175426.77houvk46xhcxxmn@treble>
+ <3b3f07b3-172b-0560-96c7-d9386e3cab23@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3b3f07b3-172b-0560-96c7-d9386e3cab23@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Namhyung Kim <namhyung@kernel.org>
+On Fri, Apr 03, 2020 at 09:01:46AM +0100, Julien Thierry wrote:
+> 
+> 
+> On 4/2/20 6:54 PM, Josh Poimboeuf wrote:
+> > On Fri, Mar 27, 2020 at 03:28:47PM +0000, Julien Thierry wrote:
+> > > @@ -127,6 +129,10 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
+> > >   	if (insn.sib.nbytes)
+> > >   		sib = insn.sib.bytes[0];
+> > > +	op = calloc(1, sizeof(*op));
+> > > +	if (!op)
+> > > +		return -1;
+> > > +
+> > 
+> > Why not malloc()?
+> > 
+> 
+> It's just that previsously, stack_op was part of the instruction structure
+> and was initialized to all 0 in decode_instructions(). Now that it's created
+> here, I assumed it would be better to have the same thing here and
+> initialized the new stack_op to all 0.
+> 
+> Do you prefer to have an explicit malloc() + memset()?
 
-The PERF_SAMPLE_CGROUP bit is to save (perf_event) cgroup information in
-the sample.  It will add a 64-bit id to identify current cgroup and it's
-the file handle in the cgroup file system.  Userspace should use this
-information with PERF_RECORD_CGROUP event to match which cgroup it
-belongs.
+Maybe just add a comment that calloc() is equivalent to malloc() +
+memset() zero, for us user-space neophytes :-)
 
-I put it before PERF_SAMPLE_AUX for simplicity since it just needs a
-64-bit word.  But if we want bigger samples, I can work on that
-direction too.
-
-Committer testing:
-
-  $ pahole perf_sample_data | grep -w cgroup -B5 -A5
-  	/* --- cacheline 4 boundary (256 bytes) was 56 bytes ago --- */
-  	struct perf_regs           regs_intr;            /*   312    16 */
-  	/* --- cacheline 5 boundary (320 bytes) was 8 bytes ago --- */
-  	u64                        stack_user_size;      /*   328     8 */
-  	u64                        phys_addr;            /*   336     8 */
-  	u64                        cgroup;               /*   344     8 */
-
-  	/* size: 384, cachelines: 6, members: 22 */
-  	/* padding: 32 */
-  };
-  $
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Tejun Heo <tj@kernel.org>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Zefan Li <lizefan@huawei.com>
-Link: http://lore.kernel.org/lkml/20200325124536.2800725-3-namhyung@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- include/linux/perf_event.h      |  1 +
- include/uapi/linux/perf_event.h |  3 ++-
- init/Kconfig                    |  3 ++-
- kernel/events/core.c            | 22 ++++++++++++++++++++++
- 4 files changed, 27 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-index 8768a39b5258..9c3e7619c929 100644
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -1020,6 +1020,7 @@ struct perf_sample_data {
- 	u64				stack_user_size;
- 
- 	u64				phys_addr;
-+	u64				cgroup;
- } ____cacheline_aligned;
- 
- /* default value for data source */
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index de95f6c7b273..7b2d6fc9e6ed 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -142,8 +142,9 @@ enum perf_event_sample_format {
- 	PERF_SAMPLE_REGS_INTR			= 1U << 18,
- 	PERF_SAMPLE_PHYS_ADDR			= 1U << 19,
- 	PERF_SAMPLE_AUX				= 1U << 20,
-+	PERF_SAMPLE_CGROUP			= 1U << 21,
- 
--	PERF_SAMPLE_MAX = 1U << 21,		/* non-ABI */
-+	PERF_SAMPLE_MAX = 1U << 22,		/* non-ABI */
- 
- 	__PERF_SAMPLE_CALLCHAIN_EARLY		= 1ULL << 63, /* non-ABI; internal use */
- };
-diff --git a/init/Kconfig b/init/Kconfig
-index 20a6ac33761c..7766b06a0038 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1027,7 +1027,8 @@ config CGROUP_PERF
- 	help
- 	  This option extends the perf per-cpu mode to restrict monitoring
- 	  to threads which belong to the cgroup specified and run on the
--	  designated cpu.
-+	  designated cpu.  Or this can be used to have cgroup ID in samples
-+	  so that it can monitor performance events among cgroups.
- 
- 	  Say N if unsure.
- 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 994932d5e474..1569979c8912 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -1862,6 +1862,9 @@ static void __perf_event_header_size(struct perf_event *event, u64 sample_type)
- 	if (sample_type & PERF_SAMPLE_PHYS_ADDR)
- 		size += sizeof(data->phys_addr);
- 
-+	if (sample_type & PERF_SAMPLE_CGROUP)
-+		size += sizeof(data->cgroup);
-+
- 	event->header_size = size;
- }
- 
-@@ -6867,6 +6870,9 @@ void perf_output_sample(struct perf_output_handle *handle,
- 	if (sample_type & PERF_SAMPLE_PHYS_ADDR)
- 		perf_output_put(handle, data->phys_addr);
- 
-+	if (sample_type & PERF_SAMPLE_CGROUP)
-+		perf_output_put(handle, data->cgroup);
-+
- 	if (sample_type & PERF_SAMPLE_AUX) {
- 		perf_output_put(handle, data->aux_size);
- 
-@@ -7066,6 +7072,16 @@ void perf_prepare_sample(struct perf_event_header *header,
- 	if (sample_type & PERF_SAMPLE_PHYS_ADDR)
- 		data->phys_addr = perf_virt_to_phys(data->addr);
- 
-+#ifdef CONFIG_CGROUP_PERF
-+	if (sample_type & PERF_SAMPLE_CGROUP) {
-+		struct cgroup *cgrp;
-+
-+		/* protected by RCU */
-+		cgrp = task_css_check(current, perf_event_cgrp_id, 1)->cgroup;
-+		data->cgroup = cgroup_id(cgrp);
-+	}
-+#endif
-+
- 	if (sample_type & PERF_SAMPLE_AUX) {
- 		u64 size;
- 
-@@ -11264,6 +11280,12 @@ static int perf_copy_attr(struct perf_event_attr __user *uattr,
- 
- 	if (attr->sample_type & PERF_SAMPLE_REGS_INTR)
- 		ret = perf_reg_validate(attr->sample_regs_intr);
-+
-+#ifndef CONFIG_CGROUP_PERF
-+	if (attr->sample_type & PERF_SAMPLE_CGROUP)
-+		return -EINVAL;
-+#endif
-+
- out:
- 	return ret;
- 
 -- 
-2.21.1
+Josh
 
