@@ -2,173 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F74F19DE8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 21:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D49719DE90
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 21:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390895AbgDCT1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 15:27:12 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39299 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728288AbgDCT1M (ORCPT
+        id S2390991AbgDCT3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 15:29:08 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40905 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728636AbgDCT3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 15:27:12 -0400
-Received: by mail-lj1-f193.google.com with SMTP id i20so8124984ljn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 12:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MIK9E+nNxRyxi/S8zbmiCFNW/N4clmaRNsapSTJyCVA=;
-        b=dAtNuE2Qapg9anSlir7YSxVBhOfENs5fr72GmEEvjVZFoRd3K+rTBbVf8pjGp5y+rG
-         i1VXmIJwyYNEtA2PuX6uRnNUxwkbWjArhtk+qldFXALehEFE5rziDdhvqJ4f6YoHnDbO
-         YsxRreUMmkzNwG75syldd+XXahihORUSRlrR8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MIK9E+nNxRyxi/S8zbmiCFNW/N4clmaRNsapSTJyCVA=;
-        b=sKi6ExvEnIBpjot/s6X/92VDf0lltgQNBpN077Jvz7eTmwZDzl9X5nMwCUQFSSyDmJ
-         jdicIYYgeFDvEIuKhLZnVs/yVgsLko8OsI3OOSH94nr6VRBWmQe15iA0Edbx78nPAu3B
-         75KxooGCiDwMdWfyp1UtnaC3L95cN5WC5fWWSgsEh0BnBr5Yt5+dsATsOWtTbdRJamZl
-         uwrZzsI+KuwcI+yq0j01wH6zfnTbU9OC/3wLsx7uHBA25C1ggP70PatkvEKScNK0x8/J
-         oh1lku2M37yqjQlZ2bn9wfkZYpFZnIcwchI+AEufQ3Jk/0mXUPYWHrEmQAqeZzpd+vVS
-         JXXw==
-X-Gm-Message-State: AGi0PuaG/vf2FLm76+9UKfUqOLGOwbYbAIv5jj9jauzjoAAxb5hii2Xp
-        Ros79eGM3XfT+Y50c2j28JC3mZbTZNA=
-X-Google-Smtp-Source: APiQypK/YqZ37cvGUPNF/QUqLPuRA6xJIqOe5iBloJroDD3Q9YizkEHMvVKZgmI91kxRuLpIX6sqxQ==
-X-Received: by 2002:a2e:b804:: with SMTP id u4mr5590023ljo.159.1585942028677;
-        Fri, 03 Apr 2020 12:27:08 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id 5sm6401271lfq.20.2020.04.03.12.27.07
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 12:27:07 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id k21so8186671ljh.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 12:27:07 -0700 (PDT)
-X-Received: by 2002:a2e:8911:: with SMTP id d17mr5862737lji.16.1585942027228;
- Fri, 03 Apr 2020 12:27:07 -0700 (PDT)
+        Fri, 3 Apr 2020 15:29:08 -0400
+Received: from bigeasy by Galois.linutronix.de with local (Exim 4.80)
+        (envelope-from <bigeasy@linutronix.de>)
+        id 1jKRzy-00030I-6W; Fri, 03 Apr 2020 21:29:02 +0200
+Date:   Fri, 3 Apr 2020 21:29:02 +0200
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, LKP <lkp@lists.01.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH v2] workqueue: Remove the warning in wq_worker_sleeping()
+Message-ID: <20200403192902.ws33fhs5mrxg6dvo@linutronix.de>
+References: <20200327074308.GY11705@shao2-debian>
+ <20200327175350.rw5gex6cwum3ohnu@linutronix.de>
+ <20200327232959.rpylymw2edhtxuwr@linutronix.de>
+ <20200403145326.GA162390@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <87blobnq02.fsf@x220.int.ebiederm.org> <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
- <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
- <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com> <87lfnda3w3.fsf@x220.int.ebiederm.org>
-In-Reply-To: <87lfnda3w3.fsf@x220.int.ebiederm.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 3 Apr 2020 12:26:51 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
-Message-ID: <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200403145326.GA162390@mtj.duckdns.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ For Waiman & co - the problem is that the current cred_guard_mutex
-is horrendous and has problems with execve() deadlocking against
-various users. We've had this bug before, there's a new one, it's just
-nasty ]
+On 2020-04-03 10:53:26 [-0400], Tejun Heo wrote:
+> Hello,
+Hello Tejun,
 
-On Thu, Apr 2, 2020 at 4:04 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> That is not the direction I intend to take either.
->
-> I was hoping I could put off replying to this thread for a bit because
-> I only managed to get 4 hours of sleep last night and I am not as alert
-> to technical details as I would like to be.
+> This is not a usual control flow, right? 
 
-Hmm.. So I've been looking at this cred_guard_mutex, and I wonder...
+The worker is blocked on something and while invoking schedule() it
+needs to be preempted by an interrupt which opens interrupts and invokes
+schedule() as well.
+Interrupt handler are not allowed to enable interrupts in general.
+Page-fault handler do so by they happen only while the calling context
+triggered a page-fault. Since the kernel is always mapped, this does not
+happen.
+The async page fault handler is any exception here. I don't find
+anything else while looking over x86's idtentry. So this makes it highly
+unusual control flow, yes.
 
-This is a bit hand-wavy, because I haven't walker through all the
-paths, but could we perhaps work around a lot of the problems a
-different way., namely:
+> Can we annotate this case specifically
+> instead of weakening santiy check for generic cases?
 
- - make the "cred_guard_mutex" an rwsem-like thing instead of being a mutex.
+puh. So if this
+  do_async_page_fault() -> do_page_fault()
 
- - make the ptrace_attach() case get it for writing - not because
-ptrace changes the creds, but because ptrace changes 'task->ptrace'
-and depends on dumpability etc.
+never happens but only
+  do_async_page_fault() -> kvm_async_pf_task_wait()
 
- - change the *name* of that damn thing. Not because it's now
-rwsem'ish rather than a mutex, but because it was never really about
-just "creds". It was about creds+ptrace+dumpable flags etc.
+then kvm_async_pf_task_wait() could invoke preempt_schedule() instead.
+This would avoid the worker part (and the warning) but is only available
+for PREEMPTION kernels. And I think the former case might happen.
 
- - make all the ones that read the creds to just take it for reading
-(IOW, the cases that were basically switched over to
-exec_update_mutex).
+> Thanks.
+> 
 
- - and finally: make "execve()" take it just for reading too, but
-introduce a "upgrade to write" at the very end (when it actually is
-all done and then finally changes the creds and dumpability)
-
-Wouldn't that solve all problems? We wouldn't get deadlocks wrt
-execve(), simply because execve() doesn't need it to be writable, and
-the things execve() does and can deadlock all only want readability.
-
-But hear me out, because the above is fundamentally broken in a couple
-of ways, so let me address that brokenness before you tell me I'm a
-complete nincompoop and an idiot.
-
-I'm including some locking people here because of these issues, so
-that they can maybe verify my thinking.
-
- (a) our rwsem's are fair
-
-     So the whole "execve takes it for reading, so now others can take
-it for reading too without deadlocks" is simply not true - if you use
-the existing rwsem.
-
-     Because a concurrent (blocked) writer will then block other
-readers for fairness reasons, and holding it for reading doesn't
-guarantee that others can get it for reading.
-
-     So clearly, the above doesn't even *fix* the deadlocks - unless
-we have an unfair mode (or just a special lock for just this that is
-not our standard rwsem, but a special unfair one).
-
-     So I'm suggesting we use a special unfair rwsem here (we can make
-a simple spinlock-based one - it doesn't need to be as clever or
-optimized as the real rwsems are)
-
- (b) similarly, our rwsem's don't actually have a "upgrade from read
-to write", because that's also a fundamentally deadlocky operation.
-
-     Again, that's true. Except execve() is special, and we know
-there's only _one_ execve() at a time that will complete, since we're
-serializing them. So for this particular use, "upgrade to write" would
-be possible without the general-case deadlock issues.
-
- (c) I didn't think things through, and even with these special
-semantics, my idea is complete garbage
-
-     Ok, this may well be true.
-
-Anyway, the advantage of this (if it works) is that it would allow us
-to go back to the _really_ simple original model of just taking this
-lock for reading at the beginning of execve(), and not worrying so
-much about complex nesting or very complex rules for exactly when we
-got the lock and error handling.
-
-The final part when we actually update the credentials and dumpability
-and stuff in execve() is actually fairly simple. So the "upgrade to a
-write lock" phase doesn't worry me too much.  It's the interaction
-with all the previous parts (which happen with it held just for
-reading) that tend to be the nastier ones.
-
-And ptrace_attach() really is special, and I think it would be the
-only one that really needs that write lock.
-
-The disadvantage, of course, is that it would require that
-special-case lock semantic, and I might also be missing some thing
-that makes it not work anyway.
-
-Comments? Am I just dreaming of a simpler model without my medications again?
-
-             Linus
+Sebastian
