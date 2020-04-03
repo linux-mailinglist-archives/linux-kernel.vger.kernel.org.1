@@ -2,149 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0036F19DC39
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1406319DC43
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391097AbgDCQ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:57:13 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:40006 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728126AbgDCQ5N (ORCPT
+        id S2391045AbgDCQ7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:59:01 -0400
+Received: from mail-vk1-f195.google.com ([209.85.221.195]:44219 "EHLO
+        mail-vk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgDCQ7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:57:13 -0400
-Received: by mail-lj1-f193.google.com with SMTP id 19so7635813ljj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 09:57:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Lrcp2Eiyu9q3gbWwkT5O7o0+h0SVlGQKfd2CEGLpkSk=;
-        b=vO+eeiD/lQC1CSyjmAXdVYyjpxA/6wbx6QY3B5R4u3MdCODxv2AslQR1ctFAaT7Aiy
-         M9dGkV21vwGECTPiycUVxQrhI9MhY1PzspHbaY6FW/oApQmcN7Cj68qfIrILTvpecWZ6
-         dtnrdRZbuRoQGG8bZNEuizWEXp98DPxaS/0Z3pMrDqmgQ4pQrasHu20byweMwOpvHP9o
-         lznug//ruWUFVKFQHNlmQKZV780xNoLsJbugMYOVO1u99suFlF//O1oyjBBhXoCtaK2q
-         NgiTmlJL0R8sTYudb1wOCt7/AaDp4bNDioFGPUcAlU4I9f9g5m96fBeiIq1D24Pxf0n2
-         h4Gw==
+        Fri, 3 Apr 2020 12:59:01 -0400
+Received: by mail-vk1-f195.google.com with SMTP id s194so2161545vkb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 09:59:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Lrcp2Eiyu9q3gbWwkT5O7o0+h0SVlGQKfd2CEGLpkSk=;
-        b=af+H/erMxfLZ+BUIOGR3D+ukMYRYzl94asqzYc6ZkCnAkVXHdaXvnCw/ws/xzszT70
-         F8FZDVEioGh9GgPWwhBhE9DQlpucdQDbGCmuxFRtJg2INPgQ8joyFao+IA76ESHN9YC4
-         6fEitb/yOL04A87OBo0D7wuPUoxVyWZjY+VkgrmTLskWCp4oBbQGIpQWsIXue2Jk5pg8
-         rMxVB1wkgdHfQ+OUUrp/F0K+U97j7dcYVjYKadllbC/kUsk4+xKqWk3rOlFGGOLfvoTk
-         lSvlTK3xyKV8YjiAWivYjdJIGozrpCS7Sf0Uu+5otu+WYERmoKc2TbFmc+FN5gRGIsND
-         4zQQ==
-X-Gm-Message-State: AGi0PuaZCsWzKKe+QXwRFJKfJWaM9z93BYqcUMR205UHMb7mmiNFbLx6
-        2NrjBT4h8rn1J5WRBTOmggarlK2qrTJ31DOzo7j++Q==
-X-Google-Smtp-Source: APiQypIlLBI+GMXY4EL8caQJbBUdCkGKQlXcd5SlW80FB8+ShNTXifqmL5vhorVKpCVB2cT5Q8vEf+GzUWvAc2TqhHI=
-X-Received: by 2002:a2e:9652:: with SMTP id z18mr973853ljh.79.1585933029892;
- Fri, 03 Apr 2020 09:57:09 -0700 (PDT)
+        bh=O4DnEM+cAWQKP5FuQpPtv+EXKWtJI0ZZt3lXLyRDV4k=;
+        b=QM04RCnhCV8QXlwY5/o9UQixSDcnt1RZh1HIOURMfINqGUy5aBE7HK20K1JOoCvDx6
+         ryNqCNsOpgzdUfQJ8ORM2rMHHH7uIXXRh+jEM6Rg5ekXLCISJXs50+jsP5mZ1qqwGSaA
+         LTuMj02wF8dW3LJanGkOSf4FHUqJQsKFm0ueyjD9Owj9sk9dDOtp9aWJ8HyhWqV8Ixqb
+         ubY9nXXdw/2s+fci+v+GFvy2uTf0GXPKwzGs3IuwwRbAqeoJBuENJfgUg3Ggd/umhSh0
+         npWbcIC4aiw1USTHcMKfhU1Y9WCXOeOR1LXQD8nmIqutF3B/ZUveyxayg88bPeDf0C1G
+         Vfvw==
+X-Gm-Message-State: AGi0PuajJQ4tblvujuXKQ1RniGwSQkxE5khEX5DdNjk89ZK+liRGzn34
+        JYaDBMRxAqG3sg1brYMTC3SQrcuoGHopS+dZOl8=
+X-Google-Smtp-Source: APiQypItpwWa29o7SbsLrI3WS4YGT3OFKC36zShwOBskr7UR96lF0VYZ7x/274flsv3LeQZjMNGC4VTP2lp2PHCjbSw=
+X-Received: by 2002:a1f:60d5:: with SMTP id u204mr7032846vkb.55.1585933139776;
+ Fri, 03 Apr 2020 09:58:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200403150236.74232-1-linux@roeck-us.net> <CALWDO_WK2Vcq+92isabfsn8+=0UPoexF4pxbnEcJJPGas62-yw@mail.gmail.com>
- <0f0ea237-5976-e56f-cd31-96b76bb03254@roeck-us.net>
-In-Reply-To: <0f0ea237-5976-e56f-cd31-96b76bb03254@roeck-us.net>
-From:   Alain Michaud <alainmichaud@google.com>
-Date:   Fri, 3 Apr 2020 12:56:58 -0400
-Message-ID: <CALWDO_VfZV0_uvsXyWAa-uOQ21228rUDsaChgkex88pyiP3U=A@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: Simplify / fix return values from tk_request
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sonny Sasaka <sonnysasaka@chromium.org>
+References: <CAOkhzLWMB8rr0x4KKfqruCcTLVq4dH6nZ365auMqA1arZ57J7g@mail.gmail.com>
+ <CAOkhzLVvmoB0TgS4bioP4PnxwmnT_+h0LbCya2=KkcHu1UT_Zw@mail.gmail.com>
+In-Reply-To: <CAOkhzLVvmoB0TgS4bioP4PnxwmnT_+h0LbCya2=KkcHu1UT_Zw@mail.gmail.com>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Fri, 3 Apr 2020 12:58:48 -0400
+Message-ID: <CAKb7UvgLr2A88jbx9Zvi3SjXoKbk4iZEg7LNQ4aL3VZhKVQu3A@mail.gmail.com>
+Subject: Re: acr: failed to load firmware with Kernel 5.6. Kernel 5.5 works
+ just fine.
+To:     Ben Skeggs <bskeggs@redhat.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>,
+        Zeno Davatz <zdavatz@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 3, 2020 at 12:43 PM Guenter Roeck <linux@roeck-us.net> wrote:
+Ben -- probably the ACR changes in 5.6 don't fall back nicely anymore
+when there's no firmware? The load shouldn't be failed, just GR
+disabled...
+
+Zeno -- if you grab linux-firmware, it should be all better. Not sure
+if you're missing it on purpose or by accident.
+
+Cheers,
+
+  -ilia
+
+On Fri, Apr 3, 2020 at 11:07 AM Zeno Davatz <zdavatz@gmail.com> wrote:
 >
-> On 4/3/20 8:13 AM, Alain Michaud wrote:
-> > Hi Guenter/Marcel,
-> >
-> >
-> > On Fri, Apr 3, 2020 at 11:03 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >>
-> >> Some static checker run by 0day reports a variableScope warning.
-> >>
-> >> net/bluetooth/smp.c:870:6: warning:
-> >>         The scope of the variable 'err' can be reduced. [variableScope]
-> >>
-> >> There is no need for two separate variables holding return values.
-> >> Stick with the existing variable. While at it, don't pre-initialize
-> >> 'ret' because it is set in each code path.
-> >>
-> >> tk_request() is supposed to return a negative error code on errors,
-> >> not a bluetooth return code. The calling code converts the return
-> >> value to SMP_UNSPECIFIED if needed.
-> >>
-> >> Fixes: 92516cd97fd4 ("Bluetooth: Always request for user confirmation for Just Works")
-> >> Cc: Sonny Sasaka <sonnysasaka@chromium.org>
-> >> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> >> ---
-> >>  net/bluetooth/smp.c | 9 ++++-----
-> >>  1 file changed, 4 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
-> >> index d0b695ee49f6..30e8626dd553 100644
-> >> --- a/net/bluetooth/smp.c
-> >> +++ b/net/bluetooth/smp.c
-> >> @@ -854,8 +854,7 @@ static int tk_request(struct l2cap_conn *conn, u8 remote_oob, u8 auth,
-> >>         struct l2cap_chan *chan = conn->smp;
-> >>         struct smp_chan *smp = chan->data;
-> >>         u32 passkey = 0;
-> >> -       int ret = 0;
-> >> -       int err;
-> >> +       int ret;
-> >>
-> >>         /* Initialize key for JUST WORKS */
-> >>         memset(smp->tk, 0, sizeof(smp->tk));
-> >> @@ -887,12 +886,12 @@ static int tk_request(struct l2cap_conn *conn, u8 remote_oob, u8 auth,
-> >>         /* If Just Works, Continue with Zero TK and ask user-space for
-> >>          * confirmation */
-> >>         if (smp->method == JUST_WORKS) {
-> >> -               err = mgmt_user_confirm_request(hcon->hdev, &hcon->dst,
-> >> +               ret = mgmt_user_confirm_request(hcon->hdev, &hcon->dst,
-> >>                                                 hcon->type,
-> >>                                                 hcon->dst_type,
-> >>                                                 passkey, 1);
-> >> -               if (err)
-> >> -                       return SMP_UNSPECIFIED;
-> >> +               if (ret)
-> >> +                       return ret;
-> > I think there may be some miss match between expected types of error
-> > codes here.  The SMP error code type seems to be expected throughout
-> > this code base, so this change would propagate a potential negative
-> > value while the rest of the SMP protocol expects strictly positive
-> > error codes.
-> >
+> Hi
 >
-> Up to the patch introducing the SMP_UNSPECIFIED return value, tk_request()
-> returned negative error codes, and all callers convert it to SMP_UNSPECIFIED.
+> After installing Kernel 5.6 I am getting this error:
 >
-> If tk_request() is supposed to return SMP_UNSPECIFIED on error, it should
-> be returned consistently, and its callers don't have to convert it again.
-Agreed, the conventions aren't clear here.  I'll differ to Marcel to
-provide guidance in this case where as a long term solution might
-increase the scope of this patch beyond what would be reasonable.
+> [ please send a personal CC, thank you! ]
 >
-> Guenter
+> Cannot run in framebuffer mode. Please specify busIDs for all
+> framebuffer devices
 >
-> >>                 set_bit(SMP_FLAG_WAIT_USER, &smp->flags);
-> >>                 return 0;
-> >>         }
-> >> --
-> >> 2.17.1
-> >>
-> >
-> > Thanks,
-> > Alain
-> >
+> [ 0.757317] nouveau 0000:05:00.0: NVIDIA GP107 (137000a1)
+> [ 0.869775] nouveau 0000:05:00.0: bios: version 86.07.42.00.4a
+> [ 0.870157] nouveau 0000:05:00.0: acr: failed to load firmware
+> [ 0.870256] nouveau 0000:05:00.0: acr: failed to load firmware
+> [ 0.870356] nouveau 0000:05:00.0: acr ctor failed, -2
+> [ 0.870455] nouveau: probe of 0000:05:00.0 failed with error -2
 >
+> This used to work just fine, with Version 5.5, Gentoo/Funtoo Linux.
+>
+> Very strange.
+>
+> With Kernel 5.5 everything was fine:
+>
+> this is what I get with Kernel 5.5
+>
+> ~/.backup> dmesg | grep nouveau
+> [ 0.994622] nouveau 0000:05:00.0: NVIDIA GP107 (137000a1)
+> [ 1.107079] nouveau 0000:05:00.0: bios: version 86.07.42.00.4a
+> [ 1.107391] nouveau 0000:05:00.0: gr: failed to load firmware "gr/sw_nonctx"
+> [ 1.107494] nouveau 0000:05:00.0: gr: failed to load gr/sw_nonctx
+> [ 1.107857] nouveau 0000:05:00.0: fb: 4096 MiB GDDR5
+> [ 1.124158] nouveau 0000:05:00.0: DRM: VRAM: 4096 MiB
+> [ 1.124268] nouveau 0000:05:00.0: DRM: GART: 536870912 MiB
+> [ 1.124381] nouveau 0000:05:00.0: DRM: BIT table 'A' not found
+> [ 1.124493] nouveau 0000:05:00.0: DRM: BIT table 'L' not found
+> [ 1.124604] nouveau 0000:05:00.0: DRM: TMDS table version 2.0
+> [ 1.124719] nouveau 0000:05:00.0: DRM: DCB version 4.1
+> [ 1.124829] nouveau 0000:05:00.0: DRM: DCB outp 00: 01000f42 04620030
+> [ 1.124941] nouveau 0000:05:00.0: DRM: DCB outp 01: 02011f62 00020010
+> [ 1.125054] nouveau 0000:05:00.0: DRM: DCB outp 02: 02822f76 04600020
+> [ 1.125166] nouveau 0000:05:00.0: DRM: DCB outp 03: 02022f72 00020020
+> [ 1.125278] nouveau 0000:05:00.0: DRM: DCB outp 04: 04033f82 00020030
+> [ 1.125390] nouveau 0000:05:00.0: DRM: DCB conn 00: 00001031
+> [ 1.125501] nouveau 0000:05:00.0: DRM: DCB conn 01: 00010161
+> [ 1.125612] nouveau 0000:05:00.0: DRM: DCB conn 02: 00020246
+> [ 1.125723] nouveau 0000:05:00.0: DRM: DCB conn 03: 01000331
+> [ 1.126100] nouveau 0000:05:00.0: DRM: failed to create kernel channel, -22
+> [ 1.126364] nouveau 0000:05:00.0: DRM: MM: using COPY for buffer copies
+> [ 1.481589] nouveau 0000:05:00.0: DRM: allocated 1680x1050 fb:
+> 0x200000, bo (____ptrval____)
+> [ 1.481807] fbcon: nouveaudrmfb (fb0) is primary device
+> [ 1.672191] nouveau 0000:05:00.0: fb0: nouveaudrmfb frame buffer device
+> [ 1.672362] [drm] Initialized nouveau 1.3.1 20120801 for 0000:05:00.0 on minor 1
+>
+> Kernel Config is attached.
+>
+> Looking forward to any help or reply.
+>
+> I went back to version 5.5 of the Kernel (recompiled after git
+> checkout v5.5) and all is fine again.
+>
+> Best
+> Zeno
