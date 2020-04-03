@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4159419D0B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 09:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD13B19D0D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 09:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389510AbgDCHCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 03:02:35 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:48898 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730550AbgDCHCe (ORCPT
+        id S2388878AbgDCHHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 03:07:54 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48420 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388472AbgDCHHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 03:02:34 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0336wn4W071098;
-        Fri, 3 Apr 2020 07:02:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=dlIKwf2o/EY4z2O1MnwkwbKcG+hZpuImBpKfasMrxuk=;
- b=eBe68WUFzJFbEcfrOiAF3rIgtstCOOAExVMhutUwveSesOUI06eOtNpEeSi6HjT4aKyx
- YdiAkQAfPWaod2Zl5vgTgjN3PoCH5AK0TBz3ivRH68QfDgsVaEG9v3phn6HUa2+M9RJm
- mlhiaLQ57sQWi770WUpoaEFjoZwLpwhzwJp1KKhOeLLxRCnXbInC6L+GXa52TYJfSt+I
- XeT1uvHlaGR5d2FpIzp+W5WgQ58ZQXZ6cCQr2QByVtPy/dcbCWJRObwMWptoJmG2oZdQ
- wDcE59SjIOKsIIZr7Ef+v9yDxpgCq/1NvXJ44sua8338JSPzJOzk+utyn/35SgyfKluS jA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 303aqhytsw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 07:02:17 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03372AAl050261;
-        Fri, 3 Apr 2020 07:02:17 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 302ga3y4j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 07:02:16 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03372CZP015686;
-        Fri, 3 Apr 2020 07:02:14 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 03 Apr 2020 00:02:12 -0700
-Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Julien Thierry <jthierry@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-4-alexandre.chartre@oracle.com>
- <db508586-258a-0616-d649-e76e95df9611@redhat.com>
- <4e779423-395d-5e2e-b641-5604902bf096@oracle.com>
- <20200402150407.GD20730@hirez.programming.kicks-ass.net>
- <20200402155436.q6qbuezmmarr24qp@treble>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <a851047e-afd4-9d3d-60b7-8dd4be7423dc@oracle.com>
-Date:   Fri, 3 Apr 2020 09:06:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Fri, 3 Apr 2020 03:07:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585897673;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6XkVKL4skcBI9I3qnEHa0ueL+rxPTyXtnrcDFqwnTr4=;
+        b=MxQnN3ZXAT8QKZWAhJ1cROA63j7WlnkXJbrSQ7TGAJwn8b2pfQAtZ93eV2T2ICRUC97x7r
+        D1vj1eyZVGaw9HPdZoYA5zT6KDIYn2+zN7hgHjRfe88bCqECqaNc7HpMRA/nvQVrw5Eby/
+        TNW6uskM9QGEy3Zx7J8OUrbVg5OLjQA=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-174-nAxzqPFrOTCfQncJe5Elhw-1; Fri, 03 Apr 2020 03:07:51 -0400
+X-MC-Unique: nAxzqPFrOTCfQncJe5Elhw-1
+Received: by mail-wr1-f72.google.com with SMTP id v14so2628297wrq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 00:07:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=6XkVKL4skcBI9I3qnEHa0ueL+rxPTyXtnrcDFqwnTr4=;
+        b=iLyK97hM4ZNHjvOWbYaz/PtrzQJpY9T+wqOekxjs2DUVB+9EHSPKb5v6p4CLEmeWEV
+         OgBOPYlePW1p3ebnL837we/uJYJFqQPOei8EAfyF1ObnlfypwFvSSO1OILg//BCdw2qx
+         dqDSC5yvIGKGXfbdgdVexUnt6eKJ0Ftbc3Qsk0SPw8pEeiQnqIS8/j59QwxDmPyE1qKZ
+         DbARSZn11BzV5te+7sJPFr3o7bMS8F5cEh0ciHByMOBJyU8m8bvGM6CjeTWv0VGUtJ7o
+         PvseHbit2SqEI7ZXdhJ1j4Vx1lkD8A/p4JFFwmZRwLx6oship1lUkHWsaDAmWNvBfW82
+         xWFg==
+X-Gm-Message-State: AGi0PuY9zfGCLUSPfHyylytAaBEd7BrMOCUGoBTffIYDKQLnBkRh8wcy
+        VD1gbelWqbNsgfsOBnvc+6zneGq+Q8NkW0POKHz8oR//TcsnHE5kkrptMEl2F7tBA9xL8k4RsFm
+        sPtzYjsAXi4CvzsXgXDa+LhC9
+X-Received: by 2002:adf:f3c5:: with SMTP id g5mr7325853wrp.230.1585897669656;
+        Fri, 03 Apr 2020 00:07:49 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKj00MKc2lrco4DtzMzrre8ASngvPTRlJYQu6MPCyFkbxQQEZUm4rZj/EV1GW2sYRctom4M+w==
+X-Received: by 2002:adf:f3c5:: with SMTP id g5mr7325834wrp.230.1585897669459;
+        Fri, 03 Apr 2020 00:07:49 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u13sm11316556wru.88.2020.04.03.00.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 00:07:48 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "linux-hyperv\@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Cc:     "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "Andrea Parri \(Microsoft\)" <parri.andrea@gmail.com>
+Subject: RE: [PATCH 5/5] Drivers: hv: check VMBus messages lengths
+In-Reply-To: <MW2PR2101MB1052E7B2458F489E0123C1D9D7C70@MW2PR2101MB1052.namprd21.prod.outlook.com>
+References: <20200401103638.1406431-1-vkuznets@redhat.com> <20200401103816.1406642-1-vkuznets@redhat.com> <20200401103816.1406642-2-vkuznets@redhat.com> <MW2PR2101MB1052E7B2458F489E0123C1D9D7C70@MW2PR2101MB1052.namprd21.prod.outlook.com>
+Date:   Fri, 03 Apr 2020 09:07:47 +0200
+Message-ID: <87369lyrlo.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200402155436.q6qbuezmmarr24qp@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004030058
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 clxscore=1015
- malwarescore=0 impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- priorityscore=1501 lowpriorityscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004030057
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Michael Kelley <mikelley@microsoft.com> writes:
 
-On 4/2/20 5:54 PM, Josh Poimboeuf wrote:
-> On Thu, Apr 02, 2020 at 05:04:07PM +0200, Peter Zijlstra wrote:
->> On Thu, Apr 02, 2020 at 03:24:45PM +0200, Alexandre Chartre wrote:
->>> On 4/2/20 2:53 PM, Julien Thierry wrote:
->>>> On 4/2/20 9:22 AM, Alexandre Chartre wrote:
->>
->>>>> +Â Â Â  sec = find_section_by_name(file->elf,
->>>>> +Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â Â  ".rela.discard.intra_function_call");
->>>>
->>>> I'm wondering, do we really need to annotate the intra_function_call
->>>> and group the in a section?
->>>>
->>>> Would it be a problem to consider all (static) call instructions with
->>>> a destination that is not the start offset of a symbol to be an
->>>> intra-function call (and set insn->intra_function_call and
->>>> insn->jump_dest accordingly)?
->>>
->>> Correct, we could automatically detect intra-function calls instead of
->>> having to annotate them. However, I choose to annotate them because I don't
->>> think that's not an expected construct in a "normal" code flow (at least
->>> on x86). So objtool would still issue a warning on intra-function calls
->>> by default, and you can annotate them to indicate if they are expected.
->>
->> I wondered the same thing when reading the patch. I'm confliected on
->> this. On the one hand auto-detecting this seems like an excellent idea.
->>
->> If/when the compiler generates them, they had better be okay too.
->>
->> Josh?
-> 
-> In general I prefer to keep it simple, and keep the annotations to a
-> minimum.  And I don't think this warning has ever found anything useful.
-> So I'd be inclined to say just allow them and automatically detect them.
-> 
-> However the fact that arm64 asm actually uses them worries me a bit.
-> 
-> So for me it kind of hinges on whether arm64 has a legitimate use case
-> for them, or if the warning actually points to smelly code.
-> 
+> From: Vitaly Kuznetsov <vkuznets@redhat.com>  Sent: Wednesday, April 1, 2020 3:38 AM
+>> 
+>> VMBus message handlers (channel_message_table) receive a pointer to
+>> 'struct vmbus_channel_message_header' and cast it to a structure of their
+>> choice, which is sometimes longer than the header. We, however, don't check
+>> that the message is long enough so in case hypervisor screws up we'll be
+>> accessing memory beyond what was allocated for temporary buffer.
+>> 
+>> Previously, we used to always allocate and copy 256 bytes from message page
+>> to temporary buffer but this is hardly better: in case the message is
+>> shorter than we expect we'll be trying to consume garbage as some real
+>> data and no memory guarding technique will be able to identify an issue.
+>> 
+>> Introduce 'min_payload_len' to 'struct vmbus_channel_message_table_entry'
+>> and check against it in vmbus_on_msg_dpc(). Note, we can't require the
+>> exact length as new hypervisor versions may add extra fields to messages,
+>> we only check that the message is not shorter than we expect.
+>
+> This assumes that the current structure definitions don't already
+> include extra fields that were added in newer versions of Hyper-V.  If they did,
+> the minimum length test could fail on older versions of Hyper-V.  But I
+> looked through the structure definitions and don't see any indication that
+> such extra fields have been added, so this should be OK.
+>
 
-Then what I can do is:
-- by default, automatically detect and validate intra-function calls
-- remove the INTRA_FUNCTION_CALL annotation
-- add an objtool option to print a warning about intra-function calls
-   (but still validate such calls).
+Yes, my understanding as well. When we decide to extend some of these
+structures for newer VMbus version we'll have a choice: keep the require
+length minimal or implement a more somplex check (e.g. add a 'length
+check' function pointer to vmbus_channel_message_table_entry() -- or
+pass 'length' to all message handlers and handle it ther). But as we
+currently have no such cases this will definitely look over-engineered
+so I decided to go the easiest way.
 
-This way by default intra-function calls are automatically detected and
-validated. But you still have the option to print them out if you want
-to check if there are any intra-function calls.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  drivers/hv/channel_mgmt.c | 54 ++++++++++++++++++++++-----------------
+>>  drivers/hv/hyperv_vmbus.h |  1 +
+>>  drivers/hv/vmbus_drv.c    |  6 +++++
+>>  3 files changed, 37 insertions(+), 24 deletions(-)
+>> 
+>
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+>
 
-alex.
+Thanks!
+
+-- 
+Vitaly
+
