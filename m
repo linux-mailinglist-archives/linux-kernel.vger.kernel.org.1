@@ -2,90 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C4B19D09D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 09:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63BB19D0A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 09:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388540AbgDCHBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 03:01:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:18429 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730759AbgDCHBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 03:01:32 -0400
-IronPort-SDR: zP8KYOkfrF1Lh4tLJ2CYI5w74GdKOxSymxz8jVhmHZVE9SlR/xbFqCq7sbMQyeKBK094oL0TTm
- GkAcQhSlRMqw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 00:01:32 -0700
-IronPort-SDR: byiRMTrhb5XBXqTx15iVdR9oHh4AmpQIiQJnAKivtGn1djcuht1NL+AKYHxkpdiQnPxDzGdUr7
- GczmVQoc/6oQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,338,1580803200"; 
-   d="scan'208";a="253272312"
-Received: from kboulton-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.35.93])
-  by orsmga006.jf.intel.com with ESMTP; 03 Apr 2020 00:01:28 -0700
-Date:   Fri, 3 Apr 2020 10:01:26 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-security-module@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v4 0/2] tpm2: Make TPM2 logs accessible for non-UEFI
- firmware
-Message-ID: <20200403070114.GD25305@linux.intel.com>
-References: <20200402225140.922789-1-stefanb@linux.vnet.ibm.com>
+        id S2388898AbgDCHB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 03:01:56 -0400
+Received: from mail-pl1-f179.google.com ([209.85.214.179]:37464 "EHLO
+        mail-pl1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387849AbgDCHBz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 03:01:55 -0400
+Received: by mail-pl1-f179.google.com with SMTP id x1so2360180plm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 00:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HgoPG2/hUtoLFUXRQ/1yO4KtUHw1u4nUyOY++M662ws=;
+        b=DMxaQSsRl7CS5NyDSZ/t8wiwCsY0U9XznOGwI73DkxF0e/BmAiM8wcDULkbYIYjGHz
+         bp0wxY0EC9dSG7DYy9DO4e302wvfsHWpFvoeOMnN+3HkwdOEHZVZ7QvdtXgE6Ex3EYN+
+         FFuvkXTavd5L9Qcf7N43Ri3HKaYtp8L8jDhDbVVbYhMygGZ062EEYR8bCed4dojPSazX
+         T/G8oDGon5ov4EUFF33CevTBB0lsE11ygi1WgduLxD5+0MTSdDO4HZLY+jag04reDYHu
+         9QWAazfIDfvnjYWTnplrHtoRTKL5qlAbWxZXVFZYQc6NwrXovWy7C4jIII+90qOyOAZB
+         6fSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HgoPG2/hUtoLFUXRQ/1yO4KtUHw1u4nUyOY++M662ws=;
+        b=ah/A09MiCwT1tT9tE/N35hofWbfyfTwyBqo/C/QfY/VmAH+X0RLEhwFmcQky4wP8oS
+         kIqFd+KhZ9F5f/nGluPZvZocI2FKnXkOYYk4NzfJYapItvzfZizBU+yKHDrS+BXLFbkK
+         VHxi4FRXmvrAH33zI5bsz91/X5Ie5+udeG7+WiEc/3PWcL9tCpsWeOmAl8jmnMUwgrf7
+         /rDBZ46+9Vh6s10UvFs9yTb6om3uV1LMaTcbahKZ5c3de8WFvquunaIjxWZXm4ZUU45E
+         TADL5+3KBModWdacBlAI/ARBpYX5eLKX9THlxdHUVywgM+HNiJlwRyOkDmr6P5mP0JJW
+         wIVw==
+X-Gm-Message-State: AGi0PuYYQdT8NvjucwWemtvH4lSnYnttz4lYxAx3oF1LJSkcJP1M7VVp
+        dnbRqB0JbSidlhdB8ExBbPUGiUVJKf0=
+X-Google-Smtp-Source: APiQypKnmLYQGUicA2+nsfU+JyFllI9CLmoA87XeGmP3476ZwWA8qaxKntfwWWuyNHupNQSdYleeOQ==
+X-Received: by 2002:a17:90a:ca09:: with SMTP id x9mr8039389pjt.91.1585897314167;
+        Fri, 03 Apr 2020 00:01:54 -0700 (PDT)
+Received: from localhost ([45.127.44.53])
+        by smtp.gmail.com with ESMTPSA id r189sm4749358pgr.31.2020.04.03.00.01.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 00:01:52 -0700 (PDT)
+From:   Amit Kucheria <amit.kucheria@linaro.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        swboyd@chromium.org, lukasz.luba@arm.com, mka@chromium.org,
+        daniel.lezcano@linaro.org,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Cc:     devicetree@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [PATCH v5 0/3] Convert thermal bindings to yaml
+Date:   Fri,  3 Apr 2020 12:31:45 +0530
+Message-Id: <cover.1585748882.git.amit.kucheria@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200402225140.922789-1-stefanb@linux.vnet.ibm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 06:51:38PM -0400, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
-> 
-> This series of patches extends the existing TPM2 ACPI table with additional
-> fields found in the TPM2 TCG ACPI specification (reference is in the patch)
-> that allow access to the log's address and its size. We then modify the
-> code that so far only enables access to a TPM 1.2's log for a TPM2 as well.
-> This then enables access to the TPM2's log on non-UEFI system that for example
-> run SeaBIOS.
-> 
->    Stefan
-> 
-> v3->v4:
->   - Repost as one series
-> 
-> v2->v3:
->   - Split the series into two separate patches
->   - Added comments to ACPI table fields
->   - Added check for null pointer to log area and zero log size
-> 
-> v1->v2:
->   - Repost of the series
-> 
-> 
-> 
-> Stefan Berger (2):
->   acpi: Extend TPM2 ACPI table with missing log fields
->   tpm: Add support for event log pointer found in TPM2 ACPI table
-> 
->  drivers/char/tpm/eventlog/acpi.c | 56 +++++++++++++++++++++++++---------------
->  drivers/char/tpm/tpm_crb.c       | 13 +++++++---
->  drivers/char/tpm/tpm_tis.c       |  4 ++-
->  include/acpi/actbl3.h            |  5 ++--
->  4 files changed, 51 insertions(+), 27 deletions(-)
-> 
-> -- 
-> 2.14.5
-> 
+Hi all,
 
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Here is a series splitting up the thermal bindings into 3 separate bindings
+in YAML, one each of the sensor, cooling-device and the thermal zones.
 
-I'll apply this after I'll get Rafael's answer whether I can add his ack
-to the commits.
+A series to remove thermal.txt and change over all references to it will
+follow shortly. Another series to fixup problems found by enforcing this
+yaml definition across dts files will also follow.
 
-/Jarkko
+Changes since v4:
+- Typo fixes
+
+Changes since v3:
+- Clarify example by using cooling state numbers and a comment
+- Restrict thermal-sensors to a single reference to reflect actual code
+  where there is a one-to-one mapping between sensors and thermal zones
+- Add two optional properties that were missed in earlier submissions:
+  coefficients and sustainable-power
+- Improve description of hysteresis and contribution properties
+- Added Acks.
+
+Changes since v2:
+- Addressed review comment from Rob
+- Added required properties for thermal-zones node
+- Added select: true to thermal-cooling-devices.yaml
+- Fixed up example to pass dt_binding_check
+
+Changes since v1:
+- Addressed review comments from Rob
+- Moved the license back to GPLv2, waiting for other authors to give
+  permission to relicense to BSD-2-Clause as well
+- Fixed up warnings thrown by dt_binding_check
+
+I have to add that the bindings as they exist today, don't really follow
+the "describe the hardware" model of devicetree. e.g. the entire
+thermal-zone binding is a software abstraction to tie arbitrary,
+board-specific trip points to cooling strategies. This doesn't fit well
+into the model where the same SoC in two different form-factor devices e.g.
+mobile and laptop, will have fairly different thermal profiles and might
+benefit from different trip points and mitigation heuristics. I've started
+some experiments with moving the thermal zone data to a board-specific
+platform data that is used to initialise a "thermal zone driver".
+
+In any case, if we ever move down that path, it'll probably end up being v2
+of the binding, so this series is still relevant.
+
+Regards,
+Amit
+
+Amit Kucheria (3):
+  dt-bindings: thermal: Add yaml bindings for thermal sensors
+  dt-bindings: thermal: Add yaml bindings for thermal cooling-devices
+  dt-bindings: thermal: Add yaml bindings for thermal zones
+
+ .../thermal/thermal-cooling-devices.yaml      | 116 ++++++
+ .../bindings/thermal/thermal-sensor.yaml      |  72 ++++
+ .../bindings/thermal/thermal-zones.yaml       | 341 ++++++++++++++++++
+ 3 files changed, 529 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/thermal/thermal-cooling-devices.yaml
+ create mode 100644 Documentation/devicetree/bindings/thermal/thermal-sensor.yaml
+ create mode 100644 Documentation/devicetree/bindings/thermal/thermal-zones.yaml
+
+-- 
+2.20.1
+
