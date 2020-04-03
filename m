@@ -2,89 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2ED419DA27
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3817019DA0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:26:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404339AbgDCPbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 11:31:24 -0400
-Received: from mga03.intel.com ([134.134.136.65]:18868 "EHLO mga03.intel.com"
+        id S2404239AbgDCPZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 11:25:58 -0400
+Received: from mga12.intel.com ([192.55.52.136]:61051 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404342AbgDCPbV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 11:31:21 -0400
-IronPort-SDR: SWjTOvpMierBDBsS9i9rwSXmIZtL34Xor79oDA/eVVZDdRVnAtGbdQn30FCWJEj6mYXah/OS3D
- otGDcBF6C6Tw==
+        id S2404011AbgDCPZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 11:25:57 -0400
+IronPort-SDR: d1VUqaIwfHLBsc0115thncTDgdYDwdfluM+xMBX6Nn+Kvm719cZZQ3jN1Hcoicb9X0EXQYFVI2
+ i8CTYfXljFCQ==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 08:31:20 -0700
-IronPort-SDR: OMKQRF7Fa+iUbgQ+e6v2U6cpSieyKSM7XzJhJm5+LAmhFnsLxwCxnMzjTRjWC4Fu+rYiAQvKiH
- /Xks5XdYTiTw==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 08:25:57 -0700
+IronPort-SDR: Kz9Xn8SJxTKmlvLgOVwgF5jI27PjXyHYua/KTyfsaNgp7UaJwTPpO4T6SpIItCjULt3DA9tXZf
+ t4KOiEnnNfAA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; 
-   d="scan'208";a="329196150"
-Received: from rchatre-mobl.amr.corp.intel.com (HELO [10.251.28.58]) ([10.251.28.58])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 08:31:20 -0700
-Subject: Re: [PATCH 2/2] x86/resctrl: Support CPUID enumeration of MBM counter
- width
-To:     Fenghua Yu <fenghua.yu@intel.com>
-Cc:     tglx@linutronix.de, bp@alien8.de, tony.luck@intel.com,
-        kuo-lang.tseng@intel.com, mingo@redhat.com, babu.moger@amd.com,
-        hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1585763047.git.reinette.chatre@intel.com>
- <76dc65631c373e0c1c9f3e8aaa768f022a2c989c.1585763047.git.reinette.chatre@intel.com>
- <20200403000527.GI188393@romley-ivt3.sc.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <83423890-c3f5-3794-8e8b-4c0ac124cd42@intel.com>
-Date:   Fri, 3 Apr 2020 08:31:12 -0700
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+   d="scan'208";a="423560866"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga005.jf.intel.com with ESMTP; 03 Apr 2020 08:25:56 -0700
+Date:   Fri, 3 Apr 2020 08:31:45 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v1 7/8] vfio/type1: Add VFIO_IOMMU_CACHE_INVALIDATE
+Message-ID: <20200403083145.5097d346@jacob-builder>
+In-Reply-To: <AADFC41AFE54684AB9EE6CBC0274A5D19D807C4A@SHSMSX104.ccr.corp.intel.com>
+References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
+        <1584880325-10561-8-git-send-email-yi.l.liu@intel.com>
+        <20200402142428.2901432e@w520.home>
+        <AADFC41AFE54684AB9EE6CBC0274A5D19D807C4A@SHSMSX104.ccr.corp.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200403000527.GI188393@romley-ivt3.sc.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fenghua,
+On Fri, 3 Apr 2020 06:39:22 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-On 4/2/2020 5:05 PM, Fenghua Yu wrote:
-> On Wed, Apr 01, 2020 at 10:51:02AM -0700, Reinette Chatre wrote:
->> The original Memory Bandwidth Monitoring (MBM) architectural
->> definition defines counters of up to 62 bits in the
->> IA32_QM_CTR MSR while the first-generation MBM implementation
->> uses statically defined 24 bit counters.
->>
->> @@ -856,6 +856,8 @@ static void init_speculation_control(struct cpuinfo_x86 *c)
->>  
->>  static void init_cqm(struct cpuinfo_x86 *c)
->>  {
->> +	c->x86_cache_mbm_width_offset = -1;
->> +
->>  	if (!cpu_has(c, X86_FEATURE_CQM_LLC)) {
->>  		c->x86_cache_max_rmid  = -1;
->>  		c->x86_cache_occ_scale = -1;
->> @@ -875,6 +877,9 @@ static void init_cqm(struct cpuinfo_x86 *c)
->>  
->>  		c->x86_cache_max_rmid  = ecx;
->>  		c->x86_cache_occ_scale = ebx;
->> +		/* EAX contents is only defined for Intel CPUs */
->> +		if (c->x86_vendor == X86_VENDOR_INTEL)
->> +			c->x86_cache_mbm_width_offset = eax & 0xff;
+> > From: Alex Williamson <alex.williamson@redhat.com>
+> > Sent: Friday, April 3, 2020 4:24 AM
+> > 
+> > On Sun, 22 Mar 2020 05:32:04 -0700
+> > "Liu, Yi L" <yi.l.liu@intel.com> wrote:
+> >   
+> > > From: Liu Yi L <yi.l.liu@linux.intel.com>
+> > >
+> > > For VFIO IOMMUs with the type VFIO_TYPE1_NESTING_IOMMU, guest  
+> > "owns" the  
+> > > first-level/stage-1 translation structures, the host IOMMU driver
+> > > has no knowledge of first-level/stage-1 structure cache updates
+> > > unless the guest invalidation requests are trapped and propagated
+> > > to the host.
+> > >
+> > > This patch adds a new IOCTL VFIO_IOMMU_CACHE_INVALIDATE to  
+> > propagate guest  
+> > > first-level/stage-1 IOMMU cache invalidations to host to ensure
+> > > IOMMU  
+> > cache  
+> > > correctness.
+> > >
+> > > With this patch, vSVA (Virtual Shared Virtual Addressing) can be
+> > > used safely as the host IOMMU iotlb correctness are ensured.
+> > >
+> > > Cc: Kevin Tian <kevin.tian@intel.com>
+> > > CC: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > Cc: Alex Williamson <alex.williamson@redhat.com>
+> > > Cc: Eric Auger <eric.auger@redhat.com>
+> > > Cc: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > > Signed-off-by: Liu Yi L <yi.l.liu@linux.intel.com>
+> > > Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > ---
+> > >  drivers/vfio/vfio_iommu_type1.c | 49  
+> > +++++++++++++++++++++++++++++++++++++++++  
+> > >  include/uapi/linux/vfio.h       | 22 ++++++++++++++++++
+> > >  2 files changed, 71 insertions(+)
+> > >
+> > > diff --git a/drivers/vfio/vfio_iommu_type1.c  
+> > b/drivers/vfio/vfio_iommu_type1.c  
+> > > index a877747..937ec3f 100644
+> > > --- a/drivers/vfio/vfio_iommu_type1.c
+> > > +++ b/drivers/vfio/vfio_iommu_type1.c
+> > > @@ -2423,6 +2423,15 @@ static long  
+> > vfio_iommu_type1_unbind_gpasid(struct vfio_iommu *iommu,  
+> > >  	return ret;
+> > >  }
+> > >
+> > > +static int vfio_cache_inv_fn(struct device *dev, void *data)
+> > > +{
+> > > +	struct domain_capsule *dc = (struct domain_capsule
+> > > *)data;
+> > > +	struct iommu_cache_invalidate_info *cache_inv_info =
+> > > +		(struct iommu_cache_invalidate_info *) dc->data;
+> > > +
+> > > +	return iommu_cache_invalidate(dc->domain, dev,
+> > > cache_inv_info); +}
+> > > +
+> > >  static long vfio_iommu_type1_ioctl(void *iommu_data,
+> > >  				   unsigned int cmd, unsigned
+> > > long arg) {
+> > > @@ -2629,6 +2638,46 @@ static long vfio_iommu_type1_ioctl(void  
+> > *iommu_data,  
+> > >  		}
+> > >  		kfree(gbind_data);
+> > >  		return ret;
+> > > +	} else if (cmd == VFIO_IOMMU_CACHE_INVALIDATE) {
+> > > +		struct vfio_iommu_type1_cache_invalidate
+> > > cache_inv;
+> > > +		u32 version;
+> > > +		int info_size;
+> > > +		void *cache_info;
+> > > +		int ret;
+> > > +
+> > > +		minsz = offsetofend(struct  
+> > vfio_iommu_type1_cache_invalidate,  
+> > > +				    flags);  
+> > 
+> > This breaks backward compatibility as soon as struct
+> > iommu_cache_invalidate_info changes size by its defined versioning
+> > scheme.  ie. a field gets added, the version is bumped, all existing
+> > userspace breaks.  Our minsz is offsetofend to the version field,
+> > interpret the version to size, then reevaluate argsz.  
 > 
-> Is it reliable to read eax which is reserved on older platforms that
-> don't support the feature?
-
-The new ISE specification contains an architectural redefinition of EAX.
-
+> btw the version scheme is challenged by Christoph Hellwig. After
+> some discussions, we need your guidance how to move forward.
+> Jacob summarized available options below:
+> 	https://lkml.org/lkml/2020/4/2/876
 > 
-> Seems the code assumes the reserved eax is 0 on those platforms. Is it
-> reliable?
+For this particular case, I don't quite get the difference between
+minsz=flags and minsz=version. Our IOMMU version scheme will only
+change size at the end where the variable union is used for vendor
+specific extensions. Version bump does not change size (only re-purpose
+padding) from the start of the UAPI structure to the union, i.e. version
+will __always__ be after struct vfio_iommu_type1_cache_invalidate.flags.
 
-Testing on BDW, SKX, and CLX confirmed that EAX is 0. This addition thus
-results in no functional change on these systems with them continuing to
-use the original MBM width of 24.
 
-Reinette
+> >   
+> > > +
+> > > +		if (copy_from_user(&cache_inv, (void __user
+> > > *)arg, minsz))
+> > > +			return -EFAULT;
+> > > +
+> > > +		if (cache_inv.argsz < minsz || cache_inv.flags)
+> > > +			return -EINVAL;
+> > > +
+> > > +		/* Get the version of struct
+> > > iommu_cache_invalidate_info */
+> > > +		if (copy_from_user(&version,
+> > > +			(void __user *) (arg + minsz),
+> > > sizeof(version)))
+> > > +			return -EFAULT;
+> > > +
+> > > +		info_size = iommu_uapi_get_data_size(
+> > > +					IOMMU_UAPI_CACHE_INVAL,  
+> > version);  
+> > > +
+> > > +		cache_info = kzalloc(info_size, GFP_KERNEL);
+> > > +		if (!cache_info)
+> > > +			return -ENOMEM;
+> > > +
+> > > +		if (copy_from_user(cache_info,
+> > > +			(void __user *) (arg + minsz),
+> > > info_size)) {
+> > > +			kfree(cache_info);
+> > > +			return -EFAULT;
+> > > +		}
+> > > +
+> > > +		mutex_lock(&iommu->lock);
+> > > +		ret = vfio_iommu_for_each_dev(iommu,
+> > > vfio_cache_inv_fn,
+> > > +					    cache_info);  
+> > 
+> > How does a user respond when their cache invalidate fails?  Isn't
+> > this also another case where our for_each_dev can fail at an
+> > arbitrary point leaving us with no idea whether each device even
+> > had the opportunity to perform the invalidation request.  I don't
+> > see how we have any chance to maintain coherency after this
+> > faults.  
+> 
+> Then can we make it simple to support singleton group only? 
+> 
+> >   
+> > > +		mutex_unlock(&iommu->lock);
+> > > +		kfree(cache_info);
+> > > +		return ret;
+> > >  	}
+> > >
+> > >  	return -ENOTTY;
+> > > diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
+> > > index 2235bc6..62ca791 100644
+> > > --- a/include/uapi/linux/vfio.h
+> > > +++ b/include/uapi/linux/vfio.h
+> > > @@ -899,6 +899,28 @@ struct vfio_iommu_type1_bind {
+> > >   */
+> > >  #define VFIO_IOMMU_BIND		_IO(VFIO_TYPE, VFIO_BASE
+> > > + 23)
+> > >
+> > > +/**
+> > > + * VFIO_IOMMU_CACHE_INVALIDATE - _IOW(VFIO_TYPE, VFIO_BASE + 24,
+> > > + *			struct
+> > > vfio_iommu_type1_cache_invalidate)
+> > > + *
+> > > + * Propagate guest IOMMU cache invalidation to the host. The
+> > > cache
+> > > + * invalidation information is conveyed by @cache_info, the
+> > > content
+> > > + * format would be structures defined in uapi/linux/iommu.h. User
+> > > + * should be aware of that the struct
+> > > iommu_cache_invalidate_info
+> > > + * has a @version field, vfio needs to parse this field before
+> > > getting
+> > > + * data from userspace.
+> > > + *
+> > > + * Availability of this IOCTL is after VFIO_SET_IOMMU.  
+> > 
+> > Is this a necessary qualifier?  A user can try to call this ioctl at
+> > any point, it only makes sense in certain configurations, but it
+> > should always "do the right thing" relative to the container iommu
+> > config.
+> > 
+> > Also, I don't see anything in these last few patches testing the
+> > operating IOMMU model, what happens when a user calls them when not
+> > using the nesting IOMMU?
+> > 
+> > Is this ioctl and the previous BIND ioctl only valid when configured
+> > for the nesting IOMMU type?  
+> 
+> I think so. We should add the nesting check in those new ioctls.
+> 
+I also added nesting domain attribute check in IOMMU driver, so bind
+guest PASID will fail if nesting mode is not supported. There will be
+no invalidation w/o bind.
 
+> >   
+> > > + *
+> > > + * returns: 0 on success, -errno on failure.
+> > > + */
+> > > +struct vfio_iommu_type1_cache_invalidate {
+> > > +	__u32   argsz;
+> > > +	__u32   flags;
+> > > +	struct	iommu_cache_invalidate_info cache_info;
+> > > +};
+> > > +#define VFIO_IOMMU_CACHE_INVALIDATE      _IO(VFIO_TYPE,
+> > > VFIO_BASE  
+> > + 24)
+> > 
+> > The future extension capabilities of this ioctl worry me, I wonder
+> > if we should do another data[] with flag defining that data as
+> > CACHE_INFO.  
+> 
+> Can you elaborate? Does it mean with this way we don't rely on iommu
+> driver to provide version_to_size conversion and instead we just pass
+> data[] to iommu driver for further audit?
+> 
+I guess Alex meant we do something similar to:
+struct vfio_irq_set {
+	__u32	argsz;
+	__u32	flags;
+#define VFIO_IRQ_SET_DATA_NONE		(1 << 0) /* Data not present */
+#define VFIO_IRQ_SET_DATA_BOOL		(1 << 1) /* Data is bool (u8) */
+#define VFIO_IRQ_SET_DATA_EVENTFD	(1 << 2) /* Data is eventfd (s32) */
+#define VFIO_IRQ_SET_ACTION_MASK	(1 << 3) /* Mask interrupt */
+#define VFIO_IRQ_SET_ACTION_UNMASK	(1 << 4) /* Unmask interrupt */
+#define VFIO_IRQ_SET_ACTION_TRIGGER	(1 << 5) /* Trigger interrupt */
+	__u32	index;
+	__u32	start;
+	__u32	count;
+	__u8	data[];
+};
+
+So we could do:
+struct vfio_iommu_type1_cache_invalidate {
+	__u32   argsz;
+#define VFIO_INVL_DATA_NONE
+#define VFIO_INVL_DATA_CACHE_INFO		(1 << 1)
+	__u32   flags;
+	__u8	data[];
+}
+
+We still need version_to_size version, but under
+if (flag & VFIO_INVL_DATA_CACHE_INFO)
+	get_size_from_version();
+
+> >   
+> > > +
+> > >  /* -------- Additional API for SPAPR TCE (Server POWERPC) IOMMU
+> > > --------  
+> > */  
+> > >
+> > >  /*  
+> 
+> Thanks
+> Kevin
+
+[Jacob Pan]
