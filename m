@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 533B219CDE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20F6719CDDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390518AbgDCAkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 20:40:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39068 "EHLO mail.kernel.org"
+        id S2390462AbgDCAkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 20:40:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390431AbgDCAkT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 20:40:19 -0400
-Subject: Re: [PULL REQUEST] i2c for v5.7
+        id S2390445AbgDCAkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 20:40:21 -0400
+Subject: Re: [GIT PULL]: dmaengine updates for v5.7-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585874419;
-        bh=NwF0phCbiYdOD88pZvDvdSU+V/tyYvt4lh2/SiBpYjA=;
+        s=default; t=1585874420;
+        bh=uNdObiZUcMPCmKTt+tHx1I8OZubswKO9nydYm0aQq7w=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Lgsm5vTiTvzsSE/P0n44GDOelCSg42GpsBubvA8fszT2Pl1+pGBOIDQ0apiuZjpY9
-         nsUZ0em1NBmFYpQhjW7/JVzlkviGRupyVK2Hu/IS8h/FV1iLqOUZzLqUXlH5ebxNPN
-         /ZaMW1ggjDn6mNg7vsgDBrisx8EEZeh2P4qxA5ZQ=
+        b=gSWSUHIOrXpfpP5p8bX7J/9CG8xzvnd+nAF9pI/XHOiqDwpj193LJrWMyFBxMYaN/
+         t+VRy8J4pKKSyxhYJjBD/m7KC9P1EoW8tHZSAnDVSPiK5dY7jJ8OUnpMT85xoInQY+
+         HJOaPsNMLedeOLK5fa4VFZNwSNTd/lESvYEduDBY=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200402095948.GA2414@ninjato>
-References: <20200402095948.GA2414@ninjato>
+In-Reply-To: <20200402112500.GJ72691@vkoul-mobl>
+References: <20200402112500.GJ72691@vkoul-mobl>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200402095948.GA2414@ninjato>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.7
-X-PR-Tracked-Commit-Id: df576beee53ac97fe0a413430e623e658805891d
+X-PR-Tracked-Message-Id: <20200402112500.GJ72691@vkoul-mobl>
+X-PR-Tracked-Remote: git://git.infradead.org/users/vkoul/slave-dma.git
+ tags/dmaengine-5.7-rc1
+X-PR-Tracked-Commit-Id: cea582b5ee5645839650b6667335cfb40ec71c19
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 5c8db3eb381745c010ba746373a279e92502bdc8
-Message-Id: <158587441905.31624.16830080488714978048.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Apr 2020 00:40:19 +0000
-To:     Wolfram Sang <wsa@the-dreams.de>
+X-PR-Merge-Commit-Id: e964f1e04a1ce562f0d748b29326244d3cb35ba4
+Message-Id: <158587442059.31624.5342191140301326373.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Apr 2020 00:40:20 +0000
+To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Apr 2020 11:59:53 +0200:
+The pull request you sent on Thu, 2 Apr 2020 16:55:00 +0530:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-5.7
+> git://git.infradead.org/users/vkoul/slave-dma.git tags/dmaengine-5.7-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/5c8db3eb381745c010ba746373a279e92502bdc8
+https://git.kernel.org/torvalds/c/e964f1e04a1ce562f0d748b29326244d3cb35ba4
 
 Thank you!
 
