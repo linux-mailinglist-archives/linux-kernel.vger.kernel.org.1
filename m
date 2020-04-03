@@ -2,100 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B545519DECF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 21:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F04B19DED6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 21:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728254AbgDCTvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 15:51:02 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:39699 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728151AbgDCTu4 (ORCPT
+        id S1728308AbgDCTvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 15:51:54 -0400
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:45931 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727873AbgDCTvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 15:50:56 -0400
-Received: by mail-wm1-f68.google.com with SMTP id e9so9020832wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 12:50:54 -0700 (PDT)
+        Fri, 3 Apr 2020 15:51:54 -0400
+Received: by mail-pf1-f171.google.com with SMTP id r14so4027639pfl.12
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 12:51:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DUwfWiW0UJxalwoOZqAt5RYAz8XQErLckHV7vR83OWY=;
-        b=pirqFxhtHNPHRAEdKqSTs4Euef6KGq6HZwRdcmT4t4aLwZMfvlhm7hlrjmVzTdRxpl
-         eFo9dW0UBEptLeS9GP9lAySK33wFSJBQqw42epc7Nu3ycqFuIMEpb1YyARdOSnQPhxFU
-         Wlo2JpiSRrQpWc6DS4QNsKZbC8SCuIPzI3J6tZ87ccf5wHcLzCkFt9hULvgPnqRxQ8By
-         9CBmjph2lVCBrzXF3VxhiT+ySEDwV/Jd1cF+YBimg3snUdVsY0DIlvHNBuZTnHMQR4Dz
-         atH8ar4NRKj2bagsgPCfxiNbRZNZj65BxFSphFJOj1QNvspMV36m6ij9Z6+ClozPVGGq
-         u96g==
+        bh=9gQpMpP65smhU9h4fCxGG/DL26lj4XPv0cgPw/bIETY=;
+        b=h+VsbrHoeL2K991q/zwn2zBwZp9oObUS/klUUb0ba5Xz+CI8LR/NHkR/F9+NMtU/HZ
+         U87+M6hEmP1SJq4C+W4r4vex5FZTrwQEPJv/tMZU2eg63xmq/UPkn/qAVTD5e/hme0QT
+         sGri8EjFqoyim5+8h9BOT1deGwEssInCFiRU9mUr3AH9No0yrwR+xp647Z6HiKGOJG1l
+         mP983EgHZ4cQqTi29cfCcUATvYOvb6gFNAQMr04TXiHczx1J7+WCDiLQYMAoXflVjCeq
+         jsxso78SkSipZjyvutqkRlDmhM/D4FjLP/xzCsBYyIcKtJiycSwPno3XFgC6UR1yI0yJ
+         12Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=DUwfWiW0UJxalwoOZqAt5RYAz8XQErLckHV7vR83OWY=;
-        b=eEUqca725h9Nbo28CWcGqWMVYXdK2F9h3/WXE22mO30Leam/BMV7+Id7w691zcbpqj
-         N5efSZPy4BWOI+AElGUpO1YQXTdx+uNH//b0prAaD6biusTyVLvW56Q9tp9HXidLSAda
-         ioFzsL1yc+PaIJjpjQNc0LVd2se93ZBLOTGCMKvUcR/2SOZY36/tjFCQOD5JfU2rXz9s
-         4un8R8pFrw6d+4WGxIqNt3GdL8Li5lZ09mi9VcDNG35wsF0GYG5z6sBRJi5obpz6pTFX
-         2dRJxSxw5jUA2Zl2OG+yIpOngPkvTb5KKm38DVyq6+hx0PSiCsVSN0CGE2jjsCg87Cp8
-         opyg==
-X-Gm-Message-State: AGi0Pub5R5eFzf86KEH5w3kZf4uT0p0KBL41qYf6aCOkK9M0VNhi4iNK
-        OtJACkJ2wV6jqcmgnGY5pVB97w==
-X-Google-Smtp-Source: APiQypKOyL9ads/3hMVSff7qNmS6J5YYs0teENKpVn9t8B1IfnPqaGI7AiHQNnoMwQBYFwAvtKTTvQ==
-X-Received: by 2002:a1c:7308:: with SMTP id d8mr10713890wmb.31.1585943454150;
-        Fri, 03 Apr 2020 12:50:54 -0700 (PDT)
-Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id c17sm8102448wrp.28.2020.04.03.12.50.53
+        bh=9gQpMpP65smhU9h4fCxGG/DL26lj4XPv0cgPw/bIETY=;
+        b=jgL8ZQJXQcHdqx3ltRKLhKMd2O4BCqWo1VaFnHLvBvioVE+aRqLB7J2sbTkZcK3JKX
+         tMJax88QpU13nT3OEA8zPg0nQRdoXJIL+FKJwodgWXP3/KjcJ4E+FuKqkjAPQ9v8VWYd
+         0N97bu2qbpsPViWXB7yefw5THcwuEwv60iut39F3Em8zm/yu+eyS9fbkNsPqIxebE1Ck
+         QSKOFMV63ZGjdnapLdrO3Z1TTxW0RvFCNlzCCZ5ig9ukWZVOXNqFBmhibPyplcdzfGK/
+         Xh9xFh9/+WxOBuCBYm3YAIWiE00BnVKtI5rhMkJV3UNoEkHRLjb2O2hkIeEDQSZVmz1c
+         fCJQ==
+X-Gm-Message-State: AGi0PuZwrLMXaup1iWfEsK0jD18C7UPV4DNvWO/eHrd6AbDWYyMlcLbb
+        dLKhUJwBR43vrr0mKGalOrAhLQ==
+X-Google-Smtp-Source: APiQypK6eaKDH374gWinPksnmI/KFYMVfn16Q0XQhiv0hhYFhpiB0PC8os24xQIIqPfiER3Xbt5/Ag==
+X-Received: by 2002:a62:19d8:: with SMTP id 207mr10308346pfz.278.1585943510950;
+        Fri, 03 Apr 2020 12:51:50 -0700 (PDT)
+Received: from nuc7.sifive.com (c-24-5-48-146.hsd1.ca.comcast.net. [24.5.48.146])
+        by smtp.gmail.com with ESMTPSA id h15sm6375239pfq.10.2020.04.03.12.51.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Fri, 03 Apr 2020 12:50:53 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 7/7] crypto: sun8i-ss: better debug printing
-Date:   Fri,  3 Apr 2020 19:50:38 +0000
-Message-Id: <1585943438-862-8-git-send-email-clabbe@baylibre.com>
+        Fri, 03 Apr 2020 12:51:50 -0700 (PDT)
+From:   Alan Mikhak <alan.mikhak@sifive.com>
+X-Google-Original-From: Alan Mikhak < alan.mikhak@sifive.com >
+To:     kishon@ti.com
+Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH][next] PCI: endpoint: functions/pci-epf-test: fix memory leak of buf
+Date:   Fri,  3 Apr 2020 12:51:34 -0700
+Message-Id: <1585943494-23977-1-git-send-email-alan.mikhak@sifive.com>
 X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1585943438-862-1-git-send-email-clabbe@baylibre.com>
-References: <1585943438-862-1-git-send-email-clabbe@baylibre.com>
+In-Reply-To: <20200401223541.403438-1-colin.king@canonical.com>
+References: <20200401223541.403438-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch reworks the way debug info are printed.
-Instead of printing raw numbers, let's add a bit of context.
+Hi Colin,
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Please note a similar leak in pci_epf_test_write().
 
-diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-index d7832e2eb39c..cbeaf1962c05 100644
---- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-+++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
-@@ -420,19 +420,19 @@ static int sun8i_ss_dbgfs_read(struct seq_file *seq, void *v)
- 			continue;
- 		switch (ss_algs[i].type) {
- 		case CRYPTO_ALG_TYPE_SKCIPHER:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu fallback=%lu\n",
- 				   ss_algs[i].alg.skcipher.base.cra_driver_name,
- 				   ss_algs[i].alg.skcipher.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_fb);
- 			break;
- 		case CRYPTO_ALG_TYPE_RNG:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu tsize=%lu\n",
- 				   ss_algs[i].alg.rng.base.cra_driver_name,
- 				   ss_algs[i].alg.rng.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_bytes);
- 			break;
- 		case CRYPTO_ALG_TYPE_AHASH:
--			seq_printf(seq, "%s %s %lu %lu\n",
-+			seq_printf(seq, "%s %s reqs=%lu fallback=%lu\n",
- 				   ss_algs[i].alg.hash.halg.base.cra_driver_name,
- 				   ss_algs[i].alg.hash.halg.base.cra_name,
- 				   ss_algs[i].stat_req, ss_algs[i].stat_fb);
--- 
-2.24.1
+Regards,
+Alan Mikhak
 
