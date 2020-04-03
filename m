@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AEF19D90B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B53D319D917
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403865AbgDCOZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:25:01 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:38957 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727431AbgDCOZB (ORCPT
+        id S2390993AbgDCO0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:26:25 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:39888 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727431AbgDCO0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:25:01 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9A2145C02DC;
-        Fri,  3 Apr 2020 10:25:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 03 Apr 2020 10:25:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=h//KBBbTbCyqY5QR6Vnfov/BvLf
-        Hp/XAplTvJ5sSpZo=; b=F5LpxV8w8wwUOwdIRDGwVKRSgprh7zt8IlNEgwg0efK
-        WUGoZIatvwOODSwF0LMLn9wGXfsp6tP5gey4vzI7Xjh3V9XLQxp6mSuFA1pWXEHV
-        Pm4+b4nO7kntmCQfPOLNn2u7iLhap37yCbM6E5TgJDvXuRImpmqQiesG9B5ScOlP
-        wXaBpba6l/CFTzqZ4e/RNKpItKL5m9nqELnRPkkUyf/sONhB0L8s8B/lfJI5PAtW
-        dUdbqj6WIEtlUdzjbpvZyK+FG9Vt7M/m8w7DjXdxnR9wR2RiX1u1aTrjdLIFcgiO
-        4vy9X9Fr3oRmYnqfJCGH4tdUcVkFC+RhedLQ7InhnXw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=h//KBB
-        bTbCyqY5QR6Vnfov/BvLfHp/XAplTvJ5sSpZo=; b=bBa3X3hB/je0rfyY8TSfKw
-        FFoJC/zDMMkWwtcXjGEf//Mvc5s4t7U6HpgaYKOIvNiIaH9PMwy+xVgRj/rtSEOX
-        Tse8AL/mdGcWH+FBgvY0ToCpRrU/5vFNwwe6z/3YJjNHMi17yrPzFAOEf6OkwE+2
-        IUjJO2tj3jhmJXGGWV2vBwTzVS3B4sZarbPR1VKRwMViDO3MY6VGjwUMparDIZGY
-        TYysce5aRdS6UShhtOy1nOHNbuszY1fQ5NJY6iU2CVxIWgvUR4rbFatn8hG8IVVz
-        S/R/emWzkCLLq2f/ulNJRN6lkvm+5PmzjjFnWOPmmMaX63668fcXmAptkkjRCodA
-        ==
-X-ME-Sender: <xms:PEeHXuvYBz_XBqK4eze1qdzIpnXh9FyLv6HzaCRaDtxdYGQI-AK3AA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrtdeigdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
-    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuffhomhgrihhnpehkvghrnhgvlhdroh
-    hrghenucfkphepkeefrdekiedrkeelrddutdejnecuvehluhhsthgvrhfuihiivgeptden
-    ucfrrghrrghmpehmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:PEeHXplhaaNy224I1M32QlfeLk7TU2aEiZ2_0W99OVXmD-dg-y5Qgg>
-    <xmx:PEeHXgS2y7LOPWa2ajxc2qdfAnSbNr4oGXZ-P5_oViI_kKKF22V-Wg>
-    <xmx:PEeHXjOtjDp2ChBfQK65mmln8KANVOXWvhHQ8WPtOzchT9uMazuHWA>
-    <xmx:PEeHXpqCvpnSv02U_BzUPu-_l8qAg8YatTI4XkP0fySUN4ec8ItetA>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2C39A306CFDB;
-        Fri,  3 Apr 2020 10:25:00 -0400 (EDT)
-Date:   Fri, 3 Apr 2020 16:24:56 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: Backport dependencies helper
-Message-ID: <20200403142456.GC4088318@kroah.com>
-References: <20200331123217.GM4189@sasha-vm>
+        Fri, 3 Apr 2020 10:26:24 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h6so5963186lfp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 07:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OAww5f2PQSKNiKQxC6Q2b34/fMVZhJRuAf3EIGrKKDw=;
+        b=yIM6IlRDpjUTxRN2ABwudgNvuXxV8ur0voMSFh49m24e5bS6b4hFdSM516ZyJeeg7H
+         evkNzojnT9xnH24E7aWSxFIGep7Mxg3TEY4Htir7orYaNW5jyC3eUIRqZj/W+B3arjbw
+         xTgCfttLJJaQAoMywHk3e/+3c10sxIJ/afKuG9bo2GoOwnTZoT63AKJeFyDWbOidAe7s
+         qe0bNXp0f0QGwCMIpoQ+CoI2UFFvDRgtMViWBHq9ja9XQ2ORyhmOVPf2YJykbLpS78tC
+         cfI0A+e2NJKmpYd9abFAJijRNaGIzxU5hMERjQrG5qgodSE4niyNz65lm1Msisqdhfx/
+         ggoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OAww5f2PQSKNiKQxC6Q2b34/fMVZhJRuAf3EIGrKKDw=;
+        b=Y4JBgngFoSAKpEH0Om5iiolUG56voi0cGYGDthGHkTZZ1mhesOxwDWKivNeeK0W8XT
+         zklZg+DMIAE+NqxEZ4MgPDMYxDsHgcnVYIbrPv7ebJmFHsol5KMT8sSK2vnEqSBNX1EN
+         rOcP0zZdJtiGtMPE2qg+6OSSHYvHcZRDOHUKAxEr8AZQ6JhxItHlOQPd7lGtiozBB8HT
+         me47cxruYq90Wo31uuhbOYxhW0302LJiRdn2UWz+fLsQJ/MRqJ4+iJ+59XM1ARlwE4dQ
+         sd4CUiulcTEUjxdvCe0idzDytsFNcTGbAAlEzPVRrzHFRA9Db+cXfy9tf1n8av08ND6j
+         Aujw==
+X-Gm-Message-State: AGi0PubkWg7GzMrvKPJSUhV3mO12fjW8gWYZ1FXJ81GrtPI6pUF7bcaK
+        fu7LOj+1yOHB7CPaKyXKdgkHUA==
+X-Google-Smtp-Source: APiQypLJ9JloMpkY5sh8QUo1w9ptYVtRAzL1TavE8LmnGcuFFnwdH2rsswsjalOTbmn+uCUby9oGrA==
+X-Received: by 2002:a05:6512:3115:: with SMTP id n21mr5687418lfb.51.1585923982850;
+        Fri, 03 Apr 2020 07:26:22 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id f9sm5200343ljp.88.2020.04.03.07.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 07:26:22 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 894F3100F13; Fri,  3 Apr 2020 17:26:21 +0300 (+03)
+Date:   Fri, 3 Apr 2020 17:26:21 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>
+Subject: Re: [PATCH -V3] /proc/PID/smaps: Add PMD migration entry parsing
+Message-ID: <20200403142621.o6yqrdfdmqkagvif@box>
+References: <20200403123059.1846960-1-ying.huang@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200331123217.GM4189@sasha-vm>
+In-Reply-To: <20200403123059.1846960-1-ying.huang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 08:32:17AM -0400, Sasha Levin wrote:
-> Hi all,
+On Fri, Apr 03, 2020 at 08:30:59PM +0800, Huang, Ying wrote:
+> From: Huang Ying <ying.huang@intel.com>
 > 
-> I wanted to share a resource I've been using to help me with doing
-> backports to various stable kernels.
+> Now, when read /proc/PID/smaps, the PMD migration entry in page table is simply
+> ignored.  To improve the accuracy of /proc/PID/smaps, its parsing and processing
+> is added.
 > 
-> In the Stable Kernel world, when we need to backport a patch, we'd
-> rather take any relevant dependencies to make the patch work cleanly on
-> an older kernel, rather than modifying the patch and diverging from
-> upstream.
+> To test the patch, we run pmbench to eat 400 MB memory in background, then run
+> /usr/bin/migratepages and `cat /proc/PID/smaps` every second.  The issue as
+> follows can be reproduced within 60 seconds.
 > 
-> This raises an interesting problem: how do we figure out which other
-> patches might be "interesting" to look at? git-blame is a great tool,
-> but it takes a while to go through the history of a patch, and given the
-> volume of patches we need to look at, it just isn't enough.
+> Before the patch, for the fully populated 400 MB anonymous VMA, some THP pages
+> under migration may be lost as below.
 > 
-> So here's a tool in the form of a git repo that can help point out these
-> interesting patches:
+> 7f3f6a7e5000-7f3f837e5000 rw-p 00000000 00:00 0
+> Size:             409600 kB
+> KernelPageSize:        4 kB
+> MMUPageSize:           4 kB
+> Rss:              407552 kB
+> Pss:              407552 kB
+> Shared_Clean:          0 kB
+> Shared_Dirty:          0 kB
+> Private_Clean:         0 kB
+> Private_Dirty:    407552 kB
+> Referenced:       301056 kB
+> Anonymous:        407552 kB
+> LazyFree:              0 kB
+> AnonHugePages:    405504 kB
+> ShmemPmdMapped:        0 kB
+> FilePmdMapped:        0 kB
+> Shared_Hugetlb:        0 kB
+> Private_Hugetlb:       0 kB
+> Swap:                  0 kB
+> SwapPss:               0 kB
+> Locked:                0 kB
+> THPeligible:		1
+> VmFlags: rd wr mr mw me ac
 > 
->        https://git.kernel.org/pub/scm/linux/kernel/git/sashal/deps.git/
+> After the patch, it will be always,
 > 
-> How does it work, you might ask? It's actually quite simple: Each
-> directory represents a kernel version which we'll call K, and each file
-> inside that directory is named after an upstream commit we'll call C,
-> and it's content are the list of commits one would need to apply on top
-> of kernel K to "reach" commit C.
+> 7f3f6a7e5000-7f3f837e5000 rw-p 00000000 00:00 0
+> Size:             409600 kB
+> KernelPageSize:        4 kB
+> MMUPageSize:           4 kB
+> Rss:              409600 kB
+> Pss:              409600 kB
+> Shared_Clean:          0 kB
+> Shared_Dirty:          0 kB
+> Private_Clean:         0 kB
+> Private_Dirty:    409600 kB
+> Referenced:       294912 kB
+> Anonymous:        409600 kB
+> LazyFree:              0 kB
+> AnonHugePages:    407552 kB
+> ShmemPmdMapped:        0 kB
+> FilePmdMapped:        0 kB
+> Shared_Hugetlb:        0 kB
+> Private_Hugetlb:       0 kB
+> Swap:                  0 kB
+> SwapPss:               0 kB
+> Locked:                0 kB
+> THPeligible:		1
+> VmFlags: rd wr mr mw me ac
 > 
-> For example, let's say we want to apply:
-> 
->        f8788d86ab28 ("Linux 5.6-rc3")
-> 
-> On top of the v5.5 kernel tree. All we need to do is:
-> 
->        $ cat v5.5/f8788d86ab28f61f7b46eb6be375f8a726783636
->        f8788d86ab28 ("Linux 5.6-rc3")
->        11a48a5a18c6 ("Linux 5.6-rc2")
->        bb6d3fb354c5 ("Linux 5.6-rc1")
-> 
-> If you don't feel like cloning the repo (which contains quite a few
-> files), you can also use kernel.org's web interface in a script that
-> might look something like this:
-> 
->        #!/bin/bash
->        curl https://git.kernel.org/pub/scm/linux/kernel/git/sashal/deps.git/plain/$1/$2
-> 
-> And then simply:
-> 
->        $ ./deps.sh v5.5 f8788d86ab28f61f7b46eb6be375f8a726783636
->        f8788d86ab28 ("Linux 5.6-rc3")
->        11a48a5a18c6 ("Linux 5.6-rc2")
->        bb6d3fb354c5 ("Linux 5.6-rc1")
-> 
-> Caveats:
-> 
-> - Each file is limited to 50 entries. I feel that at that point it
->   stops being useful.
-> - Each file stops if a merge commit is hit.
-> - I might have bugs in my scripts and some entries are broken, please
->   report those if you see them.
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Reviewed-by: Zi Yan <ziy@nvidia.com>
 
-This is really cool, thanks for posting this, and for doing this work.
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-greg k-h
+-- 
+ Kirill A. Shutemov
