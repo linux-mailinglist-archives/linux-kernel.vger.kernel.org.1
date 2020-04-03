@@ -2,140 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB5C19DC58
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F57E19DC6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391119AbgDCRDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:03:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45056 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728341AbgDCRDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:03:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 9F318AA7C;
-        Fri,  3 Apr 2020 17:03:39 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E25BC1E1235; Fri,  3 Apr 2020 19:03:38 +0200 (CEST)
-Date:   Fri, 3 Apr 2020 19:03:38 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
-Message-ID: <20200403170338.GD29920@quack2.suse.cz>
-References: <20200311062952.GA11519@lst.de>
- <CAPcyv4h9Xg61jk=Uq17xC6AGj9yOSAJnCaTzHcfBZwOVdRF9dw@mail.gmail.com>
- <20200316095224.GF12783@quack2.suse.cz>
- <20200316095509.GA13788@lst.de>
- <20200401040021.GC56958@magnolia>
- <20200401102511.GC19466@quack2.suse.cz>
- <20200402085327.GA19109@lst.de>
- <20200402205518.GF3952565@iweiny-DESK2.sc.intel.com>
- <20200403072731.GA24176@lst.de>
- <20200403154828.GJ3952565@iweiny-DESK2.sc.intel.com>
+        id S2391092AbgDCRKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:10:09 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:43649 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728023AbgDCRKJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 13:10:09 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k5so6705356oiw.10
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eKwWwj3eqf+cZzC5JrJMT4a43JvCqUM+JiOzX9deVL0=;
+        b=hlm6P03s/Sq5PDxZkKnjNhsRznuMMud9tkThiDgQeV7G1rL6qquyi7rq7iMdnRCfLa
+         eWAY/+MOlyXrktAih6k/dfz5ql/Vw70D8AgPa/ajBudMfEzf400Q4yG9I1r7eVo/sMOu
+         OpTDl1bhUsTqqoiyOoYnCzV5tFYSc7pHf6vmI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eKwWwj3eqf+cZzC5JrJMT4a43JvCqUM+JiOzX9deVL0=;
+        b=MQzTEZTtGfYb3vAIvRpubHfWVqRphzoH0k7EQsSH/hyQBp5MB21+a42wVWcTjMkRBp
+         6pgmD2kuHnBUZKRvYIk86ntQSifLG3CtfOWeAHQShwwKT3OpR2gJcdPBIfE+eNnedggR
+         K4sM3UdN78TKZkDypZTWleIk5SmkPoeaykar0IgdllJywZplmGPcAAGKf2/tu8bkylFw
+         h6jOYSPRYXCPY4I6Zg4klG0/3ypiWrkhG5tc3/xhuuj4Zxh4HqFH8rG7lzSjdAvMCXTG
+         WCHw2kMDqrxabu57wg7MYjUz2+cz05VYKIhZwo/xgNwukDz2V1LmQ2CgJBTVyrJSb1Ey
+         sCXQ==
+X-Gm-Message-State: AGi0PuYuXZByzYeDjT9JOuLaWOwTXY28s6VBsyGKsyzIhjNsaNhLfHle
+        tIQRXPDSZksd/0YiSssvMReuTau4iOQ=
+X-Google-Smtp-Source: APiQypKqSINcxNUSjIvRL6ZszMyJiucl8S68/I3ni9NM2QCPQTHRAPLVH5qHa/XFze+PTHAPQ9JzLg==
+X-Received: by 2002:aca:cc41:: with SMTP id c62mr3929353oig.58.1585933808215;
+        Fri, 03 Apr 2020 10:10:08 -0700 (PDT)
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com. [209.85.210.50])
+        by smtp.gmail.com with ESMTPSA id f15sm2293002oig.13.2020.04.03.10.10.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Apr 2020 10:10:08 -0700 (PDT)
+Received: by mail-ot1-f50.google.com with SMTP id l23so8028247otf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:10:08 -0700 (PDT)
+X-Received: by 2002:ab0:1d10:: with SMTP id j16mr7491766uak.91.1585933475285;
+ Fri, 03 Apr 2020 10:04:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403154828.GJ3952565@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1573220319-4287-1-git-send-email-ppvk@codeaurora.org> <1573220319-4287-3-git-send-email-ppvk@codeaurora.org>
+In-Reply-To: <1573220319-4287-3-git-send-email-ppvk@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 3 Apr 2020 10:04:23 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WGUasS=UZxFeSS0Cg=9WxHPMWVFyYae7CFmOxV2_yhJw@mail.gmail.com>
+Message-ID: <CAD=FV=WGUasS=UZxFeSS0Cg=9WxHPMWVFyYae7CFmOxV2_yhJw@mail.gmail.com>
+Subject: Re: [RFC-v2 2/2] mmc: sdhci-msm: Add support for bus bandwidth voting
+To:     Pradeep P V K <ppvk@codeaurora.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        linux-mmc-owner@vger.kernel.org,
+        Subhash Jadavani <subhashj@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 03-04-20 08:48:29, Ira Weiny wrote:
-> On Fri, Apr 03, 2020 at 09:27:31AM +0200, Christoph Hellwig wrote:
-> > On Thu, Apr 02, 2020 at 01:55:19PM -0700, Ira Weiny wrote:
-> > > > I'd just return an error for that case, don't play silly games like
-> > > > evicting the inode.
-> > > 
-> > > I think I agree with Christoph here.  But I want to clarify.  I was heading in
-> > > a direction of failing the ioctl completely.  But we could have the flag change
-> > > with an appropriate error which could let the user know the change has been
-> > > delayed.
-> > > 
-> > > But I don't immediately see what error code is appropriate for such an
-> > > indication.  Candidates I can envision:
-> > > 
-> > > EAGAIN
-> > > ERESTART
-> > > EUSERS
-> > > EINPROGRESS
-> > > 
-> > > None are perfect but I'm leaning toward EINPROGRESS.
-> > 
-> > I really, really dislike that idea.  The whole point of not forcing
-> > evictions is to make it clear - no this inode is "busy" you can't
-> > do that.  A reasonably smart application can try to evict itself.
-> 
-> I don't understand.  What Darrick proposed would never need any
-> evictions.  If the file has blocks allocated the FS_XFLAG_DAX flag can
-> not be changed.  So I don't see what good eviction would do at all.
+Hi,
 
-I guess there's some confusion here (may well be than on my side). Darrick
-propose that we can switch FS_XFLAG_DAX only when file has no blocks
-allocated - fine by me. But that still does not mean than we can switch
-S_DAX immediately, does it? Because that would still mean we need to switch
-aops on living inode and that's ... difficult and Christoph didn't want to
-clutter the code with it.
+On Fri, Nov 8, 2019 at 5:45 AM Pradeep P V K <ppvk@codeaurora.org> wrote:
+>
+> +       if (msm_host->bus_vote_data->curr_vote != VOTE_ZERO)
+> +               queue_delayed_work(system_wq,
+> +                                  &msm_host->bus_vote_work,
+> +                                  msecs_to_jiffies(MSM_MMC_BUS_VOTING_DELAY));
+> +}
 
-So I've understood Darrick's proposal as: Just switch FS_XFLAG_DAX flag,
-S_DAX flag will magically switch when inode gets evicted and the inode gets
-reloaded from the disk again. Did I misunderstand anything?
+Drive-by feedback here without any full review of your patch...
+Someone had your patch applied and sent me a stack trace with a
+warning on it.  That warning showed:
 
-And my thinking was that this is surprising behavior for the user and so it
-will likely generate lots of bug reports along the lines of "DAX inode flag
-does not work!". So I was pondering how to make the behavior less
-confusing... The ioctl I've suggested was just a poor attempt at that.
+workqueue: WQ_MEM_RECLAIM kblockd:blk_mq_run_work_fn is flushing
+!WQ_MEM_RECLAIM events:sdhci_msm_bus_work
 
-> > But returning an error and doing a lazy change anyway is straight from
-> > the playbook for arcane and confusing API designs.
-> 
-> Jan countered with a proposal that the FS_XFLAG_DAX does change with
-> blocks allocated.  But that S_DAX would change on eviction.  Adding that
-> some eviction ioctl could be added.
+The trace shown was:
 
-No, I didn't mean that we can change FS_XFLAG_DAX with blocks allocated. I
-was still speaking about the case without blocks allocated.
+    check_flush_dependency+0x108/0x110
+    __flush_work+0xa8/0x1e8
+    __cancel_work_timer+0x130/0x1c4
+    cancel_delayed_work_sync+0x20/0x30
+    sdhci_msm_bus_cancel_work_and_set_vote+0x3c/0x8c
+    sdhci_msm_bus_voting+0x40/0x7c
+    sdhci_msm_runtime_resume+0xdc/0xf4
+    pm_generic_runtime_resume+0x34/0x48
+    __rpm_callback+0x70/0xfc
+    rpm_callback+0x5c/0x8c
+    rpm_resume+0x3fc/0x534
+    __pm_runtime_resume+0x7c/0xa0
+    __mmc_claim_host+0x1f4/0x230
+    mmc_get_card+0x34/0x40
+    mmc_mq_queue_rq+0x18c/0x244
+    blk_mq_dispatch_rq_list+0x27c/0x560
+    blk_mq_do_dispatch_sched+0xe0/0x140
+    blk_mq_sched_dispatch_requests+0x138/0x1b8
+    __blk_mq_run_hw_queue+0xc0/0x118
+    blk_mq_run_work_fn+0x24/0x30
 
-> You then proposed just returning an error for that case.  (This lead me to
-> believe that you were ok with an eviction based change of S_DAX.)
-> 
-> So I agreed that changing S_DAX could be delayed until an explicit eviction.
-> But, to aid the 'smart application', a different error code could be used to
-> indicate that the FS_XFLAG_DAX had been changed but that until that explicit
-> eviction occurs S_DAX would remain.
-> 
-> So I don't fully follow what you mean by 'lazy change'?
-> 
-> Do you still really, really dislike an explicit eviction method for changing
-> the S_DAX flag?
-> 
-> If FS_XFLAG_DAX can never be changed on a file with blocks allocated and the
-> user wants to change the mode of operations on their 'data'; they would have to
-> create a new file with the proper setting and move the data there.  For example
-> copy the file into a directory marked FS_XFLAG_DAX==true?
-> 
-> I'm ok with either interface as I think both could be clear if documented.
+I believe the way to interpret this is that you need to be running
+your work on a workqueue marked for memory reclaim.  That means you
+can't use the system_wq to queue your work.  Without being an expert,
+a quick guess would be that you should be queueing your work on the
+"kblockd_workqueue" using one of the functions for this.
 
-I agree that what Darrick suggested is technically easily doable and can be
-documented. But it is not natural behavior (i.e., different than all inode
-flags we have) and we know how careful people are when reading
-documentation...
-
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-Doug
