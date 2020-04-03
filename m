@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBA619CF7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3477919CF80
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732785AbgDCEmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:42:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42622 "EHLO mail.kernel.org"
+        id S2388057AbgDCEmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:42:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732383AbgDCEmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:42:15 -0400
+        id S1732601AbgDCEmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 00:42:16 -0400
 Received: from localhost.localdomain (unknown [223.93.147.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9390206F8;
-        Fri,  3 Apr 2020 04:42:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0051620B1F;
+        Fri,  3 Apr 2020 04:42:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585888934;
-        bh=IlSSFdTCbto5kyJBE4f6YruWvRB+ADD1o1vAqS/skW8=;
+        s=default; t=1585888936;
+        bh=YlS3C3paNOPOCPOVkzGPM1lYneYCIbFiJUt5ldc4N6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AxNKZafgB8GL4cScVWcXQFNuL4Qp8JWlU6UeoHUznZk623LNb1tX3QmqlhXYk3w18
-         xcD5zQStgqNJ25Xd0xTyW0ujNeq/ShE0p56c2ywRX5bzZ+eRMJyqbwBU0Pa2nzXqRA
-         ETlSOUAKo8tJd5AvIPgPe6jekQysRya5Fy1XylGY=
+        b=yxbYlkXWrEJWxrS2K7TGauQLjgCj57fhBHeADV6Of20Eq+uiVeuX6nmECqHDZmlkr
+         O+LnFvA/KrEjR6u2WB2sk+DQ+mYwQmsNsWfTuBiihQnMHdZtZdUQx1Cf8O5gC5xxCn
+         EDIxWmt8lpjsEcsAxipWvEd+Kffe1TYg0cOsLw1Y=
 From:   guoren@kernel.org
 To:     arnd@arndb.de
 Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH 05/11] csky/ftrace: Fixup ftrace_modify_code deadlock without CPU_HAS_ICACHE_INS
-Date:   Fri,  3 Apr 2020 12:41:44 +0800
-Message-Id: <20200403044150.20562-5-guoren@kernel.org>
+Subject: [PATCH 06/11] csky: Fixup get wrong psr value from phyical reg
+Date:   Fri,  3 Apr 2020 12:41:45 +0800
+Message-Id: <20200403044150.20562-6-guoren@kernel.org>
 X-Mailer: git-send-email 2.17.0
 In-Reply-To: <20200403044150.20562-1-guoren@kernel.org>
 References: <20200403044150.20562-1-guoren@kernel.org>
@@ -40,143 +40,119 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-If ICACHE_INS is not supported, we use IPI to sync icache on each
-core. But ftrace_modify_code is called from stop_machine from default
-implementation of arch_ftrace_update_code and stop_machine callback
-is irq_disabled. When you call ipi with irq_disabled, a deadlock will
-happen.
-
-We couldn't use icache_flush with irq_disabled, but startup make_nop
-is specific case and it needn't ipi other cores.
+We should get psr value from regs->psr in stack, not directly get
+it from phyiscal register then save the vector number in
+tsk->trap_no.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 ---
- arch/csky/kernel/ftrace.c | 31 +++++++++++++++++++++++++++
- arch/csky/mm/cachev2.c    | 45 +++++++++++++++++++++++++++++++++------
- 2 files changed, 70 insertions(+), 6 deletions(-)
+ arch/csky/include/asm/processor.h |  1 +
+ arch/csky/kernel/traps.c          | 11 ++++++++++-
+ arch/csky/mm/fault.c              |  7 +++++++
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
-diff --git a/arch/csky/kernel/ftrace.c b/arch/csky/kernel/ftrace.c
-index b4502cd2eabe..44628e3f7fa6 100644
---- a/arch/csky/kernel/ftrace.c
-+++ b/arch/csky/kernel/ftrace.c
-@@ -3,6 +3,7 @@
+diff --git a/arch/csky/include/asm/processor.h b/arch/csky/include/asm/processor.h
+index 21e0bd5293dd..c6bcd7f7c720 100644
+--- a/arch/csky/include/asm/processor.h
++++ b/arch/csky/include/asm/processor.h
+@@ -43,6 +43,7 @@ extern struct cpuinfo_csky cpu_data[];
+ struct thread_struct {
+ 	unsigned long  ksp;       /* kernel stack pointer */
+ 	unsigned long  sr;        /* saved status register */
++	unsigned long  trap_no;   /* saved status register */
  
- #include <linux/ftrace.h>
- #include <linux/uaccess.h>
-+#include <linux/stop_machine.h>
- #include <asm/cacheflush.h>
+ 	/* FPU regs */
+ 	struct user_fp __aligned(16) user_fp;
+diff --git a/arch/csky/kernel/traps.c b/arch/csky/kernel/traps.c
+index b057480e7463..63715cb90ee9 100644
+--- a/arch/csky/kernel/traps.c
++++ b/arch/csky/kernel/traps.c
+@@ -115,8 +115,9 @@ asmlinkage void trap_c(struct pt_regs *regs)
+ 	int sig;
+ 	unsigned long vector;
+ 	siginfo_t info;
++	struct task_struct *tsk = current;
  
- #ifdef CONFIG_DYNAMIC_FTRACE
-@@ -201,5 +202,35 @@ int ftrace_disable_ftrace_graph_caller(void)
- #endif /* CONFIG_DYNAMIC_FTRACE */
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+-	vector = (mfcr("psr") >> 16) & 0xff;
++	vector = (regs->sr >> 16) & 0xff;
  
-+#ifndef CONFIG_CPU_HAS_ICACHE_INS
-+struct ftrace_modify_param {
-+	int command;
-+	atomic_t cpu_count;
-+};
-+
-+static int __ftrace_modify_code(void *data)
-+{
-+	struct ftrace_modify_param *param = data;
-+
-+	if (atomic_inc_return(&param->cpu_count) == 1) {
-+		ftrace_modify_all_code(param->command);
-+		atomic_inc(&param->cpu_count);
-+	} else {
-+		while (atomic_read(&param->cpu_count) <= num_online_cpus())
-+			cpu_relax();
-+		local_icache_inv_all(NULL);
-+	}
-+
-+	return 0;
-+}
-+
-+void arch_ftrace_update_code(int command)
-+{
-+	struct ftrace_modify_param param = { command, ATOMIC_INIT(0) };
-+
-+	stop_machine(__ftrace_modify_code, &param, cpu_online_mask);
-+}
-+#endif
-+
- /* _mcount is defined in abi's mcount.S */
- EXPORT_SYMBOL(_mcount);
-diff --git a/arch/csky/mm/cachev2.c b/arch/csky/mm/cachev2.c
-index bc419f8039d3..7a9664adce43 100644
---- a/arch/csky/mm/cachev2.c
-+++ b/arch/csky/mm/cachev2.c
-@@ -7,8 +7,12 @@
- #include <asm/cache.h>
- #include <asm/barrier.h>
- 
-+/* for L1-cache */
- #define INS_CACHE		(1 << 0)
-+#define DATA_CACHE		(1 << 1)
- #define CACHE_INV		(1 << 4)
-+#define CACHE_CLR		(1 << 5)
-+#define CACHE_OMS		(1 << 6)
- 
- void local_icache_inv_all(void *priv)
- {
-@@ -16,11 +20,6 @@ void local_icache_inv_all(void *priv)
- 	sync_is();
- }
- 
--void icache_inv_all(void)
--{
--	on_each_cpu(local_icache_inv_all, NULL, 1);
--}
--
- #ifdef CONFIG_CPU_HAS_ICACHE_INS
- void icache_inv_range(unsigned long start, unsigned long end)
- {
-@@ -31,9 +30,43 @@ void icache_inv_range(unsigned long start, unsigned long end)
- 	sync_is();
- }
- #else
-+struct cache_range {
-+	unsigned long start;
-+	unsigned long end;
-+};
-+
-+static DEFINE_SPINLOCK(cache_lock);
-+
-+static inline void cache_op_line(unsigned long i, unsigned int val)
-+{
-+	mtcr("cr22", i);
-+	mtcr("cr17", val);
-+}
-+
-+void local_icache_inv_range(void *priv)
-+{
-+	struct cache_range *param = priv;
-+	unsigned long i = param->start & ~(L1_CACHE_BYTES - 1);
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&cache_lock, flags);
-+
-+	for (; i < param->end; i += L1_CACHE_BYTES)
-+		cache_op_line(i, INS_CACHE | CACHE_INV | CACHE_OMS);
-+
-+	spin_unlock_irqrestore(&cache_lock, flags);
-+
-+	sync_is();
-+}
-+
- void icache_inv_range(unsigned long start, unsigned long end)
- {
--	icache_inv_all();
-+	struct cache_range param = { start, end };
-+
-+	if (irqs_disabled())
-+		local_icache_inv_range(&param);
-+	else
-+		on_each_cpu(local_icache_inv_range, &param, 1);
- }
+ 	switch (vector) {
+ 	case VEC_ZERODIV:
+@@ -129,6 +130,7 @@ asmlinkage void trap_c(struct pt_regs *regs)
+ 		sig = SIGTRAP;
+ 		break;
+ 	case VEC_ILLEGAL:
++		tsk->thread.trap_no = vector;
+ 		die_if_kernel("Kernel mode ILLEGAL", regs, vector);
+ #ifndef CONFIG_CPU_NO_USER_BKPT
+ 		if (*(uint16_t *)instruction_pointer(regs) != USR_BKPT)
+@@ -146,16 +148,20 @@ asmlinkage void trap_c(struct pt_regs *regs)
+ 		sig = SIGTRAP;
+ 		break;
+ 	case VEC_ACCESS:
++		tsk->thread.trap_no = vector;
+ 		return buserr(regs);
+ #ifdef CONFIG_CPU_NEED_SOFTALIGN
+ 	case VEC_ALIGN:
++		tsk->thread.trap_no = vector;
+ 		return csky_alignment(regs);
  #endif
+ #ifdef CONFIG_CPU_HAS_FPU
+ 	case VEC_FPE:
++		tsk->thread.trap_no = vector;
+ 		die_if_kernel("Kernel mode FPE", regs, vector);
+ 		return fpu_fpe(regs);
+ 	case VEC_PRIV:
++		tsk->thread.trap_no = vector;
+ 		die_if_kernel("Kernel mode PRIV", regs, vector);
+ 		if (fpu_libc_helper(regs))
+ 			return;
+@@ -164,5 +170,8 @@ asmlinkage void trap_c(struct pt_regs *regs)
+ 		sig = SIGSEGV;
+ 		break;
+ 	}
++
++	tsk->thread.trap_no = vector;
++
+ 	send_sig(sig, current, 0);
+ }
+diff --git a/arch/csky/mm/fault.c b/arch/csky/mm/fault.c
+index f76618b630f9..562c7f708749 100644
+--- a/arch/csky/mm/fault.c
++++ b/arch/csky/mm/fault.c
+@@ -179,11 +179,14 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
+ bad_area_nosemaphore:
+ 	/* User mode accesses just cause a SIGSEGV */
+ 	if (user_mode(regs)) {
++		tsk->thread.trap_no = (regs->sr >> 16) & 0xff;
+ 		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
+ 		return;
+ 	}
  
+ no_context:
++	tsk->thread.trap_no = (regs->sr >> 16) & 0xff;
++
+ 	/* Are we prepared to handle this kernel fault? */
+ 	if (fixup_exception(regs))
+ 		return;
+@@ -198,6 +201,8 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
+ 	die_if_kernel("Oops", regs, write);
+ 
+ out_of_memory:
++	tsk->thread.trap_no = (regs->sr >> 16) & 0xff;
++
+ 	/*
+ 	 * We ran out of memory, call the OOM killer, and return the userspace
+ 	 * (which will retry the fault, or kill us if we got oom-killed).
+@@ -206,6 +211,8 @@ asmlinkage void do_page_fault(struct pt_regs *regs, unsigned long write,
+ 	return;
+ 
+ do_sigbus:
++	tsk->thread.trap_no = (regs->sr >> 16) & 0xff;
++
+ 	up_read(&mm->mmap_sem);
+ 
+ 	/* Kernel mode? Handle exceptions or die */
 -- 
 2.17.0
 
