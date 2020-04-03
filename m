@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A7219D5CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E0719D5D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390687AbgDCL3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 07:29:36 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:42676 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728020AbgDCL3f (ORCPT
+        id S2390776AbgDCL3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 07:29:44 -0400
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:45974 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727927AbgDCL3h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 07:29:35 -0400
-Received: by mail-lj1-f178.google.com with SMTP id q19so6512128ljp.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 04:29:34 -0700 (PDT)
+        Fri, 3 Apr 2020 07:29:37 -0400
+Received: by mail-lf1-f49.google.com with SMTP id f8so4118104lfe.12
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 04:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UDV67uaM0olVe42g3gcRUTFOTLKxm8Yf483YPZ3Dud8=;
-        b=sCxEbPsBTakoE1xknw2RtO2rz8oxNAb6cCS8SzCviLU+wXJ5m+DFbQMKB/W7GcAtYQ
-         D/0LK1slWaUCNicIxwMSPPcXyy0SuopgawhAqBDv8LGru/h2Rz//tPVcOCiAX0SeMfie
-         Rtmac2n0Qy8TbXeXOE4KNNFMQCPwok9lSTX2O0YBd41GsuzvfaBW+oKM/+RQaey1e1CJ
-         F7HBir5eC9AV6iJ3nDVZiaM9M6YOksUJ7CwPnmOYtDbgDLtLnz60hL49JSVAixZuYBQv
-         zN9NlOYVLhwtvCwlZiirwMvkOanRxXL2qLV3wkgtzXR8972SVxScB7hqZL3eWlOC48Ye
-         rPZg==
+        bh=mAGZx/EGSI/RDjikjycvglo1xEb2tWim3LCqQGVnzJI=;
+        b=x0yHw6L/NgJHQg6clxAQ3NicETBimmrGkxc5bhLtUTHIZZ6gdjrI89zcBBRayGoUir
+         7ufdkT4qvJVe+kOZvQbza2ILOMRGvZLR8jyJ1EKVJVN5VePrJVVG9hKMEjkhfUj+6p30
+         cm6cVLDe1QxBjGcUYoMnxWjf3bfLuxj/jPNPguI1Akb5WzqU3t+fnrXihgwP/ppUph4A
+         CT3L4rtI5GFKkmcmzxY7uLbnZDFQfWFqto6O/7V/qNfsjFmHmj+ow7Eikvk0jTBposlE
+         HYt7MTTbT/vjnMgOVp6OtXYFrpQClrjVosE22wjvOGPykQyxB03RFBVO3UNwtMK4WO/z
+         GT6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UDV67uaM0olVe42g3gcRUTFOTLKxm8Yf483YPZ3Dud8=;
-        b=mnxP2P+/YvjPdXFRfDsGn7tFfdtAMQUQwE/2p4tBXsEGJTesjSf9HCN3TC9cOYvdK9
-         et3FaS0g1v6T8rSCoxrvMBxWgj07nAzkwsPdKmJ75ZyqgAspBsg7HI0DE8/hnAkkPFdy
-         OrVRm37vQkyEr3twy9pc1t/k6bpF41/4nup6esj9PH1VInfijhd03gvx5IZJSMOBrkne
-         y3L3TpbSDa5nmp3F6y27rRpwplwfComrmYLFVK711r7hfcunhH3KseH6OB2NfNTEuIZY
-         spVnIx1jxHu8voNpErn/QZ/9pPexoVw3/AF/nrlRCDZoVsz/HgVVYBcQyWXs8MgRej0e
-         oVXA==
-X-Gm-Message-State: AGi0PuYIdTG2Mb0PN6Ek/cibk9vUtLYvnJLH+2Cne2oc/WrAY901pdlZ
-        pz2yiVoQ+7p1NarUwAuGv/Bxug==
-X-Google-Smtp-Source: APiQypKJovl0REGHDL9yO1HGUDFWiM4HR9jobJ/t8s9UpGtLW4jkkAHDaE6pZx5lnJh/RuFHjMKwQA==
-X-Received: by 2002:a2e:3203:: with SMTP id y3mr4372576ljy.54.1585913373250;
-        Fri, 03 Apr 2020 04:29:33 -0700 (PDT)
+        bh=mAGZx/EGSI/RDjikjycvglo1xEb2tWim3LCqQGVnzJI=;
+        b=aMNCZLMjqUo42UQyHEVrqijtR+frOueFBS57NkBAkscmOUcGKIhvo8LSNZ9o/R6+nG
+         P+92P59QHGSDR090uVhWjz9S6z8LNVpHCwi94TBekoQmeyKqSb7EHrWqyKseEnJ6ou8u
+         9jp8444QivZWuLasWEuxjqNAkwI7dqjICOk1AXXh8vMd7T2rk+UhcR3yPRdhA7xZ1rep
+         /j7uSbOKWZ7RjeN9ALCdl6hPe+cBkm9lQHu6elYSatUOQaUz1dEE72Q1EpkqcsyTHwA8
+         8TLovovRNN/6N5R3dy8o1tmRVkmAduNOQ3WErWDqcLJZkSgNjob9HIrAnQDjy7DmbUD4
+         6gUg==
+X-Gm-Message-State: AGi0PubaFQFIC0is460cgEaKYAkNyVG5v39h+bTo+Sw2EbFWMZGUQvbm
+        m3SGP1EQnqvSX2lItqhqkNEPBA==
+X-Google-Smtp-Source: APiQypJP33b4u4UTOhlDU6gSnxe16ao8dSUMHIdTs8YvwSZz48wsEnm0lTloLTHHu7PruzVkkB7nSQ==
+X-Received: by 2002:a05:6512:14a:: with SMTP id m10mr688758lfo.152.1585913374487;
+        Fri, 03 Apr 2020 04:29:34 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id g5sm4839412ljl.106.2020.04.03.04.29.31
+        by smtp.gmail.com with ESMTPSA id p14sm3202760lfe.87.2020.04.03.04.29.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 04:29:32 -0700 (PDT)
+        Fri, 03 Apr 2020 04:29:33 -0700 (PDT)
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 720FE101331; Fri,  3 Apr 2020 14:29:31 +0300 (+03)
+        id 78D6B101332; Fri,  3 Apr 2020 14:29:31 +0300 (+03)
 To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
 Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv2 3/8] khugepaged: Drain all LRU caches before scanning pages
-Date:   Fri,  3 Apr 2020 14:29:23 +0300
-Message-Id: <20200403112928.19742-4-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv2 4/8] khugepaged: Drain LRU add pagevec after swapin
+Date:   Fri,  3 Apr 2020 14:29:24 +0300
+Message-Id: <20200403112928.19742-5-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
 References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
@@ -66,30 +66,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having a page in LRU add cache offsets page refcount and gives
-false-negative on PageLRU(). It reduces collapse success rate.
+__collapse_huge_page_isolate() may fail due to extra pin in the LRU add
+pagevec. It's petty common for swapin case: we swap in pages just to
+fail due to the extra pin.
 
-Drain all LRU add caches before scanning. It happens relatively
-rare and should not disturb the system too much.
+Drain LRU add pagevec on sucessfull swapin.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- mm/khugepaged.c | 2 ++
- 1 file changed, 2 insertions(+)
+ mm/khugepaged.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 14d7afc90786..fdc10ffde1ca 100644
+index fdc10ffde1ca..57ff287caf6b 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -2065,6 +2065,8 @@ static void khugepaged_do_scan(void)
- 
- 	barrier(); /* write khugepaged_pages_to_scan to local stack */
- 
-+	lru_add_drain_all();
+@@ -940,6 +940,11 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+ 	}
+ 	vmf.pte--;
+ 	pte_unmap(vmf.pte);
 +
- 	while (progress < pages) {
- 		if (!khugepaged_prealloc_page(&hpage, &wait))
- 			break;
++	/* Drain LRU add pagevec to remove extra pin on the swapped in pages */
++	if (swapped_in)
++		lru_add_drain();
++
+ 	trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 1);
+ 	return true;
+ }
 -- 
 2.26.0
 
