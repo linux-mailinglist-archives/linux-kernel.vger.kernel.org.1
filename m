@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2C219D7E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DA319D7E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390968AbgDCNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 09:43:39 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:52065 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728104AbgDCNni (ORCPT
+        id S2403862AbgDCNnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 09:43:46 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37257 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390900AbgDCNnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:43:38 -0400
-Received: by mail-wm1-f65.google.com with SMTP id z7so7181771wmk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 06:43:36 -0700 (PDT)
+        Fri, 3 Apr 2020 09:43:41 -0400
+Received: by mail-wr1-f65.google.com with SMTP id w10so8631341wrm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 06:43:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=iREvdTpBgHupinhqYUTLOv6ABiy7AtkLXzmxvowBtBE=;
-        b=nu9QaEDcOhxZdK9WG26yHUFGE0BgroDpEr4ATxUF9giovwRqwj2fNt4rFK9gI4vN7Z
-         vlPmaSys+EG8n61Upb7MOt4lLFxbOaTlPy+kznq3zDp8AeKYUJCNyUAQ4omPvOO9cHln
-         ZHqqsAdIMhw70yXMPyr9Ek+aBgszciPvMz0rM0YqJaIfFK+0qtBKSv0oAte6w7Q+eaHe
-         MpZ09Bpba5ZHk5CDkobMgMSxJjyBd/lZbrfc6wUIr9B9iI1pjEFTKlY+xVLibntwIgnd
-         bKv25VqZwPR7B7C1abaqecf9h8gKcskzsVEwBwZoeXOAJM9jK5GyELx6XQigtHL3A4nN
-         R2ng==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=c5dN9OEwCeXPHmh94lJiBgFxl3hHCtBIDgnIzKGobZ4=;
+        b=vJkeSlrBYA2yhdUQIUjk6DJkGI0lySF+3OBnp8ffAp9H91ibI71mmZWacMzhF8K3PY
+         tV0l1DEeH5F8wyA3OYb/oLUk3yd8dlzNiMIKSDDJBEcjVdiFy/844wYWXl18eV3XQPfh
+         89GGGt0sjQP6BNQF1Ydj/ZtJgahhT+nPQK21QXJt7nHGO7pEY4/I2KU91TaxzLTH4c91
+         8EZtA9nVAV11/3hVeMTKdWCbgIjH52VMujSPSlfsL4ZpRlErMNi2k4Q7JbBL+tJE7n+m
+         /2r7HELyjEDcZVBCDvsyFEXJ8+LvZNt+451Qq2Mp15KJ15ZYHsXMZxKG+qzlmuKO89/n
+         9JrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=iREvdTpBgHupinhqYUTLOv6ABiy7AtkLXzmxvowBtBE=;
-        b=Pp5SF5kekJZ1Jr8Ht6nkLOsJSOfqCUcaxUB6QfrX/0UI5oDawvQY2Y95D8GLURt9A5
-         mOB6/wVjH9A32J9qxteKf7WqDaszj2mXcJMDhhMMZNJ+7VRnuEI+HnPpVBxbQhavg25u
-         oY7U9Zhp/V5cjj9Qsgf1EvBVkZZ0J7hbpVge9Gi+Z3dAr6P3sq3WlmDe0yO8pMSghcm2
-         PNT7jWh5lcaUqDuf10gDGsrocIp+WNaHQEfqFmLM7hIaHRurPaJYWf5DuH2P/uoogJOH
-         QkzqNnHP3t0cm91BVfOVXgkROx134rR/lZtraw46wA6h+P+fxUS0pQdjZbvR6JkH8HKy
-         xkmA==
-X-Gm-Message-State: AGi0PuasP2UzKstX284n9TnFWM6El/MUr1d5QNRnqC59WDfWz0A5r9Ac
-        QWbeVy1yY/Y3jJ8VbxKdxmU=
-X-Google-Smtp-Source: APiQypKWzVPjN7S2haq1L64Gdn1F6ztfJ7pkU8ludbPsoSB3vAXmzY1BLzKHgao7kIV7xH/gixizxA==
-X-Received: by 2002:a1c:41d6:: with SMTP id o205mr8676909wma.122.1585921415227;
-        Fri, 03 Apr 2020 06:43:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=c5dN9OEwCeXPHmh94lJiBgFxl3hHCtBIDgnIzKGobZ4=;
+        b=KOlw2uklPOS8hB4k/rvmNxPXUQ87wIRROb2o/Cza6FFZgioj6sfWnjqCSr8N06UoHb
+         V67hw2n6P0+61KftoWuqWeLfBEEAuckJDP9M0sX4z9Nlly2Ta4j25DQ2AuxGPz9Bib1G
+         3KXoUUUOksSm94YDznTDS6wk2nepHjY78dwxAq5XMaZSZOaY9HmaJfx6LxokEt0nPc1y
+         gqCOtJVe9koBL02yeAWrrKBBnmgCIl7B3MQMDpv/0URlrrulztZJUi1H9Pl8Q7xE3O8H
+         sWrCe6K4oFTP7Wi3WAPnq/pQ6BtvkTkrXwhgYLTmEYoInYUxtkhdNd4gwEh1KPJCOs0R
+         F55w==
+X-Gm-Message-State: AGi0PuZmPmq9kYtOFQJ3RBzTSPPnYZfPqaiuz6aI9O3rWjZVSW7RUH7V
+        LedLe99GxL9xe+oT2zsiJKE=
+X-Google-Smtp-Source: APiQypKEugdj4gehcOras9Yesro6Kmc+2TGz3OvFjQOv4tuiLJ91dnaNCSN43U52ZP80RxZ5ZVPhAw==
+X-Received: by 2002:a5d:4fcf:: with SMTP id h15mr9024514wrw.262.1585921416222;
+        Fri, 03 Apr 2020 06:43:36 -0700 (PDT)
 Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
-        by smtp.gmail.com with ESMTPSA id f12sm12081232wrm.94.2020.04.03.06.43.34
+        by smtp.gmail.com with ESMTPSA id f12sm12081232wrm.94.2020.04.03.06.43.35
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Apr 2020 06:43:34 -0700 (PDT)
+        Fri, 03 Apr 2020 06:43:35 -0700 (PDT)
 From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 01/11] parport: fix if-statement empty body warnings
-Date:   Fri,  3 Apr 2020 14:43:15 +0100
-Message-Id: <20200403134325.11523-1-sudipm.mukherjee@gmail.com>
+Subject: [PATCH 02/11] parport: Convert printk(KERN_<LEVEL> to pr_<level>(
+Date:   Fri,  3 Apr 2020 14:43:16 +0100
+Message-Id: <20200403134325.11523-2-sudipm.mukherjee@gmail.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200403134325.11523-1-sudipm.mukherjee@gmail.com>
+References: <20200403134325.11523-1-sudipm.mukherjee@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -58,514 +61,798 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Joe Perches <joe@perches.com>
 
-Eliminate warnings by using pr_debug which is the more typical
-kernel debugging style and also enable dynamic_debug on these
-outputs.
+Use the more common kernel style.
 
-Miscellaneous:
+Miscellanea:
 
-o A few messages were logged at KERN_INFO when enabled, now KERN_DEBUG
-o Convert %d/%d to %zd/%zu to avoid compilation warnings
+o Coalesce formats
+o Realign arguments
 
-Original-patch-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Joe Perches <joe@perches.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 ---
- drivers/parport/ieee1284.c     | 90 ++++++++++++++++--------------------------
- drivers/parport/ieee1284_ops.c | 67 +++++++++++--------------------
- 2 files changed, 57 insertions(+), 100 deletions(-)
+ drivers/parport/daisy.c          |   6 +-
+ drivers/parport/ieee1284.c       |   4 +-
+ drivers/parport/ieee1284_ops.c   |   3 +-
+ drivers/parport/parport_amiga.c  |   2 +-
+ drivers/parport/parport_atari.c  |   2 +-
+ drivers/parport/parport_cs.c     |   6 +-
+ drivers/parport/parport_gsc.c    |   7 +-
+ drivers/parport/parport_ip32.c   |  25 +++---
+ drivers/parport/parport_mfc3.c   |   2 +-
+ drivers/parport/parport_pc.c     | 166 +++++++++++++++++----------------------
+ drivers/parport/parport_sunbpp.c |   2 +-
+ drivers/parport/probe.c          |   7 +-
+ drivers/parport/share.c          |  24 +++---
+ 13 files changed, 110 insertions(+), 146 deletions(-)
 
+diff --git a/drivers/parport/daisy.c b/drivers/parport/daisy.c
+index 3b00e2c8e2e9..f87cc802167e 100644
+--- a/drivers/parport/daisy.c
++++ b/drivers/parport/daisy.c
+@@ -145,8 +145,7 @@ int parport_daisy_init(struct parport *port)
+ 	    ((num_ports = num_mux_ports(port)) == 2 || num_ports == 4)) {
+ 		/* Leave original as port zero. */
+ 		port->muxport = 0;
+-		printk(KERN_INFO
+-			"%s: 1st (default) port of %d-way multiplexor\n",
++		pr_info("%s: 1st (default) port of %d-way multiplexor\n",
+ 			port->name, num_ports);
+ 		for (i = 1; i < num_ports; i++) {
+ 			/* Clone the port. */
+@@ -159,8 +158,7 @@ int parport_daisy_init(struct parport *port)
+ 				continue;
+ 			}
+ 
+-			printk(KERN_INFO
+-				"%s: %d%s port of %d-way multiplexor on %s\n",
++			pr_info("%s: %d%s port of %d-way multiplexor on %s\n",
+ 				extra->name, i + 1, th[i + 1], num_ports,
+ 				port->name);
+ 
 diff --git a/drivers/parport/ieee1284.c b/drivers/parport/ieee1284.c
-index 90fb73575495..ba562bcd4b80 100644
+index ba562bcd4b80..f28d6a3c5a68 100644
 --- a/drivers/parport/ieee1284.c
 +++ b/drivers/parport/ieee1284.c
-@@ -31,12 +31,6 @@
- #undef DEBUG /* Don't want a garbled console */
- #endif
- 
--#ifdef DEBUG
--#define DPRINTK(stuff...) printk (stuff)
--#else
--#define DPRINTK(stuff...)
--#endif
--
- /* Make parport_wait_peripheral wake up.
-  * It will be useful to call this from an interrupt handler. */
- static void parport_ieee1284_wakeup (struct parport *port)
-@@ -258,12 +252,11 @@ static void parport_ieee1284_terminate (struct parport *port)
- 						     PARPORT_STATUS_PAPEROUT,
- 						     PARPORT_STATUS_PAPEROUT);
- 			if (r)
--				DPRINTK (KERN_INFO "%s: Timeout at event 49\n",
-+				pr_debug("%s: Timeout at event 49\n",
- 					 port->name);
- 
- 			parport_data_forward (port);
--			DPRINTK (KERN_DEBUG "%s: ECP direction: forward\n",
--				 port->name);
-+			pr_debug("%s: ECP direction: forward\n", port->name);
- 			port->ieee1284.phase = IEEE1284_PH_FWD_IDLE;
- 		}
- 
-@@ -281,8 +274,7 @@ static void parport_ieee1284_terminate (struct parport *port)
- 		/* Event 24: nAck goes low */
- 		r = parport_wait_peripheral (port, PARPORT_STATUS_ACK, 0);
- 		if (r)
--			DPRINTK (KERN_INFO "%s: Timeout at event 24\n",
--				 port->name);
-+			pr_debug("%s: Timeout at event 24\n", port->name);
- 
- 		/* Event 25: Set nAutoFd low */
- 		parport_frob_control (port,
-@@ -294,8 +286,7 @@ static void parport_ieee1284_terminate (struct parport *port)
- 					     PARPORT_STATUS_ACK, 
- 					     PARPORT_STATUS_ACK);
- 		if (r)
--			DPRINTK (KERN_INFO "%s: Timeout at event 27\n",
--				 port->name);
-+			pr_debug("%s: Timeout at event 27\n", port->name);
- 
- 		/* Event 29: Set nAutoFd high */
- 		parport_frob_control (port, PARPORT_CONTROL_AUTOFD, 0);
-@@ -304,8 +295,7 @@ static void parport_ieee1284_terminate (struct parport *port)
- 	port->ieee1284.mode = IEEE1284_MODE_COMPAT;
- 	port->ieee1284.phase = IEEE1284_PH_FWD_IDLE;
- 
--	DPRINTK (KERN_DEBUG "%s: In compatibility (forward idle) mode\n",
--		 port->name);
-+	pr_debug("%s: In compatibility (forward idle) mode\n", port->name);
- }		
- #endif /* IEEE1284 support */
- 
-@@ -406,8 +396,7 @@ int parport_negotiate (struct parport *port, int mode)
- 				      PARPORT_CONTROL_SELECT
- 				      | PARPORT_CONTROL_AUTOFD,
- 				      PARPORT_CONTROL_SELECT);
--		DPRINTK (KERN_DEBUG
--			 "%s: Peripheral not IEEE1284 compliant (0x%02X)\n",
-+		pr_debug("%s: Peripheral not IEEE1284 compliant (0x%02X)\n",
- 			 port->name, parport_read_status (port));
- 		port->ieee1284.phase = IEEE1284_PH_FWD_IDLE;
- 		return -1; /* Not IEEE1284 compliant */
-@@ -430,8 +419,7 @@ int parport_negotiate (struct parport *port, int mode)
- 				     PARPORT_STATUS_ACK,
- 				     PARPORT_STATUS_ACK)) {
- 		/* This shouldn't really happen with a compliant device. */
--		DPRINTK (KERN_DEBUG
--			 "%s: Mode 0x%02x not supported? (0x%02x)\n",
-+		pr_debug("%s: Mode 0x%02x not supported? (0x%02x)\n",
- 			 port->name, mode, port->ops->read_status (port));
- 		parport_ieee1284_terminate (port);
- 		return 1;
-@@ -442,7 +430,7 @@ int parport_negotiate (struct parport *port, int mode)
- 	/* xflag should be high for all modes other than nibble (0). */
- 	if (mode && !xflag) {
- 		/* Mode not supported. */
--		DPRINTK (KERN_DEBUG "%s: Mode 0x%02x rejected by peripheral\n",
-+		pr_debug("%s: Mode 0x%02x rejected by peripheral\n",
- 			 port->name, mode);
- 		parport_ieee1284_terminate (port);
- 		return 1;
-@@ -463,9 +451,7 @@ int parport_negotiate (struct parport *port, int mode)
- 		/* Event 52: nAck goes low */
- 		if (parport_wait_peripheral (port, PARPORT_STATUS_ACK, 0)) {
- 			/* This peripheral is _very_ slow. */
--			DPRINTK (KERN_DEBUG
--				 "%s: Event 52 didn't happen\n",
--				 port->name);
-+			pr_debug("%s: Event 52 didn't happen\n", port->name);
- 			parport_ieee1284_terminate (port);
- 			return 1;
- 		}
-@@ -481,10 +467,9 @@ int parport_negotiate (struct parport *port, int mode)
- 					     PARPORT_STATUS_ACK)) {
- 			/* This shouldn't really happen with a compliant
- 			 * device. */
--			DPRINTK (KERN_DEBUG
--				 "%s: Mode 0x%02x not supported? (0x%02x)\n",
-+			pr_debug("%s: Mode 0x%02x not supported? (0x%02x)\n",
- 				 port->name, mode,
--				 port->ops->read_status (port));
-+				 port->ops->read_status(port));
- 			parport_ieee1284_terminate (port);
- 			return 1;
- 		}
-@@ -495,8 +480,8 @@ int parport_negotiate (struct parport *port, int mode)
- 		/* xflag should be high. */
- 		if (!xflag) {
- 			/* Extended mode not supported. */
--			DPRINTK (KERN_DEBUG "%s: Extended mode 0x%02x not "
--				 "supported\n", port->name, mode);
-+			pr_debug("%s: Extended mode 0x%02x not supported\n",
-+				 port->name, mode);
- 			parport_ieee1284_terminate (port);
- 			return 1;
- 		}
-@@ -505,7 +490,7 @@ int parport_negotiate (struct parport *port, int mode)
- 	}
- 
- 	/* Mode is supported */
--	DPRINTK (KERN_DEBUG "%s: In mode 0x%02x\n", port->name, mode);
-+	pr_debug("%s: In mode 0x%02x\n", port->name, mode);
- 	port->ieee1284.mode = mode;
- 
- 	/* But ECP is special */
-@@ -522,13 +507,11 @@ int parport_negotiate (struct parport *port, int mode)
- 					     PARPORT_STATUS_PAPEROUT,
- 					     PARPORT_STATUS_PAPEROUT);
- 		if (r) {
--			DPRINTK (KERN_INFO "%s: Timeout at event 31\n",
--				port->name);
-+			pr_debug("%s: Timeout at event 31\n", port->name);
- 		}
- 
- 		port->ieee1284.phase = IEEE1284_PH_FWD_IDLE;
--		DPRINTK (KERN_DEBUG "%s: ECP direction: forward\n",
--			 port->name);
-+		pr_debug("%s: ECP direction: forward\n", port->name);
- 	} else switch (mode) {
- 	case IEEE1284_MODE_NIBBLE:
- 	case IEEE1284_MODE_BYTE:
-@@ -573,7 +556,7 @@ void parport_ieee1284_interrupt (void *handle)
- 	if (port->ieee1284.phase == IEEE1284_PH_REV_IDLE) {
- 		/* An interrupt in this phase means that data
- 		 * is now available. */
--		DPRINTK (KERN_DEBUG "%s: Data available\n", port->name);
-+		pr_debug("%s: Data available\n", port->name);
- 		parport_ieee1284_ack_data_avail (port);
- 	}
- #endif /* IEEE1284 support */
-@@ -617,13 +600,12 @@ ssize_t parport_write (struct parport *port, const void *buffer, size_t len)
- 		parport_negotiate (port, IEEE1284_MODE_COMPAT);
- 		/* fall through */
- 	case IEEE1284_MODE_COMPAT:
--		DPRINTK (KERN_DEBUG "%s: Using compatibility mode\n",
--			 port->name);
-+		pr_debug("%s: Using compatibility mode\n", port->name);
- 		fn = port->ops->compat_write_data;
- 		break;
- 
- 	case IEEE1284_MODE_EPP:
--		DPRINTK (KERN_DEBUG "%s: Using EPP mode\n", port->name);
-+		pr_debug("%s: Using EPP mode\n", port->name);
- 		if (addr) {
- 			fn = port->ops->epp_write_addr;
- 		} else {
-@@ -631,8 +613,7 @@ ssize_t parport_write (struct parport *port, const void *buffer, size_t len)
- 		}
- 		break;
- 	case IEEE1284_MODE_EPPSWE:
--		DPRINTK (KERN_DEBUG "%s: Using software-emulated EPP mode\n",
--			port->name);
-+		pr_debug("%s: Using software-emulated EPP mode\n", port->name);
- 		if (addr) {
- 			fn = parport_ieee1284_epp_write_addr;
- 		} else {
-@@ -641,7 +622,7 @@ ssize_t parport_write (struct parport *port, const void *buffer, size_t len)
- 		break;
- 	case IEEE1284_MODE_ECP:
- 	case IEEE1284_MODE_ECPRLE:
--		DPRINTK (KERN_DEBUG "%s: Using ECP mode\n", port->name);
-+		pr_debug("%s: Using ECP mode\n", port->name);
- 		if (addr) {
- 			fn = port->ops->ecp_write_addr;
- 		} else {
-@@ -650,8 +631,7 @@ ssize_t parport_write (struct parport *port, const void *buffer, size_t len)
- 		break;
- 
- 	case IEEE1284_MODE_ECPSWE:
--		DPRINTK (KERN_DEBUG "%s: Using software-emulated ECP mode\n",
--			 port->name);
-+		pr_debug("%s: Using software-emulated ECP mode\n", port->name);
- 		/* The caller has specified that it must be emulated,
- 		 * even if we have ECP hardware! */
- 		if (addr) {
-@@ -662,13 +642,13 @@ ssize_t parport_write (struct parport *port, const void *buffer, size_t len)
- 		break;
- 
- 	default:
--		DPRINTK (KERN_DEBUG "%s: Unknown mode 0x%02x\n", port->name,
--			port->ieee1284.mode);
-+		pr_debug("%s: Unknown mode 0x%02x\n",
-+			 port->name, port->ieee1284.mode);
- 		return -ENOSYS;
- 	}
- 
- 	retval = (*fn) (port, buffer, len, 0);
--	DPRINTK (KERN_DEBUG "%s: wrote %d/%d bytes\n", port->name, retval, len);
-+	pr_debug("%s: wrote %zd/%zu bytes\n", port->name, retval, len);
- 	return retval;
- #endif /* IEEE1284 support */
- }
-@@ -715,7 +695,7 @@ ssize_t parport_read (struct parport *port, void *buffer, size_t len)
- 		if ((port->physport->modes & PARPORT_MODE_TRISTATE) &&
- 		    !parport_negotiate (port, IEEE1284_MODE_BYTE)) {
- 			/* got into BYTE mode OK */
--			DPRINTK (KERN_DEBUG "%s: Using byte mode\n", port->name);
-+			pr_debug("%s: Using byte mode\n", port->name);
- 			fn = port->ops->byte_read_data;
- 			break;
- 		}
-@@ -724,17 +704,17 @@ ssize_t parport_read (struct parport *port, void *buffer, size_t len)
- 		}
- 		/* fall through - to NIBBLE */
- 	case IEEE1284_MODE_NIBBLE:
--		DPRINTK (KERN_DEBUG "%s: Using nibble mode\n", port->name);
-+		pr_debug("%s: Using nibble mode\n", port->name);
- 		fn = port->ops->nibble_read_data;
- 		break;
- 
- 	case IEEE1284_MODE_BYTE:
--		DPRINTK (KERN_DEBUG "%s: Using byte mode\n", port->name);
-+		pr_debug("%s: Using byte mode\n", port->name);
- 		fn = port->ops->byte_read_data;
- 		break;
- 
- 	case IEEE1284_MODE_EPP:
--		DPRINTK (KERN_DEBUG "%s: Using EPP mode\n", port->name);
-+		pr_debug("%s: Using EPP mode\n", port->name);
- 		if (addr) {
- 			fn = port->ops->epp_read_addr;
- 		} else {
-@@ -742,8 +722,7 @@ ssize_t parport_read (struct parport *port, void *buffer, size_t len)
- 		}
- 		break;
- 	case IEEE1284_MODE_EPPSWE:
--		DPRINTK (KERN_DEBUG "%s: Using software-emulated EPP mode\n",
--			port->name);
-+		pr_debug("%s: Using software-emulated EPP mode\n", port->name);
- 		if (addr) {
- 			fn = parport_ieee1284_epp_read_addr;
- 		} else {
-@@ -752,19 +731,18 @@ ssize_t parport_read (struct parport *port, void *buffer, size_t len)
- 		break;
- 	case IEEE1284_MODE_ECP:
- 	case IEEE1284_MODE_ECPRLE:
--		DPRINTK (KERN_DEBUG "%s: Using ECP mode\n", port->name);
-+		pr_debug("%s: Using ECP mode\n", port->name);
- 		fn = port->ops->ecp_read_data;
- 		break;
- 
- 	case IEEE1284_MODE_ECPSWE:
--		DPRINTK (KERN_DEBUG "%s: Using software-emulated ECP mode\n",
--			 port->name);
-+		pr_debug("%s: Using software-emulated ECP mode\n", port->name);
- 		fn = parport_ieee1284_ecp_read_data;
- 		break;
- 
- 	default:
--		DPRINTK (KERN_DEBUG "%s: Unknown mode 0x%02x\n", port->name,
--			 port->physport->ieee1284.mode);
-+		pr_debug("%s: Unknown mode 0x%02x\n",
-+			 port->name, port->physport->ieee1284.mode);
- 		return -ENOSYS;
- 	}
- 
+@@ -319,7 +319,7 @@ int parport_negotiate (struct parport *port, int mode)
+ #ifndef CONFIG_PARPORT_1284
+ 	if (mode == IEEE1284_MODE_COMPAT)
+ 		return 0;
+-	printk (KERN_ERR "parport: IEEE1284 not supported in this kernel\n");
++	pr_err("parport: IEEE1284 not supported in this kernel\n");
+ 	return -1;
+ #else
+ 	int m = mode & ~IEEE1284_ADDR;
+@@ -674,7 +674,7 @@ ssize_t parport_write (struct parport *port, const void *buffer, size_t len)
+ ssize_t parport_read (struct parport *port, void *buffer, size_t len)
+ {
+ #ifndef CONFIG_PARPORT_1284
+-	printk (KERN_ERR "parport: IEEE1284 not supported in this kernel\n");
++	pr_err("parport: IEEE1284 not supported in this kernel\n");
+ 	return -ENODEV;
+ #else
+ 	int mode = port->physport->ieee1284.mode;
 diff --git a/drivers/parport/ieee1284_ops.c b/drivers/parport/ieee1284_ops.c
-index 5d41dda6da4e..b1c9f513167b 100644
+index b1c9f513167b..2c11bd3fe1fd 100644
 --- a/drivers/parport/ieee1284_ops.c
 +++ b/drivers/parport/ieee1284_ops.c
-@@ -27,12 +27,6 @@
- #undef DEBUG /* Don't want a garbled console */
- #endif
- 
--#ifdef DEBUG
--#define DPRINTK(stuff...) printk (stuff)
--#else
--#define DPRINTK(stuff...)
--#endif
--
- /***                                *
-  * One-way data transfer functions. *
-  *                                ***/
-@@ -115,7 +109,7 @@ size_t parport_ieee1284_write_compat (struct parport *port,
- 		if (signal_pending (current))
- 			break;
- 
--		DPRINTK (KERN_DEBUG "%s: Timed out\n", port->name);
-+		pr_debug("%s: Timed out\n", port->name);
- 		break;
- 
- 	ready:
-@@ -178,9 +172,8 @@ size_t parport_ieee1284_read_nibble (struct parport *port,
- 		if (parport_wait_peripheral (port,
- 					     PARPORT_STATUS_ACK, 0)) {
- 			/* Timeout -- no more data? */
--			DPRINTK (KERN_DEBUG
--				 "%s: Nibble timeout at event 9 (%d bytes)\n",
--				 port->name, i/2);
-+			pr_debug("%s: Nibble timeout at event 9 (%d bytes)\n",
-+				 port->name, i / 2);
- 			parport_frob_control (port, PARPORT_CONTROL_AUTOFD, 0);
- 			break;
- 		}
-@@ -201,8 +194,7 @@ size_t parport_ieee1284_read_nibble (struct parport *port,
- 					     PARPORT_STATUS_ACK,
- 					     PARPORT_STATUS_ACK)) {
- 			/* Timeout -- no more data? */
--			DPRINTK (KERN_DEBUG
--				 "%s: Nibble timeout at event 11\n",
-+			pr_debug("%s: Nibble timeout at event 11\n",
- 				 port->name);
- 			break;
- 		}
-@@ -219,9 +211,8 @@ size_t parport_ieee1284_read_nibble (struct parport *port,
- 		/* Read the last nibble without checking data avail. */
- 		if (parport_read_status (port) & PARPORT_STATUS_ERROR) {
- 		end_of_data:
--			DPRINTK (KERN_DEBUG
--				"%s: No more nibble data (%d bytes)\n",
--				port->name, i/2);
-+			pr_debug("%s: No more nibble data (%d bytes)\n",
-+				 port->name, i / 2);
- 
- 			/* Go to reverse idle phase. */
- 			parport_frob_control (port,
-@@ -272,8 +263,7 @@ size_t parport_ieee1284_read_byte (struct parport *port,
- 			/* Timeout -- no more data? */
- 			parport_frob_control (port, PARPORT_CONTROL_AUTOFD,
- 						 0);
--			DPRINTK (KERN_DEBUG "%s: Byte timeout at event 9\n",
--				 port->name);
-+			pr_debug("%s: Byte timeout at event 9\n", port->name);
- 			break;
- 		}
- 
-@@ -288,8 +278,7 @@ size_t parport_ieee1284_read_byte (struct parport *port,
- 					     PARPORT_STATUS_ACK,
- 					     PARPORT_STATUS_ACK)) {
- 			/* Timeout -- no more data? */
--			DPRINTK (KERN_DEBUG "%s: Byte timeout at event 11\n",
--				 port->name);
-+			pr_debug("%s: Byte timeout at event 11\n", port->name);
- 			break;
- 		}
- 
-@@ -307,8 +296,7 @@ size_t parport_ieee1284_read_byte (struct parport *port,
- 		/* Read the last byte without checking data avail. */
- 		if (parport_read_status (port) & PARPORT_STATUS_ERROR) {
- 		end_of_data:
--			DPRINTK (KERN_DEBUG
--				 "%s: No more byte data (%zd bytes)\n",
-+			pr_debug("%s: No more byte data (%zd bytes)\n",
- 				 port->name, count);
- 
- 			/* Go to reverse idle phase. */
-@@ -353,12 +341,10 @@ int ecp_forward_to_reverse (struct parport *port)
- 					  PARPORT_STATUS_PAPEROUT, 0);
- 
- 	if (!retval) {
--		DPRINTK (KERN_DEBUG "%s: ECP direction: reverse\n",
--			 port->name);
-+		pr_debug("%s: ECP direction: reverse\n", port->name);
- 		port->ieee1284.phase = IEEE1284_PH_REV_IDLE;
- 	} else {
--		DPRINTK (KERN_DEBUG "%s: ECP direction: failed to reverse\n",
--			 port->name);
-+		pr_debug("%s: ECP direction: failed to reverse\n", port->name);
- 		port->ieee1284.phase = IEEE1284_PH_ECP_DIR_UNKNOWN;
- 	}
- 
-@@ -384,12 +370,10 @@ int ecp_reverse_to_forward (struct parport *port)
- 
- 	if (!retval) {
- 		parport_data_forward (port);
--		DPRINTK (KERN_DEBUG "%s: ECP direction: forward\n",
--			 port->name);
-+		pr_debug("%s: ECP direction: forward\n", port->name);
- 		port->ieee1284.phase = IEEE1284_PH_FWD_IDLE;
- 	} else {
--		DPRINTK (KERN_DEBUG
--			 "%s: ECP direction: failed to switch forward\n",
-+		pr_debug("%s: ECP direction: failed to switch forward\n",
- 			 port->name);
- 		port->ieee1284.phase = IEEE1284_PH_ECP_DIR_UNKNOWN;
- 	}
-@@ -450,7 +434,7 @@ size_t parport_ieee1284_ecp_write_data (struct parport *port,
- 		}
- 
- 		/* Time for Host Transfer Recovery (page 41 of IEEE1284) */
--		DPRINTK (KERN_DEBUG "%s: ECP transfer stalled!\n", port->name);
-+		pr_debug("%s: ECP transfer stalled!\n", port->name);
- 
- 		parport_frob_control (port, PARPORT_CONTROL_INIT,
- 				      PARPORT_CONTROL_INIT);
-@@ -466,8 +450,7 @@ size_t parport_ieee1284_ecp_write_data (struct parport *port,
- 		if (!(parport_read_status (port) & PARPORT_STATUS_PAPEROUT))
- 			break;
- 
--		DPRINTK (KERN_DEBUG "%s: Host transfer recovered\n",
--			 port->name);
-+		pr_debug("%s: Host transfer recovered\n", port->name);
- 
- 		if (time_after_eq (jiffies, expire)) break;
- 		goto try_again;
-@@ -565,23 +548,20 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
-                    command or a normal data byte, don't accept it. */
- 		if (command) {
- 			if (byte & 0x80) {
--				DPRINTK (KERN_DEBUG "%s: stopping short at "
--					 "channel command (%02x)\n",
-+				pr_debug("%s: stopping short at channel command (%02x)\n",
- 					 port->name, byte);
- 				goto out;
- 			}
- 			else if (port->ieee1284.mode != IEEE1284_MODE_ECPRLE)
--				DPRINTK (KERN_DEBUG "%s: device illegally "
--					 "using RLE; accepting anyway\n",
-+				pr_debug("%s: device illegally using RLE; accepting anyway\n",
- 					 port->name);
- 
- 			rle_count = byte + 1;
- 
- 			/* Are we allowed to read that many bytes? */
- 			if (rle_count > (len - count)) {
--				DPRINTK (KERN_DEBUG "%s: leaving %d RLE bytes "
--					 "for next time\n", port->name,
--					 rle_count);
-+				pr_debug("%s: leaving %d RLE bytes for next time\n",
-+					 port->name, rle_count);
- 				break;
- 			}
- 
-@@ -596,7 +576,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
- 					     PARPORT_STATUS_ACK)) {
- 			/* It's gone wrong.  Return what data we have
-                            to the caller. */
--			DPRINTK (KERN_DEBUG "ECP read timed out at 45\n");
-+			pr_debug("ECP read timed out at 45\n");
+@@ -579,8 +579,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
+ 			pr_debug("ECP read timed out at 45\n");
  
  			if (command)
- 				printk (KERN_WARNING
-@@ -620,7 +600,7 @@ size_t parport_ieee1284_ecp_read_data (struct parport *port,
- 			memset (buf, byte, rle_count);
- 			buf += rle_count;
- 			count += rle_count;
--			DPRINTK (KERN_DEBUG "%s: decompressed to %d bytes\n",
-+			pr_debug("%s: decompressed to %d bytes\n",
- 				 port->name, rle_count);
- 		} else {
- 			/* Normal data byte. */
-@@ -686,7 +666,7 @@ size_t parport_ieee1284_ecp_write_addr (struct parport *port,
+-				printk (KERN_WARNING
+-					"%s: command ignored (%02x)\n",
++				pr_warn("%s: command ignored (%02x)\n",
+ 					port->name, byte);
+ 
+ 			break;
+diff --git a/drivers/parport/parport_amiga.c b/drivers/parport/parport_amiga.c
+index 3301861f69fa..8c7a598abcff 100644
+--- a/drivers/parport/parport_amiga.c
++++ b/drivers/parport/parport_amiga.c
+@@ -212,7 +212,7 @@ static int __init amiga_parallel_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto out_irq;
+ 
+-	printk(KERN_INFO "%s: Amiga built-in port using irq\n", p->name);
++	pr_info("%s: Amiga built-in port using irq\n", p->name);
+ 	/* XXX: set operating mode */
+ 	parport_announce_port(p);
+ 
+diff --git a/drivers/parport/parport_atari.c b/drivers/parport/parport_atari.c
+index f8dd368bfdbb..2ff0fe053e6e 100644
+--- a/drivers/parport/parport_atari.c
++++ b/drivers/parport/parport_atari.c
+@@ -200,7 +200,7 @@ static int __init parport_atari_init(void)
  		}
  
- 		/* Time for Host Transfer Recovery (page 41 of IEEE1284) */
--		DPRINTK (KERN_DEBUG "%s: ECP transfer stalled!\n", port->name);
-+		pr_debug("%s: ECP transfer stalled!\n", port->name);
+ 		this_port = p;
+-		printk(KERN_INFO "%s: Atari built-in port using irq\n", p->name);
++		pr_info("%s: Atari built-in port using irq\n", p->name);
+ 		parport_announce_port (p);
  
- 		parport_frob_control (port, PARPORT_CONTROL_INIT,
- 				      PARPORT_CONTROL_INIT);
-@@ -702,8 +682,7 @@ size_t parport_ieee1284_ecp_write_addr (struct parport *port,
- 		if (!(parport_read_status (port) & PARPORT_STATUS_PAPEROUT))
- 			break;
+ 		return 0;
+diff --git a/drivers/parport/parport_cs.c b/drivers/parport/parport_cs.c
+index e77044c2bf62..8e7e3ac4bb87 100644
+--- a/drivers/parport/parport_cs.c
++++ b/drivers/parport/parport_cs.c
+@@ -142,10 +142,8 @@ static int parport_config(struct pcmcia_device *link)
+ 			      link->irq, PARPORT_DMA_NONE,
+ 			      &link->dev, IRQF_SHARED);
+     if (p == NULL) {
+-	printk(KERN_NOTICE "parport_cs: parport_pc_probe_port() at "
+-	       "0x%3x, irq %u failed\n",
+-	       (unsigned int) link->resource[0]->start,
+-	       link->irq);
++	    pr_notice("parport_cs: parport_pc_probe_port() at 0x%3x, irq %u failed\n",
++		      (unsigned int)link->resource[0]->start, link->irq);
+ 	goto failed;
+     }
  
--		DPRINTK (KERN_DEBUG "%s: Host transfer recovered\n",
--			 port->name);
-+		pr_debug("%s: Host transfer recovered\n", port->name);
+diff --git a/drivers/parport/parport_gsc.c b/drivers/parport/parport_gsc.c
+index 922535a118ba..81082d5899b0 100644
+--- a/drivers/parport/parport_gsc.c
++++ b/drivers/parport/parport_gsc.c
+@@ -282,7 +282,7 @@ struct parport *parport_gsc_probe_port(unsigned long base,
+ 	p->size = (p->modes & PARPORT_MODE_EPP)?8:3;
+ 	p->private_data = priv;
  
- 		if (time_after_eq (jiffies, expire)) break;
- 		goto try_again;
+-	printk(KERN_INFO "%s: PC-style at 0x%lx", p->name, p->base);
++	pr_info("%s: PC-style at 0x%lx", p->name, p->base);
+ 	p->irq = irq;
+ 	if (p->irq == PARPORT_IRQ_AUTO) {
+ 		p->irq = PARPORT_IRQ_NONE;
+@@ -315,8 +315,7 @@ struct parport *parport_gsc_probe_port(unsigned long base,
+ 	if (p->irq != PARPORT_IRQ_NONE) {
+ 		if (request_irq (p->irq, parport_irq_handler,
+ 				 0, p->name, p)) {
+-			printk (KERN_WARNING "%s: irq %d in use, "
+-				"resorting to polled operation\n",
++			pr_warn("%s: irq %d in use, resorting to polled operation\n",
+ 				p->name, p->irq);
+ 			p->irq = PARPORT_IRQ_NONE;
+ 			p->dma = PARPORT_DMA_NONE;
+@@ -347,7 +346,7 @@ static int __init parport_init_chip(struct parisc_device *dev)
+ 	unsigned long port;
+ 
+ 	if (!dev->irq) {
+-		printk(KERN_WARNING "IRQ not found for parallel device at 0x%llx\n",
++		pr_warn("IRQ not found for parallel device at 0x%llx\n",
+ 			(unsigned long long)dev->hpa.start);
+ 		return -ENODEV;
+ 	}
+diff --git a/drivers/parport/parport_ip32.c b/drivers/parport/parport_ip32.c
+index ab215b650f41..4f76e4f4f6cf 100644
+--- a/drivers/parport/parport_ip32.c
++++ b/drivers/parport/parport_ip32.c
+@@ -1337,9 +1337,8 @@ static unsigned int parport_ip32_fwp_wait_interrupt(struct parport *p)
+ 			ecr = parport_ip32_read_econtrol(p);
+ 			if ((ecr & ECR_F_EMPTY) && !(ecr & ECR_SERVINTR)
+ 			    && !lost_interrupt) {
+-				printk(KERN_WARNING PPIP32
+-				       "%s: lost interrupt in %s\n",
+-				       p->name, __func__);
++				pr_warn(PPIP32 "%s: lost interrupt in %s\n",
++					p->name, __func__);
+ 				lost_interrupt = 1;
+ 			}
+ 		}
+@@ -1643,8 +1642,8 @@ static size_t parport_ip32_compat_write_data(struct parport *p,
+ 				       DSR_nBUSY | DSR_nFAULT)) {
+ 		/* Avoid to flood the logs */
+ 		if (ready_before)
+-			printk(KERN_INFO PPIP32 "%s: not ready in %s\n",
+-			       p->name, __func__);
++			pr_info(PPIP32 "%s: not ready in %s\n",
++				p->name, __func__);
+ 		ready_before = 0;
+ 		goto stop;
+ 	}
+@@ -1724,8 +1723,8 @@ static size_t parport_ip32_ecp_write_data(struct parport *p,
+ 				       DSR_nBUSY | DSR_nFAULT)) {
+ 		/* Avoid to flood the logs */
+ 		if (ready_before)
+-			printk(KERN_INFO PPIP32 "%s: not ready in %s\n",
+-			       p->name, __func__);
++			pr_info(PPIP32 "%s: not ready in %s\n",
++				p->name, __func__);
+ 		ready_before = 0;
+ 		goto stop;
+ 	}
+@@ -2064,8 +2063,7 @@ static __init struct parport *parport_ip32_probe_port(void)
+ 	p->modes |= PARPORT_MODE_TRISTATE;
+ 
+ 	if (!parport_ip32_fifo_supported(p)) {
+-		printk(KERN_WARNING PPIP32
+-		       "%s: error: FIFO disabled\n", p->name);
++		pr_warn(PPIP32 "%s: error: FIFO disabled\n", p->name);
+ 		/* Disable hardware modes depending on a working FIFO. */
+ 		features &= ~PARPORT_IP32_ENABLE_SPP;
+ 		features &= ~PARPORT_IP32_ENABLE_ECP;
+@@ -2077,8 +2075,7 @@ static __init struct parport *parport_ip32_probe_port(void)
+ 	if (features & PARPORT_IP32_ENABLE_IRQ) {
+ 		int irq = MACEISA_PARALLEL_IRQ;
+ 		if (request_irq(irq, parport_ip32_interrupt, 0, p->name, p)) {
+-			printk(KERN_WARNING PPIP32
+-			       "%s: error: IRQ disabled\n", p->name);
++			pr_warn(PPIP32 "%s: error: IRQ disabled\n", p->name);
+ 			/* DMA cannot work without interrupts. */
+ 			features &= ~PARPORT_IP32_ENABLE_DMA;
+ 		} else {
+@@ -2091,8 +2088,7 @@ static __init struct parport *parport_ip32_probe_port(void)
+ 	/* Allocate DMA resources */
+ 	if (features & PARPORT_IP32_ENABLE_DMA) {
+ 		if (parport_ip32_dma_register())
+-			printk(KERN_WARNING PPIP32
+-			       "%s: error: DMA disabled\n", p->name);
++			pr_warn(PPIP32 "%s: error: DMA disabled\n", p->name);
+ 		else {
+ 			pr_probe(p, "DMA support enabled\n");
+ 			p->dma = 0; /* arbitrary value != PARPORT_DMA_NONE */
+@@ -2134,8 +2130,7 @@ static __init struct parport *parport_ip32_probe_port(void)
+ 	parport_ip32_dump_state(p, "end init", 0);
+ 
+ 	/* Print out what we found */
+-	printk(KERN_INFO "%s: SGI IP32 at 0x%lx (0x%lx)",
+-	       p->name, p->base, p->base_hi);
++	pr_info("%s: SGI IP32 at 0x%lx (0x%lx)", p->name, p->base, p->base_hi);
+ 	if (p->irq != PARPORT_IRQ_NONE)
+ 		printk(", irq %d", p->irq);
+ 	printk(" [");
+diff --git a/drivers/parport/parport_mfc3.c b/drivers/parport/parport_mfc3.c
+index 9f87faf939e3..3190ef0f3c81 100644
+--- a/drivers/parport/parport_mfc3.c
++++ b/drivers/parport/parport_mfc3.c
+@@ -325,7 +325,7 @@ static int __init parport_mfc3_init(void)
+ 		p->dev = &z->dev;
+ 
+ 		this_port[pias++] = p;
+-		printk(KERN_INFO "%s: Multiface III port using irq\n", p->name);
++		pr_info("%s: Multiface III port using irq\n", p->name);
+ 		/* XXX: set operating mode */
+ 
+ 		p->private_data = (void *)piabase;
+diff --git a/drivers/parport/parport_pc.c b/drivers/parport/parport_pc.c
+index 1f17a39eabe8..2872c6756489 100644
+--- a/drivers/parport/parport_pc.c
++++ b/drivers/parport/parport_pc.c
+@@ -982,28 +982,24 @@ static void show_parconfig_smsc37c669(int io, int key)
+ 	outb(0xaa, io);
+ 
+ 	if (verbose_probing) {
+-		printk(KERN_INFO
+-			"SMSC 37c669 LPT Config: cr_1=0x%02x, 4=0x%02x, "
+-			"A=0x%2x, 23=0x%02x, 26=0x%02x, 27=0x%02x\n",
++		pr_info("SMSC 37c669 LPT Config: cr_1=0x%02x, 4=0x%02x, A=0x%2x, 23=0x%02x, 26=0x%02x, 27=0x%02x\n",
+ 			cr1, cr4, cra, cr23, cr26, cr27);
+ 
+ 		/* The documentation calls DMA and IRQ-Lines by letters, so
+ 		   the board maker can/will wire them
+ 		   appropriately/randomly...  G=reserved H=IDE-irq, */
+-		printk(KERN_INFO
+-	"SMSC LPT Config: io=0x%04x, irq=%c, dma=%c, fifo threshold=%d\n",
+-				cr23 * 4,
+-				(cr27 & 0x0f) ? 'A' - 1 + (cr27 & 0x0f) : '-',
+-				(cr26 & 0x0f) ? 'A' - 1 + (cr26 & 0x0f) : '-',
+-				cra & 0x0f);
+-		printk(KERN_INFO "SMSC LPT Config: enabled=%s power=%s\n",
+-		       (cr23 * 4 >= 0x100) ? "yes" : "no",
+-		       (cr1 & 4) ? "yes" : "no");
+-		printk(KERN_INFO
+-			"SMSC LPT Config: Port mode=%s, EPP version =%s\n",
+-				(cr1 & 0x08) ? "Standard mode only (SPP)"
+-					      : modes[cr4 & 0x03],
+-				(cr4 & 0x40) ? "1.7" : "1.9");
++		pr_info("SMSC LPT Config: io=0x%04x, irq=%c, dma=%c, fifo threshold=%d\n",
++			cr23 * 4,
++			(cr27 & 0x0f) ? 'A' - 1 + (cr27 & 0x0f) : '-',
++			(cr26 & 0x0f) ? 'A' - 1 + (cr26 & 0x0f) : '-',
++			cra & 0x0f);
++		pr_info("SMSC LPT Config: enabled=%s power=%s\n",
++			(cr23 * 4 >= 0x100) ? "yes" : "no",
++			(cr1 & 4) ? "yes" : "no");
++		pr_info("SMSC LPT Config: Port mode=%s, EPP version =%s\n",
++			(cr1 & 0x08) ? "Standard mode only (SPP)"
++			: modes[cr4 & 0x03],
++			(cr4 & 0x40) ? "1.7" : "1.9");
+ 	}
+ 
+ 	/* Heuristics !  BIOS setup for this mainboard device limits
+@@ -1013,7 +1009,7 @@ static void show_parconfig_smsc37c669(int io, int key)
+ 	if (cr23 * 4 >= 0x100) { /* if active */
+ 		s = find_free_superio();
+ 		if (s == NULL)
+-			printk(KERN_INFO "Super-IO: too many chips!\n");
++			pr_info("Super-IO: too many chips!\n");
+ 		else {
+ 			int d;
+ 			switch (cr23 * 4) {
+@@ -1078,26 +1074,24 @@ static void show_parconfig_winbond(int io, int key)
+ 	outb(0xaa, io);
+ 
+ 	if (verbose_probing) {
+-		printk(KERN_INFO
+-    "Winbond LPT Config: cr_30=%02x 60,61=%02x%02x 70=%02x 74=%02x, f0=%02x\n",
+-					cr30, cr60, cr61, cr70, cr74, crf0);
+-		printk(KERN_INFO "Winbond LPT Config: active=%s, io=0x%02x%02x irq=%d, ",
+-		       (cr30 & 0x01) ? "yes" : "no", cr60, cr61, cr70 & 0x0f);
++		pr_info("Winbond LPT Config: cr_30=%02x 60,61=%02x%02x 70=%02x 74=%02x, f0=%02x\n",
++			cr30, cr60, cr61, cr70, cr74, crf0);
++		pr_info("Winbond LPT Config: active=%s, io=0x%02x%02x irq=%d, ",
++			(cr30 & 0x01) ? "yes" : "no", cr60, cr61, cr70 & 0x0f);
+ 		if ((cr74 & 0x07) > 3)
+ 			pr_cont("dma=none\n");
+ 		else
+ 			pr_cont("dma=%d\n", cr74 & 0x07);
+-		printk(KERN_INFO
+-		    "Winbond LPT Config: irqtype=%s, ECP fifo threshold=%d\n",
+-					irqtypes[crf0>>7], (crf0>>3)&0x0f);
+-		printk(KERN_INFO "Winbond LPT Config: Port mode=%s\n",
+-					modes[crf0 & 0x07]);
++		pr_info("Winbond LPT Config: irqtype=%s, ECP fifo threshold=%d\n",
++			irqtypes[crf0 >> 7], (crf0 >> 3) & 0x0f);
++		pr_info("Winbond LPT Config: Port mode=%s\n",
++			modes[crf0 & 0x07]);
+ 	}
+ 
+ 	if (cr30 & 0x01) { /* the settings can be interrogated later ... */
+ 		s = find_free_superio();
+ 		if (s == NULL)
+-			printk(KERN_INFO "Super-IO: too many chips!\n");
++			pr_info("Super-IO: too many chips!\n");
+ 		else {
+ 			s->io = (cr60 << 8) | cr61;
+ 			s->irq = cr70 & 0x0f;
+@@ -1151,9 +1145,8 @@ static void decode_winbond(int efer, int key, int devid, int devrev, int oldid)
+ 		progif = 0;
+ 
+ 	if (verbose_probing)
+-		printk(KERN_INFO "Winbond chip at EFER=0x%x key=0x%02x "
+-		       "devid=%02x devrev=%02x oldid=%02x type=%s\n",
+-		       efer, key, devid, devrev, oldid, type);
++		pr_info("Winbond chip at EFER=0x%x key=0x%02x devid=%02x devrev=%02x oldid=%02x type=%s\n",
++			efer, key, devid, devrev, oldid, type);
+ 
+ 	if (progif == 2)
+ 		show_parconfig_winbond(efer, key);
+@@ -1184,9 +1177,8 @@ static void decode_smsc(int efer, int key, int devid, int devrev)
+ 		type = "37c666GT";
+ 
+ 	if (verbose_probing)
+-		printk(KERN_INFO "SMSC chip at EFER=0x%x "
+-		       "key=0x%02x devid=%02x devrev=%02x type=%s\n",
+-		       efer, key, devid, devrev, type);
++		pr_info("SMSC chip at EFER=0x%x key=0x%02x devid=%02x devrev=%02x type=%s\n",
++			efer, key, devid, devrev, type);
+ 
+ 	if (func)
+ 		func(efer, key);
+@@ -1358,7 +1350,7 @@ static void detect_and_report_it87(void)
+ 	dev |= inb(0x2f);
+ 	if (dev == 0x8712 || dev == 0x8705 || dev == 0x8715 ||
+ 	    dev == 0x8716 || dev == 0x8718 || dev == 0x8726) {
+-		printk(KERN_INFO "IT%04X SuperIO detected.\n", dev);
++		pr_info("IT%04X SuperIO detected\n", dev);
+ 		outb(0x07, 0x2E);	/* Parallel Port */
+ 		outb(0x03, 0x2F);
+ 		outb(0xF0, 0x2E);	/* BOOT 0x80 off */
+@@ -1445,8 +1437,8 @@ static int parport_SPP_supported(struct parport *pb)
+ 	if (user_specified)
+ 		/* That didn't work, but the user thinks there's a
+ 		 * port here. */
+-		printk(KERN_INFO "parport 0x%lx (WARNING): CTR: "
+-			"wrote 0x%02x, read 0x%02x\n", pb->base, w, r);
++		pr_info("parport 0x%lx (WARNING): CTR: wrote 0x%02x, read 0x%02x\n",
++			pb->base, w, r);
+ 
+ 	/* Try the data register.  The data lines aren't tri-stated at
+ 	 * this stage, so we expect back what we wrote. */
+@@ -1464,10 +1456,9 @@ static int parport_SPP_supported(struct parport *pb)
+ 	if (user_specified) {
+ 		/* Didn't work, but the user is convinced this is the
+ 		 * place. */
+-		printk(KERN_INFO "parport 0x%lx (WARNING): DATA: "
+-			"wrote 0x%02x, read 0x%02x\n", pb->base, w, r);
+-		printk(KERN_INFO "parport 0x%lx: You gave this address, "
+-			"but there is probably no parallel port there!\n",
++		pr_info("parport 0x%lx (WARNING): DATA: wrote 0x%02x, read 0x%02x\n",
++			pb->base, w, r);
++		pr_info("parport 0x%lx: You gave this address, but there is probably no parallel port there!\n",
+ 			pb->base);
+ 	}
+ 
+@@ -1642,7 +1633,7 @@ static int parport_ECP_supported(struct parport *pb)
+ 
+ 	if (i <= priv->fifo_depth) {
+ 		if (verbose_probing)
+-			printk(KERN_INFO "0x%lx: readIntrThreshold is %d\n",
++			pr_info("0x%lx: readIntrThreshold is %d\n",
+ 				pb->base, i);
+ 	} else
+ 		/* Number of bytes we can read if we get an interrupt. */
+@@ -1657,17 +1648,14 @@ static int parport_ECP_supported(struct parport *pb)
+ 	switch (pword) {
+ 	case 0:
+ 		pword = 2;
+-		printk(KERN_WARNING "0x%lx: Unsupported pword size!\n",
+-			pb->base);
++		pr_warn("0x%lx: Unsupported pword size!\n", pb->base);
+ 		break;
+ 	case 2:
+ 		pword = 4;
+-		printk(KERN_WARNING "0x%lx: Unsupported pword size!\n",
+-			pb->base);
++		pr_warn("0x%lx: Unsupported pword size!\n", pb->base);
+ 		break;
+ 	default:
+-		printk(KERN_WARNING "0x%lx: Unknown implementation ID\n",
+-			pb->base);
++		pr_warn("0x%lx: Unknown implementation ID\n", pb->base);
+ 		/* Fall through - Assume 1 */
+ 	case 1:
+ 		pword = 1;
+@@ -2107,9 +2095,9 @@ struct parport *parport_pc_probe_port(unsigned long int base,
+ 
+ 	p->size = (p->modes & PARPORT_MODE_EPP) ? 8 : 3;
+ 
+-	printk(KERN_INFO "%s: PC-style at 0x%lx", p->name, p->base);
++	pr_info("%s: PC-style at 0x%lx", p->name, p->base);
+ 	if (p->base_hi && priv->ecr)
+-		printk(KERN_CONT " (0x%lx)", p->base_hi);
++		pr_cont(" (0x%lx)", p->base_hi);
+ 	if (p->irq == PARPORT_IRQ_AUTO) {
+ 		p->irq = PARPORT_IRQ_NONE;
+ 		parport_irq_probe(p);
+@@ -2120,7 +2108,7 @@ struct parport *parport_pc_probe_port(unsigned long int base,
+ 		p->irq = PARPORT_IRQ_NONE;
+ 	}
+ 	if (p->irq != PARPORT_IRQ_NONE) {
+-		printk(KERN_CONT ", irq %d", p->irq);
++		pr_cont(", irq %d", p->irq);
+ 		priv->ctr_writable |= 0x10;
+ 
+ 		if (p->dma == PARPORT_DMA_AUTO) {
+@@ -2144,21 +2132,21 @@ struct parport *parport_pc_probe_port(unsigned long int base,
+ 		/* p->ops->ecp_read_data = parport_pc_ecp_read_block_pio; */
+ #endif /* IEEE 1284 support */
+ 		if (p->dma != PARPORT_DMA_NONE) {
+-			printk(KERN_CONT ", dma %d", p->dma);
++			pr_cont(", dma %d", p->dma);
+ 			p->modes |= PARPORT_MODE_DMA;
+ 		} else
+-			printk(KERN_CONT ", using FIFO");
++			pr_cont(", using FIFO");
+ 	} else
+ 		/* We can't use the DMA channel after all. */
+ 		p->dma = PARPORT_DMA_NONE;
+ #endif /* Allowed to use FIFO/DMA */
+ 
+-	printk(KERN_CONT " [");
++	pr_cont(" [");
+ 
+ #define printmode(x) \
+ 	{\
+ 		if (p->modes & PARPORT_MODE_##x) {\
+-			printk(KERN_CONT "%s%s", f ? "," : "", #x);\
++			pr_cont("%s%s", f ? "," : "", #x);	\
+ 			f++;\
+ 		} \
+ 	}
+@@ -2174,11 +2162,11 @@ struct parport *parport_pc_probe_port(unsigned long int base,
+ 	}
+ #undef printmode
+ #ifndef CONFIG_PARPORT_1284
+-	printk(KERN_CONT "(,...)");
++	pr_cont("(,...)");
+ #endif /* CONFIG_PARPORT_1284 */
+-	printk(KERN_CONT "]\n");
++	pr_cont("]\n");
+ 	if (probedirq != PARPORT_IRQ_NONE)
+-		printk(KERN_INFO "%s: irq %d detected\n", p->name, probedirq);
++		pr_info("%s: irq %d detected\n", p->name, probedirq);
+ 
+ 	/* If No ECP release the ports grabbed above. */
+ 	if (ECR_res && (p->modes & PARPORT_MODE_ECP) == 0) {
+@@ -2193,8 +2181,7 @@ struct parport *parport_pc_probe_port(unsigned long int base,
+ 	if (p->irq != PARPORT_IRQ_NONE) {
+ 		if (request_irq(p->irq, parport_irq_handler,
+ 				 irqflags, p->name, p)) {
+-			printk(KERN_WARNING "%s: irq %d in use, "
+-				"resorting to polled operation\n",
++			pr_warn("%s: irq %d in use, resorting to polled operation\n",
+ 				p->name, p->irq);
+ 			p->irq = PARPORT_IRQ_NONE;
+ 			p->dma = PARPORT_DMA_NONE;
+@@ -2204,8 +2191,7 @@ struct parport *parport_pc_probe_port(unsigned long int base,
+ #ifdef HAS_DMA
+ 		if (p->dma != PARPORT_DMA_NONE) {
+ 			if (request_dma(p->dma, p->name)) {
+-				printk(KERN_WARNING "%s: dma %d in use, "
+-					"resorting to PIO operation\n",
++				pr_warn("%s: dma %d in use, resorting to PIO operation\n",
+ 					p->name, p->dma);
+ 				p->dma = PARPORT_DMA_NONE;
+ 			} else {
+@@ -2215,9 +2201,7 @@ struct parport *parport_pc_probe_port(unsigned long int base,
+ 						       &priv->dma_handle,
+ 						       GFP_KERNEL);
+ 				if (!priv->dma_buf) {
+-					printk(KERN_WARNING "%s: "
+-						"cannot get buffer for DMA, "
+-						"resorting to PIO operation\n",
++					pr_warn("%s: cannot get buffer for DMA, resorting to PIO operation\n",
+ 						p->name);
+ 					free_dma(p->dma);
+ 					p->dma = PARPORT_DMA_NONE;
+@@ -2330,7 +2314,7 @@ static int sio_ite_8872_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 		}
+ 	}
+ 	if (i >= 5) {
+-		printk(KERN_INFO "parport_pc: cannot find ITE8872 INTA\n");
++		pr_info("parport_pc: cannot find ITE8872 INTA\n");
+ 		return 0;
+ 	}
+ 
+@@ -2339,29 +2323,28 @@ static int sio_ite_8872_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 
+ 	switch (type) {
+ 	case 0x2:
+-		printk(KERN_INFO "parport_pc: ITE8871 found (1P)\n");
++		pr_info("parport_pc: ITE8871 found (1P)\n");
+ 		ite8872set = 0x64200000;
+ 		break;
+ 	case 0xa:
+-		printk(KERN_INFO "parport_pc: ITE8875 found (1P)\n");
++		pr_info("parport_pc: ITE8875 found (1P)\n");
+ 		ite8872set = 0x64200000;
+ 		break;
+ 	case 0xe:
+-		printk(KERN_INFO "parport_pc: ITE8872 found (2S1P)\n");
++		pr_info("parport_pc: ITE8872 found (2S1P)\n");
+ 		ite8872set = 0x64e00000;
+ 		break;
+ 	case 0x6:
+-		printk(KERN_INFO "parport_pc: ITE8873 found (1S)\n");
++		pr_info("parport_pc: ITE8873 found (1S)\n");
+ 		release_region(inta_addr[i], 32);
+ 		return 0;
+ 	case 0x8:
+-		printk(KERN_INFO "parport_pc: ITE8874 found (2S)\n");
++		pr_info("parport_pc: ITE8874 found (2S)\n");
+ 		release_region(inta_addr[i], 32);
+ 		return 0;
+ 	default:
+-		printk(KERN_INFO "parport_pc: unknown ITE887x\n");
+-		printk(KERN_INFO "parport_pc: please mail 'lspci -nvv' "
+-			"output to Rich.Liu@ite.com.tw\n");
++		pr_info("parport_pc: unknown ITE887x\n");
++		pr_info("parport_pc: please mail 'lspci -nvv' output to Rich.Liu@ite.com.tw\n");
+ 		release_region(inta_addr[i], 32);
+ 		return 0;
+ 	}
+@@ -2396,9 +2379,8 @@ static int sio_ite_8872_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 	release_region(inta_addr[i], 32);
+ 	if (parport_pc_probe_port(ite8872_lpt, ite8872_lpthi,
+ 				   irq, PARPORT_DMA_NONE, &pdev->dev, 0)) {
+-		printk(KERN_INFO
+-			"parport_pc: ITE 8872 parallel port: io=0x%X",
+-								ite8872_lpt);
++		pr_info("parport_pc: ITE 8872 parallel port: io=0x%X",
++			ite8872_lpt);
+ 		if (irq != PARPORT_IRQ_NONE)
+ 			pr_cont(", irq=%d", irq);
+ 		pr_cont("\n");
+@@ -2525,7 +2507,7 @@ static int sio_via_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 	pci_write_config_byte(pdev, via->via_pci_superio_config_reg, tmp);
+ 
+ 	if (siofunc == VIA_FUNCTION_PARPORT_DISABLE) {
+-		printk(KERN_INFO "parport_pc: VIA parallel port disabled in BIOS\n");
++		pr_info("parport_pc: VIA parallel port disabled in BIOS\n");
+ 		return 0;
+ 	}
+ 
+@@ -2558,9 +2540,8 @@ static int sio_via_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 	case 0x278:
+ 		port2 = 0x678; break;
+ 	default:
+-		printk(KERN_INFO
+-			"parport_pc: Weird VIA parport base 0x%X, ignoring\n",
+-									port1);
++		pr_info("parport_pc: Weird VIA parport base 0x%X, ignoring\n",
++			port1);
+ 		return 0;
+ 	}
+ 
+@@ -2579,8 +2560,7 @@ static int sio_via_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 
+ 	/* finally, do the probe with values obtained */
+ 	if (parport_pc_probe_port(port1, port2, irq, dma, &pdev->dev, 0)) {
+-		printk(KERN_INFO
+-			"parport_pc: VIA parallel port: io=0x%X", port1);
++		pr_info("parport_pc: VIA parallel port: io=0x%X", port1);
+ 		if (irq != PARPORT_IRQ_NONE)
+ 			pr_cont(", irq=%d", irq);
+ 		if (dma != PARPORT_DMA_NONE)
+@@ -2589,7 +2569,7 @@ static int sio_via_probe(struct pci_dev *pdev, int autoirq, int autodma,
+ 		return 1;
+ 	}
+ 
+-	printk(KERN_WARNING "parport_pc: Strange, can't probe VIA parallel port: io=0x%X, irq=%d, dma=%d\n",
++	pr_warn("parport_pc: Strange, can't probe VIA parallel port: io=0x%X, irq=%d, dma=%d\n",
+ 		port1, irq, dma);
+ 	return 0;
+ }
+@@ -3111,7 +3091,7 @@ static int __init parport_parse_param(const char *s, int *val,
+ 		if (ep != s)
+ 			*val = r;
+ 		else {
+-			printk(KERN_ERR "parport: bad specifier `%s'\n", s);
++			pr_err("parport: bad specifier `%s'\n", s);
+ 			return -1;
+ 		}
+ 	}
+@@ -3201,10 +3181,7 @@ static int __init parse_parport_params(void)
+ 				irqval[0] = val;
+ 				break;
+ 			default:
+-				printk(KERN_WARNING
+-					"parport_pc: irq specified "
+-					"without base address.  Use 'io=' "
+-					"to specify one\n");
++				pr_warn("parport_pc: irq specified without base address.  Use 'io=' to specify one\n");
+ 			}
+ 
+ 		if (dma[0] && !parport_parse_dma(dma[0], &val))
+@@ -3214,10 +3191,7 @@ static int __init parse_parport_params(void)
+ 				dmaval[0] = val;
+ 				break;
+ 			default:
+-				printk(KERN_WARNING
+-					"parport_pc: dma specified "
+-					"without base address.  Use 'io=' "
+-					"to specify one\n");
++				pr_warn("parport_pc: dma specified without base address.  Use 'io=' to specify one\n");
+ 			}
+ 	}
+ 	return 0;
+@@ -3256,12 +3230,12 @@ static int __init parport_setup(char *str)
+ 
+ 	val = simple_strtoul(str, &endptr, 0);
+ 	if (endptr == str) {
+-		printk(KERN_WARNING "parport=%s not understood\n", str);
++		pr_warn("parport=%s not understood\n", str);
+ 		return 1;
+ 	}
+ 
+ 	if (parport_setup_ptr == PARPORT_PC_MAX_PORTS) {
+-		printk(KERN_ERR "parport=%s ignored, too many ports\n", str);
++		pr_err("parport=%s ignored, too many ports\n", str);
+ 		return 1;
+ 	}
+ 
+diff --git a/drivers/parport/parport_sunbpp.c b/drivers/parport/parport_sunbpp.c
+index d5a669b60c27..e840c1b5ab90 100644
+--- a/drivers/parport/parport_sunbpp.c
++++ b/drivers/parport/parport_sunbpp.c
+@@ -314,7 +314,7 @@ static int bpp_probe(struct platform_device *op)
+ 	value_tcr &= ~P_TCR_DIR;
+ 	sbus_writeb(value_tcr, &regs->p_tcr);
+ 
+-	printk(KERN_INFO "%s: sunbpp at 0x%lx\n", p->name, p->base);
++	pr_info("%s: sunbpp at 0x%lx\n", p->name, p->base);
+ 
+ 	dev_set_drvdata(&op->dev, p);
+ 
+diff --git a/drivers/parport/probe.c b/drivers/parport/probe.c
+index e5e6a463a941..10ed0d174080 100644
+--- a/drivers/parport/probe.c
++++ b/drivers/parport/probe.c
+@@ -38,7 +38,7 @@ static void pretty_print(struct parport *port, int device)
+ {
+ 	struct parport_device_info *info = &port->probe_info[device + 1];
+ 
+-	printk(KERN_INFO "%s", port->name);
++	pr_info("%s", port->name);
+ 
+ 	if (device >= 0)
+ 		printk (" (addr %d)", device);
+@@ -58,7 +58,7 @@ static void parse_data(struct parport *port, int device, char *str)
+ 	struct parport_device_info *info = &port->probe_info[device + 1];
+ 
+ 	if (!txt) {
+-		printk(KERN_WARNING "%s probe: memory squeeze\n", port->name);
++		pr_warn("%s probe: memory squeeze\n", port->name);
+ 		return;
+ 	}
+ 	strcpy(txt, str);
+@@ -98,7 +98,8 @@ static void parse_data(struct parport *port, int device, char *str)
+ 						goto rock_on;
+ 					}
+ 				}
+-				printk(KERN_WARNING "%s probe: warning, class '%s' not understood.\n", port->name, sep);
++				pr_warn("%s probe: warning, class '%s' not understood\n",
++					port->name, sep);
+ 				info->class = PARPORT_CLASS_OTHER;
+ 			} else if (!strcmp(p, "CMD") ||
+ 				   !strcmp(p, "COMMAND SET")) {
+diff --git a/drivers/parport/share.c b/drivers/parport/share.c
+index d6920ebeabcd..b0f4513251ee 100644
+--- a/drivers/parport/share.c
++++ b/drivers/parport/share.c
+@@ -554,8 +554,8 @@ void parport_announce_port(struct parport *port)
+ #endif
+ 
+ 	if (!port->dev)
+-		printk(KERN_WARNING "%s: fix this legacy no-device port driver!\n",
+-		       port->name);
++		pr_warn("%s: fix this legacy no-device port driver!\n",
++			port->name);
+ 
+ 	parport_proc_register(port);
+ 	mutex_lock(&registration_lock);
+@@ -727,7 +727,8 @@ parport_register_device(struct parport *port, const char *name,
+ 
+ 	if (flags & PARPORT_DEV_LURK) {
+ 		if (!pf || !kf) {
+-			printk(KERN_INFO "%s: refused to register lurking device (%s) without callbacks\n", port->name, name);
++			pr_info("%s: refused to register lurking device (%s) without callbacks\n",
++				port->name, name);
+ 			return NULL;
+ 		}
+ 	}
+@@ -996,7 +997,7 @@ void parport_unregister_device(struct pardevice *dev)
+ 
+ #ifdef PARPORT_PARANOID
+ 	if (!dev) {
+-		printk(KERN_ERR "parport_unregister_device: passed NULL\n");
++		pr_err("%s: passed NULL\n", __func__);
+ 		return;
+ 	}
+ #endif
+@@ -1137,8 +1138,7 @@ int parport_claim(struct pardevice *dev)
+ 	unsigned long flags;
+ 
+ 	if (port->cad == dev) {
+-		printk(KERN_INFO "%s: %s already owner\n",
+-		       dev->port->name,dev->name);
++		pr_info("%s: %s already owner\n", dev->port->name, dev->name);
+ 		return 0;
+ 	}
+ 
+@@ -1158,9 +1158,8 @@ int parport_claim(struct pardevice *dev)
+ 			 * I think we'll actually deadlock rather than
+ 			 * get here, but just in case..
+ 			 */
+-			printk(KERN_WARNING
+-			       "%s: %s released port when preempted!\n",
+-			       port->name, oldcad->name);
++			pr_warn("%s: %s released port when preempted!\n",
++				port->name, oldcad->name);
+ 			if (port->cad)
+ 				goto blocked;
+ 		}
+@@ -1320,8 +1319,8 @@ void parport_release(struct pardevice *dev)
+ 	write_lock_irqsave(&port->cad_lock, flags);
+ 	if (port->cad != dev) {
+ 		write_unlock_irqrestore(&port->cad_lock, flags);
+-		printk(KERN_WARNING "%s: %s tried to release parport when not owner\n",
+-		       port->name, dev->name);
++		pr_warn("%s: %s tried to release parport when not owner\n",
++			port->name, dev->name);
+ 		return;
+ 	}
+ 
+@@ -1361,7 +1360,8 @@ void parport_release(struct pardevice *dev)
+ 			if (dev->port->cad) /* racy but no matter */
+ 				return;
+ 		} else {
+-			printk(KERN_ERR "%s: don't know how to wake %s\n", port->name, pd->name);
++			pr_err("%s: don't know how to wake %s\n",
++			       port->name, pd->name);
+ 		}
+ 	}
+ 
 -- 
 2.11.0
 
