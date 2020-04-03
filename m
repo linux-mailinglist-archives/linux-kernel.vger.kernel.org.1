@@ -2,150 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E19C619D2F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F092219D2E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390568AbgDCJB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 05:01:26 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:58254 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390600AbgDCJBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 05:01:25 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 06829F795AF01CEA341E;
-        Fri,  3 Apr 2020 17:01:17 +0800 (CST)
-Received: from DESKTOP-KKJBAGG.china.huawei.com (10.173.220.25) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 3 Apr 2020 17:01:06 +0800
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-To:     <peterz@infradead.org>, <mark.rutland@arm.com>, <will@kernel.org>,
-        <catalin.marinas@arm.com>, <aneesh.kumar@linux.ibm.com>,
-        <akpm@linux-foundation.org>, <npiggin@gmail.com>, <arnd@arndb.de>,
-        <rostedt@goodmis.org>, <maz@kernel.org>, <suzuki.poulose@arm.com>,
-        <tglx@linutronix.de>, <yuzhao@google.com>, <Dave.Martin@arm.com>,
-        <steven.price@arm.com>, <broonie@kernel.org>,
-        <guohanjun@huawei.com>
-CC:     <yezhenyu2@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-Subject: [PATCH v1 6/6] arm64: tlb: Set the TTL field in flush_tlb_range
-Date:   Fri, 3 Apr 2020 17:00:48 +0800
-Message-ID: <20200403090048.938-7-yezhenyu2@huawei.com>
-X-Mailer: git-send-email 2.22.0.windows.1
-In-Reply-To: <20200403090048.938-1-yezhenyu2@huawei.com>
-References: <20200403090048.938-1-yezhenyu2@huawei.com>
+        id S2390575AbgDCJBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 05:01:08 -0400
+Received: from ns.mm-sol.com ([37.157.136.199]:49533 "EHLO extserv.mm-sol.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727860AbgDCJBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 05:01:08 -0400
+Received: from [192.168.1.4] (212-5-158-241.ip.btc-net.bg [212.5.158.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by extserv.mm-sol.com (Postfix) with ESMTPSA id A4673CFB0;
+        Fri,  3 Apr 2020 12:01:04 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mm-sol.com; s=201706;
+        t=1585904465; bh=XlPPAmhstG/r8uQst4kUmOIq26pF12Vho8l1S5UqRUI=;
+        h=Subject:To:Cc:From:Date:From;
+        b=PT1YeIlPmjcT/MMFYSXxhK6MEa0u/rHW/38RL00YVsdt+xXtK90TAdpVTunjfB3YG
+         U+iQan+H/8+Ug8PuXKx5fLRu57nZtPhQ6d5RAxzjNksxihD0OZXUsypaMqHRboWQe2
+         V/w8qCSg4sTLJsEOLLgoGg2lrnot5ycLJNJiOOW8npQyBEYYdyzy6npThl0euzP6HK
+         ccmaJ1mPZb1KzhiARYV/JdV8pXjPw/A8M4uGkBIbMxYeqj5/Wz1I4h2e8cxRuJvrkh
+         uB0Ed4OW5w24xPwCaMEwFaHOu4UY+6yATvMpHzgMfVI8mOpAF5QFjgezvwmcFrQxXg
+         g+IQ9J7R5oj0A==
+Subject: Re: [PATCH v2 10/10] PCIe: qcom: add Force GEN1 support
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andy Gross <agross@kernel.org>
+Cc:     Sham Muthayyan <smuthayy@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200402121148.1767-1-ansuelsmth@gmail.com>
+ <20200402121148.1767-11-ansuelsmth@gmail.com>
+From:   Stanimir Varbanov <svarbanov@mm-sol.com>
+Message-ID: <8e0ada17-c858-59d2-8d5c-5129e7625f33@mm-sol.com>
+Date:   Fri, 3 Apr 2020 12:01:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.173.220.25]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200402121148.1767-11-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch uses the cleared_* in struct mmu_gather to set the
-TTL field in flush_tlb_range().
+Hi Ansuel,
 
-Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
----
- arch/arm64/include/asm/tlb.h      | 26 +++++++++++++++++++++++++-
- arch/arm64/include/asm/tlbflush.h | 14 ++++++++------
- 2 files changed, 33 insertions(+), 7 deletions(-)
+On 4/2/20 3:11 PM, Ansuel Smith wrote:
+> From: Sham Muthayyan <smuthayy@codeaurora.org>
+> 
+> Add Force GEN1 support needed in some ipq806x board
+> that needs to limit some pcie line to gen1 for some
+> hardware limitation.
+> This is set by the max-link-speed dts entry and needed
+> by some soc based on ipq806x. (for example Netgear R7800
+> router)
+> 
+> Signed-off-by: Sham Muthayyan <smuthayy@codeaurora.org>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> index 8047ac7dc8c7..2212e9498b91 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+>  
+> +#include "../../pci.h"
 
-diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
-index b76df828e6b7..d5ab72eccff4 100644
---- a/arch/arm64/include/asm/tlb.h
-+++ b/arch/arm64/include/asm/tlb.h
-@@ -21,11 +21,34 @@ static void tlb_flush(struct mmu_gather *tlb);
- 
- #include <asm-generic/tlb.h>
- 
-+/*
-+ * get the tlbi levels in arm64.  Default value is 0 if more than one
-+ * of cleared_* is set or neither is set.
-+ * Arm64 doesn't support p4ds now.
-+ */
-+static inline int tlb_get_level(struct mmu_gather *tlb)
-+{
-+	int sum = tlb->cleared_ptes + tlb->cleared_pmds +
-+		  tlb->cleared_puds + tlb->cleared_p4ds;
-+
-+	if (sum != 1)
-+		return 0;
-+	else if (tlb->cleared_ptes)
-+		return 3;
-+	else if (tlb->cleared_pmds)
-+		return 2;
-+	else if (tlb->cleared_puds)
-+		return 1;
-+
-+	return 0;
-+}
-+
- static inline void tlb_flush(struct mmu_gather *tlb)
- {
- 	struct vm_area_struct vma = TLB_FLUSH_VMA(tlb->mm, 0);
- 	bool last_level = !tlb->freed_tables;
- 	unsigned long stride = tlb_get_unmap_size(tlb);
-+	int tlb_level = tlb_get_level(tlb);
- 
- 	/*
- 	 * If we're tearing down the address space then we only care about
-@@ -38,7 +61,8 @@ static inline void tlb_flush(struct mmu_gather *tlb)
- 		return;
- 	}
- 
--	__flush_tlb_range(&vma, tlb->start, tlb->end, stride, last_level);
-+	__flush_tlb_range(&vma, tlb->start, tlb->end, stride,
-+			  last_level, tlb_level);
- }
- 
- static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pte,
-diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index 892f33235dc7..3cc705755a2d 100644
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -215,7 +215,8 @@ static inline void flush_tlb_page(struct vm_area_struct *vma,
- 
- static inline void __flush_tlb_range(struct vm_area_struct *vma,
- 				     unsigned long start, unsigned long end,
--				     unsigned long stride, bool last_level)
-+				     unsigned long stride, bool last_level,
-+				     int tlb_level)
- {
- 	unsigned long asid = ASID(vma->vm_mm);
- 	unsigned long addr;
-@@ -237,11 +238,11 @@ static inline void __flush_tlb_range(struct vm_area_struct *vma,
- 	dsb(ishst);
- 	for (addr = start; addr < end; addr += stride) {
- 		if (last_level) {
--			__tlbi_level(vale1is, addr, 0);
--			__tlbi_user_level(vale1is, addr, 0);
-+			__tlbi_level(vale1is, addr, tlb_level);
-+			__tlbi_user_level(vale1is, addr, tlb_level);
- 		} else {
--			__tlbi_level(vae1is, addr, 0);
--			__tlbi_user_level(vae1is, addr, 0);
-+			__tlbi_level(vae1is, addr, tlb_level);
-+			__tlbi_user_level(vae1is, addr, tlb_level);
- 		}
- 	}
- 	dsb(ish);
-@@ -253,8 +254,9 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
- 	/*
- 	 * We cannot use leaf-only invalidation here, since we may be invalidating
- 	 * table entries as part of collapsing hugepages or moving page tables.
-+	 * Set the tlb_level to 0 because we can not get enough information here.
- 	 */
--	__flush_tlb_range(vma, start, end, PAGE_SIZE, false);
-+	__flush_tlb_range(vma, start, end, PAGE_SIZE, false, 0);
- }
- 
- static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
+This looks suspiciously (even ugly), but I saw that the other users of
+of_pci_get_max_link_speed is doing the same.
+
+Bjorn H. : do you know why the prototype is there? Perhaps it must be in
+linux/of_pci.h.
+
+>  #include "pcie-designware.h"
+>  
+>  #define PCIE20_PARF_SYS_CTRL			0x00
+> @@ -99,6 +100,8 @@
+>  #define PCIE20_v3_PARF_SLV_ADDR_SPACE_SIZE	0x358
+>  #define SLV_ADDR_SPACE_SZ			0x10000000
+>  
+> +#define PCIE20_LNK_CONTROL2_LINK_STATUS2        0xA0
+
+tabs instead of spaces and hex numbers should be lower-case
+
+> +
+>  #define DEVICE_TYPE_RC				0x4
+>  
+>  #define QCOM_PCIE_2_1_0_MAX_SUPPLY	3
+> @@ -199,6 +202,7 @@ struct qcom_pcie {
+>  	struct phy *phy;
+>  	struct gpio_desc *reset;
+>  	const struct qcom_pcie_ops *ops;
+> +	bool force_gen1;
+
+could you rename this and make it int:
+
+	int gen;
+
+>  };
+>  
+>  #define to_qcom_pcie(x)		dev_get_drvdata((x)->dev)
+> @@ -441,6 +445,11 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+>  
+>  	/* wait for clock acquisition */
+>  	usleep_range(1000, 1500);
+
+add a blank line here
+
+> +	if (pcie->force_gen1) {
+
+	if (pcie->gen == 1) {
+
+> +		writel_relaxed((readl_relaxed(
+> +		  pcie->pci->dbi_base + PCIE20_LNK_CONTROL2_LINK_STATUS2) | 1),
+> +		  pcie->pci->dbi_base + PCIE20_LNK_CONTROL2_LINK_STATUS2);
+> +	}
+
+why you are using writel/readl_relaxed ?
+
+Also could you split the line to two:
+
+	val = read()
+	write(val | 1, address)
+
+>  
+>  
+>  	/* Set the Max TLP size to 2K, instead of using default of 4K */
+> @@ -1440,6 +1449,10 @@ static int qcom_pcie_probe(struct platform_device *pdev)
+>  		goto err_pm_runtime_put;
+>  	}
+>  
+> +	ret = of_pci_get_max_link_speed(pdev->dev.of_node);> +	if (ret == 1)
+> +		pcie->force_gen1 = true;
+
+drop this, handle ret < 0 and default to generation 2
+
+	pcie->gen = of_pci_get_max_link_speed(pdev->dev.of_node);
+	if (pcie->gen < 0)
+		pcie->gen = 2;
+
+> +
+>  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "parf");
+>  	pcie->parf = devm_ioremap_resource(dev, res);
+>  	if (IS_ERR(pcie->parf)) {
+> 
+
 -- 
-2.19.1
-
-
+regards,
+Stan
