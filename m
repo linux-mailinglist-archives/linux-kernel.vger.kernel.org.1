@@ -2,144 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC77B19DD87
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FE319DD9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404560AbgDCSHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 14:07:38 -0400
-Received: from raptor.unsafe.ru ([5.9.43.93]:38090 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404439AbgDCSHf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 14:07:35 -0400
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 9B8F6209DC;
-        Fri,  3 Apr 2020 18:07:30 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Security Module <linux-security-module@vger.kernel.org>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Djalal Harouni <tixxdz@gmail.com>,
-        "Dmitry V . Levin" <ldv@altlinux.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@poochiereds.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH v11 8/8] proc: use named enums for better readability
-Date:   Fri,  3 Apr 2020 20:06:48 +0200
-Message-Id: <20200403180648.721362-9-gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.25.2
-In-Reply-To: <20200403180648.721362-1-gladkov.alexey@gmail.com>
-References: <20200403180648.721362-1-gladkov.alexey@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Fri, 03 Apr 2020 18:07:31 +0000 (UTC)
+        id S2404626AbgDCSIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 14:08:15 -0400
+Received: from mail-qk1-f202.google.com ([209.85.222.202]:46280 "EHLO
+        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404617AbgDCSIO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 14:08:14 -0400
+Received: by mail-qk1-f202.google.com with SMTP id y5so7127790qky.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 11:08:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=vKSRcwOgSxpovOTlIQ2GGXc7undTikgLR4vPeODvBEg=;
+        b=EAdVcQMfqNQMWp+4WRmfe91idIJgxgyEfZOUxbBy5g7FhdJ3iwUVewvmIgdlkqwKKB
+         4XGNVvOFr0KM7VoBQjEDBe0GhQv0F0yrLTTCdeyAERNGWx+iroMIx7J1123VuaGXl0IO
+         air1JUnAgGTLBNudw8Qwiya3n+dbaxmbd8WNxz8kiz4SyqBE/T8dEJFunVE6ma9t0jdH
+         PhbYjrpBSqVmzygopF4G9frAkLgylR1+3Az5YUa5yXseLNV0X1siNiGUoJ6m5aOckuDO
+         N6jdBJBvMihi9JSqZM7CDvBukST8mvAXKx01SSJAoJaN68Pa4McVpwJXITE1bezXTBv/
+         P4Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=vKSRcwOgSxpovOTlIQ2GGXc7undTikgLR4vPeODvBEg=;
+        b=JjVqiCN6aa9PNpQ/2Q5K/PTB/JO2hqmnSCt84mBFj2lI+iA13trJHdC9RcOTo+JPo/
+         /fFjirA9Kw9WWDtaPTECtGOLy9vXDsBkfkzRkq7JkH3kAGeith960u2b9RoyioLbm2vg
+         kjXUE8Mq+MZswAZOVhncRdQJp/Mgnpo8DwHe4Skqmxh/HVlXGuRd/DYV4wdE5dxXPg3S
+         FrDQizejyWALjKfEGPHlDx9Ww7f2MzFtbx4dNk/igU/P8kD9DdsAvOZ15y5rQ7QFxiOt
+         jQpVhxJ75FCqRu7L5YRnNFkNZc7GocbF559zspiboQdjg7/4VX2eX5NcvPFJz25PU0sM
+         B1jg==
+X-Gm-Message-State: AGi0PuZxlu+RwObE7JzdxrqVTrhKDgpa+M3GPd6zKgX34RvaUEQxZMEP
+        VlBCi1inIAOlTzk0LBIJVF14lY1p
+X-Google-Smtp-Source: APiQypJWimwWNrbHSFo3IzrjsTj5VaB+oSMTVhhwvL+zxZmNdg193dSzzY6KHEEtRKYIPFlNYX8ohl5u
+X-Received: by 2002:ac8:1aed:: with SMTP id h42mr9705788qtk.43.1585937293082;
+ Fri, 03 Apr 2020 11:08:13 -0700 (PDT)
+Date:   Fri,  3 Apr 2020 14:08:01 -0400
+Message-Id: <20200403180801.209970-1-brho@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
+Subject: perf/cgroup: use the cgroup_id() helper
+From:   Barret Rhoden <brho@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
-Reviewed-by: Alexey Dobriyan <adobriyan@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- fs/proc/base.c          | 2 +-
- fs/proc/inode.c         | 2 +-
- fs/proc/root.c          | 4 ++--
- include/linux/proc_fs.h | 8 ++++----
- 4 files changed, 8 insertions(+), 8 deletions(-)
+We had a few places that still used cgrp->kn->id instead of cgroup_id().
 
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 1ebe9eba48ea..2f2f7b36c947 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -699,7 +699,7 @@ int proc_setattr(struct dentry *dentry, struct iattr *attr)
-  */
- static bool has_pid_permissions(struct proc_fs_info *fs_info,
- 				 struct task_struct *task,
--				 int hide_pid_min)
-+				 enum proc_hidepid hide_pid_min)
- {
- 	/*
- 	 * If 'hidpid' mount option is set force a ptrace check,
-diff --git a/fs/proc/inode.c b/fs/proc/inode.c
-index d38a9e592352..8f3681723108 100644
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -166,7 +166,7 @@ void proc_invalidate_siblings_dcache(struct hlist_head *inodes, spinlock_t *lock
- 		deactivate_super(old_sb);
- }
+Signed-off-by: Barret Rhoden <brho@google.com>
+---
+ kernel/events/core.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 318435c5bf0b..e5deab0e7185 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -1594,7 +1594,8 @@ perf_event_groups_less(struct perf_event *left, struct perf_event *right)
+ 			return false;
+ 		}
+ 		/* Two dissimilar cgroups, order by id. */
+-		if (left->cgrp->css.cgroup->kn->id < right->cgrp->css.cgroup->kn->id)
++		if (cgroup_id(left->cgrp->css.cgroup) <
++		    cgroup_id(right->cgrp->css.cgroup))
+ 			return true;
  
--static inline const char *hidepid2str(int v)
-+static inline const char *hidepid2str(enum proc_hidepid v)
- {
- 	switch (v) {
- 		case HIDEPID_OFF: return "off";
-diff --git a/fs/proc/root.c b/fs/proc/root.c
-index c6caae9e4308..9d6ce3710f4f 100644
---- a/fs/proc/root.c
-+++ b/fs/proc/root.c
-@@ -32,9 +32,9 @@
- struct proc_fs_context {
- 	struct proc_fs_info	*fs_info;
- 	unsigned int		mask;
--	int			hidepid;
-+	enum proc_hidepid	hidepid;
- 	int			gid;
--	int			pidonly;
-+	enum proc_pidonly	pidonly;
- };
+ 		return false;
+@@ -1692,7 +1693,7 @@ perf_event_groups_first(struct perf_event_groups *groups, int cpu,
+ 	u64 node_cgrp_id, cgrp_id = 0;
  
- enum proc_param {
-diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-index afd38cae2339..3701f49eb299 100644
---- a/include/linux/proc_fs.h
-+++ b/include/linux/proc_fs.h
-@@ -28,7 +28,7 @@ struct proc_ops {
- };
+ 	if (cgrp)
+-		cgrp_id = cgrp->kn->id;
++		cgrp_id = cgroup_id(cgrp);
+ #endif
  
- /* definitions for hide_pid field */
--enum {
-+enum proc_hidepid {
- 	HIDEPID_OFF	  = 0,
- 	HIDEPID_NO_ACCESS = 1,
- 	HIDEPID_INVISIBLE = 2,
-@@ -36,7 +36,7 @@ enum {
- };
+ 	while (node) {
+@@ -1709,7 +1710,7 @@ perf_event_groups_first(struct perf_event_groups *groups, int cpu,
+ #ifdef CONFIG_CGROUP_PERF
+ 		node_cgrp_id = 0;
+ 		if (node_event->cgrp && node_event->cgrp->css.cgroup)
+-			node_cgrp_id = node_event->cgrp->css.cgroup->kn->id;
++			node_cgrp_id = cgroup_id(node_event->cgrp->css.cgroup);
  
- /* definitions for proc mount option pidonly */
--enum {
-+enum proc_pidonly {
- 	PROC_PIDONLY_OFF = 0,
- 	PROC_PIDONLY_ON  = 1,
- };
-@@ -46,8 +46,8 @@ struct proc_fs_info {
- 	struct dentry *proc_self;        /* For /proc/self */
- 	struct dentry *proc_thread_self; /* For /proc/thread-self */
- 	kgid_t pid_gid;
--	int hide_pid;
--	int pidonly;
-+	enum proc_hidepid hide_pid;
-+	enum proc_pidonly pidonly;
- };
+ 		if (cgrp_id < node_cgrp_id) {
+ 			node = node->rb_left;
+@@ -1745,10 +1746,10 @@ perf_event_groups_next(struct perf_event *event)
  
- static inline struct proc_fs_info *proc_sb_info(struct super_block *sb)
+ #ifdef CONFIG_CGROUP_PERF
+ 	if (event->cgrp && event->cgrp->css.cgroup)
+-		curr_cgrp_id = event->cgrp->css.cgroup->kn->id;
++		curr_cgrp_id = cgroup_id(event->cgrp->css.cgroup);
+ 
+ 	if (next->cgrp && next->cgrp->css.cgroup)
+-		next_cgrp_id = next->cgrp->css.cgroup->kn->id;
++		next_cgrp_id = cgroup_id(next->cgrp->css.cgroup);
+ 
+ 	if (curr_cgrp_id != next_cgrp_id)
+ 		return NULL;
 -- 
-2.25.2
+2.26.0.292.g33ef6b2f38-goog
 
