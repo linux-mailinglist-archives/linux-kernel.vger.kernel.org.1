@@ -2,191 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5FB19D591
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B83E819D595
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390699AbgDCLNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 07:13:02 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:13614 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727968AbgDCLNB (ORCPT
+        id S2390724AbgDCLNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 07:13:49 -0400
+Received: from mail-wr1-f43.google.com ([209.85.221.43]:35228 "EHLO
+        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727968AbgDCLNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 07:13:01 -0400
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200403111258epoutp04020711f02fa0611b243535f55de87b1c~CSuff9ao52029920299epoutp04B
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Apr 2020 11:12:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200403111258epoutp04020711f02fa0611b243535f55de87b1c~CSuff9ao52029920299epoutp04B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1585912378;
-        bh=pA8bbH0J0a+qUde69DwBe1rYmqYSp0wwFAR3wM309Vc=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=Lqv+7NO1rmVAXbBDIVO6yWr3G2WK3h88TYu/fPc54uRluXChWOHyq+kjr6vNtIjM8
-         VvHeRz8+2s5LmEiWnWqLkjedZGqCmVDYqFPwmaZldyJ0D8G0BaPYarwZ5wxdKIa9+p
-         iSVaMV7Jia/DzQ1Ly725z+yq52xEFkV1DoUhU9aU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20200403111258epcas2p3ee44d19a4741efdbb83511769ec5e3fd~CSufFlx-z0608006080epcas2p3O;
-        Fri,  3 Apr 2020 11:12:58 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.189]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 48ty2w5FsvzMqYkY; Fri,  3 Apr
-        2020 11:12:56 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3B.76.04598.83A178E5; Fri,  3 Apr 2020 20:12:56 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200403111255epcas2p3f65f59b797653cca215f587b68008dea~CSudEwg8V3171331713epcas2p3u;
-        Fri,  3 Apr 2020 11:12:55 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200403111255epsmtrp19483369847eb24dea5b9edce8874d493~CSudD-Q7j1160411604epsmtrp15;
-        Fri,  3 Apr 2020 11:12:55 +0000 (GMT)
-X-AuditID: b6c32a45-ea1ff700000011f6-5c-5e871a382f16
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        81.0E.04024.73A178E5; Fri,  3 Apr 2020 20:12:55 +0900 (KST)
-Received: from KORCO004660 (unknown [12.36.165.196]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200403111255epsmtip254b15dded8b30bf3eef4d68f3ccb199a~CSuc2tkOy1567915679epsmtip2O;
-        Fri,  3 Apr 2020 11:12:55 +0000 (GMT)
-From:   "Hyunki Koo" <hyunki00.koo@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzk@kernel.org>
-Cc:     <gregkh@linuxfoundation.org>, "'Kukjin Kim'" <kgene@kernel.org>,
-        "'Jiri Slaby'" <jslaby@suse.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200403104744.GA29385@kozik-lap>
-Subject: RE: [PATCH v3] tty: samsung_tty: 32-bit access for TX/RX hold
- registers
-Date:   Fri, 3 Apr 2020 20:12:55 +0900
-Message-ID: <005601d609a8$d3243710$796ca530$@samsung.com>
+        Fri, 3 Apr 2020 07:13:48 -0400
+Received: by mail-wr1-f43.google.com with SMTP id g3so5745123wrx.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 04:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JvWqGNGSWU6DWrsOHOFKdACpD+bY4oqNaVseQCkk5wY=;
+        b=qSIUF3zGi9tV3IrF1qe82YGqzafnUkfe/mm+KL59FIbShzEdN2pLPv2S7/ANxsUC/Z
+         gR0ENOe+P6wpalquOb7E6clVPjAxAmkuv3b0r1MdZ0PTNwrpb7FEXsu05Tr/8gwUDWZp
+         esPfXBSgQD+qwhI0epBNbG6RYiwfKIlDtONttjwfjEq/9ZaAWHKTVoIYVbV4r8prlVAw
+         nhXwgy/1nB5lqGW9yxv4pCsfyt3maUZwLE+YAz79JCTLTW6ofF3UZX7efDwNJHYmWOrm
+         q9OFeRWLP+3g7vbSMR7dhKetiqpJPNnO2cIsikLujJ23xRrdr9TQ6HNdwKff61JcmTyT
+         E0fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JvWqGNGSWU6DWrsOHOFKdACpD+bY4oqNaVseQCkk5wY=;
+        b=fdVfOV0XyPlVLx1nwcwVrZKDZRZa1y+Kbh4aFzIZ7QOafQTPuFyQ0OW1BAVZ8f+rvl
+         qME/dsAWxIyI+NYnQNxXS5MsF2ROrXnzA/RKNq+62B0I4iQ3m2X9MMzW1NSgc8p1GMRs
+         BV2kpbF/8WPATveW/ZJjRhDwsHVfLM3HofDs+HgDfVao/QnXixdJFbvJSxE0SeK3JfNM
+         7Hb6f69ixPXrUaNlicOEsKvS7gamZ17FjeCzoYb9U9MZnHmL5vJLdTQp3OguiSDd1USK
+         OMRMVJVWECmQC+vlIz1nXUUazmDsbqVSUBxwwhzXJ2hXDCoKw1kAuixYEucRRcXhGz50
+         JiQA==
+X-Gm-Message-State: AGi0PubBpSIUD0IIBIn4PV94PC84Y4UHicpLaJgkDn6fKfR2J3SWGwhY
+        6mwu0cn/ObLXroI2z4ibxEfm/XXBJeQQZN3TcyxDJw==
+X-Google-Smtp-Source: APiQypKezTBkDczLILhhJ22RcepOC/B/eMarN+9FRJfBE2r0g2OFDw/G+h7DRbHaIiKhEIaViQdrn9BAPqsAwmg5e8U=
+X-Received: by 2002:adf:ff8b:: with SMTP id j11mr8958919wrr.117.1585912425936;
+ Fri, 03 Apr 2020 04:13:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQKEs4Y1dkf1SYeuuA/6Ie9wROds5QGozxKaAhmfaBwBVB8GPabhL5wA
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUhTYRTHeXa3ezdrdV2WpxU1rlEqmZs2u4ZG0dsgEatvVupFL5t099Lu
-        FlofNKr5gpJRkS3tzV5tOdPQoWWhpgkyP0SWpiGokb2KgZgYdbdr5Lffc875P/9znufIMdUD
-        XC3PtThYu4XhKDxE2tQRRcfQ6qIMbf3NSPp0jRenL9ZPSuhzo18wuq+vnqAbRvtl9OuWKpyu
-        7GuT0L015cR2uaGhtgQ3PK/2EIbG2wUG75M3UsPPhjVpsnQuycQyOaxdw1qyrTm5FmMyte9g
-        5s5MfYJWF6NLpLdQGgtjZpOpXSlpMXtyOaEVSnOc4ZxCKI3heSp2W5Ld6nSwGpOVdyRTrC2H
-        s+l0tk08Y+adFuOmbKt5q06rjdMLlVmc6U+hX2brUeVd8lVghej9klKkkAO5GQbOfJQGWEX6
-        EFycoEtRiMBTCCqnu3DxMI1goPg3+qdonXklERXPEHwePiIWTSAYHCkPJnAyBl7XjAU5TODG
-        d/eIQBFGziBom/bLAgkFGQu3qruCty4jD4CragQPsJRcBz1fvwfjSjIR5vxf5zkUeq6MBXvF
-        yLXQ/K0KEzvSwK/xuzLRbA90eoYIsSYMrpa4sIAxkD9wqO0alIqCXXD5WsX8OMvgc/cTQmQ1
-        TJxzzXMBtLnOE6K4DMGvyXGZmIgH98ciQSwXHKLA2xIbQCAjoHNwvrclUNzxmxDDSih2qUTh
-        eqib/iQReTV4xluICkS5F0zmXjCZe8EE7v9eN5C0Fq1gbbzZyPJxNt3Cz25AwTWN3u1Dlf6U
-        dkTKEbVYqQ0vylDJmON8vrkdgRyjwpQ7Ks9mqJQ5TP4J1m7NtDs5lm9HeuHhz2Pq5dlWYekt
-        jkydPi4hQZuop/UJcTQVrmxcNHBYRRoZB3uUZW2s/Z9OIleoC1HebPXS56vmmrNoz4bUNHzr
-        Sdf9/pU+783Z08ljq5i9sejTxpep4Z5e7MOt9KfGArrvaKS/Nvf6qcejk5eGyy4o8u4sejUX
-        39RqkimOjVTtH9Y4+yMyNDXRvdG+0cEXnG/b9zpNQUdR8/DQWy7r0Uh+81SoF40XTzyc/XAo
-        vrvkMSXlTYwuGrPzzF9FKthdvAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCIsWRmVeSWpSXmKPExsWy7bCSvK65VHucwc8fBhbNi9ezWUzZ8IHJ
-        ov/xa2aL8+c3sFtsenyN1eLyrjlsFjPO72OyOLO4l92Bw2PTqk42j/1z17B7bF5S77F+y1UW
-        j8+b5AJYo7hsUlJzMstSi/TtErgy/jecYy04KVQxdccE5gbG23xdjJwcEgImErt/nGDqYuTi
-        EBLYzShx+sYbRoiEjMSEF0uYIWxhifstR1hBbCGB54wSZzeZg9hsAroSlxc/YQKxRYDszTeW
-        s4MMYhb4xyjR/PYOM0TDE0aJU9drQGxOAX2JRXOPgS0QFgiQOHagEayGRUBF4uSbd2BxXgFL
-        iT/n3kDZghInZz5hAbGZBbQlnt58CmXLS2x/OwfqOAWJn0+XsUIc4SZxZM0ddogaEYnZnW3M
-        ExiFZyEZNQvJqFlIRs1C0rKAkWUVo2RqQXFuem6xYYFhXmq5XnFibnFpXrpecn7uJkZwXGlp
-        7mC8vCT+EKMAB6MSD+8NkfY4IdbEsuLK3EOMEhzMSiK8jjNa44R4UxIrq1KL8uOLSnNSiw8x
-        SnOwKInzPs07FikkkJ5YkpqdmlqQWgSTZeLglGpgbDsb4e1eeUbrxPssyfAYlZw0H49znG8u
-        6x6qOTBd6PevZ6cnvFjkWH5O+c2uTKa9CirJMR1fv7y5efj6nRrtguA10456++9dbvdhz7Pl
-        JaLKEj71hYpMv93YWBJr5s48942VTfoLU8XBC9uUBF19GfzljnLfURH5HLPrwIGqafHsuSsS
-        A6fPU2Ipzkg01GIuKk4EAMvMarmnAgAA
-X-CMS-MailID: 20200403111255epcas2p3f65f59b797653cca215f587b68008dea
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200403102049epcas2p1d1fe95160b7f37609a8b1710c196cdd8
-References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
-        <CGME20200403102049epcas2p1d1fe95160b7f37609a8b1710c196cdd8@epcas2p1.samsung.com>
-        <20200403102041.22015-1-hyunki00.koo@samsung.com>
-        <20200403104744.GA29385@kozik-lap>
+References: <CAE3Pknn88NZNqiaHahM4HVvTU82hdMcbhGWWb4AyXXYMbcGuaQ@mail.gmail.com>
+ <3ebbe879471898218f34918b1d009887@kernel.org>
+In-Reply-To: <3ebbe879471898218f34918b1d009887@kernel.org>
+From:   =?UTF-8?Q?Lu=C3=ADs_Matallui?= <matallui@gmail.com>
+Date:   Fri, 3 Apr 2020 05:13:35 -0600
+Message-ID: <CAE3PknnmUBPfCjJUxwLaTjAqU4tYXxakvH+qZTwYYyw4SS_DiA@mail.gmail.com>
+Subject: Re: Help with IRQ-MSI-IRQ bridges
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 7:48:38PM +0900, Krzysztof Kozlowski
-> On Fri, Apr 03, 2020 at 07:20:41PM +0900, Hyunki Koo wrote:
-> > Support 32-bit access for the TX/RX hold registers UTXH and URXH.
-> >
-> > This is required for some newer SoCs.
-> >
-> > Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
-> > ---
-> > v3: change rd_regl to rd_reg in line 954 for backward compatibility.
-> 
-> I cannot find this change against v2.
-Okay, I will add all changes.
-> 
-> > ---
-> >
-> >  drivers/tty/serial/samsung_tty.c | 76
-> > +++++++++++++++++++++++++++++++++-------
-> >  1 file changed, 64 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/tty/serial/samsung_tty.c
-> > b/drivers/tty/serial/samsung_tty.c
-> > index 73f951d65b93..a674a80163ed 100644
-> > --- a/drivers/tty/serial/samsung_tty.c
-> > +++ b/drivers/tty/serial/samsung_tty.c
-> > @@ -154,12 +154,47 @@ struct s3c24xx_uart_port {  #define
-> > portaddrl(port, reg) \
-> >  	((unsigned long *)(unsigned long)((port)->membase + (reg)))
-> >
-> > -#define rd_regb(port, reg) (readb_relaxed(portaddr(port, reg)))
-> > +static unsigned int rd_reg(struct uart_port *port, int reg)
-> 
-> You should return here u32 to be consistent with readl_relaxed.
-> 
-> > +{
-> > +	switch (port->iotype) {
-> > +	case UPIO_MEM:
-> > +		return readb_relaxed(portaddr(port, reg));
-> > +	case UPIO_MEM32:
-> > +		return readl_relaxed(portaddr(port, reg));
-> > +	default:
-> > +		return 0;
-> > +	}
-> > +	return 0;
-> > +}
-> > +
-> >  #define rd_regl(port, reg) (readl_relaxed(portaddr(port, reg)))
-> >
-> > -#define wr_regb(port, reg, val) writeb_relaxed(val, portaddr(port,
-> > reg))
-> > +static void wr_reg(struct uart_port *port, int reg, int val)
-> 
-> val should be u32.
-Okay, I will apply it.
-> 
-> > +{
-> > +	switch (port->iotype) {
-> > +	case UPIO_MEM:
-> > +		writeb_relaxed(val, portaddr(port, reg));
-> > +		break;
-> > +	case UPIO_MEM32:
-> > +		writel_relaxed(val, portaddr(port, reg));
-> > +		break;
-> > +	}
-> > +}
-> > +
-> >  #define wr_regl(port, reg, val) writel_relaxed(val, portaddr(port,
-> > reg))
-> >
-> > +static void write_buf(struct uart_port *port, int reg, int val)
-> 
-> buf is misleading, you do not write here any buffer. Maybe
-> "wr_reg_barrier()" or "wr_reg_order()"?
-Okay, wr_reg_barrier  would be good, I will apply it.
-> 
-> Best regards,
-> Krzysztof
+Hi Marc,
 
+On Fri, 3 Apr 2020 at 04:18, Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Luis,
+>
+> On 2020-04-03 02:35, Lu=C3=ADs Matallui wrote:
+> > Hi,
+> >
+> > I've got this SoC which uses IRQ-MSI and MSI-IRQ bridges in order to
+> > get interrupts from devices external to the ARM subsystem.
+> > I already got some pointers from Maz and have been able to create the
+> > drivers with the stacked domains and can now see the mappings working
+> > fine across domains.
+> >
+> > Maz pointed me to the Marvell mvebu-gicp (for my MSI controller, a.k.a
+> > MSI-IRQ bridge) and to mvebu-icu for the MSI client (IRQ-MSI bridge).
+> >
+> > I now have the interrupts working, but it seems like I'm missing a
+> > bunch of them. And therefore my device doesn't work properly.
+> > The main difference between my HW and Marvell's is that my IRQs are
+> > not level-triggered and the MSIs don't support the two messages for
+> > level-triggered interrupts.
+>
+> Which is probably a very good thing, as long as all your devices
+> generate
+> only edge-triggered interrupts.
+>
+> >
+> > To illustrate my system:
+> >
+> > DEV --line--> IRQ-MSI Bridge (MSIC) --msi--> MSI-IRQ Bridge (GICP)
+> > --line--> GICv2
+> >
+> > For MSIC, all I can do is configure the address and data for the MSI,
+> > and I believe on every rising edge of the Device IRQ, an MSI is sent.
+> > For GICP, all I have is a doorbell and a way to enable/disable it, and
+> > whenever the doorbell is enabled and has a value !=3D 0, the IRQ line t=
+o
+> > GICv2 gets asserted.
+> >
+> > The first thing I noticed is that when I get an interrupt, the IRQ
+> > flow goes like:
+> >
+> >   handle_irq();
+> >   irq_eoi();
+> >
+> > So, I guess my first question here is, how can I guarantee that I
+> > don't get another MSI whilst in handle_irq()?
+>
+> At the GIC level, once the interrupt is Ack'd, anything that is signed
+> after this ack is a separate interrupt. It will be made pending and will
+> fire once the GIC driver EOIs the first one.
 
+The thing here is, there is no Ack, or at least my irqchips are not getting
+the irq_ack() callback, which is where I was expecting to clear the doorbel=
+l.
 
+>
+> > If I do, then I will clear the doorbell on irq_eoi() (because that's
+> > my only choice) and will lose the queued IRQs.
+>
+> Why do you need to do anything at the doorbell level? This is just a
+> write,
+> so there should be nothing to clear. If you do need to clear anything,
+> then your MSI-IRQ bridge isn't stateless as it should, and you'll need
+> to
+> give much more details about the HW. Do you have a pointer to the TRM
+> for your HW?
+
+The hardware is really simple. On the MSI controller (GICP) side, each
+interrupt only has 3 registers: 1 status, 1 mask and 1 clear. When an
+MSI lands a write on the status register, it asserts the interrupt line.
+The interrupt stays asserted until we clear the status (using the clear
+register). The mask register is just to enable the interrupt basically.
+The MSI data is really irrelevant, as long as it's non-zero we always
+obtain the same result.
+
+On the MSI client side, we only configure the MSI address and data for
+a certain device interrupt line, and for each rising edge, an MSI gets issu=
+ed.
+
+>
+> > It also seems that I'm missing IRQs in the beginning after probing the
+> > device, and before it was working for me when I was setting up all
+> > these registers manually and simply using GICv2 as my only interrupt
+> > controller.
+>
+> Well, setting all of this in firmware is always the preferred option
+> if you don't expect things to change dynamically.
+
+Well, the solution I have now works perfectly for the configuration, becaus=
+e
+the MSIC gets configured by msi_compose_msg -> msi_write_msg at IRQ
+allocation time and never gets touched again.
+
+Then when the IRQ gets activated, the GICP is unmasking the interrupt but
+enabling the doorbell (setting the mask register).
+
+The only thing I really need is to intercept every MSI before the handler s=
+o
+I can Ack it by clearing the doorbell status register.
+
+>
+> > I do see the unmask() ops being called for all my stacked irqchips, so
+> > I don't understand how I'm missing so many interrupts.
+>
+> unmask is just a static configuration to enable the interrupt. There
+> shouldn't
+> be that many calls to that later on unless an endpoint driver
+> disables/enables
+> interrupts by hand.
+>
+> Please give us a bit more details to understand the context, as there is
+> only
+> so much I can do with so little HW information.
+>
+> Thanks,
+>
+>          M.
+> --
+> Jazz is not dead. It just smells funny...
+
+Let me know if that is good enough information. There's really not much on
+the HW side.
+
+Thanks,
+Luis
