@@ -2,78 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 684EF19DC72
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426D219DC75
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404079AbgDCRLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:11:23 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:44806 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727998AbgDCRLW (ORCPT
+        id S2390910AbgDCRNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:13:08 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:49922 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726087AbgDCRNI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:11:22 -0400
-Received: by mail-pf1-f196.google.com with SMTP id b72so3774681pfb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Do8qIdF6vQT1e9Pt11DpfMfF7NFSyvJ9YAoinVPJ4B0=;
-        b=DyKteckeKbLQOHNxRvjiNlOfjdsr1jQqgBETM8ffw0t5LACA/f7nbtTlfVqAU361A8
-         TlhaFiJ62NeeuXaXLHZ22PCfK5Na6gFRwfsFj3geWBmfSR6IcUDb04e9bmoJ3GU0DfmI
-         FFadDtjoTTt/2L2Fk/QMV7ygzbBXCmepfSUGHdywPKQgCzg+01p8LqL4yb8DTyq6RnNJ
-         grjPD3zunmVFy8bwFXFqR/qFoBCdaJbK8gOk65d+iOVPDODB+N7IJxBXBqUhlbSvZ96T
-         vzzDATVU1QI0gcBgjfciFIGSJdyeKX8s42+L9gvQkEuvIg7/B0/LB8InfQDg630DiPtG
-         358Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Do8qIdF6vQT1e9Pt11DpfMfF7NFSyvJ9YAoinVPJ4B0=;
-        b=hbOhY5Q/hlIwytewsLOUN+NVeoCGa/aJuGQvBHGXxJLfionn3InT+JzWHyUYvGNfW/
-         Z54BtkGFGao8svHVqSbgeOeOdhTlpXVBTE9oQQ0rSFWzjuxriJtRs4wz33XUKbA72VZs
-         QTdbbKW0br9MGjmovOi51lG/pw2BbCvm54zY+zz4ZFidfpxGVCh8SBqGV3bvdCPSlVTa
-         ikssr3Y2Jc9Hoifuhbyrjt9s+IeTHwjSvo/s4nvF8HzyiuNyK7n6F0OZ+M2HP/lXgHxA
-         wsTpoSoZrD9C0zdHJlm2h+R7zwDsKSTydU1mB+gEPI9/OLoA19ON9jDya/YItnA1J3J3
-         Yfvw==
-X-Gm-Message-State: AGi0PuY/HFsNFL7m0+4imIIujG5v65GR4dLyomC4e78S74l5hDpVXQm3
-        g52W3Gsra7U3pJ5k34tiR5opuHZOl0bLJgU378lkZg==
-X-Google-Smtp-Source: APiQypI7UauSw1zmt3GWDSv0euHCVWL7ySGTXKz+bk1VaTUXvcO5W9wbt8hwUVo/DiAbuh0tRYCoyUszY50nCC6+t00=
-X-Received: by 2002:a63:d049:: with SMTP id s9mr8754031pgi.384.1585933881177;
- Fri, 03 Apr 2020 10:11:21 -0700 (PDT)
+        Fri, 3 Apr 2020 13:13:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=jv9Yf7cQCjMobtLa9/No1kE+P61DSmIa48Wq8z5iHcI=; b=BHzwZZovpp1Jkmqku0nupezxv5
+        IgyOcoOt6ZwXcDyaavQROpQU6N9/O/KIC91FiiaaKEAtkyQPzeWvh/+Va3qoUK8Tk6iK2DYiOSR2l
+        QsCCEvPl11kbipf0xEqUmNCn24YAqgQiTinb3gkG3xnb0O0X4Qc3oeo1a7SyJhRy9up+2oavIeyBF
+        tH9MQLug1ROCSisewPft92IoZj/Vp1sNPrrB3tvWvhOjxpmdCS5KHiK9m97aX1tkY3Nn63VOmkOrZ
+        8iyNHZ0s+ZNliRrey8DpfrAaLhZmFQvdZsRyEQl7KSrysGlPnpKXHpsxuhu0d+UUeaJaBoKr6oj55
+        otM7PcFA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jKPsO-0003oN-Ct; Fri, 03 Apr 2020 17:13:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 394F53060FD;
+        Fri,  3 Apr 2020 19:13:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 250C12B125211; Fri,  3 Apr 2020 19:13:03 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 19:13:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     jeyu@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        keescook@chromium.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>
+Subject: [PATCH v2] module: Harden STRICT_MODULE_RWX
+Message-ID: <20200403171303.GK20760@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20200402204639.161637-1-trishalfonso@google.com> <20200402204639.161637-4-trishalfonso@google.com>
-In-Reply-To: <20200402204639.161637-4-trishalfonso@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 3 Apr 2020 10:11:10 -0700
-Message-ID: <CAFd5g45owC+D+K4RuppmyTJ+d+NGRL1CpuciXwXYvmtBfXnXYg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] Add KUnit Struct to Current Task
-To:     Patricia Alfonso <trishalfonso@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 1:46 PM 'Patricia Alfonso' via KUnit
-Development <kunit-dev@googlegroups.com> wrote:
->
-> In order to integrate debugging tools like KASAN into the KUnit
-> framework, add KUnit struct to the current task to keep track of the
-> current KUnit test.
->
-> Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+We're very close to enforcing W^X memory, refuse to load modules that
+violate this principle per construction.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/module.c |   25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2044,9 +2044,29 @@ static void module_enable_x(const struct
+ 	frob_text(&mod->core_layout, set_memory_x);
+ 	frob_text(&mod->init_layout, set_memory_x);
+ }
++
++static int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
++				       char *secstrings, struct module *mod)
++{
++	const unsigned long shf_wx = SHF_WRITE|SHF_EXECINSTR;
++	int i;
++
++	for (i = 0; i < hdr->e_shnum; i++) {
++		if ((sechdrs[i].sh_flags & shf_wx) == shf_wx)
++			return -ENOEXEC;
++	}
++
++	return 0;
++}
++
+ #else /* !CONFIG_ARCH_HAS_STRICT_MODULE_RWX */
+ static void module_enable_nx(const struct module *mod) { }
+ static void module_enable_x(const struct module *mod) { }
++static int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
++				       char *secstrings, struct module *mod)
++{
++	return 0;
++}
+ #endif /* CONFIG_ARCH_HAS_STRICT_MODULE_RWX */
+ 
+ 
+@@ -3378,6 +3398,11 @@ static struct module *layout_and_allocat
+ 	if (err < 0)
+ 		return ERR_PTR(err);
+ 
++	err = module_enforce_rwx_sections(info->hdr, info->sechdrs,
++					  info->secstrings, info->mod);
++	if (err < 0)
++		return ERR_PTR(err);
++
+ 	/* We will do a special allocation for per-cpu sections later. */
+ 	info->sechdrs[info->index.pcpu].sh_flags &= ~(unsigned long)SHF_ALLOC;
+ 
