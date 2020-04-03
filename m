@@ -2,412 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F8419DE97
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 21:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CE619DEA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 21:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403868AbgDCTb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 15:31:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728268AbgDCTb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 15:31:28 -0400
-Received: from localhost.localdomain (c-98-220-238-81.hsd1.il.comcast.net [98.220.238.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B71220B1F;
-        Fri,  3 Apr 2020 19:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585942288;
-        bh=0f5ulTBKB2199VWvUsfC/mbxHkXVDFVUD042l6gno/k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=2NuObjEhnGjZmDXFnSaRYjG4MPmS1MkmI//vXgyc0Nh7AmBsPG4cG0BeslNyq3sal
-         Vhw+MVrF2IUoGcfBre9bMzuEBdXOw/YHko9j96tZIM6qlNqBXNqtkgXgtxwqClwHIM
-         aZuwdfDdGXyiwq8DiMhJiUCs8LOHoX4cVMUnwisw=
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     rostedt@goodmis.org
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] tracing: Add hist_debug trace event files for histogram debugging
-Date:   Fri,  3 Apr 2020 14:31:21 -0500
-Message-Id: <77914c22b0ba493d9783c53bbfbc6087d6a7e1b1.1585941485.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1585941485.git.zanussi@kernel.org>
-References: <cover.1585941485.git.zanussi@kernel.org>
-In-Reply-To: <cover.1585941485.git.zanussi@kernel.org>
-References: <cover.1585941485.git.zanussi@kernel.org>
+        id S1728060AbgDCTnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 15:43:45 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56846 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728001AbgDCTnp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 15:43:45 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 033Jha1S002351;
+        Fri, 3 Apr 2020 14:43:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1585943016;
+        bh=xXd+5AwGNJFgwyY081cDvIo2y0k7mAEOlzRr4E8sQog=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=umvOf9x4qMnPGdmEPSwB+KSzGQph3s4xg5mMRyFCP28ebfw2msfzd+/SH/seioXhU
+         xS2FV2TjSPEg6xMsmmlsCvWI8uHB1lKI9Csv7K8d6aosE0ZIvnxU8h2xcL0Wd4Vl8s
+         B2XGWUjU9Wu5VL5CgDSwWhnAEm0rakrIBevqi6j8=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 033JhaL6072883
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 3 Apr 2020 14:43:36 -0500
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 3 Apr
+ 2020 14:43:35 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Fri, 3 Apr 2020 14:43:35 -0500
+Received: from [10.250.65.13] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033JhZ9S018356;
+        Fri, 3 Apr 2020 14:43:35 -0500
+Subject: Re: [PATCH v3] leds: ariel: Add driver for status LEDs on Dell Wyse
+ 3020
+To:     Lubomir Rintel <lkundrak@v3.sk>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+CC:     Pavel Machek <pavel@ucw.cz>, <linux-kernel@vger.kernel.org>,
+        <linux-leds@vger.kernel.org>
+References: <20200322074134.79237-1-lkundrak@v3.sk>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <ef7e8f03-0a43-156e-b86e-3ab3887f0245@ti.com>
+Date:   Fri, 3 Apr 2020 14:37:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <20200322074134.79237-1-lkundrak@v3.sk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new "hist_debug" file for each trace event, which when read will
-dump out a bunch of internal details about the hist triggers defined
-on that event.
+Lubomir
 
-This is normally off but can be enabled by saying 'y' to the new
-CONFIG_HIST_TRIGGERS_DEBUG config option.
+On 3/22/20 2:41 AM, Lubomir Rintel wrote:
+> This adds support for controlling the LEDs attached to the Embedded
+> Controller on a Dell Wyse 3020 "Ariel" board.
+>
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+>
+> ---
+> Changes since v2:
+> - Hopefully sending out the correct patch this time...
+>
+> Changes since v1:
+> - Reduce code duplication with a loop
+> - Drop "ariel:" prefix from led names
+> - Do not print a message after a successful probe
+> ---
+>   drivers/leds/Kconfig      |  11 ++++
+>   drivers/leds/Makefile     |   1 +
+>   drivers/leds/leds-ariel.c | 133 ++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 145 insertions(+)
+>   create mode 100644 drivers/leds/leds-ariel.c
+>
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index d82f1dea37111..66424ee54cc01 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -83,6 +83,17 @@ config LEDS_APU
+>   	  To compile this driver as a module, choose M here: the
+>   	  module will be called leds-apu.
+>   
+> +config LEDS_ARIEL
+> +	tristate "Dell Wyse 3020 status LED support"
+> +	depends on LEDS_CLASS
+> +	depends on (MACH_MMP3_DT && MFD_ENE_KB3930) || COMPILE_TEST
+> +	help
+> +	  This driver adds support for controlling the front panel status
+> +	  LEDs on Dell Wyse 3020 (Ariel) board via the KB3930 Embedded
+> +	  Controller.
+> +
+> +	  Say Y to if your machine is a Dell Wyse 3020 thin client.
+> +
+>   config LEDS_AS3645A
+>   	tristate "AS3645A and LM3555 LED flash controllers support"
+>   	depends on I2C && LEDS_CLASS_FLASH
+> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> index d7e1107753fb1..bf3b22038d113 100644
+> --- a/drivers/leds/Makefile
+> +++ b/drivers/leds/Makefile
+> @@ -10,6 +10,7 @@ obj-$(CONFIG_LEDS_TRIGGERS)		+= led-triggers.o
+>   obj-$(CONFIG_LEDS_88PM860X)		+= leds-88pm860x.o
+>   obj-$(CONFIG_LEDS_AAT1290)		+= leds-aat1290.o
+>   obj-$(CONFIG_LEDS_APU)			+= leds-apu.o
+> +obj-$(CONFIG_LEDS_ARIEL)		+= leds-ariel.o
+>   obj-$(CONFIG_LEDS_AS3645A)		+= leds-as3645a.o
+>   obj-$(CONFIG_LEDS_AN30259A)		+= leds-an30259a.o
+>   obj-$(CONFIG_LEDS_BCM6328)		+= leds-bcm6328.o
+> diff --git a/drivers/leds/leds-ariel.c b/drivers/leds/leds-ariel.c
+> new file mode 100644
+> index 0000000000000..8fc56722e12f4
+> --- /dev/null
+> +++ b/drivers/leds/leds-ariel.c
+> @@ -0,0 +1,133 @@
+> +// SPDX-License-Identifier: BSD-2-Clause OR GPL-2.0-or-later
+> +/*
+> + * Dell Wyse 3020 a.k.a. "Ariel" Embedded Controller LED Driver
+> + *
+> + * Copyright (C) 2020 Lubomir Rintel
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/leds.h>
+> +#include <linux/regmap.h>
+> +#include <linux/of_platform.h>
+> +
+> +enum ec_index {
+> +	EC_BLUE_LED	= 0x01,
+> +	EC_AMBER_LED	= 0x02,
 
-This is in support of the new Documentation file describing histogram
-internals, Documentation/trace/histogram-design.rst, which was
-requested by developers trying to understand the internals when
-extending or making use of the hist triggers for higher-level tools.
+Defining the value after the 0x0 is unnecessary as enums are incremental 
+only the first value needs to be defined if the following values are in 
+numerical order
 
-The histogram-design.rst documentation refers to the hist_debug files
-and demonstrates their use with output in the test examples.
+Can these also be #defined instead of an enum?  Not requesting them to 
+be just wondering about the design decision here.
 
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
----
- kernel/trace/Kconfig             |  23 +++
- kernel/trace/trace.h             |   1 +
- kernel/trace/trace_events.c      |   4 +
- kernel/trace/trace_events_hist.c | 273 +++++++++++++++++++++++++++++++
- 4 files changed, 301 insertions(+)
+> +	EC_GREEN_LED	= 0x03,
+> +};
+> +
+> +enum {
+> +	EC_LED_OFF	= 0x00,
+> +	EC_LED_STILL	= 0x01,
+Same comment as above
+> +	EC_LED_FADE	= 0x02,
+> +	EC_LED_BLINK	= 0x03,
+> +};
+> +
+> +struct ariel_led {
+> +	struct regmap *ec_ram;
+> +	enum ec_index ec_index;
+> +	struct led_classdev led_cdev;
+> +};
+> +
+> +#define led_cdev_to_ariel_led(c) container_of(c, struct ariel_led, led_cdev)
+> +
+> +static enum led_brightness ariel_led_get(struct led_classdev *led_cdev)
+> +{
+> +	struct ariel_led *led = led_cdev_to_ariel_led(led_cdev);
+> +	unsigned int led_status = 0;
+> +
+> +	if (regmap_read(led->ec_ram, led->ec_index, &led_status))
+> +		return LED_OFF;
+> +
+> +	if (led_status == EC_LED_STILL)
+> +		return LED_FULL;
+> +	else
+else is not needed here
+> +		return LED_OFF;
+> +}
+> +
+> +static void ariel_led_set(struct led_classdev *led_cdev,
+> +			  enum led_brightness brightness)
+> +{
+> +	struct ariel_led *led = led_cdev_to_ariel_led(led_cdev);
+> +
+> +	if (brightness == LED_OFF)
+> +		regmap_write(led->ec_ram, led->ec_index, EC_LED_OFF);
+> +	else
+> +		regmap_write(led->ec_ram, led->ec_index, EC_LED_STILL);
+> +}
+> +
+> +static int ariel_blink_set(struct led_classdev *led_cdev,
+> +			   unsigned long *delay_on, unsigned long *delay_off)
+> +{
+> +	struct ariel_led *led = led_cdev_to_ariel_led(led_cdev);
+> +
+> +	if (*delay_on == 0 && *delay_off == 0)
+> +		return -EINVAL;
+> +
+> +	if (*delay_on == 0) {
+> +		regmap_write(led->ec_ram, led->ec_index, EC_LED_OFF);
+> +	} else if (*delay_off == 0) {
+> +		regmap_write(led->ec_ram, led->ec_index, EC_LED_STILL);
+> +	} else {
+> +		*delay_on = 500;
+> +		*delay_off = 500;
+> +		regmap_write(led->ec_ram, led->ec_index, EC_LED_BLINK);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +#define NLEDS 3
 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 402eef84c859..357f6304e86a 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -848,6 +848,29 @@ config KPROBE_EVENT_GEN_TEST
- 
- 	  If unsure, say N.
- 
-+config HIST_TRIGGERS_DEBUG
-+	bool "Hist trigger debug support"
-+	depends on HIST_TRIGGERS
-+	help
-+          Add "hist_debug" file for each event, which when read will
-+          dump out a bunch of internal details about the hist triggers
-+          defined on that event.
-+
-+          The hist_debug file serves a couple of purposes:
-+
-+            - Helps developers verify that nothing is broken.
-+
-+            - Provides educational information to support the details
-+              of the hist trigger internals as described by
-+              Documentation/trace/histogram-design.rst.
-+
-+          The hist_debug output only covers the data structures
-+          related to the histogram definitions themselves and doesn't
-+          display the internals of map buckets or variable values of
-+          running histograms.
-+
-+          If unsure, say N.
-+
- endif # FTRACE
- 
- endif # TRACING_SUPPORT
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 4eb1d004d5f2..def769df5bf1 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1661,6 +1661,7 @@ extern struct list_head ftrace_events;
- 
- extern const struct file_operations event_trigger_fops;
- extern const struct file_operations event_hist_fops;
-+extern const struct file_operations event_hist_debug_fops;
- extern const struct file_operations event_inject_fops;
- 
- #ifdef CONFIG_HIST_TRIGGERS
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 242f59e7f17d..f6f55682d3e2 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -2208,6 +2208,10 @@ event_create_dir(struct dentry *parent, struct trace_event_file *file)
- #ifdef CONFIG_HIST_TRIGGERS
- 	trace_create_file("hist", 0444, file->dir, file,
- 			  &event_hist_fops);
-+#endif
-+#ifdef CONFIG_HIST_TRIGGERS_DEBUG
-+	trace_create_file("hist_debug", 0444, file->dir, file,
-+			  &event_hist_debug_fops);
- #endif
- 	trace_create_file("format", 0444, file->dir, call,
- 			  &ftrace_event_format_fops);
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 1bb61c217a4a..cdb79aa84066 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -6471,6 +6471,279 @@ const struct file_operations event_hist_fops = {
- 	.release = single_release,
- };
- 
-+#ifdef CONFIG_HIST_TRIGGERS_DEBUG
-+static void hist_field_debug_show_flags(struct seq_file *m,
-+					unsigned long flags)
-+{
-+	seq_puts(m, "      flags:\n");
-+
-+	if (flags & HIST_FIELD_FL_KEY)
-+		seq_puts(m, "        HIST_FIELD_FL_KEY\n");
-+	else if (flags & HIST_FIELD_FL_HITCOUNT)
-+		seq_puts(m, "        VAL: HIST_FIELD_FL_HITCOUNT\n");
-+	else if (flags & HIST_FIELD_FL_VAR)
-+		seq_puts(m, "        HIST_FIELD_FL_VAR\n");
-+	else if (flags & HIST_FIELD_FL_VAR_REF)
-+		seq_puts(m, "        HIST_FIELD_FL_VAR_REF\n");
-+	else
-+		seq_puts(m, "        VAL: normal u64 value\n");
-+
-+	if (flags & HIST_FIELD_FL_ALIAS)
-+		seq_puts(m, "        HIST_FIELD_FL_ALIAS\n");
-+}
-+
-+static int hist_field_debug_show(struct seq_file *m,
-+				 struct hist_field *field, unsigned long flags)
-+{
-+	if ((field->flags & flags) != flags) {
-+		seq_printf(m, "ERROR: bad flags - %lx\n", flags);
-+		return -EINVAL;
-+	}
-+
-+	hist_field_debug_show_flags(m, field->flags);
-+	if (field->field)
-+		seq_printf(m, "      ftrace_event_field name: %s\n",
-+			   field->field->name);
-+
-+	if (field->flags & HIST_FIELD_FL_VAR) {
-+		seq_printf(m, "      var.name: %s\n", field->var.name);
-+		seq_printf(m, "      var.idx (into tracing_map_elt.vars[]): %u\n",
-+			   field->var.idx);
-+	}
-+
-+	if (field->flags & HIST_FIELD_FL_ALIAS)
-+		seq_printf(m, "      var_ref_idx (into hist_data->var_refs[]): %u\n",
-+			   field->var_ref_idx);
-+
-+	if (field->flags & HIST_FIELD_FL_VAR_REF) {
-+		seq_printf(m, "      name: %s\n", field->name);
-+		seq_printf(m, "      var.idx (into tracing_map_elt.vars[]): %u\n",
-+			   field->var.idx);
-+		seq_printf(m, "      var.hist_data: %p\n", field->var.hist_data);
-+		seq_printf(m, "      var_ref_idx (into hist_data->var_refs[]): %u\n",
-+			   field->var_ref_idx);
-+		if (field->system)
-+			seq_printf(m, "      system: %s\n", field->system);
-+		if (field->event_name)
-+			seq_printf(m, "      event_name: %s\n", field->event_name);
-+	}
-+
-+	seq_printf(m, "      type: %s\n", field->type);
-+	seq_printf(m, "      size: %u\n", field->size);
-+	seq_printf(m, "      is_signed: %u\n", field->is_signed);
-+
-+	return 0;
-+}
-+
-+static int field_var_debug_show(struct seq_file *m,
-+				struct field_var *field_var, unsigned int i,
-+				bool save_vars)
-+{
-+	const char *vars_name = save_vars ? "save_vars" : "field_vars";
-+	struct hist_field *field;
-+	int ret = 0;
-+
-+	seq_printf(m, "\n    hist_data->%s[%d]:\n", vars_name, i);
-+
-+	field = field_var->var;
-+
-+	seq_printf(m, "\n      %s[%d].var:\n", vars_name, i);
-+
-+	hist_field_debug_show_flags(m, field->flags);
-+	seq_printf(m, "      var.name: %s\n", field->var.name);
-+	seq_printf(m, "      var.idx (into tracing_map_elt.vars[]): %u\n",
-+		   field->var.idx);
-+
-+	field = field_var->val;
-+
-+	seq_printf(m, "\n      %s[%d].val:\n", vars_name, i);
-+	if (field->field)
-+		seq_printf(m, "      ftrace_event_field name: %s\n",
-+			   field->field->name);
-+	else {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	seq_printf(m, "      type: %s\n", field->type);
-+	seq_printf(m, "      size: %u\n", field->size);
-+	seq_printf(m, "      is_signed: %u\n", field->is_signed);
-+out:
-+	return ret;
-+}
-+
-+static int hist_action_debug_show(struct seq_file *m,
-+				  struct action_data *data, int i)
-+{
-+	int ret = 0;
-+
-+	if (data->handler == HANDLER_ONMAX ||
-+	    data->handler == HANDLER_ONCHANGE) {
-+		seq_printf(m, "\n    hist_data->actions[%d].track_data.var_ref:\n", i);
-+		ret = hist_field_debug_show(m, data->track_data.var_ref,
-+					    HIST_FIELD_FL_VAR_REF);
-+		if (ret)
-+			goto out;
-+
-+		seq_printf(m, "\n    hist_data->actions[%d].track_data.track_var:\n", i);
-+		ret = hist_field_debug_show(m, data->track_data.track_var,
-+					    HIST_FIELD_FL_VAR);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (data->handler == HANDLER_ONMATCH) {
-+		seq_printf(m, "\n    hist_data->actions[%d].match_data.event_system: %s\n",
-+			   i, data->match_data.event_system);
-+		seq_printf(m, "    hist_data->actions[%d].match_data.event: %s\n",
-+			   i, data->match_data.event);
-+	}
-+out:
-+	return ret;
-+}
-+
-+static int hist_actions_debug_show(struct seq_file *m,
-+				   struct hist_trigger_data *hist_data)
-+{
-+	int i, ret = 0;
-+
-+	if (hist_data->n_actions)
-+		seq_puts(m, "\n  action tracking variables (for onmax()/onchange()/onmatch()):\n");
-+
-+	for (i = 0; i < hist_data->n_actions; i++) {
-+		struct action_data *action = hist_data->actions[i];
-+
-+		ret = hist_action_debug_show(m, action, i);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (hist_data->n_save_vars)
-+		seq_puts(m, "\n  save action variables (save() params):\n");
-+
-+	for (i = 0; i < hist_data->n_save_vars; i++) {
-+		ret = field_var_debug_show(m, hist_data->save_vars[i], i, true);
-+		if (ret)
-+			goto out;
-+	}
-+out:
-+	return ret;
-+}
-+
-+static void hist_trigger_debug_show(struct seq_file *m,
-+				    struct event_trigger_data *data, int n)
-+{
-+	struct hist_trigger_data *hist_data;
-+	int i, ret;
-+
-+	if (n > 0)
-+		seq_puts(m, "\n\n");
-+
-+	seq_puts(m, "# event histogram\n#\n# trigger info: ");
-+	data->ops->print(m, data->ops, data);
-+	seq_puts(m, "#\n\n");
-+
-+	hist_data = data->private_data;
-+
-+	seq_printf(m, "hist_data: %p\n\n", hist_data);
-+	seq_printf(m, "  n_vals: %u\n", hist_data->n_vals);
-+	seq_printf(m, "  n_keys: %u\n", hist_data->n_keys);
-+	seq_printf(m, "  n_fields: %u\n", hist_data->n_fields);
-+
-+	seq_puts(m, "\n  val fields:\n\n");
-+
-+	seq_puts(m, "    hist_data->fields[0]:\n");
-+	ret = hist_field_debug_show(m, hist_data->fields[0],
-+				    HIST_FIELD_FL_HITCOUNT);
-+	if (ret)
-+		return;
-+
-+	for (i = 1; i < hist_data->n_vals; i++) {
-+		seq_printf(m, "\n    hist_data->fields[%d]:\n", i);
-+		ret = hist_field_debug_show(m, hist_data->fields[i], 0);
-+		if (ret)
-+			return;
-+	}
-+
-+	seq_puts(m, "\n  key fields:\n");
-+
-+	for (i = hist_data->n_vals; i < hist_data->n_fields; i++) {
-+		seq_printf(m, "\n    hist_data->fields[%d]:\n", i);
-+		ret = hist_field_debug_show(m, hist_data->fields[i],
-+					    HIST_FIELD_FL_KEY);
-+		if (ret)
-+			return;
-+	}
-+
-+	if (hist_data->n_var_refs)
-+		seq_puts(m, "\n  variable reference fields:\n");
-+
-+	for (i = 0; i < hist_data->n_var_refs; i++) {
-+		seq_printf(m, "\n    hist_data->var_refs[%d]:\n", i);
-+		ret = hist_field_debug_show(m, hist_data->var_refs[i],
-+					    HIST_FIELD_FL_VAR_REF);
-+		if (ret)
-+			return;
-+	}
-+
-+	if (hist_data->n_field_vars)
-+		seq_puts(m, "\n  field variables:\n");
-+
-+	for (i = 0; i < hist_data->n_field_vars; i++) {
-+		ret = field_var_debug_show(m, hist_data->field_vars[i], i, false);
-+		if (ret)
-+			return;
-+	}
-+
-+	ret = hist_actions_debug_show(m, hist_data);
-+	if (ret)
-+		return;
-+}
-+
-+static int hist_debug_show(struct seq_file *m, void *v)
-+{
-+	struct event_trigger_data *data;
-+	struct trace_event_file *event_file;
-+	int n = 0, ret = 0;
-+
-+	mutex_lock(&event_mutex);
-+
-+	event_file = event_file_data(m->private);
-+	if (unlikely(!event_file)) {
-+		ret = -ENODEV;
-+		goto out_unlock;
-+	}
-+
-+	list_for_each_entry(data, &event_file->triggers, list) {
-+		if (data->cmd_ops->trigger_type == ETT_EVENT_HIST)
-+			hist_trigger_debug_show(m, data, n++);
-+	}
-+
-+ out_unlock:
-+	mutex_unlock(&event_mutex);
-+
-+	return ret;
-+}
-+
-+static int event_hist_debug_open(struct inode *inode, struct file *file)
-+{
-+	int ret;
-+
-+	ret = security_locked_down(LOCKDOWN_TRACEFS);
-+	if (ret)
-+		return ret;
-+
-+	return single_open(file, hist_debug_show, file);
-+}
-+
-+const struct file_operations event_hist_debug_fops = {
-+	.open = event_hist_debug_open,
-+	.read = seq_read,
-+	.llseek = seq_lseek,
-+	.release = single_release,
-+};
-+#endif
-+
- static void hist_field_print(struct seq_file *m, struct hist_field *hist_field)
- {
- 	const char *field_name = hist_field_name(hist_field, 0);
--- 
-2.17.1
+This define needs to be more unique.
+
+Something like EC_NLEDS or EC_NUM_LEDS and should be moved to the top of 
+the file under the #includes
+
+> +
+> +static int ariel_led_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct ariel_led *leds;
+> +	struct regmap *ec_ram;
+> +	int ret;
+> +	int i;
+> +
+> +	leds = devm_kcalloc(dev, NLEDS, sizeof(*leds), GFP_KERNEL);
+> +	if (!leds)
+> +		return -ENOMEM;
+> +
+> +	ec_ram = dev_get_regmap(dev->parent, "ec_ram");
+Maybe this should be checked before memory is allocated.
+> +	if (!ec_ram)
+> +		return -ENODEV;
+> +
+> +	leds[0].ec_index = EC_BLUE_LED;
+> +	leds[0].led_cdev.name = "blue:power",
+> +	leds[0].led_cdev.default_trigger = "default-on";
+> +
+> +	leds[1].ec_index = EC_AMBER_LED;
+> +	leds[1].led_cdev.name = "amber:status",
+> +
+> +	leds[2].ec_index = EC_GREEN_LED;
+> +	leds[2].led_cdev.name = "green:status",
+> +	leds[2].led_cdev.default_trigger = "default-on";
+> +
+> +	for (i = 0; i < NLEDS; i++) {
+
+I don't understand this loop.  i is incremented but never used.
+
+should the below be leds[i]?
+
+> +		leds[0].ec_ram = ec_ram;
+> +		leds[0].led_cdev.brightness_get = ariel_led_get;
+> +		leds[0].led_cdev.brightness_set = ariel_led_set;
+> +		leds[0].led_cdev.blink_set = ariel_blink_set;
+> +
+> +		ret = devm_led_classdev_register(dev, &leds[0].led_cdev);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+
+Dan
+
 
