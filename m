@@ -2,110 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FC519CF47
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0710319CF4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729556AbgDCEZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:25:12 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:39665 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbgDCEZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:25:12 -0400
-Received: by mail-pj1-f66.google.com with SMTP id z3so2396644pjr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 21:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AyD2kX0rtGFxJhOxxjgdsGTPUrD/FjXjSvw4eMWluYU=;
-        b=I+Q5xBnw6OlNyc1WeYEuiKJUTVH7pscJdTTt0CEbl2LzbrJ9EOwk04CgLOETAycBeQ
-         0GyVQ2DWmVk0q5GewcChYtUHbGpq2sr/KkEvTTeZjZ99GSl3oVE6JvDmWhDwOoRGvmdl
-         HwBKGy5bBPEL9ZB6jGxhb+k02kWIErPtOdWSmKDH8nRok/kagwYsZGxVIE4MS1O2VyDc
-         nyI5qdFNfX4MZMNJQnuvlHqjiol3dLFc7SDOUYIbG25OJs3onxxEG09q5xMyM6LlD0wD
-         YFsyfoxiBFCX/BaijsYn8l830uwB5L/C1MAJL0M0D7psWtuGNZwy2sBzuQFIFFPUcABL
-         4dEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AyD2kX0rtGFxJhOxxjgdsGTPUrD/FjXjSvw4eMWluYU=;
-        b=qOWQq6Yq2XN8Uv10ZtztMLUyq/zIrrd3at8+mCVsFIJFekrun2jUriTp992S+Dv18d
-         3+Z8jsFeusidXihjRg4CQGC/v1E5ZvmzzPn36CagUrS4/Uy5EzOVMWJeIT/Y8z0Pbcjk
-         0ki9LvavgCZyPho438v7snLdVi8pXhVnZtuTHDHQGu41NRPQO1EzwDpaVfVzqufaXrtT
-         Ybml09bpiyxHjx+IK2YaFNWrx54bSJHHy9BC1WgTd7BbW/PZ/wLAdGt0mfAEMyXFN9jT
-         k+7gQX7mfsu0hQMaSdt5DBQrPVYaKjqB8hGKomAnsyLaTyiVyPyyBwTdwebvw2xk9VEN
-         I/rQ==
-X-Gm-Message-State: AGi0PubMbb6FdHmFd1l2cHtxNVZ0Oc9kvzn9JTi6W6+0Mj89xIRlpGBb
-        atpv7yNvWLOPCy17PUlbMHQ=
-X-Google-Smtp-Source: APiQypLUFoTcgC53/RD9U2GcTptF5bIO1QeLIw/HD5iIXFZnYExMi6C3tKHE3v7Uavp2U/mKA1dw5Q==
-X-Received: by 2002:a17:902:82c5:: with SMTP id u5mr6320102plz.254.1585887911382;
-        Thu, 02 Apr 2020 21:25:11 -0700 (PDT)
-Received: from OptiPlexFedora.fios-router.home ([47.144.161.84])
-        by smtp.gmail.com with ESMTPSA id l190sm4760286pfl.212.2020.04.02.21.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 21:25:10 -0700 (PDT)
-From:   "John B. Wyatt IV" <jbwyatt4@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
-Subject: [PATCH v2] staging: android: ion: Align with parenthesis
-Date:   Thu,  2 Apr 2020 21:24:48 -0700
-Message-Id: <20200403042448.863689-1-jbwyatt4@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S1730844AbgDCE3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:29:03 -0400
+Received: from m12-11.163.com ([220.181.12.11]:56664 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725851AbgDCE3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 00:29:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Wbeh/
+        XXcF9p0H3UV40lvWAHy5eGKJ2dZMK1faGpA0Mk=; b=fuOjBSS9j4j1VOrIIr+LE
+        sHNc6E5MUFVYXC1xXTU6EuO8pRtT0tYNHvpvzGleVwha52sTyJ+1Oqy3QbX/NbdP
+        DD6Kql1AhFfTx3AAK6ppr4CrU/1aJFf0e1C1fCvYB9KTBjp5ifzhD5PoNYtnUSzV
+        KlUasBVr2jwU6MDyvE7Xlg=
+Received: from localhost.localdomain (unknown [125.82.11.124])
+        by smtp7 (Coremail) with SMTP id C8CowADH59sdu4ZePW+mCQ--.9443S4;
+        Fri, 03 Apr 2020 12:27:10 +0800 (CST)
+From:   Hu Haowen <xianfengting221@163.com>
+To:     saeedm@mellanox.com, leon@kernel.org, davem@davemloft.net
+Cc:     moshe@mellanox.com, lsahlber@redhat.com, kw@linux.com,
+        wqu@suse.com, xiubli@redhat.com, xianfengting221@163.com,
+        chris@chris-wilson.co.uk, stfrench@microsoft.com,
+        airlied@redhat.com, yamada.masahiro@socionext.com, cai@lca.pw,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net/mlx5: add the missing space character
+Date:   Fri,  3 Apr 2020 12:26:59 +0800
+Message-Id: <20200403042659.9167-1-xianfengting221@163.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowADH59sdu4ZePW+mCQ--.9443S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7GryfGr4fCr1UZrWUWw17ZFb_yoW8Jr45pF
+        s8JFZrurs7tw45Xa18ZFW8Z3s5GwsYkay09F4fC393Xrn5tr48Crn3tryYkr10kr13J3sx
+        tF9rArW7Awn8W37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jcyCJUUUUU=
+X-Originating-IP: [125.82.11.124]
+X-CM-SenderInfo: h0ld0wxhqj3xtqjsjii6rwjhhfrp/1tbiFR76AF5mI-KHKQAAs2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align two different lines of arguments with the parenthesis
-of their respected function definitions. Fix style warnings
-of matching alignment.
+Commit 91b56d8462a9 ("net/mlx5: improve some comments") did not add
+that missing space character and this commit is used to fix it up.
 
-Reported by checkpatch.
-
-Signed-off-by: John B. Wyatt IV <jbwyatt4@gmail.com>
+Fixes: 91b56d8462a9 ("net/mlx5: improve some comments")
+Signed-off-by: Hu Haowen <xianfengting221@163.com>
 ---
-v2: Change comment title and summary
-    Suggested-by: Julia Lawall <julia.lawall@inria.fr>
+ drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/staging/android/ion/ion_page_pool.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/android/ion/ion_page_pool.c b/drivers/staging/android/ion/ion_page_pool.c
-index f85ec5b16b65..0198b886d906 100644
---- a/drivers/staging/android/ion/ion_page_pool.c
-+++ b/drivers/staging/android/ion/ion_page_pool.c
-@@ -37,7 +37,7 @@ static void ion_page_pool_add(struct ion_page_pool *pool, struct page *page)
- 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+index c9c9b479bda5..31bddb48e5c3 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c
+@@ -676,7 +676,7 @@ static void mlx5_fw_tracer_handle_traces(struct work_struct *work)
+ 	block_count = tracer->buff.size / TRACER_BLOCK_SIZE_BYTE;
+ 	start_offset = tracer->buff.consumer_index * TRACER_BLOCK_SIZE_BYTE;
  
- 	mod_node_page_state(page_pgdat(page), NR_KERNEL_MISC_RECLAIMABLE,
--							1 << pool->order);
-+			    1 << pool->order);
- 	mutex_unlock(&pool->mutex);
- }
- 
-@@ -57,7 +57,7 @@ static struct page *ion_page_pool_remove(struct ion_page_pool *pool, bool high)
- 
- 	list_del(&page->lru);
- 	mod_node_page_state(page_pgdat(page), NR_KERNEL_MISC_RECLAIMABLE,
--							-(1 << pool->order));
-+			    -(1 << pool->order));
- 	return page;
- }
+-	/* Copy the block to local buffer to avoid HW override while being processed*/
++	/* Copy the block to local buffer to avoid HW override while being processed */
+ 	memcpy(tmp_trace_block, tracer->buff.log_buf + start_offset,
+ 	       TRACER_BLOCK_SIZE_BYTE);
  
 -- 
-2.25.1
+2.20.1
+
 
