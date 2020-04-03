@@ -2,129 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 737F219CF13
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B634819CF52
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:30:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729987AbgDCEVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:21:48 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:32998 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725851AbgDCEVs (ORCPT
+        id S1731505AbgDCEaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:30:16 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:40594 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725851AbgDCEaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:21:48 -0400
-Received: by mail-il1-f194.google.com with SMTP id k29so5989726ilg.0;
-        Thu, 02 Apr 2020 21:21:46 -0700 (PDT)
+        Fri, 3 Apr 2020 00:30:15 -0400
+Received: by mail-pl1-f196.google.com with SMTP id h11so2216914plk.7;
+        Thu, 02 Apr 2020 21:30:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sja6m3Mw9LjC7BK1j0HHPXQY4FKYL2Fx6diFCtiS1PE=;
+        b=h19/LNG3aBIRLqbyGckbtmcU+95XD0pxnfS64bhodTfzfjfXtnq/TJ+KQUfwxKbkb2
+         kkgsoBc0I4Esz0idHIfXX/maFUNkfgjkxmvwWyEHF/tK7o6GzBSQKbWx15oClB8LB0YW
+         zfEkUEWqzsljCZu9yhzAomn5U5idlMHsYHL0cjeoQ0+lCpgvmUdVNuNnD1axnRaeqAih
+         +R/MIFoqiTu794LHqc04TGNEU9rTEuqOoFWKgez+AbafEHmyK/4s7DGBYfx/bfEcg/K2
+         CwSr78KY+rGtCsqe8IEmG6QvsDePGLfBLBMewml61bnXUTmCpjjqDUKsON5NLcjL/FQP
+         Ty5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iTvfVv9OMelL2tJNQhqCvCC3vbEtodW1DXRkZdSxEgM=;
-        b=MakQgKQ+OPkp1iYYauWme4unfCiANy7OA1fMZ4N3dVb4DpHxRL6VT2tsxKzO6NL6RM
-         SR+Z/SlKHaxvb30RBOjJVDMOo9qTurRsVXK5eghfGwjR+VG8LGNkjBglKyyDcnykyDgC
-         bKRfEKCWuofsPNp2SpzohDHOXiHXTPNi6O9pRWbHUotsBr0YeDFMXGnlYwlZQqsqVa3E
-         tQ+y/cqe71lMTU0za+7MRwVM2D5IAVs6Q3IKUYGypUs1i3F+2H1yhHNzEKIbeJR7rfuo
-         UPgsLhvJH8Kj1pFHFXCeVsOdwvI4VK4oWx26jirUUkEfqM8CfSRZ0H+mqELlZx9tNCqT
-         JymA==
-X-Gm-Message-State: AGi0PuaRKclfI0tcGeB6yF0/IKUpeJSoPXqVkrFuIkQkuHupaZ/fjxNY
-        rDAF2wU6fCtlR/F4GdP0JGNA+gp8Uc5u0fSRE0/cTAEC
-X-Google-Smtp-Source: APiQypJRG0q51HavwyEmN1v7MTc8CDalf3p/c5rurCJxhL41UfnUexRPVYAyxzfRSydkm//LE4mXKRTvNyq0dqidknQ=
-X-Received: by 2002:a92:c742:: with SMTP id y2mr6585035ilp.147.1585887706183;
- Thu, 02 Apr 2020 21:21:46 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=sja6m3Mw9LjC7BK1j0HHPXQY4FKYL2Fx6diFCtiS1PE=;
+        b=ijY8UUISPPM6URsJuhnwF9j3VLekN8yTJ1qAjphfQkAxLK7HDYyUAq2mARkEMHmPQK
+         z0u5hBIqrJC63IXy9hY23Bj0jHjBhUXs0lovBEBu9FKcSlaH8QVHVxyjVE8+AW3Kga5j
+         D4gGU275ydK9VznpFDqN7VU/5dVUh5s+a/HiuhWq+gzrAcunmuND5DKq2sqW1SZWlD0R
+         9nFVJq3+VS4BRzg/MW3ktkT+v9WaHlG9yohRzzSnQe3c0FDjHTZvh3BLYNU/JNPNtjsj
+         nSQGpvIAVfvkxMpr9CvlN7pc2EySgwV2zIZ1V2V9mJjJCxW5Eq7n27Hx4BkBsW7161n6
+         O2dg==
+X-Gm-Message-State: AGi0PuaJ1o2OSVqneh2UEfnLn19NS+AhFAmohO1USloxzMAkIT9bmobU
+        u9CPoOYPwIYx5ujtHz5z5YDLCVCy
+X-Google-Smtp-Source: APiQypKymBolWpSQuKDcfRDNRhf9oi/2EuBelOfhbRc/eR/CsqYbdLKKIyexzCRlujj5Uqa9h055gQ==
+X-Received: by 2002:a17:902:ac8d:: with SMTP id h13mr6193580plr.267.1585888214837;
+        Thu, 02 Apr 2020 21:30:14 -0700 (PDT)
+Received: from sultan-box.localdomain (static-198-54-129-52.cust.tzulo.com. [198.54.129.52])
+        by smtp.gmail.com with ESMTPSA id k20sm4368281pgn.62.2020.04.02.21.30.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Apr 2020 21:30:14 -0700 (PDT)
+From:   Sultan Alsawaf <sultan@kerneltoast.com>
+X-Google-Original-From: Sultan Alsawaf
+Cc:     Sultan Alsawaf <sultan@kerneltoast.com>, stable@vger.kernel.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Lionel Landwerlin <lionel.g.landwerlin@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/i915: Fix use-after-free due to intel_context_pin/unpin race
+Date:   Thu,  2 Apr 2020 21:29:44 -0700
+Message-Id: <20200403042948.2533-1-sultan@kerneltoast.com>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200403011318.2280-1-sultan@kerneltoast.com>
+References: <20200403011318.2280-1-sultan@kerneltoast.com>
 MIME-Version: 1.0
-References: <1585661608-3356-1-git-send-email-yangtiezhu@loongson.cn>
-In-Reply-To: <1585661608-3356-1-git-send-email-yangtiezhu@loongson.cn>
-From:   Huacai Chen <chenhc@lemote.com>
-Date:   Fri, 3 Apr 2020 12:28:43 +0800
-Message-ID: <CAAhV-H5zKaWREreiDmmRgtAuTvOcQwEm1xvQxcCGrpdiiW7uWg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/3] Add basic support for Loongson 7A1000 bridge chip
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a rule of naming to avoid confusing: Use Loongson-3A,
-Loongson-3B, etc. to describe processor; use LS2H, LS7A, etc. to
-describe bridge. So please don't use Loongson 7A1000.
+From: Sultan Alsawaf <sultan@kerneltoast.com>
 
-Thanks,
-Huacai
+The retire and active callbacks can run simultaneously, allowing
+intel_context_pin() and intel_context_unpin() to run at the same time,
+trashing the ring and page tables. In 5.4, this was more noticeable
+because intel_ring_unpin() would set ring->vaddr to NULL and cause a
+clean NULL-pointer-dereference panic, but in newer kernels the
+use-after-free goes unnoticed.
 
-On Tue, Mar 31, 2020 at 9:34 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->
-> The Loongson 7A1000 bridge chip has been released for several years
-> since the second half of 2017, but it is not supported by the Linux
-> mainline kernel while it only works well with the Loongson internal
-> kernel version. When I update the latest version of Linux mainline
-> kernel on the Loongson 3A3000 CPU and 7A1000 bridge chip system,
-> the boot process failed and I feel depressed.
->
-> The 7A1000 bridge chip is used a lot with 3A3000 or 3A4000 CPU in
-> the most Loongson desktop and sever products, it is important to
-> support Loongson 7A1000 bridge chip by the Linux mainline kernel.
->
-> This patch series adds the basic support for the Loongson 7A1000
-> bridge chip, the patch about vendor ID and SATA has been merged
-> into the mainline tree, the next work is to refactor the code about
-> the interrupt controller, and then power management and some other
-> controller device drivers.
->
-> By the way, if you want the boot process is successful (just for
-> test) on the Loongson 3A3000 CPU and 7A1000 bridge chip system,
-> you should not only apply these patches, but also need the support
-> for SATA and interrupt controller in the v1 patch series.
->
-> This patch series is based on mips-next.
->
-> If you have any questions and suggestions, please let me know.
->
-> Thanks,
->
-> Tiezhu Yang
->
-> v2:
->   - The split patch series about Loongson vendor ID and SATA controller
->     has been merged into the linux-block.git by Jens Axboe [1].
->
->   - Think about using hierarchy IRQ domain in the patch of interrupt
->     controller, and this maybe depend on the patch series by Jiaxun
->     ("Modernize Loongson64 Machine"), so the patch about interrupt is
->     not included in this v2 patch series.
->
-> v3:
->   - The split patch series about Loongson vendor ID and SATA controller
->     has been merged into the mainline tree [2]
->
->   - Modify the macro definition and add comment to make it easy to read
->
->   - Move ls7a1000_pci_class_quirk() to fixup-loongson3.c
->
->   - Use PCI_VENDOR_ID_LOONGSON in pci_ids.h instead of 0x0014
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=9acb9fe18d86
->     https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=e49bd683e00b
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9acb9fe18d86
->     https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e49bd683e00b
->
-> Tiezhu Yang (3):
->   MIPS: Loongson: Get host bridge information
->   MIPS: Loongson: Add DMA support for 7A1000
->   MIPS: Loongson: Add PCI support for 7A1000
->
->  arch/mips/include/asm/mach-loongson64/boot_param.h | 20 +++++++
->  arch/mips/loongson64/dma.c                         |  9 ++--
->  arch/mips/loongson64/env.c                         | 22 ++++++++
->  arch/mips/loongson64/init.c                        | 17 ++++++
->  arch/mips/pci/fixup-loongson3.c                    | 12 +++++
->  arch/mips/pci/ops-loongson3.c                      | 63 ++++++++++++++++++++--
->  6 files changed, 136 insertions(+), 7 deletions(-)
->
-> --
-> 2.1.0
->
+The NULL-pointer-dereference looks like this:
+BUG: unable to handle page fault for address: 0000000000003448
+RIP: 0010:gen8_emit_flush_render+0x163/0x190
+Call Trace:
+ execlists_request_alloc+0x25/0x40
+ __i915_request_create+0x1f4/0x2c0
+ i915_request_create+0x71/0xc0
+ i915_gem_do_execbuffer+0xb98/0x1a80
+ ? preempt_count_add+0x68/0xa0
+ ? _raw_spin_lock+0x13/0x30
+ ? _raw_spin_unlock+0x16/0x30
+ i915_gem_execbuffer2_ioctl+0x1de/0x3c0
+ ? i915_gem_busy_ioctl+0x7f/0x1d0
+ ? i915_gem_execbuffer_ioctl+0x2d0/0x2d0
+ drm_ioctl_kernel+0xb2/0x100
+ drm_ioctl+0x209/0x360
+ ? i915_gem_execbuffer_ioctl+0x2d0/0x2d0
+ ksys_ioctl+0x87/0xc0
+ __x64_sys_ioctl+0x16/0x20
+ do_syscall_64+0x4e/0x150
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Protect __intel_context_retire() with active->mutex (i.e., ref->mutex)
+to complement the active callback and fix the corruption.
+
+Fixes: 12c255b5dad1 ("drm/i915: Provide an i915_active.acquire callback")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Sultan Alsawaf <sultan@kerneltoast.com>
+---
+v2: Reduce the scope of the mutex lock to only __intel_context_retire()
+    and mark it as a function that may sleep so it doesn't run in
+    atomic context
+
+ drivers/gpu/drm/i915/gt/intel_context.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/i915/gt/intel_context.c b/drivers/gpu/drm/i915/gt/intel_context.c
+index 57e8a051ddc2..9b9be8058881 100644
+--- a/drivers/gpu/drm/i915/gt/intel_context.c
++++ b/drivers/gpu/drm/i915/gt/intel_context.c
+@@ -221,6 +221,7 @@ static void __intel_context_retire(struct i915_active *active)
+ 
+ 	CE_TRACE(ce, "retire\n");
+ 
++	mutex_lock(&active->mutex);
+ 	set_bit(CONTEXT_VALID_BIT, &ce->flags);
+ 	if (ce->state)
+ 		__context_unpin_state(ce->state);
+@@ -229,6 +230,7 @@ static void __intel_context_retire(struct i915_active *active)
+ 	__ring_retire(ce->ring);
+ 
+ 	intel_context_put(ce);
++	mutex_unlock(&active->mutex);
+ }
+ 
+ static int __intel_context_active(struct i915_active *active)
+@@ -288,7 +290,8 @@ intel_context_init(struct intel_context *ce,
+ 	mutex_init(&ce->pin_mutex);
+ 
+ 	i915_active_init(&ce->active,
+-			 __intel_context_active, __intel_context_retire);
++			 __intel_context_active,
++			 i915_active_may_sleep(__intel_context_retire));
+ }
+ 
+ void intel_context_fini(struct intel_context *ce)
+-- 
+2.26.0
+
