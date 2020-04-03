@@ -2,85 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A0D19D756
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB61B19D74E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403870AbgDCNNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 09:13:23 -0400
-Received: from smtprelay0139.hostedemail.com ([216.40.44.139]:51020 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726087AbgDCNNW (ORCPT
+        id S1728241AbgDCNL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 09:11:28 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:45348 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727998AbgDCNL2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:13:22 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 955A4182CED34;
-        Fri,  3 Apr 2020 13:13:21 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2194:2199:2393:2553:2559:2562:2692:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3873:4321:5007:6120:6742:7901:7904:10004:10400:10848:11026:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21433:21611:21627:30034:30054:30069:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:8,LUA_SUMMARY:none
-X-HE-Tag: lake39_5738fffbee928
-X-Filterd-Recvd-Size: 2320
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf16.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  3 Apr 2020 13:13:19 +0000 (UTC)
-Message-ID: <a5d0029edb7328691f1a08009d564c576924a3eb.camel@perches.com>
-Subject: Re: [PATCH 1/1] lib/vsprintf: Add support for printing V4L2 and DRM
- fourccs
-From:   Joe Perches <joe@perches.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     mchehab@kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hverkuil@xs4all.nl,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        laurent.pinchart@ideasonboard.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>
-Date:   Fri, 03 Apr 2020 06:11:22 -0700
-In-Reply-To: <87zhbtkrc5.fsf@intel.com>
-References: <20200401140522.966-1-sakari.ailus@linux.intel.com>
-         <87eet6mgk7.fsf@intel.com>
-         <04bb934e551f43540d1daacd2759beacc0b3116a.camel@perches.com>
-         <87zhbtkrc5.fsf@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Fri, 3 Apr 2020 09:11:28 -0400
+Received: by mail-wr1-f65.google.com with SMTP id t7so8422565wrw.12
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 06:11:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=sYr8OBRiI7sjd0RI0DMwUta+4ZeeowcjRgVxOP3pOQM=;
+        b=Lz65vS6feWeZwRYNLp2tTj17+50NTdW60aLWmbWt8EGrOvet8XJvOpb9MdC6KN9ayd
+         WfBgcS2qxFfPq2ANXFILcvpkdZIWSFWwDYMj8FsV/sgoZ4GO6iIBM/N81bPQOIGFs2CQ
+         OdGS9ScF63nf6QevzXvcvAcjNChGdballoPM0WbSs0UnJ4+1EpJfQYh13jrvRnsuI9ND
+         X9Q2TSVEtAQKMwRysXh1HxqURl80Y8IJ0IM7tNp86imYP49eqRenKB7jftp+eL/sac+a
+         2dwFXjusCI5tiJdEP6pLY+3vsbdJP/5VeVg21zsh3KLgKd9GFmlF2lXh7nvLBJrq5u9S
+         yPYA==
+X-Gm-Message-State: AGi0PuZxbqLUozspPjVqFIkD48s/AIpp6j7ZovHyhcfMWSp6oqbBQzIp
+        K9qKJ+oLXTqo8cY64GSsDvQ=
+X-Google-Smtp-Source: APiQypKc5W+3lb6YNN/2F+K8g/qM6QEizkbMI/vzSV7g+skqyLHS+QuTh6HCwhlfPgjTyrR9d1XugA==
+X-Received: by 2002:adf:aad7:: with SMTP id i23mr8891403wrc.184.1585919485158;
+        Fri, 03 Apr 2020 06:11:25 -0700 (PDT)
+Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
+        by smtp.gmail.com with ESMTPSA id u5sm13195631wrp.81.2020.04.03.06.11.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 06:11:24 -0700 (PDT)
+Date:   Fri, 3 Apr 2020 15:11:23 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>
+Subject: Re: [PATCH -V3] /proc/PID/smaps: Add PMD migration entry parsing
+Message-ID: <20200403131123.GD22681@dhcp22.suse.cz>
+References: <20200403123059.1846960-1-ying.huang@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200403123059.1846960-1-ying.huang@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-04-03 at 09:37 +0300, Jani Nikula wrote:
-> On Thu, 02 Apr 2020, Joe Perches <joe@perches.com> wrote:
-> > On Thu, 2020-04-02 at 11:34 +0300, Jani Nikula wrote:
-> > > Or could we conceive of a way to make this locally extensible yet safe,
-> > > letting callers use something like %{foo}, as well as providing a
-> > > locally relevant function to do the conversion?
-> > 
-> > No.  printf validation would be broken.
+On Fri 03-04-20 20:30:59, Huang, Ying wrote:
+> From: Huang Ying <ying.huang@intel.com>
 > 
-> I tossed the idea on a whim, and thinking further I could probably come
-> up with a number of challenges, but care to elaborate on what you see as
-> the problem in validation?
+> Now, when read /proc/PID/smaps, the PMD migration entry in page table is simply
+> ignored.  To improve the accuracy of /proc/PID/smaps, its parsing and processing
+> is added.
+> 
+> To test the patch, we run pmbench to eat 400 MB memory in background, then run
+> /usr/bin/migratepages and `cat /proc/PID/smaps` every second.  The issue as
+> follows can be reproduced within 60 seconds.
+> 
+> Before the patch, for the fully populated 400 MB anonymous VMA, some THP pages
+> under migration may be lost as below.
+> 
+> 7f3f6a7e5000-7f3f837e5000 rw-p 00000000 00:00 0
+> Size:             409600 kB
+> KernelPageSize:        4 kB
+> MMUPageSize:           4 kB
+> Rss:              407552 kB
+> Pss:              407552 kB
+> Shared_Clean:          0 kB
+> Shared_Dirty:          0 kB
+> Private_Clean:         0 kB
+> Private_Dirty:    407552 kB
+> Referenced:       301056 kB
+> Anonymous:        407552 kB
+> LazyFree:              0 kB
+> AnonHugePages:    405504 kB
+> ShmemPmdMapped:        0 kB
+> FilePmdMapped:        0 kB
+> Shared_Hugetlb:        0 kB
+> Private_Hugetlb:       0 kB
+> Swap:                  0 kB
+> SwapPss:               0 kB
+> Locked:                0 kB
+> THPeligible:		1
+> VmFlags: rd wr mr mw me ac
+> 
+> After the patch, it will be always,
+> 
+> 7f3f6a7e5000-7f3f837e5000 rw-p 00000000 00:00 0
+> Size:             409600 kB
+> KernelPageSize:        4 kB
+> MMUPageSize:           4 kB
+> Rss:              409600 kB
+> Pss:              409600 kB
+> Shared_Clean:          0 kB
+> Shared_Dirty:          0 kB
+> Private_Clean:         0 kB
+> Private_Dirty:    409600 kB
+> Referenced:       294912 kB
+> Anonymous:        409600 kB
+> LazyFree:              0 kB
+> AnonHugePages:    407552 kB
+> ShmemPmdMapped:        0 kB
+> FilePmdMapped:        0 kB
+> Shared_Hugetlb:        0 kB
+> Private_Hugetlb:       0 kB
+> Swap:                  0 kB
+> SwapPss:               0 kB
+> Locked:                0 kB
+> THPeligible:		1
+> VmFlags: rd wr mr mw me ac
+> 
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Reviewed-by: Zi Yan <ziy@nvidia.com>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Alexey Dobriyan <adobriyan@gmail.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> Cc: "Jérôme Glisse" <jglisse@redhat.com>
+> Cc: Yang Shi <yang.shi@linux.alibaba.com>
 
-I understand you to want to add something like
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-	%<m> where m is a non-standard format specifier
+Thanks!
 
-so using using gcc's extension of
+> ---
+> 
+> v3:
+> 
+> - Revised patch description and remove VM_WARN_ON_ONCE() per Michal's comments
+> 
+> v2:
+> 
+> - Use thp_migration_supported() in condition to reduce code size if THP
+>   migration isn't enabled.
+> 
+> - Replace VM_BUG_ON() with VM_WARN_ON_ONCE(), it's not necessary to nuking
+>   kernel for this.
+> 
+> ---
+>  fs/proc/task_mmu.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 8d382d4ec067..36dc7417c0df 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -546,10 +546,17 @@ static void smaps_pmd_entry(pmd_t *pmd, unsigned long addr,
+>  	struct mem_size_stats *mss = walk->private;
+>  	struct vm_area_struct *vma = walk->vma;
+>  	bool locked = !!(vma->vm_flags & VM_LOCKED);
+> -	struct page *page;
+> +	struct page *page = NULL;
+> +
+> +	if (pmd_present(*pmd)) {
+> +		/* FOLL_DUMP will return -EFAULT on huge zero page */
+> +		page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP);
+> +	} else if (unlikely(thp_migration_supported() && is_swap_pmd(*pmd))) {
+> +		swp_entry_t entry = pmd_to_swp_entry(*pmd);
+>  
+> -	/* FOLL_DUMP will return -EFAULT on huge zero page */
+> -	page = follow_trans_huge_pmd(vma, addr, pmd, FOLL_DUMP);
+> +		if (is_migration_entry(entry))
+> +			page = migration_entry_to_page(entry);
+> +	}
+>  	if (IS_ERR_OR_NULL(page))
+>  		return;
+>  	if (PageAnon(page))
+> @@ -578,8 +585,7 @@ static int smaps_pte_range(pmd_t *pmd, unsigned long addr, unsigned long end,
+>  
+>  	ptl = pmd_trans_huge_lock(pmd, vma);
+>  	if (ptl) {
+> -		if (pmd_present(*pmd))
+> -			smaps_pmd_entry(pmd, addr, walk);
+> +		smaps_pmd_entry(pmd, addr, walk);
+>  		spin_unlock(ptl);
+>  		goto out;
+>  	}
+> -- 
+> 2.25.0
 
-__attribute__((__format__(printf, string_index, first_to_check))
-
-could not validate the argument type against use of the %<m>
-in the format string.
-
-	printk("%a\n", a);
-
-Compiler bleats.
-
+-- 
+Michal Hocko
+SUSE Labs
