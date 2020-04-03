@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AF119DC9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09EE19DCA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404316AbgDCRVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:21:01 -0400
-Received: from mail-il1-f176.google.com ([209.85.166.176]:41140 "EHLO
-        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbgDCRVA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:21:00 -0400
-Received: by mail-il1-f176.google.com with SMTP id t6so7987144ilj.8
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:21:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sac9Uo/AV73yZjiElwr8eWaCR4pb1bof561EHbRTu64=;
-        b=dM013+ng78t/3X53N7v85k+s4ZNbqHcfrtirxafjWzepY8PPg0JTHflkLye5qy1deV
-         nue2NGgEdV38O3280ERkwFJ9s7MMs/g6NbmoqP9corMbbjk80jcdwbOHsSu5mOjnRvWi
-         SjZaqD50HXL56mZHaONcA2luuaQFeGSjSGizPcX6I9E1i6aHoPI7UnEAdY7KeOMxhQku
-         zSE7DSbuUJ2sFoiXFAnLd9kev4UHIRp4UOnD0ndmRJSGGmx37vRwjsIHq3tcQOHDVcNk
-         kxJHYwp+xlotwxFNK5IosKNZvGOdlig6i/epb2Qi4klqxsTFdGHQq8kjqcbq1hvN19LV
-         9boQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sac9Uo/AV73yZjiElwr8eWaCR4pb1bof561EHbRTu64=;
-        b=bZj6kG+P+vCqY+hJGAurzIyIX+3uP3rScaAddQVmtHgXn9MmiykCnYuRtFPfmLTM10
-         GY1CO89+j6rxaRb4VHRDQnuxu7xGz1uRDq6sJmXpszKklzVLix/XBvD4Fa0uHxVPgRVc
-         xaqNxNNlsjXm6vYvDK1InIxmAVFRAFWzjm8D6YT0HlGu0RNQUVIY7cv0cvmjUB8udQ3Y
-         JJvtU+u1WXOhKN51tK+375Hy9q0xPn5B3K6rdiBATw+eE3JtgE53ZJ0J4KRDAZ+gYliJ
-         97zc/Vk1K9k+CWARp4b0MgFv5iGndv3lsReqz3u5/iRbDkmYKvj3qZ9HG8hszyUH2299
-         u64w==
-X-Gm-Message-State: AGi0PubEdkjilgGCYzP4wfY6iOAl/f5JMveBvY5EBm3TD0eyzSyH+Eps
-        T2jd/Z2Cr5GDXuGqgVjsSm7BnLLhefqIu12TPklvDjL7
-X-Google-Smtp-Source: APiQypKhx4DmB8pyY5Du9sl19ryD9Wes6Uc6oIqTsWadyRlkNrp3V3mocbD7V7mnyTwz3JXwisn/9II8tbeobuPC230=
-X-Received: by 2002:a92:912:: with SMTP id y18mr9943998ilg.299.1585934459694;
- Fri, 03 Apr 2020 10:20:59 -0700 (PDT)
+        id S2404366AbgDCRVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:21:30 -0400
+Received: from mga05.intel.com ([192.55.52.43]:43136 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728066AbgDCRV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 13:21:29 -0400
+IronPort-SDR: fjEhpCPcyAdxUQARVqP1s0WxMK+ndckAzcxa5q5ytgqf4m1qVX+UWht5ATTuz1EBZlZoqaF0tN
+ wZKABqg8jeAA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 10:21:29 -0700
+IronPort-SDR: EC4hJqgWCgeSPdQln89njVGtlG/mPy3BJRJGwOAC97Oaga7gQcH6kLrT2irhhGcfkUHziSiEGv
+ U8d7vxVtZ5Sw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; 
+   d="scan'208";a="243509627"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by orsmga008.jf.intel.com with ESMTP; 03 Apr 2020 10:21:29 -0700
+Date:   Fri, 3 Apr 2020 10:21:29 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
+        "Kenneth R. Crudup" <kenny@panix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "keescook@chromium.org" <keescook@chromium.org>
+Subject: Re: [patch 1/2] x86,module: Detect VMX modules and disable
+ Split-Lock-Detect
+Message-ID: <20200403172129.GE2701@linux.intel.com>
+References: <20200402123258.895628824@linutronix.de>
+ <20200402124205.242674296@linutronix.de>
+ <bc9a0c9a-7bd0-c85d-4795-ae0b4faa5e84@prevas.dk>
+ <20200403143459.GA30424@linux-8ccs>
+ <20200403152158.GR20730@hirez.programming.kicks-ass.net>
+ <20200403160156.GA2701@linux.intel.com>
+ <20200403161205.GT20730@hirez.programming.kicks-ass.net>
+ <20200403162555.GB2701@linux.intel.com>
+ <20200403164058.GX20730@hirez.programming.kicks-ass.net>
+ <FF9F1233-1312-4B98-A476-0C20D92200E3@vmware.com>
 MIME-Version: 1.0
-References: <CAOkhzLWMB8rr0x4KKfqruCcTLVq4dH6nZ365auMqA1arZ57J7g@mail.gmail.com>
- <CAOkhzLVvmoB0TgS4bioP4PnxwmnT_+h0LbCya2=KkcHu1UT_Zw@mail.gmail.com> <CAKb7UvgLr2A88jbx9Zvi3SjXoKbk4iZEg7LNQ4aL3VZhKVQu3A@mail.gmail.com>
-In-Reply-To: <CAKb7UvgLr2A88jbx9Zvi3SjXoKbk4iZEg7LNQ4aL3VZhKVQu3A@mail.gmail.com>
-From:   Zeno Davatz <zdavatz@gmail.com>
-Date:   Fri, 3 Apr 2020 19:20:48 +0200
-Message-ID: <CAOkhzLU+buL3J3XUbzC6JUAfbnMR-27qwS3Vm7ofrAPPCipXuw@mail.gmail.com>
-Subject: Re: acr: failed to load firmware with Kernel 5.6. Kernel 5.5 works
- just fine.
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     Ben Skeggs <bskeggs@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <FF9F1233-1312-4B98-A476-0C20D92200E3@vmware.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 3, 2020 at 6:59 PM Ilia Mirkin <imirkin@alum.mit.edu> wrote:
->
-> Ben -- probably the ACR changes in 5.6 don't fall back nicely anymore
-> when there's no firmware? The load shouldn't be failed, just GR
-> disabled...
->
-> Zeno -- if you grab linux-firmware, it should be all better. Not sure
-> if you're missing it on purpose or by accident.
+On Fri, Apr 03, 2020 at 04:48:35PM +0000, Nadav Amit wrote:
+> > On Apr 3, 2020, at 9:40 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Fri, Apr 03, 2020 at 09:25:55AM -0700, Sean Christopherson wrote:
+> >> On Fri, Apr 03, 2020 at 06:12:05PM +0200, Peter Zijlstra wrote:
+> >>> On Fri, Apr 03, 2020 at 09:01:56AM -0700, Sean Christopherson wrote:
+> >>>> On Fri, Apr 03, 2020 at 05:21:58PM +0200, Peter Zijlstra wrote:
+> >>>>> On Fri, Apr 03, 2020 at 04:35:00PM +0200, Jessica Yu wrote:
+> >>> 
+> >>>>>> I wonder if it would make sense then to limit the text scans to just
+> >>>>>> out-of-tree modules (i.e., missing the intree modinfo flag)?
+> >>>>> 
+> >>>>> It would; didn't know there was one.
+> >>>> 
+> >>>> Rather than scanning modules at all, what about hooking native_write_cr4()
+> >>>> to kill SLD if CR4.VMXE is toggled on and the caller didn't increment a
+> >>>> "sld safe" counter?
+> >>> 
+> >>> And then you're hoping that the module uses that and not:
+> >>> 
+> >>>  asm volatile ("mov %0, cr4" :: "r" (val));
+> >>> 
+> >>> I think I feel safer with the scanning to be fair. Also with the intree
+> >>> hint on, we can extend the scanning for out-of-tree modules for more
+> >>> dodgy crap we really don't want modules to do, like for example the
+> >>> above.
+> >> 
+> >> Ya, that's the big uknown.  But wouldn't they'd already be broken in the
+> >> sense that they'd corrupt the CR4 shadow?  E.g. setting VMXE without
+> >> updating cpu_tlbstate.cr4 would result in future in-kernel writes to CR4
+> >> attempting to clear CR4.VMXE post-VMXON, which would #GP.
+> > 
+> > Sadly the CR4 shadow is exported, so they can actually fix that up :/
+> 
+> I do not think that Sean’s idea would work for VMware.
 
-Thank you, Ilia
-
-I will try that on my Gentoo/Funtoo machine now. So far linux-firmware
-was not needed with Kernel 5.5, so it was not installed on my machine.
-
-[ please CC me ]
-
-Best
-Zeno
+Well phooey.
