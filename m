@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FEE819D8DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0761219D8DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390940AbgDCOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:19:42 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:42988 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728178AbgDCOTm (ORCPT
+        id S2390988AbgDCOUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:20:31 -0400
+Received: from www62.your-server.de ([213.133.104.62]:40646 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727927AbgDCOUa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:19:42 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 033EJcjW064402;
-        Fri, 3 Apr 2020 09:19:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1585923578;
-        bh=Qx+iAMwdWP0VkygxXbbv0T3XL5ZlN3V0BBEuiiFMFH0=;
-        h=From:To:CC:Subject:Date;
-        b=PSsWlQDiAC2SDtA4NKcu6ffbwfyMtrh4bS0DPFaBawr4M4idYai2KENryGe7xPeNt
-         dJM9ptHQkRdhIXt6WUnudjxn5RIBdphApKGetPG5uDMQckHCBTZroWg4g32qTB6IJ7
-         OSspylyU1sUz9xVIUz1G1GLtiBk/RF8NMybMHtOA=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 033EJcQP064141
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 3 Apr 2020 09:19:38 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 3 Apr
- 2020 09:19:38 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Fri, 3 Apr 2020 09:19:38 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033EJaPO092261;
-        Fri, 3 Apr 2020 09:19:36 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <vkoul@kernel.org>
-CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <dan.j.williams@intel.com>, <torvalds@linux-foundation.org>
-Subject: [PATCH] dmaengine: ti: k3-udma: Drop COMPILE_TEST for the drivers for now
-Date:   Fri, 3 Apr 2020 17:19:50 +0300
-Message-ID: <20200403141950.9359-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.26.0
+        Fri, 3 Apr 2020 10:20:30 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.89_1)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jKNBJ-0007Yy-8S; Fri, 03 Apr 2020 16:20:25 +0200
+Received: from [178.195.186.98] (helo=pc-9.home)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1jKNBI-000EqM-Uq; Fri, 03 Apr 2020 16:20:24 +0200
+Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
+ function"
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        bgregg@netflix.com
+References: <20200403133533.GA3424@infradead.org>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
+Date:   Fri, 3 Apr 2020 16:20:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20200403133533.GA3424@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25770/Thu Apr  2 14:58:54 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not possible to compile test the UDMA stack right now due to
-dependencies to T_SCI_PROTOCOL and TI_SCI_INTA_IRQCHIP and their
-dependencies.
+Hi Christoph,
 
-Remove the COMPILE_TEST until it is actually possible to compile test the
-drivers.
+On 4/3/20 3:35 PM, Christoph Hellwig wrote:
+[...]
+> I just stumbled over your above commit, and it really confuses me.
+> 
+> Not the newly added functions, which seems perfectly sane, but why you
+> left the crazy old functions in place instead of investing a little
+> bit of extra effort to clean the existing mess up and switch everyone
+> to the sane new variants?
 
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/dma/ti/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+With crazy old functions I presume you mean the old bpf_probe_read()
+which is mapped to BPF_FUNC_probe_read helper or something else entirely?
 
-diff --git a/drivers/dma/ti/Kconfig b/drivers/dma/ti/Kconfig
-index f76e06651f80..79618fac119a 100644
---- a/drivers/dma/ti/Kconfig
-+++ b/drivers/dma/ti/Kconfig
-@@ -36,7 +36,7 @@ config DMA_OMAP
- 
- config TI_K3_UDMA
- 	bool "Texas Instruments UDMA support"
--	depends on ARCH_K3 || COMPILE_TEST
-+	depends on ARCH_K3
- 	depends on TI_SCI_PROTOCOL
- 	depends on TI_SCI_INTA_IRQCHIP
- 	select DMA_ENGINE
-@@ -49,7 +49,7 @@ config TI_K3_UDMA
- 
- config TI_K3_UDMA_GLUE_LAYER
- 	bool "Texas Instruments UDMA Glue layer for non DMAengine users"
--	depends on ARCH_K3 || COMPILE_TEST
-+	depends on ARCH_K3
- 	depends on TI_K3_UDMA
- 	help
- 	  Say y here to support the K3 NAVSS DMA glue interface
--- 
-Peter
+For the former, basically my main concern was that these would otherwise
+break existing tools like bcc/bpftrace/.. unfortunately until they are not
+converted over yet to _strict variants.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+At least on x86, they would still rely on the broken semantic to probe
+kernel and user memory with probe_read where it 'happens to work', but not
+on other archs where the address space is not shared.
 
+But once these are fixed, I would love to deprecate these in one way or
+another. The warning in 00c42373d397 ("x86-64: add warning for non-canonical
+user access address dereferences") should be a good incentive to switch
+since people have been hitting it in production as the non-canonical space
+is sometimes used in user space to tag pointers, for example.
+
+Thanks,
+Daniel
