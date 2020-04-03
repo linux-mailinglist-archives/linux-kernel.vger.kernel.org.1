@@ -2,141 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B80C819D5AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:19:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6345119D5B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:19:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390760AbgDCLTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 07:19:03 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5400 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728023AbgDCLTD (ORCPT
+        id S2390777AbgDCLTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 07:19:43 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:38814 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728066AbgDCLTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 07:19:03 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 033BF6Ro020188
-        for <linux-kernel@vger.kernel.org>; Fri, 3 Apr 2020 04:19:02 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=vFXE1v1dpXNsso07ONV8QkrZjI6HvkS+wYQRkAeyH5w=;
- b=YKTjNsZtRPZXqyyfQsUiDPNgUF+gRzzHE1nbzzeV/ETTWDmwEucDLFziBFJJ3tnuqByK
- VmzixDuzhulmoyNSal4oNuj+TxngC6Qp9UeAYm4bLiufhhAEao03xI4oTsP8rw6JBbAt
- bR62pWykFm6OtFQJlhaFr0OBdl0MS8y6qDE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 305upk9tx1-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 04:19:02 -0700
-Received: from intmgw001.08.frc2.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 3 Apr 2020 04:18:49 -0700
-Received: by devbig020.ftw1.facebook.com (Postfix, from userid 179119)
-        id E2A1358C06B4; Fri,  3 Apr 2020 04:18:47 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Aslan Bakirov <aslan@fb.com>
-Smtp-Origin-Hostname: devbig020.ftw1.facebook.com
-To:     <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, <riel@surriel.com>, <guro@fb.com>,
-        <mhocko@kernel.org>, <hannes@cmpxchg.org>,
-        Aslan Bakirov <aslan@fb.com>, Michal Hocko <mhocko@suse.com>
-Smtp-Origin-Cluster: ftw1c07
-Subject: [PATCH 2/2] mm: hugetlb: Use node interface of cma
-Date:   Fri, 3 Apr 2020 04:18:12 -0700
-Message-ID: <20200403111812.705955-2-aslan@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200403111812.705955-1-aslan@fb.com>
-References: <20200403111812.705955-1-aslan@fb.com>
+        Fri, 3 Apr 2020 07:19:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:
+        From:Date:Sender:Reply-To:Content-ID:Content-Description;
+        bh=beMmNjLaey68i4T8yERipXx8YLgggyVjmRR12qNqb6k=; b=PP2DPp4NIT2zHNY2CCfe1S4Hym
+        btBz0EIpxs9n+QsVzjoxx84RauiDdhXR5t8Bexfjs7lsVQi3DZba10YP7WGtXQ3bCbsvQbdTHL7G+
+        HQCYcV4pCt/LrX4EOc1cydfSQzUn6vEnAPE9mbY1l/a5yTrCZQWTnTogh8tXxmlT3jJ0sZ600JgQt
+        yMiKT/D2cUsTPpnIvpq3uv9fN9NPPtCJYyr14NUzfcBNwvsKD+bE9ud86yzPsBhBqQWCUNhB6mr6G
+        rwoQ9jShaGyazX7N8i3E2NpHqkAmHxTYVR7vfg2386miIlYx49En+S50Ohimu2xdsWk6tds7KLjyM
+        kKkUT4gw==;
+Received: from ip5f5ad4d8.dynamic.kabel-deutschland.de ([95.90.212.216] helo=coco.lan)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jKKMI-00084w-Gt; Fri, 03 Apr 2020 11:19:34 +0000
+Date:   Fri, 3 Apr 2020 13:19:26 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+Message-ID: <20200403131926.7caf3288@coco.lan>
+In-Reply-To: <20200403104701.GC3172@kekkonen.localdomain>
+References: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
+        <20200403102449.GB4882@pendragon.ideasonboard.com>
+        <20200403104701.GC3172@kekkonen.localdomain>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-03_07:2020-04-02,2020-04-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- bulkscore=0 mlxscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 spamscore=0 suspectscore=1 mlxlogscore=999 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004030099
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With introduction of numa node interface for CMA, this patch is for using
-that interface for allocating memory on numa nodes if NUMA is configured.
-This will be more efficient  and cleaner because first, instead of
-iterating mem range of each numa node, cma_declare_contigueous_nid()
-will do its own address finding if we pass 0 for  both min_pfn and
-max_pfn, second, it can also handle caseswhere NUMA is not configured
-by passing NUMA_NO_NODE as an argument.
+Em Fri, 3 Apr 2020 13:47:02 +0300
+Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
 
-In addition, checking if desired size of memory is available or not,
-is happening in cma_declare_contiguous_nid()  because base and
-limit will be determined there, since 0(any) for  base and
-0(any) for limit is passed as argument to the function.
+> > > +static noinline_for_stack
+> > > +char *fourcc_string(char *buf, char *end, const u32 *fourcc,
+> > > +		    struct printf_spec spec, const char *fmt)
+> > > +{
+> > > +#define FOURCC_STRING_BE	"-BE"
+> > > +	char s[sizeof(*fourcc) + sizeof(FOURCC_STRING_BE)] = { 0 };
+> > > +
+> > > +	if (check_pointer(&buf, end, fourcc, spec))
+> > > +		return buf;
+> > > +
+> > > +	if (fmt[1] != 'c' || fmt[2] != 'c')
+> > > +		return error_string(buf, end, "(%p4?)", spec);
+> > > +
+> > > +	put_unaligned_le32(*fourcc & ~BIT(31), s);
+> > > +
+> > > +	if (*fourcc & BIT(31))
+> > > +		strscpy(s + sizeof(*fourcc), FOURCC_STRING_BE,
+> > > +			sizeof(FOURCC_STRING_BE));
+> > > +
+> > > +	return string(buf, end, s, spec);  
+> > 
+> > Taking V4L2_PIX_FMT_Y16_BE as an example, this will print 'Y16 -BE'
+> > (without quotes). There are other 4CCs that contain spaces and would
+> > suffer from a similar issue. Even in little-endian format, it would
+> > result in additional spaces in the output string. Is this what we want ?
+> > Should the caller always enclose the 4CC in quotes or brackets for
+> > clarity ? Or should still be done here ?  
+> 
+> Good question. Space is indeed a valid character in a 4cc code.
+> 
+> If I omit one or more spaces, it will no longer be a 4cc, but a 3cc or even
+> a 2cc. Jokes aside, there are probably fair arguments both ways.
+> 
+> I presume there's no 4cc code where the location of a space would make a
+> difference but all of the spaces are trailing spaces.
 
-Signed-off-by: Aslan Bakirov <aslan@fb.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- mm/hugetlb.c | 34 ++++++----------------------------
- 1 file changed, 6 insertions(+), 28 deletions(-)
+Yes. I guess it doesn't make any sense to allow a 4cc code with an
+space before or in the middle.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index b9f0c903c4cf..8fbf11de747b 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5573,42 +5573,20 @@ void __init hugetlb_cma_reserve(int order)
-=20
- 	reserved =3D 0;
- 	for_each_node_state(nid, N_ONLINE) {
--		unsigned long min_pfn =3D 0, max_pfn =3D 0;
- 		int res;
--#ifdef CONFIG_NUMA
--		unsigned long start_pfn, end_pfn;
--		int i;
-=20
--		for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
--			if (!min_pfn)
--				min_pfn =3D start_pfn;
--			max_pfn =3D end_pfn;
--		}
--#else
--		min_pfn =3D min_low_pfn;
--		max_pfn =3D max_low_pfn;
--#endif
- 		size =3D min(per_node, hugetlb_cma_size - reserved);
- 		size =3D round_up(size, PAGE_SIZE << order);
-=20
--		if (size > ((max_pfn - min_pfn) << PAGE_SHIFT) / 2) {
--			pr_warn("hugetlb_cma: cma_area is too big, please try less than %lu M=
-iB\n",
--				round_down(((max_pfn - min_pfn) << PAGE_SHIFT) *
--					   nr_online_nodes / 2 / SZ_1M,
--					   PAGE_SIZE << order));
--			break;
--		}
--
--		res =3D cma_declare_contiguous(PFN_PHYS(min_pfn), size,
--					     PFN_PHYS(max_pfn),
-+		res =3D cma_declare_contiguous_nid(0, size,
-+					     0,
- 					     PAGE_SIZE << order,
- 					     0, false,
--					     "hugetlb", &hugetlb_cma[nid]);
-+					     "hugetlb", &hugetlb_cma[nid], nid);
-+
- 		if (res) {
--			phys_addr_t begpa =3D PFN_PHYS(min_pfn);
--			phys_addr_t endpa =3D PFN_PHYS(max_pfn);
--			pr_warn("%s: reservation failed: err %d, node %d, [%pap, %pap)\n",
--				__func__, res, nid, &begpa, &endpa);
-+			pr_warn("%s: reservation failed: err %d, node %d\n",
-+				__func__, res, nid);
- 			break;
- 		}
-=20
---=20
-2.24.1
+Btw, on a quick search at the Internet for non-Linux definitions,
+a Fourcc code "Y8  " is actually shown at the lists as just "Y8", 
+e. g. removing the leading spaces:
 
+	https://www.fourcc.org/codecs.php
+	http://abcavi.kibi.ru/fourcc.php
+	https://softron.zendesk.com/hc/en-us/articles/207695697-List-of-FourCC-codes-for-video-codecs
+	https://www.free-codecs.com/guides/guides.php?f=fourcc
+
+One interesting detail there is that some tables show some codes 
+like "BGR(15)". While I'm not sure how this is encoded, I suspect
+that the fourcc is actually "BGR\x15".
+
+We don't do that on V4L, nor we have plans to do so. Not sure if
+DRM would accept something like that. Of so, then the logic should
+have some special handler if the code is below 32.	
+
+> It's also worth noting that the formats printed are mostly for debugging
+> purpose and thus even getting a hypothetical case wrong is not a grave
+> issue. This would also support just printing them as-is though.
+> 
+> I'm leaning slightly towards omitting any spaces if the code has them. 
+
+I would just remove trailing spaces, and then use a loop from the end
+to remove trailing spaces (and optionally handle codes ending with a
+value below 32, if are there any such case with DRM fourcc codes).
+
+On the other hand, I don't mind if you prefer to use just one for()
+loop and just trip any spaces inside it.
+
+> This is something that couldn't be done by using a macro...
+
+Well, I suspect that it might be possible to write a macro
+for doing that too, for example using preprocessor concatenation
+logic that could produce the same results. If you do something 
+like that, however, I suspect that te macro would face some 
+portability issues, as, as far as I know, not all C compilers
+would handle string concatenation the same way.
+
+Thanks,
+Mauro
