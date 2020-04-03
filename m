@@ -2,107 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEF619DDBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2981C19DDC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390910AbgDCSS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 14:18:29 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:41454 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728424AbgDCSS3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 14:18:29 -0400
-Received: by mail-lj1-f193.google.com with SMTP id n17so7916671lji.8
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 11:18:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8w2DZREDGtv4u783aIEwSYFiP7LUWQnaQXmT8Zgv0No=;
-        b=GYSv3okMFKQstt5b0sUydEEQWFlqxI1B9B/kGugDsF3QEuULIMbHv/WWwB2JEjtT7R
-         XQ5QOWXmOTvzdoYcxmCtnUSpTHHps8ROagnfQklUeIAkoNDpT0sgWVWVs4aibzeed6q9
-         QYKZuuPA7RunRaRsd2alE/ukJz3WQJbn600xW0uQm0jwB6N6OkZNlm5s6kEChdSeBOKq
-         1xAAaG71g73aM67UXDF77Wy5SH9GqjT7SYjg0wQraoWVorcVhoFtiqce8/64ocGkRnZz
-         P0xhV53nrf15qM9avJXZjSJLji6Yc/xoReMrXYfnAVvKn7pkX5bRc+8t9GPso0TC220a
-         vaMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8w2DZREDGtv4u783aIEwSYFiP7LUWQnaQXmT8Zgv0No=;
-        b=BJ+2EOLnDbK3H3WqNVCm0ft7KJuVTTlG6xHk7v3sad/MI9GKIRexFJRBKYzNvjBxzx
-         0XBp8uzkhgS/bWPouCQ83A2uu8av44rV1WtwgbKuOEBf7zb+26p8vsfv17tgBOW28cHW
-         11zeioT7KylFhupNoI0YwMPcC76pa3I+7PDLokeAjtgz4+3wqPhsdhWlX2ooxIWsO5HX
-         73jstoYkCUmTwh9f05Ax69KUb0dIBpDy22TIaGw2EXq49gSvQrzJavmFazZSQ+F/ptF1
-         kRjusvFwONBmyHxlTQF7/b4JzJrbesdZnZ5vW+JbDuGRYkyr1V1/XAnQxa4jEelqg8QN
-         2w4g==
-X-Gm-Message-State: AGi0PuZbnxxGeousA9Oc3JWtwLboJvuwJCi9Qo7UoWja6E1a9uy3obNd
-        M6RVdHUMFg9xoNh8zb6Iq4c=
-X-Google-Smtp-Source: APiQypKLE9bDigNrm1TkyiBTBx41I7lWdIZY8TUFAxEtzo7WfV7MdkiCAvj43xdheZynjqbkmNvB+A==
-X-Received: by 2002:a2e:3a16:: with SMTP id h22mr5207330lja.81.1585937906962;
-        Fri, 03 Apr 2020 11:18:26 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id e20sm5602045ljn.107.2020.04.03.11.18.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 11:18:26 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Fri, 3 Apr 2020 20:18:18 +0200
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, jroedel@suse.de,
-        vbabka@suse.cz, urezki@gmail.com,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] mm/vmalloc: Sanitize __get_vm_area() arguments
-Message-ID: <20200403181818.GA5538@pc636>
-References: <20200403163253.GU20730@hirez.programming.kicks-ass.net>
+        id S2391100AbgDCSSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 14:18:46 -0400
+Received: from mga05.intel.com ([192.55.52.43]:46924 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391040AbgDCSSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 14:18:45 -0400
+IronPort-SDR: PXRSSESXKYEEHYvhIDI+FS1Io+l8lhYHSnMly4Gq7LO2yI5l7EEGr/hbloUkJmo+OZFivodHfM
+ xVLwUN0X0Rgg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 11:18:44 -0700
+IronPort-SDR: V0VLOAw+LUrgIbQPN4Z4zGQxldZS1U1Mpe8InN/iTYip2KU0gw6OiS1fNLpsLBcZOk70tvoDXx
+ bSl4qi4+Qc5Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; 
+   d="scan'208";a="242873358"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga008.fm.intel.com with ESMTP; 03 Apr 2020 11:18:43 -0700
+Date:   Fri, 3 Apr 2020 11:18:43 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
+Message-ID: <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
+References: <CAPcyv4h9Xg61jk=Uq17xC6AGj9yOSAJnCaTzHcfBZwOVdRF9dw@mail.gmail.com>
+ <20200316095224.GF12783@quack2.suse.cz>
+ <20200316095509.GA13788@lst.de>
+ <20200401040021.GC56958@magnolia>
+ <20200401102511.GC19466@quack2.suse.cz>
+ <20200402085327.GA19109@lst.de>
+ <20200402205518.GF3952565@iweiny-DESK2.sc.intel.com>
+ <20200403072731.GA24176@lst.de>
+ <20200403154828.GJ3952565@iweiny-DESK2.sc.intel.com>
+ <20200403170338.GD29920@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200403163253.GU20730@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200403170338.GD29920@quack2.suse.cz>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 06:32:53PM +0200, Peter Zijlstra wrote:
+On Fri, Apr 03, 2020 at 07:03:38PM +0200, Jan Kara wrote:
+> On Fri 03-04-20 08:48:29, Ira Weiny wrote:
+> > On Fri, Apr 03, 2020 at 09:27:31AM +0200, Christoph Hellwig wrote:
+> > > On Thu, Apr 02, 2020 at 01:55:19PM -0700, Ira Weiny wrote:
+> > > > > I'd just return an error for that case, don't play silly games like
+> > > > > evicting the inode.
+> > > > 
+> > > > I think I agree with Christoph here.  But I want to clarify.  I was heading in
+> > > > a direction of failing the ioctl completely.  But we could have the flag change
+> > > > with an appropriate error which could let the user know the change has been
+> > > > delayed.
+> > > > 
+> > > > But I don't immediately see what error code is appropriate for such an
+> > > > indication.  Candidates I can envision:
+> > > > 
+> > > > EAGAIN
+> > > > ERESTART
+> > > > EUSERS
+> > > > EINPROGRESS
+> > > > 
+> > > > None are perfect but I'm leaning toward EINPROGRESS.
+> > > 
+> > > I really, really dislike that idea.  The whole point of not forcing
+> > > evictions is to make it clear - no this inode is "busy" you can't
+> > > do that.  A reasonably smart application can try to evict itself.
+> > 
+> > I don't understand.  What Darrick proposed would never need any
+> > evictions.  If the file has blocks allocated the FS_XFLAG_DAX flag can
+> > not be changed.  So I don't see what good eviction would do at all.
 > 
-> __get_vm_area() is an exported symbol, make sure the callers stay in
-> the expected memory range. When calling this function with memory
-> ranges outside of the VMALLOC range *bad* things can happen.
+> I guess there's some confusion here (may well be than on my side). Darrick
+> propose that we can switch FS_XFLAG_DAX only when file has no blocks
+> allocated - fine by me. But that still does not mean than we can switch
+> S_DAX immediately, does it? Because that would still mean we need to switch
+> aops on living inode and that's ... difficult and Christoph didn't want to
+> clutter the code with it.
 > 
-> (I noticed this when I managed to corrupt the kernel text by accident)
+> So I've understood Darrick's proposal as: Just switch FS_XFLAG_DAX flag,
+> S_DAX flag will magically switch when inode gets evicted and the inode gets
+> reloaded from the disk again. Did I misunderstand anything?
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  mm/vmalloc.c |    7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2130,6 +2130,13 @@ static struct vm_struct *__get_vm_area_n
->  struct vm_struct *__get_vm_area(unsigned long size, unsigned long flags,
->  				unsigned long start, unsigned long end)
->  {
-> +	/*
-> +	 * Ensure callers stay in the vmalloc range.
-> +	 */
-> +	if (WARN_ON(start < VMALLOC_START || start > VMALLOC_END ||
-> +		    end < VMALLOC_START || end > VMALLOC_END))
-> +		return NULL;
-> +
->  	return __get_vm_area_node(size, 1, flags, start, end, NUMA_NO_NODE,
->  				  GFP_KERNEL, __builtin_return_address(0));
->  }
-Peter, could you please clarify what kind of issues you had and how you
-tested?
+> And my thinking was that this is surprising behavior for the user and so it
+> will likely generate lots of bug reports along the lines of "DAX inode flag
+> does not work!". So I was pondering how to make the behavior less
+> confusing... The ioctl I've suggested was just a poor attempt at that.
 
-__get_vm_area() is not limited by allocating only with vmalloc space,
-it can use whole virtual address space/range, i.e. 1 - ULONG_MAX.
+Ok but then I don't understand Christophs comment to "just return an error for
+that case"?  Which case?
 
-Though, i am not sure if there are users(who uses __get_vm_area())
-which allocate outside of vmalloc address space.
+> 
+> > > But returning an error and doing a lazy change anyway is straight from
+> > > the playbook for arcane and confusing API designs.
+> > 
+> > Jan countered with a proposal that the FS_XFLAG_DAX does change with
+> > blocks allocated.  But that S_DAX would change on eviction.  Adding that
+> > some eviction ioctl could be added.
+> 
+> No, I didn't mean that we can change FS_XFLAG_DAX with blocks allocated. I
+> was still speaking about the case without blocks allocated.
 
---
-Vlad Rezki
+Ah ok good point.  But again what 'error' do we return when FS_XFLAG_DAX
+changed but S_DAX did not?
+
+> 
+> > You then proposed just returning an error for that case.  (This lead me to
+> > believe that you were ok with an eviction based change of S_DAX.)
+> > 
+> > So I agreed that changing S_DAX could be delayed until an explicit eviction.
+> > But, to aid the 'smart application', a different error code could be used to
+> > indicate that the FS_XFLAG_DAX had been changed but that until that explicit
+> > eviction occurs S_DAX would remain.
+> > 
+> > So I don't fully follow what you mean by 'lazy change'?
+> > 
+> > Do you still really, really dislike an explicit eviction method for changing
+> > the S_DAX flag?
+> > 
+> > If FS_XFLAG_DAX can never be changed on a file with blocks allocated and the
+> > user wants to change the mode of operations on their 'data'; they would have to
+> > create a new file with the proper setting and move the data there.  For example
+> > copy the file into a directory marked FS_XFLAG_DAX==true?
+> > 
+> > I'm ok with either interface as I think both could be clear if documented.
+> 
+> I agree that what Darrick suggested is technically easily doable and can be
+> documented. But it is not natural behavior (i.e., different than all inode
+> flags we have) and we know how careful people are when reading
+> documentation...
+> 
+
+Ok For 5.8 why don't we not allow FS_XFLAG_DAX to be changed on files _at_
+_all_...
+
+In summary:
+
+ - Applications must call statx to discover the current S_DAX state.
+
+ - There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
+   the parent directory FS_XFLAG_DAX inode flag.  (There is no way to change
+   this flag after file creation.)
+
+   If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
+   inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
+   Unless overridden...
+
+ - There exists a dax= mount option.
+
+   "-o dax=off" means "never set S_DAX, ignore FS_XFLAG_DAX"
+   	"-o nodax" means "dax=off"
+   "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
+   	"-o dax" by itself means "dax=always"
+   "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
+
+ - There exists an advisory directory inode flag FS_XFLAG_DAX that can be
+   changed at any time.  The flag state is copied into any files or
+   subdirectories when they are created within that directory.  If programs
+   require file access runs in S_DAX mode, they'll have to create those files
+   inside a directory with FS_XFLAG_DAX set, or mount the fs with an
+   appropriate dax mount option.
+
+
+???
+
+Ira
+
