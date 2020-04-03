@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CF819D309
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3386119D31C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390668AbgDCJCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 05:02:31 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8821 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgDCJCb (ORCPT
+        id S2390595AbgDCJFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 05:05:41 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:48056 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727774AbgDCJFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 05:02:31 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app06-12006 (RichMail) with SMTP id 2ee65e86fb91319-74293; Fri, 03 Apr 2020 17:02:09 +0800 (CST)
-X-RM-TRANSID: 2ee65e86fb91319-74293
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea5e86fb8e2e1-42d70;
-        Fri, 03 Apr 2020 17:02:08 +0800 (CST)
-X-RM-TRANSID: 2eea5e86fb8e2e1-42d70
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     narmstrong@baylibre.com, clabbe@baylibre.com,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc:     linux-crypto@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] [PATCH v3]crypto: amlogic - Delete duplicate dev_err in meson_crypto_probe()
-Date:   Fri,  3 Apr 2020 17:03:36 +0800
-Message-Id: <20200403090336.13796-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Fri, 3 Apr 2020 05:05:40 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0TuV87rs_1585904649;
+Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0TuV87rs_1585904649)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 03 Apr 2020 17:04:15 +0800
+From:   Wen Yang <wenyang@linux.alibaba.com>
+To:     Corey Minyard <minyard@acm.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Wen Yang <wenyang@linux.alibaba.com>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ipmi: fix hung processes in __get_guid()
+Date:   Fri,  3 Apr 2020 17:04:08 +0800
+Message-Id: <20200403090408.58745-1-wenyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When something goes wrong, platform_get_irq() will print an error message,
-so in order to avoid the situation of repeat output，we should remove
-dev_err here.
+The wait_event() function is used to detect command completion.
+When send_guid_cmd() returns an error, smi_send() has not been
+called to send data. Therefore, wait_event() should not be used
+on the error path, otherwise it will cause the following warning:
 
-Changes from v2:
- - modify the theme format and content description.
- - reformat the patch, it's the wrong way to resubmit a new patch that
-   should be modified on top of the original. The original piece is:
-   https://lore.kernel.org/patchwork/patch/1219611/
+[ 1361.588808] systemd-udevd   D    0  1501   1436 0x00000004
+[ 1361.588813]  ffff883f4b1298c0 0000000000000000 ffff883f4b188000 ffff887f7e3d9f40
+[ 1361.677952]  ffff887f64bd4280 ffffc90037297a68 ffffffff8173ca3b ffffc90000000010
+[ 1361.767077]  00ffc90037297ad0 ffff887f7e3d9f40 0000000000000286 ffff883f4b188000
+[ 1361.856199] Call Trace:
+[ 1361.885578]  [<ffffffff8173ca3b>] ? __schedule+0x23b/0x780
+[ 1361.951406]  [<ffffffff8173cfb6>] schedule+0x36/0x80
+[ 1362.010979]  [<ffffffffa071f178>] get_guid+0x118/0x150 [ipmi_msghandler]
+[ 1362.091281]  [<ffffffff810d5350>] ? prepare_to_wait_event+0x100/0x100
+[ 1362.168533]  [<ffffffffa071f755>] ipmi_register_smi+0x405/0x940 [ipmi_msghandler]
+[ 1362.258337]  [<ffffffffa0230ae9>] try_smi_init+0x529/0x950 [ipmi_si]
+[ 1362.334521]  [<ffffffffa022f350>] ? std_irq_setup+0xd0/0xd0 [ipmi_si]
+[ 1362.411701]  [<ffffffffa0232bd2>] init_ipmi_si+0x492/0x9e0 [ipmi_si]
+[ 1362.487917]  [<ffffffffa0232740>] ? ipmi_pci_probe+0x280/0x280 [ipmi_si]
+[ 1362.568219]  [<ffffffff810021a0>] do_one_initcall+0x50/0x180
+[ 1362.636109]  [<ffffffff812231b2>] ? kmem_cache_alloc_trace+0x142/0x190
+[ 1362.714330]  [<ffffffff811b2ae1>] do_init_module+0x5f/0x200
+[ 1362.781208]  [<ffffffff81123ca8>] load_module+0x1898/0x1de0
+[ 1362.848069]  [<ffffffff811202e0>] ? __symbol_put+0x60/0x60
+[ 1362.913886]  [<ffffffff8130696b>] ? security_kernel_post_read_file+0x6b/0x80
+[ 1362.998514]  [<ffffffff81124465>] SYSC_finit_module+0xe5/0x120
+[ 1363.068463]  [<ffffffff81124465>] ? SYSC_finit_module+0xe5/0x120
+[ 1363.140513]  [<ffffffff811244be>] SyS_finit_module+0xe/0x10
+[ 1363.207364]  [<ffffffff81003c04>] do_syscall_64+0x74/0x180
 
-Changes from v1:
- - the title has changed, because the description is not very detailed.
- - the code has been modified, because it needs to match the theme.
-
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+Fixes: 50c812b2b951 ("[PATCH] ipmi: add full sysfs support")
+Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
+Cc: Corey Minyard <minyard@acm.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: openipmi-developer@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 ---
- drivers/crypto/amlogic/amlogic-gxl-core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/char/ipmi/ipmi_msghandler.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/amlogic/amlogic-gxl-core.c b/drivers/crypto/amlogic/amlogic-gxl-core.c
-index 37901bd81..c2fa442c5 100644
---- a/drivers/crypto/amlogic/amlogic-gxl-core.c
-+++ b/drivers/crypto/amlogic/amlogic-gxl-core.c
-@@ -253,10 +253,8 @@ static int meson_crypto_probe(struct platform_device *pdev)
- 	mc->irqs = devm_kcalloc(mc->dev, MAXFLOW, sizeof(int), GFP_KERNEL);
- 	for (i = 0; i < MAXFLOW; i++) {
- 		mc->irqs[i] = platform_get_irq_optional(pdev, i);
--		if (mc->irqs[i] < 0) {
--			dev_err(mc->dev, "Cannot get IRQ for flow %d\n", i);
-+		if (mc->irqs[i] < 0)
- 			return mc->irqs[i];
--		}
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 64ba16dcb681..c48d8f086382 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -3193,8 +3193,8 @@ static void __get_guid(struct ipmi_smi *intf)
+ 	if (rv)
+ 		/* Send failed, no GUID available. */
+ 		bmc->dyn_guid_set = 0;
+-
+-	wait_event(intf->waitq, bmc->dyn_guid_set != 2);
++	else
++		wait_event(intf->waitq, bmc->dyn_guid_set != 2);
  
- 		err = devm_request_irq(&pdev->dev, mc->irqs[i], meson_irq_handler, 0,
- 				       "gxl-crypto", mc);
+ 	/* dyn_guid_set makes the guid data available. */
+ 	smp_rmb();
 -- 
-2.20.1.windows.1
-
-
+2.23.0
 
