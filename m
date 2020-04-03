@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 945AD19CF77
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2EA19CF78
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387849AbgDCEm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:42:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42758 "EHLO mail.kernel.org"
+        id S2387916AbgDCEma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:42:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733014AbgDCEmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:42:24 -0400
+        id S2387538AbgDCEm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 00:42:26 -0400
 Received: from localhost.localdomain (unknown [223.93.147.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10C60206F8;
-        Fri,  3 Apr 2020 04:42:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDA56208E4;
+        Fri,  3 Apr 2020 04:42:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585888943;
-        bh=eDMGsS8rCCafqR0Hvq3T985K4ful1PBILGdwRvtShD4=;
+        s=default; t=1585888944;
+        bh=gxsBGPQ+SZjadnosE9PH6kn6/CmHIYOSBaUfziJ2gCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yR/Xn1GJ92kv6mN8GJux0575VaW2rR3asB8dBe0lrRdFWqxMolDET0bG6R06oAs02
-         t/HeHwLPCKpBHL4agekKXwjr1e+bDnWbSB3iXuyWeMizaJ76zbiWUcMBD3K+NtITgx
-         a5dHoPzQ5spVuS5UqDxigrwOwlUs8w5dAY+1hSgI=
+        b=1exV2ULqjgpzcea1QaOsLCmwQn2Z7RnPLffxfDolYfBDR9KNIDmVN0s4B3RzMsicr
+         TComG5jI9nMKvfP8X/AL5KmOgw/GU9pdEEprhMIRTbwgoX4nm3dJ1X2j3ulfOvFo0S
+         WBMU8K2AcwE5RzZO3lkJMu46zqRr6yc8WdKSaCEk=
 From:   guoren@kernel.org
 To:     arnd@arndb.de
 Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 10/11] csky: Add uprobes support
-Date:   Fri,  3 Apr 2020 12:41:49 +0800
-Message-Id: <20200403044150.20562-10-guoren@kernel.org>
+        Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH 11/11] csky: Fixup cpu speculative execution to IO area
+Date:   Fri,  3 Apr 2020 12:41:50 +0800
+Message-Id: <20200403044150.20562-11-guoren@kernel.org>
 X-Mailer: git-send-email 2.17.0
 In-Reply-To: <20200403044150.20562-1-guoren@kernel.org>
 References: <20200403044150.20562-1-guoren@kernel.org>
@@ -41,319 +40,205 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-This patch adds support for uprobes on csky architecture.
+For the memory size ( > 512MB, < 1GB), the MSA setting is:
 
-Just like kprobe, it support single-step and simulate instructions.
+ - SSEG0: PHY_START        , PHY_START + 512MB
+ - SSEG1: PHY_START + 512MB, PHY_START + 1GB
+
+But the real memory is no more than 1GB, there is a gap between the
+end size of memory and border of 1GB. CPU could speculatively
+execute to that gap and if the gap of the bus couldn't respond to
+the CPU request, then the crash will happen.
+
+Now make the setting with:
+
+ - SSEG0: PHY_START        , PHY_START + 512MB (no change)
+ - SSEG1: Disabled (We use highmem to use the memory of 512MB~1GB)
+
+We also deprecated zhole_szie[] settings, it's only used by arm
+style CPUs. All memory gap should use Reserved setting of dts in
+csky system.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
 ---
- arch/csky/Kconfig                   |   3 +
- arch/csky/include/asm/thread_info.h |   2 +
- arch/csky/include/asm/uprobes.h     |  33 ++++++
- arch/csky/kernel/entry.S            |   2 +-
- arch/csky/kernel/probes/Makefile    |   1 +
- arch/csky/kernel/probes/uprobes.c   | 150 ++++++++++++++++++++++++++++
- arch/csky/kernel/signal.c           |   3 +
- arch/csky/kernel/traps.c            |   8 ++
- 8 files changed, 201 insertions(+), 1 deletion(-)
- create mode 100644 arch/csky/include/asm/uprobes.h
- create mode 100644 arch/csky/kernel/probes/uprobes.c
+ arch/csky/abiv1/inc/abi/entry.h |  5 +--
+ arch/csky/abiv2/inc/abi/entry.h |  7 ++--
+ arch/csky/kernel/head.S         |  5 +++
+ arch/csky/kernel/setup.c        | 63 ++++++++-------------------------
+ arch/csky/kernel/smp.c          |  3 ++
+ 5 files changed, 25 insertions(+), 58 deletions(-)
 
-diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index f76c333758ca..94545d50d40f 100644
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -75,6 +75,9 @@ config CSKY
- config LOCKDEP_SUPPORT
- 	def_bool y
+diff --git a/arch/csky/abiv1/inc/abi/entry.h b/arch/csky/abiv1/inc/abi/entry.h
+index f35a9f3315ee..5056ebb902d1 100644
+--- a/arch/csky/abiv1/inc/abi/entry.h
++++ b/arch/csky/abiv1/inc/abi/entry.h
+@@ -172,10 +172,7 @@
+ 	addi	r6, 0xe
+ 	cpwcr	r6, cpcr30
  
-+config ARCH_SUPPORTS_UPROBES
-+	def_bool y if !CPU_CK610
-+
- config CPU_HAS_CACHEV2
- 	bool
+-	lsri	r6, 28
+-	addi	r6, 2
+-	lsli	r6, 28
+-	addi	r6, 0xe
++	movi	r6, 0
+ 	cpwcr	r6, cpcr31
+ .endm
  
-diff --git a/arch/csky/include/asm/thread_info.h b/arch/csky/include/asm/thread_info.h
-index 0b546a55a8bf..442fedad0260 100644
---- a/arch/csky/include/asm/thread_info.h
-+++ b/arch/csky/include/asm/thread_info.h
-@@ -57,6 +57,7 @@ static inline struct thread_info *current_thread_info(void)
- #define TIF_SYSCALL_TRACE	3	/* syscall trace active */
- #define TIF_SYSCALL_TRACEPOINT	4       /* syscall tracepoint instrumentation */
- #define TIF_SYSCALL_AUDIT	5	/* syscall auditing */
-+#define TIF_UPROBE		6	/* uprobe breakpoint or singlestep */
- #define TIF_POLLING_NRFLAG	16	/* poll_idle() is TIF_NEED_RESCHED */
- #define TIF_MEMDIE		18      /* is terminating due to OOM killer */
- #define TIF_RESTORE_SIGMASK	20	/* restore signal mask in do_signal() */
-@@ -68,6 +69,7 @@ static inline struct thread_info *current_thread_info(void)
- #define _TIF_SYSCALL_TRACE	(1 << TIF_SYSCALL_TRACE)
- #define _TIF_SYSCALL_TRACEPOINT	(1 << TIF_SYSCALL_TRACEPOINT)
- #define _TIF_SYSCALL_AUDIT	(1 << TIF_SYSCALL_AUDIT)
-+#define _TIF_UPROBE		(1 << TIF_UPROBE)
- #define _TIF_POLLING_NRFLAG	(1 << TIF_POLLING_NRFLAG)
- #define _TIF_MEMDIE		(1 << TIF_MEMDIE)
- #define _TIF_RESTORE_SIGMASK	(1 << TIF_RESTORE_SIGMASK)
-diff --git a/arch/csky/include/asm/uprobes.h b/arch/csky/include/asm/uprobes.h
-new file mode 100644
-index 000000000000..600388eb93c6
---- /dev/null
-+++ b/arch/csky/include/asm/uprobes.h
-@@ -0,0 +1,33 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __ASM_CSKY_UPROBES_H
-+#define __ASM_CSKY_UPROBES_H
-+
-+#include <asm/probes.h>
-+
-+#define MAX_UINSN_BYTES		4
-+
-+#define UPROBE_SWBP_INSN	USR_BKPT
-+#define UPROBE_SWBP_INSN_SIZE	2
-+#define UPROBE_XOL_SLOT_BYTES	MAX_UINSN_BYTES
-+
-+typedef u32 uprobe_opcode_t;
-+
-+struct arch_uprobe_task {
-+	unsigned long   saved_trap_no;
-+};
-+
-+struct arch_uprobe {
-+	union {
-+		u8 insn[MAX_UINSN_BYTES];
-+		u8 ixol[MAX_UINSN_BYTES];
-+	};
-+	struct arch_probe_insn api;
-+	unsigned long insn_size;
-+	bool simulate;
-+};
-+
-+int uprobe_breakpoint_handler(struct pt_regs *regs);
-+int uprobe_single_step_handler(struct pt_regs *regs);
-+
-+#endif /* __ASM_CSKY_UPROBES_H */
-diff --git a/arch/csky/kernel/entry.S b/arch/csky/kernel/entry.S
-index 8b040a1b11d0..364819536f2e 100644
---- a/arch/csky/kernel/entry.S
-+++ b/arch/csky/kernel/entry.S
-@@ -221,7 +221,7 @@ ret_from_exception:
- 	andn	r9, r10
+diff --git a/arch/csky/abiv2/inc/abi/entry.h b/arch/csky/abiv2/inc/abi/entry.h
+index 6a404393d0f4..a99aff555a0a 100644
+--- a/arch/csky/abiv2/inc/abi/entry.h
++++ b/arch/csky/abiv2/inc/abi/entry.h
+@@ -290,11 +290,8 @@
+ 	addi	r6, 0x1ce
+ 	mtcr	r6, cr<30, 15> /* Set MSA0 */
  
- 	ldw	r12, (r9, TINFO_FLAGS)
--	andi	r12, (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED)
-+	andi	r12, (_TIF_SIGPENDING | _TIF_NOTIFY_RESUME | _TIF_NEED_RESCHED | _TIF_UPROBE)
- 	cmpnei	r12, 0
- 	bt	exit_work
- 1:
-diff --git a/arch/csky/kernel/probes/Makefile b/arch/csky/kernel/probes/Makefile
-index 3a857d081958..1c7c6e6cb25b 100644
---- a/arch/csky/kernel/probes/Makefile
-+++ b/arch/csky/kernel/probes/Makefile
-@@ -2,5 +2,6 @@
- obj-$(CONFIG_KPROBES)		+= kprobes.o decode-insn.o simulate-insn.o
- obj-$(CONFIG_KPROBES)		+= kprobes_trampoline.o
- obj-$(CONFIG_KPROBES_ON_FTRACE)	+= ftrace.o
-+obj-$(CONFIG_UPROBES)		+= uprobes.o decode-insn.o simulate-insn.o
+-	lsri	r6, 28
+-	addi	r6, 2
+-	lsli	r6, 28
+-	addi	r6, 0x1ce
+-	mtcr	r6, cr<31, 15> /* Set MSA1 */
++	movi    r6, 0
++	mtcr	r6, cr<31, 15> /* Clr MSA1 */
  
- CFLAGS_REMOVE_simulate-insn.o = $(CC_FLAGS_FTRACE)
-diff --git a/arch/csky/kernel/probes/uprobes.c b/arch/csky/kernel/probes/uprobes.c
-new file mode 100644
-index 000000000000..b3a56c260e3e
---- /dev/null
-+++ b/arch/csky/kernel/probes/uprobes.c
-@@ -0,0 +1,150 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2014-2016 Pratyush Anand <panand@redhat.com>
-+ */
-+#include <linux/highmem.h>
-+#include <linux/ptrace.h>
-+#include <linux/uprobes.h>
-+#include <asm/cacheflush.h>
+ 	/* enable MMU */
+ 	mfcr    r6, cr18
+diff --git a/arch/csky/kernel/head.S b/arch/csky/kernel/head.S
+index 61989f9241c0..17ed9d250480 100644
+--- a/arch/csky/kernel/head.S
++++ b/arch/csky/kernel/head.S
+@@ -21,6 +21,11 @@ END(_start)
+ ENTRY(_start_smp_secondary)
+ 	SETUP_MMU
+ 
++	/* copy msa1 from CPU0 */
++	lrw     r6, secondary_msa1
++	ld.w	r6, (r6, 0)
++	mtcr	r6, cr<31, 15>
 +
-+#include "decode-insn.h"
-+
-+#define UPROBE_TRAP_NR	UINT_MAX
-+
-+unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
-+{
-+	return instruction_pointer(regs);
-+}
-+
-+int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
-+		unsigned long addr)
-+{
-+	probe_opcode_t insn;
-+
-+	insn = *(probe_opcode_t *)(&auprobe->insn[0]);
-+
-+	auprobe->insn_size = is_insn32(insn) ? 4 : 2;
-+
-+	switch (csky_probe_decode_insn(&insn, &auprobe->api)) {
-+	case INSN_REJECTED:
-+		return -EINVAL;
-+
-+	case INSN_GOOD_NO_SLOT:
-+		auprobe->simulate = true;
-+		break;
-+
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+int arch_uprobe_pre_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
-+{
-+	struct uprobe_task *utask = current->utask;
-+
-+	utask->autask.saved_trap_no = current->thread.trap_no;
-+	current->thread.trap_no = UPROBE_TRAP_NR;
-+
-+	instruction_pointer_set(regs, utask->xol_vaddr);
-+
-+	user_enable_single_step(current);
-+
-+	return 0;
-+}
-+
-+int arch_uprobe_post_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
-+{
-+	struct uprobe_task *utask = current->utask;
-+
-+	WARN_ON_ONCE(current->thread.trap_no != UPROBE_TRAP_NR);
-+
-+	instruction_pointer_set(regs, utask->vaddr + auprobe->insn_size);
-+
-+	user_disable_single_step(current);
-+
-+	return 0;
-+}
-+
-+bool arch_uprobe_xol_was_trapped(struct task_struct *t)
-+{
-+	if (t->thread.trap_no != UPROBE_TRAP_NR)
-+		return true;
-+
-+	return false;
-+}
-+
-+bool arch_uprobe_skip_sstep(struct arch_uprobe *auprobe, struct pt_regs *regs)
-+{
-+	probe_opcode_t insn;
-+	unsigned long addr;
-+
-+	if (!auprobe->simulate)
-+		return false;
-+
-+	insn = *(probe_opcode_t *)(&auprobe->insn[0]);
-+	addr = instruction_pointer(regs);
-+
-+	if (auprobe->api.handler)
-+		auprobe->api.handler(insn, addr, regs);
-+
-+	return true;
-+}
-+
-+void arch_uprobe_abort_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
-+{
-+	struct uprobe_task *utask = current->utask;
-+
-+	/*
-+	 * Task has received a fatal signal, so reset back to probbed
-+	 * address.
-+	 */
-+	instruction_pointer_set(regs, utask->vaddr);
-+
-+	user_disable_single_step(current);
-+}
-+
-+bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check ctx,
-+		struct pt_regs *regs)
-+{
-+	if (ctx == RP_CHECK_CHAIN_CALL)
-+		return regs->usp <= ret->stack;
-+	else
-+		return regs->usp < ret->stack;
-+}
-+
-+unsigned long
-+arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
-+				  struct pt_regs *regs)
-+{
-+	unsigned long ra;
-+
-+	ra = regs->lr;
-+
-+	regs->lr = trampoline_vaddr;
-+
-+	return ra;
-+}
-+
-+int arch_uprobe_exception_notify(struct notifier_block *self,
-+				 unsigned long val, void *data)
-+{
-+	return NOTIFY_DONE;
-+}
-+
-+int uprobe_breakpoint_handler(struct pt_regs *regs)
-+{
-+	if (uprobe_pre_sstep_notifier(regs))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+int uprobe_single_step_handler(struct pt_regs *regs)
-+{
-+	if (uprobe_post_sstep_notifier(regs))
-+		return 1;
-+
-+	return 0;
-+}
-diff --git a/arch/csky/kernel/signal.c b/arch/csky/kernel/signal.c
-index 3d6b728cbb72..9452d6570b7e 100644
---- a/arch/csky/kernel/signal.c
-+++ b/arch/csky/kernel/signal.c
-@@ -253,6 +253,9 @@ static void do_signal(struct pt_regs *regs)
- asmlinkage void do_notify_resume(struct pt_regs *regs,
- 	unsigned long thread_info_flags)
+ 	/* set stack point */
+ 	lrw     r6, secondary_stack
+ 	ld.w	r6, (r6, 0)
+diff --git a/arch/csky/kernel/setup.c b/arch/csky/kernel/setup.c
+index 3821e55742f4..819a9a7bf786 100644
+--- a/arch/csky/kernel/setup.c
++++ b/arch/csky/kernel/setup.c
+@@ -24,26 +24,9 @@ struct screen_info screen_info = {
+ };
+ #endif
+ 
+-phys_addr_t __init_memblock memblock_end_of_REG0(void)
+-{
+-	return (memblock.memory.regions[0].base +
+-		memblock.memory.regions[0].size);
+-}
+-
+-phys_addr_t __init_memblock memblock_start_of_REG1(void)
+-{
+-	return memblock.memory.regions[1].base;
+-}
+-
+-size_t __init_memblock memblock_size_of_REG1(void)
+-{
+-	return memblock.memory.regions[1].size;
+-}
+-
+ static void __init csky_memblock_init(void)
  {
-+	if (thread_info_flags & _TIF_UPROBE)
-+		uprobe_notify_resume(regs);
+ 	unsigned long zone_size[MAX_NR_ZONES];
+-	unsigned long zhole_size[MAX_NR_ZONES];
+ 	signed long size;
+ 
+ 	memblock_reserve(__pa(_stext), _end - _stext);
+@@ -54,54 +37,36 @@ static void __init csky_memblock_init(void)
+ 	memblock_dump_all();
+ 
+ 	memset(zone_size, 0, sizeof(zone_size));
+-	memset(zhole_size, 0, sizeof(zhole_size));
+ 
+ 	min_low_pfn = PFN_UP(memblock_start_of_DRAM());
+-	max_pfn	    = PFN_DOWN(memblock_end_of_DRAM());
+-
+-	max_low_pfn = PFN_UP(memblock_end_of_REG0());
+-	if (max_low_pfn == 0)
+-		max_low_pfn = max_pfn;
++	max_low_pfn = max_pfn = PFN_DOWN(memblock_end_of_DRAM());
+ 
+ 	size = max_pfn - min_low_pfn;
+ 
+-	if (memblock.memory.cnt > 1) {
+-		zone_size[ZONE_NORMAL]  =
+-			PFN_DOWN(memblock_start_of_REG1()) - min_low_pfn;
+-		zhole_size[ZONE_NORMAL] =
+-			PFN_DOWN(memblock_start_of_REG1()) - max_low_pfn;
++	if (size <= PFN_DOWN(SSEG_SIZE - PHYS_OFFSET_OFFSET))
++		zone_size[ZONE_NORMAL] = size;
++	else if (size < PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET_OFFSET)) {
++		zone_size[ZONE_NORMAL] =
++				PFN_DOWN(SSEG_SIZE - PHYS_OFFSET_OFFSET);
++		max_low_pfn = min_low_pfn + zone_size[ZONE_NORMAL];
+ 	} else {
+-		if (size <= PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET_OFFSET))
+-			zone_size[ZONE_NORMAL] = max_pfn - min_low_pfn;
+-		else {
+-			zone_size[ZONE_NORMAL] =
++		zone_size[ZONE_NORMAL] =
+ 				PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET_OFFSET);
+-			max_low_pfn = min_low_pfn + zone_size[ZONE_NORMAL];
+-		}
++		max_low_pfn = min_low_pfn + zone_size[ZONE_NORMAL];
++		write_mmu_msa1(read_mmu_msa0() + SSEG_SIZE);
+ 	}
+ 
+ #ifdef CONFIG_HIGHMEM
+-	size = 0;
+-	if (memblock.memory.cnt > 1) {
+-		size = PFN_DOWN(memblock_size_of_REG1());
+-		highstart_pfn = PFN_DOWN(memblock_start_of_REG1());
+-	} else {
+-		size = max_pfn - min_low_pfn -
+-			PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET_OFFSET);
+-		highstart_pfn =  min_low_pfn +
+-			PFN_DOWN(LOWMEM_LIMIT - PHYS_OFFSET_OFFSET);
+-	}
+-
+-	if (size > 0)
+-		zone_size[ZONE_HIGHMEM] = size;
++	zone_size[ZONE_HIGHMEM] = max_pfn - max_low_pfn;
+ 
+-	highend_pfn = max_pfn;
++	highstart_pfn = max_low_pfn;
++	highend_pfn   = max_pfn;
+ #endif
+ 	memblock_set_current_limit(PFN_PHYS(max_low_pfn));
+ 
+ 	dma_contiguous_reserve(0);
+ 
+-	free_area_init_node(0, zone_size, min_low_pfn, zhole_size);
++	free_area_init_node(0, zone_size, min_low_pfn, NULL);
+ }
+ 
+ void __init setup_arch(char **cmdline_p)
+diff --git a/arch/csky/kernel/smp.c b/arch/csky/kernel/smp.c
+index df2e2174dbd0..b5c5bc3afeb5 100644
+--- a/arch/csky/kernel/smp.c
++++ b/arch/csky/kernel/smp.c
+@@ -159,6 +159,8 @@ volatile unsigned int secondary_hint;
+ volatile unsigned int secondary_ccr;
+ volatile unsigned int secondary_stack;
+ 
++unsigned long secondary_msa1;
 +
- 	/* Handle pending signal delivery */
- 	if (thread_info_flags & _TIF_SIGPENDING)
- 		do_signal(regs);
-diff --git a/arch/csky/kernel/traps.c b/arch/csky/kernel/traps.c
-index c6a40806977f..fcc3a69831ad 100644
---- a/arch/csky/kernel/traps.c
-+++ b/arch/csky/kernel/traps.c
-@@ -129,6 +129,10 @@ asmlinkage void trap_c(struct pt_regs *regs)
- #ifdef CONFIG_KPROBES
- 		if (kprobe_single_step_handler(regs))
- 			return;
-+#endif
-+#ifdef CONFIG_UPROBES
-+		if (uprobe_single_step_handler(regs))
-+			return;
- #endif
- 		info.si_code = TRAP_TRACE;
- 		sig = SIGTRAP;
-@@ -138,6 +142,10 @@ asmlinkage void trap_c(struct pt_regs *regs)
- #ifdef CONFIG_KPROBES
- 		if (kprobe_breakpoint_handler(regs))
- 			return;
-+#endif
-+#ifdef CONFIG_UPROBES
-+		if (uprobe_breakpoint_handler(regs))
-+			return;
- #endif
- 		die_if_kernel("Kernel mode ILLEGAL", regs, vector);
- #ifndef CONFIG_CPU_NO_USER_BKPT
+ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+ {
+ 	unsigned long mask = 1 << cpu;
+@@ -167,6 +169,7 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+ 		(unsigned int) task_stack_page(tidle) + THREAD_SIZE - 8;
+ 	secondary_hint = mfcr("cr31");
+ 	secondary_ccr  = mfcr("cr18");
++	secondary_msa1 = read_mmu_msa1();
+ 
+ 	/*
+ 	 * Because other CPUs are in reset status, we must flush data
 -- 
 2.17.0
 
