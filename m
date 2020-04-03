@@ -2,274 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D62F19D384
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB76419D374
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390651AbgDCJZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 05:25:02 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:55483 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390622AbgDCJY5 (ORCPT
+        id S2390432AbgDCJYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 05:24:30 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:34924 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727431AbgDCJYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 05:24:57 -0400
-Received: by mail-wm1-f67.google.com with SMTP id r16so6404801wmg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 02:24:54 -0700 (PDT)
+        Fri, 3 Apr 2020 05:24:30 -0400
+Received: by mail-wm1-f66.google.com with SMTP id i19so6925294wmb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 02:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IhWqEH+ifcQR6EnThkSLLdxyOoCGOTp66XJ4WIDsRQM=;
-        b=F+NlUIiv/8c5llpYNJLrPG1jwFWfs+1Ib4zLJd5JPX7VpAxwt2HuxrGLbf4mQSIfoI
-         L9KAmYuJ5uTbLc6Cbpq89buRnEhSIakOjMahQj5WRHPGpzyfyXhEBvEvSYzCBtjha9Hs
-         uPcn46Z2UqAuy+REiJTA5W/qX1B0l9N0QWz+YzgRHH1gnWf4fCT3ONkwyzPQJ42pm1lQ
-         oL6vyLbDOiLMYyKWfziAKG1Vqc0QUSQSyg6k5QkxgG7a6n7k0b63bn33ccdSb2dc+Nro
-         QB5xOgjuG6gLaN3K99VRQ8uWGdZTXBQMuSsipLMbQ16296SokAiG98gleOXbfzvKfqNx
-         JeJA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ph0bQEVivKyrvCsvpNnxX3VcyLljQN3rvtdW4PjpUYA=;
+        b=EoXWpACO8GQp2HUQGe3WqRlEX5JDF6cZ9WJh0dLk9SDe3WZuHSaOylvqe1T14fLlxB
+         VdiXx2NpE8iEkt4PZjnQUyIuSgMY+OdPPhxF5RCHdoRKdfW6a9NkxiYvs9a/JaDrKSMP
+         rDhgpqLiSXc/PR4Cdsib/Zs387vHMa7H0ghH5FJ1dwkjlOCWW7GwjHVlfAr1NPXHuka9
+         h/txEFfr3eiDPPShk8/0MmJjRfTqBK60nz+XcURzsjg+jV+pbLMZB+oe5nfd4PVbmVRc
+         kY2JCouPNTuCm+toiscRxFb5dxUj8O7dKHiXp3brrUs+9gw+sq2RPBMJDSIdMbD/bRhe
+         jkhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=IhWqEH+ifcQR6EnThkSLLdxyOoCGOTp66XJ4WIDsRQM=;
-        b=n/nDwzhlpdUx+tTJ/Cr7HdA3AlgNAlH6GD/tuot78NPRn04R4UXbY4Rj1qMFiwbtQq
-         7DVGNY1n17Uqt2vwOP+p4dNC5cfuqWs3m+rH3EDMYzgX0dqIna4+NVgMT53UCsYxnSxk
-         mlx2Sa4/mznVXVGv+fnN1g5LeCR5gpYoSylJc7RCHhsVM5ICGtUWZudXAdjhCwB7VnpX
-         wCTemwxbFHOpWCpxG7kBO9OXA8HEZtiP3LJ+lZuseZB38uPLuMGSJOzGTS2TQXeE5T1W
-         5h9DxFPLbVlwhmmaC9l/q/K07IIa2RQLvWJliexSJTQsXoywLQ8hBwtWz4721ZgZsuT2
-         nfuQ==
-X-Gm-Message-State: AGi0PuYSG4NQrbUhKf6trC7MtgM0MQx0VAvg00BUBde3I7qy1t9trQLg
-        OvMi2zXUq5K2L/Ra2cw+oijddQ==
-X-Google-Smtp-Source: APiQypJm1SUyhExIFhsNSoRGaTQ+ETR8QzrrZcogS3Uwn33V4q/ATjdOeTQc8R1D8teAyU06BdsV0w==
-X-Received: by 2002:a7b:c3da:: with SMTP id t26mr7405666wmj.3.1585905893625;
-        Fri, 03 Apr 2020 02:24:53 -0700 (PDT)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id i2sm11239997wrx.22.2020.04.03.02.24.52
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Apr 2020 02:24:53 -0700 (PDT)
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     johan@kernel.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Jiri Slaby <jslaby@suse.com>, linux-arm-kernel@lists.infradead.org,
-        linux-serial@vger.kernel.org
-Subject: [PATCH 7/7] Revert "serial: uartps: Register own uart console and driver structures"
-Date:   Fri,  3 Apr 2020 11:24:36 +0200
-Message-Id: <1ee35667e36a8efddee381df5fe495ad65f4d15c.1585905873.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <cover.1585905873.git.michal.simek@xilinx.com>
-References: <cover.1585905873.git.michal.simek@xilinx.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ph0bQEVivKyrvCsvpNnxX3VcyLljQN3rvtdW4PjpUYA=;
+        b=NgxXASdeyUBleWOBgdbwSyF428OuS3e31tdoZYzRukt+tkN21FUHeWvGcTb1Jd+FH4
+         AZe68x5+qpXXtVUusQp0Llyggmak+UmStZFbCpegIhrvBLOgdNtUfp0xKGDzjjFLKkn/
+         VEm3ga20k5QkiztI2cBtLYMSyDLJqwcR3kJbKLsQaecVOF2LzEVnPpFh3CZY0fhjWDgs
+         lT1DQOERKtzJjXFks0Qyc58k6a9nc83uxqeElmrcnWJbLFkKkIY36a4WO+fx9Vdy1EHi
+         ZpXfDDzkxytktzjavrl5rXz0RAn2nqlZp7/ih/87U+ceFrppXFjNRwoZbcBX1CWk3WFu
+         WxsA==
+X-Gm-Message-State: AGi0Pub4cK6J98tLDjSi0w687ey5YUWW3lNUGukjmnGl2FHwNwsfCZ1r
+        6r5+GiG/WIhBCcPIdHXKx/dTbw==
+X-Google-Smtp-Source: APiQypLvGETVEYJaT3z4N1aZZa3xAbJ+hJj/+OR8FGSF7k5T+vXXpk+pwvvdN3Bo9pTqT2FFg5XIJA==
+X-Received: by 2002:a1c:e203:: with SMTP id z3mr7923246wmg.71.1585905868318;
+        Fri, 03 Apr 2020 02:24:28 -0700 (PDT)
+Received: from dell ([2.27.35.179])
+        by smtp.gmail.com with ESMTPSA id w7sm11297056wrr.60.2020.04.03.02.24.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 02:24:27 -0700 (PDT)
+Date:   Fri, 3 Apr 2020 10:25:21 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mfd: asic3: Delete redundant variable definition
+Message-ID: <20200403092521.GD30614@dell>
+References: <b2a0e5f6-1f07-a7bd-2f3c-c95119efe635@web.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b2a0e5f6-1f07-a7bd-2f3c-c95119efe635@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 024ca329bfb9a948f76eaff3243e21b7e70182f2.
+On Fri, 03 Apr 2020, Markus Elfring wrote:
 
-As Johan says, this driver needs a lot more work and these changes are
-only going in the wrong direction:
-  https://lkml.kernel.org/r/20190523091839.GC568@localhost
+> > In this function, 'ret' is always assigned, even if 'pdata->leds'
+> > don't carry out,
+> 
+> I notice possibilities again to improve such a commit message.
+> 
+> 
+> > it has already been assigned a value in the above code, including '0',
+> 
+> The variable assignment will eventually be performed only in if branches.
+> 
+> 
+> > so it's redundant.
+> 
+> I suggest to reconsider this interpretation of the source code here.
+> Would you like to move the mentioned statement into an else branch
+> at the end?
 
-Reported-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
+Why wasn't this sent 'in reply to'?  Something wrong with your mailer?
 
- drivers/tty/serial/xilinx_uartps.c | 95 +++++++++++++-----------------
- 1 file changed, 40 insertions(+), 55 deletions(-)
+Now this messages is orphaned.  Floating about in my inbox on its own.
 
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index 41d9c2f188f0..ac137b6a1dc1 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -27,6 +27,7 @@
- #define CDNS_UART_TTY_NAME	"ttyPS"
- #define CDNS_UART_NAME		"xuartps"
- #define CDNS_UART_MAJOR		0	/* use dynamic node allocation */
-+#define CDNS_UART_MINOR		0	/* works best with devtmpfs */
- #define CDNS_UART_NR_PORTS	16
- #define CDNS_UART_FIFO_SIZE	64	/* FIFO size */
- #define CDNS_UART_REGISTER_SPACE	0x1000
-@@ -1132,6 +1133,8 @@ static const struct uart_ops cdns_uart_ops = {
- #endif
- };
- 
-+static struct uart_driver cdns_uart_uart_driver;
-+
- #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
- /**
-  * cdns_uart_console_putchar - write the character to the FIFO buffer
-@@ -1271,6 +1274,16 @@ static int cdns_uart_console_setup(struct console *co, char *options)
- 
- 	return uart_set_options(port, co, baud, parity, bits, flow);
- }
-+
-+static struct console cdns_uart_console = {
-+	.name	= CDNS_UART_TTY_NAME,
-+	.write	= cdns_uart_console_write,
-+	.device	= uart_console_device,
-+	.setup	= cdns_uart_console_setup,
-+	.flags	= CON_PRINTBUFFER,
-+	.index	= -1, /* Specified on the cmdline (e.g. console=ttyPS ) */
-+	.data	= &cdns_uart_uart_driver,
-+};
- #endif /* CONFIG_SERIAL_XILINX_PS_UART_CONSOLE */
- 
- #ifdef CONFIG_PM_SLEEP
-@@ -1402,6 +1415,9 @@ static const struct of_device_id cdns_uart_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, cdns_uart_of_match);
- 
-+/* Temporary variable for storing number of instances */
-+static int instances;
-+
- /**
-  * cdns_uart_probe - Platform driver probe
-  * @pdev: Pointer to the platform device structure
-@@ -1415,11 +1431,6 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	struct cdns_uart *cdns_uart_data;
- 	const struct of_device_id *match;
--	struct uart_driver *cdns_uart_uart_driver;
--	char *driver_name;
--#ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
--	struct console *cdns_uart_console;
--#endif
- 
- 	cdns_uart_data = devm_kzalloc(&pdev->dev, sizeof(*cdns_uart_data),
- 			GFP_KERNEL);
-@@ -1429,12 +1440,6 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	if (!port)
- 		return -ENOMEM;
- 
--	cdns_uart_uart_driver = devm_kzalloc(&pdev->dev,
--					     sizeof(*cdns_uart_uart_driver),
--					     GFP_KERNEL);
--	if (!cdns_uart_uart_driver)
--		return -ENOMEM;
--
- 	/* Look for a serialN alias */
- 	id = of_alias_get_id(pdev->dev.of_node, "serial");
- 	if (id < 0)
-@@ -1445,50 +1450,25 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	/* There is a need to use unique driver name */
--	driver_name = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%s%d",
--				     CDNS_UART_NAME, id);
--	if (!driver_name)
--		return -ENOMEM;
--
--	cdns_uart_uart_driver->owner = THIS_MODULE;
--	cdns_uart_uart_driver->driver_name = driver_name;
--	cdns_uart_uart_driver->dev_name	= CDNS_UART_TTY_NAME;
--	cdns_uart_uart_driver->major = CDNS_UART_MAJOR;
--	cdns_uart_uart_driver->minor = id;
--	cdns_uart_uart_driver->nr = 1;
--
-+	if (!cdns_uart_uart_driver.state) {
-+		cdns_uart_uart_driver.owner = THIS_MODULE;
-+		cdns_uart_uart_driver.driver_name = CDNS_UART_NAME;
-+		cdns_uart_uart_driver.dev_name = CDNS_UART_TTY_NAME;
-+		cdns_uart_uart_driver.major = CDNS_UART_MAJOR;
-+		cdns_uart_uart_driver.minor = CDNS_UART_MINOR;
-+		cdns_uart_uart_driver.nr = CDNS_UART_NR_PORTS;
- #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
--	cdns_uart_console = devm_kzalloc(&pdev->dev, sizeof(*cdns_uart_console),
--					 GFP_KERNEL);
--	if (!cdns_uart_console)
--		return -ENOMEM;
--
--	strncpy(cdns_uart_console->name, CDNS_UART_TTY_NAME,
--		sizeof(cdns_uart_console->name));
--	cdns_uart_console->index = id;
--	cdns_uart_console->write = cdns_uart_console_write;
--	cdns_uart_console->device = uart_console_device;
--	cdns_uart_console->setup = cdns_uart_console_setup;
--	cdns_uart_console->flags = CON_PRINTBUFFER;
--	cdns_uart_console->data = cdns_uart_uart_driver;
--	cdns_uart_uart_driver->cons = cdns_uart_console;
-+		cdns_uart_uart_driver.cons = &cdns_uart_console;
- #endif
- 
--	rc = uart_register_driver(cdns_uart_uart_driver);
--	if (rc < 0) {
--		dev_err(&pdev->dev, "Failed to register driver\n");
--		return rc;
-+		rc = uart_register_driver(&cdns_uart_uart_driver);
-+		if (rc < 0) {
-+			dev_err(&pdev->dev, "Failed to register driver\n");
-+			return rc;
-+		}
- 	}
- 
--	cdns_uart_data->cdns_uart_driver = cdns_uart_uart_driver;
--
--	/*
--	 * Setting up proper name_base needs to be done after uart
--	 * registration because tty_driver structure is not filled.
--	 * name_base is 0 by default.
--	 */
--	cdns_uart_uart_driver->tty_driver->name_base = id;
-+	cdns_uart_data->cdns_uart_driver = &cdns_uart_uart_driver;
- 
- 	match = of_match_node(cdns_uart_of_match, pdev->dev.of_node);
- 	if (match && match->data) {
-@@ -1566,6 +1546,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 	port->ops	= &cdns_uart_ops;
- 	port->fifosize	= CDNS_UART_FIFO_SIZE;
- 	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_XILINX_PS_UART_CONSOLE);
-+	port->line	= id;
- 
- 	/*
- 	 * Register the port.
-@@ -1597,7 +1578,7 @@ static int cdns_uart_probe(struct platform_device *pdev)
- 		console_port = port;
- #endif
- 
--	rc = uart_add_one_port(cdns_uart_uart_driver, port);
-+	rc = uart_add_one_port(&cdns_uart_uart_driver, port);
- 	if (rc) {
- 		dev_err(&pdev->dev,
- 			"uart_add_one_port() failed; err=%i\n", rc);
-@@ -1607,12 +1588,15 @@ static int cdns_uart_probe(struct platform_device *pdev)
- #ifdef CONFIG_SERIAL_XILINX_PS_UART_CONSOLE
- 	/* This is not port which is used for console that's why clean it up */
- 	if (console_port == port &&
--	    !(cdns_uart_uart_driver->cons->flags & CON_ENABLED))
-+	    !(cdns_uart_uart_driver.cons->flags & CON_ENABLED))
- 		console_port = NULL;
- #endif
- 
- 	cdns_uart_data->cts_override = of_property_read_bool(pdev->dev.of_node,
- 							     "cts-override");
-+
-+	instances++;
-+
- 	return 0;
- 
- err_out_pm_disable:
-@@ -1628,8 +1612,8 @@ static int cdns_uart_probe(struct platform_device *pdev)
- err_out_clk_dis_pclk:
- 	clk_disable_unprepare(cdns_uart_data->pclk);
- err_out_unregister_driver:
--	uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
--
-+	if (!instances)
-+		uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
- 	return rc;
- }
- 
-@@ -1664,7 +1648,8 @@ static int cdns_uart_remove(struct platform_device *pdev)
- 		console_port = NULL;
- #endif
- 
--	uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
-+	if (!--instances)
-+		uart_unregister_driver(cdns_uart_data->cdns_uart_driver);
- 	return rc;
- }
- 
 -- 
-2.26.0
-
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
