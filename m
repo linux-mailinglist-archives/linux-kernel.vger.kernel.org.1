@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B39E219D69E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B30319D6A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403937AbgDCMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 08:22:00 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:55678 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728140AbgDCMV7 (ORCPT
+        id S2390946AbgDCMWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 08:22:17 -0400
+Received: from 109-230-57-163.dynamic.orange.sk ([109.230.57.163]:50726 "EHLO
+        mail.sammserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728140AbgDCMWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 08:21:59 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 953162984BA
-Message-ID: <a36a825bc048821b4b7088feea71bd31e9e17211.camel@collabora.com>
-Subject: Re: [PATCH] cedrus: Drop unneeded CONFIG_OF dependency
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Hans Verkuil <hverkuil@xs4all.nl>,
-        Maxime Ripard <mripard@kernel.org>
-Date:   Fri, 03 Apr 2020 09:21:49 -0300
-In-Reply-To: <20200403082206.GA626942@aptenodytes>
-References: <20200402194653.13535-1-ezequiel@collabora.com>
-         <20200403082206.GA626942@aptenodytes>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.0-1 
+        Fri, 3 Apr 2020 08:22:17 -0400
+Received: by mail.sammserver.com (Postfix, from userid 5011)
+        id D8B88A24F79; Fri,  3 Apr 2020 14:22:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sammserver.com;
+        s=email; t=1585916535;
+        bh=NJLwg+ipNHzCf/EBn80JPjLTXnXV4zQy4LLMLOH3QYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sn9/pzfZusi98KcRsPrYjkqnXBnkfhGZDC4MGf+rQZEYp2+yEyghz3udKJDN2s1S6
+         FspcrzDHsGpVnIW2LG26byYdwEZNTqp3r+vI2S04Fv19Prj/4jdTtepoldnt/Rp2/Q
+         KIMPJHxaW1eoFvga9E8AQW4HGLLO+ipXPhIQeiAY=
+Received: from fastboi.localdomain (fastboi.wg [10.32.40.5])
+        by mail.sammserver.com (Postfix) with ESMTP id A3A65A24F76;
+        Fri,  3 Apr 2020 14:22:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sammserver.com;
+        s=email; t=1585916535;
+        bh=NJLwg+ipNHzCf/EBn80JPjLTXnXV4zQy4LLMLOH3QYg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sn9/pzfZusi98KcRsPrYjkqnXBnkfhGZDC4MGf+rQZEYp2+yEyghz3udKJDN2s1S6
+         FspcrzDHsGpVnIW2LG26byYdwEZNTqp3r+vI2S04Fv19Prj/4jdTtepoldnt/Rp2/Q
+         KIMPJHxaW1eoFvga9E8AQW4HGLLO+ipXPhIQeiAY=
+Received: by fastboi.localdomain (Postfix, from userid 1000)
+        id 8FC2B1420F3C; Fri,  3 Apr 2020 14:22:15 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 14:22:15 +0200
+From:   Samuel =?utf-8?B?xIxhdm9q?= <sammko@sammserver.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] HID for 5.7
+Message-ID: <20200403122215.zsi4etbclm6hljrl@fastboi.localdomain>
+References: <nycvar.YFH.7.76.2004011353080.19500@cbobk.fhfr.pm>
+ <CAHk-=wgy8AM+BOt4jhnoQ+wa=YVyXT4ARg=qEYC=S-OW4ZjZzw@mail.gmail.com>
+ <nycvar.YFH.7.76.2004031158280.19713@cbobk.fhfr.pm>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <nycvar.YFH.7.76.2004031158280.19713@cbobk.fhfr.pm>
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on sammserver.tu
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-04-03 at 10:22 +0200, Paul Kocialkowski wrote:
-> Hi Ezequiel,
+On 03.04.2020 12:05, Jiri Kosina wrote:
+> On Wed, 1 Apr 2020, Linus Torvalds wrote:
 > 
-> On Thu 02 Apr 20, 16:46, Ezequiel Garcia wrote:
-> > The driver is perfectly capable of being built without CONFIG_OF.
-> > Remove this dependency, which is useful for compile-only tests.
-> 
-> Thanks for the patch!
-> 
-> Alas, the driver won't do anything useful without OF enabled, so it seems
-> useful to keep that dependency.
-> 
-
-I'm not convinced about this argument, I like to have
-dependencies on things the driver needs to compile
-(except the machine option, see below).
-
-> I would suggest making this a: depends on OF || COMPILE_TEST
-> instead. What do you think?
-> 
-
-Although there are a handful, I don't see many drivers doing that.
-To be honest, I don't like this much.
-
-Also, if you want to make sure this driver can only be selected
-where it makes sense, you consider having a ARCH_SUNXI || COMPILE_TEST.
-
-IMO, the dependency on OF should be dropped as well.
-
-Cheers,
-Eze
-
-> Cheers,
-> 
-> Paul
-> 
-> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > ---
-> >  drivers/staging/media/sunxi/cedrus/Kconfig | 1 -
-> >  1 file changed, 1 deletion(-)
+> > Anyway, because I noticed this due to the name, it does strike me that 
+> > clearly Windows must be ignoring - or otherwise reacting differently to 
+> > - the HID_MAIN_ITEM_CONSTANT flag. Because presumably those mice work 
+> > under Windows without special drivers?
 > > 
-> > diff --git a/drivers/staging/media/sunxi/cedrus/Kconfig b/drivers/staging/media/sunxi/cedrus/Kconfig
-> > index 17733e9a088f..59b8d1b29865 100644
-> > --- a/drivers/staging/media/sunxi/cedrus/Kconfig
-> > +++ b/drivers/staging/media/sunxi/cedrus/Kconfig
-> > @@ -3,7 +3,6 @@ config VIDEO_SUNXI_CEDRUS
-> >  	tristate "Allwinner Cedrus VPU driver"
-> >  	depends on VIDEO_DEV && VIDEO_V4L2 && MEDIA_CONTROLLER
-> >  	depends on HAS_DMA
-> > -	depends on OF
-> >  	depends on MEDIA_CONTROLLER_REQUEST_API
-> >  	select SUNXI_SRAM
-> >  	select VIDEOBUF2_DMA_CONTIG
-> > -- 
-> > 2.26.0.rc2
-> > 
+> > In fact, reading that driver, it looks like they report being *both* 
+> > constant *and* variable in their report descriptors. Which sounds odd. 
+> > Maybe we should do whatever Windows does, and not need a special driver 
+> > for this maybe-bot-so-glorious-after-all mouse hardware?
+> 
+> Adding Samuel to CC.
+> 
+> From what I understood is that in order to access the buttons reported in 
+> report #2 (the one marked with HID_MAIN_ITEM_CONSTANT), you actually *do* 
+> need a special software on windows anyway.
 
+The Glorious software is merely used to map the actions to the buttons.
+The mouse comes with a common default configuration (forward and back on
+the side buttons) but every button can be remapped to any action. I am
+used to having a Play/Pause button on my mouse and that's where I
+encountered the problem in the first place.
 
+The configuration of the mouse is then stored in the firmware. The
+Glorious software is not required to be running or even to be installed
+for the mouse to function. The vanilla Windows HID driver is in use.
+Sorry if that wasn't clear.
+
+> What we do is that we ignore any changes in reports with 
+> HID_MAIN_ITEM_CONSTANT in the HID core.
+> 
+> It would still be possible to access the report via hidraw, and maybe 
+> that's analogy of what the Windows driver/special Glorious software :) 
+> does, I don't know. It's hard to believe that Windows would be actually 
+> willing to report any changes coming through HID_MAIN_ITEM_CONSTANT 
+> reports, but who knows.
+
+It unfortunately appears to be the case. Just for reference, here is the
+relevant part of the original descriptor again:
+  
+  INPUT(2)[INPUT]
+    Field(0)
+      Flags( Constant Variable Absolute )
+    Field(1)
+      Flags( Constant Variable Absolute )
+    Field(2)
+      Flags( Constant Variable Absolute )
+
+Windows accepts the reports just fine. Unless there is something else at
+play here, but I don't see anything that could be since the default HID
+driver is used on Windows.
+
+I also set the Relative flag instead of Absolute in the driver, in order
+to drop repeat events when holding down the button. These are not
+desirable in the case of consumer control events, such as 'Next Track'.
+This is not a big problem, though.
+
+Regards,
+Samuel
