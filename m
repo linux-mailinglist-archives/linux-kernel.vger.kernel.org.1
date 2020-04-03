@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA24919D93C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6AD019D945
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391061AbgDCOgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:36:04 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:34102 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728060AbgDCOgD (ORCPT
+        id S2391072AbgDCOh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:37:56 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:35882 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728060AbgDCOh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:36:03 -0400
-Received: by mail-lj1-f194.google.com with SMTP id p10so7213413ljn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 07:36:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zmPYYW3fxClIYaAQ3d5kwhebWv1mnQ+1ShHjdxdDtmU=;
-        b=Hf1KZ1qQmdj/mjtE6P1FKY3Ud/bzbLAgQS3JOTKm2ISSGkHwg51cYv/VioKxVCzdQp
-         faSw1d9n5ma/2y5jkAkLT9AM+nz5dJwa08TSRC3KmEl6tehcIshqDmgOu4EogubN1dJk
-         /JDmM5l+j5eM+9wEeOQqAugI7/x38sVvEmhQ6XBZdKTSP6ywp2e4s+5nQeCL4CAfDdVt
-         GO7eOfw+2WyrGTCC1kJdLSrvPAYoUXIMmrt9Je3F8+7XXG6sJUNz3cizBYC2Agu8Kh0e
-         wDla8AziaQ2B1yRbT2cOBRXBceBm9b1WZdFh68d9lHbQ1OtQA2donIqzy1o5DLmnjyl8
-         cacw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zmPYYW3fxClIYaAQ3d5kwhebWv1mnQ+1ShHjdxdDtmU=;
-        b=fF1yMnaK+SCMFbVPtpAGmThURHuVFftu5ABowqMp3iym2/mvf0cMzJE05FBrd9JCME
-         k82fKBWbtC3JpePKbhMyhw13Z1MY11sLG5nUPPcn2XKsP7cvRxliPqkrv/4N/dzBzofg
-         pVsCl9Tsf2zlAjUmlAMhg7txpYSzVdP83OsAsc0Z2Ax9p15GF98qWVQFbZGJVgGdJdy6
-         h9IdE3uXr88Pe1z//WMBQ4cvjBNRRHn05EoMaegOUgIPggZ6dzvM6vO72EOAdA4GtCbM
-         M1eUWBP6MlrEFiUrS90/TRwo3MyElf8ZyfBTfLhvNqFBCHOhi6N8OjI+CY/pH2rrlKdK
-         MHGg==
-X-Gm-Message-State: AGi0PuYpxNvz1Enq8VIzMgho+P8Ch0e4WLkI4rhFOmR9zHN1xdj+B8Ix
-        nCvSy6bSWT9Yz89+7Ncd/ZJ93LZwJEo=
-X-Google-Smtp-Source: APiQypIMtF298Yl8bns41YZvM//TAVUblf05xp8RS423ZldCdYW94Ak2bpOVE3gTdd9ciXzdKrrYAw==
-X-Received: by 2002:a2e:6809:: with SMTP id c9mr4915106lja.251.1585924561034;
-        Fri, 03 Apr 2020 07:36:01 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id p5sm5923335ljn.99.2020.04.03.07.35.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 07:36:00 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 94A6D10132D; Fri,  3 Apr 2020 17:35:59 +0300 (+03)
-Date:   Fri, 3 Apr 2020 17:35:59 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yang Shi <yang.shi@linux.alibaba.com>
-Cc:     kirill.shutemov@linux.intel.com, hughd@google.com,
-        aarcange@redhat.com, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: thp: don't need drain lru cache when splitting and
- mlocking THP
-Message-ID: <20200403143559.aex2w7utvkf5rr5y@box>
-References: <1585337380-97368-1-git-send-email-yang.shi@linux.alibaba.com>
+        Fri, 3 Apr 2020 10:37:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RoF2efbTgGwmrX7dboxs0x1HHgR1yO7ZbDcxDy9aJ3U=; b=AcTN0MNfLl2mayveFNdl7KGb0t
+        EDtrbhCl21n4jEl43yByQhgl4KrBHSvfYSygdgWcMyhINe/+eh2bZQQYOnejKfFBV6fNVjovro9vr
+        Oj56g4UpeHfhjI4MpSnB+UrX0HJr8MqJmpJZ+dKZnrAr88ctKQOsdFG0CZU9QznX9ZVtoxk1YwBhP
+        nLYxRxt31QJikR9dwQuABURsgb77cXkAIdQbmfjBJGNcjzKD2Ha3jJrnhFPV2ErFdOiAvGeb7zJOi
+        3ARQ3m2hOENDdG/GA+qaK84bzmPsabpkA6wJh/IUwZb7Gb0bk2HgyctVuwANIJgjslnzNTJt5ETW6
+        5SpJ7MWg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jKNS7-0000jO-SG; Fri, 03 Apr 2020 14:37:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 400683010BC;
+        Fri,  3 Apr 2020 16:37:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 29ECE2B123E34; Fri,  3 Apr 2020 16:37:45 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 16:37:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Julien Thierry <jthierry@redhat.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
+Message-ID: <20200403143745.GQ20730@hirez.programming.kicks-ass.net>
+References: <20200402082220.808-1-alexandre.chartre@oracle.com>
+ <20200402082220.808-4-alexandre.chartre@oracle.com>
+ <db508586-258a-0616-d649-e76e95df9611@redhat.com>
+ <20200402154919.2c6shw4hfreagchg@treble>
+ <3d075cb2-8d99-5ab7-4842-efef1964247d@redhat.com>
+ <20200403124107.GO20730@hirez.programming.kicks-ass.net>
+ <efa3b732-f102-9c4a-16e8-ffdb436cb9b1@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1585337380-97368-1-git-send-email-yang.shi@linux.alibaba.com>
+In-Reply-To: <efa3b732-f102-9c4a-16e8-ffdb436cb9b1@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 28, 2020 at 03:29:40AM +0800, Yang Shi wrote:
-> Since the commit 8f182270dfec ("mm/swap.c: flush lru pvecs on compound
-> page arrival") THP would not stay in pagevec anymore.  So the
-> optimization made by commit d965432234db ("thp: increase
-> split_huge_page() success rate") doesn't make sense anymore, which tries
-> to unpin munlocked THPs from pagevec by draining pagevec.
+On Fri, Apr 03, 2020 at 01:49:24PM +0100, Julien Thierry wrote:
 > 
-> And draining lru cache before isolating THP in mlock path is unnecessary
-> either.
 > 
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+> On 4/3/20 1:41 PM, Peter Zijlstra wrote:
+> > On Fri, Apr 03, 2020 at 09:01:38AM +0100, Julien Thierry wrote:
+> > > 
+> > > Last I found is in qcom_link_stack_sanitization() [2], but that's just a
+> > > workaround for a very specific hardware. In my local tree I just put the
+> > > function as STACK_FRAME_NON_STANDARD. But the code just saves the return
+> > > address, has 16 call instructions that just call the instruction after them,
+> > > restores the return address and lets the C-function return normally (and it
+> > > somehow fixes something for that hardware).
+> > > 
+> > That sounds very much like the RSB flushing we do.
+> > 
+> 
+> Yes, the piece of code you posted reminded me of this. The difference is
+> that the RSB part uses a loop and counter while the qcom thing has a fixed
+> amount of call instructions (which can make things easier for static
+> analysis, if we'd really want to go down that road).
 
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
--- 
- Kirill A. Shutemov
+We have different depth RSBs for the various uarchs which is what
+necessitates the counter. That is, we could always do the max size (32
+IIRC) but then, it's expensive and people already complain etc.. etc..
