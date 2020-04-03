@@ -2,262 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D975A19D547
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 12:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97D019D550
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 12:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgDCKwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 06:52:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40390 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727792AbgDCKwl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 06:52:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 69219AC92;
-        Fri,  3 Apr 2020 10:52:37 +0000 (UTC)
-Date:   Fri, 3 Apr 2020 12:52:34 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Nicholas Piggin <npiggin@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Allison Randal <allison@lohutok.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Claudio Carvalho <cclaudio@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Eric Richter <erichte@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gustavo Luiz Duarte <gustavold@linux.ibm.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Michael Neuling <mikey@neuling.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rob Herring <robh@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v11 3/8] powerpc/perf: consolidate read_user_stack_32
-Message-ID: <20200403105234.GX25468@kitsune.suse.cz>
-References: <20200225173541.1549955-1-npiggin@gmail.com>
- <cover.1584620202.git.msuchanek@suse.de>
- <184347595442b4ca664613008a09e8cea7188c36.1584620202.git.msuchanek@suse.de>
- <1585039473.da4762n2s0.astroid@bobo.none>
- <20200324193833.GH25468@kitsune.suse.cz>
- <1585896170.ohti800w9v.astroid@bobo.none>
+        id S2403761AbgDCKwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 06:52:50 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48923 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390474AbgDCKws (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 06:52:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585911167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+5NLHWAihP8eW/m69CJGGciyPRDVjDNEWxz3B2il954=;
+        b=ON49eOT3/IfNsP60fxdZFAlHEOZM5UwWUFgwvPQkNHz06hPtGgMn9lpy3AU43LRgfkr6/6
+        ZCgT7+A6uSrAP6eGVNNBFS13w7pokEY2UwgnKbmaAiw3WSD/Jesntn9TX18OfNN/JwNA6z
+        CUUvh+ztXGA0DoRzw6zq/CtB0Kt/tQE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-57-Fu1C1p5TNVKAUdeun9FrOQ-1; Fri, 03 Apr 2020 06:52:44 -0400
+X-MC-Unique: Fu1C1p5TNVKAUdeun9FrOQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A7CD1B18BD5;
+        Fri,  3 Apr 2020 10:52:42 +0000 (UTC)
+Received: from x1.localdomain.com (ovpn-115-123.ams2.redhat.com [10.36.115.123])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D2574BEA6C;
+        Fri,  3 Apr 2020 10:52:39 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "5 . 4+" <stable@vger.kernel.org>
+Subject: [PATCH v2 2/2] platform/x86: intel_int0002_vgpio: Use acpi_register_wakeup_handler()
+Date:   Fri,  3 Apr 2020 12:52:35 +0200
+Message-Id: <20200403105235.105187-2-hdegoede@redhat.com>
+In-Reply-To: <20200403105235.105187-1-hdegoede@redhat.com>
+References: <20200403105235.105187-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1585896170.ohti800w9v.astroid@bobo.none>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The Power Management Events (PMEs) the INT0002 driver listens for get
+signalled by the Power Management Controller (PMC) using the same IRQ
+as used for the ACPI SCI.
 
-there are 3 variants of the function
+Since commit fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from
+waking up the system") the SCI triggering, without there being a wakeup
+cause recognized by the ACPI sleep code, will no longer wakeup the system=
+.
 
-read_user_stack_64
+This breaks PMEs / wakeups signalled to the INT0002 driver, the system
+never leaves the s2idle_loop() now.
 
-32bit read_user_stack_32
-64bit read_user_Stack_32
+Use acpi_register_wakeup_handler() to register a function which checks
+the GPE0a_STS register for a PME and trigger a wakeup when a PME has
+been signalled.
 
-On Fri, Apr 03, 2020 at 05:13:25PM +1000, Nicholas Piggin wrote:
-> Michal Suchánek's on March 25, 2020 5:38 am:
-> > On Tue, Mar 24, 2020 at 06:48:20PM +1000, Nicholas Piggin wrote:
-> >> Michal Suchanek's on March 19, 2020 10:19 pm:
-> >> > There are two almost identical copies for 32bit and 64bit.
-> >> > 
-> >> > The function is used only in 32bit code which will be split out in next
-> >> > patch so consolidate to one function.
-> >> > 
-> >> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> >> > Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr>
-> >> > ---
-> >> > v6:  new patch
-> >> > v8:  move the consolidated function out of the ifdef block.
-> >> > v11: rebase on top of def0bfdbd603
-> >> > ---
-> >> >  arch/powerpc/perf/callchain.c | 48 +++++++++++++++++------------------
-> >> >  1 file changed, 24 insertions(+), 24 deletions(-)
-> >> > 
-> >> > diff --git a/arch/powerpc/perf/callchain.c b/arch/powerpc/perf/callchain.c
-> >> > index cbc251981209..c9a78c6e4361 100644
-> >> > --- a/arch/powerpc/perf/callchain.c
-> >> > +++ b/arch/powerpc/perf/callchain.c
-> >> > @@ -161,18 +161,6 @@ static int read_user_stack_64(unsigned long __user *ptr, unsigned long *ret)
-> >> >  	return read_user_stack_slow(ptr, ret, 8);
-> >> >  }
-> >> >  
-> >> > -static int read_user_stack_32(unsigned int __user *ptr, unsigned int *ret)
-> >> > -{
-> >> > -	if ((unsigned long)ptr > TASK_SIZE - sizeof(unsigned int) ||
-> >> > -	    ((unsigned long)ptr & 3))
-> >> > -		return -EFAULT;
-> >> > -
-> >> > -	if (!probe_user_read(ret, ptr, sizeof(*ret)))
-> >> > -		return 0;
-> >> > -
-> >> > -	return read_user_stack_slow(ptr, ret, 4);
-> >> > -}
-> >> > -
-> >> >  static inline int valid_user_sp(unsigned long sp, int is_64)
-> >> >  {
-> >> >  	if (!sp || (sp & 7) || sp > (is_64 ? TASK_SIZE : 0x100000000UL) - 32)
-> >> > @@ -277,19 +265,9 @@ static void perf_callchain_user_64(struct perf_callchain_entry_ctx *entry,
-> >> >  }
-> >> >  
-> >> >  #else  /* CONFIG_PPC64 */
-> >> > -/*
-> >> > - * On 32-bit we just access the address and let hash_page create a
-> >> > - * HPTE if necessary, so there is no need to fall back to reading
-> >> > - * the page tables.  Since this is called at interrupt level,
-> >> > - * do_page_fault() won't treat a DSI as a page fault.
-> >> > - */
-> >> > -static int read_user_stack_32(unsigned int __user *ptr, unsigned int *ret)
-> >> > +static int read_user_stack_slow(void __user *ptr, void *buf, int nb)
-> >> >  {
-> >> > -	if ((unsigned long)ptr > TASK_SIZE - sizeof(unsigned int) ||
-> >> > -	    ((unsigned long)ptr & 3))
-> >> > -		return -EFAULT;
-> >> > -
-> >> > -	return probe_user_read(ret, ptr, sizeof(*ret));
-> >> > +	return 0;
-> >> >  }
-> >> >  
-> >> >  static inline void perf_callchain_user_64(struct perf_callchain_entry_ctx *entry,
-> >> > @@ -312,6 +290,28 @@ static inline int valid_user_sp(unsigned long sp, int is_64)
-> >> >  
-> >> >  #endif /* CONFIG_PPC64 */
-> >> >  
-> >> > +/*
-> >> > + * On 32-bit we just access the address and let hash_page create a
-> >> > + * HPTE if necessary, so there is no need to fall back to reading
-> >> > + * the page tables.  Since this is called at interrupt level,
-> >> > + * do_page_fault() won't treat a DSI as a page fault.
-> >> > + */
-> >> 
-> >> The comment is actually probably better to stay in the 32-bit
-> >> read_user_stack_slow implementation. Is that function defined
-> >> on 32-bit purely so that you can use IS_ENABLED()? In that case
-> > It documents the IS_ENABLED() and that's where it is. The 32bit
-> > definition is only a technical detail.
-> 
-> Sorry for the late reply, busy trying to fix bugs in the C rewrite
-> series. I don't think it is the right place, it should be in the
-> ppc32 implementation detail. ppc64 has an equivalent comment at the
-> top of its read_user_stack functions.
-> 
-> >> I would prefer to put a BUG() there which makes it self documenting.
-> > Which will cause checkpatch complaints about introducing new BUG() which
-> > is frowned on.
-> 
-> It's fine in this case, that warning is about not introducing
-> runtime bugs, but this wouldn't be.
-> 
-> But... I actually don't like adding read_user_stack_slow on 32-bit
-> and especially not just to make IS_ENABLED work.
-> 
-> IMO this would be better if you really want to consolidate it
-> 
-> ---
-> 
-> diff --git a/arch/powerpc/perf/callchain.c b/arch/powerpc/perf/callchain.c
-> index cbc251981209..ca3a599b3f54 100644
-> --- a/arch/powerpc/perf/callchain.c
-> +++ b/arch/powerpc/perf/callchain.c
-> @@ -108,7 +108,7 @@ perf_callchain_kernel(struct perf_callchain_entry_ctx *entry, struct pt_regs *re
->   * interrupt context, so if the access faults, we read the page tables
->   * to find which page (if any) is mapped and access it directly.
->   */
-> -static int read_user_stack_slow(void __user *ptr, void *buf, int nb)
-> +static int read_user_stack_slow(const void __user *ptr, void *buf, int nb)
->  {
->  	int ret = -EFAULT;
->  	pgd_t *pgdir;
-> @@ -149,28 +149,21 @@ static int read_user_stack_slow(void __user *ptr, void *buf, int nb)
->  	return ret;
->  }
->  
-> -static int read_user_stack_64(unsigned long __user *ptr, unsigned long *ret)
-> +static int __read_user_stack(const void __user *ptr, void *ret, size_t size)
->  {
-> -	if ((unsigned long)ptr > TASK_SIZE - sizeof(unsigned long) ||
-> -	    ((unsigned long)ptr & 7))
-> +	if ((unsigned long)ptr > TASK_SIZE - size ||
-> +	    ((unsigned long)ptr & (size - 1)))
->  		return -EFAULT;
->  
-> -	if (!probe_user_read(ret, ptr, sizeof(*ret)))
-> +	if (!probe_user_read(ret, ptr, size))
->  		return 0;
->  
-> -	return read_user_stack_slow(ptr, ret, 8);
-> +	return read_user_stack_slow(ptr, ret, size);
->  }
->  
-> -static int read_user_stack_32(unsigned int __user *ptr, unsigned int *ret)
-> +static int read_user_stack_64(unsigned long __user *ptr, unsigned long *ret)
->  {
-> -	if ((unsigned long)ptr > TASK_SIZE - sizeof(unsigned int) ||
-> -	    ((unsigned long)ptr & 3))
-> -		return -EFAULT;
-> -
-> -	if (!probe_user_read(ret, ptr, sizeof(*ret)))
-> -		return 0;
-> -
-> -	return read_user_stack_slow(ptr, ret, 4);
-> +	return __read_user_stack(ptr, ret, sizeof(*ret));
->  }
->  
->  static inline int valid_user_sp(unsigned long sp, int is_64)
-> @@ -283,13 +276,13 @@ static void perf_callchain_user_64(struct perf_callchain_entry_ctx *entry,
->   * the page tables.  Since this is called at interrupt level,
->   * do_page_fault() won't treat a DSI as a page fault.
->   */
-> -static int read_user_stack_32(unsigned int __user *ptr, unsigned int *ret)
-> +static int __read_user_stack(const void __user *ptr, void *ret, size_t size)
->  {
-> -	if ((unsigned long)ptr > TASK_SIZE - sizeof(unsigned int) ||
-> -	    ((unsigned long)ptr & 3))
-> +	if ((unsigned long)ptr > TASK_SIZE - size ||
-> +	    ((unsigned long)ptr & (size - 1)))
->  		return -EFAULT;
->  
-> -	return probe_user_read(ret, ptr, sizeof(*ret));
-> +	return probe_user_read(ret, ptr, size);
->  }
->  
->  static inline void perf_callchain_user_64(struct perf_callchain_entry_ctx *entry,
-> @@ -312,6 +305,11 @@ static inline int valid_user_sp(unsigned long sp, int is_64)
->  
->  #endif /* CONFIG_PPC64 */
->  
-> +static int read_user_stack_32(unsigned int __user *ptr, unsigned int *ret)
-> +{
-> +	return __read_user_stack(ptr, ret, sizeof(*ret));
-Does not work for 64bit read_user_stack_32 ^ this should be 4.
+With this new mechanism the pm_wakeup_hard_event() call is no longer
+necessary, so remove it and also remove the matching device_init_wakeup()
+calls.
 
-Other than that it should preserve the existing logic just fine.
+Fixes: fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from waking=
+ up the system")
+Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changes in v2:
+- Adjust for the wakeup-handler registration function being renamed to
+  acpi_register_wakeup_handler()
+---
+ drivers/platform/x86/intel_int0002_vgpio.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
 
-Thanks
+diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platfor=
+m/x86/intel_int0002_vgpio.c
+index f14e2c5f9da5..9da19168b4f6 100644
+--- a/drivers/platform/x86/intel_int0002_vgpio.c
++++ b/drivers/platform/x86/intel_int0002_vgpio.c
+@@ -122,11 +122,17 @@ static irqreturn_t int0002_irq(int irq, void *data)
+ 	generic_handle_irq(irq_find_mapping(chip->irq.domain,
+ 					    GPE0A_PME_B0_VIRT_GPIO_PIN));
+=20
+-	pm_wakeup_hard_event(chip->parent);
+-
+ 	return IRQ_HANDLED;
+ }
+=20
++static bool int0002_check_wake(void *data)
++{
++	u32 gpe_sts_reg;
++
++	gpe_sts_reg =3D inl(GPE0A_STS_PORT);
++	return (gpe_sts_reg & GPE0A_PME_B0_STS_BIT);
++}
++
+ static struct irq_chip int0002_byt_irqchip =3D {
+ 	.name			=3D DRV_NAME,
+ 	.irq_ack		=3D int0002_irq_ack,
+@@ -220,13 +226,13 @@ static int int0002_probe(struct platform_device *pd=
+ev)
+ 		return ret;
+ 	}
+=20
+-	device_init_wakeup(dev, true);
++	acpi_register_wakeup_handler(irq, int0002_check_wake, NULL);
+ 	return 0;
+ }
+=20
+ static int int0002_remove(struct platform_device *pdev)
+ {
+-	device_init_wakeup(&pdev->dev, false);
++	acpi_unregister_wakeup_handler(int0002_check_wake, NULL);
+ 	return 0;
+ }
+=20
+--=20
+2.26.0
 
-Michal
