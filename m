@@ -2,166 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AC919E02E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 23:13:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E45719E036
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 23:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728208AbgDCVNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 17:13:05 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:45470 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727842AbgDCVNF (ORCPT
+        id S1728023AbgDCVPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 17:15:01 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:57088 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727809AbgDCVPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 17:13:05 -0400
-Received: by mail-il1-f200.google.com with SMTP id p15so8298598ils.12
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 14:13:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=wy3lpNU7WmEaGyZrYQCN+Owhy5EFfLkQGobsgJD88SY=;
-        b=Lf7Nn2Sq68oDw6G1BrTYJuQlPm7nYKpf2NExj1Hji++Hx/mb+pCHwTrmC2uMMRlPKX
-         Lm+PUWkoupsG0mUQ8TlPO/eXfl9oQ+ODEU2jzGf7fz/y6nPCFZUGceezSkru2CBwoF8O
-         tCXKtNBAfeR0+rc3VhuYjQYYb5juLkIO2kgSqeVEIwU2pypKLuev1IMplQU9SiUPsCWu
-         UGLHydRwJ1U2O2q6JVLAay+y9r0efDx5DUUa+E22jYppDe6sS80dNTgZ/azgVfzAcZ7Q
-         +eK+FfIVs+PO6J6KMdsQFShaNsJXK7R/Pc5+vT9+F09HsVG5ogwuJggXsgDMaqJR/mjk
-         pwrQ==
-X-Gm-Message-State: AGi0PuZfF6YkNZ/abFaVHqNxuPupLPSMNuE2JrlEVFEXCWy2Ee1ulfwf
-        QkafzryWtgmDXUPyenJz7e7V6aFKxcJ+/zKrBwn8CjxDF39L
-X-Google-Smtp-Source: APiQypL9Uo/ySR/OKjVx4URg+WZ+Fz/1Nz3g/6cIlDMVLpWlUll+9D4EJyEIauZtqJcCSr2Dx0Irl6P0C+9DX3zmTXi2WgHEBPJv
+        Fri, 3 Apr 2020 17:15:01 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033LDhRM179303;
+        Fri, 3 Apr 2020 21:14:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=lAFN7mAESPzYll9xPCsRkmxIqI6EVsbBX20TXlp5u6c=;
+ b=qMy9Ve5Vkgg082L1gSU2Z99BR3L1iqKKWVzQsSMD27hapkBqSFWtqMApwv4ab5CDjs4r
+ xW7NZ5DZl1MVFOWn8NlVdcdRwz9/yqAi6GL7+TNc7hHSYNghnNL3d73BlEYVcvFd9L/U
+ 7ChUqiK9WKKkETRaQ8IksmcYO5kW83CLC2uLHCP3h9AUtgNzFqCrPqNxaBJNft3Wz7SI
+ 4vSmsbZkuBAHxsLOcBNSbTaGnLVRlkS6oDLUyuVefaYtB+idJIAQV3rgvSrXFlkqNMS9
+ VZ/kPFi75LMOWKw8JU37BTD/Rl9JYp+3zHRfDdIVTRvoVq9Jn8gICFPzWMYXyvxgrcNR 3w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 303yunnu71-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 21:14:28 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033LCRB2024934;
+        Fri, 3 Apr 2020 21:14:28 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 302g4y75j2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 21:14:28 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 033LEQHN004069;
+        Fri, 3 Apr 2020 21:14:26 GMT
+Received: from localhost.localdomain (/10.159.159.117)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Apr 2020 14:14:25 -0700
+Subject: Re: [PATCH v6 12/14] KVM: x86: Introduce KVM_PAGE_ENC_BITMAP_RESET
+ ioctl
+To:     Ashish Kalra <Ashish.Kalra@amd.com>, pbonzini@redhat.com
+Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
+        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rientjes@google.com, srutherford@google.com, luto@kernel.org,
+        brijesh.singh@amd.com
+References: <cover.1585548051.git.ashish.kalra@amd.com>
+ <9e959ee134ad77f62c9881b8c54cd27e35055072.1585548051.git.ashish.kalra@amd.com>
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Message-ID: <b77a4a1e-b8ca-57a2-d849-adda91bfeac7@oracle.com>
+Date:   Fri, 3 Apr 2020 14:14:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9648:: with SMTP id d8mr9516183ios.115.1585948384628;
- Fri, 03 Apr 2020 14:13:04 -0700 (PDT)
-Date:   Fri, 03 Apr 2020 14:13:04 -0700
-In-Reply-To: <CADG63jD4BzGVHdAZifTT==qm3n9tj16JVGxfR2nFLM6D4_S3aQ@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001913a505a269626e@google.com>
-Subject: Re: KASAN: use-after-free Read in ath9k_wmi_ctrl_rx
-From:   syzbot <syzbot+5d338854440137ea0fef@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, anenbupt@gmail.com,
-        ath9k-devel@qca.qualcomm.com, davem@davemloft.net,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9e959ee134ad77f62c9881b8c54cd27e35055072.1585548051.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9580 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030167
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9580 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
+ suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030167
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch but the reproducer still triggered crash:
-KASAN: use-after-free Read in ath9k_wmi_ctrl_rx
-
-==================================================================
-BUG: KASAN: use-after-free in ath9k_wmi_ctrl_rx+0x416/0x500 drivers/net/wireless/ath/ath9k/wmi.c:229
-Read of size 1 at addr ffff8881cf89f17c by task swapper/1/0
-
-CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.6.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xef/0x16e lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xd3/0x314 mm/kasan/report.c:374
- __kasan_report.cold+0x37/0x77 mm/kasan/report.c:506
- kasan_report+0xe/0x20 mm/kasan/common.c:641
- ath9k_wmi_ctrl_rx+0x416/0x500 drivers/net/wireless/ath/ath9k/wmi.c:229
- ath9k_htc_rx_msg+0x2d9/0xb00 drivers/net/wireless/ath/ath9k/htc_hst.c:459
- ath9k_hif_usb_reg_in_cb+0x1a6/0x620 drivers/net/wireless/ath/ath9k/hif_usb.c:724
- __usb_hcd_giveback_urb+0x1f2/0x470 drivers/usb/core/hcd.c:1648
- usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1713
- dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
- call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
- expire_timers kernel/time/timer.c:1449 [inline]
- __run_timers kernel/time/timer.c:1773 [inline]
- __run_timers kernel/time/timer.c:1740 [inline]
- run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
- __do_softirq+0x21e/0x950 kernel/softirq.c:292
- invoke_softirq kernel/softirq.c:373 [inline]
- irq_exit+0x178/0x1a0 kernel/softirq.c:413
- exiting_irq arch/x86/include/asm/apic.h:546 [inline]
- smp_apic_timer_interrupt+0x141/0x540 arch/x86/kernel/apic/apic.c:1146
- apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:829
- </IRQ>
-RIP: 0010:default_idle+0x28/0x300 arch/x86/kernel/process.c:696
-Code: cc cc 41 56 41 55 65 44 8b 2d 04 3b 72 7a 41 54 55 53 0f 1f 44 00 00 e8 b6 27 b5 fb e9 07 00 00 00 0f 00 2d aa d0 52 00 fb f4 <65> 44 8b 2d e0 3a 72 7a 0f 1f 44 00 00 5b 5d 41 5c 41 5d 41 5e c3
-RSP: 0018:ffff8881da22fda8 EFLAGS: 00000246 ORIG_RAX: ffffffffffffff13
-RAX: 0000000000000007 RBX: ffff8881da213100 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000006 RDI: ffff8881da21394c
-RBP: ffffed103b442620 R08: ffff8881da213100 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-R13: 0000000000000001 R14: ffffffff87e61300 R15: 0000000000000000
- cpuidle_idle_call kernel/sched/idle.c:154 [inline]
- do_idle+0x3e0/0x500 kernel/sched/idle.c:269
- cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:361
- start_secondary+0x2a4/0x390 arch/x86/kernel/smpboot.c:264
- secondary_startup_64+0xb6/0xc0 arch/x86/kernel/head_64.S:242
-
-Allocated by task 157:
- save_stack+0x1b/0x80 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- __kasan_kmalloc mm/kasan/common.c:515 [inline]
- __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:488
- kmalloc include/linux/slab.h:555 [inline]
- kzalloc include/linux/slab.h:669 [inline]
- ath9k_init_wmi+0x40/0x310 drivers/net/wireless/ath/ath9k/wmi.c:95
- ath9k_htc_probe_device+0x21c/0x1d80 drivers/net/wireless/ath/ath9k/htc_drv_init.c:953
- ath9k_htc_hw_init+0x31/0x60 drivers/net/wireless/ath/ath9k/htc_hst.c:501
- ath9k_hif_usb_firmware_cb+0x26b/0x500 drivers/net/wireless/ath/ath9k/hif_usb.c:1218
- request_firmware_work_func+0x126/0x242 drivers/base/firmware_loader/main.c:976
- process_one_work+0x94b/0x1620 kernel/workqueue.c:2266
- worker_thread+0x96/0xe20 kernel/workqueue.c:2412
- kthread+0x318/0x420 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-Freed by task 157:
- save_stack+0x1b/0x80 mm/kasan/common.c:72
- set_track mm/kasan/common.c:80 [inline]
- kasan_set_free_info mm/kasan/common.c:337 [inline]
- __kasan_slab_free+0x117/0x160 mm/kasan/common.c:476
- slab_free_hook mm/slub.c:1444 [inline]
- slab_free_freelist_hook mm/slub.c:1477 [inline]
- slab_free mm/slub.c:3034 [inline]
- kfree+0xd5/0x300 mm/slub.c:3995
- ath9k_htc_probe_device+0x278/0x1d80 drivers/net/wireless/ath/ath9k/htc_drv_init.c:970
- ath9k_htc_hw_init+0x31/0x60 drivers/net/wireless/ath/ath9k/htc_hst.c:501
- ath9k_hif_usb_firmware_cb+0x26b/0x500 drivers/net/wireless/ath/ath9k/hif_usb.c:1218
- request_firmware_work_func+0x126/0x242 drivers/base/firmware_loader/main.c:976
- process_one_work+0x94b/0x1620 kernel/workqueue.c:2266
- worker_thread+0x96/0xe20 kernel/workqueue.c:2412
- kthread+0x318/0x420 kernel/kthread.c:255
- ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-
-The buggy address belongs to the object at ffff8881cf89f000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 380 bytes inside of
- 2048-byte region [ffff8881cf89f000, ffff8881cf89f800)
-The buggy address belongs to the page:
-page:ffffea00073e2600 refcount:1 mapcount:0 mapping:ffff8881da00c000 index:0x0 compound_mapcount: 0
-flags: 0x200000000010200(slab|head)
-raw: 0200000000010200 dead000000000100 dead000000000122 ffff8881da00c000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8881cf89f000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8881cf89f080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8881cf89f100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                                ^
- ffff8881cf89f180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8881cf89f200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+On 3/29/20 11:23 PM, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+>
+> This ioctl can be used by the application to reset the page
+> encryption bitmap managed by the KVM driver. A typical usage
+> for this ioctl is on VM reboot, on reboot, we must reinitialize
+> the bitmap.
+>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>   Documentation/virt/kvm/api.rst  | 13 +++++++++++++
+>   arch/x86/include/asm/kvm_host.h |  1 +
+>   arch/x86/kvm/svm.c              | 16 ++++++++++++++++
+>   arch/x86/kvm/x86.c              |  6 ++++++
+>   include/uapi/linux/kvm.h        |  1 +
+>   5 files changed, 37 insertions(+)
+>
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index 4d1004a154f6..a11326ccc51d 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -4698,6 +4698,19 @@ During the guest live migration the outgoing guest exports its page encryption
+>   bitmap, the KVM_SET_PAGE_ENC_BITMAP can be used to build the page encryption
+>   bitmap for an incoming guest.
+>   
+> +4.127 KVM_PAGE_ENC_BITMAP_RESET (vm ioctl)
+> +-----------------------------------------
+> +
+> +:Capability: basic
+> +:Architectures: x86
+> +:Type: vm ioctl
+> +:Parameters: none
+> +:Returns: 0 on success, -1 on error
+> +
+> +The KVM_PAGE_ENC_BITMAP_RESET is used to reset the guest's page encryption
+> +bitmap during guest reboot and this is only done on the guest's boot vCPU.
+> +
+> +
+>   5. The kvm_run structure
+>   ========================
+>   
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index d30f770aaaea..a96ef6338cd2 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1273,6 +1273,7 @@ struct kvm_x86_ops {
+>   				struct kvm_page_enc_bitmap *bmap);
+>   	int (*set_page_enc_bitmap)(struct kvm *kvm,
+>   				struct kvm_page_enc_bitmap *bmap);
+> +	int (*reset_page_enc_bitmap)(struct kvm *kvm);
+>   };
+>   
+>   struct kvm_arch_async_pf {
+> diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
+> index 313343a43045..c99b0207a443 100644
+> --- a/arch/x86/kvm/svm.c
+> +++ b/arch/x86/kvm/svm.c
+> @@ -7797,6 +7797,21 @@ static int svm_set_page_enc_bitmap(struct kvm *kvm,
+>   	return ret;
+>   }
+>   
+> +static int svm_reset_page_enc_bitmap(struct kvm *kvm)
+> +{
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +
+> +	if (!sev_guest(kvm))
+> +		return -ENOTTY;
+> +
+> +	mutex_lock(&kvm->lock);
+> +	/* by default all pages should be marked encrypted */
+> +	if (sev->page_enc_bmap_size)
+> +		bitmap_fill(sev->page_enc_bmap, sev->page_enc_bmap_size);
+> +	mutex_unlock(&kvm->lock);
+> +	return 0;
+> +}
+> +
+>   static int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>   {
+>   	struct kvm_sev_cmd sev_cmd;
+> @@ -8203,6 +8218,7 @@ static struct kvm_x86_ops svm_x86_ops __ro_after_init = {
+>   	.page_enc_status_hc = svm_page_enc_status_hc,
+>   	.get_page_enc_bitmap = svm_get_page_enc_bitmap,
+>   	.set_page_enc_bitmap = svm_set_page_enc_bitmap,
+> +	.reset_page_enc_bitmap = svm_reset_page_enc_bitmap,
 
 
-Tested on:
+We don't need to initialize the intel ops to NULL ? It's not initialized 
+in the previous patch either.
 
-commit:         0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
-git tree:       https://github.com/google/kasan.git usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=139f3b1fe00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a782c087b1f425c6
-dashboard link: https://syzkaller.appspot.com/bug?extid=5d338854440137ea0fef
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17e22ac7e00000
-
+>   };
+>   
+>   static int __init svm_init(void)
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 05e953b2ec61..2127ed937f53 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5250,6 +5250,12 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>   			r = kvm_x86_ops->set_page_enc_bitmap(kvm, &bitmap);
+>   		break;
+>   	}
+> +	case KVM_PAGE_ENC_BITMAP_RESET: {
+> +		r = -ENOTTY;
+> +		if (kvm_x86_ops->reset_page_enc_bitmap)
+> +			r = kvm_x86_ops->reset_page_enc_bitmap(kvm);
+> +		break;
+> +	}
+>   	default:
+>   		r = -ENOTTY;
+>   	}
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index b4b01d47e568..0884a581fc37 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1490,6 +1490,7 @@ struct kvm_enc_region {
+>   
+>   #define KVM_GET_PAGE_ENC_BITMAP	_IOW(KVMIO, 0xc5, struct kvm_page_enc_bitmap)
+>   #define KVM_SET_PAGE_ENC_BITMAP	_IOW(KVMIO, 0xc6, struct kvm_page_enc_bitmap)
+> +#define KVM_PAGE_ENC_BITMAP_RESET	_IO(KVMIO, 0xc7)
+>   
+>   /* Secure Encrypted Virtualization command */
+>   enum sev_cmd_id {
+Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
