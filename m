@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F3319D240
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5973D19D24B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390498AbgDCIbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 04:31:03 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54322 "EHLO
+        id S2390390AbgDCIco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 04:32:44 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:56112 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389876AbgDCIbC (ORCPT
+        with ESMTP id S2388482AbgDCIcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:31:02 -0400
+        Fri, 3 Apr 2020 04:32:43 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0338OeTf056043;
-        Fri, 3 Apr 2020 08:30:53 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0338OFmP055609;
+        Fri, 3 Apr 2020 08:32:35 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
  : subject : message-id : references : mime-version : content-type :
  in-reply-to; s=corp-2020-01-29;
- bh=oNePCKvCxUpIIS0f2ZbYU7jLe+9Z1XA0+v4YImT1gPc=;
- b=Fh3XWJDcRKgJNcBua9lUzc/+L3/EUI5I3ScY7oaxgqSABO88x+BFmuxWhz5N6yTR0mSD
- DvR+e2jxZIHvG0KZpcYMfvJYsS4zSoBYMyJSJBxYRqfypzqqybSb69Jij3MC9hpdcXn6
- embcvUUulZtut1h5nqM4NDh95T6lByt/tR/BL7DDM5OIN6ZdOJQVQ7L4NVFyZmgDE6h6
- T+8RWGz9ULvEyLjORP2MFGrpn3djtT5tIwVkgtVrS/9630RgMClTClr6S4TSNpEOpBii
- 8Iw7dKRRDnWZf9aLhn9iOSgqr85gkvTOhxv29pRJxAAz51r0isxSYa+wAw+y/OyH5uhk dA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 303yunj9ku-1
+ bh=ss086libaRnicgxivCFTmSK24emVikB4VIk29pxOOEY=;
+ b=vZd1D3Y7F64qs8Q8Cy649TJgKeHskxw5L8yLqRWz7J6FaoQOUJ9ODdwVZ2wK6Y24L2Aj
+ OsLkQIcY+rYGXDB27HMp0FCNqP9zb+OUfqMk3lvoP+03eywzxU0+7qDzWYYJQhF2iwWs
+ eBbuBJuiG/P7z6wUwX0ftzg+L4YKOSgGaw4Cq7ox8FAEo0zi1edAAqyNN4HNN3ww1UMS
+ ceSRdPmgcn4pMcuOv8uFTAR02+SJ+xk/IAtmzhVHVmisEeL0wtd0E6W+cNO/cnvp57zl
+ 9IJMlVvVJOc382Vrqiqa7cCf8HgvQIK5mZQERaCjaBP6y6g5CicrLgXkAecISe8jdknu tw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 303yunj9wt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 08:30:53 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0338NA8X010005;
-        Fri, 3 Apr 2020 08:30:53 GMT
+        Fri, 03 Apr 2020 08:32:35 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0338WNeM052226;
+        Fri, 3 Apr 2020 08:32:35 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 304sjs422x-1
+        by aserp3030.oracle.com with ESMTP id 302g4x20dw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 08:30:53 +0000
+        Fri, 03 Apr 2020 08:32:35 +0000
 Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0338Upce019918;
-        Fri, 3 Apr 2020 08:30:51 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0338WXuW020986;
+        Fri, 3 Apr 2020 08:32:33 GMT
 Received: from kadam (/41.57.98.10)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 03 Apr 2020 01:30:51 -0700
-Date:   Fri, 3 Apr 2020 11:30:43 +0300
+        with ESMTP ; Fri, 03 Apr 2020 01:32:33 -0700
+Date:   Fri, 3 Apr 2020 11:32:25 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
 To:     "John B. Wyatt IV" <jbwyatt4@gmail.com>
 Cc:     outreachy-kernel@googlegroups.com,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>,
+        Ben Chan <benchan@chromium.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: Re: [PATCH] staging: fsl-dpaa2: ethsw: Fix parenthesis alignment
-Message-ID: <20200403083043.GW2001@kadam>
-References: <20200402023310.816245-1-jbwyatt4@gmail.com>
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: gasket: Fix 4 over 80 char warnings
+Message-ID: <20200403083225.GX2001@kadam>
+References: <20200402053617.826678-1-jbwyatt4@gmail.com>
+ <20200402053617.826678-2-jbwyatt4@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200402023310.816245-1-jbwyatt4@gmail.com>
+In-Reply-To: <20200402053617.826678-2-jbwyatt4@gmail.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=0 mlxlogscore=999 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004030071
+ definitions=main-2004030072
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
  malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1011
+ suspectscore=0 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2004030071
 Sender: linux-kernel-owner@vger.kernel.org
@@ -73,30 +75,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 01, 2020 at 07:33:10PM -0700, John B. Wyatt IV wrote:
-> Fix 2 parenthesis alignment issues.
+On Wed, Apr 01, 2020 at 10:36:16PM -0700, John B. Wyatt IV wrote:
+> Fix 4 over 80 char warnings by caching long enum values into local
+> variables.
+> 
+> All enums are only used once inside each function (and once inside
+> the entire file).
 > 
 > Reported by checkpatch.
 > 
 > Signed-off-by: John B. Wyatt IV <jbwyatt4@gmail.com>
 > ---
->  drivers/staging/fsl-dpaa2/ethsw/ethsw.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  drivers/staging/gasket/apex_driver.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-> index 676d1ad1b50d..546ad376df99 100644
-> --- a/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-> +++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw.c
-> @@ -1094,7 +1094,8 @@ static int swdev_port_obj_del(struct net_device *netdev,
->  
->  static int
->  ethsw_switchdev_port_attr_set_event(struct net_device *netdev,
-> -		struct switchdev_notifier_port_attr_info *port_attr_info)
-> +				    struct switchdev_notifier_port_attr_info
-> +				    *port_attr_info)
+> diff --git a/drivers/staging/gasket/apex_driver.c b/drivers/staging/gasket/apex_driver.c
+> index 46199c8ca441..f48209ec7d24 100644
+> --- a/drivers/staging/gasket/apex_driver.c
+> +++ b/drivers/staging/gasket/apex_driver.c
+> @@ -253,6 +253,8 @@ static int apex_get_status(struct gasket_dev *gasket_dev)
+>  /* Enter GCB reset state. */
+>  static int apex_enter_reset(struct gasket_dev *gasket_dev)
+>  {
+> +	int idle_gen_reg = APEX_BAR2_REG_IDLEGENERATOR_IDLEGEN_IDLEREGISTER;
+> +
 
-I feel like the end result is worse than the original code because of
-how the type and the parameter name are on different lines.  Sorry.  :/
+Sorry, but I also hate these where we have a one time use temporary
+variable to get around the 80 character rule.  Generally, avoid pointless
+indirection.  The original code is better.
 
 regards,
 dan carpenter
