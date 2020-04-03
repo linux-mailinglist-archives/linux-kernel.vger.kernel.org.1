@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E4B19DB09
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCAF919DB18
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403992AbgDCQPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:15:55 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:35805 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728126AbgDCQPz (ORCPT
+        id S2404198AbgDCQQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:16:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:36770 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2404071AbgDCQQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:15:55 -0400
-Received: by mail-wr1-f66.google.com with SMTP id g3so6899821wrx.2;
-        Fri, 03 Apr 2020 09:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=V3/txuxpeIo6b8N65adSIdkM6XcxSjQZZcbwdANjf6E=;
-        b=jWfQ3UgQsQocDo8fuFQDjv9pKTtf6fZUBq0wSVMLiJX9fu5+0e4hXOuY5YzDYO8H69
-         TkPatJHw7AYyOAzcurQ8ECr25QGMDSznoegpeV6XHFulUENnU9HdJKmpmVWDPaFhrrv1
-         gtX+7mWWcKxQqnYss8BZQlB82lNCWsVOiJdUe98topJBuIDCZOq6/aIliC5wcUuog+ao
-         Hfs2mqtOIlBatdyam2XNmzQgN8r7JWFSn8Xi7FxPMduxH/9Y18ly3hCLxBFZJVYK4jIm
-         ezXHmdoll/Nok0Nf9StM3EvWWQCfiHA/w8RNeQgXAU2g7d2c2qp6xDasQ7HZ+Yjo+roX
-         oAvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=V3/txuxpeIo6b8N65adSIdkM6XcxSjQZZcbwdANjf6E=;
-        b=ixVgErV6ecXnrpgzL1Wqw0oi1RiZ4R6Ci46Xc+t3tDEY5J+ox3RnwSL6bm13L67DSz
-         DGXjbyvCco3+dIjeVpLpmDXsThFIf/0Lu0Dt2iAauxBAr/9gUc1vrcfoMzBeKJqTBOvw
-         pfV4Q7U9BTRmT3ohKHR6Lz490cuPnxCTFUt4cZ3fzFOy2fwJImj49dG71xLvVM6gG3ZN
-         nMD/baRWttE/jPH9KFM5zA3/pA2eePHX9NfY89NyxUSCbBOgJAhmb5t38/Sz0wIjBVMx
-         0r6kKn0DQrwW64770WpEacfZ+AYx7RDv3XoabdnkpsfCU5gvC8UvWJaM7PBFO+7BF1HI
-         IC/g==
-X-Gm-Message-State: AGi0PuY8Wz+4zpYpi8kPzSqD40zQAz+6HSucLzXiWO0ZCKXz4Prk5jBN
-        6gSPm6Hbanf7CCg3pX+1DQ==
-X-Google-Smtp-Source: APiQypLwgm3J+kKcYX7zSt4edI66hbUcWheROC6iNkXtEmEdHZDiPDAPdN+i4tyg/roRHb+J0nBfgQ==
-X-Received: by 2002:adf:f3c5:: with SMTP id g5mr9746606wrp.230.1585930551203;
-        Fri, 03 Apr 2020 09:15:51 -0700 (PDT)
-Received: from earth.lan (host-92-23-85-227.as13285.net. [92.23.85.227])
-        by smtp.gmail.com with ESMTPSA id u6sm6761276wrm.65.2020.04.03.09.15.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 09:15:50 -0700 (PDT)
-From:   Jules Irenge <jbi.octave@gmail.com>
-X-Google-Original-From: Jules Irenge <djed@earth.lan>
-Date:   Fri, 3 Apr 2020 17:15:44 +0100 (BST)
-To:     Jan Kara <jack@suse.cz>
-cc:     Jules Irenge <jbi.octave@gmail.com>, linux-kernel@vger.kernel.org,
-        boqun.feng@gmail.com, Amir Goldstein <amir73il@gmail.com>,
-        "open list:FSNOTIFY: FILESYSTEM NOTIFICATION INFRASTRUCTURE" 
-        <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 2/7] fsnotify: Add missing annotation for
- fsnotify_finish_user_wait()
-In-Reply-To: <20200401092433.GA19466@quack2.suse.cz>
-Message-ID: <alpine.LFD.2.21.2004031710120.10601@earth.lan>
-References: <0/7> <20200331204643.11262-1-jbi.octave@gmail.com> <20200331204643.11262-3-jbi.octave@gmail.com> <20200401092433.GA19466@quack2.suse.cz>
+        Fri, 3 Apr 2020 12:16:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585930575;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HdCOAJQBf5kjshxNb+3zZTkGKBqwGXfbMXAkL5oZvvg=;
+        b=EqNQky+Sd6E0tliAF/NE/agol1q7mhFAhE4ctd3mSsw0DA3vp8LoSxM8rWunSFpA7ku4Li
+        pnuGXyamxZPwvJaDfXorkUSir71HU22OBahAr5VAfNqzexQAVc0sFHDhdO0CtdsiJ3wznk
+        X3yGpRjmqtl2CQSVnAZNzk4j79Vj3UE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-RM_xudjgP22Rpw0iwHMPKA-1; Fri, 03 Apr 2020 12:16:13 -0400
+X-MC-Unique: RM_xudjgP22Rpw0iwHMPKA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31D35A0CC0;
+        Fri,  3 Apr 2020 16:16:12 +0000 (UTC)
+Received: from treble (ovpn-118-100.rdu2.redhat.com [10.10.118.100])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AC76F10027A3;
+        Fri,  3 Apr 2020 16:16:10 +0000 (UTC)
+Date:   Fri, 3 Apr 2020 11:16:07 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
+        jthierry@redhat.com, tglx@linutronix.de
+Subject: Re: [PATCH 5/7] x86/speculation: Annotate intra-function calls
+Message-ID: <20200403161607.jxz6duaz7dud22wf@treble>
+References: <20200402082220.808-1-alexandre.chartre@oracle.com>
+ <20200402082220.808-6-alexandre.chartre@oracle.com>
+ <20200403160538.qwu237amhanr6pyi@treble>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200403160538.qwu237amhanr6pyi@treble>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 03, 2020 at 11:05:38AM -0500, Josh Poimboeuf wrote:
+> On Thu, Apr 02, 2020 at 10:22:18AM +0200, Alexandre Chartre wrote:
+> >  .macro RETPOLINE_JMP reg:req
+> > -	call	.Ldo_rop_\@
+> > +	INTRA_FUNCTION_CALL .Ldo_rop_\@
+> >  .Lspec_trap_\@:
+> >  	pause
+> >  	lfence
+> > @@ -102,7 +116,7 @@
+> >  .Ldo_retpoline_jmp_\@:
+> >  	RETPOLINE_JMP \reg
+> >  .Ldo_call_\@:
+> > -	call	.Ldo_retpoline_jmp_\@
+> > +	INTRA_FUNCTION_CALL .Ldo_retpoline_jmp_\@
+> >  .endm
+> 
+> There's a catch: this is part of an alternative.  Which means if
+> X86_FEATURE_RETPOLINE isn't set at runtime, then the retpoline won't be
+> there and the ORC data will be wrong.
+> 
+> In fact objtool should probably be made smart enough to warn about this
+> situation, when an alternative changes the stack state.
+> 
+> The only way I can think of to fix this is to have ORC alternatives :-/
 
+Or they could be converted to use static branches instead of
+alternatives.
 
-On Wed, 1 Apr 2020, Jan Kara wrote:
+-- 
+Josh
 
-> On Tue 31-03-20 21:46:38, Jules Irenge wrote:
->> Sparse reports a warning at fsnotify_finish_user_wait()
->>
->> warning: context imbalance in fsnotify_finish_user_wait()
->> 	- wrong count at exit
->>
->> The root cause is the missing annotation at fsnotify_finish_user_wait()
->> Add the missing __acquires(&fsnotify_mark_srcu) annotation.
->>
->> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
->
-> OK, but then fsnotify_prepare_user_wait() needs __releases annotation as
-> well if we're going to be serious about sparse warnings in this code?
->
-> 								Honza
->
->> ---
->>  fs/notify/mark.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/notify/mark.c b/fs/notify/mark.c
->> index 1d96216dffd1..44fea637bb02 100644
->> --- a/fs/notify/mark.c
->> +++ b/fs/notify/mark.c
->> @@ -350,6 +350,7 @@ bool fsnotify_prepare_user_wait(struct fsnotify_iter_info *iter_info)
->>  }
->>
->>  void fsnotify_finish_user_wait(struct fsnotify_iter_info *iter_info)
->> +	__acquires(&fsnotify_mark_srcu)
->>  {
->>  	int type;
->>
->> --
->> 2.24.1
->>
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
->
-
-Thanks for the reply. I think adding an annotation at 
-fsnotify_prepare_user_wait() will not theoretically remove the warning. 
-That's the only reason why I skipped it .
-Best regards,
-Jules
