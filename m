@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D0819D6F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBD519D6FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390834AbgDCMta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 08:49:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:47531 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727989AbgDCMta (ORCPT
+        id S2390866AbgDCMzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 08:55:39 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:57000 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727882AbgDCMzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 08:49:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585918168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=T1KkZ0XRRswbgUoInokEgiAJa+KYlL2aTUCPUcSLR1U=;
-        b=M06xZPFGPEV5PLlHGT1YE4Xy9lcnUp21HtM+kiIOoiVNFulb9VBm6MCCo2h0OlkfPZVdrm
-        MTlzBKAU20amicwfoLDfcPZ2TfYYaePPmfbLOFH7nxFxPFZqwo8mkeLPGqoV/LAF/Tu/Vn
-        rbo6XSubRmUYGju1eeiM7JD0UncH5UE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-6nMGoouJMkK4l8uYca7UpA-1; Fri, 03 Apr 2020 08:49:27 -0400
-X-MC-Unique: 6nMGoouJMkK4l8uYca7UpA-1
-Received: by mail-wr1-f72.google.com with SMTP id 88so357875wrq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 05:49:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T1KkZ0XRRswbgUoInokEgiAJa+KYlL2aTUCPUcSLR1U=;
-        b=k1a0NMFYsm9ZAuIcKcELacjNnnAmzbaTNJR5+7WY9SBQye+39iGiQnoNkd5stS5OKs
-         XdwLqCuD8ktPb9gUIvZPyohG806zZMbTyk9T4NxAOefdJF5ZgSaggrGvqBSHPWCm7qyx
-         ze8ptVyInQQvWoIWF+ZgGRXq863/48jgnegnD2TF3TxB0DjnDtC+4yER2aV/UiH1rYpa
-         OmenXvBOjBQl7+HBA9vtVMFFcqpp+TJFskJtPq4vHlu94acIFpJb3u2LQwYKWX4X/avq
-         wFJHfM3d7hzE24Shm53cFLbz5+ZxzBEJToWmsseKxxBcOfNy3Jt0/vkzfaieVj/S5Ovy
-         gnUw==
-X-Gm-Message-State: AGi0PuZp0lQ1QbRww0p3iDDGhF5ZS3zC6Fg0yd1N5We9avGEDCGQmphw
-        Ztos8p0P5BFPR17LKUz5NDpdP7INW2d0JvUbgHuJJYcReGrpSP6KepAgmaNb0IIMCtHhG78AJa0
-        ewT9bmNIxOUWpStakCZiewPve
-X-Received: by 2002:adf:e848:: with SMTP id d8mr8636717wrn.209.1585918166424;
-        Fri, 03 Apr 2020 05:49:26 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJoZDTst7iMtymL+le90gPhjILOuY+V5+iX0JvWp5fRv+yD08cpySH5v9ZSJ1uy7aixV4S+MQ==
-X-Received: by 2002:adf:e848:: with SMTP id d8mr8636706wrn.209.1585918166276;
-        Fri, 03 Apr 2020 05:49:26 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
-        by smtp.gmail.com with ESMTPSA id g3sm12136573wrm.66.2020.04.03.05.49.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 05:49:25 -0700 (PDT)
-Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-4-alexandre.chartre@oracle.com>
- <db508586-258a-0616-d649-e76e95df9611@redhat.com>
- <20200402154919.2c6shw4hfreagchg@treble>
- <3d075cb2-8d99-5ab7-4842-efef1964247d@redhat.com>
- <20200403124107.GO20730@hirez.programming.kicks-ass.net>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <efa3b732-f102-9c4a-16e8-ffdb436cb9b1@redhat.com>
-Date:   Fri, 3 Apr 2020 13:49:24 +0100
+        Fri, 3 Apr 2020 08:55:38 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 033CtXOT078628;
+        Fri, 3 Apr 2020 07:55:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1585918534;
+        bh=zHg91WiJBWz2Fi4pC1UUIQ2mI/iVfDn7kpR8RVMHrdw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=pnTh+wiwdnusKx/s6QDDG63eOAeCqPJeWl/5E7XuR7RX5Ozu2TtDuTeJyYUN6KK1m
+         v7v6wNjS5PJgqKOKlWP547q3VIXRiMv/78F3mvjLMaVsJgrmaJFjMKpySL3ylnD73t
+         7W6hSUX04UajaPNAZVJ6CvRLZVyDZxtcaaHpnDpM=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 033CtXhs120281
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 3 Apr 2020 07:55:33 -0500
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 3 Apr
+ 2020 07:55:33 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Fri, 3 Apr 2020 07:55:33 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033CtXfd095739;
+        Fri, 3 Apr 2020 07:55:33 -0500
+Subject: Re: Cleanups in "next" tree
+To:     Pavel Machek <pavel@ucw.cz>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>
+CC:     <linux-leds@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20200322115906.GA10623@duo.ucw.cz>
+ <3a103317-b9fb-5d0f-6944-0114b9af1629@gmail.com> <20200402225745.GA9830@amd>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <7cce20f9-f665-2b96-2657-e489df87dd3f@ti.com>
+Date:   Fri, 3 Apr 2020 07:49:47 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200403124107.GO20730@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20200402225745.GA9830@amd>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Pavel
 
-
-On 4/3/20 1:41 PM, Peter Zijlstra wrote:
-> On Fri, Apr 03, 2020 at 09:01:38AM +0100, Julien Thierry wrote:
+On 4/2/20 5:57 PM, Pavel Machek wrote:
+> On Sun 2020-03-22 14:35:56, Jacek Anaszewski wrote:
+>> Hi Pavel,
 >>
->> Last I found is in qcom_link_stack_sanitization() [2], but that's just a
->> workaround for a very specific hardware. In my local tree I just put the
->> function as STACK_FRAME_NON_STANDARD. But the code just saves the return
->> address, has 16 call instructions that just call the instruction after them,
->> restores the return address and lets the C-function return normally (and it
->> somehow fixes something for that hardware).
->>
-> That sounds very much like the RSB flushing we do.
-> 
+>> On 3/22/20 12:59 PM, Pavel Machek wrote:
+>>> Hi!
+>>>
+>>> I've commited some cleanups into LED tree ( git/pavel/linux-leds.git
+>>> branch for-next ), if someone wants to review them.
+>> You abused your maintainer power by bypassing the usual patch
+>> submission procedure. Please remove the patches from linux-next
+>> and submit them officially for discussion. I would have some objections
+>> to them.
+> I'm sorry I failed to meet your high expectations... But I don't
+> believe I done anything completely outside of usual kernel procedures.
 
-Yes, the piece of code you posted reminded me of this. The difference is 
-that the RSB part uses a loop and counter while the qcom thing has a 
-fixed amount of call instructions (which can make things easier for 
-static analysis, if we'd really want to go down that road).
+So I can push a public tree out and request reviewers to review that 
+tree and expect it to get merged once the review is complete without 
+ever posting the patches to linux-leds?
 
--- 
-Julien Thierry
+This would be the precedent you are setting here as maintainer.
+
+And Jacek does not have high expectations he is just requesting that we 
+follow the process as defined in the Linux kernel document
+
+Dan
+
 
