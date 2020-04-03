@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6232A19D9EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEB3619D9F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404210AbgDCPRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 11:17:09 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:37121 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404195AbgDCPRG (ORCPT
+        id S2404222AbgDCPSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 11:18:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29472 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2404080AbgDCPSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 11:17:06 -0400
-Received: by mail-pg1-f195.google.com with SMTP id r4so2171150pgg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 08:17:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SPBXpgOWTzNV/A0U6IcPnBzzrDwIMgsQMzYHIlfsnLw=;
-        b=IRQASTuSmjWW6Y+BlyPZT7Uq9ZE4JpmSWIjUZp/1ge5VPQW+2/Ji372WrAe0piZ72m
-         TR7/5b8bHGUbZCofmnrGjuSCQ5YQDTbSI/UY7Ine7lDTTK7QSwu/+P8smG9tqVjZjpvp
-         i2OR6zI/8TfEfsJenUnc1M6/T4HhoT9nj1Q+GDymeQAAt8vha+8uMBdS2ohiYopZl+mm
-         wxNvQNs6r3rLLnJfYpcP+9q0uSIc1YempGo+WzTDU8vY4bSv6QBm5xhCWGQlw5W2j5BT
-         m/1hy7kxUVYbZA209biDi2Ign05gYIDqFxYpRUJu76z1Px9+1d7KF2mwEXuALfsHdWmh
-         fDGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=SPBXpgOWTzNV/A0U6IcPnBzzrDwIMgsQMzYHIlfsnLw=;
-        b=i8cPmYhE/cXV/fblvmz+DHqwvKnMhxp+W6/QEM7DLdqtkdBQ8MPnh5Ou+yLu4sYo6t
-         gmjVxXntnf3wG4DfGFHXUtPrWihuT3n+JcR9pG2NS2DaU9/+kUmqMobn1qg8kiLvnA0z
-         NG0p3ZFUa86IdO8E5YuBmrwL0aa4pFrtzL6NVa7dyXS4tXrwtRBygwkQRU/qIXbCSSj5
-         lP5hm5sTr1p3Kbi4NpYWaLkK8XwujY4BABZ9BLHvPIQbE2YqwU+oFJggY/ec4OfESSzO
-         Qut8qK8JTx9VAQNfgHhuDsrRAq/WsUPQsWm849Y62KMkgIHPZ/hSWFfSfVlD3kbLVzCI
-         Retw==
-X-Gm-Message-State: AGi0Pubtz1eak0lh81BfZLgyRGPAMKPzLYNPFiwQ+L41Qs01XH/WUHmT
-        frd9hhCStVASMTobnzAPj697TA==
-X-Google-Smtp-Source: APiQypLZ8H+EuQc4yT+15BG8sGk0hoQxKFyiLT89292JsUfDr+1SpCcKHVabsmr3b8PTT5NQB4HSxQ==
-X-Received: by 2002:a62:1c08:: with SMTP id c8mr9294283pfc.80.1585927025235;
-        Fri, 03 Apr 2020 08:17:05 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id y9sm6217184pfo.135.2020.04.03.08.17.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 08:17:04 -0700 (PDT)
-Date:   Fri, 03 Apr 2020 08:17:04 -0700 (PDT)
-X-Google-Original-Date: Fri, 03 Apr 2020 08:14:58 PDT (-0700)
-Subject:     Re: [RFC PATCH 2/7] riscv: Allow to dynamically define VA_BITS
-In-Reply-To: <20200322110028.18279-3-alex@ghiti.fr>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, zong.li@sifive.com,
-        anup@brainfault.org, Christoph Hellwig <hch@lst.de>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        alex@ghiti.fr
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     alex@ghiti.fr
-Message-ID: <mhng-1f8477e3-7cb4-454f-b443-8cf032325385@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Fri, 3 Apr 2020 11:18:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585927090;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=G4Hd4QamM5Yc4B1HCJcNWtBIWbRqGSOz7W+rHr5l48Q=;
+        b=ExiJaq+kxLm34lQR6RBPxOUX3LOXah4LELVk+b1Ok/IoIzQqqzIbjufmZheoBTQeGmLuGb
+        JQBOABQQ1sROugW3C9QcqXsbOB42LUqspVib8NQfZqSVLNDWJsZxuxqcz8D5HZnoN8o1NQ
+        ZN08dwzcegz+fr126pfgbSWjHL7vveg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-67-sIv6VcLVNv2o1tJyKj40Hg-1; Fri, 03 Apr 2020 11:18:00 -0400
+X-MC-Unique: sIv6VcLVNv2o1tJyKj40Hg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D8368026AF;
+        Fri,  3 Apr 2020 15:17:58 +0000 (UTC)
+Received: from [10.36.112.213] (ovpn-112-213.ams2.redhat.com [10.36.112.213])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E5B8997AE8;
+        Fri,  3 Apr 2020 15:17:54 +0000 (UTC)
+Subject: Re: [PATCH v4 3/3] mm: call cond_resched() from
+ deferred_init_memmap()
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mhocko@suse.com, linux-mm@kvack.org, dan.j.williams@intel.com,
+        shile.zhang@linux.alibaba.com, daniel.m.jordan@oracle.com,
+        ktkhai@virtuozzo.com, jmorris@namei.org, sashal@kernel.org,
+        vbabka@suse.cz
+References: <20200403140952.17177-1-pasha.tatashin@soleen.com>
+ <20200403140952.17177-4-pasha.tatashin@soleen.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <4fb5a025-c5d9-abb5-b063-16a22c8443f6@redhat.com>
+Date:   Fri, 3 Apr 2020 17:17:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200403140952.17177-4-pasha.tatashin@soleen.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 22 Mar 2020 04:00:23 PDT (-0700), alex@ghiti.fr wrote:
-> With 4-level page table folding at runtime, we don't know at compile time
-> the size of the virtual address space so we must set VA_BITS dynamically
-> so that sparsemem reserves the right amount of memory for struct pages.
->
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->  arch/riscv/Kconfig                 | 10 ----------
->  arch/riscv/include/asm/pgtable.h   | 10 +++++++++-
->  arch/riscv/include/asm/sparsemem.h |  2 +-
->  3 files changed, 10 insertions(+), 12 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index f5f3d474504d..8e4b1cbcf2c2 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -99,16 +99,6 @@ config ZONE_DMA32
->  	bool
->  	default y if 64BIT
->
-> -config VA_BITS
-> -	int
-> -	default 32 if 32BIT
-> -	default 39 if 64BIT
-> -
-> -config PA_BITS
-> -	int
-> -	default 34 if 32BIT
-> -	default 56 if 64BIT
-> -
->  config PAGE_OFFSET
->  	hex
->  	default 0xC0000000 if 32BIT && MAXPHYSMEM_2GB
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 185ffe3723ec..dce401eed1d3 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -26,6 +26,14 @@
->  #endif /* CONFIG_64BIT */
->
->  #ifdef CONFIG_MMU
-> +#ifdef CONFIG_64BIT
-> +#define VA_BITS		39
-> +#define PA_BITS		56
-> +#else
-> +#define VA_BITS		32
-> +#define PA_BITS		34
+On 03.04.20 16:09, Pavel Tatashin wrote:
+> Now that deferred pages are initialized with interrupts enabled we can
+> replace touch_nmi_watchdog() with cond_resched(), as it was before
+> 3a2d7fa8a3d5.
+> 
+> For now, we cannot do the same in deferred_grow_zone() as it is still
+> initializes pages with interrupts disabled.
+> 
+> This change fixes RCU problem described:
+> linux-mm/20200401104156.11564-2-david@redhat.com
 
-We've moved to 32-bit physical addresses on rv32 in Linux.  The mismatch was
-causing too many issues in generic code.
+BTW,
 
-> +#endif
-> +
->  /* Number of entries in the page global directory */
->  #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
->  /* Number of entries in the page table */
-> @@ -108,7 +116,7 @@ extern pgd_t swapper_pg_dir[];
->   * position vmemmap directly below the VMALLOC region.
->   */
->  #define VMEMMAP_SHIFT \
-> -	(CONFIG_VA_BITS - PAGE_SHIFT - 1 + STRUCT_PAGE_MAX_SHIFT)
-> +	(VA_BITS - PAGE_SHIFT - 1 + STRUCT_PAGE_MAX_SHIFT)
->  #define VMEMMAP_SIZE	BIT(VMEMMAP_SHIFT)
->  #define VMEMMAP_END	(VMALLOC_START - 1)
->  #define VMEMMAP_START	(VMALLOC_START - VMEMMAP_SIZE)
-> diff --git a/arch/riscv/include/asm/sparsemem.h b/arch/riscv/include/asm/sparsemem.h
-> index 45a7018a8118..f08d72155bc8 100644
-> --- a/arch/riscv/include/asm/sparsemem.h
-> +++ b/arch/riscv/include/asm/sparsemem.h
-> @@ -4,7 +4,7 @@
->  #define _ASM_RISCV_SPARSEMEM_H
->
->  #ifdef CONFIG_SPARSEMEM
-> -#define MAX_PHYSMEM_BITS	CONFIG_PA_BITS
-> +#define MAX_PHYSMEM_BITS	PA_BITS
->  #define SECTION_SIZE_BITS	27
->  #endif /* CONFIG_SPARSEMEM */
+https://lkml.kernel.org/r/20200401104156.11564-2-david@redhat.com
 
-Aside from the 32-bit PA issue:
+Would be better.
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
