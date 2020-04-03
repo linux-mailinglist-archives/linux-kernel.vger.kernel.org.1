@@ -2,132 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ABF19D224
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368DA19D23D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390539AbgDCI21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 04:28:27 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:33035 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389015AbgDCI20 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:28:26 -0400
-Received: by mail-oi1-f193.google.com with SMTP id m14so5455032oic.0;
-        Fri, 03 Apr 2020 01:28:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jd71ZkzudxX5g2IyvVUOYdKyHi8OFqEjn6IvsJ3wV7k=;
-        b=FptaELtUqZtw2PU+tc3+NF2788XDhVfr2VIIe/2V4QAciH24UopAEvzEfFTk/eMdr0
-         KK/bH8IlvDlRvFlCFXPsGiRlA/hSkE2w5OtvxkMdZHMNIERNp89MWsiIAJA2VmdcXoe0
-         ltumbPd00FeL8SIWehhKXlPqxNa8Xa/nGbJBnbEqx15TEWLKO5PbN/Ah1PvmwVIpuDW/
-         qpyf1Az7WlIF/EcBQWWZlhK6KZ7Rv8PVaR9Mru0mJZDROQwD4npZKPiNSCghc4nsZSbU
-         WAFKIioIP8XG8tZQUQ37UB3Ue+j4/8lXhRQK+ITWCjXfzdhRUMh4YNwkg4ogzTorSu0b
-         gRXQ==
-X-Gm-Message-State: AGi0PubH7hqbi2eLKTJiwBMHgXhLZ2t5EbB/p+TopymSgWJx8ZrALXP3
-        lelfEc20rHbEF5+UXWZS5KqygYsQa28o31HrWi8=
-X-Google-Smtp-Source: APiQypIS6fpMGxM4Q7dZQ7e1YsUy6vcUkIWwvKfW8MQ2oAPzqQO4S5tcl4AqLxJx41ERvItQuVYYFJJlh5Wv+BynmHU=
-X-Received: by 2002:aca:cdd1:: with SMTP id d200mr2041353oig.153.1585902505654;
- Fri, 03 Apr 2020 01:28:25 -0700 (PDT)
+        id S2387655AbgDCIa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 04:30:29 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:55032 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390557AbgDCIa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 04:30:28 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 018D779D60BE3470D8B0;
+        Fri,  3 Apr 2020 16:30:10 +0800 (CST)
+Received: from localhost (10.173.223.234) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 3 Apr 2020
+ 16:30:01 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <kys@microsoft.com>, <haiyangz@microsoft.com>,
+        <sthemmin@microsoft.com>, <wei.liu@kernel.org>
+CC:     <linux-hyperv@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] hv_debugfs: Make hv_debug_root static
+Date:   Fri, 3 Apr 2020 16:28:45 +0800
+Message-ID: <20200403082845.22740-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <1585856319-4380-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1585856319-4380-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com> <TYAPR01MB454403D69A74036B74CC8220D8C70@TYAPR01MB4544.jpnprd01.prod.outlook.com>
-In-Reply-To: <TYAPR01MB454403D69A74036B74CC8220D8C70@TYAPR01MB4544.jpnprd01.prod.outlook.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 3 Apr 2020 10:28:13 +0200
-Message-ID: <CAMuHMdVWn=U82k5RJnBaRUgRHh3bRfdncOupmX67-u-nbwsG9w@mail.gmail.com>
-Subject: Re: [PATCH v6 02/11] arm64: defconfig: enable CONFIG_PCIE_RCAR_HOST
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
-Cc:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Murray <andrew.murray@arm.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Simon Horman <horms@verge.net.au>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.173.223.234]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shimoda-san,
+Fix sparse warning:
 
-On Fri, Apr 3, 2020 at 10:03 AM Yoshihiro Shimoda
-<yoshihiro.shimoda.uh@renesas.com> wrote:
-> > From: Lad Prabhakar, Sent: Friday, April 3, 2020 4:39 AM
-> >
-> > config option PCIE_RCAR internally selects PCIE_RCAR_HOST which builds the
-> > same driver. So this patch renames CONFIG_PCIE_RCAR to
-> > CONFIG_PCIE_RCAR_HOST so that PCIE_RCAR can be safely dropped from Kconfig
-> > file.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Thank you for the patch!
->
-> Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
->
-> But, I'm thinking this patch (and patch 03/11) should be separated
-> from this patch series for arm64 subsystem to ease maintenance.
-> My scenario is:
->  1) patch series 1: R-Car PCIe endpoint support.
->  -- This means: patch 1, 4 - 9, 11
->
->  2) After the patch series 1 is merged, submit this patch 2/11 to arm subsystem
->    and submit the patch 10/11 to misc subsystem.
->
->  3) At last, submit patch 3/11 after the patch 2/11 is merged.
->
-> Geert-san, what do you think?
+drivers/hv/hv_debugfs.c:14:15: warning: symbol 'hv_debug_root' was not declared. Should it be static?
 
-Thanks, I agree with your summary.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/hv/hv_debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I can take patch 2/11 through renesas-devel.
-Probably it's best if I submit it to arm-soc as a fix for v5.8, after
-the driver part
-has been merged into v5.8-rc1, so 3/11 can be submitted for v5.9.
-
-BTW, I'm wondering about "[PATCH v6 05/11] PCI: rcar: Fix calculating
-mask for PCIEPAMR register". Can the issue fixed by this patch happen with
-the current driver in host mode, or is that limited to ep mode?
-In case of the former, please submit it to the PCI maintainer as a separate
-fix.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/hv/hv_debugfs.c b/drivers/hv/hv_debugfs.c
+index 8a2878573582..ccf752b6659a 100644
+--- a/drivers/hv/hv_debugfs.c
++++ b/drivers/hv/hv_debugfs.c
+@@ -11,7 +11,7 @@
+ 
+ #include "hyperv_vmbus.h"
+ 
+-struct dentry *hv_debug_root;
++static struct dentry *hv_debug_root;
+ 
+ static int hv_debugfs_delay_get(void *data, u64 *val)
+ {
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
