@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C5E19CF6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECD719CF6F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 06:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729349AbgDCEmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 00:42:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42554 "EHLO mail.kernel.org"
+        id S1732903AbgDCEmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 00:42:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725851AbgDCEmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 00:42:11 -0400
+        id S1732382AbgDCEmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 00:42:13 -0400
 Received: from localhost.localdomain (unknown [223.93.147.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 124602063A;
-        Fri,  3 Apr 2020 04:42:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B79E208E4;
+        Fri,  3 Apr 2020 04:42:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585888930;
-        bh=Lq2IMQMvPOCzvgXCncfrKwRonUqCRitFuKGazUr0kFE=;
+        s=default; t=1585888932;
+        bh=s0UQPMKJq3+XFTaEAnL15Z0UFEnuaZrJl5aGoqcNctY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MKYnAAsMcwnOaLvzLgVy2vO/OOGGAWi1Magvlrky38RnDpUIhnWEmvQd2k2Bt8Rcx
-         hSLta1eTMIn7UER7bnP0rFMAic7xzo04z/6Z/9ngs9b6qtLClUJfg3LuzUCdi72Srf
-         GIlarOt3uHYiYV0OKw0L4iIbcZpcHrlnsBb0wclY=
+        b=WBAnJxYL0Q+YZYzwZM07dykPpVWiA9tMoR90wy5dPhm2Uale00sJgLwoba0v1OAAm
+         J3heT8p8OqqvJD7w/CKXehh+n/ZJfV99pZvv8WLIPRI+aI2gz7sljj4x21Avd07tCi
+         Z1+rjYYB1TRhXTzRCP9S6pWpaNCZxFcGJcyWafPU=
 From:   guoren@kernel.org
 To:     arnd@arndb.de
 Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH 03/11] csky: Add support for restartable sequence
-Date:   Fri,  3 Apr 2020 12:41:42 +0800
-Message-Id: <20200403044150.20562-3-guoren@kernel.org>
+Subject: [PATCH 04/11] csky: Implement ftrace with regs
+Date:   Fri,  3 Apr 2020 12:41:43 +0800
+Message-Id: <20200403044150.20562-4-guoren@kernel.org>
 X-Mailer: git-send-email 2.17.0
 In-Reply-To: <20200403044150.20562-1-guoren@kernel.org>
 References: <20200403044150.20562-1-guoren@kernel.org>
@@ -40,81 +40,234 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-Copied and adapted from vincent's patch, but modified for csky.
-
-ref:
-https://lore.kernel.org/linux-riscv/1572919114-3886-3-git-send-email-vincent.chen@sifive.com/raw
-
-Add calls to rseq_signal_deliver(), rseq_handle_notify_resume() and
-rseq_syscall() to introduce RSEQ support.
-
-1. Call the rseq_handle_notify_resume() function on return to userspace
-   if TIF_NOTIFY_RESUME thread flag is set.
-
-2. Call the rseq_signal_deliver() function to fixup on the pre-signal
-   frame when a signal is delivered on top of a restartable sequence
-   critical section.
-
-3. Check that system calls are not invoked from within rseq critical
-   sections by invoking rseq_signal() from ret_from_syscall(). With
-   CONFIG_DEBUG_RSEQ, such behavior results in termination of the
-   process with SIGSEGV.
+This patch implements FTRACE_WITH_REGS for csky, which allows a traced
+function's arguments (and some other registers) to be captured into a
+struct pt_regs, allowing these to be inspected and/or modified.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 ---
- arch/csky/Kconfig         | 1 +
- arch/csky/kernel/entry.S  | 5 ++++-
- arch/csky/kernel/signal.c | 3 +++
- 3 files changed, 8 insertions(+), 1 deletion(-)
+ arch/csky/Kconfig               |  1 +
+ arch/csky/abiv2/inc/abi/entry.h | 60 +++++++++++++++++++++++++++++++++
+ arch/csky/abiv2/mcount.S        | 48 ++++++++++++++++++++++++++
+ arch/csky/include/asm/ftrace.h  |  2 ++
+ arch/csky/kernel/asm-offsets.c  |  1 +
+ arch/csky/kernel/ftrace.c       | 11 ++++++
+ 6 files changed, 123 insertions(+)
 
 diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-index 2dfd3fb07db9..0e9b14367fa8 100644
+index 0e9b14367fa8..6cf169a15794 100644
 --- a/arch/csky/Kconfig
 +++ b/arch/csky/Kconfig
-@@ -49,6 +49,7 @@ config CSKY
- 	select HAVE_PERF_USER_STACK_DUMP
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_REGS_AND_STACK_ACCESS_API
-+	select HAVE_RSEQ
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
- 	select MAY_HAVE_SPARSE_IRQ
-diff --git a/arch/csky/kernel/entry.S b/arch/csky/kernel/entry.S
-index 007706328000..0bde1d9fd277 100644
---- a/arch/csky/kernel/entry.S
-+++ b/arch/csky/kernel/entry.S
-@@ -128,7 +128,10 @@ tlbop_end 1
- ENTRY(csky_systemcall)
- 	SAVE_ALL TRAP0_SIZE
- 	zero_fp
--
-+#ifdef CONFIG_RSEQ_DEBUG
-+	mov	a0, sp
-+	jbsr	rseq_syscall
-+#endif
- 	psrset  ee, ie
+@@ -38,6 +38,7 @@ config CSKY
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_COPY_THREAD_TLS
+ 	select HAVE_DYNAMIC_FTRACE
++	select HAVE_DYNAMIC_FTRACE_WITH_REGS
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_FUNCTION_GRAPH_TRACER
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+diff --git a/arch/csky/abiv2/inc/abi/entry.h b/arch/csky/abiv2/inc/abi/entry.h
+index 94a7a58765df..6a404393d0f4 100644
+--- a/arch/csky/abiv2/inc/abi/entry.h
++++ b/arch/csky/abiv2/inc/abi/entry.h
+@@ -100,6 +100,66 @@
+ 	rte
+ .endm
  
- 	lrw     r11, __NR_syscalls
-diff --git a/arch/csky/kernel/signal.c b/arch/csky/kernel/signal.c
-index 9b1b7c039ddf..3d6b728cbb72 100644
---- a/arch/csky/kernel/signal.c
-+++ b/arch/csky/kernel/signal.c
-@@ -175,6 +175,8 @@ static void handle_signal(struct ksignal *ksig, struct pt_regs *regs)
- 	sigset_t *oldset = sigmask_to_save();
- 	int ret;
- 
-+	rseq_signal_deliver(ksig, regs);
++.macro SAVE_REGS_FTRACE
++	subi    sp, 152
++	stw	tls, (sp, 0)
++	stw	lr, (sp, 4)
 +
- 	/* Are we from a system call? */
- 	if (in_syscall(regs)) {
- 		/* Avoid additional syscall restarting via ret_from_exception */
-@@ -258,5 +260,6 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
- 	if (thread_info_flags & _TIF_NOTIFY_RESUME) {
- 		clear_thread_flag(TIF_NOTIFY_RESUME);
- 		tracehook_notify_resume(regs);
-+		rseq_handle_notify_resume(NULL, regs);
- 	}
++	mfcr	lr, psr
++	stw	lr, (sp, 12)
++
++	addi    lr, sp, 152
++	stw	lr, (sp, 16)
++
++	stw     a0, (sp, 20)
++	stw     a0, (sp, 24)
++	stw     a1, (sp, 28)
++	stw     a2, (sp, 32)
++	stw     a3, (sp, 36)
++
++	addi	sp, 40
++	stm	r4-r13, (sp)
++
++	addi    sp, 40
++	stm     r16-r30, (sp)
++#ifdef CONFIG_CPU_HAS_HILO
++	mfhi	lr
++	stw	lr, (sp, 60)
++	mflo	lr
++	stw	lr, (sp, 64)
++	mfcr	lr, cr14
++	stw	lr, (sp, 68)
++#endif
++	subi	sp, 80
++.endm
++
++.macro	RESTORE_REGS_FTRACE
++	ldw	tls, (sp, 0)
++	ldw	a0, (sp, 16)
++	mtcr	a0, ss0
++
++#ifdef CONFIG_CPU_HAS_HILO
++	ldw	a0, (sp, 140)
++	mthi	a0
++	ldw	a0, (sp, 144)
++	mtlo	a0
++	ldw	a0, (sp, 148)
++	mtcr	a0, cr14
++#endif
++
++	ldw     a0, (sp, 24)
++	ldw     a1, (sp, 28)
++	ldw     a2, (sp, 32)
++	ldw     a3, (sp, 36)
++
++	addi	sp, 40
++	ldm	r4-r13, (sp)
++	addi    sp, 40
++	ldm     r16-r30, (sp)
++	addi    sp, 72
++	mfcr	sp, ss0
++.endm
++
+ .macro SAVE_SWITCH_STACK
+ 	subi    sp, 64
+ 	stm	r4-r11, (sp)
+diff --git a/arch/csky/abiv2/mcount.S b/arch/csky/abiv2/mcount.S
+index 326402e65f9e..9331c7ed5958 100644
+--- a/arch/csky/abiv2/mcount.S
++++ b/arch/csky/abiv2/mcount.S
+@@ -3,6 +3,8 @@
+ 
+ #include <linux/linkage.h>
+ #include <asm/ftrace.h>
++#include <abi/entry.h>
++#include <asm/asm-offsets.h>
+ 
+ /*
+  * csky-gcc with -pg will put the following asm after prologue:
+@@ -44,6 +46,22 @@
+ 	jmp	t1
+ .endm
+ 
++.macro mcount_enter_regs
++	subi	sp, 8
++	stw	lr, (sp, 0)
++	stw	r8, (sp, 4)
++	SAVE_REGS_FTRACE
++.endm
++
++.macro mcount_exit_regs
++	RESTORE_REGS_FTRACE
++	ldw	t1, (sp, 0)
++	ldw	r8, (sp, 4)
++	ldw	lr, (sp, 8)
++	addi	sp, 12
++	jmp	t1
++.endm
++
+ .macro save_return_regs
+ 	subi	sp, 16
+ 	stw	a0, (sp, 0)
+@@ -122,6 +140,8 @@ ENTRY(ftrace_caller)
+ 	ldw	a0, (sp, 16)
+ 	subi	a0, 4
+ 	ldw	a1, (sp, 24)
++	lrw	a2, function_trace_op
++	ldw	a2, (a2, 0)
+ 
+ 	nop
+ GLOBAL(ftrace_call)
+@@ -157,3 +177,31 @@ ENTRY(return_to_handler)
+ 	jmp	lr
+ END(return_to_handler)
+ #endif
++
++#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
++ENTRY(ftrace_regs_caller)
++	mcount_enter_regs
++
++	lrw	t1, PT_FRAME_SIZE
++	add	t1, sp
++
++	ldw	a0, (t1, 0)
++	subi	a0, 4
++	ldw	a1, (t1, 8)
++	lrw	a2, function_trace_op
++	ldw	a2, (a2, 0)
++	mov	a3, sp
++
++	nop
++GLOBAL(ftrace_regs_call)
++	nop32_stub
++
++#ifdef CONFIG_FUNCTION_GRAPH_TRACER
++	nop
++GLOBAL(ftrace_graph_regs_call)
++	nop32_stub
++#endif
++
++	mcount_exit_regs
++ENDPROC(ftrace_regs_caller)
++#endif /* CONFIG_DYNAMIC_FTRACE */
+diff --git a/arch/csky/include/asm/ftrace.h b/arch/csky/include/asm/ftrace.h
+index ba35d93ecda2..fae72b0b1374 100644
+--- a/arch/csky/include/asm/ftrace.h
++++ b/arch/csky/include/asm/ftrace.h
+@@ -10,6 +10,8 @@
+ 
+ #define HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+ 
++#define ARCH_SUPPORTS_FTRACE_OPS 1
++
+ #define MCOUNT_ADDR	((unsigned long)_mcount)
+ 
+ #ifndef __ASSEMBLY__
+diff --git a/arch/csky/kernel/asm-offsets.c b/arch/csky/kernel/asm-offsets.c
+index 9b48b1b1a61b..f8be348df9e4 100644
+--- a/arch/csky/kernel/asm-offsets.c
++++ b/arch/csky/kernel/asm-offsets.c
+@@ -72,6 +72,7 @@ int main(void)
+ 	DEFINE(PT_RLO,            offsetof(struct pt_regs, rlo));
+ #endif
+ 	DEFINE(PT_USP,            offsetof(struct pt_regs, usp));
++	DEFINE(PT_FRAME_SIZE,     sizeof(struct pt_regs));
+ 
+ 	/* offsets into the irq_cpustat_t struct */
+ 	DEFINE(CPUSTAT_SOFTIRQ_PENDING, offsetof(irq_cpustat_t,
+diff --git a/arch/csky/kernel/ftrace.c b/arch/csky/kernel/ftrace.c
+index 44f4880179b7..b4502cd2eabe 100644
+--- a/arch/csky/kernel/ftrace.c
++++ b/arch/csky/kernel/ftrace.c
+@@ -126,6 +126,9 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+ {
+ 	int ret = ftrace_modify_code((unsigned long)&ftrace_call,
+ 				(unsigned long)func, true, true);
++	if (!ret)
++		ret = ftrace_modify_code((unsigned long)&ftrace_regs_call,
++				(unsigned long)func, true, true);
+ 	return ret;
  }
+ 
+@@ -135,6 +138,14 @@ int __init ftrace_dyn_arch_init(void)
+ }
+ #endif /* CONFIG_DYNAMIC_FTRACE */
+ 
++#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
++int ftrace_modify_call(struct dyn_ftrace *rec, unsigned long old_addr,
++		       unsigned long addr)
++{
++	return ftrace_modify_code(rec->ip, addr, true, true);
++}
++#endif
++
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ void prepare_ftrace_return(unsigned long *parent, unsigned long self_addr,
+ 			   unsigned long frame_pointer)
 -- 
 2.17.0
 
