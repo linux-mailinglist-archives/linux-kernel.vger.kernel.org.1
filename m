@@ -2,139 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D87419D19B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112BC19D1A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390296AbgDCIBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 04:01:52 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31115 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727431AbgDCIBw (ORCPT
+        id S2390407AbgDCIEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 04:04:00 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36332 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727431AbgDCID7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:01:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585900911;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lsBzvnpYz4f+Oue6jUVYPkRL5iE2RlTfH/8UEWbiijA=;
-        b=WIhgZV01KuWnd2s6Bkd0k3BkeZCcSgA9Jm5OnbiT7nnCwQtt0yiYdk7/0sxi+xCH+2Bdfm
-        8AvxWDixbAMMzEvM+WRLOhi0oKcR+4uWLAsPtIbt0FArJsujb3vr3DBbiXtCxrlqU48EAw
-        IxlOacrm7Woz0gb0TYYyWgg51sKMLzo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-SkzrbWYBPh2vvz2ASvwFYQ-1; Fri, 03 Apr 2020 04:01:49 -0400
-X-MC-Unique: SkzrbWYBPh2vvz2ASvwFYQ-1
-Received: by mail-wm1-f71.google.com with SMTP id t65so2456745wmf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 01:01:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lsBzvnpYz4f+Oue6jUVYPkRL5iE2RlTfH/8UEWbiijA=;
-        b=k3OAWtPPTdRVGw2fu0x4hZosWka6TOHZ89sySZTK36N2c0zurL/mfS8pUSgQG1Fxij
-         jbzAP9KCke8cXuR8UDuBmtc166gVDGOXvrylTZlhmn97wJkALNu2whh7+KOtibdXcfRf
-         QAorBVKkD0CiPb8OH9U1NoZfIRvDe9EZtABVlc3HlpsytWH3uyxqGZGdakg75tKCqLQb
-         ylN7B8y9p3t4pptiyYjSNcgDV7lZRjVSoR9KSCYBPfuVQOKl7P0crT+qWLPPXiOxpk3A
-         r9yJ6hOL/tVM1EnKiDFsHMRum9SWE9hicesHYdntjx9ylASFDt+uhu2hHkg82MqKdjNB
-         O0kg==
-X-Gm-Message-State: AGi0PuaAILCavouw6hkEE75s2u4SH7nzPC3JnN1Lmru2LY6yoUfAYxxF
-        Hqm3CU3yHdYyt+vu7MqmphPNsDIdtouDEW+cjC+N4JLOEkMR0EJRS7XyijeTBCrjyMFJoixGDQq
-        n89Uv2OjbxNnmYgxz2HmXA/QJ
-X-Received: by 2002:a5d:40ce:: with SMTP id b14mr1588280wrq.414.1585900908394;
-        Fri, 03 Apr 2020 01:01:48 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJQVFGdWtp3aWk3Dg5yEbOAfGHh4/ffY0mjzN0BPu586loesXwLM2se4u++rDlWKus3co2LFg==
-X-Received: by 2002:a5d:40ce:: with SMTP id b14mr1588262wrq.414.1585900908157;
-        Fri, 03 Apr 2020 01:01:48 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
-        by smtp.gmail.com with ESMTPSA id d18sm11437380wrn.9.2020.04.03.01.01.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 01:01:47 -0700 (PDT)
-Subject: Re: [PATCH v2 10/10] objtool: Support multiple stack_op per
- instruction
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        raphael.gault@arm.com
-References: <20200327152847.15294-1-jthierry@redhat.com>
- <20200327152847.15294-11-jthierry@redhat.com>
- <20200402175426.77houvk46xhcxxmn@treble>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <3b3f07b3-172b-0560-96c7-d9386e3cab23@redhat.com>
-Date:   Fri, 3 Apr 2020 09:01:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 3 Apr 2020 04:03:59 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03383bua041820;
+        Fri, 3 Apr 2020 08:03:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=uVaVWvGK2rRDzlNOFOUMvxplXsbxRH2vt/0XQlDzCsY=;
+ b=twbeWOniMJLadbk7nycMgbesUu2TjHH3UQD7dFhYGpMwTvQ9/9/esw2i6D2PYeCt/+rn
+ YeXF1WEdUoFx8+8tpT3V8D6xU9BiTlpI8XqEhOxdMMbLFaGO7GRZBkt9pkoSnD1mlpOM
+ 06/sINYAp/V+WtUCiKqAjzAQ7iTzDhTtsDuOTVBCdV+cp9RtHRrXVRPVSwWJLgcgsSO1
+ By9NpKzyIUa8ly2xRYd6rndixWBm8jZtuQ+1bwixTtoC94Mhn1dqsO4DWTuTEHEyz/kK
+ QKo6tW/fszw6arvGThpgrG9QtZ2jhOh7PTVla1+NJw7ls8XGUuGue86WjMCqqktjZKM0 OQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 303cevfkbn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 08:03:45 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03382Drn142883;
+        Fri, 3 Apr 2020 08:03:45 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 302ga41tmk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 08:03:45 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03383h3E008767;
+        Fri, 3 Apr 2020 08:03:43 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Apr 2020 01:03:43 -0700
+Date:   Fri, 3 Apr 2020 11:03:35 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     devel@driverdev.osuosl.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 00/32] staging: wfx: rework the Tx queue
+Message-ID: <20200403080335.GU2001@kadam>
+References: <20200401110405.80282-1-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-In-Reply-To: <20200402175426.77houvk46xhcxxmn@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200401110405.80282-1-Jerome.Pouiller@silabs.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004030068
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
+ clxscore=1015 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030068
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I didn't quite finish reviewing these pathches last night.  Looks good.
+You will need a check on "ssidlen" to prevent memory corruption, as
+discussed in patch 1, but that's not a bug which was introduced by this
+patchset.  None of my other comments really applied to the patchset
+itself, just to the surrounding code.
 
+Looks good.
 
-On 4/2/20 6:54 PM, Josh Poimboeuf wrote:
-> On Fri, Mar 27, 2020 at 03:28:47PM +0000, Julien Thierry wrote:
->> @@ -127,6 +129,10 @@ int arch_decode_instruction(struct elf *elf, struct section *sec,
->>   	if (insn.sib.nbytes)
->>   		sib = insn.sib.bytes[0];
->>   
->> +	op = calloc(1, sizeof(*op));
->> +	if (!op)
->> +		return -1;
->> +
-> 
-> Why not malloc()?
-> 
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-It's just that previsously, stack_op was part of the instruction 
-structure and was initialized to all 0 in decode_instructions(). Now 
-that it's created here, I assumed it would be better to have the same 
-thing here and initialized the new stack_op to all 0.
-
-Do you prefer to have an explicit malloc() + memset()?
-
->> +static int handle_insn_ops(struct instruction *insn, struct insn_state *state)
->> +{
->> +	struct stack_op *op;
->> +
->> +	list_for_each_entry(op, &insn->stack_ops, list) {
->> +		int res;
->> +
->> +		res = update_insn_state(insn, state, op);
->> +		if (res)
->> +			return res;
-> 
-> This should probably be like:
-> 
-> 		if (update_insn_state(insn, state, op))
-> 			return 1;
-> 
-> That way the error codes are converted to non-fatal warnings like before
-> (which I admit is confusing...)
-> 
-
-Right, I'll change this.
-
->> @@ -2205,29 +2244,8 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
->>   			return 0;
->>   
->>   		case INSN_STACK:
->> -			if (update_insn_state(insn, &state))
->> +			if (handle_insn_ops(insn, &state))
->>   				return 1;
-> 
-> How about "handle_stack_ops"?
-> 
-
-Works for me!
-
-Thanks,
-
--- 
-Julien Thierry
+regards,
+dan carpenter
 
