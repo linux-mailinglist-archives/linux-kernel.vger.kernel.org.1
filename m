@@ -2,79 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 227F919DB49
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E48119DA94
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404238AbgDCQTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:19:19 -0400
-Received: from fieber.vanmierlo.com ([84.243.197.177]:48688 "EHLO
-        kerio9.vanmierlo.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2404084AbgDCQTS (ORCPT
+        id S1728229AbgDCPuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 11:50:11 -0400
+Received: from mail-ua1-f67.google.com ([209.85.222.67]:40047 "EHLO
+        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728066AbgDCPuL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:19:18 -0400
-X-Greylist: delayed 1805 seconds by postgrey-1.27 at vger.kernel.org; Fri, 03 Apr 2020 12:19:18 EDT
-X-Footer: dmFubWllcmxvLmNvbQ==
-Received: from roundcube.vanmierlo.com ([192.168.37.37])
-        (authenticated user m.brock@vanmierlo.com)
-        by kerio9.vanmierlo.com (Kerio Connect 9.2.11 beta 1) with ESMTPA;
-        Fri, 3 Apr 2020 17:48:42 +0200
+        Fri, 3 Apr 2020 11:50:11 -0400
+Received: by mail-ua1-f67.google.com with SMTP id a10so2897758uad.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 08:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PYwienmhzZwcpFtvNd9RSefcPiogX2fAxxNq9wneN/A=;
+        b=ibt3ZzYn6jEr1uFt9Fmxd4uysCVOIdfYmHGyhSZVgnBIR/pi9AaC9kTdCIEoL3kfEI
+         m1M3HVCiUKSl6z1hjBYbZy2HkUEoTPSNAqg2H5d/uB54PUOTygq+XKIgydbJxzGK9u4+
+         eUkWHSb6TOmh7iVjaVyVEdX8JIuz0FKdd/+4k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PYwienmhzZwcpFtvNd9RSefcPiogX2fAxxNq9wneN/A=;
+        b=OGnHQTXIwgjnUYwXVUJJIxDZ5pvkfhEBp/eUkwMaDrY8USML82RzYt85U/8ynMjNA1
+         uUhGupr4oibBLq2cOe40oebSdnrYWstyhRwOBE6XYvek+cb3lZqppENCNF5/7cCfe2S3
+         udHwlfc6VvSg7HNxzGi9WW1Oopi3Fx1XWaos9Y+KykcEVx2JqaQb7+75x/HGLkrNnRYO
+         CAlGDEVLTk8e0vSdr+yd0FSJXRMZ0lG7ZjXJj3WHDjqOqUWObBcye3rnko/NmJ0Dg7e5
+         CnyyBfOnOjJM8bhyZWZ0y/nZbjiChH+XA1x9Fzqsr2L4JnJ6IzwikDutT+xmOY6wamji
+         MNAg==
+X-Gm-Message-State: AGi0PuYuehdh5/Uk7UnEfhqW5ojt6megbrgoU9DgDjfj0sDzgI19eNhz
+        iFsmGrfk/rovoV00BH3lr7vGOCV+UbQ=
+X-Google-Smtp-Source: APiQypLx0JHNak+1nLH5HMazrInf4aqiaYtkktTLZLi03ZYhuMA5k52yMSxg9mFC0NrAP0ZccAVQxw==
+X-Received: by 2002:ab0:480f:: with SMTP id b15mr6682654uad.11.1585929008971;
+        Fri, 03 Apr 2020 08:50:08 -0700 (PDT)
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com. [209.85.221.176])
+        by smtp.gmail.com with ESMTPSA id h1sm2314763vke.7.2020.04.03.08.50.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Apr 2020 08:50:08 -0700 (PDT)
+Received: by mail-vk1-f176.google.com with SMTP id n128so2120313vke.5
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 08:50:07 -0700 (PDT)
+X-Received: by 2002:a1f:e182:: with SMTP id y124mr7153752vkg.0.1585929006777;
+ Fri, 03 Apr 2020 08:50:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 03 Apr 2020 17:48:42 +0200
-From:   Maarten Brock <m.brock@vanmierlo.com>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, johan@kernel.org,
-        linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        Jiri Slaby <jslaby@suse.com>,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-serial-owner@vger.kernel.org
-Subject: Re: [PATCH 0/7] serial: uartps: Revert dynamic port allocation
-In-Reply-To: <2983dbe2-16e6-4b7b-73a6-49d8c3d70510@xilinx.com>
-References: <cover.1585905873.git.michal.simek@xilinx.com>
- <20200403093216.GA3746303@kroah.com>
- <d9598635-a8ef-eff2-22e8-4fa37f8390b3@xilinx.com>
- <20200403094427.GA3754220@kroah.com>
- <2983dbe2-16e6-4b7b-73a6-49d8c3d70510@xilinx.com>
-Message-ID: <211f564d5594994fc677d3fea4222997@vanmierlo.com>
-X-Sender: m.brock@vanmierlo.com
-User-Agent: Roundcube Webmail/1.3.3
+References: <20200402155130.8264-1-dianders@chromium.org> <20200402085050.v2.2.I28278ef8ea27afc0ec7e597752a6d4e58c16176f@changeid>
+ <20200403013356.GA6987@ming.t460p> <CAD=FV=Ub6zhVvTj79SWPUv19RDvD0gt5EjJV-FZSbYxUy_T1OA@mail.gmail.com>
+In-Reply-To: <CAD=FV=Ub6zhVvTj79SWPUv19RDvD0gt5EjJV-FZSbYxUy_T1OA@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 3 Apr 2020 08:49:54 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Vsk0SjkA+DbUwJxvO6NFcr0CO9=H1FD7okJ2PxMt5pYA@mail.gmail.com>
+Message-ID: <CAD=FV=Vsk0SjkA+DbUwJxvO6NFcr0CO9=H1FD7okJ2PxMt5pYA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] blk-mq: Rerun dispatching in the case of budget contention
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Salman Qazi <sqazi@google.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
+        Ajay Joshi <ajay.joshi@wdc.com>, Arnd Bergmann <arnd@arndb.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-03 11:51, Michal Simek wrote:
-> 
-> Thanks. I am definitely interested to hear more how this could be done
-> differently because that hardcoded limits are painful.
-> On FPGAs you can have a lot of uarts for whatever reason and users are
-> using DT aliases to have consistent naming.
-> Specifically on Xilinx devices we are using uartps which is ttyPS,
-> uartlite which is ttyUL, ns16500 which is ttyS and also pl011 which is
-> ttyAMA.
-> Only ttyAMA or ttyPS on one chip are possible.
-> 
-> And right now you can't have serial0 alias pointed ttyPS0 and another
-> serial0 pointed to ttyUL0 or ttyS0. That's why others are shifted and 
-> we
-> can reach that hardcoded NR_UART limit easily.
-> And this was the reason why I have done these patches in past to remove
-> any limit from these drivers and if user asks for serial100 alias you
-> simply get ttyPS100 node.
+Hi,
 
-I would argue that the trouble originates from every uart driver using
-its own naming scheme and thereby creating separate namespaces. If all
-uarts would register as /dev/ttySnn then the serialN alias method would
-work. These non-overlapping namespaces is something the linux kernel
-driver community has allowed to happen.
+On Fri, Apr 3, 2020 at 8:10 AM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Correct that it only happens with BFQ, but whether it's a BFQ bug or
+> not just depends on how you define the has_work() API.  If has_work()
+> is allowed to be in-exact then it's either a blk-mq bug or a SCSI bug
+> depending on how you cut it.  If has_work() must be exact then it is
+> certainly a BFQ bug.  If has_work() doesn't need to be exact then it's
+> not a BFQ bug.  I believe that a sane API could be defined either way.
+> Either has_work() can be defined as a lightweight hint to trigger
+> heavier code or it can be defined as something exact.  It's really up
+> to blk-mq to say how they define it.
+>
+> From his response on the SCSI patch [1], it sounded like Jens was OK
+> with has_work() being a lightweight hint as long as BFQ ensures that
+> the queues run later.  ...but, as my investigation found, I believe
+> that BFQ _does_ try to ensure that the queue is run at a later time by
+> calling blk_mq_run_hw_queues().  The irony is that due to the race
+> we're talking about here, blk_mq_run_hw_queues() isn't guaranteed to
+> be reliable if has_work() is inexact.  :(  One way to address this is
+> to make blk_mq_run_hw_queues() reliable even if has_work() is inexact.
+>
+> ...so Jens: care to clarify how you'd like has_work() to be defined?
 
-If the namespaces are not abandoned and disallowed, then the serialN
-alias method must no longer be used for any driver that does not create
-/dev/ttySnn devices. Every namespace will require its own alias base.
-Or forget about deriving the number from an alias and set the number in
-a property in the device tree node itself. The latter has my preference.
+Sorry to reply so quickly after my prior reply, but I might have found
+an extreme corner case where we can still run into the same race even
+if has_work() is exact.  This is all theoretical from code analysis.
+Maybe you can poke a hole in my scenario or tell me it's so
+implausible that we don't care, but it seems like it's theoretically
+possible.  For this example I'll assume a budget of 1 (AKA only one
+thread can get budget for a given queue):
 
-Maarten
+* Threads A and B both run has_work() at the same time with the same
+  "hctx".  has_work() is exact but there's no lock, so it's OK if
+  Thread A and B both get back true.
 
+* Thread B gets interrupted for a long time right after it decides
+  that there is work.  Maybe its CPU gets an interrupt and the
+  interrupt handler is slow.
+
+* Thread A runs, get budget, dispatches work.
+
+* Thread A's work finishes and budget is released.
+
+* Thread B finally runs again and gets budget.
+
+* Since Thread A already took care of the work and no new work has
+  come in, Thread B will get NULL from dispatch_request().  I believe
+  this is specifically why dispatch_request() is allowed to return
+  NULL in the first place if has_work() must be exact.
+
+* Thread B will now be holding the budget and is about to call
+  put_budget(), but hasn't called it yet.
+
+* Thread B gets interrupted for a long time (again).  Dang interrupts.
+
+* Now Thread C (with a different "hctx" but the same queue) comes
+  along and runs blk_mq_do_dispatch_sched().
+
+* Thread C won't do anything because it can't get budget.
+
+* Finally Thread B will run again and put the budget without kicking
+  any queues.
+
+Now we have a potential I/O stall because nobody will ever kick the
+queues.
+
+
+I think the above example could happen even on non-BFQ systems and I
+think it would also be fixed by an approach like the one in my patch.
+
+-Doug
