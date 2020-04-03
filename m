@@ -2,136 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5203919DA67
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B85319DA6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390920AbgDCPno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 11:43:44 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:34438 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390855AbgDCPnm (ORCPT
+        id S2404316AbgDCPnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 11:43:49 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:46455 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390855AbgDCPnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 11:43:42 -0400
-Received: by mail-wr1-f66.google.com with SMTP id 65so9100015wrl.1;
-        Fri, 03 Apr 2020 08:43:39 -0700 (PDT)
+        Fri, 3 Apr 2020 11:43:47 -0400
+Received: by mail-qv1-f65.google.com with SMTP id bu9so3758453qvb.13;
+        Fri, 03 Apr 2020 08:43:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=pJW7G8+AK7on97oQRodU2eKPtvCqhsk+Q2DcdPPDzz8=;
-        b=YsStG8A5lTrfMhCobWLibPDOdgx7uaUkrcKnsgoZ6m7l4uQKiLSkVr7SNnjTh7ecSt
-         c4+TngxLVPmQglZ1Os/5j9gQBypVYtZ3B4/Oi0xRLiheN80JUNfcmEcNhynM+q8vU4gV
-         r5p9XvbMzKunWGUcQ/Mx8p2OH/2RQj5AaEwZb2VoRT53S9f7HEv9eEivyAofhl1iEQ6n
-         s7p+E+blwpKcNAAVjWRu2enj/x9u5i1wjM3x0l4XXLfS42A+jSpUj8/eYJTxQe/eYSDb
-         bEIOCC75N0Pjqcvcs0DDGWoJ94L/JB7TyVkbjOV1THRjzFdxPW9zFTp1aE6/YHdHppu1
-         MccA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vMx0MOLe0yvwgWuw4zcBKaQIRZC+xinekU6xHhikY6Y=;
+        b=lLOBh+umo7XmD7bXXEWTjIKbErh0pNJ4W1cHP9XwA6Q/F75wkb7gFTSXpXMNV294+M
+         Vwr/9u9w4YVoFzulwd8BEeyHuQ8kMIAMYrQMPKTMpXaKlFHkDZ7Hm6YJ8zGjpJfpBeWL
+         sm2CLEazw1xhEEJ1vv6N8KbYOmwQOSaJC/xpscVDIULWN8lfy96+Lbuu1iGvXIB7CrA3
+         lpiCY9kilSUJfP2kaS6kk+z8oXKGdFjTV1CKWpCAiQA1VZhzReL4UpiC1v3jI87qOqPs
+         yrxm6+S6HCShyMOPfFjuldMpPZEjW7L+qVrB9nPI28ZkTo3OsMtNIscZjXfcVE3mJEL3
+         X3zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=pJW7G8+AK7on97oQRodU2eKPtvCqhsk+Q2DcdPPDzz8=;
-        b=F/HPJ8yrRIwSO0d8htpzT/98ESwOLwPZqecgqRfL0GZtlWc2aKJFBBf8NJMbC5nByD
-         4EARS/uIxyB7NILI/EYqtwdL6q3he4QmXTc6ovvOChvoPgWRoE4C7D7klHsyUrqfaqTq
-         7ygNqTsKynle/KujQP6QWcPwDnEUaAX/aXYyQx5uqADGquVqgETwTzjUTJCVHXZoiXDL
-         u6HchNj/ust/QoWmcsheZcn+4meG8zU5tqpYpdH4n3zHTjg72Jvg4GUc83tflmlFtMgY
-         ZzLnICPvP5JrXpG4yIXsx7jVZA+hehBs3YhSn+FQxtkKcshwE1H7PSVvAxBAXtyQX8Id
-         nmtg==
-X-Gm-Message-State: AGi0PuZ/O6B1fDUPP9JrnGvfkmim4YpX9iu1lLkxNWQWrnbEnIu95SXY
-        PjUxsro+aWOqFr+XrF8rUJs=
-X-Google-Smtp-Source: APiQypJXUfhLnIeJDO6myvWEkdL4J0QdDbMurE0ImmLwTOsJPOpdKOfj5Ot5kldFmQDBTflYB+Q5fA==
-X-Received: by 2002:adf:fc05:: with SMTP id i5mr9491160wrr.127.1585928619208;
-        Fri, 03 Apr 2020 08:43:39 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id h2sm11701580wmb.16.2020.04.03.08.43.37
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Apr 2020 08:43:38 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] arm64: dts: rockchip: remove include for irq.h
-Date:   Fri,  3 Apr 2020 17:43:29 +0200
-Message-Id: <20200403154329.11256-3-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200403154329.11256-1-jbx6244@gmail.com>
-References: <20200403154329.11256-1-jbx6244@gmail.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=vMx0MOLe0yvwgWuw4zcBKaQIRZC+xinekU6xHhikY6Y=;
+        b=qV/GUIKYVKfj7nlDuzySxHt+Fjm4ylXvdoe1iKIgSlDIwo+41/vhHZ6LZltg3MW8Hf
+         BspQENCuNlKgX4E0BnJC5R4v8BMySKf3DgMxf8ElIF1CR2+1fxi+2BIGJp4vEsYzI+vp
+         XLa/bJ9RwsrOWCTV2tCN2HfiJALfrZudTqD789TwZutKPkBsZfQi2+yXJ30kyGnF3h76
+         e57594aTv0NP9xsUF6B6gMcOxWktHURPnKuo3gnV991+GF3b8oSx2K8ridJazQ1gu3DX
+         xD9ZbBM7AjrXewostx/sLbLvkauBO1NO/Fisb8Ah2L0Khn4229ZbKhQheXwsWfDwbyKg
+         /WgA==
+X-Gm-Message-State: AGi0PuZKbbdYJ4J2ddiJVB4tUpXb4wqo1G6qHtxJKzY01S6+m0InDROp
+        UHtvXV+SVx/Y8i7i55g2LOE=
+X-Google-Smtp-Source: APiQypIeff9mC0Z8KwgZIq+VCvmh+aODX/pV4cZ2GmTHwocSkeR+JEjsvr4Xe264cWIuYEWkSFG7RA==
+X-Received: by 2002:a0c:8525:: with SMTP id n34mr8885540qva.224.1585928625897;
+        Fri, 03 Apr 2020 08:43:45 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::842b])
+        by smtp.gmail.com with ESMTPSA id d22sm7022682qte.93.2020.04.03.08.43.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 08:43:45 -0700 (PDT)
+Date:   Fri, 3 Apr 2020 11:43:43 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sonny Rao <sonnyrao@google.com>
+Subject: Re: [PATCH v2] docs: cgroup-v1: Document the cpuset_v2_mode mount
+ option
+Message-ID: <20200403154343.GE162390@mtj.duckdns.org>
+References: <20200330140615.25549-1-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200330140615.25549-1-longman@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'irq.h' file is already included through 'arm-gic.h',
-so remove them from all Rockchip dtsi files.
+On Mon, Mar 30, 2020 at 10:06:15AM -0400, Waiman Long wrote:
+> The cpuset in cgroup v1 accepts a special "cpuset_v2_mode" mount
+> option that make cpuset.cpus and cpuset.mems behave more like those in
+> cgroup v2.  Document it to make other people more aware of this feature
+> that can be useful in some circumstances.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/px30.dtsi   | 1 -
- arch/arm64/boot/dts/rockchip/rk3308.dtsi | 1 -
- arch/arm64/boot/dts/rockchip/rk3328.dtsi | 1 -
- arch/arm64/boot/dts/rockchip/rk3368.dtsi | 1 -
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 1 -
- 5 files changed, 5 deletions(-)
+Applied to cgroup/for-5.7.
 
-diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts/rockchip/px30.dtsi
-index 6f7171290..4820edc7f 100644
---- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-@@ -6,7 +6,6 @@
- #include <dt-bindings/clock/px30-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
--#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pinctrl/rockchip.h>
- #include <dt-bindings/power/px30-power.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
-diff --git a/arch/arm64/boot/dts/rockchip/rk3308.dtsi b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-index ac43bc3f7..a9b98555d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3308.dtsi
-@@ -7,7 +7,6 @@
- #include <dt-bindings/clock/rk3308-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
--#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pinctrl/rockchip.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
- #include <dt-bindings/thermal/thermal.h>
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-index 470783a48..175060695 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
-@@ -6,7 +6,6 @@
- #include <dt-bindings/clock/rk3328-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
--#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pinctrl/rockchip.h>
- #include <dt-bindings/power/rk3328-power.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-index 1ebb0eef4..f22475016 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-@@ -5,7 +5,6 @@
- 
- #include <dt-bindings/clock/rk3368-cru.h>
- #include <dt-bindings/gpio/gpio.h>
--#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/pinctrl/rockchip.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index 0d895cff5..123b7402a 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -6,7 +6,6 @@
- #include <dt-bindings/clock/rk3399-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
--#include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/pinctrl/rockchip.h>
- #include <dt-bindings/power/rk3399-power.h>
- #include <dt-bindings/thermal/thermal.h>
+Thanks.
+
 -- 
-2.11.0
-
+tejun
