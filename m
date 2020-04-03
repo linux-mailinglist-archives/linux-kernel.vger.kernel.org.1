@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9532019CDDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B783F19CDDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390478AbgDCAkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 20:40:24 -0400
+        id S2390177AbgDCAk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 20:40:26 -0400
 Received: from mail.kernel.org ([198.145.29.99]:39196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390460AbgDCAkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 20:40:22 -0400
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.6+ merge window
+        id S2390468AbgDCAkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 20:40:23 -0400
+Subject: Re: [GIT PULL] mtd: Changes for 5.7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585874422;
-        bh=YaFclORjuPZW1dxJ3qN14gsQr29KJIcmOljdhCM2wvI=;
+        s=default; t=1585874423;
+        bh=AvTELZADH9IOKaT0E3zi5IeET7bjiewk+pSbc0nxanI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=IFgwl1rGl16z3FsJynrTtPHKHZuthqw+Mvt2qOVHMiMG5iieuewi8z1R5GljORISZ
-         V7CDMNsbkl8UDyD8ILpuT3RtLiZECGIOqpvkXG98XJK7HdbNV6ZBsEHMERLg1gJERr
-         iaUqHyrno4ZIPvLRol5Th55XtUrv7GXt2bpjJoI4=
+        b=LWs2XNaWtL8PWx/qskdiWYZxBgoZE1JqwQFrVrqglfRp+oeoJg4yuFVRR5AaZI2MV
+         wt3P61S9m6rS7NNyxJyJdPhPs1MkESfycWfqDDInK8OjFb0hmRT7LcB2jKIpJTqQ+5
+         lkRNbpRGz2ViBtKtPcOnX4MLmweC+WZkEX3kgG+U=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1585843596.9534.17.camel@HansenPartnership.com>
-References: <1585843596.9534.17.camel@HansenPartnership.com>
+In-Reply-To: <20200402182811.457e9220@xps13>
+References: <20200402182811.457e9220@xps13>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <1585843596.9534.17.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
-X-PR-Tracked-Commit-Id: ff275db92c935858454b721f0d960fff421634d3
+X-PR-Tracked-Message-Id: <20200402182811.457e9220@xps13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.7
+X-PR-Tracked-Commit-Id: 025a06c1104cd8995646b761d117816b5f28c873
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 79f51b7b9c4719303f758ae8406c4e5997ed6aa3
-Message-Id: <158587442215.31624.18315350369310388562.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Apr 2020 00:40:22 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: e109f506074152b7241bcbd3949a099e776cb802
+Message-Id: <158587442328.31624.4354605256453876674.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Apr 2020 00:40:23 +0000
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 02 Apr 2020 09:06:36 -0700:
+The pull request you sent on Thu, 2 Apr 2020 18:28:11 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+> git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/79f51b7b9c4719303f758ae8406c4e5997ed6aa3
+https://git.kernel.org/torvalds/c/e109f506074152b7241bcbd3949a099e776cb802
 
 Thank you!
 
