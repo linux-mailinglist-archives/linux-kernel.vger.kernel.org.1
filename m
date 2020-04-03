@@ -2,191 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BBF19D844
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732A819D889
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390965AbgDCN7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 09:59:40 -0400
-Received: from mga17.intel.com ([192.55.52.151]:50235 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728213AbgDCN7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:59:40 -0400
-IronPort-SDR: doRDbxzMLXo9A9Er73exZGM/Jwqp41Z2dCDP8m2LIHO8/LgY64ySDHorTfmW2wwtf5oNcoiPyY
- umS85X6ekQNw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 06:59:39 -0700
-IronPort-SDR: /2xYoklzvbD7Z3OBiQji7Z/4+0GLMR0+8oACt8P+r/jxr/MscjgYt9dWLSNMoaqNCYglsm00yp
- iLcTkSF+7tOA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,339,1580803200"; 
-   d="scan'208";a="423531409"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005.jf.intel.com with ESMTP; 03 Apr 2020 06:59:38 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jKMrE-00FRbl-QL; Fri, 03 Apr 2020 16:59:40 +0300
-Date:   Fri, 3 Apr 2020 16:59:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Fengping yu <fengping.yu@mediatek.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Yingjoe Chen <yingjoe.chen@mediatek.com>,
-        linux-kernel@vger.kernel.org, wsd_upstream@mediatek.com
-Subject: Re: [PATCH v3 2/2] add MediaTek keypad driver
-Message-ID: <20200403135940.GN3676135@smile.fi.intel.com>
-References: <20200403131419.6555-1-fengping.yu@mediatek.com>
- <20200403131419.6555-3-fengping.yu@mediatek.com>
+        id S2390756AbgDCODg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:03:36 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:32937 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728188AbgDCODf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 10:03:35 -0400
+Received: by mail-ed1-f53.google.com with SMTP id z65so9433321ede.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 07:03:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V/2/QnZrdfNzMUl7V0Zc2Muz5P3vIO5snfNmGYbh3nU=;
+        b=cvWoAx8DIGxqk2ohI3cG9gBv4PW2fm2j9s1Ie5nEs+t+rfv4Jr2fL02E8a7QMdqMED
+         2jaj0tPh0VrTxG6HLMOeySAEoj23W6PVcN9kngcGZ2IBWuzowL5cfhVwAN30vTx4kJIC
+         FG49YOebDsuFw4HN/DP/8HlFi6s77WYc6dqr6v01ZXwaigPIs5alMKdgYvi2sN2iuYR4
+         91fLA7Hnk23dQBPWUuwkSgUITL5wiDZnM8rDt+fVqpLcWF/V2sVFRT+4eTO5lQhkB8jV
+         QTehIuJICbkk3AbMfzZ+RURXeEQ1dGPw3AcB84Mpdfpww1l1JyFi+3xXAK+nnqDm3qCo
+         3V7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V/2/QnZrdfNzMUl7V0Zc2Muz5P3vIO5snfNmGYbh3nU=;
+        b=qmp/tn2JnqvX9hprlRiEDdmGc6eOKZ0o7ZrRQkCzg1ehOvDbul8ICraw2kG9VPo5oK
+         yMQ3+thrZfYXTH/ILIGYykRufLHWo7fBUel63FRvdMla9t3n7ZYJsjkSyImHyrZsjS04
+         4H07UPp2kH1bkxE6R9H8O901mdxzIitRW/hUrHTtX4XY3AirNVEJFlZnqxvh9Crlckwo
+         IPjV+aXrp8cX1MfWqBF7iDPvZUfa1jLuABFPi+mXtwzRpzYLo9j7S1pELFEUBOS9Zj6v
+         rgg7nogOCziatZkwztnFMBXJB42cjr24Hmpz59rtxT0f/WGjPDocSGOLQST8XMw/5R8K
+         ygdA==
+X-Gm-Message-State: AGi0PuZuSruML/ZPF1emwMf3GFN0OKdwOGvuTvtVZmkdFEyCMyJ3PYhY
+        tTZZHfthYf2BIbgDx7Lk+cv2yk3YKF1Ak7jw9Y1mxQ==
+X-Google-Smtp-Source: APiQypIF92A9lz0LkN0P3yMzNLaE8dz28LXcse7vIzHNDR2ihHENs0X8Yg6tXBNEVCEDP1dDBCKgJLxHRBY9zYCJ79g=
+X-Received: by 2002:a50:f0d5:: with SMTP id a21mr1214123edm.85.1585922613877;
+ Fri, 03 Apr 2020 07:03:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403131419.6555-3-fengping.yu@mediatek.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200403133549.14338-1-pasha.tatashin@soleen.com>
+ <20200403133549.14338-4-pasha.tatashin@soleen.com> <20200403134439.li6i635dnur5jdha@ca-dmjordan1.us.oracle.com>
+In-Reply-To: <20200403134439.li6i635dnur5jdha@ca-dmjordan1.us.oracle.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 3 Apr 2020 10:03:23 -0400
+Message-ID: <CA+CK2bDkh4ZzvsoaFAi=NZs4sxtfZgHFoWJ-uiw+BRKkNN6BHA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] mm: call cond_resched() from deferred_init_memmap()
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        David Hildenbrand <david@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 09:14:23PM +0800, Fengping yu wrote:
-> From: "fengping.yu" <fengping.yu@mediatek.com>
+> I think you meant cond_resched()?
+>
+> With that,
+> Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-You have to give a proper commit message. Emptiness is not good enough.
+Thank you Of course, I will re-submit quickly!
 
-> Signed-off-by: fengping.yu <fengping.yu@mediatek.com>
-
-...
-
-> +#include <linux/fs.h>
-
-This is for..?
-
-> +#include <linux/gpio.h>
-
-Wrong header.
-
-> +#include <linux/of_address.h>
-> +#include <linux/of_irq.h>
-
-I hardly found any user of these two.
-
-...
-
-> +#define BITS_TO_U32(nr)	DIV_ROUND_UP(nr, BITS_PER_BYTE * sizeof(u32))
-
-I believe this is in bits.h. But see below.
-
-> +struct mtk_keypad {
-> +	struct input_dev *input_dev;
-> +	struct clk *clk;
-> +	void __iomem *base;
-> +	unsigned int irqnr;
-> +	bool wakeup;
-> +	u32 key_debounce;
-> +	u32 n_rows;
-> +	u32 n_cols;
-
-> +	DECLARE_BITMAP(keymap_state, KPD_NUM_BITS);
-
-And where is bitmap.h?
-
-> +};
-
-...
-
-> +	for_each_set_bit(bit_nr, change, KPD_NUM_BITS) {
-> +		pressed = test_bit(bit_nr, new_state) == 0U;
-> +		dev_dbg(&keypad->input_dev->dev, "%s",
-> +			pressed ? "pressed" : "released");
-> +
-
-> +	/* per 32bit register only use low 16bit as keypad mem register */
-
-Indentation issue.
-
-> +		code = keycode[bit_nr - 16 * (BITS_TO_U32(bit_nr) - 1)];
-
-For example,
-	128 - 16 * (4 - 1) = 80
-	135 - 16 * (5 - 1) = 71
-Is this correct?
-
-> +		input_report_key(keypad->input_dev, code, pressed);
-> +		input_sync(keypad->input_dev);
-> +
-> +		dev_dbg(&keypad->input_dev->dev,
-> +			"report Linux keycode = %d\n", code);
-> +	}
-
-...
-
-> +	ret = of_property_read_u32(node, "mediatek,debounce-us",
-> +				   &keypad->key_debounce);
-
-Can't you use device property API instead?
-
-> +	keypad->wakeup = of_property_read_bool(node, "wakeup-source");
-
-Ditto.
-
-...
-
-> +	keypad_pinctrl = devm_pinctrl_get(dev);
-> +	if (IS_ERR(keypad_pinctrl)) {
-
-> +		dev_err(dev, "Cannot find keypad_pinctrl!\n");
-
-Isn't it a duplicate and pin control actually does this for you?
-
-> +		return PTR_ERR(keypad_pinctrl);
-> +	}
-> +
-> +	kpd_default = pinctrl_lookup_state(keypad_pinctrl, "default");
-> +	if (IS_ERR(kpd_default)) {
-
-> +		dev_err(dev, "Cannot find ecall_state!\n");
-
-Ditto.
-
-> +		return PTR_ERR(kpd_default);
-> +	}
-
-> +	return pinctrl_select_state(keypad_pinctrl,	kpd_default);
-
-Indentation issue.
-
-> +}
-
-...
-
-> +	keypad->base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(keypad->base)) {
-
-> +		dev_err(&pdev->dev, "KP iomap failed\n");
-
-Duplicate noise.
-
-> +		return PTR_ERR(keypad->base);
-> +	}
-
-...
-
-> +	keypad->irqnr = platform_get_irq(pdev, 0);
-> +	if (keypad->irqnr < 0) {
-
-> +		dev_err(&pdev->dev, "KP get irqnr failed\n");
-
-Duplicate noise.
-
-
-> +		ret = -keypad->irqnr;
-
-Why -?
-
-> +		goto disable_kpd_clk;
-> +	}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Pasha
