@@ -2,201 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B65D719CE90
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:18:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C355019CE85
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390272AbgDCCS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 22:18:56 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20054 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388709AbgDCCSz (ORCPT
+        id S2390104AbgDCCQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 22:16:24 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:36266 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389108AbgDCCQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 22:18:55 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0332EwrQ005459
-        for <linux-kernel@vger.kernel.org>; Thu, 2 Apr 2020 19:18:54 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=cDoB0ichWZYA+VpWqPf6KR4QQ008FhSwewof75iV/qU=;
- b=En7MjjFLedgM/cesn+je/GfO37JItXAp2IDtSXq9/uGhU/F3xfHY8Xu98i1oIDsM9iVQ
- c+VP+yCg45TQbfku1069/cv2a59seu8dCKVRwPauLcN6nTXjlr+M0E85OT0E4Zlaw2vg
- oO9WgG2iNgol/fuCUGuRybLXhUmSs0FkTtA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 304cxbvqdm-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 19:18:54 -0700
-Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 2 Apr 2020 19:18:52 -0700
-Received: by devbig020.ftw1.facebook.com (Postfix, from userid 179119)
-        id 81FA358C2CDF; Thu,  2 Apr 2020 19:18:45 -0700 (PDT)
-Smtp-Origin-Hostprefix: devbig
-From:   Aslan Bakirov <aslan@fb.com>
-Smtp-Origin-Hostname: devbig020.ftw1.facebook.com
-To:     <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, <riel@surriel.com>, <guro@fb.com>,
-        <mhocko@kernel.org>, <hannes@cmpxchg.org>,
-        Aslan Bakirov <aslan@fb.com>
-Smtp-Origin-Cluster: ftw1c07
-Subject: [PATCH v3] mm: cma: NUMA node interface
-Date:   Thu, 2 Apr 2020 19:12:56 -0700
-Message-ID: <20200403021254.2842224-1-aslan@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Thu, 2 Apr 2020 22:16:24 -0400
+Received: by mail-vs1-f67.google.com with SMTP id 184so4010976vsu.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 19:16:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=64OPywlQgnmjCAJe4iab4kwGSIKCiDfuRZfFbaamGR8=;
+        b=ZBeXNkHyyBpxDAciI8v0n6KQ6TIrCy4+YjnQyZ79Il318TIpMzTN44Gy2XD+I0MAVg
+         yUfrPLrkhQsQ8HL/kxV8q7eml6lcvhpdRGn2BdRr3EOkSC3ULzPFV8/qwBW0fGNmR419
+         0kqov14s10zCUhb9s9xugada3IDhNajyvMVwg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=64OPywlQgnmjCAJe4iab4kwGSIKCiDfuRZfFbaamGR8=;
+        b=RfUPXlWUfYKogX7a3MWafEbYEkrVjEBZQQaNBH6qef2ayjKUrz0aOK1TNvqExWsFKp
+         QTrD8l5/54tV7OC7GDZiHNR+ISAvjPP37dbuj08TKtyuUGRidpLrdLK4Vk9dnxhBaKD+
+         31lTWGnii7ye7mCcLlRkCjyn4Pd0bQ2giyNWAPEehsh0MWcDAeNVnISU+enKhpxwhk0u
+         LI2hMq7dY78j15Pd/ATZMMzWGDJRxKriMuA0ekNTHBamGplBF1LMCMY3mkBkWlx25H2i
+         x/+entiV7hpPaJo8peBSwkWH42KbYcN1CdNWcVMoClmaEZWThjO0I9oWs+duCT5W7GAc
+         Tn4Q==
+X-Gm-Message-State: AGi0PubIYkkTe0t5t+j7hkeZnGsSbOpjfGSeV+qQjYipVoI97EzfZOvu
+        8Vxyxy6+DfFU27urDGs6PSBOkxNYDEca8OnY0IXEVg==
+X-Google-Smtp-Source: APiQypIXa44nB4RalY6sk42qNy+zgRVrtsa9/gMqL6cr2XgwUzEI+osnNuHYGHwb3azV09ono88vo7jVytKzOZ36N9g=
+X-Received: by 2002:a67:b60c:: with SMTP id d12mr4461805vsm.196.1585880183647;
+ Thu, 02 Apr 2020 19:16:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-02_13:2020-04-02,2020-04-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 suspectscore=1 mlxlogscore=999 mlxscore=0 clxscore=1015
- spamscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004030016
-X-FB-Internal: deliver
+References: <20200323194507.90944-1-abhishekpandit@chromium.org> <20200323124503.v3.1.I17e2220fd0c0822c76a15ef89b882fb4cfe3fe89@changeid>
+In-Reply-To: <20200323124503.v3.1.I17e2220fd0c0822c76a15ef89b882fb4cfe3fe89@changeid>
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date:   Thu, 2 Apr 2020 19:16:12 -0700
+Message-ID: <CANFp7mV=ugPr4ZotxS9n=Dgy5ZTvKb-t9xbwUq-AJ5MoBiCDcA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] Bluetooth: Prioritize SCO traffic
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>
+Cc:     ChromeOS Bluetooth Upstreaming 
+        <chromeos-bluetooth-upstreaming@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've noticed that there is no interfaces exposed by CMA which would let m=
-e
-to declare contigous memory on particular NUMA node.
+Hi Marcel,
 
-This patchset adds the ability to try to allocate contiguous memory on
-specific node. It will fallback to other nodes if the specified one
-doesn't work.
+Reminder to review this patch.
 
-Implement a new method for declaring contigous memory on particular node
-and keep cma_declare_contiguous() as a wrapper.
+Thanks,
+Abhishek
 
-Signed-off-by: Aslan Bakirov <aslan@fb.com>
----
- include/linux/cma.h      | 13 +++++++++++--
- include/linux/memblock.h |  3 +++
- mm/cma.c                 | 16 +++++++++-------
- mm/memblock.c            |  2 +-
- 4 files changed, 24 insertions(+), 10 deletions(-)
-
-diff --git a/include/linux/cma.h b/include/linux/cma.h
-index 190184b5ff32..eae834c2162f 100644
---- a/include/linux/cma.h
-+++ b/include/linux/cma.h
-@@ -24,10 +24,19 @@ extern phys_addr_t cma_get_base(const struct cma *cma=
-);
- extern unsigned long cma_get_size(const struct cma *cma);
- extern const char *cma_get_name(const struct cma *cma);
-=20
--extern int __init cma_declare_contiguous(phys_addr_t base,
-+extern int __init cma_declare_contiguous_nid(phys_addr_t base,
- 			phys_addr_t size, phys_addr_t limit,
- 			phys_addr_t alignment, unsigned int order_per_bit,
--			bool fixed, const char *name, struct cma **res_cma);
-+			bool fixed, const char *name, struct cma **res_cma,
-+			int nid);
-+static inline int __init cma_declare_contiguous(phys_addr_t base,
-+			phys_addr_t size, phys_addr_t limit,
-+			phys_addr_t alignment, unsigned int order_per_bit,
-+			bool fixed, const char *name, struct cma **res_cma)
-+{
-+	return cma_declare_contiguous_nid(base, size, limit, alignment,
-+			order_per_bit, fixed, name, res_cma, NUMA_NO_NODE);
-+}
- extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
- 					unsigned int order_per_bit,
- 					const char *name,
-diff --git a/include/linux/memblock.h b/include/linux/memblock.h
-index 079d17d96410..6bc37a731d27 100644
---- a/include/linux/memblock.h
-+++ b/include/linux/memblock.h
-@@ -348,6 +348,9 @@ static inline int memblock_get_region_node(const stru=
-ct memblock_region *r)
-=20
- phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t alig=
-n,
- 				      phys_addr_t start, phys_addr_t end);
-+phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
-+				      phys_addr_t align, phys_addr_t start,
-+				      phys_addr_t end, int nid, bool exact_nid);
- phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t al=
-ign, int nid);
-=20
- static inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
-diff --git a/mm/cma.c b/mm/cma.c
-index be55d1988c67..6405af3dc118 100644
---- a/mm/cma.c
-+++ b/mm/cma.c
-@@ -220,7 +220,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, ph=
-ys_addr_t size,
- }
-=20
- /**
-- * cma_declare_contiguous() - reserve custom contiguous area
-+ * cma_declare_contiguous_nid() - reserve custom contiguous area
-  * @base: Base address of the reserved area optional, use 0 for any
-  * @size: Size of the reserved area (in bytes),
-  * @limit: End address of the reserved memory (optional, 0 for any).
-@@ -229,6 +229,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, ph=
-ys_addr_t size,
-  * @fixed: hint about where to place the reserved area
-  * @name: The name of the area. See function cma_init_reserved_mem()
-  * @res_cma: Pointer to store the created cma region.
-+ * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
-  *
-  * This function reserves memory from early allocator. It should be
-  * called by arch specific code once the early allocator (memblock or bo=
-otmem)
-@@ -238,10 +239,11 @@ int __init cma_init_reserved_mem(phys_addr_t base, =
-phys_addr_t size,
-  * If @fixed is true, reserve contiguous area at exactly @base.  If fals=
-e,
-  * reserve in range from @base to @limit.
-  */
--int __init cma_declare_contiguous(phys_addr_t base,
-+int __init cma_declare_contiguous_nid(phys_addr_t base,
- 			phys_addr_t size, phys_addr_t limit,
- 			phys_addr_t alignment, unsigned int order_per_bit,
--			bool fixed, const char *name, struct cma **res_cma)
-+			bool fixed, const char *name, struct cma **res_cma,
-+			int nid)
- {
- 	phys_addr_t memblock_end =3D memblock_end_of_DRAM();
- 	phys_addr_t highmem_start;
-@@ -336,14 +338,14 @@ int __init cma_declare_contiguous(phys_addr_t base,
- 		 * memory in case of failure.
- 		 */
- 		if (base < highmem_start && limit > highmem_start) {
--			addr =3D memblock_phys_alloc_range(size, alignment,
--							 highmem_start, limit);
-+			addr =3D memblock_alloc_range_nid(size, alignment,
-+					highmem_start, limit, nid, false);
- 			limit =3D highmem_start;
- 		}
-=20
- 		if (!addr) {
--			addr =3D memblock_phys_alloc_range(size, alignment, base,
--							 limit);
-+			addr =3D memblock_alloc_range_nid(size, alignment, base,
-+					alimit, nid, false);
- 			if (!addr) {
- 				ret =3D -ENOMEM;
- 				goto err;
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 4d06bbaded0f..c79ba6f9920c 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -1349,7 +1349,7 @@ __next_mem_pfn_range_in_zone(u64 *idx, struct zone =
-*zone,
-  * Return:
-  * Physical address of allocated memory block on success, %0 on failure.
-  */
--static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
-+phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
- 					phys_addr_t align, phys_addr_t start,
- 					phys_addr_t end, int nid,
- 					bool exact_nid)
---=20
-2.24.1
-
+On Mon, Mar 23, 2020 at 12:45 PM Abhishek Pandit-Subedi
+<abhishekpandit@chromium.org> wrote:
+>
+> When scheduling TX packets, send all SCO/eSCO packets first, check for
+> pending SCO/eSCO packets after every ACL/LE packet and send them if any
+> are pending.  This is done to make sure that we can meet SCO deadlines
+> on slow interfaces like UART.
+>
+> If we were to queue up multiple ACL packets without checking for a SCO
+> packet, we might miss the SCO timing. For example:
+>
+> The time it takes to send a maximum size ACL packet (1024 bytes):
+> t = 10/8 * 1024 bytes * 8 bits/byte * 1 packet / baudrate
+>         where 10/8 is uart overhead due to start/stop bits per byte
+>
+> Replace t = 3.75ms (SCO deadline), which gives us a baudrate of 2730666.
+>
+> At a baudrate of 3000000, if we didn't check for SCO packets within 1024
+> bytes, we would miss the 3.75ms timing window.
+>
+> Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+> ---
+>
+> Changes in v3:
+> * Removed hci_sched_sync
+>
+> Changes in v2:
+> * Refactor to check for SCO/eSCO after each ACL/LE packet sent
+> * Enabled SCO priority all the time and removed the sched_limit variable
+>
+>  net/bluetooth/hci_core.c | 106 +++++++++++++++++++++------------------
+>  1 file changed, 57 insertions(+), 49 deletions(-)
+>
+> diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+> index dbd2ad3a26ed..9e5d7662a047 100644
+> --- a/net/bluetooth/hci_core.c
+> +++ b/net/bluetooth/hci_core.c
+> @@ -4239,6 +4239,54 @@ static void __check_timeout(struct hci_dev *hdev, unsigned int cnt)
+>         }
+>  }
+>
+> +/* Schedule SCO */
+> +static void hci_sched_sco(struct hci_dev *hdev)
+> +{
+> +       struct hci_conn *conn;
+> +       struct sk_buff *skb;
+> +       int quote;
+> +
+> +       BT_DBG("%s", hdev->name);
+> +
+> +       if (!hci_conn_num(hdev, SCO_LINK))
+> +               return;
+> +
+> +       while (hdev->sco_cnt && (conn = hci_low_sent(hdev, SCO_LINK, &quote))) {
+> +               while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
+> +                       BT_DBG("skb %p len %d", skb, skb->len);
+> +                       hci_send_frame(hdev, skb);
+> +
+> +                       conn->sent++;
+> +                       if (conn->sent == ~0)
+> +                               conn->sent = 0;
+> +               }
+> +       }
+> +}
+> +
+> +static void hci_sched_esco(struct hci_dev *hdev)
+> +{
+> +       struct hci_conn *conn;
+> +       struct sk_buff *skb;
+> +       int quote;
+> +
+> +       BT_DBG("%s", hdev->name);
+> +
+> +       if (!hci_conn_num(hdev, ESCO_LINK))
+> +               return;
+> +
+> +       while (hdev->sco_cnt && (conn = hci_low_sent(hdev, ESCO_LINK,
+> +                                                    &quote))) {
+> +               while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
+> +                       BT_DBG("skb %p len %d", skb, skb->len);
+> +                       hci_send_frame(hdev, skb);
+> +
+> +                       conn->sent++;
+> +                       if (conn->sent == ~0)
+> +                               conn->sent = 0;
+> +               }
+> +       }
+> +}
+> +
+>  static void hci_sched_acl_pkt(struct hci_dev *hdev)
+>  {
+>         unsigned int cnt = hdev->acl_cnt;
+> @@ -4270,6 +4318,10 @@ static void hci_sched_acl_pkt(struct hci_dev *hdev)
+>                         hdev->acl_cnt--;
+>                         chan->sent++;
+>                         chan->conn->sent++;
+> +
+> +                       /* Send pending SCO packets right away */
+> +                       hci_sched_sco(hdev);
+> +                       hci_sched_esco(hdev);
+>                 }
+>         }
+>
+> @@ -4354,54 +4406,6 @@ static void hci_sched_acl(struct hci_dev *hdev)
+>         }
+>  }
+>
+> -/* Schedule SCO */
+> -static void hci_sched_sco(struct hci_dev *hdev)
+> -{
+> -       struct hci_conn *conn;
+> -       struct sk_buff *skb;
+> -       int quote;
+> -
+> -       BT_DBG("%s", hdev->name);
+> -
+> -       if (!hci_conn_num(hdev, SCO_LINK))
+> -               return;
+> -
+> -       while (hdev->sco_cnt && (conn = hci_low_sent(hdev, SCO_LINK, &quote))) {
+> -               while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
+> -                       BT_DBG("skb %p len %d", skb, skb->len);
+> -                       hci_send_frame(hdev, skb);
+> -
+> -                       conn->sent++;
+> -                       if (conn->sent == ~0)
+> -                               conn->sent = 0;
+> -               }
+> -       }
+> -}
+> -
+> -static void hci_sched_esco(struct hci_dev *hdev)
+> -{
+> -       struct hci_conn *conn;
+> -       struct sk_buff *skb;
+> -       int quote;
+> -
+> -       BT_DBG("%s", hdev->name);
+> -
+> -       if (!hci_conn_num(hdev, ESCO_LINK))
+> -               return;
+> -
+> -       while (hdev->sco_cnt && (conn = hci_low_sent(hdev, ESCO_LINK,
+> -                                                    &quote))) {
+> -               while (quote-- && (skb = skb_dequeue(&conn->data_q))) {
+> -                       BT_DBG("skb %p len %d", skb, skb->len);
+> -                       hci_send_frame(hdev, skb);
+> -
+> -                       conn->sent++;
+> -                       if (conn->sent == ~0)
+> -                               conn->sent = 0;
+> -               }
+> -       }
+> -}
+> -
+>  static void hci_sched_le(struct hci_dev *hdev)
+>  {
+>         struct hci_chan *chan;
+> @@ -4436,6 +4440,10 @@ static void hci_sched_le(struct hci_dev *hdev)
+>                         cnt--;
+>                         chan->sent++;
+>                         chan->conn->sent++;
+> +
+> +                       /* Send pending SCO packets right away */
+> +                       hci_sched_sco(hdev);
+> +                       hci_sched_esco(hdev);
+>                 }
+>         }
+>
+> @@ -4458,9 +4466,9 @@ static void hci_tx_work(struct work_struct *work)
+>
+>         if (!hci_dev_test_flag(hdev, HCI_USER_CHANNEL)) {
+>                 /* Schedule queues and send stuff to HCI driver */
+> -               hci_sched_acl(hdev);
+>                 hci_sched_sco(hdev);
+>                 hci_sched_esco(hdev);
+> +               hci_sched_acl(hdev);
+>                 hci_sched_le(hdev);
+>         }
+>
+> --
+> 2.25.1.696.g5e7596f4ac-goog
+>
