@@ -2,153 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEBF19CE74
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B92519CE79
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390313AbgDCCAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 22:00:32 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33666 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389507AbgDCCAc (ORCPT
+        id S2390355AbgDCCHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 22:07:07 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:54888 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390227AbgDCCHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 22:00:32 -0400
-Received: by mail-wr1-f68.google.com with SMTP id a25so6725499wrd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 19:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uXBmPI1aMBP86rFq67gcQrBQ0rMBGLe0pgjXqjE6OXg=;
-        b=we5VT1tIaUauueTImm6VHNLLfFfkERkS+qqB5I25fA1/vaM4+IgSg5UQaU5G1vGJBQ
-         ZlsjJbcJ47yqWyqfDwAh16Ut3J/+m1JDN1spRFmk2bdi8/58Y7GcgseoMV81RiQ5zN1P
-         ncJVoY5weEO3ypUFN8zZY3/NmO2qfEOctfRxSWTBPntCQG17sDsHfCvEDcreLYUVK0EN
-         osYpYl+eIIbJ1zoUiSDtEsc5b9F9MzsNMetN+j0HtSrpgmPSgsCtAvvwovDWgrt0xf0r
-         u3ylqWoVNVVNEIsAFAB13uHetGhVjlKZ3Aox3ZZX4ZQiPPPAv8FajG1SfTHVYegjbwQT
-         5OeQ==
+        Thu, 2 Apr 2020 22:07:06 -0400
+Received: by mail-il1-f200.google.com with SMTP id m2so5348108ilb.21
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 19:07:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uXBmPI1aMBP86rFq67gcQrBQ0rMBGLe0pgjXqjE6OXg=;
-        b=Y06qoZ1tLxVCwWL3GZq9i0L/YAu9CKh3c3eWK+o4WdAZuh6lNRr+noMqb/jG4gUjwU
-         a2gDQe0ZZ0lazHAj2iHvPLQGFe1t0N/SymoBS9rGPoNdmBlmxMTQpD4VQl4bGsafLPgL
-         I+4MEpCNONrbjaoFgJKxAQhtTb3MDuMdnbR51ncVDVCj73h/ZX3LAdwzVohrZCD8RYCH
-         YbxxTMg7TD0Pn93K9eLYNsBQ/dvrm6sUjH0Ngz5Pao7Gb/fUL9/AKSm7bWObCOevtvVd
-         w2epFVXWK+IqKCf6G7vmjmVP1FEYqS6/hQQJBE42eM6Hj0u+yqAwlKnJV+U27sjp2UCr
-         8l2g==
-X-Gm-Message-State: AGi0Pub3ogd4trlzeGmuAnVdDfOPY+tyiWIWTFobPHP6DlM5D2MtQd7O
-        1Eo5aGgD2o8Fqe/md1UqD+yAUDtD7wbhldMMjFfNAA==
-X-Google-Smtp-Source: APiQypJpeSSwOq64/N7vOjBoWjJ/56BFT+hlHKLS0f3nog579CzDJTnDcAtebBwG/3cPxDxAd++E7WmJ/MKvp8wSlgA=
-X-Received: by 2002:adf:a4c9:: with SMTP id h9mr49479wrb.426.1585879229770;
- Thu, 02 Apr 2020 19:00:29 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7J/k6eEvJIq17JOSR8idMeCvoHGU5sGu3VSOhnubzmQ=;
+        b=bJudWkHu0lMAp/kDlKjtoUw3TsLB7k+NX6+Y/Rw+2iRLl6n+OS2SWbPAGhmXHiqqe4
+         FJMdYnaqzxt5dX4v0Xd3kb8+07VraT93Kmbhp5WyQ8eF2JMoxK/W4QtVNYlZA59F5CYH
+         qkP0MtmdIq0BZCFJy1JNb2jofgNGqd5+/Ql5ulXPj0dfIb7jB/V8lxutuffMMktTccLA
+         MF2cNf1nS0dLDno/flOlrPPdqZY0CPQ8VThaVEzDTPonTU80lqrJZBLdVOh3v0lhQ+wP
+         0XMBGJ8q/0E1ZIh6LZmJDkEiIaxlAak52SZdWSg1pitL82qRFSVoc+10/JsFijabNdTI
+         IL6w==
+X-Gm-Message-State: AGi0PuZjzUI1zOkrv+6Io0pY9nIM1kKb0TAQd4Ouvg5msWK44K/yLut9
+        jgdDyJsCQij5CI6b/LquxeSXLIy743aHnjqiMxKXooI0LL1P
+X-Google-Smtp-Source: APiQypIAlBCMDIO8Mp11ihUP2Aa0Ng3EkKSMlaylNoj+IQZ2XoML5J9qeSvuWJ7dpt7NnOEllOT2e+Bk8VEnYuPTEsrmo2SdkbZx
 MIME-Version: 1.0
-References: <1583466184-7060-1-git-send-email-tiantao6@hisilicon.com> <1583466184-7060-4-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1583466184-7060-4-git-send-email-tiantao6@hisilicon.com>
-From:   Xinliang Liu <xinliang.liu@linaro.org>
-Date:   Fri, 3 Apr 2020 10:00:18 +0800
-Message-ID: <CAKoKPbxF05D4vhKNkCsVCRHsfEAVmdFf8akVzSAHNEfXnwpFwA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] drm/hisilicon: Enforce 128-byte stride alignment to
- fix the hardware limitation
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     Chen Feng <puck.chen@hisilicon.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, tzimmermann@suse.de,
-        kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
+X-Received: by 2002:a6b:dd14:: with SMTP id f20mr5790683ioc.123.1585879624594;
+ Thu, 02 Apr 2020 19:07:04 -0700 (PDT)
+Date:   Thu, 02 Apr 2020 19:07:04 -0700
+In-Reply-To: <CADG63jC06pj4pSrKMKQeK1pedyRnjNTWWmTzg-6rNbQh5c6=Ug@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ae3c0205a2595fc4@google.com>
+Subject: Re: KASAN: use-after-free Write in ath9k_htc_rx_msg
+From:   syzbot <syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, anenbupt@gmail.com,
+        ath9k-devel@qca.qualcomm.com, davem@davemloft.net,
+        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+Hello,
 
-On Fri, 6 Mar 2020 at 11:44, Tian Tao <tiantao6@hisilicon.com> wrote:
->
-> because the hardware limitation,The initial color depth must set to 32bpp
-> and must set the FB Offset of the display hardware to 128Byte alignment,
-> which is used to solve the display problem at 800x600 and 1440x900
-> resolution under 16bpp.
->
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> Signed-off-by: Gong junjie <gongjunjie2@huawei.com>
+syzbot has tested the proposed patch and the reproducer did not trigger crash:
 
-Thanks for the patch.
-Acked-by: Xinliang Liu <xinliang.liu@linaro.org>
-Applied to drm-misc.
+Reported-and-tested-by: syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com
 
--Xinliang
+Tested on:
 
-> ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c  | 9 +++++----
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 4 ++--
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c     | 2 +-
->  3 files changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> index 55b46a7..cc70e83 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
-> @@ -94,6 +94,10 @@ static int hibmc_plane_atomic_check(struct drm_plane *plane,
->                 return -EINVAL;
->         }
->
-> +       if (state->fb->pitches[0] % 128 != 0) {
-> +               DRM_DEBUG_ATOMIC("wrong stride with 128-byte aligned\n");
-> +               return -EINVAL;
-> +       }
->         return 0;
->  }
->
-> @@ -119,11 +123,8 @@ static void hibmc_plane_atomic_update(struct drm_plane *plane,
->         writel(gpu_addr, priv->mmio + HIBMC_CRT_FB_ADDRESS);
->
->         reg = state->fb->width * (state->fb->format->cpp[0]);
-> -       /* now line_pad is 16 */
-> -       reg = PADDING(16, reg);
->
-> -       line_l = state->fb->width * state->fb->format->cpp[0];
-> -       line_l = PADDING(16, line_l);
-> +       line_l = state->fb->pitches[0];
->         writel(HIBMC_FIELD(HIBMC_CRT_FB_WIDTH_WIDTH, reg) |
->                HIBMC_FIELD(HIBMC_CRT_FB_WIDTH_OFFS, line_l),
->                priv->mmio + HIBMC_CRT_FB_WIDTH);
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> index 222356a..79a180a 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -94,7 +94,7 @@ static int hibmc_kms_init(struct hibmc_drm_private *priv)
->         priv->dev->mode_config.max_height = 1200;
->
->         priv->dev->mode_config.fb_base = priv->fb_base;
-> -       priv->dev->mode_config.preferred_depth = 24;
-> +       priv->dev->mode_config.preferred_depth = 32;
->         priv->dev->mode_config.prefer_shadow = 1;
->
->         priv->dev->mode_config.funcs = (void *)&hibmc_mode_funcs;
-> @@ -307,7 +307,7 @@ static int hibmc_load(struct drm_device *dev)
->         /* reset all the states of crtc/plane/encoder/connector */
->         drm_mode_config_reset(dev);
->
-> -       ret = drm_fbdev_generic_setup(dev, 16);
-> +       ret = drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
->         if (ret) {
->                 DRM_ERROR("failed to initialize fbdev: %d\n", ret);
->                 goto err;
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> index 99397ac..322bd54 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_ttm.c
-> @@ -50,7 +50,7 @@ void hibmc_mm_fini(struct hibmc_drm_private *hibmc)
->  int hibmc_dumb_create(struct drm_file *file, struct drm_device *dev,
->                       struct drm_mode_create_dumb *args)
->  {
-> -       return drm_gem_vram_fill_create_dumb(file, dev, 0, 16, args);
-> +       return drm_gem_vram_fill_create_dumb(file, dev, 0, 128, args);
->  }
->
->  const struct drm_mode_config_funcs hibmc_mode_funcs = {
-> --
-> 2.7.4
->
+commit:         0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
+git tree:       https://github.com/google/kasan.git usb-fuzzer
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a782c087b1f425c6
+dashboard link: https://syzkaller.appspot.com/bug?extid=b1c61e5f11be5782f192
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=172383dbe00000
+
+Note: testing is done by a robot and is best-effort only.
