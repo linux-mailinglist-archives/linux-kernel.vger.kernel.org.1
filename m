@@ -2,319 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AA219DD48
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B2719DD50
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404111AbgDCR7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:59:12 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:42786 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728392AbgDCR7K (ORCPT
+        id S2404220AbgDCSAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 14:00:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60090 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2404096AbgDCSAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:59:10 -0400
-Received: by mail-wr1-f67.google.com with SMTP id h15so9549404wrx.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2EJTMwd5yAFnu/Tn5slB2aVKxhhWasEuV9Nvp1nHtms=;
-        b=vUuFEUqHUgr5ANyLeOl+LO/mjA+LzITj2SxcpnJtLNebhU7LwGJsGU0g0Qggb1U9vl
-         RqHuK6goVE4isHMsgShYtfSacsi8fWuAuCJxfSX8EkCW8VhOcgOu40673bd4Q6nE+AWP
-         GASXazvH9Ng30nFzYGBu497VuNwflQ2PLNxFnNcvyVTQOLAmwoxPBWV5O0kc6ORzZ8Yc
-         TmJkRn7Nhe5mSexPNAOKaXiFSE3seS+CZ5ZVp/Wd/e7jw1At9NyCcr9VA4p5vWiTmeeM
-         0B2lJ2z27xG5HnOfuWH0HXMDwSBtMytGItKDMRE6EucDmi5JoHhFL3sEyJygZ2Y5NbcX
-         aGaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2EJTMwd5yAFnu/Tn5slB2aVKxhhWasEuV9Nvp1nHtms=;
-        b=s7ARIJG4IUpFmeJy04p/da0kmF2IYmSW9/hgHdAKTJ3R3HCeLvhHf3ENw0h6+Ds8Cl
-         xN8f/ILBADZC8mRQuUZZO+69wlzUyqY6gWqRY5Dy0TfDU6QcceKd8yicMljw0Kx+XCvn
-         HluENDLITyhMniY2rIRuFfL49PEDsErxuAZO9BQuDtsNVOIwGfbWYshHJi3Cnu4nCCVQ
-         eRZA2teapDzcWmOax4V0CiqwA51JVnk13q/BPKlzuRFHkev2JxiVh7xkWq9iDqEIppDF
-         LD5wQXnK4LPxeweNOuXyYn5tqK4p4fbqWls/P+2DurDxvUFHIMBnFOEKCTJHhUH/N605
-         DbaA==
-X-Gm-Message-State: AGi0PuaRAZd9mTvhoARydPNQLXbZvCoXIwQgqCm1kd2ifxXeI3FIub20
-        CwLwx3w9ThOiWgbWgJKSL0I=
-X-Google-Smtp-Source: APiQypJXwI2YLMLTSzAGoS7S0I9+R99VL5pFUBK43/9LwFHMg9qKO4IOl5UW1seICMuN/0QeYcCMlg==
-X-Received: by 2002:adf:e44a:: with SMTP id t10mr10132322wrm.322.1585936748526;
-        Fri, 03 Apr 2020 10:59:08 -0700 (PDT)
-Received: from 5f9ad775e7f6 ([213.137.85.32])
-        by smtp.gmail.com with ESMTPSA id a13sm12766764wrh.80.2020.04.03.10.59.06
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 03 Apr 2020 10:59:07 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 17:59:04 +0000
-From:   Daniel Shaulov <daniel.shaulov@gmail.com>
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc:     Daniel Shaulov <daniel.shaulov@granulate.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf probe: Add support for DW_OP_call_frame_cfa vars
-Message-ID: <20200403175902.GA18789@5f9ad775e7f6>
-References: <20200401161954.44640-1-daniel.shaulov@granulate.io>
- <20200402184943.GB23243@kernel.org>
- <20200402202523.GA55594@5f9ad775e7f6>
- <20200403130251.GB18559@kernel.org>
+        Fri, 3 Apr 2020 14:00:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585936845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0NiMkDJ11j6iIzUVzg7SnDb83MwqOSNwZhS3zwBcV2Y=;
+        b=aHlID9tEKRmEW5JEuilOyelPmmW5E//w6ipraMYYuvgsxiDNBnRBk9+gcsaEtxh3bdL9Yf
+        xeohdkoZ5rNCDD9cz6c6y8dbTMsTL+IZ4gpv1GVRZ4OBNsvBv6KpJk9IMP3IbzMRcfT5r1
+        49XbfyZRnBXQXF/nDktcklSjPqmf7ps=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-YokxTUBLPHi7KLMQlFoTWQ-1; Fri, 03 Apr 2020 14:00:39 -0400
+X-MC-Unique: YokxTUBLPHi7KLMQlFoTWQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8665F801E66;
+        Fri,  3 Apr 2020 18:00:37 +0000 (UTC)
+Received: from redhat.com (ovpn-114-27.phx2.redhat.com [10.3.114.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8F27F60BF3;
+        Fri,  3 Apr 2020 18:00:36 +0000 (UTC)
+Date:   Fri, 3 Apr 2020 14:00:34 -0400
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Nicolai Stange <nstange@suse.de>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [POC 20/23] module/livepatch: Relocate local variables in the
+ module loaded when the livepatch is being loaded
+Message-ID: <20200403180034.GB30284@redhat.com>
+References: <20200117150323.21801-1-pmladek@suse.com>
+ <20200117150323.21801-21-pmladek@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200403130251.GB18559@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200117150323.21801-21-pmladek@suse.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 10:02:51AM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Apr 02, 2020 at 08:25:24PM +0000, Daniel Shaulov escreveu:
-> > On Thu, Apr 02, 2020 at 03:49:43PM -0300, Arnaldo Carvalho de Melo wrote:
-> > > Daniel, next time please consider providing precise steps to show what
-> > > wasn't working and then how the patch solves the problem, i.e. get some
-> > > go program, show the command lines used to build, probe, etc.
-> > >
-> > > - Arnaldo
-> > 
-> > Sure thing:
-> > 
-> > ---- contents of example.go ----
-> > package main
-> > 
-> > import "fmt"
-> > 
-> > func example(param1 int, param2 int) {
-> > 	fmt.Println(param1, param2)
-> > }
-> > 
-> > func main() {
-> > 	example(111, 222)
-> > }
-> > ---- end contents of example.go ----
-> > 
-> > Build with:
-> > $ go build example.go
-> > 
-> > Note that the output file is named after the directory.
-> > 
-> > Then try to probe it with:
-> > $ perf probe -x ./example 'main.example param1 param2'
-> > 
-> > The result is:
-> > > Target program is compiled without optimization. Skipping prologue.
-> > > Probe on address 0x4820f0 to force probing at the function entry.
-> > >
-> > > Sorry, we don't support this variable location yet.
-> > >   Error: Failed to add events.
-> > 
-> > With my changes the event is added successfuly.
-> > The reason for the change can be observed in the output of:
-> > $ readelf --debug-dump=info ./example
-> > 
-> > Where we have the following for the main.example function (with go >= 1.10):
-> >  <1><63dd2>: Abbrev Number: 2 (DW_TAG_subprogram)
-> >     <63dd3>   DW_AT_name        : main.example
-> >     <63de0>   DW_AT_low_pc      : 0x4820f0
-> >     <63de8>   DW_AT_high_pc     : 0x4821c2
-> >     <63df0>   DW_AT_frame_base  : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
-> >     <63df2>   DW_AT_decl_file   : 0x1
-> >     <63df6>   DW_AT_external    : 1
-> >  <2><63df7>: Abbrev Number: 14 (DW_TAG_formal_parameter)
-> >     <63df8>   DW_AT_name        : param1
-> >     <63dff>   DW_AT_variable_parameter: 0
-> >     <63e00>   DW_AT_decl_line   : 5
-> >     <63e01>   DW_AT_type        : <0x220f>
-> >     <63e05>   DW_AT_location    : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
-> >  <2><63e07>: Abbrev Number: 14 (DW_TAG_formal_parameter)
-> >     <63e08>   DW_AT_name        : param2
-> >     <63e0f>   DW_AT_variable_parameter: 0
-> >     <63e10>   DW_AT_decl_line   : 5
-> >     <63e11>   DW_AT_type        : <0x220f>
-> >     <63e15>   DW_AT_location    : 2 byte block: 91 8 	(DW_OP_fbreg: 8)
-> >  <2><63e18>: Abbrev Number: 0
+On Fri, Jan 17, 2020 at 04:03:20PM +0100, Petr Mladek wrote:
+> The special SHF_RELA_LIVEPATCH section is still needed to find static
+> (non-exported) symbols. But it can be done together with the other
+> relocations when the livepatch module is being loaded.
+> 
+> There is no longer needed to copy the info section. The related
+> code in the module loaded will get removed in separate patch.
+> 
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
+> ---
+>  include/linux/livepatch.h |  4 +++
+>  kernel/livepatch/core.c   | 62 +++--------------------------------------------
+>  kernel/module.c           | 16 +++++++-----
+>  3 files changed, 18 insertions(+), 64 deletions(-)
+> 
+> 
+> [ ... snip ... ]
+> 
+> diff --git a/kernel/module.c b/kernel/module.c
+> index bd92854b42c2..c14b5135db27 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -2410,16 +2410,20 @@ static int apply_relocations(struct module *mod, const struct load_info *info)
+>  		if (!(info->sechdrs[infosec].sh_flags & SHF_ALLOC))
+>  			continue;
 >  
-> > The go compiler (after 1.10) uses DW_OP_call_frame_cfa for the first parameter and DW_OP_fbreg for the rest.
-> > On go versions lower than 1.10, it used DW_OP_call_frame_cfa for all parameters.
-> > Here is example output of the readelf on main.example, compiled with go1.9.7:
-> >  <1><2634d>: Abbrev Number: 2 (DW_TAG_subprogram)
-> >     <2634e>   DW_AT_name        : main.example
-> >     <2635b>   DW_AT_low_pc      : 0x487db0
-> >     <26363>   DW_AT_high_pc     : 0x487e99
-> >     <2636b>   DW_AT_frame_base  : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
-> >     <2636d>   DW_AT_external    : 1
-> >  <2><2636e>: Abbrev Number: 5 (DW_TAG_formal_parameter)
-> >     <2636f>   DW_AT_name        : param1
-> >     <26376>   DW_AT_location    : 1 byte block: 9c 	(DW_OP_call_frame_cfa)
-> >     <26378>   DW_AT_type        : <0x27f1c>
-> >  <2><2637c>: Abbrev Number: 5 (DW_TAG_formal_parameter)
-> >     <2637d>   DW_AT_name        : param2
-> >     <26384>   DW_AT_location    : 4 byte block: 9c 11 8 22 	(DW_OP_call_frame_cfa; DW_OP_consts: 8; DW_OP_plus)
-> >     <26389>   DW_AT_type        : <0x27f1c>
-> >  <2><2638d>: Abbrev Number: 0
-> > 
-> > Hope this makes things easier to understand.
-> 
-> Right, but I tried following your instructions here and got up to this:
-> 
->  <0><76ded>: Abbrev Number: 1 (DW_TAG_compile_unit)
->     <76dee>   DW_AT_name        : main
->     <76df3>   DW_AT_language    : 22    (Go)
->     <76df4>   DW_AT_stmt_list   : 0x27a7d
->     <76df8>   DW_AT_low_pc      : 0x48cd90
->     <76e00>   DW_AT_ranges      : 0x2e0
->     <76e04>   DW_AT_comp_dir    : .
->     <76e06>   DW_AT_producer    : Go cmd/compile go1.13.6
->     <76e1e>   Unknown AT value: 2905: main
->  <1><76e23>: Abbrev Number: 4 (DW_TAG_subprogram)
->     <76e24>   DW_AT_name        : main.example
->     <76e31>   DW_AT_inline      : 1     (inlined)
->     <76e32>   DW_AT_external    : 1
->  <2><76e33>: Abbrev Number: 17 (DW_TAG_formal_parameter)
->     <76e34>   DW_AT_name        : param1
->     <76e3b>   DW_AT_variable_parameter: 0
->     <76e3c>   DW_AT_type        : <0x37430>
->  <2><76e40>: Abbrev Number: 17 (DW_TAG_formal_parameter)
->     <76e41>   DW_AT_name        : param2
->     <76e48>   DW_AT_variable_parameter: 0
->     <76e49>   DW_AT_type        : <0x37430>
->  <2><76e4d>: Abbrev Number: 0
-> 
-> 
-> Which, with or without your patch ends with:
-> 
-> [acme@five daniel.shaulov@gmail.com]$ perf probe -x ./example 'main.example param1 param2'
-> Failed to find 'param1' in this function.
-> Probe point 'main.example' not found.
->   Error: Failed to add events.
-> [acme@five daniel.shaulov@gmail.com]$
-> 
-> [acme@five perf]$ rpm -q golang-bin
-> golang-bin-1.13.6-1.fc31.x86_64
-> [acme@five perf]$ cat /etc/fedora-release
-> Fedora release 31 (Thirty One)
-> [acme@five perf]$
-> 
-> Has the behaviour changed again in 1.13? Or is this some optimization
-> level that fedora sets that ends up auto-inlining that main.example
-> routine?
-> 
-> [acme@five daniel.shaulov@gmail.com]$ readelf --debug-dump=info ./example | grep main\.example -B10 -A13
->  <0><76ded>: Abbrev Number: 1 (DW_TAG_compile_unit)
->     <76dee>   DW_AT_name        : main
->     <76df3>   DW_AT_language    : 22	(Go)
->     <76df4>   DW_AT_stmt_list   : 0x27a7d
->     <76df8>   DW_AT_low_pc      : 0x48cd90
->     <76e00>   DW_AT_ranges      : 0x2e0
->     <76e04>   DW_AT_comp_dir    : .
->     <76e06>   DW_AT_producer    : Go cmd/compile go1.13.6
->     <76e1e>   Unknown AT value: 2905: main
->  <1><76e23>: Abbrev Number: 4 (DW_TAG_subprogram)
->     <76e24>   DW_AT_name        : main.example
->     <76e31>   DW_AT_inline      : 1	(inlined)
->     <76e32>   DW_AT_external    : 1
->  <2><76e33>: Abbrev Number: 17 (DW_TAG_formal_parameter)
->     <76e34>   DW_AT_name        : param1
->     <76e3b>   DW_AT_variable_parameter: 0
->     <76e3c>   DW_AT_type        : <0x37430>
->  <2><76e40>: Abbrev Number: 17 (DW_TAG_formal_parameter)
->     <76e41>   DW_AT_name        : param2
->     <76e48>   DW_AT_variable_parameter: 0
->     <76e49>   DW_AT_type        : <0x37430>
->  <2><76e4d>: Abbrev Number: 0
->  <1><76e4e>: Abbrev Number: 4 (DW_TAG_subprogram)
->     <76e4f>   DW_AT_name        : fmt.Println
-> [acme@five daniel.shaulov@gmail.com]$
-> 
-> - Arnaldo
+> -		/* Livepatch relocation sections are applied by livepatch */
+> -		if (info->sechdrs[i].sh_flags & SHF_RELA_LIVEPATCH)
+> -			continue;
+> -
+> -		if (info->sechdrs[i].sh_type == SHT_REL)
+> +		/* Livepatch need to resolve static symbols. */
+> +		if (info->sechdrs[i].sh_flags & SHF_RELA_LIVEPATCH) {
+> +			err = klp_resolve_symbols(info->sechdrs, i, mod);
+> +			if (err < 0)
+> +				break;
+> +			err = apply_relocate_add(info->sechdrs, info->strtab,
+> +						 info->index.sym, i, mod);
+> +		} else if (info->sechdrs[i].sh_type == SHT_REL) {
+>  			err = apply_relocate(info->sechdrs, info->strtab,
+>  					     info->index.sym, i, mod);
+> -		else if (info->sechdrs[i].sh_type == SHT_RELA)
+> +		} else if (info->sechdrs[i].sh_type == SHT_RELA) {
+>  			err = apply_relocate_add(info->sechdrs, info->strtab,
+>  						 info->index.sym, i, mod);
+> +		}
+>  		if (err < 0)
+>  			break;
+>  	}
 
-Ok, so I looked into it a little bit.
-I was using go1.10.4 (that's the one in Ubuntu 18.04 repo)
 
-Apperantly they improved inlining in go1.12
-https://golang.org/doc/go1.12#compiler
-> More functions are now eligible for inlining by default,
-> including functions that do nothing but call another function.
+Hi Petr,
 
-I added "//go:noinline" to the example function and it works in go1.12 and go1.13.6
----- contents of example.go ----
-package main
+At first I thought there was a simple order of operations problem here
+with respect to klp_resolve_symbols() accessing core_kallsyms before
+they were setup by add_kallsyms():
 
-import "fmt"
+load_module
+  apply_relocations
 
-//go:noinline
-func example(param1 int, param2 int) {
-	fmt.Println(param1, param2)
-}
+ 	/* Livepatch need to resolve static symbols. */
+ 	if (info->sechdrs[i].sh_flags & SHF_RELA_LIVEPATCH) {
+ 		err = klp_resolve_symbols(info->sechdrs, i, mod);
 
-func main() {
-	example(111, 222)
-}
----- end contents of example.go ----
+    klp_resolve_symbols
 
-There were some other changes to the dwarf output and in 1.13.6 with "//go:noinline" it looks like this:
-$ readelf --debug-dump=info ./example | grep main\.example -A17
- <1><76e8f>: Abbrev Number: 3 (DW_TAG_subprogram)
-    <76e90>   DW_AT_name        : main.example
-    <76e9d>   DW_AT_low_pc      : 0x48ce90
-    <76ea5>   DW_AT_high_pc     : 0x48cf58
-    <76ead>   DW_AT_frame_base  : 1 byte block: 9c      (DW_OP_call_frame_cfa)
-    <76eaf>   DW_AT_decl_file   : 0x1
-    <76eb3>   DW_AT_external    : 1
- <2><76eb4>: Abbrev Number: 16 (DW_TAG_formal_parameter)
-    <76eb5>   DW_AT_name        : param1
-    <76ebc>   DW_AT_variable_parameter: 0
-    <76ebd>   DW_AT_decl_line   : 6
-    <76ebe>   DW_AT_type        : <0x37472>
-    <76ec2>   DW_AT_location    : 0x7cd57 (location list)
- <2><76ec6>: Abbrev Number: 16 (DW_TAG_formal_parameter)
-    <76ec7>   DW_AT_name        : param2
-    <76ece>   DW_AT_variable_parameter: 0
-    <76ecf>   DW_AT_decl_line   : 6
-    <76ed0>   DW_AT_type        : <0x37472>
-    <76ed4>   DW_AT_location    : 0x7cd8a (location list)
+	sym = pmod->core_kallsyms.symtab + ELF_R_SYM(relas[i].r_info);
+                    ^^^^^^^^^^^^^^^^^^^^
+                                  used before init (below)
+  ...
+  post_relocation
+    add_kallsyms
 
-The "0x7cd57 (location list)" can be read with another readelf:
-$ readelf --debug-dump=loc ./example | grep 7cd57 -A5
-    0007cd57 ffffffffffffffff 000000000048ce90 (base address)
-    0007cd67 000000000048ce90 000000000048cf58 (DW_OP_call_frame_cfa)
-    0007cd7a <End of list>
-    0007cd8a ffffffffffffffff 000000000048ce90 (base address)
-    0007cd9a 000000000048ce90 000000000048cf58 (DW_OP_fbreg: 8)
-    0007cdae <End of list>
+        /*
+         * Now populate the cut down core kallsyms for after init
+         * and set types up while we still have access to sections.
+         */
+        mod->core_kallsyms.symtab = dst = mod->core_layout.base + info->symoffs;
+        mod->core_kallsyms.strtab = s = mod->core_layout.base + info->stroffs;
+        mod->core_kallsyms.typetab = mod->core_layout.base + info->core_typeoffs;
+             ^^^^^^^^^^^^^^^^^^^^^
+                           core_kallsyms initialized here
 
-So it is basically the same as what I was getting with go1.10, but with a deref in the way.
-I guess dwarf_getlocation_addr abstracts the difference away since my code still works.
+But after tinkering with the patchset, a larger problem is that
+klp_resolve_symbols() writes st_values to the core_kallsyms copies, but
+then apply_relocate_add() references the originals in the load_info
+structure.
 
-Note - in go1.11, I think there was some bug, because it shows up like this in readelf:
- <1><72a95>: Abbrev Number: 2 (DW_TAG_subprogram)
-    <72a96>   DW_AT_name        : main.example
-    <72aa3>   DW_AT_low_pc      : 0x4850b0
-    <72aab>   DW_AT_high_pc     : 0x48516e
-    <72ab3>   DW_AT_frame_base  : 1 byte block: 9c      (DW_OP_call_frame_cfa)
-    <72ab5>   DW_AT_decl_file   : 0x1
-    <72ab9>   DW_AT_external    : 1
- <2><72aba>: Abbrev Number: 14 (DW_TAG_formal_parameter)
-    <72abb>   DW_AT_name        : param1
-    <72ac2>   DW_AT_variable_parameter: 0
-    <72ac3>   DW_AT_decl_line   : 6
-    <72ac4>   DW_AT_type        : <0x3118>
-    <72ac8>   DW_AT_location    : 0 byte block:         ()
- <2><72ac9>: Abbrev Number: 14 (DW_TAG_formal_parameter)
-    <72aca>   DW_AT_name        : param2
-    <72ad1>   DW_AT_variable_parameter: 0
-    <72ad2>   DW_AT_decl_line   : 6
-    <72ad3>   DW_AT_type        : <0x3118>
-    <72ad7>   DW_AT_location    : 0 byte block:         ()
- <2><72ad8>: Abbrev Number: 0
+I assume that klp_resolve_symbols() originally looked at the
+core_kallsyms copies for handling the late module patching case.  If we
+no longer need to support that, then how about this slight modification
+to klp_resolve_symbols() to make it look more the like
+apply_relocate{_add,} calls?
 
-And perf has no way to find the parameters (DW_AT_location is empty).
+-->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8--
+
+diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+index 3b27ef1a7291..54d5a4045e5a 100644
+--- a/include/linux/livepatch.h
++++ b/include/linux/livepatch.h
+@@ -210,6 +210,8 @@ int klp_module_coming(struct module *mod);
+ void klp_module_going(struct module *mod);
+ 
+ int klp_resolve_symbols(Elf_Shdr *sechdrs,
++			const char *strtab,
++			unsigned int symindex,
+ 			unsigned int relsec,
+ 			struct module *pmod);
+ 
+diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
+index cc0ac93fe8cd..02638e3b09b0 100644
+--- a/kernel/livepatch/core.c
++++ b/kernel/livepatch/core.c
+@@ -197,13 +197,14 @@ static int klp_find_object_symbol(const char *objname, const char *name,
+ }
+ 
+ int klp_resolve_symbols(Elf_Shdr *sechdrs,
++			const char *strtab,
++			unsigned int symindex,
+ 			unsigned int relsec,
+ 			struct module *pmod)
+ {
+ 	int i, cnt, vmlinux, ret;
+ 	char objname[MODULE_NAME_LEN];
+ 	char symname[KSYM_NAME_LEN];
+-	char *strtab = pmod->core_kallsyms.strtab;
+ 	Elf_Shdr *relasec = sechdrs + relsec;
+ 	Elf_Rela *relas;
+ 	Elf_Sym *sym;
+@@ -224,7 +225,8 @@ int klp_resolve_symbols(Elf_Shdr *sechdrs,
+ 	relas = (Elf_Rela *) relasec->sh_addr;
+ 	/* For each rela in this klp relocation section */
+ 	for (i = 0; i < relasec->sh_size / sizeof(Elf_Rela); i++) {
+-		sym = pmod->core_kallsyms.symtab + ELF_R_SYM(relas[i].r_info);
++		sym = (Elf64_Sym *)sechdrs[symindex].sh_addr +
++			ELF_R_SYM(relas[i].r_info);
+ 		if (sym->st_shndx != SHN_LIVEPATCH) {
+ 			pr_err("symbol %s is not marked as a livepatch symbol\n",
+ 			       strtab + sym->st_name);
+diff --git a/kernel/module.c b/kernel/module.c
+index d435bad80d7d..a65f089f19c9 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2320,7 +2320,8 @@ static int apply_relocations(struct module *mod, const struct load_info *info)
+ 
+ 		/* Livepatch need to resolve static symbols. */
+ 		if (info->sechdrs[i].sh_flags & SHF_RELA_LIVEPATCH) {
+-			err = klp_resolve_symbols(info->sechdrs, i, mod);
++			err = klp_resolve_symbols(info->sechdrs, info->strtab,
++						  info->index.sym, i, mod);
+ 			if (err < 0)
+ 				break;
+ 			err = apply_relocate_add(info->sechdrs, info->strtab,
+
+-->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8-- -->8--
+
+
+-- Joe
 
