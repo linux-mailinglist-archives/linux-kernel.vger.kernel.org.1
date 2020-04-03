@@ -2,119 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC4E19D8F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572AB19D90F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391072AbgDCOWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:22:47 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35816 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390940AbgDCOWr (ORCPT
+        id S2403892AbgDCOZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:25:05 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:37565 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403868AbgDCOZE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:22:47 -0400
-Received: by mail-wr1-f67.google.com with SMTP id g3so6449765wrx.2;
-        Fri, 03 Apr 2020 07:22:46 -0700 (PDT)
+        Fri, 3 Apr 2020 10:25:04 -0400
+Received: by mail-pl1-f194.google.com with SMTP id x1so2748565plm.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 07:25:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=eO7X7pq9711SintqFPgETXqv2Z2n0tdDbbm4z7qxhxQ=;
-        b=mr+nvzcL9deyVcXVL/g1iirSVwK3iqndoX+uC5K0N8OLS2lWwJzFG9Jw2Us/+fDJpW
-         brLw+fuh6Ak35u+NuycplcSpqr82DZbcL0hLTZu/+IUeMfHv70EY85g6KjszihMlq5iA
-         lSHDCK302Ag022kI1mIAq4N+ho3T7qHlcGZNzQvXl2zDPWFa/vGS/tAnUZqurLVHM11r
-         WiZbq3t67mum6LuNLEe/neZ2QBJEXLMGOK8/86HtQtVT40k8OfRnx0CMngdy3mKuFtbT
-         3V4NR93kIMMp7AZIbDs2j6RSLe193oXCWnU1L3yihX4G5Xlj/0HCPorjdSQgpacir6kO
-         h8Yw==
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=vKBRMX/UzCOn34k/kAwE26KCgVenN+ytvHTmdWU7Okc=;
+        b=ZMtQ3Z/uwSYiMhhw2nTl6CsbXXgH9xLLOhxQrgzJsrv3UW4kLSwgmTsE+7IuS36SVf
+         nNr3S9XTiC1OASHDsk3Kjfy1pztgLDzzIXtliEDLztXZmr+sVH40xM7/Q9Gd23g7LO7t
+         QfJPhwHti/wJtJsJ6E7HVd7ge9OGsfoe7PzWc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=eO7X7pq9711SintqFPgETXqv2Z2n0tdDbbm4z7qxhxQ=;
-        b=BspySNqG+4jmDrhr1uPKAzkiZeUG8n6mBsXVT+jt5SmhlNkOvbHdTAh4Bh4zhdhm0l
-         O9DIvQmDr/BLulWcOwi5qan23QOPTnmAd2TC21VQVCWXyAh4ZNzotQ5OYg9zCcuxZEao
-         jySFdsoln2eeadcBIjldTiU7XT+YCF8NK4TculHOWNf5B5U5fqoA0X19n844Bn9hSxjv
-         1WKttaM/S0RHH+xEbPstOcgi1Of+Y41Ecw6jbiJwRLgI4Sq9kXAy7pAY1om3Q7/bT5pu
-         okVPCdAN4HUg8cPT0ITZWG7egh9HhidHqfHR4Pyk9vW+Yg3rJ93IdmGff36jEY5KNNUa
-         ELuA==
-X-Gm-Message-State: AGi0PuZdzo4l/aX40P3iZfecLM2Fvvuva/bXB810LMRnwT/vwFBxftsB
-        SrOMMjtROTLFZUAOig/oUNpkUV9R
-X-Google-Smtp-Source: APiQypKqvGkEBCSrGQT9ZsOFXHyYXGCO7wGvqTuF8jcFlGkZFIKO0QpJ3Mhc4I2GDp3Z3cr8LBDI5Q==
-X-Received: by 2002:adf:f8c1:: with SMTP id f1mr9559333wrq.345.1585923765447;
-        Fri, 03 Apr 2020 07:22:45 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id u16sm12132223wro.23.2020.04.03.07.22.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Apr 2020 07:22:44 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     hjc@rock-chips.com, airlied@linux.ie, daniel@ffwll.ch,
-        robh+dt@kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/2] dt-bindings: display: rockchip-vop: add additional properties
-Date:   Fri,  3 Apr 2020 16:22:35 +0200
-Message-Id: <20200403142235.8870-2-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200403142235.8870-1-jbx6244@gmail.com>
-References: <20200403142235.8870-1-jbx6244@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vKBRMX/UzCOn34k/kAwE26KCgVenN+ytvHTmdWU7Okc=;
+        b=fFzCqGfES/LtumpOuJQ+OnTpBrHMhWwVnkn/BWwDW3M1nDigFXFXzVWlgMuVtBevGe
+         pWhL+VFToc5yGvF1zX2imxbr5WmqBEMubN9RHLeHereLQbkDgbzyJPVIMEwOzZw3pZFk
+         IgJjOqSysNS3hwp8z87Zj9nCEug7Nm3wnYWrIkeni03+tGKx/AZNZso43rEyGiPruwQb
+         TqJUYq08/h8ThFx+lftCyjemwWTBCPZK+QO5sS7+mKcOqCEjtEj6A1ABqRsBPFKDDgMa
+         MHdI0GrzUztzLozRrfk26p73peY2EC+I6Z/6XOLGHp2EPPUf6ejCKqlDK6mS5cxp+T7h
+         uLmw==
+X-Gm-Message-State: AGi0Puak7OVvek8k1tWgmKiOcUx9ATATjH/wDOfUy1PnKNxRQOPquW6E
+        rl12MfFESRXXtkajU3Cs2PlZrQ==
+X-Google-Smtp-Source: APiQypK/FOTXW2tO2HaeGhqMJi79/X/DjEIrHqAV05vSXxlPqEGWtElSKJxS/FsqoFPl8lB1RiTSIg==
+X-Received: by 2002:a17:90b:3615:: with SMTP id ml21mr10361300pjb.145.1585923902916;
+        Fri, 03 Apr 2020 07:25:02 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:c809:c7d5:9cd7:b821:2c84:e325])
+        by smtp.gmail.com with ESMTPSA id g75sm5857060pje.37.2020.04.03.07.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 07:25:02 -0700 (PDT)
+From:   Jagan Teki <jagan@amarulasolutions.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-amarula@amarulasolutions.com,
+        Jagan Teki <jagan@amarulasolutions.com>
+Subject: [PATCH v3 1/3] dt-bindings: display: panel: Convert feiyang,fy07024di26a30d to DT schema
+Date:   Fri,  3 Apr 2020 19:54:51 +0530
+Message-Id: <20200403142453.25307-1-jagan@amarulasolutions.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the old txt situation we add/describe only properties that are used
-by the driver/hardware itself. With yaml it also filters things in a
-node that are used by other drivers like 'assigned-clocks' and
-'assigned-clock-rates' for rk3399 and 'power-domains' for most
-Rockchip Socs in 'vop' nodes, so add them to 'rockchip-vop.yaml'.
+Convert the feiyang,fy07024di26a30d panel bindings to DT schema.
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
-Changes v5:
-  Add reviewed by
----
- .../devicetree/bindings/display/rockchip/rockchip-vop.yaml    | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Changes for v3:
+- update the licence, used (GPL-2.0-only OR BSD-2-Clause) since
+  I'm the author for old binding
+- use panel-common.yaml
+- mark true for common properties 
+- use maxItems: 1 for reg
+- update example
+Changes for v2:
+- fix dt_binding_check 
 
-diff --git a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
-index 42ee2b5c3..1695e3e4b 100644
---- a/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
-+++ b/Documentation/devicetree/bindings/display/rockchip/rockchip-vop.yaml
-@@ -75,9 +75,18 @@ properties:
-       A port node with endpoint definitions as defined in
-       Documentation/devicetree/bindings/media/video-interfaces.txt.
- 
-+  assigned-clocks:
-+    maxItems: 2
+ .../display/panel/feiyang,fy07024di26a30d.txt | 20 -------
+ .../panel/feiyang,fy07024di26a30d.yaml        | 58 +++++++++++++++++++
+ 2 files changed, 58 insertions(+), 20 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.txt
+ create mode 100644 Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.yaml
+
+diff --git a/Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.txt b/Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.txt
+deleted file mode 100644
+index 82caa7b65ae8..000000000000
+--- a/Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.txt
++++ /dev/null
+@@ -1,20 +0,0 @@
+-Feiyang FY07024DI26A30-D 7" MIPI-DSI LCD Panel
+-
+-Required properties:
+-- compatible: must be "feiyang,fy07024di26a30d"
+-- reg: DSI virtual channel used by that screen
+-- avdd-supply: analog regulator dc1 switch
+-- dvdd-supply: 3v3 digital regulator
+-- reset-gpios: a GPIO phandle for the reset pin
+-
+-Optional properties:
+-- backlight: phandle for the backlight control.
+-
+-panel@0 {
+-	compatible = "feiyang,fy07024di26a30d";
+-	reg = <0>;
+-	avdd-supply = <&reg_dc1sw>;
+-	dvdd-supply = <&reg_dldo2>;
+-	reset-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* LCD-RST: PD24 */
+-	backlight = <&backlight>;
+-};
+diff --git a/Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.yaml b/Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.yaml
+new file mode 100644
+index 000000000000..95acf9e96f1c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/feiyang,fy07024di26a30d.yaml
+@@ -0,0 +1,58 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/feiyang,fy07024di26a30d.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+  assigned-clock-rates:
-+    maxItems: 2
++title: Feiyang FY07024DI26A30-D 7" MIPI-DSI LCD Panel
 +
-   iommus:
-     maxItems: 1
- 
-+  power-domains:
++maintainers:
++  - Jagan Teki <jagan@amarulasolutions.com>
++
++allOf:
++  - $ref: panel-common.yaml#
++
++properties:
++  compatible:
++    const: feiyang,fy07024di26a30d
++
++  reg:
++    description: DSI virtual channel used by that screen
 +    maxItems: 1
 +
- required:
-   - compatible
-   - reg
-@@ -94,6 +103,7 @@ examples:
-   - |
-     #include <dt-bindings/clock/rk3288-cru.h>
-     #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/power/rk3288-power.h>
-     vopb: vopb@ff930000 {
-       compatible = "rockchip,rk3288-vop";
-       reg = <0x0 0xff930000 0x0 0x19c>,
-@@ -103,6 +113,7 @@ examples:
-                <&cru DCLK_VOP0>,
-                <&cru HCLK_VOP0>;
-       clock-names = "aclk_vop", "dclk_vop", "hclk_vop";
-+      power-domains = <&power RK3288_PD_VIO>;
-       resets = <&cru SRST_LCDC1_AXI>,
-                <&cru SRST_LCDC1_AHB>,
-                <&cru SRST_LCDC1_DCLK>;
++  avdd-supply:
++    description: analog regulator dc1 switch
++
++  dvdd-supply:
++    description: 3v3 digital regulator
++
++  reset-gpios: true
++
++  backlight: true
++
++required:
++  - compatible
++  - reg
++  - avdd-supply
++  - dvdd-supply
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    dsi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        panel@0 {
++            compatible = "feiyang,fy07024di26a30d";
++            reg = <0>;
++            avdd-supply = <&reg_dc1sw>;
++            dvdd-supply = <&reg_dldo2>;
++            reset-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* LCD-RST: PD24 */
++            backlight = <&backlight>;
++        };
++    };
 -- 
-2.11.0
+2.17.1
 
