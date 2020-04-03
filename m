@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA5A19CDD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A139619CDD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 02:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390422AbgDCAkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 20:40:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38840 "EHLO mail.kernel.org"
+        id S2390450AbgDCAkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 20:40:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390413AbgDCAkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 20:40:15 -0400
-Subject: Re: [GIT PULL] hwspinlock updates for v5.7
+        id S2390424AbgDCAkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 20:40:17 -0400
+Subject: Re: [GIT PULL] bulk pin control changes for v5.7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585874415;
-        bh=6Fq0RBm47SeNRN3pI4nuUmLYd+7mBF4nPYB411dFPz0=;
+        s=default; t=1585874416;
+        bh=RJce0s6KlQxC6h2IiRV5aBM1cXm1VT+Q7PowoQ15MOs=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=vM10yjNyR9njHFkAy533WNUOolWjt4F3fBiK+AgXk6FfnaI13yWdy+rx7JO+iC26a
-         L6eHDSS07ZIF0QNOaxehuehKW9UZ+eE5qP97rFUTWMteZrh7w5MiBgU5nE3kpGWvay
-         SND4JZ493ubkPZiss7H4v7OEcJQHEXwAHp0DuJQE=
+        b=E6J3qhLObgi1ja0yD12gYQZ285IiQ46jui+rgf44taoT37TNMf66pLQl6Z55V11DP
+         yTZoqNFXfAtDQl2/W7hNDNTnu1pZoH5RMvO892yMFfv3Ld3y8CEYk5Fg9csPLgqcpa
+         /cOJ4pyPVgGASrV182NNVPBCfGuB75LVYf/MQMDU=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200402010837.GB751391@yoga>
-References: <20200402010837.GB751391@yoga>
+In-Reply-To: <CACRpkdbO2JBTtU-XTWzfzTkFD_x7EiPqQ-VraPcYJA7_6U-mvA@mail.gmail.com>
+References: <CACRpkdbO2JBTtU-XTWzfzTkFD_x7EiPqQ-VraPcYJA7_6U-mvA@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200402010837.GB751391@yoga>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git
- tags/hwlock-v5.7
-X-PR-Tracked-Commit-Id: ef17f5193edd42e8913c93d0b601c101c56a15bb
+X-PR-Tracked-Message-Id: <CACRpkdbO2JBTtU-XTWzfzTkFD_x7EiPqQ-VraPcYJA7_6U-mvA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+ tags/pinctrl-v5.7-1
+X-PR-Tracked-Commit-Id: c42f69b4207e104229242c3d9da43b55d4b95d6d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 11786191e2d946410cf5fde482b10cdd5356e76c
-Message-Id: <158587441546.31624.17775444987242154271.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Apr 2020 00:40:15 +0000
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+X-PR-Merge-Commit-Id: bc3b3f4bfbded031a11c4284106adddbfacd05bb
+Message-Id: <158587441692.31624.3105665865723969608.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Apr 2020 00:40:16 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 1 Apr 2020 18:08:37 -0700:
+The pull request you sent on Thu, 2 Apr 2020 09:38:27 +0200:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/hwlock-v5.7
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.7-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/11786191e2d946410cf5fde482b10cdd5356e76c
+https://git.kernel.org/torvalds/c/bc3b3f4bfbded031a11c4284106adddbfacd05bb
 
 Thank you!
 
