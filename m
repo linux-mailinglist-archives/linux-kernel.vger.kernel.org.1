@@ -2,105 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 327CC19D1B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FE519D1C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390427AbgDCIEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 04:04:08 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:41509 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727431AbgDCIEH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:04:07 -0400
-X-UUID: 62cdd6ca889f49078ab85b706985f965-20200403
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=SXMSLBQsSUZgUuEZUoBkJ70NApTii4m2ZG6S3nFKqQw=;
-        b=ocEDhnna7MEmJFSM1HpX3cO5awiWG52jGjOfBbtvblABStTwQ/Z0Nfwy6vDGSG1gIZ2/AGYB/AC9Gkd0eW93mTcxGWFlA9b88jmVm7pOqatBRzz+V/eECnCXTTnp3Sa968z3EL5yT2ldkT7EGqpqqHW2+iVxMBRrT+62QuwSLbc=;
-X-UUID: 62cdd6ca889f49078ab85b706985f965-20200403
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 487088426; Fri, 03 Apr 2020 16:03:59 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 3 Apr
- 2020 16:03:59 +0800
-Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1395.4 via Frontend Transport; Fri, 3 Apr 2020 16:03:57 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        id S2390468AbgDCIGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 04:06:31 -0400
+Received: from mail-eopbgr1400092.outbound.protection.outlook.com ([40.107.140.92]:55228
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387849AbgDCIGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 04:06:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gTsM5q1dAGVMEJWEA7sgATm6UqWkfzsBNXPhIToTHQdmt4EnZQ/krifkS8RHOapvn156dDcoPnkKRvUTfGxe6TTKhE97nVkmknyGTvPGRA51TZ0MUFCUmCkfIH31OaNV+0vCOHTzqEMecdHr6EX9xa6IakL3VkPUUmiRMYPqwzBv7cdMhA1A2lRAp9loIBYfsq7DV0mmL6UZTdOeA3GbZwulM9lSZ7LHfSXDT3WMGyXdJCc93+GZcJEKh/cpZsSoASf6l4LlN4JsnNO65lxWEITIAA1UprMUq50dUEiwVfxeHXH+taqqKh/EEnuBQhObw5/fbEAVA7KJMKQlbVYWxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2iHNw+p9CFliqPw4gSClcSVJhGgbxb3uy6TZhYpqEbU=;
+ b=ZMobhzB/rkPNNC9D0HmkGN3tTxMVXN2eRT3t04uDoak6tJtrFSu16SjLzB6U2puFXY+a3PaotyD2nt/UqGPiYw/vWXNwJB820z8fcY+qPauHWZ8gzk2emhoqCsXEFm519UhKGHvT9KGuE1wAUxxCox4WIja+5oFJ3LLrYkfptp/ZY4PpWD3cjOT4QSmzdo5iG8/DB+IjQxRKzrb0i1wWZ4FLYcmvrzTNMzzPJu+P8QYPTDABmew9ahPSCLm447Yc1ubhHOu4uifsVYtGQjY6ETVnanFCLswJ9vWx/nzXF5CrZM0MhfP9LGorZFjlNsq8WGXbiyvNgOalCjwz2YdFGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2iHNw+p9CFliqPw4gSClcSVJhGgbxb3uy6TZhYpqEbU=;
+ b=m2NuhdsQC3+MuoyT0l58zu2+3vIb4gCgkbt2n2xZHvJoLi4WiR96CHZfp4w1tTPr8Z79iJmBlaa1WSwaLRPz/ixvSzOdskvM8/o7ZYeg0Ys9nBDTRwj+zCnlELCQG8DReTl97l+XZII022vmFRqhOjdvbbiuycrYWGcCeDVywvo=
+Received: from TYAPR01MB4544.jpnprd01.prod.outlook.com (20.179.175.203) by
+ TYAPR01MB4287.jpnprd01.prod.outlook.com (20.179.173.76) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2856.20; Fri, 3 Apr 2020 08:06:26 +0000
+Received: from TYAPR01MB4544.jpnprd01.prod.outlook.com
+ ([fe80::ed7f:1268:55a9:fc06]) by TYAPR01MB4544.jpnprd01.prod.outlook.com
+ ([fe80::ed7f:1268:55a9:fc06%4]) with mapi id 15.20.2878.017; Fri, 3 Apr 2020
+ 08:06:26 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Murray <andrew.murray@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
-        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v14 3/3] drm/mediatek: set dpi pin mode to gpio low to avoid leakage current
-Date:   Fri, 3 Apr 2020 16:03:50 +0800
-Message-ID: <20200403080350.95826-4-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200403080350.95826-1-jitao.shi@mediatek.com>
-References: <20200403080350.95826-1-jitao.shi@mediatek.com>
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Simon Horman <horms@verge.net.au>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        "linux-rockchip@lists.infradead.org" 
+        <linux-rockchip@lists.infradead.org>,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: RE: [PATCH v6 04/11] PCI: rcar: Move shareable code to a common file
+Thread-Topic: [PATCH v6 04/11] PCI: rcar: Move shareable code to a common file
+Thread-Index: AQHWCSZoqgaKoB6XHkeyCAu/SQjsSKhnCvuQ
+Date:   Fri, 3 Apr 2020 08:06:26 +0000
+Message-ID: <TYAPR01MB45447612B5784FDF633FA327D8C70@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+References: <1585856319-4380-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <1585856319-4380-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <1585856319-4380-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=yoshihiro.shimoda.uh@renesas.com; 
+x-originating-ip: [124.210.22.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 50a35fff-a627-479d-1358-08d7d7a5e88f
+x-ms-traffictypediagnostic: TYAPR01MB4287:|TYAPR01MB4287:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB428700CC1832571D33516B41D8C70@TYAPR01MB4287.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 0362BF9FDB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB4544.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(4744005)(478600001)(4326008)(55016002)(7696005)(54906003)(316002)(186003)(71200400001)(5660300002)(110136005)(8676002)(86362001)(8936002)(64756008)(66446008)(66556008)(107886003)(81156014)(66476007)(2906002)(55236004)(26005)(9686003)(76116006)(52536014)(33656002)(66946007)(81166006)(6506007)(7416002)(921003)(1121003);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: renesas.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6PAWEiNWemXu5o4DcAwYDqdAQqTlxIrddMZlkXRZoM5nwRX04QP8zoTuOTdgyMwkDT9XFrekKm9+jnWuVqtdApKtGJMZCJcm8Yyy3DurKcEdQZNBJ/LsKk2qNIcMGJsmOZvt6XftJkdDvoGyF+ctsDS0tIfc29f5rpDLohXTH/NlckFL76aEQFPSemA1111WeVfuetIEVoSazuvPHU9SErFopbM+aiYokuYMZOyDUUXWiOghJfjQVkE6GwCsHrMgO1qYGtQR7vCyca28uoU/FfT2E0hMjeFnmdPfTwaaPucqX0bRA8IJxOiNKj6FC3B4OtlMcKct0CZlJ5jGj+eycfBF8beJ0gca8AZ47trjJoVq7IFn5n/lkFgr4UShzVPFP/nONsKd8zlzDS+9/WY0609K9s4AVRTUa5kUV9UjYQkCtv4j3ZKzKqQOQHWLkNQVj1OaVpfOOLJK4wyN45dOXW2wwdq2pylaWPeP5WNc24yJwD6N3FPELAeJWcR3f+yd
+x-ms-exchange-antispam-messagedata: jZUkQhXqDwwtIDzgUNtGMFuPUKGqhfTlWgG4kgwsV0afxkzi5FRbOZqlAiCIo6+FhPqd+5Y9ZlvvklSVrur2cZJQvDCIPUtdu9Ti9tNV6b6UA0Z2dp+9yphCMejfT5uRkW+hGClMsgqVYf6zGZrnQw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 1F8009A16C3C12A076DB5621D0BD997557D38E7207AD03FA9FD39F901D19D8562000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 50a35fff-a627-479d-1358-08d7d7a5e88f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2020 08:06:26.5641
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6GP3nrgo0y6VMAVLZVlQ4glJBeEyjiGwA2uJvTJgVxTucqbUTKJB6V1VVFRZbG9RCom2zlMUH+Wm6pnpxnVJDtqBbfqsbzasbX20RRVAifYhBsQQF18BTKZCLRP/ES9b
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB4287
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q29uZmlnIGRwaSBwaW5zIG1vZGUgdG8gb3V0cHV0IGFuZCBwdWxsIGxvdyB3aGVuIGRwaSBpcyBk
-aXNhYmxlZC4NCkFvdmlkIGxlYWthZ2UgY3VycmVudCBmcm9tIHNvbWUgZHBpIHBpbnMgKEhzeW5j
-IFZzeW5jIERFIC4uLiApLg0KDQpTaWduZWQtb2ZmLWJ5OiBKaXRhbyBTaGkgPGppdGFvLnNoaUBt
-ZWRpYXRlay5jb20+DQotLS0NCiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RwaS5jIHwg
-MzEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQsIDMxIGlu
-c2VydGlvbnMoKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
-ZHBpLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RwaS5jDQppbmRleCAwODdmNWNl
-NzMyZTEuLjFlMDEyNTQ3ODhkOSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
-ay9tdGtfZHBpLmMNCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHBpLmMNCkBA
-IC0xMCw3ICsxMCw5IEBADQogI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KICNpbmNsdWRlIDxs
-aW51eC9vZi5oPg0KICNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4NCisjaW5jbHVkZSA8bGlu
-dXgvb2ZfZ3Bpby5oPg0KICNpbmNsdWRlIDxsaW51eC9vZl9ncmFwaC5oPg0KKyNpbmNsdWRlIDxs
-aW51eC9waW5jdHJsL2NvbnN1bWVyLmg+DQogI2luY2x1ZGUgPGxpbnV4L3BsYXRmb3JtX2Rldmlj
-ZS5oPg0KICNpbmNsdWRlIDxsaW51eC90eXBlcy5oPg0KIA0KQEAgLTc0LDYgKzc2LDkgQEAgc3Ry
-dWN0IG10a19kcGkgew0KIAllbnVtIG10a19kcGlfb3V0X3ljX21hcCB5Y19tYXA7DQogCWVudW0g
-bXRrX2RwaV9vdXRfYml0X251bSBiaXRfbnVtOw0KIAllbnVtIG10a19kcGlfb3V0X2NoYW5uZWxf
-c3dhcCBjaGFubmVsX3N3YXA7DQorCXN0cnVjdCBwaW5jdHJsICpwaW5jdHJsOw0KKwlzdHJ1Y3Qg
-cGluY3RybF9zdGF0ZSAqcGluc19ncGlvOw0KKwlzdHJ1Y3QgcGluY3RybF9zdGF0ZSAqcGluc19k
-cGk7DQogCWludCByZWZjb3VudDsNCiB9Ow0KIA0KQEAgLTM3OSw2ICszODQsOSBAQCBzdGF0aWMg
-dm9pZCBtdGtfZHBpX3Bvd2VyX29mZihzdHJ1Y3QgbXRrX2RwaSAqZHBpKQ0KIAlpZiAoLS1kcGkt
-PnJlZmNvdW50ICE9IDApDQogCQlyZXR1cm47DQogDQorCWlmIChkcGktPnBpbmN0cmwgJiYgZHBp
-LT5waW5zX2dwaW8pDQorCQlwaW5jdHJsX3NlbGVjdF9zdGF0ZShkcGktPnBpbmN0cmwsIGRwaS0+
-cGluc19ncGlvKTsNCisNCiAJbXRrX2RwaV9kaXNhYmxlKGRwaSk7DQogCWNsa19kaXNhYmxlX3Vu
-cHJlcGFyZShkcGktPnBpeGVsX2Nsayk7DQogCWNsa19kaXNhYmxlX3VucHJlcGFyZShkcGktPmVu
-Z2luZV9jbGspOw0KQEAgLTQwMyw2ICs0MTEsOSBAQCBzdGF0aWMgaW50IG10a19kcGlfcG93ZXJf
-b24oc3RydWN0IG10a19kcGkgKmRwaSkNCiAJCWdvdG8gZXJyX3BpeGVsOw0KIAl9DQogDQorCWlm
-IChkcGktPnBpbmN0cmwgJiYgZHBpLT5waW5zX2RwaSkNCisJCXBpbmN0cmxfc2VsZWN0X3N0YXRl
-KGRwaS0+cGluY3RybCwgZHBpLT5waW5zX2RwaSk7DQorDQogCW10a19kcGlfZW5hYmxlKGRwaSk7
-DQogCXJldHVybiAwOw0KIA0KQEAgLTcwNSw2ICs3MTYsMjYgQEAgc3RhdGljIGludCBtdGtfZHBp
-X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQogCWRwaS0+ZGV2ID0gZGV2Ow0K
-IAlkcGktPmNvbmYgPSAoc3RydWN0IG10a19kcGlfY29uZiAqKW9mX2RldmljZV9nZXRfbWF0Y2hf
-ZGF0YShkZXYpOw0KIA0KKwlkcGktPnBpbmN0cmwgPSBkZXZtX3BpbmN0cmxfZ2V0KCZwZGV2LT5k
-ZXYpOw0KKwlpZiAoSVNfRVJSKGRwaS0+cGluY3RybCkpIHsNCisJCWRwaS0+cGluY3RybCA9IE5V
-TEw7DQorCQlkZXZfZGJnKCZwZGV2LT5kZXYsICJDYW5ub3QgZmluZCBwaW5jdHJsIVxuIik7DQor
-CX0NCisJaWYgKGRwaS0+cGluY3RybCkgew0KKwkJZHBpLT5waW5zX2dwaW8gPSBwaW5jdHJsX2xv
-b2t1cF9zdGF0ZShkcGktPnBpbmN0cmwsICJzbGVlcCIpOw0KKwkJaWYgKElTX0VSUihkcGktPnBp
-bnNfZ3BpbykpIHsNCisJCQlkcGktPnBpbnNfZ3BpbyA9IE5VTEw7DQorCQkJZGV2X2RiZygmcGRl
-di0+ZGV2LCAiQ2Fubm90IGZpbmQgcGluY3RybCBpZGxlIVxuIik7DQorCQl9DQorCQlpZiAoZHBp
-LT5waW5zX2dwaW8pDQorCQkJcGluY3RybF9zZWxlY3Rfc3RhdGUoZHBpLT5waW5jdHJsLCBkcGkt
-PnBpbnNfZ3Bpbyk7DQorDQorCQlkcGktPnBpbnNfZHBpID0gcGluY3RybF9sb29rdXBfc3RhdGUo
-ZHBpLT5waW5jdHJsLCAiZGVmYXVsdCIpOw0KKwkJaWYgKElTX0VSUihkcGktPnBpbnNfZHBpKSkg
-ew0KKwkJCWRwaS0+cGluc19kcGkgPSBOVUxMOw0KKwkJCWRldl9kYmcoJnBkZXYtPmRldiwgIkNh
-bm5vdCBmaW5kIHBpbmN0cmwgYWN0aXZlIVxuIik7DQorCQl9DQorCX0NCiAJbWVtID0gcGxhdGZv
-cm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAwKTsNCiAJZHBpLT5yZWdzID0g
-ZGV2bV9pb3JlbWFwX3Jlc291cmNlKGRldiwgbWVtKTsNCiAJaWYgKElTX0VSUihkcGktPnJlZ3Mp
-KSB7DQotLSANCjIuMjEuMA0K
+Hi Prabhakar-san,
+
+> From: Lad Prabhakar, Sent: Friday, April 3, 2020 4:39 AM
+>=20
+> This patch moves sharable code to common file pcie-rcar.c and the #define=
+s
+> to pcie-rcar.h so that the common code can be reused with endpoint driver=
+.
+> There are no functional changes with this patch for the host controller
+> driver.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+Thank you for the patch!
+
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+
+Best regards,
+Yoshihiro Shimoda
 
