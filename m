@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9D719DE07
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE52219DE05
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404456AbgDCSgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 14:36:33 -0400
+        id S2404411AbgDCSga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 14:36:30 -0400
 Received: from mga17.intel.com ([192.55.52.151]:4672 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728069AbgDCSg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728066AbgDCSg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Apr 2020 14:36:28 -0400
-IronPort-SDR: I4jCSoe7DtxhtPnXodFRVnlTCT2XjBjJeuSLgYzhHMAqwoHj9ZmbIb4TJ7m24a/iB0+ajtV2Py
- b42bBWtRoO9g==
+IronPort-SDR: idEO+4dIG1YCcp8yd3lnDtXZFa6wzpx0KYtGE8+CL9UOqeBk4ja1LsIX75A1MakMvNpWvLtU7F
+ OMdASvatviFw==
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 11:36:27 -0700
-IronPort-SDR: miMkGwG8IjP5yQBTfOJZVypTag+R5GLf/1FQJYGIrRWf9ZKMC6RsfFYS0kQd+zAWS260Wo3dPs
- 0rhBuUjXJvrQ==
+IronPort-SDR: D+jZjWNSavh+SQpoO6seu7Ay4FcTHMwV/PvUJIzzqiJfAUZq6CCw+I4cvhZ8f3Jon9VnGSPmFZ
+ zS90hK3KySxQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; 
-   d="scan'208";a="268439808"
+   d="scan'208";a="268439811"
 Received: from jacob-builder.jf.intel.com ([10.7.199.155])
   by orsmga002.jf.intel.com with ESMTP; 03 Apr 2020 11:36:27 -0700
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
@@ -39,9 +39,9 @@ Cc:     "Yi Liu" <yi.l.liu@intel.com>,
         "Christoph Hellwig" <hch@infradead.org>,
         Jonathan Cameron <jic23@kernel.org>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v11 01/10] iommu/vt-d: Move domain helper to header
-Date:   Fri,  3 Apr 2020 11:42:05 -0700
-Message-Id: <1585939334-21396-2-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH v11 02/10] iommu/uapi: Define a mask for bind data
+Date:   Fri,  3 Apr 2020 11:42:06 -0700
+Message-Id: <1585939334-21396-3-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
@@ -50,50 +50,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move domain helper to header to be used by SVA code.
+Memory type related flags can be grouped together for one simple check.
 
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-Reviewed-by: Eric Auger <eric.auger@redhat.com>
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
 ---
- drivers/iommu/intel-iommu.c | 6 ------
- include/linux/intel-iommu.h | 6 ++++++
- 2 files changed, 6 insertions(+), 6 deletions(-)
+v9 renamed from EMT to MTS since these are memory type support flags.
+---
 
-diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
-index 4be549478691..e599b2537b1c 100644
---- a/drivers/iommu/intel-iommu.c
-+++ b/drivers/iommu/intel-iommu.c
-@@ -446,12 +446,6 @@ static void init_translation_status(struct intel_iommu *iommu)
- 		iommu->flags |= VTD_FLAG_TRANS_PRE_ENABLED;
- }
- 
--/* Convert generic 'struct iommu_domain to private struct dmar_domain */
--static struct dmar_domain *to_dmar_domain(struct iommu_domain *dom)
--{
--	return container_of(dom, struct dmar_domain, domain);
--}
+Reviewed-by: Eric Auger <eric.auger@redhat.com>
+Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+---
+ include/uapi/linux/iommu.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
+index 4ad3496e5c43..d7bcbc5f79b0 100644
+--- a/include/uapi/linux/iommu.h
++++ b/include/uapi/linux/iommu.h
+@@ -284,7 +284,10 @@ struct iommu_gpasid_bind_data_vtd {
+ 	__u32 pat;
+ 	__u32 emt;
+ };
 -
- static int __init intel_iommu_setup(char *str)
- {
- 	if (!str)
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 980234ae0312..ed7171d2ae1f 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -595,6 +595,12 @@ static inline void __iommu_flush_cache(
- 		clflush_cache_range(addr, size);
- }
- 
-+/* Convert generic struct iommu_domain to private struct dmar_domain */
-+static inline struct dmar_domain *to_dmar_domain(struct iommu_domain *dom)
-+{
-+	return container_of(dom, struct dmar_domain, domain);
-+}
-+
- /*
-  * 0: readable
-  * 1: writable
++#define IOMMU_SVA_VTD_GPASID_MTS_MASK	(IOMMU_SVA_VTD_GPASID_CD | \
++					 IOMMU_SVA_VTD_GPASID_EMTE | \
++					 IOMMU_SVA_VTD_GPASID_PCD |  \
++					 IOMMU_SVA_VTD_GPASID_PWT)
+ /**
+  * struct iommu_gpasid_bind_data - Information about device and guest PASID binding
+  * @version:	Version of this data structure
 -- 
 2.7.4
 
