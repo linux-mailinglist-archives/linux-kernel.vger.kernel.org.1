@@ -2,153 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8723A19D6CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B195319D6D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403797AbgDCMfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 08:35:10 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:12476 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbgDCMfK (ORCPT
+        id S2403975AbgDCMfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 08:35:16 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:35684 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403965AbgDCMfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 08:35:10 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e872d1a0000>; Fri, 03 Apr 2020 05:33:30 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Fri, 03 Apr 2020 05:35:09 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Fri, 03 Apr 2020 05:35:09 -0700
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 3 Apr
- 2020 12:35:08 +0000
-Received: from hqnvemgw03.nvidia.com (10.124.88.68) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3 via Frontend
- Transport; Fri, 3 Apr 2020 12:35:09 +0000
-Received: from sandipan-pc.nvidia.com (Not Verified[10.24.42.163]) by hqnvemgw03.nvidia.com with Trustwave SEG (v7,5,8,10121)
-        id <B5e872d7a0000>; Fri, 03 Apr 2020 05:35:08 -0700
-From:   Sandipan Patra <spatra@nvidia.com>
-To:     <treding@nvidia.com>, <robh+dt@kernel.org>,
-        <u.kleine-koenig@pengutronix.de>, <jonathanh@nvidia.com>
-CC:     <bbasu@nvidia.com>, <ldewangan@nvidia.com>,
-        <linux-pwm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Sandipan Patra <spatra@nvidia.com>
-Subject: [PATCH] pwm: tegra: dynamic clk freq configuration by PWM driver
-Date:   Fri, 3 Apr 2020 18:05:03 +0530
-Message-ID: <1585917303-10573-1-git-send-email-spatra@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-X-NVConfidentiality: public
+        Fri, 3 Apr 2020 08:35:14 -0400
+Received: by mail-io1-f72.google.com with SMTP id c10so5907968ioc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 05:35:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=9i6KFf8WUAlZJA8NaxnAVF5EgcrymN6UAh6zvSpVWlU=;
+        b=VlLULW3+MNtgQ+xQQEuGYWFGrQyPuLOm/gzkvqPi+4Z7pFj5eF/YxyYGjGM2Ka+5bO
+         n76lto/WKiCC3c5QWNzcMwjV9dBlSCQLg2lwniHnLFR9Z++J2YphGzdeR9nthOSt9o4k
+         aw15hd5vatsxOsNWPJIrwe1cjYgxWVb9EnvDx0VOWzgaHYXTA0OaCp3YZ7yYqAiCI6lR
+         zgkZc3CkTwG3DLvSA2Iu9NknJ2kzosLNv4+c9oMiHMace7hiwZ3jr8rh8U5V4gZEOwdJ
+         8BKPu3yGRxyCE2FYMWGD94dsEWXFtTHPm5K3w9HaCiofRFPRtolix57QK0ClEx8jM3Dh
+         1zVw==
+X-Gm-Message-State: AGi0PuY5OTyji57+GTOElQgs0erxrAaTe2mV6ExhrYkpAKlKutYzNfbD
+        sdYU6vRd4kw4sphFh43jpIh5xBivyPAkWZSQRWkBsuZbDVc3
+X-Google-Smtp-Source: APiQypKXPAosbIPldoa5yp5n5oDNa/0NJcZ/JuFc+bCwocwk/C4fvhskYbi+ZTbJyJC4peWtusiAOlVC9sGWh8CnEB7ZfZ5M1JRF
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1585917210; bh=SYS3vdECv0ZXlLBQF+6iQhj+wQ1YRaHGnboJxduGkVU=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:Message-ID:X-Mailer:
-         X-NVConfidentiality:MIME-Version:Content-Type;
-        b=TE2LwhOxmbiB5ep0DTE9I92w7enAAm+wO8gl3WQ6R5P9Nkb5JlEgEwniETwrlX1LM
-         y2HiO9fs21duqc64qD+ctPOXdkMTVhXEamSe765g9z2cyYKzD7K3uKu/kDO7eEeQne
-         dPaoe69ra/g6ViN0aEqmc5bGuU1SFgsNJ7wkDL/eyfwJbdsHBuKXI70HGDL2WL3y3A
-         p+LVoN7mmdqsytVuQFJNgYWP18Sjzw4B3BYCuGwUi1WGHGAtVHuGEVSGT1yLaFFE/B
-         /1AbJRw1m/o7KhkOXwVZrwCtbsfrAZEZa1FA9m1vGSPN51tRWDUX+EJVQwtJhZmcO7
-         iEklmlEZ698qA==
+X-Received: by 2002:a5e:8a4d:: with SMTP id o13mr7561447iom.31.1585917312640;
+ Fri, 03 Apr 2020 05:35:12 -0700 (PDT)
+Date:   Fri, 03 Apr 2020 05:35:12 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000102ba005a2622624@google.com>
+Subject: KCSAN: data-race in binder_dec_node_nilocked / binder_state_show
+From:   syzbot <syzbot+71f39766a98dddab97b5@syzkaller.appspotmail.com>
+To:     arve@android.com, christian@brauner.io, devel@driverdev.osuosl.org,
+        elver@google.com, gregkh@linuxfoundation.org,
+        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+        maco@android.com, syzkaller-bugs@googlegroups.com,
+        tkjos@android.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added support for dynamic clock freq configuration in pwm kernel driver.
-Earlier the pwm driver used to cache boot time clock rate by pwm clock
-parent during probe. Hence dynamically changing pwm frequency was not
-possible for all the possible ranges. With this change, dynamic calculation
-is enabled and it is able to set the requested period from sysfs knob
-provided the value is supported by clock source.
+Hello,
 
-Changes mainly have 2 parts:
-  - T186 and later chips [1]
-  - T210 and prior chips [2]
+syzbot found the following crash on:
 
-For [1] - Changes implemented to set pwm period dynamically and
-          also checks added to allow only if requested period(ns) is
-          below or equals to higher range.
+HEAD commit:    245a4300 Merge branch 'rcu/kcsan' into tip/locking/kcsan
+git tree:       https://github.com/google/ktsan.git kcsan
+console output: https://syzkaller.appspot.com/x/log.txt?x=106b67f1e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a4b9db179318d21f
+dashboard link: https://syzkaller.appspot.com/bug?extid=71f39766a98dddab97b5
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-For [2] - Only checks if the requested period(ns) is below or equals
-          to higher range defined by max clock limit. The limitation
-          in T210 or prior chips are due to the reason of having only
-          one pwm-controller supporting multiple channels. But later
-          chips have multiple pwm controller instances each having
-	  single channel support.
+Unfortunately, I don't have any reproducer for this crash yet.
 
-Signed-off-by: Sandipan Patra <spatra@nvidia.com>
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+71f39766a98dddab97b5@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in binder_dec_node_nilocked / binder_state_show
+
+write to 0xffff88809f276954 of 4 bytes by task 1408 on cpu 0:
+ binder_state_show+0xd8/0x260 drivers/android/binder.c:5938
+ seq_read+0x350/0x9d0 fs/seq_file.c:229
+ full_proxy_read+0xbd/0x100 fs/debugfs/file.c:220
+ do_loop_readv_writev fs/read_write.c:714 [inline]
+ do_loop_readv_writev fs/read_write.c:701 [inline]
+ do_iter_read+0x357/0x3d0 fs/read_write.c:935
+ vfs_readv+0x9c/0xf0 fs/read_write.c:997
+ do_preadv+0x131/0x1d0 fs/read_write.c:1089
+ __do_sys_preadv fs/read_write.c:1139 [inline]
+ __se_sys_preadv fs/read_write.c:1134 [inline]
+ __x64_sys_preadv+0x61/0x80 fs/read_write.c:1134
+ do_syscall_64+0xcc/0x3a0 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+read to 0xffff88809f276954 of 4 bytes by task 1416 on cpu 1:
+ binder_dec_node_nilocked+0x382/0x610 drivers/android/binder.c:1261
+ binder_dec_node_tmpref+0xa3/0x120 drivers/android/binder.c:1379
+ binder_put_node drivers/android/binder.c:1387 [inline]
+ binder_state_show+0x1aa/0x260 drivers/android/binder.c:5950
+ seq_read+0x350/0x9d0 fs/seq_file.c:229
+ full_proxy_read+0xbd/0x100 fs/debugfs/file.c:220
+ do_loop_readv_writev fs/read_write.c:714 [inline]
+ do_loop_readv_writev fs/read_write.c:701 [inline]
+ do_iter_read+0x357/0x3d0 fs/read_write.c:935
+ vfs_readv+0x9c/0xf0 fs/read_write.c:997
+ do_preadv+0x131/0x1d0 fs/read_write.c:1089
+ __do_sys_preadv fs/read_write.c:1139 [inline]
+ __se_sys_preadv fs/read_write.c:1134 [inline]
+ __x64_sys_preadv+0x61/0x80 fs/read_write.c:1134
+ do_syscall_64+0xcc/0x3a0 arch/x86/entry/common.c:294
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 1416 Comm: syz-executor.1 Not tainted 5.5.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+==================================================================
+
+
 ---
- drivers/pwm/pwm-tegra.c | 45 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 43 insertions(+), 2 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/pwm/pwm-tegra.c b/drivers/pwm/pwm-tegra.c
-index aa12fb3..d3ba33c 100644
---- a/drivers/pwm/pwm-tegra.c
-+++ b/drivers/pwm/pwm-tegra.c
-@@ -4,7 +4,7 @@
-  *
-  * Tegra pulse-width-modulation controller driver
-  *
-- * Copyright (c) 2010, NVIDIA Corporation.
-+ * Copyright (c) 2010-2020, NVIDIA Corporation.
-  * Based on arch/arm/plat-mxc/pwm.c by Sascha Hauer <s.hauer@pengutronix.de>
-  */
- 
-@@ -83,10 +83,51 @@ static int tegra_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
- 	val = (u32)c << PWM_DUTY_SHIFT;
- 
- 	/*
-+	 * Its okay to ignore the fraction part since we will be trying to set
-+	 * slightly lower value to rate than the actual required rate
-+	 */
-+	rate = NSEC_PER_SEC/period_ns;
-+
-+	/*
-+	 *  Period in nano second has to be <= highest allowed period
-+	 *  based on the max clock rate of the pwm controller.
-+	 *
-+	 *  higher limit = max clock limit >> PWM_DUTY_WIDTH
-+	 */
-+	if (rate > (pc->soc->max_frequency >> PWM_DUTY_WIDTH))
-+		return -EINVAL;
-+
-+	/*
- 	 * Compute the prescaler value for which (1 << PWM_DUTY_WIDTH)
- 	 * cycles at the PWM clock rate will take period_ns nanoseconds.
- 	 */
--	rate = pc->clk_rate >> PWM_DUTY_WIDTH;
-+	if (pc->soc->num_channels == 1) {
-+		/*
-+		 * Rate is multiplied with 2^PWM_DUTY_WIDTH so that it matches
-+		 * with the hieghest applicable rate that the controller can
-+		 * provide. Any further lower value can be derived by setting
-+		 * PFM bits[0:12].
-+		 * Higher mark is taken since BPMP has round-up mechanism
-+		 * implemented.
-+		 */
-+		rate = rate << PWM_DUTY_WIDTH;
-+
-+		err = clk_set_rate(pc->clk, rate);
-+		if (err < 0)
-+			return -EINVAL;
-+
-+		rate = clk_get_rate(pc->clk) >> PWM_DUTY_WIDTH;
-+	} else {
-+		/*
-+		 * This is the case for SoCs who support multiple channels:
-+		 *
-+		 * clk_set_rate() can not be called again in config because
-+		 * T210 or any prior chip supports one pwm-controller and
-+		 * multiple channels. Hence in this case cached clock rate
-+		 * will be considered which was stored during probe.
-+		 */
-+		rate = pc->clk_rate >> PWM_DUTY_WIDTH;
-+	}
- 
- 	/* Consider precision in PWM_SCALE_WIDTH rate calculation */
- 	hz = DIV_ROUND_CLOSEST_ULL(100ULL * NSEC_PER_SEC, period_ns);
--- 
-2.7.4
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
