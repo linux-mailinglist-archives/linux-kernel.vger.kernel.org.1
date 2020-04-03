@@ -2,208 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0BB219CE7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65D719CE90
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 04:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390289AbgDCCLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 22:11:09 -0400
-Received: from pi3.com.pl ([185.238.74.129]:54172 "EHLO pi3.com.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389108AbgDCCLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 22:11:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by pi3.com.pl (Postfix) with ESMTP id 00E3E4C00F6;
-        Fri,  3 Apr 2020 04:11:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
-        t=1585879865; bh=XYIvUepz8Qe+tqiBlLV256QftMp5j/ITT/q+jgi5gbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yor9doaDGj9M0b7Yz1AKEvFPpx70hJfGv8qsHK6uhQ34m2qrnvS8qq2DWiBfIlfjn
-         ISRxGNesqBcYbW2kzAmu7wabU1kvt/1dRcy+j9rDDS5irgeeF1NyW3mMXfQ/XH+Z7Y
-         vZJ4G2xCDa4ts+zSQ+3U+8GmKzSZI2WMVE45esWyqt/0qgH6t1rVBG8H4dw+EfFC1L
-         j3S2lStq+A/qpGa9cMueJfWL5Kjb9qcVvs9YbFlLWZitvPGSnSpQf2zmP2tVqqfqi3
-         F5gpZEjDVHWNiMBvVKCqHCaQ6RfIoNZXY1xOu3BcbuqwvADKkVIhOJkR6ldGdNBM3M
-         Jd1u1exLMGA2g==
-X-Virus-Scanned: Debian amavisd-new at pi3.com.pl
-Received: from pi3.com.pl ([127.0.0.1])
-        by localhost (pi3.com.pl [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xnKB_2yP9xfP; Fri,  3 Apr 2020 04:11:01 +0200 (CEST)
-Received: by pi3.com.pl (Postfix, from userid 1000)
-        id DF1884C13C0; Fri,  3 Apr 2020 04:11:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
-        t=1585879861; bh=XYIvUepz8Qe+tqiBlLV256QftMp5j/ITT/q+jgi5gbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R2s9iEEfBYlPc+FPyQCksrHChkQo6pvDE4notAjx6iF14mQ+H/tHxuWb+gP5t2ka7
-         ti2x8jEKLx+5wvqCuDjhefXGO/KTPoCd08Qhd4r/4cD1xFdNH/xAFsFLf6q6EgBw1k
-         zwKiLJg6fLqGCdeLti4GaHfslQiXmzfF/Ue96u26V9UrvfmXK+vkd2AVPxSpCt9piY
-         ZNzdun/96nJk+887Ufee75C9p94vPgdSH/pvy1V7FtmqkKc6yoSYHO1dSgKo+LKi+V
-         GLp1DooSg+md4vCdFqgDTMlfwXnepXTTS05dGU2c7MC8tBFYQnSfH63ndx5UgVkQsR
-         BK5Gkhf2P/KAw==
-Date:   Fri, 3 Apr 2020 04:11:01 +0200
-From:   Adam Zabrocki <pi3@pi3.com.pl>
-To:     Jann Horn <jannh@google.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH] signal: Extend exec_id to 64bits
-Message-ID: <20200403021101.GA2608@pi3.com.pl>
-References: <20200324215049.GA3710@pi3.com.pl>
- <202003291528.730A329@keescook>
- <87zhbvlyq7.fsf_-_@x220.int.ebiederm.org>
- <CAG48ez1dCPw9Dep-+GWn=SnHv1nVv4Npv1FpFxmomk6tmazB-g@mail.gmail.com>
+        id S2390272AbgDCCS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 22:18:56 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:20054 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388709AbgDCCSz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 22:18:55 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0332EwrQ005459
+        for <linux-kernel@vger.kernel.org>; Thu, 2 Apr 2020 19:18:54 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=cDoB0ichWZYA+VpWqPf6KR4QQ008FhSwewof75iV/qU=;
+ b=En7MjjFLedgM/cesn+je/GfO37JItXAp2IDtSXq9/uGhU/F3xfHY8Xu98i1oIDsM9iVQ
+ c+VP+yCg45TQbfku1069/cv2a59seu8dCKVRwPauLcN6nTXjlr+M0E85OT0E4Zlaw2vg
+ oO9WgG2iNgol/fuCUGuRybLXhUmSs0FkTtA= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 304cxbvqdm-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 19:18:54 -0700
+Received: from intmgw004.03.ash8.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 2 Apr 2020 19:18:52 -0700
+Received: by devbig020.ftw1.facebook.com (Postfix, from userid 179119)
+        id 81FA358C2CDF; Thu,  2 Apr 2020 19:18:45 -0700 (PDT)
+Smtp-Origin-Hostprefix: devbig
+From:   Aslan Bakirov <aslan@fb.com>
+Smtp-Origin-Hostname: devbig020.ftw1.facebook.com
+To:     <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kernel-team@fb.com>, <riel@surriel.com>, <guro@fb.com>,
+        <mhocko@kernel.org>, <hannes@cmpxchg.org>,
+        Aslan Bakirov <aslan@fb.com>
+Smtp-Origin-Cluster: ftw1c07
+Subject: [PATCH v3] mm: cma: NUMA node interface
+Date:   Thu, 2 Apr 2020 19:12:56 -0700
+Message-ID: <20200403021254.2842224-1-aslan@fb.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez1dCPw9Dep-+GWn=SnHv1nVv4Npv1FpFxmomk6tmazB-g@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-02_13:2020-04-02,2020-04-02 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ phishscore=0 suspectscore=1 mlxlogscore=999 mlxscore=0 clxscore=1015
+ spamscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004030016
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 06:46:49AM +0200, Jann Horn wrote:
-> On Wed, Apr 1, 2020 at 10:50 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> > Replace the 32bit exec_id with a 64bit exec_id to make it impossible
-> > to wrap the exec_id counter.  With care an attacker can cause exec_id
-> > wrap and send arbitrary signals to a newly exec'd parent.  This
-> > bypasses the signal sending checks if the parent changes their
-> > credentials during exec.
-> >
-> > The severity of this problem can been seen that in my limited testing
-> > of a 32bit exec_id it can take as little as 19s to exec 65536 times.
-> > Which means that it can take as little as 14 days to wrap a 32bit
-> > exec_id.  Adam Zabrocki has succeeded wrapping the self_exe_id in 7
-> > days.  Even my slower timing is in the uptime of a typical server.
-> 
-> FYI, if you actually optimize this, it's more like 12s to exec 1048576
-> times according to my test, which means ~14 hours for 2^32 executions
-> (on a single core). That's on an i7-4790 (a Haswell desktop processor
-> that was launched about six years ago, in 2014).
-> 
+I've noticed that there is no interfaces exposed by CMA which would let m=
+e
+to declare contigous memory on particular NUMA node.
 
-Yep, there are a few ways of optimizing it and I believe I've pointed it out 
-here:
-https://www.openwall.com/lists/kernel-hardening/2020/03/31/11
+This patchset adds the ability to try to allocate contiguous memory on
+specific node. It will fallback to other nodes if the specified one
+doesn't work.
 
-Thanks for doing such tests :)
+Implement a new method for declaring contigous memory on particular node
+and keep cma_declare_contiguous() as a wrapper.
 
-I've also modified your PoC to use 'sysenter' and 'syscall' instruction. Both 
-cases gave me an extra 4% speed bump (including a test for 64-bits 
-"fast_execve"). I've run it under Intel(R) Xeon(R) E-2176G CPU @ 3.70GHz
+Signed-off-by: Aslan Bakirov <aslan@fb.com>
+---
+ include/linux/cma.h      | 13 +++++++++++--
+ include/linux/memblock.h |  3 +++
+ mm/cma.c                 | 16 +++++++++-------
+ mm/memblock.c            |  2 +-
+ 4 files changed, 24 insertions(+), 10 deletions(-)
 
-As you've proven, it is possible to be done in a matter of hours.
-
-Thanks,
-Adam
-
-> Here's my test code:
-> 
-> =============
-> $ grep 'model name' /proc/cpuinfo | head -n1
-> model name : Intel(R) Core(TM) i7-4790 CPU @ 3.60GHz
-> $ cat build.sh
-> #!/bin/sh
-> set -e
-> nasm -felf32 -o fast_execve.o fast_execve.asm
-> ld -m elf_i386 -o fast_execve fast_execve.o
-> gcc -o launch launch.c -Wall
-> gcc -o finish finish.c -Wall
-> $ cat fast_execve.asm
-> bits 32
-> 
-> section .text
-> global _start
-> _start:
-> ; eax = argv[0]
-> ; expected to be 8 hex digits, with 'a' meaning 0x0 and 'p' meaning 0xf
-> mov eax, [esp+4]
-> 
-> mov ebx, 0 ; loop counter
-> hex_digit_loop:
-> inc byte [eax+ebx]
-> cmp byte [eax+ebx], 'a'+16
-> jne next_exec
-> mov byte [eax+ebx], 'a'
-> inc ebx
-> cmp ebx, 5 ;;;;;;;;;;;;;;;;;; this is N, where iteration_count=pow(16,N)
-> jne hex_digit_loop
-> 
-> 
-> ; reached pow(256,N) execs, get out
-> 
-> ; first make the stack big again
-> mov eax, 75 ; setrlimit (32-bit ABI)
-> mov ebx, 3 ; RLIMIT_STACK
-> mov ecx, stacklim
-> int 0x80
-> 
-> ; execute end helper
-> mov ebx, 4 ; dirfd = 4
-> jmp common_exec
-> 
-> next_exec:
-> mov ebx, 3 ; dirfd = 3
-> 
-> common_exec: ; execveat() with file descriptor passed in as ebx
-> mov ecx, nullval ; pathname = empty string
-> lea edx, [esp+4] ; argv
-> mov esi, 0 ; envp
-> mov edi, 0x1000 ; flags = AT_EMPTY_PATH
-> mov eax, 358 ; execveat (32-bit ABI)
-> int 0x80
-> int3
-> 
-> nullval:
-> dd 0
-> stacklim:
-> dd 0x02000000
-> dd 0xffffffff
-> $ cat launch.c
-> #define _GNU_SOURCE
-> #include <fcntl.h>
-> #include <err.h>
-> #include <unistd.h>
-> #include <sys/syscall.h>
-> #include <sys/resource.h>
-> int main(void) {
->   close(3);
->   close(4);
->   if (open("fast_execve", O_PATH) != 3)
->     err(1, "open fast_execve");
->   if (open("finish", O_PATH) != 4)
->     err(1, "open finish");
->   char *argv[] = { "aaaaaaaa", NULL };
-> 
->   struct rlimit lim;
->   if (getrlimit(RLIMIT_STACK, &lim))
->     err(1, "getrlimit");
->   lim.rlim_cur = 0x4000;
->   if (setrlimit(RLIMIT_STACK, &lim))
->     err(1, "setrlimit");
-> 
->   syscall(__NR_execveat, 3, "", argv, NULL, AT_EMPTY_PATH);
-> }
-> $ cat finish.c
-> #include <stdlib.h>
-> int main(void) {
->   exit(0);
-> }
-> $ ./build.sh
-> $ time ./launch
-> 
-> real 0m12,075s
-> user 0m0,905s
-> sys 0m11,026s
-> $
-> =============
-
--- 
-pi3 (pi3ki31ny) - pi3 (at) itsec pl
-http://pi3.com.pl
+diff --git a/include/linux/cma.h b/include/linux/cma.h
+index 190184b5ff32..eae834c2162f 100644
+--- a/include/linux/cma.h
++++ b/include/linux/cma.h
+@@ -24,10 +24,19 @@ extern phys_addr_t cma_get_base(const struct cma *cma=
+);
+ extern unsigned long cma_get_size(const struct cma *cma);
+ extern const char *cma_get_name(const struct cma *cma);
+=20
+-extern int __init cma_declare_contiguous(phys_addr_t base,
++extern int __init cma_declare_contiguous_nid(phys_addr_t base,
+ 			phys_addr_t size, phys_addr_t limit,
+ 			phys_addr_t alignment, unsigned int order_per_bit,
+-			bool fixed, const char *name, struct cma **res_cma);
++			bool fixed, const char *name, struct cma **res_cma,
++			int nid);
++static inline int __init cma_declare_contiguous(phys_addr_t base,
++			phys_addr_t size, phys_addr_t limit,
++			phys_addr_t alignment, unsigned int order_per_bit,
++			bool fixed, const char *name, struct cma **res_cma)
++{
++	return cma_declare_contiguous_nid(base, size, limit, alignment,
++			order_per_bit, fixed, name, res_cma, NUMA_NO_NODE);
++}
+ extern int cma_init_reserved_mem(phys_addr_t base, phys_addr_t size,
+ 					unsigned int order_per_bit,
+ 					const char *name,
+diff --git a/include/linux/memblock.h b/include/linux/memblock.h
+index 079d17d96410..6bc37a731d27 100644
+--- a/include/linux/memblock.h
++++ b/include/linux/memblock.h
+@@ -348,6 +348,9 @@ static inline int memblock_get_region_node(const stru=
+ct memblock_region *r)
+=20
+ phys_addr_t memblock_phys_alloc_range(phys_addr_t size, phys_addr_t alig=
+n,
+ 				      phys_addr_t start, phys_addr_t end);
++phys_addr_t memblock_alloc_range_nid(phys_addr_t size,
++				      phys_addr_t align, phys_addr_t start,
++				      phys_addr_t end, int nid, bool exact_nid);
+ phys_addr_t memblock_phys_alloc_try_nid(phys_addr_t size, phys_addr_t al=
+ign, int nid);
+=20
+ static inline phys_addr_t memblock_phys_alloc(phys_addr_t size,
+diff --git a/mm/cma.c b/mm/cma.c
+index be55d1988c67..6405af3dc118 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -220,7 +220,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, ph=
+ys_addr_t size,
+ }
+=20
+ /**
+- * cma_declare_contiguous() - reserve custom contiguous area
++ * cma_declare_contiguous_nid() - reserve custom contiguous area
+  * @base: Base address of the reserved area optional, use 0 for any
+  * @size: Size of the reserved area (in bytes),
+  * @limit: End address of the reserved memory (optional, 0 for any).
+@@ -229,6 +229,7 @@ int __init cma_init_reserved_mem(phys_addr_t base, ph=
+ys_addr_t size,
+  * @fixed: hint about where to place the reserved area
+  * @name: The name of the area. See function cma_init_reserved_mem()
+  * @res_cma: Pointer to store the created cma region.
++ * @nid: nid of the free area to find, %NUMA_NO_NODE for any node
+  *
+  * This function reserves memory from early allocator. It should be
+  * called by arch specific code once the early allocator (memblock or bo=
+otmem)
+@@ -238,10 +239,11 @@ int __init cma_init_reserved_mem(phys_addr_t base, =
+phys_addr_t size,
+  * If @fixed is true, reserve contiguous area at exactly @base.  If fals=
+e,
+  * reserve in range from @base to @limit.
+  */
+-int __init cma_declare_contiguous(phys_addr_t base,
++int __init cma_declare_contiguous_nid(phys_addr_t base,
+ 			phys_addr_t size, phys_addr_t limit,
+ 			phys_addr_t alignment, unsigned int order_per_bit,
+-			bool fixed, const char *name, struct cma **res_cma)
++			bool fixed, const char *name, struct cma **res_cma,
++			int nid)
+ {
+ 	phys_addr_t memblock_end =3D memblock_end_of_DRAM();
+ 	phys_addr_t highmem_start;
+@@ -336,14 +338,14 @@ int __init cma_declare_contiguous(phys_addr_t base,
+ 		 * memory in case of failure.
+ 		 */
+ 		if (base < highmem_start && limit > highmem_start) {
+-			addr =3D memblock_phys_alloc_range(size, alignment,
+-							 highmem_start, limit);
++			addr =3D memblock_alloc_range_nid(size, alignment,
++					highmem_start, limit, nid, false);
+ 			limit =3D highmem_start;
+ 		}
+=20
+ 		if (!addr) {
+-			addr =3D memblock_phys_alloc_range(size, alignment, base,
+-							 limit);
++			addr =3D memblock_alloc_range_nid(size, alignment, base,
++					alimit, nid, false);
+ 			if (!addr) {
+ 				ret =3D -ENOMEM;
+ 				goto err;
+diff --git a/mm/memblock.c b/mm/memblock.c
+index 4d06bbaded0f..c79ba6f9920c 100644
+--- a/mm/memblock.c
++++ b/mm/memblock.c
+@@ -1349,7 +1349,7 @@ __next_mem_pfn_range_in_zone(u64 *idx, struct zone =
+*zone,
+  * Return:
+  * Physical address of allocated memory block on success, %0 on failure.
+  */
+-static phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
++phys_addr_t __init memblock_alloc_range_nid(phys_addr_t size,
+ 					phys_addr_t align, phys_addr_t start,
+ 					phys_addr_t end, int nid,
+ 					bool exact_nid)
+--=20
+2.24.1
 
