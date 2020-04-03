@@ -2,93 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB76419D374
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C8219D395
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 11:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390432AbgDCJYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 05:24:30 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:34924 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgDCJYa (ORCPT
+        id S2389015AbgDCJ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 05:27:00 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:42026 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727774AbgDCJ07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 05:24:30 -0400
-Received: by mail-wm1-f66.google.com with SMTP id i19so6925294wmb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 02:24:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Ph0bQEVivKyrvCsvpNnxX3VcyLljQN3rvtdW4PjpUYA=;
-        b=EoXWpACO8GQp2HUQGe3WqRlEX5JDF6cZ9WJh0dLk9SDe3WZuHSaOylvqe1T14fLlxB
-         VdiXx2NpE8iEkt4PZjnQUyIuSgMY+OdPPhxF5RCHdoRKdfW6a9NkxiYvs9a/JaDrKSMP
-         rDhgpqLiSXc/PR4Cdsib/Zs387vHMa7H0ghH5FJ1dwkjlOCWW7GwjHVlfAr1NPXHuka9
-         h/txEFfr3eiDPPShk8/0MmJjRfTqBK60nz+XcURzsjg+jV+pbLMZB+oe5nfd4PVbmVRc
-         kY2JCouPNTuCm+toiscRxFb5dxUj8O7dKHiXp3brrUs+9gw+sq2RPBMJDSIdMbD/bRhe
-         jkhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Ph0bQEVivKyrvCsvpNnxX3VcyLljQN3rvtdW4PjpUYA=;
-        b=NgxXASdeyUBleWOBgdbwSyF428OuS3e31tdoZYzRukt+tkN21FUHeWvGcTb1Jd+FH4
-         AZe68x5+qpXXtVUusQp0Llyggmak+UmStZFbCpegIhrvBLOgdNtUfp0xKGDzjjFLKkn/
-         VEm3ga20k5QkiztI2cBtLYMSyDLJqwcR3kJbKLsQaecVOF2LzEVnPpFh3CZY0fhjWDgs
-         lT1DQOERKtzJjXFks0Qyc58k6a9nc83uxqeElmrcnWJbLFkKkIY36a4WO+fx9Vdy1EHi
-         ZpXfDDzkxytktzjavrl5rXz0RAn2nqlZp7/ih/87U+ceFrppXFjNRwoZbcBX1CWk3WFu
-         WxsA==
-X-Gm-Message-State: AGi0Pub4cK6J98tLDjSi0w687ey5YUWW3lNUGukjmnGl2FHwNwsfCZ1r
-        6r5+GiG/WIhBCcPIdHXKx/dTbw==
-X-Google-Smtp-Source: APiQypLvGETVEYJaT3z4N1aZZa3xAbJ+hJj/+OR8FGSF7k5T+vXXpk+pwvvdN3Bo9pTqT2FFg5XIJA==
-X-Received: by 2002:a1c:e203:: with SMTP id z3mr7923246wmg.71.1585905868318;
-        Fri, 03 Apr 2020 02:24:28 -0700 (PDT)
-Received: from dell ([2.27.35.179])
-        by smtp.gmail.com with ESMTPSA id w7sm11297056wrr.60.2020.04.03.02.24.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 02:24:27 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 10:25:21 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mfd: asic3: Delete redundant variable definition
-Message-ID: <20200403092521.GD30614@dell>
-References: <b2a0e5f6-1f07-a7bd-2f3c-c95119efe635@web.de>
+        Fri, 3 Apr 2020 05:26:59 -0400
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 0339Qsq7028468;
+        Fri, 3 Apr 2020 18:26:54 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 0339Qsq7028468
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1585906015;
+        bh=MstVQUcgSZG0zMpYAd6uwUB9YIo5n+SWfVQSoNG7zYs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vPSn6fquixsMdc8F/WHY+Z3hJJymMhmLaDGmIwv7h5J0ek55oMCHsTTC4epy4WIoN
+         SWVSfC4glyY7yTY1sWGPuwl0llHmc4VwIWmXPCNX8DcZD+thXY/QtgY0PKrotEctSq
+         fVbPm/PxVFq/ebVWrmiCPK5vIyJwgugYO9rmW34Hlp+lAx2lgGgH1Hji8mAx/HeoKV
+         2jpgLrQKENR2BHBqM7/Jj9FL/+1KODQSff6lqOmkSCfEi1101py0RwTjZ1b3akTWpZ
+         WHUvzU/EqP+t88fGHnBrDwg2DolNJlit/finZMiZkdqhWFynBslUIK3Byq04Z/rnFD
+         houwTm8pljgYg==
+X-Nifty-SrcIP: [209.85.222.45]
+Received: by mail-ua1-f45.google.com with SMTP id y17so2438527uap.13;
+        Fri, 03 Apr 2020 02:26:54 -0700 (PDT)
+X-Gm-Message-State: AGi0PualAhsuBl8RJxJygZpAlVuOfIai2baHxMYhzGSlxm49F83EuqUa
+        c0dSU1yDc/wlZkqCK0ESScqAcxwSzwEnfz5iYXQ=
+X-Google-Smtp-Source: APiQypJv5Cv+OWIIu8e9neKOttTNCoftbQaRs6wYhkoxm4CNEoGf3PrOYPE8+yNwLCju9NAzOB9CzonSznjlClJ2kQA=
+X-Received: by 2002:ab0:2790:: with SMTP id t16mr5779840uap.40.1585906013243;
+ Fri, 03 Apr 2020 02:26:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b2a0e5f6-1f07-a7bd-2f3c-c95119efe635@web.de>
+References: <20200403051709.22407-1-masahiroy@kernel.org> <20200403085719.GA9282@ubuntu-m2-xlarge-x86>
+In-Reply-To: <20200403085719.GA9282@ubuntu-m2-xlarge-x86>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 3 Apr 2020 18:26:17 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATtqe_vSYTUD+7G8du46F3Kksx6F2yHK4Tw9PLdybqL7A@mail.gmail.com>
+Message-ID: <CAK7LNATtqe_vSYTUD+7G8du46F3Kksx6F2yHK4Tw9PLdybqL7A@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: support 'LLVM' to switch the default tools to Clang/LLVM
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Apr 2020, Markus Elfring wrote:
+Hi Nathan,
 
-> > In this function, 'ret' is always assigned, even if 'pdata->leds'
-> > don't carry out,
-> 
-> I notice possibilities again to improve such a commit message.
-> 
-> 
-> > it has already been assigned a value in the above code, including '0',
-> 
-> The variable assignment will eventually be performed only in if branches.
-> 
-> 
-> > so it's redundant.
-> 
-> I suggest to reconsider this interpretation of the source code here.
-> Would you like to move the mentioned statement into an else branch
-> at the end?
 
-Why wasn't this sent 'in reply to'?  Something wrong with your mailer?
+On Fri, Apr 3, 2020 at 5:57 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> Hi Masahiro,
+>
+> On Fri, Apr 03, 2020 at 02:17:09PM +0900, Masahiro Yamada wrote:
+> > As Documentation/kbuild/llvm.rst implies, building the kernel with a
+> > full set of LLVM tools gets very verbose and unwieldy.
+> >
+> > Provide a single switch 'LLVM' to use Clang and LLVM tools instead of
+> > GCC and Binutils. You can pass LLVM=1 from the command line or as an
+> > environment variable. Then, Kbuild will use LLVM toolchains in your
+> > PATH environment.
+> >
+> > Please note LLVM=1 does not turn on the LLVM integrated assembler.
+> > You need to explicitly pass AS=clang to use it. When the upstream
+> > kernel is ready for the integrated assembler, I think we can make
+> > it default.
+>
+> I agree this should be the default but I think it should probably be
+> called out somewhere in the documentation as well since users might not
+> expect to have to have a cross assembler installed.
 
-Now this messages is orphaned.  Floating about in my inbox on its own.
+
+I will add the following info to llvm.rst:
+
+`LLVM=1` does not turn on the LLVM integrated assembler, so you still need
+assembler from GNU binutils. You can pass `AS=clang` to use the integrated
+assembler, but it is experimental as of writing.
+
+
+
+
+> > We discussed what we need, and we agreed to go with a simple boolean
+> > switch (https://lkml.org/lkml/2020/3/28/494).
+> >
+> > Some items in the discussion:
+> >
+> > - LLVM_DIR
+> >
+> >   When multiple versions of LLVM are installed, I just thought supporting
+> >   LLVM_DIR=/path/to/my/llvm/bin/ might be useful.
+> >
+> >   CC      = $(LLVM_DIR)clang
+> >   LD      = $(LLVM_DIR)ld.lld
+> >     ...
+> >
+> >   However, we can handle this by modifying PATH. So, we decided to not do
+> >   this.
+> >
+> > - LLVM_SUFFIX
+> >
+> >   Some distributions (e.g. Debian) package specific versions of LLVM with
+> >   naming conventions that use the version as a suffix.
+> >
+> >   CC      = clang$(LLVM_SUFFIX)
+> >   LD      = ld.lld(LLVM_SUFFIX)
+> >     ...
+> >
+> >   will allow a user to pass LLVM_SUFFIX=-11 to use clang-11 etc.,
+> >   but the suffixed versions in /usr/bin/ are symlinks to binaries in
+> >   /usr/lib/llvm-#/bin/, so this can also be handled by PATH.
+> >
+> > - HOSTCC, HOSTCXX, etc.
+> >
+> >   We can switch the host compilers in the same way:
+> >
+> >   ifneq ($(LLVM),)
+> >   HOSTCC       = clang
+> >   HOSTCXX      = clang++
+> >   else
+> >   HOSTCC       = gcc
+> >   HOSTCXX      = g++
+> >   endif
+>
+> I would personally like to see this but I do not have the strongest
+> opinion.
+>
+> >   This may the right thing to do, but I could not make up my mind.
+> >   Because we do not frequently switch the host compiler, a counter
+> >   solution I had in my mind was to leave it to the default of the
+> >   system.
+> >
+> >   HOSTCC       = cc
+> >   HOSTCXX      = c++
+> >
+> >   Many distributions support update-alternatives to switch the default
+> >   to GCC, Clang, or whatever, but reviewers were opposed to this
+> >   approach. So, this commit does not touch the host tools.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  Documentation/kbuild/kbuild.rst |  5 +++++
+> >  Documentation/kbuild/llvm.rst   |  5 +++++
+> >  Makefile                        | 20 ++++++++++++++++----
+> >  3 files changed, 26 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
+> > index 510f38d7e78a..2d1fc03d346e 100644
+> > --- a/Documentation/kbuild/kbuild.rst
+> > +++ b/Documentation/kbuild/kbuild.rst
+> > @@ -262,3 +262,8 @@ KBUILD_BUILD_USER, KBUILD_BUILD_HOST
+> >  These two variables allow to override the user@host string displayed during
+> >  boot and in /proc/version. The default value is the output of the commands
+> >  whoami and host, respectively.
+> > +
+> > +LLVM
+> > +----
+> > +If this variable is set to 1, Kbuild will use Clang and LLVM utilities instead
+> > +of GCC and GNU binutils to build the kernel.
+> > diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> > index d6c79eb4e23e..4602369f6a4f 100644
+> > --- a/Documentation/kbuild/llvm.rst
+> > +++ b/Documentation/kbuild/llvm.rst
+> > @@ -55,6 +55,11 @@ additional parameters to `make`.
+> >         READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \\
+> >         HOSTLD=ld.lld
+> >
+> > +You can use a single switch `LLVM=1` to use LLVM utilities by default (except
+> > +for building host programs).
+> > +
+> > +     make LLVM=1 HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
+> > +
+> >  Getting Help
+> >  ------------
+> >
+> > diff --git a/Makefile b/Makefile
+> > index c91342953d9e..6db89ecdd942 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -409,16 +409,28 @@ KBUILD_HOSTLDFLAGS  := $(HOST_LFS_LDFLAGS) $(HOSTLDFLAGS)
+> >  KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
+> >
+> >  # Make variables (CC, etc...)
+> > -LD           = $(CROSS_COMPILE)ld
+> > -CC           = $(CROSS_COMPILE)gcc
+> >  CPP          = $(CC) -E
+> > +ifneq ($(LLVM),)
+> > +CC           = clang
+> > +LD           = ld.lld
+> > +AR           = llvm-ar
+> > +NM           = llvm-nm
+> > +OBJCOPY              = llvm-objcopy
+> > +OBJDUMP              = llvm-objdump
+> > +READELF              = llvm-readelf
+> > +OBJSIZE              = llvm-size
+> > +STRIP                = llvm-strip
+> > +else
+> > +CC           = $(CROSS_COMPILE)gcc
+> > +LD           = $(CROSS_COMPILE)ld
+> >  AR           = $(CROSS_COMPILE)ar
+> >  NM           = $(CROSS_COMPILE)nm
+> > -STRIP                = $(CROSS_COMPILE)strip
+> >  OBJCOPY              = $(CROSS_COMPILE)objcopy
+> >  OBJDUMP              = $(CROSS_COMPILE)objdump
+> > -OBJSIZE              = $(CROSS_COMPILE)size
+> >  READELF              = $(CROSS_COMPILE)readelf
+> > +OBJSIZE              = $(CROSS_COMPILE)size
+> > +STRIP                = $(CROSS_COMPILE)strip
+> > +endif
+> >  PAHOLE               = pahole
+> >  LEX          = flex
+> >  YACC         = bison
+> > --
+> > 2.17.1
+> >
+>
+> I have verified that the variables get their correct value with LLVM=1
+> and that they are still overridable.
+>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+> Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
+>
+> --
+> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200403085719.GA9282%40ubuntu-m2-xlarge-x86.
+
+
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Best Regards
+Masahiro Yamada
