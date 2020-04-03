@@ -2,80 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D3019DACC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AC819DAD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403900AbgDCQFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:05:48 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29711 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728126AbgDCQFr (ORCPT
+        id S2404036AbgDCQGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:06:06 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:32922 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403971AbgDCQGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:05:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585929946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YHwQSmbMG4HnMxZ26bWvjSGCnlTSFj1c/dJ6cczgSfA=;
-        b=dzXheBP2y1RTzsYkoZaecDgFajM1ArWmmN3nGa20Fpij78FfW94btEM6M3xCkJgmhzf3Da
-        l7JQ3HxfjZY6e5egQRw1ywWUGQdoD8h69bCYZTUKn4yrtj34zFAyEiEOfr45l0Dll8kGcn
-        lVHKwqz2aMei3/lyuybGe9y4PYmimAM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-MXOCZQ6nPuKZKcSD2KNjWA-1; Fri, 03 Apr 2020 12:05:44 -0400
-X-MC-Unique: MXOCZQ6nPuKZKcSD2KNjWA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C525F8017CE;
-        Fri,  3 Apr 2020 16:05:42 +0000 (UTC)
-Received: from treble (ovpn-118-100.rdu2.redhat.com [10.10.118.100])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8772F96B9B;
-        Fri,  3 Apr 2020 16:05:41 +0000 (UTC)
-Date:   Fri, 3 Apr 2020 11:05:38 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
-        jthierry@redhat.com, tglx@linutronix.de
-Subject: Re: [PATCH 5/7] x86/speculation: Annotate intra-function calls
-Message-ID: <20200403160538.qwu237amhanr6pyi@treble>
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-6-alexandre.chartre@oracle.com>
+        Fri, 3 Apr 2020 12:06:02 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033FmlXx060862;
+        Fri, 3 Apr 2020 16:05:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=UhdHklRomxNbebWWRjDfKWX0dV8tBeR4UT0S2HC9XPI=;
+ b=eYWuFB7Md4C6e/b6A31sehx/Iwdjh0AK9osSQuJ3MegOVfOo36LgqkJSHvOY2zBI0OJI
+ 4fXdc0YAdZu+Hp4q/Mda0F9aLyNcMpOx/3NybkyCv7GdDFWxpqCWabbmw2SlRAEzkcCo
+ Wqq9ZH/qS+Koxsntmhk7zosLU0Ti5za6qU6I/FRYx7RKMyadAuCXm33nLZ7gUyGYBP+Z
+ dGO3ZtkbfIg1xpk7vizt8349nyzuRhFm+yR5shUwlHiZpHDAAFCugzbJpjXtV/Uj2UX3
+ yMPoIgkxybmEHctR/n5o/YRTf0JHdVfk4MopREB56/UtKZ2at8bxwJmN+HrtslrIykzq EQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 303aqj2dqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 16:05:48 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033FmEWr175392;
+        Fri, 3 Apr 2020 16:05:48 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 302ga53hav-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 16:05:48 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 033G5jXv019624;
+        Fri, 3 Apr 2020 16:05:46 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Apr 2020 09:05:45 -0700
+Date:   Fri, 3 Apr 2020 09:05:44 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
+Message-ID: <20200403160544.GO80283@magnolia>
+References: <20200311033614.GQ1752567@magnolia>
+ <20200311062952.GA11519@lst.de>
+ <CAPcyv4h9Xg61jk=Uq17xC6AGj9yOSAJnCaTzHcfBZwOVdRF9dw@mail.gmail.com>
+ <20200316095224.GF12783@quack2.suse.cz>
+ <20200316095509.GA13788@lst.de>
+ <20200401040021.GC56958@magnolia>
+ <20200401102511.GC19466@quack2.suse.cz>
+ <20200402085327.GA19109@lst.de>
+ <20200402205518.GF3952565@iweiny-DESK2.sc.intel.com>
+ <20200403072731.GA24176@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200402082220.808-6-alexandre.chartre@oracle.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200403072731.GA24176@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=935 bulkscore=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004030136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 clxscore=1015
+ malwarescore=0 impostorscore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ priorityscore=1501 lowpriorityscore=0 adultscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030136
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 10:22:18AM +0200, Alexandre Chartre wrote:
->  .macro RETPOLINE_JMP reg:req
-> -	call	.Ldo_rop_\@
-> +	INTRA_FUNCTION_CALL .Ldo_rop_\@
->  .Lspec_trap_\@:
->  	pause
->  	lfence
-> @@ -102,7 +116,7 @@
->  .Ldo_retpoline_jmp_\@:
->  	RETPOLINE_JMP \reg
->  .Ldo_call_\@:
-> -	call	.Ldo_retpoline_jmp_\@
-> +	INTRA_FUNCTION_CALL .Ldo_retpoline_jmp_\@
->  .endm
+On Fri, Apr 03, 2020 at 09:27:31AM +0200, Christoph Hellwig wrote:
+> On Thu, Apr 02, 2020 at 01:55:19PM -0700, Ira Weiny wrote:
+> > > I'd just return an error for that case, don't play silly games like
+> > > evicting the inode.
+> > 
+> > I think I agree with Christoph here.  But I want to clarify.  I was heading in
+> > a direction of failing the ioctl completely.  But we could have the flag change
+> > with an appropriate error which could let the user know the change has been
+> > delayed.
+> > 
+> > But I don't immediately see what error code is appropriate for such an
+> > indication.  Candidates I can envision:
+> > 
+> > EAGAIN
+> > ERESTART
+> > EUSERS
+> > EINPROGRESS
+> > 
+> > None are perfect but I'm leaning toward EINPROGRESS.
+> 
+> I really, really dislike that idea.  The whole point of not forcing
+> evictions is to make it clear - no this inode is "busy" you can't
+> do that.  A reasonably smart application can try to evict itself.
+> 
+> But returning an error and doing a lazy change anyway is straight from
+> the playbook for arcane and confusing API designs.
 
-There's a catch: this is part of an alternative.  Which means if
-X86_FEATURE_RETPOLINE isn't set at runtime, then the retpoline won't be
-there and the ORC data will be wrong.
+Agreed.  That's why I wrote that applications can set FS_XFLAG_DAX and
+then query statx for STATX_ATTR_DAX to find out if it actually took
+effect, and that if applications require it immediately they can either
+create a file in a FS_XFLAG_DAX directory, or the admin can mount with
+dax=always.  No magic return values required or desired anywhere.
 
-In fact objtool should probably be made smart enough to warn about this
-situation, when an alternative changes the stack state.
+I don't know what "try to evict the inode" magic means, but I'm fairly
+sure I don't want to. ;)
 
-The only way I can think of to fix this is to have ORC alternatives :-/
-
--- 
-Josh
-
+--D
