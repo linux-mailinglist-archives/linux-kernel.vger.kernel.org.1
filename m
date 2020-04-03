@@ -2,95 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F0619DF44
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 22:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E1319DF50
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 22:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbgDCUWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 16:22:34 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33388 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728589AbgDCUWb (ORCPT
+        id S1727977AbgDCUX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 16:23:57 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:35360 "EHLO
+        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgDCUX5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 16:22:31 -0400
-Received: by mail-wr1-f66.google.com with SMTP id a25so10080866wrd.0;
-        Fri, 03 Apr 2020 13:22:30 -0700 (PDT)
+        Fri, 3 Apr 2020 16:23:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1585945437; x=1617481437;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=+6yBOTqUG3YgkG19QszLign4dTsPY2z0u9rhGPgELcw=;
+  b=Si1c3H/ciMesgUzCSxaKHCg9ehBBIjdePMxYn8dX70I754l3hmtHYxxp
+   sX5ta82KjzegA81unmoPnJDr3NAsZXefKlJC1c59mdBVpnag/vzgDjCqw
+   nkZcpl7qSGXuwK8s++fgIHqR6PloqihR0zOVOpunAp3J1bYWXRQJ5JNtP
+   7JaGddSoyRdFLJCTAAHLeV2cm5BSELqnBk2oxbBXerganjEDPic62CbU/
+   bl9jnJfrFMeV0rxylQ4/gWUMUzemu7Q9CssHf1U3Fndwxu70vfEBSGVm5
+   rNO/UkzGTMgs/2JhI4QPH//BVcWgbxYpkM8LM1hg+8Jkrjb+08ahz3N4r
+   Q==;
+IronPort-SDR: SQgmhj96AvSH1WgVm4SU8TtMw98WvrPSpMCWlLDv2pMghWq51l34KiXfqpGWYY8f69Mto5VEXX
+ U2EWa3El56YobtkTfi02DoLZ9CQtkegcS+y904R1Djk71vdK+RWcEt8tNFzP3HZIWVMHkttvWJ
+ v/JQ2HWD0TAOwoMC6uPuoPNxSc4UEQtchRiD9X0QLl/rDFziyp2g1F4pCW6wfnXLtSZvEMEEkQ
+ 0ZsdAkY6orV5fWK0QDIYBYYryo8tUIhdqyHjw65POVDqpKCOkFn0AT0hHC7NyUFUAOyIWXql4Z
+ QCI=
+X-IronPort-AV: E=Sophos;i="5.72,341,1580745600"; 
+   d="scan'208";a="134854242"
+Received: from mail-bn8nam12lp2175.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.175])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Apr 2020 04:23:56 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=huUoV4CaLqbKnBos+acl+hb7c6tm9kieKYzAuceivUTiSRTlVM6KUUnAU+73n0NyaeVLwI77x/VfVTardSbWYcwEx9uYDa+YIyFCnbqmAkVMFUn0JbEJ39MsQtmY4CT4O4zUKMBZsxChkwAPbdDYdd3Qu6pzlBUqlE9NXND/5a0XOqTgi8j7X17cZISIE0UN+waN1pYxaliFm9CVMcWFB9QKrP3dz2RIUkkojkDYJi52qz1r+5/+ElyiQ7l/LVUWFpKGkHAI/pPW+V+vYxPXfTP53qHRe45ptQpE++VSSa51hxiBXbx7Rf6v+HqJeoNkzJpv9eGkQ/NVkEQstJOHJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QLDQYu5AJwZw1qfu0XPaiqAJg1wkmZ0H0UuGsLgopDE=;
+ b=f0iBEj7GGUVclcsSpVYidKVOQT4lCWJGRei9c7SGeEZmhzswR3wZU2ETrHaWUAcj9BOfa6mTPgx2SyTKCJf3ieLQeDlcvRzL9zGMjrnVVBs6YcALHKebQP+4ntTevxEcv7eoT1CeJAVLsDEhsizk7xHRoLY3eDlY1nxIHrQ/RUDWmvhYGt0eQGbYHNFwpOziBhoyjpImY9wfrh3gEby5NWQwdpP0EdmEZ/Z1pEZNOaDMYfbxqw08U1rWL708w+utMJmsmNZTrEG8h1jAwDHhl7ii46TFzhN1NtLSagYKXY3an5VlGJeN9f6jtDTPj3r6LJzbduWL0K3shNbXtLLR8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fhOtbK0ZVL1ABebYKJYf0UxxzluO0JY5MJfCTLBiR34=;
-        b=HUU2B0i/AmHt/U6+7pI3Nauxs8P31FCocmOO2SiELa6ftuHKRB5A/klDwvPpBAd+Ft
-         dZCIqTaqcZnPCMujHH6Pwp4gyP0HayYsOuCtQ42+7r09dezJ3DHyKjohpu/k+vbRHYIc
-         LS5/aP50jeO18Fwhia9Xyea/+z4kaIE1fBubPoh3Yk0eM2D0BpL8N5xznFVgl/HG+ktr
-         /V9VsrNDeVgw/+AF/57iazt4FWaIDFrBlFU2rWXvZb9qwdKU5LyBFbS8byg9ep3gaZSj
-         d3X/DY+5vlyqezN/Z21RV1OH7KEk6iOoykOKxGbgxlyyNFkgsCzVl0lIX4iMlQnMopz7
-         hokA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fhOtbK0ZVL1ABebYKJYf0UxxzluO0JY5MJfCTLBiR34=;
-        b=FZTakWi7o3BUjUbEMVq6Nukn+2G4y2Td3B7Z0K9JvUiD/LHr2945kOXFy/lx00bkPV
-         z/Kn+2kJ9dFyEtEDmCIimW79i1wPXTrOfUDXR18IcelKkUjGZSI7vGdtTFcdwCl5uHaW
-         fVNf+CFQHUW7FkAsof9vsTxzKBztBRnnsuoG6/XzEKDd2qi2z1HVz+JY1AC4t/sisJn4
-         h1d2vtY9F/odLf6ZtYDcncC9xZtDGGtUYO9+c4LMK1UmGcZrvuSgA8/Ibk044SS7Q5b1
-         nmpmEnIq/eCwUtq51kvnceVSBFa/fLEfSEBoko6QBCKHC7RyTLOwBRF7mIRvrsTEVLvy
-         Tl6w==
-X-Gm-Message-State: AGi0PuaxeKauYtaZspgiixoO6KDbYIJyzRsIyTKwLfIqTUErWdqjvH4P
-        GFzGiX27/3lGLAt6QLnVxMw=
-X-Google-Smtp-Source: APiQypJwyjlC81w8tMkFTyU/xyPrx4riYwln0dT/JL05SWu258U0MNk5jFQCBvuNXkA7PF2MiX9s9A==
-X-Received: by 2002:a5d:4602:: with SMTP id t2mr11734250wrq.347.1585945349386;
-        Fri, 03 Apr 2020 13:22:29 -0700 (PDT)
-Received: from localhost (pD9E51CDC.dip0.t-ipconnect.de. [217.229.28.220])
-        by smtp.gmail.com with ESMTPSA id y189sm13005619wmb.26.2020.04.03.13.22.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 13:22:28 -0700 (PDT)
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 7/7] arm64: tegra: Enable native timers on Jetson AGX Xavier
-Date:   Fri,  3 Apr 2020 22:22:09 +0200
-Message-Id: <20200403202209.299823-8-thierry.reding@gmail.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200403202209.299823-1-thierry.reding@gmail.com>
-References: <20200403202209.299823-1-thierry.reding@gmail.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QLDQYu5AJwZw1qfu0XPaiqAJg1wkmZ0H0UuGsLgopDE=;
+ b=Skudzonvf7UpDYUt+8XrfvYhOLwRFE2gUUbj98I/NYFUpHmOTvJAMXkQkMfIN0czKLfS2kbTUbnbnQr69BZDhM1+G9RCi0PCzZRmokJI3ai+MYu7OUMS4BgOBnCEoef3GYnUHCIjvHt5ok0fNjYWAlpP0SOQV7ZjC3A+LUsu6vU=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BYAPR04MB4040.namprd04.prod.outlook.com (2603:10b6:a02:ac::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.19; Fri, 3 Apr
+ 2020 20:23:53 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::d826:82b2:764f:9733]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::d826:82b2:764f:9733%7]) with mapi id 15.20.2878.018; Fri, 3 Apr 2020
+ 20:23:53 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Anthony Iliopoulos <ailiop@suse.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>
+CC:     "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] nvmet: add revalidation support to bdev and file backed
+ namespaces
+Thread-Topic: [PATCH] nvmet: add revalidation support to bdev and file backed
+ namespaces
+Thread-Index: AQHWCSVL06kuVSKmBEqONSGslHKI9A==
+Date:   Fri, 3 Apr 2020 20:23:53 +0000
+Message-ID: <BYAPR04MB49652594CD66C48E2F6996F086C70@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <20200402193052.19935-1-ailiop@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Chaitanya.Kulkarni@wdc.com; 
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 339cf102-52d7-4974-91d8-08d7d80cedbe
+x-ms-traffictypediagnostic: BYAPR04MB4040:
+x-microsoft-antispam-prvs: <BYAPR04MB4040F9B911BE25A787EA753C86C70@BYAPR04MB4040.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:1443;
+x-forefront-prvs: 0362BF9FDB
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(136003)(346002)(376002)(39860400002)(396003)(366004)(5660300002)(4326008)(9686003)(55016002)(81156014)(26005)(71200400001)(33656002)(4744005)(186003)(8936002)(8676002)(110136005)(54906003)(86362001)(81166006)(52536014)(66946007)(478600001)(66476007)(66556008)(64756008)(66446008)(7696005)(76116006)(316002)(53546011)(6506007)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eB6WATlimWSptODnx2BoFDV/tUBE5D6L1Rg0+63vpFPd/kiNERinoyz6bmXFxEOyIWMQfjRqXTb69CmJvAdp3SpD9psAcLe6u4WNHOQQnm/EwSlQPevStW64nqtZtETTj8Gtrg1xxB8iX/qmZA9vIURevNW2rKG9Dfl/a7hsFWdS9/9EF+50H1nCGVllz6vSh5nLpOXsrdiPOGt3L0UqG5DMNZXZfgNcZ0+HTn7T0c82mwlvi+pqOEXEQdC+cUCwtCRnaq9HzYJvaLfcm4B4SWv+d5qKYDVk6KnCAJjJigtO7Nn/+iDC1OTUJ4jhV3IwsSmZNK2A6HLzIfxcbz0dH9xDwnoWhisqe+uC3tWVCJqojJyb93mmuLnZVJpCt54FJIk0LeNx9IDFJzwS9tPTdRibjZsR685mGWqdVtLg3cz1zi2mHacANmpBm2I6gI8t
+x-ms-exchange-antispam-messagedata: e4jFnJ3LGmU9wbaEUiwTVTUa6MPQt21ghJQQgrqIV3MBnquKFmZALMQeYLWck7AeItnKXdutd4etP6e0wjI31642Kvq5BB3by3yVc8QGnjkJhQe0L+duMcVAGP8U1m2s2P88TRs2aFwa7OtrnQZw2A==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 339cf102-52d7-4974-91d8-08d7d80cedbe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2020 20:23:53.4601
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8rWAhaekCxGJVym9qt6rJJNcrACaalGY/piNip4WA9p719wrvqKMbG6S7oGAkXOeYv6AHI7fJBgfL3gKCw6pVoAAJoEB62PuwL4oBQTtSBs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4040
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thierry Reding <treding@nvidia.com>
-
-Enable the native timers on Jetson AGX Xavier to allow using the
-watchdog functionality to recover from system hangs, for example.
-
-Signed-off-by: Thierry Reding <treding@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi b/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi
-index 623f7d7d216b..d68588f2709e 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194-p2888.dtsi
-@@ -52,6 +52,10 @@ memory-controller@2c00000 {
- 			status = "okay";
- 		};
- 
-+		timer@3010000 {
-+			status = "okay";
-+		};
-+
- 		serial@3110000 {
- 			status = "okay";
- 		};
--- 
-2.24.1
-
+On 04/02/2020 12:31 PM, Anthony Iliopoulos wrote:=0A=
+> +void nvmet_bdev_ns_revalidate(struct nvmet_ns *ns)=0A=
+> +{=0A=
+> +	loff_t size;=0A=
+> +=0A=
+> +	size =3D i_size_read(ns->bdev->bd_inode);=0A=
+> +=0A=
+> +	if (ns->size !=3D size)=0A=
+> +		ns->size =3D size;=0A=
+=0A=
+How about following one line which is still readable ?=0A=
+=0A=
+ns->size =3D i_size_read(ns->bdev->bd_inode);=0A=
+=0A=
+> +}=0A=
+> +=0A=
+=0A=
