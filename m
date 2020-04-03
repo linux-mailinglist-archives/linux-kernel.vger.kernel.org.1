@@ -2,123 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E772619D961
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:44:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 714C619D973
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391090AbgDCOod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:44:33 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38965 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727431AbgDCOod (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:44:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585925071;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dzD7eus7lBjgG30NcNG/sOIuLevArnMNUmhmE93sGjg=;
-        b=NRWpWQ9VFzHP3rcwbGp4n+rHcnljAYu1nn8M1xbs8O00vFFoveh/cYNW3hko+LtyblCx3X
-        ld86gbrXqHKOpS3BD8bLg2pz1vuyNtTw/QdF+KHjs+xqW4oOH9szwAfbCDGMnhVWQ5+vm+
-        +cUkWxRaA4WOA97UjqP2DbZ1tqdw2PA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-65-NcL3yS1iMNaO6R2a5WJWIg-1; Fri, 03 Apr 2020 10:44:27 -0400
-X-MC-Unique: NcL3yS1iMNaO6R2a5WJWIg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4BD488017F5;
-        Fri,  3 Apr 2020 14:44:26 +0000 (UTC)
-Received: from treble (ovpn-118-100.rdu2.redhat.com [10.10.118.100])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6C0D75C1D6;
-        Fri,  3 Apr 2020 14:44:25 +0000 (UTC)
-Date:   Fri, 3 Apr 2020 09:44:23 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Julien Thierry <jthierry@redhat.com>
-Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
-Message-ID: <20200403144423.lqcvdhi54cl3btvj@treble>
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-4-alexandre.chartre@oracle.com>
- <db508586-258a-0616-d649-e76e95df9611@redhat.com>
- <20200402154919.2c6shw4hfreagchg@treble>
- <3d075cb2-8d99-5ab7-4842-efef1964247d@redhat.com>
+        id S2403981AbgDCOs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:48:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46582 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727431AbgDCOs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 10:48:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D4ADDACE3;
+        Fri,  3 Apr 2020 14:48:57 +0000 (UTC)
+Received: from localhost (webern.olymp [local])
+        by webern.olymp (OpenSMTPD) with ESMTPA id 9113dd72;
+        Fri, 3 Apr 2020 15:48:57 +0100 (WEST)
+Date:   Fri, 3 Apr 2020 15:48:57 +0100
+From:   Luis Henriques <lhenriques@suse.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-cachefs@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fscache: drop fscache_cookie_put on duplicated cookies
+ in the hash
+Message-ID: <20200403144857.GA22068@suse.com>
+References: <20200309161643.GA92486@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3d075cb2-8d99-5ab7-4842-efef1964247d@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200309161643.GA92486@suse.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 09:01:38AM +0100, Julien Thierry wrote:
+Ping?
+
+Cheers,
+--
+Luis
+
+On Mon, Mar 09, 2020 at 04:16:43PM +0000, Luis Henriques wrote:
+> When there's a collision due to a duplicate cookie, __fscache_register_netfs
+> will do an fscache_cookie_put.  This, however, isn't required as
+> fscache_cookie_get hasn't been executed, and will lead to a NULL pointer as
+> fscache_unhash_cookie will be called.
 > 
+> Signed-off-by: Luis Henriques <lhenriques@suse.com>
+> ---
+>  fs/fscache/netfs.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> On 4/2/20 4:49 PM, Josh Poimboeuf wrote:
-> > On Thu, Apr 02, 2020 at 01:53:49PM +0100, Julien Thierry wrote:
-> > > Hi Alexandre,
-> > > 
-> > > I ran into the limitation of intra-function call for the arm64 support but
-> > > didn't take the time to make a clean patch to support them properly.
-> > 
-> > Can you give an example of where arm64 uses intra-function calls?  It
-> > sounds sketchy to me :-)  Is it really needed/useful?
-> > 
-> 
-> So the most notable/necessary one(s) is the one in tramp_ventry [1]. This
-> macro is used as the begining of exception handlers for exceptions coming
-> from userland. It was added as part of the mitigations of spectre (v1???).
-> 
-> To give some context, x30 is the register that "ret" instruction will use as
-> return address, "bl" is the equivalent of x86 "call" and sets x30 before
-> jumping to the target address. (However, it doesn't have a special semantic
-> for exception returns)
-> 
-> Note: I believe the comment about the return "stack" is about processor
-> internal state (speculative thingies and all) rather than the actual stack,
-> since the stack is untouched by that code. But I don't know the actual
-> details.
-
-Ok.  So another Spectre special case.
-
-> There are also some in arch/arm64/crypto/crct10dif-ce-core.o , which is
-> probably full of fast, smart and optimized code I don't understand :) . So I
-> wouldn't feel confident commenting on whether those intra-function calls are
-> needed or not.
-
-Glancing at that code, there's a macro which has bl to
-.L__pmull_p8_core, which, because it has a local label prefix, doesn't
-have an ELF symbol associated with it.  I bet changing that branch to
-"bl __pmull_p8_core" (and removing the unnecessary .L__pmull_p8_core
-label) would fix the warnings.
-
-So IIUC, this is actually a case where the warning found a cleanup,
-albeit a trivial one.
-
-> Last I found is in qcom_link_stack_sanitization() [2], but that's just a
-> workaround for a very specific hardware. In my local tree I just put the
-> function as STACK_FRAME_NON_STANDARD. But the code just saves the return
-> address, has 16 call instructions that just call the instruction after them,
-> restores the return address and lets the C-function return normally (and it
-> somehow fixes something for that hardware).
-
-Yeah, like Peter said this sounds like x86 RSB stuffing.  More Spectre
-nastiness.
-
-So it sounds like the only valid use case for intra-function calls is
-Spectre BS...
-
-So, at the risk of possibly contradicting the past version of myself, my
-current feeling is that we should annotate such cases, and then warn on
-non-annotated cases like the crypto example above.  There's nothing
-normal about these Spectre mitigations, so it's ok to add annotations to
-such craziness.
-
--- 
-Josh
+> diff --git a/fs/fscache/netfs.c b/fs/fscache/netfs.c
+> index cce92216fa28..07a55371f0a4 100644
+> --- a/fs/fscache/netfs.c
+> +++ b/fs/fscache/netfs.c
+> @@ -52,7 +52,6 @@ int __fscache_register_netfs(struct fscache_netfs *netfs)
+>  	return 0;
+>  
+>  already_registered:
+> -	fscache_cookie_put(candidate, fscache_cookie_put_dup_netfs);
+>  	_leave(" = -EEXIST");
+>  	return -EEXIST;
+>  }
 
