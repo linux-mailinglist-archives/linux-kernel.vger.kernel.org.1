@@ -2,58 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 315B319DADA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D421819DACE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404097AbgDCQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:06:19 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:34075 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728126AbgDCQGA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2403952AbgDCQGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 3 Apr 2020 12:06:00 -0400
-Received: by mail-wm1-f65.google.com with SMTP id c195so2452155wme.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 09:05:59 -0700 (PDT)
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:55572 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728126AbgDCQF7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 12:05:59 -0400
+Received: by mail-wm1-f66.google.com with SMTP id r16so7672177wmg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 09:05:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dzEeNyDala3uxeELxLxO2MZRdXlX5SVQ04E7X9m3Duc=;
-        b=d6JkZQtavCBUiM+OFTMbdv5z7W1TYsbqGQbf/cANOcgTNdFDzWgRGfzuN9QQESrjxC
-         9bH4H5MmHF8JeFjkX7Sk7RmbqJiC54ZaQPQx5kofJJch1sxLGxh9V/jFmeK7HNvXbRcF
-         4ayrMqbbWlfac3oJNmSJZhcqcPUiiQJ8RQ4Q9LiT3ZhPkJ2ACKHj7d6r9Z0e8zSTGc6g
-         owse44CHkzTayYBwJXcL8gCkmzbqdqcR/BM1IavzXzBptp9STxUNFZX/2SIJVTElvyK6
-         Ei61Z1to2qD/ULto8H0wbAHD1kwSchAaeLXSht2qR5pHzHm29CrszPK5iJN/irikH6Qh
-         3UtA==
+        bh=yWVsg2O9zhGalvGX+nmw8V2YWRG8uH/vlzv7kbC1wXg=;
+        b=Giy9dKRukI/k1MEXbyHBkt7Gtq+lTH8dlYv4wvBwQui9J39u2LalbRxTH/XL4IeuE1
+         WusY3MrDEjrStmwsREWrUZh9y0Sm0mlP9KBbPQXdVmFafQgf570zp70UuwGaFnXiZw4M
+         V1f8JZv4BVZuR/7AJqdDrauhs1Hyy2RGGYKjcniJ1bmEDx3NhK1KBhXf2m8Sr2CqQs1R
+         ZYElnSag05ex/GJ3wlbwI5CH9pOeB1ZaVMYo3/WJxqC3VhHFc6WNgWKdH3mvKGj+rmoW
+         jOokU9C2kt9iA/p6SQvbemNnH4VWMWFPIMUKQPEmRh3jyWfdFNiAQhT6zvbEpXtdfPRK
+         ZjIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dzEeNyDala3uxeELxLxO2MZRdXlX5SVQ04E7X9m3Duc=;
-        b=ZhtC+FavkF6Cn0gxEilVFzHNPtkZY3fjhXQYasTRMEgKAY5tuGRW/J+KK48VpHpUOV
-         f9YEp42E6ROHKGbLHkzZT1EOxfQ7vRExoN80Z21pTcXIQS+YRXIZOwjF8CqIubmClNeO
-         zXh5oiyPTkGYRwPTMODGmriMjLsB6YNF82LIzrwjt9/rn1+h0VsfiIwp4FIwnd19RSoB
-         C5JJEV9kFa8XIVTRbShqzKqlLkw1f/m0+W3nsL5SHWedi1okl1Yo3LInP3bdU20ozv6j
-         lwENZwqsX6fw7BTJIytxTUWURZVt6x+7a+lSiXa4l2/KD3X61mzsjBx6HDp8bnhI+j2/
-         a/VQ==
-X-Gm-Message-State: AGi0PuZk7ia7MEKZOEK/R43quDpcL0CmINgyRYwJewhMukuxn6v6sINm
-        HckkvBwIBib51ZSNXL4ZXg/3SMMv1Q==
-X-Google-Smtp-Source: APiQypKXKJoJZrGS1SrYH7hAWSC3wip/kiZezs8zGvut14Bp7EdRAFcXcnbNBxqmnaLtGV6i0TJHKA==
-X-Received: by 2002:a05:600c:2197:: with SMTP id e23mr9316654wme.90.1585929955178;
-        Fri, 03 Apr 2020 09:05:55 -0700 (PDT)
+        bh=yWVsg2O9zhGalvGX+nmw8V2YWRG8uH/vlzv7kbC1wXg=;
+        b=BF7Vgx9m0VMOWgnAbpFkYn0na73f7DIS4xc/zG9XsHMqFO4uBX1CgNjraT04MYl1Rq
+         VrjLhxakVemFAMj/+kuGTIr008vPT81QMDou1oiyEWBVEb5x/2hcs+uc0OoTyO9GT0UW
+         XNs9cB6SJdsaei5rUVjHfHPbupidxU45xQU+T6+TtKMrM4bH23BDPD+l0HXQmm9k6y4r
+         zKsYjLvS1SM1cTbirGmgZm1wGa3K8LSb9XBq/a0aD44G77aXKCuRNrf+dC1KJRnxl19Z
+         7rZKoGFbyO1wKsqZA5Umu4PX67DqGq4M+VOUIUe6Bcbh+76ZQf+uytwh54lfy0WG4IVa
+         bQgw==
+X-Gm-Message-State: AGi0Pub9Ovl0JC3eqXr65fYQDFtKh8BqAshwTY4mGxeG0k5BinH4rJQT
+        oSm7PvwecaUFBwTowFLskEt2rC/6Vw==
+X-Google-Smtp-Source: APiQypK+pHUBNHU1g6vdAifk/O+7Vo+AWOtwaxvsmWs4IEVOrdresmT7yXhlPAmgJpOokXO+pyceRA==
+X-Received: by 2002:a05:600c:2206:: with SMTP id z6mr9440647wml.188.1585929957222;
+        Fri, 03 Apr 2020 09:05:57 -0700 (PDT)
 Received: from ninjahost.lan (host-92-23-85-227.as13285.net. [92.23.85.227])
-        by smtp.gmail.com with ESMTPSA id l12sm12351426wrt.73.2020.04.03.09.05.54
+        by smtp.gmail.com with ESMTPSA id l12sm12351426wrt.73.2020.04.03.09.05.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 09:05:54 -0700 (PDT)
+        Fri, 03 Apr 2020 09:05:56 -0700 (PDT)
 From:   Jules Irenge <jbi.octave@gmail.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     boqun.feng@gmail.com
-Subject: [PATCH 0/5] lock warnings cleanup
-Date:   Fri,  3 Apr 2020 17:05:00 +0100
-Message-Id: <20200403160505.2832-1-jbi.octave@gmail.com>
+Cc:     boqun.feng@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
+        Lu Shuaibing <shuaibinglu@126.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Manfred Spraul <manfred@colorfullife.com>
+Subject: [PATCH 1/5] ipc/msg: Add missing annotation for freeque()
+Date:   Fri,  3 Apr 2020 17:05:01 +0100
+Message-Id: <20200403160505.2832-2-jbi.octave@gmail.com>
 X-Mailer: git-send-email 2.24.1
-In-Reply-To: <0/5>
+In-Reply-To: <20200403160505.2832-1-jbi.octave@gmail.com>
 References: <0/5>
+ <20200403160505.2832-1-jbi.octave@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -61,28 +65,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds missing annotations to various functions,
-that register warnings of context imbalance when built with Sparse tool.
-The adds fix the warnings, improve on readability of the code
-and give better insight or directive on what the functions are actually doing.
+Sparse reports a warning at freeque()
 
-Jules Irenge (5):
-  ipc/msg: Add missing annotation for freeque()
-  video: Add missing annotation for cyber2000fb_enable_ddc() and
-    cyber2000fb_disable_ddc()
-  ocfs2: Add missing annotation for dlm_empty_lockres()
-  libata: Add missing annotation for ata_scsi_rbuf_get() and
-    ata_scsi_rbuf_fill()
-  ipmi: Add missing annotation for ipmi_ssif_lock_cond() and
-    ipmi_ssif_unlock_cond()
+warning: context imbalance in freeque() - unexpected unlock
 
- drivers/ata/libata-scsi.c         | 2 ++
- drivers/char/ipmi/ipmi_ssif.c     | 2 ++
- drivers/video/fbdev/cyber2000fb.c | 2 ++
- fs/ocfs2/dlm/dlmmaster.c          | 1 +
- ipc/msg.c                         | 2 ++
- 5 files changed, 9 insertions(+)
+The root cause is the missing annotation at freeque()
 
+Add the missing __releases(RCU) annotation
+Add the missing __releases(&msq->q_perm) annotation
+
+Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+---
+ ipc/msg.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/ipc/msg.c b/ipc/msg.c
+index caca67368cb5..acd1bc7af55a 100644
+--- a/ipc/msg.c
++++ b/ipc/msg.c
+@@ -268,6 +268,8 @@ static void expunge_all(struct msg_queue *msq, int res,
+  * before freeque() is called. msg_ids.rwsem remains locked on exit.
+  */
+ static void freeque(struct ipc_namespace *ns, struct kern_ipc_perm *ipcp)
++	__releases(RCU)
++	__releases(&msq->q_perm)
+ {
+ 	struct msg_msg *msg, *t;
+ 	struct msg_queue *msq = container_of(ipcp, struct msg_queue, q_perm);
 -- 
 2.24.1
 
