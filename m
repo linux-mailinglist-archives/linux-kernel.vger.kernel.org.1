@@ -2,157 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 172F219DDF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DEF19DDF7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391133AbgDCSaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 14:30:06 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38765 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbgDCSaF (ORCPT
+        id S2404187AbgDCSbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 14:31:24 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:54522 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728329AbgDCSbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 14:30:05 -0400
-Received: by mail-wr1-f66.google.com with SMTP id c7so9643665wrx.5;
-        Fri, 03 Apr 2020 11:30:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BtN7k6pTSyaojIcEhqjJJ4HP26OV+mxSlIUivXrP8eE=;
-        b=usLvtxbjrzWNjPavzzAIBsV47yBp0loUKWxoqq4s0Jok9neOTP9BfX3SnhZoGXp4hF
-         h7yiUK+3LObH1kNNCrSgMy9z0kiT9+0URZuLHqgfVtsBCOinY4LlsZieLwfEdnlHz9Qh
-         2kLbA7pYKpur6rS8blek/la3hnmCtWFoLHEQIOW2SIPZHE006W9EAywWMPVmRQ96W/Wd
-         wAvciOK1W6Cmd3NhTlGft4is4l//JeHeJ37REWQ+AzvB0AmSdWeEk1qV45eArSP7OzI4
-         EFbfLBUyDzuiPM3jO4Hyw+R0ixFPSKa/cSeaLofbZZoHHxLhWKf+1/qOH/Wom9la48gi
-         n5rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BtN7k6pTSyaojIcEhqjJJ4HP26OV+mxSlIUivXrP8eE=;
-        b=Du5UOVe6U/mP6LFfBAYz8zotYcp0cwRZoogZNoEPLd6FopRVioTEwugTrVOtZA05xQ
-         O5tcueJDk99KC5Je1rlvQiaM3OSTCv46N0VriqneyB/3gYlkHaKeW5hbCf/QLbIRg7SN
-         w2WqOVP7VV/y3xdFX/a0QICsfW5uqbgLy+4SPyuEjDroaHuGts+Kv/rwgURHu4ItKeeM
-         xCwYpFLaGIAdkKPfi2jK3sVsPtZctUU4mjOTHlGyFKKdtOwpL4AQCVK86h1lpsLeeybm
-         JCRzuQOuOKNFgKyEgcC7JykEtHkSUmIcU6HVkotyUX87V7e30teTszLjtdQEX6bupYBc
-         blDA==
-X-Gm-Message-State: AGi0PuZQzNqjQkkB3zIG2RjgZsVzxcfuBEkuXqPbxSNzXty1WUzw7nBz
-        4MJ751/g2mn4fLEKbVJNcdM=
-X-Google-Smtp-Source: APiQypL8CY3NuWxQUEgtPk1QuAH9qtELPubdQ7jORZmGUEEMAI/+Vf/ruEpgtBP0XjM6LoYt7MXSKw==
-X-Received: by 2002:adf:e282:: with SMTP id v2mr10380381wri.329.1585938602733;
-        Fri, 03 Apr 2020 11:30:02 -0700 (PDT)
-Received: from [10.230.186.223] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id f3sm13148024wmj.24.2020.04.03.11.29.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 11:30:01 -0700 (PDT)
-Subject: Re: [PATCH v1] net: phy: micrel: kszphy_resume(): add delay after
- genphy_resume() before accessing PHY registers
-To:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     David Jander <david@protonic.nl>,
-        "David S. Miller" <davem@davemloft.net>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Russell King <linux@armlinux.org.uk>
-References: <20200403075325.10205-1-o.rempel@pengutronix.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <736770ae-ea7d-c575-1133-d13155857462@gmail.com>
-Date:   Fri, 3 Apr 2020 11:29:58 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.6.0
+        Fri, 3 Apr 2020 14:31:24 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033IRkvw137808;
+        Fri, 3 Apr 2020 18:30:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=ZhKqLb/Pn2h4vkI+nImUP8ZekLTUzz7SJceQfr11CKE=;
+ b=IK1AoQQ1mEAVYTOe0YhAgBpZhDrqhIIlGFZFwrNxOS4Fuj7k31oYK5mt340+KbitOTIr
+ 1fAuXUfZJ05wdWrZ2c63rFrY8XlEh7kqtZAQu6/sn3W6IeMRqtR5bKE33/W9EE1bjk2d
+ 50qssGsb8dCfWez7qQFUBHA+LscoFfoBXDZ0HGd5voUeMR9x2UFf5qUIFEdcvGrWCP03
+ 0RIxGjYhd8PJ6kbNbMvhv2nsQC/4MSNjZJW6mMqfNhh38J+VQ+rUxwjyVaFiVLy02wuH
+ U3n/7rLmVqgA1tpvo/fAmoIVJxjrA8Pb918hVrFlyRlqwcDM0ETFXBbnLpJVSb5egpys qw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 303yunn76r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 18:30:56 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033IR2Th054977;
+        Fri, 3 Apr 2020 18:30:56 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 302g2np29k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 18:30:56 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 033IUpMd016396;
+        Fri, 3 Apr 2020 18:30:51 GMT
+Received: from vbusired-dt (/10.154.116.130)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Apr 2020 11:30:51 -0700
+Date:   Fri, 3 Apr 2020 13:30:46 -0500
+From:   Venu Busireddy <venu.busireddy@oracle.com>
+To:     Ashish Kalra <Ashish.Kalra@amd.com>
+Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, joro@8bytes.org, bp@suse.de,
+        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rientjes@google.com,
+        srutherford@google.com, luto@kernel.org, brijesh.singh@amd.com
+Subject: Re: [PATCH v6 09/14] KVM: x86: Introduce KVM_GET_PAGE_ENC_BITMAP
+ ioctl
+Message-ID: <20200403183046.GA727000@vbusired-dt>
+References: <cover.1585548051.git.ashish.kalra@amd.com>
+ <388afbf3af3a10cc3101008bc9381491cc7aab2f.1585548051.git.ashish.kalra@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <20200403075325.10205-1-o.rempel@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <388afbf3af3a10cc3101008bc9381491cc7aab2f.1585548051.git.ashish.kalra@amd.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9580 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ adultscore=0 phishscore=0 bulkscore=0 suspectscore=1 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030151
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9580 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
+ suspectscore=1 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030151
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-03-30 06:22:23 +0000, Ashish Kalra wrote:
+> From: Brijesh Singh <Brijesh.Singh@amd.com>
+> 
+> The ioctl can be used to retrieve page encryption bitmap for a given
+> gfn range.
+> 
+> Return the correct bitmap as per the number of pages being requested
+> by the user. Ensure that we only copy bmap->num_pages bytes in the
+> userspace buffer, if bmap->num_pages is not byte aligned we read
+> the trailing bits from the userspace and copy those bits as is.
+> 
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: "Radim Krčmář" <rkrcmar@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 
+With the suggestions below...
 
-On 4/3/2020 12:53 AM, Oleksij Rempel wrote:
-> After the power-down bit is cleared, the chip internally triggers a
-> global reset. According to the KSZ9031 documentation, we have to wait at
-> least 1ms for the reset to finish.
-> 
-> If the chip is accessed during reset, read will return 0xffff, while
-> write will be ignored. Depending on the system performance and MDIO bus
-> speed, we may or may not run in to this issue.
-> 
-> This bug was discovered on an iMX6QP system with KSZ9031 PHY and
-> attached PHY interrupt line. If IRQ was used, the link status update was
-> lost. In polling mode, the link status update was always correct.
-> 
-> The investigation showed, that during a read-modify-write access, the
-> read returned 0xffff (while the chip was still in reset) and
-> corresponding write hit the chip _after_ reset and triggered (due to the
-> 0xffff) another reset in an undocumented bit (register 0x1f, bit 1),
-> resulting in the next write being lost due to the new reset cycle.
-> 
-> This patch fixes the issue by adding a 1...2 ms sleep after the
-> genphy_resume().
-> 
-> Fixes: 836384d2501d ("net: phy: micrel: Add specific suspend")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> ---
+>  Documentation/virt/kvm/api.rst  | 27 +++++++++++++
+>  arch/x86/include/asm/kvm_host.h |  2 +
+>  arch/x86/kvm/svm.c              | 71 +++++++++++++++++++++++++++++++++
+>  arch/x86/kvm/x86.c              | 12 ++++++
+>  include/uapi/linux/kvm.h        | 12 ++++++
+>  5 files changed, 124 insertions(+)
+> 
+> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> index ebd383fba939..8ad800ebb54f 100644
+> --- a/Documentation/virt/kvm/api.rst
+> +++ b/Documentation/virt/kvm/api.rst
+> @@ -4648,6 +4648,33 @@ This ioctl resets VCPU registers and control structures according to
+>  the clear cpu reset definition in the POP. However, the cpu is not put
+>  into ESA mode. This reset is a superset of the initial reset.
+>  
+> +4.125 KVM_GET_PAGE_ENC_BITMAP (vm ioctl)
+> +---------------------------------------
+> +
+> +:Capability: basic
+> +:Architectures: x86
+> +:Type: vm ioctl
+> +:Parameters: struct kvm_page_enc_bitmap (in/out)
+> +:Returns: 0 on success, -1 on error
+> +
+> +/* for KVM_GET_PAGE_ENC_BITMAP */
+> +struct kvm_page_enc_bitmap {
+> +	__u64 start_gfn;
+> +	__u64 num_pages;
+> +	union {
+> +		void __user *enc_bitmap; /* one bit per page */
+> +		__u64 padding2;
+> +	};
+> +};
+> +
+> +The encrypted VMs have concept of private and shared pages. The private
+s/have concept/have the concept/
+> +page is encrypted with the guest-specific key, while shared page may
+s/page is/pages are/
+s/shared page/the shared pages/
+> +be encrypted with the hypervisor key. The KVM_GET_PAGE_ENC_BITMAP can
+> +be used to get the bitmap indicating whether the guest page is private
+> +or shared. The bitmap can be used during the guest migration, if the page
+s/, if/. If/
+> +is private then userspace need to use SEV migration commands to transmit
+s/then userspace need/then the userspace needs/
+> +the page.
+> +
+>  
+>  5. The kvm_run structure
+>  ========================
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 90718fa3db47..27e43e3ec9d8 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1269,6 +1269,8 @@ struct kvm_x86_ops {
+>  	int (*enable_direct_tlbflush)(struct kvm_vcpu *vcpu);
+>  	int (*page_enc_status_hc)(struct kvm *kvm, unsigned long gpa,
+>  				  unsigned long sz, unsigned long mode);
+> +	int (*get_page_enc_bitmap)(struct kvm *kvm,
+> +				struct kvm_page_enc_bitmap *bmap);
+>  };
+>  
+>  struct kvm_arch_async_pf {
+> diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
+> index 1d8beaf1bceb..bae783cd396a 100644
+> --- a/arch/x86/kvm/svm.c
+> +++ b/arch/x86/kvm/svm.c
+> @@ -7686,6 +7686,76 @@ static int svm_page_enc_status_hc(struct kvm *kvm, unsigned long gpa,
+>  	return ret;
+>  }
+>  
+> +static int svm_get_page_enc_bitmap(struct kvm *kvm,
+> +				   struct kvm_page_enc_bitmap *bmap)
+> +{
+> +	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> +	unsigned long gfn_start, gfn_end;
+> +	unsigned long sz, i, sz_bytes;
+> +	unsigned long *bitmap;
+> +	int ret, n;
+> +
+> +	if (!sev_guest(kvm))
+> +		return -ENOTTY;
+> +
+> +	gfn_start = bmap->start_gfn;
+> +	gfn_end = gfn_start + bmap->num_pages;
+> +
+> +	sz = ALIGN(bmap->num_pages, BITS_PER_LONG) / BITS_PER_BYTE;
+> +	bitmap = kmalloc(sz, GFP_KERNEL);
+> +	if (!bitmap)
+> +		return -ENOMEM;
+> +
+> +	/* by default all pages are marked encrypted */
+> +	memset(bitmap, 0xff, sz);
+> +
+> +	mutex_lock(&kvm->lock);
+> +	if (sev->page_enc_bmap) {
+> +		i = gfn_start;
+> +		for_each_clear_bit_from(i, sev->page_enc_bmap,
+> +				      min(sev->page_enc_bmap_size, gfn_end))
+> +			clear_bit(i - gfn_start, bitmap);
+> +	}
+> +	mutex_unlock(&kvm->lock);
+> +
+> +	ret = -EFAULT;
+> +
+> +	n = bmap->num_pages % BITS_PER_BYTE;
+> +	sz_bytes = ALIGN(bmap->num_pages, BITS_PER_BYTE) / BITS_PER_BYTE;
+> +
+> +	/*
+> +	 * Return the correct bitmap as per the number of pages being
+> +	 * requested by the user. Ensure that we only copy bmap->num_pages
+> +	 * bytes in the userspace buffer, if bmap->num_pages is not byte
+> +	 * aligned we read the trailing bits from the userspace and copy
+> +	 * those bits as is.
+> +	 */
+> +
+> +	if (n) {
+> +		unsigned char *bitmap_kernel = (unsigned char *)bitmap;
+> +		unsigned char bitmap_user;
+> +		unsigned long offset, mask;
+> +
+> +		offset = bmap->num_pages / BITS_PER_BYTE;
+> +		if (copy_from_user(&bitmap_user, bmap->enc_bitmap + offset,
+> +				sizeof(unsigned char)))
+> +			goto out;
+> +
+> +		mask = GENMASK(n - 1, 0);
+> +		bitmap_user &= ~mask;
+> +		bitmap_kernel[offset] &= mask;
+> +		bitmap_kernel[offset] |= bitmap_user;
+> +	}
+> +
+> +	if (copy_to_user(bmap->enc_bitmap, bitmap, sz_bytes))
+> +		goto out;
+> +
+> +	ret = 0;
+> +out:
+> +	kfree(bitmap);
+> +	return ret;
+> +}
+> +
+>  static int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>  {
+>  	struct kvm_sev_cmd sev_cmd;
+> @@ -8090,6 +8160,7 @@ static struct kvm_x86_ops svm_x86_ops __ro_after_init = {
+>  	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
+>  
+>  	.page_enc_status_hc = svm_page_enc_status_hc,
+> +	.get_page_enc_bitmap = svm_get_page_enc_bitmap,
+>  };
+>  
+>  static int __init svm_init(void)
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 68428eef2dde..3c3fea4e20b5 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -5226,6 +5226,18 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>  	case KVM_SET_PMU_EVENT_FILTER:
+>  		r = kvm_vm_ioctl_set_pmu_event_filter(kvm, argp);
+>  		break;
+> +	case KVM_GET_PAGE_ENC_BITMAP: {
+> +		struct kvm_page_enc_bitmap bitmap;
+> +
+> +		r = -EFAULT;
+> +		if (copy_from_user(&bitmap, argp, sizeof(bitmap)))
+> +			goto out;
+> +
+> +		r = -ENOTTY;
+> +		if (kvm_x86_ops->get_page_enc_bitmap)
+> +			r = kvm_x86_ops->get_page_enc_bitmap(kvm, &bitmap);
+> +		break;
+> +	}
+>  	default:
+>  		r = -ENOTTY;
+>  	}
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 4e80c57a3182..db1ebf85e177 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -500,6 +500,16 @@ struct kvm_dirty_log {
+>  	};
+>  };
+>  
+> +/* for KVM_GET_PAGE_ENC_BITMAP */
+> +struct kvm_page_enc_bitmap {
+> +	__u64 start_gfn;
+> +	__u64 num_pages;
+> +	union {
+> +		void __user *enc_bitmap; /* one bit per page */
+> +		__u64 padding2;
+> +	};
+> +};
+> +
+>  /* for KVM_CLEAR_DIRTY_LOG */
+>  struct kvm_clear_dirty_log {
+>  	__u32 slot;
+> @@ -1478,6 +1488,8 @@ struct kvm_enc_region {
+>  #define KVM_S390_NORMAL_RESET	_IO(KVMIO,   0xc3)
+>  #define KVM_S390_CLEAR_RESET	_IO(KVMIO,   0xc4)
+>  
+> +#define KVM_GET_PAGE_ENC_BITMAP	_IOW(KVMIO, 0xc5, struct kvm_page_enc_bitmap)
+> +
+>  /* Secure Encrypted Virtualization command */
+>  enum sev_cmd_id {
+>  	/* Guest initialization commands */
+> -- 
+> 2.17.1
+> 
