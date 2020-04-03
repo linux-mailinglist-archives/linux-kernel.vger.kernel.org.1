@@ -2,95 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A56119E02A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 23:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A174619E034
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 23:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728154AbgDCVL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 17:11:59 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:44079 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727829AbgDCVL6 (ORCPT
+        id S1727842AbgDCVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 17:13:14 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36373 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgDCVNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 17:11:58 -0400
-Received: by mail-lj1-f194.google.com with SMTP id p14so8397855lji.11;
-        Fri, 03 Apr 2020 14:11:55 -0700 (PDT)
+        Fri, 3 Apr 2020 17:13:09 -0400
+Received: by mail-lj1-f195.google.com with SMTP id b1so8439371ljp.3;
+        Fri, 03 Apr 2020 14:13:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JoTm+bFk1b4wV/ZEGvF6eL+XjT1zXesgWygtLbj063Q=;
-        b=HuwN5K/syHVKjw8JGl/TibGxBj4HjiW/VyIlS+G/15frL85inIIKnqT+dc3oTVDx1p
-         H5hjUGiXTNxqaoiioBZ9dVotsWUC+eKxm3fN9IbNZHYiMq1YLbrgGI8LVKzc80ldkyrI
-         VhpeLPY6+BkqAYcaWYtVbQl1NwquvxcDjk/gsxcuVK6QvoUyYXMNCgfjjWj1+APOm7hx
-         KGcMcEmykKDduf6NE+PTYXtWOehw1d4T2KM5HCK2ctfRmFSvUcvMAvfnn2U7JtIyM9GR
-         EPKYwiab+XnPyNbTE9wm3XE17Abg7wbS+i2FTR6xGIRRweGL5ALfmHTA2igirMIRhoCF
-         7OZg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XmiJ8r8In7YZhRpgdLSggbFpjzBQN570VmkdZRjoKl0=;
+        b=M6ntENSWQevfVE4wJYGpCvuhiRBs/UguboAiKuhbN1k8eoUdPpvVhUv1xnF8VXgwRA
+         MdLwa/cOtEg+kyIANAYshaShDUIy364a8Qo+R2UAu/P1S+ulxY0kFyk+cOqsHi+T3UFp
+         g2LxoYzZgTThz6Oy4rK7gU2WNK3GzOtrqQzmeQOwI6MlscPkO2M6rdL00gjYrK8igEyZ
+         w5SN4N/51Ggyw+VN7sRiouv16fwKQmHEjKcDJW5oAysHPfz/jbDfsiAK5JZqbT+Yt1Rd
+         2RdZsW5WGf/hx2pwMsgqOhucC8mAjPqiSPy8ltpa3QVsgaRKLVWedu342pVtPwBbnBYf
+         wxIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JoTm+bFk1b4wV/ZEGvF6eL+XjT1zXesgWygtLbj063Q=;
-        b=amJWzDEnF9C3nJFjcHPyq3mFYS4/on6etzHelEXRa+nRmE6/xZIBZ//VHDasIHdoEy
-         KpBJZkCMEVYS4ay6YU2R0dnJX6QbuIMwCSHOetsOP/wCMSJu5NJBvUL8c1MMgHfkjbI7
-         9Ay4yDEZzL66VDCfItRNgS9UzFPjYIiR88p/g3nLWw2n/d9IDLHeUgzJjN0QpBSCnWtX
-         O2D/EAC6aGLcYAJW4qGdW87iK+k40QwUaAdxCpd6FPm216Jf7shtBM3PsPN+7bcRxxtr
-         atTPfegCuXnLLUa3S+yhuTx4p0tuU2Whz9x3eQCEHfenW3zL/Zj4LGqAyar2SM0iogNF
-         CLIg==
-X-Gm-Message-State: AGi0PuZCRoASR0x+hTewlG15CAorrUTjyRnySg73qhZ/mZevszCKLrVr
-        Yigmg64UJuz3sapoyfh5rf7NA5O3
-X-Google-Smtp-Source: APiQypIDMsBV/vJeVbN8qdBLtOyA9ymv6vUWZwD632rhkKfhjIYIXBFGsmKQw664GSpELaqbZjSajQ==
-X-Received: by 2002:a2e:8146:: with SMTP id t6mr5962740ljg.236.1585948314719;
-        Fri, 03 Apr 2020 14:11:54 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id v9sm5659166ljj.31.2020.04.03.14.11.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 14:11:54 -0700 (PDT)
-Subject: Re: [PATCH v3 5/7] arm64: tegra: Enable native timers on Jetson TX2
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200403202209.299823-1-thierry.reding@gmail.com>
- <20200403202209.299823-6-thierry.reding@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <948734ce-0f4e-e09b-a928-74199455eed7@gmail.com>
-Date:   Sat, 4 Apr 2020 00:11:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XmiJ8r8In7YZhRpgdLSggbFpjzBQN570VmkdZRjoKl0=;
+        b=azRK44efIQRVkP9oWe75wP8STYF6/bdc6aMngSiRglurMbz5n1HTSZu7Y4QXdGUOR+
+         P4kFFa5nBpUtnz4TboY7bIVoAadsFor6l20ir9SGpNokh2xufrhkHMidelEmwCKuaXnM
+         68JREb+mKLeU3sKj21LBAyKJ+ENHEPydV48HivhRPie3cU8IKQKm8xmR70MfWJK3vvZE
+         H7KNCKq+z29tmTrAb43gdECrAu+RbFFDvmTc6kwjBNYYNq8Xt8RZCvoTrN2+EMdf9XLe
+         sBaNGG5WkiOLK9cK8B15LaOYIoHcftZeg1grm3lDUkXrQsbsLIe/SxUVZP9mbAJQVwMY
+         ZyIA==
+X-Gm-Message-State: AGi0PuZKcVuijDqwn1vAxHAWm74zmeA1ghVjFDY8MSaGnd4+V5Jt6Vqe
+        /STXadkWxrXEgu2eupuW8I38Gk/cztfUimAZi0s=
+X-Google-Smtp-Source: APiQypLrAAv0TjbwUikI1rOrsahsFIicv7pVJUqr/CcJxejGQmURK1Ta5WDW3qardZaSCQVr8cXCTMZJZgEGyc+DR3M=
+X-Received: by 2002:a2e:b24c:: with SMTP id n12mr6345776ljm.7.1585948385607;
+ Fri, 03 Apr 2020 14:13:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200403202209.299823-6-thierry.reding@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
+ <20200331060641.79999-1-maowenan@huawei.com> <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
+ <20200401181419.7acd2aa6@carbon> <ede2f407-839e-d29e-0ebe-aa39dd461bfd@gmail.com>
+ <20200402110619.48f31a63@carbon> <CAADnVQKEyv_bRhEfu1Jp=DSggj_O2xjJyd_QZ7a4LJY+dUO2rg@mail.gmail.com>
+ <20200403095847.21e1e5ea@carbon>
+In-Reply-To: <20200403095847.21e1e5ea@carbon>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 3 Apr 2020 14:12:54 -0700
+Message-ID: <CAADnVQKs9hLUPB6vW+sC3pe1ivXKU3woJFvT=X2hCqT=NnZF7Q@mail.gmail.com>
+Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
+        Mao Wenan <maowenan@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>, jwi@linux.ibm.com,
+        jianglidong3@jd.com, Eric Dumazet <edumazet@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-03.04.2020 23:22, Thierry Reding пишет:
-> From: Thierry Reding <treding@nvidia.com>
-> 
-> Enable the native timers on Jetson TX2 to allow using the watchdog
-> functionality to recover from system hangs, for example.
-> 
-> Signed-off-by: Thierry Reding <treding@nvidia.com>
-> ---
->  arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi b/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
-> index da96de04d003..9aa17744c4a0 100644
-> --- a/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
-> +++ b/arch/arm64/boot/dts/nvidia/tegra186-p3310.dtsi
-> @@ -58,6 +58,10 @@ memory-controller@2c00000 {
->  		status = "okay";
->  	};
->  
-> +	timer@3010000 {
-> +		status = "okay";
-> +	};
+On Fri, Apr 3, 2020 at 12:59 AM Jesper Dangaard Brouer
+<brouer@redhat.com> wrote:
+>
+> I want to wait to ease your life as maintainer. This is part of a
+> larger patchset (for XDP frame_sz) and the next patch touch same code
+> path and thus depend on these code adjustments.  If we apply them in
+> bpf vs bpf-next then you/we will have to handle merge conflicts.  The
+> severity of the "fix" is really low, it only means 32 bytes less
+> headroom (which I doubt anyone is using).
 
-Why timer needs to be enabled per-board?
+Ahh. Make sense. That type of fix can wait.
+Thanks!
