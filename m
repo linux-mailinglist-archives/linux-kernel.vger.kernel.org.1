@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC76619DF3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 22:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A4719DF41
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 22:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728420AbgDCUW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 16:22:28 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:53905 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgDCUWY (ORCPT
+        id S1728600AbgDCUWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 16:22:30 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:35616 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728147AbgDCUW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 16:22:24 -0400
-Received: by mail-wm1-f68.google.com with SMTP id d77so8457350wmd.3;
-        Fri, 03 Apr 2020 13:22:22 -0700 (PDT)
+        Fri, 3 Apr 2020 16:22:26 -0400
+Received: by mail-wr1-f68.google.com with SMTP id g3so7724640wrx.2;
+        Fri, 03 Apr 2020 13:22:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lHw9M1P3NRhm9zZzwgvQTk0wuIissIS/ZfYp0zlQyws=;
-        b=NFUK9LT7vyX3pd2ZO9xJAmutJAo6n1FyzmUWmq6Dl5QWAEfq0pmzVXGvG4oaIBYMtU
-         Yva4wOKasiRbew2ufr2Ql9iUd3RmXuimf/Za9ytErkX3vBAbFkpizGRzzyA9t8D1BFia
-         8DN2hQugadcXDKEbtdhmL++cLAFv26OrOYq7ECL0CU5ccwpBgSKYmflu8FqsYIQwxg1H
-         uayMmdeZzHingkcr/8Wu0na2LhueD8vPvVobx6Z2j8OVmsFSuiAp5km5T0Gentm7Ebtc
-         NqWDjEbDLi9ssbeW2/EpTYIw/Y5EZzzPAO79pEdf3ccZnvdQwMyaihIXyYL1wnrvXFiU
-         NUPQ==
+        bh=UNPe3Sj9nisgX8TMQG4uvyThsRCvZnaiE/iNxuk8GJ8=;
+        b=VhMUnKIWuGyXO9Wk/YcdTBcgSMYnN4H26x6y7/9SgmCzWy4Vf6g8fQ6XchCp0Kko61
+         x59FMlJkWblglZmlr9PibNCvCdg+/cbB2bzk/c7tV3wMMYpkGD+wOE3ZS2f/u+3pefKS
+         V9aNke9IErE3yghtXR012FEnNkXmnyVSjgswey95eT1GBwLyxhOouZvW4LhflDdNdHhL
+         bOMct7S3a5fnTeAhYYcUJBHE8H7Q3/K1OhvaEl6o30MORyFRYmfjowZ3+mQMilawVZdR
+         xx3vkYhI3qMQNRmwtvfHJSVV21lwWy6Of/BrM97wDImyirH+nuaa+W0cDpGNMj7340Xn
+         OmCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lHw9M1P3NRhm9zZzwgvQTk0wuIissIS/ZfYp0zlQyws=;
-        b=lPsRQ/rJ+nmzWf5/Y/6YAivgWMJXwotxTcIwuJARVxLsuCa07M922THuq/k7jnhvWX
-         IJFyiuKIgTMvjBg+M+whWSmVX96clsIXMSBnDuteE2RKWPh5Cbp5Y3IogE/g2y211rDa
-         Fdv6eDxkDxdeloAw1f4gEhtlaPkawLaidhGcOkDcsCeLAl8aY/VbDZLGwZwMl3IDCmyZ
-         w2A/KiTJOESlBwdX6L0eDPpELDZBS6+2mLnxIsHtEyMweJ7wRURfIX+boVU5Xvxtzpxc
-         NebyfsPnLHA7R64BOi2LWmVWtcuEit4UYV3cUjcSWBlnPtYFMZ4wM1+gIMJ5srKRgH5o
-         Pkjg==
-X-Gm-Message-State: AGi0PuaQveXTKDyWU6Zdsw7iLysKqdKXiEj7ZUwxGcB4KN/qwjkcs5sZ
-        Y7G4sFLtUBlLb86Db3EBxJY=
-X-Google-Smtp-Source: APiQypIk9mxB+aUmqb2XE7HlA8rLb0b0i4gQUHEtneep48FuIKDI1ZpxtC25D8lnPUfmJHe0nMPvSg==
-X-Received: by 2002:a05:600c:2501:: with SMTP id d1mr7341836wma.116.1585945342303;
-        Fri, 03 Apr 2020 13:22:22 -0700 (PDT)
+        bh=UNPe3Sj9nisgX8TMQG4uvyThsRCvZnaiE/iNxuk8GJ8=;
+        b=MusC5UO9GmCuR8Dwy59rTrCOL3D2ankYho3vonag5LxoBAL5czzpB+3eR4wRLwQQcY
+         PSa3R0J/LfNeEZ6Hqo9tw+kfFlQ6GWivxlAesBAIj9oHFbRfGHvs5kMQqZlSdUJF+005
+         hDQ1hgB7RV7iR04tMCyQGXv5nEqvdOxT42Y0fjdy5z7c5tXzdLEy9UUf/w2v7GlGDAWk
+         bFCZaauMVZ8DrAcUC30Q4R+26XAcUa/rDtqnuXoZDoEOUmJYD269gmj94Nr83dS/h7HK
+         9w7q+9wJL11NVPXuCMSF5PrKJjhMhwMgJaewLv7jgkpOdKHEUJMdku/mbZRAzhUYO/jg
+         hOxQ==
+X-Gm-Message-State: AGi0PuaLxMD5dpCtXDepEG2daVqLQaouOFp8FQBIRU2R12OBtYnHwtfZ
+        OiTjVlXf9byaIvVvw7qhd+E=
+X-Google-Smtp-Source: APiQypLT9r357ptijr1DMYEYfVwzqiVe4R9FAoRQ/z4pi7HhWS8SjPiZBFyKIpQ4+XmTShtzshM9+w==
+X-Received: by 2002:a5d:6605:: with SMTP id n5mr10565784wru.303.1585945344205;
+        Fri, 03 Apr 2020 13:22:24 -0700 (PDT)
 Received: from localhost (pD9E51CDC.dip0.t-ipconnect.de. [217.229.28.220])
-        by smtp.gmail.com with ESMTPSA id h132sm13714318wmf.18.2020.04.03.13.22.20
+        by smtp.gmail.com with ESMTPSA id d13sm13804946wrq.11.2020.04.03.13.22.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 13:22:20 -0700 (PDT)
+        Fri, 03 Apr 2020 13:22:23 -0700 (PDT)
 From:   Thierry Reding <thierry.reding@gmail.com>
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -53,9 +53,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Dmitry Osipenko <digetx@gmail.com>,
         Jon Hunter <jonathanh@nvidia.com>, devicetree@vger.kernel.org,
         linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/7] arm64: tegra: Order nodes by unit-address on Tegra194
-Date:   Fri,  3 Apr 2020 22:22:05 +0200
-Message-Id: <20200403202209.299823-4-thierry.reding@gmail.com>
+Subject: [PATCH v3 4/7] arm64: tegra: Add native timer support on Tegra186
+Date:   Fri,  3 Apr 2020 22:22:06 +0200
+Message-Id: <20200403202209.299823-5-thierry.reding@gmail.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200403202209.299823-1-thierry.reding@gmail.com>
 References: <20200403202209.299823-1-thierry.reding@gmail.com>
@@ -68,97 +68,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thierry Reding <treding@nvidia.com>
 
-The pin controller device tree node was accidentally added in the wrong
-place. Move it to the correct location to keep nodes ordered by unit-
-address.
+The native timers IP block found on NVIDIA Tegra SoCs implements a
+watchdog timer that can be used to recover from system hangs. Add the
+device tree node on Tegra186.
 
 Signed-off-by: Thierry Reding <treding@nvidia.com>
 ---
- arch/arm64/boot/dts/nvidia/tegra194.dtsi | 64 ++++++++++++------------
- 1 file changed, 32 insertions(+), 32 deletions(-)
+ arch/arm64/boot/dts/nvidia/tegra186.dtsi | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra194.dtsi b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-index f4ede86e32b4..019f66f03a97 100644
---- a/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra194.dtsi
-@@ -45,6 +45,38 @@ gpio: gpio@2200000 {
- 			gpio-controller;
+diff --git a/arch/arm64/boot/dts/nvidia/tegra186.dtsi b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
+index 58100fb9cd8b..4dfa70e93693 100644
+--- a/arch/arm64/boot/dts/nvidia/tegra186.dtsi
++++ b/arch/arm64/boot/dts/nvidia/tegra186.dtsi
+@@ -167,6 +167,22 @@ emc: external-memory-controller@2c60000 {
  		};
+ 	};
  
-+		pinmux: pinmux@2430000 {
-+			compatible = "nvidia,tegra194-pinmux";
-+			reg = <0x2430000 0x17000
-+			       0xc300000 0x4000>;
++	timer@3010000 {
++		compatible = "nvidia,tegra186-timer";
++		reg = <0x0 0x03010000 0x0 0x000e0000>;
++		interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 1 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 2 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
++			     <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
++		status = "disabled";
++	};
 +
-+			status = "okay";
-+
-+			pex_rst_c5_out_state: pex_rst_c5_out {
-+				pex_rst {
-+					nvidia,pins = "pex_l5_rst_n_pgg1";
-+					nvidia,schmitt = <TEGRA_PIN_DISABLE>;
-+					nvidia,lpdr = <TEGRA_PIN_ENABLE>;
-+					nvidia,enable-input = <TEGRA_PIN_DISABLE>;
-+					nvidia,io-high-voltage = <TEGRA_PIN_ENABLE>;
-+					nvidia,tristate = <TEGRA_PIN_DISABLE>;
-+					nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-+				};
-+			};
-+
-+			clkreq_c5_bi_dir_state: clkreq_c5_bi_dir {
-+				clkreq {
-+					nvidia,pins = "pex_l5_clkreq_n_pgg0";
-+					nvidia,schmitt = <TEGRA_PIN_DISABLE>;
-+					nvidia,lpdr = <TEGRA_PIN_ENABLE>;
-+					nvidia,enable-input = <TEGRA_PIN_ENABLE>;
-+					nvidia,io-high-voltage = <TEGRA_PIN_ENABLE>;
-+					nvidia,tristate = <TEGRA_PIN_DISABLE>;
-+					nvidia,pull = <TEGRA_PIN_PULL_NONE>;
-+				};
-+			};
-+		};
-+
- 		ethernet@2490000 {
- 			compatible = "nvidia,tegra194-eqos",
- 				     "nvidia,tegra186-eqos",
-@@ -139,38 +171,6 @@ agic: interrupt-controller@2a40000 {
- 			};
- 		};
- 
--		pinmux: pinmux@2430000 {
--			compatible = "nvidia,tegra194-pinmux";
--			reg = <0x2430000 0x17000
--			       0xc300000 0x4000>;
--
--			status = "okay";
--
--			pex_rst_c5_out_state: pex_rst_c5_out {
--				pex_rst {
--					nvidia,pins = "pex_l5_rst_n_pgg1";
--					nvidia,schmitt = <TEGRA_PIN_DISABLE>;
--					nvidia,lpdr = <TEGRA_PIN_ENABLE>;
--					nvidia,enable-input = <TEGRA_PIN_DISABLE>;
--					nvidia,io-high-voltage = <TEGRA_PIN_ENABLE>;
--					nvidia,tristate = <TEGRA_PIN_DISABLE>;
--					nvidia,pull = <TEGRA_PIN_PULL_NONE>;
--				};
--			};
--
--			clkreq_c5_bi_dir_state: clkreq_c5_bi_dir {
--				clkreq {
--					nvidia,pins = "pex_l5_clkreq_n_pgg0";
--					nvidia,schmitt = <TEGRA_PIN_DISABLE>;
--					nvidia,lpdr = <TEGRA_PIN_ENABLE>;
--					nvidia,enable-input = <TEGRA_PIN_ENABLE>;
--					nvidia,io-high-voltage = <TEGRA_PIN_ENABLE>;
--					nvidia,tristate = <TEGRA_PIN_DISABLE>;
--					nvidia,pull = <TEGRA_PIN_PULL_NONE>;
--				};
--			};
--		};
--
- 		mc: memory-controller@2c00000 {
- 			compatible = "nvidia,tegra194-mc";
- 			reg = <0x02c00000 0x100000>,
+ 	uarta: serial@3100000 {
+ 		compatible = "nvidia,tegra186-uart", "nvidia,tegra20-uart";
+ 		reg = <0x0 0x03100000 0x0 0x40>;
 -- 
 2.24.1
 
