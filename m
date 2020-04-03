@@ -2,128 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D6D19D8B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E8319D8B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391008AbgDCOKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:10:03 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:46022 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727431AbgDCOKC (ORCPT
+        id S2390818AbgDCOJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:09:47 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:41858 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727431AbgDCOJr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:10:02 -0400
-Received: by mail-qt1-f193.google.com with SMTP id t17so6432884qtn.12
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 07:10:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=YSPgcifDI2m5EfK4gO+hqXsXEiiDm5SMTTnpGgq8dw0=;
-        b=fOdpAHa7t/XDhVtFgyESobW4udCrQJSVh1fy16A/UGwG3dWZWK2r0b2OpJi5GzPySW
-         m4a/z08ztTqnwaDwCjls3K6+Gf4yCn+5wJF7qe8xXMMTVt2H3OiMdo0wyYfqnLxNyeZx
-         BusfAaHEu13N5EU05wafYlaluwNViCAopsOaGklGcGzfJbKeXO88/jf4Lc00o162//gm
-         oqoJj08XRJAS7sn+tt3E633zFcLmCUxE1CsFDq8caiPX1nHng+zta2ObspuQz0De9Esy
-         XgHJ/cKjMpN/OYAj3d97/gevOFV/dAfs3josNOsbVNJVPHaHC7jsdKabROpAT0IXV/G1
-         vTyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references;
-        bh=YSPgcifDI2m5EfK4gO+hqXsXEiiDm5SMTTnpGgq8dw0=;
-        b=V/E2cEhWcXWiiaI33fAThyKdXacOUSpCuA8PWtMU1nzp6dvdUDqXJDZ40k+zTkheXs
-         ljPnCeA4e3e0gERY6yt1s2cO9/8f7pBP1rPM/k5iPDdT3wGwXxPVvJNfrV8nI4n5AzR4
-         UUdtua7zP7Rh4pZm7BhWT3wn06jMOLtaie4NjRevLu/H02ES3JmpEcQdtlajW6gfGdHE
-         /qyaXlmdOijJswn+ATUBpJNdgs8lTf9miDgMyhklQg6S8Fbz5ODduM7gtZDP91Xbm8zH
-         Dqn3t+TtyISaumhIqKszD4B8aLY/bfyqCo/hHLJc39F4/U729q/SY7wz5CL38HB3Q5a2
-         H3RQ==
-X-Gm-Message-State: AGi0PuaAv/99N9OYXZNa3vGia3ZYmHCL6ZdIgkft31INBOTNMDkFOcf8
-        x40LuTmKnurkUUdgKJVWkQc/Cninxig=
-X-Google-Smtp-Source: APiQypKxZC+0Ldt/6nkR4HdaEy9azv53IBn8kbhaopLkOkn9XgIo2LKibpG82faakXvft0QZZjlXiQ==
-X-Received: by 2002:ac8:23ed:: with SMTP id r42mr8459490qtr.372.1585922999142;
-        Fri, 03 Apr 2020 07:09:59 -0700 (PDT)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id s56sm6917392qtk.9.2020.04.03.07.09.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 07:09:58 -0700 (PDT)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        mhocko@suse.com, linux-mm@kvack.org, dan.j.williams@intel.com,
-        shile.zhang@linux.alibaba.com, daniel.m.jordan@oracle.com,
-        pasha.tatashin@soleen.com, ktkhai@virtuozzo.com, david@redhat.com,
-        jmorris@namei.org, sashal@kernel.org, vbabka@suse.cz
-Subject: [PATCH v4 3/3] mm: call cond_resched() from deferred_init_memmap()
-Date:   Fri,  3 Apr 2020 10:09:52 -0400
-Message-Id: <20200403140952.17177-4-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200403140952.17177-1-pasha.tatashin@soleen.com>
-References: <20200403140952.17177-1-pasha.tatashin@soleen.com>
+        Fri, 3 Apr 2020 10:09:47 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 033E9jJ1061866;
+        Fri, 3 Apr 2020 09:09:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1585922985;
+        bh=x82XtfYhNThrV4V+N+0uVz7ohtlRFiEl7i3LOb0N3S4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eRA2jbwVJV7Jz3emvo6zcbBp9UdFp3AzMTagHWPZFPwOZlJljmnIPpOgGn3DAstYZ
+         qCCCxw/vovfSLWIiXRTMoeQDee+ptfsPldRctIRfj34sPh6uQ/UizgzftDd5K4gND9
+         4ZyN2jXMR2qgJaVs+B6ry3eXRZgw7yxAbOD5eF+4=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033E9j04027400;
+        Fri, 3 Apr 2020 09:09:45 -0500
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 3 Apr
+ 2020 09:09:44 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Fri, 3 Apr 2020 09:09:44 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033E9hEY101749;
+        Fri, 3 Apr 2020 09:09:43 -0500
+Subject: Re: [GIT PULL]: dmaengine updates for v5.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     dma <dmaengine@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20200402112500.GJ72691@vkoul-mobl>
+ <CAHk-=wi81+9roQMgf7n0YRxJ0rqK3W0ghB3tS3kngSikC7cOig@mail.gmail.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <b4edfea1-ef1b-70bf-cae9-da1276ab8bef@ti.com>
+Date:   Fri, 3 Apr 2020 17:09:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wi81+9roQMgf7n0YRxJ0rqK3W0ghB3tS3kngSikC7cOig@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that deferred pages are initialized with interrupts enabled we can
-replace touch_nmi_watchdog() with cond_resched(), as it was before
-3a2d7fa8a3d5.
+Hi Linus,
 
-For now, we cannot do the same in deferred_grow_zone() as it is still
-initializes pages with interrupts disabled.
+On 03/04/2020 2.28, Linus Torvalds wrote:
+> On Thu, Apr 2, 2020 at 4:25 AM Vinod Koul <vkoul@kernel.org> wrote:
+>>
+>> Here are the changes for this cycle. SFR has told me that you might see
+>> a merge conflict, but I am sure you would be okay with it :)
+> 
+> It looked trivial enough. That said, it's in the TI_K3_UDMA driver,
+> which I can't build. The driver is marked as COMPILE_TEST, but it also
+> has
+> 
+>         depends on TI_SCI_PROTOCOL
+>         depends on TI_SCI_INTA_IRQCHIP
 
-This change fixes RCU problem described:
-linux-mm/20200401104156.11564-2-david@redhat.com
+Right.
 
-[   60.474005] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-[   60.475000] rcu:  1-...0: (0 ticks this GP) idle=02a/1/0x4000000000000000 softirq=1/1 fqs=15000
-[   60.475000] rcu:  (detected by 0, t=60002 jiffies, g=-1199, q=1)
-[   60.475000] Sending NMI from CPU 0 to CPUs 1:
-[    1.760091] NMI backtrace for cpu 1
-[    1.760091] CPU: 1 PID: 20 Comm: pgdatinit0 Not tainted 4.18.0-147.9.1.el8_1.x86_64 #1
-[    1.760091] Hardware name: Red Hat KVM, BIOS 1.13.0-1.module+el8.2.0+5520+4e5817f3 04/01/2014
-[    1.760091] RIP: 0010:__init_single_page.isra.65+0x10/0x4f
-[    1.760091] Code: 48 83 cf 63 48 89 f8 0f 1f 40 00 48 89 c6 48 89 d7 e8 6b 18 80 ff 66 90 5b c3 31 c0 b9 10 00 00 00 49 89 f8 48 c1 e6 33 f3 ab <b8> 07 00 00 00 48 c1 e2 36 41 c7 40 34 01 00 00 00 48 c1 e0 33 41
-[    1.760091] RSP: 0000:ffffba783123be40 EFLAGS: 00000006
-[    1.760091] RAX: 0000000000000000 RBX: fffffad34405e300 RCX: 0000000000000000
-[    1.760091] RDX: 0000000000000000 RSI: 0010000000000000 RDI: fffffad34405e340
-[    1.760091] RBP: 0000000033f3177e R08: fffffad34405e300 R09: 0000000000000002
-[    1.760091] R10: 000000000000002b R11: ffff98afb691a500 R12: 0000000000000002
-[    1.760091] R13: 0000000000000000 R14: 000000003f03ea00 R15: 000000003e10178c
-[    1.760091] FS:  0000000000000000(0000) GS:ffff9c9ebeb00000(0000) knlGS:0000000000000000
-[    1.760091] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.760091] CR2: 00000000ffffffff CR3: 000000a1cf20a001 CR4: 00000000003606e0
-[    1.760091] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    1.760091] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    1.760091] Call Trace:
-[    1.760091]  deferred_init_pages+0x8f/0xbf
-[    1.760091]  deferred_init_memmap+0x184/0x29d
-[    1.760091]  ? deferred_free_pages.isra.97+0xba/0xba
-[    1.760091]  kthread+0x112/0x130
-[    1.760091]  ? kthread_flush_work_fn+0x10/0x10
-[    1.760091]  ret_from_fork+0x35/0x40
-[   89.123011] node 0 initialised, 1055935372 pages in 88650ms
+> which means that it depends on TI_MESSAGE_MANAGER, which in turn has a
+> 
+>         depends on ARCH_KEYSTONE || ARCH_K3
 
-Fixes: 3a2d7fa8a3d5 ("mm: disable interrupts while initializing deferred pages")
-Cc: stable@vger.kernel.org # 4.17+
+And the INTA_IRQCHIP needs INTA_MSI_DOMAIN.
+and the UDMA driver actually needs the ringacc.
+It goes pretty deep it looks like.
 
-Reported-by: Yiqian Wei <yiwei@redhat.com>
-Tested-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
----
- mm/page_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> so it may be *marked* for build testing, but it doesn't actually get
+> any outside of those builds.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 5ffa8d7e5545..deacfe575872 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1810,7 +1810,7 @@ static int __init deferred_init_memmap(void *data)
- 	 */
- 	while (spfn < epfn) {
- 		nr_pages += deferred_init_maxorder(&i, zone, &spfn, &epfn);
--		touch_nmi_watchdog();
-+		cond_resched();
- 	}
- zone_empty:
- 	/* Sanity check that the next zone really is unpopulated */
--- 
-2.17.1
+Yep, sadly this is true.
 
+> So I did the resolution that looked trivial, but mistakes happen, and
+> I can't even build-test that driver..
+> 
+> Just a heads-up. It does look like it was _meant_ to be build-tested,
+> but that intent didn't work out.
+
+The merge was correct, thank you!
+
+> Adding a COMPILE_TEST option to TI_MESSAGE_MANAGER gets things a bit
+> further, but even then it doesn't actually build that driver because
+> that TI_SCI_INTA_IRQCHIP dependency needs to be enabled too.
+> 
+> And that one doesn't even have a question, it's just a plain bool, and
+> expects to be selected. Which the arm64 platform does.
+
+Yes, I'll sort this out. I prefer my drivers to be compile tested.
+
+> Anyway, to make a long story short: "the COMPILE_TEST marker is a lie".
+
+I'll remove the lie for now and fix things up so I will have legal
+grounds to put it back.
+
+> So somebody should actually test my merge.
+
+Tested, thank you again!
+
+> 
+>                   Linus
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
