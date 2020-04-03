@@ -2,112 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFADD19D22D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647F719D242
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389821AbgDCI3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 04:29:06 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:44830 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727835AbgDCI3F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 04:29:05 -0400
-Received: by mail-ot1-f67.google.com with SMTP id a49so6412122otc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 01:29:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=02Izn5NIEOgQ17Wwu9B2nDjWYnskhkbWYrLbCws9cys=;
-        b=AePlV6cvRFaia2Flr22OaglBCSan4Fn1fu1TjdH+PdqjokxAikNigzQZUfp4HAtll6
-         YGMdl+BcQ1Graq9IqqFvdG6d375dVL46YFsYvHdO39lzISMurfDlqYGtDvDCsUlXkMqv
-         sssHVyogZ9QM32uJngkP6RMbY0sg1Hsp8mtmI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=02Izn5NIEOgQ17Wwu9B2nDjWYnskhkbWYrLbCws9cys=;
-        b=LiLYsy3Zf3xBtg1qZeuZxXRKNF7QdS+P0JnEIj+/XjvLGmlSLAUfVzKG2KI6ZCZkMo
-         uCAkmgS0ilWbRIyvu+2KYVxnZ13YFpqKqQzQTgaWbmZgUA834Jax6mJx5c6HEazXVL9v
-         B9iS2VjiAtmeUR5S4UGqHXiQcSPWT1t2p5MWN+eSXXKHi6fmwqSz2m+rGMoCVqIgqv+u
-         PxJnBcvPMoyTjaDHF6LQz6oGHGdrgdWdwmC8z+STUuHVKuZs6oCcEp5qpz23NRk75by/
-         heaYFUKrxNElV+uX5NvB8dCbH4vhIRB+6Mb5te013lTMKeF1V8Vzu4ceCsRbgbPU02Vs
-         OjUg==
-X-Gm-Message-State: AGi0PuYxkznrXsnxZCyYtiQRs/28dSPEFRtE4wLE0vTBpMqrcRsFcSBF
-        48f3+XH6C46sZ13AQheLsj5M+cBh16JdtxRQpLXCzw==
-X-Google-Smtp-Source: APiQypJyeKCFnlQPk1pGtIlyDJ5aPoiQwEGi4t/hFFgGBNvUJhvcbzE54yJz9hoZgKP2mj2jINCfs30xT8u1zpxIb0w=
-X-Received: by 2002:a4a:c819:: with SMTP id s25mr5852558ooq.6.1585902543776;
- Fri, 03 Apr 2020 01:29:03 -0700 (PDT)
+        id S2390522AbgDCIbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 04:31:06 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:32980 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727774AbgDCIbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 04:31:02 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 16B74FABA60339C7C46C;
+        Fri,  3 Apr 2020 16:30:57 +0800 (CST)
+Received: from localhost (10.173.223.234) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Fri, 3 Apr 2020
+ 16:30:47 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <michal.simek@xilinx.com>, <rajan.vaja@xilinx.com>,
+        <tejas.patel@xilinx.com>, <m.tretter@pengutronix.de>,
+        <yuehaibing@huawei.com>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] clk: zynqmp: Make zynqmp_clk_get_max_divisor static
+Date:   Fri, 3 Apr 2020 16:30:40 +0800
+Message-ID: <20200403083040.37748-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-References: <20200402203317.GA34560@ubuntu-m2-xlarge-x86> <20200402215926.30714-1-chris@chris-wilson.co.uk>
- <20200403013420.GA11516@ubuntu-m2-xlarge-x86>
-In-Reply-To: <20200403013420.GA11516@ubuntu-m2-xlarge-x86>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 3 Apr 2020 10:28:52 +0200
-Message-ID: <CAKMK7uE9pv23edViQBC=Jy5fQV=-NQTNdk1qi91Z8shpeuL7FA@mail.gmail.com>
-Subject: Re: [PATCH] drm/legacy: Fix type for drm_local_map.offset
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.173.223.234]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 3, 2020 at 8:54 AM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> On Thu, Apr 02, 2020 at 10:59:26PM +0100, Chris Wilson wrote:
-> > drm_local_map.offset is not only used for resource_size_t but also
-> > dma_addr_t which may be of different sizes.
-> >
-> > Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> > Fixes: 8e4ff9b56957 ("drm: Remove the dma_alloc_coherent wrapper for internal usage")
-> > Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-> > Cc: Dave Airlie <airlied@gmail.com>
-> > Cc: Nathan Chancellor <natechancellor@gmail.com>
-> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > ---
-> >  include/drm/drm_legacy.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/include/drm/drm_legacy.h b/include/drm/drm_legacy.h
-> > index dcef3598f49e..aed382c17b26 100644
-> > --- a/include/drm/drm_legacy.h
-> > +++ b/include/drm/drm_legacy.h
-> > @@ -136,7 +136,7 @@ struct drm_sg_mem {
-> >   * Kernel side of a mapping
-> >   */
-> >  struct drm_local_map {
-> > -     resource_size_t offset;  /**< Requested physical address (0 for SAREA)*/
-> > +     dma_addr_t offset;       /**< Requested physical address (0 for SAREA)*/
-> >       unsigned long size;      /**< Requested physical size (bytes) */
-> >       enum drm_map_type type;  /**< Type of memory to map */
-> >       enum drm_map_flags flags;        /**< Flags */
-> > --
-> > 2.20.1
-> >
->
-> Thanks for the quick fix!
->
-> I ran it through my set of build tests and nothing else seems to have
-> broken (at least not any more than it already is...).
->
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
+Fix sparse warning:
 
-This works too, missed it when replying to Linus
+drivers/clk/zynqmp/divider.c:259:5: warning:
+ symbol 'zynqmp_clk_get_max_divisor' was not declared. Should it be static?
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/clk/zynqmp/divider.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Linux I guess this one is better, but like I explained it really
-doesn't matter what we do with drm legacy code, it's a horror show
-that should be disabled on all modern distros anyway. We just keep it
-because of "never break old uapi". Maybe in a few years more ...
--Daniel
+diff --git a/drivers/clk/zynqmp/divider.c b/drivers/clk/zynqmp/divider.c
+index 4be2cc76aa2e..1e93a4d32fa9 100644
+--- a/drivers/clk/zynqmp/divider.c
++++ b/drivers/clk/zynqmp/divider.c
+@@ -256,7 +256,7 @@ static const struct clk_ops zynqmp_clk_divider_ops = {
+  * Return: Maximum divisor of a clock if query data is successful
+  *	   U16_MAX in case of query data is not success
+  */
+-u32 zynqmp_clk_get_max_divisor(u32 clk_id, u32 type)
++static u32 zynqmp_clk_get_max_divisor(u32 clk_id, u32 type)
+ {
+ 	const struct zynqmp_eemi_ops *eemi_ops = zynqmp_pm_get_eemi_ops();
+ 	struct zynqmp_pm_query_data qdata = {0};
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+2.17.1
+
+
