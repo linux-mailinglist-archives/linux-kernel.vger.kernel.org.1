@@ -2,333 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3D719D93D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF3619D93A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 16:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391075AbgDCOgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 10:36:05 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:55188 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbgDCOgE (ORCPT
+        id S2391046AbgDCOfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 10:35:55 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:33286 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728066AbgDCOfy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 10:36:04 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033EXYIY031824;
-        Fri, 3 Apr 2020 14:35:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=v2VPJBmV/wf+bKML1xDBcfICL0eqxAMEV+JWda6o6PE=;
- b=Rl/ErqpV+neETN6Bc64O+elKPBLIMUCj1Qnk9Gj46JzglrsyWRkCrcTpAryyJFa/Wgs+
- +jMQYGNrOyujEl5ghZVdoExygnaGocluIqp/YN9BPIJpdX9o3E+SuQEiXmahXBnmgG3V
- cR4WX68YELAJuHTdBFxDCP8YDnf+NpxsIqqNabODWhO+JkHyslthcUfWvjKWs+ZZ1Dp1
- /o4jyvAGUrq6tuL0H+4IMbA8lOvUsImtb6wc9P2Vx8HMY2jUupsOHva8ulqCSxX6mwxP
- 5ODlmtz6VrOgGqWXMI32h2b9jxqC6RqVofM4Kx3SN4LxKzFWej0+7QJxJP9BsFlUtthg 6Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 303yunm0jx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 14:35:47 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033EXCZl011078;
-        Fri, 3 Apr 2020 14:35:46 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 304sjsyr1p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Apr 2020 14:35:46 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 033EZbX3019744;
-        Fri, 3 Apr 2020 14:35:43 GMT
-Received: from dhcp-10-175-200-49.vpn.oracle.com (/10.175.200.49)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 03 Apr 2020 07:35:37 -0700
-Date:   Fri, 3 Apr 2020 15:35:27 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     Patricia Alfonso <trishalfonso@google.com>
-cc:     davidgow@google.com, brendanhiggins@google.com,
-        aryabinin@virtuozzo.com, dvyukov@google.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] KUnit: KASAN Integration
-In-Reply-To: <20200402204639.161637-2-trishalfonso@google.com>
-Message-ID: <alpine.LRH.2.21.2004031529080.17071@localhost>
-References: <20200402204639.161637-1-trishalfonso@google.com> <20200402204639.161637-2-trishalfonso@google.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+        Fri, 3 Apr 2020 10:35:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1585924552;
+        s=strato-dkim-0002; d=hartkopp.net;
+        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=xWGcb/l7SldX2juZaR8V+bjOtkYI2pMNM28oAI3XPqQ=;
+        b=MRrfXOOieZKawrtFR0unAIALIKSs47Y1EX+ozjaxrNMMmk0hlCUq4ByhKJjUQax9ro
+        23xObzVb/fgppbdD+wZYHC9xTGqc1/1YCsAGNt73D78bvPvHQ0EZ88Q7tSwo+t2tJQBZ
+        lzRCyELT9yoTlNep1LtnolKx6YXdOGCZFhLgvun2a+5CR+AX8xul5Bv7EKI3r3+yhW9F
+        VGwR4J8DAEIynobufzjB0QU78i05OqQPIKsbkPK3BTpedMgq2O4zoHWtnH8f8nW5MuX/
+        grWhnl/zQvDqgSLO+2HU6csWb3fUYh+me0MsQzUF+0Pf/AJUV8CgRVTqFuFvNPJ/nlhs
+        Op8Q==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMJV8h5mUrT"
+X-RZG-CLASS-ID: mo00
+Received: from [192.168.50.177]
+        by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
+        with ESMTPSA id D07898w33EZZORH
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Fri, 3 Apr 2020 16:35:35 +0200 (CEST)
+Subject: Re: [PATCH] net: can: remove "WITH Linux-syscall-note" from SPDX tag
+ of C files
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20200403073741.18352-1-masahiroy@kernel.org>
+From:   Oliver Hartkopp <socketcan@hartkopp.net>
+Message-ID: <f45febfa-a19a-0d76-d545-6427e5f1ce1e@hartkopp.net>
+Date:   Fri, 3 Apr 2020 16:35:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 phishscore=0 suspectscore=1 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004030129
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 mlxlogscore=999 bulkscore=0
- suspectscore=1 mlxscore=0 spamscore=0 impostorscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004030129
+In-Reply-To: <20200403073741.18352-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Apr 2020, Patricia Alfonso wrote:
 
-> Integrate KASAN into KUnit testing framework.
->         - Fail tests when KASAN reports an error that is not expected
->         - Use KUNIT_EXPECT_KASAN_FAIL to expect a KASAN error in KASAN
-> 	tests
->         - Expected KASAN reports pass tests and are still printed when run
->         without kunit_tool (kunit_tool still bypasses the report due to the
->         test passing)
->         - KUnit struct in current task used to keep track of the current
-> 	test from KASAN code
+
+On 03/04/2020 09.37, Masahiro Yamada wrote:
+> The "WITH Linux-syscall-note" exception is intended for UAPI headers.
 > 
-> Make use of "[PATCH v3 kunit-next 1/2] kunit: generalize
-> kunit_resource API beyond allocated resources" and "[PATCH v3
-> kunit-next 2/2] kunit: add support for named resources" from Alan
-> Maguire [1]
->         - A named resource is added to a test when a KASAN report is
->          expected
->         - This resource contains a struct for kasan_data containing
->         booleans representing if a KASAN report is expected and if a
->         KASAN report is found
+> See LICENSES/exceptions/Linux-syscall-note
 > 
-> [1] (https://lore.kernel.org/linux-kselftest/1583251361-12748-1-git-send-email-alan.maguire@oracle.com/T/#t)
-> 
-> Signed-off-by: Patricia Alfonso <trishalfonso@google.com>
-> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+
+Thanks Masahiro!
+
+
 > ---
->  include/kunit/test.h  |  5 ++++
->  include/linux/kasan.h |  6 +++++
->  lib/kunit/test.c      | 13 ++++++----
->  lib/test_kasan.c      | 56 +++++++++++++++++++++++++++++++++++++++----
->  mm/kasan/report.c     | 30 +++++++++++++++++++++++
->  5 files changed, 101 insertions(+), 9 deletions(-)
 > 
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index ac59d18e6bab..1dc3d118f64b 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
-> @@ -225,6 +225,11 @@ struct kunit {
->  	struct list_head resources; /* Protected by lock. */
->  };
->  
-> +static inline void kunit_set_failure(struct kunit *test)
-> +{
-> +	WRITE_ONCE(test->success, false);
-> +}
-> +
->  void kunit_init_test(struct kunit *test, const char *name, char *log);
->  
->  int kunit_run_tests(struct kunit_suite *suite);
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 5cde9e7c2664..148eaef3e003 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -14,6 +14,12 @@ struct task_struct;
->  #include <asm/kasan.h>
->  #include <asm/pgtable.h>
->  
-> +/* kasan_data struct is used in KUnit tests for KASAN expected failures */
-> +struct kunit_kasan_expectation {
-> +	bool report_expected;
-> +	bool report_found;
-> +};
-> +
->  extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
->  extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
->  extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index 2cb7c6220a00..030a3281591e 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -10,16 +10,12 @@
->  #include <linux/kernel.h>
->  #include <linux/kref.h>
->  #include <linux/sched/debug.h>
-> +#include <linux/sched.h>
->  
->  #include "debugfs.h"
->  #include "string-stream.h"
->  #include "try-catch-impl.h"
->  
-> -static void kunit_set_failure(struct kunit *test)
-> -{
-> -	WRITE_ONCE(test->success, false);
-> -}
-> -
->  static void kunit_print_tap_version(void)
->  {
->  	static bool kunit_has_printed_tap_version;
-> @@ -288,6 +284,10 @@ static void kunit_try_run_case(void *data)
->  	struct kunit_suite *suite = ctx->suite;
->  	struct kunit_case *test_case = ctx->test_case;
->  
-> +#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
-> +	current->kunit_test = test;
-> +#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT) */
-> +
->  	/*
->  	 * kunit_run_case_internal may encounter a fatal error; if it does,
->  	 * abort will be called, this thread will exit, and finally the parent
-> @@ -603,6 +603,9 @@ void kunit_cleanup(struct kunit *test)
->  		spin_unlock(&test->lock);
->  		kunit_remove_resource(test, res);
->  	}
-> +#if (IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT))
-> +	current->kunit_test = NULL;
-> +#endif /* IS_ENABLED(CONFIG_KASAN) && IS_ENABLED(CONFIG_KUNIT)*/
->  }
->  EXPORT_SYMBOL_GPL(kunit_cleanup);
->  
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 3872d250ed2c..dbfa0875ee09 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -23,12 +23,60 @@
->  
->  #include <asm/page.h>
->  
-> -/*
-> - * Note: test functions are marked noinline so that their names appear in
-> - * reports.
-> +#include <kunit/test.h>
-> +
-> +static struct kunit_resource resource;
-> +static struct kunit_kasan_expectation fail_data;
-> +static bool multishot;
-> +static int orig_panic_on_warn;
-> +
-> +static int kasan_test_init(struct kunit *test)
-> +{
-> +	/*
-> +	 * Temporarily enable multi-shot mode and set panic_on_warn=0.
-> +	 * Otherwise, we'd only get a report for the first case.
-> +	 */
-> +	multishot = kasan_save_enable_multi_shot();
-> +
-> +	orig_panic_on_warn = panic_on_warn;
-> +	panic_on_warn = 0;
-> +
-
-When I build kunit and test_kasan as a module, I'm seeing
-
-ERROR: "panic_on_warn" [lib/test_kasan.ko] undefined!
-
-Looks like this variable isn't exported (unlike
-panic_timeout).
-
-Is there an in-kernel API to read sysctl values we could
-use here that would be safe for module and builtin access
-maybe? 
-
-Alan
-
-> +	return 0;
-> +}
-> +
-> +static void kasan_test_exit(struct kunit *test)
-> +{
-> +	kasan_restore_multi_shot(multishot);
-> +
-> +	/* Restore panic_on_warn */
-> +	panic_on_warn = orig_panic_on_warn;
-> +}
-> +
-> +/**
-> + * KUNIT_EXPECT_KASAN_FAIL() - Causes a test failure when the expression does
-> + * not cause a KASAN error. This uses a KUnit resource named "kasan_data." Do
-> + * Do not use this name for a KUnit resource outside here.
-> + *
->   */
-> +#define KUNIT_EXPECT_KASAN_FAIL(test, condition) do { \
-> +	struct kunit_resource *res; \
-> +	struct kunit_kasan_expectation *kasan_data; \
-> +	fail_data.report_expected = true; \
-> +	fail_data.report_found = false; \
-> +	kunit_add_named_resource(test, \
-> +				NULL, \
-> +				NULL, \
-> +				&resource, \
-> +				"kasan_data", &fail_data); \
-> +	condition; \
-> +	res = kunit_find_named_resource(test, "kasan_data"); \
-> +	kasan_data = res->data; \
-> +	KUNIT_EXPECT_EQ(test, \
-> +			kasan_data->report_expected, \
-> +			kasan_data->report_found); \
-> +	kunit_put_resource(res); \
-> +} while (0)
->  
-> -static noinline void __init kmalloc_oob_right(void)
->  {
->  	char *ptr;
->  	size_t size = 123;
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index 5ef9f24f566b..497477c4b679 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -32,6 +32,8 @@
->  
->  #include <asm/sections.h>
->  
-> +#include <kunit/test.h>
-> +
->  #include "kasan.h"
->  #include "../slab.h"
->  
-> @@ -455,12 +457,35 @@ static bool report_enabled(void)
->  	return !test_and_set_bit(KASAN_BIT_REPORTED, &kasan_flags);
->  }
->  
-> +#if IS_ENABLED(CONFIG_KUNIT)
-> +void kasan_update_kunit_status(struct kunit *cur_test)
-> +{
-> +	struct kunit_resource *resource;
-> +	struct kunit_kasan_expectation *kasan_data;
-> +
-> +	if (!kunit_find_named_resource(cur_test, "kasan_data")) {
-> +		kunit_set_failure(cur_test);
-> +		return;
-> +	}
-> +
-> +	resource = kunit_find_named_resource(cur_test, "kasan_data");
-> +	kasan_data = resource->data;
-> +	kasan_data->report_found = true;
-> +}
-> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
-> +
->  void kasan_report_invalid_free(void *object, unsigned long ip)
->  {
->  	unsigned long flags;
->  	u8 tag = get_tag(object);
->  
->  	object = reset_tag(object);
-> +
-> +#if IS_ENABLED(CONFIG_KUNIT)
-> +	if (current->kunit_test)
-> +		kasan_update_kunit_status(current->kunit_test);
-> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
-> +
->  	start_report(&flags);
->  	pr_err("BUG: KASAN: double-free or invalid-free in %pS\n", (void *)ip);
->  	print_tags(tag, object);
-> @@ -481,6 +506,11 @@ void __kasan_report(unsigned long addr, size_t size, bool is_write, unsigned lon
->  	if (likely(!report_enabled()))
->  		return;
->  
-> +#if IS_ENABLED(CONFIG_KUNIT)
-> +	if (current->kunit_test)
-> +		kasan_update_kunit_status(current->kunit_test);
-> +#endif /* IS_ENABLED(CONFIG_KUNIT) */
-> +
->  	disable_trace_on_warning();
->  
->  	tagged_addr = (void *)addr;
-> -- 
-> 2.26.0.292.g33ef6b2f38-goog
+>   net/can/bcm.c  | 2 +-
+>   net/can/gw.c   | 2 +-
+>   net/can/proc.c | 2 +-
+>   net/can/raw.c  | 2 +-
+>   4 files changed, 4 insertions(+), 4 deletions(-)
 > 
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index c96fa0f33db3..d94b20933339 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>   /*
+>    * bcm.c - Broadcast Manager to filter/send (cyclic) CAN content
+>    *
+> diff --git a/net/can/gw.c b/net/can/gw.c
+> index 65d60c93af29..49b4e3d91ad6 100644
+> --- a/net/can/gw.c
+> +++ b/net/can/gw.c
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>   /* gw.c - CAN frame Gateway/Router/Bridge with netlink interface
+>    *
+>    * Copyright (c) 2019 Volkswagen Group Electronic Research
+> diff --git a/net/can/proc.c b/net/can/proc.c
+> index e6881bfc3ed1..a4eb06c9eb70 100644
+> --- a/net/can/proc.c
+> +++ b/net/can/proc.c
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>   /*
+>    * proc.c - procfs support for Protocol family CAN core module
+>    *
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index 59c039d73c6d..ab104cc18562 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+> @@ -1,4 +1,4 @@
+> -// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-3-Clause)
+> +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+>   /* raw.c - Raw sockets for protocol family CAN
+>    *
+>    * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
 > 
