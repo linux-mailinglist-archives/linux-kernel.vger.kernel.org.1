@@ -2,250 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BED419D7E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15C819D7EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403942AbgDCNnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 09:43:55 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:61414 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403909AbgDCNnw (ORCPT
+        id S2390952AbgDCNoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 09:44:44 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42398 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390900AbgDCNoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:43:52 -0400
-Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.341)
- id 8a464c5ddeacfe47; Fri, 3 Apr 2020 15:43:50 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        lenb@kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        linux-acpi@vger.kernel.org,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] x86/acpi: fix a deadlock with cpu hotplug
-Date:   Fri, 03 Apr 2020 15:43:50 +0200
-Message-ID: <31115293.RZinmt0Fc6@kreacher>
-In-Reply-To: <0277E081-1807-4393-BB8D-8E851D3ED1C7@lca.pw>
-References: <20200329142109.1501-1-cai@lca.pw> <2025426.V7fFeAKXnt@kreacher> <0277E081-1807-4393-BB8D-8E851D3ED1C7@lca.pw>
+        Fri, 3 Apr 2020 09:44:44 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033DhqW9011059;
+        Fri, 3 Apr 2020 13:44:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Q5MuqANtg1zQPv6GuHLVRWoR9rnF6W2CzJ3VxupBfPQ=;
+ b=nyedowuOsKcoh/xPxMabamnVOU7rdnbAEW1I1wOT8ypFwAy+J+Mbwo0T8J7+9WDg/fxd
+ 82nW7YM4wuAJ/zI1Si+kyiktesmk+V0QzuRf/4ZEAW/UIBv7ibA3d4JTsd3/wgc/zbko
+ G4uiJ9qlWjWhmTVAWY3V0JWJYkuHGKNilCcP3J5X8okmMldzHAExXkZcZ9hLHoO75Ho0
+ 8sO849vXdxpv5KC2dZJkrQT3fJeETXdmOW2w9aiUSM0WMmmXrxdeZObMDwrLgaEELSZI
+ H5qcuANSu9h+3bvcAPPx9zR42O9lC43ypl78ot+uzwrfvfqH3Id9VPFFr0KN1PYtiw0q EA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 303cevh4a2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 13:44:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 033Dh2Sq191915;
+        Fri, 3 Apr 2020 13:44:24 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 302g2n1r88-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Apr 2020 13:44:24 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 033DiLS4017280;
+        Fri, 3 Apr 2020 13:44:21 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 03 Apr 2020 06:44:20 -0700
+Date:   Fri, 3 Apr 2020 09:44:39 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        mhocko@suse.com, linux-mm@kvack.org, dan.j.williams@intel.com,
+        shile.zhang@linux.alibaba.com, daniel.m.jordan@oracle.com,
+        ktkhai@virtuozzo.com, david@redhat.com, jmorris@namei.org,
+        sashal@kernel.org, vbabka@suse.cz
+Subject: Re: [PATCH v3 3/3] mm: call cond_resched() from
+ deferred_init_memmap()
+Message-ID: <20200403134439.li6i635dnur5jdha@ca-dmjordan1.us.oracle.com>
+References: <20200403133549.14338-1-pasha.tatashin@soleen.com>
+ <20200403133549.14338-4-pasha.tatashin@soleen.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403133549.14338-4-pasha.tatashin@soleen.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030121
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9579 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 adultscore=0
+ clxscore=1011 phishscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004030121
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, April 3, 2020 1:18:07 PM CEST Qian Cai wrote:
-> 
-> > On Apr 3, 2020, at 5:29 AM, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
-> > 
-> > On Sunday, March 29, 2020 4:21:09 PM CEST Qian Cai wrote:
-> >> Similar to the commit 0266d81e9bf5 ("acpi/processor: Prevent cpu hotplug
-> >> deadlock") except this is for acpi_processor_ffh_cstate_probe():
-> >> 
-> >> "The problem is that the work is scheduled on the current CPU from the
-> >> hotplug thread associated with that CPU.
-> >> 
-> >> It's not required to invoke these functions via the workqueue because
-> >> the hotplug thread runs on the target CPU already.
-> >> 
-> >> Check whether current is a per cpu thread pinned on the target CPU and
-> >> invoke the function directly to avoid the workqueue."
-> >> 
-> >> Since CONFIG_ACPI_PROCESSOR (for cstate.c) selects
-> >> CONFIG_ACPI_CPU_FREQ_PSS (for processor_throttling.c) on x86, just
-> >> make call_on_cpu() a static inline function from processor_throttling.c
-> >> and use it in cstate.c.
-> >> 
-> >> WARNING: possible circular locking dependency detected
-> >> ------------------------------------------------------
-> >> cpuhp/1/15 is trying to acquire lock:
-> >> ffffc90003447a28 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: __flush_work+0x4c6/0x630
-> >> 
-> >> but task is already holding lock:
-> >> ffffffffafa1c0e8 (cpuidle_lock){+.+.}-{3:3}, at: cpuidle_pause_and_lock+0x17/0x20
-> >> 
-> >> which lock already depends on the new lock.
-> >> 
-> >> the existing dependency chain (in reverse order) is:
-> >> 
-> >> -> #1 (cpu_hotplug_lock){++++}-{0:0}:
-> >> cpus_read_lock+0x3e/0xc0
-> >> irq_calc_affinity_vectors+0x5f/0x91
-> >> __pci_enable_msix_range+0x10f/0x9a0
-> >> pci_alloc_irq_vectors_affinity+0x13e/0x1f0
-> >> pci_alloc_irq_vectors_affinity at drivers/pci/msi.c:1208
-> >> pqi_ctrl_init+0x72f/0x1618 [smartpqi]
-> >> pqi_pci_probe.cold.63+0x882/0x892 [smartpqi]
-> >> local_pci_probe+0x7a/0xc0
-> >> work_for_cpu_fn+0x2e/0x50
-> >> process_one_work+0x57e/0xb90
-> >> worker_thread+0x363/0x5b0
-> >> kthread+0x1f4/0x220
-> >> ret_from_fork+0x27/0x50
-> >> 
-> >> -> #0 ((work_completion)(&wfc.work)){+.+.}-{0:0}:
-> >> __lock_acquire+0x2244/0x32a0
-> >> lock_acquire+0x1a2/0x680
-> >> __flush_work+0x4e6/0x630
-> >> work_on_cpu+0x114/0x160
-> >> acpi_processor_ffh_cstate_probe+0x129/0x250
-> >> acpi_processor_evaluate_cst+0x4c8/0x580
-> >> acpi_processor_get_power_info+0x86/0x740
-> >> acpi_processor_hotplug+0xc3/0x140
-> >> acpi_soft_cpu_online+0x102/0x1d0
-> >> cpuhp_invoke_callback+0x197/0x1120
-> >> cpuhp_thread_fun+0x252/0x2f0
-> >> smpboot_thread_fn+0x255/0x440
-> >> kthread+0x1f4/0x220
-> >> ret_from_fork+0x27/0x50
-> >> 
-> >> other info that might help us debug this:
-> >> 
-> >> Chain exists of:
-> >> (work_completion)(&wfc.work) --> cpuhp_state-up --> cpuidle_lock
-> >> 
-> >> Possible unsafe locking scenario:
-> >> 
-> >> CPU0                    CPU1
-> >> ----                    ----
-> >> lock(cpuidle_lock);
-> >>                         lock(cpuhp_state-up);
-> >>                         lock(cpuidle_lock);
-> >> lock((work_completion)(&wfc.work));
-> >> 
-> >> *** DEADLOCK ***
-> >> 
-> >> 3 locks held by cpuhp/1/15:
-> >> #0: ffffffffaf51ab10 (cpu_hotplug_lock){++++}-{0:0}, at: cpuhp_thread_fun+0x69/0x2f0
-> >> #1: ffffffffaf51ad40 (cpuhp_state-up){+.+.}-{0:0}, at: cpuhp_thread_fun+0x69/0x2f0
-> >> #2: ffffffffafa1c0e8 (cpuidle_lock){+.+.}-{3:3}, at: cpuidle_pause_and_lock+0x17/0x20
-> >> 
-> >> Call Trace:
-> >> dump_stack+0xa0/0xea
-> >> print_circular_bug.cold.52+0x147/0x14c
-> >> check_noncircular+0x295/0x2d0
-> >> __lock_acquire+0x2244/0x32a0
-> >> lock_acquire+0x1a2/0x680
-> >> __flush_work+0x4e6/0x630
-> >> work_on_cpu+0x114/0x160
-> >> acpi_processor_ffh_cstate_probe+0x129/0x250
-> >> acpi_processor_evaluate_cst+0x4c8/0x580
-> >> acpi_processor_get_power_info+0x86/0x740
-> >> acpi_processor_hotplug+0xc3/0x140
-> >> acpi_soft_cpu_online+0x102/0x1d0
-> >> cpuhp_invoke_callback+0x197/0x1120
-> >> cpuhp_thread_fun+0x252/0x2f0
-> >> smpboot_thread_fn+0x255/0x440
-> >> kthread+0x1f4/0x220
-> >> ret_from_fork+0x27/0x50
-> >> 
-> >> Signed-off-by: Qian Cai <cai@lca.pw>
-> >> ---
-> >> 
-> >> v2:
-> >> Make call_on_cpu() a static inline function to avoid a compilation
-> >> error when ACPI_PROCESSOR=m thanks to lkp@intel.com.
-> >> 
-> >> arch/x86/kernel/acpi/cstate.c       |  3 ++-
-> >> drivers/acpi/processor_throttling.c |  7 -------
-> >> include/acpi/processor.h            | 10 ++++++++++
-> >> 3 files changed, 12 insertions(+), 8 deletions(-)
-> >> 
-> >> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
-> >> index caf2edccbad2..49ae4e1ac9cd 100644
-> >> --- a/arch/x86/kernel/acpi/cstate.c
-> >> +++ b/arch/x86/kernel/acpi/cstate.c
-> >> @@ -161,7 +161,8 @@ int acpi_processor_ffh_cstate_probe(unsigned int cpu,
-> >> 
-> >> 	/* Make sure we are running on right CPU */
-> >> 
-> >> -	retval = work_on_cpu(cpu, acpi_processor_ffh_cstate_probe_cpu, cx);
-> >> +	retval = call_on_cpu(cpu, acpi_processor_ffh_cstate_probe_cpu, cx,
-> >> +			     false);
-> >> 	if (retval == 0) {
-> >> 		/* Use the hint in CST */
-> >> 		percpu_entry->states[cx->index].eax = cx->address;
-> >> diff --git a/drivers/acpi/processor_throttling.c b/drivers/acpi/processor_throttling.c
-> >> index 532a1ae3595a..a0bd56ece3ff 100644
-> >> --- a/drivers/acpi/processor_throttling.c
-> >> +++ b/drivers/acpi/processor_throttling.c
-> >> @@ -897,13 +897,6 @@ static long __acpi_processor_get_throttling(void *data)
-> >> 	return pr->throttling.acpi_processor_get_throttling(pr);
-> >> }
-> >> 
-> >> -static int call_on_cpu(int cpu, long (*fn)(void *), void *arg, bool direct)
-> >> -{
-> >> -	if (direct || (is_percpu_thread() && cpu == smp_processor_id()))
-> >> -		return fn(arg);
-> >> -	return work_on_cpu(cpu, fn, arg);
-> >> -}
-> >> -
-> >> static int acpi_processor_get_throttling(struct acpi_processor *pr)
-> >> {
-> >> 	if (!pr)
-> >> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
-> >> index 47805172e73d..770d226b22f2 100644
-> >> --- a/include/acpi/processor.h
-> >> +++ b/include/acpi/processor.h
-> >> @@ -297,6 +297,16 @@ static inline void acpi_processor_ffh_cstate_enter(struct acpi_processor_cx
-> >> }
-> >> #endif
-> >> 
-> >> +#ifdef CONFIG_ACPI_CPU_FREQ_PSS
-> > 
-> > Why does this depend on CONFIG_ACPI_CPU_FREQ_PSS?
-> 
-> call_on_cpu() was only used in processor_throttling.c which has,
-> 
-> processor-$(CONFIG_ACPI_CPU_FREQ_PSS)   += processor_throttling.o
-> 
-> after this patch, it will also be used in cstate.c which has,
-> 
-> ifneq ($(CONFIG_ACPI_PROCESSOR),)
-> obj-y                           += cstate.o
-> endif
-> 
-> i.e.,
-> 
-> config ACPI_PROCESSOR
->         tristate "Processor"
->         depends on X86 || IA64 || ARM64
->         select ACPI_PROCESSOR_IDLE
->         select ACPI_CPU_FREQ_PSS if X86 || IA64
-> 
-> Therefore, call_on_cpu() is only used when CONFIG_ACPI_CPU_FREQ_PSS=y.
+On Fri, Apr 03, 2020 at 09:35:49AM -0400, Pavel Tatashin wrote:
+> Now that deferred pages are initialized with interrupts enabled we can
+> replace touch_nmi_watchdog() with cond_resched(), as it was before
+> 3a2d7fa8a3d5.
+...
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 4a60f2427eb0..445f74358997 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -1816,7 +1816,7 @@ static int __init deferred_init_memmap(void *data)
+>  	 */
+>  	while (spfn < epfn) {
+>  		nr_pages += deferred_init_maxorder(&i, zone, &spfn, &epfn);
+> -		touch_nmi_watchdog();
+> +		sched_clock();
 
-While technically kind of correct, this is also rather far from straightforward, because
-cstate.o and ACPI_CPU_FREQ_PSS are different things logically.
+I think you meant cond_resched()?
 
-> The #ifdef is rather a safe net that in the future, if we decided to make call_on_cpu()
-> a  non-inline function, it will prevent triggering an compilation warning for unused
-> function when CONFIG_ACPI_CPU_FREQ_PSS=n.
-
-But as long as it is static inline, the #ifdef isn't necessary, is it?
-
-> It may also serve as a documentation purpose to indicate that function is only used
-> with  CONFIG_ACPI_CPU_FREQ_PSS=y.
-
-Which is incidental and therefore misleading.
-
-> > 
-> >> +static inline int call_on_cpu(int cpu, long (*fn)(void *), void *arg,
-> >> +			      bool direct)
-> >> +{
-> >> +	if (direct || (is_percpu_thread() && cpu == smp_processor_id()))
-> >> +		return fn(arg);
-> >> +	return work_on_cpu(cpu, fn, arg);
-> >> +}
-> >> +#endif
-> >> +
-> >> /* in processor_perflib.c */
-> >> 
-> >> #ifdef CONFIG_CPU_FREQ
-> 
-
-
-
-
+With that,
+Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
