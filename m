@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 423D819D9F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541EA19D9FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 17:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404117AbgDCPUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 11:20:20 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:38386 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403991AbgDCPUU (ORCPT
+        id S2404191AbgDCPW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 11:22:26 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:39804 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404171AbgDCPW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 11:20:20 -0400
-Received: by mail-qt1-f194.google.com with SMTP id z12so6723221qtq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 08:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pcySYvcjsOIXyHu4jeus+Gw8MtcUshidVKxTeJv8K+g=;
-        b=BPMLO0TmyHJ12cXzSNYL9F5s7rDKsc+quN7feDOTATPnaoZZ1WuPeHjqFkh771hN8I
-         5ClXJXIdndynCbHw1/KwNjdgz3L5zj7TWXo7HC90T3YUk1pKG/dDbNtjTgZL3b8ekPmX
-         qG0pWrfP/jMZpl+0sihgIj54o1czyUj9EtHKTbFmNxL8ojwsKIKNxgiiWtyfRAYHI2u/
-         CuwnXaudaY80eigJJzUl1R4WVZLpYQdHcbLWpD9GJ7+PzO3E0aXv8PSLTp9LDkf09Vg1
-         HDb93LncSH0MmoyQTMT7Gwe9hSJqe+QMKgqQD8SxGJMi8QPZWXmJEfmBkGgcMNavsSBp
-         gxNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pcySYvcjsOIXyHu4jeus+Gw8MtcUshidVKxTeJv8K+g=;
-        b=BijYKQlii6oCOt9/BFcuvZ/ECimIKOrYirpVWTLRvhgYBRZqWLBj2sR9SyIO6G2IDs
-         yVOYgnXyoglET0MlNw5hc70TfA5VpEoqLrkuY4v3n8J4ZFYsCCkTWZtnQItTH6Rb2qtD
-         jQYwo/PWMe6SobBGFqkLog2DbdIkcsYiLiJ/D1xKwHiqPtlPJ+yaTLIb+9hPWwD3vi0P
-         6Sny1wMX2dtjDfolOQS6ZQ/ZUET++peEp8M4GQXUmcGs3vUoLcgCxH+hnl26pntxUX+4
-         iFNQp51DD9KpiiEa4RNRko9fjeCWXAFEhQrhiPj0VWPUS3jfCY/u6EpIFgOfDq95Oi5V
-         nf4g==
-X-Gm-Message-State: AGi0PuYLUCCnuwWmuSOE5qayLqAvmihtJscMlL54gSnhiiujasO7lBK1
-        n/yfW5ycFN0pkCeQQjHGkJVk2A4xd9k=
-X-Google-Smtp-Source: APiQypLbTERbvPmsxDL1wybDZrIftPcrRBiydzX1x4UkOvNQX1XdN+On/LZJmWYaA9eDavn1M07RuQ==
-X-Received: by 2002:ac8:7385:: with SMTP id t5mr8787026qtp.222.1585927218874;
-        Fri, 03 Apr 2020 08:20:18 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::da28])
-        by smtp.gmail.com with ESMTPSA id f1sm6106148qkl.72.2020.04.03.08.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 08:20:18 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 11:20:16 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     peterz@infradead.org, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Daniel Drake <drake@endlessm.com>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH] psi: fix randomized calculation in record_times()
-Message-ID: <20200403152016.GA69203@cmpxchg.org>
-References: <1585904125-2819-1-git-send-email-laoar.shao@gmail.com>
+        Fri, 3 Apr 2020 11:22:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uzmJljZM/KQ/xQJa18Yo/qe+BC3A7JIGAtH95frw7pI=; b=tzZR5jEhA7wgjH8i/Ea1meQj6J
+        i1KwzmuPePDp5V9IznG6eVCK3KH4zGNk8ue4fa60OCVzz71RVCnswmDcWsaXzRnhYsLu6gjxBbOx3
+        X1HpYa+lW/l0zGtSMYbdX1o4/WaCee7btfhAFA8MKvB5lpQK1m6iUqROC4L1/18A/BmMnKZCalL7k
+        z7HY3P4ap/SwYwKGbsJ8PSuaQA+xRH0JKCLI/EaGfvqx08mjDXucm8BAXzGvS3hjavpG9cQ5b+ATa
+        5Lpp22o6ofbDTO/gSQO83p+D3skfXD0kdzSNriG/DwiX7si82MOofjh3eg0TkWf7BBIIAyzcTIE5y
+        xsKbrpDA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jKO8v-0001dj-7N; Fri, 03 Apr 2020 15:22:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0EA73304DB2;
+        Fri,  3 Apr 2020 17:21:58 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DDCC52B12426C; Fri,  3 Apr 2020 17:21:58 +0200 (CEST)
+Date:   Fri, 3 Apr 2020 17:21:58 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        "Kenneth R. Crudup" <kenny@panix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        jannh@google.com, keescook@chromium.org
+Subject: Re: [patch 1/2] x86,module: Detect VMX modules and disable
+ Split-Lock-Detect
+Message-ID: <20200403152158.GR20730@hirez.programming.kicks-ass.net>
+References: <20200402123258.895628824@linutronix.de>
+ <20200402124205.242674296@linutronix.de>
+ <bc9a0c9a-7bd0-c85d-4795-ae0b4faa5e84@prevas.dk>
+ <20200403143459.GA30424@linux-8ccs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1585904125-2819-1-git-send-email-laoar.shao@gmail.com>
+In-Reply-To: <20200403143459.GA30424@linux-8ccs>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 04:55:25AM -0400, Yafang Shao wrote:
-> @@ -690,7 +690,10 @@ static void psi_group_change(struct psi_group *group, int cpu,
->  	 */
->  	write_seqcount_begin(&groupc->seq);
->  
-> -	record_times(groupc, cpu, false);
-> +	if (groupc->total_tasks)
-> +		record_times(groupc, cpu, false);
-> +	else
-> +		groupc->state_start = cpu_clock(cpu);
+On Fri, Apr 03, 2020 at 04:35:00PM +0200, Jessica Yu wrote:
+> +++ Rasmus Villemoes [03/04/20 01:42 +0200]:
+> > On 02/04/2020 14.32, Thomas Gleixner wrote:
+> > > From: Peter Zijlstra <peterz@infradead.org>
+> > > 
+> > > It turns out that with Split-Lock-Detect enabled (default) any VMX
+> > > hypervisor needs at least a little modification in order to not blindly
+> > > inject the #AC into the guest without the guest being ready for it.
+> > > 
+> > > Since there is no telling which module implements a hypervisor, scan the
+> > > module text and look for the VMLAUNCH instruction. If found, the module is
+> > > assumed to be a hypervisor of some sort and SLD is disabled.
+> > 
+> > How long does that scan take/add to module load time? Would it make
+> > sense to exempt in-tree modules?
+> > 
+> > Rasmus
+> 
+> I second Rasmus's question. It seems rather unfortunate that we have
+> to do this text scan for every module load on x86, when it doesn't
+> apply to the majority of them, and only to a handful of out-of-tree
+> hypervisor modules (assuming kvm is taken care of already).
+> 
+> I wonder if it would make sense then to limit the text scans to just
+> out-of-tree modules (i.e., missing the intree modinfo flag)?
 
-This change appears is a no-op. If there are no tasks,
-groupc->state_mask is 0, and the only thing record_times() does is
-
-	groupc->state_start = cpu_clock(cpu);
-
-Did you encounter actual problems, or are you just reading the code?
+It would; didn't know there was one.
