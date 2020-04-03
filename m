@@ -2,143 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFF319D6CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFF119D6D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403967AbgDCMfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 08:35:14 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:45568 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728134AbgDCMfN (ORCPT
+        id S2403834AbgDCMgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 08:36:13 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:43490 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728219AbgDCMgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 08:35:13 -0400
-Received: by mail-il1-f197.google.com with SMTP id p15so6677252ils.12
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 05:35:12 -0700 (PDT)
+        Fri, 3 Apr 2020 08:36:12 -0400
+Received: by mail-qv1-f68.google.com with SMTP id c28so3424365qvb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 05:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/UIQ6cCz6/xPuMLPWGcywGCrwVngPK40EuPV4gXPVrg=;
+        b=G9xOnYjNwulboqxCx81yN1IIkK+Qt1i9yxPkPaBg0zRTstOZeFZPjUdhn7ibIQLAgk
+         XxxVKC9WdbOIWEGV6WDUCMUpttj2rdrk1zivYDaP90amGTclDD4ry6PBzORrnaWq0JJU
+         EOu+i//xhhpUhE+tQUDtFJaLtG3mw78bNqG0x/6Nwn/XvP/bWSXRwKOutGPvEMkClBX9
+         gSqAFTS6xtASEGigsC8wSPI+2LNaH5QiCxLr5FO89bL1SvhBqx1qYIjU4fplBboUF0Z0
+         SPraTa+dG6IEi3LOxLVm7HZklL3svPzdTRjTIWf8L6czdkrS7jmREK346b3fgG/pPEML
+         dpyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=KYTCItlIzGjfUPCFO3Xia9WBfLKbB/2YdCU/twntNsI=;
-        b=ewaZ5SSmEhZ54P9AbFfaKdMcDLc/i2Xi9QoWfysqc5Lwez+CUWqEFgVRsywsiiYaqX
-         8QaGjhLC+nZxNs6KG42ZGG2sUlzUuZCn5dqhouIbXXl1in29V9VOlYMId0rm5JV4fvb4
-         U3Hnh9x1LMmmqrxkEfHtj9ccpCAnMesDqK5vozgYJaiEGkL2MxTK2JkrvrslP9RMvElz
-         rBrgyPAaYJRfIwbLNCeOVIwgRZxXKtbI0syeXJ5dNINeLu1bVW1ebLHXir2J50tvzTy0
-         yP78VY5h2adIgyOIJc3dkVD2vuVd2gSdlh6zH7lzLeXXqgeo2lpb5x99+xPes9XoDAMp
-         9afA==
-X-Gm-Message-State: AGi0Puaqpe2bNhEJttjiSMKhOxfulm9a/iAkifHUTZJmHcqBtF3oIClP
-        q64/l64vXDzCG9iYup1jMSq9RFM16rA5Hx1I99xe+A/WvN2c
-X-Google-Smtp-Source: APiQypK8yl0gZd1VlkweFFk+ualprCzO4RaIBJVcqW87iT6e7NKACvrzDb8Dlk8cGym+9kniTNpQQ8TmIrausBM3h8qY/ncSXVGB
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/UIQ6cCz6/xPuMLPWGcywGCrwVngPK40EuPV4gXPVrg=;
+        b=TUWR4pLYYuaCbZSML0LSJ1xpS8ZEhIpseJPsPGnzQ0t6bVGIVP9Sx/NHJpR5b8GWWm
+         tvAKyuSVlG9v2Dp5iTIjNJoVqmvctvGCjsF1Ip4qwE34qHGDe/3O9ftfM3px3K5cjNeQ
+         Wguo6GhosptsMTSoP6LWR+44ucoLNOHgnSSa0n0TYIswBXqR0/HHQ9ZSN5LP/MeihWXe
+         l2X8IvWy2pfNWTSiq+oPIjdprIdOpIjfza4z3mD6T3+XNCyi84m1q/j5PUEV1eUQGJjW
+         ZGtZxHtlFTzEQLLLdjDVSPwNBqDAFEOy9BrpAJSs2f4hf4vjyPUCbuqgFhhV8TWP93ZP
+         JM2A==
+X-Gm-Message-State: AGi0PuZzuKar/o0ta7nEJ7d62/+hKhRRL+gK2RvQD6dq53DF/WYLiq9Q
+        AunoVlm0mbCRbUO+SBqpcpw=
+X-Google-Smtp-Source: APiQypI7PsH7snM6jdOXd2HKBLWUe9bvS5FDXTaIY281QuZkO+vPIsI5Vs8/2oWe95MNI5epqMg68Q==
+X-Received: by 2002:a0c:e902:: with SMTP id a2mr8154150qvo.103.1585917369743;
+        Fri, 03 Apr 2020 05:36:09 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id e16sm4514719qtq.78.2020.04.03.05.36.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 05:36:08 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 889BB409A3; Fri,  3 Apr 2020 09:36:06 -0300 (-03)
+Date:   Fri, 3 Apr 2020 09:36:06 -0300
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: Re: [PATCH 4/9] perf tools: Maintain cgroup hierarchy
+Message-ID: <20200403123606.GC23243@kernel.org>
+References: <20200325124536.2800725-1-namhyung@kernel.org>
+ <20200325124536.2800725-5-namhyung@kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e81a:: with SMTP id f26mr7519494ioh.20.1585917312432;
- Fri, 03 Apr 2020 05:35:12 -0700 (PDT)
-Date:   Fri, 03 Apr 2020 05:35:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000cfff005a26226ce@google.com>
-Subject: KCSAN: data-race in __fat_write_inode / fat12_ent_get
-From:   syzbot <syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com>
-To:     elver@google.com, hirofumi@mail.parknet.co.jp,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200325124536.2800725-5-namhyung@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Em Wed, Mar 25, 2020 at 09:45:31PM +0900, Namhyung Kim escreveu:
+> Each cgroup is kept in the perf_env's cgroup_tree sorted by the cgroup
+> id.  Hist entries have cgroup id can compare it directly and later it
+> can be used to find a group name using this tree.
 
-syzbot found the following crash on:
-
-HEAD commit:    40959e34 kcsan: Avoid blocking producers in prepare_report()
-git tree:       https://github.com/google/ktsan.git kcsan
-console output: https://syzkaller.appspot.com/x/log.txt?x=1201d5a3e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ab2c758651b11f6
-dashboard link: https://syzkaller.appspot.com/bug?extid=6f1624f937d9d6911e2d
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
-
-FAT-fs (loop1): error, clusters badly computed (876 != 875)
-FAT-fs (loop1): error, clusters badly computed (877 != 876)
-FAT-fs (loop1): error, clusters badly computed (878 != 877)
-==================================================================
-BUG: KCSAN: data-race in __fat_write_inode / fat12_ent_get
-
-write to 0xffff8881015f423c of 4 bytes by task 9966 on cpu 1:
- __fat_write_inode+0x246/0x510 fs/fat/inode.c:877
- fat_write_inode+0x67/0xe0 fs/fat/inode.c:909
- write_inode fs/fs-writeback.c:1312 [inline]
- __writeback_single_inode+0x722/0x910 fs/fs-writeback.c:1511
- writeback_single_inode+0x219/0x2f0 fs/fs-writeback.c:1565
- sync_inode fs/fs-writeback.c:2602 [inline]
- sync_inode_metadata+0x75/0xa0 fs/fs-writeback.c:2622
- __generic_file_fsync+0x117/0x180 fs/libfs.c:1081
- fat_file_fsync+0x54/0x120 fs/fat/file.c:190
- vfs_fsync_range+0x7c/0x150 fs/sync.c:197
- generic_write_sync include/linux/fs.h:2867 [inline]
- generic_file_write_iter+0x31c/0x38e mm/filemap.c:3452
- call_write_iter include/linux/fs.h:1901 [inline]
- do_iter_readv_writev+0x4a7/0x5d0 fs/read_write.c:693
- do_iter_write fs/read_write.c:998 [inline]
- do_iter_write+0x137/0x3a0 fs/read_write.c:979
- vfs_iter_write+0x56/0x80 fs/read_write.c:1039
- iter_file_splice_write+0x530/0x830 fs/splice.c:760
- do_splice_from fs/splice.c:863 [inline]
- direct_splice_actor+0x97/0xb0 fs/splice.c:1037
- splice_direct_to_actor+0x22f/0x540 fs/splice.c:992
- do_splice_direct+0x152/0x1d0 fs/splice.c:1080
- do_sendfile+0x396/0x810 fs/read_write.c:1520
- __do_sys_sendfile64 fs/read_write.c:1575 [inline]
- __se_sys_sendfile64 fs/read_write.c:1567 [inline]
- __x64_sys_sendfile64+0xb8/0x140 fs/read_write.c:1567
- do_syscall_64+0xc7/0x390 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-read to 0xffff8881015f423d of 1 bytes by task 9960 on cpu 0:
- fat12_ent_get+0x5e/0x120 fs/fat/fatent.c:125
- fat_ent_read+0x3de/0x560 fs/fat/fatent.c:370
- fat_get_cluster+0x52b/0x920 fs/fat/cache.c:266
- fat_bmap_cluster fs/fat/cache.c:299 [inline]
- fat_get_mapped_cluster+0x105/0x230 fs/fat/cache.c:320
- fat_bmap+0x146/0x28e fs/fat/cache.c:384
- __fat_get_block fs/fat/inode.c:165 [inline]
- fat_get_block+0x244/0x4f0 fs/fat/inode.c:190
- __block_write_begin_int+0x306/0xf80 fs/buffer.c:2008
- __block_write_begin fs/buffer.c:2058 [inline]
- block_write_begin+0x76/0x160 fs/buffer.c:2117
- cont_write_begin+0x3bd/0x660 fs/buffer.c:2466
- fat_write_begin+0x69/0xc0 fs/fat/inode.c:236
- pagecache_write_begin+0x67/0x90 mm/filemap.c:3106
- cont_expand_zero fs/buffer.c:2393 [inline]
- cont_write_begin+0x176/0x660 fs/buffer.c:2456
- fat_write_begin+0x69/0xc0 fs/fat/inode.c:236
- generic_perform_write+0x13a/0x320 mm/filemap.c:3287
- __generic_file_write_iter+0x240/0x370 mm/filemap.c:3416
- generic_file_write_iter+0x294/0x38e mm/filemap.c:3448
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x303/0x400 fs/read_write.c:483
- __vfs_write+0x9e/0xb0 fs/read_write.c:496
- vfs_write fs/read_write.c:558 [inline]
- vfs_write+0x189/0x380 fs/read_write.c:542
- ksys_write+0xc5/0x1a0 fs/read_write.c:611
- __do_sys_write fs/read_write.c:623 [inline]
- __se_sys_write fs/read_write.c:620 [inline]
- __x64_sys_write+0x49/0x60 fs/read_write.c:620
- do_syscall_64+0xc7/0x390 arch/x86/entry/common.c:294
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 9960 Comm: syz-executor.1 Not tainted 5.6.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-==================================================================
+This one breaks the 'perf test python' test, I fixed it adding this
+patch before your series:
 
 
+From ea3c4ab73cb2ea2960bba6894560b1ef91e69737 Mon Sep 17 00:00:00 2001
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date: Fri, 3 Apr 2020 09:29:52 -0300
+Subject: [PATCH 1/1] perf python: Include rwsem.c in the pythong biding
+
+We'll need it for the cgroup patches, and its better to have it in a
+separate patch in case we need to later revert the cgroup patches.
+
+I.e. without this we have:
+
+  [root@five ~]# perf test -v python
+  19: 'import perf' in python                               :
+  --- start ---
+  test child forked, pid 148447
+  Traceback (most recent call last):
+    File "<stdin>", line 1, in <module>
+  ImportError: /tmp/build/perf/python/perf.cpython-37m-x86_64-linux-gnu.so: undefined symbol: down_write
+  test child finished with -1
+  ---- end ----
+  'import perf' in python: FAILED!
+  [root@five ~]#
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ tools/perf/util/python-ext-sources | 1 +
+ 1 file changed, 1 insertion(+)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/tools/perf/util/python-ext-sources b/tools/perf/util/python-ext-sources
+index e7279ea6043a..a9d9c142eb7c 100644
+--- a/tools/perf/util/python-ext-sources
++++ b/tools/perf/util/python-ext-sources
+@@ -34,3 +34,4 @@ util/string.c
+ util/symbol_fprintf.c
+ util/units.c
+ util/affinity.c
++util/rwsem.c
+-- 
+2.25.1
+
