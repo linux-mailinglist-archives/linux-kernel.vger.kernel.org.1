@@ -2,486 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9B419D64B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67DD19D64F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390917AbgDCMEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 08:04:35 -0400
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:45140 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390910AbgDCMEf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 08:04:35 -0400
-Received: by mail-ua1-f66.google.com with SMTP id 9so2590950uav.12
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 05:04:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IPONUMAB3D1DcNuQiQuiJ7+MvoNVdJvTPSkPLFYEYyI=;
-        b=dcAsgmgLnaT06rcCKLTQ+N64JvwGYd1MEFPK78+55FNy6HhKcliPzu9c82AQkDhR3l
-         JdhVvy8htX3/mxrXN7rEMcHBlGYHOWqBx019FwsZ6SsWXaE4pJD//XnS8N3HXYZiqwrD
-         0JATaud8lfXdiKecwdM28keRd6PhrpTPdUf9Pqo5MJMWtnotUfz0AFhpENN7zscXTDhI
-         HQwHMlp65BlDoxAZm1/o3YsXzLM4hnYlJp+RVdsrVQIOubgdL8XnAA/vvYanFxdK/G+H
-         2ToAeucF3y3u+s/4M7w9YRAzzyXyqNzPflRDnpJ3KK67WjLRhqmWGJjbgx+H3tSFFhp6
-         iJsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IPONUMAB3D1DcNuQiQuiJ7+MvoNVdJvTPSkPLFYEYyI=;
-        b=XmTCcdbCOA/7ZtXrAlhzNeXEEqM79UmB1joRpcxziL5mFMYqamaXDMe1jib7P7975W
-         Md7CAm3Vy1FoMcJZy5xdpRjIY//jI5e9QhejAmWNua+AXjTTgmAgCF70ZWP86snS3WCE
-         qKgKh6z3tuQUcVxmrWNMzZUE4n2sq/K8EFYsm/IWTialsLlBEC4tnikjfQvxpvGWCWVw
-         SiIRvmqyKO+tm78cfrE8oKWUfs9WIc9+ZmxON7T2X1en+K1tksm3znAwUEZdsVtStiBN
-         0bVhoJ/oABYCNymQFs2bG4gAXUmeGE+10NowYoNLQJYMHJ5lBnmu13PLJkKhFCFXGMch
-         Z/2g==
-X-Gm-Message-State: AGi0PubZ/bb48ELXu3G+5Yo120nE0e+rRopZfeIu5xfAQoQMheq+n4ht
-        M3tDeFlDdx1A5k2X6yBpgzCqWskQFCNJXPOOe1pgdA==
-X-Google-Smtp-Source: APiQypJ0KFGIJF3JXXLv2U11ia7m3kVrZVSFtNJmbP2K1O3ev5uSt6YVI01oMi/Xus+TLFLi5vMWzBabCX0h876VVhE=
-X-Received: by 2002:ab0:6185:: with SMTP id h5mr6526647uan.23.1585915471249;
- Fri, 03 Apr 2020 05:04:31 -0700 (PDT)
+        id S2403837AbgDCMFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 08:05:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:7779 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728095AbgDCMFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 08:05:09 -0400
+IronPort-SDR: ScZdvbp3A0cmkTS1PYIpEu6RThyYMFEZwdoshGBVU4e72so/SWPnbM2D+qm4g6W1szUhZXvWhE
+ 33FsMiDO5hUQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 05:05:08 -0700
+IronPort-SDR: nHiLEFmqKLZ5NMlBu0nURO7qQ5E+aVDIZvllhZAhiXgAyynFkddNYFYvFHF3z94vYn7NQtxoOC
+ LceyZiaPEhmg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,339,1580803200"; 
+   d="scan'208";a="329147693"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 03 Apr 2020 05:05:04 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jKL4J-000IuQ-NM; Fri, 03 Apr 2020 20:05:03 +0800
+Date:   Fri, 3 Apr 2020 20:04:20 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: drivers/usb/gadget/legacy/inode.c:1364:8: warning: Redundant
+ initialization for 'value'. The initialized value is overwritten before it
+ is read. [redundantInitialization]
+Message-ID: <202004032011.nwluao6B%lkp@intel.com>
 MIME-Version: 1.0
-References: <1585064650-16235-1-git-send-email-jprakash@codeaurora.org> <1585064650-16235-2-git-send-email-jprakash@codeaurora.org>
-In-Reply-To: <1585064650-16235-2-git-send-email-jprakash@codeaurora.org>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Fri, 3 Apr 2020 17:34:19 +0530
-Message-ID: <CAHLCerML7vR9X_YxAg=S71n2NiY88toZyGDhxZaUZAvnNX2P+g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] iio: adc: Convert the QCOM SPMI ADC bindings to .yaml format
-To:     Jishnu Prakash <jprakash@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        Jonathan.Cameron@huawei.com, smohanad@codeaurora.org,
-        kgunda@codeaurora.org, aghayal@codeaurora.org,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Andy Gross <andy.gross@linaro.org>, linux-iio@vger.kernel.org,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-arm-msm-owner@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 24, 2020 at 9:15 PM Jishnu Prakash <jprakash@codeaurora.org> wrote:
->
-> Convert the adc bindings from .txt to .yaml format.
->
-> Signed-off-by: Jishnu Prakash <jprakash@codeaurora.org>
-> ---
->  .../devicetree/bindings/iio/adc/qcom,spmi-vadc.txt | 173 --------------------
->  .../bindings/iio/adc/qcom,spmi-vadc.yaml           | 178 +++++++++++++++++++++
->  2 files changed, 178 insertions(+), 173 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml
->
-> diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt
-> deleted file mode 100644
-> index c878768..0000000
-> --- a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.txt
-> +++ /dev/null
-> @@ -1,173 +0,0 @@
-> -Qualcomm's SPMI PMIC ADC
-> -
-> -- SPMI PMIC voltage ADC (VADC) provides interface to clients to read
-> -  voltage. The VADC is a 15-bit sigma-delta ADC.
-> -- SPMI PMIC5 voltage ADC (ADC) provides interface to clients to read
-> -  voltage. The VADC is a 16-bit sigma-delta ADC.
-> -
-> -VADC node:
-> -
-> -- compatible:
-> -    Usage: required
-> -    Value type: <string>
-> -    Definition: Should contain "qcom,spmi-vadc".
-> -                Should contain "qcom,spmi-adc5" for PMIC5 ADC driver.
-> -                Should contain "qcom,spmi-adc-rev2" for PMIC rev2 ADC driver.
-> -                Should contain "qcom,pms405-adc" for PMS405 PMIC
-> -
-> -- reg:
-> -    Usage: required
-> -    Value type: <prop-encoded-array>
-> -    Definition: VADC base address in the SPMI PMIC register map.
-> -
-> -- #address-cells:
-> -    Usage: required
-> -    Value type: <u32>
-> -    Definition: Must be one. Child node 'reg' property should define ADC
-> -            channel number.
-> -
-> -- #size-cells:
-> -    Usage: required
-> -    Value type: <u32>
-> -    Definition: Must be zero.
-> -
-> -- #io-channel-cells:
-> -    Usage: required
-> -    Value type: <u32>
-> -    Definition: Must be one. For details about IIO bindings see:
-> -            Documentation/devicetree/bindings/iio/iio-bindings.txt
-> -
-> -- interrupts:
-> -    Usage: optional
-> -    Value type: <prop-encoded-array>
-> -    Definition: End of conversion interrupt.
-> -
-> -Channel node properties:
-> -
-> -- reg:
-> -    Usage: required
-> -    Value type: <u32>
-> -    Definition: ADC channel number.
-> -            See include/dt-bindings/iio/qcom,spmi-vadc.h
-> -
-> -- label:
-> -    Usage: required for "qcom,spmi-adc5" and "qcom,spmi-adc-rev2"
-> -    Value type: <empty>
-> -    Definition: ADC input of the platform as seen in the schematics.
-> -            For thermistor inputs connected to generic AMUX or GPIO inputs
-> -            these can vary across platform for the same pins. Hence select
-> -            the platform schematics name for this channel.
-> -
-> -- qcom,decimation:
-> -    Usage: optional
-> -    Value type: <u32>
-> -    Definition: This parameter is used to decrease ADC sampling rate.
-> -            Quicker measurements can be made by reducing decimation ratio.
-> -            - For compatible property "qcom,spmi-vadc", valid values are
-> -              512, 1024, 2048, 4096. If property is not found, default value
-> -              of 512 will be used.
-> -            - For compatible property "qcom,spmi-adc5", valid values are 250, 420
-> -              and 840. If property is not found, default value of 840 is used.
-> -            - For compatible property "qcom,spmi-adc-rev2", valid values are 256,
-> -              512 and 1024. If property is not present, default value is 1024.
-> -
-> -- qcom,pre-scaling:
-> -    Usage: optional
-> -    Value type: <u32 array>
-> -    Definition: Used for scaling the channel input signal before the signal is
-> -            fed to VADC. The configuration for this node is to know the
-> -            pre-determined ratio and use it for post scaling. Select one from
-> -            the following options.
-> -            <1 1>, <1 3>, <1 4>, <1 6>, <1 20>, <1 8>, <10 81>, <1 10>
-> -            If property is not found default value depending on chip will be used.
-> -
-> -- qcom,ratiometric:
-> -    Usage: optional
-> -    Value type: <empty>
-> -    Definition: Channel calibration type.
-> -            - For compatible property "qcom,spmi-vadc", if this property is
-> -              specified VADC will use the VDD reference (1.8V) and GND for
-> -              channel calibration. If property is not found, channel will be
-> -              calibrated with 0.625V and 1.25V reference channels, also
-> -              known as absolute calibration.
-> -            - For compatible property "qcom,spmi-adc5" and "qcom,spmi-adc-rev2",
-> -              if this property is specified VADC will use the VDD reference
-> -              (1.875V) and GND for channel calibration. If property is not found,
-> -              channel will be calibrated with 0V and 1.25V reference channels,
-> -              also known as absolute calibration.
-> -
-> -- qcom,hw-settle-time:
-> -    Usage: optional
-> -    Value type: <u32>
-> -    Definition: Time between AMUX getting configured and the ADC starting
-> -            conversion. The 'hw_settle_time' is an index used from valid values
-> -            and programmed in hardware to achieve the hardware settling delay.
-> -            - For compatible property "qcom,spmi-vadc" and "qcom,spmi-adc-rev2",
-> -              Delay = 100us * (hw_settle_time) for hw_settle_time < 11,
-> -              and 2ms * (hw_settle_time - 10) otherwise.
-> -              Valid values are: 0, 100, 200, 300, 400, 500, 600, 700, 800,
-> -              900 us and 1, 2, 4, 6, 8, 10 ms.
-> -              If property is not found, channel will use 0us.
-> -            - For compatible property "qcom,spmi-adc5", delay = 15us for
-> -              value 0, 100us * (value) for values < 11,
-> -              and 2ms * (value - 10) otherwise.
-> -              Valid values are: 15, 100, 200, 300, 400, 500, 600, 700, 800,
-> -              900 us and 1, 2, 4, 6, 8, 10 ms
-> -              Certain controller digital versions have valid values of
-> -              15, 100, 200, 300, 400, 500, 600, 700, 1, 2, 4, 8, 16, 32, 64, 128 ms
-> -              If property is not found, channel will use 15us.
-> -
-> -- qcom,avg-samples:
-> -    Usage: optional
-> -    Value type: <u32>
-> -    Definition: Number of samples to be used for measurement.
-> -            Averaging provides the option to obtain a single measurement
-> -            from the ADC that is an average of multiple samples. The value
-> -            selected is 2^(value).
-> -            - For compatible property "qcom,spmi-vadc", valid values
-> -              are: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512
-> -              If property is not found, 1 sample will be used.
-> -            - For compatible property "qcom,spmi-adc5" and "qcom,spmi-adc-rev2",
-> -              valid values are: 1, 2, 4, 8, 16
-> -              If property is not found, 1 sample will be used.
-> -
-> -NOTE:
-> -
-> -For compatible property "qcom,spmi-vadc" following channels, also known as
-> -reference point channels, are used for result calibration and their channel
-> -configuration nodes should be defined:
-> -VADC_REF_625MV and/or VADC_SPARE1(based on PMIC version) VADC_REF_1250MV,
-> -VADC_GND_REF and VADC_VDD_VADC.
-> -
-> -Example:
-> -
-> -#include <dt-bindings/iio/qcom,spmi-vadc.h>
-> -#include <linux/irq.h>
-> -/* ... */
-> -
-> -       /* VADC node */
-> -       pmic_vadc: vadc@3100 {
-> -               compatible = "qcom,spmi-vadc";
-> -               reg = <0x3100>;
-> -               interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
-> -               #address-cells = <1>;
-> -               #size-cells = <0>;
-> -               #io-channel-cells = <1>;
-> -               io-channel-ranges;
-> -
-> -               /* Channel node */
-> -               adc-chan@VADC_LR_MUX10_USB_ID {
-> -                       reg = <VADC_LR_MUX10_USB_ID>;
-> -                       qcom,decimation = <512>;
-> -                       qcom,ratiometric;
-> -                       qcom,hw-settle-time = <200>;
-> -                       qcom,avg-samples = <1>;
-> -                       qcom,pre-scaling = <1 3>;
-> -               };
-> -       };
-> -
-> -       /* IIO client node */
-> -       usb {
-> -               io-channels = <&pmic_vadc VADC_LR_MUX10_USB_ID>;
-> -               io-channel-names = "vadc";
-> -       };
-> diff --git a/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml
-> new file mode 100644
-> index 0000000..72db14c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/qcom,spmi-vadc.yaml
-> @@ -0,0 +1,178 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/qcom,spmi-vadc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm's SPMI PMIC ADC
-> +
-> +maintainers:
-> +  - Andy Gross <agross@kernel.org>
-> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
-> +
-> +description: |
-> +  SPMI PMIC voltage ADC (VADC) provides interface to clients to read
-> +  voltage. The VADC is a 15-bit sigma-delta ADC.
-> +  SPMI PMIC5 voltage ADC (ADC) provides interface to clients to read
-> +  voltage. The VADC is a 16-bit sigma-delta ADC.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,spmi-vadc
-> +      - qcom,spmi-adc5
-> +      - qcom,spmi-adc-rev2
-> +      - qcom,pms405-adc
-> +
-> +  reg:
-> +    description: VADC base address in the SPMI PMIC register map
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  '#io-channel-cells':
-> +    const: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description:
-> +      End of conversion interrupt.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - '#io-channel-cells'
-> +
-> +patternProperties:
-> +  "^[a-z0-9-_@]$":
-> +    type: object
-> +    description: |
-> +      Represents the external channels which are connected to the ADC.
-> +      For compatible property "qcom,spmi-vadc" following channels, also known as
-> +      reference point channels, are used for result calibration and their channel
-> +      configuration nodes should be defined:
-> +      VADC_REF_625MV and/or VADC_SPARE1(based on PMIC version) VADC_REF_1250MV,
-> +      VADC_GND_REF and VADC_VDD_VADC.
+Hi Masahiro,
 
-Instead of this note for "qcom,spmi-vadc", you can enforce this
-through checks in YAML grammar.
+First bad commit (maybe != root cause):
 
-A simple example can be found in
-Documentation/devicetree/bindings/thermal/qcom-tsens.yaml. Look for
-the if, then, else clause which determines how many interrupts need to
-be defined.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   bef7b2a7be28638770972ab2709adf11d601c11a
+commit: df8df5e4bc37e39010cfdf5d50cf726fe08aae5b usb: get rid of 'choice' for legacy gadget drivers
+date:   3 weeks ago
 
-> +
-> +    properties:
-> +      reg:
-> +        description: |
-> +          ADC channel number.
-> +          See include/dt-bindings/iio/qcom,spmi-vadc.h
-> +
-> +      label:
-> +        description: |
-> +            ADC input of the platform as seen in the schematics.
-> +            For thermistor inputs connected to generic AMUX or GPIO inputs
-> +            these can vary across platform for the same pins. Hence select
-> +            the platform schematics name for this channel. It is required
-> +            for "qcom,spmi-adc5" and "qcom,spmi-adc-rev2".
-> +        allOf:
-> +          - $ref: /schemas/types.yaml#/definitions/string
-
-You shouldn't need allOf here.
-
-Just a "$ref: /schemas/types.yaml#/definitions/string" should be fine.
-And move it above the description.
-
-Same for all the uses of allOf below.
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
 
-> +      qcom,decimation:
-> +        description: |
-> +            This parameter is used to decrease ADC sampling rate.
-> +            Quicker measurements can be made by reducing decimation ratio.
-> +            - For compatible property "qcom,spmi-vadc", valid values are
-> +              512, 1024, 2048, 4096. If property is not found, default value
-> +              of 512 will be used.
-> +            - For compatible property "qcom,spmi-adc5", valid values are 250, 420
-> +              and 840. If property is not found, default value of 840 is used.
-> +            - For compatible property "qcom,spmi-adc-rev2", valid values are 256,
-> +              512 and 1024. If property is not present, default value is 1024.
-> +        allOf:
-> +          - $ref: /schemas/types.yaml#/definitions/uint32
-> +
+cppcheck warnings: (new ones prefixed by >>)
 
-As pointed out by Jonathon, please enforce these by keying off the
-compatible property.
+>> drivers/usb/gadget/legacy/inode.c:1364:8: warning: Redundant initialization for 'value'. The initialized value is overwritten before it is read. [redundantInitialization]
+>>  value = -EOPNOTSUPP;
+          ^
+>> drivers/usb/gadget/legacy/inode.c:1331:15: note: value is initialized
+>>  int    value = -EOPNOTSUPP;
+                 ^
+>> drivers/usb/gadget/legacy/inode.c:1364:8: note: value is overwritten
+>>  value = -EOPNOTSUPP;
+          ^
+   drivers/usb/gadget/legacy/inode.c:1817:8: warning: Redundant initialization for 'value'. The initialized value is overwritten before it is read. [redundantInitialization]
+>>  value = -EINVAL;
+          ^
+   drivers/usb/gadget/legacy/inode.c:1787:18: note: value is initialized
+>>  ssize_t   value = len, length = len;
+                    ^
+   drivers/usb/gadget/legacy/inode.c:1817:8: note: value is overwritten
+>>  value = -EINVAL;
+          ^
+--
+>> drivers/usb/gadget/legacy/g_ffs.c:181:10: warning: Variable 'ret' is assigned a value that is never used. [unreadVariable]
+    int ret = 0;
+            ^
+--
+>> drivers/usb/gadget/legacy/mass_storage.c:104:38: warning: syntax error [syntaxError]
+>> FSG_MODULE_PARAMETERS(/* no prefix */, mod_data);
+                                        ^
+--
+>> drivers/usb/gadget/legacy/hid.c:142:6: warning: Condition '!funcs' is always false [knownConditionTrueFalse]
+>>  if (!funcs)
+        ^
+>> drivers/usb/gadget/legacy/hid.c:137:22: note: Assignment 'funcs=0', assigned value is 0
+>>  int status, funcs = 0;
+                        ^
+>> drivers/usb/gadget/legacy/hid.c:140:3: note: funcs is incremented', new value is 1
+>>   funcs++;
+     ^
+>> drivers/usb/gadget/legacy/hid.c:142:6: note: Condition '!funcs' is always false
+>>  if (!funcs)
+        ^
+--
+>> drivers/usb/gadget/legacy/dbgp.c:364:7: warning: Variable 'err' is assigned a value that is never used. [unreadVariable]
+     err = 0;
+         ^
+--
+>> drivers/usb/gadget/legacy/multi.c:121:38: warning: syntax error [syntaxError]
+>> FSG_MODULE_PARAMETERS(/* no prefix */, fsg_mod_data);
+                                        ^
+--
+>> drivers/usb/gadget/legacy/nokia.c:55:38: warning: syntax error [syntaxError]
+>> FSG_MODULE_PARAMETERS(/* no prefix */, fsg_mod_data);
+                                        ^
+--
+>> drivers/usb/gadget/legacy/acm_ms.c:94:38: warning: syntax error [syntaxError]
+>> FSG_MODULE_PARAMETERS(/* no prefix */, fsg_mod_data);
+                                        ^
 
-> +      qcom,pre-scaling:
-> +        description: |
-> +            Used for scaling the channel input signal before the signal is
-> +            fed to VADC. The configuration for this node is to know the
-> +            pre-determined ratio and use it for post scaling. Select one from
-> +            the following options.
+vim +/value +1364 drivers/usb/gadget/legacy/inode.c
 
-Please improve this description from the old binding. Does <1 3> mean
-the signal is scaled 3x or 1/3x?
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1325  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1326  static int
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1327  gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1328  {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1329  	struct dev_data			*dev = get_gadget_data (gadget);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1330  	struct usb_request		*req = dev->req;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16 @1331  	int				value = -EOPNOTSUPP;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1332  	struct usb_gadgetfs_event	*event;
+1bbc169621cbe5 drivers/usb/gadget/inode.c David Brownell            2005-05-07  1333  	u16				w_value = le16_to_cpu(ctrl->wValue);
+1bbc169621cbe5 drivers/usb/gadget/inode.c David Brownell            2005-05-07  1334  	u16				w_length = le16_to_cpu(ctrl->wLength);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1335  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1336  	spin_lock (&dev->lock);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1337  	dev->setup_abort = 0;
+7489d149431817 drivers/usb/gadget/inode.c David Brownell            2007-01-16  1338  	if (dev->state == STATE_DEV_UNCONNECTED) {
+a4e3ef5597e26d drivers/usb/gadget/inode.c David Brownell            2007-08-01  1339  		if (gadget_is_dualspeed(gadget)
+a4e3ef5597e26d drivers/usb/gadget/inode.c David Brownell            2007-08-01  1340  				&& gadget->speed == USB_SPEED_HIGH
+a4e3ef5597e26d drivers/usb/gadget/inode.c David Brownell            2007-08-01  1341  				&& dev->hs_config == NULL) {
+ce46794f77f698 drivers/usb/gadget/inode.c David Brownell            2007-01-16  1342  			spin_unlock(&dev->lock);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1343  			ERROR (dev, "no high speed config??\n");
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1344  			return -EINVAL;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1345  		}
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1346  
+ce46794f77f698 drivers/usb/gadget/inode.c David Brownell            2007-01-16  1347  		dev->state = STATE_DEV_CONNECTED;
+ce46794f77f698 drivers/usb/gadget/inode.c David Brownell            2007-01-16  1348  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1349  		INFO (dev, "connected\n");
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1350  		event = next_event (dev, GADGETFS_CONNECT);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1351  		event->u.speed = gadget->speed;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1352  		ep0_readable (dev);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1353  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1354  	/* host may have given up waiting for response.  we can miss control
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1355  	 * requests handled lower down (device/endpoint status and features);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1356  	 * then ep0_{read,write} will report the wrong status. controller
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1357  	 * driver will have aborted pending i/o.
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1358  	 */
+7489d149431817 drivers/usb/gadget/inode.c David Brownell            2007-01-16  1359  	} else if (dev->state == STATE_DEV_SETUP)
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1360  		dev->setup_abort = 1;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1361  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1362  	req->buf = dev->rbuf;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1363  	req->context = NULL;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16 @1364  	value = -EOPNOTSUPP;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1365  	switch (ctrl->bRequest) {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1366  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1367  	case USB_REQ_GET_DESCRIPTOR:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1368  		if (ctrl->bRequestType != USB_DIR_IN)
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1369  			goto unrecognized;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1370  		switch (w_value >> 8) {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1371  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1372  		case USB_DT_DEVICE:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1373  			value = min (w_length, (u16) sizeof *dev->dev);
+765f5b830e5472 drivers/usb/gadget/inode.c Sebastian Andrzej Siewior 2011-06-23  1374  			dev->dev->bMaxPacketSize0 = dev->gadget->ep0->maxpacket;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1375  			req->buf = dev->dev;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1376  			break;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1377  		case USB_DT_DEVICE_QUALIFIER:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1378  			if (!dev->hs_config)
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1379  				break;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1380  			value = min (w_length, (u16)
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1381  				sizeof (struct usb_qualifier_descriptor));
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1382  			make_qualifier (dev);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1383  			break;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1384  		case USB_DT_OTHER_SPEED_CONFIG:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1385  			// FALLTHROUGH
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1386  		case USB_DT_CONFIG:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1387  			value = config_buf (dev,
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1388  					w_value >> 8,
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1389  					w_value & 0xff);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1390  			if (value >= 0)
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1391  				value = min (w_length, (u16) value);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1392  			break;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1393  		case USB_DT_STRING:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1394  			goto unrecognized;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1395  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1396  		default:		// all others are errors
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1397  			break;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1398  		}
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1399  		break;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1400  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1401  	/* currently one config, two speeds */
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1402  	case USB_REQ_SET_CONFIGURATION:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1403  		if (ctrl->bRequestType != 0)
+12cd5b984f825c drivers/usb/gadget/inode.c Roy Hashimoto             2008-03-12  1404  			goto unrecognized;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1405  		if (0 == (u8) w_value) {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1406  			value = 0;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1407  			dev->current_config = 0;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1408  			usb_gadget_vbus_draw(gadget, 8 /* mA */ );
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1409  			// user mode expected to disable endpoints
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1410  		} else {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1411  			u8	config, power;
+a4e3ef5597e26d drivers/usb/gadget/inode.c David Brownell            2007-08-01  1412  
+a4e3ef5597e26d drivers/usb/gadget/inode.c David Brownell            2007-08-01  1413  			if (gadget_is_dualspeed(gadget)
+a4e3ef5597e26d drivers/usb/gadget/inode.c David Brownell            2007-08-01  1414  					&& gadget->speed == USB_SPEED_HIGH) {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1415  				config = dev->hs_config->bConfigurationValue;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1416  				power = dev->hs_config->bMaxPower;
+a4e3ef5597e26d drivers/usb/gadget/inode.c David Brownell            2007-08-01  1417  			} else {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1418  				config = dev->config->bConfigurationValue;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1419  				power = dev->config->bMaxPower;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1420  			}
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1421  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1422  			if (config == (u8) w_value) {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1423  				value = 0;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1424  				dev->current_config = config;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1425  				usb_gadget_vbus_draw(gadget, 2 * power);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1426  			}
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1427  		}
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1428  
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1429  		/* report SET_CONFIGURATION like any other control request,
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1430  		 * except that usermode may not stall this.  the next
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1431  		 * request mustn't be allowed start until this finishes:
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1432  		 * endpoints and threads set up, etc.
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1433  		 *
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1434  		 * NOTE:  older PXA hardware (before PXA 255: without UDCCFR)
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1435  		 * has bad/racey automagic that prevents synchronizing here.
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1436  		 * even kernel mode drivers often miss them.
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1437  		 */
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1438  		if (value == 0) {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1439  			INFO (dev, "configuration #%d\n", dev->current_config);
+6027f3173e797b drivers/usb/gadget/inode.c Peter Chen                2014-04-29  1440  			usb_gadget_set_state(gadget, USB_STATE_CONFIGURED);
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1441  			if (dev->usermode_setup) {
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1442  				dev->setup_can_stall = 0;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1443  				goto delegate;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1444  			}
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1445  		}
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1446  		break;
+^1da177e4c3f41 drivers/usb/gadget/inode.c Linus Torvalds            2005-04-16  1447  
 
-> +            <1 1>, <1 3>, <1 4>, <1 6>, <1 20>, <1 8>, <10 81>, <1 10>
-> +            If property is not found default value depending on chip will be used.
-> +        allOf:
-> +          - $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      qcom,ratiometric:
-> +        description: |
-> +            Channel calibration type.
-> +            - For compatible property "qcom,spmi-vadc", if this property is
-> +              specified VADC will use the VDD reference (1.8V) and GND for
-> +              channel calibration. If property is not found, channel will be
-> +              calibrated with 0.625V and 1.25V reference channels, also
-> +              known as absolute calibration.
-> +            - For compatible property "qcom,spmi-adc5" and "qcom,spmi-adc-rev2",
-> +              if this property is specified VADC will use the VDD reference (1.875V)
-> +              and GND for channel calibration. If property is not found, channel
-> +              will be calibrated with 0V and 1.25V reference channels, also known
-> +              as absolute calibration.
-> +        type: boolean
-> +
+:::::: The code at line 1364 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
 
-please enforce these by keying off the compatible property.
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
 
-> +      qcom,hw-settle-time:
-> +        description: |
-> +            Time between AMUX getting configured and the ADC starting
-> +            conversion. The 'hw_settle_time' is an index used from valid values
-> +            and programmed in hardware to achieve the hardware settling delay.
-> +            - For compatible property "qcom,spmi-vadc" and "qcom,spmi-adc-rev2",
-> +              Delay = 100us * (hw_settle_time) for hw_settle_time < 11,
-> +              and 2ms * (hw_settle_time - 10) otherwise.
-> +              Valid values are: 0, 100, 200, 300, 400, 500, 600, 700, 800,
-> +              900 us and 1, 2, 4, 6, 8, 10 ms.
-> +              If property is not found, channel will use 0us.
-> +            - For compatible property "qcom,spmi-adc5", delay = 15us for
-> +              value 0, 100us * (value) for values < 11,
-> +              and 2ms * (value - 10) otherwise.
-> +              Valid values are: 15, 100, 200, 300, 400, 500, 600, 700, 800,
-> +              900 us and 1, 2, 4, 6, 8, 10 ms
-> +              Certain controller digital versions have valid values of
-> +              15, 100, 200, 300, 400, 500, 600, 700, 1, 2, 4, 8, 16, 32, 64, 128 ms
-> +              If property is not found, channel will use 15us.
-> +        allOf:
-> +          - $ref: /schemas/types.yaml#/definitions/uint32
-> +
-
-please enforce these by keying off the compatible property.
-
-> +      qcom,avg-samples:
-> +        description: |
-> +            Number of samples to be used for measurement.
-> +            Averaging provides the option to obtain a single measurement
-> +            from the ADC that is an average of multiple samples. The value
-> +            selected is 2^(value).
-> +            - For compatible property "qcom,spmi-vadc", valid values
-> +              are: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512
-> +              If property is not found, 1 sample will be used.
-> +        allOf:
-> +          - $ref: /schemas/types.yaml#/definitions/uint32
-> +
-
-please enforce these by keying off the compatible property.
-
-> +    required:
-> +      - reg
-> +      - diff-channels
-> +
-> +examples:
-> +  - |
-> +      /* VADC node */
-> +      pmic_vadc: vadc@3100 {
-> +        compatible = "qcom,spmi-vadc";
-> +        reg = <0x3100>;
-> +        interrupts = <0x0 0x31 0x0 0x1>;
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        #io-channel-cells = <1>;
-> +        io-channel-ranges;
-> +
-> +        /* Channel node */
-> +        adc-chan@0x39 {
-> +          reg = <0x39>;
-> +          qcom,decimation = <512>;
-> +          qcom,ratiometric;
-> +          qcom,hw-settle-time = <200>;
-> +          qcom,avg-samples = <1>;
-> +          qcom,pre-scaling = <1 3>;
-> +        };
-> +      };
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
