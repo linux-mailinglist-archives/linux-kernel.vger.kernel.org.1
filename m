@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C8C19D5D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A7219D5CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 13:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390784AbgDCL3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 07:29:46 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:42097 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728020AbgDCL3i (ORCPT
+        id S2390687AbgDCL3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 07:29:36 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:42676 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728020AbgDCL3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 07:29:38 -0400
-Received: by mail-lj1-f193.google.com with SMTP id q19so6512191ljp.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 04:29:35 -0700 (PDT)
+        Fri, 3 Apr 2020 07:29:35 -0400
+Received: by mail-lj1-f178.google.com with SMTP id q19so6512128ljp.9
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 04:29:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5yEswaSUA2DH71ZsH03UY5693O0nZ/nvg6oBTomxklk=;
-        b=K/3jDpUjVVBeQnEhKWwM3gy5Gru8BoX47Ll9axoy1+xsPYklIrCBMX+fynu8VQkirs
-         c7IdaWFPcUAldS81Lgl8ts8UDyFmKK3wuwf482yQ5bwzcLTPPeeEmvb5bjZbaEtS5n1J
-         980tEnkeEIMw580fqyrxQAJGlI8ZBc5u0zbNRGkxjEdap7yl1DDi31Sve1b1iRjJtidt
-         K8hYew8M8h7Y4uEk48knMl1An7JC3fl1k9m7z60tTErq8ZJXAOHVNOwOCMj5aGJsNKBT
-         INczse/l8Bw4CLc8ed/WJp0e/iooX+2Y+2EaKM3rsCunrr9NUn1zbLDKNy1WRvbv8m7S
-         GWow==
+        bh=UDV67uaM0olVe42g3gcRUTFOTLKxm8Yf483YPZ3Dud8=;
+        b=sCxEbPsBTakoE1xknw2RtO2rz8oxNAb6cCS8SzCviLU+wXJ5m+DFbQMKB/W7GcAtYQ
+         D/0LK1slWaUCNicIxwMSPPcXyy0SuopgawhAqBDv8LGru/h2Rz//tPVcOCiAX0SeMfie
+         Rtmac2n0Qy8TbXeXOE4KNNFMQCPwok9lSTX2O0YBd41GsuzvfaBW+oKM/+RQaey1e1CJ
+         F7HBir5eC9AV6iJ3nDVZiaM9M6YOksUJ7CwPnmOYtDbgDLtLnz60hL49JSVAixZuYBQv
+         zN9NlOYVLhwtvCwlZiirwMvkOanRxXL2qLV3wkgtzXR8972SVxScB7hqZL3eWlOC48Ye
+         rPZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5yEswaSUA2DH71ZsH03UY5693O0nZ/nvg6oBTomxklk=;
-        b=C88z3cFHKYsp1q42HHXJ8Y2RdXAo6DKPiSoGErfq4f/tm7UvDCtccCRRoWXncgLR5n
-         PyI6UrzKSIpPNXMNq6WNaaMWobU/5AjZkClFLsBqo1yIiEQTSuDvqBn1aGcRIOMDbPuu
-         q7yJJq9ZWH6wLxrymY4XY5CxWQaRtdubXN2MZYx+ShY9omi7vdhkDsYiVeEOsgZr1Uhe
-         4koYw+EvPDpHlb3NpCbq9M95/qPUHGQhfO2+DYtckgOzWSOA513j4ESdL/AvGDncpP9W
-         kFpvbCB2WcCBk6HbQ8sup2ZEW8ZM3ADj59XRuCy0jd2HOJYh4wfJoSYz1FyGp5hxBkF2
-         GVCA==
-X-Gm-Message-State: AGi0Puammcf4Y+QUtVmlidPqU2VfhIZx5Ov1WbPOMQrCyAgksFLmnlbs
-        6m69UvcJ1u+Ts8en9IEPuEnpzQ==
-X-Google-Smtp-Source: APiQypKvudeHPoFOkTLttn1XgRDx3Ffmfb4xTNZsju3O5Jb2cdvCtz/BcvwoJutkC4kvL/iz3qhYPw==
-X-Received: by 2002:a2e:9718:: with SMTP id r24mr4294536lji.287.1585913374778;
-        Fri, 03 Apr 2020 04:29:34 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id j2sm5765073lfh.70.2020.04.03.04.29.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=UDV67uaM0olVe42g3gcRUTFOTLKxm8Yf483YPZ3Dud8=;
+        b=mnxP2P+/YvjPdXFRfDsGn7tFfdtAMQUQwE/2p4tBXsEGJTesjSf9HCN3TC9cOYvdK9
+         et3FaS0g1v6T8rSCoxrvMBxWgj07nAzkwsPdKmJ75ZyqgAspBsg7HI0DE8/hnAkkPFdy
+         OrVRm37vQkyEr3twy9pc1t/k6bpF41/4nup6esj9PH1VInfijhd03gvx5IZJSMOBrkne
+         y3L3TpbSDa5nmp3F6y27rRpwplwfComrmYLFVK711r7hfcunhH3KseH6OB2NfNTEuIZY
+         spVnIx1jxHu8voNpErn/QZ/9pPexoVw3/AF/nrlRCDZoVsz/HgVVYBcQyWXs8MgRej0e
+         oVXA==
+X-Gm-Message-State: AGi0PuYIdTG2Mb0PN6Ek/cibk9vUtLYvnJLH+2Cne2oc/WrAY901pdlZ
+        pz2yiVoQ+7p1NarUwAuGv/Bxug==
+X-Google-Smtp-Source: APiQypKJovl0REGHDL9yO1HGUDFWiM4HR9jobJ/t8s9UpGtLW4jkkAHDaE6pZx5lnJh/RuFHjMKwQA==
+X-Received: by 2002:a2e:3203:: with SMTP id y3mr4372576ljy.54.1585913373250;
         Fri, 03 Apr 2020 04:29:33 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id g5sm4839412ljl.106.2020.04.03.04.29.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 04:29:32 -0700 (PDT)
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 X-Google-Original-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Received: by box.localdomain (Postfix, from userid 1000)
-        id 6B64E101330; Fri,  3 Apr 2020 14:29:31 +0300 (+03)
+        id 720FE101331; Fri,  3 Apr 2020 14:29:31 +0300 (+03)
 To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
 Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv2 2/8] khugepaged: Do not stop collapse if less than half PTEs are referenced
-Date:   Fri,  3 Apr 2020 14:29:22 +0300
-Message-Id: <20200403112928.19742-3-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv2 3/8] khugepaged: Drain all LRU caches before scanning pages
+Date:   Fri,  3 Apr 2020 14:29:23 +0300
+Message-Id: <20200403112928.19742-4-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
 References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
@@ -66,33 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__collapse_huge_page_swapin() check number of referenced PTE to decide
-if the memory range is hot enough to justify swapin.
+Having a page in LRU add cache offsets page refcount and gives
+false-negative on PageLRU(). It reduces collapse success rate.
 
-The problem is that it stops collapse altogether if there's not enough
-referenced pages, not only swappingin.
+Drain all LRU add caches before scanning. It happens relatively
+rare and should not disturb the system too much.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: 0db501f7a34c ("mm, thp: convert from optimistic swapin collapsing to conservative")
-Reviewed-by: Zi Yan <ziy@nvidia.com>
 ---
- mm/khugepaged.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/khugepaged.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 99bab7e4d05b..14d7afc90786 100644
+index 14d7afc90786..fdc10ffde1ca 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -905,7 +905,8 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
- 	/* we only decide to swapin, if there is enough young ptes */
- 	if (referenced < HPAGE_PMD_NR/2) {
- 		trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, 0);
--		return false;
-+		/* Do not block collapse, only skip swapping in */
-+		return true;
- 	}
- 	vmf.pte = pte_offset_map(pmd, address);
- 	for (; vmf.address < address + HPAGE_PMD_NR*PAGE_SIZE;
+@@ -2065,6 +2065,8 @@ static void khugepaged_do_scan(void)
+ 
+ 	barrier(); /* write khugepaged_pages_to_scan to local stack */
+ 
++	lru_add_drain_all();
++
+ 	while (progress < pages) {
+ 		if (!khugepaged_prealloc_page(&hpage, &wait))
+ 			break;
 -- 
 2.26.0
 
