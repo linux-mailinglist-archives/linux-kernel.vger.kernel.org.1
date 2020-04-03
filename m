@@ -2,104 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E09EE19DCA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E747E19DCBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404366AbgDCRVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:21:30 -0400
-Received: from mga05.intel.com ([192.55.52.43]:43136 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728066AbgDCRV3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:21:29 -0400
-IronPort-SDR: fjEhpCPcyAdxUQARVqP1s0WxMK+ndckAzcxa5q5ytgqf4m1qVX+UWht5ATTuz1EBZlZoqaF0tN
- wZKABqg8jeAA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2020 10:21:29 -0700
-IronPort-SDR: EC4hJqgWCgeSPdQln89njVGtlG/mPy3BJRJGwOAC97Oaga7gQcH6kLrT2irhhGcfkUHziSiEGv
- U8d7vxVtZ5Sw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,340,1580803200"; 
-   d="scan'208";a="243509627"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by orsmga008.jf.intel.com with ESMTP; 03 Apr 2020 10:21:29 -0700
-Date:   Fri, 3 Apr 2020 10:21:29 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "keescook@chromium.org" <keescook@chromium.org>
-Subject: Re: [patch 1/2] x86,module: Detect VMX modules and disable
- Split-Lock-Detect
-Message-ID: <20200403172129.GE2701@linux.intel.com>
-References: <20200402123258.895628824@linutronix.de>
- <20200402124205.242674296@linutronix.de>
- <bc9a0c9a-7bd0-c85d-4795-ae0b4faa5e84@prevas.dk>
- <20200403143459.GA30424@linux-8ccs>
- <20200403152158.GR20730@hirez.programming.kicks-ass.net>
- <20200403160156.GA2701@linux.intel.com>
- <20200403161205.GT20730@hirez.programming.kicks-ass.net>
- <20200403162555.GB2701@linux.intel.com>
- <20200403164058.GX20730@hirez.programming.kicks-ass.net>
- <FF9F1233-1312-4B98-A476-0C20D92200E3@vmware.com>
+        id S2404431AbgDCR2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:28:04 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:33536 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404371AbgDCR2E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 13:28:04 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 033HRdOg115404;
+        Fri, 3 Apr 2020 12:27:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1585934859;
+        bh=Jt4eGbPiA6nLbaLqUDwk0/ki7Wj5fZ7t7wGKoVBH6+4=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=WhFf4JSVjpyFG+5vUU8wZmmxcHBm33SxlF5cEknvg9VAorbjlw0lZAybFLp67W7xL
+         UnAMa9Oa8OYTmWXsS2SK1RnkJCuBW8zD0dTKCJZcOvcXx5TNHGijNdnEJwJyivWXPW
+         PUHQP6RBaO7GD0wTprQvSeX8I1WfgdIMHcB2WHCc=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033HRdWE056151;
+        Fri, 3 Apr 2020 12:27:39 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 3 Apr
+ 2020 12:27:38 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Fri, 3 Apr 2020 12:27:39 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033HRcc0044904;
+        Fri, 3 Apr 2020 12:27:38 -0500
+Subject: Re: [PATCH v2 1/2] dt-bindings: leds: Add binding for sgm3140
+To:     Luca Weiss <luca@z3ntu.xyz>, <linux-leds@vger.kernel.org>
+CC:     Heiko Stuebner <heiko@sntech.de>, Icenowy Zheng <icenowy@aosc.io>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>
+References: <20200330194757.2645388-1-luca@z3ntu.xyz>
+ <20200330194757.2645388-2-luca@z3ntu.xyz>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <6c43ac0d-2510-568c-bb5e-955709a9016f@ti.com>
+Date:   Fri, 3 Apr 2020 12:21:51 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <FF9F1233-1312-4B98-A476-0C20D92200E3@vmware.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200330194757.2645388-2-luca@z3ntu.xyz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 04:48:35PM +0000, Nadav Amit wrote:
-> > On Apr 3, 2020, at 9:40 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > On Fri, Apr 03, 2020 at 09:25:55AM -0700, Sean Christopherson wrote:
-> >> On Fri, Apr 03, 2020 at 06:12:05PM +0200, Peter Zijlstra wrote:
-> >>> On Fri, Apr 03, 2020 at 09:01:56AM -0700, Sean Christopherson wrote:
-> >>>> On Fri, Apr 03, 2020 at 05:21:58PM +0200, Peter Zijlstra wrote:
-> >>>>> On Fri, Apr 03, 2020 at 04:35:00PM +0200, Jessica Yu wrote:
-> >>> 
-> >>>>>> I wonder if it would make sense then to limit the text scans to just
-> >>>>>> out-of-tree modules (i.e., missing the intree modinfo flag)?
-> >>>>> 
-> >>>>> It would; didn't know there was one.
-> >>>> 
-> >>>> Rather than scanning modules at all, what about hooking native_write_cr4()
-> >>>> to kill SLD if CR4.VMXE is toggled on and the caller didn't increment a
-> >>>> "sld safe" counter?
-> >>> 
-> >>> And then you're hoping that the module uses that and not:
-> >>> 
-> >>>  asm volatile ("mov %0, cr4" :: "r" (val));
-> >>> 
-> >>> I think I feel safer with the scanning to be fair. Also with the intree
-> >>> hint on, we can extend the scanning for out-of-tree modules for more
-> >>> dodgy crap we really don't want modules to do, like for example the
-> >>> above.
-> >> 
-> >> Ya, that's the big uknown.  But wouldn't they'd already be broken in the
-> >> sense that they'd corrupt the CR4 shadow?  E.g. setting VMXE without
-> >> updating cpu_tlbstate.cr4 would result in future in-kernel writes to CR4
-> >> attempting to clear CR4.VMXE post-VMXON, which would #GP.
-> > 
-> > Sadly the CR4 shadow is exported, so they can actually fix that up :/
-> 
-> I do not think that Sean’s idea would work for VMware.
+Luca
 
-Well phooey.
+On 3/30/20 2:47 PM, Luca Weiss wrote:
+> Add YAML devicetree binding for SGMICRO SGM3140 charge pump used for
+> camera flash LEDs.
+>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+> Changes since v1:
+> - Add vin-supply
+> - Add led subnode (common.yaml)
+>
+>   .../bindings/leds/leds-sgm3140.yaml           | 61 +++++++++++++++++++
+>   1 file changed, 61 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/leds/leds-sgm3140.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/leds/leds-sgm3140.yaml b/Documentation/devicetree/bindings/leds/leds-sgm3140.yaml
+> new file mode 100644
+> index 000000000000..24ca178e5d0a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-sgm3140.yaml
+> @@ -0,0 +1,61 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-sgm3140.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SGMICRO SGM3140 500mA Buck/Boost Charge Pump LED Driver
+> +
+> +maintainers:
+> +  - Luca Weiss <luca@z3ntu.xyz>
+> +
+> +description: |
+> +  The SGM3140 is a current-regulated charge pump which can regulate two current
+> +  levels for Flash and Torch modes.
+> +
+> +  The data sheet can be found at:
+> +    http://www.sg-micro.com/uploads/soft/20190626/1561535688.pdf
+> +
+> +properties:
+> +  compatible:
+> +    const: sgmicro,sgm3140
+> +
+> +  enable-gpios:
+> +    maxItems: 1
+> +    description: A connection to the 'EN' pin.
+> +
+> +  flash-gpios:
+> +    maxItems: 1
+> +    description: A connection to the 'FLASH' pin.
+> +
+> +  vin-supply:
+> +    description: Regulator providing power to the 'VIN' pin.
+> +
+> +  led:
+> +    allOf:
+> +      - $ref: common.yaml#
+> +
+> +required:
+> +  - compatible
+> +  - flash-gpios
+> +  - enable-gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    sgm3140 {
+> +        compatible = "sgmicro,sgm3140";
+> +        flash-gpios = <&pio 3 24 GPIO_ACTIVE_HIGH>; /* PD24 */
+> +        enable-gpios = <&pio 2 3 GPIO_ACTIVE_HIGH>; /* PC3 */
+> +        vin-supply = <&reg_dcdc1>;
+> +
+> +        sgm3140_flash: led {
+> +            function = LED_FUNCTION_FLASH;
+> +            color = <LED_COLOR_ID_WHITE>;
+> +            flash-max-timeout-us = <250000>;
+> +        };
+> +    };
+
+
+Reviewed-by: Dan Murphy <dmurphy@ti.com>
+
