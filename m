@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E6519D76B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1F319D772
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403917AbgDCNQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 09:16:56 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26806 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390852AbgDCNQz (ORCPT
+        id S2403948AbgDCNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 09:18:45 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:39294 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728133AbgDCNSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:16:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585919813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=izOkr1BSQDJulAYByg5NgaMKcJ6WHmg0z2BChcgtZ1o=;
-        b=IvhLgMBrLjQopJ1l6WCp7lH5HfLvXxtPWXEYqyHHTHh5mlg1ZQVYpJc4XI5k95Wa6Bg3nl
-        J35b4tG0xpQgM4fflfQgbXKrRmKwWVEITeq2nY+I/G28GUSj6TMDpPou5z0S3v1ijm7Xyh
-        IDMI5mgyZFvmpbXiEpRorJF4EAV5WBs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-86jLnN6fPgepMkzE4Mu15A-1; Fri, 03 Apr 2020 09:16:52 -0400
-X-MC-Unique: 86jLnN6fPgepMkzE4Mu15A-1
-Received: by mail-wm1-f70.google.com with SMTP id s22so2024877wmh.8
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 06:16:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=izOkr1BSQDJulAYByg5NgaMKcJ6WHmg0z2BChcgtZ1o=;
-        b=T+a2b0y0q7xg7L4C9j394CqrpKgQpQfTUBfWYHxUENjxpCD9PGgfTlZIwYHxeB9Bqv
-         yUSSXaD4gvlzDmETN/KQ3SCFz2g0+t3/pTC+qFvaLduLdzQDII74RmAvw2HhCiY7JEsI
-         aQaXCXAT1qzRuwGKKuh83b3uoh1rcCMtG5yFxU6eoM9fdl6FIbbuk+WtuaOipuM3TRWd
-         eEvuxoRn8ViQMNV9jIM0fTNTNvmNeIrxA/ygVbD9wIQw3wEBBIV8BQfMysjmC46VKlV7
-         2PLYmwCJxkzLBRNImcMmUSIk4U2mQCPRJjgLykpOuMJbagVdbooiELjhGc3kO1EhxJyp
-         fM9A==
-X-Gm-Message-State: AGi0Pubh/lpV5IAqWtB/8C4Kx29IFV5kiAIHUXwCkYLkzyLF9OBZWp65
-        mQcP8AwAHDUqbCLfr/HXV1FxBagfDoKBGdQvcxhgUarmNVdhirYVyb0lOSUykivLAv6vywKCe/j
-        F8na0bxU2gwYJnQ4AbQlgvuas
-X-Received: by 2002:adf:fe4b:: with SMTP id m11mr8924891wrs.20.1585919811103;
-        Fri, 03 Apr 2020 06:16:51 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIa2NLz9OGQj4FGUNxyoDHqAatWI/l10frH2PpuCDGPpiYh2zF1KU/LgdHFx+mVLgPN1dm5Ew==
-X-Received: by 2002:adf:fe4b:: with SMTP id m11mr8924870wrs.20.1585919810807;
-        Fri, 03 Apr 2020 06:16:50 -0700 (PDT)
-Received: from ?IPv6:2a02:8388:7c1:1280:a281:9dab:554b:2fdc? (2a02-8388-07c1-1280-a281-9dab-554b-2fdc.cable.dynamic.v6.surfer.at. [2a02:8388:7c1:1280:a281:9dab:554b:2fdc])
-        by smtp.gmail.com with ESMTPSA id b5sm1812721wrs.16.2020.04.03.06.16.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 06:16:49 -0700 (PDT)
-Subject: Re: [PATCH] perf script report: fix segfault when using DWARF mode
-To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Kim Phillips <kim.phillips@amd.com>
-Cc:     linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        Fri, 3 Apr 2020 09:18:45 -0400
+Received: from localhost.localdomain (p14092-ipngnfx01kyoto.kyoto.ocn.ne.jp [153.142.97.92]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 033DH9t9027909;
+        Fri, 3 Apr 2020 22:17:09 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 033DH9t9027909
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1585919830;
+        bh=6SNvN4uZsUHdhQ28mSp8KyStQBpxyYCWP8kC6l/eSfI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uhYpip08oTMfdfXf8KHL6QegqkNA6gfAiFvhui0ahYMcbzpxCL2l+0kBcYQ/mrruC
+         lHlvf61boJqmhqeXKM3t6CD4m6rQKDVyYi/7WNYY74AK/KCNYdm9w85nR0Sbx6cJfg
+         8M6Zg39W3WGHxd2K+3YYXbg3G5qo24s9ZBJo3eSLQUKFVK5tDG9sgSFD8S9rxL7Jzg
+         89AGfwjYIB3TSWE0HADxvPqIe7jKFrQqDLQO/AiV5xCb3kim7DrCfghjmgGPImLw2k
+         pgONRMfdu6j3FQ/PIUKsWrAYWGi8CJOXcMtMNCFQxxUzk5UAN2ShA0EEyeG16nu0x6
+         9PgHAHnK3q3Aw==
+X-Nifty-SrcIP: [153.142.97.92]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Felipe Balbi <felipe.balbi@linux.intel.com>,
+        linux-usb@vger.kernel.org
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        David Howells <dhowells@redhat.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-References: <05e0d633-54b4-fb3b-3d08-8963271017ea@amd.com>
- <20200402125417.422232-1-agerstmayr@redhat.com>
- <6a098ce1-1981-dcff-ea62-af5fc07ec7fb@amd.com>
- <20200403124028.GA18559@kernel.org>
-From:   Andreas Gerstmayr <agerstmayr@redhat.com>
-Message-ID: <bf95c9f1-1970-fce4-c6f2-dc231730e7ab@redhat.com>
-Date:   Fri, 3 Apr 2020 15:16:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200403124028.GA18559@kernel.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] usb: gadget: legacy: fix redundant initialization warnings from cppcheck
+Date:   Fri,  3 Apr 2020 22:16:51 +0900
+Message-Id: <20200403131652.8183-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.04.20 14:40, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Apr 02, 2020 at 02:07:51PM -0500, Kim Phillips escreveu:
->> On 4/2/20 7:54 AM, Andreas Gerstmayr wrote:
->>> When running perf script report with a Python script and a callgraph in
->>> DWARF mode, intr_regs->regs can be 0 and therefore crashing the regs_map
->>> function.
->>>
->>> Added a check for this condition (same check as in builtin-script.c:595).
->>>
->>> Signed-off-by: Andreas Gerstmayr <agerstmayr@redhat.com>
->>> ---
->>
->> Tested-by: Kim Phillips <kim.phillips@amd.com>
-> 
-> Thanks, added this to that patch.
-> 
+Fix the following cppcheck warnings:
 
-Great, thanks!
+drivers/usb/gadget/legacy/inode.c:1364:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
+ value = -EOPNOTSUPP;
+       ^
+drivers/usb/gadget/legacy/inode.c:1331:15: note: value is initialized
+ int    value = -EOPNOTSUPP;
+              ^
+drivers/usb/gadget/legacy/inode.c:1364:8: note: value is overwritten
+ value = -EOPNOTSUPP;
+       ^
+drivers/usb/gadget/legacy/inode.c:1817:8: style: Redundant initialization for 'value'. The initialized value is overwritten$
+ value = -EINVAL;
+       ^
+drivers/usb/gadget/legacy/inode.c:1787:18: note: value is initialized
+ ssize_t   value = len, length = len;
+                 ^
+drivers/usb/gadget/legacy/inode.c:1817:8: note: value is overwritten
+ value = -EINVAL;
+       ^
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+I do not think this is my fault because the addressed commit did not
+touch this file, but the kbuild test robot sent me this report somehow:
+
+  https://lkml.org/lkml/2020/4/3/395
+
+Anyway, the warnings are real, so I removed the redundant assignments.
+I re-ran cppcheck and confirmed the warnings have been fixed.
 
 
-Cheers,
-Andreas
+ drivers/usb/gadget/legacy/inode.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/usb/gadget/legacy/inode.c b/drivers/usb/gadget/legacy/inode.c
+index aa0de9e35afa..3afddd3bea6e 100644
+--- a/drivers/usb/gadget/legacy/inode.c
++++ b/drivers/usb/gadget/legacy/inode.c
+@@ -1361,7 +1361,6 @@ gadgetfs_setup (struct usb_gadget *gadget, const struct usb_ctrlrequest *ctrl)
+ 
+ 	req->buf = dev->rbuf;
+ 	req->context = NULL;
+-	value = -EOPNOTSUPP;
+ 	switch (ctrl->bRequest) {
+ 
+ 	case USB_REQ_GET_DESCRIPTOR:
+@@ -1784,7 +1783,7 @@ static ssize_t
+ dev_config (struct file *fd, const char __user *buf, size_t len, loff_t *ptr)
+ {
+ 	struct dev_data		*dev = fd->private_data;
+-	ssize_t			value = len, length = len;
++	ssize_t			value, length = len;
+ 	unsigned		total;
+ 	u32			tag;
+ 	char			*kbuf;
+-- 
+2.17.1
 
