@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37B5D19D677
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A988519D67E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 14:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403923AbgDCMK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 08:10:58 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44032 "EHLO
+        id S2403938AbgDCMLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 08:11:45 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33086 "EHLO
         mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403836AbgDCMK6 (ORCPT
+        with ESMTP id S2403859AbgDCMLp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 08:10:58 -0400
-Received: by mail-wr1-f67.google.com with SMTP id m17so8197547wrw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 05:10:56 -0700 (PDT)
+        Fri, 3 Apr 2020 08:11:45 -0400
+Received: by mail-wr1-f67.google.com with SMTP id a25so8296118wrd.0;
+        Fri, 03 Apr 2020 05:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8mWBNkB1mpQPt43O1OjkI1/IjpLk3sF192gEDKaSPA4=;
-        b=adKEPDUjtMciZxhtUKSncQ7uOdW5PzfVnh2wW0vPHlxbb0Ml6npH1wmP6l1/ebWuBS
-         5/M5VhUcTla6U02FRhmujSlXleSg0bAFRAoWxxdJ0Qx6fNADKOuVf79CXGKVTQ4iusfD
-         T1EsH0x15qgDefZ7+A0gVWWf4lDq43b4fr8fw=
+        d=gmail.com; s=20161025;
+        h=cc:to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=WQVTbDEDjFr4O1/Say+4s7vNmlllW/RrwEUKTO3oWa8=;
+        b=TP8Lye1ieaOT12W1mNC+gBP2C8/zdudJ0dgxpWpHbJ+mSWs/WMlXAkoGe6kEuwKcDS
+         Fy/qipHyfOTYH3XapK5yjVHr70F8Ap/IRCP0fwL4CKXAJwJ2UzHgQfqDoCkjfWhfFCmD
+         16JZhKhnDLhGTARKcDD709jkRT6w1KU4tkaamJU6bOyCmgzokDusLz+rfLbQwI72iz7p
+         G/dXOfBBiLVZTjyj2dy/jP1B+FVbzkWc15JozPNkODqWwCJu8idVk6qa/7/nwbCP385p
+         ba60yIRL8xi8HuYjMAVCjTySbinwg1or59ixFBUR9XveaMOOUFoEzB56O+72Caoph5fI
+         Mi0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8mWBNkB1mpQPt43O1OjkI1/IjpLk3sF192gEDKaSPA4=;
-        b=SVw+i5nF0lP47/ZgIv8vaQRyoVdgI88uzvPjqcw9MLnuoNt5PMnDGOW+GYEwEiBgK3
-         vRXZoA35EwqVHaV91NQEQVF515rSBft3/7LZLH3oBGtTKyQepSJggge05HH/d5PStH2J
-         0DrPdJ2n9Q72zEDynY583mD7ycgugl04QXNGEHbu2SYSTGqP4XqzwnypAMyDadwZoLvM
-         8iY/hOnYGuzZjly1xbR6VD5uPxUo75JYvRfoxTlDR7G1pyfwgbHbi2xC8SZ7SEM6mqI4
-         d75/4ZNbaSDh5TVx9eNK3BiqQ71pvCVpntpLnDuh6NoCh0a0ZPCKZdQ8nClkXBRRA6Qo
-         oAfg==
-X-Gm-Message-State: AGi0PuaeIMp5pjt3aavMUwIOF5bQn4IE5J7T0TialNAOZBRGRfTjoNQq
-        3Kli2qHRWUBGId7FjxVEdTAJuw==
-X-Google-Smtp-Source: APiQypIwIzyIDkSJbAVVEfkHzuQnbPI/gjaKiG9yy6P0l/Lc3z/sFLfAD9qOo6Z+TElh0cprhE+HOQ==
-X-Received: by 2002:a5d:4844:: with SMTP id n4mr1180275wrs.314.1585915855411;
-        Fri, 03 Apr 2020 05:10:55 -0700 (PDT)
-Received: from [192.168.1.149] (ip-5-186-116-45.cgn.fibianet.dk. [5.186.116.45])
-        by smtp.gmail.com with ESMTPSA id z129sm11337245wmb.7.2020.04.03.05.10.54
+        h=x-gm-message-state:cc:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=WQVTbDEDjFr4O1/Say+4s7vNmlllW/RrwEUKTO3oWa8=;
+        b=eTdB4lsPrlJdRf29s3lJZqjktTgJt1hJTbkQRSMe0cQ/iF3ADMCLfsiwF4dVgSbCkF
+         DL0nixz7p5jKQfTrJQ/CT/RJJMhEjEcoDeAIJpWcOVFgtowrDSq9+tEl49X1DJ4otcJ7
+         WglKh9txz3QCFhGNDksU9WDO7vWzBjeoc0D6/lSvyB0lWSDDIXU2p2Ib33sLND4elGXe
+         Eqq1p3Y3Iyli6heHR95WO7SDbgaqnDXjkfoDri+JbBQsB0O1oj6MMF9LkO0zxo6LgzM4
+         +VMpcCGACc+hF6Ae943hyMJbYcJfch+cW8/e/1uPF+ktInWwEIR0Ix7R3MuqE2Tp7tr/
+         jaXw==
+X-Gm-Message-State: AGi0PuZpNN1fcmubg3Btx7w37J8K5vQWK/h4zD+LH0szsLl72WCYzyZY
+        kJmWut5KYHneGNk1XMS4PHOkFJhz
+X-Google-Smtp-Source: APiQypKf7jEOtuElOnZb8aETb4jmcZ9jf8R5ft545q5pRetS8T3tqZmdVX6gJiFykqA8bMjea7SAsw==
+X-Received: by 2002:a5d:4d51:: with SMTP id a17mr8937558wru.317.1585915903067;
+        Fri, 03 Apr 2020 05:11:43 -0700 (PDT)
+Received: from ?IPv6:2001:a61:2482:101:3351:6160:8173:cc31? ([2001:a61:2482:101:3351:6160:8173:cc31])
+        by smtp.gmail.com with ESMTPSA id v186sm11229090wme.24.2020.04.03.05.11.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Apr 2020 05:10:54 -0700 (PDT)
-Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-References: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <1105bfe5-88f1-040e-db40-54d7761747d5@rasmusvillemoes.dk>
-Date:   Fri, 3 Apr 2020 14:10:53 +0200
+        Fri, 03 Apr 2020 05:11:41 -0700 (PDT)
+Cc:     mtk.manpages@gmail.com, Adrian Reber <adrian@lisas.de>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, Dmitry Safonov <0x7f454c46@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Containers <containers@lists.linux-foundation.org>
+To:     Dmitry Safonov <dima@arista.com>, Andrei Vagin <avagin@openvz.or>
+From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Subject: [PATCH] ns: Fix time_for_children symlink
+Message-ID: <a2418c48-ed80-3afe-116e-6611cb799557@gmail.com>
+Date:   Fri, 3 Apr 2020 14:11:39 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -73,84 +70,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/04/2020 11.11, Sakari Ailus wrote:
-> Add a printk modifier %ppf (for pixel format) for printing V4L2 and DRM
-> pixel formats denoted by 4ccs. The 4cc encoding is the same for both so
-> the same implementation can be used.
+Dmitry, Andrei,
 
-This seems quite niche to me, I'm not sure that belongs in vsprintf.c.
-What's wrong with having a
+Looking at the contents of the /proc/PID/ns/time_for_children
+symlink shows an anomaly:
 
-char *fourcc_string(char *buf, u32 x)
+$ ls -l /proc/self/ns/* |awk '{print $9, $10, $11}'
+...
+/proc/self/ns/pid -> pid:[4026531836]
+/proc/self/ns/pid_for_children -> pid:[4026531836]
+/proc/self/ns/time -> time:[4026531834]
+/proc/self/ns/time_for_children -> time_for_children:[4026531834]
+/proc/self/ns/user -> user:[4026531837]
+...
 
-that formats x into buf and returns buf, so it can be used in a
+The reference for 'time_for_children' should be a 'time' namespace,
+just as the reference for 'pid_for_children' is a 'pid' namespace.
+In other words, I think the above time_for_children link should read:
 
-char buf[8];
-pr_debug("bla: %s\n", fourcc_string(buf, x))
+/proc/self/ns/time_for_children -> time:[4026531834]
 
-Or, for that matter, since it's for debugging, why not just print x with
-0x%08x?
+If you agree with this patch, then it should be marked for
+stable@vger.kernel.org.
 
-At the very least, the "case '4'" in pointer() should be guarded by
-appropriate CONFIG_*.
+Signed-off-by: Michael Kerrisk <mtk.manpages@gmail.com>
 
-Good that Documentation/ gets updated, but test_printf needs updating as
-well.
+---
+ kernel/time/namespace.c | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
+index e6ba064ce773..3b30288793fe 100644
+--- a/kernel/time/namespace.c
++++ b/kernel/time/namespace.c
+@@ -447,6 +447,7 @@ const struct proc_ns_operations timens_operations = {
+ 
+ const struct proc_ns_operations timens_for_children_operations = {
+ 	.name		= "time_for_children",
++	.real_ns_name	= "time",
+ 	.type		= CLONE_NEWTIME,
+ 	.get		= timens_for_children_get,
+ 	.put		= timens_put,
+-- 
+2.25.1
 
-> Suggested-by: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> ---
-> since v1:
-> 
-> - Improve documentation (add -BE suffix, refer to "FourCC".
-> 
-> - Use '%p4cc' conversion specifier instead of '%ppf'.
-
-Cute. Remember to update the commit log (which still says %ppf).
-
-> - Fix 31st bit handling in printing FourCC codes.
-> 
-> - Use string() correctly, to allow e.g. proper field width handling.
-> 
-> - Remove loop, use put_unaligned_le32() instead.
-> 
->  Documentation/core-api/printk-formats.rst | 12 +++++++++++
->  lib/vsprintf.c                            | 25 +++++++++++++++++++++++
->  2 files changed, 37 insertions(+)
-> 
-> diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-> index 8ebe46b1af39..550568520ab6 100644
-> --- a/Documentation/core-api/printk-formats.rst
-> +++ b/Documentation/core-api/printk-formats.rst
-> @@ -545,6 +545,18 @@ For printing netdev_features_t.
->  
->  Passed by reference.
->  
-> +V4L2 and DRM FourCC code (pixel format)
-> +---------------------------------------
-> +
-> +::
-> +
-> +	%p4cc
-> +
-> +Print a FourCC code used by V4L2 or DRM. The "-BE" suffix is added on big endian
-> +formats.
-> +
-> +Passed by reference.
-
-Maybe it's obvious to anyone in that business, but perhaps make it more
-clear the 4cc is stored in a u32 (and not, e.g., a __le32 or some other
-integer), that obviously matters when the code treats the pointer as a u32*.
-> +
-> +	put_unaligned_le32(*fourcc & ~BIT(31), s);
-> +
-> +	if (*fourcc & BIT(31))
-> +		strscpy(s + sizeof(*fourcc), FOURCC_STRING_BE,
-> +			sizeof(FOURCC_STRING_BE));
-
-put_unaligned_le32(0x0045422d, s + 4) probably generates smaller code,
-and is more in line with building the first part of the string with
-put_unaligned_le32().
-
-Rasmus
+-- 
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
