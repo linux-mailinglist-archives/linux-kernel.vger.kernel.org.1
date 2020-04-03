@@ -2,105 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 838A419DC34
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2533419DC3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391031AbgDCQ4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:56:47 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:36600 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726087AbgDCQ4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:56:45 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 48v5gZ3jQRz89;
-        Fri,  3 Apr 2020 18:56:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1585933002; bh=AKiZe9v9Y0LBmwVIkVjc7YkrXM9XLJKMJUSVn3jCmO0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RN9Kg8Bh/VOAImlkFnNMcOXp3WXSAtBBZrJ0Pfd64BT8ZIVORDToaZltZ0nD4H3ee
-         UFzA8m03JQT4oEDSQgerdStSiL66V1HAZsbsHhqAuFg7Mdh4adBD63fSjUyt1RX4U1
-         6Za+tRZtwsjFQcbMyN54s8ejuWV2JGtcg2juZD3457Q7qLVBdJLy1IukiEkla71den
-         v1layTbWEsbBnzgFfssxdmrNY+gxNqXcnaYdYL1h/j49OF+TloBMA1zwPOvVetp+2f
-         Sveg5bm44U8mf9rEnL4SG7zNYk79iGei9dsny3ixmofwvHoMnV+SKeRacyvkRKjiWt
-         pmee4yYZOUHUA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Fri, 3 Apr 2020 18:56:39 +0200
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 4/8] power: supply: core: tabularize HWMON temperature
- labels
-Message-ID: <20200403165639.GA1966@qmqm.qmqm.pl>
-References: <cover.1585929579.git.mirq-linux@rere.qmqm.pl>
- <ae82abf9da86542f5657a8c37106bcdae5011927.1585929579.git.mirq-linux@rere.qmqm.pl>
- <dad5d544-7f6d-5c0d-6c6e-9d23cb0a6055@roeck-us.net>
+        id S1728387AbgDCQ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:58:43 -0400
+Received: from smtprelay0129.hostedemail.com ([216.40.44.129]:39372 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726087AbgDCQ6m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 12:58:42 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 8995D1801EEB1;
+        Fri,  3 Apr 2020 16:58:41 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4321:5007:6119:6120:6742:7901:7903:7904:8603:10004:10400:11026:11232:11473:11658:11914:12297:12663:12740:12760:12895:13069:13311:13357:13439:13869:14659:14721:21080:21433:21627:21740:21990:30005:30012:30034:30041:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: blood31_115de04d83516
+X-Filterd-Recvd-Size: 2242
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  3 Apr 2020 16:58:39 +0000 (UTC)
+Message-ID: <b1e6213ba9f67da8278dd5c5f5e4def8ab927c83.camel@perches.com>
+Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and
+ DRM fourccs
+From:   Joe Perches <joe@perches.com>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>
+Date:   Fri, 03 Apr 2020 09:56:42 -0700
+In-Reply-To: <1105bfe5-88f1-040e-db40-54d7761747d5@rasmusvillemoes.dk>
+References: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
+         <1105bfe5-88f1-040e-db40-54d7761747d5@rasmusvillemoes.dk>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dad5d544-7f6d-5c0d-6c6e-9d23cb0a6055@roeck-us.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 09:47:40AM -0700, Guenter Roeck wrote:
-> On 4/3/20 9:23 AM, Micha³ Miros³aw wrote:
-> > Rework power_supply_hwmon_read_string() to check it's parameters.
-> > This allows to extend it later with labels for other types of
-> > measurements.
-> > 
-> > Signed-off-by: Micha³ Miros³aw <mirq-linux@rere.qmqm.pl>
-> > ---
-> > v2: split from fix temperature labels
-> > ---
-> >  drivers/power/supply/power_supply_hwmon.c | 21 +++++++++++++++++++--
-> >  1 file changed, 19 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/power/supply/power_supply_hwmon.c b/drivers/power/supply/power_supply_hwmon.c
-> > index 67b6ee60085e..48c73994732c 100644
-> > --- a/drivers/power/supply/power_supply_hwmon.c
-> > +++ b/drivers/power/supply/power_supply_hwmon.c
-> > @@ -43,6 +43,11 @@ static int power_supply_hwmon_curr_to_property(u32 attr)
-> >  	}
-> >  }
-> >  
-> > +static const char *const ps_temp_label[] = {
-> > +	"temp",
-> > +	"ambient temp",
-> > +};
-> > +
-> >  static int power_supply_hwmon_temp_to_property(u32 attr, int channel)
-> >  {
-> >  	if (channel) {
-> > @@ -144,8 +149,20 @@ static int power_supply_hwmon_read_string(struct device *dev,
-> >  					  u32 attr, int channel,
-> >  					  const char **str)
-> >  {
-> > -	*str = channel ? "temp ambient" : "temp";
-> > -	return 0;
-> > +	if (channel < 0)
-> > +		return -EINVAL;
-> > +
+On Fri, 2020-04-03 at 14:10 +0200, Rasmus Villemoes wrote:
+> On 03/04/2020 11.11, Sakari Ailus wrote:
+> > Add a printk modifier %ppf (for pixel format) for printing V4L2 and DRM
+> > pixel formats denoted by 4ccs. The 4cc encoding is the same for both so
+> > the same implementation can be used.
 > 
-> This is unnecessary.
+> This seems quite niche to me, I'm not sure that belongs in vsprintf.c.
+> What's wrong with having a
 > 
-> > +	switch (type) {
-> > +	case hwmon_temp:
-> > +		if (channel >= ARRAY_SIZE(ps_temp_label))
-> > +			return -EINVAL;
+> char *fourcc_string(char *buf, u32 x)
 > 
-> As is this. We don't usually check boundaries like this for
-> in-kernel APIs, and I personally would not want to have it
-> introduced in the kernel more than necessary. This just increases
-> kernel image size with zero benefit.
+> that formats x into buf and returns buf, so it can be used in a
+> 
+> char buf[8];
+> pr_debug("bla: %s\n", fourcc_string(buf, x))
 
-I'll amend other patches in the same spirit, then. I like the code size
-argument.
+Nothing really, it's a number of uses question.
 
-Best Regards,
-Micha³ Miros³aw
+For networking code,  print_mac was used before %pM.
+
+After Linus floated the idea of %p<foo>, %pM was
+introduced and all the DECLARE_MAC_BUF/print_mac
+calls were converted.
+
+%pM did reduce overall object size a fair amount.
+
+How many instances of %p4cc could there be?
+
+
