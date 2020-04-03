@@ -2,190 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF1919DD5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B94F19DD6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 20:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404485AbgDCSCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 14:02:18 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:52313 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404454AbgDCSCR (ORCPT
+        id S2403847AbgDCSDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 14:03:38 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:48648 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728219AbgDCSDi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 14:02:17 -0400
-Received: by mail-wm1-f66.google.com with SMTP id t8so8041213wmi.2;
-        Fri, 03 Apr 2020 11:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=IxdQKl8R6YdM8K12dz41P09Nrimll4Ax/Xh/6JqmhUQ=;
-        b=pjLWh9fa3JaWmB//DkucFHLeWDoeVKvvYt/9ZAeV1bXCC2v/ae77zMcaue3hrhw380
-         Fhga1BX1j2XkVpnwXxuqT8gKFpDRXI44u4cpXQIca59sz9Biiv8imONtXD1bDCpo59Za
-         7rpMPLzna4YJ5J8xCVTnlHSsoOCrraK0/NkQ/KBorBYOPunpWcz/91cwj34Z6HFN7G33
-         L/wmEryLTVgdQUHxWemyJjdP8XQUNSD/saVs4rAfNXjSOsGDZ8u1rAcfqwA6VYxKcjMp
-         Rih0XpHt8Uau6PVh6MadenOVaNWSDXpLGsHy2qR1IXtRlmR/WeUGBPdfQACs1Slb5cBK
-         7NXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=IxdQKl8R6YdM8K12dz41P09Nrimll4Ax/Xh/6JqmhUQ=;
-        b=FmEjQMjubTlmf7l6WmmlHks9+HdrmKX5W+2kIdJ5Xxwa1Q32T+AbMqAUEoIPpyf0OH
-         U6v+tKJvGpb3m9DW/46OS3m2U7QAa05dIDIhAHtz/Y46E/ScQ/XWO2WTB6YCawqA4a73
-         98Nt5Bkj4jbbt6Jh/VLn2MtXLcdlUcS53ktbirewQ7xlWbtJm6H+5IWnF02RWVL2aoLf
-         BCO30gfLD/EJJBdqoEDWa0beEV+Yx9+UobdXU8YQ6p2lvI24NAdXXYP4EyBW0kK8ZAgf
-         9DCS9GDkyMrpFy3QlncT1+Hp4/uReQR9LHERTzWWM8zAz+LHUBddh0g6WihxJKEre47B
-         d+sw==
-X-Gm-Message-State: AGi0PubxmHXB+6XmiMrKiySDTCue5bXCBrPIYNLf1uhzC5bg5w6cJcwd
-        Ee3kgwWSt7AnNEm4cbMyjG9roCc8
-X-Google-Smtp-Source: APiQypImoK5ioimPgpiENe2Nn/IzH6MBtR5XoFVNl4JhD2f5ZPCGGVK9AMP9nAW1l7dTWem02KHOJw==
-X-Received: by 2002:a1c:3943:: with SMTP id g64mr9784987wma.9.1585936934139;
-        Fri, 03 Apr 2020 11:02:14 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id j11sm13005492wrt.14.2020.04.03.11.02.12
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Apr 2020 11:02:13 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 4/4] ARM: dts: rockchip: sort includes of dtsi files
-Date:   Fri,  3 Apr 2020 20:01:59 +0200
-Message-Id: <20200403180159.13387-4-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200403180159.13387-1-jbx6244@gmail.com>
-References: <20200403180159.13387-1-jbx6244@gmail.com>
+        Fri, 3 Apr 2020 14:03:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585937016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CgXbM5tM4nWTswrQ/RgYu+O+1APq3VPj1+jTCpISTXI=;
+        b=XWypiIdBePENrnQSCoyRvvT7nBdjpwFCt8FKNbSsipN0Kt+SREpvOzX/F9qiao3FdtWkvZ
+        6NRESfLZRW17gIxFNopDtONPQd/mGaPPtcIjLFXxo0cwLcJqoFoqJxc0ZjIXfF/IllnFlS
+        xyNapmD8KTEqpvVw825r+cHBqjZr2tQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-145-V9u6mrzrMACNC1HS3NOGKQ-1; Fri, 03 Apr 2020 14:03:33 -0400
+X-MC-Unique: V9u6mrzrMACNC1HS3NOGKQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 42DA88017F6;
+        Fri,  3 Apr 2020 18:03:31 +0000 (UTC)
+Received: from redhat.com (ovpn-114-27.phx2.redhat.com [10.3.114.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 58F7510002CD;
+        Fri,  3 Apr 2020 18:03:30 +0000 (UTC)
+Date:   Fri, 3 Apr 2020 14:03:28 -0400
+From:   Joe Lawrence <joe.lawrence@redhat.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Nicolai Stange <nstange@suse.de>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [POC 22/23] livepatch/module: Remove obsolete copy_module_elf()
+Message-ID: <20200403180328.GC30284@redhat.com>
+References: <20200117150323.21801-1-pmladek@suse.com>
+ <20200117150323.21801-23-pmladek@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200117150323.21801-23-pmladek@suse.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The includes of Rockchip dtsi files have been subject of
-several patch styles, so give them a little alphabetical sort.
+On Fri, Jan 17, 2020 at 04:03:22PM +0100, Petr Mladek wrote:
+> The split livepatch modules can be relocated immedidately when they
+> are loaded. There is no longer needed to preserve the elf sections.
+> 
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
+> ---
+>  Documentation/livepatch/module-elf-format.rst | 18 ++++++
+>  include/linux/module.h                        |  3 -
+>  kernel/module.c                               | 87 ---------------------------
+>  3 files changed, 18 insertions(+), 90 deletions(-)
+> 
+> diff --git a/Documentation/livepatch/module-elf-format.rst b/Documentation/livepatch/module-elf-format.rst
+> index 9f0c997d4940..8c6b894c4661 100644
+> --- a/Documentation/livepatch/module-elf-format.rst
+> +++ b/Documentation/livepatch/module-elf-format.rst
+> @@ -14,6 +14,7 @@ This document outlines the Elf format requirements that livepatch modules must f
+>     4. Livepatch symbols
+>        4.1 A livepatch module's symbol table
+>        4.2 Livepatch symbol format
+> +   5. Symbol table and Elf section access
+>  
+>  1. Background and motivation
+>  ============================
+> @@ -295,3 +296,20 @@ See include/uapi/linux/elf.h for the actual definitions.
+>  [*]
+>    Note that the 'Ndx' (Section index) for these symbols is SHN_LIVEPATCH (0xff20).
+>    "OS" means OS-specific.
+> +
+> +5. Symbol table and Elf section access
+> +======================================
+> +A livepatch module's symbol table is accessible through module->symtab.
+> +
+> +Since apply_relocate_add() requires access to a module's section headers,
+> +symbol table, and relocation section indices, Elf information is preserved for
+> +livepatch modules and is made accessible by the module loader through
+> +module->klp_info, which is a klp_modinfo struct. When a livepatch module loads,
+> +this struct is filled in by the module loader. Its fields are documented below::
+> +
+> +	struct klp_modinfo {
+> +		Elf_Ehdr hdr; /* Elf header */
+> +		Elf_Shdr *sechdrs; /* Section header table */
+> +		char *secstrings; /* String table for the section headers */
+> +		unsigned int symndx; /* The symbol table section index */
+> +	};
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm/boot/dts/rk3036.dtsi        | 2 +-
- arch/arm/boot/dts/rk3066a.dtsi       | 2 +-
- arch/arm/boot/dts/rk3188.dtsi        | 2 +-
- arch/arm/boot/dts/rk322x.dtsi        | 2 +-
- arch/arm/boot/dts/rk3288-tinker.dtsi | 4 ++--
- arch/arm/boot/dts/rk3288.dtsi        | 4 ++--
- arch/arm/boot/dts/rv1108.dtsi        | 3 ++-
- 7 files changed, 10 insertions(+), 9 deletions(-)
+I think this file was inadvertently reverted, or at least the Symbol
+table and Elf section access section was supposed to stay gone, right?
 
-diff --git a/arch/arm/boot/dts/rk3036.dtsi b/arch/arm/boot/dts/rk3036.dtsi
-index 8be47354d..55f3838b2 100644
---- a/arch/arm/boot/dts/rk3036.dtsi
-+++ b/arch/arm/boot/dts/rk3036.dtsi
-@@ -1,9 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- 
-+#include <dt-bindings/clock/rk3036-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/pinctrl/rockchip.h>
--#include <dt-bindings/clock/rk3036-cru.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
- 
- / {
-diff --git a/arch/arm/boot/dts/rk3066a.dtsi b/arch/arm/boot/dts/rk3066a.dtsi
-index 1cf7e1b38..9924def56 100644
---- a/arch/arm/boot/dts/rk3066a.dtsi
-+++ b/arch/arm/boot/dts/rk3066a.dtsi
-@@ -4,9 +4,9 @@
-  * Author: Heiko Stuebner <heiko@sntech.de>
-  */
- 
-+#include <dt-bindings/clock/rk3066a-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/pinctrl/rockchip.h>
--#include <dt-bindings/clock/rk3066a-cru.h>
- #include <dt-bindings/power/rk3066-power.h>
- #include "rk3xxx.dtsi"
- 
-diff --git a/arch/arm/boot/dts/rk3188.dtsi b/arch/arm/boot/dts/rk3188.dtsi
-index 2298a8d84..e22bfc612 100644
---- a/arch/arm/boot/dts/rk3188.dtsi
-+++ b/arch/arm/boot/dts/rk3188.dtsi
-@@ -4,9 +4,9 @@
-  * Author: Heiko Stuebner <heiko@sntech.de>
-  */
- 
-+#include <dt-bindings/clock/rk3188-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/pinctrl/rockchip.h>
--#include <dt-bindings/clock/rk3188-cru.h>
- #include <dt-bindings/power/rk3188-power.h>
- #include "rk3xxx.dtsi"
- 
-diff --git a/arch/arm/boot/dts/rk322x.dtsi b/arch/arm/boot/dts/rk322x.dtsi
-index 86c4d62fc..d5a1aad17 100644
---- a/arch/arm/boot/dts/rk322x.dtsi
-+++ b/arch/arm/boot/dts/rk322x.dtsi
-@@ -1,9 +1,9 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- 
-+#include <dt-bindings/clock/rk3228-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/pinctrl/rockchip.h>
--#include <dt-bindings/clock/rk3228-cru.h>
- #include <dt-bindings/thermal/thermal.h>
- 
- / {
-diff --git a/arch/arm/boot/dts/rk3288-tinker.dtsi b/arch/arm/boot/dts/rk3288-tinker.dtsi
-index 77ae303b0..60259d9eb 100644
---- a/arch/arm/boot/dts/rk3288-tinker.dtsi
-+++ b/arch/arm/boot/dts/rk3288-tinker.dtsi
-@@ -3,9 +3,9 @@
-  * Copyright (c) 2017 Fuzhou Rockchip Electronics Co., Ltd.
-  */
- 
--#include "rk3288.dtsi"
--#include <dt-bindings/input/input.h>
- #include <dt-bindings/clock/rockchip,rk808.h>
-+#include <dt-bindings/input/input.h>
-+#include "rk3288.dtsi"
- 
- / {
- 	chosen {
-diff --git a/arch/arm/boot/dts/rk3288.dtsi b/arch/arm/boot/dts/rk3288.dtsi
-index ace67aa7d..a56b4a58f 100644
---- a/arch/arm/boot/dts/rk3288.dtsi
-+++ b/arch/arm/boot/dts/rk3288.dtsi
-@@ -1,12 +1,12 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- 
-+#include <dt-bindings/clock/rk3288-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/pinctrl/rockchip.h>
--#include <dt-bindings/clock/rk3288-cru.h>
- #include <dt-bindings/power/rk3288-power.h>
--#include <dt-bindings/thermal/thermal.h>
- #include <dt-bindings/soc/rockchip,boot-mode.h>
-+#include <dt-bindings/thermal/thermal.h>
- 
- / {
- 	#address-cells = <2>;
-diff --git a/arch/arm/boot/dts/rv1108.dtsi b/arch/arm/boot/dts/rv1108.dtsi
-index 7d2ef39db..06c46bed9 100644
---- a/arch/arm/boot/dts/rv1108.dtsi
-+++ b/arch/arm/boot/dts/rv1108.dtsi
-@@ -1,10 +1,11 @@
- // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- 
-+#include <dt-bindings/clock/rv1108-cru.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
--#include <dt-bindings/clock/rv1108-cru.h>
- #include <dt-bindings/pinctrl/rockchip.h>
- #include <dt-bindings/thermal/thermal.h>
-+
- / {
- 	#address-cells = <1>;
- 	#size-cells = <1>;
--- 
-2.11.0
+-- Joe
 
