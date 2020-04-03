@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F0419DADE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E8819DAF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390818AbgDCQIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:08:11 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:60015 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgDCQIL (ORCPT
+        id S2404116AbgDCQKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:10:35 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:26903 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404030AbgDCQKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:08:11 -0400
-Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.341)
- id c2d6f9a9fb66b688; Fri, 3 Apr 2020 18:08:08 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Len Brown <lenb@kernel.org>, Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "5 . 4+" <stable@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] platform/x86: intel_int0002_vgpio: Use acpi_register_wakeup_handler()
-Date:   Fri, 03 Apr 2020 18:08:08 +0200
-Message-ID: <3798902.sSGyZ91sKY@kreacher>
-In-Reply-To: <20200403154834.303105-2-hdegoede@redhat.com>
-References: <20200403154834.303105-1-hdegoede@redhat.com> <20200403154834.303105-2-hdegoede@redhat.com>
+        Fri, 3 Apr 2020 12:10:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585930232;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eP7ClUiEc6wxzyPpIfOZtYlk/BTjbvCUBAhRW9+z9Mo=;
+        b=fii5g44EnUT/l6SMjM9Qr9RXEaSKzEyr9pY9ywBsSVLzvUzs1dkwnEUTngDYTDWxhHIet2
+        NngPE4cuitvYhDVuESIiEqexc1Azcw9xfKqFut26ROMVIFeVFpDlkga6qWktIZCWQ89gDJ
+        NkckMsT1AEMh3G+5PFyO1V9bgTa6djU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-A_PBiK6jO2WX0WyHi9BemA-1; Fri, 03 Apr 2020 12:10:28 -0400
+X-MC-Unique: A_PBiK6jO2WX0WyHi9BemA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81FF313FB;
+        Fri,  3 Apr 2020 16:10:26 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-94.rdu2.redhat.com [10.10.118.94])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BC3110027A8;
+        Fri,  3 Apr 2020 16:10:24 +0000 (UTC)
+Subject: Re: [PATCH v2] docs: cgroup-v1: Document the cpuset_v2_mode mount
+ option
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sonny Rao <sonnyrao@google.com>
+References: <20200330140615.25549-1-longman@redhat.com>
+ <20200403154343.GE162390@mtj.duckdns.org>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <1434c1e9-bc2d-f21e-a9a8-060c1812fc8e@redhat.com>
+Date:   Fri, 3 Apr 2020 12:10:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20200403154343.GE162390@mtj.duckdns.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, April 3, 2020 5:48:34 PM CEST Hans de Goede wrote:
-> The Power Management Events (PMEs) the INT0002 driver listens for get
-> signalled by the Power Management Controller (PMC) using the same IRQ
-> as used for the ACPI SCI.
-> 
-> Since commit fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from
-> waking up the system") the SCI triggering, without there being a wakeup
-> cause recognized by the ACPI sleep code, will no longer wakeup the system.
-> 
-> This breaks PMEs / wakeups signalled to the INT0002 driver, the system
-> never leaves the s2idle_loop() now.
-> 
-> Use acpi_register_wakeup_handler() to register a function which checks
-> the GPE0a_STS register for a PME and trigger a wakeup when a PME has
-> been signalled.
-> 
-> Fixes: fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from waking up the system")
-> Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-Andy, any objections?
-
-> ---
-> Changes in v3:
-> - Keep the pm_wakeup_hard_event() call
-> 
-> Changes in v2:
-> - Adjust for the wakeup-handler registration function being renamed to
->   acpi_register_wakeup_handler()
-> ---
->  drivers/platform/x86/intel_int0002_vgpio.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platform/x86/intel_int0002_vgpio.c
-> index f14e2c5f9da5..55f088f535e2 100644
-> --- a/drivers/platform/x86/intel_int0002_vgpio.c
-> +++ b/drivers/platform/x86/intel_int0002_vgpio.c
-> @@ -127,6 +127,14 @@ static irqreturn_t int0002_irq(int irq, void *data)
->  	return IRQ_HANDLED;
->  }
->  
-> +static bool int0002_check_wake(void *data)
-> +{
-> +	u32 gpe_sts_reg;
-> +
-> +	gpe_sts_reg = inl(GPE0A_STS_PORT);
-> +	return (gpe_sts_reg & GPE0A_PME_B0_STS_BIT);
-> +}
-> +
->  static struct irq_chip int0002_byt_irqchip = {
->  	.name			= DRV_NAME,
->  	.irq_ack		= int0002_irq_ack,
-> @@ -220,6 +228,7 @@ static int int0002_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> +	acpi_register_wakeup_handler(irq, int0002_check_wake, NULL);
->  	device_init_wakeup(dev, true);
->  	return 0;
->  }
-> @@ -227,6 +236,7 @@ static int int0002_probe(struct platform_device *pdev)
->  static int int0002_remove(struct platform_device *pdev)
->  {
->  	device_init_wakeup(&pdev->dev, false);
-> +	acpi_unregister_wakeup_handler(int0002_check_wake, NULL);
->  	return 0;
->  }
->  
-> 
-
-
-
+On 4/3/20 11:43 AM, Tejun Heo wrote:
+> On Mon, Mar 30, 2020 at 10:06:15AM -0400, Waiman Long wrote:
+>> The cpuset in cgroup v1 accepts a special "cpuset_v2_mode" mount
+>> option that make cpuset.cpus and cpuset.mems behave more like those in
+>> cgroup v2.  Document it to make other people more aware of this feature
+>> that can be useful in some circumstances.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Applied to cgroup/for-5.7.
+>
+> Thanks.
+>
+Thanks,
+Longman
 
