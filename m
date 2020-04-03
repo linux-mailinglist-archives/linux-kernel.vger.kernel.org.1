@@ -2,180 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E676F19D7E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BED419D7E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 15:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403958AbgDCNoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 09:44:02 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:37276 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403873AbgDCNns (ORCPT
+        id S2403942AbgDCNnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 09:43:55 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:61414 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403909AbgDCNnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 09:43:48 -0400
-Received: by mail-wr1-f67.google.com with SMTP id w10so8631912wrm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 06:43:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=+9/VFpcuuaToh+4qGU4mj26axEdCma4WNB3UK4TkrNA=;
-        b=g/mZwB/fo4aQxMwmv66PcSsEaYUNxmA19x4fTHS7A8YBUGJprw4JCOq4mqfbZh1PWK
-         f4LzDdU3SRmLVHiYnnTS9IPWkVnWbtPz2QTddTS+lRCCIw6gnmNYJ6vNSezA/oG6BWva
-         rfX4opq47IChCVx+Qa+yka2im7/sbRJ5e7zQx2pyMoCIx/G4u014DHmEwM/uzHYBsJ9J
-         31UXlC+tDfmgipEMkCI2yKK/ed7NDbrmfWCjUa7EOzKjUya3UeyYcSv1I8CoPv7b1FuI
-         71XZcx30MCl+qOhdA3wCtm5yECT4N0NlWQic6BMZdYZrm0VfgKZJKL1a4Rr53fr1D482
-         o0EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=+9/VFpcuuaToh+4qGU4mj26axEdCma4WNB3UK4TkrNA=;
-        b=DDQ09/IKuI1xMXSCC9FeYkWm3a8ks8e3d4qMPdbcvHaxzT57ftUX/KrUtdGvxUo1LP
-         6CtabBMvRLElAzgU5J6sfSCTOJrSr08JRviNHTMjhlN/wNYl7Gm4M8kyeT9Lm99BWosV
-         44JBTS0i8cdf1rcBk9WVudvZymwUqlhknkM8yPgK5OFC00qDXWW4qT7IukiGhiY0izuF
-         eSY7OMRooxchNplnnfhN2T8fICreR51pdPsCDnTMwnzAPzs13vCrLoduoi5dA6fk1BeR
-         Y0D7fzzCurvCrQhc6VLqX2oFmi9Y9Dx/8MFrOZmJnx21D7NYv3D8gq7vKcdF0ORfVE6B
-         iDzw==
-X-Gm-Message-State: AGi0PubE68awkHs6RdGaUATBBNpI6Cd2fxSLri+X/hXh1ic4vGm7H80w
-        wGrT5lkRMLV48ExWEgOG83M=
-X-Google-Smtp-Source: APiQypI/PjD4FxEQcJYmOwgISprFFuYT9pGjVNHHcHPesKdPpak2qVTQP64fdW6saPsA8s9EPAQwHg==
-X-Received: by 2002:a5d:4305:: with SMTP id h5mr8815025wrq.69.1585921425890;
-        Fri, 03 Apr 2020 06:43:45 -0700 (PDT)
-Received: from debian.lan (host-84-13-17-86.opaltelecom.net. [84.13.17.86])
-        by smtp.gmail.com with ESMTPSA id f12sm12081232wrm.94.2020.04.03.06.43.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Apr 2020 06:43:44 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 11/11] parport: remove use of devmodel
-Date:   Fri,  3 Apr 2020 14:43:25 +0100
-Message-Id: <20200403134325.11523-11-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200403134325.11523-1-sudipm.mukherjee@gmail.com>
-References: <20200403134325.11523-1-sudipm.mukherjee@gmail.com>
+        Fri, 3 Apr 2020 09:43:52 -0400
+Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.341)
+ id 8a464c5ddeacfe47; Fri, 3 Apr 2020 15:43:50 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        lenb@kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        linux-acpi@vger.kernel.org,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] x86/acpi: fix a deadlock with cpu hotplug
+Date:   Fri, 03 Apr 2020 15:43:50 +0200
+Message-ID: <31115293.RZinmt0Fc6@kreacher>
+In-Reply-To: <0277E081-1807-4393-BB8D-8E851D3ED1C7@lca.pw>
+References: <20200329142109.1501-1-cai@lca.pw> <2025426.V7fFeAKXnt@kreacher> <0277E081-1807-4393-BB8D-8E851D3ED1C7@lca.pw>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all the drivers using parallel port has been converted to use
-device model, there is no driver left which has devmodel as false.
-Remove the part of the code which expects devmodel can be false.
+On Friday, April 3, 2020 1:18:07 PM CEST Qian Cai wrote:
+> 
+> > On Apr 3, 2020, at 5:29 AM, Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> > 
+> > On Sunday, March 29, 2020 4:21:09 PM CEST Qian Cai wrote:
+> >> Similar to the commit 0266d81e9bf5 ("acpi/processor: Prevent cpu hotplug
+> >> deadlock") except this is for acpi_processor_ffh_cstate_probe():
+> >> 
+> >> "The problem is that the work is scheduled on the current CPU from the
+> >> hotplug thread associated with that CPU.
+> >> 
+> >> It's not required to invoke these functions via the workqueue because
+> >> the hotplug thread runs on the target CPU already.
+> >> 
+> >> Check whether current is a per cpu thread pinned on the target CPU and
+> >> invoke the function directly to avoid the workqueue."
+> >> 
+> >> Since CONFIG_ACPI_PROCESSOR (for cstate.c) selects
+> >> CONFIG_ACPI_CPU_FREQ_PSS (for processor_throttling.c) on x86, just
+> >> make call_on_cpu() a static inline function from processor_throttling.c
+> >> and use it in cstate.c.
+> >> 
+> >> WARNING: possible circular locking dependency detected
+> >> ------------------------------------------------------
+> >> cpuhp/1/15 is trying to acquire lock:
+> >> ffffc90003447a28 ((work_completion)(&wfc.work)){+.+.}-{0:0}, at: __flush_work+0x4c6/0x630
+> >> 
+> >> but task is already holding lock:
+> >> ffffffffafa1c0e8 (cpuidle_lock){+.+.}-{3:3}, at: cpuidle_pause_and_lock+0x17/0x20
+> >> 
+> >> which lock already depends on the new lock.
+> >> 
+> >> the existing dependency chain (in reverse order) is:
+> >> 
+> >> -> #1 (cpu_hotplug_lock){++++}-{0:0}:
+> >> cpus_read_lock+0x3e/0xc0
+> >> irq_calc_affinity_vectors+0x5f/0x91
+> >> __pci_enable_msix_range+0x10f/0x9a0
+> >> pci_alloc_irq_vectors_affinity+0x13e/0x1f0
+> >> pci_alloc_irq_vectors_affinity at drivers/pci/msi.c:1208
+> >> pqi_ctrl_init+0x72f/0x1618 [smartpqi]
+> >> pqi_pci_probe.cold.63+0x882/0x892 [smartpqi]
+> >> local_pci_probe+0x7a/0xc0
+> >> work_for_cpu_fn+0x2e/0x50
+> >> process_one_work+0x57e/0xb90
+> >> worker_thread+0x363/0x5b0
+> >> kthread+0x1f4/0x220
+> >> ret_from_fork+0x27/0x50
+> >> 
+> >> -> #0 ((work_completion)(&wfc.work)){+.+.}-{0:0}:
+> >> __lock_acquire+0x2244/0x32a0
+> >> lock_acquire+0x1a2/0x680
+> >> __flush_work+0x4e6/0x630
+> >> work_on_cpu+0x114/0x160
+> >> acpi_processor_ffh_cstate_probe+0x129/0x250
+> >> acpi_processor_evaluate_cst+0x4c8/0x580
+> >> acpi_processor_get_power_info+0x86/0x740
+> >> acpi_processor_hotplug+0xc3/0x140
+> >> acpi_soft_cpu_online+0x102/0x1d0
+> >> cpuhp_invoke_callback+0x197/0x1120
+> >> cpuhp_thread_fun+0x252/0x2f0
+> >> smpboot_thread_fn+0x255/0x440
+> >> kthread+0x1f4/0x220
+> >> ret_from_fork+0x27/0x50
+> >> 
+> >> other info that might help us debug this:
+> >> 
+> >> Chain exists of:
+> >> (work_completion)(&wfc.work) --> cpuhp_state-up --> cpuidle_lock
+> >> 
+> >> Possible unsafe locking scenario:
+> >> 
+> >> CPU0                    CPU1
+> >> ----                    ----
+> >> lock(cpuidle_lock);
+> >>                         lock(cpuhp_state-up);
+> >>                         lock(cpuidle_lock);
+> >> lock((work_completion)(&wfc.work));
+> >> 
+> >> *** DEADLOCK ***
+> >> 
+> >> 3 locks held by cpuhp/1/15:
+> >> #0: ffffffffaf51ab10 (cpu_hotplug_lock){++++}-{0:0}, at: cpuhp_thread_fun+0x69/0x2f0
+> >> #1: ffffffffaf51ad40 (cpuhp_state-up){+.+.}-{0:0}, at: cpuhp_thread_fun+0x69/0x2f0
+> >> #2: ffffffffafa1c0e8 (cpuidle_lock){+.+.}-{3:3}, at: cpuidle_pause_and_lock+0x17/0x20
+> >> 
+> >> Call Trace:
+> >> dump_stack+0xa0/0xea
+> >> print_circular_bug.cold.52+0x147/0x14c
+> >> check_noncircular+0x295/0x2d0
+> >> __lock_acquire+0x2244/0x32a0
+> >> lock_acquire+0x1a2/0x680
+> >> __flush_work+0x4e6/0x630
+> >> work_on_cpu+0x114/0x160
+> >> acpi_processor_ffh_cstate_probe+0x129/0x250
+> >> acpi_processor_evaluate_cst+0x4c8/0x580
+> >> acpi_processor_get_power_info+0x86/0x740
+> >> acpi_processor_hotplug+0xc3/0x140
+> >> acpi_soft_cpu_online+0x102/0x1d0
+> >> cpuhp_invoke_callback+0x197/0x1120
+> >> cpuhp_thread_fun+0x252/0x2f0
+> >> smpboot_thread_fn+0x255/0x440
+> >> kthread+0x1f4/0x220
+> >> ret_from_fork+0x27/0x50
+> >> 
+> >> Signed-off-by: Qian Cai <cai@lca.pw>
+> >> ---
+> >> 
+> >> v2:
+> >> Make call_on_cpu() a static inline function to avoid a compilation
+> >> error when ACPI_PROCESSOR=m thanks to lkp@intel.com.
+> >> 
+> >> arch/x86/kernel/acpi/cstate.c       |  3 ++-
+> >> drivers/acpi/processor_throttling.c |  7 -------
+> >> include/acpi/processor.h            | 10 ++++++++++
+> >> 3 files changed, 12 insertions(+), 8 deletions(-)
+> >> 
+> >> diff --git a/arch/x86/kernel/acpi/cstate.c b/arch/x86/kernel/acpi/cstate.c
+> >> index caf2edccbad2..49ae4e1ac9cd 100644
+> >> --- a/arch/x86/kernel/acpi/cstate.c
+> >> +++ b/arch/x86/kernel/acpi/cstate.c
+> >> @@ -161,7 +161,8 @@ int acpi_processor_ffh_cstate_probe(unsigned int cpu,
+> >> 
+> >> 	/* Make sure we are running on right CPU */
+> >> 
+> >> -	retval = work_on_cpu(cpu, acpi_processor_ffh_cstate_probe_cpu, cx);
+> >> +	retval = call_on_cpu(cpu, acpi_processor_ffh_cstate_probe_cpu, cx,
+> >> +			     false);
+> >> 	if (retval == 0) {
+> >> 		/* Use the hint in CST */
+> >> 		percpu_entry->states[cx->index].eax = cx->address;
+> >> diff --git a/drivers/acpi/processor_throttling.c b/drivers/acpi/processor_throttling.c
+> >> index 532a1ae3595a..a0bd56ece3ff 100644
+> >> --- a/drivers/acpi/processor_throttling.c
+> >> +++ b/drivers/acpi/processor_throttling.c
+> >> @@ -897,13 +897,6 @@ static long __acpi_processor_get_throttling(void *data)
+> >> 	return pr->throttling.acpi_processor_get_throttling(pr);
+> >> }
+> >> 
+> >> -static int call_on_cpu(int cpu, long (*fn)(void *), void *arg, bool direct)
+> >> -{
+> >> -	if (direct || (is_percpu_thread() && cpu == smp_processor_id()))
+> >> -		return fn(arg);
+> >> -	return work_on_cpu(cpu, fn, arg);
+> >> -}
+> >> -
+> >> static int acpi_processor_get_throttling(struct acpi_processor *pr)
+> >> {
+> >> 	if (!pr)
+> >> diff --git a/include/acpi/processor.h b/include/acpi/processor.h
+> >> index 47805172e73d..770d226b22f2 100644
+> >> --- a/include/acpi/processor.h
+> >> +++ b/include/acpi/processor.h
+> >> @@ -297,6 +297,16 @@ static inline void acpi_processor_ffh_cstate_enter(struct acpi_processor_cx
+> >> }
+> >> #endif
+> >> 
+> >> +#ifdef CONFIG_ACPI_CPU_FREQ_PSS
+> > 
+> > Why does this depend on CONFIG_ACPI_CPU_FREQ_PSS?
+> 
+> call_on_cpu() was only used in processor_throttling.c which has,
+> 
+> processor-$(CONFIG_ACPI_CPU_FREQ_PSS)   += processor_throttling.o
+> 
+> after this patch, it will also be used in cstate.c which has,
+> 
+> ifneq ($(CONFIG_ACPI_PROCESSOR),)
+> obj-y                           += cstate.o
+> endif
+> 
+> i.e.,
+> 
+> config ACPI_PROCESSOR
+>         tristate "Processor"
+>         depends on X86 || IA64 || ARM64
+>         select ACPI_PROCESSOR_IDLE
+>         select ACPI_CPU_FREQ_PSS if X86 || IA64
+> 
+> Therefore, call_on_cpu() is only used when CONFIG_ACPI_CPU_FREQ_PSS=y.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/parport/share.c | 81 +++++++++++++++++--------------------------------
- 1 file changed, 28 insertions(+), 53 deletions(-)
+While technically kind of correct, this is also rather far from straightforward, because
+cstate.o and ACPI_CPU_FREQ_PSS are different things logically.
 
-diff --git a/drivers/parport/share.c b/drivers/parport/share.c
-index 661f623b3129..7fec4fefe151 100644
---- a/drivers/parport/share.c
-+++ b/drivers/parport/share.c
-@@ -278,46 +278,32 @@ static int port_detect(struct device *dev, void *dev_drv)
- int __parport_register_driver(struct parport_driver *drv, struct module *owner,
- 			      const char *mod_name)
- {
--	if (drv->devmodel) {
--		/* using device model */
--		int ret;
--
--		/* initialize common driver fields */
--		drv->driver.name = drv->name;
--		drv->driver.bus = &parport_bus_type;
--		drv->driver.owner = owner;
--		drv->driver.mod_name = mod_name;
--		ret = driver_register(&drv->driver);
--		if (ret)
--			return ret;
-+	/* using device model */
-+	int ret;
- 
--		/*
--		 * check if bus has any parallel port registered, if
--		 * none is found then load the lowlevel driver.
--		 */
--		ret = bus_for_each_dev(&parport_bus_type, NULL, NULL,
--				       port_detect);
--		if (!ret)
--			get_lowlevel_driver();
--
--		mutex_lock(&registration_lock);
--		if (drv->match_port)
--			bus_for_each_dev(&parport_bus_type, NULL, drv,
--					 port_check);
--		mutex_unlock(&registration_lock);
--	} else {
--		struct parport *port;
--
--		drv->devmodel = false;
--
--		if (list_empty(&portlist))
--			get_lowlevel_driver();
--		mutex_lock(&registration_lock);
--		list_for_each_entry(port, &portlist, list)
--			drv->attach(port);
--		list_add(&drv->list, &drivers);
--		mutex_unlock(&registration_lock);
--	}
-+	/* initialize common driver fields */
-+	drv->driver.name = drv->name;
-+	drv->driver.bus = &parport_bus_type;
-+	drv->driver.owner = owner;
-+	drv->driver.mod_name = mod_name;
-+	ret = driver_register(&drv->driver);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * check if bus has any parallel port registered, if
-+	 * none is found then load the lowlevel driver.
-+	 */
-+	ret = bus_for_each_dev(&parport_bus_type, NULL, NULL,
-+			       port_detect);
-+	if (!ret)
-+		get_lowlevel_driver();
-+
-+	mutex_lock(&registration_lock);
-+	if (drv->match_port)
-+		bus_for_each_dev(&parport_bus_type, NULL, drv,
-+				 port_check);
-+	mutex_unlock(&registration_lock);
- 
- 	return 0;
- }
-@@ -352,17 +338,9 @@ static int port_detach(struct device *dev, void *_drv)
- 
- void parport_unregister_driver(struct parport_driver *drv)
- {
--	struct parport *port;
--
- 	mutex_lock(&registration_lock);
--	if (drv->devmodel) {
--		bus_for_each_dev(&parport_bus_type, NULL, drv, port_detach);
--		driver_unregister(&drv->driver);
--	} else {
--		list_del_init(&drv->list);
--		list_for_each_entry(port, &portlist, list)
--			drv->detach(port);
--	}
-+	bus_for_each_dev(&parport_bus_type, NULL, drv, port_detach);
-+	driver_unregister(&drv->driver);
- 	mutex_unlock(&registration_lock);
- }
- EXPORT_SYMBOL(parport_unregister_driver);
-@@ -915,10 +893,7 @@ void parport_unregister_device(struct pardevice *dev)
- 	spin_unlock_irq(&port->waitlist_lock);
- 
- 	kfree(dev->state);
--	if (dev->devmodel)
--		device_unregister(&dev->dev);
--	else
--		kfree(dev);
-+	device_unregister(&dev->dev);
- 
- 	module_put(port->ops->owner);
- 	parport_put_port(port);
--- 
-2.11.0
+> The #ifdef is rather a safe net that in the future, if we decided to make call_on_cpu()
+> a  non-inline function, it will prevent triggering an compilation warning for unused
+> function when CONFIG_ACPI_CPU_FREQ_PSS=n.
+
+But as long as it is static inline, the #ifdef isn't necessary, is it?
+
+> It may also serve as a documentation purpose to indicate that function is only used
+> with  CONFIG_ACPI_CPU_FREQ_PSS=y.
+
+Which is incidental and therefore misleading.
+
+> > 
+> >> +static inline int call_on_cpu(int cpu, long (*fn)(void *), void *arg,
+> >> +			      bool direct)
+> >> +{
+> >> +	if (direct || (is_percpu_thread() && cpu == smp_processor_id()))
+> >> +		return fn(arg);
+> >> +	return work_on_cpu(cpu, fn, arg);
+> >> +}
+> >> +#endif
+> >> +
+> >> /* in processor_perflib.c */
+> >> 
+> >> #ifdef CONFIG_CPU_FREQ
+> 
+
+
+
 
