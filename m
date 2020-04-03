@@ -2,177 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E4919D18B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 09:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF6719D195
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 09:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390011AbgDCH4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 03:56:25 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:43548 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727792AbgDCH4Z (ORCPT
+        id S2390367AbgDCH7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 03:59:41 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:46659 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732595AbgDCH7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 03:56:25 -0400
-Received: by mail-pg1-f194.google.com with SMTP id g20so3131589pgk.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 00:56:22 -0700 (PDT)
+        Fri, 3 Apr 2020 03:59:41 -0400
+Received: by mail-pl1-f193.google.com with SMTP id s23so2389199plq.13;
+        Fri, 03 Apr 2020 00:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jGFgJcnAZcYkOmTi2e6KUvl6de/EYQat/43QjCkuwX0=;
-        b=Z7h63QkcMcJIMchjnZ6OGIbR7pN+UWcQwA7SLkySnzrKirDCo6HDYjKLFj5gWEAnZ7
-         eNje8dyr5R8eU5fzk7yuvLwNKSfGuGmgXQcn5C74h+HP+PIlnunCyS5JlB1IpbAx2a2Z
-         v+chsSP0JlFTG+TaEXCQhDNpOVcTHhJoPHwmmH2vcEtEF28W1QbcRpP6gXtOd1pxvvnC
-         ei8R2TzjGijsRQB5iQHMXm9BaoqncW9navKH+Ca3GTgo1Wvp3wLJI82uQAJcZbxoDTWh
-         o7f/VVcH8H1KrIuYuqLCXRUTmPFweG5l1KHN8uub4FEZoHXWgjoHr4s/zLTDj5fmmIHK
-         56Ew==
+        h=from:to:cc:subject:date:message-id;
+        bh=HkFftEmd1xByJ3L+7Q66Ss8hnA6ge5noLyBAo3i2apI=;
+        b=owdPcNHLVrE6Ernuo3DIqVGM+J5Nqciv40IjY4XcWu6kUJXVDuppwYzvUm9xhzkGer
+         2RyZBP3uYHNjwRvtxkJcB/FYs3ct/0V3YBWr5k5LLix+qzWavz5paoVlgAvhoR7jJYEE
+         mvvgY0d14n8bomLWQlFCr7FyU6IUbUfBrwkw6Pvy4NMU9ZF3KLO5XyV+dBokkDkCC0ot
+         QQZIYeZEV1nseE8I+9SvwHqOryshuUpMFamfMArl1Th+4HqS//ZCJkeMwnbZUFvsZOOn
+         GwvHh7kB2LDxYOFVy29uV+XjTjBI3wXmZucdYE2l4lIuPc0E9AHMW9gg7sp6agq5FJrJ
+         dfUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jGFgJcnAZcYkOmTi2e6KUvl6de/EYQat/43QjCkuwX0=;
-        b=ssKr4BIZWJ8l3fFYRilsRdAqLX4bMZHNmRU+mXvRdxIPFyf7sotsg0UY720lEv4Swj
-         QBc8imjfg3m94VizAf3B+l/wtvFX7tBeOPo2gPkdEhsw0dTvl3Y2G2u3sDAHEBLFONbh
-         IlZz2fr1usGTE5fYPXFzfU/FCmdYH9QxArSnb8DEBf7vQy7BhrHepWNxKJmMTA9YzjXr
-         zs/IYPcLsmfyQu0u4EQtDOMlIjyYoauYvwaqkF3cAZAzZereLSEvCFmrDOX5XL6jD3Ys
-         jPHplhYf8W9xGfMGW/SYf+zXQ7N3rAhKYSxjkWTgM1j7C6uG5E3BvWviKEG7Osc96IGc
-         kL2A==
-X-Gm-Message-State: AGi0Puadmr6L6qJu1Cr/Xt3t7FxHS661VtuE+QedPEbQPPL1Fqpoopwe
-        yqiG6mld1tIQzBM9RkP07Cc=
-X-Google-Smtp-Source: APiQypKtNPH46VRnJiamU928TrLfF1ef1udk+bsqM/kxdW3Cx6y1GHNcPLh23zVq5txnbater8/vkQ==
-X-Received: by 2002:aa7:999e:: with SMTP id k30mr7018349pfh.235.1585900582356;
-        Fri, 03 Apr 2020 00:56:22 -0700 (PDT)
-Received: from workstation-portable ([103.87.56.98])
-        by smtp.gmail.com with ESMTPSA id g75sm5146054pje.37.2020.04.03.00.56.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 00:56:21 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 13:26:13 +0530
-From:   Amol Grover <frextrite@gmail.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jann Horn <jannh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Eric Paris <eparis@redhat.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-audit@redhat.com,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH 3/3 RESEND] auditsc: Do not use RCU primitive to read
- from cred pointer
-Message-ID: <20200403075613.GA2788@workstation-portable>
-References: <20200402055640.6677-1-frextrite@gmail.com>
- <20200402055640.6677-3-frextrite@gmail.com>
- <CAHC9VhTUKepKiGZgAaWDADyTPnnM5unbM65T7jXZ3p8MFTNUuQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhTUKepKiGZgAaWDADyTPnnM5unbM65T7jXZ3p8MFTNUuQ@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HkFftEmd1xByJ3L+7Q66Ss8hnA6ge5noLyBAo3i2apI=;
+        b=RgbUCBc2+NLLTtv8hEGMbba8mpHUZQ9V6b+0G3rmSWWgqclzpIK9tYjRSrmBFT2RAp
+         H+VOaVPckg6D7WFEw0jH6KclBu893fe6pBUVs5p2Bx1eQP1Co9TBqvXmErDZJZlT5EMO
+         Q6dIF0nuphYLIEuBeqBU3RlUwJEDDuJcJb26aGhiTyJCoW3bju47o0EVuEndFtrVeF6m
+         vwygaGGk18WFg2Q4thUiAwtKyRz9jNtuIECYN5u8kuqLs70oXMLSMFoXFJo1eAZ6wVoQ
+         4l38xZHuCyS6/+iXdKaZzYuJj+pcj5Jg3EN9v2pNnulmzeA5h218sirunAuXDXDaa5Hs
+         skqg==
+X-Gm-Message-State: AGi0PubNJILFPw1P/2XZ/J7MywEHOY10oVOVHyhQKE21R+gulcwSUw9h
+        CIa/cFfUJStUjsAaVf4+QHBCHeHn
+X-Google-Smtp-Source: APiQypJCLfL2iWxMmyuJ+LAUznxT/4OCgOffcowdkVFQSdCP3AaRC5/0SwntKetKknxf7y3Lqj4VfQ==
+X-Received: by 2002:a17:90b:1118:: with SMTP id gi24mr7409859pjb.99.1585900780339;
+        Fri, 03 Apr 2020 00:59:40 -0700 (PDT)
+Received: from localhost ([43.224.245.180])
+        by smtp.gmail.com with ESMTPSA id x27sm5263837pff.200.2020.04.03.00.59.39
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 03 Apr 2020 00:59:39 -0700 (PDT)
+From:   Geliang Tang <geliangtang@gmail.com>
+To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Geliang Tang <geliangtang@gmail.com>, netdev@vger.kernel.org,
+        mptcp@lists.01.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mptcp: move pr_fmt defining to protocol.h
+Date:   Fri,  3 Apr 2020 15:57:25 +0800
+Message-Id: <34c83a5fe561739c7b85a3c4959eb44c3155d075.1585899578.git.geliangtang@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 02, 2020 at 08:56:36AM -0400, Paul Moore wrote:
-> On Thu, Apr 2, 2020 at 1:57 AM Amol Grover <frextrite@gmail.com> wrote:
-> > task_struct::cred is only used task-synchronously and does
-> > not require any RCU locks, hence, rcu_dereference_check is
-> > not required to read from it.
-> >
-> > Suggested-by: Jann Horn <jannh@google.com>
-> > Co-developed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > Signed-off-by: Amol Grover <frextrite@gmail.com>
-> > ---
-> >  kernel/auditsc.c | 15 +++++----------
-> >  1 file changed, 5 insertions(+), 10 deletions(-)
-> 
-> This is the exact same patch I ACK'd back in February, yes?
-> 
-> https://lore.kernel.org/linux-audit/CAHC9VhQCbg1V290bYEZM+izDPRpr=XYXakohnDaMphkBBFgUaA@mail.gmail.com
-> 
+Some of the mptcp logs didn't print out the format string "MPTCP":
 
-Hi Paul,
+[  129.185774] DSS
+[  129.185774] data_fin=0 dsn64=1 use_map=1 ack64=1 use_ack=1
+[  129.185774] data_ack=5481534886531492085
+[  129.185775] data_seq=15725204003114694615 subflow_seq=1425409 data_len=5216
+[  129.185776] subflow=0000000093526a92 fully established=1 seq=0:0 remaining=28
+[  129.185776] MPTCP: msk=00000000d5a704a6 ssk=00000000b5aabc31 data_avail=0 skb=0000000088f05424
+[  129.185777] MPTCP: seq=15725204003114694615 is64=1 ssn=1425409 data_len=5216 data_fin=0
+[  129.185777] MPTCP: msk=00000000d5a704a6 ssk=00000000b5aabc31 status=0
+[  129.185778] MPTCP: msk ack_seq=da3b25b9a233c2c7 subflow ack_seq=da3b25b9a233c2c7
+[  129.185778] MPTCP: msk=00000000d5a704a6 ssk=00000000b5aabc31 data_avail=1 skb=000000000caed2cc
+[  129.185779] subflow=0000000093526a92 fully established=1 seq=0:0 remaining=28
 
-That's correct. I've resend the series out of the fear that the first 2
-patches might've gotten lost as it's been almost a month since I last
-sent them. Could you please ack this again, and if you don't mind could
-you please go through the other 2 patches and ack them aswell?
+So this patch moves the pr_fmt defining from protocol.c to protocol.h, which
+is included by all the C files. Then we can get the same format string
+"MPTCP" in all mptcp logs like this:
 
-Thanks
-Amol
+[  141.854787] MPTCP: DSS
+[  141.854788] MPTCP: data_fin=0 dsn64=1 use_map=1 ack64=1 use_ack=1
+[  141.854788] MPTCP: data_ack=18028325517710311871
+[  141.854788] MPTCP: data_seq=6163976859259356786 subflow_seq=3309569 data_len=8192
+[  141.854789] MPTCP: msk=000000005847a66a ssk=0000000022469903 data_avail=0 skb=00000000dd95efc3
+[  141.854789] MPTCP: seq=6163976859259356786 is64=1 ssn=3309569 data_len=8192 data_fin=0
+[  141.854790] MPTCP: msk=000000005847a66a ssk=0000000022469903 status=0
+[  141.854790] MPTCP: msk ack_seq=558ad84b9be1d162 subflow ack_seq=558ad84b9be1d162
+[  141.854791] MPTCP: msk=000000005847a66a ssk=0000000022469903 data_avail=1 skb=000000000b8926f6
+[  141.854791] MPTCP: subflow=00000000e4e4579c fully established=1 seq=0:0 remaining=28
+[  141.854792] MPTCP: subflow=00000000e4e4579c fully established=1 seq=0:dcdf2f3b remaining=28
 
-> > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> > index 4effe01ebbe2..d3510513cdd1 100644
-> > --- a/kernel/auditsc.c
-> > +++ b/kernel/auditsc.c
-> > @@ -430,24 +430,19 @@ static int audit_field_compare(struct task_struct *tsk,
-> >  /* Determine if any context name data matches a rule's watch data */
-> >  /* Compare a task_struct with an audit_rule.  Return 1 on match, 0
-> >   * otherwise.
-> > - *
-> > - * If task_creation is true, this is an explicit indication that we are
-> > - * filtering a task rule at task creation time.  This and tsk == current are
-> > - * the only situations where tsk->cred may be accessed without an rcu read lock.
-> >   */
-> >  static int audit_filter_rules(struct task_struct *tsk,
-> >                               struct audit_krule *rule,
-> >                               struct audit_context *ctx,
-> >                               struct audit_names *name,
-> > -                             enum audit_state *state,
-> > -                             bool task_creation)
-> > +                             enum audit_state *state)
-> >  {
-> >         const struct cred *cred;
-> >         int i, need_sid = 1;
-> >         u32 sid;
-> >         unsigned int sessionid;
-> >
-> > -       cred = rcu_dereference_check(tsk->cred, tsk == current || task_creation);
-> > +       cred = tsk->cred;
-> >
-> >         for (i = 0; i < rule->field_count; i++) {
-> >                 struct audit_field *f = &rule->fields[i];
-> > @@ -745,7 +740,7 @@ static enum audit_state audit_filter_task(struct task_struct *tsk, char **key)
-> >         rcu_read_lock();
-> >         list_for_each_entry_rcu(e, &audit_filter_list[AUDIT_FILTER_TASK], list) {
-> >                 if (audit_filter_rules(tsk, &e->rule, NULL, NULL,
-> > -                                      &state, true)) {
-> > +                                      &state)) {
-> >                         if (state == AUDIT_RECORD_CONTEXT)
-> >                                 *key = kstrdup(e->rule.filterkey, GFP_ATOMIC);
-> >                         rcu_read_unlock();
-> > @@ -791,7 +786,7 @@ static enum audit_state audit_filter_syscall(struct task_struct *tsk,
-> >         list_for_each_entry_rcu(e, list, list) {
-> >                 if (audit_in_mask(&e->rule, ctx->major) &&
-> >                     audit_filter_rules(tsk, &e->rule, ctx, NULL,
-> > -                                      &state, false)) {
-> > +                                      &state)) {
-> >                         rcu_read_unlock();
-> >                         ctx->current_state = state;
-> >                         return state;
-> > @@ -815,7 +810,7 @@ static int audit_filter_inode_name(struct task_struct *tsk,
-> >
-> >         list_for_each_entry_rcu(e, list, list) {
-> >                 if (audit_in_mask(&e->rule, ctx->major) &&
-> > -                   audit_filter_rules(tsk, &e->rule, ctx, n, &state, false)) {
-> > +                   audit_filter_rules(tsk, &e->rule, ctx, n, &state)) {
-> >                         ctx->current_state = state;
-> >                         return 1;
-> >                 }
-> > --
-> > 2.24.1
-> 
-> -- 
-> paul moore
-> www.paul-moore.com
+Signed-off-by: Geliang Tang <geliangtang@gmail.com>
+---
+ net/mptcp/protocol.c | 2 --
+ net/mptcp/protocol.h | 2 ++
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 72f3176dc924..cc86137cd04f 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -4,8 +4,6 @@
+  * Copyright (c) 2017 - 2019, Intel Corporation.
+  */
+ 
+-#define pr_fmt(fmt) "MPTCP: " fmt
+-
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+diff --git a/net/mptcp/protocol.h b/net/mptcp/protocol.h
+index 67448002a2d7..3eff041eeccf 100644
+--- a/net/mptcp/protocol.h
++++ b/net/mptcp/protocol.h
+@@ -7,6 +7,8 @@
+ #ifndef __MPTCP_PROTOCOL_H
+ #define __MPTCP_PROTOCOL_H
+ 
++#define pr_fmt(fmt) "MPTCP: " fmt
++
+ #include <linux/random.h>
+ #include <net/tcp.h>
+ #include <net/inet_connection_sock.h>
+-- 
+2.17.1
+
