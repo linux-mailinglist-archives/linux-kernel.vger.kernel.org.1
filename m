@@ -2,297 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 200D019DCC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC94B19DCE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404418AbgDCRbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:31:04 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:45302 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403981AbgDCRbD (ORCPT
+        id S2404429AbgDCRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:37:57 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:34494 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727923AbgDCRh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:31:03 -0400
-Received: by mail-lj1-f196.google.com with SMTP id t17so7751982ljc.12;
-        Fri, 03 Apr 2020 10:31:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MVqBZ94a4HEstbBLSWVTsFmo6x6cOoQ//AL6Z+R7tCU=;
-        b=fAay2PCE6inyHjltPP6nyM1oOF+qQlVoNXAdmxUCyzZ8AJO7z2635/HnBPrXeQis2u
-         Jc17f6memMmt/SVpzRMd6x6y5utyBBwAZKcfMuFIy1540+FD50t3qqTAUVb9vpUMxCbA
-         KPR6ImC39fIP/nArf+HPyuVPLUWrjRqj/EnksJBVLlB5dyuAzziZR4yCQN5GW9+cDRsy
-         GKAFHt6bmaxAPAW6Qn+LLXaJD6GZESgSnBFSDrcw6LbNu9EaxrS7ximNF5LjwnwTyLUD
-         zRRIv9N8Ve7arXnEbegecU93po19tRVbDVzloJPAQ3xop9aY8DPSsjHo1quxJLx6EdcD
-         w55g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MVqBZ94a4HEstbBLSWVTsFmo6x6cOoQ//AL6Z+R7tCU=;
-        b=cRg8jKIohGhg5uhM9QqBSklLgRS8HZ7ko4IyFQWMcVoR9HHslkrTXjRnmKbJ5p2oxa
-         tJQuRlDrD78Ix0i2GkoG1L03hmVylC78WoF9x1jNg65bcUPKCzJiC3TUgVQw+60YvCNZ
-         fcBCbUDjQT7Cp7eXfEg2HHCfpTnabbAdBw8Bm3NTbMRwIfNcQuwf+pD3eWqBxymaJ7FE
-         LbrI0Zq+8mqS4O75JbLzzWCXYQmYncJ5jxO7IgPvyTfh0UgIYV5JxzdXbas0QnlTSV9G
-         d+7RjmzC/bAOn7A77SOgmdFQpE8p7qAqI+yXiWlz1cfCkVhjnzz+QIywLUzg0g/ATa60
-         ShcQ==
-X-Gm-Message-State: AGi0PuZsCG4MWLcmGdsWKDSQdGL7hH9HndFUFwpXhmjuadSR44+xwpal
-        EIHIDs9CtjejOdfK4S7QFfQmpJQCkZo=
-X-Google-Smtp-Source: APiQypI4NRa4Jcb9XKuzs/Ix5nIkcm9i/uSYAufTGJYbbcDZzrVP5NWyS/lI2TyFlK+32XesnYs/Mg==
-X-Received: by 2002:a2e:b611:: with SMTP id r17mr5543922ljn.62.1585935060470;
-        Fri, 03 Apr 2020 10:31:00 -0700 (PDT)
-Received: from pc636.lan (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id z9sm7237112lfh.45.2020.04.03.10.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 10:30:59 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Cc:     RCU <rcu@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: [PATCH 1/1] rcu/tree: add emergency pool for headless case
-Date:   Fri,  3 Apr 2020 19:30:51 +0200
-Message-Id: <20200403173051.4081-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 3 Apr 2020 13:37:57 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 033HbifV117930;
+        Fri, 3 Apr 2020 12:37:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1585935464;
+        bh=IFFxpXiVXLZc2qdhczDR7D9a9oSa0u9xD7uIEB8/v8s=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=LHgVRVKs+2Yw3EMpFPwc5jXhmuvD6wl9t4Qj7Ojf2sJEbtTSEYjThBarCO9s3O6iE
+         ia3KEFTbGSGMjQP7m/7710MOvzdExmuPDOLFwMwUREBOGXJKltoDKcsJ+nuYNY8lHB
+         qqGcN9baI5AHSMjtu9FbstfIYYO9wK65LFv3+v9I=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 033Hbigk114605
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 3 Apr 2020 12:37:44 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Fri, 3 Apr
+ 2020 12:37:44 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Fri, 3 Apr 2020 12:37:44 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 033Hbh1Q066898;
+        Fri, 3 Apr 2020 12:37:43 -0500
+Subject: Re: [PATCH v2 2/2] leds: add sgm3140 driver
+To:     Luca Weiss <luca@z3ntu.xyz>, <linux-leds@vger.kernel.org>
+CC:     Heiko Stuebner <heiko@sntech.de>, Icenowy Zheng <icenowy@aosc.io>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>
+References: <20200330194757.2645388-1-luca@z3ntu.xyz>
+ <20200330194757.2645388-3-luca@z3ntu.xyz>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <e29c3fee-068d-c3d7-a0e6-6877a616b3fa@ti.com>
+Date:   Fri, 3 Apr 2020 12:31:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200330194757.2645388-3-luca@z3ntu.xyz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maintain an emergency pool for each CPU with some
-extra objects. There is read-only sysfs attribute,
-the name is "rcu_nr_emergency_objs". It reflects
-the size of the pool. As for now the default value
-is 3.
+Luca
 
-The pool is populated when low memory condition is
-detected. Please note it is only for headless case
-it means when the regular SLAB is not able to serve
-any request, the pool is used.
+On 3/30/20 2:47 PM, Luca Weiss wrote:
+> Add a driver for the SGMICRO SGM3140 Buck/Boost Charge Pump LED driver.
+>
+> This device is controlled by two GPIO pins, one for enabling and the
+> second one for switching between torch and flash mode.
+>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+> Changes since v1:
+> - Add vin-supply (keep track of 'enabled' state for that)
+> - Wrap lines
+> - static const -ify some structs and methods
+> - use strscpy instead of strlcpy
+> - remove u32 cast by adding 'U' suffix to constants
+> - rebase on linux-next
+>
+>   drivers/leds/Kconfig        |   9 +
+>   drivers/leds/Makefile       |   1 +
+>   drivers/leds/leds-sgm3140.c | 317 ++++++++++++++++++++++++++++++++++++
+>   3 files changed, 327 insertions(+)
+>   create mode 100644 drivers/leds/leds-sgm3140.c
+>
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index 7599dbee8de1..f5beeff16bdd 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -871,6 +871,15 @@ config LEDS_IP30
+>   	  To compile this driver as a module, choose M here: the module
+>   	  will be called leds-ip30.
+>   
+> +config LEDS_SGM3140
+> +	tristate "LED support for the SGM3140"
+> +	depends on LEDS_CLASS_FLASH
+> +	depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
+> +	depends on OF
+> +	help
+> +	  This option enables support for the SGM3140 500mA Buck/Boost Charge
+> +	  Pump LED Driver.
+> +
+>   comment "LED Triggers"
+>   source "drivers/leds/trigger/Kconfig"
+>   
+> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> index fd61421f7d40..f60ed0c09d4c 100644
+> --- a/drivers/leds/Makefile
+> +++ b/drivers/leds/Makefile
+> @@ -77,6 +77,7 @@ obj-$(CONFIG_LEDS_PWM)			+= leds-pwm.o
+>   obj-$(CONFIG_LEDS_REGULATOR)		+= leds-regulator.o
+>   obj-$(CONFIG_LEDS_S3C24XX)		+= leds-s3c24xx.o
+>   obj-$(CONFIG_LEDS_SC27XX_BLTC)		+= leds-sc27xx-bltc.o
+> +obj-$(CONFIG_LEDS_SGM3140)		+= leds-sgm3140.o
+>   obj-$(CONFIG_LEDS_SUNFIRE)		+= leds-sunfire.o
+>   obj-$(CONFIG_LEDS_SYSCON)		+= leds-syscon.o
+>   obj-$(CONFIG_LEDS_TCA6507)		+= leds-tca6507.o
+> diff --git a/drivers/leds/leds-sgm3140.c b/drivers/leds/leds-sgm3140.c
+> new file mode 100644
+> index 000000000000..28fe5e34f931
+> --- /dev/null
+> +++ b/drivers/leds/leds-sgm3140.c
+> @@ -0,0 +1,317 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (C) 2020 Luca Weiss <luca@z3ntu.xyz>
+> +
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/led-class-flash.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/platform_device.h>
+> +
+> +#include <media/v4l2-flash-led-class.h>
+> +
+> +#define FLASH_TIMEOUT_DEFAULT		250000U /* 250ms */
+> +#define FLASH_MAX_TIMEOUT_DEFAULT	300000U /* 300ms */
+> +
+> +struct sgm3140 {
+> +	bool enabled;
+> +	struct gpio_desc *flash_gpio;
+> +	struct gpio_desc *enable_gpio;
+> +	struct regulator *vin_regulator;
+> +
+> +	/* current timeout in us */
+> +	u32 timeout;
+> +	/* maximum timeout in us */
+> +	u32 max_timeout;
+> +
+> +	struct led_classdev_flash fled_cdev;
+> +	struct v4l2_flash *v4l2_flash;
+> +
+> +	struct timer_list powerdown_timer;
+> +};
+> +
+> +static struct sgm3140 *flcdev_to_sgm3140(struct led_classdev_flash *flcdev)
+> +{
+> +	return container_of(flcdev, struct sgm3140, fled_cdev);
+> +}
+> +
+> +static int sgm3140_strobe_set(struct led_classdev_flash *fled_cdev, bool state)
+> +{
+> +	struct sgm3140 *priv = flcdev_to_sgm3140(fled_cdev);
+> +	int ret;
+> +
+> +	if (priv->enabled == state)
+> +		return 0;
+> +
+> +	if (state) {
+> +		ret = regulator_enable(priv->vin_regulator);
+> +		if (ret) {
+> +			dev_err(fled_cdev->led_cdev.dev,
+> +				"failed to enable regulator: %d\n", ret);
+> +			return ret;
+> +		}
+> +		gpiod_set_value_cansleep(priv->flash_gpio, 1);
+> +		gpiod_set_value_cansleep(priv->enable_gpio, 1);
+> +		mod_timer(&priv->powerdown_timer,
+> +			  jiffies + usecs_to_jiffies(priv->timeout));
+> +	} else {
+> +		del_timer_sync(&priv->powerdown_timer);
+> +		gpiod_set_value_cansleep(priv->enable_gpio, 0);
+> +		gpiod_set_value_cansleep(priv->flash_gpio, 0);
+> +		ret = regulator_disable(priv->vin_regulator);
+> +		if (ret) {
+> +			dev_err(fled_cdev->led_cdev.dev,
+> +				"failed to disable regulator: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	priv->enabled = state;
+> +
+> +	return 0;
+> +}
+> +
+> +static int sgm3140_strobe_get(struct led_classdev_flash *fled_cdev, bool *state)
+> +{
+> +	struct sgm3140 *priv = flcdev_to_sgm3140(fled_cdev);
+> +
+> +	*state = timer_pending(&priv->powerdown_timer);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sgm3140_timeout_set(struct led_classdev_flash *fled_cdev,
+> +			       u32 timeout)
+> +{
+> +	struct sgm3140 *priv = flcdev_to_sgm3140(fled_cdev);
+> +
+> +	priv->timeout = timeout;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct led_flash_ops sgm3140_flash_ops = {
+> +	.strobe_set = sgm3140_strobe_set,
+> +	.strobe_get = sgm3140_strobe_get,
+> +	.timeout_set = sgm3140_timeout_set,
+> +};
+> +
+> +static int sgm3140_brightness_set(struct led_classdev *led_cdev,
+> +				  enum led_brightness brightness)
+> +{
+> +	struct led_classdev_flash *fled_cdev = lcdev_to_flcdev(led_cdev);
+> +	struct sgm3140 *priv = flcdev_to_sgm3140(fled_cdev);
+> +	bool enable = brightness == LED_ON;
+> +	int ret;
+> +
+> +	if (priv->enabled == enable)
+> +		return 0;
+> +
+> +	if (enable) {
+> +		ret = regulator_enable(priv->vin_regulator);
+> +		if (ret) {
+> +			dev_err(led_cdev->dev,
+> +				"failed to enable regulator: %d\n", ret);
+> +			return ret;
+> +		}
+> +		gpiod_set_value_cansleep(priv->enable_gpio, 1);
+> +	} else {
+> +		gpiod_set_value_cansleep(priv->enable_gpio, 0);
+> +		ret = regulator_disable(priv->vin_regulator);
+> +		if (ret) {
+> +			dev_err(led_cdev->dev,
+> +				"failed to disable regulator: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	priv->enabled = enable;
+> +
+> +	return 0;
+> +}
+> +
+> +static void sgm3140_powerdown_timer(struct timer_list *t)
+> +{
+> +	struct sgm3140 *priv = from_timer(priv, t, powerdown_timer);
+> +
+> +	gpiod_set_value(priv->enable_gpio, 0);
+> +	gpiod_set_value(priv->flash_gpio, 0);
+> +	regulator_disable(priv->vin_regulator);
+> +
+> +	priv->enabled = false;
+> +}
+> +
+> +static void sgm3140_init_flash_timeout(struct sgm3140 *priv)
+> +{
+> +	struct led_classdev_flash *fled_cdev = &priv->fled_cdev;
+> +	struct led_flash_setting *s;
+> +
+> +	/* Init flash timeout setting */
+> +	s = &fled_cdev->timeout;
+> +	s->min = 1;
+> +	s->max = priv->max_timeout;
+> +	s->step = 1;
+> +	s->val = FLASH_TIMEOUT_DEFAULT;
+> +}
+> +
+> +#if IS_ENABLED(CONFIG_V4L2_FLASH_LED_CLASS)
+> +static void sgm3140_init_v4l2_flash_config(struct sgm3140 *priv,
+> +					struct v4l2_flash_config *v4l2_sd_cfg)
+> +{
+> +	struct led_classdev *led_cdev = &priv->fled_cdev.led_cdev;
+> +	struct led_flash_setting *s;
+> +
+> +	strscpy(v4l2_sd_cfg->dev_name, led_cdev->dev->kobj.name,
+> +		sizeof(v4l2_sd_cfg->dev_name));
+> +
+> +	/* Init flash intensity setting */
+> +	s = &v4l2_sd_cfg->intensity;
+> +	s->min = 0;
+> +	s->max = 1;
+> +	s->step = 1;
+> +	s->val = 1;
+> +}
+> +
+> +#else
+> +static void sgm3140_init_v4l2_flash_config(struct sgm3140 *priv,
+> +					struct v4l2_flash_config *v4l2_sd_cfg)
+> +{
+> +}
+> +#endif
+> +
+> +static int sgm3140_probe(struct platform_device *pdev)
+> +{
+> +	struct sgm3140 *priv;
+> +	struct led_classdev *led_cdev;
+> +	struct led_classdev_flash *fled_cdev;
+> +	struct led_init_data init_data = {};
+> +	struct device_node *child_node;
+> +	struct v4l2_flash_config v4l2_sd_cfg = {};
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->flash_gpio = devm_gpiod_get(&pdev->dev, "flash", GPIOD_OUT_LOW);
+> +	ret = PTR_ERR_OR_ZERO(priv->flash_gpio);
+> +	if (ret) {
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev,
+> +				"Failed to request flash gpio: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	priv->enable_gpio = devm_gpiod_get(&pdev->dev, "enable", GPIOD_OUT_LOW);
+> +	ret = PTR_ERR_OR_ZERO(priv->enable_gpio);
+> +	if (ret) {
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev,
+> +				"Failed to request enable gpio: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	priv->vin_regulator = devm_regulator_get(&pdev->dev, "vin");
+> +	ret = PTR_ERR_OR_ZERO(priv->vin_regulator);
+> +	if (ret) {
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev,
+> +				"Failed to request regulator: %d\n", ret);
+> +		return ret;
+This regulator is optional so why would you return here?  You should 
+only return if -EPROBE_DEFER.
+> +	}
+> +
+> +	child_node = of_get_next_available_child(pdev->dev.of_node, NULL);
 
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
----
- kernel/rcu/tree.c | 133 +++++++++++++++++++++++++++++++++-------------
- 1 file changed, 97 insertions(+), 36 deletions(-)
+Maybe this should be the first check before doing all the processing to 
+make sure that the DT is not
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 5e26145e9ead..f9f1f935ab0b 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -114,6 +114,14 @@ int rcu_num_lvls __read_mostly = RCU_NUM_LVLS;
- int rcu_kfree_nowarn;
- module_param(rcu_kfree_nowarn, int, 0444);
- 
-+/*
-+ * For headless variant. Under memory pressure an
-+ * emergency pool can be used if the regular SLAB
-+ * is not able to serve some memory for us.
-+ */
-+int rcu_nr_emergency_objs = 3;
-+module_param(rcu_nr_emergency_objs, int, 0444);
-+
- /* Number of rcu_nodes at specified level. */
- int num_rcu_lvl[] = NUM_RCU_LVL_INIT;
- int rcu_num_nodes __read_mostly = NUM_RCU_NODES; /* Total # rcu_nodes in use. */
-@@ -2877,6 +2885,12 @@ struct kfree_rcu_cpu {
- 	bool initialized;
- 	// Number of objects for which GP not started
- 	int count;
-+
-+	/*
-+	 * Reserved emergency pool for headless variant.
-+	 */
-+	int nr_emergency;
-+	void **emergency;
- };
- 
- static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
-@@ -2892,6 +2906,27 @@ debug_rcu_bhead_unqueue(struct kvfree_rcu_bulk_data *bhead)
- #endif
- }
- 
-+static inline struct kfree_rcu_cpu *
-+krc_this_cpu_lock(unsigned long *flags)
-+{
-+	struct kfree_rcu_cpu *krcp;
-+
-+	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
-+	krcp = this_cpu_ptr(&krc);
-+	if (likely(krcp->initialized))
-+		spin_lock(&krcp->lock);
-+
-+	return krcp;
-+}
-+
-+static inline void
-+krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
-+{
-+	if (likely(krcp->initialized))
-+		spin_unlock(&krcp->lock);
-+	local_irq_restore(flags);
-+}
-+
- /*
-  * This function is invoked in workqueue context after a grace period.
-  * It frees all the objects queued on ->bhead_free or ->head_free.
-@@ -2974,6 +3009,7 @@ static void kfree_rcu_work(struct work_struct *work)
- 	 */
- 	for (; head; head = next) {
- 		unsigned long offset = (unsigned long)head->func;
-+		unsigned long flags;
- 		bool headless;
- 		void *ptr;
- 
-@@ -2991,10 +3027,23 @@ static void kfree_rcu_work(struct work_struct *work)
- 		trace_rcu_invoke_kvfree_callback(rcu_state.name, head, offset);
- 
- 		if (!WARN_ON_ONCE(!__is_kvfree_rcu_offset(offset))) {
--			if (headless)
-+			if (headless) {
- 				kvfree((void *) *((unsigned long *) ptr));
- 
--			kvfree(ptr);
-+				krcp = krc_this_cpu_lock(&flags);
-+				if (krcp->emergency) {
-+					if (krcp->nr_emergency < rcu_nr_emergency_objs) {
-+						krcp->emergency[krcp->nr_emergency++] = ptr;
-+
-+						/* Bypass freeing of it, it is in emergency pool. */
-+						ptr = NULL;
-+					}
-+				}
-+				krc_this_cpu_unlock(krcp, flags);
-+			}
-+
-+			if (ptr)
-+				kvfree(ptr);
- 		}
- 
- 		rcu_lock_release(&rcu_callback_map);
-@@ -3144,40 +3193,26 @@ kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
- 	return true;
- }
- 
--static inline struct rcu_head *attach_rcu_head_to_object(void *obj)
-+static inline struct rcu_head *
-+set_ptr_in_rcu_head_obj(void *ptr, unsigned long *rho)
-+{
-+	rho[0] = (unsigned long) ptr;
-+	return ((struct rcu_head *) ++rho);
-+}
-+
-+static inline struct rcu_head *
-+alloc_rcu_head_obj(void *ptr)
- {
--	unsigned long *ptr;
-+	unsigned long *rho;
- 
- 	/* Try hard to get the memory. */
--	ptr = kmalloc(sizeof(unsigned long *) +
-+	rho = kmalloc(sizeof(unsigned long *) +
- 		sizeof(struct rcu_head), GFP_KERNEL |
- 			__GFP_ATOMIC | __GFP_HIGH | __GFP_RETRY_MAYFAIL);
--	if (!ptr)
-+	if (!rho)
- 		return NULL;
- 
--	ptr[0] = (unsigned long) obj;
--	return ((struct rcu_head *) ++ptr);
--}
--
--static inline struct kfree_rcu_cpu *
--krc_this_cpu_lock(unsigned long *flags)
--{
--	struct kfree_rcu_cpu *krcp;
--
--	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
--	krcp = this_cpu_ptr(&krc);
--	if (likely(krcp->initialized))
--		spin_lock(&krcp->lock);
--
--	return krcp;
--}
--
--static inline void
--krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
--{
--	if (likely(krcp->initialized))
--		spin_unlock(&krcp->lock);
--	local_irq_restore(flags);
-+	return set_ptr_in_rcu_head_obj(ptr, rho);
- }
- 
- /*
-@@ -3237,15 +3272,31 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- 	if (!success) {
- 		/* Is headless object? */
- 		if (head == NULL) {
--			/* Drop the lock. */
-+			/*
-+			 * Drop the lock to use more permissive
-+			 * parameters, after that take it back.
-+			 */
- 			krc_this_cpu_unlock(krcp, flags);
-+			head = alloc_rcu_head_obj(ptr);
-+			krcp = krc_this_cpu_lock(&flags);
- 
--			head = attach_rcu_head_to_object(ptr);
--			if (head == NULL)
--				goto inline_return;
-+			/*
-+			 * Use emergency pool if still fails.
-+			 */
-+			if (head == NULL) {
-+				if (!krcp->nr_emergency)
-+					goto unlock_return;
- 
--			/* Take it back. */
--			krcp = krc_this_cpu_lock(&flags);
-+				head = set_ptr_in_rcu_head_obj(ptr,
-+					krcp->emergency[--krcp->nr_emergency]);
-+
-+				/*
-+				 * We do not need to do it. But just in case
-+				 * let's set the pulled slot to NULL to avoid
-+				 * magic issues.
-+				 */
-+				krcp->emergency[krcp->nr_emergency] = NULL;
-+			}
- 
- 			/*
- 			 * Tag the headless object. Such objects have a back-pointer
-@@ -3282,7 +3333,6 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
- unlock_return:
- 	krc_this_cpu_unlock(krcp, flags);
- 
--inline_return:
- 	/*
- 	 * High memory pressure, so inline kvfree() after
- 	 * synchronize_rcu(). We can do it from might_sleep()
-@@ -4272,6 +4322,17 @@ static void __init kfree_rcu_batch_init(void)
- 		}
- 
- 		INIT_DELAYED_WORK(&krcp->monitor_work, kfree_rcu_monitor);
-+
-+		/*
-+		 * The poll will be populated when low memory condition
-+		 * is detected. Therefore we do not fill it in here.
-+		 */
-+		krcp->emergency = kmalloc_array(rcu_nr_emergency_objs,
-+			sizeof(void *), GFP_NOWAIT);
-+
-+		if (!krcp->emergency)
-+			pr_err("Failed to create emergency pool for %d CPU!\n", cpu);
-+
- 		krcp->initialized = true;
- 	}
- 	if (register_shrinker(&kfree_rcu_shrinker))
--- 
-2.20.1
+malformed.
 
+> +	if (!child_node) {
+> +		dev_err(&pdev->dev,
+> +			"No DT child node found for connected LED.\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = of_property_read_u32(child_node, "flash-max-timeout-us",
+> +				   &priv->max_timeout);
+> +	if (ret) {
+> +		priv->max_timeout = FLASH_MAX_TIMEOUT_DEFAULT;
+> +		dev_warn(&pdev->dev,
+> +			 "flash-max-timeout-us DT property missing\n");
+> +	}
+> +
+> +	/*
+> +	 * Set default timeout to FLASH_DEFAULT_TIMEOUT except if max_timeout
+> +	 * from DT is lower.
+> +	 */
+> +	priv->timeout = min(priv->max_timeout, FLASH_TIMEOUT_DEFAULT);
+> +
+> +	timer_setup(&priv->powerdown_timer, sgm3140_powerdown_timer, 0);
+> +
+> +	fled_cdev = &priv->fled_cdev;
+> +	led_cdev = &fled_cdev->led_cdev;
+> +
+> +	fled_cdev->ops = &sgm3140_flash_ops;
+> +
+> +	led_cdev->brightness_set_blocking = sgm3140_brightness_set;
+> +	led_cdev->max_brightness = LED_ON;
+> +	led_cdev->flags |= LED_DEV_CAP_FLASH;
+> +
+> +	sgm3140_init_flash_timeout(priv);
+> +
+> +	init_data.fwnode = of_fwnode_handle(child_node);
+> +
+> +	platform_set_drvdata(pdev, priv);
+> +
+> +	/* Register in the LED subsystem */
+> +	ret = devm_led_classdev_flash_register_ext(&pdev->dev,
+> +						   fled_cdev, &init_data);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "Failed to register flash device: %d\n",
+> +			ret);
+> +		goto err;
+> +	}
+> +
+> +	sgm3140_init_v4l2_flash_config(priv, &v4l2_sd_cfg);
+> +
+> +	/* Create V4L2 Flash subdev */
+> +	priv->v4l2_flash = v4l2_flash_init(&pdev->dev,
+> +					   of_fwnode_handle(child_node),
+> +					   fled_cdev, NULL,
+> +					   &v4l2_sd_cfg);
+> +	if (IS_ERR(priv->v4l2_flash)) {
+> +		ret = PTR_ERR(priv->v4l2_flash);
+> +		goto err;
+Not sure why this is here you are not in a for loop and this will fall 
+through anyway to the err label.
+> +	}
+> +
+> +err:
+> +	of_node_put(child_node);
+> +	return ret;
+> +}
+> +
+Dan
