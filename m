@@ -2,110 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E19D19DD12
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E9D19DD19
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 19:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728464AbgDCRty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 13:49:54 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:42621 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727882AbgDCRty (ORCPT
+        id S2404178AbgDCRuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 13:50:13 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:46557 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403912AbgDCRuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 13:49:54 -0400
-Received: from apollo.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:6257:18ff:fec4:ca34])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 5C49E22FF5;
-        Fri,  3 Apr 2020 19:49:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1585936191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=76ONF2brR4UH2L2O0KzOMhJ0PFTRaWglQINMn8OL8ak=;
-        b=upgFVbekBHvxdaDNGJVhpdVyscg0XYHYqZq6hVIog0+GliunUNwJYzZ6vAKcaQfXyWxAly
-        zgQl8GxMQ8qEysW34mSD0D+WljfvOQKc2Gb20PCZQeAp47+QNqfJgHLzIuYLn95TJkPiPz
-        UiTgey0wO9TTCPggoxERk3qrT64JTpE=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH] tty: serial: fsl_lpuart: make coverity happy
-Date:   Fri,  3 Apr 2020 19:49:42 +0200
-Message-Id: <20200403174942.9594-1-michael@walle.cc>
+        Fri, 3 Apr 2020 13:50:12 -0400
+Received: by mail-qv1-f67.google.com with SMTP id bu9so3994617qvb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 10:50:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6RqKi5kQS7abbcK/m1MeYgXWyu5S1dWWUHnw0at9jU4=;
+        b=hnyAoV/88z+dlStydxHrx8vJJda32g/f6iLhSfqsoXgbvHFR0fKod2GO+mjA7AMilm
+         K8sayx6yZNn4mNTqNmSHR6Z4zshubd5vm+PpE9d/xCiHeAfvwbc2fWlWkKpxe/3Qna/w
+         o95oqnQsktIYx+OQHocxLgJwacDbZI75GdSX8UzoQznNWqoS7/+i3TbeF3BqpecqkDg3
+         xtCX75JbLMROPmKKjR8HzUg1PbHYFI7fRb505sSqP05/wdQFrGvwapN82De8OjTed/+Z
+         D10mknQQn1jwnOlj7ZGc49ajapHlBqsVMl8vy803lptaH1CA58uvrEqpgY4gP9sWZecb
+         gpgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6RqKi5kQS7abbcK/m1MeYgXWyu5S1dWWUHnw0at9jU4=;
+        b=I7J7i4Z4wVUcZP/j87ZZTpCIYlH75KKRVw6T8+wfHD+C1XsPBxP+Gtj0E5sxFfvZxw
+         ayXlhMH/+U7nk6oGaaMt0BZdlTGSINQq6I+T87ZOaE1eI9Jbpi4BvmAEGMbr+3VKTRYM
+         CvsDU1xAxEgEIjjFxX/s5it51zESCFy/1jY+ehVXKBCqPXWClfUgAtSyM53aVoHlAUps
+         Ipkga2+d+mfZlPk9GYPIl4hN846pK1o5xTnhvpGMnDB8GzmycoaRDL064c5AI4jPVOzH
+         dutWTImUhNin7R0A1CrkwqIwrzQHPhXQWtqfrc9jYoPJOZAW1ebRIwtjOLUUOl8RHojv
+         eUmA==
+X-Gm-Message-State: AGi0PuaJwLMXFGTyms0++ygfHAIDKGFqf4lVOoQhLNlQY6hrttxTN20Z
+        ElYIb4zyrBH1xWf5pgJcFOmocim9FIzBoA==
+X-Google-Smtp-Source: APiQypKqlXQdNVDSxOjJ1Ms50Az8IIgj5YUggK9m6THUtnyNdT511yDYfxOcjAcIrniOVwzOCbpasA==
+X-Received: by 2002:a05:6214:b0a:: with SMTP id u10mr9744314qvj.45.1585936211473;
+        Fri, 03 Apr 2020 10:50:11 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id 77sm6821225qkh.26.2020.04.03.10.50.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 10:50:10 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>
+Cc:     linux-remoteproc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] remoteproc: bug fixes
+Date:   Fri,  3 Apr 2020 12:50:02 -0500
+Message-Id: <20200403175005.17130-1-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: ++++
-X-Spam-Level: ****
-X-Rspamd-Server: web
-X-Spam-Status: No, score=4.90
-X-Spam-Score: 4.90
-X-Rspamd-Queue-Id: 5C49E22FF5
-X-Spamd-Result: default: False [4.90 / 15.00];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         R_MISSING_CHARSET(2.50)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         DKIM_SIGNED(0.00)[];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         MID_CONTAINS_FROM(1.00)[];
-         NEURAL_HAM(-0.00)[-0.956];
-         RCVD_COUNT_ZERO(0.00)[0];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:31334, ipnet:2a02:810c:8000::/33, country:DE]
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coverity reports the following:
+This series fixes some bugs in remoteproc error paths.  The last
+patch is derived from something I posted before, but has been
+updated to based on Linus' current master branch.
 
-  var_compare_op: Comparing chan to null implies that chan might be null.
+					-Alex
 
-  1234        if (chan)
-  1235                dmaengine_terminate_all(chan);
-  1236
+Alex Elder (3):
+  remoteproc: fix a bug in rproc_alloc()
+  remoteproc: qcom_q6v5_mss: fix a bug in q6v5_probe()
+  remoteproc: qcom_q6v5_mss: fix q6v5_probe() error paths
 
-  Dereference after null check (FORWARD_NULL)
-  var_deref_op: Dereferencing null pointer chan.
+ drivers/remoteproc/qcom_q6v5_mss.c   | 33 +++++++++++++++++-----------
+ drivers/remoteproc/remoteproc_core.c |  4 ++--
+ 2 files changed, 22 insertions(+), 15 deletions(-)
 
-  1237        dma_unmap_sg(chan->device->dev, &sport->rx_sgl, 1, DMA_FROM_DEVICE);
-
-Technically, this is correct. But lpuart_dma_rx_free() is guarded by
-lpuart_dma_rx_use which is only true if there is a dma channel, see
-lpuart_rx_dma_startup(). In any way, this looks bogus. So remove
-the superfluous "if (chan)" check and make coverity happy.
-
-Fixes: a092ab25fdaa ("tty: serial: fsl_lpuart: fix DMA mapping")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Reported-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/tty/serial/fsl_lpuart.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
-index 4cb04d8bf034..83d803729d23 100644
---- a/drivers/tty/serial/fsl_lpuart.c
-+++ b/drivers/tty/serial/fsl_lpuart.c
-@@ -1210,9 +1210,7 @@ static void lpuart_dma_rx_free(struct uart_port *port)
- 					struct lpuart_port, port);
- 	struct dma_chan *chan = sport->dma_rx_chan;
- 
--	if (chan)
--		dmaengine_terminate_all(chan);
--
-+	dmaengine_terminate_all(chan);
- 	dma_unmap_sg(chan->device->dev, &sport->rx_sgl, 1, DMA_FROM_DEVICE);
- 	kfree(sport->rx_ring.buf);
- 	sport->rx_ring.tail = 0;
 -- 
 2.20.1
 
