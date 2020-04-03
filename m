@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2123D19DC32
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D792919DC37
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390939AbgDCQ4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 12:56:42 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:23372 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726087AbgDCQ4m (ORCPT
+        id S2391079AbgDCQ4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:56:53 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:17956 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391021AbgDCQ4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:56:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585933001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YEhHAWV6eoa7/VaPAdgqUWSGR2q1/D+L9I10tbha8Hs=;
-        b=WswrqRlhILM2mTyOBLepXocI6q8KfS/MuUaXDAfvSjn8hmTQxr5vL0beaw2ttcmHUuJJFk
-        PbQRsdhbGomohI3VlECykYlfgia1RWTj0h6d2LuGJnonQSTzETtY8UXqcOPyjw8zGmzeGM
-        ZEp+7vCKPH0tS/WH+zK9a38UXpYtxb0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-UGSdHACePgakTn3OGQp4rA-1; Fri, 03 Apr 2020 12:56:37 -0400
-X-MC-Unique: UGSdHACePgakTn3OGQp4rA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 3 Apr 2020 12:56:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1585933009; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=9GAbZWuPcTKjEXz3EeVxBNWDn+mYvVxInvRy5MFxrck=; b=exY1mdH5usVAVNjV1pjSINXxmhIkZn2PrpNoO3Ia8XC1gVI+avMdfPCnAwA24rSTCeENORyb
+ OUsJD1rxvm1r7l3Jzvq/NZyJX1gi/pw/CaC6E77oVTNKjeK1L5iQBtUd+BHRPEytYd8FDacd
+ OF++izEHc3I5NeilEzoxtPDPVmk=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e876ac7.7fc470598378-smtp-out-n01;
+ Fri, 03 Apr 2020 16:56:39 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 658F5C44791; Fri,  3 Apr 2020 16:56:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.110.122.98] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7DD8190B2A2;
-        Fri,  3 Apr 2020 16:56:35 +0000 (UTC)
-Received: from treble (ovpn-118-100.rdu2.redhat.com [10.10.118.100])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 391B35C3F8;
-        Fri,  3 Apr 2020 16:56:34 +0000 (UTC)
-Date:   Fri, 3 Apr 2020 11:56:31 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     jeyu@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>, keescook@chromium.org,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: Re: [PATCH] module: Harden STRICT_MODULE_RWX
-Message-ID: <20200403165631.hrxxm3pnzqa4vxln@treble>
-References: <20200403163716.GV20730@hirez.programming.kicks-ass.net>
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 171CCC433D2;
+        Fri,  3 Apr 2020 16:56:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 171CCC433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v5 2/5] phy: qcom-snps: Add SNPS USB PHY driver for QCOM
+ based SOCs
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        robh+dt@kernel.org, mark.rutland@arm.com, p.zabel@pengutronix.de,
+        mgautam@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <1585880634-15222-1-git-send-email-wcheng@codeaurora.org>
+ <1585880634-15222-3-git-send-email-wcheng@codeaurora.org>
+ <20200403060127.GM72691@vkoul-mobl>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <91262538-6b1e-afd3-97f8-614bb4a54b5a@codeaurora.org>
+Date:   Fri, 3 Apr 2020 09:56:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200403060127.GM72691@vkoul-mobl>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200403163716.GV20730@hirez.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 06:37:16PM +0200, Peter Zijlstra wrote:
+Hi Vinod,
+
+Thanks for the review, I'll address these in the next version.
+
+On 4/2/2020 11:01 PM, Vinod Koul wrote:
+> On 02-04-20, 19:23, Wesley Cheng wrote:
+>> This adds the SNPS FemtoPHY V2 driver used in QCOM SOCs.  There
+>> are potentially multiple instances of this UTMI PHY on the
+>> SOC, all which can utilize this driver.  The V2 driver will
+>> have a different register map compared to V1.
 > 
-> We're very close to enforcing W^X memory, refuse to load modules that
-> violate this principle per construction.
+> Some nitpicks below, otherwise:
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: Jessica Yu <jeyu@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> ---
->  kernel/module.c |   24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
+> Reviewed-by: Vinod Koul <vkoul@kernel.org>
 > 
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -2044,9 +2044,28 @@ static void module_enable_x(const struct
->  	frob_text(&mod->core_layout, set_memory_x);
->  	frob_text(&mod->init_layout, set_memory_x);
->  }
-> +
-> +static int module_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
-> +			       char *secstrings, struct module *mod)
-
-A verb would be nice: "module_enforce_rwx_sections"?
-
-Shouldn't this be under STRICT_MODULE_RWX instead of
-ARCH_HAS_STRICT_MODULE_RWX?
-
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < hdr->e_shnum; i++) {
-> +		if (sechdrs[i].sh_flags & (SHF_EXECINSTR|SHF_WRITE))
-> +			return -ENOEXEC;
-
-I think you only want the error when both are set?
-
-		if (sechdrs[i].sh_flags & (SHF_EXECINSTR|SHF_WRITE) == (SHF_EXECINSTR|SHF_WRITE))
+>> +/**
+>> + * struct qcom_snps_hsphy - structure holding snps hs phy attributes
+>> + *
+>> + * @phy: generic phy
+>> + * @base: iomapped memory space for qubs2 phy
+>> + *
+>> + * @cfg_ahb_clk: AHB2PHY interface clock
+>> + * @ref_clk: phy reference clock
+>> + * @iface_clk: phy interface clock
+>> + * @phy_reset: phy reset control
+>> + * @vregs: regulator supplies bulk data
+>> +
+> 
+> This is missing the marker * for kernel doc
+> 
+>> + * @phy_initialized: if PHY has been initialized correctly
+>> + *
+> 
+> This empty line is redundant
+> 
+>> + */
+>> +struct qcom_snps_hsphy {
+>> +	struct phy *phy;
+>> +	void __iomem *base;
+>> +
+>> +	struct clk *cfg_ahb_clk;
+>> +	struct clk *ref_clk;
+>> +	struct reset_control *phy_reset;
+>> +	struct regulator_bulk_data vregs[SNPS_HS_NUM_VREGS];
+>> +
+>> +	bool phy_initialized;
+>> +};
+>> +
+>> +static inline void qcom_snps_hsphy_write_mask(void __iomem *base, u32 offset,
+>> +				    u32 mask, u32 val)
+> 
+> coding style mandates that second line should start at preceeding line
+> opening brace :), so can you please make it:
+> 
+> static inline void qcom_snps_hsphy_write_mask(void __iomem *base, u32 offset,
+>                                               u32 mask, u32 val)
+> 
 
 -- 
-Josh
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
