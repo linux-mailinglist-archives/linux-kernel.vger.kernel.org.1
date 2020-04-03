@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5640919DB30
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF12919DB40
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 18:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404312AbgDCQQn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Apr 2020 12:16:43 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:37247 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404035AbgDCQQl (ORCPT
+        id S2404361AbgDCQRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 12:17:06 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:54674 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728270AbgDCQRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 12:16:41 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-6-twe0tjGPOHmUDCCDvyBmWw-1;
- Fri, 03 Apr 2020 17:16:39 +0100
-X-MC-Unique: twe0tjGPOHmUDCCDvyBmWw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 3 Apr 2020 17:16:38 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 3 Apr 2020 17:16:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Peter Zijlstra' <peterz@infradead.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-CC:     Jessica Yu <jeyu@kernel.org>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "keescook@chromium.org" <keescook@chromium.org>
-Subject: RE: [patch 1/2] x86,module: Detect VMX modules and disable
- Split-Lock-Detect
-Thread-Topic: [patch 1/2] x86,module: Detect VMX modules and disable
- Split-Lock-Detect
-Thread-Index: AQHWCdKtcG9rEqgOYkCfAyvrdM/+1ahnkoQA
-Date:   Fri, 3 Apr 2020 16:16:38 +0000
-Message-ID: <7b83b632e41c48698ab892b07673f42d@AcuMS.aculab.com>
-References: <20200402123258.895628824@linutronix.de>
- <20200402124205.242674296@linutronix.de>
- <bc9a0c9a-7bd0-c85d-4795-ae0b4faa5e84@prevas.dk>
- <20200403143459.GA30424@linux-8ccs>
- <20200403152158.GR20730@hirez.programming.kicks-ass.net>
- <20200403160156.GA2701@linux.intel.com>
- <20200403161205.GT20730@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200403161205.GT20730@hirez.programming.kicks-ass.net>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 3 Apr 2020 12:17:05 -0400
+Received: by mail-wm1-f66.google.com with SMTP id c81so7718094wmd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 09:17:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=N/dufn/yNOMJ2IHz3OJ8DzV8nJCZDUY6SoIeQkbo4HE=;
+        b=lceOlfDEZO6ls8DfUYwEazvNtjyoNL1xnA5Hyjf4y7vnnCPcqQagBjMy4dSag11/Gy
+         MJ6Agqo5OFJg8oMCea8PM67NSFhZgb+Zgk0AntQnGD42JS6ROtv65aZPI3H7sF3FAt/j
+         SpMIx8Df9bVaMG1QMUljC2IpJUeeQt/XHRi/QdahMV8GFGEdAkiciNQl3FpQ5XYYz/vZ
+         a3e2a4+PRD/6DojPFhZnn2ho1cuBL+D7pRNYpfbRcG+td1E22Zc5iuQsGdZh6tyGx31Y
+         BMC7uEQn2JptK+sGIMGCvCdh+zMEXfnN34ZPq2ipDYleISBGLADwLXrP2PmW4LBILD9Z
+         /bIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=N/dufn/yNOMJ2IHz3OJ8DzV8nJCZDUY6SoIeQkbo4HE=;
+        b=GnjOrR3UJNE2a7n45coNE5VsbXL3pJZDBPfZ/D0LFioS4nedEO6sz7aQD+mfRBAKRH
+         LkDNDTvbbkNuXlfZZ7pl+iOWUeFADeglkYJBFy/DjHMxv5rFcCur0Ot1hiCl0KtDd2oV
+         B0xWi2Uzu+nuB5QrNzq7w3eiKQU1LpMvQWxDvPgfBAPBTCM52E2YcVZhkHMZI6+oTQ+x
+         nI5oHCzoEm9hPlYyKd1ORUU346aYDsZCxegBCsxUVQhng8gE5T0x3JHzUIuS2VhXD0aM
+         s5qg8djhaMXKC402zPpx3SSs7aAH5P9L00VmLHrL3sRTm18QSveBmP1hk++gHf6g+Emp
+         gm6w==
+X-Gm-Message-State: AGi0PuY0oRFQOySu8pZZie1adhq69ceu8OQXGzdB3IhXm+cgbIF2nQPk
+        ppjXAPdcCYeN0rG/55bwEg==
+X-Google-Smtp-Source: APiQypI3FWaGbD3ENSlGqfMpgNcKgs3YQAwSWbkNhPyFv8RpF3rl1MY5lpQmkLuiEx6TMSeDwmUXlw==
+X-Received: by 2002:a1c:195:: with SMTP id 143mr9595391wmb.0.1585930624236;
+        Fri, 03 Apr 2020 09:17:04 -0700 (PDT)
+Received: from earth.lan (host-92-23-85-227.as13285.net. [92.23.85.227])
+        by smtp.gmail.com with ESMTPSA id p10sm12433171wrm.6.2020.04.03.09.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Apr 2020 09:17:03 -0700 (PDT)
+From:   Jules Irenge <jbi.octave@gmail.com>
+X-Google-Original-From: Jules Irenge <djed@earth.lan>
+Date:   Fri, 3 Apr 2020 17:17:02 +0100 (BST)
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     Jules Irenge <jbi.octave@gmail.com>, linux-kernel@vger.kernel.org,
+        julia.lawall@lip6.fr, boqun.feng@gmail.com,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v2 4/4] locking/rtmutex: Remove Comparison to bool
+In-Reply-To: <20200330112157.GI20696@hirez.programming.kicks-ass.net>
+Message-ID: <alpine.LFD.2.21.2004031716310.10601@earth.lan>
+References: <0/4> <20200330012450.312155-1-jbi.octave@gmail.com> <20200330012450.312155-5-jbi.octave@gmail.com> <20200330112157.GI20696@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Zijlstra
-> Sent: 03 April 2020 17:12
-> On Fri, Apr 03, 2020 at 09:01:56AM -0700, Sean Christopherson wrote:
-> > On Fri, Apr 03, 2020 at 05:21:58PM +0200, Peter Zijlstra wrote:
-> > > On Fri, Apr 03, 2020 at 04:35:00PM +0200, Jessica Yu wrote:
-> 
-> > > > I wonder if it would make sense then to limit the text scans to just
-> > > > out-of-tree modules (i.e., missing the intree modinfo flag)?
-> > >
-> > > It would; didn't know there was one.
-> >
-> > Rather than scanning modules at all, what about hooking native_write_cr4()
-> > to kill SLD if CR4.VMXE is toggled on and the caller didn't increment a
-> > "sld safe" counter?
-> 
-> And then you're hoping that the module uses that and not:
-> 
->   asm volatile ("mov %0, cr4" :: "r" (val));
-> 
-> I think I feel safer with the scanning to be fair. Also with the intree
-> hint on, we can extend the scanning for out-of-tree modules for more
-> dodgy crap we really don't want modules to do, like for example the
-> above.
 
-Could you do the scanning in the last phase of the module build
-that has to be done against the target kernel headers and with the
-target kernel build infrastructure?
 
-	David
+On Mon, 30 Mar 2020, Peter Zijlstra wrote:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+> On Mon, Mar 30, 2020 at 02:24:50AM +0100, Jules Irenge wrote:
+>> Coccinelle reports a warning inside __sched rt_mutex_slowunlock()
+>>
+>> WARNING: Comparison to bool
+>
+> I don't mind the patch; but WTH is that a WARNING ?!? Superfluous, but
+> definitely not wrong or even dangerous AFAICT.
+>
+>> To fix this,
+>> a comparison (==) of a bool type function result to value true
+>> together with the value are removed.
+>>
+>> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+>> ---
+>>  kernel/locking/rtmutex.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+>> index 851bbb10819d..7289e7b26be4 100644
+>> --- a/kernel/locking/rtmutex.c
+>> +++ b/kernel/locking/rtmutex.c
+>> @@ -1378,7 +1378,7 @@ static bool __sched rt_mutex_slowunlock(struct rt_mutex *lock,
+>>  	 */
+>>  	while (!rt_mutex_has_waiters(lock)) {
+>>  		/* Drops lock->wait_lock ! */
+>> -		if (unlock_rt_mutex_safe(lock, flags) == true)
+>> +		if (unlock_rt_mutex_safe(lock, flags))
+>>  			return false;
+>>  		/* Relock the rtmutex and try again */
+>>  		raw_spin_lock_irqsave(&lock->wait_lock, flags);
+>> --
+>> 2.25.1
+>>
+>
+Thanks for the reply, I will take good note.
