@@ -2,69 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0B4219CE2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 03:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393E719CE2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 03:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390272AbgDCBea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Apr 2020 21:34:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390223AbgDCBe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Apr 2020 21:34:28 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 535B1206A3;
-        Fri,  3 Apr 2020 01:34:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585877668;
-        bh=7b3Ysa1BLGv5if39DtngdrAT55GjsM/BtI03DHDpmQc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=BzJgVKHHx6uUXr9l6xQGm5A8oJuQelPcnLUdfdHp+0Yh/+8Yhp6F/TS/8EolPRx11
-         1pEPmSDHQ07+CocsG9XLo2FztBK8wXruCK3ANoHjUNZI8CWBlI+GGjqonAlpruJzIF
-         tchnmiRZ5guOzb0AcRCF1h+0CDJZdMbRXP80mIYY=
-Content-Type: text/plain; charset="utf-8"
+        id S2390348AbgDCBfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Apr 2020 21:35:16 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]:40805 "EHLO
+        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388709AbgDCBfP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Apr 2020 21:35:15 -0400
+Received: by mail-wr1-f42.google.com with SMTP id s8so4493214wrt.7
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Apr 2020 18:35:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=okSzurA2TnTvishCfA5UABEnEmnZ1xC7aBRu4+DTlSg=;
+        b=ZKfwGVICCjRx5AWbAhHCXAgDeMHWdOi5C4RE0z1zPUPuoU2rWpb5wystqf2uqosPVJ
+         bdb9FQS3BrN4wC8okLZnEDzl1SrxB+qdmdFeYV1/apo4VpVsqdVSfEdTmZFLxJwYy5C/
+         hun4imbdf1de+VHlZEl8nVMg99+6dwrgLcew+tTkoTJox7p3/IH3EXSAe6yJkkkgQJqy
+         a5cofaCJzqJ6uiaSzd7WyETrmqGujjICdiv1Y/wGbvGRzD3wm+NoRjGAOOYW+8dVC+h7
+         7SDl1VckNapg0oXqqGmYfYlc4l7fI9eULatsCHzkbwJPvEn6nP07VffpV+ibbIeUYkEU
+         kjnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=okSzurA2TnTvishCfA5UABEnEmnZ1xC7aBRu4+DTlSg=;
+        b=Ng/JbAhKAHGoBcqmMIlrZlj0/oMy+ntn0IQ6luzH83HtQ3sKnrUV4V3LYgaddja25A
+         nWrbjLHYXzdegfe6iGLlFzZVSgEt1vzft3nu8CND++xg6xNJr7Ys1sgiofY4w4SM4jrc
+         t33eqANZ4BEfNIB4Z+pjLAMB0KdVksLiqcekMDsA33RgOwwfM8n3KcNohwprLbpgoTbg
+         Azd64LwLfyf88weZmzJ6kvhHS8RM83nb8zSbHxdrwUtWoNZT3tNUmrDZKMFjwU5KDZw8
+         8Eb/PPcRCx12W7K1IqrIkipN/Zh3LB/MUD4up/x51yIDCycFz35qqwQw68GRK2nA4pFk
+         mBuA==
+X-Gm-Message-State: AGi0PuZ9TwhOxWRg0qcty88p/Kg65sEt1RSM5RZ3GAaVlYmpf93KUpqb
+        7lDFtzkI8wlmyd9pPcIyUIbW+lSqKNUrBaJx6naKuQ==
+X-Google-Smtp-Source: APiQypICUUEzh8Ovv2uj0iM+NAXefNvD6iBSf4eXgHc7MVsGchk3KaHDRgkNZbMTlHbF/HnBzXAk4eyny2V+Rwsa7hk=
+X-Received: by 2002:adf:aacf:: with SMTP id i15mr6013203wrc.31.1585877712013;
+ Thu, 02 Apr 2020 18:35:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200330205647.24806-1-ansuelsmth@gmail.com>
-References: <20200330205647.24806-1-ansuelsmth@gmail.com>
-Subject: Re: [PATCH v2] ARM: qcom: Disable i2c device on gsbi4 for ipq806x
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Mathieu Olivari <mathieu@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>, Ansuel Smith <ansuelsmth@gmail.com>
-Date:   Thu, 02 Apr 2020 18:34:27 -0700
-Message-ID: <158587766752.125146.7582840761926137726@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+From:   =?UTF-8?Q?Lu=C3=ADs_Matallui?= <matallui@gmail.com>
+Date:   Thu, 2 Apr 2020 19:35:01 -0600
+Message-ID: <CAE3Pknn88NZNqiaHahM4HVvTU82hdMcbhGWWb4AyXXYMbcGuaQ@mail.gmail.com>
+Subject: Help with IRQ-MSI-IRQ bridges
+To:     linux-kernel@vger.kernel.org
+Cc:     maz@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Ansuel Smith (2020-03-30 13:56:46)
-> diff --git a/drivers/clk/qcom/gcc-ipq806x.c b/drivers/clk/qcom/gcc-ipq806=
-x.c
-> index b0eee0903807..f7d7a2bc84c1 100644
-> --- a/drivers/clk/qcom/gcc-ipq806x.c
-> +++ b/drivers/clk/qcom/gcc-ipq806x.c
-> @@ -991,6 +991,7 @@ static struct clk_branch gsbi4_h_clk =3D {
->                 .hw.init =3D &(struct clk_init_data){
->                         .name =3D "gsbi4_h_clk",
->                         .ops =3D &clk_branch_ops,
-> +                       .flags =3D CLK_IGNORE_UNUSED,
+Hi,
 
-Is this necessary? Shouldn't we skip clks that are protected during the
-unused phase?
+I've got this SoC which uses IRQ-MSI and MSI-IRQ bridges in order to
+get interrupts from devices external to the ARM subsystem.
+I already got some pointers from Maz and have been able to create the
+drivers with the stacked domains and can now see the mappings working
+fine across domains.
 
->                 },
->         },
->  };
-> --=20
-> 2.25.1
->
+Maz pointed me to the Marvell mvebu-gicp (for my MSI controller, a.k.a
+MSI-IRQ bridge) and to mvebu-icu for the MSI client (IRQ-MSI bridge).
+
+I now have the interrupts working, but it seems like I'm missing a
+bunch of them. And therefore my device doesn't work properly.
+The main difference between my HW and Marvell's is that my IRQs are
+not level-triggered and the MSIs don't support the two messages for
+level-triggered interrupts.
+
+To illustrate my system:
+
+DEV --line--> IRQ-MSI Bridge (MSIC) --msi--> MSI-IRQ Bridge (GICP)
+--line--> GICv2
+
+For MSIC, all I can do is configure the address and data for the MSI,
+and I believe on every rising edge of the Device IRQ, an MSI is sent.
+For GICP, all I have is a doorbell and a way to enable/disable it, and
+whenever the doorbell is enabled and has a value != 0, the IRQ line to
+GICv2 gets asserted.
+
+The first thing I noticed is that when I get an interrupt, the IRQ
+flow goes like:
+
+  handle_irq();
+  irq_eoi();
+
+So, I guess my first question here is, how can I guarantee that I
+don't get another MSI whilst in handle_irq()?
+If I do, then I will clear the doorbell on irq_eoi() (because that's
+my only choice) and will lose the queued IRQs.
+
+It also seems that I'm missing IRQs in the beginning after probing the
+device, and before it was working for me when I was setting up all
+these registers manually and simply using GICv2 as my only interrupt
+controller.
+I do see the unmask() ops being called for all my stacked irqchips, so
+I don't understand how I'm missing so many interrupts.
+
+Any help would be truly appreciated.
+
+Thanks,
+ltanica
