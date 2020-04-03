@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 755F319D047
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 08:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D75E19D04F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 08:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388127AbgDCGhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 02:37:23 -0400
-Received: from mga17.intel.com ([192.55.52.151]:26051 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730759AbgDCGhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 02:37:23 -0400
-IronPort-SDR: RZnlD4dae2bMNWDjZOMQ8NYusJLdcxRnpOegY0qosItqQq/vDQB/zAiUPvpbtshvilDxkSB8PZ
- 4MMV7MzH4L/A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 23:37:22 -0700
-IronPort-SDR: uVq+TP60UB0gu+tUe0oDJi+pXCzxXRnZFGpBougHPq3mDYA7uvPNFHvnTQPtYzbVHIepve5iX1
- U0ugja7fX5rg==
-X-IronPort-AV: E=Sophos;i="5.72,338,1580803200"; 
-   d="scan'208";a="423425676"
-Received: from ellenfax-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.38.213])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2020 23:37:17 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Joe Perches <joe@perches.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>
-Cc:     mchehab@kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        hverkuil@xs4all.nl,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        laurent.pinchart@ideasonboard.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 1/1] lib/vsprintf: Add support for printing V4L2 and DRM fourccs
-In-Reply-To: <04bb934e551f43540d1daacd2759beacc0b3116a.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20200401140522.966-1-sakari.ailus@linux.intel.com> <87eet6mgk7.fsf@intel.com> <04bb934e551f43540d1daacd2759beacc0b3116a.camel@perches.com>
-Date:   Fri, 03 Apr 2020 09:37:14 +0300
-Message-ID: <87zhbtkrc5.fsf@intel.com>
+        id S2388623AbgDCGih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 02:38:37 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:24753 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730550AbgDCGih (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 02:38:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585895916;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FoY5mkBeMkeyo7y0OE/A/cmKtuN2NtQ3ZqEZt21GFCU=;
+        b=JfSrU9/hAaBZofUCjhNvHfrxGQVt0BwDeS5mRYL/gJz3nRgRskoQD53WWCSmfLLch34cDH
+        miLrxSQe+4CucaKIjwO15P1sVnLugU72DYOoPXy6dm79fFSu8IvH8oece/01MpU7QGlF7D
+        cBmCelYprpwcPmPTlo9z4mV3U79KKzY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-pOpQyYxoPhyAEITttS26fg-1; Fri, 03 Apr 2020 02:38:34 -0400
+X-MC-Unique: pOpQyYxoPhyAEITttS26fg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A9298017CE;
+        Fri,  3 Apr 2020 06:38:33 +0000 (UTC)
+Received: from [10.72.13.110] (ovpn-13-110.pek2.redhat.com [10.72.13.110])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A2B094960;
+        Fri,  3 Apr 2020 06:38:29 +0000 (UTC)
+Subject: Re: [PATCH v2] vhost: drop vring dependency on iotlb
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org
+References: <20200402144519.34194-1-mst@redhat.com>
+ <44f9b9d3-3da2-fafe-aa45-edd574dc6484@redhat.com>
+ <20200402122544-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <f811f02e-5681-33c0-f970-f60c62ff0041@redhat.com>
+Date:   Fri, 3 Apr 2020 14:38:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200402122544-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Apr 2020, Joe Perches <joe@perches.com> wrote:
-> On Thu, 2020-04-02 at 11:34 +0300, Jani Nikula wrote:
->> Or could we conceive of a way to make this locally extensible yet safe,
->> letting callers use something like %{foo}, as well as providing a
->> locally relevant function to do the conversion?
+
+On 2020/4/3 =E4=B8=8A=E5=8D=8812:27, Michael S. Tsirkin wrote:
+> On Thu, Apr 02, 2020 at 11:01:13PM +0800, Jason Wang wrote:
+>> On 2020/4/2 =E4=B8=8B=E5=8D=8810:46, Michael S. Tsirkin wrote:
+>>> vringh can now be built without IOTLB.
+>>> Select IOTLB directly where it's used.
+>>>
+>>> Signed-off-by: Michael S. Tsirkin<mst@redhat.com>
+>>> ---
+>>>
+>>> Applies on top of my vhost tree.
+>>> Changes from v1:
+>>> 	VDPA_SIM needs VHOST_IOTLB
+>> It looks to me the patch is identical to v1.
+>>
+>> Thanks
+> you are right. I squashed the description into
+>      virtio/test: fix up after IOTLB changes
+> take a look at it in the vhost tree.
+
+
+Looks fine.
+
+Thanks
+
+
 >
-> No.  printf validation would be broken.
 
-I tossed the idea on a whim, and thinking further I could probably come
-up with a number of challenges, but care to elaborate on what you see as
-the problem in validation?
-
-BR,
-Jani.
-
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
