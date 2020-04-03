@@ -2,136 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8060A19D192
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 09:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D0019D19A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Apr 2020 10:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390182AbgDCH7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 03:59:08 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:37903 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389003AbgDCH7H (ORCPT
+        id S2389297AbgDCIBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 04:01:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:60129 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727431AbgDCIBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 03:59:07 -0400
+        Fri, 3 Apr 2020 04:01:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585900745;
+        s=mimecast20190719; t=1585900906;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mniN1sVbAvx++omfkPGQNGeast1vWCfMpGJZoMvG5sg=;
-        b=cOjU317MV7u0YvNwWzGWs0WlENlf3gClsGJomRHx9i6UBGkm7y39mKSjzB6aicjrzgffPX
-        SXMy0OowBaxA42ND5/KIP6xX00hCf6H542gNrpJA4+u2r6yeOl/8Dh4cU3yl+mUAAI5PUa
-        iok5T83UDn08BOBmSsikF4HycnLFJ6Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-258-q4cbpdrYOIeVl-OSojS6fA-1; Fri, 03 Apr 2020 03:59:01 -0400
-X-MC-Unique: q4cbpdrYOIeVl-OSojS6fA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2ED85800D5C;
-        Fri,  3 Apr 2020 07:58:59 +0000 (UTC)
-Received: from carbon (unknown [10.40.208.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C5A85C1D6;
-        Fri,  3 Apr 2020 07:58:49 +0000 (UTC)
-Date:   Fri, 3 Apr 2020 09:58:47 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Toshiaki Makita <toshiaki.makita1@gmail.com>,
-        Mao Wenan <maowenan@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>, jwi@linux.ibm.com,
-        jianglidong3@jd.com, Eric Dumazet <edumazet@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, brouer@redhat.com
-Subject: Re: [PATCH net v2] veth: xdp: use head instead of hard_start
-Message-ID: <20200403095847.21e1e5ea@carbon>
-In-Reply-To: <CAADnVQKEyv_bRhEfu1Jp=DSggj_O2xjJyd_QZ7a4LJY+dUO2rg@mail.gmail.com>
-References: <fb5ab568-9bc8-3145-a8db-3e975ccdf846@gmail.com>
-        <20200331060641.79999-1-maowenan@huawei.com>
-        <7a1d55ad-1427-67fe-f204-4d4a0ab2c4b1@gmail.com>
-        <20200401181419.7acd2aa6@carbon>
-        <ede2f407-839e-d29e-0ebe-aa39dd461bfd@gmail.com>
-        <20200402110619.48f31a63@carbon>
-        <CAADnVQKEyv_bRhEfu1Jp=DSggj_O2xjJyd_QZ7a4LJY+dUO2rg@mail.gmail.com>
+        bh=t0lsX/x9+PyHMjEl9oBBvGBVzDFKOmYTP+L6m59O3mk=;
+        b=dsTA2xtzHAe1pnKcVxnW/MyEX+nnZG75It+mst4S2Gvj+RMtw/uwoBZO8/4jviUoDWW5di
+        kCbmGMV5xozCILGWPCoI/IyotPV7bD48I9nBjUa+TxtJ+YZQYLH+J9zWD5cFztg0LQIHzZ
+        9Uk+fZoF6MA7LnQbBEfWt6eWLHWtyp8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-93-YHeymKviMRy45qvE9OcUrg-1; Fri, 03 Apr 2020 04:01:41 -0400
+X-MC-Unique: YHeymKviMRy45qvE9OcUrg-1
+Received: by mail-wr1-f69.google.com with SMTP id l17so2705063wro.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 01:01:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t0lsX/x9+PyHMjEl9oBBvGBVzDFKOmYTP+L6m59O3mk=;
+        b=cGI+i2qIx9QXP13nj6o8v5+G4barXzQjEWckxiQYbih08tF8eMYdlag4aZxa4o0Pxx
+         1fKtkdWOHXEWk+qGxou+exz4d5pCWe2fOo5hpb9g0QvOHwTfj0aIK5sDKZbK8m0r4KVj
+         ED7jMixslKwBX5BTCUc1ynoPMKTjUmt3qESAL9qwQAS/7zdvovx9awGXKcTGOs4nLVsS
+         hjuc5x/7cKnNobUgsKPnOsJfYYtQ+qDjdnGms93UJs8S/5iwK5rTFUlhpuvtQ+FB9N0Y
+         2I9CodVKzNAgRYzaBwFAUJwK7sbO9HXSC/5EpOP4hElWn1jOqer/2+7feSXtLEuvOYix
+         bR3g==
+X-Gm-Message-State: AGi0PuYdE12hneG4KCzRfnbO93EpNHFiap2m7KMqKWikRUwndSXP45zr
+        jVWNx3ti1MsmeziDZ0G/QsHkAmnpvjoXIVqylGheiz0TAdt+MU9bpSqC18vXFIwFFWjDPL2HvBO
+        VVnTfklfvSHqQHc6T7IsKABKT
+X-Received: by 2002:a1c:ac8a:: with SMTP id v132mr7102695wme.62.1585900900726;
+        Fri, 03 Apr 2020 01:01:40 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLyHlb5IXsfAhPUTh9sLO0yVHO17ALsitrpsruGRbKl+AB2Mc4icG7UPpGLjoE7E14Y4REO/w==
+X-Received: by 2002:a1c:ac8a:: with SMTP id v132mr7102673wme.62.1585900900503;
+        Fri, 03 Apr 2020 01:01:40 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
+        by smtp.gmail.com with ESMTPSA id w67sm10653663wmb.41.2020.04.03.01.01.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Apr 2020 01:01:39 -0700 (PDT)
+Subject: Re: [PATCH 3/7] objtool: Add support for intra-function calls
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        tglx@linutronix.de
+References: <20200402082220.808-1-alexandre.chartre@oracle.com>
+ <20200402082220.808-4-alexandre.chartre@oracle.com>
+ <db508586-258a-0616-d649-e76e95df9611@redhat.com>
+ <20200402154919.2c6shw4hfreagchg@treble>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <3d075cb2-8d99-5ab7-4842-efef1964247d@redhat.com>
+Date:   Fri, 3 Apr 2020 09:01:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200402154919.2c6shw4hfreagchg@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Apr 2020 08:40:23 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-> On Thu, Apr 2, 2020 at 2:06 AM Jesper Dangaard Brouer <brouer@redhat.com> wrote:
-> >
-> > On Thu, 2 Apr 2020 09:47:03 +0900
-> > Toshiaki Makita <toshiaki.makita1@gmail.com> wrote:
-> >  
-> > > On 2020/04/02 1:15, Jesper Dangaard Brouer wrote:
-> > > ...  
-> > > > [PATCH RFC net-next] veth: adjust hard_start offset on redirect XDP frames
-> > > >
-> > > > When native XDP redirect into a veth device, the frame arrives in the
-> > > > xdp_frame structure. It is then processed in veth_xdp_rcv_one(),
-> > > > which can run a new XDP bpf_prog on the packet. Doing so requires
-> > > > converting xdp_frame to xdp_buff, but the tricky part is that
-> > > > xdp_frame memory area is located in the top (data_hard_start) memory
-> > > > area that xdp_buff will point into.
-> > > >
-> > > > The current code tried to protect the xdp_frame area, by assigning
-> > > > xdp_buff.data_hard_start past this memory. This results in 32 bytes
-> > > > less headroom to expand into via BPF-helper bpf_xdp_adjust_head().
-> > > >
-> > > > This protect step is actually not needed, because BPF-helper
-> > > > bpf_xdp_adjust_head() already reserve this area, and don't allow
-> > > > BPF-prog to expand into it. Thus, it is safe to point data_hard_start
-> > > > directly at xdp_frame memory area.
-> > > >
-> > > > Cc: Toshiaki Makita <makita.toshiaki@lab.ntt.co.jp>  
-> > >
-> > > FYI: This mail address is deprecated.
-> > >  
-> > > > Fixes: 9fc8d518d9d5 ("veth: Handle xdp_frames in xdp napi ring")
-> > > > Reported-by: Mao Wenan <maowenan@huawei.com>
-> > > > Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>  
-> > >
-> > > FWIW,
-> > >
-> > > Acked-by: Toshiaki Makita <toshiaki.makita1@gmail.com>  
-> >
-> > Thanks.
-> >
-> > I have updated your email and added your ack in my patchset.  I will
-> > submit this officially once net-next opens up again[1], as part my
-> > larger patchset for introducing XDP frame_sz.  
+
+On 4/2/20 4:49 PM, Josh Poimboeuf wrote:
+> On Thu, Apr 02, 2020 at 01:53:49PM +0100, Julien Thierry wrote:
+>> Hi Alexandre,
+>>
+>> I ran into the limitation of intra-function call for the arm64 support but
+>> didn't take the time to make a clean patch to support them properly.
 > 
-> It looks like bug fix to me.
-> The way I read it that behavior of bpf_xdp_adjust_head() is a bit
-> buggy with veth netdev,
-> so why wait ?
+> Can you give an example of where arm64 uses intra-function calls?  It
+> sounds sketchy to me :-)  Is it really needed/useful?
+> 
 
-I want to wait to ease your life as maintainer. This is part of a
-larger patchset (for XDP frame_sz) and the next patch touch same code
-path and thus depend on these code adjustments.  If we apply them in
-bpf vs bpf-next then you/we will have to handle merge conflicts.  The
-severity of the "fix" is really low, it only means 32 bytes less
-headroom (which I doubt anyone is using).
+So the most notable/necessary one(s) is the one in tramp_ventry [1]. 
+This macro is used as the begining of exception handlers for exceptions 
+coming from userland. It was added as part of the mitigations of spectre 
+(v1???).
+
+To give some context, x30 is the register that "ret" instruction will 
+use as return address, "bl" is the equivalent of x86 "call" and sets x30 
+before jumping to the target address. (However, it doesn't have a 
+special semantic for exception returns)
+
+Note: I believe the comment about the return "stack" is about processor 
+internal state (speculative thingies and all) rather than the actual 
+stack, since the stack is untouched by that code. But I don't know the 
+actual details.
+
+
+There are also some in arch/arm64/crypto/crct10dif-ce-core.o , which is 
+probably full of fast, smart and optimized code I don't understand :) . 
+So I wouldn't feel confident commenting on whether those intra-function 
+calls are needed or not.
+
+
+Last I found is in qcom_link_stack_sanitization() [2], but that's just a 
+workaround for a very specific hardware. In my local tree I just put the 
+function as STACK_FRAME_NON_STANDARD. But the code just saves the return 
+address, has 16 call instructions that just call the instruction after 
+them, restores the return address and lets the C-function return 
+normally (and it somehow fixes something for that hardware).
+
+
+Those are the ones I stumbled on. So yes, it a bit sketchy, corner case 
+code, but it's there and unlikely to go away.
+
+
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/entry.S?h=v5.6#n803
+
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/kernel/cpu_errata.c?h=v5.6#n195
+
+Cheers,
 
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
+Julien Thierry
 
