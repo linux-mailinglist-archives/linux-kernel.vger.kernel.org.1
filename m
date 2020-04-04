@@ -2,134 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E1A19E4D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 14:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE4819E4D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 14:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726225AbgDDMCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 08:02:05 -0400
-Received: from mout.web.de ([217.72.192.78]:57061 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbgDDMCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 08:02:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1586001647;
-        bh=2+t496lVX30o7xPopsLI94blHCVuADQCmQc1LISk3c8=;
-        h=X-UI-Sender-Class:Cc:Subject:To:From:Date;
-        b=LXo/U23FDhG3ApcaV27fZIIcEiunU45Hj8kI+pvUPYChw7apbvxIGUMV2bQfCxps6
-         xPf8LIwbNUxhzG5y8JOPhjQPyvmLMRkMEBbFUhGT5OPM+U8HxSDgXTST2DkjZOzWJx
-         4Dc8NAVsLFAwZS4awlEqnmWPSI3fGWpp0Lcsk7hY=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([93.132.181.229]) by smtp.web.de (mrweb102
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0Lhvlm-1izKov0M5a-00n7D3; Sat, 04
- Apr 2020 14:00:47 +0200
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Corentin Labbe <clabbe@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: Re: [PATCH v6] crypto: amlogic - Delete duplicate dev_err() in
- meson_crypto_probe()
-To:     Tang Bin <tangbin@cmss.chinamobile.com>,
-        linux-amlogic@lists.infradead.org, linux-crypto@vger.kernel.org
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <25715704-5648-77c9-96d5-0639280e796c@web.de>
-Date:   Sat, 4 Apr 2020 14:00:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726302AbgDDMIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 08:08:49 -0400
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:39060 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbgDDMIt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 08:08:49 -0400
+Received: by mail-lj1-f170.google.com with SMTP id i20so9690726ljn.6
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 05:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=+blAdCyyPd5TO4J0c1wmSIoLGBiNVPhnANjsOBO34Lo=;
+        b=h7qtA2qqmxM7wOBr8JLzQtbyZ56VojwdRrhdt0wr/ol8iNtkNb+9zgpXmTJBPCdKYD
+         qDow4vNPGxu0NrSdTfPLoYwLph8BngS8GNadgJJF6N+Dp21QTGBGNRssSNc7mudPXyut
+         VvMhbu23PLIocupyxhHriVzRJIJaUvPP+M+kJOfWAX0lXAyZiumuL+hEKhIWQk0q5Hza
+         mLaBCNSbfa7LtC5uiaoCEaxtal6rYg+N40Ew6Bk7H2qlLjzcrZYaHIJadWbIO2r3dfoS
+         ZbJIyRj8uhhv5Jv6HZj9EMpQ/wFV0bndNAANBNOnTfpYMro/YAEnIm1MKReECpNZzEWF
+         5YKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=+blAdCyyPd5TO4J0c1wmSIoLGBiNVPhnANjsOBO34Lo=;
+        b=stCjeICc74qGsUi+wHr3ZaE3ud8mZpPfk0FTFUjmXV4roPtXLwCu46NNkwFpu2VgUe
+         XtaREUm+XJUiX+hQZdDqDJiq0J0MlgrBxtOHWnbJARl1IWTHQxlgLgaeu2t0n7dnvKqi
+         9hepQWEfE5HmeYcB5veC8WpMRwwWIqZq65MeL0twXe19iLqvbQsZ8VpYhcbv0WigKt/b
+         FE4e5Ok05dpfeVUSpvZchw0qrQiaJRSsuiD50TE76+Ke138mKkeNqkXlGe7C61JHPCQl
+         jNjd/OjkEHv5BKzohUCtrMgSYuu9jQmjxQGyPY9BQPoczrW9elrh311q8MYwrBymVpOk
+         HlyQ==
+X-Gm-Message-State: AGi0PuYQvtpKXSieN4pCL12PcO2m5Nko42IgcrL8FagouDiokAvxmVmT
+        uMu73GIrhs9Wd5sTMhzYZeEuJi25m8EMey46/hs4OA==
+X-Google-Smtp-Source: APiQypJDNM/YCsCWW77oPYzNWheWMuJlDUnF6UzNK0BerFYSMOGIds2KbPfYgWSE92gDAXpHfktSMPhDbzKsXCxeNQI=
+X-Received: by 2002:a2e:9084:: with SMTP id l4mr7486363ljg.277.1586002125058;
+ Sat, 04 Apr 2020 05:08:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 4 Apr 2020 14:08:34 +0200
+Message-ID: <CACRpkdYMcy0ctKsUTdeXQ7EKZ40AeQVEo4fE4BpgXODJ+U6K1Q@mail.gmail.com>
+Subject: [GIT PULL] GPIO bulk changes for v5.7
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eawbiwXdJyDCWAumDCQZk8FePH6h7au3Pj1TqcybVEw+59HRIZ0
- Y8ImAuzi9rWq50bkRYDOdRFw0MKWnMcZa/pXtqj/qtNXB4cLtlIGIZEoOLCAlG2kTeSki+a
- J/89bSpeo+Rj9jGbgSjFlcXX6Ny5+HsljeLKeCFNtrAO7f/Yww9OfzPlCJO7BBN/IjCQeR1
- roLLCHPbYfwIeTMM0a35w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:gmctkTjB1cM=:Xof4a9d5BRoRn0f4oXRjnG
- tFXoS5k/De/lyeru9wPYRkk+F0vccvw5K3J61MKGna1fx6XykyFzoqzq0ssdSDKJCVeeqkFsY
- jfJ+G70FXKm+l9Ab1CiHl4b+xfULYn1TlbEQxYs1jPKNkD8OmjgLsIzaWbkc9JyIsZavJdUma
- xdUhN2aP2LXf+IBE6pEGXzxsZYPm+Ab6Owns+OCq7Qyj4ToWT9u88GNVb9JQSrMc1lCFI+tAv
- AOTLnCQ+lAwpbpk3YOFfdiWxTFK+tVqWHiZTsZQiSDO9f4s3ZF1UK4lpMlRMaRqRaqxvNzWTs
- uiwXoM5h7/WnACVJ7lKkC93vBHu/2FymEYo5Exb0NPQi+Z8OZB68VPYZw2f3yI2GWNjR0z9OE
- nbLbtxH9wAt1SQzby2OlpJbxeM8xT6NJs0Q9qezPhzypoLZt0kVY/n8NVnaEtbIzH6MkAwSz+
- ngD96IAC9rPovTGYPS0tk2mhiV8hbwqop8PIPNof1aVzBp3UBBVZS3osuA0nlQoIZgwVtZUP6
- CCxmrx3VFmpkAcEA/qYvhTwMXV2CkVE4j8bDW+78rbINONuf7G0fjV6/MTt3Sx8xMZyM3Ar2y
- 5qkEuyeccVfgSygj7be9Vv39My3aDGUA9fkqhK3ya/x3s1mGTztD3noTzhHArhgLPwyOx/jZj
- Dwr8erqefAw63crCWo+fNEhcd1nykhP7hajtrloHTG+vPsH+KPxIPCrTWE1J62DYg5u82u6ur
- fYi3+BVv7RJ1L3Lk9+ZR2aIN2WxKbX7M69JZYkrkpIlVZ7/1CtxlmQGwkqGIpAwCr90lpK0go
- UWbNj7A8McefYEiDJ2f85yI2PXmOUqye73Wa1FCqMEAlEoR9iwXBgDIhyhCwBOv5xkQQ/I3gB
- Fwm14mSsbFLgmW/eA5iF4kiu6ZAh/N3Wct1CL10BXC6WjBVouoASfDXDY5BrMBTdjaDbgWMOV
- F9IkplJDo6lz4d1wUJBEeiWCwMqSd42xt06zk0wd7mdRXNQFW+rkbbb5lLhtYSRZwxnUIcLf3
- EOZyLpfZNouP0wpniAC3FZnqV7wTcZoZjHsYH9BIDQrt4k70KAA728R6PBmR4kZ8s4Wr2kSWG
- Qt6xhpuef+T7kyFwsUp3+LKQyul5IECubqbM/X72XMEvWCtGT6oYpHYq3hdVhE4tVJbnH5HLK
- 8QtDOJkBcYOMul7yDlv+zKb14Hvd/C7oZdlA6J65F6LH0zdX7A4d01z+bFlGi1tWMKpIAvmOP
- 6IXs0vNy4pZTOPDJN
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> When something goes wrong, platform_get_irq() will print an error messag=
-e,
+Hi Linus,
 
-This information is reasonable.
+here is the GPIO pull request for the bulk of changes for v5.7.
+
+There will be at least one conflict due to me fingering around and
+renaming variables. It is pretty straight-forward to resolve: in the
+gpiochip_irq_disable() what is in your branch came in as a late
+fix and that is what should stay, with the variable "chip" renamed
+to "gc". Sorry for messing with this so late in the cycle.
+
+We have some patches to kfifo ACKed by the kfifo maintainer,
+details about this can be found in the signed tag.
+
+We have some two patches to arch/arm written by the maintainers
+for these same platforms.
+
+Please pull it in!
+
+Yours,
+Linus Walleij
 
 
-> so in order to avoid the situation of repeat output=EF=BC=8C
+The following changes since commit 16fbf79b0f83bc752cee8589279f1ebfe57b3b6e=
+:
 
-Possible adjustments:
-* Separate sentences
+  Linux 5.6-rc7 (2020-03-22 18:31:56 -0700)
 
-* Avoid another typo: =E2=80=9Crepeated output=E2=80=9D
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
+tags/gpio-v5.7-1
 
-> we should remove dev_err here.
+for you to fetch changes up to 4ed7d7dd4890bb8120a3e77c16191a695fdfcc5a:
 
-Thus remove a redundant function call.
-(An imperative wording is usually preferred for Linux commit messages.)
+  Revert "gpio: eic-sprd: Use devm_platform_ioremap_resource()"
+(2020-04-02 09:39:09 +0200)
 
-Regards,
-Markus
+----------------------------------------------------------------
+This is the bulk of GPIO development for the v5.7 kernel cycle.
+
+Core and userspace API:
+
+- The userspace API KFIFOs have been imoproved with locks that
+  do not block interrupts. This makes us better at getting
+  events to userspace without blocking or disturbing new events
+  arriving in the same time. This was reviewed by the KFIFO
+  maintainer Stefani. This is a generic improvement which
+  paves the road for similar improvements in other subsystems.
+
+- We provide a new ioctl() for monitoring changes in the line
+  information, such as when multiple clients are taking lines
+  and giving them back, possibly reconfiguring them in the
+  process: we can now monitor that and not get stuck with stale
+  static information.
+
+- An example tool 'gpio-watch' is provided to showcase this
+  functionality.
+
+- Timestamps for events are switched to ktime_get_ns() which is
+  monotonic. We previously had a 'realtime' stamp which could
+  move forward and *backward* in time, which probably would just
+  cause silent bugs and weird behaviour. In the long run we
+  see two relevant timestamps: ktime_get_ns() or the timestamp
+  sometimes provided by the GPIO hardware itself, if that
+  exists.
+
+- Device Tree overlay support for GPIO hogs. On systems that
+  load overlays, these overlays can now contain hogs, and will
+  then be respected.
+
+- Handle pin control interaction with nonexisting pin ranges
+  in the GPIO library core instead of in the individual
+  drivers.
+
+New drivers:
+
+- New driver for the Mellanox BlueField 2 GPIO controller.
+
+Driver improvements:
+
+- Introduce the BGPIOF_NO_SET_ON_INPUT flag to the generic
+  MMIO GPIO library and use this flag in the MT7621 driver.
+
+- Texas Instruments OMAP CPU power management improvements,
+  such as blocking of idle on pending GPIO interrupts.
+
+----------------------------------------------------------------
+Alexander Sverdlin (1):
+      gpio: pl061: Warn when IRQ line has not been configured
+
+Andy Shevchenko (3):
+      gpio: Avoid kernel.h inclusion where it's possible
+      gpiolib: Optimize gpiochip_remove() when check for requested line
+      gpiolib: Rename 'event' to 'ge' to be consistent with other use
+
+Anson Huang (2):
+      gpio: mxc: Add COMPILE_TEST support for GPIO_MXC
+      gpio: mxs: add COMPILE_TEST support for GPIO_MXS
+
+Anssi Hannula (1):
+      tools: gpio: Fix out-of-tree build regression
+
+Ashish Chavan (1):
+      gpio: rcar: Fix typo in comment
+
+Asmaa Mnebhi (1):
+      gpio: add driver for Mellanox BlueField 2 GPIO controller
+
+Axel Lin (2):
+      gpio: wcd934x: Don't change gpio direction in wcd_gpio_set
+      gpio: wcd934x: Fix logic of wcd_gpio_get
+
+Baolin Wang (1):
+      Revert "gpio: eic-sprd: Use devm_platform_ioremap_resource()"
+
+Bartosz Golaszewski (10):
+      kfifo: provide noirqsave variants of spinlocked in and out helpers
+      kfifo: provide kfifo_is_empty_spinlocked()
+      gpiolib: rework the locking mechanism for lineevent kfifo
+      gpiolib: emit a debug message when adding events to a full kfifo
+      gpiolib: provide a dedicated function for setting lineinfo
+      gpiolib: add new ioctl() for monitoring changes in line info
+      tools: gpio: implement gpio-watch
+      gpio: mockup: coding-style fix
+      gpiolib: use gpiochip_get_desc() where applicable
+      gpiolib: fix bitmap operations related to line event watching
+
+Chris Packham (1):
+      gpio: mvebu: avoid error message for optional IRQ
+
+Chuanhong Guo (2):
+      gpio: mmio: introduce BGPIOF_NO_SET_ON_INPUT
+      gpio: mt7621: add BGPIOF_NO_SET_ON_INPUT flag
+
+Colin Ian King (1):
+      tools: gpio-hammer: fix spelling mistake: "occurences" -> "occurrence=
+s"
+
+Doug Berger (1):
+      gpio: brcmstb: support gpio-line-names property
+
+Gabriel Ravier (2):
+      tools: gpio-hammer: Avoid potential overflow in main
+      tools: gpio-hammer: Apply scripts/Lindent and retain good changes
+
+Geert Uytterhoeven (7):
+      gpio: of: Extract of_gpiochip_add_hog()
+      gpio: of: Add DT overlay support for GPIO hogs
+      gpiolib: Fix inverted check in gpiochip_remove()
+      ARM: integrator: impd1: Use GPIO_LOOKUP() helper macro
+      gpiolib: Introduce gpiod_set_config()
+      gpiolib: Pass gpio_desc to gpio_set_config()
+      gpiolib: Remove unused gpio_chip parameter from gpio_set_bias()
+
+Gustavo A. R. Silva (1):
+      gpio: uniphier: Replace zero-length array with flexible-array member
+
+Jonathan Neusch=C3=A4fer (1):
+      gpio: uapi: Improve phrasing around arrays representing empty strings
+
+Kent Gibson (1):
+      gpiolib: fix unwatch ioctl()
+
+Linus Walleij (8):
+      Merge tag 'gpio-updates-for-v5.7-part1' of
+git://git.kernel.org/.../brgl/linux into devel
+      gpio: Switch timestamps to ktime_get_ns()
+      Merge tag 'gpio-updates-for-v5.7-part2' of
+git://git.kernel.org/.../brgl/linux into devel
+      Merge branch 'ib-omap-block-idle' into devel
+      gpio: Move devres calls to devres file
+      Merge tag 'gpio-updates-for-v5.7-part4' of
+git://git.kernel.org/.../brgl/linux into devel
+      Merge tag 'v5.6-rc7' into devel
+      gpio: Rename variable in core APIs
+
+Lubomir Rintel (1):
+      gpio: pxa: Avoid a warning when gpio0 and gpio1 IRQS are not there
+
+Mauro Carvalho Chehab (2):
+      docs: gpio: driver.rst: don't mark literal blocks twice
+      gpio: gpiolib: fix a doc warning
+
+Micha=C5=82 Miros=C5=82aw (1):
+      gpiolib: gpio_name_to_desc: factor out !name check
+
+Mykyta Poturai (1):
+      tools: gpio: Fix typo in gpio-utils
+
+Stephen Rothwell (1):
+      gpio: export of_pinctrl_get to modules
+
+Thierry Reding (7):
+      gpio: Support GPIO controllers without pin-ranges
+      gpio: tegra186: Add support for pin ranges
+      gpio: tegra186: Add Tegra194 pin ranges for GG.0 and GG.1
+      gpio: Avoid using pin ranges with !PINCTRL
+      pinctrl: Define of_pinctrl_get() dummy for !PINCTRL
+      gpio: Unconditionally assign .request()/.free()
+      pinctrl: Unconditionally assign .request()/.free()
+
+Tony Lindgren (3):
+      ARM: OMAP2+: Handle errors for cpu_pm
+      gpio: omap: Block idle on pending gpio interrupts
+      Revert "gpio: omap: Fix lost edge wake-up interrupts"
+
+Uwe Kleine-K=C3=B6nig (1):
+      gpio: siox: use raw spinlock for irq related locking
+
+ Documentation/driver-api/gpio/driver.rst |    4 +-
+ arch/arm/mach-integrator/impd1.c         |   11 +-
+ arch/arm/mach-omap2/cpuidle34xx.c        |    9 +-
+ arch/arm/mach-omap2/cpuidle44xx.c        |   26 +-
+ arch/arm/mach-omap2/pm34xx.c             |    8 +-
+ drivers/gpio/Kconfig                     |   11 +-
+ drivers/gpio/Makefile                    |    1 +
+ drivers/gpio/gpio-brcmstb.c              |   44 +
+ drivers/gpio/gpio-davinci.c              |    7 +-
+ drivers/gpio/gpio-eic-sprd.c             |    9 +-
+ drivers/gpio/gpio-mlxbf2.c               |  335 ++++++++
+ drivers/gpio/gpio-mmio.c                 |   23 +-
+ drivers/gpio/gpio-mockup.c               |    2 +-
+ drivers/gpio/gpio-mt7621.c               |    4 +-
+ drivers/gpio/gpio-mvebu.c                |    2 +-
+ drivers/gpio/gpio-mxc.c                  |    7 +-
+ drivers/gpio/gpio-omap.c                 |   29 +-
+ drivers/gpio/gpio-pl061.c                |   13 +-
+ drivers/gpio/gpio-pxa.c                  |   11 +-
+ drivers/gpio/gpio-rcar.c                 |    4 +-
+ drivers/gpio/gpio-siox.c                 |   28 +-
+ drivers/gpio/gpio-tegra186.c             |   64 ++
+ drivers/gpio/gpio-uniphier.c             |    2 +-
+ drivers/gpio/gpio-wcd934x.c              |    9 +-
+ drivers/gpio/gpio-zx.c                   |   10 +-
+ drivers/gpio/gpiolib-devres.c            |   46 ++
+ drivers/gpio/gpiolib-of.c                |  139 +++-
+ drivers/gpio/gpiolib-of.h                |    2 +
+ drivers/gpio/gpiolib.c                   | 1297 +++++++++++++++++---------=
+----
+ drivers/gpio/gpiolib.h                   |    4 +
+ drivers/pinctrl/devicetree.c             |    1 +
+ drivers/pinctrl/pinctrl-ingenic.c        |    7 +-
+ include/asm-generic/gpio.h               |    4 +-
+ include/linux/gpio.h                     |    2 -
+ include/linux/gpio/consumer.h            |   13 +-
+ include/linux/gpio/driver.h              |  139 ++--
+ include/linux/kfifo.h                    |   73 ++
+ include/linux/of_gpio.h                  |    9 +-
+ include/linux/pinctrl/pinctrl.h          |    2 +-
+ include/uapi/linux/gpio.h                |   38 +-
+ tools/gpio/.gitignore                    |    1 +
+ tools/gpio/Build                         |    1 +
+ tools/gpio/Makefile                      |   13 +-
+ tools/gpio/gpio-hammer.c                 |   19 +-
+ tools/gpio/gpio-utils.c                  |    6 +-
+ tools/gpio/gpio-watch.c                  |   99 +++
+ 46 files changed, 1814 insertions(+), 774 deletions(-)
+ create mode 100644 drivers/gpio/gpio-mlxbf2.c
+ create mode 100644 tools/gpio/gpio-watch.c
