@@ -2,24 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E6A19E78F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 22:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AAD319E791
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 22:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgDDUaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 16:30:13 -0400
-Received: from mx2.yrkesakademin.fi ([85.134.45.195]:7079 "EHLO
+        id S1726402AbgDDUgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 16:36:20 -0400
+Received: from mx2.yrkesakademin.fi ([85.134.45.195]:7347 "EHLO
         mx2.yrkesakademin.fi" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726327AbgDDUaN (ORCPT
+        with ESMTP id S1726327AbgDDUgT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 16:30:13 -0400
+        Sat, 4 Apr 2020 16:36:19 -0400
+X-Greylist: delayed 367 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Apr 2020 16:36:19 EDT
 From:   Thomas Backlund <tmb@mageia.org>
 To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Thomas Backlund <tmb@mageia.org>,
         Namjae Jeon <namjae.jeon@samsung.com>,
         Sungjong Seo <sj1557.seo@samsung.com>
-Subject: [PATCH] exfat: add missing MODULE_ALIAS_FS()
-Date:   Sat, 4 Apr 2020 23:29:43 +0300
-Message-ID: <20200404202943.367023-1-tmb@mageia.org>
+Subject: [PATCH v2] exfat: add missing MODULE_ALIAS_FS()
+Date:   Sat, 4 Apr 2020 23:35:42 +0300
+Message-ID: <20200404203541.367106-1-tmb@mageia.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -27,6 +28,9 @@ Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
+
+This adds the necessary MODULE_ALIAS_FS() to exfat so the module gets
+automatically loaded when an exfat filesystem is mounted.
 
 Signed-off-by: Thomas Backlund <tmb@mageia.org>
 Cc: Namjae Jeon <namjae.jeon@samsung.com>
