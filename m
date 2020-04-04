@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E7B19E329
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21F619E32C
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726028AbgDDHEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 03:04:38 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:44757 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725730AbgDDHEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 03:04:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1585983875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8yPzk8w0218ll4nuJumZge+AAPo+PXyvjBhxekGuY9E=;
-        b=DBUv+w6Dhbt3c/rYSE58wvARX//EqJF0dXHcIRpvXLmXT9jIgGc+/FcsXoo/KSlwhzPYc1
-        JaOuBG+M6Q0sPvi/QvcJNM7QU2Ofh0spvOVh4vqr/2dUONmfOJ9k9oWQiEgUJKaG9IfxhU
-        B3YJ+MP5IQOWdqVPgFeeEsZnK4dvgxI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-5ylZkg6TPvqKGzaSvLhe5w-1; Sat, 04 Apr 2020 03:04:33 -0400
-X-MC-Unique: 5ylZkg6TPvqKGzaSvLhe5w-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A98E4107ACC4;
-        Sat,  4 Apr 2020 07:04:32 +0000 (UTC)
-Received: from kamzik.brq.redhat.com (unknown [10.40.192.30])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D24295D9E5;
-        Sat,  4 Apr 2020 07:04:25 +0000 (UTC)
-Date:   Sat, 4 Apr 2020 09:04:22 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Wainer dos Santos Moschetta <wainersm@redhat.com>
-Cc:     pbonzini@redhat.com, kvm@vger.kernel.org, david@redhat.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] selftests: kvm: Add vm_get_fd() in kvm_util
-Message-ID: <20200404070422.nsgvdiktc477mb6b@kamzik.brq.redhat.com>
-References: <20200403172428.15574-1-wainersm@redhat.com>
- <20200403172428.15574-2-wainersm@redhat.com>
+        id S1726112AbgDDHHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 03:07:19 -0400
+Received: from mout.web.de ([212.227.17.11]:50253 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbgDDHHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 03:07:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1585984014;
+        bh=2tSpyqkIAi6Vl5POxGjPdb9m1FKqxSwXN8y4zrvlfKA=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=BaEvlITXflCFEzCQFUJf7oCKiwmRKgTseJLqTqHDVN9x7q8J4mwh86o5hV7G0cyuW
+         b1pFqlPTh3Styl3qCy+2iv0cgc0IymsIKKkmyB+abFEw3M370miYyS3O0cpuCstjAL
+         8udbYDghQx6pR1VwQ03VnGYkwjemi9wO90C0FKBI=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([93.132.181.229]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0M0Qkb-1j2QJX2ko9-00uc9y; Sat, 04
+ Apr 2020 09:06:54 +0200
+To:     Alex Dewar <alex.dewar@gmx.co.uk>, cocci@systeme.lip6.fr,
+        kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>
+Cc:     Allison Randal <allison@lohutok.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Enrico Weigelt <lkml@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Coccinelle: zalloc-simple: Fix patch mode for
+ dma_alloc_coherent()
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
+ +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
+ mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
+ lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
+ YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
+ GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
+ rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
+ 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
+ jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
+ BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
+ cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
+ Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
+ g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
+ OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
+ CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
+ LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
+ sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
+ kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
+ i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
+ g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
+ q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
+ NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
+ nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
+ 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
+ 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
+ wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
+ riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
+ DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
+ fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
+ 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
+ xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
+ qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
+ Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
+ Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
+ +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
+ hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
+ /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
+ tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
+ qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
+ Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
+ x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
+ pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
+Message-ID: <beeed2c8-1b5a-66a8-ec41-f5770c04bae9@web.de>
+Date:   Sat, 4 Apr 2020 09:06:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403172428.15574-2-wainersm@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7OHJcK2La0x95XAv8vLqoLm63g9GVp4E3Ue/YEbEavYakDQKRx1
+ CmkmPFN4nc+KpzFIjFZF1US6qmwwU5W00YEMpTL5EsP2Z4YNMRH2v73Ks7iV1xmjbTDftH4
+ eAcrviGky/7VOFcz87PuT5dEmXGJagWZNWjj3YrzTJQrCOLE5I0LAP09o/1nmyvR2cK3KnS
+ KVO4IDVNW8GTQvCCiG/Mg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Y8W0j8UHkBU=:19fw/P6cH5S92MsBvIUxX2
+ BWJJxvxWcQzIaK22yjBlKnte7aP5I3dq1xiXnZ5zKmWN35VozD/WZ1sMxQf89OC2XmkeC6mLu
+ fTUHMA7dAXvRJD8rHd+BetlOq1JKpwr34Y9lYO9QClCs5utHvEEbJQU8p4BdFJj9c7gNhm41p
+ UAAC16yZ4KekP6IL/If25PMFvYDASUjvLoePGptSc87c2s7zEByaHXYa6vdMKWc4TYy1vcaeg
+ 2mRkB/4mfgaiae1sC44INWgbUaCgfXmSP0sWQkRvntpT7N/b1iPOx7kUQypQOSh2c5No2InU3
+ bSfmeGDju/bBTOvF6RsMU/OV3hHTeykPXgc6SLqet0LCLDn9BhQzY/fsn8OjlwMrofjf1O1w4
+ CTAh9MT4AbKf8Yn5ftMdCAg3oYl3pSP8HgQVxyiJ98icG4zD+UXuCTjeh+LS6Bavi8jaZxofh
+ hORavBUU4vSTV95evPItEUt+04Hrz8XJw/O6jL+UZwYP1cfJKDN9ePLgWxh0ZETxU2ikoltB/
+ 5quzw1znnnNGJjLe4czCJIcCRtzVtixMRsjHer4500oSqWx4VCTOOix1W9xZXQvTVJr59Y5oe
+ V0bnGuAmavr/kE9vYC0/rr+XD6J1C6n6frgrAjhpj7tleSeuPTNvCHnbQiAfPvQjjkiZYi3yx
+ jXXWtW0Q9UlUzfBaFSZYcn3DE6yHYVhYDywmqNCLLmaWP68yUwDN7JSx9FEFO8ZItwNbsFAIi
+ ngiRzYIUYwtRwySvux7Lrm0efRTnAtlS2s3Wq/SiHckAxnA7xQIZRHxqGq93GUkOe7J+8SPZw
+ iePUr3YjHVPs5L9mONFIM2QtNxNFwVkmMX5MnoKNSVDRGXw0MbyLP8cFWaG/AEEIqzHcv+3Bv
+ PdLE3MpaB8VHof/nx5fyiqYyXR1F0r+2d5tJp94qVWjZ/HD0ZcczQikQmMsmvCCnpsv16kf5X
+ KsqdmCVd+a/qPyZWgrZCGUPo4LW9gExLBYevITMbDmbUbh0xGAcA+48LNxKa2lL3cNAtQdjZE
+ Y7ITtAmL2x6URjTDHF9r6Lk+Hl+eUFlmYjJ9ySyjysdodNyof/bM36ZAO7Ceh0P16rmx7fnYS
+ xJNZ2HEL02MCX7eAjEQ1MiwFxruR2RSqP+WI4+fnJ/BjUu0Ss9dr3P86axVH/zNMPA4t8t2VM
+ pUF0Xp+C7sdH4TemXzfjMcyxAbxwaMmahOmTTVO5fe460vSel2kpItl80b76DgPXu5FbXoglE
+ zX8hdiCvQuQC3dtrF
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 02:24:27PM -0300, Wainer dos Santos Moschetta wrote:
-> Introduces the vm_get_fd() function in kvm_util which returns
-> the VM file descriptor.
-> 
-> Signed-off-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
-> ---
->  tools/testing/selftests/kvm/include/kvm_util.h | 1 +
->  tools/testing/selftests/kvm/lib/kvm_util.c     | 5 +++++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> index a99b875f50d2..4e122819ee24 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -254,6 +254,7 @@ bool vm_is_unrestricted_guest(struct kvm_vm *vm);
->  unsigned int vm_get_page_size(struct kvm_vm *vm);
->  unsigned int vm_get_page_shift(struct kvm_vm *vm);
->  unsigned int vm_get_max_gfn(struct kvm_vm *vm);
-> +int vm_get_fd(struct kvm_vm *vm);
->  
->  unsigned int vm_calc_num_guest_pages(enum vm_guest_mode mode, size_t size);
->  unsigned int vm_num_host_pages(enum vm_guest_mode mode, unsigned int num_guest_pages);
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 8a3523d4434f..3e36a1eb8771 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -1734,6 +1734,11 @@ unsigned int vm_get_max_gfn(struct kvm_vm *vm)
->  	return vm->max_gfn;
->  }
->  
-> +int vm_get_fd(struct kvm_vm *vm)
-> +{
-> +        return vm->fd;
-> +}
-> +
->  static unsigned int vm_calc_num_pages(unsigned int num_pages,
->  				      unsigned int page_shift,
->  				      unsigned int new_page_shift,
-> -- 
-> 2.17.2
->
+> Commit dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()"), in
+> removing dma_zalloc_coherent() treewide, inadvertently removed the patch
+> rule for dma_alloc_coherent(), leaving Coccinelle unable to auto-generat=
+e
+> patches for this case. Fix this.
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+I suggest to reconsider also the distribution of recipients for your patch
+according to the fields =E2=80=9CCc=E2=80=9D and =E2=80=9CTo=E2=80=9D.
 
+Will the software development attention grow in a way so that further
+implementation details can be adjusted also for the mentioned SmPL script?
+
+Regards,
+Markus
