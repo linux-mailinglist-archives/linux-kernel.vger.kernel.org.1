@@ -2,227 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F016A19E6AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CEF19E69B
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgDDRUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 13:20:22 -0400
-Received: from mail-oln040092009068.outbound.protection.outlook.com ([40.92.9.68]:42988
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726066AbgDDRUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 13:20:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JBYCyBQj4C9SKaf/vn0M57ou5kVdAv5iBrGA/pSG3QKWDKZl9eUCZSSpyKiCceA64gy/tOphuDxfZU7E8si45hDEUwzk48zGQpld8QHK+/NS1TR2bWzME0cOv6QcjFISql2sxN9RQTGXdpI8ZMYYeF+La68wtjDk3nFqDzW/2c57uK1CFjViU8lH8sjW1zqPaEMHoEGmR6kbK3+YYOiQQN4b9nfOYtYWk2FF12+JHqonwfIZczcVLtzSfPVSrw7C/6WRrD8g4JLt61PZAxmKpOicoPVAPMSqa/gXXsCP+s5mXxKjlHz37Xef8A2t4+gCcKjAGVu8QS24R3+ZPsW6SA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fdrFjQhC4RTgH2t8+RYT/LGmHJ/bDys3+vyZf5Ea9Q8=;
- b=aY4iVzJPKb5f5XiBi1OQHhLyWE3/4Tytjvdcs1cgptq4VMgmpIqhEkRqWNx0O7vhPQcl2H5sxofyhk0hqdykwPEXs0NbYwaLwreQD16SF4XUDVQP4Bj0puQplk3mu3T4Ea0xP0z2NLPNjBCeOy9EuqQJ1/nekQTREo1eiMvNzPoeUbMVEUUucj8VO7CZ6p8pBqzPXQVEsA2CZ1ymDguYSI4NtYsFz4kCuvIi+fUB8/oqKbF1CLrNBSpB5Via8qZjSdei5X+AQ1hUsMOV2oJ3qMbCqauj/q9m6ICg0qB6cEHmSZRQH93KQt4ovljVFUTT1bUJMkYxp/EMIDweKdVi7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=live.ca; dmarc=pass action=none header.from=live.ca; dkim=pass
- header.d=live.ca; arc=none
-Received: from BN3NAM04FT019.eop-NAM04.prod.protection.outlook.com
- (10.152.92.58) by BN3NAM04HT154.eop-NAM04.prod.protection.outlook.com
- (10.152.93.148) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.19; Sat, 4 Apr
- 2020 17:20:18 +0000
-Received: from BYAPR10MB3479.namprd10.prod.outlook.com
- (2a01:111:e400:7e4e::4f) by BN3NAM04FT019.mail.protection.outlook.com
- (2a01:111:e400:7e4e::173) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.19 via Frontend
- Transport; Sat, 4 Apr 2020 17:20:18 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:945D559C09AC2F49B59F553698D54B91807AFD3DC69F582653470DCFF18F0A66;UpperCasedChecksum:16C04AF2120C2854D453EAA4C9A9000D8039B1A4675E33E4E9C0FE54D0AE0399;SizeAsReceived:7783;Count:48
-Received: from BYAPR10MB3479.namprd10.prod.outlook.com
- ([fe80::e144:8ace:8677:a1bd]) by BYAPR10MB3479.namprd10.prod.outlook.com
- ([fe80::e144:8ace:8677:a1bd%4]) with mapi id 15.20.2878.014; Sat, 4 Apr 2020
- 17:20:18 +0000
-From:   Jonathan Bakker <xc-racer2@live.ca>
-To:     tomasz.figa@gmail.com, krzk@kernel.org, s.nawrocki@samsung.com,
-        linus.walleij@linaro.org, kgene@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jonathan Bakker <xc-racer2@live.ca>
-Subject: [PATCH] pinctrl: samsung: Correct setting of eint wakeup mask on s5pv210
-Date:   Sat,  4 Apr 2020 10:08:49 -0700
-Message-ID: <BYAPR10MB3479E878C547053C6B952E01A3C40@BYAPR10MB3479.namprd10.prod.outlook.com>
-X-Mailer: git-send-email 2.20.1
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MWHPR2001CA0015.namprd20.prod.outlook.com
- (2603:10b6:301:15::25) To BYAPR10MB3479.namprd10.prod.outlook.com
- (2603:10b6:a03:11a::16)
-X-Microsoft-Original-Message-ID: <20200404170848.16372-1-xc-racer2@live.ca>
+        id S1726315AbgDDRNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 13:13:02 -0400
+Received: from sonic311-14.consmr.mail.bf2.yahoo.com ([74.6.131.124]:40036
+        "EHLO sonic311-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726222AbgDDRNB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 13:13:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1586020380; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=SJXnHSYu2yZOWYqnAIpMDUX4J9ljmFVijx5fyP3yW87lseGsQSAZW+jBCshl5mdJ5aqGyGAQQ8hIrXr6xswHYtrslKDdr22VfirduJV6UOKVfQXvTl3QunPW0nhrMPKi+fiD8njvx3pHpQINMOxjM64YNs2zyFVmGzVx9cwDejZPQW9IcTDeI/E4OZwNHdlOCvfqW/5+OrlXpks7DwYOcyzntGIgRA7dZN9SJJUiQzH/pkhQ3F/H4X8OYiUhjOR07X3lIlGXUkHVYcadgnhYRu1ug6JFoRSck5pl8JSIyBU6fuRTXyU5W9wKRTFHzxrN4XISIE70kdPIp4iDjvh3gw==
+X-YMail-OSG: hRfC0MIVM1kYJguK_SDfGijlTBzNDQ9Sabf3zf_nedhodi8JsLif4fZsebqIulI
+ lF05oXetWYMfNNHD5BrjeBy8CqwJa518aA7.6RUCF5cEwhQXlKFtQWBCYgyGupAZPkg.QrRRbGdC
+ KVhUADVgjkqe582PdYuAGb1PAWewCDfdWsQWgQXF3mHrzNHP88c.yCoULYr5FOnHDQ8_nCniuPLI
+ SnE2mdEI_PRibRvljM.u2N10_3TBNbtoEmlt5ClnrK1ooCVjUDi66zod_VmjWzB8E3TeVO2sbdZU
+ yHPQ9MOJuaPGaTaySvyzW69sbdkt7JIsZqav32FOkKvHuqWWzIv6Lg.Om.icJTRCUE.LcNZLVYyU
+ 8.NusUzWBoVhqXsVPAkfUjiqJuLd4DLvoJ4yF1XXzKIl2J03A2Dp0NojT0.bnVWSXQZadfmvNdUo
+ xP1BUQzxspfoVk8HW0GO5AJkG49xFgL6sAPIIxQ_olrNj9ZSKKDImwXO9ZJCk2xGgnqNN.FQZ8Xy
+ gkW.dEbb1880vZtVD3g4dYoJRwS21Gk3zDH_OIsCWaxkB9XenrfpfE4p69eBvIz981kksOk2KQ0b
+ aAJmbjT1GQmcY5XY5gdru8VYpH8wdgQidEJjZ65auTpewlG..RWgpNB6IG2LcW5cvvh98w06nSRm
+ E2ijytmKKY3ke5kFez_i8A0lo.gqMpsfweYf_yYO6tlxNK2Tas1esTMBlZ8dJGQ1pxzBsoXcVi4B
+ 3tPD5b_udLBuTKLdoIF2AVKZ3ozFxzVk7BsNgYVD8DN3liZ6RoUHn1GPwuJSdHbx0v71reczpoW.
+ puatUOe.3i3XEWRhI08ji3mXd37U1HoBXVz7N..wEpm8T6VfCII20w4mJDTt7ToSORqtZcqZB2BQ
+ Bp.OoV7WpJFe.ZxZgQapZ4poOj5wYHD9DG3.2ok2VDKygyO.MiVhMZSnMlcwkjWGxlId7pxnnkj4
+ HL4HMwWvRmG_5t5Xarr2T7cey7YDO8YveMaJ458_c1nibri9jfqqQI9TCCnYLffLIm1qKStUo89r
+ NMWuaTGGJV2Ua6ZeZf8rMA4RBEg2oprnfCRXix2aii_FHu5waLqUPAXha2oTKEQaFvFIjPIPCyCW
+ tDRRE7GWUYva4bT.6o6uMqp6dh1S_EQQy82KixNUuqgfO0gaFIBdTE0LWRJ9.Qh2qMFk3QgRgiiv
+ n0lhF.D9pKoMeT1jnhUEd09R1xKBsH1T3kjyFDpT0JZz.sd0VKDXwOuhBkqBxkGja_Rukw3FNl91
+ tXhZ5UtwMpe_RPz0ssb2sNdxhz1RDQcj1O6A4V3S6tWUZX52JYiqfSXZpf77Jpj.MPVMVx8xfweg
+ ca0UH
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.bf2.yahoo.com with HTTP; Sat, 4 Apr 2020 17:13:00 +0000
+Date:   Sat, 4 Apr 2020 17:12:57 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.mainaabrunel126@gmail.com>
+Reply-To: mrs.minaabrunel30@gmail.com
+Message-ID: <655584886.332579.1586020377266@mail.yahoo.com>
+Subject: My Dear in the lord
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jon-hp-6570b.telus (2001:569:fb67:7300:9f89:4b96:de0b:cd14) by MWHPR2001CA0015.namprd20.prod.outlook.com (2603:10b6:301:15::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15 via Frontend Transport; Sat, 4 Apr 2020 17:20:17 +0000
-X-Mailer: git-send-email 2.20.1
-X-Microsoft-Original-Message-ID: <20200404170848.16372-1-xc-racer2@live.ca>
-X-TMN:  [5f6Q7YgA8UacrHNp2VQ/+jkm+NLv/XQ41l5hVvjxFMDsNCv/0+It1smRKpQt/qkq]
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 48
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 758aab2a-d7eb-4849-8948-08d7d8bc7260
-X-MS-TrafficTypeDiagnostic: BN3NAM04HT154:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jHob2zY3LdcjtoV34gF2cD69v52hYZA11RIdOhwyFIEanMb77OIv+ptpNbM/ayUpgzLn6CCaGFHt9S4PRGE+QE5LGuAqIwaswCD0gjQdioo5Q3ELnk2/ESabX/IxGCO67nUDbGRbmC3hWTjf7nSMM/xMhAzwbC5MmTNOdJ+QmXS2Rltu8v2Ow4aOc5IEotVH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3479.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: Z8+M3gSDCxbtYYtoDlo7K0lgTigr+H49vq9aE+iQWj6N5c0HL4eZwO/BeD6jYcVedArqQd+PVgjYCHyYuWIxcddhSqF8MQX52lZuqX0SSH97fCMt9oWBN9xTtzXxgsm9G2r7+lvbTqpTyvad8BboKBJOBHdFS/sWSUrQEfLCnWCxKxu2M23LzI6rHhcJo284iBQ7njMlzeih6Gmpp0yK8g==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 758aab2a-d7eb-4849-8948-08d7d8bc7260
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2020 17:20:18.4152
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN3NAM04HT154
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <655584886.332579.1586020377266.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15620 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:74.0) Gecko/20100101 Firefox/74.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a8be2af0218c ("pinctrl: samsung: Write external wakeup interrupt
-mask") started writing the eint wakeup mask from the pinctrl driver.
-Unfortunately, it made the assumption that the private retention data
-was always a regmap while in the case of s5pv210 it is a raw pointer
-to the clock base (as the eint wakeup mask not in the PMU as with newer
-Exynos platforms).
 
-Fixes: a8be2af0218c ("pinctrl: samsung: Write external wakeup interrupt mask")
-Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
----
- drivers/pinctrl/samsung/pinctrl-exynos.c | 73 ++++++++++++++++--------
- 1 file changed, 49 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/pinctrl/samsung/pinctrl-exynos.c b/drivers/pinctrl/samsung/pinctrl-exynos.c
-index 0599f5127b01..5126a5a6d4c0 100644
---- a/drivers/pinctrl/samsung/pinctrl-exynos.c
-+++ b/drivers/pinctrl/samsung/pinctrl-exynos.c
-@@ -40,6 +40,8 @@ struct exynos_irq_chip {
- 	u32 eint_pend;
- 	u32 eint_wake_mask_value;
- 	u32 eint_wake_mask_reg;
-+	void (*set_eint_wakeup_mask)(struct samsung_pinctrl_drv_data *drvdata,
-+				     struct exynos_irq_chip *irq_chip);
- };
- 
- static inline struct exynos_irq_chip *to_exynos_irq_chip(struct irq_chip *chip)
-@@ -342,6 +344,47 @@ static int exynos_wkup_irq_set_wake(struct irq_data *irqd, unsigned int on)
- 	return 0;
- }
- 
-+static void
-+exynos_pinctrl_set_eint_wakeup_mask(struct samsung_pinctrl_drv_data *drvdata,
-+				    struct exynos_irq_chip *irq_chip)
-+{
-+	struct regmap *pmu_regs;
-+
-+	if (!drvdata->retention_ctrl || !drvdata->retention_ctrl->priv) {
-+		dev_warn(drvdata->dev,
-+			 "No retention data configured bank with external wakeup interrupt. Wake-up mask will not be set.\n");
-+		return;
-+	}
-+
-+	pmu_regs = drvdata->retention_ctrl->priv;
-+	dev_info(drvdata->dev,
-+		 "Setting external wakeup interrupt mask: 0x%x\n",
-+		 irq_chip->eint_wake_mask_value);
-+
-+	regmap_write(pmu_regs, irq_chip->eint_wake_mask_reg,
-+		     irq_chip->eint_wake_mask_value);
-+}
-+
-+static void
-+s5pv210_pinctrl_set_eint_wakeup_mask(struct samsung_pinctrl_drv_data *drvdata,
-+				    struct exynos_irq_chip *irq_chip)
-+
-+{
-+	void __iomem *clk_base;
-+
-+	if (!drvdata->retention_ctrl || !drvdata->retention_ctrl->priv) {
-+		dev_warn(drvdata->dev,
-+			 "No retention data configured bank with external wakeup interrupt. Wake-up mask will not be set.\n");
-+		return;
-+	}
-+
-+
-+	clk_base = (void __iomem *) drvdata->retention_ctrl->priv;
-+
-+	__raw_writel(irq_chip->eint_wake_mask_value,
-+		     clk_base + irq_chip->eint_wake_mask_reg);
-+}
-+
- /*
-  * irq_chip for wakeup interrupts
-  */
-@@ -360,8 +403,9 @@ static const struct exynos_irq_chip s5pv210_wkup_irq_chip __initconst = {
- 	.eint_mask = EXYNOS_WKUP_EMASK_OFFSET,
- 	.eint_pend = EXYNOS_WKUP_EPEND_OFFSET,
- 	.eint_wake_mask_value = EXYNOS_EINT_WAKEUP_MASK_DISABLED,
--	/* Only difference with exynos4210_wkup_irq_chip: */
-+	/* Only differences with exynos4210_wkup_irq_chip: */
- 	.eint_wake_mask_reg = S5PV210_EINT_WAKEUP_MASK,
-+	.set_eint_wakeup_mask = s5pv210_pinctrl_set_eint_wakeup_mask,
- };
- 
- static const struct exynos_irq_chip exynos4210_wkup_irq_chip __initconst = {
-@@ -380,6 +424,7 @@ static const struct exynos_irq_chip exynos4210_wkup_irq_chip __initconst = {
- 	.eint_pend = EXYNOS_WKUP_EPEND_OFFSET,
- 	.eint_wake_mask_value = EXYNOS_EINT_WAKEUP_MASK_DISABLED,
- 	.eint_wake_mask_reg = EXYNOS_EINT_WAKEUP_MASK,
-+	.set_eint_wakeup_mask = exynos_pinctrl_set_eint_wakeup_mask,
- };
- 
- static const struct exynos_irq_chip exynos7_wkup_irq_chip __initconst = {
-@@ -398,6 +443,7 @@ static const struct exynos_irq_chip exynos7_wkup_irq_chip __initconst = {
- 	.eint_pend = EXYNOS7_WKUP_EPEND_OFFSET,
- 	.eint_wake_mask_value = EXYNOS_EINT_WAKEUP_MASK_DISABLED,
- 	.eint_wake_mask_reg = EXYNOS5433_EINT_WAKEUP_MASK,
-+	.set_eint_wakeup_mask = exynos_pinctrl_set_eint_wakeup_mask,
- };
- 
- /* list of external wakeup controllers supported */
-@@ -574,27 +620,6 @@ int exynos_eint_wkup_init(struct samsung_pinctrl_drv_data *d)
- 	return 0;
- }
- 
--static void
--exynos_pinctrl_set_eint_wakeup_mask(struct samsung_pinctrl_drv_data *drvdata,
--				    struct exynos_irq_chip *irq_chip)
--{
--	struct regmap *pmu_regs;
--
--	if (!drvdata->retention_ctrl || !drvdata->retention_ctrl->priv) {
--		dev_warn(drvdata->dev,
--			 "No retention data configured bank with external wakeup interrupt. Wake-up mask will not be set.\n");
--		return;
--	}
--
--	pmu_regs = drvdata->retention_ctrl->priv;
--	dev_info(drvdata->dev,
--		 "Setting external wakeup interrupt mask: 0x%x\n",
--		 irq_chip->eint_wake_mask_value);
--
--	regmap_write(pmu_regs, irq_chip->eint_wake_mask_reg,
--		     irq_chip->eint_wake_mask_value);
--}
--
- static void exynos_pinctrl_suspend_bank(
- 				struct samsung_pinctrl_drv_data *drvdata,
- 				struct samsung_pin_bank *bank)
-@@ -626,8 +651,8 @@ void exynos_pinctrl_suspend(struct samsung_pinctrl_drv_data *drvdata)
- 		else if (bank->eint_type == EINT_TYPE_WKUP) {
- 			if (!irq_chip) {
- 				irq_chip = bank->irq_chip;
--				exynos_pinctrl_set_eint_wakeup_mask(drvdata,
--								    irq_chip);
-+				irq_chip->set_eint_wakeup_mask(drvdata,
-+							       irq_chip);
- 			} else if (bank->irq_chip != irq_chip) {
- 				dev_warn(drvdata->dev,
- 					 "More than one external wakeup interrupt chip configured (bank: %s). This is not supported by hardware nor by driver.\n",
--- 
-2.20.1
+My Dear in the lord
 
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
+e capital city of Italy in Southern Europe. The money was from the sale of =
+his company and death benefits payment and entitlements of my deceased husb=
+and by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
