@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BE619E34A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9A619E343
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726302AbgDDHbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 03:31:05 -0400
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:36599 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgDDHbD (ORCPT
+        id S1726112AbgDDHao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 03:30:44 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:33135 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726016AbgDDHao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 03:31:03 -0400
-Received: by mail-ua1-f65.google.com with SMTP id m15so2875743uao.3
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:00 -0700 (PDT)
+        Sat, 4 Apr 2020 03:30:44 -0400
+Received: by mail-vs1-f67.google.com with SMTP id y138so6505027vsy.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:30:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=verdurent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iN6wacGfdwib+ApYHKZ/FdwkNp4iLTwqPrmNMYd7r8E=;
-        b=XgCyTbZnWC345hsCKy5O82Uyugw36Ruw2EuDhzxddNPaJuxpWG/szVyMl3nKOsOQEw
-         a6BCuJE2um28o68NDCtRThVKI9U4Z/+WRrs5jTdn0gjMLnJVWuNuO04Zq3VNqVjXz6O8
-         xzfXQSNFWneyDUxTm6J90kj5fxDYPWABFp8c46rQsUGTPUvU31Eb8JtyUPP2QnHUKFjS
-         GoEgMZB4zvnj8RChQvLVjKbqBLgm/ja1Pw7rEp8FQ/CceQt+fzgjrZDbFDZT/cOXSXMT
-         LF5uTx2yToS6x+iIPg6I0fNmVw9Oz6cLFMVbIHvgDltGByupCJFd39dk0GsGPBcxD+TS
-         Lt8g==
+        bh=ugNVzQrfk7qCiHJC1N99XeNL9SBKdGiwiAoVFIrY3Yc=;
+        b=k15y9aRJTJjDPr7xotBcgQatNpRvSmJQ8Uj5UI4hKEF0QaT8VoZmQVLj76v99g+lpu
+         ePTHjPqnR/BXsO3z5aXz+VptCAQsjeExZKehxzX+8R5skZrYWoqmJOvPNJu8J3CwEWoz
+         fi9dc/gM3JFg952P2ORRx3bKsF6fYAKm+aLh76BFdJa4YvhnnEwlcclZd7/le8TFVDYu
+         +3ikxhmDFCLjxL5z4eQXxTgn3WlYf3UWYPwUJQX6RH5euSpFbAVsQy5OfBtPhZ3j2zjN
+         lKv9o32dpM8tJuTVJarTVUztakFY+fJLaZMM4F6Ggo239E8vuBFpiVWswZbJExr4669e
+         4X9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iN6wacGfdwib+ApYHKZ/FdwkNp4iLTwqPrmNMYd7r8E=;
-        b=BTPq5QYCJtB/dUyv6WVWjMkKOI4HNhm3IxCx0XK83+yT21eeSiekdIJryMobvHbCRD
-         TTD//RC+Tgq3YJyGscUof9GmH2YuEhzvLg+QV2l7m7uK2B8ArC2a3PCHehSt3FzVTIa+
-         bhkBlQM7i3NDgOsVTi995HK/cSuNVCEilnVUdzXBBCeL7sfTZ7Whb4JtFemjzmkoVWIh
-         homZs0dHGpUSblccn2pr0UXWMpph7AfrOvOF+3GO/dnen9Buln/NgjPZOOWvfIzw+Z9x
-         SKBBMVCpVldLVnKJe32prcQbKX/D8UuRs6UnGAGhe/BSLBrnfas+AA05mLKJ8YFRx3gU
-         tgBg==
-X-Gm-Message-State: AGi0PuYHnyMJBsWF44GmlXZK7bIqS1mN6K5JuGVNTk6Xt9InyoJ0AdPy
-        i+h628zcXmXNxoe0tUHwuBCOx378QIEQoa6Ri+dMOw==
-X-Google-Smtp-Source: APiQypLxGLnrhOCRwjBuHxBjOcTXenqCe/nppA+193Zt4K2TYnyPUN4lriSlHgW1KlWine7JnWgynUq4FjLwy+MHZTM=
-X-Received: by 2002:ab0:5f90:: with SMTP id b16mr9274182uaj.77.1585985460113;
- Sat, 04 Apr 2020 00:31:00 -0700 (PDT)
+        bh=ugNVzQrfk7qCiHJC1N99XeNL9SBKdGiwiAoVFIrY3Yc=;
+        b=CF6POysAmAxwBBES9X3s8v4gJMke4u7UMqkIUtMN8+zBRcVcZ07uEpp+Jz2+rTcg5r
+         s9/RwyiBKtfsuxmgF9UzACQM47525UYE0tTPWVqNgrh6xQsCCKWGa5WcwDkzAyP/Lsyp
+         K5yIhNRMiI1fm01G2AF3ViJlK+gbGzwCjv2G0aE0bU6bgOeSVR0mtatHtqozKjwNLupZ
+         x/xt9LLzGso0nkYjAUPM4Dx7dTjN52oyuPSQm1ymEL3BFv/shIH+BISkKrqgfOK0cExN
+         jh/pYR6yppUwKphQacPbyqHA6/ilbGIhLhZpeJsqdI4WSX4QiMee4Crt3u3DCSnRnx6q
+         cKIg==
+X-Gm-Message-State: AGi0PuZiW5+BkmrsCnGjm0MCuITyjegU15VBlX6TbKMM09zxNdtYhl7L
+        SKekHwHmJSk0teaecnI6/GHhVPjVmmVs9bFrxXUWKw==
+X-Google-Smtp-Source: APiQypJCP8LV0V83BxW/3jECfc4R8SBSmWpX3AJc5TznhrI977tcu93SFxMAOBCvDZjPYykYDSYAFdr2oCY7+PzKyWk=
+X-Received: by 2002:a67:870f:: with SMTP id j15mr8906449vsd.95.1585985443047;
+ Sat, 04 Apr 2020 00:30:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-3-daniel.lezcano@linaro.org>
-In-Reply-To: <20200402142747.8307-3-daniel.lezcano@linaro.org>
+References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-4-daniel.lezcano@linaro.org>
+In-Reply-To: <20200402142747.8307-4-daniel.lezcano@linaro.org>
 From:   Amit Kucheria <amit.kucheria@verdurent.com>
 Date:   Sat, 4 Apr 2020 13:00:00 +0530
-Message-ID: <CAHLCerOD2sqqQ0o87z7RDmTAzqyk9eDbTMZN92esLRtUHErSBg@mail.gmail.com>
-Subject: Re: [PATCH V2 3/9] thermal: Move internal IPA functions
+Message-ID: <CAHLCerPBT0mVqJpw9P+HSkdcKfq=prFDwWfaTy+2dPs3p+E3=Q@mail.gmail.com>
+Subject: Re: [PATCH V2 4/9] thermal: Move trip point structure definition to
+ private header
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc:     Zhang Rui <rui.zhang@intel.com>,
         "open list:THERMAL" <linux-pm@vger.kernel.org>,
@@ -60,18 +61,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Apr 2, 2020 at 7:58 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
 >
-> The exported IPA functions are used by the IPA. It is pointless to
-> declare the functions in the thermal.h file.
+> The struct thermal_trip is only used by the thermal internals, it is
+> pointless to export the definition in the global header.
 >
-> For better self-encapsulation and less impact for the compilation if a
-> change is made on it. Move the code in the thermal core internal
-> header file.
->
-> As the users depends on THERMAL then it is pointless to have the stub,
-> remove them.
->
-> Take also the opportunity to fix checkpatch warnings/errors when
-> moving the code around.
+> Move the structure to the thermal_core.h internal header.
 >
 > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
@@ -79,75 +72,59 @@ Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
 
 > ---
 >  drivers/thermal/thermal_core.h | 13 +++++++++++++
->  include/linux/thermal.h        | 24 ------------------------
->  2 files changed, 13 insertions(+), 24 deletions(-)
+>  include/linux/thermal.h        | 15 ---------------
+>  2 files changed, 13 insertions(+), 15 deletions(-)
 >
 > diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-> index 5d08ad60d9df..f99551ce9838 100644
+> index f99551ce9838..d37de708c28a 100644
 > --- a/drivers/thermal/thermal_core.h
 > +++ b/drivers/thermal/thermal_core.h
-> @@ -46,6 +46,19 @@ struct thermal_attr {
->         char name[THERMAL_NAME_LENGTH];
->  };
+> @@ -58,6 +58,19 @@ int power_actor_get_min_power(struct thermal_cooling_device *cdev,
+>                               struct thermal_zone_device *tz, u32 *min_power);
+>  int power_actor_set_power(struct thermal_cooling_device *cdev,
+>                           struct thermal_instance *ti, u32 power);
+> +/**
+> + * struct thermal_trip - representation of a point in temperature domain
+> + * @np: pointer to struct device_node that this trip point was created from
+> + * @temperature: temperature value in miliCelsius
+> + * @hysteresis: relative hysteresis in miliCelsius
+> + * @type: trip point type
+> + */
+> +struct thermal_trip {
+> +       struct device_node *np;
+> +       int temperature;
+> +       int hysteresis;
+> +       enum thermal_trip_type type;
+> +};
 >
-> +static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
-> +{
-> +       return cdev->ops->get_requested_power && cdev->ops->state2power &&
-> +               cdev->ops->power2state;
-> +}
-> +
-> +int power_actor_get_max_power(struct thermal_cooling_device *cdev,
-> +                             struct thermal_zone_device *tz, u32 *max_power);
-> +int power_actor_get_min_power(struct thermal_cooling_device *cdev,
-> +                             struct thermal_zone_device *tz, u32 *min_power);
-> +int power_actor_set_power(struct thermal_cooling_device *cdev,
-> +                         struct thermal_instance *ti, u32 power);
-> +
 >  /*
 >   * This structure is used to describe the behavior of
->   * a certain cooling device on a certain trip point
 > diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index 5aa80fb2fb61..e0279f7b43f4 100644
+> index e0279f7b43f4..7adbfe092281 100644
 > --- a/include/linux/thermal.h
 > +++ b/include/linux/thermal.h
-> @@ -399,18 +399,6 @@ void devm_thermal_zone_of_sensor_unregister(struct device *dev,
->  #endif
+> @@ -332,21 +332,6 @@ struct thermal_zone_of_device_ops {
+>         int (*set_trip_temp)(void *, int, int);
+>  };
 >
->  #if IS_ENABLED(CONFIG_THERMAL)
-> -static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
-> -{
-> -       return cdev->ops->get_requested_power && cdev->ops->state2power &&
-> -               cdev->ops->power2state;
-> -}
+> -/**
+> - * struct thermal_trip - representation of a point in temperature domain
+> - * @np: pointer to struct device_node that this trip point was created from
+> - * @temperature: temperature value in miliCelsius
+> - * @hysteresis: relative hysteresis in miliCelsius
+> - * @type: trip point type
+> - */
 > -
-> -int power_actor_get_max_power(struct thermal_cooling_device *,
-> -                             struct thermal_zone_device *tz, u32 *max_power);
-> -int power_actor_get_min_power(struct thermal_cooling_device *,
-> -                             struct thermal_zone_device *tz, u32 *min_power);
-> -int power_actor_set_power(struct thermal_cooling_device *,
-> -                         struct thermal_instance *, u32);
->  struct thermal_zone_device *thermal_zone_device_register(const char *, int, int,
->                 void *, struct thermal_zone_device_ops *,
->                 struct thermal_zone_params *, int, int);
-> @@ -447,18 +435,6 @@ struct thermal_instance *get_thermal_instance(struct thermal_zone_device *,
->  void thermal_cdev_update(struct thermal_cooling_device *);
->  void thermal_notify_framework(struct thermal_zone_device *, int);
->  #else
-> -static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
-> -{ return false; }
-> -static inline int power_actor_get_max_power(struct thermal_cooling_device *cdev,
-> -                             struct thermal_zone_device *tz, u32 *max_power)
-> -{ return 0; }
-> -static inline int power_actor_get_min_power(struct thermal_cooling_device *cdev,
-> -                                           struct thermal_zone_device *tz,
-> -                                           u32 *min_power)
-> -{ return -ENODEV; }
-> -static inline int power_actor_set_power(struct thermal_cooling_device *cdev,
-> -                         struct thermal_instance *tz, u32 power)
-> -{ return 0; }
->  static inline struct thermal_zone_device *thermal_zone_device_register(
->         const char *type, int trips, int mask, void *devdata,
->         struct thermal_zone_device_ops *ops,
+> -struct thermal_trip {
+> -       struct device_node *np;
+> -       int temperature;
+> -       int hysteresis;
+> -       enum thermal_trip_type type;
+> -};
+> -
+>  /* Function declarations */
+>  #ifdef CONFIG_THERMAL_OF
+>  int thermal_zone_of_get_sensor_id(struct device_node *tz_np,
 > --
 > 2.17.1
 >
