@@ -2,146 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 071E519E774
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 22:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD66D19E779
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 22:05:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726353AbgDDUA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 16:00:26 -0400
-Received: from mout.web.de ([217.72.192.78]:54033 "EHLO mout.web.de"
+        id S1726332AbgDDUFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 16:05:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726297AbgDDUA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 16:00:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1586030414;
-        bh=u0HX4xbmqfEdTZ1hP/+DNk9j+UG65ePaIyUcT+Ekhz4=;
-        h=X-UI-Sender-Class:To:Cc:From:Subject:Date;
-        b=KK/i8MyPSVL+/WwkAEE/iAWcahkt8i9Qbk+uzNZmxn4kNpi9aO5fFsWRvGc0H9hXz
-         pJ8/EEC+PNSEsIc8gQWrSZF/pL5UnYjQr6miEGTzuan/cbM17ouKcL0oOfoEFvJsDB
-         AL+aGBKcNuiIE4YGoOpJ+ZxAypR12Z36CGq8SNW0=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([93.132.181.229]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0LfAoO-1iwTe20d4a-00ok4i; Sat, 04
- Apr 2020 22:00:14 +0200
-To:     dri-devel@lists.freedesktop.org, Alison Wang <alison.wang@nxp.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Stefan Agner <stefan@agner.ch>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] drm/fsl-dcu: Delete an error message in fsl_dcu_drm_probe()
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <1c108582-ba46-153e-7975-f6cfd82d57c6@web.de>
-Date:   Sat, 4 Apr 2020 22:00:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:GTi0Cb4NKnPjWt6umO7/+f6Fxu3Hs4u1rbtisl4UQ4p52MEsq6G
- VQ4Z25lUXH3LrjEwSww08x3TMYpPPY9oCyeoQqsm+oSEnrxo8o+eC7Z4Y43CHqReCyi7M05
- AbLsxh69FQ9WCCkPO5veanBCSsfpesnRqtrpiFES8uXVjDJpaiVgxP+nHoBeCsw8dkCq4kM
- lm+biDdb/1U3r+9OTlo+Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:a2gP+i9kuIw=:oXTIMPz7gpdWOnMc7ChYEV
- vMAzEsz0h9VKK1d0l+Kc4DV4lzFTIohPqINNWcKA7vHCZCoRDY/vHG/L9imBsCiqghESrinnJ
- nvZ5SWWxhHneyD32UN0641MhEdoJSJC6QkdK4LYuplLZ1cdVhulVgd8S+gLqxQi5FwlARlDg7
- SlQF/BrpI4PUxTE/id6VhmFr8mgpsw6B0DQh1ioU/bAGZc7RwsuJW6jVsU4gHoAq3pghTAnfu
- jsUeB+qvh8lmeBZh+B7EbSY9XsKRTESBMHeDX9AW9I6I5n/ryM4p2ypciYaddQCA9gUjFE1T8
- 3+Eaj9tWS/qCPGClLh5n/WgqKDqlw5WA+iI0t2PkbYh/335ouLcJIYBEArfCKR7Q6q6bjQXg/
- 7aQVnOzEmru+Vh7ZJxDGfbrCcGPm6NZEK/z5o0nlckxdIoNxrTPaPqJDpjTpHQohv9FOtbAhc
- eF4afbshZY/T0RX8suRXKpM1uWjt0EOzo1AJHMcUcCb1CYLOEIyvLYqKBUl2zaQZjpqZ8KQ9Q
- 4dsY4gcGfPJ11fjq1AkdmNkjgI7Qg/xWNMvuEz7DcW7qbIHKQ0/Uy6dt9HU318R7w63fV8rgC
- wB068ooFZcRVGyhFoNmPrDSrVySc4HYkIAo3xXV2XkJxyAay6qSn6/bykozwnBuTj1SroIG+n
- sIPkVmpZ7ZrWe/7mMtItO9dx+zRx1seccjQsURUvdHKnjepvpro2Rp42ExaVUhrHuOSN7yhW1
- 4U35HohsC54T2lJ2MIfbanmX/XfVJ7eazQj0zixr/WXss3UIVrobm6lnzlG4xh+hUkW14zYLR
- rmC+A4ueEPmZ9luXCB4IQm2+uGLWylm5EYMeQCzygWierqnm8txYlik+z1YJAVvV7secmJUDE
- I/jlP02EFIF2WQx+ctQJvLGD9fWZtVNrjZP1fxXs17Hkr1TUR1W88o7FEIFmNDHSVVj/W1mxN
- uibOdFh+0VlBm+dFKCy6hOvs7cmTmi7OnWQvaVxmdAzzlO/PP4vrBT7Ydt39U1RpvJnZ8gTnF
- xJnG1HP1U0p3ScNIydQ6WJs0+l5mEB2glpH9bixn/HYeYdUYbgbua0Nx7ypqAUEFa5B1XGWEN
- sgFd45wNcPftNJJ/CMga9Sn1PPBCxhkVtUxgL9bvA5cW8ptHFdDT3zxs0Nx8XMfFDhQf/efRg
- cWw3OWU1MwUe1VnucqCAMp+jN6dWmKI8Tj+W/5p2sbCi23TKCOE3hlumz4onqM9PI/KNPd9BQ
- WIPs8tJG72RjUJYwb
+        id S1726302AbgDDUFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 16:05:20 -0400
+Subject: Re: [GIT PULL] keys: Fix key->sem vs mmap_sem issue when reading key
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586030720;
+        bh=0D6rNwDCyX/8UGV2BnkG3oNh97ge3r3+D/9F0mEmuaI=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=XSZcrygNc7toYpUESW2Ti/40QiqL7LFjijZt0RKbkYQxQwNri7tk+81sdgAJYK0JC
+         6kN7cyzWNfD159AjT8M8gDWCYdDRvMiQnelBCI6XqFS8mM/+Bql6yV1gSnMDY0Tyqm
+         k2zNUMLplJ0I+dvMiqldwylxq4uoGf60W2BRJa5s=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <1437197.1585570598@warthog.procyon.org.uk>
+References: <1437197.1585570598@warthog.procyon.org.uk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <1437197.1585570598@warthog.procyon.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git
+ tags/keys-fixes-20200329
+X-PR-Tracked-Commit-Id: 4f0882491a148059a52480e753b7f07fc550e188
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4c205c84e249e0a91dcfabe461d77667ec9b2d05
+Message-Id: <158603072028.17464.2702740836511365562.pr-tracker-bot@kernel.org>
+Date:   Sat, 04 Apr 2020 20:05:20 +0000
+To:     David Howells <dhowells@redhat.com>
+Cc:     torvalds@linux-foundation.org, dhowells@redhat.com,
+        jarkko.sakkinen@linux.intel.com, longman@redhat.com,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 4 Apr 2020 21:54:31 +0200
+The pull request you sent on Mon, 30 Mar 2020 13:16:38 +0100:
 
-The function =E2=80=9Cplatform_get_irq=E2=80=9D can log an error already.
-Thus omit a redundant message for the exception handling in the
-calling function.
+> git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags/keys-fixes-20200329
 
-This issue was detected by using the Coccinelle software.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4c205c84e249e0a91dcfabe461d77667ec9b2d05
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Thank you!
 
-diff --git a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c b/drivers/gpu/drm/f=
-sl-dcu/fsl_dcu_drm_drv.c
-index f15d2e7967a3..9e8ce0774db9 100644
-=2D-- a/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-+++ b/drivers/gpu/drm/fsl-dcu/fsl_dcu_drm_drv.c
-@@ -268,10 +268,8 @@ static int fsl_dcu_drm_probe(struct platform_device *=
-pdev)
- 	}
-
- 	fsl_dev->irq =3D platform_get_irq(pdev, 0);
--	if (fsl_dev->irq < 0) {
--		dev_err(dev, "failed to get irq\n");
-+	if (fsl_dev->irq < 0)
- 		return fsl_dev->irq;
--	}
-
- 	fsl_dev->regmap =3D devm_regmap_init_mmio(dev, base,
- 			&fsl_dcu_regmap_config);
-=2D-
-2.26.0
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
