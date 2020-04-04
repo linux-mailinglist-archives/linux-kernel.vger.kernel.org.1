@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B0719E355
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0D819E349
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgDDHbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 03:31:44 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:34852 "EHLO
+        id S1726277AbgDDHbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 03:31:02 -0400
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:38609 "EHLO
         mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbgDDHbn (ORCPT
+        with ESMTP id S1726224AbgDDHbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 03:31:43 -0400
-Received: by mail-vs1-f66.google.com with SMTP id u11so6505095vsg.2
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:43 -0700 (PDT)
+        Sat, 4 Apr 2020 03:31:01 -0400
+Received: by mail-vs1-f66.google.com with SMTP id x206so6498523vsx.5
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=verdurent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=48bgmIC7P0k4WqoMKtIKT6TqPnKQM4JrqDfrBmPfJWE=;
-        b=Fr1/98+ylP6lUUNN0lwT6j0DbCTEZqQvajyZwNhEL46JKpLa9djlu+7gVWNL0ZpF98
-         QGjmcGzS3gsIz9cimSB93YZAFsENs/jQsu3sm7X3RWchoFLDlL6FqfW5wRFCbUgfXsqr
-         pOgjsqYIivNCC6oyZyK8VbdfpYPkWElbN1fAra8JGznbxVkn4kHmzpeyxlNzymxEz3sp
-         XpCZcslb3XDF25E/1KzFhtHp9dkH0l5axGteq6zYJnvrE2LsephNAUvc1vo+R8gFx3An
-         Gy4xTUunBTdtBSjlKDJCq2Ivho3il+e7Rb9gQFzeD5w3d2SB3+AWah321MKIirLeIYzd
-         ziPQ==
+        bh=J+hFFTj54X+dnGLSJAQeLYPL3M77XkjKUzoz85gYbcc=;
+        b=W5l3m915mdUEF+QTl2zp5yRyUKce6jM87djRxO61GJvftQpKX913IH6irpyEW3vjWS
+         aoJ74HTDM5wHmJc1Ma+iPzFwIZOukAqxaZuvmwVBrJNp48lcRfPDwVSa9X1Q21W304Qd
+         cQyEYq73wnnrVPdxQKQdypk+J9xuqsRFRq4jiGBuX3JV5VLQqscYAjO5CIhd2QpYKeg8
+         ucXeqxti4ZpwQIRdl5WsT7wAE3iyMCWBT7I3jHnfRCfBGVJzv6x5TpSdEoWKSrdjyxdG
+         f1spuqj+Bi+5vaowZYujt3kJGE1qlJV5ermVTGj+U0Ek8M+nE+D+dkCSLgQ+wctRmDko
+         RHyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=48bgmIC7P0k4WqoMKtIKT6TqPnKQM4JrqDfrBmPfJWE=;
-        b=cGRi3fCioAim0tr9t/YJeF8Skd9oGqp/eRLIDAeVlFBcoSgSrZsQtdTRzDKDUZmr+t
-         RUY5U67NYaY/lMM1kCp/uUFaPsAnJaj739IPnxZ5FoeSZ0q92dWPJ9A8HHyZ5mgVdiq/
-         LbWwoVd+ObL/Lfo3kyrccbGdd6C+0KMuiUz5LhgLewsLOdWrpW1nnoQtxGeKfwEYMPhm
-         Dpkgp/Zi1sNJYMUq5bzUTYOV7ocZDNfE4nVPiT92oZq6Pb6n5OSGAA6KnQz9yVes/zwY
-         HHqvQBNCGXMs6IgGravcK70BjxvjOL+tH8uK6uTx4z0kABMlBSg+1UGdga3BJqc7qm6E
-         kLWA==
-X-Gm-Message-State: AGi0PuZ9MEIk+6D2kqNYOTRX+xYqcBOIRxAi0Qwu1j0DvGnKiZ8WHgXX
-        S18kVRAIIn9MSFTsfry4p9gSNYms3SKPMcQ3fMfB/KiY1XZUTEct
-X-Google-Smtp-Source: APiQypIBenk0H3x/HRjGTe8kFqJVE/KWTdiRglc5BJjUqOi1TazsAbkmt4wXx5+W2DYekvPzGYaizkRezh8QffmXmzE=
-X-Received: by 2002:a67:b147:: with SMTP id z7mr9276115vsl.27.1585985502657;
- Sat, 04 Apr 2020 00:31:42 -0700 (PDT)
+        bh=J+hFFTj54X+dnGLSJAQeLYPL3M77XkjKUzoz85gYbcc=;
+        b=PLs5lNVbD7gZoo+0wsevJyHBFzUidlgyGXSFwWxGVHzc9Gm9Ddzj/vmciBZTRv/zju
+         JbYzIDH7qzzfcz8ojD2xAqMY8uSBLUpGTLF2jUZUIXvm3zUaCdsgVhG8fYwgdxIVdsmy
+         BZ4ycsC5ay7MFttG6ONdIVIeuF3riXsB1e9iUH52CzU5wBuxt8UaQum1bZnXCcYlAqt3
+         BLna9BREK5P2of86Yh2mF7ee8Jt7wZ9yNk+NmrtMZnaUU/9AXfWT4NPXl8oz1wycHuGe
+         UG8XZGwdz5GYLCzNbRRZduhCpZtYNWFR//WBweFgHJcXZtn1FZ0r/XgdfUKpG4+26zxM
+         rFKA==
+X-Gm-Message-State: AGi0PuaYD3Nl5mRvBH4o0Lg9uwD+6kAqSWTCqhFENKHAR70QJsS1nywO
+        0Uwgc6v1F26x98ZNfRILLTq8Fg4t57zJkd/qnGPzAg==
+X-Google-Smtp-Source: APiQypKwCsok3pKZtYpKavnkMIyWFzjwvX+VhO/uzmDeq/p7hWUxGf25hzJLEtTfwGsf8hHS+ICVZnSZCzssbXJVdr8=
+X-Received: by 2002:a05:6102:5c5:: with SMTP id v5mr9239819vsf.9.1585985460949;
+ Sat, 04 Apr 2020 00:31:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-6-daniel.lezcano@linaro.org>
-In-Reply-To: <20200402142747.8307-6-daniel.lezcano@linaro.org>
+References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-7-daniel.lezcano@linaro.org>
+In-Reply-To: <20200402142747.8307-7-daniel.lezcano@linaro.org>
 From:   Amit Kucheria <amit.kucheria@verdurent.com>
 Date:   Sat, 4 Apr 2020 13:00:00 +0530
-Message-ID: <CAHLCerMXEt1hQtzBLRxsEvWBq75AHdaAOc1b6XgWOTVSPxmDJQ@mail.gmail.com>
-Subject: Re: [PATCH V2 6/9] thermal: Move get_thermal_instance to the internal header
+Message-ID: <CAHLCerNrAgOSO3DiFAr3rvD3Ar7N4SP7dLeURGNae7oqpzzEKA@mail.gmail.com>
+Subject: Re: [PATCH V2 7/9] thermal: Change IS_ENABLED to IFDEF in the header file
 To:     Daniel Lezcano <daniel.lezcano@linaro.org>
 Cc:     Zhang Rui <rui.zhang@intel.com>,
         "open list:THERMAL" <linux-pm@vger.kernel.org>,
@@ -60,65 +60,30 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, Apr 2, 2020 at 7:58 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
 >
-> The function is not used any place other than the thermal
-> directory. It does not make sense to export its definition in the
-> global header as there is no use of it.
->
-> Move the definition to the internal header and allow better
-> self-encapsulation.
->
-> Take the opportunity to add the parameter names to make checkpatch
-> happy and remove the pointless stubs.
+> The thermal framework can not be compiled as a module. The IS_ENABLED
+> macro is useless here and can be replaced by an ifdef.
 >
 > Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
 Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
 
 > ---
->  drivers/thermal/thermal_core.h | 5 +++++
->  include/linux/thermal.h        | 6 ------
->  2 files changed, 5 insertions(+), 6 deletions(-)
+>  include/linux/thermal.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-> index 5fb2bd9c7034..c95689586e19 100644
-> --- a/drivers/thermal/thermal_core.h
-> +++ b/drivers/thermal/thermal_core.h
-> @@ -74,6 +74,11 @@ struct thermal_trip {
->
->  int get_tz_trend(struct thermal_zone_device *tz, int trip);
->
-> +struct thermal_instance *
-> +get_thermal_instance(struct thermal_zone_device *tz,
-> +                    struct thermal_cooling_device *cdev,
-> +                    int trip);
-> +
->  /*
->   * This structure is used to describe the behavior of
->   * a certain cooling device on a certain trip point
 > diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index 8006ba5de855..47e745c5dfca 100644
+> index 47e745c5dfca..12df9ff0182d 100644
 > --- a/include/linux/thermal.h
 > +++ b/include/linux/thermal.h
-> @@ -414,8 +414,6 @@ int thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
->  int thermal_zone_get_slope(struct thermal_zone_device *tz);
->  int thermal_zone_get_offset(struct thermal_zone_device *tz);
+> @@ -383,7 +383,7 @@ void devm_thermal_zone_of_sensor_unregister(struct device *dev,
 >
-> -struct thermal_instance *get_thermal_instance(struct thermal_zone_device *,
-> -               struct thermal_cooling_device *, int);
->  void thermal_cdev_update(struct thermal_cooling_device *);
->  void thermal_notify_framework(struct thermal_zone_device *, int);
->  #else
-> @@ -473,10 +471,6 @@ static inline int thermal_zone_get_offset(
->                 struct thermal_zone_device *tz)
->  { return -ENODEV; }
+>  #endif
 >
-> -static inline struct thermal_instance *
-> -get_thermal_instance(struct thermal_zone_device *tz,
-> -       struct thermal_cooling_device *cdev, int trip)
-> -{ return ERR_PTR(-ENODEV); }
->  static inline void thermal_cdev_update(struct thermal_cooling_device *cdev)
->  { }
->  static inline void thermal_notify_framework(struct thermal_zone_device *tz,
+> -#if IS_ENABLED(CONFIG_THERMAL)
+> +#ifdef CONFIG_THERMAL
+>  struct thermal_zone_device *thermal_zone_device_register(const char *, int, int,
+>                 void *, struct thermal_zone_device_ops *,
+>                 struct thermal_zone_params *, int, int);
 > --
 > 2.17.1
 >
