@@ -2,42 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0D019E3DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D2B19E3CF
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727716AbgDDIoB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 4 Apr 2020 04:44:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41586 "EHLO
+        id S1727473AbgDDInm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 04:43:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41677 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgDDImF (ORCPT
+        with ESMTP id S1726508AbgDDImM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 04:42:05 -0400
+        Sat, 4 Apr 2020 04:42:12 -0400
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jKeNJ-00017m-As; Sat, 04 Apr 2020 10:41:57 +0200
+        id 1jKeNP-00018T-5h; Sat, 04 Apr 2020 10:42:03 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id E5A521C07FA;
-        Sat,  4 Apr 2020 10:41:52 +0200 (CEST)
-Date:   Sat, 04 Apr 2020 08:41:52 -0000
-From:   "tip-bot2 for Tony Jones" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id C6A521C07EC;
+        Sat,  4 Apr 2020 10:41:53 +0200 (CEST)
+Date:   Sat, 04 Apr 2020 08:41:53 -0000
+From:   "tip-bot2 for Christophe JAILLET" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf callchain: Update docs regarding kernel/user
- space unwinding
-Cc:     Tony Jones <tonyj@suse.de>,
+Subject: [tip: perf/urgent] perf cpumap: Fix snprintf overflow check
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Don Zickus <dzickus@redhat.com>, He Zhe <zhe.he@windriver.com>,
+        Jan Stancek <jstancek@redhat.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        kernel-janitors@vger.kernel.org,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200325164053.10177-1-tonyj@suse.de>
-References: <20200325164053.10177-1-tonyj@suse.de>
+In-Reply-To: <20200324070319.10901-1-christophe.jaillet@wanadoo.fr>
+References: <20200324070319.10901-1-christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Message-ID: <158598971254.28353.5713347561008942769.tip-bot2@tip-bot2>
+Message-ID: <158598971346.28353.11677112853050770868.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 X-Linutronix-Spam-Score: -1.0
 X-Linutronix-Spam-Level: -
 X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
@@ -48,84 +57,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     eadcaa3dfd706bbf46682c8b8b5979262443c3c3
-Gitweb:        https://git.kernel.org/tip/eadcaa3dfd706bbf46682c8b8b5979262443c3c3
-Author:        Tony Jones <tonyj@suse.de>
-AuthorDate:    Wed, 25 Mar 2020 09:40:53 -07:00
+Commit-ID:     d74b181a028bb5a468f0c609553eff6a8fdf4887
+Gitweb:        https://git.kernel.org/tip/d74b181a028bb5a468f0c609553eff6a8fdf4887
+Author:        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+AuthorDate:    Tue, 24 Mar 2020 08:03:19 +01:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Wed, 25 Mar 2020 16:13:21 -03:00
+CommitterDate: Tue, 24 Mar 2020 10:36:00 -03:00
 
-perf callchain: Update docs regarding kernel/user space unwinding
+perf cpumap: Fix snprintf overflow check
 
-The method of unwinding for kernel space is defined by the kernel
-config, not by the value of --call-graph.   Improve the documentation to
-reflect this.
+'snprintf' returns the number of characters which would be generated for
+the given input.
 
-Signed-off-by: Tony Jones <tonyj@suse.de>
-Link: http://lore.kernel.org/lkml/20200325164053.10177-1-tonyj@suse.de
+If the returned value is *greater than* or equal to the buffer size, it
+means that the output has been truncated.
+
+Fix the overflow test accordingly.
+
+Fixes: 7780c25bae59f ("perf tools: Allow ability to map cpus to nodes easily")
+Fixes: 92a7e1278005b ("perf cpumap: Add cpu__max_present_cpu()")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Suggested-by: David Laight <David.Laight@ACULAB.COM>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Don Zickus <dzickus@redhat.com>
+Cc: He Zhe <zhe.he@windriver.com>
+Cc: Jan Stancek <jstancek@redhat.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: kernel-janitors@vger.kernel.org
+Link: http://lore.kernel.org/lkml/20200324070319.10901-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/Documentation/perf-config.txt | 14 ++++++++------
- tools/perf/Documentation/perf-record.txt | 18 ++++++++++++------
- 2 files changed, 20 insertions(+), 12 deletions(-)
+ tools/perf/util/cpumap.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-config.txt b/tools/perf/Documentation/perf-config.txt
-index 8ead555..f16d8a7 100644
---- a/tools/perf/Documentation/perf-config.txt
-+++ b/tools/perf/Documentation/perf-config.txt
-@@ -405,14 +405,16 @@ ui.*::
- 		This option is only applied to TUI.
+diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
+index 983b738..dc5c5e6 100644
+--- a/tools/perf/util/cpumap.c
++++ b/tools/perf/util/cpumap.c
+@@ -317,7 +317,7 @@ static void set_max_cpu_num(void)
  
- call-graph.*::
--	When sub-commands 'top' and 'report' work with -g/—-children
--	there're options in control of call-graph.
-+	The following controls the handling of call-graphs (obtained via the
-+	-g/--call-graph options).
+ 	/* get the highest possible cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/possible", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -328,7 +328,7 @@ static void set_max_cpu_num(void)
  
- 	call-graph.record-mode::
--		The record-mode can be 'fp' (frame pointer), 'dwarf' and 'lbr'.
--		The value of 'dwarf' is effective only if perf detect needed library
--		(libunwind or a recent version of libdw).
--		'lbr' only work for cpus that support it.
-+		The mode for user space can be 'fp' (frame pointer), 'dwarf'
-+		and 'lbr'.  The value 'dwarf' is effective only if libunwind
-+		(or a recent version of libdw) is present on the system;
-+		the value 'lbr' only works for certain cpus. The method for
-+		kernel space is controlled not by this option but by the
-+		kernel config (CONFIG_UNWINDER_*).
+ 	/* get the highest present cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/cpu/present", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -356,7 +356,7 @@ static void set_max_node_num(void)
  
- 	call-graph.dump-size::
- 		The size of stack to dump in order to do post-unwinding. Default is 8192 (byte).
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 7f4db75..b25e028 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -237,16 +237,22 @@ OPTIONS
- 	option and remains only for backward compatibility.  See --event.
+ 	/* get the highest possible cpu number for a sparse allocation */
+ 	ret = snprintf(path, PATH_MAX, "%s/devices/system/node/possible", mnt);
+-	if (ret == PATH_MAX) {
++	if (ret >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		goto out;
+ 	}
+@@ -441,7 +441,7 @@ int cpu__setup_cpunode_map(void)
+ 		return 0;
  
- -g::
--	Enables call-graph (stack chain/backtrace) recording.
-+	Enables call-graph (stack chain/backtrace) recording for both
-+	kernel space and user space.
+ 	n = snprintf(path, PATH_MAX, "%s/devices/system/node", mnt);
+-	if (n == PATH_MAX) {
++	if (n >= PATH_MAX) {
+ 		pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 		return -1;
+ 	}
+@@ -456,7 +456,7 @@ int cpu__setup_cpunode_map(void)
+ 			continue;
  
- --call-graph::
- 	Setup and enable call-graph (stack chain/backtrace) recording,
--	implies -g.  Default is "fp".
-+	implies -g.  Default is "fp" (for user space).
- 
--	Allows specifying "fp" (frame pointer) or "dwarf"
--	(DWARF's CFI - Call Frame Information) or "lbr"
--	(Hardware Last Branch Record facility) as the method to collect
--	the information used to show the call graphs.
-+	The unwinding method used for kernel space is dependent on the
-+	unwinder used by the active kernel configuration, i.e
-+	CONFIG_UNWINDER_FRAME_POINTER (fp) or CONFIG_UNWINDER_ORC (orc)
-+
-+	Any option specified here controls the method used for user space.
-+
-+	Valid options are "fp" (frame pointer), "dwarf" (DWARF's CFI -
-+	Call Frame Information) or "lbr" (Hardware Last Branch Record
-+	facility).
- 
- 	In some systems, where binaries are build with gcc
- 	--fomit-frame-pointer, using the "fp" method will produce bogus
+ 		n = snprintf(buf, PATH_MAX, "%s/%s", path, dent1->d_name);
+-		if (n == PATH_MAX) {
++		if (n >= PATH_MAX) {
+ 			pr_err("sysfs path crossed PATH_MAX(%d) size\n", PATH_MAX);
+ 			continue;
+ 		}
