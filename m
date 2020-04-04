@@ -2,54 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE7D19E6DA
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB14F19E6E4
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726475AbgDDRu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 13:50:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40328 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgDDRuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 13:50:24 -0400
-Subject: Re: [GIT PULL] dma-mapping updates for 5.7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586022624;
-        bh=cKK4vs/ElMxlmbk52kFAcJUDROfeksg+vPch0uqr/Hw=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Pt0NybnfUbUjG+K9PWNQgx3n0++R+6EAhGcraUZ46TT5jqQIUzZ6K2vfl+h6WSzQg
-         qS9i+ves0qvlDDPFgCwTNVS3Yb12Tjp35v8fXYdWYg2TNuaaCNitE4+9rMLTf3By5k
-         TT5eLz1fI9VqCF6c6OL+l0rbzKkF4O3xqb2TjUKQ=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200404065855.GA656254@infradead.org>
-References: <20200404065855.GA656254@infradead.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200404065855.GA656254@infradead.org>
-X-PR-Tracked-Remote: git://git.infradead.org/users/hch/dma-mapping.git
- tags/dma-mapping-5.7
-X-PR-Tracked-Commit-Id: fd27a526bb381f43dded6db30b3b016468ab0e6c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6f43bae38269a55534e1f86a9917318167de6639
-Message-Id: <158602262410.31764.10662666727749617192.pr-tracker-bot@kernel.org>
-Date:   Sat, 04 Apr 2020 17:50:24 +0000
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S1726621AbgDDRun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 13:50:43 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26838 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726582AbgDDRuj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 13:50:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586022638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XpIFvMqlAZPPaPuZTXJXVsC8D8YnUvdMZglxGAOu27U=;
+        b=GZfF0AasXfCLxmQ1+zSLNzfA7g44uzlsI2H7h8Pl5ZTr4KpnJb84wSWrnVo1hFEpN80eVk
+        Cysmq6NAZghaAfj3XhnUNw/f7Qt0kz6ybyWn4rbzqVPJnELbdoGt3Ip5tZslo3OLeIfzaf
+        M45V8/gSn2PWx/bTvDKrs8ZgbNGMCVs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-Ihhp-RW2NgOWfPBvLNLeEQ-1; Sat, 04 Apr 2020 13:50:33 -0400
+X-MC-Unique: Ihhp-RW2NgOWfPBvLNLeEQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84432DB20;
+        Sat,  4 Apr 2020 17:50:30 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.53])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7252DB19B5;
+        Sat,  4 Apr 2020 17:50:25 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Sat,  4 Apr 2020 19:50:30 +0200 (CEST)
+Date:   Sat, 4 Apr 2020 19:50:24 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de,
+        Peter Zijlstra <peterz@infradead.org>,
+        clang-built-linux@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Marco Elver <elver@google.com>,
+        Brian Gerst <brgerst@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] x86: signal: move save_altstack_ex out of generic
+ headers
+Message-ID: <20200404175023.GC26298@redhat.com>
+References: <20200324220830.110002-1-ndesaulniers@google.com>
+ <20200403231611.81444-1-ndesaulniers@google.com>
+ <20200404160100.GB26298@redhat.com>
+ <20200404170604.GN23230@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200404170604.GN23230@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 4 Apr 2020 08:58:55 +0200:
+On 04/04, Al Viro wrote:
+>
+> On Sat, Apr 04, 2020 at 06:01:00PM +0200, Oleg Nesterov wrote:
+> >
+> > Nevermind, Al has already suggested to use signal_delivered()...
+>
+> FWIW, I propose to do is the patch below (against the current mainline);
+> objections?
 
-> git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.7
+Looks great, fwiw
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6f43bae38269a55534e1f86a9917318167de6639
+Acked-by: Oleg Nesterov <oleg@redhat.com>
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
