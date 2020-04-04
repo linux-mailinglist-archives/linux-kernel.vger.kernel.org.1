@@ -2,42 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD15419E3DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF18619E3CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgDDIoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 04:44:07 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41581 "EHLO
+        id S1727387AbgDDIng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 04:43:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41713 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgDDImE (ORCPT
+        with ESMTP id S1726520AbgDDImO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 04:42:04 -0400
+        Sat, 4 Apr 2020 04:42:14 -0400
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jKeNH-00016A-QV; Sat, 04 Apr 2020 10:41:56 +0200
+        id 1jKeNM-00016H-7g; Sat, 04 Apr 2020 10:42:00 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 0C42C1C0493;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7438D1C07A5;
         Sat,  4 Apr 2020 10:41:52 +0200 (CEST)
-Date:   Sat, 04 Apr 2020 08:41:51 -0000
-From:   "tip-bot2 for He Zhe" <tip-bot2@linutronix.de>
+Date:   Sat, 04 Apr 2020 08:41:52 -0000
+From:   "tip-bot2 for Ian Rogers" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf: Normalize gcc parameter when generating arch
- errno table
-Cc:     He Zhe <zhe.he@windriver.com>,
+Subject: [tip: perf/urgent] perf parse-events: Add defensive NULL check
+Cc:     Ian Rogers <irogers@google.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
+        John Garry <john.garry@huawei.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Namhyung Kim <namhyung@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        clang-built-linux@googlegroups.com,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1581618066-187262-2-git-send-email-zhe.he@windriver.com>
-References: <1581618066-187262-2-git-send-email-zhe.he@windriver.com>
+In-Reply-To: <20200325164022.41385-1-irogers@google.com>
+References: <20200325164022.41385-1-irogers@google.com>
 MIME-Version: 1.0
-Message-ID: <158598971157.28353.2501769243855333551.tip-bot2@tip-bot2>
+Message-ID: <158598971212.28353.3722461127643050599.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -53,47 +58,59 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     e4ffd066ff440a57097e9140fa9e16ceef905de8
-Gitweb:        https://git.kernel.org/tip/e4ffd066ff440a57097e9140fa9e16ceef905de8
-Author:        He Zhe <zhe.he@windriver.com>
-AuthorDate:    Fri, 14 Feb 2020 02:21:06 +08:00
+Commit-ID:     2a3d252dffe14582f238e21b09923e3772263123
+Gitweb:        https://git.kernel.org/tip/2a3d252dffe14582f238e21b09923e3772263123
+Author:        Ian Rogers <irogers@google.com>
+AuthorDate:    Wed, 25 Mar 2020 09:40:22 -07:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Thu, 26 Mar 2020 11:04:01 -03:00
+CommitterDate: Thu, 26 Mar 2020 11:03:53 -03:00
 
-perf: Normalize gcc parameter when generating arch errno table
+perf parse-events: Add defensive NULL check
 
-The $(CC) passed to arch_errno_names.sh may include a series of parameters
-along with gcc itself. To avoid overwriting the following parameters of
-arch_errno_names.sh and break the build like below, we just pick up the
-first word of the $(CC).
+Terms may have a NULL config in which case a strcmp will SEGV. This can
+be reproduced with:
 
-  find: unknown predicate `-m64/arch'
-  x86_64-wrs-linux-gcc: warning: '-x c' after last input file has no effect
-  x86_64-wrs-linux-gcc: error: unrecognized command line option '-m64/include/uapi/asm-generic/errno.h'
-  x86_64-wrs-linux-gcc: fatal error: no input files
+  perf stat -e '*/event=?,nr/' sleep 1
 
-Signed-off-by: He Zhe <zhe.he@windriver.com>
+Add a NULL check to avoid this. This was caught by LLVM's libfuzzer.
+
+Signed-off-by: Ian Rogers <irogers@google.com>
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Jin Yao <yao.jin@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: John Garry <john.garry@huawei.com>
+Cc: Kan Liang <kan.liang@linux.intel.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/1581618066-187262-2-git-send-email-zhe.he@windriver.com
+Cc: Stephane Eranian <eranian@google.com>
+Cc: clang-built-linux@googlegroups.com
+Link: http://lore.kernel.org/lkml/20200325164022.41385-1-irogers@google.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/Makefile.perf | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/perf/util/pmu.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index a02aca9..d15a311 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -574,7 +574,7 @@ arch_errno_hdr_dir := $(srctree)/tools
- arch_errno_tbl := $(srctree)/tools/perf/trace/beauty/arch_errno_names.sh
+diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+index 616fbda..ef6a63f 100644
+--- a/tools/perf/util/pmu.c
++++ b/tools/perf/util/pmu.c
+@@ -984,12 +984,11 @@ static int pmu_resolve_param_term(struct parse_events_term *term,
+ 	struct parse_events_term *t;
  
- $(arch_errno_name_array): $(arch_errno_tbl)
--	$(Q)$(SHELL) '$(arch_errno_tbl)' $(CC) $(arch_errno_hdr_dir) > $@
-+	$(Q)$(SHELL) '$(arch_errno_tbl)' $(firstword $(CC)) $(arch_errno_hdr_dir) > $@
+ 	list_for_each_entry(t, head_terms, list) {
+-		if (t->type_val == PARSE_EVENTS__TERM_TYPE_NUM) {
+-			if (!strcmp(t->config, term->config)) {
+-				t->used = true;
+-				*value = t->val.num;
+-				return 0;
+-			}
++		if (t->type_val == PARSE_EVENTS__TERM_TYPE_NUM &&
++		    t->config && !strcmp(t->config, term->config)) {
++			t->used = true;
++			*value = t->val.num;
++			return 0;
+ 		}
+ 	}
  
- sync_file_range_arrays := $(beauty_outdir)/sync_file_range_arrays.c
- sync_file_range_tbls := $(srctree)/tools/perf/trace/beauty/sync_file_range.sh
