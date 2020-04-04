@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E91A319E67E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 18:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B870819E680
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 18:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgDDQq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 12:46:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55904 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726057AbgDDQq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 12:46:28 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04114206D4;
-        Sat,  4 Apr 2020 16:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586018788;
-        bh=YQG4A/GOYNd5Jp5QAvFtVV//iwhK5hZrHteGmAX+ZTI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Chu2MnaGnccIKwDG6kMVXAqNdd6Up23J/BnZNgW1WTxLB+vGzeu/1vBFuH3d2Wmj7
-         IiRhxh4zmcsdEsCdrEvbHRbieYyKMuZxwYVXbpc65XAPVWIJiTU1LqoAUdFekAGqVI
-         79he8aXsBtMixMTbsEaeIcwT3gzoKlqJ8IPDlwQ0=
-Date:   Sat, 4 Apr 2020 17:46:24 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mircea Caprioru <mircea.caprioru@analog.com>
-Cc:     <Michael.Hennerich@analog.com>, <alexandru.ardelean@analog.com>,
-        <lars@metafoo.de>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH] iio: core: Fix handling of 'dB'
-Message-ID: <20200404174624.0b7f1c80@archlinux>
-In-Reply-To: <20200401112230.4708-1-mircea.caprioru@analog.com>
-References: <20200401112230.4708-1-mircea.caprioru@analog.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726323AbgDDQs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 12:48:29 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:40648 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgDDQs3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 12:48:29 -0400
+Received: by mail-wm1-f67.google.com with SMTP id a81so11233965wmf.5;
+        Sat, 04 Apr 2020 09:48:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0jCdl7diGu/5E6LUTJQbC87oUXvUtnqJvlN7RqWS2wE=;
+        b=NQ8WsE5cYQOvSd2V6NqpAFYf5XOvyTVeZxTiPOLIfdHIIsXCVN1YrdIKlJaIcHkGaH
+         jWF3KxnG/khQPkaAOnaaSI2gpYtDPJxsJ3/WeEtvstYLlWTeB9e6eZLdN/XXWB7VjD5Y
+         2t9dS7hFAtpffp1g/AMHagT/8s8Xj2VDjvaIKGjvFrXnVqPUkrCHAaTRABxb8paziEsi
+         YVtNfDUihOEsG7sXXB66SENX56MkWCw9dA8RwlgNwFCsIryqYVaDMB+62Fvhl/6RqEpi
+         LZTcXm4CDOmpx2SEHARfsvcsAwWKyqrV//6iUOGBshVUKp29Kyy8AOpUvCHLUvMIwhIX
+         dDlA==
+X-Gm-Message-State: AGi0PuaOdxq4h1N3koN9C0MTzCxXiHaevCvvUFA2mxoeGsYWwNwVICcM
+        vrsS9TbThEHVT/Bfjt/AwpySZP1t
+X-Google-Smtp-Source: APiQypJMMMXcQ/Xbs6aJr17+LK/xs6pjYwjySK2k06igsh2fLJ76ApPCkDnfHCnUblgwS/tnMJ3+lg==
+X-Received: by 2002:a7b:c08a:: with SMTP id r10mr13987254wmh.120.1586018907203;
+        Sat, 04 Apr 2020 09:48:27 -0700 (PDT)
+Received: from debian (44.142.6.51.dyn.plus.net. [51.6.142.44])
+        by smtp.gmail.com with ESMTPSA id i9sm2853881wrm.74.2020.04.04.09.48.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Apr 2020 09:48:26 -0700 (PDT)
+Date:   Sat, 4 Apr 2020 17:48:24 +0100
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     YueHaibing <yuehaibing@huawei.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] hv_debugfs: Make hv_debug_root static
+Message-ID: <20200404164824.yu3ye46ykwotc3ej@debian>
+References: <20200403082845.22740-1-yuehaibing@huawei.com>
+ <MW2PR2101MB105222D949FB4944EE647F2FD7C70@MW2PR2101MB1052.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW2PR2101MB105222D949FB4944EE647F2FD7C70@MW2PR2101MB1052.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Apr 2020 14:22:30 +0300
-Mircea Caprioru <mircea.caprioru@analog.com> wrote:
-
-> This patch fixes the call to iio_str_to_fixpoint when using 'dB' sufix.
-> Before this the scale_db was not used when parsing the string written to
-> the attribute and it failed with invalid value.
+On Fri, Apr 03, 2020 at 12:21:47PM +0000, Michael Kelley wrote:
+> From: YueHaibing <yuehaibing@huawei.com> Sent: Friday, April 3, 2020 1:29 AM
+> > 
+> > Fix sparse warning:
+> > 
+> > drivers/hv/hv_debugfs.c:14:15: warning: symbol 'hv_debug_root' was not declared. Should
+> > it be static?
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> > ---
+> >  drivers/hv/hv_debugfs.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/hv/hv_debugfs.c b/drivers/hv/hv_debugfs.c
+> > index 8a2878573582..ccf752b6659a 100644
+> > --- a/drivers/hv/hv_debugfs.c
+> > +++ b/drivers/hv/hv_debugfs.c
+> > @@ -11,7 +11,7 @@
+> > 
+> >  #include "hyperv_vmbus.h"
+> > 
+> > -struct dentry *hv_debug_root;
+> > +static struct dentry *hv_debug_root;
+> > 
+> >  static int hv_debugfs_delay_get(void *data, u64 *val)
+> >  {
+> > --
+> > 2.17.1
+> > 
 > 
-> Fixes: b8528224741b ("iio: core: Handle 'dB' suffix in core")
-> Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-
-Gah, I guess this messed up around the introduction of the character handling.
-
-Applied to the fixes-togreg branch of iio.git.
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/industrialio-core.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+> Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
 > 
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 157d95a24faa..7da9cd2a2b58 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -909,14 +909,11 @@ static ssize_t iio_write_channel_info(struct device *dev,
->  			return -EINVAL;
->  		integer = ch;
->  	} else {
-> -		ret = iio_str_to_fixpoint(buf, fract_mult, &integer, &fract);
-> +		ret = __iio_str_to_fixpoint(buf, fract_mult, &integer, &fract,
-> +					    scale_db);
->  		if (ret)
->  			return ret;
->  	}
-> -	ret = __iio_str_to_fixpoint(buf, fract_mult, &integer, &fract,
-> -				    scale_db);
-> -	if (ret)
-> -		return ret;
->  
->  	ret = indio_dev->info->write_raw(indio_dev, this_attr->c,
->  					 integer, fract, this_attr->address);
 
+Queued. Thanks.
