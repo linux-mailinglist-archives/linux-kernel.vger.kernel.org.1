@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FE819E771
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 21:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED92219E777
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 22:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726373AbgDDT6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 15:58:13 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:46205 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726297AbgDDT6N (ORCPT
+        id S1726402AbgDDUAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 16:00:31 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:45622 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726297AbgDDUAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 15:58:13 -0400
-Received: by mail-lf1-f66.google.com with SMTP id q5so8591425lfb.13
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 12:58:10 -0700 (PDT)
+        Sat, 4 Apr 2020 16:00:30 -0400
+Received: by mail-lj1-f195.google.com with SMTP id t17so10471385ljc.12
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 13:00:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fteReWnRxKhJdJWjlTSPXgrS3vLMPMuiU4lJg9jIfSg=;
-        b=fxQvOM9Lay46fYPKSDwRyjYD4lXBlyxEjdno5ma6bzlVNdYRGOuWf/tbaUv/55Q2lP
-         EVY09E/9dAK2jBbFJeg9lDuSAWqqeksSjOU37unrtRrFJyhzd6tATm71K8eXlp2Gr+Xf
-         un6AHFnxDD9q+D16pjQltDO0eaN61u+s+/mBaAdzSsY8AvFnCUZgVRf9CJetzRN4ZpVM
-         bF/w1Kf5Oi7aqHjrJLTNEbsQOTHkYDaGfmER7lPy2oCVuWIJthlpUotXne6dcIlvr6NR
-         w4XcTrX8P4vmYX8fYB4/ajJSYBOUTjKlTtOdGFhR2m+on9qo3p4kPeGCbzdSr+v7AFxw
-         8egA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YsuPBZsb8WE7VCqvhICagjys5vaL8jznepcO6gVNhuY=;
+        b=O/NJbZhEcELmxr8BjYMVRxOGDrpsvhy4davP58ldZKgobV0p7JxPIcKelXaB7aNZW9
+         mPcbUFn5jfyaOh/i3A4S/VxDN7Nv056gxJ7+iidO74GTBvCOtL8MrU9wKnElTGHdb3um
+         EpkDy6jh4uuboALpwZV+wASIDyIisdDKaAb18=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fteReWnRxKhJdJWjlTSPXgrS3vLMPMuiU4lJg9jIfSg=;
-        b=N7u/cxbyD4MRxDUu4fOF9lbZFLu0hZEqfBlrTUzq2E6Z+GeytBg2vJlCT6/b0WBKoW
-         SIoPTfLQenR0xONxdy4rZrA9o6UKWoW83q23N1wjUfzIocn8lBf23qQ6Rs28F8SbPUG9
-         +Qid78V09g+9vdhwvKIPz3CWiodgytoeMw+OshvwmNJqUnYcAqMprEuaKxiTh5we3oq4
-         ozpxdxMkj4s7py36xZPLnrogBEGTHph6kYTxqrLLocRq6GdfeIbvAYTYvsMUXpXAPlMY
-         sr2Qib9dFEVuv5uas7OGjAjhjHKxbqDUhT+0TyeBanOqAxvSy19+4Q5Dn3QSHXsZiFC6
-         jy8Q==
-X-Gm-Message-State: AGi0PuZs+Su6xt7oxPPgb7nxedLXTY277cNjM4l4tIZn3NHsesbALbUa
-        OYGZvciSnM2LxK+J7H3oRHuCJzXhSf8=
-X-Google-Smtp-Source: APiQypKdP67XgZkBynzeqRe85FshGKIefaHHc1NIHPIiUZ8B4LhIHwK14iHkq0dRQYef5S2pU2TzEA==
-X-Received: by 2002:ac2:4554:: with SMTP id j20mr905472lfm.91.1586030289580;
-        Sat, 04 Apr 2020 12:58:09 -0700 (PDT)
-Received: from wasted.cogentembedded.com ([2a00:1fa0:44d4:5e2:6cf1:70e1:48ed:4ff5])
-        by smtp.gmail.com with ESMTPSA id 64sm1352580lfh.32.2020.04.04.12.58.07
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 04 Apr 2020 12:58:08 -0700 (PDT)
-Subject: Re: [PATCH] ata:ahci_xgene:use devm_platform_ioremap_resource() to
- simplify code
-To:     =?UTF-8?B?5ZSQ5b2s?= <tangbin@cmss.chinamobile.com>,
-        axboe <axboe@kernel.dk>
-Cc:     linux-ide <linux-ide@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200401084952.5828-1-tangbin@cmss.chinamobile.com>
- <c1cfde01-769d-2904-3be3-a41cc51c1519@cogentembedded.com>
- <202004011744223003066@cmss.chinamobile.com>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Organization: Cogent Embedded
-Message-ID: <84628923-02d6-ae1e-fb23-373ad090d706@cogentembedded.com>
-Date:   Sat, 4 Apr 2020 22:58:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YsuPBZsb8WE7VCqvhICagjys5vaL8jznepcO6gVNhuY=;
+        b=PR0ksHmMfuY7n/VsLyubG68SRkCp6KdMMcv/iSTgJRWeGpxo7h1oZ1ez6dcFzGj57M
+         8LeeA/ik/EvjbE7FYO8CHfeF7Fr37OgRYlL4p4mzecRqzvpb0ia/kt8aU5eS+cEL7Pa7
+         PcQU84zHEYiBBCP9J9WctO0F+F44O60g3Mi45/JjNY94RAXC8bJHf6cYTQML2c7Dfac3
+         YTy9gQaWtLucBZuJ8zq9+EwBourP5MRyVVgzMi9HTjFUxg981mlbzpk5C4rDanEUSRJC
+         MqvxEz6CavvlxDoEQXslmjALdWQoyL0Bf23oArpjGQW1xbUh3mAog8UoJ/hY8s6LyFQS
+         rQ0Q==
+X-Gm-Message-State: AGi0PuY9FilP1goD1PsABt/GSs95da6Gs8I0JXhtO6Gr0MmtFbK6+ZZD
+        mS7hPJ6iSoc+X66w3464ePo+jMjXgNI=
+X-Google-Smtp-Source: APiQypJPEjmJLR+v/uMTiRI5GU2KPJmnxeQ2hBKAC8z99UM84MIW0zDB9FTVy821de+mAuiJlXyrWg==
+X-Received: by 2002:a2e:3919:: with SMTP id g25mr8309460lja.248.1586030426200;
+        Sat, 04 Apr 2020 13:00:26 -0700 (PDT)
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
+        by smtp.gmail.com with ESMTPSA id u25sm8549757lfm.97.2020.04.04.13.00.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Apr 2020 13:00:25 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id k21so10543041ljh.2
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 13:00:24 -0700 (PDT)
+X-Received: by 2002:a2e:7c1a:: with SMTP id x26mr7591094ljc.209.1586030424282;
+ Sat, 04 Apr 2020 13:00:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <202004011744223003066@cmss.chinamobile.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-MW
-Content-Transfer-Encoding: 8bit
+References: <1437197.1585570598@warthog.procyon.org.uk>
+In-Reply-To: <1437197.1585570598@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 4 Apr 2020 13:00:08 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgWnZCvTFDfiYAy=uMUf2F1Yy1r9ur5ARcmtqLjX8Tz4Q@mail.gmail.com>
+Message-ID: <CAHk-=wgWnZCvTFDfiYAy=uMUf2F1Yy1r9ur5ARcmtqLjX8Tz4Q@mail.gmail.com>
+Subject: Re: [GIT PULL] keys: Fix key->sem vs mmap_sem issue when reading key
+To:     David Howells <dhowells@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Waiman Long <longman@redhat.com>, keyrings@vger.kernel.org,
+        LSM List <linux-security-module@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Mon, Mar 30, 2020 at 5:16 AM David Howells <dhowells@redhat.com> wrote:
+>
+>  security/keys/internal.h                  |  12 ++++
 
-On 04/01/2020 12:44 PM, 唐彬 wrote:
+This isn't so much about this pull (which I have taken), as about the
+fact that this code re-inforces bad behavior we already in the slub
+layer, and now extends it further to kvfree.
 
->         I think the previous code in memory resource #4 to use 'csr' maybe useless，if
-> devm_ioremap_resource() failed，the function will return, the 'ctx->csr_mux = csr'  will 
-> become useless。So I do the same way as the other three。This's my idea, please criticize
-> and correct it。Thank you very much!
+Doing this:
 
-   I was unable to understand what you mean here.
-   My point is that the driver happily works if the MUX registers do not exist, and your
-patch makes the driver fail the probe in this case. Even if this was correct, it's usually
-a bad idea to do several thing in the same patch. So, you'd need a patch changing the probing logic before you convert things to devm_platfrom_ioremap_resource()...
 
-[...]
+   __kvzfree(const void *addr, size_t len)
+  ..
+                memset((void *)addr, 0, len);
+                kvfree(addr);
 
-MBR, Sergei
+is wrong to begin with. It's wrong because if the compiler ever knows
+that kvfree is a freeing function (with something like
+__attribute__((free)) - I don't think gcc is smart enough today), the
+compiler might throw the memset away.
+
+Yeah, so far we've only seen that for automatic stack clearing, but
+there are very much compilers that know that alloc/free are special
+(both for warning about use-after-free issues, and for "improving"
+code generation by blindly removing dead writes).
+
+We have a function for clearing sensitive information: it's called
+"memclear_explicit()", and it's about forced (explicit) clearing even
+if the data might look dead afterwards.
+
+The other problem with that function is the name: "__kvzfree()" is not
+a useful name for this function. We use the "__" format for internal
+low-level helpers, and it generally means that it does *less* than the
+full function. This does more, not less, and "__" is not following any
+sane naming model.
+
+So the name should probably be something like "kvfree_sensitive()" or
+similar. Or maybe it could go even further, and talk about _why_ it's
+sensitive, and call it "kvfree_cleartext()" or something like that.
+
+Because the clearing is really not what even matters. It might choose
+other patterns to overwrite things with, but it might do other things
+too, like putting special barriers for data leakage (or flags to tell
+return-to-user-mode to do so).
+
+And yes, kzfree() isn't a good name either, and had that same
+memset(), but at least it doesn't do the dual-underscore mistake.
+
+Including some kzfree()/crypto people explicitly - I hope we can get
+away from this incorrect and actively wrong pattern of thinking that
+"sensitive data should be memset(), and then we should add a random
+'z' in the name somewhere to 'document' that".
+
+               Linus
