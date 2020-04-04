@@ -2,88 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A0D819E349
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DAB419E352
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgDDHbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 03:31:02 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:38609 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726224AbgDDHbB (ORCPT
+        id S1726406AbgDDHbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 03:31:32 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:41697 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgDDHba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 03:31:01 -0400
-Received: by mail-vs1-f66.google.com with SMTP id x206so6498523vsx.5
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:01 -0700 (PDT)
+        Sat, 4 Apr 2020 03:31:30 -0400
+Received: by mail-vs1-f67.google.com with SMTP id a63so6463003vsa.8
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=verdurent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=J+hFFTj54X+dnGLSJAQeLYPL3M77XkjKUzoz85gYbcc=;
-        b=W5l3m915mdUEF+QTl2zp5yRyUKce6jM87djRxO61GJvftQpKX913IH6irpyEW3vjWS
-         aoJ74HTDM5wHmJc1Ma+iPzFwIZOukAqxaZuvmwVBrJNp48lcRfPDwVSa9X1Q21W304Qd
-         cQyEYq73wnnrVPdxQKQdypk+J9xuqsRFRq4jiGBuX3JV5VLQqscYAjO5CIhd2QpYKeg8
-         ucXeqxti4ZpwQIRdl5WsT7wAE3iyMCWBT7I3jHnfRCfBGVJzv6x5TpSdEoWKSrdjyxdG
-         f1spuqj+Bi+5vaowZYujt3kJGE1qlJV5ermVTGj+U0Ek8M+nE+D+dkCSLgQ+wctRmDko
-         RHyw==
+        bh=PM54+TAF+g/S8Jdu48v4vdALgU1uHmqD41DlN+nN2GQ=;
+        b=U/z7FaYgCxrifjRMbUMuNc48xDQkG1azVQ1qAqD5C7gQ2BC0+SFLokHqrseBZoS9BZ
+         HhrCnBVjIlsNzTSk4g9jfL9JJz+m5CKI+s5CrxslyKnjLoTsEBG8QO2itdwefQVPu7Sh
+         RWs2OJabHZCg++IlG5djjUt5kNFHWUOxPGGHY1AUmooXc5/Kvu95qNG/RJNI1bp408I1
+         rv4YucMhPRAVJiiew6KxAcltBjYQn1wwVVPeylGsfx2YHhAuDgZgIaV+C9Eq+6VzjDvp
+         i2sBU69P9pmQehnOz4LSQCQfw45G1MRqFniKV+pNE9TYCEJv2jY/nLd6aPv16oy5YDpy
+         UvZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=J+hFFTj54X+dnGLSJAQeLYPL3M77XkjKUzoz85gYbcc=;
-        b=PLs5lNVbD7gZoo+0wsevJyHBFzUidlgyGXSFwWxGVHzc9Gm9Ddzj/vmciBZTRv/zju
-         JbYzIDH7qzzfcz8ojD2xAqMY8uSBLUpGTLF2jUZUIXvm3zUaCdsgVhG8fYwgdxIVdsmy
-         BZ4ycsC5ay7MFttG6ONdIVIeuF3riXsB1e9iUH52CzU5wBuxt8UaQum1bZnXCcYlAqt3
-         BLna9BREK5P2of86Yh2mF7ee8Jt7wZ9yNk+NmrtMZnaUU/9AXfWT4NPXl8oz1wycHuGe
-         UG8XZGwdz5GYLCzNbRRZduhCpZtYNWFR//WBweFgHJcXZtn1FZ0r/XgdfUKpG4+26zxM
-         rFKA==
-X-Gm-Message-State: AGi0PuaYD3Nl5mRvBH4o0Lg9uwD+6kAqSWTCqhFENKHAR70QJsS1nywO
-        0Uwgc6v1F26x98ZNfRILLTq8Fg4t57zJkd/qnGPzAg==
-X-Google-Smtp-Source: APiQypKwCsok3pKZtYpKavnkMIyWFzjwvX+VhO/uzmDeq/p7hWUxGf25hzJLEtTfwGsf8hHS+ICVZnSZCzssbXJVdr8=
-X-Received: by 2002:a05:6102:5c5:: with SMTP id v5mr9239819vsf.9.1585985460949;
- Sat, 04 Apr 2020 00:31:00 -0700 (PDT)
+        bh=PM54+TAF+g/S8Jdu48v4vdALgU1uHmqD41DlN+nN2GQ=;
+        b=TyfR1QOl4nsGFDz1yIqKaciMmtb8oer7b4IZQaLsyUqVmCCfNeWx4IQofAMK7s/RNi
+         6GtAi+3dgxNNgZQDYPzdW0mYMLcBWhZBAONy35DK+3iAVl5TolO+Vl7tnZwRWtaJIfX5
+         yJLJFOKQA2+aOh9AjBrcU3RYhS8I4nLrMW/6QEw3rU9/olGPegMjQWz9z4a/bLITyitY
+         3PX7S3n7wmWUvovp1yNjhclaaGlxqfPzh60A0smsjFa6hTl6SDkqvqyxZWYYLiwjbtWT
+         jV1LbJtBoJk2kMeQMcju0HvNJB7NGDYoagRIYnFeUdUyCUlvFJ7sH/mi+zuFxiGvYzFt
+         Xp8A==
+X-Gm-Message-State: AGi0PuYCu+4pbdpY8buGHEeXTFC0z9D1wt++CIJ49GCmJw/5fX/gnqNC
+        YJJkRM2zPBp9hwm9a1UBs+XVW+Ets7Zi2hkhugAuUg==
+X-Google-Smtp-Source: APiQypIu/alTBXDgKITDXBctny47stbSvo55Own/Vu8y0I7bxK1KHmvt7pgNCgb+JQCSxYjPHiy+3AH9i6i2tnOhjmE=
+X-Received: by 2002:a67:69d5:: with SMTP id e204mr8446240vsc.159.1585985488361;
+ Sat, 04 Apr 2020 00:31:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-7-daniel.lezcano@linaro.org>
-In-Reply-To: <20200402142747.8307-7-daniel.lezcano@linaro.org>
+References: <20200331075356.19171-1-j-keerthy@ti.com> <20200331075356.19171-2-j-keerthy@ti.com>
+In-Reply-To: <20200331075356.19171-2-j-keerthy@ti.com>
 From:   Amit Kucheria <amit.kucheria@verdurent.com>
 Date:   Sat, 4 Apr 2020 13:00:00 +0530
-Message-ID: <CAHLCerNrAgOSO3DiFAr3rvD3Ar7N4SP7dLeURGNae7oqpzzEKA@mail.gmail.com>
-Subject: Re: [PATCH V2 7/9] thermal: Change IS_ENABLED to IFDEF in the header file
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+Message-ID: <CAHLCerPrmsMU3uVwQGXfZAsWkgxiG+1M136f6uuWgwB4EF2uGg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/4] dt-bindings: thermal: k3: Add VTM bindings documentation
+To:     Keerthy <j-keerthy@ti.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>, Rob Herring <robh+dt@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, t-kristo@ti.com,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        lakml <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 7:58 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+On Tue, Mar 31, 2020 at 1:24 PM Keerthy <j-keerthy@ti.com> wrote:
 >
-> The thermal framework can not be compiled as a module. The IS_ENABLED
-> macro is useless here and can be replaced by an ifdef.
+> Add VTM bindings documentation. In the Voltage Thermal
+> Management Module(VTM), K3 AM654 supplies a voltage
+> reference and a temperature sensor feature that are gathered in the band
+> gap voltage and temperature sensor (VBGAPTS) module. The band
+> gap provides current and voltage reference for its internal
+> circuits and other analog IP blocks. The analog-to-digital
+> converter (ADC) produces an output value that is proportional
+> to the silicon temperature.
 >
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
-
+> Signed-off-by: Keerthy <j-keerthy@ti.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
->  include/linux/thermal.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index 47e745c5dfca..12df9ff0182d 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -383,7 +383,7 @@ void devm_thermal_zone_of_sensor_unregister(struct device *dev,
+> Changes in v5:
 >
->  #endif
+>   * Added Reviewed-by: Rob Herring <robh@kernel.org>
 >
-> -#if IS_ENABLED(CONFIG_THERMAL)
-> +#ifdef CONFIG_THERMAL
->  struct thermal_zone_device *thermal_zone_device_register(const char *, int, int,
->                 void *, struct thermal_zone_device_ops *,
->                 struct thermal_zone_params *, int, int);
+>  .../bindings/thermal/ti,am654-thermal.yaml    | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml b/Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml
+> new file mode 100644
+> index 000000000000..d241b65d6072
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/thermal/ti,am654-thermal.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Texas Instruments AM654 VTM (DTS) binding
+> +
+> +maintainers:
+> +  - Keerthy <j-keerthy@ti.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: ti,am654-vtm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  "#thermal-sensor-cells":
+> +    const: 1
+> +
+> +required:
+> +  - "#thermal-sensor-cells"
+> +  - compatible
+> +  - reg
+> +  - power-domains
+> +
+
+A nit-pick: arrange the required properties in order they're listed above.
+
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +    vtm: thermal@42050000 {
+> +        compatible = "ti,am654-vtm";
+> +        reg = <0x0 0x42050000 0x0 0x25c>;
+> +        power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
+> +        #thermal-sensor-cells = <1>;
+> +    };
+> +
+> +    mpu0_thermal: mpu0_thermal {
+> +        polling-delay-passive = <250>; /* milliseconds */
+> +        polling-delay = <500>; /* milliseconds */
+> +        thermal-sensors = <&vtm0 0>;
+> +
+> +        trips {
+> +                mpu0_crit: mpu0_crit {
+> +                        temperature = <125000>; /* milliCelsius */
+> +                        hysteresis = <2000>; /* milliCelsius */
+> +                        type = "critical";
+> +                };
+> +        };
+> +    };
+> +...
 > --
 > 2.17.1
 >
