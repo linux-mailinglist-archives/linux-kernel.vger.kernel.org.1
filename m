@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF78319E62D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 17:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0F219E636
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 17:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726307AbgDDPp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 11:45:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39374 "EHLO mail.kernel.org"
+        id S1726388AbgDDPqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 11:46:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgDDPp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 11:45:59 -0400
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+        id S1726039AbgDDPqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 11:46:55 -0400
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96CB3206C3;
-        Sat,  4 Apr 2020 15:45:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97845206C3;
+        Sat,  4 Apr 2020 15:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586015158;
-        bh=GMu0zk+p8QMuMWjCbtVqePXwGuMgSxIWxR0r1z6lvyU=;
+        s=default; t=1586015213;
+        bh=WJRemwJCqzpDcI6pJ9JuFYK2/3qEZkXB/hThgp1+WDs=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=In63Izep8i8dqQyydQQmo8v++EZOqlLlmMuKdMxXFfzEBMh1HfJabL2vVFHShgGIj
-         /Wo4gzAUVDMtw1/UNGmQf1lYig+Kg4Wp8LDhqUX2GeATB1X7WwqAm1JcIUyZqtQ+Zk
-         TfnheDJbmR4Co6Zm3mHw7Ky+Ki1/d+WJm7frwn84=
-Received: by mail-ed1-f44.google.com with SMTP id bd14so13077896edb.10;
-        Sat, 04 Apr 2020 08:45:58 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYb4DqvdnthUD2B9TpA8TuFVbN9WT5N8639J2gvInN+1nJ/B7xV
-        5yAP+k1RqpFdua6NhQ3tYWbJcxVsGnqB1OeI8A==
-X-Google-Smtp-Source: APiQypKX48tTaJ6RxCfGLNPptu/cJWdbVnwRtToRHot3QHJ2YgdHABiYCkH652IzhRi38qOA2XH03CE7gPBlBXCImT4=
-X-Received: by 2002:a50:af85:: with SMTP id h5mr12733695edd.300.1586015157107;
- Sat, 04 Apr 2020 08:45:57 -0700 (PDT)
+        b=TIYkobiaZmaasIZmR6h4Q1DdVRaXr1785QzuvlU9dd/AoXtDZ6Y0gBE1O/ewnwcjE
+         rWVoc0dI+EKeV6zAte9vbrxi9Lo23C/DePzk6Z0mJtfRIDD5DV55QNHbG+ZiesJxbY
+         gdN7yfQg8uqBJ5y2O1MJxFjDwHv5KGoNL/G9WFyc=
+Received: by mail-ed1-f45.google.com with SMTP id c7so5386842edl.2;
+        Sat, 04 Apr 2020 08:46:53 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaDS8rHkM5X1LG7d4E4ZLeL/kfvp56LG+IooSDIKBqs0V042c3+
+        9O+d0SRlh4h3FXHhCM9f4074eTnUKojoVX106g==
+X-Google-Smtp-Source: APiQypK7z+HsfAmBbW8fRL2j4biTCkMbLc7PDBmY54QJwJhjpBtAQh3RlWcMHGlQ9VeMeZHePyRCYJTqhyjeIPOpuk0=
+X-Received: by 2002:a05:6402:335:: with SMTP id q21mr3140080edw.47.1586015212120;
+ Sat, 04 Apr 2020 08:46:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200331082725.81048-1-jitao.shi@mediatek.com> <20200331082725.81048-2-jitao.shi@mediatek.com>
-In-Reply-To: <20200331082725.81048-2-jitao.shi@mediatek.com>
+References: <20200331082725.81048-1-jitao.shi@mediatek.com> <20200331082725.81048-4-jitao.shi@mediatek.com>
+In-Reply-To: <20200331082725.81048-4-jitao.shi@mediatek.com>
 From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sat, 4 Apr 2020 23:45:45 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-77zLp1W=29oxdFbPWzdiUbk-dJfEmUU16CJoLxC8FMg@mail.gmail.com>
-Message-ID: <CAAOTY_-77zLp1W=29oxdFbPWzdiUbk-dJfEmUU16CJoLxC8FMg@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] dt-bindings: display: mediatek: add property to
- control mipi tx drive current
+Date:   Sat, 4 Apr 2020 23:46:40 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9=uyfSYms_F=T8guvB9Bx9V=Pjo1TtmmfihMgSj1dt9Q@mail.gmail.com>
+Message-ID: <CAAOTY_9=uyfSYms_F=T8guvB9Bx9V=Pjo1TtmmfihMgSj1dt9Q@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] drm/mediatek: add the mipitx driving control
 To:     Jitao Shi <jitao.shi@mediatek.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -63,43 +62,97 @@ Hi, Jitao:
 Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2020=E5=B9=B43=E6=9C=8831=E6=
 =97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=884:28=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> Add a property to control mipi tx drive current:
-> "drive-strength-microamp"
+> Add a property in device tree to control the driving by different
+> board.
 
 Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
 >
+> Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
 > Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
 > ---
->  .../devicetree/bindings/display/mediatek/mediatek,dsi.txt    | 5 +++++
->  1 file changed, 5 insertions(+)
+>  drivers/gpu/drm/mediatek/mtk_mipi_tx.c        | 14 ++++++++++++++
+>  drivers/gpu/drm/mediatek/mtk_mipi_tx.h        |  1 +
+>  drivers/gpu/drm/mediatek/mtk_mt8183_mipi_tx.c |  7 +++++++
+>  3 files changed, 22 insertions(+)
 >
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-dsi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.t=
-xt
-> index a19a6cc375ed..d78b6d6d8fab 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsi.txt
-> @@ -33,6 +33,10 @@ Required properties:
->  - #clock-cells: must be <0>;
->  - #phy-cells: must be <0>.
+> diff --git a/drivers/gpu/drm/mediatek/mtk_mipi_tx.c b/drivers/gpu/drm/med=
+iatek/mtk_mipi_tx.c
+> index e4d34484ecc8..e301af64809e 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_mipi_tx.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_mipi_tx.c
+> @@ -125,6 +125,20 @@ static int mtk_mipi_tx_probe(struct platform_device =
+*pdev)
+>                 return ret;
+>         }
 >
-> +Optional properties:
-> +- drive-strength-microamp: adjust driving current, should be 3000 ~ 6000=
-. And
-> +                                                  the step is 200.
+> +       ret =3D of_property_read_u32(dev->of_node, "drive-strength-microa=
+mp",
+> +                                  &mipi_tx->mipitx_drive);
+> +       /* If can't get the "mipi_tx->mipitx_drive", set it default 0x8 *=
+/
+> +       if (ret < 0)
+> +               mipi_tx->mipitx_drive =3D 4600;
 > +
->  Example:
+> +       /* check the mipitx_drive valid */
+> +       if (mipi_tx->mipitx_drive > 6000 || mipi_tx->mipitx_drive < 3000)=
+ {
+> +               dev_warn(dev, "drive-strength-microamp is invalid %d, not=
+ in 3000 ~ 6000\n",
+> +                        mipi_tx->mipitx_drive);
+> +               mipi_tx->mipitx_drive =3D clamp_val(mipi_tx->mipitx_drive=
+, 3000,
+> +                                                 6000);
+> +       }
+> +
+>         ref_clk_name =3D __clk_get_name(ref_clk);
 >
->  mipi_tx0: mipi-dphy@10215000 {
-> @@ -42,6 +46,7 @@ mipi_tx0: mipi-dphy@10215000 {
->         clock-output-names =3D "mipi_tx0_pll";
->         #clock-cells =3D <0>;
->         #phy-cells =3D <0>;
-> +       drive-strength-microamp =3D <4600>;
->  };
+>         ret =3D of_property_read_string(dev->of_node, "clock-output-names=
+",
+> diff --git a/drivers/gpu/drm/mediatek/mtk_mipi_tx.h b/drivers/gpu/drm/med=
+iatek/mtk_mipi_tx.h
+> index 413f35d86219..eea44327fe9f 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_mipi_tx.h
+> +++ b/drivers/gpu/drm/mediatek/mtk_mipi_tx.h
+> @@ -27,6 +27,7 @@ struct mtk_mipi_tx {
+>         struct device *dev;
+>         void __iomem *regs;
+>         u32 data_rate;
+> +       u32 mipitx_drive;
+>         const struct mtk_mipitx_data *driver_data;
+>         struct clk_hw pll_hw;
+>         struct clk *pll;
+> diff --git a/drivers/gpu/drm/mediatek/mtk_mt8183_mipi_tx.c b/drivers/gpu/=
+drm/mediatek/mtk_mt8183_mipi_tx.c
+> index 91f08a351fd0..e4cc967750cb 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_mt8183_mipi_tx.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_mt8183_mipi_tx.c
+> @@ -17,6 +17,9 @@
+>  #define RG_DSI_BG_CORE_EN              BIT(7)
+>  #define RG_DSI_PAD_TIEL_SEL            BIT(8)
 >
->  dsi0: dsi@1401b000 {
+> +#define MIPITX_VOLTAGE_SEL     0x0010
+> +#define RG_DSI_HSTX_LDO_REF_SEL                (0xf << 6)
+> +
+>  #define MIPITX_PLL_PWR         0x0028
+>  #define MIPITX_PLL_CON0                0x002c
+>  #define MIPITX_PLL_CON1                0x0030
+> @@ -123,6 +126,10 @@ static void mtk_mipi_tx_power_on_signal(struct phy *=
+phy)
+>         mtk_mipi_tx_clear_bits(mipi_tx, MIPITX_D3_SW_CTL_EN, DSI_SW_CTL_E=
+N);
+>         mtk_mipi_tx_clear_bits(mipi_tx, MIPITX_CK_SW_CTL_EN, DSI_SW_CTL_E=
+N);
+>
+> +       mtk_mipi_tx_update_bits(mipi_tx, MIPITX_VOLTAGE_SEL,
+> +                               RG_DSI_HSTX_LDO_REF_SEL,
+> +                               (mipi_tx->mipitx_drive - 3000) / 200 << 6=
+);
+> +
+>         mtk_mipi_tx_set_bits(mipi_tx, MIPITX_CK_CKMODE_EN, DSI_CK_CKMODE_=
+EN);
+>  }
+>
 > --
 > 2.21.0
 > _______________________________________________
