@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC1819E3E5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E5319E3F9
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727794AbgDDIoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 04:44:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41527 "EHLO
+        id S1726230AbgDDIto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 04:49:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41851 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgDDImB (ORCPT
+        with ESMTP id S1725906AbgDDIto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 04:42:01 -0400
+        Sat, 4 Apr 2020 04:49:44 -0400
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jKeNC-00011Y-0Y; Sat, 04 Apr 2020 10:41:50 +0200
+        id 1jKeUi-0001bq-If; Sat, 04 Apr 2020 10:49:36 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 390491C04E3;
-        Sat,  4 Apr 2020 10:41:47 +0200 (CEST)
-Date:   Sat, 04 Apr 2020 08:41:46 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 2B87B1C070D;
+        Sat,  4 Apr 2020 10:41:48 +0200 (CEST)
+Date:   Sat, 04 Apr 2020 08:41:47 -0000
 From:   "tip-bot2 for Namhyung Kim" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf cgroup: Maintain cgroup hierarchy
-Cc:     Namhyung Kim <namhyung@kernel.org>,
+Subject: [tip: perf/urgent] perf tools: Add file-handle feature test
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jiri Olsa <jolsa@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200325124536.2800725-5-namhyung@kernel.org>
-References: <20200325124536.2800725-5-namhyung@kernel.org>
+        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200402015249.3800462-1-namhyung@kernel.org>
+References: <20200402015249.3800462-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Message-ID: <158598970685.28353.1240498154608229451.tip-bot2@tip-bot2>
+Message-ID: <158598970782.28353.6782627101086180811.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -51,228 +52,134 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     d1277aa36bff4bfc1a187a469fc6a6a1d17cf59c
-Gitweb:        https://git.kernel.org/tip/d1277aa36bff4bfc1a187a469fc6a6a1d17cf59c
+Commit-ID:     49f550ea87c73671ee4d5e08820e0976894dd610
+Gitweb:        https://git.kernel.org/tip/49f550ea87c73671ee4d5e08820e0976894dd610
 Author:        Namhyung Kim <namhyung@kernel.org>
-AuthorDate:    Wed, 25 Mar 2020 21:45:31 +09:00
+AuthorDate:    Thu, 02 Apr 2020 10:52:49 +09:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Fri, 03 Apr 2020 09:37:55 -03:00
 
-perf cgroup: Maintain cgroup hierarchy
+perf tools: Add file-handle feature test
 
-Each cgroup is kept in the perf_env's cgroup_tree sorted by the cgroup
-id.  Hist entries have cgroup id can compare it directly and later it
-can be used to find a group name using this tree.
+The file handle (FHANDLE) support is configurable so some systems might not
+have it.  So add a config feature item to check it on build time so that we
+don't add the cgroup tracking feature based on that.
 
+Committer notes:
+
+Had to make the test use the same construct as its later use in
+synthetic-events.c, in the next patch in this series. i.e. make it be:
+
+	struct {
+		struct file_handle fh;
+		uint64_t cgroup_id;
+	} handle;
+
+To cope with:
+
+    CC       /tmp/build/perf/util/cloexec.o
+  util/synthetic-events.c:428:22: error: field 'fh' with   CC       /tmp/build/perf/util/call-path.o
+  variable sized type 'struct file_handle' not at the end of a struct or class is a GNU
+        extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+                  struct file_handle fh;
+                                     ^
+  1 error generated.
+
+Deal with this at some point, i.e. investigate if the right thing is to
+remove that -Wgnu-variable-sized-type-not-at-end from our CFLAGS, for
+now do the test the same way as it is used looks more sensible.
+
+Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
 Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200325124536.2800725-5-namhyung@kernel.org
+Link: http://lore.kernel.org/lkml/20200402015249.3800462-1-namhyung@kernel.org
+[ split from a larger patch, removed blank line at EOF ]
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/cgroup.c  | 80 ++++++++++++++++++++++++++++++++++++++-
- tools/perf/util/cgroup.h  | 17 ++++++--
- tools/perf/util/env.c     |  2 +-
- tools/perf/util/env.h     |  6 +++-
- tools/perf/util/machine.c |  9 +++-
- 5 files changed, 109 insertions(+), 5 deletions(-)
+ tools/build/Makefile.feature           |  3 ++-
+ tools/build/feature/Makefile           |  6 +++++-
+ tools/build/feature/test-file-handle.c | 17 +++++++++++++++++
+ tools/perf/Makefile.config             |  4 ++++
+ 4 files changed, 28 insertions(+), 2 deletions(-)
+ create mode 100644 tools/build/feature/test-file-handle.c
 
-diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-index 5bc9d3b..b73fb78 100644
---- a/tools/perf/util/cgroup.c
-+++ b/tools/perf/util/cgroup.c
-@@ -191,3 +191,83 @@ int parse_cgroups(const struct option *opt, const char *str,
- 	}
- 	return 0;
- }
+diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
+index 574c2e0..3e0c019 100644
+--- a/tools/build/Makefile.feature
++++ b/tools/build/Makefile.feature
+@@ -72,7 +72,8 @@ FEATURE_TESTS_BASIC :=                  \
+         setns				\
+         libaio				\
+         libzstd				\
+-        disassembler-four-args
++        disassembler-four-args		\
++        file-handle
+ 
+ # FEATURE_TESTS_BASIC + FEATURE_TESTS_EXTRA is the complete list
+ # of all feature tests
+diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
+index 7ac0d80..621f528 100644
+--- a/tools/build/feature/Makefile
++++ b/tools/build/feature/Makefile
+@@ -67,7 +67,8 @@ FILES=                                          \
+          test-llvm.bin				\
+          test-llvm-version.bin			\
+          test-libaio.bin			\
+-         test-libzstd.bin
++         test-libzstd.bin			\
++         test-file-handle.bin
+ 
+ FILES := $(addprefix $(OUTPUT),$(FILES))
+ 
+@@ -321,6 +322,9 @@ $(OUTPUT)test-libaio.bin:
+ $(OUTPUT)test-libzstd.bin:
+ 	$(BUILD) -lzstd
+ 
++$(OUTPUT)test-file-handle.bin:
++	$(BUILD)
 +
-+static struct cgroup *__cgroup__findnew(struct rb_root *root, uint64_t id,
-+					bool create, const char *path)
+ ###############################
+ 
+ clean:
+diff --git a/tools/build/feature/test-file-handle.c b/tools/build/feature/test-file-handle.c
+new file mode 100644
+index 0000000..4d3b03b
+--- /dev/null
++++ b/tools/build/feature/test-file-handle.c
+@@ -0,0 +1,17 @@
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <inttypes.h>
++
++int main(void)
 +{
-+	struct rb_node **p = &root->rb_node;
-+	struct rb_node *parent = NULL;
-+	struct cgroup *cgrp;
-+
-+	while (*p != NULL) {
-+		parent = *p;
-+		cgrp = rb_entry(parent, struct cgroup, node);
-+
-+		if (cgrp->id == id)
-+			return cgrp;
-+
-+		if (cgrp->id < id)
-+			p = &(*p)->rb_left;
-+		else
-+			p = &(*p)->rb_right;
-+	}
-+
-+	if (!create)
-+		return NULL;
-+
-+	cgrp = malloc(sizeof(*cgrp));
-+	if (cgrp == NULL)
-+		return NULL;
-+
-+	cgrp->name = strdup(path);
-+	if (cgrp->name == NULL) {
-+		free(cgrp);
-+		return NULL;
-+	}
-+
-+	cgrp->fd = -1;
-+	cgrp->id = id;
-+	refcount_set(&cgrp->refcnt, 1);
-+
-+	rb_link_node(&cgrp->node, parent, p);
-+	rb_insert_color(&cgrp->node, root);
-+
-+	return cgrp;
-+}
-+
-+struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
-+			       const char *path)
-+{
-+	struct cgroup *cgrp;
-+
-+	down_write(&env->cgroups.lock);
-+	cgrp = __cgroup__findnew(&env->cgroups.tree, id, true, path);
-+	up_write(&env->cgroups.lock);
-+	return cgrp;
-+}
-+
-+struct cgroup *cgroup__find(struct perf_env *env, uint64_t id)
-+{
-+	struct cgroup *cgrp;
-+
-+	down_read(&env->cgroups.lock);
-+	cgrp = __cgroup__findnew(&env->cgroups.tree, id, false, NULL);
-+	up_read(&env->cgroups.lock);
-+	return cgrp;
-+}
-+
-+void perf_env__purge_cgroups(struct perf_env *env)
-+{
-+	struct rb_node *node;
-+	struct cgroup *cgrp;
-+
-+	down_write(&env->cgroups.lock);
-+	while (!RB_EMPTY_ROOT(&env->cgroups.tree)) {
-+		node = rb_first(&env->cgroups.tree);
-+		cgrp = rb_entry(node, struct cgroup, node);
-+
-+		rb_erase(node, &env->cgroups.tree);
-+		cgroup__put(cgrp);
-+	}
-+	up_write(&env->cgroups.lock);
-+}
-diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-index 2ec11f0..e98d597 100644
---- a/tools/perf/util/cgroup.h
-+++ b/tools/perf/util/cgroup.h
-@@ -3,16 +3,19 @@
- #define __CGROUP_H__
- 
- #include <linux/refcount.h>
-+#include <linux/rbtree.h>
-+#include "util/env.h"
- 
- struct option;
- 
- struct cgroup {
--	char *name;
--	int fd;
--	refcount_t refcnt;
-+	struct rb_node		node;
-+	u64			id;
-+	char			*name;
-+	int			fd;
-+	refcount_t		refcnt;
- };
- 
--
- extern int nr_cgroups; /* number of explicit cgroups defined */
- 
- struct cgroup *cgroup__get(struct cgroup *cgroup);
-@@ -26,4 +29,10 @@ void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup);
- 
- int parse_cgroups(const struct option *opt, const char *str, int unset);
- 
-+struct cgroup *cgroup__findnew(struct perf_env *env, uint64_t id,
-+			       const char *path);
-+struct cgroup *cgroup__find(struct perf_env *env, uint64_t id);
-+
-+void perf_env__purge_cgroups(struct perf_env *env);
-+
- #endif /* __CGROUP_H__ */
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 4154f94..fadc597 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -6,6 +6,7 @@
- #include <linux/ctype.h>
- #include <linux/zalloc.h>
- #include "bpf-event.h"
-+#include "cgroup.h"
- #include <errno.h>
- #include <sys/utsname.h>
- #include <bpf/libbpf.h>
-@@ -168,6 +169,7 @@ void perf_env__exit(struct perf_env *env)
- 	int i;
- 
- 	perf_env__purge_bpf(env);
-+	perf_env__purge_cgroups(env);
- 	zfree(&env->hostname);
- 	zfree(&env->os_release);
- 	zfree(&env->version);
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index 11d05ae..7632075 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -88,6 +88,12 @@ struct perf_env {
- 		u32			btfs_cnt;
- 	} bpf_progs;
- 
-+	/* same reason as above (for perf-top) */
 +	struct {
-+		struct rw_semaphore	lock;
-+		struct rb_root		tree;
-+	} cgroups;
++		struct file_handle fh;
++		uint64_t cgroup_id;
++	} handle;
++	int mount_id;
 +
- 	/* For fast cpu to numa node lookup via perf_env__numa_node */
- 	int			*numa_map;
- 	int			 nr_numa_map;
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 399b473..97142e9 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -33,6 +33,7 @@
- #include "asm/bug.h"
- #include "bpf-event.h"
- #include <internal/lib.h> // page_size
-+#include "cgroup.h"
++	name_to_handle_at(AT_FDCWD, "/", &handle.fh, &mount_id, 0);
++	return 0;
++}
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index 80e55e7..eb95c0c 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -348,6 +348,10 @@ ifeq ($(feature-gettid), 1)
+   CFLAGS += -DHAVE_GETTID
+ endif
  
- #include <linux/ctype.h>
- #include <symbol/kallsyms.h>
-@@ -654,13 +655,19 @@ int machine__process_namespaces_event(struct machine *machine __maybe_unused,
- 	return err;
- }
- 
--int machine__process_cgroup_event(struct machine *machine __maybe_unused,
-+int machine__process_cgroup_event(struct machine *machine,
- 				  union perf_event *event,
- 				  struct perf_sample *sample __maybe_unused)
- {
-+	struct cgroup *cgrp;
++ifeq ($(feature-file-handle), 1)
++  CFLAGS += -DHAVE_FILE_HANDLE
++endif
 +
- 	if (dump_trace)
- 		perf_event__fprintf_cgroup(event, stdout);
- 
-+	cgrp = cgroup__findnew(machine->env, event->cgroup.id, event->cgroup.path);
-+	if (cgrp == NULL)
-+		return -ENOMEM;
-+
- 	return 0;
- }
- 
+ ifdef NO_LIBELF
+   NO_DWARF := 1
+   NO_DEMANGLE := 1
