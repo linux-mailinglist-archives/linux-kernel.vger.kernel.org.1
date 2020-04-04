@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E73019E3CB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5458819E3C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgDDIne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 04:43:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41722 "EHLO
+        id S1727173AbgDDInT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 04:43:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41751 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbgDDImO (ORCPT
+        with ESMTP id S1726571AbgDDImR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 04:42:14 -0400
+        Sat, 4 Apr 2020 04:42:17 -0400
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jKeNN-0001Bi-Te; Sat, 04 Apr 2020 10:42:02 +0200
+        id 1jKeNS-0001CP-7i; Sat, 04 Apr 2020 10:42:06 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 597371C0813;
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CFD8D1C081A;
         Sat,  4 Apr 2020 10:41:56 +0200 (CEST)
-Date:   Sat, 04 Apr 2020 08:41:55 -0000
+Date:   Sat, 04 Apr 2020 08:41:56 -0000
 From:   "tip-bot2 for John Garry" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf pmu: Refactor pmu_add_cpu_aliases()
+Subject: [tip: perf/urgent] perf jevents: Support test events folder
 Cc:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Andi Kleen <ak@linux.intel.com>,
@@ -36,10 +36,10 @@ Cc:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>,
         Will Deacon <will@kernel.org>, linuxarm@huawei.com,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1584442939-8911-4-git-send-email-john.garry@huawei.com>
-References: <1584442939-8911-4-git-send-email-john.garry@huawei.com>
+In-Reply-To: <1584442939-8911-3-git-send-email-john.garry@huawei.com>
+References: <1584442939-8911-3-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Message-ID: <158598971596.28353.16146351074016231140.tip-bot2@tip-bot2>
+Message-ID: <158598971644.28353.16674126587372574726.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -55,18 +55,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     e45ad701e784e0eed8a07b537b47afb302c59dab
-Gitweb:        https://git.kernel.org/tip/e45ad701e784e0eed8a07b537b47afb302c59dab
+Commit-ID:     d84478088780acdecfcf50a0e52b71cc4ab7c520
+Gitweb:        https://git.kernel.org/tip/d84478088780acdecfcf50a0e52b71cc4ab7c520
 Author:        John Garry <john.garry@huawei.com>
-AuthorDate:    Tue, 17 Mar 2020 19:02:15 +08:00
+AuthorDate:    Tue, 17 Mar 2020 19:02:14 +08:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Tue, 24 Mar 2020 10:35:59 -03:00
 
-perf pmu: Refactor pmu_add_cpu_aliases()
+perf jevents: Support test events folder
 
-Create pmu_add_cpu_aliases_map() from pmu_add_cpu_aliases(), so the caller
-can pass the map; the pmu-events test would use this since there would
-be no CPUID matching to a mapfile there.
+With the goal of supporting pmu-events test case, introduce support for
+a test events folder.
+
+These test events can be used for testing generation of pmu-event tables
+and alias creation for any arch.
+
+When running the pmu-events test case, these test events will be used as
+the platform-agnostic events, so aliases can be created per-PMU and
+validated against known expected values.
+
+To support the test events, add a "testcpu" entry in pmu_events_map[].
+The pmu-events test will be able to lookup the events map for "testcpu",
+to verify the generated tables against expected values.
+
+The resultant generated pmu-events.c will now look like the following:
+
+  struct pmu_event pme_ampere_emag[] = {
+  {
+  	.name = "ldrex_spec",
+  	.event = "event=0x6c",
+  	.desc = "Exclusive operation spe...",
+  	.topic = "intrinsic",
+  	.long_desc = "Exclusive operation ...",
+  },
+  ...
+  };
+
+  struct pmu_event pme_test_cpu[] = {
+  {
+  	.name = "uncore_hisi_ddrc.flux_wcmd",
+  	.event = "event=0x2",
+  	.desc = "DDRC write commands. Unit: hisi_sccl,ddrc ",
+  	.topic = "uncore",
+  	.long_desc = "DDRC write commands",
+  	.pmu = "hisi_sccl,ddrc",
+  },
+  {
+  	.name = "unc_cbo_xsnp_response.miss_eviction",
+  	.event = "umask=0x81,event=0x22",
+  	.desc = "Unit: uncore_cbox A cross-core snoop resulted ...",
+  	.topic = "uncore",
+  	.long_desc = "A cross-core snoop resulted from L3 ...",
+  	.pmu = "uncore_cbox",
+  },
+  {
+  	.name = "eist_trans",
+  	.event = "umask=0x0,period=200000,event=0x3a",
+  	.desc = "Number of Enhanced Intel SpeedStep(R) ...",
+  	.topic = "other",
+  },
+  {
+  	.name = 0,
+  },
+  };
+
+  struct pmu_events_map pmu_events_map[] = {
+  ...
+  {
+  	.cpuid = "0x00000000500f0000",
+  	.version = "v1",
+  	.type = "core",
+  	.table = pme_ampere_emag
+  },
+  ...
+  {
+  	.cpuid = "testcpu",
+  	.version = "v1",
+  	.type = "core",
+  	.table = pme_test_cpu,
+  },
+  {
+  	.cpuid = 0,
+  	.version = 0,
+  	.type = 0,
+  	.table = 0,
+  },
+  };
 
 Signed-off-by: John Garry <john.garry@huawei.com>
 Acked-by: Jiri Olsa <jolsa@redhat.com>
@@ -79,80 +153,64 @@ Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Will Deacon <will@kernel.org>
 Cc: linuxarm@huawei.com
-Link: http://lore.kernel.org/lkml/1584442939-8911-4-git-send-email-john.garry@huawei.com
+Link: http://lore.kernel.org/lkml/1584442939-8911-3-git-send-email-john.garry@huawei.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/pmu.c | 21 +++++++++++++--------
- tools/perf/util/pmu.h |  3 +++
- 2 files changed, 16 insertions(+), 8 deletions(-)
+ tools/perf/pmu-events/jevents.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 8b99fd3..c616a06 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -21,7 +21,6 @@
- #include "pmu.h"
- #include "parse-events.h"
- #include "header.h"
--#include "pmu-events/pmu-events.h"
- #include "string2.h"
- #include "strbuf.h"
- #include "fncache.h"
-@@ -744,16 +743,11 @@ out:
-  * to the current running CPU. Then, add all PMU events from that table
-  * as aliases.
-  */
--static void pmu_add_cpu_aliases(struct list_head *head, struct perf_pmu *pmu)
-+void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
-+			     struct pmu_events_map *map)
- {
- 	int i;
--	struct pmu_events_map *map;
- 	const char *name = pmu->name;
--
--	map = perf_pmu__find_map(pmu);
--	if (!map)
--		return;
--
- 	/*
- 	 * Found a matching PMU events table. Create aliases
- 	 */
-@@ -788,6 +782,17 @@ new_alias:
- 	}
+diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+index 3c4236a..fa86c5f 100644
+--- a/tools/perf/pmu-events/jevents.c
++++ b/tools/perf/pmu-events/jevents.c
+@@ -771,6 +771,19 @@ static void print_mapping_table_suffix(FILE *outfp)
+ 	fprintf(outfp, "};\n");
  }
  
-+static void pmu_add_cpu_aliases(struct list_head *head, struct perf_pmu *pmu)
++static void print_mapping_test_table(FILE *outfp)
 +{
-+	struct pmu_events_map *map;
-+
-+	map = perf_pmu__find_map(pmu);
-+	if (!map)
-+		return;
-+
-+	pmu_add_cpu_aliases_map(head, pmu, map);
++	/*
++	 * Print the terminating, NULL entry.
++	 */
++	fprintf(outfp, "{\n");
++	fprintf(outfp, "\t.cpuid = \"testcpu\",\n");
++	fprintf(outfp, "\t.version = \"v1\",\n");
++	fprintf(outfp, "\t.type = \"core\",\n");
++	fprintf(outfp, "\t.table = pme_test_cpu,\n");
++	fprintf(outfp, "},\n");
 +}
 +
- struct perf_event_attr * __weak
- perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+ static int process_mapfile(FILE *outfp, char *fpath)
  {
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 6737e3d..0b4a0ef 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -7,6 +7,7 @@
- #include <linux/perf_event.h>
- #include <stdbool.h>
- #include "parse-events.h"
-+#include "pmu-events/pmu-events.h"
+ 	int n = 16384;
+@@ -848,6 +861,7 @@ static int process_mapfile(FILE *outfp, char *fpath)
+ 	}
  
- struct perf_evsel_config_term;
+ out:
++	print_mapping_test_table(outfp);
+ 	print_mapping_table_suffix(outfp);
+ 	fclose(mapfp);
+ 	free(line);
+@@ -1168,6 +1182,22 @@ int main(int argc, char *argv[])
+ 		goto empty_map;
+ 	}
  
-@@ -97,6 +98,8 @@ int perf_pmu__scan_file(struct perf_pmu *pmu, const char *name, const char *fmt,
- int perf_pmu__test(void);
- 
- struct perf_event_attr *perf_pmu__get_default_config(struct perf_pmu *pmu);
-+void pmu_add_cpu_aliases_map(struct list_head *head, struct perf_pmu *pmu,
-+			     struct pmu_events_map *map);
- 
- struct pmu_events_map *perf_pmu__find_map(struct perf_pmu *pmu);
++	sprintf(ldirname, "%s/test", start_dirname);
++
++	rc = nftw(ldirname, process_one_file, maxfds, 0);
++	if (rc && verbose) {
++		pr_info("%s: Error walking file tree %s rc=%d for test\n",
++			prog, ldirname, rc);
++		goto empty_map;
++	} else if (rc < 0) {
++		/* Make build fail */
++		free_arch_std_events();
++		ret = 1;
++		goto out_free_mapfile;
++	} else if (rc) {
++		goto empty_map;
++	}
++
+ 	if (close_table)
+ 		print_events_table_suffix(eventsfp);
  
