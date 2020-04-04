@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A564119E3D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA54719E3DF
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbgDDInp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 04:43:45 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41643 "EHLO
+        id S1727737AbgDDIoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 04:44:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41561 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgDDImL (ORCPT
+        with ESMTP id S1726410AbgDDImD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 04:42:11 -0400
+        Sat, 4 Apr 2020 04:42:03 -0400
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jKeNK-00019E-Gc; Sat, 04 Apr 2020 10:41:58 +0200
+        id 1jKeNJ-00018J-If; Sat, 04 Apr 2020 10:41:57 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 6CF871C07F8;
-        Sat,  4 Apr 2020 10:41:54 +0200 (CEST)
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 5D8DF1C0805;
+        Sat,  4 Apr 2020 10:41:53 +0200 (CEST)
 Date:   Sat, 04 Apr 2020 08:41:53 -0000
-From:   "tip-bot2 for John Garry" <tip-bot2@linutronix.de>
+From:   "tip-bot2 for Ravi Bangoria" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf test: Test pmu-events aliases
-Cc:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>,
+Subject: [tip: perf/urgent] perf dso: Fix dso comparison
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        James Clark <james.clark@arm.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Jiri Olsa <jolsa@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linuxarm@huawei.com,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1584442939-8911-8-git-send-email-john.garry@huawei.com>
-References: <1584442939-8911-8-git-send-email-john.garry@huawei.com>
+        Namhyung Kim <namhyung@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200324042424.68366-1-ravi.bangoria@linux.ibm.com>
+References: <20200324042424.68366-1-ravi.bangoria@linux.ibm.com>
 MIME-Version: 1.0
-Message-ID: <158598971391.28353.7791332872130759227.tip-bot2@tip-bot2>
+Message-ID: <158598971301.28353.13896908628058795297.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -55,303 +51,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     956a78356c24c1ac3becf854135dc065b6b74265
-Gitweb:        https://git.kernel.org/tip/956a78356c24c1ac3becf854135dc065b6b74265
-Author:        John Garry <john.garry@huawei.com>
-AuthorDate:    Tue, 17 Mar 2020 19:02:19 +08:00
+Commit-ID:     0d33b34352531ff7029c58eda2321340c0ea3f5f
+Gitweb:        https://git.kernel.org/tip/0d33b34352531ff7029c58eda2321340c0ea3f5f
+Author:        Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+AuthorDate:    Tue, 24 Mar 2020 09:54:24 +05:30
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Tue, 24 Mar 2020 10:36:00 -03:00
+CommitterDate: Tue, 24 Mar 2020 10:57:38 -03:00
 
-perf test: Test pmu-events aliases
+perf dso: Fix dso comparison
 
-Add creating event aliases to the pmu-events test.
+Perf gets dso details from two different sources. 1st, from builid
+headers in perf.data and 2nd from MMAP2 samples. Dso from buildid
+header does not have dso_id detail. And dso from MMAP2 samples does
+not have buildid information. If detail of the same dso is present
+at both the places, filename is common.
 
-So currently we verify that the generated pmu-events.c is as expected for
-some test events. Now test that we generate aliases as expected for those
-events during normal operation.
+Previously, __dsos__findnew_link_by_longname_id() used to compare only
+long or short names, but Commit 0e3149f86b99 ("perf dso: Move dso_id
+from 'struct map' to 'struct dso'") also added a dso_id comparison.
+Because of that, now perf is creating two different dso objects of the
+same file, one from buildid header (with dso_id but without buildid)
+and second from MMAP2 sample (with buildid but without dso_id).
 
-For that, we cycle through each HW PMU in the system, and use the test
-events to create aliases, and verify those against known, expected values.
+This is causing issues with archive, buildid-list etc subcommands. Fix
+this by comparing dso_id only when it's present. And incase dso is
+present in 'dsos' list without dso_id, inject dso_id detail as well.
 
-For core PMUs, we should create an alias for every event in
-test_cpu_events[].
+Before:
 
-However, for uncore PMUs, they need to be matched by the pmu_event.pmu
-member, so use test_uncore_events[]; so check the match beforehand with
-pmu_uncore_alias_match().
+  $ sudo ./perf buildid-list -H
+  0000000000000000000000000000000000000000 /usr/bin/ls
+  0000000000000000000000000000000000000000 /usr/lib64/ld-2.30.so
+  0000000000000000000000000000000000000000 /usr/lib64/libc-2.30.so
 
-A sample run is as follows for my x86 machine:
+  $ ./perf archive
+  perf archive: no build-ids found
 
-  john@linux-3c19:~/linux> tools/perf/perf test -vv 10
-  10: PMU events                                            :
-  --- start ---
+After:
 
-  ...
+  $ ./perf buildid-list -H
+  b6b1291d0cead046ed0fa5734037fa87a579adee /usr/bin/ls
+  641f0c90cfa15779352f12c0ec3c7a2b2b6f41e8 /usr/lib64/ld-2.30.so
+  675ace3ca07a0b863df01f461a7b0984c65c8b37 /usr/lib64/libc-2.30.so
 
-  testing PMU uncore_arb aliases: no events to match
-  testing PMU cstate_pkg aliases: no events to match
-  skipping testing PMU breakpoint
-  testing aliases PMU uncore_cbox_1: matched event unc_cbo_xsnp_response.miss_eviction
-  testing PMU uncore_cbox_1 aliases: pass
-  testing PMU power aliases: no events to match
-  testing aliases PMU cpu: matched event bp_l1_btb_correct
-  testing aliases PMU cpu: matched event bp_l2_btb_correct
-  testing aliases PMU cpu: matched event segment_reg_loads.any
-  testing aliases PMU cpu: matched event dispatch_blocked.any
-  testing aliases PMU cpu: matched event eist_trans
-  testing PMU cpu aliases: pass
-  testing PMU intel_pt aliases: no events to match
-  skipping testing PMU software
-  skipping testing PMU intel_bts
-  testing PMU uncore_imc aliases: no events to match
-  testing aliases PMU uncore_cbox_0: matched event unc_cbo_xsnp_response.miss_eviction
-  testing PMU uncore_cbox_0 aliases: pass
-  testing PMU cstate_core aliases: no events to match
-  skipping testing PMU tracepoint
-  testing PMU msr aliases: no events to match
-  test child finished with 0
+  $ ./perf archive
+  Now please run:
 
-Signed-off-by: John Garry <john.garry@huawei.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+  $ tar xvf perf.data.tar.bz2 -C ~/.debug
+
+  wherever you need to run 'perf report' on.
+
+Committer notes:
+
+Renamed is_empty_dso_id() to dso_id__empty() and inject_dso_id() to
+dso__inject_id() to keep namespacing consistent.
+
+Fixes: 0e3149f86b99 ("perf dso: Move dso_id from 'struct map' to 'struct dso'")
+Reported-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
 Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: James Clark <james.clark@arm.com>
-Cc: Joakim Zhang <qiangqing.zhang@nxp.com>
+Tested-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Will Deacon <will@kernel.org>
-Cc: linuxarm@huawei.com
-Link: http://lore.kernel.org/lkml/1584442939-8911-8-git-send-email-john.garry@huawei.com
+Link: http://lore.kernel.org/lkml/20200324042424.68366-1-ravi.bangoria@linux.ibm.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/tests/pmu-events.c | 148 ++++++++++++++++++++++++++++++++-
- 1 file changed, 147 insertions(+), 1 deletion(-)
+ tools/perf/util/dsos.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index 12fc297..d64261d 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -5,13 +5,24 @@
- #include <errno.h>
- #include <stdio.h>
- #include <linux/kernel.h>
--
-+#include <linux/zalloc.h>
- #include "debug.h"
- #include "../pmu-events/pmu-events.h"
- 
- struct perf_pmu_test_event {
- 	struct pmu_event event;
-+
-+	/* extra events for aliases */
-+	const char *alias_str;
-+
-+	/*
-+	 * Note: For when PublicDescription does not exist in the JSON, we
-+	 * will have no long_desc in pmu_event.long_desc, but long_desc may
-+	 * be set in the alias.
-+	 */
-+	const char *alias_long_desc;
- };
-+
- static struct perf_pmu_test_event test_cpu_events[] = {
- 	{
- 		.event = {
-@@ -20,6 +31,8 @@ static struct perf_pmu_test_event test_cpu_events[] = {
- 			.desc = "L1 BTB Correction",
- 			.topic = "branch",
- 		},
-+		.alias_str = "event=0x8a",
-+		.alias_long_desc = "L1 BTB Correction",
- 	},
- 	{
- 		.event = {
-@@ -28,6 +41,8 @@ static struct perf_pmu_test_event test_cpu_events[] = {
- 			.desc = "L2 BTB Correction",
- 			.topic = "branch",
- 		},
-+		.alias_str = "event=0x8b",
-+		.alias_long_desc = "L2 BTB Correction",
- 	},
- 	{
- 		.event = {
-@@ -36,6 +51,8 @@ static struct perf_pmu_test_event test_cpu_events[] = {
- 			.desc = "Number of segment register loads",
- 			.topic = "other",
- 		},
-+		.alias_str = "umask=0x80,(null)=0x30d40,event=0x6",
-+		.alias_long_desc = "Number of segment register loads",
- 	},
- 	{
- 		.event = {
-@@ -44,6 +61,8 @@ static struct perf_pmu_test_event test_cpu_events[] = {
- 			.desc = "Memory cluster signals to block micro-op dispatch for any reason",
- 			.topic = "other",
- 		},
-+		.alias_str = "umask=0x20,(null)=0x30d40,event=0x9",
-+		.alias_long_desc = "Memory cluster signals to block micro-op dispatch for any reason",
- 	},
- 	{
- 		.event = {
-@@ -52,6 +71,8 @@ static struct perf_pmu_test_event test_cpu_events[] = {
- 			.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
- 			.topic = "other",
- 		},
-+		.alias_str = "umask=0,(null)=0x30d40,event=0x3a",
-+		.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
- 	},
- 	{ /* sentinel */
- 		.event = {
-@@ -70,6 +91,8 @@ static struct perf_pmu_test_event test_uncore_events[] = {
- 			.long_desc = "DDRC write commands",
- 			.pmu = "hisi_sccl,ddrc",
- 		},
-+		.alias_str = "event=0x2",
-+		.alias_long_desc = "DDRC write commands",
- 	},
- 	{
- 		.event = {
-@@ -80,6 +103,8 @@ static struct perf_pmu_test_event test_uncore_events[] = {
- 			.long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
- 			.pmu = "uncore_cbox",
- 		},
-+		.alias_str = "umask=0x81,event=0x22",
-+		.alias_long_desc = "A cross-core snoop resulted from L3 Eviction which misses in some processor core",
- 	},
- 	{ /* sentinel */
- 		.event = {
-@@ -223,11 +248,132 @@ static int __test_pmu_event_table(void)
- 
+diff --git a/tools/perf/util/dsos.c b/tools/perf/util/dsos.c
+index 591707c..9394717 100644
+--- a/tools/perf/util/dsos.c
++++ b/tools/perf/util/dsos.c
+@@ -26,13 +26,29 @@ static int __dso_id__cmp(struct dso_id *a, struct dso_id *b)
  	return 0;
  }
-+
-+static struct perf_pmu_alias *find_alias(const char *test_event, struct list_head *aliases)
+ 
++static bool dso_id__empty(struct dso_id *id)
 +{
-+	struct perf_pmu_alias *alias;
++	if (!id)
++		return true;
 +
-+	list_for_each_entry(alias, aliases, list)
-+		if (!strcmp(test_event, alias->name))
-+			return alias;
-+
-+	return NULL;
++	return !id->maj && !id->min && !id->ino && !id->ino_generation;
 +}
 +
-+/* Verify aliases are as expected */
-+static int __test__pmu_event_aliases(char *pmu_name, int *count)
++static void dso__inject_id(struct dso *dso, struct dso_id *id)
 +{
-+	struct perf_pmu_test_event *test;
-+	struct pmu_event *te;
-+	struct perf_pmu *pmu;
-+	LIST_HEAD(aliases);
-+	int res = 0;
-+	bool use_uncore_table;
-+	struct pmu_events_map *map = __test_pmu_get_events_map();
-+
-+	if (!map)
-+		return -1;
-+
-+	if (is_pmu_core(pmu_name)) {
-+		test = &test_cpu_events[0];
-+		use_uncore_table = false;
-+	} else {
-+		test = &test_uncore_events[0];
-+		use_uncore_table = true;
-+	}
-+
-+	pmu = zalloc(sizeof(*pmu));
-+	if (!pmu)
-+		return -1;
-+
-+	pmu->name = pmu_name;
-+
-+	pmu_add_cpu_aliases_map(&aliases, pmu, map);
-+
-+	for (te = &test->event; te->name; test++, te = &test->event) {
-+		struct perf_pmu_alias *alias = find_alias(te->name, &aliases);
-+
-+		if (!alias) {
-+			bool uncore_match = pmu_uncore_alias_match(pmu_name,
-+								   te->pmu);
-+
-+			if (use_uncore_table && !uncore_match) {
-+				pr_debug3("testing aliases PMU %s: skip matching alias %s\n",
-+					  pmu_name, te->name);
-+				continue;
-+			}
-+
-+			pr_debug2("testing aliases PMU %s: no alias, alias_table->name=%s\n",
-+				  pmu_name, te->name);
-+			res = -1;
-+			break;
-+		}
-+
-+		if (!is_same(alias->desc, te->desc)) {
-+			pr_debug2("testing aliases PMU %s: mismatched desc, %s vs %s\n",
-+				  pmu_name, alias->desc, te->desc);
-+			res = -1;
-+			break;
-+		}
-+
-+		if (!is_same(alias->long_desc, test->alias_long_desc)) {
-+			pr_debug2("testing aliases PMU %s: mismatched long_desc, %s vs %s\n",
-+				  pmu_name, alias->long_desc,
-+				  test->alias_long_desc);
-+			res = -1;
-+			break;
-+		}
-+
-+		if (!is_same(alias->str, test->alias_str)) {
-+			pr_debug2("testing aliases PMU %s: mismatched str, %s vs %s\n",
-+				  pmu_name, alias->str, test->alias_str);
-+			res = -1;
-+			break;
-+		}
-+
-+		if (!is_same(alias->topic, te->topic)) {
-+			pr_debug2("testing aliases PMU %s: mismatched topic, %s vs %s\n",
-+				  pmu_name, alias->topic, te->topic);
-+			res = -1;
-+			break;
-+		}
-+
-+		(*count)++;
-+		pr_debug2("testing aliases PMU %s: matched event %s\n",
-+			  pmu_name, alias->name);
-+	}
-+
-+	free(pmu);
-+	return res;
++	dso->id.maj = id->maj;
++	dso->id.min = id->min;
++	dso->id.ino = id->ino;
++	dso->id.ino_generation = id->ino_generation;
 +}
 +
- int test__pmu_events(struct test *test __maybe_unused,
- 		     int subtest __maybe_unused)
+ static int dso_id__cmp(struct dso_id *a, struct dso_id *b)
  {
-+	struct perf_pmu *pmu = NULL;
-+
- 	if (__test_pmu_event_table())
- 		return -1;
+ 	/*
+ 	 * The second is always dso->id, so zeroes if not set, assume passing
+ 	 * NULL for a means a zeroed id
+ 	 */
+-	if (a == NULL)
++	if (dso_id__empty(a) || dso_id__empty(b))
+ 		return 0;
  
-+	while ((pmu = perf_pmu__scan(pmu)) != NULL) {
-+		int count = 0;
+ 	return __dso_id__cmp(a, b);
+@@ -249,6 +265,10 @@ struct dso *__dsos__addnew(struct dsos *dsos, const char *name)
+ static struct dso *__dsos__findnew_id(struct dsos *dsos, const char *name, struct dso_id *id)
+ {
+ 	struct dso *dso = __dsos__find_id(dsos, name, id, false);
 +
-+		if (list_empty(&pmu->format)) {
-+			pr_debug2("skipping testing PMU %s\n", pmu->name);
-+			continue;
-+		}
++	if (dso && dso_id__empty(&dso->id) && !dso_id__empty(id))
++		dso__inject_id(dso, id);
 +
-+		if (__test__pmu_event_aliases(pmu->name, &count)) {
-+			pr_debug("testing PMU %s aliases: failed\n", pmu->name);
-+			return -1;
-+		}
-+
-+		if (count == 0)
-+			pr_debug3("testing PMU %s aliases: no events to match\n",
-+				  pmu->name);
-+		else
-+			pr_debug("testing PMU %s aliases: pass\n", pmu->name);
-+	}
-+
- 	return 0;
+ 	return dso ? dso : __dsos__addnew_id(dsos, name, id);
  }
+ 
