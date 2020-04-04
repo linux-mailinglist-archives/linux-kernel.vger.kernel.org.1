@@ -2,130 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3119C19E3AE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22C2719E3FD
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:53:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbgDDIm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 04:42:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41795 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726708AbgDDImY (ORCPT
+        id S1726121AbgDDIx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 04:53:26 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:33337 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgDDIxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 04:42:24 -0400
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jKeNZ-0001NB-2S; Sat, 04 Apr 2020 10:42:13 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 833781C0821;
-        Sat,  4 Apr 2020 10:42:05 +0200 (CEST)
-Date:   Sat, 04 Apr 2020 08:42:05 -0000
-From:   "tip-bot2 for Ian Rogers" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf parse-events: Fix 3 use after frees found
- with clang ASAN
-Cc:     Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        clang-built-linux@googlegroups.com,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200314170356.62914-1-irogers@google.com>
-References: <20200314170356.62914-1-irogers@google.com>
+        Sat, 4 Apr 2020 04:53:25 -0400
+Received: by mail-wr1-f49.google.com with SMTP id a25so11351635wrd.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 01:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qGdwKA9rmdIyqGKO0IjJWKsmKZR9VJYYBo9155sisOo=;
+        b=Dt9CEVTdqEmMLAO1mtlk74STBgT6iGX9OjtHBujDJ+Jgci0EanrXBeHNLpdjlzsvV/
+         srUe2OIiA16QcFcPrdmX+SLBIEmfJcr9gYfwkqciAmG2Xx9oAtopNzbup0M2Ut4GJ1Hn
+         QrrPGdpp4gLByLRZSARQyq3xBBgK/wNPM1sZqbMZ0hYGrJ/oYevZZFHezef0GFCg0Y96
+         IFSpWCiP1FJSJKJe0d9AtE3qEeejI99oIWDe/z8cHSuUz+jAOpet+0pByI32L8ChzGSf
+         d4sZH7vRd3aRDXKy0PPC1CgCaUVivQc3O7960iZ1WWnkvmNPEBgVbubhba/sWcs5JBty
+         vVCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qGdwKA9rmdIyqGKO0IjJWKsmKZR9VJYYBo9155sisOo=;
+        b=tIloPf0A9ZxYAE3AzzOG6MGHEd0qJIpXIzVt/kYntL+yQZaFXgoFYATlWtOFmhgCjb
+         zHlNzjtWhtHnbKzdkLZ49Vtm68o+wpk1MGULmUAlyWFAt5jeaPABJYHZAKbih98DKLaj
+         Jnsce2qJCEzLZD8lSE6rYJvDBNps20jLKzYm3mS457iiVLnACu6ZoB3pf+XrUPG2fNGS
+         Bl/8DT0erdQkwBff5M6nVTGI8w0uLb6iLv7ebamxMx/lZgdAD1JNbRe4pxhjlUz/WG0d
+         eF5Ut1emyz4mA/UGULI30Rl1sT7tNpqJe1kBwiWtwSdVrDlTwdVLoh4Qk8WiIMinNH9D
+         8hPA==
+X-Gm-Message-State: AGi0Pua3G8vTaihCBkWKdkHjX3wUrPUeEfGhXhenT0rhFeyd3ZhPNvOq
+        1wogJ2Yw15RZWQkL+qUlt5MNjg==
+X-Google-Smtp-Source: APiQypK9PqT30ndf6uW1fLOStsShr8XNEwiUSzUk9TRlUoeG69t6S9nVpMwjr4mhhaNACQZYeWdpwA==
+X-Received: by 2002:adf:ce07:: with SMTP id p7mr13058752wrn.261.1585990402779;
+        Sat, 04 Apr 2020 01:53:22 -0700 (PDT)
+Received: from localhost ([185.67.209.71])
+        by smtp.gmail.com with ESMTPSA id v186sm14900096wme.24.2020.04.04.01.53.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Apr 2020 01:53:22 -0700 (PDT)
+Date:   Sat, 4 Apr 2020 10:53:09 +0200
+From:   Jorge Amoros-Argos <joramar76@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     hauke@hauke-m.de, john@phrozen.org,
+        martin.blumenstingl@googlemail.com
+Subject: clk: Lantiq/Intel: XWAY CGU support
+Message-ID: <20200404105309.0000745d@gmail.com>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Message-ID: <158598972511.28353.7459181864895625736.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/urgent branch of tip:
+Dear community,
 
-Commit-ID:     d4953f7ef1a2e87ef732823af35361404d13fea8
-Gitweb:        https://git.kernel.org/tip/d4953f7ef1a2e87ef732823af35361404d13fea8
-Author:        Ian Rogers <irogers@google.com>
-AuthorDate:    Sat, 14 Mar 2020 10:03:56 -07:00
-Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
-CommitterDate: Mon, 23 Mar 2020 11:08:29 -03:00
+This is addresed to the Lantiq/Intel developers for the SoC's VRX200 and
+XWAY in general.
 
-perf parse-events: Fix 3 use after frees found with clang ASAN
+I'm trying to port the current sources to the common clock framework for
+Openwrt.
 
-Reproducible with a clang asan build and then running perf test in
-particular 'Parse event definition strings'.
+For this purpose, I'd need to have a good knowledge of both clock
+providers and consumers in order to update the device tree and also the
+drivers. This means hardware (how devices are connected) and software
+(what registers do what?)
 
-Signed-off-by: Ian Rogers <irogers@google.com>
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Leo Yan <leo.yan@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: clang-built-linux@googlegroups.com
-Link: http://lore.kernel.org/lkml/20200314170356.62914-1-irogers@google.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
----
- tools/perf/util/evsel.c        | 1 +
- tools/perf/util/parse-events.c | 6 +++---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+There's no such low level detail after all my investigations, which are
+shown here:
 
-diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index 816d930..15ccd19 100644
---- a/tools/perf/util/evsel.c
-+++ b/tools/perf/util/evsel.c
-@@ -1287,6 +1287,7 @@ void perf_evsel__exit(struct evsel *evsel)
- 	perf_thread_map__put(evsel->core.threads);
- 	zfree(&evsel->group_name);
- 	zfree(&evsel->name);
-+	zfree(&evsel->pmu_name);
- 	perf_evsel__object.fini(evsel);
- }
- 
-diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index a7dc0b0..1010774 100644
---- a/tools/perf/util/parse-events.c
-+++ b/tools/perf/util/parse-events.c
-@@ -1449,7 +1449,7 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 		evsel = __add_event(list, &parse_state->idx, &attr, NULL, pmu, NULL,
- 				    auto_merge_stats, NULL);
- 		if (evsel) {
--			evsel->pmu_name = name;
-+			evsel->pmu_name = name ? strdup(name) : NULL;
- 			evsel->use_uncore_alias = use_uncore_alias;
- 			return 0;
- 		} else {
-@@ -1497,7 +1497,7 @@ int parse_events_add_pmu(struct parse_events_state *parse_state,
- 		evsel->snapshot = info.snapshot;
- 		evsel->metric_expr = info.metric_expr;
- 		evsel->metric_name = info.metric_name;
--		evsel->pmu_name = name;
-+		evsel->pmu_name = name ? strdup(name) : NULL;
- 		evsel->use_uncore_alias = use_uncore_alias;
- 		evsel->percore = config_term_percore(&evsel->config_terms);
- 	}
-@@ -1547,7 +1547,7 @@ int parse_events_multi_pmu_add(struct parse_events_state *parse_state,
- 				if (!parse_events_add_pmu(parse_state, list,
- 							  pmu->name, head,
- 							  true, true)) {
--					pr_debug("%s -> %s/%s/\n", config,
-+					pr_debug("%s -> %s/%s/\n", str,
- 						 pmu->name, alias->str);
- 					ok++;
- 				}
+     https://github.com/Mandrake-Lee/Lantiq_XWAY_CGU
+
+For instance, the full structure of PLL2 register remains a mistery and
+also its output; OCP selector, is a kind of divider?; PCIe generator is
+located where? PMU, is just a gate controller or a provider itself?
+
+I'd really appreciate if you could share some details in order to start
+the job.
+
+Please keep me CC'd of this thread.
+
+Thank you very much in advance,
+
+Jorge Amor=F3s-Argos=20
