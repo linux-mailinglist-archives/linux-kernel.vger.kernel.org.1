@@ -2,154 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAB419E352
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BE619E34A
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgDDHbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 03:31:32 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:41697 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgDDHba (ORCPT
+        id S1726302AbgDDHbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 03:31:05 -0400
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:36599 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgDDHbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 03:31:30 -0400
-Received: by mail-vs1-f67.google.com with SMTP id a63so6463003vsa.8
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:28 -0700 (PDT)
+        Sat, 4 Apr 2020 03:31:03 -0400
+Received: by mail-ua1-f65.google.com with SMTP id m15so2875743uao.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=verdurent-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PM54+TAF+g/S8Jdu48v4vdALgU1uHmqD41DlN+nN2GQ=;
-        b=U/z7FaYgCxrifjRMbUMuNc48xDQkG1azVQ1qAqD5C7gQ2BC0+SFLokHqrseBZoS9BZ
-         HhrCnBVjIlsNzTSk4g9jfL9JJz+m5CKI+s5CrxslyKnjLoTsEBG8QO2itdwefQVPu7Sh
-         RWs2OJabHZCg++IlG5djjUt5kNFHWUOxPGGHY1AUmooXc5/Kvu95qNG/RJNI1bp408I1
-         rv4YucMhPRAVJiiew6KxAcltBjYQn1wwVVPeylGsfx2YHhAuDgZgIaV+C9Eq+6VzjDvp
-         i2sBU69P9pmQehnOz4LSQCQfw45G1MRqFniKV+pNE9TYCEJv2jY/nLd6aPv16oy5YDpy
-         UvZA==
+        bh=iN6wacGfdwib+ApYHKZ/FdwkNp4iLTwqPrmNMYd7r8E=;
+        b=XgCyTbZnWC345hsCKy5O82Uyugw36Ruw2EuDhzxddNPaJuxpWG/szVyMl3nKOsOQEw
+         a6BCuJE2um28o68NDCtRThVKI9U4Z/+WRrs5jTdn0gjMLnJVWuNuO04Zq3VNqVjXz6O8
+         xzfXQSNFWneyDUxTm6J90kj5fxDYPWABFp8c46rQsUGTPUvU31Eb8JtyUPP2QnHUKFjS
+         GoEgMZB4zvnj8RChQvLVjKbqBLgm/ja1Pw7rEp8FQ/CceQt+fzgjrZDbFDZT/cOXSXMT
+         LF5uTx2yToS6x+iIPg6I0fNmVw9Oz6cLFMVbIHvgDltGByupCJFd39dk0GsGPBcxD+TS
+         Lt8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PM54+TAF+g/S8Jdu48v4vdALgU1uHmqD41DlN+nN2GQ=;
-        b=TyfR1QOl4nsGFDz1yIqKaciMmtb8oer7b4IZQaLsyUqVmCCfNeWx4IQofAMK7s/RNi
-         6GtAi+3dgxNNgZQDYPzdW0mYMLcBWhZBAONy35DK+3iAVl5TolO+Vl7tnZwRWtaJIfX5
-         yJLJFOKQA2+aOh9AjBrcU3RYhS8I4nLrMW/6QEw3rU9/olGPegMjQWz9z4a/bLITyitY
-         3PX7S3n7wmWUvovp1yNjhclaaGlxqfPzh60A0smsjFa6hTl6SDkqvqyxZWYYLiwjbtWT
-         jV1LbJtBoJk2kMeQMcju0HvNJB7NGDYoagRIYnFeUdUyCUlvFJ7sH/mi+zuFxiGvYzFt
-         Xp8A==
-X-Gm-Message-State: AGi0PuYCu+4pbdpY8buGHEeXTFC0z9D1wt++CIJ49GCmJw/5fX/gnqNC
-        YJJkRM2zPBp9hwm9a1UBs+XVW+Ets7Zi2hkhugAuUg==
-X-Google-Smtp-Source: APiQypIu/alTBXDgKITDXBctny47stbSvo55Own/Vu8y0I7bxK1KHmvt7pgNCgb+JQCSxYjPHiy+3AH9i6i2tnOhjmE=
-X-Received: by 2002:a67:69d5:: with SMTP id e204mr8446240vsc.159.1585985488361;
- Sat, 04 Apr 2020 00:31:28 -0700 (PDT)
+        bh=iN6wacGfdwib+ApYHKZ/FdwkNp4iLTwqPrmNMYd7r8E=;
+        b=BTPq5QYCJtB/dUyv6WVWjMkKOI4HNhm3IxCx0XK83+yT21eeSiekdIJryMobvHbCRD
+         TTD//RC+Tgq3YJyGscUof9GmH2YuEhzvLg+QV2l7m7uK2B8ArC2a3PCHehSt3FzVTIa+
+         bhkBlQM7i3NDgOsVTi995HK/cSuNVCEilnVUdzXBBCeL7sfTZ7Whb4JtFemjzmkoVWIh
+         homZs0dHGpUSblccn2pr0UXWMpph7AfrOvOF+3GO/dnen9Buln/NgjPZOOWvfIzw+Z9x
+         SKBBMVCpVldLVnKJe32prcQbKX/D8UuRs6UnGAGhe/BSLBrnfas+AA05mLKJ8YFRx3gU
+         tgBg==
+X-Gm-Message-State: AGi0PuYHnyMJBsWF44GmlXZK7bIqS1mN6K5JuGVNTk6Xt9InyoJ0AdPy
+        i+h628zcXmXNxoe0tUHwuBCOx378QIEQoa6Ri+dMOw==
+X-Google-Smtp-Source: APiQypLxGLnrhOCRwjBuHxBjOcTXenqCe/nppA+193Zt4K2TYnyPUN4lriSlHgW1KlWine7JnWgynUq4FjLwy+MHZTM=
+X-Received: by 2002:ab0:5f90:: with SMTP id b16mr9274182uaj.77.1585985460113;
+ Sat, 04 Apr 2020 00:31:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200331075356.19171-1-j-keerthy@ti.com> <20200331075356.19171-2-j-keerthy@ti.com>
-In-Reply-To: <20200331075356.19171-2-j-keerthy@ti.com>
+References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-3-daniel.lezcano@linaro.org>
+In-Reply-To: <20200402142747.8307-3-daniel.lezcano@linaro.org>
 From:   Amit Kucheria <amit.kucheria@verdurent.com>
 Date:   Sat, 4 Apr 2020 13:00:00 +0530
-Message-ID: <CAHLCerPrmsMU3uVwQGXfZAsWkgxiG+1M136f6uuWgwB4EF2uGg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/4] dt-bindings: thermal: k3: Add VTM bindings documentation
-To:     Keerthy <j-keerthy@ti.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>, Rob Herring <robh+dt@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, t-kristo@ti.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        lakml <linux-arm-kernel@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
+Message-ID: <CAHLCerOD2sqqQ0o87z7RDmTAzqyk9eDbTMZN92esLRtUHErSBg@mail.gmail.com>
+Subject: Re: [PATCH V2 3/9] thermal: Move internal IPA functions
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 31, 2020 at 1:24 PM Keerthy <j-keerthy@ti.com> wrote:
+On Thu, Apr 2, 2020 at 7:58 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
 >
-> Add VTM bindings documentation. In the Voltage Thermal
-> Management Module(VTM), K3 AM654 supplies a voltage
-> reference and a temperature sensor feature that are gathered in the band
-> gap voltage and temperature sensor (VBGAPTS) module. The band
-> gap provides current and voltage reference for its internal
-> circuits and other analog IP blocks. The analog-to-digital
-> converter (ADC) produces an output value that is proportional
-> to the silicon temperature.
+> The exported IPA functions are used by the IPA. It is pointless to
+> declare the functions in the thermal.h file.
 >
-> Signed-off-by: Keerthy <j-keerthy@ti.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> For better self-encapsulation and less impact for the compilation if a
+> change is made on it. Move the code in the thermal core internal
+> header file.
+>
+> As the users depends on THERMAL then it is pointless to have the stub,
+> remove them.
+>
+> Take also the opportunity to fix checkpatch warnings/errors when
+> moving the code around.
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+
+Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+
 > ---
+>  drivers/thermal/thermal_core.h | 13 +++++++++++++
+>  include/linux/thermal.h        | 24 ------------------------
+>  2 files changed, 13 insertions(+), 24 deletions(-)
 >
-> Changes in v5:
+> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
+> index 5d08ad60d9df..f99551ce9838 100644
+> --- a/drivers/thermal/thermal_core.h
+> +++ b/drivers/thermal/thermal_core.h
+> @@ -46,6 +46,19 @@ struct thermal_attr {
+>         char name[THERMAL_NAME_LENGTH];
+>  };
 >
->   * Added Reviewed-by: Rob Herring <robh@kernel.org>
+> +static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
+> +{
+> +       return cdev->ops->get_requested_power && cdev->ops->state2power &&
+> +               cdev->ops->power2state;
+> +}
+> +
+> +int power_actor_get_max_power(struct thermal_cooling_device *cdev,
+> +                             struct thermal_zone_device *tz, u32 *max_power);
+> +int power_actor_get_min_power(struct thermal_cooling_device *cdev,
+> +                             struct thermal_zone_device *tz, u32 *min_power);
+> +int power_actor_set_power(struct thermal_cooling_device *cdev,
+> +                         struct thermal_instance *ti, u32 power);
+> +
+>  /*
+>   * This structure is used to describe the behavior of
+>   * a certain cooling device on a certain trip point
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index 5aa80fb2fb61..e0279f7b43f4 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -399,18 +399,6 @@ void devm_thermal_zone_of_sensor_unregister(struct device *dev,
+>  #endif
 >
->  .../bindings/thermal/ti,am654-thermal.yaml    | 56 +++++++++++++++++++
->  1 file changed, 56 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml
->
-> diff --git a/Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml b/Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml
-> new file mode 100644
-> index 000000000000..d241b65d6072
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/thermal/ti,am654-thermal.yaml
-> @@ -0,0 +1,56 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/thermal/ti,am654-thermal.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments AM654 VTM (DTS) binding
-> +
-> +maintainers:
-> +  - Keerthy <j-keerthy@ti.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: ti,am654-vtm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  "#thermal-sensor-cells":
-> +    const: 1
-> +
-> +required:
-> +  - "#thermal-sensor-cells"
-> +  - compatible
-> +  - reg
-> +  - power-domains
-> +
-
-A nit-pick: arrange the required properties in order they're listed above.
-
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> +    vtm: thermal@42050000 {
-> +        compatible = "ti,am654-vtm";
-> +        reg = <0x0 0x42050000 0x0 0x25c>;
-> +        power-domains = <&k3_pds 80 TI_SCI_PD_EXCLUSIVE>;
-> +        #thermal-sensor-cells = <1>;
-> +    };
-> +
-> +    mpu0_thermal: mpu0_thermal {
-> +        polling-delay-passive = <250>; /* milliseconds */
-> +        polling-delay = <500>; /* milliseconds */
-> +        thermal-sensors = <&vtm0 0>;
-> +
-> +        trips {
-> +                mpu0_crit: mpu0_crit {
-> +                        temperature = <125000>; /* milliCelsius */
-> +                        hysteresis = <2000>; /* milliCelsius */
-> +                        type = "critical";
-> +                };
-> +        };
-> +    };
-> +...
+>  #if IS_ENABLED(CONFIG_THERMAL)
+> -static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
+> -{
+> -       return cdev->ops->get_requested_power && cdev->ops->state2power &&
+> -               cdev->ops->power2state;
+> -}
+> -
+> -int power_actor_get_max_power(struct thermal_cooling_device *,
+> -                             struct thermal_zone_device *tz, u32 *max_power);
+> -int power_actor_get_min_power(struct thermal_cooling_device *,
+> -                             struct thermal_zone_device *tz, u32 *min_power);
+> -int power_actor_set_power(struct thermal_cooling_device *,
+> -                         struct thermal_instance *, u32);
+>  struct thermal_zone_device *thermal_zone_device_register(const char *, int, int,
+>                 void *, struct thermal_zone_device_ops *,
+>                 struct thermal_zone_params *, int, int);
+> @@ -447,18 +435,6 @@ struct thermal_instance *get_thermal_instance(struct thermal_zone_device *,
+>  void thermal_cdev_update(struct thermal_cooling_device *);
+>  void thermal_notify_framework(struct thermal_zone_device *, int);
+>  #else
+> -static inline bool cdev_is_power_actor(struct thermal_cooling_device *cdev)
+> -{ return false; }
+> -static inline int power_actor_get_max_power(struct thermal_cooling_device *cdev,
+> -                             struct thermal_zone_device *tz, u32 *max_power)
+> -{ return 0; }
+> -static inline int power_actor_get_min_power(struct thermal_cooling_device *cdev,
+> -                                           struct thermal_zone_device *tz,
+> -                                           u32 *min_power)
+> -{ return -ENODEV; }
+> -static inline int power_actor_set_power(struct thermal_cooling_device *cdev,
+> -                         struct thermal_instance *tz, u32 power)
+> -{ return 0; }
+>  static inline struct thermal_zone_device *thermal_zone_device_register(
+>         const char *type, int trips, int mask, void *devdata,
+>         struct thermal_zone_device_ops *ops,
 > --
 > 2.17.1
 >
