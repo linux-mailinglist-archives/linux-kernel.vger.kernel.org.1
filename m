@@ -2,96 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E57F19E4B8
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 13:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E705119E4C0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 13:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbgDDLoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 07:44:13 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:59677 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgDDLoN (ORCPT
+        id S1726195AbgDDLwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 07:52:35 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:50312 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726005AbgDDLwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 07:44:13 -0400
-Received: from ip5f5bf7ec.dynamic.kabel-deutschland.de ([95.91.247.236] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jKhDf-0004L2-39; Sat, 04 Apr 2020 11:44:11 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] thread changes for v5.7
-Date:   Sat,  4 Apr 2020 13:43:57 +0200
-Message-Id: <20200404114357.1359783-1-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.26.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 4 Apr 2020 07:52:35 -0400
+Received: by mail-wm1-f65.google.com with SMTP id t128so9876211wma.0;
+        Sat, 04 Apr 2020 04:52:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=WdnAbDTj6jtP4VOMCJVjHgxV4qgpznX9InRBomX1p1U=;
+        b=J4E8Wx4pFqTYQ7rSPhEuNAo18XhTGgqc93isY+r8lRW8JlqL4VLWPVkNXDV3cHGQ9d
+         z1XXfTpQM9AF4+JDVVIUq5vfxYmmqJhuaDVy59FS0UEiJre7Tn+D4dvtzcpQQvzsAE+r
+         hvZECd7kZGJu0pSPWrIR/7Ry69C1ipi/47hKON1ZifHQ80qKgQSX7pPhYD6xxYWkknfX
+         Kq/ekhgWQIQgYy1tQgW5pGFkLWEW9VoBtIwrJPG/aLRQjcKQHRf74QabqtQtE8gQjXLN
+         hqT/KeB5AEcZLVBIDUyL9kjcg68Sz6O4XvmdfN40hR0/hH93yxlSA99yWBu0UEEQ2e4q
+         bG3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WdnAbDTj6jtP4VOMCJVjHgxV4qgpznX9InRBomX1p1U=;
+        b=QntM3aNZpJ3DGo+YwJo2mSz5b1bto67AFFf3HvhINUDVFmu8zyHqEY1NxzOerAZ+24
+         0QLYuUhrPEf42oQnAuSIxDllZ2mCiRtDxDGlwSmUqt7Kpzt+gqugHCNzoqpXP6IzKgr/
+         UWEaof2EFtY57UQTVFrl5xYsGg60tS4ca/P5r8cVkLenxVP5N9cQCMq44t0UkyKPcJdQ
+         o8thMPy62OnmNSd45POTQDdnCiC/XEZ90G+K9P4EdiwwM0o3/a+oMDK/8vdhihBUGZmP
+         5r9urtfibcV9GmW367RJlU+Zy0vWFsmkeo4VFq2nFTB9DKejqq1Hu4XdlWpoFsrF6Pwo
+         mJPg==
+X-Gm-Message-State: AGi0PuZfeWvJ62fq+ujHXYOhUKCgQGLv90UBacDckrud2qrEvJSgwiWU
+        qiAjRAaBbn4Aza9uOWsW2y0=
+X-Google-Smtp-Source: APiQypLgvsrDXCY+fxQ+1NshaZ3Bzn9yeGXWoAfPDWIG/qG982FurHXkaoXmgyUD9FAl58gmD4wFrQ==
+X-Received: by 2002:a1c:f21a:: with SMTP id s26mr13636483wmc.187.1586001152742;
+        Sat, 04 Apr 2020 04:52:32 -0700 (PDT)
+Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id g186sm16183276wmg.36.2020.04.04.04.52.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 04 Apr 2020 04:52:32 -0700 (PDT)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     lgirdwood@gmail.com
+Cc:     broonie@kernel.org, heiko@sntech.de, robh+dt@kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/3] dt-bindings: sound: convert rockchip spdif bindings to yaml
+Date:   Sat,  4 Apr 2020 13:52:23 +0200
+Message-Id: <20200404115225.4314-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Current dts files with 'spdif' nodes are manually verified.
+In order to automate this process rockchip-spdif.txt
+has to be converted to yaml.
 
-Here is a simple change for this cycle. The rest being routed through another
-tree but see below for that.
+Also rk3188.dtsi, rk3288.dtsi use an extra fallback string,
+so change this in the documentation.
 
-/* Summary */
-The main changes for this cycle is the extension for clone3() to support
-spawning processes directly into cgroups via CLONE_INTO_CGROUP now in mainline
-as ef2c41cf38a7 ("clone3: allow spawning processes into cgroups"). Since I had
-to touch kernel/cgroup/ quite a bit I had Tejun route it through his tree this
-time to make it easier for him to handle other changes and I see that you've
-pulled already. So here are just unexciting leftovers.
+Changed:
+"rockchip,rk3188-spdif", "rockchip,rk3066-spdif"
+"rockchip,rk3288-spdif", "rockchip,rk3066-spdif"
 
-As promised in addcb1d0ee31 here's a regression test for the ENOMEM regression
-we fixed in b26ebfe12f34 ("pid: Fix error return value in some cases")
-verifying that we report ENOMEM when trying to create a new process in a pid
-namespace whose init process/subreaper has already exited.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes v3:
+  Add reviewed by
+  Fix irq.h already included in arm-gic.h
+  Change rk3188-cru-common.h to rk3188-cru.h
 
-The following changes since commit 2c523b344dfa65a3738e7039832044aa133c75fb:
+Changed v2:
+  dmas and dma-names layout
+---
+ .../devicetree/bindings/sound/rockchip-spdif.txt   | 45 -----------
+ .../devicetree/bindings/sound/rockchip-spdif.yaml  | 93 ++++++++++++++++++++++
+ 2 files changed, 93 insertions(+), 45 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
 
-  Linux 5.6-rc5 (2020-03-08 17:44:44 -0700)
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt b/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
+deleted file mode 100644
+index ec20c1271..000000000
+--- a/Documentation/devicetree/bindings/sound/rockchip-spdif.txt
++++ /dev/null
+@@ -1,45 +0,0 @@
+-* Rockchip SPDIF transceiver
+-
+-The S/PDIF audio block is a stereo transceiver that allows the
+-processor to receive and transmit digital audio via an coaxial cable or
+-a fibre cable.
+-
+-Required properties:
+-
+-- compatible: should be one of the following:
+-   - "rockchip,rk3066-spdif"
+-   - "rockchip,rk3188-spdif"
+-   - "rockchip,rk3228-spdif"
+-   - "rockchip,rk3288-spdif"
+-   - "rockchip,rk3328-spdif"
+-   - "rockchip,rk3366-spdif"
+-   - "rockchip,rk3368-spdif"
+-   - "rockchip,rk3399-spdif"
+-- reg: physical base address of the controller and length of memory mapped
+-  region.
+-- interrupts: should contain the SPDIF interrupt.
+-- dmas: DMA specifiers for tx dma. See the DMA client binding,
+-  Documentation/devicetree/bindings/dma/dma.txt
+-- dma-names: should be "tx"
+-- clocks: a list of phandle + clock-specifier pairs, one for each entry
+-  in clock-names.
+-- clock-names: should contain following:
+-   - "hclk": clock for SPDIF controller
+-   - "mclk" : clock for SPDIF bus
+-
+-Required properties on RK3288:
+-  - rockchip,grf: the phandle of the syscon node for the general register
+-                   file (GRF)
+-
+-Example for the rk3188 SPDIF controller:
+-
+-spdif: spdif@1011e000 {
+-	compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
+-	reg = <0x1011e000 0x2000>;
+-	interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+-	dmas = <&dmac1_s 8>;
+-	dma-names = "tx";
+-	clock-names = "hclk", "mclk";
+-	clocks = <&cru HCLK_SPDIF>, <&cru SCLK_SPDIF>;
+-	#sound-dai-cells = <0>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+new file mode 100644
+index 000000000..bfd44fd8e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
+@@ -0,0 +1,93 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/rockchip-spdif.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SPDIF transceiver
++
++description:
++  The S/PDIF audio block is a stereo transceiver that allows the
++  processor to receive and transmit digital audio via a coaxial or
++  fibre cable.
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++properties:
++  compatible:
++    oneOf:
++      - const: rockchip,rk3066-spdif
++      - const: rockchip,rk3228-spdif
++      - const: rockchip,rk3328-spdif
++      - const: rockchip,rk3366-spdif
++      - const: rockchip,rk3368-spdif
++      - const: rockchip,rk3399-spdif
++      - items:
++          - enum:
++            - rockchip,rk3188-spdif
++            - rockchip,rk3288-spdif
++          - const: rockchip,rk3066-spdif
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: clock for SPDIF bus
++      - description: clock for SPDIF controller
++
++  clock-names:
++    items:
++      - const: mclk
++      - const: hclk
++
++  dmas:
++    maxItems: 1
++
++  dma-names:
++    const: tx
++
++  rockchip,grf:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      The phandle of the syscon node for the GRF register.
++      Required property on RK3288.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++
++if:
++  properties:
++    compatible:
++      contains:
++        const: rockchip,rk3288-spdif
++
++then:
++  required:
++    - rockchip,grf
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3188-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    spdif: spdif@1011e000 {
++      compatible = "rockchip,rk3188-spdif", "rockchip,rk3066-spdif";
++      reg = <0x1011e000 0x2000>;
++      interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&cru SCLK_SPDIF>, <&cru HCLK_SPDIF>;
++      clock-names = "mclk", "hclk";
++      dmas = <&dmac1_s 8>;
++      dma-names = "tx";
++    };
+-- 
+2.11.0
 
-are available in the Git repository at:
-
-  git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/threads-v5.7
-
-for you to fetch changes up to 6952a4f646446fde9e190b62c5e45f84c6cf91aa:
-
-  selftests: add pid namespace ENOMEM regression test (2020-03-25 13:50:34 +0100)
-
-/* Testing */
-All patches are based on v5.6-rc6 and have been sitting in linux-next for a
-while. (Full disclosure, I had these patches sitting in my tree locally for
-quite longer but missed to merge them into my for-next branch so they have
-only been in linux-next for about 10 days but without any issues.)
-
-/* Conflicts */
-At the time of creating this PR no merge conflicts were observed in
-linux-next.
-
-Please consider pulling these changes from the signed threads-v5.7 tag.
-
-Thanks!
-Christian
-
-----------------------------------------------------------------
-threads-v5.7
-
-----------------------------------------------------------------
-Christian Brauner (1):
-      selftests: add pid namespace ENOMEM regression test
-
- MAINTAINERS                                        |  1 +
- tools/testing/selftests/Makefile                   |  1 +
- tools/testing/selftests/pid_namespace/.gitignore   |  1 +
- tools/testing/selftests/pid_namespace/Makefile     |  8 ++++
- tools/testing/selftests/pid_namespace/config       |  2 +
- .../selftests/pid_namespace/regression_enomem.c    | 45 ++++++++++++++++++++++
- tools/testing/selftests/pidfd/pidfd.h              |  2 +
- 7 files changed, 60 insertions(+)
- create mode 100644 tools/testing/selftests/pid_namespace/.gitignore
- create mode 100644 tools/testing/selftests/pid_namespace/Makefile
- create mode 100644 tools/testing/selftests/pid_namespace/config
- create mode 100644 tools/testing/selftests/pid_namespace/regression_enomem.c
