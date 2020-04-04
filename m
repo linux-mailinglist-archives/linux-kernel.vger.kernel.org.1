@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A8F119E3E6
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0945F19E389
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 10:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbgDDIoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 04:44:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41522 "EHLO
+        id S1726187AbgDDIlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 04:41:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41403 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726371AbgDDImA (ORCPT
+        with ESMTP id S1725730AbgDDIlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 04:42:00 -0400
+        Sat, 4 Apr 2020 04:41:49 -0400
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jKeN5-0000xv-TT; Sat, 04 Apr 2020 10:41:44 +0200
+        id 1jKeN6-0000yv-U3; Sat, 04 Apr 2020 10:41:45 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 819031C0243;
-        Sat,  4 Apr 2020 10:41:43 +0200 (CEST)
-Date:   Sat, 04 Apr 2020 08:41:43 -0000
-From:   "tip-bot2 for Jin Yao" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 753DF1C0243;
+        Sat,  4 Apr 2020 10:41:44 +0200 (CEST)
+Date:   Sat, 04 Apr 2020 08:41:44 -0000
+From:   "tip-bot2 for Arnaldo Carvalho de Melo" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/urgent] perf top: Support --group-sort-idx to change the
- sort order
-Cc:     Jin Yao <yao.jin@linux.intel.com>,
+Subject: [tip: perf/urgent] perf build-test: Honour JOBS to override detection
+ of number of cores
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Jin Yao <yao.jin@intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200324220711.6025-1-yao.jin@linux.intel.com>
-References: <20200324220711.6025-1-yao.jin@linux.intel.com>
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200330130301.GA31702@kernel.org>
+References: <20200330130301.GA31702@kernel.org>
 MIME-Version: 1.0
-Message-ID: <158598970316.28353.17958323669353267634.tip-bot2@tip-bot2>
+Message-ID: <158598970410.28353.5745644296944614276.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -53,77 +50,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     df7deb2cceef0546ab2115702da3421b7c61a8c0
-Gitweb:        https://git.kernel.org/tip/df7deb2cceef0546ab2115702da3421b7c61a8c0
-Author:        Jin Yao <yao.jin@linux.intel.com>
-AuthorDate:    Wed, 25 Mar 2020 06:07:10 +08:00
+Commit-ID:     7b1642f2fc1e1f20948e806b7ce319f660633342
+Gitweb:        https://git.kernel.org/tip/7b1642f2fc1e1f20948e806b7ce319f660633342
+Author:        Arnaldo Carvalho de Melo <acme@redhat.com>
+AuthorDate:    Mon, 30 Mar 2020 09:32:41 -03:00
 Committer:     Arnaldo Carvalho de Melo <acme@redhat.com>
 CommitterDate: Fri, 03 Apr 2020 09:37:55 -03:00
 
-perf top: Support --group-sort-idx to change the sort order
+perf build-test: Honour JOBS to override detection of number of cores
 
-'perf report' supports the option --group-sort-idx, which sorts the
-output by the event at the index n in event group.
+When one does:
 
-For example:
+  $ make -C tools/perf build-test
 
-  perf record -e cycles,instructions,cache-misses
-  perf report --group --group-sort-idx 2 --stdio
+The makefile in tools/perf/tests/ will, just like the main one, detect
+how many cores are in the system and use it with -j.
 
-The perf-report output is sorted by cache-misses.
+Sometimes we may need to override that, for instance, when using
+icecream or distcc to use multiple machines in the build process, then
+we need to, as with the main makefile, use:
 
-This patch supports --group-sort-idx in perf-top.
+  $ make JOBS=N -C tools/perf build-test
 
-For example:
+Fix the tests makefile to honour that.
 
-  perf top --group -e cycles,instructions,cache-misses --group-sort-idx 2
-
-The perf-top output is sorted by cache-misses.
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-Suggested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Jin Yao <yao.jin@intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20200324220711.6025-1-yao.jin@linux.intel.com
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: http://lore.kernel.org/lkml/20200330130301.GA31702@kernel.org
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/Documentation/perf-top.txt | 5 +++++
- tools/perf/builtin-top.c              | 4 ++++
- 2 files changed, 9 insertions(+)
+ tools/perf/tests/make | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-top.txt b/tools/perf/Documentation/perf-top.txt
-index ddab103..487737a 100644
---- a/tools/perf/Documentation/perf-top.txt
-+++ b/tools/perf/Documentation/perf-top.txt
-@@ -53,6 +53,11 @@ Default is to monitor all CPUS.
- --group::
-         Put the counters into a counter group.
+diff --git a/tools/perf/tests/make b/tools/perf/tests/make
+index c850d16..5d0c3a9 100644
+--- a/tools/perf/tests/make
++++ b/tools/perf/tests/make
+@@ -28,9 +28,13 @@ endif
  
-+--group-sort-idx::
-+	Sort the output by the event at the index n in group. If n is invalid,
-+	sort by the first event. It can support multiple groups with different
-+	amount of events. WARNING: This should be used on grouped events.
-+
- -F <freq>::
- --freq=<freq>::
- 	Profile at this frequency. Use 'max' to use the currently maximum
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index 02ea2cf..9ff7943 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -1560,6 +1560,10 @@ int cmd_top(int argc, const char **argv)
- 		    "Record namespaces events"),
- 	OPT_BOOLEAN(0, "all-cgroups", &opts->record_cgroup,
- 		    "Record cgroup events"),
-+	OPT_INTEGER(0, "group-sort-idx", &symbol_conf.group_sort_idx,
-+		    "Sort the output by the event at the index n in group. "
-+		    "If n is invalid, sort by the first event. "
-+		    "WARNING: should be used on grouped events."),
- 	OPTS_EVSWITCH(&top.evswitch),
- 	OPT_END()
- 	};
+ PARALLEL_OPT=
+ ifeq ($(SET_PARALLEL),1)
+-  cores := $(shell (getconf _NPROCESSORS_ONLN || egrep -c '^processor|^CPU[0-9]' /proc/cpuinfo) 2>/dev/null)
+-  ifeq ($(cores),0)
+-    cores := 1
++  ifeq ($(JOBS),)
++    cores := $(shell (getconf _NPROCESSORS_ONLN || egrep -c '^processor|^CPU[0-9]' /proc/cpuinfo) 2>/dev/null)
++    ifeq ($(cores),0)
++      cores := 1
++    endif
++  else
++    cores=$(JOBS)
+   endif
+   PARALLEL_OPT="-j$(cores)"
+ endif
