@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2CF19E1BB
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 02:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7E419E1BA
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 02:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726436AbgDDAAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Apr 2020 20:00:08 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:40293 "EHLO rere.qmqm.pl"
+        id S1726554AbgDDAAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Apr 2020 20:00:14 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:2456 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726208AbgDDAAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Apr 2020 20:00:07 -0400
+        id S1726339AbgDDAAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Apr 2020 20:00:09 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 48vH454MQJzWS;
-        Sat,  4 Apr 2020 02:00:05 +0200 (CEST)
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 48vH465jf5zqB;
+        Sat,  4 Apr 2020 02:00:06 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1585958405; bh=rF9Azg0yoCvSWs6Gga3gO15qve4vsBHrMOl9X8Urzq0=;
+        t=1585958406; bh=ERaR7ygM77SbTRq+ee9gcCX1NXRy6uMU4qvMkPRl8pk=;
         h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=rv1jB5t1iZLbK+mzmx5a3MMuCB8fobnQXVTL2JGZLKmN2Ah0/TASh+FoN/3usSH/G
-         Q89dmpdn4+Jbp2bM8YyEFi6etGB1qfdY3Y65Q8+yIt9zA6exmNDPShnJmCi5JaRI6z
-         2MvXsUJeRDM7AhX3cLWkyRE86lZSfXyn4pqlkf5UAmgp7AX2rqgHoCi58twvgMLO6x
-         3I9nPc+4s63dalS9H4xnUC3WJ4S7ygptkPDZnc0ojMJrnlKrQwfRu9/+4+9empDgMh
-         QTJQMRELun9g6Cd3UEndjlrjjkfRt+49yGNb9gMk2IXWhlJ1wOy55wXEcZUXZ/zcCy
-         2yxgTfHDStXvA==
+        b=T0YSsb4jOs8jPx/dRCcVRaaPL+VAs1GTk4ed+4c/4HbhcftgsFR0WcFvaxOam/jp1
+         CyEhpbfGmYOoWbNLX4E0zAGcD4UK5SIpBYZYZlqPuDxhUzR4YvYfefasta6eD6BjfV
+         ZZECMM2LnpioEIDw+62+FGj95JRGg5TPuomH04jY+m/kLmbI5p6PR6W6MGzMu0FjYZ
+         7oLoSmFw3ivPVZR0wIWWU4X61jfKFV+72RM8kv5ea6ZJDS1ZRfzPb5BS9zeJ2H8KSA
+         YqDMyA6IXPAxE6ncUnCJ7yV6iOqdlqXIQLVXDKrWcj58tHBopE2uVMFUdQ1BWdVVcF
+         Oho3eV0ciBzeA==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.2 at mail
-Date:   Sat, 04 Apr 2020 02:00:05 +0200
-Message-Id: <bf69d78d3614d25821db6f1ccb8b6911ed43d2b1.1585958250.git.mirq-linux@rere.qmqm.pl>
+Date:   Sat, 04 Apr 2020 02:00:06 +0200
+Message-Id: <1bf89d4301baa8632daf48b3e28858aff5371954.1585958250.git.mirq-linux@rere.qmqm.pl>
 In-Reply-To: <2b6d70595475a3ddbd5bb8ae1765868a98c404b6.1585958250.git.mirq-linux@rere.qmqm.pl>
 References: <2b6d70595475a3ddbd5bb8ae1765868a98c404b6.1585958250.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 2/5] usb: chipidea: usb2: fix formatting
+Subject: [PATCH 5/5] usb: chipidea: allow disabling glue drivers if EMBEDDED
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,28 +42,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add spaces before closing braces.
+Allow to cut down on driver size for embedded config.
 
 Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
- drivers/usb/chipidea/ci_hdrc_usb2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/chipidea/Kconfig  | 37 ++++++++++++++++++++++++-----------
+ drivers/usb/chipidea/Makefile | 12 +++++-------
+ 2 files changed, 31 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/usb/chipidea/ci_hdrc_usb2.c b/drivers/usb/chipidea/ci_hdrc_usb2.c
-index 62cf8a99cf78..bf300a234e64 100644
---- a/drivers/usb/chipidea/ci_hdrc_usb2.c
-+++ b/drivers/usb/chipidea/ci_hdrc_usb2.c
-@@ -33,8 +33,8 @@ static const struct ci_hdrc_platform_data ci_zynq_pdata = {
- };
+diff --git a/drivers/usb/chipidea/Kconfig b/drivers/usb/chipidea/Kconfig
+index d53db520e209..8bafcfc6080d 100644
+--- a/drivers/usb/chipidea/Kconfig
++++ b/drivers/usb/chipidea/Kconfig
+@@ -18,17 +18,6 @@ config USB_CHIPIDEA
  
- static const struct of_device_id ci_hdrc_usb2_of_match[] = {
--	{ .compatible = "chipidea,usb2"},
--	{ .compatible = "xlnx,zynq-usb-2.20a", .data = &ci_zynq_pdata},
-+	{ .compatible = "chipidea,usb2" },
-+	{ .compatible = "xlnx,zynq-usb-2.20a", .data = &ci_zynq_pdata },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, ci_hdrc_usb2_of_match);
+ if USB_CHIPIDEA
+ 
+-config USB_CHIPIDEA_OF
+-	tristate
+-	depends on OF
+-	default USB_CHIPIDEA
+-
+-config USB_CHIPIDEA_PCI
+-	tristate
+-	depends on USB_PCI
+-	depends on NOP_USB_XCEIV
+-	default USB_CHIPIDEA
+-
+ config USB_CHIPIDEA_UDC
+ 	bool "ChipIdea device controller"
+ 	depends on USB_GADGET
+@@ -43,4 +32,30 @@ config USB_CHIPIDEA_HOST
+ 	help
+ 	  Say Y here to enable host controller functionality of the
+ 	  ChipIdea driver.
++
++config USB_CHIPIDEA_PCI
++	tristate "Enable PCI glue driver" if EMBEDDED
++	depends on USB_PCI
++	depends on NOP_USB_XCEIV
++	default USB_CHIPIDEA
++
++config USB_CHIPIDEA_MSM
++	tristate "Enable MSM hsusb glue driver" if EMBEDDED
++	default USB_CHIPIDEA
++
++config USB_CHIPIDEA_IMX
++	tristate "Enable i.MX USB glue driver" if EMBEDDED
++	depends on OF
++	default USB_CHIPIDEA
++
++config USB_CHIPIDEA_GENERIC
++	tristate "Enable generic USB2 glue driver" if EMBEDDED
++	default USB_CHIPIDEA
++
++config USB_CHIPIDEA_TEGRA
++	tristate "Enable Tegra UDC glue driver" if EMBEDDED
++	depends on OF
++	depends on USB_CHIPIDEA_UDC
++	default USB_CHIPIDEA
++
+ endif
+diff --git a/drivers/usb/chipidea/Makefile b/drivers/usb/chipidea/Makefile
+index 985663ba6e68..fae779a23866 100644
+--- a/drivers/usb/chipidea/Makefile
++++ b/drivers/usb/chipidea/Makefile
+@@ -8,10 +8,8 @@ ci_hdrc-$(CONFIG_USB_OTG_FSM)		+= otg_fsm.o
+ 
+ # Glue/Bridge layers go here
+ 
+-obj-$(CONFIG_USB_CHIPIDEA)	+= ci_hdrc_usb2.o
+-obj-$(CONFIG_USB_CHIPIDEA)	+= ci_hdrc_msm.o
+-
+-obj-$(CONFIG_USB_CHIPIDEA_PCI)	+= ci_hdrc_pci.o
+-
+-obj-$(CONFIG_USB_CHIPIDEA_OF)	+= usbmisc_imx.o ci_hdrc_imx.o
+-obj-$(CONFIG_USB_CHIPIDEA_OF)	+= ci_hdrc_tegra.o
++obj-$(CONFIG_USB_CHIPIDEA_GENERIC)	+= ci_hdrc_usb2.o
++obj-$(CONFIG_USB_CHIPIDEA_MSM)		+= ci_hdrc_msm.o
++obj-$(CONFIG_USB_CHIPIDEA_PCI)		+= ci_hdrc_pci.o
++obj-$(CONFIG_USB_CHIPIDEA_IMX)		+= ci_hdrc_imx.o usbmisc_imx.o
++obj-$(CONFIG_USB_CHIPIDEA_TEGRA)	+= ci_hdrc_tegra.o
 -- 
 2.20.1
 
