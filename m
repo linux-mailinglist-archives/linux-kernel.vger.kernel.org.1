@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D6419E6E3
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63B619E6E0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726587AbgDDRui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 13:50:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40402 "EHLO mail.kernel.org"
+        id S1726509AbgDDRu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 13:50:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726437AbgDDRuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 13:50:25 -0400
-Subject: Re: [GIT PULL] thread changes for v5.7
+        id S1726315AbgDDRu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 13:50:26 -0400
+Subject: Re: [GIT PULL] GPIO bulk changes for v5.7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586022625;
-        bh=6Sp2RW5CMAyCNcVsTHa/ppjJwGkTlFk1A7tHKSmndvQ=;
+        s=default; t=1586022626;
+        bh=QR0SRq7v4sEsNOTfmR2H46SgRrsCKg2QnhZJxkPR4ys=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=vM2uWH/CrbCu07X8ANokgw/XC5x5K6VyOAa6AbeeEieBhdWnQrWrHY/BlWtPLTtdC
-         +Hzu2CJJ5++z7v76t/nxTHUyT815TgsxvlgxbA4yKA/gdgIcNdgR2VtNULDl0wGJlZ
-         RM3i28Sr5VdTWWlbk/FIddwGd/GzmumqAJNJHNUk=
+        b=JOzX6GcCwq7BK3jmrZXTkySAQXy/nokw3MKUUubPZnInBnPg9FHnMG50xjEf7HpKg
+         NELN0YbJJcQfcX9i9R8RqrXYqwr795lijQJlGD1rWAgzv1QJC+GPUhdYgBoL1fhXmc
+         EezLCpn84XNEpFdCJZPXm3weunQd3o4UGYXJPqfE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200404114357.1359783-1-christian.brauner@ubuntu.com>
-References: <20200404114357.1359783-1-christian.brauner@ubuntu.com>
+In-Reply-To: <CACRpkdYMcy0ctKsUTdeXQ7EKZ40AeQVEo4fE4BpgXODJ+U6K1Q@mail.gmail.com>
+References: <CACRpkdYMcy0ctKsUTdeXQ7EKZ40AeQVEo4fE4BpgXODJ+U6K1Q@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200404114357.1359783-1-christian.brauner@ubuntu.com>
-X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux
- tags/threads-v5.7
-X-PR-Tracked-Commit-Id: 6952a4f646446fde9e190b62c5e45f84c6cf91aa
+X-PR-Tracked-Message-Id: <CACRpkdYMcy0ctKsUTdeXQ7EKZ40AeQVEo4fE4BpgXODJ+U6K1Q@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git
+ tags/gpio-v5.7-1
+X-PR-Tracked-Commit-Id: 4ed7d7dd4890bb8120a3e77c16191a695fdfcc5a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 1e396a5d171d61aa00d49389d92f8afb21568635
-Message-Id: <158602262524.31764.16904505521685076936.pr-tracker-bot@kernel.org>
-Date:   Sat, 04 Apr 2020 17:50:25 +0000
-To:     Christian Brauner <christian.brauner@ubuntu.com>
+X-PR-Merge-Commit-Id: 828907ef25e0133f50c346ef5a3c79a707a9b100
+Message-Id: <158602262630.31764.14239984515947823534.pr-tracker-bot@kernel.org>
+Date:   Sat, 04 Apr 2020 17:50:26 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat,  4 Apr 2020 13:43:57 +0200:
+The pull request you sent on Sat, 4 Apr 2020 14:08:34 +0200:
 
-> git@gitolite.kernel.org:pub/scm/linux/kernel/git/brauner/linux tags/threads-v5.7
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-gpio.git tags/gpio-v5.7-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/1e396a5d171d61aa00d49389d92f8afb21568635
+https://git.kernel.org/torvalds/c/828907ef25e0133f50c346ef5a3c79a707a9b100
 
 Thank you!
 
