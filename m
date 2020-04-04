@@ -2,54 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AC119E6E2
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:50:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F6519E6E6
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726552AbgDDRua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 13:50:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726510AbgDDRu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 13:50:28 -0400
-Subject: Re: [GIT PULL] s390 patches for the 5.7 merge window
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586022627;
-        bh=nEvxDfugBteWRqUcG2AhaZPvHgaoyJZb6JLw1mHFGNk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=1Wg/OpNJPJYpnpNwQSoOAUyM38IbBZpTFjvKyEXpJqU3fTuzRGBfRXO+o/RowvI0V
-         1bx0IyJxil6yjwnLP6JzESUZUo4BUQra87hr/DibIc54xR0epG0nR+tBWrauAXP1Z+
-         ILPGL/Spsfzb5Yq1QDLyE8pr4pirdEP6zjlJD2Bw=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01586006344-ext-2743@work.hours>
-References: <your-ad-here.call-01586006344-ext-2743@work.hours>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01586006344-ext-2743@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.7-1
-X-PR-Tracked-Commit-Id: 1058c163dc31b3335c9cf7c4fa42ccf87be73017
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ad0bf4eb91c2f9b93479b679e5472094ddb76da8
-Message-Id: <158602262784.31764.4676490478972592998.pr-tracker-bot@kernel.org>
-Date:   Sat, 04 Apr 2020 17:50:27 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        id S1726699AbgDDRvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 13:51:01 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:34396 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726679AbgDDRvA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 13:51:00 -0400
+Received: by mail-ot1-f65.google.com with SMTP id m2so10902895otr.1;
+        Sat, 04 Apr 2020 10:51:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y95rECaQ8JB4IMFJRuAfYH3Qk60HSfmhEkxfieQ/dWg=;
+        b=l4eADaJJP50tnMxSIRVwn/ducog3dlch4SMXXXBsaNnU4CxbudhlHhi0yXdAjfhGk7
+         1HH3WXqq55Huz9Kv5ozHX9Oo/+Dnd9hyd/OdAyiTl7LF35BnMOoqU1aMsZHqvnvS5jmT
+         gDt8MMaf7cCOWKK03ek3oRWyWM+BemBewqMtSHX/9hqeJqMEeoDHY6FHGQIZhXeG6aZ+
+         yaGzl14vElYELcrIHPu/2ZSYVkKy0IeVgWnGOlWeCtd78Wwg7MVuNkYkWtCvHosYiEqd
+         bBhKtyi1/ZG/cHgAQTNoDYX7zbWpW2sYWxb/iVWH0t94rHIQsIBFBpcqQ0gjg8gzfdD4
+         klrQ==
+X-Gm-Message-State: AGi0PuZER9iMjk6dZ9DDOJ2ZPXrxDlv0ZJlW2eyHTSbUqPDBwWa3A9n1
+        ZvQdG+o8+EVGllBZauzV5253l4YBMX9YNn44/es=
+X-Google-Smtp-Source: APiQypJXXSKrtbFEwdda3esGGDETkJrOSOvYCy5M8vLD2IXdxdKJ69CPDhiUNzeJjGIdiud49pm4phv+b+5KqB034Yg=
+X-Received: by 2002:a9d:7402:: with SMTP id n2mr11522707otk.262.1586022660147;
+ Sat, 04 Apr 2020 10:51:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200403140345.3828-1-cai@lca.pw> <CAJZ5v0jjZzSosFwR3Yqu9mWtUNms1u9fbJbQb=tc5=CPc7r_1w@mail.gmail.com>
+ <20200403165305.GF20218@zn.tnic>
+In-Reply-To: <20200403165305.GF20218@zn.tnic>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Sat, 4 Apr 2020 19:50:48 +0200
+Message-ID: <CAJZ5v0hZH0LU9NeTkjRqzXyMoU8YWn7gpvO4vJQqYDaHAW3ixA@mail.gmail.com>
+Subject: Re: [PATCH v3] x86/acpi: fix a deadlock with cpu hotplug
+To:     Borislav Petkov <bp@alien8.de>, Qian Cai <cai@lca.pw>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Ingo Molnar <mingo@redhat.com>, Len Brown <lenb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 4 Apr 2020 15:19:04 +0200:
+On Fri, Apr 3, 2020 at 6:53 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Fri, Apr 03, 2020 at 05:45:10PM +0200, Rafael J. Wysocki wrote:
+> > I can take this one unless there are objections or concerns.
+>
+> Please do - I did trigger that yesterday again.
+>
+> Tested-by: Borislav Petkov <bp@suse.de>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.7-1
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ad0bf4eb91c2f9b93479b679e5472094ddb76da8
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+OK, applied now, thanks!
