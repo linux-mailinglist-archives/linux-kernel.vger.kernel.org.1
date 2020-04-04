@@ -2,210 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7F919E4C3
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 13:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B72B19E4D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 14:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbgDDLwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 07:52:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22828 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726303AbgDDLwy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 07:52:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586001173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f64FR+wQwG4Rf+1Nwf9deQLAxinVjgUZ9huOaCrREcU=;
-        b=Z3OHSHnWPWsWIyIGN/wtzxXfwRCbOzgoDMqprZpfeMmNuoRNLuu0mV4ryC6WHKcV5lU+jk
-        NaQnC7XcMk0xBeaXYyczpDqj2fgxvPSleYPHilcUqJL/8IUDe4y6w1l6QzBQzva/yi1ZcQ
-        lsjoUPEKUW7H0aOPQI8uyqsEzod3qkQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-48-oaFdpjrKOD6fPgR02xN1ZQ-1; Sat, 04 Apr 2020 07:52:51 -0400
-X-MC-Unique: oaFdpjrKOD6fPgR02xN1ZQ-1
-Received: by mail-wm1-f72.google.com with SMTP id a4so1365870wmb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 04:52:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=f64FR+wQwG4Rf+1Nwf9deQLAxinVjgUZ9huOaCrREcU=;
-        b=I0AkRZEQH3F4nniu5sZwnO6lfpi00w4LIxNTg43O5T8PgTaMxXOYUkBPc+ak936IZy
-         +clhU5X8fB6BPg2cXDwYuUe4DsLrRrDugWqXEVNtLPDrxJOTFe7+Sv6orSwPWsCWioiT
-         IliKhbT/sY8cRjgja6ZxtIbrcVm/ywNMEflgIgXF9yB2f+wywkCjAxvaSNHMKdVx6JFj
-         +Jrz4h/qoucnKM7DQVSfo5vDm2UoHpSxKR1ltyj3o0hyk10fMhh/ctt2L3wnSrimCQvO
-         Ul9oRdzaDKyujI0xpkK5gpH4CCAuy5gt28pfLs+OZXHnplGgWj58I0RHZjV3gndbVcfy
-         bb7g==
-X-Gm-Message-State: AGi0PuZD5kbnt+qi0DXnaQsfL307GyTJqa7b8e+2J+zWXXVamoawmgMB
-        PNd6wzs38SlWZY+MigQoHjeLGvpjX8vOJOxJxTDlauF1CizZsFv7s5yMpN+f2ieKWatr41pnb0q
-        GJChzylHpzma1XeXADXehyTT1
-X-Received: by 2002:a7b:cb59:: with SMTP id v25mr13986480wmj.13.1586001170108;
-        Sat, 04 Apr 2020 04:52:50 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK0AZLIM+VFnAkYrCUNC87FZEsHxgjBLzBFl6igf0XOnAGiRT//XV5W7FDIbXfi3Leu5nrGlA==
-X-Received: by 2002:a7b:cb59:: with SMTP id v25mr13986456wmj.13.1586001169826;
-        Sat, 04 Apr 2020 04:52:49 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id z16sm346059wrg.66.2020.04.04.04.52.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Apr 2020 04:52:49 -0700 (PDT)
-Subject: Re: [PATCH v3 2/2] platform/x86: intel_int0002_vgpio: Use
- acpi_register_wakeup_handler()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Len Brown <lenb@kernel.org>, Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "5 . 4+" <stable@vger.kernel.org>
-References: <20200403154834.303105-1-hdegoede@redhat.com>
- <20200403154834.303105-2-hdegoede@redhat.com> <3798902.sSGyZ91sKY@kreacher>
- <CAHp75VfThW1CrkneP5kEm_7KejQgS2dhDi0YyDrL4y3=uY9ZbA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f054f195-d5e7-8041-4995-8a52d2bd7674@redhat.com>
-Date:   Sat, 4 Apr 2020 13:52:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726246AbgDDMGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 08:06:50 -0400
+Received: from [106.54.107.2] ([106.54.107.2]:56984 "EHLO mail.kaowomen.cn"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S1725870AbgDDMGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 08:06:50 -0400
+X-Greylist: delayed 513 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Apr 2020 08:06:47 EDT
+Received: by mail.kaowomen.cn (Postfix, from userid 1001)
+        id E863841329; Sat,  4 Apr 2020 19:57:59 +0800 (CST)
+Date:   Sat, 4 Apr 2020 19:57:59 +0800
+From:   Bo YU <tsu.yubo@gmail.com>
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yuzibode@126.com, tsu.yubo@gmail.com
+Subject: [PATCH -next] block/genhd: Align the label with the content of the
+ /proc/partitions
+Message-ID: <20200404115759.yo4u52vdzsvox6wc@kaowomen.cn>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfThW1CrkneP5kEm_7KejQgS2dhDi0YyDrL4y3=uY9ZbA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Before the patch,cat /proc/partitions:
 
-On 4/3/20 6:23 PM, Andy Shevchenko wrote:
-> On Fri, Apr 3, 2020 at 7:08 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->>
->> On Friday, April 3, 2020 5:48:34 PM CEST Hans de Goede wrote:
->>> The Power Management Events (PMEs) the INT0002 driver listens for get
->>> signalled by the Power Management Controller (PMC) using the same IRQ
->>> as used for the ACPI SCI.
->>>
->>> Since commit fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from
->>> waking up the system") the SCI triggering, without there being a wakeup
->>> cause recognized by the ACPI sleep code, will no longer wakeup the system.
->>>
->>> This breaks PMEs / wakeups signalled to the INT0002 driver, the system
->>> never leaves the s2idle_loop() now.
->>>
->>> Use acpi_register_wakeup_handler() to register a function which checks
->>> the GPE0a_STS register for a PME and trigger a wakeup when a PME has
->>> been signalled.
->>>
->>> Fixes: fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from waking up the system")
->>> Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
->>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->>
->> Andy, any objections?
-> 
-> No,
-> Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> Hans, just today when testing some other stuff noticed this
-> 
-> [   49.279001] irq 9: nobody cared (try booting with the "irqpoll" option)
-> [   49.289176] CPU: 0 PID: 168 Comm: irq/123-ATML100 Not tainted
-> 5.6.0-next-20200403+ #212
-> [   49.300915] Hardware name: Intel Corporation CHERRYVIEW D0
-> PLATFORM/Braswell CRB, BIOS BRAS.X64.B082.R00.150727 0557 07/27/2015
-> [   49.316520] Call Trace:
-> [   49.322093]  <IRQ>
-> [   49.327193]  dump_stack+0x50/0x70
-> [   49.333744]  __report_bad_irq+0x30/0xa2
-> [   49.340858]  note_interrupt.cold+0xb/0x62
-> ...
-> [   49.685087] handlers:
-> [   49.690307] [<000000000ab3cf88>] acpi_irq
-> [   49.697463] [<00000000e5d78029>] int0002_irq [intel_int0002_vgpio]
-> [   49.707063] Disabling IRQ #9
-> 
-> Is this what your series fixes?
+major minor  #blocks  name
 
-I don't think that my series fixes this.
+ 254        0   57671680 vda
+ 254        1   57670656 vda1
 
-My series fixes CHT devices no longer waking up from s2idle
-when woken by pressing a key on the USB attached keyboard dock
-of various 2-in-1s. Before we were relying on the ACPI code
-also waking up on IRQs which from the ACPI SCI handler pov where
-spurious. Rafael fixed the ACPI SCI handling during s2idle
-also waking the system on spurious events. My patch hooks
-the INT0002 driver into the ACPI SCI handling / wakeup checks
-during s2idle.
+After the patch:
 
-I guess Rafael may have made some related changes elsewhere
-though where the SCI no longer returns IRQ_HANDLED in some cases?
+major minor   #blocks    name
 
-Rafael?
+254   0       57671680   vda
+254   1       57670656   vda1
 
-Regards,
+According to LDD3,major device maximun number is 12 bit,as it has 4 char
+placeholders.minor device maximum number is 20 bit(7 char palceholders)
+and keeping 10 char palceholders for blocks tag.If want to keep
+palceholder's numbers dynamiclly, There is more tricks to do that.  So i
+keep it simple.
 
-Hans
+Signed-off-by: Bo YU <tsu.yubo@gmail.com>
+---
+ block/genhd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/block/genhd.c b/block/genhd.c
+index 06b642b23a07..63a483cf76b9 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1151,7 +1151,7 @@ static void *show_partition_start(struct seq_file *seqf, loff_t *pos)
 
+ 	p = disk_seqf_start(seqf, pos);
+ 	if (!IS_ERR_OR_NULL(p) && !*pos)
+-		seq_puts(seqf, "major minor  #blocks  name\n\n");
++		seq_puts(seqf, "major minor   #blocks    name\n\n");
+ 	return p;
+ }
 
-
-> 
->>
->>> ---
->>> Changes in v3:
->>> - Keep the pm_wakeup_hard_event() call
->>>
->>> Changes in v2:
->>> - Adjust for the wakeup-handler registration function being renamed to
->>>    acpi_register_wakeup_handler()
->>> ---
->>>   drivers/platform/x86/intel_int0002_vgpio.c | 10 ++++++++++
->>>   1 file changed, 10 insertions(+)
->>>
->>> diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platform/x86/intel_int0002_vgpio.c
->>> index f14e2c5f9da5..55f088f535e2 100644
->>> --- a/drivers/platform/x86/intel_int0002_vgpio.c
->>> +++ b/drivers/platform/x86/intel_int0002_vgpio.c
->>> @@ -127,6 +127,14 @@ static irqreturn_t int0002_irq(int irq, void *data)
->>>        return IRQ_HANDLED;
->>>   }
->>>
->>> +static bool int0002_check_wake(void *data)
->>> +{
->>> +     u32 gpe_sts_reg;
->>> +
->>> +     gpe_sts_reg = inl(GPE0A_STS_PORT);
->>> +     return (gpe_sts_reg & GPE0A_PME_B0_STS_BIT);
->>> +}
->>> +
->>>   static struct irq_chip int0002_byt_irqchip = {
->>>        .name                   = DRV_NAME,
->>>        .irq_ack                = int0002_irq_ack,
->>> @@ -220,6 +228,7 @@ static int int0002_probe(struct platform_device *pdev)
->>>                return ret;
->>>        }
->>>
->>> +     acpi_register_wakeup_handler(irq, int0002_check_wake, NULL);
->>>        device_init_wakeup(dev, true);
->>>        return 0;
->>>   }
->>> @@ -227,6 +236,7 @@ static int int0002_probe(struct platform_device *pdev)
->>>   static int int0002_remove(struct platform_device *pdev)
->>>   {
->>>        device_init_wakeup(&pdev->dev, false);
->>> +     acpi_unregister_wakeup_handler(int0002_check_wake, NULL);
->>>        return 0;
->>>   }
->>>
->>>
->>
->>
->>
->>
-> 
-> 
+@@ -1172,7 +1172,7 @@ static int show_partition(struct seq_file *seqf, void *v)
+ 	/* show the full disk and all non-0 size partitions of it */
+ 	disk_part_iter_init(&piter, sgp, DISK_PITER_INCL_PART0);
+ 	while ((part = disk_part_iter_next(&piter)))
+-		seq_printf(seqf, "%4d  %7d %10llu %s\n",
++		seq_printf(seqf, "%-4d  %-7d %-10llu %s\n",
+ 			   MAJOR(part_devt(part)), MINOR(part_devt(part)),
+ 			   (unsigned long long)part_nr_sects_read(part) >> 1,
+ 			   disk_name(sgp, part->partno, buf));
+--
+2.11.0
 
