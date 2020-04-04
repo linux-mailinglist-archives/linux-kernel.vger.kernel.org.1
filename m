@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 943EB19E6D9
+	by mail.lfdr.de (Postfix) with ESMTP id DEE7D19E6DA
 	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgDDRuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 13:50:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40296 "EHLO mail.kernel.org"
+        id S1726475AbgDDRu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 13:50:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbgDDRuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 13:50:23 -0400
-Subject: Re: [GIT PULL] VFIO updates for v5.7-rc1
+        id S1726436AbgDDRuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 13:50:24 -0400
+Subject: Re: [GIT PULL] dma-mapping updates for 5.7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586022622;
-        bh=O/M0Xi670dJt4pqqvin9h8KSuZtxbX8f16RD5Ztc2aQ=;
+        s=default; t=1586022624;
+        bh=cKK4vs/ElMxlmbk52kFAcJUDROfeksg+vPch0uqr/Hw=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=yBVQsBwdA5F6iW51CfrlFIxf67qS7GaJ4QhJCdPqiKTBJEWs5k++Fa7tRTZREH583
-         BGYtWgrK284Cl4y1GtG+DpzjGBmk9HM+s1FfRLkA6V1wd4V9XW1/aPJGxkDtZsja0P
-         5sdYiPonMkWEHFhOoDDZTJuQ1Q61xghgxePmLBDE=
+        b=Pt0NybnfUbUjG+K9PWNQgx3n0++R+6EAhGcraUZ46TT5jqQIUzZ6K2vfl+h6WSzQg
+         qS9i+ves0qvlDDPFgCwTNVS3Yb12Tjp35v8fXYdWYg2TNuaaCNitE4+9rMLTf3By5k
+         TT5eLz1fI9VqCF6c6OL+l0rbzKkF4O3xqb2TjUKQ=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200403162242.5e4f9afa@w520.home>
-References: <20200403162242.5e4f9afa@w520.home>
+In-Reply-To: <20200404065855.GA656254@infradead.org>
+References: <20200404065855.GA656254@infradead.org>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200403162242.5e4f9afa@w520.home>
-X-PR-Tracked-Remote: git://github.com/awilliam/linux-vfio.git
- tags/vfio-v5.7-rc1
-X-PR-Tracked-Commit-Id: f44efca0493ddc1e8731047c234ec8e475943077
+X-PR-Tracked-Message-Id: <20200404065855.GA656254@infradead.org>
+X-PR-Tracked-Remote: git://git.infradead.org/users/hch/dma-mapping.git
+ tags/dma-mapping-5.7
+X-PR-Tracked-Commit-Id: fd27a526bb381f43dded6db30b3b016468ab0e6c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2fb732b33b0f4d73f391066c0a970b942c600dab
-Message-Id: <158602262259.31764.3687805120660330306.pr-tracker-bot@kernel.org>
-Date:   Sat, 04 Apr 2020 17:50:22 +0000
-To:     Alex Williamson <alex.williamson@redhat.com>
+X-PR-Merge-Commit-Id: 6f43bae38269a55534e1f86a9917318167de6639
+Message-Id: <158602262410.31764.10662666727749617192.pr-tracker-bot@kernel.org>
+Date:   Sat, 04 Apr 2020 17:50:24 +0000
+To:     Christoph Hellwig <hch@infradead.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 3 Apr 2020 16:22:42 -0600:
+The pull request you sent on Sat, 4 Apr 2020 08:58:55 +0200:
 
-> git://github.com/awilliam/linux-vfio.git tags/vfio-v5.7-rc1
+> git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-5.7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2fb732b33b0f4d73f391066c0a970b942c600dab
+https://git.kernel.org/torvalds/c/6f43bae38269a55534e1f86a9917318167de6639
 
 Thank you!
 
