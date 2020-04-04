@@ -2,93 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB4F19E4BD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 13:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7F919E4C3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 13:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgDDLwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 07:52:36 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:39309 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbgDDLwg (ORCPT
+        id S1726331AbgDDLwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 07:52:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22828 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726303AbgDDLwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 07:52:36 -0400
-Received: by mail-wm1-f68.google.com with SMTP id e9so10691295wme.4;
-        Sat, 04 Apr 2020 04:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=J7JWQaNHlZkGey2CYstynUU1J9hNrgdTpL9zcYilbqk=;
-        b=KMcn9it08ctna9tgMEQrsjpXRPY/0IlCndUov70cazbmUWifl1XfERwQwaWbxb8fnc
-         CLSlKcbbvKF41FGA533Eo8T6KEFilYbQfMX6N8aj2xG5UyjGjz1EHWEzRMlxi47pQ6l/
-         JbVRLrHt/o1cYKG4K+Cbl8/dAuKYYNau7sL18LJTBtmT5ZB7yvb5lxVrEYqrw+VOQPLg
-         tHdn3DP5eElLfpIwficpxfYtQwSeKfIcHOzvNeTewtwjILWrUU9eROXl2mfMeT+3XpiG
-         D2wB2Z5h4oRkvkYHL/5jX95ZgLH6PaAb1G/9UpiUXrBwceXrAL3QjS4G40EoPA50iojj
-         fLtg==
+        Sat, 4 Apr 2020 07:52:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586001173;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f64FR+wQwG4Rf+1Nwf9deQLAxinVjgUZ9huOaCrREcU=;
+        b=Z3OHSHnWPWsWIyIGN/wtzxXfwRCbOzgoDMqprZpfeMmNuoRNLuu0mV4ryC6WHKcV5lU+jk
+        NaQnC7XcMk0xBeaXYyczpDqj2fgxvPSleYPHilcUqJL/8IUDe4y6w1l6QzBQzva/yi1ZcQ
+        lsjoUPEKUW7H0aOPQI8uyqsEzod3qkQ=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-48-oaFdpjrKOD6fPgR02xN1ZQ-1; Sat, 04 Apr 2020 07:52:51 -0400
+X-MC-Unique: oaFdpjrKOD6fPgR02xN1ZQ-1
+Received: by mail-wm1-f72.google.com with SMTP id a4so1365870wmb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 04:52:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=J7JWQaNHlZkGey2CYstynUU1J9hNrgdTpL9zcYilbqk=;
-        b=sLhRqWa+EXS7YZlA34Zjgk3dAqITRZXKCYxJG0WI8gkDHztQaH0uDRqUblUT+JQBMo
-         kn44FNUjGSvkMj07zUVDqAWTla6o3bjgg+diKEBCw1Xdx+4ifXV1c4rv3/fYvfRpLAll
-         5FFCXxGOcOTREezQKyRsBb7c6ILI0DkxInmvKRwKblFkGAGdYJG9At9jvjSVHL7nsYM8
-         cdjnxZIu7FHsLAAuVDQinoUGs1KpWVdxSGoL5VQ/t0EE/YyXZch1YsPQBq0FUJpJu9zB
-         GWIsQM60PWAHN/m1pz99C5+D+vKzl+Dpjnfpzls2l5Dnn9s8VLF+VvmmD79gkenjReQv
-         9t3g==
-X-Gm-Message-State: AGi0PuZuBNG9xiHNPCnGIuXdVti+gRtFCXDA77/6ZNuKQpZrjCzCkNcQ
-        4U9pl68RP3hRqrPsK/dfEcT0u4O3
-X-Google-Smtp-Source: APiQypJOBCdxMEJ3ncc/Kkyn7t6jJ/t0d4nR31OFtbx1bKw5Uw1QEC7QFaR1ybRs/cSapZBPKEkpqg==
-X-Received: by 2002:a7b:cbd6:: with SMTP id n22mr12504001wmi.29.1586001154733;
-        Sat, 04 Apr 2020 04:52:34 -0700 (PDT)
-Received: from debian.home (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id g186sm16183276wmg.36.2020.04.04.04.52.33
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 04 Apr 2020 04:52:34 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     lgirdwood@gmail.com
-Cc:     broonie@kernel.org, heiko@sntech.de, robh+dt@kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] dt-bindings: sound: rockchip-spdif: add power-domains property
-Date:   Sat,  4 Apr 2020 13:52:25 +0200
-Message-Id: <20200404115225.4314-3-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200404115225.4314-1-jbx6244@gmail.com>
-References: <20200404115225.4314-1-jbx6244@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=f64FR+wQwG4Rf+1Nwf9deQLAxinVjgUZ9huOaCrREcU=;
+        b=I0AkRZEQH3F4nniu5sZwnO6lfpi00w4LIxNTg43O5T8PgTaMxXOYUkBPc+ak936IZy
+         +clhU5X8fB6BPg2cXDwYuUe4DsLrRrDugWqXEVNtLPDrxJOTFe7+Sv6orSwPWsCWioiT
+         IliKhbT/sY8cRjgja6ZxtIbrcVm/ywNMEflgIgXF9yB2f+wywkCjAxvaSNHMKdVx6JFj
+         +Jrz4h/qoucnKM7DQVSfo5vDm2UoHpSxKR1ltyj3o0hyk10fMhh/ctt2L3wnSrimCQvO
+         Ul9oRdzaDKyujI0xpkK5gpH4CCAuy5gt28pfLs+OZXHnplGgWj58I0RHZjV3gndbVcfy
+         bb7g==
+X-Gm-Message-State: AGi0PuZD5kbnt+qi0DXnaQsfL307GyTJqa7b8e+2J+zWXXVamoawmgMB
+        PNd6wzs38SlWZY+MigQoHjeLGvpjX8vOJOxJxTDlauF1CizZsFv7s5yMpN+f2ieKWatr41pnb0q
+        GJChzylHpzma1XeXADXehyTT1
+X-Received: by 2002:a7b:cb59:: with SMTP id v25mr13986480wmj.13.1586001170108;
+        Sat, 04 Apr 2020 04:52:50 -0700 (PDT)
+X-Google-Smtp-Source: APiQypK0AZLIM+VFnAkYrCUNC87FZEsHxgjBLzBFl6igf0XOnAGiRT//XV5W7FDIbXfi3Leu5nrGlA==
+X-Received: by 2002:a7b:cb59:: with SMTP id v25mr13986456wmj.13.1586001169826;
+        Sat, 04 Apr 2020 04:52:49 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id z16sm346059wrg.66.2020.04.04.04.52.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Apr 2020 04:52:49 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] platform/x86: intel_int0002_vgpio: Use
+ acpi_register_wakeup_handler()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Len Brown <lenb@kernel.org>, Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "5 . 4+" <stable@vger.kernel.org>
+References: <20200403154834.303105-1-hdegoede@redhat.com>
+ <20200403154834.303105-2-hdegoede@redhat.com> <3798902.sSGyZ91sKY@kreacher>
+ <CAHp75VfThW1CrkneP5kEm_7KejQgS2dhDi0YyDrL4y3=uY9ZbA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f054f195-d5e7-8041-4995-8a52d2bd7674@redhat.com>
+Date:   Sat, 4 Apr 2020 13:52:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VfThW1CrkneP5kEm_7KejQgS2dhDi0YyDrL4y3=uY9ZbA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the old txt situation we add/describe only properties that are used
-by the driver/hardware itself. With yaml it also filters things in a
-node that are used by other drivers like 'power-domains' for rk3399,
-so add it to 'rockchip-spdif.yaml'.
+Hi,
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
-Changes v3:
-  Add reviewed by
----
- Documentation/devicetree/bindings/sound/rockchip-spdif.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+On 4/3/20 6:23 PM, Andy Shevchenko wrote:
+> On Fri, Apr 3, 2020 at 7:08 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>>
+>> On Friday, April 3, 2020 5:48:34 PM CEST Hans de Goede wrote:
+>>> The Power Management Events (PMEs) the INT0002 driver listens for get
+>>> signalled by the Power Management Controller (PMC) using the same IRQ
+>>> as used for the ACPI SCI.
+>>>
+>>> Since commit fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from
+>>> waking up the system") the SCI triggering, without there being a wakeup
+>>> cause recognized by the ACPI sleep code, will no longer wakeup the system.
+>>>
+>>> This breaks PMEs / wakeups signalled to the INT0002 driver, the system
+>>> never leaves the s2idle_loop() now.
+>>>
+>>> Use acpi_register_wakeup_handler() to register a function which checks
+>>> the GPE0a_STS register for a PME and trigger a wakeup when a PME has
+>>> been signalled.
+>>>
+>>> Fixes: fdde0ff8590b ("ACPI: PM: s2idle: Prevent spurious SCIs from waking up the system")
+>>> Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
+>>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>>
+>> Andy, any objections?
+> 
+> No,
+> Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> Hans, just today when testing some other stuff noticed this
+> 
+> [   49.279001] irq 9: nobody cared (try booting with the "irqpoll" option)
+> [   49.289176] CPU: 0 PID: 168 Comm: irq/123-ATML100 Not tainted
+> 5.6.0-next-20200403+ #212
+> [   49.300915] Hardware name: Intel Corporation CHERRYVIEW D0
+> PLATFORM/Braswell CRB, BIOS BRAS.X64.B082.R00.150727 0557 07/27/2015
+> [   49.316520] Call Trace:
+> [   49.322093]  <IRQ>
+> [   49.327193]  dump_stack+0x50/0x70
+> [   49.333744]  __report_bad_irq+0x30/0xa2
+> [   49.340858]  note_interrupt.cold+0xb/0x62
+> ...
+> [   49.685087] handlers:
+> [   49.690307] [<000000000ab3cf88>] acpi_irq
+> [   49.697463] [<00000000e5d78029>] int0002_irq [intel_int0002_vgpio]
+> [   49.707063] Disabling IRQ #9
+> 
+> Is this what your series fixes?
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-index f381dbbf5..c46715265 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-+++ b/Documentation/devicetree/bindings/sound/rockchip-spdif.yaml
-@@ -51,6 +51,9 @@ properties:
-   dma-names:
-     const: tx
- 
-+  power-domains:
-+    maxItems: 1
-+
-   rockchip,grf:
-     $ref: /schemas/types.yaml#/definitions/phandle
-     description:
--- 
-2.11.0
+I don't think that my series fixes this.
+
+My series fixes CHT devices no longer waking up from s2idle
+when woken by pressing a key on the USB attached keyboard dock
+of various 2-in-1s. Before we were relying on the ACPI code
+also waking up on IRQs which from the ACPI SCI handler pov where
+spurious. Rafael fixed the ACPI SCI handling during s2idle
+also waking the system on spurious events. My patch hooks
+the INT0002 driver into the ACPI SCI handling / wakeup checks
+during s2idle.
+
+I guess Rafael may have made some related changes elsewhere
+though where the SCI no longer returns IRQ_HANDLED in some cases?
+
+Rafael?
+
+Regards,
+
+Hans
+
+
+
+
+> 
+>>
+>>> ---
+>>> Changes in v3:
+>>> - Keep the pm_wakeup_hard_event() call
+>>>
+>>> Changes in v2:
+>>> - Adjust for the wakeup-handler registration function being renamed to
+>>>    acpi_register_wakeup_handler()
+>>> ---
+>>>   drivers/platform/x86/intel_int0002_vgpio.c | 10 ++++++++++
+>>>   1 file changed, 10 insertions(+)
+>>>
+>>> diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platform/x86/intel_int0002_vgpio.c
+>>> index f14e2c5f9da5..55f088f535e2 100644
+>>> --- a/drivers/platform/x86/intel_int0002_vgpio.c
+>>> +++ b/drivers/platform/x86/intel_int0002_vgpio.c
+>>> @@ -127,6 +127,14 @@ static irqreturn_t int0002_irq(int irq, void *data)
+>>>        return IRQ_HANDLED;
+>>>   }
+>>>
+>>> +static bool int0002_check_wake(void *data)
+>>> +{
+>>> +     u32 gpe_sts_reg;
+>>> +
+>>> +     gpe_sts_reg = inl(GPE0A_STS_PORT);
+>>> +     return (gpe_sts_reg & GPE0A_PME_B0_STS_BIT);
+>>> +}
+>>> +
+>>>   static struct irq_chip int0002_byt_irqchip = {
+>>>        .name                   = DRV_NAME,
+>>>        .irq_ack                = int0002_irq_ack,
+>>> @@ -220,6 +228,7 @@ static int int0002_probe(struct platform_device *pdev)
+>>>                return ret;
+>>>        }
+>>>
+>>> +     acpi_register_wakeup_handler(irq, int0002_check_wake, NULL);
+>>>        device_init_wakeup(dev, true);
+>>>        return 0;
+>>>   }
+>>> @@ -227,6 +236,7 @@ static int int0002_probe(struct platform_device *pdev)
+>>>   static int int0002_remove(struct platform_device *pdev)
+>>>   {
+>>>        device_init_wakeup(&pdev->dev, false);
+>>> +     acpi_unregister_wakeup_handler(int0002_check_wake, NULL);
+>>>        return 0;
+>>>   }
+>>>
+>>>
+>>
+>>
+>>
+>>
+> 
+> 
 
