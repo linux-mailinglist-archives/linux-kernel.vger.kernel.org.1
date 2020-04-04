@@ -2,118 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9A719E353
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B54819E358
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbgDDHbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 03:31:33 -0400
-Received: from mail-ua1-f65.google.com ([209.85.222.65]:34647 "EHLO
-        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgDDHba (ORCPT
+        id S1726077AbgDDHcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 03:32:55 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52507 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725876AbgDDHcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 03:31:30 -0400
-Received: by mail-ua1-f65.google.com with SMTP id d23so3629052uak.1
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SWwqrW8wDRdL2ZORfzu8aPleq1ZB6ziGfokJ1el3IDA=;
-        b=Gv0RgukIAw4tMQ0NBljFp0duysnq4ESc0TwQj02b36dtHZvHVp8ENeOZEKEBYSVs9Q
-         2YRLboMMHQYZGgxdrz5cdDCsh4d/Lhv7uys0SBarv2qVliWaIN5CXmThtYCA8+LikqsG
-         +bR3h16X38ZNMG4cYc8064MGEMKVhm+a61Mc86Wl/0YEkVAVXdkhVJE+vdQ6A3sx5kl7
-         xN7ls8tNoxVTwi70Jxmp0SkB44brOEi4DS5YJ8xxKoaq+gqnySdwMhwm5SV2zt/LIfis
-         lz9MZ82hJZ/Qw/J7idihkmc3P5jIlRoEmSvHq4/bBd+dcfLSYcbv+mC73xtT1hrw7Rx5
-         cRlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SWwqrW8wDRdL2ZORfzu8aPleq1ZB6ziGfokJ1el3IDA=;
-        b=iY1Ky4VDgvURaszT7gXnpz9Qsg05BI92QLpDyk5KVQZ3FDvsLBjMgBHuUOzRjHgv8S
-         ZKLyVyy/a3yuP+fK7l5H66D41u9DGxEqowCtTm7ccdNWokk/L7C83maT5zL6EJZ1oI5k
-         4sgIQ1TAwwZdSvXbZ9hxj43bV6o7YU84FhKAIH3YNv6SCoAqcXSjWfGN2U4P9/PP6xmh
-         DHUgc7XdemsQ4NHUgWv6gHOVxbIdj4pNtjcHMi3o3VXnWE39OLFCjaw+ww5bNPy4E+n5
-         j1VjmDaFxU0l+rybHvoJdkHMnWZWxnrpOAD/1ixZUZMUSy4Bcey30Djm9Urew/Es/eG8
-         wCgA==
-X-Gm-Message-State: AGi0PubeAXO+KGPZsBPqdo3/SNFWZCckd8Yd0p6SDAamO1O4Wnnpx+4i
-        PjUejRPkMzG05LMmv4GfiZpvwWMMjEFrB0NbjMYPxw==
-X-Google-Smtp-Source: APiQypJBEmoxvF/AD4e0Zuvxmkgw8pp1CSkNCmko8hiCECMNb8A9iqGZN6JDYpB3+M97a+O+oSOPrZiziMZPVcGvAp4=
-X-Received: by 2002:ab0:608b:: with SMTP id i11mr9120478ual.94.1585985488927;
- Sat, 04 Apr 2020 00:31:28 -0700 (PDT)
+        Sat, 4 Apr 2020 03:32:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585985573;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7YAMrGdQexN/Gg5886FbARfwLJ9MAuFJH3zQs6MAaA8=;
+        b=hB+XHkoZpSMQqnwJxo5xiURguDJNZFKr/gCVEBkuvnRfFkLuP4SKQdGTf9ni0P+Fl4tjtj
+        fa6EMGb8WxQX9DBY+dkuoTSpxrcnQEeEnq6cicvVjcHyIdetnJh4BelsY1P5jh+jQm5Gel
+        QOkgkcrGJqujlXgHBW+468Xo3udi2z0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-4IwZExKVPZ2oJBRvVtB9Vw-1; Sat, 04 Apr 2020 03:32:51 -0400
+X-MC-Unique: 4IwZExKVPZ2oJBRvVtB9Vw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D275D1005509;
+        Sat,  4 Apr 2020 07:32:50 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.192.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 31DD8114819;
+        Sat,  4 Apr 2020 07:32:43 +0000 (UTC)
+Date:   Sat, 4 Apr 2020 09:32:40 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Wainer dos Santos Moschetta <wainersm@redhat.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] selftests: kvm: Add mem_slot_test test
+Message-ID: <20200404073240.grcsylznemd3pmxz@kamzik.brq.redhat.com>
+References: <20200403172428.15574-1-wainersm@redhat.com>
+ <20200403172428.15574-3-wainersm@redhat.com>
 MIME-Version: 1.0
-References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-5-daniel.lezcano@linaro.org>
-In-Reply-To: <20200402142747.8307-5-daniel.lezcano@linaro.org>
-From:   Amit Kucheria <amit.kucheria@verdurent.com>
-Date:   Sat, 4 Apr 2020 13:00:00 +0530
-Message-ID: <CAHLCerMVSAtzBc2eRn5Mokyo4qnwX33ux9dFBuoJXzSQbNJL1A@mail.gmail.com>
-Subject: Re: [PATCH V2 5/9] thermal: Move get_tz_trend to the internal header
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403172428.15574-3-wainersm@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 7:58 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
->
-> The function is not used any place other than the thermal
-> directory. It does not make sense to export its definition in the
-> global header as there is no use of it.
->
-> Move the definition to the internal header and allow better
-> self-encapsulation.
->
-> Take the opportunity to add the parameter names to make checkpatch
-> happy and remove the pointless stubs.
->
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
-
+On Fri, Apr 03, 2020 at 02:24:28PM -0300, Wainer dos Santos Moschetta wrote:
+> This patch introduces the mem_slot_test test which checks
+> an VM can have added memory slots up to the limit defined in
+> KVM_CAP_NR_MEMSLOTS. Then attempt to add one more slot to
+> verify it fails as expected.
+> 
+> Signed-off-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
 > ---
->  drivers/thermal/thermal_core.h | 2 ++
->  include/linux/thermal.h        | 4 +---
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/thermal/thermal_core.h b/drivers/thermal/thermal_core.h
-> index d37de708c28a..5fb2bd9c7034 100644
-> --- a/drivers/thermal/thermal_core.h
-> +++ b/drivers/thermal/thermal_core.h
-> @@ -72,6 +72,8 @@ struct thermal_trip {
->         enum thermal_trip_type type;
->  };
->
-> +int get_tz_trend(struct thermal_zone_device *tz, int trip);
+>  tools/testing/selftests/kvm/.gitignore      |  1 +
+>  tools/testing/selftests/kvm/Makefile        |  3 +
+>  tools/testing/selftests/kvm/mem_slot_test.c | 85 +++++++++++++++++++++
+>  3 files changed, 89 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/mem_slot_test.c
+> 
+> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+> index 16877c3daabf..232f24d6931a 100644
+> --- a/tools/testing/selftests/kvm/.gitignore
+> +++ b/tools/testing/selftests/kvm/.gitignore
+> @@ -22,3 +22,4 @@
+>  /dirty_log_test
+>  /kvm_create_max_vcpus
+>  /steal_time
+> +/mem_slot_test
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 712a2ddd2a27..69b44178f48b 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -33,12 +33,14 @@ TEST_GEN_PROGS_x86_64 += demand_paging_test
+>  TEST_GEN_PROGS_x86_64 += dirty_log_test
+>  TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
+>  TEST_GEN_PROGS_x86_64 += steal_time
+> +TEST_GEN_PROGS_x86_64 += mem_slot_test
+>  
+>  TEST_GEN_PROGS_aarch64 += clear_dirty_log_test
+>  TEST_GEN_PROGS_aarch64 += demand_paging_test
+>  TEST_GEN_PROGS_aarch64 += dirty_log_test
+>  TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
+>  TEST_GEN_PROGS_aarch64 += steal_time
+> +TEST_GEN_PROGS_aarch64 += mem_slot_test
+>  
+
+kvm selftests has a bad case of OCD when it comes to lists of tests. In
+the .gitignore and the Makefile we keep our tests in alphabetical order.
+Maybe we should stop, because it's a bit annoying to maintain, but my
+personal OCD won't allow it to be on my watch. Please fix the above
+three lists.
+
+>  TEST_GEN_PROGS_s390x = s390x/memop
+>  TEST_GEN_PROGS_s390x += s390x/resets
+> @@ -46,6 +48,7 @@ TEST_GEN_PROGS_s390x += s390x/sync_regs_test
+>  TEST_GEN_PROGS_s390x += demand_paging_test
+>  TEST_GEN_PROGS_s390x += dirty_log_test
+>  TEST_GEN_PROGS_s390x += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_s390x += mem_slot_test
+>  
+>  TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(UNAME_M))
+>  LIBKVM += $(LIBKVM_$(UNAME_M))
+> diff --git a/tools/testing/selftests/kvm/mem_slot_test.c b/tools/testing/selftests/kvm/mem_slot_test.c
+> new file mode 100644
+> index 000000000000..eef6f506f41d
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/mem_slot_test.c
+> @@ -0,0 +1,85 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * mem_slot_test
+> + *
+> + * Copyright (C) 2020, Red Hat, Inc.
+> + *
+> + * Test suite for memory region operations.
+> + */
+> +#define _GNU_SOURCE /* for program_invocation_short_name */
+> +#include <linux/kvm.h>
+> +#include <sys/mman.h>
 > +
->  /*
->   * This structure is used to describe the behavior of
->   * a certain cooling device on a certain trip point
-> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-> index 7adbfe092281..8006ba5de855 100644
-> --- a/include/linux/thermal.h
-> +++ b/include/linux/thermal.h
-> @@ -414,7 +414,6 @@ int thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
->  int thermal_zone_get_slope(struct thermal_zone_device *tz);
->  int thermal_zone_get_offset(struct thermal_zone_device *tz);
->
-> -int get_tz_trend(struct thermal_zone_device *, int);
->  struct thermal_instance *get_thermal_instance(struct thermal_zone_device *,
->                 struct thermal_cooling_device *, int);
->  void thermal_cdev_update(struct thermal_cooling_device *);
-> @@ -473,8 +472,7 @@ static inline int thermal_zone_get_slope(
->  static inline int thermal_zone_get_offset(
->                 struct thermal_zone_device *tz)
->  { return -ENODEV; }
-> -static inline int get_tz_trend(struct thermal_zone_device *tz, int trip)
-> -{ return -ENODEV; }
+> +#include "test_util.h"
+> +#include "kvm_util.h"
 > +
->  static inline struct thermal_instance *
->  get_thermal_instance(struct thermal_zone_device *tz,
->         struct thermal_cooling_device *cdev, int trip)
-> --
-> 2.17.1
+> +/*
+> + * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
+> + * tentative to add further slots should fail.
+> + */
+> +static void test_add_max_slots(void)
+> +{
+> +	struct kvm_vm *vm;
+> +	uint32_t max_mem_slots;
+> +	uint32_t slot;
+> +	uint64_t mem_reg_npages;
+> +	uint64_t mem_reg_size;
+> +	uint32_t mem_reg_flags;
+> +	uint64_t guest_addr;
+> +	int ret;
+> +
+> +	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
+> +	TEST_ASSERT(max_mem_slots > 0,
+> +		    "KVM_CAP_NR_MEMSLOTS should be greater than 0");
+> +	pr_info("Allowed number of memory slots: %i\n", max_mem_slots);
+> +
+> +	vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> +
+> +	/*
+> +	 * Uses 1MB sized/aligned memory region since this is the minimal
+> +	 * required on s390x.
+> +	 */
+> +	mem_reg_size = 0x100000;
+> +	mem_reg_npages = vm_calc_num_guest_pages(VM_MODE_DEFAULT, mem_reg_size);
+> +
+> +	mem_reg_flags = kvm_check_cap(KVM_CAP_READONLY_MEM) ? KVM_MEM_READONLY :
+> +		KVM_MEM_LOG_DIRTY_PAGES;
+
+I still don't see why we're setting a flag at all, and now we're setting
+different flags depending on what's available, so the test isn't the
+same for every environment. I would just have mem->flags = 0 for this
+test.
+
+> +
+> +	guest_addr = 0x0;
+> +
+> +	/* Check it can be added memory slots up to the maximum allowed */
+> +	pr_info("Adding slots 0..%i, each memory region with %ldK size\n",
+> +		(max_mem_slots - 1), mem_reg_size >> 10);
+> +	for (slot = 0; slot < max_mem_slots; slot++) {
+> +		vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+> +					    guest_addr, slot, mem_reg_npages,
+> +					    mem_reg_flags);
+> +		guest_addr += mem_reg_size;
+> +	}
+> +
+> +	/* Check it cannot be added memory slots beyond the limit */
+> +	void *mem = mmap(NULL, mem_reg_size, PROT_READ | PROT_WRITE,
+> +			 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	TEST_ASSERT(mem != NULL, "Failed to mmap() host");
+
+This should be testing mem != MAP_FAILED
+
+> +
+> +	struct kvm_userspace_memory_region kvm_region = {
+> +		.slot = slot,
+> +		.flags = mem_reg_flags,
+> +		.guest_phys_addr = guest_addr,
+> +		.memory_size = mem_reg_size,
+> +		.userspace_addr = (uint64_t) mem,
+> +	};
+
+Declaring kvm_region in the middle of the block. I don't really care
+myself, but it's inconsistent with all the other variables which are
+declared at the top.
+
+> +
+> +	ret = ioctl(vm_get_fd(vm), KVM_SET_USER_MEMORY_REGION, &kvm_region);
+> +	TEST_ASSERT(ret == -1, "Adding one more memory slot should fail");
+> +	TEST_ASSERT(errno == EINVAL, "Should return EINVAL errno");
+
+Please make the second assert message more specific. Or better would be
+to combine the asserts
+
+  TEST_ASSERT(ret == -1 && errno == EINVAL, "Adding one more memory slot should fail with EINVAL");
+
+> +
+> +	munmap(mem, mem_reg_size);
+> +	kvm_vm_free(vm);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	test_add_max_slots();
+> +	return 0;
+> +}
+> -- 
+> 2.17.2
 >
+
+Thanks,
+drew
+
