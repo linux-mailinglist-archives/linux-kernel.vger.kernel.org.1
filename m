@@ -2,96 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CEF19E69B
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52ED19E6A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbgDDRNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 13:13:02 -0400
-Received: from sonic311-14.consmr.mail.bf2.yahoo.com ([74.6.131.124]:40036
-        "EHLO sonic311-14.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726222AbgDDRNB (ORCPT
+        id S1726312AbgDDRRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 13:17:04 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:33432 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726057AbgDDRRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 13:13:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1586020380; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=SJXnHSYu2yZOWYqnAIpMDUX4J9ljmFVijx5fyP3yW87lseGsQSAZW+jBCshl5mdJ5aqGyGAQQ8hIrXr6xswHYtrslKDdr22VfirduJV6UOKVfQXvTl3QunPW0nhrMPKi+fiD8njvx3pHpQINMOxjM64YNs2zyFVmGzVx9cwDejZPQW9IcTDeI/E4OZwNHdlOCvfqW/5+OrlXpks7DwYOcyzntGIgRA7dZN9SJJUiQzH/pkhQ3F/H4X8OYiUhjOR07X3lIlGXUkHVYcadgnhYRu1ug6JFoRSck5pl8JSIyBU6fuRTXyU5W9wKRTFHzxrN4XISIE70kdPIp4iDjvh3gw==
-X-YMail-OSG: hRfC0MIVM1kYJguK_SDfGijlTBzNDQ9Sabf3zf_nedhodi8JsLif4fZsebqIulI
- lF05oXetWYMfNNHD5BrjeBy8CqwJa518aA7.6RUCF5cEwhQXlKFtQWBCYgyGupAZPkg.QrRRbGdC
- KVhUADVgjkqe582PdYuAGb1PAWewCDfdWsQWgQXF3mHrzNHP88c.yCoULYr5FOnHDQ8_nCniuPLI
- SnE2mdEI_PRibRvljM.u2N10_3TBNbtoEmlt5ClnrK1ooCVjUDi66zod_VmjWzB8E3TeVO2sbdZU
- yHPQ9MOJuaPGaTaySvyzW69sbdkt7JIsZqav32FOkKvHuqWWzIv6Lg.Om.icJTRCUE.LcNZLVYyU
- 8.NusUzWBoVhqXsVPAkfUjiqJuLd4DLvoJ4yF1XXzKIl2J03A2Dp0NojT0.bnVWSXQZadfmvNdUo
- xP1BUQzxspfoVk8HW0GO5AJkG49xFgL6sAPIIxQ_olrNj9ZSKKDImwXO9ZJCk2xGgnqNN.FQZ8Xy
- gkW.dEbb1880vZtVD3g4dYoJRwS21Gk3zDH_OIsCWaxkB9XenrfpfE4p69eBvIz981kksOk2KQ0b
- aAJmbjT1GQmcY5XY5gdru8VYpH8wdgQidEJjZ65auTpewlG..RWgpNB6IG2LcW5cvvh98w06nSRm
- E2ijytmKKY3ke5kFez_i8A0lo.gqMpsfweYf_yYO6tlxNK2Tas1esTMBlZ8dJGQ1pxzBsoXcVi4B
- 3tPD5b_udLBuTKLdoIF2AVKZ3ozFxzVk7BsNgYVD8DN3liZ6RoUHn1GPwuJSdHbx0v71reczpoW.
- puatUOe.3i3XEWRhI08ji3mXd37U1HoBXVz7N..wEpm8T6VfCII20w4mJDTt7ToSORqtZcqZB2BQ
- Bp.OoV7WpJFe.ZxZgQapZ4poOj5wYHD9DG3.2ok2VDKygyO.MiVhMZSnMlcwkjWGxlId7pxnnkj4
- HL4HMwWvRmG_5t5Xarr2T7cey7YDO8YveMaJ458_c1nibri9jfqqQI9TCCnYLffLIm1qKStUo89r
- NMWuaTGGJV2Ua6ZeZf8rMA4RBEg2oprnfCRXix2aii_FHu5waLqUPAXha2oTKEQaFvFIjPIPCyCW
- tDRRE7GWUYva4bT.6o6uMqp6dh1S_EQQy82KixNUuqgfO0gaFIBdTE0LWRJ9.Qh2qMFk3QgRgiiv
- n0lhF.D9pKoMeT1jnhUEd09R1xKBsH1T3kjyFDpT0JZz.sd0VKDXwOuhBkqBxkGja_Rukw3FNl91
- tXhZ5UtwMpe_RPz0ssb2sNdxhz1RDQcj1O6A4V3S6tWUZX52JYiqfSXZpf77Jpj.MPVMVx8xfweg
- ca0UH
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.bf2.yahoo.com with HTTP; Sat, 4 Apr 2020 17:13:00 +0000
-Date:   Sat, 4 Apr 2020 17:12:57 +0000 (UTC)
-From:   "Mrs. Mina A. Brunel" <mrs.mainaabrunel126@gmail.com>
-Reply-To: mrs.minaabrunel30@gmail.com
-Message-ID: <655584886.332579.1586020377266@mail.yahoo.com>
-Subject: My Dear in the lord
+        Sat, 4 Apr 2020 13:17:04 -0400
+Received: by mail-io1-f67.google.com with SMTP id o127so11130301iof.0;
+        Sat, 04 Apr 2020 10:17:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LbvmpO8/bPCuPHRYyiVH18tDMFLwI93Ii9fpZRHXa24=;
+        b=ReT+lp7J0yRDoeB5Fc6+sosj5kigItmmvilMvz/otfDzISJVpLNTytcv2xQVns1um8
+         3OWe5v+1HXVA7suEN8Pt/UCNgoxfLQ8eqveDQxV+Pc8K1LWPdHIntL4LIcAYRwSxp8fN
+         X1ZcyD98IkD4PSqMI3b60AK/aaG7zkBcTxoRRiAJgU+YZKqFR24AVFkOm77J2/T3fbek
+         v3N9aW6ldrKBgzFXHWDDG1VGphjTZ2fgIK0RYWyHIwrfAmZa5fMeuuU8dLuTPGKPjaHo
+         m/104JG5JURV25h0EP6m9LwjaW1HRouXVfXh0wn+9E84cqgeFMBU++tWoJdmIg6iVhzf
+         hOtQ==
+X-Gm-Message-State: AGi0PuY7JtHmIFh25HRkVi0mogmgFvt46kw0ICaYwA7iGb6KhRY63uDf
+        gK9NehIyEK8FH5AwmROqxQ==
+X-Google-Smtp-Source: APiQypLFu5Hc0JAC3bpktegAn7G91KQCfoP4OvP8MY4BArxOHkzgelADg0pN6T66oqTT+a47UjxOEg==
+X-Received: by 2002:a5d:894a:: with SMTP id b10mr12955179iot.38.1586020622686;
+        Sat, 04 Apr 2020 10:17:02 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id v11sm4005446ilk.68.2020.04.04.10.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Apr 2020 10:17:01 -0700 (PDT)
+Received: (nullmailer pid 22176 invoked by uid 1000);
+        Sat, 04 Apr 2020 17:17:00 -0000
+Date:   Sat, 4 Apr 2020 11:17:00 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>
+Subject: Re: [PATCH v5 1/2] dt-bindings: usb: qcom,dwc3: Convert USB DWC3
+ bindings
+Message-ID: <20200404171700.GA10096@bogus>
+References: <1585206368-685-1-git-send-email-sanm@codeaurora.org>
+ <1585206368-685-2-git-send-email-sanm@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <655584886.332579.1586020377266.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15620 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:74.0) Gecko/20100101 Firefox/74.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1585206368-685-2-git-send-email-sanm@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Mar 26, 2020 at 12:36:07PM +0530, Sandeep Maheswaram wrote:
+> Convert USB DWC3 bindings to DT schema format using json-schema.
+> 
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+> ---
+>  .../devicetree/bindings/usb/qcom,dwc3.txt          | 104 --------------
+>  .../devicetree/bindings/usb/qcom,dwc3.yaml         | 158 +++++++++++++++++++++
+>  2 files changed, 158 insertions(+), 104 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/qcom,dwc3.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
 
 
-My Dear in the lord
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> new file mode 100644
+> index 0000000..0f69475
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -0,0 +1,158 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm SuperSpeed DWC3 USB SoC controller
+> +
+> +maintainers:
+> +  - Manu Gautam <mgautam@codeaurora.org>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,msm8996-dwc3
+> +          - qcom,msm8998-dwc3
+> +          - qcom,sdm845-dwc3
+> +      - const: qcom,dwc3
+> +
+> +  reg:
+> +    description: Offset and length of register set for QSCRATCH wrapper
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    enum: [ 1, 2 ]
+> +
+> +  "#size-cells":
+> +    enum: [ 1, 2 ]
+> +
+> +  power-domains:
+> +    description: specifies a phandle to PM domain provider node
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    description:
+> +      A list of phandle and clock-specifier pairs for the clocks
+> +      listed in clock-names.
+> +    items:
+> +      - description: System Config NOC clock.
+> +      - description: Master/Core clock, has to be >= 125 MHz
+> +          for SS operation and >= 60MHz for HS operation.
+> +      - description: System bus AXI clock.
+> +      - description: Mock utmi clock needed for ITP/SOF generation
+> +          in host mode. Its frequency should be 19.2MHz.
+> +      - description: Sleep clock, used for wakeup when
+> +          USB3 core goes into low power mode (U3).
+> +
+> +  clock-names:
+> +    items:
+> +      - const: cfg_noc
+> +      - const: core
+> +      - const: iface
+> +      - const: mock_utmi
+> +      - const: sleep
+> +
+> +  assigned-clocks:
+> +    items:
+> +      - description: Phandle and clock specifier of MOCK_UTMI_CLK.
+> +      - description: Phandle and clock specifoer of MASTER_CLK.
+> +
+> +  assigned-clock-rates:
+> +    maxItems: 2
 
+Need to drop this as it is redundant. Soon this will generate an error.
 
-My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
-na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
-gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
-February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
-llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
-e capital city of Italy in Southern Europe. The money was from the sale of =
-his company and death benefits payment and entitlements of my deceased husb=
-and by his company.
+> +    items:
+> +      - description: Must be 19.2MHz (19200000).
 
-I am sending you this message with heavy tears in my eyes and great sorrow =
-in my heart, and also praying that it will reach you in good health because=
- I am not in good health, I sleep every night without knowing if I may be a=
-live to see the next day. I am suffering from long time cancer and presentl=
-y I am partially suffering from Leprosy, which has become difficult for me =
-to move around. I was married to my late husband for more than 6 years with=
-out having a child and my doctor confided that I have less chance to live, =
-having to know when the cup of death will come, I decided to contact you to=
- claim the fund since I don't have any relation I grew up from an orphanage=
- home.
+Sounds like a constraint:
 
-I have decided to donate this money for the support of helping Motherless b=
-abies/Less privileged/Widows and churches also to build the house of God be=
-cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
-cided to donate from what I have inherited from my late husband to you for =
-the good work of Almighty God; I will be going in for an operation surgery =
-soon.
+- const: 19200000
 
-Now I want you to stand as my next of kin to claim the funds for charity pu=
-rposes. Because of this money remains unclaimed after my death, the bank ex=
-ecutives or the government will take the money as unclaimed fund and maybe =
-use it for selfishness and worthless ventures, I need a very honest person =
-who can claim this money and use it for Charity works, for orphanages, wido=
-ws and also build schools and churches for less privilege that will be name=
-d after my late husband and my name.
+> +      - description: Must be >= 60 MHz in HS mode, >= 125 MHz in SS mode.
 
-I need your urgent answer to know if you will be able to execute this proje=
-ct, and I will give you more information on how the fund will be transferre=
-d to your bank account or online banking.
+- minimum: 60000000
+  maximum: ?
 
-Thanks
-Mrs. Mina A. Brunel
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    items:
+> +      - description: The interrupt that is asserted
+> +          when a wakeup event is received on USB2 bus.
+> +      - description: The interrupt that is asserted
+> +          when a wakeup event is received on USB3 bus.
+> +      - description: Wakeup event on DM line.
+> +      - description: Wakeup event on DP line.
+> +
+> +  interrupt-names:
+> +    items:
+> +      - const: hs_phy_irq
+> +      - const: ss_phy_irq
+> +      - const: dm_hs_phy_irq
+> +      - const: dp_hs_phy_irq
+> +
+> +  qcom,select-utmi-as-pipe-clk:
+> +    description:
+> +      If present, disable USB3 pipe_clk requirement.
+> +      Used when dwc3 operates without SSPHY and only
+> +      HS/FS/LS modes are supported.
+> +    type: boolean
+> +
+> +# Required child node:
+> +
+> +patternProperties:
+> +  "^dwc3@[0-9a-f]+$":
+> +    type: object
+> +    description:
+> +      A child node must exist to represent the core DWC3 IP block
+> +      The content of the node is defined in dwc3.txt.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - power-domains
+> +  - clocks
+> +  - clock-names
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-sdm845.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    usb@a6f8800 {
+> +        compatible = "qcom,sdm845-dwc3", "qcom,dwc3";
+> +        reg = <0 0x0a6f8800 0 0x400>;
+> +
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        clocks = <&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
+> +                 <&gcc GCC_USB30_PRIM_MASTER_CLK>,
+> +                 <&gcc GCC_AGGRE_USB3_PRIM_AXI_CLK>,
+> +                 <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+> +                 <&gcc GCC_USB30_PRIM_SLEEP_CLK>;
+> +        clock-names = "cfg_noc", "core", "iface", "mock_utmi",
+> +                      "sleep";
+> +
+> +        assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
+> +                          <&gcc GCC_USB30_PRIM_MASTER_CLK>;
+> +        assigned-clock-rates = <19200000>, <150000000>;
+> +
+> +        interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 486 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 488 IRQ_TYPE_LEVEL_HIGH>,
+> +                     <GIC_SPI 489 IRQ_TYPE_LEVEL_HIGH>;
+> +        interrupt-names = "hs_phy_irq", "ss_phy_irq",
+> +                          "dm_hs_phy_irq", "dp_hs_phy_irq";
+> +
+> +        power-domains = <&gcc USB30_PRIM_GDSC>;
+> +
+> +        resets = <&gcc GCC_USB30_PRIM_BCR>;
+> +
+> +        dwc3@a600000 {
+> +            compatible = "snps,dwc3";
+> +            reg = <0 0x0a600000 0 0xcd00>;
+
+You need 'ranges' in the parent for this address to be translatable.
+
+> +            interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+> +            iommus = <&apps_smmu 0x740 0>;
+> +            snps,dis_u2_susphy_quirk;
+> +            snps,dis_enblslpm_quirk;
+> +            phys = <&usb_1_hsphy>, <&usb_1_ssphy>;
+> +            phy-names = "usb2-phy", "usb3-phy";
+> +        };
+> +    };
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
