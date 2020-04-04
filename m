@@ -2,259 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3538A19E509
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 14:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF3619E511
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 15:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726312AbgDDMvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 08:51:10 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:52089 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgDDMvJ (ORCPT
+        id S1726364AbgDDNBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 09:01:46 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:33863 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726148AbgDDNBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 08:51:09 -0400
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id A7EF124000A;
-        Sat,  4 Apr 2020 12:51:06 +0000 (UTC)
-Date:   Sat, 4 Apr 2020 14:51:06 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] RTC for 5.7
-Message-ID: <20200404125106.GA12183@piout.net>
+        Sat, 4 Apr 2020 09:01:46 -0400
+Received: by mail-pl1-f196.google.com with SMTP id a23so3953602plm.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 06:01:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QbmGGp28iLBGx2kdu0b3vnWpbi+iqdsV4klADyRej2U=;
+        b=lpvEqVHbWsSI/vC2WOlhE5B7pZ591FruvYm+Oo4rRXNnPNDDJGl7teLltiQT5nn7A9
+         utndRD33FUc866UH7L4t/z1o3kbnnGYnk+AI2YxgQj7KZTpP9BAtHiD+J+yLf1GDowAL
+         9olyw1DeYPBjXWFJ08IPBU9/GGpL1lXJwJE6lioc1H7pFrdEzgK8WJxE2++ab4qj5yFt
+         JYjw56zlSnHnbd3WW3BwFp5YWxcXb4whiJv8gFGGwoRiZUaH5uX/az0Naw4sBwNgWIcr
+         hu2PH9mBENUleRxtkEjmaE66/XnOOheSx0c9DC1oqqSN0vgAf5zc34uGBd4wDniEngmZ
+         F4Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QbmGGp28iLBGx2kdu0b3vnWpbi+iqdsV4klADyRej2U=;
+        b=SFTru5tf8FusPCN78vMgbD2q75VtyG9OmcSvHHZtkne/uS2SL8Ypec5Q9b4sw53s7b
+         oQTIjC/LragmLndsVM+yyVJOvOtkHSq+gbFcp7Oe19l2ux4vg4wQsIa1FCBkbu7q4FbT
+         12slMQXDHsLSKzuB2YnPiqPBUOG8FUqf2wTJfvLjmWPV7v+s75sQvXUVJl0jAr2x86ZS
+         FeFCu4l6dg3yV44EVpj8Tg/t/bKe/Ujs2vSKYVIk1t3iVeOEdDnT7D+kW+z6LL4XkLRM
+         hONS4j2ITBEV3DdpdRuMa9L6h5dx27vcsd4zmIuaXoMZypuegBFTsU8zvHDZcsvKvBJE
+         4toQ==
+X-Gm-Message-State: AGi0PuZGoav3WPnhT1fnyOO5P+NqzLDCmRiKmn8nBPNtiYZ6VUWb3e//
+        ALqD8sHj7g++cZM5mfaAx8ez9yZMO50=
+X-Google-Smtp-Source: APiQypJBHHjo3d1FCB1Q3yDGSYQrsi6rcyZpuKwsY/nCpSkBxVSk5JCT19Ua2PZ59lsTY8tBA19OLA==
+X-Received: by 2002:a17:90b:4c0e:: with SMTP id na14mr15870273pjb.73.1586005304747;
+        Sat, 04 Apr 2020 06:01:44 -0700 (PDT)
+Received: from guoguo-omen.lan ([240e:379:951:6837:3b06:87cd:9fe1:1cd2])
+        by smtp.gmail.com with ESMTPSA id b133sm7824814pfb.180.2020.04.04.05.59.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Apr 2020 06:01:44 -0700 (PDT)
+From:   Chuanhong Guo <gch981213@gmail.com>
+To:     linux-mtd@lists.infradead.org
+Cc:     Robert Marko <robimarko@gmail.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] Revert "mtd: spi-nor: Add 4B_OPCODES flag to w25q256"
+Date:   Sat,  4 Apr 2020 20:58:40 +0800
+Message-Id: <20200404125845.1381080-1-gch981213@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+This reverts commit 10050a02f7d508fa88f70fcfceefbacd13488ca7.
 
-Here is the pull-request for the RTC subsystem for 5.7.
+Winbond W25Q256FV and W25Q256JV both uses 0xef4019 as JEDEC ID,
+but only the latter has proper 4B_OPCODES support.
+W25Q256FV has all 4B read instructions but it lacks a 4B page program
+instruction, causing the entire flash to be read-only.
+Disable 4B_OPCODES for W25Q256 completely.
+Users can use broken-flash-reset as a temporary workaround.
 
-More cleanup this cycle, with the final goal of removing the
-rtc_time_to_tm and rtc_tm_to_time wrappers. All the drivers that have 
-been modified for this now are ready for the end of times (whether it 
-happens in 2033, 2038, 2106, 2127 or even 4052). There is also a single
-new driver and the usual fixes and features.
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+---
+"line over 80 characters" warning produced by checkpatch.pl isn't
+fixed because I think a revert commit should bring a file back to
+what it was before.
+I don't have a w25q256jv available and can't compare SFDP table
+to create a fix similar to mx25l25635 one.
 
-The following changes since commit bb6d3fb354c5ee8d6bde2d576eb7220ea09862b9:
+ drivers/mtd/spi-nor/winbond.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-  Linux 5.6-rc1 (2020-02-09 16:08:48 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git tags/rtc-5.7
-
-for you to fetch changes up to 1821b79d6a7d6973d1630e71380da8bb5e95f3a5:
-
-  rtc: ds1307: check for failed memory allocation on wdt (2020-04-03 13:38:24 +0200)
-
-----------------------------------------------------------------
-RTC for 5.7
-
-Subsystem:
- - The rtc_time_to_tm and rtc_tm_to_time wrappers have finally been removed and
-   only the 64bit version remain.
- - hctosys now works with drivers compiled as modules
-
-New driver:
- - MediaTek MT2712 SoC based RTC
-
-Drivers:
- - set range for 88pm860x, au1xxx, cpcap, da9052, davinci, ds1305, ds1374,
-   mcp5121, pl030, pl031, pm8xxx, puv3, sa1100, sirfsoc, starfire, sun6i
- - ds1307: DS1388 oscillator failure detection and watchdog support
- - jz4740: JZ4760 support
- - pcf85063: clock out pin support
- - sun6i: external 32k oscillator is now optional, the range is now handled by
-   the core, providing a solution for 2034.
-
-----------------------------------------------------------------
-Alexandre Belloni (57):
-      rtc: sirfsoc: convert to devm_rtc_allocate_device
-      rtc: sirfsoc: set range
-      rtc: sirfsoc: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: davinci: convert to devm_rtc_allocate_device
-      rtc: davinci: remove useless 24h alarm handling
-      rtc: davinci: let the core handle rtc range
-      rtc: davinci: remove useless error handling
-      rtc: pl030: set range
-      rtc: pl030: remove useless invalid alarm handling
-      rtc: pl030: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: starfire: set range
-      rtc: starfire: switch to rtc_time64_to_tm
-      rtc: au1xxx: convert to devm_rtc_allocate_device
-      rtc: au1xxx: remove goto label
-      rtc: au1xxx: set range
-      rtc: au1xxx: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: sa1100: fix possible race condition
-      rtc: sa1100: set range
-      rtc: sa1100: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: cpcap: convert to devm_rtc_allocate_device
-      rtc: cpcap: set range
-      rtc: cpcap: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: ds1374: fix possible race condition
-      rtc: ds1374: set range
-      rtc: ds1374: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: ds1305: set range
-      rtc: ds1305: switch to rtc_tm_to_time64
-      rtc: pm8xxx: convert to devm_rtc_allocate_device
-      rtc: pm8xxx: set range
-      rtc: pm8xxx: : switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: pm8xxx: stop validating valid alarm time
-      rtc: mpc5121: simplify probe
-      rtc: mpc5121: convert to devm_rtc_allocate_device
-      rtc: mpc5121: set range
-      rtc: mpc5121: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: fsl-ftm-alarm: allow COMPILE_TEST
-      rtc: pl031: remove useless invalid alarm handling
-      rtc: pl031: set range
-      rtc: pl031: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: ab8500: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: puv3: set range
-      rtc: puv3: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: 88pm860x: fix possible race condition
-      rtc: 88pm860x: stop setting a default time
-      rtc: 88pm860x: stop calling unused callback
-      rtc: 88pm860x: set range
-      rtc: 88pm860x: stop mangling alarm time
-      rtc: 88pm860x: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: 88pm860x: remove platform data support
-      rtc: mt2712: fix build without PM_SLEEP
-      rtc: class: avoid unnecessary lookup in hctosys
-      rtc: da9052: convert to devm_rtc_allocate_device
-      rtc: da9052: set range
-      rtc: da9052: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: sun6i: switch to rtc_time64_to_tm/rtc_tm_to_time64
-      rtc: sun6i: let the core handle rtc range
-      rtc: remove rtc_time_to_tm and rtc_tm_to_time
-
-Anson Huang (4):
-      rtc: snvs: Remove unused include of of_device.h
-      rtc: snvs: Improve Kconfig dependency
-      rtc: snvs: Use devm_add_action_or_reset() for calls to clk_disable_unprepare()
-      rtc: mxc: Use devm_add_action_or_reset() for calls to clk_disable_unprepare()
-
-Biwen Li (1):
-      rtc: fsl-ftm-alarm: report alarm to core
-
-Chris Packham (2):
-      rtc: ds1307: handle oscillator failure flags for ds1388 variant
-      rtc: ds1307: add support for watchdog timer on ds1388
-
-Colin Ian King (2):
-      rtc: class: remove redundant assignment to variable err
-      rtc: ds1307: check for failed memory allocation on wdt
-
-Corentin Labbe (1):
-      rtc: max8907: add missing select REGMAP_IRQ
-
-Eugene Syromiatnikov (1):
-      rtc: make definitions in include/uapi/linux/rtc.h actually useful for user space
-
-Geert Uytterhoeven (1):
-      rtc: sh: Restore devm_ioremap() alignment
-
-Jernej Skrabec (1):
-      rtc: sun6i: Make external 32k oscillator optional
-
-Keyur Patel (1):
-      rtc: bd70528: Avoid double error messaging when IRQ absent
-
-Leonard Crestez (1):
-      rtc: imx-sc: Align imx sc msg structs to 4
-
-Michael McCormick (1):
-      rtc: pcf85063: Add pcf85063 clkout control to common clock framework
-
-Paul Cercueil (3):
-      rtc: jz4740: Add support for JZ4760 SoC
-      rtc: jz4740: Rename vendor-specific DT properties
-      dt-bindings: rtc: Convert and update jz4740-rtc doc to YAML
-
-Peng Ma (1):
-      rtc: fsl-ftm-alarm: enable acpi support
-
-Ran Bi (3):
-      dt-bindings: rtc: add bindings for MT2712 RTC
-      rtc: add support for the MediaTek MT2712 RTC
-      MAINTAINERS: add MT2712 RTC files
-
-Srinivas Neeli (1):
-      rtc: zynqmp: Clear alarm interrupt status before interrupt enable
-
-Steve Muckle (1):
-      rtc: class: support hctosys from modular RTC drivers
-
-Thomas Bogendoerfer (1):
-      rtc: m48t35: remove SGI-IP27 kludge
-
-Uwe Kleine-König (1):
-      rtc: omap: drop unused dt-bindings header
-
-Ville Syrjälä (1):
-      rtc: cmos: Use spin_lock_irqsave() in cmos_interrupt()
-
-suguosong (1):
-      rtc: sysfs: use kobj_to_dev
-
-韩科才 (1):
-      rtc: pm8xxx: clear alarm register when alarm is not enabled
-
- .../devicetree/bindings/rtc/ingenic,jz4740-rtc.txt |  37 --
- .../devicetree/bindings/rtc/ingenic,rtc.yaml       |  83 ++++
- .../devicetree/bindings/rtc/rtc-mt2712.txt         |  14 +
- MAINTAINERS                                        |   2 +
- drivers/rtc/Kconfig                                |  18 +-
- drivers/rtc/Makefile                               |   2 +-
- drivers/rtc/class.c                                |  49 +++
- drivers/rtc/hctosys.c                              |  69 ----
- drivers/rtc/rtc-88pm860x.c                         | 104 +----
- drivers/rtc/rtc-ab8500.c                           |  10 +-
- drivers/rtc/rtc-au1xxx.c                           |  29 +-
- drivers/rtc/rtc-bd70528.c                          |   4 +-
- drivers/rtc/rtc-cmos.c                             |   5 +-
- drivers/rtc/rtc-cpcap.c                            |  13 +-
- drivers/rtc/rtc-da9052.c                           |  18 +-
- drivers/rtc/rtc-davinci.c                          |  58 +--
- drivers/rtc/rtc-ds1305.c                           |  10 +-
- drivers/rtc/rtc-ds1307.c                           | 126 ++++++
- drivers/rtc/rtc-ds1374.c                           |  27 +-
- drivers/rtc/rtc-fsl-ftm-alarm.c                    |  23 +-
- drivers/rtc/rtc-imx-sc.c                           |   2 +-
- drivers/rtc/rtc-jz4740.c                           |   9 +-
- drivers/rtc/rtc-m48t35.c                           |   7 +-
- drivers/rtc/rtc-mpc5121.c                          |  61 +--
- drivers/rtc/rtc-mt2712.c                           | 423 +++++++++++++++++++++
- drivers/rtc/rtc-mxc.c                              |  46 +--
- drivers/rtc/rtc-omap.c                             |   1 -
- drivers/rtc/rtc-pcf85063.c                         | 157 ++++++++
- drivers/rtc/rtc-pl030.c                            |  27 +-
- drivers/rtc/rtc-pl031.c                            |  53 +--
- drivers/rtc/rtc-pm8xxx.c                           |  40 +-
- drivers/rtc/rtc-puv3.c                             |  14 +-
- drivers/rtc/rtc-sa1100.c                           |  40 +-
- drivers/rtc/rtc-sh.c                               |   3 +-
- drivers/rtc/rtc-sirfsoc.c                          |  44 +--
- drivers/rtc/rtc-snvs.c                             |  28 +-
- drivers/rtc/rtc-starfire.c                         |  10 +-
- drivers/rtc/rtc-sun6i.c                            |  47 +--
- drivers/rtc/rtc-zynqmp.c                           |  27 +-
- drivers/rtc/sysfs.c                                |   2 +-
- include/linux/rtc.h                                |  12 -
- include/uapi/linux/rtc.h                           |  11 +-
- 42 files changed, 1192 insertions(+), 573 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rtc/ingenic,jz4740-rtc.txt
- create mode 100644 Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml
- create mode 100644 Documentation/devicetree/bindings/rtc/rtc-mt2712.txt
- delete mode 100644 drivers/rtc/hctosys.c
- create mode 100644 drivers/rtc/rtc-mt2712.c
-
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 17deabad57e1..9673ec7fa003 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -52,9 +52,7 @@ static const struct flash_info winbond_parts[] = {
+ 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
+ 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
+-	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512,
+-			  SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+-			  SPI_NOR_4B_OPCODES) },
++	{ "w25q256", INFO(0xef4019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "w25q256jvm", INFO(0xef7019, 0, 64 * 1024, 512,
+ 			     SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "w25q256jw", INFO(0xef6019, 0, 64 * 1024, 512,
 -- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.25.1
+
