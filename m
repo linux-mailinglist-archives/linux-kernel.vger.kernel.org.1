@@ -2,122 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B5B19E6A7
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E40C19E6AE
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 19:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgDDRSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 13:18:36 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:34420 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726057AbgDDRSg (ORCPT
+        id S1726407AbgDDRUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 13:20:53 -0400
+Received: from mail-il1-f194.google.com ([209.85.166.194]:35202 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726066AbgDDRUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 13:18:36 -0400
-Received: by mail-lj1-f193.google.com with SMTP id p10so10275842ljn.1;
-        Sat, 04 Apr 2020 10:18:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+uhxRGX6MPG3FC6JHWtiYmK6qLmp1QIoL6oQZjfRONY=;
-        b=nd+WcLU8Nkb3NCybgzvxt5VvOktuAe/AqLpVnjLRMi1zhdqSwGot8V+Wntg2eoytm4
-         UYw+VXJ6se7MqMNVECQGMqZyn4Dtfg3FBpju68UAzafwtNqJPASMLh6NoNAtnHDIx5Dc
-         LisWSh2BUCh+q/qdErQZdpILL+qDYCibSb/ZaELWTwkDGSd104JClCdzlImF5lgGwYbM
-         VY90nOWQj9th3yD97HjIp8kcx3AJhJeLugb1FGGnZVzu1JL+PkTEBQuwy0h16ejB5tp0
-         UnTFokM4kcyiZJHcez78Qda6TEUOKgGvuRjpUbY0Ztf0jdCPUcFLewwUC6Rl1IdkxSz/
-         U3EA==
+        Sat, 4 Apr 2020 13:20:53 -0400
+Received: by mail-il1-f194.google.com with SMTP id 7so10607988ill.2;
+        Sat, 04 Apr 2020 10:20:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+uhxRGX6MPG3FC6JHWtiYmK6qLmp1QIoL6oQZjfRONY=;
-        b=heFe5iXOKv2oZldsxyuZJFKtKfVZzi3H9gfy3pcxVfvhiguK9+elOK2WA1HH1mft5o
-         4S3930WfZCUBg+WFC8hZxZKMLlgeRrUbuLj1FnLDb9JE3nA3Oz86HblCMlozxROfNK6J
-         OYbR70jUJKcQnKHkU5jxjUw3ISgOptvzccf7z5T/drn5HdqDvkVkTJKx3NJ0zBJcqqAd
-         0jOnQkFF3xQtJGxpJBoHfmqBy09piWVf/dFsFxZxJpWN9QsSzNNeQ3J6odomdh2gOOMC
-         7VZ/W+7tTGSxDBSLvA3Vhmpc9LzVzhWXfCsEjEN9E2TapP6k7XPLMEYN8nfvoMz9OFel
-         HHPA==
-X-Gm-Message-State: AGi0PuY9BmTKwycYmqjYAYi6D9E+wtIg4NbT89Vk6+UNDel00YekAMmd
-        KEdnis9jYzFGrPE0pLRjRVWR0gOCh3BTXW45tEI=
-X-Google-Smtp-Source: APiQypKbneMMaFHfEv8AYv4pXWPjoKLLu9YejArU/08n/11tmBWhsBVTZ41q0GYynLf1gxAoQxMR37qxtV7jCEj2kmI=
-X-Received: by 2002:a2e:81cc:: with SMTP id s12mr7960117ljg.90.1586020713555;
- Sat, 04 Apr 2020 10:18:33 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HKQqfFLrWC9wU446xOFUiOzeLBJC9J0I8BpHyK90qRg=;
+        b=pfzRHBKoanUB8zpUphlbqkkLpQ5N5QkW05NuXnrNeP9ZY/zFBQQYJt9gAFI49bQtYt
+         gC2rOTwOTItz1EGuMcSlBa5vROkaUtQVulmYUBz1Ypn0xmIvLzgMA6RIzFVqtRLKTeJy
+         q3rCu4YP7IgG9Ek5STovIG57v4q9/H/BRrDt5D5lMZs94Q3c9eLUJodRMMKMblQtMEyE
+         1rPxTiktZqtBf8JOjOy1BTWnwFadkE5KCn/qltijKaSeVLBreCPzLIyYIirOx8jJ7lon
+         n363qSP6yrBnOasxVCVHTQAdp5zE5Aqfa5xKUeQhMiErgpkgM9pzyU9GiuWMLA7AE5VK
+         EnTw==
+X-Gm-Message-State: AGi0PuZYcAV09vymwImjwmFPIej0Y/q9CSQWu5ZBIolH95uQjNNkf9zI
+        9AWrVzFSsrbzu+/LjU6gtQ==
+X-Google-Smtp-Source: APiQypLdRpDCBU3mc/Sp7WlbLkhX/tB6DU85rWpfeXHQ8j7oUx65QtgEHgFQpAec5Smx8y+Ezl0+iQ==
+X-Received: by 2002:a92:48cb:: with SMTP id j72mr14218395ilg.162.1586020852230;
+        Sat, 04 Apr 2020 10:20:52 -0700 (PDT)
+Received: from rob-hp-laptop ([64.188.179.250])
+        by smtp.gmail.com with ESMTPSA id y6sm4035926ilc.41.2020.04.04.10.20.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Apr 2020 10:20:51 -0700 (PDT)
+Received: (nullmailer pid 27481 invoked by uid 1000);
+        Sat, 04 Apr 2020 17:20:49 -0000
+Date:   Sat, 4 Apr 2020 11:20:49 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     kishon@ti.com, balbi@kernel.org, khilman@baylibre.com,
+        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-amlogic@lists.infradead.org, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/14] dt-bindings: usb: amlogic,meson-g12a-usb-ctrl:
+ add the Amlogic GXL and GXM Families USB Glue Bindings
+Message-ID: <20200404172049.GA27426@bogus>
+References: <20200326134507.4808-1-narmstrong@baylibre.com>
+ <20200326134507.4808-2-narmstrong@baylibre.com>
 MIME-Version: 1.0
-References: <20200404141909.26399-1-ap420073@gmail.com> <20200404155122.GD1476305@kroah.com>
-In-Reply-To: <20200404155122.GD1476305@kroah.com>
-From:   Taehee Yoo <ap420073@gmail.com>
-Date:   Sun, 5 Apr 2020 02:18:22 +0900
-Message-ID: <CAMArcTVdn7FcfX-BCnZ+LUzdct4yj2BLyhpTu832_VGt_O+xWA@mail.gmail.com>
-Subject: Re: [PATCH net v2 2/3] net: core: add netdev_class_has_file_ns()
- helper function
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, rafael@kernel.org,
-        j.vosburgh@gmail.com, vfalico@gmail.com,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, mitch.a.williams@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200326134507.4808-2-narmstrong@baylibre.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 5 Apr 2020 at 00:51, Greg KH <gregkh@linuxfoundation.org> wrote:
->
+On Thu, 26 Mar 2020 14:44:53 +0100, Neil Armstrong wrote:
+> The Amlogic GXL and GXM is slightly different from the Amlogic G12A Glue.
+> 
+> The GXL SoCs only embeds 2 USB2 PHYs and no USB3 PHYs, and the GXM SoCs
+> embeds 3 USB2 PHYs.
+> 
+> Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> ---
+>  .../usb/amlogic,meson-g12a-usb-ctrl.yaml      | 73 ++++++++++++++++++-
+>  1 file changed, 69 insertions(+), 4 deletions(-)
+> 
 
-Hi Greg,
-Thank you for your review!
-
-> On Sat, Apr 04, 2020 at 02:19:09PM +0000, Taehee Yoo wrote:
-> > This helper function is to check whether the class file "/sys/class/net/*"
-> > is existing or not.
-> > In the next patch, this helper function will be used.
-> >
-> > Reported-by: syzbot+830c6dbfc71edc4f0b8f@syzkaller.appspotmail.com
-> > Fixes: b76cdba9cdb2 ("[PATCH] bonding: add sysfs functionality to bonding (large)")
-> > Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-> > ---
-> >
-> > v1 -> v2:
-> >  - use class_has_file_ns(), which is introduced by the first patch.
-> >
-> >  include/linux/netdevice.h | 2 +-
-> >  net/core/net-sysfs.c      | 6 ++++++
-> >  2 files changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> > index 130a668049ab..a04c487c0975 100644
-> > --- a/include/linux/netdevice.h
-> > +++ b/include/linux/netdevice.h
-> > @@ -4555,7 +4555,7 @@ int netdev_class_create_file_ns(const struct class_attribute *class_attr,
-> >                               const void *ns);
-> >  void netdev_class_remove_file_ns(const struct class_attribute *class_attr,
-> >                                const void *ns);
-> > -
-> > +bool netdev_class_has_file_ns(const char *name, const void *ns);
-> >  static inline int netdev_class_create_file(const struct class_attribute *class_attr)
-> >  {
-> >       return netdev_class_create_file_ns(class_attr, NULL);
-> > diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-> > index cf0215734ceb..8a20d658eff0 100644
-> > --- a/net/core/net-sysfs.c
-> > +++ b/net/core/net-sysfs.c
-> > @@ -1914,6 +1914,12 @@ void netdev_class_remove_file_ns(const struct class_attribute *class_attr,
-> >  }
-> >  EXPORT_SYMBOL(netdev_class_remove_file_ns);
-> >
-> > +bool netdev_class_has_file_ns(const char *name, const void *ns)
-> > +{
-> > +     return class_has_file_ns(&net_class, name, ns);
-> > +}
-> > +EXPORT_SYMBOL(netdev_class_has_file_ns);
->
-> Again, this feels broken, it can not solve a race condition.
->
-
-This function is considered to be used under rtnl mutex and
-I assume that no one could use "/sys/class/net/*" outside of rtnl mutex.
-So, I think it returns the correct information under rtnl mutex.
-
-Thanks a lot!
-Taehee Yoo
+Reviewed-by: Rob Herring <robh@kernel.org>
