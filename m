@@ -2,164 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4266119E2AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 06:19:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3AD19E2BD
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 06:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgDDETG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 00:19:06 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:35950 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725468AbgDDETF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 00:19:05 -0400
-Received: by mail-oi1-f193.google.com with SMTP id k18so8162197oib.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Apr 2020 21:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=je7nuNsfXk26lRmkb6ciZHwSXJTBCDyjnYltMGy9GKw=;
-        b=Bk8YVcnE/cBJl2ujaD7DGjNm//e+RUaeMJE3R4oTnEdfER1QAwCHybt2WimOnaczqF
-         1UQOyXoQ5Ng6kLHJ49G+EIv+Hp/OFZPCGcmy+f4NwDYWKCk+BOUadj6lUbHedg82lHBR
-         aAx/e06OeA3U0eb5Hx5UBQ1gvFdpxplndrMBMnx5B85/dam1NdoOJBBTMzFG784StGTe
-         5AyOdVM3AakZGc1Z0N11r2ZZwEg+1tpABlQzQ9+PZSXdXahsklsQqJZURGFY0Zy4FH3y
-         2IVsQg9Z9Y0CW14QOuODdQpbGCdj6CcArqPWQe1KA+rV8YGGieKYlryjTjtfk8bxgvVK
-         kctQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=je7nuNsfXk26lRmkb6ciZHwSXJTBCDyjnYltMGy9GKw=;
-        b=cQYpciwYrfVgJA6p0j4a215uugTCZMFSq9IMLvsW4+z3p2EZ/8VjKD8AJ6U6443Pm2
-         jJ587gHIF1anMT28GQSlS5biMRF+8ENrN6T5wqe6C/c66BOIbd8EdTKZIX0WZ1toi0gA
-         o0XcKL2qR/RJamqGdTb6gHcfEPCBerjw1l2mvtJExuMqugjkSWEJ/kFLeGNwZeRYsypw
-         XJoNNEtLiyDTLpQZrAhUaCpVtFMxJnlzXQJvN7nyuyhQ4JN8VDkkVu9KKaYOCpCEtMPu
-         O8vj7/Xy3f4gMi+hT1jy27BioYN2pblTkqyItZBVnH/oi053PfHnOP4MG9M6RHborKy4
-         T2AQ==
-X-Gm-Message-State: AGi0PuYf1IuCdTt5a0ZT3zeA6Glp7VEOsl2kPGyTAgu+xQxe3RECfjNf
-        IYohN/bvXQB+I8shpLo8DdYQDcmfQbKj/27FghTMGg==
-X-Google-Smtp-Source: APiQypLmrSfzfYdNvicoaCyhCetap9MoAIFDaZdmEHGJohfwM7HjZ6WmIj82QvstEFNnMH986goMroldCiSCq9icpyk=
-X-Received: by 2002:a05:6808:a0a:: with SMTP id n10mr5721046oij.10.1585973942770;
- Fri, 03 Apr 2020 21:19:02 -0700 (PDT)
+        id S1725943AbgDDEXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 00:23:46 -0400
+Received: from mail-vi1eur05olkn2087.outbound.protection.outlook.com ([40.92.90.87]:22656
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725862AbgDDEXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 00:23:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=j+vpqtVPwyNtXYBzufi0E7ChqjBHeS+DS20uPY4GMitrZcKdOgSeut0WgrZvAI04ZhdSYUTAyjbwAkCrYD8ZPZMo91UYp4Hcdn0Q8f+h/q8PShiKEK/zyGHn/XKhlyW5LfhxjlNWTecrcv4GIxlLevuWnTIWoutxm06xCK9YwAPctUUiDtuckRo0yNJCY05lecZ1QGUnWuUAkLQ5ZhDxhf2sz3zhEqkTnIO6ZC72sZqFfFUW5xDJvLT8TOMHmw3tm9jyH8OS+3xW+DGvTHWnFTWcOPB88zJZlqMdNZ5OolaZD3fYnza+u9pfcJ198iq7h48YfyO9AC1czSx7cJvL2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S/B7bBW62Yy7RGHjVgMPiK/4wu2Jz4njwuzLNXRAnbU=;
+ b=VOTM2Dl2ggWpLSGDD/KwXCwWmJxHGDL6GGc97Gdr4q7ATGcJvIGfiU58weG22C8/h9XevSG5er7T4FlX7qlgUYWq8YkHEKPyS8Til4v8J2m3e7mcWRgHrFKPk1H31AClOAirrckWG6ybSEXKAplG1sU+ynM5qC44B6lNVs1zJVD59zDuN1dlC5UDE2S4wIWpzmwr6EhwuRjX28xRtqAnX8MvF1jEDfcCZdmXzrTOu66xy7FsoToF4aF77RULR5Krqr5EwltPooWpRrGVluxRvrhcJBQCtKjFfsurw7YTn892QCT5br8SFjLJOlqNdCsYC83goHsobRjL5x5jN4gvVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hotmail.de; dmarc=pass action=none header.from=hotmail.de;
+ dkim=pass header.d=hotmail.de; arc=none
+Received: from AM6EUR05FT048.eop-eur05.prod.protection.outlook.com
+ (2a01:111:e400:fc11::4b) by
+ AM6EUR05HT080.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc11::350)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Sat, 4 Apr
+ 2020 04:23:43 +0000
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2a01:111:e400:fc11::4f) by AM6EUR05FT048.mail.protection.outlook.com
+ (2a01:111:e400:fc11::479) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15 via Frontend
+ Transport; Sat, 4 Apr 2020 04:23:43 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:F15397E0514B636DBCB681A702D7457FB562C419986805F194CE3DEACE553067;UpperCasedChecksum:1ABFA233ABD3EDD0FA7306DD1C4FCE748CE0A94D072FCB10DE2AD4B967EA8F42;SizeAsReceived:9676;Count:50
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d]) by AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d%7]) with mapi id 15.20.2878.018; Sat, 4 Apr 2020
+ 04:23:43 +0000
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Waiman Long <longman@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+References: <87blobnq02.fsf@x220.int.ebiederm.org>
+ <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+ <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+ <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
+ <87lfnda3w3.fsf@x220.int.ebiederm.org>
+ <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
+ <328f5ad3-f8b3-09b9-f2f7-b6dae0137542@redhat.com>
+ <CAHk-=wgww8LFqUenUtNV7hzYSxAemjbOVYfZMXqOxK7DGRrZaw@mail.gmail.com>
+ <c7c770c9-2c5c-4878-a224-d115720068f3@redhat.com>
+From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
+Message-ID: <AM6PR03MB5170EEAA3FC61C1F390C0ED2E4C40@AM6PR03MB5170.eurprd03.prod.outlook.com>
+Date:   Sat, 4 Apr 2020 06:23:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+In-Reply-To: <c7c770c9-2c5c-4878-a224-d115720068f3@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM4P190CA0023.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:200:56::33) To AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2603:10a6:20b:ca::23)
+X-Microsoft-Original-Message-ID: <ad0a6272-5413-6e63-b900-1a671fc8d2da@hotmail.de>
 MIME-Version: 1.0
-References: <TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com>
- <CALAqxLWopjCkiM=NR868DTcX-apPc1MPnONJMppm1jzCboAheg@mail.gmail.com> <CAMuHMdVtHhq9Nef1pBtBUKfRU2L-KgDffiOv28VqhrewR_j1Dw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVtHhq9Nef1pBtBUKfRU2L-KgDffiOv28VqhrewR_j1Dw@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 3 Apr 2020 21:18:50 -0700
-Message-ID: <CALAqxLX2AEFJxqXXXKPs8SU7Su2FqNjwbSt5BxwmQJqYQuST9A@mail.gmail.com>
-Subject: Re: How to fix WARN from drivers/base/dd.c in next-20200401 if CONFIG_MODULES=y?
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (92.77.140.102) by AM4P190CA0023.EURP190.PROD.OUTLOOK.COM (2603:10a6:200:56::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15 via Frontend Transport; Sat, 4 Apr 2020 04:23:42 +0000
+X-Microsoft-Original-Message-ID: <ad0a6272-5413-6e63-b900-1a671fc8d2da@hotmail.de>
+X-TMN:  [dpan+zE3EsgNZNhfBOkT8MrVxp+gJ/+b]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 50
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: 7b852572-0ee8-4d09-2be6-08d7d84ff570
+X-MS-TrafficTypeDiagnostic: AM6EUR05HT080:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5cjwlscrRHPYKdwNJNONO6+a/RftYYt68Gx+gTv1eK/mZqkWmMVAU21R5CquDz3RxTMvCLbLWKHvA4Q4sSOSh95fVur7thHUUDq9oKY17dStr7hmh65Sbi4ysZH12KZJuxECcxeM6cz0MiLXewbnVaKDA35a7MOy3M4fBVE3VFI/TySBJKYFB0SMFaejxXxK
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB5170.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: YsIFmvyCXHzh3u04Apgd9qFEbMKyzhlNuidDA0TkTvmoTkZCCZkzbap8eSXwOlqmBe+XXRh1XsJgjF/Vjb0mozJVb/5xaZf9/pPsWLOyocEYERe4+3QFTUw2INy+W7Z5OpRgg4DqOQqXhbGM3nFofw==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b852572-0ee8-4d09-2be6-08d7d84ff570
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2020 04:23:43.1247
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6EUR05HT080
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 3, 2020 at 4:47 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Apr 2, 2020 at 7:27 PM John Stultz <john.stultz@linaro.org> wrote:
-> > On Thu, Apr 2, 2020 at 3:17 AM Yoshihiro Shimoda
-> > <yoshihiro.shimoda.uh@renesas.com> wrote:
-> > >
-> > > I found an issue after applied the following patches:
-> > > ---
-> > > 64c775f driver core: Rename deferred_probe_timeout and make it global
-> > > 0e9f8d0 driver core: Remove driver_deferred_probe_check_state_continue()
-> > > bec6c0e pinctrl: Remove use of driver_deferred_probe_check_state_continue()
-> > > e2cec7d driver core: Set deferred_probe_timeout to a longer default if CONFIG_MODULES is set
->
-> Note that just setting deferred_probe_timeout = -1 like for the
-> CONFIG_MODULES=n case doesn't help.
-
-Yea. I can see why in that case, as we're checking
-!IS_ENABLED(CONFIG_MODULES) directly in
-driver_deferred_probe_check_state.
-
-I guess we could switch that to checking
-(driver_deferred_probe_timeout == -1) which would have the same logic
-and at least make it consistent if someone specifies -1 on the command
-line (since now it will effectively have it EPROBE_DEFER forever in
-that case). But also having a timeout=infinity could be useful if
-folks don't want the deferring to time out.  Maybe in the !modules
-case setting it to =0 would be the most clear.
-
-But that's sort of a further cleanup. I'm still more worried about the
-NFS failure below.
 
 
-> > Hey,
-> >   Terribly sorry for the trouble. So as Robin mentioned I have a patch
-> > to remove the WARN messages, but I'm a bit more concerned about why
-> > after the 30 second delay, the ethernet driver loads:
-> >   [   36.218666] ravb e6800000.ethernet eth0: Base address at
-> > 0xe6800000, 2e:09:0a:02:eb:2d, IRQ 117.
-> > but NFS fails.
-> >
-> > Is it just that the 30 second delay is too long and NFS gives up?
->
-> I added some debug code to mount_nfs_root(), which shows that the first
-> 3 tries happen before ravb is instantiated, and the last 3 tries happen
-> after.  So NFS root should work, if the network works.
->
-> However, it seems the Ethernet PHY is never initialized, hence the link
-> never becomes ready.  Dmesg before/after:
->
->      ravb e6800000.ethernet eth0: Base address at 0xe6800000,
-> 2e:09:0a:02:ea:ff, IRQ 108.
->
-> Good.
->
->      ...
->     -gpio_rcar e6052000.gpio: sense irq = 11, type = 8
->
-> This is the GPIO the PHY IRQ is connected to.
-> Note that that GPIO controller has been instantiated before.
->
->      ...
->     -Micrel KSZ9031 Gigabit PHY e6800000.ethernet-ffffffff:00:
-> attached PHY driver [Micrel KSZ9031 Gigabit PHY]
-> (mii_bus:phy_addr=e6800000.ethernet-ffffffff:00, irq=197)
->      ...
->     -ravb e6800000.ethernet eth0: Link is Up - 1Gbps/Full - flow control off
->
-> Oops.
->
->     -Sending DHCP requests .., OK
->     -IP-Config: Got DHCP answer from ...
->      ...
->     +VFS: Unable to mount root fs via NFS, trying floppy.
->     +VFS: Cannot open root device "nfs" or unknown-block(2,0): error -6
->
-> > Does booting with deferred_probe_timeout=0 work?
->
-> It does, as now everything using optional links (DMA and IOMMU) is now
-> instantiated on first try.
+On 4/4/20 1:16 AM, Waiman Long wrote:
+> On 4/3/20 4:59 PM, Linus Torvalds wrote:
+>> On Fri, Apr 3, 2020 at 1:41 PM Waiman Long <longman@redhat.com> wrote:
+>>> Another alternative is to add new functions like down_read_unfair() that
+>>> perform unfair read locking for its callers. That will require less code
+>>> change, but the calling functions have to make the right choice.
+>> I'd prefer the static choice model - and I'd hide this in some
+>> "task_cred_read_lock()" function anyway rather than have the users do
+>> "mutex_lock_killable(&task->signal->cred_guard_mutex)" like they do
+>> now.
+>>
+>> How nasty would it be to add the "upgrade" op? I took a quick look,
+>> but that just made me go "Waiman would know" ;)
+>>
+>>              Linus
+>>
+> With static choice, you mean defined at init time. Right? In that case,
+> you don't really need a special encapsulation function.
+> 
+> With upgrade, if there is only one reader, it is pretty straight
+> forward. With more than one readers, it gets more complicated as we have
+> to wait for other readers to unlock. We can spin for a certain period of
+> time. After that, that reader can use the handoff mechanism by queuing
+> itself in front the wait queue before releasing the read lock and go to
+> sleep. That will make sure that it will get the lock once all the other
+> readers exits. For an unfair rwsem, the writer cannot assert the handoff
+> bit and so it shouldn't interfere with this upgrade process.
+> 
+> If there are multiple upgrade readers, only one can win the race. The
+> others have to release the read lock and queue themselves as writers.
+> Will that be acceptable?
+> 
 
-Thanks so much for helping clarify this!
+Someone pointer out prevoiosly I think
+that with the real time linux
+the rwmutex are just mutex and we
+better not base our desing on that.
 
-So it's at least good to hear that booting with
-deferred_probe_timeout=0 is working!  But I'm bummed the NFS (or as
-you pointed out in your later mail,  ip_auto_config) falls over
-because the network isn't immediately there.
+To me linux_rt is a must.
 
-Looking a little closer at the ip_auto_config() code, I think the
-issue may be that wait_for_device_probe() is effectively returning too
-early, since the probe_defer_timeout is still active? I need to dig a
-bit more on that code, on Monday, as I don't fully understand it yet.
+Thanks
+Bernd.
 
-If I can't find a way to address that, I think the best course will be
-to set the driver_deferred_probe_timeout value to default to 0
-regardless of the value of CONFIG_MODULES, so we don't cause any
-apparent regression from previous behavior. That will also sort out
-the less intuitive = -1 initialization in the non-modules case.
-
-In any case, I'll try to have a patch to send out on Monday.
-
-thanks
--john
+> Cheers,
+> Longman
+> 
+> 
+> 
+> Cheers,
+> Longman
+> 
