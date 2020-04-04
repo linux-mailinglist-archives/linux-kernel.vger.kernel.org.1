@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF9B19E33F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0965D19E34D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Apr 2020 09:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbgDDHUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 03:20:52 -0400
-Received: from conuserg-07.nifty.com ([210.131.2.74]:30630 "EHLO
-        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725837AbgDDHUw (ORCPT
+        id S1726331AbgDDHbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 03:31:24 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:36919 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725837AbgDDHbY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 03:20:52 -0400
-Received: from grover.flets-west.jp (softbank126093124033.bbtec.net [126.93.124.33]) (authenticated)
-        by conuserg-07.nifty.com with ESMTP id 0347KcNu020416;
-        Sat, 4 Apr 2020 16:20:38 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 0347KcNu020416
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1585984838;
-        bh=vQOO7N85hXpM+vNvA1qudzQ0tPB0noo15q2Psaauh68=;
-        h=From:To:Cc:Subject:Date:From;
-        b=oC4Ijy3YJTRA29djl16YM4U4nESrpZI/C4shVNMjFBnHRy4vWEskmDr0kmpIHJ7nj
-         UAZ+tn735nfidWuUmvNg/wEGU+dF8irxWw/uKVe4EgkYlo7J0E55x1tv2jKSxL5Sfl
-         OqkgW+oJ4t6WzhMR3Hlge+pkQMssjmZcM2bnTmziq5AcMmAQEX8tPCwWtePShXZVS2
-         VXhZLmytb6dDPMl42Z6g1s26GgL0GrlATinMGdCZWvfr6502elfDxXOpNq6xDPyRoG
-         Pptuy4RXtqVL565gJ9K4MBZ+mFfMrqtBUuTubVrqriv9EqIVhN6HEmMLDltHCQCx4s
-         shGNPV8MWBbXg==
-X-Nifty-SrcIP: [126.93.124.33]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: [PATCH] kbuild: remove -I$(srctree)/tools/include from scripts/Makefile
-Date:   Sat,  4 Apr 2020 16:20:34 +0900
-Message-Id: <20200404072034.15798-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        Sat, 4 Apr 2020 03:31:24 -0400
+Received: by mail-vs1-f68.google.com with SMTP id o3so6486591vsd.4
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Apr 2020 00:31:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WYYENpUenW1mOBtwvfCGSxitkk6MXuBt0h7Pv0y2XUQ=;
+        b=ilFI7CUrtJSEbObp2HesFPiTB4AR1aiGuk3EnDSRgtX/hwzeXMsExL2JaxO3jukIrv
+         bcZq/X+c6g5rUrI0WibAck/3jqs7Lsf1ZO3RkQvy9GlgeUr5NBsDVaRSokXfeErqJH/m
+         +ypokOKM2lLOG/f/i0r0id7QKcV/EZzcTzyro6x2KQdl8zo6UolTEDgOaM+6WpvSVgzX
+         ZeSQPU4Z26g/Fubo9b6HdX/srMgQOQNwie9R8i31ifBU5Nt7PFmCPlJ9DO/mZB4wZvoy
+         kGzWQpdQVSZ+Kza8C6OzMgT6xItrCu/zTyGVdqZHbSsA/36e69UeMiLIWjBfw+zVeYKr
+         2vmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WYYENpUenW1mOBtwvfCGSxitkk6MXuBt0h7Pv0y2XUQ=;
+        b=AQG+E6+SdSSk6PleTPe95Bbixrb87je9TUbXMOeMtW+gve1z6pq+lu4b46sii7b4US
+         OvJFV1Xd3AFtXrFGJfeJiG/JAjIiFx/Ok2vppYMtFGlVtyIJK8ivrk8/3+UQRLxDZxjQ
+         d2CISMtL2Joh1zgKTFTb6poKptlfZ08TvekYVwH61T9vsVywm7iXoHIQyzALg1Jcbpk0
+         vSZ+tYicbb5pq1u7nbQRGH1RAgRyZ+ndbFYKKGdacq0q4oifKy3auT388jimWCmDzIAy
+         c8U6/UUN1GjxazzDgrarbF8V69QkoiRx/ErjbSR4FY/TeZuUeQyO5vfA160XqzKTysc+
+         gtMA==
+X-Gm-Message-State: AGi0PuYDc3fv8x6+kN3JoskzIJMc4mSVlXYv9Kx8mLZ8GOxqBOOQ9tr2
+        B2BN894hcaO1f0cUralCM7MKI3l6tNQ1nhuRip0xtA==
+X-Google-Smtp-Source: APiQypIwudVuiXe/LMRHhc+8ubP3TRukmM9WaTm2+ZWP9jINOT+vAJPzu1MSDfRi5eRWTsLpXV+EashporgRQZI943w=
+X-Received: by 2002:a05:6102:104b:: with SMTP id h11mr9409688vsq.182.1585985482961;
+ Sat, 04 Apr 2020 00:31:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200402142747.8307-1-daniel.lezcano@linaro.org> <20200402142747.8307-8-daniel.lezcano@linaro.org>
+In-Reply-To: <20200402142747.8307-8-daniel.lezcano@linaro.org>
+From:   Amit Kucheria <amit.kucheria@verdurent.com>
+Date:   Sat, 4 Apr 2020 13:00:00 +0530
+Message-ID: <CAHLCerMD5fJR1nEeXPhX-=5WfTZ681KuLswcY5xXw2jfTXskWA@mail.gmail.com>
+Subject: Re: [PATCH V2 8/9] thermal: Remove stubs for thermal_zone_[un]bind_cooling_device
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I do not like to add an extra include path for every tool with no
-good reason. This should be specified per file.
+On Thu, Apr 2, 2020 at 7:58 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+> All callers of the functions depends on THERMAL, it is pointless to
+> define stubs. Remove them.
+>
+> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-This line was added by commit 6520fe5564ac ("x86, realmode: 16-bit
-real-mode code support for relocs tool"), which did not touch
-anything else in scripts/.  I do not know why this was needed.
+Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- scripts/Makefile | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/scripts/Makefile b/scripts/Makefile
-index 5e75802b1a44..da63ba81e9e7 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -5,8 +5,6 @@
- # ---------------------------------------------------------------------------
- # kallsyms:      Find all symbols in vmlinux
- 
--HOST_EXTRACFLAGS += -I$(srctree)/tools/include
--
- always-$(CONFIG_BUILD_BIN2C)			+= bin2c
- always-$(CONFIG_KALLSYMS)			+= kallsyms
- always-$(BUILD_C_RECORDMCOUNT)			+= recordmcount
--- 
-2.17.1
-
+> ---
+>  include/linux/thermal.h | 10 ----------
+>  1 file changed, 10 deletions(-)
+>
+> diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+> index 12df9ff0182d..7b3dbfe15b59 100644
+> --- a/include/linux/thermal.h
+> +++ b/include/linux/thermal.h
+> @@ -426,16 +426,6 @@ static inline struct thermal_zone_device *thermal_zone_device_register(
+>  static inline void thermal_zone_device_unregister(
+>         struct thermal_zone_device *tz)
+>  { }
+> -static inline int thermal_zone_bind_cooling_device(
+> -       struct thermal_zone_device *tz, int trip,
+> -       struct thermal_cooling_device *cdev,
+> -       unsigned long upper, unsigned long lower,
+> -       unsigned int weight)
+> -{ return -ENODEV; }
+> -static inline int thermal_zone_unbind_cooling_device(
+> -       struct thermal_zone_device *tz, int trip,
+> -       struct thermal_cooling_device *cdev)
+> -{ return -ENODEV; }
+>  static inline void thermal_zone_device_update(struct thermal_zone_device *tz,
+>                                               enum thermal_notify_event event)
+>  { }
+> --
+> 2.17.1
+>
