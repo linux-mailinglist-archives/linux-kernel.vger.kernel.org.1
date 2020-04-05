@@ -2,154 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC07F19EC2D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0E919EC38
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbgDEOxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 10:53:33 -0400
-Received: from mout.web.de ([212.227.17.11]:44179 "EHLO mout.web.de"
+        id S1727193AbgDEOyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 10:54:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:26201 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgDEOxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 10:53:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1586098377;
-        bh=IWmjjEUL/Po3O0D2P7+8NcxxH3nBfKDYaqcRWyNJMrM=;
-        h=X-UI-Sender-Class:To:From:Subject:Cc:Date;
-        b=UhA6bMM9VsnLGvDzXw1NLgZl+F/Mqy6qLaOGHYSrdDafRxgzMaB1f2oFjNg7uspat
-         yVtLguCZ2al8TR4EBBzNOunaxMaTZLaA0DC3sMG+PWF8kIqq/ONKyiErYhrjZjfYrj
-         /I9A5mb9m2/jhis+6ETSn5Gnn8L19QUiFirRnsto=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([93.131.99.70]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MV4bp-1joQHF43Ab-00YNPH; Sun, 05
- Apr 2020 16:52:57 +0200
-To:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Felix Fietkau <nbd@nbd.name>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Roy Luo <royluo@google.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] mt7615: Delete an error message in mt7622_wmac_probe()
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <0b236ef3-45cb-b6bf-a3ca-fbe4fa4185da@web.de>
-Date:   Sun, 5 Apr 2020 16:52:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1726669AbgDEOyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 10:54:44 -0400
+IronPort-SDR: 63nSUfSLM8R6twNYzqkNlzzv6yhtWouYrGSUW1Ec17Xrgfo38rApQ/NhWKY39M0VVJ1ZIErQHj
+ icJ3uvPJZQhw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2020 07:54:42 -0700
+IronPort-SDR: 6lf1dbhbqIm1OxUs3SWaIp9HMJgDKVQbYm0a/KiLhXqDMOGyyiRLdw8swAzUELjzEHmtzxkleP
+ GJUCDU1xxNHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,348,1580803200"; 
+   d="scan'208";a="424089231"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 05 Apr 2020 07:54:43 -0700
+Received: from [10.249.231.111] (abudanko-mobl.ccr.corp.intel.com [10.249.231.111])
+        by linux.intel.com (Postfix) with ESMTP id 01AF558033E;
+        Sun,  5 Apr 2020 07:54:38 -0700 (PDT)
+Subject: Re: [PATCH v8 12/12] doc/admin-guide: update kernel.rst with
+ CAP_PERFMON information
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>, Jiri Olsa <jolsa@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        linux-man@vger.kernel.org
+References: <f96f8f8a-e65c-3f36-dc85-fc3f5191e8c5@linux.intel.com>
+ <84c32383-14a2-fa35-16b6-f9e59bd37240@linux.intel.com>
+ <20200405141029.GA16896@kernel.org>
+ <eb7fd0bd-4043-b51c-9b19-ee0a1d1849e9@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <966244a1-2a2d-8e47-b805-2effa46fe8cd@linux.intel.com>
+Date:   Sun, 5 Apr 2020 17:54:37 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <eb7fd0bd-4043-b51c-9b19-ee0a1d1849e9@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4CIYD6qtluiIAwHgLtajt+xvxrAO9x7zNuFZyEBoG683vdNnJZz
- 7lXXfuAxfvYwp1UqMehK+qb5gpV36uRLHwGmG6SAddGn0fpO+CunIF/PaCv6KuStdaiUN/e
- VaWbGgxngP5OH6aaZH1pr9aziNft51Nbg/SPM5ui40rJSLKfSmX+x/TnI429y+KESujfooC
- jMw4XdUoRRyGwMthmZ0wA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qCrWWl4L1ok=:ig3rLi2RPTVORwuPEDzpMF
- tvT/rRrmhOqo/lG7v9vjQQIXYJYMVtYkd6I43i6LOZqTuJ+3oO8EguUBJDJY8Xxjz1qKiupVg
- QkxpIw0a2GUAtsJ7PtZWa1X6POnUGxYzJ2eXpVmqMfd7nHMl6f3FhLzwO/RQ8fczVuSjQvrOU
- rRRVFcina73x7uUQCqImfq89OIQVjZgaACTVAw55ITVirr3F1f9aTQK9uTgRkmNJCRkLltfX/
- piyBqKEWW47+FVz4xpmjcT0Q69d2LhziXwcaP6kZU7koJgoepF6KpxzLtS+cZXf9/x4VpOpU8
- cYA7BjtrDSIdeSF2sUwqgMaes5FGwv0Er7rEi8J5ugaEAxRNJdyeXMX/VbIi+nqKiIWVK+mXI
- tgH0XeysJfSz55ytuSTbBA9MsA/UW2/9YaHQiMUogPAlgfFTl5nraUdaDE/991Pyk6Xqp+fGQ
- 7wPqQ2Z2XqHBMEQ/rqamysegpUXpQuVwhanS6Clm2NX10JSwcp5PwSEyNGl/eSD0SwPda6peM
- rvXxN/y8ZXxg9KmhnBq0dKvr9EqCalbkVqq4h6iWXbCyEH+0hKh5rHLWggR+nGpjL4eifI1zd
- kYZ777n70jmQWbui71zg1JrF+m0Cff54LilaN10oonVP2eW8mfH88S1YMqQOFyBlyz8eKc/kS
- JHO2IBT+76fAvYzQwzdTBYX8TCb3309GQGpQCiu/q3ZPnPK5ajPq1jeRYnuIPYLpHqGJ1rrKy
- HnHyiK+Rij8ruTjJuRYIgvUFX0bKYLL8EzwEVHRWJBQM6DIwlCfpvu+EjKAkWuggPpz4eCBkr
- est+r+0Gcgv/3a4uENvlXTUnPcG+HrcYBWxKYIO+ci52o240NqMsR+vXZ2mhfBTWoI54H+52o
- AISr4jMnTlX1ZZriGjGDj1vJa8Dgu0EpIkWYVF5Bn8a7TwffnnQE1bJQpST8Dk4U6rmlY4o1A
- mC0xqXSuCP4Hb2FtoNsmOhM96lSLtJCUpPx4lQDpN2sowUX90KCQ3rRxg2mKVQ4jM5st66f3t
- VVizkOTOLejgRhHXywWAanrV8Crbi7RCYMlBKzE+oi18q0qj+MjfmecHUp2H3WJOqgJhpE+UT
- nc/UIddM31JxSgLruad+1FRi5Q/qmk0f4kMZepa5beQgAf30vDpDOE9wq5vc1g5nt5qbhut2S
- sIrH8GA3ALge6s8BTM3VVHokVybE+26NSE43VDwdEWguquvs4X2OG9jJ8T5ea5oPKoK8A97Ns
- TmMz3IWjzBMkW7BGv
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 5 Apr 2020 16:45:48 +0200
 
-The function =E2=80=9Cplatform_get_irq=E2=80=9D can log an error already.
-Thus omit a redundant message for the exception handling in the
-calling function.
+On 05.04.2020 17:41, Alexey Budankov wrote:
+> 
+> On 05.04.2020 17:10, Arnaldo Carvalho de Melo wrote:
+>> Em Thu, Apr 02, 2020 at 11:54:39AM +0300, Alexey Budankov escreveu:
+>>>
+>>> Update kernel.rst documentation file with the information
+>>> related to usage of CAP_PERFMON capability to secure performance
+>>> monitoring and observability operations in system.
+>>
+>> This one is failing in my perf/core branch, please take a look. I'm
 
-This issue was detected by using the Coccinelle software.
+Please try applying this:
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/net/wireless/mediatek/mt76/mt7615/soc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+---
+ Documentation/admin-guide/sysctl/kernel.rst | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/soc.c b/drivers/net=
-/wireless/mediatek/mt76/mt7615/soc.c
-index 43aa49706c66..9aa5183c7a56 100644
-=2D-- a/drivers/net/wireless/mediatek/mt76/mt7615/soc.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/soc.c
-@@ -36,10 +36,8 @@ static int mt7622_wmac_probe(struct platform_device *pd=
-ev)
- 	int irq;
+diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+index 335696d3360d..aaa5bbcd1e33 100644
+--- a/Documentation/admin-guide/sysctl/kernel.rst
++++ b/Documentation/admin-guide/sysctl/kernel.rst
+@@ -709,7 +709,13 @@ perf_event_paranoid
+ ===================
+ 
+ Controls use of the performance events system by unprivileged
+-users (without CAP_SYS_ADMIN).  The default value is 2.
++users (without CAP_PERFMON).  The default value is 2.
++
++For backward compatibility reasons access to system performance
++monitoring and observability remains open for CAP_SYS_ADMIN
++privileged processes but CAP_SYS_ADMIN usage for secure system
++performance monitoring and observability operations is discouraged
++with respect to CAP_PERFMON use cases.
+ 
+ ===  ==================================================================
+  -1  Allow use of (almost) all events by all users.
+@@ -718,13 +724,13 @@ users (without CAP_SYS_ADMIN).  The default value is 2.
+      ``CAP_IPC_LOCK``.
+ 
+ >=0  Disallow ftrace function tracepoint by users without
+-     ``CAP_SYS_ADMIN``.
++     ``CAP_PERFMON``.
+ 
+-     Disallow raw tracepoint access by users without ``CAP_SYS_ADMIN``.
++     Disallow raw tracepoint access by users without ``CAP_PERFMON``.
+ 
+->=1  Disallow CPU event access by users without ``CAP_SYS_ADMIN``.
++>=1  Disallow CPU event access by users without ``CAP_PERFMON``.
+ 
+->=2  Disallow kernel profiling by users without ``CAP_SYS_ADMIN``.
++>=2  Disallow kernel profiling by users without ``CAP_PERFMON``.
+ ===  ==================================================================
+ 
+---
 
- 	irq =3D platform_get_irq(pdev, 0);
--	if (irq < 0) {
--		dev_err(&pdev->dev, "Failed to get device IRQ\n");
-+	if (irq < 0)
- 		return irq;
--	}
+Thanks,
+Alexey
 
- 	mem_base =3D devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(mem_base)) {
-=2D-
-2.26.0
-
+> 
+> Trying to reproduce right now. What kind of failure do you see?
+> Please share some specifics so I could follow up properly.
+> 
+> Thanks,
+> Alexey
+> 
+>> pushing my perf/core branch with this series applied, please check that
+>> everything is ok, I'll do some testing now, but it all seems ok.
+>>
+>> Thanks,
+>>
+>> - Arnaldo
+>>  
+>>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>>> ---
+>>>  Documentation/admin-guide/sysctl/kernel.rst | 16 +++++++++++-----
+>>>  1 file changed, 11 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+>>> index def074807cee..b06ae9389809 100644
+>>> --- a/Documentation/admin-guide/sysctl/kernel.rst
+>>> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+>>> @@ -720,20 +720,26 @@ perf_event_paranoid:
+>>>  ====================
+>>>  
+>>>  Controls use of the performance events system by unprivileged
+>>> -users (without CAP_SYS_ADMIN).  The default value is 2.
+>>> +users (without CAP_PERFMON). The default value is 2.
+>>> +
+>>> +For backward compatibility reasons access to system performance
+>>> +monitoring and observability remains open for CAP_SYS_ADMIN
+>>> +privileged processes but CAP_SYS_ADMIN usage for secure system
+>>> +performance monitoring and observability operations is discouraged
+>>> +with respect to CAP_PERFMON use cases.
+>>>  
+>>>  ===  ==================================================================
+>>>   -1  Allow use of (almost) all events by all users
+>>>  
+>>>       Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
+>>>  
+>>> ->=0  Disallow ftrace function tracepoint by users without CAP_SYS_ADMIN
+>>> +>=0  Disallow ftrace function tracepoint by users without CAP_PERFMON
+>>>  
+>>> -     Disallow raw tracepoint access by users without CAP_SYS_ADMIN
+>>> +     Disallow raw tracepoint access by users without CAP_PERFMON
+>>>  
+>>> ->=1  Disallow CPU event access by users without CAP_SYS_ADMIN
+>>> +>=1  Disallow CPU event access by users without CAP_PERFMON
+>>>  
+>>> ->=2  Disallow kernel profiling by users without CAP_SYS_ADMIN
+>>> +>=2  Disallow kernel profiling by users without CAP_PERFMON
+>>>  ===  ==================================================================
+>>>  
+>>>  
+>>> -- 
+>>> 2.24.1
+>>>
+>>
