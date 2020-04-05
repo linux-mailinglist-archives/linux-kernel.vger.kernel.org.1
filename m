@@ -2,81 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5C219EA69
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 12:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8774019EA73
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 12:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgDEKgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 06:36:23 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:49386 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbgDEKgX (ORCPT
+        id S1726559AbgDEKit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 06:38:49 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:42447 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726399AbgDEKis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 06:36:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/yYzyLnkt5o4Y6sZshOUF7fL7wkCcwbfoUoIru+drL8=; b=j5X9/Ru3dETwVmESQJCHU9yF9s
-        On7QaK9lK3CMZ7kXWhnwVrN00KeNKZyK93dEX+TfcpnmgdoyAvD1FIUpxrA0AtPypRpPml23hJCfy
-        KhRuDRSX396CyPjihpasA9adwWaq0CKaHfLy+4rbiWPgalNw2IJ8wCok/x6HFd5hhu4W9RTmUEzmb
-        GXvYWCI9A/p3s5gxkNEiD7cRzDWz+pYUE0TMFZoki91O9P1uhFIS0Kn8MJO0wDuGphZksUbX4+V3j
-        0DEI9ks+BWAqV+fB0QhxYlawQkcNHu278of7/FmzeAjJNLBaQGYAtfB+JM8PMys1oirQUeXrhmxbU
-        g3IkxjmA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jL2dW-0007eO-Vw; Sun, 05 Apr 2020 10:36:18 +0000
-Date:   Sun, 5 Apr 2020 03:36:18 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, willemb@google.com,
-        kuba@kernel.org, simon.horman@netronome.com, sdf@google.com,
-        john.hurley@netronome.com, edumazet@google.com, fw@strlen.de,
-        jonathan.lemon@gmail.com, pablo@netfilter.org,
-        rdunlap@infradead.org, jeremy@azazel.net, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] skbuff.h: Improve the checksum related comments
-Message-ID: <20200405103618.GV21484@bombadil.infradead.org>
-References: <1586071063-51656-1-git-send-email-decui@microsoft.com>
+        Sun, 5 Apr 2020 06:38:48 -0400
+Received: by mail-pg1-f195.google.com with SMTP id g6so4108814pgs.9;
+        Sun, 05 Apr 2020 03:38:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qdLT95uUUHQQjan6IE7MImhuwtChu6BiQ6bgREKm7VM=;
+        b=MXLhu3KBzqbM7vGo8jZvb7194ZggQq+Rej3BI7Vu8KoJUXc36JHdoH3rU0SK24Q/N9
+         IdzsJGJ4LCDiyF0OfwAezRI30kFwJ08BUB8yJsFZz9EwPYD6JoiiLKBM3E/4qIv6HT6S
+         grhT/7ubthWiKfmBX95cGAsY3jVuTaLkP7V3ZpJZM54+jZoxtKhHCFfzK8z8BTdZTiTe
+         707weLjiVp+vnaIEsJClyv1vSvUL4YpocdJsP63n88sdSPK3CubOfMyw7LXqaL6d/FmG
+         UsOKCY6yzhfebMpt5GNWTIDIKfVf/GYUiUki1nEMB3eZSMH57CXpOlMaE/eArrZYhYl0
+         8EdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qdLT95uUUHQQjan6IE7MImhuwtChu6BiQ6bgREKm7VM=;
+        b=ea0rNsaS8lE7K7f7u2XIzSwquQfvX7wU8WL2cO/THBuAfWlL4ziZJ3EYhqrCwu483q
+         bsAZkbOdzHVK7EsHIFibtwrtlNjsqwhlTMpNzmnMAmHEVVe32zxEvombij0H4grGEf3G
+         7N/hFGtpHjEKSWwE++NJZlu0ltUniUtHs8iJU0L0igUjhKsEAvJUTyv2zlcwqDg+yHqN
+         EWPpvJNCCnCIayLhJjzYURCKGz8P4fbhjA7NQwuU/quaUERCOYTWAE+GQodBNAiykxyd
+         P4Xvbau7cr0L7gmYEIqkcUhEnwYWzX9bydpJDZLZle7V5iu8trORoB+A2Rhzbluwncc+
+         HZKg==
+X-Gm-Message-State: AGi0Pua3Czw9nTzOTS5TL6WuSJBls9blWA+JhMjnEVlE4cDdW2/kBljf
+        /DXEvXF5E0gDbwra2r2qDqnfsvLivi4anzERGacf8ZP01LM=
+X-Google-Smtp-Source: APiQypIdZjZrO4aeX+/9G7UXEKP7hP1w5JadaMQbG06oUiIQ8NjExQZ7der4QrwRDuenrob6GM+iG+QvYzm3UfSS+fE=
+X-Received: by 2002:a63:1c1:: with SMTP id 184mr17155666pgb.203.1586083127176;
+ Sun, 05 Apr 2020 03:38:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586071063-51656-1-git-send-email-decui@microsoft.com>
+References: <20200401162416.24474-1-i.mikhaylov@yadro.com> <20200401162416.24474-3-i.mikhaylov@yadro.com>
+ <CAHp75VcdDR-owtFuFMqNLFh_-L902fXODG14_6Dh416tTwjidA@mail.gmail.com>
+ <1e2c9b590a3626abee330a28cca86cbae7affb39.camel@yadro.com>
+ <CAHp75VdaM_pumyWyeHJxCQXrKUAW=ktJme1uYxH0w4e9an0X2A@mail.gmail.com> <20200405111341.0912468d@archlinux>
+In-Reply-To: <20200405111341.0912468d@archlinux>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 5 Apr 2020 13:38:36 +0300
+Message-ID: <CAHp75VeQ7LNve3bUEgzH2YrMwcihSDs+LHB3fgxy=b6pKH4RcA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] iio: proximity: Add driver support for vcnl3020
+ proximity sensor
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 05, 2020 at 12:17:43AM -0700, Dexuan Cui wrote:
->   * CHECKSUM_COMPLETE:
->   *
-> - *   This is the most generic way. The device supplied checksum of the _whole_
-> - *   packet as seen by netif_rx() and fills out in skb->csum. Meaning, the
-> + *   This is the most generic way. The device supplies checksum of the _whole_
-> + *   packet as seen by netif_rx() and fills out in skb->csum. This means the
+On Sun, Apr 5, 2020 at 1:13 PM Jonathan Cameron <jic23@kernel.org> wrote:
+> On Thu, 2 Apr 2020 15:42:02 +0300
+> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Thu, Apr 2, 2020 at 11:24 AM Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+> > > On Wed, 2020-04-01 at 19:35 +0300, Andy Shevchenko wrote:
+> > > > On Wed, Apr 1, 2020 at 7:24 PM Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
 
-I think both 'supplies' and 'supplied' are correct in this sentence.  The
-nuances are slightly different, but the meaning is the same in this instance.
+> > > > > +       indio_dev->name = VCNL_DRV_NAME;
+> > > >
+> > > > It's definitely not a driver name. You have to put part number here.
+> > >
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/light/tsl4531.c?h=v5.6#n199
+> That one is actually fine (if not very pretty) because the driver only supports one part and it happens
+> to also be the name of the driver.
+>
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/light/max44009.c?h=v5.6#n507
+> Also only one part supported, so fine if liable to accidentally get broken if we support more parts.
+>
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iio/light/vl6180.c?h=v5.6#n515
+>
+> Again, one part supported and the driver has the same name.
+>
+> >
+> > Let's Jonathan speak up.
+>
+> So, the real point here is not the value being assigned but the fact it's
+> explicitly linked to the name of the driver.  I'd argue that you could use
+> VCNL_NAME as the define and that link is clearly broken. Or just put the string
+> inline in both places and don't worry about the tiny bit of replication!
 
-You missed a mistake in the second line though, it should be either 'fills
-out' or 'fills in'.  I think we tend to prefer 'fills in'.
+My comments, except this one, to this version are quite minor, so,
+after addressing this in a way Jonathan likes,
 
->   * CHECKSUM_COMPLETE:
->   *   Not used in checksum output. If a driver observes a packet with this value
-> - *   set in skbuff, if should treat as CHECKSUM_NONE being set.
-> + *   set in skbuff, the driver should treat it as CHECKSUM_NONE being set.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-I would go with "it should treat the packet as if CHECKSUM_NONE were set."
+P.S. Don't forget to include given tags in the commit message of next
+(fixed) version.
 
-> @@ -211,7 +211,7 @@
->   * is implied by the SKB_GSO_* flags in gso_type. Most obviously, if the
->   * gso_type is SKB_GSO_TCPV4 or SKB_GSO_TCPV6, TCP checksum offload as
->   * part of the GSO operation is implied. If a checksum is being offloaded
-> - * with GSO then ip_summed is CHECKSUM_PARTIAL, csum_start and csum_offset
-> + * with GSO then ip_summed is CHECKSUM_PARTIAL AND csum_start and csum_offset
->   * are set to refer to the outermost checksum being offload (two offloaded
->   * checksums are possible with UDP encapsulation).
-
-Why the capitalisation of 'AND'?
-
-Thanks for the improvements,
-
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+-- 
+With Best Regards,
+Andy Shevchenko
