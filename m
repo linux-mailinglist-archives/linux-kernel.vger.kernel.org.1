@@ -2,163 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5ADF19E869
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 03:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79F919E876
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 04:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726423AbgDEByT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 21:54:19 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:40744 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbgDEByT (ORCPT
+        id S1726407AbgDECE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 22:04:27 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:53009 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726258AbgDECE1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 21:54:19 -0400
-Received: by mail-io1-f67.google.com with SMTP id s15so11965665ioj.7;
-        Sat, 04 Apr 2020 18:54:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WGZ1QR60q1jU80/fYr0WWBey1aNSa19nwxnAnET5oVo=;
-        b=qiu2adu0Ji6UtryfNjKfsHWLdoqfwWCx8LSRL+QaT3mS7DfsEqmp5A2rdtEKc7Webg
-         e67LIQHTA2kHMkoeaYZcIKhN7XY2OZDTGlrrZwQg/eTb73hSB6DauQcKq16v8vST6LUV
-         TxAYGVjvLaGzRs5IS096ZweX8f3xqlOtZv2NuhRYI9FJzekw9ZZRDDzAZqekRWhSKHh4
-         xrqBk2BC2l+Qgx6D63fCuhDS6YzeghwUbmSU0/8d3lHN6i70a9xp7sWh+9JS1WfGA0gq
-         +2aEKEN/R/12xPtCrNgyyLSgQzHfddEjuw3zTKlHzm9QANITwqhOACoOv2tIoh+wOEuj
-         mZRQ==
-X-Gm-Message-State: AGi0PuacIblL2Jdqdv2Yuh7KaglTyjaO7q/0SC6551xlog2Bxp6D2Iko
-        NqJ/74+GALGyQ2DjXoTEf14oYSk=
-X-Google-Smtp-Source: APiQypImWqTBdmNG/vwTJJkqNRHISPAzw3peoR+pvIb61So8Pv/Sabd7lThe+FpmDbwepybmiIZcQA==
-X-Received: by 2002:a6b:e316:: with SMTP id u22mr13881852ioc.1.1586051658393;
-        Sat, 04 Apr 2020 18:54:18 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id x10sm4570896ili.88.2020.04.04.18.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Apr 2020 18:54:17 -0700 (PDT)
-Received: (nullmailer pid 22378 invoked by uid 1000);
-        Sun, 05 Apr 2020 01:54:16 -0000
-Date:   Sat, 4 Apr 2020 19:54:16 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
-        krzk@kernel.org, avri.altman@wdc.com, martin.petersen@oracle.com,
-        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/5] dt-bindings: phy: Document Samsung UFS PHY
- bindings
-Message-ID: <20200405015416.GA16616@bogus>
-References: <20200327170638.17670-1-alim.akhtar@samsung.com>
- <CGME20200327171414epcas5p1460e932c0bc98f31ebdd115218b4fd49@epcas5p1.samsung.com>
- <20200327170638.17670-2-alim.akhtar@samsung.com>
+        Sat, 4 Apr 2020 22:04:27 -0400
+X-UUID: 18b7f7185d094cd393912fd8e78247c8-20200405
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=6C3FlHQGtBSdpwcN0CT4YS5wT7BtTafM/xlh39vjWCw=;
+        b=CDnjp3IVAFpw/2MnoqCmu/DqMax5bkp32pdHIiv8A8A88ldWdErkvPMCI2DOfaehqI1widqRazlyJRJ4DdUX8bzpzbc/SW85Fn8pBAoyImYn3O1CfDB4NpRo273GasplPM/lD4V7KFZ2yQ9wf0vV90LhlvzfFythaoOCKBpW9t0=;
+X-UUID: 18b7f7185d094cd393912fd8e78247c8-20200405
+Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
+        (envelope-from <fengping.yu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 538244710; Sun, 05 Apr 2020 10:04:20 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 5 Apr 2020 10:04:13 +0800
+Received: from localhost.localdomain (10.15.20.246) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 5 Apr 2020 10:04:13 +0800
+From:   Fengping yu <fengping.yu@mediatek.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Yingjoe Chen <yingjoe.chen@mediatek.com>
+CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v3] Add support for MediaTek keypad 
+Date:   Sun, 5 Apr 2020 10:01:13 +0800
+Message-ID: <20200405020114.14787-1-fengping.yu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200327170638.17670-2-alim.akhtar@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 10:36:34PM +0530, Alim Akhtar wrote:
-> This patch documents Samsung UFS PHY device tree bindings
-> 
-> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
-> ---
->  .../bindings/phy/samsung,ufs-phy.yaml         | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/samsung,ufs-phy.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/samsung,ufs-phy.yaml b/Documentation/devicetree/bindings/phy/samsung,ufs-phy.yaml
-> new file mode 100644
-> index 000000000000..41ba481ecc76
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/samsung,ufs-phy.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0)
+DQpUaGlzIHBhdGNoc2V0IGFkZCBzdXBwb3J0IHRvIE1lZGlhVGVrIG1hdHJpeCBrZXlwYWQuDQoN
+CkNoYW5nZSBzaW5jZSBWMjoNCi0gcmVtb3ZlIGV4dHJhIHNwYWNlIGFuZCByZWR1bmRhbnQgbGlu
+ZXMNCi0gdXBkYXRlIGtleXBhZCBkZXZpY2V0cmVlIGRvY3VtZW50IGRlYm91bmNlIHRpbWUgdW5p
+dA0KLSBjaGFuZ2UgdG8gdXNlIGRldm1fcGxhdGZvcm1faW9yZW1hcF9yZXNvdXJjZSgpIHRvIHNp
+bXBsaWZ5IHJlc291cmNlIG1hbmFnZW1lbnQNCi0gdXNlIGJpdG1hcCB0byBzdG9yZSBhbmQgY2hl
+Y2sga2V5cGFkIHN0YXRlDQoNCmZlbmdwaW5nLnl1ICgyKToNCiAgYWRkIGR0LWJpbmRpbmcgZG9j
+dW1lbnQgZm9yIE1lZGlhVGVrIEtleXBhZA0KICBhZGQgTWVkaWFUZWsga2V5cGFkIGRyaXZlcg0K
+DQogLi4uL2RldmljZXRyZWUvYmluZGluZ3MvaW5wdXQvbXRrLWtwZC50eHQgICAgIHwgIDYxICsr
+KysrDQogYXJjaC9hcm02NC9jb25maWdzL2RlZmNvbmZpZyAgICAgICAgICAgICAgICAgIHwgICAx
+ICsNCiBkcml2ZXJzL2lucHV0L2tleWJvYXJkL0tjb25maWcgICAgICAgICAgICAgICAgfCAgIDcg
+Kw0KIGRyaXZlcnMvaW5wdXQva2V5Ym9hcmQvTWFrZWZpbGUgICAgICAgICAgICAgICB8ICAgMSAr
+DQogZHJpdmVycy9pbnB1dC9rZXlib2FyZC9tdGsta3BkLmMgICAgICAgICAgICAgIHwgMjU4ICsr
+KysrKysrKysrKysrKysrKw0KIDUgZmlsZXMgY2hhbmdlZCwgMzI4IGluc2VydGlvbnMoKykNCiBj
+cmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2lucHV0
+L210ay1rcGQudHh0DQogY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvaW5wdXQva2V5Ym9hcmQv
+bXRrLWtwZC5jDQoNCi0tDQoyLjE4LjANCg0K
 
-Dual license new bindings:
-
-(GPL-2.0-only OR BSD-2-Clause)
-
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/samsung,ufs-phy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung SoC series UFS PHY Device Tree Bindings
-> +
-> +maintainers:
-> +  - Alim Akhtar <alim.akhtar@samsung.com>
-> +
-> +properties:
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +  compatible:
-> +    enum:
-> +      - samsung,exynos7-ufs-phy
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: PHY base register address
-> +
-> +  reg-names:
-> +    items:
-> +      - const: phy-pma
-> +
-> +  clocks:
-> +    items:
-> +      - description: PLL reference clock
-> +      - description: Referencec clock parrent
-> +
-> +  clock-names:
-> +    items:
-> +      - const: ref_clk_parent
-> +      - const: ref_clk
-
-Doesn't match what 'clocks' says.
-
-Also, why do you need the parent in DT? Just use clk_get_parent(). DT 
-should reflect actual h/w clock connections (not what the driver 
-happens to need). Also, there's the assigned-clocks binding.
-
-> +
-> +  samsung,pmu-syscon:
-> +    $ref: '/schemas/types.yaml#/definitions/phandle'
-> +    description: phandle for PMU system controller interface, used to
-> +                 control pmu registers for power isolation
-
-We have a binding for power domains. Use that for power isolation.
-
-> +
-> +required:
-> +  - "#phy-cells"
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - clocks
-> +  - clock-names
-> +  - samsung,pmu-syscon
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/exynos7-clk.h>
-> +
-> +    ufs_phy: ufs-phy@15571800 {
-> +        compatible = "samsung,exynos7-ufs-phy";
-> +        reg = <0x15571800 0x240>;
-> +        reg-names = "phy-pma";
-> +        samsung,pmu-syscon = <&pmu_system_controller>;
-> +        #phy-cells = <0>;
-> +        clocks = <&clock_fsys1 MOUT_FSYS1_PHYCLK_SEL1>,
-> +                 <&clock_top1 CLK_SCLK_PHY_FSYS1_26M>;
-> +        clock-names = "ref_clk_parent",
-> +                      "ref_clk";
-> +    };
-> +...
-> 
-> base-commit: fb33c6510d5595144d585aa194d377cf74d31911
-> -- 
-> 2.17.1
-> 
