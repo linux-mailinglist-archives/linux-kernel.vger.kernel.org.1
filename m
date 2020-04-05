@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 304DD19EC35
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC5619EC3E
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727329AbgDEOyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 10:54:45 -0400
-Received: from vps.xff.cz ([195.181.215.36]:38982 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726674AbgDEOyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 10:54:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1586098483; bh=YvInvH/mqpjWA9tS3gUA31bXJDMR40kHIKld7q04mmg=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=QJ79tLBwI18mxgsos5s6y/yEYEzpyGors8eAHWB3JvCsqxbtpH0uyxMCT3YGmbbfF
-         A8Rnk9/WZSr2nDyyx0DlHucdax5BmYhZ1E8B6Cyh9JiRX7+nRDVRF0eLgVfAyMxejI
-         c5y2X6oLpB3ckC9eG1gXqQSHdVvyBJUOiptaBqX0=
-Date:   Sun, 5 Apr 2020 16:54:43 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Subject: Re: [linux-sunxi] [PATCH 0/7] Add support for Allwinner H6 DVFS
-Message-ID: <20200405145443.uycsh73kxmurdmil@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-References: <20200405104913.22806-1-peron.clem@gmail.com>
- <20200405115138.vrrvv7spnv6ifm6x@core.my.home>
- <CAJiuCcfAKCs5ZLi_O21eyx-ZraC2Sb_ugQSmOEYm5+eVkQ7ZSw@mail.gmail.com>
+        id S1726674AbgDEOzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 10:55:14 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:42275 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726729AbgDEOzO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 10:55:14 -0400
+Received: by mail-io1-f71.google.com with SMTP id a16so10938432ios.9
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 07:55:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=t0QGEA/iH/o9fVkzIV8JLJ4OWazCZ63P3kwBKE4Z9Eg=;
+        b=JVZbryDrj1azr29bCZL0+Oh6mnXj92K3RaUShZujWU3q0ZHeGV1eWtFQ72b/NyOOnU
+         evxziX2GfjxtvfN6xpVejOulw6Nat1yG+oLKoOfhNkTskI5eU2OROr3iCFAEjyxrqxGo
+         Z9Md4pzr3uubV5SQY0ijCAMgSGVAZNBpSDSGoATLYBc/73sKbcKAIMqogNIc7EQpNQSy
+         nik9MHk3Uc7PQjMWSGEVfx4E1WuXslgB5YZydnu909r8dl48GRS+UNYapKbXvSIJ1Ggw
+         ipHWZ2TPR1PAZOibity1Gh1CKABlKXkQAqcnbdfu3YyFwKhjBOvuxjROtuqIcEdbFkdr
+         M6dA==
+X-Gm-Message-State: AGi0Pub8MZ41K8R07Xoa3oMlyuwuRr2kmIAxudKRvKFwBoimY2/ztomO
+        G5Y0/OULLfBARMvkvlEUH83kgubeEYmbs5nl+Qam/XbFFCjQ
+X-Google-Smtp-Source: APiQypJjDnivtGjrXVVXX6qPLRwtG90L59xknFkl/xI2XrfEyOqYveejmrftzszBBpCWE8S4yvakjolrCifCExy1O5OMJ/ddCS4k
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJiuCcfAKCs5ZLi_O21eyx-ZraC2Sb_ugQSmOEYm5+eVkQ7ZSw@mail.gmail.com>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+X-Received: by 2002:a92:bbd8:: with SMTP id x85mr17736262ilk.40.1586098513205;
+ Sun, 05 Apr 2020 07:55:13 -0700 (PDT)
+Date:   Sun, 05 Apr 2020 07:55:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000075615505a28c569e@google.com>
+Subject: WARNING: can't dereference registers at ADDR for ip interrupt_entry
+From:   syzbot <syzbot+be0c7be873b78b57c065@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, suravee.suthikulpanit@amd.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello,
 
-On Sun, Apr 05, 2020 at 04:33:37PM +0200, Clément Péron wrote:
-> Hi Ondřej,
+syzbot found the following crash on:
 
-[ ... ]
+HEAD commit:    a0ba26f3 Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=1669fcb7e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=27392dd2975fd692
+dashboard link: https://syzkaller.appspot.com/bug?extid=be0c7be873b78b57c065
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ab1edbe00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150eb063e00000
 
-> Good point, this information should be added for both CPU and GPU regulator.
-> This could be nice to confirm this point with a scope.
-> 
-> Also I remark that Allwinner user higher temperature than what we set :
-> alarm_low_temp = <105000>;
-> alarm_high_temp = <110000>;
-> alarm_temp_hysteresis = <15000>;
-> shut_temp= <115000>;
-> https://github.com/orangepi-xunlong/OrangePiH6_Linux4_9/blob/master/arch/arm64/boot/dts/sunxi/sun50iw6p1.dtsi#L1924
-> 
-> Don't you think that we can push a bit higher the temperature it's
-> actually at 80°C ?
+The bug was bisected to:
 
-We probably can. But just 5°C between high temp and criticla temp is probably
-not enough. I'd probably set our value to something like 90-100°C so that quick
-temperature spike before regulation kicks in would not shutdown the CPU.
+commit 24bbf74c0c36bfbaa276c9921b55b844018b241e
+Author: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Date:   Thu Nov 14 20:15:07 2019 +0000
 
-regards,
-	o.
+    kvm: x86: Add APICv (de)activate request trace points
 
-> Thanks for the review,
-> Clement
-> 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12f1dadbe00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=11f1dadbe00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f1dadbe00000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+be0c7be873b78b57c065@syzkaller.appspotmail.com
+Fixes: 24bbf74c0c36 ("kvm: x86: Add APICv (de)activate request trace points")
+
+WARNING: can't dereference registers at 00000000ebf55915 for ip interrupt_entry+0xb8/0xc0 arch/x86/entry/entry_64.S:579
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
