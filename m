@@ -2,127 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DB719EDCC
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 22:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB7819EDD2
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 22:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbgDEUDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 16:03:06 -0400
-Received: from mout.web.de ([212.227.17.12]:34193 "EHLO mout.web.de"
+        id S1727738AbgDEUOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 16:14:18 -0400
+Received: from mga01.intel.com ([192.55.52.88]:62225 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726678AbgDEUDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 16:03:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1586116969;
-        bh=VWzXLGBpcSdiL4HKp7NcBVrkYnDV3TAHKsakI0KFRsY=;
-        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
-        b=pO82ceHwmns+8ZLFgFRhkccyBV8pm0wrJtXl7PAkRUndHrv4LiHujTZ1ZSfp2dQrf
-         1Xyl98mWsFPhlIVumZT2ArMAH25lTz4rnKlhk1El6rVNFHQmSeN/xBAXbZDyG8ewr5
-         J2mRhxLCZ6TCvb7CLSjxp5bWfbjrtxXOiIHxJlTA=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([93.131.99.70]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0LgpVS-1izpQE38i6-00oBjY; Sun, 05
- Apr 2020 22:02:48 +0200
-To:     Qiujun Huang <hqjagain@gmail.com>, linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Alex Dewar <alex.dewar@gmx.co.uk>,
-        Hannes Reinecke <hare@suse.com>,
-        "James E. J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Subject: Re: [PATCH] scsi: aic7xxx: Remove null pointer checks before kfree()
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <72bc89d5-cf50-3f3a-41e0-b46b134e754d@web.de>
-Date:   Sun, 5 Apr 2020 22:02:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:u+p9BHXLJrqPUXSmF3wCMpNfap19OxXKEGKXCn1Ug0HtQl22rQ3
- rZKnbcoWjO4hlzq+9buuJGUPMK122aszjMwXBE27pKgzApxMGXD6d+f6Mc+elK4KifwkR2J
- 2BIeKKa3G7dW6CyXDg2sFdCvggzKol+lphVrKzJiQx9Me/Qip3Vck6bXXtSjkSyaV3KlWfn
- eYqgHWdRW3BZBa4lfp5IQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hJymaNxIJMk=:JqUf+T0sd8BDL6HoL4lI90
- TmWVOyZhBe4xSG5N6SrtwcStaIGkSk16KdC24b4CEZ295d+ZxGn/LOWX2LjrQnJt+ZxgN0xn5
- 4IwBbgkD18GC+8PMdvI2g90X56QDQ0+kYY7CtdPxIeIJ+nFx4+VDO3filf3SSPLj0OhCpVY0E
- 4ZJYcCuxcgN11tNyHh8ByWsYEhvTMqhtjXbBjjwwIhTeq0QqDF5SShSJ1DOspbkv7rZpGe6bu
- jguTongcVi04TaOM7EapsHkvZxTKpTU9sUs1wBbMvf5tqAVxtVbkOIel+xXywYpbUZ52jljvp
- L+SUZ3RuY1mMWIBzsenYpDgE/UF7hM+90tQm5Ry49TkOFfR5+PN8d6vPrekXlZQRKaq0MA+K0
- Mm9zgHQ552JLyCDJ6ST+wIgbioE9SS01KqpHYD/BEAUspZxUai3+pR3Yc4pPkQaICnBjzVm+7
- SmynTeNKRhEQMMnfs3qOfaQaGvZy0q4Mqk3I8UTqj5Sfu6WtZISbPz5s7l+IPxCWa5ZsL6gMd
- e/1oPImcH3oic3jmZonofPzc02oQKrnJsTuitM4OD1oeYgeJND8Ky6sFL4OwMs6rsqzzaBc4w
- QQzMYqYU1GYf7f2omfnLsok/JNOhhlMRk5BNXMlLpm2V6fuzZkNQfKRQ+VPAShfJyQ57cWPRx
- S1l7uGRUuzxs+S4zQVmamyQerZBlS4smSW3CGe28I7H2d+BFfFrUbBw4x7Rx8eKr2p7Am+e+B
- IDdSnlFTxXpoORYIl8ZPcFHafrLopW01PC74RutsqFZJ71R4UnE8qo7A+BPHvr0MtqGh5NftV
- hVvoBQsu4nQKXV7mTqaR3S4WDa8zB3uTxL1vUn/2Hgr2+0vggyI9sM1w69YgxbZ0EO7pdCKMQ
- L1O8qQoQ/EzBVs9ZURBG1erOuYnq73lFXhFKXCd2sYScWNpd3qQvcnizIDZmg/ahJLepqS/Fa
- fpsmdRk+JTVgUSrIBoT+QYN5sbFFMbaaH4WVAQxSfIKF9hRHQUURcwh5SP/JD6SkpCw5aOgCB
- H7I8crQCXqEYJpjmKxVCi4eerNrHvwJ1z0Mtm8VADEtE7O1o5DvOAoDd5xXDYLSj4ZKzUEddg
- YthHDgT0dfE02lNmBuNRirNUgdjJ4FnVAZheJwwS5/kljtswEKzDjxKT35JlSIewjZsMSxyxH
- ToTXrRNF6cgVWTz5Qx7gAV8p+O/k0Lsc0DITnayj2pxdlZHy5+opvT0di3gtWwyGpGR6sG1T7
- O9M0291mKShH/n7Wa
+        id S1726887AbgDEUOR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 16:14:17 -0400
+IronPort-SDR: JkCale7GbP1ZmTyda90MPz9Ho/z8ZLcw3yk2P9mENkPvF37tohqNK0p9ZR5Y25Jf6QbqHjnEh9
+ nI3sw8+nO0DA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2020 13:14:17 -0700
+IronPort-SDR: lsnpJBhoI9DEBErc0atIDPfOn0IN1Q86/t6bvgY328+C1NOO7e3pnLsn/sBEizDgNAMktLOzOh
+ YQsCEX8w8eJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,348,1580803200"; 
+   d="scan'208";a="329688337"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.87])
+  by orsmga001.jf.intel.com with ESMTP; 05 Apr 2020 13:14:12 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH V6 00/15] perf/x86: Add perf text poke events
+Date:   Sun,  5 Apr 2020 23:13:12 +0300
+Message-Id: <20200405201327.7332-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> NULL check before kfree is unnecessary so remove it.
+Hi
 
-I hope that you would like to take another update suggestion into account
-(besides a typo correction for your commit message).
-https://lore.kernel.org/patchwork/patch/1220189/
-https://lore.kernel.org/linux-scsi/20200403164712.49579-1-alex.dewar@gmx.c=
-o.uk/
+Here are patches to add a text poke event to record changes to kernel text
+(i.e. self-modifying code) in order to support tracers like Intel PT
+decoding through jump labels, kprobes and ftrace trampolines.
 
-Do you find a previous update suggestion like =E2=80=9CSCSI-aic7...: Delet=
-e unnecessary
-checks before the function call "kfree"=E2=80=9D also interesting?
-https://lore.kernel.org/linux-scsi/54D3E057.9030600@users.sourceforge.net/
-https://lore.kernel.org/patchwork/patch/540593/
-https://lkml.org/lkml/2015/2/5/650
+The first 8 patches make the kernel changes and the subsequent patches are
+tools changes.
 
-Regards,
-Markus
+The next 4 patches add support for updating perf tools' data cache
+with the changed bytes.
+
+The next patch is an Intel PT specific tools change.
+
+The final 2 patches add perf script --show-text-poke-events option
+
+Patches also here:
+
+	git://git.infradead.org/users/ahunter/linux-perf.git text_poke
+
+Changes in V6
+
+  perf: Add perf text poke event
+
+	Adjustments due to re-base on top of cgroup event patches
+
+  perf/x86: Add perf text poke events for kprobes
+
+	Expand commit message
+	Add Masami's Ack
+
+  perf tools: Add support for PERF_RECORD_TEXT_POKE
+
+	Adjustments due to re-base on top of cgroup event patches
+	Improvements to perf_event__fprintf_text_poke()
+
+  perf script: Add option --show-text-poke-events
+  perf script: Show text poke address symbol
+
+	New patches
+
+Changes in V5
+
+  perf/x86: Add perf text poke events for kprobes
+
+	Simplify optimized kprobes events (Peter)
+
+Changes in V4
+
+  kprobes: Add symbols for kprobe insn pages
+
+	Change "module name" from kprobe to __builtin__kprobes
+	Added comment about "module name" use
+
+  ftrace: Add symbols for ftrace trampolines
+	
+	Change "module name" from ftrace to __builtin__ftrace
+	Move calls of ftrace_add_trampoline_to_kallsyms() and
+	ftrace_remove_trampoline_from_kallsyms() into
+	kernel/trace/ftrace.c
+	Added comment about "module name" use
+
+  ftrace: Add perf ksymbol events for ftrace trampolines
+
+	Move changes into kernel/trace/ftrace.c
+
+  ftrace: Add perf text poke events for ftrace trampolines
+
+	Move changes into kernel/trace/ftrace.c
+
+Changes in V3:
+
+  perf: Add perf text poke event
+
+	To prevent warning, cast pointer to (unsigned long) not (u64)
+
+  kprobes: Add symbols for kprobe insn pages
+
+	Expand commit message
+	Remove un-needed declarations of kprobe_cache_get_kallsym() and arch_kprobe_get_kallsym() when !CONFIG_KPROBES
+
+  ftrace: Add symbols for ftrace trampolines
+
+	Expand commit message
+	Make ftrace_get_trampoline_kallsym() static
+
+Changes in V2:
+
+  perf: Add perf text poke event
+
+	Separate out x86 changes
+	The text poke event now has old len and new len
+	Revised commit message
+
+  perf/x86: Add support for perf text poke event for text_poke_bp_batch() callers
+
+	New patch containing x86 changes from original first patch
+
+  kprobes: Add symbols for kprobe insn pages
+  kprobes: Add perf ksymbol events for kprobe insn pages
+  perf/x86: Add perf text poke events for kprobes
+  ftrace: Add symbols for ftrace trampolines
+  ftrace: Add perf ksymbol events for ftrace trampolines
+  ftrace: Add perf text poke events for ftrace trampolines
+  perf kcore_copy: Fix module map when there are no modules loaded
+  perf evlist: Disable 'immediate' events last
+
+	New patches
+
+  perf tools: Add support for PERF_RECORD_TEXT_POKE
+
+	The text poke event now has old len and new len
+	Also select ksymbol events with text poke events
+
+  perf tools: Add support for PERF_RECORD_KSYMBOL_TYPE_OOL
+
+	New patch
+
+  perf intel-pt: Add support for text poke events
+
+	The text poke event now has old len and new len
+	Allow for the address not having a map yet
+
+
+Changes since RFC:
+
+  Dropped 'flags' from the new event.  The consensus seemed to be that text
+  pokes should employ a scheme similar to x86's INT3 method instead.
+
+  dropped tools patches already applied.
+
+
+Example:
+
+  For jump labels, the kernel needs
+	CONFIG_JUMP_LABEL=y
+  and also an easy to flip jump label is in sysctl_schedstats() which needs
+	CONFIG_SCHEDSTATS=y
+	CONFIG_PROC_SYSCTL=y
+	CONFIG_SCHED_DEBUG=y
+
+  Also note the 'sudo perf record' is put into the background which, as
+  written, needs sudo credential caching (otherwise the background task
+  will stop awaiting the sudo password), hence the 'sudo echo' to start.
+
+Before:
+
+  $ sudo echo
+  $ sudo perf record -o perf.data.before --kcore -a -e intel_pt//k -m,64M &
+  [1] 1640
+  $ cat /proc/sys/kernel/sched_schedstats
+  0
+  $ sudo bash -c 'echo 1 > /proc/sys/kernel/sched_schedstats'
+  $ cat /proc/sys/kernel/sched_schedstats
+  1
+  $ sudo bash -c 'echo 0 > /proc/sys/kernel/sched_schedstats'
+  $ cat /proc/sys/kernel/sched_schedstats
+  0
+  $ sudo kill 1640
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 16.635 MB perf.data.before ]
+  $ perf script -i perf.data.before --itrace=e >/dev/null
+  Warning:
+  1946 instruction trace errors
+
+After:
+
+  $ sudo echo
+  $ sudo perf record -o perf.data.after --kcore -a -e intel_pt//k -m,64M &
+  [1] 1882
+  $ cat /proc/sys/kernel/sched_schedstats
+  0
+  $ sudo bash -c 'echo 1 > /proc/sys/kernel/sched_schedstats'
+  $ cat /proc/sys/kernel/sched_schedstats
+  1
+  $ sudo bash -c 'echo 0 > /proc/sys/kernel/sched_schedstats'
+  $ cat /proc/sys/kernel/sched_schedstats
+  0
+  $ sudo kill 1882
+  [ perf record: Woken up 1 times to write data ]
+  [ perf record: Captured and wrote 10.893 MB perf.data.after ]
+  $ perf script -i perf.data.after --itrace=e
+  $
+
+
+Adrian Hunter (15):
+      perf: Add perf text poke event
+      perf/x86: Add support for perf text poke event for text_poke_bp_batch() callers
+      kprobes: Add symbols for kprobe insn pages
+      kprobes: Add perf ksymbol events for kprobe insn pages
+      perf/x86: Add perf text poke events for kprobes
+      ftrace: Add symbols for ftrace trampolines
+      ftrace: Add perf ksymbol events for ftrace trampolines
+      ftrace: Add perf text poke events for ftrace trampolines
+      perf kcore_copy: Fix module map when there are no modules loaded
+      perf evlist: Disable 'immediate' events last
+      perf tools: Add support for PERF_RECORD_TEXT_POKE
+      perf tools: Add support for PERF_RECORD_KSYMBOL_TYPE_OOL
+      perf intel-pt: Add support for text poke events
+      perf script: Add option --show-text-poke-events
+      perf script: Show text poke address symbol
+
+ arch/x86/include/asm/kprobes.h            |   2 +
+ arch/x86/kernel/alternative.c             |  37 ++++++++++-
+ arch/x86/kernel/kprobes/core.c            |  15 ++++-
+ arch/x86/kernel/kprobes/opt.c             |  38 +++++++++--
+ include/linux/ftrace.h                    |  12 ++--
+ include/linux/kprobes.h                   |  15 +++++
+ include/linux/perf_event.h                |   8 +++
+ include/uapi/linux/perf_event.h           |  26 +++++++-
+ kernel/events/core.c                      |  90 +++++++++++++++++++++++++-
+ kernel/kallsyms.c                         |  42 +++++++++++--
+ kernel/kprobes.c                          |  57 +++++++++++++++++
+ kernel/trace/ftrace.c                     | 101 +++++++++++++++++++++++++++++-
+ tools/include/uapi/linux/perf_event.h     |  26 +++++++-
+ tools/lib/perf/include/perf/event.h       |   9 +++
+ tools/perf/Documentation/perf-script.txt  |   4 ++
+ tools/perf/arch/x86/util/intel-pt.c       |   4 ++
+ tools/perf/builtin-record.c               |  45 +++++++++++++
+ tools/perf/builtin-script.c               |  23 ++++++-
+ tools/perf/tests/perf-record.c            |   4 +-
+ tools/perf/util/dso.c                     |   3 +
+ tools/perf/util/dso.h                     |   1 +
+ tools/perf/util/event.c                   |  62 +++++++++++++++++-
+ tools/perf/util/event.h                   |   9 ++-
+ tools/perf/util/evlist.c                  |  31 ++++++---
+ tools/perf/util/evlist.h                  |   1 +
+ tools/perf/util/evsel.c                   |   7 ++-
+ tools/perf/util/intel-pt.c                |  77 ++++++++++++++++++++++-
+ tools/perf/util/machine.c                 |  49 +++++++++++++++
+ tools/perf/util/machine.h                 |   3 +
+ tools/perf/util/map.c                     |   5 ++
+ tools/perf/util/map.h                     |   3 +-
+ tools/perf/util/perf_event_attr_fprintf.c |   1 +
+ tools/perf/util/record.c                  |  10 +++
+ tools/perf/util/record.h                  |   1 +
+ tools/perf/util/session.c                 |  23 +++++++
+ tools/perf/util/symbol-elf.c              |   7 +++
+ tools/perf/util/symbol.c                  |   1 +
+ tools/perf/util/tool.h                    |   3 +-
+ 38 files changed, 815 insertions(+), 40 deletions(-)
+
+
+Regards
+Adrian
