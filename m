@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8716919ECE9
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 19:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040A019ED0F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 19:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727600AbgDERcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 13:32:03 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:44599 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbgDERcC (ORCPT
+        id S1727742AbgDERkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 13:40:00 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:17359 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726901AbgDERj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 13:32:02 -0400
-Received: by mail-lj1-f194.google.com with SMTP id p14so12135979lji.11
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 10:32:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zcbh6sH9SJBGE+Cjk3XFguwEqI2IKXqqQBtRFq6gvFQ=;
-        b=R07dbyu7Y0eMKVM4FedC3n/xof3lreuns2KIRBmYuFzNApajuKhjO7x1wg1aWKkMhh
-         dwTz+7LXu6F7lM4s5hAWcEoHMHg14h+cQpmTR9fdFNXDCp6e2xdLcSoC3KXYyqK/QeGu
-         RsK9JhsA+jl8afkEI+uxGrG60T2A4hCuJEIG8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zcbh6sH9SJBGE+Cjk3XFguwEqI2IKXqqQBtRFq6gvFQ=;
-        b=L7b52FeG6AYIE82axxLYa0C6QO24u7FRp096yNiQ3J+SpqLZhJ+X20GyP0dAMEqmeQ
-         7b/KVlhMWzvz8nwMGsUVpr0hqpq4WJQMzet/NvMnPR5gV6b7AxRghW8L+ojczPW7LOVK
-         2RRe/d+Te4nxLX8nLw4CW6fnwFL92i+dapUlOMnh9VCNXZgZmHSXcMvmiQo5lj+6mF33
-         oFMTDYGWvOjOOD8EPzP02qfc0wgmZTxksmREYlCS5NjWsXX9A6oR9fiTjqNBeUUQl3Oo
-         GVrOM5uOEaJ9ruy82Gp6t//RAkOe+3Fn7UbC8DHZfVyWHeDS/qrypCoPHCdiFxh0+4Kv
-         CJLw==
-X-Gm-Message-State: AGi0PubW3PfuAEu2ROi0wPuUtVf2gK+sMP4Whhp5TNhPeV/araNawv8s
-        CdraCAwGjWMxwULkhFE1VTrdZ9l5Tr0=
-X-Google-Smtp-Source: APiQypJBnb8Gyf1epJhm/rqg+ka8iUeFbuZmfNsBV9karK9nbSK4GNiYaSX7PTfYupmNlIeBb7Zv/g==
-X-Received: by 2002:a2e:7a18:: with SMTP id v24mr10196151ljc.34.1586107919584;
-        Sun, 05 Apr 2020 10:31:59 -0700 (PDT)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id e2sm8624020ljl.83.2020.04.05.10.31.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Apr 2020 10:31:58 -0700 (PDT)
-Received: by mail-lf1-f45.google.com with SMTP id r17so6307233lff.2
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 10:31:57 -0700 (PDT)
-X-Received: by 2002:a05:6512:14a:: with SMTP id m10mr6564163lfo.152.1586107917356;
- Sun, 05 Apr 2020 10:31:57 -0700 (PDT)
+        Sun, 5 Apr 2020 13:39:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586108397;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=Message-Id:Date:Subject:Cc:To:From:X-RZG-CLASS-ID:X-RZG-AUTH:From:
+        Subject:Sender;
+        bh=5eexSbKaD4PWK4+vSfn+rMLl0XvRZRi7o/XZA3aRFVw=;
+        b=mLNl0fT+W7Cfi1klpdFU0PGzxPA4ud8b2TxqpRhTkWW59oMZzKPdjFFK4C2gE7FBEZ
+        10hffU65TTBjTeG94yd+v0YMd0hsJsA6LGk4mZIwRdkzVqYbEhr7Z/nLXwlvOMN62dpt
+        ZF9caWImJwIyMf6ogveFYM/j4OU6XaAMgYrCJY0L663PHCStruGq//o/IiuWzjbmoLbh
+        Eoj7fj9WGUqlYKlp/LjCkYyzzFOp7LkPy/uXnue8ieXCPA7EvBIbpATVyudc7KORsHTL
+        EXqAV4oFeTEwwpC7KTGQ3NQ3VeRaf1djZgbJ1ycD3SyAh/C8araeaXDJxgkxfrBNh/ab
+        9Kzg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXS7IYBkLahKxB526NfqU="
+X-RZG-CLASS-ID: mo00
+Received: from localhost.localdomain
+        by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
+        with ESMTPSA id u043b8w35HXqxmd
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sun, 5 Apr 2020 19:33:52 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH 1/2] ARM: dts: ux500: samsung-golden: Add proximity sensor
+Date:   Sun,  5 Apr 2020 19:32:51 +0200
+Message-Id: <20200405173252.67614-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <1437197.1585570598@warthog.procyon.org.uk> <CAHk-=wgWnZCvTFDfiYAy=uMUf2F1Yy1r9ur5ARcmtqLjX8Tz4Q@mail.gmail.com>
- <78ff6e5d-9643-8798-09cb-65b1415140be@redhat.com> <3567369.1586077430@warthog.procyon.org.uk>
-In-Reply-To: <3567369.1586077430@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 5 Apr 2020 10:31:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg-6906+D68VHWv_SCvWUSG8R9w=js7kExmTum90Evu4g@mail.gmail.com>
-Message-ID: <CAHk-=wg-6906+D68VHWv_SCvWUSG8R9w=js7kExmTum90Evu4g@mail.gmail.com>
-Subject: Re: [GIT PULL] keys: Fix key->sem vs mmap_sem issue when reading key
-To:     David Howells <dhowells@redhat.com>
-Cc:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        keyrings@vger.kernel.org,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 5, 2020 at 2:04 AM David Howells <dhowells@redhat.com> wrote:
->
-> Should this be moved into core code, rather than being squirrelled away in
-> security/keys/?
+samsung-golden has the same sharp,gp2ap002s00f proximity sensor
+that is also used in samsung-skomer.
 
-Yes. I do think that that __kvzfree() function makes sense in general
-(the same way that kzfree does).
+A driver was added for it in
+commit 97d642e23037 ("iio: light: Add a driver for Sharp GP2AP002x00F").
 
-I just happen to despise the name, and think that the implementation
-isn't great.
+Now that it was merged we can add an entry for it in the device tree
+for samsung-golden.
 
-It also probably makes no sense to make it an inline function. It's
-not like that function is done for performance reasons, and it might
-only get worse if we then end up making it cause barriers or something
-for CPU data leakage issues or whatever.
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+---
+ .../arm/boot/dts/ste-ux500-samsung-golden.dts | 35 +++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-           Linus
+diff --git a/arch/arm/boot/dts/ste-ux500-samsung-golden.dts b/arch/arm/boot/dts/ste-ux500-samsung-golden.dts
+index 313f0ab16866..0e9e33f4ca3c 100644
+--- a/arch/arm/boot/dts/ste-ux500-samsung-golden.dts
++++ b/arch/arm/boot/dts/ste-ux500-samsung-golden.dts
+@@ -146,6 +146,32 @@ uart@80007000 {
+ 			pinctrl-1 = <&u2rxtx_c_1_sleep>;
+ 		};
+ 
++		i2c@80004000 {
++			status = "okay";
++
++			pinctrl-names = "default", "sleep";
++			pinctrl-0 = <&i2c0_a_1_default>;
++			pinctrl-1 = <&i2c0_a_1_sleep>;
++
++			proximity@44 {
++				compatible = "sharp,gp2ap002s00f";
++				reg = <0x44>;
++
++				/* GPIO146 (PS_INT) */
++				interrupt-parent = <&gpio4>;
++				interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
++
++				vdd-supply = <&ab8500_ldo_aux1_reg>;
++				vio-supply = <&ab8500_ldo_aux8_reg>;
++
++				pinctrl-names = "default";
++				pinctrl-0 = <&proximity_default>;
++
++				sharp,proximity-far-hysteresis = <0x40>;
++				sharp,proximity-close-hysteresis = <0x0f>;
++			};
++		};
++
+ 		i2c@80128000 {
+ 			status = "okay";
+ 
+@@ -375,6 +401,15 @@ golden_cfg1 {
+ 		};
+ 	};
+ 
++	proximity {
++		proximity_default: proximity_default {
++			golden_cfg1 {
++				pins = "GPIO146_D13";	/* PS_INT */
++				ste,config = <&gpio_in_nopull>;
++			};
++		};
++	};
++
+ 	imu {
+ 		imu_default: imu_default {
+ 			golden_cfg1 {
+-- 
+2.26.0
+
