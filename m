@@ -2,120 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 090A219EDD0
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 22:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F034A19EE1F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 22:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbgDEUNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 16:13:24 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:40110 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726887AbgDEUNY (ORCPT
+        id S1727620AbgDEUtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 16:49:52 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:50480 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726772AbgDEUtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 16:13:24 -0400
-Received: by mail-lf1-f66.google.com with SMTP id j17so10087028lfe.7
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 13:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZecswmQzcKyJcaA1KVr1PgDOFuDkBa9m5xQm0CMlRfg=;
-        b=jJyCDymm6a4Y4wyhQ19mQrdIHDOuRafStVA1S1Ig6u2VsstNNG+WN5ithcMu/UoDhe
-         CJm6CNrO5du/C461KF08IoNM6ixV+wdPZH8150mM/yVeqUBK51IxAnWz7mKOY839n8aW
-         d7cHEB5htx7FQ8+DMQOGIPAUPdAP2iIaT8fdrFL0ztPZz0GCoILB7X3WnENer2eAJskQ
-         eeo1VWbmuMKB2MUvYRbouX1S5SlVWKrKQ6M6xDtskZYZDXj9EBjSi5jMaCUjXzgkBOze
-         jU3zjVkxzmHp8gl2mo4gFFASzkAJPg2bF21TLTOydSfR8DchzsZcVw7KD93PqUSsu39Y
-         78tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZecswmQzcKyJcaA1KVr1PgDOFuDkBa9m5xQm0CMlRfg=;
-        b=lvqpQLsD7CeJ+4XW4UGqdo+ZpknT/mJumbMrDmk3MvU8NS5dPBL6wMXTMWdwCBP10u
-         V0XSEL0qwhcXQ3hM23Ir6Yu47K4dI6CNxDgGMuSx6b8BDcCKQuwDFieryaLKn+SHtEXi
-         um0bO21fp/et0xHD2gn01epfEdiWqGMvg+hIuXB4Qwmov7MIBb0MfQ2u0uPeWHjFltgg
-         m7jTx82Qk7jOAi2y454WslQ0SUVpz213QWI3rTaiInfLzDdOr/ECNr0A36LKZVUOc5on
-         IvowRbz17UNhVC1keKXM/mcOFw5yZSm+fen/YIRuqA7N+43kIvOL2BIQLPCYBh0XYDin
-         4lcw==
-X-Gm-Message-State: AGi0Pub1QZ1xZTv6StS/I+4pIjoweybnYw1WiGIxO4nY6uzgUx9SFxe9
-        44DkW6URIryYqYaItDv/mhzzTsmo5UnTdQ==
-X-Google-Smtp-Source: APiQypIEsOpmUVRbUVIGQF9PTFmAXeRwenTbMDANUZ4VQGITx+F9m6bijBqeMQEHZ9PikkiF90Ex9A==
-X-Received: by 2002:ac2:4143:: with SMTP id c3mr4585061lfi.131.1586117602906;
-        Sun, 05 Apr 2020 13:13:22 -0700 (PDT)
-Received: from navi.cosmonova.net.ua ([95.67.24.131])
-        by smtp.gmail.com with ESMTPSA id m1sm5450815lfl.69.2020.04.05.13.13.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Apr 2020 13:13:22 -0700 (PDT)
-From:   andrew@daynix.com
-To:     virtualization@lists.linux-foundation.org
-Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Fix: buffer overflow during hvc_alloc().
-Date:   Sun,  5 Apr 2020 23:40:24 +0300
-Message-Id: <20200405204024.1007843-1-andrew@daynix.com>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 5 Apr 2020 16:49:52 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 035Kh9sw057267;
+        Sun, 5 Apr 2020 20:49:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=y7ZahLPILWikQeCjld1D1QOXNNv6J0H2ohGApvDE+GU=;
+ b=ox9XanzK/rS7B95nf8FIs6xBDghS/C1Gv6oekKSteD72Xh+x2NOAYH77Uq1jNJA5b4PA
+ OnyADF7inR8/wo13GEviFoJ25deHswEL9Yv8qR/81+qyqfQy2fm78yMHFFnamJUD8Jv6
+ bPQCI/t8XLtShOx7VeuJDnXHbnnU+JpyFIApGzBbyCUErGltnHr+1/A3fIOvzY+1Rnks
+ zWKO/er087JfnOhsxgKu96JbgQTHlXMi50zfS3Wy+jbgA3J+1Y29l2m58wiGJ29mQebw
+ OfNmsc6Ce1ptEquttCDPsmZIgfSBjbHcpKyxaf342KbsXueTDoMu/9koy56OfbV8rwrk EQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 306jvmusj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 05 Apr 2020 20:49:22 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 035KhAjH056442;
+        Sun, 5 Apr 2020 20:49:22 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3073qb8gkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 05 Apr 2020 20:49:22 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 035KnEOF007900;
+        Sun, 5 Apr 2020 20:49:14 GMT
+Received: from [192.168.0.110] (/73.243.10.6)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 05 Apr 2020 13:49:14 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH] mm/vmalloc: Sanitize __get_vm_area() arguments
+From:   William Kucharski <william.kucharski@oracle.com>
+In-Reply-To: <20200405192108.GA9429@pc636>
+Date:   Sun, 5 Apr 2020 14:49:13 -0600
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        jroedel@suse.de, Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Transfer-Encoding: 7bit
+Message-Id: <65663E36-DC60-4E6E-B6C6-3A0F6852543D@oracle.com>
+References: <D25C4027-6EF9-44C2-AD4D-DDC785288B9A@oracle.com>
+ <20200404185229.GA424@pc636>
+ <EEB53CBF-0B3F-43E0-94F6-B001918BAC3E@oracle.com>
+ <20200405172315.GA8404@pc636> <20200405192108.GA9429@pc636>
+To:     Uladzislau Rezki <urezki@gmail.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=765
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004050189
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
+ mlxlogscore=821 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004050189
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Melnychenko <andrew@daynix.com>
+That's fine.
 
-If there is a lot(more then 16) of virtio-console devices
-or virtio_console module is reloaded
-- buffers 'vtermnos' and 'cons_ops' are overflowed.
-In older kernels it overruns spinlock which leads to kernel freezing:
-https://bugzilla.redhat.com/show_bug.cgi?id=1786239
+One could still argue size should be sanitized earlier when start and end
+are, but it's a nit either way (though size is used before it's checked,
+it's not in any way that could fail with bad results.)
 
-Signed-off-by: Andrew Melnychenko <andrew@daynix.com>
----
- drivers/tty/hvc/hvc_console.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+    -- Bill
 
-diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-index 27284a2dcd2b..436cc51c92c3 100644
---- a/drivers/tty/hvc/hvc_console.c
-+++ b/drivers/tty/hvc/hvc_console.c
-@@ -302,10 +302,6 @@ int hvc_instantiate(uint32_t vtermno, int index, const struct hv_ops *ops)
- 	vtermnos[index] = vtermno;
- 	cons_ops[index] = ops;
- 
--	/* reserve all indices up to and including this index */
--	if (last_hvc < index)
--		last_hvc = index;
--
- 	/* check if we need to re-register the kernel console */
- 	hvc_check_console(index);
- 
-@@ -960,13 +956,22 @@ struct hvc_struct *hvc_alloc(uint32_t vtermno, int data,
- 		    cons_ops[i] == hp->ops)
- 			break;
- 
--	/* no matching slot, just use a counter */
--	if (i >= MAX_NR_HVC_CONSOLES)
--		i = ++last_hvc;
-+	if (i >= MAX_NR_HVC_CONSOLES) {
-+
-+		/* find 'empty' slot for console */
-+		for (i = 0; i < MAX_NR_HVC_CONSOLES && vtermnos[i] != -1; i++) {
-+		}
-+
-+		/* no matching slot, just use a counter */
-+		if (i == MAX_NR_HVC_CONSOLES)
-+			i = ++last_hvc + MAX_NR_HVC_CONSOLES;
-+	}
- 
- 	hp->index = i;
--	cons_ops[i] = ops;
--	vtermnos[i] = vtermno;
-+	if (i < MAX_NR_HVC_CONSOLES) {
-+		cons_ops[i] = ops;
-+		vtermnos[i] = vtermno;
-+	}
- 
- 	list_add_tail(&(hp->next), &hvc_structs);
- 	mutex_unlock(&hvc_structs_mutex);
--- 
-2.24.1
+> On Apr 5, 2020, at 1:21 PM, Uladzislau Rezki <urezki@gmail.com> wrote:
+> 
+> On Sun, Apr 05, 2020 at 07:23:15PM +0200, Uladzislau Rezki wrote:
+> Sorry, was thinking about one place showed different one. Here we go:
+> 
+> <snip>
+> /* Check the "vend" restriction. */
+>  if (nva_start_addr + size > vend)
+>    return vend;
+> <snip>
+> 
+> --
+> Vlad Rezki
+
 
