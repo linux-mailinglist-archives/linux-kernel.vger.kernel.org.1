@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFD419EAA8
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 13:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F282F19EAB5
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 13:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgDELOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 07:14:47 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:37825 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726399AbgDELOr (ORCPT
+        id S1726642AbgDELYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 07:24:14 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:50670 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726388AbgDELYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 07:14:47 -0400
-Received: by mail-wr1-f67.google.com with SMTP id w10so13967575wrm.4;
-        Sun, 05 Apr 2020 04:14:45 -0700 (PDT)
+        Sun, 5 Apr 2020 07:24:13 -0400
+Received: by mail-wm1-f65.google.com with SMTP id x25so659750wmc.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 04:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=NxJKrbYiQ4xe+r7i0H/o0qPIvinu13Q5NjffxcFXndY=;
-        b=tmuPFlShLkL/FtM6K000R0oIzbEJBdxtfaZ2Bp7ll7HAhcaoM4vmVqtI9An+MPUhjL
-         CQZy46bFQ+2giUsJaV70ct6TXxsWTiXEGCcBa3dkqCIHgfiGzEa825SZRMTufg+h8wyR
-         p3ts4bZbPZZRfULPr3SDm0NbQRs9GNe2/gBjZzBejNQ2yDjRc+c3EvHF17htbo4eW134
-         XUtQr4hx/UomkRbXlvh+AUa2VwC4ta8hCjVALJ3tqapeQnKyvrp+b1zuEnHw/8jbmRfN
-         doDExUHLxCmJ/l4j77DTp7usvNwPweO50tXVS9kCPuO0cPH7RKfytk47dZUCGZhd6gH6
-         FIHg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+SXrfjedrBYDlYytIqTbgN8ZqV8Q1N0fqqOl62QOS4Y=;
+        b=toTm0ALbeEoKhLTH3MjSXrfmu+PMNqosEk7uOGmgAQstwGDY6LJpSZmpNrEiyyYSkL
+         YGs+3evi0ON75+9vuRhTdbQvpUp8pxv2ENfg3X4V0oJg8VIweg52W3InQPMEG8e0I45o
+         bA9zzI+cRL8+NGJVL41uO2oDM6+eTWp/UamDGDMp93VH4nMnk52cYX6QdIlQmqdkyKjb
+         qoaHmdPb/D1vl6IgENO3LV/qxgTyaxZhWTwp50wcxGDwqRMPB8YW9Xecw36CUpOhff+s
+         HGujmeHaDp9I7McqLyUgy6wupcCFhqfkOuFRftV6efAEypwP5pYOzXMceG0BZ13g7gvY
+         mTtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=NxJKrbYiQ4xe+r7i0H/o0qPIvinu13Q5NjffxcFXndY=;
-        b=pQEwvrpaIPlSjn5WN/4I7BWYRoDKVqfLp+FcbdRwIyQC7/Te6Zmr/J4J844ZKoJnxl
-         n296DeTs4JZnkTNX+WsEnTDXXl6QreatbQqV6SoNUaBOGxt73Pglj2C0QoEe8zsxl37S
-         oZekQCAVgPXVWw0P7kUpIlQN9G4wF8LERklCWL9b2bQpn9VwmYuVn/FP8Ds6e57OMaKr
-         SXoXvveEVhhS2SH9zQjKg2HEBLt5OHhd9KZfD6H2NMkFDlxWZ86zKr6V88mBatJkbRJr
-         3kaxr73yb2qZs8txNTPXG6g3FW2dUNdu6jD5gp07AW1ZmSaC88L2/X50W/DwHHR9XaeY
-         cbTg==
-X-Gm-Message-State: AGi0PuatMQzX1COVonN1W3e+dnGGMMrd2HNthEODM2zZ3V5M9ZHjq3ge
-        +D/3n8HzW3f8L9Q0R6SKueOI2F34DmQigMKGThw=
-X-Google-Smtp-Source: APiQypJo+6EuZfrkPrLQzDLqUU6JycKAfBtQI7non1VFonreceCbe9cNRfQjuuVbBjWlchnfwHmCBimpf6PFBTUnZlQ=
-X-Received: by 2002:adf:bb94:: with SMTP id q20mr3453756wrg.179.1586085284762;
- Sun, 05 Apr 2020 04:14:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+SXrfjedrBYDlYytIqTbgN8ZqV8Q1N0fqqOl62QOS4Y=;
+        b=nyTdTtf1uVBZqaH47h6mtwPOEEBKClUlpNV/TO5San6j8IkcQOPZt+k5m8qaotlPaf
+         DahvwhR/Dcnj7NKUmGHk02SKR0Ex1B25NRZBLU16j0ovkzTW7NT7Q5+XqBBxyqDX+O10
+         hzipV8arBzUpJLv9t0rM07uL4KtNWFDPrlYIos4z/36N9xJ3DQ6Ndl2GhYtSEDhbrKeW
+         cb24swZTIOcoKJjcurzyvIjaQNdNK3tjatr+UBRWBcIXAO0dsp51JVqrYLl0ilwskorn
+         caA6J2orgsXR7/CcXWDAQYwnEKUJfG77fjxyJUCh5T31eB/Vg1O6sL9V/6lKIE/TsHlh
+         ZH4g==
+X-Gm-Message-State: AGi0PubHVAYhtCrkZ+/9cZrBWrgBWlRtJG0PnH7fdGwaRyf8pLBFs/Cw
+        s+XNl764A7anU8vU4RysenI=
+X-Google-Smtp-Source: APiQypK6AC/PctIX6tMyVU4FpT2zQjW+xLA6DSL/lKKxnGpzVZz8EIZ8mONdHmfyV5warNb46JCNFQ==
+X-Received: by 2002:a05:600c:2106:: with SMTP id u6mr18681932wml.161.1586085852274;
+        Sun, 05 Apr 2020 04:24:12 -0700 (PDT)
+Received: from localhost.localdomain (dslb-002-204-143-158.002.204.pools.vodafone-ip.de. [2.204.143.158])
+        by smtp.gmail.com with ESMTPSA id b15sm20365012wru.70.2020.04.05.04.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Apr 2020 04:24:11 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 1/2] staging: rtl8188eu: remove unnecessary asignment
+Date:   Sun,  5 Apr 2020 13:22:29 +0200
+Message-Id: <20200405112230.31975-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <20200228002244.15240-1-keescook@chromium.org> <CA+icZUWTnP8DYfbaMwKtJbG30v7bB4w6=ywo8gn8fvwr731mUQ@mail.gmail.com>
- <202004021023.D3D8AA3BE@keescook>
-In-Reply-To: <202004021023.D3D8AA3BE@keescook>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sun, 5 Apr 2020 13:15:01 +0200
-Message-ID: <CA+icZUXi_iA7XkTEbrK7b6m673iG9qPKnDBE1V0JRywDLBc9jw@mail.gmail.com>
-Subject: Re: [PATCH 0/9] Enable orphan section warning
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Borislav Petkov <bp@suse.de>, "H.J. Lu" <hjl.tools@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 7:26 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Thu, Apr 02, 2020 at 06:20:57PM +0200, Sedat Dilek wrote:
-> > On Fri, Feb 28, 2020 at 1:22 AM Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > Hi!
-> > >
-> > > A recent bug was solved for builds linked with ld.lld, and tracking
-> > > it down took way longer than it needed to (a year). Ultimately, it
-> > > boiled down to differences between ld.bfd and ld.lld's handling of
-> > > orphan sections. Similarly, the recent FGKASLR series brough up orphan
-> > > section handling too[2]. In both cases, it would have been nice if the
-> > > linker was running with --orphan-handling=warn so that surprise sections
-> > > wouldn't silently get mapped into the kernel image at locations up to
-> > > the whim of the linker's orphan handling logic. Instead, all desired
-> > > sections should be explicitly identified in the linker script (to be
-> > > either kept or discarded) with any orphans throwing a warning. The
-> > > powerpc architecture actually already does this, so this series seeks
-> > > to extend this coverage to x86, arm64, and arm.
-> > >
-> > > This series depends on tip/x86/boot (where recent .eh_frame fixes[3]
-> > > landed), and has a minor conflict[4] with the ARM tree (related to
-> > > the earlier mentioned bug). As it uses refactorings in the asm-generic
-> > > linker script, and makes changes to kbuild, I think the cleanest place
-> > > for this series to land would also be through -tip. Once again (like
-> > > my READ_IMPLIES_EXEC series), I'm looking to get maintainer Acks so
-> > > this can go all together with the least disruption. Splitting it up by
-> > > architecture seems needlessly difficult.
-> > >
-> > > Thanks!
-> > >
-> >
-> > Hi Kees,
-> >
-> > what is the status of this patchset?
-> > Looks like it is not in tip or linux-next Git.
->
-> Based on the feedback, I have 3 TODO items:
->
-> - track down and eliminate (or explain) the source of the .got.plt on arm64
-> - enable orphan warnings for _all_ architectures
-> - refactor final link logic to perform the orphan warning in a clean way
->
-> I'm working through these (and other work) still. I'm hoping to have
-> another version up some time next week.
->
+Remove unnecessary asignment in SwLedBlink1(). The code path with the
+asignment 'pLed->BlinkTimes = 0' is only executed when
+'pLed->BlinkTimes' is already zero and the value is not changed between
+the test 'if (pLed->BlinkTimes == 0)' and the asignment.
 
-Please CC when possible with a pointer to a git-link.
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/rtl8188eu/core/rtw_led.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Thanks.
+diff --git a/drivers/staging/rtl8188eu/core/rtw_led.c b/drivers/staging/rtl8188eu/core/rtw_led.c
+index d1406cc99768..91b0029d1179 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_led.c
++++ b/drivers/staging/rtl8188eu/core/rtw_led.c
+@@ -188,7 +188,6 @@ static void SwLedBlink1(struct LED_871x *pLed)
+ 					  msecs_to_jiffies(LED_BLINK_NO_LINK_INTERVAL_ALPHA));
+ 				RT_TRACE(_module_rtl8712_led_c_, _drv_info_, ("CurrLedState %d\n", pLed->CurrLedState));
+ 			}
+-			pLed->BlinkTimes = 0;
+ 			pLed->bLedBlinkInProgress = false;
+ 		} else {
+ 			if (pLed->bLedOn)
+-- 
+2.26.0
 
-- sed@ -
