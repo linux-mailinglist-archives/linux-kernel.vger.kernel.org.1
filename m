@@ -2,98 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0AD19ED19
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 19:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BF619ED2D
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 19:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727911AbgDERoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 13:44:55 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:4807 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726669AbgDERou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 13:44:50 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 48wLf53zdWz9ty3Q;
-        Sun,  5 Apr 2020 19:44:45 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=VyYb0ulP; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id IigNQAjZ64TR; Sun,  5 Apr 2020 19:44:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 48wLf52z2rz9ty2y;
-        Sun,  5 Apr 2020 19:44:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1586108685; bh=ffqSqnUxF9bgCueBowfyUL1MJP20n3WBc3ECSrkihEg=;
-        h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=VyYb0ulP9DquYNGfs4vZtZXqqijhq2+PWm2a9hlEEKUc9CBHNKhTcOnGvovPNi3gB
-         D5eOSAvlEmK16cZJlEVqUp6dH/DukUPbUGigxpxyrISq5+sjRcoHTabpzSQH1ErBv9
-         hsa4xSNkIjw8UrpJBKYv/Ue6HnEY9aYVXmH3Y5kw=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 068B98B783;
-        Sun,  5 Apr 2020 19:44:49 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id SDE5wrZTNIWY; Sun,  5 Apr 2020 19:44:48 +0200 (CEST)
-Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C592F8B774;
-        Sun,  5 Apr 2020 19:44:48 +0200 (CEST)
-Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 96D1A6571C; Sun,  5 Apr 2020 17:44:48 +0000 (UTC)
-Message-Id: <3b9257ea1f3e107b81437671fa9d3942e31c6735.1586108649.git.christophe.leroy@c-s.fr>
-In-Reply-To: <029e1064b1ad738785718221ea468c9cfc282457.1586108649.git.christophe.leroy@c-s.fr>
-References: <029e1064b1ad738785718221ea468c9cfc282457.1586108649.git.christophe.leroy@c-s.fr>
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [RFC PATCH v2 13/13] powerpc/kernel: Do not use READ_ONCE() to access
- current thread_info flags
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
-        msuchanek@suse.de
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sun,  5 Apr 2020 17:44:48 +0000 (UTC)
+        id S1727390AbgDER43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 13:56:29 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:44202 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727048AbgDER43 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 13:56:29 -0400
+Received: by mail-wr1-f68.google.com with SMTP id m17so14615388wrw.11;
+        Sun, 05 Apr 2020 10:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=baFiJWDIXcDbqRxwMJ7sjjGENTtWwfmj+QDEOMNAPIY=;
+        b=Ew9379n9xMZ0UhuAE44iezfeOMtFHGExzsbghmN1UPDmTEl1Jj4YPaBdyHT5H6dUPc
+         eEZRPy0AEPX0lV6IM8Q5ezPof/RucQeZcv3vG2+wsGI+vGGS9Z7kiRR5evCGLOrklapM
+         9XjMQn1dT+x3bRi4EWpwAXN9e3E275r/6d0BrxbO8jXFapcprOpsc1hrYwBDFKUX9q1/
+         Z2Lkcdt2nfRmPi2ZSl0Zs8p/kKfrGpXydSIlbItSID91AX/poOE4i2Qzi8ZUq6gFAYXf
+         57Pnf8j9KBduFhulx9aOm3MTA2swsxT9jVELk6LkTpgnM+Z18p+UbT3TZAqeLvZJC/DT
+         hF5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=baFiJWDIXcDbqRxwMJ7sjjGENTtWwfmj+QDEOMNAPIY=;
+        b=dUkFuyzFcSZfOhAupvDVQWwh6JOXMnnUrE3dHeqTEWBP7lI6S6+g/LaD6JJ4ISpd9v
+         rM1ZD4vdcctXFasppDoy1/ffcc5J4GqrR8LBe/MZZZHkgn38oSF7Zxkn8xdCrmZf4nXK
+         VMckqJHjc5fCmDoKLJSzDzmSewER2jcGC50KIPk+gBkxQ9msCgC4qZLb89SRHkIfy+9j
+         LEign8eu2ZwEddHXAafNT1rpWRpWXVqonQExfXXAP/pA8oU+Lf+W+xRjBcaxxD6eRj5R
+         GK+/5I3/pvD7pPmPMWooxIBwZgoBBaSjSjd23J4/NpqEyiUOuGhLxTzvTQOcL3fqwEsv
+         bGXw==
+X-Gm-Message-State: AGi0PuYEqzsSz2I78fB+4B+pyjUATWwhm9YigrNy+McZiwt8zc3qQOg6
+        Gjj5neD7QgFOc+IojrTF6s0=
+X-Google-Smtp-Source: APiQypJpoHPcVkTc7Sbv9+VocdPMbPRFiuZ9btg2WSmTqQlCTwA2Qnv4W2UYnjlw4Hcm90XWc/aQkA==
+X-Received: by 2002:adf:fdd2:: with SMTP id i18mr19348989wrs.165.1586109386897;
+        Sun, 05 Apr 2020 10:56:26 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
+        by smtp.googlemail.com with ESMTPSA id r5sm21037015wmr.15.2020.04.05.10.56.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Apr 2020 10:56:26 -0700 (PDT)
+Date:   Sun, 5 Apr 2020 19:56:24 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Chen-Yu Tsai <wens@csie.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Maxime Ripard <mripard@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: Re: [PATCH] crypto: sun8i-ss - Delete an error message in
+ sun8i_ss_probe()
+Message-ID: <20200405175624.GA24925@Red>
+References: <c7e1193f-7d8b-7da3-a2a8-e92ca0fd83b2@web.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c7e1193f-7d8b-7da3-a2a8-e92ca0fd83b2@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-current is a volatile pointer hold by r2 register.
+On Sat, Apr 04, 2020 at 05:45:26PM +0200, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sat, 4 Apr 2020 17:34:53 +0200
+> 
+> The function “platform_get_irq” can log an error already.
+> Thus omit a redundant message for the exception handling in the
+> calling function.
+> 
+> This issue was detected by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
+> index 6b301afffd11..a1fb2fbdbe7b 100644
+> --- a/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
+> +++ b/drivers/crypto/allwinner/sun8i-ss/sun8i-ss-core.c
+> @@ -537,10 +537,8 @@ static int sun8i_ss_probe(struct platform_device *pdev)
+>  		return err;
+> 
+>  	irq = platform_get_irq(pdev, 0);
+> -	if (irq < 0) {
+> -		dev_err(ss->dev, "Cannot get SecuritySystem IRQ\n");
+> +	if (irq < 0)
+>  		return irq;
+> -	}
+> 
+>  	ss->reset = devm_reset_control_get(&pdev->dev, NULL);
+>  	if (IS_ERR(ss->reset)) {
+> --
+> 2.26.0
+> 
 
-READ_ONCE() is not required.
+Hello
 
-Before: 327 cycles on null_syscall
-Before: 325 cycles on null_syscall
+Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 
-Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
----
- arch/powerpc/kernel/syscall.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/powerpc/kernel/syscall.c b/arch/powerpc/kernel/syscall.c
-index 34fd66fd11a2..3d2f285b8a01 100644
---- a/arch/powerpc/kernel/syscall.c
-+++ b/arch/powerpc/kernel/syscall.c
-@@ -164,7 +164,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- again:
- #endif
- 	local_irq_disable();
--	ti_flags = READ_ONCE(*ti_flagsp);
-+	ti_flags = current_thread_info()->flags;
- 	while (unlikely(ti_flags & (_TIF_USER_WORK_MASK & ~_TIF_RESTORE_TM))) {
- 		local_irq_enable();
- 		if (ti_flags & _TIF_NEED_RESCHED) {
-@@ -180,7 +180,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
- 			do_notify_resume(regs, ti_flags);
- 		}
- 		local_irq_disable();
--		ti_flags = READ_ONCE(*ti_flagsp);
-+		ti_flags = current_thread_info()->flags;
- 	}
- 
- 	if (IS_ENABLED(CONFIG_PPC_BOOK3S) && IS_ENABLED(CONFIG_PPC_FPU)) {
--- 
-2.25.0
-
+Thanks
