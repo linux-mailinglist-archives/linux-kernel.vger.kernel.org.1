@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 701EE19EC0A
+	by mail.lfdr.de (Postfix) with ESMTP id E3DED19EC0C
 	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbgDEOhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 10:37:24 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:34885 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727134AbgDEOhV (ORCPT
+        id S1727336AbgDEOh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 10:37:29 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:33718 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727134AbgDEOh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 10:37:21 -0400
-Received: by mail-yb1-f195.google.com with SMTP id i2so1721447ybk.2
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 07:37:21 -0700 (PDT)
+        Sun, 5 Apr 2020 10:37:26 -0400
+Received: by mail-yb1-f193.google.com with SMTP id e17so7299718ybq.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 07:37:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=UHN0S4zcuSIZtTM9i2ZMDZn8NuC8WBR+knYnvHF4CPM=;
-        b=YBUX/QBpHavrPbx08qSfbhWxlD//0632rVP7PPw+5ooUiObSkyqF42fevVfH8iZ3n2
-         CrqexY6AnrVhplA0PyXUkNKbqpCzAIIL2E5IrgGp9Jco/lEQDB7WxrI7+kEQe/Tk0Mgy
-         Wz/DMp/cZU1wQE/zC/20w5pVpHwLadIB+hkxrflJxGq3WAys9evCy49hW6QIqQuVPY1X
-         cBmr3Mc+vCqfOyXu1ZWrKZpOhuccIk63oMN4tBoWKJQMCwLSK1136hn2Bb5ennLFyxHB
-         4ZFQ5Di6aYLYe2U+EMAy8Z6w+JJxrzGmfGNMAAgED7cqj2Ye7Odk0Gr/7hcKyCyJGO5a
-         gSXg==
+        bh=Mg+J5XS0nK+zoa4Dm5ITK5YdaJ7PSdz6gYixjtBG6RI=;
+        b=lEqjKUhi2UaTN5PtzwT/7m5VaXfHxWJhlGqJC8zLutFwjRy57edPXRJnCiDHJyyLx8
+         qfxmbARD7wXjfCkxhPUq7WIIJyduJUsdGTHklqQdCG8mezs5TRbe8suxyVCF8aYjALgV
+         mw4BRuiQ5RWEEM7nAQKX9PrB+yCk85o2e/bJWJ6F5jeEX/7/tdnxf9cDM0BG54AS7wce
+         jtAuzlwSLxo/M29dcyMbLhSInOpimWmJSpxGAP8Uo7OPxHeRnMfd4wSF9MgzwOkCKFXX
+         m18mm4NNYiBin6jaRJuJkpnv50s5qlB4X52jTXhOk9+vjAcxL6P7rUVHglNNxvFlmt9A
+         MehQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=UHN0S4zcuSIZtTM9i2ZMDZn8NuC8WBR+knYnvHF4CPM=;
-        b=D3tddPx+qnL1UATSxPal9AI5iIzwdioVIrQm0xGuJKzFJoJ7Mcxx9YlgHxf8YQPH+O
-         J9hygQ6ELiM2ohzecX1Zga6OnVUYyjLc+qh66OHlMdHXQg4JdaAFrzDsV6zK2+KeKT+2
-         3T73W4WWZxhfrS6BPT5QDyoik/v0Shrfs5faL2CI4CqJPx7BcblNo5Halu/zK+HsqRRN
-         HFs4y0OoBTySmHYoJjwQpm5lS3eibsyJtpDSLE7LHBWWCZQGmJLT+/qQ8y7xpPFbd/6z
-         3J+vjDUBE7nG7X8hNpWevGzZzglB2yvOFUCii4bp8OXeBgE8f5bRfA62qzu5YbE9tMxZ
-         Y/nQ==
-X-Gm-Message-State: AGi0PubBdvc1yrS0LOPXDiGbKw7bty4hSECDekGHnp7QuCW4k4xlKGEq
-        xmolfuUxVmA1W0AjIEAnsRGkFg46WyMVr6EOU+P4Hw==
-X-Google-Smtp-Source: APiQypLhSCJzKzKa7GMp1kDQo0x/zD19XBoiLY5yjYmiAf4WNIi99hXylQklXOC+n/1Ys5XG56AMYyMRXVNuZf1VH38=
-X-Received: by 2002:a25:ae8c:: with SMTP id b12mr26352809ybj.392.1586097440870;
- Sun, 05 Apr 2020 07:37:20 -0700 (PDT)
+        bh=Mg+J5XS0nK+zoa4Dm5ITK5YdaJ7PSdz6gYixjtBG6RI=;
+        b=ZJ1TtkPKPbob5yNL7XDBUmcRx/AwYChTz068MUA/CjxjjeR8ENgkTtfFfyqdntkqSl
+         8DICE9+OhjVwVKQu+aQ3vtWRBZ/0S/oAXyNBt0kBoB1NtKzAq0o8zcqE7iojqe6bgMsK
+         n1dC/MvJ92SPg6imD9Ug+HOw+Jtq3xP3K/EzqHkOkaQVBKSqcVYB9/YierTMZHxY7T/O
+         dpLOGItDwzSeb65CFwdCk8/x4L6OkoCDBLFqOpXHsWdDkMYRev3AgyWyCi5gZAcUZWZE
+         i9nNuxkxZxbXKeoUpQjvhDHnqsiKvQYX2Z5zmjDOIL27GOarzfoWZdzst9FT0jC7AHET
+         2kIQ==
+X-Gm-Message-State: AGi0PuYn5Cez92qir5dOV4fUFPk2ffXc9gsc+xktATsmVDnRhAgw0DEC
+        1L4kE6iwsGb9uZ22dzxDl4tFRmNx+jz6OseObxk=
+X-Google-Smtp-Source: APiQypITa9uud77MgWOKfv5/bsyn1AtoDPFMqkWwa7SrGmMbocGqNVZM2IwZmmqQHyvfExGpiqMI4qU0IVkaOZx2RVw=
+X-Received: by 2002:a5b:344:: with SMTP id q4mr28492863ybp.29.1586097444396;
+ Sun, 05 Apr 2020 07:37:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200318011144.91532-1-atish.patra@wdc.com> <20200318011144.91532-9-atish.patra@wdc.com>
-In-Reply-To: <20200318011144.91532-9-atish.patra@wdc.com>
+References: <20200318011144.91532-1-atish.patra@wdc.com> <20200318011144.91532-10-atish.patra@wdc.com>
+In-Reply-To: <20200318011144.91532-10-atish.patra@wdc.com>
 From:   Bin Meng <bmeng.cn@gmail.com>
-Date:   Sun, 5 Apr 2020 22:37:10 +0800
-Message-ID: <CAEUhbmUdv=BX8JdZchgJMx4LbOvkGmXheC8TZuJSbus4jHbhtQ@mail.gmail.com>
-Subject: Re: [PATCH v11 08/11] RISC-V: Export SBI error to linux error mapping function
+Date:   Sun, 5 Apr 2020 22:37:13 +0800
+Message-ID: <CAEUhbmW-Peu4UrQvSgSkZWGRwHzKavZ-dXzG8Yhq5C9uiHq42Q@mail.gmail.com>
+Subject: Re: [PATCH v11 09/11] RISC-V: Add SBI HSM extension definitions
 To:     Atish Patra <atish.patra@wdc.com>
 Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
         Anup Patel <anup.patel@wdc.com>,
@@ -71,18 +71,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Mar 18, 2020 at 9:12 AM Atish Patra <atish.patra@wdc.com> wrote:
 >
-> All SBI related extensions will not be implemented in sbi.c to avoid
-> bloating. Thus, sbi_err_map_linux_errno() will be used in other files
-> implementing that specific extension.
+> SBI specification defines HSM extension that allows to start/stop a hart
+> by a supervisor anytime. The specification is available at
 >
-> Export the function so that it can be used later.
+> https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc
+>
+> Add those definitions here.
 >
 > Signed-off-by: Atish Patra <atish.patra@wdc.com>
 > Reviewed-by: Anup Patel <anup.patel@wdc.com>
 > ---
->  arch/riscv/include/asm/sbi.h | 2 ++
->  arch/riscv/kernel/sbi.c      | 3 ++-
->  2 files changed, 4 insertions(+), 1 deletion(-)
+>  arch/riscv/include/asm/sbi.h | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 >
 
 Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
