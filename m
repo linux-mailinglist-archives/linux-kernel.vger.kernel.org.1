@@ -2,207 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E8D19E9DC
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 10:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD9B19EA0D
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 10:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgDEITu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 04:19:50 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:14453 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726364AbgDEITu (ORCPT
+        id S1726443AbgDEIlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 04:41:00 -0400
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17582 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726308AbgDEIk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 04:19:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586074789; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KyBwcU84B4N0unkwU2I9YtySGgP2/DWULK5tSFWSoOI=; b=vKYz6jblR6Vwv727ttwpclFcDPpQUSzyk2/I6eNtNsZHO91Uo1+/uSODGDKPADuHIkuahJ0V
- nWmJuUJIudoD7ycQowjYE/tdMoWYzHWIcnFEbM+ukcYHAalYosIjoQvrYpq5lKHC6jMAqH0n
- ZeAe0veBBlEpkAG6IEAraYps3RU=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e899499.7f9e5f610ca8-smtp-out-n02;
- Sun, 05 Apr 2020 08:19:37 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 770DDC433D2; Sun,  5 Apr 2020 08:19:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.100] (unknown [49.206.125.103])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sivaprak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id AED5CC433F2;
-        Sun,  5 Apr 2020 08:19:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AED5CC433F2
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sivaprak@codeaurora.org
-Subject: Re: [PATCH 1/2] clk: qcom: Add DT bindings for ipq6018 apss clock
- controller
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm-owner@vger.kernel.org
-References: <1582797318-26288-1-git-send-email-sivaprak@codeaurora.org>
- <1582797318-26288-2-git-send-email-sivaprak@codeaurora.org>
- <e94805e32d1264ca9a162891db26730e@codeaurora.org>
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-Message-ID: <5388bacc-217c-d14a-1e7e-26c72588a035@codeaurora.org>
-Date:   Sun, 5 Apr 2020 13:49:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sun, 5 Apr 2020 04:40:59 -0400
+X-Greylist: delayed 925 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Apr 2020 04:40:56 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586075102;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=jlfqA7A2mmN1MCE9Hu767OVJ/7u6nHkaQCRHUH9vIcI=;
+        b=IYYgMZyiU3o33Tg3dO7svxhHO1GN8WczdboM3eNpfiTMRRuPToWQZQ1D1P0vOtPW
+        GFw4GM2403Fnmo03B47ozPxh3shyipdmVSbiuom2uHSay74TLw1tJHmxfT4+kjK3nmb
+        Skx/wzzg19y3Ke3LC6V6Kf/CoRVnCLrvRGcfjzvc=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 1586075100036667.996448622306; Sun, 5 Apr 2020 16:25:00 +0800 (CST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org
+Message-ID: <20200405082451.694910-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH] MIPS: malta: Set load address for 32bit kernel correctly
+Date:   Sun,  5 Apr 2020 16:24:49 +0800
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <e94805e32d1264ca9a162891db26730e@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sibi,
+LLD failed to link vmlinux with 64bit load address for 32bit ELF
+while bfd will strip 64bit address into 32bit silently.
+To fix LLD build, we should supply a 32bit load address for 32bit
+kernel.
 
-Thanks for the review.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ arch/mips/mti-malta/Platform | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On 2/27/2020 4:08 PM, Sibi Sankar wrote:
-> Hey Sivaprakash,
->
-> On 2020-02-27 15:25, Sivaprakash Murugesan wrote:
->> add dt-binding for ipq6018 apss clock controller
->>
->> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
->> ---
->>  .../devicetree/bindings/clock/qcom,apsscc.yaml     | 58 
->> ++++++++++++++++++++++
->>  include/dt-bindings/clock/qcom,apss-ipq6018.h      | 26 ++++++++++
->>  2 files changed, 84 insertions(+)
->>  create mode 100644 
->> Documentation/devicetree/bindings/clock/qcom,apsscc.yaml
->>  create mode 100644 include/dt-bindings/clock/qcom,apss-ipq6018.h
->>
->> diff --git a/Documentation/devicetree/bindings/clock/qcom,apsscc.yaml
->> b/Documentation/devicetree/bindings/clock/qcom,apsscc.yaml
->> new file mode 100644
->> index 0000000..7433721
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/clock/qcom,apsscc.yaml
->> @@ -0,0 +1,58 @@
->> +# SPDX-License-Identifier: GPL-2.0-only
->
-> Dual license
-ok.
->
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/bindings/clock/qcom,apsscc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm IPQ6018 APSS Clock Controller Binding
->> +
->> +maintainers:
->> +  - Stephen Boyd <sboyd@kernel.org>
->> +
->> +description: |
->> +  Qualcomm IPQ6018 APSS clock control module which supports the 
->> clocks with
->> +  frequencies above 800Mhz.
->> +
->> +properties:
->> +  compatible :
->> +    const: qcom,apss-ipq6018
->
-> Please use qcom,<chip>-<device>
-> instead.
->
-ok.
->> +
->> +  clocks:
->> +    description: clocks required for this controller.
->> +    maxItems: 4
->> +
->> +  clock-names:
->> +    description: clock output names of required clocks.
->> +    maxItems: 4
->> +
->> +  '#clock-cells':
->> +    const: 1
->> +
->> +  '#reset-cells':
->> +    const: 1
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - '#clock-cells'
->> +  - '#reset-cells'
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +      #include <dt-bindings/clock/qcom,gcc-ipq6018.h>
->> +      apss_clk: qcom,apss_clk@b111000 {
->> +            compatible = "qcom,apss-ipq6018";
->> +            clocks = <&xo>, <&gcc GPLL0>,
->> +                        <&gcc GPLL2>, <&gcc GPLL4>;
->> +            clock-names = "xo", "gpll0",
->> +                         "gpll2", "gpll4";
->> +            reg = <0xb11100c 0x5ff4>;
->> +            #clock-cells = <1>;
->> +            #reset-cells = <1>;
->> +      };
->> +...
->> diff --git a/include/dt-bindings/clock/qcom,apss-ipq6018.h
->> b/include/dt-bindings/clock/qcom,apss-ipq6018.h
->> new file mode 100644
->> index 0000000..ed9d7d8
->> --- /dev/null
->> +++ b/include/dt-bindings/clock/qcom,apss-ipq6018.h
->> @@ -0,0 +1,26 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
->> + *
->> + * Permission to use, copy, modify, and/or distribute this software 
->> for any
->> + * purpose with or without fee is hereby granted, provided that the 
->> above
->> + * copyright notice and this permission notice appear in all copies.
->> + *
->> + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL 
->> WARRANTIES
->> + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
->> + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE 
->> LIABLE FOR
->> + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY 
->> DAMAGES
->> + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER 
->> IN AN
->> + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING 
->> OUT OF
->> + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
->
-> ^^ is not needed just the SPDX
-> license identifier is enough.
-ok.
->
->> + */
->> +
->> +#ifndef _DT_BINDINGS_CLOCK_QCA_APSS_IPQ6018_H
->> +#define _DT_BINDINGS_CLOCK_QCA_APSS_IPQ6018_H
->> +
->> +#define APSS_PLL_EARLY                0
->> +#define APSS_PLL                1
->> +#define APCS_ALIAS0_CLK_SRC            2
->> +#define APCS_ALIAS0_CORE_CLK            3
->> +
->> +#endif
->
+diff --git a/arch/mips/mti-malta/Platform b/arch/mips/mti-malta/Platform
+index 2cc72c9b38e3..f9b49cba1764 100644
+--- a/arch/mips/mti-malta/Platform
++++ b/arch/mips/mti-malta/Platform
+@@ -6,6 +6,10 @@ cflags-$(CONFIG_MIPS_MALTA)=09+=3D -I$(srctree)/arch/mips/=
+include/asm/mach-malta
+ ifdef CONFIG_KVM_GUEST
+     load-$(CONFIG_MIPS_MALTA)=09+=3D 0x0000000040100000
+ else
++ifdef CONFIG_64BIT
+     load-$(CONFIG_MIPS_MALTA)=09+=3D 0xffffffff80100000
++else
++    load-$(CONFIG_MIPS_MALTA)=09+=3D 0x80100000
++endif
+ endif
+ all-$(CONFIG_MIPS_MALTA)=09:=3D $(COMPRESSION_FNAME).bin
+--=20
+2.26.0.rc2
+
+
