@@ -2,210 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD06019E872
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 04:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB23619E879
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 04:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726402AbgDECCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 22:02:12 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:32781 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726307AbgDECCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 22:02:12 -0400
-Received: by mail-io1-f67.google.com with SMTP id o127so11993786iof.0;
-        Sat, 04 Apr 2020 19:02:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4KE1ajm7Pr9JZRShONsIYV51HCcbzA2Ep3Y98R0uXF0=;
-        b=p2kaPmcAldHpOL99t6U+L1FwDAnTlKtTVOZUQPej+Za9wQAKU6qrbVZcKuRsYqLoy7
-         78HNHhRcQ3zoDHbUSSZF2+zjqwMlGRsWx6qWtUpStydriP31CVqTMHVvxZBFl3NQUg86
-         Uq/d7rR2NTOFVqnbyXoUa8CDrSb5+rz7hoO5z7lW5tYjyxTgzHbd8ZnB4x21eRgdNX6E
-         Lm3++nASJe4mt3q0km/0uSVB18rtOgCRifDji4wlapIGHeHTw9FiO9serZ20mDlry10h
-         4du+fHR3+/9GlHGAAe3dbsRhYPaQK9x+THWqvN4P0xz6Zlb5m2dvI4Og7WR5ynCd83Hx
-         em9w==
-X-Gm-Message-State: AGi0PubRbhCNjYaz8HnpuyocGDUkznu8dMYpq4Uwf3AOtF1mUwuZEDqw
-        PekQwGA2xQPjJGcpiucfqw==
-X-Google-Smtp-Source: APiQypJBAkbiTizGN9DKt26SkLi+oMNVXz4uYVjtoFP0Ee1EplO0IkrN+ydU296Tom/Bm7vDZfPvpA==
-X-Received: by 2002:a05:6638:155:: with SMTP id y21mr713152jao.79.1586052130726;
-        Sat, 04 Apr 2020 19:02:10 -0700 (PDT)
-Received: from rob-hp-laptop ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id r10sm3871386iom.42.2020.04.04.19.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Apr 2020 19:02:10 -0700 (PDT)
-Received: (nullmailer pid 536 invoked by uid 1000);
-        Sun, 05 Apr 2020 02:02:08 -0000
-Date:   Sat, 4 Apr 2020 20:02:08 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     devicetree@vger.kernel.org, linux-scsi@vger.kernel.org,
-        krzk@kernel.org, avri.altman@wdc.com, martin.petersen@oracle.com,
-        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
-        cang@codeaurora.org, linux-samsung-soc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/5] Documentation: devicetree: ufs: Add DT bindings
- for exynos UFS host controller
-Message-ID: <20200405020208.GA22609@bogus>
-References: <20200327170638.17670-1-alim.akhtar@samsung.com>
- <CGME20200327171418epcas5p4b85bea273e17c05a7edca58f528c435a@epcas5p4.samsung.com>
- <20200327170638.17670-4-alim.akhtar@samsung.com>
+        id S1726436AbgDECFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 22:05:31 -0400
+Received: from mga03.intel.com ([134.134.136.65]:49741 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726386AbgDECFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 22:05:31 -0400
+IronPort-SDR: d/jP6199URUur0PXVF1cy0ZjLqD317pNePbdgQIqm+/yPVbyn4w/q9jWcjPWLVIB8FjVrNWQKt
+ GQbeUkW6x9FA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2020 19:05:30 -0700
+IronPort-SDR: XVPVJ77k4EnemnElrV8rmZV2XGIkbk10TinbRbDrDlD9JneRmKf/uArvF6E9Ap0doM7Y3/7fFK
+ 3G5wIYfb2/dg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,346,1580803200"; 
+   d="scan'208";a="285501231"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 04 Apr 2020 19:05:29 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jKufA-0008b8-Ii; Sun, 05 Apr 2020 10:05:28 +0800
+Date:   Sun, 05 Apr 2020 10:04:31 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ c9a503a8ebd23b1b2c0728e18ad7df9f710cb377
+Message-ID: <5e893caf.VKufG1tn8402lGpD%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200327170638.17670-4-alim.akhtar@samsung.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 10:36:36PM +0530, Alim Akhtar wrote:
-> This adds Exynos Universal Flash Storage (UFS) Host Controller DT bindings.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: c9a503a8ebd23b1b2c0728e18ad7df9f710cb377  rcu: Remove self-stack-trace when all quiescent states seen
 
-Why the inconsistent subject. 'dt-bindings: ...' please.
+elapsed time: 482m
 
-> 
-> Signed-off-by: Seungwon Jeon <essuuj@gmail.com>
-> Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
-> ---
->  .../devicetree/bindings/ufs/ufs-exynos.txt    | 104 ++++++++++++++++++
->  1 file changed, 104 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/ufs/ufs-exynos.txt
+configs tested: 146
+configs skipped: 0
 
-Use DT schema format. Not sure why you'd do that for one and not the 
-other...
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> diff --git a/Documentation/devicetree/bindings/ufs/ufs-exynos.txt b/Documentation/devicetree/bindings/ufs/ufs-exynos.txt
-> new file mode 100644
-> index 000000000000..08e2d1497b1b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/ufs/ufs-exynos.txt
-> @@ -0,0 +1,104 @@
-> +* Exynos Universal Flash Storage (UFS) Host Controller
-> +
-> +UFSHC nodes are defined to describe on-chip UFS host controllers.
-> +Each UFS controller instance should have its own node.
-> +
-> +Required properties:
-> +- compatible        : compatible name, contains "samsung,exynos7-ufs"
-> +- interrupts        : <interrupt mapping for UFS host controller IRQ>
-> +- reg               : Should contain HCI, vendor specific, UNIPRO and
-> +		      UFS protector address space
-> +- reg-names	    : "hci", "vs_hci", "unipro", "ufsp";
-> +
-> +Optional properties:
-> +- vdd-hba-supply        : phandle to UFS host controller supply regulator node
-> +- vcc-supply            : phandle to VCC supply regulator node
-> +- vccq-supply           : phandle to VCCQ supply regulator node
-> +- vccq2-supply          : phandle to VCCQ2 supply regulator node
-> +- vcc-supply-1p8        : For embedded UFS devices, valid VCC range is 1.7-1.95V
-> +                          or 2.7-3.6V. This boolean property when set, specifies
-> +			  to use low voltage range of 1.7-1.95V. Note for external
-> +			  UFS cards this property is invalid and valid VCC range is
-> +			  always 2.7-3.6V.
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                           efm32_defconfig
+arm                         at91_dt_defconfig
+arm                        shmobile_defconfig
+arm64                               defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                           sunxi_defconfig
+arm                        multi_v7_defconfig
+sparc                            allyesconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+h8300                    h8300h-sim_defconfig
+sparc64                          allyesconfig
+mips                              allnoconfig
+riscv                            allyesconfig
+sh                                allnoconfig
+parisc                           allyesconfig
+nios2                         3c120_defconfig
+s390                             alldefconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                                defconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+xtensa                       common_defconfig
+openrisc                 simple_smp_defconfig
+openrisc                    or1ksim_defconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+h8300                     edosk2674_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                             defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+x86_64               randconfig-a001-20200405
+x86_64               randconfig-a002-20200405
+x86_64               randconfig-a003-20200405
+i386                 randconfig-a001-20200405
+i386                 randconfig-a002-20200405
+i386                 randconfig-a003-20200405
+mips                 randconfig-a001-20200405
+nds32                randconfig-a001-20200405
+m68k                 randconfig-a001-20200405
+parisc               randconfig-a001-20200405
+alpha                randconfig-a001-20200405
+riscv                randconfig-a001-20200405
+c6x                  randconfig-a001-20200405
+h8300                randconfig-a001-20200405
+microblaze           randconfig-a001-20200405
+nios2                randconfig-a001-20200405
+sparc64              randconfig-a001-20200405
+csky                 randconfig-a001-20200405
+openrisc             randconfig-a001-20200405
+s390                 randconfig-a001-20200405
+sh                   randconfig-a001-20200405
+xtensa               randconfig-a001-20200405
+x86_64               randconfig-c001-20200405
+x86_64               randconfig-c002-20200405
+x86_64               randconfig-c003-20200405
+i386                 randconfig-c001-20200405
+i386                 randconfig-c002-20200405
+i386                 randconfig-c003-20200405
+x86_64               randconfig-d001-20200405
+x86_64               randconfig-d002-20200405
+x86_64               randconfig-d003-20200405
+i386                 randconfig-d001-20200405
+i386                 randconfig-d002-20200405
+i386                 randconfig-d003-20200405
+x86_64               randconfig-f001-20200405
+x86_64               randconfig-f002-20200405
+x86_64               randconfig-f003-20200405
+i386                 randconfig-f001-20200405
+i386                 randconfig-f002-20200405
+i386                 randconfig-f003-20200405
+x86_64               randconfig-g001-20200405
+x86_64               randconfig-g002-20200405
+x86_64               randconfig-g003-20200405
+i386                 randconfig-g001-20200405
+i386                 randconfig-g002-20200405
+i386                 randconfig-g003-20200405
+arc                  randconfig-a001-20200405
+arm                  randconfig-a001-20200405
+arm64                randconfig-a001-20200405
+ia64                 randconfig-a001-20200405
+powerpc              randconfig-a001-20200405
+sparc                randconfig-a001-20200405
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                             defconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                                   rhel
+x86_64                               rhel-7.6
+x86_64                         rhel-7.2-clear
+x86_64                                    lkp
+x86_64                              fedora-25
+x86_64                                  kexec
 
-The supply for vcc-supply should be restricted to the valid range and 
-this is not needed.
-
-> +- vcc-max-microamp      : specifies max. load that can be drawn from vcc supply
-> +- vccq-max-microamp     : specifies max. load that can be drawn from vccq supply
-> +- vccq2-max-microamp    : specifies max. load that can be drawn from vccq2 supply
-
-How is this information useful?
-
-> +- <name>-fixed-regulator : boolean property specifying that <name>-supply is a fixed regulator
-
-No need for this. Look up the phandle and check supply's node if you 
-want to know this.
-
-> +
-> +- clocks                : List of phandle and clock specifier pairs
-> +- clock-names           : List of clock input name strings sorted in the same
-> +                          order as the clocks property.
-> +			  "core", "sclk_unipro_main", "ref" and ref_parent
-> +
-> +- freq-table-hz		: Array of <min max> operating frequencies stored in the same
-> +			  order as the clocks property. If this property is not
-> +			  defined or a value in the array is "0" then it is assumed
-> +			  that the frequency is set by the parent clock or a
-> +			  fixed rate clock source.
-> +- pclk-freq-avail-range : specifies available frequency range(min/max) for APB clock
-> +- ufs,pwr-attr-mode : specifies mode value for power mode change, possible values are
-> +			"FAST", "SLOW", "FAST_auto" and "SLOW_auto"
-
-Anything before the ',' is considered a vendor prefix and 'ufs' is not a 
-vendor.
-
-If these are standard UFS properties, then they should be documented in 
-a common UFS binding. On the flip side, none of the other UFS bindings 
-have needed these properties, so why do you?
-
-> +- ufs,pwr-attr-lane : specifies lane count value for power mode change
-> +		      allowed values are 1 or 2
-> +- ufs,pwr-attr-gear : specifies gear count value for power mode change
-> +		      allowed values are 1 or 2
-> +- ufs,pwr-attr-hs-series : specifies HS rate series for power mode change
-> +			   can be one of "HS_rate_b" or "HS_rate_a"
-> +- ufs,pwr-local-l2-timer : specifies array of local UNIPRO L2 timer values
-> +			   3 timers supported
-> +			   <FC0ProtectionTimeOutVal,TC0ReplayTimeOutVal, AFC0ReqTimeOutVal>
-> +- ufs,pwr-remote-l2-timer : specifies array of remote UNIPRO L2 timer values
-> +			   3 timers supported
-> +			   <FC0ProtectionTimeOutVal,TC0ReplayTimeOutVal, AFC0ReqTimeOutVal>
-> +- ufs-rx-adv-fine-gran-sup_en : specifies support of fine granularity of MPHY,
-> +			      this is a boolean property.
-> +- ufs-rx-adv-fine-gran-step : specifies granularity steps of MPHY,
-> +			      allowed step size is 0 to 3
-> +- ufs-rx-adv-min-activate-time-cap : specifies rx advanced minimum activate time of MPHY
-> +				     range is 1 to 9
-> +- ufs-pa-granularity : specifies Granularity for PA_TActivate and PA_Hibern8Time
-> +- ufs-pa-tacctivate : specifies time to wake-up remote M-RX
-> +- ufs-pa-hibern8time : specifies minimum time to wait in HIBERN8 state
-> +
-> +Note: If above properties are not defined it can be assumed that the supply
-> +regulators or clocks are always on.
-> +
-> +Example:
-> +	ufshc@0x15570000 {
-> +		compatible = "samsung,exynos7-ufs";
-> +		reg = <0x15570000 0x100>,
-> +		      <0x15570100 0x100>,
-> +		      <0x15571000 0x200>,
-> +		      <0x15572000 0x300>;
-> +		reg-names = "hci", "vs_hci", "unipro", "ufsp";
-> +		interrupts = <0 200 0>;
-> +
-> +		vdd-hba-supply = <&xxx_reg0>;
-> +		vdd-hba-fixed-regulator;
-> +		vcc-supply = <&xxx_reg1>;
-> +		vcc-supply-1p8;
-> +		vccq-supply = <&xxx_reg2>;
-> +		vccq2-supply = <&xxx_reg3>;
-> +		vcc-max-microamp = 500000;
-> +		vccq-max-microamp = 200000;
-> +		vccq2-max-microamp = 200000;
-> +
-> +		clocks = <&core 0>, <&ref 0>, <&iface 0>;
-> +		clock-names = "core", "sclk_unipro_main", "ref", "ref_parent";
-> +		freq-table-hz = <100000000 200000000>, <0 0>, <0 0>, <0 0>;
-> +
-> +		pclk-freq-avail-range = <70000000 133000000>;
-> +
-> +		ufs,pwr-attr-mode = "FAST";
-> +		ufs,pwr-attr-lane = <2>;
-> +		ufs,pwr-attr-gear = <2>;
-> +		ufs,pwr-attr-hs-series = "HS_rate_b";
-> +		ufs,pwr-local-l2-timer = <8000 28000 20000>;
-> +		ufs,pwr-remote-l2-timer = <12000 32000 16000>;
-> +		ufs-rx-adv-fine-gran-sup_en = <1>;
-> +		ufs-rx-adv-fine-gran-step = <3>;
-> +		ufs-rx-adv-min-activate-time-cap = <9>;
-> +		ufs-pa-granularity = <6>;
-> +		ufs-pa-tacctivate = <6>;
-> +		ufs-pa-hibern8time = <20>;
-> +	};
-> -- 
-> 2.17.1
-> 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
