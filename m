@@ -2,86 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF0519E82D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 03:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A43B019E835
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 03:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgDEBNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Apr 2020 21:13:12 -0400
-Received: from ozlabs.org ([203.11.71.1]:41101 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726332AbgDEBNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Apr 2020 21:13:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48vwdx5YLDz9sRR;
-        Sun,  5 Apr 2020 11:13:09 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1586049190;
-        bh=3YZKWaUv/T/setVmm6Y8aUdwLJnkxxYLCvnrIMKQ2AM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=X2xJWeh8/aoEV78VbreQ3J/MOKnM6UX8taUv/OPH75aw6i6wIIxcUExOwutC2nVW/
-         mDNWro5cvQv2FWTYqZLXPJ3BQVGKq3Htcuvba5rfNTMtWGl0QCnEbS39C43Wi1Srbw
-         52IrDIfliUz1pohfkN1vABoF83TV3vvlKbBPIxkPKiNYw60Daq+afp6xou5Sg63dSI
-         2nYg22RS/pPyeJfipiSbyReSoTjMuh0xt0CEe/8CC0yxYEjIfTFm6+qLkKt0etzj8O
-         oaKdow/pG6qtLCol96cfrXjxnD3Atua/BtV8Yb7rukmAR4V6v9yR0Qv2X6n6UIQaKh
-         BO09xv7S4+dkQ==
-Date:   Sun, 5 Apr 2020 11:13:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        "kernelci.org bot" <bot@kernelci.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        chenqiwu <chenqiwu@xiaomi.com>
-Subject: linux-next: build failure after merge of the ide tree
-Message-ID: <20200405111307.6d0ac36e@canb.auug.org.au>
+        id S1726423AbgDEB0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Apr 2020 21:26:01 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:36015 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726300AbgDEB0B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Apr 2020 21:26:01 -0400
+X-Greylist: delayed 548 seconds by postgrey-1.27 at vger.kernel.org; Sat, 04 Apr 2020 21:26:00 EDT
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 15D276C9;
+        Sat,  4 Apr 2020 21:16:51 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sat, 04 Apr 2020 21:16:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=N
+        kfxaedLLWCL3Ia/QIn6Lh9/03kANmH0eC/GZ3hJQ1k=; b=jBy0NQYWm+B6ulYyG
+        8LrCjYc70G34Zo4Z48krapj+fmkLISnqvcJWUdYZQymfaQwZq9OD26SV+dObTpCd
+        DgbCJYZWwueEGmg2UFf5ZqEX8o4JPx/ydxT0ltKhG15dt9fRRUA8AAl2TsVMm92r
+        k31cuUM5jxTKHfL17ukyVQdN/8UY7PsDAHqArrLf7pCt/NhRcuJnRsbHosGAVQJe
+        T0p/IffrTlh3w1cki9rnqQtv9Si28sFSETmASyaoSG/aXLtBtamVZMi9w0fcpbAy
+        ios+Y8LV0Rj1oG6xab5mH9x9d0PFNlGlaGAkaWG9XXj6/N9bMoHW4wSc7GW84AsC
+        Ks8Kg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=NkfxaedLLWCL3Ia/QIn6Lh9/03kANmH0eC/GZ3hJQ
+        1k=; b=VvwCdv7bESg4csbRT5bavXpJ9Eill1wTIqI/OYnN3MgcXw4rfEwuo0Uj8
+        qIE9NE3q4hr5vx02rO0fo7ffMGUw36ACpKbJEjSb4LT+iiqQyTizcC+TDfg77Dev
+        Faj0CEHWRwXkb/4uV7A13HA+GweKh8YIHL0e01HlQ2leQei2xoAWKH9PxaeP6HPo
+        o4n124WZwwayDmRMAErQUYZIDoYJu8E6cBlj+b+Pf8nq0pwbzoXLdKaBzDK/rNXX
+        Aq3cwWyU7uls0QtjixEXlCK5pYalJYWH5goJNdCftrw0brO10CMLwnSWW5AYf3II
+        0R7NIqoWy26HquJR9PSwplCl4CCcA==
+X-ME-Sender: <xms:fTGJXteEQrnd79QYNXrBF1GSWlZTdAEsHksIhVUfLD8rcKJpFbrcHg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrtdelgdeghecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtgfesthejre
+    dttdefjeenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
+    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucffohhmrghinhepuggvvhhitggvthhrvg
+    gvrdhorhhgpdhkvghrnhgvlhdrohhrghenucfkphepjeefrdelfedrkeegrddvtdeknecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihhsth
+    grihhrsegrlhhishhtrghirhdvfedrmhgv
+X-ME-Proxy: <xmx:fTGJXhDMONLl7qBROxbhVbwEl2UjtpW6nG6NAjuPDAz0ljR1mAWcrQ>
+    <xmx:fTGJXr18xc-IA9gb__BJudXTRmsBj5hppaXcWwcpFykApI1djKqurw>
+    <xmx:fTGJXhQwP4yFvhggCTC4zQeJxlivbUvmVXXntILE-7uhPsviKpbLLQ>
+    <xmx:gjGJXn2RSZeKTubI3frSzNzjRPeffoOzFzg8dEAbj37X5vZuNXZIZumTufo>
+Received: from [172.16.1.131] (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 8F20A3280060;
+        Sat,  4 Apr 2020 21:16:44 -0400 (EDT)
+Subject: Re: [PATCH 1/3] dt-bindings: net: bluetooth: Add rtl8723bs-bluetooth
+To:     alistair23@gmail.com
+Cc:     devicetree@vger.kernel.org, johan.hedberg@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marcel@holtmann.org, mripard@kernel.org, netdev@vger.kernel.org,
+        wens@csie.org, max.chou@realtek.com, hdegoede@redhat.com
+References: <20200404204850.405050-1-alistair@alistair23.me>
+ <20200404224205.1643238-1-martin.blumenstingl@googlemail.com>
+From:   Alistair Francis <alistair@alistair23.me>
+Message-ID: <d30412ef-0de3-338b-a1de-0e8b179c2aff@alistair23.me>
+Date:   Sat, 4 Apr 2020 18:16:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/E6SS.F_Nk+ZIg05FmH33vi8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200404224205.1643238-1-martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/E6SS.F_Nk+ZIg05FmH33vi8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-After merging the ide tree, yesterday's linux-next build (mips
-bigsur_defconfig) failed like this:
-
-drivers/ide/ide-scan-pci.c:104:13: error: incompatible type for argument 1 =
-of =E2=80=98list_del=E2=80=99
-
-Caused by commit
-
-  6a0033457f23 ("drivers/ide: convert to list_for_each_entry_safe()")
-
-list_del() takes a "struct list_head *", struct pci_driver::node is a
-"struct list_head" i.e. there is a missing '&'.
-
-Reported by the kernelci.org bot.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/E6SS.F_Nk+ZIg05FmH33vi8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6JMKMACgkQAVBC80lX
-0Gyzwwf/Qg1FXs9DRibhpaSJvInzfnEIV6cN/gvgOEnAko1L0fpM2Yvz+OF35qXV
-Pst3YEKgZGJGOpPxgZY/LYo2/Q0LkHFwaJtYliIMBMRNFDE0+U4yBp5jBANxXhZr
-FLPuPmStEaqkrlAQ1G9JNBDrJEss+M3tp6xJkteNgPYyycFD82hZ38LI0JVWXQm9
-V8LsYxrb1w8yWkFijgYnx0MIWdgT6vfPCDznE5TG82562CkvYkl80wYZ26DdiENq
-Q18W83D/EP4P/Ika2Ot1vHhoF1Jwgow3Y+fayxpMckSBeCNcL0/SLG0aENQbxR54
-HD69fk2oZZY4hB+NbQM3F9771GUuwQ==
-=oEy9
------END PGP SIGNATURE-----
-
---Sig_/E6SS.F_Nk+ZIg05FmH33vi8--
+On 4/04/2020 3:42 pm, Martin Blumenstingl wrote:
+> Hi Alistair,
+>
+> +Cc Max Chou, he may be interested in this also
+>
+> [...]
+>> @@ -0,0 +1,56 @@
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/net/realtek,rtl8723bs-bt.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: RTL8723BS/RTL8723CS Bluetooth Device Tree Bindings
+> I suggest you also add RTL8822C here (as well as to the compatible enum
+> and the description below). commit 848fc6164158d6 ("Bluetooth: hci_h5:
+> btrtl: Add support for RTL8822C") adde support for that chip but didn't
+> add the dt-binding documentation.
+>
+> [...]
+>> +  device-wake-gpios:
+>> +    description:
+>> +      GPIO specifier, used to wakeup the BT module (active high)
+>> +
+>> +  enable-gpios:
+>> +    description:
+>> +      GPIO specifier, used to enable the BT module (active high)
+>> +
+>> +  host-wake-gpios:
+>> +    desciption:
+>> +      GPIO specifier, used to wakeup the host processor (active high)
+> regarding all GPIOs here: it entirely depends on the board whether these
+> are active HIGH or LOW. even though the actual Bluetooth part may
+> require a specific polarity there can be (for example) a transistor on
+> the board which could be used to invert the polarity (from the SoC's
+> view).
+>
+> also "make dt_binding_check" reports:
+>    properties:host-wake-gpios: 'maxItems' is a required property
+> I assume that it'll be the same for the other properties
+>
+>> +firmware-postfix: firmware postfix to be used for firmware config
+> there's no other dt-binding that uses "firmware-postfix" yet. However,
+> there are a few that use "firmware-name". My opinion hasn't changed
+> since Vasily has posted this series initially: I would not add that
+> property for now because there seems to be a "standard" config blob
+> (which works for "all" boards), see Hans' analysis result of the ACPI
+> config blobs for RTL8723BS: [0].
+> Getting that "standard" config blob into linux-firmware would be
+> awesome (I assume licensing is not an issue here, Hans can probably give
+> more details here). I'm not sure about the licenses of "board specific"
+> config blobs and whether these can be added to linux-firmware.
+>
+> also indentation seems wrong here
+>
+>> +reset-gpios: GPIO specifier, used to reset the BT module (active high)
+> indentation seems wrong here too
+>
+> also please note that there is currently no support for this property
+> inside the hci_h5 driver and you don't seem to add support for it within
+> this series either. so please double check that the reset GPIO is really
+> wired up on your sopine board.
+>
+>> +required:
+>> +  - compatible
+>> +
+>> +examples:
+>> +  - |
+>> +    &uart1 {
+>> +        pinctrl-names = "default";
+>> +        pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
+>> +        status = "okay";
+> AFAIK the "status" property should be omitted from examples
+>
+> also please add a "uart-has-rtscts" propery, see
+> Documentation/devicetree/bindings/serial/serial.yaml
+> Also please update patch #3.
+>
+>
+> Martin
+>
+>
+> [0] https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/commit/rtl_bt/rtl8723bs_config-OBDA8723.bin?id=e6b9001e91110c654573b8f8e2db6155d10d3b57
