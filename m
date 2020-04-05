@@ -2,108 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A800F19EAB4
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 13:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1018219EAC2
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 13:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgDELYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 07:24:11 -0400
-Received: from vps.xff.cz ([195.181.215.36]:37452 "EHLO vps.xff.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726388AbgDELYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 07:24:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=megous.com; s=mail;
-        t=1586085849; bh=QY9Q7XhPkDOAvJvjFhI09s7uaGOfN/GI8egEfmyZajg=;
-        h=Date:From:To:Cc:Subject:References:X-My-GPG-KeyId:From;
-        b=eW2k5TeS8ZTpaYYemfbZP+CQujIJUdxTTMBMfsdm58FNEmhftEgEqRJqr0nWSSO+z
-         apZfhPIxZEVNsgdEgbVZIPUfRwvtgy9dNdH9HdavAbgnPesVTrAM/8g+GKrTjbF+L2
-         3+YcWOpPNMIZQ1eDXEIX5+flxI9N0TT29MajBtgU=
-Date:   Sun, 5 Apr 2020 13:24:09 +0200
-From:   =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>
-To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Subject: Re: [linux-sunxi] [PATCH 3/7] arm64: dts: allwinner: h6: set thermal
- polling time
-Message-ID: <20200405112409.gl6kn7cjakwludf6@core.my.home>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-References: <20200405104913.22806-1-peron.clem@gmail.com>
- <20200405104913.22806-4-peron.clem@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200405104913.22806-4-peron.clem@gmail.com>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
+        id S1726579AbgDELaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 07:30:04 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:7406 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726388AbgDELaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 07:30:04 -0400
+Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 05 Apr 2020 04:30:03 -0700
+Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
+  by ironmsg05-sd.qualcomm.com with ESMTP; 05 Apr 2020 04:29:59 -0700
+Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
+        id C52C9215F4; Sun,  5 Apr 2020 16:59:57 +0530 (IST)
+From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sivaprak@codeaurora.org
+Subject: [PATCH V2 0/8] Add APSS clock controller support for IPQ6018
+Date:   Sun,  5 Apr 2020 16:59:17 +0530
+Message-Id: <1586086165-19426-1-git-send-email-sivaprak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The CPU on Qualcomm's IPQ6018 devices are primarily fed by A53 PLL and XO,
+these are connected to a clock mux and enable block.
 
-On Sun, Apr 05, 2020 at 12:49:09PM +0200, Clément Péron wrote:
-> Add reasonable thermal polling time for Allwinner H6.
-> 
-> Signed-off-by: Clément Péron <peron.clem@gmail.com>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> index d4d3963705f5..c3e4f09f60ce 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-> @@ -905,8 +905,8 @@
->  
->  	thermal-zones {
->  		cpu-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
-> +			polling-delay-passive = <100>;
-> +			polling-delay = <1000>;
->  			thermal-sensors = <&ths 0>;
+This patch series adds support for these clocks and inturn enables
+clocks required for CPU freq.
 
-This is not necessary, and will not do anything useful, since the driver
-uses interrupts to update the thermal zone's temperature. Please keep the
-values at 0.
+[V2]
+ * Restructred the patch series as there are two different HW blocks,
+   the mux and enable belongs to the apcs block and PLL has a separate HW
+   block.
+ * Converted qcom mailbox and qcom a53 pll documentation to yaml.
+ * Addressed review comments from Stephen, Rob and Sibi where it is applicable.
+ * Changed this cover letter to state the purpose of this patch series
 
-With your settings the thermal zone would just add a polling timer in addition
-to being updated every 250ms via THS interrupt. The real thermal measurements
-are available every 250ms anyway, so setting a smaller period here will not do
-anything useful, and 1s period will not lead to slower updates either.
+Sivaprakash Murugesan (8):
+  dt-bindings: mailbox: Add YAML schemas for QCOM APCS global block
+  dt-bindings: clock: Add YAML schemas for QCOM A53 PLL
+  clk: qcom: Add A53 PLL support for ipq6018 devices
+  clk: qcom: Add DT bindings for ipq6018 apss clock controller
+  clk: qcom: Add ipq apss clock controller
+  dt-bindings: mailbox: Add dt-bindings for ipq6018 apcs global block
+  mailbox: qcom: Add ipq6018 apcs compatible
+  arm64: dts: ipq6018: Add a53 pll and apcs clock
 
-Values of 0 mean tell the thermal zone to rely on thermal driver to update
-the thermal zone by itself (via interrupt) and to not poll.
+ .../devicetree/bindings/clock/qcom,a53pll.txt      |  22 ----
+ .../devicetree/bindings/clock/qcom,a53pll.yaml     |  60 +++++++++
+ .../bindings/mailbox/qcom,apcs-kpss-global.txt     |  88 -------------
+ .../bindings/mailbox/qcom,apcs-kpss-global.yaml    | 101 +++++++++++++++
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi              |  16 ++-
+ drivers/clk/qcom/Kconfig                           |  10 ++
+ drivers/clk/qcom/Makefile                          |   1 +
+ drivers/clk/qcom/a53-pll.c                         | 136 +++++++++++++++++----
+ drivers/clk/qcom/apss-ipq.c                        | 107 ++++++++++++++++
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c            |  22 ++--
+ include/dt-bindings/clock/qcom,apss-ipq.h          |  12 ++
+ 11 files changed, 430 insertions(+), 145 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/qcom,a53pll.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,a53pll.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.txt
+ create mode 100644 Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
+ create mode 100644 drivers/clk/qcom/apss-ipq.c
+ create mode 100644 include/dt-bindings/clock/qcom,apss-ipq.h
 
-regards,
-	o.
+-- 
+2.7.4
 
->  			trips {
-> @@ -935,8 +935,8 @@
->  		};
->  
->  		gpu-thermal {
-> -			polling-delay-passive = <0>;
-> -			polling-delay = <0>;
-> +			polling-delay-passive = <100>;
-> +			polling-delay = <1000>;
->  			thermal-sensors = <&ths 1>;
->  		};
->  	};
-> -- 
-> 2.20.1
-> 
-> -- 
-> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
-> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/20200405104913.22806-4-peron.clem%40gmail.com.
