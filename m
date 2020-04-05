@@ -2,175 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 863C219EBD0
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 15:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0229019EBDF
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbgDEN5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 09:57:40 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:45355 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726556AbgDEN5k (ORCPT
+        id S1726826AbgDEOIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 10:08:09 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:35377 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgDEOII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 09:57:40 -0400
-Received: by mail-oi1-f193.google.com with SMTP id l22so10673170oii.12
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 06:57:38 -0700 (PDT)
+        Sun, 5 Apr 2020 10:08:08 -0400
+Received: by mail-pl1-f195.google.com with SMTP id c12so4849279plz.2
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 07:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KMfAfBpWX7DTO7rUhHMHrMFwdujm3ATZ8kNwC9anIEs=;
-        b=H2JtguxC2oY3JuGTZSL6ziiemeZz9VyaK4LEOVwXLA0flSbkyfZY6t+8PaBuJ6m3bZ
-         sF6QTTxfJEVflS+voMrryrFFMDss4i2UrSu3RwBdDNT45DxYG5rEAfA/+5Ktvl6MZXPq
-         gCJpWwWQUOWprlaLQZSV5/0WtQIsPgmJAqa3k=
+         :cc;
+        bh=D1Alutm8Kz0gIUiQDyHVyu0RXaT8qrBV0QAHZoy8LI8=;
+        b=Rgz2/Mn+rn4dCEVcoawWzXBK5JL6tV65J4lw4QvmUiox3TESU526+qFxhBlUrPXdr6
+         UOxz+3do+0YW5XmA1tmpOLMpXRfXXybaoSfMxUi28ozSZ2JMEQNzUDTr4VvmdjWwPLd4
+         X4AStBSbH3MujuRQV3kB2CekDrMCOZAXxzkCU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KMfAfBpWX7DTO7rUhHMHrMFwdujm3ATZ8kNwC9anIEs=;
-        b=FI/aQnFs7Y1Pl6ZnIuZNUHVDGILesfu00CGZ+CFUT0yIk08Jrzo6JY51DvmXctuXz+
-         mLv0QFDmOGn0Kay+RDy7fZtyDOLd/tGcOkVoNxrEvwaMK/e/qPnZoZstO7jkCI58TvAe
-         1SFYbRFnWyFgsWbTTQ1Z5zmPqX35yhBC41b0lWinL9I51HX7m7CuMZ04MRSVGnYvyeWl
-         UrpILkFdC0yW2dbpz15oh3yXcnSRca+28whHnmnhqNBxJH6iuOTiUFgwXnrbtDfnbcQN
-         Ejq3PpvHYUD/8LDuq/ZaxJYa45e84v1GHFMKptYyMcjuuyzqo+ZLUBAIk35PkeloVRdo
-         VYYw==
-X-Gm-Message-State: AGi0PubsUA0u/EUvjcyW4p/oYFrVMzY+HHRIIN0DwaAxToyakiEUqMwD
-        CKbtU0PL5vV8V5gpMXyVPv+47JAQn77yaPM7mX7VJg==
-X-Google-Smtp-Source: APiQypIWIMORz9fSLd8g2VoHBAzhQXSpQ9mdOExFYzChDoE34ciZxskTYW29aXjV5X1fFVt73sVPLdiwPcQIoasOPGs=
-X-Received: by 2002:a54:4189:: with SMTP id 9mr9815023oiy.128.1586095057678;
- Sun, 05 Apr 2020 06:57:37 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=D1Alutm8Kz0gIUiQDyHVyu0RXaT8qrBV0QAHZoy8LI8=;
+        b=g0KIsbOb1oHkRyM7M4XRJnXGwYmjtk8lZ4ciI8BUSIdekTUWBLXxxQ9+StESxkalKb
+         QVnZx9BpicIRg099PX59xPrp3ALsMAjjiGXDpZ+0YDxYJmKBu5aiMUDRHrRFuso4yMH+
+         V7TlCfWgwoCO4z+/3PweYCnPmlTm47CONkfUaGgKPKjVFS01nEuLWW5WSHcG8UFA5tCq
+         tM7O1ZNs/su1UApa2TCrBz7TNz8FAtqU9FrMobCT7xpC6YjFw6Jg9WkmKj2wTvlz2Rop
+         r4y7BKRBvHLZKj2GyIMaLnPNLw7BOd7J7O7C1BejtLvbNHf1IKYDVycX/ztsdJoVAflV
+         s5fg==
+X-Gm-Message-State: AGi0PuYZfjs0c5lYQwQuz+DJmpvIdDPzpZ0v9VYudtm2WAQrCU0JwVHk
+        5GRumMTz/t+S788WFS3Kj6p0bL0NGDQ=
+X-Google-Smtp-Source: APiQypJ2B6ZErsCGIRPfqaln0uBatZTZFZY6lN9N0AFLLzSpk8H551rcsV7OA7W0wFTKR6HXmqC0+A==
+X-Received: by 2002:a17:90a:e013:: with SMTP id u19mr11596704pjy.54.1586095687586;
+        Sun, 05 Apr 2020 07:08:07 -0700 (PDT)
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com. [209.85.216.44])
+        by smtp.gmail.com with ESMTPSA id a19sm9641731pfk.110.2020.04.05.07.08.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Apr 2020 07:08:07 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id fh8so5317459pjb.5
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 07:08:07 -0700 (PDT)
+X-Received: by 2002:a1f:a055:: with SMTP id j82mr11678218vke.75.1586095258097;
+ Sun, 05 Apr 2020 07:00:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20190921125017epcas3p2f5661cca04f0959f9707f6111102435d@epcas3p2.samsung.com>
- <20190921124843.6967-1-joonas.kylmala@iki.fi> <d8a8bf25-0c5e-8d94-9406-b1f74e3edfac@samsung.com>
- <53385e44-1847-ace0-cd87-5571f6acd3f2@iki.fi>
-In-Reply-To: <53385e44-1847-ace0-cd87-5571f6acd3f2@iki.fi>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Sun, 5 Apr 2020 15:57:26 +0200
-Message-ID: <CAKMK7uHbMOqGoki7rWUZvxn5FbnD-F2KoiMts3SVP6fCx31yAQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel: samsung: s6e8aa0: Add backlight control support
-To:     =?UTF-8?B?Sm9vbmFzIEt5bG3DpGzDpA==?= <joonas.kylmala@iki.fi>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        GNUtoo@cyberdimension.org
+References: <20200402155130.8264-1-dianders@chromium.org> <20200402085050.v2.2.I28278ef8ea27afc0ec7e597752a6d4e58c16176f@changeid>
+ <20200403013356.GA6987@ming.t460p> <CAD=FV=Ub6zhVvTj79SWPUv19RDvD0gt5EjJV-FZSbYxUy_T1OA@mail.gmail.com>
+ <CAD=FV=Vsk0SjkA+DbUwJxvO6NFcr0CO9=H1FD7okJ2PxMt5pYA@mail.gmail.com> <20200405091446.GA3421@localhost.localdomain>
+In-Reply-To: <20200405091446.GA3421@localhost.localdomain>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Sun, 5 Apr 2020 07:00:46 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=X_S_YHvKkp96f3HVM3uX0VFTCKBxNK3fEu9Yt=NB8wEQ@mail.gmail.com>
+Message-ID: <CAD=FV=X_S_YHvKkp96f3HVM3uX0VFTCKBxNK3fEu9Yt=NB8wEQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] blk-mq: Rerun dispatching in the case of budget contention
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Salman Qazi <sqazi@google.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
+        Ajay Joshi <ajay.joshi@wdc.com>, Arnd Bergmann <arnd@arndb.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 4, 2020 at 3:27 PM Joonas Kylm=C3=A4l=C3=A4 <joonas.kylmala@iki=
-.fi> wrote:
->
-> Hi,
->
-> addressing this email to you all since there might be widespread race
-> condition issue in the DRM panel drivers that are using MIPI DSI. See
-> below for my message.
->
-> Andrzej Hajda:
-> >> +static int s6e8aa0_set_brightness(struct backlight_device *bd)
-> >> +{
-> >> +    struct s6e8aa0 *ctx =3D bl_get_data(bd);
-> >> +    const u8 *gamma;
-> >> +
-> >> +    if (ctx->error)
-> >> +            return;
-> >> +
-> >> +    gamma =3D ctx->variant->gamma_tables[bd->props.brightness];
-> >> +
-> >> +    if (ctx->version >=3D 142)
-> >> +            s6e8aa0_elvss_nvm_set(ctx);
-> >> +
-> >> +    s6e8aa0_dcs_write(ctx, gamma, GAMMA_TABLE_LEN);
-> >> +
-> >> +    /* update gamma table. */
-> >> +    s6e8aa0_dcs_write_seq_static(ctx, 0xf7, 0x03);
-> >> +
-> >> +    return s6e8aa0_clear_error(ctx);
-> >> +}
-> >> +
-> >> +static const struct backlight_ops s6e8aa0_backlight_ops =3D {
-> >> +    .update_status  =3D s6e8aa0_set_brightness,
-> >
-> >
-> > This is racy, update_status can be called in any time between probe and
-> > remove, particularly:
-> >
-> > a) before panel enable,
-> >
-> > b) during panel enable,
-> >
-> > c) when panel is enabled,
-> >
-> > d) during panel disable,
-> >
-> > e) after panel disable,
-> >
-> >
-> > b and d are racy for sure - backlight and drm callbacks are async.
-> >
-> > IMO the best solution would be to register backlight after attaching
-> > panel to drm, but for this drm_panel_funcs should have attach/detach
-> > callbacks (like drm_bridge_funcs),
-> >
-> > then update_status callback should take some drm_connector lock to
-> > synchronize with drm, and write to hw only when pipe is enabled.
->
-> I have done now research and if I understand right one issue here might
-> be with setting the backlight brightness if the DSI device is not
-> attached before calling update_status() since calling it would call
-> subsequently s6e8aa0_set_brightness() -> s6e8aa0_dcs_write() ->
-> mipi_dsi_dcs_write_buffer(), which then requires DSI to be attached.
->
-> But now to the part that affects many of the panel drivers using MIPI
-> DSI, like panel-samsung-s6e63j0x03.c, panel-simple.c, etc.:
-> mipi_dsi_attach(dsi) seems to be always called only after the DRM panel
-> helper drm_panel_add(). Now I think this is problematic since
-> drm_panel_add() makes the panel available for use in userspace but if
-> the user tries to actually do something with the panel before
-> mipi_dsi_attach(dsi) is called it would not work.
->
-> So for some reason the mipi_dsi_attach() is called in all those drivers
-> after drm_panel_add() and at least to the problem I pointed out above
-> moving the call there before drm_panel_add() would fix the issue but
-> then I don't know if it causes some other issue.
+Hi,
 
-Nope, drm_panel_add only makes the panel visible to other drm drivers,
-not yet to userspace. That only happens once the overall drm driver
-calls drm_dev_register. At that point the mipi_dsi_attach should have
-happened I think.
-
-That in turn calls a drm_connector_funcs->late_register hook, which is
-meant to be use to register stuff like backlight interfaces. If you
-set up your backlight before that, yes I expect some good fireworks.
-Now as you noticed, we're not wiring that through to panels, so maybe
-the best solution would be if drm_panel gets a backlight pointer with
-an initialized, but not yet registered backlight. And then we can
-drive this in the bridge or connector wrapper for panels.
-
-Or I'm totally not understanding the issue even, which is also possible :-)
-
-Cheers, Daniel
-
-> Also I don't know if Andrzej had some other issues in mind that could be
-> caused by this race condition, so if there are multiple instead of just
-> that one issue with DSI not being attached then we might want to have
-> all these issues fixed by for example the solution Andrzej proposed
-> where we have attach/detach callbacks in drm_bridge_funcs.
+On Sun, Apr 5, 2020 at 2:15 AM Ming Lei <ming.lei@redhat.com> wrote:
 >
-> Please let me know if anything I write above doesn't make sense, I'm
-> still trying to understand the DRM subsystem better.
+> OK, looks it isn't specific on BFQ any more.
 >
-> Joonas
+> Follows another candidate approach for this issue, given it is so hard
+> to trigger, we can make it more reliable by rerun queue when has_work()
+> returns true after ops->dispath_request() returns NULL.
+>
+> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+> index 74cedea56034..4408e5d4fcd8 100644
+> --- a/block/blk-mq-sched.c
+> +++ b/block/blk-mq-sched.c
+> @@ -80,6 +80,7 @@ void blk_mq_sched_restart(struct blk_mq_hw_ctx *hctx)
+>         blk_mq_run_hw_queue(hctx, true);
+>  }
+>
+> +#define BLK_MQ_BUDGET_DELAY    3               /* ms units */
+>  /*
+>   * Only SCSI implements .get_budget and .put_budget, and SCSI restarts
+>   * its queue by itself in its completion handler, so we don't need to
+> @@ -103,6 +104,9 @@ static void blk_mq_do_dispatch_sched(struct blk_mq_hw_ctx *hctx)
+>                 rq = e->type->ops.dispatch_request(hctx);
+>                 if (!rq) {
+>                         blk_mq_put_dispatch_budget(hctx);
+> +
+> +                       if (e->type->ops.has_work && e->type->ops.has_work(hctx))
+> +                               blk_mq_delay_run_hw_queue(hctx, BLK_MQ_BUDGET_DELAY);
 
+I agree that your patch should solve the race.  With the current BFQ's
+has_work() it's a bit of a disaster though. It will essentially put
+blk-mq into a busy-wait loop (with a 3 ms delay between each poll)
+while BFQ's has_work() says "true" but BFQ doesn't dispatch anything.
 
+...so I guess the question that still needs to be answered: does
+has_work() need to be exact?  If so then we need the patch you propose
+plus one to BFQ.  If not, we should continue along the lines of my
+patch.
 
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+-Doug
