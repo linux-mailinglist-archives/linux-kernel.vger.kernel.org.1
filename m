@@ -2,69 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E05019ECA7
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 18:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC3A19EC69
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 17:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727588AbgDEQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 12:37:25 -0400
-Received: from fallback21.m.smailru.net ([94.100.176.131]:38566 "EHLO
-        fallback21.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726667AbgDEQhY (ORCPT
+        id S1727076AbgDEPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 11:48:07 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:54378 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726717AbgDEPsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 12:37:24 -0400
-X-Greylist: delayed 3243 seconds by postgrey-1.27 at vger.kernel.org; Sun, 05 Apr 2020 12:37:23 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=prok.pw; s=mailru;
-        h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From; bh=ZR+qrpI2QRDJ2JEVAjghD8OlCYyG18/jk/szwztfZIE=;
-        b=pVCQEfS0EYPd4o3uwAdUvDCe90E+nZG+/FKDVss5GGcF8N6/8d8lmJwJdKodE9JJoBSv3nPQvq/pCWfzoV08L+dyVl00K06p5L0606HG3vtdlNp5pDS1LflPXCltW5L46e33L9AbQHKk3Zm0gYICdGO6yQ2+9I2eUhHLNEhuGMs=;
-Received: from [10.161.25.35] (port=58326 helo=smtp58.i.mail.ru)
-        by fallback21.m.smailru.net with esmtp (envelope-from <me@prok.pw>)
-        id 1jL7Qc-0007i1-2M; Sun, 05 Apr 2020 18:43:18 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=prok.pw; s=mailru;
-        h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From; bh=ZR+qrpI2QRDJ2JEVAjghD8OlCYyG18/jk/szwztfZIE=;
-        b=pVCQEfS0EYPd4o3uwAdUvDCe90E+nZG+/FKDVss5GGcF8N6/8d8lmJwJdKodE9JJoBSv3nPQvq/pCWfzoV08L+dyVl00K06p5L0606HG3vtdlNp5pDS1LflPXCltW5L46e33L9AbQHKk3Zm0gYICdGO6yQ2+9I2eUhHLNEhuGMs=;
-Received: by smtp58.i.mail.ru with esmtpa (envelope-from <me@prok.pw>)
-        id 1jL7QO-0005Gl-6x; Sun, 05 Apr 2020 18:43:05 +0300
-From:   Sergey Shatunov <me@prok.pw>
-To:     nivedita@alum.mit.edu
-Cc:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org
-Subject: Re: [PATCH 1/2] x86/boot/compressed/64: Remove .bss/.pgtable from bzImage
-Date:   Sun,  5 Apr 2020 22:42:46 +0700
-Message-Id: <20200405154245.11972-1-me@prok.pw>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200109150218.16544-1-nivedita@alum.mit.edu>
-References: <20200109150218.16544-1-nivedita@alum.mit.edu>
+        Sun, 5 Apr 2020 11:48:07 -0400
+Received: by mail-pj1-f66.google.com with SMTP id np9so5389362pjb.4;
+        Sun, 05 Apr 2020 08:48:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ro6+KbefkXz+hPhP0Iqcl220cLZghODcgKlebnYOeYc=;
+        b=tP29YWUW3x9WmSD+ejFt0USy7DlViex3SScBAv1194VeWEW5P9g9VXP7BMtEHS8w4o
+         QPEfWb32O9gGWb9l5p2m/MwBZGd01bhZtG6jspoK0xjJae9sqlBh+KZssRbed9Z+QCdE
+         ibfhMZoW/BZzu86FQTx0vrjbRyyFeZSgrMea26rN5lDE2YICdsFuLjEOYYkWvZDu52eL
+         NVcqOdFEhwCMikqBIMdHZw9a0M+RpCj5nxjy8jBiVYgDTitDq+16+nYYhd+Dbzt0UuJI
+         zqaRYmvalcX94TgFGbrUvfw4CiST8M5n78E5hYYPFyRNP5bQxMkuBpFlKh+IDCQch0mz
+         BZgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ro6+KbefkXz+hPhP0Iqcl220cLZghODcgKlebnYOeYc=;
+        b=f6UneDuM21y62oIK9aKMZiYJCx8A3fOR9cUFhtoCAWxqpNqd53KMcTm8KUbyU1j/M7
+         MU/uy+sp0DTkKNBxQVckCP2E2TnegR3lAXQWettNMYgFASQvl1zTXdsWKfNrmp9m5tqA
+         wdsntUFln0mUe560Gp57dI5ycSsjDQgj8F+NDRc+embJaPiXZE0RpvhorzWy7xP1YqII
+         U580iUc8A1oLH+wU4v1ETT5Zd5NsFW+VuIppCGOMBM9XkX/N1dpEY4eqAI6UMpESgGD1
+         v+Fby5WFNWwkgQL7d/nDHy5lQoshC7NR5qdOOw8V17rnHyjnf1g+VkPT8H0NG+S6xskZ
+         FyQg==
+X-Gm-Message-State: AGi0PuYAWxkxj8WGJ0pVezkouVbHDYAEEmZhVM/o1uJAWIAcoxoysIkl
+        vCplI/cHJsEueJeTYt1NQ8CwO6e9
+X-Google-Smtp-Source: APiQypKcN3uszX8BCrmxru7kRRaolnm7NM90uaXqMOzHJXXYiCi0JzXO4o7Hw2tblXgAA60VR1Qp7A==
+X-Received: by 2002:a17:90b:292:: with SMTP id az18mr21079654pjb.126.1586101684836;
+        Sun, 05 Apr 2020 08:48:04 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l18sm9009275pgc.26.2020.04.05.08.48.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Apr 2020 08:48:04 -0700 (PDT)
+Subject: Re: [PATCH linux hwmon-next v3 3/3] dt-bindings: (hwmon/sbtsi_tmep)
+ Add SB-TSI hwmon driver bindings
+To:     Kun Yi <kunyi@google.com>, jdelvare@suse.com, robh+dt@kernel.org,
+        mark.rutland@arm.com
+Cc:     openbmc@lists.ozlabs.org, joel@jms.id.au,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200405030118.191950-1-kunyi@google.com>
+ <20200405030118.191950-4-kunyi@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <a49060b5-a529-e6b2-2690-cac4681c7722@roeck-us.net>
+Date:   Sun, 5 Apr 2020 08:48:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-7564579A: B8F34718100C35BD
-X-77F55803: 0A44E481635329DB0E1AA8A03B392317D32E5E48865217365060145B739F5F5CA26B9638504F0C26F688BCB05C26794D803AF6CF205C3D7A4DA82B128B86CD4C6438D185CB39753FA6CF1DE94F8B6303
-X-7FA49CB5: 0D63561A33F958A52440FFB3227236EB318160047910139AF29F9188C9FCDE298941B15DA834481FA18204E546F3947CA9FF340AA05FB58CF6B57BC7E64490618DEB871D839B7333395957E7521B51C2545D4CF71C94A83E9FA2833FD35BB23D27C277FBC8AE2E8B292D688DDAD4E7BC389733CBF5DBD5E9B5C8C57E37DE458B4DA2F55E57A558BE7B076A6E789B0E975F5C1EE8F4F765FC6183ED2278D24C4D3AA81AA40904B5D9CF19DD082D7633A0BE77C518755DECA13AA81AA40904B5D98AA50765F790063703A99C803C4C6BCED81D268191BDAD3D209CBC2A0E48600C262FEC7FBD7D1F5BD5E8D9A59859A8B66106518975EE654D089D37D7C0E48F6C5571747095F342E857739F23D657EF2B6825BDBE14D8E7028C9DFF55498CEFB0BD9CCCA9EDD067B1EDA766A37F9254B7
-X-D57D3AED: Y8kq8+OzVozcFQziTi/Zi1xwo7H2ZNxGP5qz8aO2mjTJzjHGC4ogvVuzB3zfVUBtENeZ6b5av1fnCBE34JUDkWdM6QxE+Ga5d8voMtmXfSpVvaONzuzjcJuf5RTkiCWD
-X-Mailru-Internal-Actual: A:0.87964429298645
-X-Mailru-Sender: C70B145DBB19DC3370B3FB291950C1B54EAE3E69B558C2EAD7FAC7CAD079F9D5BA0848438379BFCE8BA0E2A9D6159BD266FEC6BF5C9C28D9A91CF0FA91B32267255DC5169939796B8DAAFE1477B51D223453F38A29522196
-X-Mras: Ok
-X-7564579A: EEAE043A70213CC8
-X-77F55803: 669901E4625912A97F9F52485CB584D7271FD7DF62800FDC4BB875CBFB28746199A7D5051BA5AB2AFC3153F33B0963F0F0D2DEA1FFA6D9D8
-X-7FA49CB5: 0D63561A33F958A595D4E5D6CCFB01A90CBC5650B7F751A1A1B02EF0822B4C3D8941B15DA834481FA18204E546F3947CA9FF340AA05FB58CF6B57BC7E64490618DEB871D839B7333395957E7521B51C2545D4CF71C94A83E9FA2833FD35BB23D27C277FBC8AE2E8BECADA55FE5B58BB7A471835C12D1D977C4224003CC8364767815B9869FA544D8D32BA5DBAC0009BE9E8FC8737B5C22499FB0157AEC62EB7A76E601842F6C81A12EF20D2F80756B5F012D6517FE479FCD76E601842F6C81A127C277FBC8AE2E8B6183ED2278D24C4D3AA81AA40904B5D99449624AB7ADAF3726B9191E2D567F0E725E5C173C3A84C3DB8B71E42BA00C4F35872C767BF85DA2F004C906525384306FED454B719173D6462275124DF8B9C9DE2850DD75B2526BE5BFE6E7EFDEDCD789D4C264860C145E
-X-D57D3AED: Y8kq8+OzVozcFQziTi/Zi1xwo7H2ZNxGP5qz8aO2mjTJzjHGC4ogvVuzB3zfVUBtENeZ6b5av1fnCBE34JUDkWdM6QxE+Ga5d8voMtmXfSqMESoaCVCpRAD/ql6jfy+t
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C9005C4B9C964EF46FD643F568EAB4A5C3FC499A7D5051BA5AB2A009DB4CE3002C7DB8BA0E2A9D6159BD266FEC6BF5C9C28D9A91CF0FA91B32267255DC5169939796B8DAAFE1477B51D223453F38A29522196
-X-Mras: Ok
+In-Reply-To: <20200405030118.191950-4-kunyi@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch causes some strange things happens with my laptop.
+On 4/4/20 8:01 PM, Kun Yi wrote:
+> Document device tree bindings for AMD SB-TSI emulated temperature
+> sensor.
+> 
+> Signed-off-by: Kun Yi <kunyi@google.com>
+> ---
+>  .../devicetree/bindings/hwmon/amd,sbtsi.txt   | 26 +++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/amd,sbtsi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/amd,sbtsi.txt b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.txt
+> new file mode 100644
+> index 000000000000..be7293c43c0e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/amd,sbtsi.txt
+> @@ -0,0 +1,26 @@
+> +* Sideband interface Temperature Sensor Interface (SB-TSI) compliant
+> +AMD SoC temperature device.
+> +
+> +SB Temperature Sensor Interface (SB-TSI) is an SMBus compatible
+> +interface that reports AMD SoC's Ttcl (normalized temperature),
+> +and resembles a typical 8-pin remote temperature sensor's I2C interface
+> +to BMC. The emulated thermal sensor can report temperatures in increments of
+> +0.125 degrees, ranging from 0 to 255.875.
+> +
+> +Required properties:
+> +- compatible: manufacturer and chip name, should be
+> +	"amd,sbtsi",
+> +
+> +- reg: I2C bus address of the device as specified in Section 6.3.1 of the
+> +SoC register reference: The SB-TSI address is normally 98h for socket 0 and
+> +90h for socket 1, but it could vary based on hardware address select pins.
+> +
+> +[open source SoC register reference]:
+> +	https://www.amd.com/system/files/TechDocs/56255_OSRR.pdf
+> +
+> +Example:
+> +
+> +sbtsi@4c {
+> +	compatible = "amd,sbtsi";
+> +	reg = <0x4c>;
+> +};
+> 
 
-Cold boot crashed in some early initilization logic with message 'Failed to execute /esp/.../linux.efi: Buffer Too Small'.
-After couple reboots into firmware setup (bios) or hot reboot from other working kernel (without that commit) helps it to boot.
-During bisecting couple times I saw different message: 'exit_efi() failed; efi_main() failed', but above tricks helps it too.
-So bisect points to that commit and I tried to compile kernel with that commit reverted and it works flawlessly.
+Rob is going to ask you to provide this information in DT schema format
+(Documentation/devicetree/writing-schema.rst). checkpatch tells you the same
+nowadays.
 
-Some notes about my setup:
-Kernel tree I used: Torvalds git (which recently pulls that commit).
-Kernel itself with initrd and cmdline packed into systemd-boot stub (probably here can be issues too, not sure).
-Secure boot enabled with custom keyring.
+Guenter
 
-I can provide more info or change my setup (for example get rid of systemd-boot stub) if needed for sure.
