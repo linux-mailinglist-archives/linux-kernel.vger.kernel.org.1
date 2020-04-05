@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD3919EA8E
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 12:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4A719EA8A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 12:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgDEKtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 06:49:20 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:52205 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726388AbgDEKtT (ORCPT
+        id S1726696AbgDEKtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 06:49:33 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:41468 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgDEKtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 06:49:19 -0400
-Received: by mail-wm1-f66.google.com with SMTP id z7so11632211wmk.1;
-        Sun, 05 Apr 2020 03:49:18 -0700 (PDT)
+        Sun, 5 Apr 2020 06:49:22 -0400
+Received: by mail-wr1-f67.google.com with SMTP id h9so13867287wrc.8;
+        Sun, 05 Apr 2020 03:49:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=953t16PaqsK6LcXl7SedQvIrbO2yGs6c/tDrXm7TIhc=;
-        b=gDU9MpLlJXCxtnrJImoSbWNKul0yvFgILeoD6x0Az1GLzewahCBNoaASoP2PwKMwu0
-         If9A7h8AvWGp43dPJXZzkKEWy+TXf18/nhD7/OEk//SJ2ussttndqB67MpOX80y7qPUn
-         XDGeAkJXlialvYn4mgovXTGTwk8h/cvavMSNFpPg/Aj27whu6BgHq6IBDtcprRnzyUzp
-         dI1LvNsoFTdLJjqO/j4OYwqsXAkiHGiXaaYvT9LHva1GvzuNTZ6/rHO3AfdFjz2pStlS
-         Rc46XrpmD1T7jUWt7gQd0ferGemsUtHc4Gna7eOK4HpiGdwGRzH2RqlvIhpuSwWQHmSl
-         XnQg==
+        bh=T2ox6yFqqUNTyQRjV1Y6BWeD23De5Y0nxhCOsLLOIKs=;
+        b=dFZqux8Kt58ZD1nl1pEsS9jGttw4fQIvzoSx1sxe9av3Ci7uCrIEHOIXvDyxTKgdzb
+         0/0N+3iC8p/HpM1qtAttoL1O1FPIGj98M/BJSzds66yp0N+NbyG/SSooXpVurt1yII7x
+         R703o4PdqnM9DRHTkkj3mmOQl/GrDMAUewk1niAHwEn+w5IcBVaWf8EwGIlkcEaFEo/K
+         PTInczeA5IZ86qLOGWu2bayHLi2dwb0/r4wwsIEAoLJVAxZyt2gmqeHDsxXqC/rR/jCJ
+         CrDcqDZtlxNfDIvLztGZcNpJtG0HjGUtnN9nPealj8ORDrgxOmPnUIdWYCtoLneCmm+N
+         B1Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=953t16PaqsK6LcXl7SedQvIrbO2yGs6c/tDrXm7TIhc=;
-        b=OYJqFIhSu3stR2uhzjZe7nbe7UHRX53H/Zdoz++OHekF0iMeKzxxHkEf6CXiOg0y0m
-         TRc+qj/H2L4wx3KWK5KyuvV5RBwEz+vUfhiZeVFzM88Ds6KT0mh6eS6SR5KLM0J0UYPj
-         MA/y8DkoMHOtAQEtFvWPbcjnw4T6hicFsOzd9TCOu963vapZ0e4St+DMlotSObtWKnsI
-         lW2vthZ0qbfsFl2Kr35nkaiK8QO2IQnWq/vYj0XKRrU81XFte+LA9YjpYV1TGA5W8LFC
-         YKW8SB18y3ZB1R4OMKldJ81r6xC8Gn3oaQaMpCqr1TgDuz+7npauw5Duy5/TbnUktZYd
-         Z/tg==
-X-Gm-Message-State: AGi0PuYNIbo+hHIMnjSy1P2IumB6C271Bl8KqplV6qTkttnOEcncEjYc
-        9C6FViKYr5YC1M0hCrw4s1g=
-X-Google-Smtp-Source: APiQypIb6hYEiZU/p/Pp6GyHUm6hJVSiw5xrphdOw1InxhwhbkqgTWtX3m4rJUfQxyavTQCkImQr2g==
-X-Received: by 2002:a1c:6044:: with SMTP id u65mr9806744wmb.11.1586083757409;
-        Sun, 05 Apr 2020 03:49:17 -0700 (PDT)
+        bh=T2ox6yFqqUNTyQRjV1Y6BWeD23De5Y0nxhCOsLLOIKs=;
+        b=V9H5Io3Bx9dULP5EOc6rmahv1eteQM4JXlGQAglZRYWS2UyTT6WBAfa/9GWlFZpFpW
+         yQTddina82uCryEXiNLZ7/LEuVlhVdvW9mwqxZerqhY99L9p6shThMRVHJi06uLZ1rek
+         WkUcHaMlTbABwnzp6PiPxQbCCE5DkFqP129hWyFLz46xHjRrIxYCsxJQmDefgyme4d/B
+         7ZjAIW1u/I8QSP4TnM627MD8zS0jpLXxce2yogAYvHiFni3c4UnrQktxlDjaCl9DbjpG
+         hJ8xbgxffNlzZCx8mRwfzwcVu64oY5j6sgEKkDRiswHpqa10FwZ3qk6CG3Yn7OK8H4eu
+         oBrw==
+X-Gm-Message-State: AGi0PuZ0aiIxRRcgyPvB/94msRAMIDW6mnlqX+xDjbP73EmZ48DsegzM
+        S8L5tnqgLdFtcCvFVC7kcdE=
+X-Google-Smtp-Source: APiQypJ+aVzIiRh0H4IA7SAjs61Pv2FJlbjUyc95b3MQCNX7BWoOWhIjm68s9zmbsLp/uFKpTEJHGg==
+X-Received: by 2002:adf:f74d:: with SMTP id z13mr9260727wrp.55.1586083758486;
+        Sun, 05 Apr 2020 03:49:18 -0700 (PDT)
 Received: from localhost.localdomain (91-167-199-67.subs.proxad.net. [91.167.199.67])
-        by smtp.gmail.com with ESMTPSA id u13sm21606411wru.88.2020.04.05.03.49.16
+        by smtp.gmail.com with ESMTPSA id u13sm21606411wru.88.2020.04.05.03.49.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Apr 2020 03:49:16 -0700 (PDT)
+        Sun, 05 Apr 2020 03:49:17 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         linux-sunxi <linux-sunxi@googlegroups.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
+        Ondrej Jirman <megous@megous.com>,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 1/7] arm64: dts: allwinner: h6: Add clock to CPU cores
-Date:   Sun,  5 Apr 2020 12:49:07 +0200
-Message-Id: <20200405104913.22806-2-peron.clem@gmail.com>
+Subject: [PATCH 2/7] arm64: dts: allwinner: h6: Add thermal trip points/cooling map
+Date:   Sun,  5 Apr 2020 12:49:08 +0200
+Message-Id: <20200405104913.22806-3-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200405104913.22806-1-peron.clem@gmail.com>
 References: <20200405104913.22806-1-peron.clem@gmail.com>
@@ -67,58 +67,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangtao Li <tiny.windzz@gmail.com>
+From: Ondrej Jirman <megous@megous.com>
 
-The ARM CPU cores are fed by the CPU clock from the CCU. Add a
-reference to the clock for each CPU core, along with the clock
-transition latency.
+This enables passive cooling by down-regulating CPU voltage
+and frequency.
 
-Signed-off-by: Yangtao Li <tiny.windzz@gmail.com>
+Signed-off-by: Ondrej Jirman <megous@megous.com>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi | 24 ++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-index 3329283e38ab..aef4ae760d5e 100644
+index aef4ae760d5e..d4d3963705f5 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -25,6 +25,8 @@
- 			device_type = "cpu";
- 			reg = <0>;
- 			enable-method = "psci";
-+			clocks = <&ccu CLK_CPUX>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
+@@ -908,6 +908,30 @@
+ 			polling-delay-passive = <0>;
+ 			polling-delay = <0>;
+ 			thermal-sensors = <&ths 0>;
++
++			trips {
++				cpu_hot_trip: cpu-hot {
++					temperature = <80000>;
++					hysteresis = <2000>;
++					type = "passive";
++				};
++
++				cpu_very_hot_trip: cpu-very-hot {
++					temperature = <100000>;
++					hysteresis = <0>;
++					type = "critical";
++				};
++			};
++
++			cooling-maps {
++				cpu-hot-limit {
++					trip = <&cpu_hot_trip>;
++					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
++							 <&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
++				};
++			};
  		};
  
- 		cpu1: cpu@1 {
-@@ -32,6 +34,8 @@
- 			device_type = "cpu";
- 			reg = <1>;
- 			enable-method = "psci";
-+			clocks = <&ccu CLK_CPUX>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
- 		};
- 
- 		cpu2: cpu@2 {
-@@ -39,6 +43,8 @@
- 			device_type = "cpu";
- 			reg = <2>;
- 			enable-method = "psci";
-+			clocks = <&ccu CLK_CPUX>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
- 		};
- 
- 		cpu3: cpu@3 {
-@@ -46,6 +52,8 @@
- 			device_type = "cpu";
- 			reg = <3>;
- 			enable-method = "psci";
-+			clocks = <&ccu CLK_CPUX>;
-+			clock-latency-ns = <244144>; /* 8 32k periods */
- 		};
- 	};
- 
+ 		gpu-thermal {
 -- 
 2.20.1
 
