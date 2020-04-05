@@ -2,168 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A4F19EA7D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 12:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD8F19EA80
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 12:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgDEKqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 06:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726410AbgDEKqH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 06:46:07 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 406F5206B8;
-        Sun,  5 Apr 2020 10:46:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586083566;
-        bh=ei7dY175ZTQdNCbfUxChZGjkMvGPPhBe13PsivIWOSA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N81zGrWkJOqifa+/UrodK7kgmy32fbmCqDYoYU22LVI+dRMoJoNk/BHm3p/364e5i
-         Jo0udIWDW6Tk3ksjPQzBSNCbYqWBaWrAuoIcnYxX26xObKzJjf0gQB8SL8IahIdWFS
-         /KtX6QIASULhnYAowVgFBUt58PT1mxvQA3zfFql8=
-Date:   Sun, 5 Apr 2020 11:46:02 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devel@driverdev.osuosl.org>, <knaack.h@gmx.de>, <lars@metafoo.de>,
-        <pmeerw@pmeerw.net>, <lorenzo.bianconi83@gmail.com>
-Subject: Re: [PATCH 1/3] iio: kfifo: add iio_device_attach_kfifo_buffer()
- helper
-Message-ID: <20200405114602.160c690b@archlinux>
-In-Reply-To: <20200401125936.6398-1-alexandru.ardelean@analog.com>
-References: <20200401125936.6398-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726594AbgDEKtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 06:49:21 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34040 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbgDEKtT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 06:49:19 -0400
+Received: by mail-wr1-f67.google.com with SMTP id 65so13898919wrl.1;
+        Sun, 05 Apr 2020 03:49:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yv9/IWXnJ1yoMpi3TirvEFglVe/Qk5su9GHmZ1S9fvw=;
+        b=mjExk6h0SjDMiFmot3d7kbacUhaCJ2rJUaHjRag6KYbL1sKo310SOL1FvgVioCuMJE
+         AfN74pbWGyQdoV9kbee/HsesCoTxJnVudn9an0lEC0jBKQRMT65byzkYEtchI8d1Ugy+
+         HDwJuMA0zHQUj4MxS9mTyxLmo9tNRGgJ0gpxcVIwcXxHPhlAP+0Qxjs3oy2mRdL0X8MT
+         MLt8AGq1PeoqPZeewzypXrFFgS1iOPhmUY0e7qobHLIEZ+d40UhKTuAhjX4o6Yr3oSyo
+         T7P+ZUavVbah3wm95NhoNRcYQylcqXoZZpNkjiYRIndGsw8iLsilqRcQ9faMcbfmV8la
+         uq8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yv9/IWXnJ1yoMpi3TirvEFglVe/Qk5su9GHmZ1S9fvw=;
+        b=SB/abBsgi6m8Neie8CNPYbQNd9Qa5N3KekCSojGV8PcZNBvwWfQ1E2XdtdZznxc780
+         wzSKc5JLbvMMkq67MXpJpYtgU4bT7bMl4MqX58uL/+w+lX+HXnpeZN6qUhxj8nvmW5Zy
+         Go3vem5WjsCpMaQpZ83maKCQ76PyDzEE8hq5cz9q24CLZRpQUHH8xVE44cc/7lt+UJyc
+         /33XT1Eh8QLLYjlVLpqhIpMR2NuPeKJKWbjUno+EwWFtYi6hbExy/thFqrUOmV20IJgh
+         sTdcz9TI+dVr+R8gGkglyeOM2y4QRX2e4LjORd9wr6V5utkN7RYVu7ahCnTNa/Dn9XwY
+         KlDA==
+X-Gm-Message-State: AGi0PuYmKXSCIkEVnLoLmqJ0JxhEcGLh+vwt6VFmgIfdyIrNpw6zjBY6
+        vC2+6ZbyYaee2yleeXA3hM/z/U121hM=
+X-Google-Smtp-Source: APiQypI5EMi4kSaqvdloUF+bXudrs3VbGb3tMM6vkimF6JXmXh9exzeuX4ABGCQELzS/I9fiEaAo0w==
+X-Received: by 2002:a05:6000:4:: with SMTP id h4mr18068000wrx.236.1586083756474;
+        Sun, 05 Apr 2020 03:49:16 -0700 (PDT)
+Received: from localhost.localdomain (91-167-199-67.subs.proxad.net. [91.167.199.67])
+        by smtp.gmail.com with ESMTPSA id u13sm21606411wru.88.2020.04.05.03.49.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Apr 2020 03:49:15 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH 0/7] Add support for Allwinner H6 DVFS
+Date:   Sun,  5 Apr 2020 12:49:06 +0200
+Message-Id: <20200405104913.22806-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Apr 2020 15:59:34 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Hi Sunxi maintainers and members,
 
-> This change adds the iio_device_attach_kfifo_buffer() helper/short-hand,
-> which groups the simple routine of allocating a kfifo buffers via
-> devm_iio_kfifo_allocate() and calling iio_device_attach_buffer().
-> 
-> The mode_flags parameter is required. The setup_ops parameter is optional.
-> 
-> This function will be a bit more useful when needing to define multiple
-> buffers per IIO device.
-> 
-> One requirement [that is more a recommendation] for this helper, is to call
-> it after 'indio_dev' has been populated.
-> 
-> Also, one consequence related to using this helper is that the resource
-> management of the buffer will be tied to 'indio_dev->dev'. Previously it
-> was open-coded, and each driver does it slightly differently. Most of them
-> tied it to the parent device, some of them to 'indio_dev->dev'.
-> This shouldn't be a problem, and may be a good idea when adding more
-> buffers per-device.
+Now that required drivers are merged we can contibute on DVFS support for
+Allwinner H6.
 
-I'm glad you highlighted this subtlety.  I'm not sure it's safe in all cases
-because the result is that the managed cleanup for this will occur once we
-get to the cleanup for devm_iio_device_alloc and we release the indio_dev->dev
+This serie is based on Yangtao Li serie[0] and Megous works[1].
 
-That would put it 'after' any other devm calls that are still hung off the parent
-device.
+Most of the OPP tables are taken from original vendor kernel[2].
+Plus there is a new CPU frequency @1.8GHz.
 
-Now the question is whether that ever causes us problems... See next patch.
-It potentially does.  I think we need to provide the dev separately even
-if it feels a bit silly to do so.  Scope management is complex so I don't
-really want to force people to mix and match between different devices
-and so get it wrong by accident.
+I wrote a simple script to randomly set a frequency during a random time[3].
+With this script and using stress-ng during a day I didn't see any issue.
+Moreover I have tested specifically the 1.8GHz on my Beelink GS1, max thermal
+80°C is reached after ~10min and then the SoC oscillates quickly between 1.5
+and 1.8GHz.
 
-The other issue is that it's not readily apparent from the naming that
-this function is registering stuff that is cleaned up automatically or
-that it even allocates anything that might need that..
+I also test that that offlining CPU0 and doing DVFS on other CPUs works.
+As CPU regulator is only set for CPU0.
 
-devm_iio_device_attach_new_kfifo_buffer maybe?
+But maybe it doesn't cost much to set the regulator for all the CPUs?
 
-I'm sort of wondering if we should do what dma did and have
+Jernej test the GPU devfreq on several H6 board particulary the Tanix TX6 which
+doesn't have a proper dedicated PMIC and doesn't had any trouble with it.
 
-iiom_device_attach_new_kfifo_buffer to indicate it's managed in the
-scope of the iio device?
+Do you think I can enable GPU OPP for all H6 Boards?
 
-What do people think?
+Also Yangtao Li enable DVFS for OrangePi and Pine64, as I can't test them I
+didn't reenable these boards. Please, let me know if you want me to add these
+boards in this serie.
 
-However, see patch 2 before commenting.  Reality is I'm not sure forcing
-managed calls to hang off iio_dev->dev is a good idea (at this stage given
-where we are).
+Thanks,
+Clément
 
-Thanks
+0: https://patchwork.kernel.org/cover/10815117/
+1: https://megous.com/git/linux/log/?h=ths-5.7
+2: https://github.com/orangepi-xunlong/OrangePiH6_Linux4_9/blob/master/arch/arm64/boot/dts/sunxi/sun50iw6p1.dtsi#L345-L517
+3: https://gist.github.com/clementperon/55a055dae3f13bbd14fb39c0069fe2e2
 
-Jonathan
+Clément Péron (4):
+  arm64: dts: allwinner: h6: set thermal polling time
+  arm64: dts: allwinner: h6: Add GPU Operating Performance Points table
+  arm64: configs: Enable sun50i cpufreq nvmem
+  arm64: dts: allwinner: h6: Enable CPU and GPU opp tables for Beelink
+    GS1
 
+Ondrej Jirman (2):
+  arm64: dts: allwinner: h6: Add thermal trip points/cooling map
+  arm64: dts: allwinner: h6: Add CPU Operating Performance Points table
 
-> 
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> ---
->  drivers/iio/buffer/kfifo_buf.c | 37 ++++++++++++++++++++++++++++++++++
->  include/linux/iio/kfifo_buf.h  |  4 ++++
->  2 files changed, 41 insertions(+)
-> 
-> diff --git a/drivers/iio/buffer/kfifo_buf.c b/drivers/iio/buffer/kfifo_buf.c
-> index 3150f8ab984b..05b7c5fc6f1d 100644
-> --- a/drivers/iio/buffer/kfifo_buf.c
-> +++ b/drivers/iio/buffer/kfifo_buf.c
-> @@ -228,4 +228,41 @@ void devm_iio_kfifo_free(struct device *dev, struct iio_buffer *r)
->  }
->  EXPORT_SYMBOL(devm_iio_kfifo_free);
->  
-> +/**
-> + * iio_device_attach_kfifo_buffer - Allocate a kfifo buffer & attach it to an IIO device
-> + * @indio_dev: The device the buffer should be attached to
-> + * @mode_flags: The mode flags for this buffer (INDIO_BUFFER_SOFTWARE and/or
-> + *		INDIO_BUFFER_TRIGGERED).
-> + * @setup_ops: The setup_ops required to configure the HW part of the buffer (optional)
-> + *
-> + * This function allocates a kfifo buffer via devm_iio_kfifo_allocate() and
-> + * attaches it to the IIO device via iio_device_attach_buffer().
-> + * This is meant to be a bit of a short-hand/helper function as many driver
-> + * seem to do this.
-> + */
-> +int iio_device_attach_kfifo_buffer(struct iio_dev *indio_dev,
-> +				   int mode_flags,
-> +				   const struct iio_buffer_setup_ops *setup_ops)
-> +{
-> +	struct iio_buffer *buffer;
-> +
-> +	if (mode_flags)
-> +		mode_flags &= kfifo_access_funcs.modes;
-> +
-> +	if (!mode_flags)
-> +		return -EINVAL;
-> +
-> +	buffer = devm_iio_kfifo_allocate(&indio_dev->dev);
-> +	if (!buffer)
-> +		return -ENOMEM;
-> +
-> +	iio_device_attach_buffer(indio_dev, buffer);
-> +
-> +	indio_dev->modes |= mode_flags;
-> +	indio_dev->setup_ops = setup_ops;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(iio_device_attach_kfifo_buffer);
-> +
->  MODULE_LICENSE("GPL");
-> diff --git a/include/linux/iio/kfifo_buf.h b/include/linux/iio/kfifo_buf.h
-> index 764659e01b68..2363a931be14 100644
-> --- a/include/linux/iio/kfifo_buf.h
-> +++ b/include/linux/iio/kfifo_buf.h
-> @@ -11,4 +11,8 @@ void iio_kfifo_free(struct iio_buffer *r);
->  struct iio_buffer *devm_iio_kfifo_allocate(struct device *dev);
->  void devm_iio_kfifo_free(struct device *dev, struct iio_buffer *r);
->  
-> +int iio_device_attach_kfifo_buffer(struct iio_dev *indio_dev,
-> +				   int mode_flags,
-> +				   const struct iio_buffer_setup_ops *setup_ops);
-> +
->  #endif
+Yangtao Li (1):
+  arm64: dts: allwinner: h6: Add clock to CPU cores
+
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |  10 +-
+ .../boot/dts/allwinner/sun50i-h6-cpu-opp.dtsi | 103 ++++++++++++++++++
+ .../boot/dts/allwinner/sun50i-h6-gpu-opp.dtsi |  74 +++++++++++++
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  44 +++++++-
+ arch/arm64/configs/defconfig                  |   1 +
+ 5 files changed, 226 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h6-cpu-opp.dtsi
+ create mode 100644 arch/arm64/boot/dts/allwinner/sun50i-h6-gpu-opp.dtsi
+
+-- 
+2.20.1
 
