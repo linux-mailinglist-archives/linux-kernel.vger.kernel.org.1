@@ -2,170 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2AB19EBDB
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C683619EBE3
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Apr 2020 16:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726776AbgDEOFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 10:05:19 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:40414 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726674AbgDEOFT (ORCPT
+        id S1726865AbgDEOKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 10:10:36 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:40512 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbgDEOKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 10:05:19 -0400
-Received: by mail-lf1-f67.google.com with SMTP id j17so9587214lfe.7;
-        Sun, 05 Apr 2020 07:05:17 -0700 (PDT)
+        Sun, 5 Apr 2020 10:10:35 -0400
+Received: by mail-qt1-f195.google.com with SMTP id y25so10637537qtv.7;
+        Sun, 05 Apr 2020 07:10:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HogDBcooWi67XENOKHci5+dOZCCQV64k3pTiHWgv4s4=;
-        b=rBaEBSkXK2C0yzndQ/RkDwHj0w17BJXrPk7f9u7teTV8P9IxLUVusf3MKIvc4yffff
-         Yp8Cpb3XQoNRyLBWUd2Cd7nJAmpHo6S2cmHSanRKQuITwv2z21ePnlDUNkIwkgTX1i4b
-         2b2hc/0oVkEq6Q/e6S/1eW4jWOR2sSWa6ETRpFJgiSyBZ9wFqfWxgz9m9JutlfOFQN3J
-         9kOG+onl1TMLjo1attSQqqadWl5xzuog8qJNOfcpGDTqTbgXykfUBXmW/KFEtZBhN2D5
-         JO+FVp4R1fbWK6EjdVZmpfDN0wT+15Cuvh2HkfxPT+Gi+KckM4yugfn3CPwbKCbdHzvT
-         kyrg==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Fj5IkYeTwvEQJU3mrvn13eBZKNJ+9tUvL96085xGJxE=;
+        b=PUXZHGoaZxdIN6d3dLITTVmOMYMyzD1WzUovhblIhnH0+gX1MNWpAzLXCQgk2kjb4r
+         MlJo8+N8G03Sa1hMX0SzavAQvly8jLAQ+hbQperFpamXKFXDtOKZO1KBx7z3QF7jU4DN
+         v2O2rih9I491tXxgjaiA8y75O5NeuTOBTrBD5lyOIL+4LBqVTqjlPgB8IOP+vdkio7Ne
+         OF0/t3wAwc/c/4fhcxK0mgit6koSfOKh3e8xFvAUuaInvIs+DvGpC7Qx4f3FaJ6/exvW
+         RQ5WEGhuuoq8VdPrvO9ejeK2M4qtHC7mPdoXm5yO6XzAi2YIMIwcRWsAHg60RLTYDgVS
+         MEwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HogDBcooWi67XENOKHci5+dOZCCQV64k3pTiHWgv4s4=;
-        b=AwxUA+ndjKdeATrtFD1HKARSpUhTHo/ADo6mWTaePL/fBlOQe8QJ9yRlgfJPL7VRb+
-         xql2pKtFJqqJqNlByRzYH4dJ72pNgG39lNGl2JPuZfRDwTwzBDCF8SGm8Piglz2iTxPe
-         yN3Qp1tv7ywXe8vGB5Jb1tenjmsVsIUxnMgpYFxTm5g1O7POCm61CsvDOy9MZRoo8cYX
-         9Y4+cHAleZv+KZa7NCurS7j8RUjCLJEaw7nJUNfL5RiQIXWmydT1UcW1lsKH+twS467y
-         vO366HHA2SSuhPPTlvO1DTnE1CnZwTBeJN+fDjofATf4SzyTZHvjoWMzJLUIAGYWq5o5
-         SlEA==
-X-Gm-Message-State: AGi0PuZxCrI3yRGLw/bmKkbPMW0uFO764ZsXB5CgoirxWQOlauHtKBTg
-        n3F5dY6C0JwDvbEdtoy5ZVM=
-X-Google-Smtp-Source: APiQypILiNlHrBcNHoxP8124hD18AOTk35fqkGU+DQleRMILHJTfrkd1aUr9wRQOkM31pqNtx2BDfQ==
-X-Received: by 2002:ac2:5185:: with SMTP id u5mr3629194lfi.64.1586095516549;
-        Sun, 05 Apr 2020 07:05:16 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id k3sm8527148lji.43.2020.04.05.07.05.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Apr 2020 07:05:15 -0700 (PDT)
-Subject: Re: [TEGRA194_CPUFREQ Patch v2 2/3] cpufreq: Add Tegra194 cpufreq
- driver
-To:     Sumit Gupta <sumitg@nvidia.com>, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, catalin.marinas@arm.com, will@kernel.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, talho@nvidia.com,
-        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     bbasu@nvidia.com, mperttunen@nvidia.com
-References: <1586028547-14993-1-git-send-email-sumitg@nvidia.com>
- <1586028547-14993-3-git-send-email-sumitg@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <67f9feb1-ba51-f1ac-b6eb-4587924d0748@gmail.com>
-Date:   Sun, 5 Apr 2020 17:05:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Fj5IkYeTwvEQJU3mrvn13eBZKNJ+9tUvL96085xGJxE=;
+        b=CUbM8n9R1BIZ509Zn+V4YwkO3TbRgDHl/e8ettddQvDgRBSjvtYKV+0W63VoKCnB/1
+         NwS8rpTK2ysXVSFf5ZjxX4EDRvFzxuBm9xtVYgjPo0WxkoQXUKgZN4REB1NZHBIU98of
+         bGVLwmeDrVstBWhjYWkyz4OmUZPLCvZx3Kf7sijDMAtaeo/snNdvj/uoca3hVtvzXfPs
+         dE9whIHKThHT79pOaKj7ExC19aWNIZX0k8Prev9Q/4e1z5uxlKp/CUwkbPdKFc8+HP8y
+         LwoXGcqdVT+nBtz+KCgry7NE7kyiuJI0e/rM1cyjxCPofrIBoz6wLTKMO6PxvYQfEMjt
+         fSlQ==
+X-Gm-Message-State: AGi0Pua+CmfbzlG7fB/wdGUvXnQkhezH2Fup34fegx1aH8V4y4uM0mNk
+        g9Wx9qXKBcLSurIO+F4lHno=
+X-Google-Smtp-Source: APiQypJu0uvODNR9YrN0sb4Kh6DQPLH6AalqUaYQK8KEpypo5wVQtssYkV/vcueHnh7R58TbWcdGhg==
+X-Received: by 2002:aed:2435:: with SMTP id r50mr16393370qtc.314.1586095833851;
+        Sun, 05 Apr 2020 07:10:33 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id 6sm9452806qkr.25.2020.04.05.07.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Apr 2020 07:10:32 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AE02E409A3; Sun,  5 Apr 2020 11:10:29 -0300 (-03)
+Date:   Sun, 5 Apr 2020 11:10:29 -0300
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>, Jiri Olsa <jolsa@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        linux-man@vger.kernel.org
+Subject: Re: [PATCH v8 12/12] doc/admin-guide: update kernel.rst with
+ CAP_PERFMON information
+Message-ID: <20200405141029.GA16896@kernel.org>
+References: <f96f8f8a-e65c-3f36-dc85-fc3f5191e8c5@linux.intel.com>
+ <84c32383-14a2-fa35-16b6-f9e59bd37240@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1586028547-14993-3-git-send-email-sumitg@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84c32383-14a2-fa35-16b6-f9e59bd37240@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.04.2020 22:29, Sumit Gupta пишет:
-...
-> +static void tegra_read_counters(struct work_struct *work)
-> +{
-> +	struct read_counters_work *read_counters_work;
-> +	struct tegra_cpu_ctr *c;
-> +	u64 val;
-> +
-> +	/*
-> +	 * ref_clk_counter(32 bit counter) runs on constant clk,
-> +	 * pll_p(408MHz).
-> +	 * It will take = 2 ^ 32 / 408 MHz to overflow ref clk counter
-> +	 *              = 10526880 usec = 10.527 sec to overflow
-> +	 *
-> +	 * Like wise core_clk_counter(32 bit counter) runs on core clock.
-> +	 * It's synchronized to crab_clk (cpu_crab_clk) which runs at
-> +	 * freq of cluster. Assuming max cluster clock ~2000MHz,
-> +	 * It will take = 2 ^ 32 / 2000 MHz to overflow core clk counter
-> +	 *              = ~2.147 sec to overflow
-> +	 */
-> +	read_counters_work = container_of(work, struct read_counters_work,
-> +					  work);
-> +	c = &read_counters_work->c;
-> +
-> +	val = read_freq_feedback();
-> +	c->last_refclk_cnt = lower_32_bits(val);
-> +	c->last_coreclk_cnt = upper_32_bits(val);
-> +	udelay(c->delay);
-> +	val = read_freq_feedback();
-> +	c->refclk_cnt = lower_32_bits(val);
-> +	c->coreclk_cnt = upper_32_bits(val);
-> +}
-> +
-> +/*
-> + * Return instantaneous cpu speed
-> + * Instantaneous freq is calculated as -
-> + * -Takes sample on every query of getting the freq.
-> + *	- Read core and ref clock counters;
-> + *	- Delay for X us
-> + *	- Read above cycle counters again
-> + *	- Calculates freq by subtracting current and previous counters
-> + *	  divided by the delay time or eqv. of ref_clk_counter in delta time
-> + *	- Return Kcycles/second, freq in KHz
-> + *
-> + *	delta time period = x sec
-> + *			  = delta ref_clk_counter / (408 * 10^6) sec
-> + *	freq in Hz = cycles/sec
-> + *		   = (delta cycles / x sec
-> + *		   = (delta cycles * 408 * 10^6) / delta ref_clk_counter
-> + *	in KHz	   = (delta cycles * 408 * 10^3) / delta ref_clk_counter
-> + *
-> + * @cpu - logical cpu whose freq to be updated
+Em Thu, Apr 02, 2020 at 11:54:39AM +0300, Alexey Budankov escreveu:
+> 
+> Update kernel.rst documentation file with the information
+> related to usage of CAP_PERFMON capability to secure performance
+> monitoring and observability operations in system.
 
+This one is failing in my perf/core branch, please take a look. I'm
+pushing my perf/core branch with this series applied, please check that
+everything is ok, I'll do some testing now, but it all seems ok.
 
-> + * Returns freq in KHz on success, 0 if cpu is offline
+Thanks,
 
-I don't see any checks in the code about whether CPU is offline.
-
-Googling for "queue_work_on offline cpu" suggests that this function
-should hang.
-
-> + */
-> +static unsigned int tegra194_get_speed_common(u32 cpu, u32 delay)
-> +{
-> +	struct read_counters_work read_counters_work;
-> +	struct tegra_cpu_ctr c;
-> +	u32 delta_refcnt;
-> +	u32 delta_ccnt;
-> +	u32 rate_mhz;
+- Arnaldo
+ 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  Documentation/admin-guide/sysctl/kernel.rst | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index def074807cee..b06ae9389809 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -720,20 +720,26 @@ perf_event_paranoid:
+>  ====================
+>  
+>  Controls use of the performance events system by unprivileged
+> -users (without CAP_SYS_ADMIN).  The default value is 2.
+> +users (without CAP_PERFMON). The default value is 2.
 > +
-> +	read_counters_work.c.cpu = cpu;
-> +	read_counters_work.c.delay = delay;
-> +	INIT_WORK_ONSTACK(&read_counters_work.work, tegra_read_counters);
-> +	queue_work_on(cpu, read_counters_wq, &read_counters_work.work);
-> +	flush_work(&read_counters_work.work);
-> +	c = read_counters_work.c;
-> +
-> +	if (c.coreclk_cnt < c.last_coreclk_cnt)
-> +		delta_ccnt = c.coreclk_cnt + (MAX_CNT - c.last_coreclk_cnt);
-> +	else
-> +		delta_ccnt = c.coreclk_cnt - c.last_coreclk_cnt;
-> +	if (!delta_ccnt)
-> +		return 0;
-> +
-> +	/* ref clock is 32 bits */
-> +	if (c.refclk_cnt < c.last_refclk_cnt)
-> +		delta_refcnt = c.refclk_cnt + (MAX_CNT - c.last_refclk_cnt);
-> +	else
-> +		delta_refcnt = c.refclk_cnt - c.last_refclk_cnt;
-> +	if (!delta_refcnt) {
-> +		pr_debug("cpufreq: %d is idle, delta_refcnt: 0\n", cpu);
-> +		return 0;
-> +	}
-> +	rate_mhz = ((unsigned long)(delta_ccnt * REF_CLK_MHZ)) / delta_refcnt;
-> +
-> +	return (rate_mhz * KHZ); /* in KHz */
-> +}
+> +For backward compatibility reasons access to system performance
+> +monitoring and observability remains open for CAP_SYS_ADMIN
+> +privileged processes but CAP_SYS_ADMIN usage for secure system
+> +performance monitoring and observability operations is discouraged
+> +with respect to CAP_PERFMON use cases.
+>  
+>  ===  ==================================================================
+>   -1  Allow use of (almost) all events by all users
+>  
+>       Ignore mlock limit after perf_event_mlock_kb without CAP_IPC_LOCK
+>  
+> ->=0  Disallow ftrace function tracepoint by users without CAP_SYS_ADMIN
+> +>=0  Disallow ftrace function tracepoint by users without CAP_PERFMON
+>  
+> -     Disallow raw tracepoint access by users without CAP_SYS_ADMIN
+> +     Disallow raw tracepoint access by users without CAP_PERFMON
+>  
+> ->=1  Disallow CPU event access by users without CAP_SYS_ADMIN
+> +>=1  Disallow CPU event access by users without CAP_PERFMON
+>  
+> ->=2  Disallow kernel profiling by users without CAP_SYS_ADMIN
+> +>=2  Disallow kernel profiling by users without CAP_PERFMON
+>  ===  ==================================================================
+>  
+>  
+> -- 
+> 2.24.1
+> 
 
+-- 
+
+- Arnaldo
