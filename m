@@ -2,96 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D669D19FCF0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E69D19FCED
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgDFSRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 14:17:32 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:38379 "EHLO pegase1.c-s.fr"
+        id S1727752AbgDFSRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 14:17:21 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:15039 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726699AbgDFSQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 14:16:41 -0400
+        id S1726799AbgDFSQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 14:16:43 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 48wzJS5VDmz9tyd4;
-        Mon,  6 Apr 2020 20:16:40 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 48wzJT6GJFz9v00v;
+        Mon,  6 Apr 2020 20:16:41 +0200 (CEST)
 Authentication-Results: localhost; dkim=pass
         reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=aIXMTl0c; dkim-adsp=pass;
+        header.d=c-s.fr header.i=@c-s.fr header.b=nK7TDjGl; dkim-adsp=pass;
         dkim-atps=neutral
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id TGiJ8bsEBvz7; Mon,  6 Apr 2020 20:16:40 +0200 (CEST)
+        with ESMTP id HrI85LxZSqs0; Mon,  6 Apr 2020 20:16:41 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 48wzJS4R7Jz9tycr;
-        Mon,  6 Apr 2020 20:16:40 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 48wzJT5DcBz9tycr;
+        Mon,  6 Apr 2020 20:16:41 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1586197000; bh=/9XgCX7ZNJJPrUF+WQ+S9CCuMlj+u/mt4LD/Anh8LO4=;
+        t=1586197001; bh=nNmDTQngYBaiiBXdSBbHyZYIJ761JnkGOMCLyZOpnRo=;
         h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=aIXMTl0ci/qJ/Zg5T2BGlqvBO1C1o9yWOJW4tbot1k/1Vxo24G2LGIOlcCU1B366H
-         jdhFCo7arjVZtaC8L4xtkAVwtcv46BaH55AHk+6olCmzyhT2HZ3vH+4AHL0l6L7U24
-         TFoQh+jeUwZvMvk38AEVDc7Vw0SbtWwFXvtTwdIQ=
+        b=nK7TDjGlouQy5ftOoz+4/msT3hYRX+0YYMDTxPZSK11tURYpKcZ8Bm2s6jTADNkMy
+         T8+s4XXXAHQQdK1wXR7DzZoNqa/uguWeGcHH300ZaL/inY4vFSAcs1CNQtdoD3Kgjb
+         FWAsLcmVvkEhBrwkgJnmBAtrB8+Ha1nBZYzZU8Hw=
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8ECBB8B784;
-        Mon,  6 Apr 2020 20:16:40 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 976C28B784;
+        Mon,  6 Apr 2020 20:16:41 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Tb15_YGivxb0; Mon,  6 Apr 2020 20:16:40 +0200 (CEST)
+        with ESMTP id o__FePgGPPOz; Mon,  6 Apr 2020 20:16:41 +0200 (CEST)
 Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 59D4F8B775;
-        Mon,  6 Apr 2020 20:16:40 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 625E58B775;
+        Mon,  6 Apr 2020 20:16:41 +0200 (CEST)
 Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 30558656E9; Mon,  6 Apr 2020 18:16:40 +0000 (UTC)
-Message-Id: <fe868bea1741c4d902543842726fca1671dc7ef5.1586196948.git.christophe.leroy@c-s.fr>
+        id 383CC656E9; Mon,  6 Apr 2020 18:16:41 +0000 (UTC)
+Message-Id: <f9f0bd58f9e75e8e3826f25d9db9ff2c6ad9c84b.1586196948.git.christophe.leroy@c-s.fr>
 In-Reply-To: <5aeaa33383e833f6eca30893fbd188b88e019eaa.1586196948.git.christophe.leroy@c-s.fr>
 References: <5aeaa33383e833f6eca30893fbd188b88e019eaa.1586196948.git.christophe.leroy@c-s.fr>
 From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [RFC PATCH v3 04/15] powerpc/8xx: Create C version of kuap_restore()
- and kuap_check()
+Subject: [RFC PATCH v3 05/15] powerpc/irq: Add helpers to get and set
+ regs->softe
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
         msuchanek@suse.de
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  6 Apr 2020 18:16:40 +0000 (UTC)
+Date:   Mon,  6 Apr 2020 18:16:41 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation of porting PPC32 to C syscall entry/exit,
-create C version of kuap_restore() and kuap_check() on 8xx
+regs->softe doesn't exist on PPC32.
+
+Add helpers to get and set regs->softe.
+Those helpers will void on PPC32.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 ---
- arch/powerpc/include/asm/nohash/32/kup-8xx.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ arch/powerpc/include/asm/hw_irq.h | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/nohash/32/kup-8xx.h b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
-index 85ed2390fb99..1918d2e55da3 100644
---- a/arch/powerpc/include/asm/nohash/32/kup-8xx.h
-+++ b/arch/powerpc/include/asm/nohash/32/kup-8xx.h
-@@ -34,6 +34,19 @@
+diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
+index e0e71777961f..e69466867d5f 100644
+--- a/arch/powerpc/include/asm/hw_irq.h
++++ b/arch/powerpc/include/asm/hw_irq.h
+@@ -39,6 +39,8 @@
+ #define PACA_IRQ_MUST_HARD_MASK	(PACA_IRQ_EE)
+ #endif
  
- #include <asm/reg.h>
++#endif /* CONFIG_PPC64 */
++
+ /*
+  * flags for paca->irq_soft_mask
+  */
+@@ -47,8 +49,6 @@
+ #define IRQS_PMI_DISABLED	2
+ #define IRQS_ALL_DISABLED	(IRQS_DISABLED | IRQS_PMI_DISABLED)
  
-+static inline void kuap_restore(struct pt_regs *regs)
+-#endif /* CONFIG_PPC64 */
+-
+ #ifndef __ASSEMBLY__
+ 
+ extern void replay_system_reset(void);
+@@ -282,6 +282,15 @@ extern void irq_set_pending_from_srr1(unsigned long srr1);
+ 
+ extern void force_external_irq_replay(void);
+ 
++static inline unsigned long get_softe(struct pt_regs *regs)
 +{
-+	mtspr(SPRN_MD_AP, regs->kuap);
++	return regs->softe;
 +}
 +
-+static inline void kuap_check(void)
++static inline void set_softe(struct pt_regs *regs, unsigned long val)
 +{
-+	if (!IS_ENABLED(CONFIG_PPC_KUAP_DEBUG))
-+		return;
-+
-+	WARN_ON_ONCE((mfspr(SPRN_MD_AP) & 0xffff0000) != (MD_APG_KUAP & 0xffff0000));
++	regs->softe = val;
++}
+ #else /* CONFIG_PPC64 */
+ 
+ static inline unsigned long arch_local_save_flags(void)
+@@ -350,6 +359,14 @@ static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
+ 
+ static inline void may_hard_irq_enable(void) { }
+ 
++static inline unsigned long get_softe(struct pt_regs *regs)
++{
++	return 0;
 +}
 +
- static inline void allow_user_access(void __user *to, const void __user *from,
- 				     unsigned long size, unsigned long dir)
- {
++static inline void set_softe(struct pt_regs *regs, unsigned long val)
++{
++}
+ #endif /* CONFIG_PPC64 */
+ 
+ #define ARCH_IRQ_INIT_FLAGS	IRQ_NOREQUEST
 -- 
 2.25.0
 
