@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF14A1A016E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 01:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6553B1A016F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 01:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgDFXQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 19:16:13 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:38303 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgDFXQN (ORCPT
+        id S1726475AbgDFXQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 19:16:14 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36595 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726272AbgDFXQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 19:16:13 -0400
-Received: by mail-pj1-f66.google.com with SMTP id m15so575429pje.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 16:16:12 -0700 (PDT)
+        Mon, 6 Apr 2020 19:16:14 -0400
+Received: by mail-pg1-f195.google.com with SMTP id c23so797014pgj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 16:16:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kj0fYRHBAuDC6xz5T3+IMY573Uf4TkncfKhylRhRKr8=;
-        b=Rnk2RVuDB3re41BD3czt9clTzzC/cySvN48by3vzvbYksd47leEn0+g33oR+D6OVLF
-         uXnS/s3ykH8Z394kfgC1rK54rvOztdgYEYgrOrRJV5V3tiF0pL7Q/1fZwsVEAzo0r6Bj
-         pI05/jTCAIBznKwWxphMyFNjRNChw4MmGQa1A=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+xhCyqQB0W40O85FTKh55+NUFCgAzlVgGvF/KPoh1Gc=;
+        b=LwoWFesn1H5UXh6fxlgOTqCRawwYzGBkOsIJMdXLsW9VNmWZh7FlN5g0w5ME0mavLf
+         En4DY8Qr/H4pZXCOY4PL6HPF/8zw4SdQLpp2BhqVIanjk6OLqEW7lqoonhxVawZOThPI
+         RmDZ3S1j9plwAD/vf8OX3Fgc4njkJ0a8Khu3A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kj0fYRHBAuDC6xz5T3+IMY573Uf4TkncfKhylRhRKr8=;
-        b=l/N3wBWwa0her1baGGUxtgK6P6gBKQ0xe79XwUl/7uwh3pdKCHpjElK8oy5e9WsVbT
-         7dkkNjzLzAyAvxdyn7nXM2n8gVMMQDyLxw1dxkrrqiwgAE5cH4HNYRmoWyl+tZGav1lC
-         uOf+nOCS3Plo25QTTS2G+CB1ZVU+EKgh3wWW/q/MIub8OfcRhR1fcakUcMxyCn7Od9ch
-         Pc0tTUOcmbINVIScTnMdqrO6Fecrc3a660rZ+i2JOxXhK7QUTMiClDgFwM+NSJD6OKEZ
-         5CzbneSB5YkRN9Kj0oobCX4hzV2GrBv6NQBTRx7K7i9/H2XHURiOk0lLq7oUQziYPgxC
-         lRtQ==
-X-Gm-Message-State: AGi0PuarXd5WvdrEphM0kO1bwmyVDku0Fe0Ug2IWjSTgtcZfIEiDwWsg
-        VO2TXA0R9CMDOqy1dhFU6pY2Vw==
-X-Google-Smtp-Source: APiQypLe1NK0ouaCbwea2Ar/mlZdKQ8TmXJhYkOr0ndqJkk1T9pLSfqEkeDLbIKHtYCq5a4S/3PzgQ==
-X-Received: by 2002:a17:902:22e:: with SMTP id 43mr21611580plc.119.1586214972026;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+xhCyqQB0W40O85FTKh55+NUFCgAzlVgGvF/KPoh1Gc=;
+        b=X8Rho0NwYSB2rZeSgagRWBe6FH4PWUxhEokpJ3UOUtuaE+21XOnETycdpxcr6I85Od
+         NBAfrIFLWFe3YlFEDNjY2VzxtQys5hpKlw26jiA8s8cOM3YLW0Mu5E6oEKxY20xHaMqt
+         1siNpVTKMBvr6Y0WdVtf7o8yigym96EnzNbdvpBY/lTMpZWQX6erGMoYxInmw1odcmeo
+         NTHoGR8uOzv21T11rqwNSUakrLb/2/S8+NJvrne7ItUujnk05YL2dH6kJ1MFOyN43ogp
+         vLW6G1JYejknNJwQOziWvVxvLMWtnyedFm5fF66r7qVrtq8pcy11MjFCOZt86MUk+3wS
+         ETNQ==
+X-Gm-Message-State: AGi0Pub9Z6lmgQMAY/2cWFnig0MK96lVDuALQnr10KayD0kDEfY2QH3E
+        pgXQj0F80FlY6BTb+RXsUZS7jg==
+X-Google-Smtp-Source: APiQypIdiCJFOXl5opnnyyI8GIGFkvdvihjT0dOslocyOZv32kqWFFk5saHzi7q9MToGH7pRu5xnlA==
+X-Received: by 2002:a63:7b1d:: with SMTP id w29mr1421905pgc.4.1586214972791;
         Mon, 06 Apr 2020 16:16:12 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a24sm12522914pfl.115.2020.04.06.16.16.10
+        by smtp.gmail.com with ESMTPSA id c190sm12363077pfa.66.2020.04.06.16.16.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 06 Apr 2020 16:16:10 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
         Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -57,10 +57,12 @@ Cc:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/5] Optionally randomize kernel stack offset each syscall
-Date:   Mon,  6 Apr 2020 16:16:01 -0700
-Message-Id: <20200406231606.37619-1-keescook@chromium.org>
+Subject: [PATCH v3 1/5] jump_label: Provide CONFIG-driven build state defaults
+Date:   Mon,  6 Apr 2020 16:16:02 -0700
+Message-Id: <20200406231606.37619-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200406231606.37619-1-keescook@chromium.org>
+References: <20200406231606.37619-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -68,67 +70,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3:
-- added review/ack tags (peterz, glider)
-- further clarified commit logs and public attack references
-- added -fstack-protector downgrades and details
-v2: https://lore.kernel.org/lkml/20200324203231.64324-1-keescook@chromium.org/
-rfc: https://lore.kernel.org/kernel-hardening/20190329081358.30497-1-elena.reshetova@intel.com/
+Choosing the initial state of static branches changes the assembly
+layout (if the condition is expected to be likely, inline, or unlikely,
+out of line via a jump). A few places in the kernel use (or could be
+using) a CONFIG to choose the default state, so provide the
+infrastructure to do this and convert the existing cases (init_on_alloc
+and init_on_free) to the new macros.
 
-Hi,
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ include/linux/jump_label.h | 19 +++++++++++++++++++
+ include/linux/mm.h         | 12 ++----------
+ mm/page_alloc.c            | 12 ++----------
+ 3 files changed, 23 insertions(+), 20 deletions(-)
 
-This is a continuation and refactoring of Elena's earlier effort to add
-kernel stack base offset randomization. In the time since the previous
-discussions, two attacks[1][2] were made public that depended on stack
-determinism, so we're no longer in the position of "this is a good idea
-but we have no examples of attacks". :)
-
-Earlier discussions also devolved into debates on entropy sources, which
-is mostly a red herring, given the already low entropy available due
-to stack size. Regardless, entropy can be changed/improved separately
-from this series as needed.
-
-Earlier discussions also got stuck debating how much syscall overhead
-was too much, but this is also a red herring since the feature itself
-needs to be selectable at boot with no cost for those that don't want it:
-this is solved here with static branches.
-
-So, here is an improved version, made as arch-agnostic as possible,
-with usage added for x86 and arm64. It also includes some small static
-branch clean ups, and addresses some surprise performance issues due to
-the stack canary[3].
-
-Thanks!
-
--Kees
-
-[1] https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
-[2] https://repositorio-aberto.up.pt/bitstream/10216/125357/2/374717.pdf
-[3] https://lore.kernel.org/lkml/202003281520.A9BFF461@keescook/
-
-Kees Cook (5):
-  jump_label: Provide CONFIG-driven build state defaults
-  init_on_alloc: Unpessimize default-on builds
-  stack: Optionally randomize kernel stack offset each syscall
-  x86/entry: Enable random_kstack_offset support
-  arm64: entry: Enable random_kstack_offset support
-
- Makefile                         |  4 ++++
- arch/Kconfig                     | 23 ++++++++++++++++++
- arch/arm64/Kconfig               |  1 +
- arch/arm64/kernel/Makefile       |  4 ++++
- arch/arm64/kernel/syscall.c      | 10 ++++++++
- arch/x86/Kconfig                 |  1 +
- arch/x86/entry/Makefile          |  9 +++++++
- arch/x86/entry/common.c          | 12 +++++++++-
- include/linux/jump_label.h       | 19 +++++++++++++++
- include/linux/mm.h               | 18 +++++---------
- include/linux/randomize_kstack.h | 40 ++++++++++++++++++++++++++++++++
- init/main.c                      | 23 ++++++++++++++++++
- mm/page_alloc.c                  | 12 ++--------
- 13 files changed, 153 insertions(+), 23 deletions(-)
- create mode 100644 include/linux/randomize_kstack.h
-
+diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
+index 3526c0aee954..615fdfb871a3 100644
+--- a/include/linux/jump_label.h
++++ b/include/linux/jump_label.h
+@@ -382,6 +382,21 @@ struct static_key_false {
+ 		[0 ... (count) - 1] = STATIC_KEY_FALSE_INIT,	\
+ 	}
+ 
++#define _DEFINE_STATIC_KEY_1(name)	DEFINE_STATIC_KEY_TRUE(name)
++#define _DEFINE_STATIC_KEY_0(name)	DEFINE_STATIC_KEY_FALSE(name)
++#define DEFINE_STATIC_KEY_MAYBE(cfg, name)			\
++	__PASTE(_DEFINE_STATIC_KEY_, IS_ENABLED(cfg))(name)
++
++#define _DEFINE_STATIC_KEY_RO_1(name)	DEFINE_STATIC_KEY_TRUE_RO(name)
++#define _DEFINE_STATIC_KEY_RO_0(name)	DEFINE_STATIC_KEY_FALSE_RO(name)
++#define DEFINE_STATIC_KEY_MAYBE_RO(cfg, name)			\
++	__PASTE(_DEFINE_STATIC_KEY_RO_, IS_ENABLED(cfg))(name)
++
++#define _DECLARE_STATIC_KEY_1(name)	DECLARE_STATIC_KEY_TRUE(name)
++#define _DECLARE_STATIC_KEY_0(name)	DECLARE_STATIC_KEY_FALSE(name)
++#define DECLARE_STATIC_KEY_MAYBE(cfg, name)			\
++	__PASTE(_DECLARE_STATIC_KEY_, IS_ENABLED(cfg))(name)
++
+ extern bool ____wrong_branch_error(void);
+ 
+ #define static_key_enabled(x)							\
+@@ -482,6 +497,10 @@ extern bool ____wrong_branch_error(void);
+ 
+ #endif /* CONFIG_JUMP_LABEL */
+ 
++#define static_branch_maybe(config, x)					\
++	(IS_ENABLED(config) ? static_branch_likely(x)			\
++			    : static_branch_unlikely(x))
++
+ /*
+  * Advanced usage; refcount, branch is enabled when: count != 0
+  */
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c54fb96cb1e6..059658604dd6 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2662,11 +2662,7 @@ static inline void kernel_poison_pages(struct page *page, int numpages,
+ 					int enable) { }
+ #endif
+ 
+-#ifdef CONFIG_INIT_ON_ALLOC_DEFAULT_ON
+-DECLARE_STATIC_KEY_TRUE(init_on_alloc);
+-#else
+-DECLARE_STATIC_KEY_FALSE(init_on_alloc);
+-#endif
++DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
+ static inline bool want_init_on_alloc(gfp_t flags)
+ {
+ 	if (static_branch_unlikely(&init_on_alloc) &&
+@@ -2675,11 +2671,7 @@ static inline bool want_init_on_alloc(gfp_t flags)
+ 	return flags & __GFP_ZERO;
+ }
+ 
+-#ifdef CONFIG_INIT_ON_FREE_DEFAULT_ON
+-DECLARE_STATIC_KEY_TRUE(init_on_free);
+-#else
+-DECLARE_STATIC_KEY_FALSE(init_on_free);
+-#endif
++DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
+ static inline bool want_init_on_free(void)
+ {
+ 	return static_branch_unlikely(&init_on_free) &&
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 3c4eb750a199..1f625e5a03c0 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -135,18 +135,10 @@ unsigned long totalcma_pages __read_mostly;
+ 
+ int percpu_pagelist_fraction;
+ gfp_t gfp_allowed_mask __read_mostly = GFP_BOOT_MASK;
+-#ifdef CONFIG_INIT_ON_ALLOC_DEFAULT_ON
+-DEFINE_STATIC_KEY_TRUE(init_on_alloc);
+-#else
+-DEFINE_STATIC_KEY_FALSE(init_on_alloc);
+-#endif
++DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
+ EXPORT_SYMBOL(init_on_alloc);
+ 
+-#ifdef CONFIG_INIT_ON_FREE_DEFAULT_ON
+-DEFINE_STATIC_KEY_TRUE(init_on_free);
+-#else
+-DEFINE_STATIC_KEY_FALSE(init_on_free);
+-#endif
++DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
+ EXPORT_SYMBOL(init_on_free);
+ 
+ static int __init early_init_on_alloc(char *buf)
 -- 
 2.20.1
 
