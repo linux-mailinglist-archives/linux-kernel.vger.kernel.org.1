@@ -2,156 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 907F019F1A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 10:33:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23F019F1AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 10:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgDFIdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 04:33:09 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19672 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726475AbgDFIdJ (ORCPT
+        id S1726670AbgDFIgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 04:36:14 -0400
+Received: from retiisi.org.uk ([95.216.213.190]:37940 "EHLO
+        hillosipuli.retiisi.org.uk" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726595AbgDFIgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 04:33:09 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0368X7bE128198
-        for <linux-kernel@vger.kernel.org>; Mon, 6 Apr 2020 04:33:08 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 306pcyb167-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 04:33:07 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <borntraeger@de.ibm.com>;
-        Mon, 6 Apr 2020 09:32:34 +0100
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 6 Apr 2020 09:32:31 +0100
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0368WpKb54132762
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Apr 2020 08:32:51 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F187B4C050;
-        Mon,  6 Apr 2020 08:32:50 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 758994C052;
-        Mon,  6 Apr 2020 08:32:50 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.23.63])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  6 Apr 2020 08:32:50 +0000 (GMT)
-Subject: Re: [PATCH v2 1/5] KVM: s390: vsie: Fix region 1 ASCE sanity shadow
- address checks
-To:     David Hildenbrand <david@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Janosch Frank <frankja@linux.ibm.com>, stable@vger.kernel.org
-References: <59b411eb-dabe-8cac-9270-7a9f0faa63d5@de.ibm.com>
- <67F45F4F-33CB-455A-8CB8-7D20D9A2BF2F@redhat.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
- 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
- nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
-Date:   Mon, 6 Apr 2020 10:32:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 6 Apr 2020 04:36:12 -0400
+Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 1B24F634C8C;
+        Mon,  6 Apr 2020 11:35:08 +0300 (EEST)
+Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
+        (envelope-from <sakari.ailus@retiisi.org.uk>)
+        id 1jLNDn-0002Bc-5M; Mon, 06 Apr 2020 11:35:07 +0300
+Date:   Mon, 6 Apr 2020 11:35:07 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 1/3] media: dt-bindings: ov8856: Document YAML bindings
+Message-ID: <20200406083506.GE6127@valkosipuli.retiisi.org.uk>
+References: <20200331133346.372517-1-robert.foss@linaro.org>
+ <20200331133346.372517-2-robert.foss@linaro.org>
+ <20200401080705.j4goeqcqhoswhx4u@gilmour.lan>
+ <CAG3jFyvUd08U9yNVPUD9Y=nd5Xpcx34GcHJRhtvAAycoq3qimg@mail.gmail.com>
+ <20200403232736.GA6127@valkosipuli.retiisi.org.uk>
+ <20200404093446.vuvwrhn5436h4d3s@gilmour.lan>
 MIME-Version: 1.0
-In-Reply-To: <67F45F4F-33CB-455A-8CB8-7D20D9A2BF2F@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20040608-4275-0000-0000-000003BA85B6
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20040608-4276-0000-0000-000038CFE2AE
-Message-Id: <e6ef6a64-70eb-448f-1dcf-2f032f94cf07@de.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-06_03:2020-04-03,2020-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 clxscore=1015
- impostorscore=0 suspectscore=0 phishscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004060068
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200404093446.vuvwrhn5436h4d3s@gilmour.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Maxime,
 
+On Sat, Apr 04, 2020 at 11:34:46AM +0200, Maxime Ripard wrote:
+> Hi,
+> 
+> On Sat, Apr 04, 2020 at 02:27:36AM +0300, Sakari Ailus wrote:
+> > Hi Robert,
+> >
+> > On Thu, Apr 02, 2020 at 12:10:00PM +0200, Robert Foss wrote:
+> > > Hey Maxime,
+> > >
+> > > On Wed, 1 Apr 2020 at 10:07, Maxime Ripard <maxime@cerno.tech> wrote:
+> > > >
+> > > > Hi,
+> > > >
+> > > > On Tue, Mar 31, 2020 at 03:33:44PM +0200, Robert Foss wrote:
+> > > > > From: Dongchun Zhu <dongchun.zhu@mediatek.com>
+> > > > >
+> > > > > This patch adds documentation of device tree in YAML schema for the
+> > > > > OV8856 CMOS image sensor.
+> > > > >
+> > > > > Signed-off-by: Dongchun Zhu <dongchun.zhu@mediatek.com>
+> > > > > Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> > > > > ---
+> > > > >
+> > > > > - Changes since v5:
+> > > > >   * Add assigned-clocks and assigned-clock-rates
+> > > > >   * robher: dt-schema errors
+> > > > >
+> > > > > - Changes since v4:
+> > > > >   * Fabio: Change reset-gpio to GPIO_ACTIVE_LOW, explain in description
+> > > > >   * Add clock-lanes property to example
+> > > > >   * robher: Fix syntax error in devicetree example
+> > > > >
+> > > > > - Changes since v3:
+> > > > >   * robher: Fix syntax error
+> > > > >   * robher: Removed maxItems
+> > > > >   * Fixes yaml 'make dt-binding-check' errors
+> > > > >
+> > > > > - Changes since v2:
+> > > > >   Fixes comments from from Andy, Tomasz, Sakari, Rob.
+> > > > >   * Convert text documentation to YAML schema.
+> > > > >
+> > > > > - Changes since v1:
+> > > > >   Fixes comments from Sakari, Tomasz
+> > > > >   * Add clock-frequency and link-frequencies in DT
+> > > > >
+> > > > >  .../devicetree/bindings/media/i2c/ov8856.yaml | 150 ++++++++++++++++++
+> > > > >  MAINTAINERS                                   |   1 +
+> > > > >  2 files changed, 151 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/media/i2c/ov8856.yaml b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > > > > new file mode 100644
+> > > > > index 000000000000..beeddfbb8709
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/media/i2c/ov8856.yaml
+> > > > > @@ -0,0 +1,150 @@
+> > > > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > > > +# Copyright (c) 2019 MediaTek Inc.
+> > > > > +%YAML 1.2
+> > > > > +---
+> > > > > +$id: http://devicetree.org/schemas/media/i2c/ov8856.yaml#
+> > > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > > +
+> > > > > +title: Omnivision OV8856 CMOS Sensor Device Tree Bindings
+> > > > > +
+> > > > > +maintainers:
+> > > > > +  - Ben Kao <ben.kao@intel.com>
+> > > > > +  - Dongchun Zhu <dongchun.zhu@mediatek.com>
+> > > > > +
+> > > > > +description: |-
+> > > > > +  The Omnivision OV8856 is a high performance, 1/4-inch, 8 megapixel, CMOS
+> > > > > +  image sensor that delivers 3264x2448 at 30fps. It provides full-frame,
+> > > > > +  sub-sampled, and windowed 10-bit MIPI images in various formats via the
+> > > > > +  Serial Camera Control Bus (SCCB) interface. This chip is programmable
+> > > > > +  through I2C and two-wire SCCB. The sensor output is available via CSI-2
+> > > > > +  serial data output (up to 4-lane).
+> > > > > +
+> > > > > +properties:
+> > > > > +  compatible:
+> > > > > +    const: ovti,ov8856
+> > > > > +
+> > > > > +  reg:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  clocks:
+> > > > > +    maxItems: 1
+> > > > > +
+> > > > > +  clock-names:
+> > > > > +    description:
+> > > > > +      Input clock for the sensor.
+> > > > > +    items:
+> > > > > +      - const: xvclk
+> > > > > +
+> > > > > +  clock-frequency:
+> > > > > +    description:
+> > > > > +      Frequency of the xvclk clock in Hertz.
+> > > >
+> > > > We also had that discussion recently for another omnivision sensor
+> > > > (ov5645 iirc), but what is clock-frequency useful for?
+> > > >
+> > > > It seems that the sensor is passed in clocks, so if you need to
+> > > > retrieve the clock rate you should use the clock API instead.
+> > > >
+> > > > Looking at the driver, it looks like it first retrieves the clock, set
+> > > > it to clock-frequency, and then checks that this is OV8856_XVCLK_19_2
+> > > > (19.2 MHz).
+> > >
+> > > As far as I understand it, 19.2MHz is requirement for the sensor mode
+> > > that currently defaults to. Some modes require higher clock speeds
+> > > than this however.
+> >
+> > It's very system specific. Either way, bindings should not assume a
+> > particular driver implementation.
+> >
+> > >
+> > > >
+> > > > The datasheet says that the sensor can have any frequency in the 6 -
+> > > > 27 MHz range, so this is a driver limitation and should be set in the
+> > > > driver using the clock API, and you can always bail out if it doesn't
+> > > > provide a rate that is not acceptable for the drivers assumption.
+> > > >
+> > > > In any case, you don't need clock-frequency here...
+> > >
+> > > So your suggestion is that we remove all clocks-rate properties, and
+> > > replace the clk_get_rate() calls in the driver with clk_set_rate()
+> > > calls for the desired frequencies?
+> >
+> > The driver shouldn't set the rate here unless it gets it from DT (but that
+> > was not the intention). So the driver should get the frequency instead.
+> 
+> I'm actually saying the opposite :)
+> 
+> Like you were saying, the binding (or DT, for that matter) shouldn't
+> assume a particular driver implementation.
+> 
+> So one corollary is that if the driver has some restrictions in Linux,
+> it shouldn't be part of the binding, right?
 
-On 03.04.20 21:55, David Hildenbrand wrote:
-> 
-> 
->> Am 03.04.2020 um 19:56 schrieb Christian Borntraeger <borntraeger@de.ibm.com>:
->>
->> ﻿
->>
->>> On 03.04.20 17:30, David Hildenbrand wrote:
->>> In case we have a region 1 ASCE, our shadow/g3 address can have any value.
->>> Unfortunately, (-1UL << 64) is undefined and triggers sometimes,
->>> rejecting valid shadow addresses when trying to walk our shadow table
->>> hierarchy.
->>
->> I thin the range of the addresses do not matter.
->> Took me a while to understand maybe rephrase that:
->>
->> In case we have a region 1 the following calculation 
->> (31 + ((gmap->asce & _ASCE_TYPE_MASK) >> 2)*11)
->> results in 64. As shifts beyond the size are undefined the compiler is free to use
->> instructions like sllg. sllg will only use 6 bits of the shift value (here 64)
->> resulting in no shift at all. That means that ALL addresses will be rejected.
-> 
-> Interestingly, it would not fail when shadowing the r2t, but only when trying to shadow the r3t.
-> 
->>
->> With that this makes sense. 
->>
->> Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
->>
-> 
-> In case there are no other comments, can you fixup when applying, or do you want me to resend?
+Correct.
 
-I can fixup.
+> 
+> This binding uses multiple clock properties but as far as I can see,
+> the driver retrieves a clock using clocks and makes sure that its rate
+> match its limitation of 19.2MHz using clock-frequency (which is
+> redundant on a clk_get_rate on the clocks provided earlier).
+> 
+> I'm suspecting that the parent clock on multiple SoCs can be
+> configured and is not a fixed rate crystal, so assigned-clocks-rate is
+> here just to make sure we set the frequency at the one being checked
+> in the driver's probe so that it all works.
 
+Agreed.
+
+> 
+> But that 19.2MHz is not a limitation of the device itself, it's a
+> limitation of our implementation, so we can instead implement
+> something equivalent in Linux using a clk_set_rate to 19.2MHz (to make
+> sure that our parent clock is configured at the right rate) and the
+> clk_get_rate and compare that to 19.2MHz (to make sure that it's not
+> been rounded too far apart from the frequency we expect).
+> 
+> This is doing exactly the same thing, except that we don't encode our
+> implementation limitations in the DT, but in the driver instead.
+
+What I really wanted to say that a driver that doesn't get the clock
+frequency from DT but still sets that frequency is broken.
+
+This frequency is highly system specific, and in many cases only a certain
+frequency is usable, for a few reasons: On many SoCs, not all common
+frequencies can be used (e.g. 9,6 MHz, 19,2 MHz and 24 MHz; while others
+are being used as well), and then that frequency affects the usable CSI-2
+bus frequencies directly --- and of those, only safe, known-good ones
+should be used. IOW, getting the external clock frequency wrong typically
+has an effect that that none of the known-good CSI-2 bus clock frequencies
+are available.
+
+-- 
+Regards,
+
+Sakari Ailus
