@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B72A19FFAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C6F19FFBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbgDFVAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 17:00:51 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41837 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgDFVAu (ORCPT
+        id S1726197AbgDFVB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 17:01:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29994 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726084AbgDFVBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 17:00:50 -0400
-Received: by mail-pf1-f193.google.com with SMTP id a24so8189277pfc.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 14:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kN7EdV3TB2LLwhC8lF0q0y2wPgwg6vmGC+AEPO56+lI=;
-        b=Y5OI7GP+UE/pkAz0PiB49QC8C9Lg9D7fVn9yeeNUyNHKhQQ/9WYAXMY6P8Uu2JME+7
-         4Z2CYR1UJoEeDZbbPOQSn6H5ivkq2JXiU2G3WZBfz62usKvfhqYp0Jnxot1rDlRVsWS+
-         YW9kneDpHtG5gmywhyAShXe/1B/TWpN+YGr5z9t6JD/n9hHHVWFeruzOsfhXHEq3B0RU
-         aQl8F2wD9lDpWBVC1bbUUhDBhNnEI4k1u0ngX3J0cswd0Po++83Y1l/GslOJCjgVGgtL
-         YnFQxQsjtoxF6qKvDuRrpmG2tijTCz6dAQdzudtocrFO46noFpS8SxBJ6ixq1Q9glGGk
-         xpUA==
+        Mon, 6 Apr 2020 17:01:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586206913;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=1sZ8OOJadwa2nvBkBvJvN7OoNXEjWxDQSrFUIfTzI4g=;
+        b=LFLegYcEJmj+lhfyLkg7qSF/7MqVt0QHyZSrgLBBn8XHV0mLjC+E4S/g2n4FxKWlAkLhRH
+        qsvNghDNS2YJCe8l6k6NQWj7n4SscJUd2Z6ipXRlhTyCm6hdijOiQVOLFnMG0hyoXhzUPY
+        xdQvzgzyMhxMbDCC4Yt2Bssab7x4M04=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-276-HhIHHbAtOmeC48qiDB66zQ-1; Mon, 06 Apr 2020 17:01:49 -0400
+X-MC-Unique: HhIHHbAtOmeC48qiDB66zQ-1
+Received: by mail-wm1-f69.google.com with SMTP id w8so28416wmk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 14:01:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kN7EdV3TB2LLwhC8lF0q0y2wPgwg6vmGC+AEPO56+lI=;
-        b=K2LSW1FNW2yfQukxx4ZtTKheAZmyyCJJdY6KyaKR/QYSwQOrzyn73wP2eQrSTJ6yeO
-         +hZHVethBijaQdGEV1gPb+v3+dKHPtgx5VKflHtjTfEK6kkGqu9rYcEi2IzSvWfN2A7l
-         HTD9LTDbMlY+SFNQUCZrMLfvT0lSXfeNXE2y4AuG4WhB+58iJR+JBc4p4+3VmZGFI6Ls
-         AlckOqyergTydLnUN6j9zLJ8L/mMCzZxGanQCnNNimedxdAUjtaJnSEjQMVemT4Yizo3
-         FsIU3G2mbdlWEuOfxGHniEf3mrJjx59YIz977aCiG3NnFFBaxfGUVvgIgeB+wr5STlf3
-         byaw==
-X-Gm-Message-State: AGi0PuaAskINA0HvNuiHpHrtUdXs7GOaHCC74Oes4iKpChYBVnf3ZWfI
-        hWnb8QbSNhfTvLSwyQKmHAI=
-X-Google-Smtp-Source: APiQypIltXLyrYZ7Y0t4XNDZFTS4Xd3NXqK9KUWvQSVVWrmDozS8CK0rmTYZ8Thgsxsqf1eR+tKF4Q==
-X-Received: by 2002:a63:78e:: with SMTP id 136mr929138pgh.181.1586206849172;
-        Mon, 06 Apr 2020 14:00:49 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id q6sm447085pja.34.2020.04.06.14.00.48
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 06 Apr 2020 14:00:48 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 14:00:51 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     m.szyprowski@samsung.com, hch@lst.de, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Subject: Re: [RFC/RFT][PATCH] dma-mapping: set default segment_boundary_mask
- to ULONG_MAX
-Message-ID: <20200406210050.GA20495@Asurada-Nvidia.nvidia.com>
-References: <20200405005157.1318-1-nicoleotsuka@gmail.com>
- <c984d2ea-6036-a8ae-97df-b5178a2a9ab9@arm.com>
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=1sZ8OOJadwa2nvBkBvJvN7OoNXEjWxDQSrFUIfTzI4g=;
+        b=TnNXzQ5dl54SwUQBkUJWgOGomCiqLXYvSwBs/r/JklCNfpiKTkzMdR19silo6fXuTF
+         SwQ+TxVNRnUGb5HqITVwCVybOuDzMRJ6wIBi7LCera6Mj6vOox/v+gMUQk3jydP+VZrd
+         iHcI55jVRfpqDyI/BVxoOEZ1x+syangDoC6HSXsw5WXmtz0yqGzwpQnQRc0BryGuBRp3
+         dAUNaIUWdFQ69v1zAipb/foZgTexGFs3bmX538PYjRqnzHv5TzsfktA98CUpqVn06y3L
+         3fRZnr+iE/OaabsW+seVy6BP31uu0PsvBxWAGGaWMD4Mqc/aol1nJgFWEMGHKwLzSAJh
+         9EOg==
+X-Gm-Message-State: AGi0PubNvHc75v4RNTGvTtvcZRoiurND55qQI4OCOunSU9fwn9qH5HXe
+        xNVPzUQqJlYDCSCYyx3UT8AmJ8uC6MKIi1vUX4CYUptW2JgjD8b92q6kapYEE7uDN85F9r+Nc4d
+        qqwnAtQr/aCnbYcD/KQzp1lUz
+X-Received: by 2002:a1c:7d15:: with SMTP id y21mr675416wmc.57.1586206908096;
+        Mon, 06 Apr 2020 14:01:48 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKuTYrTWq0PdAqQEG2lG0Afv0SmILuv6iAD7eADtp2nPdXE+BqkxXHyQlXixXcavcj4F2YAbw==
+X-Received: by 2002:a1c:7d15:: with SMTP id y21mr675401wmc.57.1586206907839;
+        Mon, 06 Apr 2020 14:01:47 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
+        by smtp.gmail.com with ESMTPSA id j11sm940269wmi.33.2020.04.06.14.01.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 14:01:47 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 17:01:45 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/12] virtio: alignment issues
+Message-ID: <20200406210108.148131-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c984d2ea-6036-a8ae-97df-b5178a2a9ab9@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 02:48:13PM +0100, Robin Murphy wrote:
-> On 2020-04-05 1:51 am, Nicolin Chen wrote:
-> > The default segment_boundary_mask was set to DMA_BIT_MAKS(32)
-> > a decade ago by referencing SCSI/block subsystem, as a 32-bit
-> > mask was good enough for most of the devices.
-> > 
-> > Now more and more drivers set dma_masks above DMA_BIT_MAKS(32)
-> > while only a handful of them call dma_set_seg_boundary(). This
-> > means that most drivers have a 4GB segmention boundary because
-> > DMA API returns a 32-bit default value, though they might not
-> > really have such a limit.
-> > 
-> > The default segment_boundary_mask should mean "no limit" since
-> > the device doesn't explicitly set the mask. But a 32-bit mask
-> > certainly limits those devices capable of 32+ bits addressing.
-> > 
-> > And this 32-bit boundary mask might result in a situation that
-> > when dma-iommu maps a DMA buffer (size > 4GB), iommu_map_sg()
-> > cuts the IOVA region into discontiguous pieces, and creates a
-> > faulty IOVA mapping that overlaps some physical memory outside
-> > the scatter list, which might lead to some random kernel panic
-> > after DMA overwrites that faulty IOVA space.
-> 
-> Once again, get rid of this paragraph - it doesn't have much to do with the
-> *default* value since it describes a behaviour general to any boundary mask.
-> Plus it effectively says "if a driver uses a DMA-mapped scatterlist
-> incorrectly, this change can help paper over the bug", which is rather the
-> opposite of a good justification.
+This is an alternative to
+	vhost: force spec specified alignment on types
+which is a bit safer as it does not change UAPI.
+I still think it's best to change the UAPI header as well,
+we can do that as a follow-up cleanup.
 
-Np. Will drop it and resend.
+changes from v3:
+	tools/virtio fixes
+	a bunch more cleanups that now become possible
 
-> (for example most SATA devices end up with a 64KB boundary mask, such that
-> padding the IOVAs to provide the appropriate alignment happens very
-> frequently, and they've been working just fine for years now)
+Changes from v2:
+	don't change struct name, instead add ifndef
+	so kernel does not see the legacy UAPI version.
 
-Okay.
+Jason, can you pls ack one of the approaches?
 
-Thanks!
+
+Matej Genci (1):
+  virtio: add VIRTIO_RING_NO_LEGACY
+
+Michael S. Tsirkin (11):
+  tools/virtio: define aligned attribute
+  tools/virtio: make asm/barrier.h self contained
+  tools/virtio: define __KERNEL__
+  virtio: stop using legacy struct vring in kernel
+  vhost: force spec specified alignment on types
+  virtio: add legacy init/size APIs
+  virtio_ring: switch to virtio_legacy_init/size
+  tools/virtio: switch to virtio_legacy_init/size
+  vop: switch to virtio_legacy_init/size
+  remoteproc: switch to virtio_legacy_init/size
+  mellanox: switch to virtio_legacy_init/size
+
+ drivers/misc/mic/vop/vop_main.c          |  5 +--
+ drivers/misc/mic/vop/vop_vringh.c        |  8 +++--
+ drivers/platform/mellanox/mlxbf-tmfifo.c |  6 ++--
+ drivers/remoteproc/remoteproc_core.c     |  2 +-
+ drivers/vhost/vhost.h                    |  6 ++--
+ drivers/virtio/virtio_pci_modern.c       |  1 +
+ drivers/virtio/virtio_ring.c             | 15 ++++----
+ include/linux/virtio_ring.h              | 46 ++++++++++++++++++++++++
+ include/linux/vringh.h                   |  1 +
+ include/uapi/linux/virtio_ring.h         | 30 ++++++++++------
+ tools/virtio/Makefile                    |  2 +-
+ tools/virtio/asm/barrier.h               |  1 +
+ tools/virtio/linux/compiler.h            |  1 +
+ tools/virtio/ringtest/virtio_ring_0_9.c  |  6 ++--
+ tools/virtio/virtio_test.c               |  6 ++--
+ tools/virtio/vringh_test.c               | 18 +++++-----
+ 16 files changed, 110 insertions(+), 44 deletions(-)
+
+-- 
+MST
+
