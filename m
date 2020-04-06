@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D11C919F24E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3BD19F25F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgDFJSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:18:16 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:55960 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726689AbgDFJSQ (ORCPT
+        id S1726687AbgDFJVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:21:38 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59253 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726621AbgDFJVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:18:16 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 752A51C452C; Mon,  6 Apr 2020 11:18:14 +0200 (CEST)
-Date:   Mon, 6 Apr 2020 11:18:13 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Chen Yu <yu.c.chen@intel.com>, Linux PM <linux-pm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH][v3] PM / sleep: Add pm_debug_messages boot command
- control
-Message-ID: <20200406091813.GG31120@duo.ucw.cz>
-References: <20200402075652.13289-1-yu.c.chen@intel.com>
- <CAJZ5v0j2W5MYJnb4hiDn0OgR1xJZwm4TxVm9o-iw+epXPTp82g@mail.gmail.com>
+        Mon, 6 Apr 2020 05:21:38 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2E3F25C018F;
+        Mon,  6 Apr 2020 05:21:37 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 06 Apr 2020 05:21:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=oMeIIJ1mDIWN3kALdLXCgbaXtnO
+        iigOn5+MO3vnZOUI=; b=kNhzk0My+PGFQesmQtfITGCTkAeUIuaxp6gv1SR4m5/
+        H1dk3sWdxRwvl7KHVmHoXvAgg0Ut7ayn2alYB1MG9NLASeBGuOqcpvHj+273H+jz
+        o/ve/EiunT8XbLNS/wb0JtQDO+i5WaRm/d1hCf+572uib0klzX7gphcXAMcHT1Bm
+        +jTCC3C7lsCvJnZ4Nf8SF0xuOWZ/Ewv4MX8z4GlamBAZK4bk4igE536nHw41nLRR
+        pFmP24HGe7TTLr7/tQrWq5Hrg5yVREHVOVku+JTT+t9DGRUyrKmFalCqkjC3hXpp
+        RH5IkGnQFgMNoDUX02hGc1XOsf8QTve37DmCF7t2YBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=oMeIIJ
+        1mDIWN3kALdLXCgbaXtnOiigOn5+MO3vnZOUI=; b=2YEk2iM0BCpDj6J2DwGxRb
+        CNvPyqIgYSnkOeedlqJfT4R51xuWw3305b5b4Eoxcv6h8/Jnek6q8VDatcDuS5cO
+        /YaqEcroXtKy1UGkIJX718/tp5O/8U0etMLrrqGzNkKqcWF5IRD0AODQ0PW5JLkz
+        CTa4l+wc2DWHtiXbHff1a6hLOsOxk4De7aMbJP9/9Nv9y6g64RHUkYmZ1jhxCddT
+        Z/QQW8DTAnIe8dOGX2aWLiGUOdW8zbe++oYSrLhZaiFZsvwXk05KJp42uW02uLu+
+        QxSc2H/EYtX7+/qnoLfn48SEELr2plGm+xbFwuv72lO0GIQnLwgRYTBUsNyz9jvw
+        ==
+X-ME-Sender: <xms:n_SKXov82wD0S1qvcrji2PDWNwVHREeDi65UkUo8dtE63J3pQngYpw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudefgdduiecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
+    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:n_SKXjD-OFB8wBhpApb-_WEl3SFb8u7j9noWylh2j2Vj1KSnSnPvfg>
+    <xmx:n_SKXsxSRR5VgKXcX_bMSuxNF_spethl7D9dYS7QdLUUNjlvtmE0sg>
+    <xmx:n_SKXmFlGuzOkszQTm6wqMLvNpfr4JoNBx2tu1HuQmgJneHiK6wPrg>
+    <xmx:ofSKXt4XozOGp_tz2A4geXQex8OTLlg0pelVgZrOipjfRmrbaSP6GA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 43150328005D;
+        Mon,  6 Apr 2020 05:21:35 -0400 (EDT)
+Date:   Mon, 6 Apr 2020 11:21:34 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     linux@armlinux.org.uk, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] ARM: configs: sunxi: Add sun8i analog codec
+Message-ID: <20200406092134.ugxuj46qp6tmjf75@gilmour.lan>
+References: <1585820061-24172-1-git-send-email-clabbe@baylibre.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="E69HUUNAyIJqGpVn"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="y4kqwfcf6dwztl2s"
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0j2W5MYJnb4hiDn0OgR1xJZwm4TxVm9o-iw+epXPTp82g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1585820061-24172-1-git-send-email-clabbe@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---E69HUUNAyIJqGpVn
+--y4kqwfcf6dwztl2s
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On Thu, Apr 02, 2020 at 09:34:21AM +0000, Corentin Labbe wrote:
+> On my orange pi PC, I got lot of "sun4i-codec 1c22c00.codec: Failed to register our card".
+> This was due to a missing compoment: the sun8i analog codec.
+>
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 
-> > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Document=
-ation/admin-guide/kernel-parameters.txt
-> > index ed73df5f1369..3fb9cbee8d28 100644
-> > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > @@ -3720,6 +3720,9 @@
-> >                         Override pmtimer IOPort with a hex value.
-> >                         e.g. pmtmr=3D0x508
-> >
-> > +       pm_debug_messages       [SUSPEND,KNL]
-> > +                       Enable suspend/resume debug messages during boo=
-t up.
-> > +
-> >         pnp.debug=3D1     [PNP]
-> >                         Enable PNP debug messages (depends on the
-> >                         CONFIG_PNP_DEBUG_MESSAGES option).  Change at r=
-un-time
+Applied, thanks
 
-> Applied (as 5.7-rc material) with modified subject and changelog,
-  thanks!
+Maxime
 
-Please don't.
-
-We have pnp.debug, i8042.debug, acpi.debug_*, lsm.debug... It makes
-sense to do pm.debug... we want to have some consistency.
-
-Thanks,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---E69HUUNAyIJqGpVn
+--y4kqwfcf6dwztl2s
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXorz1QAKCRAw5/Bqldv6
-8tirAKCUkyHPVgDiMckfb40fMCX03KTXZQCgiI3vObBYdWvXEnTyBLT4zT9uoOs=
-=9YRC
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXor0ngAKCRDj7w1vZxhR
+xX1NAQDtmDUG0N56YtytHARXBanE8n3MN0rgFqs5YzsPTH7BKgEAlr+sj0EyZc5+
+dGB6hLBjFhR/iA7JQIbMnPSJPRYKIgE=
+=Umyl
 -----END PGP SIGNATURE-----
 
---E69HUUNAyIJqGpVn--
+--y4kqwfcf6dwztl2s--
