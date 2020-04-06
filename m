@@ -2,205 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3026019FE4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:44:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B2819FE3F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:43:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgDFTn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 15:43:59 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:43867 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgDFTny (ORCPT
+        id S1726406AbgDFTno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 15:43:44 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:44615 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgDFTnn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 15:43:54 -0400
-Received: by mail-lf1-f44.google.com with SMTP id k28so445317lfe.10;
-        Mon, 06 Apr 2020 12:43:52 -0700 (PDT)
+        Mon, 6 Apr 2020 15:43:43 -0400
+Received: by mail-io1-f66.google.com with SMTP id h6so727667iok.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 12:43:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/P0AXifXD7tANSoj1fREn68L0S32q1vEpifJGcG77J4=;
-        b=DozKuOIsBSVoCV27ns5nKcv3HJ1eX9TTUBar0+Uo4RZkHm1kvhtqLbKWxVwXy9S6Hp
-         s2bSLOBV+Sx7nycKrvZ+yQOk/p360bwA0c3QDa0/euoWkJRJTFQ0nbhGU7nIC55ErN6F
-         Fti9H64CO4uGI17S22Addk9cY926P5Z881+lIKczvmEXeUW/YpNbCsdWHA6cJuzWhkVo
-         NU2Wj2RiepasNt04beZOKe4o1z8LeH8uDkrkUODIl+Ut1ifgj7cHiSnhmi4J+ieA21pE
-         UZWU1BAW00UNF0y2k7BJgfUjBcGm9vJGCtaeBEJu0A4BOesKswHC5KFC0oVppM/WGSwF
-         nCdg==
+        d=poorly.run; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=abwTcU3NPLB9ZnkU0lkxt+NZ4BdMbKcPpC7Ll2Lyoj8=;
+        b=QuGm95H/LilnuJBVmVnYx0H7LMduoXK1eUUubT4UBJaC+N68X41iFuZPPIL/qJvwQd
+         h4G6ju6hnHbddVb0RuUkYDuVMdezs+invBSiSoOMIbxIChuZqsWIDUpiUxqJKs4gQoOg
+         n7E5NwCaO8If0SlL+U/0bhgS4HOPazzvYzPyAxK1IGqwWBD7H0R31WaE853O5cgKoNT+
+         cFRrmKFGfNzVeEXky8pX8Bz1mBOdRP15EAtc7GFWOj1VGJI47Po6klHBFnRsMb5szO9X
+         k2uJkx9KxgbF9hLJOhotAOxW3WVprGYUxZa8ddaEJlkIfFRkKYjaz36CCeoBBvfULPOx
+         tobA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/P0AXifXD7tANSoj1fREn68L0S32q1vEpifJGcG77J4=;
-        b=maymGgLqchZjNofQhycxSni/+UPP/loatWB4gKdSs/RFKhhtFStyrISBR0Skw+nWtC
-         c5//+tfiGHyr9WB8Vpx+FfE2aEzA/4avYBccq1f/UCDMABC3BT9dtjan/rnaLCunEKHB
-         mYrUW/46wAsChu2qUKudnrcEoysyssFp8vctKyptcrWwTP0P5l3PTCb3WaDwAzHaNZIr
-         hQVPRpw2ue7Hn6v7GmLNexZY4ncDv2iHQkNWLMy+zC2j/W2R+7WT8ftMZLjRbXYF/Htf
-         WltAVKjmsg4L+OL4VqUPFeXzde1QS6vA2OuVKkLpO6uf2DzNS3RxnNqLDljQ1Aq6V1UE
-         CF5w==
-X-Gm-Message-State: AGi0PubmQSKiZDKxsfDkxwH6iQa8jRZGNtPMlSNKyyq4507BEutUppOh
-        gG4UR5ww7EGHT4xXSMn4hOQ=
-X-Google-Smtp-Source: APiQypI39uvOM/RmHzylYzqHKMsRhsoS9awnN5HWbW99wBSl2rATBxEedIvfObijqG8Gwo09vbd6yQ==
-X-Received: by 2002:a19:ac41:: with SMTP id r1mr14294925lfc.113.1586202231598;
-        Mon, 06 Apr 2020 12:43:51 -0700 (PDT)
-Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id r206sm4996233lff.65.2020.04.06.12.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 12:43:51 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?q?Pedro=20=C3=82ngelo?= <pangelo@void.io>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] ARM: tegra_defconfig: Enable options useful for Nexus 7 and Acer A500
-Date:   Mon,  6 Apr 2020 22:41:10 +0300
-Message-Id: <20200406194110.21283-7-digetx@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200406194110.21283-1-digetx@gmail.com>
-References: <20200406194110.21283-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=abwTcU3NPLB9ZnkU0lkxt+NZ4BdMbKcPpC7Ll2Lyoj8=;
+        b=hUz46CS4VAMR2Gm1GIW+I2RwihHXwHDtFFzDj376JBaYYsIk7cnuS52Aiy1pMF8xtX
+         5nk5jKQJw51X/Hyj9p5zdjjif7rjVwlwcXfgeGTLl8xVPPczbXGNtjuiLZnSwJZCInH2
+         ON+HqlPNo9cgfLzcxLHqhJt3hrQ3KAMSvxnJAafXw43/DaZcD1p8DAUkfCyISp5Djb92
+         YuP416wGos8SbsPIozwqC1iFwWVkHO2wnzv9JS2b67BAiGKB536zBm9imrhX/83kdVFZ
+         dzso5Mx9t8bNvqM273vBWLUtrNlk1PioyAI/DRSyjw6EEMIc+yBm4OB/gb1WPZclcYro
+         okWA==
+X-Gm-Message-State: AGi0PuZhHtC4WAIzydPkj88NTCaMYKJqpn3DcuCQ/czo4J/lEUNT2Y8Z
+        u4DyYB9hbgO/WTkZXNJmqO3psBRBDTNHmoFTyyl0H8jC
+X-Google-Smtp-Source: APiQypLhF2Lp08EtG9n48GKhPoxcqCViZNaBO24fDJpPAR6rwFCZHEUpxBMLCAa2E8pd6+kNcQ8CAuSRjo8ByUOfK6Y=
+X-Received: by 2002:a6b:b3c3:: with SMTP id c186mr5093685iof.85.1586202222502;
+ Mon, 06 Apr 2020 12:43:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200403200757.886443-1-lyude@redhat.com> <20200403200757.886443-5-lyude@redhat.com>
+In-Reply-To: <20200403200757.886443-5-lyude@redhat.com>
+From:   Sean Paul <sean@poorly.run>
+Date:   Mon, 6 Apr 2020 15:43:06 -0400
+Message-ID: <CAMavQK+UYf8-Esah7kLcMbQtZ_J5h_bHqEroAPkO67fB=ArHyg@mail.gmail.com>
+Subject: Re: [PATCH 4/4] drm/dp_mst: Print errors on ACT timeouts
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable several drivers for hardware that is found on Nexus 7 and Acer A500
-tablet devices. Please note that some drivers may require firmware files
-extracted from original Android image.
+On Fri, Apr 3, 2020 at 4:08 PM Lyude Paul <lyude@redhat.com> wrote:
+>
+> Although it's not unexpected for drm_dp_check_act_status() to fail due
+> to DPCD read failures (as the hub may have just been unplugged
+> suddenly), timeouts are a bit more worrying as they either mean we need
+> a longer timeout value, or we aren't setting up payload allocations
+> properly. So, let's start printing errors on timeouts.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Cc: Sean Paul <sean@poorly.run>
 
-Link: https://github.com/digetx/linux-firmware
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- arch/arm/configs/tegra_defconfig | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+Reviewed-by: Sean Paul <sean@poorly.run>
 
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index 0029259a6bf5..6b78a9ad4d57 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -63,11 +63,17 @@ CONFIG_BT_RFCOMM=y
- CONFIG_BT_BNEP=y
- CONFIG_BT_HIDP=y
- CONFIG_BT_HCIBTUSB=m
-+CONFIG_BT_HCIUART=y
-+CONFIG_BT_HCIUART_BCM=y
- CONFIG_CFG80211=y
- CONFIG_MAC80211=y
- CONFIG_RFKILL=y
- CONFIG_RFKILL_INPUT=y
- CONFIG_RFKILL_GPIO=y
-+CONFIG_NFC=y
-+CONFIG_NFC_HCI=y
-+CONFIG_NFC_SHDLC=y
-+CONFIG_NFC_PN544_I2C=y
- CONFIG_PCI=y
- CONFIG_PCIEPORTBUS=y
- CONFIG_PCI_MSI=y
-@@ -106,20 +112,24 @@ CONFIG_INPUT_JOYDEV=y
- CONFIG_INPUT_EVDEV=y
- CONFIG_KEYBOARD_GPIO=y
- CONFIG_KEYBOARD_TEGRA=y
-+CONFIG_KEYBOARD_CAP11XX=y
- CONFIG_KEYBOARD_CROS_EC=y
- CONFIG_MOUSE_PS2_ELANTECH=y
- CONFIG_INPUT_TOUCHSCREEN=y
- CONFIG_TOUCHSCREEN_ATMEL_MXT=y
-+CONFIG_TOUCHSCREEN_ELAN=y
- CONFIG_TOUCHSCREEN_WM97XX=y
- # CONFIG_TOUCHSCREEN_WM9705 is not set
- # CONFIG_TOUCHSCREEN_WM9713 is not set
- CONFIG_TOUCHSCREEN_STMPE=y
- CONFIG_INPUT_MISC=y
-+CONFIG_INPUT_GPIO_VIBRA=y
- # CONFIG_LEGACY_PTYS is not set
- CONFIG_SERIAL_8250=y
- CONFIG_SERIAL_8250_CONSOLE=y
- CONFIG_SERIAL_OF_PLATFORM=y
- CONFIG_SERIAL_TEGRA=y
-+CONFIG_SERIAL_DEV_BUS=y
- # CONFIG_HW_RANDOM is not set
- # CONFIG_I2C_COMPAT is not set
- CONFIG_I2C_CHARDEV=y
-@@ -135,6 +145,7 @@ CONFIG_PINCTRL_PALMAS=y
- CONFIG_GPIO_SYSFS=y
- CONFIG_GPIO_PCA953X=y
- CONFIG_GPIO_PCA953X_IRQ=y
-+CONFIG_GPIO_MAX77620=y
- CONFIG_GPIO_PALMAS=y
- CONFIG_GPIO_TPS6586X=y
- CONFIG_GPIO_TPS65910=y
-@@ -142,13 +153,18 @@ CONFIG_POWER_RESET=y
- CONFIG_POWER_RESET_AS3722=y
- CONFIG_POWER_RESET_GPIO=y
- CONFIG_BATTERY_SBS=y
-+CONFIG_BATTERY_BQ27XXX=y
-+CONFIG_CHARGER_GPIO=y
-+CONFIG_CHARGER_SMB347=y
- CONFIG_CHARGER_TPS65090=y
- CONFIG_SENSORS_LM90=y
- CONFIG_SENSORS_LM95245=y
- CONFIG_WATCHDOG=y
-+CONFIG_MAX77620_WATCHDOG=y
- CONFIG_TEGRA_WATCHDOG=y
- CONFIG_MFD_AS3722=y
- CONFIG_MFD_CROS_EC=y
-+CONFIG_MFD_MAX77620=y
- CONFIG_MFD_MAX8907=y
- CONFIG_MFD_STMPE=y
- CONFIG_MFD_PALMAS=y
-@@ -159,6 +175,7 @@ CONFIG_REGULATOR=y
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
- CONFIG_REGULATOR_AS3722=y
- CONFIG_REGULATOR_GPIO=y
-+CONFIG_REGULATOR_MAX77620=y
- CONFIG_REGULATOR_MAX8907=y
- CONFIG_REGULATOR_PALMAS=y
- CONFIG_REGULATOR_TPS51632=y
-@@ -174,7 +191,10 @@ CONFIG_USB_GSPCA=y
- CONFIG_DRM=y
- CONFIG_DRM_NOUVEAU=m
- CONFIG_DRM_TEGRA=y
-+CONFIG_DRM_TEGRA_STAGING=y
-+CONFIG_DRM_PANEL_LVDS=y
- CONFIG_DRM_PANEL_SIMPLE=y
-+CONFIG_DRM_LVDS_ENCODER=y
- # CONFIG_LCD_CLASS_DEVICE is not set
- CONFIG_BACKLIGHT_CLASS_DEVICE=y
- # CONFIG_BACKLIGHT_GENERIC is not set
-@@ -238,6 +258,7 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_AS3722=y
- CONFIG_RTC_DRV_DS1307=y
- CONFIG_RTC_DRV_MAX8907=y
-+CONFIG_RTC_DRV_MAX77686=y
- CONFIG_RTC_DRV_PALMAS=y
- CONFIG_RTC_DRV_TPS6586X=y
- CONFIG_RTC_DRV_TPS65910=y
-@@ -259,11 +280,18 @@ CONFIG_ARCH_TEGRA_2x_SOC=y
- CONFIG_ARCH_TEGRA_3x_SOC=y
- CONFIG_ARCH_TEGRA_114_SOC=y
- CONFIG_ARCH_TEGRA_124_SOC=y
-+CONFIG_PM_DEVFREQ=y
-+CONFIG_ARM_TEGRA_DEVFREQ=y
-+CONFIG_ARM_TEGRA20_DEVFREQ=y
- CONFIG_MEMORY=y
- CONFIG_IIO=y
-+CONFIG_KXCJK1013=y
- CONFIG_MPU3050_I2C=y
-+CONFIG_INV_MPU6050_I2C=y
-+CONFIG_AL3010=y
- CONFIG_SENSORS_ISL29018=y
- CONFIG_SENSORS_ISL29028=y
-+CONFIG_AK8974=y
- CONFIG_AK8975=y
- CONFIG_PWM=y
- CONFIG_PWM_TEGRA=y
--- 
-2.25.1
-
+> ---
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index f313407374ed..3d0d373f6f91 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -4494,6 +4494,10 @@ int drm_dp_check_act_status(struct drm_dp_mst_topology_mgr *mgr)
+>                                         DP_PAYLOAD_TABLE_UPDATE_STATUS,
+>                                         &status);
+>                 if (ret < 0) {
+> +                       /*
+> +                        * Failure here isn't unexpected - the hub may have
+> +                        * just been unplugged
+> +                        */
+>                         DRM_DEBUG_KMS("failed to read payload table status %d\n",
+>                                       ret);
+>                         return ret;
+> @@ -4505,8 +4509,8 @@ int drm_dp_check_act_status(struct drm_dp_mst_topology_mgr *mgr)
+>         } while (jiffies < timeout);
+>
+>         if (!(status & DP_PAYLOAD_ACT_HANDLED)) {
+> -               DRM_DEBUG_KMS("failed to get ACT bit %d after %dms\n",
+> -                             status, timeout_ms);
+> +               DRM_ERROR("Failed to get ACT after %dms, last status: %02x\n",
+> +                         timeout_ms, status);
+>                 return -EINVAL;
+>         }
+>         return 0;
+> --
+> 2.25.1
+>
