@@ -2,122 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1245919F416
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991D319F436
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgDFLEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 07:04:55 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:46722 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbgDFLEz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 07:04:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=91jomgqgEShWhxWCDxxUvWHFtjKYAeVic8T17yZiSn8=; b=NlmLniwPmUoH7YNLXVJdXPrK+l
-        BSO/zxAlrDgIJGujl0MsOfF08n+YIxscjpHe/C9oL+Vu7U8axjLxRB/5kcttKWJ+eCdZxE+tW6HUH
-        If1hKl2oaimP6hbVLps5D4MDFT3d4bbFkibKLPmq9qui6MxO4SPzptmtPLYVgAW7d8alHnvRx52ai
-        X5PaXfw+ovZ8oZWzV2yPq0qTgnlFjSWWYFNDKfAQ3lMckmhw16UNGhB7mZeGM3iEGHwsgTq3Owe/m
-        w9ElvyKlI2yDoZl93WASyZTVuln50boW6iBuhck7D826fc/ct9HzvKom8P7DDcUh935dAPmNJ9Wt/
-        f+BUW8rQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLPYX-0005ld-8D; Mon, 06 Apr 2020 11:04:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C6B41304121;
-        Mon,  6 Apr 2020 13:04:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AB48F2BAC6A8E; Mon,  6 Apr 2020 13:04:38 +0200 (CEST)
-Date:   Mon, 6 Apr 2020 13:04:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        mhiramat@kernel.org, bristot@redhat.com, jbaron@akamai.com,
-        torvalds@linux-foundation.org, tglx@linutronix.de,
-        mingo@kernel.org, namit@vmware.com, hpa@zytor.com, luto@kernel.org,
-        ard.biesheuvel@linaro.org, jpoimboe@redhat.com,
-        clang-built-linux@googlegroups.com, hjl.tools@gmail.com
-Subject: Re: [RESEND][PATCH v3 09/17] x86/static_call: Add out-of-line static
- call implementation
-Message-ID: <20200406110438.GJ20730@hirez.programming.kicks-ass.net>
-References: <20200324135603.483964896@infradead.org>
- <20200324142245.819003994@infradead.org>
- <20200406010859.bcfouhukcgmg2on7@google.com>
+        id S1727329AbgDFLOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 07:14:02 -0400
+Received: from nautica.notk.org ([91.121.71.147]:36170 "EHLO nautica.notk.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727125AbgDFLOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 07:14:01 -0400
+X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Apr 2020 07:14:00 EDT
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id 9C620C009; Mon,  6 Apr 2020 13:07:17 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 13:07:02 +0200
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net
+Subject: [GIT PULL] 9p update for 5.7
+Message-ID: <20200406110702.GA13469@nautica>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200406010859.bcfouhukcgmg2on7@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 05, 2020 at 06:08:59PM -0700, Fangrui Song wrote:
-> On 2020-03-24, Peter Zijlstra wrote:
+Hi Linus,
 
-> > +#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)			\
-> > +	asm(".pushsection .text, \"ax\"				\n"	\
-> > +	    ".align 4						\n"	\
-> > +	    ".globl " STATIC_CALL_TRAMP_STR(name) "		\n"	\
-> > +	    STATIC_CALL_TRAMP_STR(name) ":			\n"	\
-> > +	    "	jmp.d32 " #func "				\n"	\
-> > +	    ".type " STATIC_CALL_TRAMP_STR(name) ", @function	\n"	\
-> > +	    ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-> > +	    ".popsection					\n")
-> > +
-> > +#endif /* _ASM_STATIC_CALL_H */
-> 
-> Hi Peter,
-> 
-> Coming here from https://github.com/ClangBuiltLinux/linux/issues/974
-> 
-> jmp.d32 is not recognized by clang integrated assembler.
-> The syntax appears to be very rarely used. According to Debian Code Search,
-> u-boot is the only project using this syntax.
+Not much new, but a few patches for this cycle.
 
-*groan*... I was going to use it in more places :-/
+Thanks,
+Dominique
 
-> In March 2017, gas added the pseudo prefix {disp32}
-> https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=86fa6981e7487e2c2df4337aa75ed2d93c32eaf2
-> which generalizes jmp.d32  ({disp32} jmp foo)
 
-That's all well and cute, but I can't use that because its too new. Not
-until we raise the minimum gcc/bintils version to something that
-includes that.
+The following changes since commit 16fbf79b0f83bc752cee8589279f1ebfe57b3b6e:
 
-> I wonder whether the instruction jmp.d32 can be replaced with the trick in
-> arch/x86/include/asm/jump_label.h for clang portability.
-> 
-> % grep -A2 'jmp.d32' arch/x86/include/asm/jump_label.h
->         /* Equivalent to "jmp.d32 \target" */
->         .byte           0xe9
->         .long           \target - .Lstatic_jump_after_\@
+  Linux 5.6-rc7 (2020-03-22 18:31:56 -0700)
 
-Sure, but I was hoping to move away from that since all assemblers
-should now support jmp.d32. Except of course, you have to go ruin
-things.
+are available in the Git repository at:
 
-The thing is, jmp.d32 reads so much nicer than the above crap.
+  https://github.com/martinetd/linux tags/9p-for-5.7
 
-Also, I still need a meta instruction like:
+for you to fetch changes up to 43657496e46672fe63bccc1fcfb5b68de6e1e2f4:
 
-	nopjmp $label
+  net/9p: remove unused p9_req_t aux field (2020-03-27 09:29:57 +0000)
 
-what works just like 'jmp' but instead emits either a nop2 or a nop5.
-I tried various hacks to get GAS to emit that, but no luck :/
+----------------------------------------------------------------
+9p pull request for inclusion in 5.7
 
-The only up-side from that new syntax is that I suppose we can go write:
+- Fix read with O_NONBLOCK to allow incomplete read and return
+immediately
+- Rest is just cleanup (indent, unused field in struct, extra semicolon)
 
-  {disp8} push \vec
+----------------------------------------------------------------
+Dominique Martinet (1):
+      net/9p: remove unused p9_req_t aux field
 
-without gas shitting itself and emitting a 5 byte push just because..
-Except of course we can't, for the same reason I can't go around and
-use:
+Krzysztof Kozlowski (1):
+      9p: Fix Kconfig indentation
 
-  {disp32} jmp
+Sergey Alirzaev (2):
+      9pnet: allow making incomplete read requests
+      9p: read only once on O_NONBLOCK
 
-in the above code.
+zhengbin (1):
+      9p: Remove unneeded semicolon
+
+ fs/9p/Kconfig           |  18 +++++++++---------
+ fs/9p/vfs_file.c        |   5 ++++-
+ fs/9p/vfs_inode.c       |   2 +-
+ include/net/9p/client.h |   4 ++--
+ net/9p/client.c         | 144 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---------------------------------------------------------------
+ 5 files changed, 94 insertions(+), 79 deletions(-)
