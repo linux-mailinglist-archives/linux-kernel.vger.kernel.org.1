@@ -2,76 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B739019F3E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D06D19F3EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbgDFKz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:55:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:44210 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726841AbgDFKz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:55:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA60230E;
-        Mon,  6 Apr 2020 03:55:26 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CA9A83F52E;
-        Mon,  6 Apr 2020 03:55:25 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 11:55:23 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Qian Cai <cai@lca.pw>, Prateek Sood <prsood@codeaurora.org>,
-        Li Zefan <lizefan@huawei.com>, cgroups@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: Deadlock due to "cpuset: Make cpuset hotplug synchronous"
-Message-ID: <20200406105522.c66p4vzzzylety5d@e107158-lin.cambridge.arm.com>
-References: <F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw>
- <20200325191922.GM162390@mtj.duckdns.org>
- <20200326101529.xh763j5frq2r7mqv@e107158-lin>
- <20200403145523.GC162390@mtj.duckdns.org>
+        id S1727226AbgDFK5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:57:32 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:45746 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgDFK5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:57:31 -0400
+Received: by mail-qt1-f194.google.com with SMTP id 71so5575768qtc.12;
+        Mon, 06 Apr 2020 03:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OJVdbc4/URe+WGm2RIHS01C+7ItQ2Hr946YFGhM+r6Q=;
+        b=tl9rRJmbLLwNSi8rayLraEGERtM53Mp91HzHN5ePmODbG56ymHSstnBEbRubx8reNa
+         royNt0lqw3KDwLjrw/AcEWNx9n3XQHOcNSlLLd3oc/r2upxFhfFi8QkY8bjLDoss8a+7
+         13lNlh1b2yo9aAwIUP6nQ39u/wsUbeZggzpTW0LibRAX/R8SXBBTmsuIAjIXXfzxy7bt
+         b/k/a66oSC6CEeH0T9K/gTBFiPiaZNUMiypnBLdVaxQfaWNJlQgIqIrJ0wTcXiNgBc7K
+         pkeluKPCcmsZtSA9Fvjvk0msGJ//RldzC24nesu6jwsar5wquD4JJU/V9ok0RMIbtaU5
+         A+UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OJVdbc4/URe+WGm2RIHS01C+7ItQ2Hr946YFGhM+r6Q=;
+        b=X8lmB1SNiV88n8koLGajvFe1HqH64fSxmEicJ0rM1T08ldG0+5sDpRHjcHjy1wJDv8
+         mThErgnGbbyBzhVJIoPFhC71RsrbdAFfbu+N2GVk1R5jy8DbmBm8jsPZhB7HmiNUhmrM
+         XGzs/xRWSJEPEW0Xg9v0ob5FpdULO0afZOxFygsBgT698ynuCrdjCsebLDr3/ReNvsBO
+         gWogJCYFZF5PHqZudtdjCq0BmmSgav08nfZHHz1KjnocEL5BHHsuMlj96nIhkSXvOWwK
+         e3jcmlQchs+WIhsqvJGOObVXM+kIvb+mYIUU2HbXg+FfORYcOmJnfYmppSsY6i9rb1yX
+         Da2Q==
+X-Gm-Message-State: AGi0PuYiZaQ5wwg7paaPRTWX30y0fjsuIRM6gPDCpJeomdpVASi/pbby
+        2PFvwp94N9LJHorIhMu4RYHssS1vxj0Cuyj2fA8=
+X-Google-Smtp-Source: APiQypKi+rVw7Yx3tuLfh/w9IDdOMDAcQDOY1nccoBuxFkH975v+GT9qKuQMZQBbgq5YPrSWScSrivupcGdAfyxbwsk=
+X-Received: by 2002:ac8:1a8a:: with SMTP id x10mr8463923qtj.154.1586170650053;
+ Mon, 06 Apr 2020 03:57:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200403145523.GC162390@mtj.duckdns.org>
-User-Agent: NeoMutt/20171215
+References: <20200405082451.694910-1-jiaxun.yang@flygoat.com>
+ <alpine.LFD.2.21.2004051738000.4156324@eddie.linux-mips.org>
+ <96C9B1A0-2F89-4650-B0A4-6A6242A2AA0A@flygoat.com> <alpine.LFD.2.21.2004051817310.4156324@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.21.2004051817310.4156324@eddie.linux-mips.org>
+From:   YunQiang Su <wzssyqa@gmail.com>
+Date:   Mon, 6 Apr 2020 18:57:18 +0800
+Message-ID: <CAKcpw6U=VW+h4sU1fzrsqXU9z-zVfcFsENKHgAD4paqtndip2w@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: malta: Set load address for 32bit kernel correctly
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/03/20 10:55, Tejun Heo wrote:
-> On Thu, Mar 26, 2020 at 10:15:32AM +0000, Qais Yousef wrote:
-> > On 03/25/20 15:19, Tejun Heo wrote:
-> > > On Wed, Mar 25, 2020 at 03:16:56PM -0400, Qian Cai wrote:
-> > > > The linux-next commit a49e4629b5ed (“cpuset: Make cpuset hotplug synchronous”)
-> > > > introduced real deadlocks with CPU hotplug as showed in the lockdep splat, since it is
-> > > > now making a relation from cpu_hotplug_lock —> cgroup_mutex.
-> > > 
-> > > Prateek, can you please take a look? Given that the merge window is just around
-> > > the corner, we might have to revert and retry later if it can't be resolved
-> > > quickly.
-> > 
-> > I've ran cpuset_hotplug and cpuhotplug LTP tests using next-20200325 but
-> > couldn't reproduce it.
-> > 
-> > Hopefully that can be fixed, but if you had to revert it, do you mind picking
-> > this instead to fix the LTP issue I encountered before?
-> > 
-> > 	https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
-> 
-> So, I'd rather not, for now anyway. It isn't a real problem and I don't wanna
-> add a wait vector there.
+Maciej W. Rozycki <macro@linux-mips.org> =E4=BA=8E2020=E5=B9=B44=E6=9C=886=
+=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=881:23=E5=86=99=E9=81=93=EF=BC=
+=9A
+>
+> On Mon, 6 Apr 2020, Jiaxun Yang wrote:
+>
+> > > Given the description above I think it should be done uniformly and
+> > >automatically across all platforms by trimming the address supplied
+> > >with
+> > >$(load-y) to low 8 digits in a single place, that is at the place wher=
+e
+> > >
+> > >the variable is consumed.  This will reduce clutter across Makefile
+> > >fragments, avoid inconsistencies and extra work to handle individual
+> > >platforms as the problem is triggered over and over again, and limit
+> > >the
+> > >risk of mistakes.
+> >
+> > I was intended to do like this but failed to find a proper way.
+> >
+> > Makefile isn't designed for any kind of calculation.
+> > And shell variables are 64-bit signed so it can't hold such a huge vari=
+able.
+> >
+> > Just wish somebody can give me a way to do like:
+> >
+> > ifndef CONFIG_64BIT
+> > load-y =3D $(load-y) & 0xffffffff
+> > endif
+>
+>  Use the usual shell tools like `sed', `cut', `awk', or whatever we use i=
+n
 
-What would be the right approach to get a fix in then? We have been skipping
-this test for a while and we'd like to enable it but this failure is a
-blocking issue.
+perl may be the easiest to use tool here.
 
-Android relies on cpuset and some devices use hotplug to manage thermal/power.
-So it's an interesting combination to be able to test for us.
+ifndef CONFIG_64BIT
+  load-y :=3D $(shell $(PERL) -e 'print $(load-y) & 0xffffffff')
+endif
 
-Thanks
+Note that it is `:=3D' instead of '=3D'.
 
---
-Qais Yousef
+> the kernel build already for other purposes.  There's no need to do any
+> actual calculation here to extract the last 8 characters (and the leading
+> `0x' prefix).  At worst you can write a small C program, compile it with
+> the build system compiler and run, as we already do for some stuff.
+>
+>   Maciej
+
+
+
+--=20
+YunQiang Su
