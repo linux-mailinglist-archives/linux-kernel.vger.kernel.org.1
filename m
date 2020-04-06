@@ -2,109 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E29C519FCEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7282319FCE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgDFSRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 14:17:21 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:1992 "EHLO pegase1.c-s.fr"
+        id S1726692AbgDFSQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 14:16:47 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:38379 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726705AbgDFSQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 14:16:43 -0400
+        id S1727048AbgDFSQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 14:16:45 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 48wzJV6Bqfz9v01G;
-        Mon,  6 Apr 2020 20:16:42 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 48wzJW6Dg8z9v017;
+        Mon,  6 Apr 2020 20:16:43 +0200 (CEST)
 Authentication-Results: localhost; dkim=pass
         reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=ZHSeZuKF; dkim-adsp=pass;
+        header.d=c-s.fr header.i=@c-s.fr header.b=Khk97yYL; dkim-adsp=pass;
         dkim-atps=neutral
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id cz3nR_S0gR3m; Mon,  6 Apr 2020 20:16:42 +0200 (CEST)
+        with ESMTP id GABKz4NnB9jj; Mon,  6 Apr 2020 20:16:43 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 48wzJV59VGz9v016;
-        Mon,  6 Apr 2020 20:16:42 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 48wzJW5CNpz9v016;
+        Mon,  6 Apr 2020 20:16:43 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1586197002; bh=HNyUM5qFo9XY5Fj+Oqj6ESs8K40UJCokKbJOCnivcsk=;
+        t=1586197003; bh=a5uur0JjQKV4vKxRMQhPMor8uQsgxQ5q+xZnIEjM+NE=;
         h=In-Reply-To:References:From:Subject:To:Cc:Date:From;
-        b=ZHSeZuKFaBV9IcvbK1E1aGjNT86Od/h24R4j1KBn3xWTmwQCS9846agJqIqsMSi7O
-         pxOw+4t4mqZCTsPBfniEAi26eOcwZA7/PMVljXQ3FLhZOg4MYH59AEd+jswAX0CQBI
-         6E2xpDAIX1oPGjs8WeUPt0iSwA/fZtYytF0k68bk=
+        b=Khk97yYLUlxW26zWADAmoDOC09G4UoAithNqdRQx8UjowElgsl8MM0YGnJatyFcfz
+         6A2h4lFBs2kPvIClvG8uv8rqU3q8pvHTW35X3T3v/eL05YF6QUcs8UUyFyGS0RM+nb
+         OK9tsLTYeEwHHQVgRJkQD+wLMy5+BXeSv6yk1koc=
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A11448B78D;
-        Mon,  6 Apr 2020 20:16:42 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A71D18B784;
+        Mon,  6 Apr 2020 20:16:43 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 49VM5QD-CMdi; Mon,  6 Apr 2020 20:16:42 +0200 (CEST)
+        with ESMTP id UHJQSiDgbw6w; Mon,  6 Apr 2020 20:16:43 +0200 (CEST)
 Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 67FCE8B775;
-        Mon,  6 Apr 2020 20:16:42 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6FA468B775;
+        Mon,  6 Apr 2020 20:16:43 +0200 (CEST)
 Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 3E7A6656E9; Mon,  6 Apr 2020 18:16:42 +0000 (UTC)
-Message-Id: <40bc753eaf6f82ce7c8dee219fa730bf00c0974d.1586196948.git.christophe.leroy@c-s.fr>
+        id 45F9E656E9; Mon,  6 Apr 2020 18:16:43 +0000 (UTC)
+Message-Id: <99c8590956536b6f40b9deeaec559a324ab5f81c.1586196948.git.christophe.leroy@c-s.fr>
 In-Reply-To: <5aeaa33383e833f6eca30893fbd188b88e019eaa.1586196948.git.christophe.leroy@c-s.fr>
 References: <5aeaa33383e833f6eca30893fbd188b88e019eaa.1586196948.git.christophe.leroy@c-s.fr>
 From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: [RFC PATCH v3 06/15] powerpc/irq: Add new helpers to play with MSR_EE
- and MSR_RI on PPC32
+Subject: [RFC PATCH v3 07/15] powerpc/irq: Add stub irq_soft_mask_return() for
+ PPC32
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
         msuchanek@suse.de
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  6 Apr 2020 18:16:42 +0000 (UTC)
+Date:   Mon,  6 Apr 2020 18:16:43 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation of porting PPC32 to C syscall entry/exit,
-add PPC32 version of following helpers:
-	__hard_irq_enable()
-	__hard_irq_disable()
-	__hard_EE_RI_disable()
-	__hard_RI_enable()
+To allow building syscall_64.c smoothly on PPC32, add stub version
+of irq_soft_mask_return().
 
 Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 ---
- arch/powerpc/include/asm/hw_irq.h | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ arch/powerpc/include/asm/hw_irq.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/arch/powerpc/include/asm/hw_irq.h b/arch/powerpc/include/asm/hw_irq.h
-index e69466867d5f..8c30a72262fd 100644
+index 8c30a72262fd..1c25a84a3159 100644
 --- a/arch/powerpc/include/asm/hw_irq.h
 +++ b/arch/powerpc/include/asm/hw_irq.h
-@@ -330,6 +330,16 @@ static inline void arch_local_irq_disable(void)
- 		mtmsr(mfmsr() & ~MSR_EE);
+@@ -293,6 +293,11 @@ static inline void set_softe(struct pt_regs *regs, unsigned long val)
  }
+ #else /* CONFIG_PPC64 */
  
-+static inline void arch_local_recovery_disable(void)
++static inline notrace unsigned long irq_soft_mask_return(void)
 +{
-+	if (IS_ENABLED(CONFIG_BOOKE))
-+		wrtee(0);
-+	else if (IS_ENABLED(CONFIG_PPC_8xx))
-+		wrtspr(SPRN_NRI);
-+	else
-+		mtmsr(mfmsr() & ~(MSR_EE | MSR_RI));
++	return 0;
 +}
 +
- static inline void arch_local_irq_enable(void)
+ static inline unsigned long arch_local_save_flags(void)
  {
- 	if (IS_ENABLED(CONFIG_BOOKE))
-@@ -352,6 +362,11 @@ static inline bool arch_irqs_disabled(void)
- 
- #define hard_irq_disable()		arch_local_irq_disable()
- 
-+#define __hard_irq_enable()		arch_local_irq_enable()
-+#define __hard_irq_disable()		arch_local_irq_disable()
-+#define __hard_EE_RI_disable()		arch_local_recovery_disable()
-+#define __hard_RI_enable()		arch_local_irq_disable()
-+
- static inline bool arch_irq_disabled_regs(struct pt_regs *regs)
- {
- 	return !(regs->msr & MSR_EE);
+ 	return mfmsr();
 -- 
 2.25.0
 
