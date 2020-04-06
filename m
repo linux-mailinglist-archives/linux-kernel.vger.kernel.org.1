@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB24B19F7CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02B519F7D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728619AbgDFOWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:22:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46276 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728200AbgDFOWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:22:15 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D50C23D4D;
-        Mon,  6 Apr 2020 14:22:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586182934;
-        bh=079T5wNZmSG8ZgElAL/OT/dS/9EsBX27bHZ9pHlhHc8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ATLYI5tDGQeBumcAM2blpXje1MIDHzL0PJrmYX6l244ju4FDGPaeLvzqYkcItaI8h
-         8YEi/zGP7kQdZFsDpAhji+JYnAOqfzuJsxZvf+w7Vh1pBXjM3V+RTC3rv9S1qQyvUC
-         hmtDvVYkq13RNfTKPTIpQ319x4GJqAb9KERFRg6Q=
-Date:   Mon, 6 Apr 2020 16:22:12 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oscar Carter <oscar.carter@gmx.com>
-Cc:     Forest Bond <forest@alittletooquiet.net>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] staging: vt6656: Use define instead of magic number
- for tx_rate
-Message-ID: <20200406142212.GA48502@kroah.com>
-References: <20200404141400.3772-1-oscar.carter@gmx.com>
- <20200404141400.3772-3-oscar.carter@gmx.com>
+        id S1728683AbgDFOXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:23:51 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:35298 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728539AbgDFOXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 10:23:51 -0400
+Received: by mail-pg1-f194.google.com with SMTP id k5so7648793pga.2;
+        Mon, 06 Apr 2020 07:23:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=l4jUivbNeT/tXISEa3mLl14aIqDVskamynqyyyoeohY=;
+        b=YsU9jbSzp8588IOyvGG+4YHrxffe3iPQeAwpZRZh4dJI6hn59XpIB0vFzvHRetcMWa
+         qH1JDaLYqlmIqMWRsgk60Rlr1+Bfs1EMQshyB7bOcWb4iU9plUGV1kElXNJXVwamhVeF
+         6vFKchI2tetJNWTUzBVreFKGSkuJ/zhf/7bFzP4iQfFdpGbrAvC4Sm0T28thh+UgGMP3
+         2GfqKFhBrqz74NoGL6SNMm57MzprEBmuXxTKKUOu3v/6NzPZhLFK1OoHl0J6wHOGWao2
+         k5If+SIeZfF9N9VpYD+4RIj7yYON8hrFO+aUP5jr0jQLn7fgJCZdzTMVWAp1id+C+q2v
+         Y1vQ==
+X-Gm-Message-State: AGi0PuZlcIPRY0x1C7Kaw87JZ+5MbvMZPnswBrkBmlEe1q1fn/bwVgmk
+        eyTo/sJuFSBaerqSkuMIjCw=
+X-Google-Smtp-Source: APiQypIOvcLGL/Zcaffq3CvgymvIweGawVr0JJIIPq4D6r0SEbYJXtqbU0CFu7sYyeuNreyhJjYWYw==
+X-Received: by 2002:a63:eb15:: with SMTP id t21mr5705274pgh.279.1586183029353;
+        Mon, 06 Apr 2020 07:23:49 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id q71sm11874573pfc.92.2020.04.06.07.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 07:23:48 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 8D41C40246; Mon,  6 Apr 2020 14:23:47 +0000 (UTC)
+Date:   Mon, 6 Apr 2020 14:23:47 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
+        mhocko@suse.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [RFC 1/3] block: move main block debugfs initialization to its
+ own file
+Message-ID: <20200406142347.GB11244@42.do-not-panic.com>
+References: <20200402000002.7442-1-mcgrof@kernel.org>
+ <20200402000002.7442-2-mcgrof@kernel.org>
+ <cef15625-3814-aec2-d10c-1344a6f063a9@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200404141400.3772-3-oscar.carter@gmx.com>
+In-Reply-To: <cef15625-3814-aec2-d10c-1344a6f063a9@acm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 04, 2020 at 04:13:59PM +0200, Oscar Carter wrote:
-> Use the define RATE_11M present in the file "device.h" instead of the
-> magic number 3. So the code is more clear.
+On Sat, Apr 04, 2020 at 08:12:53PM -0700, Bart Van Assche wrote:
+> On 2020-04-01 17:00, Luis Chamberlain wrote:
+> > Single and multiqeueue block devices share some debugfs code. By
+>              ^^^^^^^^^^^
+>              multiqueue?
+> > moving this into its own file it makes it easier to expand and audit
+> > this shared code.
 > 
-> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/staging/vt6656/baseband.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> [ ... ]
 > 
-> diff --git a/drivers/staging/vt6656/baseband.c b/drivers/staging/vt6656/baseband.c
-> index 3e4bd637849a..a785f91c1566 100644
-> --- a/drivers/staging/vt6656/baseband.c
-> +++ b/drivers/staging/vt6656/baseband.c
-> @@ -24,6 +24,7 @@
+> > diff --git a/block/blk-debugfs.c b/block/blk-debugfs.c
+> > new file mode 100644
+> > index 000000000000..634dea4b1507
+> > --- /dev/null
+> > +++ b/block/blk-debugfs.c
+> > @@ -0,0 +1,15 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +
+> > +/*
+> > + * Shared debugfs mq / non-mq functionality
+> > + */
 > 
->  #include <linux/bits.h>
->  #include <linux/kernel.h>
-> +#include "device.h"
->  #include "mac.h"
->  #include "baseband.h"
->  #include "rf.h"
-> @@ -141,7 +142,7 @@ unsigned int vnt_get_frame_time(u8 preamble_type, u8 pkt_type,
-> 
->  	rate = (unsigned int)vnt_frame_time[tx_rate];
-> 
-> -	if (tx_rate <= 3) {
-> +	if (tx_rate <= RATE_11M) {
->  		if (preamble_type == 1)
->  			preamble = 96;
->  		else
-> --
-> 2.20.1
+> The legacy block layer is gone, so not sure why the above comment refers
+> to non-mq?
 
-This doesn't apply to my tree :(
+Will adjust the language, thanks.
 
+> 
+> > diff --git a/block/blk.h b/block/blk.h
+> > index 0a94ec68af32..86a66b614f08 100644
+> > --- a/block/blk.h
+> > +++ b/block/blk.h
+> > @@ -487,5 +487,12 @@ struct request_queue *__blk_alloc_queue(int node_id);
+> >  int __bio_add_pc_page(struct request_queue *q, struct bio *bio,
+> >  		struct page *page, unsigned int len, unsigned int offset,
+> >  		bool *same_page);
+> > +#ifdef CONFIG_DEBUG_FS
+> > +void blk_debugfs_register(void);
+> > +#else
+> > +static inline void blk_debugfs_register(void)
+> > +{
+> > +}
+> > +#endif /* CONFIG_DEBUG_FS */
+> 
+> Do we really need a new header file that only declares a single
+> function? How about adding the above into block/blk-mq-debugfs.h?
+
+Moving forward rq->debugfs_dir will created when CONFIG_DEBUG_FS is
+enabled to enable blktrace to use it. This creation won't depend on
+CONFIG_BLK_DEBUG_FS, so we can definitely sprinkly the #ifdef
+CONFIG_DEBUG_FS stuff in block/blk-mq-debugfs.h but it just didn't
+seem the best place. Let me know.
+
+  Luis
