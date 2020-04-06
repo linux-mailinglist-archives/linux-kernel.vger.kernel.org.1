@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B474519FB07
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 19:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEA019FB18
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 19:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729791AbgDFRJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 13:09:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726512AbgDFRJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 13:09:17 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3F70249C3;
-        Mon,  6 Apr 2020 17:09:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586192957;
-        bh=jGlWkL5YDyGUqffV9CUBwhs+ieoeBSdeSCJjrAMi7+k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bX0J7CVKPDu/QIq9uQnf9dItL0Yzl4bDcJcljSzEPOOiqin2OZvTml6CkaO62pLAv
-         K9QqMIjQCNhZP4Vpk/GbF7q8Pz6D2vnJplND4/FWUGeSXJmWeg9IhJtUPwDDj71SJz
-         lqxG1EHkPqFtMupQgI4o/ezaQW19nu24BhHG4NSc=
-Date:   Mon, 6 Apr 2020 18:09:12 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] Introduce ID_PFR2 and other CPU feature changes
-Message-ID: <20200406170911.GA7446@willie-the-truck>
-References: <1580215149-21492-1-git-send-email-anshuman.khandual@arm.com>
+        id S1729825AbgDFRMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 13:12:23 -0400
+Received: from smtprelay0060.hostedemail.com ([216.40.44.60]:55862 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729811AbgDFRMW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 13:12:22 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 452E818015864;
+        Mon,  6 Apr 2020 17:12:21 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3874:4321:4385:4390:4395:5007:7904:10004:10400:10848:11232:11658:11914:12050:12296:12297:12679:12740:12760:12895:13019:13069:13311:13357:13439:14181:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: rod06_144c12ce97501
+X-Filterd-Recvd-Size: 1895
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  6 Apr 2020 17:12:19 +0000 (UTC)
+Message-ID: <dbfcbbd55c63fc87bfb31af3cae1b15e04d8a821.camel@perches.com>
+Subject: Re: [PATCH] mm: Add kvfree_sensitive() for freeing sensitive data
+ objects
+From:   Joe Perches <joe@perches.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-mm@kvack.org,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 06 Apr 2020 10:10:20 -0700
+In-Reply-To: <334933.1586190389@warthog.procyon.org.uk>
+References: <d509771b7e08fff0d18654b746e413e93ed62fe8.camel@perches.com>
+         <a291cce3ff1ba978e7ad231a8e1b7d82f6164e86.camel@perches.com>
+         <20200406023700.1367-1-longman@redhat.com>
+         <319765.1586188840@warthog.procyon.org.uk>
+         <334933.1586190389@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1580215149-21492-1-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 06:09:03PM +0530, Anshuman Khandual wrote:
-> This series is primarily motivated from an adhoc list from Mark Rutland
-> during our ID_ISAR6 discussion [1]. Besides, it also includes a patch
-> which does macro replacement for various open bits shift encodings in
-> various CPU ID registers. This series is based on linux-next 20200124.
+On Mon, 2020-04-06 at 17:26 +0100, David Howells wrote:
+> Joe Perches <joe@perches.com> wrote:
 > 
-> [1] https://patchwork.kernel.org/patch/11287805/
+> > While I agree with Linus about the __ prefix,
+> > the z is pretty common and symmetric to all
+> > the <foo>zalloc uses.
+> > 
+> > And if _sensitive is actually used, it'd be
+> > good to do a s/kzfree/kfree_sensitive/ one day
+> > sooner than later.
 > 
-> Is there anything else apart from these changes which can be accommodated
-> in this series, please do let me know. Thank you.
+> How much overhead would it be to always use kvfree_sensitive() and never have
+> a kfree_sensitive()?
 
-The latest Arm ARM also talks about DFR1 and MMFR5. Please can you include
-those too? Might also be worth checking to see if anything is missing on
-the 64-bit side as well (I didn't look).
+Another possibility:
 
-Will
+Add yet another alloc flag like __GFP_SENSITIVE
+and have kfree operate on that and not have a
+kfree_sensitive at all.
+
+
+
