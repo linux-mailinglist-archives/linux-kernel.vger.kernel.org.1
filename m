@@ -2,113 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E20819F9D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F4DB19F9E0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729397AbgDFQLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 12:11:37 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:35729 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728707AbgDFQLg (ORCPT
+        id S1729436AbgDFQMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 12:12:07 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22987 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728707AbgDFQMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 12:11:36 -0400
-Received: by mail-lf1-f66.google.com with SMTP id r17so8755304lff.2;
-        Mon, 06 Apr 2020 09:11:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qhOUGpjPKASmxoCysFaxbtOB2AHvvFDFpDiOJXOBlNo=;
-        b=UrynkiAylxjENx/BTXAnxsXfsPXLlbFbVf9NAYsIXircg3qbDqGgXpl0Agz7FjWxYV
-         o23532+gFX5nUrvt45ZV+JltPlf69OMbNpqjzTuosCOt+1TThYRgyYXYgYMkj+bUQNsG
-         C69GB+hmlKc3cCgePelBhWBhuChb5+qwFpoG4xSqLYRjBNPx6x+CFL965NRxL6Us8zd4
-         Wf/pi01y6+iKV4sj4gOGgXO+LjmCb6gg+SeknB1wc28TVxBs8RbprSXCBwbecK0DCmuy
-         PR1s0hQt4uSC473SJAESyeCrMUqIFMusJ/MdF888X8m4l9XMR0JNA8DN1/oIaDaGHcDb
-         w/cg==
+        Mon, 6 Apr 2020 12:12:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586189523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=rIWxYfcYAQw97MdNWUoWLHUlnO3W3ZP0UNabt9fJ3h8=;
+        b=FmFGC8NPjC2umzKX+V0+bSp0bDyPrylcdfGTVu+R7yO4u4MM3G8pkR89EwrrnmaCSOjQvZ
+        1RZOn1C4rPTZtfsjSyuLA+D1yjE7Ac+mSmOOkVQXKW9ZQBfqvUaGmrk2fe76B8OlyZAGUS
+        W2ISHVgDtDWDYxC4/RPmIB6t9xJLRVY=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-317-9oSuK-qfMPGkMr5Jqpwntw-1; Mon, 06 Apr 2020 12:11:59 -0400
+X-MC-Unique: 9oSuK-qfMPGkMr5Jqpwntw-1
+Received: by mail-wr1-f72.google.com with SMTP id j12so35404wrr.18
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 09:11:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qhOUGpjPKASmxoCysFaxbtOB2AHvvFDFpDiOJXOBlNo=;
-        b=SyVsXx2wOx8e6TxCr7c4OkNuOUldRLwD8Z5UcQzotf3BSofN0+UaVW3ir/sPbcY4yY
-         rSTbBJNEsDm91I4LlOgSDKnXMxl9brXyHwsl4gJuTG4B3FJ123pXCWKOmj9gwOy9r8FQ
-         eXLQXCLorQjFY61mMwXKsA6KMgJKe9RxTvqstbcRDpJVeCgCPtO8m2LeZwT5Xd2Wiyct
-         leNygLt8hyJDUvd9OFOmVKOEZV3YpS4UITRSXHPRj7hJ/Q+nVKdaTFkvKQaYwilEKZ/6
-         gN8KtCa5FxOD9KHG3h67I8igd0HsD4vANE/nNnYdUfSEv9AuMqXIs5FuesBY1wBcaLed
-         BXZw==
-X-Gm-Message-State: AGi0PuZFjZi1OYxPf1OvTmPLtMfiWqHeROEBCaLGnXMYkH92axsYZqSo
-        nea+beupW+tVkcZQoaP8eTCrZTG1
-X-Google-Smtp-Source: APiQypJjSmNNCPDM8/uvaTTUFwGwmlSABQOaKn62Vzpr2BzuKzoLuemeS08xNpG1PBcFQFtRQNlQHQ==
-X-Received: by 2002:a05:6512:686:: with SMTP id t6mr14141091lfe.163.1586189492891;
-        Mon, 06 Apr 2020 09:11:32 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id o18sm1360571lfb.13.2020.04.06.09.11.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Apr 2020 09:11:31 -0700 (PDT)
-Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
-Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
- <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
- <40102767-ecdb-e958-66f4-45d11464069c@gmail.com>
- <b7b77258-6309-7ed2-489d-337cf273ba1e@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <6014fee9-ce97-7ced-f2ba-82176b8b36db@gmail.com>
-Date:   Mon, 6 Apr 2020 19:11:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=rIWxYfcYAQw97MdNWUoWLHUlnO3W3ZP0UNabt9fJ3h8=;
+        b=E5XILfzwlKSpleqjIAaDER9RFU2J5A4UE807b1lZ3JuUe5kqC+vEUoWlPwRhOJkOci
+         80Dx6gL0tSqz3fdjvvHsFqkW7ggZbVKzcFKiBnLcN4WgVWvTDrtxP9yMGxN5Cjsp8gdq
+         Hp87CJLnOfvBbCQWrOmji3O1zw3P2oNplXn6K6xLgDTZesc0zdnmiN2lhgvIIgcQ9Zjd
+         j7OiV92CQishsc0CgMGD+3MXpL7JkGgzG4RLFl57oxJFKqa3Rb/I1hiNWilldcoBfuuw
+         RcNZ0Jb+70+enUdjoKyrkoVhFTna27CeHm1dE7bgqL7Afs9mDUWi9WGKVVbH6fzqA5uy
+         aUsg==
+X-Gm-Message-State: AGi0PubKWd60jg5uSViqeP5WaReoONznj4aXvm7ba37m3phbHL5x8V/K
+        pu0zHpj5eltcEwl81wErwoqhIX/jKe7Ga3APxc+8KmiEZUrsojup9iSLbxQ9Ho4BVrNi6623ZcM
+        UH9wBEPg4oce8zZz3GdMKsqa+
+X-Received: by 2002:a1c:2d95:: with SMTP id t143mr94665wmt.89.1586189518551;
+        Mon, 06 Apr 2020 09:11:58 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLjE0AKqb8ZcOv/GUCOOSlsc953I0NdI5fP5DlPUOgqc+1/GVFHevXh7Iz5CacTkoPH237xgg==
+X-Received: by 2002:a1c:2d95:: with SMTP id t143mr94653wmt.89.1586189518375;
+        Mon, 06 Apr 2020 09:11:58 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
+        by smtp.gmail.com with ESMTPSA id h2sm10991033wrp.50.2020.04.06.09.11.57
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 09:11:57 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 12:11:56 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] virtio: alignment issues
+Message-ID: <20200406161146.130741-1-mst@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <b7b77258-6309-7ed2-489d-337cf273ba1e@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-06.04.2020 18:41, Sowjanya Komatineni пишет:
-> 
-> On 4/5/20 2:11 PM, Dmitry Osipenko wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> 04.04.2020 04:25, Sowjanya Komatineni пишет:
->> ...
->>> +static int tegra_vi_tpg_channels_alloc(struct tegra_vi *vi)
->>> +{
->>> +     struct tegra_vi_channel *chan, *tmp;
->>> +     unsigned int port_num;
->>> +     unsigned int nchannels = vi->soc->vi_max_channels;
->>> +     int ret = 0;
->>> +
->>> +     for (port_num = 0; port_num < nchannels; port_num++) {
->>> +             /*
->>> +              * Do not use devm_kzalloc as memory is freed immediately
->>> +              * when device instance is unbound but application
->>> might still
->>> +              * be holding the device node open. Channel memory
->>> allocated
->>> +              * with kzalloc is freed during video device release
->>> callback.
->>> +              */
->>> +             chan = kzalloc(sizeof(*chan), GFP_KERNEL);
->> Why anyone would want to unbind this driver in practice?
->>
->> I think it should make more sense to set suppress_bind_attrs=true.
-> 
-> From the previous feedback of patch series, we need to support
-> unbind/bind and looks like this driver should also support to built as a
-> module.
+This is an alternative to
+	vhost: force spec specified alignment on types
+which is a bit safer as it does not change UAPI.
+I still think it's best to change the UAPI header as well,
+we can do that as a follow-up cleanup.
 
-If module unloading is also affected, then perhaps you should use
-get/put_device() to not allow freeing the resources until they're still
-in-use.
+Changes from v2:
+	don't change struct name, instead add ifndef
+	so kernel does not see the legacy UAPI version.
 
-I suppose that it should be up to the V4L core to keep the device alive
-while needed, rather than to put the burden to the individual drivers.
+Jason, can you pls ack one of the approaches?
+
+
+Michael S. Tsirkin (2):
+  virtio: stop using legacy struct vring in kernel
+  vhost: force spec specified alignment on types
+
+ drivers/vhost/vhost.h                   |  6 ++--
+ include/linux/virtio_ring.h             | 46 +++++++++++++++++++++++++
+ include/uapi/linux/virtio_ring.h        | 26 ++++++++------
+ tools/virtio/ringtest/virtio_ring_0_9.c |  6 ++--
+ tools/virtio/vringh_test.c              | 20 +++++------
+ 5 files changed, 78 insertions(+), 26 deletions(-)
+
+-- 
+MST
+
