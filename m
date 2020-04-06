@@ -2,106 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E33419F840
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C432319F848
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728793AbgDFOwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:52:41 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:39332 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728734AbgDFOwl (ORCPT
+        id S1728818AbgDFOyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:54:06 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:35159 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728734AbgDFOyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:52:41 -0400
-Received: by mail-yb1-f194.google.com with SMTP id h205so8915576ybg.6;
-        Mon, 06 Apr 2020 07:52:40 -0700 (PDT)
+        Mon, 6 Apr 2020 10:54:04 -0400
+Received: by mail-wr1-f65.google.com with SMTP id g3so15547630wrx.2;
+        Mon, 06 Apr 2020 07:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GM8pmA0bF/BIQEH6kTtZ09PNq4LdZfP9ULe+mMKgM/k=;
+        b=Wc0dTdPx5MzV2wj/LDuBVCbPzkyLdonQvb3lrIvj4TJwsA87LN5LfJHzMqtCrTw1D/
+         V2g/WqPCePWQCHcEPsTi0Lb2mQxvIy8RyqVduiT/Gj381pwBQ/Bs6J5P0GWO4QY+Z5dm
+         08uuIyIdrWdrFrNW4/N0c9xdONxWhfOUqKagC+AVFjN0tvMOgjbFhydFXmfNRFedmO7H
+         NAA0doBBq8GrW/HTXrIzdBSKYC9iHLhjY0opse85oCJJARsNpth4x3uAj2lXRpUI+yTs
+         dhR2uKj3CL33Jnj6l352myIOT2hq3kExa6QlebDqtwZ/j7Jjjltiv9XUdjDGvNxco4hA
+         qczQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t4wjTXsPVYDAF0Rh7pFMNhwtFuty/N2rOqgxDEfZ/Sw=;
-        b=SBhq0q/ZK03IfVa4a6D2mf9RXC2ytcswUYBcuVaz3kuZsif/61gpy1LRRI+zsU6++O
-         fWVrwWYFL0SbAiVsex7wd79xGP9NzMufXbwc9DWj074Pt4NsigrVSrH3gj0tjk8TOJi7
-         iwB6q8g14hF1e0DFdkMKFoS4FIbzSbZFCL0Irn09eu6+beuSgYYkGbzi2GeB0mv7Cybe
-         bYt0oMbKrQOaPokPGCjKGImNAW7m7SWarLy9Snr3MnsldszuNH74KBXIqUbfzLLn4GuP
-         RoFF4GUSMv/5pwjTzaOe8thYd6YgfJ5DK97R8qy7HI+bcnv1r8Rzd9uBfrtMcMbKyX2u
-         gjmg==
-X-Gm-Message-State: AGi0Pub8refGSTXDCBZCcYc49hPN6tCowtQ5SoSgQBmGAGW8gmkEyYhl
-        /upL4vTUb7s91IdkzepOKKxsEzJpQ71Nuzjm+QQ=
-X-Google-Smtp-Source: APiQypI1cMI5XMrDE3mSE6bbYAawc2oBNbpcDCRXHpJDoX3XOsXlC/vfwSZUcgq4MmsZjYrhcfzTbDuI279TT3hvxUQ=
-X-Received: by 2002:a25:aa29:: with SMTP id s38mr34746167ybi.325.1586184759706;
- Mon, 06 Apr 2020 07:52:39 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GM8pmA0bF/BIQEH6kTtZ09PNq4LdZfP9ULe+mMKgM/k=;
+        b=spo+nyIpsskZYqiYtxjQLDrQ54WUXrec44tYj/oDlEBVnZOocRNeyGU05ODN2+r64U
+         Yu1yqgLqr1ZdsD/usGZGpHlm3Jbvjky86GPJLDJ210YMF0cEPO18CDxGZB2WL9/SsnzW
+         Amrg8MFzxA19Lxv2CJ7ZSqKdrDo8NZ+DZ00O3oON/a/36ZOcaSHKsJi1CgKM+g9Y45/X
+         DaIhaVaLwut3viE1udBNE1JBMrfygnrQ8ozuzTS8007aKW4tIAFf2SJ2CpBapu/yGqqG
+         +W2Qe4Ysng4R68pzqipZcYqQGYKQmN2em/pr3UNr5OMA6SFhbWXGqYXGKdVeeF72Pwdk
+         1Iwg==
+X-Gm-Message-State: AGi0PubRkGVkcdwjNvHCjH8ROpXS2Zok/HxhhPE7a85056+7etTYi28u
+        EEROFQ0kR1cOn4ZYefTajQQ=
+X-Google-Smtp-Source: APiQypKxgaH8iLyioXy6Gv7ARI//mo3+aa5lemkjElutG3ckn8wXLDnpoW83ui1IJ5MTkLyiJILfOg==
+X-Received: by 2002:a5d:5001:: with SMTP id e1mr4239089wrt.246.1586184842918;
+        Mon, 06 Apr 2020 07:54:02 -0700 (PDT)
+Received: from meru.fronius.com ([2a01:cb18:832e:5f00:586b:b940:d2f2:e882])
+        by smtp.gmail.com with ESMTPSA id d7sm26382914wrr.77.2020.04.06.07.54.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 07:54:02 -0700 (PDT)
+From:   Mathieu Othacehe <m.othacehe@gmail.com>
+To:     jic23@kernel.org, knaack.h@gmx.de, lars@metafoo.de,
+        pmeerw@pmeerw.net
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mathieu Othacehe <m.othacehe@gmail.com>
+Subject: [PATCH v2 0/4] iio: vcnl: Add interrupts support for VCNL4010/20.
+Date:   Mon,  6 Apr 2020 16:53:52 +0200
+Message-Id: <20200406145356.25883-1-m.othacehe@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <cover.1585917191.git.nicolas.ferre@microchip.com>
- <CAFcVECLkPxN0nk=jr9AxJoV3i1jHBoY4s3yeodHDO2uOZspQPg@mail.gmail.com> <9e2ab6cd-526d-f1b5-4bd0-4a8f80d9dd8f@microchip.com>
-In-Reply-To: <9e2ab6cd-526d-f1b5-4bd0-4a8f80d9dd8f@microchip.com>
-From:   Harini Katakam <harinik@xilinx.com>
-Date:   Mon, 6 Apr 2020 20:22:28 +0530
-Message-ID: <CAFcVECLHkLSa+PaRWyoiqfYBpNNY3to-TSE3sqWPY3hY2chrXg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] net: macb: Wake-on-Lan magic packet fixes
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Harini Katakam <harini.katakam@xilinx.com>,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rafal Ozieblo <rafalo@cadence.com>,
-        Sergio Prado <sergio.prado@e-labworks.com>,
-        antoine.tenart@bootlin.com,
-        Florian Fainelli <f.fainelli@gmail.com>, linux@armlinux.org.uk,
-        Andrew Lunn <andrew@lunn.ch>,
-        Michal Simek <michal.simek@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+Hello,
 
-On Mon, Apr 6, 2020 at 7:56 PM Nicolas Ferre
-<nicolas.ferre@microchip.com> wrote:
->
-> Hi Harini,
->
-> On 03/04/2020 at 15:36, Harini Katakam wrote:
-> > Hi Nicolas,
-> >
-> > On Fri, Apr 3, 2020 at 6:45 PM <nicolas.ferre@microchip.com> wrote:
-> >>
-> >> From: Nicolas Ferre <nicolas.ferre@microchip.com>
-<snip>
-> >
-> > I know that the IP versions from r1p10 have a mechanism to disable DMA queues
-> > (bit 0 of the queue pointer register) which is cleaner. But for
-> > earlier IP versions,
->
-> Which IP name are you referring to? GEM, GEM-GXL? What is the value of
-> register 0xFC then?
+Thanks for reviewing Jonathan! I did split the original patch into four
+parts. I should have done it in the first place, sorry about that.
 
-GEM_GXL
+I did drop the ALS data from the buffer, as they are not really useful
+anyway. I also used iio_device_claim_direct_mode as requested. But making sure
+buffer and event capture are not done simultaneously is quite tricky as you
+mentionned.
 
->
-> > I remember discussing with Cadence and there is no way to keep RX
-> > enabled for WOL
-> > with RX DMA disabled. I'm afraid that means there should be a bare
-> > minimum memory
-> > region with a dummy descriptor if you do not want to process the
-> > packets. That memory
-> > should also be accessible while the rest of the system is powered
-> > down. Please let me
->
-> Very interesting information Harini, thanks a lot for having shared it.
->
-> My GEM IP has 0xFC at value: 0x00020203. But I don't see a way to keep
-> DMA queues disabled by using the famous bit that you mention above.
+Thanks,
 
-Yeah, it is not possible in this revision. This is part of the GEM_GXL r1p10 or
-higher I think. I can't be sure of all the possible variations of the
-revision reg
-because the scheme changed at some point but it looks like this:
-0x00070100
-bits 27:16 (module_ID), bits16:0 (module_revision); they could increase.
+Mathieu
 
-Regards,
-Harini
+Changes from v1:
+* Split into four different patches.
+* Use iio_device_claim_direct_mode to protect
+raw access from buffer capture.
+* Requesting a sampling frequency above the limit is no longer possible.
+* Inline read_isr and write_isr functions.
+* Remove IIO_LIGHT data from buffer capture.
+* Make sure postenable and predisable functions respect the common form.
+* Do not set the trigger by default.
+* Remove the devm_iio_triggered_buffer_setup top half.
+
+Mathieu Othacehe (4):
+  iio: vcnl4000: Factorize data reading and writing.
+  iio: vcnl4000: Add event support for VCNL4010/20.
+  iio: vcnl4000: Add sampling frequency support for VCNL4010/20.
+  iio: vcnl4000: Add buffer support for VCNL4010/20.
+
+ drivers/iio/light/Kconfig    |   2 +
+ drivers/iio/light/vcnl4000.c | 856 +++++++++++++++++++++++++++++++++--
+ 2 files changed, 813 insertions(+), 45 deletions(-)
+
+-- 
+2.26.0
+
