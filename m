@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C3219F2C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E4F319F2D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgDFJjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:39:52 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:38560 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726675AbgDFJjw (ORCPT
+        id S1726808AbgDFJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:45:15 -0400
+Received: from mx07-00178001.pphosted.com ([62.209.51.94]:44623 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726722AbgDFJpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:39:52 -0400
-Received: by mail-pg1-f195.google.com with SMTP id m17so1266254pgj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 02:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=UphhKKOKLoodwVftKKdXY3z6VPYBVP/K0NIVc4HqEz0=;
-        b=lUin6sw0XNT0KJ8AK2i8H7TlaDQXkoCsJVR85w7MC2UsYwyQ69rTBN/0H5cFJq3tsY
-         EI3njv470YcI66Z+laB3Hzun01P/u51mCCOzA5MdYpCSqrrFU/sp33el04XikkYxtYmp
-         wnQldO6+6yd0jvMk44MDR/VF1Ta+TCgjmu91F+FjjWhJs8vY2Jr7sXEDvGrLOA974lLo
-         nwOpHqxoJh4kqnPZH80LPFSebZIxoWwLO5uAeFUilT5t+3s0anVt2mliNeDT7mNfEQ0u
-         AgCCmqrrMCVs04l8m23JwIfyhbVfC0Lhzxyomkg6qeK7tURpN0Abie+EwlVXLeJuenEV
-         fNEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UphhKKOKLoodwVftKKdXY3z6VPYBVP/K0NIVc4HqEz0=;
-        b=D0UqKdNbHefPPK1opCf5BKK1EcZzyNTlxYTH6QgU7Hctm5+OEJFuUF6iwVwRnSEBWZ
-         X4fs1Fznw2zFEpbHTc9yKcCZgyAMbUneb/o03F6E8m3OlWvE5L4hr03C+vvtaaFZ/mcm
-         PNmKSaWk1Mei0gIRzhBDwhM0FtFxpQz9iS2G+TY4yF+0ajRYYq7ysaildOaDkbqWyTGd
-         9q/+i22O1HQOqJExuLhyjosgkHeN6SYHnbLJn9lrIERuw6d/bLNIp8qZWB6/xPGugPoL
-         P9w1CF4MQgsvNwMDkHkC2DfhK2xQPbz9sFSgMxdZf8W+kkDhrHYeImDijZ0RRwBf1xeP
-         oNvA==
-X-Gm-Message-State: AGi0PuZTU4DR0twjBxfCbNTyzO2fGHgq0jCBhDQcA9y22ESH3RtNXOfs
-        3EzQT0TsUMoEtIW9bn8glZEy7ihv
-X-Google-Smtp-Source: APiQypLJ5Y3misFwUfgYpGklC18wiNMPhOZ1LWHezVl5ddP3cePBI+Oo7rsxkPHJGRmbCdra+q0o+Q==
-X-Received: by 2002:a63:2057:: with SMTP id r23mr20805535pgm.232.1586165990812;
-        Mon, 06 Apr 2020 02:39:50 -0700 (PDT)
-Received: from localhost (n112120135125.netvigator.com. [112.120.135.125])
-        by smtp.gmail.com with ESMTPSA id e7sm11248239pfm.3.2020.04.06.02.39.49
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 06 Apr 2020 02:39:50 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
-        oohall@gmail.com
-Cc:     tglx@linutronix.de, Markus.Elfring@web.de, christophe.leroy@c-s.fr,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH v4] powerpc/powernv: add NULL check after kzalloc in opal_add_one_export
-Date:   Mon,  6 Apr 2020 17:39:44 +0800
-Message-Id: <20200406093944.4174-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 6 Apr 2020 05:45:15 -0400
+Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0369gowF031596;
+        Mon, 6 Apr 2020 11:44:18 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=STMicroelectronics;
+ bh=2a3UrR0vvKbfCVyVukYQyK/7BqGP/1N0NHAtHA/piFE=;
+ b=PUSP/zZS8e/q90fhP5DzpLOfRx8kh8mju3tyakiTGOgw4uFUJtWZJBdjVLPSKMIcZTdV
+ KHjZEbpwdD96F3obw1oICbJgV+PkGT7HkP5iTSZbdNoZEUJDSjZnfYd7veE+D+iNZRR8
+ uKuwFooa+ZRuhf57Co/midAgESknOjMaiX2zCcxrzKR4k45ngo+CR24gn3T6KIQHcCJq
+ tXfsrjdFWnZc+Oq4lqZjAGUe3qtOYCuW7vWyE4uY/1i4uy2pJ+XA69nkbMdN0nYE8+6B
+ N7K0bSlzNNYr/ATG5C1mrs84dKRgHb+en12wupcx6D9KOZ163GrHTSjTQ8xAsvs/gYcy qg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 306g0w13j5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Apr 2020 11:44:18 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id B83CC100034;
+        Mon,  6 Apr 2020 11:44:13 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7DDD92B1868;
+        Mon,  6 Apr 2020 11:44:13 +0200 (CEST)
+Received: from SFHDAG6NODE2.st.com (10.75.127.17) by SFHDAG3NODE2.st.com
+ (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1347.2; Mon, 6 Apr
+ 2020 11:44:12 +0200
+Received: from SFHDAG6NODE2.st.com ([fe80::a56f:c186:bab7:13d6]) by
+ SFHDAG6NODE2.st.com ([fe80::a56f:c186:bab7:13d6%20]) with mapi id
+ 15.00.1347.000; Mon, 6 Apr 2020 11:44:13 +0200
+From:   Olivier MOYSAN <olivier.moysan@st.com>
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+CC:     "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ASoC: stm32: sai: Add missing cleanup
+Thread-Topic: [PATCH] ASoC: stm32: sai: Add missing cleanup
+Thread-Index: AQHWC2DSIRg6JhgxIEC65JTRjgXANKhrt4mA
+Date:   Mon, 6 Apr 2020 09:44:13 +0000
+Message-ID: <1df96e7b-89fa-7822-1a57-b9a87e8388c0@st.com>
+References: <1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr>
+In-Reply-To: <1586099028-5104-1-git-send-email-Julia.Lawall@inria.fr>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.51]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A296B775786CD642978E621365BD0C9A@st.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-06_05:2020-04-03,2020-04-06 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here needs a NULL check as kzalloc may fail returning NULL.
-
-Issue was found by coccinelle.
-Generated by: scripts/coccinelle/null/kmerr.cocci
-
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
-
----
-
-v3->v4:
-	Added the information about coccinelle script.
-	Added change log.
-	Added Oliver's Reviewed-by.
-v2->v3:
-	Removed redundant assignment to 'attr' and 'name'.
-v1->v2:
-	Just return -ENOMEM if attr is NULL.
----
- arch/powerpc/platforms/powernv/opal.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/platforms/powernv/opal.c b/arch/powerpc/platforms/powernv/opal.c
-index 2b3dfd0b6cdd..908d749bcef5 100644
---- a/arch/powerpc/platforms/powernv/opal.c
-+++ b/arch/powerpc/platforms/powernv/opal.c
-@@ -801,16 +801,19 @@ static ssize_t export_attr_read(struct file *fp, struct kobject *kobj,
- static int opal_add_one_export(struct kobject *parent, const char *export_name,
- 			       struct device_node *np, const char *prop_name)
- {
--	struct bin_attribute *attr = NULL;
--	const char *name = NULL;
-+	struct bin_attribute *attr;
-+	const char *name;
- 	u64 vals[2];
- 	int rc;
- 
- 	rc = of_property_read_u64_array(np, prop_name, &vals[0], 2);
- 	if (rc)
--		goto out;
-+		return rc;
- 
- 	attr = kzalloc(sizeof(*attr), GFP_KERNEL);
-+	if (!attr)
-+		return -ENOMEM;
-+
- 	name = kstrdup(export_name, GFP_KERNEL);
- 	if (!name) {
- 		rc = -ENOMEM;
--- 
-2.17.1
-
+DQpPbiA0LzUvMjAgNTowMyBQTSwgSnVsaWEgTGF3YWxsIHdyb3RlOg0KPiBUaGUgY29tbWl0IDBk
+NmRlZmM3ZTBlNCAoIkFTb0M6IHN0bTMyOiBzYWk6IG1hbmFnZSByZWJpbmQgaXNzdWUiKQ0KPiBj
+b252ZXJ0cyBzb21lIGZ1bmN0aW9uIGNhbGxzIHRvIHRoZWlyIG5vbi1kZXZtIGVxdWl2YWxlbnRz
+LiAgVGhlDQo+IGFwcHJvcHJpYXRlIGNsZWFudXAgY29kZSB3YXMgYWRkZWQgdG8gdGhlIHJlbW92
+ZSBmdW5jdGlvbiwgYnV0IG5vdA0KPiB0byB0aGUgcHJvYmUgZnVuY3Rpb24uICBBZGQgYSBjYWxs
+IHRvIHNuZF9kbWFlbmdpbmVfcGNtX3VucmVnaXN0ZXINCj4gdG8gY29tcGVuc2F0ZSBmb3IgdGhl
+IGNhbGwgdG8gc25kX2RtYWVuZ2luZV9wY21fcmVnaXN0ZXIgaW4gY2FzZQ0KPiBvZiBzdWJzZXF1
+ZW50IGZhaWx1cmUuDQo+DQo+IEZpeGVzOiBjb21taXQgMGQ2ZGVmYzdlMGU0ICgiQVNvQzogc3Rt
+MzI6IHNhaTogbWFuYWdlIHJlYmluZCBpc3N1ZSIpDQo+IFNpZ25lZC1vZmYtYnk6IEp1bGlhIExh
+d2FsbCA8SnVsaWEuTGF3YWxsQGlucmlhLmZyPg0KPg0KPiAtLS0NCj4NCj4gTm90IHRlc3RlZC4N
+Cj4NCj4gICBzb3VuZC9zb2Mvc3RtL3N0bTMyX3NhaV9zdWIuYyB8ICAgIDQgKysrLQ0KPiAgIDEg
+ZmlsZSBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCkhpIEp1bGlhLA0K
+VGhhbmtzIGZvciB0aGUgcGF0Y2guDQoNCkFja2VkLWJ5OiBPbGl2aWVyIE1veXNhbiA8b2xpdmll
+ci5tb3lzYW5Ac3QuY29tPg0KPg0KPiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3N0bS9zdG0zMl9z
+YWlfc3ViLmMgYi9zb3VuZC9zb2Mvc3RtL3N0bTMyX3NhaV9zdWIuYw0KPiBpbmRleCAyYmQyODBj
+Li4wZDBjOWFmIDEwMDY0NA0KPiAtLS0gYS9zb3VuZC9zb2Mvc3RtL3N0bTMyX3NhaV9zdWIuYw0K
+PiArKysgYi9zb3VuZC9zb2Mvc3RtL3N0bTMyX3NhaV9zdWIuYw0KPiBAQCAtMTU1Niw4ICsxNTU2
+LDEwIEBAIHN0YXRpYyBpbnQgc3RtMzJfc2FpX3N1Yl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2
+aWNlICpwZGV2KQ0KPiAgIA0KPiAgIAlyZXQgPSBzbmRfc29jX3JlZ2lzdGVyX2NvbXBvbmVudCgm
+cGRldi0+ZGV2LCAmc3RtMzJfY29tcG9uZW50LA0KPiAgIAkJCQkJICZzYWktPmNwdV9kYWlfZHJ2
+LCAxKTsNCj4gLQlpZiAocmV0KQ0KPiArCWlmIChyZXQpIHsNCj4gKwkJc25kX2RtYWVuZ2luZV9w
+Y21fdW5yZWdpc3RlcigmcGRldi0+ZGV2KTsNCj4gICAJCXJldHVybiByZXQ7DQo+ICsJfQ0KPiAg
+IA0KPiAgIAlpZiAoU1RNX1NBSV9QUk9UT0NPTF9JU19TUERJRihzYWkpKQ0KPiAgIAkJY29uZiA9
+ICZzdG0zMl9zYWlfcGNtX2NvbmZpZ19zcGRpZjsNCj4NCg==
