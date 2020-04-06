@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C09119F5F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F69319F5F8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgDFMl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 08:41:29 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:34944 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728005AbgDFMl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 08:41:29 -0400
-Received: from zn.tnic (p200300EC2F04F600C571FE02886A814C.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:f600:c571:fe02:886a:814c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 89F001EC0C97;
-        Mon,  6 Apr 2020 14:41:27 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1586176887;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=PbaBekgCD+MeWyYk1vRkkQPU2yAt2/j+9avcpCI88LE=;
-        b=UEY77Gv5ArFCMO1FwtAfGHdXL/PbVEHaPP5I4lJUZvrVz9+QQCPvHfTkWcEzm503GpFgue
-        piAeGh2vlK1frRBdUfv6oqzgi1QgaCwpAEO+RIkfrXF6K6j6NVV4reEqzxS58IswwexQrJ
-        LY4CL2BMrwv2smovKGngto6QUgLDOtU=
-Date:   Mon, 6 Apr 2020 14:41:24 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH 18/70] x86/boot/compressed/64: Add stage1 #VC handler
-Message-ID: <20200406124123.GE2520@zn.tnic>
-References: <20200319091407.1481-1-joro@8bytes.org>
- <20200319091407.1481-19-joro@8bytes.org>
+        id S1728071AbgDFMoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 08:44:21 -0400
+Received: from s3.sipsolutions.net ([144.76.43.62]:57804 "EHLO
+        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727993AbgDFMoV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 08:44:21 -0400
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1jLR6j-009kcZ-Dx; Mon, 06 Apr 2020 14:44:05 +0200
+Message-ID: <f2a393a2f01c93776446c83e345a102a780cfe88.camel@sipsolutions.net>
+Subject: Re: [PATCH] mac80211: fix race in ieee80211_register_hw()
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Sumit Garg <sumit.garg@linaro.org>, linux-wireless@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, matthias.schoepfer@ithinx.io,
+        Philipp.Berg@liebherr.com, Michael.Weitner@liebherr.com,
+        daniel.thompson@linaro.org, loic.poulain@linaro.org,
+        stable@vger.kernel.org
+Date:   Mon, 06 Apr 2020 14:44:02 +0200
+In-Reply-To: <1586175677-3061-1-git-send-email-sumit.garg@linaro.org> (sfid-20200406_142251_569735_E1B08414)
+References: <1586175677-3061-1-git-send-email-sumit.garg@linaro.org>
+         (sfid-20200406_142251_569735_E1B08414)
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200319091407.1481-19-joro@8bytes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 10:13:15AM +0100, Joerg Roedel wrote:
-> diff --git a/arch/x86/boot/compressed/idt_handlers_64.S b/arch/x86/boot/compressed/idt_handlers_64.S
-> index bfb3fc5aa144..67ddafab2943 100644
-> --- a/arch/x86/boot/compressed/idt_handlers_64.S
-> +++ b/arch/x86/boot/compressed/idt_handlers_64.S
-> @@ -75,3 +75,7 @@ SYM_FUNC_END(\name)
->  	.code64
+On Mon, 2020-04-06 at 17:51 +0530, Sumit Garg wrote:
+> A race condition leading to a kernel crash is observed during invocation
+> of ieee80211_register_hw() on a dragonboard410c device having wcn36xx
+> driver built as a loadable module along with a wifi manager in user-space
+> waiting for a wifi device (wlanX) to be active.
+> 
+> Sequence diagram for a particular kernel crash scenario:
+> 
+>     user-space  ieee80211_register_hw()  RX IRQ
+>     +++++++++++++++++++++++++++++++++++++++++++++
+>        |                    |             |
+>        |<---wlan0---wiphy_register()      |
+>        |----start wlan0---->|             |
+>        |                    |<---IRQ---(RX packet)
+>        |              Kernel crash        |
+>        |              due to unallocated  |
+>        |              workqueue.          |
+>        |                    |             |
+>        |       alloc_ordered_workqueue()  |
+>        |                    |             |
+>        |              Misc wiphy init.    |
+>        |                    |             |
+>        |            ieee80211_if_add()    |
+>        |                    |             |
+> 
+> As evident from above sequence diagram, this race condition isn't specific
+> to a particular wifi driver but rather the initialization sequence in
+> ieee80211_register_hw() needs to be fixed. 
+
+Indeed, oops.
+
+> So re-order the initialization
+> sequence and the updated sequence diagram would look like:
+> 
+>     user-space  ieee80211_register_hw()  RX IRQ
+>     +++++++++++++++++++++++++++++++++++++++++++++
+>        |                    |             |
+>        |       alloc_ordered_workqueue()  |
+>        |                    |             |
+>        |              Misc wiphy init.    |
+>        |                    |             |
+>        |<---wlan0---wiphy_register()      |
+>        |----start wlan0---->|             |
+>        |                    |<---IRQ---(RX packet)
+>        |                    |             |
+>        |            ieee80211_if_add()    |
+>        |                    |             |
+
+Makes sense.
+
+> @@ -1254,6 +1250,14 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+>  		local->sband_allocated |= BIT(band);
+>  	}
 >  
->  EXCEPTION_HANDLER	boot_pf_handler do_boot_page_fault error_code=1
+> +	rtnl_unlock();
 > +
-> +#ifdef CONFIG_AMD_MEM_ENCRYPT
-> +EXCEPTION_HANDLER	boot_stage1_vc_handler vc_no_ghcb_handler error_code=1
+> +	result = wiphy_register(local->hw.wiphy);
+> +	if (result < 0)
+> +		goto fail_wiphy_register;
+> +
+> +	rtnl_lock();
 
-Like the others
-			boot_stage1_vc	do_boot_stage1_vc ...
+I'm a bit worried about this unlock/relock here though.
 
--- 
-Regards/Gruss,
-    Boris.
+I think we only need the RTNL for the call to
+ieee80211_init_rate_ctrl_alg() and then later ieee80211_if_add(), so
+perhaps we can move that a little closer?
 
-https://people.kernel.org/tglx/notes-about-netiquette
+All the stuff between is really just setting up local stuff, so doesn't
+really need to worry?
+
+johannes
+
+
