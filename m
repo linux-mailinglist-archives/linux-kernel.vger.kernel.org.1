@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 877E519FC79
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE7419FC87
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbgDFSGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 14:06:22 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36978 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbgDFSGU (ORCPT
+        id S1726638AbgDFSJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 14:09:09 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:38002 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgDFSJI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 14:06:20 -0400
-Received: by mail-qk1-f196.google.com with SMTP id 130so2050761qke.4;
-        Mon, 06 Apr 2020 11:06:18 -0700 (PDT)
+        Mon, 6 Apr 2020 14:09:08 -0400
+Received: by mail-yb1-f194.google.com with SMTP id 204so347425ybw.5;
+        Mon, 06 Apr 2020 11:09:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YerZdcxcQmsmPmbc7x3l9FNg9tmvbjAIdH163TSG1LM=;
+        b=C3hh1cS14KFIfA2sbb6OW61jKT6Zea0KasgKyB/5198Mh0GTyceREUQ3TXh1fJoy60
+         aqmMe+gR+t3Dt0EER1JxbS4MdKJGWi4dVaX/TUL+ye28lSgk1mgGVT9boLVvLMSx2L8y
+         Vg7uqev+kgFvU46OX16LWH2RWg9DCSCYtNvspZAVTxHu6/o2p96pmo9xBryiQ9f8cnBi
+         cNdRV359X/j2lCSFrbjMr4OIK3J6oEDoCk7sELPLvjv+2CrYfBsdar1rPFsiIknc5yVt
+         mvXiO11tk1AIye2stB2lE/Pvst7v56WhBZdW7fsmhBcbDlhew1SqVZcwOZBjlSuVaRtK
+         z1pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Cvg3whVQVAqqlVvqOZl3uLW5HgEWpclGCuhQ2YcgjRY=;
-        b=ZXORiSjktGzng5GOwaaomOc+sqqFWx3e95yZ5ZcxQ8xEU+CIcOtf6AGjK2TtGDSKO4
-         k4Q9Y+3a1VRynxa+Hb1CoeMz5Tx94tm/ZZcobm14p/2DYT93nctSPd+bfPtDb8stDhcK
-         qJeuYijVYLi6azpj5Js1nnz7EDuLrrwIO3zEv1t1S16ck2wzUDDws6IX8b3cfUhJZWdj
-         C73CWZY5McHccdJTl7F2ZuMPbUfxvaJIveihbEC6zskb13V9llIQm9ghrPGVn/Pz10Am
-         ZZI1W9Ns+TVt3Ixk4SZDsCI3Xi5zSo1cQs7CVe6okBNz8nHaNrhkaetLqzTW8nkSeG9x
-         iKmw==
-X-Gm-Message-State: AGi0PuYSbARN1DLc2C8VPOdvNhitKakbM2PYiMzoFuGcruEAB2uSvBUf
-        3d8FH4eCUUeUsridqEFcNhA=
-X-Google-Smtp-Source: APiQypLuA1RvXa3qTFL/Z2cWoE6mihW4wAocrADNP0Wws3ruz0vwV/5ow4uaekkSs2FoM1c2ZDPGMA==
-X-Received: by 2002:a37:9c8b:: with SMTP id f133mr23159866qke.482.1586196377975;
-        Mon, 06 Apr 2020 11:06:17 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id a136sm10548473qkc.75.2020.04.06.11.06.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 11:06:17 -0700 (PDT)
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@alien8.de>, Sergey Shatunov <me@prok.pw>,
-        hpa@zytor.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
-        initramfs@vger.kernel.org,
-        Donovan Tremura <neurognostic@protonmail.ch>,
-        Harald Hoyer <harald@hoyer.xyz>
-Subject: [PATCH 2/2] efi/x86: Always relocate the kernel for EFI handover entry
-Date:   Mon,  6 Apr 2020 14:06:14 -0400
-Message-Id: <20200406180614.429454-2-nivedita@alum.mit.edu>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200406180614.429454-1-nivedita@alum.mit.edu>
-References: <CAMj1kXEUkJ1XJ9OTsijeq8tNNYC00bXqEV44OMtX5ugo9WoLKA@mail.gmail.com>
- <20200406180614.429454-1-nivedita@alum.mit.edu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YerZdcxcQmsmPmbc7x3l9FNg9tmvbjAIdH163TSG1LM=;
+        b=Gc6UuhEVh82b4GgcaCEFs2Q+EG+rBNz8fxCaJejz06aYMI33IOgVxqASNAyh9jtGKX
+         NqOlse9IzOL879sledZqgRv2FdWKvhJXYHyg+7+KK8azzi+da8/p3pBzwqwogSU1aykM
+         i1KDh1pZsZ7NUKa4Gwn917DXvk0yHqudk+RAuogW3qAzB/Eil6i6L6HZQmqMQEi4udwm
+         3KieRfKPo3woFQvBbwMeuU+s+OxFIPOQOfa7RlmCYiTc1c3lWnDnh0QfkyP2513nHZSL
+         vqKiy6cCdtIOZ9G0zwsVHNSUeO05/Hvd+wJgnJ4h6b0g8a95EwYPkseMtLXtigl92Cnt
+         8FwA==
+X-Gm-Message-State: AGi0PuZES+9N8uB01LEkmjl0M9uNjT0rHjpSyPPmDccAViSJSG9an2wY
+        k2AO9ltIspqCHOTXt6h+tWNK4krnSol2Vvaytuc=
+X-Google-Smtp-Source: APiQypJNh0gfrRG+aUIvtwyV5pyFGfJIwXgdUOU3PFRpUCcp7aUGELXyXGkqfsUeqnbL0YixSStkauVyExmNu0ZwAhk=
+X-Received: by 2002:a25:bb0b:: with SMTP id z11mr35630837ybg.400.1586196545618;
+ Mon, 06 Apr 2020 11:09:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1586175677-3061-1-git-send-email-sumit.garg@linaro.org>
+ <87ftdgokao.fsf@tynnyri.adurom.net> <1e352e2130e19aec5aa5fc42db397ad50bb4ad05.camel@sipsolutions.net>
+ <87r1x0zsgk.fsf@kamboji.qca.qualcomm.com> <a7e3e8cceff1301f5de5fb2c9aac62b372922b3e.camel@sipsolutions.net>
+ <87imiczrwm.fsf@kamboji.qca.qualcomm.com> <ee168acb768d87776db2be4e978616f9187908d0.camel@sipsolutions.net>
+ <CAFA6WYOjU_iDyAn5PMGe=usg-2sPtupSQEYwcomUcHZBAPnURA@mail.gmail.com>
+ <87v9mcycbf.fsf@kamboji.qca.qualcomm.com> <CABPxzYKs3nj0AUX4L-j87Db8v3WnM4uGif9nRTGgx1m2HNN8Rg@mail.gmail.com>
+ <35cadbaff1239378c955014f9ad491bc68dda028.camel@sipsolutions.net>
+ <CABPxzY++YMBPTV4quAkYvEAMfULjMXLkVfNzwocwubno5HO2Bw@mail.gmail.com> <5575dfe84aa745a3c2a61e240c3d150dc8d9446f.camel@sipsolutions.net>
+In-Reply-To: <5575dfe84aa745a3c2a61e240c3d150dc8d9446f.camel@sipsolutions.net>
+From:   Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date:   Mon, 6 Apr 2020 23:38:54 +0530
+Message-ID: <CABPxzYJHjaLH+ozyFZx1hwXrNxdHgJaardk-kn7d72y7RC-=hw@mail.gmail.com>
+Subject: Re: [PATCH] mac80211: fix race in ieee80211_register_hw()
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Matthias=2DPeter_Sch=C3=B6pfer?= 
+        <matthias.schoepfer@ithinx.io>,
+        "Berg Philipp (HAU-EDS)" <Philipp.Berg@liebherr.com>,
+        "Weitner Michael (HAU-EDS)" <Michael.Weitner@liebherr.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit
+On Mon, Apr 6, 2020 at 8:36 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> On Mon, 2020-04-06 at 19:55 +0530, Krishna Chaitanya wrote:
+>
+> > > iw phy0 interface add wlan0 type station
+> > > ip link set wlan0 up
+> > Ah okay, got it, thanks. Very narrow window though :-) as the
+> > alloc_ordered_workqueue
+> > doesn't need RTNL and there is a long way to go to do if_add() from
+> > user and setup
+> > the driver for interrupts.
+>
+> True, I do wonder how this is hit. Maybe something with no preempt and a
+> uevent triggering things?
+Probably, it might be specific to the dragonboard410c configuration
 
-  d5cdf4cfeac9 ("efi/x86: Don't relocate the kernel unless necessary")
+> > Again depends on the driver though, it
+> > should properly handle
+> > pending ieee80211_register_hw() with start().
 
-tries to avoid relocating the kernel in the EFI stub as far as possible.
-
-However, when systemd-boot is used to boot a unified kernel image [1],
-the image is constructed by embedding the bzImage as a .linux section in
-a PE executable that contains a small stub loader from systemd that will
-call the EFI stub handover entry, together with additional sections and
-potentially an initrd. When this image is constructed, by for example
-dracut, the initrd is placed after the bzImage without ensuring that at
-least init_size bytes are available for the bzImage. If the kernel is
-not relocated by the EFI stub, this could result in the compressed
-kernel's startup code in head_{32,64}.S overwriting the initrd.
-
-To prevent this, unconditionally relocate the kernel if the EFI stub was
-entered via the handover entry point.
-
-[1] https://systemd.io/BOOT_LOADER_SPECIFICATION/#type-2-efi-unified-kernel-images
-
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Reported-by: Sergey Shatunov <me@prok.pw>
-Fixes: d5cdf4cfeac9 ("efi/x86: Don't relocate the kernel unless necessary")
----
- drivers/firmware/efi/libstub/x86-stub.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index e7af6d2eddbf..7583e908852f 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -742,8 +742,15 @@ unsigned long efi_main(efi_handle_t handle,
- 	 * now use KERNEL_IMAGE_SIZE, which will be 512MiB, the same as what
- 	 * KASLR uses.
- 	 *
--	 * Also relocate it if image_offset is zero, i.e. we weren't loaded by
--	 * LoadImage, but we are not aligned correctly.
-+	 * Also relocate it if image_offset is zero, i.e. the kernel wasn't
-+	 * loaded by LoadImage, but rather by a bootloader that called the
-+	 * handover entry. The reason we must always relocate in this case is
-+	 * to handle the case of systemd-boot booting a unified kernel image,
-+	 * which is a PE executable that contains the bzImage and an initrd as
-+	 * COFF sections. The initrd section is placed after the bzImage
-+	 * without ensuring that there are at least init_size bytes available
-+	 * for the bzImage, and thus the compressed kernel's startup code may
-+	 * overwrite the initrd unless it is moved out of the way.
- 	 */
- 
- 	buffer_start = ALIGN(bzimage_addr - image_offset,
-@@ -753,8 +760,7 @@ unsigned long efi_main(efi_handle_t handle,
- 	if ((buffer_start < LOAD_PHYSICAL_ADDR)				     ||
- 	    (IS_ENABLED(CONFIG_X86_32) && buffer_end > KERNEL_IMAGE_SIZE)    ||
- 	    (IS_ENABLED(CONFIG_X86_64) && buffer_end > MAXMEM_X86_64_4LEVEL) ||
--	    (image_offset == 0 && !IS_ALIGNED(bzimage_addr,
--					      hdr->kernel_alignment))) {
-+	    (image_offset == 0)) {
- 		status = efi_relocate_kernel(&bzimage_addr,
- 					     hdr->init_size, hdr->init_size,
- 					     hdr->pref_address,
--- 
-2.24.1
-
+> It could, but it'd be really tricky. Much better to fix mac80211.
+Sure, anyways it is a good change.
