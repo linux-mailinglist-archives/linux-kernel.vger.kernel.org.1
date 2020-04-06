@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DFA519EF2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 03:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EBB19EF2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 03:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726543AbgDFBnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 21:43:16 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:34754 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726373AbgDFBnP (ORCPT
+        id S1726530AbgDFBmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 21:42:40 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:60240 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726373AbgDFBmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 21:43:15 -0400
-Received: by mail-pg1-f196.google.com with SMTP id l14so6813450pgb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 18:43:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :user-agent:message-id:content-transfer-encoding;
-        bh=SlwKZhggJtXqNs7Yrk3WMQWVP3iUpdR4maR08x43Blc=;
-        b=GMCuX59Wzs8NCxiqc2qUvtMtD+1VUPi9wR9ZGS4RyrTfZ5AVkbpnW/NFGBJaIlSc75
-         g/tKe9kLNx98ZcJ2EspzedBVpVQkpoGqols/azIRWBBqFRHI5uSZ+vFT8Vcm1kO/tiCa
-         5XflQwEhsGgED444d1iMaRH7WJc3uvC6CEQlqsdP5YpD8FuEfujI2YnWwXGIBDjgaZWP
-         G/EBZUo0DolixLtDsW/PbvLjJy5IpALpB0dghhKRtZrwB4I2LbjY2BoTRJcSh+QN9Guj
-         lUokaIm6MOZYieb+HprdmtLswu5oSzOO7HswqJpCuxPdsLOSwKEe7v9IFtY1HjwSPDst
-         jgUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:user-agent:message-id:content-transfer-encoding;
-        bh=SlwKZhggJtXqNs7Yrk3WMQWVP3iUpdR4maR08x43Blc=;
-        b=S/hlpVcZU0hy/QRPNocJddrnB2jNKxSKtP6LxkZVowW9sdO9ed7DU6ochTMHgfxAYw
-         VaY4lF0Wy9w2aTTe8msVBT0W2rT+pTUvIKZcbq/L6/N/836f3iySmPiClqnuzIpEP9Bc
-         /Py1FGhqKfwks2sAQVun00S0ozJ0gjuEIp97woLaXceuAkFahiyRanhOf0KTJc/Tr1Z7
-         Le7aPKIVc5PJCbmV0i5Zjpj8jU5dtDM1+kbtAR8Qjx3iYToMYylKmLMFZVh7hlOoWk3/
-         AjuW2s5tNhDU6xuOc7xYjIbCNd071zf6WHUaeZjSI0nXsltCLhB0Srnad3xoDHF7NJz6
-         ySjQ==
-X-Gm-Message-State: AGi0Pubi+zfUR+kvR5QbHH+OOMKiKZhs6f/fRUEjoTCd1lz1c2dWsRx+
-        swy2AcIc9O4X41Fsm3j3Q5E=
-X-Google-Smtp-Source: APiQypK787EqE6ngINs5TXiIV+FU46w5wMuCQfPQ5zgBdP6BwTRdtKCUfE+c/fI77Ac1O+R+BpZnXA==
-X-Received: by 2002:a63:f502:: with SMTP id w2mr19256994pgh.423.1586137394697;
-        Sun, 05 Apr 2020 18:43:14 -0700 (PDT)
-Received: from localhost (60-241-117-97.tpgi.com.au. [60.241.117.97])
-        by smtp.gmail.com with ESMTPSA id j96sm10611992pje.32.2020.04.05.18.43.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Apr 2020 18:43:14 -0700 (PDT)
-Date:   Mon, 06 Apr 2020 11:42:06 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [RFC PATCH v2 05/13] powerpc/syscall: Rename syscall_64.c into
- syscall.c
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <029e1064b1ad738785718221ea468c9cfc282457.1586108649.git.christophe.leroy@c-s.fr>
-        <cacbc62ded444e26e15ca67e0ec91b05b7de6459.1586108649.git.christophe.leroy@c-s.fr>
-In-Reply-To: <cacbc62ded444e26e15ca67e0ec91b05b7de6459.1586108649.git.christophe.leroy@c-s.fr>
+        Sun, 5 Apr 2020 21:42:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=SzZxHbFXKtIbZEOWKwld3suC8XfmTE5GoyAg/oZEh78=; b=BkCAi5AA9gQyPYJOqYejompNAh
+        Dtin1jsEJuaxRAPuDlF15hMbs3Aov9XfosH7/E41oo2NzB332PpkCDHb2iT/wyewYmCOwR3nWZY0G
+        U0Mr40uP1lBx5jd2/Lq9/3KsMOuiVOGaDuZ5gMUvW2XQ27St96ovNJa80ryuWwK8KBUYBB3u7eLv1
+        ZeN1E8/CcRgkG7WH9/7/WwK9vKTjaV41wAst/1mKSMWZ8Wz3DRc5cWDzl1YjrZjwACDMxm3xkpNYz
+        0OmM+EbwQSF3LY9ATok1o21+kwepOWQvxg1p+uoG4LiFIF4kyd2Z64+JBJBQ4/qoECcVoAZTv+rp5
+        e0h1/3nA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLGmZ-0001oM-4m; Mon, 06 Apr 2020 01:42:35 +0000
+Subject: Re: [PATCH v2 net] skbuff.h: Improve the checksum related comments
+To:     decui@microsoft.com, willy@infradead.org, netdev@vger.kernel.org,
+        davem@davemloft.net, willemb@google.com, kuba@kernel.org,
+        simon.horman@netronome.com, sdf@google.com, edumazet@google.com,
+        fw@strlen.de, jonathan.lemon@gmail.com, pablo@netfilter.org,
+        jeremy@azazel.net, pabeni@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+References: <1586136369-67251-1-git-send-email-decui@microsoft.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6efee6bb-d68d-0f83-d469-b173cf4f5d0f@infradead.org>
+Date:   Sun, 5 Apr 2020 18:42:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-User-Agent: astroid/0.15.0 (https://github.com/astroidmail/astroid)
-Message-Id: <1586137301.c2ssus5vmb.astroid@bobo.none>
+In-Reply-To: <1586136369-67251-1-git-send-email-decui@microsoft.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy's on April 6, 2020 3:44 am:
-> syscall_64.c will be reused almost as is for PPC32.
->=20
-> Rename it syscall.c
+On 4/5/20 6:26 PM, Dexuan Cui wrote:
+> @@ -211,9 +211,9 @@
+>   * is implied by the SKB_GSO_* flags in gso_type. Most obviously, if the
+>   * gso_type is SKB_GSO_TCPV4 or SKB_GSO_TCPV6, TCP checksum offload as
+>   * part of the GSO operation is implied. If a checksum is being offloaded
+> - * with GSO then ip_summed is CHECKSUM_PARTIAL, csum_start and csum_offset
+> - * are set to refer to the outermost checksum being offload (two offloaded
+> - * checksums are possible with UDP encapsulation).
+> + * with GSO then ip_summed is CHECKSUM_PARTIAL, and both csum_start and
+> + * csum_offset are set to refer to the outermost checksum being offload (two
 
-Don't mind this, but I wonder if we can rename it to interrupt.c.
+                                                             being offloaded
 
-A system call is a type of interrupt.
+> + * offloaded checksums are possible with UDP encapsulation).
+>   */
+>  
+>  /* Don't change this without changing skb_csum_unnecessary! */
 
-Thanks,
-Nick
-=
+
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
+-- 
+~Randy
