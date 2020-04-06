@@ -2,60 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CB319F590
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBA219F597
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727848AbgDFMIO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Apr 2020 08:08:14 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:34267 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727666AbgDFMIO (ORCPT
+        id S1727889AbgDFMKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 08:10:50 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:37529 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727614AbgDFMKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 08:08:14 -0400
-Received: from marcel-macbook.fritz.box (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
-        by mail.holtmann.org (Postfix) with ESMTPSA id B2988CECC4;
-        Mon,  6 Apr 2020 14:17:46 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v1] Bluetooth: debugfs option to unset MITM flag
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxHUWCDVs5O-sJG8cqQKRrs9UvEjm3Yjv65SoyrzNNGV=Q@mail.gmail.com>
-Date:   Mon, 6 Apr 2020 14:08:12 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <39BBAF39-1552-48A2-AC0C-F6148987E804@holtmann.org>
-References: <20200406165542.v1.1.Ibfc500cbf0bf2dc8429b17f064e960e95bb228e9@changeid>
- <9673F164-A14E-4DD6-88FB-277694C50328@holtmann.org>
- <CAJQfnxHUWCDVs5O-sJG8cqQKRrs9UvEjm3Yjv65SoyrzNNGV=Q@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Mon, 6 Apr 2020 08:10:50 -0400
+Received: by mail-pf1-f194.google.com with SMTP id u65so7430134pfb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 05:10:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N6mLhtlmWMVTR84nfQkFj0UeiYqI/lAWABfPtUwxRcg=;
+        b=ujI1zcWP42qZdIINh84ie1npEVP76g1qKpX2ZlvJVuv9SsmVgX4HQSsfhuLPeqzQAe
+         z8YhIWc/Dc/xiPMHlr2cYJT4OWouiK8DXszrwIm1kLo+tiCrD7rqFEs3X8udwq51EDWO
+         4M533RhNUxRzapSz2T36ulJVfFnqt+a7nQIPgxkrtJSRuIEFPUHOF9GRNF7WZUrqVyc9
+         /u4hWJF3Cjt0FpMf4VIgVsGcR9MCckGF/iMx80+znle11QRgNovkbIXyaXYbScvPYrET
+         wvAyo1lIk/9wSKtLSKF7TiIYd5FL4sM6dYSIlTbrwymGcSXLoomwnsApaYnZzGVJl0KU
+         3v1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N6mLhtlmWMVTR84nfQkFj0UeiYqI/lAWABfPtUwxRcg=;
+        b=MAxG8QLsInb4tQSoSTxT2ukQXHTco90OCtOu/9+XCtueY8EW1v2CehPv3aQ4zJeBW8
+         160SmDg7j8Dh2g3ffyPWHkKsCNOW96cw1ci1QBZW42QdlC9cqaBGX1rCaYsaWUcTGGmU
+         TGMghDCbxfmp309lqWl2D6lIP88bu/jhq+Cpy6OB/kL7IWU6PEs4FOmRQv+C7T3OMYK8
+         eV7OgxRmBZaENPZcsTp/YZeKz8OXEPgjA8rgC4zO00C/b3fTYco3Y8ut9o1+6MavDYy3
+         r17Xfg0A7Xov13dkGkRcN3CKcOQYs8hb4AbeePx4aCqcz/1Q2lFi/2a2Fd9hOWCib9A+
+         i79g==
+X-Gm-Message-State: AGi0PuYDNAPShdXbLD/VwwtuvVWMHD64EJI/GNLySgr3NIxFhZwlwujk
+        Ty7GLt5Qlhplae/TGsJkqOV0QA==
+X-Google-Smtp-Source: APiQypIqMxQdjz6IFp4hpRLcqO4fbN8fpr4BxiklLRQ/t5C9ZnUZpOqDHpHnv3vNqX8IwrLjLae5rA==
+X-Received: by 2002:aa7:8659:: with SMTP id a25mr20399012pfo.173.1586175047658;
+        Mon, 06 Apr 2020 05:10:47 -0700 (PDT)
+Received: from Smcdef-MBP.lan ([103.136.221.70])
+        by smtp.gmail.com with ESMTPSA id ne16sm12012966pjb.11.2020.04.06.05.10.34
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Apr 2020 05:10:47 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mingo@kernel.org, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org
+Cc:     linux-kernel@vger.kernel.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] sched/fair: Fix call walk_tg_tree_from() without hold rcu_lock
+Date:   Mon,  6 Apr 2020 20:10:08 +0800
+Message-Id: <20200406121008.62903-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+The walk_tg_tree_from() caller must hold rcu_lock, but the caller
+do not call rcu_read_lock() in the unthrottle_cfs_rq(). The
+unthrottle_cfs_rq() is used in 3 places. There are
+distribute_cfs_runtime(), unthrottle_offline_cfs_rqs() and
+tg_set_cfs_bandwidth(). The former 2 already hold the rcu lock,
+but the last one does not. So fix it with calling rcu_read_lock()
+in the unthrottle_cfs_rq().
 
-> The way I implemented it is, if HCI_ENFORCE_MITM_SMP is set (which it
-> is by default), then it will assume the default behavior.
-> However, if it is toggled to false, then it will not set the MITM flag
-> although the io capability supports that.
-> 
-> I am reluctant to use names with "no" on it, especially since it is a
-> boolean. But if it is OK then I shall update to HCI_FORCE_NO_MITM,
-> this way it will become more separable with the default behavior.
-> 
-> Sure, I will move that to hci_debugfs.c.
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ kernel/sched/fair.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I dislike setting a flag for default behavior. So we need the invert here. I want the “force” in front of it that it clearly indicates that it is not default behavior. Similar to the force_static_addr flag.
-
-Regards
-
-Marcel
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6f05843c76d7d..870853c47b63c 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4782,7 +4782,9 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+ 	raw_spin_unlock(&cfs_b->lock);
+ 
+ 	/* update hierarchical throttle state */
++	rcu_read_lock();
+ 	walk_tg_tree_from(cfs_rq->tg, tg_nop, tg_unthrottle_up, (void *)rq);
++	rcu_read_unlock();
+ 
+ 	if (!cfs_rq->load.weight)
+ 		return;
+-- 
+2.11.0
 
