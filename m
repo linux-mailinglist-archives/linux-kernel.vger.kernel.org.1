@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0792F19F3CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A54819F3D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727226AbgDFKqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:46:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726841AbgDFKqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:46:23 -0400
-Received: from linux-8ccs (p3EE2C7AC.dip0.t-ipconnect.de [62.226.199.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E0512072A;
-        Mon,  6 Apr 2020 10:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586169982;
-        bh=VeFFXsuWR9uPnSwDIxLT71XI7ZXHdNrRVMRE7hUENAI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mJZCbwkbRogcgKRxcNXZSbRnvT9QZHFNAxjiSFYxhNorCHA1rUD8O4fgrVgumj6rG
-         B1zu+ds1Fy+WIm8V6c39ZkyoQmwmHHeJ48uqi61gWhJcP/7Z4VWlE1ufTIkoK2MZT2
-         E2cLhUEUhqSxw9nQRr0gSgGCZ69kh/CGEt+ge1Ts=
-Date:   Mon, 6 Apr 2020 12:46:17 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        keescook@chromium.org
-Subject: Re: [PATCH] module: Harden STRICT_MODULE_RWX
-Message-ID: <20200406104615.GA9629@linux-8ccs>
-References: <20200403163716.GV20730@hirez.programming.kicks-ass.net>
- <20200403165631.hrxxm3pnzqa4vxln@treble>
- <alpine.LSU.2.21.2004061146590.26870@pobox.suse.cz>
+        id S1727336AbgDFKrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:47:18 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:42890 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgDFKrS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:47:18 -0400
+Received: by mail-ed1-f67.google.com with SMTP id cw6so18588492edb.9;
+        Mon, 06 Apr 2020 03:47:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=UAxqYdPL6az1VgPFrfxQ/rn+ZWBqyWdcAzok87Z4u2E=;
+        b=LCyDFq6iTs1cx9oMAN6SI8W2jQYULe2C9YZszMNwTbZjL5scjRXcFeOnQZmtf0dH5n
+         wL/wKInrZ9TI9SbAe+sjnbWcG8cs3ha3iI8hnDe7jO3NbJeWHLyy4IMr6699UHKS3hU/
+         w1Ofq5SXXln9EyhM6MHKl1xd7D8fCo1K8pbagLqiPqkGIvvZHJuQWBIp/RKYB+VyIncR
+         9kRY4Id4qgwNjV+wFFrvQ23/Z8i10+vC41kEd+5RcpxomZl3bqD7eoYMMY5Py8y8o65y
+         ml9WCgwkuhxSipor65YyEeja5/1V5PHORWAXxkpXiILBWhJXVG4GuM/Mw6RByudfw1+m
+         HP6A==
+X-Gm-Message-State: AGi0Pub7BGaFOCx5l2mHAOCldNE2ArNr0djCTWMAQwKwxEB8/KnrXnvt
+        3VRCTe645wKJ3uib9mNuaG0=
+X-Google-Smtp-Source: APiQypKkmi8CBCaysXUslPpenLVQu3HtftW3JIysFyeclM2AJ0m49d4QSlRgMy7XSMhhvzq1JOaQ1w==
+X-Received: by 2002:a50:e107:: with SMTP id h7mr19285192edl.124.1586170035816;
+        Mon, 06 Apr 2020 03:47:15 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.125])
+        by smtp.googlemail.com with ESMTPSA id r25sm2422181edy.77.2020.04.06.03.47.14
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Apr 2020 03:47:15 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 12:47:13 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Hyunki Koo <hyunki00.koo@samsung.com>
+Cc:     gregkh@linuxfoundation.org, Rob Herring <robh+dt@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: serial: Add reg-io-width compatible
+Message-ID: <20200406104713.GB16798@kozik-lap>
+References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
+ <20200406103127.17105-1-hyunki00.koo@samsung.com>
+ <CGME20200406103206epcas2p2bf3c65f96d94cc91fcdcd3e6db75e2a3@epcas2p2.samsung.com>
+ <20200406103127.17105-2-hyunki00.koo@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2004061146590.26870@pobox.suse.cz>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200406103127.17105-2-hyunki00.koo@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Miroslav Benes [06/04/20 11:55 +0200]:
->On Fri, 3 Apr 2020, Josh Poimboeuf wrote:
->
->> On Fri, Apr 03, 2020 at 06:37:16PM +0200, Peter Zijlstra wrote:
->> > +{
->> > +	int i;
->> > +
->> > +	for (i = 0; i < hdr->e_shnum; i++) {
->> > +		if (sechdrs[i].sh_flags & (SHF_EXECINSTR|SHF_WRITE))
->> > +			return -ENOEXEC;
->>
->> I think you only want the error when both are set?
->>
->> 		if (sechdrs[i].sh_flags & (SHF_EXECINSTR|SHF_WRITE) == (SHF_EXECINSTR|SHF_WRITE))
->
->A section with SHF_EXECINSTR and SHF_WRITE but without SHF_ALLOC would be
->strange though, no? It wouldn't be copied to the final module later
->anyway.
+On Mon, Apr 06, 2020 at 07:31:26PM +0900, Hyunki Koo wrote:
+> Add a description for reg-io-width options for the samsung serial
+> UART peripheral.
+> 
+> Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
+> ---
+>  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/samsung_uart.yaml b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+> index 9d2ce347875b..a57b1233c691 100644
+> --- a/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+> @@ -29,6 +29,14 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> +  reg-io-width:
+> +    description: |
+> +      The size (in bytes) of the IO accesses that should be performed
+> +      on the device.
+> +    allOf:
+> +      - $ref: /schemas/types.yaml#/definitions/uint32
+> +      - enum: [ 1, 4 ]
 
-That's right - move_module() ignores !SHF_ALLOC sections and does not
-copy them over to their final location. So I think we want to look for
-SHF_EXECINSTR|SHF_WRITE|SHF_ALLOC here..
+I just noticed that the allOf is not needed. Just enum [1, 2] is enough.
 
->Looking at layout_sections()... a section with
->SHF_EXECINSTR|SHF_WRITE|SHF_ALLOC would not be counted at all.
+With that change:
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Also correct, a section with SHF_EXECINSTR|SHF_WRITE|SHF_ALLOC would
-be ignored as it matches none of the masks listed in
-layout_sections() - its section->sh_entsize will stay ~0UL.
+Best regards,
+Krzysztof
 
->However,
->move_module() later copies everything with SHF_ALLOC flag to the final
->module. If there is WXA section, there would be a bug because the
->allocation there would not get the correct size. In that case it is
->important to error out early as you're proposing.
-
-That would be a bug indeed, - we'd get a completely wrong offset to
-copy into since sh_entsize was never initialized. Actually, there
-should probably be a check for that in move_module() :-/
-
->Am I missing something?
-
-Nope, thanks for double checking everything!
-
-Jessica
+> +
+>    clocks:
+>      minItems: 2
+>      maxItems: 5
+> -- 
+> 2.15.0.rc1
+> 
