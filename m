@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A731A00B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6F91A00AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726446AbgDFWNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 18:13:13 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:50740 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726331AbgDFWNL (ORCPT
+        id S1726420AbgDFWNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 18:13:12 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:53642 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726130AbgDFWNL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Apr 2020 18:13:11 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586211190;
+        s=mimecast20190719; t=1586211189;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T3FlwhOWDJvLvFawmFPQ57qSIHr7J/3P5oSzH8uVsA0=;
-        b=IOxxbLWIlchQbFAmib7a7fjlDQyY3L6k76rDJJS/K1xF/RyKzxAGwDRiLqJ51wFVnGeZPS
-        fgLQde8pfitXvmoS1YYhjEMFafVd0WcqrbCf/0Gw8WNIbMvZLuY6U3C+aAdSaYy+eObr6Y
-        YXdPTQ8WFrEy+qLUjD9Z0oLavfHZAuI=
+        bh=61pSeHFI0mHGhKeOKlyyVpQ4t+B+NWcRA1rpl6V74kU=;
+        b=OQSSHqaZBEdM5XiTiJcD6R9zlxEYsQdCCfRN70XLZlQs77Aj5W3bMgV5jpEFXGhZkkpFcr
+        RwCFX8a6yB/84IFvfj2oIkUHDwngyfW25FVTRuQ/R/ki4JYkGxfMbq3bQTvrBujQWvAtTh
+        TDrQUnvHZ4/EcPKdnLP+XMYk68vXnJE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-qNlv8e2wOmWQpO09_OjX1w-1; Mon, 06 Apr 2020 18:13:06 -0400
-X-MC-Unique: qNlv8e2wOmWQpO09_OjX1w-1
+ us-mta-257-ygKCmBA-PjC_Bdt7SrkVcw-1; Mon, 06 Apr 2020 18:13:08 -0400
+X-MC-Unique: ygKCmBA-PjC_Bdt7SrkVcw-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB7B2DBA8;
-        Mon,  6 Apr 2020 22:13:04 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61FEE18AB2CC;
+        Mon,  6 Apr 2020 22:13:06 +0000 (UTC)
 Received: from Ruby.redhat.com (ovpn-117-12.rdu2.redhat.com [10.10.117.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D3BE1608E1;
-        Mon,  6 Apr 2020 22:13:03 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FB4E608E1;
+        Mon,  6 Apr 2020 22:13:05 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     dri-devel@lists.freedesktop.org
-Cc:     Sean Paul <sean@poorly.run>,
+Cc:     Sean Paul <sean@poorly.run>, stable@vger.kernel.org,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/4] drm/dp_mst: Improve kdocs for drm_dp_check_act_status()
-Date:   Mon,  6 Apr 2020 18:12:50 -0400
-Message-Id: <20200406221253.1307209-2-lyude@redhat.com>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Todd Previte <tprevite@gmail.com>,
+        Dave Airlie <airlied@redhat.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/4] drm/dp_mst: Reformat drm_dp_check_act_status() a bit
+Date:   Mon,  6 Apr 2020 18:12:51 -0400
+Message-Id: <20200406221253.1307209-3-lyude@redhat.com>
 In-Reply-To: <20200406221253.1307209-1-lyude@redhat.com>
 References: <20200406221253.1307209-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -55,38 +57,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional changes.
+Just add a bit more line wrapping, get rid of some extraneous
+whitespace, remove an unneeded goto label, and move around some variable
+declarations. No functional changes here.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
+[this isn't a fix, but it's needed for the fix that comes after this]
+Fixes: ad7f8a1f9ced ("drm/helper: add Displayport multi-stream helper (v0=
+.6)")
 Cc: Sean Paul <sean@poorly.run>
+Cc: <stable@vger.kernel.org> # v3.17+
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_=
 dp_mst_topology.c
-index 5b205aea58d4..828ca63cc576 100644
+index 828ca63cc576..c83adbdfc1cd 100644
 --- a/drivers/gpu/drm/drm_dp_mst_topology.c
 +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -4462,10 +4462,14 @@ static int drm_dp_dpcd_write_payload(struct drm_d=
+@@ -4473,33 +4473,31 @@ static int drm_dp_dpcd_write_payload(struct drm_d=
 p_mst_topology_mgr *mgr,
-=20
-=20
- /**
-- * drm_dp_check_act_status() - Check ACT handled status.
-+ * drm_dp_check_act_status() - Polls for ACT handled status.
-  * @mgr: manager to use
-  *
-- * Check the payload status bits in the DPCD for ACT handled completion.
-+ * Tries waiting for the MST hub to finish updating it's payload table b=
-y
-+ * polling for the ACT handled bit.
-+ *
-+ * Returns:
-+ * 0 if the ACT was handled in time, negative error code on failure.
   */
  int drm_dp_check_act_status(struct drm_dp_mst_topology_mgr *mgr)
  {
++	int count =3D 0, ret;
+ 	u8 status;
+-	int ret;
+-	int count =3D 0;
+=20
+ 	do {
+-		ret =3D drm_dp_dpcd_readb(mgr->aux, DP_PAYLOAD_TABLE_UPDATE_STATUS, &s=
+tatus);
+-
++		ret =3D drm_dp_dpcd_readb(mgr->aux,
++					DP_PAYLOAD_TABLE_UPDATE_STATUS,
++					&status);
+ 		if (ret < 0) {
+-			DRM_DEBUG_KMS("failed to read payload table status %d\n", ret);
+-			goto fail;
++			DRM_DEBUG_KMS("failed to read payload table status %d\n",
++				      ret);
++			return ret;
+ 		}
+=20
+ 		if (status & DP_PAYLOAD_ACT_HANDLED)
+ 			break;
+ 		count++;
+ 		udelay(100);
+-
+ 	} while (count < 30);
+=20
+ 	if (!(status & DP_PAYLOAD_ACT_HANDLED)) {
+-		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n", status, c=
+ount);
+-		ret =3D -EINVAL;
+-		goto fail;
++		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n",
++			      status, count);
++		return -EINVAL;
+ 	}
+ 	return 0;
+-fail:
+-	return ret;
+ }
+ EXPORT_SYMBOL(drm_dp_check_act_status);
+=20
 --=20
 2.25.1
 
