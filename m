@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5D819F340
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DA219F31E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbgDFKFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:05:38 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:30270 "EHLO smtp2.axis.com"
+        id S1726873AbgDFKAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:00:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36166 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726858AbgDFKFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:05:38 -0400
-X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Apr 2020 06:05:36 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; l=2524; q=dns/txt; s=axis-central1;
-  t=1586167537; x=1617703537;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=udbZg0rfhq5obQgAPCHMOu7MfWPehMKnhUi5G4Oq/kI=;
-  b=BeTHKUaXoo90+CNnosI/Y5nFWqP6R7jSYyr/SMZbHoFlhltHxWIn7Igu
-   CUqBYUZKsjPRdBbadsoCKE69L6icnhjfdMt6km00GXZOetAkaHBPGZMf8
-   vzWxGXq9Ff+kJ1AZ4z99KSzYKzSGyFsOZL4kGZoaNN5h6XZNYrGsPI8t5
-   xvS2bF6IRj7gBWt9bI1+ihUv+SMs5lh1RvUR0qNvDhF6Lr6MrZAtvj+Vn
-   CL6+3OzPOxG4WWogNhgYew0wEMAgDfvfO6igysN0ffp0EzCNl6XJAQExm
-   mMwBu67OH5XxVekl4xNRIoEHUQkI+N5Ee2j5xE5Ubmnxx8Bob6Ly25111
-   A==;
-IronPort-SDR: 5Z4ylhPBGcYjVrTIdXrBHANuvFnZoUwtw+UfHA7gcaFU6I5aMMaoV/XUyApNtZkeyQMcd9irdw
- m5a0o3u9icKDD5zzFT+p2piK6VxmaZeDD52Hwxvj7mlHIrIB9zCDmOh/tP7DWeCLc6uzN0Dbc1
- P3H9MJgHh5A5pa5heYuGvcgIFVicKpSl6Pt3FwhGmtVQbESMuOO3jvLK4y2F0AZZldzg1JrbSA
- lag4LfqbcIgzE2xTl/RaqYTZ//qPJ4d5UVT39AkTCoq5ZvHTDE0pNj93g3w5uvzAkalY9hUKzv
- FD4=
-X-IronPort-AV: E=Sophos;i="5.72,350,1580770800"; 
-   d="scan'208";a="7162607"
-Date:   Mon, 6 Apr 2020 11:58:25 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CC:     "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "amit.kucheria@verdurent.com" <amit.kucheria@verdurent.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] thermal: core: Send a sysfs notification on trip points
-Message-ID: <20200406095825.a3mrkbjqlih6xa7d@axis.com>
-References: <a7e8287d-72be-7ab0-697a-9de40eb3f81f@linaro.org>
- <20200402142116.22869-1-daniel.lezcano@linaro.org>
- <20200403144009.szjoss5ecleisg2f@axis.com>
- <e0c819ce-31f4-cee1-c7cc-7ecb73d374a3@linaro.org>
- <20200406074525.2bhseq3n5bw7dd2t@axis.com>
- <62f5e0d0-155a-7520-cb1b-2113a2b711b3@linaro.org>
+        id S1726784AbgDFKAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:00:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7CFCCADCC;
+        Mon,  6 Apr 2020 10:00:05 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 354011E1244; Mon,  6 Apr 2020 12:00:05 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 12:00:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
+Message-ID: <20200406100005.GB1143@quack2.suse.cz>
+References: <20200316095224.GF12783@quack2.suse.cz>
+ <20200316095509.GA13788@lst.de>
+ <20200401040021.GC56958@magnolia>
+ <20200401102511.GC19466@quack2.suse.cz>
+ <20200402085327.GA19109@lst.de>
+ <20200402205518.GF3952565@iweiny-DESK2.sc.intel.com>
+ <20200403072731.GA24176@lst.de>
+ <20200403154828.GJ3952565@iweiny-DESK2.sc.intel.com>
+ <20200403170338.GD29920@quack2.suse.cz>
+ <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <62f5e0d0-155a-7520-cb1b-2113a2b711b3@linaro.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 11:45:10AM +0200, Daniel Lezcano wrote:
-> On 06/04/2020 09:45, Vincent Whitchurch wrote:
-> > On Fri, Apr 03, 2020 at 05:26:39PM +0200, Daniel Lezcano wrote:
-> >> On 03/04/2020 16:40, Vincent Whitchurch wrote:
-> >>> Normally sysfs_notify() is used to notify userspace that the
-> >>> value of the sysfs file has changed, but in this case it's
-> >>> being used on a sysfs file whose value never changes.  I don't
-> >>> know if there are other drivers that do something similar.
-> >>
-> >> I think so:
-> >>
-> >> eg.
-> >>
-> >> drivers/hwmon/adt7x10.c: sysfs_notify(&dev->kobj, NULL,
-> >> "temp1_max_alarm"); drivers/hwmon/adt7x10.c:
-> >> sysfs_notify(&dev->kobj, NULL, "temp1_min_alarm");
-> >> drivers/hwmon/adt7x10.c: sysfs_notify(&dev->kobj, NULL,
-> >> "temp1_crit_alarm");
-> >>
-> >> drivers/hwmon/abx500.c: sysfs_notify(&data->pdev->dev.kobj, NULL,
-> >> alarm_node); drivers/hwmon/abx500.c:
-> >> sysfs_notify(&data->pdev->dev.kobj, NULL, alarm_node);
-> >>
-> >> drivers/hwmon/stts751.c: sysfs_notify(&priv->dev->kobj, NULL,
-> >> "temp1_max_alarm"); drivers/hwmon/stts751.c:
-> >> sysfs_notify(&priv->dev->kobj, NULL, "temp1_min_alarm");
-> >>
-> >> There are also some other places I believe they are doing the
-> >> same like:
-> >>
-> >> drivers/md/md.c: sysfs_notify(&mddev->kobj, NULL,
-> >> "sync_completed"); drivers/md/md.c: sysfs_notify(&mddev->kobj,
-> >> NULL, "degraded");
-> >
-> > AFAICS all these drivers (including the hwmon ones) use
-> > sysfs_notify() to notify that the value of the sysfs file has
-> > changed, unlike your proposed patch.
+On Fri 03-04-20 11:18:43, Ira Weiny wrote:
+> Ok For 5.8 why don't we not allow FS_XFLAG_DAX to be changed on files _at_
+> _all_...
 > 
-> Sorry, I don't have the same understanding:
+> In summary:
 > 
-> drivers/hwmon/adt7x10.c:
+>  - Applications must call statx to discover the current S_DAX state.
 > 
->  - receives an interrupt because one of the programmed temperature is
-> reached
->  - reads the status to know which one and sends a sysfs notification
+>  - There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
+>    the parent directory FS_XFLAG_DAX inode flag.  (There is no way to change
+>    this flag after file creation.)
+> 
+>    If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
+>    inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
+>    Unless overridden...
 
-In the sysfs file implementation, you can see that the value in the
-sysfs file changes based on the same condition:
+OK, after considering all the options we were hashing out here, I think
+this is the best API. There isn't the confusing "S_DAX will magically
+switch on inode eviction" and although the functionality is limited, I
+think 90% of users would end up using the functionality like this anyway.
 
-static ssize_t adt7x10_alarm_show(struct device *dev,
-                                  struct device_attribute *da, char *buf)
-{
-        struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
-        int ret;
+>  - There exists a dax= mount option.
+> 
+>    "-o dax=off" means "never set S_DAX, ignore FS_XFLAG_DAX"
+>    	"-o nodax" means "dax=off"
+>    "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
+>    	"-o dax" by itself means "dax=always"
+>    "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
+> 
+>  - There exists an advisory directory inode flag FS_XFLAG_DAX that can be
+>    changed at any time.  The flag state is copied into any files or
+>    subdirectories when they are created within that directory.  If programs
+>    require file access runs in S_DAX mode, they'll have to create those files
+>    inside a directory with FS_XFLAG_DAX set, or mount the fs with an
+>    appropriate dax mount option.
 
-        ret = adt7x10_read_byte(dev, ADT7X10_STATUS);
-        if (ret < 0)
-                return ret;
+								Honza
 
-        return sprintf(buf, "%d\n", !!(ret & attr->index));
-}
-
-static SENSOR_DEVICE_ATTR_RO(temp1_max_alarm, adt7x10_alarm,
-                             ADT7X10_STAT_T_HIGH);
-
-It's the same case with the other examples: the sysfs file's value
-changes.
-
-Anyway, as you say it probably doesn't matter as long as it is
-documented.
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
