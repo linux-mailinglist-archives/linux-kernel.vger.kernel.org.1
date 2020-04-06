@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D64D19F1FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE5D19F1FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgDFJDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:03:01 -0400
-Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:51627 "EHLO
-        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726684AbgDFJDB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:03:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1586163780;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=7NHbB9BsfudNyev+nKE/1EJEWNA2WPr4keczYxzGBKc=;
-  b=hcunOytYs0OatDlmU2yrO/Pk1ju+t0Yp8734iREq5izwUR7qBuxklmRq
-   OEOGHX1vy0W0gDHehTCjminoSX6XBx95fu/AsJBXTaCGhVJT+T9sPFFod
-   yyoXA8lrSmLPVDpFa2W8jW5EhvaGWdasQXAOtSPusIzEHkr3HxEbS8Yvg
-   A=;
-Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none; spf=None smtp.pra=roger.pau@citrix.com; spf=Pass smtp.mailfrom=roger.pau@citrix.com; spf=None smtp.helo=postmaster@mail.citrix.com
-Received-SPF: None (esa1.hc3370-68.iphmx.com: no sender
-  authenticity information available from domain of
-  roger.pau@citrix.com) identity=pra; client-ip=162.221.158.21;
-  receiver=esa1.hc3370-68.iphmx.com;
-  envelope-from="roger.pau@citrix.com";
-  x-sender="roger.pau@citrix.com";
-  x-conformance=sidf_compatible
-Received-SPF: Pass (esa1.hc3370-68.iphmx.com: domain of
-  roger.pau@citrix.com designates 162.221.158.21 as permitted
-  sender) identity=mailfrom; client-ip=162.221.158.21;
-  receiver=esa1.hc3370-68.iphmx.com;
-  envelope-from="roger.pau@citrix.com";
-  x-sender="roger.pau@citrix.com";
-  x-conformance=sidf_compatible; x-record-type="v=spf1";
-  x-record-text="v=spf1 ip4:209.167.231.154 ip4:178.63.86.133
-  ip4:195.66.111.40/30 ip4:85.115.9.32/28 ip4:199.102.83.4
-  ip4:192.28.146.160 ip4:192.28.146.107 ip4:216.52.6.88
-  ip4:216.52.6.188 ip4:162.221.158.21 ip4:162.221.156.83
-  ip4:168.245.78.127 ~all"
-Received-SPF: None (esa1.hc3370-68.iphmx.com: no sender
-  authenticity information available from domain of
-  postmaster@mail.citrix.com) identity=helo;
-  client-ip=162.221.158.21; receiver=esa1.hc3370-68.iphmx.com;
-  envelope-from="roger.pau@citrix.com";
-  x-sender="postmaster@mail.citrix.com";
-  x-conformance=sidf_compatible
-IronPort-SDR: sfPgwiT0RDqtOpIx8BpsOCGBpAYrEzJ8byAffdFSgPLT9oxrM1pLGxV1YpTJCLmm+D5/KjNwTc
- 4UshXQsueyUHBq1QxYi9jubJ5prBv2AV1sK3XdnCfpQ5nvwcoAgTHamzh1kzvb9Msqal7Yq7ju
- qkhW17FkqJq6jUNmkeLMrG3DrtG4VCWd4pl8ZCS6WZTcR9wCZPK+yuKDj30clW5wGNYiAOrJNF
- kaoORMq+5pf6CxfxkMZjiwGVrinU52Ub1BjdqlJR6wPq5FyizUbdSQa9w4AHuCK67Qe5lhHDdp
- LIU=
-X-SBRS: 2.7
-X-MesageID: 15445372
-X-Ironport-Server: esa1.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.72,350,1580792400"; 
-   d="scan'208";a="15445372"
-Date:   Mon, 6 Apr 2020 11:02:50 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Juergen Gross <jgross@suse.com>
-CC:     <xen-devel@lists.xenproject.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, <stable@vger.kernel.org>
-Subject: Re: [PATCH] xen/blkfront: fix memory allocation flags in
- blkfront_setup_indirect()
-Message-ID: <20200406090250.GX28601@Air-de-Roger>
-References: <20200403090034.8753-1-jgross@suse.com>
+        id S1726828AbgDFJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:03:31 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:43986 "EHLO a.mx.secunet.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726533AbgDFJDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 05:03:30 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id A047820523;
+        Mon,  6 Apr 2020 11:03:28 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3hYAfdPan_2n; Mon,  6 Apr 2020 11:03:28 +0200 (CEST)
+Received: from cas-essen-01.secunet.de (201.40.53.10.in-addr.arpa [10.53.40.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 3730D2051F;
+        Mon,  6 Apr 2020 11:03:28 +0200 (CEST)
+Received: from gauss2.secunet.de (10.182.7.193) by cas-essen-01.secunet.de
+ (10.53.40.201) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 6 Apr 2020
+ 11:03:28 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 9DCB53180093; Mon,  6 Apr 2020 11:03:27 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 11:03:27 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Yuehaibing <yuehaibing@huawei.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] xfrm: policy: Remove obsolete WARN while xfrm
+ policy inserting
+Message-ID: <20200406090327.GF13121@gauss3.secunet.de>
+References: <20200327123443.12408-1-yuehaibing@huawei.com>
+ <20200328112302.GA13121@gauss3.secunet.de>
+ <1d3596fb-c7e3-16c9-f48f-fe58e9a2569a@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200403090034.8753-1-jgross@suse.com>
-X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
+In-Reply-To: <1d3596fb-c7e3-16c9-f48f-fe58e9a2569a@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ cas-essen-01.secunet.de (10.53.40.201)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 11:00:34AM +0200, Juergen Gross wrote:
-> Commit 1d5c76e664333 ("xen-blkfront: switch kcalloc to kvcalloc for
-> large array allocation") didn't fix the issue it was meant to, as the
-> flags for allocating the memory are GFP_NOIO, which will lead the
-> memory allocation falling back to kmalloc().
+On Mon, Mar 30, 2020 at 10:05:32PM +0800, Yuehaibing wrote:
+> On 2020/3/28 19:23, Steffen Klassert wrote:
+> > On Fri, Mar 27, 2020 at 08:34:43PM +0800, YueHaibing wrote:
+> >> Since commit 7cb8a93968e3 ("xfrm: Allow inserting policies with matching
+> >> mark and different priorities"), we allow duplicate policies with
+> >> different priority, this WARN is not needed any more.
+> > 
+> > Can you please describe a bit more detailed why this warning
+> > can't trigger anymore?
 > 
-> So instead of GFP_NOIO use GFP_KERNEL and do all the memory allocation
-> in blkfront_setup_indirect() in a memalloc_noio_{save,restore} section.
+> No, this warning is triggered while detect a duplicate entry in the policy list
 > 
-> Fixes: 1d5c76e664333 ("xen-blkfront: switch kcalloc to kvcalloc for large array allocation")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+> regardless of the priority. If we insert policy like this:
+> 
+> policy A (mark.v = 3475289, mark.m = 0, priority = 1)	//A is inserted
+> policy B (mark.v = 0, mark.m = 0, priority = 0) 	//B is inserted
+> policy C (mark.v = 3475289, mark.m = 0, priority = 0)	//C is inserted and B is deleted
 
-Acked-by: Roger Pau Monné <roger.pau@citrix.com>
+The codepath that replaces a policy by another should just trigger
+on policy updates (XFRM_MSG_UPDPOLICY). Is that the case in your
+test?
 
-Thanks!
+It should not be possible to add policy C with XFRM_MSG_NEWPOLICY
+as long as you have policy B inserted.
+
+The update replaces an old policy by a new one, the lookup keys of
+the old policy must match the lookup keys of the new one. But policy
+B has not the same lookup keys as C, the mark is different. So B should
+not be replaced with C.
+
+> policy D (mark.v = 3475289, mark.m = 0, priority = 1)	
+> 
+> while finding delpol in xfrm_policy_insert_list,
+> first round delpol is matched C, whose priority is less than D, so contiue the loop,
+> then A is matched， WARN_ON is triggered.  It seems the WARN is useless.
+
+Looks like the warning is usefull, it found a bug.
+
