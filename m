@@ -2,58 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F04F19F2C1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C3219F2C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgDFJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726675AbgDFJjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:39:41 -0400
-Received: from pobox.suse.cz (prg-ext-pat.suse.com [213.151.95.130])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2AD1E2051A;
-        Mon,  6 Apr 2020 09:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586165981;
-        bh=PikeJ5lzCSAMVRBCATXOBgcLG2zweYuCpVoiEok4wEk=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=Q79fDb9816pwefVgZqGCzkVSc3UEqEcUrZqBkY/n4WIQoXXPJWqZAjRb9nHHAvupZ
-         EOd1cVS0qOZaJuA9PWki3eJvwzhTgMeOv9z5xI+7wCFeuKiDN0Dt64FBZjroZkdSZk
-         NraJfMRq7MkYo4ACQronwDlz45t180DPSMdDBS6c=
-Date:   Mon, 6 Apr 2020 11:39:38 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@archlinux.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] HID: logitech: drop outdated references to unifying
- receivers
-In-Reply-To: <20200112235009.4074405-1-lains@archlinux.org>
-Message-ID: <nycvar.YFH.7.76.2004061139270.19713@cbobk.fhfr.pm>
-References: <20200112235009.4074405-1-lains@archlinux.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S1726858AbgDFJjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:39:52 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:38560 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726675AbgDFJjw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 05:39:52 -0400
+Received: by mail-pg1-f195.google.com with SMTP id m17so1266254pgj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 02:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=UphhKKOKLoodwVftKKdXY3z6VPYBVP/K0NIVc4HqEz0=;
+        b=lUin6sw0XNT0KJ8AK2i8H7TlaDQXkoCsJVR85w7MC2UsYwyQ69rTBN/0H5cFJq3tsY
+         EI3njv470YcI66Z+laB3Hzun01P/u51mCCOzA5MdYpCSqrrFU/sp33el04XikkYxtYmp
+         wnQldO6+6yd0jvMk44MDR/VF1Ta+TCgjmu91F+FjjWhJs8vY2Jr7sXEDvGrLOA974lLo
+         nwOpHqxoJh4kqnPZH80LPFSebZIxoWwLO5uAeFUilT5t+3s0anVt2mliNeDT7mNfEQ0u
+         AgCCmqrrMCVs04l8m23JwIfyhbVfC0Lhzxyomkg6qeK7tURpN0Abie+EwlVXLeJuenEV
+         fNEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=UphhKKOKLoodwVftKKdXY3z6VPYBVP/K0NIVc4HqEz0=;
+        b=D0UqKdNbHefPPK1opCf5BKK1EcZzyNTlxYTH6QgU7Hctm5+OEJFuUF6iwVwRnSEBWZ
+         X4fs1Fznw2zFEpbHTc9yKcCZgyAMbUneb/o03F6E8m3OlWvE5L4hr03C+vvtaaFZ/mcm
+         PNmKSaWk1Mei0gIRzhBDwhM0FtFxpQz9iS2G+TY4yF+0ajRYYq7ysaildOaDkbqWyTGd
+         9q/+i22O1HQOqJExuLhyjosgkHeN6SYHnbLJn9lrIERuw6d/bLNIp8qZWB6/xPGugPoL
+         P9w1CF4MQgsvNwMDkHkC2DfhK2xQPbz9sFSgMxdZf8W+kkDhrHYeImDijZ0RRwBf1xeP
+         oNvA==
+X-Gm-Message-State: AGi0PuZTU4DR0twjBxfCbNTyzO2fGHgq0jCBhDQcA9y22ESH3RtNXOfs
+        3EzQT0TsUMoEtIW9bn8glZEy7ihv
+X-Google-Smtp-Source: APiQypLJ5Y3misFwUfgYpGklC18wiNMPhOZ1LWHezVl5ddP3cePBI+Oo7rsxkPHJGRmbCdra+q0o+Q==
+X-Received: by 2002:a63:2057:: with SMTP id r23mr20805535pgm.232.1586165990812;
+        Mon, 06 Apr 2020 02:39:50 -0700 (PDT)
+Received: from localhost (n112120135125.netvigator.com. [112.120.135.125])
+        by smtp.gmail.com with ESMTPSA id e7sm11248239pfm.3.2020.04.06.02.39.49
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Apr 2020 02:39:50 -0700 (PDT)
+From:   Qiujun Huang <hqjagain@gmail.com>
+To:     benh@kernel.crashing.org, paulus@samba.org, mpe@ellerman.id.au,
+        oohall@gmail.com
+Cc:     tglx@linutronix.de, Markus.Elfring@web.de, christophe.leroy@c-s.fr,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Qiujun Huang <hqjagain@gmail.com>
+Subject: [PATCH v4] powerpc/powernv: add NULL check after kzalloc in opal_add_one_export
+Date:   Mon,  6 Apr 2020 17:39:44 +0800
+Message-Id: <20200406093944.4174-1-hqjagain@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Jan 2020, Filipe Laíns wrote:
+Here needs a NULL check as kzalloc may fail returning NULL.
 
-> The hid-logitech-{dj,hidpp} were originally developed for unifying
-> receivers but since then they have evolved and now support other types
-> of receivers and devices. This patch adjusts the original descriptions
-> with this in mind.
-> 
-> Signed-off-by: Filipe Laíns <lains@archlinux.org>
+Issue was found by coccinelle.
+Generated by: scripts/coccinelle/null/kmerr.cocci
 
-Applied, thanks Filipe.
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
 
+---
+
+v3->v4:
+	Added the information about coccinelle script.
+	Added change log.
+	Added Oliver's Reviewed-by.
+v2->v3:
+	Removed redundant assignment to 'attr' and 'name'.
+v1->v2:
+	Just return -ENOMEM if attr is NULL.
+---
+ arch/powerpc/platforms/powernv/opal.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/platforms/powernv/opal.c b/arch/powerpc/platforms/powernv/opal.c
+index 2b3dfd0b6cdd..908d749bcef5 100644
+--- a/arch/powerpc/platforms/powernv/opal.c
++++ b/arch/powerpc/platforms/powernv/opal.c
+@@ -801,16 +801,19 @@ static ssize_t export_attr_read(struct file *fp, struct kobject *kobj,
+ static int opal_add_one_export(struct kobject *parent, const char *export_name,
+ 			       struct device_node *np, const char *prop_name)
+ {
+-	struct bin_attribute *attr = NULL;
+-	const char *name = NULL;
++	struct bin_attribute *attr;
++	const char *name;
+ 	u64 vals[2];
+ 	int rc;
+ 
+ 	rc = of_property_read_u64_array(np, prop_name, &vals[0], 2);
+ 	if (rc)
+-		goto out;
++		return rc;
+ 
+ 	attr = kzalloc(sizeof(*attr), GFP_KERNEL);
++	if (!attr)
++		return -ENOMEM;
++
+ 	name = kstrdup(export_name, GFP_KERNEL);
+ 	if (!name) {
+ 		rc = -ENOMEM;
 -- 
-Jiri Kosina
-SUSE Labs
+2.17.1
 
