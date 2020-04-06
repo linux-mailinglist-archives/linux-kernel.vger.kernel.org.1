@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2552F19F92C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A461B19F936
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729092AbgDFPui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 11:50:38 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24538 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728945AbgDFPui (ORCPT
+        id S1729099AbgDFPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 11:53:39 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:46002 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728945AbgDFPxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 11:50:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586188236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AiVdsmv3/2P/Q7pF5E5kmgygaZDYlx3kJKogFXNLWtA=;
-        b=R+/6szKZrLlmavEi1ic8T1i4WC7miRmmBfjBCkx0xRDQFVAHxcmONrgf8vYHHkIBxe1Dhh
-        Q4NTefNn8qQWsQCQC6UdAON6bIBipPtzOpREu5UFxb7Eb5h8TwKXpuyUfMcrPSMkg32Xsp
-        7L8ieu/c+gY8hv14wWiiAmrb+X2XzVk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-42-PYxQaaAqNfepKPXUEFjMsg-1; Mon, 06 Apr 2020 11:50:34 -0400
-X-MC-Unique: PYxQaaAqNfepKPXUEFjMsg-1
-Received: by mail-wr1-f70.google.com with SMTP id v14so6178wrq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 08:50:34 -0700 (PDT)
+        Mon, 6 Apr 2020 11:53:37 -0400
+Received: by mail-pl1-f193.google.com with SMTP id t4so6058917plq.12;
+        Mon, 06 Apr 2020 08:53:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=rN6eY9Qrqp2MyzcIySN26tQrPMmoMDpY4puhGFyM5mw=;
+        b=IKlSzMZCcVNTRiuuJTREdvQ0DQozB3+Tcxbfc0oOwCUd1mnh8GBsQGphFBawZ5p1+e
+         s+HTWu1zS0a2esb+KXnN83Qqf4k2nNPuiBnCgxO2jC4T5LwcwkEsLoMs+cS6sP2+oyY8
+         Ul6nUy11tEihE31ZV8128jkd3iYQ5Gai3QE7pyGE/A2MWryA7fNFPp2yKounLBFtzBkz
+         xzTKXuUGB2jsoz4KGE8fCqAx3mF4wic7bMTQQxV3E0IUF8AogHkG0ckdhb0OV9eVb5dT
+         JSUSKF95gMC6Z/juaRIFCQOG0tZCeIpZYVqSFqOhDkhS9fKlj5VNlR5Leh8wCAkIU+1v
+         h5VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=AiVdsmv3/2P/Q7pF5E5kmgygaZDYlx3kJKogFXNLWtA=;
-        b=rPwImEgjOZ3d6phRFdMwgX0KBi5aSjcnUjsSbrlDwE4lCi8kuEniuS/SAJTuHKaxPw
-         +C6XglKDMcidn+FG+hA+zPNhSnzvmoksjI9IroZKYTok0wniyHwU/WHhC7yd+EXnUr+F
-         5eBF8rVAKvUQSBK/qrafDKGxT2pTee/yHRVCS7h9fnlwEsjPWRfT645gIypbr4udAo6u
-         7Hwo2KiqB6MpkWOCQfSxUm/eD2q6rYpcG/tWC4kEheTVOr8rDmaK1DngpuvoN/GBORie
-         yKZBDj0wf0gvt7YjhDMJc6kFOS/iyvZVpmfK3zw6QSibdmG9TX7HPowZVoe9Y6jJqEEW
-         bxaA==
-X-Gm-Message-State: AGi0PuZuWS4nJ7DNoRXHYlNp8pKLFOnAqhdlH8yAQMscxBfB02rBEFyl
-        OHzXWNbG84jJmSzOxEHqhcLogmYCfFOHggEb3kZlTo+BhLwJTP/lKYpzG+9diOmzPviTYSD2nkV
-        fifDIviLse+g/IZNFfCWPJHrE
-X-Received: by 2002:a1c:4346:: with SMTP id q67mr29832wma.162.1586188233612;
-        Mon, 06 Apr 2020 08:50:33 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJ7Gd3nZkL9uo5+Ou7XIdYwJB7yp+v4e5QytAmqs3y0Z2zBCFk8WkkT0EaCqevxA8KNcArUAA==
-X-Received: by 2002:a1c:4346:: with SMTP id q67mr29819wma.162.1586188233457;
-        Mon, 06 Apr 2020 08:50:33 -0700 (PDT)
-Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id y33sm12153096wrd.84.2020.04.06.08.50.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=rN6eY9Qrqp2MyzcIySN26tQrPMmoMDpY4puhGFyM5mw=;
+        b=ZTVZrLkBUV9j7UXzp+n1rO1F5Cba8re+tiisggBBN7DdXnBPcLyeQnPLUYivzutYDM
+         0uQpGqhuSpZodDQUY6JaWh7zgjlWcJUXWVedEjYzp+5t9lRkuPTJijgTM6fbIcEdv0Hh
+         baeJk25QhB3j+QHdyzMKXlT55Fxl9bw983NotLyOGCJ+H+qe68qJPp9gzYrmcOnK+asr
+         CrZDbVtcOVD+wydJjey1ZyW3M6n29lJNMNDOZEsfCq47iGmzrHk3kQAzouCLyjeDJZQU
+         gagzPNzhSiDfnoKRBF8TkpIjWuKzIEQD0tcTvZ0ekRgaKIAQdzQ362oePf+KEEnNoqhX
+         g0+Q==
+X-Gm-Message-State: AGi0PuZoZ4gJT3BhejTWEDhSEXLfFL3+uIeq4CRPULCzqkAo9cr6hvqM
+        WlNVRJfRosNghng+2P+f5Ho=
+X-Google-Smtp-Source: APiQypKEwHakGNo5xil/xnae82hio7J68wiouyjW1GRU7CpJavnsLPkfCIeBBEPCBzw8SA9wgDdOUg==
+X-Received: by 2002:a17:902:b598:: with SMTP id a24mr19607934pls.230.1586188416657;
+        Mon, 06 Apr 2020 08:53:36 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:89a:e705:d50:b01b:c4e4:35ad])
+        by smtp.gmail.com with ESMTPSA id q43sm3851pjc.40.2020.04.06.08.53.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 08:50:32 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 11:50:30 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH] vdpa-sim: depend on HAS_DMA
-Message-ID: <20200406115000-mutt-send-email-mst@kernel.org>
-References: <20200405081355.2870-1-mst@redhat.com>
- <20200406130927.GA20291@infradead.org>
- <20200406095931-mutt-send-email-mst@kernel.org>
- <0f4f2502-e810-e87a-2fba-dc887d2f4272@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0f4f2502-e810-e87a-2fba-dc887d2f4272@redhat.com>
+        Mon, 06 Apr 2020 08:53:35 -0700 (PDT)
+From:   Aishwarya R <aishwaryarj100@gmail.com>
+X-Google-Original-From: Aishwarya R <raishwar@visteon.com>
+Cc:     raishwar@visteon.com, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: spi-sh-msiof: Fix checkpatch error Complex macros should use ()
+Date:   Mon,  6 Apr 2020 21:23:01 +0530
+Message-Id: <20200406155301.21768-1-raishwar@visteon.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 10:12:56PM +0800, Jason Wang wrote:
-> 
-> On 2020/4/6 下午10:02, Michael S. Tsirkin wrote:
-> > On Mon, Apr 06, 2020 at 06:09:27AM -0700, Christoph Hellwig wrote:
-> > > Pleae just drop the code - we should not add new drivers with custom
-> > > DMA ops.
-> > I'm not sure there's another way to do this: this not a driver, it's a
-> > software emulator that pretends to be an actual device. We can't
-> > have the platform supply DMA ops here since the platform is a regular
-> > x86 or whatever.
-> 
-> 
-> Yes, actually vdpa-sim does not depends on HAS_DMA. Maybe we can do shortcut
-> like dev->dma_ops = vdpasim_dma_ops;
-> 
-> Thanks
-> 
+Fixed checkpatch error "Macros with complex values should be enclosed
+in parentheses"
 
-We can do that - does it them actually work - and not just compile?
+Signed-off-by: Aishwarya R <raishwar@visteon.com>
+---
+ drivers/spi/spi-sh-msiof.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/spi/spi-sh-msiof.c b/drivers/spi/spi-sh-msiof.c
+index 1c11a00a2c36..b2579af0e3eb 100644
+--- a/drivers/spi/spi-sh-msiof.c
++++ b/drivers/spi/spi-sh-msiof.c
+@@ -1398,7 +1398,7 @@ static int sh_msiof_spi_resume(struct device *dev)
+ 
+ static SIMPLE_DEV_PM_OPS(sh_msiof_spi_pm_ops, sh_msiof_spi_suspend,
+ 			 sh_msiof_spi_resume);
+-#define DEV_PM_OPS	&sh_msiof_spi_pm_ops
++#define DEV_PM_OPS	(&sh_msiof_spi_pm_ops)
+ #else
+ #define DEV_PM_OPS	NULL
+ #endif /* CONFIG_PM_SLEEP */
 -- 
-MST
+2.17.1
 
