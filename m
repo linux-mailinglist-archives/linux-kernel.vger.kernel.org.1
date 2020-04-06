@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C4319EF12
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 03:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232B919EF18
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 03:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgDFBY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 21:24:56 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33312 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgDFBY4 (ORCPT
+        id S1727950AbgDFB0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 21:26:30 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:37084 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727913AbgDFB03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 21:24:56 -0400
-Received: by mail-wr1-f66.google.com with SMTP id a25so15479894wrd.0;
-        Sun, 05 Apr 2020 18:24:54 -0700 (PDT)
+        Sun, 5 Apr 2020 21:26:29 -0400
+Received: by mail-pf1-f195.google.com with SMTP id u65so6779142pfb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Apr 2020 18:26:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vt1jfJ08UcjXQKwq+YyYHriAKm3jxCzbKToBskSXe3o=;
-        b=agLJMsSdM0R0NH4VVIMfJFf4iY5uTObaYJ085JnQruZhy9sBJbcl+S4TyhbFR0HY3X
-         wutWmOSqP+wfaNQwkflpL1qZJeFZM72K9W/34OHDEnwM2fK0LJEJhk1uI7UL6Bri/tv6
-         ujc6+JzrFUQHByiLMWzsYg0hVDcIo63pgEU0E1XjqNCdBQ44YASTC0PwKWXYypFXGNb5
-         QQePJtvWxpESfUe9/5vaHoZD+FRi34H5EtEaKLi0+FVk44xcNbozWPrwKJvSGJoEhvLf
-         +6FDoh+yQec8FKrYXzBDkY98EEOdjDz6ZVVfvzE/cE3jiP+fk04382Ysvab3dqoP7KQq
-         d+UQ==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :user-agent:message-id:content-transfer-encoding;
+        bh=bCP/VQw337JNSqQZ2HvUPrrXtQBfFLYo/RggJtgrBzk=;
+        b=JODDqlVLar9yt2N3yezSvdVx6Le8p4yT8o0VbdUK272Yp99tZPIZzaU7VSbHlgz0yL
+         3pvJOFR1go5wOvBReFKpU2wX/ncT5zVydtd0dsEr+qvR08cN9nq6qNugH5iY3J1aUX4o
+         SXPjp37XJg5ZmuLdpa2pNBqPpTNvPaoABnYBYolgC7u15k+Kx6+Y0Se8OWV0MibaywPy
+         RCBPhUgaEq//tEPMtOlac9B0LwDaHgnHWx+L7YqwHznNM3NqeFWz7qcuaqLRhymvFCOj
+         5fpZMRdo2Z4dUgwafbsw4sWlGKKyJu+9txLNk8xZfUh0nigpUPoZA6MgKATYT8sslUi9
+         zC7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vt1jfJ08UcjXQKwq+YyYHriAKm3jxCzbKToBskSXe3o=;
-        b=MNjOzv5g3VJlE7Cjz11FQtKCQZUhHUP+lwh9b2oltR3KsFeWciONBCz2wgzviSTTeo
-         9UH4tu7eo+65Ug28kZStdSr/BEm5kIb3DGAUJn0lLAlQ9FIyvyHsnCL+mn96a8pqvxT7
-         ZIYEbf5j/+ctzWot4Mx76zDeIdXTSo+9KT9p3gmn2fzxoVU8PyJTOKKWUAuZiEH3Ra3b
-         rUEkcfeyfSPgzNjjY2qXzkMb+PghoadzEAUWKq4uPJOu5YEc/4qvR5GAvBrgMbporYR5
-         Wz8Cu4+Ce2dn8g++CO2YBrimy3lg1w2cAJ/YhqSioLq8mOzKt7j6aeBNJmGrJZLjRq8Q
-         HuWw==
-X-Gm-Message-State: AGi0PuagWcSVKlHnHi/70Hgf67vAIEPsAyxpyzBRXbpcAjNxE1CXjO6A
-        Os6w+YoCJyuSpAjFn0KiPzA=
-X-Google-Smtp-Source: APiQypLVKLk1nRlDF+SewfywMWPBBK+OenYYCxJTiIneo0/l/rRExIuuaVZjbpqNSqb5Hz9qwHo6+Q==
-X-Received: by 2002:adf:e848:: with SMTP id d8mr20608408wrn.209.1586136293937;
-        Sun, 05 Apr 2020 18:24:53 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id c85sm22795194wmd.48.2020.04.05.18.24.53
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 05 Apr 2020 18:24:53 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 01:24:53 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Wei Yang <richard.weiyang@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] XArray: entry in last level is not expected to be a
- node
-Message-ID: <20200406012453.tthxonovxzdzoluj@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20200330123643.17120-1-richard.weiyang@gmail.com>
- <20200330123643.17120-6-richard.weiyang@gmail.com>
- <20200330124842.GY22483@bombadil.infradead.org>
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:user-agent:message-id:content-transfer-encoding;
+        bh=bCP/VQw337JNSqQZ2HvUPrrXtQBfFLYo/RggJtgrBzk=;
+        b=OTkN2h5WK8Bi4xUkxJ08kk/BXnzXIi54Fee6wsOQHrEuyDR7r+qCMgia1bi2bsidg0
+         nQOzBDAFjOISfyFc3Tvz8pJ3NhzWXZ3deFSb3qXBg7rtsXBAIRdHhaEMtPz91V0Rhx1D
+         PJZolTMrvzXBeNbSRUpm+j8nFZEXZL13Tv3Sue1VdGVNOLoeoAG7VRkZDJKajftp3sD5
+         3ZPFwgwbYydW+TUsxdy66jEgqF6vqZ1AE+LhtfxFOFLbapOS3GKK1kzK9OwBRAvQacCP
+         TIcxuiXHpf7pYX14kyJJ/pngbbCoTRgvpRVN6KsyUMIsPZUfROmDbJVyo2Ck4KgFkt4p
+         sfEA==
+X-Gm-Message-State: AGi0PuYuKc/h+mMBAYr6UCV8dd7i+NeNli0jVzYLoIKHE+K24OKdM5GX
+        ufK7K3DUYBy3B6AOWrt0LsQRuK9h
+X-Google-Smtp-Source: APiQypKqiMO6ppndjhgdZ6+iwHVyw8jrQA2O3khmT516KEmmVVAwmNYuLrt9v+d/g0JDoWUtctLjpw==
+X-Received: by 2002:a65:5647:: with SMTP id m7mr18606743pgs.371.1586136388432;
+        Sun, 05 Apr 2020 18:26:28 -0700 (PDT)
+Received: from localhost (60-241-117-97.tpgi.com.au. [60.241.117.97])
+        by smtp.gmail.com with ESMTPSA id a3sm10322567pfg.172.2020.04.05.18.26.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Apr 2020 18:26:27 -0700 (PDT)
+Date:   Mon, 06 Apr 2020 11:25:20 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC PATCH v2 12/13] powerpc/kernel: Do not inconditionally save
+ non volatile registers on system call
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>, msuchanek@suse.de,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <029e1064b1ad738785718221ea468c9cfc282457.1586108649.git.christophe.leroy@c-s.fr>
+        <4ef6d617cfd34e09e9bf5a456b2e0b6d2a8a3c96.1586108649.git.christophe.leroy@c-s.fr>
+In-Reply-To: <4ef6d617cfd34e09e9bf5a456b2e0b6d2a8a3c96.1586108649.git.christophe.leroy@c-s.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200330124842.GY22483@bombadil.infradead.org>
-User-Agent: NeoMutt/20170113 (1.7.2)
+User-Agent: astroid/0.15.0 (https://github.com/astroidmail/astroid)
+Message-Id: <1586135554.pnqaj0giue.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 30, 2020 at 05:48:42AM -0700, Matthew Wilcox wrote:
->On Mon, Mar 30, 2020 at 12:36:39PM +0000, Wei Yang wrote:
->> If an entry is at the last level, whose parent's shift is 0, it is not
->> expected to be a node. We can just leverage the xa_is_node() check to
->> break the loop instead of check shift additionally.
->
->I know you didn't run the test suite after making this change.
+Christophe Leroy's on April 6, 2020 3:44 am:
+> Before : 347 cycles on null_syscall
+> After  : 327 cycles on null_syscall
 
-Well, I got your point finally. From commit 76b4e5299565 ('XArray: Permit
-storing 2-byte-aligned pointers'), xa_is_node() will not be *ACURATE*. Those
-2-byte align pointers will be treated as node too.
+The problem I had doing this is that signal delivery wnats full regs,
+and you don't know if you have a signal pending ahead of time if you
+have interrupts enabled.
 
-Well, I found another thing, but not sure whether you have fixed this or not.
+I began to try bailing out back to asm to save nvgprs and call again.
+I think that can be made to work, but it is more complication in asm,
+and I soon found that 64s CPUs don't care about NVGPRs too much so it's
+nice to get rid of the !fullregs state.
 
-If applying following change
+Possibly another approach would be to leave interrupts disabled for the
+case where you have no work to do. You could create a small
+syscall_exit_prepare_nowork fastpath for that case for 32-bit, perhaps?
 
-@@ -1461,6 +1461,11 @@ static void check_align_1(struct xarray *xa, char *name)
-                                        GFP_KERNEL) != 0);
-                XA_BUG_ON(xa, id != i);
-        }
-+       XA_STATE_ORDER(xas, xa, 0, 0);
-+       entry = xas_find_conflict(&xas);
-        xa_for_each(xa, index, entry)
-                XA_BUG_ON(xa, xa_is_err(entry));
-        xa_destroy(xa);
-
-We trigger an error message. The reason is the same. And we can fix this with
-the same approach in xas_find_conflict().
-
-If you think this is the proper way, I would add a patch for this.
-
--- 
-Wei Yang
-Help you, Help me
+Thanks,
+Nick
+=
