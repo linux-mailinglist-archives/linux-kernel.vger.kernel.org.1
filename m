@@ -2,142 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E48DD19F21A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CFD19F21D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:11:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgDFJKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:10:18 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:38346 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgDFJKS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:10:18 -0400
-Received: by mail-io1-f68.google.com with SMTP id e79so5122781iof.5;
-        Mon, 06 Apr 2020 02:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GIpFRdiLsH923QmyN8wQqcWX+/WhMLr84OozpPJEaUE=;
-        b=FkmsW/xQ+XFNOVH8bsSpa35ZszZVS4BIi3STwW48yC47+Y3mnceTZow58CS0jgRcbl
-         1Yl3ImvbL1dBSGuQnfOTjy4hZ5i0/X8IRbo7tmWrHRUej0WUf/9bV0TGvlCtCJviiNz2
-         Tp9zlpsXdLGHS0NLGsEn/6CU8myL/yHrgsDI/LOstqo/QvF6FKY00rn2OHCS2lzynTCw
-         Ad5mlBPrcV/XsuBuMcMyh/VKBAufytMxCy6N8ik7+IPdg2o/akQiCRiOqSxPKi+ryenS
-         iNOOIQ8+/0EDZjf0ai2HVaCO2MA+ICpx165GDvumkYzfd1zl1ie+ZgT6naAcLpR7lXwA
-         dsHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GIpFRdiLsH923QmyN8wQqcWX+/WhMLr84OozpPJEaUE=;
-        b=bLfytYO18zJJ7uQiMaFz5/gcV7Jd6D2TAgOyem2dLZybw5iP/GJNTr4U+n1cqbtMMV
-         PUrbtMuocMKuB2Vz8VxBuhYnQzqlcZGlBa7r3+0WSPOiKN8tPtG8eJIL4mhiHCdfonNQ
-         fLlrvfSMQk8PV0haoGgtYt/DfIUjbaiB00mhGj1iysZVIevLqtlawKrwrwPR8/JWM+78
-         L08QnLHEliFvE8X8ZArSrH5DUCsP1QefANxu7SLr6cJTRAVO3EcyZnj/IpVs1+ycrj+m
-         UOMXrIyxOsLZY9DrHdwszWNrg5wzNAJobWjw4GeMnoON4LkDlYuQsVOWqVtqm6B0I/8m
-         oxzA==
-X-Gm-Message-State: AGi0PuZFBz5HsqNrOvhZ0jkRukBxxLftk7uSYzWf/WWG6HtqJozG0LOO
-        E2iZYechx9tutTuyPRWMcScT5rjYqVNdOubK7s4=
-X-Google-Smtp-Source: APiQypI6WUS4w/Pl7H3i+0Z29uGLfg0BUZ7h87bcQVPI4mu2n4FcYAiepk1wwwunIQdOU5ejrdzdmERAO+JXLVFNamk=
-X-Received: by 2002:a6b:14d4:: with SMTP id 203mr3907248iou.123.1586164217295;
- Mon, 06 Apr 2020 02:10:17 -0700 (PDT)
+        id S1726924AbgDFJLI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Apr 2020 05:11:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36872 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726689AbgDFJLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 05:11:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id B8358AC40;
+        Mon,  6 Apr 2020 09:11:03 +0000 (UTC)
+From:   Nicolai Stange <nstange@suse.de>
+To:     Nicolai Stange <nstange@suse.de>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
+        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
+        ming.lei@redhat.com, mhocko@suse.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [RFC 3/3] block: avoid deferral of blk_release_queue() work
+References: <20200402000002.7442-1-mcgrof@kernel.org>
+        <20200402000002.7442-4-mcgrof@kernel.org>
+        <774a33e8-43ba-143f-f6fd-9cb0ae0862ac@acm.org>
+        <87o8saj62m.fsf@suse.de>
+Date:   Mon, 06 Apr 2020 11:11:01 +0200
+In-Reply-To: <87o8saj62m.fsf@suse.de> (Nicolai Stange's message of "Thu, 02
+        Apr 2020 16:49:37 +0200")
+Message-ID: <87eet1j7x6.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20200405173601.24331-1-peron.clem@gmail.com> <20200405173601.24331-8-peron.clem@gmail.com>
-In-Reply-To: <20200405173601.24331-8-peron.clem@gmail.com>
-From:   =?UTF-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
-Date:   Mon, 6 Apr 2020 11:10:06 +0200
-Message-ID: <CAJiuCcdhnCLOfe1t7oFWp8KR+_4gZ-eqpZd7zX1O3OO=5ZMB0w@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] arm64: dts: allwinner: h6: Enable CPU and GPU opp
- tables for Orange Pi boards
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Nicolai Stange <nstange@suse.de> writes:
 
-On Sun, 5 Apr 2020 at 19:36, Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>=
- wrote:
+> Bart Van Assche <bvanassche@acm.org> writes:
 >
-> Enable CPU and GPU opp tables for Orange Pi boards.
+>> The description of this patch mentions a single blk_release_queue() call
+>> that happened in the past from a context from which sleeping is not
+>> allowed and from which sleeping is allowed today. Have all other
+>> blk_release_queue() / blk_put_queue() calls been verified to see whether
+>> none of these happens from a context from which sleeping is not allowed?
 >
-> This needs to change the CPU regulator max voltage to fit
-> the OPP table.
+> I've just done this today and found the following potentially
+> problematic call paths to blk_put_queue().
 >
-> Also add the ramp-delay information to avoid any out of spec
-> running as the regulator is slower at reaching the voltage
-> requested compare to the PLL reaching the frequency.
+> 1.) mem_cgroup_throttle_swaprate() takes a spinlock and
+>     calls blkcg_schedule_throttle()->blk_put_queue().
 >
-> There is no such information for AXP805 but similar PMIC (AXP813)
-> has a DVM (Dynamic Voltage scaling Management) ramp rate equal
-> to 2500uV/us.
+>     Also note that AFAICS mem_cgroup_try_charge_delay() can be called
+>     with GFP_ATOMIC.
 >
-> Signed-off-by: Cl=C3=A9ment P=C3=A9ron <peron.clem@gmail.com>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
+> 2.) scsi_unblock_requests() gets called from a lot of drivers and
+>     invoke blk_put_queue() through
+>     scsi_unblock_requests() -> scsi_run_host_queues() ->
+>     scsi_starved_list_run() -> blk_put_queue().
 >
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi b/arch=
-/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-> index 37f4c57597d4..f3ba500ce4c6 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
+>     Most call sites are fine, the ones which are not are:
+>     a.) pmcraid_complete_ioa_reset(). This gets assigned
+>         to struct pmcraid_cmd's ->cmd_done and later invoked
+>         under a spinlock.
+>
+>     b.) qla82xx_fw_dump() and qla8044_fw_dump().
+>         These can potentially block w/o this patch already,
+>         because both invoke qla2x00_wait_for_chip_reset().
+>
+> 	However, they can get called from IRQ context. For example,
+>         qla82xx_intr_handler(), qla82xx_msix_default() and
+>         qla82xx_poll() call qla2x00_async_event(), which calls
+>         ->fw_dump().
+>
+> 	The aforementioned functions can also reach ->fw_dump() through
+>         qla24xx_process_response_queue()->qlt_handle_abts_recv()->qlt_response_pkt_all_vps()
+>         ->qlt_response_pkt()->qlt_handle_abts_completion()->qlt_chk_unresolv_exchg()
+>         -> ->fw_dump().
+>
+> 	But I'd consider this a problem with the driver -- either
+> 	->fw_dump() can sleep and must not be called from IRQ context
+>         or they must not invoke qla2x00_wait_for_hba_ready().
+>
+>
+> (I can share the full analysis, but it's lengthy and contains nothing
+>  interesting except for what is listed above).
+>
+>
+> One final note though: If I'm not mistaken, then the final
+> blk_put_queue() can in principle block even today, simply by virtue of
+> the kernfs operations invoked through
+> kobject_put()->kobject_release()->kobject_cleanup()->kobject_del()
+> ->sysfs_remove_dir()->kernfs_remove()->mutex_lock()?\
 
-Made a mistake here.
-Ondrej Jirman test DVFS on Orange Pi 3 board which is not this device-tree =
-file.
+That's wrong, I missed kobject_del() invocation issued from
+blk_unregister_queue(). Thus, blk_put_queue() in its current
+implementation won't ever block.
 
-Will fix in V3.
+Thanks,
 
-Regards,
-Cl=C3=A9ment
+Nicolai
 
-> @@ -5,6 +5,8 @@
->  /dts-v1/;
->
->  #include "sun50i-h6.dtsi"
-> +#include "sun50i-h6-cpu-opp.dtsi"
-> +#include "sun50i-h6-gpu-opp.dtsi"
->
->  #include <dt-bindings/gpio/gpio.h>
->
-> @@ -45,6 +47,10 @@
->         };
->  };
->
-> +&cpu0 {
-> +       cpu-supply =3D <&reg_dcdca>;
-> +};
-> +
->  &ehci0 {
->         status =3D "okay";
->  };
-> @@ -161,7 +167,8 @@
->                         reg_dcdca: dcdca {
->                                 regulator-always-on;
->                                 regulator-min-microvolt =3D <810000>;
-> -                               regulator-max-microvolt =3D <1080000>;
-> +                               regulator-max-microvolt =3D <1160000>;
-> +                               regulator-ramp-delay =3D <2500>;
->                                 regulator-name =3D "vdd-cpu";
->                         };
->
-> @@ -169,6 +176,7 @@
->                                 regulator-enable-ramp-delay =3D <32000>;
->                                 regulator-min-microvolt =3D <810000>;
->                                 regulator-max-microvolt =3D <1080000>;
-> +                               regulator-ramp-delay =3D <2500>;
->                                 regulator-name =3D "vdd-gpu";
->                         };
->
-> --
-> 2.20.1
->
+-- 
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg), GF: Felix Imendörffer
