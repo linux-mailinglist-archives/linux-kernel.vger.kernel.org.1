@@ -2,162 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A03F419F42B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC60019F431
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbgDFLKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 07:10:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40542 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgDFLKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 07:10:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 8ADA1ABAD;
-        Mon,  6 Apr 2020 11:10:11 +0000 (UTC)
-Subject: Re: [PATCH] thermal: devfreq_cooling: inline all stubs for
- CONFIG_DEVFREQ_THERMAL=n
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, linux-pm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, javi.merino@kernel.org,
-        edubezval@gmail.com, orjan.eide@arm.com, stable@vger.kernel.org
-References: <20200403205133.1101808-1-martin.blumenstingl@googlemail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- mQENBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAG0J1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPokBVAQTAQgAPhYh
- BHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsDBQkDwmcABQsJCAcCBhUKCQgLAgQWAgMB
- Ah4BAheAAAoJEGgNwR1TC3ojR80H/jH+vYavwQ+TvO8ksXL9JQWc3IFSiGpuSVXLCdg62AmR
- irxW+qCwNncNQyb9rd30gzdectSkPWL3KSqEResBe24IbA5/jSkPweJasgXtfhuyoeCJ6PXo
- clQQGKIoFIAEv1s8l0ggPZswvCinegl1diyJXUXmdEJRTWYAtxn/atut1o6Giv6D2qmYbXN7
- mneMC5MzlLaJKUtoH7U/IjVw1sx2qtxAZGKVm4RZxPnMCp9E1MAr5t4dP5gJCIiqsdrVqI6i
- KupZstMxstPU//azmz7ZWWxT0JzgJqZSvPYx/SATeexTYBP47YFyri4jnsty2ErS91E6H8os
- Bv6pnSn7eAq5AQ0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRH
- UE9eosYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgT
- RjP+qbU63Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+R
- dhgATnWWGKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zb
- ehDda8lvhFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r
- 12+lqdsAEQEAAYkBPAQYAQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkD
- wmcAAAoJEGgNwR1TC3ojpfcIAInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2
- h9ifw9Nf2TjCZ6AMvC3thAN0rFDj55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxU
- n+LSiRrOdywn6erjxRi9EYTVLCHcDhBEjKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uI
- aMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU2y3ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBW
- HE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/tsZvyEX6zN8CtirPdPWu/VXNRYAl/lat7lSI
- 3H26qrE=
-Message-ID: <0af90cb5-f6ba-d3a9-2cc7-8813ebab5ed6@suse.de>
-Date:   Mon, 6 Apr 2020 13:10:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727192AbgDFLLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 07:11:46 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17841 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726873AbgDFLLq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 07:11:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586171466;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=Date:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Subject:To:CC:From:Message-ID;
+        bh=Y6H0UZ+rUE7MyyGuh8+kpzPUZz7EvzhkzLuIA8Y0cbg=;
+        b=HWFrAsg7jj35y2hzV4v4EB/Vet6MmdhW8rHbiJqCjULfMr4nsnIZ5ptGmbdFJmDk
+        dIcucmWMia4qv2vFhFt5xI3ACXET5zYtyeDZK1Rz1aw+8JCKFDtX1J6oWZwQDOqfrvP
+        oK6FPcbPjG5XBHjV95efIMLBYsAo5PNICq63hU3o=
+Received: from [26.26.26.1] (115.193.87.168 [115.193.87.168]) by mx.zoho.com.cn
+        with SMTPS id 1586171461806156.29970469650766; Mon, 6 Apr 2020 19:11:01 +0800 (CST)
+Date:   Mon, 06 Apr 2020 19:10:58 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAKcpw6U=VW+h4sU1fzrsqXU9z-zVfcFsENKHgAD4paqtndip2w@mail.gmail.com>
+References: <20200405082451.694910-1-jiaxun.yang@flygoat.com> <alpine.LFD.2.21.2004051738000.4156324@eddie.linux-mips.org> <96C9B1A0-2F89-4650-B0A4-6A6242A2AA0A@flygoat.com> <alpine.LFD.2.21.2004051817310.4156324@eddie.linux-mips.org> <CAKcpw6U=VW+h4sU1fzrsqXU9z-zVfcFsENKHgAD4paqtndip2w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200403205133.1101808-1-martin.blumenstingl@googlemail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="rs5boHrlPxoqBFfxZ68VQcjl33WRm3lV0"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] MIPS: malta: Set load address for 32bit kernel correctly
+To:     YunQiang Su <wzssyqa@gmail.com>,
+        "Maciej W. Rozycki" <macro@linux-mips.org>
+CC:     linux-mips <linux-mips@vger.kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <079F408B-9C44-4317-8DD3-7A1896564960@flygoat.com>
+X-ZohoCNMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rs5boHrlPxoqBFfxZ68VQcjl33WRm3lV0
-Content-Type: multipart/mixed; boundary="XtqKdN7vdrbl3NXOzpHyXgHa0EpwxDHhz";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- rui.zhang@intel.com, daniel.lezcano@linaro.org, amit.kucheria@verdurent.com,
- linux-pm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, javi.merino@kernel.org,
- edubezval@gmail.com, orjan.eide@arm.com, stable@vger.kernel.org
-Message-ID: <0af90cb5-f6ba-d3a9-2cc7-8813ebab5ed6@suse.de>
-Subject: Re: [PATCH] thermal: devfreq_cooling: inline all stubs for
- CONFIG_DEVFREQ_THERMAL=n
-References: <20200403205133.1101808-1-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20200403205133.1101808-1-martin.blumenstingl@googlemail.com>
-
---XtqKdN7vdrbl3NXOzpHyXgHa0EpwxDHhz
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+=E4=BA=8E 2020=E5=B9=B44=E6=9C=886=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=886:=
+57:18, YunQiang Su <wzssyqa@gmail=2Ecom> =E5=86=99=E5=88=B0:
+>Maciej W=2E Rozycki <macro@linux-mips=2Eorg> =E4=BA=8E2020=E5=B9=B44=E6=
+=9C=886=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=881:23=E5=86=99=E9=81=93=
+=EF=BC=9A
+>>
+>> On Mon, 6 Apr 2020, Jiaxun Yang wrote:
+>>
+>> > > Given the description above I think it should be done uniformly
+>and
+>> > >automatically across all platforms by trimming the address
+>supplied
+>> > >with
+>> > >$(load-y) to low 8 digits in a single place, that is at the place
+>where
+>> > >
+>> > >the variable is consumed=2E  This will reduce clutter across
+>Makefile
+>> > >fragments, avoid inconsistencies and extra work to handle
+>individual
+>> > >platforms as the problem is triggered over and over again, and
+>limit
+>> > >the
+>> > >risk of mistakes=2E
+>> >
+>> > I was intended to do like this but failed to find a proper way=2E
+>> >
+>> > Makefile isn't designed for any kind of calculation=2E
+>> > And shell variables are 64-bit signed so it can't hold such a huge
+>variable=2E
+>> >
+>> > Just wish somebody can give me a way to do like:
+>> >
+>> > ifndef CONFIG_64BIT
+>> > load-y =3D $(load-y) & 0xffffffff
+>> > endif
+>>
+>>  Use the usual shell tools like `sed', `cut', `awk', or whatever we
+>use in
+>
+>perl may be the easiest to use tool here=2E
+>
+>ifndef CONFIG_64BIT
+>  load-y :=3D $(shell $(PERL) -e 'print $(load-y) & 0xffffffff')
+>endif
+>
+>Note that it is `:=3D' instead of '=3D'=2E
 
-Am 03.04.20 um 22:51 schrieb Martin Blumenstingl:
-> When CONFIG_DEVFREQ_THERMAL is disabled all functions except
-> of_devfreq_cooling_register_power() were already inlined. Also inline
-> the last function to avoid compile errors when multiple drivers call
-> of_devfreq_cooling_register_power() when CONFIG_DEVFREQ_THERMAL is not
-> set. Compilation failed with the following message:
->   multiple definition of `of_devfreq_cooling_register_power'
-> (which then lists all usages of of_devfreq_cooling_register_power())
->=20
-> Thomas Zimmermann reported this problem [0] on a kernel config with
-> CONFIG_DRM_LIMA=3D{m,y}, CONFIG_DRM_PANFROST=3D{m,y} and
-> CONFIG_DEVFREQ_THERMAL=3Dn after both, the lima and panfrost drivers
-> gained devfreq cooling support.
->=20
-> [0] https://www.spinics.net/lists/dri-devel/msg252825.html
->=20
-> Fixes: a76caf55e5b356 ("thermal: Add devfreq cooling")
-> Cc: stable@vger.kernel.org
-> Reported-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>=
+It seems like perl is not one of kernel's build dependencies=2E[1]
+I'm comsidering a alternative solution,
+write a small hostprog in C to deal with that=2E
+
+Thanks=2E
+
+[1]: https://www=2Ekernel=2Eorg/doc/html/v5=2E6/process/changes=2Ehtml
 
 
-Tested-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-> ---
->  include/linux/devfreq_cooling.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/devfreq_cooling.h b/include/linux/devfreq_co=
-oling.h
-> index 4635f95000a4..79a6e37a1d6f 100644
-> --- a/include/linux/devfreq_cooling.h
-> +++ b/include/linux/devfreq_cooling.h
-> @@ -75,7 +75,7 @@ void devfreq_cooling_unregister(struct thermal_coolin=
-g_device *dfc);
-> =20
->  #else /* !CONFIG_DEVFREQ_THERMAL */
-> =20
-> -struct thermal_cooling_device *
-> +static inline struct thermal_cooling_device *
->  of_devfreq_cooling_register_power(struct device_node *np, struct devfr=
-eq *df,
->  				  struct devfreq_cooling_power *dfc_power)
->  {
->=20
+>
+>> the kernel build already for other purposes=2E  There's no need to do
+>any
+>> actual calculation here to extract the last 8 characters (and the
+>leading
+>> `0x' prefix)=2E  At worst you can write a small C program, compile it
+>with
+>> the build system compiler and run, as we already do for some stuff=2E
+>>
+>>   Maciej
 
 --=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---XtqKdN7vdrbl3NXOzpHyXgHa0EpwxDHhz--
-
---rs5boHrlPxoqBFfxZ68VQcjl33WRm3lV0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl6LDhIACgkQaA3BHVML
-eiPOmggAo2AgrVyoaHLR1NAsGf/aJPm535dYRX/7X3exyn7bcEApm1TYiMsmbZI2
-KJ4umEw7myXEoQQfmUpRKywvdTOyAaapShsIm8xvIj/F8/U/yKGWXQNIfcPhhoFh
-4LrhPYQ/tTkju79OLVcVMc7DK2darHAnpYwlgW2CKOFZCix4mONZQNp+HKfc+j07
-rXzL8N9TrDugLDaVqpLum9Lf+VMATa4ojnHts0quf72cPYQn4pp1g+CVyjb6mzIn
-bcVyRfp+fc2v92jz2KHWC6vxz54jnv7E6C1HMYCDdPThriG3dM62L65p1+J1i8Hp
-BopII8/+/VpG8DRx70xtMuiW+NJvXg==
-=KDV+
------END PGP SIGNATURE-----
-
---rs5boHrlPxoqBFfxZ68VQcjl33WRm3lV0--
+Jiaxun Yang
