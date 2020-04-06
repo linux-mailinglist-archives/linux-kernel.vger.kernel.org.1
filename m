@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B409919FE4B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5746419FE50
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbgDFTn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 15:43:57 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:42066 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726464AbgDFTnv (ORCPT
+        id S1726632AbgDFToK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 15:44:10 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:38833 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726504AbgDFTnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 15:43:51 -0400
-Received: by mail-lf1-f66.google.com with SMTP id s13so448628lfb.9;
-        Mon, 06 Apr 2020 12:43:50 -0700 (PDT)
+        Mon, 6 Apr 2020 15:43:52 -0400
+Received: by mail-lj1-f194.google.com with SMTP id v16so1051261ljg.5;
+        Mon, 06 Apr 2020 12:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aMH1Nn5N++bI82vIh9Zeuiq3h9nQ3Tmnp6S+rKl7EQQ=;
-        b=rDKIPBDCLHw62B4B62vZtPEj8/RgTX/2PBk4DPzAR2LVxEJnM4P8uYqE2ug2BzkVur
-         0JAm3X+kiiiDVf392d+LptmOs5OPuq1V4QOT03tVJdX2CkNGyHCml9dEBNwGQ48E1KhO
-         VAum9VB+3kGjAJdJY1bKdIasM9RaXftVmhYFhwvrvj2ECcJVzNMESdrtyonJCAJ1w0J+
-         GcSVLxmmAxn351V686kgIdgdpLN/0Dp2nRWINRG9aRTTJU1/a9WQi8t/K+l36ckO1fkN
-         3UwI6Hb9XiZDZ1W9ydNom8T/fwJJbhiRn1rDDGCYUURd6tKW5BH3Z7vYxXmCQrgMN9ya
-         Obrw==
+        bh=h9tkgMFNzJvbwS5Mj8KGdhRxtWizvU/2l3mcyErW424=;
+        b=No4ucvr+ihtQGx7piq/XioUheCKpFmahFuTe8BVkyxriIJ3+PSB7RACUzg76eNsD6a
+         s+6DQ3hWJSi2mCbVdNq3GzLC4AaIOBfHrgJjN2/Gcf8pxVqDzNzeMICtxYOtfcVpqs8J
+         m506ZpFtHWKVViVYRHH25jy34iSpXkTiyxTSZ7Oo+0EPIe4e1UZm2qdeFdp1cR1ex/xB
+         0By+z5yUmKnrGx7f70f/cqxxpqDUNOfTVUjLPVc4JhjkPoX2HDld+h4aLUAnQd7nh53d
+         m1wKkq+XYc+w1borP9/qRNfAUJH836+JryBomyV+nIMW7bUdB9c6Qv2QOvuZUBB+jAyB
+         o/Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aMH1Nn5N++bI82vIh9Zeuiq3h9nQ3Tmnp6S+rKl7EQQ=;
-        b=NxJs7rXSLtG2ydcuajjnAaarDvfySAoHrWzQKpwRr8l5gxBkQ3UWr15sRTjp38rG11
-         J5r3EAaq94M1LlMMFbS174WW30zuxvBcp37iNhl2SO2xKxOKijgwAKcPmX4LTV2yEsfn
-         AGBTxLOEs71BX7t0+g4XmM/pf7lSnQnOW0e9wY1cRunufBPQU5Lzf7m7bm7DtPWcRx5Z
-         hHSgI+znssJppLvovTa93MnGBvdo5m5s9AbMPv42p8m5g8d5+RWBN7TXXpCOAUpN8uzP
-         HR//ziNU8SkPgsZo8CtSp00tKKuHpOu1dRlVS7fbNkNAGjMpbbP50A5G/BLxwDjyCXi2
-         184A==
-X-Gm-Message-State: AGi0PuYxDuH3jR9g4Z9EtDWulYISGZRP+BxcwVNO8Pc+Arr9mYq1DLFM
-        Tdj3siDyDya2IjkMdqwDlVo=
-X-Google-Smtp-Source: APiQypIFkAtpfM05vPJXyGK6D4nBuDiu8PN3Ch+eamwuvFKgcMmkpNzc2TYkkPVFbrkBHYmIMlWBzA==
-X-Received: by 2002:ac2:4853:: with SMTP id 19mr6664580lfy.171.1586202229423;
-        Mon, 06 Apr 2020 12:43:49 -0700 (PDT)
+        bh=h9tkgMFNzJvbwS5Mj8KGdhRxtWizvU/2l3mcyErW424=;
+        b=hno5aESXr3BBhRthtII65pNs8XiCiqD/1FFpH+VLvdYOui6/A4NhV8VAU/4LqAqXA1
+         M0xD8lLu5b3Y8qvMLLVPCaSE06b2WZenvU8Eo2S096A4PP/oF2NmRerYBPM2pVNXHsqj
+         Q1DfYJ7vovVG19zxYCc2yy8JbJV160nwSbKpQGIalv52FLdoVyBHjR4bGhoUg4pz5qgS
+         wOydPcU0EylGqx2McR1u8PhKqmyr6K/3fVyMtuURiDHHdHwUPX14wBIgyR7+xgMHE/Mg
+         CadGjF/nAoAJb1qqVqmDSZzsd8EAspsfLTLnFx+gf48ysLYJCbjasHOq10PSdeAV5Vwx
+         nDaA==
+X-Gm-Message-State: AGi0PuaofHA0wkXNUZ+DQWRIM5OMrK1Z220bwjLYNBzQ37VAzBRqdrxA
+        kc50Xq6yu798gLlnAfXp6HA=
+X-Google-Smtp-Source: APiQypKAK7UGTqgb/z+ukoC6VwgVw+YPVpEN9s3FFYFCKks5ZtwP1J2TWVMGJBSgBa/UfBnKq1l83w==
+X-Received: by 2002:a2e:91cc:: with SMTP id u12mr576009ljg.244.1586202230524;
+        Mon, 06 Apr 2020 12:43:50 -0700 (PDT)
 Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.gmail.com with ESMTPSA id r206sm4996233lff.65.2020.04.06.12.43.48
+        by smtp.gmail.com with ESMTPSA id r206sm4996233lff.65.2020.04.06.12.43.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 12:43:48 -0700 (PDT)
+        Mon, 06 Apr 2020 12:43:50 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -58,9 +58,9 @@ To:     Rob Herring <robh+dt@kernel.org>,
         Matt Merhar <mattmerhar@protonmail.com>
 Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/6] dt-bindings: ARM: tegra: Add Acer Iconia Tab A500
-Date:   Mon,  6 Apr 2020 22:41:08 +0300
-Message-Id: <20200406194110.21283-5-digetx@gmail.com>
+Subject: [PATCH v2 5/6] dt-bindings: ARM: tegra: Add ASUS Google Nexus 7
+Date:   Mon,  6 Apr 2020 22:41:09 +0300
+Message-Id: <20200406194110.21283-6-digetx@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200406194110.21283-1-digetx@gmail.com>
 References: <20200406194110.21283-1-digetx@gmail.com>
@@ -71,27 +71,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a binding for the Tegra20-based Acer Iconia Tab A500 tablet device.
+Add a binding for the Tegra30-based ASUS Google Nexus 7 tablet device.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- Documentation/devicetree/bindings/arm/tegra.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/arm/tegra.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/Documentation/devicetree/bindings/arm/tegra.yaml b/Documentation/devicetree/bindings/arm/tegra.yaml
-index 60b38eb5c61a..7fd0b66c69b2 100644
+index 7fd0b66c69b2..fb3bbf7a5fb4 100644
 --- a/Documentation/devicetree/bindings/arm/tegra.yaml
 +++ b/Documentation/devicetree/bindings/arm/tegra.yaml
-@@ -34,6 +34,9 @@ properties:
-               - toradex,colibri_t20-iris
-           - const: toradex,colibri_t20
-           - const: nvidia,tegra20
+@@ -62,6 +62,13 @@ properties:
+               - toradex,colibri_t30-eval-v3
+           - const: toradex,colibri_t30
+           - const: nvidia,tegra30
 +      - items:
-+          - const: acer,picasso
-+          - const: nvidia,tegra20
++          - const: asus,grouper
++          - const: nvidia,tegra30
++      - items:
++          - const: asus,tilapia
++          - const: asus,grouper
++          - const: nvidia,tegra30
        - items:
            - enum:
-               - nvidia,beaver
+               - nvidia,dalmore
 -- 
 2.25.1
 
