@@ -2,136 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFD319F3F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813CC19F410
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgDFK7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:59:32 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40226 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgDFK7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:59:31 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036AwtAp000826;
-        Mon, 6 Apr 2020 10:59:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=KZEr6EIzr1OQIdpVcJJGHW4pz4erth0s9VrWc1Y3tBM=;
- b=DIRb3j5+SZpmRrsPf6gnChovNw87rQWEqqfhf4LlR7M9XO6ZtR9YnxzdFQx6vSWrDfxX
- 5ihFml08eFNiAGjsJpjbefy3kqLtcdP9mO8XzwFaN9Hbd9TsoSvkk/IU4jFkhQqydzZu
- T7hND+CfdJfAaUym9yLdPl6JVd0lH+vtglY1TTiO7YsusAZPZhcdwmY8h1jVuqbo8nXg
- OlgLk4hsdd9QrqdAziHSE8ppb9yfZZMwyauF+M9RwW2ri2s16EX196OQnrOXmwc3eXEe
- sax4W0B9FDQGA0jtgECOWFlaBb8p9O2qGp7o2yGoHvEfU1Hy2nmqburtCmf24d+3AT/h rw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 306j6m6446-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 10:59:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036AuZ76129318;
-        Mon, 6 Apr 2020 10:59:14 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 3073spq3hb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 10:59:14 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 036AxBPC001114;
-        Mon, 6 Apr 2020 10:59:12 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 06 Apr 2020 03:59:11 -0700
-Subject: Re: [PATCH 4/7] objtool: Add support for return trampoline call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Julien Thierry <jthierry@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-References: <fc224792-bd1c-08ff-072f-e584740521b4@oracle.com>
- <a250f29d-969a-b704-6dd6-c6cc7b84f526@redhat.com>
- <20200402154022.GG20730@hirez.programming.kicks-ass.net>
- <bc3a31dc-9d59-5756-aad3-187533f05654@redhat.com>
- <20200403151757.lhhia7pzqptvlqz5@treble>
- <20200403154620.GS20730@hirez.programming.kicks-ass.net>
- <20200404133218.GL20760@hirez.programming.kicks-ass.net>
- <20200404142232.wpn7estahnabfy3z@treble>
- <20200404155126.GF20730@hirez.programming.kicks-ass.net>
- <27f433a3-6109-9831-5292-3df4155e10fb@oracle.com>
- <20200406093143.GH20730@hirez.programming.kicks-ass.net>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <0e8e9c1f-e03b-207e-a527-cf8deddf82a0@oracle.com>
-Date:   Mon, 6 Apr 2020 13:03:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
-MIME-Version: 1.0
-In-Reply-To: <20200406093143.GH20730@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727254AbgDFLET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 07:04:19 -0400
+Received: from mail-am6eur05on2069.outbound.protection.outlook.com ([40.107.22.69]:10593
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726883AbgDFLET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 07:04:19 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=anxb+w5Sui8S81+t/ryK2/+OAqZ5LkiGvw8WLtnfqqHT1EYT95CnPJGWnwb+64FElwAFbFTFvvSjhhzcI9irf71Ujr8GZhXUbpnn+XhmcnJn50t8hNo68ueVipIh3wXHEoFrFtYp1VnZBX83va5vOnQU2SFDQDG1rJCrtT4KLlpgGV9qvmAeDTqkKD+ugf0k2wRtBsadrQqzqnehDFS2YJ/y2zUXpHkKgTAYxCQ7ulRUSRbxWXF97dtM3WhgCTYFLRHiTUuMXMTXjqhExYVlyjVN617wHOjzdB5eZsarzSvZABZ5OPPWjH5Hb4mf7WIsOu0BqPNtWVFWipM7MnKyDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QR5HZD632/QO+lCYPyrprEY/ApP686I1Ub6hrx63uuU=;
+ b=CZSRu7SW4TRklkTmBTElk7h88siqncESHGYNNtp/PEwyAplJbRs+yjREBbjBy7f5f3ahFrmY+gawAtTs1nBCKXf74p+mcGt/vHfC2gITvvcZHmkhAknOZ8BEdHiVmRnsPw3eD4KnZnhZo732Zy+RoWg/QYsoVm40hrJ+u+k1zf7b9IyVWLhbIlXPHdnjf4y0Ok/fWYOEVHjDCcpZLWYjYrdeiR87tkKNHHWHXps0sY4PsELNMYvooe5Sq2XRieptBCwVPWCbVTavUdNv2JxwRAuNhreWpH/2TuWGKyV06oski4hfm92swrZ4NXlz9G+9V2/KJpjNu7mTznQ1p3Dwxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QR5HZD632/QO+lCYPyrprEY/ApP686I1Ub6hrx63uuU=;
+ b=n2pNvVdFD9rRMaqyVVqxEcbcmP9fNyR6ydjMOE9ltXWQww7l1Evn4rWxSI4emi/XNnvlcghEYFrjFw4alTuaZlM1PGmW6ZkiMcMvgdB+0U2MVVbuNYJ0SmjS2ffMgIalcPF7KEErPXE+dr3E086RLiKIJABf10NYVh+hjE6i2fU=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=horia.geanta@nxp.com; 
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com (2603:10a6:803:7::25)
+ by VI1PR0402MB3568.eurprd04.prod.outlook.com (2603:10a6:803:f::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16; Mon, 6 Apr
+ 2020 11:04:15 +0000
+Received: from VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::751e:7e8d:ed4:ef5f]) by VI1PR0402MB3485.eurprd04.prod.outlook.com
+ ([fe80::751e:7e8d:ed4:ef5f%7]) with mapi id 15.20.2878.021; Mon, 6 Apr 2020
+ 11:04:15 +0000
+Subject: Re: [PATCH 2/4] crypto: caam - fix use-after-free KASAN issue for
+ AEAD algorithms
+To:     Iuliana Prodan <iuliana.prodan@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+References: <1586087411-8505-1-git-send-email-iuliana.prodan@nxp.com>
+ <1586087411-8505-3-git-send-email-iuliana.prodan@nxp.com>
+From:   =?UTF-8?Q?Horia_Geant=c4=83?= <horia.geanta@nxp.com>
+Message-ID: <25cd577b-a690-0e7f-6c1e-6dc7430c7c69@nxp.com>
+Date:   Mon, 6 Apr 2020 14:04:11 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+In-Reply-To: <1586087411-8505-3-git-send-email-iuliana.prodan@nxp.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
- malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004060096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004060096
+X-ClientProxiedBy: AM6P192CA0024.EURP192.PROD.OUTLOOK.COM
+ (2603:10a6:209:83::37) To VI1PR0402MB3485.eurprd04.prod.outlook.com
+ (2603:10a6:803:7::25)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.129] (84.117.251.185) by AM6P192CA0024.EURP192.PROD.OUTLOOK.COM (2603:10a6:209:83::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16 via Frontend Transport; Mon, 6 Apr 2020 11:04:14 +0000
+X-Originating-IP: [84.117.251.185]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 898e79a8-11bb-4a20-8a7e-08d7da1a3e81
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3568:|VI1PR0402MB3568:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3568FD3642150F73255A0C8998C20@VI1PR0402MB3568.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1417;
+X-Forefront-PRVS: 0365C0E14B
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3485.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(396003)(346002)(136003)(376002)(366004)(956004)(16526019)(186003)(31696002)(66476007)(6486002)(66946007)(26005)(478600001)(81156014)(8676002)(81166006)(66556008)(5660300002)(31686004)(2616005)(86362001)(110136005)(4326008)(16576012)(6666004)(53546011)(6636002)(36756003)(52116002)(316002)(2906002)(8936002)(54906003);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: nxp.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FHdz4gKkY3xWrIJNWx5/WNjJFPR/D7wDmSp331LbV++2/xiAyXcX3JVyHsVB3zE+DUTaJdLV86v33Yb6YepvSFp5G7vkUPvl6QrJg9gn1yQOqEOO8qZPquuQCzGwVA+bx+HyajaY7gu60kKbW4y/X+M5w0vVn7JseEK0MfMQ6OpL7fVfZcE3Om7jrYUQiic11MviuB45ojh4YXdQYOER3zC5a+oFwz/tawsYG4zlWiKpBoiW5iD8yswO5fgtuz2ybVQDB8g9KymBxrT+wFKgrRCJOjxMm4c0hy9EsM/9sF5R9OMm2jjA38oz1BfZUgSmcbqd9cehqe3HHi+PZLNtOsSTht4qGmRH0gGoKAlpfHuSI+ZL5zSTAFgqsLIKa/YnOQhuPG5W6iOeaEu1/0JRRhW7QMy8U+psklj+SnOsJTN+Qh6WQYka5p8UXhF2oiJl
+X-MS-Exchange-AntiSpam-MessageData: 1kwbsKHNKDRsCxPIFzayAmOK0mbZ6AcXHFEfrmmgmHsWiVqOUbzjI15F3d/zJrCnby+I2Kx53tC0E/KwX5otMbr6BZtJZk3TfXE8D28y2OLyvbu703GU3d4/3i08ckwKnIm0Av2NrXeRLKUsgcDbyA==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 898e79a8-11bb-4a20-8a7e-08d7da1a3e81
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2020 11:04:15.1175
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rApnXehVZQQOe4Luxl7FukI9XhMIWgUgTP+rRu9hQsQWPQdFO0hAyJRTwyQ2UgHzRZulYcfvf1m0Yrj3MueStw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3568
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/6/20 11:31 AM, Peter Zijlstra wrote:
-> On Mon, Apr 06, 2020 at 10:19:56AM +0200, Alexandre Chartre wrote:
->>
->> On 4/4/20 5:51 PM, Peter Zijlstra wrote:
->>> On Sat, Apr 04, 2020 at 09:22:32AM -0500, Josh Poimboeuf wrote:
->>>> On Sat, Apr 04, 2020 at 03:32:18PM +0200, Peter Zijlstra wrote:
->>>>> On Fri, Apr 03, 2020 at 05:46:20PM +0200, Peter Zijlstra wrote:
->>>>>> On Fri, Apr 03, 2020 at 10:17:57AM -0500, Josh Poimboeuf wrote:
->>>>>>> Peter, I think my previous idea for UNWIND_HINT_ADJUST stack_add=8 would
->>>>>>> work here?
->>>>>>
->>>>>> Yes, it would.
->>>>>
->>>>> Sorry, I have reconsidered. While it will shut up objtool, it will not
->>>>> 'work'. That is, the ORC data generated will not correctly unwind.
->>>>>
->>>>> I'll try and write a longer email tonight.
->>>>
->>>> Right, that's what I've been trying to say.  The ORC data will be
->>>> non-deterministic unless we unroll the loop.  Or did you mean something
->>>> else?
->>>
->>> The below should result in deterministic code.
->>>
->>> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
->>> index 07e95dcb40ad..109ee65f4a11 100644
->>> --- a/arch/x86/include/asm/nospec-branch.h
->>> +++ b/arch/x86/include/asm/nospec-branch.h
->>> @@ -59,8 +59,8 @@
->>>    	jmp	775b;				\
->>>    774:						\
->>>    	dec	reg;				\
->>> -	jnz	771b;				\
->>> -	add	$(BITS_PER_LONG/8) * nr, sp;
->>> +	add	$(BITS_PER_LONG/8) * $2, sp;	\
->>> +	jnz	771b;
->>>    #ifdef __ASSEMBLY__
->>
->> Nice. This works fine and allows to remove ANNOTATE_NOSPEC_ALTERNATIVE when
->> using __FILL_RETURN_BUFFER. However this is probably less performant because
->> we now have nr/2 add instructions instead of just 1.
+On 4/5/2020 2:50 PM, Iuliana Prodan wrote:
+> Here's the KASAN report:
+> BUG: KASAN: use-after-free in aead_crypt_done+0x60/0xd8
+> Read of size 1 at addr ffff00002303f014 by task swapper/0/0
 > 
-> Does it actually matter though? That is, can you measure the difference?
-> 
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.6.0-rc1-00163-gd88dd5c-dirty #18
+This is no a public SHA1, you are probably running with patch 1/4
+applied in the tree (and with a "dirty tree").
 
-I didn't do any measurement, I am just anticipating concerns others might have
-as this code is used during context and vmexit. But I agree this might not be
-significant.
+> Hardware name: LS1046A RDB Board (DT)
+> Call trace:
+>  dump_backtrace+0x0/0x260
+>  show_stack+0x14/0x20
+>  dump_stack+0xe8/0x144
+>  print_address_description.isra.11+0x64/0x348
+>  __kasan_report+0x11c/0x230
+>  kasan_report+0xc/0x18
+>  __asan_load1+0x5c/0x68
+>  aead_crypt_done+0x60/0xd8
+>  caam_jr_dequeue+0x390/0x608
+> ...
+You should provide full KASan log - shawdow bits etc.
 
-alex.
+> @@ -973,8 +973,6 @@ static void aead_crypt_done(struct device *jrdev, u32 *desc, u32 err,
+>  
+>  	aead_unmap(jrdev, edesc, req);
+>  
+> -	kfree(edesc);
+> -
+>  	/*
+>  	 * If no backlog flag, the completion of the request is done
+>  	 * by CAAM, not crypto engine.
+> @@ -983,6 +981,8 @@ static void aead_crypt_done(struct device *jrdev, u32 *desc, u32 err,
+>  		aead_request_complete(req, ecode);
+>  	else
+>  		crypto_finalize_aead_request(jrp->engine, req, ecode);
+> +
+> +	kfree(edesc);
+I think it's better freeing all resources before calling
+the completion callback, to avoid unnecessary memory strains.
+
+Horia
