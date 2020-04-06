@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EBB19EF2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 03:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F2019EF32
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 03:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgDFBmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 21:42:40 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:60240 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726373AbgDFBmk (ORCPT
+        id S1726486AbgDFBpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 21:45:49 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:34525 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726408AbgDFBpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 21:42:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=SzZxHbFXKtIbZEOWKwld3suC8XfmTE5GoyAg/oZEh78=; b=BkCAi5AA9gQyPYJOqYejompNAh
-        Dtin1jsEJuaxRAPuDlF15hMbs3Aov9XfosH7/E41oo2NzB332PpkCDHb2iT/wyewYmCOwR3nWZY0G
-        U0Mr40uP1lBx5jd2/Lq9/3KsMOuiVOGaDuZ5gMUvW2XQ27St96ovNJa80ryuWwK8KBUYBB3u7eLv1
-        ZeN1E8/CcRgkG7WH9/7/WwK9vKTjaV41wAst/1mKSMWZ8Wz3DRc5cWDzl1YjrZjwACDMxm3xkpNYz
-        0OmM+EbwQSF3LY9ATok1o21+kwepOWQvxg1p+uoG4LiFIF4kyd2Z64+JBJBQ4/qoECcVoAZTv+rp5
-        e0h1/3nA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLGmZ-0001oM-4m; Mon, 06 Apr 2020 01:42:35 +0000
-Subject: Re: [PATCH v2 net] skbuff.h: Improve the checksum related comments
-To:     decui@microsoft.com, willy@infradead.org, netdev@vger.kernel.org,
-        davem@davemloft.net, willemb@google.com, kuba@kernel.org,
-        simon.horman@netronome.com, sdf@google.com, edumazet@google.com,
-        fw@strlen.de, jonathan.lemon@gmail.com, pablo@netfilter.org,
-        jeremy@azazel.net, pabeni@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-References: <1586136369-67251-1-git-send-email-decui@microsoft.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6efee6bb-d68d-0f83-d469-b173cf4f5d0f@infradead.org>
-Date:   Sun, 5 Apr 2020 18:42:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sun, 5 Apr 2020 21:45:49 -0400
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 0361jd9P013273;
+        Mon, 6 Apr 2020 10:45:40 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 0361jd9P013273
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1586137540;
+        bh=t1XbmubotdqxWQiJUtEmVVmLD3QtFzYtfXS6eKsOjqA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JJoh7W4D3xXNlBUBOyJoKb52THf5gc3KPF6ePUqzF2UyzZucECBoKQZng43N9midv
+         4/zVoGccZ90Yf4Dd0uMppWex45oHbUktl8qUnY4ggHD7OjReYQLFldVTRLc7fVjCZZ
+         RPricLYAybvutnGYMT9Tmn+YTEUwobmAg4btkg4ssvRq+BHazVgQX+7Qz8bhyeUEfi
+         9lvff67EBT6wLXjGR3+0x2PxMNhQqNkIwxYQBGqCPFzcpdO+j7fwgkFszyZkSwEr4H
+         07W5ALtyd17GZhgyuUWOE7svdWsK7AGy15n+KNS4VZ/WSeBPOnhU5M/Rqmy5AgvrGq
+         WlVkxwRbkuQtg==
+X-Nifty-SrcIP: [209.85.222.47]
+Received: by mail-ua1-f47.google.com with SMTP id l18so4928998uak.4;
+        Sun, 05 Apr 2020 18:45:40 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYKMzvLLaQiO24vJMDVqETXnPHKdHG1nQjdtcoAlQChEKmjXiLH
+        gWMRb84hnJW9z6SEyy4tL8TJnlqF6OXE1ASjnnk=
+X-Google-Smtp-Source: APiQypIme//LwwgDhWdl23pH0ig14cQer/hMjepL0+AGooHh0rxFpP7g9QwIcB1KYEeAWqnvnWA/n5ux8B3PbibpFH8=
+X-Received: by 2002:ab0:2085:: with SMTP id r5mr14017632uak.95.1586137538961;
+ Sun, 05 Apr 2020 18:45:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1586136369-67251-1-git-send-email-decui@microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200405163052.18942-1-masahiroy@kernel.org> <alpine.LFD.2.21.2004051813150.4156324@eddie.linux-mips.org>
+In-Reply-To: <alpine.LFD.2.21.2004051813150.4156324@eddie.linux-mips.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 6 Apr 2020 10:45:03 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATKLcCPYxQZNbrS-jMPg+_BETU0dGv0qYvLqUkJ2fMt5w@mail.gmail.com>
+Message-ID: <CAK7LNATKLcCPYxQZNbrS-jMPg+_BETU0dGv0qYvLqUkJ2fMt5w@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: fw: arc: add __weak to prom_meminit and prom_free_prom_memory
+To:     "Maciej W. Rozycki" <macro@linux-mips.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux-MIPS <linux-mips@linux-mips.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/20 6:26 PM, Dexuan Cui wrote:
-> @@ -211,9 +211,9 @@
->   * is implied by the SKB_GSO_* flags in gso_type. Most obviously, if the
->   * gso_type is SKB_GSO_TCPV4 or SKB_GSO_TCPV6, TCP checksum offload as
->   * part of the GSO operation is implied. If a checksum is being offloaded
-> - * with GSO then ip_summed is CHECKSUM_PARTIAL, csum_start and csum_offset
-> - * are set to refer to the outermost checksum being offload (two offloaded
-> - * checksums are possible with UDP encapsulation).
-> + * with GSO then ip_summed is CHECKSUM_PARTIAL, and both csum_start and
-> + * csum_offset are set to refer to the outermost checksum being offload (two
+On Mon, Apr 6, 2020 at 2:16 AM Maciej W. Rozycki <macro@linux-mips.org> wrote:
+>
+> On Mon, 6 Apr 2020, Masahiro Yamada wrote:
+>
+> > As far as I understood, prom_meminit() in arch/mips/fw/arc/memory.c
+> > is overridden by the one in arch/mips/sgi-ip32/ip32-memory.c if
+> > CONFIG_SGI_IP32 is enabled.
+> >
+> > The use of EXPORT_SYMBOL in static libraries potentially causes a
+> > problem for the llvm linker [1]. So, I want to forcibly link lib-y
+> > objects to vmlinux when CONFIG_MODULES=y.
+>
+>  It looks to me like a bug in the linker in the handling of the EXTERN
+> command.  Why not fix the linker instead?
+>
+>   Maciej
 
-                                                             being offloaded
 
-> + * offloaded checksums are possible with UDP encapsulation).
->   */
->  
->  /* Don't change this without changing skb_csum_unnecessary! */
+I am not sure if this is a bug.
+Anyway, they decided to not change ld.lld
 
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+MIPS code is so confusing.
+There are multiple definitions,
+and lib.a is (ab)used to hide them.
 
-Thanks.
+I fixed another one for MIPS before, and
+0-day bot reported this recently.
+
+
+There are lots of prom_meminit() definitions
+in arch/mips/.
+
+Making the intention clearer is a good thing, IMHO.
+
+
 -- 
-~Randy
+Best Regards
+Masahiro Yamada
