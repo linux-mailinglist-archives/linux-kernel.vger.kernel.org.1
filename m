@@ -2,99 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CA519F787
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BE719F790
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728563AbgDFOF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:05:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:46148 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728086AbgDFOFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:05:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F809106F;
-        Mon,  6 Apr 2020 07:05:53 -0700 (PDT)
-Received: from [10.37.12.4] (unknown [10.37.12.4])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA1043F73D;
-        Mon,  6 Apr 2020 07:05:42 -0700 (PDT)
-Subject: Re: [PATCH v5 2/5] OPP: refactor dev_pm_opp_of_register_em() and
- update related drivers
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-omap@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-imx@nxp.com
-Cc:     Morten.Rasmussen@arm.com, Dietmar.Eggemann@arm.com,
-        javi.merino@arm.com, cw00.choi@samsung.com,
-        b.zolnierkie@samsung.com, rjw@rjwysocki.net, sudeep.holla@arm.com,
-        viresh.kumar@linaro.org, nm@ti.com, sboyd@kernel.org,
-        rui.zhang@intel.com, amit.kucheria@verdurent.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        qperret@google.com, bsegall@google.com, mgorman@suse.de,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        kernel@pengutronix.de, khilman@kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, robh@kernel.org,
-        matthias.bgg@gmail.com, steven.price@arm.com,
-        tomeu.vizoso@collabora.com, alyssa.rosenzweig@collabora.com,
-        airlied@linux.ie, daniel@ffwll.ch, liviu.dudau@arm.com,
-        lorenzo.pieralisi@arm.com, patrick.bellasi@matbug.net,
-        orjan.eide@arm.com, rdunlap@infradead.org, mka@chromium.org
-References: <20200318114548.19916-1-lukasz.luba@arm.com>
- <20200318114548.19916-3-lukasz.luba@arm.com>
- <3ee5dc1a-fdfe-da17-9a62-a5182c1f4d3e@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <00c839d1-2f03-2d3b-5746-95deae30bee3@arm.com>
-Date:   Mon, 6 Apr 2020 15:05:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728624AbgDFOGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:06:41 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:33650 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728610AbgDFOGk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 10:06:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wuY9sae0NBKX23MLISqZR16SAVntvt/3s72TBLRjUI4=; b=FZpkeZbsvDsBzq7OGL80zOGfqp
+        VjT71XyWpoJUPGxLBcSgV7LV4eUDLSqYrtSk1lAiuBdwc3XuZvx6gGSzwU9tcz79UTkCUlIkdgXIn
+        bus14IoWCmmVbrgJB87DNgbzjN95EMp85/utaYrdQc4RefF4NTfjvyHnCDVmZazv3eYlsud77L/QS
+        HHUb61mFhq5SCBl0Q4crbGcNBv17ox8JfINumy2hHcKYhGsqsnVasHHvN/r4hLmyU//1WPgLmJKgo
+        yRvnko/hwMAd+fwhLagl6/QIaziyyFC6XJhgeYL/Ak3HIeVVcbVxqJIMjioK0OHMSZ+gd4VrnRlHW
+        pcYBEfEw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLSOa-0001I3-W3; Mon, 06 Apr 2020 14:06:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 68F7D304121;
+        Mon,  6 Apr 2020 16:06:34 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 54A4C2BAC7486; Mon,  6 Apr 2020 16:06:34 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 16:06:34 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, jroedel@suse.de,
+        vbabka@suse.cz, urezki@gmail.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Olof Johansson <olof@lixom.net>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH] mm/vmalloc: Sanitize __get_vm_area() arguments
+Message-ID: <20200406140634.GM20730@hirez.programming.kicks-ass.net>
+References: <20200403163253.GU20730@hirez.programming.kicks-ass.net>
+ <20200406130155.GB29306@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <3ee5dc1a-fdfe-da17-9a62-a5182c1f4d3e@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200406130155.GB29306@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-Thank you for your comments.
-
-On 4/3/20 5:21 PM, Daniel Lezcano wrote:
-> On 18/03/2020 12:45, Lukasz Luba wrote:
->> The Energy Model framework supports both: CPUs and devfreq devices. Drop
->> the CPU specific interface with cpumask and add struct device. Add also a
->> return value. This new interface provides easy way to create a simple
->> Energy Model, which then might be used in i.e. thermal subsystem.
+On Mon, Apr 06, 2020 at 06:01:55AM -0700, Christoph Hellwig wrote:
+> On Fri, Apr 03, 2020 at 06:32:53PM +0200, Peter Zijlstra wrote:
+> > 
+> > __get_vm_area() is an exported symbol, make sure the callers stay in
+> > the expected memory range. When calling this function with memory
+> > ranges outside of the VMALLOC range *bad* things can happen.
+> > 
+> > (I noticed this when I managed to corrupt the kernel text by accident)
 > 
-> This patch contains too many different changes.
-
-OK, I will create 4 patches:
-1) change with new argument in API function:
-    void dev_pm_opp_of_register_em(dev, cpumask)
-   and updated drivers
-2) changes with _get_cpu_power --> _get_power
-3) changes adding int return in dev_pm_opp_of_register_em()
-    and updating error handling path inside
-4) header changes with new dev_pm_opp_of_unregister_em()
-
+> Maybe it is time to unexport it?  There are only two users:
 > 
-> There are fixes and traces added in addition to a function prototype change. >
-> Please provide patches separated by logical changes.
+>  - staging/media/ipu3 really should be using vmap.  And given that it
+>    is a staging driver it really doesn't matter anyway if we break it.
+>  - pcmcia/electra_cf.c is actually using it for something that is not
+>    a vmalloc address.  But it is so special that I think prohibiting
+>    to build it as module seems fine.
 
-I will try to make this API change in a safe way, which
-won't break cpufreq drivers compilation.
-
-> 
-> If the cpumask is extracted in the underlying function
-> em_register_perf_domain() as suggested in the previous patch 1/5,
-> dev_pm_opp_of_register_em() can be struct device centric only.
-
-That would be ideal situation but unfortunately not possible to
-implement (as responded in 1/5).
-
-Regards,
-Lukasz
+I think I just sent you a patch along those lines ;-)
