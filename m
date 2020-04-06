@@ -2,43 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E79CB1A00D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B7E1A00C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgDFWPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 18:15:22 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:58694 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726536AbgDFWOw (ORCPT
+        id S1726687AbgDFWPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 18:15:13 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:33732 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726678AbgDFWPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 18:14:52 -0400
-Received: from dede-linux.corp.microsoft.com (unknown [131.107.147.242])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 888A02074CC0;
-        Mon,  6 Apr 2020 15:14:49 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 888A02074CC0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1586211289;
-        bh=FoQEwrrWn/d3Fno/jqMS38zWmUVRke4mJOAaLbjRrY8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rJpLQqlXYpAXiC15Sc4sYsTFcq+6wjfhJMC9QzVZo/CWRu+oyqKpP1lmIQQJmVmSQ
-         OyBWGc3g4ZLv/tGoWuyER6aewY28SWInUOQ9IGU17wQT+0WywgwiwE/JEDa6KC9936
-         v3Jo5YR6RJ6Os21bUNfawwgu9d57oMuaA0hyrsFs=
-From:   deven.desai@linux.microsoft.com
-To:     agk@redhat.com, axboe@kernel.dk, snitzer@redhat.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org
-Cc:     tyhicks@linux.microsoft.com, pasha.tatashin@soleen.com,
-        sashal@kernel.org, jaskarankhurana@linux.microsoft.com,
-        nramas@linux.microsoft.com, mdsakib@linux.microsoft.com,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 12/12] cleanup: uapi/linux/audit.h
-Date:   Mon,  6 Apr 2020 15:14:39 -0700
-Message-Id: <20200406221439.1469862-13-deven.desai@linux.microsoft.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200406221439.1469862-1-deven.desai@linux.microsoft.com>
-References: <20200406221439.1469862-1-deven.desai@linux.microsoft.com>
+        Mon, 6 Apr 2020 18:15:10 -0400
+Received: by mail-qt1-f194.google.com with SMTP id c14so1232651qtp.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 15:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j72I6B2yv1MtQdVXUp6mfzONbbVa//fDwmUTKLmhZlM=;
+        b=UmseYPFdd9OfC6LhQ+NAWOTbLOsEpFb06VKPLLcq3VeJFuFwva7Bg5Bglq5Z8WlJBY
+         qazf1OFqJZw0RMObUPU24HzIGgofGjlz7oNnwpQVtW2HYVx2ARu2/gXxzAPRfev3g2Yc
+         0rXQdub7D4sLzZR6PE4GVGQ2vWuokGmZxWF5OWTuynE62r/VRhMq7Ff9Co8wIMde3tid
+         S04vh6x8Xz1q89PJiffvk0mkeb68WqucLMDSzdwWAnj0aLoS/8P+tFDx5Bda5dBRbrBe
+         PHDBXGtw4FvPhYXQFGBfm6kI9quTC/6Hg2alzxea5pWiUzDYf6RXpslx0EyT37QQetYg
+         z9wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j72I6B2yv1MtQdVXUp6mfzONbbVa//fDwmUTKLmhZlM=;
+        b=MweLrGNhquEFmiYai+UgbdtaUemQtzXneOdg4tDCwo/4KxnBISh0+cY7qjTNURdhOy
+         wPZ3vrt2/fXYkEtLGkNYV78fTIo8zvRxwi9Us8peKGA5f0wLA7wWmSH3e5McW841R2zC
+         mE0+ZCPTFzmoXDg+Cu1pCUHUUpq7Zz01ET7jzVPeCK134FQpj3YflG9ySZu3+Tncl1wE
+         BKFQnqLPW0/3t9EaPMpJKR49c9fGpKsDVAXl5VoM5XqYmsLbchvPCNbithJytITwwN+0
+         KdHOF92swbi4wWClqPtZ5yMBQBLmNXVTbDpEz4oMTmr7OlqED8MOZzVctWiduJIORD35
+         Sk4A==
+X-Gm-Message-State: AGi0PuaboMm837vf8xvpKVqh3cRogv/LzmxHqJAqO5tQ0XrckJP8fKJJ
+        QnAdb2TOWbBCnlEXRdRlpYlQfQ==
+X-Google-Smtp-Source: APiQypIpf/UbhzyzYpY0P1+j4rwvPJzBNCD6XCGWvf++pPQWMWFWNGNj7BarpYyeNQ+BwIugzCGX4g==
+X-Received: by 2002:aed:32c7:: with SMTP id z65mr1711174qtd.81.1586211307951;
+        Mon, 06 Apr 2020 15:15:07 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id e10sm1834923qkl.48.2020.04.06.15.15.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 15:15:07 -0700 (PDT)
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     kunit-dev@googlegroups.com
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com, skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH v3] kunit: Fix kunit.py run --build_dir='<foo>' fails on "unclean" trees
+Date:   Mon,  6 Apr 2020 19:15:03 -0300
+Message-Id: <20200406221503.49760-1-vitor@massaru.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -46,73 +61,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Deven Bowers <deven.desai@linux.microsoft.com>
+Fix this bug: https://bugzilla.kernel.org/show_bug.cgi?id=205219
 
-Remove trailing whitespaces and align the integrity #defines in
-linux/uapi/audit.h
+For some reason, the environment variable ARCH is used instead of ARCH
+passed as an argument, this patch uses a copy of the env, but using
+ARCH=um and CROSS_COMPILER='' to avoid this problem.
 
-Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+This patch doesn't change the user's environment variables, avoiding
+side effects.
+
+Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
 ---
- include/uapi/linux/audit.h | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+v2:
+ - Use the correct next branch
 
-diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-index 4e0122a0ed0c..d642ade068b5 100644
---- a/include/uapi/linux/audit.h
-+++ b/include/uapi/linux/audit.h
-@@ -48,7 +48,7 @@
-  * 2500 - 2999 future user space (maybe integrity labels and related events)
-  *
-  * Messages from 1000-1199 are bi-directional. 1200-1299 & 2100 - 2999 are
-- * exclusively user space. 1300-2099 is kernel --> user space 
-+ * exclusively user space. 1300-2099 is kernel --> user space
-  * communication.
-  */
- #define AUDIT_GET		1000	/* Get status */
-@@ -78,7 +78,7 @@
- #define AUDIT_LAST_USER_MSG	1199
- #define AUDIT_FIRST_USER_MSG2	2100	/* More user space messages */
- #define AUDIT_LAST_USER_MSG2	2999
-- 
-+
- #define AUDIT_DAEMON_START      1200    /* Daemon startup record */
- #define AUDIT_DAEMON_END        1201    /* Daemon normal stop record */
- #define AUDIT_DAEMON_ABORT      1202    /* Daemon error stop record */
-@@ -139,20 +139,20 @@
- #define AUDIT_MAC_CALIPSO_ADD	1418	/* NetLabel: add CALIPSO DOI entry */
- #define AUDIT_MAC_CALIPSO_DEL	1419	/* NetLabel: del CALIPSO DOI entry */
+v3:
+ - Use torvalds/master branch
+ - Use base parameter on git send-email
+---
+ tools/testing/kunit/kunit_kernel.py | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 63dbda2d029f..96216c699fde 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -20,6 +20,7 @@ import kunit_parser
+ KCONFIG_PATH = '.config'
+ kunitconfig_path = '.kunitconfig'
+ BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
++env = dict(os.environ.copy(), ARCH='um', CROSS_COMPILE='')
  
--#define AUDIT_FIRST_KERN_ANOM_MSG   1700
--#define AUDIT_LAST_KERN_ANOM_MSG    1799
--#define AUDIT_ANOM_PROMISCUOUS      1700 /* Device changed promiscuous mode */
--#define AUDIT_ANOM_ABEND            1701 /* Process ended abnormally */
--#define AUDIT_ANOM_LINK		    1702 /* Suspicious use of file links */
--#define AUDIT_ANOM_CREAT	    1703 /* Suspicious file creation */
--#define AUDIT_INTEGRITY_DATA	    1800 /* Data integrity verification */
--#define AUDIT_INTEGRITY_METADATA    1801 /* Metadata integrity verification */
--#define AUDIT_INTEGRITY_STATUS	    1802 /* Integrity enable status */
--#define AUDIT_INTEGRITY_HASH	    1803 /* Integrity HASH type */
--#define AUDIT_INTEGRITY_PCR	    1804 /* PCR invalidation msgs */
--#define AUDIT_INTEGRITY_RULE	    1805 /* policy rule */
--#define AUDIT_INTEGRITY_EVM_XATTR   1806 /* New EVM-covered xattr */
--#define AUDIT_INTEGRITY_POLICY_RULE 1807 /* IMA policy rules */
-+#define AUDIT_FIRST_KERN_ANOM_MSG	1700
-+#define AUDIT_LAST_KERN_ANOM_MSG	1799
-+#define AUDIT_ANOM_PROMISCUOUS		1700 /* Device changed promiscuous mode */
-+#define AUDIT_ANOM_ABEND		1701 /* Process ended abnormally */
-+#define AUDIT_ANOM_LINK			1702 /* Suspicious use of file links */
-+#define AUDIT_ANOM_CREAT		1703 /* Suspicious file creation */
-+#define AUDIT_INTEGRITY_DATA		1800 /* Data integrity verification */
-+#define AUDIT_INTEGRITY_METADATA	1801 /* Metadata integrity verification */
-+#define AUDIT_INTEGRITY_STATUS		1802 /* Integrity enable status */
-+#define AUDIT_INTEGRITY_HASH		1803 /* Integrity HASH type */
-+#define AUDIT_INTEGRITY_PCR		1804 /* PCR invalidation msgs */
-+#define AUDIT_INTEGRITY_RULE		1805 /* policy rule */
-+#define AUDIT_INTEGRITY_EVM_XATTR	1806 /* New EVM-covered xattr */
-+#define AUDIT_INTEGRITY_POLICY_RULE	1807 /* IMA policy rules */
- #define AUDIT_INTEGRITY_POLICY_LOAD	1808 /* IPE Policy Load */
- #define AUDIT_INTEGRITY_POLICY_ACTIVATE	1809 /* IPE Policy Activation */
- #define AUDIT_INTEGRITY_EVENT		1810 /* IPE Evaluation Event */
+ class ConfigError(Exception):
+ 	"""Represents an error trying to configure the Linux kernel."""
+@@ -41,13 +42,15 @@ class LinuxSourceTreeOperations(object):
+ 			raise ConfigError(e.output)
+ 
+ 	def make_olddefconfig(self, build_dir, make_options):
+-		command = ['make', 'ARCH=um', 'olddefconfig']
++		command = ['make', 'olddefconfig']
+ 		if make_options:
+ 			command.extend(make_options)
+ 		if build_dir:
+ 			command += ['O=' + build_dir]
+ 		try:
+-			subprocess.check_output(command, stderr=subprocess.PIPE)
++			subprocess.check_output(command,
++						stderr=subprocess.PIPE,
++						env=env)
+ 		except OSError as e:
+ 			raise ConfigError('Could not call make command: ' + e)
+ 		except subprocess.CalledProcessError as e:
+@@ -57,9 +60,10 @@ class LinuxSourceTreeOperations(object):
+ 		kunit_parser.print_with_timestamp(
+ 			'Enabling all CONFIGs for UML...')
+ 		process = subprocess.Popen(
+-			['make', 'ARCH=um', 'allyesconfig'],
++			['make', 'allyesconfig'],
+ 			stdout=subprocess.DEVNULL,
+-			stderr=subprocess.STDOUT)
++			stderr=subprocess.STDOUT,
++			env=env)
+ 		process.wait()
+ 		kunit_parser.print_with_timestamp(
+ 			'Disabling broken configs to run KUnit tests...')
+@@ -71,13 +75,13 @@ class LinuxSourceTreeOperations(object):
+ 			'Starting Kernel with all configs takes a few minutes...')
+ 
+ 	def make(self, jobs, build_dir, make_options):
+-		command = ['make', 'ARCH=um', '--jobs=' + str(jobs)]
++		command = ['make', '--jobs=' + str(jobs)]
+ 		if make_options:
+ 			command.extend(make_options)
+ 		if build_dir:
+ 			command += ['O=' + build_dir]
+ 		try:
+-			subprocess.check_output(command)
++			subprocess.check_output(command, env=env)
+ 		except OSError as e:
+ 			raise BuildError('Could not call execute make: ' + e)
+ 		except subprocess.CalledProcessError as e:
+@@ -91,7 +95,8 @@ class LinuxSourceTreeOperations(object):
+ 		with open(outfile, 'w') as output:
+ 			process = subprocess.Popen([linux_bin] + params,
+ 						   stdout=output,
+-						   stderr=subprocess.STDOUT)
++						   stderr=subprocess.STDOUT,
++						   env=env)
+ 			process.wait(timeout)
+ 
+ 
 -- 
-2.26.0
+2.25.1
 
