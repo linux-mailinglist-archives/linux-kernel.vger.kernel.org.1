@@ -2,141 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A78919F67B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF5619F680
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbgDFNLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 09:11:32 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11392 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728018AbgDFNLb (ORCPT
+        id S1728328AbgDFNNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 09:13:04 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:33949 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728181AbgDFNNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 09:11:31 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8b2a1d0000>; Mon, 06 Apr 2020 06:09:49 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 06 Apr 2020 06:11:30 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 06 Apr 2020 06:11:30 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr
- 2020 13:11:30 +0000
-Received: from [10.2.163.253] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr 2020
- 13:11:29 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-CC:     <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Yang Shi" <yang.shi@linux.alibaba.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCHv2 4/8] khugepaged: Drain LRU add pagevec after swapin
-Date:   Mon, 6 Apr 2020 09:11:27 -0400
-X-Mailer: MailMate (1.13.1r5680)
-Message-ID: <592329FA-69D0-4801-A5DF-F9CC8A3FE305@nvidia.com>
-In-Reply-To: <20200403112928.19742-5-kirill.shutemov@linux.intel.com>
-References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
- <20200403112928.19742-5-kirill.shutemov@linux.intel.com>
+        Mon, 6 Apr 2020 09:13:04 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1Mr9OA-1j07J23ARS-00oEbm; Mon, 06 Apr 2020 15:13:02 +0200
+Received: by mail-qk1-f174.google.com with SMTP id 130so885179qke.4;
+        Mon, 06 Apr 2020 06:13:02 -0700 (PDT)
+X-Gm-Message-State: AGi0PubPIKvOp7wEV94JFy/6Yi+xh/HWiNI99awjCqQ098tIJ/hITfpK
+        VbYzbcZnY3fmrl4nK+Lrb9IjaFUfEe2ySIwTeT4=
+X-Google-Smtp-Source: APiQypK8zqZk5uLnoIubAdQeJgGTiVyPkpSzxxqDGQ7EZ4yy/nSPnZICKVDeK2bBxoQfBZJEyLjW+qUVp5bYDvV/ciM=
+X-Received: by 2002:a37:2714:: with SMTP id n20mr6302088qkn.138.1586178781557;
+ Mon, 06 Apr 2020 06:13:01 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: multipart/signed;
-        boundary="=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586178589; bh=QhAGqQow2xf9gnlQ1LeKiIdjJMWRPSwZu94uUdZ5Lv8=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
-         In-Reply-To:References:MIME-Version:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type;
-        b=XvOfKEqfNNOwCwscu+tUNJB3/812aq7VuEM+uFSpu1FKVXJfUeIM8uPIcx+Viyz6v
-         hgfV4fibPMtQfUz7hprNtlKr0ACsRR9Wmiuzy2AefSfgnHbZrDFEi2BCDaMgXUwNxf
-         BA1TS/U6aDv+K5lC5OKoyJiXnBLHuSGx8V9IoIrtL9CHLIANDph5c0le5N6V533ZmF
-         wqTxXyZr26ZjuEwhJ0k2yKObpYdeqbBv5e30MTtQAEsXa58kWYyjI5s/0KCJtvk7M+
-         2uKzKv58mHlf8wgNNrNEGZauIfcSwg1mkLhlO08KX3+m4EK7z4KLQzkozpFtLoar55
-         x4KvzevsZU5Hw==
+References: <20200406120312.1150405-1-hch@lst.de> <20200406120312.1150405-2-hch@lst.de>
+In-Reply-To: <20200406120312.1150405-2-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 6 Apr 2020 15:12:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1YdCuChb0mOU1+27PHK9qK6NGkuKfrHQa4LC=1LZmPTw@mail.gmail.com>
+Message-ID: <CAK8P3a1YdCuChb0mOU1+27PHK9qK6NGkuKfrHQa4LC=1LZmPTw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] powerpc/spufs: simplify spufs core dumping
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:6XdMQ65OOioIRuqHqq3+7QMYDDx6jRkjOZCrP8n45lczowS/cdI
+ B09il7WTGW1J7FQ/gHbXqtzafbYmmYNYaomppPgH11VXbffng5qbvuD+UhX4/vU2P1TU0lY
+ lMkrPkxerZ8IGSKk6vOR6emstBbqPTE+sVGNmBoqKOVUbniYJoEs5i/FncKhF0vhNN/W2zu
+ MAqzmzusyaJSaZ46ZL5iQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:La6cY6+qeSw=:gCyGgPoDKIxSW2RoC1zxtL
+ 6CI+6gRoK0r9H6g9tsBuJo0U2E/jUrgmNY52jOf9aS9UW8i0jZcx3f4QTjgtO+S1/KVyjeAm3
+ mssvbM3r+xDMVJZJh270i1KcYZruzHgiamQ/hidXxsQ5Zu6qirr6UecqZToG7GS2wUMg/CIz2
+ GsI9LIWyp/Momo0L1H/RVGpYPOZzyaTuXwgrQzfdmaFw/cuAENqGcrCTEQxD9RPQ910jm5IHd
+ mI8SwbS64bZ9uJ2o8pCU5y6AlPvC+ARTIkEeTp4WQo53oRZyxmBBmJjnJawz8vpvGicqFpgq8
+ pEP2LgLKnGoKHsWoL0OsQw/eztuvonX/UWdes0iN6x497eFxzNjiW6zKa4SNBfKPBavh9DB+E
+ YzTHuDnc/BYNIqt3Eb0efTyoC/A/ZwWyxTWq833pkTYBl/z/hdpn+ObU9M/sgOKutzCCMsiyX
+ Z64EGfiZjAVgE5QNjlaXCxNcZRoGEqA9ke/9lRHWgaoeWLbQYoeAGZ9zAYn6h9lzqIKdyFZmo
+ lak4KPm/iM+qdZSUOAgFf7+Z0Ah19Nf5BWFI3c3cSbtpF1szQTeOoOGhHehJ1bbUC5xwU2li1
+ UuZ7suVrUqUNQsIithlFEambJDiVOumynNAih5YD5dbcHJeedQATZVKwx/w61zSvFi9C5hMt1
+ Y9YF/DLapn1wK+pnYqbl8Fx7YLXG6nKIiL0KTLglnvUMZbONp/1pRqK0MuIjSVLSHFb94MYJr
+ 8t6lQfvy+Sut/QCbfjqaNF7TPU9RcLOLaZ7o1DB1IkJW2MrCOC8sfob4LWtr7UbdHZtxN4GLK
+ RS2wZhNLV0VISp6O+J7nEjzYgA2j093Wn0EH079f1GLN0S5eIM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On 3 Apr 2020, at 7:29, Kirill A. Shutemov wrote:
-
-> External email: Use caution opening links or attachments
+On Mon, Apr 6, 2020 at 2:03 PM Christoph Hellwig <hch@lst.de> wrote:
 >
->
-> __collapse_huge_page_isolate() may fail due to extra pin in the LRU add=
+> Replace the coredump ->read method with a ->dump method that must call
+> dump_emit itself.  That way we avoid a buffer allocation an messing with
+> set_fs() to call into code that is intended to deal with user buffers.
+> For the ->get case we can now use a small on-stack buffer and avoid
+> memory allocations as well.
 
-> pagevec. It's petty common for swapin case: we swap in pages just to
+I had no memory of this code at all, but your change looks fine to me.
+Amazingly you even managed to even make it smaller and more readable
 
-s/petty/pretty
-
-> fail due to the extra pin.
->
-> Drain LRU add pagevec on sucessfull swapin.
-
-s/sucessfull/successful
-
->
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
->  mm/khugepaged.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index fdc10ffde1ca..57ff287caf6b 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -940,6 +940,11 @@ static bool __collapse_huge_page_swapin(struct mm_=
-struct *mm,
->         }
->         vmf.pte--;
->         pte_unmap(vmf.pte);
-> +
-> +       /* Drain LRU add pagevec to remove extra pin on the swapped in =
-pages */
-> +       if (swapped_in)
-> +               lru_add_drain();
-> +
->         trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, =
-1);
->         return true;
->  }
-> --
-> 2.26.0
-
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl6LKn8PHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKKxYQAIDwUi/sWEd4E5TrOi0JeGwSlI9dP3EFZQPt
-joKck2BSsIirc6FgoyDMhOmstJ422Qa44vbD1eODystiAPJr2Kiv8QPGeKWBfWP0
-jt6cnItoFE03xHxXw6sTjrM2LVMpjowgb6jcoHzI11QCi6GLcVTxyYJrA2pFuBhJ
-6+Ku8ur5IHsLm1SQv3e6kmvdbrRWLyAe898CtGOuqJz7S1/sC69lK1lkc0PLGwDP
-XhMxxwcgVnVMG5zouRHnGkMZ/GnIvxvkgcGe4EXVGTQXpB3Whbgw4wtzEOl3SHW9
-RmRxNGREx3R5mfUwzidrPRjFPPKGMCkmNHwjawVYyViENPuH+uMZsx1p7TtrcefR
-dFbUESbNowbd3r1DD0n1fbN/9QeMnTZTJorRNl7dZdYe5txB0AvBBhHSJCmcw84C
-YyZ/wRpC9xv86FXuW4letu2H/J0zUJii/lQyanUWT1CorOzEi1nwRBm0iHQi2alM
-0eCqxM5VyuEuhyfUAddlegZST1iL6ouVu4X2sZ6vUAXKtXgtggB0xFkyuDSw8J+e
-a35pwnDJroqOFVImtZh+sfkq//ELFU4djvY+q2imm6pzoUgepCptAT29Mx9VbdOb
-NgGl/SSSZ1GpayWTr0J27s+bBgadoseAV5BaB1dJzW3lFjZj5poRiSTSJ8EfY7Gf
-Bz/36+gY
-=q3D5
------END PGP SIGNATURE-----
-
---=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=--
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
