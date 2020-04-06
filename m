@@ -2,75 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BAB119F542
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3522719FD0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:24:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727752AbgDFL5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 07:57:04 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:56768 "EHLO mail.skyhub.de"
+        id S1726709AbgDFSYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 14:24:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53114 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727703AbgDFL5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 07:57:04 -0400
-Received: from zn.tnic (p200300EC2F04F600C571FE02886A814C.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:f600:c571:fe02:886a:814c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E7D3D1EC05D6;
-        Mon,  6 Apr 2020 13:57:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1586174223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6mkdJTICOEGUmg5Sf3oUN1anrQ+rTmVREXUkf1ARKJE=;
-        b=VpNMhbNpDvCpH+/+qc/IbAFhZgdcKcDPIv/3B+xtociH+gmByxjgr8ZIS1cyqpzEo/hLxo
-        BnNbctTh99zUhG3w9BT1hjF7Pwe3F5rqrzQnxfkrH4Ry50KxU+imvuvl55NhxW0Dm9raTc
-        3ccjkXu8dg6Ngh1tCvTKYVw8unLL30w=
-Date:   Mon, 6 Apr 2020 13:56:59 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH 15/70] x86/boot/compressed/64: Always switch to own
- page-table
-Message-ID: <20200406115659.GD2520@zn.tnic>
-References: <20200319091407.1481-1-joro@8bytes.org>
- <20200319091407.1481-16-joro@8bytes.org>
+        id S1726475AbgDFSYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 14:24:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 4F3E5BBF4;
+        Mon,  6 Apr 2020 18:24:06 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@kernel.org>
+Date:   Mon, 06 Apr 2020 21:58:18 +1000
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "Anna.Schumaker\@Netapp.com" <Anna.Schumaker@netapp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] MM: replace PF_LESS_THROTTLE with PF_LOCAL_THROTTLE
+In-Reply-To: <20200406093601.GA1143@quack2.suse.cz>
+References: <87tv2b7q72.fsf@notabene.neil.brown.name> <87v9miydai.fsf@notabene.neil.brown.name> <87sghmyd8v.fsf@notabene.neil.brown.name> <20200403151534.GG22681@dhcp22.suse.cz> <878sjcxn7i.fsf@notabene.neil.brown.name> <20200406074453.GH19426@dhcp22.suse.cz> <20200406093601.GA1143@quack2.suse.cz>
+Message-ID: <87mu7ox1ut.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200319091407.1481-16-joro@8bytes.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 19, 2020 at 10:13:12AM +0100, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
-> 
-> When booted through startup_64 the kernel keeps running on the EFI
-> page-table until the KASLR code sets up its own page-table. Without
-> KASLR the pre-decompression boot code never switches off the EFI
-> page-table. Change that by unconditionally switching to our own
-> page-table once the kernel is relocated.
-> 
-> This makes sure we can make changes to the mapping when necessary, for
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Pls use passive voice in your commit message: no "we" or "I", etc, and
-describe your changes in imperative mood.
+On Mon, Apr 06 2020, Jan Kara wrote:
 
--- 
-Regards/Gruss,
-    Boris.
+> On Mon 06-04-20 09:44:53, Michal Hocko wrote:
+>> On Sat 04-04-20 08:40:17, Neil Brown wrote:
+>> > On Fri, Apr 03 2020, Michal Hocko wrote:
+>> >=20
+>> > > On Thu 02-04-20 10:53:20, Neil Brown wrote:
+>> > >>=20
+>> > >> PF_LESS_THROTTLE exists for loop-back nfsd, and a similar need in t=
+he
+>> > >> loop block driver, where a daemon needs to write to one bdi in
+>> > >> order to free up writes queued to another bdi.
+>> > >>=20
+>> > >> The daemon sets PF_LESS_THROTTLE and gets a larger allowance of dir=
+ty
+>> > >> pages, so that it can still dirty pages after other processses have=
+ been
+>> > >> throttled.
+>> > >>=20
+>> > >> This approach was designed when all threads were blocked equally,
+>> > >> independently on which device they were writing to, or how fast it =
+was.
+>> > >> Since that time the writeback algorithm has changed substantially w=
+ith
+>> > >> different threads getting different allowances based on non-trivial
+>> > >> heuristics.  This means the simple "add 25%" heuristic is no longer
+>> > >> reliable.
+>> > >>=20
+>> > >> This patch changes the heuristic to ignore the global limits and
+>> > >> consider only the limit relevant to the bdi being written to.  This
+>> > >> approach is already available for BDI_CAP_STRICTLIMIT users (fuse) =
+and
+>> > >> should not introduce surprises.  This has the desired result of
+>> > >> protecting the task from the consequences of large amounts of dirty=
+ data
+>> > >> queued for other devices.
+>> > >
+>> > > While I understand that you want to have per bdi throttling for those
+>> > > "special" files I am still missing how this is going to provide the
+>> > > additional room that the additnal 25% gave them previously. I might
+>> > > misremember or things have changed (what you mention as non-trivial
+>> > > heuristics) but PF_LESS_THROTTLE really needed that room to guarante=
+e a
+>> > > forward progress. Care to expan some more on how this is handled now?
+>> > > Maybe we do not need it anymore but calling that out explicitly woul=
+d be
+>> > > really helpful.
+>> >=20
+>> > The 25% was a means to an end, not an end in itself.
+>> >=20
+>> > The problem is that the NFS server needs to be able to write to the
+>> > backing filesystem when the dirty memory limits have been reached by
+>> > being totally consumed by dirty pages on the NFS filesystem.
+>> >=20
+>> > The 25% was just a way of giving an allowance of dirty pages to nfsd
+>> > that could not be consumed by processes writing to an NFS filesystem.
+>> > i.e. it doesn't need 25% MORE, it needs 25% PRIVATELY.  Actually it on=
+ly
+>> > really needs 1 page privately, but a few pages give better throughput
+>> > and 25% seemed like a good idea at the time.
+>>=20
+>> Yes this part is clear to me.
+>>=20=20
+>> > per-bdi throttling focuses on the "PRIVATELY" (the important bit) and
+>> > de-emphasises the 25% (the irrelevant detail).
+>>=20
+>> It is still not clear to me how this patch is going to behave when the
+>> global dirty throttling is essentially equal to the per-bdi - e.g. there
+>> is only a single bdi and now the PF_LOCAL_THROTTLE process doesn't have
+>> anything private.
+>
+> Let me think out loud so see whether I understand this properly. There are
+> two BDIs involved in NFS loop mount - the NFS virtual BDI (let's call it
+> simply NFS-bdi) and the bdi of the real filesystem that is backing NFS
+> (let's call this real-bdi). The case we are concerned about is when NFS-b=
+di
+> is full of dirty pages so that global dirty limit of the machine is
+> exceeded. Then flusher thread will take dirty pages from NFS-bdi and send
+> them over localhost to nfsd. Nfsd, which has PF_LOCAL_THROTTLE set, will =
+take
+> these pages and write them to real-bdi. Now because PF_LOCAL_THROTTLE is
+> set for nfsd, the fact that we are over global limit does not take effect
+> and nfsd is still able to write to real-bdi until dirty limit on real-bdi
+> is reached. So things should work as Neil writes AFAIU.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Exactly.  The 'loop' block device follows a similar pattern - there is
+the 'loop' bdi that might consume all the allowed dirty pages, and the
+backing bdi that we need to write to so those dirty pages can be
+cleaned.
+
+The intention for PR_SET_IO_FLUSHER as described in 'man 2 prctl'
+is much the same.  The thread that sets this is expected to be working
+on behalf of a "block layer or filesystem" such as "FUSE daemons,  SCSI
+device  emulation daemons" - each of these would be serving a bdi
+"above" by writing to a bdi "below".
+
+I'll add some more text to the changelog to make this clearer.
+
+Thanks,
+NeilBrown
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAl6LGVwACgkQOeye3VZi
+gblH+RAAlcjEy90rucreHhtSxKfL4Fegmm5J2BHk9DCovgq/umVm/vGLLYQABj/A
+Aq0bDdE4za3maOg55/3Ee+b9gkZap68lQDaq0l79Jn0agCdzqrfqIT18CywwfxV5
+xP5s00MWhRN9mFa3wGi2nKkL00NRmRptnzJHtmMdfnhjoASjir6tfnYIDJe3jrxQ
+TKXMr84sVoEfYd8lb7BDoH8OK4Dr8I1gNl2Us6lsLFk7fnBAzKqr7kYmbd4QNwXR
+6T928smDKxptyhlOR02pekY1EqIcXZeQUyQ0ubx02iKj6b7z54nwaMo0VehngPZc
+MU17ddYmOS7bbbB6mM+reKumrdH3PWjAz8yadb68jisp8RS7DatBtFx4dkHz8AQh
+X3W5J4Hq4/8BxR+IEhbw8iSAz/HUQNPf8hNdvRkuxtc2UAfvzQVzmuAeVIGnb2+i
+V3pYl4l63BAjmnVO0kbC/zXEbLetzrjXINeII/swLd3rYKbtMibX4TcAVQfzichK
+9hlZ61xT4EXAFy7Zf1Mgi8hwcdpf2gJvPHYFkRqaPMr6jLYNCU/jSc+sgzVUPMmo
+IFZGhfOywLVvpMCIob7HF8F1eGjElbrhcGgqoUgc/x4s8kh3lDeR98C9R8SKSI2j
+JLm9g7NkU/TQIFhb9+v0V11UboteYMGrwZlh2A7UVXKNrThP56Y=
+=QtOq
+-----END PGP SIGNATURE-----
+--=-=-=--
