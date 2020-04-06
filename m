@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C5F19F222
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE7719F22D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbgDFJLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:11:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726689AbgDFJLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:11:34 -0400
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C6E12078A;
-        Mon,  6 Apr 2020 09:11:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586164293;
-        bh=IEKnLroPOXhZZoEjwk2Sy7qHL1p/3PpX8cAZjySktEg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=x9/XnaHxSYASdAnWEA1KJzzEgemj3vDGBjEXM3ZS/mXiYMEt9DQ0mPtb0MiA+/29Y
-         +kCeLxo9TBIfyZSeU3y51QeFqzPHoFJwv+7AsMuW4PnVgUifoqVMoKIWZOPhq55kOi
-         pVVdq0uKWDmwPU73ZYVXd9jmL6nD/cuzCdeXqVa8=
-Received: by mail-io1-f47.google.com with SMTP id o3so15016926ioh.2;
-        Mon, 06 Apr 2020 02:11:33 -0700 (PDT)
-X-Gm-Message-State: AGi0PuapjANHW4VO8VO6oiRiB4Y98aWNUuCGaZXoWBGpkzkewu0xYMuV
-        jkaTDn8/aNZH+I6KsID7rmIvziKT/7zZJSP6ztA=
-X-Google-Smtp-Source: APiQypJ08+HDD3z4MBXBa9W9lMQHNod6bQSMdsaxyTfs2CUw/1PrNMe5MnrwEhdaeSq/8Hso8MUAfaqal+pRLZa+9IU=
-X-Received: by 2002:a6b:f413:: with SMTP id i19mr18808491iog.203.1586164292977;
- Mon, 06 Apr 2020 02:11:32 -0700 (PDT)
+        id S1727026AbgDFJM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:12:27 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:14512 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbgDFJM1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 05:12:27 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e8af2140000>; Mon, 06 Apr 2020 02:10:44 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 06 Apr 2020 02:12:25 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 06 Apr 2020 02:12:25 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr
+ 2020 09:12:25 +0000
+Received: from localhost (10.124.1.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr 2020 09:12:24
+ +0000
+Date:   Mon, 6 Apr 2020 11:12:22 +0200
+From:   Thierry Reding <treding@nvidia.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        Paul Walmsley <paul@pwsan.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 3/9] arm64: tegra: Remove redundant CLKDEV_LOOKUP selects
+Message-ID: <20200406091222.GA475156@ulmo>
+References: <20200405025123.154688-1-sboyd@kernel.org>
+ <20200405025123.154688-4-sboyd@kernel.org>
 MIME-Version: 1.0
-References: <20200109150218.16544-1-nivedita@alum.mit.edu> <20200405154245.11972-1-me@prok.pw>
- <20200405231845.GA3095309@rani.riverdale.lan> <c692eea9213172d8ef937322b02ff585b0dfea82.camel@prok.pw>
- <20200406035110.GA3241052@rani.riverdale.lan> <CAMj1kXEUhyv886CjyKvjw2F12WaZxZRUWF6t_XzP4C2TJPdpeg@mail.gmail.com>
- <20200406084738.GA2520@zn.tnic>
-In-Reply-To: <20200406084738.GA2520@zn.tnic>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 6 Apr 2020 11:11:21 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHAieZDvPKfjF=J+G=QVS+=XS-b4RP_=mjCEFEB_E_+Qw@mail.gmail.com>
-Message-ID: <CAMj1kXHAieZDvPKfjF=J+G=QVS+=XS-b4RP_=mjCEFEB_E_+Qw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/boot/compressed/64: Remove .bss/.pgtable from bzImage
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Sergey Shatunov <me@prok.pw>, hpa@zytor.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
-        initramfs@vger.kernel.org,
-        Donovan Tremura <neurognostic@protonmail.ch>,
-        Harald Hoyer <harald@hoyer.xyz>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200405025123.154688-4-sboyd@kernel.org>
+X-NVConfidentiality: public
+User-Agent: Mutt/1.13.1 (2019-12-14)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
+Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586164244; bh=9kmRTXF8Etb9YX4oOcNjQcdL+srESuC5aHGqMIaGSiA=;
+        h=X-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
+         MIME-Version:In-Reply-To:X-NVConfidentiality:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:
+         Content-Disposition;
+        b=RSirfZOQYdXD3Ox0BliIItemQ8d/Bs/Qcj6c5eKsQ0snKTh+/f1HotOfmbQ2aM3IZ
+         mrGAb9Z7Y0qX/nLscwBRp/cavq14ZCHvCicFVGMzuw1YflXdDXZKXHjKAHcQ0Hp7kY
+         k1t8+8YkXqZRT8Zd5Ik0qf12UuLipIUiNbmQoQFBpRLeZ3Aq6DAWgoTDmcbEI+EW1l
+         F6sjSc+xU5uNYzKF6hOiwzUVsXIWSTX/8atYdil/PfdAerWZg6YKqA+Hj3bNlf7sXk
+         Jjce3njkD3Pas7l5ePr6PDRpT62sBA6JgV3L38tL+xUFOwWmW0QEFup+TGwwZmMLYN
+         aW1kAXEjN9iXg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Apr 2020 at 10:47, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Mon, Apr 06, 2020 at 09:32:47AM +0200, Ard Biesheuvel wrote:
-> > The EFI handover protocol strikes again :-(
-> >
-> > It seems we did not include any guidance in the documentation in
-> > Documentation/x86/boot.rst regarding zero-initializing BSS, and come
-> > to think of it, we don't include any other requirements either, i.e.,
-> > regarding placement wrt section alignment etc. This is a serious bug.
-> > Even though EFI usually lays out PE/COFF images in files the exact way
-> > they appear in memory, this is not actually required by the spec. Most
-> > notably, the virtual size can be smaller than the file size, and the
-> > loader is expected to zero-initialize the difference as well.
->
-> Is that expectation stated explicitly somewhere?
->
+--IS0zKkzwUGydFO0o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, it is in the PE/COFF specification. [0]
+On Sat, Apr 04, 2020 at 07:51:17PM -0700, Stephen Boyd wrote:
+> The arm64 architecture selects COMMON_CLK at the toplevel ARM64 config.
+> The COMMON_CLK config option already selects CLKDEV_LOOKUP so it's
+> redundant to have this selected again for the Tegra specific config.
+>=20
+> Cc: Paul Walmsley <paul@pwsan.com>
+> Cc: Thierry Reding <treding@nvidia.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: <linux-arm-kernel@lists.infradead.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  arch/arm64/Kconfig.platforms | 1 -
+>  1 file changed, 1 deletion(-)
 
-The whole problem is that we are conflating 'loading a PE/COFF image'
-with 'copying a PE/COFF image into memory', which are not the same
-thing. It is not just the layout issue, we are running into other
-problems with things like UEFI secure boot and TPM-based measured
-boot, where the fact that omitting the standard LoadImage() boot
-service (which takes care of these things under the hood) means that
-you now have to do your own checks and measurements. These things are
-literally all over the place at the moment, shim, GRUB, systemd-boot
-etc, with no authoritative spec that describes which component should
-be doing what.
+We rarely touch this, so I think it's fine for this to go through the
+clock tree. I'll make a mental note just in case there's going to be
+something touching this area in the next release, but I'm sure it'll be
+all minor so we could easily work that out:
 
-> > Since the EFI handover protocol should be considered deprecated at
-> > this point (and is never going to be supported in upstream GRUB
-> > either, for instance), I would recommend the systemd-boot developers
-> > to start looking into deprecating this as well, and switch to the
-> > ordinary PE/COFF entry point, and use the new initrd callback protocol
-> > for initrd loading.
->
-> Any pointers to that new initrd callback protocol?
->
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-Commit ec93fc371f014a6fb483e3556061ecad4b40735c has the background, but ...
+--IS0zKkzwUGydFO0o
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> In any case, I'd really appreciate a patch to boot.rst formulating those
-> requirements so that they're written down and people can find them.
->
+-----BEGIN PGP SIGNATURE-----
 
-... I'll look into updating the documentation as well. Note that this
-stuff is hot off the press, so there may be some issues lurking (like
-this one) that we hadn't thought of yet.
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6K8nMACgkQ3SOs138+
+s6GYOxAAl16bdJdFCTM/is7vcybWugFQqwYZ6YQqMs8mYm7vVkbuX24Mw4Imq8Dh
+kCzqbiCOnF0Bzotqm2ZQH2DwFHuevqCcIVvFM3dFapq5vE+T/42fernYfv2Jcdt+
+D5+aKv994tvCXMPKPq6oJyJGR3Frf2BcIjxThfduw+B68ILLaImTwoW5p6fWyrUL
+jR9F3hCCASjWQS+fCNuEcNRlsEBmWw1u/c4iqjfU7JMHXpPE/DZuYeS2daLoQmEl
+5li51m8hyES7/R9/tVaJlZIfOM3t9O4V58aZDnP/ieJ4nzFGLUWg3eveOm0b88ex
+2jaQhn5zNUliym+sSa4/vZKXPkzUTW4zMtiNR2B/QZyEZdD7veQmlVVPWauSsH4S
+1NCqegINAAaBAFZnS3Xz+iJsEqnK+iHiR6sZzckpChCN8znGgpK/sqGvY3gUj9bt
+R7wI7snHv59hJSbU2NBZKl95G5JH22GlU/RT3exDgQd2LHyi9WcPbvg6lqYbydM4
+FC/YOBQjSIBr1oC1ECh9XtGiGN614I3JextBY+NIFMONb/UN2b6K842uKhETt2U7
+gCjXTkdSIGwf5m3QSSxUjPYUnMycFQ0XXhKjyNed0V7daaxrfS5LbgN2sVA/WC6G
+cvGn2OsSZnLdE0dAY9hpANrWX2RFIhIqINKHTQqc+pqGieWXvJE=
+=rq9p
+-----END PGP SIGNATURE-----
 
-OVMF and u-boot already have implementations of this initrd loading
-approach. A GRUB version is under discussion.
-
-> > On the Linux/x86 side, we should at least add some code to the EFI
-> > handover protocol entry point to zero initialize BSS, and ensure that
-> > it is either not needed in other places, or add the code to deal with
-> > those as well.
->
-> Sounds like a simple fix, if that would fix it.
->
-
-Actually, it may be sufficient to #define __efistub_global to
-__section(.data) like we already do for ARM, to ensure that these
-global flags are always initialized correctly. (I'll wait for Sergey
-to confirm that the spurious enabling of the PCI DMA protection
-resulting from this BSS issue is causing the boot regression)
-
-
-
-[0] https://docs.microsoft.com/en-us/windows/win32/debug/pe-format
+--IS0zKkzwUGydFO0o--
