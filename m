@@ -2,159 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D9419EEAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 01:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2B719EEC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 02:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgDEXv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 19:51:27 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:43025 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727736AbgDEXv0 (ORCPT
+        id S1727901AbgDFABB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 20:01:01 -0400
+Received: from fallback12.mail.ru ([94.100.179.29]:46780 "EHLO
+        fallback12.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727254AbgDFABB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 19:51:26 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200405235124epoutp02209e02c35d74edc050295cae0562e427~DEXQraay20733907339epoutp02N
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Apr 2020 23:51:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200405235124epoutp02209e02c35d74edc050295cae0562e427~DEXQraay20733907339epoutp02N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1586130684;
-        bh=lSt8LdJPpXoJoLD3otlucHeQK0lf6r+8c36+IMGqGZQ=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=LUxeaH3f7tTFyDgfKW9t7wHpCSoM88qzVutRnG5xjFo1B+05WakEEGMHT+IxVdRtF
-         RGnxp7JeeFCn+84E+LSxtru8lI4+OMex7aEbTsat6IeURJxCSSQECpez6TpLeMsJvn
-         1r7IBfg+8KmL6ExuOURwoFmfJUmblUQWED+nB9eI=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200405235123epcas1p47fa7ff1050cd380e55ddbd9c0794e0b4~DEXQDdyg01541915419epcas1p4r;
-        Sun,  5 Apr 2020 23:51:23 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.153]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 48wVn46KL9zMqYls; Sun,  5 Apr
-        2020 23:51:20 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        90.87.04402.8FE6A8E5; Mon,  6 Apr 2020 08:51:20 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200405235120epcas1p45e7a155cbceaeb44f40f60c14c1c7cba~DEXMsm99c1826218262epcas1p4c;
-        Sun,  5 Apr 2020 23:51:20 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200405235120epsmtrp1744663a0431b92a131236908e0f9896b~DEXMrzAYn2195221952epsmtrp1B;
-        Sun,  5 Apr 2020 23:51:20 +0000 (GMT)
-X-AuditID: b6c32a35-753ff70000001132-d9-5e8a6ef88e3d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1A.58.04024.7FE6A8E5; Mon,  6 Apr 2020 08:51:19 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200405235119epsmtip141572a1a03ca2dd0e1a8e20cdb8c43ea~DEXMT-pOM1472414724epsmtip10;
-        Sun,  5 Apr 2020 23:51:19 +0000 (GMT)
-Subject: Re: [PATCH] PM / devfreq: tegra30: Delete an error message in
- tegra_devfreq_probe()
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <924a6012-985e-b22d-6f85-e9eb3f03e88b@samsung.com>
-Date:   Mon, 6 Apr 2020 09:00:20 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Sun, 5 Apr 2020 20:01:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=prok.pw; s=mailru;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=+KbMK29ZT//E9SHitadTUiyxzqlP/0/hbxXj33EV400=;
+        b=HJBWkyHIFPfbRH5Dt7DvYru+7ICM+O7sbrZjL5YHjzpx2P523AcWdumPJFI3wKeJHVKOajddHiXpA8T4fAFagbPEb8Z30oaZya6oCvx77tbW4d93BX5hREI0prgDyJDeHfqud3TCrfC3hLZZ6LrDI8nmwtOj9ojLnPeGxfzuEPM=;
+Received: from [10.161.64.53] (port=47330 helo=smtp45.i.mail.ru)
+        by fallback12.m.smailru.net with esmtp (envelope-from <me@prok.pw>)
+        id 1jLFCC-0004c6-TB; Mon, 06 Apr 2020 03:00:57 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=prok.pw; s=mailru;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID; bh=+KbMK29ZT//E9SHitadTUiyxzqlP/0/hbxXj33EV400=;
+        b=HJBWkyHIFPfbRH5Dt7DvYru+7ICM+O7sbrZjL5YHjzpx2P523AcWdumPJFI3wKeJHVKOajddHiXpA8T4fAFagbPEb8Z30oaZya6oCvx77tbW4d93BX5hREI0prgDyJDeHfqud3TCrfC3hLZZ6LrDI8nmwtOj9ojLnPeGxfzuEPM=;
+Received: by smtp45.i.mail.ru with esmtpa (envelope-from <me@prok.pw>)
+        id 1jLFBz-0000LH-0A; Mon, 06 Apr 2020 03:00:44 +0300
+Message-ID: <c692eea9213172d8ef937322b02ff585b0dfea82.camel@prok.pw>
+Subject: Re: [PATCH 1/2] x86/boot/compressed/64: Remove .bss/.pgtable from
+ bzImage
+From:   Sergey Shatunov <me@prok.pw>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org,
+        linux-efi@vger.kernel.org
+Date:   Mon, 06 Apr 2020 07:00:39 +0700
+In-Reply-To: <20200405231845.GA3095309@rani.riverdale.lan>
+References: <20200109150218.16544-1-nivedita@alum.mit.edu>
+         <20200405154245.11972-1-me@prok.pw>
+         <20200405231845.GA3095309@rani.riverdale.lan>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.1 
 MIME-Version: 1.0
-In-Reply-To: <ba67e238-43a7-6c53-363e-7a2c12f09949@web.de>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLJsWRmVeSWpSXmKPExsWy7bCmge6PvK44gyeLjSxWf3zMaNEyaxGL
-        xdZb0hZnm96wW1zeNYfN4nPvEUaLzi+z2Cz+z3rOanG7cQWbxcf/zcwWP3fNY3Hg9jg/vZfN
-        Y+esu+wevc3v2Dz6tqxi9Pi8Sc7j9rNtLAFsUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZm
-        Boa6hpYW5koKeYm5qbZKLj4Bum6ZOUDnKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVIL
-        UnIKLAv0ihNzi0vz0vWS83OtDA0MjEyBChOyM04syyvYwlnx5cQExgbGE+xdjJwcEgImEmuf
-        bmXtYuTiEBLYwSjRs3QfG4TziVHi3OeNUM43Ronvn84zwrQ8nbecBSKxl1Gi+/0cqKr3jBIf
-        H70Bcjg4hAXiJGY+lgOJiwhsYZLYu38DE0g3s0CxRO/RJawgNpuAlsT+FzfYQGx+AUWJqz8e
-        g23gFbCTePm5EcxmEVCRuDb1DJgtKhAmcXJbC1SNoMTJmU9YQGxOASuJJ6v+skDMF5e49WQ+
-        1C55ieats5lBjpAQ6GeXmLCyiRniBReJza2/WSFsYYlXx7dAQ0NK4mV/G5RdLbHy5BE2iOYO
-        Rokt+y9ANRhL7F86mQnkS2YBTYn1u/QhwooSO3/PZYRYzCfx7msPK0iJhACvREebEESJssTl
-        B3eZIGxJicXtnWwTGJVmIXlnFpIXZiF5YRbCsgWMLKsYxVILinPTU4sNCwyRY3sTIzjpapnu
-        YJxyzucQowAHoxIPL8Ptzjgh1sSy4srcQ4wSHMxKIrxSvUAh3pTEyqrUovz4otKc1OJDjKbA
-        0J7ILCWanA/MCHkl8YamRsbGxhYmhmamhoZK4rxTr+fECQmkJ5akZqemFqQWwfQxcXBKNTBK
-        n3sn+jbOrfLw6gaOdOPbc66sFJe9LTXLb0PPvzLVBRfjJPqaL7itOKQs4ep7N2ix2O3y67e8
-        WYIXHrjYM4vb8gD7+RX3pj9+mLso9MLPpZPdHcwmPeQ57Xp5q06O3p3mggfSjrOeRD5le6Tv
-        sePi1fVanvt7diVxtr4s/LQh/MPt662ZH2MMlFiKMxINtZiLihMBj+AQxtADAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrGIsWRmVeSWpSXmKPExsWy7bCSnO73vK44g62TzSxWf3zMaNEyaxGL
-        xdZb0hZnm96wW1zeNYfN4nPvEUaLzi+z2Cz+z3rOanG7cQWbxcf/zcwWP3fNY3Hg9jg/vZfN
-        Y+esu+wevc3v2Dz6tqxi9Pi8Sc7j9rNtLAFsUVw2Kak5mWWpRfp2CVwZJ5blFWzhrPhyYgJj
-        A+MJ9i5GTg4JAROJp/OWs3QxcnEICexmlHh6ei0zREJSYtrFo0A2B5AtLHH4cDFEzVtGiSXz
-        P7CDxIUF4iRmPpYDKRcR2MYkcbg5D8RmFiiW2PZhDTtEfS+jxPvb+8CWsQloSex/cYMNxOYX
-        UJS4+uMxI4jNK2An8fJzI5jNIqAicW3qGTBbVCBMYueSx0wQNYISJ2c+YQGxOQWsJJ6s+ssC
-        sUxd4s+8S8wQtrjErSfzmSBseYnmrbOZJzAKz0LSPgtJyywkLbOQtCxgZFnFKJlaUJybnlts
-        WGCYl1quV5yYW1yal66XnJ+7iREce1qaOxgvL4k/xCjAwajEw8twuzNOiDWxrLgy9xCjBAez
-        kgivVC9QiDclsbIqtSg/vqg0J7X4EKM0B4uSOO/TvGORQgLpiSWp2ampBalFMFkmDk6pBkbe
-        aYsCnbPDxQ9+4PjPe108nDO1/2uOQPPul6aTQ43/W30vnL1Nc3MDa4i/Wdx/s8d3j95K39Fv
-        6nJzCuez3k/z3xzMKLrjUmVek2K5/t//xx3Om3/UWf8/8SZ+4xaWk8UPPC/fC5r169eS9XKz
-        31Uuq5O6Kr5EIsFYo8pYVv9bmt7/jlOHYyyVWIozEg21mIuKEwFq319kuQIAAA==
-X-CMS-MailID: 20200405235120epcas1p45e7a155cbceaeb44f40f60c14c1c7cba
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200404184602epcas1p1e0188779ade7c393f9e37a4757e1b6cc
-References: <CGME20200404184602epcas1p1e0188779ade7c393f9e37a4757e1b6cc@epcas1p1.samsung.com>
-        <ba67e238-43a7-6c53-363e-7a2c12f09949@web.de>
+Content-Transfer-Encoding: 7bit
+X-7564579A: B8F34718100C35BD
+X-77F55803: 0A44E481635329DB0E1AA8A03B392317D32E5E48865217365060145B739F5F5C37D2C72149323728F688BCB05C26794D64D80AAD42192768407EC83892A14282A717FCED1365A4B59525BA8E2B2C40BE
+X-7FA49CB5: 0D63561A33F958A54AE798525227D406AC6237357C51EF584BEFFA12B7773D298941B15DA834481FA18204E546F3947C2FFDA4F57982C5F4F6B57BC7E64490618DEB871D839B7333395957E7521B51C2545D4CF71C94A83E9FA2833FD35BB23D27C277FBC8AE2E8BF1175FABE1C0F9B6A471835C12D1D977C4224003CC8364767815B9869FA544D8D32BA5DBAC0009BE9E8FC8737B5C224979A692957AEF9EBE76E601842F6C81A12EF20D2F80756B5F012D6517FE479FCD76E601842F6C81A127C277FBC8AE2E8BE3F710C1C8B542CF3AA81AA40904B5D99449624AB7ADAF3726B9191E2D567F0E725E5C173C3A84C360781E301B93023135872C767BF85DA2F004C906525384306FED454B719173D6462275124DF8B9C9DE2850DD75B2526BE5BFE6E7EFDEDCD789D4C264860C145E
+X-D57D3AED: Y8kq8+OzVozcFQziTi/Zi1xwo7H2ZNxGP5qz8aO2mjTJzjHGC4ogvVuzB3zfVUBtENeZ6b5av1fnCBE34JUDkWdM6QxE+Ga5d8voMtmXfSrqfUrc6JdFWbRFuIOw5Q1i
+X-Mailru-Sender: C70B145DBB19DC3370B3FB291950C1B51DF7D989C85C045CF3B3C80E0EC4B0E77962F9E9328436E18BA0E2A9D6159BD266FEC6BF5C9C28D9A91CF0FA91B32267255DC5169939796B8DAAFE1477B51D223453F38A29522196
+X-Mras: Ok
+X-7564579A: EEAE043A70213CC8
+X-77F55803: 669901E4625912A97F9F52485CB584D7271FD7DF62800FDC4FDA42786C758E5644D14FAD8B0A7E49E8B94918EE1A0A8284873159AE7BD3C6
+X-7FA49CB5: 0D63561A33F958A5F5E58AAAA6346AFE85FD72E8A4C480771C438537F267035D8941B15DA834481FA18204E546F3947C2FFDA4F57982C5F4F6B57BC7E64490618DEB871D839B7333395957E7521B51C2545D4CF71C94A83E9FA2833FD35BB23D27C277FBC8AE2E8BF1175FABE1C0F9B6A471835C12D1D977C4224003CC8364767815B9869FA544D8D32BA5DBAC0009BE9E8FC8737B5C224979A692957AEF9EBE76E601842F6C81A12EF20D2F80756B5F012D6517FE479FCD76E601842F6C81A127C277FBC8AE2E8BE3F710C1C8B542CF3AA81AA40904B5D99449624AB7ADAF3726B9191E2D567F0E725E5C173C3A84C360781E301B93023135872C767BF85DA2F004C906525384306FED454B719173D6462275124DF8B9C9DE2850DD75B2526BE5BFE6E7EFDEDCD789D4C264860C145E
+X-D57D3AED: Y8kq8+OzVozcFQziTi/Zi1xwo7H2ZNxGP5qz8aO2mjTJzjHGC4ogvVuzB3zfVUBtENeZ6b5av1fnCBE34JUDkWdM6QxE+Ga5d8voMtmXfSqLAZGOJJVRLZzUdJfQ/bjz
+X-Mailru-MI: 800
+X-Mailru-Sender: A5480F10D64C900521F65ACE11A97E3D0B57720138EF7FA944D14FAD8B0A7E4984876E3DC5E244DF8BA0E2A9D6159BD266FEC6BF5C9C28D9A91CF0FA91B32267255DC5169939796B8DAAFE1477B51D223453F38A29522196
+X-Mras: Ok
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/20 3:45 AM, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Sat, 4 Apr 2020 20:34:02 +0200
-> 
-> The function “platform_get_irq” can log an error already.
-> Thus omit a redundant message for the exception handling in the
-> calling function.
-> 
-> This issue was detected by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-> ---
->  drivers/devfreq/tegra30-devfreq.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index 28b2c7ca416e..93e6f4b25b04 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -807,10 +807,9 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
->  	}
-> 
->  	err = platform_get_irq(pdev, 0);
-> -	if (err < 0) {
-> -		dev_err(&pdev->dev, "Failed to get IRQ: %d\n", err);
-> +	if (err < 0)
->  		return err;
-> -	}
-> +
->  	tegra->irq = err;
-> 
->  	irq_set_status_flags(tegra->irq, IRQ_NOAUTOEN);
-> --
-> 2.26.0
-> 
-> 
-> 
+On Sun, 2020-04-05 at 19:18 -0400, Arvind Sankar wrote:
+> I'm not familiar with systemd-boot: when you say systemd-boot stub,
+> is
+> that something different from the kernel's EFI_STUB option? Or is it
+> just a kernel with EFI_STUB enabled and with builtin initramfs +
+> builtin
+> cmdline?
+Basicaly systemd-boot stub is efi application with packed EFI_STUB-
+enabled kernel, initrd and cmdline into single file. Source can be
+found here: 
+https://github.com/systemd/systemd/blob/master/src/boot/efi/stub.c
 
-Applied it. Thanks.
+It doesn't do anything unusual, just extracting data from sections and
+calling efi handover.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Final image created by objcopy'ing precompiled stub and adding sections with that stuff:
+
+    objcopy \
+        --add-section .osrel=os_release --change-section-vma
+'.osrel=0x20000' \
+        --add-section .cmdline=cmdline --change-section-vma
+'.cmdline=0x30000' \
+        --add-section .linux=vmlinuz --change-section-vma
+'.linux=0x2000000' \
+        --add-section .initrd=initrd --change-section-vma
+'.initrd=0x3000000' \
+        /usr/lib/systemd/boot/efi/linuxx64.efi.stub output.efi
+
+> The first error message you mention should be from systemd-boot after
+> the kernel exits with an EFI_BUFFER_TOO_SMALL error status. The
+> second
+> one -- is that 'exit_boot() failed' rather than 'exit_efi() failed'?
+> I
+> can't find the latter string in the tree.
+Yeah, probably it's exit_boot()
+
+> Can you also specify a commit tag that is broken + works with this
+> patch
+> reverted, just to make sure we're looking at the same code?
+I'm using latest master branch from Torvalds tree, so latest commit
+(for now it's a10c9c710f9ecea87b9f4bbb837467893b4bef01) broken, but
+with 3ee372ccce4d4e7c610748d0583979d3ed3a0cf4 reverted works.
+
+Not sure
+what I should specify as broken except the
+3ee372ccce4d4e7c610748d0583979d3ed3a0cf4 itself.
+But as I told 'Buffer
+Too Small' changed to 'exit_boot() failed' couple times during
+bisecting (it was closely around that commit, probably in commits about
+.eh_frame section), but I don't remember exactly commits when this
+happened. I could do one more bisecting with more details about each
+step if you wish.
+
