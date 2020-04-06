@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 067B219F40B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1143419F4AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbgDFLD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 07:03:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37606 "EHLO mx2.suse.de"
+        id S1727447AbgDFLgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 07:36:21 -0400
+Received: from elvis.franken.de ([193.175.24.41]:55913 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726883AbgDFLD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 07:03:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id E2369AD12;
-        Mon,  6 Apr 2020 11:03:25 +0000 (UTC)
-Subject: Re: [PATCH 1/9] ARM: Remove redundant COMMON_CLK selects
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        linux-arm-kernel@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>
-References: <20200405025123.154688-1-sboyd@kernel.org>
- <20200405025123.154688-2-sboyd@kernel.org>
-From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
-Organization: SUSE Software Solutions Germany GmbH
-Message-ID: <f3d1bf68-f40f-858d-8caf-268ad9231553@suse.de>
-Date:   Mon, 6 Apr 2020 13:03:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727192AbgDFLgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 07:36:20 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jLQ39-0007W1-00; Mon, 06 Apr 2020 13:36:19 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 2E474C0206; Mon,  6 Apr 2020 13:03:33 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 13:03:33 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-mips@linux-mips.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH] MIPS: fw: arc: add __weak to prom_meminit and
+ prom_free_prom_memory
+Message-ID: <20200406110333.GA6266@alpha.franken.de>
+References: <20200405163052.18942-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200405025123.154688-2-sboyd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200405163052.18942-1-masahiroy@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 05.04.20 um 04:51 schrieb Stephen Boyd:
-> The mulitplatform config already selects COMMON_CLK, so selecting it
-> again is not useful. Remove these selects from ARM platforms that are
-> part of the multiplatform build.
+On Mon, Apr 06, 2020 at 01:30:52AM +0900, Masahiro Yamada wrote:
+> As far as I understood, prom_meminit() in arch/mips/fw/arc/memory.c
+> is overridden by the one in arch/mips/sgi-ip32/ip32-memory.c if
+> CONFIG_SGI_IP32 is enabled.
 > 
-> Cc: "Andreas Färber" <afaerber@suse.de>
-> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Alexander Shiyan <shc_work@mail.ru>
-> Cc: Lubomir Rintel <lkundrak@v3.sk>
-> Cc: <linux-arm-kernel@lists.infradead.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+> The use of EXPORT_SYMBOL in static libraries potentially causes a
+> problem for the llvm linker [1]. So, I want to forcibly link lib-y
+> objects to vmlinux when CONFIG_MODULES=y.
+> 
+> As a groundwork, we must fix multiple definitions that have previously
+> been hidden by lib-y.
+> 
+> The prom_cleanup() in this file is already marked as __weak (because
+> it is overridden by the one in arch/mips/sgi-ip22/ip22-mc.c).
+> I think it should be OK to do the same for these two.
+> 
+> [1]: https://github.com/ClangBuiltLinux/linux/issues/515
+> 
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->   arch/arm/mach-actions/Kconfig  | 1 -
->   arch/arm/mach-clps711x/Kconfig | 1 -
->   arch/arm/mach-mmp/Kconfig      | 1 -
->   3 files changed, 3 deletions(-)
 > 
-> diff --git a/arch/arm/mach-actions/Kconfig b/arch/arm/mach-actions/Kconfig
-> index b5e0ac965ec0..00fb4babccdd 100644
-> --- a/arch/arm/mach-actions/Kconfig
-> +++ b/arch/arm/mach-actions/Kconfig
-> @@ -7,7 +7,6 @@ menuconfig ARCH_ACTIONS
->   	select ARM_GLOBAL_TIMER
->   	select CACHE_L2X0
->   	select CLKSRC_ARM_GLOBAL_TIMER_SCHED_CLOCK
-> -	select COMMON_CLK
->   	select GENERIC_IRQ_CHIP
->   	select HAVE_ARM_SCU if SMP
->   	select HAVE_ARM_TWD if SMP
+> If MIPS maintainers ack this patch,
+> I want to inser it before the following patch:
 
-Reviewed-by: Andreas Färber <afaerber@suse.de> (Actions)
 
-New targets such as Realtek or Sunplus don't select it anymore, but it 
-seems we didn't clean up all the old ones yet.
+Acked-By: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-Thanks,
-Andreas
+Thomas.
 
 -- 
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-GF: Felix Imendörffer
-HRB 36809 (AG Nürnberg)
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
