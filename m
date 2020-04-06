@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA33B19FB78
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 19:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5B419F668
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729703AbgDFR1r convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Apr 2020 13:27:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49206 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726536AbgDFR1q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 13:27:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 93A78BE46;
-        Mon,  6 Apr 2020 17:27:43 +0000 (UTC)
-From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
-To:     Pavel Shilovsky <piastryyy@gmail.com>,
-        Long Li <longli@microsoft.com>
-Cc:     Steve French <sfrench@samba.org>,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cifs: Allocate crypto structures on the fly for
- calculating signatures of incoming packets
-In-Reply-To: <CAKywueTyHNw5P1M4WR+SdBKU-yXvJEfJc5VSONveNBZm-dOjKQ@mail.gmail.com>
-References: <1585696903-96794-1-git-send-email-longli@linuxonhyperv.com>
- <CAKywueRg8kJ+0aOehM-QKGuRwbDSb2TA5vNje8eSCdMqBT+EdQ@mail.gmail.com>
- <BN8PR21MB11559BF18DF932A38624369ECEC70@BN8PR21MB1155.namprd21.prod.outlook.com>
- <CAKywueRBghVuNtfP0XdLYL-wS_Nfci8uF_7pRPSjvQDif22BFQ@mail.gmail.com>
- <CAKywueTyHNw5P1M4WR+SdBKU-yXvJEfJc5VSONveNBZm-dOjKQ@mail.gmail.com>
-Date:   Mon, 06 Apr 2020 15:05:55 +0200
-Message-ID: <87h7xwn4r0.fsf@suse.com>
+        id S1728327AbgDFNGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 09:06:20 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35891 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728118AbgDFNGU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 09:06:20 -0400
+Received: by mail-lf1-f68.google.com with SMTP id w145so11753581lff.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 06:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7GN1YoLzsFU98PWBZxI+qjFmWQa/AZo0+frFBCofsJg=;
+        b=xXF6AYFcB3ozl4D4kdHrr50LF1ZbAzFYv2AWyEbx3VdXDZdEgAFF7g0GDyLvkZ+X7j
+         9M/LLUMmEvEJ+qwYkX6OKJl8UnuYxFGk4437Ue0Ul/SYyGtNWU7yTlR+xtE+DeHL70uz
+         o/zUDbyphURIF0pjMrhsCPT56gpy6uSvJGGicPccenUoejHO1g+XCkhVV/i9rx+YuZ5I
+         K+mVTdeE1Wfk1fuHpjfF9cqq8xZEiCTxBUeIO7f8sAiH5NUd6zch0P4a/7lr1XXvWGOj
+         +3RM5Q/rtssVNH9lNrYeJ3ZVOEt5xNEfo2PQLvqeK27IvWeb8CsbnBf9e1uDbuPgiyEr
+         jnTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7GN1YoLzsFU98PWBZxI+qjFmWQa/AZo0+frFBCofsJg=;
+        b=N8aPtLuO+xSlCKUZWdiIT2WeEWDA+FtHvRaJDFpIwmpo9tcDRXgGdsGRvh2hVGVys8
+         0jD9PbEwUXATHNFL3QR5mIPKWIgXmkgXXBzNFUmQ855G72+0dJ/OpGKS/tfDnyVIt1Li
+         mR6oBDXBAaeAGL6qjqAhKF1J6aueYFC6HtG6PYflDVFGUxM4ZrDOx0v6/9TNWklyAYPY
+         nVwUxyKB3KtY5DpbMQo5vzj7KOvMNhPawzU9Tz+s9HwdzGibqAaQNMUxerXhHbsSqR3C
+         dU9Mi3V0/Ba+ZimKs8IjbJx1krfUhwpCc6cGeMSbWVLd9D9u3/FnzTqMVNdFRE0R/WCT
+         ngKw==
+X-Gm-Message-State: AGi0PuYl4CYc8qoBIxMRNOqPkLitEj0k7yB1V+qUSMzEdJ1YEeXTvp1Q
+        NvBwKMsRirTTVZxlmG+t0JLpqUQe/HCevxneHcIYJg==
+X-Google-Smtp-Source: APiQypIK+bczDzGTeHW+lSUpdUeHqY1a2BN2ay+VHidmedYNAGHtBDA28bQ7bJLCQZwbaQ8u6riJa2KPaTes9V8Xvos=
+X-Received: by 2002:ac2:5f63:: with SMTP id c3mr12844845lfc.15.1586178378339;
+ Mon, 06 Apr 2020 06:06:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+References: <1586175677-3061-1-git-send-email-sumit.garg@linaro.org>
+ <87ftdgokao.fsf@tynnyri.adurom.net> <1e352e2130e19aec5aa5fc42db397ad50bb4ad05.camel@sipsolutions.net>
+In-Reply-To: <1e352e2130e19aec5aa5fc42db397ad50bb4ad05.camel@sipsolutions.net>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 6 Apr 2020 18:36:06 +0530
+Message-ID: <CAFA6WYMxKUXjhAfK6pTu9merNwUaKmQp6_FaTmW4e=kfTMthmw@mail.gmail.com>
+Subject: Re: [PATCH] mac80211: fix race in ieee80211_register_hw()
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-wireless@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Matthias=2DPeter_Sch=C3=B6pfer?= 
+        <matthias.schoepfer@ithinx.io>,
+        "Berg Philipp (HAU-EDS)" <Philipp.Berg@liebherr.com>,
+        "Weitner Michael (HAU-EDS)" <Michael.Weitner@liebherr.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Shilovsky <piastryyy@gmail.com> writes:
-> + Aurelien
+On Mon, 6 Apr 2020 at 18:17, Johannes Berg <johannes@sipsolutions.net> wrote:
 >
-> Ok, before negotiate tcpStatus is not CifsGood, so, the allocation
-> won't be skipped. I think this function should be no-op for all
-> protocols except SMB 3.1.1 to reflect the meaning. Other protocols
-> don't use preauth hash anyway.
+> On Mon, 2020-04-06 at 15:44 +0300, Kalle Valo wrote:
+> >
+> > >     user-space  ieee80211_register_hw()  RX IRQ
+> > >     +++++++++++++++++++++++++++++++++++++++++++++
+> > >        |                    |             |
+> > >        |<---wlan0---wiphy_register()      |
+> > >        |----start wlan0---->|             |
+> > >        |                    |<---IRQ---(RX packet)
+> > >        |              Kernel crash        |
+> > >        |              due to unallocated  |
+> > >        |              workqueue.          |
 >
-> @Aurelien, @everybody, what would be your thoughts about moving
-> protocol version check from IF block to the top of the function thus
-> skipping to allocate preauth hash for protocols that don't need it? In
-> this case Long's patch will require a change to keep
-> smb2_crypto_shash_allocate() and its invocation.
+> [snip]
+>
+> > I have understood that no frames should be received until mac80211 calls
+> > struct ieee80211_ops::start:
+> >
+> >  * @start: Called before the first netdevice attached to the hardware
+> >  *         is enabled. This should turn on the hardware and must turn on
+> >  *         frame reception (for possibly enabled monitor interfaces.)
+>
+> True, but I think he's saying that you can actually add and configure an
+> interface as soon as the wiphy is registered?
 
-Sounds good. I think we could go even further and do preauth crypto
-alloc/dealloc all in the preauth hash compute function too and remove
-the pointers from the server struct (except for the byte array with the
-hash result). It only runs during negprot+session establishement which
-is not a hot path at all and would keep the memory model simpler.
+Indeed, it's a call to "struct ieee80211_ops::start" just after wiphy
+is registered that causes the frame to be received leading to RX IRQ.
 
-Cheers,
--- 
-Aurélien Aptel / SUSE Labs Samba Team
-GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg, DE
-GF: Felix Imendörffer, Mary Higgins, Sri Rasiah HRB 247165 (AG München)
+>
+> The "wlan0" is kinda wrong there, should be "phy0" I guess, and then
+> interface added from iw?
+
+Okay, will update the sequence diagram.
+
+-Sumit
+
+>
+> johannes
+>
