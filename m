@@ -2,154 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E4A19FC76
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EA019FC7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgDFSGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 14:06:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53612 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726650AbgDFSGJ (ORCPT
+        id S1727331AbgDFSGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 14:06:25 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:37050 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbgDFSGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 14:06:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586196368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zq2fOqfpnunCJPcnhnd4EahDTvQRSHEmjDBqkQFoh48=;
-        b=BFyOEScHpbMwsvffNWwXQ8xSpc0r/vw4lrlRclPvwDRBuc5lfz5/TmGm5iLb+FmWdx+orb
-        KOcaPcXNV9eNQND8VzIQyrk0ha6NT0N2Wtapt/tWzwWvk1RBGQOsGir9IotSW+vjCOesRd
-        qqQUq4ba7ZzWMsRJ1EP8PllIH0lKZjc=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-joIn02_2Ma2MgIh-wvgVmA-1; Mon, 06 Apr 2020 14:06:02 -0400
-X-MC-Unique: joIn02_2Ma2MgIh-wvgVmA-1
-Received: by mail-qt1-f197.google.com with SMTP id j7so542357qtd.22
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 11:06:02 -0700 (PDT)
+        Mon, 6 Apr 2020 14:06:23 -0400
+Received: by mail-lj1-f194.google.com with SMTP id r24so720497ljd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 11:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BisFcRtdDqZDWx9x/qe3YqGCVBMdPDBaYv2iQPpKZGk=;
+        b=hycTOvQuFUOqWorRTq3COTwoQhv5QArTInVPi3BJzNZEYA8ClFHnf/Pog4SwnExpqW
+         O0t2iPzj1sC3CqfuWGAAmBs3m/sWjxm/70oydN4qonvFZVSKIYy24kF2rhRlFk/itgBj
+         OXm3JM0/7A+VH/EVB7RjlP5C0H9ZpQ3DCrkLc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zq2fOqfpnunCJPcnhnd4EahDTvQRSHEmjDBqkQFoh48=;
-        b=SDYXfDsqTaxkB4k2mPLGk19niCfsZfXAqggCulDR0EekojOyIwFzO+okE9prqvbF98
-         n9bSU17j+iyTEaRnnnrOMzjvO8Bd+B06JNl8UiqKsplrctWAUsWO9O8Nm+NbW+ib4eom
-         uaNFLYPT+UKNYapKHt3vd9xBgwT231X9UlvLWYQ21pjrFzI+WLFmsRMxugJLB4sIjEzb
-         xEoiZPhUN5GEDLKuBVt0PruxTC7yNdZ4VCvMRRsHo1/iX/QzHane7qiYXzIOoq4Q6PDK
-         Q487jlyRgGNZNciEtDLkV1wckjxRLpcXDbfW+EgmOMNElnMEtFmJaVA6esVT1CGvSzk6
-         ra0g==
-X-Gm-Message-State: AGi0PuY6QPnPvlEjxBzZqUnBerezSBxZZlTjtA9GouNSGtcisFdXKSSg
-        c0l9/u/iU7fUpEFib88z+INTVgm1MGiH+fXDx3oEj/E/Gf3A/JEl8Ey+vaTV7WWh2SBhkHYPDol
-        JrXErMQIwl9dOPwDBnfV3rZdO
-X-Received: by 2002:ac8:2a68:: with SMTP id l37mr698229qtl.77.1586196361387;
-        Mon, 06 Apr 2020 11:06:01 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLEox3UX8MCeX0tOeCXIrNeXeiRB52F4QJf5RdYuk+NCD4GaAPnvAscpKxCIJDbeDpCWYGZow==
-X-Received: by 2002:ac8:2a68:: with SMTP id l37mr698198qtl.77.1586196361085;
-        Mon, 06 Apr 2020 11:06:01 -0700 (PDT)
-Received: from dev.jcline.org ([136.56.87.133])
-        by smtp.gmail.com with ESMTPSA id s26sm14862683qkm.114.2020.04.06.11.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 11:06:00 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 14:05:58 -0400
-From:   Jeremy Cline <jcline@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>, linux-s390@vger.kernel.org,
-        Michal Kubecek <mkubecek@suse.cz>,
-        Philipp Rudo <prudo@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kbuild: add dummy toolchains to enable all cc-option
- etc. in Kconfig
-Message-ID: <20200406180558.GA22412@dev.jcline.org>
-References: <20200403090224.24045-1-masahiroy@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BisFcRtdDqZDWx9x/qe3YqGCVBMdPDBaYv2iQPpKZGk=;
+        b=DKfC2lxE2Fcp/13FObzfjVZNANoXcfrYKEPWXgh+SsAyzU1pAEf4ZkehEE1gBUtn0q
+         of69a1H4q5tx4IUhrZIOO4+caJymxLMpX36YmyZfKJot2Cn7J42ppOl9ySx6rWqHOTMI
+         bpoBwl9NPKZ+070iTLsvgjO3mERtFnvLRqHChJVoqIZORxRstk6mMo/E2UkTaJVkfiLG
+         fEI9Hit278WlpgHY/VGnoWQYJ4ZGS3jF4c27Dh2FAnvf+wmiOesF3BPcCS7V5c9AKBaZ
+         9DYUqs7JxyiVSAjU2pej89SXzktFqytzr5KHF5vkNgrX8/F8iWtGODGuNuhEXPe2kRlK
+         Mrpg==
+X-Gm-Message-State: AGi0PuZusTa/yh4d4EvrukwEM3Rp77B3JNB/BDqNWQyZsSYAanat8eVr
+        L3qZfOL13ss/DMxiT6w5WbZO7GdcXVU=
+X-Google-Smtp-Source: APiQypJk2RQB5JdBwUoI9NsyVZdVncAn5bo1kjLN2pRlJGZ7bDV3sbSRAHzwkzr2epdLHVb6buryYQ==
+X-Received: by 2002:a05:651c:200c:: with SMTP id s12mr305827ljo.30.1586196380083;
+        Mon, 06 Apr 2020 11:06:20 -0700 (PDT)
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
+        by smtp.gmail.com with ESMTPSA id v9sm10358687lji.11.2020.04.06.11.06.18
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Apr 2020 11:06:18 -0700 (PDT)
+Received: by mail-lj1-f176.google.com with SMTP id p14so660816lji.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 11:06:18 -0700 (PDT)
+X-Received: by 2002:a2e:9b8e:: with SMTP id z14mr319344lji.150.1586196377903;
+ Mon, 06 Apr 2020 11:06:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403090224.24045-1-masahiroy@kernel.org>
+References: <a291cce3ff1ba978e7ad231a8e1b7d82f6164e86.camel@perches.com>
+ <20200406023700.1367-1-longman@redhat.com> <319765.1586188840@warthog.procyon.org.uk>
+ <d509771b7e08fff0d18654b746e413e93ed62fe8.camel@perches.com> <19cbf3b1-2c3f-dd0f-a5c6-69ca3f77dd68@redhat.com>
+In-Reply-To: <19cbf3b1-2c3f-dd0f-a5c6-69ca3f77dd68@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 6 Apr 2020 11:06:02 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgjiHUWLZWKZJ4eU+RrOc2xNZCHn4ETmJ0S+H=Eig28Cw@mail.gmail.com>
+Message-ID: <CAHk-=wgjiHUWLZWKZJ4eU+RrOc2xNZCHn4ETmJ0S+H=Eig28Cw@mail.gmail.com>
+Subject: Re: [PATCH] mm: Add kvfree_sensitive() for freeing sensitive data objects
+To:     Waiman Long <longman@redhat.com>
+Cc:     Joe Perches <joe@perches.com>, David Howells <dhowells@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linux-MM <linux-mm@kvack.org>, keyrings@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 06:02:24PM +0900, Masahiro Yamada wrote:
-> Staring v4.18, Kconfig evaluates compiler capabilities, and hides CONFIG
-> options your compiler does not support. This works well if you configure
-> and build the kernel on the same host machine.
-> 
-> It is inconvenient if you prepare the .config that is carried to a
-> different build environment (typically this happens when you package
-> the kernel for distros) because using a different compiler potentially
-> produces different CONFIG options than the real build environment.
-> So, you probably want to make as many options visible as possible.
-> In other words, you need to create a super-set of CONFIG options that
-> cover any build environment. If some of the CONFIG options turned out
-> to be unsupported on the build machine, they are automatically disabled
-> by the nature of Kconfig.
-> 
-> However, it is not feasible to get a full-featured compiler for every
-> arch.
-> 
-> This issue was discussed here:
-> 
->   https://lkml.org/lkml/2019/12/9/620
-> 
-> Other than distros, savedefconfig is also a problem. Some arch subsytems
-> periodically resync defconfig files. If you use a less-capable compiler
-> for savedefconfig, options that do not meet 'depends on $(cc-option,...)'
-> will be forcibly disabled. So, defconfig && savedefconfig may silently
-> change the behavior.
-> 
-> This commit adds a set of dummy toolchains that pretend to support any
-> feature.
-> 
-> Most of compiler features are tested by cc-option, which simply checks
-> the exit code of $(CC). The dummy tools are just a shell script that
-> exits with 0 in most cases. So, $(cc-option, ...) is evaluated as 'y'.
-> 
-> There are more complicated checks such as:
-> 
->   scripts/gcc-x86_{32,64}-has-stack-protector.sh
->   scripts/gcc-plugin.sh
->   scripts/tools-support-relr.sh
-> 
-> I tried my best to implement the dummy scripts to pass all checks.
-> 
-> From the top directory of the source tree, you can do:
-> 
->    $ make CROSS_COMPILE=scripts/dummy-tools/ oldconfig
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  scripts/dummy-tools/gcc     | 91 +++++++++++++++++++++++++++++++++++++
->  scripts/dummy-tools/ld      |  4 ++
->  scripts/dummy-tools/nm      |  4 ++
->  scripts/dummy-tools/objcopy |  4 ++
->  4 files changed, 103 insertions(+)
->  create mode 100755 scripts/dummy-tools/gcc
->  create mode 100755 scripts/dummy-tools/ld
->  create mode 100755 scripts/dummy-tools/nm
->  create mode 100755 scripts/dummy-tools/objcopy
-> 
+On Mon, Apr 6, 2020 at 10:59 AM Waiman Long <longman@redhat.com> wrote:
+>
+> I have actually been thinking about that. I saw a couple of cases in the
+> crypto code where a memzero_explicit() is followed by kfree(). Those can
+> be replaced by kfree_sensitive.
 
-<snip>
+Ack.
 
-> diff --git a/scripts/dummy-tools/ld b/scripts/dummy-tools/ld
-> new file mode 100755
-> index 000000000000..3bc56ae4cc15
-> --- /dev/null
-> +++ b/scripts/dummy-tools/ld
-> @@ -0,0 +1,4 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +
-> +# Dummy script that always succeeds
+Doing that (and renaming kvzfree) should be a fairly straightforward
+coccinelle patch.
 
-It looks like scripts/Kbuild.include expects "$(LD) --version" to return
-something. If it doesn't "ld-ifversion" stops working.
+Somebody (maybe you) asked whether we could just use
+kvfree_sensitive() for everything, We probably could. The extra test
+is cheap - much cheaper than the memzero_explicit().
 
-Other than that it seems to work as advertised. Thanks!
+That said, _there_ I think that consistency with regular kfree/kvfree
+naming means that we might as well keep separate names, and keep the
+kmalloc->kfree_sensitive and kvmalloc->kvfree_sensitive pairing. Even
+if technically we could do with just the one function that works for
+both cases.
 
-- Jeremy
-
+            Linus
