@@ -2,365 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED2419FE8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D543519FEB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 22:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgDFT45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 15:56:57 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11339 "EHLO mga06.intel.com"
+        id S1726277AbgDFUFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 16:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbgDFT44 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 15:56:56 -0400
-IronPort-SDR: 8BJfuknPiXHNI8UuBXJotGM8c9NLmxiy8OV98bG5QUrZYnvJamh7KWIdiqvKAJ9nv8rMiSX0lF
- XgB10H2ULjSw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 12:56:55 -0700
-IronPort-SDR: 7jaDNfISimOsHgG8svNRIWnOicdsddpNv9m3+uFUcpM6VJKwiW8snjGbgyGtWgyPJzwB932q9z
- tta1yJ1iMWGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,352,1580803200"; 
-   d="scan'208";a="247005866"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008.jf.intel.com with ESMTP; 06 Apr 2020 12:56:54 -0700
-Date:   Mon, 6 Apr 2020 13:02:45 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 03/10] iommu/ioasid: Introduce per set allocation APIs
-Message-ID: <20200406130245.690cfe15@jacob-builder>
-In-Reply-To: <20200401134745.GE882512@myrica>
-References: <1585158931-1825-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1585158931-1825-4-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200401134745.GE882512@myrica>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1725895AbgDFUFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 16:05:04 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98AE1206C0;
+        Mon,  6 Apr 2020 20:05:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586203503;
+        bh=/o4DXNgzkWofRtLIE2DOEC8cF73vnGDweYJWMyToNpE=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=y052ti9pOmiNTsdcAy/oue9bkBL7v3dP59SdC/Bm6+h3Hty6eEJAPyKLyBiHpU3KO
+         m9FKACcquw0bxTN/0l3vnV5L5mliXEMN/kEndKPn7NcrbFcI24GP8P0s0z12cOuse9
+         RmzVCqNCIJ8Og11Pg6Qzdd7cwGMK8kdunBjkJ0t8=
+Message-ID: <538e31d9f231fbc09500c92929ef7a3cc516377f.camel@kernel.org>
+Subject: Re: [PATCH 2/2] ceph: allow rename operation under different quota
+ realms
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Luis Henriques <lhenriques@suse.com>, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Gregory Farnum <gfarnum@redhat.com>,
+        Zheng Yan <zyan@redhat.com>
+Cc:     Frank Schilder <frans@dtu.dk>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 06 Apr 2020 16:05:01 -0400
+In-Reply-To: <20200406151201.32432-3-lhenriques@suse.com>
+References: <20200406151201.32432-1-lhenriques@suse.com>
+         <20200406151201.32432-3-lhenriques@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Apr 2020 15:47:45 +0200
-Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
-
-> On Wed, Mar 25, 2020 at 10:55:24AM -0700, Jacob Pan wrote:
-> > IOASID set defines a group of IDs that share the same token. The
-> > ioasid_set concept helps to do permission checking among users as
-> > in the current code.
-> > 
-> > With guest SVA usage, each VM has its own IOASID set. More
-> > functionalities are needed:
-> > 1. Enforce quota, each guest may be assigned limited quota such
-> > that one guest cannot abuse all the system resource.
-> > 2. Stores IOASID mapping between guest and host IOASIDs
-> > 3. Per set operations, e.g. free the entire set
-> > 
-> > For each ioasid_set token, a unique set ID is assigned. This makes
-> > reference of the set and data lookup much easier to implement.
-> > 
-> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >  drivers/iommu/ioasid.c | 147
-> > +++++++++++++++++++++++++++++++++++++++++++++++++
-> > include/linux/ioasid.h |  13 +++++ 2 files changed, 160
-> > insertions(+)
-> > 
-> > diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
-> > index 4026e52855b9..27ee57f7079b 100644
-> > --- a/drivers/iommu/ioasid.c
-> > +++ b/drivers/iommu/ioasid.c
-> > @@ -10,6 +10,25 @@
-> >  #include <linux/spinlock.h>
-> >  #include <linux/xarray.h>
-> >  
-> > +static DEFINE_XARRAY_ALLOC(ioasid_sets);
-> > +/**
-> > + * struct ioasid_set_data - Meta data about ioasid_set
-> > + *
-> > + * @token:	Unique to identify an IOASID set
-> > + * @xa:		XArray to store subset ID and IOASID mapping
-> > + * @size:	Max number of IOASIDs can be allocated within the
-> > set
-> > + * @nr_ioasids	Number of IOASIDs allocated in the set
-> > + * @sid		ID of the set
-> > + */
-> > +struct ioasid_set_data {
-> > +	struct ioasid_set *token;
-> > +	struct xarray xa;
-> > +	int size;
-> > +	int nr_ioasids;
-> > +	int sid;
-> > +	struct rcu_head rcu;
-> > +};
-> > +
-> >  struct ioasid_data {
-> >  	ioasid_t id;
-> >  	struct ioasid_set *set;
-> > @@ -388,6 +407,111 @@ void ioasid_free(ioasid_t ioasid)
-> >  EXPORT_SYMBOL_GPL(ioasid_free);
-> >  
-> >  /**
-> > + * ioasid_alloc_set - Allocate a set of IOASIDs
-> > + * @token:	Unique token of the IOASID set
-> > + * @quota:	Quota allowed in this set
-> > + * @sid:	IOASID set ID to be assigned
-> > + *
-> > + * Return 0 upon success. Token will be stored internally for
-> > lookup,
-> > + * IOASID allocation within the set and other per set operations
-> > will use
-> > + * the @sid assigned.
-> > + *
-> > + */
-> > +int ioasid_alloc_set(struct ioasid_set *token, ioasid_t quota, int
-> > *sid) +{
-> > +	struct ioasid_set_data *sdata;
-> > +	ioasid_t id;
-> > +	int ret = 0;
-> > +
-> > +	if (quota > ioasid_capacity_avail) {
-> > +		pr_warn("Out of IOASID capacity! ask %d, avail
-> > %d\n",
-> > +			quota, ioasid_capacity_avail);
-> > +		return -ENOSPC;
-> > +	}  
+On Mon, 2020-04-06 at 16:12 +0100, Luis Henriques wrote:
+> Returning -EXDEV when trying to 'mv' files/directories from different
+> quota realms results in copy+unlink operations instead of the faster
+> CEPH_MDS_OP_RENAME.  This will occur even when there aren't any quotas
+> set in the destination directory, or if there's enough space left for
+> the new file(s).
 > 
-> This check should be in the same critical section as the quota
-> substraction
+> This patch adds a new helper function to be called on rename operations
+> which will allow these operations if they can be executed.  This patch
+> mimics userland fuse client commit b8954e5734b3 ("client:
+> optimize rename operation under different quota root").
 > 
-yes, right.
-
-> > +
-> > +	sdata = kzalloc(sizeof(*sdata), GFP_KERNEL);
-> > +	if (!sdata)
-> > +		return -ENOMEM;  
+> Since ceph_quota_is_same_realm() is now called only from this new
+> helper, make it static.
 > 
-> I don't understand why we need this structure at all, nor why we need
-> the SID. Users have already allocated an ioasid_set, so why not just
-> stick the content of ioasid_set_data in there, and pass the
-> ioasid_set pointer to ioasid_alloc()?
+> URL: https://tracker.ceph.com/issues/44791
+> Signed-off-by: Luis Henriques <lhenriques@suse.com>
+> ---
+>  fs/ceph/dir.c   |  9 ++++----
+>  fs/ceph/quota.c | 58 ++++++++++++++++++++++++++++++++++++++++++++++++-
+>  fs/ceph/super.h |  3 ++-
+>  3 files changed, 64 insertions(+), 6 deletions(-)
 > 
+> diff --git a/fs/ceph/dir.c b/fs/ceph/dir.c
+> index d0cd0aba5843..9d3f0062d800 100644
+> --- a/fs/ceph/dir.c
+> +++ b/fs/ceph/dir.c
+> @@ -1099,11 +1099,12 @@ static int ceph_rename(struct inode *old_dir, struct dentry *old_dentry,
+>  			op = CEPH_MDS_OP_RENAMESNAP;
+>  		else
+>  			return -EROFS;
+> +	} else {
+> +		err = ceph_quota_check_rename(mdsc, d_inode(old_dentry),
+> +					      new_dir);
 
-My thinking was that ioasid_set is an opaque user token, e.g. we use mm
-to identify a common set belong to a VM.
+I was wondering why not use "old_dir" here, but I think this is more
+correct. I guess a directory could have a different quotarealm from its
+parent?
 
-This sdata is an IOASID internal structure for managing & servicing per
-set data. If we let user fill in the content, some of the entries need
-to be managed by the IOASID code under a lock. IMO, not suitable to let
-user allocate and manage.
+> +		if (err)
+> +			return err;
+>  	}
+> -	/* don't allow cross-quota renames */
+> -	if ((old_dir != new_dir) &&
+> -	    (!ceph_quota_is_same_realm(old_dir, new_dir)))
+> -		return -EXDEV;
+>  
+>  	dout("rename dir %p dentry %p to dir %p dentry %p\n",
+>  	     old_dir, old_dentry, new_dir, new_dentry);
+> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+> index c5c8050f0f99..a6dd1a528c70 100644
+> --- a/fs/ceph/quota.c
+> +++ b/fs/ceph/quota.c
+> @@ -264,7 +264,7 @@ static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client *mdsc,
+>  	return NULL;
+>  }
+>  
+> -bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
+> +static bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
+>  {
+>  	struct ceph_mds_client *mdsc = ceph_inode_to_client(old)->mdsc;
+>  	struct ceph_snap_realm *old_realm, *new_realm;
+> @@ -516,3 +516,59 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
+>  	return is_updated;
+>  }
+>  
+> +/*
+> + * ceph_quota_check_rename - check if a rename can be executed
+> + * @mdsc:	MDS client instance
+> + * @old:	inode to be copied
+> + * @new:	destination inode (directory)
+> + *
+> + * This function verifies if a rename (e.g. moving a file or directory) can be
+> + * executed.  It forces an rstat update in the @new target directory (and in the
+> + * source @old as well, if it's a directory).  The actual check is done both for
+> + * max_files and max_bytes.
+> + *
+> + * This function returns 0 if it's OK to do the rename, or, if quotas are
+> + * exceeded, -EXDEV (if @old is a directory) or -EDQUOT.
+> + */
+> +int ceph_quota_check_rename(struct ceph_mds_client *mdsc,
+> +			    struct inode *old, struct inode *new)
+> +{
+> +	struct ceph_inode_info *ci_old = ceph_inode(old);
+> +	int ret = 0;
+> +
+> +	if ((old == new) || (ceph_quota_is_same_realm(old, new)))
+> +		return 0;
+> +
 
-Perhaps we should rename struct ioasid_set to ioasid_set_token?
+"old" represents the old dentry being moved. "new" is the new parent
+dir. Do we need to test for old == new? The vfs won't allow the source
+to be the ancestor of the target (or vice versa). From vfs_rename():
 
-/**
- * struct ioasid_set_data - Meta data about ioasid_set
- *
- * @token:	Unique to identify an IOASID set
- * @xa:		XArray to store ioasid_set private ID to
-system-wide IOASID
- *		mapping
- * @max_id:	Max number of IOASIDs can be allocated within the set
- * @nr_id	Number of IOASIDs allocated in the set
- * @sid		ID of the set
- */
-struct ioasid_set_data {
-	struct ioasid_set *token;
-	struct xarray xa;
-	int size;
-	int nr_ioasids;
-	int sid;
-	struct rcu_head rcu;
-};
+        /* source should not be ancestor of target */
+        error = -EINVAL;
+        if (old_dentry == trap)
+                goto exit5;
+        /* target should not be an ancestor of source */
+        if (!(flags & RENAME_EXCHANGE))
+                error = -ENOTEMPTY;
 
 
-I agree SID is optional. User could just use the token to reference
-the set. I use the SID for performance reason, i.e. quick lookup from
-SID to its data. Otherwise, we may have to search through a list of
-sets to find a match?
+> +	/*
+> +	 * Get the latest rstat for target directory (and for source, if a
+> +	 * directory)
+> +	 */
+> +	ret = ceph_do_getattr(new, CEPH_STAT_RSTAT, false);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (S_ISDIR(old->i_mode)) {
+> +		ret = ceph_do_getattr(old, CEPH_STAT_RSTAT, false);
+> +		if (ret)
+> +			return ret;
+> +		ret = check_quota_exceeded(new, QUOTA_CHECK_MAX_BYTES_OP,
+> +					   ci_old->i_rbytes);
+> +		if (!ret)
+> +			ret = check_quota_exceeded(new,
+> +						   QUOTA_CHECK_MAX_FILES_OP,
+> +						   ci_old->i_rfiles +
+> +						   ci_old->i_rsubdirs);
+> +		if (ret)
+> +			ret = -EXDEV;
+> +	} else {
+> +		ret = check_quota_exceeded(new, QUOTA_CHECK_MAX_BYTES_OP,
+> +					   i_size_read(old));
+> +		if (!ret)
+> +			ret = check_quota_exceeded(new,
+> +						   QUOTA_CHECK_MAX_FILES_OP, 1);
+> +		if (ret)
+> +			ret = -EDQUOT;
+> +	}
+> +
+> +	return ret;
+> +}
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index 037cdfb2ad4f..d5853831a6b5 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -1175,13 +1175,14 @@ extern void ceph_handle_quota(struct ceph_mds_client *mdsc,
+>  			      struct ceph_mds_session *session,
+>  			      struct ceph_msg *msg);
+>  extern bool ceph_quota_is_max_files_exceeded(struct inode *inode);
+> -extern bool ceph_quota_is_same_realm(struct inode *old, struct inode *new);
+>  extern bool ceph_quota_is_max_bytes_exceeded(struct inode *inode,
+>  					     loff_t newlen);
+>  extern bool ceph_quota_is_max_bytes_approaching(struct inode *inode,
+>  						loff_t newlen);
+>  extern bool ceph_quota_update_statfs(struct ceph_fs_client *fsc,
+>  				     struct kstatfs *buf);
+> +extern int ceph_quota_check_rename(struct ceph_mds_client *mdsc,
+> +				   struct inode *old, struct inode *new);
+>  extern void ceph_cleanup_quotarealms_inodes(struct ceph_mds_client *mdsc);
+>  
+>  #endif /* _FS_CEPH_SUPER_H */
 
-> > +
-> > +	spin_lock(&ioasid_allocator_lock);
-> > +
-> > +	ret = xa_alloc(&ioasid_sets, &id, sdata,
-> > +		       XA_LIMIT(0, ioasid_capacity_avail - quota),
-> > +		       GFP_KERNEL);  
-> 
-> Same as Kevin, I think the limit should be the static
-> ioasid_capacity. And perhaps a comment explaining the worst case of
-> one PASID per set. I found a little confusing using the same type
-> ioasid_t for IOASIDs and IOASID sets, it may be clearer to use an int
-> for IOASID set IDs.
-> 
-Sounds good.
+Looks good otherwise. Nice work!
+-- 
+Jeff Layton <jlayton@kernel.org>
 
-> Thanks,
-> Jean
-> 
-> > +	if (ret) {
-> > +		kfree(sdata);
-> > +		goto error;
-> > +	}
-> > +
-> > +	sdata->token = token;
-> > +	sdata->size = quota;
-> > +	sdata->sid = id;
-> > +
-> > +	/*
-> > +	 * Set Xarray is used to store IDs within the set, get
-> > ready for
-> > +	 * sub-set ID and system-wide IOASID allocation results.
-> > +	 */
-> > +	xa_init_flags(&sdata->xa, XA_FLAGS_ALLOC);
-> > +
-> > +	ioasid_capacity_avail -= quota;
-> > +	*sid = id;
-> > +
-> > +error:
-> > +	spin_unlock(&ioasid_allocator_lock);
-> > +
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(ioasid_alloc_set);
-> > +
-> > +/**
-> > + * ioasid_free_set - Free all IOASIDs within the set
-> > + *
-> > + * @sid:		The IOASID set ID to be freed
-> > + * @destroy_set:	Whether to keep the set for further
-> > allocation.
-> > + *			If true, the set will be destroyed.
-> > + *
-> > + * All IOASIDs allocated within the set will be freed upon return.
-> > + */
-> > +void ioasid_free_set(int sid, bool destroy_set)
-> > +{
-> > +	struct ioasid_set_data *sdata;
-> > +	struct ioasid_data *entry;
-> > +	unsigned long index;
-> > +
-> > +	spin_lock(&ioasid_allocator_lock);
-> > +	sdata = xa_load(&ioasid_sets, sid);
-> > +	if (!sdata) {
-> > +		pr_err("No IOASID set found to free %d\n", sid);
-> > +		goto done_unlock;
-> > +	}
-> > +
-> > +	if (xa_empty(&sdata->xa)) {
-> > +		pr_warn("No IOASIDs in the set %d\n", sdata->sid);
-> > +		goto done_destroy;
-> > +	}
-> > +
-> > +	/* Just a place holder for now */
-> > +	xa_for_each(&sdata->xa, index, entry) {
-> > +		/* Free from per sub-set pool */
-> > +		xa_erase(&sdata->xa, index);
-> > +	}
-> > +
-> > +done_destroy:
-> > +	if (destroy_set) {
-> > +		xa_erase(&ioasid_sets, sid);
-> > +
-> > +		/* Return the quota back to system pool */
-> > +		ioasid_capacity_avail += sdata->size;
-> > +		kfree_rcu(sdata, rcu);
-> > +	}
-> > +
-> > +done_unlock:
-> > +	spin_unlock(&ioasid_allocator_lock);
-> > +}
-> > +EXPORT_SYMBOL_GPL(ioasid_free_set);
-> > +
-> > +
-> > +/**
-> >   * ioasid_find - Find IOASID data
-> >   * @set: the IOASID set
-> >   * @ioasid: the IOASID to find
-> > @@ -431,6 +555,29 @@ void *ioasid_find(struct ioasid_set *set,
-> > ioasid_t ioasid, }
-> >  EXPORT_SYMBOL_GPL(ioasid_find);
-> >  
-> > +/**
-> > + * ioasid_find_sid - Retrieve IOASID set ID from an ioasid
-> > + *                   Caller must hold a reference to the set.
-> > + *
-> > + * @ioasid: IOASID associated with the set
-> > + *
-> > + * Return IOASID set ID or error
-> > + */
-> > +int ioasid_find_sid(ioasid_t ioasid)
-> > +{
-> > +	struct ioasid_data *ioasid_data;
-> > +	int ret = 0;
-> > +
-> > +	spin_lock(&ioasid_allocator_lock);
-> > +	ioasid_data = xa_load(&active_allocator->xa, ioasid);
-> > +	ret = (ioasid_data) ? ioasid_data->sdata->sid : -ENOENT;
-> > +
-> > +	spin_unlock(&ioasid_allocator_lock);
-> > +
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL_GPL(ioasid_find_sid);
-> > +
-> >  MODULE_AUTHOR("Jean-Philippe Brucker
-> > <jean-philippe.brucker@arm.com>"); MODULE_AUTHOR("Jacob Pan
-> > <jacob.jun.pan@linux.intel.com>"); MODULE_DESCRIPTION("IO Address
-> > Space ID (IOASID) allocator"); diff --git a/include/linux/ioasid.h
-> > b/include/linux/ioasid.h index 9711fa0dc357..be158e03c034 100644
-> > --- a/include/linux/ioasid.h
-> > +++ b/include/linux/ioasid.h
-> > @@ -41,6 +41,9 @@ int ioasid_register_allocator(struct
-> > ioasid_allocator_ops *allocator); void
-> > ioasid_unregister_allocator(struct ioasid_allocator_ops
-> > *allocator); int ioasid_set_data(ioasid_t ioasid, void *data); void
-> > ioasid_install_capacity(ioasid_t total); +int
-> > ioasid_alloc_set(struct ioasid_set *token, ioasid_t quota, int
-> > *sid); +void ioasid_free_set(int sid, bool destroy_set); +int
-> > ioasid_find_sid(ioasid_t ioasid); #else /* !CONFIG_IOASID */
-> >  static inline ioasid_t ioasid_alloc(struct ioasid_set *set,
-> > ioasid_t min, ioasid_t max, void *private)
-> > @@ -52,6 +55,15 @@ static inline void ioasid_free(ioasid_t ioasid)
-> >  {
-> >  }
-> >  
-> > +static inline int ioasid_alloc_set(struct ioasid_set *token,
-> > ioasid_t quota, int *sid) +{
-> > +	return -ENOTSUPP;
-> > +}
-> > +
-> > +static inline void ioasid_free_set(int sid, bool destroy_set)
-> > +{
-> > +}
-> > +
-> >  static inline void *ioasid_find(struct ioasid_set *set, ioasid_t
-> > ioasid, bool (*getter)(void *))
-> >  {
-> > @@ -75,5 +87,6 @@ static inline int ioasid_set_data(ioasid_t
-> > ioasid, void *data) static inline void
-> > ioasid_install_capacity(ioasid_t total) {
-> >  }
-> > +
-> >  #endif /* CONFIG_IOASID */
-> >  #endif /* __LINUX_IOASID_H */
-> > -- 
-> > 2.7.4
-> >   
-
-[Jacob Pan]
