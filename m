@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6A119FDEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B91119FDEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbgDFTPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 15:15:37 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:34686 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgDFTPe (ORCPT
+        id S1726269AbgDFTPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 15:15:32 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:34666
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725876AbgDFTPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 15:15:34 -0400
-Received: by mail-oi1-f194.google.com with SMTP id d3so14164020oic.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 12:15:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=miv5n/k+feV617mYPhfbVUPV8D5MSyOCPj4Ac3CWtMw=;
-        b=MYMwPh61GsI6XsGu3waWGuBT+BFAV4nlTM+8bOVNOvORSLC9/gEEvCPUVQxfcBQJA8
-         XDodjyCNKYnd13iQN3dmjxvpJuq2OMKLUKHGYphGSTT7Zwzz7GecUfFA7WsIDkc16nvg
-         BdHfFTckVYMzUtMxG+9RBCpQlVZQidM84ypVI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=miv5n/k+feV617mYPhfbVUPV8D5MSyOCPj4Ac3CWtMw=;
-        b=jdUp3vMw9vCGRHVFuzS3idCxe8aM7NKCaLJmrOC+8b+x2l5scgadaezxAmT3l8aI4B
-         kA5ghh8ghHWKRYxISbw6nVwPrRXTO38WaZblcVmah5kjFuA6N9RFqO3esLc49Ybp0/ib
-         ONI76wQYKnzT4dYF+NDEcXN7tRMD8oaoJLUK6gZ/A0wfTopAZ6P+C9Z62E4FYw2o/SyV
-         tjeKJw4Jn6SvQdtDmXSXV+feed5plqmsptAnqN+UysEkMCPUoFTsukHoqVdmdxfxQkFG
-         CbKm9gS5CmWGB7g92sdp8zKR74O5Mg3yFjhhIqcUvKDqksf0KD1R2QJj2LER/MlqFFn8
-         e3ZA==
-X-Gm-Message-State: AGi0PubjXJH86KFSRoLh5ZVfHBjL0U0LiTl5RNaKwqfflP9fqxlBMXlr
-        Rh4Qs622BuRvoHq3jOnPkw0/eEoXeTaejwmfuNdOOg==
-X-Google-Smtp-Source: APiQypJ3BCbS26CTzYSKqqpjGSJ6qpi4PpmHmXaX2aIsQQENucRJ+aKdcf/F2DLnCrFw5Bszx9oADxs91d3zg0ZKJ7A=
-X-Received: by 2002:aca:dd55:: with SMTP id u82mr618185oig.27.1586200532136;
- Mon, 06 Apr 2020 12:15:32 -0700 (PDT)
+        Mon, 6 Apr 2020 15:15:32 -0400
+X-IronPort-AV: E=Sophos;i="5.72,352,1580770800"; 
+   d="scan'208";a="345152404"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 21:15:29 +0200
+Date:   Mon, 6 Apr 2020 21:15:29 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Alex Dewar <alex.dewar@gmx.co.uk>
+cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Coccinelle: zalloc_simple: Fix patch mode for
+ dma_alloc_coherent()
+In-Reply-To: <20200403173011.65511-1-alex.dewar@gmx.co.uk>
+Message-ID: <alpine.DEB.2.21.2004062115000.10239@hadrien>
+References: <20200403173011.65511-1-alex.dewar@gmx.co.uk>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20200403150236.74232-1-linux@roeck-us.net>
-In-Reply-To: <20200403150236.74232-1-linux@roeck-us.net>
-From:   Sonny Sasaka <sonnysasaka@chromium.org>
-Date:   Mon, 6 Apr 2020 12:15:19 -0700
-Message-ID: <CAOxioNm6pu+WFwDS8oTcBiLaCjHH9QZx5R6rEjUtKPZjqN26+w@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: Simplify / fix return values from tk_request
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        BlueZ <linux-bluetooth@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
 
-On Fri, Apr 3, 2020 at 8:02 AM Guenter Roeck <linux@roeck-us.net> wrote:
+
+On Fri, 3 Apr 2020, Alex Dewar wrote:
+
+> Commit dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()"), in
+> removing dma_zalloc_coherent() treewide, inadvertently removed the patch
+> rule for dma_alloc_coherent(), leaving Coccinelle unable to auto-generate
+> patches for this case. Fix this.
 >
-> Some static checker run by 0day reports a variableScope warning.
->
-> net/bluetooth/smp.c:870:6: warning:
->         The scope of the variable 'err' can be reduced. [variableScope]
->
-> There is no need for two separate variables holding return values.
-> Stick with the existing variable. While at it, don't pre-initialize
-> 'ret' because it is set in each code path.
->
-> tk_request() is supposed to return a negative error code on errors,
-> not a bluetooth return code. The calling code converts the return
-> value to SMP_UNSPECIFIED if needed.
->
-> Fixes: 92516cd97fd4 ("Bluetooth: Always request for user confirmation for Just Works")
-> Cc: Sonny Sasaka <sonnysasaka@chromium.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Fixes: dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()")
+> CC: Luis Chamberlain <mcgrof@kernel.org>
+> Signed-off-by: Alex Dewar <alex.dewar@gmx.co.uk>
 > ---
->  net/bluetooth/smp.c | 9 ++++-----
->  1 file changed, 4 insertions(+), 5 deletions(-)
+>  scripts/coccinelle/api/alloc/zalloc-simple.cocci | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 >
-> diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
-> index d0b695ee49f6..30e8626dd553 100644
-> --- a/net/bluetooth/smp.c
-> +++ b/net/bluetooth/smp.c
-> @@ -854,8 +854,7 @@ static int tk_request(struct l2cap_conn *conn, u8 remote_oob, u8 auth,
->         struct l2cap_chan *chan = conn->smp;
->         struct smp_chan *smp = chan->data;
->         u32 passkey = 0;
-> -       int ret = 0;
-> -       int err;
-> +       int ret;
->
->         /* Initialize key for JUST WORKS */
->         memset(smp->tk, 0, sizeof(smp->tk));
-> @@ -887,12 +886,12 @@ static int tk_request(struct l2cap_conn *conn, u8 remote_oob, u8 auth,
->         /* If Just Works, Continue with Zero TK and ask user-space for
->          * confirmation */
->         if (smp->method == JUST_WORKS) {
-> -               err = mgmt_user_confirm_request(hcon->hdev, &hcon->dst,
-> +               ret = mgmt_user_confirm_request(hcon->hdev, &hcon->dst,
->                                                 hcon->type,
->                                                 hcon->dst_type,
->                                                 passkey, 1);
-> -               if (err)
-> -                       return SMP_UNSPECIFIED;
-> +               if (ret)
-> +                       return ret;
->                 set_bit(SMP_FLAG_WAIT_USER, &smp->flags);
->                 return 0;
->         }
+> diff --git a/scripts/coccinelle/api/alloc/zalloc-simple.cocci b/scripts/coccinelle/api/alloc/zalloc-simple.cocci
+> index 26cda3f48f01..c53aab7fe096 100644
+> --- a/scripts/coccinelle/api/alloc/zalloc-simple.cocci
+> +++ b/scripts/coccinelle/api/alloc/zalloc-simple.cocci
+> @@ -70,6 +70,15 @@ statement S;
+>  - x = (T)vmalloc(E1);
+>  + x = (T)vzalloc(E1);
+>  |
+> +- x = dma_alloc_coherent(E2,E1,E3,E4);
+> ++ x = dma_alloc_coherent(E2,E1,E3,E4);
+
+Hi,
+
+I don't understand the above case.  The before and after code seem to be
+the same?
+
+julia
+
+
+> +|
+> +- x = (T *)dma_alloc_coherent(E2,E1,E3,E4);
+> ++ x = dma_alloc_coherent(E2,E1,E3,E4);
+> +|
+> +- x = (T)dma_alloc_coherent(E2,E1,E3,E4);
+> ++ x = (T)dma_alloc_coherent(E2,E1,E3,E4);
+> +|
+>  - x = kmalloc_node(E1,E2,E3);
+>  + x = kzalloc_node(E1,E2,E3);
+>  |
 > --
-> 2.17.1
+> 2.26.0
+>
 >
