@@ -2,132 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B0E19F7CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C3319F7D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgDFOUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:20:40 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:36877 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728200AbgDFOUk (ORCPT
+        id S1728693AbgDFOW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:22:29 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:30702 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728334AbgDFOW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:20:40 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1jLScB-0005ab-4w; Mon, 06 Apr 2020 16:20:39 +0200
-Subject: Re: [PATCH v2] nvmem: core: don't consider subnodes not matching
- binding
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     kernel@pengutronix.de, Christian Eggers <CEggers@arri.de>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20200323152850.32657-1-a.fatoum@pengutronix.de>
- <d59007d1-f4e3-f550-cecd-64b788a534bc@linaro.org>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <bb0dcf33-f67d-7078-9341-08282d8da217@pengutronix.de>
-Date:   Mon, 6 Apr 2020 16:20:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 6 Apr 2020 10:22:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586182948; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=2Vn7X1cSpiflRFN1VreX4R0Trwz919PTZIn7s9PwGt0=;
+ b=XBjzmtyPEW49J3ab4Sx+eiLDCDYVO/nZvGHzqMsaVnjQ8urNRKz28e/72O8NxMP1zj1WH261
+ iAzo4f5bRqiCJCi9Pe5RwdiQ0SMddDitqKpbae1vQAQyO3xuXS8mRXKiOKyi3iWTX/gItNiT
+ GkpPY4Jgy1Ffi40WSkCxePWFH1M=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8b3b0f.7f31281d6618-smtp-out-n03;
+ Mon, 06 Apr 2020 14:22:07 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CB6BFC43636; Mon,  6 Apr 2020 14:22:07 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=2.0 tests=ALL_TRUSTED,MISSING_DATE,
+        MISSING_MID,SPF_NONE autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 206BBC433F2;
+        Mon,  6 Apr 2020 14:22:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 206BBC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <d59007d1-f4e3-f550-cecd-64b788a534bc@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] ath11k: fix compiler warnings without CONFIG_THERMAL
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20200403083414.31392-1-yuehaibing@huawei.com>
+References: <20200403083414.31392-1-yuehaibing@huawei.com>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <davem@davemloft.net>, <pradeepc@codeaurora.org>,
+        <ath11k@lists.infradead.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+User-Agent: pwcli/0.0.0-git (https://github.com/kvalo/pwcli/) Python/2.7.12
+Message-Id: <20200406142207.CB6BFC43636@smtp.codeaurora.org>
+Date:   Mon,  6 Apr 2020 14:22:07 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+YueHaibing <yuehaibing@huawei.com> wrote:
 
-On 4/6/20 2:33 PM, Srinivas Kandagatla wrote:
+> drivers/net/wireless/ath/ath11k/thermal.h:45:1:
+>  warning: no return statement in function returning non-void [-Wreturn-type]
+> drivers/net/wireless/ath/ath11k/core.c:416:28: error:
+>  passing argument 1 of 'ath11k_thermal_unregister' from incompatible pointer type [-Werror=incompatible-pointer-types]
 > 
+> Add missing return 0 in ath11k_thermal_set_throttling,
+> and fix ath11k_thermal_unregister param type.
 > 
-> On 23/03/2020 15:28, Ahmad Fatoum wrote:
->> The nvmem cell binding applies to objects which match "^.*@[0-9a-f]+$",
->> but so far the driver has matched all objects and failed if they didn't
->> have the expected properties.
->>
->> The driver's behavior in this regard precludes future extension of
->> EEPROMs by child nodes other than nvmem and clashes with the barebox
->> bootloader binding that extends the fixed-partitions MTD binding to
->> EEPROMs as it tries to interpret the "fixed-partitions"-compatible
->> partitions node as a nvmem cell.
->>
->> Solve this issue by skipping all subnodes that don't contain an @.
->>
->> This still allows for cell names like `partitions@0,0', but this
-> NACK.. thats nasty hack!
-> Its standard practice as per device tree specs to have nodes name as "node-name@unit-address"
-> 
-> Ref: https://github.com/devicetree-org/devicetree-specification/releases/download/v0.3/devicetree-specification-v0.3.pdf
+> Fixes: 2a63bbca06b2 ("ath11k: add thermal cooling device support")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-I didn't say otherwise. I just argued if we verify there's a @ symbol in the
-node name, before considering whether it is a NVMEM cell, we will skip fixed-partitions
-while adhering to the NVMEM cell binding.
+Patch applied to wireless-drivers.git, thanks.
 
->> is much less likely to cause future collisions.
-> 
-> There have been discussions on this topic in the past at:
-> 
-> https://patchwork.ozlabs.org/patch/890741/
-> 
-> We need to come up with a better solution!
-
-Thanks for the link, I didn't find it when I searched whether this has
-come up before.
-
-As you probably noticed, your suggested approach there wouldn't work for me though,
-because this time it can't be worked around in the MTD driver.
-If the suggestion here is not palatable, how do you think about (in
-my preferred order):
-
-- If the cell has a compatible node, it must be "nvmem-cell".
-  Otherwise, a cell with a compatible node is skipped.
-
-- Adding a nvmem cell container with a compatible and making support for
-  the old binding configurable
-
-- Skipping cells that are malformed and lack a reg = < > property _without_
-  error
-
-Cheers
-Ahmad
-
-> 
-> --srini
-> 
->>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->> v1 -> v2:
->>    use ->full_name instead of ->name as to not break existing correct
->>    cells (Christian)
->> ---
->>   drivers/nvmem/core.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
->> index ef326f243f36..f051051fb1a8 100644
->> --- a/drivers/nvmem/core.c
->> +++ b/drivers/nvmem/core.c
->> @@ -278,6 +278,8 @@ static int nvmem_add_cells_from_of(struct nvmem_device *nvmem)
->>       parent = dev->of_node;
->>         for_each_child_of_node(parent, child) {
->> +        if (!strchr(kbasename(child->full_name), '@'))
->> +            continue;
->>           addr = of_get_property(child, "reg", &len);
->>           if (!addr || (len < 2 * sizeof(u32))) {
->>               dev_err(dev, "nvmem: invalid reg on %pOF\n", child);
->>
-> 
+c9be1a642a7b ath11k: fix compiler warnings without CONFIG_THERMAL
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+https://patchwork.kernel.org/patch/11472105/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
