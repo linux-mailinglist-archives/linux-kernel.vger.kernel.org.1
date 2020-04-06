@@ -2,374 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B60F119F35D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E47219F36B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726898AbgDFKQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:16:07 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:56818 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726793AbgDFKQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:16:07 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id A5CAB412DE;
-        Mon,  6 Apr 2020 10:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-type:content-type:content-transfer-encoding:mime-version
-        :x-mailer:message-id:date:date:subject:subject:from:from
-        :received:received:received; s=mta-01; t=1586168163; x=
-        1587982564; bh=ec2Uu6MO0dI09ztGzWgEko0AxDftNtbrvg5in+Wl9is=; b=Y
-        Uu1PJW1/Fu8B1YJwjCrcANL8Y8Bfgl+NpCBjzavSEjmWR3l06MJ4EyxZ1q8perJz
-        B/fl6YxkMkvz6KBGH/vaOIKGctUiOFAlN38WxB3hZNfsdhb1PqQJ5hZ3OBSib+uX
-        QQy80+u685Qt4HGsEJCSBXlmzCl2drY+TbAGJvff+Y=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ocj7AW-wOcmT; Mon,  6 Apr 2020 13:16:03 +0300 (MSK)
-Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id 0237A41287;
-        Mon,  6 Apr 2020 13:16:03 +0300 (MSK)
-Received: from bbwork.com (172.17.14.122) by T-EXCH-02.corp.yadro.com
- (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Mon, 6 Apr
- 2020 13:16:03 +0300
-From:   Alexander Filippov <a.filippov@yadro.com>
-To:     <linux-aspeed@lists.ozlabs.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexander Filippov <a.filippov@yadro.com>
-Subject: [PATCH] ARM: DTS: Aspeed: Add YADRO Nicole BMC
-Date:   Mon, 6 Apr 2020 13:15:53 +0300
-Message-ID: <20200406101553.28958-1-a.filippov@yadro.com>
-X-Mailer: git-send-email 2.21.1
+        id S1726898AbgDFKUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:20:31 -0400
+Received: from sonic307-1.consmr.mail.bf2.yahoo.com ([74.6.134.40]:43770 "EHLO
+        sonic307-1.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726675AbgDFKUa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:20:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1586168429; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=KO4j4dDCKDvGuKhsC3TKjiLg+tfsHqHsWpwUydwhIahR+IMnPfXEVUz5GTdY1ZblPuJ/s9yQODv8oKpabQKHS8V8PsEdhZDfjgeEvj4NKLDvGRgtIxugZt8H5e8Fy6JzHv6w9+7Jq0bXUHgoq+vvqfODS+simf9lSa2+/Xaj2DE7BbIMFwa2OeyelSyZC77r9e5ZbvMmX1Pf6paDJ5eOGullPirXk+uk+xdgT0K4lrrwTc/5be1jtsxw1owjhlBVRtqjvvkIewz0XiOjBPeZBCBV2Tmjf7mVejJ+vESNwSuIWL40yfYbhwelO9cBqt7Fe0gVRMeB/4U486K3/eGZHA==
+X-YMail-OSG: hugKqDcVM1kSGaYjmRoIRctJzrbl7YTJjQ1reERdmRpqIzOpAWrzoaFDeyi5tMD
+ 0xxWflP.aWVwO03850b5XagigEmEVVBxj2JckXFZJYMXZ342C8mK_bSp179l.y77lzeMO7SsyM9v
+ 53UWvw8LKhkf4cm1L9mAEDuhxlJY8vtzl4poCvdx5pUxb7NFiyvDoR_CxtxpMKwYEO2Qq3Ok4w_q
+ 18Tk1AbI5.o3.J7Jwcay.zz68.AW4qkyCndR8O585DgbeypCa0IlT_IiYqUcby.Fn9rPgJ4ydC1z
+ 9o6pwldILjpcqHmUWyWuWvdpyV06VZp6cYY0d4cTMX1wlwl5lBFH.tydC5ynUXABwlZHUz1GGrAS
+ 8FhbM_kALxRNeJDZ_0vyqVHD_Bo.98AoJo.86_4oVZ3umZoRqa4M92uLA0b_Fxpy79CjS8bZLjBm
+ CUoloeX9PKIcJ3lTRY8VRGltWFhoWRfQF9VKMlxMoKYiO3tcCmaINMuU0lrrMldvasV7G2nHADPW
+ UOT9tvBeUHIvohdoRxGxWPEJhMDl6CMuwAZdS671t9fv2hBXHb8MvSuTiTr8NQWKG_7dnQsWWV1Q
+ M5qbJUvobC0KlwcKBWEIEUTHd5ztTKvYz2mKqODsfY_Uc_318NdzS1Nu7GV_SdAfMCOhJRR5mEtZ
+ aWPuvGDPiUGAT4G.fpntgRxGs38rWeApGOksxLNdSSZaKd7Jhy6cU1vuVKyWRYzlAk7BaGZm363T
+ RC7gO.uGZ009zbP3Kd01QuYXu_j1qKZcEYy2sxBRsgBi94_vOapOSOzGWStneKIpw5yFMhoYjWqB
+ UE_3R8Rxq1KdWx55K7ETD_Ze.gPJbktITIrlgFSj_XF4I2AAP0NUD_Nre0LV6h2G6v197ol.nqMW
+ rVBFmmp8UiZecOKdXaiUuFyJH2N6RPq3UNBSfcQ.ZZFz8ilYDg4lPwFmTNc2FEZygOUfNzlnePlh
+ zUHK_w1_F50r3mt_tTnvJ2bteH.juxK0r8GEslnrx5Oy3fpGc64pHUO_P96Sef3.VitnxYrgqhdp
+ k3gwfnPb70OEM4WGVT5p6BUV9Fqba3ubCpAndXbXHRojou0MKAij.ug.Auz4VsmblYxDMNJuStOG
+ do2rgqTlBGke2lh9Dk_CjQfWa06ot89JDhC4OBt8RI4zdJ2rD6uoUFJnmFZToZ4zHha0H4DgPzIv
+ OyqeuCzZSsHIBZ86CW8WMosNl8Gk7Y1.BLyJyhYlIOfpVddepEkHQGyExCIuI_S1u1DsLpGvnBos
+ DXrjSuPP.BDOh9GIJOtuoj1DD5TJ1EccGvjw4VQMqaVGHHGYIXB1I1gzP80Kcg_9X_bIUwu8iWJU
+ dSNZE
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.bf2.yahoo.com with HTTP; Mon, 6 Apr 2020 10:20:29 +0000
+Date:   Mon, 6 Apr 2020 10:20:25 +0000 (UTC)
+From:   Ms lisa Hugh <lisahugh531@gmail.com>
+Reply-To: ms.lisahugh000@gmail.com
+Message-ID: <420241816.731242.1586168425523@mail.yahoo.com>
+Subject: MASSAGE FROM MS LISA HUGH >>BUSINESS
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [172.17.14.122]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-02.corp.yadro.com (172.17.10.102)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <420241816.731242.1586168425523.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15620 YMailNodin Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicole is an OpenPower machine with an Aspeed 2500 BMC SoC manufactured
-by YADRO.
 
-Signed-off-by: Alexander Filippov <a.filippov@yadro.com>
----
- arch/arm/boot/dts/Makefile                  |   1 +
- arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts | 284 ++++++++++++++++++++
- 2 files changed, 285 insertions(+)
- create mode 100644 arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index e8dd99201397..6f9fe0f959f2 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1347,6 +1347,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
- 	aspeed-bmc-microsoft-olympus.dtb \
- 	aspeed-bmc-opp-lanyang.dtb \
- 	aspeed-bmc-opp-mihawk.dtb \
-+	aspeed-bmc-opp-nicole.dtb \
- 	aspeed-bmc-opp-palmetto.dtb \
- 	aspeed-bmc-opp-romulus.dtb \
- 	aspeed-bmc-opp-swift.dtb \
-diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts b/arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts
-new file mode 100644
-index 000000000000..0c8a9e7838ff
---- /dev/null
-+++ b/arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts
-@@ -0,0 +1,284 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+// Copyright 2019 YADRO
-+/dts-v1/;
-+#include "aspeed-g5.dtsi"
-+#include <dt-bindings/gpio/aspeed-gpio.h>
-+
-+/ {
-+	model = "Nicole BMC";
-+	compatible = "yadro,nicole-bmc", "aspeed,ast2500";
-+
-+	chosen {
-+		stdout-path = &uart5;
-+		bootargs = "console=ttyS4,115200 earlyprintk";
-+	};
-+
-+	memory@80000000 {
-+		reg = <0x80000000 0x20000000>;
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+
-+		vga_memory: framebuffer@9f000000 {
-+			no-map;
-+			reg = <0x9f000000 0x01000000>; /* 16M */
-+		};
-+
-+		flash_memory: region@98000000 {
-+			no-map;
-+			reg = <0x98000000 0x04000000>; /* 64M */
-+		};
-+
-+		coldfire_memory: codefire_memory@9ef00000 {
-+			reg = <0x9ef00000 0x00100000>;
-+			no-map;
-+		};
-+
-+		gfx_memory: framebuffer {
-+			size = <0x01000000>;
-+			alignment = <0x01000000>;
-+			compatible = "shared-dma-pool";
-+			reusable;
-+		};
-+
-+		video_engine_memory: jpegbuffer {
-+			size = <0x02000000>;	/* 32M */
-+			alignment = <0x01000000>;
-+			compatible = "shared-dma-pool";
-+			reusable;
-+		};
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		power {
-+			gpios = <&gpio ASPEED_GPIO(AA, 4) GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		identify {
-+			gpios = <&gpio ASPEED_GPIO(AA, 7) GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		alarm_red {
-+			gpios = <&gpio ASPEED_GPIO(AA, 3) GPIO_ACTIVE_HIGH>;
-+		};
-+
-+		alarm_yellow {
-+			gpios = <&gpio ASPEED_GPIO(AA, 1) GPIO_ACTIVE_HIGH>;
-+		};
-+	};
-+
-+	fsi: gpio-fsi {
-+		compatible = "aspeed,ast2500-cf-fsi-master", "fsi-master";
-+		#address-cells = <2>;
-+		#size-cells = <0>;
-+		no-gpio-delays;
-+
-+		memory-region = <&coldfire_memory>;
-+		aspeed,sram = <&sram>;
-+		aspeed,cvic = <&cvic>;
-+
-+		clock-gpios = <&gpio ASPEED_GPIO(AA, 0) GPIO_ACTIVE_HIGH>;
-+		data-gpios = <&gpio ASPEED_GPIO(AA, 2) GPIO_ACTIVE_HIGH>;
-+		mux-gpios = <&gpio ASPEED_GPIO(A, 6) GPIO_ACTIVE_HIGH>;
-+		enable-gpios = <&gpio ASPEED_GPIO(D, 0) GPIO_ACTIVE_HIGH>;
-+		trans-gpios = <&gpio ASPEED_GPIO(P, 1) GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+
-+		checkstop {
-+			label = "checkstop";
-+			gpios = <&gpio ASPEED_GPIO(J, 2) GPIO_ACTIVE_LOW>;
-+			linux,code = <ASPEED_GPIO(J, 2)>;
-+		};
-+	};
-+};
-+
-+&fmc {
-+	status = "okay";
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "bmc";
-+		spi-max-frequency = <50000000>;
-+#include "openbmc-flash-layout.dtsi"
-+	};
-+};
-+
-+&spi1 {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spi1_default>;
-+
-+	flash@0 {
-+		status = "okay";
-+		m25p,fast-read;
-+		label = "pnor";
-+		spi-max-frequency = <100000000>;
-+	};
-+};
-+
-+&lpc_ctrl {
-+	status = "okay";
-+	memory-region = <&flash_memory>;
-+	flash = <&spi1>;
-+};
-+
-+&uart1 {
-+	/* Rear RS-232 connector */
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_txd1_default
-+			&pinctrl_rxd1_default
-+			&pinctrl_nrts1_default
-+			&pinctrl_ndtr1_default
-+			&pinctrl_ndsr1_default
-+			&pinctrl_ncts1_default
-+			&pinctrl_ndcd1_default
-+			&pinctrl_nri1_default>;
-+};
-+
-+&uart5 {
-+	status = "okay";
-+};
-+
-+&mac0 {
-+	status = "okay";
-+
-+	use-ncsi;
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_rmii1_default>;
-+	clocks = <&syscon ASPEED_CLK_GATE_MAC1CLK>,
-+		 <&syscon ASPEED_CLK_MAC1RCLK>;
-+	clock-names = "MACCLK", "RCLK";
-+};
-+
-+&i2c0 {
-+	status = "okay";
-+
-+	eeprom@50 {
-+		compatible = "atmel,24c256";
-+		reg = <0x50>;
-+		pagesize = <64>;
-+	};
-+};
-+
-+&i2c1 {
-+	status = "okay";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+};
-+
-+&i2c3 {
-+	status = "okay";
-+};
-+
-+&i2c4 {
-+	status = "okay";
-+};
-+
-+&i2c5 {
-+	status = "okay";
-+};
-+
-+&i2c6 {
-+	status = "okay";
-+
-+	rtc@32 {
-+		compatible = "epson,rx8900";
-+		reg = <0x32>;
-+	};
-+};
-+
-+&i2c7 {
-+	status = "okay";
-+};
-+
-+&i2c8 {
-+	status = "okay";
-+};
-+
-+&i2c9 {
-+	status = "okay";
-+};
-+
-+&i2c10 {
-+	status = "okay";
-+};
-+
-+&i2c11 {
-+	status = "okay";
-+};
-+
-+&i2c12 {
-+	status = "okay";
-+};
-+
-+&gpio {
-+	nic_func_mode0 {
-+		gpio-hog;
-+		gpios = <ASPEED_GPIO(D, 3) GPIO_ACTIVE_HIGH>;
-+		output-low;
-+		line-name = "nic_func_mode0";
-+	};
-+	nic_func_mode1 {
-+		gpio-hog;
-+		gpios = <ASPEED_GPIO(D, 4) GPIO_ACTIVE_HIGH>;
-+		output-low;
-+		line-name = "nic_func_mode1";
-+	};
-+	seq_cont {
-+		gpio-hog;
-+		gpios = <ASPEED_GPIO(S, 7) GPIO_ACTIVE_HIGH>;
-+		output-low;
-+		line-name = "seq_cont";
-+	};
-+	ncsi_cfg {
-+		gpio-hog;
-+		input;
-+		gpios = <ASPEED_GPIO(E, 1) GPIO_ACTIVE_HIGH>;
-+		line-name = "ncsi_cfg";
-+	};
-+};
-+
-+&vuart {
-+	status = "okay";
-+};
-+
-+&gfx {
-+	status = "okay";
-+	memory-region = <&gfx_memory>;
-+};
-+
-+&pinctrl {
-+	aspeed,external-nodes = <&gfx &lhc>;
-+};
-+
-+&ibt {
-+	status = "okay";
-+};
-+
-+&vhub {
-+	status = "okay";
-+};
-+
-+&adc {
-+	status = "okay";
-+};
-+
-+&video {
-+	status = "okay";
-+	memory-region = <&video_engine_memory>;
-+};
-+
-+#include "ibm-power9-dual.dtsi"
--- 
-2.21.1
+Dear Friend,
 
+I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
+
+Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
+
+I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
+
+Note/ 50% for you why 50% for me after success of the transfer to your bank account.
+
+Below information is what i need from you so will can be reaching each other
+
+1)Full name ...
+2)Private telephone number...
+3)Age...
+4)Nationality...
+5)Occupation ...
+
+
+Thanks.
+
+Ms Lisa hugh.
