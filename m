@@ -2,133 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3532319F3C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F9D19F3C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727421AbgDFKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:43:42 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:38200 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727162AbgDFKnk (ORCPT
+        id S1727048AbgDFKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:46:09 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:56812 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgDFKqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:43:40 -0400
-Received: by mail-il1-f196.google.com with SMTP id n13so14185899ilm.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 03:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2BZ8kYXiM1BuTjCJPDJWq064ZRhtYcG64ceYL8l4ZHI=;
-        b=H73+pt7BbqZdfpJ4kn3Pz3eASUQ7E5K5n+u66xAH7oKU9x7IgwRKopHEYLN767ajR/
-         JkMwOzBwNM0r+bDxpTVBuKpdc1ICpyVg7WK9BY73ENYPloSGUB+E3WaWzD7yepBQnXGP
-         eMSixej2ld7yfU5izyuXLdJnoWuWxJ9aLdQ/yJLXLJKqhtt82tSOHZfEBBi+G01dNLoH
-         LD0xGohfeYyXYVStttxxd6hR0nnDBz1qoQSq7rFfY4WfcIUmgO6MGmgNbNN5HoTt+3m3
-         r4b+DP3TC/ED9tfLdWnZlrjVKt3iyLcULgbb8I+zm/gU+NX3Ob27ytnUb1TyiQDHGjnQ
-         5THQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2BZ8kYXiM1BuTjCJPDJWq064ZRhtYcG64ceYL8l4ZHI=;
-        b=tqn6jX2FuaoF5McbL6QasdciSNKlXmPu8FrZHrzMABVXlwqFBpR8O5VlZMF3dwWGYc
-         o1V8daFlR4fqwYJS1D1E8fXEpWE4Qg6NzfYHN8oO3kWsAYoB2Bz/jmghTK67UIMtHhAT
-         j2Unf8JRnJU0PWGhotiXHniEi5zhWy8jGQjYobDiFZLb+nFYb4zRsBOY+f1LYE9f3Ed4
-         rw2L64yz5TA40HI2kIKgfgKw55PaYaa2FqAr81/KHMMmFiBkJFgQb6AMq87ze+9DsZgZ
-         XUWPo6Hn/Ej6vxuAZYVSPT7K53EH+zj7YhnRpVyX+YqCxdaqXY8ns0YnznBcwEEwJZ+Y
-         MiQw==
-X-Gm-Message-State: AGi0PuZ02pz+7YYGF3x2GARBMgZyzGLWixK0Tmh7bwrFab30wpLY0eOT
-        dSoW+jbSVXk/7Wa+2B0CkE9dM6aafDoBF0aKWGw=
-X-Google-Smtp-Source: APiQypJyrlEDFj+pXJzHS3MWEdJ04ArtFK1ZoHOVPrqWHQHCzochugDXZMIBGthwFew57upW4dM31ZUO7Ew7VgwzFYE=
-X-Received: by 2002:a92:83ca:: with SMTP id p71mr19104698ilk.278.1586169820155;
- Mon, 06 Apr 2020 03:43:40 -0700 (PDT)
+        Mon, 6 Apr 2020 06:46:08 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036Ahpbk171975;
+        Mon, 6 Apr 2020 10:45:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=0ZlPWVkYRVCozqYJTFdUyWBFeoRAi1Fmbngpdi2INOk=;
+ b=XNOH+k8XPlBNYkcARuaq8rKfhIT3CzOerQi8RV/2LDRX8Wk1mHs01ESA6dKqhJT74tHi
+ HKpnhTw0+iXvMc/piNoqqrN7z3I0wEOvpLpR6yFxZ5fwLKq/o5Kd/GMv76rpOZlcSu8w
+ j5N73gp+swY/lsVRGGuC3I+iVDwGBL7EQfGmLMjKnGz4qkB8hZ4bNBSAIGraL0EeFgaU
+ LFZ94AHFJJa6XTeBT4i0wgxzLjeIucZIbtOpUr3EM11+kSwx+RBh/ikqPrqRc2vISGRS
+ 5lVTSsZbG/s0dwIkRAhFtbRpgEVDmL5F3ngbTaUHZFwPt8k7Gxs+0CaIXjdL7uDEgwpn Gw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 306j6m62gx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Apr 2020 10:45:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036AgPwf010217;
+        Mon, 6 Apr 2020 10:43:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3073xvxbka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Apr 2020 10:43:57 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 036Ahscm004286;
+        Mon, 6 Apr 2020 10:43:54 GMT
+Received: from [10.175.175.249] (/10.175.175.249)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 06 Apr 2020 03:43:54 -0700
+Subject: Re: [PATCH 11/12] device-dax: Add dis-contiguous resource support
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-mm@kvack.org, dave.hansen@linux.intel.com, hch@lst.de,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+References: <158500767138.2088294.17131646259803932461.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <158500773552.2088294.8756587190550753100.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <23742bb8-831f-29ff-1463-75427eec57c7@oracle.com>
+Date:   Mon, 6 Apr 2020 11:43:51 +0100
 MIME-Version: 1.0
-References: <20200406093944.4174-1-hqjagain@gmail.com> <87eet0sy79.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87eet0sy79.fsf@mpe.ellerman.id.au>
-From:   Qiujun Huang <hqjagain@gmail.com>
-Date:   Mon, 6 Apr 2020 18:43:27 +0800
-Message-ID: <CAJRQjoeTYg6NnxwvXusU6fdOFOmOiceokYJZQ23-0YQo_yqZ5w@mail.gmail.com>
-Subject: Re: [PATCH v4] powerpc/powernv: add NULL check after kzalloc in opal_add_one_export
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <158500773552.2088294.8756587190550753100.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 spamscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004060093
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004060093
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 6:30 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Qiujun Huang <hqjagain@gmail.com> writes:
-> > Here needs a NULL check as kzalloc may fail returning NULL.
-> >
-> > Issue was found by coccinelle.
-> > Generated by: scripts/coccinelle/null/kmerr.cocci
-> >
-> > Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-> > Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
-> >
-> > ---
->
-> Thanks for putting up with all the review comments :)
->
-> But I think this should actually be two patches now.
->
-> The first patch should change the goto after
-> of_property_read_u64_array() into a return and drop the redundant
-> assignments.
->
-> Then the second patch can add the NULL check for attr.
+On 3/23/20 11:55 PM, Dan Williams wrote:
 
-Get that, I'll separate them.
+[...]
 
->
-> cheers
->
-> > v3->v4:
-> >       Added the information about coccinelle script.
-> >       Added change log.
-> >       Added Oliver's Reviewed-by.
-> > v2->v3:
-> >       Removed redundant assignment to 'attr' and 'name'.
-> > v1->v2:
-> >       Just return -ENOMEM if attr is NULL.
-> > ---
-> >  arch/powerpc/platforms/powernv/opal.c | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/powerpc/platforms/powernv/opal.c b/arch/powerpc/platforms/powernv/opal.c
-> > index 2b3dfd0b6cdd..908d749bcef5 100644
-> > --- a/arch/powerpc/platforms/powernv/opal.c
-> > +++ b/arch/powerpc/platforms/powernv/opal.c
-> > @@ -801,16 +801,19 @@ static ssize_t export_attr_read(struct file *fp, struct kobject *kobj,
-> >  static int opal_add_one_export(struct kobject *parent, const char *export_name,
-> >                              struct device_node *np, const char *prop_name)
-> >  {
-> > -     struct bin_attribute *attr = NULL;
-> > -     const char *name = NULL;
-> > +     struct bin_attribute *attr;
-> > +     const char *name;
-> >       u64 vals[2];
-> >       int rc;
-> >
-> >       rc = of_property_read_u64_array(np, prop_name, &vals[0], 2);
-> >       if (rc)
-> > -             goto out;
-> > +             return rc;
-> >
-> >       attr = kzalloc(sizeof(*attr), GFP_KERNEL);
-> > +     if (!attr)
-> > +             return -ENOMEM;
-> > +
-> >       name = kstrdup(export_name, GFP_KERNEL);
-> >       if (!name) {
-> >               rc = -ENOMEM;
-> > --
-> > 2.17.1
+>  static ssize_t dev_dax_resize(struct dax_region *dax_region,
+>  		struct dev_dax *dev_dax, resource_size_t size)
+>  {
+>  	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+> -	resource_size_t dev_size = range_len(&dev_dax->range);
+> +	resource_size_t dev_size = dev_dax_size(dev_dax);
+>  	struct resource *region_res = &dax_region->res;
+>  	struct device *dev = &dev_dax->dev;
+> -	const char *name = dev_name(dev);
+>  	struct resource *res, *first;
+> +	resource_size_t alloc = 0;
+> +	int rc;
+>  
+>  	if (dev->driver)
+>  		return -EBUSY;
+> @@ -684,38 +766,47 @@ static ssize_t dev_dax_resize(struct dax_region *dax_region,
+>  	 * allocating a new resource.
+>  	 */
+>  	first = region_res->child;
+> -	if (!first)
+> -		return __alloc_dev_dax_range(dev_dax, dax_region->res.start,
+> -				to_alloc);
+> -	for (res = first; to_alloc && res; res = res->sibling) {
+> +retry:
+> +	rc = -ENOSPC;
+> +	for (res = first; res; res = res->sibling) {
+>  		struct resource *next = res->sibling;
+> -		resource_size_t free;
+>  
+>  		/* space at the beginning of the region */
+> -		free = 0;
+> -		if (res == first && res->start > dax_region->res.start)
+> -			free = res->start - dax_region->res.start;
+> -		if (free >= to_alloc && dev_size == 0)
+> -			return __alloc_dev_dax_range(dev_dax,
+> -					dax_region->res.start, to_alloc);
+> -
+> -		free = 0;
+> +		if (res == first && res->start > dax_region->res.start) {
+> +			alloc = min(res->start - dax_region->res.start,
+> +					to_alloc);
+> +			rc = __alloc_dev_dax_range(dev_dax,
+> +					dax_region->res.start, alloc);
+
+You might be missing:
+
+	first = region_res->child;
+
+(...) right after returning from __alloc_dev_dax_range(). Alternatively, perhaps
+even moving the 'retry' label to right before the @first initialization.
+
+In the case that you pick space from the beginning, the child resource of the
+dax region will point to first occupied region, and that changes after you pick
+this space. So, IIUC, you want to adjust where you start searching free space
+otherwise you end up wrongly picking that same space twice.
+
+If it helps, the bug can be reproduced in this unit test below, see
+daxctl_test3() test:
+
+https://lore.kernel.org/linux-nvdimm/20200403205900.18035-11-joao.m.martins@oracle.com/
+
+> +			break;
+> +		}
+> +
+
+[...]
