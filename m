@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB1E19F83C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E33419F840
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:52:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgDFOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:51:07 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:36858 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728734AbgDFOvH (ORCPT
+        id S1728793AbgDFOwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:52:41 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:39332 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728734AbgDFOwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:51:07 -0400
-Received: by mail-lj1-f193.google.com with SMTP id b1so15022792ljp.3;
-        Mon, 06 Apr 2020 07:51:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zv73VIDMB5XkekQFWexD93hVRqBSU9t2eLoE2vj9UHU=;
-        b=g10UmtjGhpUF4egpxzhwBHY2Htxf8KmrUkHxPBB8WnS6ig+ojI4TqK5eROxoVlQlEM
-         f3TZMMYHTLkAPR0Jie1hY6q8MyTys95O35rJdDbrMDrGvhawoHlnMxtoeb8f19CfZDqm
-         JbUDpyeEC7TAVw6jv8j7kPmxm/m4/2jh/3MXUzqyehfSHSQczIOYuA9fuFe9lDWCdkTd
-         RsPtbxKxccHZh0iDySbuL16pAJoadEKhGgXL9bBAQeeAMgZRiMJzXNQhiY1w4BoyaBky
-         JGDunXdRdauVsVXAy0sikq610RZvfnaF1Ya1QMReef4rDzuPM4/bG5KKLW1f2fhyhGF0
-         QOXQ==
+        Mon, 6 Apr 2020 10:52:41 -0400
+Received: by mail-yb1-f194.google.com with SMTP id h205so8915576ybg.6;
+        Mon, 06 Apr 2020 07:52:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zv73VIDMB5XkekQFWexD93hVRqBSU9t2eLoE2vj9UHU=;
-        b=HBPBuyZYDtVtfI4vLZb7C111phbBiOkaMk6Jed8TBXvE+71uT/xW/c2FPEYVRWCHXC
-         3uLKNp9YZyksX/THOENxKouLNQc+YvSLKxUIkvnhORGZ8s4cOW+cvtGebW/mtPZrpqSr
-         EwO/y3NxA15uYcM+q6buwUw38Yxp4w2frJfw0DNiIyno5bbzoe/adZCENMEbBmiSk0TK
-         4PklmB/Qyc5qvTDw6ugEoqPZirAw6rj37jgm3MC3nEVdKbAvrjoouQ6H4z3HVtOgk0zi
-         9QIT+8ds/22OzeORHW1mbvlOqZ74j9cgoUHpbKVNE9SX+tCEsLNWQdHTras47ZKYqOkJ
-         sK2A==
-X-Gm-Message-State: AGi0Pua8Tvy5GRPnB+CAGBcj98zWzdt+evgsTG1Vm6g0YTFYQ1YEMTEl
-        A4pIfFBZgGmpt11drHK8GxaccYrZvZbPqvDZ1j4=
-X-Google-Smtp-Source: APiQypJi0emqePRH1uMy/xeeuR1IoxBklmiqhMdh0JCTu6KYZOO2/ISfO6nJNFtksILbBchb6HPD3MHfceqTPc39eQw=
-X-Received: by 2002:a2e:b4d1:: with SMTP id r17mr12338199ljm.117.1586184664709;
- Mon, 06 Apr 2020 07:51:04 -0700 (PDT)
+        bh=t4wjTXsPVYDAF0Rh7pFMNhwtFuty/N2rOqgxDEfZ/Sw=;
+        b=SBhq0q/ZK03IfVa4a6D2mf9RXC2ytcswUYBcuVaz3kuZsif/61gpy1LRRI+zsU6++O
+         fWVrwWYFL0SbAiVsex7wd79xGP9NzMufXbwc9DWj074Pt4NsigrVSrH3gj0tjk8TOJi7
+         iwB6q8g14hF1e0DFdkMKFoS4FIbzSbZFCL0Irn09eu6+beuSgYYkGbzi2GeB0mv7Cybe
+         bYt0oMbKrQOaPokPGCjKGImNAW7m7SWarLy9Snr3MnsldszuNH74KBXIqUbfzLLn4GuP
+         RoFF4GUSMv/5pwjTzaOe8thYd6YgfJ5DK97R8qy7HI+bcnv1r8Rzd9uBfrtMcMbKyX2u
+         gjmg==
+X-Gm-Message-State: AGi0Pub8refGSTXDCBZCcYc49hPN6tCowtQ5SoSgQBmGAGW8gmkEyYhl
+        /upL4vTUb7s91IdkzepOKKxsEzJpQ71Nuzjm+QQ=
+X-Google-Smtp-Source: APiQypI1cMI5XMrDE3mSE6bbYAawc2oBNbpcDCRXHpJDoX3XOsXlC/vfwSZUcgq4MmsZjYrhcfzTbDuI279TT3hvxUQ=
+X-Received: by 2002:a25:aa29:: with SMTP id s38mr34746167ybi.325.1586184759706;
+ Mon, 06 Apr 2020 07:52:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200403174942.9594-1-michael@walle.cc>
-In-Reply-To: <20200403174942.9594-1-michael@walle.cc>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Mon, 6 Apr 2020 11:51:27 -0300
-Message-ID: <CAOMZO5AGEjqmsgYrhwW-3HjAHszmChLyZXC0PWDrXr=YP5mu2A@mail.gmail.com>
-Subject: Re: [PATCH] tty: serial: fsl_lpuart: make coverity happy
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        NXP Linux Team <linux-imx@nxp.com>
+References: <cover.1585917191.git.nicolas.ferre@microchip.com>
+ <CAFcVECLkPxN0nk=jr9AxJoV3i1jHBoY4s3yeodHDO2uOZspQPg@mail.gmail.com> <9e2ab6cd-526d-f1b5-4bd0-4a8f80d9dd8f@microchip.com>
+In-Reply-To: <9e2ab6cd-526d-f1b5-4bd0-4a8f80d9dd8f@microchip.com>
+From:   Harini Katakam <harinik@xilinx.com>
+Date:   Mon, 6 Apr 2020 20:22:28 +0530
+Message-ID: <CAFcVECLHkLSa+PaRWyoiqfYBpNNY3to-TSE3sqWPY3hY2chrXg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] net: macb: Wake-on-Lan magic packet fixes
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc:     linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Harini Katakam <harini.katakam@xilinx.com>,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rafal Ozieblo <rafalo@cadence.com>,
+        Sergio Prado <sergio.prado@e-labworks.com>,
+        antoine.tenart@bootlin.com,
+        Florian Fainelli <f.fainelli@gmail.com>, linux@armlinux.org.uk,
+        Andrew Lunn <andrew@lunn.ch>,
+        Michal Simek <michal.simek@xilinx.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 3, 2020 at 2:50 PM Michael Walle <michael@walle.cc> wrote:
->
-> Coverity reports the following:
->
->   var_compare_op: Comparing chan to null implies that chan might be null.
->
->   1234        if (chan)
->   1235                dmaengine_terminate_all(chan);
->   1236
->
->   Dereference after null check (FORWARD_NULL)
->   var_deref_op: Dereferencing null pointer chan.
->
->   1237        dma_unmap_sg(chan->device->dev, &sport->rx_sgl, 1, DMA_FROM_DEVICE);
->
-> Technically, this is correct. But lpuart_dma_rx_free() is guarded by
-> lpuart_dma_rx_use which is only true if there is a dma channel, see
-> lpuart_rx_dma_startup(). In any way, this looks bogus. So remove
-> the superfluous "if (chan)" check and make coverity happy.
->
-> Fixes: a092ab25fdaa ("tty: serial: fsl_lpuart: fix DMA mapping")
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> Reported-by: Colin Ian King <colin.king@canonical.com>
+Hi Nicolas,
 
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
+On Mon, Apr 6, 2020 at 7:56 PM Nicolas Ferre
+<nicolas.ferre@microchip.com> wrote:
+>
+> Hi Harini,
+>
+> On 03/04/2020 at 15:36, Harini Katakam wrote:
+> > Hi Nicolas,
+> >
+> > On Fri, Apr 3, 2020 at 6:45 PM <nicolas.ferre@microchip.com> wrote:
+> >>
+> >> From: Nicolas Ferre <nicolas.ferre@microchip.com>
+<snip>
+> >
+> > I know that the IP versions from r1p10 have a mechanism to disable DMA queues
+> > (bit 0 of the queue pointer register) which is cleaner. But for
+> > earlier IP versions,
+>
+> Which IP name are you referring to? GEM, GEM-GXL? What is the value of
+> register 0xFC then?
+
+GEM_GXL
+
+>
+> > I remember discussing with Cadence and there is no way to keep RX
+> > enabled for WOL
+> > with RX DMA disabled. I'm afraid that means there should be a bare
+> > minimum memory
+> > region with a dummy descriptor if you do not want to process the
+> > packets. That memory
+> > should also be accessible while the rest of the system is powered
+> > down. Please let me
+>
+> Very interesting information Harini, thanks a lot for having shared it.
+>
+> My GEM IP has 0xFC at value: 0x00020203. But I don't see a way to keep
+> DMA queues disabled by using the famous bit that you mention above.
+
+Yeah, it is not possible in this revision. This is part of the GEM_GXL r1p10 or
+higher I think. I can't be sure of all the possible variations of the
+revision reg
+because the scheme changed at some point but it looks like this:
+0x00070100
+bits 27:16 (module_ID), bits16:0 (module_revision); they could increase.
+
+Regards,
+Harini
