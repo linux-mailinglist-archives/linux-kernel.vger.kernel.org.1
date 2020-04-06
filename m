@@ -2,180 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B351A0144
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4991A014B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbgDFWr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 18:47:57 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:32970 "EHLO inva021.nxp.com"
+        id S1726339AbgDFWyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 18:54:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46384 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726225AbgDFWr4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 18:47:56 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4017D20159F;
-        Tue,  7 Apr 2020 00:47:55 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3356F200EDA;
-        Tue,  7 Apr 2020 00:47:55 +0200 (CEST)
-Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 99470205A5;
-        Tue,  7 Apr 2020 00:47:54 +0200 (CEST)
-From:   Iuliana Prodan <iuliana.prodan@nxp.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Horia Geanta <horia.geanta@nxp.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-imx <linux-imx@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>
-Subject: [PATCH v2 4/4] crypto: caam - fix use-after-free KASAN issue for RSA algorithms
-Date:   Tue,  7 Apr 2020 01:47:28 +0300
-Message-Id: <1586213248-4230-5-git-send-email-iuliana.prodan@nxp.com>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1586213248-4230-1-git-send-email-iuliana.prodan@nxp.com>
-References: <1586213248-4230-1-git-send-email-iuliana.prodan@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725933AbgDFWyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 18:54:38 -0400
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02F2A2080C
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Apr 2020 22:54:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586213677;
+        bh=wRV7YAY98sYhAKukUD1dijKDGjhJ0KcfEsGpp4oZP7Y=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Xme1q/fTkimi/YRHPtRcNB2y/4Jw/KM+RFzQATkGIVheH5m4VJvKVUTqXqKGGxzll
+         15uWFSw79dF198qpg34D/YXAFSjzv7htd8sopjXQdwrIPH5RmqcoxIBpNPmMNKw5mb
+         mpeSy4ilsoe+izd3NsEgUY0409cQb/XyrpMaTxrI=
+Received: by mail-wr1-f52.google.com with SMTP id 31so1566636wre.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 15:54:36 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYC/UG8HQM+jY/kgc2LirhPYeDuZL2gVlWIoFGgAT6V06N5DnQQ
+        kpkpzysP7y+AYK3WgwgE7oIg8Zz6nBS4VC7f4ZU5sQ==
+X-Google-Smtp-Source: APiQypImmf3zpzAJUpsgMcXL39iTGPv/ksypgpjR4cere/f8yMmJUIOE+7J1L+nyJYYpiBlradvcxIBKL5YNVgUxip8=
+X-Received: by 2002:a5d:460c:: with SMTP id t12mr1534701wrq.75.1586213675349;
+ Mon, 06 Apr 2020 15:54:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200403163007.6463-1-sean.j.christopherson@intel.com>
+ <20200406125010.GA29306@infradead.org> <20200406140403.GL20730@hirez.programming.kicks-ass.net>
+ <20200406152411.GA25652@infradead.org> <20200406153902.GA9939@infradead.org>
+ <20200406160157.GS20730@hirez.programming.kicks-ass.net> <20200406171058.GA5352@infradead.org>
+In-Reply-To: <20200406171058.GA5352@infradead.org>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 6 Apr 2020 15:54:23 -0700
+X-Gmail-Original-Message-ID: <CALCETrX-OccmPmJw5cXQEVb0d0OuJGmK_9vsf+dGo6Kqkp+7FA@mail.gmail.com>
+Message-ID: <CALCETrX-OccmPmJw5cXQEVb0d0OuJGmK_9vsf+dGo6Kqkp+7FA@mail.gmail.com>
+Subject: Re: [RFC PATCH] x86/split_lock: Disable SLD if an unaware
+ (out-of-tree) module enables VMX
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kenneth R. Crudup" <kenny@panix.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@aculab.com>,
+        Doug Covelli <dcovelli@vmware.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Here's the KASAN report:
-BUG: KASAN: use-after-free in rsa_pub_done+0x70/0xe8
-Read of size 1 at addr ffff000023082014 by task swapper/0/0
+On Mon, Apr 6, 2020 at 10:11 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Mon, Apr 06, 2020 at 06:01:57PM +0200, Peter Zijlstra wrote:
+> > Please feel free to use my pgprot_nx() and apply liberally on any
+> > exported function.
+> >
+> > But crucially, I don't think any of the still exported functions allows
+> > getting memory in the text range, and if you want to run code outside of
+> > the text range, things become _much_ harder. That said, modules
+> > shouldn't be able to create executable code, full-stop (IMO).
+>
+> This is what i've got for now:
+>
+> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/sanitize-vmalloc-api
 
-CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.6.0-rc1-00162-gfcb90d5 #60
-Hardware name: LS1046A RDB Board (DT)
-Call trace:
- dump_backtrace+0x0/0x260
- show_stack+0x14/0x20
- dump_stack+0xe8/0x144
- print_address_description.isra.11+0x64/0x348
- __kasan_report+0x11c/0x230
- kasan_report+0xc/0x18
- __asan_load1+0x5c/0x68
- rsa_pub_done+0x70/0xe8
- caam_jr_dequeue+0x390/0x608
- tasklet_action_common.isra.13+0x1ec/0x230
- tasklet_action+0x24/0x30
- efi_header_end+0x1a4/0x370
- irq_exit+0x114/0x128
- __handle_domain_irq+0x80/0xe0
- gic_handle_irq+0x50/0xa0
- el1_irq+0xb8/0x180
- cpuidle_enter_state+0xa4/0x490
- cpuidle_enter+0x48/0x70
- call_cpuidle+0x44/0x70
- do_idle+0x304/0x338
- cpu_startup_entry+0x24/0x40
- rest_init+0xf8/0x10c
- arch_call_rest_init+0xc/0x14
- start_kernel+0x774/0x7b4
+You have:
 
-Allocated by task 263:
- save_stack+0x24/0xb0
- __kasan_kmalloc.isra.10+0xc4/0xe0
- kasan_kmalloc+0xc/0x18
- __kmalloc+0x178/0x2b8
- rsa_edesc_alloc+0x2cc/0xe10
- caam_rsa_enc+0x9c/0x5f0
- test_akcipher_one+0x78c/0x968
- alg_test_akcipher+0x78/0xf8
- alg_test.part.44+0x114/0x4a0
- alg_test+0x1c/0x60
- cryptomgr_test+0x34/0x58
- kthread+0x1b8/0x1c0
- ret_from_fork+0x10/0x18
+ mm: remove __get_vm_area
 
-Freed by task 0:
- save_stack+0x24/0xb0
- __kasan_slab_free+0x10c/0x188
- kasan_slab_free+0x10/0x18
- kfree+0x7c/0x298
- rsa_pub_done+0x68/0xe8
- caam_jr_dequeue+0x390/0x608
- tasklet_action_common.isra.13+0x1ec/0x230
- tasklet_action+0x24/0x30
- efi_header_end+0x1a4/0x370
+Switch the two remaining callers to use __get_vm_area instead.
 
-The buggy address belongs to the object at ffff000023082000
- which belongs to the cache dma-kmalloc-256 of size 256
-The buggy address is located 20 bytes inside of
- 256-byte region [ffff000023082000, ffff000023082100)
-The buggy address belongs to the page:
-page:fffffe00006c2080 refcount:1 mapcount:0 mapping:ffff00093200c200 index:0x0 compound_mapcount: 0
-flags: 0xffff00000010200(slab|head)
-raw: 0ffff00000010200 dead000000000100 dead000000000122 ffff00093200c200
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+The second line contains a typo :)
 
-Memory state around the buggy address:
- ffff000023081f00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff000023081f80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff000023082000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                         ^
- ffff000023082080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff000023082100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-
-Fixes: bf53795025a2 ("crypto: caam - add crypto_engine support for RSA algorithms")
-Cc: <stable@vger.kernel.org> # v5.6
-Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
----
- drivers/crypto/caam/caampkc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/crypto/caam/caampkc.c b/drivers/crypto/caam/caampkc.c
-index 4fcae37..2e44d68 100644
---- a/drivers/crypto/caam/caampkc.c
-+++ b/drivers/crypto/caam/caampkc.c
-@@ -121,11 +121,13 @@ static void rsa_pub_done(struct device *dev, u32 *desc, u32 err, void *context)
- 	struct caam_drv_private_jr *jrp = dev_get_drvdata(dev);
- 	struct rsa_edesc *edesc;
- 	int ecode = 0;
-+	bool has_bklog;
- 
- 	if (err)
- 		ecode = caam_jr_strstatus(dev, err);
- 
- 	edesc = req_ctx->edesc;
-+	has_bklog = edesc->bklog;
- 
- 	rsa_pub_unmap(dev, edesc, req);
- 	rsa_io_unmap(dev, edesc, req);
-@@ -135,7 +137,7 @@ static void rsa_pub_done(struct device *dev, u32 *desc, u32 err, void *context)
- 	 * If no backlog flag, the completion of the request is done
- 	 * by CAAM, not crypto engine.
- 	 */
--	if (!edesc->bklog)
-+	if (!has_bklog)
- 		akcipher_request_complete(req, ecode);
- 	else
- 		crypto_finalize_akcipher_request(jrp->engine, req, ecode);
-@@ -152,11 +154,13 @@ static void rsa_priv_f_done(struct device *dev, u32 *desc, u32 err,
- 	struct caam_rsa_req_ctx *req_ctx = akcipher_request_ctx(req);
- 	struct rsa_edesc *edesc;
- 	int ecode = 0;
-+	bool has_bklog;
- 
- 	if (err)
- 		ecode = caam_jr_strstatus(dev, err);
- 
- 	edesc = req_ctx->edesc;
-+	has_bklog = edesc->bklog;
- 
- 	switch (key->priv_form) {
- 	case FORM1:
-@@ -176,7 +180,7 @@ static void rsa_priv_f_done(struct device *dev, u32 *desc, u32 err,
- 	 * If no backlog flag, the completion of the request is done
- 	 * by CAAM, not crypto engine.
- 	 */
--	if (!edesc->bklog)
-+	if (!has_bklog)
- 		akcipher_request_complete(req, ecode);
- 	else
- 		crypto_finalize_akcipher_request(jrp->engine, req, ecode);
--- 
-2.1.0
-
+Otherwise this looks pretty good.
