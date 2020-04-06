@@ -2,116 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 519C419F79E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876FD19F7A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728649AbgDFOIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:08:41 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:43344 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728405AbgDFOIk (ORCPT
+        id S1728657AbgDFOJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:09:42 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:27439 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728611AbgDFOJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:08:40 -0400
-Received: by mail-pl1-f193.google.com with SMTP id v23so5946283ply.10;
-        Mon, 06 Apr 2020 07:08:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qiVBZPsdURZP1jhMxDWHye9mEvFMkZlVNadDHV0ejs4=;
-        b=aCOZdE+kKjgXwNUh4wa7sd0iC9RrBIh1NeBcPBx4YJ0956l6hfldfq2s4fiZPX+lEl
-         XGScgrYshv2BiX4tuViMJ3evSNjGd2ZbtMIgQ9nPhrj4iqZLksyIYDbvBejmOYH6pUyH
-         bP/YBd6oM2UHno72Ret0EoO1lJYoX2Py3+VW5NVtrCmJILUBxMFug1MFpJqwAUS5467A
-         /lvGRWWoLCMbjM+XAPp5qlKBm8Trf+4IArkY2NZMSQISWQi6oJmVjYyAIbeILTMWiUaF
-         vXEKxMOzmU4i69trexUmXEuCVsy2qH31wrm00vShlTHZgEb6huwdYXDxYOoHvIW5Cqka
-         zYIw==
-X-Gm-Message-State: AGi0PuZPGeANKt/2IzIxM987UtFdYovcKcaxifm/j/kHLXPzUt8PCU2f
-        eqbcB9uySbQjYnA17WkjR1g=
-X-Google-Smtp-Source: APiQypK4PBijtr6jrSkxbP+qg+JhVIDRUZnqmssM67o2eOuF1E9o8YpsOIerTZkbPlD0P7gpp2RFWw==
-X-Received: by 2002:a17:90a:aa95:: with SMTP id l21mr11323852pjq.4.1586182119271;
-        Mon, 06 Apr 2020 07:08:39 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id b2sm4506439pgg.77.2020.04.06.07.08.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 07:08:37 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id DD95740246; Mon,  6 Apr 2020 14:08:36 +0000 (UTC)
-Date:   Mon, 6 Apr 2020 14:08:36 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, Ivan Teterevkov <ivan.teterevkov@nutanix.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Guilherme G . Piccoli" <gpiccoli@canonical.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH 1/3] kernel/sysctl: support setting sysctl parameters
- from kernel command line
-Message-ID: <20200406140836.GA11244@42.do-not-panic.com>
-References: <20200330115535.3215-1-vbabka@suse.cz>
- <20200330115535.3215-2-vbabka@suse.cz>
- <20200330224422.GX11244@42.do-not-panic.com>
- <287ac6ae-a898-3e68-c7d8-4c1d17a40db9@suse.cz>
- <20200402160442.GA11244@42.do-not-panic.com>
- <202004021017.3A23B759@keescook>
- <20200402205932.GM11244@42.do-not-panic.com>
- <202004031654.C4389A04EF@keescook>
+        Mon, 6 Apr 2020 10:09:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586182179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wl9a4vsMx6popLEQnps/1oTIMHKzOVah2HdwSj1HK4k=;
+        b=T7SyR2U7n4VBR9Bh2c9woIcfyTHUtAtFbAW97hOYzPisY8dtsUonr83TsEVbNEBt4H7zBX
+        +iXOnvqGaXcyuW297tsU71Miyzv+in//Fq4k6NaEYsrWyj8Rd5bp7AnAJK+odSE1mPbE1P
+        SQ6u8NKdbmp2wBKgkc2bHSkZatKH+KI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-20pdoNKkNzyFdMakHIAuLg-1; Mon, 06 Apr 2020 10:09:35 -0400
+X-MC-Unique: 20pdoNKkNzyFdMakHIAuLg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DE5313F6;
+        Mon,  6 Apr 2020 14:09:34 +0000 (UTC)
+Received: from [10.72.12.191] (ovpn-12-191.pek2.redhat.com [10.72.12.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 115529D352;
+        Mon,  6 Apr 2020 14:09:28 +0000 (UTC)
+Subject: Re: [PATCH] vhost: force spec specified alignment on types
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+References: <20200406124931.120768-1-mst@redhat.com>
+ <045c84ed-151e-a850-9c72-5079bd2775e6@redhat.com>
+ <20200406095424-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <d171447e-eabc-60ab-6de7-41ac9b82d7d1@redhat.com>
+Date:   Mon, 6 Apr 2020 22:09:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202004031654.C4389A04EF@keescook>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200406095424-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 04:57:51PM -0700, Kees Cook wrote:
-> On Thu, Apr 02, 2020 at 08:59:32PM +0000, Luis Chamberlain wrote:
-> > We modify the copied bootparams to allow new sysctls to map to old boot params?
-> 
-> This strdup is so that the
-> command line can have '\0's injected while it steps through the args
-> (and for doing the . and / replacement).
 
-Please ignore the const feedback then.
+On 2020/4/6 =E4=B8=8B=E5=8D=889:55, Michael S. Tsirkin wrote:
+> On Mon, Apr 06, 2020 at 09:34:00PM +0800, Jason Wang wrote:
+>> On 2020/4/6 =E4=B8=8B=E5=8D=888:50, Michael S. Tsirkin wrote:
+>>> The ring element addresses are passed between components with differe=
+nt
+>>> alignments assumptions. Thus, if guest/userspace selects a pointer an=
+d
+>>> host then gets and dereferences it, we might need to decrease the
+>>> compiler-selected alignment to prevent compiler on the host from
+>>> assuming pointer is aligned.
+>>>
+>>> This actually triggers on ARM with -mabi=3Dapcs-gnu - which is a
+>>> deprecated configuration, but it seems safer to handle this
+>>> generally.
+>>>
+>>> I verified that the produced binary is exactly identical on x86.
+>>>
+>>> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+>>> ---
+>>>
+>>> This is my preferred way to handle the ARM incompatibility issues
+>>> (in preference to kconfig hacks).
+>>> I will push this into next now.
+>>> Comments?
+>>
+>> I'm not sure if it's too late to fix. It would still be still problema=
+tic
+>> for the userspace that is using old uapi headers?
+>>
+>> Thanks
+> It's not a problem in userspace. The problem is when
+> userspace/guest uses 2 byte alignment and passes it to kernel
+> assuming 8 byte alignment. The fix is for host not to
+> make these assumptions.
 
-> > This is the least cumbersome solution I could think of. Other things
-> > would require things like using qemu, etc. That seems much more messsy.
-> 
-> Yes. Doing an internal extension isn't testing the actual code.
 
-But it would.
+Yes, but I meant when userspace is complied with apcs-gnu, then it still=20
+assumes 8 byte alignment?
 
-> > > This is an external interface (boot params), so
-> > > I'd rather an external driver handle that testing. We don't have a
-> > > common method to do that with the kernel, though.
-> > 
-> > Right... which begs the question now -- how do we test this sort of
-> > stuff? The above would at least get us coverage while we iron something
-> > more generic out for boot params.
-> > 
-> > > > That would test both cases with one kernel.
-> > > > 
-> > > > You could then also add a bogus new sysctl which also expands to a silly
-> > > > raw boot param to test the wrapper you are providing. That would be the
-> > > > only new test syctl you would need to add.
-> > > 
-> > > Sure, that seems reasonable. Supporting externally driven testing makes
-> > > sense for this.
-> > 
-> > But again, what exactly?
-> 
-> I don't think anything is needed for this series. It can be boot tested
-> manually.
+Thanks
 
-Why test it manually when it could be tested automatically with a new kconfig?
 
-  Luis
+>
+>>>    drivers/vhost/vhost.h            |  6 ++---
+>>>    include/uapi/linux/virtio_ring.h | 41 ++++++++++++++++++++++++----=
+----
+>>>    2 files changed, 34 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+>>> index cc82918158d2..a67bda9792ec 100644
+>>> --- a/drivers/vhost/vhost.h
+>>> +++ b/drivers/vhost/vhost.h
+>>> @@ -74,9 +74,9 @@ struct vhost_virtqueue {
+>>>    	/* The actual ring of buffers. */
+>>>    	struct mutex mutex;
+>>>    	unsigned int num;
+>>> -	struct vring_desc __user *desc;
+>>> -	struct vring_avail __user *avail;
+>>> -	struct vring_used __user *used;
+>>> +	vring_desc_t __user *desc;
+>>> +	vring_avail_t __user *avail;
+>>> +	vring_used_t __user *used;
+>>>    	const struct vhost_iotlb_map *meta_iotlb[VHOST_NUM_ADDRS];
+>>>    	struct vhost_desc *descs;
+>>> diff --git a/include/uapi/linux/virtio_ring.h b/include/uapi/linux/vi=
+rtio_ring.h
+>>> index 559f42e73315..cd6e0b2eaf2f 100644
+>>> --- a/include/uapi/linux/virtio_ring.h
+>>> +++ b/include/uapi/linux/virtio_ring.h
+>>> @@ -118,16 +118,6 @@ struct vring_used {
+>>>    	struct vring_used_elem ring[];
+>>>    };
+>>> -struct vring {
+>>> -	unsigned int num;
+>>> -
+>>> -	struct vring_desc *desc;
+>>> -
+>>> -	struct vring_avail *avail;
+>>> -
+>>> -	struct vring_used *used;
+>>> -};
+>>> -
+>>>    /* Alignment requirements for vring elements.
+>>>     * When using pre-virtio 1.0 layout, these fall out naturally.
+>>>     */
+>>> @@ -164,6 +154,37 @@ struct vring {
+>>>    #define vring_used_event(vr) ((vr)->avail->ring[(vr)->num])
+>>>    #define vring_avail_event(vr) (*(__virtio16 *)&(vr)->used->ring[(v=
+r)->num])
+>>> +/*
+>>> + * The ring element addresses are passed between components with dif=
+ferent
+>>> + * alignments assumptions. Thus, we might need to decrease the compi=
+ler-selected
+>>> + * alignment, and so must use a typedef to make sure the __aligned a=
+ttribute
+>>> + * actually takes hold:
+>>> + *
+>>> + * https://gcc.gnu.org/onlinedocs//gcc/Common-Type-Attributes.html#C=
+ommon-Type-Attributes
+>>> + *
+>>> + * When used on a struct, or struct member, the aligned attribute ca=
+n only
+>>> + * increase the alignment; in order to decrease it, the packed attri=
+bute must
+>>> + * be specified as well. When used as part of a typedef, the aligned=
+ attribute
+>>> + * can both increase and decrease alignment, and specifying the pack=
+ed
+>>> + * attribute generates a warning.
+>>> + */
+>>> +typedef struct vring_desc __attribute__((aligned(VRING_DESC_ALIGN_SI=
+ZE)))
+>>> +	vring_desc_t;
+>>> +typedef struct vring_avail __attribute__((aligned(VRING_AVAIL_ALIGN_=
+SIZE)))
+>>> +	vring_avail_t;
+>>> +typedef struct vring_used __attribute__((aligned(VRING_USED_ALIGN_SI=
+ZE)))
+>>> +	vring_used_t;
+>>> +
+>>> +struct vring {
+>>> +	unsigned int num;
+>>> +
+>>> +	vring_desc_t *desc;
+>>> +
+>>> +	vring_avail_t *avail;
+>>> +
+>>> +	vring_used_t *used;
+>>> +};
+>>> +
+>>>    static inline void vring_init(struct vring *vr, unsigned int num, =
+void *p,
+>>>    			      unsigned long align)
+>>>    {
+
