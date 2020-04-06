@@ -2,100 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE0A19FA8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7922719FA6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729702AbgDFQmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 12:42:15 -0400
-Received: from mail-qk1-f202.google.com ([209.85.222.202]:41008 "EHLO
-        mail-qk1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729692AbgDFQmN (ORCPT
+        id S1729636AbgDFQlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 12:41:52 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:37076 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729616AbgDFQlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 12:42:13 -0400
-Received: by mail-qk1-f202.google.com with SMTP id d18so366937qkj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 09:42:13 -0700 (PDT)
+        Mon, 6 Apr 2020 12:41:51 -0400
+Received: by mail-lj1-f193.google.com with SMTP id r24so400426ljd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 09:41:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Y7rlrv2nhrkBeB3yxrt1isCdPASfC8dC7N7qsaqIYpI=;
-        b=uzysDj83wFfvyx5+xHx53APFuGywhQGNYTYnY3+lbcNA+3qpT2RyVCtTCzOVWuYtrd
-         IJ7VKcld7TMSS+B4Duop178kHp3dnyyCbFCaQG30nNlIZu2qp3pd8gPvWCQ/vh5UCVNI
-         qYZP5lzEpIK9s82LrNfMVTyGg0YHy+wtBcdXCYONK5VtuSr/B+ie2tXtTLyaJ9IPy1+g
-         3D+xo+ACBtd8mKECNNqIvX1PJ+oInNfLa3VP4gJ7IaAStMJAKw0/1v2sPcOcrSw5vqh7
-         xI4vpzaPpkYp+bSxRgABVKY3EorsZQeCB4tyb7kBdLZS86i8LGqxeDzzj01uFZHbP3SR
-         Lm4Q==
+        bh=Imdp89Sb0+OtYzgCpw3IcqTUqEKq3zexZbxvNKGejvc=;
+        b=TUDiV7orONaSuZs35BQ1mawth0kHmPPUSDaWUc61FjLb/6pFGQBIyQceMCqczVlLuF
+         mQUZ4NQktXHOHP07O9tK8dQGGfgRoZsmJ5GzKHbZpqurg7mKkrY7MYTCAAZGVXJrRCHG
+         ddaqR5NSXTSjop3RFyga75kOxzIQpqbjG4OKY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Y7rlrv2nhrkBeB3yxrt1isCdPASfC8dC7N7qsaqIYpI=;
-        b=rzruPKPJ5muO8Vo3HkG8CwQ/hwJ6snyBc1/jP9uV+J0YOQRCIzRUtyHHI9Znc1dAQl
-         V+l/MluDs4LXj3bHHSBMegXM0zpezAM89rtSrZ+ZXLwDd55IFbrNMdy2Hm1E1SJfAsAD
-         6CbaTM7EpfmjS8Ja8Xqb+sesuf2FRK+2lYFfMtIl5qmlgvl7yKRZ/PBElDi3HOZY9B92
-         aItBEq1PzQkqW42eaOWj4vbxLIZmlnx3BspQiZy5bp8LqULrozny9ZU4ey6rSc3s7Sgi
-         oemYHpAPDs/eVi2uZdDLUSkwjK3YgdwQR1A9694ldEPdvMn1kUCh/BTmQl9+Zi2YPnov
-         aLjA==
-X-Gm-Message-State: AGi0PuYCfw2+Qz4lCZw1S5sthf5ZbB/mn0y2pQj5Bv7jCcYe6REY9vW2
-        Nr4MwlBqbXDWRB2c5q+QuwfPR2x7Ly1ahRBZdqM=
-X-Google-Smtp-Source: APiQypIq6K+/6sNFF07UPysJVLbTskXzuAKdx/I5NBmymQNj01YODUpkepZADD3StGdWVd8jEygPyA4Kk1CGRFm+W3w=
-X-Received: by 2002:a37:4d88:: with SMTP id a130mr21585753qkb.443.1586191332817;
- Mon, 06 Apr 2020 09:42:12 -0700 (PDT)
-Date:   Mon,  6 Apr 2020 09:41:21 -0700
-In-Reply-To: <20200406164121.154322-1-samitolvanen@google.com>
-Message-Id: <20200406164121.154322-13-samitolvanen@google.com>
-Mime-Version: 1.0
-References: <20191018161033.261971-1-samitolvanen@google.com> <20200406164121.154322-1-samitolvanen@google.com>
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-Subject: [PATCH v10 12/12] efi/libstub: disable SCS
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Dave Martin <Dave.Martin@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jann Horn <jannh@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Imdp89Sb0+OtYzgCpw3IcqTUqEKq3zexZbxvNKGejvc=;
+        b=EQIwO9zkXOCAUqOF7OGLYbSfYB51yr7PYHgmNSNx2ezNcVBx4O1rIGFOcUXAUQcOpX
+         TeKLMxgb/1AYsOfeGUmGwYy/tkHDNHAuhyBgDjaWBQQRfODT5Vz+rjqzxVVeIAOigxww
+         6wPilhKOnJdcRi4pjrhkxTPK0tDmKO070O/gdkJjkXbkSRm/sywJ+oL6MOPua8KTPNEY
+         cuxarLp7cgQ2+YvWpZraE0wJ+7fPFs1t3J3fRNCW66Mgtc2un9+o3oACw1Z7ApCvXyjk
+         8C5uZZMKpXH+p1fLtyXY/ILwgqJz6VnsSpIVW+mJtv8QnjSHhvFnZX4xGd6+tfkX0gj2
+         ZhDQ==
+X-Gm-Message-State: AGi0PuaCwEB/3tC5L6jV79GVaXkkxx3Z36ZYXwiyRvEkdQEEWOybJ5pU
+        yJ77F/H2A4l8K+hyOLdgc4CXRaze678=
+X-Google-Smtp-Source: APiQypKNs/rPitbQARNzloPT7srn+6qKRN3aW2SIXFrUg6GWoRpj6twXb73T+hhGm8HyZnvvv+mqYw==
+X-Received: by 2002:a2e:3a16:: with SMTP id h22mr62635lja.81.1586191309130;
+        Mon, 06 Apr 2020 09:41:49 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id o4sm11713936lfl.62.2020.04.06.09.41.48
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Apr 2020 09:41:48 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id t17so335047ljc.12
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 09:41:48 -0700 (PDT)
+X-Received: by 2002:a2e:8911:: with SMTP id d17mr101988lji.16.1586191307660;
+ Mon, 06 Apr 2020 09:41:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <a291cce3ff1ba978e7ad231a8e1b7d82f6164e86.camel@perches.com>
+ <20200406023700.1367-1-longman@redhat.com> <319765.1586188840@warthog.procyon.org.uk>
+ <d509771b7e08fff0d18654b746e413e93ed62fe8.camel@perches.com>
+In-Reply-To: <d509771b7e08fff0d18654b746e413e93ed62fe8.camel@perches.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 6 Apr 2020 09:41:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whgvhyi_=2AsfFLUznqmrO9TOjuzTvcYHvCC=f0+Y7PkQ@mail.gmail.com>
+Message-ID: <CAHk-=whgvhyi_=2AsfFLUznqmrO9TOjuzTvcYHvCC=f0+Y7PkQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: Add kvfree_sensitive() for freeing sensitive data objects
+To:     Joe Perches <joe@perches.com>
+Cc:     David Howells <dhowells@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linux-MM <linux-mm@kvack.org>, keyrings@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shadow stacks are not available in the EFI stub, filter out SCS flags.
+On Mon, Apr 6, 2020 at 9:12 AM Joe Perches <joe@perches.com> wrote:
+>
+> While I agree with Linus about the __ prefix,
+> the z is pretty common and symmetric to all
+> the <foo>zalloc uses.
 
-Suggested-by: James Morse <james.morse@arm.com>
-Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
----
- drivers/firmware/efi/libstub/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
+Yes, we have a pattern of 'z' for zero.
 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index 094eabdecfe6..fa0bb64f93d6 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -32,6 +32,9 @@ KBUILD_CFLAGS			:= $(cflags-y) -DDISABLE_BRANCH_PROFILING \
- 				   $(call cc-option,-fno-stack-protector) \
- 				   -D__DISABLE_EXPORTS
- 
-+#  remove SCS flags from all objects in this directory
-+KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_SCS), $(KBUILD_CFLAGS))
-+
- GCOV_PROFILE			:= n
- KASAN_SANITIZE			:= n
- UBSAN_SANITIZE			:= n
--- 
-2.26.0.292.g33ef6b2f38-goog
+But the _operation_ isn't symmetric.
 
+"kzalloc()" has absolutely _nothing_ to do with "kzfree()". They are
+not some kind of "opposite symmetric operation".  They are totally
+different. They have absolutely nothing in common.
+
+So using the same naming is wrong. They have one implementation detail
+that looks superficially similar ("zero the area"), but even that
+superficial similarity is actually completely false. They may both use
+"memset()", but in one case it is correct and makes sense, and in the
+other case it's actually a bug waiting to happen, and you really
+should use that "memzero_explicit()", which is a very very different
+operation from a normal memzero().
+
+So even the implementation isn't really validly similar, but even if
+it had been, the _reason_ for doing so is completely different.
+
+They simply don't really pair up in any way.
+
+             Linus
