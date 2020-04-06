@@ -2,68 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E27E919FE2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B475119FE41
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 21:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726269AbgDFTkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 15:40:21 -0400
-Received: from smtprelay0105.hostedemail.com ([216.40.44.105]:40198 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725895AbgDFTkV (ORCPT
+        id S1726444AbgDFTnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 15:43:47 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:36366 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgDFTnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 15:40:21 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id F1C75182CCCD3;
-        Mon,  6 Apr 2020 19:40:19 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:2892:3138:3139:3140:3141:3142:3352:3622:3865:3867:3871:3872:3874:4321:4385:4390:4395:5007:6119:7903:10004:10400:10848:11232:11658:11914:12048:12297:12679:12740:12760:12895:13069:13076:13311:13357:13439:14659:14721:21080:21324:21627:30041:30054:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: time35_2a4b0339e20d
-X-Filterd-Recvd-Size: 1787
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf13.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  6 Apr 2020 19:40:18 +0000 (UTC)
-Message-ID: <c2c8adf48be7cb18bbdf0aef7d21e2defe3d2183.camel@perches.com>
-Subject: Re: [PATCH v2] mm: Add kvfree_sensitive() for freeing sensitive
- data objects
-From:   Joe Perches <joe@perches.com>
-To:     Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>
-Date:   Mon, 06 Apr 2020 12:38:19 -0700
-In-Reply-To: <20200406185827.22249-1-longman@redhat.com>
-References: <20200406185827.22249-1-longman@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Mon, 6 Apr 2020 15:43:46 -0400
+Received: by mail-lf1-f65.google.com with SMTP id w145so480302lff.3;
+        Mon, 06 Apr 2020 12:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Yi76jXrhGzr9w1zwjkk0H648baQNxRmi8nM63MPAiw=;
+        b=Fmvs/lMCDBg/kISsqujiqyFF4pLfBTut5EYbkVl8t/ZuZEhuGdQ/iwNjQlKpgwBMvC
+         sdLf5exnbnirtv57lf03yMw6IBlzZ94RnfCdEORF3TZAqRPjBQUwrqmVL6z2rhfwLW9f
+         gONERjYtFo85nPv8vvOssmVHAeElD50LtvPyzp875CUXmvqOCSTrDYoyZUWuyaSP+Q9A
+         s/kFQdpbkGJ8v/4TD3ocx2M6xFzLQBNaY1l1mHl0sts+9bm27etGiaz6TgkPXelxmbDq
+         zBQKFX1g7Hk+VFTWgoxFXedXsrbQuUTn2igvW1/KNfKiX8Aswc8cIaKBpB13tul7Gf+z
+         KD1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3Yi76jXrhGzr9w1zwjkk0H648baQNxRmi8nM63MPAiw=;
+        b=RNJZb+WwoHLjNeeeFuw2K56I1cDMbXjFBbxYDiCPiTmFc8wxrNcAZWmcYTE0vv72DS
+         i1idKqrpeZQnC+TiuctrM/SC+p2nlG0AEwm8QONddAuNfnRFXvnpFjel/Uqxvi1nVEZp
+         g6jygHY//3ySa65sD22vEK4iETW5KpPWKYDjh3h5o2jDgRrk9TOsNfTi2Sw2+Tu7gzik
+         iZnfjuMgVdOskt1O+5AUQPkDMeYHD8t7WTy0MG03lHMaxfuIbL5c0F3L0NiVr6rEn5yp
+         CL66n8AfZqTzQ4vjy07DfNEPcWASz3JBvUi0WlbImL7vAvAjkd7xoDq/GoF6s/ZG7q9j
+         TMLg==
+X-Gm-Message-State: AGi0PubPGBiOM7Xxx31uHsXWMiXcUDSOAVIt9ysTJf7/9vUnpdBgqfGr
+        st7cl6SqKSEuRsn872BnDns=
+X-Google-Smtp-Source: APiQypKpTnzY15WgbOMsxN0r9NnfJmthP2UD2dk7FNkYNu8IicnUT4RX8v+kH0gjQiG6B1kp3Oi0CA==
+X-Received: by 2002:ac2:4554:: with SMTP id j20mr6220830lfm.91.1586202223959;
+        Mon, 06 Apr 2020 12:43:43 -0700 (PDT)
+Received: from localhost.localdomain (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.gmail.com with ESMTPSA id r206sm4996233lff.65.2020.04.06.12.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 12:43:43 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        David Heidelberg <david@ixit.cz>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        =?UTF-8?q?Pedro=20=C3=82ngelo?= <pangelo@void.io>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] Support NVIDIA Tegra-based Acer A500 and Nexus 7 devices
+Date:   Mon,  6 Apr 2020 22:41:04 +0300
+Message-Id: <20200406194110.21283-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-06 at 14:58 -0400, Waiman Long wrote:
-> For kvmalloc'ed data object that contains sensitive information like
-> cryptographic key, we need to make sure that the buffer is always
-> cleared before freeing it. Using memset() alone for buffer clearing may
-> not provide certainty as the compiler may compile it away. To be sure,
-> the special memzero_explicit() has to be used.
+Hello,
 
-[] 
->  extern void kvfree(const void *addr);
-> +extern void kvfree_sensitive(const void *addr, size_t len);
+This series introduces upstream kernel support for Acer Iconia Tab A500
+and ASUS Google Nexus 7 tablet devices. Please review and apply, thanks
+in advance.
 
-Question: why should this be const?
+Changelog:
 
-2.1.44 changed kfree(void *) to kfree(const void *) but
-I didn't find a particular reason why.
+v2: - Corrected "volume down" key-label in the grouper's device-tree and
+      improved some other names in device-trees.
 
+    - Added optional (upcoming in 5.8) VDD/AVDD regulators to the touchscreen
+      node in A500 device-tree.
+
+Dmitry Osipenko (6):
+  ARM: tegra: Add device-tree for Acer Iconia Tab A500
+  ARM: tegra: Add device-tree for ASUS Google Nexus 7
+  dt-bindings: Add vendor prefix for Acer Inc.
+  dt-bindings: ARM: tegra: Add Acer Iconia Tab A500
+  dt-bindings: ARM: tegra: Add ASUS Google Nexus 7
+  ARM: tegra_defconfig: Enable options useful for Nexus 7 and Acer A500
+
+ .../devicetree/bindings/arm/tegra.yaml        |   10 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ arch/arm/boot/dts/Makefile                    |    3 +
+ .../boot/dts/tegra20-acer-a500-picasso.dts    | 1447 +++++++++
+ .../tegra30-asus-nexus7-grouper-common.dtsi   | 2646 +++++++++++++++++
+ .../boot/dts/tegra30-asus-nexus7-grouper.dts  |  463 +++
+ .../boot/dts/tegra30-asus-nexus7-tilapia.dts  |  549 ++++
+ arch/arm/configs/tegra_defconfig              |   28 +
+ 8 files changed, 5148 insertions(+)
+ create mode 100644 arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-nexus7-grouper.dts
+ create mode 100644 arch/arm/boot/dts/tegra30-asus-nexus7-tilapia.dts
+
+-- 
+2.25.1
 
