@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D47F19F818
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3168E19F806
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbgDFOja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:39:30 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:34456 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728566AbgDFOja (ORCPT
+        id S1728726AbgDFOed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:34:33 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:34056 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728406AbgDFOec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:39:30 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 036EdPGB060058;
-        Mon, 6 Apr 2020 09:39:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1586183965;
-        bh=Mv9f2/SpVcCjK44c4OSC4J10mXtBoBKAIa6WVzJmjN8=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=aSOq2ThcWUWgAYsv82oD+RoDrRY77LUBG5h0Y8S2ARwnMOvEw0pstORLh7b61o8jM
-         bwKsWMIfCPsF45RKqJynM/zD8iJ1vAM6zXFvvJ8UIqrmtSjE99Dzq5CRbgqdIlVRw8
-         EOPupvkgYn/7XOPX1v0+NQNHP+wJwjOtuXQ+lm2U=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 036EdO15012727;
-        Mon, 6 Apr 2020 09:39:24 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Mon, 6 Apr
- 2020 09:39:24 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Mon, 6 Apr 2020 09:39:24 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 036EdOfs111481;
-        Mon, 6 Apr 2020 09:39:24 -0500
-Subject: Re: [PATCH v19 04/18] leds: multicolor: Introduce a multicolor class
- definition
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200402204311.14998-1-dmurphy@ti.com>
- <20200402204311.14998-5-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <6f8623ea-4f00-9521-e8d3-89d261c2a25e@ti.com>
-Date:   Mon, 6 Apr 2020 09:33:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Mon, 6 Apr 2020 10:34:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wr0uZpRzGVA7T8oUC8PL/uBRO2k1Ka9BIzBlz9pMP2A=; b=ejYdqtCAmo0OOTalawEY93to8L
+        IkiAEaDmYzOw7FOOD62IgZoVmwZzUI9I8saFArRIZj1erVrWnSbSE5rGnkDhEd0VB60/15oKiernY
+        aZ8nO+vaqhJnj18sDAtdGbsxroSP1ugUvL07Des8/PRIXCLs9OaFxviDL2XHPCjUglMkQtIG76teE
+        Qp6bekEhqff6215Z5pJ3BpWflGjJ6MUzNVHflFZ1cA0/njJ784WRG430wsr3Jl0SfV6oSqTVfjugt
+        16xcTCbe0/UglB5lzfjR69h08yNyJ0Cs4y+b5h5BZ/2WI2F8wEd3+ZM31nl0TwPuzxVmCxnrmsa/m
+        Uk3gfoTQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLSpF-0006Xq-H7; Mon, 06 Apr 2020 14:34:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5FB9B300478;
+        Mon,  6 Apr 2020 16:34:05 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B3A082BAC74D6; Mon,  6 Apr 2020 16:34:05 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 16:34:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        "Kenneth R. Crudup" <kenny@panix.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Laight <David.Laight@aculab.com>,
+        Doug Covelli <dcovelli@vmware.com>
+Subject: Re: [RFC PATCH] x86/split_lock: Disable SLD if an unaware
+ (out-of-tree) module enables VMX
+Message-ID: <20200406143405.GM20760@hirez.programming.kicks-ass.net>
+References: <20200403163007.6463-1-sean.j.christopherson@intel.com>
+ <20200406125010.GA29306@infradead.org>
+ <20200406140403.GL20730@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200402204311.14998-5-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200406140403.GL20730@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel
+On Mon, Apr 06, 2020 at 04:04:04PM +0200, Peter Zijlstra wrote:
+> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+> index 65c2ecd730c5..0bd5ea46f1d2 100644
+> --- a/arch/x86/include/asm/pgtable_types.h
+> +++ b/arch/x86/include/asm/pgtable_types.h
+> @@ -274,6 +274,11 @@ typedef struct pgprot { pgprotval_t pgprot; } pgprot_t;
+>  
+>  typedef struct { pgdval_t pgd; } pgd_t;
+>  
 
-On 4/2/20 3:42 PM, Dan Murphy wrote:
-> Introduce a multicolor class that groups colored LEDs
-> within a LED node.
->
-> The multi color class groups monochrome LEDs and allows controlling two
-> aspects of the final combined color: hue and lightness. The former is
-> controlled via <color>_intensity files and the latter is controlled
-> via brightness file.
->
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
+This lost:
 
-Still looking for comments and reviews from you on this specific patch 
-and implementation
+#define pgprot_nx pgprot_nx
 
-Dan
+> +static inline pgprot_t pgprot_nx(pgprot_t prot)
+> +{
+> +	return __pgprot(pgprot_val(prot) | _PAGE_NX);
+> +}
+> +
+>  #ifdef CONFIG_X86_PAE
+>  
+>  /*
 
+> diff --git a/include/asm-generic/pgtable.h b/include/asm-generic/pgtable.h
+> index e2e2bef07dd2..ee66c1f8b141 100644
+> --- a/include/asm-generic/pgtable.h
+> +++ b/include/asm-generic/pgtable.h
+> @@ -490,6 +490,10 @@ static inline int arch_unmap_one(struct mm_struct *mm,
+>  #define flush_tlb_fix_spurious_fault(vma, address) flush_tlb_page(vma, address)
+>  #endif
+>  
+> +#ifndef pgprot_nx
+> +#define pgprot_nx(prot)	(prot)
+> +#endif
+> +
+>  #ifndef pgprot_noncached
+>  #define pgprot_noncached(prot)	(prot)
+>  #endif
