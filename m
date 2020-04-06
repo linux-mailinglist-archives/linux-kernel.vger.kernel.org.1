@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD0819F9A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00CB219F9A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbgDFQEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 12:04:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729256AbgDFQEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 12:04:40 -0400
-Received: from linux-8ccs.suse.de (p3EE2C7AC.dip0.t-ipconnect.de [62.226.199.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C9FC22265;
-        Mon,  6 Apr 2020 16:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586189080;
-        bh=L00ZAAyRSvCuvRMJNJwKNL2bzR9DRu4/YFAzVqmfZwU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=duQ7kAQ1XnHbc4ULmasMoaHWa5OKdZnMGKhICVc77O+1JDe1CZ6ZKdYeW44rIQGVP
-         Qiw9X/v5lIpDn0of+n6fO8FIcBVoXA/LSWMzM3FwpkmOorCUM9HOtIcwNTSUdoogwz
-         vGTGYKYuwBXrJfshxV8Q14jQ74DC5BfdbZ6PDFlk=
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Jessica Yu <jeyu@kernel.org>
-Subject: [PATCH] module: expose load_info to arch module loader code
-Date:   Mon,  6 Apr 2020 18:04:20 +0200
-Message-Id: <20200406160420.14407-1-jeyu@kernel.org>
-X-Mailer: git-send-email 2.16.4
+        id S1729361AbgDFQFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 12:05:37 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35016 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729058AbgDFQFg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 12:05:36 -0400
+Received: by mail-lf1-f68.google.com with SMTP id r17so8735174lff.2;
+        Mon, 06 Apr 2020 09:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UlEB5mGfZfrR2ICgj85sakIeAX6bWAMpBvZEq4sclhs=;
+        b=hMnqzACejUMzIgLKjfDtgPf/VuejCHWZs65xvT1bS8bVxb8suPbcvAd15qTR5U4P0g
+         9fDauAF6ltaIGvTsqYfLaeVxlgkn46wpEufbxT4dptigxbccuIXGsYzbsRtRSOGECD67
+         G7CnfYjyn/LK2es30KIM7suDdloc3hwupo8NxITZgvAXpa7Wrr+RaAVg3EIC31B6BaC6
+         Y9AKM2vJURufQXg5vUF0ciBmgWNNl6d8ZnDsbL39B4uymtlKom6zPxEi0VGAeJL9+Aff
+         GEBBOK20kyNdtHh6abEOaI4L1WlK6l38B1XcIseSzQmXANclXhRVcHyU5zK8mZ6+iaDV
+         oWVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UlEB5mGfZfrR2ICgj85sakIeAX6bWAMpBvZEq4sclhs=;
+        b=LSiNBINORBqO4I1oVtmwr9sOFqr7ptTvhkReZ8XEVmMpktPJHQo3y8PlMokFIQuQVa
+         1oJkydgfIjkwg6Is2wni4Jclu6AEqDHT+nmVVTJRCLS3OZwyYxTbZfFBgb0P1qck77Pw
+         LiiVYM8ImlMQOkJXsQB8WT7A+Gf8vk77G4Icqh+1Ubdz/ft9uaM44xO/+mJ/KBQ76a8P
+         EN70K2JU2oS2+GW5x3db6ScK/1lN2ViheUY2Js4nq/+gtCSRLc5TWfijUgEuxQWqP2el
+         AsvfWqPvWaGppsQzgO0hJSFt9smx+hkLhAJFB4ybssMixHKOMK5mobH66mWiUcOt95fu
+         +RJg==
+X-Gm-Message-State: AGi0PuYjI41bG6Yr3LFiSs9CEE5LBxCOiz3ZbHZ4teccNa+Y9y7hxrSp
+        P0Ejh8pecmspqNho9TG5x2s58m05
+X-Google-Smtp-Source: APiQypLjG2SSlcN4OQg20r8eqrjVwnmiP/cugPGrrukYx2188O2RBBAD2rTfh2StJg+t9ezqr+LcYQ==
+X-Received: by 2002:a05:6512:52c:: with SMTP id o12mr13295963lfc.217.1586189133488;
+        Mon, 06 Apr 2020 09:05:33 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id z4sm9860769ljk.51.2020.04.06.09.05.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Apr 2020 09:05:30 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
+Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
+ <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
+ <38d921a7-5cdf-8d0a-2772-4399dd1a96a0@gmail.com>
+ <9b8cf37b-d2ad-9df2-aad8-216c2c954e69@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1a12974a-7cc7-2c3a-3995-076b9956714d@gmail.com>
+Date:   Mon, 6 Apr 2020 19:05:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
+MIME-Version: 1.0
+In-Reply-To: <9b8cf37b-d2ad-9df2-aad8-216c2c954e69@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The x86 module loader wants to check the value of a modinfo flag
-(sld_safe), before proceeding to scan the module text for VMX
-instructions. Unfortunately the arch module code currently does not have
-access to load_info, but we can easily expose that via moduleloader.h,
-which every arch module code must already include.
+06.04.2020 18:35, Sowjanya Komatineni пишет:
+...
+>>> +     /* wait for syncpt counter to reach frame start event threshold */
+>>> +     err = host1x_syncpt_wait(chan->frame_start_sp, thresh,
+>>> +                              TEGRA_VI_SYNCPT_WAIT_TIMEOUT, &value);
+>>> +     if (err) {
+>>> +             dev_err(&chan->video.dev,
+>>> +                     "frame start syncpt timeout: %d\n", err);
+>>> +             /* increment syncpoint counter for timedout events */
+>>> +             host1x_syncpt_incr(chan->frame_start_sp);
+>> Why incrementing is done while hardware is still active?
+>>
+>> The sync point's state needs to be completely reset after resetting
+>> hardware. But I don't think that the current upstream host1x driver
+>> supports doing that, it's one of the known-long-standing problems of the
+>> host1x driver.
+>>
+>> At least the sp->max_val incrementing should be done based on the actual
+>> syncpoint value and this should be done after resetting hardware.
+> 
+> upstream host1x driver don't have API to reset or to equalize max value
+> with min/load value.
+> 
+> So to synchronize missed event, incrementing HW syncpt counter.
+> 
+> This should not impact as we increment this in case of missed events only.
 
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
----
+It's wrong to touch sync point while hardware is active and it's active
+until being reset.
 
-Does this help? You may also need to implement a new arch-specific hook
-in check_modinfo() to check for sld_safe, and I guess we might need to
-expose get_modinfo() too. I realize that the detect-VMX-modules patchset
-[1] is still very much in-flight, so if you do end up needing this, feel
-free to just add this patch to the patchset.
-
-[1] http://lore.kernel.org/r/20200402123258.895628824@linutronix.de
-
- include/linux/moduleloader.h | 20 ++++++++++++++++++++
- kernel/module-internal.h     | 23 -----------------------
- kernel/module_signing.c      |  2 +-
- 3 files changed, 21 insertions(+), 24 deletions(-)
-
-diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
-index ca92aea8a6bd..2ca0bb783d1e 100644
---- a/include/linux/moduleloader.h
-+++ b/include/linux/moduleloader.h
-@@ -6,6 +6,26 @@
- #include <linux/module.h>
- #include <linux/elf.h>
- 
-+struct load_info {
-+	const char *name;
-+	/* pointer to module in temporary copy, freed at end of load_module() */
-+	struct module *mod;
-+	Elf_Ehdr *hdr;
-+	unsigned long len;
-+	Elf_Shdr *sechdrs;
-+	char *secstrings, *strtab;
-+	unsigned long symoffs, stroffs, init_typeoffs, core_typeoffs;
-+	struct _ddebug *debug;
-+	unsigned int num_debug;
-+	bool sig_ok;
-+#ifdef CONFIG_KALLSYMS
-+	unsigned long mod_kallsyms_init_off;
-+#endif
-+	struct {
-+		unsigned int sym, str, mod, vers, info, pcpu;
-+	} index;
-+};
-+
- /* These may be implemented by architectures that need to hook into the
-  * module loader code.  Architectures that don't need to do anything special
-  * can just rely on the 'weak' default hooks defined in kernel/module.c.
-diff --git a/kernel/module-internal.h b/kernel/module-internal.h
-index 33783abc377b..98a873691f1b 100644
---- a/kernel/module-internal.h
-+++ b/kernel/module-internal.h
-@@ -5,27 +5,4 @@
-  * Written by David Howells (dhowells@redhat.com)
-  */
- 
--#include <linux/elf.h>
--#include <asm/module.h>
--
--struct load_info {
--	const char *name;
--	/* pointer to module in temporary copy, freed at end of load_module() */
--	struct module *mod;
--	Elf_Ehdr *hdr;
--	unsigned long len;
--	Elf_Shdr *sechdrs;
--	char *secstrings, *strtab;
--	unsigned long symoffs, stroffs, init_typeoffs, core_typeoffs;
--	struct _ddebug *debug;
--	unsigned int num_debug;
--	bool sig_ok;
--#ifdef CONFIG_KALLSYMS
--	unsigned long mod_kallsyms_init_off;
--#endif
--	struct {
--		unsigned int sym, str, mod, vers, info, pcpu;
--	} index;
--};
--
- extern int mod_verify_sig(const void *mod, struct load_info *info);
-diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index 9d9fc678c91d..2de41a3ab8a8 100644
---- a/kernel/module_signing.c
-+++ b/kernel/module_signing.c
-@@ -8,11 +8,11 @@
- #include <linux/kernel.h>
- #include <linux/errno.h>
- #include <linux/module.h>
-+#include <linux/moduleloader.h>
- #include <linux/module_signature.h>
- #include <linux/string.h>
- #include <linux/verification.h>
- #include <crypto/public_key.h>
--#include "module-internal.h"
- 
- /*
-  * Verify the signature on a module.
--- 
-2.16.4
-
+You should re-check the timeout after hw resetting and manually put the
+syncpoint counter back into sync only if needed.
