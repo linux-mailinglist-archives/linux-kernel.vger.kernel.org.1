@@ -2,102 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F50A19F2C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142AE19F2AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgDFJlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:41:39 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:33350 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726675AbgDFJlj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:41:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eWD0h4HDJIC+j23RjV+nLrsJjqGzLhXKvD7tRceWp/E=; b=QMMEHPi1bthngWf2yz1q7kCfRJ
-        FFhLDiGBJGLO175iwcsz0ES6qU5SeUEhqWiMyc7o3OdQn5Zhmz30HemWzCLsXfRir/JoUdUmfax7F
-        YIQt5vQMBk3yrKnCLW3xd2/NeBdQi8D6EZPXfTEOhCnu0wwJVNXkfxfzae3AO2/VQWi5CpqgDvbv+
-        8R8qNwmsA1prUXlUjj/5XbIfDiktpBjw7PlE/ziVJD1BqojXBA3CUv9ps7f7TVdP+Ci+spR5lL/ke
-        vTitP1swSSvUJvEMZpBOk/w/A4IPk45m9+k6p4tkizSJJw2abRG4z8UnunmQYF/kGvMXFLC1dR6jn
-        p2CKvipw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLOG3-0000Ak-5Y; Mon, 06 Apr 2020 09:41:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 980D0300478;
-        Mon,  6 Apr 2020 11:31:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 81C312BAC6A6B; Mon,  6 Apr 2020 11:31:43 +0200 (CEST)
-Date:   Mon, 6 Apr 2020 11:31:43 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Julien Thierry <jthierry@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH 4/7] objtool: Add support for return trampoline call
-Message-ID: <20200406093143.GH20730@hirez.programming.kicks-ass.net>
-References: <fc224792-bd1c-08ff-072f-e584740521b4@oracle.com>
- <a250f29d-969a-b704-6dd6-c6cc7b84f526@redhat.com>
- <20200402154022.GG20730@hirez.programming.kicks-ass.net>
- <bc3a31dc-9d59-5756-aad3-187533f05654@redhat.com>
- <20200403151757.lhhia7pzqptvlqz5@treble>
- <20200403154620.GS20730@hirez.programming.kicks-ass.net>
- <20200404133218.GL20760@hirez.programming.kicks-ass.net>
- <20200404142232.wpn7estahnabfy3z@treble>
- <20200404155126.GF20730@hirez.programming.kicks-ass.net>
- <27f433a3-6109-9831-5292-3df4155e10fb@oracle.com>
+        id S1726761AbgDFJgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:36:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51342 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726687AbgDFJgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 05:36:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 6BA0FAE71;
+        Mon,  6 Apr 2020 09:36:04 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 671AA1E1244; Mon,  6 Apr 2020 11:36:01 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 11:36:01 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     NeilBrown <neilb@suse.de>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] MM: replace PF_LESS_THROTTLE with PF_LOCAL_THROTTLE
+Message-ID: <20200406093601.GA1143@quack2.suse.cz>
+References: <87tv2b7q72.fsf@notabene.neil.brown.name>
+ <87v9miydai.fsf@notabene.neil.brown.name>
+ <87sghmyd8v.fsf@notabene.neil.brown.name>
+ <20200403151534.GG22681@dhcp22.suse.cz>
+ <878sjcxn7i.fsf@notabene.neil.brown.name>
+ <20200406074453.GH19426@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <27f433a3-6109-9831-5292-3df4155e10fb@oracle.com>
+In-Reply-To: <20200406074453.GH19426@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 10:19:56AM +0200, Alexandre Chartre wrote:
-> 
-> On 4/4/20 5:51 PM, Peter Zijlstra wrote:
-> > On Sat, Apr 04, 2020 at 09:22:32AM -0500, Josh Poimboeuf wrote:
-> > > On Sat, Apr 04, 2020 at 03:32:18PM +0200, Peter Zijlstra wrote:
-> > > > On Fri, Apr 03, 2020 at 05:46:20PM +0200, Peter Zijlstra wrote:
-> > > > > On Fri, Apr 03, 2020 at 10:17:57AM -0500, Josh Poimboeuf wrote:
-> > > > > > Peter, I think my previous idea for UNWIND_HINT_ADJUST stack_add=8 would
-> > > > > > work here?
-> > > > > 
-> > > > > Yes, it would.
-> > > > 
-> > > > Sorry, I have reconsidered. While it will shut up objtool, it will not
-> > > > 'work'. That is, the ORC data generated will not correctly unwind.
-> > > > 
-> > > > I'll try and write a longer email tonight.
-> > > 
-> > > Right, that's what I've been trying to say.  The ORC data will be
-> > > non-deterministic unless we unroll the loop.  Or did you mean something
-> > > else?
+On Mon 06-04-20 09:44:53, Michal Hocko wrote:
+> On Sat 04-04-20 08:40:17, Neil Brown wrote:
+> > On Fri, Apr 03 2020, Michal Hocko wrote:
 > > 
-> > The below should result in deterministic code.
+> > > On Thu 02-04-20 10:53:20, Neil Brown wrote:
+> > >> 
+> > >> PF_LESS_THROTTLE exists for loop-back nfsd, and a similar need in the
+> > >> loop block driver, where a daemon needs to write to one bdi in
+> > >> order to free up writes queued to another bdi.
+> > >> 
+> > >> The daemon sets PF_LESS_THROTTLE and gets a larger allowance of dirty
+> > >> pages, so that it can still dirty pages after other processses have been
+> > >> throttled.
+> > >> 
+> > >> This approach was designed when all threads were blocked equally,
+> > >> independently on which device they were writing to, or how fast it was.
+> > >> Since that time the writeback algorithm has changed substantially with
+> > >> different threads getting different allowances based on non-trivial
+> > >> heuristics.  This means the simple "add 25%" heuristic is no longer
+> > >> reliable.
+> > >> 
+> > >> This patch changes the heuristic to ignore the global limits and
+> > >> consider only the limit relevant to the bdi being written to.  This
+> > >> approach is already available for BDI_CAP_STRICTLIMIT users (fuse) and
+> > >> should not introduce surprises.  This has the desired result of
+> > >> protecting the task from the consequences of large amounts of dirty data
+> > >> queued for other devices.
+> > >
+> > > While I understand that you want to have per bdi throttling for those
+> > > "special" files I am still missing how this is going to provide the
+> > > additional room that the additnal 25% gave them previously. I might
+> > > misremember or things have changed (what you mention as non-trivial
+> > > heuristics) but PF_LESS_THROTTLE really needed that room to guarantee a
+> > > forward progress. Care to expan some more on how this is handled now?
+> > > Maybe we do not need it anymore but calling that out explicitly would be
+> > > really helpful.
 > > 
-> > diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-> > index 07e95dcb40ad..109ee65f4a11 100644
-> > --- a/arch/x86/include/asm/nospec-branch.h
-> > +++ b/arch/x86/include/asm/nospec-branch.h
-> > @@ -59,8 +59,8 @@
-> >   	jmp	775b;				\
-> >   774:						\
-> >   	dec	reg;				\
-> > -	jnz	771b;				\
-> > -	add	$(BITS_PER_LONG/8) * nr, sp;
-> > +	add	$(BITS_PER_LONG/8) * $2, sp;	\
-> > +	jnz	771b;
-> >   #ifdef __ASSEMBLY__
+> > The 25% was a means to an end, not an end in itself.
+> > 
+> > The problem is that the NFS server needs to be able to write to the
+> > backing filesystem when the dirty memory limits have been reached by
+> > being totally consumed by dirty pages on the NFS filesystem.
+> > 
+> > The 25% was just a way of giving an allowance of dirty pages to nfsd
+> > that could not be consumed by processes writing to an NFS filesystem.
+> > i.e. it doesn't need 25% MORE, it needs 25% PRIVATELY.  Actually it only
+> > really needs 1 page privately, but a few pages give better throughput
+> > and 25% seemed like a good idea at the time.
 > 
-> Nice. This works fine and allows to remove ANNOTATE_NOSPEC_ALTERNATIVE when
-> using __FILL_RETURN_BUFFER. However this is probably less performant because
-> we now have nr/2 add instructions instead of just 1.
+> Yes this part is clear to me.
+>  
+> > per-bdi throttling focuses on the "PRIVATELY" (the important bit) and
+> > de-emphasises the 25% (the irrelevant detail).
+> 
+> It is still not clear to me how this patch is going to behave when the
+> global dirty throttling is essentially equal to the per-bdi - e.g. there
+> is only a single bdi and now the PF_LOCAL_THROTTLE process doesn't have
+> anything private.
 
-Does it actually matter though? That is, can you measure the difference?
+Let me think out loud so see whether I understand this properly. There are
+two BDIs involved in NFS loop mount - the NFS virtual BDI (let's call it
+simply NFS-bdi) and the bdi of the real filesystem that is backing NFS
+(let's call this real-bdi). The case we are concerned about is when NFS-bdi
+is full of dirty pages so that global dirty limit of the machine is
+exceeded. Then flusher thread will take dirty pages from NFS-bdi and send
+them over localhost to nfsd. Nfsd, which has PF_LOCAL_THROTTLE set, will take
+these pages and write them to real-bdi. Now because PF_LOCAL_THROTTLE is
+set for nfsd, the fact that we are over global limit does not take effect
+and nfsd is still able to write to real-bdi until dirty limit on real-bdi
+is reached. So things should work as Neil writes AFAIU.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
