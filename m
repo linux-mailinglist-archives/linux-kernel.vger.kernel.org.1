@@ -2,130 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFD119FEFB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 22:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B4219FF01
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 22:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726277AbgDFUXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 16:23:08 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:37044 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgDFUXH (ORCPT
+        id S1726395AbgDFUZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 16:25:14 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:38608 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbgDFUZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 16:23:07 -0400
-Received: by mail-ed1-f68.google.com with SMTP id de14so1167715edb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 13:23:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=39PH+pwpIycTi0BsfN3QezNcOPRNhfwqmeD1bO42FHI=;
-        b=re0wkM9Y8K0FkjQlOYTtllVGDKo96zzEV9ijGYRTSuOy69i+w+YnLmP5o40GJpt35d
-         id1hpQ7x/EK/kFALbsL9tNzD+6SkS/Vk7I8UkLLjA6NHyxmzdfU0k6F9dHb3Eiyy+jok
-         E18GAbSDHu0DAsBxHQd0paCz6sqrKShssxJf9In36mDsiTd1aw+w+YOkQcTzQqwKkpSd
-         og/4qTJ341EkMIRECzta+agUB7EVJK0c/mFmjYoRMgxHoP+ySEESE37xSNcO1R2BgqbL
-         Fbf4XVj2ywZ2YkHUG6xzQnnc3PHFsmGWn2zp1TMpAQpcERcFithJvKtO7PePdYzBw4ab
-         d7Eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=39PH+pwpIycTi0BsfN3QezNcOPRNhfwqmeD1bO42FHI=;
-        b=BiRCqOzYS+quwrUWvPHThf0xdL3PUf6PYuQ/6iX8BP4pawV+WqyzlS313Ee7fQbI/M
-         YUF8yP6eKV8BmwJOnuMdTOvwUv+Q+6j9/8WO0LayoyvpkTS7WBq9QueR3jhlP1YyGXSf
-         3lCL64KxKIYBHTXqqOZjfqlEzlWSrvfROihAM1vjz3Ec73E5QZGk7IIbiYliBWKMxtbR
-         Cn5iJuTn92V7DYywsBtaCJAgwy8EATF19YLlKzcuJu8wtkNleMGGODvGnZjTCcysegma
-         1yFkmaJeXdB2MfvEirwWk+p0++OixIMYHVp6dFADAtyctnmKSRmsyOJmUPyxaTxTmn35
-         ZfVA==
-X-Gm-Message-State: AGi0PuYkGf+q0i0iKx0hHkeON5BYRpEZopI0dzKWFmDS7oR8QvqhPU1O
-        gqHn6uso8sfrYfZkP88QZLEmhcouhI+3ShKxW/3Y1g==
-X-Google-Smtp-Source: APiQypLKe5k4sPIdyDlAdrXh1qMjrKzUsMm7i1sTvxIVG8cUt7zm4WnRhiU6r3Bysf7eOs3J7AGGIYYvkaNPjCfcQMI=
-X-Received: by 2002:a17:906:6d8e:: with SMTP id h14mr1160830ejt.123.1586204586068;
- Mon, 06 Apr 2020 13:23:06 -0700 (PDT)
+        Mon, 6 Apr 2020 16:25:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xuOwKkylxNWAK5JsGTSzYpMwNioJNBL3cpLgcRJMmIk=; b=ysD9wHAaYXhY4cbstXONp2HSoW
+        ZSVzDAAVy+rmG0HeJt4CI83tugugTQjr1ZpvMkO5a0H9iRDmQCB0tBMppX3vn+xkSA+f9r5y/4D+N
+        XI/qoOaVGp0oAcDWow6rzk2Sv/6zuEdVdRg/OWiDaPzvKYMiJfazQjJ8y3wjDp//Pv0PvZPZ8GQWc
+        4Kc//4QWnNUWrPTzzWJeLwf4Q4WWX6YKApc+oN83tSFVBvdUFGTCgBXFRax1iIqMlPrkn7EprdP0r
+        5eDF59CRjuRtlq37yzNCNOJHYmVq0HOIgBLwIBhb0SYvsLUP/JlGaI/kMLJ2qtgoBapjoiDOOxWp9
+        vr0XqWKw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLYIu-0006Z3-Ut; Mon, 06 Apr 2020 20:25:09 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5F1C6983962; Mon,  6 Apr 2020 22:25:05 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 22:25:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
+Message-ID: <20200406202505.GO2452@worktop.programming.kicks-ass.net>
+References: <CALCETrVsc-t=tDRPbCg5dWHDY0NFv2zjz12ahD-vnGPn8T+RXA@mail.gmail.com>
+ <87a74s9ehb.fsf@nanos.tec.linutronix.de>
+ <87wo7v8g4j.fsf@nanos.tec.linutronix.de>
+ <877dzu8178.fsf@nanos.tec.linutronix.de>
+ <37440ade-1657-648b-bf72-2b8ca4ac21ce@redhat.com>
+ <871rq199oz.fsf@nanos.tec.linutronix.de>
+ <CALCETrUHwd8pNr_ZdFqY8vMjJeMdNyw2C+FL6uOUM98SEE9rNQ@mail.gmail.com>
+ <87d09l73ip.fsf@nanos.tec.linutronix.de>
+ <20200309202215.GM12561@hirez.programming.kicks-ass.net>
+ <20200406190951.GA19259@redhat.com>
 MIME-Version: 1.0
-References: <158500767138.2088294.17131646259803932461.stgit@dwillia2-desk3.amr.corp.intel.com>
- <158500773552.2088294.8756587190550753100.stgit@dwillia2-desk3.amr.corp.intel.com>
- <23742bb8-831f-29ff-1463-75427eec57c7@oracle.com>
-In-Reply-To: <23742bb8-831f-29ff-1463-75427eec57c7@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 6 Apr 2020 13:22:54 -0700
-Message-ID: <CAPcyv4jvsBSD3SELYn=oj_nvLZ_VgM2YbyswbSEeq5DmkcbXcw@mail.gmail.com>
-Subject: Re: [PATCH 11/12] device-dax: Add dis-contiguous resource support
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200406190951.GA19259@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 3:46 AM Joao Martins <joao.m.martins@oracle.com> wrote:
->
-> On 3/23/20 11:55 PM, Dan Williams wrote:
->
-> [...]
->
-> >  static ssize_t dev_dax_resize(struct dax_region *dax_region,
-> >               struct dev_dax *dev_dax, resource_size_t size)
-> >  {
-> >       resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
-> > -     resource_size_t dev_size = range_len(&dev_dax->range);
-> > +     resource_size_t dev_size = dev_dax_size(dev_dax);
-> >       struct resource *region_res = &dax_region->res;
-> >       struct device *dev = &dev_dax->dev;
-> > -     const char *name = dev_name(dev);
-> >       struct resource *res, *first;
-> > +     resource_size_t alloc = 0;
-> > +     int rc;
-> >
-> >       if (dev->driver)
-> >               return -EBUSY;
-> > @@ -684,38 +766,47 @@ static ssize_t dev_dax_resize(struct dax_region *dax_region,
-> >        * allocating a new resource.
-> >        */
-> >       first = region_res->child;
-> > -     if (!first)
-> > -             return __alloc_dev_dax_range(dev_dax, dax_region->res.start,
-> > -                             to_alloc);
-> > -     for (res = first; to_alloc && res; res = res->sibling) {
-> > +retry:
-> > +     rc = -ENOSPC;
-> > +     for (res = first; res; res = res->sibling) {
-> >               struct resource *next = res->sibling;
-> > -             resource_size_t free;
-> >
-> >               /* space at the beginning of the region */
-> > -             free = 0;
-> > -             if (res == first && res->start > dax_region->res.start)
-> > -                     free = res->start - dax_region->res.start;
-> > -             if (free >= to_alloc && dev_size == 0)
-> > -                     return __alloc_dev_dax_range(dev_dax,
-> > -                                     dax_region->res.start, to_alloc);
-> > -
-> > -             free = 0;
-> > +             if (res == first && res->start > dax_region->res.start) {
-> > +                     alloc = min(res->start - dax_region->res.start,
-> > +                                     to_alloc);
-> > +                     rc = __alloc_dev_dax_range(dev_dax,
-> > +                                     dax_region->res.start, alloc);
->
-> You might be missing:
->
->         first = region_res->child;
->
-> (...) right after returning from __alloc_dev_dax_range(). Alternatively, perhaps
-> even moving the 'retry' label to right before the @first initialization.
->
-> In the case that you pick space from the beginning, the child resource of the
-> dax region will point to first occupied region, and that changes after you pick
-> this space. So, IIUC, you want to adjust where you start searching free space
-> otherwise you end up wrongly picking that same space twice.
->
-> If it helps, the bug can be reproduced in this unit test below, see
-> daxctl_test3() test:
+On Mon, Apr 06, 2020 at 03:09:51PM -0400, Vivek Goyal wrote:
+> On Mon, Mar 09, 2020 at 09:22:15PM +0100, Peter Zijlstra wrote:
+> > On Mon, Mar 09, 2020 at 08:05:18PM +0100, Thomas Gleixner wrote:
+> > > Andy Lutomirski <luto@kernel.org> writes:
+> > 
+> > > > I'm okay with the save/restore dance, I guess.  It's just yet more
+> > > > entry crud to deal with architecture nastiness, except that this
+> > > > nastiness is 100% software and isn't Intel/AMD's fault.
+> > > 
+> > > And we can do it in C and don't have to fiddle with it in the ASM
+> > > maze.
+> > 
+> > Right; I'd still love to kill KVM_ASYNC_PF_SEND_ALWAYS though, even if
+> > we do the save/restore in do_nmi(). That is some wild brain melt. Also,
+> > AFAIK none of the distros are actually shipping a PREEMPT=y kernel
+> > anyway, so killing it shouldn't matter much.
+> 
+> It will be nice if we can retain KVM_ASYNC_PF_SEND_ALWAYS. I have another
+> use case outside CONFIG_PREEMPT.
+> 
+> I am trying to extend async pf interface to also report page fault errors
+> to the guest.
 
-It definitely will, thanks. I'll be circling back to this now that
-I've settled my tree for the v5.7 window.
+Then please start over and design a sane ParaVirt Fault interface. The
+current one is utter crap.
