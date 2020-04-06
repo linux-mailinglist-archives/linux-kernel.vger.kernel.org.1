@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E33001A0046
+	by mail.lfdr.de (Postfix) with ESMTP id 6FAD01A0045
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726628AbgDFVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 17:34:50 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:41952 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgDFVeq (ORCPT
+        id S1726610AbgDFVes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 17:34:48 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:31005 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726552AbgDFVeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Apr 2020 17:34:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586208885;
+        s=mimecast20190719; t=1586208886;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qxsCmO2anPyq8x1F5Rc9demQ45Mib3q8zcUy7zKxbTE=;
-        b=a+L0KOVSfqZJgoePiwLiea2vHrslAV83aYWABG/+he+pWFbHOiRsERZptR5Xm1vNxtynHT
-        /2ibXBv5uLcCmwgdMNttCOICqBR1TYGFGOEPu/QZnabxwTkCQ6pimUxmpsCZhDoi+qNjh7
-        T17lsC+lP1CXPMtX7Yl966uHeH9ofy8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-no4UXRfPOzCSn_4odLZOOg-1; Mon, 06 Apr 2020 17:34:42 -0400
-X-MC-Unique: no4UXRfPOzCSn_4odLZOOg-1
-Received: by mail-wr1-f72.google.com with SMTP id o10so577275wrj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 14:34:42 -0700 (PDT)
+        bh=ULp/a+ohh8j4o+miqnJW1p9vX21ZhvTitDNwFW0Sn2M=;
+        b=GZaTGOTtrejNvlzfRcYIyML1jJLyDiMQ6gTzjHMbvUb6aiQ2T5eOzylhNipiTqUPwxQdm+
+        1GeKv/E3YUopRtsB6kE3FpVXejSQKTbClsePysCyItd8HJ1ra+1t7GvG97ycLkaf1qs7r9
+        m4mjhvmnKkiIvrQ7Jf5PJkHiX380ZFE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-_VrVvl_oMSyRmoPDkecC0g-1; Mon, 06 Apr 2020 17:34:45 -0400
+X-MC-Unique: _VrVvl_oMSyRmoPDkecC0g-1
+Received: by mail-wm1-f72.google.com with SMTP id p18so174190wmk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 14:34:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=qxsCmO2anPyq8x1F5Rc9demQ45Mib3q8zcUy7zKxbTE=;
-        b=FtamRpyKNqlhQzaCjfdvsBogI490VM4FgUuZ9OqqwUYsTbW+STAC9z6LDC54uW3e0l
-         QvTllqfy4FtS80qLntaTjD5CVCJZZKnYT3liqj+OBvqkmaAtLaGDndGZ3oCiCI3eIHU9
-         ItugTrXqdj4n+lBOqM+h8hUpDRjzhTOpunfLfWs+uWekqwR5S6oZdRMovHlvhVUIMjMG
-         O/LLOcKGfEbpJcta9GMlxehu7TpsZI7f5K+sjq2lPkrfnNfE5l7g/iuYlINPlZ3t4J70
-         l6LfNBJ7XeB4zhnUAAaVpOqPOhOaRWHtJfHI5Y2Y6LeL+jUfPRTXpuhR5raGYfY2LuWh
-         3tCQ==
-X-Gm-Message-State: AGi0PubRecD4ektCixs0cs5ULfS3+0UjG82KxEr9pkUaOoYSCaneWYhn
-        nqXWXcyRU/T+4kk+znJbPVhLaPJnXw71460y40jRtuhvVnRxR+/JVSp3rmlWe3j6HoywQORzh7f
-        LzCJKaJ1VqLz0l/bMpIgwXHlN
-X-Received: by 2002:adf:82c5:: with SMTP id 63mr1278579wrc.312.1586208881558;
-        Mon, 06 Apr 2020 14:34:41 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJvQJhmwP93/iT6ip06xiPQv/iv6F3OoIKQOfqi1rQxvSh+ASmH0VZ0wEEhAJBcaQLMzXMjvw==
-X-Received: by 2002:adf:82c5:: with SMTP id 63mr1278564wrc.312.1586208881342;
-        Mon, 06 Apr 2020 14:34:41 -0700 (PDT)
+        bh=ULp/a+ohh8j4o+miqnJW1p9vX21ZhvTitDNwFW0Sn2M=;
+        b=o9KUCKusWwDEPuVS1cAD8QklaQx2gJGFTvxzaDtdPzXGZX+P2gdFDYArhhXXBtVCc8
+         p5Ei43tKj05cA5B1nXPYg7lf5DTiPSP8g+6wvi7zvPgZ8M5rNc5gazhovJqJ6RHKGl5C
+         hcPwHdbmtA0axiQ5di4SoaHZm4Sdq3K8ye+5VcQ6/OZudzQVqT6upaABIPI1grXlt4/y
+         04Mkt7zzBwquKkkLHL6F+qK+QC+T0LZfQwQk9CeYldb2ohMmiGceAh94KrG0blbig35U
+         +JINDJo1FWbqogcoIgMGNfYSW3/oBfxxj1haG2OWRHGN02AKOVCCi929ZhPn6GbAuiIR
+         KqFA==
+X-Gm-Message-State: AGi0PuYfHmJHa7gj16DLyhJdHvwujc0Gb3b97BX3EXmcjfj00S8RUxo9
+        jmoEEMAXlfN7FsU7yoxFQV0sNUiu5wzAenOkE/E7aV96U+NdyBC0a6Q4h3Ax75vjHEkNDT1nFp2
+        WZJY9tw7Q2eyrRsT0NZmwJFF2
+X-Received: by 2002:a5d:55c8:: with SMTP id i8mr1429058wrw.25.1586208883781;
+        Mon, 06 Apr 2020 14:34:43 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLw9se6vWJefI4H5bbFId9Y8QOH6OesSwNWQIfj42clOY+n7XvT5IlX8YIGGdhCgHehhTgWYQ==
+X-Received: by 2002:a5d:55c8:: with SMTP id i8mr1429045wrw.25.1586208883613;
+        Mon, 06 Apr 2020 14:34:43 -0700 (PDT)
 Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id f16sm992424wmc.37.2020.04.06.14.34.40
+        by smtp.gmail.com with ESMTPSA id f16sm992522wmc.37.2020.04.06.14.34.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 14:34:40 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 17:34:39 -0400
+        Mon, 06 Apr 2020 14:34:43 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 17:34:41 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Jason Wang <jasowang@redhat.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v4 07/12] virtio: add legacy init/size APIs
-Message-ID: <20200406210108.148131-8-mst@redhat.com>
+Subject: [PATCH v4 08/12] virtio_ring: switch to virtio_legacy_init/size
+Message-ID: <20200406210108.148131-9-mst@redhat.com>
 References: <20200406210108.148131-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -69,47 +69,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vring_init/vring_size (in the uapi directory) are kept
-around to solely avoid breaking old userspace builds.
-It's not actually part of the UAPI - it was kept in the UAPI
-header by mistake, and using it in kernel isn't necessary
-and prevents us from making changes safely.
-In particular, the APIs actually assume the legacy layout.
-
-Add an internal kernel-only vring_legacy_init/vring_legacy_size.
+These are used for legacy ring format, switch to APIs
+that make this explicit.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- include/linux/virtio_ring.h | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/virtio/virtio_ring.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/virtio_ring.h b/include/linux/virtio_ring.h
-index c3f9ca054250..766d70bca492 100644
---- a/include/linux/virtio_ring.h
-+++ b/include/linux/virtio_ring.h
-@@ -140,4 +140,22 @@ void vring_del_virtqueue(struct virtqueue *vq);
- void vring_transport_features(struct virtio_device *vdev);
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 58b96baa8d48..2a2b12449bac 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -867,8 +867,10 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 	}
  
- irqreturn_t vring_interrupt(int irq, void *_vq);
-+
-+static inline void vring_legacy_init(struct vring *vr, unsigned int num, void *p,
-+				     unsigned long align)
-+{
-+	vr->num = num;
-+	vr->desc = p;
-+	vr->avail = (struct vring_avail *)((char *)p + num * sizeof(struct vring_desc));
-+	vr->used = (void *)(((uintptr_t)&vr->avail->ring[num] + sizeof(__virtio16)
-+		+ align-1) & ~(align - 1));
-+}
-+
-+static inline unsigned vring_legacy_size(unsigned int num, unsigned long align)
-+{
-+	return ((sizeof(struct vring_desc) * num + sizeof(__virtio16) * (3 + num)
-+		 + align - 1) & ~(align - 1))
-+		+ sizeof(__virtio16) * 3 + sizeof(struct vring_used_elem) * num;
-+}
-+
- #endif /* _LINUX_VIRTIO_RING_H */
+ 	/* TODO: allocate each queue chunk individually */
+-	for (; num && vring_size(num, vring_align) > PAGE_SIZE; num /= 2) {
+-		queue = vring_alloc_queue(vdev, vring_size(num, vring_align),
++	for (; num && vring_legacy_size(num, vring_align) > PAGE_SIZE;
++	     num /= 2) {
++		queue = vring_alloc_queue(vdev,
++					  vring_legacy_size(num, vring_align),
+ 					  &dma_addr,
+ 					  GFP_KERNEL|__GFP_NOWARN|__GFP_ZERO);
+ 		if (queue)
+@@ -882,14 +884,15 @@ static struct virtqueue *vring_create_virtqueue_split(
+ 
+ 	if (!queue) {
+ 		/* Try to get a single page. You are my only hope! */
+-		queue = vring_alloc_queue(vdev, vring_size(num, vring_align),
++		queue = vring_alloc_queue(vdev,
++					  vring_legacy_size(num, vring_align),
+ 					  &dma_addr, GFP_KERNEL|__GFP_ZERO);
+ 	}
+ 	if (!queue)
+ 		return NULL;
+ 
+-	queue_size_in_bytes = vring_size(num, vring_align);
+-	vring_init(&vring, num, queue, vring_align);
++	queue_size_in_bytes = vring_legacy_size(num, vring_align);
++	vring_legacy_init(&vring, num, queue, vring_align);
+ 
+ 	vq = __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
+ 				   notify, callback, name);
+@@ -2169,7 +2172,7 @@ struct virtqueue *vring_new_virtqueue(unsigned int index,
+ 	if (virtio_has_feature(vdev, VIRTIO_F_RING_PACKED))
+ 		return NULL;
+ 
+-	vring_init(&vring, num, pages, vring_align);
++	vring_legacy_init(&vring, num, pages, vring_align);
+ 	return __vring_new_virtqueue(index, vring, vdev, weak_barriers, context,
+ 				     notify, callback, name);
+ }
 -- 
 MST
 
