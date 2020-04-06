@@ -2,76 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C42111A01CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 01:45:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B0A419FCDE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbgDFXpL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Apr 2020 19:45:11 -0400
-Received: from pmg.slemankab.go.id ([103.71.191.178]:37720 "EHLO
-        pmg.slemankab.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgDFXpK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 19:45:10 -0400
-Received: from pmg.slemankab.go.id (localhost.localdomain [127.0.0.1])
-        by pmg.slemankab.go.id (Proxmox) with ESMTP id E5780341CAD;
-        Tue,  7 Apr 2020 01:17:16 +0700 (WIB)
-Received: from mailserver.slemankab.go.id (mail.slemankab.go.id [192.168.90.92])
-        by pmg.slemankab.go.id (Proxmox) with ESMTPS id C5B28341BF0;
-        Tue,  7 Apr 2020 01:17:01 +0700 (WIB)
+        id S1727079AbgDFSQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 14:16:45 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:64509 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726578AbgDFSQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 14:16:41 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 48wzJQ0tr0z9tycw;
+        Mon,  6 Apr 2020 20:16:38 +0200 (CEST)
+Authentication-Results: localhost; dkim=pass
+        reason="1024-bit key; insecure key"
+        header.d=c-s.fr header.i=@c-s.fr header.b=ZQjx3Xv+; dkim-adsp=pass;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id q6LIRPK1AIQ2; Mon,  6 Apr 2020 20:16:38 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 48wzJP6Sdjz9tycr;
+        Mon,  6 Apr 2020 20:16:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
+        t=1586196997; bh=WqU4KLn6Sl0HwiZdz0ISg/mRs3Ozs9UR7ddjW2hPIbo=;
+        h=From:Subject:To:Cc:Date:From;
+        b=ZQjx3Xv+ljJXBuPcvwr2dEZjFIw9fCAfttbYw9P2Y3fb2EUGiwAbjpKGRarpf7wtq
+         HGiCzukxBKUXb+KlBFjfgxm2xBbuAv0dGMbe3AUWCEGW61urSOrQjkwLrbahgzYYkC
+         AhsamkoEV61uXTrRLV0h7tFkwkdOhOQNIn9MySho=
 Received: from localhost (localhost [127.0.0.1])
-        by mailserver.slemankab.go.id (Postfix) with ESMTP id A97B03443F4;
-        Tue,  7 Apr 2020 01:17:01 +0700 (WIB)
-Received: from mailserver.slemankab.go.id ([127.0.0.1])
-        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id X3O01TBlXFCA; Tue,  7 Apr 2020 01:17:01 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mailserver.slemankab.go.id (Postfix) with ESMTP id 593C23443D9;
-        Tue,  7 Apr 2020 01:17:01 +0700 (WIB)
-X-Virus-Scanned: amavisd-new at mailserver.slemankab.go.id
-Received: from mailserver.slemankab.go.id ([127.0.0.1])
-        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KGnr2Q_JLSly; Tue,  7 Apr 2020 01:17:01 +0700 (WIB)
-Received: from [100.85.182.74] (unknown [110.225.93.65])
-        by mailserver.slemankab.go.id (Postfix) with ESMTPSA id A16DD3443EC;
-        Tue,  7 Apr 2020 01:16:39 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?q?ATENCI=C3=93N____?=
-To:     Recipients <administrator@ancol.com>
-From:   Sistemas administrador <administrator@ancol.com>
-Date:   Mon, 06 Apr 2020 23:46:28 +0530
-Reply-To: mailsss@mail2world.com
-Message-Id: <20200406181639.A16DD3443EC@mailserver.slemankab.go.id>
-X-SPAM-LEVEL: Spam detection results:  1
-        ALL_TRUSTED                -1 Passed through trusted hosts only via SMTP
-        AWL                    -0.000 Adjusted score from AWL reputation of From: address
-        BAYES_40               -0.001 Bayes spam probability is 20 to 40%
-        FREEMAIL_FORGED_REPLYTO  2.095 Freemail in Reply-To, but not From
-        KAM_DMARC_STATUS         0.01 Test Rule for DKIM or SPF Failure with Strict Alignment
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B9CF28B784;
+        Mon,  6 Apr 2020 20:16:37 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id t62a4Hiu9txY; Mon,  6 Apr 2020 20:16:37 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5B1988B775;
+        Mon,  6 Apr 2020 20:16:37 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 0F096656E9; Mon,  6 Apr 2020 18:16:36 +0000 (UTC)
+Message-Id: <5aeaa33383e833f6eca30893fbd188b88e019eaa.1586196948.git.christophe.leroy@c-s.fr>
+From:   Christophe Leroy <christophe.leroy@c-s.fr>
+Subject: [RFC PATCH v3 01/15] powerpc/syscall: Refactorise from Nick
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com,
+        msuchanek@suse.de
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon,  6 Apr 2020 18:16:36 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATENCIÓN;
+From: Nicholas Piggin <npiggin@gmail.com>
 
-Su buzón ha superado el límite de almacenamiento, que es de 5 GB definidos por el administrador, quien actualmente está ejecutando en 10.9GB, no puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a validar su buzón de correo electrónico. Para revalidar su buzón de correo, envíe la siguiente información a continuación:
+Christophe Leroy's on April 6, 2020 3:44 am:
+> ifdef out specific PPC64 stuff to allow building
+> syscall_64.c on PPC32.
+>
+> Modify Makefile to always build syscall.o
+>
+> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+> ---
+>  arch/powerpc/kernel/Makefile  |  5 ++---
+>  arch/powerpc/kernel/syscall.c | 10 ++++++++++
+>  2 files changed, 12 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
+> index 8cc3c831dccd..e4be425b7718 100644
+> --- a/arch/powerpc/kernel/Makefile
+> +++ b/arch/powerpc/kernel/Makefile
+> @@ -45,11 +45,10 @@ obj-y				:= cputable.o syscalls.o \
+>  				   signal.o sysfs.o cacheinfo.o time.o \
+>  				   prom.o traps.o setup-common.o \
+>  				   udbg.o misc.o io.o misc_$(BITS).o \
+> -				   of_platform.o prom_parse.o
+> +				   of_platform.o prom_parse.o syscall.o
+>  obj-y				+= ptrace/
+>  obj-$(CONFIG_PPC64)		+= setup_64.o sys_ppc32.o signal_64.o \
+> -				   paca.o nvram_64.o firmware.o note.o \
+> -				   syscall.o
+> +				   paca.o nvram_64.o firmware.o note.o
+>  obj-$(CONFIG_VDSO32)		+= vdso32/
+>  obj-$(CONFIG_PPC_WATCHDOG)	+= watchdog.o
+>  obj-$(CONFIG_HAVE_HW_BREAKPOINT)	+= hw_breakpoint.o
+> diff --git a/arch/powerpc/kernel/syscall.c b/arch/powerpc/kernel/syscall.c
+> index 72f3d2f0a823..28bd43db8755 100644
+> --- a/arch/powerpc/kernel/syscall.c
+> +++ b/arch/powerpc/kernel/syscall.c
+> @@ -25,8 +25,10 @@ notrace long system_call_exception(long r3, long r4, long r5,
+>  	unsigned long ti_flags;
+>  	syscall_fn f;
+>
+> +#ifdef CONFIG_PPC64
+>  	if (IS_ENABLED(CONFIG_PPC_IRQ_SOFT_MASK_DEBUG))
+>  		BUG_ON(irq_soft_mask_return() != IRQS_ALL_DISABLED);
+> +#endif
+>
+>  	trace_hardirqs_off(); /* finish reconciling */
+>
+> @@ -34,7 +36,9 @@ notrace long system_call_exception(long r3, long r4, long r5,
+>  		BUG_ON(!(regs->msr & MSR_RI));
+>  	BUG_ON(!(regs->msr & MSR_PR));
+>  	BUG_ON(!FULL_REGS(regs));
+> +#ifdef CONFIG_PPC64
+>  	BUG_ON(regs->softe != IRQS_ENABLED);
+> +#endif
+>
+>  	account_cpu_user_entry();
+>
+> @@ -56,7 +60,9 @@ notrace long system_call_exception(long r3, long r4, long r5,
+>  	 * frame, or if the unwinder was taught the first stack frame always
+>  	 * returns to user with IRQS_ENABLED, this store could be avoided!
+>  	 */
+> +#ifdef CONFIG_PPC64
+>  	regs->softe = IRQS_ENABLED;
+> +#endif
+>
+>  	local_irq_enable();
+>
+> @@ -148,7 +154,9 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+>  		ret |= _TIF_RESTOREALL;
+>  	}
+>
+> +#ifdef CONFIG_PPC64
+>  again:
+> +#endif
+>  	local_irq_disable();
+>  	ti_flags = READ_ONCE(*ti_flagsp);
+>  	while (unlikely(ti_flags & (_TIF_USER_WORK_MASK & ~_TIF_RESTORE_TM))) {
+> @@ -191,6 +199,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+>
+>  	/* This pattern matches prep_irq_for_idle */
+>  	__hard_EE_RI_disable();
+> +#ifdef CONFIG_PPC64
+>  	if (unlikely(lazy_irq_pending())) {
+>  		__hard_RI_enable();
+>  		trace_hardirqs_off();
+> @@ -201,6 +210,7 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+>  	}
+>  	local_paca->irq_happened = 0;
+>  	irq_soft_mask_set(IRQS_ENABLED);
+> +#endif
+>
+>  #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+>  	local_paca->tm_scratch = regs->msr;
+> --
+> 2.25.0
+>
+>
 
-nombre:
-Nombre de usuario:
-contraseña:
-Confirmar contraseña:
-E-mail:
-teléfono:
+The #ifdefs disappoint me!
 
-Si usted no puede revalidar su buzón, el buzón se deshabilitará!
+Here is (unested) something that should help 32-bit avoid several ifdefs
+in the main part of the function. I should have done this as part of the
+merged series, but that's okay I'll submit as a cleanup.
 
-Disculpa las molestias.
-Código de verificación:666690opp4r56 es: 006524.2020
-Correo Soporte Técnico © 2020
+The rest looks okay for now. Maybe we grow some helpers to manage the
+soft-mask state, though I'm not really sure it would make sense for
+32-bit code to ever call them. Maybe just confined to this file would be
+okay but for now the ifdefs are okay.
 
-¡gracias
-Sistemas administrador
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+---
+ arch/powerpc/kernel/syscall_64.c | 58 +++++++++++++++-----------------
+ 1 file changed, 28 insertions(+), 30 deletions(-)
+
+diff --git a/arch/powerpc/kernel/syscall_64.c b/arch/powerpc/kernel/syscall_64.c
+index cf06eb443a80..f021db893ec2 100644
+--- a/arch/powerpc/kernel/syscall_64.c
++++ b/arch/powerpc/kernel/syscall_64.c
+@@ -103,6 +103,31 @@ notrace long system_call_exception(long r3, long r4, long r5,
+ 	return f(r3, r4, r5, r6, r7, r8);
+ }
+ 
++/*
++ * local irqs must be disabled. Returns false if the caller must re-enable
++ * them, check for new work, and try again.
++ */
++static notrace inline bool prep_irq_for_enabled_exit(void)
++{
++	/* This must be done with RI=1 because tracing may touch vmaps */
++	trace_hardirqs_on();
++
++	/* This pattern matches prep_irq_for_idle */
++	__hard_EE_RI_disable();
++	if (unlikely(lazy_irq_pending())) {
++		/* Took an interrupt, may have more exit work to do. */
++		__hard_RI_enable();
++		trace_hardirqs_off();
++		local_paca->irq_happened |= PACA_IRQ_HARD_DIS;
++
++		return false;
++	}
++	local_paca->irq_happened = 0;
++	irq_soft_mask_set(IRQS_ENABLED);
++
++	return true;
++}
++
+ /*
+  * This should be called after a syscall returns, with r3 the return value
+  * from the syscall. If this function returns non-zero, the system call
+@@ -186,21 +211,10 @@ notrace unsigned long syscall_exit_prepare(unsigned long r3,
+ 		}
+ 	}
+ 
+-	/* This must be done with RI=1 because tracing may touch vmaps */
+-	trace_hardirqs_on();
+-
+-	/* This pattern matches prep_irq_for_idle */
+-	__hard_EE_RI_disable();
+-	if (unlikely(lazy_irq_pending())) {
+-		__hard_RI_enable();
+-		trace_hardirqs_off();
+-		local_paca->irq_happened |= PACA_IRQ_HARD_DIS;
++	if (unlikely(!prep_irq_for_enabled_exit())) {
+ 		local_irq_enable();
+-		/* Took an interrupt, may have more exit work to do. */
+ 		goto again;
+ 	}
+-	local_paca->irq_happened = 0;
+-	irq_soft_mask_set(IRQS_ENABLED);
+ 
+ #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+ 	local_paca->tm_scratch = regs->msr;
+@@ -264,19 +278,11 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
+ 		}
+ 	}
+ 
+-	trace_hardirqs_on();
+-	__hard_EE_RI_disable();
+-	if (unlikely(lazy_irq_pending())) {
+-		__hard_RI_enable();
+-		trace_hardirqs_off();
+-		local_paca->irq_happened |= PACA_IRQ_HARD_DIS;
++	if (unlikely(!prep_irq_for_enabled_exit())) {
+ 		local_irq_enable();
+ 		local_irq_disable();
+-		/* Took an interrupt, may have more exit work to do. */
+ 		goto again;
+ 	}
+-	local_paca->irq_happened = 0;
+-	irq_soft_mask_set(IRQS_ENABLED);
+ 
+ #ifdef CONFIG_PPC_BOOK3E
+ 	if (unlikely(ts->debug.dbcr0 & DBCR0_IDM)) {
+@@ -334,13 +340,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 			}
+ 		}
+ 
+-		trace_hardirqs_on();
+-		__hard_EE_RI_disable();
+-		if (unlikely(lazy_irq_pending())) {
+-			__hard_RI_enable();
+-			irq_soft_mask_set(IRQS_ALL_DISABLED);
+-			trace_hardirqs_off();
+-			local_paca->irq_happened |= PACA_IRQ_HARD_DIS;
++		if (unlikely(!prep_irq_for_enabled_exit())) {
+ 			/*
+ 			 * Can't local_irq_restore to replay if we were in
+ 			 * interrupt context. Must replay directly.
+@@ -354,8 +354,6 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 			/* Took an interrupt, may have more exit work to do. */
+ 			goto again;
+ 		}
+-		local_paca->irq_happened = 0;
+-		irq_soft_mask_set(IRQS_ENABLED);
+ 	} else {
+ 		/* Returning to a kernel context with local irqs disabled. */
+ 		__hard_EE_RI_disable();
+-- 
+2.25.0
 
