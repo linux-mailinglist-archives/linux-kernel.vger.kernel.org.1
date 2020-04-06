@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB7F19FD2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECDC19F991
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgDFS35 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Apr 2020 14:29:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56644 "EHLO mx2.suse.de"
+        id S1729091AbgDFQE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 12:04:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725787AbgDFS35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 14:29:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 91434AF85;
-        Mon,  6 Apr 2020 18:29:54 +0000 (UTC)
-Date:   Mon, 6 Apr 2020 09:03:56 -0700
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Liam Howlett <Liam.Howlett@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>
-Subject: Re: [PATCH 8/8] mmap locking API: rename mmap_sem to mmap_lock
-Message-ID: <20200406160356.py26by67dhprte5d@linux-p48b>
-Mail-Followup-To: Laurent Dufour <ldufour@linux.ibm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Liam Howlett <Liam.Howlett@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Hugh Dickins <hughd@google.com>, Ying Han <yinghan@google.com>
-References: <20200326070236.235835-1-walken@google.com>
- <20200326070236.235835-9-walken@google.com>
- <4eaa33a1-8144-253e-ac99-eeb354b6f871@linux.ibm.com>
+        id S1728982AbgDFQE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 12:04:29 -0400
+Received: from localhost.localdomain (cpe-70-114-128-244.austin.res.rr.com [70.114.128.244])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36D1920B1F;
+        Mon,  6 Apr 2020 16:04:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586189069;
+        bh=qpa1esmnSCdujDJEAzPw7H6IbbTIQDzuZG08g5oE34Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oiW5Kl69+HvhFuBsAjp4Pw6Q2azlgJG+oys3nyonDO2wlH/6spDtixEKADrUHPpOk
+         JjEo5PnQhBFekjN3jqvbq666jklv8Ci5Tr3d05PekALg3Mtr4YWo+7cBzS4wsQE5jJ
+         MXWqZjmCsSZ5m00qxF/LumrsqkeLfyHku3eHPfnI=
+From:   Dinh Nguyen <dinguyen@kernel.org>
+To:     linux-clk@vger.kernel.org
+Cc:     dinguyen@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, sboyd@kernel.org,
+        mturquette@baylibre.com, robh+dt@kernel.org, mark.rutland@arm.com
+Subject: [PATCHv6 0/5] clk: agilex: add clock driver
+Date:   Mon,  6 Apr 2020 11:04:13 -0500
+Message-Id: <20200406160418.27476-1-dinguyen@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <4eaa33a1-8144-253e-ac99-eeb354b6f871@linux.ibm.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 06 Apr 2020, Laurent Dufour wrote:
+Hi,
 
->Le 26/03/2020 à 08:02, Michel Lespinasse a écrit :
->>Rename the mmap_sem field to mmap_lock. Any new uses of this lock
->>should now go through the new mmap locking api. The mmap_lock is
->>still implemented as a rwsem, though this could change in the future.
->
->Since you don't change the type of the mmap_sem, it's still a 
->semaphore, I don't think mmap_lock is a good name. This is not a lock.
+This is version 6 of the patchset to add a clock driver to the Agilex
+platform.
 
-Well a semaphore is still a kind of lock. I think the naming in this
-patch is good and generic enough.
+The change from v5 is fix build error from 'make dt_binding_check'.
 
 Thanks,
-Davidlohr
+
+Dinh Nguyen (5):
+  clk: socfpga: remove clk_ops enable/disable methods
+  clk: socfpga: add const to _ops data structures
+  dt-bindings: documentation: add clock bindings information for Agilex
+  clk: socfpga: agilex: add clock driver for the Agilex platform
+  arm64: dts: agilex: populate clock dts entries
+
+ .../bindings/clock/intel,agilex.yaml          |  46 ++
+ arch/arm64/boot/dts/intel/socfpga_agilex.dtsi |  72 +++
+ .../boot/dts/intel/socfpga_agilex_socdk.dts   |   8 +
+ drivers/clk/Makefile                          |   3 +-
+ drivers/clk/socfpga/Makefile                  |   2 +
+ drivers/clk/socfpga/clk-agilex.c              | 454 ++++++++++++++++++
+ drivers/clk/socfpga/clk-pll-a10.c             |   4 +-
+ drivers/clk/socfpga/clk-pll-s10.c             |  74 ++-
+ drivers/clk/socfpga/clk-pll.c                 |   4 +-
+ drivers/clk/socfpga/stratix10-clk.h           |   2 +
+ include/dt-bindings/clock/agilex-clock.h      |  70 +++
+ 11 files changed, 728 insertions(+), 11 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/intel,agilex.yaml
+ create mode 100644 drivers/clk/socfpga/clk-agilex.c
+ create mode 100644 include/dt-bindings/clock/agilex-clock.h
+
+-- 
+2.25.1
+
