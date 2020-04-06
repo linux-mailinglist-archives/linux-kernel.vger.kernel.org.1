@@ -2,118 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8612719FF22
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 22:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA061A0A87
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:55:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbgDFUdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 16:33:31 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45009 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgDFUdb (ORCPT
+        id S1728157AbgDGJzz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 05:55:55 -0400
+Received: from pmg.slemankab.go.id ([103.71.191.178]:36964 "EHLO
+        pmg.slemankab.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgDGJzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 16:33:31 -0400
-Received: by mail-qk1-f193.google.com with SMTP id j4so17672047qkc.11
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 13:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=VZndNblKg2Lp/IRXBvxJ8CPTAZH6z/6SP71Yf2KIiBw=;
-        b=E6gDB1rOHel6zgkjkGrAgyYksgi2vU0Iyf5cWeGBQ5mpnvcEocj3k9XXkH54nC8Ibp
-         0g9F6WPHwG2IISDsoB1WtEYV9tEguyQ8zqJLa4z9JsYXsSVkd+MLPieNYuOSVAwO7Fb5
-         yhO9sxAVzKcqZWeaxGxDhTDbPZmcIHpGt0zL2j1NzjkfF1l10SZ+vVmaz4vnqFZECsaR
-         vY+/SF78OLFWcC0gybjzbB16+CGPDu+SoklKy0q9yXMLz6kn6TyhOrid5qz/NnEnMG9m
-         LUrW9ySGpp+uflh7KFcvJQ8V87tzuG5MaMHYWbJgGt5op6l59AinZlt15YR+9VZ4BoyK
-         g9qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=VZndNblKg2Lp/IRXBvxJ8CPTAZH6z/6SP71Yf2KIiBw=;
-        b=RevDRcyjEMTj1QnZ/Vd8QAUaiinrpTZ5D+fCw/bkjetRdktFr7pPlyR4QCCqYxodkn
-         kLz+jRdNU6SJIdGnx+gBi6voY7hOBxgfarsHCWfY6WDDvJzzz+tLyTL7iqbnQxxVvD+r
-         ShFcfrwP2Z+A6a00YOYiauNmXQ6muPFk80lGhA07HG2yCCCtR7NZUJVG3kq867TL15NZ
-         kL1dqKoq4kLGnmdLHyes6f9ooc+OYCLQokHffRHNtWk+R4okCA2qMN99aHD8YePhpuNv
-         XN4obntkT3H7z9RL2+xUVkLjMJsqfXHkRZFotRhprRI2AiC6Tdt3OqP1s6iaLxRWIZeR
-         Kkcg==
-X-Gm-Message-State: AGi0PuYIBSjf1QruEqNc6cFNJOArCI8P6uF8myTTUSaFpWj9oiCOzFd3
-        SrhhStn55lZKsUjC2WbVb5+5Gg==
-X-Google-Smtp-Source: APiQypIAquLRlacI0lYPWyaShGao0tAhiBwsgo7aHqLY5Isth42bIUHVgxbssWWkrH9Y5KFk1saoqg==
-X-Received: by 2002:a37:98c7:: with SMTP id a190mr5636331qke.91.1586205208887;
-        Mon, 06 Apr 2020 13:33:28 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id e10sm2728801qtj.76.2020.04.06.13.33.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Apr 2020 13:33:28 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v3] kcsan: Add option for verbose reporting
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <20200406195146.GI19865@paulmck-ThinkPad-P72>
-Date:   Mon, 6 Apr 2020 16:33:27 -0400
-Cc:     Andrey Konovalov <andreyknvl@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Marco Elver <elver@google.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3B06DA7F-DCAF-4566-B72A-F088A8F0B8A9@lca.pw>
-References: <20200406133543.GB19865@paulmck-ThinkPad-P72>
- <67156109-7D79-45B7-8C09-E98D25069928@lca.pw>
- <20200406195146.GI19865@paulmck-ThinkPad-P72>
-To:     paulmck@kernel.org
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Tue, 7 Apr 2020 05:55:55 -0400
+Received: from pmg.slemankab.go.id (localhost.localdomain [127.0.0.1])
+        by pmg.slemankab.go.id (Proxmox) with ESMTP id 64F603419F7;
+        Tue,  7 Apr 2020 03:35:35 +0700 (WIB)
+Received: from mailserver.slemankab.go.id (mail.slemankab.go.id [192.168.90.92])
+        by pmg.slemankab.go.id (Proxmox) with ESMTPS id 45075340EA0;
+        Tue,  7 Apr 2020 03:35:20 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id 358D8344387;
+        Tue,  7 Apr 2020 03:35:20 +0700 (WIB)
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id wjsQ4vepxmYs; Tue,  7 Apr 2020 03:35:20 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id DD0DB3442BD;
+        Tue,  7 Apr 2020 03:35:19 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at mailserver.slemankab.go.id
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id M8NgCHi59xQX; Tue,  7 Apr 2020 03:35:19 +0700 (WIB)
+Received: from [100.64.234.135] (unknown [223.225.65.193])
+        by mailserver.slemankab.go.id (Postfix) with ESMTPSA id 164E7343A34;
+        Tue,  7 Apr 2020 03:35:11 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?b?QVRFTsOHw4NPICAgIA==?=
+To:     Recipients <administrator@ancol.com>
+From:   =?utf-8?q?Administra=C3=A7=C3=A3o_Sistemas=3Cadministrator=40ancol=2Ecom?=@mailserver.slemankab.go.id,
+        =?utf-8?q?=3E?=@mailserver.slemankab.go.id
+Date:   Tue, 07 Apr 2020 02:05:04 +0530
+Reply-To: mailsss@mail2world.com
+Message-Id: <20200406203512.164E7343A34@mailserver.slemankab.go.id>
+X-SPAM-LEVEL: Spam detection results:  2
+        ALL_TRUSTED                -1 Passed through trusted hosts only via SMTP
+        AWL                     0.348 Adjusted score from AWL reputation of From: address
+        BAYES_40               -0.001 Bayes spam probability is 20 to 40%
+        FREEMAIL_FORGED_REPLYTO  2.095 Freemail in Reply-To, but not From
+        HEADER_FROM_DIFFERENT_DOMAINS  0.248 From and EnvelopeFrom 2nd level mail domains are different
+        KAM_DMARC_STATUS         0.01 Test Rule for DKIM or SPF Failure with Strict Alignment
+        KAM_INFOUSMEBIZ          0.75 Prevalent use of .info|.us|.me|.me.uk|.biz|xyz|id|rocks|life domains in spam/malware
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+ATENÇÃO;
 
+Sua caixa de correio excedeu o limite de armazenamento, que é de 5 GB como definido pelo administrador, que está atualmente em execução no 10.9GB, você pode não ser capaz de enviar ou receber novas mensagens até que você re-validar a sua caixa de correio. Para revalidar sua caixa de correio, envie os seguintes dados abaixo:
 
-> On Apr 6, 2020, at 3:51 PM, Paul E. McKenney <paulmck@kernel.org> =
-wrote:
->=20
-> On Mon, Apr 06, 2020 at 09:45:44AM -0400, Qian Cai wrote:
->>=20
->>=20
->>> On Apr 6, 2020, at 9:35 AM, Paul E. McKenney <paulmck@kernel.org> =
-wrote:
->>>=20
->>> It goes back in in seven days, after -rc1 is released.  The fact =
-that
->>> it was there last week was a mistake on my part, and I did =
-eventually
->>> get my hand slapped for it.  ;-)
->>>=20
->>> In the meantime, if it would help, I could group the KCSAN commits
->>> on top of those in -tip to allow you to get them with one "git pull"
->>> command.
->>=20
->> Testing Linux-next for a week without that commit with KCSAN is a =
-torture, so please do that if that is not much work. Otherwise, I could =
-manually cherry-pick the commit myself after fixing all the offsets.
->=20
-> Just to confirm, you are interested in this -rcu commit, correct?
->=20
-> 2402d0eae589 ("kcsan: Add option for verbose reporting")
->=20
-> This one and the following are directly on top of the KCSAN stack
-> that is in -tip and thus -next:
->=20
-> 48b1fc1 kcsan: Add option to allow watcher interruptions
-> 2402d0e kcsan: Add option for verbose reporting
-> 44656d3 kcsan: Add current->state to implicitly atomic accesses
-> e7b3410 kcsan: Fix a typo in a comment
-> e7325b7 kcsan: Update Documentation/dev-tools/kcsan.rst
-> 1443b8c kcsan: Update API documentation in kcsan-checks.h
->=20
-> These are on top of this -tip commit:
->=20
-> f5d2313bd3c5 ("kcsan, trace: Make KCSAN compatible with tracing")
->=20
-> You can pull them in via the kcsan-dev.2020.03.25a branch if you wish.
+nome:
+Nome de usuário:
+senha:
+Confirme a Senha :
+Endereço de e-mail:
+Telefone:
 
-Great! That should be enough food for me to survive for this week.
+Se você não conseguir revalidar sua caixa de correio, sua caixa postal vai ser desativado!
+
+Lamentamos o inconveniente.
+Código de verificação: pt:p9uyba98139>2020
+Correio Técnico Suporte ©2020
+
+obrigado
+Administrador de Sistemas
 
