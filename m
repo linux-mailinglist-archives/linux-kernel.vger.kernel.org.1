@@ -2,91 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0193719FBBB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 19:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1814D19FFF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbgDFRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 13:36:50 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:52766 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbgDFRgt (ORCPT
+        id S1726395AbgDFVID convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Apr 2020 17:08:03 -0400
+Received: from pmg.slemankab.go.id ([103.71.191.178]:40866 "EHLO
+        pmg.slemankab.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725895AbgDFVID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 13:36:49 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 597171031;
-        Mon,  6 Apr 2020 19:36:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1586194607;
-        bh=YPNE2hB3+Kd4JYl1p59Zx6o1xWVLnWL1+Y6boeKyKUw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OQ+6N8+n1zJZ0/2gH5NJj0mdJcoSxgpgo9vwr7oiQm0EgXP/WfcG1R7OCF1Q7Q7gs
-         sgnuJLn7jlHyoU6HR+MOZFZWLVzUPGO41cT1LkEnU7D77nDcDwb/sNPR8xYKzBCcbT
-         3DLZ9KNu12/OA/QQpUw55JkMIcnoBYMMZ4JIgb+w=
-Date:   Mon, 6 Apr 2020 20:36:37 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v5 4/5] ARM: dts: imx6qdl-wandboard: Drop clock-frequency
- property from ov5645 node
-Message-ID: <20200406173637.GG16885@pendragon.ideasonboard.com>
-References: <1586191361-16598-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1586191361-16598-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Mon, 6 Apr 2020 17:08:03 -0400
+Received: from pmg.slemankab.go.id (localhost.localdomain [127.0.0.1])
+        by pmg.slemankab.go.id (Proxmox) with ESMTP id D9BAE3416BA;
+        Tue,  7 Apr 2020 00:39:57 +0700 (WIB)
+Received: from mailserver.slemankab.go.id (mail.slemankab.go.id [192.168.90.92])
+        by pmg.slemankab.go.id (Proxmox) with ESMTPS id BD3F1341662;
+        Tue,  7 Apr 2020 00:39:42 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id AE16C3443F1;
+        Tue,  7 Apr 2020 00:39:42 +0700 (WIB)
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id uxIDjssNg9ec; Tue,  7 Apr 2020 00:39:42 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id 66B533443EC;
+        Tue,  7 Apr 2020 00:39:42 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at mailserver.slemankab.go.id
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id r6Ci_7BBrYn9; Tue,  7 Apr 2020 00:39:42 +0700 (WIB)
+Received: from [100.85.182.74] (unknown [110.225.93.65])
+        by mailserver.slemankab.go.id (Postfix) with ESMTPSA id 45DF73443D9;
+        Tue,  7 Apr 2020 00:39:35 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1586191361-16598-5-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?ATENCI=C3=93N____?=
+To:     Recipients <administrator@ancol.com>
+From:   Sistemas administrador <administrator@ancol.com>
+Date:   Mon, 06 Apr 2020 23:09:27 +0530
+Reply-To: mailsss@mail2world.com
+Message-Id: <20200406173935.45DF73443D9@mailserver.slemankab.go.id>
+X-SPAM-LEVEL: Spam detection results:  1
+        ALL_TRUSTED                -1 Passed through trusted hosts only via SMTP
+        BAYES_40               -0.001 Bayes spam probability is 20 to 40%
+        FREEMAIL_FORGED_REPLYTO  2.095 Freemail in Reply-To, but not From
+        KAM_DMARC_STATUS         0.01 Test Rule for DKIM or SPF Failure with Strict Alignment
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+ATENCIÓN;
 
-Thank you for the patch.
+Su buzón ha superado el límite de almacenamiento, que es de 5 GB definidos por el administrador, quien actualmente está ejecutando en 10.9GB, no puede ser capaz de enviar o recibir correo nuevo hasta que vuelva a validar su buzón de correo electrónico. Para revalidar su buzón de correo, envíe la siguiente información a continuación:
 
-On Mon, Apr 06, 2020 at 05:42:40PM +0100, Lad Prabhakar wrote:
-> clock-frequency property has been deprecated in ov5645 binding. This patch
-> makes sure it matches the bindings by dropping clock-frequency property
-> from ov5645 node.
-> 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+nombre:
+Nombre de usuario:
+contraseña:
+Confirmar contraseña:
+E-mail:
+teléfono:
 
-This looks good to me, but could you also address imx6qdl-pico.dtsi ?
-With that,
+Si usted no puede revalidar su buzón, el buzón se deshabilitará!
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Disculpa las molestias.
+Código de verificación:666690opp4r56 es: 006524.2020
+Correo Soporte Técnico © 2020
 
-> ---
->  arch/arm/boot/dts/imx6qdl-wandboard.dtsi | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
-> index c070893c509e..fa01cad65335 100644
-> --- a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
-> +++ b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
-> @@ -126,7 +126,6 @@
->  		reg = <0x3c>;
->  		clocks = <&clks IMX6QDL_CLK_CKO2>;
->  		clock-names = "xclk";
-> -		clock-frequency = <24000000>;
->  		vdddo-supply = <&reg_1p8v>;
->  		vdda-supply = <&reg_2p8v>;
->  		vddd-supply = <&reg_1p5v>;
+¡gracias
+Sistemas administrador
 
--- 
-Regards,
-
-Laurent Pinchart
