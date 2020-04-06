@@ -2,130 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA9719F5EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A91F19F5F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgDFMhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 08:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727989AbgDFMhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 08:37:19 -0400
-Received: from localhost.localdomain (89.208.247.74.16clouds.com [89.208.247.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDC8D21D82;
-        Mon,  6 Apr 2020 12:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586176638;
-        bh=SEe7dpsbSIG9Vldwf8gU5V4sDR/CwnSv9c8VsT4XWFg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=TFPTKDLTEfUiAs0UycDPJuwFjdV7VuPcCjOgBNXrS3AiISNs9HHgDMuLNL/+bjgjh
-         RYVOk05NhzUlzMtyar+AkgCK+KJHMAAppL8AU/5Ov3uTOusnaQWDOw96tz0QlhR9YL
-         tujw2OoSdaFi6Fe47SrpA7FPfWVE2dOHTPIQnPtE=
-From:   guoren@kernel.org
-To:     torvalds@linux-foundation.org
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-csky@vger.kernel.org
-Subject: [ GIT PULL ] csky updates for v5.7-rc1
-Date:   Mon,  6 Apr 2020 20:37:13 +0800
-Message-Id: <20200406123713.30492-1-guoren@kernel.org>
-X-Mailer: git-send-email 2.17.0
+        id S1728063AbgDFMle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 08:41:34 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:40896 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728052AbgDFMld (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 08:41:33 -0400
+Received: by mail-ot1-f67.google.com with SMTP id r19so15098390otn.7
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 05:41:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sr72t4r7lxhc/Q3B1vivttix8afMzynpg5rTdMjQSoY=;
+        b=entol2rHnqykEsDN6YkZxSuwSctDqAnKsid7hRR+PoqC5lMipLmtfJhXeba6wjsCWm
+         rfaehblGx+Me4JYjbyW4WDcJeNAIw072KujfJUYa5Ld5UR+7o3ji9LNAJu4QZHm7mDfm
+         U9KG1jjMrh/5skPTpZMtN9W1LtYTC7V9W6cd4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sr72t4r7lxhc/Q3B1vivttix8afMzynpg5rTdMjQSoY=;
+        b=c8tz9TN+bQflHr5CZ0aL4iFG8bLtuIei2/Ikc0KVHXPdwNTGb1SmsG5w/X6UhuJDLf
+         mF0dgyeyJ1YLP49p8ybLwM6C06ccpeQ3eTTFbrWHuJTWZzR8PukUaX8QqZJApCwOvvfU
+         qAMzEPuWpC0jxLwY0FBRFqoXFbnZB6NpIKUhQcUdb+ydLmvIHBa0ZeCqdqzJ4hgqP/W8
+         Ce0B5wT6mS+ZdTHEu+pYHNX6LbOFXRTk0CxNtREhdQcguvsNIoZBoOkiO8gbhv+RroAu
+         9/NXJSvB9phUfJEUlYpH4oj4pGNs6fds4l5T1taxjt5Nc7Y7gWWCEQxh5QCfqq9agsIc
+         Js4A==
+X-Gm-Message-State: AGi0PuaEP1lbMe3Wm2bf+9aZYk7frPJouQBDLoDnGWmqBcB5Ksy2BA4v
+        uAPcJusI8nZoCxh6EJmwcBy5jKyDA9zDjqujACbftQ==
+X-Google-Smtp-Source: APiQypJhwSTomdaZtFjbOnK4dQzBkSIMoNjO/uvTMoS9iCK7mUxexLxDXb1kSUc2EnvnB9OZEl1Z8vmKzFMuNZf8nBs=
+X-Received: by 2002:a9d:6e8f:: with SMTP id a15mr18136881otr.188.1586176891766;
+ Mon, 06 Apr 2020 05:41:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <00000000000091056b05a2999f1e@google.com> <CACT4Y+b4RcgG_GrcpaghmqhX47zUVsAcGGd6vb6MYJT=6gf89g@mail.gmail.com>
+ <20200406080612.v5ubxvyliuso6v5h@sirius.home.kraxel.org>
+In-Reply-To: <20200406080612.v5ubxvyliuso6v5h@sirius.home.kraxel.org>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 6 Apr 2020 14:41:20 +0200
+Message-ID: <CAKMK7uE9uQ_YCXfDOH9zQBu_ffoz546hqRd1R_r1+L-T072Lew@mail.gmail.com>
+Subject: Re: upstream boot error: KASAN: slab-out-of-bounds Write in virtio_gpu_object_create
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+d3a7951ed361037407db@syzkaller.appspotmail.com>,
+        David Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        "open list:VIRTIO CORE, NET..." 
+        <virtualization@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Mon, Apr 6, 2020 at 10:06 AM Gerd Hoffmann <kraxel@redhat.com> wrote:
+>
+> On Mon, Apr 06, 2020 at 09:07:44AM +0200, Dmitry Vyukov wrote:
+> > On Mon, Apr 6, 2020 at 8:46 AM syzbot
+> > <syzbot+d3a7951ed361037407db@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following crash on:
+> > >
+> > > HEAD commit:    ffc1c20c Merge tag 'for-5.7/dm-changes' of git://git.kerne..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1690471fe00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=d6a1e2f9a9986236
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=d3a7951ed361037407db
+> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > >
+> > > Unfortunately, I don't have any reproducer for this crash yet.
+> > >
+> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > > Reported-by: syzbot+d3a7951ed361037407db@syzkaller.appspotmail.com
+> >
+> >
+> > +drivers/gpu/drm/virtio/virtgpu_object.c maintainers
+> > Now we have both mainline and linux-next boot broken (linux-next is
+> > broken for the past 40 days).
+> > No testing of new code happens.
+> >
+> > >  virtio_gpu_object_shmem_init drivers/gpu/drm/virtio/virtgpu_object.c:151 [inline]
+> > >  virtio_gpu_object_create+0x9f3/0xaa0 drivers/gpu/drm/virtio/virtgpu_object.c:230
+>
+> Ah, that one.
+>
+> broken patch: f651c8b05542 ("drm/virtio: factor out the sg_table from virtio_gpu_object")
+> fixed by: 0666a8d7f6a4 ("drm/virtio: fix OOB in virtio_gpu_object_create")
+>
+> Both are in drm-misc-next.  I suspect the fix was added after
+> drm-misc-next was closed for the 5.7 merge window and thus should
+> have been submitted to drm-misc-next-fixes instead.
+>
+> So, what to do now?  Should I cherry-pick 0666a8d7f6a4 into
+> drm-misc-next-fixes?  Or should it go into drm-misc-fixes instead?
 
-Please pull the changes for v5.7-rc1. In this round, we have some features
-and fixups.
-
-Best Regards
- Guo Ren
-
-The following changes since commit 98d54f81e36ba3bf92172791eba5ca5bd813989b:
-
-  Linux 5.6-rc4 (2020-03-01 16:38:46 -0600)
-
-are available in the Git repository at:
-
-  https://github.com/c-sky/csky-linux.git tags/csky-for-linus-5.7-rc1
-
-for you to fetch changes up to aefd9461d34a1b0a2acad0750c43216c1c27b9d4:
-
-  csky: Fixup cpu speculative execution to IO area (2020-04-03 12:40:07 +0800)
-
-----------------------------------------------------------------
-csky updates for 5.7-rc1
-
- - Add kproobes/uprobes support
- - Add lockdep, rseq, gcov support
- - Fixup init_fpu
- - Fixup ftrace_modify deadlock
- - Fixup speculative execution on IO area
-
-----------------------------------------------------------------
-Guo Ren (10):
-      csky: Fixup init_fpu compile warning with __init
-      csky: Implement ptrace regs and stack API
-      csky: Add support for restartable sequence
-      csky: Implement ftrace with regs
-      csky/ftrace: Fixup ftrace_modify_code deadlock without CPU_HAS_ICACHE_INS
-      csky: Fixup get wrong psr value from phyical reg
-      csky: Enable LOCKDEP_SUPPORT
-      csky: Add kprobes supported
-      csky: Add uprobes support
-      csky: Fixup cpu speculative execution to IO area
-
-Ma Jun (1):
-      csky: Enable the gcov function
-
- arch/csky/Kconfig                            |  13 +
- arch/csky/abiv1/inc/abi/entry.h              |   5 +-
- arch/csky/abiv2/fpu.c                        |   5 -
- arch/csky/abiv2/inc/abi/entry.h              |  67 +++-
- arch/csky/abiv2/inc/abi/fpu.h                |   3 +-
- arch/csky/abiv2/mcount.S                     |  48 +++
- arch/csky/include/asm/Kbuild                 |   1 -
- arch/csky/include/asm/ftrace.h               |   2 +
- arch/csky/include/asm/kprobes.h              |  48 +++
- arch/csky/include/asm/probes.h               |  24 ++
- arch/csky/include/asm/processor.h            |   1 +
- arch/csky/include/asm/ptrace.h               |  43 +++
- arch/csky/include/asm/thread_info.h          |   2 +
- arch/csky/include/asm/uprobes.h              |  33 ++
- arch/csky/kernel/Makefile                    |   1 +
- arch/csky/kernel/asm-offsets.c               |   1 +
- arch/csky/kernel/entry.S                     |  18 +-
- arch/csky/kernel/ftrace.c                    |  42 +++
- arch/csky/kernel/head.S                      |   5 +
- arch/csky/kernel/probes/Makefile             |   7 +
- arch/csky/kernel/probes/decode-insn.c        |  49 +++
- arch/csky/kernel/probes/decode-insn.h        |  20 ++
- arch/csky/kernel/probes/ftrace.c             |  66 ++++
- arch/csky/kernel/probes/kprobes.c            | 499 +++++++++++++++++++++++++++
- arch/csky/kernel/probes/kprobes_trampoline.S |  19 +
- arch/csky/kernel/probes/simulate-insn.c      | 398 +++++++++++++++++++++
- arch/csky/kernel/probes/simulate-insn.h      |  49 +++
- arch/csky/kernel/probes/uprobes.c            | 150 ++++++++
- arch/csky/kernel/ptrace.c                    | 103 ++++++
- arch/csky/kernel/setup.c                     |  63 +---
- arch/csky/kernel/signal.c                    |   6 +
- arch/csky/kernel/smp.c                       |   6 +
- arch/csky/kernel/traps.c                     |  29 +-
- arch/csky/mm/cachev2.c                       |  45 ++-
- arch/csky/mm/fault.c                         |  11 +
- 35 files changed, 1807 insertions(+), 75 deletions(-)
- create mode 100644 arch/csky/include/asm/kprobes.h
- create mode 100644 arch/csky/include/asm/probes.h
- create mode 100644 arch/csky/include/asm/uprobes.h
- create mode 100644 arch/csky/kernel/probes/Makefile
- create mode 100644 arch/csky/kernel/probes/decode-insn.c
- create mode 100644 arch/csky/kernel/probes/decode-insn.h
- create mode 100644 arch/csky/kernel/probes/ftrace.c
- create mode 100644 arch/csky/kernel/probes/kprobes.c
- create mode 100644 arch/csky/kernel/probes/kprobes_trampoline.S
- create mode 100644 arch/csky/kernel/probes/simulate-insn.c
- create mode 100644 arch/csky/kernel/probes/simulate-insn.h
- create mode 100644 arch/csky/kernel/probes/uprobes.c
+Yup cherry-pick it over, with -x, to drm-misc-next-fixes.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
