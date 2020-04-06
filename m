@@ -2,128 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F59019FA88
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C656419FA90
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:44:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729653AbgDFQl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 12:41:59 -0400
-Received: from mail-wr1-f73.google.com ([209.85.221.73]:48648 "EHLO
-        mail-wr1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729617AbgDFQl4 (ORCPT
+        id S1729560AbgDFQm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 12:42:56 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:31608 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729416AbgDFQm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 12:41:56 -0400
-Received: by mail-wr1-f73.google.com with SMTP id d1so81817wru.15
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 09:41:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=MRjytoTEBKrt8aQLsMYC6tlVfTx2Uch92ldjURsQQQI=;
-        b=hTqD+W5OPhE0YOBWh6tJD21i4lK36j0CqvGr/4l2eL71mqbpXSi0D4mVaqQcXRHciM
-         cxGCEy9S9WafkNQT7BIcKBpjaXBvkX/UZCRPcgcFmGmd+vOBYh4DRHk3drpoyX/58VoU
-         O2gfzNHVjK022wBaAU2iic6LoqsqtlOeZ99UuaVToQi170Zg61P6e3rptmLqx0wPZd3M
-         NF5A5ZCFtmcsO/lehpJS48UpcVwbxqLvbi7qJpWs9pZ8bsz9Zl63jNPFF2sqrcb79oHY
-         35zN7CPfk1oTM/i6dL4jLh/jYfTErgpudqBKk569mSng4b/orWxdZIjcImcO+AtiOIxz
-         aRdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=MRjytoTEBKrt8aQLsMYC6tlVfTx2Uch92ldjURsQQQI=;
-        b=UL7JVxJaNE1qZyRKqFCnptnCoYbhzf9Ct4/Dt+SmLWje13jZHPhJmX0vN46y78S3Cw
-         LdDA4rpr7rgnPiaKbTbyBo28AcETev+AeFNz1ED/kzy3C6UyPH0lkpodYdJLdtlZgWDE
-         2jDpNFMcGAeFvRZUmVXLcXMY3PzTtw97xsxdOQYftqnsRh1Zbgk3UEy+Hn9L46LIlOEE
-         alnNT9OglvikQij4RarX07yeaucAXET8ngbR0SMmsqx/+ZSI6Jn9y1TurhXu11OM/A/o
-         +AbtLSjYwHsik+6aEh4AmCeDvWhmVUiE3v9uVN6VRVsSMHzq1hW7hP84+wNKPeDZY7fB
-         h2Zw==
-X-Gm-Message-State: AGi0Pubml5VFqvjh4pQX076WyL6Cq9D3wJfCgQwL/2M/IjFboNkVTFYr
-        HTmrN8izVrmnLQFcTNNYApnQQhatqmRtIKdP
-X-Google-Smtp-Source: APiQypIeFTvKOe10+l4Jx6e6TStaYbpWIpj4TLTkuc3VbMP4026hAOnsx5axG05+zGwYzFQLTenvn/KS5NoqcIkB
-X-Received: by 2002:a5d:6a47:: with SMTP id t7mr54263wrw.131.1586191312456;
- Mon, 06 Apr 2020 09:41:52 -0700 (PDT)
-Date:   Mon,  6 Apr 2020 18:41:44 +0200
-Message-Id: <178e01023f2e6664908f7c9660fa6527a55a22d6.1586191134.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-Subject: [PATCH] usb: raw-gadget: fix raw_event_queue_fetch locking
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 6 Apr 2020 12:42:56 -0400
+X-IronPort-AV: E=Sophos;i="5.72,351,1580742000"; 
+   d="scan'208";a="43643781"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 07 Apr 2020 01:42:54 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 9A53F4006CD9;
+        Tue,  7 Apr 2020 01:42:50 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v5 0/5] ov5645: Deprecate usage of the clock-frequency
+Date:   Mon,  6 Apr 2020 17:42:36 +0100
+Message-Id: <1586191361-16598-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If queue->size check in raw_event_queue_fetch() fails (which normally
-shouldn't happen, that check is a fail-safe), the function returns
-without reenabling interrupts. This patch fixes that issue, along with
-propagating the cause of failure to the function caller.
+Hi All,
 
-Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface"
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
+This patch series does the following:
+1: Deprecate usage of the clock-frequency property.
+2: Converts bindings to json-schema
 
-Greg, this should apply cleanly on top of Dan's "usb: raw-gadget: Fix
-copy_to/from_user() checks" patch.
+Thanks,
+Prabhakar
 
----
- drivers/usb/gadget/legacy/raw_gadget.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+Changes for v5:
+* Dropped assigned-clocks
+* Fixed review comments from Laurent for patch 5/5
 
-diff --git a/drivers/usb/gadget/legacy/raw_gadget.c b/drivers/usb/gadget/legacy/raw_gadget.c
-index e490ffa1f58b..1582521ec774 100644
---- a/drivers/usb/gadget/legacy/raw_gadget.c
-+++ b/drivers/usb/gadget/legacy/raw_gadget.c
-@@ -81,6 +81,7 @@ static int raw_event_queue_add(struct raw_event_queue *queue,
- static struct usb_raw_event *raw_event_queue_fetch(
- 				struct raw_event_queue *queue)
- {
-+	int ret;
- 	unsigned long flags;
- 	struct usb_raw_event *event;
- 
-@@ -89,11 +90,14 @@ static struct usb_raw_event *raw_event_queue_fetch(
- 	 * there's at least one event queued by decrementing the semaphore,
- 	 * and then take the lock to protect queue struct fields.
- 	 */
--	if (down_interruptible(&queue->sema))
--		return NULL;
-+	ret = down_interruptible(&queue->sema);
-+	if (ret)
-+		return ERR_PTR(ret);
- 	spin_lock_irqsave(&queue->lock, flags);
--	if (WARN_ON(!queue->size))
-+	if (WARN_ON(!queue->size)) {
-+		spin_unlock_irqrestore(&queue->lock, flags);
- 		return NULL;
-+	}
- 	event = queue->events[0];
- 	queue->size--;
- 	memmove(&queue->events[0], &queue->events[1],
-@@ -522,10 +526,17 @@ static int raw_ioctl_event_fetch(struct raw_dev *dev, unsigned long value)
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 
- 	event = raw_event_queue_fetch(&dev->queue);
--	if (!event) {
-+	if (PTR_ERR(event) == -EINTR) {
- 		dev_dbg(&dev->gadget->dev, "event fetching interrupted\n");
- 		return -EINTR;
- 	}
-+	if (IS_ERR_OR_NULL(event)) {
-+		dev_err(&dev->gadget->dev, "failed to fetch event\n");
-+		spin_lock_irqsave(&dev->lock, flags);
-+		dev->state = STATE_DEV_FAILED;
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		return -ENODEV;
-+	}
- 	length = min(arg.length, event->length);
- 	if (copy_to_user((void __user *)value, event, sizeof(*event) + length))
- 		return -EFAULT;
+Changes for v4:
+* Addressed to comments from Laurent updated patch description for
+  patch 1/5, 4/5.
+* Included Reviewed-by tags from Laurent.
+* Increased tolerance level to 5% for external clock frequency.
+* Patch 5/5 is new patch which converts bindings to json-schema.
+
+Changed for v3:
+* Dropped reading assigned-clock-rates
+* Increased the maximum clock frequency to 24480000
+
+Changes for v2:
+* Instead of completely dropping clock-frequency property marked it as
+  deprecated.
+* Split up imx6qdl-wandboard.dtsi changes as separate patch.
+
+Lad Prabhakar (5):
+  media: dt-bindings: media: i2c: Deprecate usage of the clock-frequency
+    property
+  media: i2c: ov5645: Drop reading clock-frequency dt-property
+  media: i2c: ov5645: Turn probe error into warning for xvclk frequency
+    mismatch
+  ARM: dts: imx6qdl-wandboard: Drop clock-frequency property from ov5645
+    node
+  media: dt-bindings: media: i2c: convert ov5645 bindings to json-schema
+
+ .../devicetree/bindings/media/i2c/ov5645.txt  |  54 --------
+ .../devicetree/bindings/media/i2c/ov5645.yaml | 126 ++++++++++++++++++
+ arch/arm/boot/dts/imx6qdl-wandboard.dtsi      |   1 -
+ drivers/media/i2c/ov5645.c                    |  21 +--
+ 4 files changed, 133 insertions(+), 69 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/i2c/ov5645.txt
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/ov5645.yaml
+
 -- 
-2.26.0.292.g33ef6b2f38-goog
+2.20.1
 
