@@ -2,146 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 196F019FAA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977AE19FAAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 18:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729657AbgDFQn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 12:43:27 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:56175 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729609AbgDFQn0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 12:43:26 -0400
-Received: by mail-pj1-f68.google.com with SMTP id fh8so26052pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 09:43:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eP345ArGYnfGAJ4jzoK1LoRsxz9bzdzVl4xTuSWk8YU=;
-        b=MW8/mQveOroeY0x1xpt8gPhQROWiBKBbi6WYW1EvrM+99HqbdYjegbaYgTLHtdhq1J
-         l4QPfHXLUAHwah6DKPElpdCoNk/mzsNS50F//u2UWG7wU5c4a4/GkJczthkimZUpn+qf
-         DQIOFUaCcWiA0jzlGY8FZKr4Mnx0zlemtrO+SWFM+jmsaSw3jNiXjYEgvKJ/Gnr0NwUK
-         MnClJVV3jSNRRkmUx3oKbc74LCCOJEYOHSeGdVPLODh175Xr4qGV0zFy7UPhLe/1NkmS
-         WYcQaq3Ph8aIWWt+Ip0jt0z+671w0Sbq04XPtO1QlMeNjZ7c784pcgA2r2rnYpZcgi/o
-         VlZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eP345ArGYnfGAJ4jzoK1LoRsxz9bzdzVl4xTuSWk8YU=;
-        b=RGuabHGg8anSowr0Vkg7hwqTzXjTWY2WWplPwbg9+npM02SWa55An5S+Ag50+HVXXW
-         kKt5wWpt7pcqLpWz3ekLjonxC0X1s8o0oq39vcJ/hSkWtB/eB9pcQbwvP6rTYTEAJI62
-         p1b10WstY+VN+8jid9TnIQXS78lClgh7zgSj94Hxe3q9VKBcIWWdGs7rJql72LmbxMYN
-         5dKY0AYhGKhp+ZIeYot0Q+yLDUMlov+GM+c/o5t0+Z9oSXZD7/AgwbkfIbjYs26zh3g3
-         xed8aGFrLvhFZ4U/0H5QLiE4/LoCDa6ocp+On7rp5pXvPI1yh9OsXPmGxtuqAHDn0tNQ
-         2nHw==
-X-Gm-Message-State: AGi0PubSAE7+fAbTLWXhpLZBCZeh3FMo6fhf9Lx/ERL48rlqwBVhZUxK
-        /sISzoDMPfcJOZH9cluPa2rGelJbRHQWog==
-X-Google-Smtp-Source: APiQypKGMyFeOjdTrlkRBPTR6ySLfo8qSkh83qKknt8owxl20zhRTJaNBpZZCNFvk4gJqtcAV7uKiA==
-X-Received: by 2002:a17:90a:fa17:: with SMTP id cm23mr19190pjb.121.1586191404980;
-        Mon, 06 Apr 2020 09:43:24 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
-        by smtp.gmail.com with ESMTPSA id z7sm12001669pfz.24.2020.04.06.09.43.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 09:43:24 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 09:43:21 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     YunQiang Su <wzssyqa@gmail.com>,
-        "Maciej W. Rozycki" <macro@linux-mips.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: malta: Set load address for 32bit kernel correctly
-Message-ID: <20200406164321.c3377heoqprzwbjc@google.com>
-References: <20200405082451.694910-1-jiaxun.yang@flygoat.com>
- <alpine.LFD.2.21.2004051738000.4156324@eddie.linux-mips.org>
- <96C9B1A0-2F89-4650-B0A4-6A6242A2AA0A@flygoat.com>
- <alpine.LFD.2.21.2004051817310.4156324@eddie.linux-mips.org>
- <CAKcpw6U=VW+h4sU1fzrsqXU9z-zVfcFsENKHgAD4paqtndip2w@mail.gmail.com>
- <079F408B-9C44-4317-8DD3-7A1896564960@flygoat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <079F408B-9C44-4317-8DD3-7A1896564960@flygoat.com>
+        id S1729637AbgDFQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 12:45:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729590AbgDFQpD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 12:45:03 -0400
+Subject: Re: [GIT PULL] 9p update for 5.7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586191502;
+        bh=EIuPoQNSYix7s4sCq4hwH7DS5tLlNWpflv/Y9RVVZWE=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=aqfPjYzLGsBzB/biToNIvc8QOI3jRoPNZwMP9F9oISr8aE4wcX7mXARnXs/98MX/n
+         Gbh1qIY1qAVvzwWx2AWB1/q21YaMxk5irBS+bS/+MwLVZ3f6N4wf4g0X6GTnw+u9Kv
+         quRkGA/0y+MEmuc9RqjbEx7RwIHM4w3D6FuVZ1qU=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200406110702.GA13469@nautica>
+References: <20200406110702.GA13469@nautica>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200406110702.GA13469@nautica>
+X-PR-Tracked-Remote: https://github.com/martinetd/linux tags/9p-for-5.7
+X-PR-Tracked-Commit-Id: 43657496e46672fe63bccc1fcfb5b68de6e1e2f4
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e14679b62d84b8ab9136189fc069d389da43fe71
+Message-Id: <158619150269.17891.13555483701597490537.pr-tracker-bot@kernel.org>
+Date:   Mon, 06 Apr 2020 16:45:02 +0000
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-06, Jiaxun Yang wrote:
->
->
->于 2020年4月6日 GMT+08:00 下午6:57:18, YunQiang Su <wzssyqa@gmail.com> 写到:
->>Maciej W. Rozycki <macro@linux-mips.org> 于2020年4月6日周一 上午1:23写道：
->>>
->>> On Mon, 6 Apr 2020, Jiaxun Yang wrote:
->>>
->>> > > Given the description above I think it should be done uniformly
->>and
->>> > >automatically across all platforms by trimming the address
->>supplied
->>> > >with
->>> > >$(load-y) to low 8 digits in a single place, that is at the place
->>where
->>> > >
->>> > >the variable is consumed.  This will reduce clutter across
->>Makefile
->>> > >fragments, avoid inconsistencies and extra work to handle
->>individual
->>> > >platforms as the problem is triggered over and over again, and
->>limit
->>> > >the
->>> > >risk of mistakes.
->>> >
->>> > I was intended to do like this but failed to find a proper way.
->>> >
->>> > Makefile isn't designed for any kind of calculation.
->>> > And shell variables are 64-bit signed so it can't hold such a huge
->>variable.
->>> >
->>> > Just wish somebody can give me a way to do like:
->>> >
->>> > ifndef CONFIG_64BIT
->>> > load-y = $(load-y) & 0xffffffff
->>> > endif
->>>
->>>  Use the usual shell tools like `sed', `cut', `awk', or whatever we
->>use in
->>
->>perl may be the easiest to use tool here.
->>
->>ifndef CONFIG_64BIT
->>  load-y := $(shell $(PERL) -e 'print $(load-y) & 0xffffffff')
->>endif
->>
->>Note that it is `:=' instead of '='.
->
->It seems like perl is not one of kernel's build dependencies.[1]
->I'm comsidering a alternative solution,
->write a small hostprog in C to deal with that.
->
->Thanks.
->
->[1]: https://www.kernel.org/doc/html/v5.6/process/changes.html
+The pull request you sent on Mon, 6 Apr 2020 13:07:02 +0200:
 
-load-y := 0xffffffff80100000
-load-y := 0x$(shell echo "$(load-y)" | rev | head -c 8 | rev)
+> https://github.com/martinetd/linux tags/9p-for-5.7
 
->>
->>> the kernel build already for other purposes.  There's no need to do
->>any
->>> actual calculation here to extract the last 8 characters (and the
->>leading
->>> `0x' prefix).  At worst you can write a small C program, compile it
->>with
->>> the build system compiler and run, as we already do for some stuff.
->>>
->>>   Maciej
->
->-- 
->Jiaxun Yang
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e14679b62d84b8ab9136189fc069d389da43fe71
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
