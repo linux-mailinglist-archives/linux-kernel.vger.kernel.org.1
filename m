@@ -2,117 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 156721A01B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 01:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D2F1A0147
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgDFX2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 19:28:05 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:8362 "EHLO
+        id S1726386AbgDFWwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 18:52:36 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:59028 "EHLO
         mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726254AbgDFX2E (ORCPT
+        by vger.kernel.org with ESMTP id S1726230AbgDFWwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 19:28:04 -0400
+        Mon, 6 Apr 2020 18:52:35 -0400
+X-Greylist: delayed 1885 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Apr 2020 18:52:33 EDT
 Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 036MGtnO003796;
-        Mon, 6 Apr 2020 15:21:01 -0700
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 036MGtnV003796;
+        Mon, 6 Apr 2020 15:21:41 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=MNcSBIhmCTIftmQiPFgCaLyglA1gDCy+wCWF8yc2vxA=;
- b=hrsS9f0HNYc4zZgV3Q0Wytq3NwRJ9r2w9gAkK1rYLUV3B3XmvLpz+ikL9KY14x3DmTRZ
- 2ydY+zibFTMC/NG6gzlMS8PzdVU0S5ycGJr+dpqr4xbNIjMoVZVx/86/NJHROXXm9PDV
- DUV8fJMOaWvT/uz5t3+76hdPoggMnWYwpAqzYiLQ1DEof9zWq4UNDtkPg/M6qBaIabnv
- jP0zKMXGaQs/ULM76g0+PDHw/mEiIWlqiKWBUBx/81uKoDxH0AMl6mwaG6ZyvPk6YCEx
- l1bYFLJG4bxUo/Z68N1lQ7pBOupa+mt3emR3RwnWRknOKCK7oGWHgJVNS+O/BXKHUuzR 5w== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 306psw07e9-1
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=proofpoint;
+ bh=v/Jq0f/Q3Cf7y0O11BM3lByHfl3SGsLzushnQMtfEB4=;
+ b=G+pwpaO11KuSeZH1D9HZQaG346ujknu52YD4/Vh7k6O4u1on/vOdrVf2B+gcxFjfFp71
+ u4/xB0L0eLvb0IuAimYTITQyLhcaZ0DH0fYCl0opWi3qMU5HKxer4XHFzv+fbNBf1WRW
+ ITWIW0nrhgJPnaDXnaOwhbadS054ZyOw5Ngzd5txavhYaddIpgXXElUp041JQVW7oY8T
+ KiFJmwVuUr9qNwSDZugqo+9mff6DFRISkg/Kiptn/ojSJYyycY6W12c7v4JZXbnXnwoY
+ NYEF4+7pbLXTa8mVvkmRtMrKm8NcShzwlOU8fUafN5RZ9v225PyesTBHVHB62ar34RvH OA== 
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 306psw07g5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Apr 2020 15:21:01 -0700
+        Mon, 06 Apr 2020 15:21:41 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mxnRac/RMDgHMddWxYgCM1tqi512TjOPMmootvAves7kN1yHhAm+X+RKdgFAlI6IOSLAEl5+oxa3muAScDxxNXul2+1O+hx/gFj4qIa/MvsbBjEt4Tmwj069TzxJkbL9yvI1IRDSV9jXr/uvnmeLmFJhHJ1S1C/puG4KjSaP7VhAmfiEONXCGCvaqiD4hYXpvSlvtDem3SEFGOOJjiLIhniDzQ4EIe5ZrZbS27XiLe7SsM6g1gV884NrvM/cnwBPkseX21ok0OsgQJYOg8Khh0vamonQaIhR7jOoIBtueQ7Ss6yQ38gdsH14IkNqiKYJjdvlV6J7C1RfoNHBZQgqKQ==
+ b=MEz3qCtaebJJKYp/EpBkd71RO0s1lmwl2gi8FsxXAcw4jZ4q25ChVXZm5eHXlz5QiQAFPgOuxGWlEbLLZwVR8+w/6xGLdI7ztuMNwpuYq6S+cpHKWu+k/QYE/lkJEAekhe02H6imNfGZsJNkrPrsR14y3SgnKvrl91GZ0NjINUvKyllev8iTsNlhx9KTlMZvE8vHmORgqBNCqCJgOiwKk1v9eiLmKGA6sFg6uyytEfoM/3VGRKX77vnMdWpE2PMBH8xoFlgikK0HI70IvWOG8K4APTUtg5OJtKU44CKSeraf9Ct0im7S06wP32JflMuklNfN/lAbgWilo4hkNt1+Lg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MNcSBIhmCTIftmQiPFgCaLyglA1gDCy+wCWF8yc2vxA=;
- b=Rk2KmRZMU+du9FCJto21CcRQIzmdCOFL5TxNd2DrmuKig7MSuu32JKcqa3XmZjJhYKgLq4EMLoQ5l599tI5m0SH8jEDPAFBkhVUJlNNsWASmEG+wwKdKoMUsS85v2VBIO+8Mbcokxug5758nu4S8vXIDaHQvg/ASBbStDmJh5P1+Uzwm6ED85q6gPx+5U4GTJELf5wEZLKTbwuVMruwiQ5n521XFcHXr/MGxG585F8XwmizZjsWqw4kHWsMvK3xo9qUz0SUo72MqdS6/AKhE83ZOo5isy0V/yLGEugjOH/wjzZmJS69uybrJN5Y62uDYpblFKsMTjG++tQAmtXGlAA==
+ bh=v/Jq0f/Q3Cf7y0O11BM3lByHfl3SGsLzushnQMtfEB4=;
+ b=ercribkxpu9PXOHOw3UgEzu+6yq0zJdQWGtFxVE5ubLjuctFIznYHhPfdEwxbkbZgw0cXkbXWTeUfgyN+6YH7G9Wp9oF7DIaf6sdyaHBImBW/OAvznJMV9HKC8g7CZ3wHdfkKB0DILiWJXGTqgBBo6uc4rz3tGKTe5X9uTMz1VBO6pWO4WEOpjqSyDjt70TNafCgE1yGconwkMNkipBJpoma/6wJS1GOmDWUuPF4MvUfm7jYJ1OW4KSKAvImefbLeAUhs1LUeFzCjgzM6kNzOPS1FpBc4Dyi3P9UJ3MszdT66cTAILkLBUDDyPNMMzTyd5oSm1SP8iGvNqf4yl3KnQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 199.43.4.23) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
+ 158.140.1.147) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MNcSBIhmCTIftmQiPFgCaLyglA1gDCy+wCWF8yc2vxA=;
- b=j21qbalm3yTL72IrvImwMuYByo8i0VlwOjLhmpw+S3NbROII6gQGk8IRUAfvXgFORJ8TWbaO5qf8yjT1KrUWxruUpS/1qd1edI9iIxrrkwIU/nrJyYCrWmxzVVsI3rgd1cnFsH+9y7dVb24bKjg4ue7wV8QVBBtlvhsbd7+6kOc=
-Received: from BN6PR21CA0012.namprd21.prod.outlook.com (2603:10b6:404:8e::22)
- by DM6PR07MB6714.namprd07.prod.outlook.com (2603:10b6:5:1cc::30) with
+ bh=v/Jq0f/Q3Cf7y0O11BM3lByHfl3SGsLzushnQMtfEB4=;
+ b=rEEZUbHlmcaKOZaIG4yL8olgFxKsMk4uMd9vlTUsLXEJ69CqxTncTux5Q8Fp+yTcMiBI/g+2Gqjq6fQT0yH7/Wg39PgOB3IW7cDZ8Btc/JL1ub8NuiGZloxf+qsQ7obCYJynm7oUgIfS+y9WKUjDMkxnnpmxdyCEOB+H0uqAkHw=
+Received: from BN6PR19CA0108.namprd19.prod.outlook.com (2603:10b6:404:a0::22)
+ by BY5PR07MB6467.namprd07.prod.outlook.com (2603:10b6:a03:195::31) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Mon, 6 Apr
- 2020 22:20:58 +0000
-Received: from BN8NAM12FT005.eop-nam12.prod.protection.outlook.com
- (2603:10b6:404:8e:cafe::ec) by BN6PR21CA0012.outlook.office365.com
- (2603:10b6:404:8e::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.9 via Frontend
- Transport; Mon, 6 Apr 2020 22:20:57 +0000
+ 2020 22:21:38 +0000
+Received: from BN8NAM12FT050.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:404:a0:cafe::5b) by BN6PR19CA0108.outlook.office365.com
+ (2603:10b6:404:a0::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16 via Frontend
+ Transport; Mon, 6 Apr 2020 22:21:38 +0000
 Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
- client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
-Received: from rmmaillnx1.cadence.com (199.43.4.23) by
- BN8NAM12FT005.mail.protection.outlook.com (10.13.182.167) with Microsoft SMTP
+ 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
+Received: from sjmaillnx1.cadence.com (158.140.1.147) by
+ BN8NAM12FT050.mail.protection.outlook.com (10.13.182.143) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2878.9 via Frontend Transport; Mon, 6 Apr 2020 22:20:55 +0000
+ 15.20.2878.9 via Frontend Transport; Mon, 6 Apr 2020 22:21:37 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 036MKpaN026351
+        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 036MLWU4008931
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Mon, 6 Apr 2020 18:20:53 -0400
+        Mon, 6 Apr 2020 15:21:35 -0700
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Tue, 7 Apr 2020 00:20:50 +0200
+ 15.0.1367.3; Tue, 7 Apr 2020 00:21:31 +0200
 Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Tue, 7 Apr 2020 00:20:50 +0200
+ 15.0.1367.3 via Frontend Transport; Tue, 7 Apr 2020 00:21:31 +0200
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 036MKoaP008193;
-        Tue, 7 Apr 2020 00:20:50 +0200
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 036MLVf0008762;
+        Tue, 7 Apr 2020 00:21:31 +0200
 Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 036MKm9O008168;
-        Tue, 7 Apr 2020 00:20:48 +0200
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 036MLVFD008759;
+        Tue, 7 Apr 2020 00:21:31 +0200
 From:   Parshuram Thombare <pthombar@cadence.com>
 To:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>
 CC:     <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
         Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v1 0/3] I3C mastership handover support
-Date:   Tue, 7 Apr 2020 00:20:45 +0200
-Message-ID: <1586211645-8065-1-git-send-email-pthombar@cadence.com>
+Subject: [PATCH v1 1/3] i3c: master: split bus_init callback into bus_init and master_set_info
+Date:   Tue, 7 Apr 2020 00:21:29 +0200
+Message-ID: <1586211689-8699-1-git-send-email-pthombar@cadence.com>
 X-Mailer: git-send-email 2.2.2
+In-Reply-To: <1586211645-8065-1-git-send-email-pthombar@cadence.com>
+References: <1586211645-8065-1-git-send-email-pthombar@cadence.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(39850400004)(376002)(346002)(136003)(36092001)(46966005)(81156014)(356004)(54906003)(478600001)(110136005)(107886003)(81166006)(70586007)(82740400003)(86362001)(8676002)(6666004)(70206006)(36756003)(26826003)(5660300002)(4326008)(316002)(336012)(47076004)(2906002)(186003)(426003)(26005)(2616005)(8936002)(42186006);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(376002)(39850400004)(136003)(396003)(36092001)(46966005)(4326008)(5660300002)(36906005)(336012)(107886003)(42186006)(316002)(54906003)(426003)(110136005)(86362001)(356004)(2616005)(478600001)(36756003)(246002)(47076004)(26005)(2906002)(7636002)(26826003)(8936002)(70586007)(8676002)(70206006)(82740400003)(186003);DIR:OUT;SFP:1101;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5d715910-658c-422c-bfa4-08d7da78c63e
-X-MS-TrafficTypeDiagnostic: DM6PR07MB6714:
-X-Microsoft-Antispam-PRVS: <DM6PR07MB67143EDC2C4D3806946BCAF6C1C20@DM6PR07MB6714.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 2b15a3b1-09f9-401b-8ed6-08d7da78dfb7
+X-MS-TrafficTypeDiagnostic: BY5PR07MB6467:
+X-Microsoft-Antispam-PRVS: <BY5PR07MB646734C3EACF70F6F2A42EE4C1C20@BY5PR07MB6467.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
 X-Forefront-PRVS: 0365C0E14B
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ll+Us5ZuHoZPEhj8LPsTtzcm5ZtcyRAXelBrkc+h0A0QtnNzrpQArsbseOFscLf8MsSaiVCAjoXwPKzG8ZnjJHKwpz350QB9TKvagU0bPbvRYbR+7KEaay1AOOZFvJPEbLiq/YZ6r5KxVIcfTO60sCCANz1w+I70zy5JrBoFovfbG/08Dh8Hoc55ZIucfJ44oTNEONnDU81j4ExmKvQUIQEaKP5spenndVTVGEU5T1TbGCBZXBjBkg8ayX58ZYCSpTq4vRp1zecWwRv9TagN1kcelN261ZETIaY+yDx0N9tSLBgwqyU2zyHnqBZ6V3HA9e4Zf7we/7XN7LJEySItv0VVmlQjplO+aHpeEL3JDVSs+P7H8tk2XYDMfG5dIuXPN2lrqNC/tdLjgX7uUsh9OVgePAgaQCZm1xyewosI4Pv/UQzjexds+xn5r7FksVE79rsF5bsq3s7TLP+Ht07zEVfCXYEewSgS4qCkiLVeKR/Bvf+rJQfb6xMnbT5s8SDmdnMfpGRzRBvnWfPdByHSs08L+JEfaJIfVkkxzuBQGDk=
+X-Microsoft-Antispam-Message-Info: U9aV78IpZxD5TXaVi5exqaLYmYozBTp+JCkVTsgzM88vmc7EW8FR3LGtQuB4zLETFQFSwTsQ0DPG0WvHSviexHaICIeGYics9gzy9nKnthpWP+gBGP5MRm6C1YykpcG0UOWiWMbbtVo6fR9U7eJu1SPhfSIRilHazRXByJHbcT6G4Wl85eEAj++psdNfHQ4UL5DfDXv8OwObDBrGRFg9QG0qNMyU5IxxbK0WMVHOoPRS/yiEV30pd8a3yO/9D7x6nbbrkMBBO5HUP52HtFL99KTKE1o1s0cyDZKAset3zCNz9B6GbkHf3jmC/eu5XpyC+skguWCnt4t2eNSkgRJmGgT7EGB6rSwWOdVCf6CUySCIhuONyq53hj3CIekW8GfhDqiUNz+DfYpEaCfRr6zDogaKlTLc40OPvbxes0f09AvIuvWkpDKdqLte6q0C6ny6YLOZkdgOl3j4RWFukqRsvMIAMYF/11ovtCZ4HmDb2lvuBU/Gq0PgNDd+IthLwB4HI8Dk3K/r2hIRJNiiYP5q8RKkv6Y0ysTWQUIPNLtYrFo=
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2020 22:20:55.2836
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2020 22:21:37.9144
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5d715910-658c-422c-bfa4-08d7da78c63e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b15a3b1-09f9-401b-8ed6-08d7da78dfb7
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB6714
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR07MB6467
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-06_10:2020-04-06,2020-04-06 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
- spamscore=0 clxscore=1011 adultscore=0 impostorscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 mlxlogscore=979 mlxscore=0 suspectscore=0
+ spamscore=0 clxscore=1015 adultscore=0 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 suspectscore=2
  priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2004060169
 Sender: linux-kernel-owner@vger.kernel.org
@@ -120,65 +124,247 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+To support mastership handover procedure, this patch splits the
+bus_init callback into bus_init and master_set_info callbacks
 
-This patch series is to enable mastership handover feature in I3C
-master subsystem and Cadence's I3C controller driver.
+Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+---
+ drivers/i3c/master.c                 | 10 +++--
+ drivers/i3c/master/dw-i3c-master.c   | 29 ++++++++-----
+ drivers/i3c/master/i3c-master-cdns.c | 63 ++++++++++++++++++----------
+ include/linux/i3c/master.h           |  7 +++-
+ 4 files changed, 71 insertions(+), 38 deletions(-)
 
-
-[PATCH 1/3]
-i3c: master: split bus_init callback into bus_init and master_set_info
-There are 2 reasons for this split
-Currently bus_init callback is involved in
-a. Controller specific settings such as clock prescalar, enabling
-   different functionalities and finally enabling the controller.
-b. Allocating address to the main master and calling 
-   i3c_master_set_info, which basically create a I3C device for master
-   and add it to system. This is fine for main master, but for
-   secondary master this should be deferred until controller actually
-   owns the bus/mastership.
-   
-Another reason is, to support secondary master initialization without
-board info, controller specific bus mode setting need to be done twice
-First with pure bus mode and second time when actual bus mode is known
-based on data received through DEFSLVS, whereas master set info is
-supposed to be done only once.
-	      
-[PATCH 2/3]
-i3c: add mastership handover support to i3c master subsystem
-This patch add mastership handover support as per MIPI I3C
-spec v1.0. Main master and secondary masters starts in pure
-bus mode to allow enumeration (DAA) to happen in same bus mode.
-Secondary masters are not required to have information about
-other devices connected on the bus through board info, this
-information is derived from DEFSLVS received from main
-master. While acquiring mastership, requesting master always
-make sure that it has active dynamic address, and received
-DEFSLVS at least once. Mastership request state machine
-make sure that any pending DEFSLVS is processed, so that
-when device become master it always have correct view
-of the bus.
-
-[PATCH 3/3]
-i3c: master: add mastership handover support to cdns i3c master driver
-This patch adds mastership handover support to the Cadence
-I3C controller driver. Basically, this include necessary
-callbacks for mastership request.
-
-Regards,
-Parshuram Thombare
-
-Parshuram Thombare (3):
-  i3c: master: split bus_init callback into bus_init and master_set_info
-  i3c: add mastership handover support to i3c master subsystem
-  i3c: master: add mastership handover support to cdns i3c master driver
-
- drivers/i3c/master.c                 | 490 ++++++++++++++++++++++++---
- drivers/i3c/master/dw-i3c-master.c   |  29 +-
- drivers/i3c/master/i3c-master-cdns.c | 385 ++++++++++++++++++---
- include/linux/i3c/master.h           |  47 ++-
- 4 files changed, 854 insertions(+), 97 deletions(-)
-
+diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
+index 5f4bd52121fe..0ec332e45737 100644
+--- a/drivers/i3c/master.c
++++ b/drivers/i3c/master.c
+@@ -1716,6 +1716,10 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
+ 	if (ret)
+ 		goto err_detach_devs;
+ 
++	ret = master->ops->master_set_info(master);
++	if (ret)
++		goto err_detach_devs;
++
+ 	/*
+ 	 * The master device should have been instantiated in ->bus_init(),
+ 	 * complain if this was not the case.
+@@ -2378,9 +2382,9 @@ EXPORT_SYMBOL_GPL(i3c_generic_ibi_recycle_slot);
+ 
+ static int i3c_master_check_ops(const struct i3c_master_controller_ops *ops)
+ {
+-	if (!ops || !ops->bus_init || !ops->priv_xfers ||
+-	    !ops->send_ccc_cmd || !ops->do_daa || !ops->i2c_xfers ||
+-	    !ops->i2c_funcs)
++	if (!ops || !ops->bus_init || !ops->master_set_info ||
++	    !ops->priv_xfers || !ops->send_ccc_cmd || !ops->do_daa ||
++	    !ops->i2c_xfers || !ops->i2c_funcs)
+ 		return -EINVAL;
+ 
+ 	if (ops->request_ibi &&
+diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
+index 1d83c97431c7..5c9a72d68fb8 100644
+--- a/drivers/i3c/master/dw-i3c-master.c
++++ b/drivers/i3c/master/dw-i3c-master.c
+@@ -593,7 +593,6 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
+ {
+ 	struct dw_i3c_master *master = to_dw_i3c_master(m);
+ 	struct i3c_bus *bus = i3c_master_get_bus(m);
+-	struct i3c_device_info info = { };
+ 	u32 thld_ctrl;
+ 	int ret;
+ 
+@@ -624,6 +623,24 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
+ 	writel(INTR_MASTER_MASK, master->regs + INTR_STATUS_EN);
+ 	writel(INTR_MASTER_MASK, master->regs + INTR_SIGNAL_EN);
+ 
++	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_SIR_REQ_REJECT);
++	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_MR_REQ_REJECT);
++
++	/* For now don't support Hot-Join */
++	writel(readl(master->regs + DEVICE_CTRL) | DEV_CTRL_HOT_JOIN_NACK,
++	       master->regs + DEVICE_CTRL);
++
++	dw_i3c_master_enable(master);
++
++	return 0;
++}
++
++static int dw_i3c_master_set_info(struct i3c_master_controller *m)
++{
++	struct dw_i3c_master *master = to_dw_i3c_master(m);
++	struct i3c_device_info info = { };
++	int ret;
++
+ 	ret = i3c_master_get_free_addr(m, 0);
+ 	if (ret < 0)
+ 		return ret;
+@@ -638,15 +655,6 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
+ 	if (ret)
+ 		return ret;
+ 
+-	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_SIR_REQ_REJECT);
+-	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_MR_REQ_REJECT);
+-
+-	/* For now don't support Hot-Join */
+-	writel(readl(master->regs + DEVICE_CTRL) | DEV_CTRL_HOT_JOIN_NACK,
+-	       master->regs + DEVICE_CTRL);
+-
+-	dw_i3c_master_enable(master);
+-
+ 	return 0;
+ }
+ 
+@@ -1088,6 +1096,7 @@ static irqreturn_t dw_i3c_master_irq_handler(int irq, void *dev_id)
+ 
+ static const struct i3c_master_controller_ops dw_mipi_i3c_ops = {
+ 	.bus_init = dw_i3c_master_bus_init,
++	.master_set_info = dw_i3c_master_set_info,
+ 	.bus_cleanup = dw_i3c_master_bus_cleanup,
+ 	.attach_i3c_dev = dw_i3c_master_attach_i3c_dev,
+ 	.reattach_i3c_dev = dw_i3c_master_reattach_i3c_dev,
+diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
+index 8889a4fdb454..c2d1631a9e38 100644
+--- a/drivers/i3c/master/i3c-master-cdns.c
++++ b/drivers/i3c/master/i3c-master-cdns.c
+@@ -1199,21 +1199,20 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
+ 	struct cdns_i3c_master *master = to_cdns_i3c_master(m);
+ 	unsigned long pres_step, sysclk_rate, max_i2cfreq;
+ 	struct i3c_bus *bus = i3c_master_get_bus(m);
+-	u32 ctrl, prescl0, prescl1, pres, low;
+-	struct i3c_device_info info = { };
+-	int ret, ncycles;
++	u32 ctrl, prescl0, prescl1, pres, low, bus_mode;
++	int ncycles;
+ 
+ 	switch (bus->mode) {
+ 	case I3C_BUS_MODE_PURE:
+-		ctrl = CTRL_PURE_BUS_MODE;
++		bus_mode = CTRL_PURE_BUS_MODE;
+ 		break;
+ 
+ 	case I3C_BUS_MODE_MIXED_FAST:
+-		ctrl = CTRL_MIXED_FAST_BUS_MODE;
++		bus_mode = CTRL_MIXED_FAST_BUS_MODE;
+ 		break;
+ 
+ 	case I3C_BUS_MODE_MIXED_SLOW:
+-		ctrl = CTRL_MIXED_SLOW_BUS_MODE;
++		bus_mode = CTRL_MIXED_SLOW_BUS_MODE;
+ 		break;
+ 
+ 	default:
+@@ -1244,7 +1243,6 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
+ 	bus->scl_rate.i2c = sysclk_rate / ((pres + 1) * 5);
+ 
+ 	prescl0 |= PRESCL_CTRL0_I2C(pres);
+-	writel(prescl0, master->regs + PRESCL_CTRL0);
+ 
+ 	/* Calculate OD and PP low. */
+ 	pres_step = 1000000000 / (bus->scl_rate.i3c * 4);
+@@ -1252,15 +1250,43 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
+ 	if (ncycles < 0)
+ 		ncycles = 0;
+ 	prescl1 = PRESCL_CTRL1_OD_LOW(ncycles);
++
++	ctrl = readl(master->regs + CTRL);
++	if (ctrl & CTRL_DEV_EN)
++		cdns_i3c_master_disable(master);
++	writel(prescl0, master->regs + PRESCL_CTRL0);
+ 	writel(prescl1, master->regs + PRESCL_CTRL1);
++	ctrl &= ~CTRL_BUS_MODE_MASK;
++	ctrl |= bus_mode | CTRL_HALT_EN | CTRL_MCS_EN;
++	/*
++	 * Enable Hot-Join, and, when a Hot-Join request happens,
++	 * disable all events coming from this device.
++	 * We will issue ENTDAA afterwards from the threaded IRQ
++	 * handler.
++	 */
++	if (!m->secondary)
++		ctrl |= CTRL_HJ_ACK | CTRL_HJ_DISEC;
++	writel(ctrl, master->regs + CTRL);
++	cdns_i3c_master_enable(master);
+ 
+-	/* Get an address for the master. */
+-	ret = i3c_master_get_free_addr(m, 0);
+-	if (ret < 0)
+-		return ret;
++	return 0;
++}
+ 
+-	writel(prepare_rr0_dev_address(ret) | DEV_ID_RR0_IS_I3C,
+-	       master->regs + DEV_ID_RR0(0));
++static int cdns_i3c_master_set_info(struct i3c_master_controller *m)
++{
++	struct cdns_i3c_master *master = to_cdns_i3c_master(m);
++	struct i3c_device_info info = { };
++	int ret;
++
++	if (!m->secondary) {
++		/* Get an address for the master. */
++		ret = i3c_master_get_free_addr(m, 0);
++		if (ret < 0)
++			return ret;
++
++		writel(prepare_rr0_dev_address(ret) | DEV_ID_RR0_IS_I3C,
++		       master->regs + DEV_ID_RR0(0));
++	}
+ 
+ 	cdns_i3c_master_dev_rr_to_info(master, 0, &info);
+ 	if (info.bcr & I3C_BCR_HDR_CAP)
+@@ -1270,16 +1296,6 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
+ 	if (ret)
+ 		return ret;
+ 
+-	/*
+-	 * Enable Hot-Join, and, when a Hot-Join request happens, disable all
+-	 * events coming from this device.
+-	 *
+-	 * We will issue ENTDAA afterwards from the threaded IRQ handler.
+-	 */
+-	ctrl |= CTRL_HJ_ACK | CTRL_HJ_DISEC | CTRL_HALT_EN | CTRL_MCS_EN;
+-	writel(ctrl, master->regs + CTRL);
+-
+-	cdns_i3c_master_enable(master);
+ 
+ 	return 0;
+ }
+@@ -1507,6 +1523,7 @@ static void cdns_i3c_master_recycle_ibi_slot(struct i3c_dev_desc *dev,
+ 
+ static const struct i3c_master_controller_ops cdns_i3c_master_ops = {
+ 	.bus_init = cdns_i3c_master_bus_init,
++	.master_set_info = cdns_i3c_master_set_info,
+ 	.bus_cleanup = cdns_i3c_master_bus_cleanup,
+ 	.do_daa = cdns_i3c_master_do_daa,
+ 	.attach_i3c_dev = cdns_i3c_master_attach_i3c_dev,
+diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
+index f13fd8b1dd79..3dc7eafe811a 100644
+--- a/include/linux/i3c/master.h
++++ b/include/linux/i3c/master.h
+@@ -337,10 +337,12 @@ struct i3c_bus {
+ 
+ /**
+  * struct i3c_master_controller_ops - I3C master methods
+- * @bus_init: hook responsible for the I3C bus initialization. You should at
+- *	      least call master_set_info() from there and set the bus mode.
++ * @bus_init: hook responsible for the I3C bus initialization.
+  *	      You can also put controller specific initialization in there.
+  *	      This method is mandatory.
++ * @master_set_info: hook responsible for assigning address to main master.
++ *			You should call i3c_master_set_info from here.
++ *			This method is mandatory.
+  * @bus_cleanup: cleanup everything done in
+  *		 &i3c_master_controller_ops->bus_init().
+  *		 This method is optional.
+@@ -421,6 +423,7 @@ struct i3c_bus {
+  */
+ struct i3c_master_controller_ops {
+ 	int (*bus_init)(struct i3c_master_controller *master);
++	int (*master_set_info)(struct i3c_master_controller *m);
+ 	void (*bus_cleanup)(struct i3c_master_controller *master);
+ 	int (*attach_i3c_dev)(struct i3c_dev_desc *dev);
+ 	int (*reattach_i3c_dev)(struct i3c_dev_desc *dev, u8 old_dyn_addr);
 -- 
 2.17.1
 
