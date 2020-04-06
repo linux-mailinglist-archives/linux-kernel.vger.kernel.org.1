@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6592819F2FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E0F19F302
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgDFJxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:53:52 -0400
-Received: from mga01.intel.com ([192.55.52.88]:43096 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726721AbgDFJxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:53:52 -0400
-IronPort-SDR: w0e4wFoyPMioJjZrg0tdDfu3tmw9jEE9+uGjpS54iO4BcQfUS0+I2FYHqPu2e5RNQmuDxZSXtK
- n2s9GhAWn1jw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 02:53:47 -0700
-IronPort-SDR: pSYiNYwup2Dbn4l6x88zHtU0hG4sV0HcYYC+mcCzl6PpV+ybcezEKC5wLH8DMjahWoALGHKG1t
- 0XGmDEM9OAjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,350,1580803200"; 
-   d="scan'208";a="254067748"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga006.jf.intel.com with ESMTP; 06 Apr 2020 02:53:41 -0700
-Date:   Mon, 6 Apr 2020 17:54:15 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH][v3] PM / sleep: Add pm_debug_messages boot command
- control
-Message-ID: <20200406095415.GA21720@chenyu-office.sh.intel.com>
-References: <20200402075652.13289-1-yu.c.chen@intel.com>
- <CAJZ5v0j2W5MYJnb4hiDn0OgR1xJZwm4TxVm9o-iw+epXPTp82g@mail.gmail.com>
- <20200406091813.GG31120@duo.ucw.cz>
+        id S1727020AbgDFJya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:54:30 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:43355 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726721AbgDFJya (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 05:54:30 -0400
+Received: by mail-ed1-f68.google.com with SMTP id bd14so18417615edb.10;
+        Mon, 06 Apr 2020 02:54:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Jq4dLklSvXAh4mHXbS3uqTp1YFNR8Y8OhfEZxV4SEp8=;
+        b=VDsECvv3dJgi/WyNSZFMnqH3tsD34fheZWAJo4vw+UFqci/Nu5BJ01uGZMnST6INBi
+         VXM7yNlHLkNJ99iLC0KHJXaN7YRq901+WLGHU1fa6Pk7zCcXy6cvcSy2TUgOqg2GhCr6
+         MNG+zcLv6GxdgGTRg78xqDlumDVA0P1vEKq9Y4VYdUtjALLaFtVGhoYIXCV33IhxhrBS
+         cuanFkxpXyYCrJ5n4nAnWBS5oIyI0u/S8qp0vhEQF0umBpMSkX98MKNT60qE7acWXtvf
+         y8kWDx6ToPNoV2vwQ8WEBoHaPNB53ERL5XmcOoo7Ymqm7OPNBFvmnX1ZTAdP45Ohr2BH
+         0/ww==
+X-Gm-Message-State: AGi0PuYvPmA4+xned3M0dvI6E48WB61LDhaB+F3ycgi8ZYQ7a2rEcSc2
+        QTucn9f1mKSktqxh+qp98UU=
+X-Google-Smtp-Source: APiQypIGsI1vy9jtZIncxZtn6HgnNsW1Vh3ZNhBDX+cUzlu30NjC5DdfbDeJxopv+1PyeG+Z0DSLcQ==
+X-Received: by 2002:a17:906:30c5:: with SMTP id b5mr21234309ejb.102.1586166868311;
+        Mon, 06 Apr 2020 02:54:28 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.125])
+        by smtp.googlemail.com with ESMTPSA id y10sm2858156ejm.3.2020.04.06.02.54.27
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Apr 2020 02:54:27 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 11:54:25 +0200
+From:   'Krzysztof Kozlowski' <krzk@kernel.org>
+To:     Hyunki Koo <hyunki00.koo@samsung.com>
+Cc:     gregkh@linuxfoundation.org, 'Kukjin Kim' <kgene@kernel.org>,
+        'Jiri Slaby' <jslaby@suse.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] tty: samsung_tty: 32-bit access for TX/RX hold
+ registers
+Message-ID: <20200406095425.GB13565@kozik-lap>
+References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
+ <CGME20200403111520epcas2p42ef81138693ffaaa281499c7a24e0e48@epcas2p4.samsung.com>
+ <20200403111511.10598-1-hyunki00.koo@samsung.com>
+ <20200403115941.GB29484@kozik-lap>
+ <000001d60b92$2adaee50$8090caf0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200406091813.GG31120@duo.ucw.cz>
+In-Reply-To: <000001d60b92$2adaee50$8090caf0$@samsung.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
-thanks for review.
-On Mon, Apr 06, 2020 at 11:18:13AM +0200, Pavel Machek wrote:
-> Hi!
-> 
-> > > diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> > > index ed73df5f1369..3fb9cbee8d28 100644
-> > > --- a/Documentation/admin-guide/kernel-parameters.txt
-> > > +++ b/Documentation/admin-guide/kernel-parameters.txt
-> > > @@ -3720,6 +3720,9 @@
-> > >                         Override pmtimer IOPort with a hex value.
-> > >                         e.g. pmtmr=0x508
+On Mon, Apr 06, 2020 at 06:35:46AM +0900, Hyunki Koo wrote:
+> On Fri, Apr 03, 2020 at 9:00: 10PM +0900, Krzysztof Kozlowski wrote:
+> > On Fri, Apr 03, 2020 at 08:15:10PM +0900, Hyunki Koo wrote:
+> > > Support 32-bit access for the TX/RX hold registers UTXH and URXH.
 > > >
-> > > +       pm_debug_messages       [SUSPEND,KNL]
-> > > +                       Enable suspend/resume debug messages during boot up.
-> > > +
-> > >         pnp.debug=1     [PNP]
-> > >                         Enable PNP debug messages (depends on the
-> > >                         CONFIG_PNP_DEBUG_MESSAGES option).  Change at run-time
-> 
-> > Applied (as 5.7-rc material) with modified subject and changelog,
->   thanks!
-> 
-> Please don't.
-> 
-> We have pnp.debug, i8042.debug, acpi.debug_*, lsm.debug... It makes
-> sense to do pm.debug... we want to have some consistency.
-> 
-We also have initcall_debug. It looks like the 'dot' indicates
-that it is a module(or driver) parameter, and have multiple options
-for user to choose from, but it looks like this is not the case for
-pm_debug_messages.
+> > > This is required for some newer SoCs.
+> > >
+> > > Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
+> > > ---
+> > > v2:
+> > > line 954 : change rd_regl to rd_reg in for backward compatibility.
+> > 
+> > I did not see any change around line 954 in v1... so what was it?
+> 954  line  is changed like below.
+> V1 : rd_regb --> rd_regl : we thought, this register need to change to 
+> V2: rd_regl --> rd_reg : we discuss internally, and 
+> I decided not to change  to existing devices for backward compatibility.
+> So we changed to rd_reg.
 
-Thanks,
-Chenyu
-> Thanks,
-> 									Pavel
-> -- 
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+Thanks.
 
+Best regards,
+Krzysztof
 
