@@ -2,104 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B36E19F3C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67D719F3CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgDFKoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:44:39 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:39775 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726948AbgDFKoj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:44:39 -0400
-Received: by mail-pf1-f194.google.com with SMTP id k15so7338073pfh.6;
-        Mon, 06 Apr 2020 03:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xpsSm03PNhhxTrDlHzFJiusW57aSpekqQTtY3BOaBJM=;
-        b=UAAKjx9GNKdrzDHCWGjcfG41gX/Cbvy7YW/ZDTHOCFMSnTDLchGMzaZssW3ScDGV/Z
-         7xchbKVwU0h/QPo1jv8RAxe5RxVcjUPD53V97HNIiPvht7dfc+zCDKwkcES05y/PEtcJ
-         rAg9Ae8Xo+ud9jnCybuOAMh4CNwue3K2HYxbG27mWvt9yKfXUcPcaS6xcjuzQ8ulKDvC
-         KIyQgQAo+c3WbeESfa6Vq+e6Apnszf/AWiZRxO5elgadEPGV4l3sV10OmnSeWfDDmNSY
-         Em2V4dRFPNjfWO03MliMwvxHo6lpw6Vnq/29y40ardOztBxJlJp5++zzfo/YXPNqEom1
-         KrLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xpsSm03PNhhxTrDlHzFJiusW57aSpekqQTtY3BOaBJM=;
-        b=XwHe5Ywnbw0sfDM4gbQ9NaQvl+QahJLoSGnKJNynsfjii94FugyMU7DoKs+K3SX3BX
-         V7D3oun34EoffqBsA9e0W3n0rZuYWBY8l81ktQpBwlR+wNPXsgZd9tHbXNqeAcEVowP3
-         3kM+nGnOpzP1yZHmaqWMI0LWFbt7VlEdKif7kH5kp4mkJf1Jqn3Hv9GjjESmeoJQ6g0g
-         VfFPPdcxIa0J2/0wUj4LrU3wmtW4FuG0O5OW639fVS3CmNXZ/YMBPCFxFdXXyMrE0G8/
-         1o5HehrJlGlFjtClllYFuqNIkG4y+j0Kr7Lj15t27Eihg8VXPtm7eSfonM0Q3eFRIqyL
-         hd8w==
-X-Gm-Message-State: AGi0PubUTGYaICDcGaf/jmc6rzOX4rkrLPfkyUz1bPsiNLWctBEVh47W
-        OMKXNcpTMZ6IBOjnYHdtye5wSudGasmrNIsuka4=
-X-Google-Smtp-Source: APiQypLVSCmp8W0PDDGXSdgvI9VwsRklH3NMg3fhaSk4LJ3JUwswPj1zXOnxcgmDKNT+oXenNn+9hpYhOP+QXuhOQUU=
-X-Received: by 2002:a05:6a00:2b4:: with SMTP id q20mr21324803pfs.36.1586169878219;
- Mon, 06 Apr 2020 03:44:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
- <1105bfe5-88f1-040e-db40-54d7761747d5@rasmusvillemoes.dk> <b1e6213ba9f67da8278dd5c5f5e4def8ab927c83.camel@perches.com>
- <20200403193242.38611906@coco.lan> <2751400ae13b25d8259a8a9d7b36caf98ec2d367.camel@perches.com>
- <CAHp75Vf+m_qzOwZb38dObLpKV2N27-J_7beqffhFVoSHaNV2vg@mail.gmail.com> <20200406094645.5f96457a@coco.lan>
-In-Reply-To: <20200406094645.5f96457a@coco.lan>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 6 Apr 2020 13:44:30 +0300
-Message-ID: <CAHp75Vdp+PXaJxrm99DgpJSS+6PcD1FfAfE3U1auFr2oxk5-tA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Joe Perches <joe@perches.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727185AbgDFKqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:46:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726841AbgDFKqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:46:13 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A5F1206F8;
+        Mon,  6 Apr 2020 10:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586169972;
+        bh=D6gBRmYTc+zgGLpuMuzRFYrYH7t/9Cv2c9BLVW0I8ow=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Lky6uMxo8GOtvEwgYMihpkD9LH/hRP9Cu73Mr4//sukdV5kERMpAUiMBLp527kAr1
+         SCVVZXY3OAMZiLKAzABBf6qHURcCRwtP+Hp/rUPfvKA85LbbzFQsS284bcJBGxtoqQ
+         5K1K9Q27SLoFXuR7eiGBrkFZpmAdG2ZLuXfFahMg=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Hyunki Koo <hyunki00.koo@samsung.com>
+Subject: [PATCH] dt-bindings: memory-controllers: exynos-srom: Remove unneeded type for reg-io-width
+Date:   Mon,  6 Apr 2020 12:45:54 +0200
+Message-Id: <20200406104554.29773-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 10:46 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
-> Em Fri, 3 Apr 2020 21:32:42 +0300
-> Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
-> > On Fri, Apr 3, 2020 at 8:54 PM Joe Perches <joe@perches.com> wrote:
-> > > On Fri, 2020-04-03 at 19:32 +0200, Mauro Carvalho Chehab wrote:
-> > > > Em Fri, 03 Apr 2020 09:56:42 -0700
-> > > > Joe Perches <joe@perches.com> escreveu:
-> >
-> > > It _might_ be useful to use a CONFIG_MEDIA_SUPPORT guard
-> > > in lib/vsprintf for this.
-> >
-> > No need. FourCC, if Sakari makes it more generic, can be used for
-> > other purposes, e.g. printing component names from the chips (not
-> > related to media at all).
-> >
->
-> Hmm... not 100% sure about what you're meaning with "component names".
+'reg-io-width' property is an enum so there is no need to specify its
+type.
 
-4cc is pretty much wide standard, media is just one of (famous) users of it.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ .../devicetree/bindings/memory-controllers/exynos-srom.yaml   | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-As I emphasized the example I referring to has nothing to do with media.
-
-Now, I have already two examples:
-- component name inside hardware register (used by Synopsys DesignWare)
-- CSRT table in ACPI uses this code for vendor ID.
-
+diff --git a/Documentation/devicetree/bindings/memory-controllers/exynos-srom.yaml b/Documentation/devicetree/bindings/memory-controllers/exynos-srom.yaml
+index cdfe3f7f0ea9..1250087b4ee6 100644
+--- a/Documentation/devicetree/bindings/memory-controllers/exynos-srom.yaml
++++ b/Documentation/devicetree/bindings/memory-controllers/exynos-srom.yaml
+@@ -51,9 +51,7 @@ patternProperties:
+         maxItems: 1
+ 
+       reg-io-width:
+-        allOf:
+-          - $ref: /schemas/types.yaml#/definitions/uint32
+-          - enum: [1, 2]
++        enum: [1, 2]
+         description:
+           Data width in bytes (1 or 2). If omitted, default of 1 is used.
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.17.1
+
