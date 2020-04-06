@@ -2,140 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF6C19F0D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 09:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5201B19F0DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 09:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgDFHdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 03:33:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgDFHdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 03:33:01 -0400
-Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57B2920731;
-        Mon,  6 Apr 2020 07:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586158380;
-        bh=Ms5RsENvJRoFDdb9eiP3YLO9VeSzIi6xAFAgFda9T6o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b7lVTB5lr9hZ+3dVyig/Cnn0Cs6y0NXNsLNwVL27F91zsnfPU4+X9prGzj0vRt7UE
-         xr9O2/eOICdzw1ybRAOQNInnZ/94cLujisQCsmINUuz6rQDE3WiaknJFVngP+OsFg4
-         4oDI2NOZDX9VvjYSBcBQxsTHE9fAuY/smFeKAvgM=
-Received: by mail-il1-f180.google.com with SMTP id x16so13689772ilp.12;
-        Mon, 06 Apr 2020 00:33:00 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZ8JXIOK1uCHvxVfyct9URSI/NvIvsjlQwptwbrfzP3PT6T3RKm
-        ddAEXymQ7FdIWJ0kx8zDPgiZK+m9Yap6YOZIW9Y=
-X-Google-Smtp-Source: APiQypLiaf9UohKxh3Y13jY61LCk2hUM4qVVKLN28RCHu30r14ussVsd2kZGb2FbBMTCwX6hSVz0TUifcWwc1mR+TAM=
-X-Received: by 2002:a92:443:: with SMTP id 64mr20350053ile.258.1586158379626;
- Mon, 06 Apr 2020 00:32:59 -0700 (PDT)
+        id S1726648AbgDFHfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 03:35:54 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:46651 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726491AbgDFHfy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 03:35:54 -0400
+Received: from mail-qt1-f179.google.com ([209.85.160.179]) by
+ mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MNtGq-1jf3wF3dea-00OHm3; Mon, 06 Apr 2020 09:35:52 +0200
+Received: by mail-qt1-f179.google.com with SMTP id 14so11838145qtp.1;
+        Mon, 06 Apr 2020 00:35:51 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYm2bnuPw6t6UOVgszpUf+in8zW0ZNzOo4Vbbb7oAA2crK1Hw7g
+        ekFQQXZ5pN1ZioBtPzN1l+N0mv5aiaF1ZnXkaFg=
+X-Google-Smtp-Source: APiQypJHJS0D0CuhIzouy0vALcYme6GTHL8o+M28QRpIRClyooISWprSWqp9Foh4IT+wMoCY0ggm3yzmP9kVRI43Jyk=
+X-Received: by 2002:ac8:16b8:: with SMTP id r53mr19668234qtj.7.1586158550566;
+ Mon, 06 Apr 2020 00:35:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200109150218.16544-1-nivedita@alum.mit.edu> <20200405154245.11972-1-me@prok.pw>
- <20200405231845.GA3095309@rani.riverdale.lan> <c692eea9213172d8ef937322b02ff585b0dfea82.camel@prok.pw>
- <20200406035110.GA3241052@rani.riverdale.lan>
-In-Reply-To: <20200406035110.GA3241052@rani.riverdale.lan>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 6 Apr 2020 09:32:47 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEUhyv886CjyKvjw2F12WaZxZRUWF6t_XzP4C2TJPdpeg@mail.gmail.com>
-Message-ID: <CAMj1kXEUhyv886CjyKvjw2F12WaZxZRUWF6t_XzP4C2TJPdpeg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/boot/compressed/64: Remove .bss/.pgtable from bzImage
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Sergey Shatunov <me@prok.pw>, bp@alien8.de, hpa@zytor.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
-        initramfs@vger.kernel.org,
-        Donovan Tremura <neurognostic@protonmail.ch>,
-        Harald Hoyer <harald@hoyer.xyz>
+References: <20200405025123.154688-1-sboyd@kernel.org> <20200405025123.154688-7-sboyd@kernel.org>
+ <CAK8P3a2M54quhRNK4xvwjz9O9oZwgrobc_wtkGaeA2PMYwOUdg@mail.gmail.com> <158614207114.88454.6776609424163493475@swboyd.mtv.corp.google.com>
+In-Reply-To: <158614207114.88454.6776609424163493475@swboyd.mtv.corp.google.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 6 Apr 2020 09:35:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3Yt2woG2LMcQ0jNPGuHdMtFbBmLvtBbrWFQ4J6x3v9aQ@mail.gmail.com>
+Message-ID: <CAK8P3a3Yt2woG2LMcQ0jNPGuHdMtFbBmLvtBbrWFQ4J6x3v9aQ@mail.gmail.com>
+Subject: Re: [PATCH 6/9] clk: Allow the common clk framework to be selectable
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        Russell King <linux@armlinux.org.uk>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER <linux-mips@vger.kernel.org>,
+        linux-c6x-dev@linux-c6x.org, linux-m68k
+        <linux-m68k@lists.linux-m68k.org>, Linux ARM
+        <linux-arm-kernel@lists.infradead.org>, Linux-sh list" 
+        <linux-sh@vger.kernel.org>, Greg Ungerer <gerg@linux-m68k.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:guG4TD9/Uf+l6wsnYaEJi6Nf+tdBSE8+6uRQApQnKzvFjmypFrX
+ hHWh3Ezp4uR2SgKdphNtOD2nV9veSIcm9XcGUZPF254KJA9ESrAw9usS6nBtgo/cJxc97yH
+ vq4zyfZidFEcGJ1Y5+FS/diCSzvXVCU6NeRcSait6N76rznNCsnt+7iqn51qvT41OnUPZQk
+ y8HewBkW2Otg0MGY0lFPQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:COsle5nMj1M=:/4N0BpONBt12pFkaBZk9ZB
+ KO75BcLWIs03zb0ydTySC2tUtTolL9/Ce3u0CxVriTJBz/Xqb0tmrpXL+WHab55MiiiCP3nfw
+ uZFOLLvA5NjSLt/jQdPmLWsMh2AxaZMwrYSWerS/nUgQIhyE0y35qUSOBP70TCL2tpu03cv9G
+ +5S57QZbOu2rQwITjWVQFpdY4hyNSQouC0kBJs8h1eAjV9/SULSJv43PCjSPP939u4jN88cAy
+ TIGa4uZYFyObrTVb9R/kQfNGbN9W1rWDiJ0+jBeaU4qBkDJmCMnK3SGPIvI/AJXLnFiSi3j6E
+ VV2ebVfYbH63BidI9UZihZDMhDtfVaxuxnNhnJmWMVzAP81M5FM3jCqO66+RZChPCB+gNC8qJ
+ zbFePGTqKjFOaDX/Y0nxLdV8/mkLr0zcX0wJHxnwOpprFTAwlTSixrzqKucdxqFvtW3B31eDA
+ Eg1rPQLhfyAR0WiBEaNMku5/h+LLaVzCRTVaGLWKqOUliXPwLCJ5zFxvMZX/KkRtnul+ERXZg
+ lc3U0UPMvfZto+GLygDY8JaqcSJGLYXilWMyWFSslmc4iHapHTKiKviikcxllfRXUKh4K0a11
+ iEomMmo5QjSPB5ETHwTLLJl+K8KqBrY3m/oV0gshlstSzQA8tc66tLGMXeMcxvPlZRLnSQNjs
+ 1S1/hlO2RhcE65SEAxp8jtXobjG2ooIARtO4wLWllcv4pdVM7u7ILqaVOp44BuGtqhfabsFS+
+ 7UGS3L1hnMc4Rf/03OyM/unsfb6RMxUUNSRA8pYpmdQmBjUiLzvwcSWhOXPFpCS0BYVEcS4Jq
+ zfb7TWAAezh406LSfRBcSOhY3dpXGmXStJB10Miyk6mjMCTtg4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Apr 2020 at 05:51, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+On Mon, Apr 6, 2020 at 5:01 AM Stephen Boyd <sboyd@kernel.org> wrote:
 >
-> On Mon, Apr 06, 2020 at 07:00:39AM +0700, Sergey Shatunov wrote:
-> > On Sun, 2020-04-05 at 19:18 -0400, Arvind Sankar wrote:
-> > > I'm not familiar with systemd-boot: when you say systemd-boot stub,
-> > > is
-> > > that something different from the kernel's EFI_STUB option? Or is it
-> > > just a kernel with EFI_STUB enabled and with builtin initramfs +
-> > > builtin
-> > > cmdline?
-> > Basicaly systemd-boot stub is efi application with packed EFI_STUB-
-> > enabled kernel, initrd and cmdline into single file. Source can be
-> > found here:
-> > https://github.com/systemd/systemd/blob/master/src/boot/efi/stub.c
+> Quoting Arnd Bergmann (2020-04-05 05:45:20)
+> > On Sun, Apr 5, 2020 at 4:51 AM Stephen Boyd <sboyd@kernel.org> wrote:
+> > > There's one snag with doing this, and that's making sure that randconfig
+> > > builds don't select this option when some architecture or platform
+> > > implements 'struct clk' outside of the common clk framework. Introduce a
+> > > new config option 'HAVE_LEGACY_CLK' to indicate those platforms that
+> > > haven't migrated to the common clk framework and therefore shouldn't be
+> > > allowed to select this new config option. Also add a note that we hope
+> > > one day to remove this config entirely.
 > >
-> > It doesn't do anything unusual, just extracting data from sections and
-> > calling efi handover.
+> > Good idea!
 > >
-> > Final image created by objcopy'ing precompiled stub and adding sections with that stuff:
+> > I've looked through the individual ones and commented a bit on
+> > what I think may or may not happen with them.
 > >
-> >     objcopy \
-> >         --add-section .osrel=os_release --change-section-vma
-> > '.osrel=0x20000' \
-> >         --add-section .cmdline=cmdline --change-section-vma
-> > '.cmdline=0x30000' \
-> >         --add-section .linux=vmlinuz --change-section-vma
-> > '.linux=0x2000000' \
-> >         --add-section .initrd=initrd --change-section-vma
-> > '.initrd=0x3000000' \
-> >         /usr/lib/systemd/boot/efi/linuxx64.efi.stub output.efi
+> > ralink SOC_MT7621 is the only one that I think you got wrong,
+> > as it already has common-clk support.
 >
-> So this embeds the bzImage which is a PE executable inside another PE
-> executable. Before my patch, the bss section was explicitly part of the
-> bzImage and so would have been zero, now it isn't any more and the PE
-> loader is expected to zero it out before executing. systemd-boot's stub
-> loader doesn't do that prior to jumping to the EFI handover entry, so
-> the issue must be because bss contains garbage.  I'm not 100% sure why
-> that leads to a crash, as the only variables in bss in the EFI stub are
-> for some boolean EFI command line arguments, so it ought to still have
-> worked, just as though it was invoked with random arguments. Anyway we
-> need to handle an uninitialized bss to get this to work properly.
->
+> Ah I missed that it was inside a big if RALINK. Thanks. I suppose I
+> should just remove the select then for that config and not worry about
+> the duplication of clkdev and common clk configs.
 
-The EFI handover protocol strikes again :-(
+Won't that cause build failures in those configurations that have
+both implementations?
 
-It seems we did not include any guidance in the documentation in
-Documentation/x86/boot.rst regarding zero-initializing BSS, and come
-to think of it, we don't include any other requirements either, i.e.,
-regarding placement wrt section alignment etc. This is a serious bug.
-Even though EFI usually lays out PE/COFF images in files the exact way
-they appear in memory, this is not actually required by the spec. Most
-notably, the virtual size can be smaller than the file size, and the
-loader is expected to zero-initialize the difference as well.
+According to the Makefile, the clk.c file is built whenever CONFIG_MIPS_GIC
+is unset, so I think we need
 
-Since the EFI handover protocol should be considered deprecated at
-this point (and is never going to be supported in upstream GRUB
-either, for instance), I would recommend the systemd-boot developers
-to start looking into deprecating this as well, and switch to the
-ordinary PE/COFF entry point, and use the new initrd callback protocol
-for initrd loading.
+         select HAVE_LEGACY_CLK if !MIPS_GIC
 
-On the Linux/x86 side, we should at least add some code to the EFI
-handover protocol entry point to zero initialize BSS, and ensure that
-it is either not needed in other places, or add the code to deal with
-those as well.
+or maybe move the select into the per-chip configs that need it:
+RT288X, RT305X, RT3883, and MT7620.
 
-> I also see from systemd [0] and dracut source [1] that these VMA's seem
-> to be hardcoded with no checking for how big the files actually are, and
-> objcopy doesn't seem to complain if sections end up overlapping.
->
-> So since [2] in dracut, the space available for the .linux section
-> containing the bzImage shrank from ~48MiB to 16MiB. This will hopefully
-> still fit the compressed kernel (although an allyesconfig bzImage is far
-> bigger than even 48MiB), but in-place decompression is unlikely to be
-> possible even for a normal config, which will break another patchset
-> that got merged into mainline for 5.7 [3,4], which tries to avoid
-> copying the kernel unless necessary, and has a good chance of triggering
-> in-place decompression if kaslr is disabled.
->
-> I'll get systemd-boot installed here so I can reproduce and implement
-> some workarounds for both issues. I should hopefully have a fix in a day
-> or two.
->
+> > > diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
+> > > index 60ac1cd8b96f..bd2d29c22a10 100644
+> > > --- a/arch/m68k/Kconfig.cpu
+> > > +++ b/arch/m68k/Kconfig.cpu
+> >
+> >    text    data     bss     dec     hex filename
+> > 1934726 263616   83284 2281626 22d09a obj/vmlinux-before
+> > 1971989 266192   83308 2321489 236c51 obj/vmlinux-after
+> >
+> > The coldfire clock implementation looks rather simple compared
+> > to chips from the 2010s: most chips have only fixed clocks,
+> > and three of them have one of two registers of clock gates.
+> >
+> > It shouldn't be hard to convert, but enabling common-clk will
+> > cause a noticeable kernel size increase on the fairly limited
+> > hardware.
+> >
+> > Simply enabling COMMON_CLK in m5475evb_defconfig
+> > results in a 1.7% or 40KB growth in kernel size, plus there
+> > would be additional dynamic memory usage:
+> There could certainly be some work done to reduce the code size of the
+> CCF. I haven't looked but perhaps we could save some memory by making
+> the basic types selectable too and then push a bunch of kconfig updates
+> through for that.
 
-Thanks Arvind.
+Right, that might help. Another possibility would be to support both
+the common clk layer and the custom clk implementation on coldfire
+until we remove the other custom implementations, by which point
+even fewer people will care about coldfire.
+
+Let's see what Geert and Greg think would be the best path for coldfire,
+maybe the added 40KB is less of a problem after all.
+
+       Arnd
