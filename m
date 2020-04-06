@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4AA19F960
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353AD19F964
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:56:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729114AbgDFPzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 11:55:32 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:36136 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729004AbgDFPzb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 11:55:31 -0400
-Received: by mail-pj1-f65.google.com with SMTP id nu11so21670pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 08:55:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gSjkzhFEiFJjyufT8+HraUsb7czl0gNB79kUOtKiYko=;
-        b=UBwbD9Fh2afx2lBbBBT4XMur9J9n4jUPu1rc4OUDGxMx+Ajc2wvGaAdQnMQlBkzsnr
-         +8h6sXlemiz/8/52IJN8D40WBcKL/y010DcYxll1huL1G53cvuCJrvKJKdU1bhRZN5nY
-         mW08EAE7q6lAjTkd4M3LAdvYDNmIr4f3nSivA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gSjkzhFEiFJjyufT8+HraUsb7czl0gNB79kUOtKiYko=;
-        b=gUMAXJa4jp5yFsqYGqablV7GjJJoMg4Zdo6p79iQjovcn3nTSIE/PwwFf5F+lokRwy
-         ef/2mksmsOi6zckzTtaaVRaZVH8TlL5v0llNmLOjSHh1nPocd9kq0yeoFjNGsYK1H3D+
-         ow/LV74eCZoQ1Ku1xHqceyEe+Bue0hhh5Nawki78K29NT/wBitppoPzRSxrNJkKWd/iR
-         TkM3/E+AUrllFIQLHMpEKeT/ZTIbcmix6/1gQ2p2LwQu+6Cjw1nJdRx1dtCf8H17dgGz
-         xLZp+YJBTi6E/jBJIBlyVRttRzvf+7RUQMY39PCOAcdNkXdfR1vDcCSUEMEQ+ORJJydB
-         JRVg==
-X-Gm-Message-State: AGi0PubYwArvsqshgjHcP6j4eKWTTN8Kd1zrF7XGfT/fT+zgibMCaYBr
-        89jn3t/qUHFVVmN9F0p7AcmtoQ==
-X-Google-Smtp-Source: APiQypJq6G4sfj4F480buN+2USewCEdxsSs+iaxAsio9clFT3schIx04v6ekH8nGfBzDTwyT28JlCQ==
-X-Received: by 2002:a17:902:6ac3:: with SMTP id i3mr20706329plt.111.1586188529962;
-        Mon, 06 Apr 2020 08:55:29 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t1sm14581pjf.26.2020.04.06.08.55.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 08:55:29 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 08:55:28 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Guilherme G. Piccoli" <gpiccoli@canonical.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-doc@vger.kernel.org, mcgrof@kernel.org, yzaikin@google.com,
-        tglx@linutronix.de, penguin-kernel@I-love.SAKURA.ne.jp,
-        vbabka@suse.cz, rdunlap@infradead.org, willy@infradead.org,
-        kernel@gpiccoli.net, dvyukov@google.com
-Subject: Re: [PATCH V3] kernel/hung_task.c: Introduce sysctl to print all
- traces when a hung task is detected
-Message-ID: <202004060854.22F15BDBF1@keescook>
-References: <20200327223646.20779-1-gpiccoli@canonical.com>
- <d4888de4-5748-a1d0-4a45-d1ecebe6f2a9@canonical.com>
+        id S1729131AbgDFP4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 11:56:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728645AbgDFP4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 11:56:07 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91222248B9;
+        Mon,  6 Apr 2020 15:56:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586188566;
+        bh=+3xwSPG5fNQlWz5dLxBAg7wLH73FhUVhMlCTgn4mUrI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JxriaKdrqBa1M0yXrn7jw5T5uqtxLs9RbO4XF1mRU54zloISxhNeB26IYgNvOvS6n
+         007qWUYQHXpoUVgbHkqP9pd6tyW3+YimSXx3MRt0nbgacGMg/eyrCBwenYgWrvE0Sz
+         bhpnoHMtSUt4Y+TiVbxrTRLz/zStywgHpLJE63L4=
+Date:   Mon, 6 Apr 2020 17:56:02 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Sudeep Dutt <sudeep.dutt@intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vadim Pasternak <vadimp@mellanox.com>,
+        Jason Wang <jasowang@redhat.com>,
+        platform-driver-x86@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 1/2] virtio: stop using legacy struct vring
+Message-ID: <20200406155602.GA160445@kroah.com>
+References: <20200406153245.127680-1-mst@redhat.com>
+ <20200406153245.127680-2-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d4888de4-5748-a1d0-4a45-d1ecebe6f2a9@canonical.com>
+In-Reply-To: <20200406153245.127680-2-mst@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 09:28:41AM -0300, Guilherme G. Piccoli wrote:
-> Hi Andrew / Kees, sorry for the ping.
-> Is there anything else missing in this patch? What are the necessary
-> steps to get it merged?
+On Mon, Apr 06, 2020 at 11:35:23AM -0400, Michael S. Tsirkin wrote:
+> struct vring (in the uapi directory) and supporting APIs are kept
+> around to avoid breaking old userspace builds.
+> It's not actually part of the UAPI - it was kept in the UAPI
+> header by mistake, and using it in kernel isn't necessary
+> and prevents us from making changes safely.
+> In particular, the APIs actually assume the legacy layout.
+> 
+> Add struct vring_s (identical ATM) and supporting
+> legacy APIs and switch everyone to use that.
 
-I'm expecting Andrew to pick it up, but it's the middle of the merge
-window right now, so there is likely to be a couple weeks delay before
-this will appear in -mm.
+How are we going to know that "struct vring_s" is what we need/want to
+use?  What does "_s" mean?
 
--- 
-Kees Cook
+"struct vring_kernel"?
+
+naming is hard...
+
+greg k-h
