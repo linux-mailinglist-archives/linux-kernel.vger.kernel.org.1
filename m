@@ -2,155 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4132719F30F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5D819F340
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgDFJ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:57:08 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:44232 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726675AbgDFJ5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:57:08 -0400
-Received: by mail-wr1-f68.google.com with SMTP id c15so741869wro.11;
-        Mon, 06 Apr 2020 02:57:05 -0700 (PDT)
+        id S1727045AbgDFKFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:05:38 -0400
+Received: from smtp2.axis.com ([195.60.68.18]:30270 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726858AbgDFKFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:05:38 -0400
+X-Greylist: delayed 430 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Apr 2020 06:05:36 EDT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:subject:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FvEi+v8qZ6wRx1mCm/iC1sBfa5p8W6TIxjoeXPWIu2Q=;
-        b=vEZ2wNARNNG/UR7JHYBp4KiNBSoFde3bLdpN9GMUsmvYX57lbUKfJHpc/r2cTubTpP
-         jRBX+4Lre5qkFI2ENdU1t3IgZ1t3rfVgokDYliC7NtymTR/ksf0iwzLnQkbvUH/sw3Om
-         AE3OA0r2/6qWDEAu7YdxTogwiNHyHDfV2Oae8xhs9TVu7u0YmLRhKQuwB21+lCFKJWlq
-         fAdVEVoWJNyPiHivCpbvgL9XXTBOf+MzNyRdLdKRkyCpr6Ee0nbq34I2ltbqhxDC1ZZF
-         A4SXyvv9hpePr1jYYbfc9sDH9iJ8IJcpmbV+ZzE7CgJoRpgrUpDW888LTtk+8AHqLYF5
-         jTrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FvEi+v8qZ6wRx1mCm/iC1sBfa5p8W6TIxjoeXPWIu2Q=;
-        b=lbnh79j1eqMiJ5kw5KJsZOrOX2T3NbDQ5HLVe/1+lbuXFVcLyXyYVszEjc3QLIh+xF
-         W/X0PycGqB5UHshtl25RKodnJz0YdflnwAz3FNK7tBTDpVIvAKmNGnIgZnc+RgtNF/1N
-         sJy8BpRgfprukasVR7Q2w2NJUor57XmKGXyZoVslJ5lhXnN8X+MQlkg7aXHiHPouIMHv
-         S1l5DZ5EHUf3CROMuoPiek0ojAUvpYM30i4knLTYD3U7KiEU+0QQDsHuzpXs5FQfKHLe
-         kIlf3TMib9ud5LRnFXJNRGqIRXcxjkJUtGTqlU4PeD1BdAKLN3yFlt0duqtp7K0YuJfL
-         IYOw==
-X-Gm-Message-State: AGi0PuZzOt6aeyRCoVcguvndVZYhAv3C4g0/ZCaQoneyp2a/MjW8gwIZ
-        UFubiA+vfLtV7Zczpfc/fDU=
-X-Google-Smtp-Source: APiQypKOYgFbX4rIA4V65ymFGi6FWm5SoeTA/SifEwSIIg4ZrWipB3EBywllK0pF5ZWsglTTIlRd2Q==
-X-Received: by 2002:adf:a459:: with SMTP id e25mr15750030wra.402.1586167025240;
-        Mon, 06 Apr 2020 02:57:05 -0700 (PDT)
-Received: from [192.168.2.1] (ip51ccf9cd.speed.planet.nl. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id f187sm25107141wme.9.2020.04.06.02.57.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Apr 2020 02:57:04 -0700 (PDT)
-To:     justin.swartz@risingedge.co.za
-Cc:     devicetree@vger.kernel.org, heiko@sntech.de,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, mark.rutland@arm.com,
-        robh+dt@kernel.org
-References: <20200405110022.3849-1-justin.swartz@risingedge.co.za>
-Subject: Re: [PATCH] ARM: dts: enable WLAN for Mecer Xtreme Mini S6
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <e602c1b8-3606-a8d3-c64c-ec9e58315974@gmail.com>
-Date:   Mon, 6 Apr 2020 11:57:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+  d=axis.com; l=2524; q=dns/txt; s=axis-central1;
+  t=1586167537; x=1617703537;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=udbZg0rfhq5obQgAPCHMOu7MfWPehMKnhUi5G4Oq/kI=;
+  b=BeTHKUaXoo90+CNnosI/Y5nFWqP6R7jSYyr/SMZbHoFlhltHxWIn7Igu
+   CUqBYUZKsjPRdBbadsoCKE69L6icnhjfdMt6km00GXZOetAkaHBPGZMf8
+   vzWxGXq9Ff+kJ1AZ4z99KSzYKzSGyFsOZL4kGZoaNN5h6XZNYrGsPI8t5
+   xvS2bF6IRj7gBWt9bI1+ihUv+SMs5lh1RvUR0qNvDhF6Lr6MrZAtvj+Vn
+   CL6+3OzPOxG4WWogNhgYew0wEMAgDfvfO6igysN0ffp0EzCNl6XJAQExm
+   mMwBu67OH5XxVekl4xNRIoEHUQkI+N5Ee2j5xE5Ubmnxx8Bob6Ly25111
+   A==;
+IronPort-SDR: 5Z4ylhPBGcYjVrTIdXrBHANuvFnZoUwtw+UfHA7gcaFU6I5aMMaoV/XUyApNtZkeyQMcd9irdw
+ m5a0o3u9icKDD5zzFT+p2piK6VxmaZeDD52Hwxvj7mlHIrIB9zCDmOh/tP7DWeCLc6uzN0Dbc1
+ P3H9MJgHh5A5pa5heYuGvcgIFVicKpSl6Pt3FwhGmtVQbESMuOO3jvLK4y2F0AZZldzg1JrbSA
+ lag4LfqbcIgzE2xTl/RaqYTZ//qPJ4d5UVT39AkTCoq5ZvHTDE0pNj93g3w5uvzAkalY9hUKzv
+ FD4=
+X-IronPort-AV: E=Sophos;i="5.72,350,1580770800"; 
+   d="scan'208";a="7162607"
+Date:   Mon, 6 Apr 2020 11:58:25 +0200
+From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     "rui.zhang@intel.com" <rui.zhang@intel.com>,
+        "amit.kucheria@verdurent.com" <amit.kucheria@verdurent.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] thermal: core: Send a sysfs notification on trip points
+Message-ID: <20200406095825.a3mrkbjqlih6xa7d@axis.com>
+References: <a7e8287d-72be-7ab0-697a-9de40eb3f81f@linaro.org>
+ <20200402142116.22869-1-daniel.lezcano@linaro.org>
+ <20200403144009.szjoss5ecleisg2f@axis.com>
+ <e0c819ce-31f4-cee1-c7cc-7ecb73d374a3@linaro.org>
+ <20200406074525.2bhseq3n5bw7dd2t@axis.com>
+ <62f5e0d0-155a-7520-cb1b-2113a2b711b3@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20200405110022.3849-1-justin.swartz@risingedge.co.za>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <62f5e0d0-155a-7520-cb1b-2113a2b711b3@linaro.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Justin,
-
-Have a look at the documents:
-
-Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.yaml
-Documentation/devicetree/bindings/mmc/synopsys-dw-mshc-common.yaml
-Documentation/devicetree/bindings/mmc/mmc-controller.yaml
-
-Fix &emmc as well.
-
-> From: Justin Swartz <justin.swartz@risingedge.co.za>
-> To: Heiko Stuebner <heiko@sntech.de>,
-> 	Rob Herring <robh+dt@kernel.org>,
-> 	Mark Rutland <mark.rutland@arm.com>
-> Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
-> 	linux-arm-kernel@lists.infradead.org,
-> 	linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-> 	linux-kernel@vger.kernel.org
-> Subject: [PATCH] ARM: dts: enable WLAN for Mecer Xtreme Mini S6
-> Date: Sun,  5 Apr 2020 11:00:21 +0000
-> Message-ID: <20200405110022.3849-1-justin.swartz@risingedge.co.za> (raw)
+On Mon, Apr 06, 2020 at 11:45:10AM +0200, Daniel Lezcano wrote:
+> On 06/04/2020 09:45, Vincent Whitchurch wrote:
+> > On Fri, Apr 03, 2020 at 05:26:39PM +0200, Daniel Lezcano wrote:
+> >> On 03/04/2020 16:40, Vincent Whitchurch wrote:
+> >>> Normally sysfs_notify() is used to notify userspace that the
+> >>> value of the sysfs file has changed, but in this case it's
+> >>> being used on a sysfs file whose value never changes.  I don't
+> >>> know if there are other drivers that do something similar.
+> >>
+> >> I think so:
+> >>
+> >> eg.
+> >>
+> >> drivers/hwmon/adt7x10.c: sysfs_notify(&dev->kobj, NULL,
+> >> "temp1_max_alarm"); drivers/hwmon/adt7x10.c:
+> >> sysfs_notify(&dev->kobj, NULL, "temp1_min_alarm");
+> >> drivers/hwmon/adt7x10.c: sysfs_notify(&dev->kobj, NULL,
+> >> "temp1_crit_alarm");
+> >>
+> >> drivers/hwmon/abx500.c: sysfs_notify(&data->pdev->dev.kobj, NULL,
+> >> alarm_node); drivers/hwmon/abx500.c:
+> >> sysfs_notify(&data->pdev->dev.kobj, NULL, alarm_node);
+> >>
+> >> drivers/hwmon/stts751.c: sysfs_notify(&priv->dev->kobj, NULL,
+> >> "temp1_max_alarm"); drivers/hwmon/stts751.c:
+> >> sysfs_notify(&priv->dev->kobj, NULL, "temp1_min_alarm");
+> >>
+> >> There are also some other places I believe they are doing the
+> >> same like:
+> >>
+> >> drivers/md/md.c: sysfs_notify(&mddev->kobj, NULL,
+> >> "sync_completed"); drivers/md/md.c: sysfs_notify(&mddev->kobj,
+> >> NULL, "degraded");
+> >
+> > AFAICS all these drivers (including the hwmon ones) use
+> > sysfs_notify() to notify that the value of the sysfs file has
+> > changed, unlike your proposed patch.
 > 
-> The Mecer Xtreme Mini S6 features a wireless module, based on a
-> Realtek 8723BS, which provides WLAN and Bluetooth connectivity via
-> SDIO and UART interfaces respectively.
+> Sorry, I don't have the same understanding:
 > 
-> Define a simple MMC power sequence that declares the GPIO pins
-> connected to the module's WLAN Disable and Bluetooth Disable pins
-> as active low reset signals, because both signals must be deasserted
-> for WLAN radio operation.
+> drivers/hwmon/adt7x10.c:
 > 
-> Configure the host's SDIO interface for High Speed mode with 1.8v
-> I/O signalling and IRQ detection over a 4-bit wide bus.
-> 
-> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
-> ---
->  arch/arm/boot/dts/rk3229-xms6.dts | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/rk3229-xms6.dts b/arch/arm/boot/dts/rk3229-xms6.dts
-> index 679fc2b00..cdfcef41b 100644
-> --- a/arch/arm/boot/dts/rk3229-xms6.dts
-> +++ b/arch/arm/boot/dts/rk3229-xms6.dts
-> @@ -39,6 +39,12 @@
->  		};
->  	};
->  
-> +	sdio_pwrseq: sdio-pwrseq {
-> +		compatible = "mmc-pwrseq-simple";
-> +		reset-gpios = <&gpio2 26 GPIO_ACTIVE_LOW>,
-> +		              <&gpio2 29 GPIO_ACTIVE_LOW>;
-> +	};
-> +
->  	vcc_host: vcc-host-regulator {
->  		compatible = "regulator-fixed";
->  		enable-active-high;
-> @@ -202,6 +208,18 @@
->  	status = "okay";
->  };
->  
-> +&sdio {
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	cap-sdio-irq;
+>  - receives an interrupt because one of the programmed temperature is
+> reached
+>  - reads the status to know which one and sends a sysfs notification
 
-> +	disable-wp;
+In the sysfs file implementation, you can see that the value in the
+sysfs file changes based on the same condition:
 
-Not used in combination with sdio and emmc.
+static ssize_t adt7x10_alarm_show(struct device *dev,
+                                  struct device_attribute *da, char *buf)
+{
+        struct sensor_device_attribute *attr = to_sensor_dev_attr(da);
+        int ret;
 
-> +	mmc-pwrseq = <&sdio_pwrseq>;
-> +	non-removable;
+        ret = adt7x10_read_byte(dev, ADT7X10_STATUS);
+        if (ret < 0)
+                return ret;
 
-> +	num-slots = <1>;
+        return sprintf(buf, "%d\n", !!(ret & attr->index));
+}
 
-Deprecated.
+static SENSOR_DEVICE_ATTR_RO(temp1_max_alarm, adt7x10_alarm,
+                             ADT7X10_STAT_T_HIGH);
 
-> +	vqmmc-supply = <&vccio_1v8>;
-> +	status = "okay";
-> +};
-> +
->  &sdmmc {
->  	cap-mmc-highspeed;
->  	disable-wp;
-> -- 
-> 2.11.0
+It's the same case with the other examples: the sysfs file's value
+changes.
 
+Anyway, as you say it probably doesn't matter as long as it is
+documented.
