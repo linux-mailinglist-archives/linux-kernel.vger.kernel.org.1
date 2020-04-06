@@ -2,119 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 516AD19F91A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F2C719F925
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbgDFPoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 11:44:11 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:55909 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729059AbgDFPoL (ORCPT
+        id S1729081AbgDFPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 11:47:20 -0400
+Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:35088 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729004AbgDFPrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 11:44:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586187849;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ksel4zeuxEuvzlfkWBaq7N2seFfLhw/qIgpcMtr4cuE=;
-        b=gt0Mavq/yhlJDXnEyl191ZO3UMBjkeuZRoXrpeWn+cnQlpjUgyowI6GLS7Z52gbcpTMmVU
-        +tOmCtOb4zRQqUsm3R/sqH8n4wZWnpx4r0bGlFeWHA5vmLQhT6w1Run2AJT0yhJCdek6lr
-        ewzEt1Ge9+kX7m5ytk7HeOtuu9Wenz8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-dD4Qfb39M42Ul0_Vv7_vmQ-1; Mon, 06 Apr 2020 11:44:08 -0400
-X-MC-Unique: dD4Qfb39M42Ul0_Vv7_vmQ-1
-Received: by mail-wr1-f71.google.com with SMTP id m15so14346wrb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 08:44:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ksel4zeuxEuvzlfkWBaq7N2seFfLhw/qIgpcMtr4cuE=;
-        b=lQyYuWSqf0UMzzJokKs8pthKS081O++2Jt4h9YLBE3f/65lgLW1G3nJH4wrbmLP196
-         RZPR5lPzh30bRyKYIbZfQlKL3fBgYq69xNq6leZudzjTwqHZ7/khSVmGcSMVPm2BcFjl
-         083zcVTEAJzsDxxi3O96DEWfNQA0GqKJy1C+c3jCJaPGgk/7qjLO0+r8D8fSYZLPo2Cs
-         YlDqTACjUFioeu5u1BFxEjs61/bhUFLcX6GEzZDb9MkpKRBivoQMISjBRtsHVnHzLXiK
-         laUnESWq8ANaMfmIWtqLRjWWwrUEzZntUtozEjK7o8dp5+lWLnKCrIYJL8GE6/0/OnhJ
-         HBHA==
-X-Gm-Message-State: AGi0PubwUbUkhU1Wun26Jdf+qzUB/986D/Q84n61ZLEZN8XeAtL2uaAO
-        F3bgdjuY20/TA/BCCofg8eLVgmhXwgJwAZ2imgBZqvDsfzT8whDFGoMmZKmA5+IjHYdldbUSO+S
-        zinIvNdZf3PEVVTp6NpbOxlID
-X-Received: by 2002:adf:cf09:: with SMTP id o9mr23888995wrj.74.1586187847097;
-        Mon, 06 Apr 2020 08:44:07 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIq8KKSvRFBuJvpiGY0hkZeDDxmoHMbGHpSedw+9ufGA1JoBNOnkv7Pi7rNRZL2IOokbrnHLw==
-X-Received: by 2002:adf:cf09:: with SMTP id o9mr23888982wrj.74.1586187846908;
-        Mon, 06 Apr 2020 08:44:06 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id n6sm8802wmn.10.2020.04.06.08.44.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Apr 2020 08:44:06 -0700 (PDT)
-Subject: Re: [PATCH] power: supply: axp288_fuel_gauge: Add the Meegopad T02 to
- the blacklist.
-To:     rafirafi <rafirafi.at@gmail.com>
-Cc:     Sebastian Reichel <sre@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200406140538.11894-1-rafirafi.at@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <eff57daf-6f71-1f6f-e4f9-5b5b1ed974cd@redhat.com>
-Date:   Mon, 6 Apr 2020 17:44:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 6 Apr 2020 11:47:20 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E5AA38378BBE;
+        Mon,  6 Apr 2020 15:47:18 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:2892:3138:3139:3140:3141:3142:3352:3622:3865:3867:3871:3872:3874:4321:4385:4390:4395:5007:6119:7903:10004:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13019:13069:13076:13311:13357:13439:14659:14721:21080:21627:30054:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: paper59_5695de72003b
+X-Filterd-Recvd-Size: 1721
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  6 Apr 2020 15:47:17 +0000 (UTC)
+Message-ID: <a291cce3ff1ba978e7ad231a8e1b7d82f6164e86.camel@perches.com>
+Subject: Re: [PATCH] mm: Add kvfree_sensitive() for freeing sensitive data
+ objects
+From:   Joe Perches <joe@perches.com>
+To:     Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 06 Apr 2020 08:45:18 -0700
+In-Reply-To: <20200406023700.1367-1-longman@redhat.com>
+References: <20200406023700.1367-1-longman@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-In-Reply-To: <20200406140538.11894-1-rafirafi.at@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 4/6/20 4:05 PM, rafirafi wrote:
-> From: Rafael Gandolfi <rafirafi.at@gmail.com>
+On Sun, 2020-04-05 at 22:37 -0400, Waiman Long wrote:
+> For kvmalloc'ed data object that contains sensitive information like
+> cryptographic key, we need to make sure that the buffer is always
+> cleared before freeing it. Using memset() alone for buffer clearing may
+> not provide certainty as the compiler may compile it away. To be sure,
+> the special memzero_explicit() has to be used.
 > 
->      The Meegopad T02 is a PC in stick format and doesn't have a battery,
->      it is reported with a random and constant battery charge but as
->      discharging to userspace.
-> 
->      Add it to the blacklist to avoid the bogus battery status reporting.
-> 
-> Signed-off-by: Rafael Gandolfi <rafirafi.at@gmail.com>
+> This patch introduces a new kvfree_sensitive() for freeing those
+> sensitive data objects allocated by kvmalloc(). The relevnat places
+> where kvfree_sensitive() can be used are modified to use it.
 
-Patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
+Why isn't this called kvzfree like the existing kzfree?
 
 
-> ---
->   drivers/power/supply/axp288_fuel_gauge.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
-> index e1bc4e6e6f30..0bc548865a61 100644
-> --- a/drivers/power/supply/axp288_fuel_gauge.c
-> +++ b/drivers/power/supply/axp288_fuel_gauge.c
-> @@ -717,6 +717,12 @@ static const struct dmi_system_id axp288_fuel_gauge_blacklist[] = {
->   			DMI_MATCH(DMI_PRODUCT_NAME, "STK1A32SC"),
->   		},
->   	},
-> +	{
-> +		/* Meegopad T02 */
-> +		.matches = {
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "MEEGOPAD T02"),
-> +		},
-> +	},
->   	{
->   		/* Meegopad T08 */
->   		.matches = {
-> 
 
