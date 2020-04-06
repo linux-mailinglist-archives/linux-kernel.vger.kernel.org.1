@@ -2,156 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AF619F83F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:51:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378B619F856
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgDFOvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:51:44 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:34624 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728776AbgDFOvo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:51:44 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036EmsmR135008;
-        Mon, 6 Apr 2020 14:51:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=TSq08w3zBJ3WXbaxngAG7bWBdNx8iSe5Zcj/t0FI1rw=;
- b=Ri0l9h8ptsXQDNmrdV0oqlk3PhIRtpT+VA3DLBFX1F3ehnf8e2VpCGQ/3OJbFrQQ+3lM
- oZ6RuOzs06z/VuyoWfJWZifIbj4OH5tfzLnYxxbd4eBuWgEvL+lTXkEj0i1D7YoHH0PL
- Br3BDVsun96eWccBnYX2kuQB1UR4MB1ri8cMKWmdudOwV4mshQM1kZuSq3mp+pMs7hru
- sXffiZevQIyatQWu18WKnaSbQGyEX2EKs45/As/oeHD0MqoazoMTw0fo+I17IbNsUiD0
- w71ktjB+SGvoi10WBOh9OlBi46u37S9k7RZwD2EuxQQZfLWaheodP/VZwK5wJeUtr/mv gQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 306jvmy8su-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 14:51:29 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036ElDtv100043;
-        Mon, 6 Apr 2020 14:51:29 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 3073qd9kvb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 14:51:28 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 036EpRta018224;
-        Mon, 6 Apr 2020 14:51:27 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 06 Apr 2020 07:51:27 -0700
-Subject: Re: [PATCH 4/7] objtool: Add support for return trampoline call
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-5-alexandre.chartre@oracle.com>
- <20200402152717.GE20730@hirez.programming.kicks-ass.net>
- <94272807-23c0-3eae-8312-9488607186ca@oracle.com>
-Message-ID: <8a33ffae-1926-9c0c-35b2-8276c49cfe5a@oracle.com>
-Date:   Mon, 6 Apr 2020 16:55:52 +0200
+        id S1728791AbgDFO4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:56:50 -0400
+Received: from mout.web.de ([212.227.17.12]:48533 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728689AbgDFO4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 10:56:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586184997;
+        bh=pLz/LsV8AU7v9pBmvODpUyRCAG40qhdMJASvG8MdKkU=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=NhKTH29bFE5BlYXxaLeBn5Un/TS/KxgTmjuI9VdyDe1NH3k9x/UrITM5JOze7p0xg
+         6hHZq9CHYlIl1x04TQEImENysqugOJQdtLfukdYTIjM5ndMV6aPVrfvHzHlkjkcG63
+         rkjaYCPf65NJ4YmsDqU9isOsdtOj0E1v1tnONcDE=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([2.243.176.200]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0Ls8xf-1jArIw0DRn-013sl9; Mon, 06
+ Apr 2020 16:56:37 +0200
+Subject: Re: [PATCH v5 1/2] powerpc/powernv: Return directly after a failed
+ of_property_read_u64_array() in opal_add_one_export()
+To:     Qiujun Huang <hqjagain@gmail.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     linux-kernel@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20200406125242.4973-1-hqjagain@gmail.com>
+ <20200406125242.4973-2-hqjagain@gmail.com>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <5b8b22bb-8236-1c88-5335-a0444aed79a4@web.de>
+Date:   Mon, 6 Apr 2020 16:56:34 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <94272807-23c0-3eae-8312-9488607186ca@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20200406125242.4973-2-hqjagain@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004060123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004060123
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:N3FYNfKmLhG/CmC/EVv3z0v4cgCRnS1WJQFabLg9w3V2As5N5hg
+ J/5R7MJvUZlfBmtFO2dHuU+ooMxvZ1T3I6QMS9xbIU1TMDHntv6cZHLhxBlL9vKA2WW475Q
+ 5WpmD49659wtFs6EMk1fJhi2j5gzVODKniXfJHXQJk5PS9Ena4sk7ILABNxpVjU4glsL0OQ
+ B5pcLvhusvxAXLh7MOXbQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7ERyUtTMWEA=:q5+TEOX/2iYRwb2O9m5gog
+ clwVow4sq48csyHfjoohXPTn6AEkIECWL85NsVZlz+lCiYNox+k244N13Ih5Kahib6CLTr3uV
+ sxAJGVmnc+xdiYzzS3GNcCV6w15iIZsVOsBUpU1O6JBz3MLanUtKuXcIydyP8MFrVSDRxLxhs
+ YcBL8zCscdrOJIs7XMniZoTgOaBR+Ch/CATjefwFT2INO+1V9n2wtsVM5ffM2L4EWJsanjqLJ
+ PAqEMzxr75+Oen+TTdoR0EjtgWdhT4poXyGLliEsdJhORbTWaTizZK+bqhrb7Oaix0fzZ+ykV
+ o9OKZdZn6TQqoZLRr8uHnO1BqCWeIdKq20gJmCdmLeD1HiM+vGH+YQYbQ+SdpW8BUaPTYUNtI
+ jWeMo64dOPvcMJKVOBlG+/xOIQ0tqNdTmg/Epyz5TalFjMSijrWHr2DUWSt35bS4mMFCV+SXf
+ 6ALJdXN8xplgaRaa7Qr2TgKUNBxozNDkWf3dNzw/xKs7eIhJwio67Y1Fu42N2GklF1SwOCWvs
+ uiftl2sJqD5L8E7+YP65kYuW4KYvDPv+dHZgYnnuB5Tkfh34WgOsZ6RqCi5M4KutWlfyNnFlb
+ eYH5tjEw+IT45rNxwVS9cZrEb5X/iZFr6UVoyAxBq7R7kujqNJ6iInSyN0H+pGm+Eg9z50PnR
+ yeAck0UdYWd+EcydBClUZO1wMOK7+y4DOPunM+cThFSNa5voa9JDYZWQj2+XHTGsJyZfjLnqb
+ SBPlaCykC/m9PJFtKyIM1tNgXNedxwCVTpopEbuPUn1j0oxyp/GI3KSRG6EkWkaibd7g7LXJj
+ DWKhOaY6t0ZuwKlxzSNnDkm4ZgacweZY3sGlh2TCLtjl1t9ppyRG5Kl+tppy0OAtUVsh/y4A6
+ JwNt0OcXMAqWZpyF/m8bWIjPOCHQBr9/yYsilz5dezlQ8IIhvIUnjAmCdUU/Rv/WxqaYoUqjP
+ p5NYwJrwCgCGFQgmMx5nWMq/ZGEow853efiJz0nU+sGDvEHjjnlBPvoYTpjTyyZR71s2ZsKUr
+ YT0O4t3d/JMlyoT4H5MQt9NSugkK52hkPnoXi+qv1R8C0z5X56HkC/Wrg1DqwQl2n61llnT+k
+ M1yO9IWdTlasK24rX7u20YeFVA1Tyx+nJPBJN58nTi4T4qP0cfAfib4gT6WachXYGTYzJ0ppL
+ tDIC5Hb8DK7Co+CkkXfCn+RNek1RWobUnyDfT0dTu+BE+5CIu6MeG1ar6+UQlecPngyu8rBn8
+ S+FuPdXrMSZfTExz6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> We don't need to go to the labal of out =E2=80=A6
+
+Please avoid a typo for this change description.
 
 
-On 4/6/20 4:34 PM, Alexandre Chartre wrote:
-> 
-> On 4/2/20 5:27 PM, Peter Zijlstra wrote:
->> On Thu, Apr 02, 2020 at 10:22:17AM +0200, Alexandre Chartre wrote:
->>> With retpoline, the return instruction is used to branch to an address
->>> stored on the stack. So, unlike a regular return instruction, when a
->>> retpoline return instruction is reached the stack has been modified
->>> compared to what we have when the function was entered.
->>>
->>> Provide the mechanism to explicitly call-out such return instruction
->>> so that objtool can correctly handle them.
->>
->> https://lkml.kernel.org/r/20200331222703.GH2452@worktop.programming.kicks-ass.net
->>
->> And also, the split out version:
->>
->>    https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=core/objtool&id=ec9d9549901dfd2ff411676dfc624e50219e4d5a
->>
-> 
-> HINT_RET_OFFSET works fine when an immediate value is pushed on the
-> stack. However if the value is pushed from a callee-saved register
-> (%rbp, %rbx, %r12-%r15) then we still have a "return with modified
-> stack frame" warning. That's because objtool checks callee-saved
-> registers pushed/popped on the stack, and we have retpoline functions
-> built for each register (see arch/x86/lib/retpoline.S)
-> 
-> So that's why I also added a bool to has_modified_stack_frame() to
-> no check registers:
-> 
-> @@ -1432,7 +1478,8 @@ static bool is_fentry_call(struct instruction *insn)
->       return false;
->   }
-> 
-> -static bool has_modified_stack_frame(struct insn_state *state)
-> +static bool has_modified_stack_frame(struct insn_state *state,
-> +                     bool check_registers)
->   {
->       int i;
-> 
-> @@ -1442,6 +1489,9 @@ static bool has_modified_stack_frame(struct insn_state *state)
->           state->drap)
->           return true;
-> 
-> +    if (!check_registers)
-> +        return false;
-> +
->       for (i = 0; i < CFI_NUM_REGS; i++)
->           if (state->regs[i].base != initial_func_cfi.regs[i].base ||
->               state->regs[i].offset != initial_func_cfi.regs[i].offset)
-> 
-> 
+> fails, as there is nothing to do. Just return.
 
-Here is a simple change on top of the UNWIND_HINT_RET_OFFSET patch to prevent
-this problem:
+I suggest to reconsider also this wording.
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index dbb2b2187037..97db8f49e06f 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1390,6 +1390,14 @@ static bool has_modified_stack_frame(struct instruction *insn,
-         if (state->stack_size != initial_func_cfi.cfa.offset + ret_offset)
-                 return true;
-  
-+       /*
-+        * If there is a ret offset hint then don't check registers
-+        * because a callee-saved register might have been pushed on
-+        * the stack.
-+        */
-+       if (ret_offset)
-+               return false;
-+
-         for (i = 0; i < CFI_NUM_REGS; i++) {
-                 if (state->regs[i].base != initial_func_cfi.regs[i].base ||
-                     state->regs[i].offset != initial_func_cfi.regs[i].offset)
+  Return directly after a call of the function =E2=80=9Cof_property_read_u=
+64_array=E2=80=9D
+  failed at the beginning.
 
 
-alex.
+> And we can =E2=80=A6
 
+Do such words indicate that even this patch approach should be split
+into further update steps?
+
+Regards,
+Markus
