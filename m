@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEE219F6D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7301C19F6DC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgDFNYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 09:24:32 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:37542 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728262AbgDFNYb (ORCPT
+        id S1728457AbgDFNYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 09:24:36 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:16484 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728392AbgDFNYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 09:24:31 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Mon, 6 Apr 2020 09:24:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586179474; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=0huV9gCKoElhr+Kd6F/isL7651Gm8HQMAsVqnv5Vwq0=; b=Un4MQq2UtTbbgoAla1q3swMROurPqDZzBDpB3e4zpndJpkCkeIE4a7fKiSCSBls6UE/ID4Jx
+ CJ/LNTqLeHaDIP0pJM/tNWMEUZ3c+1oAY4xu9EKy2nRCAnZXirR/LmcrWk4qETW53QAPyM4p
+ AmxS7vL4cmks4lx/9noM2xWGuRU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8b2d8d.7ff7bd409810-smtp-out-n05;
+ Mon, 06 Apr 2020 13:24:29 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1CA2FC43636; Mon,  6 Apr 2020 13:24:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 27286404C3;
-        Mon,  6 Apr 2020 13:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1586179471; bh=kO6bVcAz100KA27JSJXzLR1/q1Cun0xk/nxnhMvtHEM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=OdUaNn8AWpn3+D0gxKe1APO8OBe4MWXyGjHAWJ4pLwCRSd7I3r4ZP8hy0bh4xYUC3
-         Qn/5mQDHROxsvVLJu6QrXyKWCekXPbocBlK3oAFGZ7FAdCfUj41E7cG/MgIBJmOWDH
-         XRgg0zL+e1jOTGzCj6ZpiffOR0xPh1FIG+wwj76zbCq1gtT5CYfx51BDd5GdHL8UB5
-         F1qi1Uj/JqVN4oivAnuStzCY9Wm8SzmoCmfasEgFYf4qR5lpQRtTeOWZKWoW4D5Hnw
-         s5sgiTDc+3VoNCUu1nhiUDItU5HMI+2QmS9LMaMGS9I000pKEb0GFoJZRXsdnnkmhZ
-         mlP5fAAUFrUGQ==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id DB0FAA006D;
-        Mon,  6 Apr 2020 13:24:28 +0000 (UTC)
-From:   Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        airlied@linux.ie, daniel@ffwll.ch, Gustavo.Pimentel@synopsys.com,
-        Joao.Pinto@synopsys.com
-Cc:     Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>
-Subject: [PATCH v2 4/4] MAINTAINERS: Add IPK MIPI DSI Host driver entry
-Date:   Mon,  6 Apr 2020 15:24:14 +0200
-Message-Id: <197608bb7875677a0e61238f0434cc31f37737ba.1586174459.git.angelo.ribeiro@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1586174459.git.angelo.ribeiro@synopsys.com>
-References: <cover.1586174459.git.angelo.ribeiro@synopsys.com>
-In-Reply-To: <cover.1586174459.git.angelo.ribeiro@synopsys.com>
-References: <cover.1586174459.git.angelo.ribeiro@synopsys.com>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE9BDC433F2;
+        Mon,  6 Apr 2020 13:24:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DE9BDC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Tony Chuang <yhchuang@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "open list\:REALTEK WIRELESS DRIVER \(rtw88\)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list\:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] rtw88: Add delay on polling h2c command status bit
+References: <20200406093623.3980-1-kai.heng.feng@canonical.com>
+        <87v9mczu4h.fsf@kamboji.qca.qualcomm.com>
+        <94EAAF7E-66C5-40E2-B6A9-0787CB13A3A9@canonical.com>
+Date:   Mon, 06 Apr 2020 16:24:24 +0300
+In-Reply-To: <94EAAF7E-66C5-40E2-B6A9-0787CB13A3A9@canonical.com> (Kai-Heng
+        Feng's message of "Mon, 6 Apr 2020 21:18:20 +0800")
+Message-ID: <87zhboycfr.fsf@kamboji.qca.qualcomm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Creates entry for Synopsys DesignWare IPK MIPI DSI host driver and
-adds myself as maintainer.
+Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
 
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-Cc: Joao Pinto <jpinto@synopsys.com>
-Signed-off-by: Angelo Ribeiro <angelo.ribeiro@synopsys.com>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+>> On Apr 6, 2020, at 20:17, Kalle Valo <kvalo@codeaurora.org> wrote:
+>> 
+>> Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+>> 
+>>> --- a/drivers/net/wireless/realtek/rtw88/hci.h
+>>> +++ b/drivers/net/wireless/realtek/rtw88/hci.h
+>>> @@ -253,6 +253,10 @@ rtw_write8_mask(struct rtw_dev *rtwdev, u32
+>>> addr, u32 mask, u8 data)
+>>> 	rtw_write8(rtwdev, addr, set);
+>>> }
+>>> 
+>>> +#define rr8(addr)      rtw_read8(rtwdev, addr)
+>>> +#define rr16(addr)     rtw_read16(rtwdev, addr)
+>>> +#define rr32(addr)     rtw_read32(rtwdev, addr)
+>> 
+>> For me these macros reduce code readability, not improve anything. They
+>> hide the use of rtwdev variable, which is evil, and a name like rr8() is
+>> just way too vague. Please keep the original function names as is.
+>
+> The inspiration is from another driver.
+> readx_poll_timeout macro only takes one argument for the op.
+> Some other drivers have their own poll_timeout implementation,
+> and I guess it makes sense to make one specific for rtw88.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aff76a7..ffc678e 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5445,6 +5445,14 @@ S:	Maintained
- F:	drivers/gpu/drm/mcde/
- F:	Documentation/devicetree/bindings/display/ste,mcde.txt
- 
-+DRM DRIVER FOR SYNOPSYS DESIGNWARE IPK
-+M:	Angelo Ribeiro <angelo.ribeiro@synopsys.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	drivers/gpu/drm/ipk/
-+F:	Documentation/devicetree/bindings/display/ipk/
-+T:	git git://anongit.freedesktop.org/drm/drm-misc
-+
- DRM DRIVER FOR TDFX VIDEO CARDS
- S:	Orphan / Obsolete
- F:	drivers/gpu/drm/tdfx/
+I'm not even understanding the problem you are tying to fix with these
+macros. The upstream philosopyhy is to have the source code readable and
+maintainable, not to use minimal number of characters. There's a reason
+why we don't name our functions a(), b(), c() and so on.
+
 -- 
-2.7.4
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
