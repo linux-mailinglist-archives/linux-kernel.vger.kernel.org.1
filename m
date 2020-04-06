@@ -2,78 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 206D719F002
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 07:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1FF19F006
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 07:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgDFFGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 01:06:54 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:5392 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726408AbgDFFGx (ORCPT
+        id S1726582AbgDFFIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 01:08:47 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:33211 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726436AbgDFFIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 01:06:53 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.15]) by rmmx-syy-dmz-app10-12010 (RichMail) with SMTP id 2eea5e8ab8d4e13-9af74; Mon, 06 Apr 2020 13:06:29 +0800 (CST)
-X-RM-TRANSID: 2eea5e8ab8d4e13-9af74
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.1.173.122])
-        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee85e8ab8d204d-b87e0;
-        Mon, 06 Apr 2020 13:06:28 +0800 (CST)
-X-RM-TRANSID: 2ee85e8ab8d204d-b87e0
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     sre@kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: [PATCH] [PATCH v2] power:supply:88pm860x_battery:remove redundant dev_err message
-Date:   Mon,  6 Apr 2020 13:07:57 +0800
-Message-Id: <20200406050757.13796-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        Mon, 6 Apr 2020 01:08:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586149726; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=e9dLjINQKPN1LVIoIlwlnA22th7UlgTMqbgS6SOqu/E=; b=cI1x1u94PhoZGRToYKYHPO6BNjD4t24DSQ1F9UDSkf5Nm/9ASvNi/f5gdWmUWiCP9FZ6PIbQ
+ jNTXOI7T8pcWex2B8pI/vqN3DZFwds0w5uKiCd2nTfJNi3FBIVn40OQSeImTkPgJrHOcR+LS
+ 2ckMR8PwYLQEn7BYat0mwBpqcO4=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8ab95d.7f51098a1420-smtp-out-n04;
+ Mon, 06 Apr 2020 05:08:45 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EBF7DC43636; Mon,  6 Apr 2020 05:08:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.43.137] (unknown [106.213.172.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D2CE7C433D2;
+        Mon,  6 Apr 2020 05:08:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D2CE7C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH v15 6/7] soc: qcom: rpmh-rsc: Clear active mode
+ configuration for wake TCS
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Evan Green <evgreen@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>, lsrao@codeaurora.org,
+        "Raju P.L.S.S.S.N" <rplsssn@codeaurora.org>
+References: <1585660782-23416-1-git-send-email-mkshah@codeaurora.org>
+ <1585660782-23416-7-git-send-email-mkshah@codeaurora.org>
+ <CAD=FV=UqaTR7=i=5BApvnptZXpqVJiF1AE+Q+6H9Y4QdYfjfUQ@mail.gmail.com>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <855bb87e-6c5c-8fee-e237-f48f9d95e2ac@codeaurora.org>
+Date:   Mon, 6 Apr 2020 10:38:36 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=UqaTR7=i=5BApvnptZXpqVJiF1AE+Q+6H9Y4QdYfjfUQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the pm860x_battery_probe(),when get irq failed, the function
-platform_get_irq() can log an dev_err message,so remove redundant
-message here.
+Hi,
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
----
-Changes from v1
- - changed the theme、commit message and the code,but the purpose is the same.
-   The original piece is:https://lore.kernel.org/linux-pm/20200402111222.15204-1-tangbin@cmss.chinamobile.com/
----
- drivers/power/supply/88pm860x_battery.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+On 4/3/2020 1:44 AM, Doug Anderson wrote:
+> Hi,
+>
+> On Tue, Mar 31, 2020 at 6:21 AM Maulik Shah <mkshah@codeaurora.org> wrote:
+>> @@ -243,6 +279,14 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
+>>                  }
+>>
+>>                  trace_rpmh_tx_done(drv, i, req, err);
+>> +
+>> +               /*
+>> +                * If wake tcs was re-purposed for sending active
+>> +                * votes, clear AMC trigger & enable modes and
+>> +                * disable interrupt for this TCS
+>> +                */
+>> +               if (!drv->tcs[ACTIVE_TCS].num_tcs)
+>> +                       __tcs_set_trigger(drv, i, false);
+> Still seems weird that we have to do the untrigger in the IRQ routine
+> here and also weird that we _don't_ do it in the IRQ routine for
+> non-borrowed TCSes.  I guess it's not the end of the world, though.
+>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-diff --git a/drivers/power/supply/88pm860x_battery.c b/drivers/power/supply/88pm860x_battery.c
-index 5ca047b3f..1308f3a18 100644
---- a/drivers/power/supply/88pm860x_battery.c
-+++ b/drivers/power/supply/88pm860x_battery.c
-@@ -919,16 +919,12 @@ static int pm860x_battery_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	info->irq_cc = platform_get_irq(pdev, 0);
--	if (info->irq_cc <= 0) {
--		dev_err(&pdev->dev, "No IRQ resource!\n");
-+	if (info->irq_cc <= 0)
- 		return -EINVAL;
--	}
- 
- 	info->irq_batt = platform_get_irq(pdev, 1);
--	if (info->irq_batt <= 0) {
--		dev_err(&pdev->dev, "No IRQ resource!\n");
-+	if (info->irq_batt <= 0)
- 		return -EINVAL;
--	}
- 
- 	info->chip = chip;
- 	info->i2c =
+Thanks Doug for the review.
+
+IRQ is only needed to be enabled for TCSes used as ACTIVE_TCS.
+
+When we have dedicated ACTIVE_TCS, we leave IRQ always enabled from 
+probe (one time configuration), since the TCS won't be used for anything 
+other than to send ACTIVE transaction.
+
+When we don't have dedicated ACTIVE_TCS, we enable it when borrowed TCS 
+is used for ACTIVE transaction and then once its done using it, we 
+disable it again to leave it in its original configuration.
+
+Thanks,
+Maulik
+
 -- 
-2.20.1.windows.1
-
-
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
