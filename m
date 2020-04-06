@@ -2,69 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D07FB19F0D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 09:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E299719F0DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 09:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgDFHfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 03:35:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        id S1726633AbgDFHh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 03:37:29 -0400
+Received: from mga03.intel.com ([134.134.136.65]:65110 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726491AbgDFHfq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 03:35:46 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 531B920672;
-        Mon,  6 Apr 2020 07:35:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586158546;
-        bh=aNoZkMJveg+ENTUCrIEXfGnyqRiDMSwKqfMcazI1uX4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XSpweM2BaQ/kOvr21ZEsPsIoVLsacljsyrkv0waCLs5gJx79/0p/8GIHz9MmGubfV
-         NiRjC6QlLl0rvO2Nzq/0ryjJ5aeIJptzVJfGod5fnDdZ5X4HGxXCqcA/j1BRGO/gW4
-         FnqCMuo1bvJn+1EycGq5IojtQ8hoKmRK6t3QgBlw=
-Received: by pali.im (Postfix)
-        id D61CD8A7; Mon,  6 Apr 2020 09:35:43 +0200 (CEST)
-Date:   Mon, 6 Apr 2020 09:35:43 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Namjae Jeon <namjae.jeon@samsung.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Valdis Kletnieks <valdis.kletnieks@vt.edu>,
-        Christoph Hellwig <hch@lst.de>, sj1557.seo@samsung.com,
-        Arnd Bergmann <arnd@arndb.de>, linkinjeon@gmail.com
-Subject: Re: [PATCH v14 11/14] exfat: add Kconfig and Makefile
-Message-ID: <20200406073543.rkxnsgegunlv3lkt@pali>
-References: <CGME20200302062625epcas1p200c53fabe17996e92257a409b7a9c857@epcas1p2.samsung.com>
- <20200302062145.1719-1-namjae.jeon@samsung.com>
- <20200302062145.1719-12-namjae.jeon@samsung.com>
- <CAMuHMdXdGDnvGYi1v1OhjCz=61moVRZQdZOtiKLG3m8q7vwkTg@mail.gmail.com>
+        id S1726491AbgDFHh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 03:37:29 -0400
+IronPort-SDR: v8FVYcCLbmpqSPiMm0qmKh3vPR342wFb2q2ejyOwcB+I8w9NFZkH9MP4qVtb/86PJFLIizkecV
+ KAdaYQ2l771A==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 00:37:28 -0700
+IronPort-SDR: zxLso1bL8TOm8/q9pVl5b7mn+2Qd5Yv+N4xY2VboEbl8J62xz9AZJHXFzSK6xGtOEzeuj0Y5zo
+ 52evW69Yzqfw==
+X-IronPort-AV: E=Sophos;i="5.72,350,1580803200"; 
+   d="scan'208";a="424272165"
+Received: from maytarsh-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.38.121])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 00:37:23 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-media@vger.kernel.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and DRM fourccs
+In-Reply-To: <20200406072857.GD5835@kekkonen.localdomain>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200403091156.7814-1-sakari.ailus@linux.intel.com> <1105bfe5-88f1-040e-db40-54d7761747d5@rasmusvillemoes.dk> <20200406072857.GD5835@kekkonen.localdomain>
+Date:   Mon, 06 Apr 2020 10:37:20 +0300
+Message-ID: <87wo6tkqtr.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdXdGDnvGYi1v1OhjCz=61moVRZQdZOtiKLG3m8q7vwkTg@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 06 April 2020 09:27:01 Geert Uytterhoeven wrote:
-> I tried to do it myself:
-> 
->           Set this to the default input/output character set to use for
->           converting between the encoding that is used for user visible
->           filenames, and the UTF-16 character set that the exFAT filesystem
->           uses.  This can be overridden with the "iocharset" mount option for
->           the exFAT filesystems.
-> 
-> but then I got puzzled by the _3_ encodings that are part of it:
->   1. the default input/output character set to use for conversion,
->   2. encoding that is used for user visible filenames,
->   3. UTF-16 character set that the exFAT filesystem uses.
-> I assume 1 == 2, but there may be more to it?
+On Mon, 06 Apr 2020, Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> On Fri, Apr 03, 2020 at 02:10:53PM +0200, Rasmus Villemoes wrote:
+>> What's wrong with having a
+>> 
+>> char *fourcc_string(char *buf, u32 x)
+>> 
+>> that formats x into buf and returns buf, so it can be used in a
+>> 
+>> char buf[8];
+>> pr_debug("bla: %s\n", fourcc_string(buf, x))
+>
+> I guess that could be one option. But changing the implementation could
+> require changing the size of all those buffers.
 
-It is encoding between user visible filenames in VFS and UTF-16, so 1 == 2.
+Not arguing one way or another, just observing that
+drm_get_format_name() abstracts that by using:
+
+struct drm_format_name_buf {
+	char str[32];
+};
+
+
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
