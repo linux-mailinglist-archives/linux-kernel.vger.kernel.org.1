@@ -2,78 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7BA19F434
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99DE519F43B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbgDFLMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 07:12:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726873AbgDFLMv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 07:12:51 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 711A9206F8;
-        Mon,  6 Apr 2020 11:12:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586171571;
-        bh=MtJm1ZXy274Rt4S8/t5pgen0tFyzkY5ae3KXw6x6In4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lNHthtXXVAZNLmOMZ96NGSDiYyfoZhPYjEMJKtUifhay6eh9SXGgyIehffxgM+sxh
-         B8Rs4JGbzAnLTxPe1UErYuV9SemkVmkobtrBLQ96RC1+maODilYaeozsPW6/X7gyCb
-         dJrTUI2RhDh+0wHqRGtnSahzuWKdo2K5t+GZz32U=
-Date:   Mon, 6 Apr 2020 12:12:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Patrick Lai <plai@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org
-Subject: Re: [PATCH] ASoC: qcom: common: Silence EPROBE_DEFER messages
-Message-ID: <20200406111248.GB6837@sirena.org.uk>
-References: <20200406003656.2383978-1-bjorn.andersson@linaro.org>
+        id S1727193AbgDFLPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 07:15:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:40970 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726873AbgDFLPl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 07:15:41 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BCt5u171444;
+        Mon, 6 Apr 2020 11:15:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=QVjxrJ8QSz+DelTGjFdQ/F/1RkfZlL9u7ceZFM/P5eE=;
+ b=EMJfk10GM9MpU7Co0nc1cEz9LCFsf3eR9nuSc8gdbobAj97/byE2iB0ItD7qxR/mSzCB
+ dwLYc2xB5yguezCQzpBJEFU3tu8quCpKGQcwrVmoW+gYPz7T8oh8tdzXipcNhR92nQf2
+ 2ZfrPoGQ72jz0SPY6nwoyVAFJaE85E3ssdbU5d5ZvAxCoo/X6fC4/jWJNaa/S4TdCHZe
+ TDp2zbp0KMevFd8Wk1OcV960UjUOe7JHF7nCCaSklX+3EE0j91WNT97VP/PKyPKB8YQm
+ XNO1Ag6QAoxzq5gQsCmZwR3Xm1e2SqcIogaKiwDs3YD2bjgqPhr4bvf7e58BEyKKwEEL CA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 306jvmx3uk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Apr 2020 11:15:32 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BCaZl176512;
+        Mon, 6 Apr 2020 11:13:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 3073spqqer-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 06 Apr 2020 11:13:32 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 036BDUxr015538;
+        Mon, 6 Apr 2020 11:13:31 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 06 Apr 2020 04:13:30 -0700
+Date:   Mon, 6 Apr 2020 14:13:23 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Oscar Carter <oscar.carter@gmx.com>
+Cc:     Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Malcolm Priestley <tvboxspy@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] staging: vt6656: Use ARRAY_SIZE instead of define
+ RATE_54M
+Message-ID: <20200406111323.GD2001@kadam>
+References: <20200404141400.3772-1-oscar.carter@gmx.com>
+ <20200404141400.3772-2-oscar.carter@gmx.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oC1+HKm2/end4ao3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406003656.2383978-1-bjorn.andersson@linaro.org>
-X-Cookie: Serfs up!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200404141400.3772-2-oscar.carter@gmx.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0 mlxlogscore=792
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004060098
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
+ mlxlogscore=853 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004060098
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Apr 04, 2020 at 04:13:58PM +0200, Oscar Carter wrote:
+> Use ARRAY_SIZE to replace the define RATE_54M so we will never have a
+> mismatch. In this way, avoid the possibility of a buffer overflow if
+> this define is changed in the future to a greater value.
+> 
 
---oC1+HKm2/end4ao3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Future proofing is not really a valid reason to change this.  We have to
+assume that future programmers are not idiots.
 
-On Sun, Apr 05, 2020 at 05:36:56PM -0700, Bjorn Andersson wrote:
-> The Qualcomm sound card typically depends on several other drivers,
-> resulting in plenty of noise in the kernel log due to probe deferral.
-> Silence these errors.
+The only valid reason to do this is readability, but I'm not convinced
+the new version is more readable.
 
-This then means that if something is missing a depdenceny it becomes
-impossible to tell what the problem is from the logs.  Please at most
-reduce these to a dev_dbg().
+regards,
+dan carpenter
 
---oC1+HKm2/end4ao3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6LDq8ACgkQJNaLcl1U
-h9AnqAf/WP5/shM+o0NVDoSTzFDUIwsFx0+zD0HAUSjwRszIvxR7LzYmyk4crsOI
-izVV3xQVPYb1Ra+nGtGTEdJbU5UqJ5H7GDAHFCE0D4/eb2VP8qPCWYv+GWt9ipZz
-lopYieoo8ws+7qnd6l/DMfSjj2Ik7eSsIPUMmL4YOiUACTF1ypqtAzG0NF5bs0pR
-jtgllpDgeOwJwHKel+Lz7edKrHxqaQtPk5LdlxOqGbQU4Mm3isGP6oRAROn0p+iG
-P08qGMACi1nUfCe31/lym4z0bTOd9QCy7OXe/oIqJ2DvLdnZ/ASbRweGUWSbnxBU
-JljNw+dvdosofc2QP/WFVlg2jC9p+w==
-=gEl1
------END PGP SIGNATURE-----
-
---oC1+HKm2/end4ao3--
