@@ -2,147 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CFA19FFEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DE819FFE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgDFVFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 17:05:54 -0400
-Received: from mail26.static.mailgun.info ([104.130.122.26]:18186 "EHLO
-        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726254AbgDFVFx (ORCPT
+        id S1726277AbgDFVEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 17:04:51 -0400
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:5921 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725933AbgDFVEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 17:05:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586207153; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=ffx5EV2Q8Tn2RVpOX/tVF4K3DHDlYVftRrtuWmnjmPo=; b=EuecmqN+iYYlfCqASBwfjEBNHXUaj+VeqwtASLOcCEswCV4yzuX5f+9wXlIMzclPeBokUcef
- ftsGN6yDP/b6gEYuvMNND1pfJ/dDvvXvF1XrTvSdFTnRitE/Mf596P7e1WMRptM0bmGt3448
- EnkvI1RpWaXR2yU+DOQkTt68rME=
-X-Mailgun-Sending-Ip: 104.130.122.26
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e8b99ac.7fc1dadfe0d8-smtp-out-n01;
- Mon, 06 Apr 2020 21:05:48 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A13BFC43637; Mon,  6 Apr 2020 21:05:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
+        Mon, 6 Apr 2020 17:04:50 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 2194A44330;
+        Mon,  6 Apr 2020 23:04:48 +0200 (CEST)
+Authentication-Results: ste-pvt-msa2.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=shipmail.org header.i=@shipmail.org header.b=DA9SonA7;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
-Received: from jhugo-perf-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C347DC43636;
-        Mon,  6 Apr 2020 21:05:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C347DC43636
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH 3/3] bus: mhi: core: Remove link_status() callback
-Date:   Mon,  6 Apr 2020 15:04:37 -0600
-Message-Id: <1586207077-22361-4-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1586207077-22361-1-git-send-email-jhugo@codeaurora.org>
-References: <1586207077-22361-1-git-send-email-jhugo@codeaurora.org>
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, URIBL_BLOCKED=0.001]
+        autolearn=ham autolearn_force=no
+Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
+        dkim=pass (1024-bit key) header.d=shipmail.org
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 3PWkYw5PBWtE; Mon,  6 Apr 2020 23:04:47 +0200 (CEST)
+Received: from mail1.shipmail.org (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
+        (Authenticated sender: mb878879)
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id D45BB4432C;
+        Mon,  6 Apr 2020 23:04:40 +0200 (CEST)
+Received: from localhost.localdomain (h-205-35.A357.priv.bahnhof.se [155.4.205.35])
+        by mail1.shipmail.org (Postfix) with ESMTPSA id C75D7360153;
+        Mon,  6 Apr 2020 23:04:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=shipmail.org; s=mail;
+        t=1586207080; bh=TpPLdQ9Xg4zg7yV7oqskrJHnh3QSBtbAFduG4J4rY2E=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=DA9SonA7mU0e7m2Mh1VCU7TjJzadAUBAbdizDTQ03zAX9xHtzLm+sUQNrzo4pbh/D
+         hXXDR7/Auj4cuQsJ+NxrGJlDs6PbqdWfB0SrgPoyiDGOxD54N+lqOn0Yh35r8adjZY
+         P9SDgxCoR578vPEyVAx9W22Sr2JG4aL2kivyX50k=
+Subject: Re: Bad rss-counter state from drm/ttm, drm/vmwgfx: Support huge TTM
+ pagefaults
+To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>, linux-mm@kvack.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     pv-drivers@vmware.com, linux-graphics-maintainer@vmware.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>
+References: <1586138158.v5u7myprlp.none.ref@localhost>
+ <1586138158.v5u7myprlp.none@localhost>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m_=28VMware=29?= 
+        <thomas_os@shipmail.org>
+Organization: VMware Inc.
+Message-ID: <0b12b28c-5f42-b56b-ea79-6e3d1052b332@shipmail.org>
+Date:   Mon, 6 Apr 2020 23:04:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <1586138158.v5u7myprlp.none@localhost>
+Content-Type: multipart/mixed;
+ boundary="------------F0ED14F7B8417927F8CA67C2"
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the MHI core detects invalid data due to a PCI read, it calls into
-the controller via link_status() to double check that the link is infact
-down.  All in all, this is pretty pointless, and racy.  There are no good
-reasons for this, and only drawbacks.
+This is a multi-part message in MIME format.
+--------------F0ED14F7B8417927F8CA67C2
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Its pointless because chances are, the controller is going to do the same
-thing to determine if the link is down - attempt a PCI access and compare
-the result.  This does not make the link status decision any smarter.
+Hi,
 
-Its racy because its possible that the link was down at the time of the
-MHI core access, but then recovered before the controller access.  In this
-case, the controller will indicate the link is not down, and the MHI core
-will precede to use a bad value as the MHI core does not attempt to retry
-the access.
+On 4/6/20 9:51 PM, Alex Xu (Hello71) wrote:
+> Using 314b658 with amdgpu, starting sway and firefox causes "BUG: Bad
+> rss-counter state" and "BUG: non-zero pgtables_bytes on freeing mm" to
+> start filling dmesg, and then closing programs causes more BUGs and
+> hangs, and then everything grinds to a halt (can't start more programs,
+> can't even reboot through systemd).
+>
+> Using master and reverting that branch up to that point fixes the
+> problem.
+>
+> I'm using a Ryzen 1600 and AMD Radeon RX 480 on an ASRock B450 Pro4
+> board with IOMMU enabled.
 
-Retrying the access in the MHI core is a bad idea because again, it is
-racy - what if the link is down again?  Furthermore, there may be some
-higher level state associated with the link status, that is now invalid
-because the link went down.
+If you could try the attached patch, that'd be great!
 
-The only reason why the MHI core could see "invalid" data when doing a PCI
-access, that is actually valid, is if the register actually contained the
-PCI spec defined sentinel for an invalid access.  In this case, it is
-arguable that the MHI implementation broken, and should be fixed, not
-worked around.
+Thanks,
 
-Therefore, remove the link_status() callback before anyone attempts to
-implement it.
+Thomas
 
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+
+
+--------------F0ED14F7B8417927F8CA67C2
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-drm-ttm-Temporarily-disable-the-huge_fault-callback.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-drm-ttm-Temporarily-disable-the-huge_fault-callback.pat";
+ filename*1="ch"
+
+From b630b9b4dcc1d01514d97a84cbb7f0cb85333154 Mon Sep 17 00:00:00 2001
+From: "Thomas Hellstrom (VMware)" <thomas_os@shipmail.org>
+Date: Mon, 6 Apr 2020 22:55:13 +0200
+Subject: [PATCH] drm/ttm: Temporarily disable the huge_fault() callback
+
+Signed-off-by: Thomas Hellstrom (VMware) <thomas_os@shipmail.org>
 ---
- drivers/bus/mhi/core/init.c | 6 ++----
- drivers/bus/mhi/core/main.c | 5 ++---
- include/linux/mhi.h         | 2 --
- 3 files changed, 4 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/ttm/ttm_bo_vm.c | 63 ---------------------------------
+ 1 file changed, 63 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index b38359c..2af08d57 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -812,10 +812,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
- 	if (!mhi_cntrl)
- 		return -EINVAL;
+diff --git a/drivers/gpu/drm/ttm/ttm_bo_vm.c b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+index 6ee3b96f0d13..0ad30b112982 100644
+--- a/drivers/gpu/drm/ttm/ttm_bo_vm.c
++++ b/drivers/gpu/drm/ttm/ttm_bo_vm.c
+@@ -442,66 +442,6 @@ vm_fault_t ttm_bo_vm_fault(struct vm_fault *vmf)
+ }
+ EXPORT_SYMBOL(ttm_bo_vm_fault);
  
--	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put)
--		return -EINVAL;
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-/**
+- * ttm_pgprot_is_wrprotecting - Is a page protection value write-protecting?
+- * @prot: The page protection value
+- *
+- * Return: true if @prot is write-protecting. false otherwise.
+- */
+-static bool ttm_pgprot_is_wrprotecting(pgprot_t prot)
+-{
+-	/*
+-	 * This is meant to say "pgprot_wrprotect(prot) == prot" in a generic
+-	 * way. Unfortunately there is no generic pgprot_wrprotect.
+-	 */
+-	return pte_val(pte_wrprotect(__pte(pgprot_val(prot)))) ==
+-		pgprot_val(prot);
+-}
 -
--	if (!mhi_cntrl->status_cb || !mhi_cntrl->link_status)
-+	if (!mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
-+	    !mhi_cntrl->status_cb)
- 		return -EINVAL;
- 
- 	ret = parse_config(mhi_cntrl, config);
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index eb4256b..473278b8 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -20,9 +20,8 @@ int __must_check mhi_read_reg(struct mhi_controller *mhi_cntrl,
+-static vm_fault_t ttm_bo_vm_huge_fault(struct vm_fault *vmf,
+-				       enum page_entry_size pe_size)
+-{
+-	struct vm_area_struct *vma = vmf->vma;
+-	pgprot_t prot;
+-	struct ttm_buffer_object *bo = vma->vm_private_data;
+-	vm_fault_t ret;
+-	pgoff_t fault_page_size = 0;
+-	bool write = vmf->flags & FAULT_FLAG_WRITE;
+-
+-	switch (pe_size) {
+-	case PE_SIZE_PMD:
+-		fault_page_size = HPAGE_PMD_SIZE >> PAGE_SHIFT;
+-		break;
+-#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+-	case PE_SIZE_PUD:
+-		fault_page_size = HPAGE_PUD_SIZE >> PAGE_SHIFT;
+-		break;
+-#endif
+-	default:
+-		WARN_ON_ONCE(1);
+-		return VM_FAULT_FALLBACK;
+-	}
+-
+-	/* Fallback on write dirty-tracking or COW */
+-	if (write && ttm_pgprot_is_wrprotecting(vma->vm_page_prot))
+-		return VM_FAULT_FALLBACK;
+-
+-	ret = ttm_bo_vm_reserve(bo, vmf);
+-	if (ret)
+-		return ret;
+-
+-	prot = vm_get_page_prot(vma->vm_flags);
+-	ret = ttm_bo_vm_fault_reserved(vmf, prot, 1, fault_page_size);
+-	if (ret == VM_FAULT_RETRY && !(vmf->flags & FAULT_FLAG_RETRY_NOWAIT))
+-		return ret;
+-
+-	dma_resv_unlock(bo->base.resv);
+-
+-	return ret;
+-}
+-#endif
+-
+ void ttm_bo_vm_open(struct vm_area_struct *vma)
  {
- 	u32 tmp = readl(base + offset);
+ 	struct ttm_buffer_object *bo = vma->vm_private_data;
+@@ -604,9 +544,6 @@ static const struct vm_operations_struct ttm_bo_vm_ops = {
+ 	.open = ttm_bo_vm_open,
+ 	.close = ttm_bo_vm_close,
+ 	.access = ttm_bo_vm_access,
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	.huge_fault = ttm_bo_vm_huge_fault,
+-#endif
+ };
  
--	/* If there is any unexpected value, query the link status */
--	if (PCI_INVALID_READ(tmp) &&
--	    mhi_cntrl->link_status(mhi_cntrl))
-+	/* If the value is invalid, the link is down */
-+	if (PCI_INVALID_READ(tmp))
- 		return -EIO;
- 
- 	*out = tmp;
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index ad19960..be704a4 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -335,7 +335,6 @@ struct mhi_controller_config {
-  * @syserr_worker: System error worker
-  * @state_event: State change event
-  * @status_cb: CB function to notify power states of the device (required)
-- * @link_status: CB function to query link status of the device (required)
-  * @wake_get: CB function to assert device wake (optional)
-  * @wake_put: CB function to de-assert device wake (optional)
-  * @wake_toggle: CB function to assert and de-assert device wake (optional)
-@@ -417,7 +416,6 @@ struct mhi_controller {
- 
- 	void (*status_cb)(struct mhi_controller *mhi_cntrl,
- 			  enum mhi_callback cb);
--	int (*link_status)(struct mhi_controller *mhi_cntrl);
- 	void (*wake_get)(struct mhi_controller *mhi_cntrl, bool override);
- 	void (*wake_put)(struct mhi_controller *mhi_cntrl, bool override);
- 	void (*wake_toggle)(struct mhi_controller *mhi_cntrl);
+ static struct ttm_buffer_object *ttm_bo_vm_lookup(struct ttm_bo_device *bdev,
 -- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.21.1
+
+
+--------------F0ED14F7B8417927F8CA67C2--
