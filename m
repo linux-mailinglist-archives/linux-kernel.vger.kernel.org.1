@@ -2,126 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 623FF19F803
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DA119F808
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 16:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728712AbgDFOcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 10:32:25 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:51368 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728406AbgDFOcZ (ORCPT
+        id S1728737AbgDFOet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 10:34:49 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52325 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728729AbgDFOes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 10:32:25 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036ERmb5164674;
-        Mon, 6 Apr 2020 14:32:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=VSir/jwIS86Ti+Bjs0dKhCzkqxS9YJ8FGAa/hLbL5NA=;
- b=bRVTtBINEmWcHUhDlRnrE8XVaBIbv6S9WX3TBCU8hBOXD3+tJzaaK1jy6cK1zoVnPox7
- 1Nk2WQXUwFgnpTImAxKUsJGT6gR7u05HY3AHD80tRNqMAxYR89wjlgMwNHxqpzsut09y
- 8U3o2rEzz7C59E0DhySJKqOc4prbZF3w3oObNyhnB3ctdH04yxcGF0gWsGAr27t5WSnk
- mJ77d7Yjnydfef4+cjLlt1Pwy6/w4j3xj/LAttetfDtrAX3hzx9TVN+xq2pk5No33emG
- dY56QH6zcQMoWhyiVFyNgfr2LWAFABJXebFHHEWyuHZaaRjK1p789hTjoodgXJff/785 Fg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 306hnqy7m7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 14:32:08 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036ESQAx170971;
-        Mon, 6 Apr 2020 14:30:08 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 30839q5pqy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 14:30:08 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 036EU2eN005591;
-        Mon, 6 Apr 2020 14:30:05 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 06 Apr 2020 07:30:02 -0700
-Subject: Re: [PATCH 4/7] objtool: Add support for return trampoline call
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, tglx@linutronix.de
-References: <20200402082220.808-1-alexandre.chartre@oracle.com>
- <20200402082220.808-5-alexandre.chartre@oracle.com>
- <20200402152717.GE20730@hirez.programming.kicks-ass.net>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <94272807-23c0-3eae-8312-9488607186ca@oracle.com>
-Date:   Mon, 6 Apr 2020 16:34:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Mon, 6 Apr 2020 10:34:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586183686;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IJvEdYDLaOnX9xJG3HxXlME2+2zcIWCbfErT4uuM1A8=;
+        b=D2cMUT1wDYfBd8c4l2NM3orVyHRoYcUi1ZAEJ1/W9ZsktBX2vTRfyw1KpjhH24MC3VdQ75
+        vXayMrwCISJyPRsWwelb94j5g3L0TGzil7KotQWiOcelHGVZ74ckyQERCINqFshU0JbJj2
+        5usW0j6YCx2XS36vIX0gWEE6sVPt54E=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-phyq7vIUNwaBh-bnCapKkg-1; Mon, 06 Apr 2020 10:34:45 -0400
+X-MC-Unique: phyq7vIUNwaBh-bnCapKkg-1
+Received: by mail-wr1-f71.google.com with SMTP id h14so8439761wrr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 07:34:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=IJvEdYDLaOnX9xJG3HxXlME2+2zcIWCbfErT4uuM1A8=;
+        b=Bc8CHyC37VGGigSgJPgs+sc1luw6yLf4AyI9JzcoPtjukyBdoq1ZZBsqY5ldIswSHx
+         x6XZx/admwL7r+G2UZZ8W1DuOlZpJ3W9OhSgqg5Ggm4rmsyA0oxKIgpOjW0nfh/U2d+h
+         rOFV3AVTlddalxFYubVvDj0qFIsYcAzh/TF2QELQ577fPAyjVkxo5xENsCrBYz83X69a
+         alVBvm5NSTVzgTEfLqc55EaTP12iyYOQsBTHUDKUa6lLBDwbOkgO/dzGjSf8Q7NTVTB5
+         M1Qz+Ju34Gw8XipbCPPvUXisLJumANuCam5hpJ6OwtX5hh7sDXLLi3U/RFa5bKOVRM0e
+         sUcA==
+X-Gm-Message-State: AGi0PubzSm9/TL/F0GyMEuH2jEjgVOYa0kk13Qm4UODjix70zkEk9S4Z
+        kpkPt9+pw84HaaP4zeZYduVKPJIWvmL2yV6nOxhr0IQoktVWr/TEKfIe8eSUbRuU7yleYd+rLYo
+        enrHGpnc1+IM27YP5gLqFaffQ
+X-Received: by 2002:a5d:468b:: with SMTP id u11mr10561960wrq.89.1586183683844;
+        Mon, 06 Apr 2020 07:34:43 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKVC46xSuUV+b+SZgNesYPGvUEvVa9w1c6TmOn2m1iOj0U4q5Cbs3Io5eAGagoYg5SQI3CbzQ==
+X-Received: by 2002:a5d:468b:: with SMTP id u11mr10561937wrq.89.1586183683607;
+        Mon, 06 Apr 2020 07:34:43 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
+        by smtp.gmail.com with ESMTPSA id o13sm4347586wrm.74.2020.04.06.07.34.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 07:34:43 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 10:34:40 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: Re: [PATCH] vhost: force spec specified alignment on types
+Message-ID: <20200406102531-mutt-send-email-mst@kernel.org>
+References: <20200406124931.120768-1-mst@redhat.com>
+ <045c84ed-151e-a850-9c72-5079bd2775e6@redhat.com>
+ <20200406095424-mutt-send-email-mst@kernel.org>
+ <d171447e-eabc-60ab-6de7-41ac9b82d7d1@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200402152717.GE20730@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004060120
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 adultscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 mlxlogscore=999
- lowpriorityscore=0 spamscore=0 impostorscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004060120
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d171447e-eabc-60ab-6de7-41ac9b82d7d1@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/2/20 5:27 PM, Peter Zijlstra wrote:
-> On Thu, Apr 02, 2020 at 10:22:17AM +0200, Alexandre Chartre wrote:
->> With retpoline, the return instruction is used to branch to an address
->> stored on the stack. So, unlike a regular return instruction, when a
->> retpoline return instruction is reached the stack has been modified
->> compared to what we have when the function was entered.
->>
->> Provide the mechanism to explicitly call-out such return instruction
->> so that objtool can correctly handle them.
+On Mon, Apr 06, 2020 at 10:09:27PM +0800, Jason Wang wrote:
 > 
-> https://lkml.kernel.org/r/20200331222703.GH2452@worktop.programming.kicks-ass.net
+> On 2020/4/6 下午9:55, Michael S. Tsirkin wrote:
+> > On Mon, Apr 06, 2020 at 09:34:00PM +0800, Jason Wang wrote:
+> > > On 2020/4/6 下午8:50, Michael S. Tsirkin wrote:
+> > > > The ring element addresses are passed between components with different
+> > > > alignments assumptions. Thus, if guest/userspace selects a pointer and
+> > > > host then gets and dereferences it, we might need to decrease the
+> > > > compiler-selected alignment to prevent compiler on the host from
+> > > > assuming pointer is aligned.
+> > > > 
+> > > > This actually triggers on ARM with -mabi=apcs-gnu - which is a
+> > > > deprecated configuration, but it seems safer to handle this
+> > > > generally.
+> > > > 
+> > > > I verified that the produced binary is exactly identical on x86.
+> > > > 
+> > > > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > > > ---
+> > > > 
+> > > > This is my preferred way to handle the ARM incompatibility issues
+> > > > (in preference to kconfig hacks).
+> > > > I will push this into next now.
+> > > > Comments?
+> > > 
+> > > I'm not sure if it's too late to fix. It would still be still problematic
+> > > for the userspace that is using old uapi headers?
+> > > 
+> > > Thanks
+> > It's not a problem in userspace. The problem is when
+> > userspace/guest uses 2 byte alignment and passes it to kernel
+> > assuming 8 byte alignment. The fix is for host not to
+> > make these assumptions.
 > 
-> And also, the split out version:
 > 
->    https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/commit/?h=core/objtool&id=ec9d9549901dfd2ff411676dfc624e50219e4d5a
+> Yes, but I meant when userspace is complied with apcs-gnu, then it still
+> assumes 8 byte alignment?
 > 
-
-HINT_RET_OFFSET works fine when an immediate value is pushed on the
-stack. However if the value is pushed from a callee-saved register
-(%rbp, %rbx, %r12-%r15) then we still have a "return with modified
-stack frame" warning. That's because objtool checks callee-saved
-registers pushed/popped on the stack, and we have retpoline functions
-built for each register (see arch/x86/lib/retpoline.S)
-
-So that's why I also added a bool to has_modified_stack_frame() to
-no check registers:
-
-@@ -1432,7 +1478,8 @@ static bool is_fentry_call(struct instruction *insn)
-  	return false;
-  }
-  
--static bool has_modified_stack_frame(struct insn_state *state)
-+static bool has_modified_stack_frame(struct insn_state *state,
-+				     bool check_registers)
-  {
-  	int i;
-  
-@@ -1442,6 +1489,9 @@ static bool has_modified_stack_frame(struct insn_state *state)
-  	    state->drap)
-  		return true;
-  
-+	if (!check_registers)
-+		return false;
-+
-  	for (i = 0; i < CFI_NUM_REGS; i++)
-  		if (state->regs[i].base != initial_func_cfi.regs[i].base ||
-  		    state->regs[i].offset != initial_func_cfi.regs[i].offset)
+> Thanks
 
 
-alex.
+That's not a problem since with vhost userspace is doing the allocation.
+So it can increase alignment with no bad effect.
+
+I agree it's probably safest not to touch struct vring at all though.
+
+
+> 
+> > 
+> > > >    drivers/vhost/vhost.h            |  6 ++---
+> > > >    include/uapi/linux/virtio_ring.h | 41 ++++++++++++++++++++++++--------
+> > > >    2 files changed, 34 insertions(+), 13 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
+> > > > index cc82918158d2..a67bda9792ec 100644
+> > > > --- a/drivers/vhost/vhost.h
+> > > > +++ b/drivers/vhost/vhost.h
+> > > > @@ -74,9 +74,9 @@ struct vhost_virtqueue {
+> > > >    	/* The actual ring of buffers. */
+> > > >    	struct mutex mutex;
+> > > >    	unsigned int num;
+> > > > -	struct vring_desc __user *desc;
+> > > > -	struct vring_avail __user *avail;
+> > > > -	struct vring_used __user *used;
+> > > > +	vring_desc_t __user *desc;
+> > > > +	vring_avail_t __user *avail;
+> > > > +	vring_used_t __user *used;
+> > > >    	const struct vhost_iotlb_map *meta_iotlb[VHOST_NUM_ADDRS];
+> > > >    	struct vhost_desc *descs;
+> > > > diff --git a/include/uapi/linux/virtio_ring.h b/include/uapi/linux/virtio_ring.h
+> > > > index 559f42e73315..cd6e0b2eaf2f 100644
+> > > > --- a/include/uapi/linux/virtio_ring.h
+> > > > +++ b/include/uapi/linux/virtio_ring.h
+> > > > @@ -118,16 +118,6 @@ struct vring_used {
+> > > >    	struct vring_used_elem ring[];
+> > > >    };
+> > > > -struct vring {
+> > > > -	unsigned int num;
+> > > > -
+> > > > -	struct vring_desc *desc;
+> > > > -
+> > > > -	struct vring_avail *avail;
+> > > > -
+> > > > -	struct vring_used *used;
+> > > > -};
+> > > > -
+> > > >    /* Alignment requirements for vring elements.
+> > > >     * When using pre-virtio 1.0 layout, these fall out naturally.
+> > > >     */
+> > > > @@ -164,6 +154,37 @@ struct vring {
+> > > >    #define vring_used_event(vr) ((vr)->avail->ring[(vr)->num])
+> > > >    #define vring_avail_event(vr) (*(__virtio16 *)&(vr)->used->ring[(vr)->num])
+> > > > +/*
+> > > > + * The ring element addresses are passed between components with different
+> > > > + * alignments assumptions. Thus, we might need to decrease the compiler-selected
+> > > > + * alignment, and so must use a typedef to make sure the __aligned attribute
+> > > > + * actually takes hold:
+> > > > + *
+> > > > + * https://gcc.gnu.org/onlinedocs//gcc/Common-Type-Attributes.html#Common-Type-Attributes
+> > > > + *
+> > > > + * When used on a struct, or struct member, the aligned attribute can only
+> > > > + * increase the alignment; in order to decrease it, the packed attribute must
+> > > > + * be specified as well. When used as part of a typedef, the aligned attribute
+> > > > + * can both increase and decrease alignment, and specifying the packed
+> > > > + * attribute generates a warning.
+> > > > + */
+> > > > +typedef struct vring_desc __attribute__((aligned(VRING_DESC_ALIGN_SIZE)))
+> > > > +	vring_desc_t;
+> > > > +typedef struct vring_avail __attribute__((aligned(VRING_AVAIL_ALIGN_SIZE)))
+> > > > +	vring_avail_t;
+> > > > +typedef struct vring_used __attribute__((aligned(VRING_USED_ALIGN_SIZE)))
+> > > > +	vring_used_t;
+> > > > +
+> > > > +struct vring {
+> > > > +	unsigned int num;
+> > > > +
+> > > > +	vring_desc_t *desc;
+> > > > +
+> > > > +	vring_avail_t *avail;
+> > > > +
+> > > > +	vring_used_t *used;
+> > > > +};
+> > > > +
+> > > >    static inline void vring_init(struct vring *vr, unsigned int num, void *p,
+> > > >    			      unsigned long align)
+> > > >    {
+
