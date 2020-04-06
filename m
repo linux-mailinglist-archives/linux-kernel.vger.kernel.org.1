@@ -2,99 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3BD19F25F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F58619F269
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgDFJVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:21:38 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:59253 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726621AbgDFJVi (ORCPT
+        id S1726776AbgDFJWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:22:46 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:43352 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726655AbgDFJWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:21:38 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 2E3F25C018F;
-        Mon,  6 Apr 2020 05:21:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Mon, 06 Apr 2020 05:21:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=oMeIIJ1mDIWN3kALdLXCgbaXtnO
-        iigOn5+MO3vnZOUI=; b=kNhzk0My+PGFQesmQtfITGCTkAeUIuaxp6gv1SR4m5/
-        H1dk3sWdxRwvl7KHVmHoXvAgg0Ut7ayn2alYB1MG9NLASeBGuOqcpvHj+273H+jz
-        o/ve/EiunT8XbLNS/wb0JtQDO+i5WaRm/d1hCf+572uib0klzX7gphcXAMcHT1Bm
-        +jTCC3C7lsCvJnZ4Nf8SF0xuOWZ/Ewv4MX8z4GlamBAZK4bk4igE536nHw41nLRR
-        pFmP24HGe7TTLr7/tQrWq5Hrg5yVREHVOVku+JTT+t9DGRUyrKmFalCqkjC3hXpp
-        RH5IkGnQFgMNoDUX02hGc1XOsf8QTve37DmCF7t2YBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=oMeIIJ
-        1mDIWN3kALdLXCgbaXtnOiigOn5+MO3vnZOUI=; b=2YEk2iM0BCpDj6J2DwGxRb
-        CNvPyqIgYSnkOeedlqJfT4R51xuWw3305b5b4Eoxcv6h8/Jnek6q8VDatcDuS5cO
-        /YaqEcroXtKy1UGkIJX718/tp5O/8U0etMLrrqGzNkKqcWF5IRD0AODQ0PW5JLkz
-        CTa4l+wc2DWHtiXbHff1a6hLOsOxk4De7aMbJP9/9Nv9y6g64RHUkYmZ1jhxCddT
-        Z/QQW8DTAnIe8dOGX2aWLiGUOdW8zbe++oYSrLhZaiFZsvwXk05KJp42uW02uLu+
-        QxSc2H/EYtX7+/qnoLfn48SEELr2plGm+xbFwuv72lO0GIQnLwgRYTBUsNyz9jvw
-        ==
-X-ME-Sender: <xms:n_SKXov82wD0S1qvcrji2PDWNwVHREeDi65UkUo8dtE63J3pQngYpw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudefgdduiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucfkphepledtrd
-    ekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:n_SKXjD-OFB8wBhpApb-_WEl3SFb8u7j9noWylh2j2Vj1KSnSnPvfg>
-    <xmx:n_SKXsxSRR5VgKXcX_bMSuxNF_spethl7D9dYS7QdLUUNjlvtmE0sg>
-    <xmx:n_SKXmFlGuzOkszQTm6wqMLvNpfr4JoNBx2tu1HuQmgJneHiK6wPrg>
-    <xmx:ofSKXt4XozOGp_tz2A4geXQex8OTLlg0pelVgZrOipjfRmrbaSP6GA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 43150328005D;
-        Mon,  6 Apr 2020 05:21:35 -0400 (EDT)
-Date:   Mon, 6 Apr 2020 11:21:34 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     linux@armlinux.org.uk, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH] ARM: configs: sunxi: Add sun8i analog codec
-Message-ID: <20200406092134.ugxuj46qp6tmjf75@gilmour.lan>
-References: <1585820061-24172-1-git-send-email-clabbe@baylibre.com>
+        Mon, 6 Apr 2020 05:22:46 -0400
+Received: by mail-ed1-f65.google.com with SMTP id bd14so18314625edb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 02:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ICZidZS836uKk3f5MYlrKnxf/d24delcy3nSKE9ogi4=;
+        b=W3pq5Mo7uZpLVGOq5GAIDI/ai7fUH4IIThQ1nwRczafHnhltyPbRBYi4qNanWLvp69
+         +904YhfbA4VWq0KvmJHQkjtbf5BXIa7CMoQ1Fr67ulXZcagefy/tt06DHI28sQAl1Z4o
+         hoDv8pLs5dD5DoPrxG3VeoDU6ANvHB8Mx51a0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ICZidZS836uKk3f5MYlrKnxf/d24delcy3nSKE9ogi4=;
+        b=gSGaQPSSNdtSevL5xfHgg0b7Bx21mx2M4xTZ8ip2LE8M6kqey4JrM3LbLmFgNPnsld
+         GiZHvsvjfFkv3ccOcHIshnu5tamPYB6AlGyuUtd6q0rzpN/XdvpLJVPRTktm2GsKWfWO
+         SImSkOwPRU6HJhz6NmT5rhCln65K7I8L0CN4iP580JlO8oO2Tn0qbjqksPNvsYhAG7QV
+         GlNiaraHu7UdZSlPko9KhkmACVcWDIxtH8p/KAC8rJ5Or+ykJZTr7aSFL31cafMY3nGC
+         Kacn+ajdkc7JWKEMj3jcUnPPc25aPg/W6zV5dhqzkyam5K4ZA/TW5bN0c+9hBU9zlmYn
+         ndlA==
+X-Gm-Message-State: AGi0PuYHB8wsby69dEPdqhMhc4rtUDBUXt2PvGtbYEnal5Vwb+W7iyul
+        DRO6wyTNl5OlJermrEnafs4mOF00mB1R16L+cNfjDg==
+X-Google-Smtp-Source: APiQypKhY01mdGI1/JQgHY2uIzhyGBPdhVdoEMLb6wrymVsJFgMONWTk9QGbDBPrwg//+L4NEZ3xqyN3Wn1J9Hi6NTs=
+X-Received: by 2002:a17:906:b351:: with SMTP id cd17mr20431593ejb.351.1586164962711;
+ Mon, 06 Apr 2020 02:22:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="y4kqwfcf6dwztl2s"
-Content-Disposition: inline
-In-Reply-To: <1585820061-24172-1-git-send-email-clabbe@baylibre.com>
+References: <36e45eae8ad78f7b8889d9d03b8846e78d735d28.camel@themaw.net>
+ <CAJfpegsCDWehsTRQ9UJYuQnghnE=M8L0_bJBTTPA+Upu87t90w@mail.gmail.com>
+ <20200402143623.GB31529@gardel-login> <CAJfpegtRi9epdxAeoVbm+7UxkZfzC6XmD4K_5dg=RKADxy_TVA@mail.gmail.com>
+ <20200402152831.GA31612@gardel-login> <CAJfpegum_PsCfnar8+V2f_VO3k8CJN1LOFJV5OkHRDbQKR=EHg@mail.gmail.com>
+ <20200402155020.GA31715@gardel-login> <CAJfpeguM__+S6DiD4MWFv5GCf_EUWvGFT0mzuUCCrfQwggqtDQ@mail.gmail.com>
+ <20200403110842.GA34663@gardel-login> <CAJfpegtYKhXB-HNddUeEMKupR5L=RRuydULrvm39eTung0=yRg@mail.gmail.com>
+ <20200403150143.GA34800@gardel-login>
+In-Reply-To: <20200403150143.GA34800@gardel-login>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Mon, 6 Apr 2020 11:22:31 +0200
+Message-ID: <CAJfpegudLD8F-25k-k=9G96JKB+5Y=xFT=ZMwiBkNTwkjMDumA@mail.gmail.com>
+Subject: Re: Upcoming: Notifications, FS notifications and fsinfo()
+To:     Lennart Poettering <mzxreary@0pointer.de>
+Cc:     Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>, andres@anarazel.de,
+        keyrings@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---y4kqwfcf6dwztl2s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Apr 02, 2020 at 09:34:21AM +0000, Corentin Labbe wrote:
-> On my orange pi PC, I got lot of "sun4i-codec 1c22c00.codec: Failed to register our card".
-> This was due to a missing compoment: the sun8i analog codec.
+On Fri, Apr 3, 2020 at 5:01 PM Lennart Poettering <mzxreary@0pointer.de> wr=
+ote:
 >
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> On Fr, 03.04.20 13:48, Miklos Szeredi (miklos@szeredi.hu) wrote:
+>
+> > > > Does that make any sense?
+> > >
+> > > When all mounts in the init mount namespace are unmounted and all
+> > > remaining processes killed we switch root back to the initrd, so that
+> > > even the root fs can be unmounted, and then we disassemble any backin=
+g
+> > > complex storage if there is, i.e. lvm, luks, raid, =E2=80=A6
+> >
+> > I think it could be done the other way round, much simpler:
+> >
+> >  - switch back to initrd
+> >  - umount root, keeping the tree intact (UMOUNT_DETACHED)
+> >  - kill all remaining processes, wait for all to exit
+>
+> Nah. What I wrote above is drastically simplified. It's IRL more
+> complex. Specific services need to be killed between certain mounts
+> are unmounted, since they are a backend for another mount. NFS, or
+> FUSE or stuff like that usually has some processes backing them
+> around, and we need to stop the mounts they provide before these
+> services, and then the mounts these services reside on after that, and
+> so on. It's a complex dependency tree of stuff that needs to be done
+> in order, so that we can deal with arbitrarily nested mounts, storage
+> subsystems, and backing services.
 
-Applied, thanks
+That still doesn't explain why you need to keep track of all mounts in
+the system.
 
-Maxime
+If you are aware of the dependency, then you need to keep track of
+that particular mount. If not, then why?
 
---y4kqwfcf6dwztl2s
-Content-Type: application/pgp-signature; name="signature.asc"
+What I'm starting to see is that there's a fundamental conflict
+between how systemd people want to deal with new mounts and how some
+other people want to use mounts (i.e. tens of thousands of mounts in
+an automount map).
 
------BEGIN PGP SIGNATURE-----
+I'm really curious how much the mount notification ring + per mount
+query (any implementation) can help that use case.
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCXor0ngAKCRDj7w1vZxhR
-xX1NAQDtmDUG0N56YtytHARXBanE8n3MN0rgFqs5YzsPTH7BKgEAlr+sj0EyZc5+
-dGB6hLBjFhR/iA7JQIbMnPSJPRYKIgE=
-=Umyl
------END PGP SIGNATURE-----
+> Anyway, this all works fine in systemd, the dependency logic is
+> there. We want a more efficient way to watch mounts, that's
+> all. Subscribing and constantly reparsing /proc/self/mountinfo is
+> awful, that's all.
 
---y4kqwfcf6dwztl2s--
+I'm not sure that is all.   To handle storms of tens of thousands of
+mounts, my guess is that the fundamental way of dealing with these
+changes will need to be updated in systemd.
+
+Thanks,
+Miklos
