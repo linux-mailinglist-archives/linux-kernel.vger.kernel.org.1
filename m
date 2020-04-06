@@ -2,95 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4306D19F054
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 08:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 062C819F05A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 08:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgDFG3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 02:29:37 -0400
-Received: from mga02.intel.com ([134.134.136.20]:33202 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726486AbgDFG3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 02:29:37 -0400
-IronPort-SDR: OcmwFdCSyM50eK6y86cGoaZMn2oORlS0fFjfH/CPr7qX4mnhCST10SCu6bbfHNuef5e2KOULaQ
- sa/9It9lQZ9w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2020 23:29:36 -0700
-IronPort-SDR: 7e5L34Y+rt3E7GG9GfybLo7T4EOEtglNQ7+WMHvNTxahyFk7KZ5UFlI+0W46C7I61/CGt+apdu
- m0aSTz8EJbJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,350,1580803200"; 
-   d="scan'208";a="285778220"
-Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Apr 2020 23:29:36 -0700
-Received: from fmsmsx113.amr.corp.intel.com (10.18.116.7) by
- FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Sun, 5 Apr 2020 23:29:36 -0700
-Received: from shsmsx102.ccr.corp.intel.com (10.239.4.154) by
- FMSMSX113.amr.corp.intel.com (10.18.116.7) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Sun, 5 Apr 2020 23:29:36 -0700
-Received: from shsmsx104.ccr.corp.intel.com ([169.254.5.225]) by
- shsmsx102.ccr.corp.intel.com ([169.254.2.138]) with mapi id 14.03.0439.000;
- Mon, 6 Apr 2020 14:29:32 +0800
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Auger Eric <eric.auger@redhat.com>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "jean-philippe.brucker@arm.com" <jean-philippe.brucker@arm.com>,
-        "will.deacon@arm.com" <will.deacon@arm.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>
-CC:     "marc.zyngier@arm.com" <marc.zyngier@arm.com>,
-        "peter.maydell@linaro.org" <peter.maydell@linaro.org>,
-        "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>
-Subject: RE: [PATCH v10 04/11] vfio/pci: Add VFIO_REGION_TYPE_NESTED region
- type
-Thread-Topic: [PATCH v10 04/11] vfio/pci: Add VFIO_REGION_TYPE_NESTED region
- type
-Thread-Index: AQHV/tNxynbYpV5vT0iLn8klxfIfp6hkUe3A//995QCAB+uK0A==
-Date:   Mon, 6 Apr 2020 06:29:32 +0000
-Message-ID: <A2975661238FB949B60364EF0F2C25743A222F4C@SHSMSX104.ccr.corp.intel.com>
-References: <20200320161911.27494-1-eric.auger@redhat.com>
- <20200320161911.27494-5-eric.auger@redhat.com>
- <A2975661238FB949B60364EF0F2C25743A21DBDF@SHSMSX104.ccr.corp.intel.com>
- <893039be-265a-8c70-8e48-74122d9857de@redhat.com>
-In-Reply-To: <893039be-265a-8c70-8e48-74122d9857de@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        id S1726608AbgDFGcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 02:32:53 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:39882 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726533AbgDFGcw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 02:32:52 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586154771; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=WADnD71Mza55huyLackldMLXtqAMdtwJNrEm09YPJFM=; b=OWVj6idl9NkEexxV8AAwZAnE/27tETipAqquOHWEq3ihMHledALkFwSefFKG9mQPzB8SXoqy
+ bAe3dzOFOrZaerEZYCspgtI0YYZ3Al/y3h+7R1kG7WVW2/Fr8WU6rweLT5aJHNAu1kYb+M3c
+ agSTJzoD1UFmd3oL0JqxPv2GPPU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8acd02.7f1f138b06f8-smtp-out-n04;
+ Mon, 06 Apr 2020 06:32:34 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 773FFC43637; Mon,  6 Apr 2020 06:32:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AB198C433D2;
+        Mon,  6 Apr 2020 06:32:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AB198C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     swboyd@chromium.org, evgreen@chromium.org, dianders@chromium.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, mka@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v16 0/6] Invoke rpmh_flush for non OSI targets
+Date:   Mon,  6 Apr 2020 12:02:15 +0530
+Message-Id: <1586154741-8293-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRXJpYywNCj4gRnJvbTogQXVnZXIgRXJpYyA8ZXJpYy5hdWdlckByZWRoYXQuY29tPg0KPiBT
-ZW50OiBXZWRuZXNkYXksIEFwcmlsIDEsIDIwMjAgOTozMSBQTQ0KPiBUbzogTGl1LCBZaSBMIDx5
-aS5sLmxpdUBpbnRlbC5jb20+OyBlcmljLmF1Z2VyLnByb0BnbWFpbC5jb207IGlvbW11QGxpc3Rz
-LmxpbnV4LQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYxMCAwNC8xMV0gdmZpby9wY2k6IEFkZCBW
-RklPX1JFR0lPTl9UWVBFX05FU1RFRCByZWdpb24NCj4gdHlwZQ0KPiANCj4gSGkgWWksDQo+IA0K
-PiBPbiA0LzEvMjAgMzoxOCBQTSwgTGl1LCBZaSBMIHdyb3RlOg0KPiA+IEhpIEVyaWMsDQo+ID4N
-Cj4gPiBKdXN0IGN1cmlvdXMgYWJvdXQgeW91ciBwbGFuIG9uIHRoaXMgcGF0Y2gsIEkganVzdCBo
-ZWFyZCBteSBjb2xsZWFndWUNCj4gPiB3b3VsZCBsaWtlIHRvIHJlZmVyZW5jZSB0aGUgZnVuY3Rp
-b25zIGZyb20gdGhpcyBwYXRjaCBpbiBoaXMgZHNhIGRyaXZlciB3b3JrLg0KPiANCj4gV2VsbCBJ
-IGludGVuZCB0byByZXNwaW4gdW50aWwgc29tZWJvZHkgdGVsbHMgbWUgaXQgaXMgY29tcGxldGVs
-eSB2YWluIG9yIGRlYWQgZm9sbG93cy4NCj4gSm9raW5nIGFzaWRlLCBmZWVsIGZyZWUgdG8gZW1i
-ZWQgaXQgaW4gYW55IHNlcmllcyBpdCB3b3VsZCBiZSBiZW5lZmljaWFsIHRvLCBqdXN0IHBsZWFz
-ZQ0KPiBjYyBtZSBpbiBjYXNlIGNvZGUgZGl2ZXJnZXMuDQoNCmdvdCBpdC4gUGxlYXNlIGFsc28g
-Y2MgbWUgaW4gZnV0dXJlIHZlcnNpb24uIDotKQ0KDQpSZWdhcmRzLA0KWWkgTGl1DQoNCg==
+Changes in v16:
+- Use base address in probe only, drop change to save it in drv->base
+- Address Doug's comments on change 5,6 and 7.
+- Add Doug's Reviewed-by.
+
+Changes in v15:
+- Address Doug's comments on change 3 of v14 and add Reviewed-by
+- Split change 4 of v14 to save drv->base in a new change
+- Address Doug's comments on change 4, 5, 6 of v14
+- Add missing NOTIFY_OK for rpmh_flush() success case
+- First 5 changes in this series can be merged without change 6 and 7
+
+Changes in v14:
+- Address Doug's comments on change 3 from v13
+- Drop new APIs for start and end transaction from change 4 in v13
+- Update change 4 to use cpu pm notifications instead
+- Add [5] as change 5 to enable use of WAKE TCS when ACTIVE TCS count is 0
+- Add change 6 to Allow multiple WAKE TCS to be used as ACTIVE TCSes
+- First 4 changes can be merged even without change 5 and 6.
+
+Changes in v13:
+- Address Stephen's comment to maintain COMPILE_TEST
+- Address Doug's comments and add new APIs for start and end transaction
+
+Changes in v12:
+- Kconfig change to remove COMPILE_TEST was dropped in v11, reinclude it.
+
+Changes in v11:
+- Address Doug's comments on change 2 and 3
+- Include change to invalidate TCSes before flush from [4]
+
+Changes in v10:
+- Address Evan's comments to update commit message on change 2
+- Add Evan's Reviewed by on change 2
+- Remove comment from rpmh_flush() related to last CPU invoking it
+- Rebase all changes on top of next-20200302
+
+Changes in v9:
+- Keep rpmh_flush() to invoke from within cache_lock
+- Remove comments related to only last cpu invoking rpmh_flush()
+
+Changes in v8:
+- Address Stephen's comments on changes 2 and 3
+- Add Reviewed by from Stephen on change 1
+
+Changes in v7:
+- Address Srinivas's comments to update commit text
+- Add Reviewed by from Srinivas
+
+Changes in v6:
+- Drop 1 & 2 changes from v5 as they already landed in maintainer tree
+- Drop 3 & 4 changes from v5 as no user at present for power domain in rsc
+- Rename subject to appropriate since power domain changes are dropped
+- Rebase other changes on top of next-20200221
+
+Changes in v5:
+- Add Rob's Acked by on dt-bindings change
+- Drop firmware psci change
+- Update cpuidle stats in dtsi to follow PC mode
+- Include change to update dirty flag when data is updated from [4]
+- Add change to invoke rpmh_flush when caches are dirty
+
+Changes in v4:
+- Add change to allow hierarchical topology in PC mode
+- Drop hierarchical domain idle states converter from v3
+- Address Merge sc7180 dtsi change to add low power modes
+
+Changes in v3:
+- Address Rob's comment on dt property value
+- Address Stephen's comments on rpmh-rsc driver change
+- Include sc7180 cpuidle low power mode changes from [1]
+- Include hierarchical domain idle states converter change from [2]
+
+Changes in v2:
+- Add Stephen's Reviewed-By to the first three patches
+- Addressed Stephen's comments on fourth patch
+- Include changes to connect rpmh domain to cpuidle and genpds
+
+Resource State Coordinator (RSC) is responsible for powering off/lowering
+the requirements from CPU subsystem for the associated hardware like buses,
+clocks, and regulators when all CPUs and cluster is powered down.
+
+RSC power domain uses last-man activities provided by genpd framework based
+on Ulf Hansoon's patch series[3], when the cluster of CPUs enter deepest
+idle states. As a part of domain poweroff, RSC can lower resource state
+requirements by flushing the cached sleep and wake state votes for various
+resources.
+
+[1] https://patchwork.kernel.org/patch/11218965
+[2] https://patchwork.kernel.org/patch/10941671
+[3] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=222355
+[4] https://patchwork.kernel.org/project/linux-arm-msm/list/?series=236503
+[5] https://patchwork.kernel.org/patch/10818129
+
+Maulik Shah (5):
+  arm64: dts: qcom: sc7180: Add cpuidle low power states
+  soc: qcom: rpmh: Update dirty flag only when data changes
+  soc: qcom: rpmh: Invalidate SLEEP and WAKE TCSes before flushing new
+    data
+  soc: qcom: rpmh: Invoke rpmh_flush() for dirty caches
+  soc: qcom: rpmh-rsc: Allow using free WAKE TCS for active request
+
+Raju P.L.S.S.S.N (1):
+  soc: qcom: rpmh-rsc: Clear active mode configuration for wake TCS
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi |  78 +++++++++++++
+ drivers/soc/qcom/rpmh-internal.h     |  25 ++--
+ drivers/soc/qcom/rpmh-rsc.c          | 221 +++++++++++++++++++++++++++--------
+ drivers/soc/qcom/rpmh.c              |  76 ++++++------
+ 4 files changed, 303 insertions(+), 97 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
