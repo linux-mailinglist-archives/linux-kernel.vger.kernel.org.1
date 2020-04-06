@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98B8919F3F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846F019F3F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727327AbgDFK5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:57:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:37749 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726841AbgDFK5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:57:52 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48wnYz5X2Pz9sQx;
-        Mon,  6 Apr 2020 20:57:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1586170668;
-        bh=3T/Sm1A0E9UPY5qOETqeF8SyVeK3inqT1uc8wO3uPEM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=UgSmH10Uu3lHOI0JliHDuckF5cdxdt2wxO1Hc+gsFghZJ3qGxUrd2rS5O8hy7upoY
-         y7ojnOs5snp4BeJoHkfEXuJT7fVOLK+pTuxDc5ScQMstyeV8AEHnk2g8PshC/yHhnB
-         wmNmaNLqIxvNTbjSGhvtV1kv2jTYsfAewG3ZAg661qUBw7nwMAEfoWCvKg8K459JUz
-         3UN4iAZG7+IyYGuk89I2GslVHzKuXyeeiIDlj+C4ag1EPdKtN7e8Yi0598/C0K+4Aa
-         MTUTT/9gc26h3QfDOfUQb8vqZu7hj/nVP7EjYEw0iW36wKqZQcTAhe0P9bPenUFJKp
-         3DytM7CwoFx+Q==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     afzal.mohd.ma@gmail.com, agust@denx.de, aik@ozlabs.ru,
-        alistair@popple.id.au,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, bala24@linux.ibm.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chenzhou10@huawei.com,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Christophe Leroy <christophe.leroy@c-s.fr>, clg@kaod.org,
-        courbet@google.com, Daniel Axtens <dja@axtens.net>,
-        dougmill@linux.vnet.ibm.com, farosas@linux.ibm.com,
-        ganeshgr@linux.ibm.com, Grant Likely <grant.likely@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        gustavold@linux.ibm.com, Ilie Halip <ilie.halip@gmail.com>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Joe Perches <joe@perches.com>, kjain@linux.ibm.com,
-        laurentiu.tudor@nxp.com, leonardo@linux.ibm.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, lpechacek@suse.cz,
-        maddy@linux.ibm.com, maskray@google.com,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        nathanl@linux.ibm.com,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        Olof Johansson <olof@lixom.net>,
-        Oliver O'Halloran <oohall@gmail.com>, oss@buserror.net,
-        po-hsu.lin@canonical.com, psampat@linux.ibm.com,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        shilpa.bhat@linux.vnet.ibm.com, sourabhjain@linux.ibm.com,
-        srikar@linux.vnet.ibm.com, tyreld@linux.ibm.com,
-        vaibhav@linux.ibm.com, YueHaibing <yuehaibing@huawei.com>
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.7-1 tag
-In-Reply-To: <CAHk-=wgkkmNV5tMzQDmPAQuNJBuMcry--Jb+h8H1o4RA3kF7QQ@mail.gmail.com>
-References: <87h7xyrt5d.fsf@mpe.ellerman.id.au> <CAHk-=wgkkmNV5tMzQDmPAQuNJBuMcry--Jb+h8H1o4RA3kF7QQ@mail.gmail.com>
-Date:   Mon, 06 Apr 2020 20:57:53 +1000
-Message-ID: <87blo4swy6.fsf@mpe.ellerman.id.au>
+        id S1727192AbgDFK77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:59:59 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:44553 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgDFK77 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:59:59 -0400
+Received: by mail-pg1-f193.google.com with SMTP id 142so7350854pgf.11;
+        Mon, 06 Apr 2020 03:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=76mGlpp6BFJSmPDHJW6kprv/8C2HQ3fa7ORMT87pipU=;
+        b=XKJsvcpo7Y3eIsvwt+slK2It9/UwJptza1whwFfWJeSj+Tk+KPPzWRnlV8RzFZnRco
+         /y7P0QfbJX6+uyw/ECZSlNemCC0/iajDr+1ag30GCLMMRu5NcpKvX9FkOA2gYmQZI698
+         NHwzj58/n2FvYzGWfXQMvk+h0znA13zDb/EZuCDh94XdXGJYTJiQw0ILMoO5sLMAePcA
+         vaAVOnzoTiiSNsWCJVKud051c87X5fZ2jUa/FtqGx2Asx2VGORgUd7wMw2XAlPwydg/+
+         SrGwQPAkrr9goYq8UrZDdBGT2FeBGd/7ZJLVvTxDRZwkeZhXyMGxpuHt9BOGKWHq7Xl8
+         N2Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=76mGlpp6BFJSmPDHJW6kprv/8C2HQ3fa7ORMT87pipU=;
+        b=CmAadlBZ25hcVGYOPKOizSV9QjkVYyy+QiMBybhyUtKTNQY9ByYi6E14iw4093Y3EJ
+         mb0WCPhQla3T32nVuKdy5TNR45XlTKgaGR9MTqCDXSZ/3WAmJO2Gr9PwXUmHj1z33fD1
+         HTo0G3DZKVv2YzcC7Q2YQPp2iyukKQ6x6Btuds8GlfziNNrOuxv4vgXtppGiU46M5rFW
+         kDmQaqvzgyEz7h2013pj3BeVCAXL2yLD+VuiQ9O1dIK/QUK/0aQvtFOTzET+4SjDM1Bl
+         TG2V5P7u+eaxuy3/9OeRMgjbYSJ4imXE2pbPdmf5skhj0keEDPTm9c15Qn1XrxHJJxVk
+         Uh6Q==
+X-Gm-Message-State: AGi0PuZpjTtQr78Qz6mihnvi9fjcWvNjEPeqCXuhHTXVklRBcLrFFT6S
+        If8gdyYjudd/jAjBk7SDWYE=
+X-Google-Smtp-Source: APiQypLo5R6aTgUFGFSStDUnpE8fqAAl3q8UtUXqjkfX8M/Kws53j2EaC6qi929TvME8Gj6oK+ylkg==
+X-Received: by 2002:a62:7911:: with SMTP id u17mr20215835pfc.305.1586170796382;
+        Mon, 06 Apr 2020 03:59:56 -0700 (PDT)
+Received: from workstation-kernel-dev ([103.87.57.178])
+        by smtp.gmail.com with ESMTPSA id x68sm9955214pfb.5.2020.04.06.03.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 03:59:55 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 16:29:50 +0530
+From:   Amol Grover <frextrite@gmail.com>
+To:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        linux-security-module@vger.kernel.org,
+        Amol Grover <frextrite@gmail.com>
+Subject: [PATCH RESEND] device_cgroup: Fix RCU list debugging warning
+Message-ID: <20200406105950.GA2285@workstation-kernel-dev>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.24.1
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
-> On Sun, Apr 5, 2020 at 5:53 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->>
->> There is one conflict in fs/sysfs/group.c, between our:
->>
->>   9255782f7061 ("sysfs: Wrap __compat_only_sysfs_link_entry_to_kobj function to change the symlink name")
-> [...]
->
-> The conflict was trivial.
->
-> But I want to kvetch a bit about that commit. It's doing some odd stuff.
->
-> In particular, it's wrapping things "the wrong way". Our naming rules
-> are that the double underscore versions are the internal helper
-> functions that you generally shouldn't use unless you have some extra
-> reason for it, and then the non-underscore versions are the preferred
-> and simpler user interface to those internal implementations.
->
-> IOW, the _wrapper_ doesn't have double underscores, it's the _wrappee_
-> that has the underscores.
->
-> That commit does the exact reverse of that usual pattern, which is
-> very confusing.
->
-> Now, I see _why_ you do that - normally the non-underscore version is
-> the "real" interface and the one we've always exported, and then the
-> double underscore is the special internal thing that maybe exposes
-> some internal detail (or maybe only does one special case of it and
-> leaves out locking or whatever).
->
-> In this case, for hysterical raisins, we only _had_ that
-> double-underscore version, and you basically added the new case and
-> did it without the underscores.
->
-> So I see why it happened the way it did, but I do think the end result
-> makes no sense and is odd and surprising.
+exceptions may be traversed using list_for_each_entry_rcu()
+outside of an RCU read side critical section BUT under the
+protection of decgroup_mutex. Hence add the corresponding
+lockdep expression to fix the following false-positive
+warning:
 
-Yeah, that's fair.
+[    2.304417] =============================
+[    2.304418] WARNING: suspicious RCU usage
+[    2.304420] 5.5.4-stable #17 Tainted: G            E
+[    2.304422] -----------------------------
+[    2.304424] security/device_cgroup.c:355 RCU-list traversed in non-reader section!!
 
-I was a bit unsure about taking a fs/sysfs patch to begin with, so I
-thought leaving the existing function unchanged was the least risky in
-terms of causing any other breakage.
+Signed-off-by: Amol Grover <frextrite@gmail.com>
+---
+ security/device_cgroup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-But in hindsight that was the wrong choice, the end result is not
-actually what we want.
+diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+index 7d0f8f7431ff..b7da9e0970d9 100644
+--- a/security/device_cgroup.c
++++ b/security/device_cgroup.c
+@@ -352,7 +352,8 @@ static bool match_exception_partial(struct list_head *exceptions, short type,
+ {
+ 	struct dev_exception_item *ex;
+ 
+-	list_for_each_entry_rcu(ex, exceptions, list) {
++	list_for_each_entry_rcu(ex, exceptions, list,
++				lockdep_is_held(&devcgroup_mutex)) {
+ 		if ((type & DEVCG_DEV_BLOCK) && !(ex->type & DEVCG_DEV_BLOCK))
+ 			continue;
+ 		if ((type & DEVCG_DEV_CHAR) && !(ex->type & DEVCG_DEV_CHAR))
+-- 
+2.24.1
 
-So we should have done the right patch and then either asked Greg to
-take it or put it in a topic branch of my own.
-
-> The thing is, we have exactly *one* user of that double-underscore
-> version: tpm-chip.c (ok, there are two calls in that file, but it's a
-> single user).
->
-> So I think it should just have removed the __ version entirely. Make
-> tpm-chip just use the new semantics, and pass in the extra NULL
-> argument.
->
-> I guess I'll just do that as a cleanup patch on top, but it feels a
-> bit odd to have to do that cleanup when the original patch could have
-> just done the obvious thing.
-
-Thanks.
-
-cheers
