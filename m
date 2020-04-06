@@ -2,143 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2FF19F22B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B925819F237
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 11:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgDFJMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 05:12:22 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39205 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726723AbgDFJMW (ORCPT
+        id S1726858AbgDFJNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 05:13:22 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55548 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726715AbgDFJNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 05:12:22 -0400
-Received: by mail-wr1-f67.google.com with SMTP id p10so16476230wrt.6;
-        Mon, 06 Apr 2020 02:12:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=glkaDM5M1FoM2GQRJ0fDDMF/MejHXymIl6X4UtEi45w=;
-        b=hUr0f/B6PpAktI3a6eoaU1zTcfOcHxV89tvP0kcd8jZBbI7WT++ehVaWsh9HeIrZtG
-         xuu1c3/b6aKj7y4S7ruK7DQjOBZcGxwIgUJkDaydRCD4JgcMvW7pfjXw4s3Oz2Eq68vi
-         D+4DwMwsW86NI/dHuQZd5+25ZWJZ+ixQhGqrxnoHHCe1f50CodifbOg5k/bRpOry19D+
-         UD54aw4U8pfdtQ9v+19UqvUIuiwE/k9t9yJf+y1TCqQ9raRJdYvMS8YLvj/yGs6K0ATk
-         OUbnPJUY3mkDGNK0zDUt1BEQfxs5pFBDHSN553zkHXpVfbgg8WuxYWP3DL4Q0sCfiNbo
-         LfLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=glkaDM5M1FoM2GQRJ0fDDMF/MejHXymIl6X4UtEi45w=;
-        b=fEPDOkpH585NibyKzLkQsQMM79nWQSLMvou6xqkcrtULgpgPqBkRWcp15ACi7g+W+P
-         Qklbv+BvfY62XdBY+pDWfRV/gbX/diU9LpsCh/K5dmnMnGrV4POKcuKHVd7APqAWC7+4
-         GtbioIomSl99vXGnSQ4nhefMTrwrNEY18FGcR0H8taonLRXBC+J+J3vX8mk6UdM2ud5m
-         gg3AlaqzLW2h4fFhjmZRPxa4gKjWpOV7qr5Ry46LVN5tNzfsUJoT2hqjFtGxD4DZkH0e
-         ryUwZjB8R8hi5e1wR/WM5Z0P1K25LZm6dqZA8rSgrzmIafz1baOMK8+3ov54XYND+30M
-         IMuQ==
-X-Gm-Message-State: AGi0PuZMXfmCWAPQ75I85tVflTsQvBI/K9p7P09wyq8vK3AfzHJ3c+ed
-        5cBni40z5OzEPi3HXdzEbRKyckXvmEf59DNoECU=
-X-Google-Smtp-Source: APiQypL24y4fJaGtGW9gRNAz9pUa7fkp7hOrxC5pazn4QZ+0m+JtSdUti/oau1CdKKN+mr2AASvDWC3HNFJREEErwpM=
-X-Received: by 2002:adf:b64f:: with SMTP id i15mr3772042wre.351.1586164339736;
- Mon, 06 Apr 2020 02:12:19 -0700 (PDT)
+        Mon, 6 Apr 2020 05:13:21 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 575E91C4527; Mon,  6 Apr 2020 11:13:19 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 11:13:13 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Chen-Yu Tsai <wens@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
+        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        jacek.anaszewski@gmail.com, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/6] arm64: dts: rockchip: rk3399-roc-pc: Fix MMC
+ numbering for LED triggers
+Message-ID: <20200406091313.GF31120@duo.ucw.cz>
+References: <20200327030414.5903-2-wens@kernel.org>
+ <684a08e6-7dfe-4cb1-2ae5-c1fb4128976b@gmail.com>
+ <CAGb2v65ayZwN14S-Pzu2ip1K=fgzTbNB=ZzUcpou-jtv8m6vBA@mail.gmail.com>
+ <ccf35a92-7005-9c6d-a8a2-c17b714a60bc@arm.com>
 MIME-Version: 1.0
-References: <20200403051709.22407-1-masahiroy@kernel.org> <CAKwvOdnaZ6qDVxaPY-GEH8pdUkzH6eqm16ok9_wzRSVRG-1kiQ@mail.gmail.com>
- <CAK7LNAQybfcYiosNU+ybd-Q7-Y2dbLqBVN2XA00wCRnFAoqdew@mail.gmail.com>
- <20200405235507.psjjhqa3cxw57xra@google.com> <CAK7LNAS_SQg2nhJ8HKBTq3+dziGpaJZ87fOBRS-ZMdUpKGhX9Q@mail.gmail.com>
-In-Reply-To: <CAK7LNAS_SQg2nhJ8HKBTq3+dziGpaJZ87fOBRS-ZMdUpKGhX9Q@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 6 Apr 2020 11:12:39 +0200
-Message-ID: <CA+icZUU5YmFJispXy8Ax7gzxv__LfFMwUX-cGO_kaNXv_RHO7w@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: support 'LLVM' to switch the default tools to Clang/LLVM
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Fangrui Song <maskray@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Matthias_M=C3=A4nnich?= <maennich@google.com>,
-        Sandeep Patil <sspatil@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ExXT7PjY8AI4Hyfa"
+Content-Disposition: inline
+In-Reply-To: <ccf35a92-7005-9c6d-a8a2-c17b714a60bc@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 3:34 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Mon, Apr 6, 2020 at 8:55 AM 'Fangrui Song' via Clang Built Linux
-> <clang-built-linux@googlegroups.com> wrote:
-> >
-> > On 2020-04-06, Masahiro Yamada wrote:
-> > >On Sat, Apr 4, 2020 at 3:24 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > >>
-> > >> On Thu, Apr 2, 2020 at 10:17 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >> >
-> > >> > As Documentation/kbuild/llvm.rst implies, building the kernel with a
-> > >> > full set of LLVM tools gets very verbose and unwieldy.
-> > >> >
-> > >> > Provide a single switch 'LLVM' to use Clang and LLVM tools instead of
-> > >> > GCC and Binutils. You can pass LLVM=1 from the command line or as an
-> > >> > environment variable. Then, Kbuild will use LLVM toolchains in your
-> > >> > PATH environment.
-> > >> >
-> > >> > Please note LLVM=1 does not turn on the LLVM integrated assembler.
-> > >> > You need to explicitly pass AS=clang to use it. When the upstream
-> > >> > kernel is ready for the integrated assembler, I think we can make
-> > >> > it default.
-> > >>
-> > >> Having this behavior change over time may be surprising.  I'd rather
-> > >> that if you want to not use the integrated assembler, you explicitly
-> > >> negate it, or just don't use the LLVM=1 syntax, ie. `make CC=clang
-> > >> LD=ld.lld ...`.
-> > >>
-> > >> We could modify how `-no-integrated-as` is chosen when LLVM=1.
-> > >>
-> > >> make LLVM=1 LLVMIA=0 ... # add `-no-integrated-as`
-> > >> # what the flag is doesn't really matter to me, something shorter might be nice.
-> > >> make LLVM=1 # use all LLVM tools
-> > >>
-> > >> Since we got rid of $(AS), it would be appropriate to remove/change it
-> > >> there, since no one really relies on AS=clang right now. (We do have 1
-> > >> of our 60+ CI targets using it, but we can also change that trivially.
-> > >> So I think we have a lot of freedom to change how `-no-integrated-as`
-> > >> is set.
-> > >>
-> > >> This could even be independent of this patch.
-> > >
-> > >
-> > >I also thought a boolean flag is preferred.
-> > >
-> > >AS=clang will not live long anyway, and
-> > >I hesitated to break the compatibility
-> > >for the short-term workaround.
-> > >
-> > >But, if this is not a big deal, I can
-> > >replace AS=clang with LLVMIA=1.
-> >
-> > My mere complaint is that it may be difficult to infer the intention (integrated
-> > assembler) from the abbreviation "IA" in "LLVMIA" :/
-> >
-> > Something with "AS" in the name may be easier for a user to understand,
-> > e.g. CLANG_AS or LLVM_AS.
->
->
->
->
-> I see 'llvm-as' in my PATH,
-> but it is a different kind of tool, right?
-> (converter from LLVM assembler *.ll to LLVM bit code *.bc)
->
-> So, I thought "LLVM_AS" might be confusing.
->
 
-Indeed LLVM_AS is confusing as llvm-as is different to Clang's
-integrated assembler.
-So CLANG_AS might be a better choice.
+--ExXT7PjY8AI4Hyfa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-- sed@ -
+Hi!
+
+> > > arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dt.yaml: leds:
+> > > diy-led:linux,default-trigger:0: 'mmc2' is not one of ['backlight',
+> > > 'default-on', 'heartbeat', 'disk-activity', 'ide-disk', 'timer', 'pat=
+tern']
+> > > arch/arm64/boot/dts/rockchip/rk3399-roc-pc-mezzanine.dt.yaml: leds:
+> > > yellow-led:linux,default-trigger:0: 'mmc1' is not one of ['backlight',
+> > > 'default-on', 'heartbeat', 'disk-activity', 'ide-disk', 'timer', 'pat=
+tern']
+> >=20
+> > Maybe we should just get rid of linux,default-trigger then?
+>=20
+> In this particular case, I'd say it's probably time to reevaluate the rat=
+her
+> out-of-date binding. The apparent intent of the "linux,default-trigger"
+> property seems to be to describe any trigger supported by Linux, so either
+> the binding wants to be kept in sync with all the triggers Linux actually
+> supports, or perhaps it should just be redefined as a free-form
+
+It is enough to keep it in sync with all the triggers we actually use :-).
+
+> I'd be slightly inclined towards the latter, since the schema validator
+> can't know whether the given trigger actually corresponds to the correct
+> thing for whatever the LED is physically labelled on the board/case, nor
+> whether the version(s) of Linux that people intend to use actually support
+> that trigger (since it doesn't have to be the version contemporary with t=
+he
+> schema definition), so strict validation of this particular property seems
+> to be of limited value.
+
+But freeform seems acceptable, too.
+
+> > > > -             diy-led {
+> > > > +             diy_led: diy-led {
+> > > >                        label =3D "red:diy";
+> > > >                        gpios =3D <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
+> > > >                        default-state =3D "off";
+> > > >                        linux,default-trigger =3D "mmc1";
+> > > >                };
+
+This label probably should be "mmc1:red:activity" or something like that.
+
+> > > > -             yellow-led {
+> > > > +             yellow_led: yellow-led {
+> > > >                        label =3D "yellow:yellow-led";
+> > > >                        gpios =3D <&gpio0 RK_PA2 GPIO_ACTIVE_HIGH>;
+> > > >                        default-state =3D "off";
+
+And this label should be changed, too.
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--ExXT7PjY8AI4Hyfa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXoryqQAKCRAw5/Bqldv6
+8ulxAJ9JvBVEpW4qxrGrRgIxyoWrDXPWaACglhyoV7FLpZSAdi34M9to1ysGuB4=
+=FV4E
+-----END PGP SIGNATURE-----
+
+--ExXT7PjY8AI4Hyfa--
