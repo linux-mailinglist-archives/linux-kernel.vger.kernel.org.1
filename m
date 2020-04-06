@@ -2,132 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 926E119F3CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B862D19F3E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgDFKrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:47:13 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:41102 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgDFKrM (ORCPT
+        id S1727136AbgDFKzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:55:33 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:35838 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbgDFKzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:47:12 -0400
-Received: by mail-wr1-f66.google.com with SMTP id h9so16835457wrc.8;
-        Mon, 06 Apr 2020 03:47:11 -0700 (PDT)
+        Mon, 6 Apr 2020 06:55:33 -0400
+Received: by mail-qk1-f193.google.com with SMTP id k134so5043502qke.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 03:55:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=kd6c2N25HEZts+YP+jU82vZlm0XB3hI9StV8Q2SYi18=;
-        b=KzqsCjvyQeXsFJpe6vy3m8t2XIt52zRT6r7HP+tdSEHioDTBvZTmk3Owaez8ITWsq4
-         ZnVhfue9kEp7ctIk92PhIauoCQ6/Z8tK90PmlVBDD7GuERISRaXD7Gwp9dE0nh/xoyy8
-         ye2oDibBh55XD1CRiXY0TERLmm1xzXiusAbmgXbYWrQ6pz5N5aUS/VxcC4nWnmNXHVmc
-         y69WfOzf4a+D7MYGCZqKWBdGNDgXhwunOh0d8GXvlLolSEFxqTx/pvqh987Id+63fMXq
-         sw9fLVuORf0jEcIuTsS9MEdvqKHfUB/uzHN3THEUVYnmEoUwhRyhuy0g7kphJ7+RQAPI
-         8K3Q==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+wdEtajVoyLqgAvqGqYNiCNXOxg9qyO5Ddu4EUSO/4c=;
+        b=CBPXCgQUCkx4unuFWcuwTweKM3yOZzDcvOXw5OWfMxMcyJpW4DYoNd9TM+OMHULyRa
+         iLVgasY9iJoEM+qDkmLrYSgyy5LuXUOmnw/LYFuJxKk/wTfE9Dr99l/dUAs7rZSwyopY
+         thQPyAx1RGipfvma4oEtCh3A+iPAbxYA62+RMqKeNXUoHu0LcgLOonZtfib5D4a0JoHn
+         fYj43xC1kD/ZnlwkNdSbvrAve3qTzU/XidkGvoXVWZkcGm5SpWN/fk+ixNaJijIFMeCg
+         lxbECGe2SyDOqjf7zsZC2R7xYtJFBZVyeLFJg9h5CoDntumGdea6xJlwC8i+hgkg/twz
+         sB2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=kd6c2N25HEZts+YP+jU82vZlm0XB3hI9StV8Q2SYi18=;
-        b=O261Otp+UCYDxJ/tKEewPCxaWCv/pmp2tQDHQwmesymqxhmFjkPjqugPqojJD7vLS2
-         XiMo3zQMznCwCE78GGqSqpBp1VCwZ51e/EsurPN3rTvaAdE/bxpX8HAxtFiKC2A/B7oX
-         iLzoFxXuQ15wrKBUSA1q/+IUWsgW1bU7gc7ubfiF4Ylhccut6xh0cNHVWlIbZP9EvCcM
-         eCMRRA0Fsi6fD3681UVVRwke8xX2Hw+E57sOritHEnFJxOMA3PZ5r3WfGZP2mp5u7SFP
-         Touv8l48sejOlU13g+myyI/IYNgN0j4SX89Oz9HDkxyXi9IQjv/PsBByYW3Cwfo2PUdl
-         gG+A==
-X-Gm-Message-State: AGi0PuZaB7xpGviON4DkE7GRBeAOn4c9ra65S8ERBOMlXUpnvBeQEQU+
-        fFANAGViinNR8XvGwGbfujEQ83Q7fXNZh5Tnl78=
-X-Google-Smtp-Source: APiQypJ5GHPxzMFVraMUiKVhD3OACRC2/EACvph11iACbw5clZBFSXVxVdy+pE2tdp5sbmAHWtN0YvnmoCqfimB2rjE=
-X-Received: by 2002:adf:ef51:: with SMTP id c17mr23091048wrp.130.1586170030510;
- Mon, 06 Apr 2020 03:47:10 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+wdEtajVoyLqgAvqGqYNiCNXOxg9qyO5Ddu4EUSO/4c=;
+        b=tRDIcHg8CMFhmPy9+Rcju1nkqGeLmMyBLln7UXlYyKfAFA+tzh8FRPyvontAuP15wI
+         oWuVWkYQpbKVniArWwEP3n1DcvjGgStVVGbnLDSmQ4LSZMohp1bOYVImQ3yMjV8fBZuF
+         /U/zBZ75Xag9PI9uNXmPN4D12CffRltfjxFJ8mfU5/BnaDfKkiDe013VSpz6NjcHA5VP
+         qjnpixxT/JoJwJVn03mL3WyTigVJp8NAy7r4mCbtrxRVwreLnXO21X8HpfzXkKBzLPRD
+         HMPNRUMulJoeB7/9Ek0Wy0kUyLd3vkom8qfS/ym9nitg8J0Y0aMxzge6i+GVwwdK/BTK
+         cQ6A==
+X-Gm-Message-State: AGi0PuaDLm1wNolf48PGBiClHNvA+bioinYl+j6Df/4ItTOn3fi4/J8U
+        vgaZ4M2M7hzeW9F56hr4bbiNhdVhs0sXEIVEw+PtDA==
+X-Google-Smtp-Source: APiQypIYaZCTcQvxndKYkKUeNWKytaqjjq7JBOSystgiXQFPuY/nWdK+EIURYPa5E2CAjQ8kOoNcEAowYWqqUSC48NQ=
+X-Received: by 2002:a37:9c8b:: with SMTP id f133mr21160222qke.482.1586170531983;
+ Mon, 06 Apr 2020 03:55:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200401053913.216783-1-nickrterrell@gmail.com>
- <20200401053913.216783-7-nickrterrell@gmail.com> <20200401093310.GA13748@zn.tnic>
- <D45F637D-6BB0-4F08-BEBE-FAB9B56F36F6@fb.com> <20200402155810.GD9352@zn.tnic> <2370741E-FE5A-44C1-8BF3-24A03E321F4E@fb.com>
-In-Reply-To: <2370741E-FE5A-44C1-8BF3-24A03E321F4E@fb.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 6 Apr 2020 12:47:30 +0200
-Message-ID: <CA+icZUWP0HR5ZiWq438bpcyu71cxmkv2HPqeuR2EwUAz5CjwBg@mail.gmail.com>
-Subject: Re: [PATCH v4 6/8] x86: bump ZO_z_extra_bytes margin for zstd
-To:     Nick Terrell <terrelln@fb.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Nick Terrell <nickrterrell@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Chris Mason <clm@fb.com>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Petr Malat <oss@malat.biz>, Kees Cook <keescook@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        Adam Borowski <kilobyte@angband.pl>,
-        Patrick Williams <patrickw3@fb.com>,
-        Michael van der Westhuizen <rmikey@fb.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        Patrick Williams <patrick@stwcx.xyz>
+References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Mon, 6 Apr 2020 11:55:21 +0100
+Message-ID: <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
+Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
+ multiple connections
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 2, 2020 at 10:26 PM Nick Terrell <terrelln@fb.com> wrote:
->
->
->
-> > On Apr 2, 2020, at 8:58 AM, Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Wed, Apr 01, 2020 at 05:33:03PM +0000, Nick Terrell wrote:
-> >> The code is currently written so that all the compression algorithms u=
-se the
-> >> same ZO_z_extra_bytes. It is taken to be the maximum of the growth rat=
-e
-> >> plus the maximum fixed overhead. Just a few lines above is the comment=
-:
-> >>
-> >> # =E2=80=A6 Hence safety
-> >> # margin should be updated to cover all decompressors so that we don't
-> >> # need to deal with each of them separately. Please check
-> >> # the description in lib/decompressor_xxx.c for specific information.
-> >>
-> >> So I was been following the guidance in the comments.
-> >
-> > Please state that in the commit message when you send your next
-> > revision.
->
-> Will do.
->
-> >> Does it matter? I=E2=80=99m not an expert here,
-> >
-> > Huh, you're only sending the code then? Or what do you mean with not
-> > being an expert?
->
-> I mean that while I=E2=80=99ve read and understood this piece of the code=
-, have tested
-> the patches, have followed the template of other compression methods
-> added, and am confident in the correctness of the code, I=E2=80=99m not a=
- regular
-> contributor to the pre-boot x86 kernel code. So it is possible that there=
- is a
-> use case for kernel compression that I=E2=80=99m not aware of where RAM i=
-s extremely
-> tight and within 64 KB of the current limits.
->
-> It seems to me that adding 64KB to the memory requirement for kernel
-> decompression is not going to break anyone. If it did the kernel image is=
- taking
-> up nearly all available RAM, which doesn=E2=80=99t seem likely. But, I do=
-n=E2=80=99t know all
-> use cases. If it does break someone, we can put up a separate patch that
-> switches all the compression methods over a per-method ZO_z_extra_bytes.
->
+Hi,
 
-Hi Nick,
+The programmable replicator hardware by design enables trace through
+both ports on reset. (see 1, section 4.4, 9.11)  The replicator driver
+overrides this functionality to disable output, until the Coresight
+infrastructure chooses a path from source to sink.
+Now given that the hardware design is such that we must be able to
+allow trace to be sent to both ports, a generic patch to prevent this
+does not seem appropriate here.
 
-are you planning a zstd-v5?
-If yes, please CC me, thanks.
+I think this needs further investigation - to determine why this
+appears to be failing in this particular instance.
 
-Regards,
-- Sedat -
+Regards
+
+Mike
+
+[1] CoreSight System-on-Chip SoC-600 TRM, r3p2, 100806_0302_00_en
+
+On Sun, 5 Apr 2020 at 11:28, Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Since commit 30af4fb619e5 ("coresight: dynamic-replicator:
+> Handle multiple connections"), we do not make sure that
+> the other port is disabled when the dynamic replicator is
+> enabled. This is seen to cause the CPU hardlockup atleast
+> on SC7180 SoC when enabling ETM with ETR as the sink via
+> sysfs.
+>
+>   Kernel panic - not syncing: Watchdog detected hard LOCKUP on cpu 0
+>   CPU: 7 PID: 0 Comm: swapper/7 Tainted: G S  B             5.4.25 #100
+>   Hardware name: Qualcomm Technologies, Inc. SC7180 IDP (DT)
+>   Call trace:
+>    dump_backtrace+0x0/0x188
+>    show_stack+0x20/0x2c
+>    dump_stack+0xdc/0x144
+>    panic+0x168/0x370
+>    arch_seccomp_spec_mitigate+0x0/0x14
+>    watchdog_timer_fn+0x68/0x290
+>    __hrtimer_run_queues+0x264/0x498
+>    hrtimer_interrupt+0xf0/0x22c
+>    arch_timer_handler_phys+0x40/0x50
+>    handle_percpu_devid_irq+0x8c/0x158
+>    __handle_domain_irq+0x84/0xc4
+>    gic_handle_irq+0x100/0x1c4
+>    el1_irq+0xbc/0x180
+>    arch_cpu_idle+0x3c/0x5c
+>    default_idle_call+0x1c/0x38
+>    do_idle+0x100/0x280
+>    cpu_startup_entry+0x24/0x28
+>    secondary_start_kernel+0x15c/0x170
+>   SMP: stopping secondary CPUs
+>
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>  .../hwtracing/coresight/coresight-replicator.c    | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+> index e7dc1c31d20d..f4eaa38f8f43 100644
+> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+> @@ -66,14 +66,16 @@ static int dynamic_replicator_enable(struct replicator_drvdata *drvdata,
+>                                      int inport, int outport)
+>  {
+>         int rc = 0;
+> -       u32 reg;
+> +       u32 reg0, reg1;
+>
+>         switch (outport) {
+>         case 0:
+> -               reg = REPLICATOR_IDFILTER0;
+> +               reg0 = REPLICATOR_IDFILTER0;
+> +               reg1 = REPLICATOR_IDFILTER1;
+>                 break;
+>         case 1:
+> -               reg = REPLICATOR_IDFILTER1;
+> +               reg0 = REPLICATOR_IDFILTER1;
+> +               reg1 = REPLICATOR_IDFILTER0;
+>                 break;
+>         default:
+>                 WARN_ON(1);
+> @@ -87,8 +89,11 @@ static int dynamic_replicator_enable(struct replicator_drvdata *drvdata,
+>                 rc = coresight_claim_device_unlocked(drvdata->base);
+>
+>         /* Ensure that the outport is enabled. */
+> -       if (!rc)
+> -               writel_relaxed(0x00, drvdata->base + reg);
+> +       if (!rc) {
+> +               writel_relaxed(0x00, drvdata->base + reg0);
+> +               writel_relaxed(0xff, drvdata->base + reg1);
+> +       }
+> +
+>         CS_LOCK(drvdata->base);
+>
+>         return rc;
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+
+
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
