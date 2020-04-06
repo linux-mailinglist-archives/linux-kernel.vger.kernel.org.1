@@ -2,69 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B808419EF41
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 04:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D972A19EF4E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 04:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgDFCEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Apr 2020 22:04:54 -0400
-Received: from zeniv.linux.org.uk ([195.92.253.2]:45788 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726373AbgDFCEy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Apr 2020 22:04:54 -0400
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLH87-00BimU-Nh; Mon, 06 Apr 2020 02:04:51 +0000
-Date:   Mon, 6 Apr 2020 03:04:51 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     kernel test robot <rong.a.chen@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
-Subject: Re: [non] 2aa3847085: will-it-scale.per_process_ops -32.0% regression
-Message-ID: <20200406020451.GQ23230@ZenIV.linux.org.uk>
-References: <20200406012539.GR8179@shao2-debian>
+        id S1726514AbgDFCeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 22:34:08 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43495 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726436AbgDFCeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 22:34:08 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 48wZNs0cPvz9sP7;
+        Mon,  6 Apr 2020 12:34:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1586140445;
+        bh=U6eO/OF3fJaerYwuXFWM9RWCS5CHpktBx/iKBLdZcPk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ESGoOHT52uoZdBOnRQZe6t3yDh0JrcrUcRn28/kHGkyivem4kzCkcue7Wjm+i6qI2
+         h8Ek2neGghpEorZuQy5Jx9OiscjMk/ueBH1PDWHTOH+uaTE7OjO/tMo7NyQmZyWIbu
+         r47FnJBk0NrqoZECZVkgnqpsZuzCh4KC8ycLPwwm4O7BMh+5KA8WPm5fMMBsiwMupq
+         JDneLwWHzweSfVf+w0FXBotRnHTMAKOBKyPSuN0EukPUy4/dT9aSvFY4L6Il99SZFS
+         MVA2s5obZUFc4OS3cVL7kjGAqKq8bf+zBUf0XRvflN6/wA7Ulcn58xYS5aeUXayl5w
+         rCa1x1s4gosMA==
+Date:   Mon, 6 Apr 2020 12:34:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Subject: linux-next: build failure after merge of the kbuild tree
+Message-ID: <20200406123403.4f20fbb1@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200406012539.GR8179@shao2-debian>
+Content-Type: multipart/signed; boundary="Sig_/SsnSpdcqA_A.hKymK/vTDrw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 09:25:39AM +0800, kernel test robot wrote:
-> Greeting,
-> 
-> FYI, we noticed a -32.0% regression of will-it-scale.per_process_ops due to commit:
-> 
-> 
-> commit: 2aa38470853a65dc9b1b4bd0989d34cd3fc57ebd ("non-RCU analogue of the previous commit")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+--Sig_/SsnSpdcqA_A.hKymK/vTDrw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Arrgghh...  Could you check if vfs.git#fixes recovers that?  FWIW, proposed fix
-is this:
+Hi all,
 
-commit d98d78cd6ac9eb5ed0506140cc43432d7c7dd480
-Author: Al Viro <viro@zeniv.linux.org.uk>
-Date:   Sun Apr 5 21:59:55 2020 -0400
+After merging the kbuild tree, today's linux-next build (powercp
+allyesconfig) failed like this:
 
-    fix braino in legitimize_path()
-    
-    brown paperbag time... wrong order of arguments ended up confusing
-    the values to check dentry and mount_lock seqcounts against.
-    
-    Reported-by: kernel test robot <rong.a.chen@intel.com>
-    Fixes: 2aa38470853a ("non-RCU analogue of the previous commit")
-    Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+In file included from net/netfilter/nft_set_pipapo.c:342:
+net/netfilter/nft_set_pipapo_avx2.h:4:10: fatal error: asm/fpu/xstate.h: No=
+ such file or directory
+    4 | #include <asm/fpu/xstate.h>
+      |          ^~~~~~~~~~~~~~~~~~
 
-diff --git a/fs/namei.c b/fs/namei.c
-index 61fdb77a7d58..a320371899cf 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -610,7 +610,7 @@ static bool __legitimize_path(struct path *path, unsigned seq, unsigned mseq)
- static inline bool legitimize_path(struct nameidata *nd,
- 			    struct path *path, unsigned seq)
- {
--	return __legitimize_path(path, nd->m_seq, seq);
-+	return __legitimize_path(path, seq, nd->m_seq);
- }
- 
- static bool legitimize_links(struct nameidata *nd)
+Caused by commit
+
+  b851fc367202 ("x86: update AS_* macros to binutils >=3D2.23, supporting A=
+DX and AVX2")
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/SsnSpdcqA_A.hKymK/vTDrw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6KlRsACgkQAVBC80lX
+0GwrUAgAorG+0i6QiBVmEtK+KyXDwsSkd6YG1UCfDpgXLG1/TDrRs9iJWSG9Nr+q
+7iLjvMPM4bBRWpMh46XEXM4rM9fsWChJNwFG9GDUiTMLGfKUaFyguEyLGjUO4Emv
+bJG5R3NAnUEZQbXdLHzB/yJmgvMaMFOkPnwy4K+WFiiJcDs+EPN5G8NFoTngJhR7
+08T8rpcXoUJr/CG8+mHqw1jiRiBadmElcNYrfDwSur1OoRI7V79pXCgbwEoQZnys
+gL41Hpv+vzAxq2nZ64H+zJDdIpi+CQGoTm+Xh75XJChJxhEWeAdi8GbL+IyPlIQE
+Q9SFHs/0Sw56vR2BQAFvYbWU3vb64A==
+=qoYF
+-----END PGP SIGNATURE-----
+
+--Sig_/SsnSpdcqA_A.hKymK/vTDrw--
