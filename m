@@ -2,101 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F46C1A0027
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056CA1A002E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726329AbgDFVci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 17:32:38 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45743 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725895AbgDFVch (ORCPT
+        id S1726437AbgDFVec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 17:34:32 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49918 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725895AbgDFVeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 17:32:37 -0400
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jLZM7-0001C1-U3; Mon, 06 Apr 2020 23:32:32 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 5FC34100C47; Mon,  6 Apr 2020 23:32:31 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Vivek Goyal <vgoyal@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
-In-Reply-To: <20200406190951.GA19259@redhat.com>
-References: <87ftek9ngq.fsf@nanos.tec.linutronix.de> <CALCETrVsc-t=tDRPbCg5dWHDY0NFv2zjz12ahD-vnGPn8T+RXA@mail.gmail.com> <87a74s9ehb.fsf@nanos.tec.linutronix.de> <87wo7v8g4j.fsf@nanos.tec.linutronix.de> <877dzu8178.fsf@nanos.tec.linutronix.de> <37440ade-1657-648b-bf72-2b8ca4ac21ce@redhat.com> <871rq199oz.fsf@nanos.tec.linutronix.de> <CALCETrUHwd8pNr_ZdFqY8vMjJeMdNyw2C+FL6uOUM98SEE9rNQ@mail.gmail.com> <87d09l73ip.fsf@nanos.tec.linutronix.de> <20200309202215.GM12561@hirez.programming.kicks-ass.net> <20200406190951.GA19259@redhat.com>
-Date:   Mon, 06 Apr 2020 23:32:31 +0200
-Message-ID: <87wo6sjo5s.fsf@nanos.tec.linutronix.de>
+        Mon, 6 Apr 2020 17:34:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586208869;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=1sZ8OOJadwa2nvBkBvJvN7OoNXEjWxDQSrFUIfTzI4g=;
+        b=LUZlI2Wo04c51zs+UNizXdUcZK+Y2A4Ua6R7ORUuUUvx90IC0Y2BVtKuBzPiq2l0bU5uhO
+        JbcxM8OATnwhp91NflCfcm/Cg0U1d6ltqaDIuHKtGcp7olkpixhz0/DimH+ydlYAJ+yHJW
+        A1zSQYVSbVjdBwSqkx7kJKEUL//ZUpc=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-494-9jGSM0QKOjeJJ9nDdGfxjg-1; Mon, 06 Apr 2020 17:34:28 -0400
+X-MC-Unique: 9jGSM0QKOjeJJ9nDdGfxjg-1
+Received: by mail-wm1-f71.google.com with SMTP id e16so412479wmh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 14:34:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=1sZ8OOJadwa2nvBkBvJvN7OoNXEjWxDQSrFUIfTzI4g=;
+        b=fqkxXrLSF4y61tVeC0T7OxywfQxM/qE2RxviB67j9zHXbZLjNWT/9B0dOAc1pMpg9h
+         wvvOG6mgRdpFM4phAy3OON53Gvd8Pi+fOmiDJYD2WIZftPc35IcxPVfJdrfRl9VT0FCX
+         DvzZpMiWJSdGq+HCK2QkptjJNeP4fp6obHl+q8HdNXY3GIJwhcaQ7pRiw7WHH1nQaLoZ
+         8Y81LMsPnGix/c5JTJOLxDwFtDlEcRie2GS7zMXgD5ZXuOXZz+FpPKfNr5o8yPBlBrU0
+         +7Nsf8S5nKjJW2uQS/IaPltwc33x4DPD1MfnVWQugjoqcn8nnRfXRQd47JUYl5J8sO+f
+         Cf6A==
+X-Gm-Message-State: AGi0PuYSnmyWLv90PZWKnzbHea9idPNb0GMRNVJOUS2ieMQ2ef0LrBHR
+        CDmi775D32SZy8b10U+nKd1XmrA013gt+g8aYGtsdkcyA7wINrzehYHY3PdJOwgprnM72VsXmQx
+        57H8A/VXRd2riKVwhK2EeerFr
+X-Received: by 2002:a1c:195:: with SMTP id 143mr1089750wmb.0.1586208866444;
+        Mon, 06 Apr 2020 14:34:26 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJtVitTo8Jc7qPkfGBinVZbvA0f5dsOX7DORdYPtHLOGRIFfRXKAwHHQ2twIGwKrTUEcixAMQ==
+X-Received: by 2002:a1c:195:: with SMTP id 143mr1089730wmb.0.1586208866128;
+        Mon, 06 Apr 2020 14:34:26 -0700 (PDT)
+Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
+        by smtp.gmail.com with ESMTPSA id h5sm26965139wro.83.2020.04.06.14.34.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 14:34:25 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 17:34:24 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/12] virtio: alignment issues
+Message-ID: <20200406210108.148131-1-mst@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
+X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vivek Goyal <vgoyal@redhat.com> writes:
-> On Mon, Mar 09, 2020 at 09:22:15PM +0100, Peter Zijlstra wrote:
->> On Mon, Mar 09, 2020 at 08:05:18PM +0100, Thomas Gleixner wrote:
->> > Andy Lutomirski <luto@kernel.org> writes:
->> 
->> > > I'm okay with the save/restore dance, I guess.  It's just yet more
->> > > entry crud to deal with architecture nastiness, except that this
->> > > nastiness is 100% software and isn't Intel/AMD's fault.
->> > 
->> > And we can do it in C and don't have to fiddle with it in the ASM
->> > maze.
->> 
->> Right; I'd still love to kill KVM_ASYNC_PF_SEND_ALWAYS though, even if
->> we do the save/restore in do_nmi(). That is some wild brain melt. Also,
->> AFAIK none of the distros are actually shipping a PREEMPT=y kernel
->> anyway, so killing it shouldn't matter much.
->
-> It will be nice if we can retain KVM_ASYNC_PF_SEND_ALWAYS. I have another
-> use case outside CONFIG_PREEMPT.
->
-> I am trying to extend async pf interface to also report page fault errors
-> to the guest.
->
-> https://lore.kernel.org/kvm/20200331194011.24834-1-vgoyal@redhat.com/
->
-> Right now async page fault interface assumes that host will always be
-> able to successfully resolve the page fault and sooner or later PAGE_READY
-> event will be sent to guest. And there is no mechnaism to report the
-> errors back to guest.
->
-> I am trying to add enhance virtiofs to directly map host page cache in guest.
->
-> https://lore.kernel.org/linux-fsdevel/20200304165845.3081-1-vgoyal@redhat.com/
->
-> There it is possible that a file page on host is mapped in guest and file
-> got truncated and page is not there anymore. Guest tries to access it,
-> and it generates async page fault. On host we will get -EFAULT and I 
-> need to propagate it back to guest so that guest can either send SIGBUS
-> to process which caused this. Or if kernel was trying to do memcpy(),
-> then be able to use execpetion table error handling and be able to
-> return with error.  (memcpy_mcflush()).
->
-> For the second case to work, I will need async pf events to come in
-> even if guest is in kernel and CONFIG_PREEMPT=n.
+This is an alternative to
+	vhost: force spec specified alignment on types
+which is a bit safer as it does not change UAPI.
+I still think it's best to change the UAPI header as well,
+we can do that as a follow-up cleanup.
 
-What?
+changes from v3:
+	tools/virtio fixes
+	a bunch more cleanups that now become possible
 
-> So it would be nice if we can keep KVM_ASYNC_PF_SEND_ALWAYS around.
+Changes from v2:
+	don't change struct name, instead add ifndef
+	so kernel does not see the legacy UAPI version.
 
-No. If you want this stuff to be actually useful and correct, then
-please redesign it from scratch w/o abusing #PF. It want's to be a
-separate vector and then the pagefault resulting from your example above
-becomes a real #PF without any bells and whistels.
+Jason, can you pls ack one of the approaches?
 
-Thanks,
 
-        tglx
+Matej Genci (1):
+  virtio: add VIRTIO_RING_NO_LEGACY
 
+Michael S. Tsirkin (11):
+  tools/virtio: define aligned attribute
+  tools/virtio: make asm/barrier.h self contained
+  tools/virtio: define __KERNEL__
+  virtio: stop using legacy struct vring in kernel
+  vhost: force spec specified alignment on types
+  virtio: add legacy init/size APIs
+  virtio_ring: switch to virtio_legacy_init/size
+  tools/virtio: switch to virtio_legacy_init/size
+  vop: switch to virtio_legacy_init/size
+  remoteproc: switch to virtio_legacy_init/size
+  mellanox: switch to virtio_legacy_init/size
+
+ drivers/misc/mic/vop/vop_main.c          |  5 +--
+ drivers/misc/mic/vop/vop_vringh.c        |  8 +++--
+ drivers/platform/mellanox/mlxbf-tmfifo.c |  6 ++--
+ drivers/remoteproc/remoteproc_core.c     |  2 +-
+ drivers/vhost/vhost.h                    |  6 ++--
+ drivers/virtio/virtio_pci_modern.c       |  1 +
+ drivers/virtio/virtio_ring.c             | 15 ++++----
+ include/linux/virtio_ring.h              | 46 ++++++++++++++++++++++++
+ include/linux/vringh.h                   |  1 +
+ include/uapi/linux/virtio_ring.h         | 30 ++++++++++------
+ tools/virtio/Makefile                    |  2 +-
+ tools/virtio/asm/barrier.h               |  1 +
+ tools/virtio/linux/compiler.h            |  1 +
+ tools/virtio/ringtest/virtio_ring_0_9.c  |  6 ++--
+ tools/virtio/virtio_test.c               |  6 ++--
+ tools/virtio/vringh_test.c               | 18 +++++-----
+ 16 files changed, 110 insertions(+), 44 deletions(-)
+
+-- 
+MST
 
