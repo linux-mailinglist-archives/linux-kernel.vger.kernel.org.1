@@ -2,140 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BFC19F3E9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B8919F3F0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgDFK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:57:29 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:36378 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726841AbgDFK52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:57:28 -0400
-Received: by mail-wm1-f65.google.com with SMTP id d202so15339990wmd.1;
-        Mon, 06 Apr 2020 03:57:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g5mY/6j+QCbr50e5xP/QNFLfFi9SvIAJHD7FGYbPvOI=;
-        b=epdGNnlRAHhd8nG5XjmSks0ueQkDVxN+tk76w/WK4rdFEiMDcWsZ1KhqSszzqqK6ME
-         ijoDDhSVr7sqVyVc7tq2zoeL0XZRyhZepYsQRATkj7EFaAo3r2gQpZhRFSUbwfa/6S5t
-         Yuzbe+TSHV20V3ZQMF2+L+l9UeItgFdenwb0/2hu1KLZyNMGeGRuGNXaLxbouYxCmP2k
-         BuS2iaHuCDL8fgOU9nqnOiDhZZY6AIhF+Q/HCikTJ4H4s0qZ0j4d1PU+ExxMWmdwdrjv
-         2+0GqiLWrgWoXZPnt567wYp19+7duZQxjrcEGUNW5XuqowIIYwmBJqB5osX3L81jHyID
-         /4cg==
-X-Gm-Message-State: AGi0PuaY8dfXz7oekAtUQIHD5yZ128odoymlfKPzset/Tef5wqsFJJ+F
-        iH10wV+0uI7E/LIOi7PtWDE=
-X-Google-Smtp-Source: APiQypLI2VKCrb+awtZriktURlgTQ9LBJ2jKntQWFaLBR48f6AeEwpIjCggmXhacyVJA38rFQc9SrA==
-X-Received: by 2002:a7b:cb13:: with SMTP id u19mr4747173wmj.132.1586170645555;
-        Mon, 06 Apr 2020 03:57:25 -0700 (PDT)
-Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
-        by smtp.gmail.com with ESMTPSA id a2sm17369883wra.71.2020.04.06.03.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 03:57:24 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 12:57:23 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     NeilBrown <neilb@suse.de>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] MM: replace PF_LESS_THROTTLE with PF_LOCAL_THROTTLE
-Message-ID: <20200406105723.GM19426@dhcp22.suse.cz>
-References: <87tv2b7q72.fsf@notabene.neil.brown.name>
- <87v9miydai.fsf@notabene.neil.brown.name>
- <87sghmyd8v.fsf@notabene.neil.brown.name>
- <20200403151534.GG22681@dhcp22.suse.cz>
- <878sjcxn7i.fsf@notabene.neil.brown.name>
- <20200406074453.GH19426@dhcp22.suse.cz>
- <20200406093601.GA1143@quack2.suse.cz>
+        id S1727327AbgDFK5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:57:52 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37749 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726841AbgDFK5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:57:52 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 48wnYz5X2Pz9sQx;
+        Mon,  6 Apr 2020 20:57:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1586170668;
+        bh=3T/Sm1A0E9UPY5qOETqeF8SyVeK3inqT1uc8wO3uPEM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=UgSmH10Uu3lHOI0JliHDuckF5cdxdt2wxO1Hc+gsFghZJ3qGxUrd2rS5O8hy7upoY
+         y7ojnOs5snp4BeJoHkfEXuJT7fVOLK+pTuxDc5ScQMstyeV8AEHnk2g8PshC/yHhnB
+         wmNmaNLqIxvNTbjSGhvtV1kv2jTYsfAewG3ZAg661qUBw7nwMAEfoWCvKg8K459JUz
+         3UN4iAZG7+IyYGuk89I2GslVHzKuXyeeiIDlj+C4ag1EPdKtN7e8Yi0598/C0K+4Aa
+         MTUTT/9gc26h3QfDOfUQb8vqZu7hj/nVP7EjYEw0iW36wKqZQcTAhe0P9bPenUFJKp
+         3DytM7CwoFx+Q==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     afzal.mohd.ma@gmail.com, agust@denx.de, aik@ozlabs.ru,
+        alistair@popple.id.au,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>, bala24@linux.ibm.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chenzhou10@huawei.com,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Christophe Leroy <christophe.leroy@c-s.fr>, clg@kaod.org,
+        courbet@google.com, Daniel Axtens <dja@axtens.net>,
+        dougmill@linux.vnet.ibm.com, farosas@linux.ibm.com,
+        ganeshgr@linux.ibm.com, Grant Likely <grant.likely@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        gustavold@linux.ibm.com, Ilie Halip <ilie.halip@gmail.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Joe Perches <joe@perches.com>, kjain@linux.ibm.com,
+        laurentiu.tudor@nxp.com, leonardo@linux.ibm.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, lpechacek@suse.cz,
+        maddy@linux.ibm.com, maskray@google.com,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        nathanl@linux.ibm.com,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Piggin <npiggin@gmail.com>,
+        Olof Johansson <olof@lixom.net>,
+        Oliver O'Halloran <oohall@gmail.com>, oss@buserror.net,
+        po-hsu.lin@canonical.com, psampat@linux.ibm.com,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        shilpa.bhat@linux.vnet.ibm.com, sourabhjain@linux.ibm.com,
+        srikar@linux.vnet.ibm.com, tyreld@linux.ibm.com,
+        vaibhav@linux.ibm.com, YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.7-1 tag
+In-Reply-To: <CAHk-=wgkkmNV5tMzQDmPAQuNJBuMcry--Jb+h8H1o4RA3kF7QQ@mail.gmail.com>
+References: <87h7xyrt5d.fsf@mpe.ellerman.id.au> <CAHk-=wgkkmNV5tMzQDmPAQuNJBuMcry--Jb+h8H1o4RA3kF7QQ@mail.gmail.com>
+Date:   Mon, 06 Apr 2020 20:57:53 +1000
+Message-ID: <87blo4swy6.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200406093601.GA1143@quack2.suse.cz>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 06-04-20 11:36:01, Jan Kara wrote:
-> On Mon 06-04-20 09:44:53, Michal Hocko wrote:
-> > On Sat 04-04-20 08:40:17, Neil Brown wrote:
-> > > On Fri, Apr 03 2020, Michal Hocko wrote:
-> > > 
-> > > > On Thu 02-04-20 10:53:20, Neil Brown wrote:
-> > > >> 
-> > > >> PF_LESS_THROTTLE exists for loop-back nfsd, and a similar need in the
-> > > >> loop block driver, where a daemon needs to write to one bdi in
-> > > >> order to free up writes queued to another bdi.
-> > > >> 
-> > > >> The daemon sets PF_LESS_THROTTLE and gets a larger allowance of dirty
-> > > >> pages, so that it can still dirty pages after other processses have been
-> > > >> throttled.
-> > > >> 
-> > > >> This approach was designed when all threads were blocked equally,
-> > > >> independently on which device they were writing to, or how fast it was.
-> > > >> Since that time the writeback algorithm has changed substantially with
-> > > >> different threads getting different allowances based on non-trivial
-> > > >> heuristics.  This means the simple "add 25%" heuristic is no longer
-> > > >> reliable.
-> > > >> 
-> > > >> This patch changes the heuristic to ignore the global limits and
-> > > >> consider only the limit relevant to the bdi being written to.  This
-> > > >> approach is already available for BDI_CAP_STRICTLIMIT users (fuse) and
-> > > >> should not introduce surprises.  This has the desired result of
-> > > >> protecting the task from the consequences of large amounts of dirty data
-> > > >> queued for other devices.
-> > > >
-> > > > While I understand that you want to have per bdi throttling for those
-> > > > "special" files I am still missing how this is going to provide the
-> > > > additional room that the additnal 25% gave them previously. I might
-> > > > misremember or things have changed (what you mention as non-trivial
-> > > > heuristics) but PF_LESS_THROTTLE really needed that room to guarantee a
-> > > > forward progress. Care to expan some more on how this is handled now?
-> > > > Maybe we do not need it anymore but calling that out explicitly would be
-> > > > really helpful.
-> > > 
-> > > The 25% was a means to an end, not an end in itself.
-> > > 
-> > > The problem is that the NFS server needs to be able to write to the
-> > > backing filesystem when the dirty memory limits have been reached by
-> > > being totally consumed by dirty pages on the NFS filesystem.
-> > > 
-> > > The 25% was just a way of giving an allowance of dirty pages to nfsd
-> > > that could not be consumed by processes writing to an NFS filesystem.
-> > > i.e. it doesn't need 25% MORE, it needs 25% PRIVATELY.  Actually it only
-> > > really needs 1 page privately, but a few pages give better throughput
-> > > and 25% seemed like a good idea at the time.
-> > 
-> > Yes this part is clear to me.
-> >  
-> > > per-bdi throttling focuses on the "PRIVATELY" (the important bit) and
-> > > de-emphasises the 25% (the irrelevant detail).
-> > 
-> > It is still not clear to me how this patch is going to behave when the
-> > global dirty throttling is essentially equal to the per-bdi - e.g. there
-> > is only a single bdi and now the PF_LOCAL_THROTTLE process doesn't have
-> > anything private.
-> 
-> Let me think out loud so see whether I understand this properly. There are
-> two BDIs involved in NFS loop mount - the NFS virtual BDI (let's call it
-> simply NFS-bdi) and the bdi of the real filesystem that is backing NFS
-> (let's call this real-bdi). The case we are concerned about is when NFS-bdi
-> is full of dirty pages so that global dirty limit of the machine is
-> exceeded. Then flusher thread will take dirty pages from NFS-bdi and send
-> them over localhost to nfsd. Nfsd, which has PF_LOCAL_THROTTLE set, will take
-> these pages and write them to real-bdi. Now because PF_LOCAL_THROTTLE is
-> set for nfsd, the fact that we are over global limit does not take effect
-> and nfsd is still able to write to real-bdi until dirty limit on real-bdi
-> is reached. So things should work as Neil writes AFAIU.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
+> On Sun, Apr 5, 2020 at 5:53 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>
+>> There is one conflict in fs/sysfs/group.c, between our:
+>>
+>>   9255782f7061 ("sysfs: Wrap __compat_only_sysfs_link_entry_to_kobj function to change the symlink name")
+> [...]
+>
+> The conflict was trivial.
+>
+> But I want to kvetch a bit about that commit. It's doing some odd stuff.
+>
+> In particular, it's wrapping things "the wrong way". Our naming rules
+> are that the double underscore versions are the internal helper
+> functions that you generally shouldn't use unless you have some extra
+> reason for it, and then the non-underscore versions are the preferred
+> and simpler user interface to those internal implementations.
+>
+> IOW, the _wrapper_ doesn't have double underscores, it's the _wrappee_
+> that has the underscores.
+>
+> That commit does the exact reverse of that usual pattern, which is
+> very confusing.
+>
+> Now, I see _why_ you do that - normally the non-underscore version is
+> the "real" interface and the one we've always exported, and then the
+> double underscore is the special internal thing that maybe exposes
+> some internal detail (or maybe only does one special case of it and
+> leaves out locking or whatever).
+>
+> In this case, for hysterical raisins, we only _had_ that
+> double-underscore version, and you basically added the new case and
+> did it without the underscores.
+>
+> So I see why it happened the way it did, but I do think the end result
+> makes no sense and is odd and surprising.
 
-Thanks for the clarification. I was not aware of the 2 bdi situation.
-This makes more sense now. Maybe this is a trivial fact for everybody
-who is more familiar with nfs internals but it would be so much esier to
-follow if it was explicit in the changelog.
--- 
-Michal Hocko
-SUSE Labs
+Yeah, that's fair.
+
+I was a bit unsure about taking a fs/sysfs patch to begin with, so I
+thought leaving the existing function unchanged was the least risky in
+terms of causing any other breakage.
+
+But in hindsight that was the wrong choice, the end result is not
+actually what we want.
+
+So we should have done the right patch and then either asked Greg to
+take it or put it in a topic branch of my own.
+
+> The thing is, we have exactly *one* user of that double-underscore
+> version: tpm-chip.c (ok, there are two calls in that file, but it's a
+> single user).
+>
+> So I think it should just have removed the __ version entirely. Make
+> tpm-chip just use the new semantics, and pass in the extra NULL
+> argument.
+>
+> I guess I'll just do that as a cleanup patch on top, but it feels a
+> bit odd to have to do that cleanup when the original patch could have
+> just done the obvious thing.
+
+Thanks.
+
+cheers
