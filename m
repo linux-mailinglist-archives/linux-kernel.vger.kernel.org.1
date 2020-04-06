@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6A719F657
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F96719F648
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728312AbgDFNDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 09:03:20 -0400
-Received: from smtprelay0104.hostedemail.com ([216.40.44.104]:34142 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728237AbgDFNDT (ORCPT
+        id S1728191AbgDFNBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 09:01:43 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:51515 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727989AbgDFNBm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 09:03:19 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 1E2261800468C;
-        Mon,  6 Apr 2020 13:03:18 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:4250:4321:5007:6117:6120:6691:6742:7514:7875:7901:7903:8957:10004:10400:10848:10967:11026:11232:11473:11658:11914:12296:12297:12438:12555:12740:12760:12895:12986:13069:13101:13311:13357:13439:13972:14181:14659:14721:21080:21627:21740:21990:30012:30029:30030:30054:30060:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: uncle16_1c73d53e8c256
-X-Filterd-Recvd-Size: 3467
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Mon,  6 Apr 2020 13:03:15 +0000 (UTC)
-Message-ID: <ea5e4d82e78140de6591889430a4ded351b18e89.camel@perches.com>
-Subject: Re: [PATCH v2 1/1] lib/vsprintf: Add support for printing V4L2 and
- DRM fourccs
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>
-Date:   Mon, 06 Apr 2020 06:01:17 -0700
-In-Reply-To: <CAHp75Vdp+PXaJxrm99DgpJSS+6PcD1FfAfE3U1auFr2oxk5-tA@mail.gmail.com>
-References: <20200403091156.7814-1-sakari.ailus@linux.intel.com>
-         <1105bfe5-88f1-040e-db40-54d7761747d5@rasmusvillemoes.dk>
-         <b1e6213ba9f67da8278dd5c5f5e4def8ab927c83.camel@perches.com>
-         <20200403193242.38611906@coco.lan>
-         <2751400ae13b25d8259a8a9d7b36caf98ec2d367.camel@perches.com>
-         <CAHp75Vf+m_qzOwZb38dObLpKV2N27-J_7beqffhFVoSHaNV2vg@mail.gmail.com>
-         <20200406094645.5f96457a@coco.lan>
-         <CAHp75Vdp+PXaJxrm99DgpJSS+6PcD1FfAfE3U1auFr2oxk5-tA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Mon, 6 Apr 2020 09:01:42 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1N9MlI-1jIKor1ERw-015Lh9; Mon, 06 Apr 2020 15:01:41 +0200
+Received: by mail-qt1-f176.google.com with SMTP id f20so12682135qtq.6;
+        Mon, 06 Apr 2020 06:01:41 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZRqJFzBfGN2kcbOmxTsxVGDR1Ew//AdsEuGdlqjoeFeM6O6XMp
+        XK0D2kcs4tLnZfPliPVGccE1f1+4T+afC+8JkGQ=
+X-Google-Smtp-Source: APiQypKGl0rcjmxPk7LYkIyq/3sFEAQ9JSPbooEo+AQI5dEX6atvP7qavyGi7h4ravOrmygkje1eLWDqMVjJqya7e2s=
+X-Received: by 2002:ac8:d8e:: with SMTP id s14mr20274585qti.204.1586178100052;
+ Mon, 06 Apr 2020 06:01:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200406120312.1150405-1-hch@lst.de> <20200406120312.1150405-3-hch@lst.de>
+In-Reply-To: <20200406120312.1150405-3-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 6 Apr 2020 15:01:24 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a02LQNOehukgaCj81wg1D2XhW1=_mQZ72cT6nQdO=mhOw@mail.gmail.com>
+Message-ID: <CAK8P3a02LQNOehukgaCj81wg1D2XhW1=_mQZ72cT6nQdO=mhOw@mail.gmail.com>
+Subject: Re: [PATCH 2/6] binfmt_elf: open code copy_siginfo_to_user to
+ kernelspace buffer
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:dGr/PTHzNlhAg8nmJiAVpx3qyNykoPFVVfJTEzev2QMu2b+GJt5
+ MwseBCwLfebyAuVxIj/eu++fOsT1+89Ai5a1SSOdnXOQxMo6iiUdOEDBKBvBchemFXS/9iM
+ ksV7b7Y7iaQmlwq2jnGXyH1a2sQhbvu7Vto269EJGL6tEVzCkJIhvqlL7Wpb9kxOD1Likzp
+ EXMzAPOON4rmpwi8DBpEA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:H8nvoPmcBCY=:+2G3Ozxt1Z+SydtUKt6d+5
+ nhOaKGkoBaQLlFv/IWC59fP+dHQ2tuwUBpEkkjrzQNh0CBU2b/dcZd8jXcjA6Y2SVn4eiE0hU
+ eay14z9qwK4/38FrfqmBY6zLzpomzZHdr5D77TZ5ALRZU380ACuLme1pGarQZ27GoOZ9YvlB3
+ C716dVErOAKDR5FlSnHazfCKl2lRPs+vmeTXx5lRpnepmxoI1GJA5D+dCk+crd5UiNZBdOZFs
+ BKaX0b/jWX+sqWXxtmMrZo63BsZALqajLIAbTEkPsk4CR05Ii9G9Aq8iYRLu3W3EbLgBYNJLL
+ TDukJxQULIYJi658+D3FQ3YaW+RkaihjXBkRTWg2sGUej2jUtFS+v84wwgm6qIsfSPCVzwO8n
+ On95rRtx/Zb1qe5WAJJcKNqBbYXJanXtcTr5nGzlfJ5ilNbdM/21+O0UkRvxNYA9VV93FsA3+
+ Glr/520GmIxPmtFIBHC0MXy5saL92Xd3BuixvDZsfmJ6hli5jVO7jaOiXm5CGDhU9xousUa96
+ jT3xC1Mhi7uz+tSY/JZHfXw3d+JTeV4uoHeTFQzPzKIBg0W1uVLpnTbvI04IFtyJxEfunZC03
+ gtJuXf42oijsmYOTbyk8VKTmm/QgIaH0nNtuxMFEaGsHeoZeLHElAJSCBLVKOha5IDxJZheAg
+ lp6o2OEcLoYDzRCDCmX7cvqJOWM/gIlgyDQWIS4w0w5bcu3Z0URlSPZpMC6U8t6p9FLtMLNTC
+ vFJDGO5KOjV1qEgCXVohXE72xiqlUY/7DCcbqj9ags4/2F1OfuwR2JevtwdR/tGk8UVQ3JFW+
+ gB59/5Fpbgxr2cQ13bEcWC5nKoxiXp+dSu50lHipR6kRWDLU+c=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-04-06 at 13:44 +0300, Andy Shevchenko wrote:
-> On Mon, Apr 6, 2020 at 10:46 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
-> > Em Fri, 3 Apr 2020 21:32:42 +0300
-> > Andy Shevchenko <andy.shevchenko@gmail.com> escreveu:
-> > > On Fri, Apr 3, 2020 at 8:54 PM Joe Perches <joe@perches.com> wrote:
-> > > > On Fri, 2020-04-03 at 19:32 +0200, Mauro Carvalho Chehab wrote:
-> > > > > Em Fri, 03 Apr 2020 09:56:42 -0700
-> > > > > Joe Perches <joe@perches.com> escreveu:
-> > > > It _might_ be useful to use a CONFIG_MEDIA_SUPPORT guard
-> > > > in lib/vsprintf for this.
-> > > 
-> > > No need. FourCC, if Sakari makes it more generic, can be used for
-> > > other purposes, e.g. printing component names from the chips (not
-> > > related to media at all).
-> > > 
-> > 
-> > Hmm... not 100% sure about what you're meaning with "component names".
-> 
-> 4cc is pretty much wide standard, media is just one of (famous) users of it.
-> 
-> As I emphasized the example I referring to has nothing to do with media.
-> 
-> Now, I have already two examples:
-> - component name inside hardware register (used by Synopsys DesignWare)
-> - CSRT table in ACPI uses this code for vendor ID.
+On Mon, Apr 6, 2020 at 2:03 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Instead of messing with the address limit just open code the trivial
+> memcpy + memset logic.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/binfmt_elf.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index f4713ea76e82..d744ce9a4b52 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -1556,10 +1556,9 @@ static void fill_auxv_note(struct memelfnote *note, struct mm_struct *mm)
+>  static void fill_siginfo_note(struct memelfnote *note, user_siginfo_t *csigdata,
+>                 const kernel_siginfo_t *siginfo)
+>  {
+> -       mm_segment_t old_fs = get_fs();
+> -       set_fs(KERNEL_DS);
+> -       copy_siginfo_to_user((user_siginfo_t __user *) csigdata, siginfo);
+> -       set_fs(old_fs);
+> +       memcpy(csigdata, siginfo, sizeof(struct kernel_siginfo));
+> +       memset((char *)csigdata + sizeof(struct kernel_siginfo), 0,
+> +               SI_EXPANSION_SIZE);
+>         fill_note(note, "CORE", NT_SIGINFO, sizeof(*csigdata), csigdata);
+>  }
 
-So if this is really u32_to_ascii, perhaps the "-BE" bit
-should be separated and "%4pEp" could be used with some
-renamed inline used like ERR_PTR so maybe something like
-this might work?
+I think this breaks compat binfmt-elf mode, which relies on this trick:
 
-static inline void * __must_check FOURCC(u32 val)
-{
-	return (void *)(unsigned long)cpu_to_be32(val);
-}
+fs/compat_binfmt_elf.c:#define copy_siginfo_to_user     copy_siginfo_to_user32
+fs/compat_binfmt_elf.c#include "binfmt_elf.c"
 
-void test_4cc(void)
-{
-	u32 val = 0x41424344;
+At least we seem to only have one remaining implementation of
+__copy_siginfo_to_user32(), so fixing this won't require touching all
+architectures, but I don't see an obvious way to do it right. Maybe
+compat-binfmt-elf.c should just override fill_siginfo_note() itself
+rather than overriding copy_siginfo_to_user().
 
-	printk("4cc like: %4pE\n", FOURCC(val));
-}
-
-
+       Arnd
