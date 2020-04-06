@@ -2,62 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A4119F556
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9499719F55B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 14:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbgDFMCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 08:02:35 -0400
-Received: from mail-40130.protonmail.ch ([185.70.40.130]:25187 "EHLO
-        mail-40130.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgDFMCf (ORCPT
+        id S1727834AbgDFMDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 08:03:23 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:44214 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727526AbgDFMDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 08:02:35 -0400
-Date:   Mon, 06 Apr 2020 12:02:27 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.ch;
-        s=default; t=1586174552;
-        bh=5WZ5+FLUh3mc2UsRwK/MWjgcY03tO2vIuA2n/70q2tk=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=o8wQl2YYnR8Gw0Lm3uYAL71gdAmvUeBjqXXf/X9DJmgauW1cM3LknS3QI1/qJ0VN3
-         BxRzfZFTAy99T2RAGySkh2+Z1qkDndj9u6bfnOobcE5bZ/cFaGO4lwjKZMPE+VbBT/
-         fPHQBjYCIRIgn1x9P2tqmozf7xIxOIssD8dWTSwg=
-To:     LSM List <linux-security-module@vger.kernel.org>
-From:   Jordan Glover <Golden_Miller83@protonmail.ch>
-Cc:     "SMACK-discuss@lists.01.org" <SMACK-discuss@lists.01.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        "Schaufler, Casey" <casey.schaufler@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Reply-To: Jordan Glover <Golden_Miller83@protonmail.ch>
-Subject: =?UTF-8?Q?[SMACK]_Build-time_warning_from_Linux_5.6.2:_unused_variable_?=
- =?UTF-8?Q?=E2=80=98sip=E2=80=99?=
-Message-ID: <lTqravVBK9-oBbja6fvn3DqA3lv42gF_wg4Q9fC0FhfG1DbinZb4oKl7JV_meJYykJtkvN2gXhy-bCAgIlRglRT2z-oQ6wFF6aPx2vo-ZAs=@protonmail.ch>
+        Mon, 6 Apr 2020 08:03:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=M3PudfTDfMbp/kyNfADOICHhe3xiV05PupFz4zJKaGo=; b=Z3LfP/8tdTqyZ1tf4vGA2UZVTm
+        T+V+JRjTgn8R2yztuK/gSGSNmlfMRk2U6xJTog/RRxYAJ0wsq2hYTXjwqXN+swW1ykR7Nc80++ZzP
+        UTnkhAr+rivlk1bW1WqNpoalE1es8EdQQ1Sfh/zQKliNjkTmsBFzdf2LZn4XH9+F2o1/ffwTo4YFk
+        LV6p3LUF+9TFaK8yhfTK8xLp6peJQ+QaH+PtVTk8rs+Dv9EKdad4OuNOtegec0fIwsrTTYtp0gi42
+        BS4wWWRV9xOBBaG/ZlJTC5Iv65EBLi8C9oTBcQ5loGeVJRZ6Evb8gGIAxjV9JKTLTGh3XE0217U+E
+        2pdCuCtw==;
+Received: from [2001:4bb8:180:5765:7ca0:239a:fe26:fec2] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLQTC-0003JP-17; Mon, 06 Apr 2020 12:03:14 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Jeremy Kerr <jk@ozlabs.org>, Arnd Bergmann <arnd@arndb.de>,
+        linuxppc-dev@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: remove set_fs calls from the exec and coredump code
+Date:   Mon,  6 Apr 2020 14:03:06 +0200
+Message-Id: <20200406120312.1150405-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, during build of Linux 5.6.2 (also happened on 5.5.x series)
-gcc (9.3) prints following warning:
+Hi all,
 
-security/smack/smack_lsm.c: In function =E2=80=98smack_socket_connect=
-=E2=80=99:
-security/smack/smack_lsm.c:2838:24: warning: unused variable =E2=80=98sip=
-=E2=80=99 [-Wunused-variable]
- 2838 |   struct sockaddr_in6 *sip =3D (struct sockaddr_in6 *)sap;
-
-My kernel has set CONFIG_IPV6=3Dn during build.
-
-Jordan
-
-
-
-
-
+this series gets rid of playing with the address limit in the exec and
+coredump code.  Most of this was fairly trivial, the biggest changes are
+those to the spufs coredump code.
