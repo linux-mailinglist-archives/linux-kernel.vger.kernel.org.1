@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DA219F31E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A0919F32C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726873AbgDFKAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:00:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36166 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726784AbgDFKAH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:00:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7CFCCADCC;
-        Mon,  6 Apr 2020 10:00:05 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 354011E1244; Mon,  6 Apr 2020 12:00:05 +0200 (CEST)
-Date:   Mon, 6 Apr 2020 12:00:05 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH V5 00/12] Enable per-file/per-directory DAX operations V5
-Message-ID: <20200406100005.GB1143@quack2.suse.cz>
-References: <20200316095224.GF12783@quack2.suse.cz>
- <20200316095509.GA13788@lst.de>
- <20200401040021.GC56958@magnolia>
- <20200401102511.GC19466@quack2.suse.cz>
- <20200402085327.GA19109@lst.de>
- <20200402205518.GF3952565@iweiny-DESK2.sc.intel.com>
- <20200403072731.GA24176@lst.de>
- <20200403154828.GJ3952565@iweiny-DESK2.sc.intel.com>
- <20200403170338.GD29920@quack2.suse.cz>
- <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
+        id S1726950AbgDFKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:01:58 -0400
+Received: from mail-eopbgr1400110.outbound.protection.outlook.com ([40.107.140.110]:6357
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726784AbgDFKB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 06:01:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WKclT8SSW6xUw9or9LUyOec48tuwvzOnzubgTBKeiREX2o3rO+vzh3rvK4uVnDmXfzadUQYsW+KeV1zE1kYjwYKWRhxxUoTDJAfhu88LtKF1nhUUFGPweUpjEjGr+LfU5LieDwL6Vjbu27xpej9FHBTf3iWrv+Yki85gmv23pWkjAItt2nU/wRZbEhcWUcE3t9AU2o552sRYIcIawrjcu/Bm5vdeZrki2YLycNobM4jmh2eO+dMKGR89Sm99BMEMQE7Vvk9NRS9t6dxnHRG/mpjei/wpyiLnocV/xiV3J02tDFlbhqA0D8V+BX+cMrsZJUDlzwpbwMVPLAE2sqpXsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RuxuSojrTZ5mrYPsKKNEW1NuQt6W3hfYbPkPqQ6lCdM=;
+ b=FMWlQn3fc1/5yiM9KM4PJ5h6lPSLGV2A0qSNtw0389Gdd/appHnB+W1nECv1zBptFWioYBuLsf/sK6XRXKCen9yQbizsp4qF5vVNCPXHzwQUSiDPSsEfhGAbpfvQmJA+xwwvfXlkSLzPbNJ6NJkLJDNeY8V/shJKqpk9S0sLcXykR80HFsxxvW1gQOs4dqqknlzB9iNyrUS8ti56qPZHQHNoLhrW1gECmYrB3Uyi35kMUTmYXFoTxSazavVAHrfPqfo8RcZ6id+tIMzXSEo9p+8sJQJo6FKoK4Z5n6m20al3jq/G10siFsLFFdcFFquIS29lHXvr/+52AeIM+biqJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RuxuSojrTZ5mrYPsKKNEW1NuQt6W3hfYbPkPqQ6lCdM=;
+ b=KxaaQIbtQw9284Sw/VARVf/MUo4Irfa0/n3HzO6qYBgy7WMbY/ZSAY92ob7ew7ZjSPCHh+U9Rk4CClFpSz4PsZw4vzxHyxbPFNDpx27vnvQX4NWllM2iT0WQfCX6e5sGWYPTEzZkPv8YqCadHrHdVuhmuQeAVXkq/AS4bODcnRs=
+Received: from TYAPR01MB4544.jpnprd01.prod.outlook.com (20.179.175.203) by
+ TYAPR01MB3856.jpnprd01.prod.outlook.com (20.178.140.19) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2878.17; Mon, 6 Apr 2020 10:01:54 +0000
+Received: from TYAPR01MB4544.jpnprd01.prod.outlook.com
+ ([fe80::ed7f:1268:55a9:fc06]) by TYAPR01MB4544.jpnprd01.prod.outlook.com
+ ([fe80::ed7f:1268:55a9:fc06%4]) with mapi id 15.20.2878.017; Mon, 6 Apr 2020
+ 10:01:54 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     John Stultz <john.stultz@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: RE: How to fix WARN from drivers/base/dd.c in next-20200401 if
+ CONFIG_MODULES=y?
+Thread-Topic: How to fix WARN from drivers/base/dd.c in next-20200401 if
+ CONFIG_MODULES=y?
+Thread-Index: AdYI1eHeE+d8Du49RZSXfyqelir+RgAPcQ+AACaCwgAAIpzUAABtUcqgAAMnEZA=
+Date:   Mon, 6 Apr 2020 10:01:54 +0000
+Message-ID: <TYAPR01MB45443FA43152C0091D6EBF9AD8C20@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+References: <TYAPR01MB45443DF63B9EF29054F7C41FD8C60@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+ <CALAqxLWopjCkiM=NR868DTcX-apPc1MPnONJMppm1jzCboAheg@mail.gmail.com>
+ <CAMuHMdVtHhq9Nef1pBtBUKfRU2L-KgDffiOv28VqhrewR_j1Dw@mail.gmail.com>
+ <CALAqxLX2AEFJxqXXXKPs8SU7Su2FqNjwbSt5BxwmQJqYQuST9A@mail.gmail.com>
+ <TYAPR01MB45447DFE9E81D77CA867DEC8D8C20@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+In-Reply-To: <TYAPR01MB45447DFE9E81D77CA867DEC8D8C20@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=yoshihiro.shimoda.uh@renesas.com; 
+x-originating-ip: [124.210.22.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 04893ba5-4c5b-4ce4-c177-08d7da1188e1
+x-ms-traffictypediagnostic: TYAPR01MB3856:
+x-microsoft-antispam-prvs: <TYAPR01MB38563D264B942DA6C6B27FC0D8C20@TYAPR01MB3856.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 0365C0E14B
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB4544.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(376002)(346002)(366004)(39860400002)(396003)(136003)(2940100002)(54906003)(2906002)(8936002)(7696005)(5660300002)(55016002)(66556008)(66476007)(64756008)(110136005)(66446008)(9686003)(52536014)(86362001)(33656002)(76116006)(4744005)(478600001)(66946007)(71200400001)(8676002)(81166006)(81156014)(6506007)(4326008)(316002)(186003)(55236004)(26005);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: renesas.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Mlai7qN/Z0vAZR072P+hQbZnvEBxwrx/SNyOPurdKT6AR0CJuzhY4USEYzNITl0FEECdWNmNdz28Q46QCh17JSOqSKW5yzvXN9rOpMk1aWdgCGoavRvwKDDLAT/QhAFyoFhvfxhL/6rOvD3zhDKQs5dJ/LF81lB92WqxJL/MSh2gxoleBxyoyjXq0u+42+eWmhA3PWNzaumYTsr+hitC71evIiZMtZIU4ZSBWOXWrUbwGJAlF2bwfSad8k0DEQfFqco4o4WYXakk+AVJT5ZBK71mtHWnBjup50oZuEZPw6R8x3Utb9Cs4Wgggvcf/JCLdVFQ6/pwrRllhv5Naoq7nfZ1ENb1XG6z00jH6dEJADSDLSFoEpyNzUc3b0XzF3UzZUQDg7pfKRKgHKlvVfIquQJQkkFwMAbxhiCGvOs5rk9XCLupR+tJQmvSwfEkE1w1
+x-ms-exchange-antispam-messagedata: syDBZF21Si1AS472cmz891iQdvDcJivLnEl0JTJvDbErvxiTkSLbApAYq6fG2e3nCDRb9lSOGfwXgmBh+8YeGodtaeiudl3LTxjMq8IaECOriiI5gxd3KnUDemeqNZmxeQUcePY+bvVAKdHw/vSfZA==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403181843.GK3952565@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 04893ba5-4c5b-4ce4-c177-08d7da1188e1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2020 10:01:54.0820
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lSTa1cBryjOlJMrAhIT/X8bCGujjGH6hKb50T5ntCI5h8A62/PM93miU9XlonwhaCcr9tp4cZ+AXM/fXQO04IADZvHolxsOrec9e5b6UWvFLLPvaBkYHJQDEvB8StXXt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB3856
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 03-04-20 11:18:43, Ira Weiny wrote:
-> Ok For 5.8 why don't we not allow FS_XFLAG_DAX to be changed on files _at_
-> _all_...
-> 
-> In summary:
-> 
->  - Applications must call statx to discover the current S_DAX state.
-> 
->  - There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
->    the parent directory FS_XFLAG_DAX inode flag.  (There is no way to change
->    this flag after file creation.)
-> 
->    If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
->    inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
->    Unless overridden...
-
-OK, after considering all the options we were hashing out here, I think
-this is the best API. There isn't the confusing "S_DAX will magically
-switch on inode eviction" and although the functionality is limited, I
-think 90% of users would end up using the functionality like this anyway.
-
->  - There exists a dax= mount option.
-> 
->    "-o dax=off" means "never set S_DAX, ignore FS_XFLAG_DAX"
->    	"-o nodax" means "dax=off"
->    "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
->    	"-o dax" by itself means "dax=always"
->    "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
-> 
->  - There exists an advisory directory inode flag FS_XFLAG_DAX that can be
->    changed at any time.  The flag state is copied into any files or
->    subdirectories when they are created within that directory.  If programs
->    require file access runs in S_DAX mode, they'll have to create those files
->    inside a directory with FS_XFLAG_DAX set, or mount the fs with an
->    appropriate dax mount option.
-
-								Honza
-
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+SGkgYWdhaW4sDQoNCjxzbmlwPg0KPiBJJ20gZ3Vlc3Npbmcgd2Ugc2hvdWxkIGFkZCB0aGUgZm9s
+bG93aW5nIGZsdXNoX3dvcmsgZm9yIGRlZmVycmVkX3Byb2JlX3RpbWVvdXRfd29yaygpLg0KPiAj
+IFNvcnJ5LCBJIGRpZG4ndCB0ZXN0IHRoaXMgZm9yIHNvbWUgcmVhc29ucyB5ZXQgdGhvdWdoLi4u
+DQo+IA0KPiArICAgICAgIC8qIHdhaXQgZm9yIHRoZSBkZWZlcnJlZCBwcm9iZSB0aW1lb3V0IHdv
+cmtxdWV1ZSB0byBmaW5pc2ggKi8NCj4gKyAgICAgICBpZiAoZHJpdmVyX2RlZmVycmVkX3Byb2Jl
+X3RpbWVvdXQgPiAwKQ0KPiArICAgICAgICAgICAgICAgZmx1c2hfd29yaygmZGVmZXJyZWRfcHJv
+YmVfdGltZW91dF93b3JrKTsNCg0KSSdtIHNvcnJ5LiBUaGlzIGNvZGUgY2F1c2VkIGJ1aWxkIGVy
+cm9yIGJlY2F1c2UgdGhlIGRlZmVycmVkX3Byb2JlX3RpbWVvdXRfd29yaw0KaXMgc3RydWN0IGRl
+bGF5ZWRfd29yay4gQWxzbywgSSBkb24ndCB0aGluayB1c2luZyBmbHVzaF9kZWxheWVkX3dvcmso
+KSBpcw0KbXkgZXhwZWN0YXRpb24gKHdhaXQgdW50aWwgdGhlIHRpbWVvdXQgb2YgZGVmZXJyZWQp
+Li4uDQoNCkJlc3QgcmVnYXJkcywNCllvc2hpaGlybyBTaGltb2RhDQoNCg==
