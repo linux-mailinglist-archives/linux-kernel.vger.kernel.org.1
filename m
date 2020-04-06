@@ -2,151 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8991A0172
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 01:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62581A0183
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 01:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbgDFXQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 19:16:19 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:38844 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbgDFXQQ (ORCPT
+        id S1726484AbgDFXSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 19:18:10 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:43969 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgDFXSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 19:16:16 -0400
-Received: by mail-pg1-f194.google.com with SMTP id m17so792056pgj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 16:16:16 -0700 (PDT)
+        Mon, 6 Apr 2020 19:18:10 -0400
+Received: by mail-lf1-f65.google.com with SMTP id k28so847462lfe.10;
+        Mon, 06 Apr 2020 16:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6T/7mkz2QJj1i6yBI9rf5y5UrGkfIoNdamdak5bIEr8=;
-        b=SHvDMZKynQoupRAYdyzGP7833YCcGwM4Pjmu4hIlfgEi41IUoIMZIvMFkCimFNo1pC
-         ukiFfjPKn6dwME2ko+g8mNG5D99lrZbhcV9idRFBRE7QuhQxO7LJZsbFMVIn38ydgfCG
-         4qMfQRVb21FqPszfB/2JLkg9/aNX0WWnHNT0E=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=chS43n5Rzi5QlXuzujx9Up/J1i2zDWrT898t52vhKwM=;
+        b=C8El9k9Xe+SkBTrIZmw46NaUoXdx8q2vzZ2qLOwqIC3BIoa2ynJ4xkShtIAVG6Ps65
+         5s8USY91DvcarVsY/k9q10+g5qjicoNQuIouYE6p7k5YDKS7nRQOlliAaSdh9nBQlto1
+         XUp7gUmvaTF1yetGDRwZZchQzAnHxsUq9xwyb+S59Qjzpa64YZnKZO8IcrN2vtSyvs+r
+         BYv/2aQfWTJlUc0MhGoL690I3u5V9KLX1koXfURhFYW1IXMhhdNPt3J9QWC6WEK4vKrJ
+         rRug3DMfmCkU9Me3uyNMt6rI1ESrh/TmT+WwAlsYfyNt7+H0X8cWHNe8zu4a6UubeT6i
+         O/lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6T/7mkz2QJj1i6yBI9rf5y5UrGkfIoNdamdak5bIEr8=;
-        b=Jx2yq5aRe6XBwbR8+HCnSxEGE1kpyjGoZoUgHvFVihKOKDL6jL2HctEZpFLytmLD6k
-         Ey610iRyZJ2CcMpq8GEKIZi//VZOk9e5MBpTQJeUBrx1o6Ki1ZycydvRWX/ggxjM7Qr5
-         gMHdLjpahH1BW8V3/3pWWVXi8etVisKLKTxhQtgqfcE0Lk+ytgVYINmRzAm1c3L5HGQ1
-         RWI3Jm/3EuZxG9UWNqXp9QjayqOWAhiY0tEq2cYVKeldM4IFKAJGXSkbW3NkwVk6yD9W
-         NrGeQ5bk6xb2CdjMjhzBYL7/THGHV9WJJ8akQcZ1Dsv5nsUBtYkTVqqkyZ2+ywRfoLRi
-         FQYA==
-X-Gm-Message-State: AGi0PuYcOnHrkWS/Q+4/aBr9eEKigNS0KynhKZhhh5Zgd85G9SrIjzfo
-        vXCvtLU1P++5bCBJbSs1BxfyQA==
-X-Google-Smtp-Source: APiQypKPb2SK+P7H+McMjGGqVwR7DToHZCme/uHbB59Pjk0ShbX/p0nUYaBfdUBZDv7/4hnnvCIAMQ==
-X-Received: by 2002:a62:d10b:: with SMTP id z11mr1732920pfg.205.1586214975509;
-        Mon, 06 Apr 2020 16:16:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k20sm11602048pgn.62.2020.04.06.16.16.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 16:16:14 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] arm64: entry: Enable random_kstack_offset support
-Date:   Mon,  6 Apr 2020 16:16:06 -0700
-Message-Id: <20200406231606.37619-6-keescook@chromium.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200406231606.37619-1-keescook@chromium.org>
-References: <20200406231606.37619-1-keescook@chromium.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=chS43n5Rzi5QlXuzujx9Up/J1i2zDWrT898t52vhKwM=;
+        b=BjTeodJ7WBrWZYtkxiw/SqSFexjkdBkiLd1vhbDpenuS2Imn5COVDyDGKU+JrDHj97
+         bMc+Ly1v/hrBGjSmHmr6PYw/julEjoOnTi+vnqE2Y+cXFnzN650X668RGHkwWKKe8cJC
+         IvIWwbaKjIoBtnaSHB2AurQL1ZXSnI7FM2Whwe6aoPI5BOGf86B3clBoy3JgXop7MSAr
+         44ifvgxdhcJrfEVPuu9+I4IDEmUcADQpRaWK8QUxD8ktNQB4Gb02NOwVSUtJTBy9s8CZ
+         zCI3Ix/QU2M9OWegv1LmDe0qRFg0RMvYeqG8Jsgm9eks2bwImE6MPAn5vtmQ6UX/tlfd
+         KnyA==
+X-Gm-Message-State: AGi0PuZMihRM8CskxB+aEpzwm2Kcd1TUurFdhe6zAdN5DKjlRPzfiwhM
+        kfIO6QRFsxXdI7irdGR2dc4TtySs
+X-Google-Smtp-Source: APiQypKYg7s05Oo6p5B56gIRuzqS4bQjSQVXLZkNJNbdwWw5ASMZsecvKR7JPKWjof/yi0102iCppQ==
+X-Received: by 2002:a05:6512:14a:: with SMTP id m10mr10185113lfo.152.1586215086411;
+        Mon, 06 Apr 2020 16:18:06 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id d21sm10826594ljc.49.2020.04.06.16.18.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Apr 2020 16:18:05 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
+Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
+ <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
+ <200bb96e-2d07-764f-9e14-55538dc742fd@gmail.com>
+ <23bfab09-b464-6e51-9843-06d13000e9b9@nvidia.com>
+ <be77b0ef-d605-8357-4180-f40b2886d07a@gmail.com>
+ <08cd31d5-e8b9-4d3a-fb0e-0e4462947d96@nvidia.com>
+ <12a834ac-52b1-6dc0-7d3a-3e6a1fa85a2a@gmail.com>
+ <e3712e7b-b335-b35b-a94f-24eb85122dca@nvidia.com>
+ <b1726d33-0d35-9323-a747-407148d0104e@gmail.com>
+ <eb80178f-30f4-8f46-51cd-ea3f4914b81d@nvidia.com>
+ <dd16c560-ba8f-e7df-5dc4-5227e0043196@nvidia.com>
+ <fea4f0a1-4a20-34d4-9eda-e4a599eeeffc@nvidia.com>
+ <760d071e-0cbc-b3eb-9231-fb9f9ecb44a6@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9e317f65-8a02-3b15-cfec-8e0d8374130e@gmail.com>
+Date:   Tue, 7 Apr 2020 02:18:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <760d071e-0cbc-b3eb-9231-fb9f9ecb44a6@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow for a randomized stack offset on a per-syscall basis, with roughly
-5 bits of entropy.
+07.04.2020 01:07, Sowjanya Komatineni пишет:
+> 
+> On 4/6/20 3:00 PM, Sowjanya Komatineni wrote:
+>>
+>> On 4/6/20 2:39 PM, Sowjanya Komatineni wrote:
+>>>
+>>> On 4/6/20 2:15 PM, Sowjanya Komatineni wrote:
+>>>>
+>>>> On 4/6/20 2:11 PM, Dmitry Osipenko wrote:
+>>>>> External email: Use caution opening links or attachments
+>>>>>
+>>>>>
+>>>>> 07.04.2020 00:02, Sowjanya Komatineni пишет:
+>>>>>>>>>>> Am I understanding correctly that this thread will take 100%
+>>>>>>>>>>> CPU,
+>>>>>>>>>>> spinning here, if more than 2 frame-captures queued?
+>>>>>>>>>> on more than 2 frames captures, it breaks thread and on next
+>>>>>>>>>> wakeup it
+>>>>>>>>>> continues
+>>>>>>>>> The wait_event() won't wait if condition is true.
+>>>>>>>> condition is checked when waitqueue is woken up
+>>>>>>> https://elixir.bootlin.com/linux/v5.6.2/source/include/linux/wait.h#L462
+>>>>>>>
+>>>>>> process is put to sleep until the condition evaluates to true or
+>>>>>> signal
+>>>>>> is received.
+>>>>>>
+>>>>>> condition is checked each time the waitqueue head is woken up.
+>>>>> This is a wrong assumption in accordance to the code.
+>>
+>> process is in sleep until the condition is evaluated and when
+>> condition is true wakeup still happens only when wake_up on waitqueue
+>> is called
+>>
+>> This is the reason for using this to prevent blocking while waiting
+>> for the buffers.
+> 
+> w.r.t capture list update, wakeup happens when wake_up on waitqueue is
+> called.
+> 
+> wakeup also happens on kthread stop signal event.
+> 
+>>
+>>
+>>>>
+>>>> when every buffer is available as long as we are in streaming, we
+>>>> should process it.
+>>>>
+>>>> So if wake up happens when list has buffer, it will be processed but
+>>>> at a time we limit processing 2 simultaneous buffer capture starts
+>>>> only.
+>>>>
+>>> Fixing typo.
+>>>
+>>> I meant when ever buffer is available as long as we are in streaming,
+>>> we should process it.
+>>>
+>>> So capture thread processes as long as buffers are available from
+>>> user space limiting 2 simultaneous trigger of captures and thread
+>>> will be in sleep when capture buffers list is empty or no stop thread
+>>> is signaled.
 
-In order to avoid unconditional stack canaries on syscall entry, also
-downgrade from -fstack-protector-strong to -fstack-protector to avoid
-triggering checks due to alloca(). Examining the resulting syscall.o,
-sees no changes in canary coverage (none before, none now).
+IIUC, the waiting won't happen if more than 2 captures are queued and
+thread will be spinning until captures are processed.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/arm64/Kconfig          |  1 +
- arch/arm64/kernel/Makefile  |  4 ++++
- arch/arm64/kernel/syscall.c | 10 ++++++++++
- 3 files changed, 15 insertions(+)
-
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 0b30e884e088..4d5aa4959f72 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -127,6 +127,7 @@ config ARM64
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
- 	select HAVE_ARCH_PREL32_RELOCATIONS
-+	select HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_STACKLEAK
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index fc6488660f64..b89005f125d6 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -11,6 +11,10 @@ CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_insn.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_return_address.o = $(CC_FLAGS_FTRACE)
- 
-+# Downgrade to -fstack-protector to avoid triggering unneeded stack canary
-+# checks due to randomize_kstack_offset.
-+CFLAGS_syscall.o	+= $(subst -fstack-protector-strong,-fstack-protector,$(filter -fstack-protector-strong,$(KBUILD_CFLAGS)))
-+
- # Object file lists.
- obj-y			:= debug-monitors.o entry.o irq.o fpsimd.o		\
- 			   entry-common.o entry-fpsimd.o process.o ptrace.o	\
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index a12c0c88d345..238dbd753b44 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -5,6 +5,7 @@
- #include <linux/errno.h>
- #include <linux/nospec.h>
- #include <linux/ptrace.h>
-+#include <linux/randomize_kstack.h>
- #include <linux/syscalls.h>
- 
- #include <asm/daifflags.h>
-@@ -42,6 +43,8 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- {
- 	long ret;
- 
-+	add_random_kstack_offset();
-+
- 	if (scno < sc_nr) {
- 		syscall_fn_t syscall_fn;
- 		syscall_fn = syscall_table[array_index_nospec(scno, sc_nr)];
-@@ -51,6 +54,13 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 	}
- 
- 	regs->regs[0] = ret;
-+
-+	/*
-+	 * Since the compiler chooses a 4 bit alignment for the stack,
-+	 * let's save one additional bit (9 total), which gets us up
-+	 * near 5 bits of entropy.
-+	 */
-+	choose_random_kstack_offset(get_random_int() & 0x1FF);
- }
- 
- static inline bool has_syscall_work(unsigned long flags)
--- 
-2.20.1
-
+I think you need a semaphore with resource count = 2.
