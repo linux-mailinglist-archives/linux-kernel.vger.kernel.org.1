@@ -2,146 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B8A19FFDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4437319FFE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 23:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgDFVCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 17:02:25 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18516 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgDFVCX (ORCPT
+        id S1726386AbgDFVFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 17:05:38 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:11350 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726287AbgDFVFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 17:02:23 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8b98780001>; Mon, 06 Apr 2020 14:00:40 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 06 Apr 2020 14:02:22 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 06 Apr 2020 14:02:22 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr
- 2020 21:02:22 +0000
-Received: from [10.2.164.193] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr 2020
- 21:02:20 +0000
-Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
- <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
- <200bb96e-2d07-764f-9e14-55538dc742fd@gmail.com>
- <23bfab09-b464-6e51-9843-06d13000e9b9@nvidia.com>
- <be77b0ef-d605-8357-4180-f40b2886d07a@gmail.com>
- <08cd31d5-e8b9-4d3a-fb0e-0e4462947d96@nvidia.com>
- <12a834ac-52b1-6dc0-7d3a-3e6a1fa85a2a@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <e3712e7b-b335-b35b-a94f-24eb85122dca@nvidia.com>
-Date:   Mon, 6 Apr 2020 14:02:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <12a834ac-52b1-6dc0-7d3a-3e6a1fa85a2a@gmail.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586206840; bh=LQXwr464PKLkjQc2JsoYa1G97YL2u32MHMj5ekn3DUU=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=GFnoW0ZchKsXuQEVljP/q6rNBTeuZ8TFD7OPOXLXgF2TcIGeMngQG1a4AUrpCeMhT
-         MOXkPVGm0YEFAm0e1r5Skb4h5D9840DKi37WZfZUW283MfRbTgBo+9QQvzfbC96LLx
-         2BI75bFW44qcXx0A40n1wehEounnWLu2G5K5LGyeR9Cav39zkgSh+XlEEovhCyI4Vh
-         qKHc+dLKhbUk2qcl2uhv3q6hgTRdPIb8uU5G5LYDiTv1dlGJ5zNGI17lMyFTF/A2Vf
-         yBGlHcErTUa1H+xcOMPhFdahdeaNeAYWUF6jCB/4lJigKpCwaH9ceqTSR/2F7StgZ8
-         I/OFZ19xF97iQ==
+        Mon, 6 Apr 2020 17:05:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586207137; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=SbimLU8r3+FaMh0qlreNkY8X8m5XbfbUdLj+XfQh8CE=; b=wE0jvN6q0m4nqETV/aGXwXgIl8aGQsoSxhJptcxTsHMU6nCQnixIsuo/J43r0uagqKOZm74F
+ lZ4gC0m+jaL1wflieyEt0bAeCRkziMwzHvhfZxWjeHD/AoetgYawrkyjCEnwIT6CQA6Kh/yf
+ 7LsWtRNekhxHycszkONRsLGAUjE=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8b999f.7ff88ffa0b20-smtp-out-n03;
+ Mon, 06 Apr 2020 21:05:35 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 58551C433F2; Mon,  6 Apr 2020 21:05:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.0
+Received: from jhugo-perf-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 98914C433D2;
+        Mon,  6 Apr 2020 21:05:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 98914C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH 0/3] Misc MHI fixes
+Date:   Mon,  6 Apr 2020 15:04:34 -0600
+Message-Id: <1586207077-22361-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+A few (independent) fixes to the MHI bus for issues that I have come across
+while developing against the mainline code.
 
-On 4/6/20 1:56 PM, Dmitry Osipenko wrote:
-> External email: Use caution opening links or attachments
->
->
-> 06.04.2020 23:55, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 4/6/20 1:53 PM, Dmitry Osipenko wrote:
->>> External email: Use caution opening links or attachments
->>>
->>>
->>> 06.04.2020 23:50, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> On 4/6/20 1:45 PM, Dmitry Osipenko wrote:
->>>>> External email: Use caution opening links or attachments
->>>>>
->>>>>
->>>>> 04.04.2020 04:25, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>>> +static int chan_capture_kthread_start(void *data)
->>>>>> +{
->>>>>> +     struct tegra_vi_channel *chan =3D data;
->>>>>> +     struct tegra_channel_buffer *buf;
->>>>>> +     int err =3D 0;
->>>>>> +     int caps_inflight;
->>>>>> +
->>>>>> +     set_freezable();
->>>>>> +
->>>>>> +     while (1) {
->>>>>> +             try_to_freeze();
->>>>>> +
->>>>>> +             wait_event_interruptible(chan->start_wait,
->>>>>> +                                      !list_empty(&chan->capture) |=
-|
->>>>>> +                                      kthread_should_stop());
->>>>>> +             /*
->>>>>> +              * Frame start and MW_ACK_DONE syncpoint condition
->>>>>> FIFOs are
->>>>>> +              * of max depth 2. So make sure max 2 capture
->>>>>> requests are
->>>>>> +              * in process by the hardware at a time.
->>>>>> +              */
->>>>>> +             while (!(kthread_should_stop() ||
->>>>>> list_empty(&chan->capture))) {
->>>>>> +                     caps_inflight =3D chan->capture_reqs -
->>>>>> chan->sequence;
->>>>>> +                     /*
->>>>>> +                      * Source is not streaming if error is non-zer=
-o.
->>>>>> +                      * So, do not dequeue buffers on capture error
->>>>>> or when
->>>>>> +                      * syncpoint requests in FIFO are full.
->>>>>> +                      */
->>>>>> +                     if (err || caps_inflight >=3D SYNCPT_FIFO_DEPT=
-H)
->>>>>> +                             break;
->>>>> Am I understanding correctly that this thread will take 100% CPU,
->>>>> spinning here, if more than 2 frame-captures queued?
->>>> on more than 2 frames captures, it breaks thread and on next wakeup it
->>>> continues
->>> The wait_event() won't wait if condition is true.
->> condition is checked when waitqueue is woken up
-> https://elixir.bootlin.com/linux/v5.6.2/source/include/linux/wait.h#L462
+Jeffrey Hugo (3):
+  bus: mhi: core: Handle syserr during power_up
+  bus: mhi: core: Make sure to powerdown if mhi_sync_power_up fails
+  bus: mhi: core: Remove link_status() callback
 
-process is put to sleep until the condition evaluates to true or signal=20
-is received.
+ drivers/bus/mhi/core/init.c |  6 ++----
+ drivers/bus/mhi/core/main.c |  5 ++---
+ drivers/bus/mhi/core/pm.c   | 26 +++++++++++++++++++++++++-
+ include/linux/mhi.h         |  2 --
+ 4 files changed, 29 insertions(+), 10 deletions(-)
 
-condition is checked each time the waitqueue head is woken up.
-
-Also capture list may keep on getting updated with buffers from userspace.
-
-but at a time we only limit 2 frames as VI supports double buffering and=20
-syncpt fifo's max depth is 2
-
-Any more buffers waiting will be processing on subsequent iterations.
-
-So basically thread run time is depending on buffers getting queued from=20
-userspace.
-
+-- 
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
