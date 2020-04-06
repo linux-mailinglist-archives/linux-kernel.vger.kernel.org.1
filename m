@@ -2,159 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA87819FD2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D5B19FD33
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 20:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726339AbgDFS3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 14:29:49 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:47012 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgDFS3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 14:29:48 -0400
-Received: by mail-pl1-f193.google.com with SMTP id s23so141185plq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 11:29:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bzgH14cowT5NOH2YXPfOKwZ5lmbgMroAquim/LRzAhU=;
-        b=aAOSAIrDkWpEGky9IFQuA9uSBE7wYOQC1JT+2Lomjz0H2gpHXbajlsuxjJY141ilSs
-         0SVNnp7eUpSGuOJaB51JSw5Qb7ncbxEZkFXirUuxNWDRdtiy6mX1o+R8oqE1LKu4o5Az
-         +51gBKE4XoL5lzxsnG2lEX0jzlRQQtKrW93SJBxbpy6tljYhpCOJHNT56045vXxYclwY
-         PcfmYmgQTRlDIkEHZ2x4SZtDz2DFng1OhlpAikNsiWTatdywAXHrUIDnBlkBTt9UGXcx
-         boCxCjkEfSaxgndpiWGg9fGFoaRnRX36sxYo9wVWP1yj1xrBZ6OciIwG0K68fXJcXNpA
-         6Rxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bzgH14cowT5NOH2YXPfOKwZ5lmbgMroAquim/LRzAhU=;
-        b=crs6S2g+Kh+jQXs910UHsOQ9yxQCBJ2Qo9hLx6FmvUS7zVeYKNmnrssRrOAcCRIcnd
-         Ul3RTAJ06kPZnJSfezSrx4ZHXCNsViqnCtSFbwV/GGJFXanNfg/3fDBpLtVrArw6TA9H
-         UEnzh+tiTD/o71nufBldvT7/MFHRNR4UTM4Hpf8fcDhTiNDiGIaYekFzETU6VNcqzBXE
-         KWODonGB/49OQ3rCgItMZ7asT5J+zlkfQNpDdS741NCv4dPb14717SqMpqjvgPmBbocK
-         Yx6ajwDogDVT34HvvXH5ejcmVmpejKpuRANhFaVj5PF0y7IeGXonX+73bJFc4mfnMsU0
-         37ZA==
-X-Gm-Message-State: AGi0PubSr/IEqQNN6FcJW4E/GqU4t518wHi8IZWjZ5t44z5yTzjWFUbB
-        5BYWfXKiWN6UeHwJqNKjKQEjexS42RBD4BiheMq0xQ==
-X-Google-Smtp-Source: APiQypLF/CdpZAklvMFqIklRIEpiQeUL7pAjbidBTqoMrPy2xCykMhf18DMZSOzLEu/DbCHvnC8toMDYZVc9oAWVC64=
-X-Received: by 2002:a17:90b:3783:: with SMTP id mz3mr579681pjb.27.1586197786666;
- Mon, 06 Apr 2020 11:29:46 -0700 (PDT)
+        id S1726453AbgDFSaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 14:30:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725787AbgDFSaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 14:30:10 -0400
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DF642078C;
+        Mon,  6 Apr 2020 18:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586197809;
+        bh=HBvFCeSJpqyDca6uPYo//uUcwNS1HPsmDmAlbZua63w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OQu/KdqJDMcqZ+Bn5MhryrSIlGUHMSCxoQrTySfWGm1ktwzBg6k747lsrw+hZMziC
+         y5Nf10brDLchUsRgeYPnGZGa24JPBacfZ9l4FK7znrXsllWpNbStplA7N6K+xnag/o
+         Ryltx4sNIduVtvaQRx22htBLO7ONSwi9FeB4uwqw=
+Received: by mail-io1-f43.google.com with SMTP id y14so473769iol.12;
+        Mon, 06 Apr 2020 11:30:09 -0700 (PDT)
+X-Gm-Message-State: AGi0PubxFqFEwI5fPWqNYrlBSehLjkE/qvvonBGr7ezCPQayBGiTGcw5
+        8/s5fP6ECNPrWdIermal4xZ2ESqPPcfhWj4x9To=
+X-Google-Smtp-Source: APiQypId4Gl802lHnEOrV9sQstKR9OAkyvaTpSgpJG5BIvk42Cjxi15zB2C1hlXWt9hJyyflowd/BdxiWcIZ1/rOigw=
+X-Received: by 2002:a5e:8b47:: with SMTP id z7mr1222858iom.16.1586197808726;
+ Mon, 06 Apr 2020 11:30:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200324135603.483964896@infradead.org> <20200324142245.819003994@infradead.org>
- <20200406010859.bcfouhukcgmg2on7@google.com> <20200406110438.GJ20730@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200406110438.GJ20730@hirez.programming.kicks-ass.net>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 6 Apr 2020 11:29:36 -0700
-Message-ID: <CAKwvOd=hjh_MXDR05A5A8W3NwYSAwzf_ALYKyiAD4nRo1caKqA@mail.gmail.com>
-Subject: Re: [RESEND][PATCH v3 09/17] x86/static_call: Add out-of-line static
- call implementation
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Fangrui Song <maskray@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, bristot@redhat.com,
-        Jason Baron <jbaron@akamai.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>
+References: <CAMj1kXEUkJ1XJ9OTsijeq8tNNYC00bXqEV44OMtX5ugo9WoLKA@mail.gmail.com>
+ <20200406180614.429454-1-nivedita@alum.mit.edu>
+In-Reply-To: <20200406180614.429454-1-nivedita@alum.mit.edu>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 6 Apr 2020 20:29:57 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEpaKxoOBP9suDR1CJ7gTnKEQJcA1nPa3BWh1sN5piZoA@mail.gmail.com>
+Message-ID: <CAMj1kXEpaKxoOBP9suDR1CJ7gTnKEQJcA1nPa3BWh1sN5piZoA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] efi/x86: Move efi stub globals from .bss to .data
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Borislav Petkov <bp@alien8.de>, Sergey Shatunov <me@prok.pw>,
+        hpa@zytor.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
+        initramfs@vger.kernel.org,
+        Donovan Tremura <neurognostic@protonmail.ch>,
+        Harald Hoyer <harald@hoyer.xyz>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 4:04 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Mon, 6 Apr 2020 at 20:06, Arvind Sankar <nivedita@alum.mit.edu> wrote:
 >
-> On Sun, Apr 05, 2020 at 06:08:59PM -0700, Fangrui Song wrote:
-> > On 2020-03-24, Peter Zijlstra wrote:
+> Commit
 >
-> > > +#define ARCH_DEFINE_STATIC_CALL_TRAMP(name, func)                  \
-> > > +   asm(".pushsection .text, \"ax\"                         \n"     \
-> > > +       ".align 4                                           \n"     \
-> > > +       ".globl " STATIC_CALL_TRAMP_STR(name) "             \n"     \
-> > > +       STATIC_CALL_TRAMP_STR(name) ":                      \n"     \
-> > > +       "   jmp.d32 " #func "                               \n"     \
-> > > +       ".type " STATIC_CALL_TRAMP_STR(name) ", @function   \n"     \
-> > > +       ".size " STATIC_CALL_TRAMP_STR(name) ", . - " STATIC_CALL_TRAMP_STR(name) " \n" \
-> > > +       ".popsection                                        \n")
-> > > +
-> > > +#endif /* _ASM_STATIC_CALL_H */
-> >
-> > Hi Peter,
-> >
-> > Coming here from https://github.com/ClangBuiltLinux/linux/issues/974
-> >
-> > jmp.d32 is not recognized by clang integrated assembler.
-> > The syntax appears to be very rarely used. According to Debian Code Search,
-> > u-boot is the only project using this syntax.
+>   3ee372ccce4d ("x86/boot/compressed/64: Remove .bss/.pgtable from
+>   bzImage")
 >
-> *groan*... I was going to use it in more places :-/
+> removed the .bss section from the bzImage.
 >
-> > In March 2017, gas added the pseudo prefix {disp32}
-> > https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=86fa6981e7487e2c2df4337aa75ed2d93c32eaf2
-> > which generalizes jmp.d32  ({disp32} jmp foo)
+> However, while a PE loader is required to zero-initialize the .bss
+> section before calling the PE entry point, the EFI handover protocol
+> does not currently document any requirement that .bss be initialized by
+> the bootloader prior to calling the handover entry.
 >
-> That's all well and cute, but I can't use that because its too new. Not
-> until we raise the minimum gcc/bintils version to something that
-> includes that.
+> When systemd-boot is used to boot a unified kernel image [1], the image
+> is constructed by embedding the bzImage as a .linux section in a PE
+> executable that contains a small stub loader from systemd together with
+> additional sections and potentially an initrd. As the .bss section
+> within the bzImage is no longer explicitly present as part of the file,
+> it is not initialized before calling the EFI handover entry.
+> Furthermore, as the size of the embedded .linux section is only the size
+> of the bzImage file itself, the .bss section's memory may not even have
+> been allocated.
+>
+> In particular, this can result in efi_disable_pci_dma being true even
+> when it was not specified via the command line or configuration option,
+> which in turn causes crashes while booting on some systems.
+>
+> To avoid issues, place all EFI stub global variables into the .data
+> section instead of .bss. As of this writing, only boolean flags for a
+> few command line arguments and the sys_table pointer were in .bss and
+> will now move into the .data section.
+>
+> [1] https://systemd.io/BOOT_LOADER_SPECIFICATION/#type-2-efi-unified-kernel-images
+>
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> Reported-by: Sergey Shatunov <me@prok.pw>
+> Fixes: 3ee372ccce4d ("x86/boot/compressed/64: Remove .bss/.pgtable from bzImage")
 
-If it seems like it would be useful, let us know.  If it doesn't have
-some ridiculous baggage or inconsistency or unspecified behavior,
-we're generally happy to do so.  We have finite resources so knowing
-where to focus our attention helps us sort the never ending TODO list.
-It's not easy to predict which feature we'll need to drop everything
-to implement next, so any help there would be much appreciated.
+Thanks Arvind.
 
+This should be fine for the time being, but going forward, it would
+indeed be better [as you suggested] to consolidate the section
+tweaking logic that exists on different architectures for entirely
+different reasons, but with similar results. That will also ensure
+that BSS gets pulled into .data (or .init.data for arm64)
+automatically, rather than requiring these manual annotations.
+
+I'll queue these up in efi/urgent, and send them on later this week.
+
+
+> ---
+>  drivers/firmware/efi/libstub/efistub.h  | 2 +-
+>  drivers/firmware/efi/libstub/x86-stub.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 >
-> > I wonder whether the instruction jmp.d32 can be replaced with the trick in
-> > arch/x86/include/asm/jump_label.h for clang portability.
-> >
-> > % grep -A2 'jmp.d32' arch/x86/include/asm/jump_label.h
-> >         /* Equivalent to "jmp.d32 \target" */
-> >         .byte           0xe9
-> >         .long           \target - .Lstatic_jump_after_\@
+> diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+> index cc90a748bcf0..67d26949fd26 100644
+> --- a/drivers/firmware/efi/libstub/efistub.h
+> +++ b/drivers/firmware/efi/libstub/efistub.h
+> @@ -25,7 +25,7 @@
+>  #define EFI_ALLOC_ALIGN                EFI_PAGE_SIZE
+>  #endif
 >
-> Sure, but I was hoping to move away from that since all assemblers
-> should now support jmp.d32. Except of course, you have to go ruin
-> things.
+> -#ifdef CONFIG_ARM
+> +#if defined(CONFIG_ARM) || defined(CONFIG_X86)
+>  #define __efistub_global       __section(.data)
+>  #else
+>  #define __efistub_global
+> diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+> index 8d3a707789de..e7af6d2eddbf 100644
+> --- a/drivers/firmware/efi/libstub/x86-stub.c
+> +++ b/drivers/firmware/efi/libstub/x86-stub.c
+> @@ -20,7 +20,7 @@
+>  /* Maximum physical address for 64-bit kernel with 4-level paging */
+>  #define MAXMEM_X86_64_4LEVEL (1ull << 46)
 >
-> The thing is, jmp.d32 reads so much nicer than the above crap.
->
-> Also, I still need a meta instruction like:
->
->         nopjmp $label
->
-> what works just like 'jmp' but instead emits either a nop2 or a nop5.
-> I tried various hacks to get GAS to emit that, but no luck :/
->
-> The only up-side from that new syntax is that I suppose we can go write:
->
->   {disp8} push \vec
->
-> without gas shitting itself and emitting a 5 byte push just because..
-> Except of course we can't, for the same reason I can't go around and
-> use:
->
->   {disp32} jmp
->
-> in the above code.
+> -static efi_system_table_t *sys_table;
+> +static efi_system_table_t *sys_table __efistub_global;
+>  extern const bool efi_is64;
+>  extern u32 image_offset;
 >
 > --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200406110438.GJ20730%40hirez.programming.kicks-ass.net.
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+> 2.24.1
+>
