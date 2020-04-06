@@ -2,105 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EB519F6B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A78919F67B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728466AbgDFNSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 09:18:21 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:37749 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728304AbgDFNSU (ORCPT
+        id S1728351AbgDFNLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 09:11:32 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:11392 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728018AbgDFNLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 09:18:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1586179100; x=1617715100;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=+0kzseOEO2Wgx77lNa15u7+p1olXeh9q9Qu05DxPffM=;
-  b=IoPNaSb+7ngGEZwfcCOtz7K2l1bYIA4eG0LBPS69g2NrGth6TAHQ8LKd
-   B7S/zIYtVs7O07t3QvqTRhZg5kDF6kfjtZf33t7Z+wf83hgBwAulNJSgc
-   L4DRXZ8KTwqkpxOCMUU6724K8ygTKFbe/xrDt8cc03ZDSpUdNCZ3EYJUQ
-   o=;
-IronPort-SDR: R/0UjDZFQb/v4jCLfB+MVpWjtFMF7wWQniLxNG0di5e1b0uUslIswAt1urfZrobS8MZnfI4Ujs
- b/rnWB+In8zg==
-X-IronPort-AV: E=Sophos;i="5.72,351,1580774400"; 
-   d="scan'208";a="27147481"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-57e1d233.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 06 Apr 2020 13:18:16 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-57e1d233.us-east-1.amazon.com (Postfix) with ESMTPS id 155DA142821;
-        Mon,  6 Apr 2020 13:18:05 +0000 (UTC)
-Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 6 Apr 2020 13:18:05 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.160.65) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 6 Apr 2020 13:17:51 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
-        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
-        <dwmw@amazon.com>, <jolsa@redhat.com>, <kirill@shutemov.name>,
-        <mark.rutland@arm.com>, <mgorman@suse.de>, <minchan@kernel.org>,
-        <mingo@redhat.com>, <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <shakeelb@google.com>, <shuah@kernel.org>,
-        <sj38.park@gmail.com>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 15/15] MAINTAINERS: Update for DAMON
-Date:   Mon, 6 Apr 2020 15:09:38 +0200
-Message-ID: <20200406130938.14066-16-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200406130938.14066-1-sjpark@amazon.com>
-References: <20200406130938.14066-1-sjpark@amazon.com>
+        Mon, 6 Apr 2020 09:11:31 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e8b2a1d0000>; Mon, 06 Apr 2020 06:09:49 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 06 Apr 2020 06:11:30 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 06 Apr 2020 06:11:30 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr
+ 2020 13:11:30 +0000
+Received: from [10.2.163.253] (172.20.13.39) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 6 Apr 2020
+ 13:11:29 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+CC:     <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Yang Shi" <yang.shi@linux.alibaba.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCHv2 4/8] khugepaged: Drain LRU add pagevec after swapin
+Date:   Mon, 6 Apr 2020 09:11:27 -0400
+X-Mailer: MailMate (1.13.1r5680)
+Message-ID: <592329FA-69D0-4801-A5DF-F9CC8A3FE305@nvidia.com>
+In-Reply-To: <20200403112928.19742-5-kirill.shutemov@linux.intel.com>
+References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
+ <20200403112928.19742-5-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.65]
-X-ClientProxiedBy: EX13D11UWB003.ant.amazon.com (10.43.161.206) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586178589; bh=QhAGqQow2xf9gnlQ1LeKiIdjJMWRPSwZu94uUdZ5Lv8=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=XvOfKEqfNNOwCwscu+tUNJB3/812aq7VuEM+uFSpu1FKVXJfUeIM8uPIcx+Viyz6v
+         hgfV4fibPMtQfUz7hprNtlKr0ACsRR9Wmiuzy2AefSfgnHbZrDFEi2BCDaMgXUwNxf
+         BA1TS/U6aDv+K5lC5OKoyJiXnBLHuSGx8V9IoIrtL9CHLIANDph5c0le5N6V533ZmF
+         wqTxXyZr26ZjuEwhJ0k2yKObpYdeqbBv5e30MTtQAEsXa58kWYyjI5s/0KCJtvk7M+
+         2uKzKv58mHlf8wgNNrNEGZauIfcSwg1mkLhlO08KX3+m4EK7z4KLQzkozpFtLoar55
+         x4KvzevsZU5Hw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+--=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit updates MAINTAINERS file for DAMON related files.
+On 3 Apr 2020, at 7:29, Kirill A. Shutemov wrote:
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
----
- MAINTAINERS | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+> External email: Use caution opening links or attachments
+>
+>
+> __collapse_huge_page_isolate() may fail due to extra pin in the LRU add=
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5a5332b3591d..cb4a7fa3cdfe 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4661,6 +4661,18 @@ F:	net/ax25/ax25_out.c
- F:	net/ax25/ax25_timer.c
- F:	net/ax25/sysctl_net_ax25.c
- 
-+DATA ACCESS MONITOR
-+M:	SeongJae Park <sjpark@amazon.de>
-+L:	linux-mm@kvack.org
-+S:	Maintained
-+F:	Documentation/admin-guide/mm/data_access_monitor.rst
-+F:	include/linux/damon.h
-+F:	include/trace/events/damon.h
-+F:	mm/damon-test.h
-+F:	mm/damon.c
-+F:	tools/damon/*
-+F:	tools/testing/selftests/damon/*
-+
- DAVICOM FAST ETHERNET (DMFE) NETWORK DRIVER
- L:	netdev@vger.kernel.org
- S:	Orphan
--- 
-2.17.1
+> pagevec. It's petty common for swapin case: we swap in pages just to
 
+s/petty/pretty
+
+> fail due to the extra pin.
+>
+> Drain LRU add pagevec on sucessfull swapin.
+
+s/sucessfull/successful
+
+>
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+>  mm/khugepaged.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index fdc10ffde1ca..57ff287caf6b 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -940,6 +940,11 @@ static bool __collapse_huge_page_swapin(struct mm_=
+struct *mm,
+>         }
+>         vmf.pte--;
+>         pte_unmap(vmf.pte);
+> +
+> +       /* Drain LRU add pagevec to remove extra pin on the swapped in =
+pages */
+> +       if (swapped_in)
+> +               lru_add_drain();
+> +
+>         trace_mm_collapse_huge_page_swapin(mm, swapped_in, referenced, =
+1);
+>         return true;
+>  }
+> --
+> 2.26.0
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl6LKn8PHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKKxYQAIDwUi/sWEd4E5TrOi0JeGwSlI9dP3EFZQPt
+joKck2BSsIirc6FgoyDMhOmstJ422Qa44vbD1eODystiAPJr2Kiv8QPGeKWBfWP0
+jt6cnItoFE03xHxXw6sTjrM2LVMpjowgb6jcoHzI11QCi6GLcVTxyYJrA2pFuBhJ
+6+Ku8ur5IHsLm1SQv3e6kmvdbrRWLyAe898CtGOuqJz7S1/sC69lK1lkc0PLGwDP
+XhMxxwcgVnVMG5zouRHnGkMZ/GnIvxvkgcGe4EXVGTQXpB3Whbgw4wtzEOl3SHW9
+RmRxNGREx3R5mfUwzidrPRjFPPKGMCkmNHwjawVYyViENPuH+uMZsx1p7TtrcefR
+dFbUESbNowbd3r1DD0n1fbN/9QeMnTZTJorRNl7dZdYe5txB0AvBBhHSJCmcw84C
+YyZ/wRpC9xv86FXuW4letu2H/J0zUJii/lQyanUWT1CorOzEi1nwRBm0iHQi2alM
+0eCqxM5VyuEuhyfUAddlegZST1iL6ouVu4X2sZ6vUAXKtXgtggB0xFkyuDSw8J+e
+a35pwnDJroqOFVImtZh+sfkq//ELFU4djvY+q2imm6pzoUgepCptAT29Mx9VbdOb
+NgGl/SSSZ1GpayWTr0J27s+bBgadoseAV5BaB1dJzW3lFjZj5poRiSTSJ8EfY7Gf
+Bz/36+gY
+=q3D5
+-----END PGP SIGNATURE-----
+
+--=_MailMate_C83B2B7B-6470-4A8C-8DF4-B63554AB4EDB_=--
