@@ -2,164 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 234C519F937
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1159619F94C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 17:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgDFPxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 11:53:39 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:42695 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729076AbgDFPxh (ORCPT
+        id S1729194AbgDFPyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 11:54:09 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:37651 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729077AbgDFPyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 11:53:37 -0400
-Received: by mail-pl1-f193.google.com with SMTP id e1so6069682plt.9
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 08:53:37 -0700 (PDT)
+        Mon, 6 Apr 2020 11:54:08 -0400
+Received: by mail-lj1-f195.google.com with SMTP id r24so219500ljd.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 08:54:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wcnhRTJrKqZe9cHSmG/x1YIdkcTsb9+hzvjah1m+gLU=;
-        b=QrYTLNTcoBTCrSMVW19VcWv0ByKz6+H/37bqjQyrTg4kesqGVzq2Wgfz73C4lswLje
-         dxDZgzi0QyM7rWOy5lpHTOla3P7NFlogJUYlOoFpNTtzBjXYaeEkDoiqoWeA1Phowqys
-         EamnTgsa7EEPlDYtuUdxGe+9I1orrycGdTHEo=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Npl54g1ItqpAme/2buCJ5Yu5mdmAHuNU9wsDMO3jye0=;
+        b=H4p3L21IZ+E6Zf51TcjhGAy5KKt6jEvVABr7zIB8jRl0G2SuDYdEetPYUT+1ZxEWS6
+         6DgxrfZ6KnN4+KFuLplobcwfZUamqs9zkVWbAh1hO2ee6JuLvqUGOXWlP1C2HoiCV4Fx
+         R0dS7eJj7qE9B5xQZOSWZcZAPWfCpE9O+mXpk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wcnhRTJrKqZe9cHSmG/x1YIdkcTsb9+hzvjah1m+gLU=;
-        b=Dg4JzizCCBReeg0oFHBox9BtEF+k0EpkwHCooub4H4AvZ7WqY6QbyT6A42TcbmrVVS
-         4O5/8ig4RnnHQneGuEWWLJQqmQ+POOivaeY0NJgpbN2ikYtLj/TnZCOJHwSqsPXgc0KQ
-         vhVg3u3tSTQk1UuormNQzYBabCeHMbfAjey+qs6WQ+5lyAVyZf56GUlz0pmVDaHfma79
-         YMRwEpxrPZw8doRej9eMZgB85CnP8EptV/RAIQA5UHuLokKEKn/qs0PR25qiglwl62BL
-         agDck7e5HmkKg+9uqO4sQccmrhiHNtz1K8HtB9fAiG+XG4gW0f0j9G8nvNv2YIDE+IP9
-         15JQ==
-X-Gm-Message-State: AGi0Pubn4c+EMjzraR28Mp4mkjcsthbozgqhB/GOaCWJ+LEHhccOlxSN
-        eF8f0licX/j8pzicklFh6pF8Kg==
-X-Google-Smtp-Source: APiQypLqIcfMQ3mfXhR8Fc2dFArba08SdCuw59KBYoWtvJ9xxfg3FceQ1q6rQno6xNecJn9lQ4+qGQ==
-X-Received: by 2002:a17:90a:2347:: with SMTP id f65mr30129pje.105.1586188416932;
-        Mon, 06 Apr 2020 08:53:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t188sm11935793pfb.102.2020.04.06.08.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 08:53:35 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 08:53:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] kbuild: mkcompile_h: Include $LD version in /proc/version
-Message-ID: <202004060851.CCB538AD1@keescook>
-References: <202004020117.6E434C035@keescook>
- <CA+icZUW0R9LDGJ1YjJAB2oWkcEQxCO79xYmdVEoh=P8Fy_AL1A@mail.gmail.com>
- <CA+icZUVowLVpAxiWw=FJHfQ38KtU7AXXkVnw46D2XLM41-NCEA@mail.gmail.com>
- <CAK7LNAQ6ji3=2+7R1DL7eFveH7L7No6e3XkqfqgiH5QFyQj==A@mail.gmail.com>
- <CA+icZUV3rhvmBv91KMKCgvGSvJUoWDVfaV+08eC-kTMdThRn6w@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Npl54g1ItqpAme/2buCJ5Yu5mdmAHuNU9wsDMO3jye0=;
+        b=m0Wy4+hqlx/p0k72RCzSdgY4pvOTGBJI7bRRJBEe6egM0mv42RX3DYAoIbFRe3Kfzx
+         hAV6hocVlIo3c2oUxj/mK47H+0+i406Ztqw1WxE3p4wmzv5w8PDRLqvN1fhUmW606aJq
+         dMYxG32pWLvco0wm875pnFkC3HJoOqVVpRCS0Pc0z0RmzzHmeIogSFYe/noSvi9IgGl/
+         luB1/MrTvX18xs3R8Rs2HAf4d6lnrqqca+Hak/jwD2u0+ygwQ7cbCTkcSIR5aijKd4t6
+         Cvb67LOnQBQuhBXlsmCN4IEwtGmBmG2p8YOj000vrOaxuPybLqRp4fngmZI/G0U1aTHU
+         y8vg==
+X-Gm-Message-State: AGi0PuZMiMDVo3Obskxl1uQlRXElcySsILNGd5VC4ZHrCq0m1qojXiB9
+        fqd9sYaSp4qfLqoeud/llA9DepMWe48=
+X-Google-Smtp-Source: APiQypKdmZA6Vg9X0qXYHGF6QIEk7kdh2fg8FSCN8CesDTqIQl58VkpowwSFxJe4Jgf5xvDu//B9QA==
+X-Received: by 2002:a2e:9f16:: with SMTP id u22mr12079275ljk.202.1586188445528;
+        Mon, 06 Apr 2020 08:54:05 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id a11sm4587711lff.15.2020.04.06.08.54.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Apr 2020 08:54:04 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id i20so200706ljn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 08:54:04 -0700 (PDT)
+X-Received: by 2002:a2e:b4cb:: with SMTP id r11mr12993787ljm.201.1586188444079;
+ Mon, 06 Apr 2020 08:54:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUV3rhvmBv91KMKCgvGSvJUoWDVfaV+08eC-kTMdThRn6w@mail.gmail.com>
+References: <20200406110702.GA13469@nautica>
+In-Reply-To: <20200406110702.GA13469@nautica>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 6 Apr 2020 08:53:48 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whVEPEsKhU4w9y_sjbg=4yYHKDfgzrpFdy=-f9j+jTO3w@mail.gmail.com>
+Message-ID: <CAHk-=whVEPEsKhU4w9y_sjbg=4yYHKDfgzrpFdy=-f9j+jTO3w@mail.gmail.com>
+Subject: Re: [GIT PULL] 9p update for 5.7
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 12:35:35PM +0200, Sedat Dilek wrote:
-> On Sun, Apr 5, 2020 at 3:56 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > On Sun, Apr 5, 2020 at 8:23 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Thu, Apr 2, 2020 at 4:24 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > >
-> > > > On Thu, Apr 2, 2020 at 10:18 AM Kees Cook <keescook@chromium.org> wrote:
-> > > > >
-> > > > > When doing Clang builds of the kernel, it is possible to link with
-> > > > > either ld.bfd (binutils) or ld.lld (LLVM), but it is not possible to
-> > > > > discover this from a running kernel. Add the "$LD -v" output to
-> > > > > /proc/version.
-> > > > >
-> > > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > >
-> > >
-> > > Please feel free and add:
-> > >
-> > > Reviewed-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > > Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> >
-> >
-> > Thanks.
-> >
-> > I collected all Reviewed-by and Tested-by.
-> >
-> 
-> How to test scripts/mkcompile_h?
+On Mon, Apr 6, 2020 at 4:07 AM Dominique Martinet
+<asmadeus@codewreck.org> wrote:
+>
+> - Fix read with O_NONBLOCK to allow incomplete read and return
+> immediately
 
-There's probably a better way, but I do:
+Hmm. This is kind of special semantics (normally a POSIX filesystem
+ignores O_NONBLOCK), but I guess it makes sense for a network
+filesystem.
 
-$ rm include/generated/compile.h init/version.o
-$ make init/version.o
-$ cat include/generated/compile.h
+It might be worth a bti more documentation/commenting because of the
+special semantics. For example, since you don't have 'poll()',
+O_NONBLOCK doesn't really mean "nonblocking", it means "stop earlier"
+if I read that patch right. You can't just return -EAGAIN because
+there's no way to then avoid busy looping..
 
--Kees
-
-> 
-> I did:
-> 
-> $ cd /path/to/linux
-> 
-> $ head -10 scripts/mkcompile_h
-> #!/bin/sh
-> # SPDX-License-Identifier: GPL-2.0
-> 
-> TARGET=$1
-> ARCH=$2
-> SMP=$3
-> PREEMPT=$4
-> PREEMPT_RT=$5
-> CC=$6
-> LD=$7
-> 
-> $ scripts/mkcompile_h include/generated/compile.h x86_64 SMP "" ""
-> clang-10 ld.lld-10
->   UPD     include/generated/compile.h
-> 
-> $ cat include/generated/compile.h
-> /* This file is auto generated, version 1 */
-> /* SMP */
-> #define UTS_MACHINE "x86_64"
-> #define UTS_VERSION "#1 SMP Mon Apr 6 12:29:53 CEST 2020"
-> #define LINUX_COMPILE_BY "dileks"
-> #define LINUX_COMPILE_HOST "iniza"
-> #define LINUX_COMPILER "clang version 10.0.0-2, LLD 10.0.0"
-> 
-> This is with clang-10 and ld.lld-10 from Debian/unstable:
-> 
-> $ clang-10 -v
-> clang version 10.0.0-2
-> Target: x86_64-pc-linux-gnu
-> Thread model: posix
-> InstalledDir: /usr/bin
-> Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10
-> Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/8
-> Found candidate GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/9
-> Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/10
-> Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/8
-> Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/9
-> Selected GCC installation: /usr/bin/../lib/gcc/x86_64-linux-gnu/10
-> Candidate multilib: .;@m64
-> Candidate multilib: 32;@m32
-> Candidate multilib: x32;@mx32
-> Selected multilib: .;@m64
-> 
-> $ ld.lld-10 -v
-> LLD 10.0.0 (compatible with GNU linkers)
-> 
-> Thanks.
-> 
-> - sed@ -
-
--- 
-Kees Cook
+                Linus
