@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D865F19F485
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7AD19F488
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 13:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727300AbgDFL1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 07:27:04 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49936 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgDFL1D (ORCPT
+        id S1727444AbgDFL1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 07:27:40 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:43900 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726858AbgDFL1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 07:27:03 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BMsJZ190826;
-        Mon, 6 Apr 2020 11:26:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=l6U4uiwcoMNuAN7weaFKznTLP8mqOIF7+J81t474szc=;
- b=tTdiZ//ENQ4+HyxiYLF7e0TuwV0FFQslnx8RS/WgQwkOssca2fDNmPLuqa4FGr2xNVli
- EoKJSSrNEUqN2kmW7C5qqEX+kA0y8Ojt8UgvScFQfep3ma18M6G6r7uioL5LrOK/Viey
- j7PO+PIaBZZGinVJLQHsfmuvUU8VaoHZ5Gw654twENIIGUGgSkXe1AtV51VWWai5xkQK
- p2uY2EObk8u0P54fodKK47Tti85Ir8Vis69HOpAEiH2iHTkIaY7/aERVNPu331HLXi5e
- CNUKge8tct4TcoXuClJvG3uF47kzGXGhDMlXjSkWU49tO7fxuEo1nEndw0bzCnrWPj6s zA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 306jvmx593-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 11:26:58 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 036BNO14161458;
-        Mon, 6 Apr 2020 11:26:57 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 30741a7640-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 06 Apr 2020 11:26:57 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 036BQshn022602;
-        Mon, 6 Apr 2020 11:26:54 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 06 Apr 2020 04:26:54 -0700
-Date:   Mon, 6 Apr 2020 14:26:47 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, Larry.Finger@lwfinger.net
-Subject: Re: [PATCH 1/2] staging: rtl8188eu: remove unnecessary asignment
-Message-ID: <20200406112647.GJ2066@kadam>
-References: <20200405112230.31975-1-straube.linux@gmail.com>
- <20200406112519.GH2001@kadam>
+        Mon, 6 Apr 2020 07:27:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=stqKhpJAxSNxUDl9LKX3RMiIfMaXKlbdboYYc+aM/is=; b=HQjQ1j+lvcPQt8YqSWvgUdjt4F
+        EayFlz03dhGyAGys48clP571u+KGrhYPvxeAK2myijPA6fn6zcWSLUIKUeJFVugYlKGRxPBy8W4zG
+        /IsEzazIG0U/7TbCB+87SJo2s5ZGMAmHhfpgZfiticpIgRosw2u8UJ3voaz/+haWZywezIKC+Gfnc
+        ssz/m9cdPYEZp2trb+duF2Hd9XFqbDeMGttL9Vh8wAQ2sdOY2vrBHfMupPhYIKNGxHyBvQFuw6eVK
+        U5yIa1DA6kbFnAwcBwPhCkQgMsIMRfDdao7OoeDiWrLMuVBL7gcsiDjdEWOp1yKJVpvwO7a0khzn8
+        yfD16lzg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLPug-0002N0-EB; Mon, 06 Apr 2020 11:27:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 011E6300478;
+        Mon,  6 Apr 2020 13:27:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D3DC42B1362DC; Mon,  6 Apr 2020 13:27:32 +0200 (CEST)
+Date:   Mon, 6 Apr 2020 13:27:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        keescook@chromium.org
+Subject: Re: [PATCH] module: Harden STRICT_MODULE_RWX
+Message-ID: <20200406112732.GK20730@hirez.programming.kicks-ass.net>
+References: <20200403163716.GV20730@hirez.programming.kicks-ass.net>
+ <20200403165631.hrxxm3pnzqa4vxln@treble>
+ <alpine.LSU.2.21.2004061146590.26870@pobox.suse.cz>
+ <20200406104615.GA9629@linux-8ccs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406112519.GH2001@kadam>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- malwarescore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004060100
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9582 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004060100
+In-Reply-To: <20200406104615.GA9629@linux-8ccs>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 02:25:20PM +0300, Dan Carpenter wrote:
-> On Sun, Apr 05, 2020 at 01:22:29PM +0200, Michael Straube wrote:
-> > Remove unnecessary asignment in SwLedBlink1(). The code path with the
-> > asignment 'pLed->BlinkTimes = 0' is only executed when
-> > 'pLed->BlinkTimes' is already zero and the value is not changed between
-> > the test 'if (pLed->BlinkTimes == 0)' and the asignment.
+On Mon, Apr 06, 2020 at 12:46:17PM +0200, Jessica Yu wrote:
+> +++ Miroslav Benes [06/04/20 11:55 +0200]:
+> > On Fri, 3 Apr 2020, Josh Poimboeuf wrote:
 > > 
+> > > On Fri, Apr 03, 2020 at 06:37:16PM +0200, Peter Zijlstra wrote:
+> > > > +{
+> > > > +	int i;
+> > > > +
+> > > > +	for (i = 0; i < hdr->e_shnum; i++) {
+> > > > +		if (sechdrs[i].sh_flags & (SHF_EXECINSTR|SHF_WRITE))
+> > > > +			return -ENOEXEC;
+> > > 
+> > > I think you only want the error when both are set?
+> > > 
+> > > 		if (sechdrs[i].sh_flags & (SHF_EXECINSTR|SHF_WRITE) == (SHF_EXECINSTR|SHF_WRITE))
+> > 
+> > A section with SHF_EXECINSTR and SHF_WRITE but without SHF_ALLOC would be
+> > strange though, no? It wouldn't be copied to the final module later
+> > anyway.
 > 
-> Better to get rid of the bStopBlinking variable and this becomes more
-> obvious.
+> That's right - move_module() ignores !SHF_ALLOC sections and does not
+> copy them over to their final location. So I think we want to look for
+> SHF_EXECINSTR|SHF_WRITE|SHF_ALLOC here..
 
-Oh, never mind.  You did that in patch 2.  This is fine then.
+So I did notice that !SHF_ALLOC sections get ignored, but since this
+check is about W^X we don't strictly care about SHF_ALLOC. What we care
+about it never allowing a writable and executable map.
 
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-regards,
-dan carpenter
+Adding ALLOC to the test only allows for future mistakes and doesn't
+make the check any better.
 
