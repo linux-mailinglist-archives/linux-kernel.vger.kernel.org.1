@@ -2,78 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CF419F6BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB5619F6C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 15:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728278AbgDFNUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 09:20:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728018AbgDFNUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 09:20:42 -0400
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D657F22525;
-        Mon,  6 Apr 2020 13:20:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586179241;
-        bh=/diuoYfDNps0PKm2EIWXg6vofs6Y/sYAPX1d3JHK3e0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FArWIS8OLKRTDCnIfmIbvUX4FgyIkn7NrYdAag0/m9S/xVCiz1+7C3pnFQ6/FJpjW
-         aWAQmUv2qS9idelP1leM1rj+/KNw+Yx+GgWfVX9H1UXRrMlSXcQ7rpe8XJ+F6nDhT9
-         Kp8fF+mpqxCR6vlT6Ib1hAVZwGJWu1JfpSgBsImI=
-Received: by mail-io1-f45.google.com with SMTP id b12so15646810ion.8;
-        Mon, 06 Apr 2020 06:20:41 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZN+4UxCG0+nxvJtHWGC9kOwucu0pP0AeASLoG8iEYGHvVN9Sc1
-        Z6ZTUr6cowuLKDK0yCr/onUAFp3B/rAwtu1bOnU=
-X-Google-Smtp-Source: APiQypIVyAXMT7E/aAfDQd2edICxPmp90/maCJHv6uy3ageh6+PVBV4QYACU13jyI2fL+YFcO6LOQ2hjiItEfV93Pao=
-X-Received: by 2002:a5d:8b83:: with SMTP id p3mr19192941iol.16.1586179241352;
- Mon, 06 Apr 2020 06:20:41 -0700 (PDT)
+        id S1728296AbgDFNVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 09:21:21 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:36393 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728288AbgDFNVT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 09:21:19 -0400
+Received: by mail-lj1-f193.google.com with SMTP id b1so14668901ljp.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 06:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sjFMtmuU3xHuzoUFWq9Y0DhLjc0PE8fgYoHAQmkfrZE=;
+        b=q0+b59CKCMf16lfCFCrz+8Vga8AQbbnlul6SAAPiEK6Z40MhjCJl5lMXZGjeOIR4sj
+         WXFXqWqaxBwiuX3ek3W41llkgTTwVBk0Gv7UwLunZB1ahYNl0fas+Fwmv4Go9rCdrnnR
+         vOc3SPVG2rXgARf8j1lZYXSHapc7lXi7u1sv3/a1uBGyF6PET55UO7ry3TIxoItAriBJ
+         6QOpxQ19v5kFVg5xKS1C/k4iUoZc0gERXlmZLjjgNfO8i8DxiUNfc57UbPzoCRalcWxQ
+         ew1SyBeJ86G4p5AOKyX4AnoqTRKsh4lVSSWA85IA6oQdkwHuhsnIgCDpqu0FRCuceiaa
+         Ko0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sjFMtmuU3xHuzoUFWq9Y0DhLjc0PE8fgYoHAQmkfrZE=;
+        b=cDi9Cr5oIsgeLscZRswiuAFL671bY8o26DO4FRWEQOL5YSgJBxgZa8oRaywoy72rOC
+         ncD0Nx4vpfBBi6feJZamCylQXeRelM30n2nf0DSB2VYnHXN4tSZxgu7JdDuveqNb+xrg
+         zZzItAEmU9/5I/pmMKFeNoEHQC8MaZ44zqrIk263SljyOmmd+I8eCgE9VO7BNrl6MKzC
+         Si7MYyb5ENtWKfa6KeE8wavZzT6oVekQabYRTgW2zJ8+rsWGy678cBb7i0z1HUZM/+ja
+         O2fb74DuknSbw99fo6QmNvnMYzBTu8ERdrFlbZcEkC6Dr+/T6d5WGMSGSJ9EzFwG5SEA
+         gEjA==
+X-Gm-Message-State: AGi0PuabJE6uHP+0tcProIyUqBnL2LOXdAC9kJnN1bqdX3P6dRg0LH87
+        QFvK+Ofg2CFnl1qKDulYSLhN5bzAkwvjf5ebtsc9Cg==
+X-Google-Smtp-Source: APiQypIZr3Wr7gU6HfYZ2DPp4KYZRoMiMMIzh0ZeGpLkLlpRcwTmLnmLC682+JLbzmgWhr4LrLDmlXima8G8ek4WTDk=
+X-Received: by 2002:a2e:8093:: with SMTP id i19mr12191984ljg.12.1586179276126;
+ Mon, 06 Apr 2020 06:21:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200109150218.16544-1-nivedita@alum.mit.edu> <20200405154245.11972-1-me@prok.pw>
- <20200405231845.GA3095309@rani.riverdale.lan> <CAMj1kXHWhPmnaCS74n=1MYLfnsKqf+UAfmaLGQYx9jH3YsXvfg@mail.gmail.com>
- <a406bd0ab573e17c1004d3d91948938c209cf94d.camel@prok.pw>
-In-Reply-To: <a406bd0ab573e17c1004d3d91948938c209cf94d.camel@prok.pw>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 6 Apr 2020 15:20:30 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHTQqYaK=vMs2O1Osy9NMi8dnn8ueBEPod6AaiZvQf0qQ@mail.gmail.com>
-Message-ID: <CAMj1kXHTQqYaK=vMs2O1Osy9NMi8dnn8ueBEPod6AaiZvQf0qQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] x86/boot/compressed/64: Remove .bss/.pgtable from bzImage
-To:     Sergey Shatunov <me@prok.pw>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@alien8.de>, hpa@zytor.com,
+References: <1586175677-3061-1-git-send-email-sumit.garg@linaro.org>
+ <87ftdgokao.fsf@tynnyri.adurom.net> <1e352e2130e19aec5aa5fc42db397ad50bb4ad05.camel@sipsolutions.net>
+ <87r1x0zsgk.fsf@kamboji.qca.qualcomm.com> <a7e3e8cceff1301f5de5fb2c9aac62b372922b3e.camel@sipsolutions.net>
+ <87imiczrwm.fsf@kamboji.qca.qualcomm.com> <ee168acb768d87776db2be4e978616f9187908d0.camel@sipsolutions.net>
+In-Reply-To: <ee168acb768d87776db2be4e978616f9187908d0.camel@sipsolutions.net>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 6 Apr 2020 18:51:04 +0530
+Message-ID: <CAFA6WYOjU_iDyAn5PMGe=usg-2sPtupSQEYwcomUcHZBAPnURA@mail.gmail.com>
+Subject: Re: [PATCH] mac80211: fix race in ieee80211_register_hw()
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     linux-wireless@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        netdev@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>
+        =?UTF-8?Q?Matthias=2DPeter_Sch=C3=B6pfer?= 
+        <matthias.schoepfer@ithinx.io>,
+        "Berg Philipp (HAU-EDS)" <Philipp.Berg@liebherr.com>,
+        "Weitner Michael (HAU-EDS)" <Michael.Weitner@liebherr.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Apr 2020 at 15:14, Sergey Shatunov <me@prok.pw> wrote:
+On Mon, 6 Apr 2020 at 18:38, Johannes Berg <johannes@sipsolutions.net> wrote:
 >
-> On Mon, 2020-04-06 at 10:44 +0200, Ard Biesheuvel wrote:
-> > On Mon, 6 Apr 2020 at 01:18, Arvind Sankar <nivedita@alum.mit.edu>
-> > wrote:
-> > > On Sun, Apr 05, 2020 at 10:42:46PM +0700, Sergey Shatunov wrote:
-> > > > This patch causes some strange things happens with my laptop.
-> > > >
-> > > > Cold boot crashed in some early initilization logic with message
-> > > > 'Failed to execute /esp/.../linux.efi: Buffer Too Small'.
-> > > > After couple reboots into firmware setup (bios) or hot reboot
-> > > > from other working kernel (without that commit) helps it to boot.
-> > > > During bisecting couple times I saw different message:
-> > > > 'exit_efi() failed; efi_main() failed', but above tricks helps it
-> > > > too.
+> On Mon, 2020-04-06 at 16:04 +0300, Kalle Valo wrote:
+> > Johannes Berg <johannes@sipsolutions.net> writes:
 > >
-> > Could you please try adding 'efi=no_disable_early_pci_dma' to the
-> > kernel command line? The lack of BSS zeroization may result in that
-> > option to get inadvertently enabled, and it is known to break
-> > exit_boot() on some systems.
+> > > On Mon, 2020-04-06 at 15:52 +0300, Kalle Valo wrote:
+> > > > Johannes Berg <johannes@sipsolutions.net> writes:
+> > > >
+> > > > > On Mon, 2020-04-06 at 15:44 +0300, Kalle Valo wrote:
+> > > > > > >     user-space  ieee80211_register_hw()  RX IRQ
+> > > > > > >     +++++++++++++++++++++++++++++++++++++++++++++
+> > > > > > >        |                    |             |
+> > > > > > >        |<---wlan0---wiphy_register()      |
+> > > > > > >        |----start wlan0---->|             |
+> > > > > > >        |                    |<---IRQ---(RX packet)
+> > > > > > >        |              Kernel crash        |
+> > > > > > >        |              due to unallocated  |
+> > > > > > >        |              workqueue.          |
+> > > > >
+> > > > > [snip]
+> > > > >
+> > > > > > I have understood that no frames should be received until mac80211 calls
+> > > > > > struct ieee80211_ops::start:
+> > > > > >
+> > > > > >  * @start: Called before the first netdevice attached to the hardware
+> > > > > >  *         is enabled. This should turn on the hardware and must turn on
+> > > > > >  *         frame reception (for possibly enabled monitor interfaces.)
+> > > > >
+> > > > > True, but I think he's saying that you can actually add and configure an
+> > > > > interface as soon as the wiphy is registered?
+> > > >
+> > > > With '<---IRQ---(RX packet)' I assumed wcn36xx is delivering a frame to
+> > > > mac80211 using ieee80211_rx(), but of course I'm just guessing here.
+> > >
+> > > Yeah, but that could be legitimate?
+> >
+> > Ah, I misunderstood then. The way I have understood is that no rx frames
+> > should be delivered (= calling ieee80211_rx()_ before start() is called,
+> > but if that's not the case please ignore me :)
 >
-> With 'efi=no_disable_early_pci_dma' it works again.
+> No no, that _is_ the case. But I think the "start wlan0" could end up
+> calling it?
 >
 
-Thanks Sergey
+Sorry if I wasn't clear enough via the sequence diagram. It's a common
+RX packet that arrives via ieee80211_tasklet_handler() which is
+enabled via call to "struct ieee80211_ops::start" api.
+
+-Sumit
+
+> johannes
+>
