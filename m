@@ -2,195 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 535A119F3BE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3532319F3C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbgDFKne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:43:34 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:47381 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727048AbgDFKnd (ORCPT
+        id S1727421AbgDFKnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:43:42 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:38200 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727162AbgDFKnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:43:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586169812;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MOoW9499EvJVij0307Is5KB/srLre3Eb87DAHnH4ats=;
-        b=Cozv58TpD+8sVyog6PTa04WsDU2bLN10kc86FzHzV8A66s4ueTeVkW9tyIe7hhdD7punIc
-        NtkbfmCZj6QTStOVkUdTZNsSjOerelgAXL0Zrb655/kC7J9B5Gc9Z6rbul8XIkDQUhAoVn
-        ktiDO/c9iAexIuayWiTA5nUKv/+fxnw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-56-xOjSppvOM3eHWqBFKexvpQ-1; Mon, 06 Apr 2020 06:43:30 -0400
-X-MC-Unique: xOjSppvOM3eHWqBFKexvpQ-1
-Received: by mail-wr1-f72.google.com with SMTP id g6so2393410wru.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 03:43:30 -0700 (PDT)
+        Mon, 6 Apr 2020 06:43:40 -0400
+Received: by mail-il1-f196.google.com with SMTP id n13so14185899ilm.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 03:43:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2BZ8kYXiM1BuTjCJPDJWq064ZRhtYcG64ceYL8l4ZHI=;
+        b=H73+pt7BbqZdfpJ4kn3Pz3eASUQ7E5K5n+u66xAH7oKU9x7IgwRKopHEYLN767ajR/
+         JkMwOzBwNM0r+bDxpTVBuKpdc1ICpyVg7WK9BY73ENYPloSGUB+E3WaWzD7yepBQnXGP
+         eMSixej2ld7yfU5izyuXLdJnoWuWxJ9aLdQ/yJLXLJKqhtt82tSOHZfEBBi+G01dNLoH
+         LD0xGohfeYyXYVStttxxd6hR0nnDBz1qoQSq7rFfY4WfcIUmgO6MGmgNbNN5HoTt+3m3
+         r4b+DP3TC/ED9tfLdWnZlrjVKt3iyLcULgbb8I+zm/gU+NX3Ob27ytnUb1TyiQDHGjnQ
+         5THQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MOoW9499EvJVij0307Is5KB/srLre3Eb87DAHnH4ats=;
-        b=Q6PgtqP45evSPQlIKaNOaUF3Ep9/OmdlBAAZZgN7qE7WadjuFQYNutIY4MDOO3jCVK
-         e1epMlRbjvl2Z6M+U/ecRD4/+Al8k/JrdUkkaFQ+IMUK5o56mM22fbAjKU7CnSxCazvR
-         eXm/ieZAgW8lOhzb4t2lWPDUoF0UOD5W0HI/j127MqLohVEgAUT6wXxsaXpcRjMy1uG6
-         hTgsNsEcpCl52GkF5vqkUfQjmgmQvuCt9cQ3CwfwZgGWt+RIdH8I6/2EBIzWBxeVVT41
-         8qL2FDNQMh9ZEM8qvtYidgiYDNnyjPnPeCfTIDsFx9l+MkMlK96Y5sDMmrseFtnbxLWK
-         uehg==
-X-Gm-Message-State: AGi0PuZOR75Cujj5SZ4qNLWIltD64mHTdsJ9pDDNcCg4IaF2vRKtjowx
-        bg1zgklfMXGNjSw2pq5zuolFo73/AvOFT2ZAiBufPx3lXsWM3EgHCI0G1FWNEwCmjarhb3i9ytu
-        pIPmx4sJbNID+cTvk/5D3JGXF
-X-Received: by 2002:a7b:c050:: with SMTP id u16mr23634743wmc.68.1586169809018;
-        Mon, 06 Apr 2020 03:43:29 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIvdXbdHDNxdM9vCZ47FkUkV3BXmQ41VqT7ZmCSc+rF/xbW8UtoFYMmmzhlMj1eE4dFibGriw==
-X-Received: by 2002:a7b:c050:: with SMTP id u16mr23634720wmc.68.1586169808789;
-        Mon, 06 Apr 2020 03:43:28 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id g2sm25443360wrs.42.2020.04.06.03.43.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 03:43:28 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     linux-hyperv@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Subject: [PATCH v2 5/5] Drivers: hv: check VMBus messages lengths
-Date:   Mon,  6 Apr 2020 12:43:26 +0200
-Message-Id: <20200406104326.45361-1-vkuznets@redhat.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200406104154.45010-1-vkuznets@redhat.com>
-References: <20200406104154.45010-1-vkuznets@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2BZ8kYXiM1BuTjCJPDJWq064ZRhtYcG64ceYL8l4ZHI=;
+        b=tqn6jX2FuaoF5McbL6QasdciSNKlXmPu8FrZHrzMABVXlwqFBpR8O5VlZMF3dwWGYc
+         o1V8daFlR4fqwYJS1D1E8fXEpWE4Qg6NzfYHN8oO3kWsAYoB2Bz/jmghTK67UIMtHhAT
+         j2Unf8JRnJU0PWGhotiXHniEi5zhWy8jGQjYobDiFZLb+nFYb4zRsBOY+f1LYE9f3Ed4
+         rw2L64yz5TA40HI2kIKgfgKw55PaYaa2FqAr81/KHMMmFiBkJFgQb6AMq87ze+9DsZgZ
+         XUWPo6Hn/Ej6vxuAZYVSPT7K53EH+zj7YhnRpVyX+YqCxdaqXY8ns0YnznBcwEEwJZ+Y
+         MiQw==
+X-Gm-Message-State: AGi0PuZ02pz+7YYGF3x2GARBMgZyzGLWixK0Tmh7bwrFab30wpLY0eOT
+        dSoW+jbSVXk/7Wa+2B0CkE9dM6aafDoBF0aKWGw=
+X-Google-Smtp-Source: APiQypJyrlEDFj+pXJzHS3MWEdJ04ArtFK1ZoHOVPrqWHQHCzochugDXZMIBGthwFew57upW4dM31ZUO7Ew7VgwzFYE=
+X-Received: by 2002:a92:83ca:: with SMTP id p71mr19104698ilk.278.1586169820155;
+ Mon, 06 Apr 2020 03:43:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200406093944.4174-1-hqjagain@gmail.com> <87eet0sy79.fsf@mpe.ellerman.id.au>
+In-Reply-To: <87eet0sy79.fsf@mpe.ellerman.id.au>
+From:   Qiujun Huang <hqjagain@gmail.com>
+Date:   Mon, 6 Apr 2020 18:43:27 +0800
+Message-ID: <CAJRQjoeTYg6NnxwvXusU6fdOFOmOiceokYJZQ23-0YQo_yqZ5w@mail.gmail.com>
+Subject: Re: [PATCH v4] powerpc/powernv: add NULL check after kzalloc in opal_add_one_export
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VMBus message handlers (channel_message_table) receive a pointer to
-'struct vmbus_channel_message_header' and cast it to a structure of their
-choice, which is sometimes longer than the header. We, however, don't check
-that the message is long enough so in case hypervisor screws up we'll be
-accessing memory beyond what was allocated for temporary buffer.
+On Mon, Apr 6, 2020 at 6:30 PM Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> Qiujun Huang <hqjagain@gmail.com> writes:
+> > Here needs a NULL check as kzalloc may fail returning NULL.
+> >
+> > Issue was found by coccinelle.
+> > Generated by: scripts/coccinelle/null/kmerr.cocci
+> >
+> > Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+> > Reviewed-by: Oliver O'Halloran <oohall@gmail.com>
+> >
+> > ---
+>
+> Thanks for putting up with all the review comments :)
+>
+> But I think this should actually be two patches now.
+>
+> The first patch should change the goto after
+> of_property_read_u64_array() into a return and drop the redundant
+> assignments.
+>
+> Then the second patch can add the NULL check for attr.
 
-Previously, we used to always allocate and copy 256 bytes from message page
-to temporary buffer but this is hardly better: in case the message is
-shorter than we expect we'll be trying to consume garbage as some real
-data and no memory guarding technique will be able to identify an issue.
+Get that, I'll separate them.
 
-Introduce 'min_payload_len' to 'struct vmbus_channel_message_table_entry'
-and check against it in vmbus_on_msg_dpc(). Note, we can't require the
-exact length as new hypervisor versions may add extra fields to messages,
-we only check that the message is not shorter than we expect.
-
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
----
- drivers/hv/channel_mgmt.c | 54 ++++++++++++++++++++++-----------------
- drivers/hv/hyperv_vmbus.h |  1 +
- drivers/hv/vmbus_drv.c    |  6 +++++
- 3 files changed, 37 insertions(+), 24 deletions(-)
-
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index c6bcfee6ac99..d4ccc9b203fa 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -1329,30 +1329,36 @@ static void vmbus_onversion_response(
- /* Channel message dispatch table */
- const struct vmbus_channel_message_table_entry
- channel_message_table[CHANNELMSG_COUNT] = {
--	{ CHANNELMSG_INVALID,			0, NULL },
--	{ CHANNELMSG_OFFERCHANNEL,		0, vmbus_onoffer },
--	{ CHANNELMSG_RESCIND_CHANNELOFFER,	0, vmbus_onoffer_rescind },
--	{ CHANNELMSG_REQUESTOFFERS,		0, NULL },
--	{ CHANNELMSG_ALLOFFERS_DELIVERED,	1, vmbus_onoffers_delivered },
--	{ CHANNELMSG_OPENCHANNEL,		0, NULL },
--	{ CHANNELMSG_OPENCHANNEL_RESULT,	1, vmbus_onopen_result },
--	{ CHANNELMSG_CLOSECHANNEL,		0, NULL },
--	{ CHANNELMSG_GPADL_HEADER,		0, NULL },
--	{ CHANNELMSG_GPADL_BODY,		0, NULL },
--	{ CHANNELMSG_GPADL_CREATED,		1, vmbus_ongpadl_created },
--	{ CHANNELMSG_GPADL_TEARDOWN,		0, NULL },
--	{ CHANNELMSG_GPADL_TORNDOWN,		1, vmbus_ongpadl_torndown },
--	{ CHANNELMSG_RELID_RELEASED,		0, NULL },
--	{ CHANNELMSG_INITIATE_CONTACT,		0, NULL },
--	{ CHANNELMSG_VERSION_RESPONSE,		1, vmbus_onversion_response },
--	{ CHANNELMSG_UNLOAD,			0, NULL },
--	{ CHANNELMSG_UNLOAD_RESPONSE,		1, vmbus_unload_response },
--	{ CHANNELMSG_18,			0, NULL },
--	{ CHANNELMSG_19,			0, NULL },
--	{ CHANNELMSG_20,			0, NULL },
--	{ CHANNELMSG_TL_CONNECT_REQUEST,	0, NULL },
--	{ CHANNELMSG_22,			0, NULL },
--	{ CHANNELMSG_TL_CONNECT_RESULT,		0, NULL },
-+	{ CHANNELMSG_INVALID,			0, NULL, 0},
-+	{ CHANNELMSG_OFFERCHANNEL,		0, vmbus_onoffer,
-+		sizeof(struct vmbus_channel_offer_channel)},
-+	{ CHANNELMSG_RESCIND_CHANNELOFFER,	0, vmbus_onoffer_rescind,
-+		sizeof(struct vmbus_channel_rescind_offer) },
-+	{ CHANNELMSG_REQUESTOFFERS,		0, NULL, 0},
-+	{ CHANNELMSG_ALLOFFERS_DELIVERED,	1, vmbus_onoffers_delivered, 0},
-+	{ CHANNELMSG_OPENCHANNEL,		0, NULL, 0},
-+	{ CHANNELMSG_OPENCHANNEL_RESULT,	1, vmbus_onopen_result,
-+		sizeof(struct vmbus_channel_open_result)},
-+	{ CHANNELMSG_CLOSECHANNEL,		0, NULL, 0},
-+	{ CHANNELMSG_GPADL_HEADER,		0, NULL, 0},
-+	{ CHANNELMSG_GPADL_BODY,		0, NULL, 0},
-+	{ CHANNELMSG_GPADL_CREATED,		1, vmbus_ongpadl_created,
-+		sizeof(struct vmbus_channel_gpadl_created)},
-+	{ CHANNELMSG_GPADL_TEARDOWN,		0, NULL, 0},
-+	{ CHANNELMSG_GPADL_TORNDOWN,		1, vmbus_ongpadl_torndown,
-+		sizeof(struct vmbus_channel_gpadl_torndown) },
-+	{ CHANNELMSG_RELID_RELEASED,		0, NULL, 0},
-+	{ CHANNELMSG_INITIATE_CONTACT,		0, NULL, 0},
-+	{ CHANNELMSG_VERSION_RESPONSE,		1, vmbus_onversion_response,
-+		sizeof(struct vmbus_channel_version_response)},
-+	{ CHANNELMSG_UNLOAD,			0, NULL, 0},
-+	{ CHANNELMSG_UNLOAD_RESPONSE,		1, vmbus_unload_response, 0},
-+	{ CHANNELMSG_18,			0, NULL, 0},
-+	{ CHANNELMSG_19,			0, NULL, 0},
-+	{ CHANNELMSG_20,			0, NULL, 0},
-+	{ CHANNELMSG_TL_CONNECT_REQUEST,	0, NULL, 0},
-+	{ CHANNELMSG_22,			0, NULL, 0},
-+	{ CHANNELMSG_TL_CONNECT_RESULT,		0, NULL, 0},
- };
- 
- /*
-diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-index f5fa3b3c9baf..7fd66a4e2951 100644
---- a/drivers/hv/hyperv_vmbus.h
-+++ b/drivers/hv/hyperv_vmbus.h
-@@ -317,6 +317,7 @@ struct vmbus_channel_message_table_entry {
- 	enum vmbus_channel_message_type message_type;
- 	enum vmbus_message_handler_type handler_type;
- 	void (*message_handler)(struct vmbus_channel_message_header *msg);
-+	u32 min_payload_len;
- };
- 
- extern const struct vmbus_channel_message_table_entry
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index 94c02433827d..d770a2582dd0 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1054,6 +1054,12 @@ void vmbus_on_msg_dpc(unsigned long data)
- 	if (!entry->message_handler)
- 		goto msg_handled;
- 
-+	if (msg->header.payload_size < entry->min_payload_len) {
-+		WARN_ONCE(1, "message too short: msgtype=%d len=%d\n",
-+			  hdr->msgtype, msg->header.payload_size);
-+		goto msg_handled;
-+	}
-+
- 	if (entry->handler_type	== VMHT_BLOCKING) {
- 		ctx = kmalloc(sizeof(*ctx) + msg->header.payload_size,
- 			      GFP_ATOMIC);
--- 
-2.25.1
-
+>
+> cheers
+>
+> > v3->v4:
+> >       Added the information about coccinelle script.
+> >       Added change log.
+> >       Added Oliver's Reviewed-by.
+> > v2->v3:
+> >       Removed redundant assignment to 'attr' and 'name'.
+> > v1->v2:
+> >       Just return -ENOMEM if attr is NULL.
+> > ---
+> >  arch/powerpc/platforms/powernv/opal.c | 9 ++++++---
+> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/powerpc/platforms/powernv/opal.c b/arch/powerpc/platforms/powernv/opal.c
+> > index 2b3dfd0b6cdd..908d749bcef5 100644
+> > --- a/arch/powerpc/platforms/powernv/opal.c
+> > +++ b/arch/powerpc/platforms/powernv/opal.c
+> > @@ -801,16 +801,19 @@ static ssize_t export_attr_read(struct file *fp, struct kobject *kobj,
+> >  static int opal_add_one_export(struct kobject *parent, const char *export_name,
+> >                              struct device_node *np, const char *prop_name)
+> >  {
+> > -     struct bin_attribute *attr = NULL;
+> > -     const char *name = NULL;
+> > +     struct bin_attribute *attr;
+> > +     const char *name;
+> >       u64 vals[2];
+> >       int rc;
+> >
+> >       rc = of_property_read_u64_array(np, prop_name, &vals[0], 2);
+> >       if (rc)
+> > -             goto out;
+> > +             return rc;
+> >
+> >       attr = kzalloc(sizeof(*attr), GFP_KERNEL);
+> > +     if (!attr)
+> > +             return -ENOMEM;
+> > +
+> >       name = kstrdup(export_name, GFP_KERNEL);
+> >       if (!name) {
+> >               rc = -ENOMEM;
+> > --
+> > 2.17.1
