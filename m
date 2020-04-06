@@ -2,91 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D2F1A0147
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5431A0152
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 00:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbgDFWwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 18:52:36 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:59028 "EHLO
+        id S1726386AbgDFW4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 18:56:36 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:54816 "EHLO
         mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726230AbgDFWwf (ORCPT
+        by vger.kernel.org with ESMTP id S1726287AbgDFW4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 18:52:35 -0400
-X-Greylist: delayed 1885 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Apr 2020 18:52:33 EDT
+        Mon, 6 Apr 2020 18:56:36 -0400
 Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 036MGtnV003796;
-        Mon, 6 Apr 2020 15:21:41 -0700
+        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 036MGvhx003807;
+        Mon, 6 Apr 2020 15:21:52 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=proofpoint;
- bh=v/Jq0f/Q3Cf7y0O11BM3lByHfl3SGsLzushnQMtfEB4=;
- b=G+pwpaO11KuSeZH1D9HZQaG346ujknu52YD4/Vh7k6O4u1on/vOdrVf2B+gcxFjfFp71
- u4/xB0L0eLvb0IuAimYTITQyLhcaZ0DH0fYCl0opWi3qMU5HKxer4XHFzv+fbNBf1WRW
- ITWIW0nrhgJPnaDXnaOwhbadS054ZyOw5Ngzd5txavhYaddIpgXXElUp041JQVW7oY8T
- KiFJmwVuUr9qNwSDZugqo+9mff6DFRISkg/Kiptn/ojSJYyycY6W12c7v4JZXbnXnwoY
- NYEF4+7pbLXTa8mVvkmRtMrKm8NcShzwlOU8fUafN5RZ9v225PyesTBHVHB62ar34RvH OA== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2107.outbound.protection.outlook.com [104.47.58.107])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 306psw07g5-1
+ bh=w9lCPLv2HC7RRhOjj8aCZiyTVq/tBNMk+rrYBZGIfRQ=;
+ b=ByDtxukFI8cQ3kKNM/J46zWVLiCjM/y/yHFVVx8yD6NJaOfPgGY/+ojM1fXLGPr/MG8z
+ c5KO+bEzrvpGMJ2gOpawCtPiKaSIIslsZengLbUGqSrYHR9vbETy+48wt7zhSqwlkqtK
+ HCBNlAtA1d7jozxxmUXmISE0EFn4iS3IYIw72r4+OVJux6HMlm5uZWhhRMM7j9sPEzEm
+ /gTPHowo79Bp3G2Nn4I74CwDM2V5qKsWbwzQrWOpVUFtmRCTU5/98HYwczvssRvzEYE/
+ wkNAhSfqBOOhVAI8Y7rQyAg5KMWJgIQly670J6gCNiEurKopF2jMb2fnw8qoUtQUUPfi lQ== 
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2171.outbound.protection.outlook.com [104.47.59.171])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 306psw07gq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Apr 2020 15:21:41 -0700
+        Mon, 06 Apr 2020 15:21:52 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MEz3qCtaebJJKYp/EpBkd71RO0s1lmwl2gi8FsxXAcw4jZ4q25ChVXZm5eHXlz5QiQAFPgOuxGWlEbLLZwVR8+w/6xGLdI7ztuMNwpuYq6S+cpHKWu+k/QYE/lkJEAekhe02H6imNfGZsJNkrPrsR14y3SgnKvrl91GZ0NjINUvKyllev8iTsNlhx9KTlMZvE8vHmORgqBNCqCJgOiwKk1v9eiLmKGA6sFg6uyytEfoM/3VGRKX77vnMdWpE2PMBH8xoFlgikK0HI70IvWOG8K4APTUtg5OJtKU44CKSeraf9Ct0im7S06wP32JflMuklNfN/lAbgWilo4hkNt1+Lg==
+ b=LBNbMjnbf++cDoc5ZGvF8CmHcUo175fH9ES0XHj7VetCeo9G3/fgO8vJFzqckg0kHusByLummt2/c80+zbr9vjP1QS51g1uI6ZTLUuyHKoenYaZIim9Z4cq6Mt1UWYg0tpmecU40e6NrFbyUx8DuqGN5a5b54jE/5p9qU+M4L1iM6tVR7KxK7oSuq2seciO17jKZzsZwR4kA5mcgGdZd8KFlzVHeny0Hui+aiNcDJicK7mOgnHAOUPJUvjLjDn29jrySmIPlGn38qNlrptjcccoNEV+jUJ4gp5Fbjx9DBHQgqq8xLgLsD9CR5upjkbDyxRp6t5hxr/icv9nt8SMhYw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v/Jq0f/Q3Cf7y0O11BM3lByHfl3SGsLzushnQMtfEB4=;
- b=ercribkxpu9PXOHOw3UgEzu+6yq0zJdQWGtFxVE5ubLjuctFIznYHhPfdEwxbkbZgw0cXkbXWTeUfgyN+6YH7G9Wp9oF7DIaf6sdyaHBImBW/OAvznJMV9HKC8g7CZ3wHdfkKB0DILiWJXGTqgBBo6uc4rz3tGKTe5X9uTMz1VBO6pWO4WEOpjqSyDjt70TNafCgE1yGconwkMNkipBJpoma/6wJS1GOmDWUuPF4MvUfm7jYJ1OW4KSKAvImefbLeAUhs1LUeFzCjgzM6kNzOPS1FpBc4Dyi3P9UJ3MszdT66cTAILkLBUDDyPNMMzTyd5oSm1SP8iGvNqf4yl3KnQ==
+ bh=w9lCPLv2HC7RRhOjj8aCZiyTVq/tBNMk+rrYBZGIfRQ=;
+ b=OQUNi+4RRKNi1roUrIU7yzOaVWBnIqEwtxcMLKpYilPo5rS/5Uh0bA7JqyzhDCfGTgN+VB81tXJjhQ+r/8seBvuOJFArSMdH2L7pS2cZ/NBkNJyl1YK9pYdDJ6c0HCXtOYsn1c5viL19IyQicYRfycz3YE2WbnamiC3igQv8WYjNphtgV5uuNLJHWzf1+j8C+D0w8LVbx8jI+4kapSVX0KbMnEWDahLJCeGuvJACe+q0JgrweW7zvlwkOT4KzC1/30/gdQiZPcUZGtxpbNVbsrfUaSECh45HocJk8cvGs5TyyybH0Ba7zGIzJ41ufxQfcXBKnxo0uCpNDOV4Kf92jw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.147) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
+ 158.140.1.148) smtp.rcpttodomain=synopsys.com smtp.mailfrom=cadence.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=v/Jq0f/Q3Cf7y0O11BM3lByHfl3SGsLzushnQMtfEB4=;
- b=rEEZUbHlmcaKOZaIG4yL8olgFxKsMk4uMd9vlTUsLXEJ69CqxTncTux5Q8Fp+yTcMiBI/g+2Gqjq6fQT0yH7/Wg39PgOB3IW7cDZ8Btc/JL1ub8NuiGZloxf+qsQ7obCYJynm7oUgIfS+y9WKUjDMkxnnpmxdyCEOB+H0uqAkHw=
-Received: from BN6PR19CA0108.namprd19.prod.outlook.com (2603:10b6:404:a0::22)
- by BY5PR07MB6467.namprd07.prod.outlook.com (2603:10b6:a03:195::31) with
+ bh=w9lCPLv2HC7RRhOjj8aCZiyTVq/tBNMk+rrYBZGIfRQ=;
+ b=GxY2LbNP9BhEFEcrANSM2aNMvKDgoQrmb4mG5zIiwm4fHLV9J1Ji+U9K2zfTqpVkQfI9nnT8yyOFwyPTc2fySe1OETqHVRCTG24N+lvWxzrX8zL+138Eu5wZqz2ZKpxEWg1C+BGr1uYF+vyg3wfnSRE3oUzUpi4Ax5nWH6S8kL4=
+Received: from MN2PR02CA0017.namprd02.prod.outlook.com (2603:10b6:208:fc::30)
+ by BL0PR07MB3874.namprd07.prod.outlook.com (2603:10b6:207:4b::31) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Mon, 6 Apr
- 2020 22:21:38 +0000
-Received: from BN8NAM12FT050.eop-nam12.prod.protection.outlook.com
- (2603:10b6:404:a0:cafe::5b) by BN6PR19CA0108.outlook.office365.com
- (2603:10b6:404:a0::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16 via Frontend
- Transport; Mon, 6 Apr 2020 22:21:38 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.20; Mon, 6 Apr
+ 2020 22:21:50 +0000
+Received: from BN8NAM12FT010.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:208:fc:cafe::cd) by MN2PR02CA0017.outlook.office365.com
+ (2603:10b6:208:fc::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15 via Frontend
+ Transport; Mon, 6 Apr 2020 22:21:50 +0000
 Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- BN8NAM12FT050.mail.protection.outlook.com (10.13.182.143) with Microsoft SMTP
+ 158.140.1.148 as permitted sender) receiver=protection.outlook.com;
+ client-ip=158.140.1.148; helo=sjmaillnx2.cadence.com;
+Received: from sjmaillnx2.cadence.com (158.140.1.148) by
+ BN8NAM12FT010.mail.protection.outlook.com (10.13.182.62) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2878.9 via Frontend Transport; Mon, 6 Apr 2020 22:21:37 +0000
+ 15.20.2878.9 via Frontend Transport; Mon, 6 Apr 2020 22:21:49 +0000
 Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 036MLWU4008931
+        by sjmaillnx2.cadence.com (8.14.4/8.14.4) with ESMTP id 036MLju5009940
         (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Mon, 6 Apr 2020 15:21:35 -0700
+        Mon, 6 Apr 2020 15:21:48 -0700
 X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
 Received: from maileu3.global.cadence.com (10.160.88.99) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Tue, 7 Apr 2020 00:21:31 +0200
+ 15.0.1367.3; Tue, 7 Apr 2020 00:21:45 +0200
 Received: from vleu-orange.cadence.com (10.160.88.83) by
  maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Tue, 7 Apr 2020 00:21:31 +0200
+ 15.0.1367.3 via Frontend Transport; Tue, 7 Apr 2020 00:21:45 +0200
 Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 036MLVf0008762;
-        Tue, 7 Apr 2020 00:21:31 +0200
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 036MLjRn008923;
+        Tue, 7 Apr 2020 00:21:45 +0200
 Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 036MLVFD008759;
-        Tue, 7 Apr 2020 00:21:31 +0200
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 036MLj0r008922;
+        Tue, 7 Apr 2020 00:21:45 +0200
 From:   Parshuram Thombare <pthombar@cadence.com>
 To:     <bbrezillon@kernel.org>, <vitor.soares@synopsys.com>
 CC:     <pgaj@cadence.com>, <linux-i3c@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <mparab@cadence.com>,
         Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v1 1/3] i3c: master: split bus_init callback into bus_init and master_set_info
-Date:   Tue, 7 Apr 2020 00:21:29 +0200
-Message-ID: <1586211689-8699-1-git-send-email-pthombar@cadence.com>
+Subject: [PATCH v1 2/3] i3c: add mastership handover support to i3c master subsystem
+Date:   Tue, 7 Apr 2020 00:21:43 +0200
+Message-ID: <1586211703-8862-1-git-send-email-pthombar@cadence.com>
 X-Mailer: git-send-email 2.2.2
 In-Reply-To: <1586211645-8065-1-git-send-email-pthombar@cadence.com>
 References: <1586211645-8065-1-git-send-email-pthombar@cadence.com>
@@ -94,24 +93,24 @@ MIME-Version: 1.0
 Content-Type: text/plain
 X-OrganizationHeadersPreserved: maileu3.global.cadence.com
 X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(346002)(376002)(39850400004)(136003)(396003)(36092001)(46966005)(4326008)(5660300002)(36906005)(336012)(107886003)(42186006)(316002)(54906003)(426003)(110136005)(86362001)(356004)(2616005)(478600001)(36756003)(246002)(47076004)(26005)(2906002)(7636002)(26826003)(8936002)(70586007)(8676002)(70206006)(82740400003)(186003);DIR:OUT;SFP:1101;
+X-Forefront-Antispam-Report: CIP:158.140.1.148;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx2.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(396003)(136003)(39850400004)(376002)(346002)(36092001)(46966005)(47076004)(30864003)(356004)(2616005)(36906005)(36756003)(186003)(336012)(8676002)(42186006)(107886003)(26826003)(478600001)(86362001)(54906003)(4326008)(316002)(2906002)(110136005)(426003)(82740400003)(5660300002)(8936002)(7636002)(70206006)(26005)(246002)(70586007)(42413003);DIR:OUT;SFP:1101;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2b15a3b1-09f9-401b-8ed6-08d7da78dfb7
-X-MS-TrafficTypeDiagnostic: BY5PR07MB6467:
-X-Microsoft-Antispam-PRVS: <BY5PR07MB646734C3EACF70F6F2A42EE4C1C20@BY5PR07MB6467.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Office365-Filtering-Correlation-Id: 82515725-c5c8-4e11-c1f1-08d7da78e6af
+X-MS-TrafficTypeDiagnostic: BL0PR07MB3874:
+X-Microsoft-Antispam-PRVS: <BL0PR07MB3874C6659BB2CC0E3A0FBA0DC1C20@BL0PR07MB3874.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:372;
 X-Forefront-PRVS: 0365C0E14B
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: U9aV78IpZxD5TXaVi5exqaLYmYozBTp+JCkVTsgzM88vmc7EW8FR3LGtQuB4zLETFQFSwTsQ0DPG0WvHSviexHaICIeGYics9gzy9nKnthpWP+gBGP5MRm6C1YykpcG0UOWiWMbbtVo6fR9U7eJu1SPhfSIRilHazRXByJHbcT6G4Wl85eEAj++psdNfHQ4UL5DfDXv8OwObDBrGRFg9QG0qNMyU5IxxbK0WMVHOoPRS/yiEV30pd8a3yO/9D7x6nbbrkMBBO5HUP52HtFL99KTKE1o1s0cyDZKAset3zCNz9B6GbkHf3jmC/eu5XpyC+skguWCnt4t2eNSkgRJmGgT7EGB6rSwWOdVCf6CUySCIhuONyq53hj3CIekW8GfhDqiUNz+DfYpEaCfRr6zDogaKlTLc40OPvbxes0f09AvIuvWkpDKdqLte6q0C6ny6YLOZkdgOl3j4RWFukqRsvMIAMYF/11ovtCZ4HmDb2lvuBU/Gq0PgNDd+IthLwB4HI8Dk3K/r2hIRJNiiYP5q8RKkv6Y0ysTWQUIPNLtYrFo=
+X-Microsoft-Antispam-Message-Info: OOAbMYhvFFOmzAtz8Ia1T4VNki9KmSRvfGS+pVrtFUqa0wlzFLPsuwwStwpC+B/UzUF4lGni+IVuJ+uaAzfNI/kZwoOidHoTAE58sWc5laB46Q/ohD0hUI0nZEgo2shulPRFjLJma3Y/e337oQsjgNQ9r/vrhrdiVgM/EIpHEuaS+9Tdxk1BQcCKrxDwN4VZpF+YzsEhvMnIrDluu1zeXTFvGzxE9VKLtoFPMBbqEsGKJvMgmcNgT2JNNCyprYntsmEJE07on06RYS7NRl8/suuOsSMhq5N0CpWzXn9kBaQ+y81p03DC78djST718lgi/dWk6P3xzJrDnRd3vk/X0SXh4o23IJYQCYBmD5GnH8EGp1CSZbMdu0GHThPAsNdXh5xepcsXfEYo66XpEBUke/c548ZHmwQZns7P4SCghZ0AWIOcXrhvRDf8FmBTqGNB2lUZ7OHPcVQMDHX0gFR8cj3YUwrvtiya5T0k4UwQHxwrtMF1nLPkJo984ermBSexiEwyyrvxNhcTfgSBEc531NhVRkoLSuk2UClpp4Ay+W52Kjc8DsTLXATyqGEejqkY
 X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2020 22:21:37.9144
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2020 22:21:49.5424
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2b15a3b1-09f9-401b-8ed6-08d7da78dfb7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82515725-c5c8-4e11-c1f1-08d7da78e6af
 X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.148];Helo=[sjmaillnx2.cadence.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR07MB6467
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR07MB3874
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-06_10:2020-04-06,2020-04-06 signatures=0
 X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
@@ -124,247 +123,700 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support mastership handover procedure, this patch splits the
-bus_init callback into bus_init and master_set_info callbacks
+This patch adds mastership handover support to I3C master
+subsystem as per MIPI I3C v1.0 specification.
 
 Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
 ---
- drivers/i3c/master.c                 | 10 +++--
- drivers/i3c/master/dw-i3c-master.c   | 29 ++++++++-----
- drivers/i3c/master/i3c-master-cdns.c | 63 ++++++++++++++++++----------
- include/linux/i3c/master.h           |  7 +++-
- 4 files changed, 71 insertions(+), 38 deletions(-)
+ drivers/i3c/master.c       | 486 ++++++++++++++++++++++++++++++++++---
+ include/linux/i3c/master.h |  40 +++
+ 2 files changed, 487 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 5f4bd52121fe..0ec332e45737 100644
+index 0ec332e45737..42b6385fc3c8 100644
 --- a/drivers/i3c/master.c
 +++ b/drivers/i3c/master.c
-@@ -1716,6 +1716,10 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
- 	if (ret)
- 		goto err_detach_devs;
+@@ -963,6 +963,33 @@ int i3c_master_defslvs_locked(struct i3c_master_controller *master)
+ }
+ EXPORT_SYMBOL_GPL(i3c_master_defslvs_locked);
  
-+	ret = master->ops->master_set_info(master);
-+	if (ret)
-+		goto err_detach_devs;
++static int i3c_master_get_accmst_locked(struct i3c_master_controller *master,
++					u8 addr)
++{
++	struct i3c_ccc_getaccmst *accmst;
++	struct i3c_ccc_cmd_dest dest;
++	struct i3c_ccc_cmd cmd;
++	int ret;
 +
- 	/*
- 	 * The master device should have been instantiated in ->bus_init(),
- 	 * complain if this was not the case.
-@@ -2378,9 +2382,9 @@ EXPORT_SYMBOL_GPL(i3c_generic_ibi_recycle_slot);
- 
- static int i3c_master_check_ops(const struct i3c_master_controller_ops *ops)
++	accmst = i3c_ccc_cmd_dest_init(&dest, addr, sizeof(*accmst));
++	if (!accmst)
++		return -ENOMEM;
++
++	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETACCMST, &dest, 1);
++
++	ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
++	if (ret)
++		goto out;
++
++	if (dest.payload.len != sizeof(*accmst))
++		ret = -EIO;
++
++out:
++	i3c_ccc_cmd_dest_cleanup(&dest);
++
++	return ret;
++}
++
+ static int i3c_master_setda_locked(struct i3c_master_controller *master,
+ 				   u8 oldaddr, u8 newaddr, bool setdasa)
  {
--	if (!ops || !ops->bus_init || !ops->priv_xfers ||
--	    !ops->send_ccc_cmd || !ops->do_daa || !ops->i2c_xfers ||
--	    !ops->i2c_funcs)
-+	if (!ops || !ops->bus_init || !ops->master_set_info ||
-+	    !ops->priv_xfers || !ops->send_ccc_cmd || !ops->do_daa ||
-+	    !ops->i2c_xfers || !ops->i2c_funcs)
+@@ -1525,6 +1552,185 @@ int i3c_master_do_daa(struct i3c_master_controller *master)
+ }
+ EXPORT_SYMBOL_GPL(i3c_master_do_daa);
+ 
++static int i3c_master_getaccmst(struct i3c_master_controller *master)
++{
++	int ret;
++
++	i3c_bus_maintenance_lock(&master->bus);
++	ret = i3c_master_get_accmst_locked(master, master->mr_addr);
++	i3c_bus_maintenance_unlock(&master->bus);
++
++	return ret;
++}
++
++static int i3c_master_request_mastership(struct i3c_master_controller *master)
++{
++	int ret;
++
++	/* request_mastership callback should handle EN/DIS EC MR.*/
++	i3c_bus_maintenance_lock(&master->bus);
++	ret = master->ops->request_mastership(master);
++	i3c_bus_maintenance_unlock(&master->bus);
++
++	return ret;
++}
++
++static void i3c_mst_yield_bus(struct work_struct *work)
++{
++	struct i3c_master_controller *m;
++	struct i3c_dev_desc *i3cdev;
++	int ret;
++
++	m = container_of(work, struct i3c_master_controller, mst_work);
++	switch (m->mr_state) {
++	case I3C_MR_DISEC_MR:
++		/*
++		 * Disable MR on all but the secondary master first
++		 * reaching here.
++		 */
++		i3c_bus_for_each_i3cdev(&m->bus, i3cdev) {
++			if (I3C_BCR_DEVICE_ROLE(i3cdev->info.bcr) !=
++			    I3C_BCR_I3C_MASTER ||
++			    i3cdev->info.dyn_addr == m->mr_addr ||
++			    m->this == i3cdev)
++				continue;
++			i3c_bus_maintenance_lock(&m->bus);
++			i3c_master_disec_locked(m, i3cdev->info.dyn_addr,
++						I3C_CCC_EVENT_MR);
++			i3c_bus_maintenance_unlock(&m->bus);
++		}
++		m->mr_state = I3C_MR_GETACCMST;
++		queue_work(m->wq, &m->mst_work);
++		break;
++
++	case I3C_MR_GETACCMST:
++		ret = i3c_master_getaccmst(m);
++		if (!ret)
++			m->mr_state = I3C_MR_DONE;
++		else
++			m->mr_state = I3C_MR_FAILED;
++		queue_work(m->wq, &m->mst_work);
++		break;
++
++	case I3C_MR_DONE:
++		i3c_bus_for_each_i3cdev(&m->bus, i3cdev) {
++			if (m->mr_addr == i3cdev->info.dyn_addr) {
++				m->bus.cur_master = i3cdev;
++				break;
++			}
++		}
++		m->mr_state = I3C_MR_IDLE;
++		break;
++
++	case I3C_MR_FAILED:
++		m->ops->enable_mr_events(m);
++		i3c_bus_maintenance_lock(&m->bus);
++		i3c_master_enec_locked(m, I3C_BROADCAST_ADDR,
++				       I3C_CCC_EVENT_MR);
++		i3c_bus_maintenance_unlock(&m->bus);
++		m->mr_state = I3C_MR_IDLE;
++		break;
++
++	default:
++		break;
++	}
++}
++
++void
++i3c_master_yield_bus(struct i3c_master_controller *master, u8 sec_mst_dyn_addr)
++{
++	master->ops->disable_mr_events(master);
++	master->mr_addr = sec_mst_dyn_addr;
++	master->mr_state = I3C_MR_DISEC_MR;
++	queue_work(master->wq, &master->mst_work);
++}
++EXPORT_SYMBOL_GPL(i3c_master_yield_bus);
++
++static void i3c_sec_mst_acquire_bus(struct work_struct *work)
++{
++	struct i3c_master_controller *m;
++	struct i3c_bus *i3cbus;
++	int ret;
++
++	m = container_of(work, struct i3c_master_controller, sec_mst_work);
++	i3cbus = i3c_master_get_bus(m);
++	switch (m->mr_state) {
++	case I3C_MR_WAIT_DA:
++		/* Wait until this master have dynamic address */
++		if (m->ops->check_event_set(m, I3C_SLV_DA_UPDATE))
++			m->mr_state = I3C_MR_REQUEST;
++		queue_work(m->wq, &m->sec_mst_work);
++		break;
++
++	case I3C_MR_REQUEST:
++		/* Wait until we can send MR */
++		ret = i3c_master_request_mastership(m);
++		if (!ret)
++			m->mr_state = I3C_MR_WAIT_DEFSLVS;
++		queue_work(m->wq, &m->sec_mst_work);
++		break;
++
++	case I3C_MR_WAIT_DEFSLVS:
++		/*
++		 * Wait for DEFSLVS, this event check should make sure
++		 * that DEFSLVS list is read into m->defslvs_data
++		 */
++		if (m->ops->check_event_set(m, I3C_SLV_DEFSLVS_CCC))
++			m->mr_state = I3C_MR_WAIT_MR_DONE;
++		queue_work(m->wq, &m->sec_mst_work);
++		break;
++
++	case I3C_MR_WAIT_MR_DONE:
++		if (m->ops->check_event_set(m, I3C_SLV_MR_DONE)) {
++			m->mr_state = I3C_MR_DONE;
++			complete(&m->mr_comp);
++		} else {
++			queue_work(m->wq, &m->sec_mst_work);
++		}
++		break;
++
++	default:
++		m->mr_state = I3C_MR_FAILED;
++		complete(&m->mr_comp);
++		break;
++	}
++}
++
++void i3c_sec_mst_mr_dis_event(struct i3c_master_controller *m)
++{
++	if (m->mr_state != I3C_MR_IDLE)
++		m->mr_state = I3C_MR_WAIT_DA;
++}
++EXPORT_SYMBOL_GPL(i3c_sec_mst_mr_dis_event);
++
++static int i3c_master_acquire_bus(struct i3c_master_controller *master)
++{
++	int ret = 0;
++
++	if (!master->this || master->this != master->bus.cur_master) {
++		i3c_bus_normaluse_lock(&master->bus);
++		if (master->mr_state == I3C_MR_IDLE) {
++			master->mr_state = I3C_MR_WAIT_DA;
++			i3c_bus_normaluse_unlock(&master->bus);
++			init_completion(&master->mr_comp);
++			queue_work(master->wq, &master->sec_mst_work);
++			wait_for_completion(&master->mr_comp);
++			if (master->mr_state != I3C_MR_DONE)
++				ret = -EAGAIN;
++			master->mr_state = I3C_MR_IDLE;
++		} else {
++			/*
++			 * MR request is already in process for
++			 * this master
++			 */
++			ret = -EAGAIN;
++			i3c_bus_normaluse_unlock(&master->bus);
++		}
++	}
++
++	return ret;
++}
++
+ /**
+  * i3c_master_set_info() - set master device information
+  * @master: master used to send frames on the bus
+@@ -1558,10 +1764,6 @@ int i3c_master_set_info(struct i3c_master_controller *master,
+ 	if (!i3c_bus_dev_addr_is_avail(&master->bus, info->dyn_addr))
  		return -EINVAL;
  
- 	if (ops->request_ibi &&
-diff --git a/drivers/i3c/master/dw-i3c-master.c b/drivers/i3c/master/dw-i3c-master.c
-index 1d83c97431c7..5c9a72d68fb8 100644
---- a/drivers/i3c/master/dw-i3c-master.c
-+++ b/drivers/i3c/master/dw-i3c-master.c
-@@ -593,7 +593,6 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
- {
- 	struct dw_i3c_master *master = to_dw_i3c_master(m);
- 	struct i3c_bus *bus = i3c_master_get_bus(m);
--	struct i3c_device_info info = { };
- 	u32 thld_ctrl;
- 	int ret;
- 
-@@ -624,6 +623,24 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
- 	writel(INTR_MASTER_MASK, master->regs + INTR_STATUS_EN);
- 	writel(INTR_MASTER_MASK, master->regs + INTR_SIGNAL_EN);
- 
-+	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_SIR_REQ_REJECT);
-+	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_MR_REQ_REJECT);
-+
-+	/* For now don't support Hot-Join */
-+	writel(readl(master->regs + DEVICE_CTRL) | DEV_CTRL_HOT_JOIN_NACK,
-+	       master->regs + DEVICE_CTRL);
-+
-+	dw_i3c_master_enable(master);
-+
-+	return 0;
-+}
-+
-+static int dw_i3c_master_set_info(struct i3c_master_controller *m)
-+{
-+	struct dw_i3c_master *master = to_dw_i3c_master(m);
-+	struct i3c_device_info info = { };
-+	int ret;
-+
- 	ret = i3c_master_get_free_addr(m, 0);
- 	if (ret < 0)
- 		return ret;
-@@ -638,15 +655,6 @@ static int dw_i3c_master_bus_init(struct i3c_master_controller *m)
- 	if (ret)
- 		return ret;
- 
--	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_SIR_REQ_REJECT);
--	writel(IBI_REQ_REJECT_ALL, master->regs + IBI_MR_REQ_REJECT);
+-	if (I3C_BCR_DEVICE_ROLE(info->bcr) == I3C_BCR_I3C_MASTER &&
+-	    master->secondary)
+-		return -EINVAL;
 -
--	/* For now don't support Hot-Join */
--	writel(readl(master->regs + DEVICE_CTRL) | DEV_CTRL_HOT_JOIN_NACK,
--	       master->regs + DEVICE_CTRL);
--
--	dw_i3c_master_enable(master);
--
- 	return 0;
- }
+ 	if (master->this)
+ 		return -EINVAL;
  
-@@ -1088,6 +1096,7 @@ static irqreturn_t dw_i3c_master_irq_handler(int irq, void *dev_id)
- 
- static const struct i3c_master_controller_ops dw_mipi_i3c_ops = {
- 	.bus_init = dw_i3c_master_bus_init,
-+	.master_set_info = dw_i3c_master_set_info,
- 	.bus_cleanup = dw_i3c_master_bus_cleanup,
- 	.attach_i3c_dev = dw_i3c_master_attach_i3c_dev,
- 	.reattach_i3c_dev = dw_i3c_master_reattach_i3c_dev,
-diff --git a/drivers/i3c/master/i3c-master-cdns.c b/drivers/i3c/master/i3c-master-cdns.c
-index 8889a4fdb454..c2d1631a9e38 100644
---- a/drivers/i3c/master/i3c-master-cdns.c
-+++ b/drivers/i3c/master/i3c-master-cdns.c
-@@ -1199,21 +1199,20 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
- 	struct cdns_i3c_master *master = to_cdns_i3c_master(m);
- 	unsigned long pres_step, sysclk_rate, max_i2cfreq;
- 	struct i3c_bus *bus = i3c_master_get_bus(m);
--	u32 ctrl, prescl0, prescl1, pres, low;
--	struct i3c_device_info info = { };
--	int ret, ncycles;
-+	u32 ctrl, prescl0, prescl1, pres, low, bus_mode;
-+	int ncycles;
- 
- 	switch (bus->mode) {
- 	case I3C_BUS_MODE_PURE:
--		ctrl = CTRL_PURE_BUS_MODE;
-+		bus_mode = CTRL_PURE_BUS_MODE;
- 		break;
- 
- 	case I3C_BUS_MODE_MIXED_FAST:
--		ctrl = CTRL_MIXED_FAST_BUS_MODE;
-+		bus_mode = CTRL_MIXED_FAST_BUS_MODE;
- 		break;
- 
- 	case I3C_BUS_MODE_MIXED_SLOW:
--		ctrl = CTRL_MIXED_SLOW_BUS_MODE;
-+		bus_mode = CTRL_MIXED_SLOW_BUS_MODE;
- 		break;
- 
- 	default:
-@@ -1244,7 +1243,6 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
- 	bus->scl_rate.i2c = sysclk_rate / ((pres + 1) * 5);
- 
- 	prescl0 |= PRESCL_CTRL0_I2C(pres);
--	writel(prescl0, master->regs + PRESCL_CTRL0);
- 
- 	/* Calculate OD and PP low. */
- 	pres_step = 1000000000 / (bus->scl_rate.i3c * 4);
-@@ -1252,15 +1250,43 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
- 	if (ncycles < 0)
- 		ncycles = 0;
- 	prescl1 = PRESCL_CTRL1_OD_LOW(ncycles);
-+
-+	ctrl = readl(master->regs + CTRL);
-+	if (ctrl & CTRL_DEV_EN)
-+		cdns_i3c_master_disable(master);
-+	writel(prescl0, master->regs + PRESCL_CTRL0);
- 	writel(prescl1, master->regs + PRESCL_CTRL1);
-+	ctrl &= ~CTRL_BUS_MODE_MASK;
-+	ctrl |= bus_mode | CTRL_HALT_EN | CTRL_MCS_EN;
-+	/*
-+	 * Enable Hot-Join, and, when a Hot-Join request happens,
-+	 * disable all events coming from this device.
-+	 * We will issue ENTDAA afterwards from the threaded IRQ
-+	 * handler.
-+	 */
-+	if (!m->secondary)
-+		ctrl |= CTRL_HJ_ACK | CTRL_HJ_DISEC;
-+	writel(ctrl, master->regs + CTRL);
-+	cdns_i3c_master_enable(master);
- 
--	/* Get an address for the master. */
--	ret = i3c_master_get_free_addr(m, 0);
--	if (ret < 0)
--		return ret;
-+	return 0;
-+}
- 
--	writel(prepare_rr0_dev_address(ret) | DEV_ID_RR0_IS_I3C,
--	       master->regs + DEV_ID_RR0(0));
-+static int cdns_i3c_master_set_info(struct i3c_master_controller *m)
-+{
-+	struct cdns_i3c_master *master = to_cdns_i3c_master(m);
-+	struct i3c_device_info info = { };
-+	int ret;
-+
-+	if (!m->secondary) {
-+		/* Get an address for the master. */
-+		ret = i3c_master_get_free_addr(m, 0);
-+		if (ret < 0)
-+			return ret;
-+
-+		writel(prepare_rr0_dev_address(ret) | DEV_ID_RR0_IS_I3C,
-+		       master->regs + DEV_ID_RR0(0));
-+	}
- 
- 	cdns_i3c_master_dev_rr_to_info(master, 0, &info);
- 	if (info.bcr & I3C_BCR_HDR_CAP)
-@@ -1270,16 +1296,6 @@ static int cdns_i3c_master_bus_init(struct i3c_master_controller *m)
- 	if (ret)
- 		return ret;
+@@ -1622,9 +1824,10 @@ static void i3c_master_detach_free_devs(struct i3c_master_controller *master)
+  * 1. Attach I2C and statically defined I3C devs to the master so that the
+  *    master can fill its internal device table appropriately
+  *
+- * 2. Call &i3c_master_controller_ops->bus_init() method to initialize
+- *    the master controller. That's usually where the bus mode is selected
+- *    (pure bus or mixed fast/slow bus)
++ * 2. Should have called &i3c_master_controller_ops->bus_init()
++ *    method with pure bus mode to initialize the master controller.
++ *    That's usually where the bus mode is selected (pure bus or
++ *    mixed fast/slow bus)
+  *
+  * 3. Instruct all devices on the bus to drop their dynamic address. This is
+  *    particularly important when the bus was previously configured by someone
+@@ -1708,14 +1911,6 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
+ 		}
+ 	}
  
 -	/*
--	 * Enable Hot-Join, and, when a Hot-Join request happens, disable all
--	 * events coming from this device.
--	 *
--	 * We will issue ENTDAA afterwards from the threaded IRQ handler.
+-	 * Now execute the controller specific ->bus_init() routine, which
+-	 * might configure its internal logic to match the bus limitations.
 -	 */
--	ctrl |= CTRL_HJ_ACK | CTRL_HJ_DISEC | CTRL_HALT_EN | CTRL_MCS_EN;
--	writel(ctrl, master->regs + CTRL);
+-	ret = master->ops->bus_init(master);
+-	if (ret)
+-		goto err_detach_devs;
 -
--	cdns_i3c_master_enable(master);
+ 	ret = master->ops->master_set_info(master);
+ 	if (ret)
+ 		goto err_detach_devs;
+@@ -1728,7 +1923,7 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
+ 		dev_err(&master->dev,
+ 			"master_set_info() was not called in ->bus_init()\n");
+ 		ret = -EINVAL;
+-		goto err_bus_cleanup;
++		goto err_detach_devs;
+ 	}
  
+ 	/*
+@@ -1737,14 +1932,14 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
+ 	 */
+ 	ret = i3c_master_rstdaa_locked(master, I3C_BROADCAST_ADDR);
+ 	if (ret && ret != I3C_ERROR_M2)
+-		goto err_bus_cleanup;
++		goto err_detach_devs;
+ 
+ 	/* Disable all slave events before starting DAA. */
+ 	ret = i3c_master_disec_locked(master, I3C_BROADCAST_ADDR,
+ 				      I3C_CCC_EVENT_SIR | I3C_CCC_EVENT_MR |
+ 				      I3C_CCC_EVENT_HJ);
+ 	if (ret && ret != I3C_ERROR_M2)
+-		goto err_bus_cleanup;
++		goto err_detach_devs;
+ 
+ 	/*
+ 	 * Pre-assign dynamic address and retrieve device information if
+@@ -1762,10 +1957,6 @@ static int i3c_master_bus_init(struct i3c_master_controller *master)
+ err_rstdaa:
+ 	i3c_master_rstdaa_locked(master, I3C_BROADCAST_ADDR);
+ 
+-err_bus_cleanup:
+-	if (master->ops->bus_cleanup)
+-		master->ops->bus_cleanup(master);
+-
+ err_detach_devs:
+ 	i3c_master_detach_free_devs(master);
+ 
+@@ -2249,6 +2440,9 @@ void i3c_generic_ibi_free_pool(struct i3c_generic_ibi_pool *pool)
+ 	struct i3c_generic_ibi_slot *slot;
+ 	unsigned int nslots = 0;
+ 
++	if (!pool)
++		return;
++
+ 	while (!list_empty(&pool->free_slots)) {
+ 		slot = list_first_entry(&pool->free_slots,
+ 					struct i3c_generic_ibi_slot, node);
+@@ -2392,9 +2586,179 @@ static int i3c_master_check_ops(const struct i3c_master_controller_ops *ops)
+ 	     !ops->recycle_ibi_slot))
+ 		return -EINVAL;
+ 
++	if (ops->request_mastership &&
++	    (!ops->enable_mr_events || !ops->disable_mr_events ||
++	     !ops->check_event_set))
++		return -EINVAL;
++
  	return 0;
  }
-@@ -1507,6 +1523,7 @@ static void cdns_i3c_master_recycle_ibi_slot(struct i3c_dev_desc *dev,
  
- static const struct i3c_master_controller_ops cdns_i3c_master_ops = {
- 	.bus_init = cdns_i3c_master_bus_init,
-+	.master_set_info = cdns_i3c_master_set_info,
- 	.bus_cleanup = cdns_i3c_master_bus_cleanup,
- 	.do_daa = cdns_i3c_master_do_daa,
- 	.attach_i3c_dev = cdns_i3c_master_attach_i3c_dev,
++static struct i2c_dev_boardinfo *
++i3c_master_alloc_i2c_boardinfo(struct i3c_master_controller *master,
++			       u16 addr, u8 lvr)
++{
++	struct i2c_dev_boardinfo *i2cboardinfo;
++
++	i2cboardinfo = kzalloc(sizeof(*i2cboardinfo), GFP_KERNEL);
++	if (!i2cboardinfo)
++		return ERR_PTR(-ENOMEM);
++
++	i2cboardinfo->base.addr = addr;
++	i2cboardinfo->lvr = lvr;
++
++	return i2cboardinfo;
++}
++
++static int i3c_secondary_master_bus_init(struct i3c_master_controller *master)
++{
++	struct i3c_ccc_dev_desc *desc;
++	struct i3c_dev_desc *i3cdev;
++	struct i2c_dev_desc *i2cdev;
++	struct i2c_dev_boardinfo *info;
++	int ret, slot;
++
++	desc = master->defslvs_data.devs;
++	for (slot = 1; slot <= master->defslvs_data.ndevs; slot++, desc++) {
++		if (desc->static_addr) {
++			i3c_bus_set_addr_slot_status(&master->bus,
++						     desc->static_addr,
++						     I3C_ADDR_SLOT_I2C_DEV);
++			info = i3c_master_alloc_i2c_boardinfo(master,
++							      desc->static_addr,
++							      desc->lvr);
++			if (IS_ERR(info)) {
++				ret = PTR_ERR(info);
++				goto err_detach_devs;
++			}
++
++			i2cdev = i3c_master_alloc_i2c_dev(master, info);
++			if (IS_ERR(i2cdev)) {
++				ret = PTR_ERR(i2cdev);
++				goto err_detach_devs;
++			}
++
++			ret = i3c_master_attach_i2c_dev(master, i2cdev);
++			if (ret) {
++				i3c_master_free_i2c_dev(i2cdev);
++				goto err_detach_devs;
++			}
++		} else {
++			struct i3c_device_info info = {
++				.dyn_addr = desc->dyn_addr,
++			};
++
++			i3cdev = i3c_master_alloc_i3c_dev(master, &info);
++			if (IS_ERR(i3cdev)) {
++				ret = PTR_ERR(i3cdev);
++				goto err_detach_devs;
++			}
++
++			ret = i3c_master_attach_i3c_dev(master, i3cdev);
++			if (ret) {
++				i3c_master_free_i3c_dev(i3cdev);
++				goto err_detach_devs;
++			}
++		}
++	}
++
++	ret = master->ops->master_set_info(master);
++	if (ret)
++		goto err_bus_cleanup;
++
++	i3c_bus_for_each_i3cdev(&master->bus, i3cdev) {
++		if (master->this != i3cdev) {
++			ret = i3c_master_retrieve_dev_info(i3cdev);
++			if (ret)
++				goto err_bus_cleanup;
++		}
++	}
++
++	if (!master->this) {
++		dev_err(&master->dev,
++			"master_set_info() was not called in ->bus_init()\n");
++		ret = -EINVAL;
++		goto err_bus_cleanup;
++	}
++
++	return 0;
++
++err_bus_cleanup:
++	if (master->ops->bus_cleanup)
++		master->ops->bus_cleanup(master);
++
++err_detach_devs:
++	i3c_master_detach_free_devs(master);
++
++	return ret;
++}
++
++static void i3c_secondary_master_register(struct work_struct *work)
++{
++	struct i3c_master_controller *master;
++	struct i3c_bus *i3cbus;
++	int ret;
++
++	master = container_of(work, struct i3c_master_controller,
++			      sec_mst_register_work);
++	i3cbus = i3c_master_get_bus(master);
++
++	ret = i3c_master_acquire_bus(master);
++	if (ret)
++		goto err_cleanup_bus;
++
++	/* Again bus_init to bus_mode, based on data received in DEFSLVS */
++	ret = i3c_bus_set_mode(i3cbus, master->defslvs_data.bus_mode);
++	if (ret)
++		goto err_cleanup_bus;
++
++	ret = master->ops->bus_init(master);
++	if (ret)
++		goto err_cleanup_bus;
++
++	ret = i3c_secondary_master_bus_init(master);
++	if (ret)
++		goto err_cleanup_bus;
++
++	ret = device_add(&master->dev);
++	if (ret)
++		goto err_cleanup_bus;
++
++	/*
++	 * Expose our I3C bus as an I2C adapter so that I2C devices are exposed
++	 * through the I2C subsystem.
++	 */
++	ret = i3c_master_i2c_adapter_init(master);
++	if (ret)
++		goto err_del_dev;
++
++	/*
++	 * We're done initializing the bus and the controller, we can now
++	 * register I3C devices from defslvs list.
++	 */
++	master->init_done = true;
++	i3c_bus_normaluse_lock(&master->bus);
++	i3c_master_register_new_i3c_devs(master);
++	i3c_bus_normaluse_unlock(&master->bus);
++
++	master->ops->enable_mr_events(master);
++	i3c_bus_maintenance_lock(&master->bus);
++	ret = i3c_master_enec_locked(master, I3C_BROADCAST_ADDR,
++				     I3C_CCC_EVENT_MR);
++	i3c_bus_maintenance_unlock(&master->bus);
++
++	return;
++
++err_del_dev:
++	device_del(&master->dev);
++
++err_cleanup_bus:
++	if (master->ops->bus_cleanup)
++		master->ops->bus_cleanup(master);
++
++	put_device(&master->dev);
++}
++
+ /**
+  * i3c_master_register() - register an I3C master
+  * @master: master used to send frames on the bus
+@@ -2424,10 +2788,10 @@ int i3c_master_register(struct i3c_master_controller *master,
+ 	struct i3c_bus *i3cbus = i3c_master_get_bus(master);
+ 	enum i3c_bus_mode mode = I3C_BUS_MODE_PURE;
+ 	struct i2c_dev_boardinfo *i2cbi;
+-	int ret;
++	int ret, sz;
+ 
+-	/* We do not support secondary masters yet. */
+-	if (secondary)
++	/*Check if controller driver supports secondary masters. */
++	if (secondary && !ops->request_mastership)
+ 		return -ENOTSUPP;
+ 
+ 	ret = i3c_master_check_ops(ops);
+@@ -2451,10 +2815,45 @@ int i3c_master_register(struct i3c_master_controller *master,
+ 	device_initialize(&master->dev);
+ 	dev_set_name(&master->dev, "i3c-%d", i3cbus->id);
+ 
+-	ret = of_populate_i3c_bus(master);
++	master->wq = alloc_workqueue("%s", 0, 0, dev_name(parent));
++	if (!master->wq) {
++		ret = -ENOMEM;
++		goto err_put_dev;
++	}
++
++	master->mr_state = I3C_MR_IDLE;
++	INIT_WORK(&master->sec_mst_work, i3c_sec_mst_acquire_bus);
++	INIT_WORK(&master->mst_work, i3c_mst_yield_bus);
++
++	ret = i3c_bus_set_mode(i3cbus, mode);
++	if (ret)
++		goto err_put_dev;
++
++	/*
++	 * Now execute the controller specific ->bus_init() routine, which
++	 * might configure its internal logic to match the bus limitations.
++	 */
++	ret = master->ops->bus_init(master);
+ 	if (ret)
+ 		goto err_put_dev;
+ 
++	if (secondary) {
++		sz = sizeof(struct i3c_ccc_dev_desc) * I3C_BUS_MAX_DEVS;
++		master->defslvs_data.devs = devm_kzalloc(&master->dev, sz,
++							 GFP_KERNEL);
++		if (!master->defslvs_data.devs)
++			goto err_put_dev;
++
++		INIT_WORK(&master->sec_mst_register_work,
++			  i3c_secondary_master_register);
++		queue_work(master->wq, &master->sec_mst_register_work);
++		return 0;
++	}
++
++	ret = of_populate_i3c_bus(master);
++	if (ret)
++		goto err_cleanup_bus;
++
+ 	list_for_each_entry(i2cbi, &master->boardinfo.i2c, node) {
+ 		switch (i2cbi->lvr & I3C_LVR_I2C_INDEX_MASK) {
+ 		case I3C_LVR_I2C_INDEX(0):
+@@ -2468,23 +2867,13 @@ int i3c_master_register(struct i3c_master_controller *master,
+ 			break;
+ 		default:
+ 			ret = -EINVAL;
+-			goto err_put_dev;
++			goto err_cleanup_bus;
+ 		}
+ 	}
+ 
+-	ret = i3c_bus_set_mode(i3cbus, mode);
+-	if (ret)
+-		goto err_put_dev;
+-
+-	master->wq = alloc_workqueue("%s", 0, 0, dev_name(parent));
+-	if (!master->wq) {
+-		ret = -ENOMEM;
+-		goto err_put_dev;
+-	}
+-
+ 	ret = i3c_master_bus_init(master);
+ 	if (ret)
+-		goto err_put_dev;
++		goto err_cleanup_bus;
+ 
+ 	ret = device_add(&master->dev);
+ 	if (ret)
+@@ -2507,6 +2896,22 @@ int i3c_master_register(struct i3c_master_controller *master,
+ 	i3c_master_register_new_i3c_devs(master);
+ 	i3c_bus_normaluse_unlock(&master->bus);
+ 
++	if (ops->request_mastership) {
++		master->ops->enable_mr_events(master);
++		i3c_bus_maintenance_lock(&master->bus);
++		i3c_master_enec_locked(master, I3C_BROADCAST_ADDR,
++				       I3C_CCC_EVENT_MR);
++		i3c_bus_maintenance_unlock(&master->bus);
++	}
++
++	ret = i3c_bus_set_mode(i3cbus, mode);
++	if (ret)
++		goto err_del_dev;
++
++	ret = master->ops->bus_init(master);
++	if (ret)
++		goto err_del_dev;
++
+ 	return 0;
+ 
+ err_del_dev:
+@@ -2557,7 +2962,10 @@ int i3c_dev_do_priv_xfers_locked(struct i3c_dev_desc *dev,
+ 	if (!master->ops->priv_xfers)
+ 		return -ENOTSUPP;
+ 
+-	return master->ops->priv_xfers(dev, xfers, nxfers);
++	if (!i3c_master_acquire_bus(master))
++		return master->ops->priv_xfers(dev, xfers, nxfers);
++	else
++		return -EAGAIN;
+ }
+ 
+ int i3c_dev_disable_ibi_locked(struct i3c_dev_desc *dev)
 diff --git a/include/linux/i3c/master.h b/include/linux/i3c/master.h
-index f13fd8b1dd79..3dc7eafe811a 100644
+index 3dc7eafe811a..c6427c62ed83 100644
 --- a/include/linux/i3c/master.h
 +++ b/include/linux/i3c/master.h
-@@ -337,10 +337,12 @@ struct i3c_bus {
+@@ -259,6 +259,27 @@ enum i3c_bus_mode {
+ 	I3C_BUS_MODE_MIXED_SLOW,
+ };
+ 
++enum i3c_mr_state {
++	I3C_MR_IDLE,
++	I3C_MR_DISEC_MR,
++	I3C_MR_SEND_DEFSLVS,
++	I3C_MR_GETACCMST,
++	I3C_MR_WAIT_DA,
++	I3C_MR_CHECK_STATE,
++	I3C_MR_REQUEST,
++	I3C_MR_WAIT_DEFSLVS,
++	I3C_MR_WAIT_MR_DONE,
++	I3C_MR_DONE,
++	I3C_MR_FAILED,
++};
++
++enum i3c_event {
++	I3C_SLV_DA_UPDATE,
++	I3C_SLV_DEFSLVS_CCC,
++	I3C_SLV_MR_DIS,
++	I3C_SLV_MR_DONE,
++};
++
+ /**
+  * enum i3c_addr_slot_status - I3C address slot status
+  * @I3C_ADDR_SLOT_FREE: address is free
+@@ -448,6 +469,11 @@ struct i3c_master_controller_ops {
+ 	int (*disable_ibi)(struct i3c_dev_desc *dev);
+ 	void (*recycle_ibi_slot)(struct i3c_dev_desc *dev,
+ 				 struct i3c_ibi_slot *slot);
++	int (*request_mastership)(struct i3c_master_controller *master);
++	void (*enable_mr_events)(struct i3c_master_controller *m);
++	void (*disable_mr_events)(struct i3c_master_controller *m);
++	bool (*check_event_set)(struct i3c_master_controller *m,
++				enum i3c_event);
+ };
  
  /**
-  * struct i3c_master_controller_ops - I3C master methods
-- * @bus_init: hook responsible for the I3C bus initialization. You should at
-- *	      least call master_set_info() from there and set the bus mode.
-+ * @bus_init: hook responsible for the I3C bus initialization.
-  *	      You can also put controller specific initialization in there.
-  *	      This method is mandatory.
-+ * @master_set_info: hook responsible for assigning address to main master.
-+ *			You should call i3c_master_set_info from here.
-+ *			This method is mandatory.
-  * @bus_cleanup: cleanup everything done in
-  *		 &i3c_master_controller_ops->bus_init().
-  *		 This method is optional.
-@@ -421,6 +423,7 @@ struct i3c_bus {
-  */
- struct i3c_master_controller_ops {
- 	int (*bus_init)(struct i3c_master_controller *master);
-+	int (*master_set_info)(struct i3c_master_controller *m);
- 	void (*bus_cleanup)(struct i3c_master_controller *master);
- 	int (*attach_i3c_dev)(struct i3c_dev_desc *dev);
- 	int (*reattach_i3c_dev)(struct i3c_dev_desc *dev, u8 old_dyn_addr);
+@@ -489,6 +515,17 @@ struct i3c_master_controller {
+ 	} boardinfo;
+ 	struct i3c_bus bus;
+ 	struct workqueue_struct *wq;
++	struct work_struct sec_mst_register_work;
++	struct work_struct mst_work;
++	struct work_struct sec_mst_work;
++	struct completion mr_comp;
++	enum i3c_mr_state mr_state;
++	u8 mr_addr;
++	struct {
++		u32 ndevs;
++		enum i3c_bus_mode bus_mode;
++		struct i3c_ccc_dev_desc *devs;
++	} defslvs_data;
+ };
+ 
+ /**
+@@ -513,6 +550,9 @@ struct i3c_master_controller {
+ #define i3c_bus_for_each_i3cdev(bus, dev)				\
+ 	list_for_each_entry(dev, &(bus)->devs.i3c, common.node)
+ 
++void i3c_master_yield_bus(struct i3c_master_controller *master,
++			  u8 slv_dyn_addr);
++void i3c_sec_mst_mr_dis_event(struct i3c_master_controller *m);
+ int i3c_master_do_i2c_xfers(struct i3c_master_controller *master,
+ 			    const struct i2c_msg *xfers,
+ 			    int nxfers);
 -- 
 2.17.1
 
