@@ -2,77 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A0D19F32A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C006A19F335
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 12:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbgDFKB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 06:01:57 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:36324 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726819AbgDFKB5 (ORCPT
+        id S1726890AbgDFKEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 06:04:15 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:33608 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726784AbgDFKEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 06:01:57 -0400
-Received: by mail-wr1-f68.google.com with SMTP id k1so7251486wrm.3;
-        Mon, 06 Apr 2020 03:01:55 -0700 (PDT)
+        Mon, 6 Apr 2020 06:04:15 -0400
+Received: by mail-wm1-f68.google.com with SMTP id g21so1356278wmh.0;
+        Mon, 06 Apr 2020 03:04:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=YzmMXR5rNZPtC86zvMRgp4oCyOtVaABF9wgIVshKUW4=;
-        b=gxJuXYINMA6TTC8wuTzGOaWVvfdkcVLMnRKU1Ii1lnkAsnPz2965x29SwCgMv225Si
-         O4O5QPrC9jqsgfivQfknFkPHpINpRhBLVdC+1zWF2zYzBiha3FzPKTIidV/1GaAexobV
-         GSfDZO88re0FoVr3BLwGlZAM9DAnXzIK/C8BoxXfeLPEaVUfEIHETy01Umg3//1qCr4p
-         VDCn1gY/yWFa4qqTqBerWz9V0rshhKg5pHfXzOOFY2ORojh0YlKagWaEgtqRzaR7L99x
-         1poKuZHTJ7RRZlx4z4n9oLYqdS/P46mMysw3s8yaAOF6J90UewZMfZINfnUszhnTdSMi
-         080Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TDxVDF2XVyHK1LpPBZBlcR0MpokI9aaOMTXvOXm2QFs=;
+        b=slj96URnwsKS5pPlbU8Zvbw/ymTmZPpymkHbhDerbD6rJvw0kYwQOb4QMhZIycJZLb
+         xp3aIPbkdJFXYU8uX5u+yy5u/opWF2hrhj0BEWP9HsLE4h1ZylqCD8Vzg3w1spTCOkZv
+         Id7azN7Qc/vONo33LjyAKXPxbPQWrY+Mld+W6h3ahI0DZGN5RTkQFMqjeDq3NIGsHv+h
+         p1xahfhixL0fGOeH4yCOG+S8S//33UsuRSZ7lXQPJlpPx29QOTYMr4N50PRpuCvN214S
+         nztGKNakCFDieyuV1KtLbs5Mg7HrQs29Czrz12UeiWiJA0erKVAoDE2MEVTEHh61d2fq
+         27Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=YzmMXR5rNZPtC86zvMRgp4oCyOtVaABF9wgIVshKUW4=;
-        b=tOu5TgLZX1dRRoFuEEfVd4aHdGSJjSRMx+7Nr/dQMGmvHbCgYvQ6aDDebT7HMqU1DF
-         cQGACsLdFB1+AZvWhGlmJ4PEp1694FUCVYoAOPS7kBxO9NJRidHmv6NI33ALJN7qtMbP
-         xzbObMjtcb0M4XPKwomQ8Ec8M7y6NYqAZ+heVDq9Gcst+jsYUrWis7tKbzJMC6q2JS2r
-         IR+VgKI4kAi+lZbYxwvA7z7XLGm3fthcYtSLJgTnQXbbLDYzczTHBr8Bd04YVmEjJo3k
-         nDVrrg0WbSJ4nRK83nP9dN9cVPAWh/XUj+UXIpQ1P3LMdBuH3T0/l2rsYGHHTxcwt1sI
-         BUNw==
-X-Gm-Message-State: AGi0PubcOONZRmbpVcAPBtlV2jMo+y3RIvdyUIA8kMCy3RWWQMwYYQ7D
-        bj/sHO2AXjG2U2QqcIgjoDKDIh8hYrvRScE+IKA=
-X-Google-Smtp-Source: APiQypKdiuOwo8naTpsrSPB5xSBWnI12Pc8gnVs1udE3VqYTg+4byJnBdfF7ALwaBDV5QRhywnpO473osUYaBiMEbSw=
-X-Received: by 2002:adf:bb94:: with SMTP id q20mr8443986wrg.179.1586167315127;
- Mon, 06 Apr 2020 03:01:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TDxVDF2XVyHK1LpPBZBlcR0MpokI9aaOMTXvOXm2QFs=;
+        b=IwnnghIDQfM2CXD62g9OiT8J53cNHH1/2DmQ8CiSsccMFPU/Wvsqxbh5CvrPTRzN6G
+         nXnENyCkDxsLZwOb2vryu54zxAtEXRl9up8a4zfAx3o6grmojmXlw/aaKCOce7CC//l0
+         sHY59rhtPYpegq1J0dbv01+J2QbNgAHWQkuYCjT+RU+tck2mAV8xyNR7itd82pVLdW5h
+         28lhzxSuwZR+P0vINTchJQIngoT+dx1TvvqpbszRFPdbAq4bR0xYd+kPHdhAwwuXwzd+
+         LYkkywJAEgEV5ZEV66zr6UFOCX+1aBFNU3Sxw2lUSrYK3sanKUypNe/WFCzDiBlUmyOs
+         c22A==
+X-Gm-Message-State: AGi0Pub1eHhXyfvFq2QL4mLanUvug2sT4hzzUuOGU/3DcOkRc3y3j9HK
+        xW8Zl5lQx/v6cCoEYWn0iB3N50Hq
+X-Google-Smtp-Source: APiQypKnVE9KLirDRtYyYCwaK9z8EPYQ48t44bv9OTxySufX2aEFJDl57z7NIHlciCFzL4i5rBj+mw==
+X-Received: by 2002:a1c:5605:: with SMTP id k5mr12809098wmb.83.1586167453487;
+        Mon, 06 Apr 2020 03:04:13 -0700 (PDT)
+Received: from localhost (pD9E51D62.dip0.t-ipconnect.de. [217.229.29.98])
+        by smtp.gmail.com with ESMTPSA id r15sm27503137wra.19.2020.04.06.03.04.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 03:04:12 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 12:04:11 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/4] of: reserved-memory: Various improvements
+Message-ID: <20200406100411.GB475759@ulmo>
+References: <20200403185640.118569-1-thierry.reding@gmail.com>
+ <CAL_JsqLsCHJOuYBdh33eouu3VhwYzv5XR5wop8QAAi4jXP2xcQ@mail.gmail.com>
 MIME-Version: 1.0
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 6 Apr 2020 12:02:15 +0200
-Message-ID: <CA+icZUWnZwaNooj4WLvS7FKhkDgq3R3xUaQ8hFjuDgZTSj0s2Q@mail.gmail.com>
-Subject: kbuild: do not pass $(KBUILD_CFLAGS) to scripts/mkcompile_h
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jho1yZJdad60DJr+"
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqLsCHJOuYBdh33eouu3VhwYzv5XR5wop8QAAi4jXP2xcQ@mail.gmail.com>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Please CC me I am not subscribed to this mailing-list ]
 
-Hi,
+--jho1yZJdad60DJr+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think with your patch in [1] line #56 can go away, too?
+On Sat, Apr 04, 2020 at 07:24:25PM -0600, Rob Herring wrote:
+> On Fri, Apr 3, 2020 at 12:56 PM Thierry Reding <thierry.reding@gmail.com>=
+ wrote:
+> >
+> > From: Thierry Reding <treding@nvidia.com>
+> >
+> > Hi Rob, all,
+> >
+> > this is a set of patches that I've been working on to allow me to use
+> > reserved memory regions more flexibly. One of the use-cases that I have
+> > is an external memory controller driver that gets passed one or two
+> > tables from firmware containing a set of EMC frequencies and the
+> > corresponding register values to program for these frequencies.
+> >
+> > One of these tables is the "nominal" table and an optional second table
+> > is "derated" and is used when the DRAM chips are overheating. I want to
+> > be able to pass these tables as separate memory-region entries.
+> >
+> > So what this small patchset does is make the reserved-memory code adapt
+> > to this situation better. On one hand, while the DT bindings currently
+> > support multiple regions per device tree node, it's slightly unintuitive
+> > to specify them. The first patch adds a memory-region-names property
+> > that allows the DT to specify a "consumer" name for these regions much
+> > like we do for things like clocks, resets or the reg property. At the
+> > same time, a new alias for memory-region, named memory-regions, is
+> > introduced to make this more consistent with other bindings.
+>=20
+> It's just not worth supporting both flavors (forever). I don't want to
+> repeat gpio vs. gpios. Let's just stick with 'memory-region' and allow
+> that to be more than one entry.
 
-[ scripts/mkcompile_h ]
+Alright, I'll drop the corresponding changes from the bindings and the
+OF core then.
 
-53 # Generate a temporary compile.h
-54
-55 { echo /\* This file is auto generated, version $VERSION \*/
-56   if [ -n "$CONFIG_FLAGS" ] ; then echo "/* $CONFIG_FLAGS */"; fi
+> I'm not a fan of *-names, but fine.
 
-Thanks.
+I suppose I could work without them, but I like the descriptiveness that
+they add to the device tree. There are also cases where they can be very
+essential. For example, what if a device can take two separate memory
+regions. One case that we have on Tegra is the display controller that
+can have a framebuffer and a color-conversion lookup table assigned to
+it on boot. I think in this particular case both are actually always
+there, but what if either of them was optional. Without -names it would
+be impossible to describe the context if only one is provided in device
+tree.
 
-Regards,
-- Sedat -
+Thierry
 
-[1] https://patchwork.kernel.org/patch/11473667/
+--jho1yZJdad60DJr+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6K/pgACgkQ3SOs138+
+s6EcBBAAknv2wjVaLqK8Fv5noZrIB4XtpJNVRyHSCdzsZ32kDSogdVHbSGnmgqdb
+sGP6hAF8i6wZan9ZfAm3ZGcYTngPZPJVMI5EszlVW1WXtiXjpA963KSuVwg930H+
+h8oPvchZ6DKOiHy90RaVt3wIyZA0CQwpCDukYMxjj7o2xzx+Ig7ywmaP+GkV6lUF
+utXr68/po507c5JsgB9xc8THDnM1dOazLPrb3O0nG+WcmGeLuqZx8AVZnGZsM5Bb
+khjmisr6O2YpATkGWO7ZJbRMKSQZOVgmkFxJB2NpuOKSU0z5PdlopYAh8OgCOjy0
+e9HKoAaF0Ip7dlMaCKrEg3tifMCPQZ3o5UroATrDfVQagRCzing/UGqGSaftNkif
++yh8DiwKpttDEdsKK5Oipa6oCwViqCANXIFe443lYdlSH1qUMO2ow7Oi/DEIFeTB
+6NjOKi2HQxrhqQ3BOc7PvAG/eUH+yBH3P9mUEwctFdTLvlQgsmIo97vA+wAnkL6o
+nYP+wQLkehEV2WsHFJFFVZZbbATX0UjXyQH0QGCFGXK1vYw0KwJcwDU5V1k/+HFh
+o0TonpcG28IksxcDuw4CcuH3MZbB0a+AvAPjjfewmCbx+L3hDWULJK2dl3YPRYtP
+o1wNwBsuUDtHNREgj3KcZMBj3YgBEdryxTM6dHDtOa25Ze8SacM=
+=98ej
+-----END PGP SIGNATURE-----
+
+--jho1yZJdad60DJr+--
