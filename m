@@ -2,146 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF76D19FBE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 19:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E9F19FBF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 19:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgDFRoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 13:44:44 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:43671 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727922AbgDFRon (ORCPT
+        id S1727796AbgDFRpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 13:45:39 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:34882 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726713AbgDFRpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 13:44:43 -0400
-Received: by mail-qt1-f196.google.com with SMTP id a5so394696qtw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 10:44:42 -0700 (PDT)
+        Mon, 6 Apr 2020 13:45:39 -0400
+Received: by mail-ed1-f66.google.com with SMTP id c7so589078edl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 10:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=O889dxB/XJ11aoM95cldpEaus4gDgLM3yTi+BUCXaL0=;
-        b=CjbhAJj3Tg6y8oKldTLzjJgMKn6v55oqoh5dQSCe0t9eI0N5Ab9KpB1ZaMBFL49hJ1
-         U2YSO0kjrRgeaVmCyD1Lcyc+Iuyxswp5BwvxKn+KzvzHMaJcVK7WJhnu0m7hWXwYQAjw
-         EsH9hi5e2/hmMFgImNwnk2oGoD+gqahObRsAOtHsmPfZSJNwMjQA+RrmNO7VLZb2hQ+h
-         qUebv2jQpa0u/8Tixk/rjBRzO66TXyjwfdnFe1eOI2mWwFyyzG4hzRY/WnE/jl5r+6YQ
-         QwHeryLLzOnmdRx3ZutBFI9zPe366Dfo41v/rVhgI7RZAv5qyT02wzORNsi1NbF9BHM3
-         ubhQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7RXoohFvXLaoEKx3R14gPI97or8iyID+gO/ke9YZLZk=;
+        b=pGJxT/+1b5N0eaXPQ8MD+apq1vM1MKAp+Icn53TKKJ0KGEnm05VOa5Y1PXrdWJnued
+         R9YUUUBFQ3SAx68o4tq3gsy3sganiQ/LSMuSCuL8zeRVyMPSVBMwijQ+zyheaSWAu3xJ
+         M+OPJMGhw6A30yvpkCR1omLvF+gJmffGC2W/3lpB316ys6wZpTVSfHDp9wusrVxG+kTJ
+         8QhIM3+WDSWjrfsSpPJlWmuFuQJHkBccKMwVYR+437mDuaT39nIrHtpckrkXjLc15TLB
+         3ZQ6bg5krSgAE+jYAaOpI2wf8bRjMTc6TzFNGjCyuxtK4inqkOZaPt0bxepRj/sXaXhc
+         GF5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=O889dxB/XJ11aoM95cldpEaus4gDgLM3yTi+BUCXaL0=;
-        b=r2RQJggwCHgSd2x3vYUw1k1tqILt5ERH5SC2Wld/DHzqVfOO9JHthHUSJYqAv3tpZN
-         P/tmUa5TFwqWn/3+SkFWXW0zmSdlJFnaVGsKEypqN9I9PXSvQYAANOJG5X3q5TfROtzD
-         ZHJ1OoSRPJGQU3PRzl2yal426KvtubqE5CR6YM8ymtK7coP2afBnZR0LeIRs6KqU1MRt
-         G4k+kwfGmMNw4Kma52zIxUP01VGh+HN9A8dHakMGK6hH28+wUehKjkFibZTIOpIEVKlh
-         fiabXrVVpwPBvxgIzAn7+4r3xBlFRABUefSrbHIxnvF7TKgskPvr8s5g4cwOLxkajJPJ
-         TtdQ==
-X-Gm-Message-State: AGi0PuYKmFasXCrUqkrQvOBPHfzVY77dI/mOgodEn225V35j4UUmkZDV
-        nEioQKAETg91MaD3VOZd3dBEIA==
-X-Google-Smtp-Source: APiQypLj6wnyOzro00s4tpq9gdIN+7IPdSVtnDUW7iERedT5t2IGtckVe64o2Po3xX134XMZwCxmLA==
-X-Received: by 2002:ac8:4c8a:: with SMTP id j10mr602951qtv.69.1586195081480;
-        Mon, 06 Apr 2020 10:44:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
-        by smtp.gmail.com with ESMTPSA id u29sm13038349qkm.102.2020.04.06.10.44.40
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 06 Apr 2020 10:44:40 -0700 (PDT)
-Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jLVnc-0008Sf-EB; Mon, 06 Apr 2020 14:44:40 -0300
-Date:   Mon, 6 Apr 2020 14:44:40 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     syzbot <syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, rafael@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: WARNING in ib_umad_kill_port
-Message-ID: <20200406174440.GR20941@ziepe.ca>
-References: <00000000000075245205a2997f68@google.com>
- <20200406172151.GJ80989@unreal>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7RXoohFvXLaoEKx3R14gPI97or8iyID+gO/ke9YZLZk=;
+        b=STt23aD7RVpYhd77F+yS9LfJkcUfVAm7fk4l+HgPk1C+oDelYJqUBe+qEz4YTWhJIA
+         okh63Wss0V7ngc5SOHwAiy6/L9bXR0lqwBVv4KnQyz3G1WKUZVxhQU0HVLQdeTXBJn/1
+         gupvwryKj7NaWskMaFcWgMy2PVtYyhTPWXrcMHmtRj6bDLayiFYjbVRlWIkFEC1IVwId
+         3bNLIEAPeHJT4dd89MUdiwDAOdxaw7uxat1Ss+AVo6qcjEf6QvlZFDsuT4WHVNUzzQvq
+         iSA+OFeNvqydyqpiuFboD3nDXKyONQB6tiBNg5XO1ppybahvNWuN4bVYVOb3YbIjXPoX
+         rvvg==
+X-Gm-Message-State: AGi0Puagk5Dz21jI2MKZX+W6MtmK3bku0w3OgiutA/deI9IUo1plJlZa
+        VrLNe5hEW+szGi+zybqt18oBC8rMGPDoke9JNOA=
+X-Google-Smtp-Source: APiQypIaHtJ4hn23pa/NkZ7zj/dGv/ZlRU8kWcFi0fx8qH8eIA32EcKufiVaVgryZZ59IaKMiOdYUiH5qzK3Hj5fT5s=
+X-Received: by 2002:a50:ed93:: with SMTP id h19mr19481900edr.255.1586195137719;
+ Mon, 06 Apr 2020 10:45:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200406172151.GJ80989@unreal>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <a809feb7d7153a92e323416f744f1565e995da01.1586180592.git.angelo.ribeiro@synopsys.com>
+In-Reply-To: <a809feb7d7153a92e323416f744f1565e995da01.1586180592.git.angelo.ribeiro@synopsys.com>
+From:   Adrian Pop <pop.adrian61@gmail.com>
+Date:   Mon, 6 Apr 2020 20:45:26 +0300
+Message-ID: <CAP-HsdQtdSeiSe3O8P6Pe587PYAqO48pGJLwf+Tvq20sY_nh=A@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/bridge: dw-mipi-dsi.c: Add VPG runtime config
+ through debugfs
+To:     Angelo Ribeiro <Angelo.Ribeiro@synopsys.com>
+Cc:     yannick.fertre@st.com, philippe.cornu@st.com,
+        benjamin.gaignard@st.com, airlied@linux.ie,
+        Daniel Vetter <daniel@ffwll.ch>, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, dri-devel@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 08:21:51PM +0300, Leon Romanovsky wrote:
-> + RDMA
-> 
-> On Sun, Apr 05, 2020 at 11:37:15PM -0700, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following crash on:
-> >
-> > HEAD commit:    304e0242 net_sched: add a temporary refcnt for struct tcin..
-> > git tree:       net
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=119dd16de00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=8c1e98458335a7d1
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=9627a92b1f9262d5d30c
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> >
-> > Unfortunately, I don't have any reproducer for this crash yet.
-> >
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com
-> >
-> > sysfs group 'power' not found for kobject 'umad1'
-> > WARNING: CPU: 1 PID: 31308 at fs/sysfs/group.c:279 sysfs_remove_group fs/sysfs/group.c:279 [inline]
-> > WARNING: CPU: 1 PID: 31308 at fs/sysfs/group.c:279 sysfs_remove_group+0x155/0x1b0 fs/sysfs/group.c:270
-> > Kernel panic - not syncing: panic_on_warn set ...
-> > CPU: 1 PID: 31308 Comm: kworker/u4:10 Not tainted 5.6.0-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Workqueue: events_unbound ib_unregister_work
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x188/0x20d lib/dump_stack.c:118
-> >  panic+0x2e3/0x75c kernel/panic.c:221
-> >  __warn.cold+0x2f/0x35 kernel/panic.c:582
-> >  report_bug+0x27b/0x2f0 lib/bug.c:195
-> >  fixup_bug arch/x86/kernel/traps.c:175 [inline]
-> >  fixup_bug arch/x86/kernel/traps.c:170 [inline]
-> >  do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
-> >  do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
-> >  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-> > RIP: 0010:sysfs_remove_group fs/sysfs/group.c:279 [inline]
-> > RIP: 0010:sysfs_remove_group+0x155/0x1b0 fs/sysfs/group.c:270
-> > Code: 48 89 d9 49 8b 14 24 48 b8 00 00 00 00 00 fc ff df 48 c1 e9 03 80 3c 01 00 75 41 48 8b 33 48 c7 c7 60 c3 39 88 e8 93 c3 5f ff <0f> 0b eb 95 e8 22 62 cb ff e9 d2 fe ff ff 48 89 df e8 15 62 cb ff
-> > RSP: 0018:ffffc90001d97a60 EFLAGS: 00010282
-> > RAX: 0000000000000000 RBX: ffffffff88915620 RCX: 0000000000000000
-> > RDX: 0000000000000000 RSI: ffffffff815ca861 RDI: fffff520003b2f3e
-> > RBP: 0000000000000000 R08: ffff8880a78fc2c0 R09: ffffed1015ce66a1
-> > R10: ffffed1015ce66a0 R11: ffff8880ae733507 R12: ffff88808e5ba070
-> > R13: ffffffff88915bc0 R14: ffff88808e5ba008 R15: dffffc0000000000
-> >  dpm_sysfs_remove+0x97/0xb0 drivers/base/power/sysfs.c:794
-> >  device_del+0x18b/0xd30 drivers/base/core.c:2687
-> >  cdev_device_del+0x15/0x80 fs/char_dev.c:570
-> >  ib_umad_kill_port+0x45/0x250 drivers/infiniband/core/user_mad.c:1327
-> >  ib_umad_remove_one+0x18a/0x220 drivers/infiniband/core/user_mad.c:1409
-> >  remove_client_context+0xbe/0x110 drivers/infiniband/core/device.c:724
-> >  disable_device+0x13b/0x230 drivers/infiniband/core/device.c:1270
-> >  __ib_unregister_device+0x91/0x180 drivers/infiniband/core/device.c:1437
-> >  ib_unregister_work+0x15/0x30 drivers/infiniband/core/device.c:1547
-> >  process_one_work+0x965/0x16a0 kernel/workqueue.c:2266
-> >  worker_thread+0x96/0xe20 kernel/workqueue.c:2412
-> >  kthread+0x388/0x470 kernel/kthread.c:268
-> >  ret_from_fork+0x24/0x30 arch/x86/entry/entry_64.S:352
-> > Kernel Offset: disabled
-> > Rebooting in 86400 seconds..
+Hello Angelo,
 
-I'm not sure what could be done wrong here to elicit this:
+Tested OK on STM32F769i-DISCO, DSI v1.30, on next-20200406. I guess
+there is no horizontal for BER.
 
- sysfs group 'power' not found for kobject 'umad1'
+Regards,
+Adrian
 
-??
-
-I've seen another similar sysfs related trigger that we couldn't
-figure out.
-
-Hard to investigate without a reproducer.
-
-Jason
+On Mon, Apr 6, 2020 at 4:49 PM Angelo Ribeiro
+<Angelo.Ribeiro@synopsys.com> wrote:
+>
+> Add support for the video pattern generator (VPG) BER pattern mode and
+> configuration in runtime.
+>
+> This enables using the debugfs interface to manipulate the VPG after
+> the pipeline is set.
+> Also, enables the usage of the VPG BER pattern.
+>
+> Changes in v2:
+>   - Added VID_MODE_VPG_MODE
+>   - Solved incompatible return type on __get and __set
+>
+> Reported-by: kbuild test robot <lkp@intel.com>
+> Reported-by: Adrian Pop <pop.adrian61@gmail.com>
+> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+> Cc: Joao Pinto <jpinto@synopsys.com>
+> Cc: Jose Abreu <jose.abreu@synopsys.com>
+> Signed-off-by: Angelo Ribeiro <angelo.ribeiro@synopsys.com>
+> ---
+>  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c | 98 ++++++++++++++++++++++++---
+>  1 file changed, 90 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> index b18351b..9de3645 100644
+> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
+> @@ -91,6 +91,7 @@
+>  #define VID_MODE_TYPE_BURST                    0x2
+>  #define VID_MODE_TYPE_MASK                     0x3
+>  #define VID_MODE_VPG_ENABLE            BIT(16)
+> +#define VID_MODE_VPG_MODE              BIT(20)
+>  #define VID_MODE_VPG_HORIZONTAL                BIT(24)
+>
+>  #define DSI_VID_PKT_SIZE               0x3c
+> @@ -221,6 +222,21 @@
+>  #define PHY_STATUS_TIMEOUT_US          10000
+>  #define CMD_PKT_STATUS_TIMEOUT_US      20000
+>
+> +#ifdef CONFIG_DEBUG_FS
+> +#define VPG_DEFS(name, dsi) \
+> +       ((void __force *)&((*dsi).vpg_defs.name))
+> +
+> +#define REGISTER(name, mask, dsi) \
+> +       { #name, VPG_DEFS(name, dsi), mask, dsi }
+> +
+> +struct debugfs_entries {
+> +       const char                              *name;
+> +       bool                                    *reg;
+> +       u32                                     mask;
+> +       struct dw_mipi_dsi                      *dsi;
+> +};
+> +#endif /* CONFIG_DEBUG_FS */
+> +
+>  struct dw_mipi_dsi {
+>         struct drm_bridge bridge;
+>         struct mipi_dsi_host dsi_host;
+> @@ -238,9 +254,12 @@ struct dw_mipi_dsi {
+>
+>  #ifdef CONFIG_DEBUG_FS
+>         struct dentry *debugfs;
+> -
+> -       bool vpg;
+> -       bool vpg_horizontal;
+> +       struct debugfs_entries *debugfs_vpg;
+> +       struct {
+> +               bool vpg;
+> +               bool vpg_horizontal;
+> +               bool vpg_ber_pattern;
+> +       } vpg_defs;
+>  #endif /* CONFIG_DEBUG_FS */
+>
+>         struct dw_mipi_dsi *master; /* dual-dsi master ptr */
+> @@ -530,9 +549,11 @@ static void dw_mipi_dsi_video_mode_config(struct dw_mipi_dsi *dsi)
+>                 val |= VID_MODE_TYPE_NON_BURST_SYNC_EVENTS;
+>
+>  #ifdef CONFIG_DEBUG_FS
+> -       if (dsi->vpg) {
+> +       if (dsi->vpg_defs.vpg) {
+>                 val |= VID_MODE_VPG_ENABLE;
+> -               val |= dsi->vpg_horizontal ? VID_MODE_VPG_HORIZONTAL : 0;
+> +               val |= dsi->vpg_defs.vpg_horizontal ?
+> +                      VID_MODE_VPG_HORIZONTAL : 0;
+> +               val |= dsi->vpg_defs.vpg_ber_pattern ? VID_MODE_VPG_MODE : 0;
+>         }
+>  #endif /* CONFIG_DEBUG_FS */
+>
+> @@ -961,6 +982,68 @@ static const struct drm_bridge_funcs dw_mipi_dsi_bridge_funcs = {
+>
+>  #ifdef CONFIG_DEBUG_FS
+>
+> +int dw_mipi_dsi_debugfs_write(void *data, u64 val)
+> +{
+> +       struct debugfs_entries *vpg = data;
+> +       struct dw_mipi_dsi *dsi;
+> +       u32 mode_cfg;
+> +
+> +       if (!vpg)
+> +               return -ENODEV;
+> +
+> +       dsi = vpg->dsi;
+> +
+> +       *vpg->reg = (bool)val;
+> +
+> +       mode_cfg = dsi_read(dsi, DSI_VID_MODE_CFG);
+> +
+> +       if (*vpg->reg)
+> +               mode_cfg |= vpg->mask;
+> +       else
+> +               mode_cfg &= ~vpg->mask;
+> +
+> +       dsi_write(dsi, DSI_VID_MODE_CFG, mode_cfg);
+> +
+> +       return 0;
+> +}
+> +
+> +int dw_mipi_dsi_debugfs_show(void *data, u64 *val)
+> +{
+> +       struct debugfs_entries *vpg = data;
+> +
+> +       if (!vpg)
+> +               return -ENODEV;
+> +
+> +       *val = *vpg->reg;
+> +
+> +       return 0;
+> +}
+> +
+> +DEFINE_DEBUGFS_ATTRIBUTE(fops_x32, dw_mipi_dsi_debugfs_show,
+> +                        dw_mipi_dsi_debugfs_write, "%llu\n");
+> +
+> +static void debugfs_create_files(void *data)
+> +{
+> +       struct dw_mipi_dsi *dsi = data;
+> +       struct debugfs_entries debugfs[] = {
+> +               REGISTER(vpg, VID_MODE_VPG_ENABLE, dsi),
+> +               REGISTER(vpg_horizontal, VID_MODE_VPG_HORIZONTAL, dsi),
+> +               REGISTER(vpg_ber_pattern, VID_MODE_VPG_MODE, dsi),
+> +       };
+> +       int i;
+> +
+> +       dsi->debugfs_vpg = kmalloc(sizeof(debugfs), GFP_KERNEL);
+> +       if (!dsi->debugfs_vpg)
+> +               return;
+> +
+> +       memcpy(dsi->debugfs_vpg, debugfs, sizeof(debugfs));
+> +
+> +       for (i = 0; i < ARRAY_SIZE(debugfs); i++)
+> +               debugfs_create_file(dsi->debugfs_vpg[i].name, 0644,
+> +                                   dsi->debugfs, &dsi->debugfs_vpg[i],
+> +                                   &fops_x32);
+> +}
+> +
+>  static void dw_mipi_dsi_debugfs_init(struct dw_mipi_dsi *dsi)
+>  {
+>         dsi->debugfs = debugfs_create_dir(dev_name(dsi->dev), NULL);
+> @@ -969,14 +1052,13 @@ static void dw_mipi_dsi_debugfs_init(struct dw_mipi_dsi *dsi)
+>                 return;
+>         }
+>
+> -       debugfs_create_bool("vpg", 0660, dsi->debugfs, &dsi->vpg);
+> -       debugfs_create_bool("vpg_horizontal", 0660, dsi->debugfs,
+> -                           &dsi->vpg_horizontal);
+> +       debugfs_create_files(dsi);
+>  }
+>
+>  static void dw_mipi_dsi_debugfs_remove(struct dw_mipi_dsi *dsi)
+>  {
+>         debugfs_remove_recursive(dsi->debugfs);
+> +       kfree(dsi->debugfs_vpg);
+>  }
+>
+>  #else
+> --
+> 2.7.4
+>
