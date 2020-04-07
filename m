@@ -2,120 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF751A082B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50161A0836
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727805AbgDGHW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:22:29 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:37171 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727635AbgDGHW1 (ORCPT
+        id S1727699AbgDGHZw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 03:25:52 -0400
+Received: from mail.fireflyinternet.com ([109.228.58.192]:60584 "EHLO
+        fireflyinternet.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726591AbgDGHZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 03:22:27 -0400
-Received: by mail-ed1-f65.google.com with SMTP id de14so2776356edb.4;
-        Tue, 07 Apr 2020 00:22:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2R+3gjNy0SnBLUw5qWy9RI2DQvlFhSy+vrS7w50bWE4=;
-        b=m8+AAhZiJIL9VNZQZombf4JhXv8ni3nKHXgrxcFEKM31ImIKDSZXbPIM0bizOmwh1c
-         IZ7LNpGPGt6gX0+w+CS9Km3WDJSLymYlWDzfIDHvWmWqv1q0MbCC3RTt74xthYrYkMyZ
-         csIm0cd0QwZuyKLqckQzlkuDRTC7QINss+NeX2kQ0palKv6jagXuwvKzuSNJ3EvBxsug
-         g1h5Ck+S74owN1qpwENEaKbfwiuZn9IUeguOypRRvMWCwbb/Ly3QugamAzDxSvPwTl+S
-         OJWvceqU+HKdZ4NEX3gyNcQ3ds9GukfDjQr9cdmdohUCTLzBY/8fG1VLiWabAJKpkhc4
-         tupg==
-X-Gm-Message-State: AGi0PuY6STpJdp8e1MKVRje0egafGEesjYcrXPNzKc6Rjn72pa+uZEw8
-        jnClWoWJx0oz21tYyxLQm6o=
-X-Google-Smtp-Source: APiQypIAGwgfjaRfHihsJeJ737ZyX6DGCobU8BkZcdk7Gc5hUQmvmBkfIOK6sewJ+lnv4/IXbMKBwg==
-X-Received: by 2002:a50:9b58:: with SMTP id a24mr759017edj.353.1586244144485;
-        Tue, 07 Apr 2020 00:22:24 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.125])
-        by smtp.googlemail.com with ESMTPSA id qu11sm230130ejb.12.2020.04.07.00.22.23
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 07 Apr 2020 00:22:23 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 09:22:21 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Hyunki Koo <hyunki00.koo@samsung.com>, gregkh@linuxfoundation.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH v6 2/2] tty: samsung_tty: 32-bit access for TX/RX hold
- registers
-Message-ID: <20200407072221.GA18236@kozik-lap>
-References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
- <CGME20200406230902epcas2p19a8df6805dac59968d664efb9bc9419b@epcas2p1.samsung.com>
- <20200406230855.13772-1-hyunki00.koo@samsung.com>
- <62a918df-b3ba-21f4-b3ad-9f638ad104ad@suse.com>
- <20200407062439.GA21995@kozik-lap>
- <257f278b-ce96-4cfb-85ff-53e123a076f5@suse.cz>
+        Tue, 7 Apr 2020 03:25:52 -0400
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 20823561-1500050 
+        for multiple; Tue, 07 Apr 2020 08:24:27 +0100
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <257f278b-ce96-4cfb-85ff-53e123a076f5@suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200407072047.GA18532@amd.ucw.cz>
+References: <20200407072047.GA18532@amd.ucw.cz>
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Pavel Machek <pavel@ucw.cz>, airlied@redhat.com,
+        intel-gfx@lists.freedesktop.org, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com,
+        kernel list <linux-kernel@vger.kernel.org>,
+        matthew.auld@intel.com, rodrigo.vivi@intel.com
+Subject: Re: Linus, please revert 7dc8f11437: regression in 5.7-rc0, hangs while attempting to run X
+Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com
+Message-ID: <158624426770.4794.6070200474948860768@build.alporthouse.com>
+User-Agent: alot/0.8.1
+Date:   Tue, 07 Apr 2020 08:24:27 +0100
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 08:32:56AM +0200, Jiri Slaby wrote:
-> On 07. 04. 20, 8:24, Krzysztof Kozlowski wrote:
-> > On Tue, Apr 07, 2020 at 06:49:29AM +0200, Jiri Slaby wrote:
-> >> On 07. 04. 20, 1:08, Hyunki Koo wrote:
-> >>> Support 32-bit access for the TX/RX hold registers UTXH and URXH.
-> >>>
-> >>> This is required for some newer SoCs.
-> >>>
-> >>> Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
-> >> ...
-> >>> ---
-> >>>  drivers/tty/serial/samsung_tty.c | 76 +++++++++++++++++++++++++++++++++-------
-> >>>  1 file changed, 64 insertions(+), 12 deletions(-)
-> >>>
-> >>> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> >>> index 73f951d65b93..bdf1d4d12cb1 100644
-> >>> --- a/drivers/tty/serial/samsung_tty.c
-> >>> +++ b/drivers/tty/serial/samsung_tty.c
-> >>> @@ -154,12 +154,47 @@ struct s3c24xx_uart_port {
-> >> ...
-> >>> -#define wr_regb(port, reg, val) writeb_relaxed(val, portaddr(port, reg))
-> >>> +static void wr_reg(struct uart_port *port, u32 reg, u32 val)
-> >>> +{
-> >>> +	switch (port->iotype) {
-> >>> +	case UPIO_MEM:
-> >>> +		writeb_relaxed(val, portaddr(port, reg));
-> >>> +		break;
-> >>> +	case UPIO_MEM32:
-> >>> +		writel_relaxed(val, portaddr(port, reg));
-> >>> +		break;
-> >>> +	}
-> >>> +}
-> >>> +
-> >>>  #define wr_regl(port, reg, val) writel_relaxed(val, portaddr(port, reg))
-> >>>  
-> >>> +static void wr_reg_barrier(struct uart_port *port, u32 reg, u32 val)
-> >>
-> >> You need to explain, why you need this _barrier variant now. This change
-> >> should be done in a separate patch too.
-> > 
-> > There is no functional change in regard of barrier.  The ordered IO was
-> > used there before.
+Quoting Pavel Machek (2020-04-07 08:20:47)
 > 
-> The patch changes one wr_reg to wr_reg_barrier without any explanation.
-> This will hardly be accepted.
+> On Fri 2020-04-03 15:00:31, Pavel Machek wrote:
+> > Hi!
+> > 
+> > 7dc8f1143778a35b190f9413f228b3cf28f67f8d
+> > 
+> >     drm/i915/gem: Drop relocation slowpath
+> >     
+> >     Since the relocations are no longer performed under a global
+> >     struct_mutex, or any other lock, that is also held by pagefault handlers,
+> >     we can relax and allow our fast path to take a fault. As we no longer
+> >     need to abort the fast path for lock avoidance, we no longer need the
+> >     slow path handling at all.
+> > 
+> > causes regression on thinkpad x220: instead of starting X, I'm looking
+> > at blinking cursor.
+> > 
+> > Reverting the patch on too of 919dce24701f7b3 fixes things for me.
+> 
+> I have received no feedback from patch authors, and I believe we don't
+> want to break boot in -rc1 on Intel hardware... so the commit should
+> be simply reverted.
 
-I cannot find such change... I see only:
-
-@@ -2612,7 +2664,7 @@ static void samsung_early_putc(struct uart_port *port, int c)
--       writeb(c, port->membase + S3C2410_UTXH);
-+       wr_reg_barrier(port, S3C2410_UTXH, c);
-
-which is the same except 'b' -> 'b/l'.
-
-Best regards,
-Krzysztof
-
+Beyond the fix already submitted?
+-Chris
