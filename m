@@ -2,43 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C75B11A0BD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB4E1A0B38
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgDGKX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:23:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
+        id S1728752AbgDGKYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:24:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728599AbgDGKX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:23:56 -0400
+        id S1728727AbgDGKY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:24:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E5DA207FF;
-        Tue,  7 Apr 2020 10:23:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BED82074F;
+        Tue,  7 Apr 2020 10:24:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255035;
-        bh=DCZ2l5F56FR9NskugDQGc4jykl12y8rfDISYAsN/Awo=;
+        s=default; t=1586255067;
+        bh=kbZl1uDjGDqe9P85bbeC5tlO3WXKxc6I56W8sgaOY54=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CNLeEHTSTH7SgTIKt3Z4pa/o4imRZa5ia6Xt0TQ1cGvOR68kY28bjWLaqSeNTDefo
-         mcSyz3RPhUmTsVxDwteaDOYhOYmhhGHxUn1n06DQ/+RpgEP4fjZiBeik+sgiUCFRqr
-         ocFfU20gXS+AS+nrWtudrpnEtwGgstwXBMNKMmAc=
+        b=C7ZA8P+F1wM/Zwvg3hVVuKJm40PLWedTkOn6Gb9bM4HiFDN58BDqdmr03vuIvc6/+
+         p25bSMeLcnhimWz25nMI5dTdw4azOVTI7tgVlhofr4J/PmYWjizdD028qsS1uozYyu
+         LwleJr5i1bEA3hHpEKE8vWbsr5BPqk3qq1s0zS/Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, franky.lin@broadcom.com,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/36] brcmfmac: abort and release host after error
-Date:   Tue,  7 Apr 2020 12:21:47 +0200
-Message-Id: <20200407101456.184025773@linuxfoundation.org>
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.5 17/46] padata: fix uninitialized return value in padata_replace()
+Date:   Tue,  7 Apr 2020 12:21:48 +0200
+Message-Id: <20200407101501.345016605@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
-References: <20200407101454.281052964@linuxfoundation.org>
+In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
+References: <20200407101459.502593074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,55 +46,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-[ Upstream commit 863844ee3bd38219c88e82966d1df36a77716f3e ]
+[ Upstream commit 41ccdbfd5427bbbf3ed58b16750113b38fad1780 ]
 
-With commit 216b44000ada ("brcmfmac: Fix use after free in
-brcmf_sdio_readframes()") applied, we see locking timeouts in
-brcmf_sdio_watchdog_thread().
+According to Geert's report[0],
 
-brcmfmac: brcmf_escan_timeout: timer expired
-INFO: task brcmf_wdog/mmc1:621 blocked for more than 120 seconds.
-Not tainted 4.19.94-07984-g24ff99a0f713 #1
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-brcmf_wdog/mmc1 D    0   621      2 0x00000000 last_sleep: 2440793077.  last_runnable: 2440766827
-[<c0aa1e60>] (__schedule) from [<c0aa2100>] (schedule+0x98/0xc4)
-[<c0aa2100>] (schedule) from [<c0853830>] (__mmc_claim_host+0x154/0x274)
-[<c0853830>] (__mmc_claim_host) from [<bf10c5b8>] (brcmf_sdio_watchdog_thread+0x1b0/0x1f8 [brcmfmac])
-[<bf10c5b8>] (brcmf_sdio_watchdog_thread [brcmfmac]) from [<c02570b8>] (kthread+0x178/0x180)
+  kernel/padata.c: warning: 'err' may be used uninitialized in this
+    function [-Wuninitialized]:  => 539:2
 
-In addition to restarting or exiting the loop, it is also necessary to
-abort the command and to release the host.
+Warning is seen only with older compilers on certain archs.  The
+runtime effect is potentially returning garbage down the stack when
+padata's cpumasks are modified before any pcrypt requests have run.
 
-Fixes: 216b44000ada ("brcmfmac: Fix use after free in brcmf_sdio_readframes()")
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Cc: Brian Norris <briannorris@chromium.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: franky.lin@broadcom.com
-Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Simplest fix is to initialize err to the success value.
+
+[0] http://lkml.kernel.org/r/20200210135506.11536-1-geert@linux-m68k.org
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: bbefa1dd6a6d ("crypto: pcrypt - Avoid deadlock by using per-instance padata queues")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/padata.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index a935993a3c514..d43247a95ce53 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-@@ -1934,6 +1934,8 @@ static uint brcmf_sdio_readframes(struct brcmf_sdio *bus, uint maxframes)
- 			if (brcmf_sdio_hdparse(bus, bus->rxhdr, &rd_new,
- 					       BRCMF_SDIO_FT_NORMAL)) {
- 				rd->len = 0;
-+				brcmf_sdio_rxfail(bus, true, true);
-+				sdio_release_host(bus->sdiodev->func1);
- 				brcmu_pkt_buf_free_skb(pkt);
- 				continue;
- 			}
+diff --git a/kernel/padata.c b/kernel/padata.c
+index fda7a7039422d..7bd37dd9ec55b 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -516,7 +516,7 @@ static int padata_replace(struct padata_instance *pinst)
+ {
+ 	int notification_mask = 0;
+ 	struct padata_shell *ps;
+-	int err;
++	int err = 0;
+ 
+ 	pinst->flags |= PADATA_RESET;
+ 
 -- 
 2.20.1
 
