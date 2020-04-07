@@ -2,121 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 770901A0C8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A1F1A0C61
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbgDGLLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:11:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:24170 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728458AbgDGLKz (ORCPT
+        id S1728374AbgDGLBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:01:18 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:54461 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgDGLBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:10:55 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 037B4bhr060603
-        for <linux-kernel@vger.kernel.org>; Tue, 7 Apr 2020 07:10:54 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 308eu86aec-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:10:53 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <imbrenda@linux.ibm.com>;
-        Tue, 7 Apr 2020 12:10:29 +0100
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (9.149.109.195)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 7 Apr 2020 12:10:26 +0100
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 037BAmfi60620846
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Apr 2020 11:10:48 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE219A405B;
-        Tue,  7 Apr 2020 11:10:47 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72C43A4054;
-        Tue,  7 Apr 2020 11:10:47 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.8.150])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Apr 2020 11:10:47 +0000 (GMT)
-Date:   Tue, 7 Apr 2020 13:00:13 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] KVM: s390: vsie: Fix delivery of addressing
- exceptions
-In-Reply-To: <20200403153050.20569-3-david@redhat.com>
-References: <20200403153050.20569-1-david@redhat.com>
-        <20200403153050.20569-3-david@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 7 Apr 2020 07:01:17 -0400
+Received: by mail-wm1-f66.google.com with SMTP id h2so1281101wmb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 04:01:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7e9JekbMjRN4qPP6TudcyC7igTWSIzN2Q0/JhAQisHk=;
+        b=duiM5LY4uZHmex4Jt6wly7w4b8nz+kynRNmoYgzVHI2ALnmCS9o3l7eRxd0wjBwdyV
+         gbkolDuuheNfRxLCT24aNDLzV/Z2m9v70GkrEG6cWYU0/omnLSKHNfvfTG3gwej2D9H1
+         4f+gjsxAGivrRr9lb70weK10C4ni2WemjUf5V1iDy6Xawp2sdtat5DSgNf5panWRyt0h
+         rcRw1t4IDFCYct9gfq/Dnia8VNNMyQfOAST2/TqQExF+77UzzScDP5wRwIrk4ShggYV6
+         BAymg2P98k6WxZdHTpRYAoZipthquxivlmzUzDPOKHxUvbZk35ywy5kODtjk+5RLjD56
+         A1ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7e9JekbMjRN4qPP6TudcyC7igTWSIzN2Q0/JhAQisHk=;
+        b=WI2tR+7K8bOjcnG6TuVjB/dSxT0VT+DnWXW2K7tyVU3Lsj2hU65kFhN9VOaCE5BNky
+         T03Kq7fVjCibXxwYaJ4AqtTcDzB8FnRZG7U0Y5c73eBVcCSdERxWhMB1yQ7BuXShK8A5
+         tyk5Z/nFxNRO+wN8SxterjBFCqG402EQwQdmTCzsrAMDtevHtcfWzu2ncOJyF6D90Qe7
+         gOwnAQPqdEJuRDhF6tUE7qYsYxOA/1rAaRddgy7Gcz3zwmoznwJwe0xNiFxgno8LtwdG
+         z8A+2kwQcbdzzyfvKOYI28K8dsPSH0y0DEXrbqx7s8SyZb9A30ZlLUZBgCalzeNSsJtO
+         xKcA==
+X-Gm-Message-State: AGi0Pubb7a0dniL2/Kaj5PrwqTrS6stqVDOExU+J4v+azKpFHyWqRDbP
+        XViCiPuFSBfLgM/3X1XoFMK/oiRBkms=
+X-Google-Smtp-Source: APiQypJpn4ESFTAnvOZvBKGgLWqORpMqhwZ+ndImgbUVp841Jgn4bvs28o6JGa3FczBgoHt12e4o+A==
+X-Received: by 2002:a1c:2489:: with SMTP id k131mr1905062wmk.86.1586257275550;
+        Tue, 07 Apr 2020 04:01:15 -0700 (PDT)
+Received: from myrica ([2001:171b:226b:54a0:6097:1406:6470:33b5])
+        by smtp.gmail.com with ESMTPSA id u16sm30205510wro.23.2020.04.07.04.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 04:01:14 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 13:01:07 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>
+Subject: Re: [PATCH 03/10] iommu/ioasid: Introduce per set allocation APIs
+Message-ID: <20200407110107.GA285264@myrica>
+References: <1585158931-1825-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1585158931-1825-4-git-send-email-jacob.jun.pan@linux.intel.com>
+ <20200401134745.GE882512@myrica>
+ <20200406130245.690cfe15@jacob-builder>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20040711-4275-0000-0000-000003BB444E
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20040711-4276-0000-0000-000038D0A4AD
-Message-Id: <20200407130013.2898fb57@p-imbrenda>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-07_03:2020-04-07,2020-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 malwarescore=0
- clxscore=1015 priorityscore=1501 impostorscore=0 spamscore=0
- mlxlogscore=999 suspectscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004070091
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200406130245.690cfe15@jacob-builder>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  3 Apr 2020 17:30:47 +0200
-David Hildenbrand <david@redhat.com> wrote:
+On Mon, Apr 06, 2020 at 01:02:45PM -0700, Jacob Pan wrote:
+> > > +	sdata = kzalloc(sizeof(*sdata), GFP_KERNEL);
+> > > +	if (!sdata)
+> > > +		return -ENOMEM;  
+> > 
+> > I don't understand why we need this structure at all, nor why we need
+> > the SID. Users have already allocated an ioasid_set, so why not just
+> > stick the content of ioasid_set_data in there, and pass the
+> > ioasid_set pointer to ioasid_alloc()?
+> > 
+> 
+> My thinking was that ioasid_set is an opaque user token, e.g. we use mm
+> to identify a common set belong to a VM.
+> 
+> This sdata is an IOASID internal structure for managing & servicing per
+> set data. If we let user fill in the content, some of the entries need
+> to be managed by the IOASID code under a lock.
 
-> Whenever we get an -EFAULT, we failed to read in guest 2 physical
-> address space. Such addressing exceptions are reported via a program
-> intercept to the nested hypervisor.
-> 
-> We faked the intercept, we have to return to guest 2. Instead, right
-> now we would be returning -EFAULT from the intercept handler,
-> eventually crashing the VM.
-> 
-> Addressing exceptions can only happen if the g2->g3 page tables
-> reference invalid g2 addresses (say, either a table or the final page
-> is not accessible - so something that basically never happens in sane
-> environments.
-> 
-> Identified by manual code inspection.
-> 
-> Fixes: a3508fbe9dc6 ("KVM: s390: vsie: initial support for nested
-> virtualization") Cc: <stable@vger.kernel.org> # v4.8+
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  arch/s390/kvm/vsie.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
-> index 076090f9e666..4f6c22d72072 100644
-> --- a/arch/s390/kvm/vsie.c
-> +++ b/arch/s390/kvm/vsie.c
-> @@ -1202,6 +1202,7 @@ static int vsie_run(struct kvm_vcpu *vcpu,
-> struct vsie_page *vsie_page) scb_s->iprcc = PGM_ADDRESSING;
->  		scb_s->pgmilc = 4;
->  		scb_s->gpsw.addr = __rewind_psw(scb_s->gpsw, 4);
-> +		rc = 1;
->  	}
->  	return rc;
->  }
+We don't have to let users fill the content. A bit like iommu_domain:
+device drivers don't modify it, they pass it to iommu_map() rather than
+passing a domain ID.
 
-so, the reason why we never noticed this issue before is simply that
-nobody tried running a misbehaving nested guest?
+> IMO, not suitable to let user allocate and manage.
+> 
+> Perhaps we should rename struct ioasid_set to ioasid_set_token?
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Is the token actually used anywhere?  As far as I can tell VFIO does its
+own uniqueness check before calling ioasid_alloc_set(), and consumers of
+notifications don't read the token.
 
+> 
+> /**
+>  * struct ioasid_set_data - Meta data about ioasid_set
+>  *
+>  * @token:	Unique to identify an IOASID set
+>  * @xa:		XArray to store ioasid_set private ID to
+> system-wide IOASID
+>  *		mapping
+>  * @max_id:	Max number of IOASIDs can be allocated within the set
+>  * @nr_id	Number of IOASIDs allocated in the set
+>  * @sid		ID of the set
+>  */
+> struct ioasid_set_data {
+> 	struct ioasid_set *token;
+> 	struct xarray xa;
+> 	int size;
+> 	int nr_ioasids;
+> 	int sid;
+> 	struct rcu_head rcu;
+> };
+
+How about we remove the current ioasid_set, call this structure ioasid_set
+instead of ioasid_set_data, and have ioasid_alloc_set() return it, rather
+than requiring users to allocate the ioasid_set themselves?
+
+	struct ioasid_set *ioasid_alloc_set(ioasid_t quota):
+
+This way ioasid_set is opaque to users (we could have the definition in
+ioasid.c), but it can be passed to ioasid_alloc() and avoids the lookup by
+SID. Could also add the unique token as a void * argument to
+ioasid_alloc_set(), if needed.
+
+Thanks,
+Jean
