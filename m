@@ -2,247 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA5C1A162D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:48:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915471A1669
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgDGTsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 15:48:00 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46998 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgDGTsA (ORCPT
+        id S1727797AbgDGUCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:02:30 -0400
+Received: from mx0b-00183b01.pphosted.com ([67.231.157.42]:48584 "EHLO
+        mx0a-00183b01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727109AbgDGUC3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 15:48:00 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 037JlukC027693;
-        Tue, 7 Apr 2020 14:47:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1586288876;
-        bh=G0g/ujhbkCn0w978vN5Cpx5M/lHsfzHDsD90bCOEhFc=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=L9Zrev1zbKsuw5Psd7V23JxRSG9T1ud4mvNbSiMT/I1eSOo4lx5FDldrYfeDq2LeO
-         vh7pUbZFvFePYXNjJrUI/MEraqMwjIlQzyRqVYuRzIv/3VT2vuRv9++N6E8w0VNYC0
-         b7gVUg76tNYvncWoHToX5+mO/49QG+xHvfoxKNg8=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 037JluNR099348
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 7 Apr 2020 14:47:56 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Tue, 7 Apr
- 2020 14:47:56 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Tue, 7 Apr 2020 14:47:56 -0500
-Received: from [10.250.86.212] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 037JluJf016510;
-        Tue, 7 Apr 2020 14:47:56 -0500
-Subject: Re: [PATCH v2 1/2] remoteproc: fall back to using parent memory pool
- if no dedicated available
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic Pallardy <loic.pallardy@st.com>,
-        Tero Kristo <t-kristo@ti.com>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200319162321.20632-1-s-anna@ti.com>
- <20200319162321.20632-2-s-anna@ti.com> <20200325203812.GA9384@xps15>
- <207036a8-b34e-6311-5ad6-3289eb9f7a06@ti.com>
- <CANLsYkzU79LDVWO=wtoOY-=iW0a4EUf5sruwWicyj+2EAFZ4rg@mail.gmail.com>
- <592f2ed1-7833-d4f1-2894-d2300b9cc9dc@st.com>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <6287a462-6261-8b79-ae30-762c30487bb5@ti.com>
-Date:   Tue, 7 Apr 2020 14:47:55 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Tue, 7 Apr 2020 16:02:29 -0400
+X-Greylist: delayed 809 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 16:02:28 EDT
+Received: from pps.filterd (m0059811.ppops.net [127.0.0.1])
+        by mx0b-00183b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 037JbQK5019294;
+        Tue, 7 Apr 2020 13:48:54 -0600
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2104.outbound.protection.outlook.com [104.47.55.104])
+        by mx0b-00183b01.pphosted.com with ESMTP id 306mruf642-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 13:48:53 -0600
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b1EtLp0TH80X03l9k+oXTTzYtkvLzhyAL0qSr+CVhVPemdth3DhSC3FWMuFQgFC+H8qQ3QRrayYqyM/hvQ1cRpLYIuVri8ABBeJ8EAw4DtUxPLCD0boF8PiKPBvRYDV2h03Qk/DxoBJk22WZSUDcUJ+/uXWTCotfpy+lpAFnQh9nUzbDb0DghIDf4pD7c2Tbl3zG999yiBgGUg5k5AWTNQyu17iHapj8G69Kk2rlZbEAUwg/RXoyE765FwW8alLvQ3MHvxJKOQhXglq1BOusMmelpVlVMOBszuJRB4KGYXfmrt54MmzbJEzJ//tm/owlV2k4faWWBpkrMn0A2fga6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W0UK76TzFgOA2iUOqqcPQ4wXkAo1pJXh80+LEJ7aalo=;
+ b=GZDKnilbWEOuO9RIMn/kpLQBAuUGsaNPHBh94eSnwu6T0+cX49U9fXqrVPr92RlahUF+SIaGuZIn4vQYtb0meV3Pz3mpmwt+cDMUIjGUVzK2TKwbTbHEuPbqgBEqExHddnZY82pIz/NscTOUhAclBTG7DZMf5NeF+hx0QSRsbE/71kmQ64k2HsC0ebD3ilQav0/ii39NelTyzWTbcZghs+Uvk+mcUr+SamZdqhAK0MJ3ubvQO6G1rSQKRvnOSnB24y9R1gFwNpUkVAH1AtvGYD5DKvUvYiSQkgCYUjEGp4JjrP2HJrCTmUGFS+BPYIlJan/4SuY13vPdYS+ib2V08g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=quantenna.com; dmarc=pass action=none
+ header.from=quantenna.com; dkim=pass header.d=quantenna.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quantenna.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W0UK76TzFgOA2iUOqqcPQ4wXkAo1pJXh80+LEJ7aalo=;
+ b=AJrvRgyVN1cj20kl4NI3Cpueq7/VvIvaB1fnXwMVnL6YdHxhgKp6FwUbpOnfrOsukvfX/BfF7WoeEqSPDiAYF6As/I+4z8Et32TzOEUW/h7Khki1iQ6wH4KAKPma6UMUsj9H3f+63IK9pU4gSx3/a81htssGgdwRYGCpvtblRcc=
+Received: from BN3PR05MB2641.namprd05.prod.outlook.com
+ (2a01:111:e400:7bb9::24) by BN3PR05MB2658.namprd05.prod.outlook.com
+ (2a01:111:e400:7bb5::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.13; Tue, 7 Apr
+ 2020 19:48:52 +0000
+Received: from BN3PR05MB2641.namprd05.prod.outlook.com
+ ([fe80::a0b8:50f4:2701:4ecf]) by BN3PR05MB2641.namprd05.prod.outlook.com
+ ([fe80::a0b8:50f4:2701:4ecf%4]) with mapi id 15.20.2900.012; Tue, 7 Apr 2020
+ 19:48:52 +0000
+Received: from CY4PR05MB3558.namprd05.prod.outlook.com (2603:10b6:910:53::39)
+ by CY4PR05MB3046.namprd05.prod.outlook.com (2603:10b6:903:f3::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.13; Tue, 7 Apr
+ 2020 19:48:20 +0000
+Received: from CY4PR05MB3558.namprd05.prod.outlook.com
+ ([fe80::c886:d658:a1c4:1f6a]) by CY4PR05MB3558.namprd05.prod.outlook.com
+ ([fe80::c886:d658:a1c4:1f6a%7]) with mapi id 15.20.2900.012; Tue, 7 Apr 2020
+ 19:48:20 +0000
+Date:   Tue, 7 Apr 2020 22:48:13 +0300
+From:   Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC:     imitsyanko@quantenna.com, avinashp@quantenna.com,
+        smatyukevich@quantenna.com, kvalo@codeaurora.org,
+        davem@davemloft.net, huangfq.daxian@gmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] qtnfmac: Simplify code in _attach functions
+Message-ID: <20200407194812.aziu2hedsfkwh7lg@bars>
+Mail-Followup-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        imitsyanko@quantenna.com, avinashp@quantenna.com,
+        smatyukevich@quantenna.com, kvalo@codeaurora.org,
+        davem@davemloft.net, huangfq.daxian@gmail.com,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20200407193233.9439-1-christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407193233.9439-1-christophe.jaillet@wanadoo.fr>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-ClientProxiedBy: AM6P194CA0086.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:209:8f::27) To CY4PR05MB3558.namprd05.prod.outlook.com
+ (2603:10b6:910:53::39)
 MIME-Version: 1.0
-In-Reply-To: <592f2ed1-7833-d4f1-2894-d2300b9cc9dc@st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from bars (195.182.157.78) by AM6P194CA0086.EURP194.PROD.OUTLOOK.COM (2603:10a6:209:8f::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16 via Frontend Transport; Tue, 7 Apr 2020 19:48:17 +0000
+X-Originating-IP: [195.182.157.78]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 12bfffd6-f00f-4ec0-c110-08d7db2c9fce
+X-MS-TrafficTypeDiagnostic: CY4PR05MB3046:|BN3PR05MB2658:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CY4PR05MB3046DCAA18E799701E5FB7FAA3C30@CY4PR05MB3046.namprd05.prod.outlook.com>
+X-Moderation-Data: 4/7/2020 7:48:49 PM
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-Forefront-PRVS: 036614DD9C
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN3PR05MB2641.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(366004)(6666004)(9576002)(66556008)(66946007)(5660300002)(9686003)(66476007)(956004)(4326008)(2906002)(33716001)(52116002)(1076003)(6496006)(6916009)(26005)(81166006)(8936002)(498600001)(81156014)(186003)(8676002)(16526019)(558084003)(55016002)(86362001);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: quantenna.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9mRMJKhpJ5OqXETYBMKnc3FwU6jgMZdIB/OT12E362akRA7E+6zfS9zPX+UXZDVu5fvoMY/6jA2n4BXzxZ8mOnB2Ff/6uN3RrRnCEH9SQQqCSHYoC5VSwS32tl9mDL9OSBYCF+UflH6vRh7Y1qwiC6U2btLRRrCgPHUtAccmQGrglf1ROG6kOltaftNsJsg3n50ao0E6oVSjJDQj9I935pG2DiOz7btlK/bP9dX6UqEr7hNkrQRdT2v9xFYmDXr5VTQxIBmGOKePKjdr7ynpXICljKkWJbw5YSWN41X91lHii/Kr4M+ygDy+hai8ZP43gD0IWkG3cY+KdHSWgu5BCGgVIRPzXlpBRwgqloeJYBhn3Cv8bg/zlGZmYLFGOuImye7fWYn2u8rv3pWk8GyLwb++I5ewNd+4WoHqXQGFzq9CnBiWf/4ldUIRNMQAN9uq
+X-MS-Exchange-AntiSpam-MessageData: HR8qq6/QVcm/qmySwRKP4tPZBvkn1MpzdJgZxRbMU+HIfPnMxRSHIvXjN1UGdP5+DltmOyOXDItnyfG7Ddi6Uv7CZsuNTGhSwd90aohYu0wGglXh0lUiwPW/S8bRn+t3BrkO2PpqkY9sDViCS819/Q==
+X-OriginatorOrg: quantenna.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12bfffd6-f00f-4ec0-c110-08d7db2c9fce
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a355dbce-62b4-4789-9446-c1d5582180ff
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j55ykmrFdXdXGxdm4Ug+8N8CAiQ7Nv+7Xsx9kdH8MsoFsPZxetfrwxB9ucWzPWh6Fm1s38nH2q0K7BNIpL4xBmgmgJCBQgkfb3d7X2XfxR06oKACtqwxEeKyltR8OsakpTDZonFQ+Fz7ulIXDBTOXJR2gjo9cs1vH01lx82pY9ivoQgpAskAvhDee5bksNWYoryRTMEYm2qtLjQaVgYBeg==
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2020 19:48:52.0354
+ (UTC)
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN3PR05MB2658
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_08:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=653
+ phishscore=0 spamscore=0 bulkscore=0 clxscore=1011 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070158
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud,
 
-On 3/30/20 7:29 AM, Arnaud POULIQUEN wrote:
+Hello Christophe,
+
+> There is no need to re-implement 'netdev_alloc_skb_ip_align()' here.
+> Keep the code simple.
 > 
-> 
-> On 3/27/20 10:09 PM, Mathieu Poirier wrote:
->> On Wed, 25 Mar 2020 at 17:39, Suman Anna <s-anna@ti.com> wrote:
->>>
->>> Hi Mathieu,
->>>
->>> On 3/25/20 3:38 PM, Mathieu Poirier wrote:
->>>> On Thu, Mar 19, 2020 at 11:23:20AM -0500, Suman Anna wrote:
->>>>> From: Tero Kristo <t-kristo@ti.com>
->>>>>
->>>>> In some cases, like with OMAP remoteproc, we are not creating dedicated
->>>>> memory pool for the virtio device. Instead, we use the same memory pool
->>>>> for all shared memories. The current virtio memory pool handling forces
->>>>> a split between these two, as a separate device is created for it,
->>>>> causing memory to be allocated from bad location if the dedicated pool
->>>>> is not available. Fix this by falling back to using the parent device
->>>>> memory pool if dedicated is not available.
->>>>>
->>>>> Fixes: 086d08725d34 ("remoteproc: create vdev subdevice with specific dma memory pool")
->>>>> Signed-off-by: Tero Kristo <t-kristo@ti.com>
->>>>> Signed-off-by: Suman Anna <s-anna@ti.com>
->>>>> ---
->>>>> v2:
->>>>>  - Address Arnaud's concerns about hard-coded memory-region index 0
->>>>>  - Update the comment around the new code addition
->>>>> v1: https://patchwork.kernel.org/patch/11422721/
->>>>>
->>>>>  drivers/remoteproc/remoteproc_virtio.c | 15 +++++++++++++++
->>>>>  include/linux/remoteproc.h             |  2 ++
->>>>>  2 files changed, 17 insertions(+)
->>>>>
->>>>> diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
->>>>> index eb817132bc5f..b687715cdf4b 100644
->>>>> --- a/drivers/remoteproc/remoteproc_virtio.c
->>>>> +++ b/drivers/remoteproc/remoteproc_virtio.c
->>>>> @@ -369,6 +369,21 @@ int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
->>>>>                              goto out;
->>>>>                      }
->>>>>              }
->>>>> +    } else {
->>>>> +            struct device_node *np = rproc->dev.parent->of_node;
->>>>> +
->>>>> +            /*
->>>>> +             * If we don't have dedicated buffer, just attempt to re-assign
->>>>> +             * the reserved memory from our parent. A default memory-region
->>>>> +             * at index 0 from the parent's memory-regions is assigned for
->>>>> +             * the rvdev dev to allocate from, and this can be customized
->>>>> +             * by updating the vdevbuf_mem_id in platform drivers if
->>>>> +             * desired. Failure is non-critical and the allocations will
->>>>> +             * fall back to global pools, so don't check return value
->>>>> +             * either.
->>>>
->>>> I'm perplex...  In the changelog it is indicated that if a memory pool is
->>>> not dedicated allocation happens from a bad location but here failure of
->>>> getting a hold of a dedicated memory pool is not critical.
->>>
->>> So, the comment here is a generic one while the bad location part in the
->>> commit description is actually from OMAP remoteproc usage perspective
->>> (if you remember the dev_warn messages we added to the memory-region
->>> parse logic in the driver).
->>
->> I can't tell... Are you referring to the comment lines after
->> of_reserved_mem_device_init() in omap_rproc_probe()?
->>
->>>
->>> Before the fixed-memory carveout support, all the DMA allocations in
->>> remoteproc core were made from the rproc platform device's DMA pool (
->>> which can be NULL). That is lost after the fixed-memory support, and
->>> they were always allocated from global DMA pools if no dedicated pools
->>> are used. After this patch, that continues to be case for drivers that
->>> still do not use any dedicated pools, while it does restore the usage of
->>> the platform device's DMA pool if a driver uses one (OMAP remoteproc
->>> falls into the latter).
->>>
->>>>
->>>>> +             */
->>>>> +            of_reserved_mem_device_init_by_idx(dev, np,
->>>>> +                                               rproc->vdevbuf_mem_id);
->>>>
->>>> I wonder if using an index setup by platform code is really the best way
->>>> forward when we already have the carveout mechanic available to us.  I see the
->>>> platform code adding a carveout that would have the same name as rproc->name.
->>>> From there in rproc_add_virtio_dev() we could have something like:
->>>>
->>>>         mem = rproc_find_carveout_by_name(rproc, "%s", rproc->name);
->>>>
->>>>
->>>> That would be very flexible, the location of the reserved memory withing the
->>>> memory-region could change without fear of breaking things and no need to add to
->>>> struct rproc.
->>>>
->>>> Let me know what you think.
->>>
->>> I think that can work as well but I feel it is lot more cumbersome. It
->>> does require every platform driver to add code adding/registering that
->>> carveout, and parse the reserved memory region etc. End of the day, we
->>> rely on DMA API and we just have to assign the region to the newly
->>> created device. The DMA pool assignment for devices using
->>> reserved-memory nodes has simply been the of_reserved_mem_device_init()
->>> function.
->>
->> Given all the things happening in the platform drivers adding and
->> registering a single carveout doesn't seem that onerous to me.   I
->> also expect setting rproc->vdevbuf_mem_id would involve some form of
->> parsing.  Lastly if a couple of platforms end up doing the same thing
->> might as well bring the code in the core, hence choosing a generic
->> name such as rproc->name for the memory region.
->>
->> At the very least I would use of_reserved_mem_device_init_by_idx(dev,
->> np, 0).  I agree it is not flexible but I'll take that over adding a
->> new field to structure rproc.
-> 
-> I wonder whether this would not introduce side effect for some legacy
-> drivers. Some rproc platforms can have a memory region defined but not
-> used for the virtio buffers which is allocated in the Linux default
-> memory pool.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-I am actually trying to restore the behavior before the separate vdev
-device creation. All allocations were coming from the rproc platform
-device's DMA pool (if assigned, otherwise will fall back to global pool).
+Thanks for cleaning this up!
 
-You have a valid point though, but are there any drivers relying on this
-today? All the usage I saw were only using of_reserved_mem_device_init()
-which is 0-indexed region by default. If this is really an issue, we can
-use -1 as a means to conditionally follow this path.
+Reviewed-by: Sergey Matyukevich <sergey.matyukevich.os@quantenna.com>
 
-> If the aim is to minimize impact in the core part, the solution i proposed
-> in V1 using rproc_of_resm_mem_entry_init seems a good default candidate too.
-> The constraint would be that the platform driver has to pre-register
-> vdev<X>buffer reserved memory associated for a max number of vdev.
-> This max would limit the number of vdev that a remote firmware can request.
-> Also not very flexible more that the index 0, as managed at platform level.
-> 
-> Having a default name or a default index seems to me a good compromise...
-> One advantage of the default name (in this case not rproc->name) is the 
-> ability to define the memory region in a resource table carveout, instead
-> of a static definition in DT.
-
-Hmm, regarding the default name, vdev rings and vdev buffers are already
-looking for specific names, right? So, what resource type are you
-envisioning for this - RSC_CARVEOUT? Wouldn't that become a separate
-allocation by itself?
-
-regards
-Suman
-
->>>>
->>>>>      }
->>>>>
->>>>>      /* Allocate virtio device */
->>>>> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
->>>>> index ed127b2d35ca..07bd73a6d72a 100644
->>>>> --- a/include/linux/remoteproc.h
->>>>> +++ b/include/linux/remoteproc.h
->>>>> @@ -481,6 +481,7 @@ struct rproc_dump_segment {
->>>>>   * @auto_boot: flag to indicate if remote processor should be auto-started
->>>>>   * @dump_segments: list of segments in the firmware
->>>>>   * @nb_vdev: number of vdev currently handled by rproc
->>>>> + * @vdevbuf_mem_id: default memory-region index for allocating vdev buffers
->>>>>   */
->>>>>  struct rproc {
->>>>>      struct list_head node;
->>>>> @@ -514,6 +515,7 @@ struct rproc {
->>>>>      bool auto_boot;
->>>>>      struct list_head dump_segments;
->>>>>      int nb_vdev;
->>>>> +    u8 vdevbuf_mem_id;
->>>>>      u8 elf_class;
->>>>>  };
->>>>>
->>>>> --
->>>>> 2.23.0
->>>>>
->>>
-
+Regards,
+Sergey
