@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C55F91A0C9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D401A0CA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728525AbgDGLNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:13:07 -0400
-Received: from sauhun.de ([88.99.104.3]:52042 "EHLO pokefinder.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728495AbgDGLNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:13:06 -0400
-Received: from localhost (p54B3320F.dip0.t-ipconnect.de [84.179.50.15])
-        by pokefinder.org (Postfix) with ESMTPSA id E3CFD2C07CD;
-        Tue,  7 Apr 2020 13:13:03 +0200 (CEST)
-Date:   Tue, 7 Apr 2020 13:13:01 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Martin Volf <martin.volf.42@gmail.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.5 42/46] i2c: i801: Do not add ICH_RES_IO_SMI for the
- iTCO_wdt device
-Message-ID: <20200407111301.GA1928@ninjato>
-References: <20200407101459.502593074@linuxfoundation.org>
- <20200407101503.858623897@linuxfoundation.org>
+        id S1728329AbgDGLOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:14:19 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:36739 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728156AbgDGLOT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 07:14:19 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k18so1129161oib.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 04:14:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6LFIhFPtPPKJ3ndghHuNkRs8YK+fMEM1IjmTl+p5MPs=;
+        b=iYuJbmqJH5abSIKPAw4GCnRAu5+28RRuPDmyExIN43517PnZYuwuzZQVcznQYuH4S9
+         w/sH3PWiCT5U8qZvhPnsyg+MoPMSaODv2i6uWnfPtk0UJjC+BtC6wmFvtokqoIWBYgQL
+         rAn3TGHsV0a+3euIpsi3s/osOOz3d9JdlmLWp4iEI4HLzWzKKB7eDfaNifA1x0g2bFRA
+         277R5KIdUUAhl9Lg2WJiCfSKp53dkkZXZrzf5nFVaQjFkBNmuYMHj+BQ3pJGkN5svyGH
+         pZJZgjNi0ooN3uB1uV4yY4ceIr1JWUmXJyEKOTjaSJ6TPbwj0+HonLGbumSmuim+ZfvW
+         GuPg==
+X-Gm-Message-State: AGi0PuZYAbRh9u/6cB8/2nbBhergwAK/8kqmdz67eBl+7VMMvTrNqKzq
+        USJfJVELf6WzdgsU77s1sWnWYqQgiYqXwpSJRnI=
+X-Google-Smtp-Source: APiQypLaq1/7PvbU+aucJpFvKxhOnhbk0dV8Qd3pppkFhUN10n44mcY0arNBmKRwHIkNZilLzSf/4/95JSUapvY/ftg=
+X-Received: by 2002:aca:4e57:: with SMTP id c84mr1165333oib.148.1586258058642;
+ Tue, 07 Apr 2020 04:14:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-In-Reply-To: <20200407101503.858623897@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200407103537.4138-1-max.krummenacher@toradex.com> <20200407103537.4138-4-max.krummenacher@toradex.com>
+In-Reply-To: <20200407103537.4138-4-max.krummenacher@toradex.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Apr 2020 13:14:07 +0200
+Message-ID: <CAMuHMdUBMwwBNhBABu-9=oz02hO2=vPkMjUyG=Q43FPTPMxJjg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: defconfig: ARCH_R8A7795: follow changed config
+ symbol name
+To:     Max Krummenacher <max.oss.09@gmail.com>
+Cc:     Max Krummenacher <max.krummenacher@toradex.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Olof Johansson <olof@lixom.net>, Li Yang <leoyang.li@nxp.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Max,
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, Apr 7, 2020 at 12:36 PM Max Krummenacher <max.oss.09@gmail.com> wrote:
+> Completes commit b925adfceb52 ("soc: renesas: Add ARCH_R8A7795[01] for
+> existing R-Car H3") and commit 361c5dbb446e ("arm64: dts: renesas:
+> Remove use of ARCH_R8A7795").
+>
+> CONFIG_ARCH_R8A7795 was split in CONFIG_ARCH_R8A77950 and
+> CONFIG_ARCH_R8A77951.
+>
+> Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
 
-Hi Greg,
+Thanks, as I was going to send a similar patch after v5.7-rc1:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> Fixes: 9424693035a5 ("i2c: i801: Create iTCO device on newer Intel PCHs")
-> [wsa: complete fix needs all of http://patchwork.ozlabs.org/project/linux-i2c/list/?series=160959&state=*]
+Gr{oetje,eeting}s,
 
-Did you pick these others, too, this time?
+                        Geert
 
-All the  best,
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-   Wolfram
-
-
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl6MYDkACgkQFA3kzBSg
-KbaEgg//cyLUYHfeQlAmqDmjH4MEtoK6Skye8nnj/KuqDHJJj4YjlWW31XUwb7LA
-S2o/6X99kLBUTlvZ4h53j0NV2xXRjDe7etUykB8TduXjUGKe3RyamU/v9wN5iFY8
-TPIEPL9U9aaYPimz28aVucE24ZY6txKdttfoH5Dq7X5nA07bqFugy8JObHu9MdRj
-Eo+71Zn253oG6g6/FTeceW6nT8foxe0QjhJKmEkPE1GG3qpb5W+E2beLP2yhAv8f
-eHPeJuqcOC8yrHFn6m8vs+ymZ/JYuA4zOvuz5VidHMujcrZlC2LjLSN/lMo4dFbs
-HAzJ214EpNW2itH16iv8cjAdombRq9IuQDCTwtVnpb39n+FA7XCHcXRlLrU7KvIb
-s2rWq0NGhU70F5hV+0cxrx7GOED0yOtAu4Ox7hv9Nw3Ydkg7umd9rwNhfbV5aZT5
-lRBtjM/789DPTI4pQf7a+w8yPqzWeEDIFf0tLN5BxmLcdEXpGDfhQOV3Bp9w+xVS
-z631G4C7o6vKVrhLFQlzVh1kVtRJGBTF3hNV0/CEWkhDd/zAIN6pWEo4Kshg2zWT
-7weoUlcCmibjAcBD3h3dzRBK6VPZ2+6Oz03LyqOPQuQbMtbpuRgy1ISgfx0VJdW4
-PPlyshcNCfN5aTMt1oQ/F5WS1tiTL1fBu3n1hemn5eFH+mbp0BM=
-=rzgb
------END PGP SIGNATURE-----
-
---RnlQjJ0d97Da+TV1--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
