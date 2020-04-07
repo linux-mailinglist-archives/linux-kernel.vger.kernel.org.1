@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1B71A184C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 00:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82921A1850
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 00:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726438AbgDGWov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 18:44:51 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:45163 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgDGWov (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 18:44:51 -0400
-Received: by mail-il1-f196.google.com with SMTP id x16so4885381ilp.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 15:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oofgp/T6AW49TxBbYkC8nWUbJk1leoz17ITw6jj2QJ0=;
-        b=FQwZ9WExx4B4zYVFH4rDo7FKhKj9DJhOj95gcRjYqZLyNBTbpmzDfbpfvFKHM2MSww
-         HwpH/AXvsxgS7kSRpBe5si9OOfyZ0zu0rgafv0v9/J/yBCnfBY1+gCELGdPEsbadZjmu
-         /x+mh7ZsLn/Cy8h9jdWhUPYtDl2XGtz0pqrRw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oofgp/T6AW49TxBbYkC8nWUbJk1leoz17ITw6jj2QJ0=;
-        b=nyrRlgFqcdICWmg3RGaeIatwT0a8EvU2/3uk0gUZKzHDbavjuNpxKxDQAYNb5OdD+x
-         p49I+GQc9xlY7qv1DlLaZurcBXCdvBz30S/Na9C+cJJzjQBk1XNyC7FniZPQbQQLqYg6
-         LG7sNNyNXPqlpBxGgZwQsv1NcNfoOycrajmtEZeT2I2N3Vmd2a9q2A5mDhsQk/jPg9An
-         JkG8a+7kFBjzRaqWEYyXSienV/ZyUOuxBACi6pMLwhdPvf8emSDkM4YU2Msbn3kufR0e
-         2gokOHM/iZx47F62GMMZEM1kjoK8GsI61gzS56BoJykhGxykIB87fcer9U2cDALCvkhh
-         xOwQ==
-X-Gm-Message-State: AGi0PuYRFmSCVgkRBX6Mc7IsGK/4BKOvspazQ8hMTD1kENXoC198cHU0
-        E8xIWymEmCfLmE5XHC9NqvwTww==
-X-Google-Smtp-Source: APiQypKOH2Yw4cE+ZWnzZZK0xkO4YQUmuivtdVtcuJdE5RMdeBIN8GbObMxVNUWhUJgnY95NNqIyuA==
-X-Received: by 2002:a05:6e02:f43:: with SMTP id y3mr5288157ilj.112.1586299490170;
-        Tue, 07 Apr 2020 15:44:50 -0700 (PDT)
-Received: from localhost.localdomain (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i4sm7315788ilq.4.2020.04.07.15.44.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 15:44:49 -0700 (PDT)
-From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     shuah@kernel.org, rong.a.chen@intel.com
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: Fix memfd test run-time regression
-Date:   Tue,  7 Apr 2020 16:44:46 -0600
-Message-Id: <20200407224446.1578-1-skhan@linuxfoundation.org>
-X-Mailer: git-send-email 2.20.1
+        id S1726467AbgDGWqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 18:46:22 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53734 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgDGWqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 18:46:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=SjTHWgdH+APmia7yev+r5og+EF8CcHtsC9+wUuc74BQ=; b=419V9ZM8i56ZctpAO/OJC4QDpJ
+        0I4aBfDHchtIoOk0LriYXrHgmMGDCm3ArG+bwNDforN1Ianmzag0VF/NfbVtBHRMnFtpauief9ioM
+        CdW5+oBd6nVNCksfES5xAY/3FuW+BnczEyKKC3fj1/LPtUhVat84eRiWUQIEcOffM1yQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jLwz1-001X61-Hq; Wed, 08 Apr 2020 00:46:15 +0200
+Date:   Wed, 8 Apr 2020 00:46:15 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Paul Spooren <mail@aparcar.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        jason@lakedaemon.net, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, daniel@makrotopia.org,
+        freifunk@adrianschmutzler.de
+Subject: Re: [PATCH 0/5] arm: dts: linksys: rename codename to model
+Message-ID: <20200407224615.GA359603@lunn.ch>
+References: <20200407210816.866084-1-mail@aparcar.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407210816.866084-1-mail@aparcar.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit d3fd949abd3e ("selftests: Fix memfd to support relocatable
-build (O=objdir)") introduced regression run-time regression with
-a change to include programs that should be run from shell scripts
-to list of programs that run as independent tests. This fix restores
-the original designation.
+On Tue, Apr 07, 2020 at 11:08:10AM -1000, Paul Spooren wrote:
+> Linksys chose to use codenames for a few of their devices and sell their
+> them under an entirely different name.
+> 
+> codename  model name
+> rango  -> wrt3200acm
+> mamba  -> wrt1900ac
+> cobra  -> wrt1900ac-v2
+> caiman -> wrt1200ac
+> shelby -> wrt1900acs
 
-Fixes: d3fd949abd3e ("selftests: Fix memfd to support relocatable build (O=objdir)")
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
----
- tools/testing/selftests/memfd/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi Paul
 
-diff --git a/tools/testing/selftests/memfd/Makefile b/tools/testing/selftests/memfd/Makefile
-index 0a15f9e23431..187b14cad00c 100644
---- a/tools/testing/selftests/memfd/Makefile
-+++ b/tools/testing/selftests/memfd/Makefile
-@@ -4,8 +4,9 @@ CFLAGS += -I../../../../include/uapi/
- CFLAGS += -I../../../../include/
- CFLAGS += -I../../../../usr/include/
- 
--TEST_GEN_PROGS := memfd_test fuse_test fuse_mnt
-+TEST_GEN_PROGS := memfd_test
- TEST_PROGS := run_fuse_test.sh run_hugetlbfs_test.sh
-+TEST_GEN_FILES := fuse_test fuse_mnt
- 
- fuse_mnt.o: CFLAGS += $(shell pkg-config fuse --cflags)
- 
--- 
-2.20.1
+There was quite a bit of discussion about this when the first board
+was added. If i remember correctly, it was Mamba.
 
+Imre Kaloz, <kaloz@openwrt.org> was the one arguing for
+the name armada-xp-linksys-mamba.dts.
+
+So it seems that openwrt.org has now come full circle?
+
+> This introduces some extra loops in OpenWrt, a distribution specialized
+> on embedded Internet facing devices, as both codename and model name are
+> used within the build system. The double naming requires developers to
+> keep track of that mapping and introduces inconsistencies:
+> 
+> To build a specific device in OpenWrt profiles are used, named after the
+> the compatible string for targets using device tree (similar to how .dts
+> files are named in the linux source tree). However, the first item of
+> the DT `compatible` list in this case is `linksys,rango`, which is
+> inconsistent with the model name and not what common users would expect.
+> 
+> Such double naming complicates currently the automatic search for
+> firmware upgrade as the build system does not support such mapping.
+> Ideally the first item of the DT `compatible` list would contain a
+> string suitable to be used as a filename recognizable by normal users to
+> belong to that device.
+
+> With this patch set the Linksys device tree files are moved from
+> containing the codename to contain a sanitized model name and also use
+> it as first entry of the DT `compatible` list.
+
+I've no problems adding another compatible to the list. But i don't
+like the idea of renaming the files. The file names could be
+considered ABI! What installers/bootloaders are you going to break by
+renaming them?
+
+	   Andrew
