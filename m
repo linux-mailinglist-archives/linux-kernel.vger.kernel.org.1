@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6971A0468
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A315A1A044D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:17:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgDGBQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 21:16:50 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:52374 "EHLO
+        id S1726689AbgDGBQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 21:16:52 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22582 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726637AbgDGBQr (ORCPT
+        by vger.kernel.org with ESMTP id S1726651AbgDGBQt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 21:16:47 -0400
+        Mon, 6 Apr 2020 21:16:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586222206;
+        s=mimecast20190719; t=1586222208;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=5TH7w/JfrvK6PO93eOn/asqSkXlWjc9e7s1Mrzet5kE=;
-        b=DItxWHo1onP01S5Mn6ZFOHKDEYzkrKZVfwBN+q9NU2DPRI3ZNa6ILEpOEQ0WiuC7LDSMLo
-        0CT//Gyx1k/RphJYy1/+ofjMYJzcl7N2ahyY7i0Lvk+eEBQVaP10Ig8COeEghzT3q/J4A2
-        3UVI7KSTJ3uP1I5SZ9sF2eQK+6TN4+w=
+        bh=cpBCN9COwU5b1SJmxmkerQbIPy9Gv4aGbfqwyHnqUyE=;
+        b=Ga1WPGqAyrZjAkdDu9C5i3pOECZAXxLMm7GoMkMsYgXI7ltPuC2nCwofQKMpb5+4Fjk9Ti
+        AEZrBGwX8e5HqyToNNp0EcYKaIeX9zm1MZSvGID/Kt5569Gv08lKs5Dvi7jo6jMJVyzggH
+        /lpXqIPgvRPvshHMUqgf1AkqmXMT5pE=
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
  [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-118-DsY_-jZdPSq48Jjq6YgwgA-1; Mon, 06 Apr 2020 21:16:45 -0400
-X-MC-Unique: DsY_-jZdPSq48Jjq6YgwgA-1
-Received: by mail-wr1-f71.google.com with SMTP id i18so848639wrx.17
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:16:45 -0700 (PDT)
+ us-mta-167-xQjstrbGMJKVV3E67wO-SA-1; Mon, 06 Apr 2020 21:16:47 -0400
+X-MC-Unique: xQjstrbGMJKVV3E67wO-SA-1
+Received: by mail-wr1-f71.google.com with SMTP id d1so856708wru.15
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:16:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=5TH7w/JfrvK6PO93eOn/asqSkXlWjc9e7s1Mrzet5kE=;
-        b=ia+Ij0d/G7QkaTm7z282xd2ys6Unzb81k6QqATd+cePydgMeFjDZyXVC/PflCG1yl5
-         fGvRLEFpQGCgyFrRr6SXMfTsfW240AtggliUtoWaN+JE70a8ipDZdwCW/fHqUymHwPbT
-         WL+YsFTCI3mn2I1YZ5NlPnO/KSMAHrDOhgRqVhW9wFVRXvJEGxqbEJzJSPNZ2tdpQmKu
-         8cnftbvpRxyiGNSC6uFpaqJxCQ8szt6BIWoQKerlMNGsUFzKMqADF5OH/eQLZnjwC08C
-         2VUKVXO2IxCDYNVfgfz+9VEI31Q+pgYhXjVFYJMeAOxscw5WkgeD75Ptx4+b0kOrD84j
-         qGmA==
-X-Gm-Message-State: AGi0PuYmEc0HCf2keuhT/EefXr1BzbDAhwwe4t04TJMC4yGuFNY7Ogk5
-        Op+QbbOmj89Yf0DHhxKwM/yUohA4tfGpvADBj+0nWBrJmO/K4Q5p1F4bCvqqp+JFVqV7gR4G44t
-        Ll1LDuZBWjPpnzd2HPIUCqpTN
-X-Received: by 2002:adf:f8c1:: with SMTP id f1mr2102831wrq.345.1586222204018;
-        Mon, 06 Apr 2020 18:16:44 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIUKx/E68FBj3d4XOQ00hcyXYBl/67P8FPYE2YoFyXU7fFCF05zzALyhpIqvei+4TT7JQeC9g==
-X-Received: by 2002:adf:f8c1:: with SMTP id f1mr2102818wrq.345.1586222203824;
-        Mon, 06 Apr 2020 18:16:43 -0700 (PDT)
+        bh=cpBCN9COwU5b1SJmxmkerQbIPy9Gv4aGbfqwyHnqUyE=;
+        b=lKVUIE7UDdv0tjPbH+nZgf7l0C8mIJDxXVqJTC0X15LiehhD00nFbCNmghuYPm2B4A
+         u9O3tet9eCTTSmeYGg2JgRL8rUItLCwaO9v9W1J1RuheDUaz0+jhjkCgn8Z0MRBQ7a4U
+         spTSDORPJYkdP8vgq2Hl4icSNw5VpjfWq1HiKlIxmBQF0QBwLO6OEYDEtP5SBaGHuSd7
+         ftZZZl6R9RVzOJHWYcLn1mrSCWciLSfB9iD+n1335yc3ngUkpA/oZESLU/Yzu0RSRVBD
+         TszTzjd58PIjMMWGzNHYCtjgn1wTRwMT1ZwFyVhhse7n/Htu34AkdY3Bu4jyRU78vL6D
+         vB0Q==
+X-Gm-Message-State: AGi0PuYPAsOR1zELXrzDBN8LZNoFd5XhAw7MYPbeS53//cMJvE9nsphQ
+        qSyPnSznjX1IzFqRJINiO4hog89MMo7BQuqEAj2lGOQ7Aw2eMA7r3GGuRswDbVetxfA3QNE1pFF
+        nSddu+0N9CRiMrkeVm+kjbX/S
+X-Received: by 2002:a05:600c:20c6:: with SMTP id y6mr673325wmm.131.1586222206035;
+        Mon, 06 Apr 2020 18:16:46 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKsYIs3Qr5PkXmap2E0hCjkxv5++0RLSpqWIlZfkMmuv1j2DVhSfHZ98voqjkQnNwsmVYs5Tg==
+X-Received: by 2002:a05:600c:20c6:: with SMTP id y6mr673314wmm.131.1586222205877;
+        Mon, 06 Apr 2020 18:16:45 -0700 (PDT)
 Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id o67sm136301wmo.5.2020.04.06.18.16.42
+        by smtp.gmail.com with ESMTPSA id s66sm98326wme.40.2020.04.06.18.16.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 18:16:43 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 21:16:42 -0400
+        Mon, 06 Apr 2020 18:16:45 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 21:16:44 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-remoteproc@vger.kernel.org
-Subject: [PATCH v8 07/19] remoteproc: pull in slab.h
-Message-ID: <20200407011612.478226-8-mst@redhat.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH v8 08/19] virtio_input: pull in slab.h
+Message-ID: <20200407011612.478226-9-mst@redhat.com>
 References: <20200407011612.478226-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -75,21 +75,21 @@ this module is using it.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/remoteproc/remoteproc_sysfs.c | 1 +
+ drivers/virtio/virtio_input.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
-index 7f8536b73295..52b871327b55 100644
---- a/drivers/remoteproc/remoteproc_sysfs.c
-+++ b/drivers/remoteproc/remoteproc_sysfs.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/remoteproc.h>
+diff --git a/drivers/virtio/virtio_input.c b/drivers/virtio/virtio_input.c
+index 5ae529671b3d..efaf65b0f42d 100644
+--- a/drivers/virtio/virtio_input.c
++++ b/drivers/virtio/virtio_input.c
+@@ -3,6 +3,7 @@
+ #include <linux/virtio.h>
+ #include <linux/virtio_config.h>
+ #include <linux/input.h>
 +#include <linux/slab.h>
  
- #include "remoteproc_internal.h"
- 
+ #include <uapi/linux/virtio_ids.h>
+ #include <uapi/linux/virtio_input.h>
 -- 
 MST
 
