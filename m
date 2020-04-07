@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DA41A0B53
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32CD1A0BA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728954AbgDGKZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35978 "EHLO mail.kernel.org"
+        id S1729130AbgDGK0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:26:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728942AbgDGKZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:25:25 -0400
+        id S1728557AbgDGK0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:26:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5CE5A2074F;
-        Tue,  7 Apr 2020 10:25:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D1D2B20644;
+        Tue,  7 Apr 2020 10:26:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255124;
-        bh=ojqA7GJty1sXsLltzpUdgQpF8D6qRE1HTnadQNXvzSo=;
+        s=default; t=1586255178;
+        bh=HqEmlzxufOwa6YagG4mTNMv27CCEvyFSPzld7zaEp8o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fldE7JfG2QJil7Qyh3Ih7CAdaiL0M/TMOJMifiQvPGOUmuqot9aqG/tnyI9fZ/my3
-         00Bwqoe3qvBbd5Sjx9Kf7wbj/8NHZrK1k0H2nCnkQsTwjTKZ2pmWlMMJXqatx2IHzP
-         N0ZJYNJOSqihfZneSFEE4smi/IOTFqedPGZIO8Xg=
+        b=pTjzTp7Jc+Ml7yEiE98yPFTQiSJCQTp+t0cORw+Z+Ggu7gJ1eJao9ZFDKNaUVkNPX
+         +mw3ajeqYC8QeJcg/A55F4WVY+SrXHL/iw0H648YBbRqKONR/3O7sNXn1Wd9ldhPcy
+         ER2sEzMJonhKuAplEObjL+9sKcJEoymQGduTY1vU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Pirko <jiri@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.5 40/46] sched: act: count in the size of action flags bitfield
-Date:   Tue,  7 Apr 2020 12:22:11 +0200
-Message-Id: <20200407101503.698766874@linuxfoundation.org>
+        stable@vger.kernel.org, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH 5.6 15/29] misc: rtsx: set correct pcr_ops for rts522A
+Date:   Tue,  7 Apr 2020 12:22:12 +0200
+Message-Id: <20200407101453.850101538@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
-References: <20200407101459.502593074@linuxfoundation.org>
+In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
+References: <20200407101452.046058399@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Pirko <jiri@mellanox.com>
+From: YueHaibing <yuehaibing@huawei.com>
 
-commit 1521a67e6016664941f0917d50cb20053a8826a2 upstream.
+commit 10cea23b6aae15e8324f4101d785687f2c514fe5 upstream.
 
-The put of the flags was added by the commit referenced in fixes tag,
-however the size of the message was not extended accordingly.
+rts522a should use rts522a_pcr_ops, which is
+diffrent with rts5227 in phy/hw init setting.
 
-Fix this by adding size of the flags bitfield to the message size.
-
-Fixes: e38226786022 ("net: sched: update action implementations to support flags")
-Signed-off-by: Jiri Pirko <jiri@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: ce6a5acc9387 ("mfd: rtsx: Add support for rts522A")
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200326032618.20472-1-yuehaibing@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sched/act_api.c |    1 +
+ drivers/misc/cardreader/rts5227.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -186,6 +186,7 @@ static size_t tcf_action_shared_attrs_si
- 		+ nla_total_size(IFNAMSIZ) /* TCA_ACT_KIND */
- 		+ cookie_len /* TCA_ACT_COOKIE */
- 		+ nla_total_size(0) /* TCA_ACT_STATS nested */
-+		+ nla_total_size(sizeof(struct nla_bitfield32)) /* TCA_ACT_FLAGS */
- 		/* TCA_STATS_BASIC */
- 		+ nla_total_size_64bit(sizeof(struct gnet_stats_basic))
- 		/* TCA_STATS_PKT64 */
+--- a/drivers/misc/cardreader/rts5227.c
++++ b/drivers/misc/cardreader/rts5227.c
+@@ -394,6 +394,7 @@ static const struct pcr_ops rts522a_pcr_
+ void rts522a_init_params(struct rtsx_pcr *pcr)
+ {
+ 	rts5227_init_params(pcr);
++	pcr->ops = &rts522a_pcr_ops;
+ 	pcr->tx_initial_phase = SET_CLOCK_PHASE(20, 20, 11);
+ 	pcr->reg_pm_ctrl3 = RTS522A_PM_CTRL3;
+ 
 
 
