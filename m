@@ -2,151 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 616EB1A060A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 07:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD341A05FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 06:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgDGFHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 01:07:07 -0400
-Received: from hfcrelay.icp-osb-irony-out6.external.iinet.net.au ([203.59.1.86]:8292
-        "EHLO hfcrelay.icp-osb-irony-out6.external.iinet.net.au"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726399AbgDGFHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 01:07:06 -0400
-X-Greylist: delayed 558 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 01:07:03 EDT
-X-SMTP-MATCH: 0
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AqAACBB4xe/yqY3MsNWRwBAQEBAQc?=
- =?us-ascii?q?BAREBBAQBAYFpBQEBCwGERYQbj0oBAQEBAQEGgQoIJYl+j1CBewoBAQEBAQE?=
- =?us-ascii?q?BAQE3BAEBhEQCgm02Bw4CEAEBAQUBAQEBAQUDAYV3hkkBAQEDIxVBEAsSBgI?=
- =?us-ascii?q?CJgICSQ4GAQwGAgEBgyKCWK9hdYEyhUuDVYE/gQ4qAYxMeYEHgTgMgi8uPoQ?=
- =?us-ascii?q?lgzuCXgSQRYdfmHoIgj+XJCOcAo83niYKgX8zGggoCIMkUCWcd2KNCYJDAQE?=
-X-IPAS-Result: =?us-ascii?q?A2AqAACBB4xe/yqY3MsNWRwBAQEBAQcBAREBBAQBAYFpB?=
- =?us-ascii?q?QEBCwGERYQbj0oBAQEBAQEGgQoIJYl+j1CBewoBAQEBAQEBAQE3BAEBhEQCg?=
- =?us-ascii?q?m02Bw4CEAEBAQUBAQEBAQUDAYV3hkkBAQEDIxVBEAsSBgICJgICSQ4GAQwGA?=
- =?us-ascii?q?gEBgyKCWK9hdYEyhUuDVYE/gQ4qAYxMeYEHgTgMgi8uPoQlgzuCXgSQRYdfm?=
- =?us-ascii?q?HoIgj+XJCOcAo83niYKgX8zGggoCIMkUCWcd2KNCYJDAQE?=
-X-IronPort-AV: E=Sophos;i="5.72,353,1580745600"; 
-   d="scan'208";a="234957621"
-Received: from 203-220-152-42.tpgi.com.au (HELO [192.168.1.108]) ([203.220.152.42])
-  by icp-osb-irony-out6.iinet.net.au with ESMTP; 07 Apr 2020 12:57:41 +0800
-Subject: Re: [PATCH 6/9] clk: Allow the common clk framework to be selectable
-To:     Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mark Salter <msalter@redhat.com>,
-        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Guan Xuetao <gxt@pku.edu.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-c6x-dev@linux-c6x.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-References: <20200405025123.154688-1-sboyd@kernel.org>
- <20200405025123.154688-7-sboyd@kernel.org>
- <CAK8P3a2M54quhRNK4xvwjz9O9oZwgrobc_wtkGaeA2PMYwOUdg@mail.gmail.com>
- <158614207114.88454.6776609424163493475@swboyd.mtv.corp.google.com>
- <CAK8P3a3Yt2woG2LMcQ0jNPGuHdMtFbBmLvtBbrWFQ4J6x3v9aQ@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <8a2a142a-106a-4241-fca5-5ef12e66cd41@linux-m68k.org>
-Date:   Tue, 7 Apr 2020 14:57:39 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3Yt2woG2LMcQ0jNPGuHdMtFbBmLvtBbrWFQ4J6x3v9aQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1726684AbgDGE6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 00:58:34 -0400
+Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:40258 "EHLO
+        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726030AbgDGE6d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 00:58:33 -0400
+Received: from pps.filterd (m0167090.ppops.net [127.0.0.1])
+        by mx0b-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0374oVVc005584;
+        Tue, 7 Apr 2020 00:58:31 -0400
+Received: from nam02-cy1-obe.outbound.protection.outlook.com (mail-cys01nam02lp2056.outbound.protection.outlook.com [104.47.37.56])
+        by mx0b-00128a01.pphosted.com with ESMTP id 306pv6qnq3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 00:58:31 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PugDEsdqpBLcLsS6eTI3f1Z9JxptgUBp7mXKkdI50KQZpnUAseTI2ndr8nfwwTd3ueeqsqujmRLuXw9SjJx3zcfm2lf9XQ4nVqcaiyFaBHwfKn+nqyftKLaUMWAN1KNEY0hCN6eLin9shqTDggi5hJDHzx678RIwOJi8aCKw7k1hhAa7XxGoO4aStEIx49vM6LwaYXl9B0IH8IMNPr4/9aWzCAraIKVZF+kIEd5AbQKPWFFCNPmRaUrJ1VlqTwi6Zjc1UPwwGoApcDEd+cEVJeo7OXG6uAr/Xknd4/7cg7m91bHI5tZzCwNw+EEICHcF4SCSE2SeA70Qy9OtbU1/WA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JMeiTJl0GGLfBI+XAIVfmlw+nBgv3BX+pLqpifQoHYo=;
+ b=N23avWSweY+L4zSLBg+u2gH81FzgIaNRoJKfxpEqYZk5hJ1dZN5Bw/NeBwrU26y/Ydc8khMnwGRP3AXtXAXEAZjB5X5uygtdKtPoZ0p9xDZGQ/JNQ842uk/z1cZZpSiv+Bwe1aOa6G7lBOkMfd2/9XqOajcUgscQsVGIqoUTjGfoFUIxjmKzT0jwtBuNoY/OAIaYp6nfO3giijxFr95IIA/GSW1QcxWiHvvJkEGiCSd8jtoSiLLrVFAPqmtVxCUnVoqHPj81KDHNVechjS53yyutO2yjkigiYTRyKqtBCVNpcYNO6l0VEkadIfhPDbHEorOUrKfKZL4y5tbbsf5GeQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JMeiTJl0GGLfBI+XAIVfmlw+nBgv3BX+pLqpifQoHYo=;
+ b=XO1qDdIHXBdr5Y/HWY73Zz4cFU1tFZdNiq9Wmm2OJj5d/G4myMHYWPTtgbOiyy2ql1cdwiC7vRz0sSSmcGEGloXg6BSV21asNtLRrNqq1DvhUGA1BpVisfx3cRNuRcCK2TjR81uFmDxpoJBHplpbHdWaWqZBKJSlOOpaOM39iAY=
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
+ by DM6PR03MB4345.namprd03.prod.outlook.com (2603:10b6:5:10f::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16; Tue, 7 Apr
+ 2020 04:58:28 +0000
+Received: from DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::c47f:ceee:cfda:6a7f]) by DM6PR03MB4411.namprd03.prod.outlook.com
+ ([fe80::c47f:ceee:cfda:6a7f%3]) with mapi id 15.20.2878.018; Tue, 7 Apr 2020
+ 04:58:28 +0000
+From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+To:     "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
+CC:     "jic23@kernel.org" <jic23@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: core: move 'indio_dev->info' null check first
+Thread-Topic: [PATCH] iio: core: move 'indio_dev->info' null check first
+Thread-Index: AQHWDEkhKFaiQSYROEmBGFoZTClxX6htGtSA
+Date:   Tue, 7 Apr 2020 04:58:28 +0000
+Message-ID: <8a13307a8973efcf1adac349208f274d480f0f02.camel@analog.com>
+References: <50f3bbed-c46c-b28d-cf7d-101582df1c53@web.de>
+In-Reply-To: <50f3bbed-c46c-b28d-cf7d-101582df1c53@web.de>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [188.27.135.58]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 96f37c86-a370-4c80-39cd-08d7dab04fe4
+x-ms-traffictypediagnostic: DM6PR03MB4345:
+x-microsoft-antispam-prvs: <DM6PR03MB434591CDAF204B28393887A9F9C30@DM6PR03MB4345.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 036614DD9C
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(346002)(396003)(136003)(376002)(39850400004)(366004)(66476007)(8676002)(81156014)(2616005)(66556008)(66446008)(4744005)(4326008)(71200400001)(64756008)(81166006)(91956017)(76116006)(186003)(316002)(86362001)(66946007)(8936002)(54906003)(6512007)(6486002)(478600001)(26005)(5660300002)(110136005)(6506007)(2906002)(36756003);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: analog.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U+9FBiPOZj8bmhfezGtWAeEZemoILkEbGrGfkCfeKiEwkC8MUBi/zLnTffcxFQ7RxSFaY9vUNbpi6EG1dtQmiXYRPHCiLPeqWojI3Ns+uH8waD8gvy7gmDhasEBzhlj4kEnGxMMZ6mNE0Hkl7WSjKxfzNRtXOvRkvjvZM32HNqNMvXJ7AhD03vGaW2gpAiCwMmyRKXAHOzLFfn+sFhVJGDoo6oHitUubu4qYt1TICuNJWeGas0yuo/0o5hPv8BhFqRy23O8wTCfS1vwNYBnGMu0c/lPmr3cFCq1dU/FgBFfwVv0CC+kptbc/Y5hrSASa5gJ3g/EjAAJzi780o6uRg3vJ6WyP8ZLQht3RVnrD8dxLl8u2hCZ9r4uZhjlqgHHAIna3WvcUl3ixR1xikwkql335IWvDreqZ00p5uCMrXTJ1BqNB7UoPTa66baMlLZiL
+x-ms-exchange-antispam-messagedata: aohrRgJ7l10UbmJZcWIa+ByYdGdvHdoBVtf9JJNuMU0w7soAkKEPVILMC8yU7JqweeSjJ9nAXn4AlHJacr6Pv2M9Fkuk0zALY9TCIBTX8cg6F1UiGHhZ2d9EdHMCtdnalsnWBchwwmsLMLZmednRfg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <435CE2222D4F3645BA6CDC906D461EBB@namprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96f37c86-a370-4c80-39cd-08d7dab04fe4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2020 04:58:28.4431
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kF+jnH9Qq3YwexU+Y4p0YIbhTu49BJB8kKCGDMDNkFqD8A4xqvgKWzYrZzLbKJA8wfJ7eZwEV5pxIyPQinyDm2Sp/W1Lcwtgk0bGgB9hyE0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4345
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_01:2020-04-07,2020-04-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ adultscore=0 malwarescore=0 phishscore=0 mlxscore=0 bulkscore=0
+ mlxlogscore=999 lowpriorityscore=0 spamscore=0 suspectscore=0
+ clxscore=1011 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004070039
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd, Stephen
-
-On 6/4/20 5:35 pm, Arnd Bergmann wrote:
-> On Mon, Apr 6, 2020 at 5:01 AM Stephen Boyd <sboyd@kernel.org> wrote:
->> Quoting Arnd Bergmann (2020-04-05 05:45:20)
->>> On Sun, Apr 5, 2020 at 4:51 AM Stephen Boyd <sboyd@kernel.org> wrote:
->>>> There's one snag with doing this, and that's making sure that randconfig
->>>> builds don't select this option when some architecture or platform
->>>> implements 'struct clk' outside of the common clk framework. Introduce a
->>>> new config option 'HAVE_LEGACY_CLK' to indicate those platforms that
->>>> haven't migrated to the common clk framework and therefore shouldn't be
->>>> allowed to select this new config option. Also add a note that we hope
->>>> one day to remove this config entirely.
->>>
->>> Good idea!
->>>
->>> I've looked through the individual ones and commented a bit on
->>> what I think may or may not happen with them.
->>>
->>> ralink SOC_MT7621 is the only one that I think you got wrong,
->>> as it already has common-clk support.
->>
->> Ah I missed that it was inside a big if RALINK. Thanks. I suppose I
->> should just remove the select then for that config and not worry about
->> the duplication of clkdev and common clk configs.
-> 
-> Won't that cause build failures in those configurations that have
-> both implementations?
-> 
-> According to the Makefile, the clk.c file is built whenever CONFIG_MIPS_GIC
-> is unset, so I think we need
-> 
->           select HAVE_LEGACY_CLK if !MIPS_GIC
-> 
-> or maybe move the select into the per-chip configs that need it:
-> RT288X, RT305X, RT3883, and MT7620.
-> 
->>>> diff --git a/arch/m68k/Kconfig.cpu b/arch/m68k/Kconfig.cpu
->>>> index 60ac1cd8b96f..bd2d29c22a10 100644
->>>> --- a/arch/m68k/Kconfig.cpu
->>>> +++ b/arch/m68k/Kconfig.cpu
->>>
->>>     text    data     bss     dec     hex filename
->>> 1934726 263616   83284 2281626 22d09a obj/vmlinux-before
->>> 1971989 266192   83308 2321489 236c51 obj/vmlinux-after
->>>
->>> The coldfire clock implementation looks rather simple compared
->>> to chips from the 2010s: most chips have only fixed clocks,
->>> and three of them have one of two registers of clock gates.
->>>
->>> It shouldn't be hard to convert, but enabling common-clk will
->>> cause a noticeable kernel size increase on the fairly limited
->>> hardware.
->>>
->>> Simply enabling COMMON_CLK in m5475evb_defconfig
->>> results in a 1.7% or 40KB growth in kernel size, plus there
->>> would be additional dynamic memory usage:
->> There could certainly be some work done to reduce the code size of the
->> CCF. I haven't looked but perhaps we could save some memory by making
->> the basic types selectable too and then push a bunch of kconfig updates
->> through for that.
-> 
-> Right, that might help. Another possibility would be to support both
-> the common clk layer and the custom clk implementation on coldfire
-> until we remove the other custom implementations, by which point
-> even fewer people will care about coldfire.
-> 
-> Let's see what Geert and Greg think would be the best path for coldfire,
-> maybe the added 40KB is less of a problem after all.
-
-Losing another 40k is not ideal, but not the end of the world.
-It would not stop me running it on any platforms I regularly
-run on. For sure some of the really old hardware just doesn't
-have the RAM to spare.
-
-Any way, I say we have to move forward and and move to using
-the common clock framework for ColdFire sooner than later.
-
-Regards
-Greg
-
+T24gTW9uLCAyMDIwLTA0LTA2IGF0IDIxOjI1ICswMjAwLCBNYXJrdXMgRWxmcmluZyB3cm90ZToN
+Cj4gW0V4dGVybmFsXQ0KPiANCj4gPiBEb2Vzbid0IGZpeCBhbnl0aGluZy4gSnVzdCBtb3ZlcyB0
+aGlzIHRvIGJlIHRoZSBmaXJzdCBjaGVjaywgYXMgaXQncyB2ZXJ5DQo+ID4gc2ltcGxlIGFuZCBm
+YWlscyB0aGUgcmVnaXRyYXRpb24gZWFybGllciwg4oCmDQo+IA0KPiBIb3cgZG8geW91IHRoaW5r
+IGFib3V0IHRvIHVzZSB0aGUgd29yZCDigJxyZWdpc3RyYXRpb27igJ0gaW4gdGhlIGNoYW5nZQ0K
+PiBkZXNjcmlwdGlvbj8NCg0KV2lsbCBmaXguDQpUaGFua3MNCg0KPiANCj4gUmVnYXJkcywNCj4g
+TWFya3VzDQo=
