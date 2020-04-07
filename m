@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B0F1A0843
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC7F1A0879
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727891AbgDGH2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:28:11 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24561 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727833AbgDGH2H (ORCPT
+        id S1727737AbgDGHjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 03:39:03 -0400
+Received: from submit-4.e-mind.com ([188.94.192.50]:45694 "EHLO
+        submit-4.e-mind.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgDGHjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 03:28:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586244486;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+zSuESAdmDNaSehXE++KKHmAinJZPYbBQIlb8YW2/Kg=;
-        b=HpH+2BMFOa1YIDMeRKFYLaJ0Dt5DCryvujN2IrXV3aPqJY8m8olFsakIYzTHtOzGs8aADH
-        Xmyj57deFq2/zmlcMV0jUU3FCSe4Az0EG5BXS+rl4tcUfRqe+aPwIIP5pKg6ot/OUbUQqU
-        v+rqsaTFO1tCIKySchc7a8kTNX4zrVo=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-Eh72ZufgP9mh76PQr6Zfkw-1; Tue, 07 Apr 2020 03:28:04 -0400
-X-MC-Unique: Eh72ZufgP9mh76PQr6Zfkw-1
-Received: by mail-wr1-f71.google.com with SMTP id o10so1292929wrj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 00:28:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=+zSuESAdmDNaSehXE++KKHmAinJZPYbBQIlb8YW2/Kg=;
-        b=h6Fn72fd1q46YND/STQPOCWY/9EFllERfib/h3Eqqq4ECWgZ4COiHAVDKaNpJblqKE
-         +tx0PzNdu0e2Vv3tXofDb3/G/d1qv9KxMUOdNgzV3JdcG/VUEWWEudXxwDx43rAklVcp
-         n73rBGk1GMB3dBJlofNYYUoF7bgbq6EHpO1VzJBuXV5ksB89TdsU6b03FBbXe4mJcjnL
-         AIWzUttuarTZKLRPRTfwzCZ3pw/FB2kuc6utBT+07I6o2IlMzisA+wTmlzWpNwURfaAz
-         Ha6Zele4TuKXvl9i/hlrCwg7rD1PkD/9dC9qlml2MoLU2Mv42Ne67mqoHeCYJlD+GncN
-         6J0g==
-X-Gm-Message-State: AGi0PubdtEhBt9yOOtrGEZnTu2fOmzeW+2koe0eB+VnsqFN8F1mpSc6g
-        Jvw22eLRMjcisjvG9rG0yC/DQ0O2ehVTkO4QSGaKXj5tnt8g6nJEkMc6tqT47y8nL5b3R0b9E6S
-        UfjiueUOFaR8l8FEVtSr0P0q6
-X-Received: by 2002:adf:9e49:: with SMTP id v9mr1200687wre.34.1586244483391;
-        Tue, 07 Apr 2020 00:28:03 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLvoxh+i4BgWxDcfk/zNNWVBGiWj/CCu99qpamlIgjACcFmj10/koCLpDW3NtDhyVjYTtCmFw==
-X-Received: by 2002:adf:9e49:: with SMTP id v9mr1200664wre.34.1586244483136;
-        Tue, 07 Apr 2020 00:28:03 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id c20sm1186423wmd.36.2020.04.07.00.28.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 00:28:02 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     x86@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: hv_hypercall_pg page permissios
-In-Reply-To: <20200407065500.GA28490@lst.de>
-References: <20200407065500.GA28490@lst.de>
-Date:   Tue, 07 Apr 2020 09:28:01 +0200
-Message-ID: <87v9mblpq6.fsf@vitty.brq.redhat.com>
+        Tue, 7 Apr 2020 03:39:03 -0400
+X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 03:39:03 EDT
+Received: from localhost (unknown [127.0.0.1])
+        by submit-4.e-mind.com (Postfix) with ESMTP id 87B81840ACD
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Apr 2020 07:30:27 +0000 (UTC)
+Received: from submit-4.e-mind.com ([127.0.0.1])
+        by localhost (submit-4.e-mind.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xpFV_Vk5VK2J for <linux-kernel@vger.kernel.org>;
+        Tue,  7 Apr 2020 09:30:27 +0200 (CEST)
+Received: from qmail.e-mind.com (qmail34.e-mind.com [188.94.192.34])
+        by submit-4.e-mind.com (Postfix) with SMTP id 808A0840ACF
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Apr 2020 09:30:20 +0200 (CEST)
+Received: (qmail 3614 invoked by uid 0); 7 Apr 2020 07:30:20 -0000
+Received: from unknown (HELO ?192.168.143.6?) (185.53.252.165)
+  by 0 with SMTP; 7 Apr 2020 07:30:20 -0000
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>, jslaby@suse.com,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Gianluca Renzi <icjtqr@gmail.com>, dimka@embeddedalley.com,
+        linux@rempel-privat.de
+From:   gianluca <gianlucarenzi@eurek.it>
+Subject: Serial data loss
+Message-ID: <960c5054-48b0-fedc-4f3a-7246d84da832@eurek.it>
+Date:   Tue, 7 Apr 2020 09:30:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Hellwig <hch@lst.de> writes:
+Hello everybody!
 
-> Hi all,
->
-> The x86 Hyper-V hypercall page (hv_hypercall_pg) is the only allocation
-> in the kernel using __vmalloc with exectutable persmissions, and the
-> only user of PAGE_KERNEL_RX.  Is there any good reason it needs to
-> be readable?  Otherwise we could use vmalloc_exec and kill off
-> PAGE_KERNEL_RX.  Note that before 372b1e91343e6 ("drivers: hv: Turn off
-> write permission on the hypercall page") it was even mapped writable..
+I hope you are keeping safe against Covid-19 a.k.a. Coronavirus!
 
-[There is nothing secret in the hypercall page, by reading it you can
-figure out if you're running on Intel or AMD (VMCALL/VMMCALL) but it's
-likely not the only possible way :-)]
+Now my issue:
 
-I see no reason for hv_hypercall_pg to remain readable. I just
-smoke-tested
+I have a BIG trouble having dataloss when using two internal serial 
+ports of my boards based on NXP/FreeScale iMX28 SoC ARMv5Te ARM920ej-s 
+architecture.
 
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 7581cab74acb..17845db67fe2 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -382,7 +382,7 @@ void __init hyperv_init(void)
-        guest_id = generate_guest_id(0, LINUX_VERSION_CODE, 0);
-        wrmsrl(HV_X64_MSR_GUEST_OS_ID, guest_id);
- 
--       hv_hypercall_pg  = __vmalloc(PAGE_SIZE, GFP_KERNEL, PAGE_KERNEL_RX);
-+       hv_hypercall_pg  = vmalloc_exec(PAGE_SIZE);
-        if (hv_hypercall_pg == NULL) {
-                wrmsrl(HV_X64_MSR_GUEST_OS_ID, 0);
-                goto remove_cpuhp_state;
+It runs at 454Mhz.
 
-on a Hyper-V 2016 guest and nothing broke, feel free to go ahead and
-kill PAGE_KERNEL_RX.
+Kernel used 4.9.x
 
+When using my test case unit software between two serial ports connect 
+each other by a null modem cable, it fails when the speed rate are 
+different, and dataloss is increasing higher the speed rate.
+
+I suppose to have overruns (now I am modifying my software to check them 
+too), but I think it is due the way the ISR is called and all data are 
+passed to the uart circular buffer within the interrupt routine.
+
+I am talking about the high latency from the IRQ up to the service 
+routine when flushing the FIFO and another IRQ is called by another uart 
+in the same time at different speed.
+
+The code I was looking is: drivers/tty/serial/mxs-auart.c __but__ all 
+other serial drivers are acting in the same way: they are reading one 
+character at time from the FIFO (if it exists) and put it into the 
+circular buffer so serial/tty driver can pass them to the user read routine.
+
+Each function call has some overhead and it is time-consuming, and if 
+another interrupt is invoked by the same UART Core but from another 
+serial port (different context) the continuos insertion done by hardware 
+UART into the FIFO cannot be served fast enough to have an overrun. I 
+think this can be applied __almost__ to every serial driver as they are 
+written in the same way.
+
+And it is __NOT__ an issue because of the CPU and its speed! Using two 
+serial converter (FTDI and Prolific PL2303 based) on each board, the 
+problem does not appear at all even after 24 hours running at more than 
+115200!!!
+
+It does work fine if I am using two different serial devices: one 
+internal uart (mxs-auart) and an external uart (ttyUSB).
+
+So I can say it is related on how the harwdare is managing the interrupt 
+context and the FIFO/buffer small size.
+
+Are those correct assuptions?
+
+Will a shared FIQ driver over the UART solve the issue?
+
+Regards,
 -- 
-Vitaly
-
+Eurek s.r.l.                          |
+Electronic Engineering                | http://www.eurek.it
+via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
+p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
