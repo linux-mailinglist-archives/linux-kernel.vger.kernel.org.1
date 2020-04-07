@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 096191A0D72
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E28E21A0D78
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728580AbgDGMUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:20:03 -0400
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:35720 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728152AbgDGMUC (ORCPT
+        id S1728645AbgDGMVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 08:21:25 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:41722 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728146AbgDGMVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:20:02 -0400
-Received: by mail-pj1-f68.google.com with SMTP id g9so705753pjp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 05:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=R4hvZR8SPgpRXTOdJt4oRMxXYe8DMEbopd6JEn/rddg=;
-        b=NLanvurQ+ZPjNlsHq1Eqo37ceC0rWKMgTTjMn9f1vBeiiXkP24I5O/82bQeGy/l7Eo
-         yMKva0N79AFo5oGBvW4HgRB/ROUCognwcHld7nmzH67RzRIUte3JNDxBarqioqw3mtyl
-         A70iziS5ofFmI47r0S0PMZI1gDHHUfyABy8iqGsnOzX39utmk6JYQIbsp5ByzXlc2xzY
-         KdhYzd0opCH2t8PAZm0H1t9hlGlh5eU4UOL8bylNF7Z4KVwjRZUk3wYQtiuID5WREagO
-         vsMhbg0gLx/nAFBg/VY0BgOm2Sod4FFDEGTDJJSZnChEmBw2jxQJeSNv89zs9in8sSn2
-         rPcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=R4hvZR8SPgpRXTOdJt4oRMxXYe8DMEbopd6JEn/rddg=;
-        b=rgECe1jkchbY5aJh+UWLMvmhheTWauenAlnDZo1eeoVfyigy6GW0WaTBpl+V6n7Bse
-         dlK6bGqy8ofDAseW+jIujzeH02KgrnNGarutaSfsyabuR40r8Grr9rsjMLVq3Ph8UTXL
-         V8Zv+o6BqcGu27FJQ+4vc0hshmj7KBDfuaTRwTVbR+CWfB1BFtbtnW/BQicLUQz/Q+zo
-         HLeHV2EWZtkLfSNvo+nrf10hX+4oW0zpxxx+uJaNDINkdb9BOra7uW+shZ/y8nKEZFOY
-         Xnmarleq2B6ioyl7HyeC+3sjYZZXYdmi9QPk1Bc1T6TIAbg0NzzKY3fCqjtodfZDV0LA
-         fHwQ==
-X-Gm-Message-State: AGi0PuZPO3K4jzef7gYgIW0mXVJT6NHeGLVNHc2M8cyhA1tOE5kBOM6J
-        QL+okp1z5C8hmC3DU5VIUCo=
-X-Google-Smtp-Source: APiQypJQMPX3R8hhbCk3y5ITo4/ipXEOgqTDUwx9oTXuJ3PEI8hMJEPkPisA9p4FuU+QC8Ynj93LrQ==
-X-Received: by 2002:a17:90a:c392:: with SMTP id h18mr2488966pjt.89.1586262001848;
-        Tue, 07 Apr 2020 05:20:01 -0700 (PDT)
-Received: from localhost (g54.222-224-167.ppp.wakwak.ne.jp. [222.224.167.54])
-        by smtp.gmail.com with ESMTPSA id r70sm13926024pfr.116.2020.04.07.05.20.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 05:20:01 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 21:19:58 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Openrisc <openrisc@lists.librecores.org>
-Subject: Re: [GIT PULL] OpenRISC updates for v5.6
-Message-ID: <20200407121958.GQ7926@lianli.shorne-pla.net>
+        Tue, 7 Apr 2020 08:21:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pk/wTIvk5X/DA8IhsCZhc7nIIHKp7L4drvl4ax6UlCI=; b=nUq0d8G/UTbLmHOUMtDRZHG7G8
+        lmfBuv9l9XDCrfNeMMPzDX5LeWc4XlPOWSw1F8VqaQEA1X0o144IoW7upqJ/eCaqPpbMEDGNii59x
+        mFJeYjXuyLzmBhZWTwSMuGThBX3edd89GQ21+Jb7PRs1RrG2CiMidbHYHH+oA9mi/uNegd4hQO4ck
+        KU55v8J5n87l5CDbwymwwze/U3jxcOEcyCroM5B7korTt5WbAYaacEOI6+l7slJXtxni7yQCT2dBg
+        L689SisLfiL8duhwNUHapm1s2FwQQVU4x68zHLGo/JeCNO3OEaAPUpIBmkXxpigDVhqlLzVizZNwN
+        WCbZJkng==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLnE2-0003qM-R2; Tue, 07 Apr 2020 12:21:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 56F893010C8;
+        Tue,  7 Apr 2020 14:21:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3E48B2B907A89; Tue,  7 Apr 2020 14:21:03 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 14:21:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Keno Fischer <keno@juliacomputing.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kyle Huey <khuey@kylehuey.com>,
+        Robert O'Callahan <robert@ocallahan.org>
+Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0
+ per-thread
+Message-ID: <20200407122103.GU20730@hirez.programming.kicks-ass.net>
+References: <20200407011259.GA72735@juliacomputing.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <20200407011259.GA72735@juliacomputing.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Er, Sorry, this should be for 5.7.
+On Mon, Apr 06, 2020 at 09:12:59PM -0400, Keno Fischer wrote:
+> This is a follow-up to my from two-years ago [1]. I've been using
+> rebased versions of that patch locally for my needs, but I've had
+> more people ask me about this patch recently, so I figured, I'd
+> have another go at this. Even if this doesn't make it into mainline,
+> I figure I can at least improve the quality of the patch for others
+> who want to use it. That's said, here's how this version is
+> different from v1:
 
-I was a bit confused because of other things going on.  Let me know if you are
-ok with this or need a new tag.  It should apply just fine for 5.7.
+Aside of having an inconsistent comment style and whitespace damage, it
+adds exports without a module user.
 
--Stafford
+But my main reason for replying is asking: 'What the heck for?'
 
-On Tue, Apr 07, 2020 at 09:16:15PM +0900, Stafford Horne wrote:
-> Hi Linus,
-> 
-> Please consider pulling...
-> 
-> The following changes since commit d5226fa6dbae0569ee43ecfc08bdcd6770fc4755:
-> 
->   Linux 5.5 (2020-01-26 16:23:03 -0800)
-> 
-> are available in the Git repository at:
-> 
->   git://github.com/openrisc/linux.git tags/for-linus
-> 
-> for you to fetch changes up to 9737e2c5f0bc768b58416ec070bd96c91c52a153:
-> 
->   openrisc: Remove obsolete show_trace_task function (2020-03-18 22:10:44 +0900)
-> 
-> ----------------------------------------------------------------
-> OpenRISC updates for 5.6
-> 
-> A few cleanups all over the place, things of note:
->  - Enable the clone3 syscall
->  - Remove CONFIG_CROSS_COMPILE from Krzysztof Kozlowski
->  - Update to use mmgrab from Julia Lawall
-> 
-> ----------------------------------------------------------------
-> Julia Lawall (1):
->       openrisc: use mmgrab
-> 
-> Krzysztof Kozlowski (1):
->       openrisc: configs: Cleanup CONFIG_CROSS_COMPILE
-> 
-> Stafford Horne (4):
->       openrisc: Convert copy_thread to copy_thread_tls
->       openrisc: Enable the clone3 syscall
->       openrisc: Cleanup copy_thread_tls docs and comments
->       openrisc: Remove obsolete show_trace_task function
-> 
->  Documentation/openrisc/openrisc_port.rst   |  4 ++--
->  arch/openrisc/Kconfig                      |  1 +
->  arch/openrisc/configs/or1ksim_defconfig    |  1 -
->  arch/openrisc/configs/simple_smp_defconfig |  1 -
->  arch/openrisc/include/uapi/asm/unistd.h    |  1 +
->  arch/openrisc/kernel/process.c             | 18 ++++++------------
->  arch/openrisc/kernel/smp.c                 |  3 ++-
->  arch/openrisc/kernel/traps.c               |  7 -------
->  8 files changed, 12 insertions(+), 24 deletions(-)
+You had a fairly long changelog detailing what the patchd does; but I've
+failed to find a single word on _WHY_ we want to do any of that.
