@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 969341A0B48
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBBC1A0BE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728883AbgDGKZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:25:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35528 "EHLO mail.kernel.org"
+        id S1728454AbgDGK3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:29:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728843AbgDGKZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:25:05 -0400
+        id S1728297AbgDGKWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:22:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85C4820644;
-        Tue,  7 Apr 2020 10:25:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48D3D20801;
+        Tue,  7 Apr 2020 10:22:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255105;
-        bh=Fs02QOeqFeunLDhAhOWC8FGhC42gEBQwFYKZQ5UAcC8=;
+        s=default; t=1586254969;
+        bh=gmDm55ev+jBU5e+PcU2wskqxgzx4vGLTtfMr1tuFboE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ah5OOGzKCvaOOTCZmFdvapXOu8pnIaRaSR2cv8yPfuvLJETfcFMfJZkO2Z7wHYxQD
-         aG+PieNbP+bPwszG3AXemGhIy7GTpWnFp6CwvtFVCbIjF9wVf3qZKjAE+PhMVv3O+x
-         5lrbyNL9AHjsMiIIkgHinzCDg8vQb7TDuumH03rc=
+        b=IpLV1SJstrYZCBU77h5lHsqIsrqV5Lef5S0tRkHHuFKpD4pSudUC5C1yNFXltXlK+
+         sesClGHdNkS5SC6XfFzpOdtgB5hkFnUhAKbc+HifpSboE6nsDQNRXmjNedrQu0Za+U
+         sffCLkys3NSeL9SNgUuTHhlV7lAj7fWRG/K2xnBc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roland Dreier <roland@purestorage.com>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Prabhath Sajeepa <psajeepa@purestorage.com>,
-        Keith Busch <kbusch@kernel.org>,
+        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
+        Leo Liu <leo.liu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 07/46] nvme-rdma: Avoid double freeing of async event data
-Date:   Tue,  7 Apr 2020 12:21:38 +0200
-Message-Id: <20200407101500.273308750@linuxfoundation.org>
+Subject: [PATCH 5.4 06/36] drm/amdgpu: fix typo for vcn1 idle check
+Date:   Tue,  7 Apr 2020 12:21:39 +0200
+Message-Id: <20200407101455.080556646@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
-References: <20200407101459.502593074@linuxfoundation.org>
+In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
+References: <20200407101454.281052964@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,54 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Prabhath Sajeepa <psajeepa@purestorage.com>
+From: James Zhu <James.Zhu@amd.com>
 
-[ Upstream commit 9134ae2a2546cb96abddcd4469a79c77ee3a4480 ]
+[ Upstream commit acfc62dc68770aa665cc606891f6df7d6d1e52c0 ]
 
-The timeout of identify cmd, which is invoked as part of admin queue
-creation, can result in freeing of async event data both in
-nvme_rdma_timeout handler and error handling path of
-nvme_rdma_configure_admin queue thus causing NULL pointer reference.
-Call Trace:
- ? nvme_rdma_setup_ctrl+0x223/0x800 [nvme_rdma]
- nvme_rdma_create_ctrl+0x2ba/0x3f7 [nvme_rdma]
- nvmf_dev_write+0xa54/0xcc6 [nvme_fabrics]
- __vfs_write+0x1b/0x40
- vfs_write+0xb2/0x1b0
- ksys_write+0x61/0xd0
- __x64_sys_write+0x1a/0x20
- do_syscall_64+0x60/0x1e0
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+fix typo for vcn1 idle check
 
-Reviewed-by: Roland Dreier <roland@purestorage.com>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Prabhath Sajeepa <psajeepa@purestorage.com>
-Signed-off-by: Keith Busch <kbusch@kernel.org>
+Signed-off-by: James Zhu <James.Zhu@amd.com>
+Reviewed-by: Leo Liu <leo.liu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/rdma.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 3e85c5cacefd2..0fe08c4dfd2f1 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -850,9 +850,11 @@ out_free_tagset:
- 	if (new)
- 		blk_mq_free_tag_set(ctrl->ctrl.admin_tagset);
- out_free_async_qe:
--	nvme_rdma_free_qe(ctrl->device->dev, &ctrl->async_event_sqe,
--		sizeof(struct nvme_command), DMA_TO_DEVICE);
--	ctrl->async_event_sqe.data = NULL;
-+	if (ctrl->async_event_sqe.data) {
-+		nvme_rdma_free_qe(ctrl->device->dev, &ctrl->async_event_sqe,
-+			sizeof(struct nvme_command), DMA_TO_DEVICE);
-+		ctrl->async_event_sqe.data = NULL;
-+	}
- out_free_queue:
- 	nvme_rdma_free_queue(&ctrl->queues[0]);
- 	return error;
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+index 93b3500e522b8..4f0f0de832937 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+@@ -1375,7 +1375,7 @@ static int vcn_v1_0_set_clockgating_state(void *handle,
+ 
+ 	if (enable) {
+ 		/* wait for STATUS to clear */
+-		if (vcn_v1_0_is_idle(handle))
++		if (!vcn_v1_0_is_idle(handle))
+ 			return -EBUSY;
+ 		vcn_v1_0_enable_clock_gating(adev);
+ 	} else {
 -- 
 2.20.1
 
