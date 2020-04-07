@@ -2,114 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 869BB1A0D76
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3D61A0D7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728633AbgDGMVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:21:20 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:41290 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728548AbgDGMVU (ORCPT
+        id S1728610AbgDGMWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 08:22:42 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:34458 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728482AbgDGMWm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:21:20 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0C33159E;
-        Tue,  7 Apr 2020 14:21:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1586262077;
-        bh=ccNWqTZBMcAMBu/tDHaT/nTS1utdy/HvpeGfWy7F6wE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oD1Jg3Tu+GArR9R2iri+k4MRwKhy9x4XUxz/P6UmD7HHZ42mE9skWot7T/lLdItZI
-         YIzE7TY1JVVNjcHcLfKlwZS7MqbsMRd1UdFUbk9NRsXpIqLhWUqRwhrVAtk3jtbQL1
-         3qDZaB9eWR/veW1hpqiebbXmNc0s9cT+bqBQ+l2Y=
-Date:   Tue, 7 Apr 2020 15:21:06 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: Re: [PATCH v5 2/5] media: i2c: ov5645: Drop reading clock-frequency
- dt-property
-Message-ID: <20200407122106.GD4751@pendragon.ideasonboard.com>
-References: <1586191361-16598-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <1586191361-16598-3-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200406165108.GA7646@kekkonen.localdomain>
- <20200406173234.GD16885@pendragon.ideasonboard.com>
- <20200407062241.GA8883@kekkonen.localdomain>
+        Tue, 7 Apr 2020 08:22:42 -0400
+Received: by mail-vs1-f68.google.com with SMTP id b5so2048752vsb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 05:22:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=omnibond-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z511MDYhv4o+xquNAW2DROMbGPhQBRu4/JH0RaTSkLw=;
+        b=rq6AiC7dwdXCobVOO+f+WNp1k+3JC8UWM9UFQqKhPm1K0hzAOn92rvaQ0LXCwMHysB
+         0SxkT3AujfliCTQxZyyNA/na195T1BDWVlt6CfMVBpe3NryLSdp8m0sujbYkOTD4gcvc
+         2ZF2+QsUuU+iVep3ZE9aJca+iEiaIf9yXU49eYBazU0cohQt7SHKPLigGiIDR5obOKUm
+         0Dlaq3eiSq7Vl5CGwOaCXpMq7jm78RfvLt2+7l+JBRwp/qAsOWxZFrMlYVR28MGKM4iC
+         C5FScwHdCdIpS/eGIDFUR8j5JRZwvn0ETfPjZYZOLimGajlHKPFiwRqdHCLf2PUIC8KZ
+         e3SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z511MDYhv4o+xquNAW2DROMbGPhQBRu4/JH0RaTSkLw=;
+        b=XtdPeBkot9cMd3Eci2GkBxRIqY5xzKSkKZk0a4olqCH49pA70ejp+1kOr+zMVhONVL
+         iK0RXvb3STQ/hDL/OWjPNHV1L5chB9aOdbv5t1onwylrjjxwK+2u0KaHc31oFMwCr26Y
+         aG5Uvh2CFCk2RIZJlgnKERTdBdTlPbbcPCSFQpS2XIAEQEF5JQ44pOboSUhVMpwfbfvn
+         hCew7o+Zh7V0AyMV9DW7J4imd4kjxnOtan0wn5O22rokglulpBp4s8BmTI4dWErkPYtp
+         iqfeOPowkF+dzF33RrXHjMvTwnuuTFSzFKsgCsEHXsCTh6NJ7kF9s++W5svQ+/BCGHMb
+         HkGw==
+X-Gm-Message-State: AGi0PuaXOm3bFNC9ZMH9QPVU4nL38aCq+251XeWxiaeeGU2pchYFoSl9
+        UcyqJPZJgiIRSUWsPQvKYemtFqGK4PYLyhtT2MKplC3i
+X-Google-Smtp-Source: APiQypJOloediqTcP7bVJrSj3o2Nu6Q5oLyGH8q9e/MG+HlSs5+WgZ/5WabTTYh0HGGAyMoVlmBWh0gWQ1bGQpAECuQ=
+X-Received: by 2002:a67:80d6:: with SMTP id b205mr1428650vsd.137.1586262160955;
+ Tue, 07 Apr 2020 05:22:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200407062241.GA8883@kekkonen.localdomain>
+References: <20200407075207.0bfc0e71@canb.auug.org.au>
+In-Reply-To: <20200407075207.0bfc0e71@canb.auug.org.au>
+From:   Mike Marshall <hubcap@omnibond.com>
+Date:   Tue, 7 Apr 2020 08:22:29 -0400
+Message-ID: <CAOg9mSQEeQQbt2v-fsO6xg-TJS7oucZZp4C2kbozfNvFjtFL8Q@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the orangefs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+fixed, thanks...
 
-On Tue, Apr 07, 2020 at 09:22:41AM +0300, Sakari Ailus wrote:
-> On Mon, Apr 06, 2020 at 08:32:34PM +0300, Laurent Pinchart wrote:
-> > On Mon, Apr 06, 2020 at 07:51:08PM +0300, Sakari Ailus wrote:
-> > > On Mon, Apr 06, 2020 at 05:42:38PM +0100, Lad Prabhakar wrote:
-> > > > Modes in the driver are based on xvclk frequency fixed to 24MHz, but where
-> > > > as the OV5645 sensor can support the xvclk frequency ranging from 6MHz to
-> > > > 24MHz. So instead making clock-frequency as dt-property just let the
-> > > > driver enforce the required clock frequency.
-> > > 
-> > > Even if some current systems where the driver is used are using 24 MHz
-> > > clock, that doesn't mean there wouldn't be systems using another frequency
-> > > that the driver does not support right now.
-> > > 
-> > > The driver really should not set the frequency unless it gets it from DT,
-> > > but I think the preferred means is to use assigned-clock-rates instead, and
-> > > not to involve the driver with setting the frequency.
-> > > 
-> > > Otherwise we'll make it impossible to support other frequencies, at least
-> > > without more or less random defaults.
-> > 
-> > We're running in circles here.
-> > 
-> > As the driver only supports 24MHz at the moment, the frequency should be
-> > set by the driver, as it's a driver limitation. We can then work on
-> > supporting additional frequencies, which will require DT to provide a
-> > list of supported frequencies for the system, but that can be done on
-> > top.
-> 
-> I guess it would be possible to use different external clock frequencies on
-> a sensor in a given system but that seems to be a bit far fetched, to the
-> extent I've never seen anyone doing that in practice.
-> 
-> Originally, the driver set the frequency based on the clock-frequency
-> property. If we're removing that but use a fixed frequency instead, then
-> how is that going to work going forward when someone adds support for other
-> frequencies in the driver and has a system requiring that, while there are
-> some other platforms relying on the driver setting a particular frequency?
+-Mike
 
-The standard property for this is link-frequencies, not clock-frequency.
-Deprecating clock-frequency now paves the way to use the standard
-property later when/if someone implements support for additional
-frequencies.
-
-> Although, if you're saying that this driver only needs to work with DT that
-> comes with the kernel and you don't care about DT binary compatibility,
-> this would be fine.
-
-I believe this series to not break backward compatibility, as the driver
-only works with a 24MHz clock, so I expect all DTs to specify that.
-
--- 
-Regards,
-
-Laurent Pinchart
+On Mon, Apr 6, 2020 at 5:52 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> Commits
+>
+>   aa8891f95484 ("orangefs: don't mess with I_DIRTY_TIMES in orangefs_flush")
+>   4501ab590e3c ("Revert "orangefs: remember count when reading."")
+>
+> are missing a Signed-off-by from their committer.
+>
+> --
+> Cheers,
+> Stephen Rothwell
