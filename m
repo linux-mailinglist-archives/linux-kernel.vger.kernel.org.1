@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 995DA1A16F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC761A16F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbgDGUpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 16:45:50 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:46782 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgDGUpu (ORCPT
+        id S1726428AbgDGUsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:48:04 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:40464 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbgDGUsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:45:50 -0400
-Received: by mail-pf1-f195.google.com with SMTP id q3so1332960pff.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:45:48 -0700 (PDT)
+        Tue, 7 Apr 2020 16:48:04 -0400
+Received: by mail-lj1-f194.google.com with SMTP id 142so733774ljj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=C88lZVacgBqVCx9fOOndyOqopaXcP4IkqPpQrquRUaE=;
-        b=E7ztmKn5DIinrdB65ZxtV9BqWJ96hvR4RnwLJ3pVLBFcHhQYwlx8ErU4p03tVhzuaZ
-         mdzMScU20+5lCgnkECaEDZoSUPr46fINUyYVMXHYw+gzhMFhs2nMHrPaJNk4SbOQ1DFW
-         sfu63JKBWizzPmXipte4ZTNfEOS7OPwv2Gno42KUWG/Lq3j761JETDAOx9bINurCkeXk
-         d8mMjHieRX8LdgfobuyIxxoJhz7/TUjN1qjjgBKjXWvyJDMOM/uiKgVwPLGoZdVtlQke
-         s9akxu+THvX2r7Q9lAhX8wI5CB2h4NOiecnmknGZbxGZNKKci7BcOnN+ryuwrD1LFWg9
-         qZoA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0HjyJmpuP/fheL56eiDsEL3j2Jeu/bd9xUqsyeAAnTM=;
+        b=FQhyz95ErvyUTVGyfMDMjF6va9oPn5G9QQis7cMRsGgxDIlUsuR1VPQIJcvsMd+KCq
+         0iP/0/T9Jmk7j6bVuyAPuFSmCHiQ0xIfFLAeu2pHJH+OZduD+lXrUxG4XnL+i0voL1YP
+         rrIyxNCOOm8Hwt3UhNhsZTM7/H0hggIN/mxg4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C88lZVacgBqVCx9fOOndyOqopaXcP4IkqPpQrquRUaE=;
-        b=oYIg/32P91+KxvsLhhJazvrBBHMNFuCtyFQGjosRUDTrDnW+PIlJVydiiSaj98h+ZW
-         ITsp4QtWGdM+SKpwBbD7m9BV1mKIJwP1jEWww/zJzYZn2TBmVSkpxIS8YMNEXg1p1Fr8
-         aWkdaGah+b15GPIbv5f5o8pT2xEhtStJiaTrENk8oefCB+GCMkrwb0LcwR/BFYJGgLXT
-         QPDACoM4Kh5wHrondDOjXC9ncnt0BYEq/psW5YKrZqBCTkJ/9/4ab2/uawbi1Eomy8PW
-         hsikzIkiENScl0omPCNFxAonRRbY0NCYO1b58BDwjB8LFPG0QzFFusWeQ3V9NFp3Raql
-         9cvg==
-X-Gm-Message-State: AGi0PuZmkNimCQtD9UMLPLcNxHxqubc35DXtzQTAh01QqN5ciue4HfE5
-        ZSq0kKkCByZLrlKAchu06rpRUg==
-X-Google-Smtp-Source: APiQypImd7G6uhM36TiwPi1QL4r5mkuVWEgspW/FrthCdBwyFXKd9TRK8OWmMMLjrbizn6oSgnCKgg==
-X-Received: by 2002:a63:5c01:: with SMTP id q1mr3627155pgb.177.1586292347981;
-        Tue, 07 Apr 2020 13:45:47 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:ec7d:96d3:6e2d:dcab? ([2605:e000:100e:8c61:ec7d:96d3:6e2d:dcab])
-        by smtp.gmail.com with ESMTPSA id t1sm2419726pjf.26.2020.04.07.13.45.46
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0HjyJmpuP/fheL56eiDsEL3j2Jeu/bd9xUqsyeAAnTM=;
+        b=JP9+oZXgLK/cRztn3TyssbpTOyt4FuH/PTxTYsnTmxw7JIni8RTXI2H3yoLoNNX6G3
+         8v/QC3pKBYstqX/UXNrvZy+pbnwluuPfw7VqZdCY1dCPCJNNMh5LvUcruZiJkFG7wmk+
+         NuROIycrtwfdBMQLaoIargXO9h5swQfFKgcpPYocR6ePMRI0W8LIg51JRBoeOxnJdBkl
+         aEDTGsyn+V2lKv61zna0lZYTTZ1EN9slWCagY14sbn3NhoTH2UrWRaLtzhKpJHg6xWF6
+         hYx6zK4Jt4nj5q33zN23RRdBrPFiG2BAEln2AcIBhmJh0iEtbvcoBQRfAOOUQIPE+1oL
+         Nktg==
+X-Gm-Message-State: AGi0PuasaAK9Y3PXuiFisYLv06Ag9frGR8s1s4ejg90to5NjDcEy7XWw
+        im7hA+4HfSaD44JcW8+xhZmMBtunmM4=
+X-Google-Smtp-Source: APiQypL4G/+xD4DTFNlPJWRl7zy3Ii4bz+kI8xwAsD8O01hQouE/5T6m8UV9PQWXaqitO77zkF3d6Q==
+X-Received: by 2002:a05:651c:22e:: with SMTP id z14mr2768735ljn.64.1586292480080;
+        Tue, 07 Apr 2020 13:48:00 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id i2sm150899ljb.50.2020.04.07.13.47.58
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 13:45:47 -0700 (PDT)
-Subject: Re: [PATCH] libata: Return correct rc status in
- sata_pmp_eh_recover_pm() pwhen ATA_DFLAG_DETACH is set
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20190327090254.10365-1-kai.heng.feng@canonical.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fad442bc-792e-5e6b-4c8c-db932eec3c96@kernel.dk>
-Date:   Tue, 7 Apr 2020 13:45:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 07 Apr 2020 13:47:59 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id g27so5237500ljn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:47:58 -0700 (PDT)
+X-Received: by 2002:a2e:8911:: with SMTP id d17mr2932028lji.16.1586292478505;
+ Tue, 07 Apr 2020 13:47:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190327090254.10365-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <87blobnq02.fsf@x220.int.ebiederm.org> <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+ <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+ <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
+ <87lfnda3w3.fsf@x220.int.ebiederm.org> <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
+ <87blo45keg.fsf@x220.int.ebiederm.org> <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+ <AM6PR03MB5170FA8CACA7A1BB2026F55EE4C30@AM6PR03MB5170.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB5170FA8CACA7A1BB2026F55EE4C30@AM6PR03MB5170.eurprd03.prod.outlook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Apr 2020 13:47:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wibSLkDSW-5jqyXoaSN-pi9bQVAFtcyZfgYGxBaRp4E4Q@mail.gmail.com>
+Message-ID: <CAHk-=wibSLkDSW-5jqyXoaSN-pi9bQVAFtcyZfgYGxBaRp4E4Q@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/27/19 2:02 AM, Kai-Heng Feng wrote:
-> During system resume from suspend, this can be observed on ASM1062 PMP
-> controller:
-> <6>[12007.593358] ata10.01: SATA link down (SStatus 0 SControl 330)
-> <6>[12007.593469] ata10.02: hard resetting link
-> <6>[12007.908353] ata10.02: SATA link down (SStatus 0 SControl 330)
-> <6>[12007.911149] ata10.00: configured for UDMA/133
-> <0>[12007.972508] Kernel panic - not syncing: stack-protector: Kernel
-> stack is corrupted in: sata_pmp_eh_recover+0xa2b/0xa40
-> <0>[12007.972508]
-> <4>[12007.972515] CPU: 2 PID: 230 Comm: scsi_eh_9 Tainted: P OE
-> 4.15.0-46-generic #49-Ubuntu
-> <4>[12007.972517] Hardware name: System manufacturer System Product
-> Name/A320M-C, BIOS 1001 12/10/2017
-> <4>[12007.972518] Call Trace:
-> <4>[12007.972525] dump_stack+0x63/0x8b
-> <4>[12007.972530] panic+0xe4/0x244
-> <4>[12007.972533] ? sata_pmp_eh_recover+0xa2b/0xa40
-> <4>[12007.972536] __stack_chk_fail+0x19/0x20
-> <4>[12007.972538] sata_pmp_eh_recover+0xa2b/0xa40
-> <4>[12007.972543] ? ahci_do_softreset+0x260/0x260 [libahci]
-> <4>[12007.972545] ? ahci_do_hardreset+0x140/0x140 [libahci]
-> <4>[12007.972547] ? ata_phys_link_offline+0x60/0x60
-> <4>[12007.972549] ? ahci_stop_engine+0xc0/0xc0 [libahci]
-> <4>[12007.972552] sata_pmp_error_handler+0x22/0x30
-> <4>[12007.972554] ahci_error_handler+0x45/0x80 [libahci]
-> <4>[12007.972556] ata_scsi_port_error_handler+0x29b/0x770
-> <4>[12007.972558] ? ata_scsi_cmd_error_handler+0x101/0x140
-> <4>[12007.972559] ata_scsi_error+0x95/0xd0
-> <4>[12007.972562] ? scsi_try_target_reset+0x90/0x90
-> <4>[12007.972563] scsi_error_handler+0xd0/0x5b0
-> <4>[12007.972566] kthread+0x121/0x140
-> <4>[12007.972567] ? scsi_eh_get_sense+0x200/0x200
-> <4>[12007.972569] ? kthread_create_worker_on_cpu+0x70/0x70
-> <4>[12007.972572] ret_from_fork+0x22/0x40
-> <0>[12007.972591] Kernel Offset: 0xcc00000 from 0xffffffff81000000
-> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> 
-> Since sata_pmp_eh_recover_pmp() doens't set rc when ATA_DFLAG_DETACH is
-> set, sata_pmp_eh_recover() continues to run. During retry it triggers
-> the stack protector.
-> 
-> Set correct rc in sata_pmp_eh_recover_pmp() to let sata_pmp_eh_recover()
-> jump to pmp_fail directly.
+On Tue, Apr 7, 2020 at 1:29 PM Bernd Edlinger <bernd.edlinger@hotmail.de> wrote:
+>
+> Maybe, actually I considered this, but I was anxious that making something
+> that is so far not killable suddenly killable might break other things.
 
-Applied, with the commit message and title fixed up a bit.
+I don't think it can.
 
--- 
-Jens Axboe
+Basically, if you have a execve() and a setprocattr() racing, one or
+the other starts first.
 
+And if the execve() started first, then the setprocattr() thread would
+get killed by the execve(), and there's no serialization. So you might
+as well just say "it got killed before it even started to wait".
+
+So semantically, having a killable wait is basically exactly the same
+as losing the race - which wasn't ordered to begin with.
+
+It's not like anybody will see the return value - the thread that
+would have gotten the value got killed.
+
+So doing
+
+    if (down_writel_killable(&credlock))
+        return -EINTR;
+
+may *look* like it's new semantics, but it isn't really. That EINTR
+error isn't visible to anybody, and everything looks absolutely
+identical to "execve() in the other thread started earlier and killed
+the thread even before it got to the system call".
+
+              Linus
