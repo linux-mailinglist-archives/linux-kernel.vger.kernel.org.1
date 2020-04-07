@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DA71A0842
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 806881A0846
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727878AbgDGH2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:28:10 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47110 "EHLO
+        id S1727901AbgDGH2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 03:28:21 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:47102 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727600AbgDGH16 (ORCPT
+        with ESMTP id S1727528AbgDGH16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Apr 2020 03:27:58 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377Ra32152454;
-        Tue, 7 Apr 2020 07:27:42 GMT
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RcCM152481;
+        Tue, 7 Apr 2020 07:27:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=HXu0krWaJVrdRIcRgZBH9F6CYP3RcFfwJPOybRCJ39Y=;
- b=ONX5G3AI0CoSrUNm/PFAvGheIvZ1unOwxsus5/5AynhWjOsDAwp1dvEq4l0AzRKciRJq
- 3hbpbp/z/QUSHREsVQvMAmwgP3a43+4jxkg3lxbxPmO/4HiDGKT8F124K0TCbgZUy4dL
- XD4rxiI/l4lpYykRYjJSgYRm9dI9rXDkgYmS4Kz5WOWOSolbMaXozXm53D4VckdRI7my
- Bc0a3Kx1DjY+efhJasTibe6vclbZ4ndAmCpke5kNt6TcXkMv0VuBRwoDfvhdIDD8XzF1
- GQ1ISLuM1dcwpezzJjECxZtAe+Tz/+LoKkHbfuRob4tQgtDsXr0vykvghYWVYHF2jUD9 sw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 308ffd93jj-1
+ bh=Yi+ISfW4XANqf5H7nQYfhfCeBbpWZmxIlhqEHhJfA5w=;
+ b=vqZgC00FDwCa74cj7JpjQ6dXHrDGdR3y6qjJS6A4U1ez/K3h43+SVi5mEXmteO7vJolY
+ u53oCUNS64LHHGtU2x6IyzFg5dknA34YzdHh2/ZifrW/p2cntM/y+FjwMLL0qQlFPtQ1
+ nkUAPCUJUMcv7X3LE8/0hef1MPitiUo+hgdRTaMbVtw0UNoBRmu5J96DENz5Ocz3bocv
+ j5AGHrHkGl7J7jYMamMhFYlNvpBbiQeoHLbe+RX8EnTYhmSjtPofc2Ge4OX6Po+hVynD
+ O9tC5eMmfedRWb4nhAvG8MpD/8qmdqdrT+kz/s5a+/19kgQtKgMXgrwcT6RtS+jyfAYf QQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 308ffd93jq-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 07:27:42 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RSiU151366;
-        Tue, 7 Apr 2020 07:27:42 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 30741d9uew-1
+        Tue, 07 Apr 2020 07:27:44 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RIZh078195;
+        Tue, 7 Apr 2020 07:27:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 3073qf781j-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 07:27:42 +0000
+        Tue, 07 Apr 2020 07:27:44 +0000
 Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0377RfZA011289;
-        Tue, 7 Apr 2020 07:27:41 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0377RhGX032020;
+        Tue, 7 Apr 2020 07:27:43 GMT
 Received: from linux-1.home (/92.157.90.160)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 00:27:41 -0700
+        with ESMTP ; Tue, 07 Apr 2020 00:27:43 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
         alexandre.chartre@oracle.com
-Subject: [PATCH V2 7/9] x86/speculation: Annotate intra-function calls
-Date:   Tue,  7 Apr 2020 09:31:40 +0200
-Message-Id: <20200407073142.20659-8-alexandre.chartre@oracle.com>
+Subject: [PATCH V2 8/9] x86/speculation: Add unwind hint to trampoline return
+Date:   Tue,  7 Apr 2020 09:31:41 +0200
+Message-Id: <20200407073142.20659-9-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200407073142.20659-1-alexandre.chartre@oracle.com>
 References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=13 phishscore=0
- malwarescore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004070062
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=13
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070062
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=13 priorityscore=1501
  impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
@@ -67,78 +67,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some speculative execution mitigations (like retpoline) use intra-
-function calls. Provide a macro to annotate such intra-function calls
-so they can be properly handled by objtool, and use this macro to
-annotate intra-function calls.
+With retpoline, the address to branch to is pushed on the stack and
+the return instruction (ret) is used to jump to that address. Use the
+UNWIND_HINT_RET_OFFSET directive to inform objtool that the stack
+should be adjusted.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
+
+replace RETPOLINE_RET with UNWIND_HINT_RET_OFFSET
 ---
- arch/x86/include/asm/nospec-branch.h | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 9a946fd5e824..a345c6fa0541 100644
+index a345c6fa0541..5ce2a40a26da 100644
 --- a/arch/x86/include/asm/nospec-branch.h
 +++ b/arch/x86/include/asm/nospec-branch.h
-@@ -3,6 +3,7 @@
- #ifndef _ASM_X86_NOSPEC_BRANCH_H_
- #define _ASM_X86_NOSPEC_BRANCH_H_
+@@ -10,6 +10,7 @@
+ #include <asm/alternative-asm.h>
+ #include <asm/cpufeatures.h>
+ #include <asm/msr-index.h>
++#include <asm/unwind_hints.h>
  
-+#include <linux/frame.h>
- #include <linux/static_key.h>
- 
- #include <asm/alternative.h>
-@@ -19,6 +20,15 @@
- #define ANNOTATE_NOSPEC_ALTERNATIVE \
- 	ANNOTATE_IGNORE_ALTERNATIVE
- 
-+/*
-+ * Intra-function call instruction. This should be used as a substitute
-+ * for the call instruction when doing an intra-function call. It is
-+ * similar to the call instruction but it tells objtool that this is
-+ * an intra-function call.
-+ */
-+#define INTRA_FUNCTION_CALL \
-+	ANNOTATE_INTRA_FUNCTION_CALL call
-+
  /*
-  * Fill the CPU return stack buffer.
-  *
-@@ -47,13 +57,13 @@
- #define __FILL_RETURN_BUFFER(reg, nr, sp)	\
- 	mov	$(nr/2), reg;			\
- 771:						\
--	call	772f;				\
-+	INTRA_FUNCTION_CALL 772f;		\
- 773:	/* speculation trap */			\
- 	pause;					\
- 	lfence;					\
- 	jmp	773b;				\
- 772:						\
--	call	774f;				\
-+	INTRA_FUNCTION_CALL 774f;		\
- 775:	/* speculation trap */			\
- 	pause;					\
- 	lfence;					\
-@@ -83,7 +93,7 @@
-  * invocation below less ugly.
-  */
- .macro RETPOLINE_JMP reg:req
--	call	.Ldo_rop_\@
-+	INTRA_FUNCTION_CALL .Ldo_rop_\@
- .Lspec_trap_\@:
- 	pause
- 	lfence
-@@ -102,7 +112,7 @@
- .Ldo_retpoline_jmp_\@:
- 	RETPOLINE_JMP \reg
- .Ldo_call_\@:
--	call	.Ldo_retpoline_jmp_\@
-+	INTRA_FUNCTION_CALL .Ldo_retpoline_jmp_\@
+  * This should be used immediately before a retpoline alternative. It tells
+@@ -100,6 +101,7 @@
+ 	jmp	.Lspec_trap_\@
+ .Ldo_rop_\@:
+ 	mov	\reg, (%_ASM_SP)
++	UNWIND_HINT_RET_OFFSET
+ 	ret
  .endm
  
- /*
 -- 
 2.18.2
 
