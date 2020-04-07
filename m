@@ -2,126 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F551A06DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 07:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F1A1A06ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726881AbgDGF6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 01:58:50 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:47509 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726792AbgDGF6t (ORCPT
+        id S1726792AbgDGGCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 02:02:55 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:53820 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725802AbgDGGCy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 01:58:49 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6806B58030C;
-        Tue,  7 Apr 2020 01:58:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 07 Apr 2020 01:58:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=j0hiybRWpWmn4
-        RFlXkM4Nvl4eLWofEJym1lENDbvopU=; b=fzFRDfdn9v8eMnVl8iT7MynBqAS7Z
-        okMUoO2leumP0WFnxOmlJN0ax8p0/tDS/H/BeAKje4ULvIe6sfO6vVMY1TYLSONZ
-        BlQBJ5o+QXvNRU0UixXbFxKDf4oxpgPwmQ+RJ6wrkKi1T1Loo1FMiaY975GwutbO
-        C1fL+AWFxL3Ox7Bd+tdQaibXuLjvoM495YCZA4n0iZVWBNGti6c854Ik0d8uvKoi
-        AYMMiNff+1cHb4C7Qbpe3K5mqraDf2tnp5dxDxceKFHKB6kHw6cNHJDWX1sg26+E
-        29pCKYZcpMdVWJoIwnD1lUHF62RrCKCiRDwIuZ14ua7ig6suAX87PBocA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=j0hiybRWpWmn4RFlXkM4Nvl4eLWofEJym1lENDbvopU=; b=RZ3NC15S
-        6n2oFqaKn8j1/5yiru9oXGDSqQlt6pAoqUNX8YlDUL0eyiGG0qPkdeoHq1MEy0bK
-        8qE5uR3lIOHfWZq3zRProqQxvm2YphnnwtNxgsmdhGTNxYPciYTRM5xUBhrTFa7V
-        jCEtD0029ZuWAGTmzjOytKXs70lk5lrjnTLlFghTITzy27zkuptxYqCYX71Se030
-        qOc+gBbIaHdeCvb/GnEtflhJCTFY3NpNko/bBsIv3S59MsrBd2CTHuIehXwdB39l
-        oUnf5vpSIpGKCubiKYZaEk/+Rw+yy2KPzUE+LkVeLOV1uEFroMrINIlaJPLpbIvf
-        dOYN1j6MHQj0IQ==
-X-ME-Sender: <xms:lxaMXvsmFnSGvBb0DBILmQD_iruZgzBOoaorzpbJIwKkc7vXqGJI6g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudeggdellecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
-    rhesrghlihhsthgrihhrvdefrdhmvgeqnecukfhppeejfedrleefrdekgedrvddtkeenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishht
-    rghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:lxaMXjfRdmjaeSUQ-_foCoeQEjT2DUq9cH7API2izHpdw6phnOaPbA>
-    <xmx:lxaMXuaARqcMIIPBjAvGULjtqfWrXT3n9beNUjY97zebZmt0sKE1AQ>
-    <xmx:lxaMXs4QoxsT-W4VJYbB8KXl4oiHzjWccqlmTOLkCiWDinjxWS_2XA>
-    <xmx:mBaMXtFfF4rIiaxzDaVxIs6NYgvNgVVRa9caWph7Nazh_511BZ0W-Q>
-Received: from alistair-xps-14z.alistair23.me (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 738AC3280064;
-        Tue,  7 Apr 2020 01:58:46 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org, mripard@kernel.org, wens@csie.org
-Cc:     anarsoul@gmail.com, devicetree@vger.kernel.org,
-        alistair23@gmail.com, linux-arm-kernel@lists.infradead.org,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v2 3/3] arm64: allwinner: Enable Bluetooth and WiFi on sopine baseboard
-Date:   Mon,  6 Apr 2020 22:58:37 -0700
-Message-Id: <20200407055837.3508017-3-alistair@alistair23.me>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200407055837.3508017-1-alistair@alistair23.me>
-References: <20200407055837.3508017-1-alistair@alistair23.me>
+        Tue, 7 Apr 2020 02:02:54 -0400
+Received: by mail-pj1-f65.google.com with SMTP id l36so295717pjb.3;
+        Mon, 06 Apr 2020 23:02:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mDrnzDZiOnBQa09dvb0Cd1YjsF5mMmyz1I055wbl9vg=;
+        b=meOsJwIutYxTrhH9bp6ewRd5RYJhEuAug27VMNargRV3jJhXH/2M5/2bLN3x6lLh6L
+         qHDayjzoxQfjLNsOtDmIycx2hqVR7RlolxiUPwl1bR+K0kWCwmANPG7GnJt9Zdjy+Yt6
+         PSyAwp2HEzmADUXurEsLRtaijgS2W+MetX2pV6K1dypT7ZnnYmqloQsMiFB7WXnU6Zyn
+         6fl0LFoy8Riof1ih1YJzGFq2znARDo2Q8G+SOGeK0JzJBJB2suZC9i+DsbqBDMGdTpoN
+         9rhZ6q9k7JDlUaRQ979800OtaTOeL0DwrDvpc3qrq4RiPL6KGs3RKSQM9wBi+zK06jZt
+         VYpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mDrnzDZiOnBQa09dvb0Cd1YjsF5mMmyz1I055wbl9vg=;
+        b=oZXEOmDy1jgPb6+6UrxHmO4zRyo/s1m9kdI/nhTS9AYYd9UD2+BtL92NEEi5nl+U36
+         A9/P/EtHS+npJlUqp/CDuyC7VMHsQuSzM2T1UO4FBxCiGmGmR/o+tCiOmS3tsx4toi6f
+         dp4e3c5EY/VRV1xTOalW//AJUMBJaaVUgx4NhteF71YScB5yrZpC4KXYNhs5zH3Phkwo
+         91mA7WOXNEpZtal/cZPvl2EvdaXo/01qwbI/fRGcGAsrISy6DqOOKkDGhtpN2ISc+Qvn
+         HdeeM7Al6E0joonv8cXyhPe+hfyiXV0/+63bF6JA5l1B09g8D5+4i7A5pUEXlPk6mGtq
+         VWiQ==
+X-Gm-Message-State: AGi0PuZDIIJLeaHG+l4k8z5PjYdIbo8VJnH14C73QprtKVXMnPOHREOk
+        UiaShdyYuwsO1IpUpRbR418=
+X-Google-Smtp-Source: APiQypIQztCXQB9qQWzpcptTM4CGBLA/xZSQCGcmzobvLJ1Ru341f80oLgBRRdcEFutuAOe/Kse/qw==
+X-Received: by 2002:a17:902:a411:: with SMTP id p17mr939658plq.157.1586239371640;
+        Mon, 06 Apr 2020 23:02:51 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id d22sm2030774pgh.11.2020.04.06.23.02.50
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Apr 2020 23:02:51 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 23:02:43 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Stephen Boyd <swboyd@chromium.org>, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, taoren@fb.com
+Subject: Re: [PATCH v3] usb: gadget: aspeed: improve vhub port irq handling
+Message-ID: <20200407060242.GA15050@taoren-ubuntu-R90MNF91>
+References: <20200315191430.12379-1-rentao.bupt@gmail.com>
+ <20200401215826.GA8248@taoren-ubuntu-R90MNF91>
+ <512d625e45ea953d722bb7ea73c3619730312284.camel@kernel.crashing.org>
+ <20200403064826.GA10866@taoren-ubuntu-R90MNF91>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200403064826.GA10866@taoren-ubuntu-R90MNF91>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sopine board has an optional RTL8723BS WiFi + BT module that can be
-connected to UART1. Add this to the device tree so that it will work
-for users if connected.
+Hi Ben,
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
----
- .../allwinner/sun50i-a64-sopine-baseboard.dts | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
+On Thu, Apr 02, 2020 at 11:48:27PM -0700, Tao Ren wrote:
+> On Thu, Apr 02, 2020 at 09:45:38PM +1100, Benjamin Herrenschmidt wrote:
+> > On Wed, 2020-04-01 at 14:58 -0700, Tao Ren wrote:
+> > > Hi Ben,
+> > > 
+> > > Any further comments on the patch?
+> > 
+> > Ah sorry, nope. Did you check the generated assembly to see if it
+> > looked any better ? :-)
+> > 
+> > Otherwise,
+> > 
+> > Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> 
+> Thanks Ben for the review. Let me see if I can collect some runtime data
+> on my ast2400 BMC platform. Will update back later.
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-index 2f6ea9f3f6a2..f4be1bc56b07 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-@@ -103,6 +103,16 @@ ext_rgmii_phy: ethernet-phy@1 {
- 	};
- };
- 
-+&mmc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc1_pins>;
-+	vmmc-supply = <&reg_dldo4>;
-+	vqmmc-supply = <&reg_eldo1>;
-+	non-removable;
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
- &mmc2 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc2_pins>;
-@@ -174,6 +184,19 @@ &uart0 {
- 	status = "okay";
- };
- 
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
-+	uart-has-rtscts = <1>;
-+	status = "okay";
-+
-+	bluetooth {
-+		compatible = "realtek,rtl8723bs-bt";
-+		device-wake-gpios = <&r_pio 0 5 GPIO_ACTIVE_HIGH>; /* PL5 */
-+		host-wake-gpios = <&r_pio 0 6 GPIO_ACTIVE_HIGH>; /* PL6 */
-+	};
-+};
-+
- /* On Pi-2 connector */
- &uart2 {
- 	pinctrl-names = "default";
--- 
-2.25.1
+I ran some testing on my ast2400 and ast2500 BMC and looks like the
+for() loop runs faster than for_each_set_bit_from() loop in my
+environment. I'm not sure if something needs to be revised in my test
+code, but please kindly share your suggestions:
 
+I use get_cycles() to calculate execution time of 2 different loops, and
+ast_vhub_dev_irq() is replaced with barrier() to avoid "noise"; below
+are the results:
+
+  - when downstream port number is 5 and only 1 irq bit is set, it takes
+    ~30 cycles to finish for_each_set_bit() loop, and 20-25 cycles to
+    finish the for() loop.
+
+  - if downstream port number is 5 and all 5 bits are set, then
+    for_each_set_bit() loop takes ~50 cycles and for() loop takes ~25
+    cycles.
+
+  - when I increase downsteam port number to 16 and set 1 irq bit, the
+    for_each_set_bit() loop takes ~30 cycles and for() loop takes 25
+    cycles. It's a little surprise to me because I thought for() loop
+    would cost 60+ cycles (3 times of the value when port number is 5).
+
+  - if downstream port number is 16 and all irq status bits are set,
+    then for_each_set_bit() loop takes 60-70 cycles and for() loop takes
+    30+ cycles.
+
+
+Cheers,
+
+Tao
+
+> 
+> > > 
+> > > On Sun, Mar 15, 2020 at 12:14:30PM -0700, rentao.bupt@gmail.com
+> > > wrote:
+> > > > From: Tao Ren <rentao.bupt@gmail.com>
+> > > > 
+> > > > This patch evaluates vhub ports' irq mask before going through per-
+> > > > port
+> > > > irq handling one by one, which helps to speed up irq handling in
+> > > > case
+> > > > there is no port interrupt.
+> > > > 
+> > > > Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+> > > > ---
+> > > >  Changes in v3:
+> > > >    - assign istat to (unsigned long) bitmap before calling
+> > > >      "for_each_set_bit_from".
+> > > >  Changes in v2:
+> > > >    - use "for_each_set_bit" to speed up port irq handling.
+> > > > 
+> > > >  drivers/usb/gadget/udc/aspeed-vhub/core.c | 12 +++++++++---
+> > > >  drivers/usb/gadget/udc/aspeed-vhub/vhub.h |  8 +++-----
+> > > >  2 files changed, 12 insertions(+), 8 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/usb/gadget/udc/aspeed-vhub/core.c
+> > > > b/drivers/usb/gadget/udc/aspeed-vhub/core.c
+> > > > index f8d35dd60c34..555e8645fb1e 100644
+> > > > --- a/drivers/usb/gadget/udc/aspeed-vhub/core.c
+> > > > +++ b/drivers/usb/gadget/udc/aspeed-vhub/core.c
+> > > > @@ -134,11 +134,15 @@ static irqreturn_t ast_vhub_irq(int irq, void
+> > > > *data)
+> > > >  	}
+> > > >  
+> > > >  	/* Handle device interrupts */
+> > > > -	for (i = 0; i < vhub->max_ports; i++) {
+> > > > -		u32 dev_mask = VHUB_IRQ_DEVICE1 << i;
+> > > > +	if (istat & vhub->port_irq_mask) {
+> > > > +		unsigned long bitmap = istat;
+> > > > +		int offset = VHUB_IRQ_DEV1_BIT;
+> > > > +		int size = VHUB_IRQ_DEV1_BIT + vhub->max_ports;
+> > > >  
+> > > > -		if (istat & dev_mask)
+> > > > +		for_each_set_bit_from(offset, &bitmap, size) {
+> > > > +			i = offset - VHUB_IRQ_DEV1_BIT;
+> > > >  			ast_vhub_dev_irq(&vhub->ports[i].dev);
+> > > > +		}
+> > > >  	}
+> > > >  
+> > > >  	/* Handle top-level vHub EP0 interrupts */
+> > > > @@ -332,6 +336,8 @@ static int ast_vhub_probe(struct
+> > > > platform_device *pdev)
+> > > >  
+> > > >  	spin_lock_init(&vhub->lock);
+> > > >  	vhub->pdev = pdev;
+> > > > +	vhub->port_irq_mask = GENMASK(VHUB_IRQ_DEV1_BIT + vhub-
+> > > > >max_ports - 1,
+> > > > +				      VHUB_IRQ_DEV1_BIT);
+> > > >  
+> > > >  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> > > >  	vhub->regs = devm_ioremap_resource(&pdev->dev, res);
+> > > > diff --git a/drivers/usb/gadget/udc/aspeed-vhub/vhub.h
+> > > > b/drivers/usb/gadget/udc/aspeed-vhub/vhub.h
+> > > > index fac79ef6d669..23a1ac91f8d2 100644
+> > > > --- a/drivers/usb/gadget/udc/aspeed-vhub/vhub.h
+> > > > +++ b/drivers/usb/gadget/udc/aspeed-vhub/vhub.h
+> > > > @@ -51,14 +51,11 @@
+> > > >  #define VHUB_CTRL_UPSTREAM_CONNECT		(1 << 0)
+> > > >  
+> > > >  /* IER & ISR */
+> > > > +#define VHUB_IRQ_DEV1_BIT			9
+> > > >  #define VHUB_IRQ_USB_CMD_DEADLOCK		(1 << 18)
+> > > >  #define VHUB_IRQ_EP_POOL_NAK			(1 << 17)
+> > > >  #define VHUB_IRQ_EP_POOL_ACK_STALL		(1 << 16)
+> > > > -#define VHUB_IRQ_DEVICE5			(1 << 13)
+> > > > -#define VHUB_IRQ_DEVICE4			(1 << 12)
+> > > > -#define VHUB_IRQ_DEVICE3			(1 << 11)
+> > > > -#define VHUB_IRQ_DEVICE2			(1 << 10)
+> > > > -#define VHUB_IRQ_DEVICE1			(1 << 9)
+> > > > +#define VHUB_IRQ_DEVICE1			(1 <<
+> > > > (VHUB_IRQ_DEV1_BIT))
+> > > >  #define VHUB_IRQ_BUS_RESUME			(1 << 8)
+> > > >  #define VHUB_IRQ_BUS_SUSPEND 			(1 << 7)
+> > > >  #define VHUB_IRQ_BUS_RESET 			(1 << 6)
+> > > > @@ -402,6 +399,7 @@ struct ast_vhub {
+> > > >  	/* Per-port info */
+> > > >  	struct ast_vhub_port		*ports;
+> > > >  	u32				max_ports;
+> > > > +	u32				port_irq_mask;
+> > > >  
+> > > >  	/* Generic EP data structures */
+> > > >  	struct ast_vhub_ep		*epns;
+> > > > -- 
+> > > > 2.17.1
+> > > > 
+> > 
