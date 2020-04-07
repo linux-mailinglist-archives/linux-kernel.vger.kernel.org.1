@@ -2,151 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A9C21A0D8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880111A0DAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728637AbgDGM3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:29:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728075AbgDGM3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:29:24 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50D0F2051A;
-        Tue,  7 Apr 2020 12:29:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586262562;
-        bh=hrXJIm2yARS2f7WqTD+GSOvFj12Qjg9tKPNB5u2C4Zw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=kUGwajbMjegrZ9/FXEfvB/C/P+YdB3LOk1YwoNOBffm+Plv2nIpa/cAVirE/B3fGw
-         V2yjSVgwFPyr9GPyB0RsXD2GdCV4E2PYH7lMIfzcrtsGMJbG00wMWvVY/7AGuIoJ6I
-         fwU5Z+J4ITndAyObWgHa4x5VUu35POgDzptHveRk=
-Date:   Tue, 7 Apr 2020 21:29:18 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 8/9] riscv: introduce interfaces to patch kernel code
-Message-Id: <20200407212918.235324cbc82e9e4deb839b14@kernel.org>
-In-Reply-To: <CANXhq0psUB4OaFuoTu-VuQNdaVOBs2UCv5kjx1Oad6rwajA1_Q@mail.gmail.com>
-References: <cover.1583772574.git.zong.li@sifive.com>
-        <d27d9e68491e1df67dbee6c22df6a72ff95bab18.1583772574.git.zong.li@sifive.com>
-        <20200401003233.17fe4b6f7075e5b8f0ed5114@kernel.org>
-        <CANXhq0ra3o+mgenbYLq_q0eZY2KiXNpWmo2V0amD0cFDqCQkXw@mail.gmail.com>
-        <20200402101733.1ef240faeaeada6e4d38ae80@kernel.org>
-        <CANXhq0rMbkNxQ3_qqYEKe8DSbL-vfQku6V9a81Hy9cxW4LaW9g@mail.gmail.com>
-        <20200404121428.596911ba5653f8b18a80eab2@kernel.org>
-        <CANXhq0rc+6jor7CMaa-zqSn3vNBdJhj3gD5wGxPkXAtVVHDHdQ@mail.gmail.com>
-        <CANXhq0psUB4OaFuoTu-VuQNdaVOBs2UCv5kjx1Oad6rwajA1_Q@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728655AbgDGMcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 08:32:21 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38760 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728573AbgDGMcU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 08:32:20 -0400
+Received: by mail-qk1-f194.google.com with SMTP id h14so1368942qke.5;
+        Tue, 07 Apr 2020 05:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HXfkv1G0Lz+UcHIZnaf78/cXd++W3mTTWiLtv0MGDKg=;
+        b=nq5Sj1vdkVIinV47uKusx+/IAaxPorzbZ0bpNu0hoqO92OIO8KW65Cn3Eud9lzmTOz
+         J/uel0MXGV7EAQoxZBCa4lC6et8tGhjgju+KgulMZq0manmR3kV1IuntfGygoRYNLW4Q
+         9yAlO1LEVeBF72c+JjSuhIjEFEd4amS41Xbaj8oUueL34Wku4m27s5hSC6B1xX18otq/
+         2lwFTtoaNiyYJMdXTrf/W9TvurJuPgCae54MmMhny+O5sCgOhDeEndUqpL3AyrOvaDx2
+         f9jjQNdCxknVsiVVZQ8LWNYEDXv1sKcfuk4B5WR4aww1S4/e2xazl59bfCSQlG3BQfIP
+         /vXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HXfkv1G0Lz+UcHIZnaf78/cXd++W3mTTWiLtv0MGDKg=;
+        b=kFQuvs1fOz5WMx8p8TbMC5yOr9Ky7M2aN1VIpdNnfTvHdpqGLl8D4rgm7U8PcnSR99
+         ejSHRmwos8ycqLU3H6gNeVGSZw6AjUUcu0hyW9GNFrWkxVJO4A0JUo97+vqaN43drBOc
+         v0XnEKBigYa4K5KWNrOeg4xDFRD3AAOV8obu8V1kS3cm8PAXvgFHFO1NSngigo6VeAsE
+         MskoKTJJqSZ7/xsMCk/myEJt8sZ/W75j39+zQDSljZhNcUS1Nb7OWAWAoxfDMarPC680
+         JcxDvbXHqnuQZCtmih8I3xg78hndcZn/Npo2oAu/mSUxhaWBnndGWX83RD55kaLLRiXR
+         WuSw==
+X-Gm-Message-State: AGi0PubMZFaPQaTjd6a7VSr5KbfViizVbuRRGQEZIu8/wbXKBr9Y0Ob4
+        luinhafhtHYRQsEhQ4ePylU=
+X-Google-Smtp-Source: APiQypLebGaYj1oLCVg67ZweYiLjid3Gs93MfJOn0wrXL3dKmJRwIN8Od+7n97Ecv5WuuGbXloyzsQ==
+X-Received: by 2002:a05:620a:12fa:: with SMTP id f26mr1900865qkl.374.1586262738547;
+        Tue, 07 Apr 2020 05:32:18 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id l42sm17747121qtf.51.2020.04.07.05.32.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 05:32:17 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5DB5A409A3; Tue,  7 Apr 2020 09:32:15 -0300 (-03)
+Date:   Tue, 7 Apr 2020 09:32:15 -0300
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Petr Mladek <pmladek@suse.com>,
+        Andrey Zhizhikin <andrey.z@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Subject: Re: [PATCH v2 4/5] tools api: add a lightweight buffered reading api
+Message-ID: <20200407123215.GA8452@kernel.org>
+References: <20200402154357.107873-1-irogers@google.com>
+ <20200402154357.107873-5-irogers@google.com>
+ <CAM9d7cgCyatYvH98m8DYiAe1CapqW8Sfu8VtwnF24kJQbUvG=Q@mail.gmail.com>
+ <20200406140951.GE29826@kernel.org>
+ <CAP-5=fVt9ueNm66MrV=CBYQPOXdOxYo2w_jiF-Cm-8i70SD8mQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAP-5=fVt9ueNm66MrV=CBYQPOXdOxYo2w_jiF-Cm-8i70SD8mQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Apr 2020 18:36:42 +0800
-Zong Li <zong.li@sifive.com> wrote:
-
-> On Sat, Apr 4, 2020 at 8:12 PM Zong Li <zong.li@sifive.com> wrote:
-> >
-> > On Sat, Apr 4, 2020 at 11:14 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> > >
-> > > Hi Zong,
-> > >
-> > > On Fri, 3 Apr 2020 17:04:51 +0800
-> > > Zong Li <zong.li@sifive.com> wrote:
-> > >
-> > > > > > > > +{
-> > > > > > > > +     void *waddr = addr;
-> > > > > > > > +     bool across_pages = (((uintptr_t) addr & ~PAGE_MASK) + len) > PAGE_SIZE;
-> > > > > > > > +     unsigned long flags = 0;
-> > > > > > > > +     int ret;
-> > > > > > > > +
-> > > > > > > > +     raw_spin_lock_irqsave(&patch_lock, flags);
-> > > > > > >
-> > > > > > > This looks a bit odd since stop_machine() is protected by its own mutex,
-> > > > > > > and also the irq is already disabled here.
-> > > > > >
-> > > > > > We need it because we don't always enter the riscv_patch_text_nosync()
-> > > > > > through stop_machine mechanism. If we call the
-> > > > > > riscv_patch_text_nosync() directly, we need a lock to protect the
-> > > > > > page.
-> > > > >
-> > > > > Oh, OK, but it leads another question. Is that safe to patch the
-> > > > > text without sync? Would you use it for UP system?
-> > > > > I think it is better to clarify "in what case user can call _nosync()"
-> > > > > and add a comment on it.
+Em Mon, Apr 06, 2020 at 09:15:51AM -0700, Ian Rogers escreveu:
+> On Mon, Apr 6, 2020 at 7:09 AM Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com> wrote:
+> > Em Sat, Apr 04, 2020 at 12:06:45PM +0900, Namhyung Kim escreveu:
+> > > On Fri, Apr 3, 2020 at 12:44 AM Ian Rogers <irogers@google.com> wrote:
 > > > >
-> > > > The ftrace is one of the cases, as documentation of ftrace said, when
-> > > > dynamic ftrace is initialized, it calls kstop_machine to make the
-> > > > machine act like a uniprocessor so that it can freely modify code
-> > > > without worrying about other processors executing that same code. So
-> > > > the ftrace called the _nosync interface here directly.
-> > >
-> > > Hmm, even though, since it already running under kstop_machine(), no
-> > > other thread will run.
-> > > Could you consider to use text_mutex instead of that? The text_mutex
-> > > is already widely used in x86 and kernel/kprobes.c etc.
-> > >
-> > > (Hmm, it seems except for x86, alternative code don't care about
-> > >  racing...)
-> > >
-> 
-> The mutex_lock doesn't seem to work in ftrace context, I think it
-> might be the reason why other architectures didn't use text_mutex in
-> somewhere.
+> > > > The synthesize benchmark shows the majority of execution time going to
+> > > > fgets and sscanf, necessary to parse /proc/pid/maps. Add a new buffered
+> > > > reading library that will be used to replace these calls in a follow-up
+> > > > CL.
 
-Yes, you need to implement ftrace_arch_code_modify_prepare() and
-ftrace_arch_code_modify_post_process() in arch/riscv/kernel/ftrace.c.
-Please see arch/x86/kernel/ftrace.c.
+> > waiting for some conclusion to this thread,
+ 
+> Thanks, sorry I was busy at the weekend. I agree with Namhyung's
+> comments, nice catch! Fwiw, it comes from my refactoring this api out
+> of a specific /proc/pid/maps reader. I'll work to address the issue
+> and ideally stick some tests of the corner cases somewhere - any
+> suggestions? This doesn't feel like a perf test, nor is it a kernel
 
-Thank you,
+It may not be uniquely useful for perf, but I'd start by adding an entry
+to 'perf test' anyway, as its used by perf, after all what we want is
+that code gets tested regularly, adding it to 'perf test' achieves that.
 
+Thanks,
+
+- Arnaldo
+
+> side test.
 > 
-> # echo function > current_tracer
-> [   28.198070] BUG: sleeping function called from invalid context at
-> kernel/locking/mutex.c:281
-> [   28.198663] in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid:
-> 11, name: migration/0
-> [   28.199491] CPU: 0 PID: 11 Comm: migration/0 Not tainted
-> 5.6.0-00012-gd6f56a7a4be2-dirty #10
-> [   28.200330] Call Trace:
-> [   28.200798] [<ffffffe00060319a>] walk_stackframe+0x0/0xcc
-> [   28.201395] [<ffffffe000603442>] show_stack+0x3c/0x46
-> [   28.200798] [<ffffffe00060319a>] walk_stackframe+0x0/0xcc
-> [   28.201395] [<ffffffe000603442>] show_stack+0x3c/0x46
-> [   28.201898] [<ffffffe000d498b0>] dump_stack+0x76/0x90
-> [   28.202329] [<ffffffe00062c3f0>] ___might_sleep+0x100/0x10e
-> [   28.202720] [<ffffffe00062c448>] __might_sleep+0x4a/0x78
-> [   28.203033] [<ffffffe000d61622>] mutex_lock+0x2c/0x54
-> [   28.203397] [<ffffffe00060393e>] patch_insn_write+0x32/0xd8
-> [   28.203780] [<ffffffe000603a94>] patch_text_nosync+0x10/0x32
-> [   28.204139] [<ffffffe0006051b0>] __ftrace_modify_call+0x5c/0x6c
-> [   28.204497] [<ffffffe0006052c6>] ftrace_update_ftrace_func+0x20/0x4a
-> [   28.204919] [<ffffffe000697742>] ftrace_modify_all_code+0xa0/0x148
-> [   28.205378] [<ffffffe0006977fc>] __ftrace_modify_code+0x12/0x1c
-> [   28.205793] [<ffffffe0006924b6>] multi_cpu_stop+0xa2/0x158
-> [   28.206147] [<ffffffe0006921b0>] cpu_stopper_thread+0xa4/0x13a
-> [   28.206510] [<ffffffe000629f38>] smpboot_thread_fn+0xf8/0x1da
-> [   28.206868] [<ffffffe000625f36>] kthread+0xfa/0x12a
-> [   28.207201] [<ffffffe0006017e2>] ret_from_exception+0x0/0xc
+> Thanks,
+> Ian
 > 
+> > > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > > ---
+> > > >  tools/lib/api/io.h | 107 +++++++++++++++++++++++++++++++++++++++++++++
+> > > >  1 file changed, 107 insertions(+)
+> > > >  create mode 100644 tools/lib/api/io.h
+> > > >
+> > > > diff --git a/tools/lib/api/io.h b/tools/lib/api/io.h
+> > > > new file mode 100644
+> > > > index 000000000000..5aa5b0e26a7a
+> > > > --- /dev/null
+> > > > +++ b/tools/lib/api/io.h
+> > > > @@ -0,0 +1,107 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > > +/*
+> > > > + * Lightweight buffered reading library.
+> > > > + *
+> > > > + * Copyright 2019 Google LLC.
+> > > > + */
+> > > > +#ifndef __API_IO__
+> > > > +#define __API_IO__
+> > > > +
+> > > > +struct io {
+> > > > +       /* File descriptor being read/ */
+> > > > +       int fd;
+> > > > +       /* Size of the read buffer. */
+> > > > +       unsigned int buf_len;
+> > > > +       /* Pointer to storage for buffering read. */
+> > > > +       char *buf;
+> > > > +       /* End of the storage. */
+> > > > +       char *end;
+> > > > +       /* Currently accessed data pointer. */
+> > > > +       char *data;
+> > > > +       /* Set true on when the end of file on read error. */
+> > > > +       bool eof;
+> > > > +};
+> > > > +
+> > > > +static inline void io__init(struct io *io, int fd,
+> > > > +                           char *buf, unsigned int buf_len)
+> > > > +{
+> > > > +       io->fd = fd;
+> > > > +       io->buf_len = buf_len;
+> > > > +       io->buf = buf;
+> > > > +       io->end = buf;
+> > > > +       io->data = buf;
+> > > > +       io->eof = false;
+> > > > +}
+> > > > +
+> > > > +/* Reads one character from the "io" file with similar semantics to fgetc. */
+> > > > +static inline int io__get_char(struct io *io)
+> > > > +{
+> > > > +       char *ptr = io->data;
+> > > > +
+> > > > +       if (ptr == io->end) {
+> > > > +               ssize_t n = read(io->fd, io->buf, io->buf_len);
+> > > > +
+> > > > +               if (n <= 0) {
+> > > > +                       io->eof = true;
+> > > > +                       return -1;
+> > > > +               }
+> > > > +               ptr = &io->buf[0];
+> > > > +               io->end = &io->buf[n];
+> > > > +       }
+> > > > +       io->data = ptr + 1;
+> > > > +       return *ptr;
+> > > > +}
+> > > > +
+> > > > +/* Read a hexadecimal value with no 0x prefix into the out argument hex.
+> > > > + * Returns -1 on error or if nothing is read, otherwise returns the character
+> > > > + * after the hexadecimal value.
+> > > > + */
+> > > > +static inline int io__get_hex(struct io *io, __u64 *hex)
+> > > > +{
+> > > > +       bool first_read = true;
+> > > > +
+> > > > +       *hex = 0;
+> > > > +       while (true) {
+> > > > +               char ch = io__get_char(io);
+> > > > +
+> > >
+> > > Maybe you can add this
+> > >
+> > >     if (io->eof)
+> > >         return 0;
+> > >
+> > > Please see below
+> > >
+> > >
+> > > > +               if (ch < 0)
+> > > > +                       return ch;
+> > > > +               if (ch >= '0' && ch <= '9')
+> > > > +                       *hex = (*hex << 4) | (ch - '0');
+> > > > +               else if (ch >= 'a' && ch <= 'f')
+> > > > +                       *hex = (*hex << 4) | (ch - 'a' + 10);
+> > > > +               else if (ch >= 'A' && ch <= 'F')
+> > > > +                       *hex = (*hex << 4) | (ch - 'A' + 10);
+> > > > +               else if (first_read)
+> > > > +                       return -1;
+> > > > +               else
+> > > > +                       return ch;
+> > > > +               first_read = false;
+> > > > +       }
+> > > > +}
+> > >
+> > > What if a file contains hex digits at the end (without trailing spaces)?
+> > > I guess it'd see EOF and return -1, right?
+> > >
+> > > And it'd better to be clear when it sees a big hex numbers -
+> > > it could have a comment that it'd simply discard upper bits
+> > > or return an error.
+> > >
+> > > > +
+> > > > +/* Read a decimal value into the out argument dec.
+> > > > + * Returns -1 on error or if nothing is read, otherwise returns the character
+> > > > + * after the decimal value.
+> > > > + */
+> > > > +static inline int io__get_dec(struct io *io, __u64 *dec)
+> > > > +{
+> > > > +       bool first_read = true;
+> > > > +
+> > > > +       *dec = 0;
+> > > > +       while (true) {
+> > > > +               char ch = io__get_char(io);
+> > > > +
+> > > > +               if (ch < 0)
+> > > > +                       return ch;
+> > > > +               if (ch >= '0' && ch <= '9')
+> > > > +                       *dec = (*dec * 10) + ch - '0';
+> > > > +               else if (first_read)
+> > > > +                       return -1;
+> > > > +               else
+> > > > +                       return ch;
+> > > > +               first_read = false;
+> > > > +       }
+> > > > +}
+> > >
+> > > Ditto.
+> > >
+> > > Thanks
+> > > Namhyung
+> > >
+> > >
+> > > > +
+> > > > +#endif /* __API_IO__ */
+> > > > --
+> > > > 2.26.0.rc2.310.g2932bb562d-goog
+> > > >
 > >
-> > Yes, text_mutex seems to be great. I'll change to use text_mutex in
-> > the next version if it works fine after testing. Thanks.
+> > --
 > >
-> > > Thank you,
-> > > --
-> > > Masami Hiramatsu <mhiramat@kernel.org>
-
+> > - Arnaldo
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+
+- Arnaldo
