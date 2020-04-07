@@ -2,100 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 250981A0BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF431A0BFE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728344AbgDGKa5 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 06:30:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46992 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728075AbgDGKa4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:30:56 -0400
-Received: from [5.158.153.52] (helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jLlVG-0004Aj-Kw; Tue, 07 Apr 2020 12:30:46 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 31A28101303; Tue,  7 Apr 2020 12:30:46 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Andrei Vagin <avagin@gmail.com>,
-        "Michael Kerrisk \(man-pages\)" <mtk.manpages@gmail.com>
-Cc:     Andrei Vagin <avagin@openvz.org>, Dmitry Safonov <dima@arista.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Containers <containers@lists.linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Adrian Reber <adrian@lisas.de>
-Subject: Re: RFC: time_namespaces(7) manual page
-In-Reply-To: <20200407032318.GA494464@gmail.com>
-References: <7221df0a-435b-f8bc-ff91-c188af535e73@gmail.com> <20200407032318.GA494464@gmail.com>
-Date:   Tue, 07 Apr 2020 12:30:46 +0200
-Message-ID: <87r1wzk2p5.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1728318AbgDGKda convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 06:33:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:13947 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726399AbgDGKd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:33:29 -0400
+IronPort-SDR: FPFM3prjgIG1IJDrOPG1N/h4i3Na8ugc+3Gdw15sfP7Cd23WgOWP+b3ndHprKZp3Dfm/FB/LH9
+ Qh665Az/REQA==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 03:33:29 -0700
+IronPort-SDR: XpZt+O2iUSCoEK9yUeNSh7sumO7vG9vjSw8ex36zPLiZlE9N5cc8i5pG7TOakd9BQpVM6bly1l
+ me/a5kPTscGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,353,1580803200"; 
+   d="scan'208";a="361496130"
+Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Apr 2020 03:33:29 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 7 Apr 2020 03:33:28 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 7 Apr 2020 03:33:28 -0700
+Received: from shsmsx108.ccr.corp.intel.com (10.239.4.97) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 7 Apr 2020 03:33:28 -0700
+Received: from shsmsx104.ccr.corp.intel.com ([169.254.5.225]) by
+ SHSMSX108.ccr.corp.intel.com ([169.254.8.7]) with mapi id 14.03.0439.000;
+ Tue, 7 Apr 2020 18:33:25 +0800
+From:   "Liu, Yi L" <yi.l.liu@intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+CC:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>
+Subject: RE: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
+Thread-Topic: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
+Thread-Index: AQHWAEUdkW8K+/kg/06c7098DvJyv6hgm8wAgANYlCCAAK00AIAA6IawgAEUvACABu4SMA==
+Date:   Tue, 7 Apr 2020 10:33:25 +0000
+Message-ID: <A2975661238FB949B60364EF0F2C25743A224C8F@SHSMSX104.ccr.corp.intel.com>
+References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
+ <1584880325-10561-7-git-send-email-yi.l.liu@intel.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D7FF98F@SHSMSX104.ccr.corp.intel.com>
+ <A2975661238FB949B60364EF0F2C25743A21D8C6@SHSMSX104.ccr.corp.intel.com>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D805F75@SHSMSX104.ccr.corp.intel.com>
+ <A2975661238FB949B60364EF0F2C25743A21ED01@SHSMSX104.ccr.corp.intel.com>
+ <20200403083407.GB1269501@myrica>
+In-Reply-To: <20200403083407.GB1269501@myrica>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.239.127.40]
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrei Vagin <avagin@gmail.com> writes:
-> On Sat, Apr 04, 2020 at 01:08:50PM +0200, Michael Kerrisk (man-pages) wrote:
->>    /proc/PID/timens_offsets
->>        Associated  with  each  time namespace are offsets, expressed with
->>        respect to the initial time namespace, that define the  values  of
->>        the  monotonic  and  boot clocks in that namespace.  These offsets
->>        are exposed via the file  /proc/PID/timens_offsets.   Within  this
->>        file,  the  offsets  are  expressed  as  lines consisting of three
->>        space-delimited fields:
->> 
->>            <clock-id> <offset-secs> <offset-nanosecs>
->> 
->>        The clock-id identifies the clock whose offsets are  being  shown.
->>        This field is either 1, for CLOCK_MONOTONIC, or 7, for CLOCK_BOOT‐
->>        TIME.  The remaining  fields  express  the  offset  (seconds  plus
->>        nanoseconds)  for the clock in this time namespace.  These offsets
->>        are expressed relative to the clock values  in  the  initial  time
->>        namespace.   In  the  initial time namespace, the contents of this
->>        file are as follows:
->
-> I think we can mention that offset-secs can be negative, but
-> offset-nanosleep has to be 0 or positive.
+Hi Jean,
 
-I assume you meant offset-nanosecs :)
+> From: Jean-Philippe Brucker < jean-philippe@linaro.org >
+> Sent: Friday, April 3, 2020 4:35 PM
+> Subject: Re: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
+> 
+> On Thu, Apr 02, 2020 at 08:05:29AM +0000, Liu, Yi L wrote:
+> > > > > > static long vfio_iommu_type1_ioctl(void *iommu_data,
+> > > > > >  		default:
+> > > > > >  			return -EINVAL;
+> > > > > >  		}
+> > > > > > +
+> > > > > > +	} else if (cmd == VFIO_IOMMU_BIND) {
+> > > > >
+> > > > > BIND what? VFIO_IOMMU_BIND_PASID sounds clearer to me.
+> > > >
+> > > > Emm, it's up to the flags to indicate bind what. It was proposed to
+> > > > cover the three cases below:
+> > > > a) BIND/UNBIND_GPASID
+> > > > b) BIND/UNBIND_GPASID_TABLE
+> > > > c) BIND/UNBIND_PROCESS
+> > > > <only a) is covered in this patch>
+> > > > So it's called VFIO_IOMMU_BIND.
+> > >
+> > > but aren't they all about PASID related binding?
+> >
+> > yeah, I can rename it. :-)
+> 
+> I don't know if anyone intends to implement it, but SMMUv2 supports
+> nesting translation without any PASID support. For that case the name
+> VFIO_IOMMU_BIND_GUEST_PGTBL without "PASID" anywhere makes more sense.
+> Ideally we'd also use a neutral name for the IOMMU API instead of
+> bind_gpasid(), but that's easier to change later.
 
-That aside, there are also limitations in place.
+I agree VFIO_IOMMU_BIND is somehow not straight-forward. Especially, it may
+cause confusion when thinking about VFIO_SET_IOMMU. How about using
+VFIO_NESTING_IOMMU_BIND_STAGE1 to cover a) and b)? And has another
+VFIO_BIND_PROCESS in future for the SVA bind case.
 
-  1) Negative offsets which would offset time into negative space are
-     rejected, i.e. its enforced that
+Regards,
+Yi Liu
 
-          now(CLOCK) + offset[CLOCK] >= 0
-
-     This is necessary as the kernel expects and also enforces that time
-     cannot be negative.
-
-  2) Positive offsets which would offset time above KTTIME_SEC_MAX / 2 are
-     rejected, i.e. it's enforced that
-
-          now(CLOCK) + offset[CLOCK] <= KTIME_SEC_MAX / 2
-
-     That is done to prevent that clocks wrap around if the offset would
-     bring it close enough to the wrap around point.
-
-     The cutoff value is a pretty arbitrary choice (~146 years). So to
-     hit this you'd need a system which has an uptime of > 146 years,
-     which is pretty much unrealistic.
-
-Thanks,
-
-        tglx
-
-     
-          
