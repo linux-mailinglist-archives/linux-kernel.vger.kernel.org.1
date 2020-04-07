@@ -2,65 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBB31A04AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF971A04AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbgDGBzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 21:55:10 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:42053 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgDGBzK (ORCPT
+        id S1726587AbgDGBzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 21:55:42 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50716 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726329AbgDGBzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 21:55:10 -0400
-Received: by mail-ed1-f65.google.com with SMTP id cw6so1975547edb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:55:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KRU1fUgJ9mq/2EmmX91pd4664Jbd7pOskrgtWur3uVw=;
-        b=bqiDlA3C9o4YLVhBSNxIsAgtPP6zwn2iHA/LGr5/A4wVwSOFzqqwoeMiVVrb9vitK1
-         o8zzvmgcqstnFZw6ThWOIBaQUHve4CKT21SaTzBZd50FTqHmSJM79a1ReaHPe8eHRDNR
-         /rClhsaLuUVxqg64l1glyh3RvpoFYLfQVS3VaNTj3jTe1SVZcX2+J3vK8S6pLf48cKEV
-         1ryouG/L09K0hG1rWDiss6RJAaaPsynltLuW2mkurIFA8dkh1OlmlLc8bjAabSIHCYvb
-         ngsf5ZoPVBQiNRjNZOOcE7uSlJWmvEms9KZYEmr1rxRHL5GFUSXAL/SteL1qUi9XGiKA
-         8eHA==
+        Mon, 6 Apr 2020 21:55:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586224540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oItCj2q8YHb63ZBfFyBFQkDD3U/LJfbIS9cHzfIZ+kg=;
+        b=B6Rz7dKmqjP/KZc/yHJLXh5qkViWKUmVdbJHXVWDpYNpF4GSCLOLl5E5YMazBfhaNyFkTf
+        7ZrCwbnlb4mfKto+XLkIQKRWmcjGxCdPfAGDGvaXqnos+7KVxeJOBDkw6tRlCGKPTc47mR
+        FSrvw5rjSd/jmmk+pa5K4YuaEh4t+Y8=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-2xOz6wj1N22t3dsDwhlmSA-1; Mon, 06 Apr 2020 21:55:38 -0400
+X-MC-Unique: 2xOz6wj1N22t3dsDwhlmSA-1
+Received: by mail-qt1-f198.google.com with SMTP id n89so1748662qte.15
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:55:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KRU1fUgJ9mq/2EmmX91pd4664Jbd7pOskrgtWur3uVw=;
-        b=s8D/HPZ1byndu4BbkpmtuxTVQhuqFzKjeNXZiS9mEwF7cMwJdYyWKVQPUHB2ERIR43
-         IgHFmn0ilEZAm7knXyhBDvdwS9KxXmOTW93z3pyXq4bxb2w7ZOwa7IbRcX8ecUc71P1Z
-         bGR5PVkYYC6jCITyOy3CCmRYn8AStS0ucGmAuvCAUyG9wOCS1m3FTCevgG66fRgdWN50
-         jKbTyPtDlM6ckCbeYJ4u0aw0oybqsJ5YV1Q4+GHPP+p/5Hgnl6GakQbG+qPqYiANgjbE
-         igDg3PhWON6KxiKty84ug6PVIa8oiDsO83PQyLjsc+v1kTMs9j4ytTSD3lGu6DZNZG6N
-         Xwrg==
-X-Gm-Message-State: AGi0PuZ7h8fKpYYJlUua/XuMVkFodpT1SNmpQ8u+xWp1+hUwGZlI7/ng
-        +scHwOGhkKCZKPv6dRw9MBkmKL7vzB0f327nvh0=
-X-Google-Smtp-Source: APiQypKdqA2fyUEeoN7aOI2mbnY/T0lCZvgplImhxrqmDzfQTrr/KQ4eHosXUu4dPrQESoEWVU7U8nCIlmi2G8JC78M=
-X-Received: by 2002:a05:6402:b7b:: with SMTP id cb27mr52684edb.343.1586224508665;
- Mon, 06 Apr 2020 18:55:08 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oItCj2q8YHb63ZBfFyBFQkDD3U/LJfbIS9cHzfIZ+kg=;
+        b=rAS68Ug9Up1JhHOXOWlTBX1Ta+iH+DNfq0epE4Pd+8yxcYbGfMFReANkGRs+EiDfFA
+         Amr8QnaPrEuIS6qYen1tHu2vDRAvGteSXTBgwGJJqsPRVQ7uSwR5a7k1MPvVrkJY+T5s
+         GwDf4ZVOXB2INzSAZdjo15hNhr81QqjrF6q6tXvxYhmEYZPfRIsSxpms8R0Yra9Cb5Yi
+         w+LHYn/TgfO/YaDOo1AlB9d6iXBMYEUw+j4j4Lh6BQ8JijSf2mNqvnjtld72Ni66kGdn
+         h1ogYc+rRzAbwjcAU29X2RtU7fOKaXWLkZqMnbZxgNpZ0ERwEnXagRcK1+SOHsJsZ2cr
+         VlGA==
+X-Gm-Message-State: AGi0PuY/AS8Okh8kT51rFT2/MjxEqMs3SxJOzfjHhzIOvKhvsTxOm108
+        01Nqve61XjeSFBxJD+HrxzSgi7e5mohordfxWJ4odkUfoKMD6Td/pyBMnXYAGHk44gi3LZE3m3q
+        bL2PDsqkV4GbY2XUr+dZUS+VX
+X-Received: by 2002:ac8:4d8b:: with SMTP id a11mr143478qtw.391.1586224538182;
+        Mon, 06 Apr 2020 18:55:38 -0700 (PDT)
+X-Google-Smtp-Source: APiQypK+gNlV/6Oyl3ckqIUc2Hc29srtoZnCqrcc5MKHtt+qWVWRdKpz+NvsF8oAGL3g8gWu3juB0g==
+X-Received: by 2002:ac8:4d8b:: with SMTP id a11mr143461qtw.391.1586224537863;
+        Mon, 06 Apr 2020 18:55:37 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::3])
+        by smtp.gmail.com with ESMTPSA id c6sm13998002qkg.88.2020.04.06.18.55.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Apr 2020 18:55:37 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 21:55:35 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     syzbot <syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com>,
+        bgeffon@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        torvalds@linux-foundation.org
+Subject: Re: BUG: unable to handle kernel paging request in
+ kernel_get_mempolicy
+Message-ID: <20200407015535.GC48345@xz-x1>
+References: <0000000000002b25f105a2a3434d@google.com>
+ <20200407004745.GA48345@xz-x1>
+ <20200406183941.38a2e52026e42dbfde239a56@linux-foundation.org>
 MIME-Version: 1.0
-Received: by 2002:aa7:d887:0:0:0:0:0 with HTTP; Mon, 6 Apr 2020 18:55:07 -0700 (PDT)
-Reply-To: flavbenz@gmail.com
-From:   Flavor Benz <morgansalami@gmail.com>
-Date:   Tue, 7 Apr 2020 02:55:07 +0100
-Message-ID: <CAPncyG5zEru5BsVzWLGEy77KcS2Gpxg_fj9g-=CVvpo47kO7hg@mail.gmail.com>
-Subject: Good day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200406183941.38a2e52026e42dbfde239a56@linux-foundation.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello my dear Friend,
+On Mon, Apr 06, 2020 at 06:39:41PM -0700, Andrew Morton wrote:
+> On Mon, 6 Apr 2020 20:47:45 -0400 Peter Xu <peterx@redhat.com> wrote:
+> 
+> > >From 23800bff6fa346a4e9b3806dc0cfeb74498df757 Mon Sep 17 00:00:00 2001
+> > From: Peter Xu <peterx@redhat.com>
+> > Date: Mon, 6 Apr 2020 20:40:13 -0400
+> > Subject: [PATCH] mm/mempolicy: Allow lookup_node() to handle fatal signal
+> > 
+> > lookup_node() uses gup to pin the page and get node information.  It
+> > checks against ret>=0 assuming the page will be filled in.  However
+> > it's also possible that gup will return zero, for example, when the
+> > thread is quickly killed with a fatal signal.  Teach lookup_node() to
+> > gracefully return an error -EFAULT if it happens.
+> > 
+> > ...
+> >
+> > --- a/mm/mempolicy.c
+> > +++ b/mm/mempolicy.c
+> > @@ -902,7 +902,10 @@ static int lookup_node(struct mm_struct *mm, unsigned long addr)
+> >  
+> >  	int locked = 1;
+> >  	err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
+> > -	if (err >= 0) {
+> > +	if (err == 0) {
+> > +		/* E.g. GUP interupted by fatal signal */
+> > +		err = -EFAULT;
+> > +	} else if (err > 0) {
+> >  		err = page_to_nid(p);
+> >  		put_page(p);
+> >  	}
+> 
+> Doh.  Thanks.
+> 
+> Should it have been -EINTR?
 
-I sent you an email a month ago, but I'm not sure if you get the
-message, and this is the reason why I repeat it again.
+It looks ok to me too.  I was returning -EFAULT to follow the same
+value as get_vaddr_frames() (which is the other caller of
+get_user_pages_locked()).  So far the only path that I found can
+trigger this is when there's a fatal signal pending right after the
+gup.  If so, the userspace won't have a chance to see the -EINTR (or
+whatever we return) anyways.
 
-I urgently looking forward to hear from you as soon as you read my message.
+Thanks,
 
-Thanks.
+-- 
+Peter Xu
 
-Mr.Flavour Benz.(Esq)
