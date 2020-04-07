@@ -2,139 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C3E1A1761
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF731A176A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726494AbgDGVbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 17:31:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:51886 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726416AbgDGVbH (ORCPT
+        id S1726546AbgDGVcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 17:32:14 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38238 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726395AbgDGVcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 17:31:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586295065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qHR0CsCwZ0V31PL2BJqAGUsMlkV/uU0L7++NwyRQkxk=;
-        b=Um+I6llquRJ5Kg4SLEnji4aPAKM1j7vOdWJm1n6DfnpzmPuR+NYn3oBo7xt/avtADCrGFV
-        AKZojWQwyfBiSSA8vC5TXfGKv0YMlS0enYlGhL7Y6U4kKC/tGVY5xpc2w9MBbY2Uej5CAy
-        cQH0OwdCoINLcZ+31iLS42FIjuxV0BY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-zJCwTx1xNny4xDdybgXr8A-1; Tue, 07 Apr 2020 17:31:03 -0400
-X-MC-Unique: zJCwTx1xNny4xDdybgXr8A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEC5E149C3;
-        Tue,  7 Apr 2020 21:31:01 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-112-63.ams2.redhat.com [10.36.112.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 51AC75C1B0;
-        Tue,  7 Apr 2020 21:31:00 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Mikityanskiy <maxtram95@gmail.com>,
-        "5 . 3+" <stable@vger.kernel.org>
-Subject: [PATCH] platform/x86: intel_int0002_vgpio: Only bind to the INT0002 dev when using s2idle
-Date:   Tue,  7 Apr 2020 23:30:58 +0200
-Message-Id: <20200407213058.62870-1-hdegoede@redhat.com>
+        Tue, 7 Apr 2020 17:32:14 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 037L4hap104014;
+        Tue, 7 Apr 2020 17:31:59 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3082hh5qp2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 17:31:59 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 037LRsL0015276;
+        Tue, 7 Apr 2020 17:31:59 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3082hh5qng-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 17:31:59 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 037LUbr1023206;
+        Tue, 7 Apr 2020 21:31:57 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma04dal.us.ibm.com with ESMTP id 306hv69vxa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 21:31:57 +0000
+Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 037LVuCl12845986
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Apr 2020 21:31:56 GMT
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C7712B2066;
+        Tue,  7 Apr 2020 21:31:56 +0000 (GMT)
+Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 66031B2068;
+        Tue,  7 Apr 2020 21:31:55 +0000 (GMT)
+Received: from swastik.ibm.com (unknown [9.65.198.190])
+        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Apr 2020 21:31:55 +0000 (GMT)
+Subject: Re: [RFC PATCH v2 00/12] Integrity Policy Enforcement LSM (IPE)
+To:     deven.desai@linux.microsoft.com
+Cc:     agk@redhat.com, axboe@kernel.dk, snitzer@redhat.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, tyhicks@linux.microsoft.com,
+        pasha.tatashin@soleen.com, sashal@kernel.org,
+        jaskarankhurana@linux.microsoft.com, nramas@linux.microsoft.com,
+        mdsakib@linux.microsoft.com, linux-kernel@vger.kernel.org
+References: <20200406221439.1469862-1-deven.desai@linux.microsoft.com>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <c1466cc8-8a08-708a-4629-234485bb833e@linux.vnet.ibm.com>
+Date:   Tue, 7 Apr 2020 17:31:54 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200406221439.1469862-1-deven.desai@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_09:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 spamscore=0 clxscore=1011 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=1 mlxscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070166
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement
-irq_set_wake on Bay Trail") stopped passing irq_set_wake requests on to
-the parents IRQ because this was breaking suspend (causing immediate
-wakeups) on an Asus E202SA.
 
-This workaround for this issue is mostly fine, on most Cherry Trail
-devices where we need the INT0002 device for wakeups by e.g. USB kbds,
-the parent IRQ is shared with the ACPI SCI and that is marked as wakeup
-anyways.
+On 4/6/20 6:14 PM, deven.desai@linux.microsoft.com wrote:
+> From: Deven Bowers <deven.desai@linux.microsoft.com>
+>
+> Changelog:
+> ------------------------------------
+>
+> v1: Introduced
+>
+> v2:
+>    Split the second patch of the previous series into two.
+>    Minor corrections in the cover-letter and documentation
+>    comments regarding CAP_MAC_ADMIN checks in IPE.
+>
+> Overview:
+> ------------------------------------
+> IPE is a Linux Security Module, which allows for a configurable
+> policy to enforce integrity requirements on the whole system. It
+> attempts to solve the issue of Code Integrity: that any code being
+> executed (or files being read), are identical to the version that
+> was built by a trusted source.
 
-But not on all devices, specifically on a Medion Akoya E1239T there is
-no SCI at all, and because the irq_set_wake request is not passed on to
-the parent IRQ, wake up by the builtin USB kbd does not work here.
+Can you please clarify the "motivation" for this patch set more clearly? 
+It seems to define a policy layer on top of dm-verity, which may be 
+compiled into the kernel. In the motivation, can you please also make it 
+explicit why existing mechanisms cannot be extended to achieve your purpose?
 
-So the workaround for the Asus E202SA immediate wake problem is causing
-problems elsewhere; and in hindsight it is not the correct fix,
-the Asus E202SA uses Airmont CPU cores, but this does not mean it is a
-Cherry Trail based device, Brasswell uses Airmont CPU cores too and this
-actually is a Braswell device.
+Also, AFIK, the changelog should be moved to the end of the patch 
+description.
 
-Most (all?) Braswell devices use classic S3 mode suspend rather then
-s2idle suspend and in this case directly dealing with PME events as
-the INT0002 driver does likely is not the best idea, so that this is
-causing issues is not surprising.
+Thanks & Regards,
 
-Replace the workaround of not passing irq_set_wake requests on to the
-parents IRQ, by not binding to the INT0002 device when s2idle is not used=
-.
-This fixes USB kbd wakeups not working on some Cherry Trail devices,
-while still avoiding mucking with the wakeup flags on the Asus E202SA
-(and other Brasswell devices).
-
-Cc: Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc: 5.3+ <stable@vger.kernel.org> # 5.3+
-Fixes: 871f1f2bcb01 ("platform/x86: intel_int0002_vgpio: Only implement i=
-rq_set_wake on Bay Trail")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/platform/x86/intel_int0002_vgpio.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/platform/x86/intel_int0002_vgpio.c b/drivers/platfor=
-m/x86/intel_int0002_vgpio.c
-index 55f088f535e2..e8bec72d3823 100644
---- a/drivers/platform/x86/intel_int0002_vgpio.c
-+++ b/drivers/platform/x86/intel_int0002_vgpio.c
-@@ -143,21 +143,9 @@ static struct irq_chip int0002_byt_irqchip =3D {
- 	.irq_set_wake		=3D int0002_irq_set_wake,
- };
-=20
--static struct irq_chip int0002_cht_irqchip =3D {
--	.name			=3D DRV_NAME,
--	.irq_ack		=3D int0002_irq_ack,
--	.irq_mask		=3D int0002_irq_mask,
--	.irq_unmask		=3D int0002_irq_unmask,
--	/*
--	 * No set_wake, on CHT the IRQ is typically shared with the ACPI SCI
--	 * and we don't want to mess with the ACPI SCI irq settings.
--	 */
--	.flags			=3D IRQCHIP_SKIP_SET_WAKE,
--};
--
- static const struct x86_cpu_id int0002_cpu_ids[] =3D {
- 	INTEL_CPU_FAM6(ATOM_SILVERMONT, int0002_byt_irqchip),	/* Valleyview, Ba=
-y Trail  */
--	INTEL_CPU_FAM6(ATOM_AIRMONT, int0002_cht_irqchip),	/* Braswell, Cherry =
-Trail */
-+	INTEL_CPU_FAM6(ATOM_AIRMONT, int0002_byt_irqchip),	/* Braswell, Cherry =
-Trail */
- 	{}
- };
-=20
-@@ -181,6 +169,10 @@ static int int0002_probe(struct platform_device *pde=
-v)
- 	if (!cpu_id)
- 		return -ENODEV;
-=20
-+	/* We only need to directly deal with PMEs when using s2idle */
-+	if (!pm_suspend_default_s2idle())
-+		return -ENODEV;
-+
- 	irq =3D platform_get_irq(pdev, 0);
- 	if (irq < 0)
- 		return irq;
---=20
-2.26.0
+     - Nayna
 
