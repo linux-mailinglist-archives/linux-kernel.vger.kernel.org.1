@@ -2,81 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 988781A0639
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 07:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20C01A0653
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 07:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgDGFMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 01:12:47 -0400
-Received: from mail-yb1-f196.google.com ([209.85.219.196]:41707 "EHLO
-        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbgDGFMn (ORCPT
+        id S1726924AbgDGFNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 01:13:18 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:34223 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbgDGFNS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 01:12:43 -0400
-Received: by mail-yb1-f196.google.com with SMTP id t10so1140602ybk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 22:12:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=m9m/DCsFRus/zRmIuphflM5sHyenmkMN/TOEnECOGthbLJHVg8u2+iqtFZpNbyb2/k
-         2tLF//qwyXGtNVJKRleGUy+KbEtVjN+06Aw6FbGL98d5M/QEqB9c9SHaIsBPFlQYoUCh
-         Lj+P9EPUGdvyQRip4KeH3oSvDVhqDTV0IJcbcI66BzYP/b9Y/1y4LF++1q0teLhPl3GM
-         v15gBTxOBB8qvH4CNaCnwdm2sugBL+St8qIlm7SqBWweWj6hdsos1F0mjeWO8qJt64R9
-         xl3tya8AfljNAFdSOkZ4tC7INitomO8JQPFHHcp+JAODUsaup01At9KIYDntXEoTQZb0
-         DmdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=38NlpNEbzNFWb7RFQtfvRASB+B576yw7dNc7pozf3pc=;
-        b=bnD1xJnUoc2x29zgyqVH0AnLFO+f9U0YqRW4817pxc98pRTl1Vcalayh/lVsUnIMjE
-         q6vtSnw6LNlUrFavphAVCVmvpRT3ECEcf8XhY0oxeTe8j5l0i82tXmQWxWe7oZTmLiaQ
-         Yw/EcFk3Ygv8NTRtbWm/1l0pBbky4AF71hTnUKtDtxjrNP6J9qkss1ECQFqW+QE+ULnE
-         qMVwBGDq4Ro1+hAWsgX9U3hqWAdHOgIuIzgNzaScCGqVic86fg1j1tswLyIFbG0zT1H/
-         A6a6Fe9octBWbz45DWowzrsZRxz751bQC3coTvZBavN7JIIrc0zv8n8uYCo2kOwD/8tg
-         KIXA==
-X-Gm-Message-State: AGi0PuahKugbvaxG19YuyNNets6OxKOnGJSJOxN1YkaCr5QpCjwlNDEq
-        iN5C/xqKGWurJ/XBsMYfUmldZbCX12J3jIHZL5pj7ge3Rlw=
-X-Google-Smtp-Source: APiQypIYXniGQUHEpASwiGNjKth4Cu9ElCz4yjrJ2uXbYBYunhfz0887D/TRydUbTstl7MwaeVftG8QxF1P80ST3qos=
-X-Received: by 2002:ab0:a9:: with SMTP id 38mr504317uaj.61.1586236361040; Mon,
- 06 Apr 2020 22:12:41 -0700 (PDT)
+        Tue, 7 Apr 2020 01:13:18 -0400
+Received: from [192.168.1.101] (lfbn-lyo-1-453-25.w2-7.abo.wanadoo.fr [2.7.45.25])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 24AB9200004;
+        Tue,  7 Apr 2020 05:13:10 +0000 (UTC)
+From:   Alex Ghiti <alex@ghiti.fr>
+Subject: Re: [RFC PATCH 3/7] riscv: Simplify MAXPHYSMEM config
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, zong.li@sifive.com,
+        anup@brainfault.org, Christoph Hellwig <hch@lst.de>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <mhng-f28ea5f1-ad10-4216-8612-f92863d20cca@palmerdabbelt-glaptop1>
+Message-ID: <61d65afd-1650-4e16-b93d-f6d44c95ada7@ghiti.fr>
+Date:   Tue, 7 Apr 2020 01:13:10 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Received: by 2002:ab0:4929:0:0:0:0:0 with HTTP; Mon, 6 Apr 2020 22:12:40 -0700 (PDT)
-From:   SANDRA DEWI <dewisandra154@gmail.com>
-Date:   Tue, 7 Apr 2020 05:12:40 +0000
-Message-ID: <CABRVPWys0xe4CWBkaU0ZXQW+4d=tjDOjyo8cKohc5-VFkWPkcA@mail.gmail.com>
-Subject: whether this is your correct email address or not
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <mhng-f28ea5f1-ad10-4216-8612-f92863d20cca@palmerdabbelt-glaptop1>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear ,Pastor
 
+On 4/3/20 11:53 AM, Palmer Dabbelt wrote:
+> On Sun, 22 Mar 2020 04:00:24 PDT (-0700), alex@ghiti.fr wrote:
+>> Either the user specifies maximum physical memory size of 2GB or the
+>> user lives with the system constraint which is 128GB in 64BIT for now.
+>>
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>> ---
+>>  arch/riscv/Kconfig | 20 ++++++--------------
+>>  1 file changed, 6 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index 8e4b1cbcf2c2..a475c78e66bc 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -104,7 +104,7 @@ config PAGE_OFFSET
+>>      default 0xC0000000 if 32BIT && MAXPHYSMEM_2GB
+>>      default 0x80000000 if 64BIT && !MMU
+>>      default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+>> -    default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+>> +    default 0xffffffe000000000 if 64BIT && !MAXPHYSMEM_2GB
+>>
+>>  config ARCH_FLATMEM_ENABLE
+>>      def_bool y
+>> @@ -216,19 +216,11 @@ config MODULE_SECTIONS
+>>      bool
+>>      select HAVE_MOD_ARCH_SPECIFIC
+>>
+>> -choice
+>> -    prompt "Maximum Physical Memory"
+>> -    default MAXPHYSMEM_2GB if 32BIT
+>> -    default MAXPHYSMEM_2GB if 64BIT && CMODEL_MEDLOW
+>> -    default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
+>> -
+>> -    config MAXPHYSMEM_2GB
+>> -        bool "2GiB"
+>> -    config MAXPHYSMEM_128GB
+>> -        depends on 64BIT && CMODEL_MEDANY
+>> -        bool "128GiB"
+>> -endchoice
+>> -
+>> +config MAXPHYSMEM_2GB
+>> +    bool "Maximum Physical Memory 2GiB"
+>> +    default y if 32BIT
+>> +    default y if 64BIT && CMODEL_MEDLOW
+>> +    default n
+>>
+>>  config SMP
+>>      bool "Symmetric Multi-Processing"
+> 
+> I'm not sure this actually helps with anything, but if it's all going 
+> away then it's
+> fine.  Originally the 2G/128G stuff was there to allow for larger VA 
+> spaces in
+> the future.
 
+With runtime sv48 introduction, whatever we would have used here could 
+have been wrong at runtime, so removing it was easier.
 
-I have a client who is an oil business man and he made a fixed deposit
-of $26 million USD in my bank, where I am the director of the branch,
-My client died with his entire family in Jordanian
-
-50% of the fund will be for the church  for the work of God,the
-balance 50% we share it in the ratio of 50/50. Meaning 50% to you and
-50% for me
-
-intervention in the Syrian Civil War 2014 leaving behind no next of
-kin. I Propose to present you as next of kin to claim the funds, if
-interested reply me for full details and how we are to
-
-
-
-proceed to close this deal.
-
-
-
-
-Mrs. Sandra Dewi
-
-
-
-Email  mrsdewi@gmx.com
+Alex
