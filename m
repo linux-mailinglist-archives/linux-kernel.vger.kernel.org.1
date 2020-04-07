@@ -2,74 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 046BC1A0C34
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF3D1A0C2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728389AbgDGKnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:43:23 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44340 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgDGKnX (ORCPT
+        id S1728383AbgDGKmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:42:14 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:53358 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726687AbgDGKmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:43:23 -0400
-Received: from ip5f5bf7ec.dynamic.kabel-deutschland.de ([95.91.247.236] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jLlhQ-0006uP-Cg; Tue, 07 Apr 2020 10:43:20 +0000
-Date:   Tue, 7 Apr 2020 12:43:19 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrey Vagin <avagin@openvz.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Containers <containers@lists.linux-foundation.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>, stable@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Adrian Reber <adrian@lisas.de>
-Subject: Re: [PATCH] kernel/time: Add max_time_namespaces ucount
-Message-ID: <20200407104319.mrknabgzmmraxk22@wittgenstein>
-References: <20200406171342.128733-1-dima@arista.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200406171342.128733-1-dima@arista.com>
+        Tue, 7 Apr 2020 06:42:13 -0400
+Received: by mail-wm1-f68.google.com with SMTP id d77so1233728wmd.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 03:42:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=qwoI7riVDu0AahmoSXPZbaJVLWK9qNlpZnhfM3M9Fk0=;
+        b=ZVsIwruVeUye+mQQvLbyyVdlLUN12dHiYTZbkDZJRK5mBmzn1kqKnXKpHb1VZtkLTS
+         ecHYgPu0S0sKnUd1uNQ+MzHs8zoxJFHoVC8rfc3mGxyWFwPUfXc6TjY2CKSBhfabbPGp
+         puRg2p8PL9QRfce2n6nRy8s4OxClPWst8M78PMHXPyNHXDmIDQLcdxrR//WsZGSOSOaK
+         qHeHL41NiYQvhz6e4sGihGccVYVbPrDmsaGDEdpt5dftN/eO7T+7V3jIjoNLLp5BbCyO
+         5Uvks8G63sZJzf/toQyi3VLYIToL55zReTlvS1aLNpmwf6ylLh6KCE1AHJfoLcwtd/3Q
+         EhCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=qwoI7riVDu0AahmoSXPZbaJVLWK9qNlpZnhfM3M9Fk0=;
+        b=Ywv9e6M2GJ+tu0L+pJz6QZwPREO8yxfiI0gXclXrB92FINTS+9710TACivs36tdyB1
+         hOAQGDK2LNbpjBhNmJGV35WWq9314IENrlPgCj7A38ARk+trRYDpNMSoDAiIjWkIvsW+
+         YVTTWLZNPWFtQS3c+IG7yHkoyV1PMdpEDBJ8E314d6dHWHu57twgVRTeBmFcktAW645Z
+         X8OeokwMu0xed+m+PSOCNZekfpwauBeJ1/c5i9sQFBVLsfudRnXxeQxNHnagulMgUu+6
+         b770PsrBFUcaP1iiF7WXoLx+AQKqZi5O7eWTTGs+/gOW8n4INCGC7W7HCkh0PSuii0/2
+         aYeg==
+X-Gm-Message-State: AGi0PuazyGJjkX7N+MKPis/svtR0ElYvg+KyzJnNR5vcSlBYyv1xdl3k
+        s6McI6iYAY4ixOyKuAVZiJIY5g==
+X-Google-Smtp-Source: APiQypKDHeqfnBtlcrpc5vBuaPo8+WiRBN+xcEEELjZAHyRBT1S85K8BXirTii7Uh5nK4VgEhCiSlA==
+X-Received: by 2002:a1c:5502:: with SMTP id j2mr1756335wmb.93.1586256131946;
+        Tue, 07 Apr 2020 03:42:11 -0700 (PDT)
+Received: from [192.168.0.105] ([84.33.141.156])
+        by smtp.gmail.com with ESMTPSA id y22sm1908552wma.18.2020.04.07.03.42.10
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Apr 2020 03:42:11 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v2 2/2] blk-mq: Rerun dispatching in the case of budget
+ contention
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <CAD=FV=UK=4OW2Q5i2FhrJw_+A-q+R=K8E5ui-PCQXvYhDY3ZHw@mail.gmail.com>
+Date:   Tue, 7 Apr 2020 12:43:58 +0200
+Cc:     Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Salman Qazi <sqazi@google.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-scsi@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
+        Ajay Joshi <ajay.joshi@wdc.com>, Arnd Bergmann <arnd@arndb.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Hou Tao <houtao1@huawei.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B7C03D1F-7048-4FDF-AAAF-BCD0F95132E6@linaro.org>
+References: <20200402155130.8264-1-dianders@chromium.org>
+ <20200402085050.v2.2.I28278ef8ea27afc0ec7e597752a6d4e58c16176f@changeid>
+ <20200403013356.GA6987@ming.t460p>
+ <CAD=FV=Ub6zhVvTj79SWPUv19RDvD0gt5EjJV-FZSbYxUy_T1OA@mail.gmail.com>
+ <CAD=FV=Vsk0SjkA+DbUwJxvO6NFcr0CO9=H1FD7okJ2PxMt5pYA@mail.gmail.com>
+ <20200405091446.GA3421@localhost.localdomain>
+ <CAD=FV=X_S_YHvKkp96f3HVM3uX0VFTCKBxNK3fEu9Yt=NB8wEQ@mail.gmail.com>
+ <E316A36E-1B2B-47E8-A78C-7DD3F354425A@linaro.org>
+ <CAD=FV=UK=4OW2Q5i2FhrJw_+A-q+R=K8E5ui-PCQXvYhDY3ZHw@mail.gmail.com>
+To:     Doug Anderson <dianders@chromium.org>
+X-Mailer: Apple Mail (2.3445.104.11)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 06:13:42PM +0100, Dmitry Safonov via Containers wrote:
-> Introduce missing time namespaces limit per-userns.
-> Michael noticed that userns limit for number of time namespaces is
-> missing.
-> 
-> Furthermore, time namespace introduced UCOUNT_TIME_NAMESPACES, but
-> didn't introduce an array member in user_table[]. It would make array's
-> initialisation OOB write, but by luck the user_table array has
-> an excessive empty member (all accesses to the array are limited with
-> UCOUNT_COUNTS - so it silently reuses the last free member.
-> 
-> Fixes user-visible regression: max_inotify_instances by reason of the
-> missing UCOUNT_ENTRY() has limited max number of namespaces instead of
-> the number of inotify instances.
-> 
-> Fixes: 769071ac9f20 ("ns: Introduce Time Namespace")
-> Cc: Adrian Reber <adrian@lisas.de>
-> Cc: Andrey Vagin <avagin@openvz.org>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: Eric W. Biederman <ebiederm@xmission.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> Cc: Containers <containers@lists.linux-foundation.org>
-> Cc: Linux API <linux-api@vger.kernel.org>
-> Cc: stable@kernel.org # v5.6+
-> Reported-by: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
-> Signed-off-by: Dmitry Safonov <dima@arista.com>
 
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+
+> Il giorno 5 apr 2020, alle ore 18:16, Doug Anderson =
+<dianders@chromium.org> ha scritto:
+>=20
+> Hi,
+>=20
+> On Sun, Apr 5, 2020 at 7:55 AM Paolo Valente =
+<paolo.valente@linaro.org> wrote:
+>>=20
+>>> Il giorno 5 apr 2020, alle ore 16:00, Doug Anderson =
+<dianders@chromium.org> ha scritto:
+>>>=20
+>>> Hi,
+>>>=20
+>>> On Sun, Apr 5, 2020 at 2:15 AM Ming Lei <ming.lei@redhat.com> wrote:
+>>>>=20
+>>>> OK, looks it isn't specific on BFQ any more.
+>>>>=20
+>>>> Follows another candidate approach for this issue, given it is so =
+hard
+>>>> to trigger, we can make it more reliable by rerun queue when =
+has_work()
+>>>> returns true after ops->dispath_request() returns NULL.
+>>>>=20
+>>>> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+>>>> index 74cedea56034..4408e5d4fcd8 100644
+>>>> --- a/block/blk-mq-sched.c
+>>>> +++ b/block/blk-mq-sched.c
+>>>> @@ -80,6 +80,7 @@ void blk_mq_sched_restart(struct blk_mq_hw_ctx =
+*hctx)
+>>>>       blk_mq_run_hw_queue(hctx, true);
+>>>> }
+>>>>=20
+>>>> +#define BLK_MQ_BUDGET_DELAY    3               /* ms units */
+>>>> /*
+>>>> * Only SCSI implements .get_budget and .put_budget, and SCSI =
+restarts
+>>>> * its queue by itself in its completion handler, so we don't need =
+to
+>>>> @@ -103,6 +104,9 @@ static void blk_mq_do_dispatch_sched(struct =
+blk_mq_hw_ctx *hctx)
+>>>>               rq =3D e->type->ops.dispatch_request(hctx);
+>>>>               if (!rq) {
+>>>>                       blk_mq_put_dispatch_budget(hctx);
+>>>> +
+>>>> +                       if (e->type->ops.has_work && =
+e->type->ops.has_work(hctx))
+>>>> +                               blk_mq_delay_run_hw_queue(hctx, =
+BLK_MQ_BUDGET_DELAY);
+>>>=20
+>>> I agree that your patch should solve the race.  With the current =
+BFQ's
+>>> has_work() it's a bit of a disaster though. It will essentially put
+>>> blk-mq into a busy-wait loop (with a 3 ms delay between each poll)
+>>> while BFQ's has_work() says "true" but BFQ doesn't dispatch =
+anything.
+>>>=20
+>>> ...so I guess the question that still needs to be answered: does
+>>> has_work() need to be exact?  If so then we need the patch you =
+propose
+>>> plus one to BFQ.  If not, we should continue along the lines of my
+>>> patch.
+>>>=20
+>>=20
+>> Some more comments.  BFQ's I/O plugging lasts 9 ms by default.  So,
+>> with this last Ming's patch, BFQ may happen to be polled every 3ms,
+>> for at most three times.
+>=20
+> Ah!  I did not know this.  OK, then Ming's patch seems like it should
+> work.  If nothing else it should fix the problem.  If this ends up
+> making BFQ chew up too much CPU time then presumably someone will
+> notice and BFQ's has_work() can be improved.
+>=20
+> Ming: how do you want to proceed?  Do you want to formally post the
+> patch?  Do you want me to post a v3 of my series where I place patch
+> #2 with your patch?  Do you want authorship (which implies adding your
+> Signed-off-by)?
+>=20
+>=20
+>> On the opposite end, making bfq_has_work plugging aware costs more
+>> complexity, and possibly one more lock.  While avoiding the above
+>> occasional polling, this may imply a lot of overhead or CPU stalls on
+>> every dispatch.
+>=20
+> I still think it would be interesting to run performance tests with my
+> proof-of-concept solution for has_work().  Even if it's not ideal,
+> knowing whether performance increased, decreased, or stayed the same
+> would give information about how much more effort should be put into
+> this.
+>=20
+
+Why not?  It is however hard to hope that we add only negligible
+overhead and CPU stalls if we move from one lock-protected section per
+I/O-request dispatch, to two or more lock-protected sections per
+request (has_work may be invoked several times per request).
+
+At any rate, if useful, one of the scripts in my S benchmark suite can
+also measure max IOPS (when limited only by I/O processing) [1].  The
+script is for Linux distros; I don't know whether it works in your
+environments of interest, Doug.
+
+Paolo
+
+[1] =
+https://github.com/Algodev-github/S/blob/master/throughput-sync/throughput=
+-sync.sh
+
+> -Doug
+
