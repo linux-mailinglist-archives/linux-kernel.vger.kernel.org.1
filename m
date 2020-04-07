@@ -2,147 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1D11A0AAE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD2E1A0AC1
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728260AbgDGKCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:02:16 -0400
-Received: from pandora.armlinux.org.uk ([78.32.30.218]:38286 "EHLO
-        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgDGKCQ (ORCPT
+        id S1728193AbgDGKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:05:21 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:27528 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728091AbgDGKFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:02:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2wR2xqOs8l+OydThwaZ/J8QQDNxkPOYEU/7GzqzAa3M=; b=m5BFSB4gVHf+ffBnIzdw2gzUY
-        wYLYy5Y0VK2BwlAyzTKiAhBnFbd4tft0EP3wZxXv1Vn+oKtv6/Q9jbMnoqA64m5cNzOeU9H6FkysY
-        /BApbRWhjPi3yuFLOZpGvw+24y0Y7sz50JPO3tw+6r+GHd9VPv0T4Yh4nfRnFtJVPjkcPs2sPUctL
-        HktSJN0U63pN2g7MioenRIARxbvLaCNvEJInUlMTLmLWjDaB/AMU8rbmCg/VZJB+FEDVMzQcTB8YI
-        30jZXG3OvCyhOrHD8nZ2rxDyl+oS4PtHG5NB8e5uFJILtGl5xdF6Dx89XcFBFmY17Hh1ZmQnDvQbK
-        SmW2L+DCQ==;
-Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:35146)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jLl3U-0007DE-Og; Tue, 07 Apr 2020 11:02:05 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jLl3T-0007DO-VB; Tue, 07 Apr 2020 11:02:03 +0100
-Date:   Tue, 7 Apr 2020 11:02:03 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     ebiederm@xmission.com, kexec@lists.infradead.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, mripard@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Trying to kexec on Allwinner A80
-Message-ID: <20200407100203.GK25745@shell.armlinux.org.uk>
-References: <20200406082720.GA31279@Red>
+        Tue, 7 Apr 2020 06:05:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586253920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=V6OOZIcMHbA4COKeQ3vI4ZGPp1DvSViJ7U0v6oxO7OU=;
+        b=isfvF6mPKH2xlGIYjd1edvfhyc///fagGJC9FAXype1YqNJ2cQOOkHUjlZoLfT6AOrryNJ
+        stXPOemkgLjk9+ZVsiGGI4lE3poYwP0sKCy0ROlkO47MqjetwrkkqXNzswF06n3cAgk2wk
+        y/Xn5JmgL1nTj3RdqxT1xjawBp7KhgY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-371-QroJ8KuLO02FEL4Vw2CyIQ-1; Tue, 07 Apr 2020 06:05:12 -0400
+X-MC-Unique: QroJ8KuLO02FEL4Vw2CyIQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCBFC102C868;
+        Tue,  7 Apr 2020 10:05:10 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 27CA394B4E;
+        Tue,  7 Apr 2020 10:05:10 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 3375E93A61;
+        Tue,  7 Apr 2020 10:05:09 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 06:05:09 -0400 (EDT)
+From:   Vladis Dronov <vdronov@redhat.com>
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Piotr Morgwai =?utf-8?Q?Kotarbi=C5=84ski?= <morgwai@morgwai.pl>,
+        Colin Ian King <colin.king@canonical.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <1493646639.21012930.1586253909001.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20200407093422.GD3665@xps-13>
+References: <20200309172238.GJ267906@xps-13> <1196893766.20531178.1585920854778.JavaMail.zimbra@redhat.com> <20200407093422.GD3665@xps-13>
+Subject: Re: [PATCH v2] ptp: free ptp clock properly
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200406082720.GA31279@Red>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [10.40.208.84, 10.4.195.29]
+Thread-Topic: free ptp clock properly
+Thread-Index: WLuFyIwSVbLAUz+GYlxwZs1rVfBFIw==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 10:27:20AM +0200, Corentin Labbe wrote:
-> Hello
-> 
-> I am trying to add the last missing Allwinner Soc in kernelci: the A80.
-> But this SoC does not have any way to be used in kernelci, no USB nor network in uboot.
-> So I have tried to fake uboot since the kernel has network support and run the new kernel via kexec.
-> 
-> But kexec 2.0.18 fail to work:
-> kexec --force /tmp/kernel --initrd /tmp/ramdisk --dtb /tmp/dtb --command-line='console=ttyS0,115200n8 root=/dev/ram0 earlycon=uart,mmio32,0x7000000 ip=dhcp'
+Hello,
 
-As I mentioned in my other reply, this apparent "kexec" command line
-does not seem to reflect the arguments you actually used to invoke
-the kexec output below.
+----- Original Message -----
+> From: "Andrea Righi" <andrea.righi@canonical.com>
+> To: "Vladis Dronov" <vdronov@redhat.com>
+> Cc: "Piotr Morgwai Kotarbi=C5=84ski" <morgwai@morgwai.pl>, "Colin Ian Kin=
+g" <colin.king@canonical.com>, "Richard Cochran"
+> <richardcochran@gmail.com>, "David S. Miller" <davem@davemloft.net>, netd=
+ev@vger.kernel.org,
+> linux-kernel@vger.kernel.org
+> Sent: Tuesday, April 7, 2020 11:34:22 AM
+> Subject: Re: [PATCH v2] ptp: free ptp clock properly
+>=20
+> On Fri, Apr 03, 2020 at 09:34:14AM -0400, Vladis Dronov wrote:
+> > Hello, Andrea, Colin, all,
+> >=20
+> > This fix is really not needed, as its creation is based on the assumpti=
+on
+> > that the Ubuntu kernel 5.3.0-40-generic has the upstream commit
+> > 75718584cb3c,
+> > which is the real fix to this crash.
+> >=20
+> > > > > I would guess that a kernel in question (5.3.0-40-generic) has th=
+e
+> > > > > commit
+> > > > > a33121e5487b but does not have the commit 75718584cb3c, which sho=
+uld
+> > > > > be
+> > > > > exactly fixing a docking station disconnect crash. Could you plea=
+se,
+> > > > > check this?
+> > > >
+> > > > Unfortunately the kernel in question already has 75718584cb3c:
+> > > > https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/=
+bionic/commit/?h=3Dhwe&id=3Dc71b774732f997ef38ed7bd62e73891a01f2bbfe
+> >=20
+> > Apologies, but the assumption above is not correct, 5.3.0-40-generic do=
+es
+> > not have 75718584cb3c. If it had 75718584cb3c it would be a fix and the
+> > ptp-related
+> > crash (described in https://bugs.launchpad.net/bugs/1864754) would not
+> > happen.
+> >=20
+> > This way
+> > https://lists.ubuntu.com/archives/kernel-team/2020-March/108562.html fi=
+x
+> > is not really needed.
+>=20
+> Hi Vladis,
+>=20
+> for the records, I repeated the tests with a lot of help from the bug
+> reporter (Morgwai, added in cc), this time making sure we were using the
+> same kernels.
+>=20
+> I confirm that my fix is not really needed as you correctly pointed out.
+> Thanks for looking into this and sorry for the noise! :)
 
-> syscall kexec_file_load not available.
+Hei, great! Thank you for updating. I'm happy this situation has resolved
+properly!
 
-This message is produced by do_kexec_file_load().  This function is only
-invoked if the do_kexec_file_syscall flag in main() is set.  This flag
-is only set if one of:
+>=20
+> -Andrea
+>=20
 
-	--kexec-file-syscall
-	--kexec-syscall
-	--kexec-syscall-auto
-	-s
-	-c
-	-a
+Best regards,
+Vladis Dronov | Red Hat, Inc. | The Core Kernel | Senior Software Engineer
 
-are provided on the kexec command line.  Your command line above does
-not contain any of those arguments, so either the command line is not
-what you used, or you are using a patched kexec, or your compiler is
-grossly miscompiling kexec.
-
-> Try gzip decompression.
-> kernel: 0xb6535008 kernel_size: 0x853200
-> MEMORY RANGES
-> 0000000020000000-000000009fffffff (0)
-
-Then there's the debug output, which is only produced if the
-kexec_debug global is set, which in turn is only set if --debug or -d
-is supplied on the kexec command line - which again, your kexec
-command line does not contain this.
-
-> zImage header: 0x016f2818 0x00000000 0x00853200
-> zImage size 0x853200, file size 0x853200
-> zImage requires 0x00864200 bytes
->   offset 0x0000bae4 tag 0x5a534c4b size 8
-> Decompressed kernel sizes:
->  text+data 0x0158b3a0 bss 0x000632f0 total 0x015ee690
-> Resulting kernel space: 0x01def5a0
-> Kernel: address=0x20008000 size=0x01def5a0
-> Initrd: address=0x21df8000 size=0x0090b6fa
-> DT    : address=0x22704000 size=0x00005c09
-> kexec_load: entry = 0x20008000 flags = 0x280000
-> nr_segments = 3
-> segment[0].buf   = 0xb6535008
-> segment[0].bufsz = 0x853204
-> segment[0].mem   = 0x20008000
-> segment[0].memsz = 0x854000
-> segment[1].buf   = 0xb5c29008
-> segment[1].bufsz = 0x90b6fa
-> segment[1].mem   = 0x21df8000
-> segment[1].memsz = 0x90c000
-> segment[2].buf   = 0x4db50
-> segment[2].bufsz = 0x5c09
-> segm[   71.039126] kexec_core: Starting new kernel
-> ent[2].mem   = 0[   71.044712] Disabling non-boot CPUs ...
-> x22704000
-> segment[2].memsz = 0x6000
-> [   71.489070] Bye!
-> 
-> 
-> I have tried also kexec-2.0.20
-> Try gzip decompression.
-> zImage header: 0x00000000 0x000019b4 0x00001000
-> zImage requires 0x008641c0 bytes
-> Could not find a free area of memory of 0x86c1c0 bytes...
-> Cannot load /tmp/kernel
-
-kexec 2.0.20 doesn't appear to have changed anything to do with how
-allocations are done.  The above output looks even more strange and
-confusing.  "zImage header" is produced by debugging prints, which
-imply that kexec_debug was set.
-
-However, the "MEMORY RANGES" output is missing - this has not gone
-away with kexec 2.0.20, it's still there, and works for me (I've
-just built and tested kexec 2.0.20).
-
-Also, the values on the "zImage header" line are completely messed
-up; the first should be the zImage magic value and it is not - that
-suggests that the file being loaded is not a zImage file, or is
-corrupted.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
