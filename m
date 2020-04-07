@@ -2,84 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C761A1375
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B23A81A137B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgDGSTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:19:10 -0400
-Received: from mga01.intel.com ([192.55.52.88]:52939 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgDGSTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:19:09 -0400
-IronPort-SDR: CBgkUhMsTzaB2+QZBsUBwD0XqM42ZvThBvRoWxen6rQqLwRQVxPrkxXhYbXCO0TseomAXWX3t7
- 5b68GO3DoHgw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:19:08 -0700
-IronPort-SDR: hrIdburDaMCzTAQyPcSF6hxKn0vdzYIyj0JgJyyQtUugCGrjCw8SK7PRdi+nBnpzQcRmt5bpho
- ZdVHFyZ+P7BA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,356,1580803200"; 
-   d="scan'208";a="451317416"
-Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Apr 2020 11:19:08 -0700
-Date:   Tue, 7 Apr 2020 11:19:08 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH] mm/gup: fix null pointer dereference detected by coverity
-Message-ID: <20200407181908.GB94792@iweiny-DESK2.sc.intel.com>
-References: <20200407095107.1988-1-miles.chen@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407095107.1988-1-miles.chen@mediatek.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+        id S1726712AbgDGSVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:21:18 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:21822 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726277AbgDGSVR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 14:21:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586283676;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=IbMheVXmF0VacTTe2Hnfg/Xyo9y1cU/Y6NYWIzzzerg=;
+        b=SkEJ3mbfIILtm+Xu6JDgBON0cQdguIZmsKGEEXMxK/R709hBhYcWaNGf+ft/HN3MnYRb6E
+        9djHFZnfZ7FMmNpWcWk2+txYCZ2aBdiakYirTbmCnINjPUrKjJguCcClNbqPAuTVjCU4+q
+        JK1LIm3xMyUiRudVMYlGQ7st8UdEj9I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-70-1XmFQbKJOvOaa9FylQnhcw-1; Tue, 07 Apr 2020 14:21:13 -0400
+X-MC-Unique: 1XmFQbKJOvOaa9FylQnhcw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 333C08017FE;
+        Tue,  7 Apr 2020 18:21:12 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9DF2360BEC;
+        Tue,  7 Apr 2020 18:21:11 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] Second batch of KVM changes for Linux 5.7
+Date:   Tue,  7 Apr 2020 14:21:11 -0400
+Message-Id: <20200407182111.23659-1-pbonzini@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 05:51:07PM +0800, Miles Chen wrote:
-> In fixup_user_fault(), it is possible that unlocked is NULL,
-> so we should test unlocked before using it.
-> 
-> For example, in arch/arc/kernel/process.c, NULL is passed
-> to fixup_user_fault().
-> 
-> SYSCALL_DEFINE3(arc_usr_cmpxchg, int *, uaddr, int, expected, int, new)
-> {
-> ...
-> 	ret = fixup_user_fault(current, current->mm, (unsigned long) uaddr,
-> 			       FAULT_FLAG_WRITE, NULL);
-> ...
-> }
-> 
-> Fixes: 4a9e1cda2748 ("mm: bring in additional flag for fixup_user_fault to signal unlock")
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+Linus,
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+The following changes since commit 8c1b724ddb218f221612d4c649bc9c7819d8d7a6:
 
-> ---
->  mm/gup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index da3e03185144..a68d11dc232d 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1230,7 +1230,8 @@ int fixup_user_fault(struct task_struct *tsk, struct mm_struct *mm,
->  	if (ret & VM_FAULT_RETRY) {
->  		down_read(&mm->mmap_sem);
->  		if (!(fault_flags & FAULT_FLAG_TRIED)) {
-> -			*unlocked = true;
-> +			if (unlocked)
-> +				*unlocked = true;
->  			fault_flags |= FAULT_FLAG_TRIED;
->  			goto retry;
->  		}
-> -- 
-> 2.18.0
+  Merge tag 'for-linus' of git://git.kernel.org/pub/scm/virt/kvm/kvm (2020-04-02 15:13:15 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to dbef2808af6c594922fe32833b30f55f35e9da6d:
+
+  KVM: VMX: fix crash cleanup when KVM wasn't used (2020-04-07 08:35:36 -0400)
+
+----------------------------------------------------------------
+s390:
+* nested virtualization fixes
+
+x86:
+* split svm.c
+* miscellaneous fixes
+
+----------------------------------------------------------------
+David Hildenbrand (3):
+      KVM: s390: vsie: Fix region 1 ASCE sanity shadow address checks
+      KVM: s390: vsie: Fix delivery of addressing exceptions
+      KVM: s390: vsie: Fix possible race when shadowing region 3 tables
+
+Joerg Roedel (4):
+      kVM SVM: Move SVM related files to own sub-directory
+      KVM: SVM: Move Nested SVM Implementation to nested.c
+      KVM: SVM: Move AVIC code to separate file
+      KVM: SVM: Move SEV code to separate file
+
+Oliver Upton (1):
+      KVM: nVMX: don't clear mtf_pending when nested events are blocked
+
+Paolo Bonzini (1):
+      Merge tag 'kvm-s390-master-5.7-1' of git://git.kernel.org/.../kvms390/linux into HEAD
+
+Uros Bizjak (2):
+      KVM: SVM: Split svm_vcpu_run inline assembly to separate file
+      KVM: VMX: Remove unnecessary exception trampoline in vmx_vmenter
+
+Vitaly Kuznetsov (1):
+      KVM: VMX: fix crash cleanup when KVM wasn't used
+
+Wanpeng Li (1):
+      KVM: X86: Filter out the broadcast dest for IPI fastpath
+
+ arch/s390/kvm/vsie.c                  |    1 +
+ arch/s390/mm/gmap.c                   |    7 +-
+ arch/x86/kvm/Makefile                 |    2 +-
+ arch/x86/kvm/lapic.c                  |    3 -
+ arch/x86/kvm/lapic.h                  |    3 +
+ arch/x86/kvm/svm/avic.c               | 1027 ++++++
+ arch/x86/kvm/svm/nested.c             |  823 +++++
+ arch/x86/kvm/{pmu_amd.c => svm/pmu.c} |    0
+ arch/x86/kvm/svm/sev.c                | 1187 ++++++
+ arch/x86/kvm/{ => svm}/svm.c          | 6476 ++++++++-------------------------
+ arch/x86/kvm/svm/svm.h                |  491 +++
+ arch/x86/kvm/svm/vmenter.S            |  162 +
+ arch/x86/kvm/vmx/nested.c             |    3 +-
+ arch/x86/kvm/vmx/vmenter.S            |    8 +-
+ arch/x86/kvm/vmx/vmx.c                |   12 +-
+ arch/x86/kvm/x86.c                    |    3 +-
+ 16 files changed, 5219 insertions(+), 4989 deletions(-)
+ create mode 100644 arch/x86/kvm/svm/avic.c
+ create mode 100644 arch/x86/kvm/svm/nested.c
+ rename arch/x86/kvm/{pmu_amd.c => svm/pmu.c} (100%)
+ create mode 100644 arch/x86/kvm/svm/sev.c
+ rename arch/x86/kvm/{ => svm}/svm.c (54%)
+ create mode 100644 arch/x86/kvm/svm/svm.h
+ create mode 100644 arch/x86/kvm/svm/vmenter.S
+
