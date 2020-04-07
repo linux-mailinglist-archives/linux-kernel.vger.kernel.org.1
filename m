@@ -2,120 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 516971A0FB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3C11A0FD4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729290AbgDGOzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:55:22 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:42197 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729268AbgDGOzW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:55:22 -0400
-Received: from kb-xps (unknown [78.193.40.249])
-        (Authenticated sender: kamel.bouhara@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id DE9D2240009;
-        Tue,  7 Apr 2020 14:55:11 +0000 (UTC)
-Date:   Tue, 7 Apr 2020 16:55:10 +0200
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        id S1729145AbgDGPDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:03:22 -0400
+Received: from mail-vi1eur05on2096.outbound.protection.outlook.com ([40.107.21.96]:61358
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728306AbgDGPDW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 11:03:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kj04heUr+HYusf6oIWXyyp5nqeSBxBWFEb6oHSgt3lsvxLMeQpuZXs5NXc3HUW1D718tN/VZ+KpC1ex94ItWdztqL0papBDCFaUoLilr9iNYmEiSWj7mnARPHO/nPgh/XJ4l0JpH/OPOJv0by6sfodHhjQdjrQGeZneV3VhGOJL2+KD3LCeDV4PEn0oHaFc+yYk+dicG+2wP5nUvd35IGm0MFreuuY43AUYRNFA3hbeNQukNOoHK6EB1c7PAcSMQtJYX/Lq/YQsLwxI4UA6OaNO5Gs0q7EoHeuJTEk2NHOs5ncCpLORr7N5TDFjQY0DzTFMKCctkxyskGSZUun+/mQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z7g9CIIbfpIxg6D5MyZN7sIGSrgpv7q7e5h4qDbWFHw=;
+ b=EH+Bje7KmYoYa9K/F5yrLx4OtHVjtmp2z6Ts80HZbWPPh3TMUU3zjEj8Hvh5XUFKSMbP9DikaloL0pgFe7T6ZOplImyv19GSz5N9L7LtTr2VucfwcTi8p3KKc4aqugJL1wi306kjHkzabSTDJJfWWQZWpG+8IXFFtZa+BfCn6PdOCv/HzSBiZ+SlGxsOUwziovvMBOK/UKt8RBkX1vj/NQYg5z+jXnCV7LkUin8D/KFg1FHTv4u/XFkOktcW7+7gLQGBb5nHRE7Z44DhYlPhqCONBJlFuRcrXrMhQiQLwmtqkB3gDche3OyJis5l64edYp4b3eLEkGWtu2zwFvIhuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=toradex.com; dmarc=pass action=none header.from=toradex.com;
+ dkim=pass header.d=toradex.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z7g9CIIbfpIxg6D5MyZN7sIGSrgpv7q7e5h4qDbWFHw=;
+ b=ZBNFyjs2OdPdpHMGADX13DDJ6aQHnNfEggEQfBUoPRBm5agjW5FnHpMmJBsygSDlFj8pDz+M6LILGtSwrmntdO/tZQ/EWP6j1z3rhStRr3LoFcPR5PUgFVzVL8TpGT1f2J+wFWUhGPV2DDdcwagUU0TCngGaoVvB7i2rgwIiJM8=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=oleksandr.suvorov@toradex.com; 
+Received: from VI1PR05MB3279.eurprd05.prod.outlook.com (2603:10a6:802:1c::24)
+ by VI1PR05MB3197.eurprd05.prod.outlook.com (2603:10a6:802:1e::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.16; Tue, 7 Apr
+ 2020 15:02:43 +0000
+Received: from VI1PR05MB3279.eurprd05.prod.outlook.com
+ ([fe80::7cdd:4feb:a8b6:a6d2]) by VI1PR05MB3279.eurprd05.prod.outlook.com
+ ([fe80::7cdd:4feb:a8b6:a6d2%7]) with mapi id 15.20.2878.018; Tue, 7 Apr 2020
+ 15:02:43 +0000
+X-Gm-Message-State: AGi0Pua2Woas8iaQqvpmTEO+VJLyhEl+EQv2BcP5/D2g5fZ0njoAzNE5
+        r/CakPEF4MrJncFXG8BfFXBcagUP7NW6NOR2H4Q=
+X-Google-Smtp-Source: APiQypJecAGSzh6EfVMbgGC7Y20UIVAsV7RXFyihwphTgBjyxSXKRhk249Ab4SbtSokg3ekIHhX2jUhq74sTTTwY1kE=
+X-Received: by 2002:ad4:54d4:: with SMTP id j20mr2526844qvx.75.1586271329677;
+ Tue, 07 Apr 2020 07:55:29 -0700 (PDT)
+References: <20200405192246.3741784-1-oleksandr.suvorov@toradex.com>
+ <20200405192246.3741784-3-oleksandr.suvorov@toradex.com> <20200407061646.pcglaw43kfmrag6a@pengutronix.de>
+ <CAGgjyvH5nmnXH068QTNPKzsjocNXfEP_yh0HO=L-oGaqQdYRuA@mail.gmail.com> <20200407111842.hp7mhrlsuesa74ep@pengutronix.de>
+In-Reply-To: <20200407111842.hp7mhrlsuesa74ep@pengutronix.de>
+From:   Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Date:   Tue, 7 Apr 2020 17:55:18 +0300
+X-Gmail-Original-Message-ID: <CAGgjyvEP8q9AmXr5nnHiw6zEhoTwFNOW4=wP8eeALfsxtj7L-g@mail.gmail.com>
+Message-ID: <CAGgjyvEP8q9AmXr5nnHiw6zEhoTwFNOW4=wP8eeALfsxtj7L-g@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/6] dt-bindings: pwm: document the PWM no-flag
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     devicetree@vger.kernel.org, Paul Barker <pbarker@konsulko.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Igor Opaniuk <igor.opaniuk@toradex.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH 2/3] Input: rotary-encoder-counter: add DT bindings
-Message-ID: <20200407145510.GC1489441@kb-xps>
-References: <20200406155806.1295169-1-kamel.bouhara@bootlin.com>
- <20200406155806.1295169-3-kamel.bouhara@bootlin.com>
- <20200407094159.xtbhtsxorvs2g22c@gilmour.lan>
- <20200407110339.GA1489441@kb-xps>
- <20200407142238.ik67isetbggn2rh3@gilmour.lan>
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: MWHPR13CA0025.namprd13.prod.outlook.com
+ (2603:10b6:300:95::11) To VI1PR05MB3279.eurprd05.prod.outlook.com
+ (2603:10a6:802:1c::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407142238.ik67isetbggn2rh3@gilmour.lan>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mail-pg1-f179.google.com (209.85.215.179) by MWHPR13CA0025.namprd13.prod.outlook.com (2603:10b6:300:95::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.5 via Frontend Transport; Tue, 7 Apr 2020 15:02:42 +0000
+Received: by mail-pg1-f179.google.com with SMTP id m17so1852860pgj.5;        Tue, 07 Apr 2020 08:02:42 -0700 (PDT)
+X-Gm-Message-State: AGi0Pua2Woas8iaQqvpmTEO+VJLyhEl+EQv2BcP5/D2g5fZ0njoAzNE5
+        r/CakPEF4MrJncFXG8BfFXBcagUP7NW6NOR2H4Q=
+X-Google-Smtp-Source: APiQypJecAGSzh6EfVMbgGC7Y20UIVAsV7RXFyihwphTgBjyxSXKRhk249Ab4SbtSokg3ekIHhX2jUhq74sTTTwY1kE=
+X-Received: by 2002:ad4:54d4:: with SMTP id j20mr2526844qvx.75.1586271329677;
+ Tue, 07 Apr 2020 07:55:29 -0700 (PDT)
+X-Gmail-Original-Message-ID: <CAGgjyvEP8q9AmXr5nnHiw6zEhoTwFNOW4=wP8eeALfsxtj7L-g@mail.gmail.com>
+X-Originating-IP: [209.85.215.179]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d617f09e-eb50-4b32-09e0-08d7db04b927
+X-MS-TrafficTypeDiagnostic: VI1PR05MB3197:
+X-Microsoft-Antispam-PRVS: <VI1PR05MB319799A1BCD75094045343ABF9C30@VI1PR05MB3197.eurprd05.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-Forefront-PRVS: 036614DD9C
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR05MB3279.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(396003)(136003)(366004)(346002)(39850400004)(376002)(316002)(478600001)(81156014)(52116002)(42186006)(5660300002)(186003)(55446002)(8676002)(26005)(9686003)(2906002)(86362001)(81166006)(966005)(44832011)(54906003)(55236004)(66556008)(66946007)(53546011)(450100002)(6862004)(4326008)(66476007)(8936002)(6666004);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: toradex.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J87O5YKbc/Uu15/8JJDoH0tCcA6WBGlYqbUdZitaGotre1kWO5SUbkeirn1aca7nsvg6NJIyJJ1yJd8ciGk5oVnGXqfkj8g8c43IYGkCS/93AIUCE51EJOmAABeCNjAKVA2rO1GVwF59g4pFmiSeUpPJ1PHp+nqN5yZ74KOD4K7cclAfOvcxpXKbG6q1nj+yZdgJ0SCJGH1Mkzgd3LTzNojEyOD2/TMqCnBqsvbMyOpdWWarBzjeJ9SV/EcAVxyvSGETJh8EtZ7UQn5BynmkQq3senyB9tpEPkkojsOAf1XHVHbxRucIi2k/z6EGQnjWB4rHVnQ0jS3vj3AZURKDsh1n9tEUAApDVQyNLd6J2PdZ5XSW3pu4acsdwVSn0DaJaE/AcgD+M5VRUhhMoSksQAJJLx99vvcjIs0E3p9RDbdukUO3TZUDe2vUhgDUhCQZWdbCEz7yRAA1yAa7OYOyFUwMXNifA7puGCLsLkVutH+aY/+BvVs37RqEazoTvCUesCaJ7nZ1cPhFiolXQepaJA==
+X-MS-Exchange-AntiSpam-MessageData: yCnjryy0mQRGQcbswCCozBY6FK5qzrhclWe5Bjb6vRLgU2fmvpTGZC6p2AVrjgdzRSM6h6Wvrv+f9Lxttxc8vaT5IqjAcSSFoTQfpIvVnptBt3C5Wxk6lEEs24E1je+RijiiSuQWfQtvN0tKYdzKGQ==
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d617f09e-eb50-4b32-09e0-08d7db04b927
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2020 15:02:42.9809
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dpJ7TC0OhxvwrC/oa40wq71iyPLobCejS+DFmnIBJxNW/DxHwkJSjS7cNY2z0JdPTscWyyM2iqWz+My+0qwIQppGhOJ+pkE1SyaLNp/lXzA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR05MB3197
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 04:22:38PM +0200, Maxime Ripard wrote:
-> On Tue, Apr 07, 2020 at 01:03:39PM +0200, Kamel Bouhara wrote:
-> > > On Mon, Apr 06, 2020 at 05:58:05PM +0200, Kamel Bouhara wrote:
-> > > > Add dt binding for the counter variant of the rotary encoder driver.
+On Tue, Apr 7, 2020 at 2:19 PM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> On Tue, Apr 07, 2020 at 01:51:42PM +0300, Oleksandr Suvorov wrote:
+> > On Tue, Apr 7, 2020 at 9:17 AM Uwe Kleine-K=C3=B6nig
+> > <u.kleine-koenig@pengutronix.de> wrote:
+> > >
+> > > On Sun, Apr 05, 2020 at 10:22:42PM +0300, Oleksandr Suvorov wrote:
+> > > > Add the description of PWM_NOFLAGS flag property.
 > > > >
-> > > > Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > > > ---
-> > > >  .../input/rotary-encoder-counter.yaml         | 67 +++++++++++++++++++
-> > > >  1 file changed, 67 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..a59f7c1faf0c
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
-> > > > @@ -0,0 +1,67 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0
+> > > > Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 > > >
-> > > Bindings are usually used by other OS's, so you should consider
-> > > putting it under a more permissive license, usually that would be GPL2
-> > > and the BSD-2-Clause
+> > > As I already wrote in reply to the v1 series I'd prefer a name for 0
+> > > that explicitly handles normal polarity.
 > >
-> > Well to be honest I just looked into an existing binding and I guess
-> > the wrong one :).
+> > Uwe, AFAIU, there is no flag that forces normal polarity, the normal po=
+larity
+> > is the default state if there is no flag to invert the polarity is set.
 >
-> Not the wrong ones, but the old ones :)
+> Yes, that's the status quo.
 >
-> It's painful to change a license on existing files, whereas it's
-> pretty easy to mention it during review.
+> > '0' value in the bit flags cell really means there are no flags set
+> > for the PWM instance.
 >
-
-Alright.
-
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/input/rotary-encoder-counter.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Rotary Encoder Counter
-> > > > +
-> > > > +maintainers:
-> > > > +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > > > +
-> > > > +description:
-> > > > +  Registers a Rotary encoder connected through a counter device.
-> > >
-> > > You shouldn't really describe the action here, but more what the
-> > > binding is about. The registration will not depend on the presence of
-> > > the node following that binding, but rather on whether or not the OS
-> > > that uses it has support for it.
-> > >
-> >
-> > Then shall it be better with just :
-> > "A rotary encoder device using a generic counter interface." ?
+> For me the relevance of giving 0 a name is mostly for human consumption.
+> Currently there is only a single flag encoded in the number in question.
+> But as soon as we add another, say PWM_AUTOSTART we have the following
+> possible settings:
 >
-> The generic counter interface is a Linux-only stuff though, some other
-> OS might want to implement something else. Something like "based on a
-> counter"?
+>         PWM_NOFLAGS
+>         PWM_POLARITY_INVERTED
+>         PWM_AUTOSTART
+>         PWM_POLARITY_INVERTED | PWM_AUTOSTART
 >
+> Then for the first two a reader doesn't see if autostart is not in use
+> because the dt author doesn't know this feature (e.g. because autostart
+> is too new) or if they don't want autostart at all.
+>
+> If however we had PWM_POLARITY_NORMAL and PWM_NO_AUTOSTART to complement
+> PWM_POLARITY_INVERTED and PWM_AUTOSTART
 
-Indeed, that's fair enough.
+So using this approach, in theory, we'll have several flags that all
+just equals to 0 (0 << 0, 0 << 1, 0 << 2 ...).
+What if just describe default states for each flag in the DT documentation?
 
-Thanks.
+> every flag's setting could be explicit and if there is a device tree that=
+ only has
+>
+>         PWM_POLARITY_NORMAL
+>
+> it would be obvious that nobody thought enough about autostarting to
+> explicitly mention it.
 
-> Maxime
+If you insist on the flag complement model, I have another suggestion.
+As the normal polarity is the default state, can we use PWM_NO_POLARITY_INV=
+ERTED
+instead of PWM_POLARITY_NORMAL?
+It gives us 2 benefits:
+1. The name will not interfere with enum PWM_POLARITY_NORMAL in <linux/pmw.=
+h>
+2. Each flag complement will be made with the same scheme:
+PWM_flagA -> PWM_NO_flagA...
 
-
+> Best regards
+> Uwe
+>
+> --
+> Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig       =
+     |
+> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
+|
 
 --
-Kamel Bouhara, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+Best regards
+Oleksandr Suvorov
+
+Toradex AG
+Ebenaustrasse 10 | 6048 Horw | Switzerland | T: +41 41 500 48 00
