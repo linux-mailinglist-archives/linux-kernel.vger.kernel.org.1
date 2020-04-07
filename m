@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0232C1A0B12
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D151A0B79
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728487AbgDGKXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:23:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33364 "EHLO mail.kernel.org"
+        id S1728437AbgDGK05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:26:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726637AbgDGKX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:23:29 -0400
+        id S1728706AbgDGK0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:26:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 62E2120801;
-        Tue,  7 Apr 2020 10:23:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2025D20644;
+        Tue,  7 Apr 2020 10:26:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255008;
-        bh=qAtiFLtErp5CaagbFlv5bSjeLFAc3rfDFA84TXWxh3o=;
+        s=default; t=1586255212;
+        bh=VNqCZBzrB81vN+E5aqxkm8Kxryctt/ULReZdCHmHATY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RluvpUbkORqlBjLYiPDpzlT6r0V5jWeqGc963ymX38TkwXjbro6GLYSnkp5K35qdR
-         tbpizReATy0AE0AvD79SMV8C4Uge9fCS8ZrJVREOXwX5cdHo2Ud4Uj2A+VZKib5svw
-         Ue1NqXC0CmFDNiQaraGRw7Ryf39hvMFZRPfmbqFw=
+        b=Aqbp1pqF3oYtRI05ZFJGva7Jh622wcGNwC1o1b+7C0YB9Q8GpbjeVBGRc30XWMFAF
+         crmAkpJXaW9nuDADNu93l3GamwGSZztp2lTFB13GND4WUvwUahHINhKaufPEtCC78M
+         FQZAE79nws0am85YG1vcPnjk9EUOWIL6v8A567rI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>
-Subject: [PATCH 5.4 29/36] iwlwifi: yoyo: dont add TLV offset when reading FIFOs
-Date:   Tue,  7 Apr 2020 12:22:02 +0200
-Message-Id: <20200407101458.020363607@linuxfoundation.org>
+        Cristian Birsan <cristian.birsan@microchip.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 06/29] net: macb: Fix handling of fixed-link node
+Date:   Tue,  7 Apr 2020 12:22:03 +0200
+Message-Id: <20200407101452.757137875@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
-References: <20200407101454.281052964@linuxfoundation.org>
+In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
+References: <20200407101452.046058399@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mordechay Goodstein <mordechay.goodstein@intel.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 
-commit a5688e600e78f9fc68102bf0fe5c797fc2826abe upstream.
+[ Upstream commit 79540d133ed6f65a37dacb54b7a704cc8a24c52d ]
 
-The TLV offset is only used to read registers, while the offset used for
-the FIFO addresses are hard coded in the driver and not given by the
-TLV.
+fixed-link nodes are treated as PHY nodes by of_mdiobus_child_is_phy().
+We must check if the interface is a fixed-link before looking up for PHY
+nodes.
 
-If we try to apply the TLV offset when reading the FIFOs, we'll read
-from invalid addresses, causing the driver to hang.
-
-Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
-Fixes: 8d7dea25ada7 ("iwlwifi: dbg_ini: implement Rx fifos dump")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20200306151129.fbab869c26fa.I4ddac20d02f9bce41855a816aa6855c89bc3874e@changeid
+Fixes: 7897b071ac3b ("net: macb: convert to phylink")
+Tested-by: Cristian Birsan <cristian.birsan@microchip.com>
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/net/wireless/intel/iwlwifi/fw/dbg.c |   10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/cadence/macb_main.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
-@@ -8,7 +8,7 @@
-  * Copyright(c) 2008 - 2014 Intel Corporation. All rights reserved.
-  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
-  * Copyright(c) 2015 - 2017 Intel Deutschland GmbH
-- * Copyright(c) 2018 - 2019 Intel Corporation
-+ * Copyright(c) 2018 - 2020 Intel Corporation
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of version 2 of the GNU General Public License as
-@@ -31,7 +31,7 @@
-  * Copyright(c) 2005 - 2014 Intel Corporation. All rights reserved.
-  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
-  * Copyright(c) 2015 - 2017 Intel Deutschland GmbH
-- * Copyright(c) 2018 - 2019 Intel Corporation
-+ * Copyright(c) 2018 - 2020 Intel Corporation
-  * All rights reserved.
-  *
-  * Redistribution and use in source and binary forms, with or without
-@@ -1373,11 +1373,7 @@ static int iwl_dump_ini_rxf_iter(struct
- 		goto out;
- 	}
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -724,6 +724,9 @@ static int macb_mdiobus_register(struct
+ {
+ 	struct device_node *child, *np = bp->pdev->dev.of_node;
  
--	/*
--	 * region register have absolute value so apply rxf offset after
--	 * reading the registers
--	 */
--	offs += rxf_data.offset;
-+	offs = rxf_data.offset;
- 
- 	/* Lock fence */
- 	iwl_write_prph_no_grab(fwrt->trans, RXF_SET_FENCE_MODE + offs, 0x1);
++	if (of_phy_is_fixed_link(np))
++		return mdiobus_register(bp->mii_bus);
++
+ 	/* Only create the PHY from the device tree if at least one PHY is
+ 	 * described. Otherwise scan the entire MDIO bus. We do this to support
+ 	 * old device tree that did not follow the best practices and did not
 
 
