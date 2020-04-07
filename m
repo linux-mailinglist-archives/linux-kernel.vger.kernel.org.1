@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 947EC1A0F81
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619031A0F84
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729261AbgDGOrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:47:06 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:32944 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729241AbgDGOrE (ORCPT
+        id S1729298AbgDGOrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:47:11 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42902 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728855AbgDGOrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:47:04 -0400
-Received: by mail-pl1-f196.google.com with SMTP id ay1so1347070plb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:47:03 -0700 (PDT)
+        Tue, 7 Apr 2020 10:47:05 -0400
+Received: by mail-pl1-f193.google.com with SMTP id e1so1321329plt.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:47:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=c7uXdqcuiavHxznT4lBdSfVCr+fRg7NRHIyZNAY7wD8=;
-        b=P1AeqVorlKShJdhSjCpTu5VNpL+Za5BmA1B3JGSOcSzJ7IsnKO3GBuODRscgWd8G4+
-         U72bLLhsvWgXXJ9Z1Ys3LQZ496OgU8thm3JeaaBzwwPjF/H3FQJkdS03gosEpC5ynCmL
-         nY8/ZsqWzGMBTjzKMdq8js54lm2TGULQE7TTAQS8L5PfeMfte0gj0xFKVGk9ezdp9Fc7
-         w9U63uhPj5rz3outYretqeP1s6X1T5TiNUFE37tqUZ095aTt0Y09G07DpmSKngy9k33Z
-         qOUfgd9dMFrG2P/+48+pVd6EsnmDd0hNYKATwaX5XJVyR/fax2lE16ib2MIitH8AiofC
-         e8hg==
+        bh=kYuVFCggRo9I8GvVGPv9n9TMuc3y+S8enCWZ0r9b2Rg=;
+        b=Dp2cyuiV3Zq2urQAMh7yiuZ3tl4kdNTj0CnDofGx5CYcevhuKy6HPSG4E7W9b0Q7Y0
+         2uRjZtKohnI7E8ZgkiEw8px7x+qMhXPYizZnM37q5PEOBdTSXVfkFm1rceB9zklVQOkX
+         1LPAhRh1htLQX11lcxKXodjYAR/tQZSpZ31ln21dus97h07gwSbhgcUgQebQncnDJVxG
+         FTmWLZgq3KfB2/OjR+yXpBM8YXWRHKJp+WLQ2haAVfKXzKbFkVmcTQIrch4ZHhaQgeM+
+         pnouesMXOGAoFz4QI/DgUrFHdTMGktQ4jJzfrqzYGwFkYxCBwnkXraurAUu5y22zedFW
+         bdyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=c7uXdqcuiavHxznT4lBdSfVCr+fRg7NRHIyZNAY7wD8=;
-        b=puG7dJXpIGq4S7wGfUpKIFQRLRNjaEZ5sAZ00xlHTXBcm6jojpmNTIWYHQ/ztET5AI
-         6fILoEr0eRgE75uHY8tZOHE221aUQf4FKSv7cV0kgmocd69Qr05Ol4AgRwnACNcaq7rd
-         NiySnE3k3NuCyzIu3OW5PaEqtsMWxR4frxD0XL97FPHh4R1NPC02Kn26DQTlBxmMaJaI
-         6R0F3BzuiRmWJDxyv7vwpo057Ja6MEak/b0X3xaSdE0ZSLr83/XKZ0lVSrg/YWv+6dTw
-         imQf3Vx7BNII+CTdT6TqjlmhZwcC41I5TAoIc2No9/r3XNRnHQps2oVg9Tybp1f924fv
-         pvxw==
-X-Gm-Message-State: AGi0Pub5+vqyXhhRy5csA+uXG7UoZHQ/JSetmBikIAh7F5wCzmOE0565
-        4t4iEegWnSjsPaPrc0DZM7K15w==
-X-Google-Smtp-Source: APiQypILA25M+qgwgYPvpmKFU28Lv6GclMDIO1ifCU+inCy8FTJZT6CORAEugRPYmfSQcdv9GSOt8w==
-X-Received: by 2002:a17:90b:3714:: with SMTP id mg20mr3197336pjb.127.1586270822588;
-        Tue, 07 Apr 2020 07:47:02 -0700 (PDT)
+        bh=kYuVFCggRo9I8GvVGPv9n9TMuc3y+S8enCWZ0r9b2Rg=;
+        b=jig31crtYLQl3RvA3ZMaxaTlZ2VbTSwgPaT0qjtkZ8py3ZoJ+S/ACRn8ij0/pN0ibP
+         1xt/2Gz5FTYs+ew8vu899oKFJRqbow+L/WiRGFMP7XGgiGZVVpnuCP2CzAlFN5galCzJ
+         CTag9FETt/0kJhzrzOcF+ovo7DJ+Ztrm3O1pwtZl7DbYiCqvcuBpRZ6yya1gMOLRV3gk
+         znvkuen4Pi8cpDJo1Ka2MEsJUJvVFEpQtgHik3pIuuXHScM/YDj1NSImzWuaxmVJ+pEF
+         5Hz04oZF96oihe+CMSObujCMlbTejUzKZQ1kWInyB/RybHt3p+dQGROJZdLeYo5q7cTm
+         w2Cw==
+X-Gm-Message-State: AGi0PuYkTzAerevF4xrFRDziVbJlMIOuXJIlJOGLEIUtKxatfD1SJTXw
+        5Fg/+Z+T0+ea4eAItR8YTHE9YBtAtdo=
+X-Google-Smtp-Source: APiQypJeg8iV+Is/jjghotuLsws3LW3MbtvTfDLRSrO+mQADIEt6UxaVlUqnEGdv59l9qdnUHdBNhw==
+X-Received: by 2002:a17:90b:4c84:: with SMTP id my4mr3182095pjb.3.1586270824425;
+        Tue, 07 Apr 2020 07:47:04 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (220-132-236-182.HINET-IP.hinet.net. [220.132.236.182])
-        by smtp.gmail.com with ESMTPSA id y15sm14190093pfc.206.2020.04.07.07.47.00
+        by smtp.gmail.com with ESMTPSA id y15sm14190093pfc.206.2020.04.07.07.47.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 07:47:02 -0700 (PDT)
+        Tue, 07 Apr 2020 07:47:04 -0700 (PDT)
 From:   Zong Li <zong.li@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         aou@eecs.berkeley.edu, mhiramat@kernel.org,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Zong Li <zong.li@sifive.com>
-Subject: [PATCH v4 2/9] riscv: introduce interfaces to patch kernel code
-Date:   Tue,  7 Apr 2020 22:46:47 +0800
-Message-Id: <a491ce48973a0b4f0eed3fe4e97d6a07cb6d6ae8.1586265122.git.zong.li@sifive.com>
+Subject: [PATCH v4 3/9] riscv: patch code by fixmap mapping
+Date:   Tue,  7 Apr 2020 22:46:48 +0800
+Message-Id: <0b6ad2759b47731a83008b46dbbed7c92e68cae2.1586265122.git.zong.li@sifive.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <cover.1586265122.git.zong.li@sifive.com>
 References: <cover.1586265122.git.zong.li@sifive.com>
@@ -63,211 +63,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On strict kernel memory permission, we couldn't patch code without
-writable permission. Preserve two holes in fixmap area, so we can map
-the kernel code temporarily to fixmap area, then patch the instructions.
-
-We need two pages here because we support the compressed instruction, so
-the instruction might be align to 2 bytes. When patching the 32-bit
-length instruction which is 2 bytes alignment, it will across two pages.
-
-Introduce two interfaces to patch kernel code:
-riscv_patch_text_nosync:
- - patch code without synchronization, it's caller's responsibility to
-   synchronize all CPUs if needed.
-riscv_patch_text:
- - patch code and always synchronize with stop_machine()
+On strict kernel memory permission, the ftrace have to change the
+permission of text for dynamic patching the intructions. Use
+riscv_patch_text_nosync() to patch code instead of probe_kernel_write.
 
 Signed-off-by: Zong Li <zong.li@sifive.com>
 Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/riscv/include/asm/fixmap.h |   2 +
- arch/riscv/include/asm/patch.h  |  12 ++++
- arch/riscv/kernel/Makefile      |   4 +-
- arch/riscv/kernel/patch.c       | 120 ++++++++++++++++++++++++++++++++
- 4 files changed, 137 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/include/asm/patch.h
- create mode 100644 arch/riscv/kernel/patch.c
+ arch/riscv/kernel/ftrace.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-diff --git a/arch/riscv/include/asm/fixmap.h b/arch/riscv/include/asm/fixmap.h
-index 42d2c42f3cc9..2368d49eb4ef 100644
---- a/arch/riscv/include/asm/fixmap.h
-+++ b/arch/riscv/include/asm/fixmap.h
-@@ -27,6 +27,8 @@ enum fixed_addresses {
- 	FIX_FDT = FIX_FDT_END + FIX_FDT_SIZE / PAGE_SIZE - 1,
- 	FIX_PTE,
- 	FIX_PMD,
-+	FIX_TEXT_POKE1,
-+	FIX_TEXT_POKE0,
- 	FIX_EARLYCON_MEM_BASE,
- 	__end_of_fixed_addresses
- };
-diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patch.h
-new file mode 100644
-index 000000000000..9a7d7346001e
---- /dev/null
-+++ b/arch/riscv/include/asm/patch.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright (C) 2020 SiFive
-+ */
-+
-+#ifndef _ASM_RISCV_PATCH_H
-+#define _ASM_RISCV_PATCH_H
-+
-+int patch_text_nosync(void *addr, const void *insns, size_t len);
-+int patch_text(void *addr, u32 insn);
-+
-+#endif /* _ASM_RISCV_PATCH_H */
-diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-index f40205cb9a22..d189bd3d8501 100644
---- a/arch/riscv/kernel/Makefile
-+++ b/arch/riscv/kernel/Makefile
-@@ -4,7 +4,8 @@
- #
+diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+index c40fdcdeb950..08396614d6f4 100644
+--- a/arch/riscv/kernel/ftrace.c
++++ b/arch/riscv/kernel/ftrace.c
+@@ -7,9 +7,23 @@
  
- ifdef CONFIG_FTRACE
--CFLAGS_REMOVE_ftrace.o = -pg
-+CFLAGS_REMOVE_ftrace.o	= -pg
-+CFLAGS_REMOVE_patch.o	= -pg
- endif
+ #include <linux/ftrace.h>
+ #include <linux/uaccess.h>
++#include <linux/memory.h>
+ #include <asm/cacheflush.h>
++#include <asm/patch.h>
  
- extra-y += head.o
-@@ -26,6 +27,7 @@ obj-y	+= traps.o
- obj-y	+= riscv_ksyms.o
- obj-y	+= stacktrace.o
- obj-y	+= cacheinfo.o
-+obj-y	+= patch.o
- obj-$(CONFIG_MMU) += vdso.o vdso/
+ #ifdef CONFIG_DYNAMIC_FTRACE
++int ftrace_arch_code_modify_prepare(void) __acquires(&text_mutex)
++{
++	mutex_lock(&text_mutex);
++	return 0;
++}
++
++int ftrace_arch_code_modify_post_process(void) __releases(&text_mutex)
++{
++	mutex_unlock(&text_mutex);
++	return 0;
++}
++
+ static int ftrace_check_current_call(unsigned long hook_pos,
+ 				     unsigned int *expected)
+ {
+@@ -46,20 +60,14 @@ static int __ftrace_modify_call(unsigned long hook_pos, unsigned long target,
+ {
+ 	unsigned int call[2];
+ 	unsigned int nops[2] = {NOP4, NOP4};
+-	int ret = 0;
  
- obj-$(CONFIG_RISCV_M_MODE)	+= clint.o
-diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-new file mode 100644
-index 000000000000..5b4f0d37097f
---- /dev/null
-+++ b/arch/riscv/kernel/patch.c
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2020 SiFive
-+ */
-+
-+#include <linux/spinlock.h>
-+#include <linux/mm.h>
-+#include <linux/uaccess.h>
-+#include <linux/stop_machine.h>
-+#include <asm/kprobes.h>
-+#include <asm/cacheflush.h>
-+#include <asm/fixmap.h>
-+
-+struct patch_insn_patch {
-+	void *addr;
-+	u32 insn;
-+	atomic_t cpu_count;
-+};
-+
-+#ifdef CONFIG_MMU
-+static void *patch_map(void *addr, int fixmap)
-+{
-+	uintptr_t uintaddr = (uintptr_t) addr;
-+	struct page *page;
-+
-+	if (core_kernel_text(uintaddr))
-+		page = phys_to_page(__pa_symbol(addr));
-+	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
-+		page = vmalloc_to_page(addr);
-+	else
-+		return addr;
-+
-+	BUG_ON(!page);
-+
-+	return (void *)set_fixmap_offset(fixmap, page_to_phys(page) +
-+					 (uintaddr & ~PAGE_MASK));
-+}
-+NOKPROBE_SYMBOL(patch_map);
-+
-+static void patch_unmap(int fixmap)
-+{
-+	clear_fixmap(fixmap);
-+}
-+NOKPROBE_SYMBOL(patch_unmap);
-+
-+static int patch_insn_write(void *addr, const void *insn, size_t len)
-+{
-+	void *waddr = addr;
-+	bool across_pages = (((uintptr_t) addr & ~PAGE_MASK) + len) > PAGE_SIZE;
-+	int ret;
-+
-+	if (across_pages)
-+		patch_map(addr + len, FIX_TEXT_POKE1);
-+
-+	waddr = patch_map(addr, FIX_TEXT_POKE0);
-+
-+	ret = probe_kernel_write(waddr, insn, len);
-+
-+	patch_unmap(FIX_TEXT_POKE0);
-+
-+	if (across_pages)
-+		patch_unmap(FIX_TEXT_POKE1);
-+
-+	return ret;
-+}
-+NOKPROBE_SYMBOL(patch_insn_write);
-+#else
-+static int patch_insn_write(void *addr, const void *insn, size_t len)
-+{
-+	return probe_kernel_write(addr, insn, len);
-+}
-+NOKPROBE_SYMBOL(patch_insn_write);
-+#endif /* CONFIG_MMU */
-+
-+int patch_text_nosync(void *addr, const void *insns, size_t len)
-+{
-+	u32 *tp = addr;
-+	int ret;
-+
-+	ret = patch_insn_write(tp, insns, len);
-+
-+	if (!ret)
-+		flush_icache_range((uintptr_t) tp, (uintptr_t) tp + len);
-+
-+	return ret;
-+}
-+NOKPROBE_SYMBOL(patch_text_nosync);
-+
-+static int patch_text_cb(void *data)
-+{
-+	struct patch_insn_patch *patch = data;
-+	int ret = 0;
-+
-+	if (atomic_inc_return(&patch->cpu_count) == 1) {
-+		ret =
-+		    patch_text_nosync(patch->addr, &patch->insn,
-+					    GET_INSN_LENGTH(patch->insn));
-+		atomic_inc(&patch->cpu_count);
-+	} else {
-+		while (atomic_read(&patch->cpu_count) <= num_online_cpus())
-+			cpu_relax();
-+		smp_mb();
-+	}
-+
-+	return ret;
-+}
-+NOKPROBE_SYMBOL(patch_text_cb);
-+
-+int patch_text(void *addr, u32 insn)
-+{
-+	struct patch_insn_patch patch = {
-+		.addr = addr,
-+		.insn = insn,
-+		.cpu_count = ATOMIC_INIT(0),
-+	};
-+
-+	return stop_machine_cpuslocked(patch_text_cb,
-+				       &patch, cpu_online_mask);
-+}
-+NOKPROBE_SYMBOL(patch_text);
+ 	make_call(hook_pos, target, call);
+ 
+-	/* replace the auipc-jalr pair at once */
+-	ret = probe_kernel_write((void *)hook_pos, enable ? call : nops,
+-				 MCOUNT_INSN_SIZE);
+-	/* return must be -EPERM on write error */
+-	if (ret)
++	/* Replace the auipc-jalr pair at once. Return -EPERM on write error. */
++	if (patch_text_nosync
++	    ((void *)hook_pos, enable ? call : nops, MCOUNT_INSN_SIZE))
+ 		return -EPERM;
+ 
+-	smp_mb();
+-	flush_icache_range((void *)hook_pos, (void *)hook_pos + MCOUNT_INSN_SIZE);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.26.0
 
