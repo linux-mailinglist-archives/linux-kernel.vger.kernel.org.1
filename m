@@ -2,256 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C45D1A041C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDFD71A0423
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgDGBI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 21:08:28 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30580 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726826AbgDGBIT (ORCPT
+        id S1726446AbgDGBJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 21:09:56 -0400
+Received: from mail-pg1-f171.google.com ([209.85.215.171]:44459 "EHLO
+        mail-pg1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726230AbgDGBJ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 21:08:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586221698;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L4yUJTneo14gmnV6yvCsrtosUccNNJJsj0HwyG8nxy8=;
-        b=T6oXOIBo7XvYJa/9UWCfTjIKd9QoVDCQZmzyE49SelC5SrQC0/5Ew6O75JvYRe+ZDxbFCD
-        z3URrq6hrJkkR1EDDDsGLjG4SZ876+q6ldX68gdGiVi2Ct9Fn3RmpTIOBaJEQgTyDhZJvr
-        ESrhtlVmuaBB7khZoWy/5C8HkM5hur4=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-JsyZKWjUNtCBQEs4iwNf7w-1; Mon, 06 Apr 2020 21:08:14 -0400
-X-MC-Unique: JsyZKWjUNtCBQEs4iwNf7w-1
-Received: by mail-wr1-f71.google.com with SMTP id o10so854677wrj.7
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:08:14 -0700 (PDT)
+        Mon, 6 Apr 2020 21:09:56 -0400
+Received: by mail-pg1-f171.google.com with SMTP id 142so899484pgf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:09:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hxs/afcb0MhjFFfWYcFauB3HH6jjoFqq7M9/7Awekes=;
+        b=XbsiHs0kPiXh+KouUNZMERmrL06fLoNH3qeAhFjSsbF677ozzS+MsBznMHrqAEVvlH
+         YvKbM4BSBuS0KwJS1YD91zEv+as8Eehgwh/0M64ImGC14gFXo6azk/UCISZ7faZ5HSYr
+         PsevY+xJ5YURV1M1bAEvE1MbKR3edaydTjPe4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=L4yUJTneo14gmnV6yvCsrtosUccNNJJsj0HwyG8nxy8=;
-        b=IEpQPUbV1LwuiYNYYBEXbMuQjZYTUlqbKveB6AjtXt6+WZO0tzTdS7FD7UF7ocO4Vd
-         99EKmPAFmklPDEQBKF/olBKfM2fvEMr9RyIacBMhc0edArCoyUru25A2csnmXUr4Lwpb
-         5IKH+9O5SobqynnUnQMFk5IqCbUclYREPGZPEiGlvMyiAijcU0Qjcy2VkyWsr7GIW2JD
-         gRKKnTSwFn0RHa8mxgGxtNyRMNbc5Ml0+oJg5Y2pGS0PxfrJ9WM9rFO0OrDkpPNwB45I
-         ks38Y8waIIhM0isYBfNmPnCTP3EroRLXENUx5QKDYQiZW75CY1sJejMnN3XPa39t3J7e
-         p06g==
-X-Gm-Message-State: AGi0PuaClag/xiCZUfi8hUyg3eUnWFwYS/egHzp6Tc3UY7O5YzxkLVT5
-        27R3DzX4qNgHlRqdlX62ubqBR9h9Th3i8NZ80dZfycI79De1knamtB8FsvyhnB1ODqDgHVZWX1z
-        6yX9kr0pKZjXPQgLYpjrlL/PO
-X-Received: by 2002:a5d:4ac2:: with SMTP id y2mr2231408wrs.340.1586221692864;
-        Mon, 06 Apr 2020 18:08:12 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJRyp/ZpJacQiZ3k9H+aTIpbKPM4w8UFFPSIqcFT0rwHZZkPHnvafzAm6P2M2/gPs/IswWSoA==
-X-Received: by 2002:a5d:4ac2:: with SMTP id y2mr2231387wrs.340.1586221692600;
-        Mon, 06 Apr 2020 18:08:12 -0700 (PDT)
-Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id c17sm23267693wrp.28.2020.04.06.18.08.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Hxs/afcb0MhjFFfWYcFauB3HH6jjoFqq7M9/7Awekes=;
+        b=Swm49AxGJrlczjgz2R1yXQzbRM1ufSsLNx2SYW7JtjusLM81MN97dWmZxtPT28lqK/
+         U47Usg6WR46yxj+Mdb8MtyMHlwTroHUFcrcTqeqHUtBvzPVe0DkFsVfRy7Ec66liJRs+
+         gIYyqexi201kDsxwXJViEsj6LIG4dITizWvfQkYTlrZyEyut3pR0qxXWKWVriCI4J7E8
+         2A4INwrmezmgFGRFVkYoA1wzxLVUXLeQ/2YhsFHPMvrycqtH4+39vZTPSgIYCQJRlxAS
+         v4uK6ZRlEaT0KrZp7t249j9uMga2avzzE1RYtAKacy983FX4WCuTlvmpTS2a2OfF9X/2
+         J6hQ==
+X-Gm-Message-State: AGi0PubkYNBX8Z6F4ElHPA8bwZWv5guFFGJ5ocEfn1s/Pdag1HpfmnRe
+        NSZOb4eADKGtkL9uNQMfKhE8JSY5HvQ=
+X-Google-Smtp-Source: APiQypLOn6SjQqUwMDdvustCjzzD3AW1DQSx+dpCelcy6Ptdb7cAm/AABk1hV6c0vDmLNwuVfIHT+g==
+X-Received: by 2002:a63:a55d:: with SMTP id r29mr1888282pgu.248.1586221794481;
+        Mon, 06 Apr 2020 18:09:54 -0700 (PDT)
+Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id s27sm12086500pgn.90.2020.04.06.18.09.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 18:08:12 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 21:08:10 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
+        Mon, 06 Apr 2020 18:09:53 -0700 (PDT)
+From:   Prashant Malani <pmalani@chromium.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH v7 19/19] vhost: batching fetches
-Message-ID: <20200407010700.446571-20-mst@redhat.com>
-References: <20200407010700.446571-1-mst@redhat.com>
+Cc:     heikki.krogerus@linux.intel.com,
+        Prashant Malani <pmalani@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH 0/3] platform/chrome: typec: Add port partner registration
+Date:   Mon,  6 Apr 2020 18:09:36 -0700
+Message-Id: <20200407010940.155490-1-pmalani@chromium.org>
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200407010700.446571-1-mst@redhat.com>
-X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
-X-Mutt-Fcc: =sent
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With this patch applied, new and old code perform identically.
+The following series adds port-partner registration when
+connects/disconnects are detected. In order to do that, we also register
+a listener for the cros-usbpd-notifier, which will inform the driver of
+EC PD events. While we are here, separate out the Type C port data
+objects into a separate struct.
 
-Lots of extra optimizations are now possible, e.g.
-we can fetch multiple heads with copy_from/to_user now.
-We can get rid of maintaining the log array.  Etc etc.
+Prashant Malani (3):
+  platform/chrome: typec: Use notifier for updates
+  platform/chrome: typec: Add struct for port data
+  platform/chrome: typec: Register port partner
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Eugenio Pérez <eperezma@redhat.com>
-Link: https://lore.kernel.org/r/20200401183118.8334-4-eperezma@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/vhost/test.c  |  2 +-
- drivers/vhost/vhost.c | 47 ++++++++++++++++++++++++++++++++++++++-----
- drivers/vhost/vhost.h |  5 ++++-
- 3 files changed, 47 insertions(+), 7 deletions(-)
+ drivers/platform/chrome/cros_ec_typec.c | 121 ++++++++++++++++++++----
+ 1 file changed, 104 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
-index b06680833f03..251ca723ac3f 100644
---- a/drivers/vhost/test.c
-+++ b/drivers/vhost/test.c
-@@ -119,7 +119,7 @@ static int vhost_test_open(struct inode *inode, struct file *f)
- 	dev = &n->dev;
- 	vqs[VHOST_TEST_VQ] = &n->vqs[VHOST_TEST_VQ];
- 	n->vqs[VHOST_TEST_VQ].handle_kick = handle_vq_kick;
--	vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV,
-+	vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV + 64,
- 		       VHOST_TEST_PKT_WEIGHT, VHOST_TEST_WEIGHT, NULL);
- 
- 	f->private_data = n;
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 6ca658c21e15..0395229486a9 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -299,6 +299,7 @@ static void vhost_vq_reset(struct vhost_dev *dev,
- {
- 	vq->num = 1;
- 	vq->ndescs = 0;
-+	vq->first_desc = 0;
- 	vq->desc = NULL;
- 	vq->avail = NULL;
- 	vq->used = NULL;
-@@ -367,6 +368,11 @@ static int vhost_worker(void *data)
- 	return 0;
- }
- 
-+static int vhost_vq_num_batch_descs(struct vhost_virtqueue *vq)
-+{
-+	return vq->max_descs - UIO_MAXIOV;
-+}
-+
- static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
- {
- 	kfree(vq->descs);
-@@ -389,6 +395,9 @@ static long vhost_dev_alloc_iovecs(struct vhost_dev *dev)
- 	for (i = 0; i < dev->nvqs; ++i) {
- 		vq = dev->vqs[i];
- 		vq->max_descs = dev->iov_limit;
-+		if (vhost_vq_num_batch_descs(vq) < 0) {
-+			return -EINVAL;
-+		}
- 		vq->descs = kmalloc_array(vq->max_descs,
- 					  sizeof(*vq->descs),
- 					  GFP_KERNEL);
-@@ -1570,6 +1579,7 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
- 		vq->last_avail_idx = s.num;
- 		/* Forget the cached index value. */
- 		vq->avail_idx = vq->last_avail_idx;
-+		vq->ndescs = vq->first_desc = 0;
- 		break;
- 	case VHOST_GET_VRING_BASE:
- 		s.index = idx;
-@@ -2136,7 +2146,7 @@ static int fetch_indirect_descs(struct vhost_virtqueue *vq,
- 	return 0;
- }
- 
--static int fetch_descs(struct vhost_virtqueue *vq)
-+static int fetch_buf(struct vhost_virtqueue *vq)
- {
- 	unsigned int i, head, found = 0;
- 	struct vhost_desc *last;
-@@ -2149,7 +2159,11 @@ static int fetch_descs(struct vhost_virtqueue *vq)
- 	/* Check it isn't doing very strange things with descriptor numbers. */
- 	last_avail_idx = vq->last_avail_idx;
- 
--	if (vq->avail_idx == vq->last_avail_idx) {
-+	if (unlikely(vq->avail_idx == vq->last_avail_idx)) {
-+		/* If we already have work to do, don't bother re-checking. */
-+		if (likely(vq->ndescs))
-+			return vq->num;
-+
- 		if (unlikely(vhost_get_avail_idx(vq, &avail_idx))) {
- 			vq_err(vq, "Failed to access avail idx at %p\n",
- 				&vq->avail->idx);
-@@ -2240,6 +2254,24 @@ static int fetch_descs(struct vhost_virtqueue *vq)
- 	return 0;
- }
- 
-+static int fetch_descs(struct vhost_virtqueue *vq)
-+{
-+	int ret = 0;
-+
-+	if (unlikely(vq->first_desc >= vq->ndescs)) {
-+		vq->first_desc = 0;
-+		vq->ndescs = 0;
-+	}
-+
-+	if (vq->ndescs)
-+		return 0;
-+
-+	while (!ret && vq->ndescs <= vhost_vq_num_batch_descs(vq))
-+		ret = fetch_buf(vq);
-+
-+	return vq->ndescs ? 0 : ret;
-+}
-+
- /* This looks in the virtqueue and for the first available buffer, and converts
-  * it to an iovec for convenient access.  Since descriptors consist of some
-  * number of output then some number of input descriptors, it's actually two
-@@ -2265,7 +2297,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- 	if (unlikely(log))
- 		*log_num = 0;
- 
--	for (i = 0; i < vq->ndescs; ++i) {
-+	for (i = vq->first_desc; i < vq->ndescs; ++i) {
- 		unsigned iov_count = *in_num + *out_num;
- 		struct vhost_desc *desc = &vq->descs[i];
- 		int access;
-@@ -2311,14 +2343,19 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- 		}
- 
- 		ret = desc->id;
-+
-+		if (!(desc->flags & VRING_DESC_F_NEXT))
-+			break;
- 	}
- 
--	vq->ndescs = 0;
-+	vq->first_desc = i + 1;
- 
- 	return ret;
- 
- err:
--	vhost_discard_vq_desc(vq, 1);
-+	for (i = vq->first_desc; i < vq->ndescs; ++i)
-+		if (!(vq->descs[i].flags & VRING_DESC_F_NEXT))
-+			vhost_discard_vq_desc(vq, 1);
- 	vq->ndescs = 0;
- 
- 	return ret;
-diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-index 76356edee8e5..a67bda9792ec 100644
---- a/drivers/vhost/vhost.h
-+++ b/drivers/vhost/vhost.h
-@@ -81,6 +81,7 @@ struct vhost_virtqueue {
- 
- 	struct vhost_desc *descs;
- 	int ndescs;
-+	int first_desc;
- 	int max_descs;
- 
- 	struct file *kick;
-@@ -229,7 +230,7 @@ void vhost_iotlb_map_free(struct vhost_iotlb *iotlb,
- 			  struct vhost_iotlb_map *map);
- 
- #define vq_err(vq, fmt, ...) do {                                  \
--		pr_debug(pr_fmt(fmt), ##__VA_ARGS__);       \
-+		pr_err(pr_fmt(fmt), ##__VA_ARGS__);       \
- 		if ((vq)->error_ctx)                               \
- 				eventfd_signal((vq)->error_ctx, 1);\
- 	} while (0)
-@@ -255,6 +256,8 @@ static inline void vhost_vq_set_backend(struct vhost_virtqueue *vq,
- 					void *private_data)
- {
- 	vq->private_data = private_data;
-+	vq->ndescs = 0;
-+	vq->first_desc = 0;
- }
- 
- /**
 -- 
-MST
+2.26.0.292.g33ef6b2f38-goog
 
