@@ -2,128 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E9C1A0D0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D141A0CE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728392AbgDGLss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:48:48 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21350 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726720AbgDGLss (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:48:48 -0400
-X-Greylist: delayed 904 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 07:48:47 EDT
-ARC-Seal: i=1; a=rsa-sha256; t=1586259204; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=SQJ4J3gdSHaAMJrAW2vforzWyw2HsCPIDymu1UirJX5baA3vwJe7dTqCwjAEVuVM7D9ln4rmRzEOO9id2GN3SraE3cEoETJudsPsprvBgR6F2rxW5jsfsdrmysdLyf9nlLJgNdSmocWdktBsWrzZ3h+tLlE1+h/jjqVYWUCLhow=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1586259204; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=C/Yq67cW8uTVVpw1SfMGvhEYjHhJY1OJC8jyQ+cJV/s=; 
-        b=BXuIgPue5YQpbdEGogRNrq256YcfNTscgiQEZ4zkrRzccsTQkXQElgKVYJGydLj3kOQe3t98WLjCjTbGkBSyz2MAtQVyOVpnMafy91RzX92JEVVpH1wpCqg/selqsWOSHwoGYtPSQSuY6eVBJQUZwHU/KUBJFWXkGSEBra3B8P4=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=qubes-os.org;
-        spf=pass  smtp.mailfrom=frederic.pierret@qubes-os.org;
-        dmarc=pass header.from=<frederic.pierret@qubes-os.org> header.from=<frederic.pierret@qubes-os.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586259204;
-        s=s; d=qubes-os.org; i=frederic.pierret@qubes-os.org;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=C/Yq67cW8uTVVpw1SfMGvhEYjHhJY1OJC8jyQ+cJV/s=;
-        b=RhskYl71ugxP1z+Y7zz+0MDN+ttSoPYMyRG9M+2ugxCe3Z/xLIFpfFb9BWHZGyb7
-        XXLbAXx41Y6mBHAcKtjCPEA4benFGfW7o51MWrzc3sWbd1Gcsr7/mDjRrwAn3xlE1Ik
-        S3h6cHXti3yMZg+DThXzREE14n/R/1NNKhKTWork=
-Received: from localhost.localdomain (92.188.110.153 [92.188.110.153]) by mx.zohomail.com
-        with SMTPS id 1586259191605742.439510224391; Tue, 7 Apr 2020 04:33:11 -0700 (PDT)
-From:   =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?= 
-        <frederic.pierret@qubes-os.org>
-To:     keescook@chromium.org, re.emese@gmail.com,
-        kernel-hardening@lists.openwall.com, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Fr=C3=A9d=C3=A9ric=20Pierret=20=28fepitre=29?= 
-        <frederic.pierret@qubes-os.org>
-Message-ID: <20200407113259.270172-1-frederic.pierret@qubes-os.org>
-Subject: [PATCH] gcc-common.h: 'params.h' has been dropped in GCC10
-Date:   Tue,  7 Apr 2020 13:32:59 +0200
-X-Mailer: git-send-email 2.25.2
+        id S1728341AbgDGLdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:33:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47780 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728023AbgDGLdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 07:33:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id D35EAABD7;
+        Tue,  7 Apr 2020 11:33:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 589C61E1233; Tue,  7 Apr 2020 13:33:48 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 13:33:48 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, NeilBrown <neilb@suse.de>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] MM: Discard NR_UNSTABLE_NFS, use NR_WRITEBACK
+ instead.
+Message-ID: <20200407113348.GG9482@quack2.suse.cz>
+References: <draft-87d08kw57p.fsf@notabene.neil.brown.name>
+ <878sj8w55y.fsf@notabene.neil.brown.name>
+ <20200407102515.GB9482@quack2.suse.cz>
+ <20200407112412.GO18914@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407112412.GO18914@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moreover, GCC10 complains about gimple definition. For example,
-doing a 'scripts/gcc-plugin.sh g++ g++ gcc' returns:
+On Tue 07-04-20 13:24:12, Michal Hocko wrote:
+> On Tue 07-04-20 12:25:15, Jan Kara wrote:
+> > > @@ -1707,8 +1706,16 @@ static void *vmstat_start(struct seq_file *m, loff_t *pos)
+> > >  static void *vmstat_next(struct seq_file *m, void *arg, loff_t *pos)
+> > >  {
+> > >  	(*pos)++;
+> > > -	if (*pos >= NR_VMSTAT_ITEMS)
+> > > +	if (*pos >= NR_VMSTAT_ITEMS) {
+> > > +		/*
+> > > +		 * Deprecated counters which are no longer represented
+> > > +		 * in vmstat arrays. We just lie about them to be always
+> > > +		 * 0 to not break userspace which might expect them in
+> > > +		 * the output.
+> > > +		 */
+> > > +		seq_puts(m, "nr_unstable 0");
+> > >  		return NULL;
+> > > +	}
+> > >  	return (unsigned long *)m->private + *pos;
+> > >  }
+> > 
+> > Umm, how is this supposed to work? vmstat_next() should return next element
+> > of the sequence, not fill anything into seq_file - that's the job of
+> > vmstat_show(). Looking at seq_read() implementation it may actually end up
+> > working fine but I wouldn't really bet much on it especially in corner
+> > cases like when we are just about to fill the user buffer and then need to
+> > restart reading close to an end of vmstat file or so.
+> 
+> Well, I have to confess I haven't really tested this myself but the
+> logic was to have this output close to NR_VMSTAT_ITEMS break out of
+> the counters loop.
+> 
+> > Michal, won't it be cleaner to have NR_VM_DEPRECATED_ITEMS included in
+> > NR_VMSTAT_ITEMS, have names of these items in vmstat_text, and just set
+> > appropriate number of 0 entries at the end of the array generated in
+> > vmstat_start() and be done with it? That seems conceptually simpler and the
+> > overhead is minimal.
+> 
+> Yes, that would be much nicer, albeit more code.  So I believe you meant
+> something like this?
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 462f6873905a..a18611197bea 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -237,7 +237,6 @@ enum node_stat_item {
+>  	NR_FILE_THPS,
+>  	NR_FILE_PMDMAPPED,
+>  	NR_ANON_THPS,
+> -	NR_UNSTABLE_NFS,	/* NFS unstable pages */
+>  	NR_VMSCAN_WRITE,
+>  	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
+>  	NR_DIRTIED,		/* page dirtyings since bootup */
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 78d53378db99..992e162f1886 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1162,7 +1162,6 @@ const char * const vmstat_text[] = {
+>  	"nr_file_hugepages",
+>  	"nr_file_pmdmapped",
+>  	"nr_anon_transparent_hugepages",
+> -	"nr_unstable",
+>  	"nr_vmscan_write",
+>  	"nr_vmscan_immediate_reclaim",
+>  	"nr_dirtied",
+> @@ -1293,9 +1292,13 @@ const char * const vmstat_text[] = {
+>  	"swap_ra_hit",
+>  #endif
+>  #endif /* CONFIG_VM_EVENT_COUNTERS || CONFIG_MEMCG */
+> +	/* Deprecated counters. Count them in NR_VM_DEPRECATED_ITEMS */
+> +	"nr_unstable",
+>  };
+>  #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA || CONFIG_MEMCG */
+>  
+> +#define NR_VM_DEPRECATED_ITEMS 1
+> +
+>  #if (defined(CONFIG_DEBUG_FS) && defined(CONFIG_COMPACTION)) || \
+>       defined(CONFIG_PROC_FS)
+>  static void *frag_start(struct seq_file *m, loff_t *pos)
+> @@ -1661,7 +1664,8 @@ static const struct seq_operations zoneinfo_op = {
+>  			 NR_VM_NODE_STAT_ITEMS + \
+>  			 NR_VM_WRITEBACK_STAT_ITEMS + \
+>  			 (IS_ENABLED(CONFIG_VM_EVENT_COUNTERS) ? \
+> -			  NR_VM_EVENT_ITEMS : 0))
+> +			  NR_VM_EVENT_ITEMS : 0) + \
+> +			  NR_VM_DEPRECATED_ITEMS)
+>  
+>  static void *vmstat_start(struct seq_file *m, loff_t *pos)
+>  {
+> @@ -1698,7 +1702,11 @@ static void *vmstat_start(struct seq_file *m, loff_t *pos)
+>  	all_vm_events(v);
+>  	v[PGPGIN] /= 2;		/* sectors -> kbytes */
+>  	v[PGPGOUT] /= 2;
+> +	v += NR_VM_EVENT_ITEMS;
+>  #endif
+> +	for (i = 0; i < NR_VM_DEPRECATED_ITEMS)
+					     ^^ ; i++ here
 
-In file included from <stdin>:1:
-./gcc-plugins/gcc-common.h:852:13: error: redefinition of =E2=80=98static b=
-ool is_a_helper<T>::test(U*) [with U =3D const gimple; T =3D const ggoto*]=
-=E2=80=99
-  852 | inline bool is_a_helper<const ggoto *>::test(const_gimple gs)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ./gcc-plugins/gcc-common.h:125,
-                 from <stdin>:1:
-/usr/lib/gcc/x86_64-redhat-linux/10/plugin/include/gimple.h:1037:1: note: =
-=E2=80=98static bool is_a_helper<T>::test(U*) [with U =3D const gimple; T =
-=3D const ggoto*]=E2=80=99 previously declared here
- 1037 | is_a_helper <const ggoto *>::test (const gimple *gs)
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from <stdin>:1:
-./gcc-plugins/gcc-common.h:859:13: error: redefinition of =E2=80=98static b=
-ool is_a_helper<T>::test(U*) [with U =3D const gimple; T =3D const greturn*=
-]=E2=80=99
-  859 | inline bool is_a_helper<const greturn *>::test(const_gimple gs)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ./gcc-plugins/gcc-common.h:125,
-                 from <stdin>:1:
-/usr/lib/gcc/x86_64-redhat-linux/10/plugin/include/gimple.h:1489:1: note: =
-=E2=80=98static bool is_a_helper<T>::test(U*) [with U =3D const gimple; T =
-=3D const greturn*]=E2=80=99 previously declared here
- 1489 | is_a_helper <const greturn *>::test (const gimple *gs)
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+but otherwise yes, this is what I meant. Thanks!
 
-A hacky way for solving this is to ignore them for GCC10.
+> +		v[i] = 0;
+> +
+>  	return (unsigned long *)m->private + *pos;
+>  }
 
-Signed-off-by: Fr=C3=A9d=C3=A9ric Pierret (fepitre) <frederic.pierret@qubes=
--os.org>
----
- scripts/gcc-plugins/gcc-common.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/scripts/gcc-plugins/gcc-common.h b/scripts/gcc-plugins/gcc-com=
-mon.h
-index 17f06079a712..9ad76b7f3f10 100644
---- a/scripts/gcc-plugins/gcc-common.h
-+++ b/scripts/gcc-plugins/gcc-common.h
-@@ -35,7 +35,9 @@
- #include "ggc.h"
- #include "timevar.h"
-=20
-+#if BUILDING_GCC_VERSION < 10000
- #include "params.h"
-+#endif
-=20
- #if BUILDING_GCC_VERSION <=3D 4009
- #include "pointer-set.h"
-@@ -847,6 +849,7 @@ static inline gimple gimple_build_assign_with_ops(enum =
-tree_code subcode, tree l
- =09return gimple_build_assign(lhs, subcode, op1, op2 PASS_MEM_STAT);
- }
-=20
-+#if BUILDING_GCC_VERSION < 10000
- template <>
- template <>
- inline bool is_a_helper<const ggoto *>::test(const_gimple gs)
-@@ -860,6 +863,7 @@ inline bool is_a_helper<const greturn *>::test(const_gi=
-mple gs)
- {
- =09return gs->code =3D=3D GIMPLE_RETURN;
- }
-+#endif
-=20
- static inline gasm *as_a_gasm(gimple stmt)
- {
---=20
-2.25.2
-
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
