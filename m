@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAC41A1684
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23211A168B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727797AbgDGUI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 16:08:29 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:18590 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727349AbgDGUI2 (ORCPT
+        id S1727461AbgDGUJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:09:32 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:41829 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726840AbgDGUJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:08:28 -0400
-X-UUID: 8471fe2b636049fa9f36b0f8e3fb0568-20200408
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=WqSU90W8BDFuk3y8S58rG8mKm4Tc9B0etHGPGZwhauc=;
-        b=nOG4bn7wd9ovUAiygI3NOcRDlNPX4dyIje0Ejhh7to6mIDLlGPokoulHf3O8vtXTXD0TFea5396/BcXjzuTAKZqQs8ij26LJawAhhrEZerH6FeOckd1y78Tgb3vxG6AAyiL7SZGoQVNMweKFzPeE9v2kuO0S/+POqIC2ekw08+o=;
-X-UUID: 8471fe2b636049fa9f36b0f8e3fb0568-20200408
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <sean.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 360376222; Wed, 08 Apr 2020 04:08:23 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 8 Apr 2020 04:08:17 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 8 Apr 2020 04:08:18 +0800
-From:   <sean.wang@mediatek.com>
-To:     <linus.walleij@linaro.org>, <linux-mediatek@lists.infradead.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Light Hsieh <light.hsieh@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>
-Subject: [PATCH v7 2/2] pinctrl: mediatek: make MediaTek MT6765 pinctrl ready for buiding loadable module
-Date:   Wed, 8 Apr 2020 04:08:17 +0800
-Message-ID: <42100afe6f97d28447c153bea6b54ea556cf95ca.1586289920.git.sean.wang@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <9feeb04805e5a406fe22a92e3f280abda39ddda4.1586289920.git.sean.wang@mediatek.com>
-References: <9feeb04805e5a406fe22a92e3f280abda39ddda4.1586289920.git.sean.wang@mediatek.com>
+        Tue, 7 Apr 2020 16:09:31 -0400
+Received: by mail-lj1-f194.google.com with SMTP id n17so5158808lji.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:09:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3sghJldqMMjWeerVBLUfhc/cQuHU1aQm4qS6KijAW8Q=;
+        b=LIs7mHA3OXPjMsaXtYIk07UvtJnPGY4OLuhw5yUdciWXo/7JrrEmPqgnrwGk7LYTDy
+         rq/7n66O3MT27zCaMgmAZUsQHre2pHLQbaKY/YARTqgYJVheydI5BKhcTlTAQdZtVZZq
+         45bOqqTdfPd9zcZUW/Ki0gAVMMNSm+WBI9Bqk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3sghJldqMMjWeerVBLUfhc/cQuHU1aQm4qS6KijAW8Q=;
+        b=mbi3pkYkrRrssiHeC2azZZSfuZVLZQDO6AQFEOlfw+BFLTqjyH2UqhRsqxJb5iUlY0
+         CcefXYk7C8ypPQdCRw6KOS2hTfJTA35SNDcuBfTkeYpcvHB1it5alR/99hhi/ZN8MIHL
+         KpxI0Azdqk9aIvsEeToffxaQBF52JjaL0cZo+bY6h8MkI1mLov8yjWThiokg8JbSm0G/
+         g7EW4PsfGZHTOVycxm8XBWc4xTo5Q5hKamcV37Dxa0i4GRKtl3UikvZaF+foZEpHJjaK
+         fCXJVCO0gjfV26IT5TQCKIA9QdAt7tHTdT+QxjgtJyyM3bZgwRa+fP3KMoc3VcEiuia8
+         fgoQ==
+X-Gm-Message-State: AGi0PuZzwNI9YTkAVP4IZ4tSj2qIpah6ni6ECW/BYglkuNiPUIvAYmlj
+        5I32O6OjQJXbNPk9e88dLroeWSDqr3c=
+X-Google-Smtp-Source: APiQypLYg6kLrEV1mmwd0kUorwiyt6sMZRNKEmXfsuLqjMiJ5OsQCpFhOY0ayCA6svg0kDhB6dWZTA==
+X-Received: by 2002:a2e:87cc:: with SMTP id v12mr2777717ljj.127.1586290168746;
+        Tue, 07 Apr 2020 13:09:28 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id u7sm2140400lfi.0.2020.04.07.13.09.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Apr 2020 13:09:27 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id 142so627409ljj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:09:27 -0700 (PDT)
+X-Received: by 2002:a2e:8911:: with SMTP id d17mr2856344lji.16.1586290167180;
+ Tue, 07 Apr 2020 13:09:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200407200318.11711-1-longman@redhat.com>
+In-Reply-To: <20200407200318.11711-1-longman@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Apr 2020 13:09:11 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh4YYef26dFX2o9iAKts6vuPceUNg7Bdq32REnvfOWiog@mail.gmail.com>
+Message-ID: <CAHk-=wh4YYef26dFX2o9iAKts6vuPceUNg7Bdq32REnvfOWiog@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: Add kvfree_sensitive() for freeing sensitive data objects
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linux-MM <linux-mm@kvack.org>, keyrings@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGlnaHQgSHNpZWggPGxpZ2h0LmhzaWVoQG1lZGlhdGVrLmNvbT4NCg0KVGhpcyBwYXRj
-aCBtYWtlIHBpbmN0cmwtbXQ2NzY1IHJlYWR5IGZvciBidWlsZGluZyBhcyBsb2FkYWJsZSBtb2R1
-bGUuDQoNClNpZ25lZC1vZmYtYnk6IFNlYW4gV2FuZyA8c2Vhbi53YW5nQG1lZGlhdGVrLmNvbT4N
-ClNpZ25lZC1vZmYtYnk6IExpZ2h0IEhzaWVoIDxsaWdodC5oc2llaEBtZWRpYXRlay5jb20+DQot
-LS0NCnY2LT52NzogcmVtb3ZlIGNoYW5nZS1pZA0KLS0tDQogZHJpdmVycy9waW5jdHJsL21lZGlh
-dGVrL0tjb25maWcgICAgICAgICAgfCAyICstDQogZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3Bp
-bmN0cmwtbXQ2NzY1LmMgfCA0ICsrKysNCiAyIGZpbGVzIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygr
-KSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9waW5jdHJsL21lZGlhdGVr
-L0tjb25maWcgYi9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvS2NvbmZpZw0KaW5kZXggNTUxYWM3
-MTZiMTBjLi5mMzJkMzY0NGM1MDkgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0
-ZWsvS2NvbmZpZw0KKysrIGIvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL0tjb25maWcNCkBAIC04
-Nyw3ICs4Nyw3IEBAIGNvbmZpZyBQSU5DVFJMX01UMjcxMg0KIAlzZWxlY3QgUElOQ1RSTF9NVEsN
-CiANCiBjb25maWcgUElOQ1RSTF9NVDY3NjUNCi0JYm9vbCAiTWVkaWF0ZWsgTVQ2NzY1IHBpbiBj
-b250cm9sIg0KKwl0cmlzdGF0ZSAiTWVkaWF0ZWsgTVQ2NzY1IHBpbiBjb250cm9sIg0KIAlkZXBl
-bmRzIG9uIE9GDQogCWRlcGVuZHMgb24gQVJNNjQgfHwgQ09NUElMRV9URVNUDQogCWRlZmF1bHQg
-QVJNNjQgJiYgQVJDSF9NRURJQVRFSw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGluY3RybC9tZWRp
-YXRlay9waW5jdHJsLW10Njc2NS5jIGIvZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwt
-bXQ2NzY1LmMNCmluZGV4IDkwNWRhZThjM2ZkOC4uMmM1OWQzOTM2MjU2IDEwMDY0NA0KLS0tIGEv
-ZHJpdmVycy9waW5jdHJsL21lZGlhdGVrL3BpbmN0cmwtbXQ2NzY1LmMNCisrKyBiL2RyaXZlcnMv
-cGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10Njc2NS5jDQpAQCAtNiw2ICs2LDcgQEANCiAgKg0K
-ICAqLw0KIA0KKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4NCiAjaW5jbHVkZSAicGluY3RybC1t
-dGstbXQ2NzY1LmgiDQogI2luY2x1ZGUgInBpbmN0cmwtcGFyaXMuaCINCiANCkBAIC0xMTAzLDMg
-KzExMDQsNiBAQCBzdGF0aWMgaW50IF9faW5pdCBtdDY3NjVfcGluY3RybF9pbml0KHZvaWQpDQog
-CXJldHVybiBwbGF0Zm9ybV9kcml2ZXJfcmVnaXN0ZXIoJm10Njc2NV9waW5jdHJsX2RyaXZlcik7
-DQogfQ0KIGFyY2hfaW5pdGNhbGwobXQ2NzY1X3BpbmN0cmxfaW5pdCk7DQorDQorTU9EVUxFX0xJ
-Q0VOU0UoIkdQTCB2MiIpOw0KK01PRFVMRV9ERVNDUklQVElPTigiTWVkaWFUZWsgTVQ2NzY1IFBp
-bmN0cmwgRHJpdmVyIik7DQotLSANCjIuMjUuMQ0K
+On Tue, Apr 7, 2020 at 1:03 PM Waiman Long <longman@redhat.com> wrote:
+>
+> For kvmalloc'ed data object that contains sensitive information like
+> cryptographic key, we need to make sure that the buffer is always
+> cleared before freeing it. Using memset() alone for buffer clearing may
+> not provide certainty as the compiler may compile it away. To be sure,
+> the special memzero_explicit() has to be used.
 
+Ack. Since this isn't exactly high-priority, I'm assuming it will go
+through the usual channels (ie Andrew).
+
+             Linus
