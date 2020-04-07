@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E8E1A0B3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442B61A0BDB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbgDGKYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:24:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35048 "EHLO mail.kernel.org"
+        id S1728390AbgDGKXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:23:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728747AbgDGKYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:24:43 -0400
+        id S1728373AbgDGKXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:23:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2744A2082F;
-        Tue,  7 Apr 2020 10:24:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5E2972074F;
+        Tue,  7 Apr 2020 10:23:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255082;
-        bh=khVOaY2ujlcX/REye0ztyWAGD+5eMAaXklsRDjNbiUc=;
+        s=default; t=1586254986;
+        bh=TorpH4uEST+U3yxKOkCZL/m53n9xz2lDBNqCEdKUsyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1zEry82Ikal49LncbaqmuFMxrQQbU9fQ4wIc1/Qexu8nGPjEeWU661mRmavEe4Xl0
-         FfA4DMOqAh/JaX39BAy5LlOx372QOwSc0Qxx8CcYIQJ5iDvJcRwcwr4+0UTpAQxbrv
-         5/FH1o1sf46qtIqGz+FruwDxeLXKfYlp1i1U2ras=
+        b=k8jEBkmSIEXfQfV1A4+po1IfDfeDErInOkq/3vbU5A9ZiGthlX2u9XXyJs7XpFU60
+         lx6yisW9hqoVHwgOVBQa5e6i0q/TZ8aTv1n0HDM9iH4rXl/HGYigKvJeORdIVZvJBf
+         pFsaiv0XklYHeqtVAVBrSvzcL0WJDaFi2CZ/1A1M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: [PATCH 5.5 22/46] misc: pci_endpoint_test: Fix to support > 10 pci-endpoint-test devices
-Date:   Tue,  7 Apr 2020 12:21:53 +0200
-Message-Id: <20200407101501.881056561@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5.4 21/36] nvmem: check for NULL reg_read and reg_write before dereferencing
+Date:   Tue,  7 Apr 2020 12:21:54 +0200
+Message-Id: <20200407101457.069282699@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
-References: <20200407101459.502593074@linuxfoundation.org>
+In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
+References: <20200407101454.281052964@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kishon Vijay Abraham I <kishon@ti.com>
+From: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
 
-commit 6b443e5c80b67a7b8a85b33d052d655ef9064e90 upstream.
+commit 3c91ef69a3e94f78546b246225ed573fbf1735b4 upstream.
 
-Adding more than 10 pci-endpoint-test devices results in
-"kobject_add_internal failed for pci-endpoint-test.1 with -EEXIST, don't
-try to register things with the same name in the same directory". This
-is because commit 2c156ac71c6b ("misc: Add host side PCI driver for PCI
-test function device") limited the length of the "name" to 20 characters.
-Change the length of the name to 24 in order to support upto 10000
-pci-endpoint-test devices.
+Return -EPERM if reg_read is NULL in bin_attr_nvmem_read() or if
+reg_write is NULL in bin_attr_nvmem_write().
 
-Fixes: 2c156ac71c6b ("misc: Add host side PCI driver for PCI test function device")
-Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc: stable@vger.kernel.org # v4.14+
+This prevents NULL dereferences such as the one described in
+03cd45d2e219 ("thunderbolt: Prevent crash if non-active NVMem file is
+read")
+
+Signed-off-by: Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200310132257.23358-10-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/misc/pci_endpoint_test.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvmem/nvmem-sysfs.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/misc/pci_endpoint_test.c
-+++ b/drivers/misc/pci_endpoint_test.c
-@@ -633,7 +633,7 @@ static int pci_endpoint_test_probe(struc
- {
- 	int err;
- 	int id;
--	char name[20];
-+	char name[24];
- 	enum pci_barno bar;
- 	void __iomem *base;
- 	struct device *dev = &pdev->dev;
+--- a/drivers/nvmem/nvmem-sysfs.c
++++ b/drivers/nvmem/nvmem-sysfs.c
+@@ -56,6 +56,9 @@ static ssize_t bin_attr_nvmem_read(struc
+ 
+ 	count = round_down(count, nvmem->word_size);
+ 
++	if (!nvmem->reg_read)
++		return -EPERM;
++
+ 	rc = nvmem->reg_read(nvmem->priv, pos, buf, count);
+ 
+ 	if (rc)
+@@ -90,6 +93,9 @@ static ssize_t bin_attr_nvmem_write(stru
+ 
+ 	count = round_down(count, nvmem->word_size);
+ 
++	if (!nvmem->reg_write)
++		return -EPERM;
++
+ 	rc = nvmem->reg_write(nvmem->priv, pos, buf, count);
+ 
+ 	if (rc)
 
 
