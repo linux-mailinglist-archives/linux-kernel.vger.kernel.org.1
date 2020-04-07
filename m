@@ -2,145 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE99F1A0DBF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B1D019EF90
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 05:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728683AbgDGMfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:35:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:31073 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728447AbgDGMfY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:35:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586262923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qj/NCHNTy8cKBQLrOFei5N4fXMJmrkSwVdyGWxnI98o=;
-        b=fdAVkdZHggSIqrSDUjpbbS/xXC4yKtpJiWA7z6Qrun7nmRcPo0bSPLI5CKHgUDSgUM56OE
-        y4lWiAcbq/V8Cgmo08pRUtyjSpS8YmvyvSbomWYezpcJIXxBbqI0r4fK/Y71r4KzI6BGOG
-        H756abaY8HU5QqJ3K+7O9GNiUZcuqAU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-186-meKj4tUhP_qrewzk8yUyMA-1; Tue, 07 Apr 2020 08:35:21 -0400
-X-MC-Unique: meKj4tUhP_qrewzk8yUyMA-1
-Received: by mail-wr1-f69.google.com with SMTP id w12so1687895wrl.23
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 05:35:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qj/NCHNTy8cKBQLrOFei5N4fXMJmrkSwVdyGWxnI98o=;
-        b=mVGRqWG7eWo7RuybDMhPu/m6zUNdMkjaAAjWs0PCPJmdcMZFlK9PfwiRMDMxYUAEPI
-         ONAue5LU0BucpaiOrtHPWXF/ouQgKraNb7E8Xzjhzd7zozHfYsVyy/aIG3qQyOIPiSOs
-         kpk6+9F2/Ez9XjjX3fl2m4IG7Pkx6LkjVUW2z86ZQlOBHolzMh8Sk+gszUxM5GEG7GQG
-         zE36jTdU99Xa4bFVkk4kKtQUFR79I5A5PaxfS5ura84Yu/BtOv2OxgtedNfoZmdfnIKy
-         /eaDBJ8yZxJUK5Ue1GPCba2Ji4gHnMjEDHWghijO1QapQI4t/vw3K8zXAiZsh0hft4/0
-         XYdQ==
-X-Gm-Message-State: AGi0PubAsRi7xA4ltlu4217Fv++DHw4NhM9mghMSR6lcOUrWmYNMDTP2
-        HL224egDhv1HeJB0h68deIU5gOdP3ge5AiyxeKY9ZIy1y9i83Jtzkn1OOtwUxNivi+LhGsSxPDE
-        6zYZvcm5iDKXwosSjtlSxuCbY
-X-Received: by 2002:a7b:cf02:: with SMTP id l2mr2224569wmg.4.1586262920073;
-        Tue, 07 Apr 2020 05:35:20 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKpOChN8tGzByvwHEKGAyg4BmSbrzIK1wsR3YYnAfmm17DVuuJcLPkB5PdpW+tBGHaK6JYitA==
-X-Received: by 2002:a7b:cf02:: with SMTP id l2mr2224546wmg.4.1586262919855;
-        Tue, 07 Apr 2020 05:35:19 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:bd61:914:5c2f:2580? ([2001:b07:6468:f312:bd61:914:5c2f:2580])
-        by smtp.gmail.com with ESMTPSA id f1sm32628821wrv.37.2020.04.07.05.35.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 05:35:19 -0700 (PDT)
-Subject: Re: [PATCH] KVM: VMX: fix crash cleanup when KVM wasn't used
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200401081348.1345307-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0c2504c0-8dac-4bbf-bd50-a503be755d3f@redhat.com>
-Date:   Tue, 7 Apr 2020 14:35:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726506AbgDFDYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 23:24:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:40754 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726473AbgDFDYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 23:24:37 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 37D6B69C984608471486;
+        Mon,  6 Apr 2020 11:24:28 +0800 (CST)
+Received: from huawei.com (10.175.112.70) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 6 Apr 2020
+ 11:24:20 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <puranjay12@gmail.com>,
+        <robsonde@gmail.com>, <zhengbin13@huawei.com>
+CC:     <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
+        <wanghai38@huawei.com>
+Subject: [PATCH] Staging: rtl8192e: remove set but not used variable 'tmpRegC'
+Date:   Tue, 7 Apr 2020 08:36:04 -0400
+Message-ID: <1586262964-4582-1-git-send-email-wanghai38@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-In-Reply-To: <20200401081348.1345307-1-vkuznets@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/04/20 10:13, Vitaly Kuznetsov wrote:
-> If KVM wasn't used at all before we crash the cleanup procedure fails with
->  BUG: unable to handle page fault for address: ffffffffffffffc8
->  #PF: supervisor read access in kernel mode
->  #PF: error_code(0x0000) - not-present page
->  PGD 23215067 P4D 23215067 PUD 23217067 PMD 0
->  Oops: 0000 [#8] SMP PTI
->  CPU: 0 PID: 3542 Comm: bash Kdump: loaded Tainted: G      D           5.6.0-rc2+ #823
->  RIP: 0010:crash_vmclear_local_loaded_vmcss.cold+0x19/0x51 [kvm_intel]
-> 
-> The root cause is that loaded_vmcss_on_cpu list is not yet initialized,
-> we initialize it in hardware_enable() but this only happens when we start
-> a VM.
-> 
-> Previously, we used to have a bitmap with enabled CPUs and that was
-> preventing [masking] the issue.
-> 
-> Initialized loaded_vmcss_on_cpu list earlier, right before we assign
-> crash_vmclear_loaded_vmcss pointer. blocked_vcpu_on_cpu list and
-> blocked_vcpu_on_cpu_lock are moved altogether for consistency.
-> 
-> Fixes: 31603d4fc2bb ("KVM: VMX: Always VMCLEAR in-use VMCSes during crash with kexec support")
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 3aba51d782e2..39a5dde12b79 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -2257,10 +2257,6 @@ static int hardware_enable(void)
->  	    !hv_get_vp_assist_page(cpu))
->  		return -EFAULT;
->  
-> -	INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> -	INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
-> -	spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
-> -
->  	r = kvm_cpu_vmxon(phys_addr);
->  	if (r)
->  		return r;
-> @@ -8006,7 +8002,7 @@ module_exit(vmx_exit);
->  
->  static int __init vmx_init(void)
->  {
-> -	int r;
-> +	int r, cpu;
->  
->  #if IS_ENABLED(CONFIG_HYPERV)
->  	/*
-> @@ -8060,6 +8056,12 @@ static int __init vmx_init(void)
->  		return r;
->  	}
->  
-> +	for_each_possible_cpu(cpu) {
-> +		INIT_LIST_HEAD(&per_cpu(loaded_vmcss_on_cpu, cpu));
-> +		INIT_LIST_HEAD(&per_cpu(blocked_vcpu_on_cpu, cpu));
-> +		spin_lock_init(&per_cpu(blocked_vcpu_on_cpu_lock, cpu));
-> +	}
-> +
->  #ifdef CONFIG_KEXEC_CORE
->  	rcu_assign_pointer(crash_vmclear_loaded_vmcss,
->  			   crash_vmclear_local_loaded_vmcss);
-> 
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-Queued, thanks.
+drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c: In function rtl92e_start_adapter:
+drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c:693:15: warning: variable ‘tmpRegC’ set but not used [-Wunused-but-set-variable]
 
-Paolo
+commit 94a799425eee ("rtl8192e: Split into two directories")
+involved this, remove it.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+index ddcd788..ff934ae 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
++++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+@@ -690,7 +690,7 @@ bool rtl92e_start_adapter(struct net_device *dev)
+ 	u8 tmpvalue;
+ 	u8 ICVersion, SwitchingRegulatorOutput;
+ 	bool bfirmwareok = true;
+-	u32 tmpRegA, tmpRegC, TempCCk;
++	u32 tmpRegA, TempCCk;
+ 	int i = 0;
+ 	u32 retry_times = 0;
+ 
+@@ -889,8 +889,8 @@ bool rtl92e_start_adapter(struct net_device *dev)
+ 		if (priv->IC_Cut >= IC_VersionCut_D) {
+ 			tmpRegA = rtl92e_get_bb_reg(dev, rOFDM0_XATxIQImbalance,
+ 						    bMaskDWord);
+-			tmpRegC = rtl92e_get_bb_reg(dev, rOFDM0_XCTxIQImbalance,
+-						    bMaskDWord);
++			rtl92e_get_bb_reg(dev, rOFDM0_XCTxIQImbalance,
++					  bMaskDWord);
+ 			for (i = 0; i < TxBBGainTableLength; i++) {
+ 				if (tmpRegA == dm_tx_bb_gain[i]) {
+ 					priv->rfa_txpowertrackingindex = (u8)i;
+-- 
+1.8.3.1
 
