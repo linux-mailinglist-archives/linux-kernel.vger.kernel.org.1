@@ -2,43 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF101A0B64
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 946C21A0B61
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728521AbgDGK0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:26:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37096 "EHLO mail.kernel.org"
+        id S1729077AbgDGK0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:26:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729079AbgDGK0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:26:08 -0400
+        id S1729068AbgDGKZ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:25:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39F7220771;
-        Tue,  7 Apr 2020 10:26:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC57C2074F;
+        Tue,  7 Apr 2020 10:25:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255166;
-        bh=QAjVBsd8e5IbA+b+qruEdohp9CjMqPCmCzLociEPK+o=;
+        s=default; t=1586255159;
+        bh=T/gxYwkr6ionYU18uJNrAb27pxUoEUdBjhg+6cFkrBE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pfbbyNGVdUPrWzoBiwBk5m146hNghYWWxiHES8iprjgbtainVmdmiMG4gTjHMnSKj
-         /8pC5dG4m/d8M/6zYI2KVcoyLSyCBfAAiHGhbxWpUi1q8fMplZa8gc4WD1jh2TIE/A
-         YrS0Rii0BH+eD2PmoRUoN8XKzS2bkEsRG4kwy8TI=
+        b=gD1Ka6J3FZEsXxCoy3ry5ZyQNWuTikxihuhpEZXfR9bujCDPGGYLUr4GpZAiRZuXz
+         1IN3Te/Hib8UbVsjF+WAyORCffy0ibvuhq8DZE2UhGiz5bur7suT9Cm/s6VchoZuhf
+         wozjvkHYLzmQhsAUyhinCQXd/lkIi+2+ZCubrrcs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, franky.lin@broadcom.com,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 10/29] brcmfmac: abort and release host after error
+        stable@vger.kernel.org,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>
+Subject: [PATCH 5.5 36/46] iwlwifi: yoyo: dont add TLV offset when reading FIFOs
 Date:   Tue,  7 Apr 2020 12:22:07 +0200
-Message-Id: <20200407101453.241931574@linuxfoundation.org>
+Message-Id: <20200407101503.317654678@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
-References: <20200407101452.046058399@linuxfoundation.org>
+In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
+References: <20200407101459.502593074@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,57 +44,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Mordechay Goodstein <mordechay.goodstein@intel.com>
 
-[ Upstream commit 863844ee3bd38219c88e82966d1df36a77716f3e ]
+commit a5688e600e78f9fc68102bf0fe5c797fc2826abe upstream.
 
-With commit 216b44000ada ("brcmfmac: Fix use after free in
-brcmf_sdio_readframes()") applied, we see locking timeouts in
-brcmf_sdio_watchdog_thread().
+The TLV offset is only used to read registers, while the offset used for
+the FIFO addresses are hard coded in the driver and not given by the
+TLV.
 
-brcmfmac: brcmf_escan_timeout: timer expired
-INFO: task brcmf_wdog/mmc1:621 blocked for more than 120 seconds.
-Not tainted 4.19.94-07984-g24ff99a0f713 #1
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-brcmf_wdog/mmc1 D    0   621      2 0x00000000 last_sleep: 2440793077.  last_runnable: 2440766827
-[<c0aa1e60>] (__schedule) from [<c0aa2100>] (schedule+0x98/0xc4)
-[<c0aa2100>] (schedule) from [<c0853830>] (__mmc_claim_host+0x154/0x274)
-[<c0853830>] (__mmc_claim_host) from [<bf10c5b8>] (brcmf_sdio_watchdog_thread+0x1b0/0x1f8 [brcmfmac])
-[<bf10c5b8>] (brcmf_sdio_watchdog_thread [brcmfmac]) from [<c02570b8>] (kthread+0x178/0x180)
+If we try to apply the TLV offset when reading the FIFOs, we'll read
+from invalid addresses, causing the driver to hang.
 
-In addition to restarting or exiting the loop, it is also necessary to
-abort the command and to release the host.
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Fixes: 8d7dea25ada7 ("iwlwifi: dbg_ini: implement Rx fifos dump")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20200306151129.fbab869c26fa.I4ddac20d02f9bce41855a816aa6855c89bc3874e@changeid
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 216b44000ada ("brcmfmac: Fix use after free in brcmf_sdio_readframes()")
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Cc: Brian Norris <briannorris@chromium.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: franky.lin@broadcom.com
-Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/fw/dbg.c |   10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index f9047db6a11d8..3a08252f1a53f 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-@@ -1938,6 +1938,8 @@ static uint brcmf_sdio_readframes(struct brcmf_sdio *bus, uint maxframes)
- 			if (brcmf_sdio_hdparse(bus, bus->rxhdr, &rd_new,
- 					       BRCMF_SDIO_FT_NORMAL)) {
- 				rd->len = 0;
-+				brcmf_sdio_rxfail(bus, true, true);
-+				sdio_release_host(bus->sdiodev->func1);
- 				brcmu_pkt_buf_free_skb(pkt);
- 				continue;
- 			}
--- 
-2.20.1
-
+--- a/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
++++ b/drivers/net/wireless/intel/iwlwifi/fw/dbg.c
+@@ -8,7 +8,7 @@
+  * Copyright(c) 2008 - 2014 Intel Corporation. All rights reserved.
+  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
+  * Copyright(c) 2015 - 2017 Intel Deutschland GmbH
+- * Copyright(c) 2018 - 2019 Intel Corporation
++ * Copyright(c) 2018 - 2020 Intel Corporation
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of version 2 of the GNU General Public License as
+@@ -31,7 +31,7 @@
+  * Copyright(c) 2005 - 2014 Intel Corporation. All rights reserved.
+  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
+  * Copyright(c) 2015 - 2017 Intel Deutschland GmbH
+- * Copyright(c) 2018 - 2019 Intel Corporation
++ * Copyright(c) 2018 - 2020 Intel Corporation
+  * All rights reserved.
+  *
+  * Redistribution and use in source and binary forms, with or without
+@@ -1407,11 +1407,7 @@ static int iwl_dump_ini_rxf_iter(struct
+ 		goto out;
+ 	}
+ 
+-	/*
+-	 * region register have absolute value so apply rxf offset after
+-	 * reading the registers
+-	 */
+-	offs += rxf_data.offset;
++	offs = rxf_data.offset;
+ 
+ 	/* Lock fence */
+ 	iwl_write_prph_no_grab(fwrt->trans, RXF_SET_FENCE_MODE + offs, 0x1);
 
 
