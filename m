@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA5D1A0956
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414431A0964
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgDGI3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 04:29:33 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:40099 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgDGI3c (ORCPT
+        id S1727948AbgDGIdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 04:33:08 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27829 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725883AbgDGIdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 04:29:32 -0400
-Received: by mail-pl1-f194.google.com with SMTP id h11so952698plk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 01:29:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4R/FPBL4dOo4mvZ9ReJ8CLxavGglB5XXnfcP3bpIQMU=;
-        b=YF7pfVtnVNormD+6w1FhUmCCmIPX8WylGW+gMb6fcDVCwxbjNpGspR80BZhFu81/wC
-         9mGnJKwUU3jjI6aV9mcWfz9QHoD3N9j+t3t7uW1fJfq3k9+V6vPBnljs+ugaNxvH2oM3
-         4fBcqqWsKDX8Vg/5/IVAXwf+8dlGNtHJhTMLogSVr30vlUXOSwvnl5PxBYoUdlZqZHZz
-         8hYl4Zqcu6CNjvxU0x9amIs54FLIYOip55tk5JBJ+2Pi1ijg3lhIm+XWqxUIXtIsl/Gu
-         3Y8xRbNRGLHZTKZBmWLyUyWGcwSuRyW6xDHlEgTIVdhWpg0gMdR1bVdSlt0FgGwI1rX+
-         myNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4R/FPBL4dOo4mvZ9ReJ8CLxavGglB5XXnfcP3bpIQMU=;
-        b=rxzcb/gv8t//2iIcOyjotvyrVpwq74YM9BapZyDkjFfO10g51OajWLbGrpQqZ+uZ9+
-         UbSIOgQWOCt7HPf8BzB10bK8A1zJsvo4ib0lqIyg1PY2C0dCg4QGmkxvkgkiJ/uXc8eH
-         8r/976wDHZTvLbD12B7fjoK8y6KKtavXZkG+GHL86Dc+F8UHgCIX4TNSab57izzLMAeA
-         cUUOT8Z3AqfN4fFC82KfWZmrvkEJMt9aQNXA4okOpqA33gH0yOoVGq985HQF7FB27JBd
-         vmS3XKglmRrQedhqL3uuCb8DllcCiS1UtttgaPpW6Pmh5koKpBBFR16oEcHU8E39ixH+
-         5Tow==
-X-Gm-Message-State: AGi0PuYmspd83oNPjH9TPNKAS7twb5NlTV/zE5kpoMA3C6a0UPsmHTYZ
-        TfuidE/fMGicLnecUUJhOmhEiw==
-X-Google-Smtp-Source: APiQypIcnVfCrjU/SQx6rFcAG9MOEb1k60YQzwaCjM39FmAU4PrzS6vHLapoN/BLX9AQQ8GBXTqLpw==
-X-Received: by 2002:a17:902:b489:: with SMTP id y9mr1436701plr.144.1586248171653;
-        Tue, 07 Apr 2020 01:29:31 -0700 (PDT)
-Received: from localhost ([122.171.118.46])
-        by smtp.gmail.com with ESMTPSA id np4sm989176pjb.48.2020.04.07.01.29.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 Apr 2020 01:29:30 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 13:59:28 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "andrew-sh.cheng" <andrew-sh.cheng@mediatek.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, Nishanth Menon <nm@ti.com>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Fan Chen =?utf-8?B?KOmZs+WHoSk=?= <fan.chen@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [v5, PATCH 4/5] cpufreq: mediatek: add opp notification for SVS
- support
-Message-ID: <20200407082928.lancywbqts5yg4ks@vireshk-i7>
-References: <20191127083619.etocnhpyyut3hzwq@vireshk-i7>
- <1575874588.13494.4.camel@mtksdaap41>
- <20191210064319.f4ksrxozp3gv4xry@vireshk-i7>
- <1583827865.4840.1.camel@mtksdaap41>
- <20200311060616.62nh7sfwtjwvrjfr@vireshk-i7>
- <1584084154.7753.3.camel@mtksdaap41>
- <20200313091038.q7q7exiowoah4nk4@vireshk-i7>
- <1586164366.5015.6.camel@mtksdaap41>
- <20200406092945.d5thcd2h3bo7mn45@vireshk-i7>
- <1586242489.10019.1.camel@mtksdaap41>
+        Tue, 7 Apr 2020 04:33:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586248386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tq+OpIRxnn+Zk8S9fkUt7kbbJEzkzq8nr2igicyRqKM=;
+        b=i4ZrWVhxy7nsHVQUf/hVfUjMn+5ueqkvQKDOEHfriUpnHNjuYZC/EKjWnOGpEUiN/pGewF
+        ScYgaSxqU47hcJlutboFB+C453yr4slu5dwdDN+JxHQM6Yd3PNyZGg4RVEwQp9avn3AKhd
+        ocInM8yeGTuz9jDeNiylY4Ml7zmxFlE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-347-9m_XtjzwNRWLGIgdO_C1CA-1; Tue, 07 Apr 2020 04:33:02 -0400
+X-MC-Unique: 9m_XtjzwNRWLGIgdO_C1CA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9638818FF663;
+        Tue,  7 Apr 2020 08:33:01 +0000 (UTC)
+Received: from kamzik.brq.redhat.com (unknown [10.40.194.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C54BD60BE1;
+        Tue,  7 Apr 2020 08:32:54 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 10:32:51 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Wainer dos Santos Moschetta <wainersm@redhat.com>
+Cc:     pbonzini@redhat.com, kvm@vger.kernel.org, david@redhat.com,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] selftests: kvm: Add mem_slot_test test
+Message-ID: <20200407083251.3zgjscwhldcm5hce@kamzik.brq.redhat.com>
+References: <20200403172428.15574-1-wainersm@redhat.com>
+ <20200403172428.15574-3-wainersm@redhat.com>
+ <20200404073240.grcsylznemd3pmxz@kamzik.brq.redhat.com>
+ <64a47faa-74f5-60ad-9b74-8c295072c719@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1586242489.10019.1.camel@mtksdaap41>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <64a47faa-74f5-60ad-9b74-8c295072c719@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-04-20, 14:54, andrew-sh.cheng wrote:
-> On Mon, 2020-04-06 at 14:59 +0530, Viresh Kumar wrote:
-> > On 06-04-20, 17:12, andrew-sh.cheng wrote:
-> > > I will use regulator in the locked region.
-> > > And regulator will use mutex_lock.
-> > 
-> > Yeah, you can't use spinlock here, use a mutex.
-> > 
-> Hi Viresh,
+On Mon, Apr 06, 2020 at 02:10:53PM -0300, Wainer dos Santos Moschetta wrote:
 > 
-> I am not familiar with read/write lock.
-> Do you mean there is another read/write function, which is not
-> read_lock()/write_lock(), using mutex but not spinlock?
+> On 4/4/20 4:32 AM, Andrew Jones wrote:
+> > On Fri, Apr 03, 2020 at 02:24:28PM -0300, Wainer dos Santos Moschetta wrote:
+> > > This patch introduces the mem_slot_test test which checks
+> > > an VM can have added memory slots up to the limit defined in
+> > > KVM_CAP_NR_MEMSLOTS. Then attempt to add one more slot to
+> > > verify it fails as expected.
+> > > 
+> > > Signed-off-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
+> > > ---
+> > >   tools/testing/selftests/kvm/.gitignore      |  1 +
+> > >   tools/testing/selftests/kvm/Makefile        |  3 +
+> > >   tools/testing/selftests/kvm/mem_slot_test.c | 85 +++++++++++++++++++++
+> > >   3 files changed, 89 insertions(+)
+> > >   create mode 100644 tools/testing/selftests/kvm/mem_slot_test.c
+> > > 
+> > > diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+> > > index 16877c3daabf..232f24d6931a 100644
+> > > --- a/tools/testing/selftests/kvm/.gitignore
+> > > +++ b/tools/testing/selftests/kvm/.gitignore
+> > > @@ -22,3 +22,4 @@
+> > >   /dirty_log_test
+> > >   /kvm_create_max_vcpus
+> > >   /steal_time
+> > > +/mem_slot_test
+> > > diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> > > index 712a2ddd2a27..69b44178f48b 100644
+> > > --- a/tools/testing/selftests/kvm/Makefile
+> > > +++ b/tools/testing/selftests/kvm/Makefile
+> > > @@ -33,12 +33,14 @@ TEST_GEN_PROGS_x86_64 += demand_paging_test
+> > >   TEST_GEN_PROGS_x86_64 += dirty_log_test
+> > >   TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
+> > >   TEST_GEN_PROGS_x86_64 += steal_time
+> > > +TEST_GEN_PROGS_x86_64 += mem_slot_test
+> > >   TEST_GEN_PROGS_aarch64 += clear_dirty_log_test
+> > >   TEST_GEN_PROGS_aarch64 += demand_paging_test
+> > >   TEST_GEN_PROGS_aarch64 += dirty_log_test
+> > >   TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
+> > >   TEST_GEN_PROGS_aarch64 += steal_time
+> > > +TEST_GEN_PROGS_aarch64 += mem_slot_test
+> > kvm selftests has a bad case of OCD when it comes to lists of tests. In
+> > the .gitignore and the Makefile we keep our tests in alphabetical order.
+> > Maybe we should stop, because it's a bit annoying to maintain, but my
+> > personal OCD won't allow it to be on my watch. Please fix the above
+> > three lists.
+> 
+> I will fix it on v3.
+> 
+> Kind of related... has ever been discussed a naming convention for kvm
+> selftests? It would allow the use of regex on both .gitignore and
+> Makefile...and bye-bye those sorted lists.
 
-Heh, I am asking you to use simple mutex here, leave the read/write
-lock thing completely as it won't work here.
+It's never been discussed that I know of. Feel free to send an RFC if
+you'd like to kick off the discussion :-)
 
--- 
-viresh
+Thanks,
+drew
+
