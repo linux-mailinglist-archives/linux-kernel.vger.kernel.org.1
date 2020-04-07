@@ -2,136 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E171A1382
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:26:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF7C1A1390
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgDGS03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:26:29 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:35225 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgDGS02 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:26:28 -0400
-Received: by mail-pl1-f195.google.com with SMTP id c12so1562561plz.2;
-        Tue, 07 Apr 2020 11:26:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=QYIL30Y4lbaKfN8N+l8AxNYOEP0WbdeSFWqM4jX1lok=;
-        b=mxHXxTGRl3NQIgP6rWcoMhsY6HyE0rG3wlkwE7jpIjN6tDrpy3niF7BPolTzE8bQjr
-         IQEvbqk18gIQA+HXQxRY1E/K951ezmtJEDVqQTatABZqg/UsladnMSVqQOHJF1fSXzAX
-         JkYk/zAoyiOWIMgl4+hbEYSi1oY/hpHkTiBpInCAgYpkuhyF9WuyK9EWeuRADOT4Xd+Q
-         70DPWmnYATwpbwORIXdMAGbVeqVhQmEJl5ObgV2vUx1A1op3bQkLdEGGdZyuk2Vt69Fe
-         p61Ne6M2DYMZBYEhVRJQ9HO0MIVqRRPQgKyYym0DjBt+a3W6mLnmXEffOnZ/Ml6yoAlp
-         hB3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=QYIL30Y4lbaKfN8N+l8AxNYOEP0WbdeSFWqM4jX1lok=;
-        b=lP4GC1Thu/x/NaW8CK0PX6csQL90ETvrQMsNwPgK6K7D8fTtBR2vlWojEHJYIkLMzM
-         tB1a7ZYOiBuIKJ1bfPcRbREyfjtetgAEm1YDa6Hg5K+Z2SmMz3/xmcoLvAuUo4ZJvdxe
-         zPEsiEZW+a0Tl3rGMqO4eG4TdFoBUGwvw1IXRg1v0TxTZ8ZoleKkqIkdMaBIHb3Ealnl
-         X0egVV4xXV1XR12k3FE5T91jrZyJYBxiIfkwp/6J66lcqcx28ZCVLnEb5V4oh6qPYht9
-         +cPD9/jaQ0wqDNpAiTX91vcYYHvCb5ktuLZBF47wh3xH/YsEQrReNLpDhYUnH3d+AfZT
-         JfEw==
-X-Gm-Message-State: AGi0PuaiIck/pvXNncOLE6xLspja8RfvWpJLSn335OPzIdeW7KhYjfGN
-        uQ9a5M38LpnqLlXy5akz4ac=
-X-Google-Smtp-Source: APiQypLb43XLaFbNxFhG+GiABGvTv6XTEtcbAOzcaSzrn5J22qswf4W9Su1wRVnFdBIYrvGNGj3zig==
-X-Received: by 2002:a17:902:5a0b:: with SMTP id q11mr470011pli.23.1586283987222;
-        Tue, 07 Apr 2020 11:26:27 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
-        by smtp.gmail.com with ESMTPSA id z63sm14548184pfb.20.2020.04.07.11.26.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 11:26:26 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 11:26:24 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v5.7-rc0
-Message-ID: <20200407182624.GA222411@dtor-ws>
+        id S1726712AbgDGSaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:30:12 -0400
+Received: from mga14.intel.com ([192.55.52.115]:60112 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726332AbgDGSaL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 14:30:11 -0400
+IronPort-SDR: aat543FUNqMwKniNQEWkV4Un5133hP62tEFF4hDlKtIwx+EGUj/ZaSzmvXwuzuHcHLWNWB+wRg
+ HEpHzmHXEEbw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:30:10 -0700
+IronPort-SDR: ZwrsoMC8FP+nMgQHxSpq0C5muJmfVAL83tMxkeXV63taXiHZ1DJeyxaq2vFmySl8XEg79EDTLa
+ 678dkWgjTJ1g==
+X-IronPort-AV: E=Sophos;i="5.72,356,1580803200"; 
+   d="scan'208";a="424844297"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:30:10 -0700
+From:   ira.weiny@intel.com
+To:     linux-kernel@vger.kernel.org
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jeff Moyer <jmoyer@redhat.com>
+Subject: [PATCH V6 0/8] Enable per-file/per-directory DAX operations V6
+Date:   Tue,  7 Apr 2020 11:29:50 -0700
+Message-Id: <20200407182958.568475-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+From: Ira Weiny <ira.weiny@intel.com>
 
-Please pull from:
+Changes from V5:
+	* make dax mount option a tri-state
+	* Reject changes to FS_XFLAG_DAX for regular files
+		- Allow only on directories
+	* Update documentation
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+At LSF/MM'19 [1] [2] we discussed applications that overestimate memory
+consumption due to their inability to detect whether the kernel will
+instantiate page cache for a file, and cases where a global dax enable via a
+mount option is too coarse.
 
-to receive updates for the input subsystem. You will get update to
-Goodix touchscreen driver to enable it work properly on various Bay
-Trail and Cherry Trail devices, and a few other assorted changes.
+The following patch series enables the use of DAX on individual files and/or
+directories on xfs, and lays some groundwork to do so in ext4.  It further
+enhances the dax mount option to be a tri-state of 'always', 'never', or
+'iflag' (default).  Furthermore, it maintians '-o dax' to be equivalent to '-o
+dax=always'.
 
-Changelog:
----------
+The insight at LSF/MM was to separate the per-mount or per-file "physical"
+(FS_XFLAG_DAX) capability switch from an "effective" (S_DAX) attribute for the
+file.
 
-Andy Shevchenko (1):
-      Input: of_touchscreen - explicitly choose axis
+At LSF/MM we discussed the difficulties of switching the DAX state of a file
+with active mappings / page cache.  It was thought the races could be avoided
+by limiting DAX state flips to 0-length files.
 
-Benjamin Gaignard (1):
-      dt-bindings: touchscreen: Convert edt-ft5x06 to json-schema
+However, this turns out to not be true.[3][5] This is because address space
+operations (a_ops) may be in use at any time the inode is referenced.
 
-Dmitry Mastykin (2):
-      Input: goodix - fix spurious key release events
-      Input: goodix - add support for more then one touch-key
+For this reason direct manipulation of the FS_XFLAG_DAX file is prohibited on
+files in this patch set.  File can only inherit this flag from their parent
+directory on creation.
 
-Hans de Goede (14):
-      Input: goodix - refactor IRQ pin GPIO accesses
-      Input: goodix - make loading the config from disk independent from the GPIO setup
-      Input: goodix - make resetting the controller at probe independent from the GPIO setup
-      Input: goodix - add support for getting IRQ + reset GPIOs on Cherry Trail devices
-      Input: goodix - add support for getting IRQ + reset GPIOs on Bay Trail devices
-      Input: goodix - add support for controlling the IRQ pin through ACPI methods
-      Input: goodix - move defines to above struct goodix_ts_data declaration
-      Input: goodix - save a copy of the config from goodix_read_config()
-      Input: goodix - add minimum firmware size check
-      Input: goodix - make goodix_send_cfg() take a raw buffer as argument
-      Input: goodix - restore config on resume if necessary
-      Input: goodix - try to reset the controller if the i2c-test fails
-      Input: goodix - fix compilation when ACPI support is disabled
-      Input: i8042 - add Acer Aspire 5738z to nomux list
+Details of when and how DAX state can be changed on a file is included in a
+documentation patch.
 
-Icenowy Zheng (3):
-      dt-bindings: input: touchscreen: add compatible string for Goodix GT917S
-      Input: goodix - use string-based chip ID
-      Input: goodix - add support for Goodix GT917S
+It should be noted that FS_XFLAG_DAX inheritance is not shown in this patch set
+as it was maintained from previous work on XFS.  FS_XFLAG_DAX and it's
+inheritance will need to be added to other file systems for user control. 
 
-Johnny Chuang (1):
-      Input: elants_i2c - report resolution information for touch major
 
-Rajat Jain (1):
-      Input: update SPDX tag for input-event-codes.h
+[1] https://lwn.net/Articles/787973/
+[2] https://lwn.net/Articles/787233/
+[3] https://lkml.org/lkml/2019/10/20/96
+[4] https://patchwork.kernel.org/patch/11310511/
+[5] https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
 
-Sergei A. Trusov (1):
-      Input: goodix - fix touch coordinates on Cube I15-TC
 
-Yannick Fertre (2):
-      dt-bindings: touchscreen: goodix: support of gt9147
-      Input: goodix - support gt9147 touchpanel
+To: linux-kernel@vger.kernel.org
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Chinner <david@fromorbit.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
 
-Diffstat:
---------
 
- .../bindings/input/touchscreen/edt-ft5x06.txt      |  77 ---
- .../bindings/input/touchscreen/edt-ft5x06.yaml     | 125 +++++
- .../bindings/input/touchscreen/goodix.yaml         |   2 +
- drivers/input/serio/i8042-x86ia64io.h              |  11 +
- drivers/input/touchscreen/elants_i2c.c             |   1 +
- drivers/input/touchscreen/goodix.c                 | 608 +++++++++++++++++----
- drivers/input/touchscreen/of_touchscreen.c         |  35 +-
- include/uapi/linux/input-event-codes.h             |   2 +-
- 8 files changed, 651 insertions(+), 210 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.txt
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/edt-ft5x06.yaml
+Changes from V4:
+	* Open code the aops lock rather than add it to the xfs_ilock()
+	  subsystem (Darrick's comments were obsoleted by this change)
+	* Fix lkp build suggestions and bugs
 
-Thanks.
+Changes from V3:
+	* Remove global locking...  :-D
+	* put back per inode locking and remove pre-mature optimizations
+	* Fix issues with Directories having IS_DAX() set
+	* Fix kernel crash issues reported by Jeff
+	* Add some clean up patches
+	* Consolidate diflags to iflags functions
+	* Update/add documentation
+	* Reorder/rename patches quite a bit
 
+Changes from V2:
+
+	* Move i_dax_sem to be a global percpu_rw_sem rather than per inode
+		Internal discussions with Dan determined this would be easier,
+		just as performant, and slightly less overhead that having it
+		in the SB as suggested by Jan
+	* Fix locking order in comments and throughout code
+	* Change "mode" to "state" throughout commits
+	* Add CONFIG_FS_DAX wrapper to disable inode_[un]lock_state() when not
+		configured
+	* Add static branch for which is activated by a device which supports
+		DAX in XFS
+	* Change "lock/unlock" to up/down read/write as appropriate
+		Previous names were over simplified
+	* Update comments/documentation
+
+	* Remove the xfs specific lock to the vfs (global) layer.
+	* Fix i_dax_sem locking order and comments
+
+	* Move 'i_mapped' count from struct inode to struct address_space and
+		rename it to mmap_count
+	* Add inode_has_mappings() call
+
+	* Fix build issues
+	* Clean up syntax spacing and minor issues
+	* Update man page text for STATX_ATTR_DAX
+	* Add reviewed-by's
+	* Rebase to 5.6
+
+	Rename patch:
+		from: fs/xfs: Add lock/unlock state to xfs
+		to: fs/xfs: Add write DAX lock to xfs layer
+	Add patch:
+		fs/xfs: Clarify lockdep dependency for xfs_isilocked()
+	Drop patch:
+		fs/xfs: Fix truncate up
+
+Ira Weiny (8):
+  fs/xfs: Remove unnecessary initialization of i_rwsem
+  fs: Remove unneeded IS_DAX() check
+  fs/stat: Define DAX statx attribute
+  fs/xfs: Make DAX mount option a tri-state
+  fs/xfs: Create function xfs_inode_enable_dax()
+  fs/xfs: Combine xfs_diflags_to_linux() and xfs_diflags_to_iflags()
+  fs/xfs: Change xfs_ioctl_setattr_dax_invalidate() to
+    xfs_ioctl_dax_check()
+  Documentation/dax: Update Usage section
+
+ Documentation/filesystems/dax.txt |  94 +++++++++++++++++++++-
+ fs/stat.c                         |   3 +
+ fs/xfs/xfs_icache.c               |   4 +-
+ fs/xfs/xfs_inode.h                |   1 +
+ fs/xfs/xfs_ioctl.c                | 124 +++---------------------------
+ fs/xfs/xfs_iops.c                 |  62 ++++++++++-----
+ fs/xfs/xfs_mount.h                |  26 ++++++-
+ fs/xfs/xfs_super.c                |  34 ++++++--
+ include/linux/fs.h                |   2 +-
+ include/uapi/linux/stat.h         |   1 +
+ 10 files changed, 206 insertions(+), 145 deletions(-)
 
 -- 
-Dmitry
+2.25.1
+
