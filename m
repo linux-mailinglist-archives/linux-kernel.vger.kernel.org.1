@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 812EC1A1146
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5451A1151
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728121AbgDGQXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:23:42 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:43096 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727409AbgDGQXl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:23:41 -0400
-Received: by mail-lf1-f67.google.com with SMTP id k28so2844417lfe.10;
-        Tue, 07 Apr 2020 09:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lIqJzw68A7L2ZWYO7kXO32fbdvxsPUYFK3LDegQyWKc=;
-        b=fNT4E41c9Kf5/+9c195ZItbCQYbPiNgNCDcP9aouFle0LBy5SPGYfimut47m7vkxDt
-         V8rWGYHyO3WCWn7RKiG1E5fVA6VARNQi89QMCxZxi+keGbxOj+wsb+5t9bTw1cpaDT5S
-         tLkhbhsDUgF5pkKMcFXKIW6Hjt8/wlDR7AmX4JgfaMBatBdeCmwUqpBMScq9w2Z4wnhQ
-         LE/XyHSX+8XSEjAsKWhzIZKW8lVFDoWSeWAhaMw4OeaX2po85cwrdSKcABQVs76CBHd/
-         Z3L0C2TCUrYBwYvoxONzkrevi7QXnLschZG3zPWvQmLmQKeJSGkt762Z29yt1x4ZJdoZ
-         vpbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lIqJzw68A7L2ZWYO7kXO32fbdvxsPUYFK3LDegQyWKc=;
-        b=oStFr7lEKKHjvmrrsDnomr0QVEe+nz5AHLTgTErUGrOutvLBJc0c0ne2i2mSC+xsGc
-         yeLQrKYgi+/S/8FTnLJRLsvN9VNbzpbiZC0DmN5ZNEMTs4FsGeRaB8lJeQjObSfkSgdz
-         Id7E3ogg00ppZ4dnWflQD9N0WwceBRaAhovT4M18vG2ePOiq7otgeue3NV5OeY/Touip
-         0Ovm5MR8f3dG8GCU8/5JadghZtZ1w3eewx71GWipIfOzLYefdbVX9zauv/SWFWkot6e/
-         OsZqfNbZDdNnQ8LK/BkCTcJfgsiWxlRRMB9rJOwilM7MkjrmWHtp0VEJMFV3+lsAZSNp
-         gvtg==
-X-Gm-Message-State: AGi0PuZTopLeoG7kGRelxnXn2GO8Yco/a1tOpQNaKr3iAKDDyQXJdTNw
-        ZWN0DIjDRbADpxOmQOIILHVZWg6W
-X-Google-Smtp-Source: APiQypIQxCrMVBGXPJJ/pWY6ipOmji7dpEZtCwu9qdrifxSSlfjvJAGzOR28WynMaQVcGQpcjA0aAA==
-X-Received: by 2002:ac2:4291:: with SMTP id m17mr1948274lfh.201.1586276617360;
-        Tue, 07 Apr 2020 09:23:37 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id z9sm11818302lfd.9.2020.04.07.09.23.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 09:23:36 -0700 (PDT)
-Subject: Re: [PATCH v2 1/6] ARM: tegra: Add device-tree for Acer Iconia Tab
- A500
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        David Heidelberg <david@ixit.cz>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        =?UTF-8?Q?Pedro_=c3=82ngelo?= <pangelo@void.io>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200406194110.21283-1-digetx@gmail.com>
- <20200406194110.21283-2-digetx@gmail.com> <20200407104109.GC1720957@ulmo>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <dcacb220-580f-d9fc-a82d-4c7941f5ed2c@gmail.com>
-Date:   Tue, 7 Apr 2020 19:23:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727794AbgDGQ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:27:38 -0400
+Received: from mga06.intel.com ([134.134.136.31]:32973 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726776AbgDGQ1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:27:38 -0400
+IronPort-SDR: 2VlTbSxVbBSbuYw1ydcGX/vPTduvbQflHNBXRKtVEs8jtp7Y0AvkW362WdSb+Ph6A10JWxoSh6
+ aCGgF9SqgEqw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 09:27:37 -0700
+IronPort-SDR: X45ded2A9SgUXwbH/l+PIMaqb/QJ89zgSdi/8J/tx1pNQTytOCCP4R5rWkwrDffgCQwmutwOe3
+ P3tMODcwjmJg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,355,1580803200"; 
+   d="scan'208";a="254507809"
+Received: from chenb-mobl1.amr.corp.intel.com (HELO [10.255.231.128]) ([10.255.231.128])
+  by orsmga006.jf.intel.com with ESMTP; 07 Apr 2020 09:27:32 -0700
+Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0
+ per-thread
+To:     Keno Fischer <keno@juliacomputing.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andi Kleen <andi@firstfloor.org>,
+        Kyle Huey <khuey@kylehuey.com>,
+        Robert O'Callahan <robert@ocallahan.org>
+References: <20200407011259.GA72735@juliacomputing.com>
+ <8f95e8b4-415f-1652-bb02-0a7c631c72ac@intel.com>
+ <CABV8kRw1TQsqs+z43bSfZ5isctuFGMB4g_ztDYihiiXHcy4nVA@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+Message-ID: <5208ad1e-cd9b-d57e-15b0-0ca935fccacd@intel.com>
+Date:   Tue, 7 Apr 2020 09:27:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200407104109.GC1720957@ulmo>
+In-Reply-To: <CABV8kRw1TQsqs+z43bSfZ5isctuFGMB4g_ztDYihiiXHcy4nVA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -77,174 +98,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.04.2020 13:41, Thierry Reding пишет:
-> On Mon, Apr 06, 2020 at 10:41:05PM +0300, Dmitry Osipenko wrote:
-> [...]
->> diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> [...]
->> +	host1x@50000000 {
->> +		dc@54200000 {
->> +			rgb {
->> +				status = "okay";
->> +				nvidia,panel = <&panel>;
->> +
->> +				port@0 {
->> +					lvds_output: endpoint {
->> +						remote-endpoint = <&lvds_encoder_input>;
->> +						bus-width = <18>;
->> +					};
->> +				};
->> +			};
->> +		};
+>> How does this work with things like xstateregs_[gs]et() where the format
+>> of the kernel buffer and thus the kernel XCR0 is exposed as part of our
+>> ABI?  With this patch, wouldn't a debugger app see a state buffer that
+>> looks invalid?
 > 
-> This seems a little strange to me, though, admittedly, I've never worked
-> with these types of bridges before, so I may be misunderstanding this. I
-> was under the impression that we could obtain the panel by traversing an
-> OF graph, so that we didn't have to have that extra nvidia,panel
-> property. As it is, you seem to describe two different paths, one that
-> goes from the RGB output to the panel directly, and another that goes
-> from the RGB output to the LVDS encoder and then to the panel.
+> Since those operate on the in-kernel buffer of these, which
+> in this patch always uses the unmodified XCR0, ptracers
+> should not observe a difference.
+
+Those operate on *BOTH* kernel and userspace buffers.  They copy between
+them.  That's kinda the point. :)
+
+But I don't see any modifications to copy_xstate_to_user() or
+user_regset_copyout() in your patch.
+
+I suspect the patch thus far is only the tip of the iceberg.  I'd really
+suggest doing some more thorough audits of all of the locations in the
+kernel that touch the fpu buffer *or* that call XSAVE/XRSTOR.  I'm
+pretty sure that audit hasn't been done or the ptrace example would have
+been found already.
+
+>> I'm also trying to think of what kinds of things CPU companies add to
+>> their architectures that would break this stuff.  I can't recall ever
+>> having a discussion with folks at Intel where we're designing a CPU
+>> feature and we say, "Can't do that, it would break record/replay".
 > 
-> It doesn't seem to me like a direct link from RGB output to panel does
-> actually exist in this setup.
+> Heh, I'm having these discussions for you - ask me which Intel
+> microarchitectures have interesting bugs here ;). The fact that rr works,
+> is pretty much the only reason we buy Intel hardware these days, so
+> there is at least a good reason for Intel folks to care. I think the evil
+> plan is to make rr so good that everybody is using it, so you'll
+> start having these conversations more :).
 
-AFAIK, the direct link doesn't exist on any of Tegra boards, they all
-have an LVDS bridge. The older device-trees just didn't model it properly.
+Having reverse execution is a laudable goal.  I've been using this:
 
-The LVDS bridge and panel-lvds are relatively new things in DRM, which
-allow to model hardware more correctly, like for example the bridge's
-powerdown control is now modeled properly.
+	https://www.windriver.com/products/simics/
 
-The nvidia,panel is a mandatory property for the Tegra's DRM output,
-panel won't light up without it. I guess it should be possible to get
-the panel's phandle from the graph, but this is not supported by the
-Tegra's DRM driver + nvidia,panel is also useful to have for older
-kernels that do not support panel-lvds. The panel falls back to a
-simple-panel in the case of older kernel version, which results in a not
-entirely appropriate panel timing (wrong framerate), but this is okay'ish.
+to do kernel (and occasional app) debugging the last few years, and its
+reverse execution is invaluable for certain kinds of debugging.  But,
+it's also not my daily go-to for debugging.
 
-> [...]
->> +	pwm: pwm@7000a000 {
->> +		status = "okay";
->> +		power-supply = <&vdd_3v3_sys>;
->> +	};
-> 
-> I don't see power-supply defined as a property for the PWM controller.
-> Why do you need this?
-
-Yes, looks like it's not needed. I'll remove it in v3, thanks.
-
-> [...]
->> +	sdhci@c8000000 {
->> +		status = "okay";
->> +
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +
->> +		max-frequency = <25000000>;
->> +		keep-power-in-suspend;
->> +		bus-width = <4>;
->> +		non-removable;
->> +
->> +		mmc-pwrseq = <&brcm_wifi_pwrseq>;
->> +		vmmc-supply = <&vdd_3v3_sys>;
->> +		vqmmc-supply = <&vdd_3v3_sys>;
->> +
->> +		/* Azurewave AW-NH611 BCM4329 */
->> +		WiFi@1 {
-> 
-> I think these names are supposed to be lowercase.
-
-The dtbs_check doesn't complain, should be fine :)
-
-But I don't mind, although the camel-case should be a correct way of
-spelling WiFi. I'll change it in v3.
-
->> +			reg = <1>;
->> +			compatible = "brcm,bcm4329-fmac";
->> +			interrupt-parent = <&gpio>;
->> +			interrupts = <TEGRA_GPIO(S, 0) IRQ_TYPE_LEVEL_HIGH>;
->> +			interrupt-names = "host-wake";
->> +		};
->> +	};
-> [...]
->> +	clocks {
->> +		compatible = "simple-bus";
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +
->> +		clk32k_in: clock@0 {
->> +			compatible = "fixed-clock";
->> +			reg = <0>;
->> +			#clock-cells = <0>;
->> +			clock-frequency = <32768>;
->> +			clock-output-names = "tps658621-out32k";
->> +		};
->> +
->> +		rtc_32k_wifi: clock@1 {
->> +			compatible = "fixed-clock";
->> +			reg = <1>;
->> +			#clock-cells = <0>;
->> +			clock-frequency = <32768>;
->> +			clock-output-names = "kk3270032";
->> +		};
->> +	};
-> 
-> Are these clocks going to the PMIC and RTC, or are they generated by the
-> chips? If they are generated by the chips, which sounds like they might
-> be, wouldn't it be better to represent them as children of the
-> corresponding chips?
-
-They are generated by the chips.
-
-The PMIC has a built-in 32K oscillator.
-
-The kk3270032 is a dedicated onboard 32K oscillator. This one is not
-mandatory to model in the device-tree, but I wanted to model as much as
-possible.
-
-> There's probably no infrastructure to do this, so maybe that would be
-> overkill.
-
-Yes, PMIC doesn't model the clock. All Tegra boards model the PMIC's
-clock this way, although those boards don't set the clock-output-names
-property, which makes the DT model more obscure than it could be.
-
-The kk3270032 is a standalone oscillator, so it's fine as-is already.
-
-> But for clarity it might be worth documenting here where
-> exactly these clocks come from.
-
-I guess the output clock-output-names are already self-explanatory,
-don't you think so? For more details you could always consult the
-board's schematics.
-
-> [...]
->> +	memory-controller@7000f400 {
->> +		nvidia,use-ram-code;
->> +
->> +		emc-tables@elpida-8gb {
-> 
-> I don't think unit-addresses are supposed to be freeform text like
-> above. These should always reflect the value of the "reg" property,
-> though in this case we don't have one...
-> 
->> +			nvidia,ram-code = <0>;
-> 
-> In retrospect it might have been better to just reuse the reg property
-> for this.
-> 
-> I think in this case it might be best to reflect the RAM code in the
-> unit-address. At least that way we conceptually get things right since
-> it's the RAM code that selects which of these tables is used, much like
-> a register, I2C slave address, or SPI chip select would select which of
-> the subdevices are targetted.
-
-This could be done, although we already have a precedent in a form of
-the paz00 board that got memory timings not so long time ago.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=834f1d6cf3647e804e7a80569e42ee7fbee50eb1
-
-I'll change it in v3.
-
-Thank you for the review.
+I'm just far from convinced that we your problem is worth solving,
+especially in the place you're proposing to solve it.
