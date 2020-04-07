@@ -2,160 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEAB1A10D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48061A10DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727977AbgDGP7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 11:59:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49592 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726937AbgDGP7Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:59:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586275162;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uyjESamdwUR+qBAftAf1wggTNgdAJyF9I7vk6xL9aJk=;
-        b=F8o6ZOebQNsRCAPiswS5HblN1xXA8JHEr46/0lCDVcTA34KN3sK6FIRveE+o6KZBWe2rfK
-        tyWCXxoBQ4cbKkutfsnEA2o0GOn/uUiPNmkC/lV8uTP9Py98mXrMlov9TY/8PClXKNpUI8
-        hz7M3p1vxBoajzZFCZ36/bs+7E2iALo=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-436-IaUL2AI7Ony57DFJCFiRCA-1; Tue, 07 Apr 2020 11:59:21 -0400
-X-MC-Unique: IaUL2AI7Ony57DFJCFiRCA-1
-Received: by mail-qk1-f197.google.com with SMTP id 19so3579678qkc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 08:59:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uyjESamdwUR+qBAftAf1wggTNgdAJyF9I7vk6xL9aJk=;
-        b=Z1km62zef1obaQO4IuOZHBQsU8z8ij9z9eOPkkcjRoJdwZ9oEZL7Px6utxOp1u0izm
-         MqSFcZZ9AiQ6drRKpUFXLsJcKQB7Sq1rq/3iexOIqp3H6V3AeSKorsd56fv0YAAKfl5S
-         SImV3WnwEH8F9FCEE1sMGaq3xTaNgjbc+yl53oG39sSk5geYBo4JgrIcRJ+1D0v+khtu
-         ssBAFcIcH4EbIVDfr2n77rpzbFDM9umqLaEi6pJBUTbxGosqJEUB2zdIbSCpK4H1llaK
-         CW4RpRxMLxZnIUonzjyGMs2KO/cP7Y6sjdXOEcbjviVjUDUmblFWuw/k8OVTf5wpgTed
-         jJjA==
-X-Gm-Message-State: AGi0PuZmGbNpVAJhsyBb179/oTgRKt1S1Ukn/jnCTFtK/9OltpMEWelY
-        ponDP8z+ebkb5qOmQ0xT9JJTaM1ME+PWHxWHSw93+Ipo5+86O8g6p5YTEjrzzMbYyYon7cEIksP
-        NXcvrwj8FfWAgBZT3VVOHPGKN
-X-Received: by 2002:ac8:544b:: with SMTP id d11mr2980135qtq.122.1586275160051;
-        Tue, 07 Apr 2020 08:59:20 -0700 (PDT)
-X-Google-Smtp-Source: APiQypITVF/A5j/lHW/Mk28wZXwa0K1fTtGrCfGOtpwxDP9B0toGgUPl684klg2CCJr7b6M9QM6bHQ==
-X-Received: by 2002:ac8:544b:: with SMTP id d11mr2980108qtq.122.1586275159771;
-        Tue, 07 Apr 2020 08:59:19 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::3])
-        by smtp.gmail.com with ESMTPSA id z40sm7063418qtj.45.2020.04.07.08.59.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 08:59:18 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 11:59:17 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com>,
-        Brian Geffon <bgeffon@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in
- kernel_get_mempolicy
-Message-ID: <20200407155917.GF48345@xz-x1>
-References: <0000000000002b25f105a2a3434d@google.com>
- <20200407004745.GA48345@xz-x1>
- <20200406183941.38a2e52026e42dbfde239a56@linux-foundation.org>
- <20200407015535.GC48345@xz-x1>
- <20200406191534.aafd8f74406c242ba1a42549@linux-foundation.org>
- <20200407024254.GD48345@xz-x1>
- <CACT4Y+bxjLaK-QG+7WQ0S-N4_1-2-gtDU=ytUDd5fUOjsxEjdA@mail.gmail.com>
+        id S1727986AbgDGQCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:02:46 -0400
+Received: from mout.gmx.net ([212.227.17.20]:49349 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726889AbgDGQCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:02:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1586275336;
+        bh=MjED2rL8qFcaewF1yuTCY8oY81g21cBSfIGHWAJZhMU=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=Jl8BqXl73a3riwsYbnv+x7UmfvkDw9tKZL2TNz/DJ0vFDfMaN2+x19lbN9xx87+lC
+         3+ZL2kMK+WiwDySFJZjTn3TmI3NAhZWNhxh0yMPypCuDv1dcm6cPNINx9XNyuxNGul
+         rH8nkZklPVh2RmUjRZp9o9qblbOHX95hYR+B1LCE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from lenovo-laptop ([82.19.195.159]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wll-1jB2250hY1-012FWj; Tue, 07
+ Apr 2020 18:02:16 +0200
+Date:   Tue, 7 Apr 2020 17:02:13 +0100
+From:   Alex Dewar <alex.dewar@gmx.co.uk>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Allison Randal <allison@lohutok.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Chaitra Basappa <chaitra.basappa@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Himanshu Madhani <hmadhani@marvell.com>,
+        "James E. J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-scsi@vger.kernel.org, aacraid@microsemi.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: Remove unnecessary calls to memset after
+ dma_alloc_coherent
+Message-ID: <20200407160213.qh64de6ebrj7qkmx@lenovo-laptop>
+References: <e2401a31-e9fd-e849-e27c-6e079f5556d2@web.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bxjLaK-QG+7WQ0S-N4_1-2-gtDU=ytUDd5fUOjsxEjdA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e2401a31-e9fd-e849-e27c-6e079f5556d2@web.de>
+X-Provags-ID: V03:K1:d/rbaoVneuFo0laPsfO0MaLfxIn2+jKJUs/i7ZOLORm+LfbBtQT
+ ESuMc1oTz+fMZ0oStoWZwfeViYqrbeO1LXx1GGgpaEVPnqsXdzsBP1CCn5fNSGlUyZljOui
+ I7fgj9QWPd7jJBqYvNLWXFsWvl2e2GA/b/izskTEJrxpVWWfI/dvT66HeAuXqJJEoWAwBWc
+ jebJmfW9Kw6uZBru7hWMA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:U2Pjpg2Ki7w=:xq6163nCcOwVZqGtXA1HMf
+ 19/Gs5h+3UI36/aBiaBU1kuksy+wup06rLtbVmc5WwxmfLOYa99iZHzKR77kev6SwPaMOnf/5
+ gyQJ2ZHoFnzVuAkgIB4AA0Ddz+Egx6RS7JGbLkoEmd6dDu1KnS5TAEDxko2eNMA/EojMz/Rq8
+ nEBeKbpf0mtSuVqb5v3BM4IqKZ8IGWRUhSs7U9OYEXUS2TLPUWLZ6eGeT+J0WSJo8ZL4sEVYq
+ lMmuzOXowBoWvVsv8G6jGuvzupEfa1iEb8CVK5FIXTcP+GmbLrqNKyoI2mFt9IFAbhjpPm92s
+ JoWRcvh4wpQAeDq/0cs7PycSMpvvSVM1MxkylDZaeVr+8uBaqbhc9sAy8JlBlJeEAF+u1TDIJ
+ YvZ7vttcV/EiFjAi1RSy4MM4WbTATmAS5TK2XvKM2kq3RzLJDaZQ9R9Ih5b6/ln83Gmun3Bwj
+ w917gxTNOlglO8uETEOIRSydDoio5a0xWEZz7jELD/+xPPDP8lRqfl9Io/7f3Y3UhjksL+EMG
+ Ear5+fdik64Jksxf89roRGribeIswgpWy3uRU4aeQL8rNqJZPRlxnoiGdaTDowt4zYG2v4v+X
+ y8sxAZq1dRQWSQEjq1V0u5ckgIDkKlfJeivxKd/K2mWLlO0OCnCYyKcIBpHZI3BCDgyqTCRGw
+ GviZQW73dh2jkjG/xyanglkDtGbqy4dYjOb8XFSZS9w+cN5tx7gkz5P4RvStdA63mfV9tiLhQ
+ Ub5RUHfXr9E9bNmYwRSBdlF1PGkEkAY765SL3J4PFJqeKVs00z0SRSdL3AJPZg7YlUDIwrdMp
+ M4/KAFkk50NkU/AmGF8ROcfm858qfZtYTaN6ZPqF1uSYXu2D6nOMKE3e3tiyTjfannSXer6hw
+ ysT9Hwdl/g46QipspSaTNFAZUsW/P+8V4mjOdzi3vzx9wv82cHpJAaClCqHAZv4ZWJN338IFw
+ Nkgspk0qtotriu5gwEaJsm6l1wZYIXQurHkHXl5qRWVtVrKDBHM5VkcrERXbDdVqPrlAqmPPm
+ b4RsFafzc8NkynJrJhD60LW4E6cli01gC5F9gGfd6yeFGheimpNcUtqtoP8OAge2GnpH+ohne
+ 3R/CqDXTi26RVR9IzGv2uAsfSRWiYhY9yaitv/VIiqPai8vxdHCTK4BJ6YUkO3EQq/sz9/qfi
+ +afwyyOiaN+FTiEEN/FgmPUa14e6fuJ08jHShjGl8Vmhflh8gMXL8/SXk01mM8856ZH1uP1v7
+ YUw3hrs2eYKFne8Sc
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 10:27:15AM +0200, Dmitry Vyukov wrote:
-> On Tue, Apr 7, 2020 at 4:43 AM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > On Mon, Apr 06, 2020 at 07:15:34PM -0700, Andrew Morton wrote:
-> > > On Mon, 6 Apr 2020 21:55:35 -0400 Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > > On Mon, Apr 06, 2020 at 06:39:41PM -0700, Andrew Morton wrote:
-> > > > > On Mon, 6 Apr 2020 20:47:45 -0400 Peter Xu <peterx@redhat.com> wrote:
-> > > > >
-> > > > > > >From 23800bff6fa346a4e9b3806dc0cfeb74498df757 Mon Sep 17 00:00:00 2001
-> > > > > > From: Peter Xu <peterx@redhat.com>
-> > > > > > Date: Mon, 6 Apr 2020 20:40:13 -0400
-> > > > > > Subject: [PATCH] mm/mempolicy: Allow lookup_node() to handle fatal signal
-> > > > > >
-> > > > > > lookup_node() uses gup to pin the page and get node information.  It
-> > > > > > checks against ret>=0 assuming the page will be filled in.  However
-> > > > > > it's also possible that gup will return zero, for example, when the
-> > > > > > thread is quickly killed with a fatal signal.  Teach lookup_node() to
-> > > > > > gracefully return an error -EFAULT if it happens.
-> > > > > >
-> > > > > > ...
-> > > > > >
-> > > > > > --- a/mm/mempolicy.c
-> > > > > > +++ b/mm/mempolicy.c
-> > > > > > @@ -902,7 +902,10 @@ static int lookup_node(struct mm_struct *mm, unsigned long addr)
-> > > > > >
-> > > > > >         int locked = 1;
-> > > > > >         err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
-> > > > > > -       if (err >= 0) {
-> > > > > > +       if (err == 0) {
-> > > > > > +               /* E.g. GUP interupted by fatal signal */
-> > > > > > +               err = -EFAULT;
-> > > > > > +       } else if (err > 0) {
-> > > > > >                 err = page_to_nid(p);
-> > > > > >                 put_page(p);
-> > > > > >         }
-> > > > >
-> > > > > Doh.  Thanks.
-> > > > >
-> > > > > Should it have been -EINTR?
-> > > >
-> > > > It looks ok to me too.  I was returning -EFAULT to follow the same
-> > > > value as get_vaddr_frames() (which is the other caller of
-> > > > get_user_pages_locked()).  So far the only path that I found can
-> > > > trigger this is when there's a fatal signal pending right after the
-> > > > gup.  If so, the userspace won't have a chance to see the -EINTR (or
-> > > > whatever we return) anyways.
-> > >
-> > > Yup.  I guess we're a victim of get_user_pages()'s screwy return value
-> > > conventions - the caller cannot distinguish between invalid-addr and
-> > > fatal-signal.
-> >
-> > Indeed.
-> >
-> > >
-> > > Which makes one wonder why lookup_node() ever worked.  What happens if
-> > > get_mempolicy(MPOL_F_NODE) is passed a wild userspace address?
-> > >
-> >
-> > I'm not familiar with mempolicy at all, but do you mean MPOL_F_NODE
-> > with MPOL_F_ADDR?  Asked since iiuc if only MPOL_F_NODE is specified,
-> > the kernel should not use the userspace addr at all (which seems to be
-> > the thing we do now).  get_mempolicy(MPOL_F_NODE|MPOL_F_ADDR) seems to
-> > return -EFAULT as expected, though I agree maybe it would still be
-> > nicer to differentiate the two cases.
-> 
-> Am I reading this correctly that we put an initialized struct page* in
-> this case? If so, with stack spraying this looks like an "interesting"
-> bug.
+On Sat, Apr 04, 2020 at 01:14:52PM +0200, Markus Elfring wrote:
+> > dma_alloc_coherent() now zeroes memory after allocation, so additional
+> > calls to memset() afterwards are unnecessary. Remove them.
+>
+> I suggest to reconsider the distribution of recipients also for this pat=
+ch
+> according to the fields =E2=80=9CCc=E2=80=9D and =E2=80=9CTo=E2=80=9D.
 
-Yeah, so far it should be fine, but... ideally I guess we should init
-page==NULL in lookup_node() too to avoid potential risk on exploiting.
-Maybe we could squash this into the fix if still possible.
+Thanks. I'll do this in a v2/RESEND.
+>
+>
+> =E2=80=A6
+> > +++ b/drivers/scsi/dpt_i2o.c
+> =E2=80=A6
+> > @@ -3067,13 +3064,12 @@ static int adpt_i2o_build_sys_table(void)
+> >  	sys_tbl_len =3D sizeof(struct i2o_sys_tbl) +	// Header + IOPs
+> >  				(hba_count) * sizeof(struct i2o_sys_tbl_entry);
+> >
+> > -	sys_tbl =3D dma_alloc_coherent(&pHba->pDev->dev,
+> > -				sys_tbl_len, &sys_tbl_pa, GFP_KERNEL);
+> > +	sys_tbl =3D dma_alloc_coherent(&pHba->pDev->dev, sys_tbl_len,
+> > +				     &sys_tbl_pa, GFP_KERNEL);
+> >  	if (!sys_tbl) {
+> =E2=80=A6
+> > +++ b/drivers/scsi/mvsas/mv_init.c
+> > @@ -244,28 +244,22 @@ static int mvs_alloc(struct mvs_info *mvi, struc=
+t Scsi_Host *shost)
+> =E2=80=A6
+> > -	mvi->slot =3D dma_alloc_coherent(mvi->dev,
+> > -				       sizeof(*mvi->slot) * slot_nr,
+> > +	mvi->slot =3D dma_alloc_coherent(mvi->dev, sizeof(*mvi->slot) * slot=
+_nr,
+> >  				       &mvi->slot_dma, GFP_KERNEL);
+> >  	if (!mvi->slot)
+> =E2=80=A6
+> > +++ b/drivers/scsi/qla2xxx/qla_isr.c
+> > @@ -79,7 +79,7 @@ qla24xx_process_abts(struct scsi_qla_host *vha, void=
+ *pkt)
+> >  	    (uint8_t *)abts, sizeof(*abts));
+> >
+> >  	rsp_els =3D dma_alloc_coherent(&ha->pdev->dev, sizeof(*rsp_els), &dm=
+a,
+> > -	    GFP_KERNEL);
+> > +				     GFP_KERNEL);
+> >  	if (!rsp_els) {
+> =E2=80=A6
+> > +++ b/drivers/scsi/qla2xxx/qla_mbx.c
+> > @@ -4887,15 +4887,13 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t=
+ *vha)
+> >  	    "Entered %s.\n", __func__);
+> >
+> >  	els_cmd_map =3D dma_alloc_coherent(&ha->pdev->dev, ELS_CMD_MAP_SIZE,
+> > -	    &els_cmd_map_dma, GFP_KERNEL);
+> > +					 &els_cmd_map_dma, GFP_KERNEL);
+> >  	if (!els_cmd_map) {
+> =E2=80=A6
+>
+> I find it safer to integrate such source code reformattings by
+> another update step which will be separated from the proposed deletion
+> of unwanted function calls.
 
-Thanks,
+Good point. This whitespace was autoformatted by Coccinelle, probably
+due to my bad SmPL skills.
 
--- 
-Peter Xu
+Best,
+Alex
 
+
+>
+> Regards,
+> Markus
