@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2369C1A0AFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1020C1A0AF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:20:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728236AbgDGKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:22:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60204 "EHLO mail.kernel.org"
+        id S1728189AbgDGKT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:19:57 -0400
+Received: from foss.arm.com ([217.140.110.172]:54460 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725883AbgDGKWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:22:41 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4281720771;
-        Tue,  7 Apr 2020 10:22:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586254960;
-        bh=juQKuUZDgyyxGgsF7uNhckuR4k0PFa3vOdCv8igXe0Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sgYqeamJWAiaBCp2NFSD03QPo70At2AUr/IUVrprBg+Ml5NDCfoPAKTNJYYXNX6an
-         vAQ7e3e2LWUeFyKv98p4GoBGzkyh2TeRFOvdvOm18bZZP3vlg38k0CTydolrBFmEWu
-         29LGMbGbHOxwLRXzrU3Ok29lE8bw89yC7XaBAWNk=
-Received: by pali.im (Postfix)
-        id 418C85F1; Tue,  7 Apr 2020 12:22:38 +0200 (CEST)
-Date:   Tue, 7 Apr 2020 12:22:38 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Thomas Hebb <tommyhebb@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: (dell-smm) Use one DMI match for all XPS models
-Message-ID: <20200407102238.zweh7s7t6rn5cwhf@pali>
-References: <5d7e498b83e89ce7c41a449b61919c65d0770b73.1586033337.git.tommyhebb@gmail.com>
+        id S1726399AbgDGKT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:19:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC2CC1FB;
+        Tue,  7 Apr 2020 03:19:56 -0700 (PDT)
+Received: from [10.37.12.154] (unknown [10.37.12.154])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10FA63F73D;
+        Tue,  7 Apr 2020 03:19:54 -0700 (PDT)
+Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
+ multiple connections
+To:     saiprakash.ranjan@codeaurora.org, mike.leach@linaro.org
+Cc:     mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        alexander.shishkin@linux.intel.com, swboyd@chromium.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
+ <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
+ <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
+Date:   Tue, 7 Apr 2020 11:24:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5d7e498b83e89ce7c41a449b61919c65d0770b73.1586033337.git.tommyhebb@gmail.com>
-User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On Saturday 04 April 2020 16:49:00 Thomas Hebb wrote:
-> Currently, each new XPS has to be added manually for module autoloading
-> to work. Since fan multiplier autodetection should work fine on all XPS
-> models, just match them all with one block like is done for Precision
-> and Studio.
-
-It makes sense. We already load driver for all Inspirion, Latitude,
-Precision, Vostro and Studio models so I do not see reason why not to
-load it also for all XPS models. I doubt that Dell uses one base
-firmware for all mentioned models and second one specially for XPS.
-
-> The only match we replace that doesn't already use autodetection is
-> "XPS13" which, according to Google, only matches the XPS 13 9333. (All
-> other XPS 13 models have "XPS" as its own word, surrounded by spaces.)
-> According to the thread at [1], autodetection works for the XPS 13 9333,
-> meaning this shouldn't regress it. I do not own one to confirm with,
-> though.
+On 04/07/2020 10:46 AM, Sai Prakash Ranjan wrote:
+> Hi Mike,
 > 
-> Tested on an XPS 13 9350 and confirmed the module now autoloads and
-> reports reasonable-looking data. I am using BIOS 1.12.2 and do not see
-> any freezes when querying fan speed.
+> Thanks for taking a look.
 > 
-> [1] https://lore.kernel.org/patchwork/patch/525367/
-
-I guess that these two tests are enough based on the fact that lot of
-XPS models are already whitelisted.
-
-Guenter, it is fine for you now? Or is something else needed?
-
-> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
-
-Acked-by: Pali Rohár <pali@kernel.org>
-
-> ---
+> On 2020-04-06 16:25, Mike Leach wrote:
+>> Hi,
+>>
+>> The programmable replicator hardware by design enables trace through
+>> both ports on reset. (see 1, section 4.4, 9.11)  The replicator driver
+>> overrides this functionality to disable output, until the Coresight
+>> infrastructure chooses a path from source to sink.
+>> Now given that the hardware design is such that we must be able to
+>> allow trace to be sent to both ports, a generic patch to prevent this
+>> does not seem appropriate here.
+>>
+>> I think this needs further investigation - to determine why this
+>> appears to be failing in this particular instance.
+>>
 > 
-> Changes in v2:
-> - Remove another now-redundant XPS entry that I'd missed.
+> Yes, this probably needs further investigation, but CPU hardlock stack
+> trace doesnt help much. I could always trigger this hard lockup without
+> this patch on SC7180 SoC and this is only seen when ETR is used as the 
+> sink.
 > 
->  drivers/hwmon/dell-smm-hwmon.c | 26 ++------------------------
->  1 file changed, 2 insertions(+), 24 deletions(-)
+> The only difference I could see between non working case (on SC7180 [1]) 
+> and
+> the working case (on SDM845 [2]) is the path from source to sink.
+
+
 > 
-> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-> index d4c83009d625..ca30bf903ec7 100644
-> --- a/drivers/hwmon/dell-smm-hwmon.c
-> +++ b/drivers/hwmon/dell-smm-hwmon.c
-> @@ -1072,13 +1072,6 @@ static const struct dmi_system_id i8k_dmi_table[] __initconst = {
->  			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro"),
->  		},
->  	},
-> -	{
-> -		.ident = "Dell XPS421",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS L421X"),
-> -		},
-> -	},
->  	{
->  		.ident = "Dell Studio",
->  		.matches = {
-> @@ -1087,14 +1080,6 @@ static const struct dmi_system_id i8k_dmi_table[] __initconst = {
->  		},
->  		.driver_data = (void *)&i8k_config_data[DELL_STUDIO],
->  	},
-> -	{
-> -		.ident = "Dell XPS 13",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS13"),
-> -		},
-> -		.driver_data = (void *)&i8k_config_data[DELL_XPS],
-> -	},
->  	{
->  		.ident = "Dell XPS M140",
->  		.matches = {
-> @@ -1104,17 +1089,10 @@ static const struct dmi_system_id i8k_dmi_table[] __initconst = {
->  		.driver_data = (void *)&i8k_config_data[DELL_XPS],
->  	},
->  	{
-> -		.ident = "Dell XPS 15 9560",
-> -		.matches = {
-> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 15 9560"),
-> -		},
-> -	},
-> -	{
-> -		.ident = "Dell XPS 15 9570",
-> +		.ident = "Dell XPS",
->  		.matches = {
->  			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 15 9570"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "XPS"),
->  		},
->  	},
->  	{ }
-> -- 
-> 2.25.2
+> SC7180 source to sink path(Not working):
+> ----------------------------------------
 > 
+>        etm0_out
+>       |
+>    apss_funnel_in0
+>           |
+>   apss_merge_funnel_in
+>           |
+>       funnel1_in4
+>       |
+>    merge_funnel_in1
+>       |
+>     swao_funnel_in
+>           |
+>         etf_in
+>       |
+>   swao_replicator_in
+>           |
+>    replicator_in
+>       |
+>         etr_in
+
+
+There seems to be two replicators back to back here. What is connected
+to the other output of both of them ? Are there any TPIUs ? What happens
+if you choose a sink on the other end of "swao_replicator" (ETB ?)
+
+After boot, what do the idfilter registers read for both the replicators ?
+
+
+I believe we need to properly assign the TRACE_IDs for tracing sessions,
+(rather than static ids) in a way such that we could filter them and use
+the multiple sinks in parallel for separate trace sessions and this is
+not simple (involves kernel driver changes and the perf tool to be able
+to decode the trace id changes too).
+
+
+So for the moment, we need to :
+
+1) Disallow turning the replicator ON, when it is already turned ON
+2) Do what your patch does. i.e, disable the other end while one end
+    is turned on.
+
+Thoughts ?
+
+Kind regards
+Suzuki
