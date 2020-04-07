@@ -2,152 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7901A0D9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7201A0D8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:29:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728804AbgDGM3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:29:53 -0400
-Received: from esa5.microchip.iphmx.com ([216.71.150.166]:32823 "EHLO
-        esa5.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728784AbgDGM3u (ORCPT
+        id S1728605AbgDGM3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 08:29:13 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:44606 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728075AbgDGM3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:29:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1586262591; x=1617798591;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=V1XGm8+lrs3ttcPc2wge9SGUo/478sGSJ11eiBPE2ok=;
-  b=LK30PICyp+bgymBN0GWSd/r6pQt1TIdJSPYpdp3nTIxkt+SqzuJQjMpw
-   Qvyfj/qtQMS0Fu61NLe5sRWz6v1aTdhC3rVQReBUXPbpk058HFBgGE9xW
-   LYXhjk9CW9w3Tz0wITov0g+Cm5maIrSSr/ZDfUQf/OwOBEPhfyl1qFNTP
-   zg1O6hWF4HQV0HArTBeRT7ZRZkMgAxYV17rMyJkBzVZb/cubsYsyfi1O3
-   /5JbKKJkyYsl3Cm1OSFNmsjs78OnDUBL1yJm0vOpDe84KqlVmzlbQkJZ7
-   1Or2ipB/hiwUJ2gNhD2THOHXSsbfUHOqOaShltjYpqHE6JyUC4Hp+PqZ/
-   w==;
-IronPort-SDR: ny0bsXupWmmLJSObKBLCIa7mRcQpCK/WsszZcDt9MkE1Ft+xygV0uI8zVBuae/W0ncSOuHVhuh
- brhDl7LVWjr7rWLr06nzZraSirFUjAD+9ln7AeDG1HuNI6nJmrIwb2WLlSNRzLUvVNIeNekc4+
- cFIYTsKrW4b4Z61q7ecXIg96pDSVoWEzEhu0ctrj0DkLYbAeoQti/i3OV9FflSbWKxfsunKpIH
- 2gkQ7MpeePZITu8tZDbtF9d5yFQ8dCkR0CjwGKOX56nZDC8eUS6UnGsZ0B78+Vrf5eEjw4KkPS
- eAA=
-X-IronPort-AV: E=Sophos;i="5.72,354,1580799600"; 
-   d="scan'208";a="71684398"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Apr 2020 05:29:50 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 7 Apr 2020 05:29:49 -0700
-Received: from cristi-P53.amer.actel.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Tue, 7 Apr 2020 05:29:47 -0700
-From:   <cristian.birsan@microchip.com>
-To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
-        <nicolas.ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
-        Cristian Birsan <cristian.birsan@microchip.com>
-Subject: [PATCH 7/7] usb: gadget: udc: atmel: update endpoint allocation for sam9x60
-Date:   Tue, 7 Apr 2020 15:28:52 +0300
-Message-ID: <20200407122852.19422-8-cristian.birsan@microchip.com>
+        Tue, 7 Apr 2020 08:29:13 -0400
+Received: by mail-pg1-f195.google.com with SMTP id n13so230123pgp.11;
+        Tue, 07 Apr 2020 05:29:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=vOQTjEsc/b9nWGCQMtsVYfPJl+HytGkwz1UpCx9vwX8=;
+        b=MNBVjKjkXAaGGC+lGJMT5/YHMphzZ/i2GJoK2Vs0pV4BMdNwgyWmFrn2nPs24yAMGJ
+         VXKWNoh7Tq2+SsQSnNksB1r/ZUKdvgd+ahRqmeC71sBlC1IikzKclwP+8qlOMR9T63mk
+         QLbVUqEXCZJbp0p6YgQ3nkmX1DidzROnBaSxHa8PSWfH1RJh23rsl3U7IdLvTKKH2F3O
+         7/qXeBRwIKJkRMzWae0vjLHG+eovzgzqc0rFwY5c29JGobY2CKRepLCoJUVXGaXUWKHv
+         fK7GY0uhz3a7erjY3f8IdrCjL63ftba2Myvi6pIGzvasS+8dbBoyPzuMFN1cvWooRiOD
+         f0iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=vOQTjEsc/b9nWGCQMtsVYfPJl+HytGkwz1UpCx9vwX8=;
+        b=t9Mj1QPnccWZ8kiKvsUjSNb7LiHYk91gY9gpTxw/ykkhruHLXkd+afL2BpWohf05hB
+         IKCJUAv7luPVvxdm0uw0VqLgNQy8afSFazS7/zWraB96kvUSt8RFNJGiN5Juk9+0oU7P
+         Xqbx/zvlbWFlu4PzfH46TIMyk7SCwHk8+OHDy0fIsW7n4HI/F4o657kNqP4QCoLE+V5c
+         EYx8xRa4AOl7ZyyvLlpxpCnSy9iPquy4jmtbnJNrors4xVzX+26Sjlv9ntRbXkVDoVRc
+         4ra3sCnpGMhdCR+7ilCfLPx/Z+fntfzW4hAHJL4lplPahTQDCSytiqNIzaZ/2EmxUoPE
+         Qs2Q==
+X-Gm-Message-State: AGi0PuYlJIUUVTKe+749FNSLaufCI02+4CT0SvlxW1mE023CpGBYYvqP
+        7/8euNR9sicgnsnFxcRiS2pHgzK0qo1j3CC2
+X-Google-Smtp-Source: APiQypLEkKHjYIC1deoz+QQ8rx+ZY4YXbE5tVqk1ceCDuNWxjpvIjZpICuv5ce0ib1fz3VKkOSOl3Q==
+X-Received: by 2002:a62:2b07:: with SMTP id r7mr2220138pfr.273.1586262551588;
+        Tue, 07 Apr 2020 05:29:11 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:600d:c36b:d50:b01b:c4e4:35ad])
+        by smtp.gmail.com with ESMTPSA id o11sm12966626pgh.78.2020.04.07.05.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 05:29:10 -0700 (PDT)
+From:   Aishwarya R <aishwaryarj100@gmail.com>
+Cc:     aishwaryarj100@gmail.com, Mark Brown <broonie@kernel.org>,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: spi-fsl-spi: Fix checkpatch error "foo * bar" should be "foo *bar"
+Date:   Tue,  7 Apr 2020 17:58:55 +0530
+Message-Id: <20200407122855.5531-1-aishwaryarj100@gmail.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200407122852.19422-1-cristian.birsan@microchip.com>
-References: <20200407122852.19422-1-cristian.birsan@microchip.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Birsan <cristian.birsan@microchip.com>
+This patch fixes checkpatch error "foo * bar" should be "foo *bar"
 
-The DPRAM memory from the USB High Speed Device Port (UDPHS) hardware
-block was increased. This patch updates the endpoint allocation for sam9x60
-to take advantage of this larger memory. At the same time the
-constraint to allocate the endpoints in order was lifted. To handle old
-and new hardware in the same driver the capabilities (caps) structure
-was extended.
-
-Signed-off-by: Cristian Birsan <cristian.birsan@microchip.com>
+Signed-off-by: Aishwarya R <aishwaryarj100@gmail.com>
 ---
- drivers/usb/gadget/udc/atmel_usba_udc.c | 22 ++++++++++++++++++----
- drivers/usb/gadget/udc/atmel_usba_udc.h |  1 +
- 2 files changed, 19 insertions(+), 4 deletions(-)
+ drivers/spi/spi-fsl-spi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.c b/drivers/usb/gadget/udc/atmel_usba_udc.c
-index dfe30913c76b..3eb715d4d786 100644
---- a/drivers/usb/gadget/udc/atmel_usba_udc.c
-+++ b/drivers/usb/gadget/udc/atmel_usba_udc.c
-@@ -1066,12 +1066,14 @@ static struct usb_ep *atmel_usba_match_ep(struct usb_gadget *gadget,
+diff --git a/drivers/spi/spi-fsl-spi.c b/drivers/spi/spi-fsl-spi.c
+index 3b81772fea0d..67f022b8c81d 100644
+--- a/drivers/spi/spi-fsl-spi.c
++++ b/drivers/spi/spi-fsl-spi.c
+@@ -588,7 +588,7 @@ static void fsl_spi_grlib_probe(struct device *dev)
+ 	pdata->cs_control = fsl_spi_grlib_cs_control;
+ }
  
- 		case USB_ENDPOINT_XFER_ISOC:
- 			ep->fifo_size = 1024;
--			ep->nr_banks = 2;
-+			if (ep->udc->caps->ep_prealloc)
-+				ep->nr_banks = 2;
- 			break;
- 
- 		case USB_ENDPOINT_XFER_BULK:
- 			ep->fifo_size = 512;
--			ep->nr_banks = 1;
-+			if (ep->udc->caps->ep_prealloc)
-+				ep->nr_banks = 1;
- 			break;
- 
- 		case USB_ENDPOINT_XFER_INT:
-@@ -1081,7 +1083,8 @@ static struct usb_ep *atmel_usba_match_ep(struct usb_gadget *gadget,
- 			else
- 				ep->fifo_size =
- 				    roundup_pow_of_two(le16_to_cpu(desc->wMaxPacketSize));
--			ep->nr_banks = 1;
-+			if (ep->udc->caps->ep_prealloc)
-+				ep->nr_banks = 1;
- 			break;
- 		}
- 
-@@ -2034,16 +2037,27 @@ static void at91sam9g45_pulse_bias(struct usba_udc *udc)
- 
- static const struct usba_udc_caps at91sam9rl_caps = {
- 	.toggle_bias = at91sam9rl_toggle_bias,
-+	.ep_prealloc = true,
- };
- 
- static const struct usba_udc_caps at91sam9g45_caps = {
- 	.pulse_bias = at91sam9g45_pulse_bias,
-+	.ep_prealloc = true,
-+};
-+
-+static const struct usba_udc_caps sama5d3_caps = {
-+	.ep_prealloc = true,
-+};
-+
-+static const struct usba_udc_caps at91sam9x60_caps = {
-+	.ep_prealloc = false,
- };
- 
- static const struct of_device_id atmel_udc_dt_ids[] = {
- 	{ .compatible = "atmel,at91sam9rl-udc", .data = &at91sam9rl_caps },
- 	{ .compatible = "atmel,at91sam9g45-udc", .data = &at91sam9g45_caps },
--	{ .compatible = "atmel,sama5d3-udc" },
-+	{ .compatible = "atmel,sama5d3-udc", .data = &sama5d3_caps },
-+	{ .compatible = "microchip,sam9x60-udc", .data = &at91sam9x60_caps },
- 	{ /* sentinel */ }
- };
- 
-diff --git a/drivers/usb/gadget/udc/atmel_usba_udc.h b/drivers/usb/gadget/udc/atmel_usba_udc.h
-index 1a0f77bf8d4f..f9239e200e7a 100644
---- a/drivers/usb/gadget/udc/atmel_usba_udc.h
-+++ b/drivers/usb/gadget/udc/atmel_usba_udc.h
-@@ -305,6 +305,7 @@ struct usba_request {
- struct usba_udc_caps {
- 	void (*toggle_bias)(struct usba_udc *udc, int is_on);
- 	void (*pulse_bias)(struct usba_udc *udc);
-+	bool ep_prealloc;
- };
- 
- struct usba_udc {
+-static struct spi_master * fsl_spi_probe(struct device *dev,
++static struct spi_master *fsl_spi_probe(struct device *dev,
+ 		struct resource *mem, unsigned int irq)
+ {
+ 	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
 -- 
 2.17.1
 
