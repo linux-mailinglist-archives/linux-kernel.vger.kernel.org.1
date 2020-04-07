@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E9731A0EF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8271A0EFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbgDGOO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:14:57 -0400
-Received: from mail-wm1-f74.google.com ([209.85.128.74]:51346 "EHLO
-        mail-wm1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728812AbgDGOO5 (ORCPT
+        id S1729065AbgDGOQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:16:43 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57974 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728861AbgDGOQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:14:57 -0400
-Received: by mail-wm1-f74.google.com with SMTP id o26so899657wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:14:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=gOTUaqmgbGCsE0dVLTz9SOZ17zVq8RiTIkdhy3fA4uM=;
-        b=RtXu6P/4U4fHkpq2NJTWopKO2cpCfiMN7O8tch7NptGBMwdtYdHqh/THbw9Ct12QaE
-         kKT6cmNhVDe4hYgj2Cn/K30IGR+GPiJ8I2xavinT9NLHdgFbpBFJxfSPQVdkr3dhCw1U
-         zEYRvhaOiibxKn0gNechJZYO6jEQo2Kw6jxCR5GJSJH15OB6iWadkswM+KgfkDGuNOdW
-         wNCf4hgSTdOVE370FnCcOicjkT9irrs2APdaWKvl/m60kMT3YUxVLZ1M/tHUCe3lkAGJ
-         7CwBS5zJNuLNY6Xg4JwQnVaVgv0pgLLNlhLMTniAQEIL20LyNMPe14QP52rQXi/JVnJw
-         iWLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=gOTUaqmgbGCsE0dVLTz9SOZ17zVq8RiTIkdhy3fA4uM=;
-        b=GGa1kEJ98PcTT1auYlrjbC2ciD0Wh72lbzzhifbDC70gOaVRwKvGfS2uop4CzZbNRk
-         7WEUCcO6fzgBYbVbNP1UlcvlsmbGSqdk38crE+xc1krNFOHJOd5WkXm4+nZ2u94DzZhe
-         ibLrDBqQNmYESJkL4XtJCZq3ZYUDtRZ3Yu7f4p4hvIIKgI92SXGHugwc7zK45d+wrTsx
-         n8OIBwGXWeMvteZpqo8cuoOo/8zwYw0fcHq0cj4hgz7HNBMWWa72KuQoX5XtuHflgiIg
-         946+Jrr8SscF7g/p/8Gh+4P+Hu2IjPlp4dw0xnKq0HqFBNKL6UYDIjWS9mKSUloSjOU/
-         iXxw==
-X-Gm-Message-State: AGi0PuZMWgZ1XKvRoGf9/kr8auZVSU2xZtTapCzDUlXOsH3qiXPGnPpF
-        jGByKdECjLTOwBHcD7l0b1Ht96/RyYRQWyaT
-X-Google-Smtp-Source: APiQypIuCxxkxv9G1eKVjmIVs2yLdCdb1+xcFVQyqd0Yt5LJUlM//Nn9s+vfGRkkadqLefDR/ZUjlgfZuz1rYxUV
-X-Received: by 2002:adf:e691:: with SMTP id r17mr3023185wrm.421.1586268895116;
- Tue, 07 Apr 2020 07:14:55 -0700 (PDT)
-Date:   Tue,  7 Apr 2020 16:14:50 +0200
-Message-Id: <c4cedb13ee6159857ed7d9884e55718e4b1dede4.1586268809.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-Subject: [PATCH v2] usb: raw-gadget: fix raw_event_queue_fetch locking
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Felipe Balbi <balbi@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 7 Apr 2020 10:16:42 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037ED3vM172731;
+        Tue, 7 Apr 2020 14:16:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=yK09YV7sHccZ+in/N/EnR8J9sdEjaYyJawI3sE50HS8=;
+ b=Eqs64c8kq+8i/FiSWw/q+MCzbqzmXi52Nmfj3oTE7D9H7jPPRxsvTmN53Px4uiEdTG/Y
+ EZT1ZMQNhAANBVqumbdqC0fYBs+NnI3MesiDvtQeWK/HJueP3dwK53jfA5C7bo1sDFXd
+ oOznTTn2BzQLt4XKgtW3grdsq2lfrKnJcGpsLL6bR9bMTQdlfuMo7LQF0EhvqVj5IFdJ
+ TJsFNLRe5tkWvoEsVPFZbO0bWbRSsBJyAaTof2LYyY8yeCWcxLOnzL4K0Zr2tOPQ10PU
+ UTBczpNo3Bdm3jEoffqcCjqkD/27DifD4NM4vvchNzowuWqHSqlgTCmLP/OiQdnpnfc8 Lg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 306jvn570u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 14:16:29 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037ECTPD066162;
+        Tue, 7 Apr 2020 14:16:29 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 30839tfuee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 14:16:29 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 037EGQHo007736;
+        Tue, 7 Apr 2020 14:16:26 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 07:16:25 -0700
+Date:   Tue, 7 Apr 2020 17:16:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     gregkh@linuxfoundation.org, puranjay12@gmail.com,
+        robsonde@gmail.com, zhengbin13@huawei.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: rtl8192e: remove set but not used variable
+ 'tmpRegC'
+Message-ID: <20200407141616.GL2001@kadam>
+References: <1586262964-4582-1-git-send-email-wanghai38@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1586262964-4582-1-git-send-email-wanghai38@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 clxscore=1011 malwarescore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If queue->size check in raw_event_queue_fetch() fails (which normally
-shouldn't happen, that check is a fail-safe), the function returns
-without reenabling interrupts. This patch fixes that issue, along with
-propagating the cause of failure to the function caller.
+On Tue, Apr 07, 2020 at 08:36:04AM -0400, Wang Hai wrote:
+> Fixes gcc '-Wunused-but-set-variable' warning:
+> 
+> drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c: In function rtl92e_start_adapter:
+> drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c:693:15: warning: variable ‘tmpRegC’ set but not used [-Wunused-but-set-variable]
+> 
+> commit 94a799425eee ("rtl8192e: Split into two directories")
+> involved this, remove it.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> ---
+>  drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+> index ddcd788..ff934ae 100644
+> --- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+> +++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
+> @@ -690,7 +690,7 @@ bool rtl92e_start_adapter(struct net_device *dev)
+>  	u8 tmpvalue;
+>  	u8 ICVersion, SwitchingRegulatorOutput;
+>  	bool bfirmwareok = true;
+> -	u32 tmpRegA, tmpRegC, TempCCk;
+> +	u32 tmpRegA, TempCCk;
+>  	int i = 0;
+>  	u32 retry_times = 0;
+>  
+> @@ -889,8 +889,8 @@ bool rtl92e_start_adapter(struct net_device *dev)
+>  		if (priv->IC_Cut >= IC_VersionCut_D) {
+>  			tmpRegA = rtl92e_get_bb_reg(dev, rOFDM0_XATxIQImbalance,
+>  						    bMaskDWord);
+> -			tmpRegC = rtl92e_get_bb_reg(dev, rOFDM0_XCTxIQImbalance,
+> -						    bMaskDWord);
+> +			rtl92e_get_bb_reg(dev, rOFDM0_XCTxIQImbalance,
+> +					  bMaskDWord);
 
-Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface"
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
+Delete the call as well.
 
-Changes in v2:
-- Added a comment before the WARN_ON() call.
-
-Greg, this should apply cleanly on top of Dan's "usb: raw-gadget: Fix
-copy_to/from_user() checks" patch.
-
----
- drivers/usb/gadget/legacy/raw_gadget.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/usb/gadget/legacy/raw_gadget.c b/drivers/usb/gadget/legacy/raw_gadget.c
-index e490ffa1f58b..85dfbcd461ac 100644
---- a/drivers/usb/gadget/legacy/raw_gadget.c
-+++ b/drivers/usb/gadget/legacy/raw_gadget.c
-@@ -81,6 +81,7 @@ static int raw_event_queue_add(struct raw_event_queue *queue,
- static struct usb_raw_event *raw_event_queue_fetch(
- 				struct raw_event_queue *queue)
- {
-+	int ret;
- 	unsigned long flags;
- 	struct usb_raw_event *event;
- 
-@@ -89,11 +90,18 @@ static struct usb_raw_event *raw_event_queue_fetch(
- 	 * there's at least one event queued by decrementing the semaphore,
- 	 * and then take the lock to protect queue struct fields.
- 	 */
--	if (down_interruptible(&queue->sema))
--		return NULL;
-+	ret = down_interruptible(&queue->sema);
-+	if (ret)
-+		return ERR_PTR(ret);
- 	spin_lock_irqsave(&queue->lock, flags);
--	if (WARN_ON(!queue->size))
-+	/*
-+	 * queue->size must have the same value as queue->sema counter (before
-+	 * the down_interruptible() call above), so this check is a fail-safe.
-+	 */
-+	if (WARN_ON(!queue->size)) {
-+		spin_unlock_irqrestore(&queue->lock, flags);
- 		return NULL;
-+	}
- 	event = queue->events[0];
- 	queue->size--;
- 	memmove(&queue->events[0], &queue->events[1],
-@@ -522,10 +530,17 @@ static int raw_ioctl_event_fetch(struct raw_dev *dev, unsigned long value)
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 
- 	event = raw_event_queue_fetch(&dev->queue);
--	if (!event) {
-+	if (PTR_ERR(event) == -EINTR) {
- 		dev_dbg(&dev->gadget->dev, "event fetching interrupted\n");
- 		return -EINTR;
- 	}
-+	if (IS_ERR_OR_NULL(event)) {
-+		dev_err(&dev->gadget->dev, "failed to fetch event\n");
-+		spin_lock_irqsave(&dev->lock, flags);
-+		dev->state = STATE_DEV_FAILED;
-+		spin_unlock_irqrestore(&dev->lock, flags);
-+		return -ENODEV;
-+	}
- 	length = min(arg.length, event->length);
- 	if (copy_to_user((void __user *)value, event, sizeof(*event) + length))
- 		return -EFAULT;
--- 
-2.26.0.292.g33ef6b2f38-goog
+regards,
+dan carpenter
 
