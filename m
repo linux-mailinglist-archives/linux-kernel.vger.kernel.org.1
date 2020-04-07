@@ -2,163 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B9C1A0E32
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8686F1A0E35
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728897AbgDGNOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 09:14:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:40466 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728663AbgDGNOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 09:14:35 -0400
-IronPort-SDR: UpYyJ7eHJYrS7BJd6ae1nj+Zq+ZiHP4Skm231tMGmPQh8jzq+bNe8DZi7CDchXqJgYvEbPUFvH
- HsLCvlaN98rw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 06:14:34 -0700
-IronPort-SDR: r/0dr6EYTZwxWLxIayR2ZXR9NdFw9Xa9tYai4ILG9dVOsoYZY+SxJMYB3W6M6W/SDKcRT5hmRl
- dpKdSYCIt5OQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,354,1580803200"; 
-   d="scan'208";a="254453175"
-Received: from chenb-mobl1.amr.corp.intel.com (HELO [10.255.231.128]) ([10.255.231.128])
-  by orsmga006.jf.intel.com with ESMTP; 07 Apr 2020 06:14:33 -0700
-Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0
- per-thread
-To:     Keno Fischer <keno@juliacomputing.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Kyle Huey <khuey@kylehuey.com>,
-        Robert O'Callahan <robert@ocallahan.org>
-References: <20200407011259.GA72735@juliacomputing.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-Message-ID: <8f95e8b4-415f-1652-bb02-0a7c631c72ac@intel.com>
-Date:   Tue, 7 Apr 2020 06:14:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728844AbgDGNQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 09:16:27 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:33393 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728555AbgDGNQ1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 09:16:27 -0400
+Received: by mail-oi1-f193.google.com with SMTP id m14so1451068oic.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 06:16:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HPDKx3oSRt9Y7X4bWqhfNeKSwWIUsvZI1ClXBkig7os=;
+        b=Wu1UfZYHGPAXzaVdZpciVen+ZgF6JiRlGKPoxOiNrLShHXP1l2yhsDS1K4QcKxDlkH
+         s/uMAR0ryseBoErZbfaHNrriqZ5EuByprURHU1ag/zwB1UJBI/6+hnPuac3rzC5w2NFC
+         ek/TdSC80cdAlXPaH1fzDYFizgK+O1U7ZUDe0KBjqitWM/0py7lKnYqceNg3pjS0b1g3
+         tYbctDnQSi2o1soQtVfchc7wKC6oxjh84FRGNGTMXEafwMApQnOCRd8mdXfK/RKakchZ
+         MKUFI3V2G1nL0ymuphA9d/YX6LOu3BXwz8s3nbmskpEA5eJ5QiOhLsABJ+WCjcheK6D9
+         1Nug==
+X-Gm-Message-State: AGi0PuYPAW2GRX3YMQ1wDtNZI6TArAG4f03+B8dfi0ldu7Y8YZGd1VeU
+        Ft2NYGqAEZBCWkMWfL7+/9IzkFy9DyF4wd9op0U=
+X-Google-Smtp-Source: APiQypLG5uAh4zlD6yhUFCYUK18eL9OcJRZ0sLvd60tTXtYDdxd3jG6DqxcxL+LEDKwxJRKuEyPr6H6evLUmTJr8ALw=
+X-Received: by 2002:aca:ad93:: with SMTP id w141mr1676490oie.54.1586265386476;
+ Tue, 07 Apr 2020 06:16:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200407011259.GA72735@juliacomputing.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200407103537.4138-1-max.krummenacher@toradex.com>
+In-Reply-To: <20200407103537.4138-1-max.krummenacher@toradex.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Apr 2020 15:16:14 +0200
+Message-ID: <CAMuHMdWrekHiADkMmgO5nDxFNYjLud7FD=7ArMZNQire_+7TQg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] defconfig: fix changed configs and refresh
+To:     Max Krummenacher <max.oss.09@gmail.com>
+Cc:     Max Krummenacher <max.krummenacher@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, Vidya Sagar <vidyas@nvidia.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I didn't review the first attempt at this, but this looks like a really
-bad idea to me.  I don't 100% buy the arguments that this shouldn't be
-done in a VM.  The x86 virtualization architecture was literally
-designed to hide hardware details like this.
+Hi Max,
 
-I can't imagine ever merging this until using VMs or at least the KVM
-API has been completely ruled out.
+On Tue, Apr 7, 2020 at 12:36 PM Max Krummenacher <max.oss.09@gmail.com> wrote:
+> Three configs have been renamed and/or changed behaviour.
+> Clean that by using the new config name.
+> Then refresh the defconfig with make defconfig savedefconfig.
+>
+> The refreshed defconfig does result in a not changed .config.
+>
+> Applies on linux-next/master tag: next-20200407
+>
+> Max Krummenacher (4):
+>   arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
+>   arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name
+>   arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
+>   arm64: defconfig: refresh
 
-I don't doubt that this approach works in a controlled environment.
-But, I can't imagine that we could ever wrap sane semantics around such
-a beast.
+Probably CONFIG_DRM_DISPLAY_CONNECTOR should also be enabled for HDMI,
+VGA, and composite display connectors on various boards since commit
+0c275c30176b2e78 ("drm/bridge: Add bridge driver for display
+connectors"), but it's not clear to me when exactly this became a
+requirement, as before there was no code that looked for e.g.
+vga-connector.
+Laurent?
 
-For instance, what would ARCH_SET_XCR0 do in a signal handler?  The
-components are mostly in their init states so xstate_is_initial() will
-pass.  But the kernel's XRSTOR might #GP because it might try to restore
-states that are not enabled in XCR0 now.
+Gr{oetje,eeting}s,
 
-Also, this has to be done before XCR0's state is observed by userspace,
-which the kernel can't easily do once the program is off and running.
-This tells me that it really needs to be done at execve() time, even
-before the first program instruction runs.
+                        Geert
 
-These are usually the kinds of things that you figure out when you try
-to go write a manpage for one of these suckers.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-How does this work with things like xstateregs_[gs]et() where the format
-of the kernel buffer and thus the kernel XCR0 is exposed as part of our
-ABI?  With this patch, wouldn't a debugger app see a state buffer that
-looks invalid?
-
-Where else in our ABI is the format of the XSAVE buffer exposed?
-
-I'm extra wary of a v2 that's missing the CodingStyle and changelog
-basics as well.
-
-> +static int xcr0_is_legal(unsigned long xcr0)
-> +{
-> +	/* Conservatively disallow anything above bit 9,
-> +	 * to avoid accidentally allowing the disabling of
-> +	 * new features without updating these checks
-> +	 */
-> +	if (xcr0 & ~((1 << 10) - 1))
-> +		return 0;
-
-Yay, magic numbers!
-
-This would be much better as a BUILD_BUG_ON().
-
-> +	if (!(xcr0 & XFEATURE_MASK_FP))
-> +		return 0;
-> +	if ((xcr0 & XFEATURE_MASK_YMM) && !(xcr0 & XFEATURE_MASK_SSE))
-> +		return 0;
-> +	if ((!(xcr0 & XFEATURE_MASK_BNDREGS)) !=
-> +		(!(xcr0 & XFEATURE_MASK_BNDCSR)))
-> +		return 0;
-> +	if (xcr0 & XFEATURE_MASK_AVX512) {
-> +		if (!(xcr0 & XFEATURE_MASK_YMM))
-> +			return 0;
-> +		if ((xcr0 & XFEATURE_MASK_AVX512) != XFEATURE_MASK_AVX512)
-> +			return 0;
-> +	}
-> +	return 1;
-> +}
-
-This appears to copy (instead of refactoring) code from __kvm_set_xcr(),
-yet manages to get the indentation different and wrong.
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
