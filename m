@@ -2,76 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B401A0828
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF751A082B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbgDGHW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:22:26 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:56687 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726591AbgDGHWZ (ORCPT
+        id S1727805AbgDGHW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 03:22:29 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:37171 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727635AbgDGHW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 03:22:25 -0400
-X-UUID: d7f55375fe254678a864b23b132f236f-20200407
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=utm8widddof+A3OuVYBrYQZC1E2LozvtM6pEaLDQE04=;
-        b=l+Tkv/u3YSCBtrGh7uPYiTdVmdda1Tyk8GNp7RAOmm2qARCJg+1S7wUC2itLV9TVy/Do5edBEtXIrlxmpNUkMhUdbizVtajpzTjH9AyqCDoegeNz6QK98lTKJl60J02neBfUK09/P8UGthsUErGdtk6dvj7+fvtjIPwlcWkdmWA=;
-X-UUID: d7f55375fe254678a864b23b132f236f-20200407
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <light.hsieh@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 718477797; Tue, 07 Apr 2020 15:22:19 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 7 Apr 2020 15:22:15 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 7 Apr 2020 15:22:15 +0800
-From:   <light.hsieh@mediatek.com>
-To:     <linus.walleij@linaro.org>
-CC:     <linux-mediatek@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <sean.wang@kernel.org>,
-        <kuohong.wang@mediatek.com>, Light Hsieh <light.hsieh@mediatek.com>
-Subject: [PATCH v6 2/2] pinctrl: mediatek: make MediaTek MT6765 pinctrl ready for buiding loadable module
-Date:   Tue, 7 Apr 2020 15:22:10 +0800
-Message-ID: <1586244130-21523-3-git-send-email-light.hsieh@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1586244130-21523-1-git-send-email-light.hsieh@mediatek.com>
-References: <1586244130-21523-1-git-send-email-light.hsieh@mediatek.com>
+        Tue, 7 Apr 2020 03:22:27 -0400
+Received: by mail-ed1-f65.google.com with SMTP id de14so2776356edb.4;
+        Tue, 07 Apr 2020 00:22:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2R+3gjNy0SnBLUw5qWy9RI2DQvlFhSy+vrS7w50bWE4=;
+        b=m8+AAhZiJIL9VNZQZombf4JhXv8ni3nKHXgrxcFEKM31ImIKDSZXbPIM0bizOmwh1c
+         IZ7LNpGPGt6gX0+w+CS9Km3WDJSLymYlWDzfIDHvWmWqv1q0MbCC3RTt74xthYrYkMyZ
+         csIm0cd0QwZuyKLqckQzlkuDRTC7QINss+NeX2kQ0palKv6jagXuwvKzuSNJ3EvBxsug
+         g1h5Ck+S74owN1qpwENEaKbfwiuZn9IUeguOypRRvMWCwbb/Ly3QugamAzDxSvPwTl+S
+         OJWvceqU+HKdZ4NEX3gyNcQ3ds9GukfDjQr9cdmdohUCTLzBY/8fG1VLiWabAJKpkhc4
+         tupg==
+X-Gm-Message-State: AGi0PuY6STpJdp8e1MKVRje0egafGEesjYcrXPNzKc6Rjn72pa+uZEw8
+        jnClWoWJx0oz21tYyxLQm6o=
+X-Google-Smtp-Source: APiQypIAGwgfjaRfHihsJeJ737ZyX6DGCobU8BkZcdk7Gc5hUQmvmBkfIOK6sewJ+lnv4/IXbMKBwg==
+X-Received: by 2002:a50:9b58:: with SMTP id a24mr759017edj.353.1586244144485;
+        Tue, 07 Apr 2020 00:22:24 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.125])
+        by smtp.googlemail.com with ESMTPSA id qu11sm230130ejb.12.2020.04.07.00.22.23
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Apr 2020 00:22:23 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 09:22:21 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Hyunki Koo <hyunki00.koo@samsung.com>, gregkh@linuxfoundation.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>, linux-serial@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH v6 2/2] tty: samsung_tty: 32-bit access for TX/RX hold
+ registers
+Message-ID: <20200407072221.GA18236@kozik-lap>
+References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
+ <CGME20200406230902epcas2p19a8df6805dac59968d664efb9bc9419b@epcas2p1.samsung.com>
+ <20200406230855.13772-1-hyunki00.koo@samsung.com>
+ <62a918df-b3ba-21f4-b3ad-9f638ad104ad@suse.com>
+ <20200407062439.GA21995@kozik-lap>
+ <257f278b-ce96-4cfb-85ff-53e123a076f5@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: AFE7326EF84B9D724EA3663D065E6C8B4AF86494C553AB547ADC88E30E0CF6152000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <257f278b-ce96-4cfb-85ff-53e123a076f5@suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGlnaHQgSHNpZWggPGxpZ2h0LmhzaWVoQG1lZGlhdGVrLmNvbT4NCg0KVGhpcyBwYXRj
-aCBtYWtlIHBpbmN0cmwtbXQ2NzY1IHJlYWR5IGZvciBidWlsZGluZyBhcyBsb2FkYWJsZSBtb2R1
-bGUuDQoNCkNoYW5nZS1JZDogSTcyMzFlZjFlZjMwZTkzNWZjMDhlMDQ5YjJjOGNiYWI2YTE5YzY2
-ZjUNClNpZ25lZC1vZmYtYnk6IExpZ2h0IEhzaWVoIDxsaWdodC5oc2llaEBtZWRpYXRlay5jb20+
-DQotLS0NCiBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvS2NvbmZpZyAgICAgICAgICB8IDIgKy0N
-CiBkcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NjUuYyB8IDQgKysrKw0KIDIg
-ZmlsZXMgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvS2NvbmZpZyBiL2RyaXZlcnMvcGluY3RybC9t
-ZWRpYXRlay9LY29uZmlnDQppbmRleCA1NTFhYzcxLi5mMzJkMzY0IDEwMDY0NA0KLS0tIGEvZHJp
-dmVycy9waW5jdHJsL21lZGlhdGVrL0tjb25maWcNCisrKyBiL2RyaXZlcnMvcGluY3RybC9tZWRp
-YXRlay9LY29uZmlnDQpAQCAtODcsNyArODcsNyBAQCBjb25maWcgUElOQ1RSTF9NVDI3MTINCiAJ
-c2VsZWN0IFBJTkNUUkxfTVRLDQogDQogY29uZmlnIFBJTkNUUkxfTVQ2NzY1DQotCWJvb2wgIk1l
-ZGlhdGVrIE1UNjc2NSBwaW4gY29udHJvbCINCisJdHJpc3RhdGUgIk1lZGlhdGVrIE1UNjc2NSBw
-aW4gY29udHJvbCINCiAJZGVwZW5kcyBvbiBPRg0KIAlkZXBlbmRzIG9uIEFSTTY0IHx8IENPTVBJ
-TEVfVEVTVA0KIAlkZWZhdWx0IEFSTTY0ICYmIEFSQ0hfTUVESUFURUsNCmRpZmYgLS1naXQgYS9k
-cml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NjUuYyBiL2RyaXZlcnMvcGluY3Ry
-bC9tZWRpYXRlay9waW5jdHJsLW10Njc2NS5jDQppbmRleCA5MDVkYWU4Yy4uMmM1OWQzOSAxMDA2
-NDQNCi0tLSBhL2RyaXZlcnMvcGluY3RybC9tZWRpYXRlay9waW5jdHJsLW10Njc2NS5jDQorKysg
-Yi9kcml2ZXJzL3BpbmN0cmwvbWVkaWF0ZWsvcGluY3RybC1tdDY3NjUuYw0KQEAgLTYsNiArNiw3
-IEBADQogICoNCiAgKi8NCiANCisjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQogI2luY2x1ZGUg
-InBpbmN0cmwtbXRrLW10Njc2NS5oIg0KICNpbmNsdWRlICJwaW5jdHJsLXBhcmlzLmgiDQogDQpA
-QCAtMTEwMywzICsxMTA0LDYgQEAgc3RhdGljIGludCBfX2luaXQgbXQ2NzY1X3BpbmN0cmxfaW5p
-dCh2b2lkKQ0KIAlyZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZtdDY3NjVfcGluY3Ry
-bF9kcml2ZXIpOw0KIH0NCiBhcmNoX2luaXRjYWxsKG10Njc2NV9waW5jdHJsX2luaXQpOw0KKw0K
-K01PRFVMRV9MSUNFTlNFKCJHUEwgdjIiKTsNCitNT0RVTEVfREVTQ1JJUFRJT04oIk1lZGlhVGVr
-IE1UNjc2NSBQaW5jdHJsIERyaXZlciIpOw0KLS0gDQoxLjguMS4xLmRpcnR5DQo=
+On Tue, Apr 07, 2020 at 08:32:56AM +0200, Jiri Slaby wrote:
+> On 07. 04. 20, 8:24, Krzysztof Kozlowski wrote:
+> > On Tue, Apr 07, 2020 at 06:49:29AM +0200, Jiri Slaby wrote:
+> >> On 07. 04. 20, 1:08, Hyunki Koo wrote:
+> >>> Support 32-bit access for the TX/RX hold registers UTXH and URXH.
+> >>>
+> >>> This is required for some newer SoCs.
+> >>>
+> >>> Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
+> >> ...
+> >>> ---
+> >>>  drivers/tty/serial/samsung_tty.c | 76 +++++++++++++++++++++++++++++++++-------
+> >>>  1 file changed, 64 insertions(+), 12 deletions(-)
+> >>>
+> >>> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> >>> index 73f951d65b93..bdf1d4d12cb1 100644
+> >>> --- a/drivers/tty/serial/samsung_tty.c
+> >>> +++ b/drivers/tty/serial/samsung_tty.c
+> >>> @@ -154,12 +154,47 @@ struct s3c24xx_uart_port {
+> >> ...
+> >>> -#define wr_regb(port, reg, val) writeb_relaxed(val, portaddr(port, reg))
+> >>> +static void wr_reg(struct uart_port *port, u32 reg, u32 val)
+> >>> +{
+> >>> +	switch (port->iotype) {
+> >>> +	case UPIO_MEM:
+> >>> +		writeb_relaxed(val, portaddr(port, reg));
+> >>> +		break;
+> >>> +	case UPIO_MEM32:
+> >>> +		writel_relaxed(val, portaddr(port, reg));
+> >>> +		break;
+> >>> +	}
+> >>> +}
+> >>> +
+> >>>  #define wr_regl(port, reg, val) writel_relaxed(val, portaddr(port, reg))
+> >>>  
+> >>> +static void wr_reg_barrier(struct uart_port *port, u32 reg, u32 val)
+> >>
+> >> You need to explain, why you need this _barrier variant now. This change
+> >> should be done in a separate patch too.
+> > 
+> > There is no functional change in regard of barrier.  The ordered IO was
+> > used there before.
+> 
+> The patch changes one wr_reg to wr_reg_barrier without any explanation.
+> This will hardly be accepted.
+
+I cannot find such change... I see only:
+
+@@ -2612,7 +2664,7 @@ static void samsung_early_putc(struct uart_port *port, int c)
+-       writeb(c, port->membase + S3C2410_UTXH);
++       wr_reg_barrier(port, S3C2410_UTXH, c);
+
+which is the same except 'b' -> 'b/l'.
+
+Best regards,
+Krzysztof
 
