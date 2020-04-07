@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A4381A158D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272371A15A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbgDGTGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 15:06:02 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14419 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726719AbgDGTGB (ORCPT
+        id S1726867AbgDGTLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 15:11:50 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45576 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726759AbgDGTLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 15:06:01 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8ccf0c0000>; Tue, 07 Apr 2020 12:05:48 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 07 Apr 2020 12:06:01 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 07 Apr 2020 12:06:01 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr
- 2020 19:06:00 +0000
-Received: from [10.2.171.175] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr 2020
- 19:05:59 +0000
-Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
- <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
- <40102767-ecdb-e958-66f4-45d11464069c@gmail.com>
- <b7b77258-6309-7ed2-489d-337cf273ba1e@nvidia.com>
- <6014fee9-ce97-7ced-f2ba-82176b8b36db@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <55ca95a0-41d9-a071-ab9d-08d26b3f8698@nvidia.com>
-Date:   Tue, 7 Apr 2020 12:05:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <6014fee9-ce97-7ced-f2ba-82176b8b36db@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Tue, 7 Apr 2020 15:11:50 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037J84Ik060043;
+        Tue, 7 Apr 2020 19:09:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=swajKYutGq2J/flsUm50gGY9cMazIJGr09EB2ZsOi40=;
+ b=uqvNasyPkZpE0WsJm/4dH/pnZTwFH534H6Bpy3rYZYrfwrrqJ05K5H6q7F18wb3tTUmS
+ rfeWUx0o7WvySvFmsuUL57BNGwbFfOc74I1kjs2wNlX42h5GpPurIvPuBSNY3oFLZYti
+ DToHOgan1AWxGSRzkw7rCUKp6KRUjhjFNnQeKhDyi5M8/LggfceYItVbDjaSaE4EEJVV
+ Jlh+CHAXc9W0cdThRXIhzCSn4k9TvQv6/a08YmXe1++VyHXAUbE1hwsRVQTsNtv7zHM3
+ FYdaidr+anDEh310RLE+QEJQo4wrEdDoRN3tiTYQ7fysYCLp1CFnFT8V3vsAYkENA5P9 rQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 306j6mexrx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 19:09:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037J7hUD095632;
+        Tue, 7 Apr 2020 19:09:34 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3073qgxx5t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 19:09:33 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 037J9WFu028390;
+        Tue, 7 Apr 2020 19:09:32 GMT
+Received: from [192.168.0.110] (/73.243.10.6)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 12:09:32 -0700
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [RFC] Renaming page_offset() to page_pos()
+From:   William Kucharski <william.kucharski@oracle.com>
+In-Reply-To: <20200403153323.GQ21484@bombadil.infradead.org>
+Date:   Tue, 7 Apr 2020 13:09:31 -0600
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586286348; bh=7t/2hBzkGE2FuWGhPFMgSIueDjtcOTTLwFTzLicufH0=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=M8VtUxkwY4lt7B0+68GJzxSBImPxb9H/gfjuA+dKsjvSpuoQavo9IR3cdWt2JMBrG
-         HKdD1OGl3acnmDWMe9ZPflMVWi9J8wsjbl6+KRBvFhQhUZeMbfWExwhyedr5bWJZvX
-         akWNxOPL2ufAyt/bybX4OMkPnA3okeZzehS6b0KfVR0FRJkk8wPXtw6AQ2JUGMvZzu
-         h1P8qm+PcfnTL+KvhW/inCEftVsuWkW0xsuhzH4wpmpYQQu+TcAw+HhVOktgMHBFj8
-         hKx62HbzhxQu2zL/zVFrabC/J1Suce7z3p6Z1lQ+oOF3C5dZMdRYM/H3/e+Oko7ccq
-         K/L2d7j1BudTA==
+Message-Id: <FE9117E6-D432-439D-836F-9805986C29DD@oracle.com>
+References: <20200403153323.GQ21484@bombadil.infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=827
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070153
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=875 spamscore=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070153
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+page_pos seems quite reasonable to me.
 
-On 4/6/20 9:11 AM, Dmitry Osipenko wrote:
-> External email: Use caution opening links or attachments
->
->
-> 06.04.2020 18:41, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 4/5/20 2:11 PM, Dmitry Osipenko wrote:
->>> External email: Use caution opening links or attachments
->>>
->>>
->>> 04.04.2020 04:25, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> ...
->>>> +static int tegra_vi_tpg_channels_alloc(struct tegra_vi *vi)
->>>> +{
->>>> +     struct tegra_vi_channel *chan, *tmp;
->>>> +     unsigned int port_num;
->>>> +     unsigned int nchannels =3D vi->soc->vi_max_channels;
->>>> +     int ret =3D 0;
->>>> +
->>>> +     for (port_num =3D 0; port_num < nchannels; port_num++) {
->>>> +             /*
->>>> +              * Do not use devm_kzalloc as memory is freed immediatel=
-y
->>>> +              * when device instance is unbound but application
->>>> might still
->>>> +              * be holding the device node open. Channel memory
->>>> allocated
->>>> +              * with kzalloc is freed during video device release
->>>> callback.
->>>> +              */
->>>> +             chan =3D kzalloc(sizeof(*chan), GFP_KERNEL);
->>> Why anyone would want to unbind this driver in practice?
->>>
->>> I think it should make more sense to set suppress_bind_attrs=3Dtrue.
->>  From the previous feedback of patch series, we need to support
->> unbind/bind and looks like this driver should also support to built as a
->> module.
-> If module unloading is also affected, then perhaps you should use
-> get/put_device() to not allow freeing the resources until they're still
-> in-use.
->
-> I suppose that it should be up to the V4L core to keep the device alive
-> while needed, rather than to put the burden to the individual drivers.
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>
 
-Hans/Thierry, Can you please comment on this?
+
+> On Apr 3, 2020, at 9:33 AM, Matthew Wilcox <willy@infradead.org> =
+wrote:
+>=20
+> Without looking at the source, can you tell me what page_offset() =
+does?
+>=20
+> At least one regular contributor thought it meant the pgoff_t of this
+> page within the file.  It's actually the byte offset of this page into
+> the file.
+>=20
+> We have a perfectly good name for byte offset into the file --
+> file->f_pos.  So I propose renaming it to page_pos().  To minimise
+> disruption to other development, I'm going to send Linus a pull =
+request
+> at the end of the merge window with the results of this coccinelle =
+script:
+>=20
+> @@ expression a; @@
+> -       page_offset(a)
+> +       page_pos(a)
+>=20
+> I've reviewed the output and the only slight weirdness is an extra =
+space
+> in casts:
+>=20
+>                btrfs_warn(BTRFS_I(page->mapping->host)->root->fs_info,
+>                           "page private not zero on page %llu",
+> -                          (unsigned long long)page_offset(page));
+> +                          (unsigned long long) page_pos(page));
+>=20
+> Sometimes Coccinelle fixes the surrounding whitespace to be better
+> than it currently is:
+>=20
+> -               ow->bv[i].bv_len =3D min(page_offset(ow->pages[i]) + =
+PAGE_SIZE,
+> -                   ow->off + ow->len) -
+> -                   max(ow->off, page_offset(ow->pages[i]));
+> +               ow->bv[i].bv_len =3D min(page_pos(ow->pages[i]) + =
+PAGE_SIZE,
+> +                                      ow->off + ow->len) -
+> +                   max(ow->off, page_pos(ow->pages[i]));
+>=20
+> (it's still bad, but it's an improvement)
+>=20
+> Any objections?  Anyone got a better name than page_pos()?
+>=20
 
