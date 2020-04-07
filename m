@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E852F1A169D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD2A1A16A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727417AbgDGUQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 16:16:14 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:51170 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727009AbgDGUQN (ORCPT
+        id S1727635AbgDGURK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:17:10 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:38985 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727461AbgDGURK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:16:13 -0400
-Received: by mail-il1-f198.google.com with SMTP id c9so4437972ill.17
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:16:12 -0700 (PDT)
+        Tue, 7 Apr 2020 16:17:10 -0400
+Received: by mail-lj1-f195.google.com with SMTP id i20so5195266ljn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tqNU/lPOQShoDviss5cOicvqhvwtlk4dqmmrGpr1nC4=;
+        b=AestyY1vTqwruS2SjIrVNUtcv5M8Rgu+CcoXa2Ec6+EMfNUym7BLVuLaqMEg4Qo83h
+         Qnr6k3woR88ywv52t7EjGWsxUFiyzpMnJQ7/9g74RK12uuMuQBryg8i26qgkAh6zrbEf
+         bvModrsMiA1tyaJ0cX/reQrpKDKOb9pKz3p18=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=w1JdwZ4JTK2zSFzQ0+SLaEq0GpOjTdWhLLcQfpdtjGc=;
-        b=B65tVB48g7vlMyiClS0woKvXHjA6oim2hhfbwXqCIH45XIS0FYkyM+xwvhCxyBSo07
-         NHChrSVLlA025QF1qOEd8GMqjo5oSjlLomHy0laxuiZFS3G/i4XLuLdzsOEGipTf0PS5
-         s/cHYBY0Dc69eRWnks2BozVwMBw4Bp9kRQoloHYxuyHmCBXBpqc9kGLaESY4wtRG2vdy
-         svoKDCWw1UqrCoT4EbJlZQpfL2CMlgO/7uFSj0oYk5Gh1HEq17E4uAyCLZnYK3totFQS
-         CamfLOU8tKeHG+UMgQlI05/kW4DWzBOgXNLKwCaqOX0XL2tIWuItfxLRvJSIAyjvgW6Z
-         /x8g==
-X-Gm-Message-State: AGi0PubMT1IF2A9WjtS4rgvWY7nPw26bOQzWzWQqMTG59Lz45tbEfHKE
-        +GImC6HKCLWvz0zYIFGG/3Wrv11mOK4FgsLgfqe3iz60UTyd
-X-Google-Smtp-Source: APiQypL1eqW6t1zwOt7p93wu/ZHxWxgjH5FONjXCECWPw7Wgj3k5CWMqKvMJkAZIHkQVgN/RktRUFxKfCJLlbZ0UoG5HvNt/cEd8
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tqNU/lPOQShoDviss5cOicvqhvwtlk4dqmmrGpr1nC4=;
+        b=IHl8wC4A6Ciul5jMT3kat3IvtkD5Fx2t8ZOowm4ehcNSbHCrY6nlFv6R2cgQRV/1Bg
+         N1z5nj3cNuO8bsNp/2I6ZzhFyF7O87jwzvG2f31TPDUTAV4Aincmg4hJyQ+kHKxEJeB3
+         MtIyYbki6NkhubVke/GB4+Z7LRPXTrgBGyyAgADKcPao4QXmLlJ4VpjwGa71rY4LEWAE
+         jYE3IQafedDgM/ed+0b0f/zV/naLvq/VA2jutVT29j+2YE0fYTicTg3/0XmVIfcF/6iP
+         9KH1snQ9C8tB0SPIwqcs2fLxsnyTfEc+U6VCRDY0ypENGbYo2n7Zrd6/SKntfasnTF0y
+         uLOg==
+X-Gm-Message-State: AGi0PuYqEPAerfqpLoGmbyXF1RFCbgzNAMRmn0NzTnFerpAfTKd2XuVN
+        7UkUUOel05BP6Ci/nQm3zLnmU9m8HGE=
+X-Google-Smtp-Source: APiQypJWLWy00ET6fRIq+eC8sM1mbnZxo3t3cFyGIyi7nsxc5ZVbxM+yEifw4lR/M0fJzjx39MKR7A==
+X-Received: by 2002:a2e:6e15:: with SMTP id j21mr2790266ljc.42.1586290626452;
+        Tue, 07 Apr 2020 13:17:06 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id 4sm12198367lja.56.2020.04.07.13.17.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Apr 2020 13:17:04 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id m2so3399999lfo.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:17:04 -0700 (PDT)
+X-Received: by 2002:a19:9109:: with SMTP id t9mr2511760lfd.10.1586290623763;
+ Tue, 07 Apr 2020 13:17:03 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a02:2b11:: with SMTP id h17mr3539418jaa.140.1586290571459;
- Tue, 07 Apr 2020 13:16:11 -0700 (PDT)
-Date:   Tue, 07 Apr 2020 13:16:11 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000005c65d05a2b90e70@google.com>
-Subject: WARNING: bad unlock balance in __get_user_pages_remote
-From:   syzbot <syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bgeffon@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        peterx@redhat.com, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org
+References: <20200406185827.22249-1-longman@redhat.com> <c2c8adf48be7cb18bbdf0aef7d21e2defe3d2183.camel@perches.com>
+In-Reply-To: <c2c8adf48be7cb18bbdf0aef7d21e2defe3d2183.camel@perches.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Apr 2020 13:16:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg_mkSc-pH8ntGHR=no9DOLRQyxdtU20p55DrM1su6QzA@mail.gmail.com>
+Message-ID: <CAHk-=wg_mkSc-pH8ntGHR=no9DOLRQyxdtU20p55DrM1su6QzA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: Add kvfree_sensitive() for freeing sensitive data objects
+To:     Joe Perches <joe@perches.com>
+Cc:     Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linux-MM <linux-mm@kvack.org>, keyrings@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Apr 6, 2020 at 12:40 PM Joe Perches <joe@perches.com> wrote:
+>
+> 2.1.44 changed kfree(void *) to kfree(const void *) but
+> I didn't find a particular reason why.
 
-syzbot found the following crash on:
+Because "free()" should always have been const (and volatile, for that
+matter, but the kernel doesn't care since we eschew volatile data
+structures).
 
-HEAD commit:    7e634208 Merge tag 'acpi-5.7-rc1-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=169498ede00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12205d036cec317f
-dashboard link: https://syzkaller.appspot.com/bug?extid=a8c70b7f3579fc0587dc
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a41543e00000
+It's a bug in the C library standard.
 
-The bug was bisected to:
+Think of it this way: free() doesn't really change the data, it kills
+the lifetime of it. You can't access it afterwards - you can neither
+read it nor write it validly. That is a completely different - and
+independent - operation from writing to it.
 
-commit 71335f37c5e8ec9225285206f7f875057b9737ad
-Author: Peter Xu <peterx@redhat.com>
-Date:   Thu Apr 2 04:08:53 2020 +0000
+And  more importantly, it's perfectly fine to have a const data
+structure (or a volatile one) that you free. The allocation may have
+done something like this:
 
-    mm/gup: allow to react to fatal signals
+   struct mystruct {
+       const struct dictionary *dictionary;
+       ...
+   };
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17dba9b3e00000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=143ba9b3e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=103ba9b3e00000
+and it was allocated and initialized before it was assigned to that
+"dictionary" pointer. That's _good_ code.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com
-Fixes: 71335f37c5e8 ("mm/gup: allow to react to fatal signals")
+So it wasn't const before the allocation, but it turned const
+afterwards, and freeing it doesn't change that, it just kills the
+lifetime entirely.
 
-=====================================
-WARNING: bad unlock balance detected!
-5.6.0-syzkaller #0 Not tainted
--------------------------------------
-syz-executor.0/8429 is trying to release lock (&mm->mmap_sem) at:
-[<ffffffff819fbf60>] __get_user_pages_locked mm/gup.c:1366 [inline]
-[<ffffffff819fbf60>] __get_user_pages_remote mm/gup.c:1831 [inline]
-[<ffffffff819fbf60>] __get_user_pages_remote+0x540/0x740 mm/gup.c:1806
-but there are no more locks to release!
+So "free()" should take a const pointer without complaining, and saying
 
-other info that might help us debug this:
-no locks held by syz-executor.0/8429.
+   free(mystruct->dictionary);
+   free(mystruct);
 
-stack backtrace:
-CPU: 0 PID: 8429 Comm: syz-executor.0 Not tainted 5.6.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- __lock_release kernel/locking/lockdep.c:4633 [inline]
- lock_release+0x586/0x800 kernel/locking/lockdep.c:4941
- up_read+0x79/0x750 kernel/locking/rwsem.c:1573
- __get_user_pages_locked mm/gup.c:1366 [inline]
- __get_user_pages_remote mm/gup.c:1831 [inline]
- __get_user_pages_remote+0x540/0x740 mm/gup.c:1806
- pin_user_pages_remote+0x67/0xa0 mm/gup.c:2897
- process_vm_rw_single_vec mm/process_vm_access.c:108 [inline]
- process_vm_rw_core.isra.0+0x423/0x940 mm/process_vm_access.c:218
- process_vm_rw+0x21f/0x240 mm/process_vm_access.c:286
- __do_sys_process_vm_writev mm/process_vm_access.c:308 [inline]
- __se_sys_process_vm_writev mm/process_vm_access.c:303 [inline]
- __x64_sys_process_vm_writev+0xdf/0x1b0 mm/process_vm_access.c:303
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45c879
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fa1008bac78 EFLAGS: 00000246 ORIG_RAX: 0000000000000137
-RAX: ffffffffffffffda RBX: 00007fa1008bb6d4 RCX: 000000000045c879
-RDX: 0000000000000001 RSI: 0000000020c22000 RDI: 0000000000000009
-RBP: 000000000076bf00 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000020c22fa0 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 000000000000085d R14: 00000000004cb1ee R15: 000000000076bf0c
-------------[ cut here ]------------
-DEBUG_RWSEMS_WARN_ON(tmp < 0): count = 0xffffffffffffff00, magic = 0xffff888094028338, owner = 0x3, curr 0xffff888093cbc500, list empty
-WARNING: CPU: 0 PID: 8429 at kernel/locking/rwsem.c:1435 __up_read kernel/locking/rwsem.c:1435 [inline]
-WARNING: CPU: 0 PID: 8429 at kernel/locking/rwsem.c:1435 up_read+0x5f9/0x750 kernel/locking/rwsem.c:1574
+is a sensible an correct thing to do. Warning about - or requiring
+that dictionary pointer to be cast to be freed - is fundamentally
+wrong.
 
+We're not bound by the fact that the C standard library got their
+rules wrong, so we can fix it in the kernel.
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+             Linus
