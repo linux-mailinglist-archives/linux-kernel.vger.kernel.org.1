@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C4D1A10A7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FFD1A10AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgDGPvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 11:51:45 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:40464 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727078AbgDGPvo (ORCPT
+        id S1727526AbgDGPxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:53:33 -0400
+Received: from gardel.0pointer.net ([85.214.157.71]:33398 "EHLO
+        gardel.0pointer.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbgDGPxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:51:44 -0400
-Received: by mail-qk1-f196.google.com with SMTP id z15so2120973qki.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 08:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=QRvfH2t9mDG7scFOCVvuI8jWvAD9H98CvwOtBY9xnFU=;
-        b=axir4veRvSMSA5Z1mltRhTcN5fRfVsKE+fgQ9RTFYSj1h4ZcIA+qxTHF0WEmQsuqhm
-         FBibTJkcTCywNcFEi1qeODNnokh/DGSGlnqW09p7FFWByaT68dmkV0tjQEXXU1GvR+0u
-         wqiIjhnAQbLToP2WtkvwfbjBMmCzD2JzsboNArKXAPcaxlmCo5V0d9ElsvasnwJ1K4Qg
-         Qpz6U0/xTQoIxgW5Jj4OlAOy9efbwq4dwUJKr/JUuWPGSzvw3z/8hNastPUIK8TrzUnE
-         RG2xxHrqJhDDiF9gMYnmML7Zje/ZEYBzKmpBcgaOfdbwtTugzSs6WNAs1qN61HKjF+uX
-         NmXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=QRvfH2t9mDG7scFOCVvuI8jWvAD9H98CvwOtBY9xnFU=;
-        b=UwQJPA4BjqItmx7q/1yHfYmvvjYH4QOek/Hvo0fvuqgal6nrFDSsQ2s4aqkR5wDPI0
-         Od1Z9/9o8KJAYt2ABAKxCWh+0/RR7iNjD+tdA3v+u1l5OOM8Ow4KZQQfShTEpNdNx9zw
-         jmwj+hwvy6D+i1y/tEiVrchcmBzv3jyH/zv3LojRKQ4/DDVDK2+fivy2M01W2iTh1Cu7
-         QTMXoU/LzGOU2c/joEWbzj5iAC21xPk7wwP7Tg1F4a3WQezE1UU4AV3DKhfF1lzikjzO
-         uN3xVRY052YCJJKNeKeKN7aKlCMETubD8xthjlZlxurHikTrsDyIlFLu75/t6ytdi09F
-         sxxw==
-X-Gm-Message-State: AGi0PubYcAJHvFWh35xnlQeZnWr5mtEoz84u+jwMeCbu0eWVMXDcHWN7
-        ArKmkTY5Uy4fzOSEXOTx04KPIvhvOPzHVnh9SM8=
-X-Google-Smtp-Source: APiQypJaXafzIz0nEK9GupsAI+2UMyT5Eo4NgFq65Qj3anW9KFZ1Pl2hrQUyRlB8+PlrkkIr/bn6AmY1L12uddOiFyw=
-X-Received: by 2002:a37:a88e:: with SMTP id r136mr2961798qke.12.1586274701104;
- Tue, 07 Apr 2020 08:51:41 -0700 (PDT)
+        Tue, 7 Apr 2020 11:53:33 -0400
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by gardel.0pointer.net (Postfix) with ESMTP id 1F908E8017E;
+        Tue,  7 Apr 2020 17:53:30 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id A667E161537; Tue,  7 Apr 2020 17:53:29 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 17:53:29 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>, andres@anarazel.de,
+        keyrings@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>
+Subject: Re: Upcoming: Notifications, FS notifications and fsinfo()
+Message-ID: <20200407155329.GA39803@gardel-login>
+References: <CAJfpegum_PsCfnar8+V2f_VO3k8CJN1LOFJV5OkHRDbQKR=EHg@mail.gmail.com>
+ <20200402155020.GA31715@gardel-login>
+ <CAJfpeguM__+S6DiD4MWFv5GCf_EUWvGFT0mzuUCCrfQwggqtDQ@mail.gmail.com>
+ <20200403110842.GA34663@gardel-login>
+ <CAJfpegtYKhXB-HNddUeEMKupR5L=RRuydULrvm39eTung0=yRg@mail.gmail.com>
+ <20200403150143.GA34800@gardel-login>
+ <CAJfpegudLD8F-25k-k=9G96JKB+5Y=xFT=ZMwiBkNTwkjMDumA@mail.gmail.com>
+ <20200406172917.GA37692@gardel-login>
+ <a4b5828d73ff097794f63f5f9d0fd1532067941c.camel@themaw.net>
+ <CAJfpegvYGB01i9eqCH-95Ynqy0P=CuxPCSAbSpBPa-TV8iXN0Q@mail.gmail.com>
 MIME-Version: 1.0
-Reply-To: sebastient766@gmail.com
-Received: by 2002:ad4:554e:0:0:0:0:0 with HTTP; Tue, 7 Apr 2020 08:51:39 -0700 (PDT)
-From:   =?UTF-8?B?TXIuU8OpYmFzdGllbiBUb25p?= <sebastient766@gmail.com>
-Date:   Tue, 7 Apr 2020 08:51:39 -0700
-X-Google-Sender-Auth: yxmVWc3_CzPnrUaZYKacNI8Uv1E
-Message-ID: <CAFddMiN_O_kZ3oavuzPgbxrcY-_1d9D1n5hz=xAt66nVy8onSQ@mail.gmail.com>
-Subject: Attention:My Dear Friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJfpegvYGB01i9eqCH-95Ynqy0P=CuxPCSAbSpBPa-TV8iXN0Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention:My Dear Friend.
+On Di, 07.04.20 15:59, Miklos Szeredi (miklos@szeredi.hu) wrote:
 
-I=E2=80=99m sorry but happy to inform you about my success in getting those
-funds transfer under the cooperation of a new partner from India,
-though I tried my best to involve you in the business but God decided
-the whole situations.
+> On Tue, Apr 7, 2020 at 4:22 AM Ian Kent <raven@themaw.net> wrote:
+> > > Right now, when you have n mounts, and any mount changes, or one is
+> > > added or removed then we have to parse the whole mount table again,
+> > > asynchronously, processing all n entries again, every frickin
+> > > time. This means the work to process n mounts popping up at boot is
+> > > O(n²). That sucks, it should be obvious to anyone. Now if we get that
+> > > fixed, by some mount API that can send us minimal notifications about
+> > > what happened and where, then this becomes O(n), which is totally OK.
+>
+> Something's not right with the above statement.  Hint: if there are
+> lots of events in quick succession, you can batch them quite easily to
+> prevent overloading the system.
+>
+> Wrote a pair of utilities to check out the capabilities of the current
+> API.   The first one just creates N mounts, optionally sleeping
+> between each.  The second one watches /proc/self/mountinfo and
+> generates individual (add/del/change) events based on POLLPRI and
+> comparing contents with previous instance.
+>
+> First use case: create 10,000 mounts, then start the watcher and
+> create 1000 mounts with a 50ms sleep between them.  Total time (user +
+> system) consumed by the watcher: 25s.  This is indeed pretty dismal,
+> and a per-mount query will help tremendously.  But it's still "just"
+> 25ms per mount, so if the mounts are far apart (which is what this
+> test is about), this won't thrash the system.  Note, how this is self
+> regulating: if the load is high, it will automatically batch more
+> requests, preventing overload.  It is also prone to lose pairs of add
+> + remove in these case (and so is the ring buffer based one from
+> David).
 
-Presently I=E2=80=99m in India for investment projects with my own share of
-the total sum; I decided to load your compensation fund of US1.860 000.
-one million eight hundred and sixty thoundsand dollars in an atm
-payment card and register it with Sonapost Courier Company here in
-Burkina Faso with
-registration code of (Shipment Code awb33xzs)
+We will batch requests too in systemd, of course, necessarily, given
+that the /p/s/mi inotify stuff is async. Thing though is that this
+means we buy lower CPU usage — working around the O(n²) issue — by
+introducing artifical higher latencies. We usually want to boot
+quickly, and not artificially slow.
 
-Please Contact the delivery manager of Sonapost Courier Company
-through his email address for more update on how to receive your
-compensation fund on ATM PAYMENT VISA CARD,
+Sure one can come up with some super smart scheme how to tweak the
+artifical latencies, how to grow them, how to shrink them, depending
+on a perceived flood of events, some backing off scheme. But that's
+just polishing a turd, if all we want is proper queued change
+notification without the O(n²) behaviour.
 
-Contact them with the reconfirmation of your information below,
+I mean, the fix for an O(n²) algorithm is to make it O(n) or so. By
+coalescing wake-up events you just lower the n again, probably
+linearly, but that still means we pay O(n²), which sucks.
 
-1. Your full names.
-2. Your full contact address/country
-3. Your mobile or office phone numbers
-SONAPOST EMAIL ADDRESS BELOW
+Lennart
 
-**************************************************************
-
-Name of the Director.
-Mr. Salam Ander
-of Sonapost Courier Company
-EMAIL ADDRESS BELOW:
-andermrsalam1@gmail.com
-
-Best Regards
-Mr.S=C3=A9bastien Toni,
+--
+Lennart Poettering, Berlin
