@@ -2,149 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A48061A10DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFA21A10DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:02:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgDGQCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:02:46 -0400
-Received: from mout.gmx.net ([212.227.17.20]:49349 "EHLO mout.gmx.net"
+        id S1727796AbgDGQCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:02:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgDGQCp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:02:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586275336;
-        bh=MjED2rL8qFcaewF1yuTCY8oY81g21cBSfIGHWAJZhMU=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Jl8BqXl73a3riwsYbnv+x7UmfvkDw9tKZL2TNz/DJ0vFDfMaN2+x19lbN9xx87+lC
-         3+ZL2kMK+WiwDySFJZjTn3TmI3NAhZWNhxh0yMPypCuDv1dcm6cPNINx9XNyuxNGul
-         rH8nkZklPVh2RmUjRZp9o9qblbOHX95hYR+B1LCE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from lenovo-laptop ([82.19.195.159]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wll-1jB2250hY1-012FWj; Tue, 07
- Apr 2020 18:02:16 +0200
-Date:   Tue, 7 Apr 2020 17:02:13 +0100
-From:   Alex Dewar <alex.dewar@gmx.co.uk>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Allison Randal <allison@lohutok.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Chaitra Basappa <chaitra.basappa@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Himanshu Madhani <hmadhani@marvell.com>,
-        "James E. J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-scsi@vger.kernel.org, aacraid@microsemi.com,
-        MPT-FusionLinux.pdl@broadcom.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: Remove unnecessary calls to memset after
- dma_alloc_coherent
-Message-ID: <20200407160213.qh64de6ebrj7qkmx@lenovo-laptop>
-References: <e2401a31-e9fd-e849-e27c-6e079f5556d2@web.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <e2401a31-e9fd-e849-e27c-6e079f5556d2@web.de>
-X-Provags-ID: V03:K1:d/rbaoVneuFo0laPsfO0MaLfxIn2+jKJUs/i7ZOLORm+LfbBtQT
- ESuMc1oTz+fMZ0oStoWZwfeViYqrbeO1LXx1GGgpaEVPnqsXdzsBP1CCn5fNSGlUyZljOui
- I7fgj9QWPd7jJBqYvNLWXFsWvl2e2GA/b/izskTEJrxpVWWfI/dvT66HeAuXqJJEoWAwBWc
- jebJmfW9Kw6uZBru7hWMA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:U2Pjpg2Ki7w=:xq6163nCcOwVZqGtXA1HMf
- 19/Gs5h+3UI36/aBiaBU1kuksy+wup06rLtbVmc5WwxmfLOYa99iZHzKR77kev6SwPaMOnf/5
- gyQJ2ZHoFnzVuAkgIB4AA0Ddz+Egx6RS7JGbLkoEmd6dDu1KnS5TAEDxko2eNMA/EojMz/Rq8
- nEBeKbpf0mtSuVqb5v3BM4IqKZ8IGWRUhSs7U9OYEXUS2TLPUWLZ6eGeT+J0WSJo8ZL4sEVYq
- lMmuzOXowBoWvVsv8G6jGuvzupEfa1iEb8CVK5FIXTcP+GmbLrqNKyoI2mFt9IFAbhjpPm92s
- JoWRcvh4wpQAeDq/0cs7PycSMpvvSVM1MxkylDZaeVr+8uBaqbhc9sAy8JlBlJeEAF+u1TDIJ
- YvZ7vttcV/EiFjAi1RSy4MM4WbTATmAS5TK2XvKM2kq3RzLJDaZQ9R9Ih5b6/ln83Gmun3Bwj
- w917gxTNOlglO8uETEOIRSydDoio5a0xWEZz7jELD/+xPPDP8lRqfl9Io/7f3Y3UhjksL+EMG
- Ear5+fdik64Jksxf89roRGribeIswgpWy3uRU4aeQL8rNqJZPRlxnoiGdaTDowt4zYG2v4v+X
- y8sxAZq1dRQWSQEjq1V0u5ckgIDkKlfJeivxKd/K2mWLlO0OCnCYyKcIBpHZI3BCDgyqTCRGw
- GviZQW73dh2jkjG/xyanglkDtGbqy4dYjOb8XFSZS9w+cN5tx7gkz5P4RvStdA63mfV9tiLhQ
- Ub5RUHfXr9E9bNmYwRSBdlF1PGkEkAY765SL3J4PFJqeKVs00z0SRSdL3AJPZg7YlUDIwrdMp
- M4/KAFkk50NkU/AmGF8ROcfm858qfZtYTaN6ZPqF1uSYXu2D6nOMKE3e3tiyTjfannSXer6hw
- ysT9Hwdl/g46QipspSaTNFAZUsW/P+8V4mjOdzi3vzx9wv82cHpJAaClCqHAZv4ZWJN338IFw
- Nkgspk0qtotriu5gwEaJsm6l1wZYIXQurHkHXl5qRWVtVrKDBHM5VkcrERXbDdVqPrlAqmPPm
- b4RsFafzc8NkynJrJhD60LW4E6cli01gC5F9gGfd6yeFGheimpNcUtqtoP8OAge2GnpH+ohne
- 3R/CqDXTi26RVR9IzGv2uAsfSRWiYhY9yaitv/VIiqPai8vxdHCTK4BJ6YUkO3EQq/sz9/qfi
- +afwyyOiaN+FTiEEN/FgmPUa14e6fuJ08jHShjGl8Vmhflh8gMXL8/SXk01mM8856ZH1uP1v7
- YUw3hrs2eYKFne8Sc
+        id S1726889AbgDGQCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:02:23 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7CBB2075E;
+        Tue,  7 Apr 2020 16:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586275342;
+        bh=3VjqdLa0s70r8aebZrWtJwDbgUgBPZ4Fn9cPzsn7F8c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Gw12nJpwBaICSNfCelcRlTky9psIctNfr5AJaqWmlY49ejsFHlL99qIPglWjGUE6g
+         lt8XQXYKRg8vkMPGLFA45y42nwSgDMDSWpCJnWHPa0OORNCkXAgpnZMm3xhLDod8Xu
+         5vmKwu/nNjeR6eTeVFO7ruZlDGkVoOk0ro2Istk8=
+Date:   Wed, 8 Apr 2020 01:02:18 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Zong Li <zong.li@sifive.com>
+Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/9] riscv: patch code by fixmap mapping
+Message-Id: <20200408010218.c601beb496712a1251e2c9a0@kernel.org>
+In-Reply-To: <0b6ad2759b47731a83008b46dbbed7c92e68cae2.1586265122.git.zong.li@sifive.com>
+References: <cover.1586265122.git.zong.li@sifive.com>
+        <0b6ad2759b47731a83008b46dbbed7c92e68cae2.1586265122.git.zong.li@sifive.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 04, 2020 at 01:14:52PM +0200, Markus Elfring wrote:
-> > dma_alloc_coherent() now zeroes memory after allocation, so additional
-> > calls to memset() afterwards are unnecessary. Remove them.
->
-> I suggest to reconsider the distribution of recipients also for this pat=
-ch
-> according to the fields =E2=80=9CCc=E2=80=9D and =E2=80=9CTo=E2=80=9D.
+On Tue,  7 Apr 2020 22:46:48 +0800
+Zong Li <zong.li@sifive.com> wrote:
 
-Thanks. I'll do this in a v2/RESEND.
->
->
-> =E2=80=A6
-> > +++ b/drivers/scsi/dpt_i2o.c
-> =E2=80=A6
-> > @@ -3067,13 +3064,12 @@ static int adpt_i2o_build_sys_table(void)
-> >  	sys_tbl_len =3D sizeof(struct i2o_sys_tbl) +	// Header + IOPs
-> >  				(hba_count) * sizeof(struct i2o_sys_tbl_entry);
-> >
-> > -	sys_tbl =3D dma_alloc_coherent(&pHba->pDev->dev,
-> > -				sys_tbl_len, &sys_tbl_pa, GFP_KERNEL);
-> > +	sys_tbl =3D dma_alloc_coherent(&pHba->pDev->dev, sys_tbl_len,
-> > +				     &sys_tbl_pa, GFP_KERNEL);
-> >  	if (!sys_tbl) {
-> =E2=80=A6
-> > +++ b/drivers/scsi/mvsas/mv_init.c
-> > @@ -244,28 +244,22 @@ static int mvs_alloc(struct mvs_info *mvi, struc=
-t Scsi_Host *shost)
-> =E2=80=A6
-> > -	mvi->slot =3D dma_alloc_coherent(mvi->dev,
-> > -				       sizeof(*mvi->slot) * slot_nr,
-> > +	mvi->slot =3D dma_alloc_coherent(mvi->dev, sizeof(*mvi->slot) * slot=
-_nr,
-> >  				       &mvi->slot_dma, GFP_KERNEL);
-> >  	if (!mvi->slot)
-> =E2=80=A6
-> > +++ b/drivers/scsi/qla2xxx/qla_isr.c
-> > @@ -79,7 +79,7 @@ qla24xx_process_abts(struct scsi_qla_host *vha, void=
- *pkt)
-> >  	    (uint8_t *)abts, sizeof(*abts));
-> >
-> >  	rsp_els =3D dma_alloc_coherent(&ha->pdev->dev, sizeof(*rsp_els), &dm=
-a,
-> > -	    GFP_KERNEL);
-> > +				     GFP_KERNEL);
-> >  	if (!rsp_els) {
-> =E2=80=A6
-> > +++ b/drivers/scsi/qla2xxx/qla_mbx.c
-> > @@ -4887,15 +4887,13 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t=
- *vha)
-> >  	    "Entered %s.\n", __func__);
-> >
-> >  	els_cmd_map =3D dma_alloc_coherent(&ha->pdev->dev, ELS_CMD_MAP_SIZE,
-> > -	    &els_cmd_map_dma, GFP_KERNEL);
-> > +					 &els_cmd_map_dma, GFP_KERNEL);
-> >  	if (!els_cmd_map) {
-> =E2=80=A6
->
-> I find it safer to integrate such source code reformattings by
-> another update step which will be separated from the proposed deletion
-> of unwanted function calls.
+> On strict kernel memory permission, the ftrace have to change the
+> permission of text for dynamic patching the intructions. Use
+> riscv_patch_text_nosync() to patch code instead of probe_kernel_write.
+> 
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-Good point. This whitespace was autoformatted by Coccinelle, probably
-due to my bad SmPL skills.
+Looks good to me.
 
-Best,
-Alex
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thanks!
+
+> ---
+>  arch/riscv/kernel/ftrace.c | 26 +++++++++++++++++---------
+>  1 file changed, 17 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+> index c40fdcdeb950..08396614d6f4 100644
+> --- a/arch/riscv/kernel/ftrace.c
+> +++ b/arch/riscv/kernel/ftrace.c
+> @@ -7,9 +7,23 @@
+>  
+>  #include <linux/ftrace.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/memory.h>
+>  #include <asm/cacheflush.h>
+> +#include <asm/patch.h>
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE
+> +int ftrace_arch_code_modify_prepare(void) __acquires(&text_mutex)
+> +{
+> +	mutex_lock(&text_mutex);
+> +	return 0;
+> +}
+> +
+> +int ftrace_arch_code_modify_post_process(void) __releases(&text_mutex)
+> +{
+> +	mutex_unlock(&text_mutex);
+> +	return 0;
+> +}
+> +
+>  static int ftrace_check_current_call(unsigned long hook_pos,
+>  				     unsigned int *expected)
+>  {
+> @@ -46,20 +60,14 @@ static int __ftrace_modify_call(unsigned long hook_pos, unsigned long target,
+>  {
+>  	unsigned int call[2];
+>  	unsigned int nops[2] = {NOP4, NOP4};
+> -	int ret = 0;
+>  
+>  	make_call(hook_pos, target, call);
+>  
+> -	/* replace the auipc-jalr pair at once */
+> -	ret = probe_kernel_write((void *)hook_pos, enable ? call : nops,
+> -				 MCOUNT_INSN_SIZE);
+> -	/* return must be -EPERM on write error */
+> -	if (ret)
+> +	/* Replace the auipc-jalr pair at once. Return -EPERM on write error. */
+> +	if (patch_text_nosync
+> +	    ((void *)hook_pos, enable ? call : nops, MCOUNT_INSN_SIZE))
+>  		return -EPERM;
+>  
+> -	smp_mb();
+> -	flush_icache_range((void *)hook_pos, (void *)hook_pos + MCOUNT_INSN_SIZE);
+> -
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.26.0
+> 
 
 
->
-> Regards,
-> Markus
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
