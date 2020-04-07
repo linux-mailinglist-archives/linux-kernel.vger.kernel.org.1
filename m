@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1EA71A162F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1731A1637
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgDGTsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 15:48:30 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:50210 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgDGTsa (ORCPT
+        id S1727121AbgDGTvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 15:51:14 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40054 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbgDGTvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 15:48:30 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 0EAE380533;
-        Tue,  7 Apr 2020 21:48:26 +0200 (CEST)
-Date:   Tue, 7 Apr 2020 21:48:24 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Jules Irenge <jbi.octave@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        boqun.feng@gmail.com, Russell King <linux@armlinux.org.uk>,
-        "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>,
-        "moderated list:CYBERPRO FB DRIVER" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/5] video: Add missing annotation for
- cyber2000fb_enable_ddc() and cyber2000fb_disable_ddc()
-Message-ID: <20200407194824.GA28801@ravnborg.org>
-References: <0/5>
- <20200403160505.2832-1-jbi.octave@gmail.com>
- <20200403160505.2832-3-jbi.octave@gmail.com>
+        Tue, 7 Apr 2020 15:51:14 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 142so573332ljj.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 12:51:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ilLyS0vne6BzXe6S6ucqrxkT0PaPMwvFpiaeY+Srkws=;
+        b=arMl4qqEfJTIRx8VEWeLINPE4bGVG5CK1wnMXC4ZAyCSKhGf1UktLZtThxRySiWKrc
+         C495qi8z/3TQBoHlyqu6z01DeMHzC4dpq9Z8dFrAprXqY+znH6KeRiBrwSgLiv60L8Ad
+         ELwFC34feUDfkB6yCd6kZDWPEtJvSFA8QD6d0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ilLyS0vne6BzXe6S6ucqrxkT0PaPMwvFpiaeY+Srkws=;
+        b=LBr4ICyQbhiE4V6A6BB8EmYPnihFyIOdMGoN3oVEwv5vSiCIDF8dzp69F7WZ4M7sgp
+         Ss4fykVNKCwtNz61/nlAGUE5RbGZCpX6LBkTVJlsK5T7EfHjYyHA1t3xc77d66/0DH5j
+         NUS/EIzLHys/w0uFbzfNaxtVqhmu2HYUJ+Tch5NS7db9J4ZBCsfkn9dEnMQelTP6FgXn
+         Lr1tfYfExc0YSzdKglVhPPVYHOFFbzfP4txMtbpNPp/otPAwnlYC094h+RrjYrD9rcVc
+         AhuwiAUqH9poYfuP3DNWp10ZHdjOMwXJUyuM/y8V2guHt6eKA6jeNA4m25sqke81i1So
+         H4yQ==
+X-Gm-Message-State: AGi0PuZsjjTqgp3Enlyg9x8kFen/9lgqId4lQatHdmUc8JNLG39KBAYT
+        iJ8AbLiVvLO8qkxeFgGs6n9NoXHhSoA=
+X-Google-Smtp-Source: APiQypKJEiI6uNyk9igXxyQ44rJg0YHEUrpfNcqUYLMzdmWqXIB8iqao9XVuQeD6/q4aSovwsaibhA==
+X-Received: by 2002:a2e:97d6:: with SMTP id m22mr993379ljj.245.1586289070326;
+        Tue, 07 Apr 2020 12:51:10 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id l6sm12222088ljc.80.2020.04.07.12.51.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Apr 2020 12:51:09 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id j17so3337734lfe.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 12:51:08 -0700 (PDT)
+X-Received: by 2002:a05:6512:14a:: with SMTP id m10mr2416749lfo.152.1586289068320;
+ Tue, 07 Apr 2020 12:51:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403160505.2832-3-jbi.octave@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=pGLkceISAAAA:8
-        a=e5mUnYsNAAAA:8 a=c_KzuGgbJLCNkQNsKyQA:9 a=CjuIK1q_8ugA:10
-        a=Vxmtnl_E_bksehYqCbjh:22 a=pHzHmUro8NiASowvMSCR:22
-        a=Ew2E2A-JSTLzCXPT_086:22
+References: <87blobnq02.fsf@x220.int.ebiederm.org> <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+ <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+ <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
+ <87lfnda3w3.fsf@x220.int.ebiederm.org> <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
+ <87blo45keg.fsf@x220.int.ebiederm.org>
+In-Reply-To: <87blo45keg.fsf@x220.int.ebiederm.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Apr 2020 12:50:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+Message-ID: <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jules.
+On Mon, Apr 6, 2020 at 3:20 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> But fundamentally the only reason we need this information stable
+> before the point of no return is so that we can return a nice error
+> code to the process calling exec.  Instead of terminating the
+> process with SIGSEGV.
 
-On Fri, Apr 03, 2020 at 05:05:02PM +0100, Jules Irenge wrote:
-> Sparse reports warnings at cyber2000fb_enable_ddc()
-> 	and cyber2000fb_disable_ddc()
-> 
-> warning: context imbalance in cyber2000fb_enable_ddc()
-> 	- wrong count at exit
-> 
-> warning: context imbalance in cyber2000fb_disable_ddc()
-> 	- unexpected unlock
-> 
-> The root cause is the missing annotation at cyber2000fb_enable_ddc()
-> 	and cyber2000fb_disable_ddc()
-> 
-> Add the missing __acquires(&cfb->reg_b0_lock) annotation
-> Add the missing __releases(&cfb->reg_b0_lock) annotation
-> 
-> Signed-off-by: Jules Irenge <jbi.octave@gmail.com>
+I'd suggest doing it the other way around instead: let the thread that
+does the security_setprocattr() die, since execve() is terminating
+other threads anyway.
 
-Thanks, added to drm-misc-next, so the patch will hit the kernel
-when the merge windows opens the next time.
+And the easy way to do that is to just make the rule be that anybody
+who waits for this thing for write needs to use a killable wait.
 
-Was this the only locking relevant warning in fbdev?
-I would expect a few more.
+So if the execve() got started earlier, and already took the cred lock
+(whatever we'll call it) for reading, then zap_other_threads() will
+take care of another thread doing setprocattr().
 
-	Sam
+That sounds like a really simple model, no?
 
-> ---
->  drivers/video/fbdev/cyber2000fb.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/video/fbdev/cyber2000fb.c b/drivers/video/fbdev/cyber2000fb.c
-> index 460826a7ad55..513f58f28b0f 100644
-> --- a/drivers/video/fbdev/cyber2000fb.c
-> +++ b/drivers/video/fbdev/cyber2000fb.c
-> @@ -1160,12 +1160,14 @@ EXPORT_SYMBOL(cyber2000fb_detach);
->  #define DDC_SDA_IN	(1 << 6)
->  
->  static void cyber2000fb_enable_ddc(struct cfb_info *cfb)
-> +	__acquires(&cfb->reg_b0_lock)
->  {
->  	spin_lock(&cfb->reg_b0_lock);
->  	cyber2000fb_writew(0x1bf, 0x3ce, cfb);
->  }
->  
->  static void cyber2000fb_disable_ddc(struct cfb_info *cfb)
-> +	__releases(&cfb->reg_b0_lock)
->  {
->  	cyber2000fb_writew(0x0bf, 0x3ce, cfb);
->  	spin_unlock(&cfb->reg_b0_lock);
-> -- 
-> 2.24.1
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+                Linus
