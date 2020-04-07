@@ -2,202 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D0B1A1006
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46891A102E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729064AbgDGPS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 11:18:58 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:28578 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728306AbgDGPS5 (ORCPT
+        id S1729345AbgDGP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:28:16 -0400
+Received: from relay06.etecsa.net ([181.225.231.76]:51255 "EHLO
+        relay06.etecsa.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbgDGP2Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:18:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586272736; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=MkHWeN7jEYivOg5ls6MEofDm2yhzyIloU6lj3iDRPEs=;
- b=dKwo/ZV25eoEOHn5mobbkJbkvkxMh09wV1XYP2tVpQFRPjLqV+9NUEY5kWYc0lAlDiy4YXm9
- DQWwWgWmGX9j8ngnrpUUkbJQnwSSWAa2wFaUfZ23LEt1F66MdWw81vRaSasCO9A/MQ75dBR3
- R+4cAROcnR5aS0B2A9KN3WtYinA=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e8c99e0.7f42bc7b51f0-smtp-out-n05;
- Tue, 07 Apr 2020 15:18:56 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 390D5C44788; Tue,  7 Apr 2020 15:18:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 63272C433D2;
-        Tue,  7 Apr 2020 15:18:54 +0000 (UTC)
+        Tue, 7 Apr 2020 11:28:16 -0400
+X-Greylist: delayed 541 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 11:28:15 EDT
+Received: from smtp-gw05.enet.cu (unknown [172.29.8.35])
+        by relay06.etecsa.net (Postfix) with ESMTP id 57FC7E0199;
+        Tue,  7 Apr 2020 11:19:10 -0400 (CDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nauta.cu; s=nauta;
+        t=1586272750; bh=3OEQrDP/C/QP2IW4KtNioNWskky+CWRiw47w6j2UTrQ=;
+        h=Date:From:To:Subject:Reply-to;
+        b=IMsOrytU5XogSHRMXs1f4RwGGaNU+1iACsKypB7GB2A/rVKJjjM1GpXSLxtgSV20b
+         0InJOYozZBtC9ZGwoFg5zFtwsmgi5zsCZ4o2YawmBW62YcffYxa+95/UUOt6MPIhV/
+         BqE7MT2+BuCerrPoDEHO5eqaU/1Bb1jFg+HVM/ms=
+Received: from amavis.etecsa.net (unknown [172.29.8.230])
+        by smtp-gw05.enet.cu (Postfix) with ESMTP id B634B1800054;
+        Tue,  7 Apr 2020 11:19:09 -0400 (CDT)
+Received: from smtp.nauta.cu ([172.29.8.248])
+        by amavis.etecsa.net  with ESMTP id 037FJ41X013626-037FJ41Y013626;
+        Tue, 7 Apr 2020 11:19:04 -0400
+Received: from horde04.enet.cu (unknown [172.29.15.54])
+        by smtp.nauta.cu (Postfix) with ESMTP id 644D79F176;
+        Tue,  7 Apr 2020 11:19:04 -0400 (CDT)
+Received: from [84.17.50.168] ([84.17.50.168]) by webmail.nauta.cu (Horde
+ Framework) with HTTPS; Tue, 07 Apr 2020 11:19:04 -0400
+Date:   Tue, 07 Apr 2020 11:19:04 -0400
+Message-ID: <20200407111904.Horde.KslgiYc3-sY9Ogta4rKwA0V@webmail.nauta.cu>
+From:   Steam Card Raffle Draw <campestre.91@nauta.cu>
+Subject: hello
+Reply-to: steamcarddraw@gmail.com
+User-Agent: Horde Application Framework 5
+X-Originating-IP: 84.17.50.168
+X-Remote-Browser: Mozilla/5.0 (Windows NT 6.1; Win64; x64)
+ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+ OPR/67.0.3575.79
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Tue, 07 Apr 2020 20:48:54 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
-        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
- multiple connections
-In-Reply-To: <e9c299c4-caeb-9eb8-f019-b311bfce756a@arm.com>
-References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
- <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
- <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
- <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
- <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
- <bb209f80-ac02-6321-dac4-ebf9ee6fa9a0@arm.com>
- <bd05b31c2391edfff5044f22f2f83edf@codeaurora.org>
- <e9c299c4-caeb-9eb8-f019-b311bfce756a@arm.com>
-Message-ID: <a7074f44ebbde720b5e0189801eab7c9@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Disposition: inline
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki,
 
-On 2020-04-07 20:23, Suzuki K Poulose wrote:
-> On 04/07/2020 02:56 PM, Sai Prakash Ranjan wrote:
->> Hi Suzuki,
->> 
->> On 2020-04-07 18:38, Suzuki K Poulose wrote:
->>> On 04/07/2020 12:29 PM, Sai Prakash Ranjan wrote:
->>>> Hi Suzuki,
->>>> 
->>>> Thanks for looking into this issue.
->>>> 
->>>> On 2020-04-07 15:54, Suzuki K Poulose wrote:
->>>>> On 04/07/2020 10:46 AM, Sai Prakash Ranjan wrote:
->>>>> 
->>>>> There seems to be two replicators back to back here. What is 
->>>>> connected
->>>>> to the other output of both of them ? Are there any TPIUs ? What 
->>>>> happens
->>>>> if you choose a sink on the other end of "swao_replicator" (ETB ?)
->>>>> 
->>>> 
->>>> The other outport of swao replicator is connected to EUD which is a
->>>> QCOM specific HW which can be used as a sink like USB.
->>>> And the other outport of other replicator(replicator_out) is 
->>>> connected to
->>>> TPIU.
->>>> 
->>>>> After boot, what do the idfilter registers read for both the 
->>>>> replicators ?
->>>>> 
->>>> 
->>>> Added some prints in replicator_probe.
->>>> 
->>>>   replicator probe ret=-517 devname=6046000.replicator idfilter0=0x0 
->>>> idfilter1=0x0
->>>>   replicator probe ret=0 devname=6b06000.replicator idfilter0=0xff 
->>>> idfilter1=0xff
->>>>   replicator probe ret=0 devname=6046000.replicator idfilter0=0xff 
->>>> idfilter1=0xff
->>> 
->>> Curious to see how the idfilterX is set to 0:
->>>      if that is never used.
->>>         Or
->>>      if the user doesn't reset it back to 0xff.
->>> 
->> 
->> For both replicators, the default value seems to be 0x0.
->> 
->>   replicator probe in res ret=0 devname=6046000.replicator 
->> idfilter0=0x0 idfilter1=0x0
->>   replicator probe ret=-517 devname=6046000.replicator idfilter0=0x0 
->> idfilter1=0x0
->>   replicator probe in res ret=0 devname=6b06000.replicator 
->> idfilter0=0x0 idfilter1=0x0
->>   replicator probe ret=0 devname=6b06000.replicator idfilter0=0xff 
->> idfilter1=0xff
->>   replicator probe in res ret=0 devname=6046000.replicator 
->> idfilter0=0x0 idfilter1=0x0
->>   replicator probe ret=0 devname=6046000.replicator idfilter0=0xff 
->> idfilter1=0xff
-> 
-> I am not sure how you have added the debugs, but it looks like the
-> drivers set 0xff for both the port filters on a successful probe.
-> 
-
-Yes, thats done by replicator_reset in probe right? Below is the diff:
-
-@@ -242,6 +244,9 @@ static int replicator_probe(struct device *dev, 
-struct resource *res)
-                 }
-                 drvdata->base = base;
-                 desc.groups = replicator_groups;
-+               pr_info("replicator probe in res ret=%d devname=%s 
-idfilter0=%#lx idfilter1=%#lx\n",
-+                       ret, dev_name(dev), (readl_relaxed(base + 
-REPLICATOR_IDFILTER0)),
-+                       (readl_relaxed(base + REPLICATOR_IDFILTER1)));
-         }
-
-         dev_set_drvdata(dev, drvdata);
-@@ -272,6 +277,12 @@ static int replicator_probe(struct device *dev, 
-struct resource *res)
-  out_disable_clk:
-         if (ret && !IS_ERR_OR_NULL(drvdata->atclk))
-                 clk_disable_unprepare(drvdata->atclk);
-+
-+       if (res)
-+               pr_info("replicator probe ret=%d devname=%s 
-idfilter0=%#lx idfilter1=%#lx\n",
-+                       ret, dev_name(dev), (readl_relaxed(base + 
-REPLICATOR_IDFILTER0)),
-+                       (readl_relaxed(base + REPLICATOR_IDFILTER1)));
-+
-         return ret;
-  }
-
->> 
->>> Does your test ever touch EUD (enable the port for EUD at
->>> swao-replicator) ? What are the values before you run your test ?
->>> 
->>> 
->> 
->> No, we do not use EUD, downstream it is used as dummy sink.
->> And I just try to select the ETR as the sink and enable ETM0 as the 
->> trace source.
->> 
->> echo 1 > /sys/bus/coresight/devices/tmc_etr0/enable_sink
->> echo 1 > /sys/bus/coresight/devices/etm0/enable_source
->> 
->> Also I see the KASAN warning but that seems like some other issue.
->> 
-> 
-> Does your funnel have sparse input described ? I think we have an
-> issue with the "refcnt" tracking for funnels (especially). When we
-> have a sparse input ports described (ie. if only input ports 0, 3,
-> 5 are described to protect the secure side connections), we could
-> end up accessing beyond the memory allocated for csdev->refcnts.
-> i.e, csdev->pdata->nr_inport = 3, and we could access 
-> csdev->refcnts[5],
-> while sizeof(csdev->refcnts) = sizeof(atomic_t) * 3.
-> 
-> I will send a patch.
-> 
-
-Thanks, I can test it out.
-
-Thanks,
-Sai
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Steam Card Raffle Draw
+
+Play and win $5,000
+
