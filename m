@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC141A0F95
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E521D1A0F90
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbgDGOrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:47:39 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:36571 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729275AbgDGOrJ (ORCPT
+        id S1729346AbgDGOrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:47:17 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:56062 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729306AbgDGOrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:47:09 -0400
-Received: by mail-pl1-f196.google.com with SMTP id g2so1334939plo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:47:09 -0700 (PDT)
+        Tue, 7 Apr 2020 10:47:12 -0400
+Received: by mail-pj1-f66.google.com with SMTP id fh8so850472pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:47:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1qkEQ73ghM61/BXRvlDJEs7SEg6hkPYIpkfLFdxJqkM=;
-        b=Z95WsXjaZ4R1OiZAjtFWozqj9735nUzepdNDu+Rm+ykKmZ1QhMW1WXzh4mh+TxtIUE
-         3up1bhUw0eoHYPS2z8u6Mz4s5j4A2KaKT+b3o5aWzvtjB2dNihRQ+qXe8mFuGaUjOb7e
-         PHR/jKA1Ybc0M0HAbqxdcQ4Id/syAJDH5PBKE8wm9I8phudmq4vsXT6ifv3WXy0nXAIB
-         AH2lCtDzZ8wqQyWQ5t3ZAaLK/NdSJoIrbi78EcorwBkK9t45hMs/R6/CQqwUJ3hI8RZL
-         W9QEv1DPVnBiArLheGHAnGn1vDRriUf+GqOdmk4bKQW2fK7NCvaaEyPjormnBQMmeELy
-         Pchg==
+        bh=v9zl9wdVM8GEYtYil3Mhwjs87sA3d02fBbOSD/V/2Io=;
+        b=Dr3sAdrvWqwbVgYRG3xI41G3QomvAew/Asd8fOt+Hzih8GAcGLY990zl5lzEDEUFfS
+         rFz2r8PiTez4vQkSHyG6i66D37p45zDTF7mKWyqHS2KRTSW4HsCHenibJ08i0FlY9LCA
+         RJATz1HEkSwg5S/VSgSpr6RXXPaavBo70UMlSGPI82JH1ercjcbnGTpTe132ZKGMZHAw
+         nZksYVqpBq42d5GPn0kG3A1mMxp6m9j2bb+5m8WvKb6oXTdpyGm/tEZMU0avt92C3PwW
+         WXhNzRtLZimrbB/nPTEE/DL7MZON4cRniYmXRoW32mBWz7TA80gs7IJIuu/Jwx1bBX1v
+         bT4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1qkEQ73ghM61/BXRvlDJEs7SEg6hkPYIpkfLFdxJqkM=;
-        b=ZHGF7sw/pAZ/SGM/OU2FMTPRKe3UCLSUjBE9yfSBOypBd395cGistjeY0aS0nGVna5
-         WtAFeXkDRh0Gwfa4CNNt9NKi/gWqLB3gntpXf5XWC6QRyj7MevCRtL5BsveunWoT/LWy
-         qHOUXr2nJ/SEk3hiVoPrlMFGDVgFH1yj2bczcSZuaGc+L1xqtzOdKT1TT8xQ4326FgOn
-         QBSTQnrmHsfuoYVKW7lsT6ub6vmLYY+8hcQ2zVB9HBjq4PUTh06Y35FYugz96p26JnYY
-         KyvXE1Co18vE1EzvdL9zgzrRScvkd2Lc03BdUPu8/nVe52qc2kLU8NZTDu/MzSSXozdD
-         I3hA==
-X-Gm-Message-State: AGi0PuZ5TyyRaxGMNRpMDgDL6sR0kzt2ENkextHTCJOSMzWH/k7mla7o
-        RwocN9k1T3bD6AVugT/efR6JqQ==
-X-Google-Smtp-Source: APiQypL0QZL2CpYGkPcslhSMRE9aqJtSat2xKN9cJ0wG3hkbm7awrwBq0Y0CDoR4ztQTWLcG3pAU6A==
-X-Received: by 2002:a17:902:8609:: with SMTP id f9mr2675736plo.203.1586270828988;
-        Tue, 07 Apr 2020 07:47:08 -0700 (PDT)
+        bh=v9zl9wdVM8GEYtYil3Mhwjs87sA3d02fBbOSD/V/2Io=;
+        b=JeBElMuEXzfsY6Npne6uuELV2sBy6Ou/MHPbKumpHgjIw9Zh0rhF2W9y9hQ4fw5auf
+         ycBnRgS6LvqFy6r3oWUy2dMWFlY8ijMvRRj3C8nmWF052T75NBV6V+s83X8g8iwrQv8c
+         68dxndqBJSIk9nJV8+BfoBtuTb/5a1VuOtV0Ix0E/sKI3xOTEXTu3XOPR39V7yCsutuD
+         Lfo+8HPa0RSm/NIOJ1RSSyOmzrqE1bNesYoUljjf4fLzNnvwLQOO9c0yHnjfRZ0l/y5z
+         x2Wz2x1O63tHu39TSIDDAsnphLW3noK3RPCY5+cpqu9WuyzLJNT10niSIRui0SKmOynA
+         Pxug==
+X-Gm-Message-State: AGi0PuYQpSnx7Gc9J3lHdQ+SQ1v+ERZZk/A04InaBKkV+zVV358FO77X
+        x2V++lT3I4fFFEjrcCcDKfJFSQ==
+X-Google-Smtp-Source: APiQypIxfe67P6X0LmkT8qgkBuwk7TGkhTTBndI07oSrQhzlvJyC2RaWNfS88nZVZw4Jjgn0w6QRAw==
+X-Received: by 2002:a17:902:aa94:: with SMTP id d20mr2788910plr.313.1586270831007;
+        Tue, 07 Apr 2020 07:47:11 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (220-132-236-182.HINET-IP.hinet.net. [220.132.236.182])
-        by smtp.gmail.com with ESMTPSA id y15sm14190093pfc.206.2020.04.07.07.47.07
+        by smtp.gmail.com with ESMTPSA id y15sm14190093pfc.206.2020.04.07.07.47.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 07:47:08 -0700 (PDT)
+        Tue, 07 Apr 2020 07:47:10 -0700 (PDT)
 From:   Zong Li <zong.li@sifive.com>
 To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
         aou@eecs.berkeley.edu, mhiramat@kernel.org,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Zong Li <zong.li@sifive.com>,
         Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH v4 5/9] riscv: add ARCH_HAS_SET_DIRECT_MAP support
-Date:   Tue,  7 Apr 2020 22:46:50 +0800
-Message-Id: <1b9ab6009c1d70451e21a35ed7fea47c139bc65f.1586265122.git.zong.li@sifive.com>
+Subject: [PATCH v4 6/9] riscv: add ARCH_SUPPORTS_DEBUG_PAGEALLOC support
+Date:   Tue,  7 Apr 2020 22:46:51 +0800
+Message-Id: <9a9f8ff6d9ea84628511def8bacce8f8247945d1.1586265122.git.zong.li@sifive.com>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <cover.1586265122.git.zong.li@sifive.com>
 References: <cover.1586265122.git.zong.li@sifive.com>
@@ -64,74 +64,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add set_direct_map_*() functions for setting the direct map alias for
-the page to its default permissions and to an invalid state that cannot
-be cached in a TLB. (See d253ca0c ("x86/mm/cpa: Add set_direct_map_*()
-functions")) Add a similar implementation for RISC-V.
+ARCH_SUPPORTS_DEBUG_PAGEALLOC provides a hook to map and unmap
+pages for debugging purposes. Implement the __kernel_map_pages
+functions to fill the poison pattern.
 
 Signed-off-by: Zong Li <zong.li@sifive.com>
 Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
 ---
- arch/riscv/Kconfig                  |  1 +
- arch/riscv/include/asm/set_memory.h |  3 +++
- arch/riscv/mm/pageattr.c            | 24 ++++++++++++++++++++++++
- 3 files changed, 28 insertions(+)
+ arch/riscv/Kconfig       |  3 +++
+ arch/riscv/mm/pageattr.c | 13 +++++++++++++
+ 2 files changed, 16 insertions(+)
 
 diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 9044e0dd95ea..a94d0f064d9c 100644
+index a94d0f064d9c..1e1efc998baf 100644
 --- a/arch/riscv/Kconfig
 +++ b/arch/riscv/Kconfig
-@@ -59,6 +59,7 @@ config RISCV
- 	select HAVE_EBPF_JIT if 64BIT
- 	select EDAC_SUPPORT
- 	select ARCH_HAS_GIGANTIC_PAGE
-+	select ARCH_HAS_SET_DIRECT_MAP
- 	select ARCH_HAS_SET_MEMORY
- 	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
- 	select SPARSEMEM_STATIC if 32BIT
-diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-index 79a810f0f38b..620d81c372d9 100644
---- a/arch/riscv/include/asm/set_memory.h
-+++ b/arch/riscv/include/asm/set_memory.h
-@@ -21,4 +21,7 @@ static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
- #endif
+@@ -132,6 +132,9 @@ config ARCH_SELECT_MEMORY_MODEL
+ config ARCH_WANT_GENERAL_HUGETLB
+ 	def_bool y
  
-+int set_direct_map_invalid_noflush(struct page *page);
-+int set_direct_map_default_noflush(struct page *page);
++config ARCH_SUPPORTS_DEBUG_PAGEALLOC
++	def_bool y
 +
- #endif /* _ASM_RISCV_SET_MEMORY_H */
+ config SYS_SUPPORTS_HUGETLBFS
+ 	def_bool y
+ 
 diff --git a/arch/riscv/mm/pageattr.c b/arch/riscv/mm/pageattr.c
-index fcd59ef2835b..7be6cd67e2ef 100644
+index 7be6cd67e2ef..728759eb530a 100644
 --- a/arch/riscv/mm/pageattr.c
 +++ b/arch/riscv/mm/pageattr.c
-@@ -148,3 +148,27 @@ int set_memory_nx(unsigned long addr, int numpages)
- {
- 	return __set_memory(addr, numpages, __pgprot(0), __pgprot(_PAGE_EXEC));
+@@ -172,3 +172,16 @@ int set_direct_map_default_noflush(struct page *page)
+ 
+ 	return walk_page_range(&init_mm, start, end, &pageattr_ops, &masks);
  }
 +
-+int set_direct_map_invalid_noflush(struct page *page)
++void __kernel_map_pages(struct page *page, int numpages, int enable)
 +{
-+	unsigned long start = (unsigned long)page_address(page);
-+	unsigned long end = start + PAGE_SIZE;
-+	struct pageattr_masks masks = {
-+		.set_mask = __pgprot(0),
-+		.clear_mask = __pgprot(_PAGE_PRESENT)
-+	};
++	if (!debug_pagealloc_enabled())
++		return;
 +
-+	return walk_page_range(&init_mm, start, end, &pageattr_ops, &masks);
-+}
-+
-+int set_direct_map_default_noflush(struct page *page)
-+{
-+	unsigned long start = (unsigned long)page_address(page);
-+	unsigned long end = start + PAGE_SIZE;
-+	struct pageattr_masks masks = {
-+		.set_mask = PAGE_KERNEL,
-+		.clear_mask = __pgprot(0)
-+	};
-+
-+	return walk_page_range(&init_mm, start, end, &pageattr_ops, &masks);
++	if (enable)
++		__set_memory((unsigned long)page_address(page), numpages,
++			     __pgprot(_PAGE_PRESENT), __pgprot(0));
++	else
++		__set_memory((unsigned long)page_address(page), numpages,
++			     __pgprot(0), __pgprot(_PAGE_PRESENT));
 +}
 -- 
 2.26.0
