@@ -2,97 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 849791A0F91
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EB31A0F99
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbgDGOrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:47:32 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:43371 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729284AbgDGOrL (ORCPT
+        id S1729399AbgDGOsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:48:03 -0400
+Received: from mail-wm1-f74.google.com ([209.85.128.74]:35921 "EHLO
+        mail-wm1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728943AbgDGOsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:47:11 -0400
-Received: by mail-lf1-f65.google.com with SMTP id k28so2571236lfe.10;
-        Tue, 07 Apr 2020 07:47:10 -0700 (PDT)
+        Tue, 7 Apr 2020 10:48:03 -0400
+Received: by mail-wm1-f74.google.com with SMTP id 2so825498wmf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZjR9e+bUX9QLydK8oHL5gRtVWql0LfajQG/APB8lzoQ=;
-        b=ptY38GSrdgA8CLIhf2D4x6lBrbCgAB9GnhIZG9BPz9+PflofvDL4BrPk0dU8vhzXjR
-         EN6ADfa0OBffwwkXUKfQAJFPFwCRKBnWhhynkZ1OYGH73acQXRX1fhQuSKj/iGmsYjIU
-         lFODvTnd6ePf9AJsEMmqnh5rXH2pgLsR7w7j1+/iWnYwQypoiZVyZg2oHdPA45mD+DyD
-         qs0Rngup53A84V+RD+BANK7/J90nwV8JYokfpDgX+RS+FsHIQ06gsfwajQ+WLnBk4sOm
-         6nRIqtspxam5L+he1fEE/Kgp0UylehvEBK1n0QajuC+apzQ2qORs4ElfO2IvhW7mGp9K
-         cCIQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=kBwtinCCbQD3d1i0W2BxWgZFWTEf8D3Zw/F9mdZ06Jo=;
+        b=BNEPSE0i8ARIophwmS/TfQV8URnTXgM7H88FFcYI1mefm7MRNzS602/NFMRBGmANX1
+         di6r/78+mPNVawgfAa1U7JL9oJ2BHxq8FuZO/Ea4b6mFUR6sjAWEtcRwlOFiduw8n+cX
+         3JL8Jiwp4Td+bDdkGXF/4+H4YwlauOSM3JhmLN8as860cROD2yFXU1EpN8XUg6C1V1z1
+         XbfrcT0K7ztziOhy0f+xSeAxi3vMvjIfR0qj1V7b07b6ALk8fgtlv1E9UXc29IvyJ7rp
+         MgT8aNYQox7waYe1/EpaJEiEjIac/Olz53DSDXWB8uhX0NlXDuVs2oW04SXjpgoEtFvh
+         Zstw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZjR9e+bUX9QLydK8oHL5gRtVWql0LfajQG/APB8lzoQ=;
-        b=DqvYKPGxNAP5YTNzWEEmbfdE7qGk+NzNOGX39CqSniirkTyy6keRDfGRqt+Dh2CJpd
-         +6ve43nryFi98rqUXt7T7S8FXCmkxDUD9MScud78CUqTIZbJ+M1yANJfNZWhDY9llgQn
-         qXUO9vWw8dBdrykCS74LKPrKImyrnXXhVY0CWLVNJo44KbbeQp+5HGXUPwFpk6LfZWir
-         zf3gxf9LS3VyPJktRi8pfUT21OLNhS3aklk424p1R9oJ2rIqCW6mwISsMdLZeiZkWAcq
-         BAiulm/SC2G3ITDzgTZec1qGWh527UWpJAdyuoQJ0XbylHa5hnvjKRcOF2FcBNXbFKLA
-         zuwg==
-X-Gm-Message-State: AGi0PuYdEFQwCu8m3bS4QvhCBZWZfNLYILckdTI8rA4gOVsMv3s2TTTp
-        8fnB8QdIdE0rL2VuLuXz690LkYTW
-X-Google-Smtp-Source: APiQypJLXWyalNeqXpB2reQ+HYchUM+EfmBNpisKVAZjBf1+v4XkE9R18DeFEIaGZ3fCuYJkBOaoYQ==
-X-Received: by 2002:ac2:483a:: with SMTP id 26mr1733534lft.5.1586270829482;
-        Tue, 07 Apr 2020 07:47:09 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id u4sm11718887ljj.44.2020.04.07.07.47.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 07:47:08 -0700 (PDT)
-Subject: Re: [PATCH v10 43/55] dt-bindings: input: atmel: support to set max
- bytes transferred
-To:     "Wang, Jiada" <jiada_wang@mentor.com>, nick@shmanahar.org,
-        dmitry.torokhov@gmail.com, jikos@kernel.org,
-        benjamin.tissoires@redhat.com, bsz@semihalf.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erosca@de.adit-jv.com, Andrew_Gabbasov@mentor.com
-References: <20200331105051.58896-1-jiada_wang@mentor.com>
- <20200331105051.58896-44-jiada_wang@mentor.com>
- <a15d312d-587e-5b10-e031-dde1965f6f89@gmail.com>
- <9b98a3fc-b7ee-fc01-dc5c-248df507d4a2@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <008d019c-2de7-4fe4-0c22-2668312f808b@gmail.com>
-Date:   Tue, 7 Apr 2020 17:47:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <9b98a3fc-b7ee-fc01-dc5c-248df507d4a2@mentor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=kBwtinCCbQD3d1i0W2BxWgZFWTEf8D3Zw/F9mdZ06Jo=;
+        b=kh1lYVHfF17bSBrQ4eOOJTQ7KIpYwKVtJvoqO9UqIDn5DbaCirfZGcThLYaglZXCbZ
+         2IGhj9YP+q0X1Te1bsLElfQ//WHjlCZsk7P6kJ+gGc03l0HRE7lMM/NtKLtP9qPePSCs
+         5/km3cwsJ4yFn2mYJ+N0r5NybUKGnOx3LNhs0y63k34FYCEk8XQDudxxrkxJqRFRtkrE
+         Us5nybIo40POCJJJ5pxH+89/IqD8E+xgNfTW0ziFO2hQiHqZpLlk/Fr1Cf3hV7knLJYj
+         PF/a/hqKkaWwLCEnvaDStmOR/YRTvvJ7ogVrXpe3YK2VIc3kp40pP3Vq2tB77EdY8Ynh
+         /4JA==
+X-Gm-Message-State: AGi0PuZ/17wgUDzcIVxkS8zHSLJm3AQRusdZ8fy/9HvQd8xNM8Oh2PA8
+        ChsdFIrPb4F7ckqSPIi0eYV7o6yYKLf+CFKY
+X-Google-Smtp-Source: APiQypI9dbRfSFBjBzZlPOeHHSm0VSKX2n7bXJQdB3MU8o7qN8FqnsRORojqoLqm6nFbaGri/ULx5j08PxaoYWUk
+X-Received: by 2002:adf:92a3:: with SMTP id 32mr3356166wrn.254.1586270881011;
+ Tue, 07 Apr 2020 07:48:01 -0700 (PDT)
+Date:   Tue,  7 Apr 2020 16:47:54 +0200
+Message-Id: <9f7ce7a1472cfb9447f6c5a494186fa1f2670f6f.1586270396.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
+Subject: [PATCH v3] usb: raw-gadget: fix raw_event_queue_fetch locking
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Felipe Balbi <balbi@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.04.2020 12:27, Wang, Jiada пишет:
-..
->> Is this a software (firmware) limitation which varies from version to
->> version?
->>
-> 
-> the timeout issue trying to be addressed in this patch is from software,
-> one of our board a Serializer/Deserializer bridge exists between the SoC
-> (imx6) and the Atmel touch controller.
-> imx6 i2c controller driver has a timeout value(100ms) for each i2c
-> transaction,
-> Large i2c read transaction failed to complete within this timeout value
-> and therefore imx6 i2c controller driver aborts the transaction
-> and returns failure.
-> 
-> Therefore this patch was created to split the large i2c transaction into
-> smaller chunks which can complete
-> within the timeout defined by i2c controller driver.
+If queue->size check in raw_event_queue_fetch() fails (which normally
+shouldn't happen, that check is a fail-safe), the function returns
+without reenabling interrupts. This patch fixes that issue, along with
+propagating the cause of failure to the function caller.
 
-Isn't it possible to use the max_read/write_len of the generic struct
-i2c_adapter_quirks for limiting the transfer size?
+Fixes: f2c2e717642c ("usb: gadget: add raw-gadget interface"
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
 
-BTW, it looks like the i.MX I2C driver doesn't specify the
-i2c_adapter_quirks, which probably needs to be fixed.
+Changes in v3:
+- Don't return NULL from raw_event_queue_fetch() in case on an error.
+
+Changes in v2:
+- Added a comment before the WARN_ON() call.
+
+Greg, this should apply cleanly on top of Dan's "usb: raw-gadget: Fix
+copy_to/from_user() checks" patch.
+
+---
+ drivers/usb/gadget/legacy/raw_gadget.c | 25 ++++++++++++++++++++-----
+ 1 file changed, 20 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/gadget/legacy/raw_gadget.c b/drivers/usb/gadget/legacy/raw_gadget.c
+index e490ffa1f58b..ca7d95bf7397 100644
+--- a/drivers/usb/gadget/legacy/raw_gadget.c
++++ b/drivers/usb/gadget/legacy/raw_gadget.c
+@@ -81,6 +81,7 @@ static int raw_event_queue_add(struct raw_event_queue *queue,
+ static struct usb_raw_event *raw_event_queue_fetch(
+ 				struct raw_event_queue *queue)
+ {
++	int ret;
+ 	unsigned long flags;
+ 	struct usb_raw_event *event;
+ 
+@@ -89,11 +90,18 @@ static struct usb_raw_event *raw_event_queue_fetch(
+ 	 * there's at least one event queued by decrementing the semaphore,
+ 	 * and then take the lock to protect queue struct fields.
+ 	 */
+-	if (down_interruptible(&queue->sema))
+-		return NULL;
++	ret = down_interruptible(&queue->sema);
++	if (ret)
++		return ERR_PTR(ret);
+ 	spin_lock_irqsave(&queue->lock, flags);
+-	if (WARN_ON(!queue->size))
+-		return NULL;
++	/*
++	 * queue->size must have the same value as queue->sema counter (before
++	 * the down_interruptible() call above), so this check is a fail-safe.
++	 */
++	if (WARN_ON(!queue->size)) {
++		spin_unlock_irqrestore(&queue->lock, flags);
++		return ERR_PTR(-ENODEV);
++	}
+ 	event = queue->events[0];
+ 	queue->size--;
+ 	memmove(&queue->events[0], &queue->events[1],
+@@ -522,10 +530,17 @@ static int raw_ioctl_event_fetch(struct raw_dev *dev, unsigned long value)
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ 
+ 	event = raw_event_queue_fetch(&dev->queue);
+-	if (!event) {
++	if (PTR_ERR(event) == -EINTR) {
+ 		dev_dbg(&dev->gadget->dev, "event fetching interrupted\n");
+ 		return -EINTR;
+ 	}
++	if (IS_ERR(event)) {
++		dev_err(&dev->gadget->dev, "failed to fetch event\n");
++		spin_lock_irqsave(&dev->lock, flags);
++		dev->state = STATE_DEV_FAILED;
++		spin_unlock_irqrestore(&dev->lock, flags);
++		return -ENODEV;
++	}
+ 	length = min(arg.length, event->length);
+ 	if (copy_to_user((void __user *)value, event, sizeof(*event) + length))
+ 		return -EFAULT;
+-- 
+2.26.0.292.g33ef6b2f38-goog
+
