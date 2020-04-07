@@ -2,63 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C68591A0C8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A481A0C9A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728398AbgDGLKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:10:52 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:60444 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726399AbgDGLKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:10:51 -0400
-Received: from zn.tnic (p200300EC2F0B270031CC7BB993460DB2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:2700:31cc:7bb9:9346:db2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DEF6A1EC0CD1;
-        Tue,  7 Apr 2020 13:10:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1586257850;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kKSXjR2zcfAfxC6hm8YraN9x9I1XacHZ4DYRo5xZxuo=;
-        b=PmmIVYlKh4MZc63sWAH8xBpIsTiN3nGyOKx/W+u7vSJ8zMRRc7SovkrUBbxrNGd28t547K
-        LyWeK2LZfmQ5MUtxhDGY4hrraBhkQjQddj50brZ6x0fFuFQkHaGuv2/ygFd6fBsB7qtqB5
-        /UkXWanYhMWNjjVOduQadJg0kjrRb8o=
-Date:   Tue, 7 Apr 2020 13:10:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] x86/mce: Change default mce logger to check
- mce->kflags
-Message-ID: <20200407111047.GB9616@zn.tnic>
-References: <20200212204652.1489-1-tony.luck@intel.com>
- <20200214222720.13168-1-tony.luck@intel.com>
- <20200214222720.13168-6-tony.luck@intel.com>
+        id S1728463AbgDGLMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:12:08 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:42579 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728075AbgDGLMI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 07:12:08 -0400
+X-Originating-IP: 84.210.220.251
+Received: from [192.168.1.123] (cm-84.210.220.251.getinternet.no [84.210.220.251])
+        (Authenticated sender: fredrik@strupe.net)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id F082FFF80D;
+        Tue,  7 Apr 2020 11:12:04 +0000 (UTC)
+Subject: Re: [PATCH] arm64: armv8_deprecated: Fix undef_hook mask for thumb
+ setend
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>, catalin.marinas@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        will.deacon@arm.com
+References: <911db2f1-e078-a460-32ee-154a0b4de5d4@strupe.net>
+ <20200407092744.GA2665@gaia> <a2b345a4-30a0-3218-8c8d-e84ec2317dc9@arm.com>
+From:   Fredrik Strupe <fredrik@strupe.net>
+Message-ID: <7e0a3318-5b0e-3718-ced6-ae1fc7f5fece@strupe.net>
+Date:   Tue, 7 Apr 2020 13:12:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200214222720.13168-6-tony.luck@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a2b345a4-30a0-3218-8c8d-e84ec2317dc9@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 02:27:18PM -0800, Tony Luck wrote:
-> @@ -261,6 +249,8 @@ static void __print_mce(struct mce *m)
->  	}
->  
->  	pr_cont("\n");
-> +	if (m->kflags)
-> +		pr_emerg(HW_ERR "kflags = 0x%llx\n", m->kflags);
+On 07.04.2020 12:47, Suzuki K Poulose wrote:
 
-I've zapped that hunk. I'd like to avoid exposing those kflags to
-luserspace in any shape or form for now.
+> On 04/07/2020 10:27 AM, Catalin Marinas wrote:
+>> On Mon, Apr 06, 2020 at 04:16:05PM +0200, Fredrik Strupe wrote:
+>>> Use a full 32-bit mask to prevent accidental matchings of thumb32
+>>> instructions where the second half-word is equal to the thumb16 setend
+>>> encoding.
+>>>
+>>> This fixes the same problem as the following patch:
+>>>
+>>>      https://lkml.org/lkml/2020/3/16/341
+>>
+>> This link is not guaranteed to be stable and the commit should have the
+>> full description rather than referring to another email.
+>>
+>>> but for setend emulation instead.
+>>>
+>>> Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+>>
+>> It also needs Fixes: and Cc: stable tags.
+>>
+>>> ---
+>>>   arch/arm64/kernel/armv8_deprecated.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm64/kernel/armv8_deprecated.c 
+>>> b/arch/arm64/kernel/armv8_deprecated.c
+>>> index 9d3442d62..8c06dfee0 100644
+>>> --- a/arch/arm64/kernel/armv8_deprecated.c
+>>> +++ b/arch/arm64/kernel/armv8_deprecated.c
+>>> @@ -609,7 +609,7 @@ static struct undef_hook setend_hooks[] = {
+>>>       },
+>>>       {
+>>>           /* Thumb mode */
+>>> -        .instr_mask    = 0x0000fff7,
+>>> +        .instr_mask    = 0xfffffff7,
+>>>           .instr_val    = 0x0000b650,
+>>
+>> I can see how this could happen but it would be useful to provide a
+>> concrete example in the commit log.
+>>
+>> The instruction opcode built by call_undef_hook() first reads a u16 as a
+>> T16 instruction and the above should be fine. However, if this looks
+>> like a T32 opcode, it reads a subsequent u16 which becomes the lowest
+>> half-word and the above mask/val may inadvertently match it.
+>>
+Thanks for the feedback. I have updated the patch with the requested 
+changes.
 
--- 
-Regards/Gruss,
-    Boris.
+>
+> We also do a check on the pstate_val, along with the instr_val to
+> confirm the mode. So this should be fine as it is ?
+>
+> Suzuki
 
-https://people.kernel.org/tglx/notes-about-netiquette
+pstate_val only indicates thumb execution, not whether the current 
+instruction
+is a T16 or T32 instruction.
+
+Fredrik
+
+--- For thumb instructions, call_undef_hook() in traps.c first reads a 
+u16, and if the u16 indicates a T32 instruction (u16 >= 0xe800), a 
+second u16 is read, which then makes up the the lower half-word of a T32 
+instruction. For T16 instructions, the second u16 is not read, which 
+makes the resulting u32 opcode always have the upper half set to 0. 
+However, having the upper half of instr_mask in the undef_hook set to 0 
+masks out the upper half of all thumb instructions - both T16 and T32. 
+This results in trapped T32 instructions with the lower half-word equal 
+to the T16 encoding of setend (b650) being matched, even though the 
+upper half-word is not 0000 and thus indicates a T32 opcode. An example 
+of such a T32 instruction is eaa0b650, which should raise a SIGILL since 
+T32 instructions with an eaa prefix are unallocated as per Arm ARM, but 
+instead works as a SETEND because the second half-word is set to b650. 
+This patch fixes the issue by extending instr_mask to include the upper 
+u32 half, which will still match T16 instructions where the upper half 
+is 0, but not T32 instructions. Signed-off-by: Fredrik Strupe 
+<fredrik@strupe.net> Cc: Catalin Marinas <catalin.marinas@arm.com> Cc: 
+Will Deacon <will.deacon@arm.com> Fixes: 2d888f48e056 ("arm64: Emulate 
+SETEND for AArch32 tasks") --- arch/arm64/kernel/armv8_deprecated.c | 2 
++- 1 file changed, 1 insertion(+), 1 deletion(-) diff --git 
+a/arch/arm64/kernel/armv8_deprecated.c 
+b/arch/arm64/kernel/armv8_deprecated.c index 9d3442d62..8c06dfee0 100644 
+--- a/arch/arm64/kernel/armv8_deprecated.c +++ 
+b/arch/arm64/kernel/armv8_deprecated.c @@ -609,7 +609,7 @@ static struct 
+undef_hook setend_hooks[] = { }, { /* Thumb mode */ - .instr_mask = 
+0x0000fff7, + .instr_mask = 0xfffffff7, .instr_val = 0x0000b650, 
+.pstate_mask = (PSR_AA32_T_BIT | PSR_AA32_MODE_MASK), .pstate_val = 
+(PSR_AA32_T_BIT | PSR_AA32_MODE_USR), -- 2.20.1
+
