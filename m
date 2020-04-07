@@ -2,104 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA211A1401
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0921A145E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727666AbgDGSiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:38:12 -0400
-Received: from 8bytes.org ([81.169.241.247]:57616 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727192AbgDGSiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:38:04 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 12C8A70B; Tue,  7 Apr 2020 20:37:54 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: [RFC PATCH 34/34] iommu: Unexport iommu_group_get_for_dev()
-Date:   Tue,  7 Apr 2020 20:37:42 +0200
-Message-Id: <20200407183742.4344-35-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200407183742.4344-1-joro@8bytes.org>
-References: <20200407183742.4344-1-joro@8bytes.org>
+        id S1727902AbgDGSil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:38:41 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:36168 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727849AbgDGSii (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 14:38:38 -0400
+Received: by mail-ot1-f66.google.com with SMTP id l23so4225210otf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 11:38:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DfU5H29fCXE3UgX+4sVCKl7laMGWi7iSdKnWzwJAqFc=;
+        b=r3Amgov5t5gHc1Vo6J48zl+Kwo3vO8poNSiulyIrPrwzvvmc+vbExumlXUUezgp2e0
+         ahmpdd62XIm162m5mZX27P7RzSvQAjLc8hopGL9glBIVZT4cxLnIkZiayMsUpTYERFhE
+         kCIkAEBhIgZXyoUB9Nzt5UtNj7sEwP0fWY129L/TacgRefrZ7gOkLBCoRLwlUnT7xk+w
+         cuEjeefzyNNNQWc8hThFdp1JqyLnAoEimChKY9ubvSA0d+CN8nCpBFy6VQfHNkEuMF2N
+         Ahk4ha84IJF27fgAaDOlQV1GuDyNZISxoWXaTkz7i4u+BfZKS8a3wvroUIExmQcz7E1v
+         5h3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DfU5H29fCXE3UgX+4sVCKl7laMGWi7iSdKnWzwJAqFc=;
+        b=X3bXEfcDAt1BWUIvirYyIL35M7rMqvmgXJrrZZrt95MUwBlu7jX7j4//SvrCiZgdhs
+         d7d2v/0P7Mf7eYodmZZvzxxo2qBAPXMOQuPdf+zHUsA0mskvrW9kSoqGxIrQv/lTLtFI
+         YLDycre4wqmGnCCmFQN2dhoo+q7SQnXGLgtbDYv5K1ro4utqprvNobsBXDqGIeJUI09f
+         DMzMebQjUL3KYBc+57RMMvuo4r5+ThJE62/q6Uzt1nhSnjhmUSBSRUF7OoRO57qmCAyH
+         yXZ/yjbxACz7bDvJ15QXAZcIvLwuDfC9mU7dPqPwpsjm1AX37UaJKJ1zcvBxXg5FFJpT
+         EObg==
+X-Gm-Message-State: AGi0PubX4j8z+dQTEwvwjkbKNAKXYcrum3aQzm5+6OHWZAOXh8aFX+JK
+        Odz0QYN6fAYkhOqqvD3xA6Ptp0P2ecTrEPdtMYHehDwM
+X-Google-Smtp-Source: APiQypKvRIslouspebvmyiyTT8xoA5MiR6UfoN24Yzn6dDPf3VJZJrZVbdZ4mwOwB4jJHmwtHVaBzLtq5nJkixnQyVY=
+X-Received: by 2002:a9d:7349:: with SMTP id l9mr601660otk.221.1586284717081;
+ Tue, 07 Apr 2020 11:38:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <TYAPR01MB45443FA43152C0091D6EBF9AD8C20@TYAPR01MB4544.jpnprd01.prod.outlook.com>
+ <20200407070609.42865-1-john.stultz@linaro.org> <CAMuHMdWSXvHN5zEh7A+CygxEHP42qFrum+ntiL=m+ATwYOOB0Q@mail.gmail.com>
+ <CAMuHMdXuv1jcuDZLh9TfBQH5Oyf9S8qhVfFbui0a5OpbwUzT8Q@mail.gmail.com>
+In-Reply-To: <CAMuHMdXuv1jcuDZLh9TfBQH5Oyf9S8qhVfFbui0a5OpbwUzT8Q@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Tue, 7 Apr 2020 11:38:25 -0700
+Message-ID: <CALAqxLVCMbHO33P1wF-4bXZ5r7T9Xgw569eVp8e7oM7QSQtjzA@mail.gmail.com>
+Subject: Re: [RFC][PATCH] driver core: Ensure wait_for_device_probe() waits
+ until the deferred_probe_timeout fires
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh@kernel.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Tue, Apr 7, 2020 at 9:46 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi John,
+>
+> On Tue, Apr 7, 2020 at 9:50 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, Apr 7, 2020 at 9:06 AM John Stultz <john.stultz@linaro.org> wrote:
+> > > In commit c8c43cee29f6 ("driver core: Fix
+> > > driver_deferred_probe_check_state() logic"), we set the default
+> > > driver_deferred_probe_timeout value to 30 seconds to allow for
+> > > drivers that are missing dependencies to have some time so that
+> > > the dependency may be loaded from userland after initcalls_done
+> > > is set.
+> > >
+> > > However, Yoshihiro Shimoda reported that on his device that
+> > > expects to have unmet dependencies (due to "optional links" in
+> > > its devicetree), was failing to mount the NFS root.
+> > >
+> > > In digging further, it seemed the problem was that while the
+> > > device properly probes after waiting 30 seconds for any missing
+> > > modules to load, the ip_auto_config() had already failed,
+> > > resulting in NFS to fail. This was due to ip_auto_config()
+> > > calling wait_for_device_probe() which doesn't wait for the
+> > > driver_deferred_probe_timeout to fire.
+> > >
+> > > This patch tries to fix the issue by creating a waitqueue
+> > > for the driver_deferred_probe_timeout, and calling wait_event()
+> > > to make sure driver_deferred_probe_timeout is zero in
+> > > wait_for_device_probe() to make sure all the probing is
+> > > finished.
+> > >
+> > > NOTE: I'm not 100% sure this won't have other unwanted side
+> > > effects (I don't have failing hardware myself to validate),
+> > > so I'd apprecate testing and close review.
+> > >
+> > > If this approach doesn't work, I'll simply set the default
+> > > driver_deferred_probe_timeout value back to zero, to avoid any
+> > > behavioral change from before.
+> > >
+> > > Thanks to Geert for chasing down that ip_auto_config was why NFS
+> > > was failing in this case!
+> > >
+> > > Cc: "David S. Miller" <davem@davemloft.net>
+> > > Cc: Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>
+> > > Cc: Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
+> > > Cc: Jakub Kicinski <kuba@kernel.org>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> > > Cc: Rob Herring <robh@kernel.org>
+> > > Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> > > Cc: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> > > Cc: netdev <netdev@vger.kernel.org>
+> > > Cc: linux-pm@vger.kernel.org
+> > > Reported-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> > > Fixes: c8c43cee29f6 ("driver core: Fix driver_deferred_probe_check_state() logic")
+> > > Signed-off-by: John Stultz <john.stultz@linaro.org>
+> >
+> > Thanks, this fixes the issue for me!
+> >
+> > Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>
+> Unfortunately this adds another delay of ca. 30 s to mounting NFS root
+> when using a kernel config that does include IOMMU and MODULES
+> support.
 
-The function is now only used in IOMMU core code and shouldn't be used
-outside of it anyway, so remove the export for it.
+Yea. I worry the other downside is that systems with no missing
+dependencies will also see the stall here since we're waiting for the
+timeout regardless of if there's any drivers missing.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- drivers/iommu/iommu.c | 4 ++--
- include/linux/iommu.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+So in the light of morning (well, just barely), I think just setting
+the probe timeout to zero by default is the best approach. The series
+then doesn't change behavior but just cleans things up.
 
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index d9032f9d597c..8a5e1ac328dd 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -91,6 +91,7 @@ static void __iommu_detach_group(struct iommu_domain *domain,
- 				 struct iommu_group *group);
- static int iommu_create_device_direct_mappings(struct iommu_group *group,
- 					       struct device *dev);
-+static struct iommu_group *iommu_group_get_for_dev(struct device *dev);
- 
- #define IOMMU_GROUP_ATTR(_name, _mode, _show, _store)		\
- struct iommu_group_attribute iommu_group_attr_##_name =		\
-@@ -1483,7 +1484,7 @@ static int iommu_alloc_default_domain(struct device *dev)
-  * to the returned IOMMU group, which will already include the provided
-  * device.  The reference should be released with iommu_group_put().
-  */
--struct iommu_group *iommu_group_get_for_dev(struct device *dev)
-+static struct iommu_group *iommu_group_get_for_dev(struct device *dev)
- {
- 	const struct iommu_ops *ops = dev->bus->iommu_ops;
- 	struct iommu_group *group;
-@@ -1514,7 +1515,6 @@ struct iommu_group *iommu_group_get_for_dev(struct device *dev)
- 
- 	return ERR_PTR(ret);
- }
--EXPORT_SYMBOL(iommu_group_get_for_dev);
- 
- struct iommu_domain *iommu_group_default_domain(struct iommu_group *group)
- {
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index dd076366383f..7cfd2dddb49d 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -527,7 +527,6 @@ extern int iommu_page_response(struct device *dev,
- 			       struct iommu_page_response *msg);
- 
- extern int iommu_group_id(struct iommu_group *group);
--extern struct iommu_group *iommu_group_get_for_dev(struct device *dev);
- extern struct iommu_domain *iommu_group_default_domain(struct iommu_group *);
- 
- extern int iommu_domain_get_attr(struct iommu_domain *domain, enum iommu_attr,
--- 
-2.17.1
+Though, I guess one could argue this fix should go along with setting
+the value to zero, so at least if folks specify a delay on the boot
+cmd, things don't fail because they didn't wait.
 
+thanks
+-john
