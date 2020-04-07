@@ -2,109 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FC801A1108
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDDE1A1118
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726934AbgDGQOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:14:53 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:55088 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbgDGQOx (ORCPT
+        id S1727865AbgDGQTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:19:46 -0400
+Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:46346 "EHLO
+        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726840AbgDGQTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:14:53 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037G9wsq140724;
-        Tue, 7 Apr 2020 16:14:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=1//3QeBEtaoZSXxnV8zned1KuVjvYnBfZKQumGBDNHM=;
- b=E/x9m24EjcMVFhK+tOGTPgmbgK9aOvYFVIywzehvoWFwXrBmqyiNfQkqqnC0ta0evdVG
- 1QPEkr8Znco+tAjs4uj+3UUhACBCITEExVqFocuttGDwCvEJ8s3p4MwLXoOvmIVZ1nAe
- Na2FLhFH6H4SOBLmQCUSw8Q7vT7jqpSEtAZw1FtAIn/I6i5fLwbi9tdapAHxQrxKXgoR
- hqxp2mYgsiSm30rO1ntq3qvmfT1KLqYuQcKOuY0+tGU2CbPSxqaHTBom/ae5GEMObKgi
- mv94vDBgEFld7ofsyvtFVPfC+/OBMlOdhjru6sr8QNCkOLz2ZkQBPbkC9RpNQDMG0G1H nw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 306j6me1ef-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 16:14:30 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037G7RxO051001;
-        Tue, 7 Apr 2020 16:14:30 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3073qghd4x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 16:14:29 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 037GEQbB008161;
-        Tue, 7 Apr 2020 16:14:29 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 09:14:26 -0700
-Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
- ANNOTATE_NOSPEC_ALTERNATIVE directives
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-10-alexandre.chartre@oracle.com>
- <20200407132837.GA20730@hirez.programming.kicks-ass.net>
- <20200407133454.n55u5nx33ruj73gx@treble>
- <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
-Message-ID: <3eb36fd2-9827-4c1b-681c-9c1d65c7582f@oracle.com>
-Date:   Tue, 7 Apr 2020 18:18:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Tue, 7 Apr 2020 12:19:46 -0400
+Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 71533C03A4;
+        Tue,  7 Apr 2020 16:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1586276385; bh=kz+JCBOqLBdnfrj6mI4BVaUtvHunmgJaO/61mEwBLGc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=E46NZKV/uzVpQj4Oi7ZddQXl4JMvMNcj0zQjfdYnK2x130ic30ZejPmh8xx3LRR3y
+         hJvsGg9lO0ITqB36crJ44plenZNIDiv84qlVZRkzRDHSukriGISM5hnPvdtO9dAfRj
+         ZriP6M7oUVfEkO0JynRHaLebYEwz/7Ot6B3dW6PbLl86siD1GzBOPmZSamgI6BJBnL
+         vNMkvtcp/fCwKh/p9T9vAULUyWbWjSgaVNp2DNCxfFSUwb62SntTZgNP7QxhSodLkf
+         WGPHAhdT4JY+tvemFC6GfpRP/8NMB17/ZtB363/Povj5qqNzC2JzU7aFGulfUM/eNi
+         z2RQfqd2hPj2w==
+Received: from paltsev-e7480.internal.synopsys.com (ru20-e7250.internal.synopsys.com [10.225.49.23])
+        by mailhost.synopsys.com (Postfix) with ESMTP id 6DAB2A005C;
+        Tue,  7 Apr 2020 16:19:37 +0000 (UTC)
+From:   Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+To:     linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+Subject: [PATCH] ARC: [plat-hsdk]: fix USB regression
+Date:   Tue,  7 Apr 2020 19:19:33 +0300
+Message-Id: <20200407161933.10874-1-Eugeniy.Paltsev@synopsys.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-In-Reply-To: <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070131
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070131
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As of today the CONFIG_USB isn't explicitly present in HSDK defconfig
+as it is implicitly forcibly enabled by UDL driver which selects CONFIG_USB
+in its kconfig.
+The commit 5d50bd440bc2 ("drm/udl: Make udl driver depend on CONFIG_USB")
+reverse the dependencies between UDL and USB so UDL now depends on
+CONFIG_USB and not selects it. This introduces regression for ARC HSDK
+board as HSDK defconfig wasn't adjusted and now it misses USB support
+due to lack of CONFIG_USB enabled.
 
-On 4/7/20 4:32 PM, Alexandre Chartre wrote:
-> 
-> On 4/7/20 3:34 PM, Josh Poimboeuf wrote:
->> On Tue, Apr 07, 2020 at 03:28:37PM +0200, Peter Zijlstra wrote:
->>> Josh, we should probably have objtool verify it doesn't emit ORC entries
->>> in alternative ranges.
->>
->> Agreed, it might be as simple as checking for insn->alt_group in the
->> INSN_STACK check or in update_insn_state().
->>
-> 
-> We could do that only for the "objtool orc generate" command. That way
-> "objtool check" would still check the alternative, but "objtool orc generate"
-> will just use the first half of the alternative (like it does today with
-> ANNOTATE_NOSPEC_ALTERNATIVE). We can even keep all ANNOTATE_NOSPEC_ALTERNATIVE
-> but only use them for "objtool orc generate".
-> 
+Fix that.
 
-I have checked and objtool doesn't emit ORC entries for alternative:
-decode_instructions() doesn't mark such section with sec->text = true
-so create_orc_sections() doesn't emit corresponding ORC entries.
+Fixes: 5d50bd440bc2 ("drm/udl: Make udl driver depend on CONFIG_USB")
+Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+---
+ arch/arc/configs/hsdk_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-So I think we can remove the ANNOTATE_NOSPEC_ALTERNATIVE directives,
-this will allow objtool to check the instructions but it still won't
-emit ORC entries (same behavior as today). In the future, if ORC
-eventually supports alternative we will be ready to have objtool emit
-ORC entries.
+diff --git a/arch/arc/configs/hsdk_defconfig b/arch/arc/configs/hsdk_defconfig
+index 0974226fab55..f79c15892704 100644
+--- a/arch/arc/configs/hsdk_defconfig
++++ b/arch/arc/configs/hsdk_defconfig
+@@ -65,6 +65,7 @@ CONFIG_DRM_UDL=y
+ CONFIG_DRM_ETNAVIV=y
+ CONFIG_FB=y
+ CONFIG_FRAMEBUFFER_CONSOLE=y
++CONFIG_USB
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_HCD_PLATFORM=y
+ CONFIG_USB_OHCI_HCD=y
+-- 
+2.21.1
 
-alex.
