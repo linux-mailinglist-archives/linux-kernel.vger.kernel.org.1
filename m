@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFFF91A0222
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 02:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E261A02D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 02:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727547AbgDGABs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 20:01:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35136 "EHLO mail.kernel.org"
+        id S1726860AbgDGAB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 20:01:26 -0400
+Received: from ozlabs.org ([203.11.71.1]:46803 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727421AbgDGABn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 20:01:43 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726754AbgDGABW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 20:01:22 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2808B208E4;
-        Tue,  7 Apr 2020 00:01:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586217702;
-        bh=Cu0bIJ+vz5khx9IVzUJPi8H2/VKCJ3eiUPqW2uMzAk8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E/NUX8p/xVlJgOX5TJ11GGyc5BoCrNq9dxdwZ1UClrUlJtEqrrM+0DOs7RhR6aV8w
-         KZThioS5YFOmLTykLbDOuGyyuy/h5g+rQ/EaMOQrppganuTCBsU0Tn3GPMj2gw1iqM
-         Oei5qpJxE3FYZ2DBIIK4Crm+OxU8hEoqwCPHQE0c=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Sasha Levin <sashal@kernel.org>, linux-i2c@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 35/35] i2c: pca-platform: Use platform_irq_get_optional
-Date:   Mon,  6 Apr 2020 20:00:57 -0400
-Message-Id: <20200407000058.16423-35-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200407000058.16423-1-sashal@kernel.org>
-References: <20200407000058.16423-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 48x6y60yQbz9sSb;
+        Tue,  7 Apr 2020 10:01:18 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
+        t=1586217679; bh=A/84cobeo/UVyjykfoa1X4y58WV7ot7+3H5XSPUqBL8=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=hP2f9sWpVYrH9K7zG38YwbnoPZPBD11DUfLrMOQBUUBpOyCozOs1zvMSYAEQMzxCo
+         qyUV01N/ioM0FJwECYpouUVXS3yeORxApJoAxgMyqnh09BNnRNbgQfkfUZgZ3RumH/
+         D5amVJn6VYoNQYgMiGyUN9pPcULmr3cLyJ6z1Ae4XhR78H2Xqk+ci8TM37rZQv+ucN
+         V/+lUlbLcfx91j8w5ncFyN32TfokXuLiyjmLxIH4hWKrt6xJR+lBxmts0fO5cM4qkl
+         leB5gj68Qtmmwu1cOb9h3AH0rbpyJfYk01fMTcs9Pj3VbVjMKTb7aNqgyCLSY6GWng
+         0Z1zL2glv/Avw==
+Message-ID: <06400bab5a734666bc5b9565e151eb477f9831b7.camel@ozlabs.org>
+Subject: Re: [PATCH 1/6] powerpc/spufs: simplify spufs core dumping
+From:   Jeremy Kerr <jk@ozlabs.org>
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Tue, 07 Apr 2020 08:01:16 +0800
+In-Reply-To: <20200406120312.1150405-2-hch@lst.de>
+References: <20200406120312.1150405-1-hch@lst.de>
+         <20200406120312.1150405-2-hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Hi Christoph,
 
-[ Upstream commit 14c1fe699cad9cb0acda4559c584f136d18fea50 ]
+> Replace the coredump ->read method with a ->dump method that must call
+> dump_emit itself.  That way we avoid a buffer allocation an messing with
+> set_fs() to call into code that is intended to deal with user buffers.
+> For the ->get case we can now use a small on-stack buffer and avoid
+> memory allocations as well.
 
-The interrupt is not required so use platform_irq_get_optional() to
-avoid error messages like
+That looks much better, thanks!
 
-  i2c-pca-platform 22080000.i2c: IRQ index 0 not found
+Reviewed-by: Jeremy Kerr <jk@ozlabs.org>
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/i2c/busses/i2c-pca-platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+However, I no longer have access to hardware to test this on. Michael,
+are the coredump tests in spufs-testsuite still alive?
 
-diff --git a/drivers/i2c/busses/i2c-pca-platform.c b/drivers/i2c/busses/i2c-pca-platform.c
-index a7a81846d5b1d..635dd697ac0bb 100644
---- a/drivers/i2c/busses/i2c-pca-platform.c
-+++ b/drivers/i2c/busses/i2c-pca-platform.c
-@@ -140,7 +140,7 @@ static int i2c_pca_pf_probe(struct platform_device *pdev)
- 	int ret = 0;
- 	int irq;
- 
--	irq = platform_get_irq(pdev, 0);
-+	irq = platform_get_irq_optional(pdev, 0);
- 	/* If irq is 0, we do polling. */
- 	if (irq < 0)
- 		irq = 0;
--- 
-2.20.1
+Cheers,
+
+
+Jeremy
 
