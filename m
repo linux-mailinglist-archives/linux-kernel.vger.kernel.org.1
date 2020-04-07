@@ -2,93 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 263301A09D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9811A09E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:17:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbgDGJPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:15:47 -0400
-Received: from foss.arm.com ([217.140.110.172]:53870 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726562AbgDGJPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:15:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20BE830E;
-        Tue,  7 Apr 2020 02:15:46 -0700 (PDT)
-Received: from [10.37.12.138] (unknown [10.37.12.138])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10B563F73D;
-        Tue,  7 Apr 2020 02:15:42 -0700 (PDT)
-Subject: Re: [PATCH] kernel/time: Add max_time_namespaces ucount
-To:     mtk.manpages@gmail.com, Andrei Vagin <avagin@gmail.com>
-Cc:     Dmitry Safonov via Containers 
-        <containers@lists.linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Andrey Vagin <avagin@openvz.org>,
-        Dmitry Safonov <dima@arista.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>, stable@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Adrian Reber <adrian@lisas.de>
-References: <20200406171342.128733-1-dima@arista.com>
- <20200407033148.GB494464@gmail.com>
- <CAKgNAkgTdND5m60Adb2O+SnogcUcho15F9cF5sZt_yrDF0REYg@mail.gmail.com>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <e6718888-3a18-45da-e091-577c3822d6ac@arm.com>
-Date:   Tue, 7 Apr 2020 10:16:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1728026AbgDGJRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:17:35 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:40830 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgDGJRe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 05:17:34 -0400
+Received: by mail-oi1-f194.google.com with SMTP id y71so871389oia.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 02:17:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D77AbQbLILoEautT7eBJR6pylqABbqtx1s3GXkCGPvU=;
+        b=L8h8JHWPPE5e5IjKHj/KIrGUW7OQSTxyIdoYT0avlrAxkQPITdHDJTCss8bsl6BDVo
+         Bv6BYIQZtU56B8GM2b23qbu4M3zaRj7HqQcUSVsJ7gb+IaWtYK8RsCUQBAo93GBtmvcx
+         /e6n3xQUuo28Leh45AXBUL7HOcHn2lKhbwCZARkCSnCZz1brOLsHEgZiThmFPUt69rIb
+         yrcRpoEY+NM2dP5So+XBvyqvoTrGcT3tEMVH82rAG2eKeSiKuLYXolsPDZDImYKl3R45
+         5IpPxLz4n4rTGmQvGoJe6y//E04Y2SU92MpczmEiKdtABlx96GLPxoXlaGY2RyAMAt4+
+         Ij1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D77AbQbLILoEautT7eBJR6pylqABbqtx1s3GXkCGPvU=;
+        b=ue4ESYVju2XyHvsmk2S/om5KUu2CB06g7bXLEI+UbU0a5RFMpczl+gHlAvWDg3sI/l
+         Be7zWlN6ybgtZ8nKlU+KPKQk1/ndQi4DnTvrQwVQkl1VkZ5JSkVA5g/06d3IybH2aV7G
+         El1sVbsBFpL45rqqYtKuhuqV5EB1qDm3g44275Bfa7qJ/nkMrGqhPrk1PJgu2+bwl6tT
+         fQJimfrW7tVi+blOUghgaO/MinHJW90gfEU9PZk4LLKlaSFjrRAMQ82x8/xgRW7Lygzi
+         y96NRV7Ti/PU5rorMxibAzhDD8ihMa6MMyr+AI4/zCHB1GYHB6+bw6GH1B22yOFhTMN0
+         273A==
+X-Gm-Message-State: AGi0PuaQqSFYoJAZ665eZFXf5Ulk9V55OoUeICszE5jDardaVQZqY+kV
+        fPnh4tZ+tn9IqGsJbpAnXX5DuBzR/MQhMnQDeBzxwfXq
+X-Google-Smtp-Source: APiQypIE+B91iz8/BuW7W1OkVLd6tGb2FK7jOm9bG10/ZZbWWtcBmU0LGdfCSLwh++ulbiEdTNQ6PM/IdVf7ydrdWXI=
+X-Received: by 2002:a05:6808:a08:: with SMTP id n8mr929598oij.91.1586251052494;
+ Tue, 07 Apr 2020 02:17:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAKgNAkgTdND5m60Adb2O+SnogcUcho15F9cF5sZt_yrDF0REYg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1584352425.git.zong.li@sifive.com> <286a940ef8fbc4480c63679271eea440d167a258.1584352425.git.zong.li@sifive.com>
+ <507f88a2-63c0-f615-2684-a200dd44c34a@ghiti.fr>
+In-Reply-To: <507f88a2-63c0-f615-2684-a200dd44c34a@ghiti.fr>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Tue, 7 Apr 2020 17:17:22 +0800
+Message-ID: <CANXhq0oduoX-gdG17FCwqpS5GAvY9w13B8a7YP0t2vNAHvKB_g@mail.gmail.com>
+Subject: Re: [PATCH RFC 2/8] riscv/kaslr: introduce functions to clear page table
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/20 9:22 AM, Michael Kerrisk (man-pages) wrote:
-> On Tue, 7 Apr 2020 at 05:31, Andrei Vagin <avagin@gmail.com> wrote:
->>
->> On Mon, Apr 06, 2020 at 06:13:42PM +0100, Dmitry Safonov via Containers wrote:
->>> Introduce missing time namespaces limit per-userns.
->>> Michael noticed that userns limit for number of time namespaces is
->>> missing.
->>>
->>> Furthermore, time namespace introduced UCOUNT_TIME_NAMESPACES, but
->>> didn't introduce an array member in user_table[]. It would make array's
->>> initialisation OOB write, but by luck the user_table array has
->>> an excessive empty member (all accesses to the array are limited with
->>> UCOUNT_COUNTS - so it silently reuses the last free member.
->>>
->>> Fixes user-visible regression: max_inotify_instances by reason of the
->>> missing UCOUNT_ENTRY() has limited max number of namespaces instead of
->>> the number of inotify instances.
->>>
->>> Fixes: 769071ac9f20 ("ns: Introduce Time Namespace")
->>> Cc: Adrian Reber <adrian@lisas.de>
->>> Cc: Andrey Vagin <avagin@openvz.org>
->>> Cc: Christian Brauner <christian.brauner@ubuntu.com>
->>> Cc: Eric W. Biederman <ebiederm@xmission.com>
->>> Cc: Ingo Molnar <mingo@redhat.com>
->>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>> Cc: Vincenzo Frascino <vincenzo.frascino@arm.com>
->>> Cc: Containers <containers@lists.linux-foundation.org>
->>> Cc: Linux API <linux-api@vger.kernel.org>
->>> Cc: stable@kernel.org # v5.6+
->>> Reported-by: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
->>
->> Acked-by: Andrei Vagin <avagin@gmail.com>
-> 
-> Acked-by: Michael Kerrisk <mtk.manpages@gmail.com>
-> 
-> 
-> 
+On Tue, Apr 7, 2020 at 1:09 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>
+> On 3/24/20 3:30 AM, Zong Li wrote:
+> > In KASLR, we need to re-create page table after getting a random
+> > destination. Introduce clear function to clear old content. Also, the
+> > page table entries allow writing value when it's empty, so we have to
+> > clear the early page table.
+> >
+> > This patch is a preparation to support KASLR.
+> >
+> > Signed-off-by: Zong Li <zong.li@sifive.com>
+> > ---
+> >   arch/riscv/mm/init.c | 54 ++++++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 54 insertions(+)
+> >
+> > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> > index ace5d74fd939..51e263c04fa2 100644
+> > --- a/arch/riscv/mm/init.c
+> > +++ b/arch/riscv/mm/init.c
+> > @@ -315,6 +315,7 @@ static void __init create_pmd_mapping(pmd_t *pmdp,
+> >   #define get_pgd_next_virt(__pa)     get_pmd_virt(__pa)
+> >   #define create_pgd_next_mapping(__nextp, __va, __pa, __sz, __prot)  \
+> >       create_pmd_mapping(__nextp, __va, __pa, __sz, __prot)
+> > +#define clear_pgd_next_mapping(__nextp)      clear_pmd(__nextp)
+> >   #define fixmap_pgd_next             fixmap_pmd
+> >   #else
+> >   #define pgd_next_t          pte_t
+> > @@ -322,6 +323,7 @@ static void __init create_pmd_mapping(pmd_t *pmdp,
+> >   #define get_pgd_next_virt(__pa)     get_pte_virt(__pa)
+> >   #define create_pgd_next_mapping(__nextp, __va, __pa, __sz, __prot)  \
+> >       create_pte_mapping(__nextp, __va, __pa, __sz, __prot)
+> > +#define clear_pgd_next_mapping(__nextp)      clear_pte(__nextp)
+> >   #define fixmap_pgd_next             fixmap_pte
+> >   #endif
+> >
+> > @@ -361,6 +363,58 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
+> >       return PMD_SIZE;
+> >   }
+> >
+> > +#ifdef CONFIG_RANDOMIZE_BASE
+> > +static void __init clear_pte(pte_t *ptep)
+> > +{
+> > +     unsigned int i;
+> > +
+> > +     for (i = 0; i < PTRS_PER_PTE; i++)
+> > +             if (!pte_none(ptep[i]))
+> > +                     ptep[i] = __pte(0);
+> > +}
+> > +
+> > +static void __init clear_pmd(pmd_t *pmdp)
+> > +{
+> > +     unsigned int i;
+> > +     pte_t *ptep;
+> > +     phys_addr_t pte_phys;
+> > +     uintptr_t kaslr_offset = get_kaslr_offset();
+> > +
+> > +     for (i = 0; i < PTRS_PER_PMD; i++)
+> > +             if (!pmd_none(pmdp[i])) {
+> > +                     if (pmd_leaf(pmdp[i])) {
+> > +                             pmd_clear(&pmdp[i]);
+> > +                     } else {
+> > +                             pte_phys = PFN_PHYS(_pmd_pfn(pmdp[i]));
+> > +                             ptep = get_pte_virt(pte_phys + kaslr_offset);
+> > +                             clear_pte(ptep);
+> > +                             pmd_clear(&pmdp[i]);
+> > +                     }
+> > +             }
+> > +}
+> > +
+> > +static void __init clear_pgd(pgd_t *pgdp)
+> > +{
+> > +     unsigned int i;
+> > +     pgd_next_t *nextp;
+> > +     phys_addr_t next_phys;
+> > +     uintptr_t kaslr_offset = get_kaslr_offset();
+> > +
+> > +     for (i = 0; i < PTRS_PER_PGD; i++)
+> > +             if (pgd_val(pgdp[i]) != 0) {
+> > +                     if (pgd_leaf(pgd_val(pgdp[i]))) {
+> > +                             set_pgd(&pgdp[i], __pgd(0));
+> > +                     } else {
+> > +                             next_phys = PFN_PHYS(_pgd_pfn(pgdp[i]));
+> > +                             nextp = get_pgd_next_virt(next_phys +
+> > +                                                       kaslr_offset);
+> > +                             clear_pgd_next_mapping(nextp);
+> > +                             set_pgd(&pgdp[i], __pgd(0));
+> > +                     }
+> > +             }
+> > +}
+> > +#endif
+> > +
+> >   /*
+> >    * setup_vm() is called from head.S with MMU-off.
+> >    *
+> >
+>
+> If this is only for clearing early page tables, a memset is way easier
+> as there is only one page per level to clear.
+>
 
-Acked-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+Yes, it's a better way. Thanks.
 
--- 
-Regards,
-Vincenzo
+> Alex
