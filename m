@@ -2,110 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5BB1A10EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C19C1A10EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728036AbgDGQDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:03:49 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:24499 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727991AbgDGQDt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:03:49 -0400
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 037G3Ue9024707;
-        Wed, 8 Apr 2020 01:03:30 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 037G3Ue9024707
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1586275411;
-        bh=H1J7FezWT1dgglGN/erJ3S7DC6IYDiQ5DhPkx5GnfYo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=djBLvGd0L88sTtMnV7Ktcs7LOCu7upEpPBj4r3AIG6B3UH80aD6p0N80wXfqBwexX
-         GmI2q73EAYBwYtYWbCYlXFHLvCk0pmkSQe7agC/KKcQcmjoZR+h0rbU2Yq0JACA1ny
-         XCKJt7iKiI+sEqKyVoMsaqGz1LsWXxTKQvfWa3Ud3YJaWoQ+vr/7oZU4wZ0cAyyBBZ
-         LEi0D3KUjNTJbnHCtOGF976xzP0f7k0HYwaZx3Pi5729+UL1iRziZsZbOIigrzHzxj
-         TE8La+DxQ1PoUTkQxvPG38FHx+NP2C5EJ6yAZ3l13CasR4auPyw7KC8VV3UwbW2lJp
-         qrMaiN+3XQoeQ==
-X-Nifty-SrcIP: [209.85.217.44]
-Received: by mail-vs1-f44.google.com with SMTP id s10so2507357vsi.9;
-        Tue, 07 Apr 2020 09:03:30 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYav1JspkgY3FaVtAbcoJieQT8N6gSe4oRdkT3VJJ3lNyFxMjKR
-        g+Z3gcVjx7pdfSgZmeW6gZSA0aLxFTOrN+iId8M=
-X-Google-Smtp-Source: APiQypJdib1woalCQ47LsPcjFIUt+uD0oJywtqnU3blPMN/3x09w4VC5A1Jftlia+RledGNP4o+h/SP9BtoezdZD7j8=
-X-Received: by 2002:a67:6542:: with SMTP id z63mr2511247vsb.179.1586275409554;
- Tue, 07 Apr 2020 09:03:29 -0700 (PDT)
+        id S1728108AbgDGQD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:03:57 -0400
+Received: from mout.gmx.net ([212.227.15.19]:40645 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728000AbgDGQD5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:03:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1586275414;
+        bh=e3mRm5CWAZ94bLSIQgu24+nnAMT62ywXZ1pN+mDxiVA=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=jIN5hjrSASiCcNRUHqRZCzPOYwhWWdaVRg9MoG+Uq2mqNFDGhB0vSQK/n2MN3VmSy
+         h92TJRIfqf5DB+Z+GEjspLoee1s236JsuuNPn/DHrq71lNusQKjsPgaa99S4s1hy8y
+         QKZlRV+KDzvHwXUAI5SagxvyAhK7cwpy6HywOOaE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from lenovo-laptop ([82.19.195.159]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvbFs-1j3d5f3HN8-00sfoC; Tue, 07
+ Apr 2020 18:03:33 +0200
+Date:   Tue, 7 Apr 2020 17:03:30 +0100
+From:   Alex Dewar <alex.dewar@gmx.co.uk>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     cocci@systeme.lip6.fr, kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Allison Randal <allison@lohutok.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Enrico Weigelt <lkml@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Coccinelle: zalloc-simple: Fix patch mode for
+ dma_alloc_coherent()
+Message-ID: <20200407160330.5m75sfkhrrx3wgrl@lenovo-laptop>
+References: <beeed2c8-1b5a-66a8-ec41-f5770c04bae9@web.de>
 MIME-Version: 1.0
-References: <20200405163052.18942-1-masahiroy@kernel.org> <20200406110333.GA6266@alpha.franken.de>
-In-Reply-To: <20200406110333.GA6266@alpha.franken.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 8 Apr 2020 01:02:53 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARGO5ciqaseZ7z1k+e-dVh9rU+HY3-1H0XYMwq6+5PqaQ@mail.gmail.com>
-Message-ID: <CAK7LNARGO5ciqaseZ7z1k+e-dVh9rU+HY3-1H0XYMwq6+5PqaQ@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: fw: arc: add __weak to prom_meminit and prom_free_prom_memory
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux-MIPS <linux-mips@linux-mips.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <beeed2c8-1b5a-66a8-ec41-f5770c04bae9@web.de>
+X-Provags-ID: V03:K1:VyTCQk3EiMwZojK0lcw8VVypr4boid8PMeIUQcoFh5hfKXppl56
+ f55N+K3JBSSRb1BRquGaiX4iXL3AXghXl6kjS9BQyMfsiE7wKmAzQjMA6az0OKeLnxKig21
+ 0jtHzgLZDn7oelFHXALFodCvR1ijjVom5BFJsf81wct7THQwETUEq5ke8Cip0Y+QW5kyvzn
+ tgfNXExVv5a25wkN2Eo4g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7YENew970fU=:3ut9H6t0BFdslC+tkJ3dnR
+ 4vEXMQannVKiiPvU4Ifp81a8B/GXumK0AUngL5R0LwXPAGET5HxyNp9IvUET//yuSKo1LgWJM
+ zC+s4sn+xZ4ESLWwFE0oJX42w94ZdqosLisZaQqpAlkAF6Rkj/EWXNkNZ1tkmmlJOl/uzPIny
+ 5TTUVZMDkN4kxA9iOUGfSf9ikSxrPITG3E+urpXnOCVWM5ZgYfslrxuvyL0At4dFTTfiaYBW0
+ FqxTgTSDTCUOu52A+JEfZa65NvVBB2ldi4sU/VhalGYYa6FJGp85NsHrhzj+49K1RRJaUqd5D
+ 2+6bT+IMpLL+uiol8SpyBVsottPF2KlkEFLAnNT9+RG4hpjq6YDfJ6pKD5mds1KoNhaLiJQiy
+ 6tOGt/XM+4bkUFaqXGGLqC3Je+zto3vqMW5lx1y+R60pC1oA2FEWKsPYGkjWKvVu527zi6zyj
+ WRa1UT97yPy9FuKTlYoiPJ6DxehYCZ4b4rI8mfbrpwZCGJ0nySBWcrQ5yxRP0YkmOD39NYLYP
+ 2clVJS4sDs+vUpZY5kp882AvQyStkPuJZ5gYgzAkBsjaZd3YaKN9FXOJxhkDhKRBKRqj6T2J3
+ WgmXLgxDl10l8OveZP5X7QBUBbCC3RSvfYHyPp+nCbzZPHT2IXXikUE56feY34aZkpgqI9TD4
+ 7gH/zKpSlp9avP9PSCfkzfsYe8JEI7SI+VOLHVRZBl9RfLoOGZghWWrha6kVKZ8gNhixV2Npz
+ QeHs6xVdAgbt3RMfz1QEHOdGpHxsRyFcw/bZ1Uoo4dE2JH91/WFVeLl84J6iM+F5oF/oSXC8S
+ Yn4EbLN6PzaiIt4Sf7OPCssoA0uNr41i4mlZJoKbpwA+8lw+XYzWZM5JN77FnhHQynKcllLmb
+ LtamXhONciuKcqE9P0lJfLtKGrIbLlEQJmsj8fkeJGMZ0HH0rLXkIfgLMhVf9/++xVcA4/e4l
+ 2ZWGFPlANUS1cX6bjWcWmTnF6Kj+JMrm1ccvgCRVPgL+/I9QgG4g4RYofMrca4tSnX4bTPOHp
+ qpnXzrPel7V2RzxAARtJ8zrbP42Z/br8iNMZqfVMYmGq1eprif+D5ixyt8GHCstUw8kxjpycJ
+ Y9QqL2IDdi/tOtD7PgCjvKs/+cLQuvgFwDa0Fb5btAQraaJ2Px1Qu2zMg1tm0RsIDr8n2to2t
+ Uzdjg7ZfJQtSQj9uhiJB3P9Ne7Gr6KVZWrFsYRlfcJohjVJOFUUaRSP4hrNoYfA6tdLPSxlNR
+ iEBlZEtOjOrF1ex8v
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 8:36 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On Sat, Apr 04, 2020 at 09:06:46AM +0200, Markus Elfring wrote:
+> > Commit dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()"), in
+> > removing dma_zalloc_coherent() treewide, inadvertently removed the pat=
+ch
+> > rule for dma_alloc_coherent(), leaving Coccinelle unable to auto-gener=
+ate
+> > patches for this case. Fix this.
 >
-> On Mon, Apr 06, 2020 at 01:30:52AM +0900, Masahiro Yamada wrote:
-> > As far as I understood, prom_meminit() in arch/mips/fw/arc/memory.c
-> > is overridden by the one in arch/mips/sgi-ip32/ip32-memory.c if
-> > CONFIG_SGI_IP32 is enabled.
-> >
-> > The use of EXPORT_SYMBOL in static libraries potentially causes a
-> > problem for the llvm linker [1]. So, I want to forcibly link lib-y
-> > objects to vmlinux when CONFIG_MODULES=y.
-> >
-> > As a groundwork, we must fix multiple definitions that have previously
-> > been hidden by lib-y.
-> >
-> > The prom_cleanup() in this file is already marked as __weak (because
-> > it is overridden by the one in arch/mips/sgi-ip22/ip22-mc.c).
-> > I think it should be OK to do the same for these two.
-> >
-> > [1]: https://github.com/ClangBuiltLinux/linux/issues/515
-> >
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> > If MIPS maintainers ack this patch,
-> > I want to inser it before the following patch:
->
->
-> Acked-By: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
->
-> Thomas.
+> I suggest to reconsider also the distribution of recipients for your pat=
+ch
+> according to the fields =E2=80=9CCc=E2=80=9D and =E2=80=9CTo=E2=80=9D.
 
-
-Applied to linux-kbuild with Thomas' Ack.
-
-Thanks.
-
+Good point.
 
 >
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+> Will the software development attention grow in a way so that further
+> implementation details can be adjusted also for the mentioned SmPL scrip=
+t?
+
+I'm not sure I understand what you mean. Would you mind clarifying?
+
+Best,
+Alex
+
 >
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200406110333.GA6266%40alpha.franken.de.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> Regards,
+> Markus
