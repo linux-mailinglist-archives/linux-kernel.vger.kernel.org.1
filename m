@@ -2,256 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F38B91A045A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F2C1A046E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgDGBRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 21:17:16 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:34254 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726546AbgDGBRO (ORCPT
+        id S1726365AbgDGBVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 21:21:42 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:18303 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726277AbgDGBVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 21:17:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586222232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L4yUJTneo14gmnV6yvCsrtosUccNNJJsj0HwyG8nxy8=;
-        b=Wjfk+yM+I387YpK/KLewrugga5h1+BAJ2A64kT76OHWOPPS25RGF4khnPWiUSLMv2mmZJp
-        L7SiQFUCDDHyTL5Gk4jW5jukHSfQ3f2Z6+ov2GsgY5e9dXnqv08oQ8gYE5qNl8l5xHEqae
-        gS0And4ToFguU/JoGwsxlXvalPtBJhU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-79-zuGzb_CCMpCN7_KGjAsr4w-1; Mon, 06 Apr 2020 21:17:11 -0400
-X-MC-Unique: zuGzb_CCMpCN7_KGjAsr4w-1
-Received: by mail-wr1-f71.google.com with SMTP id t13so875311wru.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:17:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=L4yUJTneo14gmnV6yvCsrtosUccNNJJsj0HwyG8nxy8=;
-        b=TDG7sWNU10S/Fp4lahsZDsYehY59FvmTRR7Al7B+GxuQUIcNQakbv2uwIoUPdRF726
-         O2B+G/U8ojHeKmivKJI7kGMtv2SAz/JFx5VomPXzdZP7DV7PBCSWgbZnWOzlkH7uHOq1
-         OXbHoIMffa2Xq5kiJYjBImqJX7so+qgRUffaq2ve0AawSx2fPSkhUncXt30ZBWkHj8Pv
-         m32/6u39scytPtf+Qpy90Jp/15+cwQf6h6Trcm7rvVj6NJdf2tHEripJTfuyZ4rN8BKM
-         vPI1SIBSz2g0moal3F3za+wdnLD+BR1mzcOtw5F2QJ+ZI3LhcgTn2opK7vTdCszQbcTL
-         nxeA==
-X-Gm-Message-State: AGi0PuYOifnx5e5SkbGM7UEQN+5vwqnjxLQdwulwbS7jr75tRtwMrRtu
-        EfuOT75j3vW72U0i8qTUHgHO2X7Ehbwpv9xmXa96MvzWFtqs5kiIsXOyNTEWhsk9HFVF5UpxbMv
-        OXm4FuXUe6C2MWpnruQw+2khU
-X-Received: by 2002:a1c:5fc4:: with SMTP id t187mr374384wmb.181.1586222229740;
-        Mon, 06 Apr 2020 18:17:09 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKkiNknhVaK+RZPuldKf4eAt3hD9+QrpIeBJqjHyc1vicdnoI2VoW6Zw94N1UlJe5J6ZKdvFQ==
-X-Received: by 2002:a1c:5fc4:: with SMTP id t187mr374365wmb.181.1586222229459;
-        Mon, 06 Apr 2020 18:17:09 -0700 (PDT)
-Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id a145sm122477wmd.20.2020.04.06.18.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 18:17:09 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 21:17:07 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Eugenio =?utf-8?B?UMOpcmV6?= <eperezma@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH v8 19/19] vhost: batching fetches
-Message-ID: <20200407011612.478226-20-mst@redhat.com>
-References: <20200407011612.478226-1-mst@redhat.com>
+        Mon, 6 Apr 2020 21:21:41 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e8bd5700000>; Mon, 06 Apr 2020 18:20:48 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 06 Apr 2020 18:21:40 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 06 Apr 2020 18:21:40 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr
+ 2020 01:21:40 +0000
+Received: from [10.2.60.145] (172.20.13.39) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr 2020
+ 01:21:39 +0000
+Subject: Re: [PATCH 1/2] mm: clarify __GFP_MEMALLOC usage
+To:     NeilBrown <neilb@suse.de>, Michal Hocko <mhocko@kernel.org>
+CC:     David Rientjes <rientjes@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
+        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20200403083543.11552-1-mhocko@kernel.org>
+ <20200403083543.11552-2-mhocko@kernel.org>
+ <alpine.DEB.2.21.2004031238571.230548@chino.kir.corp.google.com>
+ <87blo8xnz2.fsf@notabene.neil.brown.name>
+ <20200406070137.GC19426@dhcp22.suse.cz>
+ <4f861f07-4b47-8ddc-f783-10201ea302d3@nvidia.com>
+ <875zecw1n6.fsf@notabene.neil.brown.name>
+From:   John Hubbard <jhubbard@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <34cb5019-9fab-4dfd-db48-c3f88fe5614c@nvidia.com>
+Date:   Mon, 6 Apr 2020 18:21:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200407011612.478226-1-mst@redhat.com>
-X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
-X-Mutt-Fcc: =sent
+In-Reply-To: <875zecw1n6.fsf@notabene.neil.brown.name>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586222448; bh=LYXDUK+GJft3mnfsdxuky7tVzUNlHTrLGp5zc2o/mDo=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Jl/QqwDKYXHNIQohfKGwFXrYefebguhhbbIxJJtXWn2OBMU2XSKkvCx9qNgcIb/nS
+         XqJru4pynZpuMwAtLpfjpZIRVoJBQUWu6qG19aN3w4VWYFL8DRqitD2ArHjWsz7lEb
+         ZhCgVC9skTQdSs2jfmiMpjl6BZbe3Jse6/tVWkSplo0FqnJKPUdN6lzaLgenWyWLBB
+         dsQKEHwk1WbcBYwWwnGhiHgHI0kTmPyq4mSYlN7bGrhb5bYSd+nt/Mkd4A5Kna0Ih3
+         PHKFGIDW2IYetxeHBldIHbi4ayfJd3VGaDRvRkCSLY72eZ6Tt6ah1IGd4iwFDDLr3F
+         1n19FqbN5jQYQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With this patch applied, new and old code perform identically.
+On 4/6/20 6:00 PM, NeilBrown wrote:
+...
+>>> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+>>> index e5b817cb86e7..9cacef1a3ee0 100644
+>>> --- a/include/linux/gfp.h
+>>> +++ b/include/linux/gfp.h
+>>> @@ -110,6 +110,11 @@ struct vm_area_struct;
+>>>     * the caller guarantees the allocation will allow more memory to be freed
+>>>     * very shortly e.g. process exiting or swapping. Users either should
+>>>     * be the MM or co-ordinating closely with the VM (e.g. swap over NFS).
+>>> + * Users of this flag have to be extremely careful to not deplete the reserve
+>>> + * completely and implement a throttling mechanism which controls the consumption
+>>> + * of the reserve based on the amount of freed memory.
+>>> + * Usage of a pre-allocated pool (e.g. mempool) should be always considered before
+>>> + * using this flag.
+> 
+> I think this version is pretty good.
+> 
+>>>     *
+>>>     * %__GFP_NOMEMALLOC is used to explicitly forbid access to emergency reserves.
+>>>     * This takes precedence over the %__GFP_MEMALLOC flag if both are set.
+>>>
+>>
+>> Hi Michal and all,
+>>
+>> How about using approximately this wording instead? I found Neil's wording to be
+>> especially helpful so I mixed it in. (Also fixed a couple of slight 80-col overruns.)
+>>
+>> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+>> index be2754841369..c247a911d8c7 100644
+>> --- a/include/linux/gfp.h
+>> +++ b/include/linux/gfp.h
+>> @@ -111,6 +111,15 @@ struct vm_area_struct;
+>>     * very shortly e.g. process exiting or swapping. Users either should
+>>     * be the MM or co-ordinating closely with the VM (e.g. swap over NFS).
+>>     *
+>> + * To be extra clear: users of __GFP_MEMALLOC must be working to free other
+>> + * memory, and that other memory needs to be freed "soon"; specifically, before
+>> + * the reserve is exhausted. This generally implies a throttling mechanism that
+>> + * balances the amount of __GFP_MEMALLOC memory used against the amount that the
+>> + * caller is about to free.
+> 
+> I don't like this change. "balances the amount ... is about to free"
+> does say anything about time, so it doesn't seem to be about throttling.
+> 
+> I think it is hard to write rules because the rules are a bit spongey.
+> 
+> With mempools, we have a nice clear rule.  When you allocate from a
+> mempool you must have a clear path to freeing that allocation which will
+> not block on memory allocation except from a subordinate mempool.  This
+> implies a partial ordering between mempools.  When you have layered
+> block devices the path through the layers from filesystem down to
+> hardware defines the order.  It isn't enforced, but it is quite easy to
+> reason about.
+> 
+> GFP_MEMALLOC effectively provides multiple mempools.  So it could
+> theoretically deadlock if multiple long dependency chains
+> happened. i.e. if 1000 threads each make a GFP_MEMALLOC allocation and
+> then need to make another one before the first can be freed - then you
+> hit problems.  There is no formal way to guarantee that this doesn't
+> happen.  We just say "be gentle" and minimize the users of this flag,
+> and keep more memory in reserve than we really need.
+> Note that 'threads' here might not be Linux tasks.  If you have an IO
+> request that proceed asynchronously, moving from queue to queue and
+> being handled by different task, then each one is a "thread" for the
+> purpose of understanding mem-alloc dependency.
+> 
+> So maybe what I really should focus on is not how quickly things happen,
+> but how many happen concurrently.  The idea of throttling is to allow
+> previous requests to complete before we start too many more.
+> 
+> With Swap-over-NFS, some of the things that might need to be allocated
+> are routing table entries.  These scale with the number of NFS servers
+> rather than the number of IO requests, so they are not going to cause
+> concurrency problems.
+> We also need memory to store replies, but these never exceed the number
+> of pending requests, so there is limited concurrency there.
+> NFS can send a lot of requests in parallel, but the main limit is the
+> RPC "slot table" and while that grows dynamically, it does so with
+> GFP_NOFS, so it can block or fail (I wonder if that should explicitly
+> disable the use of the reserves).
+> 
+> So there a limit on concurrency imposed by non-GFP_MEMALLOC allocations
+> 
+> So ... maybe the documentation should say that boundless concurrency of
+> allocations (i.e. one module allocating a boundless number of times
+> before previous allocations are freed) must be avoided.
+> 
 
-Lots of extra optimizations are now possible, e.g.
-we can fetch multiple heads with copy_from/to_user now.
-We can get rid of maintaining the log array.  Etc etc.
+Well, that's a good discussion that you just wrote, above, and I think it
+demonstrates that it's hard to describe the situation in just a couple of
+sentences. With that in mind, perhaps it's best to take the above notes
+as a starting point, adjust them slightly and drop them into
+Documentation/core-api/memory-allocation.rst ?
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Eugenio Pérez <eperezma@redhat.com>
-Link: https://lore.kernel.org/r/20200401183118.8334-4-eperezma@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/vhost/test.c  |  2 +-
- drivers/vhost/vhost.c | 47 ++++++++++++++++++++++++++++++++++++++-----
- drivers/vhost/vhost.h |  5 ++++-
- 3 files changed, 47 insertions(+), 7 deletions(-)
+Then the comments here could refer to it.
 
-diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
-index b06680833f03..251ca723ac3f 100644
---- a/drivers/vhost/test.c
-+++ b/drivers/vhost/test.c
-@@ -119,7 +119,7 @@ static int vhost_test_open(struct inode *inode, struct file *f)
- 	dev = &n->dev;
- 	vqs[VHOST_TEST_VQ] = &n->vqs[VHOST_TEST_VQ];
- 	n->vqs[VHOST_TEST_VQ].handle_kick = handle_vq_kick;
--	vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV,
-+	vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV + 64,
- 		       VHOST_TEST_PKT_WEIGHT, VHOST_TEST_WEIGHT, NULL);
- 
- 	f->private_data = n;
-diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-index 6ca658c21e15..0395229486a9 100644
---- a/drivers/vhost/vhost.c
-+++ b/drivers/vhost/vhost.c
-@@ -299,6 +299,7 @@ static void vhost_vq_reset(struct vhost_dev *dev,
- {
- 	vq->num = 1;
- 	vq->ndescs = 0;
-+	vq->first_desc = 0;
- 	vq->desc = NULL;
- 	vq->avail = NULL;
- 	vq->used = NULL;
-@@ -367,6 +368,11 @@ static int vhost_worker(void *data)
- 	return 0;
- }
- 
-+static int vhost_vq_num_batch_descs(struct vhost_virtqueue *vq)
-+{
-+	return vq->max_descs - UIO_MAXIOV;
-+}
-+
- static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
- {
- 	kfree(vq->descs);
-@@ -389,6 +395,9 @@ static long vhost_dev_alloc_iovecs(struct vhost_dev *dev)
- 	for (i = 0; i < dev->nvqs; ++i) {
- 		vq = dev->vqs[i];
- 		vq->max_descs = dev->iov_limit;
-+		if (vhost_vq_num_batch_descs(vq) < 0) {
-+			return -EINVAL;
-+		}
- 		vq->descs = kmalloc_array(vq->max_descs,
- 					  sizeof(*vq->descs),
- 					  GFP_KERNEL);
-@@ -1570,6 +1579,7 @@ long vhost_vring_ioctl(struct vhost_dev *d, unsigned int ioctl, void __user *arg
- 		vq->last_avail_idx = s.num;
- 		/* Forget the cached index value. */
- 		vq->avail_idx = vq->last_avail_idx;
-+		vq->ndescs = vq->first_desc = 0;
- 		break;
- 	case VHOST_GET_VRING_BASE:
- 		s.index = idx;
-@@ -2136,7 +2146,7 @@ static int fetch_indirect_descs(struct vhost_virtqueue *vq,
- 	return 0;
- }
- 
--static int fetch_descs(struct vhost_virtqueue *vq)
-+static int fetch_buf(struct vhost_virtqueue *vq)
- {
- 	unsigned int i, head, found = 0;
- 	struct vhost_desc *last;
-@@ -2149,7 +2159,11 @@ static int fetch_descs(struct vhost_virtqueue *vq)
- 	/* Check it isn't doing very strange things with descriptor numbers. */
- 	last_avail_idx = vq->last_avail_idx;
- 
--	if (vq->avail_idx == vq->last_avail_idx) {
-+	if (unlikely(vq->avail_idx == vq->last_avail_idx)) {
-+		/* If we already have work to do, don't bother re-checking. */
-+		if (likely(vq->ndescs))
-+			return vq->num;
-+
- 		if (unlikely(vhost_get_avail_idx(vq, &avail_idx))) {
- 			vq_err(vq, "Failed to access avail idx at %p\n",
- 				&vq->avail->idx);
-@@ -2240,6 +2254,24 @@ static int fetch_descs(struct vhost_virtqueue *vq)
- 	return 0;
- }
- 
-+static int fetch_descs(struct vhost_virtqueue *vq)
-+{
-+	int ret = 0;
-+
-+	if (unlikely(vq->first_desc >= vq->ndescs)) {
-+		vq->first_desc = 0;
-+		vq->ndescs = 0;
-+	}
-+
-+	if (vq->ndescs)
-+		return 0;
-+
-+	while (!ret && vq->ndescs <= vhost_vq_num_batch_descs(vq))
-+		ret = fetch_buf(vq);
-+
-+	return vq->ndescs ? 0 : ret;
-+}
-+
- /* This looks in the virtqueue and for the first available buffer, and converts
-  * it to an iovec for convenient access.  Since descriptors consist of some
-  * number of output then some number of input descriptors, it's actually two
-@@ -2265,7 +2297,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- 	if (unlikely(log))
- 		*log_num = 0;
- 
--	for (i = 0; i < vq->ndescs; ++i) {
-+	for (i = vq->first_desc; i < vq->ndescs; ++i) {
- 		unsigned iov_count = *in_num + *out_num;
- 		struct vhost_desc *desc = &vq->descs[i];
- 		int access;
-@@ -2311,14 +2343,19 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
- 		}
- 
- 		ret = desc->id;
-+
-+		if (!(desc->flags & VRING_DESC_F_NEXT))
-+			break;
- 	}
- 
--	vq->ndescs = 0;
-+	vq->first_desc = i + 1;
- 
- 	return ret;
- 
- err:
--	vhost_discard_vq_desc(vq, 1);
-+	for (i = vq->first_desc; i < vq->ndescs; ++i)
-+		if (!(vq->descs[i].flags & VRING_DESC_F_NEXT))
-+			vhost_discard_vq_desc(vq, 1);
- 	vq->ndescs = 0;
- 
- 	return ret;
-diff --git a/drivers/vhost/vhost.h b/drivers/vhost/vhost.h
-index 76356edee8e5..a67bda9792ec 100644
---- a/drivers/vhost/vhost.h
-+++ b/drivers/vhost/vhost.h
-@@ -81,6 +81,7 @@ struct vhost_virtqueue {
- 
- 	struct vhost_desc *descs;
- 	int ndescs;
-+	int first_desc;
- 	int max_descs;
- 
- 	struct file *kick;
-@@ -229,7 +230,7 @@ void vhost_iotlb_map_free(struct vhost_iotlb *iotlb,
- 			  struct vhost_iotlb_map *map);
- 
- #define vq_err(vq, fmt, ...) do {                                  \
--		pr_debug(pr_fmt(fmt), ##__VA_ARGS__);       \
-+		pr_err(pr_fmt(fmt), ##__VA_ARGS__);       \
- 		if ((vq)->error_ctx)                               \
- 				eventfd_signal((vq)->error_ctx, 1);\
- 	} while (0)
-@@ -255,6 +256,8 @@ static inline void vhost_vq_set_backend(struct vhost_virtqueue *vq,
- 					void *private_data)
- {
- 	vq->private_data = private_data;
-+	vq->ndescs = 0;
-+	vq->first_desc = 0;
- }
- 
- /**
+
+thanks,
 -- 
-MST
-
+John Hubbard
+NVIDIA
