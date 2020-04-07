@@ -2,229 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FDA61A126F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 19:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1AD1A1271
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 19:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbgDGRJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 13:09:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39614 "EHLO mail.kernel.org"
+        id S1726582AbgDGRLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 13:11:13 -0400
+Received: from mout.web.de ([217.72.192.78]:58005 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgDGRJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 13:09:38 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9B20206C0;
-        Tue,  7 Apr 2020 17:09:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586279377;
-        bh=VB+SQrXLH+V56cXBmJ4Ico1K0KFD430OPxgvMiGQAe4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f/jMwoUPj5wWoPwsm+cUdnJByPmlxldq/Gyk5soTngqsdF264Px4XclWyk7+th5If
-         5i3Ht9f/sLY9kioHa+cEPrAQvCf8i7X8OeqHq1xcHkesHAB58kC4y6jLD6RdAq1AK7
-         pfJ4u/2zloFCZfeQa36NodlPje3Db3m38O+aFSkQ=
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Leon Romanovsky <leonro@mellanox.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86 <x86@kernel.org>,
-        Suresh Siddha <suresh.b.siddha@intel.com>,
+        id S1726365AbgDGRLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 13:11:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586279449;
+        bh=6Fwx67S7LSpJX9ZpZfC6U+5pKtQcych8l4xHzMwnVv0=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=WL0skkhXAuy5b7FlXXx2g/8pF3+mAtXaZ3Xmqki/eoAKDL3Pu1qHpxNrPz/ZLzCFj
+         fBPG+3Zs8Oa22/ilENsg3BuFl4ATa1dtvjfyCXJ0cp4iY6x08FgvTZ1Ks6kjjeAtb7
+         LTyrJEBEqwhrhz10/c+ia1Mp0Hoixi58cBZfsAR0=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.49.5.104]) by smtp.web.de (mrweb101
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MKa6N-1jLadL3VVX-0023fS; Tue, 07
+ Apr 2020 19:10:49 +0200
+Subject: Re: Coccinelle: zalloc-simple: Fix patch mode for
+ dma_alloc_coherent()
+To:     Alex Dewar <alex.dewar@gmx.co.uk>, cocci@systeme.lip6.fr
+Cc:     kernel-janitors@vger.kernel.org,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Julia Lawall <Julia.Lawall@lip6.fr>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Allison Randal <allison@lohutok.net>,
+        Christoph Hellwig <hch@lst.de>,
+        Enrico Weigelt <lkml@metux.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/apic: Fix circular locking dependency between console and hrtimer locks
-Date:   Tue,  7 Apr 2020 20:09:25 +0300
-Message-Id: <20200407170925.1775019-1-leon@kernel.org>
-X-Mailer: git-send-email 2.25.1
+References: <beeed2c8-1b5a-66a8-ec41-f5770c04bae9@web.de>
+ <20200407160330.5m75sfkhrrx3wgrl@lenovo-laptop>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <045a4a1a-c841-2979-c899-b632ca418b3b@web.de>
+Date:   Tue, 7 Apr 2020 19:10:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200407160330.5m75sfkhrrx3wgrl@lenovo-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:658ts8KvimtcwF8VX6q9/vLaAaDgPGhLfmlrhuR5p1DJ/49ESZ7
+ t7zqagrqHtiNFol+3hQh9gTCZawokRswqnToErN6dizrlCcVY+oc4fO7Mfi2GcHdElEcQ7f
+ xSv1NHoINQCLdl7+emL4aYt0rNWIM2tGak9+xrK29tPDtFtOTKavwEJ6b62IhSpkMtzEuL9
+ aaKCf58WTzd9TK1CjbjiQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RbwNodSnESU=:HxHcmDsIsBUwiJ5jInTsi2
+ Hb19qGho3Di2u6lgZ+nhC/DpPk8hm3PRMwx6wucoQmJdUR786JjN6k4NYp8nGnWeEFuO8/8M9
+ 0/NtAIfRPOacRcaYPinNeapCFm2IM5aAspSY04rOdP1v1Z0spy58zINlNTKGN9ZCt7mAhGQr5
+ n8npo+HLvbrKmOorWmAHCA/qjSw2lPd4Tk9UDj25GhdQsu/w/yu49ocMczPdquLJ42FoBGlfE
+ ldVs9WE4HG7ZNHD3ZySwCr+uOIr+b+46yTdltP1mFwwOr9C1IhVjlXPm6QS5NxRAaWfLulYop
+ 6r0Yh5q5RPzr9SAEspsYx47Evlz8jhReEvrOQyCeX5ktAGpJqOPwajdpK4h/AHBisxAMEtTjY
+ LG7pNL6ZhVt1r8PeyvGgqPxx+EqQiY6TEKMkKT6/kqBUVJiKCzA52X/AbfW4sjoVgWbDFkP7J
+ LOz1gXwLxLdx8lwcuZ+EsTwh5N2nISR32hfnoByZam2RugQDGWJenvnCw6A5DivOiFEAj3mnG
+ NkrpUq3JEgJjfy+iZr2b/uPv45u6SaEU2YIsJQDiJsJyQGVd0pvX0QXrWZ3qgQJZgz8qNjAtS
+ 5WY5wbfAgZ/QtoBmeYBz/3dFBKXXuhNt2NSPBuTCV8MJI8qAHdYxey0Umgcs5xPn/oLiR9szF
+ oo9+J15J3a0zhLVlVPPmuV4vQ7V9L4hzpbF2Vf1foknpN2RrfnOjS6MQN9esXUTQo/Ux7ohz8
+ X3j19ymhYaehbgPHZxnV46ZmV3Eq9d5oUtlqXAuHLcAUOsJ/JL/xUOR3+EFUKQGg1xotLsI8j
+ 3iAn23VVsYRQW6vu412a3s6tcfHfMYOYp/VTDcE8OC5IZP3YrsEx5NLmxF8+15mfJHn231E06
+ zmaIJrooxZWeyf8W7NlTH2PB867nrkjimvDdPSK40WMPWa1uUi2tr3nvTEhDy/yvQbKHjmqua
+ HMIFucJqkuhPV7lkMmpLrOpTHH4WeQuFKzk+so4vX5SSfLl/z5sl3rGhiZZG4mcCc/goTMTNm
+ 8Q0hkXKlU/p/V+kmzrn8yiQZ6cGVq+DFAjiw4mZ3r5Oz5m7ggQzDYTn4Zou8PAS/FghdIM9RE
+ pb6ZDm/ilC987fZyCICXuJpsXPW0Dc+cPeGsdmb37BwnFi81S627BepvvFkU3Oi6wbuFE52SF
+ qsED5ml6XaLiGBnYkHEFAY+Sqz6ohFUuOdshXr32BRmpJte/gIRa1InoquY5zRAI9zlcoRddG
+ bcWzaEz+WZ6ueTiyk
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@mellanox.com>
+>> Will the software development attention grow in a way so that further
+>> implementation details can be adjusted also for the mentioned SmPL scri=
+pt?
+>
+> I'm not sure I understand what you mean. Would you mind clarifying?
 
-clockevents_switch_state() calls printk() from under hrtimer_bases.lock.
-That causes lock inversion on scheduler locks because printk() can call
-into the scheduler. Lockdep puts it as:
+You would like to a change a file for which some software development
+discussions happened a while ago.
+Do you get any further ideas from available information in message archive=
+s?
 
- [  728.464312] ====================================================================================================
- [  735.312580] TSC deadline timer enabled
- [  735.324143]
- [  735.324146] ======================================================
- [  735.324148] WARNING: possible circular locking dependency detected
- [  735.324150] 5.6.0-for-upstream-dbg-2020-04-03_10-44-43-70 #1 Not tainted
- [  735.324152] ------------------------------------------------------
- [  735.324154] swapper/3/0 is trying to acquire lock:
- [  735.324155] ffffffff8442c858 ((console_sem).lock){-...}-{2:2}, at: down_trylock+0x13/0x70
- [  735.324162]
- [  735.324164] but task is already holding lock:
- [  735.324165] ffff88842dfb9958 (hrtimer_bases.lock){-.-.}-{2:2}, at: lock_hrtimer_base+0x71/0x120
- [  735.324171]
- [  735.324173] which lock already depends on the new lock.
- [  735.324174]
- [  735.324175]
- [  735.324177] the existing dependency chain (in reverse order) is:
- [  735.324179]
- [  735.324180] -> #4 (hrtimer_bases.lock){-.-.}-{2:2}:
- [  735.324186]        _raw_spin_lock_irqsave+0x3c/0x4b
- [  735.324187]        lock_hrtimer_base+0x71/0x120
- [  735.324189]        hrtimer_start_range_ns+0xc6/0xaa0
- [  735.324191]        __enqueue_rt_entity+0xc44/0xf50
- [  735.324192]        enqueue_rt_entity+0x79/0xc0
- [  735.324194]        enqueue_task_rt+0x5c/0x2e0
- [  735.324195]        activate_task+0x15a/0x2c0
- [  735.324197]        ttwu_do_activate+0xcf/0x120
- [  735.324199]        sched_ttwu_pending+0x160/0x230
- [  735.324200]        scheduler_ipi+0x1c0/0x530
- [  735.324202]        reschedule_interrupt+0xf/0x20
- [  735.324204]        tick_nohz_idle_enter+0x16c/0x250
- [  735.324205]        do_idle+0x90/0x530
- [  735.324207]        cpu_startup_entry+0x19/0x20
- [  735.324208]        start_secondary+0x2ee/0x3e0
- [  735.324210]        secondary_startup_64+0xa4/0xb0
- [  735.324211]
- [  735.324212] -> #3 (&rt_b->rt_runtime_lock){-...}-{2:2}:
- [  735.324218]        _raw_spin_lock+0x25/0x30
- [  735.324219]        rq_online_rt+0x288/0x550
- [  735.324221]        set_rq_online+0x11f/0x190
- [  735.324223]        sched_cpu_activate+0x1d4/0x390
- [  735.324225]        cpuhp_invoke_callback+0x1c5/0x1560
- [  735.324226]        cpuhp_thread_fun+0x3f8/0x6f0
- [  735.324228]        smpboot_thread_fn+0x305/0x5f0
- [  735.324229]        kthread+0x2f8/0x3b0
- [  735.324231]        ret_from_fork+0x24/0x30
- [  735.324232]
- [  735.324233] -> #2 (&rq->lock){-.-.}-{2:2}:
- [  735.324238]        _raw_spin_lock+0x25/0x30
- [  735.324240]        task_fork_fair+0x34/0x430
- [  735.324241]        sched_fork+0x48a/0xa60
- [  735.324243]        copy_process+0x15df/0x5970
- [  735.324244]        _do_fork+0x106/0xcd0
- [  735.324246]        kernel_thread+0x9e/0xe0
- [  735.324247]        rest_init+0x28/0x330
- [  735.324249]        start_kernel+0x6ac/0x6ed
- [  735.324251]        secondary_startup_64+0xa4/0xb0
- [  735.324252]
- [  735.324253] -> #1 (&p->pi_lock){-.-.}-{2:2}:
- [  735.324258]        _raw_spin_lock_irqsave+0x3c/0x4b
- [  735.324260]        try_to_wake_up+0x9a/0x1700
- [  735.324261]        up+0x7a/0xb0
- [  735.324263]        __up_console_sem+0x3c/0x70
- [  735.324264]        console_unlock+0x4f4/0xab0
- [  735.324266]        con_font_op+0x907/0x1010
- [  735.324267]        vt_ioctl+0x10a6/0x2890
- [  735.324269]        tty_ioctl+0x257/0x1240
- [  735.324270]        ksys_ioctl+0x3e9/0x1190
- [  735.324272]        __x64_sys_ioctl+0x6f/0xb0
- [  735.324273]        do_syscall_64+0xe7/0x12c0
- [  735.324275]        entry_SYSCALL_64_after_hwframe+0x49/0xb3
- [  735.324276]
- [  735.324277] -> #0 ((console_sem).lock){-...}-{2:2}:
- [  735.324283]        __lock_acquire+0x374a/0x5210
- [  735.324284]        lock_acquire+0x1b9/0x920
- [  735.324286]        _raw_spin_lock_irqsave+0x3c/0x4b
- [  735.324288]        down_trylock+0x13/0x70
- [  735.324289]        __down_trylock_console_sem+0x33/0xa0
- [  735.324291]        console_trylock+0x13/0x60
- [  735.324292]        vprintk_emit+0xec/0x370
- [  735.324294]        printk+0x9c/0xc3
- [  735.324296]        lapic_timer_set_oneshot+0x4e/0x60
- [  735.324297]        clockevents_switch_state+0x1e1/0x360
- [  735.324299]        tick_program_event+0xae/0xc0
- [  735.324301]        hrtimer_start_range_ns+0x4b6/0xaa0
- [  735.324302]        tick_nohz_idle_stop_tick+0x67c/0xa90
- [  735.324304]        do_idle+0x326/0x530
- [  735.324305]        cpu_startup_entry+0x19/0x20
- [  735.324307]        start_secondary+0x2ee/0x3e0
- [  735.324309]        secondary_startup_64+0xa4/0xb0
- [  735.324310]
- [  735.324311] other info that might help us debug this:
- [  735.324312]
- [  735.324314] Chain exists of:
- [  735.324315]   (console_sem).lock --> &rt_b->rt_runtime_lock --> hrtimer_bases.lock
- [  735.324322]
- [  735.324324]  Possible unsafe locking scenario:
- [  735.324325]
- [  735.324327]        CPU0                    CPU1
- [  735.324328]        ----                    ----
- [  735.324329]   lock(hrtimer_bases.lock);
- [  735.324333]                                lock(&rt_b->rt_runtime_lock);
- [  735.324337]                                lock(hrtimer_bases.lock);
- [  735.324341]   lock((console_sem).lock);
- [  735.324344]
- [  735.324345]  *** DEADLOCK ***
- [  735.324346]
- [  735.324348] 1 lock held by swapper/3/0:
- [  735.324349]  #0: ffff88842dfb9958 (hrtimer_bases.lock){-.-.}-{2:2}, at: lock_hrtimer_base+0x71/0x120
- [  735.324356]
- [  735.324357] stack backtrace:
- [  735.324360] CPU: 3 PID: 0 Comm: swapper/3 Not tainted 5.6.0-for-upstream-dbg-2020-04-03_10-44-43-70 #1
- [  735.324363] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.12.1-0-ga5cab58e9a3f-prebuilt.qemu.org 04/01/2014
- [  735.324364] Call Trace:
- [  735.324366]  dump_stack+0xb7/0x10b
- [  735.324367]  check_noncircular+0x37f/0x460
- [  735.324369]  ? arch_stack_walk+0x7c/0xd0
- [  735.324370]  ? print_circular_bug+0x4e0/0x4e0
- [  735.324372]  ? mark_lock+0x1a4/0xb60
- [  735.324373]  ? __lock_acquire+0x374a/0x5210
- [  735.324375]  __lock_acquire+0x374a/0x5210
- [  735.324376]  ? register_lock_class+0x17e0/0x17e0
- [  735.324378]  ? register_lock_class+0x17e0/0x17e0
- [  735.324380]  lock_acquire+0x1b9/0x920
- [  735.324381]  ? down_trylock+0x13/0x70
- [  735.324383]  ? check_flags.part.29+0x450/0x450
- [  735.324384]  ? lock_downgrade+0x760/0x760
- [  735.324386]  ? vprintk_emit+0xec/0x370
- [  735.324387]  _raw_spin_lock_irqsave+0x3c/0x4b
- [  735.324389]  ? down_trylock+0x13/0x70
- [  735.324390]  down_trylock+0x13/0x70
- [  735.324392]  __down_trylock_console_sem+0x33/0xa0
- [  735.324393]  console_trylock+0x13/0x60
- [  735.324395]  vprintk_emit+0xec/0x370
- [  735.324396]  printk+0x9c/0xc3
- [  735.324398]  ? kmsg_dump_rewind_nolock+0xd9/0xd9
- [  735.324399]  lapic_timer_set_oneshot+0x4e/0x60
- [  735.324401]  clockevents_switch_state+0x1e1/0x360
- [  735.324402]  ? enqueue_hrtimer+0x116/0x310
- [  735.324404]  tick_program_event+0xae/0xc0
- [  735.324406]  hrtimer_start_range_ns+0x4b6/0xaa0
- [  735.324407]  ? hrtimer_run_softirq+0x210/0x210
- [  735.324409]  ? rcu_read_lock_sched_held+0xab/0xe0
- [  735.324410]  ? rcu_read_lock_bh_held+0xe0/0xe0
- [  735.324412]  tick_nohz_idle_stop_tick+0x67c/0xa90
- [  735.324413]  ? tsc_verify_tsc_adjust+0x71/0x290
- [  735.324415]  do_idle+0x326/0x530
- [  735.324416]  ? arch_cpu_idle_exit+0x40/0x40
- [  735.324418]  cpu_startup_entry+0x19/0x20
- [  735.324419]  start_secondary+0x2ee/0x3e0
- [  735.324421]  ? set_cpu_sibling_map+0x2f70/0x2f70
- [  735.324423]  secondary_startup_64+0xa4/0xb0
- [  760.028504] ====================================================================================================
+Julia Lawall (and me) pointed special development concerns out.
 
-Fix by using deferred variant of printk which doesn't call to the scheduler.
+Example:
+Code duplications in SmPL disjunctions
+https://lore.kernel.org/cocci/alpine.DEB.2.21.2004062115000.10239@hadrien/
+https://systeme.lip6.fr/pipermail/cocci/2020-April/007099.html
 
-Fixes: 279f1461432c ("x86: apic: Use tsc deadline for oneshot when available")
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
----
-It is far away from my main expertise and I'm not sure that the solution
-is correct, but it definitely fixed our regression.
----
- arch/x86/kernel/apic/apic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index d254cebdd3c3..6706b2cd9aec 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -353,7 +353,7 @@ static void __setup_APIC_LVTT(unsigned int clocks, int oneshot, int irqen)
- 		 */
- 		asm volatile("mfence" : : : "memory");
-
--		printk_once(KERN_DEBUG "TSC deadline timer enabled\n");
-+		printk_deferred_once(KERN_DEBUG "TSC deadline timer enabled\n");
- 		return;
- 	}
-
---
-2.25.1
-
+Regards,
+Markus
