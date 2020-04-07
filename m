@@ -2,71 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C51D1A1588
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1CD1A1595
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgDGTFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 15:05:54 -0400
-Received: from smtprelay0106.hostedemail.com ([216.40.44.106]:38812 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726736AbgDGTFy (ORCPT
+        id S1726791AbgDGTJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 15:09:11 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:55875 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgDGTJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 15:05:54 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id DA3271802CCA2;
-        Tue,  7 Apr 2020 19:05:52 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3867:3870:3871:4250:4321:5007:7903:10004:10400:11026:11232:11658:11914:12043:12297:12438:12555:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21451:21627:21939:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: pipe70_33360acc5b61e
-X-Filterd-Recvd-Size: 1868
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  7 Apr 2020 19:05:51 +0000 (UTC)
-Message-ID: <ffdaa916088c95a984b2953334ea446251b2ecd9.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: Fix a typo in the regex for $allocFunctions
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        apw@canonical.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Date:   Tue, 07 Apr 2020 12:03:52 -0700
-In-Reply-To: <20200407190029.892-1-christophe.jaillet@wanadoo.fr>
-References: <20200407190029.892-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Tue, 7 Apr 2020 15:09:10 -0400
+Received: by mail-pj1-f66.google.com with SMTP id fh8so147282pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 12:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LDxb1cWgmjR2rFQEK0+5JpvDE312cPS2zScBr2bujHE=;
+        b=OQ1rrBhzVf0fJC3M4ocRBLsWOLwIev84mAm14MNsK1lJKOeqK2JSQPVIN0X4dgWaMe
+         PbXUXIhIddautej6PdwCqFJK0e2lTP+L+YB+8ciP3SM72Phf996FeN091bdS6O1f/PBr
+         YLZyGadFtUIbyZEbN3BYBn1Jn5n9lT0+Xupjn3WiTbMtGsoYHmNRQf2wJz8SQbTRXH0O
+         +r4uXZ2BdTJVFaujA+96JNAFQMG9KGFwXswQnycKHlmBhF/ywFOhBAZpKjy7AYCgIBkN
+         TlBcucvVruI8VPia6fG8s30mOQUpw0cIqGf7B9zZhSBO7K3SVw2ItS+k+aejklwUxcx9
+         oykw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LDxb1cWgmjR2rFQEK0+5JpvDE312cPS2zScBr2bujHE=;
+        b=asHGm9l4EDsZ5mQJ06N4VLY5CEciietnsSzbx56j4BQPVeEpl5eK9lpN/Ks7O7kpKu
+         Amq1Pw1vr5fdIf+OcQCGpfmiheJXhi0EDvYq5Xnb+ZpK1rRR9Hiix90KrJR52ffcH8GV
+         mG+7J7kW2c2DrPooxo7Jryb9FLLJLahF/N6EoWFGiIsmmjQEHtSkm2ROkbAp79jMhX4O
+         nEuIk5uQHoX3xLxD3rKH6j0hoE7oKMw8b2kJ/6PTQrR9zm59o6MvUjp2+a6IfaFvirXz
+         DNYkkms6JEwvIeJqx+Ddor7Ry6uziNBSkuezwqsLI59ddF8n4M58Tl7+Jnq32atarNks
+         55HA==
+X-Gm-Message-State: AGi0PuaHXpS/X3bnL8HcqY2COKPbzvcjsifuR5xNGiCZtPTKdNCDWp26
+        QltVb11MiNDufzO/Au/cItoFUiSLLpw=
+X-Google-Smtp-Source: APiQypIAweHpsgOBRcq92pnGKdIS++5/gxov6spI1gTUH2o53lpimCMwTYCCEJfCGkDl1fke9lad7w==
+X-Received: by 2002:a17:902:8a8f:: with SMTP id p15mr3787069plo.45.1586286549841;
+        Tue, 07 Apr 2020 12:09:09 -0700 (PDT)
+Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:b7ed:16a3:9dc0:21bb])
+        by smtp.googlemail.com with ESMTPSA id q12sm13833090pgi.86.2020.04.07.12.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 12:09:09 -0700 (PDT)
+From:   Jian Cai <caij2003@gmail.com>
+Cc:     caij2003@gmail.com, ndesaulniers@google.com, manojgupta@google.com,
+        stefan@agner.ch, Russell King <linux@armlinux.org.uk>,
+        Enrico Weigelt <info@metux.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH] ARM: replace the sole use of a symbol with its definition
+Date:   Tue,  7 Apr 2020 12:05:57 -0700
+Message-Id: <20200407190558.196865-1-caij2003@gmail.com>
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-07 at 21:00 +0200, Christophe JAILLET wrote:
-> Here, we look for function such as 'netdev_alloc_skb_ip_align', so a '_'
-> is missing in the regex.
-> 
-> To make sure:
->    grep -r --include=*.c skbip_a * | wc   ==>   0 results
->    grep -r --include=*.c skb_ip_a * | wc  ==> 112 results
+ALT_UP_B macro sets symbol up_b_offset via .equ to an expression
+involving another symbol. The macro gets expanded twice when
+arch/arm/kernel/sleep.S is assembled, creating a scenario where
+up_b_offset is set to another expression involving symbols while its
+current value is based on symbols. LLVM integrated assembler does not
+allow such cases, and based on the documentation of binutils, "Values
+that are based on expressions involving other symbols are allowed, but
+some targets may restrict this to only being done once per assembly", so
+it may be better to avoid such cases as it is not clearly stated which
+targets should support or disallow them. The fix in this case is simple,
+as up_b_offset has only one use, so we can replace the use with the
+definition and get rid of up_b_offset.
 
-Acked-by: Joe Perches <joe@perches.com>
+Signed-off-by: Jian Cai <caij2003@gmail.com>
+---
+ arch/arm/include/asm/assembler.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  scripts/checkpatch.pl | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 529c892722b9..c392ab8ea12e 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -479,7 +479,7 @@ our $allocFunctions = qr{(?x:
->  		(?:kv|k|v)[czm]alloc(?:_node|_array)? |
->  		kstrdup(?:_const)? |
->  		kmemdup(?:_nul)?) |
-> -	(?:\w+)?alloc_skb(?:ip_align)? |
-> +	(?:\w+)?alloc_skb(?:_ip_align)? |
->  				# dev_alloc_skb/netdev_alloc_skb, et al
->  	dma_alloc_coherent
->  )};
+diff --git a/arch/arm/include/asm/assembler.h b/arch/arm/include/asm/assembler.h
+index 99929122dad7..adee13126c62 100644
+--- a/arch/arm/include/asm/assembler.h
++++ b/arch/arm/include/asm/assembler.h
+@@ -269,10 +269,9 @@
+ 	.endif							;\
+ 	.popsection
+ #define ALT_UP_B(label)					\
+-	.equ	up_b_offset, label - 9998b			;\
+ 	.pushsection ".alt.smp.init", "a"			;\
+ 	.long	9998b						;\
+-	W(b)	. + up_b_offset					;\
++	W(b)	. + (label - 9998b)					;\
+ 	.popsection
+ #else
+ #define ALT_SMP(instr...)
+-- 
+2.26.0.292.g33ef6b2f38-goog
 
