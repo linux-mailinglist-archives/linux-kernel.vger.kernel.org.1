@@ -2,161 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7791A0D87
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C585A1A0D90
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728576AbgDGMZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:25:45 -0400
-Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17543 "EHLO
-        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728146AbgDGMZp (ORCPT
+        id S1728665AbgDGM3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 08:29:34 -0400
+Received: from esa1.microchip.iphmx.com ([68.232.147.91]:26852 "EHLO
+        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgDGM3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:25:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586262323;
-        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=Qcosx3zOods1ZrT/9F495oLQo2i1f+60srMg2RUuf7A=;
-        b=ags5tFZ/0zZxTM73JceTG1Mmm3zVwPq29RPqq/7RBJz9wypY+9hjo1RIF1lnKAqZ
-        coO3/cN3zC0K/wsMDwcKtP103XkOoTY9eAst8VpFAA7EG2Tx493vbYrS5SboxAECf2Z
-        gVKizgoJxE7jo4OTgUFxct5tZP1yTpg30KRsA8K0=
-Received: from flygoat-x1e (60.177.191.213 [60.177.191.213]) by mx.zoho.com.cn
-        with SMTPS id 15862623217966.568477178934359; Tue, 7 Apr 2020 20:25:21 +0800 (CST)
-Date:   Tue, 7 Apr 2020 20:25:19 +0800
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: BUG: mips: errors when compiling kernel with a large initramfs
-Message-ID: <20200407202519.4d384f3b@flygoat-x1e>
-In-Reply-To: <0c1e4eda-53c6-ea8b-c27b-eabc8569cc74@windriver.com>
-References: <0c1e4eda-53c6-ea8b-c27b-eabc8569cc74@windriver.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 7 Apr 2020 08:29:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1586262573; x=1617798573;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=mwrqDeZZFPwdOZQAzDue552yl4u2PTg8dL3CuhCIRD0=;
+  b=owJBZ9DRTFviDU9Srbi89NboTVl0OpygGIXQj3H2SZhl2hKZYDRfut4T
+   B3mCc2N0pfAfMg8ayQyBswe5ZZ3zbg7hk4DpXYvSO2J8vI/rxXgH2VIlv
+   dC2PJZPlNas8DMf+nxBQZN4YconHzRhlJSejXVOmrDI0bpE7Ta6asmkce
+   48Nbl06HTEPp1cjOWpKdJNPUfeIU/r+QCWEqNOKA+hpPm8C6cV6tOoJBz
+   nJRWGWN+ZWTL0UcBKRssWr4b4ZEi+BaNxMundtJ/OzrcAnUvhtpTefIMN
+   di5uleXWqRzWqbSxgz6dgpdlN2nswbAB3pkO8L7mJTyQku6H0D+kSgtbd
+   g==;
+IronPort-SDR: eHcVGlQPapM0erpoDIa3ogDoNhu9Y1m7vz119BJjbiF1QmLcmp/aHB+3LjwuNjS5U+NicQJtje
+ SaL7FbFUUz2CY2TsnwHYNB6drmR/GxR+7zKKT26XdkmhoY/toNxYdftDJefmB3hqSHhnrWat7V
+ GE3vtzT7ofkQ3Rm+lfAvYXN1a6stvjO2MAtoa7sEDyawq6bxbOmUWi0XWMhJmSEVU2tJ54vGeS
+ sFz0+mihLtjW9nTooH19R8c0QflvKZfjLSYGeSc4WbYovxLxZNKpdzT1oRPdbaIyNsW1L7N6WI
+ Yok=
+X-IronPort-AV: E=Sophos;i="5.72,354,1580799600"; 
+   d="scan'208";a="75013395"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Apr 2020 05:29:32 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 7 Apr 2020 05:29:43 -0700
+Received: from cristi-P53.amer.actel.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.1713.5 via Frontend Transport; Tue, 7 Apr 2020 05:29:29 -0700
+From:   <cristian.birsan@microchip.com>
+To:     <balbi@kernel.org>, <gregkh@linuxfoundation.org>,
+        <nicolas.ferre@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <alexandre.belloni@bootlin.com>, <ludovic.desroches@microchip.com>,
+        Cristian Birsan <cristian.birsan@microchip.com>
+Subject: [PATCH 0/7] usb: gadget: udc: atmel: add usb device support for SAM9x60 SoC
+Date:   Tue, 7 Apr 2020 15:28:45 +0300
+Message-ID: <20200407122852.19422-1-cristian.birsan@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Apr 2020 17:58:23 +0800
-"Xu, Yanfei" <yanfei.xu@windriver.com> wrote:
+From: Cristian Birsan <cristian.birsan@microchip.com>
 
-> Hi,
->=20
->=20
-> It fails to compile mips kernel with large initramfs (at link time).
->=20
-> kernel version: 5.6.0
->=20
->=20
-> Steps to reproduce:
->=20
-> 1. git clone mainline kernel
->=20
-> 2. set ARCH=3Dmips and CROSS_COMPILE=3Dmips-linux-gnu-
->=20
-> 3. make defconfig
->=20
-> 4.enable initramfs support and set the path about initramfs source
-> file
->=20
-> 5.make -j24
->=20
-> [KEY] when your initramfs files is too large, and cause=20
-> usr/initramfs_data.cpio.gz
->=20
-> compiled is larger than 225M, you will get the following error. BTW,
-> x86 doesn't
->=20
-> have this issue that I have tested.
->=20
-> ------------------------------error=20
-> messages-----------------------------------------
->=20
->  =C2=A0 CHK=C2=A0=C2=A0=C2=A0=C2=A0 include/generated/compile.h
->  =C2=A0 LD=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 vmlinux.o
->  =C2=A0 MODPOST vmlinux.o
->  =C2=A0 MODINFO modules.builtin.modinfo
->  =C2=A0 GEN=C2=A0=C2=A0=C2=A0=C2=A0 modules.builtin
->  =C2=A0 LD=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .tmp_vmlinux.kallsyms1
-> kernel/configs.o: In function `ikconfig_cleanup':
-> /home/wrsadmin/work/linux/kernel/linux-master/kernel/configs.c:72:(.exit.=
-text+0x8):=20
-> relocation truncated to fit: R_MIPS_26 against `remove_proc_entry'
-> fs/binfmt_script.o: In function `exit_script_binfmt':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/binfmt_script.c:165:(.ex=
-it.text+0x4):=20
-> relocation truncated to fit: R_MIPS_26 against `unregister_binfmt'
-> fs/binfmt_elf.o: In function `exit_elf_binfmt':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/binfmt_elf.c:2393:(.exit=
-.text+0x4):=20
-> relocation truncated to fit: R_MIPS_26 against `unregister_binfmt'
-> fs/mbcache.o: In function `mbcache_exit':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/mbcache.c:429:(.exit.tex=
-t+0x4):=20
-> relocation truncated to fit: R_MIPS_26 against `kmem_cache_destroy'
-> fs/nfs_common/grace.o: In function `exit_grace':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/nfs_common/grace.c:133:(=
-.exit.text+0x4):=20
-> relocation truncated to fit: R_MIPS_26 against
-> `unregister_pernet_subsys' fs/ext4/super.o: In function
-> `ext4_destroy_lazyinit_thread':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:3456:(.exit=
-.text+0x24):
-> relocation truncated to fit: R_MIPS_26 against `kthread_stop'
-> fs/ext4/super.o: In function `unregister_as_ext2':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:6126:(.exit=
-.text+0x30):
-> relocation truncated to fit: R_MIPS_26 against
-> `unregister_filesystem' fs/ext4/super.o: In function
-> `unregister_as_ext3':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:6155:(.exit=
-.text+0x3c):
-> relocation truncated to fit: R_MIPS_26 against
-> `unregister_filesystem' fs/ext4/super.o: In function `ext4_exit_fs':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:6261:(.exit=
-.text+0x48):
-> relocation truncated to fit: R_MIPS_26 against
-> `unregister_filesystem' fs/ext4/super.o: In function
-> `destroy_inodecache':
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:1218:(.exit=
-.text+0x50):
-> relocation truncated to fit: R_MIPS_26 against `rcu_barrier'
-> /home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:1219:(.exit=
-.text+0x5c):
-> additional relocation overflows omitted from the output
-> Makefile:1086: recipe for target 'vmlinux' failed make[1]: ***
-> [vmlinux] Error 1 Makefile:1058: recipe for target
-> 'autoksyms_recursive' failed make: *** [autoksyms_recursive] Error 2
->=20
->=20
-> Any comment will be appreciated.
+This patch set adds usb device support for SAM9x60 SoC.
+The DPRAM memory for the USB High Speed Device Port (UDPHS) hardware
+block was increased and the allocation method is changed. This patch
+series simplifies the endpoint allocation scheme to acomodate this SoC
+and the old ones.
 
-Actually I think that won't work even if you managed to workaround
-reloc issue.
+Claudiu Beznea (2):
+  usb: gadget: udc: atmel: use of_find_matching_node_and_match
+  usb: gadget: udc: atmel: add compatible for SAM9X60's PMC
 
-MIPS have limited LOW MEM range accessible via KSEG0 (512M, but can be
-less if your system place some MMIO register in that range). Kernel
-image will be placed here together with built-in initramfs, and a
-lot of memory like Page Table can only be allocated from here.
+Cristian Birsan (5):
+  usb: gadget: at91_udc: Update DT binding documentation
+  usb: gadget: udc: atmel: simplify endpoint allocation
+  usb: gadget: udc: atmel: use 1 bank endpoints for control transfers
+  usb: gadget: udc: atmel: rename errata into caps
+  usb: gadget: udc: atmel: update endpoint allocation for sam9x60
 
-Such a huge initrd will occupy the whole LOW MEM range leaving no space
-for others.
+ .../devicetree/bindings/usb/atmel-usb.txt     |  1 +
+ drivers/usb/gadget/udc/atmel_usba_udc.c       | 87 ++++++++++++-------
+ drivers/usb/gadget/udc/atmel_usba_udc.h       |  6 +-
+ 3 files changed, 58 insertions(+), 36 deletions(-)
 
-It seems like your system is 32bit, we have no solution for that
-hardware limitaion. For 64bit system you may try to move your kernel
-into XKPHYS instead of KSEG0.
-
-Thanks
-
---
-Jiaxun Yang
-
->=20
-> Thanks,
->=20
-> Yanfei
->=20
+-- 
+2.17.1
 
