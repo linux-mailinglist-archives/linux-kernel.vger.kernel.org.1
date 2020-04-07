@@ -2,46 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE7031A16B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22B5D1A16BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbgDGUWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 16:22:07 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22970 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727354AbgDGUWH (ORCPT
+        id S1726417AbgDGUYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:24:33 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:22720 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726277AbgDGUYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:22:07 -0400
+        Tue, 7 Apr 2020 16:24:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586290926;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
+        s=mimecast20190719; t=1586291071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=r8vqiSN09abRSI1hwl8/sl3dADzQpKJS/8XVAle9PuY=;
-        b=DHGCk+ybLsU5lRjyi8KzMF4YIrPIjsU7duiBXektme0O0gj0svZfl/pLLDmLNkVkRiwKAd
-        9ws9N/x+a0D7CXY/LyDtym6mD8g+WQq6sjJYRBl4TxtAvMaHVtV7e/96I35LaIBe7NOQyn
-        CqrjeyNJYlPfkiEd6UVbUkRYv3HCs4k=
+        bh=4/CqPjYKIqhLe6o90l4etdHa0avAv3myBuxrGVzJJlk=;
+        b=Rs5QZ5k0xvm+54gwbwIXO7SKbvbAFNEcVXp/QdDklfl4KaE7lz8jM1P5zWz+E8WF3RPanj
+        vXNrV1j7Ddjx3xqKfeQ2PK4elQQUxshRsfntpXaqNB4Pm+a/p6FRx8l1/xEKsxl8qE63Fo
+        YoGTSa+pozMOqwyux9Z+qhROwXfFunc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-eD3JK8RXOV290N2tCG19Jw-1; Tue, 07 Apr 2020 16:22:04 -0400
-X-MC-Unique: eD3JK8RXOV290N2tCG19Jw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-429-60P6iwMSPu-ID1hyPHX0oA-1; Tue, 07 Apr 2020 16:24:30 -0400
+X-MC-Unique: 60P6iwMSPu-ID1hyPHX0oA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C732F8017CE;
-        Tue,  7 Apr 2020 20:22:02 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-224.rdu2.redhat.com [10.10.112.224])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 32CE950C01;
-        Tue,  7 Apr 2020 20:21:58 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <694135.1586290793@warthog.procyon.org.uk>
-References: <694135.1586290793@warthog.procyon.org.uk> <20200407200318.11711-1-longman@redhat.com>
-Cc:     dhowells@redhat.com, Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50574190D341;
+        Tue,  7 Apr 2020 20:24:28 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-180.rdu2.redhat.com [10.10.117.180])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D52ED19C7F;
+        Tue,  7 Apr 2020 20:24:26 +0000 (UTC)
+Subject: Re: [PATCH v3] mm: Add kvfree_sensitive() for freeing sensitive data
+ objects
+To:     David Howells <dhowells@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
         James Morris <jmorris@namei.org>,
         "Serge E. Hallyn" <serge@hallyn.com>, linux-mm@kvack.org,
@@ -50,29 +46,33 @@ Cc:     dhowells@redhat.com, Waiman Long <longman@redhat.com>,
         Joe Perches <joe@perches.com>,
         Matthew Wilcox <willy@infradead.org>,
         David Rientjes <rientjes@google.com>
-Subject: Re: [PATCH v3] mm: Add kvfree_sensitive() for freeing sensitive data objects
+References: <20200407200318.11711-1-longman@redhat.com>
+ <694135.1586290793@warthog.procyon.org.uk>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <025eb655-4c3f-6196-7f55-2987022c9b42@redhat.com>
+Date:   Tue, 7 Apr 2020 16:24:26 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <694339.1586290917.1@warthog.procyon.org.uk>
-Date:   Tue, 07 Apr 2020 21:21:57 +0100
-Message-ID: <694340.1586290917@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <694135.1586290793@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Howells <dhowells@redhat.com> wrote:
+On 4/7/20 4:19 PM, David Howells wrote:
+> Waiman Long <longman@redhat.com> wrote:
+>
+>> sensitive data objects allocated by kvmalloc(). The relevnat places
+> "relevant".
 
-> >  			if (unlikely(key_data))
-> > -				__kvzfree(key_data, key_data_len);
-> > +				kvfree_sensitive(key_data, key_data_len);
-> 
-> I think the if-statement is redundant.
+Oh, sorry about the typo. Maybe Andrew can fix it.
 
-Ah - I see that you explicitly wanted to keep it.  There's a good chance it'll
-get janitored at some point.
-
-David
+Cheers,
+Longman
 
