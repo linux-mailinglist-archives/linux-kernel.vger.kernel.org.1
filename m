@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3060C1A0710
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CE631A071B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726892AbgDGGNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 02:13:24 -0400
-Received: from mail-eopbgr760043.outbound.protection.outlook.com ([40.107.76.43]:9670
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725802AbgDGGNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 02:13:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gnHHZ0DJJKNbViHKBgKcWig9nym4WeFl9OfvcTdHbosEjv++iKq/+jbzxDtVQKH7om35X0o2EXIW+aGgSd572nUn5aFse93DlY5G+RKu/s+PKOmc+cZCXxB1nfXHQEHeeOaoWH+UTauG9zGU+utY5vXyXmtYf9cbjhlaGmWmpXe+Esc/uqIHajY15klI1dK9iOCG7xJptYCz30jzoAovISqDE0qEudnGu5+18jto7d6wycjUR1LPykH9hqESRZb312q44yWo1wpX95XMnBXITLSgG2zeF1zvdBpi90tSRdRqjAhrFbuF0GDWrrVZH1W/UWD6deeaj9S4XhlWkAhNfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dg7ZqmOdtpnlk1OQiets3N5Y3HSftsSf1ihldmuggoQ=;
- b=nec/ST07CRFjo+xG57nVEWGSZaOZyZyMGtMdc6FieUDLhd33jZxNUkCKZY2Qxirq/z+S8XtYSkSsI0EpW+neIaYNzzWVon2C2fOZtLDPIKrLlOc4oqTPkiH88BtaQkySzrahliiMTg1AX49SELhU+FvX7JjiG/Qb96tSZGOwfhNdic7/4j/0fdHMHZu5g24WfO2yJ3s3tlEGbncpIqbXT0uNa+rlpEDADblz6hbXhmX53wrZQo7O+xDjtp/BldIsjNiMpnmnTH42CdpO2v+WnLiKCOGoit1LZK8hEF5R9XwB6rpA3rd3185Z0GqKYg/6jSw14/j2ZTyj4JIb9p6ARw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1727118AbgDGGPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 02:15:04 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:34080 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727078AbgDGGPD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 02:15:03 -0400
+Received: by mail-pj1-f66.google.com with SMTP id q16so836121pje.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 23:15:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Dg7ZqmOdtpnlk1OQiets3N5Y3HSftsSf1ihldmuggoQ=;
- b=pCGTwxkzg76JecwiwPDtWlfbcVs479jInPtotEEQaBbOnGW+mnIAwb9ocH/PUuIRrTxwwSB8s+ZxMFC0IEfYe5Xc3T8cAErwZzdRp6oEtxiVinzszUNWpULGvdUc6J2zKu430WIrmUs8WInW/eYaYuj9M+wXeaHPrd6fLSx/JC0=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Suravee.Suthikulpanit@amd.com; 
-Received: from DM6PR12MB3865.namprd12.prod.outlook.com (2603:10b6:5:1c4::14)
- by DM6SPR01MB0036.namprd12.prod.outlook.com (2603:10b6:5:61::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Tue, 7 Apr
- 2020 06:13:18 +0000
-Received: from DM6PR12MB3865.namprd12.prod.outlook.com
- ([fe80::2d84:ed9d:cba4:dcfd]) by DM6PR12MB3865.namprd12.prod.outlook.com
- ([fe80::2d84:ed9d:cba4:dcfd%3]) with mapi id 15.20.2878.018; Tue, 7 Apr 2020
- 06:13:18 +0000
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, joro@8bytes.org, jon.grimm@amd.com,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Alexander Graf <graf@amazon.com>
-Subject: [PATCH] KVM: x86: Fixes posted interrupt check for IRQs delivery modes
-Date:   Tue,  7 Apr 2020 01:13:09 -0500
-Message-Id: <1586239989-58305-1-git-send-email-suravee.suthikulpanit@amd.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: DM5PR21CA0037.namprd21.prod.outlook.com
- (2603:10b6:3:ed::23) To DM6PR12MB3865.namprd12.prod.outlook.com
- (2603:10b6:5:1c4::14)
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=CPlaxgayQ+N8MMMgIjFe5Z07E3atFvajpg/1wJmrQ4E=;
+        b=duuJ/dCMH1GS2IhzjWHgtKDPtdz+mC+7tRLFQi833UXwl/X9ymcCGx3w54JBnlnMHP
+         TsM+ZPpNTH7E1SDzv15C0Wa8LS1j/5x8ZQUMUK5DTTbDJD84IaCN+n6uVLz6iCCHVSnf
+         ZH2ptMQk3aGfZAmSq6UpPl4GvsyCWYy+eBNsdrV8jHpIOt7MJVuLe8rL3yotvjuNixX2
+         U8tz2ylApBeEF7vtjckch4fkJ4kxt+zP5k5jVrqnmITz+vL2zlFzBTOFx/ECrQMFmBiI
+         OGfg+bnHgFoTK5whjS8hRyMLvowZizPJGeqHNC+YOlf8ata1t2miQN8YmKUfDA0CLL3A
+         5sZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=CPlaxgayQ+N8MMMgIjFe5Z07E3atFvajpg/1wJmrQ4E=;
+        b=g1AQf8/8WOJG+rOtT+7nyLUvzcI0MkJpzHut0uDAANp08NnxI9acisZa0fY1onasf1
+         +HTuNJk0Lb7RMT+bMTPqmnnrMZpTE8ca4+EwqiURruTBUcT0WBc9YB/GRaW71/KKXdFE
+         sf4L2FUTU3/lvvsKriKebyY4TbP2LsHs6MxRHEcUS6NhqsBcD3E2afameB1RuYCo8S0b
+         UmL3ELLZj/UMusAFtXphnScWM6nMYKNDnC+99D1VOlov7S3zJOCQUQlmyKCxgyYac1G3
+         lscB2lNpYT2w/ZXzKOsYm9upB81brMU5YMaA3X0QLjtMVkkxh4rwWqfRC96WnQFe15Ob
+         P+1Q==
+X-Gm-Message-State: AGi0PuZE6u+nA9bOxtEAxx5v56cM0d7JKqiZHbBExG/XfIpRULvudNHt
+        aO0hUFMsWjJKRmVY81SNKRn7
+X-Google-Smtp-Source: APiQypKg9GQP7HSI0sIBC/WkLuQ+scrTQg6EQWIm62SUZwcY4ef1Iyh0wNK40QrAvAAmAh1HpTsdfQ==
+X-Received: by 2002:a17:90a:1784:: with SMTP id q4mr837275pja.174.1586240101941;
+        Mon, 06 Apr 2020 23:15:01 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:6e86:d03b:80dc:a9ff:fe0a:9bd3])
+        by smtp.gmail.com with ESMTPSA id o19sm2403759pfp.119.2020.04.06.23.14.58
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 06 Apr 2020 23:15:01 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 11:44:55 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] bus: mhi: core: Make sure to powerdown if
+ mhi_sync_power_up fails
+Message-ID: <20200407061455.GB2442@Mani-XPS-13-9360>
+References: <1586207077-22361-1-git-send-email-jhugo@codeaurora.org>
+ <1586207077-22361-3-git-send-email-jhugo@codeaurora.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ssuthiku-rhel7-ssp.amd.com (165.204.78.2) by DM5PR21CA0037.namprd21.prod.outlook.com (2603:10b6:3:ed::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.6 via Frontend Transport; Tue, 7 Apr 2020 06:13:17 +0000
-X-Mailer: git-send-email 1.8.3.1
-X-Originating-IP: [165.204.78.2]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2c1ade45-3bd7-4a8f-41ee-08d7dabac3bc
-X-MS-TrafficTypeDiagnostic: DM6SPR01MB0036:|DM6SPR01MB0036:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6SPR01MB00368BF3D5E1477B1A142214F3C30@DM6SPR01MB0036.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-Forefront-PRVS: 036614DD9C
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3865.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(366004)(346002)(376002)(39860400002)(396003)(136003)(2906002)(956004)(8936002)(54906003)(5660300002)(81166006)(81156014)(316002)(36756003)(8676002)(44832011)(66946007)(6486002)(86362001)(66556008)(478600001)(2616005)(186003)(52116002)(7696005)(66476007)(26005)(6666004)(4326008)(16526019)(21314003);DIR:OUT;SFP:1101;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GXNSa4tnlLTCGXhu9z+dOi3CaAO4BTCvTJ9SpTOfeHikfrXNwhnrXZyC+7y1S4pZONXi6iXchoOa8cHCjktjp3NzloDouEwJd2UNRsSjqysTn/rku6ikRy9UZ2MZa/zjf1d3yJjlSvAoaAmzre00BIxvJ7sqXq0Gl+1EXZJSUQWYiezRPbhfb2U5MxpDsjIUYQDySd1w0QgqAk0jqfAQjCFupHCnXLG+QB9CMhu/fVNEEFQdmG2Td56uflTaCbxZpyZBOmxI1YqdbqUyx6fyRWEJ3F+WNy3PJi/8AGiOSVKjM3aKayftN9tzBbP+UMYDTT0XOZ43BLWl5y8JN1PTS3dcru1N8OYZ+rJe/YMIf0BWSCii0DY/5Wp5KlBOrhTiEqLTIU+lp1P4Oplw/bzuDnVhsc6BLGwg5bIV9SEKJ1xc/RKgCCA3ruyUQymbvPHekLtS4Bxl9e4dMIciD9JVR/zqT2XIE1eW38zsw7CmeAk=
-X-MS-Exchange-AntiSpam-MessageData: 3TwdOSKPhKyqR26FG4cqQRe/5hLHHPDNI+Y+H+OIn/znZvnUsmYpGz5DNwkVnbufDXzK5q8/34oLf+65VdKrlhO4SUDnJ+THQkkjK2iqNqErA6fbXAW98vYD4N95/l+5X+yqyD8SPxj4IZEEhPTXfA==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c1ade45-3bd7-4a8f-41ee-08d7dabac3bc
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2020 06:13:18.1500
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EDc84LflynubXaR4UALvBYVSbl1nETR1hviNoH0G9LMvekeOypSoPkEY2Lsi8HWaKOlnE2A2g20m7CgLFyiaig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6SPR01MB0036
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586207077-22361-3-git-send-email-jhugo@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current logic incorrectly uses the enum ioapic_irq_destination_types
-to check the posted interrupt destination types. However, the value was
-set using APIC_DM_XXX macros, which are left-shifted by 8 bits.
+On Mon, Apr 06, 2020 at 03:04:36PM -0600, Jeffrey Hugo wrote:
+> Powerdown is necessary if mhi_sync_power_up fails due to a timeout, to
+> clean up the resources.  Otherwise a BUG could be triggered when
+> attempting to clean up MSIs because the IRQ is still active from a
+> request_irq().
+> 
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+> ---
+>  drivers/bus/mhi/core/pm.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index cd6ba23..1bfa334 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -922,7 +922,11 @@ int mhi_sync_power_up(struct mhi_controller *mhi_cntrl)
+>  			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+>  			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>  
+> -	return (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -EIO;
+> +	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -EIO;
+> +
+> +	if (ret)
+> +		mhi_power_down(mhi_cntrl, false);
+> +	return ret;
 
-Fixes by using the APIC_DM_FIXED and APIC_DM_LOWEST instead.
+I'd prefer the style of,
 
-Fixes: (fdcf75621375 'KVM: x86: Disable posted interrupts for non-standard IRQs delivery modes')
-Cc: Alexander Graf <graf@amazon.com>
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
----
- arch/x86/include/asm/kvm_host.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+```
+statement
+if (cond)
+	statement
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 98959e8..f15e5b3 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1664,8 +1664,8 @@ void kvm_set_msi_irq(struct kvm *kvm, struct kvm_kernel_irq_routing_entry *e,
- static inline bool kvm_irq_is_postable(struct kvm_lapic_irq *irq)
- {
- 	/* We can only post Fixed and LowPrio IRQs */
--	return (irq->delivery_mode == dest_Fixed ||
--		irq->delivery_mode == dest_LowestPrio);
-+	return (irq->delivery_mode == APIC_DM_FIXED ||
-+		irq->delivery_mode == APIC_DM_LOWEST);
- }
- 
- static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
--- 
-1.8.3.1
+return
+```
 
+Please stick to this. The change itself looks good.
+
+Thanks,
+Mani
+
+>  }
+>  EXPORT_SYMBOL(mhi_sync_power_up);
+>  
+> -- 
+> Qualcomm Technologies, Inc. is a member of the
+> Code Aurora Forum, a Linux Foundation Collaborative Project.
