@@ -2,112 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA111A152E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C0A1A1535
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbgDGSoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:44:32 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:37213 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgDGSob (ORCPT
+        id S1726952AbgDGSpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:45:38 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:33294 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgDGSph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:44:31 -0400
-Received: from mail-qt1-f180.google.com ([209.85.160.180]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N1feo-1jAi7Z0sbQ-011x3p; Tue, 07 Apr 2020 20:44:29 +0200
-Received: by mail-qt1-f180.google.com with SMTP id b10so3526301qtt.9;
-        Tue, 07 Apr 2020 11:44:28 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZ8gFi2hvXVNh/IDfrZw+5XGrGfrdFNApJQkA7YIPOLIZvwIeKD
-        katH3iln/MTyHNH65SgN7SLdxT7ey3u+5NCGTKE=
-X-Google-Smtp-Source: APiQypKgeOSDBPfhB1u6KIP702ET7PgnervxCjGhHD+k7vVuRMCphJPctLEDVz7EFynIzXKRIHAMuiP/RJU2OhJDfVo=
-X-Received: by 2002:ac8:7292:: with SMTP id v18mr3736593qto.304.1586285067943;
- Tue, 07 Apr 2020 11:44:27 -0700 (PDT)
+        Tue, 7 Apr 2020 14:45:37 -0400
+Received: by mail-ot1-f67.google.com with SMTP id 22so4263601otf.0;
+        Tue, 07 Apr 2020 11:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gIwQXo30ZMAIkBOcVj8rGDbZtlax11guTXEso2ZEUsc=;
+        b=RA82pSey4Yv0H/tle8kDxmXR1Vov50OhJn5NRQbpbw1I67v8xkwHPthpd4V10HbztQ
+         Aw19NCLdMMIXdPYAThrTk+yRNTAt8tBNO8kYsYk19mqNveMh/U/ELa2zRJjehtIidXcw
+         jPN1t1Gc6kz7F8T6uDLTKdf4zrQLCJ3sqeWWyN0vbZGaJWDRn4W5eyE5Ezbn9fXQQ3Gm
+         TnbsV7wdykH4lXmT23nNjX1ymuHgmO2gQwEy8pPCw9hhnuCWFAKx6QxJG2O/Kb9Ce2J/
+         JceREjngPoabEWKMFQyPw0yHzC7iiLNox76+9P26cZsrAwgls69319SRaxyRW2hL2JYH
+         qU2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gIwQXo30ZMAIkBOcVj8rGDbZtlax11guTXEso2ZEUsc=;
+        b=SlGlQ+7YnCP73POLQhgoZPGJAlk01gOqxeV58LrnhnZKxSdwfo0I4zX31NyFkSr+bn
+         AjdjodhS02h+3/kCvgXlILu2eGP5SdPe9sTi19X3ykEloKRzsReuni38fIFCdaEF/UHh
+         /E2hSwL1+UnEl4cA8WPZSCEPVYPLpA+ZmvGdBk+h+zOXDixMuafG4KFjpmX7xxD1eMbh
+         hjzC8BV0yLJC4y6gdtcoa5Z1h0WmBvdYQEYZT3VoeBE9/6+Y68llQA9c+x0Z00ufxoFn
+         BqnYfiUn1vB1vPVdVI+LrNAoqym8/5raohDv5DVD/0Gq7/KoMUGoNc/RK+X6kUUacbj/
+         urww==
+X-Gm-Message-State: AGi0PuaQLDpoO0W8Pa0D0xQGY3tOZ5HAAxOThvzG3fTT4c8v9rYNOAMZ
+        w09hOdUuYWP6ylR7WStBWag=
+X-Google-Smtp-Source: APiQypJdxahdG65tvuwC7Cm01mkk7QWp7VED5VN28r2S+3MBIbGJmdDYHkwOCW+U36ThYHo/KTaj1g==
+X-Received: by 2002:a05:6830:1348:: with SMTP id r8mr2688095otq.57.1586285135559;
+        Tue, 07 Apr 2020 11:45:35 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id k132sm5609593oih.9.2020.04.07.11.45.34
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Apr 2020 11:45:35 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 11:45:33 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] kbuild: replace AS=clang with LLVM_IA=1
+Message-ID: <20200407184533.GA48427@ubuntu-s3-xlarge-x86>
+References: <20200407184336.14612-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-References: <20190205133821.1a243836@gandalf.local.home> <20190206021611.2nsqomt6a7wuaket@treble>
- <20190206121638.3d2230c1@gandalf.local.home> <CAK8P3a1hsca02=jPQmBG68RTUAt-jDR-qo=UFwf13nZ0k-nDgA@mail.gmail.com>
- <20200406221614.ac2kl3vlagiaj5jf@treble> <CAK8P3a3QntCOJUeUfNmqogO51yh29i4NQCu=NBF4H1+h_m_Pug@mail.gmail.com>
- <CAK8P3a2Bvebrvj7XGBtCwV969g0WhmGr_xFNfSRsZ7WX1J308g@mail.gmail.com> <20200407163253.mji2z465ixaotnkh@treble>
-In-Reply-To: <20200407163253.mji2z465ixaotnkh@treble>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 7 Apr 2020 20:44:11 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3piAV7BbgH-y_zqj4XmLcBQqKZ-NHPcqo4OTF=4H3UFA@mail.gmail.com>
-Message-ID: <CAK8P3a3piAV7BbgH-y_zqj4XmLcBQqKZ-NHPcqo4OTF=4H3UFA@mail.gmail.com>
-Subject: Re: libelf-0.175 breaks objtool
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:FOE0EA54SyWtQIMENFoNs85TPCpb5Kcf9NUCi9wsMX9f+URGxgJ
- xX96trz1uEbdVhSSI8AhLDGfyoF4ZY3uQ8dqPbsMlHWW2xffg7FUuAcnpiv71c4e3wJTQ3R
- pSKIGb11Mwqa41Oqt9i8E+IBB+3wkEHjH1IGbYdhVoah1hxfFkJIWwfF9F44Ck3AiWojZ3B
- MDpo0qA6ddsTJnkdnV/Kg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5y9y3SeAyk8=:HpxMxQJf8uhJtzjNh/z4Cq
- vR1PABdsX0rkiriS72bCc1WRErctmtdhwdTSk8N3g2/7LOJ4V3X0/9zNJRxH/ptXY/+0Cwjz8
- DPPdNSad4bsZ/h/hv1G5jpyaG7rt98EZgaGLNdujCX+6mTw/qXG+a9LWTxRNGm/4yaYV3BvE1
- dwWf/8AGbtgf0NhNEhxxufGKfiTdArCWKAd/Z0rXU8bP+5K9zGx0d5wmSswgj3B+FE+j67nF3
- hYsJrwipBUym46aQD9rmL0xPwlYZKRKv0oIJlmP+d7qnHlHgab+3PCXejQYmerD2L+jZweRMA
- edbyk+nmtOyzJzbEcibQNis7Bug6K16her2Vupo2LT2+J+cJKrk2C4bt3TTBYD8XbeZoNSZC/
- hqcb0r5URdwjAsdUSKno5FQCo33qckSO1ScXz99MnRCRUwqQwM47iVrUEuebrWNFGG3V+bIUk
- buTe2W/Hh12QL7cOlBdulbebyva5hVwy1BKBVDIgC9Oj3Bb2WJGnlCEv0uixVxP6K5AX60MTW
- CJIVe4tHMuzYgIClLx0PA8H6CQdHd7zYkIaVyTqGfVaKMVSjsxSHaEv1z3FiXW5G9gv9LEONt
- MVGnh+LT9Z0w/MDaFJ1+16hea8JkMtAFxAvPPhg0age7YJ46ttprq7eS9hRLneCYcDYXfMzrL
- VUe3ewpyXyXwXQzaCwrpGVKyvd8vTcETUu92Ggzq2d//Cy1gUcQR6Yj6WREPy8FMkzMqONQ7B
- GSnHAzoazGxdyfoVjHN/s43ItDOpU6wEI5blL/t+V8soiPTmhr9X+uPSfZr2k6pwscFOAhG6h
- tqj18fNK3/+gTWkAB0Pc80W/Mbre5iOytgvaG1X/T5CEeDrcq0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407184336.14612-1-masahiroy@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 7, 2020 at 6:33 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> On Tue, Apr 07, 2020 at 05:46:23PM +0200, Arnd Bergmann wrote:
-> > On Tue, Apr 7, 2020 at 12:31 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Tue, Apr 7, 2020 at 12:16 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > >
-> > > It's also odd that I only see the problem in two specific files:
-> > > arch/x86/realmode/rm/trampoline_64.o (in half of the randconfig builds)
-> > > and fs/xfs/xfs_trace.o  (in only one configuration so far).
-> > >
-> > > With this patch I can avoid the first one, which is unconditionally
-> > > built with -g (why?):
-> > >
-> > > --- a/arch/x86/realmode/rm/Makefile
-> > > +++ b/arch/x86/realmode/rm/Makefile
-> > > @@ -69,7 +69,7 @@ $(obj)/realmode.relocs: $(obj)/realmode.elf FORCE
-> > >  # ---------------------------------------------------------------------------
-> > >
-> > >  KBUILD_CFLAGS  := $(REALMODE_CFLAGS) -D_SETUP -D_WAKEUP \
-> > > -                  -I$(srctree)/arch/x86/boot
-> > > +                  -I$(srctree)/arch/x86/boot -gz=none
-> > >  KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
-> > >  KBUILD_CFLAGS  += -fno-asynchronous-unwind-tables
-> > >  GCOV_PROFILE := n
-> > >
-> > > I'll look at the other one tomorrow.
-> >
-> > I found where -g gets added in both cases, and adding -gz=none
-> > seems to address all randconfigs with CONFIG_DEBUG_INFO=n:
-> >
-> > --- a/fs/xfs/Makefile
-> > +++ b/fs/xfs/Makefile
-> > @@ -7,7 +7,7 @@
-> >  ccflags-y += -I $(srctree)/$(src)              # needed for trace events
-> >  ccflags-y += -I $(srctree)/$(src)/libxfs
-> >
-> > -ccflags-$(CONFIG_XFS_DEBUG) += -g
-> > +ccflags-$(CONFIG_XFS_DEBUG) += -g $(call cc-option,-gz=none)
->
-> Maybe they shouldn't have -g in the first place?
+On Wed, Apr 08, 2020 at 03:43:35AM +0900, Masahiro Yamada wrote:
+> The 'AS' variable is unused for building the kernel. Only the remaining
+> usage is to turn on the integrated assembler. A boolean flag is a better
+> fit for this purpose.
+> 
+> AS=clang was added for experts. So, I replaced it with LLVM_IA=1,
+> breaking the backward compatibility.
+> 
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-That is very possible. The -g has been there since xfs was originally merged
-back in 2002, and I could not figure out why it was there (unlike the
--DSTATIC=""
-and -DDEBUG flags that are set in the same line).
-
-On the other hand, my feeling is that setting -g should not cause problems
-with objtool, if CONFIG_DEBUG_INFO is ok.
-
-       Arnd
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
