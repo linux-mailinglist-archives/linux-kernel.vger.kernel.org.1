@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E781A16FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29A11A1709
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbgDGUuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 16:50:02 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:34140 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726365AbgDGUuB (ORCPT
+        id S1726513AbgDGUvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:51:22 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:33518 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726370AbgDGUvW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:50:01 -0400
-Received: by mail-pl1-f195.google.com with SMTP id a23so1700742plm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:50:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8KnDK4lPfD3ThErmqjMOkJqIG1D+dLUhlEHhC7zHGyQ=;
-        b=kMRk+d3kGoGcM14Fj8KK6z5Yvpj78HolILDt022nsA80s67Q95IBM+hKdlhH5N2RnO
-         3/mgjP1ddXUULum6oNJhSEnrIeKVodpQSFDuAZqRhtagyUSceqFxyFLGfXYu5tqTQbh9
-         HHanuj64WLpepEnv+UBQbLWE317V4JxGa1/DxCnMYQ75WmEymU8yYpuQ9elGGMpTDaFQ
-         MprXCN7RI5uVTYSTxBL659EZZWhXHh6rOJm5qLunYqEBNkovi++89DtaQAR/CCLjAOdk
-         jO4BLYH5uXWuCmjm5s40CHFXjoCwsKKDfEbOhaIJROGqz7uC63sa0/msjf7CDQT77wvr
-         tx5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8KnDK4lPfD3ThErmqjMOkJqIG1D+dLUhlEHhC7zHGyQ=;
-        b=Fe7pCURfv9JQHZCIyT6hkcsBSuLq9IZ/2wXyVYgN4WZ/BOiZTnGbYo13eqq8teAwZI
-         cta1kATv0MB7NdfhoCLpMMJiu7fKHw+7O8g7LD64Az6DW9bzkqetlXs0dDazF7wwMLMQ
-         5AMnwAB3yxb3fQzzc0UymzXwwxUOE5w7mMTrcf+bXSXLZ//9aSqzaDfhDXPu+k5jLTCJ
-         B15XA1ySsBubbPziHZ+1duYfxRS7Qw0sEgn9HDFbBjUrTi9e4VWWL1gc77lCo/BMKq4L
-         qXrgHU0fHiYzhSjNTpiJHx29WYa/gU/ZZb3wRLgg9627hoD4MTxRPKnT9eExz/tXt1yl
-         sfiw==
-X-Gm-Message-State: AGi0PuZMtUu8CYioLoGxcXFWm/MXHCBzYnUaDp2PMQXZq1ZduAnSPSwj
-        JMcVVL4kShGYv3SLK2EvcDIOWaMP5docLA==
-X-Google-Smtp-Source: APiQypIxqfTmYOscCTssroZulr1ZWx6qppCwC/i48VMqcar+nE80Hxbwwzzdacvkw01iJ8lW+FtHrg==
-X-Received: by 2002:a17:90a:1784:: with SMTP id q4mr1232457pja.174.1586292600830;
-        Tue, 07 Apr 2020 13:50:00 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:ec7d:96d3:6e2d:dcab? ([2605:e000:100e:8c61:ec7d:96d3:6e2d:dcab])
-        by smtp.gmail.com with ESMTPSA id b11sm862891pgj.92.2020.04.07.13.49.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 13:50:00 -0700 (PDT)
-Subject: Re: [PATCH] ata: ahci-imx: remove redundant assignment to ret
-To:     Colin King <colin.king@canonical.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-ide@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200405115120.366864-1-colin.king@canonical.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ac93c383-fdc3-a818-9e3b-faed462c31e5@kernel.dk>
-Date:   Tue, 7 Apr 2020 13:49:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Tue, 7 Apr 2020 16:51:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=lh4sEdCLn8yyKnv2ihUERe5IA2+XsyUMwTJh9Tv7VC4=; b=uNwdKYbJS/3gcAD7AScVS2Ri2s
+        wWs84Rnl2Q/J2zVDi1SjuWf0i3EqN2Ny0ZqFCaEqX2nc5AMlCGGDfPoCSe8AF4aU+q/KrW/+SjlDA
+        8VDoFbNdRczApwiraJ3tjw+Mmi4DUp25CiRcEtDrBCQfc4iHAlTWMf/EW0JVZMBeerGUTKftEWqxA
+        lGVoe3Gy49bVGPAXKyxFvVM+x/rB63pSmpYCJ3hnFh3BmThY3ANmkAjwNu1mPM+4ubpjESpIuijxI
+        mzdg6L+DEfOV1s3uenbN8OrixipVOn+2VYvoxbTm3+/pHemVjml0QRNSdQ3aqqbkX4eBeSsKkz3Mr
+        KPUMpaRw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLvBF-0002B5-W8; Tue, 07 Apr 2020 20:50:46 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C300D982F1A; Tue,  7 Apr 2020 22:50:42 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 22:50:42 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, hch@infradead.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        mingo <mingo@redhat.com>, bp <bp@alien8.de>, hpa@zytor.com,
+        x86 <x86@kernel.org>, "Kenneth R. Crudup" <kenny@panix.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        jannh@google.com, keescook@chromium.org, David.Laight@aculab.com,
+        Doug Covelli <dcovelli@vmware.com>, mhiramat@kernel.org
+Subject: Re: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
+Message-ID: <20200407205042.GT2452@worktop.programming.kicks-ass.net>
+References: <20200407110236.930134290@infradead.org>
+ <20200407111007.429362016@infradead.org>
+ <10ABBCEE-A74D-4100-99D9-05B4C1758FF6@gmail.com>
+ <20200407193853.GP2452@worktop.programming.kicks-ass.net>
+ <90B32DAE-0BB5-4455-8F73-C43037695E7C@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200405115120.366864-1-colin.king@canonical.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <90B32DAE-0BB5-4455-8F73-C43037695E7C@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/5/20 4:51 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Apr 07, 2020 at 01:27:45PM -0700, Nadav Amit wrote:
+> > On Apr 7, 2020, at 12:38 PM, Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > On Tue, Apr 07, 2020 at 11:55:21AM -0700, Nadav Amit wrote:
+> >>> On Apr 7, 2020, at 4:02 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> >>> 
+> >>> Since we now have infrastructure to analyze module text, disallow
+> >>> modules that write to CRn and DRn registers.
+> >> 
+> >> Assuming the kernel is built without CONFIG_PARAVIRT, what is the right way
+> >> for out-of-tree modules to write to CRs? Let’s say CR2?
+> > 
+> > Most of them there is no real justification for ever writing to. CR2 I
+> > suppose we can have an exception for given a sane rationale for why
+> > you'd need to rewrite the fault address.
 > 
-> The variable ret is being initialized with a value that is never read
-> and it is being updated later with a new value.  The initialization is
-> redundant and can be removed.
+> For the same reason that KVM writes to CR2 - to restore CR2 before entering
+> a guest, since CR2 not architecturally loaded from the VMCS. I suspect there
+> are additional use-cases which are not covered by the kernel interfaces.
 
-Applied, thanks.
-
--- 
-Jens Axboe
-
+So I'm not much of a virt guy (clearly), and *groan*, that's horrible.
+I'll go make an exception for CR2.
