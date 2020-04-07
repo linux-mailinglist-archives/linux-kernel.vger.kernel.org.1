@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 445DE1A04B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5631A04BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgDGCF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 22:05:28 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36074 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgDGCF2 (ORCPT
+        id S1726494AbgDGCLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 22:11:21 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:35595 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726310AbgDGCLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 22:05:28 -0400
-Received: by mail-qt1-f193.google.com with SMTP id m33so1601951qtb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 19:05:28 -0700 (PDT)
+        Mon, 6 Apr 2020 22:11:20 -0400
+Received: by mail-qv1-f68.google.com with SMTP id q73so1147603qvq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 19:11:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=joelfernandes.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=QE9feUnP6i9X/aj/z/7/gJs0TCfrmf+hqNm1oT5H5Wo=;
-        b=Ug+nh1/Djrrr/Q9qUloEDJX7nwoQbukp++5BAg8jRhC6bKO5v2srUpBPJ5CSdxM8+y
-         DZM3V/FCvDfVTAdln6l0g4IpB2p5Q+zSAwEMPnG4Mpn7Id6AxXESijE8ghTVWJ6YUHrQ
-         ldTC1LqkITSR7e14Q2G+OgeqG3MEEF1b1wsaA=
+        bh=aaa6SifOL9ZgGakR85u07GVO9twQQnlqkKhhw8LJ61Y=;
+        b=xI/ujC/RAckrvStiyT1s/lKEcpA1186172WShsPNhGoEOvQ5y2Ser1kYDtJsnPsLga
+         f6QPfBlDXJ4h7eLoL/ZFwg0+woBukzLR534NkFoPeELNS+GjxvNixkkD5xoEJUd4e+n9
+         Kyrm2zsmBCRaqyD3cOlNW7XK34Oqd7RmKL8vA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QE9feUnP6i9X/aj/z/7/gJs0TCfrmf+hqNm1oT5H5Wo=;
-        b=EHlHVT0ajTRUX+ZH5dicYQvehLzW4WiHNOGIFDDEl2c0veuCQhykajkrKaa8lqzCLg
-         32EPgBRFWlDISSpKrxWCfqXVZc6YTk+xUtH+ty7mH4woRqjwrHmjNE0RSe6bataRINGg
-         J7u+tJtX5oUxYgx9fywbpw1rSW8DSEtTWrx8a6RKSq+5K+4YmtIzrx6CtavGJpMj59Wp
-         P8sy9P0D00z5KEZ9yVly3jNjq/YWNqQvPG38tqzoPwqqeZO0RSxPYTR/UQaKjz1Ykz6u
-         R+vhp7F/xn23k1wgBxIv0uNRqO1ccDwjP6VtGykxz11DpowmsgkPOjBks8Qio+uT0awU
-         y/Iw==
-X-Gm-Message-State: AGi0PuaXw0SkTghZc5DCiGF6rwVXt6VoKCuZdBTDfDqWQxzqjig86fb9
-        XdVjUlkGuFPX5+8Ytnm9/ZE4yA==
-X-Google-Smtp-Source: APiQypKtWDj3oedlvF3bwvLFauAg3ZIkbXpPPfDmPdit0eD4VUDvGdBp5v89JmUTbXIWhz19qDHGug==
-X-Received: by 2002:aed:37a8:: with SMTP id j37mr213233qtb.272.1586225127531;
-        Mon, 06 Apr 2020 19:05:27 -0700 (PDT)
+        bh=aaa6SifOL9ZgGakR85u07GVO9twQQnlqkKhhw8LJ61Y=;
+        b=Zja2vJokCuE5Rw4NkRoLlgGoPfNFfwJBZLYmvOwJoO7B8JgFCWljKoH5IpazoCRvzw
+         w0UuH/cNE9OpeYhpL+oeUFRLdc3t81khwey4ZcM1NmmuY5XxcsMYNDEbet5J4k3PvS0o
+         SMNZEDqF5phrqQi8klmrrl1C9bVYu+yiidwS0QKf7Sx/GJlM/EIeu2SEqwjHhoCleALv
+         4peK+jrymhuDFO3t3gcHjF48oCKQyeRrdd5xBXbt1D4Wn/i8CC+eM4V0OiNruwg1uJlp
+         FIL9DqCn04hlmXvvdIjaIM0Hmf0wmBVLjO4WXSISyG72JpkbVss3K3X7vNzVSsfNvM2o
+         AsEw==
+X-Gm-Message-State: AGi0Pub0vKvowlp8YktnM2LqC1Gpf2k2MOs2XhXDDdgDc4+4uTVlapkG
+        //jcinUfBTeKK1eDDbfzgKwlag==
+X-Google-Smtp-Source: APiQypJXPpYd12Vrp+/OA+MjcYQlGqYJcYWnu164CU0oVIxQEvSPK9xJqC/qsXd3mxWCvZpUCgm1Ng==
+X-Received: by 2002:ad4:4f93:: with SMTP id em19mr84697qvb.110.1586225479431;
+        Mon, 06 Apr 2020 19:11:19 -0700 (PDT)
 Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id n5sm15879583qkn.4.2020.04.06.19.05.26
+        by smtp.gmail.com with ESMTPSA id g187sm15461721qkf.115.2020.04.06.19.11.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 19:05:26 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 22:05:25 -0400
+        Mon, 06 Apr 2020 19:11:18 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 22:11:18 -0400
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -53,7 +53,7 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [PATCH 1/3] rcu/tree: use more permissive parameters when
  attaching a head
-Message-ID: <20200407020525.GA113967@google.com>
+Message-ID: <20200407021118.GB113967@google.com>
 References: <20200402123253.10382-1-urezki@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -87,14 +87,6 @@ On Thu, Apr 02, 2020 at 02:32:51PM +0200, Uladzislau Rezki (Sony) wrote:
 > 
 > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > Suggested-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Beautifully done, thanks Vlad! I agree with this and the other 2 changes and
-I applied it to my rcu/kfree branch for further testing by both of us.
-
-thanks,
-
- - Joel
-
 > ---
 >  kernel/rcu/tree.c | 23 ++++++++++++++++-------
 >  1 file changed, 16 insertions(+), 7 deletions(-)
@@ -117,6 +109,16 @@ thanks,
 > -
 > +		sizeof(struct rcu_head), GFP_KERNEL |
 > +			__GFP_ATOMIC | __GFP_HIGH | __GFP_RETRY_MAYFAIL);
+
+On thing here though, you removed the NOWARN. Was there a reason? It would
+now warn even when synchronously waiting right? I will fixup your commit to
+add it back for now but let me know if you had some other reason to remove it.
+
+thanks,
+
+ - Joel
+
+
 >  	if (!ptr)
 >  		return NULL;
 >  
