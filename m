@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2055A1A0B3A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855111A0BC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbgDGKYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:24:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
+        id S1728479AbgDGK26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:28:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728739AbgDGKYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:24:34 -0400
+        id S1728755AbgDGKYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:24:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B92F2080C;
-        Tue,  7 Apr 2020 10:24:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 329B82082F;
+        Tue,  7 Apr 2020 10:24:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255072;
-        bh=MgUBkgRyGDEoet7WkJIpUu01v9uuWx0w0BQHOcz/Zoo=;
+        s=default; t=1586255077;
+        bh=IefxS/Yc5ROgBysnlD7RBJzc6vlR8Ndpi0VarpK9QKA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a6si5W56L2IR1TdjwHMt/EjGkhtsLCqjQgOxsn4GL5T9jDj2Q66gPs7poTdbDEE7L
-         pvxKYxvJ4rhZlw043xfLxV8NH+lZegSysyXJXlg2O4m1vkGUK7rIYchSZAvAdOx+r2
-         3GLc1H+lGC1DqX4gGFB+/oW2M3PfFCiFRTi6+xG8=
+        b=CLV8S4kK7BRuHHhJPAfe68j6YzXoMOYt6pCHR9/t2l6wbNwzethD+anUKvS/6aT+R
+         1ysR60zEZ3RwtvZsCajx03P55wIdKCGaSDiXGug42pkxXLtTn4RnMv/nHmK8s7x9aX
+         zp9/0nEKOHjsXDYmxYIzy/o3P6QSFTr1TnAlYfkQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 19/46] bpf: Fix tnum constraints for 32-bit comparisons
-Date:   Tue,  7 Apr 2020 12:21:50 +0200
-Message-Id: <20200407101501.574740613@linuxfoundation.org>
+Subject: [PATCH 5.5 20/46] XArray: Fix xa_find_next for large multi-index entries
+Date:   Tue,  7 Apr 2020 12:21:51 +0200
+Message-Id: <20200407101501.673089011@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
 References: <20200407101459.502593074@linuxfoundation.org>
@@ -45,192 +45,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jann Horn <jannh@google.com>
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-[ Upstream commit 604dca5e3af1db98bd123b7bfc02b017af99e3a0 ]
+[ Upstream commit bd40b17ca49d7d110adf456e647701ce74de2241 ]
 
-The BPF verifier tried to track values based on 32-bit comparisons by
-(ab)using the tnum state via 581738a681b6 ("bpf: Provide better register
-bounds after jmp32 instructions"). The idea is that after a check like
-this:
+Coverity pointed out that xas_sibling() was shifting xa_offset without
+promoting it to an unsigned long first, so the shift could cause an
+overflow and we'd get the wrong answer.  The fix is obvious, and the
+new test-case provokes UBSAN to report an error:
+runtime error: shift exponent 60 is too large for 32-bit type 'int'
 
-    if ((u32)r0 > 3)
-      exit
-
-We can't meaningfully constrain the arithmetic-range-based tracking, but
-we can update the tnum state to (value=0,mask=0xffff'ffff'0000'0003).
-However, the implementation from 581738a681b6 didn't compute the tnum
-constraint based on the fixed operand, but instead derives it from the
-arithmetic-range-based tracking. This means that after the following
-sequence of operations:
-
-    if (r0 >= 0x1'0000'0001)
-      exit
-    if ((u32)r0 > 7)
-      exit
-
-The verifier assumed that the lower half of r0 is in the range (0, 0)
-and apply the tnum constraint (value=0,mask=0xffff'ffff'0000'0000) thus
-causing the overall tnum to be (value=0,mask=0x1'0000'0000), which was
-incorrect. Provide a fixed implementation.
-
-Fixes: 581738a681b6 ("bpf: Provide better register bounds after jmp32 instructions")
-Signed-off-by: Jann Horn <jannh@google.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200330160324.15259-3-daniel@iogearbox.net
+Fixes: 19c30f4dd092 ("XArray: Fix xa_find_after with multi-index entries")
+Reported-by: Bjorn Helgaas <bhelgaas@google.com>
+Reported-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 108 ++++++++++++++++++++++++++++--------------
- 1 file changed, 72 insertions(+), 36 deletions(-)
+ lib/test_xarray.c | 18 ++++++++++++++++++
+ lib/xarray.c      |  3 ++-
+ 2 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 79f38a281390d..f6476c4e9037a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5550,6 +5550,70 @@ static bool cmp_val_with_extended_s64(s64 sval, struct bpf_reg_state *reg)
- 		reg->smax_value <= 0 && reg->smin_value >= S32_MIN);
+diff --git a/lib/test_xarray.c b/lib/test_xarray.c
+index 55c14e8c88591..8c7d7a8468b88 100644
+--- a/lib/test_xarray.c
++++ b/lib/test_xarray.c
+@@ -12,6 +12,9 @@
+ static unsigned int tests_run;
+ static unsigned int tests_passed;
+ 
++static const unsigned int order_limit =
++		IS_ENABLED(CONFIG_XARRAY_MULTI) ? BITS_PER_LONG : 1;
++
+ #ifndef XA_DEBUG
+ # ifdef __KERNEL__
+ void xa_dump(const struct xarray *xa) { }
+@@ -959,6 +962,20 @@ static noinline void check_multi_find_2(struct xarray *xa)
+ 	}
  }
  
-+/* Constrain the possible values of @reg with unsigned upper bound @bound.
-+ * If @is_exclusive, @bound is an exclusive limit, otherwise it is inclusive.
-+ * If @is_jmp32, @bound is a 32-bit value that only constrains the low 32 bits
-+ * of @reg.
-+ */
-+static void set_upper_bound(struct bpf_reg_state *reg, u64 bound, bool is_jmp32,
-+			    bool is_exclusive)
++static noinline void check_multi_find_3(struct xarray *xa)
 +{
-+	if (is_exclusive) {
-+		/* There are no values for `reg` that make `reg<0` true. */
-+		if (bound == 0)
-+			return;
-+		bound--;
-+	}
-+	if (is_jmp32) {
-+		/* Constrain the register's value in the tnum representation.
-+		 * For 64-bit comparisons this happens later in
-+		 * __reg_bound_offset(), but for 32-bit comparisons, we can be
-+		 * more precise than what can be derived from the updated
-+		 * numeric bounds.
-+		 */
-+		struct tnum t = tnum_range(0, bound);
++	unsigned int order;
 +
-+		t.mask |= ~0xffffffffULL; /* upper half is unknown */
-+		reg->var_off = tnum_intersect(reg->var_off, t);
++	for (order = 5; order < order_limit; order++) {
++		unsigned long index = 1UL << (order - 5);
 +
-+		/* Compute the 64-bit bound from the 32-bit bound. */
-+		bound += gen_hi_max(reg->var_off);
++		XA_BUG_ON(xa, !xa_empty(xa));
++		xa_store_order(xa, 0, order - 4, xa_mk_index(0), GFP_KERNEL);
++		XA_BUG_ON(xa, xa_find_after(xa, &index, ULONG_MAX, XA_PRESENT));
++		xa_erase_index(xa, 0);
 +	}
-+	reg->umax_value = min(reg->umax_value, bound);
 +}
 +
-+/* Constrain the possible values of @reg with unsigned lower bound @bound.
-+ * If @is_exclusive, @bound is an exclusive limit, otherwise it is inclusive.
-+ * If @is_jmp32, @bound is a 32-bit value that only constrains the low 32 bits
-+ * of @reg.
-+ */
-+static void set_lower_bound(struct bpf_reg_state *reg, u64 bound, bool is_jmp32,
-+			    bool is_exclusive)
-+{
-+	if (is_exclusive) {
-+		/* There are no values for `reg` that make `reg>MAX` true. */
-+		if (bound == (is_jmp32 ? U32_MAX : U64_MAX))
-+			return;
-+		bound++;
-+	}
-+	if (is_jmp32) {
-+		/* Constrain the register's value in the tnum representation.
-+		 * For 64-bit comparisons this happens later in
-+		 * __reg_bound_offset(), but for 32-bit comparisons, we can be
-+		 * more precise than what can be derived from the updated
-+		 * numeric bounds.
-+		 */
-+		struct tnum t = tnum_range(bound, U32_MAX);
-+
-+		t.mask |= ~0xffffffffULL; /* upper half is unknown */
-+		reg->var_off = tnum_intersect(reg->var_off, t);
-+
-+		/* Compute the 64-bit bound from the 32-bit bound. */
-+		bound += gen_hi_min(reg->var_off);
-+	}
-+	reg->umin_value = max(reg->umin_value, bound);
-+}
-+
- /* Adjusts the register min/max values in the case that the dst_reg is the
-  * variable register that we are working on, and src_reg is a constant or we're
-  * simply doing a BPF_K check.
-@@ -5605,15 +5669,8 @@ static void reg_set_min_max(struct bpf_reg_state *true_reg,
- 	case BPF_JGE:
- 	case BPF_JGT:
- 	{
--		u64 false_umax = opcode == BPF_JGT ? val    : val - 1;
--		u64 true_umin = opcode == BPF_JGT ? val + 1 : val;
--
--		if (is_jmp32) {
--			false_umax += gen_hi_max(false_reg->var_off);
--			true_umin += gen_hi_min(true_reg->var_off);
--		}
--		false_reg->umax_value = min(false_reg->umax_value, false_umax);
--		true_reg->umin_value = max(true_reg->umin_value, true_umin);
-+		set_upper_bound(false_reg, val, is_jmp32, opcode == BPF_JGE);
-+		set_lower_bound(true_reg, val, is_jmp32, opcode == BPF_JGT);
- 		break;
- 	}
- 	case BPF_JSGE:
-@@ -5634,15 +5691,8 @@ static void reg_set_min_max(struct bpf_reg_state *true_reg,
- 	case BPF_JLE:
- 	case BPF_JLT:
- 	{
--		u64 false_umin = opcode == BPF_JLT ? val    : val + 1;
--		u64 true_umax = opcode == BPF_JLT ? val - 1 : val;
--
--		if (is_jmp32) {
--			false_umin += gen_hi_min(false_reg->var_off);
--			true_umax += gen_hi_max(true_reg->var_off);
--		}
--		false_reg->umin_value = max(false_reg->umin_value, false_umin);
--		true_reg->umax_value = min(true_reg->umax_value, true_umax);
-+		set_lower_bound(false_reg, val, is_jmp32, opcode == BPF_JLE);
-+		set_upper_bound(true_reg, val, is_jmp32, opcode == BPF_JLT);
- 		break;
- 	}
- 	case BPF_JSLE:
-@@ -5717,15 +5767,8 @@ static void reg_set_min_max_inv(struct bpf_reg_state *true_reg,
- 	case BPF_JGE:
- 	case BPF_JGT:
- 	{
--		u64 false_umin = opcode == BPF_JGT ? val    : val + 1;
--		u64 true_umax = opcode == BPF_JGT ? val - 1 : val;
--
--		if (is_jmp32) {
--			false_umin += gen_hi_min(false_reg->var_off);
--			true_umax += gen_hi_max(true_reg->var_off);
--		}
--		false_reg->umin_value = max(false_reg->umin_value, false_umin);
--		true_reg->umax_value = min(true_reg->umax_value, true_umax);
-+		set_lower_bound(false_reg, val, is_jmp32, opcode == BPF_JGE);
-+		set_upper_bound(true_reg, val, is_jmp32, opcode == BPF_JGT);
- 		break;
- 	}
- 	case BPF_JSGE:
-@@ -5743,15 +5786,8 @@ static void reg_set_min_max_inv(struct bpf_reg_state *true_reg,
- 	case BPF_JLE:
- 	case BPF_JLT:
- 	{
--		u64 false_umax = opcode == BPF_JLT ? val    : val - 1;
--		u64 true_umin = opcode == BPF_JLT ? val + 1 : val;
--
--		if (is_jmp32) {
--			false_umax += gen_hi_max(false_reg->var_off);
--			true_umin += gen_hi_min(true_reg->var_off);
--		}
--		false_reg->umax_value = min(false_reg->umax_value, false_umax);
--		true_reg->umin_value = max(true_reg->umin_value, true_umin);
-+		set_upper_bound(false_reg, val, is_jmp32, opcode == BPF_JLE);
-+		set_lower_bound(true_reg, val, is_jmp32, opcode == BPF_JLT);
- 		break;
- 	}
- 	case BPF_JSLE:
+ static noinline void check_find_1(struct xarray *xa)
+ {
+ 	unsigned long i, j, k;
+@@ -1081,6 +1098,7 @@ static noinline void check_find(struct xarray *xa)
+ 	for (i = 2; i < 10; i++)
+ 		check_multi_find_1(xa, i);
+ 	check_multi_find_2(xa);
++	check_multi_find_3(xa);
+ }
+ 
+ /* See find_swap_entry() in mm/shmem.c */
+diff --git a/lib/xarray.c b/lib/xarray.c
+index 1d9fab7db8dad..acd1fad2e862a 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -1839,7 +1839,8 @@ static bool xas_sibling(struct xa_state *xas)
+ 	if (!node)
+ 		return false;
+ 	mask = (XA_CHUNK_SIZE << node->shift) - 1;
+-	return (xas->xa_index & mask) > (xas->xa_offset << node->shift);
++	return (xas->xa_index & mask) >
++		((unsigned long)xas->xa_offset << node->shift);
+ }
+ 
+ /**
 -- 
 2.20.1
 
