@@ -2,67 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8971A0A3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E091E1A0A40
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728134AbgDGJd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:33:59 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:42344 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726716AbgDGJd6 (ORCPT
+        id S1728096AbgDGJe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:34:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41877 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgDGJe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:33:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ALLpFhoRwFcaZVxVwmpORwXzqCLllgkOW88XxNP1czw=; b=cXqt2Apb0IYUWCtEG/qZtDMcnU
-        GDRnm2aNxxGoLxkuAR2tr8mHb6Rbt51JplL2wsHcw0XXes/p9vuKk2dRBjziu0pj+AMLXBIVXd5MB
-        gvV51G/O02Ml2mfOfroshmH9vvT7b25V5u29s96NWMaLGhnQ3eRcS49vwwXdNV7XAE1sQ6TTUm338
-        r+cGgmsDwefFnOAQBzqSeJN/mQh9Y7/rvYUJ2/a5zxNSS+8KqyAQ55Tz9rvkDZQAS6eOCTxFKzMz0
-        EHTPlUb/iGsSM621kD101DfYjXLrGVEVLN5aOlUfGqxkJf7cU2Lpm3CWVfvPvyK+JQrjpvISps5WE
-        4y29vzZQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLkcH-0006yf-F2; Tue, 07 Apr 2020 09:33:57 +0000
-Date:   Tue, 7 Apr 2020 02:33:57 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        bgregg@netflix.com
-Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
- function"
-Message-ID: <20200407093357.GA24309@infradead.org>
-References: <20200403133533.GA3424@infradead.org>
- <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
- <20200404093105.GA445@infradead.org>
- <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
+        Tue, 7 Apr 2020 05:34:26 -0400
+Received: from mail-wm1-f70.google.com ([209.85.128.70])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1jLkci-0001sz-RN
+        for linux-kernel@vger.kernel.org; Tue, 07 Apr 2020 09:34:24 +0000
+Received: by mail-wm1-f70.google.com with SMTP id a4so472771wmb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 02:34:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uPsTNxLdIDWlRCtJqG7CoBzdAg59oIT20FSzJSMfJfM=;
+        b=B6LRD4mclXrTEEhXFGb/Jjaxif0iugfVEcybu6i/Prdq1l8cGAQ/R/RjInH9kTO3UA
+         nUv924UdS5qqOY9/wREigcvK0tXuy6dKtcH6TxeldnfTFHOOfAcMt/2EkapYGJ3Atl4a
+         rYbtgZdbkYv9sNckbimozEol9YEUHqPoo2+f/mpyfhSbp0k72du9EUaVWV4XMC5T7tn4
+         i77BTtKNWe+fm+Gq31slF8D5tStYz0wOPC5SegB5eDbqjIRoHKdNnO6a20rY9P+Q4RkJ
+         jUFDTupJK+TansKlww5NkDOuee/2xOeDbK3OV+B9PKsFG3itBU/UUe0S/jgN8dL6SZ/v
+         Vw2g==
+X-Gm-Message-State: AGi0PuZTGIMoIi8gTjtnxl+atS5uA2QYFxcD5ZPK4LYk98L8zhgwH5KO
+        DF6wNbMY8wCYFpwJCMTOFd949SV9msgoNobxqJmPrkFa624/RG6Ulj4j4gOU4sBz5KgPJbuvXHg
+        EDVx7B13Iu6dmW1N4CZQecdgXihVYjpdG0aYLRI4AuQ==
+X-Received: by 2002:a1c:68d5:: with SMTP id d204mr1442654wmc.15.1586252064435;
+        Tue, 07 Apr 2020 02:34:24 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKmrWsL/bX9oZ/TNvsql4F4PCjQsXe8fa6CUIX/VQhprHmkFfhDzZXlUz4Tuus9VKxSSbzujw==
+X-Received: by 2002:a1c:68d5:: with SMTP id d204mr1442631wmc.15.1586252064149;
+        Tue, 07 Apr 2020 02:34:24 -0700 (PDT)
+Received: from localhost (host123-127-dynamic.36-79-r.retail.telecomitalia.it. [79.36.127.123])
+        by smtp.gmail.com with ESMTPSA id f5sm20796541wrj.95.2020.04.07.02.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 02:34:23 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 11:34:22 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Vladis Dronov <vdronov@redhat.com>
+Cc:     Piotr Morgwai =?utf-8?Q?Kotarbi=C5=84ski?= <morgwai@morgwai.pl>,
+        Colin Ian King <colin.king@canonical.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ptp: free ptp clock properly
+Message-ID: <20200407093422.GD3665@xps-13>
+References: <20200309172238.GJ267906@xps-13>
+ <1196893766.20531178.1585920854778.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1196893766.20531178.1585920854778.JavaMail.zimbra@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 11:03:23AM +0200, Daniel Borkmann wrote:
+On Fri, Apr 03, 2020 at 09:34:14AM -0400, Vladis Dronov wrote:
+> Hello, Andrea, Colin, all,
 > 
-> ... where archs with non-overlapping user and kernel address range would
-> only end up having to implementing kernel_range_ok() check. Or, instead of
-> a generic kernel_range_ok() this could perhaps be more probing-specific as
-> in probe_kernel_range_ok() where this would then also cover the special
-> cases we seem to have in parisc and um. Then, this would allow to get rid
-> of all the __weak aliasing as well which may just be confusing. I could look
-> into coming up with something along these lines. Thoughts?
+> This fix is really not needed, as its creation is based on the assumption
+> that the Ubuntu kernel 5.3.0-40-generic has the upstream commit 75718584cb3c,
+> which is the real fix to this crash.
+> 
+> > > > I would guess that a kernel in question (5.3.0-40-generic) has the commit
+> > > > a33121e5487b but does not have the commit 75718584cb3c, which should be
+> > > > exactly fixing a docking station disconnect crash. Could you please,
+> > > > check this?
+> > >
+> > > Unfortunately the kernel in question already has 75718584cb3c:
+> > > https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/bionic/commit/?h=hwe&id=c71b774732f997ef38ed7bd62e73891a01f2bbfe
+> 
+> Apologies, but the assumption above is not correct, 5.3.0-40-generic does
+> not have 75718584cb3c. If it had 75718584cb3c it would be a fix and the ptp-related
+> crash (described in https://bugs.launchpad.net/bugs/1864754) would not happen.
+> 
+> This way https://lists.ubuntu.com/archives/kernel-team/2020-March/108562.html fix
+> is not really needed.
 
-FYI, this is what I cooked up a few days ago:
+Hi Vladis,
 
-http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/maccess-fixups
+for the records, I repeated the tests with a lot of help from the bug
+reporter (Morgwai, added in cc), this time making sure we were using the
+same kernels.
 
-Still misses the final work to switch probe_kernel_read to be the
-strict version.  Any good naming suggestion for the non-strict one?
+I confirm that my fix is not really needed as you correctly pointed out.
+Thanks for looking into this and sorry for the noise! :)
+
+-Andrea
