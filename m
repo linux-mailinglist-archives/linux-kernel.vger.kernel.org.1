@@ -2,149 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FCFE1A123E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5101A1248
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgDGQ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:56:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:27905 "EHLO mga04.intel.com"
+        id S1726510AbgDGQ5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:57:04 -0400
+Received: from mout.web.de ([212.227.17.12]:36377 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726578AbgDGQ4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:56:09 -0400
-IronPort-SDR: nsUHeCQOTtKd2+wgwUz9dfQkgo2vsfdHfILwfpW4hZiWlCFw4R/faFtTgpMJzfUoBgUuabwfAm
- yqe6lEjlm4fw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 09:56:07 -0700
-IronPort-SDR: YKqw7IJZIbnXpTnkUrnMft+/VeegHfN+UmzF0cStQx8x2Z54EFBvaGfW3i+uytMaWqLC/5yLRU
- cxwBY6TJ2gKg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,355,1580803200"; 
-   d="scan'208";a="275160916"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004.fm.intel.com with ESMTP; 07 Apr 2020 09:55:56 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1jLrW0-00GTap-OF; Tue, 07 Apr 2020 19:55:56 +0300
-Date:   Tue, 7 Apr 2020 19:55:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     thor.thayer@linux.intel.com, krzysztof.adamski@nokia.com,
-        rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com, f.fainelli@gmail.com,
-        nsekhar@ti.com, bgolaszewski@baylibre.com,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        baruch@tkos.co.il, wsa+renesas@sang-engineering.com,
-        kgene@kernel.org, krzk@kernel.org, paul@crapouillou.net,
-        vz@mleia.com, khilman@baylibre.com, matthias.bgg@gmail.com,
-        gregory.clement@bootlin.com, rrichter@marvell.com,
-        afaerber@suse.de, manivannan.sadhasivam@linaro.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, heiko@sntech.de,
-        baohua@kernel.org, linus.walleij@linaro.org, mripard@kernel.org,
-        wens@csie.org, ardb@kernel.org, michal.simek@xilinx.com,
-        gcherian@marvell.com, jun.nie@linaro.org, shawnguo@kernel.org,
-        rayagonda.kokatanur@broadcom.com, lori.hikichi@broadcom.com,
-        nishkadg.linux@gmail.com, kstewart@linuxfoundation.org,
-        allison@lohutok.net, gregkh@linuxfoundation.org,
-        tglx@linutronix.de, bigeasy@linutronix.de, info@metux.net,
-        hslester96@gmail.com, narmstrong@baylibre.com,
-        martin.blumenstingl@googlemail.com, qii.wang@mediatek.com,
-        drinkcat@chromium.org, hsinyi@chromium.org, fparent@baylibre.com,
-        opensource@jilayne.com, swinslow@gmail.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1 00/28] convert to devm_platform_ioremap_resource
-Message-ID: <20200407165556.GK3676135@smile.fi.intel.com>
-References: <20200407163741.17615-1-zhengdejin5@gmail.com>
+        id S1726352AbgDGQ5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:57:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586278590;
+        bh=VYjOv751hGIO6e6H/n6kePCjB92E1MhJ+L5qHzX+zDE=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=RzD4waItOMY8lSgIUk0z6+zbjsSFeoo7US2rQqfBf7A6ai9rWB8qev86ySIDyvq3L
+         qaKGTxojGuBiocXZSArJMZ94pvlUlPOB5GrxSaiit6+SzfXJ7pIIpz6cCRo/4JMfqH
+         IADodRq8KSlE97/hD+75Icf9gE2p+c4UlcnbtTBc=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.49.5.104]) by smtp.web.de (mrweb102
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MOzsZ-1jPyeX2T71-006Mj7; Tue, 07
+ Apr 2020 18:56:30 +0200
+Subject: Re: [PATCH] scsi: Remove unnecessary calls to memset after
+ dma_alloc_coherent
+To:     Alex Dewar <alex.dewar@gmx.co.uk>
+Cc:     Allison Randal <allison@lohutok.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Himanshu Madhani <hmadhani@marvell.com>,
+        "James E. J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-scsi@vger.kernel.org, aacraid@microsemi.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-kernel@vger.kernel.org
+References: <e2401a31-e9fd-e849-e27c-6e079f5556d2@web.de>
+ <20200407160213.qh64de6ebrj7qkmx@lenovo-laptop>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <807090f6-f2ee-0e5b-6e35-b0c148c7a22f@web.de>
+Date:   Tue, 7 Apr 2020 18:56:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407163741.17615-1-zhengdejin5@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200407160213.qh64de6ebrj7qkmx@lenovo-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:xxr66DgWr9Hg+3ovkVmwDGvM8UNKsWnP0Z+iO1MYs+PzBAu+yQ2
+ wsbpITBnAILzGzz1Pt4x7p48ohW6Ifp/9PKZhANqRNS25KePYJZqYAivm6h5kfHHIYxwpGX
+ Ir5eJMGI9ri9XPfOeOcW6mhxSmw8xFzpSQeeJYAP14NCEuNWBkC/TO2ZKjWZ9lk61c9gxnz
+ lD7hyaQFFzryBMdJP38ng==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8K5Lsa2On1M=:bZI8QkuaaXEYH8gc8RSd4Z
+ L4df/ORXTpaTqMfPaIUJSouqwjOi7HbaT9LWdU44w1SJn8XqAonSpiFewqlY7mW5m+btz6l6b
+ WSeE0GUPS24kAv93557YsDNxwA8d460Foog9HAcGWzs1Nenc3DQmern2Lb+aAAHdM5/QxuNcr
+ ZZ+oHp618ANYJEofirk+u7mEG2o6+TcBAfH/5qpskK5YgSKwvXS4lEa8hDvEW7EQIgQ0APRzP
+ 8WlQ3oYsWk+ytozMv0hF24FnxPDwOTgxHCu+PMeITq0xyMulSxGoq4nSQ6ZpMYULnH6zhrU0v
+ Nj5qeLpz4J4jJ/DTVc7lHZKcL9UYSucjs5bNbl8e+qtFGxUVGLT5q3GNvLy2P+VHcnc2K7e9i
+ Oi3A7u0v1R6CelJ16OL9k2blm9ezVi3AUSMj709et3u+pPxEYI4KObtYTyl/ODlNOXOR3g8QT
+ S1mghFPwlxENaHVlaYAE/+LfvlptVGGvrobGZwjBOBLNGUX4E7oyAABI5uobpGrqIvcVzVV3o
+ 8lnmAUxpnH3tTD0luVtHFtczZ/Y4kdQti1UxcJp1/KAapE+5MFoZs/WFqYGzB8aP6HBYtzLXn
+ /nO1xAA5Tzf16CngBpKQ7GiuuOIvJrtyn+xnzHPn90VJD3SL5QcGNJ2C1qJCUBhk4WWXzD8+1
+ FBQ9/T4PFQxIeCVI6899RgHcvZPI0H0VVt3J+j1IjNUVSdz5lak0VoP5mgIUzYMiKn9knGD++
+ AYuWneJd3oUrejK0XuKS1memjXFYNsR4YfVm0IQtSWzqmFRBZQYKzbMniAp84UzwZzD7Ots1i
+ YMfLS3sCINIPtBeawdcvJlnokBHDpCF34pqHtoG5gaRDWx8FkNajmxXK8HyIiuPBQZHdt4E3M
+ rHhECF0nJ22Ylh0WtCGvR9El7E7t92HGHP2cXy4DXU02cD9t9KxGTZ8IhKnd2cG3a2Od7KDV7
+ xdSynT448JDfarZH0LHElCbdKx9bVehmgavHnx38cUjR5yM7Z1UupjQFFwjdToGGEFLNYr90k
+ U3IexsxHfnUK6qvVOAyfBciZw5H9XZTLoUqGwOUE3B6WDqxtbBFn+kQrgvXoy30BD7Lkvq55X
+ aKlBRZaFC8o6cx1M6yUD0H/xhkIQyTHUzw/LoKQcQ0er8gsXoihpzeiaaZa/35lX8lP58glT2
+ DYaQG7jOsMPsvsl6fdy0MtC1f5oWEFIZAsIJJl4OGVLL5JAW56ctpos67mN9SYUbGZxXU0k5T
+ BfmPKdPnLC9jLIgL6
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 12:37:13AM +0800, Dejin Zheng wrote:
-> this patch sets use devm_platform_ioremap_resource() to simplify code,
-> which contains platform_get_resource() and devm_ioremap_resource(). so
-> use it to replace the platform_get_resource() and
-> devm_ioremap_resource().
+>> =E2=80=A6
+>>> +++ b/drivers/scsi/qla2xxx/qla_mbx.c
+>>> @@ -4887,15 +4887,13 @@ qla25xx_set_els_cmds_supported(scsi_qla_host_t=
+ *vha)
+>>>  	    "Entered %s.\n", __func__);
+>>>
+>>>  	els_cmd_map =3D dma_alloc_coherent(&ha->pdev->dev, ELS_CMD_MAP_SIZE,
+>>> -	    &els_cmd_map_dma, GFP_KERNEL);
+>>> +					 &els_cmd_map_dma, GFP_KERNEL);
+>>>  	if (!els_cmd_map) {
+>> =E2=80=A6
+>>
+>> I find it safer to integrate such source code reformattings by
+>> another update step which will be separated from the proposed deletion
+>> of unwanted function calls.
+>
+> Good point. This whitespace was autoformatted by Coccinelle,
+> probably due to my bad SmPL skills.
 
-Please, use something like below next time when you generate Cc list:
+Some system factors can be involved here.
 
-	scripts/get_maintainer.pl --git --git-min-percent=67 ...
+* The source code formatting can occasionally be improvable
+  in further ways (despite of help by a software like Coccinelle).
 
-P.S. I have no idea why my name in this Cc list.
+* A change mixture can become more challenging.
 
-> Dejin Zheng (28):
->   i2c: img-scb: convert to devm_platform_ioremap_resource
->   i2c: mv64xxx: convert to devm_platform_ioremap_resource
->   i2c: owl: convert to devm_platform_ioremap_resource
->   i2c: exynos5: convert to devm_platform_ioremap_resource
->   i2c: mt65xx: convert to devm_platform_ioremap_resource
->   i2c: designware: convert to devm_platform_ioremap_resource
->   i2c: zx2967: convert to devm_platform_ioremap_resource
->   i2c: xlp9xx: convert to devm_platform_ioremap_resource
->   i2c: xiic: convert to devm_platform_ioremap_resource
->   i2c: synquacer: convert to devm_platform_ioremap_resource
->   i2c: rk3x: convert to devm_platform_ioremap_resource
->   i2c: qup: convert to devm_platform_ioremap_resource
->   i2c: meson: convert to devm_platform_ioremap_resource
->   i2c: hix5hd2: convert to devm_platform_ioremap_resource
->   i2c: emev2: convert to devm_platform_ioremap_resource
->   i2c: jz4780: convert to devm_platform_ioremap_resource
->   i2c: altera: convert to devm_platform_ioremap_resource
->   i2c: axxia: convert to devm_platform_ioremap_resource
->   i2c: bcm-iproc: convert to devm_platform_ioremap_resource
->   i2c: davinci: convert to devm_platform_ioremap_resource
->   i2c: digicolor: convert to devm_platform_ioremap_resource
->   i2c: lpc2k: convert to devm_platform_ioremap_resource
->   i2c: sirf: convert to devm_platform_ioremap_resource
->   i2c: stu300: convert to devm_platform_ioremap_resource
->   i2c: sun6i-p2wi: convert to devm_platform_ioremap_resource
->   i2c: xlr: convert to devm_platform_ioremap_resource
->   i2c: bcm-kona: convert to devm_platform_ioremap_resource
->   i2c: octeon-platdrv: convert to devm_platform_ioremap_resource
-> 
->  drivers/i2c/busses/i2c-altera.c             | 4 +---
->  drivers/i2c/busses/i2c-axxia.c              | 4 +---
->  drivers/i2c/busses/i2c-bcm-iproc.c          | 8 ++------
->  drivers/i2c/busses/i2c-bcm-kona.c           | 4 +---
->  drivers/i2c/busses/i2c-davinci.c            | 4 +---
->  drivers/i2c/busses/i2c-designware-platdrv.c | 8 ++------
->  drivers/i2c/busses/i2c-digicolor.c          | 4 +---
->  drivers/i2c/busses/i2c-emev2.c              | 4 +---
->  drivers/i2c/busses/i2c-exynos5.c            | 4 +---
->  drivers/i2c/busses/i2c-hix5hd2.c            | 4 +---
->  drivers/i2c/busses/i2c-img-scb.c            | 4 +---
->  drivers/i2c/busses/i2c-jz4780.c             | 4 +---
->  drivers/i2c/busses/i2c-lpc2k.c              | 4 +---
->  drivers/i2c/busses/i2c-meson.c              | 4 +---
->  drivers/i2c/busses/i2c-mt65xx.c             | 7 ++-----
->  drivers/i2c/busses/i2c-mv64xxx.c            | 4 +---
->  drivers/i2c/busses/i2c-octeon-platdrv.c     | 4 +---
->  drivers/i2c/busses/i2c-owl.c                | 4 +---
->  drivers/i2c/busses/i2c-qup.c                | 4 +---
->  drivers/i2c/busses/i2c-rk3x.c               | 4 +---
->  drivers/i2c/busses/i2c-sirf.c               | 4 +---
->  drivers/i2c/busses/i2c-stu300.c             | 4 +---
->  drivers/i2c/busses/i2c-sun6i-p2wi.c         | 4 +---
->  drivers/i2c/busses/i2c-synquacer.c          | 4 +---
->  drivers/i2c/busses/i2c-xiic.c               | 4 +---
->  drivers/i2c/busses/i2c-xlp9xx.c             | 4 +---
->  drivers/i2c/busses/i2c-xlr.c                | 4 +---
->  drivers/i2c/busses/i2c-zx2967.c             | 4 +---
->  28 files changed, 31 insertions(+), 92 deletions(-)
-> 
-> -- 
-> 2.25.0
-> 
+* Would you like to extend your skills in corresponding areas anyhow?
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Regards,
+Markus
