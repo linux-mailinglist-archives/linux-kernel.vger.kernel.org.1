@@ -2,362 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9487B1A13B6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC8F1A13C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727307AbgDGSbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:31:18 -0400
-Received: from mga12.intel.com ([192.55.52.136]:47795 "EHLO mga12.intel.com"
+        id S1726719AbgDGShw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:37:52 -0400
+Received: from 8bytes.org ([81.169.241.247]:57308 "EHLO theia.8bytes.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgDGSbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:31:18 -0400
-IronPort-SDR: AHb7KEouitRVp0Iu9+KB8C4Z8lauJCdDRCXGimB8F1MNmXrjmwHiNjVb4ncGIafKpovXssnPzG
- AQRnq9XPGVNw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:31:09 -0700
-IronPort-SDR: mZWWrPhcUfWsZoVHmBmgdX9nFhfkAqYok3LKO+y4wHl7uWIAqD6Q22EhNRXwlGyz/S8vorCoYb
- /zIHD6Y3Iw1A==
-X-IronPort-AV: E=Sophos;i="5.72,356,1580803200"; 
-   d="scan'208";a="242147137"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:31:07 -0700
-From:   ira.weiny@intel.com
-To:     fstests@vger.kernel.org
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH] xfs/XXX: Add xfs/XXX
-Date:   Tue,  7 Apr 2020 11:30:59 -0700
-Message-Id: <20200407183059.568653-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726277AbgDGShv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 14:37:51 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 49F26A5; Tue,  7 Apr 2020 20:37:48 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [RFC PATCH 00/34] iommu: Move iommu_group setup to IOMMU core code
+Date:   Tue,  7 Apr 2020 20:37:08 +0200
+Message-Id: <20200407183742.4344-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Hi,
 
-Add XXX to test per file DAX operations.
+here is a patch-set to remove all calls of iommu_group_get_for_dev() from
+the IOMMU drivers and move the per-device group setup and default domain
+allocation into the IOMMU core code.
 
-The following is tested[*]
+This eliminates some ugly back and forth between IOMMU core code and the
+IOMMU drivers, where the driver called iommu_group_get_for_dev() which itself
+called back into the driver.
 
- - Applications must call statx to discover the current S_DAX state.
+The patch-set started as a "quick" Friday afternoon project to split the
+IOMMU group creation and the allocation of the default domain, so that the
+default domain is not allocated before all devices are added to the group.
+In the end it took 1.5 weeks to get this in a reasonable shape, but now the
+code (during bus probing) first adds all devices to their respective IOMMU
+group before it determines the default domain type and then allocates it for
+the group.
 
- - There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
-   the parent directory FS_XFLAG_DAX inode flag.  (There is no way to change
-   this flag after file creation.)
+It turned out that this required to remove the calls of
+iommu_group_get_for_dev() from the IOMMU drivers. While at it, the calls to
+iommu_device_link()/unlink() where also moved out of the drivers, which
+required a different interface than add_device()/remove_device(). The result
+is the new probe_device()/release_device() interface, where the driver just
+does its own setup and then returns the iommu_device which belongs to the
+device being probed.
 
-   If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
-   inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
-   Unless overridden...
+There is certainly more room for cleanups, but I think this is a good start
+to simplify the code flow during IOMMU device probing.  It is also a more
+robust base for the pending patch-sets which implement per-group default
+domain types and the removal of the private domains from the Intel VT-d
+driver.
 
- - There exists a dax= mount option.
+With regards to testing, I verified this code works on three IOMMUs:
 
-   "-o dax=never" means "never set S_DAX, ignore FS_XFLAG_DAX"
-   "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
-	"-o dax" (old option) by itself means "dax=always"
-   "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
+	- AMD-Vi
+	- Intel VT-d (but there might be breakages on some hardware, the
+	  patches to remove the private domain handling from the VT-d driver
+	  should be rebased to these patches)
+	- ARM-SMMU-v3 (as emulated by QEMU)
 
- - There exists an advisory directory inode flag FS_XFLAG_DAX that can be
-   changed at any time.  The flag state is copied into any files or
-   subdirectories when they are created within that directory.  If programs
-   require file access runs in S_DAX mode, they must create those files
-   inside a directory with FS_XFLAG_DAX set, or mount the fs with an
-   appropriate dax mount option.
+Most driver conversions to the probe_device()/release_device() interface
+were trivial, but there were also some hard nuts, which I am not sure still
+work. The more difficult drivers were:
 
-[*] https://lore.kernel.org/lkml/20200405061945.GA94792@iweiny-DESK2.sc.intel.com/
+	- ARM-SMMU-v2
+	- OMAP
+	- Renesas
+	- Mediatek IOMMU v1
+	- Exynos
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- tests/xfs/999     | 231 ++++++++++++++++++++++++++++++++++++++++++++++
- tests/xfs/999.out |  21 +++++
- tests/xfs/group   |   1 +
- 3 files changed, 253 insertions(+)
- create mode 100755 tests/xfs/999
- create mode 100644 tests/xfs/999.out
+It would be great if the changes could be tested (and possibly fixed) on
+those IOMMUs, as I can't do testing on them.
 
-diff --git a/tests/xfs/999 b/tests/xfs/999
-new file mode 100755
-index 000000000000..4d3048616715
---- /dev/null
-+++ b/tests/xfs/999
-@@ -0,0 +1,231 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2019 Intel, Corp.  All Rights Reserved.
-+#
-+# FSQA Test No. 999 (temporary)
-+#
-+# Test setting of DAX flag
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+status=1	# failure is the default!
-+
-+dax_dir=$TEST_DIR/dax-dir
-+dax_sub_dir=$TEST_DIR/dax-dir/dax-sub-dir
-+dax_inh_file=$dax_dir/dax-inh-file
-+dax_non_inh_file=$dax_dir/dax-non-inh-file
-+non_dax=$TEST_DIR/non-dax
-+dax_file=$TEST_DIR/dax-dir/dax-file
-+dax_file_copy=$TEST_DIR/dax-file-copy
-+dax_file_move=$TEST_DIR/dax-file-move
-+data_file=$TEST_DIR/data-file
-+
-+_cleanup() {
-+	rm -rf $TEST_DIR/*
-+}
-+
-+trap "_cleanup ; exit \$status" 0 1 2 3 15
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+
-+# real QA test starts here
-+_supported_os Linux
-+_require_xfs_io_command "lsattr"
-+_require_xfs_io_command "statx"
-+_require_test
-+
-+#
-+# mnt_opt's we expect
-+# ''
-+# '-o dax=off'
-+# '-o dax=iflag'
-+# '-o dax'
-+# '-o dax=always'
-+function remount_w_option {
-+	mnt_opt=$1
-+	export MOUNT_OPTIONS=""
-+	export TEST_FS_MOUNT_OPTS=""
-+	_test_unmount
-+	_test_mount $mnt_opt
-+}
-+
-+function check_dax_mount_option {
-+	mnt_opt=$1
-+	_fs_options $TEST_DEV | grep -qw '$mnt_opt'
-+	if [ "$?" == "0" ]; then
-+		echo "FAILED: to mount FS with option '$mnt_opt'"
-+		status=1; exit
-+	fi
-+}
-+
-+function check_xflag_dax {
-+	xfs_io -c 'lsattr' $1 | awk -e '{ print $1 }' | grep 'x' &> /dev/null
-+	if [ "$?" != "0" ]; then
-+		echo "FAILED: Did NOT find FS_XFLAG_DAX on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+function check_s_dax {
-+	attr=`xfs_io -c 'statx -r' $1 | grep 'stat.attributes' | awk -e '{ print $3 }'`
-+	masked=$(( $attr & 0x2000 ))
-+	if [ "$masked" != "8192" ]; then
-+		echo "FAILED: Did NOT find S_DAX flag on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+function check_no_xflag_dax {
-+	xfs_io -c 'lsattr' $1 | awk -e '{ print $1 }' | grep 'x' &> /dev/null
-+	if [ "$?" == "0" ]; then
-+		echo "FAILED: Found FS_XFLAG_DAX on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+function check_no_s_dax {
-+	attr=`xfs_io -c 'statx -r' $1 | grep 'stat.attributes' | awk -e '{ print $3 }'`
-+	masked=$(( $attr & 0x2000 ))
-+	if [ "$masked" == "8192" ]; then
-+		echo "FAILED: Found S_DAX flag on $1"
-+		status=1; exit
-+	fi
-+}
-+
-+echo "running tests..."
-+
-+remount_w_option ""
-+check_dax_mount_option "dax=iflag"
-+
-+echo "   *** mark dax-dir as dax enabled"
-+mkdir $dax_dir
-+xfs_io -c 'chattr +x' $dax_dir
-+check_xflag_dax $dax_dir
-+
-+echo "   *** check file inheritance"
-+touch $dax_inh_file
-+check_xflag_dax $dax_inh_file
-+check_s_dax $dax_inh_file
-+
-+echo "   *** check directory inheritance"
-+mkdir $dax_sub_dir
-+check_xflag_dax $dax_sub_dir
-+
-+echo "   *** check changing directory"
-+xfs_io -c 'chattr -x' $dax_dir
-+check_no_xflag_dax $dax_dir
-+check_no_s_dax $dax_dir
-+
-+echo "   *** check non file inheritance"
-+touch $dax_non_inh_file
-+check_no_xflag_dax $dax_non_inh_file
-+check_no_s_dax $dax_non_inh_file
-+
-+echo "   *** check that previous file stays enabled"
-+check_xflag_dax $dax_inh_file
-+check_s_dax $dax_inh_file
-+
-+echo "   *** Reset the directory"
-+xfs_io -c 'chattr +x' $dax_dir
-+check_xflag_dax $dax_dir
-+
-+# Set up for next test
-+touch $dax_file
-+touch $non_dax
-+
-+#
-+#                      inode flag
-+# ./
-+#   + dax-dir/             X
-+#     + dax-sub-dir/       X
-+#     + dax-inh-file       X
-+#     + dax-non-inh-file
-+#     + dax-file           X
-+#   + non-dax
-+#
-+
-+# check mount overrides
-+# =====================
-+
-+echo "   *** Check '-o dax'"
-+remount_w_option "-o dax"
-+check_dax_mount_option "dax=always"
-+
-+echo "   *** non-dax inode but overrides to be effective"
-+check_no_xflag_dax $non_dax
-+check_s_dax $non_dax
-+
-+echo "   *** Check for non-dax inode to be dax with mount option"
-+check_no_xflag_dax $dax_non_inh_file
-+check_s_dax $dax_non_inh_file
-+
-+
-+echo "   *** Check '-o dax=never'"
-+remount_w_option "-o dax=never"
-+check_dax_mount_option "dax=never"
-+
-+check_xflag_dax $dax_dir
-+check_xflag_dax $dax_sub_dir
-+check_xflag_dax $dax_inh_file
-+check_no_s_dax $dax_inh_file
-+check_no_xflag_dax $dax_non_inh_file
-+check_no_s_dax $dax_non_inh_file
-+check_no_xflag_dax $non_dax
-+check_no_s_dax $non_dax
-+check_xflag_dax $dax_file
-+check_no_s_dax $dax_file
-+
-+
-+echo "   *** Check '-o dax=iflag'"
-+remount_w_option "-o dax=iflag"
-+check_dax_mount_option "dax=iflag"
-+
-+check_xflag_dax $dax_dir
-+check_xflag_dax $dax_sub_dir
-+check_xflag_dax $dax_inh_file
-+check_s_dax $dax_inh_file
-+check_no_xflag_dax $dax_non_inh_file
-+check_no_s_dax $dax_non_inh_file
-+check_no_xflag_dax $non_dax
-+check_no_s_dax $non_dax
-+check_xflag_dax $dax_file
-+check_s_dax $dax_file
-+
-+
-+# Check non-zero file operations
-+# ==============================
-+
-+echo "   *** Verify setting FS_XFLAG_DAX flag fails"
-+$XFS_IO_PROG -f -c "pwrite 0 10000" $data_file > /dev/null
-+xfs_io -c 'chattr +x' $data_file
-+check_no_xflag_dax $data_file
-+check_no_s_dax $data_file
-+
-+
-+# Check inheritance on cp, mv
-+# ===========================
-+
-+echo "   *** check making 'data' dax with cp"
-+cp $non_dax $dax_dir/conv-dax
-+check_xflag_dax $dax_dir/conv-dax
-+check_s_dax $dax_dir/conv-dax
-+
-+echo "   *** check making 'data' non-dax with cp"
-+rm -f $data_file
-+cp $dax_dir/conv-dax $data_file
-+check_no_xflag_dax $data_file
-+check_no_s_dax $data_file
-+
-+echo "   *** Moved files 'don't inherit'"
-+mv $non_dax $dax_dir/move-dax
-+check_no_xflag_dax $dax_dir/move-dax
-+check_no_s_dax $dax_dir/move-dax
-+
-+echo "   *** Check '-o dax=garbage'"
-+remount_w_option "-o dax=garbage"
-+
-+status=0 ; exit
-diff --git a/tests/xfs/999.out b/tests/xfs/999.out
-new file mode 100644
-index 000000000000..3b204d4643a5
---- /dev/null
-+++ b/tests/xfs/999.out
-@@ -0,0 +1,21 @@
-+QA output created by 999
-+running tests...
-+   *** mark dax-dir as dax enabled
-+   *** check file inheritance
-+   *** check directory inheritance
-+   *** check changing directory
-+   *** check non file inheritance
-+   *** check that previous file stays enabled
-+   *** Reset the directory
-+   *** Check '-o dax'
-+   *** non-dax inode but overrides to be effective
-+   *** Check for non-dax inode to be dax with mount option
-+   *** Check '-o dax=never'
-+   *** Check '-o dax=iflag'
-+   *** Verify setting FS_XFLAG_DAX flag fails
-+xfs_io: cannot set flags on /mnt/xfstests_test/data-file: Invalid argument
-+   *** check making 'data' dax with cp
-+   *** check making 'data' non-dax with cp
-+   *** Moved files 'don't inherit'
-+   *** Check '-o dax=garbage'
-+mount: /mnt/xfstests_test: wrong fs type, bad option, bad superblock on /dev/pmem0p1, missing codepage or helper program, or other error.
-diff --git a/tests/xfs/group b/tests/xfs/group
-index 522d4bc44d1f..816883a268bf 100644
---- a/tests/xfs/group
-+++ b/tests/xfs/group
-@@ -511,3 +511,4 @@
- 511 auto quick quota
- 512 auto quick acl attr
- 513 auto mount
-+999 auto
+The patches are based on the current iommu/next branch, I will rebase them
+to v5.7-rc1 when it comes out. A branch with these patches applied can be
+found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/joro/linux.git/log/?h=iommu-probe-device
+
+Please review and test these changes and let me know what breaks.
+
+Thanks,
+
+	Joerg
+
+Joerg Roedel (33):
+  iommu: Move default domain allocation to separate function
+  iommu/amd: Implement iommu_ops->def_domain_type call-back
+  iommu/vt-d: Wire up iommu_ops->def_domain_type
+  iommu/amd: Remove dma_mask check from check_device()
+  iommu/amd: Return -ENODEV in add_device when device is not handled by
+    IOMMU
+  iommu: Add probe_device() and remove_device() call-backs
+  iommu: Move default domain allocation to iommu_probe_device()
+  iommu: Keep a list of allocated groups in __iommu_probe_device()
+  iommu: Move new probe_device path to separate function
+  iommu: Split off default domain allocation from group assignment
+  iommu: Move iommu_group_create_direct_mappings() out of
+    iommu_group_add_device()
+  iommu: Export bus_iommu_probe() and make is safe for re-probing
+  iommu/amd: Remove dev_data->passthrough
+  iommu/amd: Convert to probe/release_device() call-backs
+  iommu/vt-d: Convert to probe/release_device() call-backs
+  iommu/arm-smmu: Store device instead of group in arm_smmu_s2cr
+  iommu/arm-smmu: Convert to probe/release_device() call-backs
+  iommu/pamu: Convert to probe/release_device() call-backs
+  iommu/s390: Convert to probe/release_device() call-backs
+  iommu/virtio: Convert to probe/release_device() call-backs
+  iommu/msm: Convert to probe/release_device() call-backs
+  iommu/mediatek: Convert to probe/release_device() call-backs
+  iommu/mediatek-v1 Convert to probe/release_device() call-backs
+  iommu/qcom: Convert to probe/release_device() call-backs
+  iommu/rockchip: Convert to probe/release_device() call-backs
+  iommu/tegra: Convert to probe/release_device() call-backs
+  iommu/renesas: Convert to probe/release_device() call-backs
+  iommu/omap: Remove orphan_dev tracking
+  iommu/omap: Convert to probe/release_device() call-backs
+  iommu/exynos: Create iommu_device in struct exynos_iommu_owner
+  iommu/exynos: Convert to probe/release_device() call-backs
+  iommu: Remove add_device()/remove_device() code-paths
+  iommu: Unexport iommu_group_get_for_dev()
+
+Sai Praneeth Prakhya (1):
+  iommu: Add def_domain_type() callback in iommu_ops
+
+ drivers/iommu/amd_iommu.c       |  97 ++++----
+ drivers/iommu/amd_iommu_types.h |   1 -
+ drivers/iommu/arm-smmu-v3.c     |  42 +---
+ drivers/iommu/arm-smmu.c        |  44 ++--
+ drivers/iommu/exynos-iommu.c    | 113 ++++++---
+ drivers/iommu/fsl_pamu_domain.c |  22 +-
+ drivers/iommu/intel-iommu.c     |  68 +-----
+ drivers/iommu/iommu.c           | 391 +++++++++++++++++++++++++-------
+ drivers/iommu/ipmmu-vmsa.c      |  60 ++---
+ drivers/iommu/msm_iommu.c       |  34 +--
+ drivers/iommu/mtk_iommu.c       |  24 +-
+ drivers/iommu/mtk_iommu_v1.c    |  50 ++--
+ drivers/iommu/omap-iommu.c      |  99 ++------
+ drivers/iommu/qcom_iommu.c      |  24 +-
+ drivers/iommu/rockchip-iommu.c  |  26 +--
+ drivers/iommu/s390-iommu.c      |  22 +-
+ drivers/iommu/tegra-gart.c      |  24 +-
+ drivers/iommu/tegra-smmu.c      |  31 +--
+ drivers/iommu/virtio-iommu.c    |  41 +---
+ include/linux/iommu.h           |  21 +-
+ 20 files changed, 600 insertions(+), 634 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
