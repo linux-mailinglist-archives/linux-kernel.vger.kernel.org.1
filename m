@@ -2,29 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E27D1A1216
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF1C1A121E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgDGQvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:51:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726365AbgDGQvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:51:32 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A45F62076E;
-        Tue,  7 Apr 2020 16:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586278292;
-        bh=hybhU6x+OnJln3ewfYearVtUDFvYr/tvnY6jHol4ltA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=O5jx3/AV6mS7DZjU+GjcMYctgOJDk9MVvbpe/P3K5sucxiBppzuY9VFfQdd47RBIV
-         1pKJV/8Ii5sMAUyeu9vg/x3skPB2uAxXwtSs14LGqcf+Ax89WHn/Y5A56FaEKpPw4d
-         caQs3JXR5RORWchkAwR4l1I4+xUvb8j2iZYxkhGs=
-Date:   Wed, 8 Apr 2020 01:51:24 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
+        id S1726892AbgDGQwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:52:04 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:37844 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbgDGQwD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:52:03 -0400
+Received: by mail-pg1-f195.google.com with SMTP id r4so2002907pgg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 09:52:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XdpEvu/+95xIShI6Rp2COGtZvHM0bAFV7GQvKx62Gs0=;
+        b=EA0i9u30tm1f2Ej2aVKmBwDRg1IBGCFcdx21Hv7s3kXdOrLZJuJ1D/ZdXDQs/QBbgb
+         1/GXe7WfDGMMsaifJm47HJ/Dh8uz8Qp4Wc9WG84NVc0eYMAWlg1lcktW4yh1y3s2Zyyn
+         850xxVOwP6EgwlERe6UCpP2D6q3KonIPQllN0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XdpEvu/+95xIShI6Rp2COGtZvHM0bAFV7GQvKx62Gs0=;
+        b=RdSzWpgMtKil3HRk4FNi4K0UQdH39/d1XOUAzApKNKqGu9lbS3T8kVjaNHC8rHg7TN
+         YbVZTMx4fzt3yWUPcznSHJLPWs23RB0CZIuAfJ05ShPSz/tqq9cGWNqiSqVMQgjGTPYE
+         bLOF46nqB+ZQEVXXZ4CcxKcw60RmS3P9kutySaTw4ThjYwyEvxDCO7Dd/hdmG+Ehg4Xq
+         G2snHTjJZ2GoinftbHhAZVRDDqifhXnW5xa5w+TWN/nI4L3VHL9DQV4BjaVrEMkJVO/q
+         bbIjxQpp3/PjOfFbuHr97hEPMGmN+9PpnlQRzWTYWJx0y8HExCWT9Dmwo4bpLmuF/7JX
+         wHkQ==
+X-Gm-Message-State: AGi0PuYTESqGUMWt+p4NJijRdKlbuSdtsttx8P2D8mjOzZsNZ0jHLLSH
+        s+8aDP+C1QYXZwy9414+CptDsQ==
+X-Google-Smtp-Source: APiQypIV8hKgOD0pMZ/yqWWdr+fv5eUil+grVBWSTBnRIuOI/tazQjBUl4hZZzgrr6ZSxIV/KIeMUQ==
+X-Received: by 2002:a63:89c1:: with SMTP id v184mr3044992pgd.333.1586278323003;
+        Tue, 07 Apr 2020 09:52:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v38sm2123966pjb.1.2020.04.07.09.52.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 09:52:02 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 09:52:01 -0700
+From:   Kees Cook <keescook@chromium.org>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
         hch@infradead.org, sean.j.christopherson@intel.com,
@@ -33,207 +52,126 @@ Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
         pbonzini@redhat.com, fenghua.yu@intel.com, xiaoyao.li@intel.com,
         nadav.amit@gmail.com, thellstrom@vmware.com, tony.luck@intel.com,
         rostedt@goodmis.org, gregkh@linuxfoundation.org, jannh@google.com,
-        keescook@chromium.org, David.Laight@aculab.com,
-        dcovelli@vmware.com, mhiramat@kernel.org
-Subject: Re: [PATCH 3/4] x86,module: Detect VMX vs SLD conflicts
-Message-Id: <20200408015124.ec42bcffc1377cb6ea94f785@kernel.org>
-In-Reply-To: <20200407111007.352324393@infradead.org>
+        David.Laight@aculab.com, dcovelli@vmware.com, mhiramat@kernel.org
+Subject: Re: [PATCH 1/4] module: Expose load_info to arch module loader code
+Message-ID: <202004070951.40A8E7B278@keescook>
 References: <20200407110236.930134290@infradead.org>
-        <20200407111007.352324393@infradead.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20200407111007.198738828@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407111007.198738828@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On Tue, Apr 07, 2020 at 01:02:37PM +0200, Peter Zijlstra wrote:
+> From: Jessica Yu <jeyu@kernel.org>
+> 
+> The x86 module loader wants to check the value of a modinfo flag
+> (sld_safe), before proceeding to scan the module text for VMX
+> instructions. Unfortunately the arch module code currently does not have
+> access to load_info, but we can easily expose that via moduleloader.h,
+> which every arch module code must already include.
+> 
+> Signed-off-by: Jessica Yu <jeyu@kernel.org>
 
-On Tue, 07 Apr 2020 13:02:39 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-> +static bool insn_is_vmx(struct insn *insn)
-> +{
-> +	u8 modrm = insn->modrm.bytes[0];
-> +	u8 modrm_mod = X86_MODRM_MOD(modrm);
-> +	u8 modrm_reg = X86_MODRM_REG(modrm);
-> +
-> +	u8 prefix = insn->prefixes.bytes[0];
-> +
-> +	if (insn->opcode.bytes[0] != 0x0f)
-> +		return false;
-> +
-> +	switch (insn->opcode.bytes[1]) {
-> +	case 0x01:
-> +		switch (insn->opcode.bytes[2]) {
-> +		case 0xc1: /* VMCALL */
-> +		case 0xc2: /* VMLAUNCH */
-> +		case 0xc3: /* VMRESUME */
-> +		case 0xc4: /* VMXOFF */
-> +			return true;
-> +
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +
-> +	case 0x78: /* VMREAD */
-> +	case 0x79: /* VMWRITE */
-> +		return true;
-> +
-> +	case 0xc7:
-> +		/* VMPTRLD, VMPTRST, VMCLEAR, VMXON */
-> +		if (modrm_mod == 0x03)
-> +			break;
-> +
-> +		if ((modrm_reg == 6 && (!prefix || prefix == 0x66 || prefix == 0xf3)) ||
-> +		    (modrm_reg == 7 && (!prefix || prefix == 0xf3)))
-> +			return true;
-> +
-> +		break;
-> +
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return false;
-> +}
+-Kees
 
-OK, so here is what you need ;)
-
-From 36f4f6aec623b0190fde95c8630a6a1d8c23ffc9 Mon Sep 17 00:00:00 2001
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Date: Wed, 8 Apr 2020 01:04:41 +0900
-Subject: [PATCH] x86: insn: Add insn_is_vmx()
-
-Add insn_is_vmx() to identify the given instruction is
-for VMX or not. This is simply identifying those instructions
-by mnemonic pattern.
-
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- arch/x86/include/asm/inat.h                | 1 +
- arch/x86/include/asm/insn.h                | 7 +++++++
- arch/x86/tools/gen-insn-attr-x86.awk       | 6 ++++++
- tools/arch/x86/include/asm/inat.h          | 1 +
- tools/arch/x86/include/asm/insn.h          | 7 +++++++
- tools/arch/x86/tools/gen-insn-attr-x86.awk | 6 ++++++
- 6 files changed, 28 insertions(+)
-
-diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
-index ffce45178c08..599876801ae8 100644
---- a/arch/x86/include/asm/inat.h
-+++ b/arch/x86/include/asm/inat.h
-@@ -79,6 +79,7 @@
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
- #define INAT_FPU	(1 << (INAT_FLAG_OFFS + 8))
- #define INAT_FPUIFVEX	(1 << (INAT_FLAG_OFFS + 9))
-+#define INAT_VMX	(1 << (INAT_FLAG_OFFS + 10))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index 1752c54d2103..57e81013836d 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -141,6 +141,13 @@ static inline int insn_is_fpu(struct insn *insn)
- 	return 0;
- }
- 
-+static inline int insn_is_vmx(struct insn *insn)
-+{
-+	if (!insn->opcode.got)
-+		insn_get_opcode(insn);
-+	return (insn->attr & INAT_VMX) && !insn_is_fpu(insn);
-+}
-+
- static inline int insn_has_emulate_prefix(struct insn *insn)
- {
- 	return !!insn->emulate_prefix_size;
-diff --git a/arch/x86/tools/gen-insn-attr-x86.awk b/arch/x86/tools/gen-insn-attr-x86.awk
-index d74d9e605723..ade80796453c 100644
---- a/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -70,6 +70,8 @@ BEGIN {
- 	mmx_expr = "^(emms|fxsave|fxrstor|ldmxcsr|stmxcsr)" # MMX/SSE nmemonics lacking operands
- 	fpu_expr = "^x87"
- 
-+	vmx_expr = "^VM.*" # All mnemonic start with "VM" are VMX instructions
-+
- 	lprefix1_expr = "\\((66|!F3)\\)"
- 	lprefix2_expr = "\\(F3\\)"
- 	lprefix3_expr = "\\((F2|!F3|66&F2)\\)"
-@@ -328,6 +330,10 @@ function convert_operands(count,opnd,       i,j,imm,mod,mmx)
- 		if (match(ext, force64_expr))
- 			flags = add_flags(flags, "INAT_FORCE64")
- 
-+		# check VMX related opcode
-+		if (match(opcode, vmx_expr))
-+			flags = add_flags(flags, "INAT_VMX")
-+
- 		# check REX prefix
- 		if (match(opcode, rex_expr))
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(INAT_PFX_REX)")
-diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/asm/inat.h
-index 2e6a05290efd..af393952916c 100644
---- a/tools/arch/x86/include/asm/inat.h
-+++ b/tools/arch/x86/include/asm/inat.h
-@@ -79,6 +79,7 @@
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
- #define INAT_FPU	(1 << (INAT_FLAG_OFFS + 8))
- #define INAT_FPUIFVEX	(1 << (INAT_FLAG_OFFS + 9))
-+#define INAT_VMX	(1 << (INAT_FLAG_OFFS + 10))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index d9f6bd9059c1..d18ce4683d8e 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -141,6 +141,13 @@ static inline int insn_is_fpu(struct insn *insn)
- 	return 0;
- }
- 
-+static inline int insn_is_vmx(struct insn *insn)
-+{
-+	if (!insn->opcode.got)
-+		insn_get_opcode(insn);
-+	return (insn->attr & INAT_VMX) && !insn_is_fpu(insn);
-+}
-+
- static inline int insn_has_emulate_prefix(struct insn *insn)
- {
- 	return !!insn->emulate_prefix_size;
-diff --git a/tools/arch/x86/tools/gen-insn-attr-x86.awk b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-index d74d9e605723..ade80796453c 100644
---- a/tools/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -70,6 +70,8 @@ BEGIN {
- 	mmx_expr = "^(emms|fxsave|fxrstor|ldmxcsr|stmxcsr)" # MMX/SSE nmemonics lacking operands
- 	fpu_expr = "^x87"
- 
-+	vmx_expr = "^VM.*" # All mnemonic start with "VM" are VMX instructions
-+
- 	lprefix1_expr = "\\((66|!F3)\\)"
- 	lprefix2_expr = "\\(F3\\)"
- 	lprefix3_expr = "\\((F2|!F3|66&F2)\\)"
-@@ -328,6 +330,10 @@ function convert_operands(count,opnd,       i,j,imm,mod,mmx)
- 		if (match(ext, force64_expr))
- 			flags = add_flags(flags, "INAT_FORCE64")
- 
-+		# check VMX related opcode
-+		if (match(opcode, vmx_expr))
-+			flags = add_flags(flags, "INAT_VMX")
-+
- 		# check REX prefix
- 		if (match(opcode, rex_expr))
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(INAT_PFX_REX)")
--- 
-2.20.1
-
-
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Link: https://lkml.kernel.org/r/20200406160420.14407-1-jeyu@kernel.org
+> ---
+> 
+>  include/linux/moduleloader.h | 20 ++++++++++++++++++++
+>  kernel/module-internal.h     | 23 -----------------------
+>  kernel/module_signing.c      |  2 +-
+>  3 files changed, 21 insertions(+), 24 deletions(-)
+> 
+> Index: linux-2.6/include/linux/moduleloader.h
+> ===================================================================
+> --- linux-2.6.orig/include/linux/moduleloader.h
+> +++ linux-2.6/include/linux/moduleloader.h
+> @@ -6,6 +6,26 @@
+>  #include <linux/module.h>
+>  #include <linux/elf.h>
+>  
+> +struct load_info {
+> +	const char *name;
+> +	/* pointer to module in temporary copy, freed at end of load_module() */
+> +	struct module *mod;
+> +	Elf_Ehdr *hdr;
+> +	unsigned long len;
+> +	Elf_Shdr *sechdrs;
+> +	char *secstrings, *strtab;
+> +	unsigned long symoffs, stroffs, init_typeoffs, core_typeoffs;
+> +	struct _ddebug *debug;
+> +	unsigned int num_debug;
+> +	bool sig_ok;
+> +#ifdef CONFIG_KALLSYMS
+> +	unsigned long mod_kallsyms_init_off;
+> +#endif
+> +	struct {
+> +		unsigned int sym, str, mod, vers, info, pcpu;
+> +	} index;
+> +};
+> +
+>  /* These may be implemented by architectures that need to hook into the
+>   * module loader code.  Architectures that don't need to do anything special
+>   * can just rely on the 'weak' default hooks defined in kernel/module.c.
+> Index: linux-2.6/kernel/module-internal.h
+> ===================================================================
+> --- linux-2.6.orig/kernel/module-internal.h
+> +++ linux-2.6/kernel/module-internal.h
+> @@ -5,27 +5,4 @@
+>   * Written by David Howells (dhowells@redhat.com)
+>   */
+>  
+> -#include <linux/elf.h>
+> -#include <asm/module.h>
+> -
+> -struct load_info {
+> -	const char *name;
+> -	/* pointer to module in temporary copy, freed at end of load_module() */
+> -	struct module *mod;
+> -	Elf_Ehdr *hdr;
+> -	unsigned long len;
+> -	Elf_Shdr *sechdrs;
+> -	char *secstrings, *strtab;
+> -	unsigned long symoffs, stroffs, init_typeoffs, core_typeoffs;
+> -	struct _ddebug *debug;
+> -	unsigned int num_debug;
+> -	bool sig_ok;
+> -#ifdef CONFIG_KALLSYMS
+> -	unsigned long mod_kallsyms_init_off;
+> -#endif
+> -	struct {
+> -		unsigned int sym, str, mod, vers, info, pcpu;
+> -	} index;
+> -};
+> -
+>  extern int mod_verify_sig(const void *mod, struct load_info *info);
+> Index: linux-2.6/kernel/module_signing.c
+> ===================================================================
+> --- linux-2.6.orig/kernel/module_signing.c
+> +++ linux-2.6/kernel/module_signing.c
+> @@ -8,11 +8,11 @@
+>  #include <linux/kernel.h>
+>  #include <linux/errno.h>
+>  #include <linux/module.h>
+> +#include <linux/moduleloader.h>
+>  #include <linux/module_signature.h>
+>  #include <linux/string.h>
+>  #include <linux/verification.h>
+>  #include <crypto/public_key.h>
+> -#include "module-internal.h"
+>  
+>  /*
+>   * Verify the signature on a module.
+> 
+> 
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Kees Cook
