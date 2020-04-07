@@ -2,76 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B381A0B83
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2369C1A0AFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728769AbgDGK1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:27:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39578 "EHLO mail.kernel.org"
+        id S1728236AbgDGKWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:22:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728482AbgDGK1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:27:12 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        id S1725883AbgDGKWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:22:41 -0400
+Received: from pali.im (pali.im [31.31.79.79])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFFF820801;
-        Tue,  7 Apr 2020 10:27:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4281720771;
+        Tue,  7 Apr 2020 10:22:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255232;
-        bh=xGZH/xfyVGtNxM8KRokDTvG6RUGbGegXIurZFLA+fXg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LFyTYpFrXkXMwaJSmOrH/UfCQ16BfofXQxCnmXpAjQGgInmVYDjsQJjltaq0xzJKO
-         lu2MSgunDncXKntxdRgkuUVRXyXWGvousAPc20VMK1zhLOhCTHEv/GY1/sEoMb21kt
-         Y7sxznITIuNwTndEFpuDjAjs8gQR18bRI7HliPAM=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        CK Hu <ck.hu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Subject: [PATCH 5.6 29/29] soc: mediatek: knows_txdone needs to be set in Mediatek CMDQ helper
-Date:   Tue,  7 Apr 2020 12:22:26 +0200
-Message-Id: <20200407101455.698732087@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
-References: <20200407101452.046058399@linuxfoundation.org>
-User-Agent: quilt/0.66
+        s=default; t=1586254960;
+        bh=juQKuUZDgyyxGgsF7uNhckuR4k0PFa3vOdCv8igXe0Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sgYqeamJWAiaBCp2NFSD03QPo70At2AUr/IUVrprBg+Ml5NDCfoPAKTNJYYXNX6an
+         vAQ7e3e2LWUeFyKv98p4GoBGzkyh2TeRFOvdvOm18bZZP3vlg38k0CTydolrBFmEWu
+         29LGMbGbHOxwLRXzrU3Ok29lE8bw89yC7XaBAWNk=
+Received: by pali.im (Postfix)
+        id 418C85F1; Tue,  7 Apr 2020 12:22:38 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 12:22:38 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Thomas Hebb <tommyhebb@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH v2] hwmon: (dell-smm) Use one DMI match for all XPS models
+Message-ID: <20200407102238.zweh7s7t6rn5cwhf@pali>
+References: <5d7e498b83e89ce7c41a449b61919c65d0770b73.1586033337.git.tommyhebb@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <5d7e498b83e89ce7c41a449b61919c65d0770b73.1586033337.git.tommyhebb@gmail.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bibby Hsieh <bibby.hsieh@mediatek.com>
+Hi!
 
-commit ce35e21d82bcac8b3fd5128888f9e233f8444293 upstream.
+On Saturday 04 April 2020 16:49:00 Thomas Hebb wrote:
+> Currently, each new XPS has to be added manually for module autoloading
+> to work. Since fan multiplier autodetection should work fine on all XPS
+> models, just match them all with one block like is done for Precision
+> and Studio.
 
-Mediatek CMDQ driver have a mechanism to do TXDONE_BY_ACK,
-so we should set knows_txdone.
+It makes sense. We already load driver for all Inspirion, Latitude,
+Precision, Vostro and Studio models so I do not see reason why not to
+load it also for all XPS models. I doubt that Dell uses one base
+firmware for all mentioned models and second one specially for XPS.
 
-Fixes:576f1b4bc802 ("soc: mediatek: Add Mediatek CMDQ helper")
+> The only match we replace that doesn't already use autodetection is
+> "XPS13" which, according to Google, only matches the XPS 13 9333. (All
+> other XPS 13 models have "XPS" as its own word, surrounded by spaces.)
+> According to the thread at [1], autodetection works for the XPS 13 9333,
+> meaning this shouldn't regress it. I do not own one to confirm with,
+> though.
+> 
+> Tested on an XPS 13 9350 and confirmed the module now autoloads and
+> reports reasonable-looking data. I am using BIOS 1.12.2 and do not see
+> any freezes when querying fan speed.
+> 
+> [1] https://lore.kernel.org/patchwork/patch/525367/
 
-Cc: stable@vger.kernel.org # v5.0+
-Signed-off-by: Bibby Hsieh <bibby.hsieh@mediatek.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+I guess that these two tests are enough based on the fact that lot of
+XPS models are already whitelisted.
 
----
- drivers/soc/mediatek/mtk-cmdq-helper.c |    1 +
- 1 file changed, 1 insertion(+)
+Guenter, it is fine for you now? Or is something else needed?
 
---- a/drivers/soc/mediatek/mtk-cmdq-helper.c
-+++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
-@@ -78,6 +78,7 @@ struct cmdq_client *cmdq_mbox_create(str
- 	client->pkt_cnt = 0;
- 	client->client.dev = dev;
- 	client->client.tx_block = false;
-+	client->client.knows_txdone = true;
- 	client->chan = mbox_request_channel(&client->client, index);
- 
- 	if (IS_ERR(client->chan)) {
+> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
 
+Acked-by: Pali Rohár <pali@kernel.org>
 
+> ---
+> 
+> Changes in v2:
+> - Remove another now-redundant XPS entry that I'd missed.
+> 
+>  drivers/hwmon/dell-smm-hwmon.c | 26 ++------------------------
+>  1 file changed, 2 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> index d4c83009d625..ca30bf903ec7 100644
+> --- a/drivers/hwmon/dell-smm-hwmon.c
+> +++ b/drivers/hwmon/dell-smm-hwmon.c
+> @@ -1072,13 +1072,6 @@ static const struct dmi_system_id i8k_dmi_table[] __initconst = {
+>  			DMI_MATCH(DMI_PRODUCT_NAME, "Vostro"),
+>  		},
+>  	},
+> -	{
+> -		.ident = "Dell XPS421",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS L421X"),
+> -		},
+> -	},
+>  	{
+>  		.ident = "Dell Studio",
+>  		.matches = {
+> @@ -1087,14 +1080,6 @@ static const struct dmi_system_id i8k_dmi_table[] __initconst = {
+>  		},
+>  		.driver_data = (void *)&i8k_config_data[DELL_STUDIO],
+>  	},
+> -	{
+> -		.ident = "Dell XPS 13",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS13"),
+> -		},
+> -		.driver_data = (void *)&i8k_config_data[DELL_XPS],
+> -	},
+>  	{
+>  		.ident = "Dell XPS M140",
+>  		.matches = {
+> @@ -1104,17 +1089,10 @@ static const struct dmi_system_id i8k_dmi_table[] __initconst = {
+>  		.driver_data = (void *)&i8k_config_data[DELL_XPS],
+>  	},
+>  	{
+> -		.ident = "Dell XPS 15 9560",
+> -		.matches = {
+> -			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 15 9560"),
+> -		},
+> -	},
+> -	{
+> -		.ident = "Dell XPS 15 9570",
+> +		.ident = "Dell XPS",
+>  		.matches = {
+>  			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> -			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 15 9570"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "XPS"),
+>  		},
+>  	},
+>  	{ }
+> -- 
+> 2.25.2
+> 
