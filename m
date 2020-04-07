@@ -2,104 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73BD51A0F56
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1FB1A0F5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729108AbgDGOfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:35:20 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:40196 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728306AbgDGOfU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:35:20 -0400
-Received: by mail-il1-f200.google.com with SMTP id g79so3352739ild.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:35:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=DrOiOhIFnf1BvQ7pnLuWGhH2q/1ZIrRtofFqFtUp27M=;
-        b=Vcb3ydY1+iRNbp7VdRWo1bOmDVq6YtvGLjf2UHPBs+z4K2AttY8FouPU8zgmBmxxot
-         4fGN7AW/2xzEQ4sFWZBFYaLF3PHBG+uxilLos2keYjE5acQMyUwSspr3vp1LzYleqCQc
-         wnTp+2Yk+UjLEoMB9zXQvW5iUuAdTyuLzOyv5wPSji09SfuQ8uaMqEixxSXOdD3lZwiZ
-         YCN5C25EwQ5gGFYu+hNlGmPNUQ+eOQfaE5DA1KmYTbHbkM39d0RHAG1GO8ueMWvjeaXA
-         UCU9Px3vX1cKLj4NxUgv4xFmRZ9wjLzXPn/j+Urn/g0so4pdrkUwCEIBhFD+su3g6tV5
-         1C5w==
-X-Gm-Message-State: AGi0PuaYsmr/Q+h1JpmsYEtBtCJAYNNEggQyI93CGLJ9Dd1XbUukD1ff
-        ODA4/fLb5iIkIPMbVjSmMi3eC2WGE/2/hn8dFPEg13neAmip
-X-Google-Smtp-Source: APiQypIPzmkdGfhwr1DKHuI4/FjJ/bMgn9Z346lrTLPvc30IISP1GbPLwjE+Qkth+YHj1ZooU6MxLDwq4gufEcCl16/+XanvKJii
+        id S1729285AbgDGOfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:35:51 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2636 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729103AbgDGOfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 10:35:50 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id EE6482EEB0E7A442C724;
+        Tue,  7 Apr 2020 15:35:47 +0100 (IST)
+Received: from [127.0.0.1] (10.210.168.238) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 7 Apr 2020
+ 15:35:46 +0100
+Subject: Re: [PATCH RFC v2 02/24] scsi: allocate separate queue for reserved
+ commands
+To:     Hannes Reinecke <hare@suse.de>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <ming.lei@redhat.com>,
+        <bvanassche@acm.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <esc.storagedev@microsemi.com>, <chenxiang66@hisilicon.com>,
+        Hannes Reinecke <hare@suse.com>
+References: <1583857550-12049-1-git-send-email-john.garry@huawei.com>
+ <1583857550-12049-3-git-send-email-john.garry@huawei.com>
+ <20200310183243.GA14549@infradead.org>
+ <79cf4341-f2a2-dcc9-be0d-2efc6e83028a@huawei.com>
+ <20200311062228.GA13522@infradead.org>
+ <b5a63725-722b-8ccd-3867-6db192a248a4@suse.de>
+ <9c6ced82-b3f1-9724-b85e-d58827f1a4a4@huawei.com>
+ <39bc2d82-2676-e329-5d32-8acb99b0a204@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <20ebe296-9e57-b3e3-21b3-63a09ce86036@huawei.com>
+Date:   Tue, 7 Apr 2020 15:35:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:b0a:: with SMTP id b10mr2580712ilf.18.1586270119511;
- Tue, 07 Apr 2020 07:35:19 -0700 (PDT)
-Date:   Tue, 07 Apr 2020 07:35:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fdc98405a2b44a8c@google.com>
-Subject: WARNING in add_taint/usb_submit_urb
-From:   syzbot <syzbot+f44561cfce4cc0e75b89@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, gregkh@linuxfoundation.org,
-        ingrassia@epigenesys.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <39bc2d82-2676-e329-5d32-8acb99b0a204@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.210.168.238]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 07/04/2020 15:00, Hannes Reinecke wrote:
+> On 4/7/20 1:54 PM, John Garry wrote:
+>> On 06/04/2020 10:05, Hannes Reinecke wrote:
+>>> On 3/11/20 7:22 AM, Christoph Hellwig wrote:
+>>>> On Tue, Mar 10, 2020 at 09:08:56PM +0000, John Garry wrote:
+>>>>> On 10/03/2020 18:32, Christoph Hellwig wrote:
+>>>>>> On Wed, Mar 11, 2020 at 12:25:28AM +0800, John Garry wrote:
+>>>>>>> From: Hannes Reinecke <hare@suse.com>
+>>>>>>>
+>>>>>>> Allocate a separate 'reserved_cmd_q' for sending reserved commands.
+>>>>>>
+>>>>>> Why?  Reserved command specifically are not in any way tied to 
+>>>>>> queues.
+>>>>>> .
+>>>>>>
+>>>>>
+>>>>> So the v1 series used a combination of the sdev queue and the per-host
+>>>>> reserved_cmd_q. Back then you questioned using the sdev queue for 
+>>>>> virtio
+>>>>> scsi, and the unconfirmed conclusion was to use a common per-host 
+>>>>> q. This is
+>>>>> the best link I can find now:
+>>>>>
+>>>>> https://www.mail-archive.com/linux-scsi@vger.kernel.org/msg83177.html
+>>>>
+>>>> That was just a question on why virtio uses the per-device tags, which
+>>>> didn't look like it made any sense.  What I'm worried about here is
+>>>> mixing up the concept of reserved tags in the tagset, and queues to use
+>>>> them.  Note that we already have the scsi_get_host_dev to allocate
+>>>> a scsi_device and thus a request_queue for the host itself.  That seems
+>>>> like the better interface to use a tag for a host wide command vs
+>>>> introducing a parallel path.
+>>>>
+>>> Thinking about it some more, I don't think that scsi_get_host_dev() is
+>>> the best way of handling it.
+>>> Problem is that it'll create a new scsi_device with <hostno:this_id:0>,
+>>> which will then show up via eg 'lsscsi'.
+>>
+>> are you sure? Doesn't this function just allocate the sdev, but do 
+>> nothing with it, like probing it?
+>>
+>> I bludgeoned it in here for PoC:
+>>
+>> https://github.com/hisilicon/kernel-dev/commit/ef0ae8540811e32776f64a5b42bd76cbed17ba47 
+>>
+>>
+>> And then still:
+>>
+>> john@ubuntu:~$ lsscsi
+>> [0:0:0:0] disk SEAGATE  ST2000NM0045  N004  /dev/sda
+>> [0:0:1:0] disk SEAGATE  ST2000NM0045  N004  /dev/sdb
+>> [0:0:2:0] disk ATASAMSUNG HM320JI  0_01  /dev/sdc
+>> [0:0:3:0] disk SEAGATE  ST1000NM0023  0006  /dev/sdd
+>> [0:0:4:0] enclosu HUAWEIExpander 12Gx16  128-
+>> john@ubuntu:~$
+>>
+>> Some proper plumbing would be needed, though.
+>>
+>>> This would be okay if 'this_id' would have been defined by the driver;
+>>> sadly, most drivers which are affected here do set 'this_id' to -1.
+>>> So we wouldn't have a nice target ID to allocate the device from, let
+>>> alone the problem that we would have to emulate a complete scsi device
+>>> with all required minimal command support etc.
+>>> And I'm not quite sure how well that would play with the exising SCSI
+>>> host template; the device we'll be allocating would have basically
+>>> nothing in common with the 'normal' SCSI devices.
+>>>
+>>> What we could do, though, is to try it the other way round:
+>>> Lift the request queue from scsi_get_host_dev() into the scsi host
+>>> itself, so that scsi_get_host_dev() can use that queue, but we also
+>>> would be able to use it without a SCSI device attached.
+>>
+>> wouldn't that limit 1x scsi device per host, not that I know if any 
+>> more would ever be required? But it does still seem better to use the 
+>> request queue in the scsi device.
+>>
+> My concern is this:
+> 
+> struct scsi_device *scsi_get_host_dev(struct Scsi_Host *shost)
+> {
+>      [ .. ]
+>      starget = scsi_alloc_target(&shost->shost_gendev, 0, shost->this_id);
+>      [ .. ]
+> 
+> and we have typically:
+> 
+> drivers/scsi/hisi_sas/hisi_sas_v3_hw.c: .this_id                = -1,
+> 
+> It's _very_ uncommon to have a negative number as the SCSI target 
+> device; in fact, it _is_ an unsigned int already.
+> 
 
-syzbot found the following crash on:
+FWIW, the only other driver (gdth) which I see uses this API has this_id 
+= -1 in the scsi host template.
 
-HEAD commit:    0fa84af8 Merge tag 'usb-serial-5.7-rc1' of https://git.ker..
-git tree:       https://github.com/google/kasan.git usb-fuzzer
-console output: https://syzkaller.appspot.com/x/log.txt?x=11cce12be00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6b9c154b0c23aecf
-dashboard link: https://syzkaller.appspot.com/bug?extid=f44561cfce4cc0e75b89
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17a8312be00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14e35d8fe00000
+> But alright, I'll give it a go; let's see what I'll end up with.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+f44561cfce4cc0e75b89@syzkaller.appspotmail.com
+note: If we want a fixed scsi_device per host, calling 
+scsi_mq_setup_tags() -> scsi_get_host_dev() will fail as shost state is 
+not running. Maybe we need to juggle some things there to provide a 
+generic solution.
 
-------------[ cut here ]------------
-usb 1-1: BOGUS urb xfer, pipe 1 != type 3
-WARNING: CPU: 1 PID: 384 at drivers/usb/core/urb.c:478 usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 384 Comm: systemd-udevd Not tainted 5.6.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0xef/0x16e lib/dump_stack.c:118
- usb_submit_urb+0x10b0/0x1460 drivers/usb/core/urb.c:363
- panic+0x2aa/0x6e1 kernel/panic.c:221
- add_taint.cold+0x16/0x16 kernel/panic.c:434
- set_bit include/asm-generic/bitops/instrumented-atomic.h:28 [inline]
- set_ti_thread_flag include/linux/thread_info.h:55 [inline]
- set_fs arch/x86/include/asm/uaccess.h:33 [inline]
- __probe_kernel_read+0x188/0x1d0 mm/maccess.c:67
- __warn.cold+0x14/0x30 kernel/panic.c:581
- __warn+0xd5/0x1c8 kernel/panic.c:574
- usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
- __warn.cold+0x2f/0x30 kernel/panic.c:582
- usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
- report_bug+0x27b/0x2f0 lib/bug.c:195
- fixup_bug arch/x86/kernel/traps.c:174 [inline]
- fixup_bug arch/x86/kernel/traps.c:169 [inline]
- do_error_trap+0x12b/0x1e0 arch/x86/kernel/traps.c:267
- usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
- do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
- usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
- invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-RIP: 0010:usb_submit_urb+0x1188/0x1460 drivers/usb/core/urb.c:478
-Code: 4d 85 e
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+thanks
