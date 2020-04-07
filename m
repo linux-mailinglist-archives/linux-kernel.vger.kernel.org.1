@@ -2,85 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A371A079B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9834F1A0780
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727522AbgDGGqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 02:46:47 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:58386 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726901AbgDGGqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 02:46:45 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AE67920039D;
-        Tue,  7 Apr 2020 08:46:44 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 56D92201016;
-        Tue,  7 Apr 2020 08:46:40 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9F480402EE;
-        Tue,  7 Apr 2020 14:46:34 +0800 (SGT)
-From:   Biwen Li <biwen.li@oss.nxp.com>
-To:     shawnguo@kernel.org, ran.wang_1@nxp.com, robh+dt@kernel.org,
-        mark.rutland@arm.com
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiafei.pan@nxp.com, Biwen Li <biwen.li@nxp.com>
-Subject: [RESEND 4/4] arm: dts: ls1021a: add ftm_alarm0 DT node
-Date:   Tue,  7 Apr 2020 14:42:51 +0800
-Message-Id: <20200407064251.39244-4-biwen.li@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200407064251.39244-1-biwen.li@oss.nxp.com>
-References: <20200407064251.39244-1-biwen.li@oss.nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1727242AbgDGGnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 02:43:11 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:41923 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726865AbgDGGnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 02:43:10 -0400
+Received: by mail-lf1-f65.google.com with SMTP id z23so1443212lfh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 23:43:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OivOvN/o8gD1CI0/RRvNf9QuUqmaxYvN8Wf6SB8cHhk=;
+        b=mxhMTlXaTWQOfj6UOAJK4K+XlKKUSLakafb8CAFJsq1PQC/hBcA34JiOdrRqMJnEGY
+         ZgjnmOq44EvutBSgvMEnI95N8byxPCRJrAQFbIeKRQJu/Qq7syLFZ5eeo/mkoJ0xiomK
+         sroYl33qPbntRAwCjfoihnS4GB4I3d7CCYOLRvo34xM5Vig70FEiQ06yE4gHt1fn+Qi6
+         j6YiDyx3W5KTvI6MfhE/HaT0Dh54hpqJOxM2y/n3BlNZ/SrYsHSspdl0LwTFTUtJNNyw
+         atB/jqPqTClkM282cfExVVnAxn5RwZfRtKpZKLMyq61mPupJy7ebVlNytIawKcZrxDCl
+         uS1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OivOvN/o8gD1CI0/RRvNf9QuUqmaxYvN8Wf6SB8cHhk=;
+        b=jZfC8WBBclLITf3nzeNM2/v3fyOTcQkMoziopaE9udhXCsc7KGBEI0TdvIVD7bof5J
+         dqiAVrzJnHxeGAMxfE7OpF8FLgB2TEgE1FDOxgiGiNFKEvZgVHCmWb+yE+9Yf2ojSF7j
+         3a1um6S0xxvqJOJYpwE5b9zJXnLFrAEp/VFxLq6v+CcRXiSuS16GRbFUHz8BEudyFlQ4
+         S7wvxQ7lPQQsqfc0Plnfy/d4k2/myGhnk7wuBeCFhIdTGl0iKigtCiLhfZm/JM9XA2TP
+         5ujfauucIYnsjT97V68BYZhN+p02qtOyBaoJHFrkGLNS/YTrkBgnPl6pYfzuSwd9qyzb
+         9UdA==
+X-Gm-Message-State: AGi0PuYaztIpm1zdZVYxIvaXT3CkEF9o1vfvgVIEyS+07eVMkzamYFIw
+        A+1lQBarXjo9PXKCsoRYxzq2Ko+Qh53vtK3FLiXaFg==
+X-Google-Smtp-Source: APiQypKqAs223KGZqI3lkqdz0fRZjxubri09ud5p1UeeKehXNEZpq92ZBMf2CClMn4Xvs7o3el1+N//5NbPGVdrLbJs=
+X-Received: by 2002:ac2:5c07:: with SMTP id r7mr552282lfp.160.1586241786676;
+ Mon, 06 Apr 2020 23:43:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <1586175677-3061-1-git-send-email-sumit.garg@linaro.org>
+ <87ftdgokao.fsf@tynnyri.adurom.net> <1e352e2130e19aec5aa5fc42db397ad50bb4ad05.camel@sipsolutions.net>
+ <87r1x0zsgk.fsf@kamboji.qca.qualcomm.com> <a7e3e8cceff1301f5de5fb2c9aac62b372922b3e.camel@sipsolutions.net>
+ <87imiczrwm.fsf@kamboji.qca.qualcomm.com> <ee168acb768d87776db2be4e978616f9187908d0.camel@sipsolutions.net>
+ <CAFA6WYOjU_iDyAn5PMGe=usg-2sPtupSQEYwcomUcHZBAPnURA@mail.gmail.com>
+ <87v9mcycbf.fsf@kamboji.qca.qualcomm.com> <CABPxzYKs3nj0AUX4L-j87Db8v3WnM4uGif9nRTGgx1m2HNN8Rg@mail.gmail.com>
+ <35cadbaff1239378c955014f9ad491bc68dda028.camel@sipsolutions.net>
+ <CABPxzY++YMBPTV4quAkYvEAMfULjMXLkVfNzwocwubno5HO2Bw@mail.gmail.com>
+ <5575dfe84aa745a3c2a61e240c3d150dc8d9446f.camel@sipsolutions.net> <CABPxzYJHjaLH+ozyFZx1hwXrNxdHgJaardk-kn7d72y7RC-=hw@mail.gmail.com>
+In-Reply-To: <CABPxzYJHjaLH+ozyFZx1hwXrNxdHgJaardk-kn7d72y7RC-=hw@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Tue, 7 Apr 2020 12:12:54 +0530
+Message-ID: <CAFA6WYP1Os46sh8-PTyDp0ztK2e6cbCoATVX5HN-ojG7bNxeOw@mail.gmail.com>
+Subject: Re: [PATCH] mac80211: fix race in ieee80211_register_hw()
+To:     Krishna Chaitanya <chaitanya.mgit@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless <linux-wireless@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, kuba@kernel.org,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Matthias=2DPeter_Sch=C3=B6pfer?= 
+        <matthias.schoepfer@ithinx.io>,
+        "Berg Philipp (HAU-EDS)" <Philipp.Berg@liebherr.com>,
+        "Weitner Michael (HAU-EDS)" <Michael.Weitner@liebherr.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+On Mon, 6 Apr 2020 at 23:39, Krishna Chaitanya <chaitanya.mgit@gmail.com> wrote:
+>
+> On Mon, Apr 6, 2020 at 8:36 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> >
+> > On Mon, 2020-04-06 at 19:55 +0530, Krishna Chaitanya wrote:
+> >
+> > > > iw phy0 interface add wlan0 type station
+> > > > ip link set wlan0 up
+> > > Ah okay, got it, thanks. Very narrow window though :-) as the
+> > > alloc_ordered_workqueue
+> > > doesn't need RTNL and there is a long way to go to do if_add() from
+> > > user and setup
+> > > the driver for interrupts.
+> >
+> > True, I do wonder how this is hit. Maybe something with no preempt and a
+> > uevent triggering things?
 
-The patch add ftm_alarm0 DT node
-	- add rcpm node
-	- add ftm_alarm0 node
-	- aliases ftm_alarm0 as rtc1
+The crash is reproducible while working with iwd [1] which is
+basically a wireless daemon. It can be started as "iwd.service" during
+boot that can detect wiphy registration events and configure
+interfaces. Have a look at this text [2] from iwd manager.
 
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
----
- arch/arm/boot/dts/ls1021a.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+To have a simple reproducer, please have a look at this trigger script
+[3] from Matthias in CC. With this script I am able to reproduce the
+kernel crash with approx. frequency of 1/10 across reboots on
+dragonboard 410c.
 
-diff --git a/arch/arm/boot/dts/ls1021a.dtsi b/arch/arm/boot/dts/ls1021a.dtsi
-index 0855b1fe98e0..7bb7bb130b41 100644
---- a/arch/arm/boot/dts/ls1021a.dtsi
-+++ b/arch/arm/boot/dts/ls1021a.dtsi
-@@ -66,6 +66,7 @@
- 		serial4 = &lpuart4;
- 		serial5 = &lpuart5;
- 		sysclk = &sysclk;
-+		rtc1 = &ftm_alarm0;
- 	};
- 
- 	cpus {
-@@ -1002,5 +1003,19 @@
- 			big-endian;
- 		};
- 
-+		rcpm: rcpm@1ee2140 {
-+			compatible = "fsl,ls1021a-rcpm", "fsl,qoriq-rcpm-2.1+";
-+			reg = <0x0 0x1ee2140 0x0 0x8>;
-+			#fsl,rcpm-wakeup-cells = <2>;
-+		};
-+
-+		ftm_alarm0: timer0@29d0000 {
-+			compatible = "fsl,ls1021a-ftm-alarm";
-+			reg = <0x0 0x29d0000 0x0 0x10000>;
-+			reg-names = "ftm";
-+			fsl,rcpm-wakeup = <&rcpm 0x20000 0x0>;
-+			interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH>;
-+			big-endian;
-+		};
- 	};
- };
--- 
-2.17.1
+There is nothing special like no preempt.
 
+[1] https://wiki.archlinux.org/index.php/Iwd
+[2] https://git.kernel.org/pub/scm/network/wireless/iwd.git/tree/src/manager.c#n563
+[3] https://github.com/DasRoteSkelett/meta-iwd/blob/master/recipes-trigger/trigger/trigger/trigger.sh
+
+> Probably, it might be specific to the dragonboard410c configuration
+>
+
+As described above, it isn't specific to any dragonboard 410c
+configuration and one should be able to reproduce it on other boards
+too using iwd depending on how long it takes to start corresponding
+wiphy device.
+
+> > > Again depends on the driver though, it
+> > > should properly handle
+> > > pending ieee80211_register_hw() with start().
+>
+> > It could, but it'd be really tricky. Much better to fix mac80211.
+
++1
+
+-Sumit
+
+> Sure, anyways it is a good change.
