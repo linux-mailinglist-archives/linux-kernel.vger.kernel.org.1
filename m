@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4E11A1553
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAAAC1A1564
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgDGSz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:55:58 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13729 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgDGSz5 (ORCPT
+        id S1726826AbgDGS6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:58:19 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:40772 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgDGS6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:55:57 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8cccaf0000>; Tue, 07 Apr 2020 11:55:43 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Tue, 07 Apr 2020 11:55:56 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Tue, 07 Apr 2020 11:55:56 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr
- 2020 18:55:56 +0000
-Received: from [10.24.37.103] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr 2020
- 18:55:52 +0000
-From:   sumitg <sumitg@nvidia.com>
-Subject: Re: [TEGRA194_CPUFREQ Patch v2 2/3] cpufreq: Add Tegra194 cpufreq
- driver
-To:     Dmitry Osipenko <digetx@gmail.com>, <rjw@rjwysocki.net>,
-        <viresh.kumar@linaro.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <talho@nvidia.com>,
-        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <bbasu@nvidia.com>, <mperttunen@nvidia.com>, <sumitg@nvidia.com>
-References: <1586028547-14993-1-git-send-email-sumitg@nvidia.com>
- <1586028547-14993-3-git-send-email-sumitg@nvidia.com>
- <ba12496f-ac27-d4f2-dc69-d0a7e2d58679@gmail.com>
-Message-ID: <9004e519-61c0-83fd-dc24-07f84c384f8a@nvidia.com>
-Date:   Wed, 8 Apr 2020 00:26:22 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Tue, 7 Apr 2020 14:58:19 -0400
+Received: by mail-ot1-f68.google.com with SMTP id q2so1503045otk.7;
+        Tue, 07 Apr 2020 11:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=QGY37FNAkjMLaN4OPkvvGVRfJPoF2m0cC0lGKtXcqAo=;
+        b=gr+rckUKI58G49Z44BoYW2p6LI6XQ7dJRWJrQ8Sd55kDDpeLB7+lboJBSJdfZGyJdC
+         wuK5DBxn3IGPtxEzcb8ydKbdLdhed+RrAscug86FQyWxSI97EUlig0rnLh5VqDANRDcN
+         arQxqN+pdjx7imdHu+s+JBYprOyvO0yAc5yu1pm3lixaXVZfAG3lqHuk8AbXtnKh/f8w
+         oxWugx2clNoJn7hvWIfqWRdn73eFz7blMNigUe5FHJYvtghxPJtIN1YAB9HYwSYFo6D8
+         B8O6b3GGlQHMX8omJh8mVtZDY7XoyBKNae4DcMaxcSd2cptIM5/jV/4+lsluvhn2LmcA
+         XAiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=QGY37FNAkjMLaN4OPkvvGVRfJPoF2m0cC0lGKtXcqAo=;
+        b=CbhVjXc5dgH8Yq4qgVHNsiJ04dORbxi2Pemkvcv6LuDza5QSEs6Il1aW4Fa9qyYabC
+         ekcOMQjeRYO8W3N73mP3OuQCxIY6ybv38lW6N2vrUOZk/5CZmvZ2VBDPAIRZ/067W5h8
+         vPohMI3dTiB2IMeuOGhIny5AIvkeMInfO5Nhc8Nh26+SWaaq6L5zJ8gDZbLyAa/siN3+
+         YmRhyQSlGfZkSw2R5eX5z+v60dDIkAJKR0Fkbw1luXGwlaUli8ymN6nk5toHt6XhdDLb
+         Kh3o6yusU/8Yu7H2WL9cWwzu47n0Tr8nVSL9QjigY7M5MZ4dv4oRstmhdAE3jpwIdK12
+         I2sw==
+X-Gm-Message-State: AGi0PuabdDl4bM/umtfAqoF0L90qAX4cq2yWcLHdUDjlGAbuYb1wEwg3
+        horn532sP04zOSqwUlffItk=
+X-Google-Smtp-Source: APiQypKv050/wlgr0SPQh2dayH2Ig9WLi5w4zCIC06+rIw0jxXUib3/jR4GEycJh4cac4u8oLrmGgQ==
+X-Received: by 2002:a9d:75d0:: with SMTP id c16mr2826857otl.8.1586285897659;
+        Tue, 07 Apr 2020 11:58:17 -0700 (PDT)
+Received: from ubuntu-s3-xlarge-x86 ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id 90sm5534875otc.29.2020.04.07.11.58.17
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Apr 2020 11:58:17 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 11:58:15 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        clang-built-linux@googlegroups.com
+Subject: Re: linux-next: build failure after merge of the vhost tree
+Message-ID: <20200407185815.GA1805@ubuntu-s3-xlarge-x86>
+References: <20200407130542.0e3b5d9d@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <ba12496f-ac27-d4f2-dc69-d0a7e2d58679@gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586285743; bh=64QyJ4TUbgO1pBh2CRY7c5Q8fJPeuJLJBdC3Q0tjXdQ=;
-        h=X-PGP-Universal:From:Subject:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=n2cusTcLOgy11bAq/RqsEFwFiXE290u6N7UZltFIwxJsmttTW60QQrcP4VH9vwAET
-         VPkZ6LW24GfHmyMHXwB1v7sjc46E1yW+lpfs7efhTjAqLV/1bsmj5nJfoDVFpjBQ5x
-         +R8snfDT2DFJAJNm/7+GS8Vt2lX6ZZvztbHaA90WI833NlXGgR/cTgSkEy78+Y2Hlk
-         PUZcIkkADtZ1lwocfkVFVjooe5LNI/WjNz1Yo9HodpfEJGqNOhzD8g1eV+4YJWqwAN
-         swv0UdjlTm6iEUmKQ7IuTpnh792gt14tgEwK5LHIwQNJaDZ7Pofw+6tKpc1aisHNHg
-         Fj9HnMM99t0tg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407130542.0e3b5d9d@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 07, 2020 at 01:05:42PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the vhost tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> drivers/gpu/drm/virtio/virtgpu_kms.c: In function 'virtio_gpu_init':
+> drivers/gpu/drm/virtio/virtgpu_kms.c:153:38: error: 'VIRTIO_RING_F_INDIRECT_DESC' undeclared (first use in this function)
+>   153 |  if (virtio_has_feature(vgdev->vdev, VIRTIO_RING_F_INDIRECT_DESC)) {
+>       |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> drivers/gpu/drm/virtio/virtgpu_kms.c:153:38: note: each undeclared identifier is reported only once for each function it appears in
+> 
+> Caused by commit
+> 
+>   898952f9597e ("virtio: stop using legacy struct vring in kernel")
+> 
+> interacting with commit
+> 
+>   5edbb5608256 ("drm/virtio: fix ring free check")
+> 
+> from Linus' tree (post v5.6).
+> 
+> I have added the following merge fix patch for today.
+> 
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 7 Apr 2020 12:58:26 +1000
+> Subject: [PATCH] drm/virtio: fix up for include file changes
+> 
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
+> index 023a030ca7b9..f4ea4cef5e23 100644
+> --- a/drivers/gpu/drm/virtio/virtgpu_kms.c
+> +++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
+> @@ -25,6 +25,7 @@
+>  
+>  #include <linux/virtio.h>
+>  #include <linux/virtio_config.h>
+> +#include <linux/virtio_ring.h>
+>  
+>  #include <drm/drm_file.h>
+>  
+> -- 
+> 2.25.0
+> 
+> I do have to wonder why all this code has been added to the vhost tree
+> during the second week of the merge window (especially when I see it
+> rebased 4 times in one day :-().  Is it really intended for v5.7?
+> -- 
+> Cheers,
+> Stephen Rothwell
 
+Linaro's CI also reports an issue with this patch with the remoteproc
+drivers that were freshly merged in Linus' tree for 5.7-rc1 (seen with a
+simple arm allyesconfig build):
 
-On 05/04/20 7:41 PM, Dmitry Osipenko wrote:
-> External email: Use caution opening links or attachments
->=20
->=20
-> 04.04.2020 22:29, Sumit Gupta =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> ...
->> +static void tegra_read_counters(struct work_struct *work)
->> +{
->> +     struct read_counters_work *read_counters_work;
->> +     struct tegra_cpu_ctr *c;
->> +     u64 val;
->> +
->> +     /*
->> +      * ref_clk_counter(32 bit counter) runs on constant clk,
->> +      * pll_p(408MHz).
->=20
-> Is changing PLLP rate really impossible on T194? What makes you say that
-> it runs on a fixed 408MHz?
->=20
-Pasting below from TRM.
-Register "NVFREQ_FEEDBACK_EL1":
-....
-[31:0] PLLP counter: This counter counts at a fixed frequency (408 MHz).
+drivers/rpmsg/mtk_rpmsg.c:68:2: error: implicit declaration of function 'kfree' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:93:9: error: implicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:170:2: error: implicit declaration of function 'kfree' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:204:9: error: implicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:223:3: error: implicit declaration of function 'kfree' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:259:9: error: implicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:376:3: error: implicit declaration of function 'kfree' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:387:15: error: implicit declaration of function 'kzalloc' [-Werror,-Wimplicit-function-declaration]
+drivers/rpmsg/mtk_rpmsg.c:409:2: error: implicit declaration of function 'kfree' [-Werror,-Wimplicit-function-declaration]
+drivers/remoteproc/stm32_rproc.c:152:14: error: implicit declaration of function 'kcalloc' [-Werror,-Wimplicit-function-declaration]
+drivers/remoteproc/stm32_rproc.c:179:2: error: implicit declaration of function 'kfree' [-Werror,-Wimplicit-function-declaration]
 
+It seems like this series shouldn't be in -next until after 5.7-rc1 (or
+rebased on Linus' tree if it is intended for the merge window).
+
+Cheers,
+Nathan
