@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC09F1A0BCE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A561A0B7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728538AbgDGKXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33516 "EHLO mail.kernel.org"
+        id S1729273AbgDGK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:27:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728525AbgDGKXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:23:39 -0400
+        id S1729256AbgDGK1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:27:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2798F2074B;
-        Tue,  7 Apr 2020 10:23:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6C53E20644;
+        Tue,  7 Apr 2020 10:26:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255018;
-        bh=zHf6rioeVhtooweuQYliiB150kH9YFprMHPlKJ3+gm4=;
+        s=default; t=1586255219;
+        bh=P7iouULCpIAHpWLOd6Wjrgm7dXrqA8tQoL3jEOu3ql4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qq9tt5IKmi+hVerW1xc+brPvlbld+eauMVCD9j4ZrOYfg18MyzU7HBqO+0pPTNtzX
-         UB4G8omBRy46ylHyf3eWnRQRB5km5U0yGxnzU9mqaZG+vl56Uus+QiMj3U88tW7FFu
-         LeMqgnEu9PSVL2GoYNQnM6niUaHxJFpA+SdF7ifM=
+        b=JIh2c307cG7sLRuJmaQVWfsXuS9mdJripg8tX7hDuqujFtYenes7bG8DsM7MQuiKW
+         wS9++TRMhr/niLKy/vbpwDcAlWc2MdcW6dqXW9qQ4yyLaEFP0aga7zjVpUU2KkAiPj
+         6tK176Tzw7hWdBnJgVG9CH0hUs3uobRPTHYUroVU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 33/36] tcp: fix TFO SYNACK undo to avoid double-timestamp-undo
+        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.6 09/29] padata: fix uninitialized return value in padata_replace()
 Date:   Tue,  7 Apr 2020 12:22:06 +0200
-Message-Id: <20200407101458.459005973@linuxfoundation.org>
+Message-Id: <20200407101453.138259293@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
-References: <20200407101454.281052964@linuxfoundation.org>
+In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
+References: <20200407101452.046058399@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,68 +46,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neal Cardwell <ncardwell@google.com>
+From: Daniel Jordan <daniel.m.jordan@oracle.com>
 
-commit dad8cea7add96a353fa1898b5ccefbb72da66f29 upstream.
+[ Upstream commit 41ccdbfd5427bbbf3ed58b16750113b38fad1780 ]
 
-In a rare corner case the new logic for undo of SYNACK RTO could
-result in triggering the warning in tcp_fastretrans_alert() that says:
-        WARN_ON(tp->retrans_out != 0);
+According to Geert's report[0],
 
-The warning looked like:
+  kernel/padata.c: warning: 'err' may be used uninitialized in this
+    function [-Wuninitialized]:  => 539:2
 
-WARNING: CPU: 1 PID: 1 at net/ipv4/tcp_input.c:2818 tcp_ack+0x13e0/0x3270
+Warning is seen only with older compilers on certain archs.  The
+runtime effect is potentially returning garbage down the stack when
+padata's cpumasks are modified before any pcrypt requests have run.
 
-The sequence that tickles this bug is:
- - Fast Open server receives TFO SYN with data, sends SYNACK
- - (client receives SYNACK and sends ACK, but ACK is lost)
- - server app sends some data packets
- - (N of the first data packets are lost)
- - server receives client ACK that has a TS ECR matching first SYNACK,
-   and also SACKs suggesting the first N data packets were lost
-    - server performs TS undo of SYNACK RTO, then immediately
-      enters recovery
-    - buggy behavior then performed a *second* undo that caused
-      the connection to be in CA_Open with retrans_out != 0
+Simplest fix is to initialize err to the success value.
 
-Basically, the incoming ACK packet with SACK blocks causes us to first
-undo the cwnd reduction from the SYNACK RTO, but then immediately
-enters fast recovery, which then makes us eligible for undo again. And
-then tcp_rcv_synrecv_state_fastopen() accidentally performs an undo
-using a "mash-up" of state from two different loss recovery phases: it
-uses the timestamp info from the ACK of the original SYNACK, and the
-undo_marker from the fast recovery.
+[0] http://lkml.kernel.org/r/20200210135506.11536-1-geert@linux-m68k.org
 
-This fix refines the logic to only invoke the tcp_try_undo_loss()
-inside tcp_rcv_synrecv_state_fastopen() if the connection is still in
-CA_Loss.  If peer SACKs triggered fast recovery, then
-tcp_rcv_synrecv_state_fastopen() can't safely undo.
-
-Fixes: 794200d66273 ("tcp: undo cwnd on Fast Open spurious SYNACK retransmit")
-Signed-off-by: Neal Cardwell <ncardwell@google.com>
-Signed-off-by: Yuchung Cheng <ycheng@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Fixes: bbefa1dd6a6d ("crypto: pcrypt - Avoid deadlock by using per-instance padata queues")
+Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Steffen Klassert <steffen.klassert@secunet.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/tcp_input.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/padata.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -6096,7 +6096,11 @@ static void tcp_rcv_synrecv_state_fastop
+diff --git a/kernel/padata.c b/kernel/padata.c
+index 72777c10bb9cb..62082597d4a2a 100644
+--- a/kernel/padata.c
++++ b/kernel/padata.c
+@@ -512,7 +512,7 @@ static int padata_replace_one(struct padata_shell *ps)
+ static int padata_replace(struct padata_instance *pinst)
  {
- 	struct request_sock *req;
+ 	struct padata_shell *ps;
+-	int err;
++	int err = 0;
  
--	tcp_try_undo_loss(sk, false);
-+	/* If we are still handling the SYNACK RTO, see if timestamp ECR allows
-+	 * undo. If peer SACKs triggered fast recovery, we can't undo here.
-+	 */
-+	if (inet_csk(sk)->icsk_ca_state == TCP_CA_Loss)
-+		tcp_try_undo_loss(sk, false);
+ 	pinst->flags |= PADATA_RESET;
  
- 	/* Reset rtx states to prevent spurious retransmits_timed_out() */
- 	tcp_sk(sk)->retrans_stamp = 0;
+-- 
+2.20.1
+
 
 
