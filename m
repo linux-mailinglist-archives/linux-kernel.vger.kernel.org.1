@@ -2,160 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1FB1A0F5D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52811A0F5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgDGOfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:35:51 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2636 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729103AbgDGOfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:35:50 -0400
-Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
-        by Forcepoint Email with ESMTP id EE6482EEB0E7A442C724;
-        Tue,  7 Apr 2020 15:35:47 +0100 (IST)
-Received: from [127.0.0.1] (10.210.168.238) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 7 Apr 2020
- 15:35:46 +0100
-Subject: Re: [PATCH RFC v2 02/24] scsi: allocate separate queue for reserved
- commands
-To:     Hannes Reinecke <hare@suse.de>,
-        Christoph Hellwig <hch@infradead.org>
-CC:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <ming.lei@redhat.com>,
-        <bvanassche@acm.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <esc.storagedev@microsemi.com>, <chenxiang66@hisilicon.com>,
-        Hannes Reinecke <hare@suse.com>
-References: <1583857550-12049-1-git-send-email-john.garry@huawei.com>
- <1583857550-12049-3-git-send-email-john.garry@huawei.com>
- <20200310183243.GA14549@infradead.org>
- <79cf4341-f2a2-dcc9-be0d-2efc6e83028a@huawei.com>
- <20200311062228.GA13522@infradead.org>
- <b5a63725-722b-8ccd-3867-6db192a248a4@suse.de>
- <9c6ced82-b3f1-9724-b85e-d58827f1a4a4@huawei.com>
- <39bc2d82-2676-e329-5d32-8acb99b0a204@suse.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <20ebe296-9e57-b3e3-21b3-63a09ce86036@huawei.com>
-Date:   Tue, 7 Apr 2020 15:35:24 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1729245AbgDGOfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:35:32 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:47088 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbgDGOfb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 10:35:31 -0400
+Received: by mail-qk1-f194.google.com with SMTP id g74so1309205qke.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:35:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y4xgURPmRjyibn/2qSCq97LYNObKcToBBtf2Gfwy2qo=;
+        b=Yiz1k2a+d2vyPRjl1p6OB1s3oRmhJRa5DG4YZ0H+AUV/Saew9NegKF2jh3r9qjam78
+         eeCCWMtYLfMCzWLSg34uIuIw/eM9kAT3TyDKzV1z12eiQSGmu9bfWj0DNIzs8Dh4Dhkt
+         IiAOSad+g2vsRib0Yzm63lmrmtW2zEryv/nfJH+nGBiOgdmVgieyrwDVT8ifojzyHprH
+         UE2SQ7lFdx+OXV8o1S8lPdxxByTJoRk5+9ziWySKynVZT45eG7mLsPbiIWGApTgi0bFx
+         eGhKgqlK6SmCr/aq00Z8LaHBayOZZIOFH8bSxVwKxfumKLVY6ImglmWKO/aK1QgP9sPl
+         Cigg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y4xgURPmRjyibn/2qSCq97LYNObKcToBBtf2Gfwy2qo=;
+        b=fcu9RPLvKVvryF74hi6RV137hbVR3DeIs5d6DhR0Rr9/nTIIDevmIojXrxKfcE/wk4
+         u6bTVZw8ZKCOeDp+I+VjXQNILhv2ASprlR7U5r6fzBX2g4DZ3Tx5trUbc6oztx0cUTKr
+         GGUuqteuieRKtXe+vbs6yUJNhkzJN0pMm1pgly34riTSe5VeN+JYz+goIaiDoED0j7s3
+         qJsR1rBV6Fv7aEfIgcNL9XrKTOzqnelqUD/0T9bzebKNVh2DxKtKCNfNVQEm1U0vecYk
+         bio1LtO9gZw8Eg3Bp1ZTvir/qEtMezKSqyhpm0TfuocEhGDKni+X2BMPFhk17BBFdFXh
+         E4MQ==
+X-Gm-Message-State: AGi0PuY+mqDbdUVPZtsMEkuQbEXzCAcB2G/HxIv7z+8Njx6UgBXx+JR/
+        Oq1FdG3hqvbJ2CGaBo0emXP6wA==
+X-Google-Smtp-Source: APiQypKmGGXSajztBQhxLq8UQIvrySAvflfXyKfiybSPc1r2BxzTEDdWHUHv27/JoHEv5QYkPHlEVQ==
+X-Received: by 2002:a37:4b97:: with SMTP id y145mr2601556qka.167.1586270129635;
+        Tue, 07 Apr 2020 07:35:29 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-57-212.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.57.212])
+        by smtp.gmail.com with ESMTPSA id 60sm16925154qtb.95.2020.04.07.07.35.28
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 07 Apr 2020 07:35:29 -0700 (PDT)
+Received: from jgg by mlx.ziepe.ca with local (Exim 4.90_1)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jLpK4-0000lj-Ij; Tue, 07 Apr 2020 11:35:28 -0300
+Date:   Tue, 7 Apr 2020 11:35:28 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        syzbot <syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: WARNING in ib_umad_kill_port
+Message-ID: <20200407143528.GV20941@ziepe.ca>
+References: <00000000000075245205a2997f68@google.com>
+ <20200406172151.GJ80989@unreal>
+ <20200406174440.GR20941@ziepe.ca>
+ <CACT4Y+Zv_WXEn6u5a6kRZpkDJnSzeGF1L7JMw4g85TLEgAM7Lw@mail.gmail.com>
+ <20200407115548.GU20941@ziepe.ca>
+ <CACT4Y+Zy0LwpHkTMTtb08ojOxuEUFo1Z7wkMCYSVCvsVDcxayw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <39bc2d82-2676-e329-5d32-8acb99b0a204@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.210.168.238]
-X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Zy0LwpHkTMTtb08ojOxuEUFo1Z7wkMCYSVCvsVDcxayw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/04/2020 15:00, Hannes Reinecke wrote:
-> On 4/7/20 1:54 PM, John Garry wrote:
->> On 06/04/2020 10:05, Hannes Reinecke wrote:
->>> On 3/11/20 7:22 AM, Christoph Hellwig wrote:
->>>> On Tue, Mar 10, 2020 at 09:08:56PM +0000, John Garry wrote:
->>>>> On 10/03/2020 18:32, Christoph Hellwig wrote:
->>>>>> On Wed, Mar 11, 2020 at 12:25:28AM +0800, John Garry wrote:
->>>>>>> From: Hannes Reinecke <hare@suse.com>
->>>>>>>
->>>>>>> Allocate a separate 'reserved_cmd_q' for sending reserved commands.
->>>>>>
->>>>>> Why?  Reserved command specifically are not in any way tied to 
->>>>>> queues.
->>>>>> .
->>>>>>
->>>>>
->>>>> So the v1 series used a combination of the sdev queue and the per-host
->>>>> reserved_cmd_q. Back then you questioned using the sdev queue for 
->>>>> virtio
->>>>> scsi, and the unconfirmed conclusion was to use a common per-host 
->>>>> q. This is
->>>>> the best link I can find now:
->>>>>
->>>>> https://www.mail-archive.com/linux-scsi@vger.kernel.org/msg83177.html
->>>>
->>>> That was just a question on why virtio uses the per-device tags, which
->>>> didn't look like it made any sense.  What I'm worried about here is
->>>> mixing up the concept of reserved tags in the tagset, and queues to use
->>>> them.  Note that we already have the scsi_get_host_dev to allocate
->>>> a scsi_device and thus a request_queue for the host itself.  That seems
->>>> like the better interface to use a tag for a host wide command vs
->>>> introducing a parallel path.
->>>>
->>> Thinking about it some more, I don't think that scsi_get_host_dev() is
->>> the best way of handling it.
->>> Problem is that it'll create a new scsi_device with <hostno:this_id:0>,
->>> which will then show up via eg 'lsscsi'.
->>
->> are you sure? Doesn't this function just allocate the sdev, but do 
->> nothing with it, like probing it?
->>
->> I bludgeoned it in here for PoC:
->>
->> https://github.com/hisilicon/kernel-dev/commit/ef0ae8540811e32776f64a5b42bd76cbed17ba47 
->>
->>
->> And then still:
->>
->> john@ubuntu:~$ lsscsi
->> [0:0:0:0] disk SEAGATE  ST2000NM0045  N004  /dev/sda
->> [0:0:1:0] disk SEAGATE  ST2000NM0045  N004  /dev/sdb
->> [0:0:2:0] disk ATASAMSUNG HM320JI  0_01  /dev/sdc
->> [0:0:3:0] disk SEAGATE  ST1000NM0023  0006  /dev/sdd
->> [0:0:4:0] enclosu HUAWEIExpander 12Gx16  128-
->> john@ubuntu:~$
->>
->> Some proper plumbing would be needed, though.
->>
->>> This would be okay if 'this_id' would have been defined by the driver;
->>> sadly, most drivers which are affected here do set 'this_id' to -1.
->>> So we wouldn't have a nice target ID to allocate the device from, let
->>> alone the problem that we would have to emulate a complete scsi device
->>> with all required minimal command support etc.
->>> And I'm not quite sure how well that would play with the exising SCSI
->>> host template; the device we'll be allocating would have basically
->>> nothing in common with the 'normal' SCSI devices.
->>>
->>> What we could do, though, is to try it the other way round:
->>> Lift the request queue from scsi_get_host_dev() into the scsi host
->>> itself, so that scsi_get_host_dev() can use that queue, but we also
->>> would be able to use it without a SCSI device attached.
->>
->> wouldn't that limit 1x scsi device per host, not that I know if any 
->> more would ever be required? But it does still seem better to use the 
->> request queue in the scsi device.
->>
-> My concern is this:
+On Tue, Apr 07, 2020 at 02:39:42PM +0200, Dmitry Vyukov wrote:
+> On Tue, Apr 7, 2020 at 1:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Apr 07, 2020 at 11:56:30AM +0200, Dmitry Vyukov wrote:
+> > > > I'm not sure what could be done wrong here to elicit this:
+> > > >
+> > > >  sysfs group 'power' not found for kobject 'umad1'
+> > > >
+> > > > ??
+> > > >
+> > > > I've seen another similar sysfs related trigger that we couldn't
+> > > > figure out.
+> > > >
+> > > > Hard to investigate without a reproducer.
+> > >
+> > > Based on all of the sysfs-related bugs I've seen, my bet would be on
+> > > some races. E.g. one thread registers devices, while another
+> > > unregisters these.
+> >
+> > I did check that the naming is ordered right, at least we won't be
+> > concurrently creating and destroying umadX sysfs of the same names.
+> >
+> > I'm also fairly sure we can't be destroying the parent at the same
+> > time as this child.
+> >
+> > Do you see the above commonly? Could it be some driver core thing? Or
+> > is it more likely something wrong in umad?
 > 
-> struct scsi_device *scsi_get_host_dev(struct Scsi_Host *shost)
-> {
->      [ .. ]
->      starget = scsi_alloc_target(&shost->shost_gendev, 0, shost->this_id);
->      [ .. ]
-> 
-> and we have typically:
-> 
-> drivers/scsi/hisi_sas/hisi_sas_v3_hw.c: .this_id                = -1,
-> 
-> It's _very_ uncommon to have a negative number as the SCSI target 
-> device; in fact, it _is_ an unsigned int already.
-> 
+> Mmmm... I can't say, I am looking at some bugs very briefly. I've
+> noticed that sysfs comes up periodically (or was it some other similar
+> fs?). 
 
-FWIW, the only other driver (gdth) which I see uses this API has this_id 
-= -1 in the scsi host template.
+Hmm..
 
-> But alright, I'll give it a go; let's see what I'll end up with.
+Looking at the git history I see several cases where there are
+ordering problems. I wonder if the rdma parent device is being
+destroyed before the rdma devices complete destruction?
 
-note: If we want a fixed scsi_device per host, calling 
-scsi_mq_setup_tags() -> scsi_get_host_dev() will fail as shost state is 
-not running. Maybe we need to juggle some things there to provide a 
-generic solution.
+I see the syzkaller is creating a bunch of virtual net devices, and I
+assume it has created a software rdma device on one of these virtual
+devices.
 
-thanks
+So I'm guessing that it is also destroying a parent? But I can't guess
+which.. Some simple tests with veth suggest it is OK because the
+parent is virtual. But maybe bond or bridge or something?
+
+The issue in rdma is that unregistering a netdev triggers an async
+destruction of the RDMA devices. This has to be async because the
+netdev notification is delivered with RTNL held, and a rdma device
+cannot be destroyed while holding RTNL.
+
+So there is a race, I suppose, where the netdev can complete
+destruction while rdma continues, and if someone deletes the sysfs
+holding the netdev before rdma completes, I'm going to guess, that we
+hit this warning?
+
+Could it be? I would love to know what netdev the rdma device was
+created on, but it doesn't seem to show in the trace :\ 
+
+This theory could be made more likely by adding a sleep to
+ib_unregister_work() to increase the race window - is there some way
+to get syzkaller to search for a reproducer with that patch?
+
+Jason
