@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 403381A0E15
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17EC1A0E28
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728807AbgDGND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 09:03:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:56054 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726562AbgDGND1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 09:03:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0839E31B;
-        Tue,  7 Apr 2020 06:03:27 -0700 (PDT)
-Received: from [10.37.12.154] (unknown [10.37.12.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F210D3F68F;
-        Tue,  7 Apr 2020 06:03:24 -0700 (PDT)
-Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
- multiple connections
-To:     saiprakash.ranjan@codeaurora.org
-Cc:     mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
-        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
- <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
- <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
- <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
- <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <bb209f80-ac02-6321-dac4-ebf9ee6fa9a0@arm.com>
-Date:   Tue, 7 Apr 2020 14:08:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1728782AbgDGNKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 09:10:39 -0400
+Received: from mail.parknet.co.jp ([210.171.160.6]:37268 "EHLO
+        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728640AbgDGNKi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 09:10:38 -0400
+Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
+        by mail.parknet.co.jp (Postfix) with ESMTPSA id C491A12F211;
+        Tue,  7 Apr 2020 22:10:37 +0900 (JST)
+Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
+        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-18) with ESMTPS id 037DAaWA154643
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 7 Apr 2020 22:10:37 +0900
+Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
+        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-18) with ESMTPS id 037DAaMM906835
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Tue, 7 Apr 2020 22:10:36 +0900
+Received: (from hirofumi@localhost)
+        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 037DAUks906833;
+        Tue, 7 Apr 2020 22:10:30 +0900
+From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     syzbot <syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com>,
+        Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Subject: [PATCH] fat: Don't allow to mount if the FAT length == 0
+Date:   Tue, 07 Apr 2020 22:10:30 +0900
+Message-ID: <87r1wz8mrd.fsf@mail.parknet.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/07/2020 12:29 PM, Sai Prakash Ranjan wrote:
-> Hi Suzuki,
-> 
-> Thanks for looking into this issue.
-> 
-> On 2020-04-07 15:54, Suzuki K Poulose wrote:
->> On 04/07/2020 10:46 AM, Sai Prakash Ranjan wrote:
->>
->> There seems to be two replicators back to back here. What is connected
->> to the other output of both of them ? Are there any TPIUs ? What happens
->> if you choose a sink on the other end of "swao_replicator" (ETB ?)
->>
-> 
-> The other outport of swao replicator is connected to EUD which is a
-> QCOM specific HW which can be used as a sink like USB.
-> And the other outport of other replicator(replicator_out) is connected to
-> TPIU.
-> 
->> After boot, what do the idfilter registers read for both the 
->> replicators ?
->>
-> 
-> Added some prints in replicator_probe.
-> 
->   replicator probe ret=-517 devname=6046000.replicator idfilter0=0x0 
-> idfilter1=0x0
->   replicator probe ret=0 devname=6b06000.replicator idfilter0=0xff 
-> idfilter1=0xff
->   replicator probe ret=0 devname=6046000.replicator idfilter0=0xff 
-> idfilter1=0xff
+If FAT length == 0, the image doesn't have any data. And it can be the
+cause of overlapping the root dir and FAT entries.
 
-Curious to see how the idfilterX is set to 0:
-	 if that is never used.
-		Or
-	 if the user doesn't reset it back to 0xff.
+Also Windows treats it as invalid format.
 
-Does your test ever touch EUD (enable the port for EUD at
-swao-replicator) ? What are the values before you run your test ?
+Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+---
+ fs/fat/inode.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-
-Suzuki
+diff --git a/fs/fat/inode.c b/fs/fat/inode.c
+index 71946da..bf8e04e 100644
+--- a/fs/fat/inode.c	2020-04-07 21:55:27.001147223 +0900
++++ b/fs/fat/inode.c	2020-04-07 22:06:15.164098069 +0900
+@@ -1520,6 +1520,12 @@ static int fat_read_bpb(struct super_blo
+ 		goto out;
+ 	}
+ 
++	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
++		if (!silent)
++			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
++		goto out;
++	}
++
+ 	error = 0;
+ 
+ out:
+_
+OGAWA Hirofumi <hirofumi@mail.parknet.co.jp> writes:
