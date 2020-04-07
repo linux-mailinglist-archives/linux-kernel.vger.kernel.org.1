@@ -2,140 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FDA1A0704
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD9C1A0713
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgDGGJj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 02:09:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34665 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726030AbgDGGJj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 02:09:39 -0400
-Received: from mail-pf1-f199.google.com ([209.85.210.199])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jLhQX-0005eq-Kr
-        for linux-kernel@vger.kernel.org; Tue, 07 Apr 2020 06:09:37 +0000
-Received: by mail-pf1-f199.google.com with SMTP id 20so1660349pfw.10
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 23:09:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=UZI8JedmnuHToXu7Q/I7xx7S7a3ItUDjPQAoytpljgU=;
-        b=IkkWEZynGP4E1flQ+jFutvjBPNwJ0DQaJ9cscvsldbDQBBk97YcGxcmMIjcsAP0Ieb
-         qxTCYDBiGo9lU6oXO2eH1CaDNeHNg+azACK5xdV3fgdUcjpiABFGlqk+XAUi/18re9Bi
-         hE7lttw57gRSNiPdpEbTs8XwP0sRZxljz4Q+Fau2XbmVEj8csN08zGGWaB6dODdWI4fw
-         AYz6YAi+TqS4uEy/UTwp/95J4KIKw0p3S9NEyMkVlOLg+Smr2UM+n7YfvGJV7SGlAveU
-         TYOgUQ1BPzcGyO3usS/Qkm/GRueIXMGkeqnMruJ7tO8WeEpsb2wF81d8f8A4g/C38qMu
-         MbXw==
-X-Gm-Message-State: AGi0PubzLYJIGAi0Gg8WuUZo2z3I9bzwt6iLhAP8BGTgoq7zKuxwZk3d
-        7PE75i/iZlaS2bHTzmyCBy3apIOjQ3nHTekuwxWJBEObcP1hv3fsdRnFRaddg6c611BmN251L0t
-        zQOuOC+suev32sbDseftinusfgDOinCAGptlBCYRnAw==
-X-Received: by 2002:aa7:98c9:: with SMTP id e9mr1038785pfm.204.1586239775970;
-        Mon, 06 Apr 2020 23:09:35 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLoN6nnx4YD3X7VJk9A66/0ZEp9elDgbImAvoNuoS7c7bQNoEObS/YpnSfIY6drzOS7Fwmadw==
-X-Received: by 2002:aa7:98c9:: with SMTP id e9mr1038773pfm.204.1586239775668;
-        Mon, 06 Apr 2020 23:09:35 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id o128sm12965746pfb.58.2020.04.06.23.09.34
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Apr 2020 23:09:35 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] libata: Return correct rc status in
- sata_pmp_eh_recover_pm() pwhen ATA_DFLAG_DETACH is set
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20190327090254.10365-1-kai.heng.feng@canonical.com>
-Date:   Tue, 7 Apr 2020 14:09:33 +0800
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <A7C20983-8C32-4B63-AAEB-BFA2AE0DBAE9@canonical.com>
-References: <20190327090254.10365-1-kai.heng.feng@canonical.com>
-To:     Jens Axboe <axboe@kernel.dk>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1726894AbgDGGOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 02:14:46 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:42746 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725802AbgDGGOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 02:14:46 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D1EB1A10E6;
+        Tue,  7 Apr 2020 08:14:44 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 854A31A1064;
+        Tue,  7 Apr 2020 08:14:40 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2074840294;
+        Tue,  7 Apr 2020 14:14:35 +0800 (SGT)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     robh+dt@kernel.org, mark.rutland@arm.com, ran.wang_1@nxp.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, Biwen Li <biwen.li@nxp.com>
+Subject: [PATCH 1/4] arm64: dts: lx2160a: add ftm_alarm0 DT node
+Date:   Tue,  7 Apr 2020 14:10:51 +0800
+Message-Id: <20200407061054.16912-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+From: Biwen Li <biwen.li@nxp.com>
 
-> On Mar 27, 2019, at 17:02, Kai-Heng Feng <kai.heng.feng@canonical.com> wrote:
-> 
-> During system resume from suspend, this can be observed on ASM1062 PMP
-> controller:
-> <6>[12007.593358] ata10.01: SATA link down (SStatus 0 SControl 330)
-> <6>[12007.593469] ata10.02: hard resetting link
-> <6>[12007.908353] ata10.02: SATA link down (SStatus 0 SControl 330)
-> <6>[12007.911149] ata10.00: configured for UDMA/133
-> <0>[12007.972508] Kernel panic - not syncing: stack-protector: Kernel
-> stack is corrupted in: sata_pmp_eh_recover+0xa2b/0xa40
-> <0>[12007.972508]
-> <4>[12007.972515] CPU: 2 PID: 230 Comm: scsi_eh_9 Tainted: P OE
-> 4.15.0-46-generic #49-Ubuntu
-> <4>[12007.972517] Hardware name: System manufacturer System Product
-> Name/A320M-C, BIOS 1001 12/10/2017
-> <4>[12007.972518] Call Trace:
-> <4>[12007.972525] dump_stack+0x63/0x8b
-> <4>[12007.972530] panic+0xe4/0x244
-> <4>[12007.972533] ? sata_pmp_eh_recover+0xa2b/0xa40
-> <4>[12007.972536] __stack_chk_fail+0x19/0x20
-> <4>[12007.972538] sata_pmp_eh_recover+0xa2b/0xa40
-> <4>[12007.972543] ? ahci_do_softreset+0x260/0x260 [libahci]
-> <4>[12007.972545] ? ahci_do_hardreset+0x140/0x140 [libahci]
-> <4>[12007.972547] ? ata_phys_link_offline+0x60/0x60
-> <4>[12007.972549] ? ahci_stop_engine+0xc0/0xc0 [libahci]
-> <4>[12007.972552] sata_pmp_error_handler+0x22/0x30
-> <4>[12007.972554] ahci_error_handler+0x45/0x80 [libahci]
-> <4>[12007.972556] ata_scsi_port_error_handler+0x29b/0x770
-> <4>[12007.972558] ? ata_scsi_cmd_error_handler+0x101/0x140
-> <4>[12007.972559] ata_scsi_error+0x95/0xd0
-> <4>[12007.972562] ? scsi_try_target_reset+0x90/0x90
-> <4>[12007.972563] scsi_error_handler+0xd0/0x5b0
-> <4>[12007.972566] kthread+0x121/0x140
-> <4>[12007.972567] ? scsi_eh_get_sense+0x200/0x200
-> <4>[12007.972569] ? kthread_create_worker_on_cpu+0x70/0x70
-> <4>[12007.972572] ret_from_fork+0x22/0x40
-> <0>[12007.972591] Kernel Offset: 0xcc00000 from 0xffffffff81000000
-> (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> 
-> Since sata_pmp_eh_recover_pmp() doens't set rc when ATA_DFLAG_DETACH is
-> set, sata_pmp_eh_recover() continues to run. During retry it triggers
-> the stack protector.
-> 
-> Set correct rc in sata_pmp_eh_recover_pmp() to let sata_pmp_eh_recover()
-> jump to pmp_fail directly.
-> 
-> BugLink: https://bugs.launchpad.net/bugs/1821434
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+The patch adds ftm_alarm0 DT node for Soc LX2160A
+FlexTimer1 module is used to wakeup the system in deep sleep
 
-Any suggestion for this patch?
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Kai-Heng
-
-> ---
-> drivers/ata/libata-pmp.c | 1 +
-> 1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/ata/libata-pmp.c b/drivers/ata/libata-pmp.c
-> index 2ae1799f4992..51eeaea65833 100644
-> --- a/drivers/ata/libata-pmp.c
-> +++ b/drivers/ata/libata-pmp.c
-> @@ -764,6 +764,7 @@ static int sata_pmp_eh_recover_pmp(struct ata_port *ap,
-> 
-> 	if (dev->flags & ATA_DFLAG_DETACH) {
-> 		detach = 1;
-> +		rc = -ENODEV;
-> 		goto fail;
-> 	}
-> 
-> -- 
-> 2.17.1
-> 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index e5ee5591e52b..e0d8d68ce070 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -16,6 +16,10 @@
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
+ 
++	aliases {
++		rtc1 = &ftm_alarm0;
++	};
++
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -768,6 +772,20 @@
+ 			timeout-sec = <30>;
+ 		};
+ 
++		rcpm: rcpm@1e34040 {
++			compatible = "fsl,lx2160a-rcpm", "fsl,qoriq-rcpm-2.1+";
++			reg = <0x0 0x1e34040 0x0 0x1c>;
++			#fsl,rcpm-wakeup-cells = <7>;
++			little-endian;
++		};
++
++		ftm_alarm0: timer@2800000 {
++			compatible = "fsl,lx2160a-ftm-alarm";
++			reg = <0x0 0x2800000 0x0 0x10000>;
++			fsl,rcpm-wakeup = <&rcpm 0x0 0x0 0x0 0x0 0x4000 0x0 0x0>;
++			interrupts = <0 44 4>;
++		};
++
+ 		usb0: usb@3100000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3100000 0x0 0x10000>;
+-- 
+2.17.1
 
