@@ -2,60 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E46891A102E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B621A100F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729345AbgDGP2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 11:28:16 -0400
-Received: from relay06.etecsa.net ([181.225.231.76]:51255 "EHLO
-        relay06.etecsa.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728306AbgDGP2Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:28:16 -0400
-X-Greylist: delayed 541 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 11:28:15 EDT
-Received: from smtp-gw05.enet.cu (unknown [172.29.8.35])
-        by relay06.etecsa.net (Postfix) with ESMTP id 57FC7E0199;
-        Tue,  7 Apr 2020 11:19:10 -0400 (CDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nauta.cu; s=nauta;
-        t=1586272750; bh=3OEQrDP/C/QP2IW4KtNioNWskky+CWRiw47w6j2UTrQ=;
-        h=Date:From:To:Subject:Reply-to;
-        b=IMsOrytU5XogSHRMXs1f4RwGGaNU+1iACsKypB7GB2A/rVKJjjM1GpXSLxtgSV20b
-         0InJOYozZBtC9ZGwoFg5zFtwsmgi5zsCZ4o2YawmBW62YcffYxa+95/UUOt6MPIhV/
-         BqE7MT2+BuCerrPoDEHO5eqaU/1Bb1jFg+HVM/ms=
-Received: from amavis.etecsa.net (unknown [172.29.8.230])
-        by smtp-gw05.enet.cu (Postfix) with ESMTP id B634B1800054;
-        Tue,  7 Apr 2020 11:19:09 -0400 (CDT)
-Received: from smtp.nauta.cu ([172.29.8.248])
-        by amavis.etecsa.net  with ESMTP id 037FJ41X013626-037FJ41Y013626;
-        Tue, 7 Apr 2020 11:19:04 -0400
-Received: from horde04.enet.cu (unknown [172.29.15.54])
-        by smtp.nauta.cu (Postfix) with ESMTP id 644D79F176;
-        Tue,  7 Apr 2020 11:19:04 -0400 (CDT)
-Received: from [84.17.50.168] ([84.17.50.168]) by webmail.nauta.cu (Horde
- Framework) with HTTPS; Tue, 07 Apr 2020 11:19:04 -0400
-Date:   Tue, 07 Apr 2020 11:19:04 -0400
-Message-ID: <20200407111904.Horde.KslgiYc3-sY9Ogta4rKwA0V@webmail.nauta.cu>
-From:   Steam Card Raffle Draw <campestre.91@nauta.cu>
-Subject: hello
-Reply-to: steamcarddraw@gmail.com
-User-Agent: Horde Application Framework 5
-X-Originating-IP: 84.17.50.168
-X-Remote-Browser: Mozilla/5.0 (Windows NT 6.1; Win64; x64)
- AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
- OPR/67.0.3575.79
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        id S1729413AbgDGPUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:20:01 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2638 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728917AbgDGPUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 11:20:01 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 5EA12238EC4E6DA72243;
+        Tue,  7 Apr 2020 16:19:59 +0100 (IST)
+Received: from [127.0.0.1] (10.210.168.238) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 7 Apr 2020
+ 16:19:57 +0100
+Subject: Re: [PATCH RFC v2 02/24] scsi: allocate separate queue for reserved
+ commands
+To:     Hannes Reinecke <hare@suse.de>,
+        Christoph Hellwig <hch@infradead.org>
+CC:     <axboe@kernel.dk>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <ming.lei@redhat.com>,
+        <bvanassche@acm.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <esc.storagedev@microsemi.com>, <chenxiang66@hisilicon.com>,
+        Hannes Reinecke <hare@suse.com>
+References: <1583857550-12049-1-git-send-email-john.garry@huawei.com>
+ <1583857550-12049-3-git-send-email-john.garry@huawei.com>
+ <20200310183243.GA14549@infradead.org>
+ <79cf4341-f2a2-dcc9-be0d-2efc6e83028a@huawei.com>
+ <20200311062228.GA13522@infradead.org>
+ <b5a63725-722b-8ccd-3867-6db192a248a4@suse.de>
+ <9c6ced82-b3f1-9724-b85e-d58827f1a4a4@huawei.com>
+ <39bc2d82-2676-e329-5d32-8acb99b0a204@suse.de>
+ <20ebe296-9e57-b3e3-21b3-63a09ce86036@huawei.com>
+ <dcfba0ea-4ba5-4e4f-150d-24bd4fe11cdd@suse.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <38c1592d-c90a-d6ca-1e7e-e8cc665aaf22@huawei.com>
+Date:   Tue, 7 Apr 2020 16:19:35 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Disposition: inline
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <dcfba0ea-4ba5-4e4f-150d-24bd4fe11cdd@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.168.238]
+X-ClientProxiedBy: lhreml738-chm.china.huawei.com (10.201.108.188) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>>>
+>>
+>> FWIW, the only other driver (gdth) which I see uses this API has 
+>> this_id = -1 in the scsi host template.
+>>
+>>> But alright, I'll give it a go; let's see what I'll end up with.
+>>
+>> note: If we want a fixed scsi_device per host, calling 
+>> scsi_mq_setup_tags() -> scsi_get_host_dev() will fail as shost state 
+>> is not running. Maybe we need to juggle some things there to provide a 
+>> generic solution.
+>>
+> It might even get worse, as during device setup things like 
+> 'slave_alloc' etc is getting called, which has a fair chance of getting 
+> confused for non-existing devices.
+> Cf qla2xxx:qla2xx_slave_alloc() is calling starget_to_rport(), which 
+> will get us a nice oops when accessing a target which is _not_ the child 
+> of a fc remote port.
 
+Yes, something similar happens for libsas [hence my hack], where 
+sas_alloc_target()->sas_find_dev_by_rphy() fails as it cannot handle 
+rphy for scsi host as parent properly.
 
--- 
-Steam Card Raffle Draw
+> And this is why I'm not utterly keen on this approach; auditing all 
+> these callbacks is _not_ fun.
+> 
 
-Play and win $5,000
+Understood. And if you can't test them, then a change like this is too 
+risky for those drivers.
 
+Cheers,
+John
