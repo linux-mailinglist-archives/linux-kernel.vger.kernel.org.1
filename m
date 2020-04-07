@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BDE1A116A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B0B1A116C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbgDGQci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:32:38 -0400
-Received: from mout.web.de ([212.227.17.11]:46547 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726884AbgDGQci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:32:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1586277140;
-        bh=1QXk0kglKncjSEgu6UTFVCnPyetO/PRHvyiAud9o2KI=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=cdKRRIahL+10a6qpIINxGKk/dXBUycNxEpjbtVQYD86A0LMmYgesF6X4dIEL3ArLF
-         QoAduXR8QHSfxctU9tj25EYBW068MCvvZS4FkM/cQHZrrZOf94mZIgHkasFdDwzJzN
-         PLJUup2ueZLhWcC0oH31HF1BIXVpU30lShFPLf6c=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([78.49.5.104]) by smtp.web.de (mrweb101
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0M8iH2-1jRJjk2NSO-00CBs1; Tue, 07
- Apr 2020 18:32:20 +0200
-Subject: Re: scsi: aic7xxx: Remove null pointer checks before kfree()
-To:     Alex Dewar <alex.dewar@gmx.co.uk>, linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
-        "James E. J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Qiujun Huang <hqjagain@gmail.com>
-References: <72bc89d5-cf50-3f3a-41e0-b46b134e754d@web.de>
- <20200407155453.sosj4brsw6r7fnot@lenovo-laptop>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
- +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
- mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
- lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
- YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
- GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
- rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
- 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
- jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
- BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
- cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
- Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
- g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
- OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
- CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
- LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
- sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
- kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
- i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
- g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
- q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
- NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
- nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
- 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
- 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
- wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
- riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
- DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
- fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
- 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
- xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
- qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
- Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
- Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
- +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
- hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
- /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
- tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
- qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
- Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
- x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
- pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <99c64c9f-0a9f-aafb-2e32-da7e026f9940@web.de>
-Date:   Tue, 7 Apr 2020 18:32:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728306AbgDGQdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:33:16 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59068 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726833AbgDGQdQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:33:16 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 037GWCOF109057;
+        Tue, 7 Apr 2020 12:32:55 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 306mjdwncb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 12:32:55 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 037GV4UU008867;
+        Tue, 7 Apr 2020 16:32:54 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma02dal.us.ibm.com with ESMTP id 306hv6yww7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 16:32:54 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 037GWrMc46858584
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Apr 2020 16:32:53 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0C5F1AC062;
+        Tue,  7 Apr 2020 16:32:53 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4A9D6AC05E;
+        Tue,  7 Apr 2020 16:32:50 +0000 (GMT)
+Received: from LeoBras (unknown [9.85.172.25])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Apr 2020 16:32:50 +0000 (GMT)
+Message-ID: <dfa8c0d60f171b5cd475d6a5441e94d4dbafbc77.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 1/1] powerpc/kernel: Enables memory hot-remove after
+ reboot on pseries guests
+From:   Leonardo Bras <leonardo@linux.ibm.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Claudio Carvalho <cclaudio@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Allison Randal <allison@lohutok.net>,
+        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linuxppc-dev@lists.ozlabs.org,
+        Hari Bathini <hbathini@linux.ibm.com>, bharata@linux.ibm.com
+Date:   Tue, 07 Apr 2020 13:32:41 -0300
+In-Reply-To: <20200407040046.GA12609@in.ibm.com>
+References: <20200402195156.626430-1-leonardo@linux.ibm.com>
+         <20200403143831.GA12662@in.ibm.com>
+         <6c09a6e1a1f790ad87a2591ff8f8a6e1c7d6b079.camel@linux.ibm.com>
+         <20200407040046.GA12609@in.ibm.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-6w+DgFjDZwO6PZH9+FP6"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200407155453.sosj4brsw6r7fnot@lenovo-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:D7UzCIEZpu3yjkzGyVUqKA3cFSssRuF/qJNq5UnvEb5jlYmVHIp
- LpjY6x8ohyThGCVB9SLJWCdgx5sDWKvu3SxhWPtkuzLzYMx0tkXq6N3eQzZK6wwpBWsPtyH
- PZ1owk6N5h7kHkZ8gCSuEDpqQO4DeZQic0ZmXcKQ6w8EdG0b2TazLU4RN9fYTAgaOGwrVAn
- /TqWrD3QMYw5Dfc3lgg3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LeeTaExtV6Q=:wkvrnyZwoOjs8yBaMCHWCK
- S0Lw9wk4IB2oa0Yj3DD7h65DKACBlhkXBYKkQymnMZpvkXPJa2i+fIOzLRjXR4kiFq2hHm+ib
- pt58NYoLlAGqVk93HvvULR1JYui30e8wjjYJijF/lO8o/MxQ1roanSOfmY2IkMcqMljxDF0ms
- 8nUdmnqB5/KYsC7aRzhWY5r7LI+9qbUIePQRpXbxsKkc3oSKB9xCVOXB9qooPq1AGXw6HBUSG
- NWmhXUSw7tvY6yspAPrp7/tT+U1YZfBfqnVPIbJ78wwwMqYlfBnJfdWPmMD9gca485rM0tAYB
- RI/YbUdaA/yoW5zlSBsmoBtwxu01tmny9R4LDG6z7VOPXEHZ7HZM1S0zQ1tUXX4zs8lfqU54+
- VYbtHapHXj3GcrEXs30PON4AI/yhxZdAxWysDXIrcFgyFmvMhG+AK55uSFVSfyiGLB1HmSjgA
- B8hEj1/lViiwEvyVm5xc7lohbLJHOKP5BrJunujIVqU4nPwDlCZ5Z46gTjhTwsGPB+qCVOGg3
- lIzqnywTxVFlSj0A9zAdaj+BNuQUnHE6nKpyWu4qFUp+kIMypo/wfLvCkiHG3UCnKZmaFg5S+
- SiehPuDS6KH5nFB37jsILOqZqNTqYK36QYoj5ikKWUI9e3lJ5SmOnBAVRyPFfQkrkiKo6omv3
- 1mqtcvXXq6HcgG/tj2o88Sjn7v8cfsJM8ZHXQL2M/KAy2WS5nHOsp/9UUGdjCjDRvS0yQ5rEY
- hasROWS2QOkVOdlki8/N9iMGNd+Djp+3IDOBJlt7oV3tcomVZ1zhYsLO1mWcYUVdxDaZB3yvt
- Pl+nUemZj3fwvhy1CYfZ6kW+oKLrj1/kFQRnRgM+vLs8YA91WbqxGL39Gtix2ea104cEwjhgG
- L2Lh9gqXI4zQ2Zpjt1asQz4/4liZ3EnKwmLP0zVKE4g1pShXzUhEmSkFEmBeT0+S2jPjD2h+5
- W+0+VplAAwoYKf066D4yuaWp5/lo0yEVnLy2jHb1b00kadwCcxg+jWpbxJAyzVxaj+DI6rCb+
- k4hFYJcN/1zhpVfTYdsgWcxoqlhP4yT/VjHUo1T4a+mcKvCTUq6WTAdWOwd2oPpVSA5LzIbu6
- XPPyiCAGwNyCuDfWgULycAWNw4NspuDTaSLtu9UzOjBnwKyVTcS7wshDklt+oI6ljn7FGzf6I
- 7GmxBKzTEEz0KrczGxdEqqU2fC/h5QCrrxeRTwS2p9lZx3QFOyo/d9CSrwExQtEnZxzOU5iks
- Vt0uxQtKNTNHg1IlY
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_07:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=677
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 phishscore=0 spamscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070131
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> I hope that you would like to take another update suggestion into accou=
-nt
->> (besides a typo correction for your commit message).
->> https://lore.kernel.org/patchwork/patch/1220189/
->> https://lore.kernel.org/linux-scsi/20200403164712.49579-1-alex.dewar@gm=
-x.co.uk/
->
-> I'm not sure I understand the relevance.
 
-I pointed your patch out for another contributor.
+--=-6w+DgFjDZwO6PZH9+FP6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hello Michael,
 
-> Are you saying I should reference this other patch?
-
-I suggest to take another look at the development history for presented
-patches according to a known source code search pattern.
-
-
-> Thanks for the reference. I'll mention it in the commit if I do a v2.
-
-I am curious under which circumstances the affected source files
-will actually be improved in ways which were suggested a few times.
+Would it be ok to add this patch for 5.7 ? Or too late?
 
 Regards,
-Markus
+
+On Tue, 2020-04-07 at 09:30 +0530, Bharata B Rao wrote:
+> On Mon, Apr 06, 2020 at 12:41:01PM -0300, Leonardo Bras wrote:
+> > Hello Bharata,
+> >=20
+> > On Fri, 2020-04-03 at 20:08 +0530, Bharata B Rao wrote:
+> > > The patch would be more complete with the following change that ensur=
+es
+> > > that DRCONF_MEM_HOTREMOVABLE flag is set for non-boot-time hotplugged
+> > > memory too. This will ensure that ibm,dynamic-memory-vN property
+> > > reflects the right flags value for memory that gets hotplugged
+> > > post boot.
+> > >=20
+> >=20
+> > You just sent that on a separated patchset, so I think it's dealt with.
+> > Do you have any other comments on the present patch?
+>=20
+> None, thanks.
+>=20
+> Regards,
+> Bharata.
+>=20
+
+--=-6w+DgFjDZwO6PZH9+FP6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEMdeUgIzgjf6YmUyOlQYWtz9SttQFAl6MqykACgkQlQYWtz9S
+ttRMzA/+PmdXf6V5z8ndbT/KNBi9gdUk91oks3AMHhMzDPDchaVqeEL8DVlp5Coz
+kOU2f2oIef2yRAlFNbSU2BFgzTe2E28AezUj9O4+TqCw+SSeimAfAqhxR/avZYXJ
++TFXctQFvmUPKFnNFySgjhBqqBi1iF4C9yWpw+cJbr8Soc5OTlMTjXkgaXEddjip
++WIs4sCJCAvfoIEmIDqbE64BIjwEGP0Hm2vp+Kb0/BjcmZBbXCReZ2VNz5+pqQCX
++KEfIT02zRgl8WV1jDg6FGHA9ImOBPLaEvAEmYKaNjDiZYCNo3LULipa5++pevmc
+30jjTj44k+fYIuSDcVB87P9HbS+bNxow7y2wCG8kqZZHDItLvBWR3tnnNzgX8vr3
+iyZB+yJgw0YR4yQ/agPJgOqkIeSbQcYsQtI/U8C7m4dlNKxlsk3QTwFq0iJnj2g3
+SqtACtJmr383hjRnkowLMvIY8ETCQTGdMfipfFD2lHY0qVvoMefAHrpAt1dFHaqK
+QNJFicFyua2INKMt/3NJd4HEp43ltAgdUpA1GFVHx40HDQn3wfgHRewBC21fhmJL
+9orQ6tluAMaCC/EFbny7RyW4zqNO3R+3fuhlyTi1GWs3nXrxy9RecA3MmL6AsEK6
+JnN5awDDilnCmswf5d5bBBC/MFwozTl2ZTG4Lg3cOSPmG21h04Q=
+=+f+k
+-----END PGP SIGNATURE-----
+
+--=-6w+DgFjDZwO6PZH9+FP6--
+
