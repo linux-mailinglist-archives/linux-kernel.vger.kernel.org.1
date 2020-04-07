@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E1D1A0F22
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B0A1A0F4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729101AbgDGO2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:28:31 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:52152 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729040AbgDGO22 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:28:28 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037ERj7i147104;
-        Tue, 7 Apr 2020 14:28:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Goihtn9rgqAJTR6qpyPmZdKS5VFl0VQlxjENwDfJrvE=;
- b=gV3CRGJafUB149X0UIV4F4JDdXizlHEZhKrtE7LhW48zLlQByjV7TQFes5RL8KJ402G1
- W+m9FSqbdQS3VzNjNldoi39Z9PVVDEWnRB1+jpNMlVGlFRaJrBpicB3Bpvv9V6TCFmTE
- vdzLEfptdnkIQcMmOirmvmDSDKXDst3k4UYRqMezXJSnV0XfTeSpsMwsJCKBX6MwyP+x
- hHt0CxJ4xtOGrI6UwXnOf22/7ZYHqugHH1/XxMmi/GlwdWRrevB8gwcSBVnzHPSZswdu
- w/zV5RJcpQRig2y+g1Rm9AyC3xQYiez2/JmV22A3g0MKukhIudwyAjX1J27osyYW4dqb Lw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 306j6mdb1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 14:28:08 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037ERH9S024263;
-        Tue, 7 Apr 2020 14:28:08 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 3073qg64bw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 14:28:08 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 037ES6nA014362;
-        Tue, 7 Apr 2020 14:28:07 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 07:28:06 -0700
-Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
- ANNOTATE_NOSPEC_ALTERNATIVE directives
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-10-alexandre.chartre@oracle.com>
- <20200407132837.GA20730@hirez.programming.kicks-ass.net>
- <20200407133454.n55u5nx33ruj73gx@treble>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
-Date:   Tue, 7 Apr 2020 16:32:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S1729182AbgDGOdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:33:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728975AbgDGOdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 10:33:09 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8AC342072A;
+        Tue,  7 Apr 2020 14:33:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586269989;
+        bh=cminWrIgkRVEhjmai3BMkPP+WLA37jmwDe9yEHcu7Tg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=T+mc3+rDHQN+IacAd+EmpTdDH2QE8aO0VMBd8RUfIZg7lMPcTqAmayi+OoDlmf724
+         ep5Duhdvj2XzEEsxx/jN5ENw5LdRt5/mEw/XJjh/e8Wnk+8niv71ZpkDUjqXuE+iWc
+         A9g/3oTOEG6F6VMW6AuzVTUNvoovPNd8kqkKV2DE=
+Date:   Tue, 7 Apr 2020 16:33:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+        syzbot <syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: WARNING in ib_umad_kill_port
+Message-ID: <20200407143304.GA876345@kroah.com>
+References: <00000000000075245205a2997f68@google.com>
+ <20200406172151.GJ80989@unreal>
+ <20200406174440.GR20941@ziepe.ca>
+ <CACT4Y+Zv_WXEn6u5a6kRZpkDJnSzeGF1L7JMw4g85TLEgAM7Lw@mail.gmail.com>
+ <20200407115548.GU20941@ziepe.ca>
+ <CACT4Y+Zy0LwpHkTMTtb08ojOxuEUFo1Z7wkMCYSVCvsVDcxayw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200407133454.n55u5nx33ruj73gx@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
- impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070126
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Zy0LwpHkTMTtb08ojOxuEUFo1Z7wkMCYSVCvsVDcxayw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/7/20 3:34 PM, Josh Poimboeuf wrote:
-> On Tue, Apr 07, 2020 at 03:28:37PM +0200, Peter Zijlstra wrote:
->> Josh, we should probably have objtool verify it doesn't emit ORC entries
->> in alternative ranges.
+On Tue, Apr 07, 2020 at 02:39:42PM +0200, Dmitry Vyukov wrote:
+> On Tue, Apr 7, 2020 at 1:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Apr 07, 2020 at 11:56:30AM +0200, Dmitry Vyukov wrote:
+> > > > I'm not sure what could be done wrong here to elicit this:
+> > > >
+> > > >  sysfs group 'power' not found for kobject 'umad1'
+> > > >
+> > > > ??
+> > > >
+> > > > I've seen another similar sysfs related trigger that we couldn't
+> > > > figure out.
+> > > >
+> > > > Hard to investigate without a reproducer.
+> > >
+> > > Based on all of the sysfs-related bugs I've seen, my bet would be on
+> > > some races. E.g. one thread registers devices, while another
+> > > unregisters these.
+> >
+> > I did check that the naming is ordered right, at least we won't be
+> > concurrently creating and destroying umadX sysfs of the same names.
+> >
+> > I'm also fairly sure we can't be destroying the parent at the same
+> > time as this child.
+> >
+> > Do you see the above commonly? Could it be some driver core thing? Or
+> > is it more likely something wrong in umad?
 > 
-> Agreed, it might be as simple as checking for insn->alt_group in the
-> INSN_STACK check or in update_insn_state().
+> Mmmm... I can't say, I am looking at some bugs very briefly. I've
+> noticed that sysfs comes up periodically (or was it some other similar
+> fs?). General observation is that code frequently assumes only the
+> happy scenario and only, say, a single administrator doing one thing
+> at a time, slowly and carefully, and it is not really hardened against
+> armies of monkeys.
+> But I did not look at code abstractions, bug patterns, contracts, etc.
 > 
+> Greg KH may know better. Greg, as far as I remember you commented on
+> some of these reports along the lines of, for example, "the warning is
+> in sysfs code, but the bug is in the callers".
 
-We could do that only for the "objtool orc generate" command. That way
-"objtool check" would still check the alternative, but "objtool orc generate"
-will just use the first half of the alternative (like it does today with
-ANNOTATE_NOSPEC_ALTERNATIVE). We can even keep all ANNOTATE_NOSPEC_ALTERNATIVE
-but only use them for "objtool orc generate".
+Yes, that is correct.
 
-alex.
