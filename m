@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D471A052E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 05:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183551A0525
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 05:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgDGDS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 23:18:27 -0400
-Received: from mga07.intel.com ([134.134.136.100]:19262 "EHLO mga07.intel.com"
+        id S1726683AbgDGDKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 23:10:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbgDGDS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 23:18:26 -0400
-IronPort-SDR: 9vRluI4iJ7LncyDqqP9OOkqmrDCqYY8nZY0vJXvjyyNaUn016xWtinCmu0YWMEidX6uih+VMKy
- PcbSIPYQYVVQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 20:18:26 -0700
-IronPort-SDR: 2xR9uCM5BCNi15KKmsOhl436RFPRAMt47uVHr0POCE9sbZmZYVeBcv4l84JGJCChQ2Yo+l3GPc
- XmGUNL+cWKeg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,353,1580803200"; 
-   d="scan'208";a="451069613"
-Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
-  by fmsmga005.fm.intel.com with ESMTP; 06 Apr 2020 20:18:21 -0700
-Date:   Mon, 6 Apr 2020 23:08:46 -0400
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Felipe Balbi <balbi@kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        linux-usb@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        intel-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Jason Wang <jasowang@redhat.com>,
-        Zhi Wang <zhi.a.wang@intel.com>
-Subject: Re: [PATCH 2/6] i915/gvt/kvm: a NULL ->mm does not mean a thread is
- a kthread
-Message-ID: <20200407030845.GA10586@joy-OptiPlex-7040>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20200404094101.672954-1-hch@lst.de>
- <20200404094101.672954-3-hch@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200404094101.672954-3-hch@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1726591AbgDGDKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 23:10:40 -0400
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E389120716;
+        Tue,  7 Apr 2020 03:10:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586229039;
+        bh=HIaba1rSBj0VPkRgG8RzQApmSUX3kIoFFe7U8GvgMa8=;
+        h=Date:From:To:Subject:In-Reply-To:From;
+        b=Q4LJx0dBHXGuJHAb6rxvCyj8LQqc88XSD22JMiBacG19bZ5BA0ncFCfLbIyT3/17K
+         jDpMvt1jzc9uo9NSiKrIlR0kkBpTS0NVvCIsyQfS3W2nYKIae0sM8k88rBUXSPsKBS
+         CFjjUFy5800mvaktVuGEiWSDSPLecoTBl/oVJo7g=
+Date:   Mon, 06 Apr 2020 20:10:38 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     akpm@linux-foundation.org, bp@alien8.de, geert@linux-m68k.org,
+        haren@us.ibm.com, joe@perches.com, johannes@sipsolutions.net,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mingo@redhat.com, mm-commits@vger.kernel.org,
+        rikard.falkeborn@gmail.com, tglx@linutronix.de,
+        torvalds@linux-foundation.org, yamada.masahiro@socionext.com
+Subject:  [patch 124/166] linux/bits.h: add compile time sanity
+ check of GENMASK inputs
+Message-ID: <20200407031038.8mS1ou6Ll%akpm@linux-foundation.org>
+In-Reply-To: <20200406200254.a69ebd9e08c4074e41ddebaf@linux-foundation.org>
+User-Agent: s-nail v14.8.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 04, 2020 at 11:40:57AM +0200, Christoph Hellwig wrote:
-> Use the proper API instead.
-> 
-> Fixes: f440c8a572d7 ("drm/i915/gvt/kvmgt: read/write GPA via KVM API")
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/gpu/drm/i915/gvt/kvmgt.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> index 074c4efb58eb..5848400620b4 100644
-> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
-> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
-> @@ -2037,7 +2037,7 @@ static int kvmgt_rw_gpa(unsigned long handle, unsigned long gpa,
->  	struct kvmgt_guest_info *info;
->  	struct kvm *kvm;
->  	int idx, ret;
-> -	bool kthread = current->mm == NULL;
-> +	bool kthread = (current->flags & PF_KTHREAD);
->  
->  	if (!handle_valid(handle))
->  		return -ESRCH;
-> -- 
-> 2.25.1
->
-hi
-we were removing this code. see
-https://lore.kernel.org/kvm/20200313031109.7989-1-yan.y.zhao@intel.com/
+From: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: linux/bits.h: add compile time sanity check of GENMASK inputs
 
-The implementation of vfio_dma_rw() has been in vfio next tree.
-https://github.com/awilliam/linux-vfio/commit/8d46c0cca5f4dc0538173d62cd36b1119b5105bc
+GENMASK() and GENMASK_ULL() are supposed to be called with the high bit as
+the first argument and the low bit as the second argument.  Mixing them
+will return a mask with zero bits set.
 
-in vfio_dma_rw(),  we still use
-bool kthread = current->mm == NULL.
-because if current->mm != NULL and current->flags & PF_KTHREAD, instead
-of calling use_mm(), we first check if (current->mm == mm) and allow copy_to_user() if it's true.
+Recent commits show getting this wrong is not uncommon, see e.g.  commit
+aa4c0c9091b0 ("net: stmmac: Fix misuses of GENMASK macro") and commit
+9bdd7bb3a844 ("clocksource/drivers/npcm: Fix misuse of GENMASK macro").
 
-Do you think it's all right?
+To prevent such mistakes from appearing again, add compile time sanity
+checking to the arguments of GENMASK() and GENMASK_ULL().  If both
+arguments are known at compile time, and the low bit is higher than the
+high bit, break the build to detect the mistake immediately.
 
-Thanks
-Yan
+Since GENMASK() is used in declarations, BUILD_BUG_ON_ZERO() must be used
+instead of BUILD_BUG_ON().
 
+__builtin_constant_p does not evaluate is argument, it only checks if it
+is a constant or not at compile time, and __builtin_choose_expr does not
+evaluate the expression that is not chosen.  Therefore, GENMASK(x++, 0)
+does only evaluate x++ once.
 
+Commit 95b980d62d52 ("linux/bits.h: make BIT(), GENMASK(), and friends
+available in assembly") made the macros in linux/bits.h available in
+assembly.  Since BUILD_BUG_OR_ZERO() is not asm compatible, disable the
+checks if the file is included in an asm file.
 
-> _______________________________________________
-> intel-gvt-dev mailing list
-> intel-gvt-dev@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
+Due to bugs in GCC versions before 4.9 [0], disable the check if building
+with a too old GCC compiler.
+
+[0]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449
+
+Link: http://lkml.kernel.org/r/20200308193954.2372399-1-rikard.falkeborn@gmail.com
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Haren Myneni <haren@us.ibm.com>
+Cc: Joe Perches <joe@perches.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: lkml <linux-kernel@vger.kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ include/linux/bits.h |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
+
+--- a/include/linux/bits.h~linux-bitsh-add-compile-time-sanity-check-of-genmask-inputs
++++ a/include/linux/bits.h
+@@ -18,12 +18,30 @@
+  * position @h. For example
+  * GENMASK_ULL(39, 21) gives us the 64bit vector 0x000000ffffe00000.
+  */
+-#define GENMASK(h, l) \
++#if !defined(__ASSEMBLY__) && \
++	(!defined(CONFIG_CC_IS_GCC) || CONFIG_GCC_VERSION >= 49000)
++#include <linux/build_bug.h>
++#define GENMASK_INPUT_CHECK(h, l) \
++	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
++		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
++#else
++/*
++ * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
++ * disable the input check if that is the case.
++ */
++#define GENMASK_INPUT_CHECK(h, l) 0
++#endif
++
++#define __GENMASK(h, l) \
+ 	(((~UL(0)) - (UL(1) << (l)) + 1) & \
+ 	 (~UL(0) >> (BITS_PER_LONG - 1 - (h))))
++#define GENMASK(h, l) \
++	(GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+ 
+-#define GENMASK_ULL(h, l) \
++#define __GENMASK_ULL(h, l) \
+ 	(((~ULL(0)) - (ULL(1) << (l)) + 1) & \
+ 	 (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
++#define GENMASK_ULL(h, l) \
++	(GENMASK_INPUT_CHECK(h, l) + __GENMASK_ULL(h, l))
+ 
+ #endif	/* __LINUX_BITS_H */
+_
