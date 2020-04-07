@@ -2,78 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B026F1A161B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBEE1A1620
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgDGTjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 15:39:06 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:40492 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726339AbgDGTjG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 15:39:06 -0400
-Received: by mail-lj1-f196.google.com with SMTP id 142so536039ljj.7;
-        Tue, 07 Apr 2020 12:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zLcAPrdHJTiOlU+Vohv35MeNqZnxV8vWIz+r7YmHilc=;
-        b=LM3rAhtTTjnkZ1iIh8WZemFvYAu0N5VIhOLI9ksG4cpplJmIO55BPNi4CqaJoiRHcm
-         ImpGasuoshNZJdpe5Ki+cTs6iyiN5l1rqVfhgcwLB11GtgoazdmRBYgsXQ2AVleCa8SN
-         P7XKhpUysj4j1KYsTzSnmWvMPBGPCuja8MKm8xR8SpM56HxiUVYvGDxgw6juSEqJ7q/i
-         pr7y7b2IRBkmr9iHJ8kX/rBYt5QpA4hA2j4iUXFOIwa195gcWI6Nw76siqZdWMlXb4CD
-         r5yFv2BOkbpn2XJuM17H6zNV3JtE5532XAlQovkoYHVqvRyptPDpFH4mgC6NnmNfpJK9
-         kD9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zLcAPrdHJTiOlU+Vohv35MeNqZnxV8vWIz+r7YmHilc=;
-        b=ITkpGE/uBLw3voBISnxIHOCdqNYbbM1Yn9mWh4PVnAzyhqJwKynrbS0l+f4B3vOyQH
-         8pEcxaJxqjTtT1rbLQYvoHJUhufOK/44w6OWjAvN6ARvcN+CLMc0aO9+MeOpQkCvtmOl
-         QrtCnRLjSmF9KFgJ0YXY+N5uDpDtsnYn2GIP418+sEPwQKOaHFAPnPAFAYV2Mcb5ZDQP
-         Czw03VR+SIF84J8vPct4Qv6IrHH/BttJzhUkxSLLe4tgjGNtANFaEfc8IBDNSWqbX6x6
-         Jx65cerUSJL6qq0L7v75vqSg/zYrUXlFHY5+mmxvEMJ4nWrEnynSUACRHuWnqvVk/Sru
-         mY0A==
-X-Gm-Message-State: AGi0PubfUP+hN9FTpRX0rGk5NSrfI4Rtg6EiOmeBkeiaT+dz2N2g/w8V
-        tRCPaZV02SWOgpmLAwdiMFDk5jTd
-X-Google-Smtp-Source: APiQypIGjUsAGDXlzydI9bWO6M0/Yuew5+4My4ojzFTz6EdfIqkgZW9wbFZMtjvZN5qigbULI1yT7A==
-X-Received: by 2002:a2e:3c0b:: with SMTP id j11mr2803432lja.9.1586288343010;
-        Tue, 07 Apr 2020 12:39:03 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id f26sm12187680lja.102.2020.04.07.12.39.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 12:39:02 -0700 (PDT)
-Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
-        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
-Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
- <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <430efa4e-5435-7e2a-fe07-c3a0d0dc967e@gmail.com>
-Date:   Tue, 7 Apr 2020 22:39:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1726973AbgDGTkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 15:40:31 -0400
+Received: from ms.lwn.net ([45.79.88.28]:40610 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726719AbgDGTkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 15:40:31 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 82BD260C;
+        Tue,  7 Apr 2020 19:40:29 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 13:40:28 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        John Mathew <john.mathew@unikie.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        tsbogend@alpha.franken.de, lukas.bulwahn@gmail.com, x86@kernel.org,
+        linux-mips@vger.kernel.org, tglx@linutronix.de,
+        mostafa.chamanara@basemark.com
+Subject: Re: [RFC PATCH 2/3] docs: scheduler: Add scheduler overview
+ documentation
+Message-ID: <20200407134028.44d0d16a@lwn.net>
+In-Reply-To: <9614b346-a848-3e01-eea7-6237b759dad6@redhat.com>
+References: <20200401100029.1445-1-john.mathew@unikie.com>
+        <20200401100029.1445-3-john.mathew@unikie.com>
+        <20200401103520.GA20713@hirez.programming.kicks-ass.net>
+        <9614b346-a848-3e01-eea7-6237b759dad6@redhat.com>
+Organization: LWN.net
 MIME-Version: 1.0
-In-Reply-To: <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-04.04.2020 04:25, Sowjanya Komatineni пишет:
-...
-> +static const struct dev_pm_ops tegra_vi_pm_ops = {
-> +	SET_RUNTIME_PM_OPS(vi_runtime_suspend, vi_runtime_resume, NULL)
-> +};
+On Wed, 1 Apr 2020 13:47:04 +0200
+Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
 
-Aren't the suspend/resume ops needed?
+> > And that is a prime example of why I hates RST, it pretty much mandates
+> > you view this with something other than a text editor.  
+> 
+> The good thing about the dot format is that we can convert it to many other
+> formats, including text:
+> 
+> [bristot@x1 ~]$ cat sched_transition.dot | graph-easy 
+> 
+>                        *
+> 
+>                        |
+>                        | task
+>                        | forks
+>                        v
+>                      +------------------------------------+
+>                      |              TASK_NEW              |
+>                      |           (Ready to run)           |
+>                      +------------------------------------+
+>                        |
+>                        |
+>                        v
+> + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -+
+> '                                     int                                            '
+> '                                                                                    '
+> '                    +------------------------------------+                          '
+> '                    |            TASK_RUNNING            |                          '
+> '   +--------------> |           (Ready to run)           | <--+                     '
+> '   |                +------------------------------------+    |                     '
+> '   |                  |                                       |                     '
+> '   |                  | schedule() calls context_switch()     | task is pre-empted  '
+> '   |                  v                                       |                     '
+> '   |                +------------------------------------+    |                     '
+> '   |                |            TASK_RUNNING            |    |                     '
+> '   |                |             (Running)              | ---+                     '
+> '   | event occurred +------------------------------------+                          '
+> '   |                  |                                                             '
+> '   |                  |                                      - - - - - - - - - - - -+
+> '   |                  |                                    '
+> '   |                  | task needs to wait for event       '
+> '   |                  v                                    '
+> '   |                +------------------------------------+ '
+> '   |                |         TASK_INTERRUPTIBLE         | '
+> '   |                |        TASK_UNINTERRUPTIBLE        | '
+> '   +--------------- |           TASK_WAKEKILL            | '
+> '                    +------------------------------------+ '
+> '                                                           '
+> + - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+>                        |
+>                        | task exits via do_exit()
+>                        v
+>                      +------------------------------------+
+>                      |             TASK_DEAD              |
+>                      |            EXIT_ZOMBIE             |
+>                      +------------------------------------+
+> 
+> 
+> Is there a way to also add this representation, while hiding it
+> when using a graphical reader?
+
+Better, honestly, to just put the ascii art into the doc as a literal
+block.  I don't see any real reason to embed Dot stuff unless there's
+really no alternative.
+
+Thanks,
+
+jon
