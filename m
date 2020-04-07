@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 174321A1176
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D391A117C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728462AbgDGQeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:34:24 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:53930 "EHLO mail.skyhub.de"
+        id S1728682AbgDGQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:34:46 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53954 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728259AbgDGQeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:34:22 -0400
+        id S1728417AbgDGQeX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:34:23 -0400
 Received: from zn.tnic (p200300EC2F0B2700A94266E658FF3DDD.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:2700:a942:66e6:58ff:3ddd])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 998E21EC0CE1;
-        Tue,  7 Apr 2020 18:34:21 +0200 (CEST)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7FA311EC0CE2;
+        Tue,  7 Apr 2020 18:34:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1586277261;
+        t=1586277262;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PVePcEN5rX9U+YD9qBHBAUyHWvNU8DcClDL4UV8p+fY=;
-        b=kkL9eZNaHHZzl6W3n2iZZVUV3XVfDptN24k+dQYIBEnLiS9DZwjF4rGZ0ZHbiYKrJ5BeTU
-        zm6+A2jK8fVLIpjXda7MFbs1/7HkdaOCtAxleTI0gbvy339AOk+cFy7FxEOfESNBUdh2Eg
-        upLcALRoyv/oB0mlykq3VxaxMJy9sNQ=
+        bh=L++T/eHJQ4wQj0es+pUzShPUQPqyKRj22HWDQVhzfPI=;
+        b=JAusqSiobci4wDF6QYXUWcqDePXyEGiN9+pQWI6uED05IE0Z2/Zd78G2yyThhUXmS12enD
+        I0IGMqEOIHH/oNzG/DqW65JYgzvfCiFT3CiAvW+hJlxdU8sw2fBcwF0uy8uOotpdVJSP03
+        Gkon4NHsegw2SjhIo2iQnHRyh5bAQqw=
 From:   Borislav Petkov <bp@alien8.de>
 To:     Tony Luck <tony.luck@intel.com>
 Cc:     Yazen Ghannam <Yazen.Ghannam@amd.com>, X86 ML <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/9] x86/mce: Rename "first" function as "early"
-Date:   Tue,  7 Apr 2020 18:34:07 +0200
-Message-Id: <20200407163414.18058-3-bp@alien8.de>
+Subject: [PATCH 3/9] x86/mce: Convert the CEC to use the MCE notifier
+Date:   Tue,  7 Apr 2020 18:34:08 +0200
+Message-Id: <20200407163414.18058-4-bp@alien8.de>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200407163414.18058-1-bp@alien8.de>
 References: <20200212204652.1489-1-tony.luck@intel.com>
@@ -46,86 +46,138 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tony Luck <tony.luck@intel.com>
 
-It isn't going to be first on the notifier chain when the CEC is moved
-to be a normal user of the notifier chain.
+The CEC code has its claws in a couple of routines in mce/core.c.
+Convert it to just register itself on the normal MCE notifier chain.
 
-Fix the enum for the MCE_PRIO symbols to list them in reverse order so
-that the compiler can give them numbers from low to high priority. Add
-an entry for MCE_PRIO_CEC as the highest priority.
-
- [ bp: Use passive voice, add comments. ]
+ [ bp: Make cec_add_elem() and cec_init() static. ]
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200214222720.13168-2-tony.luck@intel.com
+Link: https://lkml.kernel.org/r/20200214222720.13168-3-tony.luck@intel.com
 ---
- arch/x86/include/asm/mce.h     | 16 +++++++++-------
- arch/x86/kernel/cpu/mce/core.c | 10 +++++-----
- 2 files changed, 14 insertions(+), 12 deletions(-)
+ arch/x86/kernel/cpu/mce/core.c | 19 -------------------
+ drivers/ras/cec.c              | 30 ++++++++++++++++++++++++++++--
+ include/linux/ras.h            |  5 -----
+ 3 files changed, 28 insertions(+), 26 deletions(-)
 
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index 83b6ddafa032..689ac6e9c65f 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -144,14 +144,16 @@ struct mce_log_buffer {
- 	struct mce entry[];
- };
- 
-+/* Highest last */
- enum mce_notifier_prios {
--	MCE_PRIO_FIRST		= INT_MAX,
--	MCE_PRIO_UC		= INT_MAX - 1,
--	MCE_PRIO_EXTLOG		= INT_MAX - 2,
--	MCE_PRIO_NFIT		= INT_MAX - 3,
--	MCE_PRIO_EDAC		= INT_MAX - 4,
--	MCE_PRIO_MCELOG		= 1,
--	MCE_PRIO_LOWEST		= 0,
-+	MCE_PRIO_LOWEST,
-+	MCE_PRIO_MCELOG,
-+	MCE_PRIO_EDAC,
-+	MCE_PRIO_NFIT,
-+	MCE_PRIO_EXTLOG,
-+	MCE_PRIO_UC,
-+	MCE_PRIO_EARLY,
-+	MCE_PRIO_CEC
- };
- 
- struct notifier_block;
 diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index a6009efdfe2b..43b1519ad4e5 100644
+index 43b1519ad4e5..b033b3589630 100644
 --- a/arch/x86/kernel/cpu/mce/core.c
 +++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -559,7 +559,7 @@ static bool cec_add_mce(struct mce *m)
- 	return false;
+@@ -544,21 +544,6 @@ bool mce_is_correctable(struct mce *m)
  }
+ EXPORT_SYMBOL_GPL(mce_is_correctable);
  
--static int mce_first_notifier(struct notifier_block *nb, unsigned long val,
-+static int mce_early_notifier(struct notifier_block *nb, unsigned long val,
+-static bool cec_add_mce(struct mce *m)
+-{
+-	if (!m)
+-		return false;
+-
+-	/* We eat only correctable DRAM errors with usable addresses. */
+-	if (mce_is_memory_error(m) &&
+-	    mce_is_correctable(m)  &&
+-	    mce_usable_address(m))
+-		if (!cec_add_elem(m->addr >> PAGE_SHIFT))
+-			return true;
+-
+-	return false;
+-}
+-
+ static int mce_early_notifier(struct notifier_block *nb, unsigned long val,
  			      void *data)
  {
- 	struct mce *m = (struct mce *)data;
-@@ -580,9 +580,9 @@ static int mce_first_notifier(struct notifier_block *nb, unsigned long val,
- 	return NOTIFY_DONE;
+@@ -567,9 +552,6 @@ static int mce_early_notifier(struct notifier_block *nb, unsigned long val,
+ 	if (!m)
+ 		return NOTIFY_DONE;
+ 
+-	if (cec_add_mce(m))
+-		return NOTIFY_STOP;
+-
+ 	/* Emit the trace record: */
+ 	trace_mce_record(m);
+ 
+@@ -2612,7 +2594,6 @@ static int __init mcheck_late_init(void)
+ 		static_branch_inc(&mcsafe_key);
+ 
+ 	mcheck_debugfs_init();
+-	cec_init();
+ 
+ 	/*
+ 	 * Flush out everything that has been logged during early boot, now that
+diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
+index c09cf55e2d20..6b42040bf956 100644
+--- a/drivers/ras/cec.c
++++ b/drivers/ras/cec.c
+@@ -309,7 +309,7 @@ static bool sanity_check(struct ce_array *ca)
+ 	return ret;
  }
  
--static struct notifier_block first_nb = {
--	.notifier_call	= mce_first_notifier,
--	.priority	= MCE_PRIO_FIRST,
-+static struct notifier_block early_nb = {
-+	.notifier_call	= mce_early_notifier,
-+	.priority	= MCE_PRIO_EARLY,
- };
- 
- static int uc_decode_notifier(struct notifier_block *nb, unsigned long val,
-@@ -2041,7 +2041,7 @@ __setup("mce", mcheck_enable);
- int __init mcheck_init(void)
+-int cec_add_elem(u64 pfn)
++static int cec_add_elem(u64 pfn)
  {
- 	mcheck_intel_therm_init();
--	mce_register_decode_chain(&first_nb);
-+	mce_register_decode_chain(&early_nb);
- 	mce_register_decode_chain(&mce_uc_nb);
- 	mce_register_decode_chain(&mce_default_nb);
- 	mcheck_vendor_init_severity();
+ 	struct ce_array *ca = &ce_arr;
+ 	unsigned int to = 0;
+@@ -527,7 +527,30 @@ static int __init create_debugfs_nodes(void)
+ 	return 1;
+ }
+ 
+-void __init cec_init(void)
++static int cec_notifier(struct notifier_block *nb, unsigned long val,
++			void *data)
++{
++	struct mce *m = (struct mce *)data;
++
++	if (!m)
++		return NOTIFY_DONE;
++
++	/* We eat only correctable DRAM errors with usable addresses. */
++	if (mce_is_memory_error(m) &&
++	    mce_is_correctable(m)  &&
++	    mce_usable_address(m))
++		if (!cec_add_elem(m->addr >> PAGE_SHIFT))
++			return NOTIFY_STOP;
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block cec_nb = {
++	.notifier_call	= cec_notifier,
++	.priority	= MCE_PRIO_CEC,
++};
++
++static void __init cec_init(void)
+ {
+ 	if (ce_arr.disabled)
+ 		return;
+@@ -546,8 +569,11 @@ void __init cec_init(void)
+ 	INIT_DELAYED_WORK(&cec_work, cec_work_fn);
+ 	schedule_delayed_work(&cec_work, CEC_DECAY_DEFAULT_INTERVAL);
+ 
++	mce_register_decode_chain(&cec_nb);
++
+ 	pr_info("Correctable Errors collector initialized.\n");
+ }
++late_initcall(cec_init);
+ 
+ int __init parse_cec_param(char *str)
+ {
+diff --git a/include/linux/ras.h b/include/linux/ras.h
+index 7c3debb47c87..1f4048bf2674 100644
+--- a/include/linux/ras.h
++++ b/include/linux/ras.h
+@@ -17,12 +17,7 @@ static inline int ras_add_daemon_trace(void) { return 0; }
+ #endif
+ 
+ #ifdef CONFIG_RAS_CEC
+-void __init cec_init(void);
+ int __init parse_cec_param(char *str);
+-int cec_add_elem(u64 pfn);
+-#else
+-static inline void __init cec_init(void)	{ }
+-static inline int cec_add_elem(u64 pfn)		{ return -ENODEV; }
+ #endif
+ 
+ #ifdef CONFIG_RAS
 -- 
 2.21.0
 
