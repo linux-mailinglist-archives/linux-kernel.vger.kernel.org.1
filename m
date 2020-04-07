@@ -2,150 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACB91A124A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B833A1A1261
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 19:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgDGQ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:57:37 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46922 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbgDGQ5h (ORCPT
+        id S1726669AbgDGRCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 13:02:55 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:38743 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726352AbgDGRCz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:57:37 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037GrwMN104165;
-        Tue, 7 Apr 2020 16:57:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Nrqiw6PVutT0nmUPIO8Z4xdWOEVBfSK+9lm/8i+m2ZA=;
- b=bQMMj2niT3feQnQPmbUAdrbjXYMyvEZGcYLXVdLQ0H9mrTfw9MjT9TPFl38IJeWr3UYc
- 3y1H3x391ts+0L4wrU+PwB1mausr0m9jzFnSrEvWIjovc5xN9jX4QgytxKFsJSG373Ng
- gHGJhWdyBHTY+lfudZN6Md+IdxVa30z1O7xcwO3eEC7M6KMJCDPiZB7mi8FQhot54Zvf
- N6Tq6o3qQx782Jqf1dG9fw1tfTXmd9UoKtjPEYq87fPVMEhCwo15LNe2nvi/JpTwZjur
- nwxej5cf5hmrL9cDGNyXyLyD63rif5oXT/yF2fqZ9Wb421CslJDsCBOWXim8hAtqZjAF aA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 308ffdc996-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 16:57:21 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037GvIp0050066;
-        Tue, 7 Apr 2020 16:57:21 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3073qgmb3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 16:57:21 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 037GvIue029049;
-        Tue, 7 Apr 2020 16:57:18 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 09:57:18 -0700
-Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
- ANNOTATE_NOSPEC_ALTERNATIVE directives
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-10-alexandre.chartre@oracle.com>
- <20200407132837.GA20730@hirez.programming.kicks-ass.net>
- <20200407133454.n55u5nx33ruj73gx@treble>
- <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
- <3eb36fd2-9827-4c1b-681c-9c1d65c7582f@oracle.com>
- <20200407162838.5hlh6oom4oa45ugt@treble>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <06605b1c-c9ae-fd18-bcb1-e4a48f2cb60e@oracle.com>
-Date:   Tue, 7 Apr 2020 19:01:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Tue, 7 Apr 2020 13:02:55 -0400
+Received: by mail-qt1-f196.google.com with SMTP id 13so1368847qtt.5;
+        Tue, 07 Apr 2020 10:02:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lubV0uwS0PhaWFReAExDn03E2JRmyIjYgI8tq8wZYAQ=;
+        b=JCYoQl/UYv0xHlgxUuvhhP4MOXQA+ieQOLJF3zFXnBOpzmA1+M7u5cEq/4SXoVlKHA
+         vG7Vnff6kUfGNwU8ABUNHSlWWr8xinfhLsY9xN2bEhodwCk+ntG6LWZ2im/W4qpeC/Y2
+         Goqf3F/GVrC29eZKjFNZa4QH40w4+TICPssQUEdH+rah3tVRnVGLdGzQojywsg3Rg4Rp
+         BSEtqINsTmi1269DWkTqWCJh27IH2s3C9EtbSSDbfQ99Uyqcuitw8b/YgkVK78gOfPJm
+         m3bnsqVxqhU3kGpsafXZ8+ntdH/PCCyhX+QAyV1+MIAPspwP6+cjgCLryU9wGt6n3F4F
+         Y7FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lubV0uwS0PhaWFReAExDn03E2JRmyIjYgI8tq8wZYAQ=;
+        b=VAkeZcMtRfzELFxlLh1KWlw58rUBypq06cq6L9AWUd/D9BccvdG894jviWyTrkMdBl
+         zDTCpqso+T23T9t/xTblNCLtHYd7ApxndcZW5WoX9ESkgEs1almfmlIoAXdSMU6vbBnh
+         QUG5ObFxNrPyeiswCCWdlIoFRMsF8/5dIw516LOX79BXppF40+Jc5Ou1hQvZ3B/EUTQS
+         QAfgThz4/RhupoaxfB3HjGclMiLmyHZLlTNCFF051RQA599sn/1/2v6KTU2tIzxXiefQ
+         ndqdjzyjtoMOs+CW/w/2hqKTP/sy27+JjPQ8yTdupOKRIoCMENpCJxaIT1u9whqHbh+J
+         vwog==
+X-Gm-Message-State: AGi0PuZQFYqRufd3E1LpDHfx3yX8yzZs+EV65sFEIxgZ4XPp38n9HsRI
+        YOGJqQbqTmB60QcwlXNEcNuPVoN5ygV1mg==
+X-Google-Smtp-Source: APiQypIjHnuzXuojSCppJsD78fxYKavB67p37aAGYyRBiBhjYwH4oUBe/V7etaIxr/j9xhiuNfUR5w==
+X-Received: by 2002:ac8:23af:: with SMTP id q44mr3292106qtq.54.1586278973911;
+        Tue, 07 Apr 2020 10:02:53 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id r40sm18041660qtc.39.2020.04.07.10.02.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 10:02:53 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 2B1C8409A3; Tue,  7 Apr 2020 14:02:51 -0300 (-03)
+Date:   Tue, 7 Apr 2020 14:02:51 -0300
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>, Jiri Olsa <jolsa@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        linux-man@vger.kernel.org
+Subject: Re: [PATCH v8 00/12] Introduce CAP_PERFMON to secure system
+ performance monitoring and observability
+Message-ID: <20200407170251.GE12003@kernel.org>
+References: <f96f8f8a-e65c-3f36-dc85-fc3f5191e8c5@linux.intel.com>
+ <20200407143014.GD11186@kernel.org>
+ <20200407143551.GF11186@kernel.org>
+ <10cc74ee-8587-8cdb-f85f-5724b370a2ce@linux.intel.com>
+ <20200407163654.GB12003@kernel.org>
+ <85da1e42-2cf2-98ca-1e0c-2cf3469b7d30@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200407162838.5hlh6oom4oa45ugt@treble>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070138
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070137
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85da1e42-2cf2-98ca-1e0c-2cf3469b7d30@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/7/20 6:28 PM, Josh Poimboeuf wrote:
-> On Tue, Apr 07, 2020 at 06:18:51PM +0200, Alexandre Chartre wrote:
->>
->> On 4/7/20 4:32 PM, Alexandre Chartre wrote:
->>>
->>> On 4/7/20 3:34 PM, Josh Poimboeuf wrote:
->>>> On Tue, Apr 07, 2020 at 03:28:37PM +0200, Peter Zijlstra wrote:
->>>>> Josh, we should probably have objtool verify it doesn't emit ORC entries
->>>>> in alternative ranges.
->>>>
->>>> Agreed, it might be as simple as checking for insn->alt_group in the
->>>> INSN_STACK check or in update_insn_state().
->>>>
->>>
->>> We could do that only for the "objtool orc generate" command. That way
->>> "objtool check" would still check the alternative, but "objtool orc generate"
->>> will just use the first half of the alternative (like it does today with
->>> ANNOTATE_NOSPEC_ALTERNATIVE). We can even keep all ANNOTATE_NOSPEC_ALTERNATIVE
->>> but only use them for "objtool orc generate".
->>>
->>
->> I have checked and objtool doesn't emit ORC entries for alternative:
->> decode_instructions() doesn't mark such section with sec->text = true
->> so create_orc_sections() doesn't emit corresponding ORC entries.
->>
->> So I think we can remove the ANNOTATE_NOSPEC_ALTERNATIVE directives,
->> this will allow objtool to check the instructions but it still won't
->> emit ORC entries (same behavior as today). In the future, if ORC
->> eventually supports alternative we will be ready to have objtool emit
->> ORC entries.
+Em Tue, Apr 07, 2020 at 07:52:56PM +0300, Alexey Budankov escreveu:
 > 
-> What's the benefit of removing ANNOTATE_NOSPEC_ALTERNATIVE if there's no
-> ORC support to go along with it?
+> On 07.04.2020 19:36, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Apr 07, 2020 at 05:54:27PM +0300, Alexey Budankov escreveu:
+> >> Could makes sense adding cap_ipc_lock to the binary to isolate from this:
 
-To have the code validated by objtool like any other alternative code
-(which is not tagged with ANNOTATE_NOSPEC_ALTERNATIVE).
+> >> kernel/events/core.c: 6101
+> >> 	if ((locked > lock_limit) && perf_is_paranoid() &&
+> >> 		!capable(CAP_IPC_LOCK)) {
+> >> 		ret = -EPERM;
+> >> 		goto unlock;
+> >> 	}
 
-> Also I want to avoid adding "ORC alternatives".  ORC is nice and simple
-> and we should keep it that way as much as possible.
-> 
-> Again, we should warn on stack changes inside alternatives, and then
-> look at converting RSB and retpolines to use static branches so they
-> have deterministic stacks.
-> 
-objtool doesn't currently warn on stack changes inside alternatives.
-The RSB/retpoline alternatives have warning because objtool doesn't
-support retpoline ret and intra-function calls. If you have an alternative
-doing stack changes that objtool understand (like push/pop, add/remove
-to sp) then you won't have a warning.
+> > That did the trick, I'll update the documentation and include in my
+> > "Committer testing" section:
+ 
+> Looks like top mode somehow reaches perf mmap limit described here [1].
+> Using -m option solves the issue avoiding cap_ipc_lock on my 8 cores machine:
+> perf top -e cycles -m 1
 
-I think that's the case with smap_save:
+So this would read better?
 
-static __always_inline unsigned long smap_save(void)
-{
-         unsigned long flags;
-
-         asm volatile (ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC,
-                                   X86_FEATURE_SMAP)
-                       : "=rm" (flags) : : "memory", "cc");
-
-         return flags;
-}
-
-The alternative does change the stack but objtool won't complain
-because it handles the pushf and pop instruction.
-
-alex.
+diff --git a/Documentation/admin-guide/perf-security.rst b/Documentation/admin-guide/perf-security.rst
+index ed33682e26b0..d44dd24b0244 100644
+--- a/Documentation/admin-guide/perf-security.rst
++++ b/Documentation/admin-guide/perf-security.rst
+@@ -127,8 +127,8 @@ taken to create such groups of privileged Perf users.
+ 
+ ::
+ 
+-   # setcap "cap_perfmon,cap_ipc_lock,cap_sys_ptrace,cap_syslog=ep" perf
+-   # setcap -v "cap_perfmon,cap_ipc_lock,cap_sys_ptrace,cap_syslog=ep" perf
++   # setcap "cap_perfmon,cap_sys_ptrace,cap_syslog=ep" perf
++   # setcap -v "cap_perfmon,cap_sys_ptrace,cap_syslog=ep" perf
+    perf: OK
+    # getcap perf
+    perf = cap_sys_ptrace,cap_syslog,cap_perfmon+ep
+@@ -140,6 +140,10 @@ i.e.:
+ 
+    # setcap "38,cap_ipc_lock,cap_sys_ptrace,cap_syslog=ep" perf
+ 
++Note that you may need to have 'cap_ipc_lock' in the mix for tools such as
++'perf top', alternatively use 'perf top -m N', to reduce the memory that
++it uses for the perf ring buffer, see the memory allocation section below.
++
+ As a result, members of perf_users group are capable of conducting
+ performance monitoring and observability by using functionality of the
+ configured Perf tool executable that, when executes, passes perf_events
