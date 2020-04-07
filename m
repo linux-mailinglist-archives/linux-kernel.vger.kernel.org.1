@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E261A02D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 02:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E701A0226
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 02:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgDGAB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 20:01:26 -0400
-Received: from ozlabs.org ([203.11.71.1]:46803 "EHLO ozlabs.org"
+        id S1727641AbgDGABz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 20:01:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726754AbgDGABW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 20:01:22 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727421AbgDGABx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 20:01:53 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48x6y60yQbz9sSb;
-        Tue,  7 Apr 2020 10:01:18 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ozlabs.org; s=201707;
-        t=1586217679; bh=A/84cobeo/UVyjykfoa1X4y58WV7ot7+3H5XSPUqBL8=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=hP2f9sWpVYrH9K7zG38YwbnoPZPBD11DUfLrMOQBUUBpOyCozOs1zvMSYAEQMzxCo
-         qyUV01N/ioM0FJwECYpouUVXS3yeORxApJoAxgMyqnh09BNnRNbgQfkfUZgZ3RumH/
-         D5amVJn6VYoNQYgMiGyUN9pPcULmr3cLyJ6z1Ae4XhR78H2Xqk+ci8TM37rZQv+ucN
-         V/+lUlbLcfx91j8w5ncFyN32TfokXuLiyjmLxIH4hWKrt6xJR+lBxmts0fO5cM4qkl
-         leB5gj68Qtmmwu1cOb9h3AH0rbpyJfYk01fMTcs9Pj3VbVjMKTb7aNqgyCLSY6GWng
-         0Z1zL2glv/Avw==
-Message-ID: <06400bab5a734666bc5b9565e151eb477f9831b7.camel@ozlabs.org>
-Subject: Re: [PATCH 1/6] powerpc/spufs: simplify spufs core dumping
-From:   Jeremy Kerr <jk@ozlabs.org>
-To:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Tue, 07 Apr 2020 08:01:16 +0800
-In-Reply-To: <20200406120312.1150405-2-hch@lst.de>
-References: <20200406120312.1150405-1-hch@lst.de>
-         <20200406120312.1150405-2-hch@lst.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        by mail.kernel.org (Postfix) with ESMTPSA id 49AE02083E;
+        Tue,  7 Apr 2020 00:01:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586217713;
+        bh=5tu6jgjQORBsXTyfqgjJ3eMKXV2UrGsH132oHEvwEcc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ilHvrIVeY8be5f6Uq2Tmel5tAM7qebUNj1c2VyO5V3/KUvOblJ0+F8yDsB/Dv5D5p
+         MAhRLwPhPKM3VEn4nxjQfbtkJ8Fhr2p9egPi9P3Lh9MgAtVLiSSb4pyxuvLjY0BkfQ
+         PFkojcywn/CYKFa+RZ1E9OLEr1e8dDzJvh6QyQIU=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Ondrej Jirman <megous@megous.com>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Sasha Levin <sashal@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 01/32] ARM: dts: sun8i-a83t-tbs-a711: HM5065 doesn't like such a high voltage
+Date:   Mon,  6 Apr 2020 20:01:19 -0400
+Message-Id: <20200407000151.16768-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph,
+From: Ondrej Jirman <megous@megous.com>
 
-> Replace the coredump ->read method with a ->dump method that must call
-> dump_emit itself.  That way we avoid a buffer allocation an messing with
-> set_fs() to call into code that is intended to deal with user buffers.
-> For the ->get case we can now use a small on-stack buffer and avoid
-> memory allocations as well.
+[ Upstream commit a40550952c000667b20082d58077bc647da6c890 ]
 
-That looks much better, thanks!
+Lowering the voltage solves the quick image degradation over time
+(minutes), that was probably caused by overheating.
 
-Reviewed-by: Jeremy Kerr <jk@ozlabs.org>
+Signed-off-by: Ondrej Jirman <megous@megous.com>
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-However, I no longer have access to hardware to test this on. Michael,
-are the coredump tests in spufs-testsuite still alive?
-
-Cheers,
-
-
-Jeremy
+diff --git a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
+index 397140454132f..6bf93e5ed6817 100644
+--- a/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
++++ b/arch/arm/boot/dts/sun8i-a83t-tbs-a711.dts
+@@ -358,8 +358,8 @@
+ };
+ 
+ &reg_dldo3 {
+-	regulator-min-microvolt = <2800000>;
+-	regulator-max-microvolt = <2800000>;
++	regulator-min-microvolt = <1800000>;
++	regulator-max-microvolt = <1800000>;
+ 	regulator-name = "vdd-csi";
+ };
+ 
+-- 
+2.20.1
 
