@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A20D1A0840
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0B21A083B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgDGH2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:28:03 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47120 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgDGH17 (ORCPT
+        id S1727724AbgDGH15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 03:27:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45196 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726707AbgDGH14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 03:27:59 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377Ra31152454;
+        Tue, 7 Apr 2020 03:27:56 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RaUi026351;
         Tue, 7 Apr 2020 07:27:36 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=oi4MXjr6M18OyzeSSbbCVeHeM327zwlAeXbvcI1g+qo=;
- b=wZCYSNEywQ+0xv+j4iNdL7VMqWF93k/j27gwL6xPwoZJ/xWcFnRExxPTolk/eZfiT9Q0
- XtR27b5yV2C/Ck8qqEIsUAIHt8L2wSkC4ViBIYFbMKMG3TPUyz+SyVUv83MRlVaKBHfx
- 8rNZC4eANl2JUljnHIMdLBa7gEPV+UQGwmff+XNiXIeqJuUkNAnlfgWrk3NIy/n6OB8a
- FctZC7MmsM/GBfjeMRjQ+w3b9BMsyQI1N+Sa11zjqhkuB8dj5okaq23L89q/A+C+jhNo
- 5+yhcUsqvyq69o5D9DRlsc9sDq3PTZDeG4or9kf4IdePNq3Tir+w8lTfDlor90UkKS81 0w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 308ffd93hy-1
+ bh=7tsZqCnPSqTL0O2P1Rr9JutvRVK1YzYVaBpfBhyLAHQ=;
+ b=LP5abjiWwG12+awu64RXbfz9bnuLyqYlC4oL/5Qy1WYeg9Q76qmdFS+BJC/MmCJxAYXJ
+ TLg7pV6/g+B8QuEXxGoAh3G1YsXN4geK3Vj4aQgOb1WVD4duYi37jGIrfNJ+ggleiRe7
+ xLSpEDJPVoJvMoHHCa/0UeGtyVqObo7f+956r0+IH4zHoeiU/ZTpJS2QUFo46JhDP7qC
+ duVWO5uA9dwmvuTp0usnC2Gz+oi0VLZDRvX2CEyWuVyQvQhOnwd0JhD1tJo19qgElPLw
+ yBVvmZahGUV1deNT1tUkmO6wTYPnlfDmLVnSNq77+xxkauKxc3uh9kgWGmecnjC2hvwZ SQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 306j6mb2m8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 07 Apr 2020 07:27:36 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RSOq151362;
-        Tue, 7 Apr 2020 07:27:30 GMT
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377MSJO194109;
+        Tue, 7 Apr 2020 07:27:32 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 30741d9tyx-1
+        by userp3020.oracle.com with ESMTP id 30839sfr7n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 07:27:30 +0000
+        Tue, 07 Apr 2020 07:27:32 +0000
 Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0377RSjQ008146;
-        Tue, 7 Apr 2020 07:27:28 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0377RVuY008151;
+        Tue, 7 Apr 2020 07:27:31 GMT
 Received: from linux-1.home (/92.157.90.160)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 00:27:27 -0700
+        with ESMTP ; Tue, 07 Apr 2020 00:27:30 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
         alexandre.chartre@oracle.com
-Subject: [PATCH V2 1/9] objtool: Introduce HINT_RET_OFFSET
-Date:   Tue,  7 Apr 2020 09:31:34 +0200
-Message-Id: <20200407073142.20659-2-alexandre.chartre@oracle.com>
+Subject: [PATCH V2 2/9] objtool: UNWIND_HINT_RET_OFFSET should not check registers
+Date:   Tue,  7 Apr 2020 09:31:35 +0200
+Message-Id: <20200407073142.20659-3-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200407073142.20659-1-alexandre.chartre@oracle.com>
 References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 phishscore=0
- malwarescore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004070062
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=1 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070061
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
- impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 suspectscore=1 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2004070062
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,158 +67,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+UNWIND_HINT_RET_OFFSET will adjust a modified stack. However if a
+callee-saved register was pushed on the stack then the stack frame
+will still appear modified. So stop checking registers when
+UNWIND_HINT_RET_OFFSET is used.
 
-Normally objtool ensures a function keeps the stack layout invariant.
-But there is a useful exception, it is possible to stuff the return
-stack in order to 'inject' a 'call':
-
-        push $fun
-        ret
-
-In this case the invariant mentioned above is violated.
-
-Add an objtool HINT to annotate this and allow a function exit with a
-modified stack frame.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- arch/x86/include/asm/orc_types.h       |  1 +
- arch/x86/include/asm/unwind_hints.h    | 10 ++++++++++
- tools/arch/x86/include/asm/orc_types.h |  1 +
- tools/objtool/check.c                  | 26 ++++++++++++++++++--------
- tools/objtool/check.h                  |  5 ++++-
- 5 files changed, 34 insertions(+), 9 deletions(-)
+ tools/objtool/check.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/arch/x86/include/asm/orc_types.h b/arch/x86/include/asm/orc_types.h
-index 6e060907c163..5f18ca7ac51a 100644
---- a/arch/x86/include/asm/orc_types.h
-+++ b/arch/x86/include/asm/orc_types.h
-@@ -60,6 +60,7 @@
- #define ORC_TYPE_REGS_IRET		2
- #define UNWIND_HINT_TYPE_SAVE		3
- #define UNWIND_HINT_TYPE_RESTORE	4
-+#define UNWIND_HINT_TYPE_RET_OFFSET	5
- 
- #ifndef __ASSEMBLY__
- /*
-diff --git a/arch/x86/include/asm/unwind_hints.h b/arch/x86/include/asm/unwind_hints.h
-index f5e2eb12cb71..aabf7ace0476 100644
---- a/arch/x86/include/asm/unwind_hints.h
-+++ b/arch/x86/include/asm/unwind_hints.h
-@@ -94,6 +94,16 @@
- 	UNWIND_HINT type=UNWIND_HINT_TYPE_RESTORE
- .endm
- 
-+
-+/*
-+ * RET_OFFSET: Used on instructions that terminate a function; mostly RETURN
-+ * and sibling calls. On these, sp_offset denotes the expected offset from
-+ * initial_func_cfi.
-+ */
-+.macro UNWIND_HINT_RET_OFFSET sp_offset=8
-+	UNWIND_HINT type=UNWIND_HINT_TYPE_RET_OFFSET sp_offset=\sp_offset
-+.endm
-+
- #else /* !__ASSEMBLY__ */
- 
- #define UNWIND_HINT(sp_reg, sp_offset, type, end)		\
-diff --git a/tools/arch/x86/include/asm/orc_types.h b/tools/arch/x86/include/asm/orc_types.h
-index 6e060907c163..5f18ca7ac51a 100644
---- a/tools/arch/x86/include/asm/orc_types.h
-+++ b/tools/arch/x86/include/asm/orc_types.h
-@@ -60,6 +60,7 @@
- #define ORC_TYPE_REGS_IRET		2
- #define UNWIND_HINT_TYPE_SAVE		3
- #define UNWIND_HINT_TYPE_RESTORE	4
-+#define UNWIND_HINT_TYPE_RET_OFFSET	5
- 
- #ifndef __ASSEMBLY__
- /*
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 4768d91c6d68..bbee26de92ec 100644
+index bbee26de92ec..c7fcaddfaa8a 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -1209,6 +1209,10 @@ static int read_unwind_hints(struct objtool_file *file)
- 			insn->restore = true;
- 			insn->hint = true;
- 			continue;
-+
-+		} else if (hint->type == UNWIND_HINT_TYPE_RET_OFFSET) {
-+			insn->ret_offset = hint->sp_offset;
-+			continue;
- 		}
- 
- 		insn->hint = true;
-@@ -1371,20 +1375,26 @@ static bool is_fentry_call(struct instruction *insn)
- 	return false;
- }
- 
--static bool has_modified_stack_frame(struct insn_state *state)
-+static bool has_modified_stack_frame(struct instruction *insn,
-+				     struct insn_state *state)
- {
-+	u8 ret_offset = insn->ret_offset;
- 	int i;
- 
--	if (state->cfa.base != initial_func_cfi.cfa.base ||
--	    state->cfa.offset != initial_func_cfi.cfa.offset ||
--	    state->stack_size != initial_func_cfi.cfa.offset ||
--	    state->drap)
-+	if (state->cfa.base != initial_func_cfi.cfa.base || state->drap)
-+		return true;
-+
-+	if (state->cfa.offset != initial_func_cfi.cfa.offset + ret_offset)
+@@ -1390,6 +1390,14 @@ static bool has_modified_stack_frame(struct instruction *insn,
+ 	if (state->stack_size != initial_func_cfi.cfa.offset + ret_offset)
  		return true;
  
--	for (i = 0; i < CFI_NUM_REGS; i++)
-+	if (state->stack_size != initial_func_cfi.cfa.offset + ret_offset)
-+		return true;
++	/*
++	 * If there is a ret offset hint then don't check registers
++	 * because a callee-saved register might have been pushed on
++	 * the stack.
++	 */
++	if (ret_offset)
++		return false;
 +
-+	for (i = 0; i < CFI_NUM_REGS; i++) {
+ 	for (i = 0; i < CFI_NUM_REGS; i++) {
  		if (state->regs[i].base != initial_func_cfi.regs[i].base ||
  		    state->regs[i].offset != initial_func_cfi.regs[i].offset)
- 			return true;
-+	}
- 
- 	return false;
- }
-@@ -1926,7 +1936,7 @@ static int validate_call(struct instruction *insn, struct insn_state *state)
- 
- static int validate_sibling_call(struct instruction *insn, struct insn_state *state)
- {
--	if (has_modified_stack_frame(state)) {
-+	if (has_modified_stack_frame(insn, state)) {
- 		WARN_FUNC("sibling call from callable instruction with modified stack frame",
- 				insn->sec, insn->offset);
- 		return 1;
-@@ -2065,7 +2075,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
- 				return 1;
- 			}
- 
--			if (func && has_modified_stack_frame(&state)) {
-+			if (func && has_modified_stack_frame(insn, &state)) {
- 				WARN_FUNC("return with modified stack frame",
- 					  sec, insn->offset);
- 				return 1;
-diff --git a/tools/objtool/check.h b/tools/objtool/check.h
-index 6d875ca6fce0..7a91497fee7e 100644
---- a/tools/objtool/check.h
-+++ b/tools/objtool/check.h
-@@ -33,9 +33,12 @@ struct instruction {
- 	unsigned int len;
- 	enum insn_type type;
- 	unsigned long immediate;
--	bool alt_group, dead_end, ignore, hint, save, restore, ignore_alts;
-+	unsigned int alt_group;
-+	bool dead_end, ignore, ignore_alts;
-+	bool hint, save, restore;
- 	bool retpoline_safe;
- 	u8 visited;
-+	u8 ret_offset;
- 	struct symbol *call_dest;
- 	struct instruction *jump_dest;
- 	struct instruction *first_jump_src;
 -- 
 2.18.2
 
