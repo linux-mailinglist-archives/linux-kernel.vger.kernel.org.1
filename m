@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D351A1760
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E511A1765
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:31:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726453AbgDGVaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 17:30:07 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:37315 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726386AbgDGVaH (ORCPT
+        id S1726534AbgDGVbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 17:31:18 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:45120 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbgDGVbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 17:30:07 -0400
-Received: by mail-wr1-f68.google.com with SMTP id w10so5546330wrm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 14:30:06 -0700 (PDT)
+        Tue, 7 Apr 2020 17:31:17 -0400
+Received: by mail-lf1-f67.google.com with SMTP id f8so3504120lfe.12
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 14:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xeOb7bw7ZU05WWRpiZXDbb732pxeQMi4LbeTnQvk5RI=;
-        b=GHbNDz0o8lcP5xbu+Wb/yshUnWPBucml6fsGMRJi7IBP7dlySYYTU+1q09y0DGhMZ5
-         l+vEnigD2NFXbI2q9UGJX0uKIiYrZHR6Z0PPksE81MY8Ij18sJ15Swrxe+rgJxmlxvHG
-         wgmgqsIm4ZTFD/9Uck+I6zXU2Phju7lN0KT6wsP9QYYd5Zf/hxU0LKqjFyLjLzPDpsd0
-         HCnXfUYrCTWW/GmGqoRSbUOCYwpq8WpJQPJGI5n1IhUT96jNUjfacOh4zsltx4qHHbIr
-         4JCy2UJtZyDC14m7/+K42dxM9U71fsoXZNlZcS3a215KLEzfZzN+CV9GBtnoFqijrgHE
-         PskQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iaANTB9nNT6txCWkp5q0unn31Ph9MDDOGwo0378128g=;
+        b=IG+R0/ryQyxsm3aoO9zzMJijTHkszFi1ngFSZdu48/cZWTT+aLwliZsS6eelWRzhug
+         Y4uVdfeOZeYoqfZDuNzkFzie3apptpcnSHImYRC3jQuhjNBu1vpBPHVxFh8BADZ/HBCH
+         KHCUUNqVfwbgte5zG7M9cn/4DkmoO81yuy+s8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xeOb7bw7ZU05WWRpiZXDbb732pxeQMi4LbeTnQvk5RI=;
-        b=P2cfadZ9m5eQtIfxZXcpd8WJ/7E/1BQZl2j2XDlVjRqRPbThDP7s0ntRQ3DqamU4kn
-         LWZiHyxB38qV30Jytdo/nf6GuQ8u5oX/kZNba78I7NMZCvSmcSozSGT5M0L2OkrBWQku
-         SzZLRxKsEHc7CzjCxr8Po5uFwFc9ezi8E8WUUcxXlwZMmNT+mh5P7rTVYvLydDyRLR+g
-         Rh+ymhiO8hkmP30tMRV7MUhInK51Ydj4Lbs6MfXabPQwMhYvc+HfbueCUnulu+gckAtz
-         /a3uLEn+1u+JisE//3tS3uIy5kABsjQFuOJMC22rNK9mQVfOhtd/XDmYS+D5vZ1phGNT
-         B2Dw==
-X-Gm-Message-State: AGi0PuYLFPLa4hYpDyGksuIh4xe/Jh0wuEP6m6jmWWKZBFvxulWnIGFm
-        85VxdbSy4AZ9YiLww6uTUhs=
-X-Google-Smtp-Source: APiQypLgEgrDf34HSgRuIR4yNy76OxilPFRw0shtbt54IFPaMkrRIaOXKXmW1ahdPA+N0lBTKuGvuw==
-X-Received: by 2002:adf:916f:: with SMTP id j102mr4530675wrj.335.1586295005505;
-        Tue, 07 Apr 2020 14:30:05 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id t67sm4438171wmg.40.2020.04.07.14.30.04
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 07 Apr 2020 14:30:04 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 21:30:04 +0000
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Baoquan He <bhe@redhat.com>,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: Re: [PATCH v1 2/2] mm/memory_hotplug: remove
- is_mem_section_removable()
-Message-ID: <20200407213004.xeipetht4eq5g72r@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <20200407135416.24093-1-david@redhat.com>
- <20200407135416.24093-3-david@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iaANTB9nNT6txCWkp5q0unn31Ph9MDDOGwo0378128g=;
+        b=pK8uQK+hlxoFnp8howi4uv+vRuNGXLycWcPs1eBcrHlcg/Dirhkz0NWHDZkiE3OKPs
+         PiM/h1rAfV6BqAeuzxlBMzyGBrXGh3WZLWT8Q1uytnWmiJvNGFaq0SnPPPwZLGGm1HA2
+         RFlCkakgayCwMeBQXMe/yS5gXztDTW4HN9TmjU2o75HH7TOWT6GX4KAIgaUIWpi780xN
+         qJ4vvFV6qtDZBLKWmCbHHExsw0AcKTDhTGG7OA/WxfUwkV59PZeJU/ph9ZinTfZHt4Qw
+         XUb5lgcIDQlqbnuJ7Ofban4E6ciiqpQccjx4J6Ls0X5ZgCLwHjLCR6Ky7DlwJCNk5WSC
+         /8EA==
+X-Gm-Message-State: AGi0PuZ59aVxjsdviZ8xn9jj6PFHi0g2syBu9NgPlY6FpoW02bDmKdTT
+        OtpyOlTGLoi+vmGq7PmBUWhpDbcKfqs=
+X-Google-Smtp-Source: APiQypJHXd1/zlz3sbHqqFmS/UNJQ3MYmv0SfGpGCLGVHtyJOuuuIlC3VzCA8PXGgCnd8+T+yKtLcQ==
+X-Received: by 2002:ac2:457b:: with SMTP id k27mr2607437lfm.126.1586295074933;
+        Tue, 07 Apr 2020 14:31:14 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id k3sm12460024lji.43.2020.04.07.14.31.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Apr 2020 14:31:13 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id z23so3535124lfh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 14:31:13 -0700 (PDT)
+X-Received: by 2002:ac2:4466:: with SMTP id y6mr2619685lfl.125.1586295072951;
+ Tue, 07 Apr 2020 14:31:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407135416.24093-3-david@redhat.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+References: <20200407200318.11711-1-longman@redhat.com> <0fe5dcaf078be61ef21c7f18b750c5dc14c69dd7.camel@perches.com>
+ <67c51b03-192c-3006-5071-452f351aee67@redhat.com> <CAHk-=whV5Z4XioUOW0UM-PBrW7iqb0HwWKQU5Vn8b5pmsDm=Ww@mail.gmail.com>
+ <20200407212447.GA29554@pc636>
+In-Reply-To: <20200407212447.GA29554@pc636>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Apr 2020 14:30:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whrZLs=+VkBXS_KWrMwoM2PRmw6mKEPJHRBQ_e3raFh9Q@mail.gmail.com>
+Message-ID: <CAHk-=whrZLs=+VkBXS_KWrMwoM2PRmw6mKEPJHRBQ_e3raFh9Q@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: Add kvfree_sensitive() for freeing sensitive data objects
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Waiman Long <longman@redhat.com>, Joe Perches <joe@perches.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Linux-MM <linux-mm@kvack.org>, keyrings@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 03:54:16PM +0200, David Hildenbrand wrote:
->Fortunately, all users of is_mem_section_removable() are gone. Get rid of
->it, including some now unnecessary functions.
+On Tue, Apr 7, 2020 at 2:25 PM Uladzislau Rezki <urezki@gmail.com> wrote:
 >
->Cc: Michael Ellerman <mpe@ellerman.id.au>
->Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->Cc: Michal Hocko <mhocko@suse.com>
->Cc: Andrew Morton <akpm@linux-foundation.org>
->Cc: Oscar Salvador <osalvador@suse.de>
->Cc: Baoquan He <bhe@redhat.com>
->Cc: Wei Yang <richard.weiyang@gmail.com>
->Signed-off-by: David Hildenbrand <david@redhat.com>
+> Seems like there is only one place where we can "sleep". I mean when we
+> call vfree(). That is free_vmap_area_noflush() -> try_purge_vmap_area_lazy().
+> Basically try_purge_vmap_area_lazy() can call the schedule() what is not
+> allowed for IRQs. Instead of inlining the try_purge_vmap_area_lazy()
+> into current context we can schedule_work(). And i think it makes sense
+> from many point of views.
 
-Nice.
+I don't think that's the only case.
 
-Reviewed-by: Wei Yang <richard.weiyang@gmail.com>
+Or rather, that may be the only case of _sleeping_, but we also aren't
+irq-safe wrt locking.
 
--- 
-Wei Yang
-Help you, Help me
+And I'm not just talking about the vmap_purge_lock mutex, but all the
+spinlocks etc we have.
+
+That said, I haven't looked at that code in _ages_. Maybe those things
+would be trivial to just turn into irq-safe ones and there are no real
+latency issues anywhere.
+
+                Linus
