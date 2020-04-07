@@ -2,175 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D651A16DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01FC1A16DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgDGUbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 16:31:21 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:51116 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbgDGUbV (ORCPT
+        id S1726428AbgDGUdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:33:18 -0400
+Received: from smtprelay0160.hostedemail.com ([216.40.44.160]:56964 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726277AbgDGUdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:31:21 -0400
-Received: by mail-pj1-f66.google.com with SMTP id b7so106158pju.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 13:31:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zKqZWyMQ8V8zQ20un6jU7HEK04ADqKGnxMMnNcQmdRY=;
-        b=a0fZT4bKGAAC/shPL7O9e0uWZrLTjV2ylyJY2sfBmRY6B5ZvfW0dghucSOrpamWJPY
-         JUCYKHnWorr9tUamq/iR4giSU6tjk4oCiShBGmL782UKl0DWVLzfSxGttgdlmHeSMD8n
-         USEybio2T7VuUT2fLczo63Ru53sMFCVzfTlT+mU1Fa/ap6GWDg2VcjCg86jjpviYRHXc
-         Iz7So5F7Udpr9Lbhc79nVirD0nmXaF25Itbm1mm1GG9t2QNB6iWyFMa5OAL092sfbgH8
-         5AztG4ripU+6zZTSDZvgQZCVw8RocoC0t5NurWuTODsqnHquobk+085szhz7aVytbHti
-         ZXwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zKqZWyMQ8V8zQ20un6jU7HEK04ADqKGnxMMnNcQmdRY=;
-        b=jcVdqWDd3j4SyT3hI5hAWZ8MvBQxmy2usxMBKGMJzR04Fi9X8YEvPX3pmtdABqofOO
-         wF83Lc/YXUOCxGiIvbJ8Cj8FLQzaaN9zN5z/kbKuPAuNqU6pz1tmNnyM/lfj6vla3/05
-         u05W9ckHBPa/8DlIdgq5B9sSJj5WGNUgsM8Tp9d5zQEFi6z+fPxApdlBBicxVz76aac8
-         vBlfYMvrGhLEPYi3d65MJ1wUaX9B3+p7RQ4isWBKrp1TPcpsbzMjdFYEuAU+bD/J5csg
-         F6msBX8URte7kDSOyD3c6IKtmCIgyrcVvBUh57wMQR7Qu08ZdSb0wQKk7TUmFGRrWxQC
-         v6IQ==
-X-Gm-Message-State: AGi0PuazbK+wk1oGLDXmjTGPh/cKcJr+0pGVbOOC5a7d0fhNJmKY/U2j
-        ymRFJQ/rsVPDNEyeHLHskVA80a768UpBT408AQ8rvQ==
-X-Google-Smtp-Source: APiQypKi0NHL1kvG+6WjCjMqalM7lL+WN8MrRtbStR3FlzJY1khKq++r7+B0jHFKqM7izTL5ggeQhNjpij2BSWIXUw4=
-X-Received: by 2002:a17:90a:30c3:: with SMTP id h61mr1246223pjb.18.1586291478614;
- Tue, 07 Apr 2020 13:31:18 -0700 (PDT)
+        Tue, 7 Apr 2020 16:33:18 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 97DE21802914F;
+        Tue,  7 Apr 2020 20:33:17 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:2892:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3874:4321:4385:4390:4395:5007:6119:7903:8603:10004:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13069:13076:13141:13161:13229:13230:13311:13357:13439:14659:14721:21080:21627:30054:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: glass81_56ab4fb76ca51
+X-Filterd-Recvd-Size: 2129
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Tue,  7 Apr 2020 20:33:15 +0000 (UTC)
+Message-ID: <0fe5dcaf078be61ef21c7f18b750c5dc14c69dd7.camel@perches.com>
+Subject: Re: [PATCH v3] mm: Add kvfree_sensitive() for freeing sensitive
+ data objects
+From:   Joe Perches <joe@perches.com>
+To:     Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>
+Date:   Tue, 07 Apr 2020 13:31:16 -0700
+In-Reply-To: <20200407200318.11711-1-longman@redhat.com>
+References: <20200407200318.11711-1-longman@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-References: <20200406221916.50008-1-vitor@massaru.org>
-In-Reply-To: <20200406221916.50008-1-vitor@massaru.org>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Tue, 7 Apr 2020 13:31:07 -0700
-Message-ID: <CAFd5g44EGCY0zHfZXekS8GAXHxrf5zeeTW=MHRz0NujKqTsRQg@mail.gmail.com>
-Subject: Re: [PATCH v3, RESEND] kunit: Fix kunit.py run --build_dir='<foo>'
- fails on "unclean" trees
-To:     Vitor Massaru Iha <vitor@massaru.org>
-Cc:     KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 3:19 PM Vitor Massaru Iha <vitor@massaru.org> wrote:
->
-> Fix this bug: https://bugzilla.kernel.org/show_bug.cgi?id=205219
+On Tue, 2020-04-07 at 16:03 -0400, Waiman Long wrote:
+> For kvmalloc'ed data object that contains sensitive information like
+> cryptographic key, we need to make sure that the buffer is always
+> cleared before freeing it. Using memset() alone for buffer clearing may
+> not provide certainty as the compiler may compile it away. To be sure,
+> the special memzero_explicit() has to be used.
+> 
+> This patch introduces a new kvfree_sensitive() for freeing those
+> sensitive data objects allocated by kvmalloc(). The relevnat places
+> where kvfree_sensitive() can be used are modified to use it.
+[]
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+[]
+> @@ -757,6 +757,7 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
+>  }
+>  
+>  extern void kvfree(const void *addr);
+> +extern void kvfree_sensitive(const void *addr, size_t len);
 
-I am still seeing the error described in the bug.
+Why should size_t len be required?
 
-Steps to reproduce:
+Why not do what kzfree does and memset
+the entire allocation? (area->size)
 
-1. tools/testing/kunit/kunit.py run --timeout=60 --jobs=8 --defconfig
 
-2. make ARCH=um mrproper
-
-3. tools/testing/kunit/kunit.py run --timeout=60 --jobs=8 --defconfig
---build_dir=.kunit
-
-One other note: It should probably be done in another patch, but it
-would be nice if kunit.py would tell you that you need to run mrproper
-when the olddefconfig fails.
-
-> For some reason, the environment variable ARCH is used instead of ARCH
-> passed as an argument, this patch uses a copy of the env, but using
-> ARCH=um and CROSS_COMPILER='' to avoid this problem.
->
-> This patch doesn't change the user's environment variables, avoiding
-> side effects.
->
-> Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
-> ---
-> v2:
->  - Use the correct next branch
->
-> v3:
->  - Use torvalds/master branch
->  - Use base parameter on git send-email
-> ---
->  tools/testing/kunit/kunit_kernel.py | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index 63dbda2d029f..96216c699fde 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -20,6 +20,7 @@ import kunit_parser
->  KCONFIG_PATH = '.config'
->  kunitconfig_path = '.kunitconfig'
->  BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
-> +env = dict(os.environ.copy(), ARCH='um', CROSS_COMPILE='')
->
->  class ConfigError(Exception):
->         """Represents an error trying to configure the Linux kernel."""
-> @@ -41,13 +42,15 @@ class LinuxSourceTreeOperations(object):
->                         raise ConfigError(e.output)
->
->         def make_olddefconfig(self, build_dir, make_options):
-> -               command = ['make', 'ARCH=um', 'olddefconfig']
-> +               command = ['make', 'olddefconfig']
->                 if make_options:
->                         command.extend(make_options)
->                 if build_dir:
->                         command += ['O=' + build_dir]
->                 try:
-> -                       subprocess.check_output(command, stderr=subprocess.PIPE)
-> +                       subprocess.check_output(command,
-> +                                               stderr=subprocess.PIPE,
-> +                                               env=env)
->                 except OSError as e:
->                         raise ConfigError('Could not call make command: ' + e)
->                 except subprocess.CalledProcessError as e:
-> @@ -57,9 +60,10 @@ class LinuxSourceTreeOperations(object):
->                 kunit_parser.print_with_timestamp(
->                         'Enabling all CONFIGs for UML...')
->                 process = subprocess.Popen(
-> -                       ['make', 'ARCH=um', 'allyesconfig'],
-> +                       ['make', 'allyesconfig'],
->                         stdout=subprocess.DEVNULL,
-> -                       stderr=subprocess.STDOUT)
-> +                       stderr=subprocess.STDOUT,
-> +                       env=env)
->                 process.wait()
->                 kunit_parser.print_with_timestamp(
->                         'Disabling broken configs to run KUnit tests...')
-> @@ -71,13 +75,13 @@ class LinuxSourceTreeOperations(object):
->                         'Starting Kernel with all configs takes a few minutes...')
->
->         def make(self, jobs, build_dir, make_options):
-> -               command = ['make', 'ARCH=um', '--jobs=' + str(jobs)]
-> +               command = ['make', '--jobs=' + str(jobs)]
->                 if make_options:
->                         command.extend(make_options)
->                 if build_dir:
->                         command += ['O=' + build_dir]
->                 try:
-> -                       subprocess.check_output(command)
-> +                       subprocess.check_output(command, env=env)
->                 except OSError as e:
->                         raise BuildError('Could not call execute make: ' + e)
->                 except subprocess.CalledProcessError as e:
-> @@ -91,7 +95,8 @@ class LinuxSourceTreeOperations(object):
->                 with open(outfile, 'w') as output:
->                         process = subprocess.Popen([linux_bin] + params,
->                                                    stdout=output,
-> -                                                  stderr=subprocess.STDOUT)
-> +                                                  stderr=subprocess.STDOUT,
-> +                                                  env=env)
->                         process.wait(timeout)
->
->
->
-> base-commit: 7e63420847ae5f1036e4f7c42f0b3282e73efbc2
-> --
-> 2.25.1
->
