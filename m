@@ -2,290 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5061A125C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 19:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACB91A124A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgDGRBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 13:01:19 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:37395 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726527AbgDGRBS (ORCPT
+        id S1726620AbgDGQ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:57:37 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:46922 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725874AbgDGQ5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 13:01:18 -0400
-Received: by mail-pl1-f193.google.com with SMTP id x1so1473526plm.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 10:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BKA4RM51A82x/5SpJbkyD9gWBCDUmnDILyC/0E/dflg=;
-        b=ma3VTOaM3ccztMgbWUch6c9Nop0cKlddfRdpAgSYy7156lYP1wdkteuId5JaVDSzgv
-         pstITV0JnBjl18ZnTE6upqD3TrTmYjV1BhYYPm/isptuMEyFwY+neCeERdoMYIA7FceE
-         xNVwlvSMjCG83B8EHkpPJnmePjhK+X4KiRdfPjVc0byiuKoVyK5E3bk9YI6Dlvga6ir7
-         cVDQCpvkxG0SJFNfsJ0E5vidb8x267+9UBHEhnGyzZW9eCxi1GQ3ezR3fHYst8oiLvLz
-         IFstetzqRlAla/WuwKTX5ClMVQozR86gOzJMPoKJLbYQRPkqoo62sEBKwhW77lGPmRfM
-         5SKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BKA4RM51A82x/5SpJbkyD9gWBCDUmnDILyC/0E/dflg=;
-        b=eRJlCJGBMNpI3aur01IU8bA06I4tkXOU9PMiJ4GqnO643M5SIXq9AoMpC0n8e5I0Fa
-         ggfbZfXg05RlabC6OG5qiV1CuCkloUJomzP9UuCm3X6O10oR4rjGuTlFzd9sBnycjz3n
-         1wzdwWCEhf9pmsdyedl5zQK0txYgvi16vFCCviITBYvZ8OZZ3A9m0ln1rMLyuY5k3ukm
-         DaVrdBSl53stGPosNy+Pi3tLEmPOp5+VfthdWJBiKRUlNFToLNngjlsFdDZaAoCDvvY8
-         NLqC6e8piG7xdHMEvk6NleWqt5vKtcg/1HJePsdze627Hf06narimFfqNIspx91WoZr3
-         KINw==
-X-Gm-Message-State: AGi0Pua5apzyVpH90OIxsWcq4FkIhFNlC8NsMhfixpcsiHwnMEmahOoI
-        Gj8aMO3P9k3nkpgouXvkw1gHe3fZc9rKcrJrLiiQfw==
-X-Google-Smtp-Source: APiQypLwGulDH+WJsMgYCIEQ0C1UrzVbHqpMJvqU9FEJJ+53A81wLeMpTOTAACHxZBxyCdDBD0SwVckZrPDO4CnpsWc=
-X-Received: by 2002:a17:90a:8085:: with SMTP id c5mr276765pjn.186.1586278877201;
- Tue, 07 Apr 2020 10:01:17 -0700 (PDT)
+        Tue, 7 Apr 2020 12:57:37 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037GrwMN104165;
+        Tue, 7 Apr 2020 16:57:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=Nrqiw6PVutT0nmUPIO8Z4xdWOEVBfSK+9lm/8i+m2ZA=;
+ b=bQMMj2niT3feQnQPmbUAdrbjXYMyvEZGcYLXVdLQ0H9mrTfw9MjT9TPFl38IJeWr3UYc
+ 3y1H3x391ts+0L4wrU+PwB1mausr0m9jzFnSrEvWIjovc5xN9jX4QgytxKFsJSG373Ng
+ gHGJhWdyBHTY+lfudZN6Md+IdxVa30z1O7xcwO3eEC7M6KMJCDPiZB7mi8FQhot54Zvf
+ N6Tq6o3qQx782Jqf1dG9fw1tfTXmd9UoKtjPEYq87fPVMEhCwo15LNe2nvi/JpTwZjur
+ nwxej5cf5hmrL9cDGNyXyLyD63rif5oXT/yF2fqZ9Wb421CslJDsCBOWXim8hAtqZjAF aA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 308ffdc996-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 16:57:21 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037GvIp0050066;
+        Tue, 7 Apr 2020 16:57:21 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 3073qgmb3x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 16:57:21 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 037GvIue029049;
+        Tue, 7 Apr 2020 16:57:18 GMT
+Received: from linux-1.home (/92.157.90.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 09:57:18 -0700
+Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
+ ANNOTATE_NOSPEC_ALTERNATIVE directives
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, jthierry@redhat.com,
+        tglx@linutronix.de
+References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
+ <20200407073142.20659-10-alexandre.chartre@oracle.com>
+ <20200407132837.GA20730@hirez.programming.kicks-ass.net>
+ <20200407133454.n55u5nx33ruj73gx@treble>
+ <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
+ <3eb36fd2-9827-4c1b-681c-9c1d65c7582f@oracle.com>
+ <20200407162838.5hlh6oom4oa45ugt@treble>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <06605b1c-c9ae-fd18-bcb1-e4a48f2cb60e@oracle.com>
+Date:   Tue, 7 Apr 2020 19:01:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-References: <20200403051709.22407-1-masahiroy@kernel.org> <20200406112220.GB126804@google.com>
- <CAK7LNARkFN8jTD8F3CU7r_AL8dbqaKpUuou4MCLZvAYLGs9bYA@mail.gmail.com>
-In-Reply-To: <CAK7LNARkFN8jTD8F3CU7r_AL8dbqaKpUuou4MCLZvAYLGs9bYA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 7 Apr 2020 10:01:04 -0700
-Message-ID: <CAKwvOdmHxeZ+T1OsOhW25pPygHM4D21OgZqRk141xbjP437-1w@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: support 'LLVM' to switch the default tools to Clang/LLVM
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Matthias Maennich <maennich@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Marek <michal.lkml@markovi.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200407162838.5hlh6oom4oa45ugt@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070137
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 7, 2020 at 9:17 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Mon, Apr 6, 2020 at 8:22 PM 'Matthias Maennich' via Clang Built
-> Linux <clang-built-linux@googlegroups.com> wrote:
-> >
-> > On Fri, Apr 03, 2020 at 02:17:09PM +0900, Masahiro Yamada wrote:
-> > >As Documentation/kbuild/llvm.rst implies, building the kernel with a
-> > >full set of LLVM tools gets very verbose and unwieldy.
-> > >
-> > >Provide a single switch 'LLVM' to use Clang and LLVM tools instead of
-> > >GCC and Binutils. You can pass LLVM=1 from the command line or as an
-> > >environment variable. Then, Kbuild will use LLVM toolchains in your
-> > >PATH environment.
-> > >
-> > >Please note LLVM=1 does not turn on the LLVM integrated assembler.
-> > >You need to explicitly pass AS=clang to use it. When the upstream
-> > >kernel is ready for the integrated assembler, I think we can make
-> > >it default.
-> > >
-> > >We discussed what we need, and we agreed to go with a simple boolean
-> > >switch (https://lkml.org/lkml/2020/3/28/494).
-> > >
-> > >Some items in the discussion:
-> > >
-> > >- LLVM_DIR
-> > >
-> > >  When multiple versions of LLVM are installed, I just thought supporting
-> > >  LLVM_DIR=/path/to/my/llvm/bin/ might be useful.
-> > >
-> > >  CC      = $(LLVM_DIR)clang
-> > >  LD      = $(LLVM_DIR)ld.lld
-> > >    ...
-> > >
-> > >  However, we can handle this by modifying PATH. So, we decided to not do
-> > >  this.
-> > >
-> > >- LLVM_SUFFIX
-> > >
-> > >  Some distributions (e.g. Debian) package specific versions of LLVM with
-> > >  naming conventions that use the version as a suffix.
-> > >
-> > >  CC      = clang$(LLVM_SUFFIX)
-> > >  LD      = ld.lld(LLVM_SUFFIX)
-> > >    ...
-> > >
-> > >  will allow a user to pass LLVM_SUFFIX=-11 to use clang-11 etc.,
-> > >  but the suffixed versions in /usr/bin/ are symlinks to binaries in
-> > >  /usr/lib/llvm-#/bin/, so this can also be handled by PATH.
-> > >
-> > >- HOSTCC, HOSTCXX, etc.
-> > >
-> > >  We can switch the host compilers in the same way:
-> > >
-> > >  ifneq ($(LLVM),)
-> > >  HOSTCC       = clang
-> > >  HOSTCXX      = clang++
-> > >  else
-> > >  HOSTCC       = gcc
-> > >  HOSTCXX      = g++
-> > >  endif
-> > >
-> > >  This may the right thing to do, but I could not make up my mind.
-> > >  Because we do not frequently switch the host compiler, a counter
-> > >  solution I had in my mind was to leave it to the default of the
-> > >  system.
-> > >
-> > >  HOSTCC       = cc
-> > >  HOSTCXX      = c++
-> >
-> > What about HOSTLD ? I saw recently, that setting HOSTLD=ld.lld is not
-> > yielding the expected result (some tools, like e.g. fixdep still require
-> > an `ld` to be in PATH to be built). I did not find the time to look into
-> > that yet, but I would like to consistently switch to the llvm toolchain
-> > (including linker and possibly more) also for hostprogs.
->
->
-> HOSTLD=ld.lld worked for me, but HOSTCC=clang did not.
->
->
->
-> HOSTCC=clang without CC=clang fails to build objtool.
->
-> The build system of objtool is meh.  :(
-
-Let's tackle that in a follow up, with the goal of build hermiticity
-in mind.  I think there's good feedback in this thread to inform the
-design of a v2:
-1. CLANG_AS=0 to disable integrated as.  Hopefully we won't need this
-much longer, so we don't need to spend too much time on this, Masahiro
-please just choose a name for this.  llvm-as naming conventions
-doesn't follow the rest of binutils.
-2. HOSTCC=clang HOSTLD=ld.lld set by LLVM=1 for helping with build hermiticity.
-
->
->
->   HOSTCC  scripts/mod/sumversion.o
->   HOSTLD  scripts/mod/modpost
->   CALL    scripts/checksyscalls.sh
->   CALL    scripts/atomic/check-atomics.sh
->   DESCEND  objtool
-> error: unknown warning option '-Wstrict-aliasing=3'; did you mean
-> '-Wstring-plus-int'? [-Werror,-Wunknown-warning-option]
->   HOSTCC   /home/masahiro/workspace/linux-kbuild/tools/objtool/fixdep.o
->   HOSTLD   /home/masahiro/workspace/linux-kbuild/tools/objtool/fixdep-in.o
->   LINK     /home/masahiro/workspace/linux-kbuild/tools/objtool/fixdep
->   CC       /home/masahiro/workspace/linux-kbuild/tools/objtool/exec-cmd.o
->   CC       /home/masahiro/workspace/linux-kbuild/tools/objtool/help.o
->   CC       /home/masahiro/workspace/linux-kbuild/tools/objtool/pager.o
->
->
->
->
->
->
-> > Cheers,
-> > Matthias
-> >
-> > >
-> > >  Many distributions support update-alternatives to switch the default
-> > >  to GCC, Clang, or whatever, but reviewers were opposed to this
-> > >  approach. So, this commit does not touch the host tools.
-> > >
-> > >Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > >---
-> > >
-> > > Documentation/kbuild/kbuild.rst |  5 +++++
-> > > Documentation/kbuild/llvm.rst   |  5 +++++
-> > > Makefile                        | 20 ++++++++++++++++----
-> > > 3 files changed, 26 insertions(+), 4 deletions(-)
-> > >
-> > >diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
-> > >index 510f38d7e78a..2d1fc03d346e 100644
-> > >--- a/Documentation/kbuild/kbuild.rst
-> > >+++ b/Documentation/kbuild/kbuild.rst
-> > >@@ -262,3 +262,8 @@ KBUILD_BUILD_USER, KBUILD_BUILD_HOST
-> > > These two variables allow to override the user@host string displayed during
-> > > boot and in /proc/version. The default value is the output of the commands
-> > > whoami and host, respectively.
-> > >+
-> > >+LLVM
-> > >+----
-> > >+If this variable is set to 1, Kbuild will use Clang and LLVM utilities instead
-> > >+of GCC and GNU binutils to build the kernel.
-> > >diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-> > >index d6c79eb4e23e..4602369f6a4f 100644
-> > >--- a/Documentation/kbuild/llvm.rst
-> > >+++ b/Documentation/kbuild/llvm.rst
-> > >@@ -55,6 +55,11 @@ additional parameters to `make`.
-> > >         READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \\
-> > >         HOSTLD=ld.lld
-> > >
-> > >+You can use a single switch `LLVM=1` to use LLVM utilities by default (except
-> > >+for building host programs).
-> > >+
-> > >+      make LLVM=1 HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
-> > >+
-> > > Getting Help
-> > > ------------
-> > >
-> > >diff --git a/Makefile b/Makefile
-> > >index c91342953d9e..6db89ecdd942 100644
-> > >--- a/Makefile
-> > >+++ b/Makefile
-> > >@@ -409,16 +409,28 @@ KBUILD_HOSTLDFLAGS  := $(HOST_LFS_LDFLAGS) $(HOSTLDFLAGS)
-> > > KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
-> > >
-> > > # Make variables (CC, etc...)
-> > >-LD            = $(CROSS_COMPILE)ld
-> > >-CC            = $(CROSS_COMPILE)gcc
-> > > CPP           = $(CC) -E
-> > >+ifneq ($(LLVM),)
-> > >+CC            = clang
-> > >+LD            = ld.lld
-> > >+AR            = llvm-ar
-> > >+NM            = llvm-nm
-> > >+OBJCOPY               = llvm-objcopy
-> > >+OBJDUMP               = llvm-objdump
-> > >+READELF               = llvm-readelf
-> > >+OBJSIZE               = llvm-size
-> > >+STRIP         = llvm-strip
-> > >+else
-> > >+CC            = $(CROSS_COMPILE)gcc
-> > >+LD            = $(CROSS_COMPILE)ld
-> > > AR            = $(CROSS_COMPILE)ar
-> > > NM            = $(CROSS_COMPILE)nm
-> > >-STRIP         = $(CROSS_COMPILE)strip
-> > > OBJCOPY               = $(CROSS_COMPILE)objcopy
-> > > OBJDUMP               = $(CROSS_COMPILE)objdump
-> > >-OBJSIZE               = $(CROSS_COMPILE)size
-> > > READELF               = $(CROSS_COMPILE)readelf
-> > >+OBJSIZE               = $(CROSS_COMPILE)size
-> > >+STRIP         = $(CROSS_COMPILE)strip
-> > >+endif
-> > > PAHOLE                = pahole
-> > > LEX           = flex
-> > > YACC          = bison
-> > >--
-> > >2.17.1
-> > >
-> > >--
-> > >You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> > >To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> > >To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200403051709.22407-1-masahiroy%40kernel.org.
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200406112220.GB126804%40google.com.
->
->
->
-> --
-> Best Regards
-> Masahiro Yamada
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/CAK7LNARkFN8jTD8F3CU7r_AL8dbqaKpUuou4MCLZvAYLGs9bYA%40mail.gmail.com.
 
 
+On 4/7/20 6:28 PM, Josh Poimboeuf wrote:
+> On Tue, Apr 07, 2020 at 06:18:51PM +0200, Alexandre Chartre wrote:
+>>
+>> On 4/7/20 4:32 PM, Alexandre Chartre wrote:
+>>>
+>>> On 4/7/20 3:34 PM, Josh Poimboeuf wrote:
+>>>> On Tue, Apr 07, 2020 at 03:28:37PM +0200, Peter Zijlstra wrote:
+>>>>> Josh, we should probably have objtool verify it doesn't emit ORC entries
+>>>>> in alternative ranges.
+>>>>
+>>>> Agreed, it might be as simple as checking for insn->alt_group in the
+>>>> INSN_STACK check or in update_insn_state().
+>>>>
+>>>
+>>> We could do that only for the "objtool orc generate" command. That way
+>>> "objtool check" would still check the alternative, but "objtool orc generate"
+>>> will just use the first half of the alternative (like it does today with
+>>> ANNOTATE_NOSPEC_ALTERNATIVE). We can even keep all ANNOTATE_NOSPEC_ALTERNATIVE
+>>> but only use them for "objtool orc generate".
+>>>
+>>
+>> I have checked and objtool doesn't emit ORC entries for alternative:
+>> decode_instructions() doesn't mark such section with sec->text = true
+>> so create_orc_sections() doesn't emit corresponding ORC entries.
+>>
+>> So I think we can remove the ANNOTATE_NOSPEC_ALTERNATIVE directives,
+>> this will allow objtool to check the instructions but it still won't
+>> emit ORC entries (same behavior as today). In the future, if ORC
+>> eventually supports alternative we will be ready to have objtool emit
+>> ORC entries.
+> 
+> What's the benefit of removing ANNOTATE_NOSPEC_ALTERNATIVE if there's no
+> ORC support to go along with it?
 
--- 
-Thanks,
-~Nick Desaulniers
+To have the code validated by objtool like any other alternative code
+(which is not tagged with ANNOTATE_NOSPEC_ALTERNATIVE).
+
+> Also I want to avoid adding "ORC alternatives".  ORC is nice and simple
+> and we should keep it that way as much as possible.
+> 
+> Again, we should warn on stack changes inside alternatives, and then
+> look at converting RSB and retpolines to use static branches so they
+> have deterministic stacks.
+> 
+objtool doesn't currently warn on stack changes inside alternatives.
+The RSB/retpoline alternatives have warning because objtool doesn't
+support retpoline ret and intra-function calls. If you have an alternative
+doing stack changes that objtool understand (like push/pop, add/remove
+to sp) then you won't have a warning.
+
+I think that's the case with smap_save:
+
+static __always_inline unsigned long smap_save(void)
+{
+         unsigned long flags;
+
+         asm volatile (ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC,
+                                   X86_FEATURE_SMAP)
+                       : "=rm" (flags) : : "memory", "cc");
+
+         return flags;
+}
+
+The alternative does change the stack but objtool won't complain
+because it handles the pushf and pop instruction.
+
+alex.
