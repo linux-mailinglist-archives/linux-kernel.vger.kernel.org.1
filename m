@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B0E1A0B36
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2F71A0B26
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbgDGKYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:24:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34782 "EHLO mail.kernel.org"
+        id S1728641AbgDGKYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:24:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728720AbgDGKYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:24:30 -0400
+        id S1728274AbgDGKYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:24:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2EA620801;
-        Tue,  7 Apr 2020 10:24:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B61B92078A;
+        Tue,  7 Apr 2020 10:24:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255070;
-        bh=DCZ2l5F56FR9NskugDQGc4jykl12y8rfDISYAsN/Awo=;
+        s=default; t=1586255043;
+        bh=hFSSaaFZs7iS34JeOV/LO3xxtt/qCl6SQ6F3A3HPIlg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ZpoRXpN8jx1+gbVYZSgeBKfnuo9UHdJYvEt20DAdoyTZFj1V7773cGSgFOwPtHF/
-         bs70Nm3yjF4k4iZ92NoK6Ct/UAvW4lBDJJNKs5YpNyC9iP/bOZ5VrxuJm9UylgcAc9
-         lF7jdq+hoJdYO0rPNhDfIRGOrYYkXQ0s0DxDdH78=
+        b=c1gdXcWvhkNJyaS5X5117n8a0wL+gWkvAXIBSyiHlRJ+ksDM9Ss6GeXDjppDtz/sZ
+         31KsChhaSDsSe8XN1dDRW/YcfrQyUP15hPais8nn+86Rnz9ppsdA+pXd7Jm3Uuvwb+
+         eFhICi6Pu+b8FRPfeAT6yMsGtoPS8MEatTnBDwQE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Brian Norris <briannorris@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>, franky.lin@broadcom.com,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 18/46] brcmfmac: abort and release host after error
-Date:   Tue,  7 Apr 2020 12:21:49 +0200
-Message-Id: <20200407101501.481443066@linuxfoundation.org>
+        stable@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: [PATCH 5.4 17/36] misc: pci_endpoint_test: Avoid using module parameter to determine irqtype
+Date:   Tue,  7 Apr 2020 12:21:50 +0200
+Message-Id: <20200407101456.596034502@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
-References: <20200407101459.502593074@linuxfoundation.org>
+In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
+References: <20200407101454.281052964@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,57 +43,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guenter Roeck <linux@roeck-us.net>
+From: Kishon Vijay Abraham I <kishon@ti.com>
 
-[ Upstream commit 863844ee3bd38219c88e82966d1df36a77716f3e ]
+commit b2ba9225e0313b1de631a44b7b48c109032bffec upstream.
 
-With commit 216b44000ada ("brcmfmac: Fix use after free in
-brcmf_sdio_readframes()") applied, we see locking timeouts in
-brcmf_sdio_watchdog_thread().
+commit e03327122e2c ("pci_endpoint_test: Add 2 ioctl commands")
+uses module parameter 'irqtype' in pci_endpoint_test_set_irq()
+to check if IRQ vectors of a particular type (MSI or MSI-X or
+LEGACY) is already allocated. However with multi-function devices,
+'irqtype' will not correctly reflect the IRQ type of the PCI device.
 
-brcmfmac: brcmf_escan_timeout: timer expired
-INFO: task brcmf_wdog/mmc1:621 blocked for more than 120 seconds.
-Not tainted 4.19.94-07984-g24ff99a0f713 #1
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-brcmf_wdog/mmc1 D    0   621      2 0x00000000 last_sleep: 2440793077.  last_runnable: 2440766827
-[<c0aa1e60>] (__schedule) from [<c0aa2100>] (schedule+0x98/0xc4)
-[<c0aa2100>] (schedule) from [<c0853830>] (__mmc_claim_host+0x154/0x274)
-[<c0853830>] (__mmc_claim_host) from [<bf10c5b8>] (brcmf_sdio_watchdog_thread+0x1b0/0x1f8 [brcmfmac])
-[<bf10c5b8>] (brcmf_sdio_watchdog_thread [brcmfmac]) from [<c02570b8>] (kthread+0x178/0x180)
+Fix it here by adding 'irqtype' for each PCI device to show the
+IRQ type of a particular PCI device.
 
-In addition to restarting or exiting the loop, it is also necessary to
-abort the command and to release the host.
+Fixes: e03327122e2c ("pci_endpoint_test: Add 2 ioctl commands")
+Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 216b44000ada ("brcmfmac: Fix use after free in brcmf_sdio_readframes()")
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Cc: Brian Norris <briannorris@chromium.org>
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: franky.lin@broadcom.com
-Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/misc/pci_endpoint_test.c |   12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index a935993a3c514..d43247a95ce53 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-@@ -1934,6 +1934,8 @@ static uint brcmf_sdio_readframes(struct brcmf_sdio *bus, uint maxframes)
- 			if (brcmf_sdio_hdparse(bus, bus->rxhdr, &rd_new,
- 					       BRCMF_SDIO_FT_NORMAL)) {
- 				rd->len = 0;
-+				brcmf_sdio_rxfail(bus, true, true);
-+				sdio_release_host(bus->sdiodev->func1);
- 				brcmu_pkt_buf_free_skb(pkt);
- 				continue;
- 			}
--- 
-2.20.1
-
+--- a/drivers/misc/pci_endpoint_test.c
++++ b/drivers/misc/pci_endpoint_test.c
+@@ -98,6 +98,7 @@ struct pci_endpoint_test {
+ 	struct completion irq_raised;
+ 	int		last_irq;
+ 	int		num_irqs;
++	int		irq_type;
+ 	/* mutex to protect the ioctls */
+ 	struct mutex	mutex;
+ 	struct miscdevice miscdev;
+@@ -157,6 +158,7 @@ static void pci_endpoint_test_free_irq_v
+ 	struct pci_dev *pdev = test->pdev;
+ 
+ 	pci_free_irq_vectors(pdev);
++	test->irq_type = IRQ_TYPE_UNDEFINED;
+ }
+ 
+ static bool pci_endpoint_test_alloc_irq_vectors(struct pci_endpoint_test *test,
+@@ -191,6 +193,8 @@ static bool pci_endpoint_test_alloc_irq_
+ 		irq = 0;
+ 		res = false;
+ 	}
++
++	test->irq_type = type;
+ 	test->num_irqs = irq;
+ 
+ 	return res;
+@@ -330,6 +334,7 @@ static bool pci_endpoint_test_copy(struc
+ 	dma_addr_t orig_dst_phys_addr;
+ 	size_t offset;
+ 	size_t alignment = test->alignment;
++	int irq_type = test->irq_type;
+ 	u32 src_crc32;
+ 	u32 dst_crc32;
+ 
+@@ -426,6 +431,7 @@ static bool pci_endpoint_test_write(stru
+ 	dma_addr_t orig_phys_addr;
+ 	size_t offset;
+ 	size_t alignment = test->alignment;
++	int irq_type = test->irq_type;
+ 	u32 crc32;
+ 
+ 	if (size > SIZE_MAX - alignment)
+@@ -494,6 +500,7 @@ static bool pci_endpoint_test_read(struc
+ 	dma_addr_t orig_phys_addr;
+ 	size_t offset;
+ 	size_t alignment = test->alignment;
++	int irq_type = test->irq_type;
+ 	u32 crc32;
+ 
+ 	if (size > SIZE_MAX - alignment)
+@@ -555,7 +562,7 @@ static bool pci_endpoint_test_set_irq(st
+ 		return false;
+ 	}
+ 
+-	if (irq_type == req_irq_type)
++	if (test->irq_type == req_irq_type)
+ 		return true;
+ 
+ 	pci_endpoint_test_release_irq(test);
+@@ -567,12 +574,10 @@ static bool pci_endpoint_test_set_irq(st
+ 	if (!pci_endpoint_test_request_irq(test))
+ 		goto err;
+ 
+-	irq_type = req_irq_type;
+ 	return true;
+ 
+ err:
+ 	pci_endpoint_test_free_irq_vectors(test);
+-	irq_type = IRQ_TYPE_UNDEFINED;
+ 	return false;
+ }
+ 
+@@ -652,6 +657,7 @@ static int pci_endpoint_test_probe(struc
+ 	test->test_reg_bar = 0;
+ 	test->alignment = 0;
+ 	test->pdev = pdev;
++	test->irq_type = IRQ_TYPE_UNDEFINED;
+ 
+ 	if (no_msi)
+ 		irq_type = IRQ_TYPE_LEGACY;
 
 
