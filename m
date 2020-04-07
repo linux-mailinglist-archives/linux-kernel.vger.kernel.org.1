@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A3C1A0F3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B211A0F18
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729253AbgDGObc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:31:32 -0400
-Received: from nibbler.cm4all.net ([82.165.145.151]:47604 "EHLO
-        nibbler.cm4all.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729173AbgDGOb2 (ORCPT
+        id S1728997AbgDGO0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:26:53 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:39386 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728776AbgDGO0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:31:28 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by nibbler.cm4all.net (Postfix) with ESMTP id C5E72C02F8
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Apr 2020 16:23:09 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at nibbler.cm4all.net
-Received: from nibbler.cm4all.net ([127.0.0.1])
-        by localhost (nibbler.cm4all.net [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id DzQnTQCQB3uI for <linux-kernel@vger.kernel.org>;
-        Tue,  7 Apr 2020 16:23:09 +0200 (CEST)
-Received: from zero.intern.cm-ag (zero.intern.cm-ag [172.30.16.10])
-        by nibbler.cm4all.net (Postfix) with SMTP id A71FDC02C6
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Apr 2020 16:23:09 +0200 (CEST)
-Received: (qmail 19706 invoked from network); 7 Apr 2020 17:35:22 +0200
-Received: from unknown (HELO rabbit.intern.cm-ag) (172.30.3.1)
-  by zero.intern.cm-ag with SMTP; 7 Apr 2020 17:35:22 +0200
-Received: by rabbit.intern.cm-ag (Postfix, from userid 1023)
-        id 7F4A246143D; Tue,  7 Apr 2020 16:23:09 +0200 (CEST)
-From:   Max Kellermann <mk@cm4all.com>
-To:     linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        trond.myklebust@hammerspace.com
-Cc:     bfields@redhat.com, tytso@mit.edu, viro@zeniv.linux.org.uk,
-        agruenba@redhat.com, linux-kernel@vger.kernel.org,
-        Max Kellermann <mk@cm4all.com>, stable@vger.kernel.org
-Subject: [PATCH v3 4/4] nfs/super: check NFS_CAP_ACLS instead of the NFS version
-Date:   Tue,  7 Apr 2020 16:22:43 +0200
-Message-Id: <20200407142243.2032-4-mk@cm4all.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200407142243.2032-1-mk@cm4all.com>
-References: <20200407142243.2032-1-mk@cm4all.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 7 Apr 2020 10:26:52 -0400
+Received: by mail-wr1-f66.google.com with SMTP id p10so4124780wrt.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1IYm3UJMYvZGcA5HDx6pN/EcT0r+laztRqnVn0lIv8o=;
+        b=odzYHM4PQyxjrTdP94HEuH+cVYijwmO4USncHr3KBM+149SLADXX0l5w+eH1QjXMDq
+         2usIGRMpJkO4vtnJ4/xbDW7w9VGBfZSXHIMf+m9RIhJd8Eug4LLMT91gtx+pR3VpkVaY
+         FCnmm67cuXEQi7XFfyZk/0CAUZcxbYOjKvDEAn5S3NZh7+tkn0nMwHL7FUDRyHDS8Mnl
+         wDrCoVW4ZFFVT3Wv3qCwDj3uKoioUOKK8Jlc0eipMjyND96mVue0x/Xp4atmpNrGbS0i
+         YHnr0sYMJiqWInH+XZkl7sIovRIss8th70kqT/l6N5rJIzsGPX9yny/xqHWwTzGe2fW6
+         sbhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1IYm3UJMYvZGcA5HDx6pN/EcT0r+laztRqnVn0lIv8o=;
+        b=NifTES1ZLSfKlLbFYaaVkIjYzX+17qCEm2NaJFGbD+8bF6u2BVLy2QJhQW+I/lxJK5
+         +XziDHIh2IHqBsemSMrAmK+XMaDP3LfBLbHKZk2aWhVrcPZVrhujWSKp/VO3ZJ7w5S0B
+         kGJU172HQCq2m3SYsaveWPsF0e4AQsweTmy1TZ+DEfQgGg3D8FitXdGMUSdlbsxEGj3S
+         vYy9IWVDkN2Bf4c2qpBExWvfLyBeZzuV6kmRRrnNyEnjpn+7ve/c2oSzcYwk0oMRj3KV
+         Zs+o2bDBgvSgYaYDTroYQsak2A8sH/eY/nNaCUFoAbwtVD5heKgq+BilTqWeUXTu1Jic
+         TguA==
+X-Gm-Message-State: AGi0PuaGvjPcGWRrr9BJu1kyLpge4qelIUvqakihInng8Lri2Leytqbd
+        SabCGllu0ny8IfvUvPQaNnA=
+X-Google-Smtp-Source: APiQypIajbhXDWtqrq1B2DdOwT8dbEEV5/v0+zYrndyRedN8LxgiIIX/wjQGUqh2yW1LFwrGLMRFNQ==
+X-Received: by 2002:a5d:5686:: with SMTP id f6mr3019640wrv.91.1586269610755;
+        Tue, 07 Apr 2020 07:26:50 -0700 (PDT)
+Received: from Saturn.fritz.box ([81.221.228.86])
+        by smtp.gmail.com with ESMTPSA id f20sm2544119wmc.35.2020.04.07.07.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 07:26:49 -0700 (PDT)
+Message-ID: <1586269609.25385.3.camel@gmail.com>
+Subject: Re: [PATCH 0/4] defconfig: fix changed configs and refresh
+From:   Max Krummenacher <max.oss.09@gmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Max Krummenacher <max.krummenacher@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, Vidya Sagar <vidyas@nvidia.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Date:   Tue, 07 Apr 2020 16:26:49 +0200
+In-Reply-To: <20200407141624.GG4751@pendragon.ideasonboard.com>
+References: <20200407103537.4138-1-max.krummenacher@toradex.com>
+         <CAMuHMdWrekHiADkMmgO5nDxFNYjLud7FD=7ArMZNQire_+7TQg@mail.gmail.com>
+         <20200407141624.GG4751@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This sets SB_POSIXACL only if ACL support is really enabled, instead
-of always setting SB_POSIXACL if the NFS protocol version
-theoretically supports ACL.
+Hi Laurent, Geert,
 
-The code comment says "We will [apply the umask] ourselves", but that
-happens in posix_acl_create() only if the kernel has POSIX ACL
-support.  Without it, posix_acl_create() is an empty dummy function.
+Am Dienstag, den 07.04.2020, 17:16 +0300 schrieb Laurent Pinchart:
+> Hi Geert,
+> 
+> On Tue, Apr 07, 2020 at 03:16:14PM +0200, Geert Uytterhoeven wrote:
+> > On Tue, Apr 7, 2020 at 12:36 PM Max Krummenacher <max.oss.09@gmail.com> wrote:
+> > > Three configs have been renamed and/or changed behaviour.
+> > > Clean that by using the new config name.
+> > > Then refresh the defconfig with make defconfig savedefconfig.
+> > > 
+> > > The refreshed defconfig does result in a not changed .config.
+> > > 
+> > > Applies on linux-next/master tag: next-20200407
+> > > 
+> > > Max Krummenacher (4):
+> > >   arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
+> > >   arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name
+> > >   arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
+> > >   arm64: defconfig: refresh
+> > 
+> > Probably CONFIG_DRM_DISPLAY_CONNECTOR should also be enabled for HDMI,
+> > VGA, and composite display connectors on various boards since commit
+> > 0c275c30176b2e78 ("drm/bridge: Add bridge driver for display
+> > connectors"), but it's not clear to me when exactly this became a
+> > requirement, as before there was no code that looked for e.g.
+> > vga-connector.
+> > Laurent?
+> 
+> It's not required yet for R-Car DU, but I'm working on changing that :-)
+> If we can enable CONFIG_DRM_DISPLAY_CONNECTOR in defconfig as part of
+> this series, it would be useful for me.
+> 
+I will add CONFIG_DRM_DISPLAY_CONNECTOR in a V2 to  "arm64: defconfig: DRM_DUMB_VGA_DAC:
+follow changed config symbol name" with a comment in the commit comment that this is
+recommended to go  with the DRM_DUMB_VGA_DAC.
 
-So let's not pretend we will apply the umask if we can already know
-that we will never.
-
-This fixes a problem where the umask is always ignored in the NFS
-client when compiled without CONFIG_FS_POSIX_ACL.  This is a 4 year
-old regression caused by commit 013cdf1088d723 which itself was not
-completely wrong, but failed to consider all the side effects by
-misdesigned VFS code.
-
-Signed-off-by: Max Kellermann <mk@cm4all.com>
-Reviewed-by: J. Bruce Fields <bfields@redhat.com>
-Cc: stable@vger.kernel.org
----
- fs/nfs/super.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/fs/nfs/super.c b/fs/nfs/super.c
-index dada09b391c6..dab79193f641 100644
---- a/fs/nfs/super.c
-+++ b/fs/nfs/super.c
-@@ -977,11 +977,14 @@ static void nfs_fill_super(struct super_block *sb, struct nfs_fs_context *ctx)
- 	if (ctx && ctx->bsize)
- 		sb->s_blocksize = nfs_block_size(ctx->bsize, &sb->s_blocksize_bits);
- 
--	if (server->nfs_client->rpc_ops->version != 2) {
-+	if (NFS_SB(sb)->caps & NFS_CAP_ACLS) {
- 		/* The VFS shouldn't apply the umask to mode bits. We will do
- 		 * so ourselves when necessary.
- 		 */
- 		sb->s_flags |= SB_POSIXACL;
-+	}
-+
-+	if (server->nfs_client->rpc_ops->version != 2) {
- 		sb->s_time_gran = 1;
- 		sb->s_export_op = &nfs_export_ops;
- 	} else
--- 
-2.20.1
-
+Regards
+Max
