@@ -2,122 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C423E1A08D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C871A08DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727950AbgDGIBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 04:01:50 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55701 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726635AbgDGIBt (ORCPT
+        id S1727975AbgDGICo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 04:02:44 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:39207 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726635AbgDGICo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 04:01:49 -0400
-Received: by mail-wm1-f65.google.com with SMTP id e26so747327wmk.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 01:01:48 -0700 (PDT)
+        Tue, 7 Apr 2020 04:02:44 -0400
+Received: by mail-ot1-f66.google.com with SMTP id x11so2178533otp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 01:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G+sVYGdrgciOIyEUzjtYrjQlBCZb9nKDuvRS4LNAffc=;
-        b=Qd1u5BWiAFEF5eIkYtQ1aW0zarMMS8/WjeHsBw0RB/FWcWrTM1Atvp8Lz3K48EdY/N
-         ieEIwA2Z1hZa+6lfyxhxSt72gWI+loQE6Q6J7WS9TQq18TPhfbqbqZsvN09fPs5ZDFAh
-         qOwyiyAOMfsviVHWPPLwZC3R9ipYE1vcsLYNTCuXl9mpwoDyTbJIL/3oBOX3ay6NqH9d
-         XIyPzKzIYeHGYlODQVmvHgHLOjDpS3PA3Jr8e9+sa3H0KU6qU9yAuQLo4BkFYDbSNvS5
-         PDJn0+/WGkqMGv/DXK31kSVhHauzwgwgY9GjcbnVCLtPtl2NyRo33U/WoA/dnTO8dYyq
-         B+QA==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B+IGGvwXtvpMoFyJXBYUflNRrfjRZwkCQuMyByMcQho=;
+        b=BFn6qsZEZ4ktGp46hnAl9O7se/SSwvgjXfSJ606X4QvyDqgcq2yEP0Y2ZvJZXUevB0
+         9bgtFW/7tYpvIYHL7cFCt1CLsmcTzC6qdcXg1kl2ulXPwB7afeCjLIuKgAFUeMpKJF6c
+         DvgZoU2Maqj/2MtZKUsDkWj4c9YZMwMpsgGNw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G+sVYGdrgciOIyEUzjtYrjQlBCZb9nKDuvRS4LNAffc=;
-        b=oANNo/cEpzmPJDa83lmD8gXpemKi0DrAcxsGfeCxj+a+CUXf+BFk7T08xEL6IpZJXL
-         DadYTZwzGB/t8O1gqM9r2mQ5uX13WJth06kbUZmcy4lRFodFyMG0LofArAKhhdyrX9uN
-         huwm43+kO0QGJ20WOib0siZl900I/QZWS0zFVBJkWBPIkE++9qLrJ1uj1+8zUKbA7dtT
-         cIFhMqliWl9+VrGwvZY12t2LWIYz9LjyL8uioxkuRRV/JbsX1qWtWHjo8GMnILHv67H3
-         5P2wl8i6NZVZ/eN21FXjMIoju8MDKBZyrHsVZn7qvC+mN570IQlU3uZr+yqQDd/HORoX
-         MA3Q==
-X-Gm-Message-State: AGi0PuZ9p5ir7liK0my2XAGxh6JxnudGjmokdQVnYbPGWLhac2jAlEyx
-        0THYCbEcCFRBNrzaXhwd8h0=
-X-Google-Smtp-Source: APiQypJ9A3980VQ+KaUlU3du9ayaETdW8cUmPckCAt5+8KvV1MmMZZ85OIJta6+2YdWtSn1ALKPBfQ==
-X-Received: by 2002:a1c:5401:: with SMTP id i1mr1089001wmb.172.1586246507989;
-        Tue, 07 Apr 2020 01:01:47 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
-        by smtp.googlemail.com with ESMTPSA id k9sm12166115wrn.89.2020.04.07.01.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 01:01:46 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 10:01:44 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     ebiederm@xmission.com, kexec@lists.infradead.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, mripard@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Trying to kexec on Allwinner A80
-Message-ID: <20200407080144.GA20773@Red>
-References: <20200406082720.GA31279@Red>
- <20200406091600.GF25745@shell.armlinux.org.uk>
- <20200406092540.GB31279@Red>
- <20200406093729.GG25745@shell.armlinux.org.uk>
- <20200406201053.GA10931@Red>
- <20200407073117.GH25745@shell.armlinux.org.uk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B+IGGvwXtvpMoFyJXBYUflNRrfjRZwkCQuMyByMcQho=;
+        b=VbAbzdc58K4ESl6BzO66d1hvmJSSoj7EJzFFTYZV9wvEBX7g4CYRsbIpIGUIsXQgAb
+         1oWDlvZt0BjXMfasMcswC5crhw2XVAH63Bhh8nqDfiJYoCoqx37a8xka9SVNXbK6qhaC
+         /s/68SeRUS7OFN2RdX3uY3kU1NbZ2uU7+fNsbZ+MzYqlczpu8deRDBqvGJMq2GomCQD6
+         waLojRd2axI7mnxyKaYN1DEVFGZTkE30v/PXtvTlQczCOY0HqKZ+mdWxBEQ1C8NtRUa5
+         giUofSJUgqmkox5CuGj5piBQcWlk8UEq8m6tYVqbnRVRNsrqnX6WI8F5Zg07viY9icwq
+         5ISQ==
+X-Gm-Message-State: AGi0PuaoRq4JO9s3/59wqiPW21xGe8eSiGH4IDVDFFG4FIxSAhdUL6M4
+        3gre98VMyyCcr7WMP7cf97/IMOOiorGGGIIjjYS0je3+
+X-Google-Smtp-Source: APiQypI0IVHv01F8Nt/anDTLR+c5S/0mtBDi0RIysglEWUDApMRa4zR5cD1gvrCxl6Z7NEIzrfxyzmkFDQyWfRw4sic=
+X-Received: by 2002:a9d:6e8f:: with SMTP id a15mr604218otr.188.1586246562936;
+ Tue, 07 Apr 2020 01:02:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407073117.GH25745@shell.armlinux.org.uk>
+References: <20190820230626.23253-1-john.stultz@linaro.org> <20190820230626.23253-20-john.stultz@linaro.org>
+In-Reply-To: <20190820230626.23253-20-john.stultz@linaro.org>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Tue, 7 Apr 2020 10:02:29 +0200
+Message-ID: <CAKMK7uHr5U-pPsxdQ4MpfK5v8iLjphDFug_3VTiUAf06nhS=yQ@mail.gmail.com>
+Subject: Re: [PATCH v5 19/25] drm: kirin: Add register connect helper
+ functions in drm init
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Xu YiPing <xuyiping@hisilicon.com>,
+        Rongrong Zou <zourongrong@gmail.com>,
+        Xinliang Liu <z.liuxinliang@hisilicon.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 08:31:17AM +0100, Russell King - ARM Linux admin wrote:
-> On Mon, Apr 06, 2020 at 10:10:53PM +0200, Corentin Labbe wrote:
-> > On Mon, Apr 06, 2020 at 10:37:29AM +0100, Russell King - ARM Linux admin wrote:
-> > > On Mon, Apr 06, 2020 at 11:25:40AM +0200, Corentin Labbe wrote:
-> > > > On Mon, Apr 06, 2020 at 10:16:00AM +0100, Russell King - ARM Linux admin wrote:
-> > > > > On Mon, Apr 06, 2020 at 10:27:20AM +0200, Corentin Labbe wrote:
-> > > > > > Hello
-> > > > > > 
-> > > > > > I am trying to add the last missing Allwinner Soc in kernelci: the A80.
-> > > > > > But this SoC does not have any way to be used in kernelci, no USB nor network in uboot.
-> > > > > > So I have tried to fake uboot since the kernel has network support and run the new kernel via kexec.
-> > > > > > 
-> > > > > > But kexec 2.0.18 fail to work:
-> > > > > > kexec --force /tmp/kernel --initrd /tmp/ramdisk --dtb /tmp/dtb --command-line='console=ttyS0,115200n8 root=/dev/ram0 earlycon=uart,mmio32,0x7000000 ip=dhcp'
-> > > > > 
-> > > > > What happens if you omit the dtb argument?
-> > > > > 
-> > > > 
-> > > > No change without dtb
-> > > > 
-> > > > I have also tried to add --mem-mim and --mem-max without any change.
-> > > > I given mem according to what I saw in /proc/iomem
-> > > > 20000000-9fffffff : System RAM
-> > > >   20008000-207fffff : Kernel code
-> > > >   20900000-209a0c87 : Kernel data
-> > > > So I gave --mem-min 0x30000000 --mem-max 0x9fffffff
-> > > > Anyway, the result is always the same.
-> > > 
-> > > The next step is to enable the early debugging - first in the
-> > > decompressor - add #define DEBUG to the top of
-> > > arch/arm/boot/compressed/head.S
-> > > 
-> > > Also enable DEBUG_LL in the kernel and use earlyprintk to see if you can
-> > > get anything from the new kernel.
-> > > 
-> > 
-> > I dont know what happened, but now I always get "Could not find a free area of memory of 0x86c1c0 bytes..." (even with kexec 2.0.18)
-> > Furthermore, I have added crashkernel=128M to the cmdlist
-> > I have verified that the reservation is working:
-> > 20000000-9fffffff : System RAM
-> >   20008000-207fffff : Kernel code
-> >   20900000-209a0c87 : Kernel data
-> >   40000000-47ffffff : Crash kernel
-> > But even with this reservation, no change.
-> 
-> crashkernel is only necessary if you're loading a kenrel image to be
-> booted when the existing one has crashed. For the problem you're
-> seeing, it's an unnecessary additional change; please drop that.
-> 
-> You could try running kexec with debug enabled to see more information.
-> 
+On Wed, Aug 21, 2019 at 1:06 AM John Stultz <john.stultz@linaro.org> wrote:
+>
+> From: Xu YiPing <xuyiping@hisilicon.com>
+>
+> As part of refactoring the kirin driver to better support
+> different hardware revisions, this patch adds a flag to the
+> device specific driver data so that we can conditionally
+> register the connectors at init.
+>
+> Cc: Rongrong Zou <zourongrong@gmail.com>
+> Cc: Xinliang Liu <z.liuxinliang@hisilicon.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: dri-devel <dri-devel@lists.freedesktop.org>
+> Cc: Sam Ravnborg <sam@ravnborg.org>
+> Acked-by: Xinliang Liu <z.liuxinliang@hisilicon.com>
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: Xu YiPing <xuyiping@hisilicon.com>
+> [jstultz: reworded commit message]
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 
-I am already running with --debug
+Whatever it is you're doing, this is nonsense. drm_dev_register does
+register connectors for you. If you hotplug connectors later on, you
+have to register them (manually), but definitely that should happen in
+the hotplug code. General rule: If it's not a hotplugged dp mst
+connector, calling drm_connector_register from drivers is pointless
+(and yes I know there's tons of that stuff around, for historical
+reasons).
+
+Further the flag isn't even set, so this is just dead code.
+
+Please revert.
+
+Thanks, Daniel
+
+> ---
+> v5: checkpatch --strict whitespace fixups noticed by Sam
+> ---
+>  .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  1 +
+>  .../gpu/drm/hisilicon/kirin/kirin_drm_drv.c   | 43 +++++++++++++++++++
+>  .../gpu/drm/hisilicon/kirin/kirin_drm_drv.h   |  1 +
+>  3 files changed, 45 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> index 21c5d457a97d..89bdc0388138 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> @@ -1073,6 +1073,7 @@ static struct drm_driver ade_driver = {
+>  };
+>
+>  struct kirin_drm_data ade_driver_data = {
+> +       .register_connects = false,
+>         .num_planes = ADE_CH_NUM,
+>         .prim_plane = ADE_CH1,
+>         .channel_formats = channel_formats,
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
+> index c9faaa848cc6..68de8838da3c 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
+> @@ -98,6 +98,40 @@ static int compare_of(struct device *dev, void *data)
+>         return dev->of_node == data;
+>  }
+>
+> +static int kirin_drm_connectors_register(struct drm_device *dev)
+> +{
+> +       struct drm_connector *connector;
+> +       struct drm_connector *failed_connector;
+> +       struct drm_connector_list_iter conn_iter;
+> +       int ret;
+> +
+> +       mutex_lock(&dev->mode_config.mutex);
+> +       drm_connector_list_iter_begin(dev, &conn_iter);
+> +       drm_for_each_connector_iter(connector, &conn_iter) {
+> +               ret = drm_connector_register(connector);
+> +               if (ret) {
+> +                       failed_connector = connector;
+> +                       goto err;
+> +               }
+> +       }
+> +       drm_connector_list_iter_end(&conn_iter);
+> +       mutex_unlock(&dev->mode_config.mutex);
+> +
+> +       return 0;
+> +
+> +err:
+> +       drm_connector_list_iter_begin(dev, &conn_iter);
+> +       drm_for_each_connector_iter(connector, &conn_iter) {
+> +               if (failed_connector == connector)
+> +                       break;
+> +               drm_connector_unregister(connector);
+> +       }
+> +       drm_connector_list_iter_end(&conn_iter);
+> +       mutex_unlock(&dev->mode_config.mutex);
+> +
+> +       return ret;
+> +}
+> +
+>  static int kirin_drm_bind(struct device *dev)
+>  {
+>         struct drm_device *drm_dev;
+> @@ -117,8 +151,17 @@ static int kirin_drm_bind(struct device *dev)
+>
+>         drm_fbdev_generic_setup(drm_dev, 32);
+>
+> +       /* connectors should be registered after drm device register */
+> +       if (driver_data->register_connects) {
+> +               ret = kirin_drm_connectors_register(drm_dev);
+> +               if (ret)
+> +                       goto err_drm_dev_unregister;
+> +       }
+> +
+>         return 0;
+>
+> +err_drm_dev_unregister:
+> +       drm_dev_unregister(drm_dev);
+>  err_kms_cleanup:
+>         kirin_drm_kms_cleanup(drm_dev);
+>  err_drm_dev_put:
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
+> index fdbfc4a90f22..95f56c9960d5 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
+> @@ -39,6 +39,7 @@ struct kirin_drm_data {
+>         u32 channel_formats_cnt;
+>         int config_max_width;
+>         int config_max_height;
+> +       bool register_connects;
+>         u32 num_planes;
+>         u32 prim_plane;
+>
+> --
+> 2.17.1
+>
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
