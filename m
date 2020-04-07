@@ -2,156 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E077D1A1734
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B031A173E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:12:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgDGVIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 17:08:41 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:12001 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgDGVIl (ORCPT
+        id S1726492AbgDGVM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 17:12:56 -0400
+Received: from mail-vk1-f201.google.com ([209.85.221.201]:48182 "EHLO
+        mail-vk1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726416AbgDGVMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 17:08:41 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8ceba20002>; Tue, 07 Apr 2020 14:07:46 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 07 Apr 2020 14:08:39 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 07 Apr 2020 14:08:39 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr
- 2020 21:08:39 +0000
-Received: from [10.2.171.175] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr 2020
- 21:08:37 +0000
-Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
- <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
- <200bb96e-2d07-764f-9e14-55538dc742fd@gmail.com>
- <23bfab09-b464-6e51-9843-06d13000e9b9@nvidia.com>
- <be77b0ef-d605-8357-4180-f40b2886d07a@gmail.com>
- <08cd31d5-e8b9-4d3a-fb0e-0e4462947d96@nvidia.com>
- <12a834ac-52b1-6dc0-7d3a-3e6a1fa85a2a@gmail.com>
- <e3712e7b-b335-b35b-a94f-24eb85122dca@nvidia.com>
- <b1726d33-0d35-9323-a747-407148d0104e@gmail.com>
- <eb80178f-30f4-8f46-51cd-ea3f4914b81d@nvidia.com>
- <dd16c560-ba8f-e7df-5dc4-5227e0043196@nvidia.com>
- <fea4f0a1-4a20-34d4-9eda-e4a599eeeffc@nvidia.com>
- <760d071e-0cbc-b3eb-9231-fb9f9ecb44a6@nvidia.com>
- <9e317f65-8a02-3b15-cfec-8e0d8374130e@gmail.com>
- <97b35910-4c93-123a-43a0-eb14476ed0f3@nvidia.com>
-Message-ID: <84ad4e2d-6ac1-e1f4-1c55-5edaae850631@nvidia.com>
-Date:   Tue, 7 Apr 2020 14:08:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <97b35910-4c93-123a-43a0-eb14476ed0f3@nvidia.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586293666; bh=p0/DWg6pW/GsSUz9X/po1THsEzzlpWiq+7OgvqVf1NM=;
-        h=X-PGP-Universal:Subject:From:To:CC:References:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=DSq+wk/V3vmE+OZKgrneo9QUGwCD2UhnoTfktGp0A8ZbgG8rvMFFD1PxmZ3QNra9x
-         BpkKprgB69xcX2I6V087N4bEiXFF5pUZUvYVZsbDM3Fav0CS8kVt7Atz2Gd8es02Uj
-         ymYRt1oWbK36galxrWt0IBJ4BjEP2a5tXdqzhi5sg+ZY71xVP6LtoLDYCObeTrZzf8
-         4FbiznmIgevIsI0xYXLA1VHS6VzaceTCVkHhkyP1sDKbrlNH0Rq+v48FDhg2N8ibwP
-         9j6sJ9T1wzbOzdwSYrRHsvfzzeNHO1tBE5SaAR2bRlyxlRtSTeHw7ZHp85fBRl3qw4
-         yoOjVnObn7/5w==
+        Tue, 7 Apr 2020 17:12:52 -0400
+Received: by mail-vk1-f201.google.com with SMTP id g7so1830142vkk.15
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 14:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=MaBweOlch11HKb9t7GCZeN/zarBri4qPTIweTTR7A04=;
+        b=U1hIVeMgswPvziZ0ENUZYnzyWBhSCYX1bi1rARPXO57w/nzGQOlElGD5smfdBFlgwG
+         gXCN6YdCQeatvDTyqJdkgZuBP8CiZ+Hj3VRJHszvMVDyns+C/E9Q8C/y6yxRFeTTGWoM
+         GG1+jjyR0teAgUt91n/wzDszB+8msDgtD7ByUeko2Qpj4m22zRPp5ALbgoPr/uVvFgbQ
+         TTfUs8RpRc30TRfkI6SzWRYi6WgM/NLDDnXf7s3wFlY60H6B93LrYlmWtMw04W7Vrb+T
+         g4C1jYezUSJ/DNkuS09urOiqpdkeYzOib6zl5qhTxluDPNqAVmIR11J75YVKeTCRsxBW
+         LM3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=MaBweOlch11HKb9t7GCZeN/zarBri4qPTIweTTR7A04=;
+        b=KlHIuS72IEIdmxosYoE/D/wlouNFPh6lL80craloTh89HzT4RzNxQ1yWITh5TsEs4Z
+         fICyLr3+sxTGBpybMRICvCIT1ic5LZhRzuro9kMjn/HikIhwCt+/KdRGI3DOJjNspjzg
+         mcnt8pmA0lPfV5G2qCMD2Jn+x5M+b0VkIZX4iezUajA4XmOlAOyOCaqzFUFhCLyIdi8z
+         SwelwNJSgGiM/p/1q9LRvfh0LCs7qmHvuGmSoGmhzQ5MGsYOnRNNMhHmxlwG2f2E32fH
+         96/jiFJdv+7GxiJzLuZh9xy5FSMGuq0L4x2lGL4ExQnkX/9pGM3T242sP3uhcKfMaIx6
+         kw7g==
+X-Gm-Message-State: AGi0Pua0ShRsmgJfMHCdjFlA7AkMBK4n/bM8j3Nsd2R/72ZozNQCZvCy
+        9lsnTVoxtqaJJLL444xc53GB2anj978=
+X-Google-Smtp-Source: APiQypK5y0nSomIW5VQaxOMuV0GGky2G/aipZdtaQUPbQUivIeAbJmE6e/0rAFwdiqwLJNImOtnXxJ/ZUpM=
+X-Received: by 2002:ab0:764a:: with SMTP id s10mr3176845uaq.1.1586293969257;
+ Tue, 07 Apr 2020 14:12:49 -0700 (PDT)
+Date:   Tue,  7 Apr 2020 14:12:43 -0700
+Message-Id: <20200407211243.247362-1-badhri@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
+Subject: [PATCH v1] power_supply: Add a helper function to retrieve psy array
+ from phandle
+From:   Badhri Jagan Sridharan <badhri@google.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+power_supply_get_by_phandle retrieves power_supply object based on
+phandle. However, when multiple power_supply objects are registered
+by the same parent device the first power_supply object's reference
+is returned. This varies according to probe order. Add a helper to
+return all the power_supply object's reference.
 
-On 4/6/20 4:48 PM, Sowjanya Komatineni wrote:
->
-> On 4/6/20 4:18 PM, Dmitry Osipenko wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> 07.04.2020 01:07, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> On 4/6/20 3:00 PM, Sowjanya Komatineni wrote:
->>>> On 4/6/20 2:39 PM, Sowjanya Komatineni wrote:
->>>>> On 4/6/20 2:15 PM, Sowjanya Komatineni wrote:
->>>>>> On 4/6/20 2:11 PM, Dmitry Osipenko wrote:
->>>>>>> External email: Use caution opening links or attachments
->>>>>>>
->>>>>>>
->>>>>>> 07.04.2020 00:02, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=
-=82:
->>>>>>>>>>>>> Am I understanding correctly that this thread will take 100%
->>>>>>>>>>>>> CPU,
->>>>>>>>>>>>> spinning here, if more than 2 frame-captures queued?
->>>>>>>>>>>> on more than 2 frames captures, it breaks thread and on next
->>>>>>>>>>>> wakeup it
->>>>>>>>>>>> continues
->>>>>>>>>>> The wait_event() won't wait if condition is true.
->>>>>>>>>> condition is checked when waitqueue is woken up
->>>>>>>>> https://elixir.bootlin.com/linux/v5.6.2/source/include/linux/wait=
-.h#L462=20
->>>>>>>>>
->>>>>>>>>
->>>>>>>> process is put to sleep until the condition evaluates to true or
->>>>>>>> signal
->>>>>>>> is received.
->>>>>>>>
->>>>>>>> condition is checked each time the waitqueue head is woken up.
->>>>>>> This is a wrong assumption in accordance to the code.
->>>> process is in sleep until the condition is evaluated and when
->>>> condition is true wakeup still happens only when wake_up on waitqueue
->>>> is called
->>>>
->>>> This is the reason for using this to prevent blocking while waiting
->>>> for the buffers.
->>> w.r.t capture list update, wakeup happens when wake_up on waitqueue is
->>> called.
->>>
->>> wakeup also happens on kthread stop signal event.
->>>
->>>>
->>>>>> when every buffer is available as long as we are in streaming, we
->>>>>> should process it.
->>>>>>
->>>>>> So if wake up happens when list has buffer, it will be processed but
->>>>>> at a time we limit processing 2 simultaneous buffer capture starts
->>>>>> only.
->>>>>>
->>>>> Fixing typo.
->>>>>
->>>>> I meant when ever buffer is available as long as we are in streaming,
->>>>> we should process it.
->>>>>
->>>>> So capture thread processes as long as buffers are available from
->>>>> user space limiting 2 simultaneous trigger of captures and thread
->>>>> will be in sleep when capture buffers list is empty or no stop thread
->>>>> is signaled.
->> IIUC, the waiting won't happen if more than 2 captures are queued and
->> thread will be spinning until captures are processed.
->>
->> I think you need a semaphore with resource count =3D 2.
-> we hold on to issuing capture if more than 2 buffers are queued and it=20
-> continues only after fifo has min 1 slot empty
+The caller has to provide the power_supply pointer array.
+-EOVERFLOW is returned when the size of the array is not enough to
+pass back all the power_supply objects.
 
+Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+---
+ drivers/power/supply/power_supply_core.c | 78 ++++++++++++++++++++++++
+ include/linux/power_supply.h             |  9 +++
+ 2 files changed, 87 insertions(+)
 
-Just want to close on this part of feedback. Hope above explanation is=20
-clear regarding triggering/issuing at max 2 frame capture to VI HW and=20
-also regarding capture threads where they use wait_event_interruptible=20
-to prevent blocking waiting for buffers to be available for captures.
-
-So no changes related to this part are needed in v7.
+diff --git a/drivers/power/supply/power_supply_core.c b/drivers/power/supply/power_supply_core.c
+index 1a9a9fae73d32..e7bab4661ba13 100644
+--- a/drivers/power/supply/power_supply_core.c
++++ b/drivers/power/supply/power_supply_core.c
+@@ -32,6 +32,13 @@ EXPORT_SYMBOL_GPL(power_supply_notifier);
+ 
+ static struct device_type power_supply_dev_type;
+ 
++struct match_device_node_array_param {
++	struct device_node *parent_of_node;
++	struct power_supply **psy;
++	ssize_t psy_size;
++	ssize_t psy_count;
++};
++
+ #define POWER_SUPPLY_DEFERRED_REGISTER_TIME	msecs_to_jiffies(10)
+ 
+ static bool __power_supply_is_supplied_by(struct power_supply *supplier,
+@@ -522,6 +529,77 @@ struct power_supply *power_supply_get_by_phandle(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(power_supply_get_by_phandle);
+ 
++static int power_supply_match_device_node_array(struct device *dev,
++						void *data)
++{
++	struct match_device_node_array_param *param =
++		(struct match_device_node_array_param *)data;
++	struct power_supply **psy = param->psy;
++	ssize_t size = param->psy_size;
++	ssize_t *count = &param->psy_count;
++
++	if (!dev->parent || dev->parent->of_node != param->parent_of_node)
++		return 0;
++
++	if (*count >= size)
++		return -EOVERFLOW;
++
++	psy[*count] = dev_get_drvdata(dev);
++	atomic_inc(&psy[*count]->use_cnt);
++	(*count)++;
++
++	return 0;
++}
++
++/**
++ * power_supply_get_by_phandle_array() - Similar to
++ * power_supply_get_by_phandle but returns an array of power supply
++ * objects which are associated with the phandle.
++ * @np: Pointer to device node holding phandle property.
++ * @property: Name of property holding a power supply name.
++ * @psy: Array of power_supply pointers provided by the client which is
++ * filled by power_supply_get_by_phandle_array.
++ * @size: size of power_supply pointer array.
++ *
++ * If power supply was found, it increases reference count for the
++ * internal power supply's device. The user should power_supply_put()
++ * after usage.
++ *
++ * Return: On success returns the number of power supply objects filled
++ * in the @psy array.
++ * -EOVERFLOW when size of @psy array is not suffice.
++ * -EINVAL when @psy is NULL or @size is 0.
++ * -ENODEV when matching device_node is not found.
++ */
++int power_supply_get_by_phandle_array(struct device_node *np,
++				      const char *property,
++				      struct power_supply **psy,
++				      ssize_t size)
++{
++	struct device_node *power_supply_np;
++	int ret;
++	struct match_device_node_array_param param;
++
++	if (psy == NULL || size == 0)
++		return -EINVAL;
++
++	power_supply_np = of_parse_phandle(np, property, 0);
++	if (!power_supply_np)
++		return -ENODEV;
++
++	param.parent_of_node = power_supply_np;
++	param.psy = psy;
++	param.psy_size = size;
++	param.psy_count = 0;
++	ret = class_for_each_device(power_supply_class, NULL, &param,
++				    power_supply_match_device_node_array);
++
++	of_node_put(power_supply_np);
++
++	return param.psy_count;
++}
++EXPORT_SYMBOL_GPL(power_supply_get_by_phandle_array);
++
+ static void devm_power_supply_put(struct device *dev, void *res)
+ {
+ 	struct power_supply **psy = res;
+diff --git a/include/linux/power_supply.h b/include/linux/power_supply.h
+index dcd5a71e6c677..8c1478a480674 100644
+--- a/include/linux/power_supply.h
++++ b/include/linux/power_supply.h
+@@ -366,12 +366,21 @@ extern void power_supply_put(struct power_supply *psy);
+ #ifdef CONFIG_OF
+ extern struct power_supply *power_supply_get_by_phandle(struct device_node *np,
+ 							const char *property);
++extern int power_supply_get_by_phandle_array(struct device_node *np,
++					     const char *property,
++					     struct power_supply **psy,
++					     ssize_t size);
+ extern struct power_supply *devm_power_supply_get_by_phandle(
+ 				    struct device *dev, const char *property);
+ #else /* !CONFIG_OF */
+ static inline struct power_supply *
+ power_supply_get_by_phandle(struct device_node *np, const char *property)
+ { return NULL; }
++static int power_supply_get_by_phandle_array(struct device_node *np,
++					     const char *property,
++					     struct power_supply **psy,
++					     int size)
++{ return 0; }
+ static inline struct power_supply *
+ devm_power_supply_get_by_phandle(struct device *dev, const char *property)
+ { return NULL; }
+-- 
+2.26.0.292.g33ef6b2f38-goog
 
