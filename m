@@ -2,117 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C0571A0EFA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CB41A0F04
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgDGOQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:16:40 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:32898 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728861AbgDGOQj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:16:39 -0400
-Received: by mail-pg1-f193.google.com with SMTP id d17so1805278pgo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=nLSA7WGf+iI/uqjocg3jy7gnQIxiPv4ZG9SRGV0SsjM=;
-        b=sY6pD4XWO6yDRQ48KIuHy/LVVx8uJGPOGYNLFtNBzgUriQ3gQs9j9xWzROUkdQJREm
-         H88BLVe3guteuTBAPJcg3JMiafRq/RJ3Wm1n9XeY/hnysJjHKVmjcHA04uZvjmzmHHSp
-         fUe+ZspqMLIbyiw4JvHHkXLC5XHJf0DSSivnKArAamAebIfMY3BoEzWk0JB4Xh6brHPV
-         FL5+C4L/B8VyW5C7zEiJwFDUw2BXwNPiRl1uwrGg804wKmNG+ymk4eGT6NNH/7uTBKTa
-         J0T1CR8qCu60AptbaAhPso72A4M7xVgoDykEA71O/uBS6sg+YjTGxKQ0ebbVz8LE216P
-         lqgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=nLSA7WGf+iI/uqjocg3jy7gnQIxiPv4ZG9SRGV0SsjM=;
-        b=Ofk+Bx1BGbeaT3URvoZNXST9sEbuMZ6/kP2aUgdNQs5YjrjpBcI1I6VxdAHNR4HWlK
-         qbqK7mBeOa2/4bSxMr3SG9HLW5cL8ZbvUsHVRKTpH8IKjnG4IBhymqzOVN0nDeB950Gn
-         iOjnSeSysTDvZVzvgUFHSwvbSweJS8vKatWftsK+V2GzOLRJY6qjEzVC194hPk0UzLHJ
-         VT9yvSN3MLOkN8LHCBqiVBh+WusSPW+9GIvz7Daz9jxJ32Ye6f8bk7QPfprg7M0bCXc/
-         EUhuzCZsxpiesVnf3QNHDKtnIPLieWodk6g1Q9VwyGw9BnMCGxNJG6LcNcKHx6O6KrCL
-         zR+g==
-X-Gm-Message-State: AGi0PuYlJaWbTDEeAP6ijBuBq9xv4inppBuJ3wX33QjKL2MUvWLh4SIl
-        r4O7wXRb4PeBqEhXbozp6/olTg==
-X-Google-Smtp-Source: APiQypIynIOntpedXRAuRnA+JSjxtWZI/O0qjQNmxZI9NkXKo72GAkhWr64AizC6zCJPxKJFF+zflQ==
-X-Received: by 2002:a62:92:: with SMTP id 140mr2693207pfa.186.1586268997569;
-        Tue, 07 Apr 2020 07:16:37 -0700 (PDT)
-Received: from ?IPv6:2600:1010:b064:7066:dc53:1479:9187:9f80? ([2600:1010:b064:7066:dc53:1479:9187:9f80])
-        by smtp.gmail.com with ESMTPSA id 144sm14198363pfx.184.2020.04.07.07.16.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 07:16:36 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [RFC PATCH v2] x86/arch_prctl: Add ARCH_SET_XCR0 to set XCR0 per-thread
-Date:   Tue, 7 Apr 2020 07:16:34 -0700
-Message-Id: <BEA3CCB8-5127-4E6A-9696-E293C00BFA82@amacapital.net>
-References: <a5b07aa9-96ea-a9b5-13db-e5dcbd7760e6@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Keno Fischer <keno@juliacomputing.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andi Kleen <andi@firstfloor.org>,
-        Kyle Huey <khuey@kylehuey.com>,
-        Robert O'Callahan <robert@ocallahan.org>
-In-Reply-To: <a5b07aa9-96ea-a9b5-13db-e5dcbd7760e6@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-X-Mailer: iPhone Mail (17E255)
+        id S1729067AbgDGOR0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 10:17:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:12920 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728596AbgDGORZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 10:17:25 -0400
+IronPort-SDR: zeB+OLmTnYV/HGJlXvqujkhLodlArGeWGD62WtRjFB53sAuxI7m46zHpSWaDvUWyBayaE28I14
+ cvtKcXIc9hjw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 07:17:25 -0700
+IronPort-SDR: nLQ9Qj9Xs0hrrMydI0L0HBiUpkBkzTSe0+UiehNicEwpF7vPq+FFBPoSc8RrS2vkw4ogyLb8JQ
+ uF+hbMtc3ptA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,354,1580803200"; 
+   d="scan'208";a="269440905"
+Received: from fmsmsx105.amr.corp.intel.com ([10.18.124.203])
+  by orsmga002.jf.intel.com with ESMTP; 07 Apr 2020 07:17:24 -0700
+Received: from fmsmsx163.amr.corp.intel.com (10.18.125.72) by
+ FMSMSX105.amr.corp.intel.com (10.18.124.203) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 7 Apr 2020 07:17:24 -0700
+Received: from shsmsx101.ccr.corp.intel.com (10.239.4.153) by
+ fmsmsx163.amr.corp.intel.com (10.18.125.72) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Tue, 7 Apr 2020 07:17:24 -0700
+Received: from shsmsx108.ccr.corp.intel.com ([169.254.8.7]) by
+ SHSMSX101.ccr.corp.intel.com ([169.254.1.129]) with mapi id 14.03.0439.000;
+ Tue, 7 Apr 2020 22:17:21 +0800
+From:   "Zhang, Rui" <rui.zhang@intel.com>
+To:     Takashi Iwai <tiwai@suse.de>,
+        Amit Kucheria <amit.kucheria@verdurent.com>
+CC:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] thermal: Add a sanity check for invalid state at stats
+ update
+Thread-Topic: [PATCH] thermal: Add a sanity check for invalid state at stats
+ update
+Thread-Index: AQHWBpzH0NNV6tuj6kqI2uO2gMago6htLiyAgAALuQCAAIctYA==
+Date:   Tue, 7 Apr 2020 14:17:21 +0000
+Message-ID: <744357E9AAD1214791ACBA4B0B90926377CEDF41@SHSMSX108.ccr.corp.intel.com>
+References: <20200330140859.12535-1-tiwai@suse.de>
+        <CAHLCerOGgv8k1ce43jvmhZwXWVQ_uB1WgrQN_NbkBphWE9NfHA@mail.gmail.com>
+ <s5himibmljz.wl-tiwai@suse.de>
+In-Reply-To: <s5himibmljz.wl-tiwai@suse.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.239.127.40]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Right, I have a V2 patch series, which will be post soon.
+
+Thanks,
+rui
+
+-----Original Message-----
+From: linux-pm-owner@vger.kernel.org <linux-pm-owner@vger.kernel.org> On Behalf Of Takashi Iwai
+Sent: Tuesday, April 07, 2020 10:13 PM
+To: Amit Kucheria <amit.kucheria@verdurent.com>
+Cc: Takashi Iwai <tiwai@suse.de>; Zhang, Rui <rui.zhang@intel.com>; Daniel Lezcano <daniel.lezcano@linaro.org>; Linux PM list <linux-pm@vger.kernel.org>; LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] thermal: Add a sanity check for invalid state at stats update
+Importance: High
+
+On Tue, 07 Apr 2020 15:30:51 +0200,
+Amit Kucheria wrote:
+> 
+> On Mon, Mar 30, 2020 at 7:39 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > The thermal sysfs handler keeps the statistics table with the fixed 
+> > size that was determined from the initial max_states() call, and the 
+> > table entry is updated at each sysfs cur_state write call.  And, 
+> > when the driver's set_cur_state() ops accepts the value given from 
+> > user-space, the thermal sysfs core blindly applies it to the 
+> > statistics table entry, which may overflow and cause an Oops.
+> > Although it's rather a bug in the driver's ops implementations, we 
+> > shouldn't crash but rather give a proper warning instead.
+> >
+> > This patch adds a sanity check for avoiding such an OOB access and 
+> > warns with a stack trace to show the suspicious device in question.
+> 
+> Hi Takashi,
+> 
+> Instead of this warning, I think we should reject such input when 
+> writing to cur_state.
+> 
+> See attached patch. If you think this OK, I'll submit it.
+
+Actually the input value itself is correct, the problem is rather about the max_states that may vary depending on other driver.  So IMO, we don't want to refuse the input completely.
+
+Please see the thread:
+  https://lore.kernel.org/linux-acpi/s5h5zeiwd01.wl-tiwai@suse.de/
 
 
-> On Apr 7, 2020, at 7:07 AM, Dave Hansen <dave.hansen@intel.com> wrote:
->=20
-> =EF=BB=BFOn 4/7/20 5:21 AM, Peter Zijlstra wrote:
->> You had a fairly long changelog detailing what the patchd does; but I've
->> failed to find a single word on _WHY_ we want to do any of that.
->=20
-> The goal in these record/replay systems is to be able to recreate thee
-> exact same program state on two systems at two different times.  To make
-> it reasonably fast, they try to minimize the number of snapshots they
-> have to take and avoid things like single stepping.
->=20
-> So, there are some windows where they just let the CPU run and don't
-> bother with taking any snapshots of register state, for instance.  Let's
-> say you read a word from shared memory, multiply it and shift it around
-> some registers, then stick it back in shared memory.  Most of these
-> things will just a record the snapshot at the memory read and assume
-> that all the instructions in the middle execute deterministically.  That
-> eliminates a ton of snapshots.
->=20
-> But, what if an instruction in the middle isn't deterministic between
-> two machines.  Let's say you record a trace on a a Broadwell system,
-> then try to replay it on a Skylake, and one of the non-snapshotted
-> instructions is xgetbv.  Skylake added MPX, so xgetbv will return
-> different values.  Your replay diverges from what was "recorded", and
-> life sucks.
->=20
-> Same problem exists for CPUID, but that was hacked around in another set.
->=20
-> I'm also trying to think of what kinds of things CPU companies add to
-> their architectures that would break this stuff.  I can't recall ever
-> having a discussion with folks at Intel where we're designing a CPU
-> feature and we say, "Can't do that, it would break record/replay".  I
-> suspect there are more of these landmines around and I bet that we're
-> building more of them into CPUs every day.
+thanks,
 
-TSX!
+Takashi
 
-I think rr should give the raw KVM API at least a try.  It should be possibl=
-e to fire up a vCPU in CPL3 in the correct state.  No guest kernel required.=
-  I don=E2=80=99t know if there will be issues with the perf API, though.
 
-If we actually do merge this XCR0 hack, I think the rule should be that it h=
-as no effect on kernel behavior.  Signals, ptrace, etc reflect the normal XC=
-R0, not the overridden value.=
+> 
+> Regards,
+> Amit
+> 
+> > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > ---
+> >
+> > We've hit some crash by stress tests, and this patch at least works 
+> > around the crash itself.  While the actual bug fix of the buggy 
+> > driver is still being investigated, I submit the hardening in the 
+> > core side at first.
+> >
+> >  drivers/thermal/thermal_sysfs.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/thermal/thermal_sysfs.c 
+> > b/drivers/thermal/thermal_sysfs.c index aa99edb4dff7..a23c4e701d63 
+> > 100644
+> > --- a/drivers/thermal/thermal_sysfs.c
+> > +++ b/drivers/thermal/thermal_sysfs.c
+> > @@ -772,6 +772,11 @@ void thermal_cooling_device_stats_update(struct 
+> > thermal_cooling_device *cdev,
+> >
+> >         spin_lock(&stats->lock);
+> >
+> > +       if (dev_WARN_ONCE(&cdev->device, new_state >= stats->max_states,
+> > +                         "new state %ld exceeds max_state %ld",
+> > +                         new_state, stats->max_states))
+> > +               goto unlock;
+> > +
+> >         if (stats->state == new_state)
+> >                 goto unlock;
+> >
+> > --
+> > 2.16.4
+> >
+> From 54266260d483ab4476510dd4461a1cafc611e17d Mon Sep 17 00:00:00 2001
+> Message-Id: 
+> <54266260d483ab4476510dd4461a1cafc611e17d.1586266224.git.amit.kucheria
+> @linaro.org>
+> From: Amit Kucheria <amit.kucheria@linaro.org>
+> Date: Tue, 7 Apr 2020 18:48:14 +0530
+> Subject: [PATCH] thermal: Reject invalid cur_state input from 
+> userspace
+> 
+> We don't check if the cur_state value input in sysfs is greater than 
+> the maximum cooling state that the cooling device supports. This can 
+> cause access to unallocated memory in case THERMAL_STATISTICS in 
+> enabled and could also crash cooling devices that don't check for an 
+> invalid state in their set_cur_state() callback.
+> 
+> Return an error if the state being requested in greater than the 
+> maximum cooling state the device supports.
+> 
+> Reported-by: Takashi Iwai <tiwai@suse.de>
+> Signed-off-by: Amit Kucheria <amit.kucheria@linaro.org>
+> ---
+>  drivers/thermal/thermal_sysfs.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/thermal_sysfs.c 
+> b/drivers/thermal/thermal_sysfs.c index 7e1d11bdd258..8033e5a9386a 
+> 100644
+> --- a/drivers/thermal/thermal_sysfs.c
+> +++ b/drivers/thermal/thermal_sysfs.c
+> @@ -703,7 +703,7 @@ cur_state_store(struct device *dev, struct device_attribute *attr,
+>  		const char *buf, size_t count)
+>  {
+>  	struct thermal_cooling_device *cdev = to_cooling_device(dev);
+> -	unsigned long state;
+> +	unsigned long state, max_state;
+>  	int result;
+>  
+>  	if (sscanf(buf, "%ld\n", &state) != 1) @@ -712,6 +712,13 @@ 
+> cur_state_store(struct device *dev, struct device_attribute *attr,
+>  	if ((long)state < 0)
+>  		return -EINVAL;
+>  
+> +	result = cdev->ops->get_max_state(cdev, &max_state);
+> +	if (result)
+> +		return result;
+> +
+> +	if (state >= max_state)
+> +		return -EINVAL;
+> +
+>  	mutex_lock(&cdev->lock);
+>  
+>  	result = cdev->ops->set_cur_state(cdev, state);
+> --
+> 2.20.1
+> 
