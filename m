@@ -2,138 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CE01A10A9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173681A106A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbgDGPw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 11:52:57 -0400
-Received: from mo4-p00-ob.smtp.rzone.de ([81.169.146.216]:34221 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726833AbgDGPw5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:52:57 -0400
-X-Greylist: delayed 726 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Apr 2020 11:52:56 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586274775;
-        s=strato-dkim-0002; d=aepfle.de;
-        h=Message-ID:Subject:To:From:Date:X-RZG-CLASS-ID:X-RZG-AUTH:From:
-        Subject:Sender;
-        bh=0Vm5jvdMMayd/AwXXhj00PE8ghMFHjy0GR5Lfh87NN4=;
-        b=l4GJooe1P6ckza86t8onD0IM13cp0a0RIkOJk+fPoeoOHMIfotcZzApdq9CuETfm8s
-        SuZnuEkIaxdAcV5Mrxy+Gm/oWJucLWKNOTYOWrHto6R0wrCCGKtmQd8CAHAfqVOxd6p0
-        dW9RN92pbVApcPlHyF/AYs7PAoPqJ3RwVMqlpPlDgwVhO9t8tcBVOIbN3TKYZO48XjUb
-        6riG7udOrvlSSXUZd/oa7H3GU7KTBccPKJZxU9zzx/M+yXJ7KnfHS+WJnsY9Tx3InOvK
-        FZybhoAWhFXM14j8IKQKuAyWFI+8kCQGiHv9hPvblKZC+0fXKPJIZfedW51SAIJYbYRh
-        f5Kg==
-X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzBW/OdlBZQ4AHSS32kg"
-X-RZG-CLASS-ID: mo00
-Received: from aepfle.de
-        by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
-        with ESMTPSA id 204e5fw37Fenh96
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Tue, 7 Apr 2020 17:40:49 +0200 (CEST)
-Date:   Tue, 7 Apr 2020 17:40:46 +0200
-From:   Olaf Hering <olaf@aepfle.de>
-To:     linux-kernel@vger.kernel.org, git@vger.kernel.org
-Subject: get_maintainer.pl sends bogus addresses to git send-email
-Message-ID: <20200407154046.GA15368@aepfle.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-Content-Disposition: inline
+        id S1729431AbgDGPlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:41:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729052AbgDGPlR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 11:41:17 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B9B120730;
+        Tue,  7 Apr 2020 15:41:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586274077;
+        bh=8pU6tiXi9rnuNRWdnhlU0X7jG5tusWkAVjZTaY2jevI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=06qyQNXRyys01kGYppgJpj6KNzoPjQaxeWNQ4ceuhDI+nINHs/fybUDtA0656lKff
+         FngeSccYnMRDoriIRvhrCsscLZjMnfSY2/kefq0bR4Xlg2rBfTJoVJid1cS0We9BLp
+         2M7tqJ9AoOU8n0Wtj9fJk8TGmh47BEK7LcvFPh1c=
+Date:   Wed, 8 Apr 2020 00:41:11 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Jann Horn <jannh@google.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: AMD DC graphics display code enables -mhard-float, -msse,
+ -msse2 without any visible FPU state protection
+Message-Id: <20200408004111.3dd597f2a7c6172b4c71a9ba@kernel.org>
+In-Reply-To: <20200407111535.GT20730@hirez.programming.kicks-ass.net>
+References: <CAG48ez2Sx4ELkM94aD_h_J7K7KBOeuGmvZLKRkg3n_f2WoZ_cg@mail.gmail.com>
+        <4c5fe55d-9db9-2f61-59b2-1fb2e1b45ed0@amd.com>
+        <20200402141308.GB20730@hirez.programming.kicks-ass.net>
+        <20200403142837.f61a18d7bd32fd73777479ad@kernel.org>
+        <20200403112113.GN20730@hirez.programming.kicks-ass.net>
+        <20200404120808.05e9aa61500265be2e031bd6@kernel.org>
+        <20200404143224.GL2452@worktop.programming.kicks-ass.net>
+        <20200405121930.e3ea3e7acc7588102de483e2@kernel.org>
+        <20200406102107.GI20730@hirez.programming.kicks-ass.net>
+        <20200407185008.c819005f0174cae76c44a135@kernel.org>
+        <20200407111535.GT20730@hirez.programming.kicks-ass.net>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 7 Apr 2020 13:15:35 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Tue, Apr 07, 2020 at 06:50:08PM +0900, Masami Hiramatsu wrote:
+> > On Mon, 6 Apr 2020 12:21:07 +0200
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > > arch/x86/mm/extable.o: warning: objtool: ex_handler_fprestore()+0x8b: fpu_safe hint not an FPU instruction
+> > > 008b  36b:      48 0f ae 0d 00 00 00    fxrstor64 0x0(%rip)        # 373 <ex_handler_fprestore+0x93>
+> > > 
+> > > arch/x86/kvm/x86.o: warning: objtool: kvm_load_guest_fpu.isra.0()+0x1fa: fpu_safe hint not an FPU instruction
+> > > 01fa    1d2fa:  48 0f ae 4b 40          fxrstor64 0x40(%rbx)
+> > 
+> > Ah, fxstor will not chang the FPU/MMX/SSE regs but just store it on memory.
+> > OK, I'll remove it from the list.
+> 
+> Yeah, I don't much care if its in or out, but the way I was reading that
+> patch it _should_ be in, but then it doesn't seem to recognise it.
 
-For me sending patches via git send-email fails because email address
-conversion is failing. Something appends a ')' to x86/lkml@kernel.org.
-I suspect the double '))' in MAINTAINERS is confusing the command.
-I tried to send the trivial patch from v5.0 and v5.6 tag.
+Oops, I misread. OK. I fixed the issue.
 
-Is this a failure in ./scripts/get_maintainer.pl,
-or is this something git does internally?
-I'm sure others use such command on a daily basis, so likely something on
-my end became broken at some point in the past.
+> 
+> > > Also, all the VMX bits seems to qualify as FPU (I can't remember seeing
+> > > that previously):
+> > 
+> > Oops, let me check it.
+> 
+> I just send you another patch that could do with insn_is_vmx()
+> (sorry!!!)
 
-Olaf
+Hmm, it is hard to find out the vmx insns. Maybe we need to clarify it by
+opcode pattern. (like "VM.*")
 
-linux.git $ git send-email --reroll-count 1 --confirm=3Dalways --annotate -=
--to-cmd ./scripts/get_maintainer.pl  HEAD^
+Thank you,
 
-(mbox) Adding cc: Olaf Hering <olaf@aepfle.de> from line 'From: Olaf Hering=
- <olaf@aepfle.de>'
-(body) Adding cc: Olaf Hering <olaf@aepfle.de> from line 'Signed-off-by: Ol=
-af Hering <olaf@aepfle.de>'
-(to-cmd) Adding to: "K. Y. Srinivasan" <kys@microsoft.com> from: './scripts=
-/get_maintainer.pl'
-(to-cmd) Adding to: Haiyang Zhang <haiyangz@microsoft.com> from: './scripts=
-/get_maintainer.pl'
-(to-cmd) Adding to: Stephen Hemminger <sthemmin@microsoft.com> from: './scr=
-ipts/get_maintainer.pl'
-(to-cmd) Adding to: Sasha Levin <sashal@kernel.org> from: './scripts/get_ma=
-intainer.pl'
-(to-cmd) Adding to: Thomas Gleixner <tglx@linutronix.de> from: './scripts/g=
-et_maintainer.pl'
-(to-cmd) Adding to: Ingo Molnar <mingo@redhat.com> from: './scripts/get_mai=
-ntainer.pl'
-(to-cmd) Adding to: Borislav Petkov <bp@alien8.de> from: './scripts/get_mai=
-ntainer.pl'
-(to-cmd) Adding to: "H. Peter Anvin" <hpa@zytor.com> from: './scripts/get_m=
-aintainer.pl'
-(to-cmd) Adding to: x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND=
- 64-BIT)) from: './scripts/get_maintainer.pl'
-(to-cmd) Adding to: devel@linuxdriverproject.org (open list:Hyper-V CORE AN=
-D DRIVERS) from: './scripts/get_maintainer.pl'
-(to-cmd) Adding to: linux-kernel@vger.kernel.org (open list:X86 ARCHITECTUR=
-E (32-BIT AND 64-BIT)) from: './scripts/get_maintainer.pl'
-
-=46rom: Olaf Hering <olaf@aepfle.de>
-To: "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        x86@kernel.org) (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT),
-        devel@linuxdriverproject.org (open list:Hyper-V CORE AND DRIVERS),
-        linux-kernel@vger.kernel.org) (open list:X86 ARCHITECTURE (32-BIT A=
-ND 64-BIT)
-Cc: Olaf Hering <olaf@aepfle.de>
-X-Mailer: git-send-email 2.16.4
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-
-Send this email? ([y]es|[n]o|[q]uit|[a]ll): y
-5.1.3 Invalid character in domain: <x86@kernel.org)>
-
-
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAl6MnvkACgkQ86SN7mm1
-DoBZWw//b1Rcjobavt7s5p1SIXjRUQLivHHKjVm7BgoPN30dtaltqRpZH/ngWUpz
-et96oqNdh5ATkSmWvbg0V53H1zc6BNfovcDnQU7hfEYs4VP6jil1tiQg3nKgc63P
-TXOnmuKQjOjzz1tSA40JEdB1CerNTVjAgpdHeNndv0fsxORjUownNPrTWNI+RWov
-wLn4ZWCTIp9181fYuHsX+8qKpqPYUK7oM7BcAPBq/IlQU5g8+YAckwRCU2cCbm4y
-DzUgYyUOyOpgxNfKKb2htcUwpwz77xFBmksiRsO1vY2i4QbU18josDdvqUeJZDJ1
-dwVOOYtbDbKq2yYoJu/vPv/RVamlKy42vh4m03l6KOuh/ZxZxtcN4uGqPKFFyxzy
-2zMx9RFautx+IcBE2ZJGPKeOycs1H9FdJSnUayFMBBuykaBj6/vnPUwR/jmNPkeP
-rYn1A9ZHvbuTWyox1ed1QMrS/sVsbRTNGvWUoYVz/kH/Z3qPQWYtZ5vkRjk2AvHY
-63baYKf7qAtTkS+95FCdrTc54kjNfFBetdn8vtw2AvspD3o+LHUklF/sVrVPhgPm
-pXUoaW0q1u5yuof0xPOvNeeac0EYyPQgeoG52R9tZHBNCWf4TgJZj3hzVv6IldQk
-5CV1nn9TSzjYEtkuVwM0eZdsVuhh9EfbmoLmWY8x/NjcCcIRQaU=
-=r0nd
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
