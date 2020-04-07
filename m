@@ -2,220 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6E71A04E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49AA61A04FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgDGC2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 22:28:08 -0400
-Received: from mail-qv1-f47.google.com ([209.85.219.47]:39379 "EHLO
-        mail-qv1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgDGC2H (ORCPT
+        id S1726582AbgDGCkM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Apr 2020 22:40:12 -0400
+Received: from [122.49.211.3] ([122.49.211.3]:48903 "EHLO
+        mail.2successcorp.com" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbgDGCkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 22:28:07 -0400
-Received: by mail-qv1-f47.google.com with SMTP id v38so1145834qvf.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 19:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :cc:to;
-        bh=53HavfuEoNs7RdkbULc05Z/N1hLdj8dohxY4zgNOzHg=;
-        b=Xz1PaOxLFsXJrcs/MLYXgVbP6pZ68eOQOoeOAwDWL/o3fGjYrlIabduJ8regH40GBU
-         b4fF1q6VopAEvLtlUJCdDRGSLwx+Dk95JSmvM1oiEkkPwJd7605yxXA6e0l3XR5TMbn2
-         lP3i2rBZHaInkgKdChOShXThfRXbdtJHS+Rj1OVMGZAR565lkPbE2x7D3mt3cBERkEuV
-         7Fyb6IBh7bQCeFeCYQcowONWeEf43i+vRUpVOyxLicwGYivlB8ov2mOk0MsYXwp4XWDS
-         Z9sn92aSH7v3vlO5G2WSmiHm6uxY5CH824PwLSkyC/MNOLIj6oFdRwbmcX3Bgwm14IC6
-         AYlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=53HavfuEoNs7RdkbULc05Z/N1hLdj8dohxY4zgNOzHg=;
-        b=Y5mT4SbzAUBhFQin8WQz+u6TrV4OHZvh394864Z1zibreyBBHfKOCsw5qf7cOonIkp
-         0rJdsjHBlKeafRqCKHgRkLpfskJf1NURU870VF/pofY0f0LXztNCprP14nL5vyrhy6wy
-         AyN9uk021Dt3eLupAeNRwJLWFmU2CqvHyessTCxR6/aBptdMo199+8h9sLou5gFafrYO
-         ia4DueDQnFT5np/jJIlcGrruuEtswJqD6sZldn9UUDEp5R5B9lRWkF6lb9/GFXf3iaB/
-         SeGo07ozNtimeeDRLE+0iYpxH1f95qDe+K69c8+02G105kHl8brrMesrGeyTBkgF04lx
-         +1xA==
-X-Gm-Message-State: AGi0Pub9AyfZOAsT6LHA7IFgTt/7P2fjyc+gAay0HMY6MJ9Gd3Lhw4z8
-        HlFUXz6RaNaWycTFVFpdRToJkTFfxpfCrw==
-X-Google-Smtp-Source: APiQypLzwKru+4XVS81uYNuNV2j8b55OHDlmxpC6NF8tm56uLTju6sMpbDTav6gvnVo4iJRoCZL4xw==
-X-Received: by 2002:a05:6214:183:: with SMTP id q3mr121783qvr.234.1586226485967;
-        Mon, 06 Apr 2020 19:28:05 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id h138sm15856228qke.86.2020.04.06.19.28.05
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Apr 2020 19:28:05 -0700 (PDT)
-From:   Qian Cai <cai@lca.pw>
+        Mon, 6 Apr 2020 22:40:12 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.2successcorp.com (Postfix) with ESMTP id DBEB52B8AE1D
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Apr 2020 10:28:09 +0800 (+08)
+Received: from mail.2successcorp.com ([127.0.0.1])
+        by localhost (mail.2successcorp.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id npXkVaPCZuKv for <linux-kernel@vger.kernel.org>;
+        Tue,  7 Apr 2020 10:28:09 +0800 (+08)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.2successcorp.com (Postfix) with ESMTP id 71F852B8ACBB
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Apr 2020 10:28:09 +0800 (+08)
+X-Virus-Scanned: amavisd-new at 2successcorp.com
+Received: from mail.2successcorp.com ([127.0.0.1])
+        by localhost (mail.2successcorp.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id rRttVPbdH6Rf for <linux-kernel@vger.kernel.org>;
+        Tue,  7 Apr 2020 10:28:09 +0800 (+08)
+Received: from jfii.com (unknown [51.89.230.106])
+        by mail.2successcorp.com (Postfix) with ESMTPSA id 0CCD52B88B8E
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Apr 2020 10:28:07 +0800 (+08)
+Reply-To: Jx_838@163.com
+From:   Mar Cha <Project020@jfii.com>
+To:     linux-kernel@vger.kernel.org
+Subject: Project Collaboration,,
+Date:   06 Apr 2020 19:30:00 -0700
+Message-ID: <20200406152246.EAF96B64E69D558F@jfii.com>
+MIME-Version: 1.0
 Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Linux-next POWER9 NULL pointer NIP since 1st Apr.
-Message-Id: <15AC5B0E-A221-4B8C-9039-FA96B8EF7C88@lca.pw>
-Date:   Mon, 6 Apr 2020 22:28:04 -0400
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        LKML <linux-kernel@vger.kernel.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ever since 1st Apr, linux-next starts to trigger a NULL pointer NIP on =
-POWER9 below using
-this config,
+Hello linux-kernel
 
-https://raw.githubusercontent.com/cailca/linux-mm/master/powerpc.config
+My boss Jean Maynard has asked me to contact you at once. He 
+checked your profile and would like to collaborate with you on 
+some project Email him at ( l3606436169@163.com ) for briefs and 
+procedures because he has no LinkedIn account.
 
-It takes a while to reproduce, so before I bury myself into bisecting =
-and just send a head-up
-to see if anyone spots anything obvious.
+His representative is presently in your country and he will meet 
+with you today after the briefs and procedures if you are 
+interested.
 
-[  206.744625][T13224] LTP: starting fallocate04
-[  207.601583][T27684] /dev/zero: Can't open blockdev
-[  208.674301][T27684] EXT4-fs (loop0): mounting ext3 file system using =
-the ext4 subsystem
-[  208.680347][T27684] BUG: Unable to handle kernel instruction fetch =
-(NULL pointer?)
-[  208.680383][T27684] Faulting instruction address: 0x00000000
-[  208.680406][T27684] Oops: Kernel access of bad area, sig: 11 [#1]
-[  208.680439][T27684] LE PAGE_SIZE=3D64K MMU=3DRadix SMP NR_CPUS=3D256 =
-DEBUG_PAGEALLOC NUMA PowerNV
-[  208.680474][T27684] Modules linked in: ext4 crc16 mbcache jbd2 loop =
-kvm_hv kvm ip_tables x_tables xfs sd_mod bnx2x ahci libahci mdio tg3 =
-libata libphy firmware_class dm_mirror dm_region_hash dm_log dm_mod
-[  208.680576][T27684] CPU: 117 PID: 27684 Comm: fallocate04 Tainted: G  =
-      W         5.6.0-next-20200401+ #288
-[  208.680614][T27684] NIP:  0000000000000000 LR: c0080000102c0048 CTR: =
-0000000000000000
-[  208.680657][T27684] REGS: c000200361def420 TRAP: 0400   Tainted: G    =
-    W          (5.6.0-next-20200401+)
-[  208.680700][T27684] MSR:  900000004280b033 =
-<SF,HV,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 42022228  XER: 20040000
-[  208.680760][T27684] CFAR: c00800001032c494 IRQMASK: 0=20
-[  208.680760][T27684] GPR00: c0000000005ac3f8 c000200361def6b0 =
-c00000000165c200 c00020107dae0bd0=20
-[  208.680760][T27684] GPR04: 0000000000000000 0000000000000400 =
-0000000000000000 0000000000000000=20
-[  208.680760][T27684] GPR08: c000200361def6e8 c0080000102c0040 =
-000000007fffffff c000000001614e80=20
-[  208.680760][T27684] GPR12: 0000000000000000 c000201fff671280 =
-0000000000000000 0000000000000002=20
-[  208.680760][T27684] GPR16: 0000000000000002 0000000000040001 =
-c00020030f5a1000 c00020030f5a1548=20
-[  208.680760][T27684] GPR20: c0000000015fbad8 c00000000168c654 =
-c000200361def818 c0000000005b4c10=20
-[  208.680760][T27684] GPR24: 0000000000000000 c0080000103365b8 =
-c00020107dae0bd0 0000000000000400=20
-[  208.680760][T27684] GPR28: c00000000168c3a8 0000000000000000 =
-0000000000000000 0000000000000000=20
-[  208.681014][T27684] NIP [0000000000000000] 0x0
-[  208.681065][T27684] LR [c0080000102c0048] ext4_iomap_end+0x8/0x30 =
-[ext4]
-[  208.681091][T27684] Call Trace:
-[  208.681129][T27684] [c000200361def6b0] [c0000000005ac3bc] =
-iomap_apply+0x20c/0x920 (unreliable)
-iomap_apply at fs/iomap/apply.c:80 (discriminator 4)
-[  208.681173][T27684] [c000200361def7f0] [c0000000005b4adc] =
-iomap_bmap+0xfc/0x160
-iomap_bmap at fs/iomap/fiemap.c:142
-[  208.681228][T27684] [c000200361def850] [c0080000102c2c1c] =
-ext4_bmap+0xa4/0x180 [ext4]
-ext4_bmap at fs/ext4/inode.c:3213
-[  208.681260][T27684] [c000200361def890] [c0000000004f71fc] =
-bmap+0x4c/0x80
-[  208.681281][T27684] [c000200361def8c0] [c00800000fdb0acc] =
-jbd2_journal_init_inode+0x44/0x1a0 [jbd2]
-jbd2_journal_init_inode at fs/jbd2/journal.c:1255
-[  208.681326][T27684] [c000200361def960] [c00800001031c808] =
-ext4_load_journal+0x440/0x860 [ext4]
-[  208.681371][T27684] [c000200361defa30] [c008000010322a14] =
-ext4_fill_super+0x342c/0x3ab0 [ext4]
-[  208.681414][T27684] [c000200361defba0] [c0000000004cb0bc] =
-mount_bdev+0x25c/0x290
-[  208.681478][T27684] [c000200361defc40] [c008000010310250] =
-ext4_mount+0x28/0x50 [ext4]
-[  208.681520][T27684] [c000200361defc60] [c00000000053242c] =
-legacy_get_tree+0x4c/0xb0
-[  208.681556][T27684] [c000200361defc90] [c0000000004c864c] =
-vfs_get_tree+0x4c/0x130
-[  208.681593][T27684] [c000200361defd00] [c00000000050a1c8] =
-do_mount+0xa18/0xc50
-[  208.681641][T27684] [c000200361defdd0] [c00000000050a9a8] =
-sys_mount+0x158/0x180
-[  208.681679][T27684] [c000200361defe20] [c00000000000b3f8] =
-system_call+0x5c/0x68
-[  208.681726][T27684] Instruction dump:
-[  208.681747][T27684] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX =
-XXXXXXXX XXXXXXXX XXXXXXXX=20
-[  208.681797][T27684] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX =
-XXXXXXXX XXXXXXXX XXXXXXXX=20
-[  208.681839][T27684] ---[ end trace 4e9e2bab7f1d4048 ]---
-[  208.802259][T27684]=20
-[  209.802373][T27684] Kernel panic - not syncing: Fatal exception
-
-[  215.281666][T16896] LTP: starting chown04_16
-[  215.424203][T18297] BUG: Unable to handle kernel instruction fetch =
-(NULL pointer?)
-[  215.424289][T18297] Faulting instruction address: 0x00000000
-[  215.424313][T18297] Oops: Kernel access of bad area, sig: 11 [#1]
-[  215.424341][T18297] LE PAGE_SIZE=3D64K MMU=3DRadix SMP NR_CPUS=3D256 =
-DEBUG_PAGEALLOC NUMA PowerNV
-[  215.424383][T18297] Modules linked in: loop kvm_hv kvm ip_tables =
-x_tables xfs sd_mod bnx2x mdio tg3 ahci libahci libphy libata =
-firmware_class dm_mirror dm_region_hash dm_log dm_mod
-[  215.424459][T18297] CPU: 85 PID: 18297 Comm: chown04_16 Tainted: G    =
-    W         5.6.0-next-20200405+ #3
-[  215.424489][T18297] NIP:  0000000000000000 LR: c00800000fbc0408 CTR: =
-0000000000000000
-[  215.424530][T18297] REGS: c000200b8606f990 TRAP: 0400   Tainted: G    =
-    W          (5.6.0-next-20200405+)
-[  215.424570][T18297] MSR:  9000000040009033 <SF,HV,EE,ME,IR,DR,RI,LE>  =
-CR: 84000248  XER: 20040000
-[  215.424619][T18297] CFAR: c00800000fbc64f4 IRQMASK: 0=20
-[  215.424619][T18297] GPR00: c0000000006c2238 c000200b8606fc20 =
-c00000000165ce00 0000000000000000=20
-[  215.424619][T18297] GPR04: c000201a58106400 c000200b8606fcc0 =
-000000005f037e7d ffffffff00013bfb=20
-[  215.424619][T18297] GPR08: c000201a58106400 0000000000000000 =
-0000000000000000 c000000001652ee0=20
-[  215.424619][T18297] GPR12: 0000000000000000 c000201fff69a600 =
-0000000000000000 0000000000000000=20
-[  215.424619][T18297] GPR16: 0000000000000000 0000000000000000 =
-0000000000000000 0000000000000000=20
-[  215.424619][T18297] GPR20: 0000000000000000 0000000000000000 =
-0000000000000000 0000000000000007=20
-[  215.424619][T18297] GPR24: 0000000000000000 0000000000000000 =
-c00800000fbc8688 c000200b8606fcc0=20
-[  215.424619][T18297] GPR28: 0000000000000000 000000007fffffff =
-c00800000fbc0400 c00020068b8c0e70=20
-[  215.424914][T18297] NIP [0000000000000000] 0x0
-[  215.424953][T18297] LR [c00800000fbc0408] find_free_cb+0x8/0x30 =
-[loop]
-find_free_cb at drivers/block/loop.c:2129
-[  215.424997][T18297] Call Trace:
-[  215.425036][T18297] [c000200b8606fc20] [c0000000006c2290] =
-idr_for_each+0xf0/0x170 (unreliable)
-[  215.425073][T18297] [c000200b8606fca0] [c00800000fbc2744] =
-loop_lookup.part.2+0x4c/0xb0 [loop]
-loop_lookup at drivers/block/loop.c:2144
-[  215.425105][T18297] [c000200b8606fce0] [c00800000fbc3558] =
-loop_control_ioctl+0x120/0x1d0 [loop]
-[  215.425149][T18297] [c000200b8606fd40] [c0000000004eb688] =
-ksys_ioctl+0xd8/0x130
-[  215.425190][T18297] [c000200b8606fd90] [c0000000004eb708] =
-sys_ioctl+0x28/0x40
-[  215.425233][T18297] [c000200b8606fdb0] [c00000000003cc30] =
-system_call_exception+0x110/0x1e0
-[  215.425274][T18297] [c000200b8606fe20] [c00000000000c9f0] =
-system_call_common+0xf0/0x278
-[  215.425314][T18297] Instruction dump:
-[  215.425338][T18297] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX =
-XXXXXXXX XXXXXXXX XXXXXXXX=20
-[  215.425374][T18297] XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX =
-XXXXXXXX XXXXXXXX XXXXXXXX=20
-[  215.425422][T18297] ---[ end trace ebed248fad431966 ]---
-[  215.642114][T18297]=20
-[  216.642220][T18297] Kernel panic - not syncing: Fatal exception=
+Mar Cha
