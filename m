@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A139C1A0D4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F0B19EF7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Apr 2020 05:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728591AbgDGMFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:05:14 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:47010 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728556AbgDGMFO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:05:14 -0400
-Received: by mail-ed1-f68.google.com with SMTP id cf14so3673112edb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 05:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
-        b=r9+wddViVvdqJX8nJHxmkHun6czJ1ikOViiDg5WrV9zsEG8g+/XsCs/Xm8ycJNr5Ml
-         2fuWB1NlLbfc9KUcuyehV5oBNlxoII4bQqlns7ggarruibdn9M7NPubgv2NwI4ghw4q6
-         1iP0OzwDLrwtuIjynAkDMR9V+F7VNbc5SOL1Zz9Q6G98wa8K8FFZQeUID3JSQdRWWQFi
-         ldW15EVw+VNiQ1Az7KgCIbVzPidhk/uK0SGlgeBOEFOC/dv6W9D9D9Vhs5YPaMbwGqPv
-         2jmm/lwv/01mhBrCJ7AZ83I7wgIQbzz7WwjiopAUrGbFPrMes7SZVSzxNBGnUxmtd/Xg
-         gYKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
-        b=Vo3K9LOHJVy4l4DnIa85o0615n+Xq5jWSfti9M8IxavMgz8LZLLOGQKC1HMUH3/dVJ
-         q+Ll7enoWWpCyZo/jUwWOq0/sh/E4wPTOVFuKZUulM6hYOR4PVcaWT2YzCFvR+Os3y6c
-         q+INK4NbxmUwpmAQM6hHpV6ZshQrH1JkXFZvqEFVD86MpC+uJBFIpYYHed+c7V7XmBSf
-         mByXwDMbt1zMacNtkKrXD03mMx0OvHLiTARoTyMavBGKR+BHmKAY42Xehw0Ymsoysrat
-         u8+cPKApbQ8uCz7c2gD1pfCXSy0xIwevLoIqQe8WjFEDnUT9RKTxPpRLDQiUbx8FCGMj
-         Dbow==
-X-Gm-Message-State: AGi0PuYF72QdSLAYm7IvPTwgchMhVS19BM1IsVmRh79UQQlsSZnGSJ/A
-        eFVow1QQE2BiFYjApLtoL2m6hPZwA5z2LCcpvNI=
-X-Google-Smtp-Source: APiQypLxWgxTObCMscWGDo5tJRLAw8Gjysi7VxpivmqA8Dbqp6klUnK+qCv8lcGGWvbj42MQ6KHkhLML+FeceTIY/Oc=
-X-Received: by 2002:a17:907:447c:: with SMTP id oo20mr1758131ejb.282.1586261112260;
- Tue, 07 Apr 2020 05:05:12 -0700 (PDT)
+        id S1726575AbgDFDOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Apr 2020 23:14:09 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:35444 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726408AbgDFDOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Apr 2020 23:14:09 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id D6D53A88BACA08F62BBF;
+        Mon,  6 Apr 2020 10:56:09 +0800 (CST)
+Received: from huawei.com (10.175.112.70) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Mon, 6 Apr 2020
+ 10:56:00 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <sylphrenadin@gmail.com>,
+        <c.cantanheide@gmail.com>, <navid.emamdoost@gmail.com>,
+        <nishkadg.linux@gmail.com>, <mst@redhat.com>, <stephen@brennan.io>,
+        <mchehab@kernel.org>
+CC:     <devel@driverdev.osuosl.org>, <linux-kernel@vger.kernel.org>,
+        <wanghai38@huawei.com>
+Subject: [PATCH] staging: rtl8192u: Remove some set but not used variables
+Date:   Tue, 7 Apr 2020 08:07:44 -0400
+Message-ID: <1586261264-37576-1-git-send-email-wanghai38@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Reply-To: mrsanna.h.bruun119@gmail.com
-Received: by 2002:a17:906:2cd4:0:0:0:0 with HTTP; Tue, 7 Apr 2020 05:05:11
- -0700 (PDT)
-From:   "Mrs. Anna H. Bruun" <mrsanna.h.bruun119@gmail.com>
-Date:   Tue, 7 Apr 2020 05:05:11 -0700
-X-Google-Sender-Auth: A6h9rJGyrFCkCAMHowGD9fjWh1Q
-Message-ID: <CAMrr=JgtYk+AYEFNjXo8P18gjsxJDQG7ApfUuRfymRmMT5utiw@mail.gmail.com>
-Subject: My Greetings
-To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.112.70]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Dear
+Fixes gcc '-Wunused-but-set-variable' warning:
 
-My Name is Mrs. Anna H. Bruun, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick Bruun,
-A gold merchant who owns a small gold Mine in Burkina Faso; He died of
-Cardiovascular Disease in mid-March 2011. During his life time he
-deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
-d
-thousand Euros in a bank in Ouagadougou the capital city of Burkina
-Faso. The deposited money was from the sale of the shares, death
-benefits payment and entitlements of my deceased husband by his
-company.
+drivers/staging/rtl8192u/r8192U_core.c: In function rtl8192_hard_data_xmit:
+drivers/staging/rtl8192u/r8192U_core.c:905:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+drivers/staging/rtl8192u/r8192U_core.c: In function rtl8192_commit:
+drivers/staging/rtl8192u/r8192U_core.c:3418:6: warning: variable ‘reset_status’ set but not used [-Wunused-but-set-variable]
 
-I am sending this message to you praying that it will reach you in
-good health, since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently i am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I am married to my late husband for over 4 years
-before he died and is unfortunately that we don't have a child, my
-doctor confided in me that i have less chance to live. Having known my
-health condition, I decided to contact you to claim the fund since I
-don't have any relation I grew up from the orphanage home,
+Fixes: 8fc8598e61f6 ("Staging: Added Realtek rtl8192u driver to staging")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+---
+ drivers/staging/rtl8192u/r8192U_core.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-I have decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed of cancer for about 2 years ago. I have been touched by God
-Almighty to donate from what I have inherited from my late husband to
-you for good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation surgery soon
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+index fcfb902..bb28670 100644
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -902,7 +902,6 @@ static void rtl8192_hard_data_xmit(struct sk_buff *skb, struct net_device *dev,
+ 				   int rate)
+ {
+ 	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
+-	int ret;
+ 	unsigned long flags;
+ 	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
+ 	u8 queue_index = tcb_desc->queue_index;
+@@ -915,7 +914,7 @@ static void rtl8192_hard_data_xmit(struct sk_buff *skb, struct net_device *dev,
+ 	*(struct net_device **)(skb->cb) = dev;
+ 	tcb_desc->bTxEnableFwCalcDur = 1;
+ 	skb_push(skb, priv->ieee80211->tx_headroom);
+-	ret = rtl8192_tx(dev, skb);
++	rtl8192_tx(dev, skb);
+ 
+ 	spin_unlock_irqrestore(&priv->tx_lock, flags);
+ }
+@@ -3415,7 +3414,6 @@ int rtl8192_down(struct net_device *dev)
+ void rtl8192_commit(struct net_device *dev)
+ {
+ 	struct r8192_priv *priv = ieee80211_priv(dev);
+-	int reset_status = 0;
+ 
+ 	if (priv->up == 0)
+ 		return;
+@@ -3427,7 +3425,7 @@ void rtl8192_commit(struct net_device *dev)
+ 	ieee80211_softmac_stop_protocol(priv->ieee80211);
+ 
+ 	rtl8192_rtx_disable(dev);
+-	reset_status = _rtl8192_up(dev);
++	_rtl8192_up(dev);
+ }
+ 
+ static void rtl8192_restart(struct work_struct *work)
+-- 
+1.8.3.1
 
-This is the reason i need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-Information on how the fund will be transferred to your bank account.
-
-Thanks
-Mrs. Anna H.
