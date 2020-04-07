@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C00E31A0E25
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403381A0E15
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbgDGNHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 09:07:43 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:51078 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726562AbgDGNHm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 09:07:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=u9rndlSOWcXt5MluGcOU4O98z6YSzlHpzInPEsgwmf4=; b=0nkot3V1Ujsd/IDR0hvt6z7XNp
-        8tdipods6PKseW7H02KbANK8vpuBRyh0X0C4kJROp8IVqwIUaNOtDHpFJ6q44z1filvnmduIkzL3S
-        vHMz5wwcshjLDc4pk5B363pgZilASh/nnksE2U4V5OexAug5p495V11y0ahC2NcuaNSvspXKlGoQa
-        MthHa6DS07FJKqnZshhpVtUphR18MiXMciGHefLdmdVawIgtf68eF5a5CyMFbUidUuOuPe8IOmhU5
-        gbT9tvJVZneFCEM8vMhMZDlq+kEn/xtgMhsA2qmC7X+gLy8jqn5jrh1yt8CYooeAyuPHDVSxD8C2x
-        yeV62/3w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLnwx-0000mK-Ef; Tue, 07 Apr 2020 13:07:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EFD783010C8;
-        Tue,  7 Apr 2020 15:07:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DD7182B907A93; Tue,  7 Apr 2020 15:07:29 +0200 (CEST)
-Date:   Tue, 7 Apr 2020 15:07:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, tglx@linutronix.de
-Subject: Re: [PATCH V2 5/9] objtool: Add support for intra-function calls
-Message-ID: <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-6-alexandre.chartre@oracle.com>
+        id S1728807AbgDGND1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 09:03:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:56054 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgDGND1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 09:03:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0839E31B;
+        Tue,  7 Apr 2020 06:03:27 -0700 (PDT)
+Received: from [10.37.12.154] (unknown [10.37.12.154])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F210D3F68F;
+        Tue,  7 Apr 2020 06:03:24 -0700 (PDT)
+Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
+ multiple connections
+To:     saiprakash.ranjan@codeaurora.org
+Cc:     mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
+        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
+ <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
+ <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
+ <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
+ <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <bb209f80-ac02-6321-dac4-ebf9ee6fa9a0@arm.com>
+Date:   Tue, 7 Apr 2020 14:08:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407073142.20659-6-alexandre.chartre@oracle.com>
+In-Reply-To: <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
+On 04/07/2020 12:29 PM, Sai Prakash Ranjan wrote:
+> Hi Suzuki,
+> 
+> Thanks for looking into this issue.
+> 
+> On 2020-04-07 15:54, Suzuki K Poulose wrote:
+>> On 04/07/2020 10:46 AM, Sai Prakash Ranjan wrote:
+>>
+>> There seems to be two replicators back to back here. What is connected
+>> to the other output of both of them ? Are there any TPIUs ? What happens
+>> if you choose a sink on the other end of "swao_replicator" (ETB ?)
+>>
+> 
+> The other outport of swao replicator is connected to EUD which is a
+> QCOM specific HW which can be used as a sink like USB.
+> And the other outport of other replicator(replicator_out) is connected to
+> TPIU.
+> 
+>> After boot, what do the idfilter registers read for both the 
+>> replicators ?
+>>
+> 
+> Added some prints in replicator_probe.
+> 
+>   replicator probe ret=-517 devname=6046000.replicator idfilter0=0x0 
+> idfilter1=0x0
+>   replicator probe ret=0 devname=6b06000.replicator idfilter0=0xff 
+> idfilter1=0xff
+>   replicator probe ret=0 devname=6046000.replicator idfilter0=0xff 
+> idfilter1=0xff
 
-> index a62e032863a8..7ee1561bf7ad 100644
-> --- a/tools/objtool/arch/x86/decode.c
-> +++ b/tools/objtool/arch/x86/decode.c
-> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct cfi_state *state)
->  	state->regs[16].base = CFI_CFA;
->  	state->regs[16].offset = -8;
->  }
-> +
-> +
-> +void arch_configure_intra_function_call(struct stack_op *op)
-> +{
-> +	/*
-> +	 * For the impact on the stack, make an intra-function
-> +	 * call behaves like a push of an immediate value (the
-> +	 * return address).
-> +	 */
-> +	op->src.type = OP_SRC_CONST;
-> +	op->dest.type = OP_DEST_PUSH;
-> +}
+Curious to see how the idfilterX is set to 0:
+	 if that is never used.
+		Or
+	 if the user doesn't reset it back to 0xff.
 
-An alternative is to always set up stack ops for CALL/RET on decode, but
-conditionally run update_insn_state() for them.
+Does your test ever touch EUD (enable the port for EUD at
+swao-replicator) ? What are the values before you run your test ?
 
-Not sure that makes more logical sense, but the patch would be simpler I
-think.
+
+Suzuki
