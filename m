@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8D71A0DD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872981A0DDE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728784AbgDGMiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:38:05 -0400
-Received: from lithops.sigma-star.at ([195.201.40.130]:48860 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728146AbgDGMiD (ORCPT
+        id S1728755AbgDGMkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 08:40:01 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:34854 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728679AbgDGMkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:38:03 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id AE750607BD9A;
-        Tue,  7 Apr 2020 14:38:01 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id mfUTYiUMQWeO; Tue,  7 Apr 2020 14:38:01 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 4DF6C607BDBD;
-        Tue,  7 Apr 2020 14:38:01 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id bQr49hM-qh4C; Tue,  7 Apr 2020 14:38:01 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 30DC2607BD9A;
-        Tue,  7 Apr 2020 14:38:01 +0200 (CEST)
-Date:   Tue, 7 Apr 2020 14:38:01 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <793490269.91815.1586263081165.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UBI/UBIFS fixes for v5.7-rc1
+        Tue, 7 Apr 2020 08:40:00 -0400
+Received: by mail-qk1-f193.google.com with SMTP id k134so1405253qke.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 05:39:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=REDd9q05KI702EFSQR/cgT2WpH4+rJemrcfJ/MESpiQ=;
+        b=KAWILKHjC4U9jPdGMThPZYzHGsdaOtMUPXfBK3RD9JmlOj98NEM4m0KQgCBFHOy4n2
+         fz1uocxz1N2G9vMJEeyZholf93xXeY1RNkHv6cTa7zlix8KDMLaEwtOetBNS4xgCG65i
+         nl/kidfVBsyDg10Vb6nj662lbRm4o+KQ0OAxYFWRFZmYWbTHnP345h0tsgP/m4ka1MA1
+         Y47N+uagOXchGg8ch0blRb8O8a9R0pDqCrK3bvXOzycUe0+e8e0c2zx1cOxvwkqQO6Ad
+         iSD3Oz8xgI+cNYoJpa8jDIUY+efa5fjKfgWGE16NzX7q01rSH5gbyz6Uou6p83ih43tR
+         g9gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=REDd9q05KI702EFSQR/cgT2WpH4+rJemrcfJ/MESpiQ=;
+        b=leaZSvVCZ7DRb2EjEgn3pTZI8wTlzmslJUKdJ0V3G7ICLg9FeRUJ79qRJSzQ2ELlHp
+         Es9KcbE+mlvyCDOhKb3KzMXWPDRwV/8Wi9AEzJ7TptFRUbxQjIGU2D5LVHnAbOW77ZWY
+         ThJLdEL6oFp3EDwHE8ErtL80uPBZcEYWyezXzn0hyZylTrG7okCJDQHnonNda7LsexV9
+         gdgr+lq4G6Q1yecVKAAtF1vRcUwg4BRRiWJvFTe9iV252E4i6taNO7sk4mq301mU85ad
+         OyzrpKANvYIq6h94vGWiUK7TiaLnMhD0d2u+6SoN+EpoMYIvUWXIiOseFtSulWJVVKWy
+         hY9Q==
+X-Gm-Message-State: AGi0PuafSXQifbVPRExT1h01FpZkaA8Ru37eNXOs5WHTMx0bwW65it0O
+        gzZLiKjDkYznF9bT74X8I5VYCIi8csAFiQ7HGHSWaQ==
+X-Google-Smtp-Source: APiQypJufCd7AZpci4Y41mZ7FMY2K9lw7Nzb7z1xobj1dlFqbdAhNNzeKkI9NXFd18jF3KT1Xafx0uU+IQkz5xU0O7w=
+X-Received: by 2002:a05:620a:348:: with SMTP id t8mr1690858qkm.407.1586263198896;
+ Tue, 07 Apr 2020 05:39:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF68 (Linux)/8.8.12_GA_3809)
-Thread-Index: VK/uz/K9Ve0lIe+2IoztTTPv430b3g==
-Thread-Topic: UBI/UBIFS fixes for v5.7-rc1
+References: <00000000000075245205a2997f68@google.com> <20200406172151.GJ80989@unreal>
+ <20200406174440.GR20941@ziepe.ca> <CACT4Y+Zv_WXEn6u5a6kRZpkDJnSzeGF1L7JMw4g85TLEgAM7Lw@mail.gmail.com>
+ <20200407115548.GU20941@ziepe.ca>
+In-Reply-To: <20200407115548.GU20941@ziepe.ca>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 7 Apr 2020 14:39:42 +0200
+Message-ID: <CACT4Y+Zy0LwpHkTMTtb08ojOxuEUFo1Z7wkMCYSVCvsVDcxayw@mail.gmail.com>
+Subject: Re: WARNING in ib_umad_kill_port
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        syzbot <syzbot+9627a92b1f9262d5d30c@syzkaller.appspotmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Rafael Wysocki <rafael@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Tue, Apr 7, 2020 at 1:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Apr 07, 2020 at 11:56:30AM +0200, Dmitry Vyukov wrote:
+> > > I'm not sure what could be done wrong here to elicit this:
+> > >
+> > >  sysfs group 'power' not found for kobject 'umad1'
+> > >
+> > > ??
+> > >
+> > > I've seen another similar sysfs related trigger that we couldn't
+> > > figure out.
+> > >
+> > > Hard to investigate without a reproducer.
+> >
+> > Based on all of the sysfs-related bugs I've seen, my bet would be on
+> > some races. E.g. one thread registers devices, while another
+> > unregisters these.
+>
+> I did check that the naming is ordered right, at least we won't be
+> concurrently creating and destroying umadX sysfs of the same names.
+>
+> I'm also fairly sure we can't be destroying the parent at the same
+> time as this child.
+>
+> Do you see the above commonly? Could it be some driver core thing? Or
+> is it more likely something wrong in umad?
 
-The following changes since commit 16fbf79b0f83bc752cee8589279f1ebfe57b3b6e:
+Mmmm... I can't say, I am looking at some bugs very briefly. I've
+noticed that sysfs comes up periodically (or was it some other similar
+fs?). General observation is that code frequently assumes only the
+happy scenario and only, say, a single administrator doing one thing
+at a time, slowly and carefully, and it is not really hardened against
+armies of monkeys.
+But I did not look at code abstractions, bug patterns, contracts, etc.
 
-  Linux 5.6-rc7 (2020-03-22 18:31:56 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.7-rc1
-
-for you to fetch changes up to 3676f32a98cd6ed4481c21bceb8b4829d4b6d1cf:
-
-  ubi: ubi-media.h: Replace zero-length array with flexible-array member (2020-03-30 23:02:37 +0200)
-
-----------------------------------------------------------------
-This pull request contains fixes for UBI and UBIFS:
-
-- Fix for memory leaks around UBIFS orphan handling
-- Fix for memory leaks around UBI fastmap
-- Remove zero-length array from ubi-media.h
-- Fix for TNC lookup in UBIFS orphan code
-
-----------------------------------------------------------------
-Gustavo A. R. Silva (1):
-      ubi: ubi-media.h: Replace zero-length array with flexible-array member
-
-Hou Tao (2):
-      ubi: fastmap: Free unused fastmap anchor peb during detach
-      ubi: fastmap: Only produce the initial anchor PEB when fastmap is used
-
-Liu Song (1):
-      ubifs: Fix out-of-bounds memory access caused by abnormal value of node_len
-
-Richard Weinberger (1):
-      ubifs: Fix ubifs_tnc_lookup() usage in do_kill_orphans()
-
-Zhihao Cheng (2):
-      ubifs: ubifs_jnl_write_inode: Fix a memory leak bug
-      ubifs: ubifs_add_orphan: Fix a memory leak bug
-
- drivers/mtd/ubi/fastmap-wl.c | 15 +++++++++++++--
- drivers/mtd/ubi/ubi-media.h  |  2 +-
- drivers/mtd/ubi/wl.c         |  3 ++-
- fs/ubifs/io.c                | 16 ++++++++++++++--
- fs/ubifs/journal.c           |  1 +
- fs/ubifs/orphan.c            | 13 +++++++++----
- 6 files changed, 40 insertions(+), 10 deletions(-)
+Greg KH may know better. Greg, as far as I remember you commented on
+some of these reports along the lines of, for example, "the warning is
+in sysfs code, but the bug is in the callers".
