@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 154EA1A0A14
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881561A0A28
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728043AbgDGJ3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:29:11 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:32218 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726353AbgDGJ3L (ORCPT
+        id S1728106AbgDGJbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:31:52 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51906 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgDGJbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:29:11 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0379RIce016784;
-        Tue, 7 Apr 2020 05:28:53 -0400
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by mx0a-00128a01.pphosted.com with ESMTP id 306q55hw36-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Apr 2020 05:28:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jFQVyWWujxfhqLFGZ68pwxnjiESBagheuIUajMS9LwSZCENFqYW8A0n7silU4UDvgDcMTMlLXLwRw//cI9TyYdpjc41KHeiDBFbH35NrX0wmgMtYXEdqZLZIwpLoY4e2+Hdg9VuiBc5MRWCl+hmjvbWWAts7CgUMH9tN8fVkbyeqvAcxXZ5Oyi1y5DbAMBC/HSzYBxEjEAhRrVBfSeR9au6O69w5xcrz1S0j5rnIloD6eEiGwIF5g6KDSOMMrCWEK5rAkNnnak88zkMyPrGI7MRW9yNqHkhL3Rs0yC1/xI7CeQWflzXtkt39wHYQkWR7MIlin+sKkZSanQWpwdC0xg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1b0QhILor/VvDbCtMKGapbCbmZO3e6cMtm61odFRNsQ=;
- b=kOQfxvi3IosX6KTKG8XK0KSsUDv4lRoypwqgzTsse69q8MfUKgH4a3lYiXodIDdD+cxbbtv7O050vLvkxrC3yAYX8uihRQt1Mu+kV0PrcPHLt3fwFwTm0VYHIICWnoDQbsLYAKkB+Bu5AiR3vUVBUTYtPVwxSoSUxCsIAvqIuiQWg2qHSiGSu0NkY/6elXj4mDUF0lUCQZ3mPILqWjp2AxltJRyLS/wgdESJJAy5BIqMs8z1ctActJB16KzGXQ4+XOldPqMSsdoT7amcXVeIxSlLamY6VefPKTDPCWjYEL8uHXUbuEm0sBIJUusK4mJ+UhqujLw4uiUHF97xz/iY0A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1b0QhILor/VvDbCtMKGapbCbmZO3e6cMtm61odFRNsQ=;
- b=yxRn/DMyqz9zCVGNTTyTLVkWuGACz1srTZxa2OBGGkfgM/KaUNYPYMVCjw6X7ZXqTBx9a2CpcBJDBTuZHVt1hYD1Ld9qqg61ao6fBPTCV8yeQYAOKh9C2OoRLwZXtGQIDil6a5Z/QJ38i9/LwvbJ6lIHccofuMY+3jscoVpSyzA=
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
- by DM6PR03MB5051.namprd03.prod.outlook.com (2603:10b6:5:1ea::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Tue, 7 Apr
- 2020 09:28:50 +0000
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::c47f:ceee:cfda:6a7f]) by DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::c47f:ceee:cfda:6a7f%3]) with mapi id 15.20.2878.018; Tue, 7 Apr 2020
- 09:28:50 +0000
-From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-To:     "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
-CC:     "jic23@kernel.org" <jic23@kernel.org>,
-        "lorenzo.bianconi83@gmail.com" <lorenzo.bianconi83@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "knaack.h@gmx.de" <knaack.h@gmx.de>,
-        "pmeerw@pmeerw.net" <pmeerw@pmeerw.net>,
-        "lars@metafoo.de" <lars@metafoo.de>
-Subject: Re: [PATCH 2/3] iio: make use of iio_device_attach_kfifo_buffer()
- where straightforward
-Thread-Topic: [PATCH 2/3] iio: make use of iio_device_attach_kfifo_buffer()
- where straightforward
-Thread-Index: AQHWDL6X7y9OF2Hsf0WKb3NS9qDxRqhtZGcA
-Date:   Tue, 7 Apr 2020 09:28:50 +0000
-Message-ID: <a8fd15498fc71fb1d6a02e463aeaade44574c06a.camel@analog.com>
-References: <36669e0f-c41c-5cc8-7218-be5cad5cf8a5@web.de>
-In-Reply-To: <36669e0f-c41c-5cc8-7218-be5cad5cf8a5@web.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [188.27.135.58]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 30e329ea-06fa-4130-8814-08d7dad61535
-x-ms-traffictypediagnostic: DM6PR03MB5051:
-x-microsoft-antispam-prvs: <DM6PR03MB5051FAF4175AF4F8D051C36CF9C30@DM6PR03MB5051.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:466;
-x-forefront-prvs: 036614DD9C
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(39860400002)(376002)(136003)(396003)(346002)(366004)(478600001)(36756003)(110136005)(4326008)(86362001)(71200400001)(5660300002)(54906003)(2906002)(316002)(6512007)(186003)(26005)(8676002)(81156014)(66556008)(4744005)(66476007)(66946007)(6506007)(91956017)(6486002)(8936002)(81166006)(66446008)(64756008)(2616005)(76116006);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: analog.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZL/EaOI2Ef6D3oMF3xcK97eWH9uoP/PvZ+tJLx4eg0yJIHuj1mJEtR3bruUNfCjxlh9zN4zzp8n51sEYP3LfahxXtqbuK2nYFTDDQjNsZUTfTbUj6/JxahOb30m0JRdDrNAfwlDrHHN4uILoW2OSMGnogZ/raZrpOsH8rIywaku+NuhAhMm41gulb9RdhadyX3hVjyQdAZT/AOyCg6W9tQGzseBySFJf3xn4TRxOwEs5ncmZGePTxZ5B26wMDJsPfYhbUanB+0/KVD0JFdEhx5lxxBK5cf972ZXEwzBgYcA9uGFdcgdk6SJ2r0Zg5rilANZdcMjfUGXbD1T3IBhaM5MJPrr0MZ9M8kHERFZjAfiTaZCg4HP8hOzcOAqxS9lpjtgBY6JOxQk4qMS20J6cSjkCAxIriuZ9cJuzvCpzmoctNfKRgb3Tq5CyXftiMa+H
-x-ms-exchange-antispam-messagedata: Cohff/hpX2iCD+9aRgq+3XHCn4E8DK+vbyJ4+SV11ANfDcr/TItKtwHVf920YxroY+itOS+/cUHtvw8giFepm9rvDYzR+/4kSGEFtULr6/+Xdc+riUmCeuErIfYA50LDavbFfrop+7zUuJrHlA02Fg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <666B5620265F2C43AB29A5B29BE79C67@namprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 7 Apr 2020 05:31:51 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0379RjTd036982;
+        Tue, 7 Apr 2020 09:31:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=mFJKZdvG9tvfo3wI4BHRhumZXMJkbQEYiBmgzAAOxys=;
+ b=e0ZtK8ijTfcK04bM5+gMRSGNgR1I71ZRPxCPgEvX79NumFBk5ot/FgrOXu3gCc96+6uM
+ sO3p6GgSCztN//JzDY+f/hM4MctQhQ1KLSN4o1vu1BXuvTmvy0DOgrk2niFaRhTb73B5
+ 5GKRMYTbMIuJDanfdOykZFCf2pXu+IDFA2Gnq+6stvOBON6V52gIZnud3dwdaoE15RUn
+ Uh8VUxw6+C7ebOfVUxh4rI1PV0QRp64xMN3PJ+JDn2pHm9UIWVX0RQlQYY0I/Y/nMuXD
+ YmqCjzsr9fQke2thnPnuRhQ+UaWvnwhoFAt+X76FQ8XCX2yvHVtptgY5upGQwbeP4fqy ZQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 306j6mbr85-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 09:31:46 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0379RGcO041436;
+        Tue, 7 Apr 2020 09:29:45 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 3073qfg9gc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 09:29:45 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0379ThcJ005216;
+        Tue, 7 Apr 2020 09:29:43 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 02:29:43 -0700
+Date:   Tue, 7 Apr 2020 12:29:35 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Benson Leung <bleung@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>
+Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] platform/chrome: cros_ec_sensorhub: Off by one in
+ cros_sensorhub_send_sample()
+Message-ID: <20200407092935.GJ68494@mwanda>
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30e329ea-06fa-4130-8814-08d7dad61535
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2020 09:28:50.8431
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: s8SR21q65W9lrBAhNGfKlhlDXQTyqrhk8kaqtxiAx+bE6krtdtL2cshz/OOh6Ed0TNkEwvgM76O80BA5bJcCE3NyuLeYrIRFr7nndqCYTpo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5051
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-07_01:2020-04-07,2020-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
- phishscore=0 mlxscore=0 adultscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=589 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004070080
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070080
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070080
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA0LTA3IGF0IDExOjI2ICswMjAwLCBNYXJrdXMgRWxmcmluZyB3cm90ZToN
-Cj4gW0V4dGVybmFsXQ0KPiANCj4gSG93IGRvIHlvdSB0aGluayBhYm91dCBhIHBhdGNoIHN1Ympl
-Y3QgbGlrZSDigJxpaW86IEluY3JlYXNlIHVzZSBvZg0KPiBpaW9fZGV2aWNlX2F0dGFjaF9rZmlm
-b19idWZmZXIoKeKAnT8NCj4gDQo+IA0KPiA+IFRoaXMgY2hhbmdlIGRvZXMgdGhhdC4NCj4gDQo+
-IEkgc3VnZ2VzdCB0byBpbXByb3ZlIGFsc28gdGhpcyBjb21taXQgbWVzc2FnZS4NCj4gDQo+ICog
-V291bGQgeW91IGxpa2UgdG8gY29uc2lkZXIgYSB3b3JkaW5nIGxpa2Ug4oCcQ29udmVydCBhIHNw
-ZWNpZmljIGZ1bmN0aW9uIGNhbGwNCj4gICBjb21iaW5hdGlvbiB0byBhIGJldHRlciBwcm9ncmFt
-bWluZyBpbnRlcmZhY2Uu4oCdPw0KPiANCj4gKiBEbyB5b3UgaW1hZ2luZSBhbnkgbW9yZSBzb2Z0
-d2FyZSBmaW5lLXR1bmluZyBiZWNhdXNlIG9mIHJlbGF0ZWQNCj4gICBjb2xsYXRlcmFsIGV2b2x1
-dGlvbj8NCj4gDQoNCkknbGwgc2VlLg0KVGhpcyBwYXRjaHNldCBpcyBraW5kIG9mIHN0b3BwZWQu
-DQpXaWxsIG5lZWQgYSByZXdvcmsgZm9yIGl0Lg0KDQo+IFJlZ2FyZHMsDQo+IE1hcmt1cw0K
+The sensorhub->push_data[] array has sensorhub->sensor_num elements.
+It's allocated in cros_ec_sensorhub_ring_add().  So the > should be >=
+to prevent a read one element beyond the end of the array.
+
+Fixes: 145d59baff59 ("platform/chrome: cros_ec_sensorhub: Add FIFO support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/platform/chrome/cros_ec_sensorhub_ring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/platform/chrome/cros_ec_sensorhub_ring.c b/drivers/platform/chrome/cros_ec_sensorhub_ring.c
+index 230e6cf3da2f..85e8ba782f0c 100644
+--- a/drivers/platform/chrome/cros_ec_sensorhub_ring.c
++++ b/drivers/platform/chrome/cros_ec_sensorhub_ring.c
+@@ -40,7 +40,7 @@ cros_sensorhub_send_sample(struct cros_ec_sensorhub *sensorhub,
+ 	int id = sample->sensor_id;
+ 	struct iio_dev *indio_dev;
+ 
+-	if (id > sensorhub->sensor_num)
++	if (id >= sensorhub->sensor_num)
+ 		return -EINVAL;
+ 
+ 	cb = sensorhub->push_data[id].push_data_cb;
+-- 
+2.25.1
+
