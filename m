@@ -2,278 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7191A0760
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C8E1A0769
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgDGGgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 02:36:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58828 "EHLO mx2.suse.de"
+        id S1727149AbgDGGiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 02:38:20 -0400
+Received: from mga06.intel.com ([134.134.136.31]:58680 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726030AbgDGGgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 02:36:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A333AAB8F;
-        Tue,  7 Apr 2020 06:36:50 +0000 (UTC)
-Subject: Re: [PATCH v2 10/17] drm/vram-helper: make drm_vram_mm_debugfs_init()
- return 0
-To:     Wambui Karuga <wambui.karugax@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Dave Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-References: <20200310133121.27913-1-wambui.karugax@gmail.com>
- <20200310133121.27913-11-wambui.karugax@gmail.com>
- <20200318152627.GY2363188@phenom.ffwll.local>
- <alpine.LNX.2.21.99999.375.2003181857010.54051@wambui>
- <CAKMK7uGwJ6nzLPzwtfUY79e1fSFxkrSgTfJuDeM4px6c0v13qg@mail.gmail.com>
- <20200318165846.GC3090655@kroah.com>
- <CAKMK7uGbg5Lax+eXJda4k9LNd7JBb+LRtRw4S+bZ4GbNGT--ZA@mail.gmail.com>
- <20200319075524.GB3445010@kroah.com>
- <20200319101830.GB2363188@phenom.ffwll.local>
- <alpine.LNX.2.21.99999.375.2003191522020.89327@wambui>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- mQENBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAG0J1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPokBVAQTAQgAPhYh
- BHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsDBQkDwmcABQsJCAcCBhUKCQgLAgQWAgMB
- Ah4BAheAAAoJEGgNwR1TC3ojR80H/jH+vYavwQ+TvO8ksXL9JQWc3IFSiGpuSVXLCdg62AmR
- irxW+qCwNncNQyb9rd30gzdectSkPWL3KSqEResBe24IbA5/jSkPweJasgXtfhuyoeCJ6PXo
- clQQGKIoFIAEv1s8l0ggPZswvCinegl1diyJXUXmdEJRTWYAtxn/atut1o6Giv6D2qmYbXN7
- mneMC5MzlLaJKUtoH7U/IjVw1sx2qtxAZGKVm4RZxPnMCp9E1MAr5t4dP5gJCIiqsdrVqI6i
- KupZstMxstPU//azmz7ZWWxT0JzgJqZSvPYx/SATeexTYBP47YFyri4jnsty2ErS91E6H8os
- Bv6pnSn7eAq5AQ0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRH
- UE9eosYbT6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgT
- RjP+qbU63Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+R
- dhgATnWWGKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zb
- ehDda8lvhFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r
- 12+lqdsAEQEAAYkBPAQYAQgAJhYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJbOdLgAhsMBQkD
- wmcAAAoJEGgNwR1TC3ojpfcIAInwP5OlcEKokTnHCiDTz4Ony4GnHRP2fXATQZCKxmu4AJY2
- h9ifw9Nf2TjCZ6AMvC3thAN0rFDj55N9l4s1CpaDo4J+0fkrHuyNacnT206CeJV1E7NYntxU
- n+LSiRrOdywn6erjxRi9EYTVLCHcDhBEjKmFZfg4AM4GZMWX1lg0+eHbd5oL1as28WvvI/uI
- aMyV8RbyXot1r/8QLlWldU3NrTF5p7TMU2y3ZH2mf5suSKHAMtbE4jKJ8ZHFOo3GhLgjVrBW
- HE9JXO08xKkgD+w6v83+nomsEuf6C6LYrqY/tsZvyEX6zN8CtirPdPWu/VXNRYAl/lat7lSI
- 3H26qrE=
-Message-ID: <cfbf0a0c-8fe1-ff41-d8cb-8f96a3912a36@suse.de>
-Date:   Tue, 7 Apr 2020 08:36:47 +0200
+        id S1726030AbgDGGiU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 02:38:20 -0400
+IronPort-SDR: 6fVd+Tl0D+VeHngz5oTZt6+b0RZiD0ns7uydhDeTmfsxCghyYua5vgt/la/xdhb7hz5dIgTUFa
+ venK98bfLUfw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 23:38:19 -0700
+IronPort-SDR: acXIqMHlC2Var749gsjCYLUDv65hiGtYDDjyccFn7fbSKcPf0wneY31yBcdySE4077Hxhhc6Bx
+ awghGDehFkcg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,353,1580803200"; 
+   d="scan'208";a="296867632"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.87]) ([10.237.72.87])
+  by FMSMGA003.fm.intel.com with ESMTP; 06 Apr 2020 23:38:16 -0700
+Subject: Re: [PATCH v4 1/3] mmc: host: Introduce the request_atomic() for the
+ host
+To:     Baolin Wang <baolin.wang7@gmail.com>, ulf.hansson@linaro.org
+Cc:     orsonzhai@gmail.com, zhang.lyra@gmail.com, arnd@arndb.de,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1585896945.git.baolin.wang7@gmail.com>
+ <04c25ff9f9b17d41d734c498e4be61dee745bb30.1585896945.git.baolin.wang7@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <5a55947b-e920-4515-49cf-163f6d539421@intel.com>
+Date:   Tue, 7 Apr 2020 09:37:30 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.21.99999.375.2003191522020.89327@wambui>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="6mY5WCj8o464gsmRMV60mpBknP0sOP0q2"
+In-Reply-To: <04c25ff9f9b17d41d734c498e4be61dee745bb30.1585896945.git.baolin.wang7@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6mY5WCj8o464gsmRMV60mpBknP0sOP0q2
-Content-Type: multipart/mixed; boundary="mwE4Ij88AF68pEAL96OgyaZsE0QujrvLw";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Wambui Karuga <wambui.karugax@gmail.com>, Daniel Vetter
- <daniel@ffwll.ch>, Greg KH <gregkh@linuxfoundation.org>,
- Dave Airlie <airlied@linux.ie>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- dri-devel <dri-devel@lists.freedesktop.org>
-Message-ID: <cfbf0a0c-8fe1-ff41-d8cb-8f96a3912a36@suse.de>
-Subject: Re: [PATCH v2 10/17] drm/vram-helper: make drm_vram_mm_debugfs_init()
- return 0
-References: <20200310133121.27913-1-wambui.karugax@gmail.com>
- <20200310133121.27913-11-wambui.karugax@gmail.com>
- <20200318152627.GY2363188@phenom.ffwll.local>
- <alpine.LNX.2.21.99999.375.2003181857010.54051@wambui>
- <CAKMK7uGwJ6nzLPzwtfUY79e1fSFxkrSgTfJuDeM4px6c0v13qg@mail.gmail.com>
- <20200318165846.GC3090655@kroah.com>
- <CAKMK7uGbg5Lax+eXJda4k9LNd7JBb+LRtRw4S+bZ4GbNGT--ZA@mail.gmail.com>
- <20200319075524.GB3445010@kroah.com>
- <20200319101830.GB2363188@phenom.ffwll.local>
- <alpine.LNX.2.21.99999.375.2003191522020.89327@wambui>
-In-Reply-To: <alpine.LNX.2.21.99999.375.2003191522020.89327@wambui>
-
---mwE4Ij88AF68pEAL96OgyaZsE0QujrvLw
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 19.03.20 um 13:27 schrieb Wambui Karuga:
->=20
->=20
-> On Thu, 19 Mar 2020, Daniel Vetter wrote:
->=20
->> On Thu, Mar 19, 2020 at 08:55:24AM +0100, Greg KH wrote:
->>> On Wed, Mar 18, 2020 at 08:10:43PM +0100, Daniel Vetter wrote:
->>>> On Wed, Mar 18, 2020 at 5:58 PM Greg KH <gregkh@linuxfoundation.org>=
-
->>>> wrote:
->>>>>
->>>>> On Wed, Mar 18, 2020 at 05:31:47PM +0100, Daniel Vetter wrote:
->>>>>> On Wed, Mar 18, 2020 at 5:03 PM Wambui Karuga
->>>>>> <wambui.karugax@gmail.com> wrote:
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> On Wed, 18 Mar 2020, Daniel Vetter wrote:
->>>>>>>
->>>>>>>> On Tue, Mar 10, 2020 at 04:31:14PM +0300, Wambui Karuga wrote:
->>>>>>>>> Since 987d65d01356 (drm: debugfs: make
->>>>>>>>> drm_debugfs_create_files() never fail),
->>>>>>>>> drm_debugfs_create_files() never
->>>>>>>>> fails and should return void. Therefore, remove its use as the
->>>>>>>>> return value of drm_vram_mm_debugfs_init(), and have the functi=
-on
->>>>>>>>> return 0 directly.
->>>>>>>>>
->>>>>>>>> v2: have drm_vram_mm_debugfs_init() return 0 instead of void to=
-
->>>>>>>>> avoid
->>>>>>>>> introducing build issues and build breakage.
->>>>>>>>>
->>>>>>>>> References:
->>>>>>>>> https://lists.freedesktop.org/archives/dri-devel/2020-February/=
-257183.html
->>>>>>>>>
->>>>>>>>> Signed-off-by: Wambui Karuga <wambui.karugax@gmail.com>
->>>>>>>>> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->>>>>>>>> ---
->>>>>>>>> =C2=A0drivers/gpu/drm/drm_gem_vram_helper.c | 10 ++++------
->>>>>>>>> =C2=A01 file changed, 4 insertions(+), 6 deletions(-)
->>>>>>>>>
->>>>>>>>> diff --git a/drivers/gpu/drm/drm_gem_vram_helper.c
->>>>>>>>> b/drivers/gpu/drm/drm_gem_vram_helper.c
->>>>>>>>> index 92a11bb42365..c8bcc8609650 100644
->>>>>>>>> --- a/drivers/gpu/drm/drm_gem_vram_helper.c
->>>>>>>>> +++ b/drivers/gpu/drm/drm_gem_vram_helper.c
->>>>>>>>> @@ -1048,14 +1048,12 @@ static const struct drm_info_list
->>>>>>>>> drm_vram_mm_debugfs_list[] =3D {
->>>>>>>>> =C2=A0 */
->>>>>>>>> =C2=A0int drm_vram_mm_debugfs_init(struct drm_minor *minor)
->>>>>>>>> =C2=A0{
->>>>>>>>> -=C2=A0=C2=A0=C2=A0 int ret =3D 0;
->>>>>>>>> -
->>>>>>>>> =C2=A0#if defined(CONFIG_DEBUG_FS)
->>>>>>>>
->>>>>>>> Just noticed that this #if here is not needed, we already have a=
-
->>>>>>>> dummy
->>>>>>>> function for that case. Care to write a quick patch to remove
->>>>>>>> it? On top
->>>>>>>> of this patch series here ofc, I'm in the processing of merging
->>>>>>>> the entire
->>>>>>>> pile.
->>>>>>>>
->>>>>>>> Thanks, Daniel
->>>>>>> Hi Daniel,
->>>>>>> Without this check here, and compiling without CONFIG_DEBUG_FS, t=
-his
->>>>>>> function is run and the drm_debugfs_create_files() does not have
->>>>>>> access to
->>>>>>> the parameters also protected by an #if above this function. So
->>>>>>> the change
->>>>>>> throws an error for me. Is that correct?
->>>>>>
->>>>>> Hm right. Other drivers don't #ifdef out their debugfs file functi=
-ons
->>>>>> ... kinda a bit disappointing that we can't do this in the neatest=
-
->>>>>> way
->>>>>> possible.
->>>>>>
->>>>>> Greg, has anyone ever suggested to convert the debugfs_create_file=
-
->>>>>> function (and similar things) to macros that don't use any of the
->>>>>> arguments, and then also annotating all the static
->>>>>> functions/tables as
->>>>>> __maybe_unused and let the compiler garbage collect everything?
->>>>>> Instead of explicit #ifdef in all the drivers ...
->>>>>
->>>>> No, no one has suggested that, having the functions be static inlin=
-e
->>>>> should make it all "just work" properly if debugfs is not enabled.=C2=
-=A0
->>>>> The
->>>>> variables will not be used, so the compiler should just optimize th=
-em
->>>>> away properly.
->>>>>
->>>>> No checks for CONFIG_DEBUG_FS should be needed anywhere in .c code.=
-
->>>>
->>>> So the trouble with this one is that the static inline functions for=
-
->>>> the debugfs file are wrapped in a #if too, and hence if we drop the
->>>> #if around the function call stuff won't compile. Should we drop all=
-
->>>> the #if in the .c file and assume the compiler will remove all the
->>>> dead code and dead functions?
->>>
->>> Yes you should :)
->>>
->>> there should not be any need for #if in a .c file for debugfs stuff.
->>
->> Wambui, can you pls try that out? I.e. removing all the #if for
->> CONFIG_DEBUG_FS from that file.
->=20
-> Removing them works with CONFIG_DEBUG_FS enabled or disabled.
-> I can send a patch for that.
-
-Please do. Removing explicit checks for CONFIG_ is usually a good thing.
-
-Best regards
-Thomas
-
->=20
-> wambui karuga
->> -Daniel
->> --=C2=A0
->> Daniel Vetter
->> Software Engineer, Intel Corporation
->> http://blog.ffwll.ch
->>
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+On 3/04/20 10:05 am, Baolin Wang wrote:
+> The SD host controller can process one request in the atomic context if
+> the card is nonremovable, which means we can submit next request in the
+> irq hard handler when using the MMC host software queue to reduce the
+> latency. Thus this patch adds a new API request_atomic() for the host
+> controller, as well as adding support for host software queue to submit
+> a request by the new request_atomic() API.
+> 
+> Moreover there is an unusual case that the card is busy when trying to
+> send a command, and we can not polling the card status in interrupt
+> context by using request_atomic() to dispatch requests. Thus we should
+> queue a work to try again in the non-atomic context in case the host
+> releases the busy signal later.
+> 
+> Suggested-by: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Baolin Wang <baolin.wang7@gmail.com>
 
 
---mwE4Ij88AF68pEAL96OgyaZsE0QujrvLw--
+One minor point below, otherwise:
 
---6mY5WCj8o464gsmRMV60mpBknP0sOP0q2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
------BEGIN PGP SIGNATURE-----
+> ---
+>  drivers/mmc/host/mmc_hsq.c | 29 ++++++++++++++++++++++++++++-
+>  drivers/mmc/host/mmc_hsq.h |  1 +
+>  include/linux/mmc/host.h   |  3 +++
+>  3 files changed, 32 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/mmc_hsq.c b/drivers/mmc/host/mmc_hsq.c
+> index b90b2c9..a57f802 100644
+> --- a/drivers/mmc/host/mmc_hsq.c
+> +++ b/drivers/mmc/host/mmc_hsq.c
+> @@ -16,11 +16,20 @@
+>  #define HSQ_NUM_SLOTS	64
+>  #define HSQ_INVALID_TAG	HSQ_NUM_SLOTS
+>  
+> +static void mmc_hsq_retry_handler(struct work_struct *work)
+> +{
+> +	struct mmc_hsq *hsq = container_of(work, struct mmc_hsq, retry_work);
+> +	struct mmc_host *mmc = hsq->mmc;
+> +
+> +	mmc->ops->request(mmc, hsq->mrq);
+> +}
+> +
+>  static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
+>  {
+>  	struct mmc_host *mmc = hsq->mmc;
+>  	struct hsq_slot *slot;
+>  	unsigned long flags;
+> +	int ret = 0;
+>  
+>  	spin_lock_irqsave(&hsq->lock, flags);
+>  
+> @@ -42,7 +51,24 @@ static void mmc_hsq_pump_requests(struct mmc_hsq *hsq)
+>  
+>  	spin_unlock_irqrestore(&hsq->lock, flags);
+>  
+> -	mmc->ops->request(mmc, hsq->mrq);
+> +	if (mmc->ops->request_atomic)
+> +		ret = mmc->ops->request_atomic(mmc, hsq->mrq);
+> +	else
+> +		mmc->ops->request(mmc, hsq->mrq);
+> +
+> +	/*
+> +	 * If returning BUSY from request_atomic(), which means the card
+> +	 * may be busy now, and we should change to non-atomic context to
+> +	 * try again for this unusual case, to avoid time-consuming operations
+> +	 * in the atomic context.
+> +	 *
+> +	 * Note: we just give a warning for other error cases, since the host
+> +	 * driver will handle them.
+> +	 */
+> +	if (ret == -EBUSY)
+> +		schedule_work(&hsq->retry_work);
+> +	else
+> +		WARN_ON_ONCE(ret && ret != -EBUSY);
 
-iQEzBAEBCAAdFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl6MH38ACgkQaA3BHVML
-eiPRpAf/XgFMgUJ3EjT30XEr8vTATgBrz7VDp5Kg8yOi8yTEQZ+W+IOsfQG43xcl
-3O8ZP3m9kvse6ILrojpr51f4mWj64zW7D4I5zuzGh7MS0nfDUCKYL2/kp/Dgiy8K
-04pIJVmuTEIIjdd2IZXJOwRfPtcu9GVNIgRbL+aqv854dOTfcFEjx7MQejaCKiXg
-Al8t5V0Ewce8nBMFLbipCutq6FjanV5G0kHWAszO6ftD1RFD3KTGSPkJ+1vJZrib
-5I7EtoxXJ5lX3FMksJML4RYI5LDZifbAQT7lH7uqQgxY4hfaswwPXKjQ5EHxBh39
-V/bNZ8yh/4fKv9QQx1IkzuqbJtV03w==
-=b7HE
------END PGP SIGNATURE-----
+'ret != -EBUSY' is redundant because it is always true in the 'else' clause.
 
---6mY5WCj8o464gsmRMV60mpBknP0sOP0q2--
+>  }
+>  
+>  static void mmc_hsq_update_next_tag(struct mmc_hsq *hsq, int remains)
+> @@ -325,6 +351,7 @@ int mmc_hsq_init(struct mmc_hsq *hsq, struct mmc_host *mmc)
+>  	hsq->mmc->cqe_private = hsq;
+>  	mmc->cqe_ops = &mmc_hsq_ops;
+>  
+> +	INIT_WORK(&hsq->retry_work, mmc_hsq_retry_handler);
+>  	spin_lock_init(&hsq->lock);
+>  	init_waitqueue_head(&hsq->wait_queue);
+>  
+> diff --git a/drivers/mmc/host/mmc_hsq.h b/drivers/mmc/host/mmc_hsq.h
+> index 18b9cf5..ffdd9cd 100644
+> --- a/drivers/mmc/host/mmc_hsq.h
+> +++ b/drivers/mmc/host/mmc_hsq.h
+> @@ -12,6 +12,7 @@ struct mmc_hsq {
+>  	wait_queue_head_t wait_queue;
+>  	struct hsq_slot *slot;
+>  	spinlock_t lock;
+> +	struct work_struct retry_work;
+>  
+>  	int next_tag;
+>  	int num_slots;
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index c318fb5..d4a50e5d 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -92,6 +92,9 @@ struct mmc_host_ops {
+>  			    int err);
+>  	void	(*pre_req)(struct mmc_host *host, struct mmc_request *req);
+>  	void	(*request)(struct mmc_host *host, struct mmc_request *req);
+> +	/* Submit one request to host in atomic context. */
+> +	int	(*request_atomic)(struct mmc_host *host,
+> +				  struct mmc_request *req);
+>  
+>  	/*
+>  	 * Avoid calling the next three functions too often or in a "fast
+> 
+
