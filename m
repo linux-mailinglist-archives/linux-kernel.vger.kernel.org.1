@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA3A1A1166
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A36E1A1161
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728280AbgDGQbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:31:45 -0400
-Received: from mout.gmx.net ([212.227.15.15]:42475 "EHLO mout.gmx.net"
+        id S1728243AbgDGQa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:30:58 -0400
+Received: from mout.gmx.net ([212.227.15.15]:47181 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726884AbgDGQbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:31:44 -0400
+        id S1726776AbgDGQa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:30:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586277031;
-        bh=dRrnNHMV0G1JWqD9csNXwBisLe5gckVpiKr95ecTaME=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=A2xmSSgoRNLUHu1/Szg6r1vDXUsZTOb+KG/SzV/HDceLZWBO/U+Oj6HDrV1WnDhko
-         pZONpBSR2un/s1WzpCBwdlNsEXB1ArF8I4rMsRAUI4I2meaksyoywhLJQwfZtLVpft
-         JZLwizq6DZjy+zoHK0ZZayf0QKAisQygb+nN8OGQ=
+        s=badeba3b8450; t=1586277048;
+        bh=sgFBcuEhJ09mNWZg34/SHX56SC+2GL9Chr9TTaUeP1s=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=jAeeiq8O37DIgn86++v52pz6abQzqk8q2GvBdYWbXyjsbslLvM5GYwplpqNy0MUMm
+         v2cFFMXIWeQXKDCCg+S7VYPu+KAD8viGtH42Bnl0TMtSmYYCF12ckO5vkFt8AXHFln
+         2/6UaW+6jn7eg9H3+wqYIO/ex+TH6AEyucIufvWA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
  (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MxlzI-1j5qfp01K2-00zFIB; Tue, 07 Apr 2020 18:30:31 +0200
+ 1MirjS-1ipqDk1z6q-00exHd; Tue, 07 Apr 2020 18:30:48 +0200
 From:   Oscar Carter <oscar.carter@gmx.com>
 To:     Forest Bond <forest@alittletooquiet.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -31,56 +31,75 @@ Cc:     Oscar Carter <oscar.carter@gmx.com>,
         Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
         Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] staging: vt6656: Cleanup of the vnt_get_frame_time function
-Date:   Tue,  7 Apr 2020 18:29:57 +0200
-Message-Id: <20200407162959.7318-1-oscar.carter@gmx.com>
+Subject: [PATCH 1/2] staging: vt6656: Use define instead of magic number for tx_rate
+Date:   Tue,  7 Apr 2020 18:29:58 +0200
+Message-Id: <20200407162959.7318-2-oscar.carter@gmx.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200407162959.7318-1-oscar.carter@gmx.com>
+References: <20200407162959.7318-1-oscar.carter@gmx.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NC+4dIil97qHJle9P/jL4lfVPLU6zXIGv3DcNsA37CN31QtovPX
- g7fC2WiIKUbfZfLe+tWJ81AyrwAkQRoJb1waEYYfBFIGlt01IJeZLY8c6h2SuLhTXyoOqCu
- QdbyepCYd+xIjSrQABk1eOP7vfnjvOujorDEly3sdLmenh1JbXdWPDQ5TadppU4ww9j7Msd
- MyGcNYOv90QOACHIxHshw==
+X-Provags-ID: V03:K1:szOayLQTAId7qo7NZHx+GS0NJkVobbE+8kh0SBj1Vzt8VOCnrLb
+ 7prfRQgPnbAcLNmGEadMG+UrXL6t9H1IAFTQFOMaXA1UFufJdWF9rK4ZH6UbqKF83dV9sir
+ hJZT8SZv1/uq5H5+rflLgcnx9WHENFR0pFD+8CHnm19AiOfbBWUrE/NO9I+9YMjmQPLIInR
+ hDlWJHmAVs/3MGHbVWnXA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mGXCBEHfOME=:awlMunGY2CwfFgGND6vS6a
- Sj8Eg86ye8tBzkbBpLedSEy1NZP08VL0lFBpCa9LyqtbFy3H2M0PnzB4r+i6wI4xEHGeiuh4v
- RfoOegHBOARWSVd9hw7MyTKTj3GvG47PjLtiExj8EQ5P8GwIR9byBlZmPUdDKTnqa9osGv0UQ
- oI67n5/JuTw9UlvLW9NK0B1TxHZcX+0I51Oa0N+1InDVzQikHOu5+MwiKl73skTMpPMBGSEbh
- 3SsiOuM1W7lhLe9gUA0codB4JVdNT873A8IjkjJ6ufdVjEhF2GVzZspLfUXmKKs732+O5PD/x
- 3NZKDoT9AsuZtQWwxfhiBYYKFq29csza+BnG2ASLImn0U2N/tIpxVSPSmAPcnQ4vnGXHbtFBj
- 6Hm1kGn0iSs2jcEzFdL/diJenSzPN+Y4s67/gIHsnSeiMBvTyfYtMSryl5wJhJIp5BaySAvfm
- nY3KgGlSq9vUGjFBv2ZZVTJ+uHYIfHtQgLpvHqroM4ldgEMDd3m2q7iCnVI5xQvK+U0HVnj8h
- 724JzXWiYdSBPxIzq+hMCjOl+mut7n7TQluS35+jH4b3QFJj8W5q6KsmIpVAVbv17A2bTGYUF
- xGDIfB+Z0pQ9jg8n6FtOTY5QTwu2IqMrNGbcypYRCP1GTEn367P8TAi54xgUBYo/lhsdoACGw
- fIqodTTbCTmq5kfTN+c+tnJVd0rD+T8tTha3Ps2V77wCNaN1lJSUXSpMY0vvZd7f1RvY/a8x8
- 1TBRgiDjkmRQLLntOmfZCIflAbNgWVtyIbk+TCUBtWjuNVhzj8h5rMzlXWQi4tGKV0/55mLfP
- 9dw6xFD1LA96LHPkW7QvC/Th0K+Yn55L7lqAj3iCiFDzFKfCXhJTCZTpbmRXPuSn7FeLv2a6w
- yPe8fZH5uyh9gA/86Vd8M1xtCEYlo7237h90vznZNdLIZZwRjpquvf4N48SIuZvjzLCPTZ4FE
- 6JaJCD5dY38FvtNSzn7B9YvEDVxJ4PwM4MMYsK3CYo5kdlbWVI+dmHoEXXqL3pInTywrj3YXJ
- M8OJ3cnxShFT0MOmUYVHt0x2hTM3B1NHHIoujU96DMZBlUMj0Px2tZhnRHEP3UnqWSZpxwy15
- 5yIdaDXzpAkwJxAx0UMktmwtMGoAxgx9M2rPOo4WCHlLe6xj8hmO+3XAgZ5dUwo8ZDW0dypsb
- bUEcsI/EIM0NQIKUoC7yAkekUICa6f6I00PI/Pm0r7iu5N7aBWwS9rPIO6u6tcbjOyBUJQDn7
- kQ9GDukuzpk4ptoAs
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9q6i7Pi+KZs=:liAxVS0Sfys8sbMV+1krZD
+ GSDfkUf0M3erwlSu4xcmTnwwVH0CCs8e4ZgfB1GtOLzMihnM8fd3Z1uQLSOpjuEEeTWN+sAOU
+ k5giVl0TdfI7GDHo7pBxiAc39pG4u7erXdkbWdWl4RXGGunpWbvD8dQDeAvhcuUx7GbKdQJmi
+ N8f1q2HbFmAiEaueZc3rv4omPIM6rrrLo0BVnOL320099qaohKTsjQgYXbUNCBBUIC2OVTuNG
+ 9welrHpM2vCFETiHfg9/nxs9A6RA2DSgnIBm+HOv+JO0xxvSxV76eRMlk9tU8GryxW2WYRj7X
+ 5IrK/jAsL5qZHxqGxC6pLP+h+lnvKU/vKdssMsEq8XaO0prP7Dyo17VYoDCZo1SzW9t+SGzhx
+ YK3kNIjGon4nELMO1eb9ijnOwfmFde5adv1dvm0bKhxY3MLiOuwngHaNNVBz15OdMHZvUAyXg
+ daBRiuXvrlD54vYuknJsB9rYLVZeQjHxrFFoV+pN8IyWoz/sygVrtDJHMi2RZ5pIaouo6dndW
+ hkPmglSqR4D7LF+yjbCYBXlfuTgoXJZYeH++QGJYj8O1xMuze7uMZ2wMDAObG9UGfyOEj1T3x
+ a7z6+K5h4+oMbJiUcs1iRtQuYo35LXdJTtkHM1SIk5bFSDzGTm6rkG8dLJDgAcLRdkHcuwBtk
+ ttxO034yFgG5ncoh3+6DUOwq4PY/fgkQyOx8JUjI9vDY7oXRBcBOw3EBUKtKmIM3BxUp7N6G7
+ 8iJyF8TLn728r3QSmpcsUOifZPamWWg49uUG5gRZaW8rHdRx7ooJqa2rEOJHc4UIFGm6R0Gh8
+ ZE8EEbwqif9b44NhOTbWpjj33zP7htBN63v4Ey3WfEl962zmVgSuhEcTNJZqy2yKTLVVrrzw0
+ 5U0BeVv3s1RdvYfJ+E9ogGRUjO0AaZNhAtLFk+qVk1gLAqNwBwUipkx0b/q8FNH+uwHML7G+H
+ vpXFG3ELgKKZOLnNRP0DkIeL34jZri+WNRfMtWSxCVSqDKuo7JHopTVk3CwXveCrbOl/u/aax
+ Bt7mnSFfjUWZki1Dy7Mw378RVx5MmNysKWsSG0YfXlKC87qmEzATLy/V/AQCTcnE779is1Tdm
+ h6tPIWfsgIDoxij7ra6In1BMWwTyqr4Mc7LWA3OMZE9BkKAoV6V0rpoBFm9+vhoGu1Cg6Cxiz
+ /lUZhIx6G0z5Fg16CzFv5zzJF2lEoLtnlYSlFBMid1axRJh7IsQGZLwmdvs8ffjLLNRhFB8iF
+ BFcZjljnwjRseSd+v
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series makes a cleanup of the vnt_get_frame_time function.
+Use the define RATE_11M present in the file "device.h" instead of the
+magic number 3. So the code is more clear.
 
-The first patch makes use of the define RATE_11M instead of a magic
-number. The second patch remove unnecessary local variable initialization.
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+=2D--
+ drivers/staging/vt6656/baseband.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Changelog v1 -> v2
-- Not use the ARRAY_SIZE macro to compare against the tx_rate variable.
+diff --git a/drivers/staging/vt6656/baseband.c b/drivers/staging/vt6656/ba=
+seband.c
+index a19a563d8bcc..092e56668a09 100644
+=2D-- a/drivers/staging/vt6656/baseband.c
++++ b/drivers/staging/vt6656/baseband.c
+@@ -24,6 +24,7 @@
 
-Oscar Carter (2):
-  staging: vt6656: Use define instead of magic number for tx_rate
-  staging: vt6656: Remove unnecessary local variable initialization
+ #include <linux/bits.h>
+ #include <linux/kernel.h>
++#include "device.h"
+ #include "mac.h"
+ #include "baseband.h"
+ #include "rf.h"
+@@ -141,7 +142,7 @@ unsigned int vnt_get_frame_time(u8 preamble_type, u8 p=
+kt_type,
 
- drivers/staging/vt6656/baseband.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ 	rate =3D (unsigned int)vnt_frame_time[tx_rate];
 
+-	if (tx_rate <=3D 3) {
++	if (tx_rate <=3D RATE_11M) {
+ 		if (preamble_type =3D=3D 1)
+ 			preamble =3D 96;
+ 		else
 =2D-
 2.20.1
 
