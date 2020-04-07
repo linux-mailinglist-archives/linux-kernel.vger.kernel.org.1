@@ -2,116 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8271A0EFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27EF61A0EF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 16:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729065AbgDGOQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 10:16:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57974 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728861AbgDGOQm (ORCPT
+        id S1729012AbgDGOQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 10:16:35 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:42430 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728861AbgDGOQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 10:16:42 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037ED3vM172731;
-        Tue, 7 Apr 2020 14:16:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=yK09YV7sHccZ+in/N/EnR8J9sdEjaYyJawI3sE50HS8=;
- b=Eqs64c8kq+8i/FiSWw/q+MCzbqzmXi52Nmfj3oTE7D9H7jPPRxsvTmN53Px4uiEdTG/Y
- EZT1ZMQNhAANBVqumbdqC0fYBs+NnI3MesiDvtQeWK/HJueP3dwK53jfA5C7bo1sDFXd
- oOznTTn2BzQLt4XKgtW3grdsq2lfrKnJcGpsLL6bR9bMTQdlfuMo7LQF0EhvqVj5IFdJ
- TJsFNLRe5tkWvoEsVPFZbO0bWbRSsBJyAaTof2LYyY8yeCWcxLOnzL4K0Zr2tOPQ10PU
- UTBczpNo3Bdm3jEoffqcCjqkD/27DifD4NM4vvchNzowuWqHSqlgTCmLP/OiQdnpnfc8 Lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 306jvn570u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 14:16:29 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037ECTPD066162;
-        Tue, 7 Apr 2020 14:16:29 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 30839tfuee-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 14:16:29 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 037EGQHo007736;
-        Tue, 7 Apr 2020 14:16:26 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 07:16:25 -0700
-Date:   Tue, 7 Apr 2020 17:16:16 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     gregkh@linuxfoundation.org, puranjay12@gmail.com,
-        robsonde@gmail.com, zhengbin13@huawei.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: rtl8192e: remove set but not used variable
- 'tmpRegC'
-Message-ID: <20200407141616.GL2001@kadam>
-References: <1586262964-4582-1-git-send-email-wanghai38@huawei.com>
+        Tue, 7 Apr 2020 10:16:35 -0400
+Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B59B859E;
+        Tue,  7 Apr 2020 16:16:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1586268993;
+        bh=CcU2iAia1wY4OY0Wlixli88UQl/oDVQJd3BN2oHVZs4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Hyx/r2qvOlhW/upsn1igaKv3oxlLGcSnhX+2DoQ0FH+lQrwx8zYoWNsqDWEBT4CKj
+         oPNY9yZdASHuEJaHeFRyZAnMLIC3Fo9mHavnwXkFOAwGBriB9/5rKXn/AP7AqGoVFv
+         r5MsZwh13hLhgZBGK7HbMd3B5QlAYYCZcPkHptlA=
+Date:   Tue, 7 Apr 2020 17:16:24 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Max Krummenacher <max.oss.09@gmail.com>,
+        Max Krummenacher <max.krummenacher@toradex.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, Vidya Sagar <vidyas@nvidia.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Olof Johansson <olof@lixom.net>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 0/4] defconfig: fix changed configs and refresh
+Message-ID: <20200407141624.GG4751@pendragon.ideasonboard.com>
+References: <20200407103537.4138-1-max.krummenacher@toradex.com>
+ <CAMuHMdWrekHiADkMmgO5nDxFNYjLud7FD=7ArMZNQire_+7TQg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1586262964-4582-1-git-send-email-wanghai38@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1011 malwarescore=0 impostorscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004070124
+In-Reply-To: <CAMuHMdWrekHiADkMmgO5nDxFNYjLud7FD=7ArMZNQire_+7TQg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 08:36:04AM -0400, Wang Hai wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
-> 
-> drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c: In function rtl92e_start_adapter:
-> drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c:693:15: warning: variable ‘tmpRegC’ set but not used [-Wunused-but-set-variable]
-> 
-> commit 94a799425eee ("rtl8192e: Split into two directories")
-> involved this, remove it.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
-> ---
->  drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-> index ddcd788..ff934ae 100644
-> --- a/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-> +++ b/drivers/staging/rtl8192e/rtl8192e/r8192E_dev.c
-> @@ -690,7 +690,7 @@ bool rtl92e_start_adapter(struct net_device *dev)
->  	u8 tmpvalue;
->  	u8 ICVersion, SwitchingRegulatorOutput;
->  	bool bfirmwareok = true;
-> -	u32 tmpRegA, tmpRegC, TempCCk;
-> +	u32 tmpRegA, TempCCk;
->  	int i = 0;
->  	u32 retry_times = 0;
->  
-> @@ -889,8 +889,8 @@ bool rtl92e_start_adapter(struct net_device *dev)
->  		if (priv->IC_Cut >= IC_VersionCut_D) {
->  			tmpRegA = rtl92e_get_bb_reg(dev, rOFDM0_XATxIQImbalance,
->  						    bMaskDWord);
-> -			tmpRegC = rtl92e_get_bb_reg(dev, rOFDM0_XCTxIQImbalance,
-> -						    bMaskDWord);
-> +			rtl92e_get_bb_reg(dev, rOFDM0_XCTxIQImbalance,
-> +					  bMaskDWord);
+Hi Geert,
 
-Delete the call as well.
+On Tue, Apr 07, 2020 at 03:16:14PM +0200, Geert Uytterhoeven wrote:
+> On Tue, Apr 7, 2020 at 12:36 PM Max Krummenacher <max.oss.09@gmail.com> wrote:
+> > Three configs have been renamed and/or changed behaviour.
+> > Clean that by using the new config name.
+> > Then refresh the defconfig with make defconfig savedefconfig.
+> >
+> > The refreshed defconfig does result in a not changed .config.
+> >
+> > Applies on linux-next/master tag: next-20200407
+> >
+> > Max Krummenacher (4):
+> >   arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
+> >   arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name
+> >   arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
+> >   arm64: defconfig: refresh
+> 
+> Probably CONFIG_DRM_DISPLAY_CONNECTOR should also be enabled for HDMI,
+> VGA, and composite display connectors on various boards since commit
+> 0c275c30176b2e78 ("drm/bridge: Add bridge driver for display
+> connectors"), but it's not clear to me when exactly this became a
+> requirement, as before there was no code that looked for e.g.
+> vga-connector.
+> Laurent?
 
-regards,
-dan carpenter
+It's not required yet for R-Car DU, but I'm working on changing that :-)
+If we can enable CONFIG_DRM_DISPLAY_CONNECTOR in defconfig as part of
+this series, it would be useful for me.
 
+-- 
+Regards,
+
+Laurent Pinchart
