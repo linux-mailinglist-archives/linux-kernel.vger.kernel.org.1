@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D131A0BBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3961A0B28
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbgDGKZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:25:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35668 "EHLO mail.kernel.org"
+        id S1728651AbgDGKYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728497AbgDGKZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:25:11 -0400
+        id S1728639AbgDGKYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:24:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 842CA20644;
-        Tue,  7 Apr 2020 10:25:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39B772082D;
+        Tue,  7 Apr 2020 10:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255110;
-        bh=q7wvOp/B+vcsKe//MRTz/um2sZICyj6+bgXMc/jce7k=;
+        s=default; t=1586255045;
+        bh=WWPBWH6R7vqAyfkKB/N+fKzsFhjvBeypNxeA9gpyPj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KuNRWLG0fboRy3+wTx8zjgBPnsM8s6RUZPQltm29vqsZ+9CH3HvZ4zD7oNP3N1Z+h
-         hR5P38nGDhGiSZYCU4wwktYVai2sZN55DLcofTrJQHxIGFrWJ7wmhDwiuFaZrvoYVB
-         8ecNBkHKFsxlrhVMA7oPwVFobK04KwMFoEIcwbEU=
+        b=uUVDIksD6F8QoTr+xiE0GBdyp0jzxDdQXADWCLqcyAjNKTVH35XJGKK2uFUa5rk0j
+         NjFz1ULRvWMNNTJLqKbChXgXCPZ/mki7ubm7MQm/DxJcDcurTP7tGi3I15pyka23yE
+         xstxUqUm3Jw0cFc9M1550fTzyaw50bt4lBUjV8Sc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Len Brown <len.brown@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.5 09/46] drm/amdgpu: add fbdev suspend/resume on gpu reset
-Date:   Tue,  7 Apr 2020 12:21:40 +0200
-Message-Id: <20200407101500.474076886@linuxfoundation.org>
+Subject: [PATCH 5.4 08/36] tools/power turbostat: Fix missing SYS_LPI counter on some Chromebooks
+Date:   Tue,  7 Apr 2020 12:21:41 +0200
+Message-Id: <20200407101455.377342847@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
-References: <20200407101459.502593074@linuxfoundation.org>
+In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
+References: <20200407101454.281052964@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +43,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Evan Quan <evan.quan@amd.com>
+From: Len Brown <len.brown@intel.com>
 
-[ Upstream commit 063e768ebd27d3ec0d6908b7f8ea9b0a732b9949 ]
+[ Upstream commit 1f81c5efc020314b2db30d77efe228b7e117750d ]
 
-This can fix the baco reset failure seen on Navi10.
-And this should be a low risk fix as the same sequence
-is already used for system suspend/resume.
+Some Chromebook BIOS' do not export an ACPI LPIT, which is how
+Linux finds the residency counter for CPU and SYSTEM low power states,
+that is exports in /sys/devices/system/cpu/cpuidle/*residency_us
 
-Signed-off-by: Evan Quan <evan.quan@amd.com>
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+When these sysfs attributes are missing, check the debugfs attrubte
+from the pmc_core driver, which accesses the same counter value.
+
+Signed-off-by: Len Brown <len.brown@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ tools/power/x86/turbostat/turbostat.c | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 332b9c24a2cd0..9a8a1c6ca3210 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -3854,6 +3854,8 @@ static int amdgpu_do_asic_reset(struct amdgpu_hive_info *hive,
- 				if (r)
- 					goto out;
+diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
+index 78507cd479bb4..17e82eaf5c4f4 100644
+--- a/tools/power/x86/turbostat/turbostat.c
++++ b/tools/power/x86/turbostat/turbostat.c
+@@ -304,6 +304,10 @@ int *irqs_per_cpu;		/* indexed by cpu_num */
  
-+				amdgpu_fbdev_set_suspend(tmp_adev, 0);
+ void setup_all_buffers(void);
+ 
++char *sys_lpi_file;
++char *sys_lpi_file_sysfs = "/sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us";
++char *sys_lpi_file_debugfs = "/sys/kernel/debug/pmc_core/slp_s0_residency_usec";
 +
- 				/* must succeed. */
- 				amdgpu_ras_resume(tmp_adev);
+ int cpu_is_not_present(int cpu)
+ {
+ 	return !CPU_ISSET_S(cpu, cpu_present_setsize, cpu_present_set);
+@@ -2916,8 +2920,6 @@ int snapshot_gfx_mhz(void)
+  *
+  * record snapshot of
+  * /sys/devices/system/cpu/cpuidle/low_power_idle_cpu_residency_us
+- *
+- * return 1 if config change requires a restart, else return 0
+  */
+ int snapshot_cpu_lpi_us(void)
+ {
+@@ -2941,17 +2943,14 @@ int snapshot_cpu_lpi_us(void)
+ /*
+  * snapshot_sys_lpi()
+  *
+- * record snapshot of
+- * /sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us
+- *
+- * return 1 if config change requires a restart, else return 0
++ * record snapshot of sys_lpi_file
+  */
+ int snapshot_sys_lpi_us(void)
+ {
+ 	FILE *fp;
+ 	int retval;
  
-@@ -4023,6 +4025,8 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
- 		 */
- 		amdgpu_unregister_gpu_instance(tmp_adev);
+-	fp = fopen_or_die("/sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us", "r");
++	fp = fopen_or_die(sys_lpi_file, "r");
  
-+		amdgpu_fbdev_set_suspend(adev, 1);
-+
- 		/* disable ras on ALL IPs */
- 		if (!in_ras_intr && amdgpu_device_ip_need_full_reset(tmp_adev))
- 			amdgpu_ras_suspend(tmp_adev);
+ 	retval = fscanf(fp, "%lld", &cpuidle_cur_sys_lpi_us);
+ 	if (retval != 1) {
+@@ -4907,10 +4906,16 @@ void process_cpuid()
+ 	else
+ 		BIC_NOT_PRESENT(BIC_CPU_LPI);
+ 
+-	if (!access("/sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us", R_OK))
++	if (!access(sys_lpi_file_sysfs, R_OK)) {
++		sys_lpi_file = sys_lpi_file_sysfs;
+ 		BIC_PRESENT(BIC_SYS_LPI);
+-	else
++	} else if (!access(sys_lpi_file_debugfs, R_OK)) {
++		sys_lpi_file = sys_lpi_file_debugfs;
++		BIC_PRESENT(BIC_SYS_LPI);
++	} else {
++		sys_lpi_file_sysfs = NULL;
+ 		BIC_NOT_PRESENT(BIC_SYS_LPI);
++	}
+ 
+ 	if (!quiet)
+ 		decode_misc_feature_control();
 -- 
 2.20.1
 
