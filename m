@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8E11A0E56
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980D71A0E46
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728815AbgDGN1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 09:27:55 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:37241 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728482AbgDGN1z (ORCPT
+        id S1728834AbgDGNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 09:24:13 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:43188 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728812AbgDGNYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 09:27:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586266074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XbhhpaH/SFh6E99OqnskVI1bse12C1UUsZMwShUxJYc=;
-        b=Z5jZnoc2UOqK8Aby7ru2nFwImerM3xnztdQ1Gk//C32d9MM9TM+ve4QnDHHbLsmPLxKCot
-        TM2vYgI9XHrvrjSXjfB7ebWnmHPypK5ApBOKct8zUAkODJ/INtNjx6uqDjJDf2u6JZPHS2
-        ncOU8vYXLLuKG7OkYM0Rmx81oMUiUrw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-UsDFAZpXOSCwoiO2FQ8XBQ-1; Tue, 07 Apr 2020 09:27:50 -0400
-X-MC-Unique: UsDFAZpXOSCwoiO2FQ8XBQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C87CA0CCB;
-        Tue,  7 Apr 2020 13:27:49 +0000 (UTC)
-Received: from treble (ovpn-116-24.rdu2.redhat.com [10.10.116.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 647B35DF2A;
-        Tue,  7 Apr 2020 13:27:47 +0000 (UTC)
-Date:   Tue, 7 Apr 2020 08:27:45 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, peterz@infradead.org,
+        Tue, 7 Apr 2020 09:24:13 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037DMX9S132958;
+        Tue, 7 Apr 2020 13:23:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=HUw+iF3lmkPYdLpCfY3zJ8y3YywDPB2OUxVRgTbL+5w=;
+ b=C1VPA4l1iKpGlFUKd75dJWscvpQww4PyN8f9x9/DNZJUSEa/zSlsejjgZg8Q9ejahPNT
+ F4t5eyLRrBNLEVd5z5uaP/uRbUOmxMerGjYUKv787gSbdS9HaqZAXix4xpp+dkU9RpAt
+ Vnzu1r4/Wk3bC/SpmA+NRMFNV46SKn+F4M6YiqWIhd9jJKhhfYPMOd9PXIDOA2D1J2v1
+ Fkw8WYJy33gNqmjLJnz0POpPGBwkp3vbdFry6UFTtLuBsOKDXbPDAE4KyJYlT1+Z23x/
+ qK+GyFsvO7WnPe5C2GEC6lFf4bxyv7GoUJcCVhJjoSqiCTzUmcDJdvxxmJbUe+f6WeLX IQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 308ffdawqv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 13:23:57 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037DMUSd010700;
+        Tue, 7 Apr 2020 13:23:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 30839tbkup-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 13:23:57 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 037DNtoV003956;
+        Tue, 7 Apr 2020 13:23:56 GMT
+Received: from linux-1.home (/10.175.58.13)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 06:23:55 -0700
+Subject: Re: [PATCH V2 5/9] objtool: Add support for intra-function calls
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         jthierry@redhat.com, tglx@linutronix.de
-Subject: Re: [PATCH V2 6/9] x86/speculation: Change __FILL_RETURN_BUFFER to
- work with objtool
-Message-ID: <20200407132745.iieggolloidvdiwu@treble>
 References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-7-alexandre.chartre@oracle.com>
+ <20200407073142.20659-6-alexandre.chartre@oracle.com>
+ <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
+Date:   Tue, 7 Apr 2020 15:28:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200407073142.20659-7-alexandre.chartre@oracle.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
+ mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070115
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 09:31:39AM +0200, Alexandre Chartre wrote:
-> Change __FILL_RETURN_BUFFER so that the stack state is deterministically
-> defined for each iteration and that objtool can have an accurate view
-> of the stack.
+
+On 4/7/20 3:07 PM, Peter Zijlstra wrote:
+> On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
 > 
-> Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-> ---
->  arch/x86/include/asm/nospec-branch.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>> index a62e032863a8..7ee1561bf7ad 100644
+>> --- a/tools/objtool/arch/x86/decode.c
+>> +++ b/tools/objtool/arch/x86/decode.c
+>> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct cfi_state *state)
+>>   	state->regs[16].base = CFI_CFA;
+>>   	state->regs[16].offset = -8;
+>>   }
+>> +
+>> +
+>> +void arch_configure_intra_function_call(struct stack_op *op)
+>> +{
+>> +	/*
+>> +	 * For the impact on the stack, make an intra-function
+>> +	 * call behaves like a push of an immediate value (the
+>> +	 * return address).
+>> +	 */
+>> +	op->src.type = OP_SRC_CONST;
+>> +	op->dest.type = OP_DEST_PUSH;
+>> +}
 > 
-> diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-> index 5c24a7b35166..9a946fd5e824 100644
-> --- a/arch/x86/include/asm/nospec-branch.h
-> +++ b/arch/x86/include/asm/nospec-branch.h
-> @@ -60,8 +60,8 @@
->  	jmp	775b;				\
->  774:						\
->  	dec	reg;				\
-> -	jnz	771b;				\
-> -	add	$(BITS_PER_LONG/8) * nr, sp;
-> +	add	$(BITS_PER_LONG/8) * 2, sp;	\
-> +	jnz	771b;
->  
->  #ifdef __ASSEMBLY__
+> An alternative is to always set up stack ops for CALL/RET on decode, but
+> conditionally run update_insn_state() for them.
+> 
+> Not sure that makes more logical sense, but the patch would be simpler I
+> think.
 
-This still isn't a complete fix because the macro is used in an
-alternative.  So in the !X86_FEATURE_RSB_CTXSW case, this code isn't
-patched in and the ORC data which refers to it is wrong.
+Right, this would avoid adding a new arch dependent function and the patch
+will be simpler. This probably makes sense as the stack impact is the same
+for all calls (but objtool will use it only for intra-function calls).
 
-As I said before I think the easiest fix would be to convert RSB and
-retpolines to use static branches instead of alternatives.
+Thanks,
 
--- 
-Josh
+alex.
 
