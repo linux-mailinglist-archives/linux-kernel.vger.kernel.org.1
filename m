@@ -2,65 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5901A172F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115A51A173A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 23:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgDGVIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 17:08:06 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:48676 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbgDGVIF (ORCPT
+        id S1726444AbgDGVMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 17:12:52 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:46087 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbgDGVMw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 17:08:05 -0400
-Received: by mail-io1-f69.google.com with SMTP id w10so4238223iod.15
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 14:08:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=WcamevgV8aJ2+1jjTqeYsPnyyqndOfJut4ANxNQo7II=;
-        b=PlCwhW4raXijD8dBgPt25S43z13MK6adTqBukdF1ftMoFUqbmmKKvfDJ3Yum1+Fb16
-         k+cZhjCaAQUnFdMmpEODXQO21n4juRrO42dLR6RigOiz9v8Zv3KeLAnCo0HIuRfV9L4w
-         IOMH0IHUQdeKYHPTuOvCRLkFVzdTtKaJ+qYjbN1gVudAEQ95MVzWdHOuMCT5/6Gj+hNs
-         dJHGvLxtpYWtOpGYV/LlIL8hvPIkWm5F1LHebgnEh/wH8IIKC/NsMKyzrywRnxsJpGNi
-         ATOohXIQ0ecaM3+8ABPtlXyhOb/ytuD3rR7uEne8so24QyUvPHPRWyX6iJHNSxMH+Px5
-         EIPQ==
-X-Gm-Message-State: AGi0PubffIccEy4JiwF4qcUpgRc7FnWsuEQazgltF4DeB8/UAgLGRd84
-        p9kGyQHM9poY++cICsK5hAfwccDy3qtX8KxNkkdeglLms1z0
-X-Google-Smtp-Source: APiQypIJ3E46KuEnE+e2QTkr/FvlYted4kADS5RZaWPImSV2/Q7w4dG+0q4dvns60lBZ6mieeCONw10hVN4u0453OWg03tYi2w0b
+        Tue, 7 Apr 2020 17:12:52 -0400
+X-Originating-IP: 72.234.141.215
+Received: from tb.lan (udp224251uds.hawaiiantel.net [72.234.141.215])
+        (Authenticated sender: mail@aparcar.org)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 13A81FF802;
+        Tue,  7 Apr 2020 21:12:42 +0000 (UTC)
+From:   Paul Spooren <mail@aparcar.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, jason@lakedaemon.net, andrew@lunn.ch,
+        gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+        daniel@makrotopia.org, freifunk@adrianschmutzler.de,
+        Paul Spooren <mail@aparcar.org>
+Subject: [PATCH 0/5] arm: dts: linksys: rename codename to model
+Date:   Tue,  7 Apr 2020 11:08:10 -1000
+Message-Id: <20200407210816.866084-1-mail@aparcar.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9dc7:: with SMTP id 7mr3984559ioo.109.1586293684848;
- Tue, 07 Apr 2020 14:08:04 -0700 (PDT)
-Date:   Tue, 07 Apr 2020 14:08:04 -0700
-In-Reply-To: <20200407204754.GA66033@xz-x1>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000984d3705a2b9c7ce@google.com>
-Subject: Re: WARNING: bad unlock balance in __get_user_pages_remote
-From:   syzbot <syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bgeffon@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        peterx@redhat.com, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Linksys chose to use codenames for a few of their devices and sell their
+them under an entirely different name.
 
-syzbot has tested the proposed patch and the reproducer did not trigger crash:
+codename  model name
+rango  -> wrt3200acm
+mamba  -> wrt1900ac
+cobra  -> wrt1900ac-v2
+caiman -> wrt1200ac
+shelby -> wrt1900acs
 
-Reported-and-tested-by: syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com
+This introduces some extra loops in OpenWrt, a distribution specialized
+on embedded Internet facing devices, as both codename and model name are
+used within the build system. The double naming requires developers to
+keep track of that mapping and introduces inconsistencies:
 
-Tested on:
+To build a specific device in OpenWrt profiles are used, named after the
+the compatible string for targets using device tree (similar to how .dts
+files are named in the linux source tree). However, the first item of
+the DT `compatible` list in this case is `linksys,rango`, which is
+inconsistent with the model name and not what common users would expect.
 
-commit:         763dede1 Merge tag 'for-linus-5.7-rc1' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5b9ca0b4c36cd4da
-dashboard link: https://syzkaller.appspot.com/bug?extid=a8c70b7f3579fc0587dc
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=122c0e1be00000
+Such double naming complicates currently the automatic search for
+firmware upgrade as the build system does not support such mapping.
+Ideally the first item of the DT `compatible` list would contain a
+string suitable to be used as a filename recognizable by normal users to
+belong to that device.
 
-Note: testing is done by a robot and is best-effort only.
+With this patch set the Linksys device tree files are moved from
+containing the codename to contain a sanitized model name and also use
+it as first entry of the DT `compatible` list.
+
+Paul Spooren (5):
+  arm: dts: linksys: rename rango to wrt3200acm
+  arm: dts: linksys: rename mamba to wrt1900ac
+  arm: dts: linksys: rename cobra to wrt1900ac-v2
+  arm: dts: linksys: rename caiman to wrt1200ac
+  arm: dts: linksys: rename shelby to wrt1900acs
+
+ arch/arm/boot/dts/Makefile                    | 10 +++----
+ ...n.dts => armada-385-linksys-wrt1200ac.dts} | 26 +++++++++---------
+ ...ts => armada-385-linksys-wrt1900ac-v2.dts} | 27 ++++++++++---------
+ ....dts => armada-385-linksys-wrt1900acs.dts} | 25 ++++++++---------
+ ....dts => armada-385-linksys-wrt3200acm.dts} | 26 +++++++++---------
+ ...ba.dts => armada-xp-linksys-wrt1900ac.dts} | 27 ++++++++++---------
+ 6 files changed, 72 insertions(+), 69 deletions(-)
+ rename arch/arm/boot/dts/{armada-385-linksys-caiman.dts => armada-385-linksys-wrt1200ac.dts} (80%)
+ rename arch/arm/boot/dts/{armada-385-linksys-cobra.dts => armada-385-linksys-wrt1900ac-v2.dts} (78%)
+ rename arch/arm/boot/dts/{armada-385-linksys-shelby.dts => armada-385-linksys-wrt1900acs.dts} (80%)
+ rename arch/arm/boot/dts/{armada-385-linksys-rango.dts => armada-385-linksys-wrt3200acm.dts} (83%)
+ rename arch/arm/boot/dts/{armada-xp-linksys-mamba.dts => armada-xp-linksys-wrt1900ac.dts} (92%)
+
+
+base-commit: 7e63420847ae5f1036e4f7c42f0b3282e73efbc2
+-- 
+2.25.1
+
