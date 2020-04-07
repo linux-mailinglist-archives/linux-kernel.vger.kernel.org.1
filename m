@@ -2,137 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B31E1A11E4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5073E1A11C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbgDGQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:40:26 -0400
-Received: from retiisi.org.uk ([95.216.213.190]:52194 "EHLO
-        hillosipuli.retiisi.org.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727993AbgDGQk0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:40:26 -0400
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1729498AbgDGQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:39:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727857AbgDGQjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:39:21 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by hillosipuli.retiisi.org.uk (Postfix) with ESMTPS id 0A114634C89;
-        Tue,  7 Apr 2020 19:39:17 +0300 (EEST)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1jLrFs-0002MN-3d; Tue, 07 Apr 2020 19:39:16 +0300
-Date:   Tue, 7 Apr 2020 19:39:16 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 1/3] media: dt-bindings: ov8856: Document YAML bindings
-Message-ID: <20200407163916.GL6127@valkosipuli.retiisi.org.uk>
-References: <20200331133346.372517-2-robert.foss@linaro.org>
- <20200401080705.j4goeqcqhoswhx4u@gilmour.lan>
- <CAG3jFyvUd08U9yNVPUD9Y=nd5Xpcx34GcHJRhtvAAycoq3qimg@mail.gmail.com>
- <20200403232736.GA6127@valkosipuli.retiisi.org.uk>
- <20200404093446.vuvwrhn5436h4d3s@gilmour.lan>
- <20200406083506.GE6127@valkosipuli.retiisi.org.uk>
- <20200407083647.4mocdl7aqa3x737q@gilmour.lan>
- <CAG3jFyvd32pWppubMoOoyH9eO2XLjwUXMC7p4xtv8m+JkPv6vw@mail.gmail.com>
- <20200407123232.ktvaifhqntgzvkap@gilmour.lan>
- <CAG3jFysSrZJRE2TvL0bWoRFNnscgDGj8yGr-iwWBm4=1wMbJ9A@mail.gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EAC420719;
+        Tue,  7 Apr 2020 16:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586277559;
+        bh=mD//OxWSv3JzAZY80pw3/cwLjQsYQbHnAdi7kfJVQgk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=unqwZKHeXdEkOukf9sZQhGSO7Tmsx0qkp0pOhcLQRZYt6KSKhplUh0TWaho56UZj/
+         7e7mPkqCwdJ9lM+P+S6e/FAa18EuP6Wiqr03WL2JLMjJYu2bvPgTiAf5cP2xFYU9Sp
+         ngYIiXr04BiDwNVbWSmG4z81mOiqnjV0Kswy6sQA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: [PATCH 5.6 00/30] 5.6.3-rc2 review
+Date:   Tue,  7 Apr 2020 18:39:17 +0200
+Message-Id: <20200407154752.006506420@linuxfoundation.org>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG3jFysSrZJRE2TvL0bWoRFNnscgDGj8yGr-iwWBm4=1wMbJ9A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.6.3-rc2.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.6.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.6.3-rc2
+X-KernelTest-Deadline: 2020-04-09T15:47+00:00
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 05:47:41PM +0200, Robert Foss wrote:
-> On Tue, 7 Apr 2020 at 14:32, Maxime Ripard <maxime@cerno.tech> wrote:
-> >
-> > Hi Robert,
-> >
-> > On Tue, Apr 07, 2020 at 01:29:05PM +0200, Robert Foss wrote:
-> > > On Tue, 7 Apr 2020 at 10:36, Maxime Ripard <maxime@cerno.tech> wrote:
-> > > > On Mon, Apr 06, 2020 at 11:35:07AM +0300, Sakari Ailus wrote:
-> > > > > > But that 19.2MHz is not a limitation of the device itself, it's a
-> > > > > > limitation of our implementation, so we can instead implement
-> > > > > > something equivalent in Linux using a clk_set_rate to 19.2MHz (to make
-> > > > > > sure that our parent clock is configured at the right rate) and the
-> > > > > > clk_get_rate and compare that to 19.2MHz (to make sure that it's not
-> > > > > > been rounded too far apart from the frequency we expect).
-> > > > > >
-> > > > > > This is doing exactly the same thing, except that we don't encode our
-> > > > > > implementation limitations in the DT, but in the driver instead.
-> > > > >
-> > > > > What I really wanted to say that a driver that doesn't get the clock
-> > > > > frequency from DT but still sets that frequency is broken.
-> > > > >
-> > > > > This frequency is highly system specific, and in many cases only a certain
-> > > > > frequency is usable, for a few reasons: On many SoCs, not all common
-> > > > > frequencies can be used (e.g. 9,6 MHz, 19,2 MHz and 24 MHz; while others
-> > > > > are being used as well), and then that frequency affects the usable CSI-2
-> > > > > bus frequencies directly --- and of those, only safe, known-good ones
-> > > > > should be used. IOW, getting the external clock frequency wrong typically
-> > > > > has an effect that that none of the known-good CSI-2 bus clock frequencies
-> > > > > are available.
-> > > >
-> > > > So clock-frequency is not about the "Frequency of the xvclk clock in
-> > > > Hertz", but the frequency at which that clock must run on this
-> > > > particular SoC / board to be functional?
-> > > >
-> > > > If so, then yeah, we should definitely keep it, but the documentation
-> > > > of the binding should be made clearer as well.
-> > >
-> > > Alright so, let me summarise the desired approach then.
-> >
-> > There's a separate discussion on the same topic here:
-> > https://lore.kernel.org/linux-media/20200407122106.GD4751@pendragon.ideasonboard.com/
-> 
-> Thanks for the link.
-> 
-> >
-> > > ACPI:
-> > >   - Fetch the "clock-frequency" property
-> > >   - Verify it to be 19.2Mhz
-> > >
-> > > DT:
-> > >   - Fetch the "clock-frequency" property
-> > >   - Verify it to be 19.2Mhz
-> > >   - Get xvclk clock
-> > >   - Get xvclk clock rate
-> > >   - Verify xvclk clock rate to be 19.2Mhz
-> >
-> > The current status is that you should
-> > 's/clock-frequency/link-frequencies/', and in order to replace
-> > assigned-clock-rates, you'll want to have a clk_set_rate to 19.2MHz
-> > between steps 3 and 4
-> 
-> Would we want to 's/clock-frequency/link-frequencies/' for ACPI too?
-> I imagine that would cause some breakage.
+This is the start of the stable review cycle for the 5.6.3 release.
+There are 30 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-It would, yes, and it would be no more correct on DT either.
+Responses should be made by Thu, 09 Apr 2020 15:46:32 +0000.
+Anything received after that time might be too late.
 
-There are basically two possibilities here; either use the clock-frequency
-property and set the frequency, or rely on assigned-clock-rates, and get
-the frequency instead.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.3-rc2.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
+and the diffstat can be found below.
 
-The latter, while I understand it is generally preferred, comes with having
-to figure out the register list set that closest matches the frequency
-obtained. The former generally gets around this silently by the clock
-driver setting the closest frequency it can support.
+thanks,
 
--- 
-Regards,
+greg k-h
 
-Sakari Ailus
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.6.3-rc2
+
+Randy Dunlap <rdunlap@infradead.org>
+    mm: mempolicy: require at least one nodeid for MPOL_PREFERRED
+
+Arnaldo Carvalho de Melo <acme@redhat.com>
+    perf python: Fix clang detection to strip out options passed in $CC
+
+Bibby Hsieh <bibby.hsieh@mediatek.com>
+    soc: mediatek: knows_txdone needs to be set in Mediatek CMDQ helper
+
+Geoffrey Allott <geoffrey@allott.email>
+    ALSA: hda/ca0132 - Add Recon3Di quirk to handle integrated sound on EVGA X99 Classified motherboard
+
+Mike Snitzer <snitzer@redhat.com>
+    Revert "dm: always call blk_queue_split() in dm_process_bio()"
+
+Takashi Iwai <tiwai@suse.de>
+    Revert "ALSA: uapi: Drop asound.h inclusion from asoc.h"
+
+Hans de Goede <hdegoede@redhat.com>
+    power: supply: axp288_charger: Add special handling for HP Pavilion x2 10
+
+Hans de Goede <hdegoede@redhat.com>
+    extcon: axp288: Add wakeup support
+
+Freeman Liu <freeman.liu@unisoc.com>
+    nvmem: sprd: Fix the block lock operation
+
+Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
+    nvmem: check for NULL reg_read and reg_write before dereferencing
+
+Khouloud Touil <ktouil@baylibre.com>
+    nvmem: release the write-protect pin
+
+Alexander Usyskin <alexander.usyskin@intel.com>
+    mei: me: add cedar fork device ids
+
+Eugene Syromiatnikov <esyr@redhat.com>
+    coresight: do not use the BIT() macro in the UAPI header
+
+Kelsey Skunberg <kelsey.skunberg@gmail.com>
+    PCI: sysfs: Revert "rescan" file renames
+
+Kishon Vijay Abraham I <kishon@ti.com>
+    misc: pci_endpoint_test: Avoid using module parameter to determine irqtype
+
+Kishon Vijay Abraham I <kishon@ti.com>
+    misc: pci_endpoint_test: Fix to support > 10 pci-endpoint-test devices
+
+YueHaibing <yuehaibing@huawei.com>
+    misc: rtsx: set correct pcr_ops for rts522A
+
+Uma Shankar <uma.shankar@intel.com>
+    drm/i915/display: Fix mode private_flags comparison at atomic_check
+
+Torsten Duwe <duwe@lst.de>
+    drm/bridge: analogix-anx6345: Avoid duplicate -supply suffix
+
+Matthew Wilcox (Oracle) <willy@infradead.org>
+    XArray: Fix xa_find_next for large multi-index entries
+
+Guenter Roeck <linux@roeck-us.net>
+    brcmfmac: abort and release host after error
+
+Daniel Jordan <daniel.m.jordan@oracle.com>
+    padata: fix uninitialized return value in padata_replace()
+
+Xin Long <lucien.xin@gmail.com>
+    udp: initialize is_flist with 0 in udp_gro_receive
+
+Florian Westphal <fw@strlen.de>
+    net: fix fraglist segmentation reference count leak
+
+Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+    net: macb: Fix handling of fixed-link node
+
+Qiujun Huang <hqjagain@gmail.com>
+    sctp: fix refcount bug in sctp_wfree
+
+Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+    sctp: fix possibly using a bad saddr with a given dst
+
+William Dauchy <w.dauchy@criteo.com>
+    net, ip_tunnel: fix interface lookup with no key
+
+Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+    net: dsa: ksz: Select KSZ protocol tag
+
+Qian Cai <cai@lca.pw>
+    ipv4: fix a RCU-list lock in fib_triestat_seq_show
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +-
+ drivers/extcon/extcon-axp288.c                     | 32 ++++++++++++
+ drivers/gpu/drm/bridge/analogix/analogix-anx6345.c |  4 +-
+ drivers/gpu/drm/i915/display/intel_display.c       |  4 +-
+ drivers/md/dm.c                                    |  5 +-
+ drivers/misc/cardreader/rts5227.c                  |  1 +
+ drivers/misc/mei/hw-me-regs.h                      |  2 +
+ drivers/misc/mei/pci-me.c                          |  2 +
+ drivers/misc/pci_endpoint_test.c                   | 14 ++++--
+ drivers/net/dsa/microchip/Kconfig                  |  1 +
+ drivers/net/ethernet/cadence/macb_main.c           |  3 ++
+ .../wireless/broadcom/brcm80211/brcmfmac/sdio.c    |  2 +
+ drivers/nvmem/core.c                               |  1 +
+ drivers/nvmem/nvmem-sysfs.c                        |  6 +++
+ drivers/nvmem/sprd-efuse.c                         |  2 +-
+ drivers/pci/pci-sysfs.c                            |  6 ++-
+ drivers/power/supply/axp288_charger.c              | 57 +++++++++++++++++++++-
+ drivers/soc/mediatek/mtk-cmdq-helper.c             |  1 +
+ include/uapi/linux/coresight-stm.h                 |  6 ++-
+ include/uapi/sound/asoc.h                          |  1 +
+ kernel/padata.c                                    |  2 +-
+ lib/test_xarray.c                                  | 18 +++++++
+ lib/xarray.c                                       |  3 +-
+ mm/mempolicy.c                                     |  6 ++-
+ net/core/skbuff.c                                  |  1 +
+ net/ipv4/fib_trie.c                                |  3 ++
+ net/ipv4/ip_tunnel.c                               |  6 +--
+ net/ipv4/udp_offload.c                             |  1 +
+ net/sctp/ipv6.c                                    | 20 +++++---
+ net/sctp/protocol.c                                | 28 +++++++----
+ net/sctp/socket.c                                  | 31 +++++++++---
+ sound/pci/hda/patch_ca0132.c                       |  1 +
+ tools/perf/util/setup.py                           |  2 +-
+ 33 files changed, 226 insertions(+), 50 deletions(-)
+
+
