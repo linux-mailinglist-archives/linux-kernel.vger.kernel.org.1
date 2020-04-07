@@ -2,188 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 651071A04F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8051C1A04FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgDGCg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 22:36:29 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:54916 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgDGCg2 (ORCPT
+        id S1726642AbgDGCkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 22:40:16 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:6109 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726353AbgDGCkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 22:36:28 -0400
-Received: by mail-pj1-f67.google.com with SMTP id np9so111645pjb.4;
-        Mon, 06 Apr 2020 19:36:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=ExK57tXOixEJPtpgQX6g+8AKcUB7kSM0nnsqiNXCe8g=;
-        b=b57Mqs1SyShP3Bt0t9JzzA0NZqy2N4G3vB+SfwUQSesJu7SXsYL38fHId7tYnxONr9
-         MlBOzEeaZw/TeYN+AIaWPvxmRwZkdYWKjWjNzPiLcBUV3Hha8AxakAfVC5BNCZS/KVBx
-         904wYURAm3l73G6TCXuHoCmOJQQetZAssWnL+iMrUgAvNYJhqmUoMNNAgY3vJcJcCbiU
-         NUp8H/IMn/Luk/iGvQlLSSrQhXNp53oOTEkj/xx+iB7IzQayOGMBir4tBjdE2PCuCtGB
-         3ci41UWd27FUwH/MKTpH9KPsbxplzUBysnkQXr6Zv826LQqCDU6U5xVe0QyuPkb/JlG8
-         sjXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=ExK57tXOixEJPtpgQX6g+8AKcUB7kSM0nnsqiNXCe8g=;
-        b=SG0o2LmNPmmMGDiueFhiYpkp2hWZcv/kist9t3C3uDkRqedN1FG7JIU+dyRcytyvz6
-         w7QA9T2QxvhvyK2SGfwmMd61XnaGahdCE2SZ1wfEzaQ2ghcU91Vwb7DIyKU9JdWsLWtl
-         O4AE8ZDVO4/rHtwyndm5IXtZK2FaHD9zB+e64ku7Awv9t+2f+Uct5XfL3UVYVrWlG5Md
-         Y6MQzPkbYvsPq5eS6cuIduspjARLHh4f1TG9ePvFTxEDuMsNSIz8IbkdPWST7zS5oK5/
-         gojsPjrwkxTg4dABlMOcsO+VNAEe8KBNuzaxIO9s0UslVuoSW0lNNRHP7zXdhdGIc1ac
-         Ajiw==
-X-Gm-Message-State: AGi0PuYQ+pwxExV3KyjZcXlgxSrvjrnj3cFe10urHYcc5YNDO3JiT4TX
-        AVHNDKv9osLMpGMYO0FRdsM=
-X-Google-Smtp-Source: APiQypIeTnYYzsxQVldoeNZqGd/EuxIqSfFT/gSqGItMiyge00wsJhmlNbG62DgPwOfbvsZD/piv1w==
-X-Received: by 2002:a17:902:5a4b:: with SMTP id f11mr334310plm.7.1586226986814;
-        Mon, 06 Apr 2020 19:36:26 -0700 (PDT)
-Received: from ubuntu ([125.132.45.8])
-        by smtp.gmail.com with ESMTPSA id v59sm168874pjb.26.2020.04.06.19.36.23
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 06 Apr 2020 19:36:26 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 11:35:46 +0900
-From:   Levi <ppbuk5246@gmail.com>
-To:     viro@zeniv.linux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        gnault@redhat.com, nicolas.dichtel@6wind.com, edumazet@google.com,
-        lirongqing@baidu.com, tglx@linutronix.de, johannes.berg@intel.com,
-        dhowells@redhat.com, daniel@iogearbox.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH] netns: dangling pointer on netns bind mount point.
-Message-ID: <20200407023512.GA25005@ubuntu>
+        Mon, 6 Apr 2020 22:40:15 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 06 Apr 2020 19:40:14 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 06 Apr 2020 19:40:13 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 8A2DF4BBC; Mon,  6 Apr 2020 19:40:13 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 19:40:13 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arnd Bergmann' <arnd@arndb.de>,
+        Linux PWM List <linux-pwm@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v11 11/12] clk: pwm: Assign u64 divisor to unsigned int
+ before use
+Message-ID: <20200407024013.GB7019@codeaurora.org>
+References: <cover.1584667964.git.gurus@codeaurora.org>
+ <ab7b568b1d287949276b3b1c9efdb1cad1f92004.1584667964.git.gurus@codeaurora.org>
+ <CAK8P3a0XrYGYBQ_hTKF4fVBr7DDZsLnR+8o=09cig_gAje=v3w@mail.gmail.com>
+ <9943d663c74046d798f4614343f25187@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <9943d663c74046d798f4614343f25187@AcuMS.aculab.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we try to bind mount on network namespace (ex) /proc/{pid}/ns/net,
-inode's private data can have dangling pointer to net_namespace that was
-already freed in below case.
+On Fri, Mar 20, 2020 at 06:42:39PM +0000, David Laight wrote:
+> From: Arnd Bergmann
+> > Sent: 20 March 2020 17:01
+> > On Fri, Mar 20, 2020 at 2:42 AM Guru Das Srinagesh <gurus@codeaurora.org> wrote:
+> > >
+> > > Since the PWM framework is switching struct pwm_args.period's datatype
+> > > to u64, prepare for this transition by assigning the 64-bit divisor to
+> > > an unsigned int variable to use as the divisor. This is being done
+> > > because the divisor is a 32-bit constant and the quotient will be zero
+> > > if the divisor exceeds 2^32.
 
-    1. Forking the process.
-    2. [PARENT] Waiting the Child till the end.
-    3. [CHILD] call unshare for creating new network namespace
-    4. [CHILD] Bind mount with /proc/self/ns/net to some mount point.
-    5. [CHILD] Exit child.
-    6. [PARENT] Try to setns with binded mount point
+Correction: The quotient will be zero when the denominator exceeds the
+numerator, i.e. NSECS_PER_SEC, and not U32_MAX. For this to happen, the
+property "clock-frequency" must be specified to be more than
+NSEC_PER_SEC, i.e. 1 GHz. Just observed that currently in the device
+tree, all instances of this driver (compatible string "pwm-clock") are
+setting this property to values within that limit.
 
-In step 5, net_namespace made by child process'll be freed,
-But in bind mount point, it still held the pointer to net_namespace made
-by child process.
-In this situation, when parent try to call "setns" systemcall with the
-bind mount point, parent process try to access to freed memory, That
-makes memory corruption.
+> > >
+> > > Cc: Michael Turquette <mturquette@baylibre.com>
+> > > Cc: Stephen Boyd <sboyd@kernel.org>
+> > > Cc: linux-clk@vger.kernel.org
+> > > Cc: David Laight <David.Laight@ACULAB.COM>
+> > >
+> > > Reported-by: kbuild test robot <lkp@intel.com>
+> > > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > > ---
+> > >  drivers/clk/clk-pwm.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/clk/clk-pwm.c b/drivers/clk/clk-pwm.c
+> > > index 87fe0b0e..c0b5da3 100644
+> > > --- a/drivers/clk/clk-pwm.c
+> > > +++ b/drivers/clk/clk-pwm.c
+> > > @@ -72,6 +72,7 @@ static int clk_pwm_probe(struct platform_device *pdev)
+> > >         struct pwm_device *pwm;
+> > >         struct pwm_args pargs;
+> > >         const char *clk_name;
+> > > +       unsigned int period;
+> > >         int ret;
+> > >
+> > >         clk_pwm = devm_kzalloc(&pdev->dev, sizeof(*clk_pwm), GFP_KERNEL);
+> > > @@ -88,8 +89,9 @@ static int clk_pwm_probe(struct platform_device *pdev)
+> > >                 return -EINVAL;
+> > >         }
+> > >
+> > > +       period = pargs.period;
+> > >         if (of_property_read_u32(node, "clock-frequency", &clk_pwm->fixed_rate))
+> > > -               clk_pwm->fixed_rate = NSEC_PER_SEC / pargs.period;
+> > > +               clk_pwm->fixed_rate = NSEC_PER_SEC / period;
+> > >
+> > >         if (pargs.period != NSEC_PER_SEC / clk_pwm->fixed_rate &&
+> > >             pargs.period != DIV_ROUND_UP(NSEC_PER_SEC, clk_pwm->fixed_rate)) {
+> > 
+> > Doesn't this one need a check for "pargs.period>UINT_MAX" or
+> > "pargs.period > NSEC_PER_SEC"?
+> > 
 
-This patch fix the above scenario by increaseing reference count.
+With the assignment of period to unsigned int, wouldn't doing
+s/pargs.period/period suffice?
 
-Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
----
- fs/namespace.c              | 31 +++++++++++++++++++++++++++++++
- include/net/net_namespace.h |  7 +++++++
- net/core/net_namespace.c    |  5 -----
- 3 files changed, 38 insertions(+), 5 deletions(-)
+Also, will add a check to ensure that clk_pwm->fixed_rate is non-zero. If it
+is zero, fail probe.
 
-diff --git a/fs/namespace.c b/fs/namespace.c
-index a28e4db075ed..ed0fbb6a1b52 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -31,6 +31,10 @@
- #include <linux/fs_context.h>
- #include <linux/shmem_fs.h>
+> > It looks like truncating the 64-bit value to a 32-bit type can result in
+> > unexpected behavior.
+> 
+> I also suspect the last two lines ought to use the 32bit copy.
+> And there is a chance that the division will explode.
 
-+#ifdef CONFIG_NET_NS
-+#include <net/net_namespace.h>
-+#endif
-+
- #include "pnode.h"
- #include "internal.h"
+The check mentioned above will ensure that the division will not
+explode.
 
-@@ -1013,12 +1017,25 @@ vfs_submount(const struct dentry *mountpoint, struct file_system_type *type,
- }
- EXPORT_SYMBOL_GPL(vfs_submount);
+What do you guys think?
 
-+#ifdef CONFIG_NET_NS
-+static bool is_net_ns_file(struct dentry *dentry)
-+{
-+	/* Is this a proxy for a network namespace? */
-+	return dentry->d_op == &ns_dentry_operations &&
-+		dentry->d_fsdata == &netns_operations;
-+}
-+#endif
-+
- static struct mount *clone_mnt(struct mount *old, struct dentry *root,
- 					int flag)
- {
- 	struct super_block *sb = old->mnt.mnt_sb;
- 	struct mount *mnt;
- 	int err;
-+#ifdef CONFIG_NET_NS
-+	struct ns_common *ns = NULL;
-+	struct net *net = NULL;
-+#endif
+Thank you.
 
- 	mnt = alloc_vfsmnt(old->mnt_devname);
- 	if (!mnt)
-@@ -1035,6 +1052,20 @@ static struct mount *clone_mnt(struct mount *old, struct dentry *root,
- 			goto out_free;
- 	}
-
-+#ifdef CONFIG_NET_NS
-+	if (!(flag & CL_COPY_MNT_NS_FILE) && is_net_ns_file(root)) {
-+		ns = get_proc_ns(d_inode(root));
-+		if (ns == NULL || ns->ops->type != CLONE_NEWNET) {
-+			err = -EINVAL;
-+
-+			goto out_free;
-+		}
-+
-+		net = to_net_ns(ns);
-+		net = get_net(net);
-+	}
-+#endif
-+
- 	mnt->mnt.mnt_flags = old->mnt.mnt_flags;
- 	mnt->mnt.mnt_flags &= ~(MNT_WRITE_HOLD|MNT_MARKED|MNT_INTERNAL);
-
-diff --git a/include/net/net_namespace.h b/include/net/net_namespace.h
-index ab96fb59131c..275258d1dbee 100644
---- a/include/net/net_namespace.h
-+++ b/include/net/net_namespace.h
-@@ -474,4 +474,11 @@ static inline void fnhe_genid_bump(struct net *net)
- 	atomic_inc(&net->fnhe_genid);
- }
-
-+#ifdef CONFIG_NET_NS
-+static inline struct net *to_net_ns(struct ns_common *ns)
-+{
-+	return container_of(ns, struct net, ns);
-+}
-+#endif
-+
- #endif /* __NET_NET_NAMESPACE_H */
-diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-index 190ca66a383b..3a6d9155806f 100644
---- a/net/core/net_namespace.c
-+++ b/net/core/net_namespace.c
-@@ -1343,11 +1343,6 @@ static struct ns_common *netns_get(struct task_struct *task)
- 	return net ? &net->ns : NULL;
- }
-
--static inline struct net *to_net_ns(struct ns_common *ns)
--{
--	return container_of(ns, struct net, ns);
--}
--
- static void netns_put(struct ns_common *ns)
- {
- 	put_net(to_net_ns(ns));
---
-2.26.0
+Guru Das.
