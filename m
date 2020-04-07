@@ -2,103 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9C51A0CA2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05881A0C74
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728561AbgDGLNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:13:13 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:42482 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728495AbgDGLNJ (ORCPT
+        id S1728397AbgDGLDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:03:44 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:48821 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgDGLDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:13:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=jKJXZpzzDrrjmwLNRHLcBZgkJJqiHAXwqSXGUdiOBYo=; b=0j+dqzCwYKeCySGxRekkKqS18I
-        Ci4hvKzYPKjEPtpr0yDYoOQfLkgInKK5Am6VbHyjnWE+6tpIXnkM++yfH69CFy+71eKW0wOLC15EM
-        mGUfAbvj14OTkzee+xcIuGyRFMTgOF1sOzUhvQTCqHlgi6mh3Nmqd1Mkv1N2wiijcwvjjIfEsPut9
-        meT/gty9dwvqxnuuGuK4n8ZnF2tQvNjMvv04Q8Z595cDgt0rF3ckoUIpnvHZEvJcT8vT3VgJNc8ew
-        4oVAMlOUcslek5ZWl43n7ciUgQp1chuZYE6BI0o52KWcC1c1GVM5X+ZmFJ5EkMGTD34EdVgEPW9BD
-        55DFhRVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLm9m-0007DP-Oh; Tue, 07 Apr 2020 11:12:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4E45D30604B;
-        Tue,  7 Apr 2020 13:12:36 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 25ACF29C96F21; Tue,  7 Apr 2020 13:12:36 +0200 (CEST)
-Message-Id: <20200407111007.429362016@infradead.org>
-User-Agent: quilt/0.65
-Date:   Tue, 07 Apr 2020 13:02:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     tglx@linutronix.de, linux-kernel@vger.kernel.org
-Cc:     hch@infradead.org, sean.j.christopherson@intel.com,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        kenny@panix.com, peterz@infradead.org, jeyu@kernel.org,
-        rasmus.villemoes@prevas.dk, pbonzini@redhat.com,
-        fenghua.yu@intel.com, xiaoyao.li@intel.com, nadav.amit@gmail.com,
-        thellstrom@vmware.com, tony.luck@intel.com, rostedt@goodmis.org,
-        gregkh@linuxfoundation.org, jannh@google.com,
-        keescook@chromium.org, David.Laight@aculab.com,
-        dcovelli@vmware.com, mhiramat@kernel.org
-Subject: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
-References: <20200407110236.930134290@infradead.org>
+        Tue, 7 Apr 2020 07:03:44 -0400
+X-Originating-IP: 78.193.40.249
+Received: from kb-xps (unknown [78.193.40.249])
+        (Authenticated sender: kamel.bouhara@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id D5839FF819;
+        Tue,  7 Apr 2020 11:03:40 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 13:03:39 +0200
+From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 2/3] Input: rotary-encoder-counter: add DT bindings
+Message-ID: <20200407110339.GA1489441@kb-xps>
+References: <20200406155806.1295169-1-kamel.bouhara@bootlin.com>
+ <20200406155806.1295169-3-kamel.bouhara@bootlin.com>
+ <20200407094159.xtbhtsxorvs2g22c@gilmour.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407094159.xtbhtsxorvs2g22c@gilmour.lan>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we now have infrastructure to analyze module text, disallow
-modules that write to CRn and DRn registers.
+On Tue, Apr 07, 2020 at 11:41:59AM +0200, Maxime Ripard wrote:
+> Hi Kamel,
+>
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/kernel/module.c |   21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Hi Maxime,
 
---- a/arch/x86/kernel/module.c
-+++ b/arch/x86/kernel/module.c
-@@ -266,6 +266,22 @@ static bool insn_is_vmx(struct insn *ins
- 	return false;
- }
- 
-+static bool insn_is_mov_CRn(struct insn *insn)
-+{
-+	if (insn->opcode.bytes[0] == 0x0f && insn->opcode.bytes[1] == 0x22)
-+		return true;
-+
-+	return false;
-+}
-+
-+static bool insn_is_mov_DRn(struct insn *insn)
-+{
-+	if (insn->opcode.bytes[0] == 0x0f && insn->opcode.bytes[1] == 0x23)
-+		return true;
-+
-+	return false;
-+}
-+
- static int decode_module(struct module *mod, void *text, void *text_end, bool sld_safe)
- {
- 	bool allow_vmx = sld_safe || !split_lock_enabled();
-@@ -285,6 +301,11 @@ static int decode_module(struct module *
- 			return -ENOEXEC;
- 		}
- 
-+		if (insn_is_mov_CRn(&insn) || insn_is_mov_DRn(&insn)) {
-+			pr_err("Module writes to CRn or DRn, please use the proper accessors: %s\n", mod->name);
-+			return -ENOEXEC;
-+		}
-+
- 		text += insn.length;
- 	}
- 
+> The prefix for device tree bindings is usually dt-bindings:
+> $framework: $title
+>
+> So a title like "dt-bindings: input: Add a counter-based rotary
+> encoder binding" would be better.
+>
+
+OK, to be fixed then.
+
+> On Mon, Apr 06, 2020 at 05:58:05PM +0200, Kamel Bouhara wrote:
+> > Add dt binding for the counter variant of the rotary encoder driver.
+> >
+> > Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > ---
+> >  .../input/rotary-encoder-counter.yaml         | 67 +++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
+> > new file mode 100644
+> > index 000000000000..a59f7c1faf0c
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
+> > @@ -0,0 +1,67 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+>
+> Bindings are usually used by other OS's, so you should consider
+> putting it under a more permissive license, usually that would be GPL2
+> and the BSD-2-Clause
+>
+
+Well to be honest I just looked into an existing binding and I guess
+the wrong one :).
+
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/input/rotary-encoder-counter.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Rotary Encoder Counter
+> > +
+> > +maintainers:
+> > +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > +
+> > +description:
+> > +  Registers a Rotary encoder connected through a counter device.
+>
+> You shouldn't really describe the action here, but more what the
+> binding is about. The registration will not depend on the presence of
+> the node following that binding, but rather on whether or not the OS
+> that uses it has support for it.
+>
+
+Then shall it be better with just :
+"A rotary encoder device using a generic counter interface." ?
+
+> > +properties:
+> > +  compatible:
+> > +    const: rotary-encoder-counter
+> > +
+> > +  counter:
+> > +    description: Phandle for the counter device providing rotary position.
+>
+> This should have a type
+>
+> > +  linux-axis:
+> > +    description: The input subsystem axis to map to this rotary encoder.
+> > +    type: boolean
+> > +
+> > +  qdec-mode:
+> > +    description: |
+> > +      Quadrature decoder function to set in the counter device.
+> > +      3: x1-PHA
+> > +      4: x1-PHB
+> > +      5: x2-PHA
+> > +      6: x2-PHB
+> > +      7: x4-PHA and PHB
+>
+> That range (even though it's a bit odd) should be expressed through an
+> enum so that you can check that the values are actually within that
+> range.
+>
+
+Indeed, that make sens to check it from the binding.
+
+Will fix it in v2.
+
+> > +  steps:
+> > +    description: Number of steps in a full turnaround of the encoder.
+>
+> Muli-line strings should have either quotes around them, or a | or >
+> like you did for the description. | will keep the \n, > will make that
+> a single string.
+>
+> This should also have a type
+>
+> > +      Only relevant for absolute axis.
+>
+> This should be expressed through a if / then clause, or a dependencies one
+>
+> >                                         Defaults to 24 which is a typical
+> > +      value for such devices.
+>
+> This should be expressed through a default property.
+>
+
+The devil is in the details and yet quite lot of them to fix.
+
+Thanks.
+
+> > +  relative-axis:
+> > +    description: Register a relative axis rather than an absolute one.
+> > +    type: boolean
+> > +
+> > +  rollover:
+> > +    description: Automatic rollover when the rotary value becomes greater
+> > +      than the specified steps or smaller than 0. For absolute axis only.
+> > +    type: boolean
+>
+> Same story than steps for the dependency. Also, what is is the
+> behaviour when this property isn't set?
+>
+
+OK, if rollover isn't set then the count is unbounded, of course this
+shall be described here.
+
+> > +  poll-interval:
+> > +    description: Poll interval at which the position is read from the counter
+> > +      device (default 500ms).
+>
+> It should have a type too, and a default property
+>
+> > +
+> > +required:
+> > +  - compatible
+> > +  - counter
+> > +  - qdec-mode
+> > +
+> > +examples:
+> > +  - |
+> > +    rotary@0 {
+> > +        compatible = "rotary-encoder-counter";
+>
+> A unit-address (the part after @) only makes sense for a node if
+> there's a matching reg property in the node. This will trigger a DTC
+> warning, so you should remove the @0
+>
+
+Ok I'll fix it then.
+
+Thanks again.
+
+> Maxime
 
 
+
+--
+Kamel Bouhara, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
