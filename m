@@ -2,113 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 375631A0C63
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0BEE1A0C69
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728424AbgDGLBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:01:30 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:50874 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728146AbgDGLBa (ORCPT
+        id S1728388AbgDGLB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:01:58 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33944 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728152AbgDGLB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:01:30 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 037B1SAb012656;
-        Tue, 7 Apr 2020 07:01:28 -0400
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by mx0a-00128a01.pphosted.com with ESMTP id 306q55j3b7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Apr 2020 07:01:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gL8fuJzvfWusUC+r8oI7glsTHOEwszc56GtQEiZZZmyLCzG2vov9s35Z0yjY9OGOVjzBOkPZ0lGAz2MRLUSYFKAP9btiFdbVW3PPkFNIodGBVH56XE8yLWQfaHjMGpF/i8Yi5c597aK9ksEtKtUGTEraeDRAcAhMCK3Z9Pbo42vbrW6+vV7r/19yIpJQ9znqJIT0/BKFTphSQ9Kjy3E1xyUFyZWmikMxPQtAjNK35kXJi26XUZfkVxzH/ZgEoRQJLUwH5Zl+IN6KMmkhIT3LVIknCHYsk4ieRngvcMSgiYWsPt15ciquBQF8kQ0CeMVLLr5kzSG/A7Fk4Vlt/4bJXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S9MFHYZXF7SdHf5Ltxl2TxrPw+isNcAmZO0cNAPKd8U=;
- b=EhLkG5VgVq2T2OFdgj/KBNJ6rMOTe9dXwQDDXh8OZKsUPKG4fKLsJcMt19ou6G7Q9vu6OeLsE5ZzyUlhMAu/Tv0LiktYYwZEGNLwjykPWVcM9PcNkLtZ55knttFQ8SWNKmqTLW6hI/s9BADWMBUk/VL10TLnbkCBeHKiBOBOMuMI7KgzQ2ayK/yS3XPe8FxfIi+IFZTvDF3ylhIsDswyMaKhNTv0Cr4eaafH/suelclb3MYePT7/bi8msIN5RFhl6W4d8Lu1mplq5YDKFrYFJC+lly+Tnu0Q3QX7F7w+i6j8QOUDP2QExyi/tWzjWMJd0J0vt8sYuIKhz7Hyg1dBkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
+        Tue, 7 Apr 2020 07:01:57 -0400
+Received: by mail-wr1-f67.google.com with SMTP id 65so3401230wrl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 04:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=S9MFHYZXF7SdHf5Ltxl2TxrPw+isNcAmZO0cNAPKd8U=;
- b=Mz/zvYDgqyXKXqm2LT9ftaqztUopsBJ0sFU6B27Q2BfPidwpbuqFAnpSP3dRc+6D8qgPMC0o0dL8f4o2yrLWe4koxygziq6oseXF4U5qb2eWWAvCn67FWmUCjxyyWgMtJHaC7Qo8z8vqmrgbfL7D6ehuWfEfNVMWW5adhMDx5QI=
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com (2603:10b6:5:10f::14)
- by DM6PR03MB5033.namprd03.prod.outlook.com (2603:10b6:5:1e2::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.19; Tue, 7 Apr
- 2020 11:01:23 +0000
-Received: from DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::c47f:ceee:cfda:6a7f]) by DM6PR03MB4411.namprd03.prod.outlook.com
- ([fe80::c47f:ceee:cfda:6a7f%3]) with mapi id 15.20.2878.018; Tue, 7 Apr 2020
- 11:01:23 +0000
-From:   "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-To:     "Markus.Elfring@web.de" <Markus.Elfring@web.de>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
-CC:     "jic23@kernel.org" <jic23@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [v2] iio: core: move 'indio_dev->info' null check first
-Thread-Topic: [v2] iio: core: move 'indio_dev->info' null check first
-Thread-Index: AQHWDMlSZrUp5iveZ0qk1mOyXvaT86htfiwA
-Date:   Tue, 7 Apr 2020 11:01:23 +0000
-Message-ID: <d25190f18a171d82f3300f00b00f50f62f636d28.camel@analog.com>
-References: <cb300eeb-6045-bd91-3e0e-902dd3b5d5d8@web.de>
-         <3725f882accda683815f04c0eff0bb36c285fe62.camel@analog.com>
-         <39d24c67-e83a-e414-e27e-041c7d5cea1a@web.de>
-In-Reply-To: <39d24c67-e83a-e414-e27e-041c7d5cea1a@web.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [188.27.135.58]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2e8375f6-7029-40a1-b8a1-08d7dae302e8
-x-ms-traffictypediagnostic: DM6PR03MB5033:
-x-microsoft-antispam-prvs: <DM6PR03MB503375A6B93E8DB92D9E0D7EF9C30@DM6PR03MB5033.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 036614DD9C
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4411.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(136003)(39860400002)(396003)(376002)(366004)(346002)(71200400001)(8936002)(6512007)(186003)(8676002)(54906003)(86362001)(4744005)(26005)(110136005)(478600001)(2616005)(316002)(6486002)(4326008)(66946007)(66476007)(91956017)(76116006)(6506007)(5660300002)(2906002)(36756003)(81166006)(81156014)(66556008)(64756008)(66446008);DIR:OUT;SFP:1101;
-received-spf: None (protection.outlook.com: analog.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 98XM18tH3Tas/HDsjAHuYimKB0jauC24WZTFwWv2FLmLt7nIV8T9Sf6w+W8/Hy47huEbd6/3tMt9IrRfBm+KEGm8+TIiPwI3heGUd/TFQduAFbuoy76RQD5SocK5YSv0cLAboy22b0A4Wn4wF/xZsXzbLC+7JGhbCJ9VUyLmdLdmB9GmYsDyKC+gGiK56xGl++8J1J58Kb6lHmELCTrSzkHEomJ0yIR7tyJ2wsiu+alagqj8eACyAJgsQCYZbrYhHJP5QR2Y2s3yeyXghbNNGxo9TbC3S6gDzEOVpDzsfQEHieGHTPTVae69NHYnapB0g+cz2JYxtibg/lwnk+ANPf0KfLJzpmBEq/zqYFxuAKfETkLBa5JQGsz+DCKJhHyofZuQjWd67by0rQlYb3RpJ2MlFHqQ/4m88Df9MX0PwBSjYHzvqdFaYv1T4WMfLITj
-x-ms-exchange-antispam-messagedata: xDCJDP6p3ValM/WBVSTvhKLp+FSz3ztdPEwP4nXGNROxLEx1DLLC9rbW20FvOhwenixepGGuMix24X03VADY0OihsyANtqLREVao4TADRI7POlSWRtUOf72sB2xqNHKIWHzmHqpeGqHIdci+ohrTiQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <BD47960F5ACF7A4FBF88E432A1741231@namprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lrvv+xJ1GPbPtd9mC9WfvPH0Y05ufQDVnaAuC8UizGg=;
+        b=R4qx4JOBBD08rkaPcYuve7i7YBu+uaBWWCNPH1KgklRWcm2mn+BHz7MFBD/5G8bS63
+         pwuLv+YC8yWxneBxjrA8hTtg4wmRTdKuBlFtvMY6YU2WXhvCQnwdKHZivSsJYN65qdWi
+         pxV2BL7a3eGDjSvF5CIetpFNRMZezjbn4ZGu3YSPtkW0Umyp2MGbFqCTF/W2N/CcmgwN
+         DfU4Rj6iXHK7aR60xMgqb8JRf9PE8Ht8yZ4bm4zYad6J00HHAilj+UBAdAcxo46QQnbs
+         lEKsJoFIDF51XrcFPuREZ9391dV/V0TfpC4sOYKSUNM5BWNbmOi/zln3sXSDdDFx5Ox/
+         A5KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lrvv+xJ1GPbPtd9mC9WfvPH0Y05ufQDVnaAuC8UizGg=;
+        b=GrorWDomFI6I6deI1C4HLZ60GrpD3z0jKi6ca/Ht1ZwUMCowX3Y4ZgNSikYTphPYGU
+         atLQJJZAXsLlFVpAmw2gmulwe6QBNWnrCLRTzh6blnvc2/rQrwnGqTKE82aPvIV/tPqY
+         7ekGeJzD0i0flWEoaykTue9s1aconfeb5fxROoLhRVKWiZwsCwZubRpuixMx+r+rT3Mt
+         n4ixCVasS0C4+sAuD9KUql/M6/DSOoL7D4Ol75lK3rNHoZLo/e0d44UdjQ8ohhAtT4/6
+         qVgiDlnAaLrHcmaKtucGfHv6Ez4ADFdwnm3raV7N7Bqhc5Pud3pWUd5xd8sK+4WOI/3a
+         Pekg==
+X-Gm-Message-State: AGi0Pua7u4L930b2fx1dbavqfIbIb05of9s15+MOelPuEUfCJiin7jSU
+        9bNXslhMMmc5RHO5qB4b6yQdJQ==
+X-Google-Smtp-Source: APiQypIw5mZTJ+obpt9JttMWcZCpY5PLCvRKb+0qmz83brxu78nH/PbJRR8NjOqQssQsjCrOrH/AxA==
+X-Received: by 2002:a5d:4842:: with SMTP id n2mr2217910wrs.154.1586257314435;
+        Tue, 07 Apr 2020 04:01:54 -0700 (PDT)
+Received: from myrica ([2001:171b:226b:54a0:6097:1406:6470:33b5])
+        by smtp.gmail.com with ESMTPSA id c18sm30089003wrx.5.2020.04.07.04.01.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 04:01:54 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 13:01:46 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Eric Auger <eric.auger@redhat.com>
+Subject: Re: [PATCH 05/10] iommu/ioasid: Create an IOASID set for host SVA use
+Message-ID: <20200407110146.GB285264@myrica>
+References: <1585158931-1825-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1585158931-1825-6-git-send-email-jacob.jun.pan@linux.intel.com>
+ <20200401135316.GF882512@myrica>
+ <20200406083353.73efda5b@jacob-builder>
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2e8375f6-7029-40a1-b8a1-08d7dae302e8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Apr 2020 11:01:23.6572
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: b6a4BGGnN+mX2WPE6J3sbqf3GMToz5j70fNLuVJddAifgL90R3EjbJ7uMQLcOjmxBVRBgIhGAjkQoFRHOamjN0I9NPX9k5wj7a2ezgr6NQ0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5033
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-07_03:2020-04-07,2020-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 suspectscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0
- phishscore=0 mlxscore=0 adultscore=0 priorityscore=1501 bulkscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004070095
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200406083353.73efda5b@jacob-builder>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTA0LTA3IGF0IDEyOjQyICswMjAwLCBNYXJrdXMgRWxmcmluZyB3cm90ZToN
-Cj4gW0V4dGVybmFsXQ0KPiANCj4gPiBTbywgb3ZlciB0aW1lIEkgZ290IHRoZSBoYWJpdCBvZiBt
-ZW50aW9uaW5nICdEb2Vzbid0IGZpeCBhbnl0aGluZy4nDQo+IA0KPiBJIHN1Z2dlc3QgdG8gcmVj
-b25zaWRlciBzdWNoIGluZm9ybWF0aW9uIG9uY2UgbW9yZS4NCj4gV2UgY29tZSBhbG9uZyBkaWZm
-ZXJlbnQgaW50ZXJwcmV0YXRpb25zIGZvciByZW1hcmthYmxlIHNvZnR3YXJlIGFkanVzdG1lbnRz
-Lg0KPiANCj4gDQo+ID4gaWYgdGhlIHBhdGNoIGRvZXNuJ3QgZml4IGFueXRoaW5nLg0KPiANCj4g
-RG8geW91IGltcHJvdmUgdGhlIGlucHV0IHBhcmFtZXRlciB2YWxpZGF0aW9uIGEgYml0IGluIHBy
-aW5jaXBsZSBoZXJlPw0KDQpJIHRob3VnaHQgdGhhdCB3YXMgb2J2aW91cyBmcm9tIHRoZSByZXN0
-IG9mIHRoZSBkZXNjcmlwdGlvbiArIHBhdGNoLg0KSSBndWVzcyBpdCBpc24ndC4NCg0KSSdsbCBz
-ZWUuDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IE1hcmt1cw0K
+On Mon, Apr 06, 2020 at 08:33:53AM -0700, Jacob Pan wrote:
+> Hi Jean,
+> 
+> On Wed, 1 Apr 2020 15:53:16 +0200
+> Jean-Philippe Brucker <jean-philippe@linaro.org> wrote:
+> 
+> > On Wed, Mar 25, 2020 at 10:55:26AM -0700, Jacob Pan wrote:
+> > > Bare metal SVA allocates IOASIDs for native process addresses. This
+> > > should be separated from VM allocated IOASIDs thus under its own
+> > > set.
+> > > 
+> > > This patch creates a system IOASID set with its quota set to
+> > > PID_MAX. This is a reasonable default in that SVM capable devices
+> > > can only bind to limited user processes.  
+> > 
+> > Yes realistically there won't be more than PID_MAX_DEFAULT=0x8000
+> > bound address spaces. My machine uses a PID_MAX of 4 million though,
+> > so in theory more than 0x8000 processes may want a bond.
+> Got it, I assume we can adjust the system set quota as necessary.
+> 
+> > On Arm the
+> > limit of shared contexts per VM is currently a little less than
+> > 0x10000 (which is the number of CPU ASIDs).
+> > 
+> I guess shared contexts means shared address? then it makes sense
+> #IOASID < #ASID.
+
+Yes by shared contexts I mean shared address spaces. Theoretically #ASID <
+#IOASID for us, because the max ASID size is 16-bit.
+
+> 
+> > But quotas are only necessary for VMs, when the host shares the PASID
+> > space with them (which isn't a use-case for Arm systems as far as I
+> > know, each VM gets its own PASID space).
+> Is there a host-guest PASID translation? or the PASID used by the VM is
+> physical PASID? When a page request comes in to SMMU, how does it know
+> the owner of the PASID if PASID range can overlap between host and
+> guest?
+
+We assign PCI functions to VMs, so Page Requests are routed with
+RID:PASID, not PASID alone. The SMMU finds the struct device associated
+with the RID, and submits the fault with iommu_report_device_fault(). If
+the VF is assigned to a VM, then the page request gets injected into the
+VM, otherwise it uses the host IOPF handler
+
+> > Could we have quota-free IOASID sets for the host?
+> > 
+> Yes, perhaps just add a flag such that the set has its own namespace.
+> You mean have this quota-free IOASID set even co-exist with VMs? I still
+> don't get how PRQ works.
+> 
+> That is not the use case for VT-d in that we have to have system-wide
+> allocation for host PASIDs. We have enqcmd which can take a PASID from
+> the per task MSR and deliver to multiple devices, so even though the
+> PASID table is per device the PASID name space must be global.
+> 
+> > For the SMMU I'd like to allocate two sets, one SVA and one private
+> > for auxiliary domains, and I don't think giving either a quota makes
+> > much sense at the moment.
+> I agree we don;t need the quota if we don't support guest SVA at the
+> same time.
+> 
+> So the sva set and aux_domain set PASIDs have their own namespaces?
+
+They share the same PASID space, but they store different objects
+(mm_struct and context descriptor, respectively) so they need different
+ioasid_set tokens.
+
+> 
+> > There can be systems using only SVA and
+> > systems using only private PASIDs. I think it should be
+> > first-come-first-served until admins want a knob to define a policy
+> > themselves, based on cgroups for example.
+> > 
+> > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > ---
+> > >  drivers/iommu/intel-iommu.c | 8 +++++++-
+> > >  drivers/iommu/ioasid.c      | 9 +++++++++
+> > >  include/linux/ioasid.h      | 9 +++++++++
+> > >  3 files changed, 25 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/iommu/intel-iommu.c
+> > > b/drivers/iommu/intel-iommu.c index ec3fc121744a..af7a1ef7b31e
+> > > 100644 --- a/drivers/iommu/intel-iommu.c
+> > > +++ b/drivers/iommu/intel-iommu.c
+> > > @@ -3511,8 +3511,14 @@ static int __init init_dmars(void)
+> > >  		goto free_iommu;
+> > >  
+> > >  	/* PASID is needed for scalable mode irrespective to SVM */
+> > > -	if (intel_iommu_sm)
+> > > +	if (intel_iommu_sm) {
+> > >  		ioasid_install_capacity(intel_pasid_max_id);
+> > > +		/* We should not run out of IOASIDs at boot */
+> > > +		if (ioasid_alloc_system_set(PID_MAX_DEFAULT)) {
+> > > +			pr_err("Failed to enable host PASID
+> > > allocator\n");
+> > > +			intel_iommu_sm = 0;
+> > > +		}
+> > > +	}
+> > >  
+> > >  	/*
+> > >  	 * for each drhd
+> > > diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
+> > > index 6265d2dbbced..9135af171a7c 100644
+> > > --- a/drivers/iommu/ioasid.c
+> > > +++ b/drivers/iommu/ioasid.c
+> > > @@ -39,6 +39,9 @@ struct ioasid_data {
+> > >  static ioasid_t ioasid_capacity;
+> > >  static ioasid_t ioasid_capacity_avail;
+> > >  
+> > > +int system_ioasid_sid;
+> > > +static DECLARE_IOASID_SET(system_ioasid);
+> > > +
+> > >  /* System capacity can only be set once */
+> > >  void ioasid_install_capacity(ioasid_t total)
+> > >  {
+> > > @@ -51,6 +54,12 @@ void ioasid_install_capacity(ioasid_t total)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(ioasid_install_capacity);
+> > >  
+> > > +int ioasid_alloc_system_set(int quota)
+> > > +{
+> > > +	return ioasid_alloc_set(&system_ioasid, quota,
+> > > &system_ioasid_sid); +}
+> > > +EXPORT_SYMBOL_GPL(ioasid_alloc_system_set);  
+> > 
+> > I think this helper could stay in the VT-d driver for the moment. If
+> > the SMMU driver ever implements auxiliary domains it will use a
+> > private IOASID set, separate from the shared IOASID set managed by
+> > iommu-sva. Both could qualify as "system set".
+> > 
+> Sounds good. Perhaps remove the special "system set". SVA code,
+> VFIO, VT-d, or SMMU driver can all allocate their own sets.
+> So to meet both SMMU and VT-d requirements, we should do:
+> 1. add an IOASID_PRIVATE flag to ioasid_alloc_set(), indicating this is
+> a private set
+> 2. All APIs operate on the set_id accordingly, e.g. ioasid_find() will
+> only search within the private set. Private set is excluded from from
+> global search (VT-d needs this in PRQ).
+> 
+> Since VT-d already needs private PASIDs for guest SVM where
+> GPASID!=HPASID, I feel we can just reuse the per ioasid_set Xarray for
+> both quota-free private set and guest set.
+
+Ok I think this sounds fine
+
+Thanks,
+Jean
+
+> 
+> 
+> Thanks for the feedback!
+> 
+> Jacob
+> 
+> > Thanks,
+> > Jean
+> > 
+> > > +
+> > >  /*
+> > >   * struct ioasid_allocator_data - Internal data structure to hold
+> > > information
+> > >   * about an allocator. There are two types of allocators:
+> > > diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
+> > > index 8c82d2625671..097b1cc043a3 100644
+> > > --- a/include/linux/ioasid.h
+> > > +++ b/include/linux/ioasid.h
+> > > @@ -29,6 +29,9 @@ struct ioasid_allocator_ops {
+> > >  	void *pdata;
+> > >  };
+> > >  
+> > > +/* Shared IOASID set for reserved for host system use */
+> > > +extern int system_ioasid_sid;
+> > > +
+> > >  #define DECLARE_IOASID_SET(name) struct ioasid_set name = { 0 }
+> > >  
+> > >  #if IS_ENABLED(CONFIG_IOASID)
+> > > @@ -41,6 +44,7 @@ int ioasid_register_allocator(struct
+> > > ioasid_allocator_ops *allocator); void
+> > > ioasid_unregister_allocator(struct ioasid_allocator_ops
+> > > *allocator); int ioasid_attach_data(ioasid_t ioasid, void *data);
+> > > void ioasid_install_capacity(ioasid_t total); +int
+> > > ioasid_alloc_system_set(int quota); int ioasid_alloc_set(struct
+> > > ioasid_set *token, ioasid_t quota, int *sid); void
+> > > ioasid_free_set(int sid, bool destroy_set); int
+> > > ioasid_find_sid(ioasid_t ioasid); @@ -88,5 +92,10 @@ static inline
+> > > void ioasid_install_capacity(ioasid_t total) {
+> > >  }
+> > >  
+> > > +static inline int ioasid_alloc_system_set(int quota)
+> > > +{
+> > > +	return -ENOTSUPP;
+> > > +}
+> > > +
+> > >  #endif /* CONFIG_IOASID */
+> > >  #endif /* __LINUX_IOASID_H */
+> > > -- 
+> > > 2.7.4
+> > >   
+> 
+> [Jacob Pan]
