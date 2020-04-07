@@ -2,240 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 319371A0954
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6E531A095E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgDGI2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 04:28:50 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:50373 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726767AbgDGI2t (ORCPT
+        id S1727980AbgDGIaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 04:30:17 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33474 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726687AbgDGIaR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 04:28:49 -0400
-Received: by mail-pj1-f66.google.com with SMTP id v13so435997pjb.0;
-        Tue, 07 Apr 2020 01:28:49 -0700 (PDT)
+        Tue, 7 Apr 2020 04:30:17 -0400
+Received: by mail-wr1-f67.google.com with SMTP id a25so2872691wrd.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 01:30:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QwWmobyOdR5r+7JJZxSrwfB56TjLUl825BwGgH9NRNQ=;
-        b=N2Rgae8zms+3LBxcOrnLBU6jO9Vokq7alwIwdkajm2FUP1feOjiHVPKSETTl9o9lJe
-         e7OTGKpv440s5Lfcetiy6u8IiLz7+Y65DDE1Du0iTM9Jc128kZeLDcwZDP2wvDVveaIc
-         7RE1k4T2JIo9iPgOk01c9xZ9YKhpy340rKlsPtWfXLmi3Rl4PlnuJxanwfKZO6hF/8M1
-         F74iN54bpM1rgEA+G2heoGYtF9uMSouwpX+N28YAE6gIllNTnzbD3G8DzQ6dtk3f1XX+
-         Ov0kmUIwGI1h6dIrIBQQX/RiKzAEJqbvWRGeU4xATH0LIQGyIeubVEtJ+ioJT0f5KCDv
-         ZI7w==
+        d=9elements.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bjnqIOw/64UQcMVXxP2HD9T2UIEtrKARcLY/HHXuepw=;
+        b=B+xIf7LrFVj/ug5XH1E/s6FhhIXn71JDZDAtx7pUHGPzZ285a1FcD58Mq98o3Zhhb3
+         2dcf+apBwPnaTla0J+J+W3uP3bHomuQMPzdqkHMj1A5T/DjrGlvBgd8MVa0+UDNv73mR
+         J0iXUHGAizCSurnz6QFQHPYnfFq+JqHN1sWH8gCntQXXthgv+orE435eRnkAyous8NoK
+         pvOX0X1Ole1qobSOudaRsdYsfXT/evwkaKN2y207fivB1lfKZbOo0tb/Rzo56fVsmaFd
+         2vfNCX5OwcJvYSQAiwE8IJCojx7VS8Novt6RRc3GpDvtRgivGmbzf6WsCUC8JUpERADr
+         33kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QwWmobyOdR5r+7JJZxSrwfB56TjLUl825BwGgH9NRNQ=;
-        b=bcMP05UarBvvw2ZLczV8sX8k1eoW4D+8Co1Jm3BDnZbseGIaG2D0bF2UU32Itc1Yv+
-         NcGeXswQhpm/vzWU2E0xv/qYhUAthPgU4FHQhjvwsua81DXCJElScTbvcGEixYkRNMcH
-         /8+r9eR7K6ekeiWwGefsxOWR0KvhCyI7M0H268YamJvWC6jzjhVgNxUpmFT7qfNAF8ZL
-         D/cucOGbHjp1miUo8f0zFvVFU/ymByDwDAaz+2hGocZp+uq/DnnpffBTkst2ZEEnZWMr
-         QX+5yi+JJzaO8twUkUHuSZpg/k4oLP5avbUDvYEm+NO9v+hKUHDW/Pi3zwv/F0YmDQe0
-         SDgA==
-X-Gm-Message-State: AGi0PuYiNAA8xo0camTArksjQVK+BSZMumlpUc+bOCzE1lqlpJpUWQIz
-        bkBRGCfCoBraFEyAzAj6byOsIZbq01Y=
-X-Google-Smtp-Source: APiQypJ4MXFHCvLmE8SCVaL1WlvfgUE4X19jgukoo7Kk6ggpuOGHWgDPmWpJtOQeHusGT0nP3uKCxA==
-X-Received: by 2002:a17:902:8ec1:: with SMTP id x1mr1381741plo.325.1586248128475;
-        Tue, 07 Apr 2020 01:28:48 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id h2sm13520526pfr.220.2020.04.07.01.28.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Tue, 07 Apr 2020 01:28:48 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Subject: [PATCH] KVM: X86: Ultra fast single target IPI fastpath
-Date:   Tue,  7 Apr 2020 16:28:38 +0800
-Message-Id: <1586248118-19607-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bjnqIOw/64UQcMVXxP2HD9T2UIEtrKARcLY/HHXuepw=;
+        b=ae+leR+5v/VTNhP1GE4HSxFxSVfyPteL5bffjtx4NvUpK1oO0JNc6a5w6orC9mwSna
+         /ZSZbxCuashfxCdJo63fPO2veSWnsMVQXGSy8Dz5K3QsDjSiY91TwdxBVV2UaE3yZ5xt
+         iBhn0ti3/28FoqUZR3LyJYbcMJeEgFhiOk6H9AxPkSx3MT9gOiuMuEviELnXI98h4MM+
+         ol06R9OA7GNiukxms00bK73kirHmobUQzoQ1lFavhWPV1S/GrPYvnSVcdxIh9cKUTxK3
+         ydFJ3bM+P1Ov0a2c9LVkiI42BQ6EAQFnI/6MnQkHOoXothZUNSIgM97Na88l4plrPj7r
+         NcLg==
+X-Gm-Message-State: AGi0PuYR4pOVxFSX75rjVPM5B7Pj8BDpwaf+yKapgAzuYfISEn5aVjK7
+        +5hoYuk5RCaDng14Vmk+rdRWvOhdJoE0culA
+X-Google-Smtp-Source: APiQypJ93wNSP368wCVt3Ckg5cs2DoYF36j4Rpl82GUvt99HweZnWg7ZOEqe853jNO0v/H8JAAZqNQ==
+X-Received: by 2002:adf:a343:: with SMTP id d3mr1426273wrb.163.1586248214691;
+        Tue, 07 Apr 2020 01:30:14 -0700 (PDT)
+Received: from localhost.localdomain (ip-94-114-101-228.unity-media.net. [94.114.101.228])
+        by smtp.gmail.com with ESMTPSA id t16sm31190743wra.17.2020.04.07.01.30.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 01:30:13 -0700 (PDT)
+From:   patrick.rudolph@9elements.com
+To:     linux-kernel@vger.kernel.org
+Cc:     coreboot@coreboot.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        Julius Werner <jwerner@chromium.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: [PATCH v4 0/2] firmware: google: Expose coreboot tables and CBMEM
+Date:   Tue,  7 Apr 2020 10:29:05 +0200
+Message-Id: <20200407082923.2001556-1-patrick.rudolph@9elements.com>
+X-Mailer: git-send-email 2.24.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-IPI and Timer cause the main MSRs write vmexits in cloud environment 
-observation, let's optimize virtual IPI latency more aggressively to 
-inject target IPI as soon as possible.
+As user land tools currently use /dev/mem to access coreboot tables and
+CBMEM, provide a better way by using read-only sysfs attributes.
 
-Running kvm-unit-tests/vmexit.flat IPI testing on SKX server, disable 
-adaptive advance lapic timer and adaptive halt-polling to avoid the 
-interference, this patch can give another 7% improvement.
+Unconditionally expose all tables and buffers making future changes in
+coreboot possible without modifying a kernel driver.
 
-w/o fastpath -> fastpath            4238 -> 3543  16.4%
-fastpath     -> ultra fastpath      3543 -> 3293     7%
-w/o fastpath -> ultra fastpath      4338 -> 3293    24%
+Changes in v2:
+ - Add ABI documentation
+ - Add 0x prefix on hex values
+ - Remove wrong ioremap hint as found by CI
 
-This also revises the performance data in commit 1e9e2622a1 (KVM: VMX: 
-FIXED+PHYSICAL mode single target IPI fastpath), that testing exposes
-mwait to kvm-unit-tests guest which is unnecessary.
+Changes in v3:
+ - Use BIN_ATTR_RO
 
-Tested-by: Haiwei Li <lihaiwei@tencent.com>
-Cc: Haiwei Li <lihaiwei@tencent.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/include/asm/kvm_host.h |  6 +++---
- arch/x86/kvm/svm.c              | 21 ++++++++++++++-------
- arch/x86/kvm/vmx/vmx.c          | 19 +++++++++++++------
- arch/x86/kvm/x86.c              |  4 ++--
- 4 files changed, 32 insertions(+), 18 deletions(-)
+Changes in v4:
+ - Use temporary memremap instead of persistent ioremap
+ - Constify a struct
+ - Get rid of unused headers
+ - Use dev_{get|set}_drvdata
+ - Use dev_groups to automatically handle attributes
+ - Updated file description
+ - Updated ABI documentation
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 42a2d0d..932162f 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1114,7 +1114,8 @@ struct kvm_x86_ops {
- 	 */
- 	void (*tlb_flush_gva)(struct kvm_vcpu *vcpu, gva_t addr);
- 
--	void (*run)(struct kvm_vcpu *vcpu);
-+	void (*run)(struct kvm_vcpu *vcpu,
-+		enum exit_fastpath_completion *exit_fastpath);
- 	int (*handle_exit)(struct kvm_vcpu *vcpu,
- 		enum exit_fastpath_completion exit_fastpath);
- 	int (*skip_emulated_instruction)(struct kvm_vcpu *vcpu);
-@@ -1164,8 +1165,7 @@ struct kvm_x86_ops {
- 			       struct x86_instruction_info *info,
- 			       enum x86_intercept_stage stage,
- 			       struct x86_exception *exception);
--	void (*handle_exit_irqoff)(struct kvm_vcpu *vcpu,
--		enum exit_fastpath_completion *exit_fastpath);
-+	void (*handle_exit_irqoff)(struct kvm_vcpu *vcpu);
- 
- 	int (*check_nested_events)(struct kvm_vcpu *vcpu);
- 	void (*request_immediate_exit)(struct kvm_vcpu *vcpu);
-diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-index 851e9cc..683474b 100644
---- a/arch/x86/kvm/svm.c
-+++ b/arch/x86/kvm/svm.c
-@@ -5755,7 +5755,18 @@ static void svm_cancel_injection(struct kvm_vcpu *vcpu)
- 	svm_complete_interrupts(svm);
- }
- 
--static void svm_vcpu_run(struct kvm_vcpu *vcpu)
-+static enum exit_fastpath_completion svm_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
-+{
-+	if (!is_guest_mode(vcpu) &&
-+	    to_svm(vcpu)->vmcb->control.exit_code == SVM_EXIT_MSR &&
-+	    to_svm(vcpu)->vmcb->control.exit_info_1)
-+		return handle_fastpath_set_msr_irqoff(vcpu);
-+
-+	return EXIT_FASTPATH_NONE;
-+}
-+
-+static void svm_vcpu_run(struct kvm_vcpu *vcpu,
-+	enum exit_fastpath_completion *exit_fastpath)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
-@@ -5946,6 +5957,7 @@ static void svm_vcpu_run(struct kvm_vcpu *vcpu)
- 	kvm_load_host_xsave_state(vcpu);
- 	stgi();
- 
-+	*exit_fastpath = svm_exit_handlers_fastpath(vcpu);
- 	/* Any pending NMI will happen here */
- 
- 	if (unlikely(svm->vmcb->control.exit_code == SVM_EXIT_NMI))
-@@ -6277,13 +6289,8 @@ static int svm_check_intercept(struct kvm_vcpu *vcpu,
- 	return ret;
- }
- 
--static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu,
--	enum exit_fastpath_completion *exit_fastpath)
-+static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
- {
--	if (!is_guest_mode(vcpu) &&
--	    to_svm(vcpu)->vmcb->control.exit_code == SVM_EXIT_MSR &&
--	    to_svm(vcpu)->vmcb->control.exit_info_1)
--		*exit_fastpath = handle_fastpath_set_msr_irqoff(vcpu);
- }
- 
- static void svm_sched_in(struct kvm_vcpu *vcpu, int cpu)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 91749f1..14d7a74 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6279,8 +6279,7 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
- }
- STACK_FRAME_NON_STANDARD(handle_external_interrupt_irqoff);
- 
--static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu,
--	enum exit_fastpath_completion *exit_fastpath)
-+static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 
-@@ -6288,9 +6287,6 @@ static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu,
- 		handle_external_interrupt_irqoff(vcpu);
- 	else if (vmx->exit_reason == EXIT_REASON_EXCEPTION_NMI)
- 		handle_exception_nmi_irqoff(vmx);
--	else if (!is_guest_mode(vcpu) &&
--		vmx->exit_reason == EXIT_REASON_MSR_WRITE)
--		*exit_fastpath = handle_fastpath_set_msr_irqoff(vcpu);
- }
- 
- static bool vmx_has_emulated_msr(int index)
-@@ -6495,9 +6491,19 @@ void vmx_update_host_rsp(struct vcpu_vmx *vmx, unsigned long host_rsp)
- 	}
- }
- 
-+static enum exit_fastpath_completion vmx_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
-+{
-+	if (!is_guest_mode(vcpu) &&
-+		to_vmx(vcpu)->exit_reason == EXIT_REASON_MSR_WRITE)
-+		return handle_fastpath_set_msr_irqoff(vcpu);
-+
-+	return EXIT_FASTPATH_NONE;
-+}
-+
- bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
- 
--static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
-+static void vmx_vcpu_run(struct kvm_vcpu *vcpu,
-+	enum exit_fastpath_completion *exit_fastpath)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	unsigned long cr3, cr4;
-@@ -6662,6 +6668,7 @@ static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
- 	vmx->idt_vectoring_info = 0;
- 
- 	vmx->exit_reason = vmx->fail ? 0xdead : vmcs_read32(VM_EXIT_REASON);
-+	*exit_fastpath = vmx_exit_handlers_fastpath(vcpu);
- 	if ((u16)vmx->exit_reason == EXIT_REASON_MCE_DURING_VMENTRY)
- 		kvm_machine_check();
- 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b8124b56..99f9a1a 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8392,7 +8392,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
- 	}
- 
--	kvm_x86_ops.run(vcpu);
-+	kvm_x86_ops.run(vcpu, &exit_fastpath);
- 
- 	/*
- 	 * Do this here before restoring debug registers on the host.  And
-@@ -8424,7 +8424,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	vcpu->mode = OUTSIDE_GUEST_MODE;
- 	smp_wmb();
- 
--	kvm_x86_ops.handle_exit_irqoff(vcpu, &exit_fastpath);
-+	kvm_x86_ops.handle_exit_irqoff(vcpu);
- 
- 	/*
- 	 * Consume any pending interrupts, including the possible source of
+Patrick Rudolph (2):
+  firmware: google: Expose CBMEM over sysfs
+  firmware: google: Expose coreboot tables over sysfs
+
+ Documentation/ABI/stable/sysfs-bus-coreboot |  74 +++++++++++
+ drivers/firmware/google/Kconfig             |   9 ++
+ drivers/firmware/google/Makefile            |   1 +
+ drivers/firmware/google/cbmem-coreboot.c    | 128 ++++++++++++++++++++
+ drivers/firmware/google/coreboot_table.c    |  58 +++++++++
+ drivers/firmware/google/coreboot_table.h    |  14 +++
+ 6 files changed, 284 insertions(+)
+ create mode 100644 Documentation/ABI/stable/sysfs-bus-coreboot
+ create mode 100644 drivers/firmware/google/cbmem-coreboot.c
+
 -- 
-2.7.4
+2.24.1
 
