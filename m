@@ -2,206 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5073E1A11C5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD521A11EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgDGQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727857AbgDGQjV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:39:21 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EAC420719;
-        Tue,  7 Apr 2020 16:39:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586277559;
-        bh=mD//OxWSv3JzAZY80pw3/cwLjQsYQbHnAdi7kfJVQgk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=unqwZKHeXdEkOukf9sZQhGSO7Tmsx0qkp0pOhcLQRZYt6KSKhplUh0TWaho56UZj/
-         7e7mPkqCwdJ9lM+P+S6e/FAa18EuP6Wiqr03WL2JLMjJYu2bvPgTiAf5cP2xFYU9Sp
-         ngYIiXr04BiDwNVbWSmG4z81mOiqnjV0Kswy6sQA=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: [PATCH 5.6 00/30] 5.6.3-rc2 review
-Date:   Tue,  7 Apr 2020 18:39:17 +0200
-Message-Id: <20200407154752.006506420@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.0
+        id S1728891AbgDGQkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:40:55 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:39608 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728034AbgDGQkz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 12:40:55 -0400
+Received: by mail-qk1-f193.google.com with SMTP id b62so2801qkf.6;
+        Tue, 07 Apr 2020 09:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NEBZoEbbGRpG5+efrS4YpEv5tZvQcL2k17oabanZi30=;
+        b=m9E0bGcM1xVIO6HzwOiiw6azRMQ74K9HY/E+3Cq8ZYo+b2q/t/4DqwdDJysT1v2/jE
+         /Fbw+z77aAyD2P+UZL/NhMvnvrX4mIAXXG4/6zyxXJSoSCTEF/6PwBr25bCL4Wdgl11G
+         xE1YP75k2LXGGKeO0RfqexMQBXvkypqNCbnG8KDXj0GGIMsc/fxCnRSOpuQtldDxVBT5
+         bKitoI/pXFqrGa6Tuno2w0+IeKCc15VeBK2o8DK2XbIfk3dLryz+nDLgDWir1FYORsOm
+         YILS26DYbdWonLPnQAoI/lvv1QTpYxRO1rw/3K5Sqc9L7RWKCOLQMyA7GfTRGaA9C+HU
+         msKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NEBZoEbbGRpG5+efrS4YpEv5tZvQcL2k17oabanZi30=;
+        b=TX1Bd5QV0Bg0btTPFcaZIBZrMYhG/V80GxdGibLC1bxvEfD1+D7xLM5d3WnOfTRcRr
+         h6Z+EW07xYF0MhkkGTyiLoTIvUcT/6RPgyG4sONAsaB+D+adCjw9XKVIke9LKhbyr4vG
+         hCOk/tmNbCfJnFScD3XfQk/J0wC9+Mqea4EjT3RtHjg8Wp2sBsXoerbGn4zQHdsq4ArU
+         DgZtUpPIswmGXIf7UUmCiAYs7ZrB2FBY23rITiuCP1g9pb9jr5mzbhesiOlmGW8T6p2K
+         bljjhRVzHmE0hjTmlHB7agGm/UZKwF4kGEguw6UWA4iT5g1OmwBmAb95AtlV/RY2Taga
+         MhJA==
+X-Gm-Message-State: AGi0PuagSr77rO39BXpucNgfsvcnpcpXEkJ1tUEhGcwwKfXKFiEs0qZv
+        YJjGEmq1E572Qh9ESJdL9GQ=
+X-Google-Smtp-Source: APiQypLyjk8hC3wH5TspiRi3WgJRbW7/VmxEEgbMs9kvR9mUY96WFZvAa+DGSCDDJfubK+BP2ROymA==
+X-Received: by 2002:ae9:c312:: with SMTP id n18mr3041970qkg.472.1586277652883;
+        Tue, 07 Apr 2020 09:40:52 -0700 (PDT)
+Received: from quaco.ghostprotocols.net ([179.97.37.151])
+        by smtp.gmail.com with ESMTPSA id t11sm3230053qto.75.2020.04.07.09.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 09:40:52 -0700 (PDT)
+From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 4A371409A3; Tue,  7 Apr 2020 13:40:50 -0300 (-03)
+Date:   Tue, 7 Apr 2020 13:40:50 -0300
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Serge Hallyn <serge@hallyn.com>, Jiri Olsa <jolsa@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        linux-man@vger.kernel.org
+Subject: Re: [PATCH v8 00/12] Introduce CAP_PERFMON to secure system
+ performance monitoring and observability
+Message-ID: <20200407164050.GC12003@kernel.org>
+References: <f96f8f8a-e65c-3f36-dc85-fc3f5191e8c5@linux.intel.com>
+ <20200407143014.GD11186@kernel.org>
+ <20200407143551.GF11186@kernel.org>
+ <10cc74ee-8587-8cdb-f85f-5724b370a2ce@linux.intel.com>
+ <20200407163654.GB12003@kernel.org>
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-5.6.3-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.6.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.6.3-rc2
-X-KernelTest-Deadline: 2020-04-09T15:47+00:00
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407163654.GB12003@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.6.3 release.
-There are 30 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+Em Tue, Apr 07, 2020 at 01:36:54PM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Tue, Apr 07, 2020 at 05:54:27PM +0300, Alexey Budankov escreveu:
+> > On 07.04.2020 17:35, Arnaldo Carvalho de Melo wrote:
+> > > Em Tue, Apr 07, 2020 at 11:30:14AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > >> [perf@five ~]$ type perf
+> > >> perf is hashed (/home/perf/bin/perf)
+> > >> [perf@five ~]$ getcap /home/perf/bin/perf
+> > >> /home/perf/bin/perf = cap_sys_ptrace,cap_syslog,38+ep
+> > >> [perf@five ~]$ groups
+> > >> perf perf_users
+> > >> [perf@five ~]$ id
+> > >> uid=1002(perf) gid=1002(perf) groups=1002(perf),1003(perf_users) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+> > >> [perf@five ~]$ perf top --stdio
+> > >> Error:
+> > >> Failed to mmap with 1 (Operation not permitted)
+> > >> [perf@five ~]$ perf record -a
+> > >> ^C[ perf record: Woken up 1 times to write data ]
+> > >> [ perf record: Captured and wrote 1.177 MB perf.data (1552 samples) ]
+> > >>
+> > >> [perf@five ~]$ perf evlist
+> > >> cycles:u
+> > >> [perf@five ~]$
+> > > 
+> > > Humm, perf record falls back to cycles:u after initially trying cycles
+> > > (i.e. kernel and userspace), lemme see trying 'perf top -e cycles:u',
+> > > lemme test, humm not really:
+> > > 
+> > > [perf@five ~]$ perf top --stdio -e cycles:u
+> > > Error:
+> > > Failed to mmap with 1 (Operation not permitted)
+> > > [perf@five ~]$ perf record -e cycles:u -a sleep 1
+> > > [ perf record: Woken up 1 times to write data ]
+> > > [ perf record: Captured and wrote 1.123 MB perf.data (132 samples) ]
+> > > [perf@five ~]$
+> > > 
+> > > Back to debugging this.
+> > 
+> > Could makes sense adding cap_ipc_lock to the binary to isolate from this:
+> > 
+> > kernel/events/core.c: 6101
+> > 	if ((locked > lock_limit) && perf_is_paranoid() &&
+> > 		!capable(CAP_IPC_LOCK)) {
+> > 		ret = -EPERM;
+> > 		goto unlock;
+> > 	}
+> 
+> 
+> That did the trick, I'll update the documentation and include in my
+> "Committer testing" section:
 
-Responses should be made by Thu, 09 Apr 2020 15:46:32 +0000.
-Anything received after that time might be too late.
+I ammended this to that patch, please check the wording:
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.3-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-and the diffstat can be found below.
+- Arnaldo
 
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.6.3-rc2
-
-Randy Dunlap <rdunlap@infradead.org>
-    mm: mempolicy: require at least one nodeid for MPOL_PREFERRED
-
-Arnaldo Carvalho de Melo <acme@redhat.com>
-    perf python: Fix clang detection to strip out options passed in $CC
-
-Bibby Hsieh <bibby.hsieh@mediatek.com>
-    soc: mediatek: knows_txdone needs to be set in Mediatek CMDQ helper
-
-Geoffrey Allott <geoffrey@allott.email>
-    ALSA: hda/ca0132 - Add Recon3Di quirk to handle integrated sound on EVGA X99 Classified motherboard
-
-Mike Snitzer <snitzer@redhat.com>
-    Revert "dm: always call blk_queue_split() in dm_process_bio()"
-
-Takashi Iwai <tiwai@suse.de>
-    Revert "ALSA: uapi: Drop asound.h inclusion from asoc.h"
-
-Hans de Goede <hdegoede@redhat.com>
-    power: supply: axp288_charger: Add special handling for HP Pavilion x2 10
-
-Hans de Goede <hdegoede@redhat.com>
-    extcon: axp288: Add wakeup support
-
-Freeman Liu <freeman.liu@unisoc.com>
-    nvmem: sprd: Fix the block lock operation
-
-Nicholas Johnson <nicholas.johnson-opensource@outlook.com.au>
-    nvmem: check for NULL reg_read and reg_write before dereferencing
-
-Khouloud Touil <ktouil@baylibre.com>
-    nvmem: release the write-protect pin
-
-Alexander Usyskin <alexander.usyskin@intel.com>
-    mei: me: add cedar fork device ids
-
-Eugene Syromiatnikov <esyr@redhat.com>
-    coresight: do not use the BIT() macro in the UAPI header
-
-Kelsey Skunberg <kelsey.skunberg@gmail.com>
-    PCI: sysfs: Revert "rescan" file renames
-
-Kishon Vijay Abraham I <kishon@ti.com>
-    misc: pci_endpoint_test: Avoid using module parameter to determine irqtype
-
-Kishon Vijay Abraham I <kishon@ti.com>
-    misc: pci_endpoint_test: Fix to support > 10 pci-endpoint-test devices
-
-YueHaibing <yuehaibing@huawei.com>
-    misc: rtsx: set correct pcr_ops for rts522A
-
-Uma Shankar <uma.shankar@intel.com>
-    drm/i915/display: Fix mode private_flags comparison at atomic_check
-
-Torsten Duwe <duwe@lst.de>
-    drm/bridge: analogix-anx6345: Avoid duplicate -supply suffix
-
-Matthew Wilcox (Oracle) <willy@infradead.org>
-    XArray: Fix xa_find_next for large multi-index entries
-
-Guenter Roeck <linux@roeck-us.net>
-    brcmfmac: abort and release host after error
-
-Daniel Jordan <daniel.m.jordan@oracle.com>
-    padata: fix uninitialized return value in padata_replace()
-
-Xin Long <lucien.xin@gmail.com>
-    udp: initialize is_flist with 0 in udp_gro_receive
-
-Florian Westphal <fw@strlen.de>
-    net: fix fraglist segmentation reference count leak
-
-Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-    net: macb: Fix handling of fixed-link node
-
-Qiujun Huang <hqjagain@gmail.com>
-    sctp: fix refcount bug in sctp_wfree
-
-Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-    sctp: fix possibly using a bad saddr with a given dst
-
-William Dauchy <w.dauchy@criteo.com>
-    net, ip_tunnel: fix interface lookup with no key
-
-Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-    net: dsa: ksz: Select KSZ protocol tag
-
-Qian Cai <cai@lca.pw>
-    ipv4: fix a RCU-list lock in fib_triestat_seq_show
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +-
- drivers/extcon/extcon-axp288.c                     | 32 ++++++++++++
- drivers/gpu/drm/bridge/analogix/analogix-anx6345.c |  4 +-
- drivers/gpu/drm/i915/display/intel_display.c       |  4 +-
- drivers/md/dm.c                                    |  5 +-
- drivers/misc/cardreader/rts5227.c                  |  1 +
- drivers/misc/mei/hw-me-regs.h                      |  2 +
- drivers/misc/mei/pci-me.c                          |  2 +
- drivers/misc/pci_endpoint_test.c                   | 14 ++++--
- drivers/net/dsa/microchip/Kconfig                  |  1 +
- drivers/net/ethernet/cadence/macb_main.c           |  3 ++
- .../wireless/broadcom/brcm80211/brcmfmac/sdio.c    |  2 +
- drivers/nvmem/core.c                               |  1 +
- drivers/nvmem/nvmem-sysfs.c                        |  6 +++
- drivers/nvmem/sprd-efuse.c                         |  2 +-
- drivers/pci/pci-sysfs.c                            |  6 ++-
- drivers/power/supply/axp288_charger.c              | 57 +++++++++++++++++++++-
- drivers/soc/mediatek/mtk-cmdq-helper.c             |  1 +
- include/uapi/linux/coresight-stm.h                 |  6 ++-
- include/uapi/sound/asoc.h                          |  1 +
- kernel/padata.c                                    |  2 +-
- lib/test_xarray.c                                  | 18 +++++++
- lib/xarray.c                                       |  3 +-
- mm/mempolicy.c                                     |  6 ++-
- net/core/skbuff.c                                  |  1 +
- net/ipv4/fib_trie.c                                |  3 ++
- net/ipv4/ip_tunnel.c                               |  6 +--
- net/ipv4/udp_offload.c                             |  1 +
- net/sctp/ipv6.c                                    | 20 +++++---
- net/sctp/protocol.c                                | 28 +++++++----
- net/sctp/socket.c                                  | 31 +++++++++---
- sound/pci/hda/patch_ca0132.c                       |  1 +
- tools/perf/util/setup.py                           |  2 +-
- 33 files changed, 226 insertions(+), 50 deletions(-)
-
-
+diff --git a/Documentation/admin-guide/perf-security.rst b/Documentation/admin-guide/perf-security.rst
+index c0ca0c1a6804..ed33682e26b0 100644
+--- a/Documentation/admin-guide/perf-security.rst
++++ b/Documentation/admin-guide/perf-security.rst
+@@ -127,12 +127,19 @@ taken to create such groups of privileged Perf users.
+ 
+ ::
+ 
+-   # setcap "cap_perfmon,cap_sys_ptrace,cap_syslog=ep" perf
+-   # setcap -v "cap_perfmon,cap_sys_ptrace,cap_syslog=ep" perf
++   # setcap "cap_perfmon,cap_ipc_lock,cap_sys_ptrace,cap_syslog=ep" perf
++   # setcap -v "cap_perfmon,cap_ipc_lock,cap_sys_ptrace,cap_syslog=ep" perf
+    perf: OK
+    # getcap perf
+    perf = cap_sys_ptrace,cap_syslog,cap_perfmon+ep
+ 
++If the libcap installed doesn't yet support "cap_perfmon", use "38" instead,
++i.e.:
++
++::
++
++   # setcap "38,cap_ipc_lock,cap_sys_ptrace,cap_syslog=ep" perf
++
+ As a result, members of perf_users group are capable of conducting
+ performance monitoring and observability by using functionality of the
+ configured Perf tool executable that, when executes, passes perf_events
