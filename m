@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F01FC1A16DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D631A16DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbgDGUdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 16:33:18 -0400
-Received: from smtprelay0160.hostedemail.com ([216.40.44.160]:56964 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726277AbgDGUdS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:33:18 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 97DE21802914F;
-        Tue,  7 Apr 2020 20:33:17 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:2892:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:3874:4321:4385:4390:4395:5007:6119:7903:8603:10004:10400:10848:11232:11658:11914:12048:12297:12740:12760:12895:13069:13076:13141:13161:13229:13230:13311:13357:13439:14659:14721:21080:21627:30054:30075:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: glass81_56ab4fb76ca51
-X-Filterd-Recvd-Size: 2129
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Tue,  7 Apr 2020 20:33:15 +0000 (UTC)
-Message-ID: <0fe5dcaf078be61ef21c7f18b750c5dc14c69dd7.camel@perches.com>
-Subject: Re: [PATCH v3] mm: Add kvfree_sensitive() for freeing sensitive
- data objects
-From:   Joe Perches <joe@perches.com>
-To:     Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     linux-mm@kvack.org, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>
-Date:   Tue, 07 Apr 2020 13:31:16 -0700
-In-Reply-To: <20200407200318.11711-1-longman@redhat.com>
-References: <20200407200318.11711-1-longman@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        id S1726453AbgDGUeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:34:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726277AbgDGUeu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 16:34:50 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC62C2074B;
+        Tue,  7 Apr 2020 20:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586291689;
+        bh=YRABWMvwvHV0PmDLsBbttXpDhy97LPhtP+IKmrC+GN4=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=myOh01Dmx+KkdWrwz40Cn7g/n00RxRMho1HYuUNqGKXOcalbV/rv3vk/Ni5UOFIMf
+         wjSfQFrDMjiu+Kpe0IwkQFz09Dx/Ah2ANqDryLaB5RDYetyY4DoKURVSBQ5BgWy9ux
+         oXBEvtnVgLj4JdHZEFyUDi4buGHDcpmErypEZF5Q=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAAfSe-u1VNDiY0MXGwrUqsNLBiai8zivxoPiyLnkJMZ7hcX+Eg@mail.gmail.com>
+References: <20200331104532.12698-1-chunyan.zhang@unisoc.com> <158605608663.158626.7732167785990086489@swboyd.mtv.corp.google.com> <CAAfSe-u1VNDiY0MXGwrUqsNLBiai8zivxoPiyLnkJMZ7hcX+Eg@mail.gmail.com>
+Subject: Re: [PATCH] clk: sprd: don't gate uart console clock
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Tue, 07 Apr 2020 13:34:48 -0700
+Message-ID: <158629168890.88454.8918367547173437575@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-07 at 16:03 -0400, Waiman Long wrote:
-> For kvmalloc'ed data object that contains sensitive information like
-> cryptographic key, we need to make sure that the buffer is always
-> cleared before freeing it. Using memset() alone for buffer clearing may
-> not provide certainty as the compiler may compile it away. To be sure,
-> the special memzero_explicit() has to be used.
-> 
-> This patch introduces a new kvfree_sensitive() for freeing those
-> sensitive data objects allocated by kvmalloc(). The relevnat places
-> where kvfree_sensitive() can be used are modified to use it.
-[]
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-[]
-> @@ -757,6 +757,7 @@ static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
->  }
->  
->  extern void kvfree(const void *addr);
-> +extern void kvfree_sensitive(const void *addr, size_t len);
+Quoting Chunyan Zhang (2020-04-06 19:02:38)
+> On Sun, 5 Apr 2020 at 11:08, Stephen Boyd <sboyd@kernel.org> wrote:
+> >
+> > Quoting Chunyan Zhang (2020-03-31 03:45:32)
+> > > Don't gate uart1_eb which provides console clock, gating that clock w=
+ould
+> > > make serial stop working if serial driver didn't enable that explicit=
+ly.
+> > >
+> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > > ---
+> >
+> > Do you have a Fixes: tag?
+>=20
+> I didn't leave a Fixed tag since that commit [1] will be merged into v5.7=
+-rc1
+>=20
+> [1] https://www.spinics.net/lists/linux-clk/msg46430.html
 
-Why should size_t len be required?
-
-Why not do what kzfree does and memset
-the entire allocation? (area->size)
-
-
+Please still provide a Fixes tag. It helps track what commit is fixed
+regardless.
