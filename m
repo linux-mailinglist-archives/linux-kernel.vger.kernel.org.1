@@ -2,133 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE651A0984
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7311A098A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:50:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgDGIsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 04:48:17 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58538 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726393AbgDGIsP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 04:48:15 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0378Ydvw028371;
-        Tue, 7 Apr 2020 04:48:09 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3082pe73we-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Apr 2020 04:48:08 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 0378jK2H017907;
-        Tue, 7 Apr 2020 08:48:08 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma04dal.us.ibm.com with ESMTP id 306hv64bm5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Apr 2020 08:48:08 +0000
-Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0378m79L37880126
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Apr 2020 08:48:07 GMT
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A4AF2805C;
-        Tue,  7 Apr 2020 08:48:07 +0000 (GMT)
-Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B000C28058;
-        Tue,  7 Apr 2020 08:48:06 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.79.178.96])
-        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Apr 2020 08:48:06 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id CD1652E33BA; Tue,  7 Apr 2020 14:17:59 +0530 (IST)
-From:   "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-To:     Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
-Subject: [PATCH v5 5/5] Documentation: Document sysfs interfaces purr, spurr, idle_purr, idle_spurr
-Date:   Tue,  7 Apr 2020 14:17:43 +0530
-Message-Id: <1586249263-14048-6-git-send-email-ego@linux.vnet.ibm.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1586249263-14048-1-git-send-email-ego@linux.vnet.ibm.com>
-References: <1586249263-14048-1-git-send-email-ego@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-07_01:2020-04-07,2020-04-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- clxscore=1015 spamscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
- adultscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070068
+        id S1727962AbgDGIur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 04:50:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:53700 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725817AbgDGIuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 04:50:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CAA430E;
+        Tue,  7 Apr 2020 01:50:46 -0700 (PDT)
+Received: from [10.163.1.2] (unknown [10.163.1.2])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D21EE3F73D;
+        Tue,  7 Apr 2020 01:50:36 -0700 (PDT)
+Subject: Re: [PATCH 0/6] Introduce ID_PFR2 and other CPU feature changes
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+References: <1580215149-21492-1-git-send-email-anshuman.khandual@arm.com>
+ <20200406170911.GA7446@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <05f6eb1e-a82c-bd02-1871-e44ea00683d8@arm.com>
+Date:   Tue, 7 Apr 2020 14:20:20 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <20200406170911.GA7446@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>
 
-Add documentation for the following sysfs interfaces:
-/sys/devices/system/cpu/cpuX/purr
-/sys/devices/system/cpu/cpuX/spurr
-/sys/devices/system/cpu/cpuX/idle_purr
-/sys/devices/system/cpu/cpuX/idle_spurr
 
-Signed-off-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
----
- Documentation/ABI/testing/sysfs-devices-system-cpu | 39 ++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+On 04/06/2020 10:39 PM, Will Deacon wrote:
+> On Tue, Jan 28, 2020 at 06:09:03PM +0530, Anshuman Khandual wrote:
+>> This series is primarily motivated from an adhoc list from Mark Rutland
+>> during our ID_ISAR6 discussion [1]. Besides, it also includes a patch
+>> which does macro replacement for various open bits shift encodings in
+>> various CPU ID registers. This series is based on linux-next 20200124.
+>>
+>> [1] https://patchwork.kernel.org/patch/11287805/
+>>
+>> Is there anything else apart from these changes which can be accommodated
+>> in this series, please do let me know. Thank you.
+> 
+> The latest Arm ARM also talks about DFR1 and MMFR5. Please can you include
 
-diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu b/Documentation/ABI/testing/sysfs-devices-system-cpu
-index 2e0e3b4..b73b8b5 100644
---- a/Documentation/ABI/testing/sysfs-devices-system-cpu
-+++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
-@@ -580,3 +580,42 @@ Description:	Secure Virtual Machine
- 		If 1, it means the system is using the Protected Execution
- 		Facility in POWER9 and newer processors. i.e., it is a Secure
- 		Virtual Machine.
-+
-+What: 		/sys/devices/system/cpu/cpuX/purr
-+Date:		Apr 2005
-+Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-+Description:	PURR ticks for this CPU since the system boot.
-+
-+		The Processor Utilization Resources Register (PURR) is
-+		a 64-bit counter which provides an estimate of the
-+		resources used by the CPU thread. The contents of this
-+		register increases monotonically. This sysfs interface
-+		exposes the number of PURR ticks for cpuX.
-+
-+What: 		/sys/devices/system/cpu/cpuX/spurr
-+Date:		Dec 2006
-+Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-+Description:	SPURR ticks for this CPU since the system boot.
-+
-+		The Scaled Processor Utilization Resources Register
-+		(SPURR) is a 64-bit counter that provides a frequency
-+		invariant estimate of the resources used by the CPU
-+		thread. The contents of this register increases
-+		monotonically. This sysfs interface exposes the number
-+		of SPURR ticks for cpuX.
-+
-+What: 		/sys/devices/system/cpu/cpuX/idle_purr
-+Date:		Apr 2020
-+Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-+Description:	PURR ticks for cpuX when it was idle.
-+
-+		This sysfs interface exposes the number of PURR ticks
-+		for cpuX when it was idle.
-+
-+What: 		/sys/devices/system/cpu/cpuX/idle_spurr
-+Date:		Apr 2020
-+Contact:	Linux for PowerPC mailing list <linuxppc-dev@ozlabs.org>
-+Description:	SPURR ticks for cpuX when it was idle.
-+
-+		This sysfs interface exposes the number of SPURR ticks
-+		for cpuX when it was idle.
--- 
-1.9.4
+Sure, will do.
 
+> those too? Might also be worth checking to see if anything is missing on
+> the 64-bit side as well (I didn't look).
+
+Yeah. Now there some missing ones, will add those as well.
+
+> 
+> Will
+> 
