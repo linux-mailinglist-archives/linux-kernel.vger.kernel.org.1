@@ -2,151 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB221A0CB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599EB1A0CBC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbgDGLS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:18:26 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:62237 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726767AbgDGLS0 (ORCPT
+        id S1728466AbgDGLSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:18:55 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:51181 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbgDGLSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:18:26 -0400
-X-Originating-IP: 84.210.220.251
-Received: from [192.168.1.123] (cm-84.210.220.251.getinternet.no [84.210.220.251])
-        (Authenticated sender: fredrik@strupe.net)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id BFACA240005;
-        Tue,  7 Apr 2020 11:18:23 +0000 (UTC)
-Subject: Re: [PATCH] arm64: armv8_deprecated: Fix undef_hook mask for thumb
- setend
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>, catalin.marinas@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        will.deacon@arm.com
-References: <911db2f1-e078-a460-32ee-154a0b4de5d4@strupe.net>
- <20200407092744.GA2665@gaia> <a2b345a4-30a0-3218-8c8d-e84ec2317dc9@arm.com>
-From:   Fredrik Strupe <fredrik@strupe.net>
-Message-ID: <0d7b582a-1bd0-9db2-2fdc-04fc887f64c6@strupe.net>
-Date:   Tue, 7 Apr 2020 13:18:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Tue, 7 Apr 2020 07:18:55 -0400
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jLmFf-0005po-L5; Tue, 07 Apr 2020 13:18:43 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jLmFe-0002q9-MB; Tue, 07 Apr 2020 13:18:42 +0200
+Date:   Tue, 7 Apr 2020 13:18:42 +0200
+From:   Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Cc:     devicetree@vger.kernel.org, Paul Barker <pbarker@konsulko.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+        Igor Opaniuk <igor.opaniuk@toradex.com>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [RFC PATCH v2 2/6] dt-bindings: pwm: document the PWM no-flag
+Message-ID: <20200407111842.hp7mhrlsuesa74ep@pengutronix.de>
+References: <20200405192246.3741784-1-oleksandr.suvorov@toradex.com>
+ <20200405192246.3741784-3-oleksandr.suvorov@toradex.com>
+ <20200407061646.pcglaw43kfmrag6a@pengutronix.de>
+ <CAGgjyvH5nmnXH068QTNPKzsjocNXfEP_yh0HO=L-oGaqQdYRuA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <a2b345a4-30a0-3218-8c8d-e84ec2317dc9@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <CAGgjyvH5nmnXH068QTNPKzsjocNXfEP_yh0HO=L-oGaqQdYRuA@mail.gmail.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.04.2020 12:47, Suzuki K Poulose wrote:
+On Tue, Apr 07, 2020 at 01:51:42PM +0300, Oleksandr Suvorov wrote:
+> On Tue, Apr 7, 2020 at 9:17 AM Uwe Kleine-K�nig
+> <u.kleine-koenig@pengutronix.de> wrote:
+> >
+> > On Sun, Apr 05, 2020 at 10:22:42PM +0300, Oleksandr Suvorov wrote:
+> > > Add the description of PWM_NOFLAGS flag property.
+> > >
+> > > Signed-off-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+> >
+> > As I already wrote in reply to the v1 series I'd prefer a name for 0
+> > that explicitly handles normal polarity.
+> 
+> Uwe, AFAIU, there is no flag that forces normal polarity, the normal polarity
+> is the default state if there is no flag to invert the polarity is set.
 
-> On 04/07/2020 10:27 AM, Catalin Marinas wrote:
->> On Mon, Apr 06, 2020 at 04:16:05PM +0200, Fredrik Strupe wrote:
->>> Use a full 32-bit mask to prevent accidental matchings of thumb32
->>> instructions where the second half-word is equal to the thumb16 setend
->>> encoding.
->>>
->>> This fixes the same problem as the following patch:
->>>
->>>      https://lkml.org/lkml/2020/3/16/341
->>
->> This link is not guaranteed to be stable and the commit should have the
->> full description rather than referring to another email.
->>
->>> but for setend emulation instead.
->>>
->>> Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
->>
->> It also needs Fixes: and Cc: stable tags.
->>
->>> ---
->>>   arch/arm64/kernel/armv8_deprecated.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/arch/arm64/kernel/armv8_deprecated.c 
->>> b/arch/arm64/kernel/armv8_deprecated.c
->>> index 9d3442d62..8c06dfee0 100644
->>> --- a/arch/arm64/kernel/armv8_deprecated.c
->>> +++ b/arch/arm64/kernel/armv8_deprecated.c
->>> @@ -609,7 +609,7 @@ static struct undef_hook setend_hooks[] = {
->>>       },
->>>       {
->>>           /* Thumb mode */
->>> -        .instr_mask    = 0x0000fff7,
->>> +        .instr_mask    = 0xfffffff7,
->>>           .instr_val    = 0x0000b650,
->>
->> I can see how this could happen but it would be useful to provide a
->> concrete example in the commit log.
->>
->> The instruction opcode built by call_undef_hook() first reads a u16 as a
->> T16 instruction and the above should be fine. However, if this looks
->> like a T32 opcode, it reads a subsequent u16 which becomes the lowest
->> half-word and the above mask/val may inadvertently match it.
->>
->
-Thanks for the feedback. I have updated the patch with the requested 
-changes.
-> We also do a check on the pstate_val, along with the instr_val to
-> confirm the mode. So this should be fine as it is ?
->
-> Suzuki
-pstate_val only indicates thumb execution, not whether the current 
-instruction
-is a T16 or T32 instruction.
+Yes, that's the status quo.
 
-(Sorry for duplicate, something went terribly wrong with the formatting 
-of the
-previous email.)
+> '0' value in the bit flags cell really means there are no flags set
+> for the PWM instance.
 
-Fredrik
+For me the relevance of giving 0 a name is mostly for human consumption.
+Currently there is only a single flag encoded in the number in question.
+But as soon as we add another, say PWM_AUTOSTART we have the following
+possible settings:
 
----
-For thumb instructions, call_undef_hook() in traps.c first reads a u16,
-and if the u16 indicates a T32 instruction (u16 >= 0xe800), a second
-u16 is read, which then makes up the the lower half-word of a T32
-instruction. For T16 instructions, the second u16 is not read,
-which makes the resulting u32 opcode always have the upper half set to
-0.
+	PWM_NOFLAGS
+	PWM_POLARITY_INVERTED
+	PWM_AUTOSTART
+	PWM_POLARITY_INVERTED | PWM_AUTOSTART
 
-However, having the upper half of instr_mask in the undef_hook set to 0
-masks out the upper half of all thumb instructions - both T16 and T32.
-This results in trapped T32 instructions with the lower half-word equal
-to the T16 encoding of setend (b650) being matched, even though the upper
-half-word is not 0000 and thus indicates a T32 opcode.
+Then for the first two a reader doesn't see if autostart is not in use
+because the dt author doesn't know this feature (e.g. because autostart
+is too new) or if they don't want autostart at all.
 
-An example of such a T32 instruction is eaa0b650, which should raise a
-SIGILL since T32 instructions with an eaa prefix are unallocated as per
-Arm ARM, but instead works as a SETEND because the second half-word is set
-to b650.
+If however we had PWM_POLARITY_NORMAL and PWM_NO_AUTOSTART to complement
+PWM_POLARITY_INVERTED and PWM_AUTOSTART every flag's setting could be
+explicit and if there is a device tree that only has
 
-This patch fixes the issue by extending instr_mask to include the
-upper u32 half, which will still match T16 instructions where the upper
-half is 0, but not T32 instructions.
+	PWM_POLARITY_NORMAL
 
-Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Fixes: 2d888f48e056 ("arm64: Emulate SETEND for AArch32 tasks")
----
-  arch/arm64/kernel/armv8_deprecated.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+it would be obvious that nobody thought enough about autostarting to
+explicitly mention it.
 
-diff --git a/arch/arm64/kernel/armv8_deprecated.c 
-b/arch/arm64/kernel/armv8_deprecated.c
-index 9d3442d62..8c06dfee0 100644
---- a/arch/arm64/kernel/armv8_deprecated.c
-+++ b/arch/arm64/kernel/armv8_deprecated.c
-@@ -609,7 +609,7 @@ static struct undef_hook setend_hooks[] = {
-      },
-      {
-          /* Thumb mode */
--        .instr_mask    = 0x0000fff7,
-+        .instr_mask    = 0xfffffff7,
-          .instr_val    = 0x0000b650,
-          .pstate_mask    = (PSR_AA32_T_BIT | PSR_AA32_MODE_MASK),
-          .pstate_val    = (PSR_AA32_T_BIT | PSR_AA32_MODE_USR),
+Best regards
+Uwe
+
 -- 
-2.20.1
-
+Pengutronix e.K.                           | Uwe Kleine-K�nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
