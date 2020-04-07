@@ -2,135 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D42281A0AA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1D11A0AAE
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728206AbgDGKBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:01:32 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:30273 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728189AbgDGKBb (ORCPT
+        id S1728260AbgDGKCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:02:16 -0400
+Received: from pandora.armlinux.org.uk ([78.32.30.218]:38286 "EHLO
+        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgDGKCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:01:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586253690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=072pIwxp+i9xdZgez7LPJl0p0p/jipVd9TvhmmVdjNw=;
-        b=Bj24B2Me/cQrfMMGFYQ4/xTQf7J5ZAx1ZDgt8qZkyyNJD3dBU3tsmTT3e8r6KLuDzLve58
-        965t/r1rEa0nysBqkVqKFXXdHSBwXHEPBXEHiNDEFK6BBAJ3NC5QQ+550jDOgq899WgRnY
-        SYGOvMYKbIXp076djxvbpgv5L/g5Poo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-412-CZw5_VC8OKyJh7WlTYTvsg-1; Tue, 07 Apr 2020 06:01:28 -0400
-X-MC-Unique: CZw5_VC8OKyJh7WlTYTvsg-1
-Received: by mail-wr1-f69.google.com with SMTP id t25so1486471wrb.16
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 03:01:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=072pIwxp+i9xdZgez7LPJl0p0p/jipVd9TvhmmVdjNw=;
-        b=f7e+LZ1r8SOHXGnt40TnmSejhpDBOzubeZJlTbZQ6bYJotezIflmNFT5yu8ncxJ9Dq
-         jDsOlFrNcfPuMLmpCFRnOceMk8NOW+IKna/WMwkhblFsm6/WcvrbvVbokmffK0NUwIrw
-         0fT8uW61Tf8Xkf2dnUm4qm99a0ZPFPgHC+Wf4X+27sbccrmriIQCrrWYaLcvNfYnKy03
-         qss+2nIK8ZhO7x2xpbtakJQNCDaqsbpoXvEU8cixu6FokLWQFy9dtTi1RaS6pBFNqXtu
-         ImXBOCPmSjwIxqPaOrDbHr3qZFn85maShlwK430x1RwZlf0tlIWG60we3WkaeD4r3c5/
-         jWZw==
-X-Gm-Message-State: AGi0PuYsgjgw5Xoj8Sc+1tMtHU4Z+0ZNpUwjC/nq8jd3QzTmBMFtzBB6
-        ge5TRpAniB1PFXOj5F7YLUvtUe+oGB8MZbzxFTGZCAergECsy5Oz0xlaY6OkFdmbdyi9MvRP2Mg
-        JBKGp08rfZ/eUJyulb4oRfTgL
-X-Received: by 2002:a5d:5542:: with SMTP id g2mr1545343wrw.310.1586253687283;
-        Tue, 07 Apr 2020 03:01:27 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKkTeznfj9q9APqorxfRPW8aui7Fzp+uWDvURlf9QkARfLMmwPoVunNlyo6XHiM3RPmDuhNog==
-X-Received: by 2002:a5d:5542:: with SMTP id g2mr1545322wrw.310.1586253687084;
-        Tue, 07 Apr 2020 03:01:27 -0700 (PDT)
-Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id p22sm1622027wmc.42.2020.04.07.03.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 03:01:26 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 06:01:23 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: Re: linux-next: build failure after merge of the vhost tree
-Message-ID: <20200407055832-mutt-send-email-mst@kernel.org>
-References: <20200407130542.0e3b5d9d@canb.auug.org.au>
+        Tue, 7 Apr 2020 06:02:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2wR2xqOs8l+OydThwaZ/J8QQDNxkPOYEU/7GzqzAa3M=; b=m5BFSB4gVHf+ffBnIzdw2gzUY
+        wYLYy5Y0VK2BwlAyzTKiAhBnFbd4tft0EP3wZxXv1Vn+oKtv6/Q9jbMnoqA64m5cNzOeU9H6FkysY
+        /BApbRWhjPi3yuFLOZpGvw+24y0Y7sz50JPO3tw+6r+GHd9VPv0T4Yh4nfRnFtJVPjkcPs2sPUctL
+        HktSJN0U63pN2g7MioenRIARxbvLaCNvEJInUlMTLmLWjDaB/AMU8rbmCg/VZJB+FEDVMzQcTB8YI
+        30jZXG3OvCyhOrHD8nZ2rxDyl+oS4PtHG5NB8e5uFJILtGl5xdF6Dx89XcFBFmY17Hh1ZmQnDvQbK
+        SmW2L+DCQ==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:35146)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jLl3U-0007DE-Og; Tue, 07 Apr 2020 11:02:05 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jLl3T-0007DO-VB; Tue, 07 Apr 2020 11:02:03 +0100
+Date:   Tue, 7 Apr 2020 11:02:03 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     ebiederm@xmission.com, kexec@lists.infradead.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, mripard@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Trying to kexec on Allwinner A80
+Message-ID: <20200407100203.GK25745@shell.armlinux.org.uk>
+References: <20200406082720.GA31279@Red>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200407130542.0e3b5d9d@canb.auug.org.au>
+In-Reply-To: <20200406082720.GA31279@Red>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 01:05:42PM +1000, Stephen Rothwell wrote:
-> Hi all,
+On Mon, Apr 06, 2020 at 10:27:20AM +0200, Corentin Labbe wrote:
+> Hello
 > 
-> After merging the vhost tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
+> I am trying to add the last missing Allwinner Soc in kernelci: the A80.
+> But this SoC does not have any way to be used in kernelci, no USB nor network in uboot.
+> So I have tried to fake uboot since the kernel has network support and run the new kernel via kexec.
 > 
-> drivers/gpu/drm/virtio/virtgpu_kms.c: In function 'virtio_gpu_init':
-> drivers/gpu/drm/virtio/virtgpu_kms.c:153:38: error: 'VIRTIO_RING_F_INDIRECT_DESC' undeclared (first use in this function)
->   153 |  if (virtio_has_feature(vgdev->vdev, VIRTIO_RING_F_INDIRECT_DESC)) {
->       |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> drivers/gpu/drm/virtio/virtgpu_kms.c:153:38: note: each undeclared identifier is reported only once for each function it appears in
-> 
-> Caused by commit
-> 
->   898952f9597e ("virtio: stop using legacy struct vring in kernel")
-> 
-> interacting with commit
-> 
->   5edbb5608256 ("drm/virtio: fix ring free check")
-> 
-> from Linus' tree (post v5.6).
-> 
-> I have added the following merge fix patch for today.
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Tue, 7 Apr 2020 12:58:26 +1000
-> Subject: [PATCH] drm/virtio: fix up for include file changes
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> But kexec 2.0.18 fail to work:
+> kexec --force /tmp/kernel --initrd /tmp/ramdisk --dtb /tmp/dtb --command-line='console=ttyS0,115200n8 root=/dev/ram0 earlycon=uart,mmio32,0x7000000 ip=dhcp'
 
-That's the right fix - anyone using VIRTIO_RING_F_INDIRECT_DESC
-must include virtio_ring.h, not assume some other header
-pulls it in.
+As I mentioned in my other reply, this apparent "kexec" command line
+does not seem to reflect the arguments you actually used to invoke
+the kexec output below.
 
-Given Gerd's patch is in Linus' tree I'll put this one in mine to
-make things easy.
+> syscall kexec_file_load not available.
 
-Thanks!
+This message is produced by do_kexec_file_load().  This function is only
+invoked if the do_kexec_file_syscall flag in main() is set.  This flag
+is only set if one of:
 
-> ---
->  drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
->  1 file changed, 1 insertion(+)
+	--kexec-file-syscall
+	--kexec-syscall
+	--kexec-syscall-auto
+	-s
+	-c
+	-a
+
+are provided on the kexec command line.  Your command line above does
+not contain any of those arguments, so either the command line is not
+what you used, or you are using a patched kexec, or your compiler is
+grossly miscompiling kexec.
+
+> Try gzip decompression.
+> kernel: 0xb6535008 kernel_size: 0x853200
+> MEMORY RANGES
+> 0000000020000000-000000009fffffff (0)
+
+Then there's the debug output, which is only produced if the
+kexec_debug global is set, which in turn is only set if --debug or -d
+is supplied on the kexec command line - which again, your kexec
+command line does not contain this.
+
+> zImage header: 0x016f2818 0x00000000 0x00853200
+> zImage size 0x853200, file size 0x853200
+> zImage requires 0x00864200 bytes
+>   offset 0x0000bae4 tag 0x5a534c4b size 8
+> Decompressed kernel sizes:
+>  text+data 0x0158b3a0 bss 0x000632f0 total 0x015ee690
+> Resulting kernel space: 0x01def5a0
+> Kernel: address=0x20008000 size=0x01def5a0
+> Initrd: address=0x21df8000 size=0x0090b6fa
+> DT    : address=0x22704000 size=0x00005c09
+> kexec_load: entry = 0x20008000 flags = 0x280000
+> nr_segments = 3
+> segment[0].buf   = 0xb6535008
+> segment[0].bufsz = 0x853204
+> segment[0].mem   = 0x20008000
+> segment[0].memsz = 0x854000
+> segment[1].buf   = 0xb5c29008
+> segment[1].bufsz = 0x90b6fa
+> segment[1].mem   = 0x21df8000
+> segment[1].memsz = 0x90c000
+> segment[2].buf   = 0x4db50
+> segment[2].bufsz = 0x5c09
+> segm[   71.039126] kexec_core: Starting new kernel
+> ent[2].mem   = 0[   71.044712] Disabling non-boot CPUs ...
+> x22704000
+> segment[2].memsz = 0x6000
+> [   71.489070] Bye!
 > 
-> diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/virtgpu_kms.c
-> index 023a030ca7b9..f4ea4cef5e23 100644
-> --- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-> +++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-> @@ -25,6 +25,7 @@
->  
->  #include <linux/virtio.h>
->  #include <linux/virtio_config.h>
-> +#include <linux/virtio_ring.h>
->  
->  #include <drm/drm_file.h>
->  
-> -- 
-> 2.25.0
 > 
-> I do have to wonder why all this code has been added to the vhost tree
-> during the second week of the merge window (especially when I see it
-> rebased 4 times in one day :-().  Is it really intended for v5.7?
-> -- 
-> Cheers,
-> Stephen Rothwell
+> I have tried also kexec-2.0.20
+> Try gzip decompression.
+> zImage header: 0x00000000 0x000019b4 0x00001000
+> zImage requires 0x008641c0 bytes
+> Could not find a free area of memory of 0x86c1c0 bytes...
+> Cannot load /tmp/kernel
 
+kexec 2.0.20 doesn't appear to have changed anything to do with how
+allocations are done.  The above output looks even more strange and
+confusing.  "zImage header" is produced by debugging prints, which
+imply that kexec_debug was set.
 
+However, the "MEMORY RANGES" output is missing - this has not gone
+away with kexec 2.0.20, it's still there, and works for me (I've
+just built and tested kexec 2.0.20).
+
+Also, the values on the "zImage header" line are completely messed
+up; the first should be the zImage magic value and it is not - that
+suggests that the file being loaded is not a zImage file, or is
+corrupted.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
