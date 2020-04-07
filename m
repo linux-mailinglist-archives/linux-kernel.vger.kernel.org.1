@@ -2,122 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1020C1A0AF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C299F1A0B4F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:26:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgDGKT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:19:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:54460 "EHLO foss.arm.com"
+        id S1728925AbgDGKZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:25:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45174 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726399AbgDGKT5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:19:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC2CC1FB;
-        Tue,  7 Apr 2020 03:19:56 -0700 (PDT)
-Received: from [10.37.12.154] (unknown [10.37.12.154])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10FA63F73D;
-        Tue,  7 Apr 2020 03:19:54 -0700 (PDT)
-Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
- multiple connections
-To:     saiprakash.ranjan@codeaurora.org, mike.leach@linaro.org
-Cc:     mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, swboyd@chromium.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
- <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
- <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
-Date:   Tue, 7 Apr 2020 11:24:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1728896AbgDGKZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:25:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id ACAF2AB76;
+        Tue,  7 Apr 2020 10:25:15 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 347761E1233; Tue,  7 Apr 2020 12:25:15 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 12:25:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@netapp.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] MM: Discard NR_UNSTABLE_NFS, use NR_WRITEBACK
+ instead.
+Message-ID: <20200407102515.GB9482@quack2.suse.cz>
+References: <draft-87d08kw57p.fsf@notabene.neil.brown.name>
+ <878sj8w55y.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-In-Reply-To: <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878sj8w55y.fsf@notabene.neil.brown.name>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/07/2020 10:46 AM, Sai Prakash Ranjan wrote:
-> Hi Mike,
+On Tue 07-04-20 09:44:25, NeilBrown wrote:
 > 
-> Thanks for taking a look.
+> After an NFS page has been written it is considered "unstable" until a
+> COMMIT request succeeds.  If the COMMIT fails, the page will be
+> re-written.
 > 
-> On 2020-04-06 16:25, Mike Leach wrote:
->> Hi,
->>
->> The programmable replicator hardware by design enables trace through
->> both ports on reset. (see 1, section 4.4, 9.11)  The replicator driver
->> overrides this functionality to disable output, until the Coresight
->> infrastructure chooses a path from source to sink.
->> Now given that the hardware design is such that we must be able to
->> allow trace to be sent to both ports, a generic patch to prevent this
->> does not seem appropriate here.
->>
->> I think this needs further investigation - to determine why this
->> appears to be failing in this particular instance.
->>
+> These "unstable" pages are currently accounted as "reclaimable", either
+> in WB_RECLAIMABLE, or in NR_UNSTABLE_NFS which is included in a
+> 'reclaimable' count.  This might have made sense when sending the COMMIT
+> required a separate action by the VFS/MM (e.g.  releasepage() used to
+> send a COMMIT).  However now that all writes generated by ->writepages()
+> will automatically be followed by a COMMIT (since commit 919e3bd9a875
+> ("NFS: Ensure we commit after writeback is complete")) it makes more
+> sense to treat them as writeback pages.
 > 
-> Yes, this probably needs further investigation, but CPU hardlock stack
-> trace doesnt help much. I could always trigger this hard lockup without
-> this patch on SC7180 SoC and this is only seen when ETR is used as the 
-> sink.
+> So this patch removes NR_UNSTABLE_NFS and accounts unstable pages in
+> NR_WRITEBACK and WB_WRITEBACK.
 > 
-> The only difference I could see between non working case (on SC7180 [1]) 
-> and
-> the working case (on SDM845 [2]) is the path from source to sink.
-
-
+> A particular effect of this change is that when
+> wb_check_background_flush() calls wb_over_bg_threshold(), the latter
+> will report 'true' a lot less often as the 'unstable' pages are no
+> longer considered 'dirty' (as there is nothing that writeback can do
+> about them anyway).
 > 
-> SC7180 source to sink path(Not working):
-> ----------------------------------------
+> Currently wb_check_background_flush() will trigger writeback to NFS even
+> when there are relatively few dirty pages (if there are lots of unstable
+> pages), this can result in small writes going to the server (10s of
+> Kilobytes rather than a Megabyte) which hurts throughput.
+> With this patch, there are fewer writes which are each larger on average.
 > 
->        etm0_out
->       |
->    apss_funnel_in0
->           |
->   apss_merge_funnel_in
->           |
->       funnel1_in4
->       |
->    merge_funnel_in1
->       |
->     swao_funnel_in
->           |
->         etf_in
->       |
->   swao_replicator_in
->           |
->    replicator_in
->       |
->         etr_in
+> Where the NR_UNSTABLE_NFS count was included in statistics
+> virtual-files, the entry is retained, but the value is hard-coded as
+> zero.  static trace points which record this counter no longer report
+> it.
+> 
+> Signed-off-by: NeilBrown <neilb@suse.de>
 
+...
 
-There seems to be two replicators back to back here. What is connected
-to the other output of both of them ? Are there any TPIUs ? What happens
-if you choose a sink on the other end of "swao_replicator" (ETB ?)
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index e5f76da8cd4e..24678d6e308d 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5237,7 +5237,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+>  
+>  	printk("active_anon:%lu inactive_anon:%lu isolated_anon:%lu\n"
+>  		" active_file:%lu inactive_file:%lu isolated_file:%lu\n"
+> -		" unevictable:%lu dirty:%lu writeback:%lu unstable:%lu\n"
+> +		" unevictable:%lu dirty:%lu writeback:%lu unstable:0\n"
+>  		" slab_reclaimable:%lu slab_unreclaimable:%lu\n"
+>  		" mapped:%lu shmem:%lu pagetables:%lu bounce:%lu\n"
+>  		" free:%lu free_pcp:%lu free_cma:%lu\n",
+> @@ -5250,7 +5250,6 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+>  		global_node_page_state(NR_UNEVICTABLE),
+>  		global_node_page_state(NR_FILE_DIRTY),
+>  		global_node_page_state(NR_WRITEBACK),
+> -		global_node_page_state(NR_UNSTABLE_NFS),
+>  		global_node_page_state(NR_SLAB_RECLAIMABLE),
+>  		global_node_page_state(NR_SLAB_UNRECLAIMABLE),
+>  		global_node_page_state(NR_FILE_MAPPED),
+> @@ -5283,7 +5282,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+>  			" anon_thp: %lukB"
+>  #endif
+>  			" writeback_tmp:%lukB"
+> -			" unstable:%lukB"
+> +			" unstable:0kB"
+>  			" all_unreclaimable? %s"
+>  			"\n",
+>  			pgdat->node_id,
+> @@ -5305,7 +5304,6 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+>  			K(node_page_state(pgdat, NR_ANON_THPS) * HPAGE_PMD_NR),
+>  #endif
+>  			K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
+> -			K(node_page_state(pgdat, NR_UNSTABLE_NFS)),
+>  			pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES ?
+>  				"yes" : "no");
+>  	}
 
-After boot, what do the idfilter registers read for both the replicators ?
+These are just page allocator splats on OOM. I don't think preserving
+'unstable' in these reports is needed.
 
+> @@ -1707,8 +1706,16 @@ static void *vmstat_start(struct seq_file *m, loff_t *pos)
+>  static void *vmstat_next(struct seq_file *m, void *arg, loff_t *pos)
+>  {
+>  	(*pos)++;
+> -	if (*pos >= NR_VMSTAT_ITEMS)
+> +	if (*pos >= NR_VMSTAT_ITEMS) {
+> +		/*
+> +		 * Deprecated counters which are no longer represented
+> +		 * in vmstat arrays. We just lie about them to be always
+> +		 * 0 to not break userspace which might expect them in
+> +		 * the output.
+> +		 */
+> +		seq_puts(m, "nr_unstable 0");
+>  		return NULL;
+> +	}
+>  	return (unsigned long *)m->private + *pos;
+>  }
 
-I believe we need to properly assign the TRACE_IDs for tracing sessions,
-(rather than static ids) in a way such that we could filter them and use
-the multiple sinks in parallel for separate trace sessions and this is
-not simple (involves kernel driver changes and the perf tool to be able
-to decode the trace id changes too).
+Umm, how is this supposed to work? vmstat_next() should return next element
+of the sequence, not fill anything into seq_file - that's the job of
+vmstat_show(). Looking at seq_read() implementation it may actually end up
+working fine but I wouldn't really bet much on it especially in corner
+cases like when we are just about to fill the user buffer and then need to
+restart reading close to an end of vmstat file or so.
 
+Michal, won't it be cleaner to have NR_VM_DEPRECATED_ITEMS included in
+NR_VMSTAT_ITEMS, have names of these items in vmstat_text, and just set
+appropriate number of 0 entries at the end of the array generated in
+vmstat_start() and be done with it? That seems conceptually simpler and the
+overhead is minimal.
 
-So for the moment, we need to :
-
-1) Disallow turning the replicator ON, when it is already turned ON
-2) Do what your patch does. i.e, disable the other end while one end
-    is turned on.
-
-Thoughts ?
-
-Kind regards
-Suzuki
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
