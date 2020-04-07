@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E69FE1A0D4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A139C1A0D4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 14:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728495AbgDGMFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 08:05:05 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29070 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728209AbgDGMFF (ORCPT
+        id S1728591AbgDGMFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 08:05:14 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:47010 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728556AbgDGMFO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 08:05:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586261103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xs2PYMoagJh94p0hVD/QmfuH7llxM6LPUQDf48wdDxQ=;
-        b=ZKMGy2ZbThMThSPn1sMApdcyFTAybgncM4FCVq1avjOwQhKmKj+ZiDBUTCxDIKX9DlINup
-        6AnrxXFMCAiL5weQqssBLhwMpAhorSs1e2vITjNo11uWyyCpqEK+hh8lXBfmoZSQgZqvy5
-        k6mCjLVJJ1CXLW3otT7kGlR3lv+OWP0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-402-wETm9zmzMA6ts11MWWEB2A-1; Tue, 07 Apr 2020 08:04:59 -0400
-X-MC-Unique: wETm9zmzMA6ts11MWWEB2A-1
-Received: by mail-wm1-f69.google.com with SMTP id y1so501068wmj.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 05:04:59 -0700 (PDT)
+        Tue, 7 Apr 2020 08:05:14 -0400
+Received: by mail-ed1-f68.google.com with SMTP id cf14so3673112edb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 05:05:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
+        b=r9+wddViVvdqJX8nJHxmkHun6czJ1ikOViiDg5WrV9zsEG8g+/XsCs/Xm8ycJNr5Ml
+         2fuWB1NlLbfc9KUcuyehV5oBNlxoII4bQqlns7ggarruibdn9M7NPubgv2NwI4ghw4q6
+         1iP0OzwDLrwtuIjynAkDMR9V+F7VNbc5SOL1Zz9Q6G98wa8K8FFZQeUID3JSQdRWWQFi
+         ldW15EVw+VNiQ1Az7KgCIbVzPidhk/uK0SGlgeBOEFOC/dv6W9D9D9Vhs5YPaMbwGqPv
+         2jmm/lwv/01mhBrCJ7AZ83I7wgIQbzz7WwjiopAUrGbFPrMes7SZVSzxNBGnUxmtd/Xg
+         gYKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xs2PYMoagJh94p0hVD/QmfuH7llxM6LPUQDf48wdDxQ=;
-        b=CBq8d2VCjUaL5AXHx+afgg9C+1VQ11lkTnjTbLwEdyIsXlP+zhDauh8/raU/f3wREv
-         b5Hk7vGKKw3bZyzF0lmjYTI41jv6sULPLvlJkeBe7ciLAmruFybwoPxkrVBii2SrmH0U
-         KtMgfCU2gDmFRId4iT7D2W0W/FM/5ERqLc+X9up1Vvc9TqtMOwlrMSNJKnoDKy9BF1FN
-         VME7eQhvZxBy/PAfsTa4pS+cdGTcC5UIanW8YaPmJfGFHoUhxMleWsZgevK7A5CBnp8j
-         QovBE5F4BLdZLI0c2gGqPXQnXNum5KamdDOBgwQnINSEbukZyCWHygx4NsldrjTj7JIE
-         faCg==
-X-Gm-Message-State: AGi0PuYWztg2gSKNxB2tCbLa/+nUreVrBN+LtZhsa1pfq+TjijasPJsO
-        lJAxUaCUOByp+PNrpI0nIsCYoZgWRn90Cw6LGGYb7IIJbbUTkF1PCUAZSzLt7S7aaOoNYKXq/5a
-        5p37BR4IQrQgyUtmtJ2dIaqnA
-X-Received: by 2002:a7b:cb59:: with SMTP id v25mr2068572wmj.139.1586261098296;
-        Tue, 07 Apr 2020 05:04:58 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIxvMFy1wzXFEuNpmyuAGAymcuopHHwSE4i0SJNeaS+clSzuREQQnSpHRy9z4S008CNZ2pTlw==
-X-Received: by 2002:a7b:cb59:: with SMTP id v25mr2068545wmj.139.1586261098042;
-        Tue, 07 Apr 2020 05:04:58 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id f4sm13282639wrp.80.2020.04.07.05.04.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 05:04:57 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-        dzickus@redhat.com, dyoung@redhat.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH v2 0/3] KVM: VMX: Fix for kexec VMCLEAR and VMXON cleanup
-In-Reply-To: <20200407110115.GA14381@MiWiFi-R3L-srv>
-References: <20200321193751.24985-1-sean.j.christopherson@intel.com> <20200407110115.GA14381@MiWiFi-R3L-srv>
-Date:   Tue, 07 Apr 2020 14:04:56 +0200
-Message-ID: <87r1wzlcwn.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=t0TLC5mt6zw20J38nO6UV1Kz+5E95WBtIXeRkoxQ4a0=;
+        b=Vo3K9LOHJVy4l4DnIa85o0615n+Xq5jWSfti9M8IxavMgz8LZLLOGQKC1HMUH3/dVJ
+         q+Ll7enoWWpCyZo/jUwWOq0/sh/E4wPTOVFuKZUulM6hYOR4PVcaWT2YzCFvR+Os3y6c
+         q+INK4NbxmUwpmAQM6hHpV6ZshQrH1JkXFZvqEFVD86MpC+uJBFIpYYHed+c7V7XmBSf
+         mByXwDMbt1zMacNtkKrXD03mMx0OvHLiTARoTyMavBGKR+BHmKAY42Xehw0Ymsoysrat
+         u8+cPKApbQ8uCz7c2gD1pfCXSy0xIwevLoIqQe8WjFEDnUT9RKTxPpRLDQiUbx8FCGMj
+         Dbow==
+X-Gm-Message-State: AGi0PuYF72QdSLAYm7IvPTwgchMhVS19BM1IsVmRh79UQQlsSZnGSJ/A
+        eFVow1QQE2BiFYjApLtoL2m6hPZwA5z2LCcpvNI=
+X-Google-Smtp-Source: APiQypLxWgxTObCMscWGDo5tJRLAw8Gjysi7VxpivmqA8Dbqp6klUnK+qCv8lcGGWvbj42MQ6KHkhLML+FeceTIY/Oc=
+X-Received: by 2002:a17:907:447c:: with SMTP id oo20mr1758131ejb.282.1586261112260;
+ Tue, 07 Apr 2020 05:05:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Reply-To: mrsanna.h.bruun119@gmail.com
+Received: by 2002:a17:906:2cd4:0:0:0:0 with HTTP; Tue, 7 Apr 2020 05:05:11
+ -0700 (PDT)
+From:   "Mrs. Anna H. Bruun" <mrsanna.h.bruun119@gmail.com>
+Date:   Tue, 7 Apr 2020 05:05:11 -0700
+X-Google-Sender-Auth: A6h9rJGyrFCkCAMHowGD9fjWh1Q
+Message-ID: <CAMrr=JgtYk+AYEFNjXo8P18gjsxJDQG7ApfUuRfymRmMT5utiw@mail.gmail.com>
+Subject: My Greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Baoquan He <bhe@redhat.com> writes:
+My Dear
 
->
-> The trace is here. 
->
-> [  132.480817] RIP: 0010:crash_vmclear_local_loaded_vmcss+0x57/0xd0 [kvm_intel] 
+My Name is Mrs. Anna H. Bruun, from Norway. I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick Bruun,
+A gold merchant who owns a small gold Mine in Burkina Faso; He died of
+Cardiovascular Disease in mid-March 2011. During his life time he
+deposited the sum of =E2=82=AC 8.5 Million Euro) Eight million, Five hundre=
+d
+thousand Euros in a bank in Ouagadougou the capital city of Burkina
+Faso. The deposited money was from the sale of the shares, death
+benefits payment and entitlements of my deceased husband by his
+company.
 
-This is a known bug,
+I am sending this message to you praying that it will reach you in
+good health, since I am not in good health condition in which I sleep
+every night without knowing if I may be alive to see the next day. I
+am suffering from long time cancer and presently i am partially
+suffering from a stroke illness which has become almost impossible for
+me to move around. I am married to my late husband for over 4 years
+before he died and is unfortunately that we don't have a child, my
+doctor confided in me that i have less chance to live. Having known my
+health condition, I decided to contact you to claim the fund since I
+don't have any relation I grew up from the orphanage home,
 
-https://lore.kernel.org/kvm/20200401081348.1345307-1-vkuznets@redhat.com/
+I have decided to donate what I have to you for the support of helping
+Motherless babies/Less privileged/Widows' because I am dying and
+diagnosed of cancer for about 2 years ago. I have been touched by God
+Almighty to donate from what I have inherited from my late husband to
+you for good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has, because He is a Merciful God I will be
+going in for an operation surgery soon
 
--- 
-Vitaly
+This is the reason i need your services to stand as my next of kin or
+an executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name; I need your urgent answer to know if you
+will be able to execute this project, and I will give you more
+Information on how the fund will be transferred to your bank account.
 
+Thanks
+Mrs. Anna H.
