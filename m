@@ -2,73 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CE31A09D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51331A09DA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgDGJO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:14:28 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:34319 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgDGJO1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:14:27 -0400
-Received: by mail-lf1-f44.google.com with SMTP id x23so1802264lfq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 02:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6OtopnAAEq7RcaO3cYzbThDgjEImIu/ZUC/MK9b+8Qk=;
-        b=N9VSIZQuml59Tid/3BT8Vv4Sl3yokkoCg6reujsWc0KVmCdZMyecSp/JlJ5bRFLMfx
-         3oEg5dE+ElyxX76iOxKMp8b439iMCs5lrNXjrIO3VqB+0WP4iInZWzceXD0wNI+VqQPk
-         n8LP6LTxMSNYh6XvAAoh/2rLEUZfgWzlTbFU+ThhE+qFEcYl3fTFc99sVuIHcvh2oRVo
-         F/7Y9Lj4MEndi2rtAbUwoyLYjzu10I+wrv0GkyOXtzYsT+h2jZyY4KZUOX/q6fLO2+Sk
-         crkqYg8AcOeIXQfefQQYKJRFd3hBg5pkw0LosD1pDaBbXt8u6BEY/WXxDULmROayJbJ5
-         VwNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6OtopnAAEq7RcaO3cYzbThDgjEImIu/ZUC/MK9b+8Qk=;
-        b=FOaXdbeVw/ln8eb4g0tiyfr1OS3Dy08qRgsgEEYGvrdKu+QSJcahFWE7ZXylnNaGZp
-         47DzG+NszANLSaskl99ZyFnuUM+RY+p/c3b0I2KHEP5ykWPgOgbVCb8BmPTC1QW2rMb+
-         q/5YGxRN/yrne22AFSmaAFtFFNak18u3PoVyRpGfN0vNuWmaekfuxdjZAg5JdN6tqEE3
-         MkokSpK+N+LMukGYjLYCOHCdJQoR1U4rI0im4WineMiE/Lp7e00fy0JSsCqDXU7el+Sb
-         OKVOOd9blTlamMRxCRZ3DwgEMNMGF7vyAW97A4nM8XxgLbA5ToCE71RGdm0XMA9CKleO
-         bAPA==
-X-Gm-Message-State: AGi0PuaeJlBNtYRsgyFEQ6lXZDiTxhJnCwVzfaK/CDC9M/aO8nmuR1un
-        0z9lV4iaCuJFMup3fLVexKByjg==
-X-Google-Smtp-Source: APiQypJGoa7tB+BMSHzRLxg2kNe/UtYrewh2+8LZfB0dIpTElAeYYLhQvYMMPeS2DRMexOD8gZbQCw==
-X-Received: by 2002:ac2:5559:: with SMTP id l25mr936737lfk.55.1586250864387;
-        Tue, 07 Apr 2020 02:14:24 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:46df:46e6:40f1:f0a5:2488:8311? ([2a00:1fa0:46df:46e6:40f1:f0a5:2488:8311])
-        by smtp.gmail.com with ESMTPSA id m17sm11470733ljb.61.2020.04.07.02.14.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 02:14:23 -0700 (PDT)
-Subject: Re: [PATCH] libata: Return correct rc status in
- sata_pmp_eh_recover_pm() pwhen ATA_DFLAG_DETACH is set
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20190327090254.10365-1-kai.heng.feng@canonical.com>
-From:   Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Message-ID: <6c0f9cd4-13a7-3f5c-020f-2401de9e42b7@cogentembedded.com>
-Date:   Tue, 7 Apr 2020 12:14:18 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726393AbgDGJQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:16:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgDGJQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 05:16:15 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC597206C0;
+        Tue,  7 Apr 2020 09:16:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586250974;
+        bh=lxtAEZgTZYEOnKFPYs4f9mkdDkEbk/o3qr1XD05lqqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jj01Y45hyRfiRHwSntGuo77qpXgGZSxR9OFGluQ+3RQelJevcsB5EGifGWRigaUV4
+         JhGiDqEIMSTnRIxpDP21BgNBMVC/rO6sNdqMN1VcNJa1kge9Gp24DzddZhgroXDvf3
+         aZGTIJfyMdm8LlXaQFnJo0USWbfBPUCYBURo4Nhc=
+Date:   Tue, 7 Apr 2020 11:16:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     gianluca <gianlucarenzi@eurek.it>
+Cc:     jslaby@suse.com, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Gianluca Renzi <icjtqr@gmail.com>,
+        dimka@embeddedalley.com, linux@rempel-privat.de
+Subject: Re: Serial data loss
+Message-ID: <20200407091611.GA657631@kroah.com>
+References: <960c5054-48b0-fedc-4f3a-7246d84da832@eurek.it>
+ <20200407082454.GA299198@kroah.com>
+ <19bbd87d-75d7-3d9f-d7c1-629d1cc961e8@eurek.it>
 MIME-Version: 1.0
-In-Reply-To: <20190327090254.10365-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <19bbd87d-75d7-3d9f-d7c1-629d1cc961e8@eurek.it>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Tue, Apr 07, 2020 at 11:01:08AM +0200, gianluca wrote:
+> On 04/07/2020 10:24 AM, Greg Kroah-Hartman wrote:
+> > On Tue, Apr 07, 2020 at 09:30:21AM +0200, gianluca wrote:
+> > > I have a BIG trouble having dataloss when using two internal serial ports of
+> > > my boards based on NXP/FreeScale iMX28 SoC ARMv5Te ARM920ej-s architecture.
+> > > 
+> > > It runs at 454Mhz.
+> > > 
+> > > Kernel used 4.9.x
+> > 
+> > That's a very old kernel, you are going to have to get support for that
+> > from the vendor you bought it from :(
+> > 
+> 
+> We are the vendor. ;-)
 
-    s/pwhen/when/ in the subject? Also, I don't think "rc" is needed there...
+Good luck!  :)
 
-MBR, Sergei
+> Jokes apart, I can try to use the latest kernel 5.6, and see how is going on
+> them, but at the first check the driver seems exactly the same as in kernel
+> 4.9.
+> 
+> > > When using my test case unit software between two serial ports connect each
+> > > other by a null modem cable, it fails when the speed rate are different,
+> > 
+> > Of course, how would that work?
+> > 
+> 
+> I am not native english speaker so I am misleading to a misunderstanding: my
+> test case is a software with two pthreads which the main thread is working
+> with a differnet baud rate than the other pthread. Using the same software
+> in two different machines, and using the same baudrate for each
+> corrispondant port it should work.
+> 
+> i.e. /dev/ttyAPP1 is running at 9600 and /dev/ttyAPP2 is running at 38400
+> 
+> The same in the other machine. Both ports are null-modem connected:
+> 
+> 	9600  /dev/ttyAPP1 <----> /dev/ttyAPP1 9600
+> 	38400 /dev/ttyAPP2 <----> /dev/ttyAPP2 38400
+> 
+> I hope to be clear now. ;-)
+
+Ok, yes, that makes more sense now, thank you.
+
+> > > and
+> > > dataloss is increasing higher the speed rate.
+> > 
+> > What type of flow control are you using?
+> > 
+> 
+> Unfortunately no flow control. Because the I cannot use it. When connected
+> to the real-hardware those two ports are connected to a microcontroller unit
+> which does not have flow control, only RX & TX connected (i.e. no
+> RTS/CTS/DTE/DCE lines)
+
+Then you are going to have problems, that is exactly what flow control
+was designed for.  To ignore that is to have problems.
+
+Also, there is software flow control when you do not have any control
+lines.  This "issue" was solved decades ago :)
+
+> > > I am talking about the high latency from the IRQ up to the service routine
+> > > when flushing the FIFO and another IRQ is called by another uart in the same
+> > > time at different speed.
+> > > 
+> > > The code I was looking is: drivers/tty/serial/mxs-auart.c __but__ all other
+> > > serial drivers are acting in the same way: they are reading one character at
+> > > time from the FIFO (if it exists) and put it into the circular buffer so
+> > > serial/tty driver can pass them to the user read routine.
+> > > 
+> > > Each function call has some overhead and it is time-consuming, and if
+> > > another interrupt is invoked by the same UART Core but from another serial
+> > > port (different context) the continuos insertion done by hardware UART into
+> > > the FIFO cannot be served fast enough to have an overrun. I think this can
+> > > be applied __almost__ to every serial driver as they are written in the same
+> > > way.
+> > > 
+> > > And it is __NOT__ an issue because of the CPU and its speed! Using two
+> > > serial converter (FTDI and Prolific PL2303 based) on each board, the problem
+> > > does not appear at all even after 24 hours running at more than 115200!!!
+> > 
+> > usb-serial devices are totally different and send data to the host in a
+> > completly different way.
+> > 
+> > Your hardware might just not be able to handle really high baud rates at
+> > a continous stream, what baud rate were you using?
+> > 
+> 
+> I suppose that, but the same issue can be proven with all single core (NO
+> FIFO UART) processors using two ports on the same uart core, running Linux
+> kernel @ 450 Mhz or less.
+> 
+> The irq latency it is the same.
+
+Again, usb-serial devices do not use a uart on the host, so they have a
+totally different design and code flow.
+
+> > And again, this is what flow control was designed for, please use it.
+> > 
+> 
+> I know and usually I am using a sort of protocol which can check correctness
+> of packet, and if not, the packet has to be reasked/resent.
+> In this case the microcontroller board I am connected to is not built by us,
+> and the software is a custom protocol (and I do not know if an error on
+> transfer can be accomplished by another request).
+> 
+> So the flow control __CANNOT_BE_USED_AT_ALL__...
+
+Then that is a design mistake, please fix that.
+
+good luck!
+
+greg k-h
