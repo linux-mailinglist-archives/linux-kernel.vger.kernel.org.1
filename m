@@ -2,212 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E05881A0C74
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0600E1A0C8D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728397AbgDGLDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:03:44 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:48821 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726591AbgDGLDo (ORCPT
+        id S1728490AbgDGLK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 07:10:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:54452 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728333AbgDGLKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:03:44 -0400
-X-Originating-IP: 78.193.40.249
-Received: from kb-xps (unknown [78.193.40.249])
-        (Authenticated sender: kamel.bouhara@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id D5839FF819;
-        Tue,  7 Apr 2020 11:03:40 +0000 (UTC)
-Date:   Tue, 7 Apr 2020 13:03:39 +0200
-From:   Kamel Bouhara <kamel.bouhara@bootlin.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH 2/3] Input: rotary-encoder-counter: add DT bindings
-Message-ID: <20200407110339.GA1489441@kb-xps>
-References: <20200406155806.1295169-1-kamel.bouhara@bootlin.com>
- <20200406155806.1295169-3-kamel.bouhara@bootlin.com>
- <20200407094159.xtbhtsxorvs2g22c@gilmour.lan>
+        Tue, 7 Apr 2020 07:10:52 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 037B4imE108346
+        for <linux-kernel@vger.kernel.org>; Tue, 7 Apr 2020 07:10:51 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3082j8mv1g-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:10:51 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <imbrenda@linux.ibm.com>;
+        Tue, 7 Apr 2020 12:10:22 +0100
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 7 Apr 2020 12:10:19 +0100
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 037BAio653936380
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Apr 2020 11:10:44 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CA03A4054;
+        Tue,  7 Apr 2020 11:10:44 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00ACEA4060;
+        Tue,  7 Apr 2020 11:10:44 +0000 (GMT)
+Received: from p-imbrenda (unknown [9.145.8.150])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Apr 2020 11:10:43 +0000 (GMT)
+Date:   Tue, 7 Apr 2020 13:05:22 +0200
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [PATCH v2 3/5] KVM: s390: vsie: Fix possible race when
+ shadowing region 3 tables
+In-Reply-To: <20200403153050.20569-4-david@redhat.com>
+References: <20200403153050.20569-1-david@redhat.com>
+        <20200403153050.20569-4-david@redhat.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407094159.xtbhtsxorvs2g22c@gilmour.lan>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20040711-0020-0000-0000-000003C33E85
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20040711-0021-0000-0000-0000221BFC1A
+Message-Id: <20200407130522.189a9a3f@p-imbrenda>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_03:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 suspectscore=2 impostorscore=0 bulkscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 mlxlogscore=999 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070095
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 11:41:59AM +0200, Maxime Ripard wrote:
-> Hi Kamel,
->
+On Fri,  3 Apr 2020 17:30:48 +0200
+David Hildenbrand <david@redhat.com> wrote:
 
-Hi Maxime,
+> We have to properly retry again by returning -EINVAL immediately in
+> case somebody else instantiated the table concurrently. We missed to
+> add the goto in this function only. The code now matches the other,
+> similar shadowing functions.
+> 
+> We are overwriting an existing region 2 table entry. All allocated
+> pages are added to the crst_list to be freed later, so they are not
+> lost forever. However, when unshadowing the region 2 table, we
+> wouldn't trigger unshadowing of the original shadowed region 3 table
+> that we replaced. It would get unshadowed when the original region 3
+> table is modified. As it's not connected to the page table hierarchy
+> anymore, it's not going to get used anymore. However, for a limited
+> time, this page table will stick around, so it's in some sense a
+> temporary memory leak.
+> 
+> Identified by manual code inspection. I don't think this classifies as
+> stable material.
+> 
+> Fixes: 998f637cc4b9 ("s390/mm: avoid races on region/segment/page
+> table shadowing") Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  arch/s390/mm/gmap.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+> index b93dd54b234a..24ef30fb0833 100644
+> --- a/arch/s390/mm/gmap.c
+> +++ b/arch/s390/mm/gmap.c
+> @@ -1844,6 +1844,7 @@ int gmap_shadow_r3t(struct gmap *sg, unsigned
+> long saddr, unsigned long r3t, goto out_free;
+>  	} else if (*table & _REGION_ENTRY_ORIGIN) {
+>  		rc = -EAGAIN;		/* Race with shadow */
+> +		goto out_free;
+>  	}
+>  	crst_table_init(s_r3t, _REGION3_ENTRY_EMPTY);
+>  	/* mark as invalid as long as the parent table is not
+> protected */
 
-> The prefix for device tree bindings is usually dt-bindings:
-> $framework: $title
->
-> So a title like "dt-bindings: input: Add a counter-based rotary
-> encoder binding" would be better.
->
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-OK, to be fixed then.
-
-> On Mon, Apr 06, 2020 at 05:58:05PM +0200, Kamel Bouhara wrote:
-> > Add dt binding for the counter variant of the rotary encoder driver.
-> >
-> > Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > ---
-> >  .../input/rotary-encoder-counter.yaml         | 67 +++++++++++++++++++
-> >  1 file changed, 67 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
-> > new file mode 100644
-> > index 000000000000..a59f7c1faf0c
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
-> > @@ -0,0 +1,67 @@
-> > +# SPDX-License-Identifier: GPL-2.0
->
-> Bindings are usually used by other OS's, so you should consider
-> putting it under a more permissive license, usually that would be GPL2
-> and the BSD-2-Clause
->
-
-Well to be honest I just looked into an existing binding and I guess
-the wrong one :).
-
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/input/rotary-encoder-counter.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Rotary Encoder Counter
-> > +
-> > +maintainers:
-> > +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
-> > +
-> > +description:
-> > +  Registers a Rotary encoder connected through a counter device.
->
-> You shouldn't really describe the action here, but more what the
-> binding is about. The registration will not depend on the presence of
-> the node following that binding, but rather on whether or not the OS
-> that uses it has support for it.
->
-
-Then shall it be better with just :
-"A rotary encoder device using a generic counter interface." ?
-
-> > +properties:
-> > +  compatible:
-> > +    const: rotary-encoder-counter
-> > +
-> > +  counter:
-> > +    description: Phandle for the counter device providing rotary position.
->
-> This should have a type
->
-> > +  linux-axis:
-> > +    description: The input subsystem axis to map to this rotary encoder.
-> > +    type: boolean
-> > +
-> > +  qdec-mode:
-> > +    description: |
-> > +      Quadrature decoder function to set in the counter device.
-> > +      3: x1-PHA
-> > +      4: x1-PHB
-> > +      5: x2-PHA
-> > +      6: x2-PHB
-> > +      7: x4-PHA and PHB
->
-> That range (even though it's a bit odd) should be expressed through an
-> enum so that you can check that the values are actually within that
-> range.
->
-
-Indeed, that make sens to check it from the binding.
-
-Will fix it in v2.
-
-> > +  steps:
-> > +    description: Number of steps in a full turnaround of the encoder.
->
-> Muli-line strings should have either quotes around them, or a | or >
-> like you did for the description. | will keep the \n, > will make that
-> a single string.
->
-> This should also have a type
->
-> > +      Only relevant for absolute axis.
->
-> This should be expressed through a if / then clause, or a dependencies one
->
-> >                                         Defaults to 24 which is a typical
-> > +      value for such devices.
->
-> This should be expressed through a default property.
->
-
-The devil is in the details and yet quite lot of them to fix.
-
-Thanks.
-
-> > +  relative-axis:
-> > +    description: Register a relative axis rather than an absolute one.
-> > +    type: boolean
-> > +
-> > +  rollover:
-> > +    description: Automatic rollover when the rotary value becomes greater
-> > +      than the specified steps or smaller than 0. For absolute axis only.
-> > +    type: boolean
->
-> Same story than steps for the dependency. Also, what is is the
-> behaviour when this property isn't set?
->
-
-OK, if rollover isn't set then the count is unbounded, of course this
-shall be described here.
-
-> > +  poll-interval:
-> > +    description: Poll interval at which the position is read from the counter
-> > +      device (default 500ms).
->
-> It should have a type too, and a default property
->
-> > +
-> > +required:
-> > +  - compatible
-> > +  - counter
-> > +  - qdec-mode
-> > +
-> > +examples:
-> > +  - |
-> > +    rotary@0 {
-> > +        compatible = "rotary-encoder-counter";
->
-> A unit-address (the part after @) only makes sense for a node if
-> there's a matching reg property in the node. This will trigger a DTC
-> warning, so you should remove the @0
->
-
-Ok I'll fix it then.
-
-Thanks again.
-
-> Maxime
-
-
-
---
-Kamel Bouhara, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
