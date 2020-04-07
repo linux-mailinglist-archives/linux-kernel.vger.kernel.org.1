@@ -2,115 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A891A135C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502B71A1364
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgDGSOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:14:04 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:33559 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726332AbgDGSOE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:14:04 -0400
-Received: by mail-pl1-f196.google.com with SMTP id ay1so1557162plb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 11:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PeiZnJCEZqQc3Rqpk45c1lEucyFQ8/zMMdEk9YtKXts=;
-        b=Y+PUf4/ItL0F+5y8tsRBf+kNreItmx9FrKwi5SiANr06qTw66OGN+bynO38NPjRCxF
-         dXLfvMaQcQxA4gXWi5uboU6rC8p1zSePp59K/vOjX1o6XWPy+1620KI7YA22wae9JRsX
-         KxEoRF8kdPb6y8ddg7dfVOwafjoUKtI0tZLmOaEunAqjoNKTNyRgtD74+rT2t/JwGye+
-         siU98mSYL3CG+KWPIzD/1F2vSrkqtl2Vauwv+IdVhin9oCylWjSxWx5bR5TExnuqTSTL
-         UIuWTmq6jv0kWnTgqKj/pxd0f/sZZWusq7acyEGXLPMI34hFInfYFj1Kjvj7VbMjVD5j
-         O5Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PeiZnJCEZqQc3Rqpk45c1lEucyFQ8/zMMdEk9YtKXts=;
-        b=aPYQxatBvB0WWatAgVTHGfHVtT7sCbxS2lDkQ688ieoQCFDn+/35Awwk1CbK0YoDjZ
-         eYV5r26MN8tRMa+af9K2dI3MyZPDstw7IpPbtqlYX5g38qT8KoJtdBHZcZu6XdWF4KVK
-         Y6nDV5WGZP6+D/m573u/GKkzYV21DQnLjRlZBsn9hq5ja1sdkS4ZCNw8XZsZQ2xJ+4+S
-         wRORx2nZh8sSeL0P6X91s7ROl4kpdolz7S/oIYoysjRCEyHKGlSH522a0mz01c97EU4j
-         sWXdaieP9ccrg4x6cIlAp8/xOmWlQPTmKCQ6Big2oQ4HwMnrfpTDs+OrxPfdkzwYYpTo
-         gOwQ==
-X-Gm-Message-State: AGi0PuYJq6c/jQC4ZQdb2ShcdL1W5vMU/M4B0T8b3rh/u+GKblElo++m
-        WO2DQLiNW7/F0PaOlcnn4KXdCDfqBms9PcLoH7sQ9A==
-X-Google-Smtp-Source: APiQypJKouIIKhONDkOghKTAW34SOEQnio5T0ysv+Iu/ELxMBu4fc4dVDMgQPcZZE3yIw33w58OEv/qC/oYsouUrQM0=
-X-Received: by 2002:a17:90a:8085:: with SMTP id c5mr568939pjn.186.1586283241410;
- Tue, 07 Apr 2020 11:14:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <29b5043db9a51ef7a0cb6e3a8c69c91e36045cd6.1585944770.git.mirq-linux@rere.qmqm.pl>
- <202004050928.d6QhVcsQ%lkp@intel.com>
-In-Reply-To: <202004050928.d6QhVcsQ%lkp@intel.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 7 Apr 2020 11:13:50 -0700
-Message-ID: <CAKwvOdm5BhMdAmXR0gCLntkbvF7ajaNoWoHVCCio1CqbGzS6aQ@mail.gmail.com>
-Subject: Re: [PATCH v3 07/11] power: supply: core: tabularize HWMON
- temperature labels
-To:     kbuild test robot <lkp@intel.com>
-Cc:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pm@vger.kernel.org
+        id S1726706AbgDGSO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:14:59 -0400
+Received: from mga11.intel.com ([192.55.52.93]:7315 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726380AbgDGSO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 14:14:59 -0400
+IronPort-SDR: sWPo7ahmYzt2gzCFCyAnVLINzSO06zNZ5b2uNofdOn87uTqIp2gexTYA3840XSZ1G7MqNYIvlE
+ VoLEQeMuVftw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2020 11:14:58 -0700
+IronPort-SDR: kJCrsPjoVYdbrOIa/DsHhlgy3v2nC4JN+UUwMGWfglVpv1BJLsoVZYjqnzPZ63YyNHofXQ22Jn
+ Cr26BsaSkbgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,356,1580803200"; 
+   d="scan'208";a="451316171"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga005.fm.intel.com with ESMTP; 07 Apr 2020 11:14:58 -0700
+Message-ID: <444d97c4a4f70ccbb12da5e8f7ff498b37a9f60d.camel@intel.com>
+Subject: Re: [RFC PATCH v9 14/27] mm: Handle Shadow Stack page fault
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>, x86-patch-review@intel.com
+Date:   Tue, 07 Apr 2020 11:14:58 -0700
+In-Reply-To: <4902a6ee-cb0f-2700-1f6d-9d756593183c@intel.com>
+References: <20200205181935.3712-1-yu-cheng.yu@intel.com>
+         <20200205181935.3712-15-yu-cheng.yu@intel.com>
+         <4902a6ee-cb0f-2700-1f6d-9d756593183c@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.32.4 (3.32.4-1.fc30) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 4, 2020 at 6:53 PM kbuild test robot <lkp@intel.com> wrote:
->
-> Hi "Micha=C5=82,
->
-> I love your patch! Perhaps something to improve:
->
-> [auto build test WARNING on power-supply/for-next]
-> [also build test WARNING on hwmon/hwmon-next linus/master v5.6 next-20200=
-404]
-> [if your patch is applied to the wrong git tree, please drop us a note to=
- help
-> improve the system. BTW, we also suggest to use '--base' option to specif=
-y the
-> base tree in git format-patch, please see https://stackoverflow.com/a/374=
-06982]
->
-> url:    https://github.com/0day-ci/linux/commits/Micha-Miros-aw/extension=
-s-and-fixes/20200405-044024
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-s=
-upply.git for-next
-> config: x86_64-randconfig-b002-20200405 (attached as .config)
-> compiler: clang version 11.0.0 (https://github.com/llvm/llvm-project 62f3=
-a9650a9f289a07a5f480764fb655178c2334)
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
-n/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         COMPILER=3Dclang make.cross ARCH=3Dx86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kbuild test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/power/supply/power_supply_hwmon.o: warning: objtool: power_sup=
-ply_hwmon_read_string() falls through to next function power_supply_hwmon_w=
-rite()
+On Wed, 2020-02-26 at 16:08 -0800, Dave Hansen wrote:
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index 45442d9a4f52..6daa28614327 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -772,7 +772,8 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+> >  	 * If it's a COW mapping, write protect it both
+> >  	 * in the parent and the child
+> >  	 */
+> > -	if (is_cow_mapping(vm_flags) && pte_write(pte)) {
+> > +	if ((is_cow_mapping(vm_flags) && pte_write(pte)) ||
+> > +	    arch_copy_pte_mapping(vm_flags)) {
+> >  		ptep_set_wrprotect(src_mm, addr, src_pte);
+> >  		pte = pte_wrprotect(pte);
+> >  	}
+> 
+> You have to modify this because pte_write()==0 for shadow stack PTEs, right?
+> 
+> Aren't shadow stack ptes *logically* writable, even if they don't have
+> the write bit set?  What would happen if we made pte_write()==1 for them?
 
-I'm guessing this is from the unreachable:
-https://github.com/0day-ci/linux/commit/b8b2d14ca46ca54257f55c9af58ea25695b=
-9ee36
-I'll need to play with this some more as I couldn't reproduce with a
-simplified test case, but looks like a compiler bug.  Filed
-https://github.com/ClangBuiltLinux/linux/issues/978 for me to track.
+Here the vm_flags needs to have VM_MAYWRITE, and the PTE needs to have
+_PAGE_WRITE.  A shadow stack does not have either.
 
---=20
-Thanks,
-~Nick Desaulniers
+To fix checking vm_flags, what about adding a "arch_is_cow_mappping()" to the
+generic is_cow_mapping()?
+
+For the PTE, the check actually tries to determine if the PTE is not already
+being copy-on-write, which is:
+
+	(!_PAGE_RW && !_PAGE_DIRTY_HW)
+
+So what about making it pte_cow()?
+
+	/*
+	 * The PTE is in copy-on-write status.
+	 */
+	static inline int pte_cow(pte_t pte)
+	{
+		return !(pte_flags(pte) & (_PAGE_WRITE | _PAGE_DIRTY_HW));
+	}
+> 
+> > @@ -2417,6 +2418,7 @@ static inline void wp_page_reuse(struct vm_fault *vmf)
+> >  	flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
+> >  	entry = pte_mkyoung(vmf->orig_pte);
+> >  	entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+> > +	entry = pte_set_vma_features(entry, vma);
+> >  	if (ptep_set_access_flags(vma, vmf->address, vmf->pte, entry, 1))
+> >  		update_mmu_cache(vma, vmf->address, vmf->pte);
+> >  	pte_unmap_unlock(vmf->pte, vmf->ptl);
+> > @@ -2504,6 +2506,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+> >  		flush_cache_page(vma, vmf->address, pte_pfn(vmf->orig_pte));
+> >  		entry = mk_pte(new_page, vma->vm_page_prot);
+> >  		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
+> > +		entry = pte_set_vma_features(entry, vma);
+> >  		/*
+> >  		 * Clear the pte entry and flush it first, before updating the
+> >  		 * pte with the new entry. This will avoid a race condition
+> > @@ -3023,6 +3026,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >  	pte = mk_pte(page, vma->vm_page_prot);
+> >  	if ((vmf->flags & FAULT_FLAG_WRITE) && reuse_swap_page(page, NULL)) {
+> >  		pte = maybe_mkwrite(pte_mkdirty(pte), vma);
+> > +		pte = pte_set_vma_features(pte, vma);
+> >  		vmf->flags &= ~FAULT_FLAG_WRITE;
+> >  		ret |= VM_FAULT_WRITE;
+> >  		exclusive = RMAP_EXCLUSIVE;
+> > @@ -3165,6 +3169,7 @@ static vm_fault_t do_anonymous_page(struct vm_fault *vmf)
+> >  	entry = mk_pte(page, vma->vm_page_prot);
+> >  	if (vma->vm_flags & VM_WRITE)
+> >  		entry = pte_mkwrite(pte_mkdirty(entry));
+> > +	entry = pte_set_vma_features(entry, vma);
+> >  
+> >  	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+> >  			&vmf->ptl);
+> > 
+> 
+> These seem wrong, or at best inconsistent with what's already done.
+> 
+> We don't need anything like pte_set_vma_features() today because we have
+> vma->vm_page_prot.  We could easily have done what you suggest here for
+> things like protection keys: ignore the pkey PTE bits until we create
+> the final PTE then shove them in there.
+> 
+> What are the bit patterns of the shadow stack bits that come out of
+> these sites?  Can they be represented in ->vm_page_prot?
+
+Yes, we can put _PAGE_DIRTY_HW in vm_page_prot.  Also set the bit in
+ptep_set_access_flags() for shadow stack PTEs.
+
