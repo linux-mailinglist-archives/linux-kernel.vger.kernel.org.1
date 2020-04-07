@@ -2,147 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC851A10EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374361A10F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728069AbgDGQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:03:51 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:54820 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728000AbgDGQDt (ORCPT
+        id S1727078AbgDGQG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:06:28 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:45573 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726840AbgDGQG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:03:49 -0400
-Received: by mail-pj1-f66.google.com with SMTP id np9so940422pjb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 09:03:48 -0700 (PDT)
+        Tue, 7 Apr 2020 12:06:28 -0400
+Received: by mail-ed1-f65.google.com with SMTP id m12so4675739edl.12
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 09:06:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gP729yExvsKwcKrE86VBUvEUivRuAU1I4cifk756xg8=;
-        b=BiT/yyVr1rSfof6VFqWXygsiJDCQsZIVl3d4oHMX1AlwZu2InJRMzINblucNVGW/ZH
-         t+PA9lgM0DmQMakMUPj4R/C/CPo85Zx7iBKrQHz14noUlbYVtQ2CR0tcbxK52eUp/0by
-         XbWcQl93c78Jk4nzonwajBC96ypn5aCIxRxEE=
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZSC8MNyMYJ4CcbIl5da3tSwMWoq31/28XKL6OZqNaaY=;
+        b=lYJjsqchyogIG2xHJXiYDwsutn6iKu82kteMMh/iUcPx8osqcaPhaQMR0VRfmVhNWK
+         NCagF590A9IHqge+RLez3WuO7uxY62A3hcYNfVsfdv+RVIwhEq7wV1V2/QfjuAh/HHNJ
+         Ndiq/cU1KP/QZ40BrUjm6Tbot2afFBCYP9DNU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gP729yExvsKwcKrE86VBUvEUivRuAU1I4cifk756xg8=;
-        b=Iy8b9DD03rUMAlD1XyTl6vmxcNyzzXI7pXyzgGKpZkoORAM2qCZZlSVfvRCA+rnYoU
-         PHn+7QJtb0TUyOsJF4BZ2yI4Y0IIWXA7zjDamcrcPQ/ZWn9ydhi7UBkU1nwC/P9XBfjz
-         geOp+tf+8u4AoB8ILXeHHWf+Kt2rADpK2ORRfk0V69murrm5AgqLL/b3Q9k6ntPbQzZP
-         5MD6Gc37bpW41HiLTsKVLl4Ah6BxYYaLO0nkb/PjN1hhCRq5LEhLPGB+bQf22lqFCWDG
-         xYBZJVteS0lScvllWd6oxjxnDo/bJgTi3xHpg73pKUfqr0eD9XbQ2/wRcQMWO8c/Buna
-         /lPw==
-X-Gm-Message-State: AGi0Puae1hpHjGkfWthLgHbGQJUpmgSd7NCjeoYTjsKYI7Be9gSfp7hh
-        oYeZGTNyBYP0zeEXpVrFwCv8cA==
-X-Google-Smtp-Source: APiQypJ9peVI9az7UwkHqtzSEwC0pTS1l9u9mH/FppWKiEPX2XYXZdvNpEolk4nHDToGI2lLSlyaXQ==
-X-Received: by 2002:a17:902:6acc:: with SMTP id i12mr3051101plt.61.1586275428262;
-        Tue, 07 Apr 2020 09:03:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id nh14sm2014218pjb.17.2020.04.07.09.03.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 09:03:47 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 09:03:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH 3/3] exec: Rename the flag called_exec_mmap
- point_of_no_return
-Message-ID: <202004070903.CC08A70A@keescook>
-References: <87blobnq02.fsf@x220.int.ebiederm.org>
- <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
- <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
- <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
- <87lfnda3w3.fsf@x220.int.ebiederm.org>
- <CAHk-=wjuv_J+2KOi+Fhr_nBKYf5CXr76DQKThA3uxXm3rCC3Uw@mail.gmail.com>
- <87wo6s3wxd.fsf_-_@x220.int.ebiederm.org>
- <87d08k3wt4.fsf_-_@x220.int.ebiederm.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZSC8MNyMYJ4CcbIl5da3tSwMWoq31/28XKL6OZqNaaY=;
+        b=J4KNVAw8Hf0KZZNz6NYNjD8MGzc+uibzweXN4PUiA3YqFxEA0esNViJKU5vHgyk8nk
+         0BQPh1DFMX2m6zsw6oYXT2GCf+DA/Ob42Yn7pZzIc1GmWj/k7tOVRvbsguC17VWkstSX
+         uwFOoXr/0tyKekYnBpATFGaposRaI/VMowEVSh/fxjAffIwrFo66gxTd1Abgti9zrjT1
+         oRB7/cJHcqaBySMga9SVALhk+/C4Sz+WnQwI24MzQmpKZVEnyNG+zdlaCEolRJ6HCBqU
+         0G4eVlMUVDmNS3Z13z/lK64LGl9+8Zch9eaKHWuGJ3T0LnDgw0BJgCL8KpI5j9JeinkO
+         eWsA==
+X-Gm-Message-State: AGi0PuaEa08WF2qrmayLx+agpJuqCmonKj9y2E4kPRfzhwncpbgStlC4
+        7R+8BFFeDTE5jcRpLRVQ5GX1aMySsyzu58fyb+1Wog==
+X-Google-Smtp-Source: APiQypIXfOQtepXXTh7ycOqzqzJa8O502xxo9QjDYoNHsfjRyMveiS82f7idPBRjOLqUA9QCRFw1nO3c8tM2xgW4Ai4=
+X-Received: by 2002:a17:906:405b:: with SMTP id y27mr2784058ejj.213.1586275585452;
+ Tue, 07 Apr 2020 09:06:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87d08k3wt4.fsf_-_@x220.int.ebiederm.org>
+References: <CAJfpegum_PsCfnar8+V2f_VO3k8CJN1LOFJV5OkHRDbQKR=EHg@mail.gmail.com>
+ <20200402155020.GA31715@gardel-login> <CAJfpeguM__+S6DiD4MWFv5GCf_EUWvGFT0mzuUCCrfQwggqtDQ@mail.gmail.com>
+ <20200403110842.GA34663@gardel-login> <CAJfpegtYKhXB-HNddUeEMKupR5L=RRuydULrvm39eTung0=yRg@mail.gmail.com>
+ <20200403150143.GA34800@gardel-login> <CAJfpegudLD8F-25k-k=9G96JKB+5Y=xFT=ZMwiBkNTwkjMDumA@mail.gmail.com>
+ <20200406172917.GA37692@gardel-login> <a4b5828d73ff097794f63f5f9d0fd1532067941c.camel@themaw.net>
+ <CAJfpegvYGB01i9eqCH-95Ynqy0P=CuxPCSAbSpBPa-TV8iXN0Q@mail.gmail.com> <20200407155329.GA39803@gardel-login>
+In-Reply-To: <20200407155329.GA39803@gardel-login>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 7 Apr 2020 18:06:13 +0200
+Message-ID: <CAJfpegufdi7u3Wyo0YWeoPs9MQa1TePD=AHNW9S9Ey9jTuofHw@mail.gmail.com>
+Subject: Re: Upcoming: Notifications, FS notifications and fsinfo()
+To:     Lennart Poettering <mzxreary@0pointer.de>
+Cc:     Ian Kent <raven@themaw.net>, David Howells <dhowells@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, dray@redhat.com,
+        Karel Zak <kzak@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Jeff Layton <jlayton@redhat.com>, andres@anarazel.de,
+        keyrings@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 08:32:23PM -0500, Eric W. Biederman wrote:
-> 
-> Update the comments and make the code easier to understand by
-> renaming this flag.
-> 
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+On Tue, Apr 7, 2020 at 5:53 PM Lennart Poettering <mzxreary@0pointer.de> wr=
+ote:
+>
+> On Di, 07.04.20 15:59, Miklos Szeredi (miklos@szeredi.hu) wrote:
+>
+> > On Tue, Apr 7, 2020 at 4:22 AM Ian Kent <raven@themaw.net> wrote:
+> > > > Right now, when you have n mounts, and any mount changes, or one is
+> > > > added or removed then we have to parse the whole mount table again,
+> > > > asynchronously, processing all n entries again, every frickin
+> > > > time. This means the work to process n mounts popping up at boot is
+> > > > O(n=C2=B2). That sucks, it should be obvious to anyone. Now if we g=
+et that
+> > > > fixed, by some mount API that can send us minimal notifications abo=
+ut
+> > > > what happened and where, then this becomes O(n), which is totally O=
+K.
+> >
+> > Something's not right with the above statement.  Hint: if there are
+> > lots of events in quick succession, you can batch them quite easily to
+> > prevent overloading the system.
+> >
+> > Wrote a pair of utilities to check out the capabilities of the current
+> > API.   The first one just creates N mounts, optionally sleeping
+> > between each.  The second one watches /proc/self/mountinfo and
+> > generates individual (add/del/change) events based on POLLPRI and
+> > comparing contents with previous instance.
+> >
+> > First use case: create 10,000 mounts, then start the watcher and
+> > create 1000 mounts with a 50ms sleep between them.  Total time (user +
+> > system) consumed by the watcher: 25s.  This is indeed pretty dismal,
+> > and a per-mount query will help tremendously.  But it's still "just"
+> > 25ms per mount, so if the mounts are far apart (which is what this
+> > test is about), this won't thrash the system.  Note, how this is self
+> > regulating: if the load is high, it will automatically batch more
+> > requests, preventing overload.  It is also prone to lose pairs of add
+> > + remove in these case (and so is the ring buffer based one from
+> > David).
+>
+> We will batch requests too in systemd, of course, necessarily, given
+> that the /p/s/mi inotify stuff is async. Thing though is that this
+> means we buy lower CPU usage =E2=80=94 working around the O(n=C2=B2) issu=
+e =E2=80=94 by
+> introducing artifical higher latencies. We usually want to boot
+> quickly, and not artificially slow.
+>
+> Sure one can come up with some super smart scheme how to tweak the
+> artifical latencies, how to grow them, how to shrink them, depending
+> on a perceived flood of events, some backing off scheme. But that's
+> just polishing a turd, if all we want is proper queued change
+> notification without the O(n=C2=B2) behaviour.
+>
+> I mean, the fix for an O(n=C2=B2) algorithm is to make it O(n) or so. By
+> coalescing wake-up events you just lower the n again, probably
+> linearly, but that still means we pay O(n=C2=B2), which sucks.
 
-I like it, yes!
+Obviously.  But you keep ignoring event queue overflows; it's
+basically guaranteed to happen with a sizable mount storm and then you
+are back to O(n^2).
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Give it some testing please, as Linus is not going to take any
+solution without an actual use case and testing.  When you come back
+and say that fsinfo(2) works fine with systemd and a 100k mount/umount
+storm, then we can have a look at the performance budget and revisit
+the fine points of API design.
 
--Kees
-
-> ---
->  fs/exec.c               | 12 ++++++------
->  include/linux/binfmts.h |  6 +++---
->  2 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 28c87020da9b..a61987d6dc33 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -1300,12 +1300,12 @@ int flush_old_exec(struct linux_binprm * bprm)
->  		goto out;
->  
->  	/*
-> -	 * After setting bprm->called_exec_mmap (to mark that current is
-> -	 * using the prepared mm now), we have nothing left of the original
-> -	 * process. If anything from here on returns an error, the check
-> -	 * in search_binary_handler() will SEGV current.
-> +	 * With the new mm installed it is completely impossible to
-> +	 * fail and return to the original process.  If anything from
-> +	 * here on returns an error, the check in
-> +	 * search_binary_handler() will SEGV current.
->  	 */
-> -	bprm->called_exec_mmap = 1;
-> +	bprm->point_of_no_return = true;
->  	bprm->mm = NULL;
->  
->  #ifdef CONFIG_POSIX_TIMERS
-> @@ -1694,7 +1694,7 @@ int search_binary_handler(struct linux_binprm *bprm)
->  
->  		read_lock(&binfmt_lock);
->  		put_binfmt(fmt);
-> -		if (retval < 0 && bprm->called_exec_mmap) {
-> +		if (retval < 0 && bprm->point_of_no_return) {
->  			/* we got to flush_old_exec() and failed after it */
->  			read_unlock(&binfmt_lock);
->  			force_sigsegv(SIGSEGV);
-> diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-> index 6f564b9ad882..8f479dad7931 100644
-> --- a/include/linux/binfmts.h
-> +++ b/include/linux/binfmts.h
-> @@ -46,10 +46,10 @@ struct linux_binprm {
->  		 */
->  		secureexec:1,
->  		/*
-> -		 * Set by flush_old_exec, when exec_mmap has been called.
-> -		 * This is past the point of no return.
-> +		 * Set when errors can no longer be returned to the
-> +		 * original userspace.
->  		 */
-> -		called_exec_mmap:1;
-> +		point_of_no_return:1;
->  #ifdef __alpha__
->  	unsigned int taso:1;
->  #endif
-> -- 
-> 2.25.0
-> 
-
--- 
-Kees Cook
+Thanks,
+Miklos
