@@ -2,76 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7121A1602
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033041A1605
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 21:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgDGTcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 15:32:39 -0400
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:57594 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726712AbgDGTcj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 15:32:39 -0400
-Received: from localhost.localdomain ([93.22.37.82])
-        by mwinf5d42 with ME
-        id PvYb220081mLNr903vYbaZ; Tue, 07 Apr 2020 21:32:37 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 07 Apr 2020 21:32:37 +0200
-X-ME-IP: 93.22.37.82
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     imitsyanko@quantenna.com, avinashp@quantenna.com,
-        smatyukevich@quantenna.com, kvalo@codeaurora.org,
-        davem@davemloft.net, huangfq.daxian@gmail.com
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] qtnfmac: Simplify code in _attach functions
-Date:   Tue,  7 Apr 2020 21:32:33 +0200
-Message-Id: <20200407193233.9439-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.20.1
+        id S1727049AbgDGTct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 15:32:49 -0400
+Received: from ms.lwn.net ([45.79.88.28]:40574 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726339AbgDGTcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 15:32:48 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 210B67DF;
+        Tue,  7 Apr 2020 19:32:48 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 13:32:47 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Alyssa Ross <hi@alyssa.is>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: sysrq: fix RST formatting
+Message-ID: <20200407133247.575838bb@lwn.net>
+In-Reply-To: <20200403170701.10852-1-hi@alyssa.is>
+References: <20200403170701.10852-1-hi@alyssa.is>
+Organization: LWN.net
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to re-implement 'netdev_alloc_skb_ip_align()' here.
-Keep the code simple.
+On Fri,  3 Apr 2020 17:07:01 +0000
+Alyssa Ross <hi@alyssa.is> wrote:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c | 2 +-
- drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> "On x86" and "On SPARC" are now definition list terms, like
+> "On PowerPC", "On other", and "On all".
+> 
+> The Credits list is now a bulleted list, like lots of Credits lists in
+> other files.  This prevents the list from becoming a single long,
+> unpunctuated sentence in the generated documentation.
+> 
+> I also did a couple of other tiny readability improvements to the
+> "How do I use the magic SysRq key?" section while I was there.
+> 
+> Signed-off-by: Alyssa Ross <hi@alyssa.is>
 
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c
-index dbb241106d8a..eb67b66b846b 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/pearl_pcie.c
-@@ -286,7 +286,7 @@ static int pearl_skb2rbd_attach(struct qtnf_pcie_pearl_state *ps, u16 index)
- 	struct sk_buff *skb;
- 	dma_addr_t paddr;
- 
--	skb = __netdev_alloc_skb_ip_align(NULL, SKB_BUF_SIZE, GFP_ATOMIC);
-+	skb = netdev_alloc_skb_ip_align(NULL, SKB_BUF_SIZE);
- 	if (!skb) {
- 		priv->rx_skb[index] = NULL;
- 		return -ENOMEM;
-diff --git a/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c b/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c
-index dbf3c5fd751f..d1b850aa4657 100644
---- a/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c
-+++ b/drivers/net/wireless/quantenna/qtnfmac/pcie/topaz_pcie.c
-@@ -247,7 +247,7 @@ topaz_skb2rbd_attach(struct qtnf_pcie_topaz_state *ts, u16 index, u32 wrap)
- 	struct sk_buff *skb;
- 	dma_addr_t paddr;
- 
--	skb = __netdev_alloc_skb_ip_align(NULL, SKB_BUF_SIZE, GFP_ATOMIC);
-+	skb = netdev_alloc_skb_ip_align(NULL, SKB_BUF_SIZE);
- 	if (!skb) {
- 		ts->base.rx_skb[index] = NULL;
- 		return -ENOMEM;
--- 
-2.20.1
+Applied, thanks.
 
+jon
