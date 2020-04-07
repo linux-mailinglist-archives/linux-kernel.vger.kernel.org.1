@@ -2,133 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3817C1A18ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 01:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4B11A18D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 01:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbgDGX5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 19:57:11 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:37010 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbgDGX5L (ORCPT
+        id S1726504AbgDGXu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 19:50:59 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42373 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgDGXu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 19:57:11 -0400
-Received: by mail-ed1-f68.google.com with SMTP id de14so6304402edb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 16:57:10 -0700 (PDT)
+        Tue, 7 Apr 2020 19:50:58 -0400
+Received: by mail-pl1-f193.google.com with SMTP id v2so461078plp.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 16:50:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zksoCklR8z1unQJuTBJp3Rro9MEQv7rmoj+ED3C7oyg=;
-        b=Td8kk/wwBIcNQ5/edS+wLaYx9ypQ0Xx+RdI4BqPcVFzedqFgesVW8C0IjQkk8xO+9c
-         GFfwVFDIaBwoUeYyZ+F2+9SFOMkc4tW9LFJGDZ9t5P2P4MDclhoZQ8m9RwKd8bXmmICe
-         ThbWpWcO8nS2CaXOD7SirGXBzJ6n6RI04OA4Q=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eT68veUdahfIguyUyBYQoqVQI3dpUpP+dfw8Z1rw5oQ=;
+        b=dKeiEDM/PDcbX+fPQvAgtDORBZqcmvJ6BvEJWJJCDxNNCyzNjQhJpBTP3d3xIgQ439
+         EHC2t7qMFaU01TDtZvzIdZZOe6jtOMYFF/FRidLta6hxWbb/2We2PvfJ/+zG1YUfx0B6
+         MOFHzw0uf5F6afuyvwkxKCU7CNR4pj5q4Pv3c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zksoCklR8z1unQJuTBJp3Rro9MEQv7rmoj+ED3C7oyg=;
-        b=gAY/F6uXc0HPWe5FJv9nhEnBXEf8rhPFhrk8ogU9qEd/Bz12LGEfMGoONJNwugudRc
-         zEz7Pba/wM185sCE9v5x634uWLaXGHNOG86S0OVQV5Xod1aITlijJ30SoxREsgX3KLUA
-         f4jCyibqDClC0DLKhWUW88DLs53oJUr9uamJKs+whZ0RYfYv1G8h/1N2ghCpjMvYRSNG
-         HL13yPaovgyTt0TX0b1iHSXumSH4+L7cBXyM2K9AthpmjQCebvCNAVnXEuz3ySvXIncE
-         gNlLSeSU+9/dn0wpMlny84QgrlyW0We+Lry9G+qaXStOjXctC6VCEA5DRALCyj587UWx
-         6VRQ==
-X-Gm-Message-State: AGi0PuZ9cEeBula2OhtAxBD5muKTUH9P31rdOj8ie2xUUVZU+idOKtdr
-        xiw7SeoncEMZ6vF9szHRvJQUfi4nXME=
-X-Google-Smtp-Source: APiQypI7vADbfeXHi2oZSNUWOoCOofyfRRSthSlSOgkTi9IJmB4PIkfruE34MR3ISaoT9rlt+9j5sg==
-X-Received: by 2002:a17:906:35ce:: with SMTP id p14mr4434570ejb.43.1586303828846;
-        Tue, 07 Apr 2020 16:57:08 -0700 (PDT)
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com. [209.85.208.53])
-        by smtp.gmail.com with ESMTPSA id um17sm584563ejb.50.2020.04.07.16.57.08
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Apr 2020 16:57:08 -0700 (PDT)
-Received: by mail-ed1-f53.google.com with SMTP id v1so6264630edq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 16:57:08 -0700 (PDT)
-X-Received: by 2002:a2e:7c1a:: with SMTP id x26mr2966560ljc.209.1586303427328;
- Tue, 07 Apr 2020 16:50:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eT68veUdahfIguyUyBYQoqVQI3dpUpP+dfw8Z1rw5oQ=;
+        b=UV7gisPKVTtJNWarJ0mgiHZKUAdcgKkZ/tWBcX3YKXVao80uYVnvSaTmUebdDqiJwE
+         q0CfMj+yIg1dWCz/YmPDiy5IMbmDGmBiHEc5L3Icddz4s1RvArF/NXhKjFFBrCrJBXFz
+         0jSK2VpROmMkSpOm9dYmFqViS4qYo9Uf4oGafsBgUR53evnivK3E0bVD0spKilGSw0Tl
+         Db21SvMOOstRdAlwod7ppWoHodUdS8EEZf1XpII+gI/QPCWeYQUR4hUocgdOiSWaXfxj
+         H7cvFN7QOEdnc75ZgJKyWFUVhDUs316c1NdpyTKFAynde4QY+8V/Ax7A6E+p72aYgi51
+         b5tg==
+X-Gm-Message-State: AGi0PuYdes0fx5mBotPq76+iGs0z8Tab1u+xzNuwWCOoX3s31EYn0MQM
+        fK2n1xZaRVQyz128vSg7gL4Ktw==
+X-Google-Smtp-Source: APiQypJYTmO0cbgnxZFQZqkN1iaxMEolwKi85hzl9BR9MlhjVCBjNxuHbd1evldXYryQV0IDGem+MA==
+X-Received: by 2002:a17:90a:ba09:: with SMTP id s9mr2081513pjr.20.1586303455987;
+        Tue, 07 Apr 2020 16:50:55 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
+        by smtp.gmail.com with ESMTPSA id s27sm14467165pgn.90.2020.04.07.16.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 16:50:55 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>
+Cc:     mka@chromium.org, Lina Iyer <ilina@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>, swboyd@chromium.org,
+        evgreen@chromium.org, Douglas Anderson <dianders@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/10] drivers: qcom: rpmh-rsc: Cleanup / add lots of comments
+Date:   Tue,  7 Apr 2020 16:50:14 -0700
+Message-Id: <20200407235024.260460-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
 MIME-Version: 1.0
-References: <20200406185827.22249-1-longman@redhat.com> <c2c8adf48be7cb18bbdf0aef7d21e2defe3d2183.camel@perches.com>
- <CAHk-=wg_mkSc-pH8ntGHR=no9DOLRQyxdtU20p55DrM1su6QzA@mail.gmail.com>
- <CAHk-=wg2Vsb0JETo24=Tc-T2drwMopMRfKnc__r5SZ6tEnbwcA@mail.gmail.com>
- <699292.1586294051@warthog.procyon.org.uk> <CAHk-=whwaNvyd1q=h0nUQio9byojpxufGkOiVfAh10woRs8KSA@mail.gmail.com>
- <749735.1586300050@warthog.procyon.org.uk>
-In-Reply-To: <749735.1586300050@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Apr 2020 16:50:11 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjJ4A8h=Qqq-mYuQ1CwyQkquQpNfHmeOkkbsPtb19+z5Q@mail.gmail.com>
-Message-ID: <CAHk-=wjJ4A8h=Qqq-mYuQ1CwyQkquQpNfHmeOkkbsPtb19+z5Q@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: Add kvfree_sensitive() for freeing sensitive data objects
-To:     David Howells <dhowells@redhat.com>
-Cc:     Joe Perches <joe@perches.com>, Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Linux-MM <linux-mm@kvack.org>, keyrings@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>, law@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 7, 2020 at 3:54 PM David Howells <dhowells@redhat.com> wrote:
->
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=94527
->
-> With regard to this, I've got back "not sure what Linus was talking about WRT
-> DSE, if he's got examples he could pass along, they'd be appreciated"
+In order to review Maulik's latest "rpmh_flush for non OSI targets"
+patch series I've found myself trying to understand rpmh-rsc better.
+To make it easier for others to do this in the future, add a whole lot
+of comments / documentation.
 
-I'll do that. We have real examples in the kernel, although they
-probably aren't all that _important_.
+As part of this there are a very small number of functional changes.
+- We'll get a tiny performance boost by getting rid of the "cmd_cache"
+  which I believe was unnecessary.
+- We now assume someone else is in charge of exclusivity for
+  tcs_invalidate() and have removed a lock in there. As per the
+  comments in the patch, this isn't expected to cause problems.
+- tcs_is_free() no longer checks hardware state, but we think it
+  didn't need to.
 
-I don't see that comment on the bugzilla, but I'll put the stupid
-example in there too.
+These changes touch a lot of code in rpmh-rsc, so hopefully someone at
+Qualcomm can test them out better than I did (I don't have every last
+client of RPMH in my tree).
 
-One such example would be kernel/async.c: async_run_entry_fn(), where we have
+I've tried to structure the patches so that simpler / less
+controversial patches are first. Those could certainly land on their
+own without later patches. Many of the patches could also be dropped
+and the others would still apply if they are controversial.  If you
+need help doing this then please yell.
 
-        /* 2) remove self from the pending queues */
-        spin_lock_irqsave(&async_lock, flags);
-        list_del_init(&entry->domain_list);
-        list_del_init(&entry->global_list);
+These patches are based on Maulik's v16 series, AKA:
+https://lore.kernel.org/r/1586154741-8293-1-git-send-email-mkshah@codeaurora.org/
 
-        /* 3) free the entry */
-        kfree(entry);
-        atomic_dec(&entry_count);
+With all that, enjoy.
 
-and while it's good form to do "list_del_init()" on those fields in
-entry, the fact that we then do "kfree(entry)" right afterwards means
-that the stores that re-initialize the entry list are dead.
+Changes in v3:
+- ("...are not for IRQ") is new for v3.
+- ("Don't double-check rpmh") replaces ("Warning if tcs_write...")
+- Add "TCS" in title (Maulik).
+- Adjusted comments for rpmh_rsc_write_ctrl_data().
+- Comments for new enable_tcs_irq() function.
+- Comments for new rpmh_rsc_cpu_pm_callback() function.
+- Extra blank line removed (Maulik).
+- IRQ registers aren't in TCS0 (Maulik).
+- Kill find_match moves from patch #9 to patch #5 (Maulik).
+- Mention in message that I also fixed up kernel-doc stuff.
+- Moved comments patch after ("Kill cmd_cache and find_match...").
+- One space after a period now (Maulik).
+- Plural of TCS fixed to TCSes following Maulik's example.
+- Re-added comment in tcs_write() about checking for same address.
+- Rebased atop v16 ('Invoke rpmh_flush...') series.
+- Replace ("...warn if state mismatch") w/ ("...just check tcs_in_use")
+- Replaced ("irqsave()...") + ("...never -EBUSY") w/ ("Caller handles...")
+- Rewrote commit message to adjust for patch order.
+- __tcs_set_trigger() comments adjusted now that it can set or unset.
+- get_tcs_for_msg() documents why it's safe to borrow the wake TCS.
+- get_tcs_for_msg() no longer returns -EAGAIN.
 
-So _if_ we had some way to tell the compiler that "hey, kfree(ptr)
-kills the lifetime of that object", the compiler could eliminate the
-dead stores.
+Changes in v2:
+- Comment tcs_is_free() new for v2; replaces old patch 6.
+- Document bug of tcs_write() not handling -EAGAIN.
+- Document get_tcs_for_msg() => -EAGAIN only for ACTIVE_ONLY.
+- Document locks for updating "tcs_in_use" more.
+- Document tcs_is_free() without drv->lock OK for tcs_invalidate().
+- Document that rpmh_rsc_send_data() can be an implicit invalidate.
+- Document two get_tcs_for_msg() issues if zero-active TCS.
+- Fixed documentation of "tcs" param in find_slots().
+- Got rid of useless "if (x) continue" at end of for loop.
+- More clear that active-only xfers can happen on wake TCS sometimes.
+- Now prose in comments instead of struct definitions.
+- Pretty ASCII art from Stephen.
+- Reword tcs_write() doc a bit.
 
-I think that dead store elimination is perhaps less important than if
-the compiler could warn about us stupidly using the dead storage
-afterwards, but I mention it as a "it can actually matter for code
-generation" example too.
+Douglas Anderson (10):
+  drivers: qcom: rpmh-rsc: Clean code reading/writing TCS regs/cmds
+  drivers: qcom: rpmh-rsc: Document the register layout better
+  drivers: qcom: rpmh-rsc: Fold tcs_ctrl_write() into its single caller
+  drivers: qcom: rpmh-rsc: Remove get_tcs_of_type() abstraction
+  drivers: qcom: rpmh-rsc: Kill cmd_cache and find_match() with fire
+  drivers: qcom: rpmh-rsc: A lot of comments
+  drivers: qcom: rpmh-rsc: tcs_is_free() can just check tcs_in_use
+  drivers: qcom: rpmh-rsc: Don't double-check rpmh
+  drivers: qcom: rpmh-rsc: Caller handles tcs_invalidate() exclusivity
+  drivers: qcom: rpmh-rsc: read_tcs_reg()/write_tcs_reg() are not for
+    IRQ
 
-Now, the above is a particularly stupid example, because if we cared,
-we could just turn the "list_del_init()" into a plain "list_del()",
-and simply not do the unnecessary re-initialization of the list entry
-after removing it.
+ drivers/soc/qcom/rpmh-internal.h |  66 +++--
+ drivers/soc/qcom/rpmh-rsc.c      | 465 +++++++++++++++++++++----------
+ drivers/soc/qcom/rpmh.c          |   5 +-
+ 3 files changed, 363 insertions(+), 173 deletions(-)
 
-But I picked a stupid example because it's easy to understand.
+-- 
+2.26.0.292.g33ef6b2f38-goog
 
-Less stupidly, we sometimes have "cleanup" functions that get rid of
-things, and are called before you free the underlying storage.
-
-And there, the cleanup function might be used in general, and not only
-just before freeing. So the re-initialization could make sense in that
-context, but might again be just dead stores for the actual final
-freeing case.
-
-Is this a big deal? No it's not. But it's not really any different
-from the dead store elimination that gcc already does for local
-variables on stack.
-
-          Linus
