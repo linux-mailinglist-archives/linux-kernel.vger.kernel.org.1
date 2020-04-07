@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9171A04C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDFA1A04DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 04:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726616AbgDGCQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 22:16:41 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12682 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726287AbgDGCQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 22:16:40 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4A90F7B786DD6BC6961;
-        Tue,  7 Apr 2020 10:16:34 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 7 Apr 2020
- 10:16:24 +0800
-Subject: Re: [f2fs-dev] [PATCH] f2fs: introduce sysfs/data_io_flag to attach
- REQ_META/FUA
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-References: <20200403161249.68385-1-jaegeuk@kernel.org>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <0e627c29-7fb0-5bd6-c1d9-b96a94df62ae@huawei.com>
-Date:   Tue, 7 Apr 2020 10:16:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726545AbgDGCZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 22:25:40 -0400
+Received: from mail.cock.li ([37.120.193.124]:44758 "EHLO mail.cock.li"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726310AbgDGCZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 22:25:40 -0400
+X-Greylist: delayed 549 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Apr 2020 22:25:39 EDT
+Date:   Tue, 7 Apr 2020 05:16:26 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cock.li; s=mail;
+        t=1586225788; bh=qGyX1HAPEsmwawjGfgfHc62Pd/1AP3V4lb8GMUPYgI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lll4n0UHK6zDbeXwmQeKbYCRle2Ckod6ONDIFvBXJyYIA9WflPyz/XHG+MRCZUejl
+         M+jyxLy+2MpfcpUpXUEDtgK6Szd63wYw8dhGw08NPLVwr/6+6fo1+x/1X1HcuXYW/2
+         t2TkRHYH7UKLknO71pouxikDYwLUw6aqyaWjsIK7kI8dGC5DtFFYoi0zZguqHhnmn5
+         CLn6tUYNvcMwLG5Q1qUVJ7cZ9OWILgZfvrh8CFlSMXxc/FxB3Y1Sin/3Y1URUVbdSY
+         Mrl+7rLPbx6qAAHREDghiv3oHkjTka4qNdnRgUw5WMpf2mMeCN4FPja9PkhTCDHJPO
+         pv41uqpfKQm4g==
+From:   L29Ah <l29ah@cock.li>
+To:     Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        v9fs-developer@lists.sourceforge.net
+Subject: Re: [GIT PULL] 9p update for 5.7
+Message-ID: <20200407021626.cd3wwbg7ayiwt4ry@l29ah-x201.l29ah-x201>
+References: <20200406110702.GA13469@nautica>
+ <CAHk-=whVEPEsKhU4w9y_sjbg=4yYHKDfgzrpFdy=-f9j+jTO3w@mail.gmail.com>
+ <20200406164057.GA18312@nautica>
 MIME-Version: 1.0
-In-Reply-To: <20200403161249.68385-1-jaegeuk@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200406164057.GA18312@nautica>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/4/4 0:12, Jaegeuk Kim wrote:
-> This patch introduces a way to attach REQ_META/FUA explicitly
-> to all the data writes given temperature.
-> 
-> -> attach REQ_FUA to Hot Data writes
-> 
-> -> attach REQ_FUA to Hot|Warm Data writes
-> 
-> -> attach REQ_FUA to Hot|Warm|Cold Data writes
-> 
-> -> attach REQ_FUA to Hot|Warm|Cold Data writes as well as
->           REQ_META to Hot Data writes
+On Mon, Apr 06, 2020 at 06:40:57PM +0200, Dominique Martinet wrote:
+> The use-case here is stuff like reading from synthetic files (think fake
+> pipes) where data comes in like a pipe and one would want read to return
+> as soon as data is available.
+> Just thinking out loud it might be possible to make pipes go through the
+> server and somewhat work, but this might bring its own share of other
+> problems and existing programs would need to be changed (e.g. wmii's
+> synthetic filesystem exposes this kind of files as well as regular
+> files, which works fine for their userspace client (wmiir) but can't
+> really be used with a linux client)
 
-Out of curiosity, what scenario it is used for?
+> Anyway, I agree looking at O_NONBLOCK for that isn't obvious.
+> I agree with the usecase here and posix allows short reads regardless of
+> the flag so the behaviour is legal either way ; the filesystem is
+> allowed to return whenever it wants on a whim - let's just add some docs
+> as you suggest unless Sergey has something to add.
 
-Thanks,
+In fact i would prefer disabling the full reads unconditionally, but AFAIR some userspace programs might interpret a short read as EOF (and also would need to check the logic that motivated the kernel-side looping).
+
+-- 
+()  ascii ribbon campaign - against html mail
+/\  http://arc.pasp.de/   - against proprietary attachments
