@@ -2,135 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC931A0841
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817561A085A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbgDGH2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:28:08 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47134 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727763AbgDGH16 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 03:27:58 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377Rk21152980;
-        Tue, 7 Apr 2020 07:27:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=fmwJ6boFaoMUNdhsXf3ZCRqWn354NQrYvQa/zjOMXIQ=;
- b=G12d6CgWdIgVYv1VREZV+XfW6Zyy1GA4YJX2pT3IgIUqlfYcoH01ckD+R2+BIkTOOAY2
- CM52uW5Yw1fke2WEH6S2ucjeoQryIgDJwhX2KLLV6vvAHhv0SMIbGAefwg0WtVY6ZwdA
- 908bk6YNiDT/C/irBa+3MzmAT0ShOarzL7Er2tla4gPkR1VAMdd+MB/3zggSjHpiRNV6
- ciIA5Mgx1Jfj5M5vcRo98UxuGjOWVWKU6T0gPvjQvnOZEze1xYqe0+qftOg8m3U9q3Mq
- 0rTMxxUYz0aEgnN+Uy3iTqVLv7lkO6yb1/0uSTZp1iGK1dJ0sFZeCxDRRBwr2nK4jp0e fA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 308ffd93ju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 07:27:46 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377QdmS191108;
-        Tue, 7 Apr 2020 07:27:46 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 3073srhd7m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 07:27:45 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0377Rj2e032029;
-        Tue, 7 Apr 2020 07:27:45 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 00:27:45 -0700
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     x86@kernel.org
-Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
-        alexandre.chartre@oracle.com
-Subject: [PATCH V2 9/9] x86/speculation: Remove all ANNOTATE_NOSPEC_ALTERNATIVE directives
-Date:   Tue,  7 Apr 2020 09:31:42 +0200
-Message-Id: <20200407073142.20659-10-alexandre.chartre@oracle.com>
-X-Mailer: git-send-email 2.18.2
-In-Reply-To: <20200407073142.20659-1-alexandre.chartre@oracle.com>
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
- malwarescore=0 suspectscore=13 adultscore=0 bulkscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070062
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=13 priorityscore=1501
- impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070062
+        id S1727742AbgDGHdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 03:33:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52638 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726393AbgDGHdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 03:33:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 52892AC84;
+        Tue,  7 Apr 2020 07:33:09 +0000 (UTC)
+Date:   Tue, 7 Apr 2020 09:33:08 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Joe Lawrence <joe.lawrence@redhat.com>
+cc:     Petr Mladek <pmladek@suse.com>, Jiri Kosina <jikos@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>,
+        Nicolai Stange <nstange@suse.de>,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [POC 19/23] module/livepatch: Allow to use exported symbols from
+ livepatch module for "vmlinux"
+In-Reply-To: <20200406184833.GA6023@redhat.com>
+Message-ID: <alpine.LSU.2.21.2004070915040.1817@pobox.suse.cz>
+References: <20200117150323.21801-1-pmladek@suse.com> <20200117150323.21801-20-pmladek@suse.com> <20200406184833.GA6023@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that intra-function calls have been annotated and are supported
-by objtool, that retpoline return instructions have been annotated,
-and that __FILL_RETURN_BUFFER code is compatible with objtool, then
-all ANNOTATE_NOSPEC_ALTERNATIVE directives can be removed.
+On Mon, 6 Apr 2020, Joe Lawrence wrote:
 
-Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
----
- arch/x86/include/asm/nospec-branch.h | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+> On Fri, Jan 17, 2020 at 04:03:19PM +0100, Petr Mladek wrote:
+> > HINT: Get some coffee before reading this commit message.
+> > 
+> >       Stop reading when it gets too complicated. It is possible that we
+> >       will need to resolve symbols from livepatch modules another way.
+> >       Livepatches need to access also non-exported symbols anyway.
+> > 
+> >       Or just ask me to explain the problem a better way. I have
+> >       ended in many cycles when thinking about it. And it might
+> >       be much easier from another point of view.
+> > 
+> > The split per-object livepatches brings even more types of module
+> > dependencies. Let's split them into few categories:
+> > 
+> > A. Livepatch module using an exported symbol from "vmlinux".
+> > 
+> >    It is quite common and works by definition. Livepatch module is just
+> >    a module from this point of view.
+> > 
+> 
+> Hi Petr,
+> 
+> If only all the cases were so easy :)
+> 
+> > B. Livepatch module using an exported symbol from the patched module.
+> > 
+> >    It should be avoided even with the non-split livepatch module. The module
+> >    loader automatically takes reference to make sure the modules are
+> >    unloaded in the right order. This would basically prevent the livepatched
+> >    module from unloading.
+> > 
+> >    Note that it would be perfectly safe to remove this automatic
+> >    dependency. The livepatch framework makes sure that the livepatch
+> >    module is loaded only when the patched one is loaded. But it cannot
+> >    be implemented easily, see below.
+> 
+> Do you envision klp-convert providing this functionality?
+> 
+> For reference, kpatch-build will take this example input patch:
+> 
+>   diff -U 15 -Nupr linux-3.10.0-1133.el7.x86_64.old/drivers/cdrom/cdrom.c linux-3.10.0-1133.el7.x86_64/drivers/cdrom/cdrom.c
+>   --- linux-3.10.0-1133.el7.x86_64.old/drivers/cdrom/cdrom.c      2020-04-06 11:58:34.470969120 -0400
+>   +++ linux-3.10.0-1133.el7.x86_64/drivers/cdrom/cdrom.c  2020-04-06 12:01:07.882719611 -0400
+>   @@ -1429,30 +1429,32 @@ unsigned int cdrom_check_events(struct c
+>    EXPORT_SYMBOL(cdrom_check_events);
+>   
+>    /* We want to make media_changed accessible to the user through an
+>     * ioctl. The main problem now is that we must double-buffer the
+>     * low-level implementation, to assure that the VFS and the user both
+>     * see a medium change once.
+>     */
+>   
+>    static
+>    int media_changed(struct cdrom_device_info *cdi, int queue)
+>    {
+>           unsigned int mask = (1 << (queue & 1));
+>           int ret = !!(cdi->mc_flags & mask);
+>           bool changed;
+>   
+>   +pr_info("%lx\n", (unsigned long) cdrom_check_events);
+>   +
+>           if (!CDROM_CAN(CDC_MEDIA_CHANGED))
+>                   return ret;
+>   
+>           /* changed since last call? */
+>           if (cdi->ops->check_events) {
+>                   BUG_ON(!queue); /* shouldn't be called from VFS path */
+>                   cdrom_update_events(cdi, DISK_EVENT_MEDIA_CHANGE);
+>                   changed = cdi->ioctl_events & DISK_EVENT_MEDIA_CHANGE;
+>                   cdi->ioctl_events = 0;
+>           } else
+>                   changed = cdi->ops->media_changed(cdi, CDSL_CURRENT);
+>   
+>           if (changed) {
+>                   cdi->mc_flags = 0x3;    /* set bit on both queues */
+>                   ret |= 1;
+> 
+> and you'll have the original cdrom.ko, owner of exported
+> cdrom_check_events, and a new livepatch-cdrom.ko that references it.
+> kpatch-build converts the symbol/rela combination like so:
+> 
+>   % readelf --wide --symbols livepatch-test.ko | grep cdrom_check_events
+>       79: 0000000000000000     0 FUNC    GLOBAL DEFAULT OS [0xff20] .klp.sym.cdrom.cdrom_check_events,0
+> 
+>   % readelf --wide --relocs livepatch-test.ko | awk '/cdrom_check_events/' RS="\n\n" ORS="\n\n"
+>   Relocation section '.klp.rela.cdrom..text.media_changed' at offset 0x97fc0 contains 1 entries:
+>       Offset             Info             Type               Symbol's Value  Symbol's Name + Addend
+>   0000000000000016  0000004f0000000b R_X86_64_32S           0000000000000000 .klp.sym.cdrom.cdrom_check_events,0 + 0
+> 
+> That dodges the implicit module reference on cdrom.ko, but would it
+> still be safe in this klp-split POC?
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 5ce2a40a26da..6480db4304a0 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -124,7 +124,6 @@
-  */
- .macro JMP_NOSPEC reg:req
- #ifdef CONFIG_RETPOLINE
--	ANNOTATE_NOSPEC_ALTERNATIVE
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *\reg),	\
- 		__stringify(RETPOLINE_JMP \reg), X86_FEATURE_RETPOLINE,	\
- 		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *\reg), X86_FEATURE_RETPOLINE_AMD
-@@ -135,7 +134,6 @@
- 
- .macro CALL_NOSPEC reg:req
- #ifdef CONFIG_RETPOLINE
--	ANNOTATE_NOSPEC_ALTERNATIVE
- 	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *\reg),	\
- 		__stringify(RETPOLINE_CALL \reg), X86_FEATURE_RETPOLINE,\
- 		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *\reg), X86_FEATURE_RETPOLINE_AMD
-@@ -150,7 +148,6 @@
-   */
- .macro FILL_RETURN_BUFFER reg:req nr:req ftr:req
- #ifdef CONFIG_RETPOLINE
--	ANNOTATE_NOSPEC_ALTERNATIVE
- 	ALTERNATIVE "jmp .Lskip_rsb_\@",				\
- 		__stringify(__FILL_RETURN_BUFFER(\reg,\nr,%_ASM_SP))	\
- 		\ftr
-@@ -174,7 +171,6 @@
-  * which is ensured when CONFIG_RETPOLINE is defined.
-  */
- # define CALL_NOSPEC						\
--	ANNOTATE_NOSPEC_ALTERNATIVE				\
- 	ALTERNATIVE_2(						\
- 	ANNOTATE_RETPOLINE_SAFE					\
- 	"call *%[thunk_target]\n",				\
-@@ -193,7 +189,6 @@
-  * here, anyway.
-  */
- # define CALL_NOSPEC						\
--	ANNOTATE_NOSPEC_ALTERNATIVE				\
- 	ALTERNATIVE_2(						\
- 	ANNOTATE_RETPOLINE_SAFE					\
- 	"call *%[thunk_target]\n",				\
-@@ -261,8 +256,7 @@ static inline void vmexit_fill_RSB(void)
- #ifdef CONFIG_RETPOLINE
- 	unsigned long loops;
- 
--	asm volatile (ANNOTATE_NOSPEC_ALTERNATIVE
--		      ALTERNATIVE("jmp 910f",
-+	asm volatile (ALTERNATIVE("jmp 910f",
- 				  __stringify(__FILL_RETURN_BUFFER(%0, RSB_CLEAR_LOOPS, %1)),
- 				  X86_FEATURE_RETPOLINE)
- 		      "910:"
--- 
-2.18.2
+That is one way to get around the dependency problem. And I think it 
+should work even with the PoC. It should (and I don't remember all details 
+now unfortunately) guarantee that the patched module is always available 
+for the livepatch and since there is no explicit dependency, the recursion 
+issue is gone.
 
+However, I think the goal was to follow the most natural road and leverage 
+the existing dependency system. Meaning, since the presence of a patched 
+module in the system before its patching is guaranteed now, there is no 
+reason not to use its exported symbols directly like anywhere else. But it 
+introduces the recursion problem, so we may drop it.
+
+> FWIW, I have been working an updated klp-convert for v5.6 that includes
+> a bunch of fixes and such... modifying it to convert module-export
+> references like this was quite easy.
+
+*THUMBS UP* :)
+
+> > C. Livepatch module using an exported symbol from the main livepatch module
+> >    for "vmlinux".
+> > 
+> >    It is the 2nd most realistic variant. It even exists in current
+> >    selftests. Namely, test_klp_callback_demo* modules share
+> >    the implementation of callbacks. It avoids code duplication.
+> >    And it is actually needed to make module parameters working.
+> 
+> I had to double check this and the exports were introduced by this POC
+> just to avoid code duplication, right?  If so, would it be worth the
+> extra code to avoid providing bad example usage?  Or at least do so for
+> sample/livepatch/ and not selftests.
+
+I agree.
+
+This case sounds a bit quirky to me.
+
+> >    Note that the current implementation allows to pass module parameters
+> >    only to the main livepatch module for "vmlinux". It should not be a real
+> >    life problem. The parameters are used in selftests. But they are
+> >    not used in practice.
+> 
+> Yeah, we don't use module parameters for kpatch either, AFAIK they are
+> only useful as a quick and easy method to poke those selftests.
+> 
+> On a related note, one possible work around for case C is to use shadow
+> variables created by the main livepatch module to store symbol
+> locations or the values themselves.  This might get tedious for real
+> kernel API, but has been reasonable for livepatch bookkeeping states,
+> counts, etc.
+> 
+> > D. Livepatch modules might depend on each other. Note that dependency on
+> >    the main livepatch module for "vmlinux" has got a separate category 'C'.
+> > 
+> >    The dependencies between modules are quite rare. But they exist.
+> >    One can assume that this might be useful also on the livepatching
+> >    level.
+> > 
+> >    To keep it sane, the livepatch modules should just follow
+> >    the dependencies of the related patched modules. By other words,
+> >    the livepatch modules might or should have the same dependencies
+> >    as the patched counter parts but nothing more.
+> > 
+> 
+> I agree, I think this is the only sane way to approach case D.
+> 
+> > Do these dependencies need some special handling?
+> > 
+> > [ ... snip ... ]
+> > 
+> 
+> This is the multiple-coffee cup section that I'm still trying to wrap my
+> brain around.
+
+Yes, I really need to go through the patch set once again and try to 
+digest it.
+
+Miroslav
