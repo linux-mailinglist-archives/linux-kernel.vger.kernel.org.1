@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9702F1A083C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 362D51A0847
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbgDGH16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:27:58 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47116 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727666AbgDGH16 (ORCPT
+        id S1727548AbgDGH15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 03:27:57 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45194 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgDGH14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 03:27:58 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RaUh152439;
+        Tue, 7 Apr 2020 03:27:56 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377Ra2N026377;
         Tue, 7 Apr 2020 07:27:36 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=corp-2020-01-29;
- bh=7MZAxxGVYE6IO/tX19kNiAQeKs8JH+78I7IbTMQSWyI=;
- b=Hkp1mQEMoF9S47xOlwF+ramtxnOSy+CzV1EvmoJnS86J5xJ/Qv/OeNmbyv/EeW+EyK9L
- rVYlOh3GvGGIdjqaBOR9Di8P8YpGH52Nm9TkznOGSZR6Ve9myIuhTAMhZnGcB01L/aOs
- dXzHlxMAEnboIXgmptIOmtYAWkUIOAyr7RVDZWJ6ZuBpwmGoC9ejwHbiuE4JKlpfXfMx
- Wjz8GtS+h3sQIcO/Kgbp6hD7x+RaftlZURC9vzUm2xidj9mOkuGJBbnmZepb7zlqDoSV
- 1vhJBJMU8ppSRx8HkFzVxeiZwjnXWoKghB2zWn8ksLlwdVkniZL9EHdMm+ybcW2B/zAR Ug== 
+ bh=slDzjJlr8LfYsLe6Y6X31cSMqj13VCofNy5CK2Foxss=;
+ b=kgXu8Vv6XTjDoY5iMu4xVMSFI/vBjyAxGMGI/077w6ridv1IsbaCe1dx+Z0+GMBv8iGK
+ EOih5hWrcnfsp0UhkkMaEZ8WUerE8u80RvcAtQovbmGThx9BkokfgB6AMLqO4XthoK7p
+ zjCEI0myG0qz8vQ2pf09e28VmahNiiZ10kb/12U8Z44zSl1jj5cSSCLmnKKVKb6jleHW
+ uk5iBkoXfqEIa8W8c+LagKDXAlTVNjazNPNjR2fSGOqMndoaXZu7YJruOw534aVrLYMU
+ 5jiv1mPHYqqEVVWdL1VRAt/bb1QwMvZQr0XR9smW1JrpihilTSPHvlorR4HxB+bC+wMC Dg== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 308ffd93j7-1
+        by aserp2120.oracle.com with ESMTP id 306j6mb2mj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 07 Apr 2020 07:27:36 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RSOV151398;
-        Tue, 7 Apr 2020 07:27:35 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 30741d9u5q-1
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RROg151275;
+        Tue, 7 Apr 2020 07:27:36 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 30741d9u7n-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 07:27:35 +0000
+        Tue, 07 Apr 2020 07:27:36 +0000
 Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0377RXD7020646;
-        Tue, 7 Apr 2020 07:27:34 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0377RZ4e011250;
+        Tue, 7 Apr 2020 07:27:35 GMT
 Received: from linux-1.home (/92.157.90.160)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 00:27:33 -0700
+        with ESMTP ; Tue, 07 Apr 2020 00:27:35 -0700
 From:   Alexandre Chartre <alexandre.chartre@oracle.com>
 To:     x86@kernel.org
 Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
         alexandre.chartre@oracle.com
-Subject: [PATCH V2 3/9] objtool: is_fentry_call() crashes if call has no destination
-Date:   Tue,  7 Apr 2020 09:31:36 +0200
-Message-Id: <20200407073142.20659-4-alexandre.chartre@oracle.com>
+Subject: [PATCH V2 4/9] objtool: Allow branches within the same alternative.
+Date:   Tue,  7 Apr 2020 09:31:37 +0200
+Message-Id: <20200407073142.20659-5-alexandre.chartre@oracle.com>
 X-Mailer: git-send-email 2.18.2
 In-Reply-To: <20200407073142.20659-1-alexandre.chartre@oracle.com>
 References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
@@ -57,9 +57,9 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 ph
  mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2003020000 definitions=main-2004070062
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
- impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 suspectscore=1 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
  definitions=main-2004070062
 Sender: linux-kernel-owner@vger.kernel.org
@@ -67,28 +67,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix is_fentry_call() so that it works if a call has no destination
-set (call_dest). This needs to be done in order to support intra-
-function calls.
+Currently objtool prevents any branch to an alternative. While preventing
+branching from the outside to the middle of an alternative makes perfect
+sense, branching within the same alternative should be allowed. To do so,
+identify each alternative and check that a branch to an alternative comes
+from the same alternative.
 
 Signed-off-by: Alexandre Chartre <alexandre.chartre@oracle.com>
 ---
- tools/objtool/check.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/objtool/check.c | 19 +++++++++++++------
+ 1 file changed, 13 insertions(+), 6 deletions(-)
 
 diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index c7fcaddfaa8a..c0da033a40c5 100644
+index c0da033a40c5..ab06e9bdd396 100644
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -1367,7 +1367,7 @@ static int decode_sections(struct objtool_file *file)
- 
- static bool is_fentry_call(struct instruction *insn)
+@@ -712,7 +712,9 @@ static int handle_group_alt(struct objtool_file *file,
+ 			    struct instruction *orig_insn,
+ 			    struct instruction **new_insn)
  {
--	if (insn->type == INSN_CALL &&
-+	if (insn->type == INSN_CALL && insn->call_dest &&
- 	    insn->call_dest->type == STT_NOTYPE &&
- 	    !strcmp(insn->call_dest->name, "__fentry__"))
- 		return true;
++	static unsigned int alt_group_next_index = 1;
+ 	struct instruction *last_orig_insn, *last_new_insn, *insn, *fake_jump = NULL;
++	unsigned int alt_group = alt_group_next_index++;
+ 	unsigned long dest_off;
+ 
+ 	last_orig_insn = NULL;
+@@ -721,7 +723,7 @@ static int handle_group_alt(struct objtool_file *file,
+ 		if (insn->offset >= special_alt->orig_off + special_alt->orig_len)
+ 			break;
+ 
+-		insn->alt_group = true;
++		insn->alt_group = alt_group;
+ 		last_orig_insn = insn;
+ 	}
+ 
+@@ -1960,6 +1962,7 @@ static int validate_sibling_call(struct instruction *insn, struct insn_state *st
+  * tools/objtool/Documentation/stack-validation.txt.
+  */
+ static int validate_branch(struct objtool_file *file, struct symbol *func,
++			   struct instruction *from,
+ 			   struct instruction *first, struct insn_state state)
+ {
+ 	struct alternative *alt;
+@@ -1971,7 +1974,9 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 	insn = first;
+ 	sec = insn->sec;
+ 
+-	if (insn->alt_group && list_empty(&insn->alts)) {
++	if (insn->alt_group &&
++	    (!from || from->alt_group != insn->alt_group) &&
++	    list_empty(&insn->alts)) {
+ 		WARN_FUNC("don't know how to handle branch to middle of alternative instruction group",
+ 			  sec, insn->offset);
+ 		return 1;
+@@ -2053,7 +2058,8 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 				if (alt->skip_orig)
+ 					skip_orig = true;
+ 
+-				ret = validate_branch(file, func, alt->insn, state);
++				ret = validate_branch(file, func,
++						      NULL, alt->insn, state);
+ 				if (ret) {
+ 					if (backtrace)
+ 						BT_FUNC("(alt)", insn);
+@@ -2123,7 +2129,7 @@ static int validate_branch(struct objtool_file *file, struct symbol *func,
+ 					return ret;
+ 
+ 			} else if (insn->jump_dest) {
+-				ret = validate_branch(file, func,
++				ret = validate_branch(file, func, insn,
+ 						      insn->jump_dest, state);
+ 				if (ret) {
+ 					if (backtrace)
+@@ -2254,7 +2260,8 @@ static int validate_unwind_hints(struct objtool_file *file)
+ 
+ 	for_each_insn(file, insn) {
+ 		if (insn->hint && !insn->visited) {
+-			ret = validate_branch(file, insn->func, insn, state);
++			ret = validate_branch(file, insn->func,
++					      NULL, insn, state);
+ 			if (ret && backtrace)
+ 				BT_FUNC("<=== (hint)", insn);
+ 			warnings += ret;
+@@ -2395,7 +2402,7 @@ static int validate_functions(struct objtool_file *file)
+ 
+ 			state.uaccess = func->uaccess_safe;
+ 
+-			ret = validate_branch(file, func, insn, state);
++			ret = validate_branch(file, func, NULL, insn, state);
+ 			if (ret && backtrace)
+ 				BT_FUNC("<=== (func)", insn);
+ 			warnings += ret;
 -- 
 2.18.2
 
