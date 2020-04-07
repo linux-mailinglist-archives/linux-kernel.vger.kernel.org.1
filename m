@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 980D71A0E46
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E3F1A0E59
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbgDGNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 09:24:13 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:43188 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728812AbgDGNYN (ORCPT
+        id S1728829AbgDGN2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 09:28:45 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:43072 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728152AbgDGN2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 09:24:13 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037DMX9S132958;
-        Tue, 7 Apr 2020 13:23:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=HUw+iF3lmkPYdLpCfY3zJ8y3YywDPB2OUxVRgTbL+5w=;
- b=C1VPA4l1iKpGlFUKd75dJWscvpQww4PyN8f9x9/DNZJUSEa/zSlsejjgZg8Q9ejahPNT
- F4t5eyLRrBNLEVd5z5uaP/uRbUOmxMerGjYUKv787gSbdS9HaqZAXix4xpp+dkU9RpAt
- Vnzu1r4/Wk3bC/SpmA+NRMFNV46SKn+F4M6YiqWIhd9jJKhhfYPMOd9PXIDOA2D1J2v1
- Fkw8WYJy33gNqmjLJnz0POpPGBwkp3vbdFry6UFTtLuBsOKDXbPDAE4KyJYlT1+Z23x/
- qK+GyFsvO7WnPe5C2GEC6lFf4bxyv7GoUJcCVhJjoSqiCTzUmcDJdvxxmJbUe+f6WeLX IQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 308ffdawqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 13:23:57 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 037DMUSd010700;
-        Tue, 7 Apr 2020 13:23:57 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 30839tbkup-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Apr 2020 13:23:57 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 037DNtoV003956;
-        Tue, 7 Apr 2020 13:23:56 GMT
-Received: from linux-1.home (/10.175.58.13)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 07 Apr 2020 06:23:55 -0700
-Subject: Re: [PATCH V2 5/9] objtool: Add support for intra-function calls
-To:     Peter Zijlstra <peterz@infradead.org>
+        Tue, 7 Apr 2020 09:28:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FABG1nsUHC99ShEuLwmDippLPOdYOOruooCxAiRmuhs=; b=GHzN/uRc/BMFdpy3BouGji/K//
+        +Z6DYoWnPnQJXxR7gdL40oyG4486KAo6RF39nVPINJCP9UxF5z0GYEpePvsXD8vaOsi7GnMN/soHi
+        uInUeMygfP4Dumy8QeD4hRKl+2ebbi2jYCEJnshZ/EkBZF53RqLM0XTuBYQZh72X8SVVXzrn44Igh
+        4ndaAvewTfBFaWs9D1SFUIco+aSkBMBVYpsygPpnBbLwtoGvkqcsme5tq1PeNOnn6R2Z8KHw5Dste
+        D+k2mPSA510vHT4nA17lAqsx02rvS+4I+lAE8PmfZCuvlag5odRM+PpCYZ+jekYf+tUvvKItagOJi
+        yycPv0sQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLoHQ-0003da-4Q; Tue, 07 Apr 2020 13:28:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 19D273011DD;
+        Tue,  7 Apr 2020 15:28:38 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 039B02B907A96; Tue,  7 Apr 2020 15:28:37 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 15:28:37 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         jthierry@redhat.com, tglx@linutronix.de
+Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
+ ANNOTATE_NOSPEC_ALTERNATIVE directives
+Message-ID: <20200407132837.GA20730@hirez.programming.kicks-ass.net>
 References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-6-alexandre.chartre@oracle.com>
- <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
-Date:   Tue, 7 Apr 2020 15:28:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+ <20200407073142.20659-10-alexandre.chartre@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 spamscore=0 malwarescore=0
- mlxscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004070115
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407073142.20659-10-alexandre.chartre@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 07, 2020 at 09:31:42AM +0200, Alexandre Chartre wrote:
+> Now that intra-function calls have been annotated and are supported
+> by objtool, that retpoline return instructions have been annotated,
+> and that __FILL_RETURN_BUFFER code is compatible with objtool, then
+> all ANNOTATE_NOSPEC_ALTERNATIVE directives can be removed.
 
-On 4/7/20 3:07 PM, Peter Zijlstra wrote:
-> On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
-> 
->> index a62e032863a8..7ee1561bf7ad 100644
->> --- a/tools/objtool/arch/x86/decode.c
->> +++ b/tools/objtool/arch/x86/decode.c
->> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct cfi_state *state)
->>   	state->regs[16].base = CFI_CFA;
->>   	state->regs[16].offset = -8;
->>   }
->> +
->> +
->> +void arch_configure_intra_function_call(struct stack_op *op)
->> +{
->> +	/*
->> +	 * For the impact on the stack, make an intra-function
->> +	 * call behaves like a push of an immediate value (the
->> +	 * return address).
->> +	 */
->> +	op->src.type = OP_SRC_CONST;
->> +	op->dest.type = OP_DEST_PUSH;
->> +}
-> 
-> An alternative is to always set up stack ops for CALL/RET on decode, but
-> conditionally run update_insn_state() for them.
-> 
-> Not sure that makes more logical sense, but the patch would be simpler I
-> think.
+Like Josh said in the previous thread, this isn't going to work right.
 
-Right, this would avoid adding a new arch dependent function and the patch
-will be simpler. This probably makes sense as the stack impact is the same
-for all calls (but objtool will use it only for intra-function calls).
+> -	ANNOTATE_NOSPEC_ALTERNATIVE
+>  	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *\reg),	\
+>  		__stringify(RETPOLINE_JMP \reg), X86_FEATURE_RETPOLINE,	\
+>  		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *\reg), X86_FEATURE_RETPOLINE_AMD
 
-Thanks,
+The problem is that while objtool can now understand the code flow and
+the corresponding stack layout, we only have a single ORC table, one
+that must be valid for all alternatives.
 
-alex.
+Effectively this means there should not be any orc entries in an
+alternative range.
 
+In practise it _might_ work when the instruction of the various
+alternatives have unique offsets in the range. But I'm not entirely sure
+of that.
+
+Josh, we should probably have objtool verify it doesn't emit ORC entries
+in alternative ranges.
