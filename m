@@ -2,190 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FD31A05BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 06:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1A71A05E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 06:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgDGE0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 00:26:37 -0400
-Received: from mail-pg1-f201.google.com ([209.85.215.201]:33018 "EHLO
-        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726663AbgDGE0g (ORCPT
+        id S1726703AbgDGEmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 00:42:33 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:40782 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726030AbgDGEmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 00:26:36 -0400
-Received: by mail-pg1-f201.google.com with SMTP id x16so1499753pgi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 21:26:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=QWUKDJQTRxWuVmOwgRvVPoWS0UavR+FekLqN1+lSVJ0=;
-        b=vOoh/LI74uP5oGTJtFVs6Wj0xTE8/y6MFdP3yrgFAKUCddTIF/l1UpDa8U199B88Ru
-         w9vQSEt0QtBFCZoQ2zSrGdEwEuiLUow0J7rStScAiPsb968sEU/qyfuiA0kYdaV+X3we
-         mdF+WBr/pbi0ZmjOdWtXyEW50KZW41qkvwyiJnX5NHvmTEKAJbN8SGS5DDX7v4lo/981
-         tWgMYlgRjMuDFYQgKoX43TZNCOmmHH9pWJ5iGZ+81QFYtqZYkBef/I4OntvBMmi7C3Vf
-         HeWvWUzmXa3/1sdg8OMFpEKJdYBwiT3Hw4PwYvyMAPagBmFgHZL95Tu+Ne+JOmFSVKGA
-         a8Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=QWUKDJQTRxWuVmOwgRvVPoWS0UavR+FekLqN1+lSVJ0=;
-        b=YUuTFX3rCZkZNVePGd26ipD+BBgS14d0bIUMXciF3JQ55yd2UHL9Bs+ji/20wrIby9
-         +iiRU4IKKnghn9gNIHFK7dW7b1y+8dQ6Tt9EmUATkO82hyTF+6h0BUPMOJw+x3Ol26EJ
-         iu3mAguoHjRCtLoGJ1w9YMA9hRBjjBIgUwIn/zLY3aIpJNReBf559wLswi4VrdIp9bB5
-         bl8zTt64Tt9yM7+XQ9KKiv0PheZ2NeT1TA9edRMx7EbZhJ0BV408XytP/MHuDO2pm51R
-         HyeyFIKo3ncuyToyxidjT5rqGdC/sC42rZrvXYPx+Y8QyN36jRa+GnOQeKltD6Q5pIds
-         HIzQ==
-X-Gm-Message-State: AGi0PuZO2bY3bEVmgrR4lhTgwoXKsv6YZarAuxVEP920AvXs8864xUVe
-        dVDxwM13hF5RuTCq5ySNkzGKgT/epW+5
-X-Google-Smtp-Source: APiQypLJCnHPeQcXq6SQEnVok3DreXL6u5mQfQikHBJHO0xSMfffYfbLHPybQF8KmADEvQ/NI6B62Eye81jN
-X-Received: by 2002:a17:90b:909:: with SMTP id bo9mr432591pjb.125.1586233595138;
- Mon, 06 Apr 2020 21:26:35 -0700 (PDT)
-Date:   Tue,  7 Apr 2020 12:26:27 +0800
-Message-Id: <20200407122522.v2.1.Ibfc500cbf0bf2dc8429b17f064e960e95bb228e9@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-Subject: [PATCH v2] Bluetooth: debugfs option to unset MITM flag
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>
-Cc:     Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
+        Tue, 7 Apr 2020 00:42:33 -0400
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 0374gOCM012174;
+        Tue, 7 Apr 2020 13:42:25 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 0374gOCM012174
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1586234546;
+        bh=CdHc/8sVSQ4d6Ie7iKvR0diSkrEOJeL+mmH/Yszwrqk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=OYrYl+i5TyWoIDy8ou+xLJVQz7jQ3RExm87aMzCiZSQkD52lfg980nHjlnySg+wkd
+         8hZdwg5xevIEKuaEVYbUsuDgkeCYY1l6EMIJC+s6LPt1MaD4FnrUPlj0Szhqbwt6e0
+         Vd5Bde2RppOuy31cFj/MHbGv73U1swsvcMWxSgxJSgbAh2etrhPF/xPhct5kjXn7fy
+         Zt2e9myNKRwivnfmhRPfiwCej1o7U+8JfD1wSS4Vs71kcSTJs9W18FkflbKsTQdNwO
+         j90796TmbNrBZkdBIIb2j04nAs91WWONQAJb9cTmWJtyZPK/gypzIU2eiyTp6TJ222
+         Lco/IeNi9m/WA==
+X-Nifty-SrcIP: [209.85.217.48]
+Received: by mail-vs1-f48.google.com with SMTP id e138so1365016vsc.11;
+        Mon, 06 Apr 2020 21:42:25 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZDhgDT9fKWnKwWBEZed02J0qa4aFPubpLszlWRRW/NONaiKMYp
+        RsEXO2M4YVcCTsDVsK5CRh5XoDChVrPxQbjlGPk=
+X-Google-Smtp-Source: APiQypLJKZXPrcYP365otvzBGyKcE5PdVeCX/bi+e3i7zA78jwrbZGMKGAcIVoHe2gh5W7oSuj3CMX1NHHJtqLuoeQI=
+X-Received: by 2002:a67:2d55:: with SMTP id t82mr423662vst.215.1586234544251;
+ Mon, 06 Apr 2020 21:42:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200406123403.4f20fbb1@canb.auug.org.au>
+In-Reply-To: <20200406123403.4f20fbb1@canb.auug.org.au>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 7 Apr 2020 13:41:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATjRY8RT4vAjhT=L0xJY2nnVHR2VdrkfZxTkFV2YC_iXQ@mail.gmail.com>
+Message-ID: <CAK7LNATjRY8RT4vAjhT=L0xJY2nnVHR2VdrkfZxTkFV2YC_iXQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the kbuild tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+On Mon, Apr 6, 2020 at 11:34 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the kbuild tree, today's linux-next build (powercp
+> allyesconfig) failed like this:
+>
+> In file included from net/netfilter/nft_set_pipapo.c:342:
+> net/netfilter/nft_set_pipapo_avx2.h:4:10: fatal error: asm/fpu/xstate.h: No such file or directory
+>     4 | #include <asm/fpu/xstate.h>
+>       |          ^~~~~~~~~~~~~~~~~~
+>
+> Caused by commit
+>
+>   b851fc367202 ("x86: update AS_* macros to binutils >=2.23, supporting ADX and AVX2")
+>
+> I have reverted that commit for today.
 
-The BT qualification test SM/MAS/PKE/BV-01-C needs us to turn off
-the MITM flag when pairing, and at the same time also set the io
-capability to something other than no input no output.
+I will fix as follows:
 
-Currently the MITM flag is only unset when the io capability is set
-to no input no output, therefore the test cannot be executed.
 
-This patch introduces a debugfs option to force MITM flag to be
-turned off.
+diff --git a/net/netfilter/nft_set_pipapo_avx2.h
+b/net/netfilter/nft_set_pipapo_avx2.h
+index 8467337c5f4c..a1cde35fdad6 100644
+--- a/net/netfilter/nft_set_pipapo_avx2.h
++++ b/net/netfilter/nft_set_pipapo_avx2.h
+@@ -1,6 +1,7 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ #ifndef _NFT_SET_PIPAPO_AVX2_H
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
----
++#ifdef CONFIG_X86_64
+ #include <asm/fpu/xstate.h>
+ #define NFT_PIPAPO_ALIGN       (XSAVE_YMM_SIZE / BITS_PER_BYTE)
 
-Changes in v2:
-- Rename flag to HCI_FORCE_NO_MITM
-- Move debugfs functions to hci_debugfs.c
-- Add comments on not setting SMP_AUTH_MITM
+@@ -8,4 +9,6 @@ bool nft_pipapo_avx2_lookup(const struct net *net,
+const struct nft_set *set,
+                            const u32 *key, const struct nft_set_ext **ext);
+ bool nft_pipapo_avx2_estimate(const struct nft_set_desc *desc, u32 features,
+                              struct nft_set_estimate *est);
++#endif /* CONFIG_X86_64 */
++
+ #endif /* _NFT_SET_PIPAPO_AVX2_H */
 
- include/net/bluetooth/hci.h |  1 +
- net/bluetooth/hci_debugfs.c | 46 +++++++++++++++++++++++++++++++++++++
- net/bluetooth/smp.c         | 15 ++++++++----
- 3 files changed, 57 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index 79de2a659dd69..f4e8e2a0b7c15 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -298,6 +298,7 @@ enum {
- 	HCI_FORCE_STATIC_ADDR,
- 	HCI_LL_RPA_RESOLUTION,
- 	HCI_CMD_PENDING,
-+	HCI_FORCE_NO_MITM,
- 
- 	__HCI_NUM_FLAGS,
- };
-diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 6b1314c738b8e..5e8af2658e44a 100644
---- a/net/bluetooth/hci_debugfs.c
-+++ b/net/bluetooth/hci_debugfs.c
-@@ -1075,6 +1075,50 @@ DEFINE_SIMPLE_ATTRIBUTE(auth_payload_timeout_fops,
- 			auth_payload_timeout_get,
- 			auth_payload_timeout_set, "%llu\n");
- 
-+static ssize_t force_no_mitm_read(struct file *file,
-+				  char __user *user_buf,
-+				  size_t count, loff_t *ppos)
-+{
-+	struct hci_dev *hdev = file->private_data;
-+	char buf[3];
-+
-+	buf[0] = hci_dev_test_flag(hdev, HCI_FORCE_NO_MITM) ? 'Y' : 'N';
-+	buf[1] = '\n';
-+	buf[2] = '\0';
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, 2);
-+}
-+
-+static ssize_t force_no_mitm_write(struct file *file,
-+				   const char __user *user_buf,
-+				   size_t count, loff_t *ppos)
-+{
-+	struct hci_dev *hdev = file->private_data;
-+	char buf[32];
-+	size_t buf_size = min(count, (sizeof(buf) - 1));
-+	bool enable;
-+
-+	if (copy_from_user(buf, user_buf, buf_size))
-+		return -EFAULT;
-+
-+	buf[buf_size] = '\0';
-+	if (strtobool(buf, &enable))
-+		return -EINVAL;
-+
-+	if (enable == hci_dev_test_flag(hdev, HCI_FORCE_NO_MITM))
-+		return -EALREADY;
-+
-+	hci_dev_change_flag(hdev, HCI_FORCE_NO_MITM);
-+
-+	return count;
-+}
-+
-+static const struct file_operations force_no_mitm_fops = {
-+	.open		= simple_open,
-+	.read		= force_no_mitm_read,
-+	.write		= force_no_mitm_write,
-+	.llseek		= default_llseek,
-+};
-+
- DEFINE_QUIRK_ATTRIBUTE(quirk_strict_duplicate_filter,
- 		       HCI_QUIRK_STRICT_DUPLICATE_FILTER);
- DEFINE_QUIRK_ATTRIBUTE(quirk_simultaneous_discovery,
-@@ -1134,6 +1178,8 @@ void hci_debugfs_create_le(struct hci_dev *hdev)
- 			    &max_key_size_fops);
- 	debugfs_create_file("auth_payload_timeout", 0644, hdev->debugfs, hdev,
- 			    &auth_payload_timeout_fops);
-+	debugfs_create_file("force_no_mitm", 0644, hdev->debugfs, hdev,
-+			    &force_no_mitm_fops);
- 
- 	debugfs_create_file("quirk_strict_duplicate_filter", 0644,
- 			    hdev->debugfs, hdev,
-diff --git a/net/bluetooth/smp.c b/net/bluetooth/smp.c
-index d0b695ee49f63..a85e3e49cd0da 100644
---- a/net/bluetooth/smp.c
-+++ b/net/bluetooth/smp.c
-@@ -2393,12 +2393,17 @@ int smp_conn_security(struct hci_conn *hcon, __u8 sec_level)
- 			authreq |= SMP_AUTH_CT2;
- 	}
- 
--	/* Require MITM if IO Capability allows or the security level
--	 * requires it.
-+	/* Don't attempt to set MITM if setting is overridden by debugfs
-+	 * Needed to pass certification test SM/MAS/PKE/BV-01-C
- 	 */
--	if (hcon->io_capability != HCI_IO_NO_INPUT_OUTPUT ||
--	    hcon->pending_sec_level > BT_SECURITY_MEDIUM)
--		authreq |= SMP_AUTH_MITM;
-+	if (!hci_dev_test_flag(hcon->hdev, HCI_FORCE_NO_MITM)) {
-+		/* Require MITM if IO Capability allows or the security level
-+		 * requires it.
-+		 */
-+		if (hcon->io_capability != HCI_IO_NO_INPUT_OUTPUT ||
-+		    hcon->pending_sec_level > BT_SECURITY_MEDIUM)
-+			authreq |= SMP_AUTH_MITM;
-+	}
- 
- 	if (hcon->role == HCI_ROLE_MASTER) {
- 		struct smp_cmd_pairing cp;
+
 -- 
-2.26.0.292.g33ef6b2f38-goog
-
+Best Regards
+Masahiro Yamada
