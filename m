@@ -2,72 +2,441 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEB61A0E13
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F971A0E1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 15:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgDGNDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 09:03:21 -0400
-Received: from mail.parknet.co.jp ([210.171.160.6]:37260 "EHLO
-        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728573AbgDGNDU (ORCPT
+        id S1728697AbgDGNGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 09:06:05 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46559 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726562AbgDGNGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 09:03:20 -0400
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id BC50A12F211;
-        Tue,  7 Apr 2020 22:03:19 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-18) with ESMTPS id 037D3I3Z154581
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 7 Apr 2020 22:03:19 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-18) with ESMTPS id 037D3H6D892892
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Tue, 7 Apr 2020 22:03:17 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 037D3Gpb892808;
-        Tue, 7 Apr 2020 22:03:16 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com>,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: KCSAN: data-race in __fat_write_inode / fat12_ent_get
-References: <0000000000000cfff005a26226ce@google.com>
-        <874ku0sncc.fsf@mail.parknet.co.jp>
-        <CACT4Y+YaM9Qj9V9G7G+aQrmfxfdtyBX4WXXsBamUjyMMpEeEdg@mail.gmail.com>
-        <877dyveq1h.fsf@mail.parknet.co.jp>
-        <CACT4Y+ZQ4Uw7uP36ULiAQ_MSB8KkXhBSZhWTXZaMybn2acK1Sg@mail.gmail.com>
-Date:   Tue, 07 Apr 2020 22:03:16 +0900
-In-Reply-To: <CACT4Y+ZQ4Uw7uP36ULiAQ_MSB8KkXhBSZhWTXZaMybn2acK1Sg@mail.gmail.com>
-        (Dmitry Vyukov's message of "Tue, 7 Apr 2020 12:39:28 +0200")
-Message-ID: <874ktva1nv.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+        Tue, 7 Apr 2020 09:06:05 -0400
+Received: by mail-wr1-f66.google.com with SMTP id y44so247111wrd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 06:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eJpgjZGO2SDH3m/Qm4ML/lfT6VrW02E/4eP3OcqBUvM=;
+        b=sYepMvUCJCrNYtPD5KLEffA65PleHZLt9xSz/BhFfTJVEwk96jEtBJisS1KX/DrFKD
+         CI1I/yL0etrrVhQG88AXtTmXYvnyFuJBLdFsfNV4ng0fiTsb9umm4QlytQdLGzg4PLTz
+         lLVa1yg+bARlGLi53Y875eAs8oq/L3Pl9odTP2lOkEJUHtJNRCLMz421x4eiffgIeh5O
+         MwEYDDXjH4DsA5xrjdpIC8V4wTuTnunx6srGInKHIWYDK80EzcTV7VxR/FFtI2Wm7i5f
+         v3zbLz4ZF6jE9Ko59IMNQNG+Ih9poXFzAhPjcesYwAQvTWIPJWS3U4uQ5ilUvhsLpi98
+         mlxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eJpgjZGO2SDH3m/Qm4ML/lfT6VrW02E/4eP3OcqBUvM=;
+        b=tH3uCzC6a/ZO7VKOL2FAx4CYaCBoG8SqhKF4oj3Ky0lo1SAf1Iw7tj8OEwSLMzLRkK
+         qsKZL7I4XG1sPCknpeWqEEdAAsksiyJKoDQA0PG1Jmofamo2uTbmrHe1oC+8Pb/Swkks
+         Xa/fzuEmrEUl4e8c64ExUVb9DyDaJinFB7L7N1zaxAZMn+ZagX9fVk3wcD7UugbUQZK7
+         lYZie33y6aNYVUkajRXyGPkfTTBQG8eIg26LyA30vD/WUfDinhW7LJHVDPVTJI3aIUNE
+         H2fqbMaW1dhhTPZOdQFbOsMZC2t76srp4K5Uxj94dX3fEWfNoHeOti9XSLdj+DjVRkWc
+         oFJw==
+X-Gm-Message-State: AGi0PuZ8OfOeQLRuCx7040coUB9SNt4cQHWXli9Wpk7qdURtz637zOQi
+        4v/v/DSucYV16xac+LbiBX5lAdgO
+X-Google-Smtp-Source: APiQypJHORREYkeKAdgx5p0vHSapMRCeAasDNckG0l2Aq6Qbkk2MgtRpSwxRn+Q1cq45M6qHmTaiwQ==
+X-Received: by 2002:adf:d851:: with SMTP id k17mr2931380wrl.157.1586264762153;
+        Tue, 07 Apr 2020 06:06:02 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:2e56:dcff:fed2:c6d6])
+        by smtp.googlemail.com with ESMTPSA id x5sm2219471wmk.29.2020.04.07.06.06.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 06:06:01 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 15:05:59 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, wens@csie.org, ebiederm@xmission.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: Trying to kexec on Allwinner A80
+Message-ID: <20200407130559.GB457@Red>
+References: <20200406082720.GA31279@Red>
+ <20200407100203.GK25745@shell.armlinux.org.uk>
+ <20200407101912.GL25745@shell.armlinux.org.uk>
+ <20200407113454.GA457@Red>
+ <20200407122243.GN25745@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200407122243.GN25745@shell.armlinux.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dmitry Vyukov <dvyukov@google.com> writes:
+On Tue, Apr 07, 2020 at 01:22:43PM +0100, Russell King - ARM Linux admin wrote:
+> On Tue, Apr 07, 2020 at 01:34:54PM +0200, Corentin Labbe wrote:
+> > On Tue, Apr 07, 2020 at 11:19:12AM +0100, Russell King - ARM Linux admin wrote:
+> > > On Tue, Apr 07, 2020 at 11:02:03AM +0100, Russell King - ARM Linux admin wrote:
+> > > > On Mon, Apr 06, 2020 at 10:27:20AM +0200, Corentin Labbe wrote:
+> > > > > Hello
+> > > > > 
+> > > > > I am trying to add the last missing Allwinner Soc in kernelci: the A80.
+> > > > > But this SoC does not have any way to be used in kernelci, no USB nor network in uboot.
+> > > > > So I have tried to fake uboot since the kernel has network support and run the new kernel via kexec.
+> > > > > 
+> > > > > But kexec 2.0.18 fail to work:
+> > > > > kexec --force /tmp/kernel --initrd /tmp/ramdisk --dtb /tmp/dtb --command-line='console=ttyS0,115200n8 root=/dev/ram0 earlycon=uart,mmio32,0x7000000 ip=dhcp'
+> > > > 
+> > > > As I mentioned in my other reply, this apparent "kexec" command line
+> > > > does not seem to reflect the arguments you actually used to invoke
+> > > > the kexec output below.
+> > > > 
+> > > > > syscall kexec_file_load not available.
+> > > > 
+> > > > This message is produced by do_kexec_file_load().  This function is only
+> > > > invoked if the do_kexec_file_syscall flag in main() is set.  This flag
+> > > > is only set if one of:
+> > > > 
+> > > > 	--kexec-file-syscall
+> > > > 	--kexec-syscall
+> > > > 	--kexec-syscall-auto
+> > > > 	-s
+> > > > 	-c
+> > > > 	-a
+> > > > 
+> > > > are provided on the kexec command line.  Your command line above does
+> > > > not contain any of those arguments, so either the command line is not
+> > > > what you used, or you are using a patched kexec, or your compiler is
+> > > > grossly miscompiling kexec.
+> > > > 
+> > > > > Try gzip decompression.
+> > > > > kernel: 0xb6535008 kernel_size: 0x853200
+> > > > > MEMORY RANGES
+> > > > > 0000000020000000-000000009fffffff (0)
+> > > > 
+> > > > Then there's the debug output, which is only produced if the
+> > > > kexec_debug global is set, which in turn is only set if --debug or -d
+> > > > is supplied on the kexec command line - which again, your kexec
+> > > > command line does not contain this.
+> > > > 
+> > > > > zImage header: 0x016f2818 0x00000000 0x00853200
+> > > > > zImage size 0x853200, file size 0x853200
+> > > > > zImage requires 0x00864200 bytes
+> > > > >   offset 0x0000bae4 tag 0x5a534c4b size 8
+> > > > > Decompressed kernel sizes:
+> > > > >  text+data 0x0158b3a0 bss 0x000632f0 total 0x015ee690
+> > > > > Resulting kernel space: 0x01def5a0
+> > > > > Kernel: address=0x20008000 size=0x01def5a0
+> > > > > Initrd: address=0x21df8000 size=0x0090b6fa
+> > > > > DT    : address=0x22704000 size=0x00005c09
+> > > > > kexec_load: entry = 0x20008000 flags = 0x280000
+> > > > > nr_segments = 3
+> > > > > segment[0].buf   = 0xb6535008
+> > > > > segment[0].bufsz = 0x853204
+> > > > > segment[0].mem   = 0x20008000
+> > > > > segment[0].memsz = 0x854000
+> > > > > segment[1].buf   = 0xb5c29008
+> > > > > segment[1].bufsz = 0x90b6fa
+> > > > > segment[1].mem   = 0x21df8000
+> > > > > segment[1].memsz = 0x90c000
+> > > > > segment[2].buf   = 0x4db50
+> > > > > segment[2].bufsz = 0x5c09
+> > > > > segm[   71.039126] kexec_core: Starting new kernel
+> > > > > ent[2].mem   = 0[   71.044712] Disabling non-boot CPUs ...
+> > > > > x22704000
+> > > > > segment[2].memsz = 0x6000
+> > > > > [   71.489070] Bye!
+> > > > > 
+> > > > > 
+> > > > > I have tried also kexec-2.0.20
+> > > > > Try gzip decompression.
+> > > > > zImage header: 0x00000000 0x000019b4 0x00001000
+> > > > > zImage requires 0x008641c0 bytes
+> > > > > Could not find a free area of memory of 0x86c1c0 bytes...
+> > > > > Cannot load /tmp/kernel
+> > > > 
+> > > > kexec 2.0.20 doesn't appear to have changed anything to do with how
+> > > > allocations are done.  The above output looks even more strange and
+> > > > confusing.  "zImage header" is produced by debugging prints, which
+> > > > imply that kexec_debug was set.
+> > > > 
+> > > > However, the "MEMORY RANGES" output is missing - this has not gone
+> > > > away with kexec 2.0.20, it's still there, and works for me (I've
+> > > > just built and tested kexec 2.0.20).
+> > > > 
+> > > > Also, the values on the "zImage header" line are completely messed
+> > > > up; the first should be the zImage magic value and it is not - that
+> > > > suggests that the file being loaded is not a zImage file, or is
+> > > > corrupted.
+> > > 
+> > > Under a VM (the kernel doesn't have kexec support - but that's not a
+> > > problem, because the initial loading stages are the relevant parts
+> > > which all happen in userspace):
+> > > 
+> > > # build/sbin/kexec --version
+> > > kexec-tools 2.0.20
+> > > # build/sbin/kexec --debug --load virt-vmlinuz-5.4.0+
+> > > Try gzip decompression.
+> > > kernel: 0xb6a6c008 kernel_size: 0x407358
+> > > MEMORY RANGES
+> > > 0000000040000000-000000007fffffff (0)
+> > > zImage header: 0x016f2818 0x00000000 0x00407358
+> > > zImage size 0x407358, file size 0x407358
+> > > zImage requires 0x00418358 bytes
+> > >   offset 0x00007178 tag 0x5a534c4b size 12
+> > > Decompressed kernel sizes:
+> > >  text+data 0x00c2ed24 bss 0x000319ec total 0x00c60710
+> > > Resulting kernel space: 0x0104707c
+> > > Kernel: address=0x40008000 size=0x0104707c
+> > > DT    : address=0x41051000 size=0x00100000
+> > > kexec_load: entry = 0x40008000 flags = 0x280000
+> > > nr_segments = 2
+> > > segment[0].buf   = 0xb6a6c008
+> > > segment[0].bufsz = 0x40735c
+> > > segment[0].mem   = 0x40008000
+> > > segment[0].memsz = 0x408000
+> > > segment[1].buf   = 0xb696b008
+> > > segment[1].bufsz = 0x100000
+> > > segment[1].mem   = 0x41051000
+> > > segment[1].memsz = 0x100000
+> > > kexec_load failed: Function not implemented
+> > > entry       = 0x40008000 flags = 0x280000
+> > > nr_segments = 2
+> > > segment[0].buf   = 0xb6aa0008
+> > > segment[0].bufsz = 0x40735c
+> > > segment[0].mem   = 0x40008000
+> > > segment[0].memsz = 0x408000
+> > > segment[1].buf   = 0xb699f008
+> > > segment[1].bufsz = 0x100000
+> > > segment[1].mem   = 0x41051000
+> > > segment[1].memsz = 0x100000
+> > > #
+> > > 
+> > > On a SolidRun Hummingboard2 (iMX6 based, which has kexec support, same
+> > > kexec binary, first without an initrd, and then with):
+> > > 
+> > > # build/sbin/kexec --version
+> > > kexec-tools 2.0.20
+> > > # build/sbin/kexec --debug --load multi-vmlinuz-5.6.0+
+> > > Try gzip decompression.
+> > > kernel: 0xb6763008 kernel_size: 0x7273a8
+> > > MEMORY RANGES
+> > > 0000000010000000-000000004fffffff (0)
+> > > zImage header: 0x016f2818 0x00000000 0x007273a8
+> > > zImage size 0x7273a8, file size 0x7273a8
+> > > zImage requires 0x007383a8 bytes
+> > >   offset 0x00004da8 tag 0x5a534c4b size 12
+> > > Decompressed kernel sizes:
+> > >  text+data 0x00dbedb8 bss 0x007489f8 total 0x015077b0
+> > > Resulting kernel space: 0x015077b0
+> > > Kernel: address=0x10008000 size=0x015077b0
+> > > DT    : address=0x11511000 size=0x0000b000
+> > > kexec_load: entry = 0x10008000 flags = 0x280000
+> > > nr_segments = 2
+> > > segment[0].buf   = 0xb6763008
+> > > segment[0].bufsz = 0x7273ac
+> > > segment[0].mem   = 0x10008000
+> > > segment[0].memsz = 0x728000
+> > > segment[1].buf   = 0x1207cb0
+> > > segment[1].bufsz = 0xb000
+> > > segment[1].mem   = 0x11511000
+> > > segment[1].memsz = 0xb000
+> > > # build/sbin/kexec --unload
+> > > # build/sbin/kexec --debug --load multi-vmlinuz-5.6.0+ --initrd /boot/initrd.img-5.4.0+
+> > > Try gzip decompression.
+> > > kernel: 0xb65d8008 kernel_size: 0x7273a8
+> > > MEMORY RANGES
+> > > 0000000010000000-000000004fffffff (0)
+> > > zImage header: 0x016f2818 0x00000000 0x007273a8
+> > > zImage size 0x7273a8, file size 0x7273a8
+> > > zImage requires 0x007383a8 bytes
+> > >   offset 0x00004da8 tag 0x5a534c4b size 12
+> > > Decompressed kernel sizes:
+> > >  text+data 0x00dbedb8 bss 0x007489f8 total 0x015077b0
+> > > Resulting kernel space: 0x015077b0
+> > > Kernel: address=0x10008000 size=0x015077b0
+> > > Initrd: address=0x11510000 size=0x0053f46a
+> > > DT    : address=0x11a50000 size=0x0000b044
+> > > kexec_load: entry = 0x10008000 flags = 0x280000
+> > > nr_segments = 3
+> > > segment[0].buf   = 0xb65d8008
+> > > segment[0].bufsz = 0x7273ac
+> > > segment[0].mem   = 0x10008000
+> > > segment[0].memsz = 0x728000
+> > > segment[1].buf   = 0xb6098008
+> > > segment[1].bufsz = 0x53f46a
+> > > segment[1].mem   = 0x11510000
+> > > segment[1].memsz = 0x540000
+> > > segment[2].buf   = 0x993cf0
+> > > segment[2].bufsz = 0xb044
+> > > segment[2].mem   = 0x11a50000
+> > > segment[2].memsz = 0xc000
+> > > 
+> > > On clearfog (Armada 388):
+> > > 
+> > > # build/sbin/kexec --debug --load multi-vmlinuz-5.6.0+
+> > > Try gzip decompression.
+> > > kernel: 0xb6745008 kernel_size: 0x7273a8
+> > > MEMORY RANGES
+> > > 0000000000000000-000000003fffffff (0)
+> > > zImage header: 0x016f2818 0x00000000 0x007273a8
+> > > zImage size 0x7273a8, file size 0x7273a8
+> > > zImage requires 0x007383a8 bytes
+> > >   offset 0x00004da8 tag 0x5a534c4b size 12
+> > > Decompressed kernel sizes:
+> > >  text+data 0x00dbedb8 bss 0x007489f8 total 0x015077b0
+> > > Resulting kernel space: 0x015077b0
+> > > Kernel: address=0x00008000 size=0x015077b0
+> > > DT    : address=0x01511000 size=0x00007be3
+> > > kexec_load: entry = 0x8000 flags = 0x280000
+> > > nr_segments = 2
+> > > segment[0].buf   = 0xb6745008
+> > > segment[0].bufsz = 0x7273ac
+> > > segment[0].mem   = 0x8000
+> > > segment[0].memsz = 0x728000
+> > > segment[1].buf   = 0x1be7f68
+> > > segment[1].bufsz = 0x7be3
+> > > segment[1].mem   = 0x1511000
+> > > segment[1].memsz = 0x8000
+> > > 
+> > > All appears to work fine.
+> > > 
+> > 
+> > I have found a part of my problem, kexec-tool seems to always use the OPT_KEXEC_FILE_SYSCALL.
+> > Even if I set --kexec-syscall.
+> 
+> You mention below that you're using buildroot.  Does buildroot have
+> patches on top of the reference kexec-tools codebase as found at
+> git://git.kernel.org/pub/scm/utils/kernel/kexec/kexec-tools.git ?
+> 
+> Looking at the 2.0.20 code, there's no way for that to be happening;
+> the only way that _could_ happen is if getopt_long() always returns
+> 's' when we get to the last argument, which is highly unlikely.
+> 
+> > On my early tries I got "syscall kexec_file_load not available."
+> > When I did a full rebuild of my buildroot to go back to kexec-tool 2.0.18, this syscall become availlable.
+> 
+> 32-bit kernels have no support for kexec_file_load(), although the
+> syscall is reserved.
+> 
+> Irrespective of that, presence of the syscall number allocation is
+> not sufficient to tell whether the syscall is implemented by the
+> kernel; that is controlled by the kernel's CONFIG_KEXEC_FILE symbol.
+> This symbol is never offered for 32-bit ARM kernels.
+> 
+> > The get_memory_ranges seems to be called only from my_load() which is executed when !do_kexec_file_syscall.
+> > 
+> > Since kexec-tool always set do_kexec_file_syscall, it is never called.
+> > I have added a print for each syscal option, and it seems that OPT_KEXEC_SYSCALL_AUTO is called after the handling of OPT_KEXEC_SYSCALL.
+> > 
+> > So I have hack to always set do_kexec_file_syscall=0
+> 
+> It sounds like buildroot is patching kexec-tools in ways that break
+> 32-bit ARM, and it sounds like this needs to be reported as a bug to
+> buildroot.
+> 
+> That said, I think there's a weakness in the ARM support in
+> kexec-tools, which this patch should address for 2.0.20.  Things have
+> changed in the merged patches since 2.0.20, so the return needs to be
+> EFALLBACK not ENOSYS, so please pay attention to exactly which version
+> of kexec-tools you have (whether it's the 2.0.20 tagged version or has
+> further patches from kexec-tools on top.)
+> 
+> diff --git a/kexec/arch/arm/kexec-zImage-arm.c b/kexec/arch/arm/kexec-zImage-arm.c
+> index 9a67b8a4db98..ca4e35382ea1 100644
+> --- a/kexec/arch/arm/kexec-zImage-arm.c
+> +++ b/kexec/arch/arm/kexec-zImage-arm.c
+> @@ -421,6 +421,12 @@ int zImage_arm_load(int argc, char **argv, const char *buf, off_t len,
+>  	};
+>  	static const char short_options[] = KEXEC_ARCH_OPT_STR "a:r:";
+>  
+> +	/* We do not support file mode */
+> +	if (info->file_mode) {
+> +		fprintf(stderr, "syscall kexec_file_load not implemented.\n");
+> +		return -ENOSYS;
+> +	}
+> +
+>  	/*
+>  	 * Parse the command line arguments
+>  	 */
+> 
+> > So now my test go further, but the final kernel crash.
+> > DEBUG: bootz: run kexec with /tmp/kernel --debug --kexec-syscall --force --initrd /tmp/ramdisk --dtb /tmp/dtb --command-line='console=ttyS0,115200n8 root=/dev/ram0 earlycon=uart,mmio32,0x7000000 ip=dhcp'
+> > Set DEBUG!
+> > main:1417 OPT_KEXEC_SYSCALL
+> > main:1422 OPT_KEXEC_SYSCALL_AUTO
+> > arch_process_options:119
+> > main:1500
+> > main:1517 res=0 do_load=1
+> > main:1519 res=0 do_kexec_file_syscall=0
+> > my_load:713
+> > Try gzip decompression.
+> > kernel: 0xb693b008 kernel_size: 0x443ac0
+> > get_memory_ranges:36
+> > MEMORY RANGES
+> > 0000000020000000-000000009fffffff (0)
+> > DEBUG: my_load:737 memory_ranges=1
+> > zImage_arm_load:423
+> > zImage header: 0x016f2818 0x00000000 0x00443ac0
+> > zImage size 0x443ac0, file size 0x443ac0
+> > zImage requires 0x00454ac0 bytes
+> >   offset 0x00006678 tag 0x5a534c4b size 8
+> > Decompressed kernel sizes:
+> >  text+data 0x00b78080 bss 0x0003d3c0 total 0x00bb5440
+> > Resulting kernel space: 0x00fccb40
+> > DEBUG: locate_hole:237 memory_ranges=1
+> > Check 0/1 536870912 0 type=-1610612737
+> > Check 0/1 536870912 0
+> > Kernel: address=0x20008000 size=0x00fccb40
+> > DEBUG: locate_hole:237 memory_ranges=1
+> > Check 0/1 536870912 0 type=-1610612737
+> > Check 0/1 536870912 0
+> > Initrd: address=0x20fd5000 size=0x0167213d
+> > DEBUG: locate_hole:237 memory_ranges=1
+> > Check 0/1 536870912 0 type=-1610612737
+> > Check 0/2 536870912 0
+> > Check 1/2 577011712 0
+> > DT    : address=0x22648000 size=0x00006043
+> > kexec_load: entry = 0x20008000 flags = 0x280000
+> > nr_segments = 3
+> > segment[0].buf   = 0xb693b008
+> > segment[0].bufsz = 0x443ac4
+> > segment[0].mem   = 0x20008000
+> > segment[0].memsz = 0x444000
+> > segment[1].buf   = 0xb52c8008
+> > segment[1].bufsz = 0x167213d
+> > segment[1].mem   = 0x20fd5000
+> > segment[1].memsz = 0x1673000
+> > segment[2].buf   = 0x4ef88
+> > segment[2].bufsz = 0x6043
+> > segment[2].mem   = 0x2[   31.265096] sun7i-dwmac 830000.ethernet eth0: Link is Down
+> > 2648000
+> > segment[2].memsz = 0x7000
+> > main:1568 res=0
+> > main:1582 res=0 do_exec=1
+> > [   31.277297] kexec_core: Starting new kernel
+> > [   31.282700] Disabling non-boot CPUs ...
+> > [   31.692085] Bye!
+> > C:0x200080C0-0x2044BAC0->0x20B80B00-0x20FC4500
+> 
+> This line shows that we entered the new kernel, which was located
+> (correctly) at 0x200080C0-0x2044BAC0, and it has decided to relocate
+> itself to 0x20B80B00-0x20FC4500.
+> 
+> The lack of further output suggests that the decompressor itself
+> wasn't able to run after being relocated higher in memory.
+> 
+> It may be worth booting the same kernel image and see what the C:
+> line comes out as there.
+> 
 
->> You meant I can regenerate a disk image from that log (if so, how)?
->>
->> If not, for next time, it would be helpful if syzkaller provides the log
->> to regenerate the corrupted image (or saving a corrupted image) to
->> reproduce this, then I can try to detect the corruption pattern early.
->
->
-> I've converted the program to C using syz-prog2c:
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#syzkaller-reproducers
-> then slightly changed the generated program to dump the file to disk
-> rather than mounting.
->
-> The resulting image is attached (archived because it's mostly zeros).
+I have checked and some CONFIG was missing, now I get one line further:
+[   32.903765] kexec_core: Starting new kernel
+[   32.907958] Disabling non-boot CPUs ...
+[   33.392056] Bye!
+C:0x200080C0-0x2044AE80->0x20B80300-0x20FC30C0
+Uncompressing Linux... done, booting the kernel.
 
-Thank you! I think I can see now why the generated image became the
-cause of this.
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+So the uncompressor seems ok.
+
+As you said, I have started the same kernel, but I dont see any C:
+Starting kernel ...
+Uncompressing Linux... done, booting the kernel.
+[    0.000000] Booting Linux on physical CPU 0x0
+[    0.000000] Linux version 5.6.0-10890-gc27180b13770-dirty (compile@Red) (gcc version 8.3.0 (Gentoo 8.3.0-r1 p1.1)) #78 SMP Tue Apr 7 14:55:53 CEST 2020
+[    0.000000] CPU: ARMv7 Processor [410fc075] revision 5 (ARMv7), cr=10c5387d
+[    0.000000] CPU: div instructions available: patching division code
