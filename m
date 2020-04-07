@@ -2,101 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 235FE1A116B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867B61A116D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 18:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728201AbgDGQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 12:33:08 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:47768 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726883AbgDGQdI (ORCPT
+        id S1728338AbgDGQdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 12:33:20 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:44365 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726833AbgDGQdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 12:33:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586277187;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dWYmPOF17U+sC21sG3I3LCOo8bkjHtTnGXVgw8ZhdZQ=;
-        b=EnklouZ2Bdyfe1DzbmIj4DihfiGIpHwTZPgaAx6hA7iF7BIpOV6T9TusKu2mo9m3I4I68j
-        a82cl2WApD4Cm09aNy0bCP13pfptWoQb/EdddN5mwxuVrgu7k7Bdzc3zFFf5tZn1pLEvTm
-        v/CdyXokqF+QeImpdeb3UOaLAIWrXGc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-WdoSPLGTNWu2V2CFdCXRzA-1; Tue, 07 Apr 2020 12:32:58 -0400
-X-MC-Unique: WdoSPLGTNWu2V2CFdCXRzA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4923DB67;
-        Tue,  7 Apr 2020 16:32:56 +0000 (UTC)
-Received: from treble (ovpn-116-24.rdu2.redhat.com [10.10.116.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 345B519488;
-        Tue,  7 Apr 2020 16:32:56 +0000 (UTC)
-Date:   Tue, 7 Apr 2020 11:32:53 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: libelf-0.175 breaks objtool
-Message-ID: <20200407163253.mji2z465ixaotnkh@treble>
-References: <20190205133821.1a243836@gandalf.local.home>
- <20190206021611.2nsqomt6a7wuaket@treble>
- <20190206121638.3d2230c1@gandalf.local.home>
- <CAK8P3a1hsca02=jPQmBG68RTUAt-jDR-qo=UFwf13nZ0k-nDgA@mail.gmail.com>
- <20200406221614.ac2kl3vlagiaj5jf@treble>
- <CAK8P3a3QntCOJUeUfNmqogO51yh29i4NQCu=NBF4H1+h_m_Pug@mail.gmail.com>
- <CAK8P3a2Bvebrvj7XGBtCwV969g0WhmGr_xFNfSRsZ7WX1J308g@mail.gmail.com>
+        Tue, 7 Apr 2020 12:33:19 -0400
+Received: by mail-pg1-f196.google.com with SMTP id n13so540753pgp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 09:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=AlcwjOm+1Oh931lo1HzGT/5VUetrnzxIQ7HJJpMAkSA=;
+        b=HXd2UwNSpZv1U6uiJdGL+SA6oIP70AZXhiqqbtCpORm55myGT6F8YoYz1KcqrXBzpQ
+         6PhnHzrI/1egYgCS4yivmIhASptb/TJE+LdK4qoo7Avb8yNPjTxfipFQpfqNBtoTtKOS
+         IPLiKFb99PyptFPWiEJPD71sdfoIvojaqEh0A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=AlcwjOm+1Oh931lo1HzGT/5VUetrnzxIQ7HJJpMAkSA=;
+        b=fO7BbgJw2J8ykAAkYipb3zHfnF9XtCoIfLhD+ewa3a88+M/AjmHQwIoveVc0F1KKk7
+         0YLeEB0gY9VG8/LUZAzIBFPIeb0Zl95X1IyfI2pp0Cmx4nDGdq5sIMrxV1frItFsKYx6
+         v+vuEU58YZkPBlz4uo2lUABGi53a8uDk/Tb1tEq882FIRP5csb13w8mHpeeMhx2FFxgb
+         DH5ERBhAZGKyfhNFkiypAaGeXZ4umGhwqJlaqs55qBA7nwCuy/ZIw1apBGXgb8OXMP22
+         E93j1N6+GyvuSszk586bjE1stRfu9rwRarnteHGgW1qFZstOy3TfpB7WSeYWkiJDegMr
+         oYrQ==
+X-Gm-Message-State: AGi0PubUj7mEqH/4DWTDE7QPS7YAU40RAHV4Ax2dmOYQP9WN/NG6olAU
+        4nmcsJHYEcF0NcWv8ZdY2OQtMw==
+X-Google-Smtp-Source: APiQypKeLFLniNnmBEATU0CRT1p7cx8eVojEZZ/MBtMP+nCynVZQytfYdqaR6xyI5TtllI5gK89mGg==
+X-Received: by 2002:a63:be09:: with SMTP id l9mr2829851pgf.439.1586277198229;
+        Tue, 07 Apr 2020 09:33:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b26sm11802653pfd.98.2020.04.07.09.33.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 09:33:17 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 09:33:16 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     kernel-hardening@lists.openwall.com,
+        Emese Revfy <re.emese@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] gcc-plugins/stackleak: Avoid assignment for unused macro
+ argument
+Message-ID: <202004070933.5112AA6@keescook>
+References: <202004020103.731F201@keescook>
+ <13c90df4-a422-bb73-a119-b8ccd11fc4f1@linux.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2Bvebrvj7XGBtCwV969g0WhmGr_xFNfSRsZ7WX1J308g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <13c90df4-a422-bb73-a119-b8ccd11fc4f1@linux.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 05:46:23PM +0200, Arnd Bergmann wrote:
-> On Tue, Apr 7, 2020 at 12:31 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> > On Tue, Apr 7, 2020 at 12:16 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > It's also odd that I only see the problem in two specific files:
-> > arch/x86/realmode/rm/trampoline_64.o (in half of the randconfig builds)
-> > and fs/xfs/xfs_trace.o  (in only one configuration so far).
-> >
-> > With this patch I can avoid the first one, which is unconditionally
-> > built with -g (why?):
-> >
-> > --- a/arch/x86/realmode/rm/Makefile
-> > +++ b/arch/x86/realmode/rm/Makefile
-> > @@ -69,7 +69,7 @@ $(obj)/realmode.relocs: $(obj)/realmode.elf FORCE
-> >  # ---------------------------------------------------------------------------
-> >
-> >  KBUILD_CFLAGS  := $(REALMODE_CFLAGS) -D_SETUP -D_WAKEUP \
-> > -                  -I$(srctree)/arch/x86/boot
-> > +                  -I$(srctree)/arch/x86/boot -gz=none
-> >  KBUILD_AFLAGS  := $(KBUILD_CFLAGS) -D__ASSEMBLY__
-> >  KBUILD_CFLAGS  += -fno-asynchronous-unwind-tables
-> >  GCOV_PROFILE := n
-> >
-> > I'll look at the other one tomorrow.
+On Tue, Apr 07, 2020 at 06:30:18PM +0300, Alexander Popov wrote:
+> Hello Kees,
 > 
-> I found where -g gets added in both cases, and adding -gz=none
-> seems to address all randconfigs with CONFIG_DEBUG_INFO=n:
+> On 02.04.2020 11:10, Kees Cook wrote:
+> > With GCC version >= 8, the cgraph_create_edge() macro argument using
+> > "frequency" goes unused. Instead of assigning a temporary variable for
+> > the argument, pass the compute_call_stmt_bb_frequency() call directly
+> > as the macro argument so that it will just not be uncalled when it is
+> > not wanted by the macros.
 > 
-> --- a/fs/xfs/Makefile
-> +++ b/fs/xfs/Makefile
-> @@ -7,7 +7,7 @@
->  ccflags-y += -I $(srctree)/$(src)              # needed for trace events
->  ccflags-y += -I $(srctree)/$(src)/libxfs
-> 
-> -ccflags-$(CONFIG_XFS_DEBUG) += -g
-> +ccflags-$(CONFIG_XFS_DEBUG) += -g $(call cc-option,-gz=none)
+> Do you mean "it will just not be called"?
 
-Maybe they shouldn't have -g in the first place?
+I really did. ;) Thanks, I'll adjust this.
+
+-Kees
+
+> 
+> Thanks!
+> 
+> > Silences the warning:
+> > 
+> > scripts/gcc-plugins/stackleak_plugin.c:54:6: warning: variable ‘frequency’ set but not used [-Wunused-but-set-variable]
+> > 
+> > Now builds cleanly with gcc-7 and gcc-9. Both boot and pass
+> > STACKLEAK_ERASING LKDTM test.
+> > 
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  scripts/gcc-plugins/stackleak_plugin.c | 5 ++---
+> >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/scripts/gcc-plugins/stackleak_plugin.c b/scripts/gcc-plugins/stackleak_plugin.c
+> > index dbd37460c573..cc75eeba0be1 100644
+> > --- a/scripts/gcc-plugins/stackleak_plugin.c
+> > +++ b/scripts/gcc-plugins/stackleak_plugin.c
+> > @@ -51,7 +51,6 @@ static void stackleak_add_track_stack(gimple_stmt_iterator *gsi, bool after)
+> >  	gimple stmt;
+> >  	gcall *stackleak_track_stack;
+> >  	cgraph_node_ptr node;
+> > -	int frequency;
+> >  	basic_block bb;
+> >  
+> >  	/* Insert call to void stackleak_track_stack(void) */
+> > @@ -68,9 +67,9 @@ static void stackleak_add_track_stack(gimple_stmt_iterator *gsi, bool after)
+> >  	bb = gimple_bb(stackleak_track_stack);
+> >  	node = cgraph_get_create_node(track_function_decl);
+> >  	gcc_assert(node);
+> > -	frequency = compute_call_stmt_bb_frequency(current_function_decl, bb);
+> >  	cgraph_create_edge(cgraph_get_node(current_function_decl), node,
+> > -			stackleak_track_stack, bb->count, frequency);
+> > +			stackleak_track_stack, bb->count,
+> > +			compute_call_stmt_bb_frequency(current_function_decl, bb));
+> >  }
+> >  
+> >  static bool is_alloca(gimple stmt)
+> > 
+> 
 
 -- 
-Josh
-
+Kees Cook
