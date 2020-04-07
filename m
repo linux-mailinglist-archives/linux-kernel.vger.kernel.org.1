@@ -2,67 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A83891A0C10
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F131A0C11
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728339AbgDGKgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:36:49 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:33773 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgDGKgs (ORCPT
+        id S1728394AbgDGKgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:36:50 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:36382 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728209AbgDGKgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 7 Apr 2020 06:36:48 -0400
-Received: by mail-wr1-f65.google.com with SMTP id a25so3325306wrd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 03:36:46 -0700 (PDT)
+Received: by mail-wm1-f66.google.com with SMTP id d202so1283229wmd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 03:36:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TPds7mBnkEpkQwy+qSjMo7aN1Cxu/qv8fnAKewhN5TY=;
-        b=XgHGDJuhlWB53K7kSOMCeUU+d2LLI13DU6SbFx73xSB3dGcXh3lWrdaVLYHXbhEXam
-         UMSIxiBjmvypThjWEw0rPAOpJNKS56qNQURYwXtydsIlJODoqXcLAJkCQFbeUttPdmMT
-         nFULO+JQm9nCqPIKCzmfro/NVlCz/2PJtUJuR0Z0pIDfK3A1J5W0UmgGVZg61SlFgl2r
-         PvnVHOJthhXcORRBuPWBh3BwY0WHOIbwpsvDA4RhICLlRtcCdYt9SLxtRSOvHlMTEXDQ
-         NGMLcdF+wmkm9c76sPZr5B9NP7nbeHXAY1A6ToQnjucT2mSnp4fJh18iWngG3DtO6hlO
-         AYeA==
+        bh=Hso2J7opfoi1MkF9CkeZd0bKFD2GyxBW+ac7H4bJoMg=;
+        b=Ro5qVrJkPFnjtYrlSuf/QfRk79xkL8m7WYpCs6ceAQ2l70aA6hP07c2uAKy4X2gwJd
+         67IwMKItcK23hnZF1SlVGJMyuqUGI20px9JNeguaMI/ym//WD+OIDbOcgGWrnAlWSchz
+         j3UuVvrnrwhWWuhSCVXS0alb3wnnh4dG0J30BeyiQlc4n5mTn6aVW/o4uIkkmw7Xk4rY
+         /swqWwxFOg8VqPr7bec+BbDjSto4j31edxuySuag9F830z7hqnd1CkJlepdomyU/1S87
+         mTEUALmihunfuZB/HvhCA+33bPBuz8ZQXRU3LxaLYFp7QMZTfh/bt1NHmljZTco0zota
+         3jiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TPds7mBnkEpkQwy+qSjMo7aN1Cxu/qv8fnAKewhN5TY=;
-        b=ggyNlgsXxtR+u1qMw5mjxOXNf8efUCh+VR2QeswKFy58AZ9wmUzH7PEPh3oN1TvPru
-         /F6iNbh5Ut2P4OltX0IJfFMHK+78576e83+NQo+f6UPMiln6NA9jiPFajg4NXisYx4a7
-         UzaYOYNz4P8aY566yr93YXuJ9/2cWFyxFNTBDuilSAkhsBUS4ZUDl6ITjdN7RGRMfi0N
-         MtmclKBWrhUV1UXTu74o1N6MgTxnwmc0TVlRpTIieVmf+8WWo9w1uZrXCgwPGOdMDCcY
-         X9R8WPs3g5XRZBGGDJC0RTYD1qdy/+8+SPNprOT5/VxxMMh+AyjoE6JjGs/ovPYTuB+s
-         id0A==
-X-Gm-Message-State: AGi0PubwQ8IW2rckVRx4u5C7F8aP4w5xhrWGykjbO8irV3BQO3e56ev6
-        0k2FlgDkFLbHyrfz3NrFmxE=
-X-Google-Smtp-Source: APiQypJCbIb+EF4w6L0bLgEKdLTmTLmcq/2wjVvUlpt/OF2HSK4ZsVgDMeKDsUVL4EcT/GVVyL1WRw==
-X-Received: by 2002:adf:904a:: with SMTP id h68mr1900019wrh.291.1586255806173;
-        Tue, 07 Apr 2020 03:36:46 -0700 (PDT)
+        bh=Hso2J7opfoi1MkF9CkeZd0bKFD2GyxBW+ac7H4bJoMg=;
+        b=jFV4DsUCmcZnWyIDyznfI9MAS4rvYFs50vJKQdIfChOUU3nMI9VNTmf4At/Q8Bm3zw
+         WbaUrQwyZczxkN2w7/esUY/adyKi7KOs/6VyDxLumJ6n7V0dj4OmoSkuTPp4E/dM9qk+
+         EZSIkKxPoyUUD5Zkx3VwumOwfPEInemQF8V4vokrONgHAK9LJPAxHReVw6L0tJ0R/y9M
+         avc/LnBGglMW5cpklE3WNXKsbfl+XKfkX8QXnn5VDoqkYwF7ah7pp/9obSbKqSx2kY77
+         bl2Fq8e/cjohXaRtjS1HPa3QKUXUABYVg90VBdSTqHOdFr4PRkD9ZRIPGh3VQYdfXfBC
+         OVEg==
+X-Gm-Message-State: AGi0Pua6S1U467BSnlC/Au0nH++YzY6J01dFWMXOFiWChUJh98NdCMWD
+        drmNKdp+FUjzQFaDmn4MQxg=
+X-Google-Smtp-Source: APiQypLrTiTAAK5rH+3jpeNejuPDIwUbyTsA42840oxs2Nv7LjBiUmVXh9o1TGwDcxXRzjEWIuvMVQ==
+X-Received: by 2002:a1c:b684:: with SMTP id g126mr1637639wmf.163.1586255807131;
+        Tue, 07 Apr 2020 03:36:47 -0700 (PDT)
 Received: from linuxdev2.toradex.int (31-10-206-124.static.upc.ch. [31.10.206.124])
-        by smtp.gmail.com with ESMTPSA id c17sm25016722wrp.28.2020.04.07.03.36.45
+        by smtp.gmail.com with ESMTPSA id c17sm25016722wrp.28.2020.04.07.03.36.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 03:36:45 -0700 (PDT)
+        Tue, 07 Apr 2020 03:36:46 -0700 (PDT)
 From:   Max Krummenacher <max.oss.09@gmail.com>
 X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
 To:     Max Krummenacher <max.krummenacher@toradex.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org,
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, Vidya Sagar <vidyas@nvidia.com>,
+        Olof Johansson <olof@lixom.net>, linux-kernel@vger.kernel.org,
         Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Olof Johansson <olof@lixom.net>,
+        Anson Huang <Anson.Huang@nxp.com>,
         Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
         Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 1/4] arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
-Date:   Tue,  7 Apr 2020 12:35:34 +0200
-Message-Id: <20200407103537.4138-2-max.krummenacher@toradex.com>
+Subject: [PATCH 2/4] arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name
+Date:   Tue,  7 Apr 2020 12:35:35 +0200
+Message-Id: <20200407103537.4138-3-max.krummenacher@toradex.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200407103537.4138-1-max.krummenacher@toradex.com>
 References: <20200407103537.4138-1-max.krummenacher@toradex.com>
@@ -73,10 +71,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This occurrence wasn't changed in the original rename commit.
+When adding PCIE EP functionality the config symbol name logic for
+PCIE RC was also changed.
 
-Fixes commit 0411374bdf2b3 ("drm/bridge: dumb-vga-dac: Rename driver to
-simple-bridge").
+Fixes commit c57247f940e8e ("PCI: tegra: Add support for PCIe endpoint
+mode in Tegra194")
 
 Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
 
@@ -86,18 +85,18 @@ Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 24e534d850454..ae908c3f43c76 100644
+index ae908c3f43c76..7e2690b449328 100644
 --- a/arch/arm64/configs/defconfig
 +++ b/arch/arm64/configs/defconfig
-@@ -610,7 +610,7 @@ CONFIG_DRM_MSM=m
- CONFIG_DRM_TEGRA=m
- CONFIG_DRM_PANEL_LVDS=m
- CONFIG_DRM_PANEL_SIMPLE=m
--CONFIG_DRM_DUMB_VGA_DAC=m
-+CONFIG_DRM_SIMPLE_BRIDGE=m
- CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_SII902X=m
- CONFIG_DRM_THINE_THC63LVD1024=m
+@@ -208,7 +208,7 @@ CONFIG_PCIE_QCOM=y
+ CONFIG_PCIE_ARMADA_8K=y
+ CONFIG_PCIE_KIRIN=y
+ CONFIG_PCIE_HISI_STB=y
+-CONFIG_PCIE_TEGRA194=m
++CONFIG_PCIE_TEGRA194_HOST=m
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_FW_LOADER_USER_HELPER=y
 -- 
 2.20.1
 
