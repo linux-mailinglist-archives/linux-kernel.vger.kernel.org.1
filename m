@@ -2,184 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA2D1A0C8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 13:11:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF901A0C41
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728469AbgDGLK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 07:10:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:21646 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728427AbgDGLKx (ORCPT
+        id S1728262AbgDGKu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:50:58 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34728 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726591AbgDGKu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 07:10:53 -0400
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 037B4nSQ079407
-        for <linux-kernel@vger.kernel.org>; Tue, 7 Apr 2020 07:10:52 -0400
-Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3082hy4kmg-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 07:10:52 -0400
-Received: from localhost
-        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <imbrenda@linux.ibm.com>;
-        Tue, 7 Apr 2020 12:10:23 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 7 Apr 2020 12:10:20 +0100
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 037B9frB50856328
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Apr 2020 11:09:41 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 404A1A4054;
-        Tue,  7 Apr 2020 11:10:46 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B3D8AA405B;
-        Tue,  7 Apr 2020 11:10:45 +0000 (GMT)
-Received: from p-imbrenda (unknown [9.145.8.150])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Apr 2020 11:10:45 +0000 (GMT)
-Date:   Tue, 7 Apr 2020 12:48:15 +0200
-From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Janosch Frank <frankja@linux.ibm.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] KVM: s390: vsie: Fix region 1 ASCE sanity shadow
- address checks
-In-Reply-To: <3431ccbb-25b2-66fc-5e07-3f449c03b087@de.ibm.com>
-References: <20200403153050.20569-1-david@redhat.com>
-        <20200403153050.20569-2-david@redhat.com>
-        <ee3f6c69-4401-066d-6f87-806667facf35@de.ibm.com>
-        <c5c9fdcd-37ce-029d-a412-8987a901a116@redhat.com>
-        <3431ccbb-25b2-66fc-5e07-3f449c03b087@de.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 7 Apr 2020 06:50:58 -0400
+Received: by mail-wr1-f67.google.com with SMTP id 65so3364426wrl.1;
+        Tue, 07 Apr 2020 03:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=amPYgdlLGhWc+0ojfJPO8krsqf8U5xNGSa0wf2ccSKY=;
+        b=b3CCYlyY9xhzitc78hkXpZ1gIUYPF7KzBXSYpqojtuQupSJ6+DrUCxe8FH2jW/v9IN
+         mmiI0EKVYXfUpjcCJCdQQNOMPqu5X7PQNjy/shuujY7mh2l+wTUqkhsT1wnbBwqV/7E+
+         2PubsF6JiCerT5L4ZrKen1I3oa5MN5Po8xDFfWEQzk7HfYe4A78UGRVAZSKHV07lFmOq
+         qXU3LWk80e3OtZZyInEOoOsLmDd4mXCqpzziH2Fynm9CT52eVSCo2nDbJeyf4ymAwjXM
+         zFQ6O1js/IitR3+FIcnoYfKJ+9CAkcY/X41nNxYn4kfCU5y3PpD2LdtCu7hWgsx4Lr+3
+         jhzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=amPYgdlLGhWc+0ojfJPO8krsqf8U5xNGSa0wf2ccSKY=;
+        b=Xgdn+8pVxDZX9Rls2CUbqKvTvsthfPs+blOqeVUTZ/JIJZZhBH94zIxVezcGGgWvnR
+         dy1+1hiPPIlePR9ixAxtgIDue0yTFh67rjKIG0VzrDkLiKk6YkhwadnjECgw8T7rwWx7
+         9+s+6jBDEcrfvw+H8vSIQ6eUmpQKh1ZsPETpz39f9qh71y9AU6WQL4tu1LiUkyAPryOn
+         FSXLO/Sz6Y2Z5yL7YUwGK6o8Hd108UFh4dZ99hmaHPMqaquYKmDhbdA/v3/6y9H3I0y0
+         DbJUMjQcno+q0aKzQF0o0PG9DCy5/5PRP95e6ys+fOwWWRo9XFp3ZbxSUfmyiBwQp+iv
+         5PHg==
+X-Gm-Message-State: AGi0Pua/Ss61Z7yED+Et7clEicPSZWkCl3IChCmztqnB7g0vMo3NY5UB
+        P32kdgJ60daGvEt4oPUGKq8=
+X-Google-Smtp-Source: APiQypK2b4OXIxuXoJyQ4fHa63DR9pfnOD8PvvRreqrLTWsZW8M6lrkz2Z8K3TIgliXbrE9X5C4YeQ==
+X-Received: by 2002:a5d:4d12:: with SMTP id z18mr2163780wrt.67.1586256655703;
+        Tue, 07 Apr 2020 03:50:55 -0700 (PDT)
+Received: from localhost (pD9E51D62.dip0.t-ipconnect.de. [217.229.29.98])
+        by smtp.gmail.com with ESMTPSA id n6sm1799380wmc.28.2020.04.07.03.50.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 03:50:54 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 12:50:53 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        David Heidelberg <david@ixit.cz>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Pedro =?utf-8?Q?=C3=82ngelo?= <pangelo@void.io>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] ARM: tegra: Add device-tree for ASUS Google Nexus
+ 7
+Message-ID: <20200407105053.GD1720957@ulmo>
+References: <20200406194110.21283-1-digetx@gmail.com>
+ <20200406194110.21283-3-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20040711-0020-0000-0000-000003C33E87
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20040711-0021-0000-0000-0000221BFC1D
-Message-Id: <20200407124815.4577e98c@p-imbrenda>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-07_03:2020-04-07,2020-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- mlxscore=0 malwarescore=0 bulkscore=0 adultscore=0 phishscore=0
- lowpriorityscore=0 clxscore=1015 suspectscore=0 mlxlogscore=998
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004070091
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="P+33d92oIH25kiaB"
+Content-Disposition: inline
+In-Reply-To: <20200406194110.21283-3-digetx@gmail.com>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Apr 2020 09:52:53 +0200
-Christian Borntraeger <borntraeger@de.ibm.com> wrote:
 
-> On 07.04.20 09:49, David Hildenbrand wrote:
-> > On 07.04.20 09:33, Christian Borntraeger wrote:  
-> >>
-> >> On 03.04.20 17:30, David Hildenbrand wrote:  
-> >>> In case we have a region 1 ASCE, our shadow/g3 address can have
-> >>> any value. Unfortunately, (-1UL << 64) is undefined and triggers
-> >>> sometimes, rejecting valid shadow addresses when trying to walk
-> >>> our shadow table hierarchy.
-> >>>
-> >>> The result is that the prefix cannot get mapped and will loop
-> >>> basically forever trying to map it (-EAGAIN loop).
-> >>>
-> >>> After all, the broken check is only a sanity check, our table
-> >>> shadowing code in kvm_s390_shadow_tables() already checks these
-> >>> conditions, injecting proper translation exceptions. Turn it into
-> >>> a WARN_ON_ONCE().  
-> >>
-> >> After some testing I now triggered this warning:
-> >>
-> >> [  541.633114] ------------[ cut here ]------------
-> >> [  541.633128] WARNING: CPU: 38 PID: 2812 at
-> >> arch/s390/mm/gmap.c:799 gmap_shadow_pgt_lookup+0x98/0x1a0 [
-> >> 541.633129] Modules linked in: vhost_net vhost macvtap macvlan tap
-> >> kvm xt_CHECKSUM xt_MASQUERADE nf_nat_tftp nf_conntrack_tftp xt_CT
-> >> tun bridge stp llc xt_tcpudp ip6t_REJECT nf_reject_ipv6
-> >> ip6t_rpfilter ipt_REJECT nf_reject_ipv4 xt_conntrack ip6table_nat
-> >> ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat
-> >> iptable_mangle iptable_raw iptable_security nf_conntrack
-> >> nf_defrag_ipv6 nf_defrag_ipv4 ip_set nfnetlink ip6table_filter
-> >> ip6_tables iptable_filter rpcrdma sunrpc rdma_ucm rdma_cm iw_cm
-> >> ib_cm configfs mlx5_ib s390_trng ghash_s390 prng aes_s390
-> >> ib_uverbs des_s390 ib_core libdes sha3_512_s390 genwqe_card
-> >> sha3_256_s390 vfio_ccw crc_itu_t vfio_mdev sha512_s390 mdev
-> >> vfio_iommu_type1 sha1_s390 vfio eadm_sch zcrypt_cex4 sch_fq_codel
-> >> ip_tables x_tables mlx5_core sha256_s390 sha_common pkey zcrypt
-> >> rng_core autofs4 [  541.633164] CPU: 38 PID: 2812 Comm: CPU 0/KVM
-> >> Not tainted 5.6.0+ #354 [  541.633166] Hardware name: IBM 3906 M04
-> >> 704 (LPAR) [  541.633167] Krnl PSW : 0704d00180000000
-> >> 00000014e05dc454 (gmap_shadow_pgt_lookup+0x9c/0x1a0) [
-> >> 541.633169]            R:0 T:1 IO:1 EX:1 Key:0 M:1 W:0 P:0 AS:3
-> >> CC:1 PM:0 RI:0 EA:3 [  541.633171] Krnl GPRS: 0000000000000000
-> >> 0000001f00000000 0000001f487b8000 ffffffff80000000 [  541.633172]
-> >>           ffffffffffffffff 000003e003defa18 000003e003defa1c
-> >> 000003e003defa18 [  541.633173]            fffffffffffff000
-> >> 000003e003defa18 000003e003defa28 0000001f70e06300 [  541.633174]
-> >>           0000001f43484000 00000000043ed200 000003e003def978
-> >> 000003e003def920 [  541.633203] Krnl Code: 00000014e05dc448:
-> >> b9800038		ngr	%r3,%r8 00000014e05dc44c:
-> >> a7840014		brc	8,00000014e05dc474
-> >> #00000014e05dc450: af000000		mc	0,0  
-> >>                          >00000014e05dc454: a728fff5
-> >>                          >	lhi	%r2,-11  
-> >>                           00000014e05dc458: a7180000
-> >> 	lhi	%r1,0 00000014e05dc45c: b2fa0070
-> >> niai	7,0 00000014e05dc460: 4010b04a
-> >> sth	%r1,74(%r11) 00000014e05dc464: b9140022
-> >> lgfr	%r2,%r2 [  541.633215] Call Trace:
-> >> [  541.633218]  [<00000014e05dc454>]
-> >> gmap_shadow_pgt_lookup+0x9c/0x1a0 [  541.633257]
-> >> [<000003ff804c57d6>] kvm_s390_shadow_fault+0x66/0x1e8 [kvm] [
-> >> 541.633265]  [<000003ff804c72dc>] vsie_run+0x43c/0x710 [kvm] [
-> >> 541.633273]  [<000003ff804c85ca>] kvm_s390_handle_vsie+0x632/0x750
-> >> [kvm] [  541.633281]  [<000003ff804c123c>]
-> >> kvm_s390_handle_b2+0x84/0x4e0 [kvm] [  541.633289]
-> >> [<000003ff804b46b2>] kvm_handle_sie_intercept+0x172/0xcb8 [kvm] [
-> >> 541.633297]  [<000003ff804b18a8>] __vcpu_run+0x658/0xc90 [kvm] [
-> >> 541.633305]  [<000003ff804b2920>]
-> >> kvm_arch_vcpu_ioctl_run+0x248/0x858 [kvm] [  541.633313]
-> >> [<000003ff8049d454>] kvm_vcpu_ioctl+0x284/0x7b0 [kvm] [
-> >> 541.633316]  [<00000014e087d5ae>] ksys_ioctl+0xae/0xe8 [
-> >> 541.633318]  [<00000014e087d652>] __s390x_sys_ioctl+0x2a/0x38 [
-> >> 541.633323]  [<00000014e0ff02a2>] system_call+0x2a6/0x2c8 [
-> >> 541.633323] Last Breaking-Event-Address: [  541.633334]
-> >> [<000003ff804983e0>] kvm_running_vcpu+0x3ea9ee997d8/0x3ea9ee99950
-> >> [kvm] [  541.633335] ---[ end trace f69b6021855ea189 ]---
-> >>
-> >>
-> >> Unfortunately no dump at that point in time.
-> >> I have other tests which are clearly fixed by this patch, so we
-> >> should propbably go forward anyway. Question is, is this just
-> >> another bug we need to fix or is the assumption that somebody else
-> >> checked all conditions so we can warn false?  
-> > 
-> > Yeah, I think it is via
-> > 
-> > kvm_s390_shadow_fault()->gmap_shadow_pgt_lookup()->gmap_table_walk()
-> > 
-> > where we just peek if there is already something shadowed. If not,
-> > we go via the full kvm_s390_shadow_tables() path.
-> > 
-> > So we could either do sanity checks in gmap_shadow_pgt_lookup(), or
-> > rather drop the WARN_ON_ONCE. I think the latter makes sense, now
-> > that we understood the problem.  
-> 
-> Ok, so I will drop the WARN_ON_ONCE and fixup the commit message.
-> 
+--P+33d92oIH25kiaB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-with those fixes, you can also add:
+On Mon, Apr 06, 2020 at 10:41:06PM +0300, Dmitry Osipenko wrote:
+[...]
+> diff --git a/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi b/arch/arm/boot/dts/tegra30-asus-nexus7-grouper-common.dtsi
+[...]
+> +	reserved-memory {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges;
+> +
+> +		linux,cma@80000000 {
+> +			compatible = "shared-dma-pool";
+> +			alloc-ranges = <0x80000000 0x30000000>;
+> +			size = <0x10000000>; /* 256MiB */
+> +			linux,cma-default;
+> +			reusable;
+> +		};
+> +
+> +		ramoops@bfdf0000 {
+> +			compatible = "ramoops";
+> +			reg = <0xbfdf0000 0x10000>;	/* 64kB */
+> +			console-size = <0x8000>;	/* 32kB */
+> +			record-size = <0x400>;		/*  1kB */
+> +			ecc-size = <16>;
+> +		};
+> +
+> +		trust_zone@bfe00000 {
 
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Given that this is trademarked as "TrustZone", perhaps drop the
+underscore?
 
+Other than that, the same comments as for the Acer tablet patch also
+apply here.
+
+Thierry
+
+--P+33d92oIH25kiaB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6MWw0ACgkQ3SOs138+
+s6GFUxAAjuO9EN/TXj4dinbIrLbtW7TMjcDyz79Bogtubyxa0vfYgHB14xoBe5tm
+xRsBWLwvJho9KUQZo2eo8prLaI1Wv2hZNy5T94OmmBRfT52Vfg+xLdRySwwDruft
+Shw9b0FPXFJQAuV4R2BcWav7nznEiB+1d/NVwa/Je4bexYWWjXlcdjWDsx5fpBhd
+SQaXl+P337dFW9xsoXSzM7Cxv9gMvZXxe61qgWTKCnTzkyvRZjPlnp61RgHaB60b
+R9X4h4Llu297J3Abz8xfniQPj2V2ivcm5G7uOIeAlJFDNht78Pirytg8X8G2c3Iv
+KGdz6NmV9yCkNSGjJ6gkQEH5BuI/dQbcmRkEw3CaD4hB2fWOvEfLqlSbplc/b3MT
+pY7z60pREG06H2VlqrFMVQH0JFLkFNVMAZzDkvxpE9y+hLLDUYVjvHXti1HOTIBW
+IJA+aiqaxiDDtghn4gp254d6n0Toq9knu3PIaKFf8ssv7VlrAFYUrScXnnXZfbG2
+Nhu7szpE0ejt1+LwJkKWybeIEuKP4WK1cVmyd9vNPSa+i6WBNAmfxtA7SZ22ZF3+
+nCZokOQ9js77AIIzz/WbtwG9miq6S2W1At7itN4IN2pt5B358kiXHdjk3y32k4Pz
+ZM2/ODOgdmAKILn8xfXqi1S1ITKlUYD62qu86RYDiWclgDIOLJU=
+=MqrP
+-----END PGP SIGNATURE-----
+
+--P+33d92oIH25kiaB--
