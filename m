@@ -2,158 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 973901A0A95
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 812701A0A9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbgDGJ6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:58:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33864 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726716AbgDGJ6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:58:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 51A19AC44;
-        Tue,  7 Apr 2020 09:58:01 +0000 (UTC)
-Date:   Tue, 7 Apr 2020 11:57:58 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Christophe Leroy <christophe.leroy@c-s.fr>
-Cc:     linuxppc-dev@lists.ozlabs.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Eric Richter <erichte@linux.ibm.com>,
-        Claudio Carvalho <cclaudio@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Jordan Niethe <jniethe5@gmail.com>,
-        Michael Neuling <mikey@neuling.org>,
-        Gustavo Luiz Duarte <gustavold@linux.ibm.com>,
-        Allison Randal <allison@lohutok.net>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v12 5/8] powerpc/64: make buildable without CONFIG_COMPAT
-Message-ID: <20200407095758.GF25468@kitsune.suse.cz>
-References: <20200225173541.1549955-1-npiggin@gmail.com>
- <cover.1584699455.git.msuchanek@suse.de>
- <e5619617020ef3a1f54f0c076e7d74cb9ec9f3bf.1584699455.git.msuchanek@suse.de>
- <b420b304-05e9-df58-7149-31169b0b01e2@c-s.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+        id S1728257AbgDGJ6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:58:36 -0400
+Received: from mail-bn7nam10on2059.outbound.protection.outlook.com ([40.107.92.59]:6144
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728191AbgDGJ6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 05:58:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C8SHLIDWu1INnSgs5kK/q1HtRgFENsCftvCLUjGq0OvmpE1BkiJ+EWTKn+6y5Oc9OBmb9BgEJNCEnw9bBTpUyPAPF7WWFOdyc4GTcZU0gnvCZbr7x6T7B44PKqzFliQOFIlOldc0Uc8k7Z60Ua0bWvpw+q0Ggo1Z66z8l1InKzMxEvUPq31nsbFMcZ2F0izAP4UnvndxYJgR5P2DpbIKhA9lfvCrFAziJpX+5+b3QxUE3B3IULKDhHgt3DttkZPfC9LXVYJPyTBfAuv2i5kapSkXbUO+393O3o3dPsc+a1qZalCgM7zuVZWblJ2wZI/av7HBXpGw/C2sBzWW3OszrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=81d07uDWZ2M0pl3GJghVSB14yRRhnsKkyLhQ5jIqm8s=;
+ b=XT0d6T5DMOUS3leVM2GpmSlPpMvI/JPuEDXStDth9a9H/4kNhTpW5O2r4voqGX61Ea9u5IDngsvqop4Ah87sy+bxhdpYepq7dAmQ3GSXgxs6PPBztWMUuHn2cLOx2btiA4zFZW97QAEul/M7QNQ0RrYhLovq5Pv99iAziPhyVX6UP2FEU18xLTvdpr3MsMcgy+UZtNtXlPgBV+a+rfnCDGn0Aude+wa1D1DgyJaCgTtAL5eyjOd2Vx6Q0dokM50+DECn1fzQfy0PaR5za/Ueoxr9Q65qaj4tycUQ7IQXQruwl4mRHHmVIoxyH8l43ZhAqeu/IBZyj9l8sQG3c50VOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=81d07uDWZ2M0pl3GJghVSB14yRRhnsKkyLhQ5jIqm8s=;
+ b=gG/xzRTZUECouw3TxpvZqDSECi9v+nrsaPX1rxtzqlIHxop1NAI49aCbwtwH1G6KlC00Tw6oMU8jcOtQsz3DOYCbgNsRHtrbIafhct+pXpgVe/7gvW9qluEpjj+Y8lkOheWrbWaXeR8qQcnrUMG+YZbiZH969ci2rYkQVFNcLLE=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Yanfei.Xu@windriver.com; 
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
+ by BY5PR11MB4151.namprd11.prod.outlook.com (2603:10b6:a03:18f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.20; Tue, 7 Apr
+ 2020 09:58:31 +0000
+Received: from BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::80a8:667c:426b:6917]) by BY5PR11MB4241.namprd11.prod.outlook.com
+ ([fe80::80a8:667c:426b:6917%7]) with mapi id 15.20.2878.018; Tue, 7 Apr 2020
+ 09:58:30 +0000
+From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
+Subject: BUG: mips: errors when compiling kernel with a large initramfs
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <0c1e4eda-53c6-ea8b-c27b-eabc8569cc74@windriver.com>
+Date:   Tue, 7 Apr 2020 17:58:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b420b304-05e9-df58-7149-31169b0b01e2@c-s.fr>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Language: en-US
+X-ClientProxiedBy: HK2PR02CA0203.apcprd02.prod.outlook.com
+ (2603:1096:201:20::15) To BY5PR11MB4241.namprd11.prod.outlook.com
+ (2603:10b6:a03:1ca::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.160] (60.247.85.82) by HK2PR02CA0203.apcprd02.prod.outlook.com (2603:1096:201:20::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15 via Frontend Transport; Tue, 7 Apr 2020 09:58:29 +0000
+X-Originating-IP: [60.247.85.82]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0e7b969e-bd51-468e-e468-08d7dada39d0
+X-MS-TrafficTypeDiagnostic: BY5PR11MB4151:
+X-Microsoft-Antispam-PRVS: <BY5PR11MB415180C650EADECB837FB822E4C30@BY5PR11MB4151.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Forefront-PRVS: 036614DD9C
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(346002)(376002)(136003)(366004)(39850400004)(396003)(6916009)(5660300002)(8676002)(81166006)(66476007)(8936002)(66556008)(36756003)(6666004)(86362001)(6486002)(31696002)(66946007)(478600001)(16526019)(26005)(316002)(4326008)(956004)(81156014)(2906002)(186003)(16576012)(31686004)(52116002)(6706004)(2616005)(78286006);DIR:OUT;SFP:1101;
+Received-SPF: None (protection.outlook.com: windriver.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: exJpxNwaB/L9U9BBCinQ6OTs5pnL5H7og5YvfwCqorp+VnsUDb4lijWEz6GUkRBCbber+kioPmKpzuEhvEDnNjzh9SVmRL9Q5Mll7ocY3YyOOoVg2bZfMqZXPFkeST2a/apFr0mUfHcgG8IaNxH4/BGpME1ZEv3Deyt4TSRPjHzGxb9ZGdQjELdmSYkI9VUzodM8qVBG3MZLA//T3q2fQysBD6YaIn4oa0AFkOTlk/wsqqbj+H9QwhNpft3pbuc9JIVTagn6wDrTYhc/dtFWRaJNDkuw30cB8csWyaA3uRCm8MSrNzjJ3d+pdDNZrVzwqAZWvB3kX67kmh3BkSUqXLktsvF1GZXm69muAxvxS9S6f8clWmfwcIZjAYqFSRe6MA+eoLV6Mhd/Jr9SHFK2u0LT4Ex+o5XCnlId36EN40V83qIFMaRAc2SkpMw2wreHzKvhaH37bn/mlnSX6V5+gzgF4sJfvHOOh7He735xLnULh2E5CA7/37mugNF6rjc/jBDJKjDtUauuJxNJ64WDWL0efgniUM2Q7tEE980RnuI=
+X-MS-Exchange-AntiSpam-MessageData: 37vA5ackbd3Lw+m4JtjKUyq0HOx3KQysZRgfwPQDKsS5I1/emLRgfZPhlpYlyw5m6fYeerSJB3424cGn9Xxi4tCFscUFmJ078w7CYakfTKlcFk6aFCW7UsAHLbCN1BcRvzX7GPkDz4IW/OZFUebszg==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0e7b969e-bd51-468e-e468-08d7dada39d0
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2020 09:58:30.7959
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7OK2Qdy3xAnpUeY0RaeWElFAT5BAL7reF7dzDPRUcLkxcNGdzAsyjsSykfBjCmqWJm4RHyQ5PSwG+3B6gd3Rsw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4151
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 07:50:30AM +0200, Christophe Leroy wrote:
-> 
-> 
-> Le 20/03/2020 � 11:20, Michal Suchanek a �crit�:
-> > There are numerous references to 32bit functions in generic and 64bit
-> > code so ifdef them out.
-> > 
-> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
-> > ---
-> > v2:
-> > - fix 32bit ifdef condition in signal.c
-> > - simplify the compat ifdef condition in vdso.c - 64bit is redundant
-> > - simplify the compat ifdef condition in callchain.c - 64bit is redundant
-> > v3:
-> > - use IS_ENABLED and maybe_unused where possible
-> > - do not ifdef declarations
-> > - clean up Makefile
-> > v4:
-> > - further makefile cleanup
-> > - simplify is_32bit_task conditions
-> > - avoid ifdef in condition by using return
-> > v5:
-> > - avoid unreachable code on 32bit
-> > - make is_current_64bit constant on !COMPAT
-> > - add stub perf_callchain_user_32 to avoid some ifdefs
-> > v6:
-> > - consolidate current_is_64bit
-> > v7:
-> > - remove leftover perf_callchain_user_32 stub from previous series version
-> > v8:
-> > - fix build again - too trigger-happy with stub removal
-> > - remove a vdso.c hunk that causes warning according to kbuild test robot
-> > v9:
-> > - removed current_is_64bit in previous patch
-> > v10:
-> > - rebase on top of 70ed86f4de5bd
-> > ---
-> >   arch/powerpc/include/asm/thread_info.h | 4 ++--
-> >   arch/powerpc/kernel/Makefile           | 6 +++---
-> >   arch/powerpc/kernel/entry_64.S         | 2 ++
-> >   arch/powerpc/kernel/signal.c           | 3 +--
-> >   arch/powerpc/kernel/syscall_64.c       | 6 ++----
-> >   arch/powerpc/kernel/vdso.c             | 3 ++-
-> >   arch/powerpc/perf/callchain.c          | 8 +++++++-
-> >   7 files changed, 19 insertions(+), 13 deletions(-)
-> > 
-> 
-> [...]
-> 
-> > diff --git a/arch/powerpc/kernel/syscall_64.c b/arch/powerpc/kernel/syscall_64.c
-> > index 87d95b455b83..2dcbfe38f5ac 100644
-> > --- a/arch/powerpc/kernel/syscall_64.c
-> > +++ b/arch/powerpc/kernel/syscall_64.c
-> > @@ -24,7 +24,6 @@ notrace long system_call_exception(long r3, long r4, long r5,
-> >   				   long r6, long r7, long r8,
-> >   				   unsigned long r0, struct pt_regs *regs)
-> >   {
-> > -	unsigned long ti_flags;
-> >   	syscall_fn f;
-> >   	if (IS_ENABLED(CONFIG_PPC_IRQ_SOFT_MASK_DEBUG))
-> > @@ -68,8 +67,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
-> >   	local_irq_enable();
-> > -	ti_flags = current_thread_info()->flags;
-> > -	if (unlikely(ti_flags & _TIF_SYSCALL_DOTRACE)) {
-> > +	if (unlikely(current_thread_info()->flags & _TIF_SYSCALL_DOTRACE)) {
-> >   		/*
-> >   		 * We use the return value of do_syscall_trace_enter() as the
-> >   		 * syscall number. If the syscall was rejected for any reason
-> > @@ -94,7 +92,7 @@ notrace long system_call_exception(long r3, long r4, long r5,
-> >   	/* May be faster to do array_index_nospec? */
-> >   	barrier_nospec();
-> > -	if (unlikely(ti_flags & _TIF_32BIT)) {
-> > +	if (unlikely(is_32bit_task())) {
-> 
-> is_compat() should be used here instead, because we dont want to use
-is_compat_task()
-> compat_sys_call_table() on PPC32.
-> 
-> >   		f = (void *)compat_sys_call_table[r0];
-> >   		r3 &= 0x00000000ffffffffULL;
-> 
-That only applies once you use this for 32bit as well. Right now it's
-64bit only so the two are the same.
+Hi,
 
-Thanks
 
-Michal
+It fails to compile mips kernel with large initramfs (at link time).
+
+kernel version: 5.6.0
+
+
+Steps to reproduce:
+
+1. git clone mainline kernel
+
+2. set ARCH=mips and CROSS_COMPILE=mips-linux-gnu-
+
+3. make defconfig
+
+4.enable initramfs support and set the path about initramfs source file
+
+5.make -j24
+
+[KEY] when your initramfs files is too large, and cause 
+usr/initramfs_data.cpio.gz
+
+compiled is larger than 225M, you will get the following error. BTW, x86 
+doesn't
+
+have this issue that I have tested.
+
+------------------------------error 
+messages-----------------------------------------
+
+   CHK     include/generated/compile.h
+   LD      vmlinux.o
+   MODPOST vmlinux.o
+   MODINFO modules.builtin.modinfo
+   GEN     modules.builtin
+   LD      .tmp_vmlinux.kallsyms1
+kernel/configs.o: In function `ikconfig_cleanup':
+/home/wrsadmin/work/linux/kernel/linux-master/kernel/configs.c:72:(.exit.text+0x8): 
+relocation truncated to fit: R_MIPS_26 against `remove_proc_entry'
+fs/binfmt_script.o: In function `exit_script_binfmt':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/binfmt_script.c:165:(.exit.text+0x4): 
+relocation truncated to fit: R_MIPS_26 against `unregister_binfmt'
+fs/binfmt_elf.o: In function `exit_elf_binfmt':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/binfmt_elf.c:2393:(.exit.text+0x4): 
+relocation truncated to fit: R_MIPS_26 against `unregister_binfmt'
+fs/mbcache.o: In function `mbcache_exit':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/mbcache.c:429:(.exit.text+0x4): 
+relocation truncated to fit: R_MIPS_26 against `kmem_cache_destroy'
+fs/nfs_common/grace.o: In function `exit_grace':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/nfs_common/grace.c:133:(.exit.text+0x4): 
+relocation truncated to fit: R_MIPS_26 against `unregister_pernet_subsys'
+fs/ext4/super.o: In function `ext4_destroy_lazyinit_thread':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:3456:(.exit.text+0x24): 
+relocation truncated to fit: R_MIPS_26 against `kthread_stop'
+fs/ext4/super.o: In function `unregister_as_ext2':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:6126:(.exit.text+0x30): 
+relocation truncated to fit: R_MIPS_26 against `unregister_filesystem'
+fs/ext4/super.o: In function `unregister_as_ext3':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:6155:(.exit.text+0x3c): 
+relocation truncated to fit: R_MIPS_26 against `unregister_filesystem'
+fs/ext4/super.o: In function `ext4_exit_fs':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:6261:(.exit.text+0x48): 
+relocation truncated to fit: R_MIPS_26 against `unregister_filesystem'
+fs/ext4/super.o: In function `destroy_inodecache':
+/home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:1218:(.exit.text+0x50): 
+relocation truncated to fit: R_MIPS_26 against `rcu_barrier'
+/home/wrsadmin/work/linux/kernel/linux-master/fs/ext4/super.c:1219:(.exit.text+0x5c): 
+additional relocation overflows omitted from the output
+Makefile:1086: recipe for target 'vmlinux' failed
+make[1]: *** [vmlinux] Error 1
+Makefile:1058: recipe for target 'autoksyms_recursive' failed
+make: *** [autoksyms_recursive] Error 2
+
+
+Any comment will be appreciated.
+
+Thanks,
+
+Yanfei
+
