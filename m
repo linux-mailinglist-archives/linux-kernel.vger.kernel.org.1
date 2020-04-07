@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52AF01A17ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 00:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD581A17FE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 00:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbgDGWWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 18:22:11 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:13202 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726438AbgDGWWJ (ORCPT
+        id S1726638AbgDGWYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 18:24:08 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:37732 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726484AbgDGWYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 18:22:09 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8cfca90000>; Tue, 07 Apr 2020 15:20:25 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Tue, 07 Apr 2020 15:22:08 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Tue, 07 Apr 2020 15:22:08 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr
- 2020 22:22:07 +0000
-Received: from [10.2.171.175] (172.20.13.39) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 7 Apr 2020
- 22:22:06 +0000
-Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <frankc@nvidia.com>, <hverkuil@xs4all.nl>,
-        <sakari.ailus@iki.fi>, <helen.koike@collabora.com>
-CC:     <sboyd@kernel.org>, <linux-media@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
- <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
- <200bb96e-2d07-764f-9e14-55538dc742fd@gmail.com>
- <23bfab09-b464-6e51-9843-06d13000e9b9@nvidia.com>
- <be77b0ef-d605-8357-4180-f40b2886d07a@gmail.com>
- <08cd31d5-e8b9-4d3a-fb0e-0e4462947d96@nvidia.com>
- <12a834ac-52b1-6dc0-7d3a-3e6a1fa85a2a@gmail.com>
- <e3712e7b-b335-b35b-a94f-24eb85122dca@nvidia.com>
- <b1726d33-0d35-9323-a747-407148d0104e@gmail.com>
- <eb80178f-30f4-8f46-51cd-ea3f4914b81d@nvidia.com>
- <dd16c560-ba8f-e7df-5dc4-5227e0043196@nvidia.com>
- <fea4f0a1-4a20-34d4-9eda-e4a599eeeffc@nvidia.com>
- <760d071e-0cbc-b3eb-9231-fb9f9ecb44a6@nvidia.com>
- <9e317f65-8a02-3b15-cfec-8e0d8374130e@gmail.com>
- <97b35910-4c93-123a-43a0-eb14476ed0f3@nvidia.com>
- <84ad4e2d-6ac1-e1f4-1c55-5edaae850631@nvidia.com>
- <15a879b3-8fb9-6821-3cdc-104ba583ac12@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <0c425505-347f-7418-af7e-d121fe0d06dc@nvidia.com>
-Date:   Tue, 7 Apr 2020 15:22:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <15a879b3-8fb9-6821-3cdc-104ba583ac12@gmail.com>
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586298025; bh=affO1Yr/fVkdDgXtDFDw59Iv7waWtClGoqGLbuDmMvA=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Transfer-Encoding:
-         Content-Language;
-        b=gQN4aVBFGHGfJTH4B+1M5e3V40VRWaNWZ/4VYh6O83zGBgCCkEPn7tt+e+40JAfW1
-         LyY6THdOiL1ww8uD/iOy8wzG4YyNEoYiepsyeHS3cPFJrvmG/hk0wWHEJQKrfU/xVY
-         kKlhkNye6bffxcrrQFV3xQ/bIdjKoo5BG4CTP/CirNy9gMgdx2lpwob70+O9RBk5hF
-         xHrfDGeBjgLLWYilKcS3QWfJ8gALhtXkFruZyu+210ZEkZAmfQZtORygckCHc6fPx9
-         IaCUaNMPEmyknNUyPY8tn3H/mHhuj1EgBiYlZ56GJn7NlTw5AZ8i+xuen6mBQ/1c7e
-         EFZIAi3TcTWcw==
+        Tue, 7 Apr 2020 18:24:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586298240; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=zb9gBubLqpCRCY9HKdRqpmX1NGtX4V5sdNkRDWjR9R0=; b=Ba1Ju2PteoEnYCgtaWM4BpRD6ZvqiFUf5pU2VBXrwWZOm1iuhseNI87wyBPsg5EcTC4dSyLz
+ VoesmT+MGmgWgW5k47XXy5AcY0c6Gw3vJY7wjhfyfKSNuaj/EZQ5LzGAqGMwcI05gQPf6VlW
+ mYbPcAS8Sa+mUmcYQ7aWmNXwTOY=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8cfd6a.7f90da0bbce0-smtp-out-n05;
+ Tue, 07 Apr 2020 22:23:38 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 55505C43637; Tue,  7 Apr 2020 22:23:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5246BC433F2;
+        Tue,  7 Apr 2020 22:23:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5246BC433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        mark.rutland@arm.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        vinod.koul@linaro.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH v3 0/4] Add SS/HS-USB changes for Qualcomm SM8150 chipset
+Date:   Tue,  7 Apr 2020 15:23:25 -0700
+Message-Id: <1586298209-4589-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds support for the Synopsis 7nm HSPHY USB driver being
+used in QCOM chipsets.  The HSPHY register map differs compared to 
+other PHY revisions.  In addition, modifications and updates are done
+to the QMP driver to add new registers/offsets, and to update the
+initialization sequence for enabling the SSUSB path on SM8150.
 
-On 4/7/20 3:08 PM, Dmitry Osipenko wrote:
-> External email: Use caution opening links or attachments
->
->
-> 08.04.2020 00:08, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> ...
->>>> I think you need a semaphore with resource count =3D 2.
->>> we hold on to issuing capture if more than 2 buffers are queued and it
->>> continues only after fifo has min 1 slot empty
->>
->> Just want to close on this part of feedback. Hope above explanation is
->> clear regarding triggering/issuing at max 2 frame capture to VI HW and
->> also regarding capture threads where they use wait_event_interruptible
->> to prevent blocking waiting for buffers to be available for captures.
->>
->> So no changes related to this part are needed in v7.
->  From what I see in the code, you "hold on" by making kthread to spin in
-> a busy-loop while caps_inflight >=3D SYNCPT_FIFO_DEPTH. So some change
-> should be needed to prevent this.
->
-> The wait_event_interruptible seems should be okay.
+Changes in v3:
+ - Use devm_reset_control_get_exclusive instead of referencing index for
+   reset handle
 
-We don't want to prevent that as we already have buffers available for=20
-capture so as soon as VI HW issuing single shot is done and when min 1=20
-slot is empty we should continue with issuing for another capture.
+Changes in v2:
+ - Fixed YAML errors caught by dt_binding_check
 
-As long as buffers are available, we should continue to capture and=20
-should not hold
+Jack Pham (1):
+  phy: qcom-qmp: Add SM8150 QMP USB3 PHY support
 
+Wesley Cheng (3):
+  dt-bindings: phy: Add binding for qcom,usb-hs-7nm
+  phy: qcom-snps: Add SNPS USB PHY driver for QCOM based SOCs
+  phy: qcom-qmp: Use proper PWRDOWN offset for sm8150 USB
+
+ .../devicetree/bindings/phy/qcom,usb-hs-7nm.yaml   |  76 ++++++
+ drivers/phy/qualcomm/Kconfig                       |  10 +
+ drivers/phy/qualcomm/Makefile                      |   1 +
+ drivers/phy/qualcomm/phy-qcom-qmp.c                | 157 +++++++++++
+ drivers/phy/qualcomm/phy-qcom-qmp.h                | 198 +++++++++++++-
+ drivers/phy/qualcomm/phy-qcom-snps-7nm.c           | 294 +++++++++++++++++++++
+ 6 files changed, 734 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/qcom,usb-hs-7nm.yaml
+ create mode 100644 drivers/phy/qualcomm/phy-qcom-snps-7nm.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
