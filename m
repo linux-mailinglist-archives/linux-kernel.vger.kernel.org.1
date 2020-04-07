@@ -2,249 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 345DA1A10A6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C4D1A10A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727121AbgDGPvj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 11:51:39 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:52570 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726637AbgDGPvj (ORCPT
+        id S1727302AbgDGPvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:51:45 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40464 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727078AbgDGPvo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:51:39 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-347-YJR14UtLOt-0-mg4vgE9sw-1; Tue, 07 Apr 2020 11:51:33 -0400
-X-MC-Unique: YJR14UtLOt-0-mg4vgE9sw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 029D218AB2C2;
-        Tue,  7 Apr 2020 15:51:32 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.192.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C1A04272A1;
-        Tue,  7 Apr 2020 15:51:29 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Michael Petlan <mpetlan@redhat.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>
-Subject: [PATCHv3] perf build-ids: Fall back to debuginfod query if debuginfo not found
-Date:   Tue,  7 Apr 2020 17:51:28 +0200
-Message-Id: <20200407155128.3203040-1-jolsa@kernel.org>
+        Tue, 7 Apr 2020 11:51:44 -0400
+Received: by mail-qk1-f196.google.com with SMTP id z15so2120973qki.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 08:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=QRvfH2t9mDG7scFOCVvuI8jWvAD9H98CvwOtBY9xnFU=;
+        b=axir4veRvSMSA5Z1mltRhTcN5fRfVsKE+fgQ9RTFYSj1h4ZcIA+qxTHF0WEmQsuqhm
+         FBibTJkcTCywNcFEi1qeODNnokh/DGSGlnqW09p7FFWByaT68dmkV0tjQEXXU1GvR+0u
+         wqiIjhnAQbLToP2WtkvwfbjBMmCzD2JzsboNArKXAPcaxlmCo5V0d9ElsvasnwJ1K4Qg
+         Qpz6U0/xTQoIxgW5Jj4OlAOy9efbwq4dwUJKr/JUuWPGSzvw3z/8hNastPUIK8TrzUnE
+         RG2xxHrqJhDDiF9gMYnmML7Zje/ZEYBzKmpBcgaOfdbwtTugzSs6WNAs1qN61HKjF+uX
+         NmXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=QRvfH2t9mDG7scFOCVvuI8jWvAD9H98CvwOtBY9xnFU=;
+        b=UwQJPA4BjqItmx7q/1yHfYmvvjYH4QOek/Hvo0fvuqgal6nrFDSsQ2s4aqkR5wDPI0
+         Od1Z9/9o8KJAYt2ABAKxCWh+0/RR7iNjD+tdA3v+u1l5OOM8Ow4KZQQfShTEpNdNx9zw
+         jmwj+hwvy6D+i1y/tEiVrchcmBzv3jyH/zv3LojRKQ4/DDVDK2+fivy2M01W2iTh1Cu7
+         QTMXoU/LzGOU2c/joEWbzj5iAC21xPk7wwP7Tg1F4a3WQezE1UU4AV3DKhfF1lzikjzO
+         uN3xVRY052YCJJKNeKeKN7aKlCMETubD8xthjlZlxurHikTrsDyIlFLu75/t6ytdi09F
+         sxxw==
+X-Gm-Message-State: AGi0PubYcAJHvFWh35xnlQeZnWr5mtEoz84u+jwMeCbu0eWVMXDcHWN7
+        ArKmkTY5Uy4fzOSEXOTx04KPIvhvOPzHVnh9SM8=
+X-Google-Smtp-Source: APiQypJaXafzIz0nEK9GupsAI+2UMyT5Eo4NgFq65Qj3anW9KFZ1Pl2hrQUyRlB8+PlrkkIr/bn6AmY1L12uddOiFyw=
+X-Received: by 2002:a37:a88e:: with SMTP id r136mr2961798qke.12.1586274701104;
+ Tue, 07 Apr 2020 08:51:41 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8BIT
+Reply-To: sebastient766@gmail.com
+Received: by 2002:ad4:554e:0:0:0:0:0 with HTTP; Tue, 7 Apr 2020 08:51:39 -0700 (PDT)
+From:   =?UTF-8?B?TXIuU8OpYmFzdGllbiBUb25p?= <sebastient766@gmail.com>
+Date:   Tue, 7 Apr 2020 08:51:39 -0700
+X-Google-Sender-Auth: yxmVWc3_CzPnrUaZYKacNI8Uv1E
+Message-ID: <CAFddMiN_O_kZ3oavuzPgbxrcY-_1d9D1n5hz=xAt66nVy8onSQ@mail.gmail.com>
+Subject: Attention:My Dear Friend.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Frank Ch. Eigler" <fche@redhat.com>
+Attention:My Dear Friend.
 
-During a perf-record, use the -ldebuginfod API to query a debuginfod
-server, should the debug data not be found in the usual system
-locations.  If successful, the usual $HOME/.debug dir is populated.
+I=E2=80=99m sorry but happy to inform you about my success in getting those
+funds transfer under the cooperation of a new partner from India,
+though I tried my best to involve you in the business but God decided
+the whole situations.
 
-Tested with:
+Presently I=E2=80=99m in India for investment projects with my own share of
+the total sum; I decided to load your compensation fund of US1.860 000.
+one million eight hundred and sixty thoundsand dollars in an atm
+payment card and register it with Sonapost Courier Company here in
+Burkina Faso with
+registration code of (Shipment Code awb33xzs)
 
-  $ find .
-  .
-  ./ctags-debuginfo-5.8-26.fc31.x86_64.rpm
-  ./usr
-  ./usr/lib
-  ./usr/lib/debug
-  ./usr/lib/debug/.build-id
-  ./usr/lib/debug/.build-id/ca
-  ./usr/lib/debug/.build-id/ca/46f6ae6a0cee57d85abc1d461c49074248908d
-  ./usr/lib/debug/.build-id/ca/46f6ae6a0cee57d85abc1d461c49074248908d.debug
-  ./usr/lib/debug/usr
-  ./usr/lib/debug/usr/bin
-  ./usr/lib/debug/usr/bin/ctags-5.8-26.fc31.x86_64.debug
+Please Contact the delivery manager of Sonapost Courier Company
+through his email address for more update on how to receive your
+compensation fund on ATM PAYMENT VISA CARD,
 
-  $ debuginfod  -F .
-  ...
+Contact them with the reconfirmation of your information below,
 
-  $ rm -rf ~/.debug/ ; mkdir ~/.debug
+1. Your full names.
+2. Your full contact address/country
+3. Your mobile or office phone numbers
+SONAPOST EMAIL ADDRESS BELOW
 
-  $ perf record make tags
-    BUILD:   Doing 'make -j8' parallel build
-    GEN      tags
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.107 MB perf.data (1483 samples) ]
+**************************************************************
 
-  $ find ~/.debug | grep ctags
-  /home/jolsa/.debug/usr/bin/ctags
-  /home/jolsa/.debug/usr/bin/ctags/ca46f6ae6a0cee57d85abc1d461c49074248908d
-  /home/jolsa/.debug/usr/bin/ctags/ca46f6ae6a0cee57d85abc1d461c49074248908d/elf
-  /home/jolsa/.debug/usr/bin/ctags/ca46f6ae6a0cee57d85abc1d461c49074248908d/probes
+Name of the Director.
+Mr. Salam Ander
+of Sonapost Courier Company
+EMAIL ADDRESS BELOW:
+andermrsalam1@gmail.com
 
-  $ rm -rf ~/.debug/ ; mkdir ~/.debug
-
-  $ DEBUGINFOD_URLS=http://localhost:8002 perf record make tags
-    BUILD:   Doing 'make -j8' parallel build
-    GEN      tags
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.108 MB perf.data (1531 samples) ]
-
-  $ find ~/.debug | grep ctag
-  /home/jolsa/.debug/usr/bin/ctags
-  /home/jolsa/.debug/usr/bin/ctags/ca46f6ae6a0cee57d85abc1d461c49074248908d
-  /home/jolsa/.debug/usr/bin/ctags/ca46f6ae6a0cee57d85abc1d461c49074248908d/debug
-  /home/jolsa/.debug/usr/bin/ctags/ca46f6ae6a0cee57d85abc1d461c49074248908d/elf
-  /home/jolsa/.debug/usr/bin/ctags/ca46f6ae6a0cee57d85abc1d461c49074248908d/probes
-
-Note the 'debug' file is created in the last run.
-
-v3:
-    added NO_LIBDEBUGINFOD variable
-    moved the libdebuginfod check to FEATURE_TESTS_EXTRA
-
-v2: use #ifdef HAVE_DEBUGINFOD_SUPPORT guards
-    include feature test source file
-
-Note that currently the debuginfo data are downloaded only on record path,
-we still need add this support to perf build-id/report.. and test ;-)
-
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Frank Ch. Eigler <fche@redhat.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/build/Makefile.feature             |  3 ++-
- tools/build/feature/Makefile             |  4 ++++
- tools/build/feature/test-libdebuginfod.c |  8 ++++++++
- tools/perf/Makefile.config               |  8 ++++++++
- tools/perf/Makefile.perf                 |  2 ++
- tools/perf/util/build-id.c               | 19 +++++++++++++++++++
- 6 files changed, 43 insertions(+), 1 deletion(-)
- create mode 100644 tools/build/feature/test-libdebuginfod.c
-
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 3e0c019ef297..8005608a2b78 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -98,7 +98,8 @@ FEATURE_TESTS_EXTRA :=                  \
-          llvm                           \
-          llvm-version                   \
-          clang                          \
--         libbpf
-+         libbpf                         \
-+         libdebuginfod
- 
- FEATURE_TESTS ?= $(FEATURE_TESTS_BASIC)
- 
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 621f528f7822..f8a4105bc376 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -26,6 +26,7 @@ FILES=                                          \
-          test-libelf-gelf_getnote.bin           \
-          test-libelf-getshdrstrndx.bin          \
-          test-libelf-mmap.bin                   \
-+         test-libdebuginfod.bin                 \
-          test-libnuma.bin                       \
-          test-numa_num_possible_cpus.bin        \
-          test-libperl.bin                       \
-@@ -156,6 +157,9 @@ $(OUTPUT)test-libelf-gelf_getnote.bin:
- $(OUTPUT)test-libelf-getshdrstrndx.bin:
- 	$(BUILD) -lelf
- 
-+$(OUTPUT)test-libdebuginfod.bin:
-+	$(BUILD) -ldebuginfod
-+
- $(OUTPUT)test-libnuma.bin:
- 	$(BUILD) -lnuma
- 
-diff --git a/tools/build/feature/test-libdebuginfod.c b/tools/build/feature/test-libdebuginfod.c
-new file mode 100644
-index 000000000000..da22548b8413
---- /dev/null
-+++ b/tools/build/feature/test-libdebuginfod.c
-@@ -0,0 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <elfutils/debuginfod.h>
-+
-+int main(void)
-+{
-+	debuginfod_client* c = debuginfod_begin();
-+	return (long)c;
-+}
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 12a8204d63c6..5ff7d72688b1 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -480,6 +480,14 @@ ifndef NO_LIBELF
-     CFLAGS += -DHAVE_ELF_GETSHDRSTRNDX_SUPPORT
-   endif
- 
-+  ifndef NO_LIBDEBUGINFOD
-+    $(call feature_check,libdebuginfod)
-+    ifeq ($(feature-libdebuginfod), 1)
-+      CFLAGS += -DHAVE_DEBUGINFOD_SUPPORT
-+      EXTLIBS += -ldebuginfod
-+    endif
-+  endif
-+
-   ifndef NO_DWARF
-     ifeq ($(origin PERF_HAVE_DWARF_REGS), undefined)
-       msg := $(warning DWARF register mappings have not been defined for architecture $(SRCARCH), DWARF support disabled);
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index d15a311408f1..5ccb5c694640 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -118,6 +118,8 @@ include ../scripts/utilities.mak
- #
- # Define LIBBPF_DYNAMIC to enable libbpf dynamic linking.
- #
-+# Define NO_LIBDEBUGINFOD if you do not want support debuginfod
-+#
- 
- # As per kernel Makefile, avoid funny character set dependencies
- unexport LC_ALL
-diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-index c076fc7fe025..31207b6e2066 100644
---- a/tools/perf/util/build-id.c
-+++ b/tools/perf/util/build-id.c
-@@ -31,6 +31,10 @@
- #include "probe-file.h"
- #include "strlist.h"
- 
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+#include <elfutils/debuginfod.h>
-+#endif
-+
- #include <linux/ctype.h>
- #include <linux/zalloc.h>
- 
-@@ -636,6 +640,21 @@ static char *build_id_cache__find_debug(const char *sbuild_id,
- 	if (realname && access(realname, R_OK))
- 		zfree(&realname);
- 	nsinfo__mountns_exit(&nsc);
-+
-+#ifdef HAVE_DEBUGINFOD_SUPPORT
-+        if (realname == NULL) {
-+                debuginfod_client* c = debuginfod_begin();
-+                if (c != NULL) {
-+                        int fd = debuginfod_find_debuginfo(c,
-+                                                           (const unsigned char*)sbuild_id, 0,
-+                                                           &realname);
-+                        if (fd >= 0)
-+                                close(fd); /* retaining reference by realname */
-+                        debuginfod_end(c);
-+                }
-+        }
-+#endif
-+
- out:
- 	free(debugfile);
- 	return realname;
--- 
-2.25.2
-
+Best Regards
+Mr.S=C3=A9bastien Toni,
