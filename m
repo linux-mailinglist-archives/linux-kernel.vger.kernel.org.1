@@ -2,68 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97DF61A12B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 19:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4531A12BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 19:30:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726550AbgDGR1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 13:27:45 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:45830 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgDGR1o (ORCPT
+        id S1726598AbgDGR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 13:29:58 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:25834 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgDGR36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 13:27:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=4bpQMLgWqSgsPCS9NLdaFYcf5ljNZI9OXQ8zzPQkveA=; b=CiWM3lvKoUr9dhAvXi+rH+w06i
-        aA2zSE9oEGBzdjbLE60jP8u4rNkgJWXSJMLDDQH/Qlh1v57yDYKtSJ7TuP3YaLfX6jvoBQWCQb2BH
-        WKTASsWY7F1uS87rLWV2Jt2cVOrl2OkxLKq7bn7JbgIHmOnuyTwPEuFJpMkQzlFEEp6Bi+ADMf6aV
-        i6NqKJelG5csifXKdF9ljlAweLt1qO7fz8SkD7hPJ/WcwoiFMZpl5NW5jrEiflSG0TkP8QfOtqPZE
-        6Rx1jTh2illfMZkT23+Mf60OMtZS2GbN95Qqb0wsu96TzQSGoUlr/43NT5lwhIxnvkl0buJZmgRmz
-        y7rww37g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jLs0i-0005y3-PV; Tue, 07 Apr 2020 17:27:41 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9DF093011DD;
-        Tue,  7 Apr 2020 19:27:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8CCD32B0A1247; Tue,  7 Apr 2020 19:27:39 +0200 (CEST)
-Date:   Tue, 7 Apr 2020 19:27:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Alexandre Chartre <alexandre.chartre@oracle.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de
-Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
- ANNOTATE_NOSPEC_ALTERNATIVE directives
-Message-ID: <20200407172739.GI20730@hirez.programming.kicks-ass.net>
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-10-alexandre.chartre@oracle.com>
- <20200407132837.GA20730@hirez.programming.kicks-ass.net>
- <20200407133454.n55u5nx33ruj73gx@treble>
- <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
- <3eb36fd2-9827-4c1b-681c-9c1d65c7582f@oracle.com>
- <20200407162838.5hlh6oom4oa45ugt@treble>
+        Tue, 7 Apr 2020 13:29:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1586280596;
+        s=strato-dkim-0002; d=aepfle.de;
+        h=References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:
+        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
+        bh=3FGuj7N8e29gKvPlFnzIwsDBtK6iaslDZO/2Jm/LaGU=;
+        b=GfhmcrnWyzcQmUa5Lz3s3bRLyaocHib8/gkI7bKngEYf0qBXU+9ZkVkApCoJi6Wm8P
+        GtLINSe7uD6w0tp8Cs6uc1TBmF1a/sKQlvdX2Q8OT1T+yHpoUoNBaMp0x73xBdXbWTwi
+        Gbc9m7MxysiWheSTPAFJe37jIzPzU8cmPHMfwkxTlnaHzEtwqGT0ObgQQPu+MrI0bFXU
+        urTpXPiEyQpWxzY9SgcEgdPTlR57/33FD6vmFRHckAeEOqe+174ZsCe/K7yq+9AKaI43
+        e8/v1gcbPiJ0TqIw+KAY8qVrx2NjjZeubwTksDrGrVu5RLJQRz9tqTUrW47LVl4sFJbs
+        +/lg==
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QED/SSGq+wjGiUC4AUztn93FPS2dyuY88K"
+X-RZG-CLASS-ID: mo00
+Received: from sender
+        by smtp.strato.de (RZmta 46.2.1 DYNA|AUTH)
+        with ESMTPSA id 204e5fw37HTuhOV
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Tue, 7 Apr 2020 19:29:56 +0200 (CEST)
+Date:   Tue, 7 Apr 2020 19:29:49 +0200
+From:   Olaf Hering <olaf@aepfle.de>
+To:     Joe Perches <joe@perches.com>
+Cc:     Jeff King <peff@peff.net>, linux-kernel@vger.kernel.org,
+        git@vger.kernel.org
+Subject: Re: get_maintainer.pl sends bogus addresses to git send-email
+Message-ID: <20200407192949.586159e7.olaf@aepfle.de>
+In-Reply-To: <2e6975d606846c834a387c07ee11cdce52356586.camel@perches.com>
+References: <20200407154046.GA15368@aepfle.de>
+        <20200407170257.GA1844923@coredump.intra.peff.net>
+        <2e6975d606846c834a387c07ee11cdce52356586.camel@perches.com>
+X-Mailer: Claws Mail 2019.12.31 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200407162838.5hlh6oom4oa45ugt@treble>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/gyvhdOKHJllakF_ac6Obz20"; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 11:28:38AM -0500, Josh Poimboeuf wrote:
-> Again, we should warn on stack changes inside alternatives, and then
-> look at converting RSB and retpolines to use static branches so they
-> have deterministic stacks.
+--Sig_/gyvhdOKHJllakF_ac6Obz20
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I don't think we need static brancher, we should just out-of-line the
-whole thing.
+Am Tue, 07 Apr 2020 10:18:41 -0700
+schrieb Joe Perches <joe@perches.com>:
 
-Let me sort this CFI error Thomas is getting and then I'll attempt a
-patch along the lines I outlined in earlier emails.
+> You need to add --norolestats on the get_maintainer command line
+
+Thanks, this can be used as a workaround for the time being.
+Not sure why anyone would actually care about such details in default mode.=
+..
+
+
+Olaf
+
+--Sig_/gyvhdOKHJllakF_ac6Obz20
+Content-Type: application/pgp-signature
+Content-Description: Digitale Signatur von OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE97o7Um30LT3B+5b/86SN7mm1DoAFAl6MuI0ACgkQ86SN7mm1
+DoDElRAAoKPmoW8t03Z5XrOYrmXy2RJPzRRguC/zAbQL+N3AK+xfNHqy93bBDyPF
+xonrACp9WyHtLNywMLH+5k2PecEch70kGyzbw6P1O/H530rN1wWWdbdwywguKpgm
+JVaWu5AEQHWukFfqsZH3BduY8ThOPbsGCar0l+ZtRAlUAs2eYeXv8tcdu0NeVaGS
+9ZyzLO2w7i/wX2MQUfGyJAeJTLFEkXGi+4jy4z+9c05zUqPzmXSncMR5njCytNjD
+W7lEOthcFVKMAUmIvMlnT8KvraKdbJ229Cqs5vlA9LCQK6bd0Xg0MAkH6tHOH61U
+31EV5C4zn5j+/QZdk9qYmlPjyKz7AWp88OiC17ZOqzugILIxGFU2QZwRcxcsVvGK
+dn2llTaTuzen77ifvNhcAjZPhlwrMStqAs0GSFD54XczCNnGUBV6PR/kPt/PhTWT
+ICHAE5HOC+/QmWwI4LsXGwi8l6i+HEd49sr+Egl/iu7mLERmtEY7tROtyYfi+oul
+/oaLYwuXV/kJsLgR2Y2V+D3iWjadyGl9OWbXNaN8AuKXL7dNP1bELbwiqBdJfu6c
+CZsxfi1pzzicw+2s3Hg/phjCgYKlhf9DjVdU9SdQCUY3qF9nGHrJlB0heJBGL+6U
+o/uIBId7siYE3oB3W9OBlp/ZsuQnBAnwx9FiohN5JJTjQo/5uoU=
+=HUNz
+-----END PGP SIGNATURE-----
+
+--Sig_/gyvhdOKHJllakF_ac6Obz20--
