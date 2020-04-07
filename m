@@ -2,248 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D89AC1A0A56
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EB61A0A5E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbgDGJmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:42:42 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46957 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725883AbgDGJml (ORCPT
+        id S1728105AbgDGJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:46:37 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:18336 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726725AbgDGJqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:42:41 -0400
-Received: by mail-wr1-f67.google.com with SMTP id j17so3032603wru.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 02:42:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=20leKfDnp9hGUKa9qwXeSYUwOVCG23UzDKZ3FQOqTKs=;
-        b=fZ9cv6wAj7u/XdboZIaVf2DSf+/yIorTWdNC6h/fFWS7y53Y9qHd0A9N7u+ODKXs3N
-         hOHdNmbeoIoPMnL4HixEF2+V/ULyQwF3/LD+GX3xc/M4Yt1CyAI3ffsrjnIuX7588vxB
-         cGReJFC0W4es+8DnVTfrIx+I9nJBSV04cdBnVZNIcW4hYDfJORyZb0nZVqvBOOB5gipw
-         +HdBzihbRB/lvnmTA1qhsejqF0FCAHYIGmdAvdVhiT8hv6DEMFA8VDaUThO+0yqscWLn
-         Mc6t3p+TLqF3yzWPLURWqKa1mCFMzeVfCktNwfR9BgHPvpeP+wBddDgqJ0BElrRhq/gg
-         v02A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=20leKfDnp9hGUKa9qwXeSYUwOVCG23UzDKZ3FQOqTKs=;
-        b=PFYBWWMnmAmuuW+V5NkSczHOpmxfObI3dmUI5qW6YETuNvM5Rr61mQRx0euolX/suF
-         rNhkrnsy3MzJTbieycONx1A1ydoK1Aj/LG9pEvJzCxQyWjt8lGQdjj4xJVd7+EKEnjG/
-         rsGn3T6yZT6tjY1OZcqyb/i17lF47h+FAUu6kMvRGqgLbJXcbgh8nLdKY7Gvo17vukbG
-         XWdmBlOi42D0+15qWJltTAWq2C3UWspISaASb5/kS9allOD1Or+pawYpEKnVmIPESpo1
-         z6l0pTB5PegXCeT0yDrcd6BPL6hkxCJYo7WGikAaGDFXmT7PbH9sBLhRc6qUYXxDqymU
-         v+hg==
-X-Gm-Message-State: AGi0PuZbHi7YsObgawKzYsr737c/nil2fitFY8d6hLMzP8cekvwcfpXo
-        zn5V06dSLkOwu+/q99li05nITg==
-X-Google-Smtp-Source: APiQypKkqz6z6YyRviQPi/wzjuP/+ZuPQsKmsVWJpbc392dm7RW+JWiqNapGo5mEIHkQRM+vVn94+A==
-X-Received: by 2002:a5d:6645:: with SMTP id f5mr1849365wrw.280.1586252558469;
-        Tue, 07 Apr 2020 02:42:38 -0700 (PDT)
-Received: from dell ([2.31.167.253])
-        by smtp.gmail.com with ESMTPSA id u17sm1621294wmu.31.2020.04.07.02.42.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 02:42:38 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 10:43:34 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MFD for v5.7
-Message-ID: <20200407094334.GH30614@dell>
+        Tue, 7 Apr 2020 05:46:36 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586252796; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=Ul3YhDd1rPscgFpO4CCJ18JVqPLmuQ5bBOiQ1R8owsk=;
+ b=V9j7NvrkmWPKQd6ECIQqP6Xxc/2RryYtFG1ePOcuHNZLYkwuTRldCtKTQ3Xl9YXSUCiD4S4I
+ G2/Bng8yf9b6aIPm78wqmYi/pdRSdsxBK5TFZKn2mokBSh5ZkEGgUVHy9DihsKow+nH6w6Z0
+ KIyvCj0lMHpcFY5hng3BMj0UaPc=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8c4bfb.7fc0072c6490-smtp-out-n03;
+ Tue, 07 Apr 2020 09:46:35 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BB59AC44788; Tue,  7 Apr 2020 09:46:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 38318C433F2;
+        Tue,  7 Apr 2020 09:46:35 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 07 Apr 2020 15:16:35 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
+ multiple connections
+In-Reply-To: <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
+References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
+ <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
+Message-ID: <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good morning Linus,
+Hi Mike,
 
-Enjoy!
+Thanks for taking a look.
 
-The following changes since commit bb6d3fb354c5ee8d6bde2d576eb7220ea09862b9:
+On 2020-04-06 16:25, Mike Leach wrote:
+> Hi,
+> 
+> The programmable replicator hardware by design enables trace through
+> both ports on reset. (see 1, section 4.4, 9.11)  The replicator driver
+> overrides this functionality to disable output, until the Coresight
+> infrastructure chooses a path from source to sink.
+> Now given that the hardware design is such that we must be able to
+> allow trace to be sent to both ports, a generic patch to prevent this
+> does not seem appropriate here.
+> 
+> I think this needs further investigation - to determine why this
+> appears to be failing in this particular instance.
+> 
 
-  Linux 5.6-rc1 (2020-02-09 16:08:48 -0800)
+Yes, this probably needs further investigation, but CPU hardlock stack
+trace doesnt help much. I could always trigger this hard lockup without
+this patch on SC7180 SoC and this is only seen when ETR is used as the 
+sink.
 
-are available in the Git repository at:
+The only difference I could see between non working case (on SC7180 [1]) 
+and
+the working case (on SDM845 [2]) is the path from source to sink.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/lee/mfd.git mfd-next-5.7
+SC7180 source to sink path(Not working):
+----------------------------------------
 
-for you to fetch changes up to d2923aa4535664ae5c46c3a093985afd18fec118:
+       etm0_out
+	 |
+   apss_funnel_in0
+          |
+  apss_merge_funnel_in
+          |
+      funnel1_in4
+	 |
+   merge_funnel_in1
+	 |
+    swao_funnel_in
+          |
+        etf_in
+	 |
+  swao_replicator_in
+          |
+   replicator_in
+	 |
+        etr_in
 
-  mfd: intel-lpss: Fix Intel Elkhart Lake LPSS I2C input clock (2020-03-30 07:35:28 +0100)
 
-----------------------------------------------------------------
- - New Drivers
-   - Add support for IQS620A/621/622/624/625 Azoteq IQS62X Sensors
+SDM845 source to sink path(Working):
+------------------------------------
 
- - New Device Support
-   - Add support for ADC, IRQ, Regulator, RTC and WDT to Ricoh RN5T618 PMIC
-   - Add support for Comet Lake to Intel LPSS
+       etm0_out
+          |
+    apss_funnel_in0
+          |
+  apss_merge_funnel_in
+          |
+     funnel2_in5
+	 |
+   merge_funnel_in2
+          |
+       etf_in
+	 |
+   replicator_in
+	 |
+        etr_in
 
- - New Functionality
-   - Add support for Charger Detection to Spreadtrum SC27xx PMICs
-   - Add support for Interrupt Polarity to Dialog Semi DA9062/61 PMIC
-   - Add ACPI enumeration support to Diolan DLN2 USB Adaptor
 
- - Fix-ups
-   - Device Tree; iqs62x, rn5t618, cros_ec_dev, stm32-lptimer, rohm,bd71837, rohm,bd71847
-   - I2C registration; rn5t618
-   - Kconfig; MFD_CPCAP, AB8500_CORE, MFD_WM8994, MFD_WM97xx, MFD_STPMIC1
-   - Use flexible-array members; omap-usb-tll, qcom-pm8xxx
-   - Remove unnecessary casts; omap-usb-host, omap-usb-tll
-   - Power (suspend/resume/poweroff) enhancements; rk808
-   - Improve error/sanity checking; dln2
-   - Use snprintf(); aat2870-core
+[1] - https://lore.kernel.org/patchwork/patch/1212946/
+[2] - 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/sdm845.dtsi?h=v5.6#n1910
 
- - Bug Fixes
-   - Fix PCI IDs; intel-lpss-pci
 
-----------------------------------------------------------------
-Andreas Kemnade (7):
-      dt-bindings: mfd: rn5t618: Document optional property interrupts
-      mfd: rn5t618: Add IRQ support
-      mfd: rn5t618: Add RTC related registers
-      mfd: rn5t618: Add more subdevices
-      rtc: rc5t619: Add Ricoh RC5T619 RTC driver
-      iio: adc: rn5t618: Add ADC driver for RN5T618/RC5T619
-      mfd: rn5t618: Cleanup i2c_device_id
-
-Andy Shevchenko (3):
-      mfd: intel-lpss: Add Intel Comet Lake PCH-V PCI IDs
-      mfd: dln2: Fix sanity checking for endpoints
-      mfd: dln2: Allow to be enumerated via ACPI
-
-Baolin Wang (1):
-      mfd: sc27xx: Add USB charger type detection support
-
-Benjamin Gaignard (1):
-      dt-bindings: mfd: Document STM32 low power timer bindings
-
-Christophe JAILLET (1):
-      mfd: Kconfig: Fix some misspelling of the word functionality
-
-Corentin Labbe (1):
-      mfd: omap: Remove useless cast for driver.name
-
-Gustavo A. R. Silva (2):
-      mfd: omap-usb-tll: Replace zero-length array with flexible-array member
-      mfd: pm8xxx: Replace zero-length array with flexible-array member
-
-Jarkko Nikula (1):
-      mfd: intel-lpss: Fix Intel Elkhart Lake LPSS I2C input clock
-
-Jeff LaBundy (6):
-      dt-bindings: Add bindings for Azoteq IQS620A/621/622/624/625
-      mfd: Add support for Azoteq IQS620A/621/622/624/625
-      input: keyboard: Add support for Azoteq IQS620A/621/622/624/625
-      iio: temperature: Add support for Azoteq IQS620AT temperature sensor
-      iio: light: Add support for Azoteq IQS621/622 ambient light sensors
-      iio: position: Add support for Azoteq IQS624/625 angle sensors
-
-Lee Jones (1):
-      Merge branches 'ib-mfd-iio-input-5.7' and 'ib-mfd-iio-rtc-5.7' into ibs-for-mfd-merged
-
-Matti Vaittinen (1):
-      dt-bindings: bd718x7: Yamlify and add BD71850
-
-Prashant Malani (1):
-      mfd: cros_ec: Check DT node for usbpd-notify add
-
-Robin Murphy (4):
-      mfd: rk808: Ensure suspend/resume hooks always work
-      mfd: rk808: Stop using syscore ops
-      mfd: rk808: Reduce shutdown duplication
-      mfd: rk808: Convert RK805 to shutdown/suspend hooks
-
-Shreyas Joshi (1):
-      mfd: da9062: Add support for interrupt polarity defined in device tree
-
-Soeren Moch (1):
-      mfd: rk808: Always use poweroff when requested
-
-Takashi Iwai (1):
-      mfd: aat2870: Use scnprintf() for avoiding potential buffer overflow
-
-Tony Lindgren (1):
-      mfd: cpcap: Fix compile if MFD_CORE is not selected
-
- .../devicetree/bindings/input/iqs62x-keys.yaml     |  132 +++
- Documentation/devicetree/bindings/mfd/iqs62x.yaml  |  179 ++++
- Documentation/devicetree/bindings/mfd/rn5t618.txt  |    4 +
- .../devicetree/bindings/mfd/rohm,bd71837-pmic.txt  |   90 --
- .../devicetree/bindings/mfd/rohm,bd71837-pmic.yaml |  236 +++++
- .../devicetree/bindings/mfd/rohm,bd71847-pmic.yaml |  222 ++++
- .../devicetree/bindings/mfd/st,stm32-lptimer.yaml  |   16 +
- .../devicetree/bindings/pwm/iqs620a-pwm.yaml       |   32 +
- .../bindings/regulator/rohm,bd71837-regulator.txt  |  162 ---
- .../bindings/regulator/rohm,bd71837-regulator.yaml |  103 ++
- .../bindings/regulator/rohm,bd71847-regulator.yaml |   97 ++
- drivers/iio/Kconfig                                |    1 +
- drivers/iio/Makefile                               |    1 +
- drivers/iio/adc/Kconfig                            |   10 +
- drivers/iio/adc/Makefile                           |    1 +
- drivers/iio/adc/rn5t618-adc.c                      |  256 +++++
- drivers/iio/light/Kconfig                          |   10 +
- drivers/iio/light/Makefile                         |    1 +
- drivers/iio/light/iqs621-als.c                     |  617 ++++++++++++
- drivers/iio/position/Kconfig                       |   19 +
- drivers/iio/position/Makefile                      |    7 +
- drivers/iio/position/iqs624-pos.c                  |  284 ++++++
- drivers/iio/temperature/Kconfig                    |   10 +
- drivers/iio/temperature/Makefile                   |    1 +
- drivers/iio/temperature/iqs620at-temp.c            |   97 ++
- drivers/input/keyboard/Kconfig                     |   10 +
- drivers/input/keyboard/Makefile                    |    1 +
- drivers/input/keyboard/iqs62x-keys.c               |  335 ++++++
- drivers/mfd/Kconfig                                |   23 +-
- drivers/mfd/Makefile                               |    1 +
- drivers/mfd/aat2870-core.c                         |    2 +-
- drivers/mfd/cros_ec_dev.c                          |    2 +-
- drivers/mfd/da9062-core.c                          |   44 +-
- drivers/mfd/dln2.c                                 |   30 +-
- drivers/mfd/intel-lpss-pci.c                       |   31 +-
- drivers/mfd/iqs62x.c                               | 1063 ++++++++++++++++++++
- drivers/mfd/omap-usb-host.c                        |    2 +-
- drivers/mfd/omap-usb-tll.c                         |    4 +-
- drivers/mfd/qcom-pm8xxx.c                          |    2 +-
- drivers/mfd/rk808.c                                |  139 +--
- drivers/mfd/rn5t618.c                              |  109 +-
- drivers/mfd/sprd-sc27xx-spi.c                      |   52 +
- drivers/rtc/Kconfig                                |   10 +
- drivers/rtc/Makefile                               |    1 +
- drivers/rtc/rtc-rc5t619.c                          |  444 ++++++++
- include/linux/mfd/iqs62x.h                         |  139 +++
- include/linux/mfd/rk808.h                          |    2 -
- include/linux/mfd/rn5t618.h                        |   26 +
- include/linux/mfd/sc27xx-pmic.h                    |    7 +
- 49 files changed, 4688 insertions(+), 379 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/input/iqs62x-keys.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/iqs62x.yaml
- delete mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.txt
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71837-pmic.yaml
- create mode 100644 Documentation/devicetree/bindings/mfd/rohm,bd71847-pmic.yaml
- create mode 100644 Documentation/devicetree/bindings/pwm/iqs620a-pwm.yaml
- delete mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71837-regulator.yaml
- create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71847-regulator.yaml
- create mode 100644 drivers/iio/adc/rn5t618-adc.c
- create mode 100644 drivers/iio/light/iqs621-als.c
- create mode 100644 drivers/iio/position/Kconfig
- create mode 100644 drivers/iio/position/Makefile
- create mode 100644 drivers/iio/position/iqs624-pos.c
- create mode 100644 drivers/iio/temperature/iqs620at-temp.c
- create mode 100644 drivers/input/keyboard/iqs62x-keys.c
- create mode 100644 drivers/mfd/iqs62x.c
- create mode 100644 drivers/rtc/rtc-rc5t619.c
- create mode 100644 include/linux/mfd/iqs62x.h
- create mode 100644 include/linux/mfd/sc27xx-pmic.h
+Thanks,
+Sai
 
 -- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
