@@ -2,63 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5DE1A03F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298831A0413
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 03:09:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbgDGBHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 21:07:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:48409 "EHLO
+        id S1726608AbgDGBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 21:07:49 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29264 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726552AbgDGBHm (ORCPT
+        with ESMTP id S1726582AbgDGBHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 21:07:42 -0400
+        Mon, 6 Apr 2020 21:07:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586221661;
+        s=mimecast20190719; t=1586221665;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=QXdHnCPN9IKDzYXh6cSCK96yIk733FWewogK2tGBIaQ=;
-        b=QBm8Nf8vBAEuKuDzFJINxLUMRLq4bmepJwcOSh0P7v30/j9yeAGNIi3C+dMKgim/SZCAWE
-        tnIBx5BoUE9nc5QxtUynDdqiR9oaCrRpkL4whnS/HwyTINWmp7ybfHkrP7bD8dltd15Ffh
-        jeeBWg8EH7ulAFOG2vUlNLvZgj/VNSQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-t6tbhrJHMxintePz3Npcfw-1; Mon, 06 Apr 2020 21:07:39 -0400
-X-MC-Unique: t6tbhrJHMxintePz3Npcfw-1
-Received: by mail-wr1-f72.google.com with SMTP id m15so870923wrb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:07:39 -0700 (PDT)
+        bh=jXqTQsUO9YVhjrcDRdxdoA1nJXOlF582i9eQgnD+YFc=;
+        b=S8rr+ljhJNGprvWC73XtxxyWK92hrfxtUkxPjUoy0GJDl3bDfr+2Vtjk8nfh2AjB9AdKlB
+        PznXQ7PUqwTgq+haElXdDbk9gFoXM5xtMV9KND99+VjvN6J67WCkkmf1FwA551MIhceZXE
+        5/C0MU82JitBvSXQlJmLzP+a/ZeO+Js=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-sV9uXe5IN4CFksfgDMcCLA-1; Mon, 06 Apr 2020 21:07:42 -0400
+X-MC-Unique: sV9uXe5IN4CFksfgDMcCLA-1
+Received: by mail-wr1-f71.google.com with SMTP id d4so853639wrq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Apr 2020 18:07:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QXdHnCPN9IKDzYXh6cSCK96yIk733FWewogK2tGBIaQ=;
-        b=BplijxARbyY7rU1jWVCEyRofjn28IJqPwtzm0tp1vwUp3OPNDZdF1HwOcYpyMgyZGX
-         rqL8m2PFK4TBoi4VZcjuYjLnE0e5XO+AphS0qdFb5EJ5czaO5akec4hwx3jrE8p3xKhw
-         Iv4W/6HvXjUv9+J9MXXTeP2ej/gMdZ+7VzIQNSzx5eu8R21Wijos6V5wPugeZKBlNLYX
-         ONNYwuat3zIbjorFRoki4TL3/gbQgybgHpvcx5ecnFEzgoGGS28x2TehjZAKcJd6OugX
-         YcSYgAN0bUjPItRy7IvBkp5Nbjvz6fXFbmqpwuMklmz3bEPGjMizZ9foKLt3V6yTKCJD
-         LY/A==
-X-Gm-Message-State: AGi0PuZFhC9A5K/q9pgHo2oPESkrH39/fkKtmOyJW/O0D2C3etccnmEn
-        2Ofe9t+7ZWZtWF7TR7V9LuELbAuqrAYuosQpoi1GaU/tGABw7hwZARnhwICkmncv5W/nHCh3nA2
-        ZLzibQ14HyYBKq0MqJahEn0a1
-X-Received: by 2002:adf:9b96:: with SMTP id d22mr2187310wrc.249.1586221658595;
-        Mon, 06 Apr 2020 18:07:38 -0700 (PDT)
-X-Google-Smtp-Source: APiQypK4RDCslYo3i2lHvzOQqU7u0oLmj6vW5yEO0Z36UmKBoS+EK0dWhGTEZV4YpT9+RwLo5TAivQ==
-X-Received: by 2002:adf:9b96:: with SMTP id d22mr2187292wrc.249.1586221658447;
-        Mon, 06 Apr 2020 18:07:38 -0700 (PDT)
+        bh=jXqTQsUO9YVhjrcDRdxdoA1nJXOlF582i9eQgnD+YFc=;
+        b=hxBL3Kj+1zsXbUOJyYpATsAlHhS5Fk8U2Vbo2Ba8oOfKND1m0YipuPUW9umYdPCbTp
+         V94D+Pf6DJQ5wylYz5MGTpBCiZNe/DNqYDOQ7SXC2hy3mTNXR8YxTxtj1PQUkbjsWvEj
+         2MuwMb7RoW3VlV9UZ0tGrs0sfq55IAXjlsLI+/QgSxauEJT0sNF5Rqb5SOwtIQb1jnfM
+         rXcHDxNwQ97uSeiutGQ7ruI/whhSGihrJ2FvGHDI6QeVTo2MOE+7ycrvOmPikO7iFW7Q
+         QpFhzlE93zFNMhrETvHyc8gJFsFoUCKjOxL6QRLD2E0+8JmkVMNN2KGI++Zd//ExemCh
+         ARLQ==
+X-Gm-Message-State: AGi0PubBTlF3cc4/ibaoUqNwn6gANzhJDxxe4EfejBMeW9ZmgYY0Siwz
+        K7xW62ozNSvpQEUQjy4cyctHiVknC/8Y1MbsZSXSQ5HsDWp5zPH3YYCQrrg93ZCQ1LUN2xSD3NN
+        0Ny0K+xLoji2yGEEH8fCH2+LH
+X-Received: by 2002:a5d:6a47:: with SMTP id t7mr1956340wrw.131.1586221660768;
+        Mon, 06 Apr 2020 18:07:40 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLi++G08KSxRhS85KgN5Q3h/2wGkqBja4GHXhB9IEHoUEJizYJP56tBhmaJBFrG8QKxZifQnw==
+X-Received: by 2002:a5d:6a47:: with SMTP id t7mr1956327wrw.131.1586221660622;
+        Mon, 06 Apr 2020 18:07:40 -0700 (PDT)
 Received: from redhat.com (bzq-79-176-51-222.red.bezeqint.net. [79.176.51.222])
-        by smtp.gmail.com with ESMTPSA id w204sm123674wma.1.2020.04.06.18.07.37
+        by smtp.gmail.com with ESMTPSA id k184sm103051wma.13.2020.04.06.18.07.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2020 18:07:37 -0700 (PDT)
-Date:   Mon, 6 Apr 2020 21:07:36 -0400
+        Mon, 06 Apr 2020 18:07:40 -0700 (PDT)
+Date:   Mon, 6 Apr 2020 21:07:38 -0400
 From:   "Michael S. Tsirkin" <mst@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     David Airlie <airlied@linux.ie>, Gerd Hoffmann <kraxel@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH v7 05/19] virtgpu: pull in uaccess.h
-Message-ID: <20200407010700.446571-6-mst@redhat.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-crypto@vger.kernel.org
+Subject: [PATCH v7 06/19] virtio-rng: pull in slab.h
+Message-ID: <20200407010700.446571-7-mst@redhat.com>
 References: <20200407010700.446571-1-mst@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,26 +72,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to virtio header changes, include uaccess.h directly as
-this file is using copy to/from user.
+In preparation to virtio header changes, include slab.h directly as
+this module is using it.
 
 Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 ---
- drivers/gpu/drm/virtio/virtgpu_ioctl.c | 1 +
+ drivers/char/hw_random/virtio-rng.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/virtio/virtgpu_ioctl.c b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-index 205ec4abae2b..2342a8baa5f8 100644
---- a/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_ioctl.c
-@@ -27,6 +27,7 @@
+diff --git a/drivers/char/hw_random/virtio-rng.c b/drivers/char/hw_random/virtio-rng.c
+index 718d8c087650..79a6e47b5fbc 100644
+--- a/drivers/char/hw_random/virtio-rng.c
++++ b/drivers/char/hw_random/virtio-rng.c
+@@ -11,6 +11,7 @@
+ #include <linux/virtio.h>
+ #include <linux/virtio_rng.h>
+ #include <linux/module.h>
++#include <linux/slab.h>
  
- #include <linux/file.h>
- #include <linux/sync_file.h>
-+#include <linux/uacess.h>
+ static DEFINE_IDA(rng_index_ida);
  
- #include <drm/drm_file.h>
- #include <drm/virtgpu_drm.h>
 -- 
 MST
 
