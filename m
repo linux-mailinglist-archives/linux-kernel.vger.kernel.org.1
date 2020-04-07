@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E6D1A0851
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAC461A083F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 09:28:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727528AbgDGHbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 03:31:37 -0400
-Received: from pandora.armlinux.org.uk ([78.32.30.218]:36496 "EHLO
-        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgDGHbh (ORCPT
+        id S1727801AbgDGH2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 03:28:01 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:47104 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727193AbgDGH15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 03:31:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=rWh8rrEPIkDMv4VbQykebA3zv8/SWd0dZcFoD4kPIuI=; b=WE+MMrJ/4QBFfcAKqCx0/lyS8
-        2aK+1lxsxR+r4wSUKpm06kagEuskFZA3GFBe+D2vT/jRALfufrBtc6c0dQkmdwLxnYlpH58ycehIq
-        2cIxeAMIbUNNoKn8Knaj/rkrCn7DyD9Gr/U21BLsxgpoqK6DH5MD9mJT0vYuAsTvAdRXjqeXA5Z6q
-        TnPcSOy3w28B6pWguwIt2vIzUhCpq880ySmVj0Sa329Uz2mGU7nrRWZOYDsjPi1GCwfX9IeG5rdaC
-        8hTEpDtOlOEGHbUh2TWk7yO5sWRFPfmAuNXAP+nGnppfoiMT+XD3e1YO2F7rJE+MrzMegzdGgl6CZ
-        DXWFYLIqA==;
-Received: from shell.armlinux.org.uk ([2002:4e20:1eda:1:5054:ff:fe00:4ec]:42612)
-        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1jLihc-0006a5-1h; Tue, 07 Apr 2020 08:31:20 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1jLihZ-00070T-KM; Tue, 07 Apr 2020 08:31:17 +0100
-Date:   Tue, 7 Apr 2020 08:31:17 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     ebiederm@xmission.com, kexec@lists.infradead.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, mripard@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Trying to kexec on Allwinner A80
-Message-ID: <20200407073117.GH25745@shell.armlinux.org.uk>
-References: <20200406082720.GA31279@Red>
- <20200406091600.GF25745@shell.armlinux.org.uk>
- <20200406092540.GB31279@Red>
- <20200406093729.GG25745@shell.armlinux.org.uk>
- <20200406201053.GA10931@Red>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200406201053.GA10931@Red>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Tue, 7 Apr 2020 03:27:57 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RaCP152424;
+        Tue, 7 Apr 2020 07:27:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=fVkYofmuk3HJT9Kp2o+/BbW/pN/3eB4v5F1XpsOZds8=;
+ b=kyt9t+tP5muP0a1k/zf6ZRsLUCx6YAWsWOYOgHf6BQmE4Okq4FOE7tD7f5xwP21r8rf9
+ a2MY9xwPHKbWAbWfjhNahpG7uhOU0YxT23FicjfUvzk2wPxsFwAt9461fAA7s5GnJ/o9
+ 54qpsi6aWrspxvfSuz8aMzsqsNKgGtG4TVpqYYCHs0Xdix9o2YLuK20UW0XzKl+aWl1k
+ /fNtNI3jqOw/Sp7DSW4W9l4P4nc5SyG16o7V1FmLJ5uaYUx0ZH5sc18EjwBroRIkVN6/
+ ofHqVCDLrrgT0lbVpxlPmrhlIsvDsX0KgwZBVHkdXOaiABbMzv61V78Wjf7R8XeFHOHd mA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 308ffd93hr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 07:27:36 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0377RTRw151616;
+        Tue, 7 Apr 2020 07:27:29 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30741d9tx2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 07:27:29 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0377RPl8031888;
+        Tue, 7 Apr 2020 07:27:25 GMT
+Received: from linux-1.home (/92.157.90.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 00:27:25 -0700
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        peterz@infradead.org, jthierry@redhat.com, tglx@linutronix.de,
+        alexandre.chartre@oracle.com
+Subject: [PATCH V2 0/9] objtool changes to remove all ANNOTATE_NOSPEC_ALTERNATIVE
+Date:   Tue,  7 Apr 2020 09:31:33 +0200
+Message-Id: <20200407073142.20659-1-alexandre.chartre@oracle.com>
+X-Mailer: git-send-email 2.18.2
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 phishscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 adultscore=0 mlxlogscore=955
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070062
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 priorityscore=1501
+ impostorscore=0 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1015 phishscore=0 mlxscore=0 bulkscore=0 adultscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070062
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 10:10:53PM +0200, Corentin Labbe wrote:
-> On Mon, Apr 06, 2020 at 10:37:29AM +0100, Russell King - ARM Linux admin wrote:
-> > On Mon, Apr 06, 2020 at 11:25:40AM +0200, Corentin Labbe wrote:
-> > > On Mon, Apr 06, 2020 at 10:16:00AM +0100, Russell King - ARM Linux admin wrote:
-> > > > On Mon, Apr 06, 2020 at 10:27:20AM +0200, Corentin Labbe wrote:
-> > > > > Hello
-> > > > > 
-> > > > > I am trying to add the last missing Allwinner Soc in kernelci: the A80.
-> > > > > But this SoC does not have any way to be used in kernelci, no USB nor network in uboot.
-> > > > > So I have tried to fake uboot since the kernel has network support and run the new kernel via kexec.
-> > > > > 
-> > > > > But kexec 2.0.18 fail to work:
-> > > > > kexec --force /tmp/kernel --initrd /tmp/ramdisk --dtb /tmp/dtb --command-line='console=ttyS0,115200n8 root=/dev/ram0 earlycon=uart,mmio32,0x7000000 ip=dhcp'
-> > > > 
-> > > > What happens if you omit the dtb argument?
-> > > > 
-> > > 
-> > > No change without dtb
-> > > 
-> > > I have also tried to add --mem-mim and --mem-max without any change.
-> > > I given mem according to what I saw in /proc/iomem
-> > > 20000000-9fffffff : System RAM
-> > >   20008000-207fffff : Kernel code
-> > >   20900000-209a0c87 : Kernel data
-> > > So I gave --mem-min 0x30000000 --mem-max 0x9fffffff
-> > > Anyway, the result is always the same.
-> > 
-> > The next step is to enable the early debugging - first in the
-> > decompressor - add #define DEBUG to the top of
-> > arch/arm/boot/compressed/head.S
-> > 
-> > Also enable DEBUG_LL in the kernel and use earlyprintk to see if you can
-> > get anything from the new kernel.
-> > 
-> 
-> I dont know what happened, but now I always get "Could not find a free area of memory of 0x86c1c0 bytes..." (even with kexec 2.0.18)
-> Furthermore, I have added crashkernel=128M to the cmdlist
-> I have verified that the reservation is working:
-> 20000000-9fffffff : System RAM
->   20008000-207fffff : Kernel code
->   20900000-209a0c87 : Kernel data
->   40000000-47ffffff : Crash kernel
-> But even with this reservation, no change.
+Hi,
 
-crashkernel is only necessary if you're loading a kenrel image to be
-booted when the existing one has crashed. For the problem you're
-seeing, it's an unnecessary additional change; please drop that.
+This is version v2 of this patchset based on the different comments
+received so far. It now uses and includes PeterZ patch to add
+UNWIND_HINT_RET_OFFSET. Other changes are described below.
 
-You could try running kexec with debug enabled to see more information.
+Code like retpoline or RSB stuffing, which is used to mitigate some of
+the speculative execution issues, is currently ignored by objtool with
+the ANNOTATE_NOSPEC_ALTERNATIVE directive. This series adds support
+for intra-function calls to objtool so that it can handle such a code.
+With these changes, we can remove all ANNOTATE_NOSPEC_ALTERNATIVE
+directives.
+
+Changes:
+ - replace RETPOLINE_RET with PeterZ UNWIND_HINT_RET_OFFSET
+ - make objtool intra-function call action architecture dependent
+ - objtool now automatically detects and validates all intra-function
+   calls but it issues a warning if the call was not explicitly tagged
+ - change __FILL_RETURN_BUFFER to work with objtool
+ - add generic ANNOTATE_INTRA_FUNCTION_CALL macro
+ - remove all ANNOTATE_SPEC_ALTERNATIVE (even for __FILL_RETURN_BUFFER)
+
+Thanks,
+
+alex.
+
+-----
+
+Alexandre Chartre (8):
+  objtool: UNWIND_HINT_RET_OFFSET should not check registers
+  objtool: is_fentry_call() crashes if call has no destination
+  objtool: Allow branches within the same alternative.
+  objtool: Add support for intra-function calls
+  x86/speculation: Change __FILL_RETURN_BUFFER to work with objtool
+  x86/speculation: Annotate intra-function calls
+  x86/speculation: Add unwind hint to trampoline return
+  x86/speculation: Remove all ANNOTATE_NOSPEC_ALTERNATIVE directives
+
+Peter Zijlstra (Intel) (1):
+  objtool: Introduce HINT_RET_OFFSET
+
+ arch/x86/include/asm/nospec-branch.h          |  32 ++--
+ arch/x86/include/asm/orc_types.h              |   1 +
+ arch/x86/include/asm/unwind_hints.h           |  10 ++
+ include/linux/frame.h                         |  11 ++
+ tools/arch/x86/include/asm/orc_types.h        |   1 +
+ .../Documentation/stack-validation.txt        |   8 +
+ tools/objtool/arch.h                          |   2 +
+ tools/objtool/arch/x86/decode.c               |  12 ++
+ tools/objtool/check.c                         | 152 ++++++++++++++----
+ tools/objtool/check.h                         |   6 +-
+ 10 files changed, 192 insertions(+), 43 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
+2.18.2
+
