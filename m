@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A561A0B7B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E6D01A0B19
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729273AbgDGK1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39302 "EHLO mail.kernel.org"
+        id S1728552AbgDGKXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:23:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729256AbgDGK1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:27:01 -0400
+        id S1728533AbgDGKXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:23:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6C53E20644;
-        Tue,  7 Apr 2020 10:26:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8EBF42078C;
+        Tue,  7 Apr 2020 10:23:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255219;
-        bh=P7iouULCpIAHpWLOd6Wjrgm7dXrqA8tQoL3jEOu3ql4=;
+        s=default; t=1586255021;
+        bh=OTr7RM5lQrjJE8EzqxD/5LlOedA2SxaY+uJAxcNQoTU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JIh2c307cG7sLRuJmaQVWfsXuS9mdJripg8tX7hDuqujFtYenes7bG8DsM7MQuiKW
-         wS9++TRMhr/niLKy/vbpwDcAlWc2MdcW6dqXW9qQ4yyLaEFP0aga7zjVpUU2KkAiPj
-         6tK176Tzw7hWdBnJgVG9CH0hUs3uobRPTHYUroVU=
+        b=o2GvLhpBqGxosMDoOSfmy0w/d2kX+7aDB8CPU/5UATFE3q0H0yUJ+xRLD46nAH2IX
+         TylFh2s+7MTX4neEvHOJUFDoIEGJscyfTfKVvkkIEuK4YX6Q36PkN8q7DUp/UInI5p
+         j0SXCz6kmGiiFh3vzJoI68ODwf71jPmga/Lxqqkc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-crypto@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.6 09/29] padata: fix uninitialized return value in padata_replace()
-Date:   Tue,  7 Apr 2020 12:22:06 +0200
-Message-Id: <20200407101453.138259293@linuxfoundation.org>
+        stable@vger.kernel.org, Martin Volf <martin.volf.42@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wolfram Sang <wsa@the-dreams.de>
+Subject: [PATCH 5.4 34/36] i2c: i801: Do not add ICH_RES_IO_SMI for the iTCO_wdt device
+Date:   Tue,  7 Apr 2020 12:22:07 +0200
+Message-Id: <20200407101458.567850603@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
-References: <20200407101452.046058399@linuxfoundation.org>
+In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
+References: <20200407101454.281052964@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,51 +45,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit 41ccdbfd5427bbbf3ed58b16750113b38fad1780 ]
+commit 04bbb97d1b732b2d197f103c5818f5c214a4cf81 upstream.
 
-According to Geert's report[0],
+Martin noticed that nct6775 driver does not load properly on his system
+in v5.4+ kernels. The issue was bisected to commit b84398d6d7f9 ("i2c:
+i801: Use iTCO version 6 in Cannon Lake PCH and beyond") but it is
+likely not the culprit because the faulty code has been in the driver
+already since commit 9424693035a5 ("i2c: i801: Create iTCO device on
+newer Intel PCHs"). So more likely some commit that added PCI IDs of
+recent chipsets made the driver to create the iTCO_wdt device on Martins
+system.
 
-  kernel/padata.c: warning: 'err' may be used uninitialized in this
-    function [-Wuninitialized]:  => 539:2
+The issue was debugged to be PCI configuration access to the PMC device
+that is not present. This returns all 1's when read and this caused the
+iTCO_wdt driver to accidentally request resourses used by nct6775.
 
-Warning is seen only with older compilers on certain archs.  The
-runtime effect is potentially returning garbage down the stack when
-padata's cpumasks are modified before any pcrypt requests have run.
+It turns out that the SMI resource is only required for some ancient
+systems, not the ones supported by this driver. For this reason do not
+populate the SMI resource at all and drop all the related code. The
+driver now always populates the main I/O resource and only in case of SPT
+(Intel Sunrisepoint) compatible devices it adds another resource for the
+NO_REBOOT bit. These two resources are of different types so
+platform_get_resource() used by the iTCO_wdt driver continues to find
+the both resources at index 0.
 
-Simplest fix is to initialize err to the success value.
+Link: https://lore.kernel.org/linux-hwmon/CAM1AHpQ4196tyD=HhBu-2donSsuogabkfP03v1YF26Q7_BgvgA@mail.gmail.com/
+Fixes: 9424693035a5 ("i2c: i801: Create iTCO device on newer Intel PCHs")
+[wsa: complete fix needs all of http://patchwork.ozlabs.org/project/linux-i2c/list/?series=160959&state=*]
+Reported-by: Martin Volf <martin.volf.42@gmail.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-[0] http://lkml.kernel.org/r/20200210135506.11536-1-geert@linux-m68k.org
-
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Fixes: bbefa1dd6a6d ("crypto: pcrypt - Avoid deadlock by using per-instance padata queues")
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/padata.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-i801.c |   45 +++++++++++-------------------------------
+ 1 file changed, 12 insertions(+), 33 deletions(-)
 
-diff --git a/kernel/padata.c b/kernel/padata.c
-index 72777c10bb9cb..62082597d4a2a 100644
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -512,7 +512,7 @@ static int padata_replace_one(struct padata_shell *ps)
- static int padata_replace(struct padata_instance *pinst)
+--- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -129,11 +129,6 @@
+ #define TCOBASE		0x050
+ #define TCOCTL		0x054
+ 
+-#define ACPIBASE		0x040
+-#define ACPIBASE_SMI_OFF	0x030
+-#define ACPICTRL		0x044
+-#define ACPICTRL_EN		0x080
+-
+ #define SBREG_BAR		0x10
+ #define SBREG_SMBCTRL		0xc6000c
+ #define SBREG_SMBCTRL_DNV	0xcf000c
+@@ -1544,7 +1539,7 @@ i801_add_tco_spt(struct i801_priv *priv,
+ 		pci_bus_write_config_byte(pci_dev->bus, devfn, 0xe1, hidden);
+ 	spin_unlock(&p2sb_spinlock);
+ 
+-	res = &tco_res[ICH_RES_MEM_OFF];
++	res = &tco_res[1];
+ 	if (pci_dev->device == PCI_DEVICE_ID_INTEL_DNV_SMBUS)
+ 		res->start = (resource_size_t)base64_addr + SBREG_SMBCTRL_DNV;
+ 	else
+@@ -1554,7 +1549,7 @@ i801_add_tco_spt(struct i801_priv *priv,
+ 	res->flags = IORESOURCE_MEM;
+ 
+ 	return platform_device_register_resndata(&pci_dev->dev, "iTCO_wdt", -1,
+-					tco_res, 3, &spt_tco_platform_data,
++					tco_res, 2, &spt_tco_platform_data,
+ 					sizeof(spt_tco_platform_data));
+ }
+ 
+@@ -1567,17 +1562,16 @@ static struct platform_device *
+ i801_add_tco_cnl(struct i801_priv *priv, struct pci_dev *pci_dev,
+ 		 struct resource *tco_res)
  {
- 	struct padata_shell *ps;
--	int err;
-+	int err = 0;
+-	return platform_device_register_resndata(&pci_dev->dev, "iTCO_wdt", -1,
+-					tco_res, 2, &cnl_tco_platform_data,
+-					sizeof(cnl_tco_platform_data));
++	return platform_device_register_resndata(&pci_dev->dev,
++			"iTCO_wdt", -1, tco_res, 1, &cnl_tco_platform_data,
++			sizeof(cnl_tco_platform_data));
+ }
  
- 	pinst->flags |= PADATA_RESET;
+ static void i801_add_tco(struct i801_priv *priv)
+ {
+-	u32 base_addr, tco_base, tco_ctl, ctrl_val;
+ 	struct pci_dev *pci_dev = priv->pci_dev;
+-	struct resource tco_res[3], *res;
+-	unsigned int devfn;
++	struct resource tco_res[2], *res;
++	u32 tco_base, tco_ctl;
  
--- 
-2.20.1
-
+ 	/* If we have ACPI based watchdog use that instead */
+ 	if (acpi_has_watchdog())
+@@ -1592,30 +1586,15 @@ static void i801_add_tco(struct i801_pri
+ 		return;
+ 
+ 	memset(tco_res, 0, sizeof(tco_res));
+-
+-	res = &tco_res[ICH_RES_IO_TCO];
+-	res->start = tco_base & ~1;
+-	res->end = res->start + 32 - 1;
+-	res->flags = IORESOURCE_IO;
+-
+ 	/*
+-	 * Power Management registers.
++	 * Always populate the main iTCO IO resource here. The second entry
++	 * for NO_REBOOT MMIO is filled by the SPT specific function.
+ 	 */
+-	devfn = PCI_DEVFN(PCI_SLOT(pci_dev->devfn), 2);
+-	pci_bus_read_config_dword(pci_dev->bus, devfn, ACPIBASE, &base_addr);
+-
+-	res = &tco_res[ICH_RES_IO_SMI];
+-	res->start = (base_addr & ~1) + ACPIBASE_SMI_OFF;
+-	res->end = res->start + 3;
++	res = &tco_res[0];
++	res->start = tco_base & ~1;
++	res->end = res->start + 32 - 1;
+ 	res->flags = IORESOURCE_IO;
+ 
+-	/*
+-	 * Enable the ACPI I/O space.
+-	 */
+-	pci_bus_read_config_dword(pci_dev->bus, devfn, ACPICTRL, &ctrl_val);
+-	ctrl_val |= ACPICTRL_EN;
+-	pci_bus_write_config_dword(pci_dev->bus, devfn, ACPICTRL, ctrl_val);
+-
+ 	if (priv->features & FEATURE_TCO_CNL)
+ 		priv->tco_pdev = i801_add_tco_cnl(priv, pci_dev, tco_res);
+ 	else
 
 
