@@ -2,129 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7041A16A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1CB1A16AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 22:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727473AbgDGUUl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Apr 2020 16:20:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:48531 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726740AbgDGUUl (ORCPT
+        id S1727666AbgDGUVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 16:21:39 -0400
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:34173 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726719AbgDGUVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 16:20:41 -0400
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jLui2-0004ak-1Y; Tue, 07 Apr 2020 22:20:34 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 595CA101273; Tue,  7 Apr 2020 22:20:33 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Andy Lutomirski <luto@amacapital.net>,
-        Vivek Goyal <vgoyal@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
-In-Reply-To: <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net>
-References: <20200407172140.GB64635@redhat.com> <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net>
-Date:   Tue, 07 Apr 2020 22:20:33 +0200
-Message-ID: <87eeszjbe6.fsf@nanos.tec.linutronix.de>
+        Tue, 7 Apr 2020 16:21:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1586290897;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=WtVl2Tqlgobs3aTGznDkxrp2IRy/nD6GLGW1APrqHHY=;
+  b=XjIsjt7KYWpO3BMgvTOK/FxHB7NIiwyCAfS8YBn9qKsSAXAZD3tU3/YZ
+   sCIp6TGBw/yUrNHCNPgaivTDWEFEKWveTfLIKh6NUsux94leIfprxWXRz
+   bCeayo1B0ThHOu25FoKOfURVJW520ZV6LoJl8S2mSzMVLMxf3pK93C1xB
+   k=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none; spf=None smtp.pra=andrew.cooper3@citrix.com; spf=Pass smtp.mailfrom=Andrew.Cooper3@citrix.com; spf=None smtp.helo=postmaster@mail.citrix.com
+Received-SPF: None (esa4.hc3370-68.iphmx.com: no sender
+  authenticity information available from domain of
+  andrew.cooper3@citrix.com) identity=pra;
+  client-ip=162.221.158.21; receiver=esa4.hc3370-68.iphmx.com;
+  envelope-from="Andrew.Cooper3@citrix.com";
+  x-sender="andrew.cooper3@citrix.com";
+  x-conformance=sidf_compatible
+Received-SPF: Pass (esa4.hc3370-68.iphmx.com: domain of
+  Andrew.Cooper3@citrix.com designates 162.221.158.21 as
+  permitted sender) identity=mailfrom;
+  client-ip=162.221.158.21; receiver=esa4.hc3370-68.iphmx.com;
+  envelope-from="Andrew.Cooper3@citrix.com";
+  x-sender="Andrew.Cooper3@citrix.com";
+  x-conformance=sidf_compatible; x-record-type="v=spf1";
+  x-record-text="v=spf1 ip4:209.167.231.154 ip4:178.63.86.133
+  ip4:195.66.111.40/30 ip4:85.115.9.32/28 ip4:199.102.83.4
+  ip4:192.28.146.160 ip4:192.28.146.107 ip4:216.52.6.88
+  ip4:216.52.6.188 ip4:162.221.158.21 ip4:162.221.156.83
+  ip4:168.245.78.127 ~all"
+Received-SPF: None (esa4.hc3370-68.iphmx.com: no sender
+  authenticity information available from domain of
+  postmaster@mail.citrix.com) identity=helo;
+  client-ip=162.221.158.21; receiver=esa4.hc3370-68.iphmx.com;
+  envelope-from="Andrew.Cooper3@citrix.com";
+  x-sender="postmaster@mail.citrix.com";
+  x-conformance=sidf_compatible
+IronPort-SDR: 1eDelT3dZ0888ZvXjwp6+FAhyRUH3fRbOibIZI8yY9Gxmy9iGmv1WSxTdw9nmc6e3y8ppZdh7j
+ M6jN4Rq1bsoMYcSNTSTyM2YV801o4rJh8FrLoKgLi7mbuZvUT1PkYMcOTzXwQMlKy46eg+pZJB
+ CaFLEQEpjXzN09jZMHVjCCF7pPdE0Hq4RsQ2u87YxXzGg5cTBOUrv89QeFaLdvye6DUPljvxlw
+ DFX1eMatkkhImuuD/qwrjBRyCLK6/gWyn+X3MHTVJo6oMlBAyH57OsYmrbin5EWbEXKHP2cGBO
+ Qv4=
+X-SBRS: 2.7
+X-MesageID: 15994726
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.72,356,1580792400"; 
+   d="scan'208";a="15994726"
+Subject: Re: [PATCH 0/4] x86/module: Out-of-tree module decode and sanitize
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>,
+        <hch@infradead.org>, <sean.j.christopherson@intel.com>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <x86@kernel.org>, <kenny@panix.com>, <jeyu@kernel.org>,
+        <rasmus.villemoes@prevas.dk>, <pbonzini@redhat.com>,
+        <fenghua.yu@intel.com>, <xiaoyao.li@intel.com>,
+        <nadav.amit@gmail.com>, <thellstrom@vmware.com>,
+        <tony.luck@intel.com>, <rostedt@goodmis.org>,
+        <gregkh@linuxfoundation.org>, <jannh@google.com>,
+        <keescook@chromium.org>, <David.Laight@aculab.com>,
+        <dcovelli@vmware.com>, <mhiramat@kernel.org>
+References: <20200407110236.930134290@infradead.org>
+ <a53a01b9-2907-4eb3-a9fd-16e6e8029028@citrix.com>
+ <20200407194112.GQ2452@worktop.programming.kicks-ass.net>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <3245cf5e-b21b-634e-a9d7-a63d55145c33@citrix.com>
+Date:   Tue, 7 Apr 2020 21:21:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+In-Reply-To: <20200407194112.GQ2452@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
+ AMSPEX02CL02.citrite.net (10.69.22.126)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Lutomirski <luto@amacapital.net> writes:
->> On Apr 7, 2020, at 10:21 AM, Vivek Goyal <vgoyal@redhat.com> wrote:
->> Whether interrupts are enabled or not check only happens before we decide
->> if async pf protocol should be followed or not. Once we decide to
->> send PAGE_NOT_PRESENT, later notification PAGE_READY does not check
->> if interrupts are enabled or not. And it kind of makes sense otherwise
->> guest process will wait infinitely to receive PAGE_READY.
->> 
->> I modified the code a bit to disable interrupt and wait 10 seconds (after
->> getting PAGE_NOT_PRESENT message). And I noticed that error async pf
->> got delivered after 10 seconds after enabling interrupts. So error
->> async pf was not lost because interrupts were disabled.
-
-Async PF is not the same as a real #PF. It just hijacked the #PF vector
-because someone thought this is a brilliant idea.
-
->> Havind said that, I thought disabling interrupts does not mask exceptions.
->> So page fault exception should have been delivered even with interrupts
->> disabled. Is that correct? May be there was no vm exit/entry during
->> those 10 seconds and that's why.
-
-No. Async PF is not a real exception. It has interrupt semantics and it
-can only be injected when the guest has interrupts enabled. It's bad
-design.
-
-> My point is that the entire async pf is nonsense. There are two types of events right now:
+On 07/04/2020 20:41, Peter Zijlstra wrote:
+> On Tue, Apr 07, 2020 at 06:23:27PM +0100, Andrew Cooper wrote:
+>> On 07/04/2020 12:02, Peter Zijlstra wrote:
+>>> Hi all,
+>>>
+>>> Driven by the SLD vs VMX interaction, here are some patches that provide means
+>>> to analyze the text of out-of-tree modules.
+>>>
+>>> The first user of that is refusing to load modules on VMX-SLD conflicts, but it
+>>> also has a second patch that refulses to load any module that tries to modify
+>>> CRn/DRn.
+>>>
+>>> I'm thinking people will quickly come up with more and more elaborate tests to
+>>> which to subject out-of-tree modules.
+>> Anything playing with LGDT & friends?  Shouldn't be substantially more
+>> elaborate than CR/DR to check for.
+> More friends? (I wasn't sure on the Sxxx instructions, they appear
+> harmless, but what do I know..)
 >
-> “Page not ready”: normally this isn’t even visible to the guest — the
-> guest just waits. With async pf, the idea is to try to tell the guest
-> that a particular instruction would block and the guest should do
-> something else instead. Sending a normal exception is a poor design,
-> though: the guest may not expect this instruction to cause an
-> exception. I think KVM should try to deliver an *interrupt* and, if it
-> can’t, then just block the guest.
-
-That's pretty much what it does, just that it runs this through #PF and
-has the checks for interrupts disabled - i.e can't right now' around
-that. If it can't then KVM schedules the guest out until the situation
-has been resolved.
-
-> “Page ready”: this is a regular asynchronous notification just like,
-> say, a virtio completion. It should be an ordinary interrupt.  Some in
-> memory data structure should indicate which pages are ready.
+> I was also eyeing LSL LTR LSS, none of which I figured a module has any
+> business of using. Are there more?
 >
-> “Page is malfunctioning” is tricky because you *must* deliver the
-> event. x86’s #MC is not exactly a masterpiece, but it does kind of
-> work.
+> --- a/arch/x86/kernel/module.c
+> +++ b/arch/x86/kernel/module.c
+> @@ -282,6 +282,50 @@ static bool insn_is_mov_DRn(struct insn
+>  	return false;
+>  }
+>  
+> +static bool insn_is_LxDT(struct insn *insn)
+> +{
+> +	u8 modrm = insn->modrm.bytes[0];
+> +	u8 modrm_mod = X86_MODRM_MOD(modrm);
+> +	u8 modrm_reg = X86_MODRM_REG(modrm);
+> +
+> +	if (insn->opcode.bytes[0] != 0x0f)
+> +		return false;
+> +
+> +	switch (insn->opcode.bytes[1]) {
+> +	case 0x00:
+> +		if (modrm_mod != 0x03)
+> +			break;
+> +
 
-Nooooo. This does not need #MC at all. Don't even think about it.
+Apologies - missed this before.  LLDT and LTR can be encoded with a
+memory operand, so you need to drop the modrm_mod check to spot all
+instances.
 
-The point is that the access to such a page is either happening in user
-space or in kernel space with a proper exception table fixup.
-
-That means a real #PF is perfectly fine. That can be injected any time
-and does not have the interrupt semantics of async PF.
-
-So now lets assume we distangled async PF from #PF and made it a regular
-interrupt, then the following situation still needs to be dealt with:
-
-   guest -> access faults
-
-host -> injects async fault
-
-   guest -> handles and blocks the task
-
-host figures out that the page does not exist anymore and now needs to
-fixup the situation.
-
-host -> injects async wakeup
-
-   guest -> returns from aysnc PF interrupt and retries the instruction
-            which faults again.
-
-host -> knows by now that this is a real fault and injects a proper #PF
-
-   guest -> #PF runs and either sends signal to user space or runs
-            the exception table fixup for a kernel fault.
-
-Thanks,
-
-        tglx
-
-
-
-
+~Andrew
