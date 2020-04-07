@@ -2,122 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E4491A051C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 05:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D471A052E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 05:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgDGDFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Apr 2020 23:05:49 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45569 "EHLO ozlabs.org"
+        id S1726701AbgDGDS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Apr 2020 23:18:27 -0400
+Received: from mga07.intel.com ([134.134.136.100]:19262 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgDGDFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Apr 2020 23:05:48 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48xC2y1QR0z9sP7;
-        Tue,  7 Apr 2020 13:05:45 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1586228746;
-        bh=4jItGZbMT8Xb1UNdcXfJm/hRV2V4Q6ciJoIaU9vs9NI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DyB/tyn8jBuhsBprcd1O0K7yvkig6NL/shFbPjx4V8FYIFqwgj/nkEVDhefyZi3Np
-         K1T1I7djraV0KfB40tc9OcRwd09E1UqTKWbdMV/ip+OgW5CiTk+EStGHqaFLgRS8hf
-         A8s8L4Xjo3HY0xZNJ54gf0rip4c2Y0vGNLITzq0z/OXSKYwLtnO3NwWBdq7jMZuvb5
-         KucVpj7PrgjlsUlxA4dm72BypWG4HfrCpJX/XHljAV2mWj9oADHKm9f4H1awI3eW+t
-         ElIpIHoaX33Zx97Aaju7QIjABeSmKroOY5BZNVFClKl/6HmRx5PF8F9yR8T4r9x//l
-         nw2UFZs3KwRFQ==
-Date:   Tue, 7 Apr 2020 13:05:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gerd Hoffmann <kraxel@redhat.com>
-Subject: linux-next: build failure after merge of the vhost tree
-Message-ID: <20200407130542.0e3b5d9d@canb.auug.org.au>
+        id S1726535AbgDGDS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Apr 2020 23:18:26 -0400
+IronPort-SDR: 9vRluI4iJ7LncyDqqP9OOkqmrDCqYY8nZY0vJXvjyyNaUn016xWtinCmu0YWMEidX6uih+VMKy
+ PcbSIPYQYVVQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2020 20:18:26 -0700
+IronPort-SDR: 2xR9uCM5BCNi15KKmsOhl436RFPRAMt47uVHr0POCE9sbZmZYVeBcv4l84JGJCChQ2Yo+l3GPc
+ XmGUNL+cWKeg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,353,1580803200"; 
+   d="scan'208";a="451069613"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by fmsmga005.fm.intel.com with ESMTP; 06 Apr 2020 20:18:21 -0700
+Date:   Mon, 6 Apr 2020 23:08:46 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Felipe Balbi <balbi@kernel.org>,
+        amd-gfx@lists.freedesktop.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        linux-usb@vger.kernel.org, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        intel-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Jason Wang <jasowang@redhat.com>,
+        Zhi Wang <zhi.a.wang@intel.com>
+Subject: Re: [PATCH 2/6] i915/gvt/kvm: a NULL ->mm does not mean a thread is
+ a kthread
+Message-ID: <20200407030845.GA10586@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200404094101.672954-1-hch@lst.de>
+ <20200404094101.672954-3-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DQefj_VsLdP6ZiNGGyHotvI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200404094101.672954-3-hch@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DQefj_VsLdP6ZiNGGyHotvI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, Apr 04, 2020 at 11:40:57AM +0200, Christoph Hellwig wrote:
+> Use the proper API instead.
+> 
+> Fixes: f440c8a572d7 ("drm/i915/gvt/kvmgt: read/write GPA via KVM API")
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/gvt/kvmgt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gvt/kvmgt.c b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> index 074c4efb58eb..5848400620b4 100644
+> --- a/drivers/gpu/drm/i915/gvt/kvmgt.c
+> +++ b/drivers/gpu/drm/i915/gvt/kvmgt.c
+> @@ -2037,7 +2037,7 @@ static int kvmgt_rw_gpa(unsigned long handle, unsigned long gpa,
+>  	struct kvmgt_guest_info *info;
+>  	struct kvm *kvm;
+>  	int idx, ret;
+> -	bool kthread = current->mm == NULL;
+> +	bool kthread = (current->flags & PF_KTHREAD);
+>  
+>  	if (!handle_valid(handle))
+>  		return -ESRCH;
+> -- 
+> 2.25.1
+>
+hi
+we were removing this code. see
+https://lore.kernel.org/kvm/20200313031109.7989-1-yan.y.zhao@intel.com/
 
-Hi all,
+The implementation of vfio_dma_rw() has been in vfio next tree.
+https://github.com/awilliam/linux-vfio/commit/8d46c0cca5f4dc0538173d62cd36b1119b5105bc
 
-After merging the vhost tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+in vfio_dma_rw(),  we still use
+bool kthread = current->mm == NULL.
+because if current->mm != NULL and current->flags & PF_KTHREAD, instead
+of calling use_mm(), we first check if (current->mm == mm) and allow copy_to_user() if it's true.
 
-drivers/gpu/drm/virtio/virtgpu_kms.c: In function 'virtio_gpu_init':
-drivers/gpu/drm/virtio/virtgpu_kms.c:153:38: error: 'VIRTIO_RING_F_INDIRECT=
-_DESC' undeclared (first use in this function)
-  153 |  if (virtio_has_feature(vgdev->vdev, VIRTIO_RING_F_INDIRECT_DESC)) {
-      |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/virtio/virtgpu_kms.c:153:38: note: each undeclared identifi=
-er is reported only once for each function it appears in
+Do you think it's all right?
 
-Caused by commit
+Thanks
+Yan
 
-  898952f9597e ("virtio: stop using legacy struct vring in kernel")
 
-interacting with commit
 
-  5edbb5608256 ("drm/virtio: fix ring free check")
-
-from Linus' tree (post v5.6).
-
-I have added the following merge fix patch for today.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Tue, 7 Apr 2020 12:58:26 +1000
-Subject: [PATCH] drm/virtio: fix up for include file changes
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- drivers/gpu/drm/virtio/virtgpu_kms.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/gpu/drm/virtio/virtgpu_kms.c b/drivers/gpu/drm/virtio/=
-virtgpu_kms.c
-index 023a030ca7b9..f4ea4cef5e23 100644
---- a/drivers/gpu/drm/virtio/virtgpu_kms.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_kms.c
-@@ -25,6 +25,7 @@
-=20
- #include <linux/virtio.h>
- #include <linux/virtio_config.h>
-+#include <linux/virtio_ring.h>
-=20
- #include <drm/drm_file.h>
-=20
---=20
-2.25.0
-
-I do have to wonder why all this code has been added to the vhost tree
-during the second week of the merge window (especially when I see it
-rebased 4 times in one day :-().  Is it really intended for v5.7?
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DQefj_VsLdP6ZiNGGyHotvI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6L7gYACgkQAVBC80lX
-0Gyo+QgAlmFf+SXu2mXp4y3oDXo3FyBwEqOKYpWQYFP0gbuPPLMK+wY8qjneo0yf
-R40AWCz9UHY7+TPzlZ0+cz0C99zQgO2mzWT6xcKOenGcyA93jDo5TpxNcN0SfVJI
-/CANM7NrVgNo0gc0aexw47fiBr/l4FL3LruLkfSHgnWV83UqS7rhzgPUcU9761NU
-LID6R0xLk+SU2u5ydjCWFwy5AER2oU8UjSLDiZuq6ZJn7j2tkegz+W2gqQauSNN3
-S2knxLbhLDKcNkFwDApZ8K7g0OdmnjIkDBWlXr/huk9onQnohjCgCaHa+8+U3rWj
-gIYSGXJYmbMm6yfUbQgvMd3g/VslqA==
-=aVgB
------END PGP SIGNATURE-----
-
---Sig_/DQefj_VsLdP6ZiNGGyHotvI--
+> _______________________________________________
+> intel-gvt-dev mailing list
+> intel-gvt-dev@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gvt-dev
