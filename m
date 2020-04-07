@@ -2,131 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC711A18D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 01:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1A1B1A18E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 01:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgDGXvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 19:51:11 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:46486 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgDGXvI (ORCPT
+        id S1726740AbgDGXv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 19:51:59 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:55566 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726453AbgDGXv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 19:51:08 -0400
-Received: by mail-pf1-f196.google.com with SMTP id q3so1531662pff.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 16:51:07 -0700 (PDT)
+        Tue, 7 Apr 2020 19:51:59 -0400
+Received: by mail-pj1-f68.google.com with SMTP id fh8so411123pjb.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 16:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KvEJzMH6Rxi8JFDstC273KQ0bdGB37YijaATrtjA+Oo=;
-        b=OT/L+d2sOkBze7u7kCa/ul9nbt7FBPk4UFbvoXf7evUw860Zm7kdOTvn+/o1kPqp4C
-         1Y0MaFQ01GRIGs3AAZfSuNfnwO66ph7dkS6vDmTcUTZl5i6jIw+1+KFcO9KXV1wjqlrZ
-         PPO7T+JbzB1wgA8vitRJDvxObqOOuYYVZDiYo=
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=yi5N0/kPtibwvaPoEsen6lkTis7zla3Rx4lUTaY+3hg=;
+        b=UxLby8j0hhHK4v1rgi2F9QL6OFUcWgpvoK4MUJ1TfyKvzIaQtPSrOQXbKEc8chl8/b
+         etKzy10ELjXhrSdv8O/k5aUryyIeqGTGdlS0B1zbeKx7Pwmn9bJa4U8kuAO9bZIHHBDg
+         NsnZM3NwmDwu6nV3x2xsHwCJGGbFkLHLFSh90EQ9Igf90f5cFYjDQUkF7Yr1gv6E1TYt
+         wQdXhyzvnUwN4hip5j9DdmZQYteAY7gQQZYmWbuZc7TL3e3MKEHoud/n1ryATmDZmaAi
+         OjhNruGj2jFxI+u+IbvlAXk3FOkCLIqfcnjuf3VfTk/JFHO0roPF1RKYxCXZuIRl2bDQ
+         JylQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KvEJzMH6Rxi8JFDstC273KQ0bdGB37YijaATrtjA+Oo=;
-        b=pbObw0DjDOJ5DWxemhZsRHQdOy9pqLywERkbPlqOyBQWx9zdSxo2ARlztIcFipIB4e
-         w7wofaRet6ADdMbVmwgNHFqC3wkCSGXg0gI7y9KO2yPgdTA1JqgBRkx4tNQ44aOwEQ0L
-         1yIfbBMcCozLHBn+VXV365aV2PVRHm3ME/HHxWlLcHZg1Znbk5u/e16ONFgKeaszfu88
-         IivGNMZyi5j9jjP8ik+8I7AQZqXqO+hD8THhteM9jCVNRXfc4F467cxdYaBZjX1tE1Mh
-         4Z2QTlMFwxlHRLVvkRSaRyFbfqyQmUpQGvLZu4vnAmcgMQ0N8RnyzH7SCthHMtczeS7g
-         uDlA==
-X-Gm-Message-State: AGi0PuYsQubxWvMf6/tOWzs35FD4V3jLbs6O3GyuA5zJ6g+Dk0CDTigW
-        PkdzqAIwMyvWbT5f3XP4ZR5tMg==
-X-Google-Smtp-Source: APiQypJMr4oUHM0Ta88xT7+6ntyKOqf33TdlrkpIUfBkSR/NP5bMYzT+8z/Iix1PO7MN42gvKmsSlg==
-X-Received: by 2002:aa7:8d90:: with SMTP id i16mr3456900pfr.126.1586303467414;
-        Tue, 07 Apr 2020 16:51:07 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id s27sm14467165pgn.90.2020.04.07.16.51.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 16:51:06 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-Cc:     mka@chromium.org, Lina Iyer <ilina@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>, swboyd@chromium.org,
-        evgreen@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 10/10] drivers: qcom: rpmh-rsc: read_tcs_reg()/write_tcs_reg() are not for IRQ
-Date:   Tue,  7 Apr 2020 16:50:24 -0700
-Message-Id: <20200407164915.v3.10.I2adf93809c692d0b673e1a86ea97c45644aa8d97@changeid>
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-In-Reply-To: <20200407235024.260460-1-dianders@chromium.org>
-References: <20200407235024.260460-1-dianders@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=yi5N0/kPtibwvaPoEsen6lkTis7zla3Rx4lUTaY+3hg=;
+        b=MROwglufSOUV3bv/SEIcsOu5eZ0wIGdBPW3aeUhhvL+e1RIpOpvg/ANp5IfzpODN2+
+         8hx0ukf40KprBSUHnTzHdy8Shm/k4hr7uwdw6h7r9lEiYl3P+XdN7o/QSbVTVJBii49Y
+         nxewJFSyZqHhV45v22ssLket5XRjxhxRuf+oShyUBHA3MxkCiW92djRMMEZ3slB7z6wq
+         Mgge9zM/8pcpqN5eql5O5YNK5WseU1a72dzXloHd0w4Zc6TF8Rl0k/rgvPL4kKCcxSlW
+         4/sktC3pcKegqj5eNPDY+m5QzwcRNVdzTBxut1Vc8oUPIgHz8wGCiRxKh69PGebO/IR5
+         vBLw==
+X-Gm-Message-State: AGi0PuanGvwzFrJg0oAjDwWp6gagcu0STypzj7X6+iU8GVXGcs3Sfw3e
+        1RMk6YJNZUovZw8kIyRgCD8=
+X-Google-Smtp-Source: APiQypKN8Prkhxpg+xN01/pXYsicaesT0t7aLWZFCH+WZp5ZGHKV3aSCBAIzIkXVi24udZnCBdPpfA==
+X-Received: by 2002:a17:902:d685:: with SMTP id v5mr4751396ply.256.1586303517938;
+        Tue, 07 Apr 2020 16:51:57 -0700 (PDT)
+Received: from ?IPv6:2601:647:4700:9b2:1d50:a6a4:b3be:b3e4? ([2601:647:4700:9b2:1d50:a6a4:b3be:b3e4])
+        by smtp.gmail.com with ESMTPSA id n7sm14245864pgm.28.2020.04.07.16.51.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Apr 2020 16:51:56 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <e390a895-cc09-0e9b-a05d-0c9b7bc6bfbd@redhat.com>
+Date:   Tue, 7 Apr 2020 16:51:54 -0700
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, hch@infradead.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        mingo <mingo@redhat.com>, bp <bp@alien8.de>, hpa@zytor.com,
+        x86 <x86@kernel.org>, "Kenneth R. Crudup" <kenny@panix.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        jannh@google.com, keescook@chromium.org, David.Laight@aculab.com,
+        Doug Covelli <dcovelli@vmware.com>, mhiramat@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F4B5EE1A-AD3C-4098-8784-E19356A25A48@gmail.com>
+References: <20200407110236.930134290@infradead.org>
+ <20200407111007.429362016@infradead.org>
+ <10ABBCEE-A74D-4100-99D9-05B4C1758FF6@gmail.com>
+ <20200407193853.GP2452@worktop.programming.kicks-ass.net>
+ <90B32DAE-0BB5-4455-8F73-C43037695E7C@gmail.com>
+ <20200407205042.GT2452@worktop.programming.kicks-ass.net>
+ <96C2F23A-D6F4-4A04-82B6-284788C5D2CC@gmail.com>
+ <20200407212754.GU2452@worktop.programming.kicks-ass.net>
+ <e390a895-cc09-0e9b-a05d-0c9b7bc6bfbd@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RSC_DRV_IRQ_ENABLE, RSC_DRV_IRQ_STATUS, and RSC_DRV_IRQ_CLEAR
-registers are not part of TCS 0.  Let's not pretend that they are by
-using read_tcs_reg() and write_tcs_reg() and passing a bogus tcs_id of
-0.  We could introduce a new wrapper for these registers but it
-wouldn't buy us much.  Let's just read/write directly.
+> On Apr 7, 2020, at 3:12 PM, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>=20
+> On 07/04/20 23:27, Peter Zijlstra wrote:
+>> On Tue, Apr 07, 2020 at 02:22:11PM -0700, Nadav Amit wrote:
+>>> Anyhow, I do not think it is the only use-case which is not covered =
+by your
+>>> patches (even considering CRs/DRs alone). For example, there is no =
+kernel
+>>> function to turn on CR4.VMXE, which is required to run hypervisors =
+on x86.
+>> That needs an exported function; there is no way we'll allow random
+>> writes to CR4, there's too much dodgy stuff in there.
+>=20
+> native_write_cr4 and pv_ops (through which you can do write_cr4) are
+> both exported, and so is cpu_tlbstate which is used by __cr4_set_bits
+> and friends.  Am I missing something glaringly obvious?
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
+No, I was the one who missed the obvious thing.
 
-Changes in v3:
-- ("...are not for IRQ") is new for v3.
-
-Changes in v2: None
-
- drivers/soc/qcom/rpmh-rsc.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-index a3b015196f15..31a998e6f2e9 100644
---- a/drivers/soc/qcom/rpmh-rsc.c
-+++ b/drivers/soc/qcom/rpmh-rsc.c
-@@ -363,12 +363,12 @@ static void enable_tcs_irq(struct rsc_drv *drv, int tcs_id, bool enable)
- {
- 	u32 data;
- 
--	data = read_tcs_reg(drv, RSC_DRV_IRQ_ENABLE, 0);
-+	data = readl_relaxed(drv->tcs_base + RSC_DRV_IRQ_ENABLE);
- 	if (enable)
- 		data |= BIT(tcs_id);
- 	else
- 		data &= ~BIT(tcs_id);
--	write_tcs_reg(drv, RSC_DRV_IRQ_ENABLE, 0, data);
-+	writel_relaxed(data, drv->tcs_base + RSC_DRV_IRQ_ENABLE);
- }
- 
- /**
-@@ -389,7 +389,7 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
- 	const struct tcs_request *req;
- 	struct tcs_cmd *cmd;
- 
--	irq_status = read_tcs_reg(drv, RSC_DRV_IRQ_STATUS, 0);
-+	irq_status = readl_relaxed(drv->tcs_base + RSC_DRV_IRQ_STATUS);
- 
- 	for_each_set_bit(i, &irq_status, BITS_PER_LONG) {
- 		req = get_req_from_tcs(drv, i);
-@@ -426,7 +426,7 @@ static irqreturn_t tcs_tx_done(int irq, void *p)
- 		/* Reclaim the TCS */
- 		write_tcs_reg(drv, RSC_DRV_CMD_ENABLE, i, 0);
- 		write_tcs_reg(drv, RSC_DRV_CMD_WAIT_FOR_CMPL, i, 0);
--		write_tcs_reg(drv, RSC_DRV_IRQ_CLEAR, 0, BIT(i));
-+		writel_relaxed(BIT(i), drv->tcs_base + RSC_DRV_IRQ_CLEAR);
- 		spin_lock(&drv->lock);
- 		clear_bit(i, drv->tcs_in_use);
- 		/*
-@@ -969,7 +969,8 @@ static int rpmh_rsc_probe(struct platform_device *pdev)
- 	}
- 
- 	/* Enable the active TCS to send requests immediately */
--	write_tcs_reg(drv, RSC_DRV_IRQ_ENABLE, 0, drv->tcs[ACTIVE_TCS].mask);
-+	writel_relaxed(drv->tcs[ACTIVE_TCS].mask,
-+		       drv->tcs_base + RSC_DRV_IRQ_ENABLE);
- 
- 	spin_lock_init(&drv->client.cache_lock);
- 	INIT_LIST_HEAD(&drv->client.cache);
--- 
-2.26.0.292.g33ef6b2f38-goog
+Having said that, I still think there are additional cases that need to =
+be
+handled. For instance, I see that is_erratum_383() in KVM (AMD) flushes =
+the
+local TLB by writing to CR3 the previous value. I am not familiar with =
+the
+erratum. Maybe I am missing something again, but I do not see an =
+appropriate
+exported alternative in the kernel.
 
