@@ -2,109 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A605E1A09C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A31E1A09DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgDGJJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:09:59 -0400
-Received: from www62.your-server.de ([213.133.104.62]:46680 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbgDGJJ7 (ORCPT
+        id S1728045AbgDGJQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:16:43 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:18004 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726562AbgDGJQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:09:59 -0400
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jLkEy-00032R-Aa; Tue, 07 Apr 2020 11:09:52 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jLkEx-000KHk-Um; Tue, 07 Apr 2020 11:09:52 +0200
-Subject: Re: [PATCH v2 1/4] powerpc/64s: implement probe_kernel_read/write
- without touching AMR
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Alexei Starovoitov <ast@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org
-References: <20200403093529.43587-1-npiggin@gmail.com>
- <558b6131-60b4-98b7-dc40-25d8dacea05a@c-s.fr>
- <1585911072.njtr9qmios.astroid@bobo.none>
- <1586230235.0xvc3pjkcj.astroid@bobo.none>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <e01d8139-dca4-2239-d660-bfc962426c7a@iogearbox.net>
-Date:   Tue, 7 Apr 2020 11:09:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 7 Apr 2020 05:16:43 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0379DJsm025062;
+        Tue, 7 Apr 2020 05:16:21 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 306q55hv5d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Apr 2020 05:16:21 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 0379GKDf020080
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 7 Apr 2020 05:16:20 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 7 Apr 2020
+ 05:16:19 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 7 Apr 2020 05:16:19 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 0379GFA5009115;
+        Tue, 7 Apr 2020 05:16:15 -0400
+From:   Bogdan Togorean <bogdan.togorean@analog.com>
+To:     <dri-devel@lists.freedesktop.org>
+CC:     Bogdan Togorean <bogdan.togorean@analog.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Allison Randal <allison@lohutok.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Richard Fontana <rfontana@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RESEND 1/2] drm: bridge: adv7511: Enable SPDIF DAI
+Date:   Tue, 7 Apr 2020 12:13:06 +0300
+Message-ID: <20200407091309.58297-1-bogdan.togorean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <1586230235.0xvc3pjkcj.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25774/Mon Apr  6 14:53:25 2020)
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_01:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 suspectscore=1 lowpriorityscore=0 clxscore=1011 spamscore=0
+ phishscore=0 mlxscore=0 adultscore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=864 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004070078
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Nicholas,
+ADV7511 support I2S or SPDIF as audio input interfaces. This commit
+enable support for SPDIF.
 
-On 4/7/20 6:01 AM, Nicholas Piggin wrote:
-> Nicholas Piggin's on April 3, 2020 9:05 pm:
->> Christophe Leroy's on April 3, 2020 8:31 pm:
->>> Le 03/04/2020 à 11:35, Nicholas Piggin a écrit :
->>>> There is no need to allow user accesses when probing kernel addresses.
->>>
->>> I just discovered the following commit
->>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=75a1a607bb7e6d918be3aca11ec2214a275392f4
->>>
->>> This commit adds probe_kernel_read_strict() and probe_kernel_write_strict().
->>>
->>> When reading the commit log, I understand that probe_kernel_read() may
->>> be used to access some user memory. Which will not work anymore with
->>> your patch.
->>
->> Hmm, I looked at _strict but obviously not hard enough. Good catch.
->>
->> I don't think probe_kernel_read() should ever access user memory,
->> the comment certainly says it doesn't, but that patch sort of implies
->> that they do.
->>
->> I think it's wrong. The non-_strict maybe could return userspace data to
->> you if you did pass a user address? I don't see why that shouldn't just
->> be disallowed always though.
->>
->> And if the _strict version is required to be safe, then it seems like a
->> bug or security issue to just allow everyone that doesn't explicitly
->> override it to use the default implementation.
->>
->> Also, the way the weak linkage is done in that patch, means parisc and
->> um archs that were previously overriding probe_kernel_read() now get
->> the default probe_kernel_read_strict(), which would be wrong for them.
-> 
-> The changelog in commit 75a1a607bb7 makes it a bit clearer. If the
-> non-_strict variant is used on non-kernel addresses, then it might not
-> return -EFAULT or it might cause a kernel warning. The _strict variant
-> is supposed to be usable with any address and it will return -EFAULT if
-> it was not a valid and mapped kernel address.
-> 
-> The non-_strict variant can not portably access user memory because it
-> uses KERNEL_DS, and its documentation says its only for kernel pointers.
-> So powerpc should be fine to run that under KUAP AFAIKS.
-> 
-> I don't know why the _strict behaviour is not just made default, but
-> the implementation of it does seem to be broken on the archs that
-> override the non-_strict variant.
+Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
+Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
+---
+ drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-Yeah, we should make it default and only add a "opt out" for the old legacy
-cases; there was also same discussion started over here just recently [0].
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+index a428185be2c1..1e9b128d229b 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
+@@ -119,6 +119,9 @@ int adv7511_hdmi_hw_params(struct device *dev, void *data,
+ 		audio_source = ADV7511_AUDIO_SOURCE_I2S;
+ 		i2s_format = ADV7511_I2S_FORMAT_LEFT_J;
+ 		break;
++	case HDMI_SPDIF:
++		audio_source = ADV7511_AUDIO_SOURCE_SPDIF;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -175,11 +178,21 @@ static int audio_startup(struct device *dev, void *data)
+ 	/* use Audio infoframe updated info */
+ 	regmap_update_bits(adv7511->regmap, ADV7511_REG_GC(1),
+ 				BIT(5), 0);
++	/* enable SPDIF receiver */
++	if (adv7511->audio_source == ADV7511_AUDIO_SOURCE_SPDIF)
++		regmap_update_bits(adv7511->regmap, ADV7511_REG_AUDIO_CONFIG,
++				   BIT(7), BIT(7));
++
+ 	return 0;
+ }
+ 
+ static void audio_shutdown(struct device *dev, void *data)
+ {
++	struct adv7511 *adv7511 = dev_get_drvdata(dev);
++
++	if (adv7511->audio_source == ADV7511_AUDIO_SOURCE_SPDIF)
++		regmap_update_bits(adv7511->regmap, ADV7511_REG_AUDIO_CONFIG,
++				   BIT(7), 0);
+ }
+ 
+ static int adv7511_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
+@@ -213,6 +226,7 @@ static const struct hdmi_codec_pdata codec_data = {
+ 	.ops = &adv7511_codec_ops,
+ 	.max_i2s_channels = 2,
+ 	.i2s = 1,
++	.spdif = 1,
+ };
+ 
+ int adv7511_audio_init(struct device *dev, struct adv7511 *adv7511)
+-- 
+2.17.1
 
-Thanks,
-Daniel
-
-   [0] https://lore.kernel.org/lkml/20200403133533.GA3424@infradead.org/T/
