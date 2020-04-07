@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 831A51A0A25
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2193E1A0A3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 11:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgDGJbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 05:31:04 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:55251 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbgDGJbD (ORCPT
+        id S1728147AbgDGJeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 05:34:01 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:53744 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbgDGJeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 05:31:03 -0400
-Received: by mail-il1-f198.google.com with SMTP id m2so1115080ilb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 02:31:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=9ecQ8raBwV+ql8FB6mKArZB1484qcIdZc1keMaK2jMc=;
-        b=Y2tJqHbf/zSITczatjJXsMWemsvJd6fWCL7vujvGXBo3mGc9c4ofpNeo9b+Rp4nBcJ
-         NbpEjFyY16ZhR+lJdqFukOzPqQIApAI0IPJWFmndY8CJVYJzBmfw+BObNw3UYYpIfpGq
-         KRmqOkTSijdl37Oct0V88I1PLjwZHV2PPaqtxsOxx5s1QPixRhHD0sxXAuiuQc4NkuXK
-         BLTRtSNrWo0whwqF7eABHJh3tRNwBBxM+b5HHBIbPxv/8qV9yFOyEvkwdtEbPxw6Kcir
-         JaCOIK3C+J8g0Cs4S9n0aBSxuRwDq+um+Aeghr1qW3af4JUIiGyZ4x8IOAx2aezwjy/U
-         U93w==
-X-Gm-Message-State: AGi0Pub6zBYc9Bpt0wVRvk+XIypTsOkJ4nBBRbwX6tg2UquphPDP4kA9
-        qZyHOEcHXp9FfpZDaNSkn2CiIq8viuJ4V+4J+gb6c/GN6PiV
-X-Google-Smtp-Source: APiQypIVR59kn7drjOvrJ37LHlH0A1TQqNo5AIe8adfVvVA7j+43yXTNPKQq6cEndGOflU7+5OFZ9Q/tarO/p/azAPJ9AMzyiuAb
+        Tue, 7 Apr 2020 05:34:00 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0379Xooq042120;
+        Tue, 7 Apr 2020 09:33:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=qcmA2k2UwC4imiuARVmbmTLIEvubWj//Z2k36MvdxtE=;
+ b=ZeZ6N1Y1EEjkLRdUdneRzCv6B6vuAwBBvW2gzit89rzQpCkn7Dvb7tf8xOwCyY37/jZp
+ ETym6Mo6eHnJjQ/Xg6iyUhCMSq16AhHYd0EMA/K5xIWUN6UDNiOjVGpan6YSyrFAkFYO
+ MVUpXxc5OUqpvtOKZoWvq2KsQXPKrYGbmD1yIKJ9lDyO0BQRpuw+JoVE22TOJ8U35jMi
+ FRHHyJglDo0oiX3hrv4agAHgVdls4bQ8KErxCR8EQO2tFPtLVxulxNFrn6EwldINmHBT
+ 3F83ZgeABH9jtuaadYZ3frt60pFt9mMxHGk8AVGksGXfBCVjOCFR42XPQTWS7It0AckJ ag== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 306j6mbrgn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 09:33:50 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0379RGdW041436;
+        Tue, 7 Apr 2020 09:31:43 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3073qfgg4y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 07 Apr 2020 09:31:43 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0379VfL9028581;
+        Tue, 7 Apr 2020 09:31:42 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 07 Apr 2020 02:31:41 -0700
+Date:   Tue, 7 Apr 2020 12:31:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Siddartha Mohanadoss <smohanad@codeaurora.org>,
+        Sujeev Dias <sdias@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH] bus: mhi: core: Fix a NULL vs IS_ERR check in
+ mhi_create_devices()
+Message-ID: <20200407093133.GM68494@mwanda>
 MIME-Version: 1.0
-X-Received: by 2002:a92:498e:: with SMTP id k14mr1290576ilg.160.1586251862658;
- Tue, 07 Apr 2020 02:31:02 -0700 (PDT)
-Date:   Tue, 07 Apr 2020 02:31:02 -0700
-In-Reply-To: <000000000000f59ac305a25cfa14@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cc522f05a2b00ad5@google.com>
-Subject: Re: possible deadlock in io_submit_one (3)
-From:   syzbot <syzbot+343f75cdeea091340956@syzkaller.appspotmail.com>
-To:     adobriyan@gmail.com, akpm@linux-foundation.org,
-        allison@lohutok.net, areber@redhat.com, aubrey.li@linux.intel.com,
-        avagin@gmail.com, bcrl@kvack.org, christian@brauner.io,
-        cyphar@cyphar.com, ebiederm@xmission.com,
-        gregkh@linuxfoundation.org, guro@fb.com, joel@joelfernandes.org,
-        keescook@chromium.org, linmiaohe@huawei.com, linux-aio@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mhocko@suse.com, mingo@kernel.org, oleg@redhat.com,
-        peterz@infradead.org, sargun@sargun.me,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070080
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9583 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 suspectscore=0 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004070081
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this bug to:
+The mhi_alloc_device() function never returns NULL, it returns error
+pointers.
 
-commit 7bc3e6e55acf065500a24621f3b313e7e5998acf
-Author: Eric W. Biederman <ebiederm@xmission.com>
-Date:   Thu Feb 20 00:22:26 2020 +0000
+Fixes: da1c4f856924 ("bus: mhi: core: Add support for creating and destroying MHI devices")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/bus/mhi/core/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    proc: Use a list of inodes to flush from proc
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index eb4256b81406..55928feea0c9 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -294,7 +294,7 @@ void mhi_create_devices(struct mhi_controller *mhi_cntrl)
+ 		    !(mhi_chan->ee_mask & BIT(mhi_cntrl->ee)))
+ 			continue;
+ 		mhi_dev = mhi_alloc_device(mhi_cntrl);
+-		if (!mhi_dev)
++		if (IS_ERR(mhi_dev))
+ 			return;
+ 
+ 		mhi_dev->dev_type = MHI_DEVICE_XFER;
+-- 
+2.25.1
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12b3c9c7e00000
-start commit:   7e634208 Merge tag 'acpi-5.7-rc1-2' of git://git.kernel.or..
-git tree:       upstream
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=11b3c9c7e00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16b3c9c7e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12205d036cec317f
-dashboard link: https://syzkaller.appspot.com/bug?extid=343f75cdeea091340956
-userspace arch: i386
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105d592be00000
-
-Reported-by: syzbot+343f75cdeea091340956@syzkaller.appspotmail.com
-Fixes: 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
