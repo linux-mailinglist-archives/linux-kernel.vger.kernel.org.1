@@ -2,108 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4D31A0765
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B19D1A0770
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 08:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbgDGGhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 02:37:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58952 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726030AbgDGGhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 02:37:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id C7192AB8F;
-        Tue,  7 Apr 2020 06:37:49 +0000 (UTC)
-Subject: Re: [PATCH v6 2/2] tty: samsung_tty: 32-bit access for TX/RX hold
- registers
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Hyunki Koo <hyunki00.koo@samsung.com>
-Cc:     gregkh@linuxfoundation.org, Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>, linux-serial@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20200401082721.19431-1-hyunki00.koo@samsung.com>
- <CGME20200406230902epcas2p19a8df6805dac59968d664efb9bc9419b@epcas2p1.samsung.com>
- <20200406230855.13772-1-hyunki00.koo@samsung.com>
- <20200407062655.GC21995@kozik-lap>
- <6479146a-2249-633d-b0a8-7d1d1e44fd99@suse.cz>
-Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <dfbb5351-ea8a-c958-f840-7c8a1d2dcc7a@suse.cz>
-Date:   Tue, 7 Apr 2020 08:37:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        id S1727109AbgDGGj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 02:39:57 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:34233 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726030AbgDGGj5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 02:39:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0TusvTcJ_1586241590;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TusvTcJ_1586241590)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 07 Apr 2020 14:39:50 +0800
+Subject: Re: [PATCH v5] Translate debugfs.txt into Chinese and link it to the
+ index.
+To:     Chucheng Luo <luochucheng@vivo.com>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20200328122315.4245-1-luochucheng@vivo.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <83019620-ed71-7efb-7ccd-6bbb52f9ee3f@linux.alibaba.com>
+Date:   Tue, 7 Apr 2020 14:39:50 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <6479146a-2249-633d-b0a8-7d1d1e44fd99@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200328122315.4245-1-luochucheng@vivo.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07. 04. 20, 8:28, Jiri Slaby wrote:
-> On 07. 04. 20, 8:26, Krzysztof Kozlowski wrote:
->> On Tue, Apr 07, 2020 at 08:08:49AM +0900, Hyunki Koo wrote:
->>> Support 32-bit access for the TX/RX hold registers UTXH and URXH.
->>>
->>> This is required for some newer SoCs.
->>>
->>> Signed-off-by: Hyunki Koo <hyunki00.koo@samsung.com>
->>> ---
->>
->> Why I am adding these for the third time?
+Hi Chucheng,
+
+Sorry for a bit late.
+This patch is still have some place to improve.
+
+
+在 2020/3/28 下午8:23, Chucheng Luo 写道:
+> Translate Documentation/filesystems/debugfs.txt into Chinese.
 > 
-> I don't know as I don't care about your tags anyway.
+> Signed-off-by: Chucheng Luo <luochucheng@vivo.com>
+> ---
+> Changelog:
+> v5:
+>  - include disclaimer-zh_CN.rst
+>  - fix space missing between debugfs.txt and its reference
+>  - remove redundant '=' in caption
+>  - no 'introduction' in original file, remove it
+>  - keep each line less than 80 chars>  - change 'attention' to 'Note' in second last line
+> ---
+>  .../zh_CN/filesystems/debugfs.rst             | 258 ++++++++++++++++++
+>  .../translations/zh_CN/filesystems/index.rst  |  21 ++
+>  Documentation/translations/zh_CN/index.rst    |   2 +
+>  3 files changed, 281 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/filesystems/debugfs.rst
+>  create mode 100644 Documentation/translations/zh_CN/filesystems/index.rst
+> 
+> diff --git a/Documentation/translations/zh_CN/filesystems/debugfs.rst b/Documentation/translations/zh_CN/filesystems/debugfs.rst
+> new file mode 100644
+> index 000000000000..c33d3c797b4a
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/filesystems/debugfs.rst
+> @@ -0,0 +1,258 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. include:: ../disclaimer-zh_CN.rst
+> +
+> +:Original: :ref:`Documentation/filesystems/debugfs.txt <debugfs_index>`
+> +
+> +=======
+> +Debugfs
+> +=======
+> +
+> +译者
+> +::
+> +
+> +	中文版维护者： 罗楚成 Chucheng Luo <luochucheng@vivo.com>
+> +	中文版翻译者： 罗楚成 Chucheng Luo <luochucheng@vivo.com>
+> +	中文版校译者:  罗楚成 Chucheng Luo <luochucheng@vivo.com>
+> +
+> +
+> +
+> +版权所有2020 罗楚成 <luochucheng@vivo.com>
+> +
+> +
+> +Debugfs是内核开发人员在用户空间获取信息的简单方法。
+> +与/proc不同，proc只提供进程信息。
+> +也不像sysfs,具有严格的“每个文件一个值“的规则。
+> +debugfs根本没有规则,开发人员可以在这里放置他们
+> +想要的任何信息。debugfs文件系统也不能用作稳定的ABI接口。
+> +从理论上讲，debugfs导出文件的时候没有任何约束。
+> +但是[1]实际情况并不总是那么简单。
+> +即使是debugfs接口，也最好根据需要进行设计,
+> +并尽量保持接口不变。
 
-Sorry, my bad, I was somehow mislead by thunderbird, thinking I am
-replying to a different thread.
+This is one section, except no more 80 chars, we'd better
+to keep them as one section too. So fulfill each lines, and 
+don't close too ealry until 80 chars.
 
-sorry,
--- 
-js
-suse labs
+And this requriment is also apply to following sections.
+
+> +
+> +
+
+...
+
+> +注释：
+> +[1] http://lwn.net/Articles/309298/
+> diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
+> new file mode 100644
+> index 000000000000..3a7f5233767d
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/filesystems/index.rst
+> @@ -0,0 +1,21 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +===============================
+> +Linux 内核中的文件系统
+> +===============================
+
+The '=' char is also too long to surpass contents. please change
+them too. (as well as the '-' in following lines)
+As to a same style issue. please check whole patch, not only
+the comment line.
+
+
+Btw, before sent out your patch, would you change the 
+'charset=y' to 'charset=UTF-8'?
+
+Thanks
+Alex
+
+> +
+> +这个不完整的指南在某一天将会提供关于Linux 虚拟文件系统(VFS)层如何工作的
+> +完整信息。以及VFS以下的的文件系统。目前为止，我们提供了以下信息。
+> +
+> +
+> +
+> +
+> +文件系统
+> +===========> +
+> +关于文件系统实现的文档.
+> +
+> +.. toctree::
+> +   :maxdepth: 2
+> +
+> +   debugfs
+> diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+> index d3165535ec9e..770f886d081c 100644
+> --- a/Documentation/translations/zh_CN/index.rst
+> +++ b/Documentation/translations/zh_CN/index.rst
+> @@ -1,3 +1,4 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+>  .. raw:: latex
+>  
+>  	\renewcommand\thesection*
+> @@ -14,6 +15,7 @@
+>     :maxdepth: 2
+>  
+>     process/index
+> +   filesystems/index
+>  
+>  目录和表格
+>  ----------
+> 
