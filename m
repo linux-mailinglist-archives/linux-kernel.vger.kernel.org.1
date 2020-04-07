@@ -2,226 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 733C81A0960
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA5D1A0956
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 10:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgDGIa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 04:30:57 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44203 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726637AbgDGIa5 (ORCPT
+        id S1727968AbgDGI3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 04:29:33 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:40099 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbgDGI3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 04:30:57 -0400
-Received: by mail-wr1-f66.google.com with SMTP id c15so2786031wro.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 01:30:55 -0700 (PDT)
+        Tue, 7 Apr 2020 04:29:32 -0400
+Received: by mail-pl1-f194.google.com with SMTP id h11so952698plk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 01:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yx+tINXIME57q+zwEQX7GUc2q689uTp0DHJLLnExQdI=;
-        b=W5neKHtjNtN2qdnv1EvBBnImqR/p9wXjP7dgPXGwM/blFqUYA7aAi2smhDGUZHSlHm
-         GC+u8nxbhK0TtsfGPwGJaxlYofw4lDL03SA0S9RtvV7czkvO7xqJ7uaSF5uxlpKqIKu3
-         XDWeph6xHiOQQus/xjYANK53ks31G8BjXyA1wlGzZ3z3CczDE7U8l0YEXy6Qvx4JoKUa
-         lXcfhPtLMEhFrudtWs5VSyUsGdD59bWXr17rDRV8XFntWaRx5kWpRA/rkg8sl7EcGu2E
-         IqYh4TseoEft8/r2v6EV6fP9pplaWVVAnI6cwL5KydbTXhgPID/CpHCE78eQNZVXH35u
-         hnQA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4R/FPBL4dOo4mvZ9ReJ8CLxavGglB5XXnfcP3bpIQMU=;
+        b=YF7pfVtnVNormD+6w1FhUmCCmIPX8WylGW+gMb6fcDVCwxbjNpGspR80BZhFu81/wC
+         9mGnJKwUU3jjI6aV9mcWfz9QHoD3N9j+t3t7uW1fJfq3k9+V6vPBnljs+ugaNxvH2oM3
+         4fBcqqWsKDX8Vg/5/IVAXwf+8dlGNtHJhTMLogSVr30vlUXOSwvnl5PxBYoUdlZqZHZz
+         8hYl4Zqcu6CNjvxU0x9amIs54FLIYOip55tk5JBJ+2Pi1ijg3lhIm+XWqxUIXtIsl/Gu
+         3Y8xRbNRGLHZTKZBmWLyUyWGcwSuRyW6xDHlEgTIVdhWpg0gMdR1bVdSlt0FgGwI1rX+
+         myNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yx+tINXIME57q+zwEQX7GUc2q689uTp0DHJLLnExQdI=;
-        b=Itx9eIHW7BzGd9ftcPCn3IGyoRnY3LVNZ/ImjGRQcHEj8Rzmr2QzoxVZ8/YFpWyOvc
-         rG4h8RclJxSwHD6WfSMiHg9Mo5GnDfqbPf01BjB/1smd5XzDM9aPncJQGP7VsQmaqt8H
-         0/kCuSo7vU4BI1VxbfmjFIMgVGenikA0dcVp8r2297bIl6B1QUKWhlXVz77RkIih5CIN
-         mO0Sv0MVwLbZZGLmCabWZZGNsFtNIMAx8gSpUp4eRWxRR2NF3kHkzPJsUXFupssw4zVE
-         zQuifcPdPfbCMNUh6TIwNLHdwifIuvOSN4K/w841eOenha5W6YLFvt2h5agdwilSS2uh
-         zTAA==
-X-Gm-Message-State: AGi0PubDCm/85/NSh9EZsTZjaEMXLb2gcH+7eQqgKdxVJMeX79Iv8IFk
-        8wy/DPbiQnbCJrVW7sgDfgLmayRC1LD1UUxl
-X-Google-Smtp-Source: APiQypLn1I5bDOjHiqrEKv9WNcKpmBw+2qlHgD1bJnnUppVm6vexnSseG8TsgmdvTfuAFULHBEUvrQ==
-X-Received: by 2002:a5d:5447:: with SMTP id w7mr270939wrv.312.1586248254215;
-        Tue, 07 Apr 2020 01:30:54 -0700 (PDT)
-Received: from localhost.localdomain (ip-94-114-101-228.unity-media.net. [94.114.101.228])
-        by smtp.gmail.com with ESMTPSA id t16sm31190743wra.17.2020.04.07.01.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 01:30:53 -0700 (PDT)
-From:   patrick.rudolph@9elements.com
-To:     linux-kernel@vger.kernel.org
-Cc:     coreboot@coreboot.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Julius Werner <jwerner@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v4 2/2] firmware: google: Expose coreboot tables over sysfs
-Date:   Tue,  7 Apr 2020 10:29:07 +0200
-Message-Id: <20200407082923.2001556-3-patrick.rudolph@9elements.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200407082923.2001556-1-patrick.rudolph@9elements.com>
-References: <20200407082923.2001556-1-patrick.rudolph@9elements.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4R/FPBL4dOo4mvZ9ReJ8CLxavGglB5XXnfcP3bpIQMU=;
+        b=rxzcb/gv8t//2iIcOyjotvyrVpwq74YM9BapZyDkjFfO10g51OajWLbGrpQqZ+uZ9+
+         UbSIOgQWOCt7HPf8BzB10bK8A1zJsvo4ib0lqIyg1PY2C0dCg4QGmkxvkgkiJ/uXc8eH
+         8r/976wDHZTvLbD12B7fjoK8y6KKtavXZkG+GHL86Dc+F8UHgCIX4TNSab57izzLMAeA
+         cUUOT8Z3AqfN4fFC82KfWZmrvkEJMt9aQNXA4okOpqA33gH0yOoVGq985HQF7FB27JBd
+         vmS3XKglmRrQedhqL3uuCb8DllcCiS1UtttgaPpW6Pmh5koKpBBFR16oEcHU8E39ixH+
+         5Tow==
+X-Gm-Message-State: AGi0PuYmspd83oNPjH9TPNKAS7twb5NlTV/zE5kpoMA3C6a0UPsmHTYZ
+        TfuidE/fMGicLnecUUJhOmhEiw==
+X-Google-Smtp-Source: APiQypIcnVfCrjU/SQx6rFcAG9MOEb1k60YQzwaCjM39FmAU4PrzS6vHLapoN/BLX9AQQ8GBXTqLpw==
+X-Received: by 2002:a17:902:b489:: with SMTP id y9mr1436701plr.144.1586248171653;
+        Tue, 07 Apr 2020 01:29:31 -0700 (PDT)
+Received: from localhost ([122.171.118.46])
+        by smtp.gmail.com with ESMTPSA id np4sm989176pjb.48.2020.04.07.01.29.30
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Apr 2020 01:29:30 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 13:59:28 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "andrew-sh.cheng" <andrew-sh.cheng@mediatek.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, Nishanth Menon <nm@ti.com>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Fan Chen =?utf-8?B?KOmZs+WHoSk=?= <fan.chen@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [v5, PATCH 4/5] cpufreq: mediatek: add opp notification for SVS
+ support
+Message-ID: <20200407082928.lancywbqts5yg4ks@vireshk-i7>
+References: <20191127083619.etocnhpyyut3hzwq@vireshk-i7>
+ <1575874588.13494.4.camel@mtksdaap41>
+ <20191210064319.f4ksrxozp3gv4xry@vireshk-i7>
+ <1583827865.4840.1.camel@mtksdaap41>
+ <20200311060616.62nh7sfwtjwvrjfr@vireshk-i7>
+ <1584084154.7753.3.camel@mtksdaap41>
+ <20200313091038.q7q7exiowoah4nk4@vireshk-i7>
+ <1586164366.5015.6.camel@mtksdaap41>
+ <20200406092945.d5thcd2h3bo7mn45@vireshk-i7>
+ <1586242489.10019.1.camel@mtksdaap41>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586242489.10019.1.camel@mtksdaap41>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
+On 07-04-20, 14:54, andrew-sh.cheng wrote:
+> On Mon, 2020-04-06 at 14:59 +0530, Viresh Kumar wrote:
+> > On 06-04-20, 17:12, andrew-sh.cheng wrote:
+> > > I will use regulator in the locked region.
+> > > And regulator will use mutex_lock.
+> > 
+> > Yeah, you can't use spinlock here, use a mutex.
+> > 
+> Hi Viresh,
+> 
+> I am not familiar with read/write lock.
+> Do you mean there is another read/write function, which is not
+> read_lock()/write_lock(), using mutex but not spinlock?
 
-Make all coreboot table entries available to userland. This is useful for
-tools that are currently using /dev/mem.
+Heh, I am asking you to use simple mutex here, leave the read/write
+lock thing completely as it won't work here.
 
-Besides the tag and size also expose the raw table data itself.
-
-Update the ABI documentation to explain the new sysfs interface.
-
-Tools can easily scan for the right coreboot table by reading
-/sys/bus/coreboot/devices/coreboot*/attributes/id
-The binary table data can then be read from
-/sys/bus/coreboot/devices/coreboot*/attributes/data
-
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
----
- -v2:
-        - Add ABI documentation
-        - Add 0x prefix on hex values
-        - Remove wrong ioremap hint as found by CI
- -v3:
-        - Use BIN_ATTR_RO
- -v4:
-        - Updated ABI documentation
----
- Documentation/ABI/stable/sysfs-bus-coreboot | 30 +++++++++++
- drivers/firmware/google/coreboot_table.c    | 58 +++++++++++++++++++++
- 2 files changed, 88 insertions(+)
-
-diff --git a/Documentation/ABI/stable/sysfs-bus-coreboot b/Documentation/ABI/stable/sysfs-bus-coreboot
-index 6055906f41f2..328153a1b3f4 100644
---- a/Documentation/ABI/stable/sysfs-bus-coreboot
-+++ b/Documentation/ABI/stable/sysfs-bus-coreboot
-@@ -42,3 +42,33 @@ Description:
- 		buffer.
- 		The file holds a read-only binary representation of the CBMEM
- 		buffer.
-+
-+What:		/sys/bus/coreboot/devices/.../attributes/id
-+Date:		Apr 2020
-+KernelVersion:	5.6
-+Contact:	Patrick Rudolph <patrick.rudolph@9elements.com>
-+Description:
-+		coreboot device directory can contain a file named attributes/id.
-+		The file holds an ASCII representation of the coreboot table ID
-+		in hex (e.g. 0x000000ef). On coreboot enabled platforms the ID is
-+		usually called TAG.
-+
-+What:		/sys/bus/coreboot/devices/.../attributes/size
-+Date:		Apr 2020
-+KernelVersion:	5.6
-+Contact:	Patrick Rudolph <patrick.rudolph@9elements.com>
-+Description:
-+		coreboot device directory can contain a file named
-+		attributes/size.
-+		The file holds an ASCII representation as decimal number of the
-+		coreboot table size (e.g. 64).
-+
-+What:		/sys/bus/coreboot/devices/.../attributes/data
-+Date:		Apr 2020
-+KernelVersion:	5.6
-+Contact:	Patrick Rudolph <patrick.rudolph@9elements.com>
-+Description:
-+		coreboot device directory can contain a file named
-+		attributes/data.
-+		The file holds a read-only binary representation of the coreboot
-+		table.
-diff --git a/drivers/firmware/google/coreboot_table.c b/drivers/firmware/google/coreboot_table.c
-index 0205987a4fd4..d0fc3eb93f4f 100644
---- a/drivers/firmware/google/coreboot_table.c
-+++ b/drivers/firmware/google/coreboot_table.c
-@@ -3,9 +3,11 @@
-  * coreboot_table.c
-  *
-  * Module providing coreboot table access.
-+ * Exports coreboot tables as attributes in sysfs.
-  *
-  * Copyright 2017 Google Inc.
-  * Copyright 2017 Samuel Holland <samuel@sholland.org>
-+ * Copyright 2019 9elements Agency GmbH
-  */
- 
- #include <linux/acpi.h>
-@@ -84,6 +86,60 @@ void coreboot_driver_unregister(struct coreboot_driver *driver)
- }
- EXPORT_SYMBOL(coreboot_driver_unregister);
- 
-+static ssize_t id_show(struct device *dev,
-+		       struct device_attribute *attr, char *buffer)
-+{
-+	struct coreboot_device *device = CB_DEV(dev);
-+
-+	return sprintf(buffer, "0x%08x\n", device->entry.tag);
-+}
-+
-+static ssize_t size_show(struct device *dev,
-+			 struct device_attribute *attr, char *buffer)
-+{
-+	struct coreboot_device *device = CB_DEV(dev);
-+
-+	return sprintf(buffer, "%u\n", device->entry.size);
-+}
-+
-+static DEVICE_ATTR_RO(id);
-+static DEVICE_ATTR_RO(size);
-+
-+static struct attribute *cb_dev_attrs[] = {
-+	&dev_attr_id.attr,
-+	&dev_attr_size.attr,
-+	NULL
-+};
-+
-+static ssize_t data_read(struct file *filp, struct kobject *kobj,
-+			 struct bin_attribute *bin_attr,
-+			 char *buffer, loff_t offset, size_t count)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct coreboot_device *device = CB_DEV(dev);
-+
-+	return memory_read_from_buffer(buffer, count, &offset,
-+				       &device->entry, device->entry.size);
-+}
-+
-+static BIN_ATTR_RO(data, 0);
-+
-+static struct bin_attribute *cb_dev_bin_attrs[] = {
-+	&bin_attr_data,
-+	NULL
-+};
-+
-+static const struct attribute_group cb_dev_attr_group = {
-+	.name = "attributes",
-+	.attrs = cb_dev_attrs,
-+	.bin_attrs = cb_dev_bin_attrs,
-+};
-+
-+static const struct attribute_group *cb_dev_attr_groups[] = {
-+	&cb_dev_attr_group,
-+	NULL
-+};
-+
- static int coreboot_table_populate(struct device *dev, void *ptr)
- {
- 	int i, ret;
-@@ -104,6 +160,8 @@ static int coreboot_table_populate(struct device *dev, void *ptr)
- 		device->dev.parent = dev;
- 		device->dev.bus = &coreboot_bus_type;
- 		device->dev.release = coreboot_device_release;
-+		device->dev.groups = cb_dev_attr_groups;
-+
- 		memcpy(&device->entry, ptr_entry, entry->size);
- 
- 		ret = device_register(&device->dev);
 -- 
-2.24.1
-
+viresh
