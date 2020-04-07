@@ -2,134 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A8D1A108E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B871A10A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbgDGPr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 11:47:56 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:47054 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727481AbgDGPry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:47:54 -0400
-Received: by mail-oi1-f196.google.com with SMTP id q204so1879952oia.13
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 08:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C5+Tj/x0seqvn19MWhPZoKn+VlDCEMR9Hc+Aq3tkzY8=;
-        b=AqvyHOEKa5D4KldSTXCJnWs49QR2eXk+zF16yQDJ/jO2g384gpvbB+mCb9j8OEA43m
-         A6MJ5P+j9YHQ9ALT8li8x+DrQzx4FYzIUF4jzdSTBguXP75zfrh9l/P+mR2yC9oUFmbh
-         Yn8a9rA4p42mGrhMH+ty00/pUaHnx9ZPa4dmFBsdcEWiR/R8eLwj7ps7YItEsiliVj9x
-         hc7+ZDQQTkrx9SU1xDncAFv/vXs+HvkGPU5/2aEF17mo20t2DhLi36900gUTcWnRYfiV
-         5jI4l5PaOBVH08bwik0C/yypiQ4cZP+kcrCOPLy8/Bm/UM9YAF3+Nh+1nBPDRQ+FHO80
-         SCBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C5+Tj/x0seqvn19MWhPZoKn+VlDCEMR9Hc+Aq3tkzY8=;
-        b=A6hqcLjpoTCTdFvQ92yserX0yrfqBs6SeWgzxEz7CNHEkCsvuh8eacFRo0ZpZpc/PU
-         UH360z6HUGXbQKzHCXEeTiz4xkHfVBxrkF/ftcWNgMIzfEiPw7W0qkaC+NRZ2C/4StBv
-         4KlPU0d/95bMO2SEuAlidAWjVUOGverFvFUEKuB4dppw34M04GzFrmud34g6csD7ydWE
-         GoIfAM7h2VNttPGbZw8rk4z2FwGICH0cfYoFSYm9sFEgULfjkiwrEtbRRGlIsJBHXM9D
-         HCsW/ExeU/kN0ZBeI4uKNyNyHJYaJylX7ZVKGJkqTeCnTaEhLuglp5dkovhWCjRwGoVy
-         P0Hg==
-X-Gm-Message-State: AGi0PuaxQ4QZcnulxUj7r1Ne8nI7kVW8bYST4biaHeMwXw9J4APno6BV
-        8JITPTPkg18P5bVrWOHanwDL3dOev7dm8ZVFTo+OfA==
-X-Google-Smtp-Source: APiQypJu3SjURBCeHG9XCeUMhTFUk1+T5l/kcmiOEHAKUxA8FMQScTewM/7d0CG0YpkFEyil0R95v+JbbO4tHHpx7Qg=
-X-Received: by 2002:aca:ab16:: with SMTP id u22mr2087293oie.133.1586274473098;
- Tue, 07 Apr 2020 08:47:53 -0700 (PDT)
+        id S1727134AbgDGPuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:50:25 -0400
+Received: from mout.gmx.net ([212.227.17.20]:34111 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726893AbgDGPuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 11:50:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1586274608;
+        bh=BZI6U+33BCxOnCVdE28ab0//2fZpUYxRTZDmA4+ws5g=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=UpqStN6aLNBRWEpwqx88cN0FCsrqwqi0Oiw0dleghRLlIfGQwmfitkvVMSsigu1S+
+         kFU2/kmfQ2uyGSwjYrhcoQDXdmX83YwIYKTbhVgFdfWNO0EnKo+H4woEARhzWzfU+Z
+         v4os6Ofs+mJUnp8/2/Pw9DBfnzQ5e1iK99zUwUuo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from lenovo-laptop ([82.19.195.159]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1itdXO0tFi-00kt6E; Tue, 07
+ Apr 2020 17:50:08 +0200
+Date:   Tue, 7 Apr 2020 16:50:05 +0100
+From:   Alex Dewar <alex.dewar@gmx.co.uk>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Coccinelle: zalloc_simple: Fix patch mode for
+ dma_alloc_coherent()
+Message-ID: <20200407155005.rdyiu7xqss57rzhq@lenovo-laptop>
+References: <20200403173011.65511-1-alex.dewar@gmx.co.uk>
+ <alpine.DEB.2.21.2004062115000.10239@hadrien>
 MIME-Version: 1.0
-References: <20200331133346.372517-1-robert.foss@linaro.org>
- <20200331133346.372517-2-robert.foss@linaro.org> <20200401080705.j4goeqcqhoswhx4u@gilmour.lan>
- <CAG3jFyvUd08U9yNVPUD9Y=nd5Xpcx34GcHJRhtvAAycoq3qimg@mail.gmail.com>
- <20200403232736.GA6127@valkosipuli.retiisi.org.uk> <20200404093446.vuvwrhn5436h4d3s@gilmour.lan>
- <20200406083506.GE6127@valkosipuli.retiisi.org.uk> <20200407083647.4mocdl7aqa3x737q@gilmour.lan>
- <CAG3jFyvd32pWppubMoOoyH9eO2XLjwUXMC7p4xtv8m+JkPv6vw@mail.gmail.com> <20200407123232.ktvaifhqntgzvkap@gilmour.lan>
-In-Reply-To: <20200407123232.ktvaifhqntgzvkap@gilmour.lan>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Tue, 7 Apr 2020 17:47:41 +0200
-Message-ID: <CAG3jFysSrZJRE2TvL0bWoRFNnscgDGj8yGr-iwWBm4=1wMbJ9A@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] media: dt-bindings: ov8856: Document YAML bindings
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
-        Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2004062115000.10239@hadrien>
+X-Provags-ID: V03:K1:3+/uYKcyqckCD21z5Oc92ud+jA0kA+TrKGQMzrR1eI7TLUaCYYA
+ a7C1GCnuuU6+6Zqbu5xXJMNgU5wz4nW5X9OCgSCxt0Xs0S+CxLUghMWapkau4+FswwcbJ5C
+ 2MrWCZyxW+fpYQEy9l/H9+X54ehU9CxG3OjiJbQI8mKoMqVTVMcpZ8ftpyNzywyjiSrUyTD
+ lMeVN5SdL57AXev69FA0w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:I4ElZ7o+piY=:PCIQOsUg9Jbxqznmt7mwxt
+ +y8wZWkXIgHmHGg9aWshaEsrSyjTLCf+ssCrqG3C3alMVCsSO+SNrH7jzivlborXIA5r+zQTl
+ OCvXK+ZO0G6wKiehVVHK97PGLFtx4uEPUVg2ePyBEekxJAHucyaTRfgdwogLLMvyRbeRphMwG
+ HxiYv4sqMlXXTnW97aLwZR8cE0Bat0Knm7hJXoskqhFELyCtYTJyUO0MQDT3PfvP31pLT+cyI
+ VYZmB9XCUTaKtDpq8Ln+iQa5/QIqhLI0BH6XVua1z4TTC84uR9Aiexz22OYUxSxrSA/mRI8gi
+ 8WsrdCMElSZZlT0GGldrjcXlBGfroqbB8XAPcbKIAssig64CZlseJ6pCZeLWT98AipYgIhk3/
+ X59jvXPzKIjg0d7qmAd7OJfQUSCG8zWZjO5omIg7NOsZjm2k91ohTNHHyPDHs5QeCBcIh28X2
+ U/PsYLsxTZHO5FsexY0VOpRc1WsA5zMEOFspryedKHMnqZA0Ur085SW5vL5ojYAtmg7nk1V09
+ G9bNYYHoW9J5F+5d6sl1x50Nk4eMFnKch3jSypNrdMUsMpo6rLRAVjl1ebaWPfrUtD8VhTODo
+ xhPunwOESSqn+LYUPzrdPxKTaNYkjgfBwaUGrcSryLd7X1oBjpKbp5s/guQoiaQYs2CCcpkR9
+ yzEnu5MjAxvrxAGhZ/ApSiu20i0UnhivwalRqI77WWOZM0q9rWcBDDZ+26ola10A0Cd7i55Fg
+ cexHNv94w0th7Va26mXq2yCV9vsLIgSHP5fhdXmp8nG/GBeYXgPrZLiNuawK/0USfvCM0SQ6W
+ t0qt5dOmY1X+r34ZkOgxShTkSiLbrO5luh/RT9cfliFRwchSpxHWJnLACud4a4bKs++AwPu+s
+ 8QpbhpF7DSzKfu52nOPB7b/SgKFXiMI2TEoEgM8d++/XeJQ+H1hiASns9Aus/hXu/CBulVew+
+ Glg//8y9N3JKKQNIND41iSCncjwTrV+++IFU33k3ErASPlo17VkAX0Xsn3kmBOAm9XaklDbCq
+ E8DVbBeyy4cE58uwgyvUlEd9V3TjQXrPQha4vh49z512Pw3zYrVhVyp+OzmZUlr6GkIdv1asw
+ uqddE3uxyZGOQGFgTgBcbE3sZPyObcjq1fJjqIpGfhMjVlGVuz/UOqU90deY09cbdSR3Df2f5
+ isWIml7zPwIJltIxEC35ftebcmtafSZitf1JFdvdwqU54BsXZoBjuqPLlEYZelQasa7U6u8jh
+ MNYYbaMeYQ9CDYf+B
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Apr 2020 at 14:32, Maxime Ripard <maxime@cerno.tech> wrote:
+On Mon, Apr 06, 2020 at 09:15:29PM +0200, Julia Lawall wrote:
 >
-> Hi Robert,
 >
-> On Tue, Apr 07, 2020 at 01:29:05PM +0200, Robert Foss wrote:
-> > On Tue, 7 Apr 2020 at 10:36, Maxime Ripard <maxime@cerno.tech> wrote:
-> > > On Mon, Apr 06, 2020 at 11:35:07AM +0300, Sakari Ailus wrote:
-> > > > > But that 19.2MHz is not a limitation of the device itself, it's a
-> > > > > limitation of our implementation, so we can instead implement
-> > > > > something equivalent in Linux using a clk_set_rate to 19.2MHz (to make
-> > > > > sure that our parent clock is configured at the right rate) and the
-> > > > > clk_get_rate and compare that to 19.2MHz (to make sure that it's not
-> > > > > been rounded too far apart from the frequency we expect).
-> > > > >
-> > > > > This is doing exactly the same thing, except that we don't encode our
-> > > > > implementation limitations in the DT, but in the driver instead.
-> > > >
-> > > > What I really wanted to say that a driver that doesn't get the clock
-> > > > frequency from DT but still sets that frequency is broken.
-> > > >
-> > > > This frequency is highly system specific, and in many cases only a certain
-> > > > frequency is usable, for a few reasons: On many SoCs, not all common
-> > > > frequencies can be used (e.g. 9,6 MHz, 19,2 MHz and 24 MHz; while others
-> > > > are being used as well), and then that frequency affects the usable CSI-2
-> > > > bus frequencies directly --- and of those, only safe, known-good ones
-> > > > should be used. IOW, getting the external clock frequency wrong typically
-> > > > has an effect that that none of the known-good CSI-2 bus clock frequencies
-> > > > are available.
-> > >
-> > > So clock-frequency is not about the "Frequency of the xvclk clock in
-> > > Hertz", but the frequency at which that clock must run on this
-> > > particular SoC / board to be functional?
-> > >
-> > > If so, then yeah, we should definitely keep it, but the documentation
-> > > of the binding should be made clearer as well.
+> On Fri, 3 Apr 2020, Alex Dewar wrote:
+>
+> > Commit dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()"), in
+> > removing dma_zalloc_coherent() treewide, inadvertently removed the pat=
+ch
+> > rule for dma_alloc_coherent(), leaving Coccinelle unable to auto-gener=
+ate
+> > patches for this case. Fix this.
 > >
-> > Alright so, let me summarise the desired approach then.
->
-> There's a separate discussion on the same topic here:
-> https://lore.kernel.org/linux-media/20200407122106.GD4751@pendragon.ideasonboard.com/
-
-Thanks for the link.
-
->
-> > ACPI:
-> >   - Fetch the "clock-frequency" property
-> >   - Verify it to be 19.2Mhz
+> > Fixes: dfd32cad146e ("dma-mapping: remove dma_zalloc_coherent()")
+> > CC: Luis Chamberlain <mcgrof@kernel.org>
+> > Signed-off-by: Alex Dewar <alex.dewar@gmx.co.uk>
+> > ---
+> >  scripts/coccinelle/api/alloc/zalloc-simple.cocci | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
 > >
-> > DT:
-> >   - Fetch the "clock-frequency" property
-> >   - Verify it to be 19.2Mhz
-> >   - Get xvclk clock
-> >   - Get xvclk clock rate
-> >   - Verify xvclk clock rate to be 19.2Mhz
+> > diff --git a/scripts/coccinelle/api/alloc/zalloc-simple.cocci b/script=
+s/coccinelle/api/alloc/zalloc-simple.cocci
+> > index 26cda3f48f01..c53aab7fe096 100644
+> > --- a/scripts/coccinelle/api/alloc/zalloc-simple.cocci
+> > +++ b/scripts/coccinelle/api/alloc/zalloc-simple.cocci
+> > @@ -70,6 +70,15 @@ statement S;
+> >  - x =3D (T)vmalloc(E1);
+> >  + x =3D (T)vzalloc(E1);
+> >  |
+> > +- x =3D dma_alloc_coherent(E2,E1,E3,E4);
+> > ++ x =3D dma_alloc_coherent(E2,E1,E3,E4);
 >
-> The current status is that you should
-> 's/clock-frequency/link-frequencies/', and in order to replace
-> assigned-clock-rates, you'll want to have a clk_set_rate to 19.2MHz
-> between steps 3 and 4
+> Hi,
+>
+> I don't understand the above case.  The before and after code seem to be
+> the same?
+>
+> julia
 
-Would we want to 's/clock-frequency/link-frequencies/' for ACPI too?
-I imagine that would cause some breakage.
+Hi,
+
+I just wanted to flag up unnecessary calls to memset() after
+dma_alloc_coherent() and I wasn't sure how to best express that, though
+I'm sure there's a much cleaner way. At the moment the cocci file only
+gives warnings for this case, but it would be nice to be able to
+autogenerate patches too.
+
+Best,
+Alex
+
+>
+>
+> > +|
+> > +- x =3D (T *)dma_alloc_coherent(E2,E1,E3,E4);
+> > ++ x =3D dma_alloc_coherent(E2,E1,E3,E4);
+> > +|
+> > +- x =3D (T)dma_alloc_coherent(E2,E1,E3,E4);
+> > ++ x =3D (T)dma_alloc_coherent(E2,E1,E3,E4);
+> > +|
+> >  - x =3D kmalloc_node(E1,E2,E3);
+> >  + x =3D kzalloc_node(E1,E2,E3);
+> >  |
+> > --
+> > 2.26.0
+> >
+> >
