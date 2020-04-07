@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 287891A0B75
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6E51A0B11
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728328AbgDGK0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:26:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38932 "EHLO mail.kernel.org"
+        id S1728475AbgDGKXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:23:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729215AbgDGK0p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:26:45 -0400
+        id S1728462AbgDGKX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:23:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D10932074B;
-        Tue,  7 Apr 2020 10:26:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E84C820644;
+        Tue,  7 Apr 2020 10:23:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255205;
-        bh=+9/waoq6urivDfNZvIaeIMosuJ6pHCmjRRVUUlB8Uig=;
+        s=default; t=1586255006;
+        bh=5/sL9mCXly5jrq1A3Z9N4VVG6JUPKXdB9TUdv7LPc+4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kwm7mD3zf05JacqVEYGv2jqg4UYgSEvmLrueTcmnWj+y20uiyXwJ579D/oka7qWqq
-         FILF+eNA/VtO8RFKkilCzt8tiN9BApvtVxk1PLCHv1m2jCzw2ljehJr4xgMoLoUfgD
-         oOog3GpG4aKQghkWjtjL09WIPFAeeTDr9ehlk7FQ=
+        b=ek2IyiXBFNT7W7bkfcTBGmTOJSdavEoMxf0yghUTc+ALh5xTSkE0sGSg/H2edqhMa
+         f0Y8TuwCMiXz7o5sWltYIHqlyVNFhKqFHvGyddHow/VnzJzJ0CdJtUx6PP1PATa/jQ
+         swTaaYYmncreKp4b8XWnYO9/uH8nGf8lMLcXHXLk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, William Dauchy <w.dauchy@criteo.com>,
-        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 03/29] net, ip_tunnel: fix interface lookup with no key
-Date:   Tue,  7 Apr 2020 12:22:00 +0200
-Message-Id: <20200407101452.411878897@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>
+Subject: [PATCH 5.4 28/36] iwlwifi: consider HE capability when setting LDPC
+Date:   Tue,  7 Apr 2020 12:22:01 +0200
+Message-Id: <20200407101457.877281841@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
-References: <20200407101452.046058399@linuxfoundation.org>
+In-Reply-To: <20200407101454.281052964@linuxfoundation.org>
+References: <20200407101454.281052964@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,54 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: William Dauchy <w.dauchy@criteo.com>
+From: Mordechay Goodstein <mordechay.goodstein@intel.com>
 
-[ Upstream commit 25629fdaff2ff509dd0b3f5ff93d70a75e79e0a1 ]
+commit cb377dfda1755b3bc01436755d866c8e5336a762 upstream.
 
-when creating a new ipip interface with no local/remote configuration,
-the lookup is done with TUNNEL_NO_KEY flag, making it impossible to
-match the new interface (only possible match being fallback or metada
-case interface); e.g: `ip link add tunl1 type ipip dev eth0`
+The AP may set the LDPC capability only in HE (IEEE80211_HE_PHY_CAP1),
+but we were checking it only in the HT capabilities.
 
-To fix this case, adding a flag check before the key comparison so we
-permit to match an interface with no local/remote config; it also avoids
-breaking possible userland tools relying on TUNNEL_NO_KEY flag and
-uninitialised key.
+If we don't use this capability when required, the DSP gets the wrong
+configuration in HE and doesn't work properly.
 
-context being on my side, I'm creating an extra ipip interface attached
-to the physical one, and moving it to a dedicated namespace.
-
-Fixes: c54419321455 ("GRE: Refactor GRE tunneling code.")
-Signed-off-by: William Dauchy <w.dauchy@criteo.com>
-Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Fixes: befebbb30af0 ("iwlwifi: rs: consider LDPC capability in case of HE")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20200306151128.492d167c1a25.I1ad1353dbbf6c99ae57814be750f41a1c9f7f4ac@changeid
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/ip_tunnel.c |    6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
---- a/net/ipv4/ip_tunnel.c
-+++ b/net/ipv4/ip_tunnel.c
-@@ -142,11 +142,8 @@ struct ip_tunnel *ip_tunnel_lookup(struc
- 			cand = t;
- 	}
+---
+ drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
+@@ -147,7 +147,11 @@ static u16 rs_fw_get_config_flags(struct
+ 	     (vht_ena && (vht_cap->cap & IEEE80211_VHT_CAP_RXLDPC))))
+ 		flags |= IWL_TLC_MNG_CFG_FLAGS_LDPC_MSK;
  
--	if (flags & TUNNEL_NO_KEY)
--		goto skip_key_lookup;
--
- 	hlist_for_each_entry_rcu(t, head, hash_node) {
--		if (t->parms.i_key != key ||
-+		if ((!(flags & TUNNEL_NO_KEY) && t->parms.i_key != key) ||
- 		    t->parms.iph.saddr != 0 ||
- 		    t->parms.iph.daddr != 0 ||
- 		    !(t->dev->flags & IFF_UP))
-@@ -158,7 +155,6 @@ struct ip_tunnel *ip_tunnel_lookup(struc
- 			cand = t;
- 	}
- 
--skip_key_lookup:
- 	if (cand)
- 		return cand;
- 
+-	/* consider our LDPC support in case of HE */
++	/* consider LDPC support in case of HE */
++	if (he_cap->has_he && (he_cap->he_cap_elem.phy_cap_info[1] &
++	    IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD))
++		flags |= IWL_TLC_MNG_CFG_FLAGS_LDPC_MSK;
++
+ 	if (sband->iftype_data && sband->iftype_data->he_cap.has_he &&
+ 	    !(sband->iftype_data->he_cap.he_cap_elem.phy_cap_info[1] &
+ 	     IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD))
 
 
