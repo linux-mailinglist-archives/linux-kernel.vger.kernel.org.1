@@ -2,270 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C96061A10D1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FEAB1A10D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 17:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbgDGP64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 11:58:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726937AbgDGP64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 11:58:56 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A1C92072A;
-        Tue,  7 Apr 2020 15:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586275135;
-        bh=ltIOImB02Z71XhE+ab4AZjqWho6FXnB/SdX/vjB8BxA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dmp90ubmZP2czndVvQXWl03wmMM9mO/JPcATNHy2z9xFFl+W4sASxc89XShQvJ65d
-         4xBUn2UodHNybm6HuKbb4TjlB2WCP09XP22hvEsQ/aWcT7vXtKseuW/MtYicFijNS1
-         GJpAlD3EXfNGs7i9RmNFzytbek/t01G3FwTWAehI=
-Date:   Wed, 8 Apr 2020 00:58:50 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/9] riscv: introduce interfaces to patch kernel code
-Message-Id: <20200408005850.5e1a7666013f080ff60020e2@kernel.org>
-In-Reply-To: <a491ce48973a0b4f0eed3fe4e97d6a07cb6d6ae8.1586265122.git.zong.li@sifive.com>
-References: <cover.1586265122.git.zong.li@sifive.com>
-        <a491ce48973a0b4f0eed3fe4e97d6a07cb6d6ae8.1586265122.git.zong.li@sifive.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727977AbgDGP7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 11:59:24 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:49592 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726937AbgDGP7Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 11:59:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586275162;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uyjESamdwUR+qBAftAf1wggTNgdAJyF9I7vk6xL9aJk=;
+        b=F8o6ZOebQNsRCAPiswS5HblN1xXA8JHEr46/0lCDVcTA34KN3sK6FIRveE+o6KZBWe2rfK
+        tyWCXxoBQ4cbKkutfsnEA2o0GOn/uUiPNmkC/lV8uTP9Py98mXrMlov9TY/8PClXKNpUI8
+        hz7M3p1vxBoajzZFCZ36/bs+7E2iALo=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-IaUL2AI7Ony57DFJCFiRCA-1; Tue, 07 Apr 2020 11:59:21 -0400
+X-MC-Unique: IaUL2AI7Ony57DFJCFiRCA-1
+Received: by mail-qk1-f197.google.com with SMTP id 19so3579678qkc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 08:59:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uyjESamdwUR+qBAftAf1wggTNgdAJyF9I7vk6xL9aJk=;
+        b=Z1km62zef1obaQO4IuOZHBQsU8z8ij9z9eOPkkcjRoJdwZ9oEZL7Px6utxOp1u0izm
+         MqSFcZZ9AiQ6drRKpUFXLsJcKQB7Sq1rq/3iexOIqp3H6V3AeSKorsd56fv0YAAKfl5S
+         SImV3WnwEH8F9FCEE1sMGaq3xTaNgjbc+yl53oG39sSk5geYBo4JgrIcRJ+1D0v+khtu
+         ssBAFcIcH4EbIVDfr2n77rpzbFDM9umqLaEi6pJBUTbxGosqJEUB2zdIbSCpK4H1llaK
+         CW4RpRxMLxZnIUonzjyGMs2KO/cP7Y6sjdXOEcbjviVjUDUmblFWuw/k8OVTf5wpgTed
+         jJjA==
+X-Gm-Message-State: AGi0PuZmGbNpVAJhsyBb179/oTgRKt1S1Ukn/jnCTFtK/9OltpMEWelY
+        ponDP8z+ebkb5qOmQ0xT9JJTaM1ME+PWHxWHSw93+Ipo5+86O8g6p5YTEjrzzMbYyYon7cEIksP
+        NXcvrwj8FfWAgBZT3VVOHPGKN
+X-Received: by 2002:ac8:544b:: with SMTP id d11mr2980135qtq.122.1586275160051;
+        Tue, 07 Apr 2020 08:59:20 -0700 (PDT)
+X-Google-Smtp-Source: APiQypITVF/A5j/lHW/Mk28wZXwa0K1fTtGrCfGOtpwxDP9B0toGgUPl684klg2CCJr7b6M9QM6bHQ==
+X-Received: by 2002:ac8:544b:: with SMTP id d11mr2980108qtq.122.1586275159771;
+        Tue, 07 Apr 2020 08:59:19 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::3])
+        by smtp.gmail.com with ESMTPSA id z40sm7063418qtj.45.2020.04.07.08.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 08:59:18 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 11:59:17 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com>,
+        Brian Geffon <bgeffon@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: BUG: unable to handle kernel paging request in
+ kernel_get_mempolicy
+Message-ID: <20200407155917.GF48345@xz-x1>
+References: <0000000000002b25f105a2a3434d@google.com>
+ <20200407004745.GA48345@xz-x1>
+ <20200406183941.38a2e52026e42dbfde239a56@linux-foundation.org>
+ <20200407015535.GC48345@xz-x1>
+ <20200406191534.aafd8f74406c242ba1a42549@linux-foundation.org>
+ <20200407024254.GD48345@xz-x1>
+ <CACT4Y+bxjLaK-QG+7WQ0S-N4_1-2-gtDU=ytUDd5fUOjsxEjdA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bxjLaK-QG+7WQ0S-N4_1-2-gtDU=ytUDd5fUOjsxEjdA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zong,
-
-On Tue,  7 Apr 2020 22:46:47 +0800
-Zong Li <zong.li@sifive.com> wrote:
-
-> On strict kernel memory permission, we couldn't patch code without
-> writable permission. Preserve two holes in fixmap area, so we can map
-> the kernel code temporarily to fixmap area, then patch the instructions.
+On Tue, Apr 07, 2020 at 10:27:15AM +0200, Dmitry Vyukov wrote:
+> On Tue, Apr 7, 2020 at 4:43 AM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > On Mon, Apr 06, 2020 at 07:15:34PM -0700, Andrew Morton wrote:
+> > > On Mon, 6 Apr 2020 21:55:35 -0400 Peter Xu <peterx@redhat.com> wrote:
+> > >
+> > > > On Mon, Apr 06, 2020 at 06:39:41PM -0700, Andrew Morton wrote:
+> > > > > On Mon, 6 Apr 2020 20:47:45 -0400 Peter Xu <peterx@redhat.com> wrote:
+> > > > >
+> > > > > > >From 23800bff6fa346a4e9b3806dc0cfeb74498df757 Mon Sep 17 00:00:00 2001
+> > > > > > From: Peter Xu <peterx@redhat.com>
+> > > > > > Date: Mon, 6 Apr 2020 20:40:13 -0400
+> > > > > > Subject: [PATCH] mm/mempolicy: Allow lookup_node() to handle fatal signal
+> > > > > >
+> > > > > > lookup_node() uses gup to pin the page and get node information.  It
+> > > > > > checks against ret>=0 assuming the page will be filled in.  However
+> > > > > > it's also possible that gup will return zero, for example, when the
+> > > > > > thread is quickly killed with a fatal signal.  Teach lookup_node() to
+> > > > > > gracefully return an error -EFAULT if it happens.
+> > > > > >
+> > > > > > ...
+> > > > > >
+> > > > > > --- a/mm/mempolicy.c
+> > > > > > +++ b/mm/mempolicy.c
+> > > > > > @@ -902,7 +902,10 @@ static int lookup_node(struct mm_struct *mm, unsigned long addr)
+> > > > > >
+> > > > > >         int locked = 1;
+> > > > > >         err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
+> > > > > > -       if (err >= 0) {
+> > > > > > +       if (err == 0) {
+> > > > > > +               /* E.g. GUP interupted by fatal signal */
+> > > > > > +               err = -EFAULT;
+> > > > > > +       } else if (err > 0) {
+> > > > > >                 err = page_to_nid(p);
+> > > > > >                 put_page(p);
+> > > > > >         }
+> > > > >
+> > > > > Doh.  Thanks.
+> > > > >
+> > > > > Should it have been -EINTR?
+> > > >
+> > > > It looks ok to me too.  I was returning -EFAULT to follow the same
+> > > > value as get_vaddr_frames() (which is the other caller of
+> > > > get_user_pages_locked()).  So far the only path that I found can
+> > > > trigger this is when there's a fatal signal pending right after the
+> > > > gup.  If so, the userspace won't have a chance to see the -EINTR (or
+> > > > whatever we return) anyways.
+> > >
+> > > Yup.  I guess we're a victim of get_user_pages()'s screwy return value
+> > > conventions - the caller cannot distinguish between invalid-addr and
+> > > fatal-signal.
+> >
+> > Indeed.
+> >
+> > >
+> > > Which makes one wonder why lookup_node() ever worked.  What happens if
+> > > get_mempolicy(MPOL_F_NODE) is passed a wild userspace address?
+> > >
+> >
+> > I'm not familiar with mempolicy at all, but do you mean MPOL_F_NODE
+> > with MPOL_F_ADDR?  Asked since iiuc if only MPOL_F_NODE is specified,
+> > the kernel should not use the userspace addr at all (which seems to be
+> > the thing we do now).  get_mempolicy(MPOL_F_NODE|MPOL_F_ADDR) seems to
+> > return -EFAULT as expected, though I agree maybe it would still be
+> > nicer to differentiate the two cases.
 > 
-> We need two pages here because we support the compressed instruction, so
-> the instruction might be align to 2 bytes. When patching the 32-bit
-> length instruction which is 2 bytes alignment, it will across two pages.
-> 
-> Introduce two interfaces to patch kernel code:
-> riscv_patch_text_nosync:
->  - patch code without synchronization, it's caller's responsibility to
->    synchronize all CPUs if needed.
-> riscv_patch_text:
->  - patch code and always synchronize with stop_machine()
-> 
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> Suggested-by: Masami Hiramatsu <mhiramat@kernel.org>
-> ---
->  arch/riscv/include/asm/fixmap.h |   2 +
->  arch/riscv/include/asm/patch.h  |  12 ++++
->  arch/riscv/kernel/Makefile      |   4 +-
->  arch/riscv/kernel/patch.c       | 120 ++++++++++++++++++++++++++++++++
->  4 files changed, 137 insertions(+), 1 deletion(-)
->  create mode 100644 arch/riscv/include/asm/patch.h
->  create mode 100644 arch/riscv/kernel/patch.c
-> 
-> diff --git a/arch/riscv/include/asm/fixmap.h b/arch/riscv/include/asm/fixmap.h
-> index 42d2c42f3cc9..2368d49eb4ef 100644
-> --- a/arch/riscv/include/asm/fixmap.h
-> +++ b/arch/riscv/include/asm/fixmap.h
-> @@ -27,6 +27,8 @@ enum fixed_addresses {
->  	FIX_FDT = FIX_FDT_END + FIX_FDT_SIZE / PAGE_SIZE - 1,
->  	FIX_PTE,
->  	FIX_PMD,
-> +	FIX_TEXT_POKE1,
-> +	FIX_TEXT_POKE0,
->  	FIX_EARLYCON_MEM_BASE,
->  	__end_of_fixed_addresses
->  };
-> diff --git a/arch/riscv/include/asm/patch.h b/arch/riscv/include/asm/patch.h
-> new file mode 100644
-> index 000000000000..9a7d7346001e
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/patch.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (C) 2020 SiFive
-> + */
-> +
-> +#ifndef _ASM_RISCV_PATCH_H
-> +#define _ASM_RISCV_PATCH_H
-> +
-> +int patch_text_nosync(void *addr, const void *insns, size_t len);
-> +int patch_text(void *addr, u32 insn);
-> +
-> +#endif /* _ASM_RISCV_PATCH_H */
-> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> index f40205cb9a22..d189bd3d8501 100644
-> --- a/arch/riscv/kernel/Makefile
-> +++ b/arch/riscv/kernel/Makefile
-> @@ -4,7 +4,8 @@
->  #
->  
->  ifdef CONFIG_FTRACE
-> -CFLAGS_REMOVE_ftrace.o = -pg
-> +CFLAGS_REMOVE_ftrace.o	= -pg
-> +CFLAGS_REMOVE_patch.o	= -pg
->  endif
->  
->  extra-y += head.o
-> @@ -26,6 +27,7 @@ obj-y	+= traps.o
->  obj-y	+= riscv_ksyms.o
->  obj-y	+= stacktrace.o
->  obj-y	+= cacheinfo.o
-> +obj-y	+= patch.o
->  obj-$(CONFIG_MMU) += vdso.o vdso/
->  
->  obj-$(CONFIG_RISCV_M_MODE)	+= clint.o
-> diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
-> new file mode 100644
-> index 000000000000..5b4f0d37097f
-> --- /dev/null
-> +++ b/arch/riscv/kernel/patch.c
-> @@ -0,0 +1,120 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 SiFive
-> + */
-> +
-> +#include <linux/spinlock.h>
-> +#include <linux/mm.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/stop_machine.h>
-> +#include <asm/kprobes.h>
-> +#include <asm/cacheflush.h>
-> +#include <asm/fixmap.h>
-> +
-> +struct patch_insn_patch {
-> +	void *addr;
-> +	u32 insn;
-> +	atomic_t cpu_count;
-> +};
-> +
-> +#ifdef CONFIG_MMU
-> +static void *patch_map(void *addr, int fixmap)
-> +{
-> +	uintptr_t uintaddr = (uintptr_t) addr;
-> +	struct page *page;
-> +
-> +	if (core_kernel_text(uintaddr))
-> +		page = phys_to_page(__pa_symbol(addr));
-> +	else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
-> +		page = vmalloc_to_page(addr);
-> +	else
-> +		return addr;
-> +
-> +	BUG_ON(!page);
-> +
-> +	return (void *)set_fixmap_offset(fixmap, page_to_phys(page) +
-> +					 (uintaddr & ~PAGE_MASK));
-> +}
-> +NOKPROBE_SYMBOL(patch_map);
-> +
-> +static void patch_unmap(int fixmap)
-> +{
-> +	clear_fixmap(fixmap);
-> +}
-> +NOKPROBE_SYMBOL(patch_unmap);
-> +
+> Am I reading this correctly that we put an initialized struct page* in
+> this case? If so, with stack spraying this looks like an "interesting"
+> bug.
 
-Please leave a comment here about text_mutex,
+Yeah, so far it should be fine, but... ideally I guess we should init
+page==NULL in lookup_node() too to avoid potential risk on exploiting.
+Maybe we could squash this into the fix if still possible.
 
-> +static int patch_insn_write(void *addr, const void *insn, size_t len)
-> +{
-> +	void *waddr = addr;
-> +	bool across_pages = (((uintptr_t) addr & ~PAGE_MASK) + len) > PAGE_SIZE;
-> +	int ret;
-
-Or use lockdep_assert_held(&text_mutex); here so that user can easily
-understand they have to lock the text_mutex before calling this.
-
-Thank you,
-
-> +
-> +	if (across_pages)
-> +		patch_map(addr + len, FIX_TEXT_POKE1);
-> +
-> +	waddr = patch_map(addr, FIX_TEXT_POKE0);
-> +
-> +	ret = probe_kernel_write(waddr, insn, len);
-> +
-> +	patch_unmap(FIX_TEXT_POKE0);
-> +
-> +	if (across_pages)
-> +		patch_unmap(FIX_TEXT_POKE1);
-> +
-> +	return ret;
-> +}
-> +NOKPROBE_SYMBOL(patch_insn_write);
-> +#else
-> +static int patch_insn_write(void *addr, const void *insn, size_t len)
-> +{
-> +	return probe_kernel_write(addr, insn, len);
-> +}
-> +NOKPROBE_SYMBOL(patch_insn_write);
-> +#endif /* CONFIG_MMU */
-> +
-> +int patch_text_nosync(void *addr, const void *insns, size_t len)
-> +{
-> +	u32 *tp = addr;
-> +	int ret;
-> +
-> +	ret = patch_insn_write(tp, insns, len);
-> +
-> +	if (!ret)
-> +		flush_icache_range((uintptr_t) tp, (uintptr_t) tp + len);
-> +
-> +	return ret;
-> +}
-> +NOKPROBE_SYMBOL(patch_text_nosync);
-> +
-> +static int patch_text_cb(void *data)
-> +{
-> +	struct patch_insn_patch *patch = data;
-> +	int ret = 0;
-> +
-> +	if (atomic_inc_return(&patch->cpu_count) == 1) {
-> +		ret =
-> +		    patch_text_nosync(patch->addr, &patch->insn,
-> +					    GET_INSN_LENGTH(patch->insn));
-> +		atomic_inc(&patch->cpu_count);
-> +	} else {
-> +		while (atomic_read(&patch->cpu_count) <= num_online_cpus())
-> +			cpu_relax();
-> +		smp_mb();
-> +	}
-> +
-> +	return ret;
-> +}
-> +NOKPROBE_SYMBOL(patch_text_cb);
-> +
-> +int patch_text(void *addr, u32 insn)
-> +{
-> +	struct patch_insn_patch patch = {
-> +		.addr = addr,
-> +		.insn = insn,
-> +		.cpu_count = ATOMIC_INIT(0),
-> +	};
-> +
-> +	return stop_machine_cpuslocked(patch_text_cb,
-> +				       &patch, cpu_online_mask);
-> +}
-> +NOKPROBE_SYMBOL(patch_text);
-> -- 
-> 2.26.0
-> 
-
+Thanks,
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Peter Xu
+
