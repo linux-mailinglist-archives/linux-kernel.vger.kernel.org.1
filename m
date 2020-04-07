@@ -2,66 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DCAE1A0C12
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E5611A0C13
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbgDGKgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:36:51 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:44447 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728213AbgDGKgt (ORCPT
+        id S1728472AbgDGKgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:36:54 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36383 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgDGKgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:36:49 -0400
-Received: by mail-wr1-f65.google.com with SMTP id c15so3235458wro.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 03:36:48 -0700 (PDT)
+        Tue, 7 Apr 2020 06:36:50 -0400
+Received: by mail-wm1-f65.google.com with SMTP id d202so1283315wmd.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 03:36:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ol+vaCJYJOmb17xQ0UGT+1HdKXAsk3yj2s/uWUmOiBs=;
-        b=P8ntfIrzx7XCkvwrKYcQ2SFWvNNUMcR0yVny70SYCfEYYkh3uIZICwOYbT0IZAtmDS
-         vIXxJgPS08LBuoNOlTx9ZxzVQgvZ9sRVHYzqHNzQkWYnq8U1dR4xsnnk92Ihdv/mC7b1
-         FokX4LcFfBbWxXIeV+fRm72GjZh+Y5YUhA8etckXplszoVEL6XLGexmEUaAhTCMXs8uh
-         CkjznhoyaNlQPjoz5EHjjiteARj5o0yzvigTPX5roMYiFjLY9yXlJpwWjg0szsYTbJo6
-         /cjNieLchRC5jJumDkT86Str8t8J/ax2AS5ZcWRaMHWOuSh03KPS3tKNElNSK7YDBgMZ
-         zrGg==
+        bh=p+jrVWY9jfP+8Y37zFyB2OTvL0uCfTEvFAk5REfQdCQ=;
+        b=e/iKYiP3U8IFZUiXKXgRyKuO40a7lPZXacKRxaNnk8MwYDQ3a5AKR/LnSGEkVPxV5w
+         8yhqESa/jPWOsEURwyjYi2wFW6W3qsEhURrBI+O1dIR4mEugRqvLr5qAD5kCg7s7MrEm
+         7BEiqe4ZAS2ugw9pzPCFYuXyrdFT1tnKJQIqlCOuso1slzuAFEYFJ9bQLbXHhRWjdavc
+         +hagbwhtthEtQhUwJTDaZeTF7dwU4BtXEjjXhFU540VI0Vv/TZut+YzfiFGIdGufn2IB
+         dvNv+yhk/kci/AjkaBipbOMOep91gXsg9mjE8wQnSb944kVxaiJXW78cZbD+XA5RNssm
+         zc4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ol+vaCJYJOmb17xQ0UGT+1HdKXAsk3yj2s/uWUmOiBs=;
-        b=cFO2o/GH+JGn/WoD9X9SYZlf1adNgGLaMzxaJettbKg1jwUKTif8VdU4s8i9mZh9tx
-         cGibEj4eoWjlb+yVwJ7UXo1FdcepD5UwhCywjGciBzWOh2dCI1nmfm5NTNXaeIL8nQ3u
-         lvh9R+fTjsF6pveEXUz62NsCLpz/hcWyxJWULKBG6yfghzsCgM88zrTYbPsjdj90WU6u
-         sBJuckQP4whHh1VwuyfxqTEUYKIq1t8kBQeCABRBTI28/TjRXfpJEvXL7MCOOtaIVK5P
-         gx1kMtUn0AruKtvKsD9YfVm5vHCEu3NQfVv0is++mIPPbCt/sr5VVWnifmAj8xdHuh49
-         qkzQ==
-X-Gm-Message-State: AGi0PuZvbQ/NUR4ibl0evHXroKmB/wrfe8gnfTKbXfk4vITzavZFOF5w
-        RW4KuR14n7Yu7jkqKRdxdnw=
-X-Google-Smtp-Source: APiQypIeZi8S0XuxSx9RZsD0A1xI/nmNPgHIHvzHTmy2n2WZAOlRPEd69ICfvzXVEFNtF/MOb76x5A==
-X-Received: by 2002:a5d:4d12:: with SMTP id z18mr2100522wrt.67.1586255807938;
-        Tue, 07 Apr 2020 03:36:47 -0700 (PDT)
+        bh=p+jrVWY9jfP+8Y37zFyB2OTvL0uCfTEvFAk5REfQdCQ=;
+        b=SMbAns7UqJT08E1PkFRApugtXR2UH4Nbnqh8i8Mqy+qECdMRq/wUXVV0zO63e+MRN4
+         6KwViL3Jj2QJPo4iM9YcN9M0bfljHpfe1QjcGn55TBmV5DzkS5SxyJ/Ih+K59rmwVztc
+         F9JXB+80VYxIh+jvbMz5qQJDGFETNiWkwDzwwUf0fWZvJNs4i+vvgMJDezQfLVOS7czA
+         WahehALEZ2j33d7og6vCRwiFCrvDY4nazOMxYRewiFF5sDpIOZDTBvvQrqxRg5J2Ic51
+         v1UNwHvRf66Jgm9s8PjCOJx+8yjJIGur5KD8lyr3qDJqT6uO/lQQHNwAWY1PFO/b1+Y+
+         YFzg==
+X-Gm-Message-State: AGi0PuYS3rq7G4KFj0HGroR+gi/WTz1iPt4rlvrb7KELYnkbJtUudvqz
+        vWSwXSNM1m0coOdpCS8EGqs=
+X-Google-Smtp-Source: APiQypJ2rpcyVhbW1cGHbfHfmSBrOKk8gU9YMo2YwCvd00EuJXCIiVVanib/NghtO6RkweID08Ep4g==
+X-Received: by 2002:a1c:96cf:: with SMTP id y198mr1718399wmd.186.1586255808914;
+        Tue, 07 Apr 2020 03:36:48 -0700 (PDT)
 Received: from linuxdev2.toradex.int (31-10-206-124.static.upc.ch. [31.10.206.124])
-        by smtp.gmail.com with ESMTPSA id c17sm25016722wrp.28.2020.04.07.03.36.47
+        by smtp.gmail.com with ESMTPSA id c17sm25016722wrp.28.2020.04.07.03.36.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 03:36:47 -0700 (PDT)
+        Tue, 07 Apr 2020 03:36:48 -0700 (PDT)
 From:   Max Krummenacher <max.oss.09@gmail.com>
 X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
 To:     Max Krummenacher <max.krummenacher@toradex.com>
 Cc:     linux-arm-kernel@lists.infradead.org,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
         linux-kernel@vger.kernel.org,
         Valentin Schneider <valentin.schneider@arm.com>,
         Anson Huang <Anson.Huang@nxp.com>,
         Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Olof Johansson <olof@lixom.net>, Li Yang <leoyang.li@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 3/4] arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
-Date:   Tue,  7 Apr 2020 12:35:36 +0200
-Message-Id: <20200407103537.4138-4-max.krummenacher@toradex.com>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 4/4] arm64: defconfig: refresh
+Date:   Tue,  7 Apr 2020 12:35:37 +0200
+Message-Id: <20200407103537.4138-5-max.krummenacher@toradex.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20200407103537.4138-1-max.krummenacher@toradex.com>
 References: <20200407103537.4138-1-max.krummenacher@toradex.com>
@@ -72,34 +71,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Completes commit b925adfceb52 ("soc: renesas: Add ARCH_R8A7795[01] for
-existing R-Car H3") and commit 361c5dbb446e ("arm64: dts: renesas:
-Remove use of ARCH_R8A7795").
-
-CONFIG_ARCH_R8A7795 was split in CONFIG_ARCH_R8A77950 and
-CONFIG_ARCH_R8A77951.
+Refresh with make defconfig savedefconfig
 
 Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
 
 ---
 
- arch/arm64/configs/defconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/configs/defconfig | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
 diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 7e2690b449328..d43bd18bedf1e 100644
+index d43bd18bedf1e..b65425f83e0b6 100644
 --- a/arch/arm64/configs/defconfig
 +++ b/arch/arm64/configs/defconfig
-@@ -848,7 +848,8 @@ CONFIG_QCOM_APR=m
- CONFIG_ARCH_R8A774A1=y
- CONFIG_ARCH_R8A774B1=y
- CONFIG_ARCH_R8A774C0=y
--CONFIG_ARCH_R8A7795=y
-+CONFIG_ARCH_R8A77950=y
-+CONFIG_ARCH_R8A77951=y
- CONFIG_ARCH_R8A77960=y
- CONFIG_ARCH_R8A77961=y
- CONFIG_ARCH_R8A77965=y
+@@ -165,9 +165,9 @@ CONFIG_QRTR_SMD=m
+ CONFIG_QRTR_TUN=m
+ CONFIG_BPF_JIT=y
+ CONFIG_CAN=m
++CONFIG_CAN_FLEXCAN=m
+ CONFIG_CAN_RCAR=m
+ CONFIG_CAN_RCAR_CANFD=m
+-CONFIG_CAN_FLEXCAN=m
+ CONFIG_BT=m
+ CONFIG_BT_HIDP=m
+ # CONFIG_BT_HS is not set
+@@ -202,20 +202,19 @@ CONFIG_PCI_HOST_THUNDER_ECAM=y
+ CONFIG_PCIE_ROCKCHIP_HOST=m
+ CONFIG_PCIE_BRCMSTB=m
+ CONFIG_PCI_LAYERSCAPE=y
+-CONFIG_PCIE_LAYERSCAPE_GEN4=y
+ CONFIG_PCI_HISI=y
+ CONFIG_PCIE_QCOM=y
+ CONFIG_PCIE_ARMADA_8K=y
+ CONFIG_PCIE_KIRIN=y
+ CONFIG_PCIE_HISI_STB=y
+ CONFIG_PCIE_TEGRA194_HOST=m
++CONFIG_PCIE_LAYERSCAPE_GEN4=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_FW_LOADER_USER_HELPER=y
+ CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+ CONFIG_HISILICON_LPC=y
+ CONFIG_SIMPLE_PM_BUS=y
+-CONFIG_FSL_MC_BUS=y
+ CONFIG_MTD=y
+ CONFIG_MTD_BLOCK=y
+ CONFIG_MTD_CFI=y
+@@ -494,10 +493,10 @@ CONFIG_SENSORS_INA3221=m
+ CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
+ CONFIG_CPU_THERMAL=y
+ CONFIG_THERMAL_EMULATION=y
+-CONFIG_QORIQ_THERMAL=m
+-CONFIG_SUN8I_THERMAL=y
+ CONFIG_IMX_SC_THERMAL=m
+ CONFIG_IMX8MM_THERMAL=m
++CONFIG_QORIQ_THERMAL=m
++CONFIG_SUN8I_THERMAL=y
+ CONFIG_ROCKCHIP_THERMAL=m
+ CONFIG_RCAR_THERMAL=y
+ CONFIG_RCAR_GEN3_THERMAL=y
+@@ -610,9 +609,9 @@ CONFIG_DRM_MSM=m
+ CONFIG_DRM_TEGRA=m
+ CONFIG_DRM_PANEL_LVDS=m
+ CONFIG_DRM_PANEL_SIMPLE=m
+-CONFIG_DRM_SIMPLE_BRIDGE=m
+ CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
+ CONFIG_DRM_SII902X=m
++CONFIG_DRM_SIMPLE_BRIDGE=m
+ CONFIG_DRM_THINE_THC63LVD1024=m
+ CONFIG_DRM_TI_SN65DSI86=m
+ CONFIG_DRM_I2C_ADV7511=m
+@@ -660,7 +659,6 @@ CONFIG_SND_SOC_WSA881X=m
+ CONFIG_SND_SIMPLE_CARD=m
+ CONFIG_SND_AUDIO_GRAPH_CARD=m
+ CONFIG_I2C_HID=m
+-CONFIG_USB_CONN_GPIO=m
+ CONFIG_USB=y
+ CONFIG_USB_OTG=y
+ CONFIG_USB_XHCI_HCD=y
+@@ -795,14 +793,13 @@ CONFIG_QCOM_A53PLL=y
+ CONFIG_QCOM_CLK_APCS_MSM8916=y
+ CONFIG_QCOM_CLK_SMD_RPM=y
+ CONFIG_QCOM_CLK_RPMH=y
+-CONFIG_IPQ_GCC_8074=y
+ CONFIG_IPQ_GCC_6018=y
++CONFIG_IPQ_GCC_8074=y
+ CONFIG_MSM_GCC_8916=y
+ CONFIG_MSM_GCC_8994=y
+ CONFIG_MSM_MMCC_8996=y
+ CONFIG_MSM_GCC_8998=y
+ CONFIG_QCS_GCC_404=y
+-CONFIG_SDM_GCC_845=y
+ CONFIG_SDM_GPUCC_845=y
+ CONFIG_SDM_DISPCC_845=y
+ CONFIG_SM_GCC_8150=y
+@@ -931,10 +928,10 @@ CONFIG_FPGA_REGION=m
+ CONFIG_OF_FPGA_REGION=m
+ CONFIG_TEE=y
+ CONFIG_OPTEE=y
++CONFIG_MUX_MMIO=y
+ CONFIG_SLIMBUS=m
+ CONFIG_SLIM_QCOM_CTRL=m
+ CONFIG_SLIM_QCOM_NGD_CTRL=m
+-CONFIG_MUX_MMIO=y
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT3_FS=y
+ CONFIG_EXT4_FS_POSIX_ACL=y
 -- 
 2.20.1
 
