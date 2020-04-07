@@ -2,375 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3471A1380
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9EC1A1384
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 20:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbgDGS0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 14:26:10 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:36839 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgDGS0J (ORCPT
+        id S1726801AbgDGS0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 14:26:43 -0400
+Received: from zeniv.linux.org.uk ([195.92.253.2]:46958 "EHLO
+        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbgDGS0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 14:26:09 -0400
-Received: by mail-pl1-f195.google.com with SMTP id g2so1556672plo.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 11:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9BFJKwIvnbFLCnynBhvEwstaoKJTrUkAwJ/w89yCvj8=;
-        b=KK0PCNsz4wUac6mZDEeC7/7ntMm4B+edFgWKlZgOwv8bqe2rlO7Hv9DgA5a68xx/oA
-         AAw4Eb0BoFWqaurobmElvnzy2t60lxAl4MewZ/LqGvuLbvsuMRzMrL+GtqKGcnAJtamq
-         uVIAvAoUgPiiGUNTXAg4plvaRKtz0SN75NgGs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9BFJKwIvnbFLCnynBhvEwstaoKJTrUkAwJ/w89yCvj8=;
-        b=VJ1zLKHAXyXP4UrKxZwb2r1AxXHtZY6nQf5+bASyMz/t3sBDXeXLQHaNFBtjSHjJdh
-         2JDOYg86cKglVH2Y4KT56yDffjL+NC420Of7zBj9puupAhehmFTRoKmNUYN2ZOd2g0f/
-         DydeKOFh3o5id8gTEQBytZCer8ni18FKN2BtmJ7D+GnGsQrdMax4VdiG8YLcg43QpWpO
-         F2mm0HfjZJ9JemiaFaKh+6713s4SYxB9hM7gqxROFgIE6tuPtILRGIOdy2nuL7Mjk9pP
-         tlApCMrpfeZeGr6b4GDuwE+oWoqoTBzJG7W8V3GDBe8iyL+alfVi+x/mLhfYvcF5uAEQ
-         9gAQ==
-X-Gm-Message-State: AGi0PuZO2hysF09E4zshgACyXuunY+1SMnit4Fr7nZfcUbkFiIUY84qg
-        KfT+H6EAU/OAt2btTR5FDg/LzlL5vqE=
-X-Google-Smtp-Source: APiQypL5+ZPEMSFkEX0VN9M0mH8cJLGGJnppkVGBLIzg0pm0bktdJcUTn5rPSbwxIiFVNQxj2T2F8w==
-X-Received: by 2002:a17:90b:4c8f:: with SMTP id my15mr670422pjb.63.1586283968200;
-        Tue, 07 Apr 2020 11:26:08 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a18sm2238797pjh.25.2020.04.07.11.26.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 11:26:07 -0700 (PDT)
-Date:   Tue, 7 Apr 2020 11:26:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Balbir Singh <sblbir@amazon.com>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        jpoimboe@redhat.com, tony.luck@intel.com, benh@kernel.crashing.org,
-        x86@kernel.org, dave.hansen@intel.com
-Subject: Re: [PATCH v2 3/4] arch/x86: Optionally flush L1D on context switch
-Message-ID: <202004071125.605F665@keescook>
-References: <20200406031946.11815-1-sblbir@amazon.com>
- <20200406031946.11815-4-sblbir@amazon.com>
+        Tue, 7 Apr 2020 14:26:43 -0400
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jLsvJ-00DKY3-Bm; Tue, 07 Apr 2020 18:26:09 +0000
+Date:   Tue, 7 Apr 2020 19:26:09 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Yun Levi <ppbuk5246@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Guillaume Nault <gnault@redhat.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Li RongQing <lirongqing@baidu.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Johannes Berg <johannes.berg@intel.com>,
+        David Howells <dhowells@redhat.com>, daniel@iogearbox.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH] netns: dangling pointer on netns bind mount point.
+Message-ID: <20200407182609.GA23230@ZenIV.linux.org.uk>
+References: <20200407023512.GA25005@ubuntu>
+ <20200407030504.GX23230@ZenIV.linux.org.uk>
+ <20200407031318.GY23230@ZenIV.linux.org.uk>
+ <CAM7-yPQas7hvTVLa4U80t0Em0HgLCk2whLQa4O3uff5J3OYiAA@mail.gmail.com>
+ <20200407040354.GZ23230@ZenIV.linux.org.uk>
+ <CAM7-yPRaQsNgZKjru40nM1N_u8HVLVKmJCAzu20DcPL=jzKjWQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200406031946.11815-4-sblbir@amazon.com>
+In-Reply-To: <CAM7-yPRaQsNgZKjru40nM1N_u8HVLVKmJCAzu20DcPL=jzKjWQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 01:19:45PM +1000, Balbir Singh wrote:
-> Implement a mechanism to selectively flush the L1D cache. The goal is to
-> allow tasks that are paranoid due to the recent snoop assisted data sampling
-> vulnerabilites, to flush their L1D on being switched out.  This protects
-> their data from being snooped or leaked via side channels after the task
-> has context switched out.
+On Tue, Apr 07, 2020 at 09:53:29PM +0900, Yun Levi wrote:
+> BTW, It's my question.
 > 
-> There are two scenarios we might want to protect against, a task leaving
-> the CPU with data still in L1D (which is the main concern of this patch),
-> the second scenario is a malicious task coming in (not so well trusted)
-> for which we want to clean up the cache before it starts. Only the case
-> for the former is addressed.
+> >Look: we call ns_get_path(), which calls ns_get_path_cb(), which
+> >calls the callback passed to it (ns_get_path_task(), in this case),
+> >which grabs a reference to ns.  Then we pass that reference to
+> >__ns_get_path().
+> >
+> >__ns_get_path() looks for dentry stashed in ns.  If there is one
+> >and it's still alive, we grab a reference to that dentry and drop
+> >the reference to ns - no new inodes had been created, so no new
+> >namespace references have appeared.  Existing inode is pinned
+> >by dentry and dentry is pinned by _dentry_ reference we've got.
 > 
-> Add arch specific prctl()'s to opt-in to the L1D cache on context switch
-> out, the existing mechanisms of tracking prev_mm via cpu_tlbstate is
-> reused. cond_ibpb() is refactored and renamed into cond_mitigation().
+> actually ns_get_path is called in unshare(2).
 
-I still think this should be a generic prctl(). If there is a strong
-reason not to do this, can it be described in the commit log here?
+Yes, it does.  Via perf_event_namespaces(), which does
+        perf_fill_ns_link_info(&ns_link_info[NET_NS_INDEX],
+                               task, &netns_operations);
+and there we have
+        error = ns_get_path(&ns_path, task, ns_ops);
+        if (!error) {
+                ns_inode = ns_path.dentry->d_inode;
+                ns_link_info->dev = new_encode_dev(ns_inode->i_sb->s_dev);
+                ns_link_info->ino = ns_inode->i_ino;
+                path_put(&ns_path);
+        }
+See that path_put()?  Dentry reference is dropped by it.
 
--Kees
+> and it makes new dentry and
+> inode in __ns_get_path finally (Cuz it create new network namespace)
+>
+> In that case, when I mount with --bind option to this proc/self/ns/net, it
+> only increase dentry refcount on do_loopback->clone_mnt finally (not call
+> netns_operation->get)
+> That means it's not increase previous created network namespace reference
+> count but only increase reference count of _dentry_
+>
+> In that situation, If I exit the child process it definitely frees the
+> net_namespace previous created at the same time it decrease net_namespace's
+> refcnt in exit_task_namespace().
+> It means it's possible that bind mount point can hold the dentry with inode
+> having net_namespace's dangling pointer in another process.
+> In above situation, parent who know that binded mount point calls setns(2)
+> then it sets the net_namespace which is refered by the inode of the dentry
+> increased by do_loopback.
+> That makes set the net_namespace which was freed already.
 
-> 
-> A new thread_info flag TIF_SPEC_FLUSH_L1D is added to track tasks which
-> opt-into L1D flushing. cpu_tlbstate.last_user_mm_ibpb is renamed to
-> cpu_tlbstate.last_user_mm_spec, this is used to convert the TIF flags
-> into mm state (per cpu via last_user_mm_spec) in cond_mitigation(),
-> which then used to do decide when to call flush_l1d().
-> 
-> The current version benefited from discussions with Kees and Thomas.
-> Thomas suggested and provided the code snippet for refactoring the
-> existing cond_ibpb() code.
-> 
-> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Balbir Singh <sblbir@amazon.com>
-> ---
->  arch/x86/include/asm/thread_info.h |  6 +-
->  arch/x86/include/asm/tlbflush.h    |  2 +-
->  arch/x86/include/uapi/asm/prctl.h  |  3 +
->  arch/x86/kernel/process_64.c       | 10 +++-
->  arch/x86/mm/tlb.c                  | 94 +++++++++++++++++++++++-------
->  5 files changed, 91 insertions(+), 24 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-> index 8de8ceccb8bc..5cb250872643 100644
-> --- a/arch/x86/include/asm/thread_info.h
-> +++ b/arch/x86/include/asm/thread_info.h
-> @@ -84,7 +84,7 @@ struct thread_info {
->  #define TIF_SYSCALL_AUDIT	7	/* syscall auditing active */
->  #define TIF_SECCOMP		8	/* secure computing */
->  #define TIF_SPEC_IB		9	/* Indirect branch speculation mitigation */
-> -#define TIF_SPEC_FORCE_UPDATE	10	/* Force speculation MSR update in context switch */
-> +#define TIF_SPEC_FLUSH_L1D	10	/* Flush L1D on mm switches (processes) */
->  #define TIF_USER_RETURN_NOTIFY	11	/* notify kernel of userspace return */
->  #define TIF_UPROBE		12	/* breakpointed or singlestepping */
->  #define TIF_PATCH_PENDING	13	/* pending live patching update */
-> @@ -96,6 +96,7 @@ struct thread_info {
->  #define TIF_MEMDIE		20	/* is terminating due to OOM killer */
->  #define TIF_POLLING_NRFLAG	21	/* idle is polling for TIF_NEED_RESCHED */
->  #define TIF_IO_BITMAP		22	/* uses I/O bitmap */
-> +#define TIF_SPEC_FORCE_UPDATE	23	/* Force speculation MSR update in context switch */
->  #define TIF_FORCED_TF		24	/* true if TF in eflags artificially */
->  #define TIF_BLOCKSTEP		25	/* set when we want DEBUGCTLMSR_BTF */
->  #define TIF_LAZY_MMU_UPDATES	27	/* task is updating the mmu lazily */
-> @@ -132,6 +133,7 @@ struct thread_info {
->  #define _TIF_ADDR32		(1 << TIF_ADDR32)
->  #define _TIF_X32		(1 << TIF_X32)
->  #define _TIF_FSCHECK		(1 << TIF_FSCHECK)
-> +#define _TIF_SPEC_FLUSH_L1D	(1 << TIF_SPEC_FLUSH_L1D)
->  
->  /* Work to do before invoking the actual syscall. */
->  #define _TIF_WORK_SYSCALL_ENTRY	\
-> @@ -239,6 +241,8 @@ extern void arch_task_cache_init(void);
->  extern int arch_dup_task_struct(struct task_struct *dst, struct task_struct *src);
->  extern void arch_release_task_struct(struct task_struct *tsk);
->  extern void arch_setup_new_exec(void);
-> +extern int enable_l1d_flush_for_task(struct task_struct *tsk);
-> +extern int disable_l1d_flush_for_task(struct task_struct *tsk);
->  #define arch_setup_new_exec arch_setup_new_exec
->  #endif	/* !__ASSEMBLY__ */
->  
-> diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-> index 6f66d841262d..69e6ea20679c 100644
-> --- a/arch/x86/include/asm/tlbflush.h
-> +++ b/arch/x86/include/asm/tlbflush.h
-> @@ -172,7 +172,7 @@ struct tlb_state {
->  	/* Last user mm for optimizing IBPB */
->  	union {
->  		struct mm_struct	*last_user_mm;
-> -		unsigned long		last_user_mm_ibpb;
-> +		unsigned long		last_user_mm_spec;
->  	};
->  
->  	u16 loaded_mm_asid;
-> diff --git a/arch/x86/include/uapi/asm/prctl.h b/arch/x86/include/uapi/asm/prctl.h
-> index 5a6aac9fa41f..1361e5e25791 100644
-> --- a/arch/x86/include/uapi/asm/prctl.h
-> +++ b/arch/x86/include/uapi/asm/prctl.h
-> @@ -14,4 +14,7 @@
->  #define ARCH_MAP_VDSO_32	0x2002
->  #define ARCH_MAP_VDSO_64	0x2003
->  
-> +#define ARCH_SET_L1D_FLUSH	0x3001
-> +#define ARCH_GET_L1D_FLUSH	0x3002
-> +
->  #endif /* _ASM_X86_PRCTL_H */
-> diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-> index 5ef9d8f25b0e..ecf542f13572 100644
-> --- a/arch/x86/kernel/process_64.c
-> +++ b/arch/x86/kernel/process_64.c
-> @@ -699,7 +699,15 @@ long do_arch_prctl_64(struct task_struct *task, int option, unsigned long arg2)
->  	case ARCH_MAP_VDSO_64:
->  		return prctl_map_vdso(&vdso_image_64, arg2);
->  #endif
-> -
-> +	case ARCH_GET_L1D_FLUSH:
-> +		return test_ti_thread_flag(&task->thread_info, TIF_SPEC_FLUSH_L1D);
-> +	case ARCH_SET_L1D_FLUSH: {
-> +		if (arg2 >= 1)
-> +			return enable_l1d_flush_for_task(task);
-> +		else
-> +			return disable_l1d_flush_for_task(task);
-> +		break;
-> +	}
->  	default:
->  		ret = -EINVAL;
->  		break;
-> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-> index 66f96f21a7b6..71ef9fb941b8 100644
-> --- a/arch/x86/mm/tlb.c
-> +++ b/arch/x86/mm/tlb.c
-> @@ -13,6 +13,7 @@
->  #include <asm/mmu_context.h>
->  #include <asm/nospec-branch.h>
->  #include <asm/cache.h>
-> +#include <asm/cacheflush.h>
->  #include <asm/apic.h>
->  #include <asm/uv/uv.h>
->  
-> @@ -33,10 +34,12 @@
->   */
->  
->  /*
-> - * Use bit 0 to mangle the TIF_SPEC_IB state into the mm pointer which is
-> - * stored in cpu_tlb_state.last_user_mm_ibpb.
-> + * Bits to mangle the TIF_SPEC_* state into the mm pointer which is
-> + * stored in cpu_tlb_state.last_user_mm_spec.
->   */
->  #define LAST_USER_MM_IBPB	0x1UL
-> +#define LAST_USER_MM_FLUSH_L1D	0x2UL
-> +#define LAST_USER_MM_SPEC_MASK	(LAST_USER_MM_IBPB | LAST_USER_MM_FLUSH_L1D)
->  
->  /*
->   * We get here when we do something requiring a TLB invalidation
-> @@ -151,6 +154,52 @@ void leave_mm(int cpu)
->  }
->  EXPORT_SYMBOL_GPL(leave_mm);
->  
-> +static void *l1d_flush_pages;
-> +static DEFINE_MUTEX(l1d_flush_mutex);
-> +
-> +int enable_l1d_flush_for_task(struct task_struct *tsk)
-> +{
-> +	struct page *page;
-> +	int ret = 0;
-> +
-> +	if (static_cpu_has(X86_FEATURE_FLUSH_L1D))
-> +		goto done;
-> +
-> +	page = READ_ONCE(l1d_flush_pages);
-> +	if (unlikely(!page)) {
-> +		mutex_lock(&l1d_flush_mutex);
-> +		if (!l1d_flush_pages) {
-> +			l1d_flush_pages = alloc_l1d_flush_pages();
-> +			if (!l1d_flush_pages) {
-> +				mutex_unlock(&l1d_flush_mutex);
-> +				return -ENOMEM;
-> +			}
-> +		}
-> +		mutex_unlock(&l1d_flush_mutex);
-> +	}
-> +	/* I don't think we need to worry about KSM */
-> +done:
-> +	set_ti_thread_flag(&tsk->thread_info, TIF_SPEC_FLUSH_L1D);
-> +	return ret;
-> +}
-> +
-> +int disable_l1d_flush_for_task(struct task_struct *tsk)
-> +{
-> +	clear_ti_thread_flag(&tsk->thread_info, TIF_SPEC_FLUSH_L1D);
-> +	return 0;
-> +}
-> +
-> +/*
-> + * Flush the L1D cache for this CPU. We want to this at switch mm time,
-> + * this is a pessimistic security measure and an opt-in for those tasks
-> + * that host sensitive information.
-> + */
-> +static void flush_l1d(void)
-> +{
-> +	if (!flush_l1d_cache_hw())
-> +		flush_l1d_cache_sw(l1d_flush_pages);
-> +}
-> +
->  void switch_mm(struct mm_struct *prev, struct mm_struct *next,
->  	       struct task_struct *tsk)
->  {
-> @@ -189,19 +238,26 @@ static void sync_current_stack_to_mm(struct mm_struct *mm)
->  	}
->  }
->  
-> -static inline unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
-> +static inline unsigned long mm_mangle_tif_spec_bits(struct task_struct *next)
->  {
->  	unsigned long next_tif = task_thread_info(next)->flags;
-> -	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
-> +	unsigned long spec_bits = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_SPEC_MASK;
-> +
-> +	BUILD_BUG_ON(TIF_SPEC_FLUSH_L1D != TIF_SPEC_IB + 1);
->  
-> -	return (unsigned long)next->mm | ibpb;
-> +	return (unsigned long)next->mm | spec_bits;
->  }
->  
-> -static void cond_ibpb(struct task_struct *next)
-> +static void cond_mitigation(struct task_struct *next)
->  {
-> +	unsigned long prev_mm, next_mm;
-> +
->  	if (!next || !next->mm)
->  		return;
->  
-> +	next_mm = mm_mangle_tif_spec_bits(next);
-> +	prev_mm = this_cpu_read(cpu_tlbstate.last_user_mm_spec);
-> +
->  	/*
->  	 * Both, the conditional and the always IBPB mode use the mm
->  	 * pointer to avoid the IBPB when switching between tasks of the
-> @@ -212,8 +268,6 @@ static void cond_ibpb(struct task_struct *next)
->  	 * exposed data is not really interesting.
->  	 */
->  	if (static_branch_likely(&switch_mm_cond_ibpb)) {
-> -		unsigned long prev_mm, next_mm;
-> -
->  		/*
->  		 * This is a bit more complex than the always mode because
->  		 * it has to handle two cases:
-> @@ -243,20 +297,14 @@ static void cond_ibpb(struct task_struct *next)
->  		 * Optimize this with reasonably small overhead for the
->  		 * above cases. Mangle the TIF_SPEC_IB bit into the mm
->  		 * pointer of the incoming task which is stored in
-> -		 * cpu_tlbstate.last_user_mm_ibpb for comparison.
-> -		 */
-> -		next_mm = mm_mangle_tif_spec_ib(next);
-> -		prev_mm = this_cpu_read(cpu_tlbstate.last_user_mm_ibpb);
-> -
-> -		/*
-> +		 * cpu_tlbstate.last_user_mm_spec for comparison.
-> +		 *
->  		 * Issue IBPB only if the mm's are different and one or
->  		 * both have the IBPB bit set.
->  		 */
->  		if (next_mm != prev_mm &&
->  		    (next_mm | prev_mm) & LAST_USER_MM_IBPB)
->  			indirect_branch_prediction_barrier();
-> -
-> -		this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, next_mm);
->  	}
->  
->  	if (static_branch_unlikely(&switch_mm_always_ibpb)) {
-> @@ -265,11 +313,15 @@ static void cond_ibpb(struct task_struct *next)
->  		 * different context than the user space task which ran
->  		 * last on this CPU.
->  		 */
-> -		if (this_cpu_read(cpu_tlbstate.last_user_mm) != next->mm) {
-> +		if ((prev_mm & ~LAST_USER_MM_SPEC_MASK) !=
-> +					(unsigned long)next->mm)
->  			indirect_branch_prediction_barrier();
-> -			this_cpu_write(cpu_tlbstate.last_user_mm, next->mm);
-> -		}
->  	}
-> +
-> +	if (prev_mm & LAST_USER_MM_FLUSH_L1D)
-> +		flush_l1d();
-> +
-> +	this_cpu_write(cpu_tlbstate.last_user_mm_spec, next_mm);
->  }
->  
->  void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
-> @@ -375,7 +427,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
->  		 * predictor when switching between processes. This stops
->  		 * one process from doing Spectre-v2 attacks on another.
->  		 */
-> -		cond_ibpb(tsk);
-> +		cond_mitigation(tsk);
->  
->  		if (IS_ENABLED(CONFIG_VMAP_STACK)) {
->  			/*
-> @@ -501,7 +553,7 @@ void initialize_tlbstate_and_flush(void)
->  	write_cr3(build_cr3(mm->pgd, 0));
->  
->  	/* Reinitialize tlbstate. */
-> -	this_cpu_write(cpu_tlbstate.last_user_mm_ibpb, LAST_USER_MM_IBPB);
-> +	this_cpu_write(cpu_tlbstate.last_user_mm_spec, LAST_USER_MM_IBPB);
->  	this_cpu_write(cpu_tlbstate.loaded_mm_asid, 0);
->  	this_cpu_write(cpu_tlbstate.next_asid, 1);
->  	this_cpu_write(cpu_tlbstate.ctxs[0].ctx_id, mm->context.ctx_id);
-> -- 
-> 2.17.1
-> 
+How?  Netns reference in inode contributes to netns refcount.  And it's held
+for as long as the _inode_ has positive refcount - we only drop it from
+the inode destructor, *NOT* every time we drop a reference to inode.
+In the similar fashion, the inode reference in dentry contributes to inode
+refcount.  And again, that inode reference won't be dropped until the _last_
+reference to dentry gets dropped.
 
--- 
-Kees Cook
+Incrementing refcount of dentry is enough to pin the inode and thus the
+netns the inode refers to.  It's a very common pattern with refcounting;
+a useful way of thinking about it is to consider the refcount of e.g.
+inode as sum of several components, one of them being "number of struct
+dentry instances with ->d_inode pointing to our inode".  And look at e.g.
+__ns_get_path() like this:
+        rcu_read_lock();
+        d = atomic_long_read(&ns->stashed);
+        if (!d)
+                goto slow;
+        dentry = (struct dentry *)d;
+        if (!lockref_get_not_dead(&dentry->d_lockref))
+                goto slow;
+other_count(dentry) got incremented by 1.
+        rcu_read_unlock();
+        ns->ops->put(ns);
+other_count(ns) decremented by 1.
+got_it:
+        path->mnt = mntget(mnt);
+        path->dentry = dentry;
+path added to paths(dentry), other_count(dentry) decremented by 1 (getting
+it back to the original value).
+        return 0;
+slow:   
+        rcu_read_unlock();
+        inode = new_inode_pseudo(mnt->mnt_sb);
+        if (!inode) {
+                ns->ops->put(ns);
+subtract 1 from other_count(ns)
+                return -ENOMEM;
+        }
+dentries(inode) = empty
+other_count(inode) = 1
+	....
+	inode->i_private = ns;
+add inode to inodes(ns), subtract 1 from other_count(ns); the total
+is unchanged.
+        dentry = d_alloc_anon(mnt->mnt_sb);
+        if (!dentry) {
+                iput(inode);
+subtract 1 from other_count(inode).  Since now all components of
+inode refcount are zero, inode gets destroyed.  Destructor calls
+nsfs_evict_inode(), which removes the inode from inodes(ns).
+The total effect: inode is destroyed, inodes(ns) is back to what
+it used to be and other_count(ns) is left decremented by 1 compared
+to what we used to have.  IOW, the balance is the same as if inode
+allocation would've failed.
+                return -ENOMEM;
+        }
+other_count(dentry) = 1
+        d_instantiate(dentry, inode);
+add dentry to dentries(inode), subtract 1 from other_count(inode).
+The total is unchanged.  Now other_count(inode) is 0 and dentries(inode)
+is {dentry}.
+        d = atomic_long_cmpxchg(&ns->stashed, 0, (unsigned long)dentry);
+        if (d) {
+somebody else has gotten there first
+                d_delete(dentry);       /* make sure ->d_prune() does nothing */
+                dput(dentry);
+subtract 1 from other_count(dentry) (which will drive it to 0).  Since
+no other references exist, dentry gets destroyed.  Destructor will
+remove dentry from dentries(inode) and since other_count(inode) is already
+zero, trigger destruction of inode.  That, in turn, will remove inode
+from inodes(ns).  Total effect: dentry is destroyed, inode is destroyed,
+inodes(ns) is back to what it used to be, other_count(ns) is left decremented
+by 1 compared to what we used to have.
+                cpu_relax();
+                return -EAGAIN;
+        }
+        goto got_it;
+got_it:
+        path->mnt = mntget(mnt);
+        path->dentry = dentry;
+add path to paths(dentry), subtract 1 from other_count(dentry).  At that
+point other_count(dentry) is back to 0, ditto for other_count(inode) and
+other_count(ns) is left decremented by 1 compared to what it used to be.
+inode is added to inodes(ns), dentry - to dentries(inode) and path - to
+paths(dentry).
+        return 0;
+and we are done.
+
+In all cases the total effect is the same as far as "other" counts go:
+other_count(ns) is down by 1 and that's the only change in other_count()
+of *ANY* objects.  Of course we do not keep track of the sets explicitly;
+it would cost too much and we only interested in the sum of their sizes
+anyway.  What we actually store is the sum, so operations like "transfer
+the reference from one component to another" are not immediately obvious
+to be refcounting ones - the sum is unchanged.  Conceptually, though,
+they are refcounting operations.
+	Up to d_instantiate() we are holding a reference to inode;
+after that we are *not* - it has been transferred to dentry.  That's
+why on subsequent failure exits we do not call iput() - the inode
+reference is not ours to discard anymore.
+	In the same way, up to inode->i_private = ns; we are holding
+a reference to ns.  After that we are not - it's been transferred to
+inode.  From that point on it's not ours to discard; it will be
+dropped when inode gets destroyed, whenever that happens.
