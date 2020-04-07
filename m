@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00AA81A0B5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E271A0B76
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Apr 2020 12:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbgDGKZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 06:25:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36470 "EHLO mail.kernel.org"
+        id S1729235AbgDGK0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 06:26:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728992AbgDGKZq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 06:25:46 -0400
+        id S1728674AbgDGK0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 06:26:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 141882074F;
-        Tue,  7 Apr 2020 10:25:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4999D20644;
+        Tue,  7 Apr 2020 10:26:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586255144;
-        bh=4pHLwaftfoue1jLFWgtZnNla0KEbD+Y0nes/UYDUXW8=;
+        s=default; t=1586255207;
+        bh=hhDMd2q+B4foZzqScTF1hMGEB0eCBYKc70Dio+EMIDY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aYGCrxbE5OpP98O/TTLqNYmOrYxoKIYwe4+06AzTrldUK43E1reE7jfYsYHDCFlxE
-         4uUyxLheqI0duWFMn5FJMZGqBPcpIZj0x3Gw+UDvOl6gqYLJqrRIMaltxKNnGe6WLS
-         9bEL2TXDLU8xmlD79PwhBm4KYPPIQveVBDiBy1Ic=
+        b=MApSaScDdmZLGsssCtB/+ptA2pAH0wfLx5E0oTine36EOsr4zh4BuczfYceMd70bW
+         cMvAOEggv0WE1Gp8Zhqkufnj1xmOTtQb/ayhSkUN9fAigDcnwOEchE6CFZlMlJLdgO
+         ZKBybD25P9uNy81fOTZPBIfGu+MG5GylvygoyuVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: [PATCH 5.5 30/46] power: supply: axp288_charger: Add special handling for HP Pavilion x2 10
+        stable@vger.kernel.org, Jin Meng <meng.a.jin@nokia-sbell.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 04/29] sctp: fix possibly using a bad saddr with a given dst
 Date:   Tue,  7 Apr 2020 12:22:01 +0200
-Message-Id: <20200407101502.698383372@linuxfoundation.org>
+Message-Id: <20200407101452.516112496@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200407101459.502593074@linuxfoundation.org>
-References: <20200407101459.502593074@linuxfoundation.org>
+In-Reply-To: <20200407101452.046058399@linuxfoundation.org>
+References: <20200407101452.046058399@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,178 +45,188 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-commit 9c80662a74cd2a5d1113f5c69d027face963a556 upstream.
+[ Upstream commit 582eea230536a6f104097dd46205822005d5fe3a ]
 
-Some HP Pavilion x2 10 models use an AXP288 for charging and fuel-gauge.
-We use a native power_supply / PMIC driver in this case, because on most
-models with an AXP288 the ACPI AC / Battery code is either completely
-missing or relies on custom / proprietary ACPI OpRegions which Linux
-does not implement.
+Under certain circumstances, depending on the order of addresses on the
+interfaces, it could be that sctp_v[46]_get_dst() would return a dst
+with a mismatched struct flowi.
 
-The native drivers mostly work fine, but there are 2 problems:
+For example, if when walking through the bind addresses and the first
+one is not a match, it saves the dst as a fallback (added in
+410f03831c07), but not the flowi. Then if the next one is also not a
+match, the previous dst will be returned but with the flowi information
+for the 2nd address, which is wrong.
 
-1. These model uses a Type-C connector for charging which the AXP288 does
-not support. As long as a Type-A charger (which uses the USB data pins for
-charger type detection) is used everything is fine. But if a Type-C
-charger is used (such as the charger shipped with the device) then the
-charger is not recognized.
+The fix is to use a locally stored flowi that can be used for such
+attempts, and copy it to the parameter only in case it is a possible
+match, together with the corresponding dst entry.
 
-So we end up slowly discharging the device even though a charger is
-connected, because we are limiting the current from the charger to 500mA.
-To make things worse this happens with the device's official charger.
+The patch updates IPv6 code mostly just to be in sync. Even though the issue
+is also present there, it fallback is not expected to work with IPv6.
 
-Looking at the ACPI tables HP has "solved" the problem of the AXP288 not
-being able to recognize Type-C chargers by simply always programming the
-input-current-limit at 3000mA and relying on a Vhold setting of 4.7V
-(normally 4.4V) to limit the current intake if the charger cannot handle
-this.
-
-2. If no charger is connected when the machine boots then it boots with the
-vbus-path disabled. On other devices this is done when a 5V boost converter
-is active to avoid the PMIC trying to charge from the 5V boost output.
-This is done when an OTG host cable is inserted and the ID pin on the
-micro-B receptacle is pulled low, the ID pin has an ACPI event handler
-associated with it which re-enables the vbus-path when the ID pin is pulled
-high when the OTG cable is removed. The Type-C connector has no ID pin,
-there is no ID pin handler and there appears to be no 5V boost converter,
-so we end up not charging because the vbus-path is disabled, until we
-unplug the charger which automatically clears the vbus-path disable bit and
-then on the second plug-in of the adapter we start charging.
-
-The HP Pavilion x2 10 models with an AXP288 do have mostly working ACPI
-AC / Battery code which does not rely on custom / proprietary ACPI
-OpRegions. So one possible solution would be to blacklist the AXP288
-native power_supply drivers and add the HP Pavilion x2 10 with AXP288
-DMI ids to the list of devices which should use the ACPI AC / Battery
-code even though they have an AXP288 PMIC. This would require changes to
-4 files: drivers/acpi/ac.c, drivers/power/supply/axp288_charger.c,
-drivers/acpi/battery.c and drivers/power/supply/axp288_fuel_gauge.c.
-
-Beside needing adding the same DMI matches to 4 different files, this
-approach also triggers problem 2. from above, but then when suspended,
-during suspend the machine will not wakeup because the vbus path is
-disabled by the AML code when not charging, so the Vbus low-to-high
-IRQ is not triggered, the CPU never wakes up and the device does not
-charge even though the user likely things it is charging, esp. since
-the charge status LED is directly coupled to an adapter being plugged
-in and does not reflect actual charging.
-
-This could be worked by enabling vbus-path explicitly from say the
-axp288_charger driver's suspend handler.
-
-So neither situation is ideal, in both cased we need to explicitly enable
-the vbus-path to work around different variants of problem 2 above, this
-requires a quirk in the axp288_charger code.
-
-If we go the route of using the ACPI AC / Battery drivers then we need
-modifications to 3 other drivers; and we need to partially disable the
-axp288_charger code, while at the same time keeping it around to enable
-vbus-path on suspend.
-
-OTOH we can copy the hardcoding of 3A input-current-limit (we never touch
-Vhold, so that would stay at 4.7V) to the axp288_charger code, which needs
-changes regardless, then we concentrate all special handling of this
-interesting device model in the axp288_charger code. That is what this
-commit does.
-
-Cc: stable@vger.kernel.org
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1791098
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Fixes: 410f03831c07 ("sctp: add routing output fallback")
+Reported-by: Jin Meng <meng.a.jin@nokia-sbell.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Tested-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/power/supply/axp288_charger.c |   57 +++++++++++++++++++++++++++++++++-
- 1 file changed, 56 insertions(+), 1 deletion(-)
+ net/sctp/ipv6.c     |   20 ++++++++++++++------
+ net/sctp/protocol.c |   28 +++++++++++++++++++---------
+ 2 files changed, 33 insertions(+), 15 deletions(-)
 
---- a/drivers/power/supply/axp288_charger.c
-+++ b/drivers/power/supply/axp288_charger.c
-@@ -21,6 +21,7 @@
- #include <linux/property.h>
- #include <linux/mfd/axp20x.h>
- #include <linux/extcon.h>
-+#include <linux/dmi.h>
+--- a/net/sctp/ipv6.c
++++ b/net/sctp/ipv6.c
+@@ -228,7 +228,8 @@ static void sctp_v6_get_dst(struct sctp_
+ {
+ 	struct sctp_association *asoc = t->asoc;
+ 	struct dst_entry *dst = NULL;
+-	struct flowi6 *fl6 = &fl->u.ip6;
++	struct flowi _fl;
++	struct flowi6 *fl6 = &_fl.u.ip6;
+ 	struct sctp_bind_addr *bp;
+ 	struct ipv6_pinfo *np = inet6_sk(sk);
+ 	struct sctp_sockaddr_entry *laddr;
+@@ -238,7 +239,7 @@ static void sctp_v6_get_dst(struct sctp_
+ 	enum sctp_scope scope;
+ 	__u8 matchlen = 0;
  
- #define PS_STAT_VBUS_TRIGGER		BIT(0)
- #define PS_STAT_BAT_CHRG_DIR		BIT(2)
-@@ -545,6 +546,49 @@ out:
- 	return IRQ_HANDLED;
+-	memset(fl6, 0, sizeof(struct flowi6));
++	memset(&_fl, 0, sizeof(_fl));
+ 	fl6->daddr = daddr->v6.sin6_addr;
+ 	fl6->fl6_dport = daddr->v6.sin6_port;
+ 	fl6->flowi6_proto = IPPROTO_SCTP;
+@@ -276,8 +277,11 @@ static void sctp_v6_get_dst(struct sctp_
+ 	rcu_read_unlock();
+ 
+ 	dst = ip6_dst_lookup_flow(sock_net(sk), sk, fl6, final_p);
+-	if (!asoc || saddr)
++	if (!asoc || saddr) {
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
+ 		goto out;
++	}
+ 
+ 	bp = &asoc->base.bind_addr;
+ 	scope = sctp_scope(daddr);
+@@ -300,6 +304,8 @@ static void sctp_v6_get_dst(struct sctp_
+ 			if ((laddr->a.sa.sa_family == AF_INET6) &&
+ 			    (sctp_v6_cmp_addr(&dst_saddr, &laddr->a))) {
+ 				rcu_read_unlock();
++				t->dst = dst;
++				memcpy(fl, &_fl, sizeof(_fl));
+ 				goto out;
+ 			}
+ 		}
+@@ -338,6 +344,8 @@ static void sctp_v6_get_dst(struct sctp_
+ 			if (!IS_ERR_OR_NULL(dst))
+ 				dst_release(dst);
+ 			dst = bdst;
++			t->dst = dst;
++			memcpy(fl, &_fl, sizeof(_fl));
+ 			break;
+ 		}
+ 
+@@ -351,6 +359,8 @@ static void sctp_v6_get_dst(struct sctp_
+ 			dst_release(dst);
+ 		dst = bdst;
+ 		matchlen = bmatchlen;
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
+ 	}
+ 	rcu_read_unlock();
+ 
+@@ -359,14 +369,12 @@ out:
+ 		struct rt6_info *rt;
+ 
+ 		rt = (struct rt6_info *)dst;
+-		t->dst = dst;
+ 		t->dst_cookie = rt6_get_cookie(rt);
+ 		pr_debug("rt6_dst:%pI6/%d rt6_src:%pI6\n",
+ 			 &rt->rt6i_dst.addr, rt->rt6i_dst.plen,
+-			 &fl6->saddr);
++			 &fl->u.ip6.saddr);
+ 	} else {
+ 		t->dst = NULL;
+-
+ 		pr_debug("no route\n");
+ 	}
+ }
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -409,7 +409,8 @@ static void sctp_v4_get_dst(struct sctp_
+ {
+ 	struct sctp_association *asoc = t->asoc;
+ 	struct rtable *rt;
+-	struct flowi4 *fl4 = &fl->u.ip4;
++	struct flowi _fl;
++	struct flowi4 *fl4 = &_fl.u.ip4;
+ 	struct sctp_bind_addr *bp;
+ 	struct sctp_sockaddr_entry *laddr;
+ 	struct dst_entry *dst = NULL;
+@@ -419,7 +420,7 @@ static void sctp_v4_get_dst(struct sctp_
+ 
+ 	if (t->dscp & SCTP_DSCP_SET_MASK)
+ 		tos = t->dscp & SCTP_DSCP_VAL_MASK;
+-	memset(fl4, 0x0, sizeof(struct flowi4));
++	memset(&_fl, 0x0, sizeof(_fl));
+ 	fl4->daddr  = daddr->v4.sin_addr.s_addr;
+ 	fl4->fl4_dport = daddr->v4.sin_port;
+ 	fl4->flowi4_proto = IPPROTO_SCTP;
+@@ -438,8 +439,11 @@ static void sctp_v4_get_dst(struct sctp_
+ 		 &fl4->saddr);
+ 
+ 	rt = ip_route_output_key(sock_net(sk), fl4);
+-	if (!IS_ERR(rt))
++	if (!IS_ERR(rt)) {
+ 		dst = &rt->dst;
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
++	}
+ 
+ 	/* If there is no association or if a source address is passed, no
+ 	 * more validation is required.
+@@ -502,27 +506,33 @@ static void sctp_v4_get_dst(struct sctp_
+ 		odev = __ip_dev_find(sock_net(sk), laddr->a.v4.sin_addr.s_addr,
+ 				     false);
+ 		if (!odev || odev->ifindex != fl4->flowi4_oif) {
+-			if (!dst)
++			if (!dst) {
+ 				dst = &rt->dst;
+-			else
++				t->dst = dst;
++				memcpy(fl, &_fl, sizeof(_fl));
++			} else {
+ 				dst_release(&rt->dst);
++			}
+ 			continue;
+ 		}
+ 
+ 		dst_release(dst);
+ 		dst = &rt->dst;
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
+ 		break;
+ 	}
+ 
+ out_unlock:
+ 	rcu_read_unlock();
+ out:
+-	t->dst = dst;
+-	if (dst)
++	if (dst) {
+ 		pr_debug("rt_dst:%pI4, rt_src:%pI4\n",
+-			 &fl4->daddr, &fl4->saddr);
+-	else
++			 &fl->u.ip4.daddr, &fl->u.ip4.saddr);
++	} else {
++		t->dst = NULL;
+ 		pr_debug("no route\n");
++	}
  }
  
-+/*
-+ * The HP Pavilion x2 10 series comes in a number of variants:
-+ * Bay Trail SoC    + AXP288 PMIC, DMI_BOARD_NAME: "815D"
-+ * Cherry Trail SoC + AXP288 PMIC, DMI_BOARD_NAME: "813E"
-+ * Cherry Trail SoC + TI PMIC,     DMI_BOARD_NAME: "827C" or "82F4"
-+ *
-+ * The variants with the AXP288 PMIC are all kinds of special:
-+ *
-+ * 1. All variants use a Type-C connector which the AXP288 does not support, so
-+ * when using a Type-C charger it is not recognized. Unlike most AXP288 devices,
-+ * this model actually has mostly working ACPI AC / Battery code, the ACPI code
-+ * "solves" this by simply setting the input_current_limit to 3A.
-+ * There are still some issues with the ACPI code, so we use this native driver,
-+ * and to solve the charging not working (500mA is not enough) issue we hardcode
-+ * the 3A input_current_limit like the ACPI code does.
-+ *
-+ * 2. If no charger is connected the machine boots with the vbus-path disabled.
-+ * Normally this is done when a 5V boost converter is active to avoid the PMIC
-+ * trying to charge from the 5V boost converter's output. This is done when
-+ * an OTG host cable is inserted and the ID pin on the micro-B receptacle is
-+ * pulled low and the ID pin has an ACPI event handler associated with it
-+ * which re-enables the vbus-path when the ID pin is pulled high when the
-+ * OTG host cable is removed. The Type-C connector has no ID pin, there is
-+ * no ID pin handler and there appears to be no 5V boost converter, so we
-+ * end up not charging because the vbus-path is disabled, until we unplug
-+ * the charger which automatically clears the vbus-path disable bit and then
-+ * on the second plug-in of the adapter we start charging. To solve the not
-+ * charging on first charger plugin we unconditionally enable the vbus-path at
-+ * probe on this model, which is safe since there is no 5V boost converter.
-+ */
-+static const struct dmi_system_id axp288_hp_x2_dmi_ids[] = {
-+	{
-+		/*
-+		 * Bay Trail model has "Hewlett-Packard" as sys_vendor, Cherry
-+		 * Trail model has "HP", so we only match on product_name.
-+		 */
-+		.matches = {
-+			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
-+		},
-+	},
-+	{} /* Terminating entry */
-+};
-+
- static void axp288_charger_extcon_evt_worker(struct work_struct *work)
- {
- 	struct axp288_chrg_info *info =
-@@ -568,7 +612,11 @@ static void axp288_charger_extcon_evt_wo
- 	}
- 
- 	/* Determine cable/charger type */
--	if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
-+	if (dmi_check_system(axp288_hp_x2_dmi_ids)) {
-+		/* See comment above axp288_hp_x2_dmi_ids declaration */
-+		dev_dbg(&info->pdev->dev, "HP X2 with Type-C, setting inlmt to 3A\n");
-+		current_limit = 3000000;
-+	} else if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
- 		dev_dbg(&info->pdev->dev, "USB SDP charger is connected\n");
- 		current_limit = 500000;
- 	} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
-@@ -685,6 +733,13 @@ static int charger_init_hw_regs(struct a
- 		return ret;
- 	}
- 
-+	if (dmi_check_system(axp288_hp_x2_dmi_ids)) {
-+		/* See comment above axp288_hp_x2_dmi_ids declaration */
-+		ret = axp288_charger_vbus_path_select(info, true);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	/* Read current charge voltage and current limit */
- 	ret = regmap_read(info->regmap, AXP20X_CHRG_CTRL1, &val);
- 	if (ret < 0) {
+ /* For v4, the source address is cached in the route entry(dst). So no need
 
 
