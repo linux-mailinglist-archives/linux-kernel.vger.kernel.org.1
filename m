@@ -2,161 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0911A25EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F65F1A2628
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbgDHPr3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:47:29 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:26012 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729682AbgDHPr1 (ORCPT
+        id S1729747AbgDHPs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:48:28 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40814 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729566AbgDHPs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:47:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586360847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gAEJnsFvJ/UE0FB3O27yABAEEtvPXM+Fg0YVQjfo/a4=;
-        b=SO0UzvBPB3brW+NKADWrvbBix+Dl8ZGoVw3WqvT2Y0ezg0kcukRYW8YiZM6wtfqkKVllkK
-        Kx6LYA6Ye5BFiv2yJVeuYT++Rbard2oJL69TDNpWGeJ38mSCW+7ZWHNxBBur+cqx51FxwR
-        Nex0VDT/iFibLxkPYl/7WrpxVIapTjU=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-484-brNGuT3YMYqs6Ze3U7W-EQ-1; Wed, 08 Apr 2020 11:47:25 -0400
-X-MC-Unique: brNGuT3YMYqs6Ze3U7W-EQ-1
-Received: by mail-wr1-f71.google.com with SMTP id x9so2523717wrq.17
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:47:24 -0700 (PDT)
+        Wed, 8 Apr 2020 11:48:26 -0400
+Received: by mail-qk1-f196.google.com with SMTP id z15so599275qki.7;
+        Wed, 08 Apr 2020 08:48:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3+eGFsLGGWL0hFZoo3T4TQK9gJ4JHOSPbWbKxqCC7yc=;
+        b=fjG3bXlOYQCEmTAhE3aDsX6GZwLes9ZflbLRHjwVFdgrveZ3HnI+b6RJBkuoDANCdj
+         ZHulRjlfPetgLiQ8wTg7fsvhL49fIvhhhMC9x8t7sbB7KbKzf3d3MIbo+oNoBhW0a3PR
+         s/IzUrBYCQRKSsl9hWq70bNlyV8qVDa8hQaAZSuEMyZiWeZBKL2gyF30vCK/Upwrif2D
+         D0ZoaaiJCJ9xOgC9SUhk2m8AogAYKfvuEqJcwUlHnah9TBoSsgsgrxdH1dqmTa+MMwPG
+         Zza8FsyB6tJQe4SL1NmRZ8eM1ybf16RTOck6iluSQIMDTkDdGnFZ7ED4SXZpuVKjbN/t
+         5cdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=gAEJnsFvJ/UE0FB3O27yABAEEtvPXM+Fg0YVQjfo/a4=;
-        b=GbgKD/TlLU6qEUtidtOuCRwqoDdajG0G5ujxP9QYQGFleKfS4C2EpGw/l/gfNwqLzD
-         Q95YhmG+MYSqSt2o9NirTyHq5X385f5yVtBysDo8q08CfTpV32RWnxX03hBniH1HVAek
-         ReH/5djpWXWSwgSXKnAIsP3C/3F3irXZoZVYqT+jsxfYVlo5xZAUQi1JUpyL7mzL/Bg1
-         Wxx6pdrcHqDxvUz+jap0mbVHusRoYYbAYreqVFLkn3SvLkaFiEQ1KaLuAnaVEa+sAbMN
-         pmhp0R/QFUA0yTvB9Om8THQtNZSxemsD97fkB2wLznIukSzQk1hCKw3uD63cao03rM3/
-         bLfA==
-X-Gm-Message-State: AGi0PuYufI+/iq7qtkz6H97+gXnJK2XoJhXYHngfsqKrvB9FSgey07vr
-        P0iIGJF4I+F+KssqrFafYFdSUAvLfVcN6wp2UvhXpAHI+6i2KfMhFaCz794jKOH278HLzO0Pqnl
-        0BEzrcKSdBjalgsF9iQ+XCfpk
-X-Received: by 2002:a1c:9652:: with SMTP id y79mr5236093wmd.89.1586360840768;
-        Wed, 08 Apr 2020 08:47:20 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLIaJalJox0wC1qgjSXqmHy0drYO5xeMGjHVXA0P2g5EJhvdpeQG2ZSxTcASdJhmstQtru9VQ==
-X-Received: by 2002:a1c:9652:: with SMTP id y79mr5236080wmd.89.1586360840526;
-        Wed, 08 Apr 2020 08:47:20 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id c190sm7520877wme.4.2020.04.08.08.47.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 08:47:19 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com
-Subject: Re: [PATCH] Drivers: hv: vmbus: Disallow the freeze PM operation
-In-Reply-To: <1586296907-53744-1-git-send-email-decui@microsoft.com>
-References: <1586296907-53744-1-git-send-email-decui@microsoft.com>
-Date:   Wed, 08 Apr 2020 17:47:18 +0200
-Message-ID: <877dyq2d4p.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3+eGFsLGGWL0hFZoo3T4TQK9gJ4JHOSPbWbKxqCC7yc=;
+        b=Nn8sGQYmpMtaRmp3WiJNH8vhIQjXf2UGkL7ljnSwZ2BPraHXMp30vY+jLUbz7Dmnt0
+         pVGKcx2YT1DaWMzUXLqyXDYuhCg94MzgfEUiaHlnUFOJmGWBfemHqyxIkT3nfKwwV7Ix
+         kcWX8DFhsGjCEFeCUiJtXVpb/ZgcnXNPkpl4ZZVLnU5gB4ww2WWJaqn9lNzisYZm4ogz
+         YVghbqteGMiuBsL0OQ2f7rEEi1VRPhkLEgzPZy53/7Yv4ZiqH5nIR9wLTJTswmVfGzKY
+         9bKklkb9FKD2Nhg77xExiUEaYaFJd+AADaJuCatNTMuaCewlV+BD4SaPKpg9rqygFpFO
+         XuGQ==
+X-Gm-Message-State: AGi0PubNcJsTzrNeTEDDuYhOnd7uh7oWoRAAUEdWLjQyIRFQcgErVWZP
+        myUYJyyYHTBUWEiVO6zKrASDNfPr7M0DrWQ05b8=
+X-Google-Smtp-Source: APiQypJfn2wnXFL9j9EyznimHBwrBbDfxxbx3yC43znzRXh7g8S7mBwYqGH4WtP2+jqGLilI9BccVEwBZMw+aO7/ff8=
+X-Received: by 2002:a37:6c81:: with SMTP id h123mr8156567qkc.290.1586360904353;
+ Wed, 08 Apr 2020 08:48:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20191118104252.228406-1-hsinyi@chromium.org>
+In-Reply-To: <20191118104252.228406-1-hsinyi@chromium.org>
+From:   Enric Balletbo Serra <eballetbo@gmail.com>
+Date:   Wed, 8 Apr 2020 17:48:12 +0200
+Message-ID: <CAFqH_528vidMhTFxNZ=b7SFD2K12UwtdX3uTUzW4YUgeDWkg5A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8173: Add gce setting in mmsys and display node
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dexuan Cui <decui@microsoft.com> writes:
-
-> Before the hibernation patchset (e.g. f53335e3289f), a Linux VM on Hyper-V
-> can run "echo freeze > /sys/power/state" (or "systemctl suspend")
-> to freeze the system. The user can press the keyboard or move the mouse
-> to wake up the VM. Note: the two aforementioned commands are equivalent
-> here, because Hyper-V doesn't support the guest ACPI S3 state.
+Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dl., 18 de nov.
+2019 a les 11:43:
 >
-> With the hibernation patchset, a Linux VM on Hyper-V can hibernate to disk
-> and resume back; however, the 'freeze' operation is broken for Hyper-V
-> Generation-2 VM (which doesn't have a legacy keyboard/mouse): when the
-> vmbus devices are suspended, the VM can not receive any interrupt from
-> the synthetic keyboard/mouse devices, so there is no way to wake up the
-> VM. This is not an issue for Generaton-1 VM, because it looks the legacy
-> keyboard/mouse devices can still be used to wake up the VM in my test.
+> In order to use GCE function, we need add some informations
+> into display node (mboxes, mediatek,gce-client-reg, mediatek,gce-events).
 >
-> IMO 'freeze' in a Linux VM on Hyper-V is not really useful in practice,
-> so let's disallow the operation for both Gen-1 and Gen-2 VMs, even if
-> it's not an issue for Gen-1 VMs.
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-Suspend-to-idle may not be very useful indeed, however, it worked before
-and I think we can just fix it. In particular, why do we need to do
-anything when we are not hibernating? 
+With the fix provided by Hsin-Yi [1] and after the mmsys patches
+landed I get GCE function working on mt8173, so
 
->
-> Fixes: f53335e3289f ("Drivers: hv: vmbus: Suspend/resume the vmbus itself for hibernation")
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+[1] https://lore.kernel.org/lkml/20200406051131.225748-1-hsinyi@chromium.org/
+
+Thanks,
+ Enric
+
 > ---
->  drivers/hv/vmbus_drv.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
+> - This is based on series "support gce on mt8183 platform"
+>   https://patchwork.kernel.org/cover/11208309/
+> - gce setting in 8183:
+>   https://patchwork.kernel.org/patch/11127105/
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
 >
-> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-> index 029378c..82a4327 100644
-> --- a/drivers/hv/vmbus_drv.c
-> +++ b/drivers/hv/vmbus_drv.c
-> @@ -28,6 +28,7 @@
->  #include <linux/notifier.h>
->  #include <linux/ptrace.h>
->  #include <linux/screen_info.h>
-> +#include <linux/suspend.h>
->  #include <linux/kdebug.h>
->  #include <linux/efi.h>
->  #include <linux/random.h>
-> @@ -2357,6 +2358,23 @@ static void hv_synic_resume(void)
->  	.resume = hv_synic_resume,
->  };
->  
-> +/*
-> + * Note: "freeze/suspend" here means "systemctl suspend".
-> + * "systemctl hibernate" is still supported.
-
-Let's not use systemd terminology in kernel, let's use the ones from
-admin-guide/pm/sleep-states.rst (Suspend-to-Idle/Standby/Suspend-to-RAM/
-Hibernation).
-
-> + */
-> +static int hv_pm_notify(struct notifier_block *nb,
-> +			unsigned long val, void *ign)
-> +{
-> +	if (val == PM_SUSPEND_PREPARE) {
-> +		pr_info("freeze/suspend is not supported\n");
-> +		return NOTIFY_BAD;
-> +	}
-> +
-> +	return NOTIFY_DONE;
-> +}
-> +
-> +static struct notifier_block hv_pm_nb;
-> +
->  static int __init hv_acpi_init(void)
->  {
->  	int ret, t;
-> @@ -2389,6 +2407,8 @@ static int __init hv_acpi_init(void)
->  	hv_setup_crash_handler(hv_crash_handler);
->  
->  	register_syscore_ops(&hv_synic_syscore_ops);
-> +	hv_pm_nb.notifier_call = hv_pm_notify;
-> +	register_pm_notifier(&hv_pm_nb);
->  
->  	return 0;
->  
-> @@ -2402,6 +2422,7 @@ static void __exit vmbus_exit(void)
->  {
->  	int cpu;
->  
-> +	unregister_pm_notifier(&hv_pm_nb);
->  	unregister_syscore_ops(&hv_synic_syscore_ops);
->  
->  	hv_remove_kexec_handler();
-
--- 
-Vitaly
-
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> index 15f1842f6df3..e84ec3f95d81 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> @@ -911,6 +911,11 @@ mmsys: clock-controller@14000000 {
+>                         assigned-clocks = <&topckgen CLK_TOP_MM_SEL>;
+>                         assigned-clock-rates = <400000000>;
+>                         #clock-cells = <1>;
+> +                       mboxes = <&gce 0 CMDQ_THR_PRIO_HIGHEST 1>,
+> +                                <&gce 1 CMDQ_THR_PRIO_HIGHEST 1>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
+> +                       mediatek,gce-events = <CMDQ_EVENT_MUTEX0_STREAM_EOF>,
+> +                                             <CMDQ_EVENT_MUTEX1_STREAM_EOF>;
+>                 };
+>
+>                 mdp_rdma0: rdma@14001000 {
+> @@ -991,6 +996,7 @@ ovl0: ovl@1400c000 {
+>                         clocks = <&mmsys CLK_MM_DISP_OVL0>;
+>                         iommus = <&iommu M4U_PORT_DISP_OVL0>;
+>                         mediatek,larb = <&larb0>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xc000 0x1000>;
+>                 };
+>
+>                 ovl1: ovl@1400d000 {
+> @@ -1001,6 +1007,7 @@ ovl1: ovl@1400d000 {
+>                         clocks = <&mmsys CLK_MM_DISP_OVL1>;
+>                         iommus = <&iommu M4U_PORT_DISP_OVL1>;
+>                         mediatek,larb = <&larb4>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xd000 0x1000>;
+>                 };
+>
+>                 rdma0: rdma@1400e000 {
+> @@ -1011,6 +1018,7 @@ rdma0: rdma@1400e000 {
+>                         clocks = <&mmsys CLK_MM_DISP_RDMA0>;
+>                         iommus = <&iommu M4U_PORT_DISP_RDMA0>;
+>                         mediatek,larb = <&larb0>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xe000 0x1000>;
+>                 };
+>
+>                 rdma1: rdma@1400f000 {
+> @@ -1021,6 +1029,7 @@ rdma1: rdma@1400f000 {
+>                         clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+>                         iommus = <&iommu M4U_PORT_DISP_RDMA1>;
+>                         mediatek,larb = <&larb4>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xf000 0x1000>;
+>                 };
+>
+>                 rdma2: rdma@14010000 {
+> @@ -1031,6 +1040,7 @@ rdma2: rdma@14010000 {
+>                         clocks = <&mmsys CLK_MM_DISP_RDMA2>;
+>                         iommus = <&iommu M4U_PORT_DISP_RDMA2>;
+>                         mediatek,larb = <&larb4>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0 0x1000>;
+>                 };
+>
+>                 wdma0: wdma@14011000 {
+> @@ -1041,6 +1051,7 @@ wdma0: wdma@14011000 {
+>                         clocks = <&mmsys CLK_MM_DISP_WDMA0>;
+>                         iommus = <&iommu M4U_PORT_DISP_WDMA0>;
+>                         mediatek,larb = <&larb0>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x1000 0x1000>;
+>                 };
+>
+>                 wdma1: wdma@14012000 {
+> @@ -1051,6 +1062,7 @@ wdma1: wdma@14012000 {
+>                         clocks = <&mmsys CLK_MM_DISP_WDMA1>;
+>                         iommus = <&iommu M4U_PORT_DISP_WDMA1>;
+>                         mediatek,larb = <&larb4>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x2000 0x1000>;
+>                 };
+>
+>                 color0: color@14013000 {
+> @@ -1059,6 +1071,7 @@ color0: color@14013000 {
+>                         interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_LOW>;
+>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>                         clocks = <&mmsys CLK_MM_DISP_COLOR0>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x3000 0x1000>;
+>                 };
+>
+>                 color1: color@14014000 {
+> @@ -1067,6 +1080,7 @@ color1: color@14014000 {
+>                         interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_LOW>;
+>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>                         clocks = <&mmsys CLK_MM_DISP_COLOR1>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x4000 0x1000>;
+>                 };
+>
+>                 aal@14015000 {
+> @@ -1075,6 +1089,7 @@ aal@14015000 {
+>                         interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_LOW>;
+>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>                         clocks = <&mmsys CLK_MM_DISP_AAL>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x5000 0x1000>;
+>                 };
+>
+>                 gamma@14016000 {
+> @@ -1083,6 +1098,7 @@ gamma@14016000 {
+>                         interrupts = <GIC_SPI 190 IRQ_TYPE_LEVEL_LOW>;
+>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>                         clocks = <&mmsys CLK_MM_DISP_GAMMA>;
+> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x6000 0x1000>;
+>                 };
+>
+>                 merge@14017000 {
+> --
+> 2.24.0.432.g9d3f5f5b63-goog
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
