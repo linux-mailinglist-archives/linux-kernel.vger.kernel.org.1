@@ -2,91 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B341A2715
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62A01A277A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730273AbgDHQXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 12:23:35 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:42299 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728473AbgDHQXe (ORCPT
+        id S1730419AbgDHQtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:49:10 -0400
+Received: from fudo.makrotopia.org ([185.142.180.71]:52755 "EHLO
+        fudo.makrotopia.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbgDHQtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:23:34 -0400
-Received: by mail-lj1-f193.google.com with SMTP id q19so8237658ljp.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 09:23:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FeyuJaGsNvNj6lpnK7K9Yru14CFjP1xhZJAUfZMr7aI=;
-        b=IGz34XNmrlLU/pF3e6BHZO3cspAyx/bs3KdtgD8UMpxNNZAUTM4RBEsRUp4gFH4FJO
-         hIofPAOTbxV4PbxvxDDfjolqztRwIRQIfmOFTLSGFyKi7nMCrsTeazdreoU8EcH26rIR
-         2Z25v5YqmyreWF3qo1hoXxWPnJ8hS7UewdkvQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FeyuJaGsNvNj6lpnK7K9Yru14CFjP1xhZJAUfZMr7aI=;
-        b=NGNUWMskxQhgh1mW7gVPT2my3YtqLeLNUzIgHJuxxHIpTlcxKeKK+yzSipeA+wFXap
-         a2jpSOWdZ4x4ofi1QC85Od6+PM93z5xIhFKnztXpssO8xKSgbgs8Gg5Lwt9x+haPv/Lc
-         3skGg7XbGHCTesyoz1S7/Tb/yjirSVZ2/yaOt9NW6LIZcbvCuUK/uxQ2ZDVczoUS7R7T
-         Bcn3p86O6ULvXdm1fB9fcyvGIZyKssRr+N8EuppoiNhPRxCLn+eeShQAzk3Z8lEjP4PE
-         gRbcm4uC2Pdc/f0M2AZRXYFtEzSxoxcVKFh56M9OZpDlkNphBPG06HaBMfCqMCu/XypI
-         EBHw==
-X-Gm-Message-State: AGi0Pua5M5XUbBRrRpbGy9nSn4GeHr1Ixk+x/05KfTBv19U0KSTp/fx9
-        7kflXr8t8EPrvAHapFQbspCZLwuOqIQ=
-X-Google-Smtp-Source: APiQypJ79mkF+O2hiJlheD+PcbWFEANdzG1+COyybC3IZH+COOdXsdur7yJRabIca9sO3XxJ8Sry0g==
-X-Received: by 2002:a2e:9655:: with SMTP id z21mr398101ljh.122.1586363010529;
-        Wed, 08 Apr 2020 09:23:30 -0700 (PDT)
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
-        by smtp.gmail.com with ESMTPSA id a4sm17211006ljb.27.2020.04.08.09.23.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2020 09:23:29 -0700 (PDT)
-Received: by mail-lj1-f169.google.com with SMTP id k21so8318020ljh.2
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 09:23:28 -0700 (PDT)
-X-Received: by 2002:a2e:9b8e:: with SMTP id z14mr5525159lji.150.1586363008508;
- Wed, 08 Apr 2020 09:23:28 -0700 (PDT)
+        Wed, 8 Apr 2020 12:49:10 -0400
+X-Greylist: delayed 1482 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 12:49:08 EDT
+Received: from local
+        by fudo.makrotopia.org with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.92.3)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1jMDUv-0002ru-7m; Wed, 08 Apr 2020 18:24:19 +0200
+Date:   Wed, 8 Apr 2020 17:23:49 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Imre Kaloz <kaloz@dune.hu>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Paul Spooren <mail@aparcar.org>, Andrew Lunn <andrew@lunn.ch>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "jason@lakedaemon.net" <jason@lakedaemon.net>,
+        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "freifunk@adrianschmutzler.de" <freifunk@adrianschmutzler.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "kaloz@openwrt.org" <kaloz@openwrt.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>
+Subject: Re: [PATCH 0/5] arm: dts: linksys: rename codename to model
+Message-ID: <20200408162009.GC1995@makrotopia.org>
+References: <20200407210816.866084-1-mail@aparcar.org>
+ <20200407224615.GA359603@lunn.ch>
+ <004a2ef9c1e04f9ffbb9c3cc9907ca656a406713.camel@aparcar.org>
+ <ecf4dc01-81f8-a33d-b4a7-2065748993ed@gmail.com>
+ <VI1PR02MB5325621D39BF0FFAFE3993C4A0C00@VI1PR02MB5325.eurprd02.prod.outlook.com>
 MIME-Version: 1.0
-References: <20200219171225.5547-1-idryomov@gmail.com> <CAHp75Vf24yNeLEweq_70AUzKwbdyurB6ze9739Qy9djA9dSefg@mail.gmail.com>
- <CAOi1vP9gfMoU14Ax+VLksQ+_3yOO3m3bh0Uh02SUMfPFDDEW9g@mail.gmail.com>
- <CAOi1vP8NN=8e8kW6g7KegUt52auJoE53ZCdEQHv2DMqFe1=g0Q@mail.gmail.com>
- <CAOi1vP9t=kq0M91rJXbXa1pj43eczsHw+0Y5Km30tQP5AJrs2g@mail.gmail.com>
- <CAHp75VfvUN=E-_n8VAKQ9nQ7mr2hbjS38bYCBbCdh02pxphOwg@mail.gmail.com>
- <CAOi1vP-K-AwzPqdHHDFDvef_nLPx3pr2NnQnSo5Emvsc1hF7Cg@mail.gmail.com> <20200408150643.GD3676135@smile.fi.intel.com>
-In-Reply-To: <20200408150643.GD3676135@smile.fi.intel.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 8 Apr 2020 09:23:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgndVg4U2rh_6e8YBuhN+78wEiyTuCRTqfWuSZzGC6f_w@mail.gmail.com>
-Message-ID: <CAHk-=wgndVg4U2rh_6e8YBuhN+78wEiyTuCRTqfWuSZzGC6f_w@mail.gmail.com>
-Subject: Re: [PATCH v2] vsprintf: don't obfuscate NULL and error pointers
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Ilya Dryomov <idryomov@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Tobin C . Harding" <me@tobin.cc>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VI1PR02MB5325621D39BF0FFAFE3993C4A0C00@VI1PR02MB5325.eurprd02.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 8:08 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> For the better understanding the current state of affairs I suggest to respin
-> new version after rc1 and we will see again.
+Hi Imre,
 
-For something simple and straightforward like the obfuscation patches,
-I can take them directly if people are unavailable.
+On Wed, Apr 08, 2020 at 08:32:41AM +0000, Imre Kaloz wrote:
+> Hi,
+> 
+> I'm on the same page here - this has not an issue for years. The common sense and policy was always to reject kernel changes that would only make the userland's job easier - and here were are not even talking about the userland, but a script that's being used for image generation.
+> 
+> The reason codenames are preffered to marketing names is simple: the same board can be sold under multiple marketing names.
+> 
+> The Linksys Viper has been sold as E4200v2 and EA4500. The Linksys Focus as EA6100 and EA5800. The LeMans is the EA6300 and the EA6200. The Macan is both EA7500 and EA7400 - on the other hand, the EA7500v2 and the EA7400v2 are the Savannah.
 
-Just make sure to re-post the patches, and make it clear that it's to
-me (because usually if I'm cc'd I end up just reading and then
-ignoring things that I expect to go through a maintainer).
+What Paul, Adian and others are trying to achieve here is consistency.
+See also the debate on openwrt-devel:
 
-              Linus
+http://lists.infradead.org/pipermail/openwrt-devel/2020-April/022567.html
+
+The goal is to make it easier for users and semi-automated processes
+to identify the right OpenWrt image for a specific device.
+This especially becomes necessary for OTA updates and we have invested
+quite a bit of work to no longer need to scrape and translate that
+with additional layers of abstraction but simply use the first (ie.
+most significant) compatible from DTS to indentify the right image.
+
+As product-name aliases are indeed very common, we usually deal with it
+in a way that the first product name which hits the OpenWrt tree is
+used for model, compatible, DTS- and image filenames. We then add
+aliases to that in our build-scripts which allows web-based wizards and
+such to match the alternative names as well when entered by the user.
+
+
+> 
+> 
+> Best,
+> 
+> Imre
+> 
+> ________________________________
+> From: Florian Fainelli <f.fainelli@gmail.com>
+> Sent: Wednesday, April 8, 2020 2:07:38 AM
+> To: Paul Spooren <mail@aparcar.org>; Andrew Lunn <andrew@lunn.ch>
+> Cc: devicetree@vger.kernel.org <devicetree@vger.kernel.org>; jason@lakedaemon.net <jason@lakedaemon.net>; gregory.clement@bootlin.com <gregory.clement@bootlin.com>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; daniel@makrotopia.org <daniel@makrotopia.org>; freifunk@adrianschmutzler.de <freifunk@adrianschmutzler.de>; robh+dt@kernel.org <robh+dt@kernel.org>; kaloz@openwrt.org <kaloz@openwrt.org>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@lists.infradead.org>; sebastian.hesselbarth@gmail.com <sebastian.hesselbarth@gmail.com>
+> Subject: Re: [PATCH 0/5] arm: dts: linksys: rename codename to model
+> 
+> 
+> 
+> On 4/7/2020 4:38 PM, Paul Spooren wrote:
+> > Hi Andrew,
+> >
+> > thank you very much for the quick response!
+> >
+> > On Wed, 2020-04-08 at 00:46 +0200, Andrew Lunn wrote:
+> >> On Tue, Apr 07, 2020 at 11:08:10AM -1000, Paul Spooren wrote:
+> >>> Linksys chose to use codenames for a few of their devices and sell
+> >>> their
+> >>> them under an entirely different name.
+> >>>
+> >>> codename  model name
+> >>> rango  -> wrt3200acm
+> >>> mamba  -> wrt1900ac
+> >>> cobra  -> wrt1900ac-v2
+> >>> caiman -> wrt1200ac
+> >>> shelby -> wrt1900acs
+> >>
+> >> Hi Paul
+> >>
+> >> There was quite a bit of discussion about this when the first board
+> >> was added. If i remember correctly, it was Mamba.
+> >>
+> >> Imre Kaloz, <kaloz@openwrt.org> was the one arguing for
+> >> the name armada-xp-linksys-mamba.dts.
+> >>
+> >> So it seems that openwrt.org has now come full circle?
+> >
+> > I talked with three currently active OpenWrt core developers and all
+> > were in favor of a unification. I wasn't aware of any previous
+> > discussions nor any pro arguments to keep code names.
+> >
+> > I've added Imre via CC so maybe he can share his opinion, too.
+> >>
+> >>> This introduces some extra loops in OpenWrt, a distribution
+> >>> specialized
+> >>> on embedded Internet facing devices, as both codename and model
+> >>> name are
+> >>> used within the build system. The double naming requires developers
+> >>> to
+> >>> keep track of that mapping and introduces inconsistencies:
+> >>>
+> >>> To build a specific device in OpenWrt profiles are used, named
+> >>> after the
+> >>> the compatible string for targets using device tree (similar to how
+> >>> .dts
+> >>> files are named in the linux source tree). However, the first item
+> >>> of
+> >>> the DT `compatible` list in this case is `linksys,rango`, which is
+> >>> inconsistent with the model name and not what common users would
+> >>> expect.
+> >>>
+> >>> Such double naming complicates currently the automatic search for
+> >>> firmware upgrade as the build system does not support such mapping.
+> >>> Ideally the first item of the DT `compatible` list would contain a
+> >>> string suitable to be used as a filename recognizable by normal
+> >>> users to
+> >>> belong to that device.
+> >>> With this patch set the Linksys device tree files are moved from
+> >>> containing the codename to contain a sanitized model name and also
+> >>> use
+> >>> it as first entry of the DT `compatible` list.
+> >>
+> >> I've no problems adding another compatible to the list. But i don't
+> >> like the idea of renaming the files. The file names could be
+> >> considered ABI! What installers/bootloaders are you going to break by
+> >> renaming them?
+> >
+> > Are you okay with adding the new compatible string as first element of
+> > the list? This would already simplify the OpenWrt build system.
+> 
+> Having a mapping table between model names in OpenWrt profiles and .dts
+> file names in the kernel sources is not that complicated to maintain,
+> changing the kernel for that reason sounds a bit weak IMHO.
+> --
+> Florian
