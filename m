@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5594F1A260E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59ACB1A25E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgDHPsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49158 "EHLO mail.kernel.org"
+        id S1729844AbgDHPrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:47:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729686AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729702AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Apr 2020 11:46:33 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB29F221EC;
-        Wed,  8 Apr 2020 15:46:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05490221F6;
+        Wed,  8 Apr 2020 15:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586360792;
-        bh=yAOsXbL7fg020jSPFmIR1e4J97xQZcJrrPalm0wfW+M=;
+        bh=4l77Yn2wW/bRDMs12FfVArUGIzMtsVYGB6DvYUarqs0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r/sb8b09rd+lmNDr5/l5llwPOyWVGz0nsjaHvCrJBq0H+Vzr6lISTG+mmfGhiH4a6
-         ZrI5WCOp6tGmS0KKS5PR+k1AGSaiSGQ2L1VUxgT7EEDrOP8LzZzH+2Q9vajqYATQ2s
-         GvZwN5REBGZ5NY7NnhFS2wdKsbHQ6JlD4gCojYsU=
+        b=VF6H0x7Ot7lxgI1ISZI/YaviI/NzcKJPIZRwbZ4mM/xbQrZrwEL38pg10zez1SP5E
+         xuOIgatlYINtigXbwOO+bL9qeFHD/iYMHVqtlniNhRBnLGE6sEwI9jcuhPBLVXWwWK
+         0ZtgiYvnGF9as+3xSzHcfydypiHgf9tO1mkp/qR8=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jMCuM-000cCa-5P; Wed, 08 Apr 2020 17:46:30 +0200
+        id 1jMCuM-000cCe-6M; Wed, 08 Apr 2020 17:46:30 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: [PATCH 29/35] MAINTAINERS: dt: fix pointers for ARM Integrator, Versatile and RealView
-Date:   Wed,  8 Apr 2020 17:46:21 +0200
-Message-Id: <d8b0656cb3f1eacb10ca6168babb235d59a853a1.1586359676.git.mchehab+huawei@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Matthias Brugger <mbrugger@suse.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH 30/35] docs: dt: fix a broken reference for a file converted to json
+Date:   Wed,  8 Apr 2020 17:46:22 +0200
+Message-Id: <402922bc26fe9b340dff8693bab57142820f1fc7.1586359676.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586359676.git.mchehab+huawei@kernel.org>
 References: <cover.1586359676.git.mchehab+huawei@kernel.org>
@@ -46,39 +48,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a conversion from a plain text binding file into 4 yaml ones.
-The old file got removed, causing this new warning:
+Changeset 32ced09d7903 ("dt-bindings: serial: Convert slave-device bindings to json-schema")
+moved a binding to json and updated the links. Yet, one link
+was forgotten.
 
-	Warning: MAINTAINERS references a file that doesn't exist: Documentation/devicetree/bindings/arm/arm-boards
+Update this one too.
 
-Address it by replacing the old reference by the new ones
-
-Fixes: 2d483550b6d2 ("dt-bindings: arm: Drop the non-YAML bindings")
-Fixes: 33fbfb3eaf4e ("dt-bindings: arm: Add Integrator YAML schema")
-Fixes: 4b900070d50d ("dt-bindings: arm: Add Versatile YAML schema")
-Fixes: 7db625b9fa75 ("dt-bindings: arm: Add RealView YAML schema")
-Fixes: 4fb00d9066c1 ("dt-bindings: arm: Add Versatile Express and Juno YAML schema")
+Fixes: 32ced09d7903 ("dt-bindings: serial: Convert slave-device bindings to json-schema")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- MAINTAINERS | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 67e52e9d630c..72fb84483a23 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1296,7 +1296,10 @@ ARM INTEGRATOR, VERSATILE AND REALVIEW SUPPORT
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
--F:	Documentation/devicetree/bindings/arm/arm-boards
-+F:	Documentation/devicetree/bindings/arm/arm,integrator.yaml
-+F:	Documentation/devicetree/bindings/arm/arm,realview.yaml
-+F:	Documentation/devicetree/bindings/arm/arm,versatile.yaml
-+F:	Documentation/devicetree/bindings/arm/arm,vexpress-juno.yaml
- F:	Documentation/devicetree/bindings/auxdisplay/arm-charlcd.txt
- F:	Documentation/devicetree/bindings/clock/arm,syscon-icst.yaml
- F:	Documentation/devicetree/bindings/i2c/i2c-versatile.txt
+diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+index badf597c0e58..aad2632c6443 100644
+--- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
++++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+@@ -30,7 +30,7 @@ Required properties for compatible string qcom,wcn399x-bt:
+ 
+ Optional properties for compatible string qcom,wcn399x-bt:
+ 
+- - max-speed: see Documentation/devicetree/bindings/serial/slave-device.txt
++ - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
+  - firmware-name: specify the name of nvm firmware to load
+  - clocks: clock provided to the controller
+ 
 -- 
 2.25.2
 
