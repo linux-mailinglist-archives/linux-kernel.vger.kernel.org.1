@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 291B51A249C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044781A24A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729361AbgDHPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:07:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:39738 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727847AbgDHPHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:07:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23D331063;
-        Wed,  8 Apr 2020 08:07:40 -0700 (PDT)
-Received: from [10.57.55.221] (unknown [10.57.55.221])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6D903F68F;
-        Wed,  8 Apr 2020 08:07:35 -0700 (PDT)
-Subject: Re: [RFC PATCH 17/34] iommu/arm-smmu: Store device instead of group
- in arm_smmu_s2cr
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Joerg Roedel <jroedel@suse.de>
-References: <20200407183742.4344-1-joro@8bytes.org>
- <20200407183742.4344-18-joro@8bytes.org>
- <98c10a41-d223-e375-9742-b6471c3dc33c@arm.com>
- <20200408143707.GK3103@8bytes.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <f8b541c2-9271-fc48-dde6-166a2ed6679f@arm.com>
-Date:   Wed, 8 Apr 2020 16:07:33 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1729387AbgDHPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:09:57 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:43904 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728844AbgDHPJ5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:09:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=89Z6RxZbArgSbKPhvwh545xFzap5boKJNxHrWLE5c3c=; b=pBKw32kgXdu8+8BKvU+rZoryaH
+        cxLwy66LF3zStA1uprQ8+vkAf4LfN1dDxufW0oN1Gd7Byp0QZ5vWV1PCIGbw2StameFanawUwPzA5
+        7tTiQukMUs/MjmGABqLVbUUk6qPQPD0YQ8bDH7dFYxKOyXdABPWWXHQqxDH7nR0ZXXYuj14A4aQcR
+        IQIMDuqAT15RzfeOMzLc32U8C6mK086NagAEpsPZl+VbS576oG/jZm1qgDHkHGrLwkZorutTwhdpu
+        wVCQtafnKcHNz7mKZ8StbDannr2HcgTKSwLP7nOS4FW6JnU70V224+1BmasGmq/hNQPndB7QeXytO
+        N/cCVSzQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jMCKl-0004s4-4q; Wed, 08 Apr 2020 15:09:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 97519300130;
+        Wed,  8 Apr 2020 17:09:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7BF4D201C1CBC; Wed,  8 Apr 2020 17:09:40 +0200 (CEST)
+Date:   Wed, 8 Apr 2020 17:09:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     syzbot <syzbot+a95c7753605c9d219466@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, bgeffon@google.com,
+        dvhart@infradead.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, peterx@redhat.com,
+        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org
+Subject: Re: general protection fault in get_futex_key
+Message-ID: <20200408150940.GM20730@hirez.programming.kicks-ass.net>
+References: <0000000000008250f105a2c4ade1@google.com>
+ <87mu7mayky.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20200408143707.GK3103@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87mu7mayky.fsf@nanos.tec.linutronix.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-08 3:37 pm, Joerg Roedel wrote:
-> Hi Robin,
-> 
-> thanks for looking into this.
-> 
-> On Wed, Apr 08, 2020 at 01:09:40PM +0100, Robin Murphy wrote:
->> For a hot-pluggable bus where logical devices may share Stream IDs (like
->> fsl-mc), this could happen:
->>
->>    create device A
->>    iommu_probe_device(A)
->>      iommu_device_group(A) -> alloc group X
->>    create device B
->>    iommu_probe_device(B)
->>      iommu_device_group(A) -> lookup returns group X
->>    ...
->>    iommu_remove_device(A)
->>    delete device A
->>    create device C
->>    iommu_probe_device(C)
->>      iommu_device_group(C) -> use-after-free of A
->>
->> Preserving the logical behaviour here would probably look *something* like
->> the mangled diff below, but I haven't thought it through 100%.
-> 
-> Yeah, I think you are right. How about just moving the loop which sets
-> s2crs[idx].group to arm_smmu_device_group()? In that case I can drop
-> this patch and leave the group pointer in place.
+On Wed, Apr 08, 2020 at 03:36:45PM +0200, Thomas Gleixner wrote:
 
-Isn't that exactly what I suggested? :)
+> This means that
+> 
+>      get_user_pages_fast(address, 1, FOLL_WRITE, &page)
+> 
+> returned 0, which is breaking the interface:
+> 
+>  * Returns number of pages pinned. This may be fewer than the number requested.
+>  * If nr_pages is 0 or negative, returns 0. If no pages were pinned, returns
+>  * -errno.
+> 
+> nr_pages is clearly 1. So if the call fails, the number of pinned pages
+> is 0 and it should return a proper error number. It did before.
+> 
+> From a quick look at the commit in question I assume it's the
+> 
+> +               if (fatal_signal_pending(current))
+> +                       break;
+> 
+> which can cause that to happen.
 
-I don't recall for sure, but knowing me, that bit of group bookkeeping 
-is only where it currently is because it cheekily saves iterating the 
-IDs a second time. I don't think there's any technical reason.
+Yep, that's broken. It wants the below, just like all the other error
+paths in that loop.
 
-Robin.
+---
+Subject: mm/gup: Fix broken fatal_signal_pending() test
+
+Just like all the other error returns in this loop, we need to set
+pages_done to the error value when it is zero.
+
+Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+diff --git a/mm/gup.c b/mm/gup.c
+index afce0bc47e70..14bce270b249 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1326,8 +1326,11 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
+ 		 * start trying again otherwise it can loop forever.
+ 		 */
+ 
+-		if (fatal_signal_pending(current))
++		if (fatal_signal_pending(current)) {
++			if (!pages_done)
++				pages_done = -ERESTARTSYS;
+ 			break;
++		}
+ 
+ 		ret = down_read_killable(&mm->mmap_sem);
+ 		if (ret) {
