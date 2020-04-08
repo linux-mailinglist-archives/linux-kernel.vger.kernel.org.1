@@ -2,193 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE8F1A24C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017581A24D1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729489AbgDHPMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:12:42 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:46920 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728110AbgDHPMl (ORCPT
+        id S1728262AbgDHPRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:17:02 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:59702 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727832AbgDHPRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:12:41 -0400
-Received: by mail-io1-f69.google.com with SMTP id p69so205516iod.13
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:12:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=B8H7F5N3xhpnu0cuEvuqeHEM1UyehCMDiAQUZ8A44M8=;
-        b=QNHeMrxXvE5G5IIys9q+5hMM8fLsLVnfl9j5Q6qGg/qTF6DMnqQCYZolwwGZaLDlvn
-         vAG38Py4yTQDSEukUyuxpqT7FTLOnVCmtDm/NB/yBCniuWsIidWS5F+/DXkubUckPBB0
-         Up0ZacvVYbepKVKzUG6TqeXloB6FRn/zSEjpNBjth+I4h8jNEBcoe9fhUuNTRIe6otFa
-         oBh7BRbJZyVyi4VdXt2eevFwazgWakJJPMu7Is1EQ1RjCtsENHIXUWuoGaSpIeyiLL4Y
-         0fUaV/pQ6HudE6euseIwjnvuCi8y7eMJ5rZt57u2ynOjEdQ0jNP9Lk3/8/ztiP0kq6pW
-         TWZw==
-X-Gm-Message-State: AGi0PuY0iA90MMC722AF5jDqP+1d6cz/9uv9TdA/at8cP1y0xY+ILlOy
-        1wwO4P21PKba3PqAzTIgLiBMXBogqUIkM4Zh0F68QCZpZHGh
-X-Google-Smtp-Source: APiQypIw78JHKjhB+j0Glb7K1dSHJ3rZZKUptkGDO/woVDSlTQLfWodDE84Nn1NCUDR3wOty5ZBVBCo0f+LP7Xw27A0pYv17MwGb
+        Wed, 8 Apr 2020 11:17:02 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jMCRo-0003vB-Tz; Wed, 08 Apr 2020 09:17:00 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jMCRn-0005Ft-WC; Wed, 08 Apr 2020 09:17:00 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+References: <87blobnq02.fsf@x220.int.ebiederm.org>
+        <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+        <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+        <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
+        <87lfnda3w3.fsf@x220.int.ebiederm.org>
+        <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
+        <87blo45keg.fsf@x220.int.ebiederm.org>
+        <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+Date:   Wed, 08 Apr 2020 10:14:09 -0500
+In-Reply-To: <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+        (Linus Torvalds's message of "Tue, 7 Apr 2020 12:50:52 -0700")
+Message-ID: <87v9maxb5q.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-Received: by 2002:a92:af8c:: with SMTP id v12mr184656ill.6.1586358758901;
- Wed, 08 Apr 2020 08:12:38 -0700 (PDT)
-Date:   Wed, 08 Apr 2020 08:12:38 -0700
-In-Reply-To: <20200408151213.GE66033@xz-x1>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004f8fee05a2c8ee0b@google.com>
-Subject: Re: Re: WARNING in af_alg_make_sg
-From:   syzbot <syzbot+3be1a33f04dc782e9fd5@syzkaller.appspotmail.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     akpm@linux-foundation.org, bgeffon@google.com, davem@davemloft.net,
-        hdanton@sina.com, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1jMCRn-0005Ft-WC;;;mid=<87v9maxb5q.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX18IElz77CBQfmTS9aa6PTkXWD7jLB72d6E=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4793]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 535 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 8 (1.6%), b_tie_ro: 7 (1.4%), parse: 0.88 (0.2%),
+        extract_message_metadata: 15 (2.9%), get_uri_detail_list: 1.74 (0.3%),
+        tests_pri_-1000: 19 (3.5%), tests_pri_-950: 1.25 (0.2%),
+        tests_pri_-900: 1.03 (0.2%), tests_pri_-90: 117 (21.9%), check_bayes:
+        101 (18.9%), b_tokenize: 11 (2.1%), b_tok_get_all: 10 (1.8%),
+        b_comp_prob: 4.0 (0.8%), b_tok_touch_all: 72 (13.5%), b_finish: 1.04
+        (0.2%), tests_pri_0: 359 (67.1%), check_dkim_signature: 0.83 (0.2%),
+        check_dkim_adsp: 2.8 (0.5%), poll_dns_idle: 0.66 (0.1%), tests_pri_10:
+        2.3 (0.4%), tests_pri_500: 8 (1.4%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Wed, Apr 08, 2020 at 05:58:48PM +0800, Hillf Danton wrote:
->> 
->> On Wed, 08 Apr 2020 00:48:13 -0700
->> > syzbot found the following crash on:
->> > 
->> > HEAD commit:    763dede1 Merge tag 'for-linus-5.7-rc1' of git://git.kernel..
->> > git tree:       upstream
->> > console output: https://syzkaller.appspot.com/x/log.txt?x=12b919c7e00000
->> > kernel config:  https://syzkaller.appspot.com/x/.config?x=12205d036cec317f
->> > dashboard link: https://syzkaller.appspot.com/bug?extid=3be1a33f04dc782e9fd5
->> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
->> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142f3b8fe00000
->> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159bd23fe00000
->> > 
->> > The bug was bisected to:
->> > 
->> > commit 4426e945df588f2878affddf88a51259200f7e29
->> > Author: Peter Xu <peterx@redhat.com>
->> > Date:   Thu Apr 2 04:08:49 2020 +0000
->> > 
->> >     mm/gup: allow VM_FAULT_RETRY for multiple times
->> > 
->> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1408ea9fe00000
->> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1608ea9fe00000
->> > console output: https://syzkaller.appspot.com/x/log.txt?x=1208ea9fe00000
->> > 
->> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
->> > Reported-by: syzbot+3be1a33f04dc782e9fd5@syzkaller.appspotmail.com
->> > Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
->> > 
->> > ------------[ cut here ]------------
->> > WARNING: CPU: 1 PID: 7094 at crypto/af_alg.c:404 af_alg_make_sg+0x399/0x400 crypto/af_alg.c:404
->> > Kernel panic - not syncing: panic_on_warn set ...
->> > CPU: 1 PID: 7094 Comm: syz-executor037 Not tainted 5.6.0-syzkaller #0
->> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> > Call Trace:
->> >  __dump_stack lib/dump_stack.c:77 [inline]
->> >  dump_stack+0x188/0x20d lib/dump_stack.c:118
->> >  panic+0x2e3/0x75c kernel/panic.c:221
->> >  __warn.cold+0x2f/0x35 kernel/panic.c:582
->> >  report_bug+0x27b/0x2f0 lib/bug.c:195
->> >  fixup_bug arch/x86/kernel/traps.c:175 [inline]
->> >  fixup_bug arch/x86/kernel/traps.c:170 [inline]
->> >  do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
->> >  do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
->> >  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
->> > RIP: 0010:af_alg_make_sg+0x399/0x400 crypto/af_alg.c:404
->> > Code: 5c 24 2b 31 ff 89 de e8 c5 b9 f8 fd 84 db 74 0e e8 8c b8 f8 fd 48 8b 04 24 48 89 44 24 70 e8 7e b8 f8 fd 0f 0b e8 77 b8 f8 fd <0f> 0b c7 44 24 4c ea ff ff ff e9 4b ff ff ff 48 89 df e8 40 6e 36
->> > RSP: 0018:ffffc900018779a0 EFLAGS: 00010293
->> > RAX: ffff8880a16b65c0 RBX: ffff8880a4141220 RCX: ffffffff837a763d
->> > RDX: 0000000000000000 RSI: ffffffff837a78f9 RDI: 0000000000000005
->> > RBP: 000000001fef2254 R08: ffff8880a16b65c0 R09: ffffed10142d6cb9
->> > R10: ffff8880a16b65c7 R11: ffffed10142d6cb8 R12: 0000000000000000
->> > R13: dffffc0000000000 R14: 0000000000000000 R15: dffffc0000000000
->> >  hash_sendmsg+0x45c/0xad0 crypto/algif_hash.c:94
->> >  sock_sendmsg_nosec net/socket.c:652 [inline]
->> >  sock_sendmsg+0xcf/0x120 net/socket.c:672
->> >  ____sys_sendmsg+0x6bf/0x7e0 net/socket.c:2362
->> >  ___sys_sendmsg+0x100/0x170 net/socket.c:2416
->> >  __sys_sendmsg+0xec/0x1b0 net/socket.c:2449
->> >  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
->> >  entry_SYSCALL_64_after_hwframe+0x49/0xb3
->> 
->> Make gup feed back correct error code in case of bailout.
->> 
->> --- a/mm/gup.c
->> +++ b/mm/gup.c
->> @@ -1325,8 +1325,11 @@ retry:
->>  		 * start trying again otherwise it can loop forever.
->>  		 */
->>  
->> -		if (fatal_signal_pending(current))
->> +		if (fatal_signal_pending(current)) {
->> +			if (!pages_done)
->> +				pages_done = -EINTR;
->>  			break;
->> +		}
->>  
->>  		*locked = 1;
->>  		down_read(&mm->mmap_sem);
->> 
->
-> CC Thomas too.
->
-> Sorry for all these mess...
->
-> Frankly speaking I didn't notice get_user_pages_fast() forbids
-> returning zero while __get_user_pages() allowed it...  Ideally I think
-> the gup callers should check against ret>0 to know exactly how many
-> valid pages we've got, but it's not an excuse good enough...
->
-> Hillf, would you mind kick the syzbot directly next time when post the
-> fix?  I'll make bold to do that for you this time, Thanks!
->
-> #syz test: #https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-"#https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git" does not look like a valid git repo address.
+> On Mon, Apr 6, 2020 at 3:20 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> But fundamentally the only reason we need this information stable
+>> before the point of no return is so that we can return a nice error
+>> code to the process calling exec.  Instead of terminating the
+>> process with SIGSEGV.
+>
+> I'd suggest doing it the other way around instead: let the thread that
+> does the security_setprocattr() die, since execve() is terminating
+> other threads anyway.
+>
+> And the easy way to do that is to just make the rule be that anybody
+> who waits for this thing for write needs to use a killable wait.
+>
+> So if the execve() got started earlier, and already took the cred lock
+> (whatever we'll call it) for reading, then zap_other_threads() will
+> take care of another thread doing setprocattr().
+>
+> That sounds like a really simple model, no?
 
->
-> 8<--------------------------------------------------------------------
-> From 380003a56efc125565143c91ee6cefd7b3eba869 Mon Sep 17 00:00:00 2001
-> From: Hillf Danton <hdanton@sina.com>
-> Date: Wed, 8 Apr 2020 11:01:25 -0400
-> Subject: [PATCH] mm/gup: Let __get_user_pages_locked() return -EINTR for fatal
->  signal
->
-> __get_user_pages_locked() will return 0 instead of -EINTR after commit
-> 4426e945df588 which added extra code to allow gup detect fatal signal
-> faster.  Restore that behavior.
->
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Hillf Danton <hdanton@sina.com>
-> [peterx: write commit message]
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  mm/gup.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/gup.c b/mm/gup.c
-> index afce0bc47e70..6076df8e04a4 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1326,8 +1326,11 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
->  		 * start trying again otherwise it can loop forever.
->  		 */
->  
-> -		if (fatal_signal_pending(current))
-> +		if (fatal_signal_pending(current)) {
-> +			if (!pages_done)
-> +				pages_done = -EINTR;
->  			break;
-> +		}
->  
->  		ret = down_read_killable(&mm->mmap_sem);
->  		if (ret) {
-> -- 
-> 2.24.1
->
->
-> -- 
-> Peter Xu
->
+Yes.  I missed the fact that we could take the lock killable.
+We still unfortunately have the deadlock with ptrace.
+
+It might be simpler to make whichever lock we are dealing with per
+task_struct instead of per signal_struct.  Then we don't even have to
+think about what de_thread does or if the lock is taken killable.
+
+
+Looking at the code in binfmt_elf.c there are about 11 other places
+after install_exec_creds where we can fail and would be forced to
+terminate the application with SIGSEGV instead of causing fork to fail.
+
+
+
+
+I keep wondering if we could do something similar to vfork.  That is
+allocate an new task_struct and fully set it up for the post exec
+process, and then make it visible under tasklist_lock.  Finally we could
+free the old process.
+
+That would appear as if everything happened atomically from
+the point of view of the rest of the kernel.
+
+As well as fixing all of the deadlocks and making it easy
+to ensure we don't have any more weird failures in the future.
+
+Eric
+
+p.s. For tasklist_lock I suspect we can put a lock in struct pid
+and use that to guard the task lists in struct pid.  Which would
+allow for tasklist_lock to be take much less.  Then we would
+just need a solution for task->parent and task->real_parent and
+I think all of the major users of tasklist_lock would be gone.
+
+
