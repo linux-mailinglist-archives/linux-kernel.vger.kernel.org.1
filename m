@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 012711A1996
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:34:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 226451A199E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgDHBeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 21:34:20 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:60797 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726420AbgDHBeT (ORCPT
+        id S1726508AbgDHBhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 21:37:35 -0400
+Received: from conuserg-12.nifty.com ([210.131.2.79]:51263 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726417AbgDHBhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 21:34:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586309659; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=XoOYi2TV+UeP2kOoRrpUAk9Ku3EzZ9BU0fhtMfFP28s=;
- b=Pvpf7CZVEMApbiorlvaY+4vDU7H11aMv5kzGWZoi54RqlQH8ndO6FXfsEmeyH4tNQBo5ENc1
- Nr9kfpsM6j7tYVgKa89kHBif2+NfR6fAENTJ3yB9tu+FSPhv+cNCFERzP7rdq/JN8ayIcygs
- yNxhJhb/D0hHEo1GXS6ht9Jvxoc=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e8d2a0f.7f5cd5569340-smtp-out-n02;
- Wed, 08 Apr 2020 01:34:07 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5D7ACC433D2; Wed,  8 Apr 2020 01:34:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3AD1C433F2;
-        Wed,  8 Apr 2020 01:34:05 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 07 Apr 2020 18:34:05 -0700
-From:   hemantk@codeaurora.org
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] bus: mhi: core: Make sure to powerdown if
- mhi_sync_power_up fails
-In-Reply-To: <1586278230-29565-3-git-send-email-jhugo@codeaurora.org>
-References: <1586278230-29565-1-git-send-email-jhugo@codeaurora.org>
- <1586278230-29565-3-git-send-email-jhugo@codeaurora.org>
-Message-ID: <7249d9608f41e4528c87c2b1c464d615@codeaurora.org>
-X-Sender: hemantk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Tue, 7 Apr 2020 21:37:35 -0400
+Received: from grover.flets-west.jp (softbank126125134031.bbtec.net [126.125.134.31]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 0381aPHj015816;
+        Wed, 8 Apr 2020 10:36:26 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 0381aPHj015816
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1586309786;
+        bh=L+PxVczbvSKDZy0QWnkH2JdHG6AtVEb4Ujw81uwS82s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EYNWU9WnLG7JPzG9hEFTiEiOosaggylbvEyQBUhyARImrmOae8AV4vIs/vRUeFyN6
+         U/NQS2quG6Vy3yU28X8WbIImFbUjG2qQvonokWVwh4HXR1gpl0bqBE0w7xGxG5ql0a
+         SITtT8BApmOqT74yj9Nb/0jrMn0MPfM0qPddukrkERbWbvCyhamG8Gy+so2IFk9qvq
+         2Gr/06JnW0V8SL+FQ3dkPLLVrxHIyvhDl6MYy26bYYxfeIOjHt0sjXvoHqb4a6ODHb
+         ot+GJhWG8rzJWIAvCI1KVTgdD/e323ChbaeHDEGpmgMB8cW6FnZO2H5OE2Qxy0sW2s
+         GQmDyx99PoJ1w==
+X-Nifty-SrcIP: [126.125.134.31]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/2] kbuild: replace AS=clang with LLVM_IAS=1
+Date:   Wed,  8 Apr 2020 10:36:22 +0900
+Message-Id: <20200408013623.31974-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-04-07 09:50, Jeffrey Hugo wrote:
-> Powerdown is necessary if mhi_sync_power_up fails due to a timeout, to
-> clean up the resources.  Otherwise a BUG could be triggered when
-> attempting to clean up MSIs because the IRQ is still active from a
-> request_irq().
-> 
-> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/pm.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index 3285c9e..fbffc6b 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -922,7 +922,11 @@ int mhi_sync_power_up(struct mhi_controller 
-> *mhi_cntrl)
->  			   MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
->  			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
-> 
-> -	return (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -EIO;
-> +	ret = (MHI_IN_MISSION_MODE(mhi_cntrl->ee)) ? 0 : -EIO;
+The 'AS' variable is unused for building the kernel. Only the remaining
+usage is to turn on the integrated assembler. A boolean flag is a better
+fit for this purpose.
 
-Does it make sense to return -ETIMEDOUT instead of -EIO if device fails 
-to move to mission mode?
-Controller can use this info as mhi_async_power_up() would not return 
--ETIMEDOUT.
+AS=clang was added for experts. So, I replaced it with LLVM_IAS=1,
+breaking the backward compatibility.
 
-> +	if (ret)
-> +		mhi_power_down(mhi_cntrl, false);
-> +
-> +	return ret;
->  }
->  EXPORT_SYMBOL(mhi_sync_power_up);
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+
+Changes in v3:
+  - rename LLVM_IA to LLVM_IAS (per Fangrui Song)
+
+Changes in v2:
+  - new patch
+
+ Documentation/kbuild/llvm.rst | 5 ++++-
+ Makefile                      | 2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+index eefbdfa3e4d9..0fefdf1737e9 100644
+--- a/Documentation/kbuild/llvm.rst
++++ b/Documentation/kbuild/llvm.rst
+@@ -50,11 +50,14 @@ LLVM Utilities
+ LLVM has substitutes for GNU binutils utilities. These can be invoked as
+ additional parameters to `make`.
+ 
+-	make CC=clang AS=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \\
++	make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \\
+ 	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size \\
+ 	  READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \\
+ 	  HOSTLD=ld.lld
+ 
++Currently, the integrated assembler is disabled by default. You can pass
++LLVM_IAS=1 to enable it.
++
+ Getting Help
+ ------------
+ 
+diff --git a/Makefile b/Makefile
+index 1b2691057cb5..a2aadcf8a36c 100644
+--- a/Makefile
++++ b/Makefile
+@@ -538,7 +538,7 @@ endif
+ ifneq ($(GCC_TOOLCHAIN),)
+ CLANG_FLAGS	+= --gcc-toolchain=$(GCC_TOOLCHAIN)
+ endif
+-ifeq ($(if $(AS),$(shell $(AS) --version 2>&1 | head -n 1 | grep clang)),)
++ifneq ($(LLVM_IAS),1)
+ CLANG_FLAGS	+= -no-integrated-as
+ endif
+ CLANG_FLAGS	+= -Werror=unknown-warning-option
+-- 
+2.17.1
+
