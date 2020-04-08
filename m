@@ -2,124 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A47921A23B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0B61A23C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727907AbgDHOET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:04:19 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42796 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727226AbgDHOET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 10:04:19 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 038Dw6X1087445;
-        Wed, 8 Apr 2020 14:03:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=hWI6KSBJwhLBPRk58QK/JNaKG+agLjuCHca2NgnWmtI=;
- b=kV/HOgs3XEXgeSot3ajlmAUJGkvf3xT/Zf0t0BerQVQ+0s3KEm4tg6TqPsmpSsIM0HVC
- 8JLJLnIh9Ei1/mnO1hwoXtdDpRxW/VgHTGWrBRBV4qj42oq76/Y3QmGZYYIIX8OiIuyE
- jRlCdbZ3T7UmIeorA85EY3U/d5MfnDxRtbac6yC1ABt03qaXTzQMKnGRbBz1YJKqdoaZ
- rKPO3yOavaIewE3vuLsWs+JgBNhsRafqdjPHFqnc16+maF5GJ3A2+o/JTFsA4XKpE/+J
- fZnnZs0UB4cSIU6EHZA+3I2mA8CKrz/l4nt9VUW64JXsae6DqQMWAkOnR52glrD/EnrA sw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 3091m3br14-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Apr 2020 14:03:57 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 038DuYkf107015;
-        Wed, 8 Apr 2020 14:01:57 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 3099v92rv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Apr 2020 14:01:55 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 038E1qLg002863;
-        Wed, 8 Apr 2020 14:01:53 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 08 Apr 2020 07:01:52 -0700
-Subject: Re: [PATCH V2 5/9] objtool: Add support for intra-function calls
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        jthierry@redhat.com, tglx@linutronix.de
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-6-alexandre.chartre@oracle.com>
- <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
- <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
-Message-ID: <7ba6d4c9-c1dc-fa83-2ade-b7d3fba9e7fb@oracle.com>
-Date:   Wed, 8 Apr 2020 16:06:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S1728237AbgDHOHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:07:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728159AbgDHOHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 10:07:00 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD26D20780;
+        Wed,  8 Apr 2020 14:06:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586354820;
+        bh=mwQWgzVnM1Gk3FCn6bt7z1/0O75c4sfpqBfxxPs/al0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gh7bxstm1xQxcj6Pf/epMrYu3OflWzvm5XzwmHvdoWuHVaZrCDtMitxeuZTT5im+L
+         8ntbEZpPrf/BJgbl+SZHwn3dy4pcYd9O8Zqyvweblvr/Q0Ndbw7FDB5ypNHT7CObXT
+         vQTJ87Osa66oVYrL/5pWmbpjesQ87Sz/FMHCyFsc=
+Date:   Wed, 8 Apr 2020 16:06:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>
+Subject: Re: [PATCH 5.6 00/30] 5.6.3-rc2 review
+Message-ID: <20200408140658.GA1251074@kroah.com>
+References: <20200407154752.006506420@linuxfoundation.org>
+ <CA+G9fYsyETNoV58oyrBtb2o_vyFi1MPUNkZ9uUZK6uRCg5OK5w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 mlxscore=0
- mlxlogscore=999 bulkscore=0 spamscore=0 phishscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004080116
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004080116
+In-Reply-To: <CA+G9fYsyETNoV58oyrBtb2o_vyFi1MPUNkZ9uUZK6uRCg5OK5w@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/7/20 3:28 PM, Alexandre Chartre wrote:
+On Wed, Apr 08, 2020 at 03:16:45PM +0530, Naresh Kamboju wrote:
+> On Tue, 7 Apr 2020 at 22:09, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > This is the start of the stable review cycle for the 5.6.3 release.
+> > There are 30 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> >
+> > Responses should be made by Thu, 09 Apr 2020 15:46:32 +0000.
+> > Anything received after that time might be too late.
+> >
+> > The whole patch series can be found in one patch at:
+> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.3-rc2.gz
+> > or in the git tree and branch at:
+> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
+> > and the diffstat can be found below.
+> >
+> > thanks,
+> >
+> > greg k-h
 > 
-> On 4/7/20 3:07 PM, Peter Zijlstra wrote:
->> On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
->>
->>> index a62e032863a8..7ee1561bf7ad 100644
->>> --- a/tools/objtool/arch/x86/decode.c
->>> +++ b/tools/objtool/arch/x86/decode.c
->>> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct cfi_state *state)
->>>       state->regs[16].base = CFI_CFA;
->>>       state->regs[16].offset = -8;
->>>   }
->>> +
->>> +
->>> +void arch_configure_intra_function_call(struct stack_op *op)
->>> +{
->>> +    /*
->>> +     * For the impact on the stack, make an intra-function
->>> +     * call behaves like a push of an immediate value (the
->>> +     * return address).
->>> +     */
->>> +    op->src.type = OP_SRC_CONST;
->>> +    op->dest.type = OP_DEST_PUSH;
->>> +}
->>
->> An alternative is to always set up stack ops for CALL/RET on decode, but
->> conditionally run update_insn_state() for them.
->>
->> Not sure that makes more logical sense, but the patch would be simpler I
->> think.
-> 
-> Right, this would avoid adding a new arch dependent function and the patch
-> will be simpler. This probably makes sense as the stack impact is the same
-> for all calls (but objtool will use it only for intra-function calls).
-> 
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 
-Actually the processing of the ret instruction is more complicated than I
-anticipated with intra-function calls, and so my implementation is not
-complete at the moment.
+Thanks for testing all of these and letting me know.
 
-The issue is to correctly handle how the ret is going to behave depending how
-the stack (or register on arm) is modified before the ret. Adjusting the stack
-offset makes the stack state correct, but objtool still needs to correctly
-figure out where the ret is going to return and where the code flow continues.
-
-alex.
+greg k-h
