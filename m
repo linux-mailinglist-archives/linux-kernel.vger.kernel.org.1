@@ -2,90 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA54B1A218E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575691A21BB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728220AbgDHMSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 08:18:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:38012 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726924AbgDHMSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 08:18:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94ADC31B;
-        Wed,  8 Apr 2020 05:18:12 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3217A3F73D;
-        Wed,  8 Apr 2020 05:18:09 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 13:18:02 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        james.morse@arm.com
-Subject: Re: [PATCH 26/28] arm64: use __vmalloc_node in arch_alloc_vmap_stack
-Message-ID: <20200408121802.GA36478@lakrids.cambridge.arm.com>
-References: <20200408115926.1467567-1-hch@lst.de>
- <20200408115926.1467567-27-hch@lst.de>
+        id S1728274AbgDHMU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 08:20:29 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:48661 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727126AbgDHMU1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 08:20:27 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586348427; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uxrIDtB/jOhAPmjTIB8iD89D5eovr0qySBws36IDfuc=;
+ b=PqxHb3tyz5hf/ZDDvrkv/wlbg1TV/NT1oeNbtHifegjWFiNF8ZlWIBkEm+uEMjuJYgoyvxYg
+ Q88az46xNRDE/Z/TkRj0AgSoJMfXPMnUezbFJ5dF/I9VI6DG80Cwr8ikrxP9wcSJnyrER9zc
+ F2wbKkGL6EckvAbiLLL7XyxiB14=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8dc180.7f33284917d8-smtp-out-n01;
+ Wed, 08 Apr 2020 12:20:16 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 03244C433BA; Wed,  8 Apr 2020 12:20:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0F445C433F2;
+        Wed,  8 Apr 2020 12:20:14 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200408115926.1467567-27-hch@lst.de>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 08 Apr 2020 17:50:14 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, ohad@wizery.com, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        evgreen@chromium.org, linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: qcom_q6v5_mss: map/unmap mpss region
+ before/after use
+In-Reply-To: <20200408021026.GP20625@builder.lan>
+References: <20200317191918.4123-1-sibis@codeaurora.org>
+ <20200408021026.GP20625@builder.lan>
+Message-ID: <940b74388c744ef5bbfcf15709c4ae05@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 01:59:24PM +0200, Christoph Hellwig wrote:
-> arch_alloc_vmap_stack can use a slightly higher level vmalloc function.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Hey Bjorn,
+Thanks for review!
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
-> ---
->  arch/arm64/include/asm/vmap_stack.h | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
+On 2020-04-08 07:40, Bjorn Andersson wrote:
+> On Tue 17 Mar 12:19 PDT 2020, Sibi Sankar wrote:
 > 
-> diff --git a/arch/arm64/include/asm/vmap_stack.h b/arch/arm64/include/asm/vmap_stack.h
-> index 0a12115d9638..0cc6636e3f15 100644
-> --- a/arch/arm64/include/asm/vmap_stack.h
-> +++ b/arch/arm64/include/asm/vmap_stack.h
-> @@ -19,10 +19,8 @@ static inline unsigned long *arch_alloc_vmap_stack(size_t stack_size, int node)
->  {
->  	BUILD_BUG_ON(!IS_ENABLED(CONFIG_VMAP_STACK));
->  
-> -	return __vmalloc_node_range(stack_size, THREAD_ALIGN,
-> -				    VMALLOC_START, VMALLOC_END,
-> -				    THREADINFO_GFP, PAGE_KERNEL, 0, node,
-> -				    __builtin_return_address(0));
-> +	return __vmalloc_node(stack_size, THREAD_ALIGN, THREADINFO_GFP, node,
-> +			__builtin_return_address(0));
->  }
->  
->  #endif /* __ASM_VMAP_STACK_H */
-> -- 
-> 2.25.1
+>> The application processor accessing the mpss region when the Q6 modem
+>> is running will lead to an XPU violation. Fix this by un-mapping the
+>> mpss region post copy during processor out of reset sequence and
+>> coredumps.
+>> 
 > 
+> Does this problem not apply to the "mba" region?
+
+For mba region, memcpy is expected
+to be completed before bringing
+the Q6 out of reset. Downstream they
+seem to use a wmb() to accomplish
+this. Since we havn't observed any
+issues until now, we can defer adding
+any fixes related to mba region.
+
+> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>>  drivers/remoteproc/qcom_q6v5_mss.c | 53 
+>> ++++++++++++++++--------------
+>>  1 file changed, 29 insertions(+), 24 deletions(-)
+>> 
+>> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c 
+>> b/drivers/remoteproc/qcom_q6v5_mss.c
+>> index ce49c3236ff7c..b1ad4de179019 100644
+>> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+>> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+>> @@ -196,7 +196,6 @@ struct q6v5 {
+>> 
+>>  	phys_addr_t mpss_phys;
+>>  	phys_addr_t mpss_reloc;
+>> -	void *mpss_region;
+>>  	size_t mpss_size;
+>> 
+>>  	struct qcom_rproc_glink glink_subdev;
+>> @@ -1061,6 +1060,18 @@ static int q6v5_reload_mba(struct rproc *rproc)
+>>  	return ret;
+>>  }
+>> 
+>> +static void *q6v5_da_to_va(struct rproc *rproc, u64 da, size_t len)
+>> +{
+>> +	struct q6v5 *qproc = rproc->priv;
+>> +	int offset;
+>> +
+>> +	offset = da - qproc->mpss_reloc;
+>> +	if (offset < 0 || offset + len > qproc->mpss_size)
+>> +		return NULL;
+>> +
+>> +	return devm_ioremap_wc(qproc->dev, qproc->mpss_phys + offset, len);
+> 
+> This function isn't expected to have side effects.
+
+unfortunately doing ioremap/iounmap
+for the entire region isn't sufficient,
+while testing I found per region remap
+/unmap was required i.e after we moved to
+away from the validating the entire blog
+in a single pass.
+
+Now with the mpss_region out of the picture
+da_to_va really made no sense without having
+ioremap function in it. Let me know what you
+think.
+
+> 
+> So I think you should add the ioremap/iounmap to the beginning/end of
+> mpss_load and the dump_segment directly instead.
+> 
+>> +}
+>> +
+>>  static int q6v5_mpss_load(struct q6v5 *qproc)
+>>  {
+>>  	const struct elf32_phdr *phdrs;
+>> @@ -1156,7 +1167,11 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+>>  			goto release_firmware;
+>>  		}
+>> 
+>> -		ptr = qproc->mpss_region + offset;
+>> +		ptr = q6v5_da_to_va(qproc->rproc, phdr->p_paddr, phdr->p_memsz);
+> 
+> rproc_da_to_va() here.
+
+sure
+
+> 
+>> +		if (!ptr) {
+>> +			dev_err(qproc->dev, "failed to map memory\n");
+> 
+> Now this will be able to fail, so you should add this error handling
+> snippet, just with a slightly different message.
+
+sure
+
+> 
+>> +			goto release_firmware;
+>> +		}
+>> 
+>>  		if (phdr->p_filesz && phdr->p_offset < fw->size) {
+>>  			/* Firmware is large enough to be non-split */
+>> @@ -1165,6 +1180,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+>>  					"failed to load segment %d from truncated file %s\n",
+>>  					i, fw_name);
+>>  				ret = -EINVAL;
+>> +				devm_iounmap(qproc->dev, ptr);
+>>  				goto release_firmware;
+>>  			}
+>> 
+>> @@ -1175,6 +1191,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+>>  			ret = request_firmware(&seg_fw, fw_name, qproc->dev);
+>>  			if (ret) {
+>>  				dev_err(qproc->dev, "failed to load %s\n", fw_name);
+>> +				devm_iounmap(qproc->dev, ptr);
+>>  				goto release_firmware;
+>>  			}
+>> 
+>> @@ -1187,6 +1204,7 @@ static int q6v5_mpss_load(struct q6v5 *qproc)
+>>  			memset(ptr + phdr->p_filesz, 0,
+>>  			       phdr->p_memsz - phdr->p_filesz);
+>>  		}
+>> +		devm_iounmap(qproc->dev, ptr);
+> 
+> Move this to the end an unmap the entire thing.
+> 
+> And generally, please avoid devm for things where you manually unmap.
+
+will take care of ^^ in the next re-spin.
+
+> 
+> Regards,
+> Bjorn
+> 
+>>  		size += phdr->p_memsz;
+>> 
+>>  		code_length = readl(qproc->rmb_base + RMB_PMI_CODE_LENGTH_REG);
+>> @@ -1236,7 +1254,7 @@ static void qcom_q6v5_dump_segment(struct rproc 
+>> *rproc,
+>>  	int ret = 0;
+>>  	struct q6v5 *qproc = rproc->priv;
+>>  	unsigned long mask = BIT((unsigned long)segment->priv);
+>> -	void *ptr = rproc_da_to_va(rproc, segment->da, segment->size);
+>> +	void *ptr = NULL;
+>> 
+>>  	/* Unlock mba before copying segments */
+>>  	if (!qproc->dump_mba_loaded) {
+>> @@ -1250,10 +1268,15 @@ static void qcom_q6v5_dump_segment(struct 
+>> rproc *rproc,
+>>  		}
+>>  	}
+>> 
+>> -	if (!ptr || ret)
+>> -		memset(dest, 0xff, segment->size);
+>> -	else
+>> +	if (!ret)
+>> +		ptr = rproc_da_to_va(rproc, segment->da, segment->size);
+>> +
+>> +	if (ptr) {
+>>  		memcpy(dest, ptr, segment->size);
+>> +		devm_iounmap(qproc->dev, ptr);
+>> +	} else {
+>> +		memset(dest, 0xff, segment->size);
+>> +	}
+>> 
+>>  	qproc->dump_segment_mask |= mask;
+>> 
+>> @@ -1327,18 +1350,6 @@ static int q6v5_stop(struct rproc *rproc)
+>>  	return 0;
+>>  }
+>> 
+>> -static void *q6v5_da_to_va(struct rproc *rproc, u64 da, size_t len)
+>> -{
+>> -	struct q6v5 *qproc = rproc->priv;
+>> -	int offset;
+>> -
+>> -	offset = da - qproc->mpss_reloc;
+>> -	if (offset < 0 || offset + len > qproc->mpss_size)
+>> -		return NULL;
+>> -
+>> -	return qproc->mpss_region + offset;
+>> -}
+>> -
+>>  static int qcom_q6v5_register_dump_segments(struct rproc *rproc,
+>>  					    const struct firmware *mba_fw)
+>>  {
+>> @@ -1595,12 +1606,6 @@ static int q6v5_alloc_memory_region(struct q6v5 
+>> *qproc)
+>> 
+>>  	qproc->mpss_phys = qproc->mpss_reloc = r.start;
+>>  	qproc->mpss_size = resource_size(&r);
+>> -	qproc->mpss_region = devm_ioremap_wc(qproc->dev, qproc->mpss_phys, 
+>> qproc->mpss_size);
+>> -	if (!qproc->mpss_region) {
+>> -		dev_err(qproc->dev, "unable to map memory region: %pa+%zx\n",
+>> -			&r.start, qproc->mpss_size);
+>> -		return -EBUSY;
+>> -	}
+>> 
+>>  	return 0;
+>>  }
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
