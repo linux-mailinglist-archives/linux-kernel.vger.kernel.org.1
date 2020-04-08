@@ -2,98 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9B51A1C5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229E81A1C71
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbgDHHKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:10:36 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:56586 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726642AbgDHHKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:10:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586329835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OJEdDfDhxqWIuQHGi6+YXk/eEkMKJUcybOhiZu3aaes=;
-        b=DzdDKZ2TicmmI7ttkkOUSMfI8J+DZfNt4uUQ0YVx+DDbrv3bhW/UKFZyZXFV6iMg+Icyc+
-        5AG1XXt2aQDOa+y6mByYpxX1FsO3NMMw21zwX5HzT/v0pdF2eFaZPta3wgHnZmHHpElOlH
-        By2dCBt4bdYLftjkdQE0dLAjVLmf2Ko=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-OCdvW6INMP6v5AQCkPEiRA-1; Wed, 08 Apr 2020 03:10:33 -0400
-X-MC-Unique: OCdvW6INMP6v5AQCkPEiRA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 82FF98024D0;
-        Wed,  8 Apr 2020 07:10:32 +0000 (UTC)
-Received: from gondolin (ovpn-113-103.ams2.redhat.com [10.36.113.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F0F931001DD8;
-        Wed,  8 Apr 2020 07:10:27 +0000 (UTC)
-Date:   Wed, 8 Apr 2020 09:10:24 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com
-Subject: Re: [PATCH 2/2] KVM: s390: Return last valid slot if approx index
- is out-of-bounds
-Message-ID: <20200408091024.14a0d096.cohuck@redhat.com>
-In-Reply-To: <20200408064059.8957-3-sean.j.christopherson@intel.com>
-References: <20200408064059.8957-1-sean.j.christopherson@intel.com>
-        <20200408064059.8957-3-sean.j.christopherson@intel.com>
-Organization: Red Hat GmbH
+        id S1726603AbgDHHSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:18:14 -0400
+Received: from vkten.in ([104.244.73.96]:45190 "EHLO vkten.in"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726366AbgDHHSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 03:18:14 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 03:18:13 EDT
+Received: (qmail 4649 invoked from network); 8 Apr 2020 07:11:31 -0000
+Received: from unknown (HELO localhost) (vkor@vkten.in@117.219.207.72)
+  de/crypted with TLSv1.3: TLS_AES_256_GCM_SHA384 [256/256] DN=none
+  by vkten with ESMTPSA; 8 Apr 2020 07:11:31 -0000
+From:   R Veera Kumar <vkor@vkten.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     R Veera Kumar <vkor@vkten.in>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: mt7621-pinctrl: Use correct pointer type argument for sizeof
+Date:   Wed,  8 Apr 2020 12:41:12 +0530
+Message-Id: <20200408071112.11578-1-vkor@vkten.in>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Apr 2020 23:40:59 -0700
-Sean Christopherson <sean.j.christopherson@intel.com> wrote:
+Use correct pointer type argument for sizeof.
+Found using coccinelle.
 
-> Return the index of the last valid slot from gfn_to_memslot_approx() if
-> its binary search loop yielded an out-of-bounds index.  The index can
-> be out-of-bounds if the specified gfn is less than the base of the
-> lowest memslot (which is also the last valid memslot).
-> 
-> Note, the sole caller, kvm_s390_get_cmma(), ensures used_slots is
-> non-zero.
-> 
+Signed-off-by: R Veera Kumar <vkor@vkten.in>
+---
+ drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This also should be cc:stable, with the dependency expressed as
-mentioned by Christian.
-
-> Fixes: afdad61615cc3 ("KVM: s390: Fix storage attributes migration with memory slots")
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/s390/kvm/kvm-s390.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 19a81024fe16..5dcf9ff12828 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -1939,6 +1939,9 @@ static int gfn_to_memslot_approx(struct kvm_memslots *slots, gfn_t gfn)
->  			start = slot + 1;
->  	}
->  
-> +	if (start >= slots->used_slots)
-> +		return slots->used_slots - 1;
-> +
->  	if (gfn >= memslots[start].base_gfn &&
->  	    gfn < memslots[start].base_gfn + memslots[start].npages) {
->  		atomic_set(&slots->lru_slot, start);
-
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+diff --git a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
+index d0f06790d38f..62babad5ee0b 100644
+--- a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
++++ b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
+@@ -220,7 +220,7 @@ static int rt2880_pinmux_index(struct rt2880_priv *p)
+ 	/* allocate our function and group mapping index buffers */
+ 	f = p->func = devm_kcalloc(p->dev,
+ 				   p->func_count,
+-				   sizeof(struct rt2880_pmx_func),
++				   sizeof(rt2880_pmx_func),
+ 				   GFP_KERNEL);
+ 	gpio_func.groups = devm_kcalloc(p->dev, p->group_count, sizeof(int),
+ 					GFP_KERNEL);
+-- 
+2.20.1
 
