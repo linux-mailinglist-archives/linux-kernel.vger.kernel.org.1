@@ -2,86 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9556B1A2631
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 901FF1A2647
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbgDHPso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:48:44 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:32948 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729295AbgDHPsk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:48:40 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2D4EC522;
-        Wed,  8 Apr 2020 17:48:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1586360919;
-        bh=/JgXmN/0WyKx0OrE+QYBVoprM4aMOvGu9pmddBBOTck=;
+        id S1729831AbgDHPt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:49:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729502AbgDHPt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:49:28 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52A8B206F5;
+        Wed,  8 Apr 2020 15:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586360967;
+        bh=ye2CgUYCSqFysyTcMZGbUC3+b/DeIcyAgFxFOsM0mDI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rmLITQ6k1FTf27YU2enzczolQS74XPSGlFhJ/EQQXSIXI1XzLyqq5RoGVNMucXZPG
-         SVY4hg6v413eemiT/yEG6hyHsjdzKF2HpRnG4MZTMN8JK+mNVsgXuH6nBgN1O7qS9M
-         hsypevpJn75bHjg5BVE1q1AujS4QIYgPCk64QV3A=
-Date:   Wed, 8 Apr 2020 18:48:29 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Max Krummenacher <max.oss.09@gmail.com>
-Cc:     Max Krummenacher <max.krummenacher@toradex.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>, Olof Johansson <olof@lixom.net>,
-        linux-kernel@vger.kernel.org, Anson Huang <Anson.Huang@nxp.com>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH v2 2/5] arm64: defconfig: add DRM_DISPLAY_CONNECTOR
-Message-ID: <20200408154829.GI4881@pendragon.ideasonboard.com>
-References: <20200408143040.57458-1-max.krummenacher@toradex.com>
- <20200408143040.57458-3-max.krummenacher@toradex.com>
+        b=mBRoO4V7hIW80h+FrLth1k9gnfo/pigAPcZkkT5ZkTjJbS8GgTj635UeaXBKpoXkP
+         EnXOzlCBUzPJySgR4/NX0KLXzf6+30jxMlD0nH7UIdoZUM/6xk632X5drsRdaSKcFe
+         eQzK8/WJfZ6i/fXXdMjly0Kr6XblN6tODkkMxf38=
+Date:   Wed, 8 Apr 2020 16:49:25 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 21/35] docs: spi: spi.h: fix a doc building warning
+Message-ID: <20200408154925.GA5177@sirena.org.uk>
+References: <cover.1586359676.git.mchehab+huawei@kernel.org>
+ <d62f3f3536c0da2062bad87524fb184ad5a9a5f2.1586359676.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
 Content-Disposition: inline
-In-Reply-To: <20200408143040.57458-3-max.krummenacher@toradex.com>
+In-Reply-To: <d62f3f3536c0da2062bad87524fb184ad5a9a5f2.1586359676.git.mchehab+huawei@kernel.org>
+X-Cookie: Sank heaven for leetle curls.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Max,
 
-Thank you for the patch.
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 08, 2020 at 04:30:37PM +0200, Max Krummenacher wrote:
-> Add DRM_DISPLAY_CONNECTOR. This got introduced with the bridge rework
-> Which renamed among others DRM_DUMB_VGA_DAC.
-> 
-> Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
+On Wed, Apr 08, 2020 at 05:46:13PM +0200, Mauro Carvalho Chehab wrote:
+> We need to add a blank line to avoid this warning:
+>=20
+> 	./include/linux/spi/spi.h:401: WARNING: Unexpected indentation.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>   * @transfer_one: transfer a single spi_transfer.
+> + *
+>   *                  - return 0 if the transfer is finished,
+>   *                  - return 1 if the transfer is still in progress. When
+>   *                    the driver is finished with this transfer it must
 
-> 
-> ---
-> 
-> Changes in v2:
-> - additional patch adding DRM_DISPLAY_CONNECTOR as recommended by Geert and Laurent
-> 
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index ae908c3f43c76..d765a920a20b9 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -612,6 +612,7 @@ CONFIG_DRM_PANEL_LVDS=m
->  CONFIG_DRM_PANEL_SIMPLE=m
->  CONFIG_DRM_SIMPLE_BRIDGE=m
->  CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
-> +CONFIG_DRM_DISPLAY_CONNECTOR=m
->  CONFIG_DRM_SII902X=m
->  CONFIG_DRM_THINE_THC63LVD1024=m
->  CONFIG_DRM_TI_SN65DSI86=m
+Are you sure this is a sensible fix?  The following lines should be part
+of the documentation for transfer_one, will that be the case after your
+change?
 
--- 
-Regards,
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Laurent Pinchart
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl6N8oQACgkQJNaLcl1U
+h9ADFAf/fx8bDo5MrqjuRdoyjFCwBxM7HE0VHxtW2VKIbiMPUe21gNoyjVDF4ObX
+shR/3FATGwbGRc8dSdaAQXnV7Lmjqjdbfgkt35XgWvmRxjeSWdFd2BM2WxutVzJr
+/mOTN/gKM+8K3mgBxR+UOEoVI0WSNZGdx0pQZu1HGdsqKk3iQuWUzjonPiGpG/T8
+e+ueC+FhaC7QDMwGXXpxP0FtRzLiOP95pAy03o1dYpWnf6ORiuwjl8Dz6sDzZpSa
+N/RdEt23t/JFi1V96D5LsGh+TdjoTl8hPt1L68AbGIBSRSmhpt0+7aFQ+wpmWBSJ
+HBqe97rqeLS2mxqM8cwp8CjoKvKy0Q==
+=h6Sg
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
