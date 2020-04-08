@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E5A1A2AD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 842EB1A2AE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730194AbgDHVLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 17:11:48 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57400 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730109AbgDHVLl (ORCPT
+        id S1730209AbgDHVM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 17:12:57 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:37390 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727798AbgDHVM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 17:11:41 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 943BA297495
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     laurent.pinchart@ideasonboard.com,
-        Collabora Kernel ML <kernel@collabora.com>,
-        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 7/7] drm/mediatek: mtk_dsi: Create connector for bridges
-Date:   Wed,  8 Apr 2020 23:11:20 +0200
-Message-Id: <20200408211120.1407512-8-enric.balletbo@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200408211120.1407512-1-enric.balletbo@collabora.com>
-References: <20200408211120.1407512-1-enric.balletbo@collabora.com>
+        Wed, 8 Apr 2020 17:12:57 -0400
+Received: by mail-wm1-f68.google.com with SMTP id z6so1427977wml.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 14:12:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=+AwwgEHFD5bilNHg0VD/JP6P2YBOrf+uHd0tB2xL4pE=;
+        b=HkZV9t2hAwjvaNhBlInKGUCm/hr7/K/Ey+6xiClnyWaqye+9xiel5MCdKkVIKQ+4kI
+         wI9jPSDGtZSRGvJTfzk2yFoyO4eObyDs0r/Jyse9iJx/i2u6HjeJriDGvfNYZCj/FJ6Q
+         IDgu+b70BhF07VBMWANUNUnWhyt4h3GSVMFJsJWZmoRbY/8eFXBz6rAtRHJd22KdmAAl
+         zqNClInIVowsg7lsCCRIuCEK/XJX1csE/bTALDy1j3WnoFWpcJApeb7ef6q74Nwqu4xc
+         jEn8bm+Kt6pjX1kcSfnv7wyV1ujlLtgPPVMiueehgLrfhGFxsoiRjoI+HVW7WUM7Ernd
+         5GWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=+AwwgEHFD5bilNHg0VD/JP6P2YBOrf+uHd0tB2xL4pE=;
+        b=hcAFcz1GWIYPmOmuqX5cfB5bsb9QmTyqn/IRNJ7BaEJuToRXLwgBGUmP5qS2wNCEu4
+         rLbA6SiRcnTeobkqIv/IiT2xyXvLwOwVSze05kxCQUqd56a7E8tvuF5RIX7weSnuYiAR
+         JepeNrdxYJ57Hzrt6Lk8OyCnD7IsrPrYlUS2v3pv+T1phWNARzxtgFtADGJg6CPMK///
+         OqxdHn5Efd+Kfyk3n0JXHIxRcZ+KeQiJkhRHqjwZ6RBZmUUa6TMRJZDyytPqzAgOX1In
+         D1mzOcLxdSYXeHADX2W7Kh/5HgTs4oUwzDeYWuvJzvYikmolFnElAXLy6P1jFEcTSXw7
+         /hiw==
+X-Gm-Message-State: AGi0Pub/ecDFqEgIsc3LhnbWyU/ZdE+e1ahCSPWHUtVwn9yxMbbKWYmR
+        qph+ZJ0GL+K5LLMSgGeOLkIDUbvMw9vw0UIo/wWKbm0z
+X-Google-Smtp-Source: APiQypIEA+vymPWIIq5+2XuP34UflBloAgSXy7ew6JLfr6plXXbaqmNJRlxdTY3HEMwJyuv/xPkyzLlHszjkF8+Cgz0=
+X-Received: by 2002:a7b:c927:: with SMTP id h7mr6424887wml.122.1586380375005;
+ Wed, 08 Apr 2020 14:12:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200408205323.44490-1-natechancellor@gmail.com>
+In-Reply-To: <20200408205323.44490-1-natechancellor@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Wed, 8 Apr 2020 23:12:43 +0200
+Message-ID: <CA+icZUUTEEZww3qT0jfFP0ZgUPXoF1_uOHMT4ZecrQxumE1Zmg@mail.gmail.com>
+Subject: Re: [PATCH] x86: mmiotrace: Use cpumask_available for cpumask_var_t variables
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, nouveau@lists.freedesktop.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the drm_bridge_connector helper to create a connector for pipelines
-that use drm_bridge. This allows splitting connector operations across
-multiple bridges when necessary, instead of having the last bridge in
-the chain creating the connector and handling all connector operations
-internally.
+On Wed, Apr 8, 2020 at 10:53 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> When building with Clang + -Wtautological-compare and
+> CONFIG_CPUMASK_OFFSTACK unset:
+>
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
+Hi Nathan,
 
- drivers/gpu/drm/mediatek/mtk_dsi.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+thanks for the quick patch.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index f9706f306275..a36c86e174f4 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -17,6 +17,7 @@
- 
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_bridge_connector.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_of.h>
- #include <drm/drm_panel.h>
-@@ -184,6 +185,7 @@ struct mtk_dsi {
- 	struct drm_bridge bridge;
- 	struct drm_bridge *panel_bridge;
- 	struct drm_bridge *next_bridge;
-+	struct drm_connector *connector;
- 	struct phy *phy;
- 
- 	void __iomem *regs;
-@@ -983,10 +985,19 @@ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
- 	 */
- 	dsi->encoder.possible_crtcs = 1;
- 
--	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL, 0);
-+	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
-+				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 	if (ret)
- 		goto err_cleanup_encoder;
- 
-+	dsi->connector = drm_bridge_connector_init(drm, &dsi->encoder);
-+	if (IS_ERR(dsi->connector)) {
-+		DRM_ERROR("Unable to create bridge connector\n");
-+		ret = PTR_ERR(dsi->connector);
-+		goto err_cleanup_encoder;
-+	}
-+	drm_connector_attach_encoder(dsi->connector, &dsi->encoder);
-+
- 	return 0;
- 
- err_cleanup_encoder:
-@@ -1145,6 +1156,7 @@ static int mtk_dsi_probe(struct platform_device *pdev)
- 
- 	dsi->bridge.funcs = &mtk_dsi_bridge_funcs;
- 	dsi->bridge.of_node = dev->of_node;
-+	dsi->bridge.type = DRM_MODE_CONNECTOR_DSI;
- 
- 	drm_bridge_add(&dsi->bridge);
- 
--- 
-2.25.1
+I can confirm I have no CONFIG_CPUMASK_OFFSTACK set.
 
+Regards,
+- Sedat -
+
+
+> arch/x86/mm/mmio-mod.c:375:6: warning: comparison of array 'downed_cpus'
+> equal to a null pointer is always false [-Wtautological-pointer-compare]
+>         if (downed_cpus == NULL &&
+>             ^~~~~~~~~~~    ~~~~
+> arch/x86/mm/mmio-mod.c:405:6: warning: comparison of array 'downed_cpus'
+> equal to a null pointer is always false [-Wtautological-pointer-compare]
+>         if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
+>             ^~~~~~~~~~~    ~~~~
+> 2 warnings generated.
+>
+> Commit f7e30f01a9e2 ("cpumask: Add helper cpumask_available()") added
+> cpumask_available to fix warnings of this nature. Use that here so that
+> clang does not warn regardless of CONFIG_CPUMASK_OFFSTACK's value.
+>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/982
+> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  arch/x86/mm/mmio-mod.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/mm/mmio-mod.c b/arch/x86/mm/mmio-mod.c
+> index 109325d77b3e..43fd19b3f118 100644
+> --- a/arch/x86/mm/mmio-mod.c
+> +++ b/arch/x86/mm/mmio-mod.c
+> @@ -372,7 +372,7 @@ static void enter_uniprocessor(void)
+>         int cpu;
+>         int err;
+>
+> -       if (downed_cpus == NULL &&
+> +       if (!cpumask_available(downed_cpus) &&
+>             !alloc_cpumask_var(&downed_cpus, GFP_KERNEL)) {
+>                 pr_notice("Failed to allocate mask\n");
+>                 goto out;
+> @@ -402,7 +402,7 @@ static void leave_uniprocessor(void)
+>         int cpu;
+>         int err;
+>
+> -       if (downed_cpus == NULL || cpumask_weight(downed_cpus) == 0)
+> +       if (!cpumask_available(downed_cpus) || cpumask_weight(downed_cpus) == 0)
+>                 return;
+>         pr_notice("Re-enabling CPUs...\n");
+>         for_each_cpu(cpu, downed_cpus) {
+>
+> base-commit: ae46d2aa6a7fbe8ca0946f24b061b6ccdc6c3f25
+> --
+> 2.26.0
+>
