@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B6E1A19A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AFD1A19AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgDHBkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 21:40:20 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:23415 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726417AbgDHBkU (ORCPT
+        id S1726619AbgDHBk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 21:40:27 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:43798 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726436AbgDHBkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 21:40:20 -0400
+        Tue, 7 Apr 2020 21:40:25 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586310018;
+        s=mimecast20190719; t=1586310024;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7b3hN2sSbkSm2D93h3QJ554a9zb0gmfcgA7NY6J8BVs=;
-        b=WDFsVUMZ5B67/BNddzXFOD0Ywuv+GyOf9xqeSrhY//XXLxgpeVp/Uco/R/bkuBzeI8DGYa
-        EwtnqBp9lizFNBfualesKuzIfFAINSOajMxcY98bUIjJ+ZvlUQPXAt+FoouEAhehlqcMMi
-        ToayLY1MFyIohggAMEyaAwb/N92suFs=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-7-PA3XN0rTO0CLDRyS_XR0Fg-1; Tue, 07 Apr 2020 21:40:17 -0400
-X-MC-Unique: PA3XN0rTO0CLDRyS_XR0Fg-1
-Received: by mail-qt1-f198.google.com with SMTP id f56so4951241qte.18
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 18:40:16 -0700 (PDT)
+        bh=fSQbrEAc+w70rT9qB0nDUcFBa4qHjfjCBhj2Rky49/o=;
+        b=HZhDpk9rshQ3k2xMQGU3BjYCE1tGhC6fEHLJ1prJ1ujQrBpPTH+W/8SRnUfcpP5zJRrJXH
+        v6sw/cS6K06PqRvuzUtqCeTyfwi5b4YYdvkW1hjDesSsIWsLPM7yPihVLbDNglCI3EODjH
+        OTfSpIP72EXhzjHjGoJNa3gP6FZiiUY=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-bHa42HK9PH-3ujoxNQ8rRQ-1; Tue, 07 Apr 2020 21:40:23 -0400
+X-MC-Unique: bHa42HK9PH-3ujoxNQ8rRQ-1
+Received: by mail-qt1-f197.google.com with SMTP id z5so5014396qtd.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 18:40:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7b3hN2sSbkSm2D93h3QJ554a9zb0gmfcgA7NY6J8BVs=;
-        b=YwfSJpkj9jxYqQYklAnDMkEtp8ZxI1/P1bSpWPQh3EeVtNZeWv69YzZxuQf4+xPD87
-         XyxEc0cBef3F5XvOasHtJ6HCgij9Ts1r0EWHMOBMlKTEodrNvNz3s5SBZSedAaMDrx8i
-         MbjgYm0tG/9gqVgwHDHnIDFcvkUx5El9LJhB1cZylnHwo1aX6b6rF+C1BmMa3NGsDAe5
-         bdzEgNBbz1NCajMXS4usX9wh44dHxUFrb4dnLFK/kwZwztPt3j62UeHyKfvNMprH9qwB
-         Tl+O+rKHQQ3xuZ2S5PLYFNr9Z8g6yOZ350t/qg6BGpqg4aKJ/0phBaqTKhOXbH/YMM5p
-         2uyw==
-X-Gm-Message-State: AGi0PuYC7XzDiEC2PWRmzkQ/3l8o5q0+GsHHDako49z5d0C7UkBGJtQI
-        9ntpamxRC9XQfrjyycCDFZF0aAijen33ozNaYB4rvV/SHYfKNtZ7Jj+iPL/1GMasYyDTWgwYxAr
-        DVeowg92PXobFMpLZl9Aoa9+F
-X-Received: by 2002:ac8:27a9:: with SMTP id w38mr5008091qtw.112.1586310016214;
-        Tue, 07 Apr 2020 18:40:16 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKiDdfbU3ZlDmMw5zsuDQ3egIlmUEykfE0Bx/gD1U+WuGauQrVFK6YiY93u5z4zZQ9aM9zH4A==
-X-Received: by 2002:ac8:27a9:: with SMTP id w38mr5008079qtw.112.1586310015979;
-        Tue, 07 Apr 2020 18:40:15 -0700 (PDT)
+        bh=fSQbrEAc+w70rT9qB0nDUcFBa4qHjfjCBhj2Rky49/o=;
+        b=KVx/qsv95Qr7EA9+0Q5uumKlxEgysfmWiYyc28OiQX+m55o5ciNJP/kNdc1QWHnm+D
+         4gajE7qbJmPqKlhBZL5xd7Fcn7fpQU/CyZ8PFLIj7HWt4y8bcm+aAkTh486/qU+Nlpk0
+         sN6M58zMxrAQc9CIi7lv3WQnc/bproRBoBM9PUSXbhSRC5DQj4luVCK+bOJiYBgUPlUn
+         DnpQ48+fWi6r+fc42kPOfMh4m/x7r0i/QNmHwQKlR24tCIUOLBEKz7UZI3VRMmwwBfg3
+         Nkjhk8owIWVLKiMzEyciOJBGVfPuPLniyU1yBle6jcsjqywAdyzNGAwOBQePiMtKHxHX
+         0hMw==
+X-Gm-Message-State: AGi0PuYhxhvVl1Q9VPHovJMMeAZfUKGXJavrCR1+VG1nTcy4o8tGwVMh
+        hlPN+8I13ueaJnqzoFK9KmFprLYJfvB7FzGvRVLZw0Tqwwjfkic3Cauf0/SMfTKqEEuoLSZTq8z
+        UoxG7g+2+hePpwP0MdrwwfAsk
+X-Received: by 2002:aed:3b4c:: with SMTP id q12mr5171839qte.18.1586310022101;
+        Tue, 07 Apr 2020 18:40:22 -0700 (PDT)
+X-Google-Smtp-Source: APiQypKjaxC86ETeSiD0L0Kj0V5llgsE6iR778Jm5S9I3k5ubB9PlpALIp3ITqh0ujLQ2viwPE/E4Q==
+X-Received: by 2002:aed:3b4c:: with SMTP id q12mr5171819qte.18.1586310021884;
+        Tue, 07 Apr 2020 18:40:21 -0700 (PDT)
 Received: from xz-x1.hitronhub.home ([2607:9880:19c0:32::3])
-        by smtp.gmail.com with ESMTPSA id a186sm18438740qkg.2.2020.04.07.18.40.14
+        by smtp.gmail.com with ESMTPSA id x24sm6126607qth.80.2020.04.07.18.40.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 18:40:15 -0700 (PDT)
+        Tue, 07 Apr 2020 18:40:18 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org,
         Linus Torvalds <torvalds@linux-foundation.org>,
         linux-mm@kvack.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-Subject: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal signal
-Date:   Tue,  7 Apr 2020 21:40:09 -0400
-Message-Id: <20200408014010.80428-2-peterx@redhat.com>
+        syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com
+Subject: [PATCH 2/2] mm/gup: Mark lock taken only after a successful retake
+Date:   Tue,  7 Apr 2020 21:40:10 -0400
+Message-Id: <20200408014010.80428-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200408014010.80428-1-peterx@redhat.com>
 References: <20200408014010.80428-1-peterx@redhat.com>
@@ -70,44 +70,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lookup_node() uses gup to pin the page and get node information.  It
-checks against ret>=0 assuming the page will be filled in.  However
-it's also possible that gup will return zero, for example, when the
-thread is quickly killed with a fatal signal.  Teach lookup_node() to
-gracefully return an error -EFAULT if it happens.
+It's definitely incorrect to mark the lock as taken even if
+down_read_killable() failed.  It's overlooked when we switched from
+down_read() to down_read_killable() because down_read() won't fail
+while down_read_killable() could.
 
-Meanwhile, initialize "page" to NULL to avoid potential risk of
-exploiting the pointer.
-
-Reported-by: syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
+Reported-by: syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com
+Fixes: 71335f37c5e8 ("mm/gup: allow to react to fatal signals")
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/mempolicy.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ mm/gup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 5fb427aed612..c7ca6a808fb1 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -897,12 +897,15 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
+diff --git a/mm/gup.c b/mm/gup.c
+index da3e03185144..1f9a9b3a5869 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1328,7 +1328,6 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
+ 		if (fatal_signal_pending(current))
+ 			break;
  
- static int lookup_node(struct mm_struct *mm, unsigned long addr)
- {
--	struct page *p;
-+	struct page *p = NULL;
- 	int err;
+-		*locked = 1;
+ 		ret = down_read_killable(&mm->mmap_sem);
+ 		if (ret) {
+ 			BUG_ON(ret > 0);
+@@ -1337,6 +1336,7 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
+ 			break;
+ 		}
  
- 	int locked = 1;
- 	err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
--	if (err >= 0) {
-+	if (err == 0) {
-+		/* E.g. GUP interrupted by fatal signal */
-+		err = -EFAULT;
-+	} else if (err > 0) {
- 		err = page_to_nid(p);
- 		put_page(p);
- 	}
++		*locked = 1;
+ 		ret = __get_user_pages(tsk, mm, start, 1, flags | FOLL_TRIED,
+ 				       pages, NULL, locked);
+ 		if (!*locked) {
 -- 
 2.24.1
 
