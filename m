@@ -2,52 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B041A26B6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1BBD1A26F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730142AbgDHQGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 12:06:03 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62264 "EHLO mga06.intel.com"
+        id S1730166AbgDHQMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:12:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729667AbgDHQGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:06:02 -0400
-IronPort-SDR: EQuy1YXZU1ZUHsEIbiMPSGfPewYu0IulUvXyeM0EYiMXUenlvL3FLMXt5Ha7WFKRrKnQGrBQp0
- ukMPLP0AUZrA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 09:06:01 -0700
-IronPort-SDR: FWGMRCIDKc+4rShY/k2btbmNpB2Vde5BU/A9n1poyY3PXe4Ws5w3Xl/N5BgmtT1pk2Wkr9ZZko
- cDdb4dYAUqXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,359,1580803200"; 
-   d="scan'208";a="330578827"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001.jf.intel.com with ESMTP; 08 Apr 2020 09:06:01 -0700
-Date:   Wed, 8 Apr 2020 09:11:52 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v11 02/10] iommu/uapi: Define a mask for bind data
-Message-ID: <20200408091152.7e2a2fef@jacob-builder>
-In-Reply-To: <20200408130722.GA27140@8bytes.org>
-References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1585939334-21396-3-git-send-email-jacob.jun.pan@linux.intel.com>
-        <20200408130722.GA27140@8bytes.org>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1727933AbgDHQL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 12:11:59 -0400
+Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF55B20730;
+        Wed,  8 Apr 2020 16:11:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586362319;
+        bh=vR3Za9vsIQ5x9x78qsSEKyr+Z7YV/dYZe3ACWer/qqI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tSd41lOG+oThYoZPZT9m4TZJz0Eta+Mu+uT/MUzOHL88hVrxrf/1uRkmSixCPNRMc
+         1FoQlpzzPq2RDGhFJAUeLZip9yRA1lLb8HekKb1p0k0JrWFhTA3i+a0YUrfvxuxqVY
+         BHF1/kB28BK5RGQf0YVeOPJHmtZn0BARF8bRKF5Y=
+Date:   Wed, 8 Apr 2020 18:11:54 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 21/35] docs: spi: spi.h: fix a doc building warning
+Message-ID: <20200408181154.6c290772@coco.lan>
+In-Reply-To: <20200408154925.GA5177@sirena.org.uk>
+References: <cover.1586359676.git.mchehab+huawei@kernel.org>
+        <d62f3f3536c0da2062bad87524fb184ad5a9a5f2.1586359676.git.mchehab+huawei@kernel.org>
+        <20200408154925.GA5177@sirena.org.uk>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -56,54 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Apr 2020 15:07:22 +0200
-Joerg Roedel <joro@8bytes.org> wrote:
+Hi Mark,
 
-> On Fri, Apr 03, 2020 at 11:42:06AM -0700, Jacob Pan wrote:
-> > Memory type related flags can be grouped together for one simple
-> > check.
+Em Wed, 8 Apr 2020 16:49:25 +0100
+Mark Brown <broonie@kernel.org> escreveu:
+
+> On Wed, Apr 08, 2020 at 05:46:13PM +0200, Mauro Carvalho Chehab wrote:
+> > We need to add a blank line to avoid this warning:
 > > 
-> > ---
-> > v9 renamed from EMT to MTS since these are memory type support
-> > flags. ---
-> > 
-> > Reviewed-by: Eric Auger <eric.auger@redhat.com>
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >  include/uapi/linux/iommu.h | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
-> > index 4ad3496e5c43..d7bcbc5f79b0 100644
-> > --- a/include/uapi/linux/iommu.h
-> > +++ b/include/uapi/linux/iommu.h
-> > @@ -284,7 +284,10 @@ struct iommu_gpasid_bind_data_vtd {
-> >  	__u32 pat;
-> >  	__u32 emt;
-> >  };
-> > -
-> > +#define IOMMU_SVA_VTD_GPASID_MTS_MASK
-> > (IOMMU_SVA_VTD_GPASID_CD | \
-> > +					 IOMMU_SVA_VTD_GPASID_EMTE
-> > | \
-> > +					 IOMMU_SVA_VTD_GPASID_PCD
-> > |  \
-> > +
-> > IOMMU_SVA_VTD_GPASID_PWT)  
+> > 	./include/linux/spi/spi.h:401: WARNING: Unexpected indentation.  
 > 
-> Where and how will this be used? Can you add this in the patch that
-> actually makes use of it?
+> >   * @transfer_one: transfer a single spi_transfer.
+> > + *
+> >   *                  - return 0 if the transfer is finished,
+> >   *                  - return 1 if the transfer is still in progress. When
+> >   *                    the driver is finished with this transfer it must  
 > 
-They are used in later patch when setting up PASID entry for guest SVA.
-[PATCH v11 04/10] iommu/vt-d: Add nested translation helper function
+> Are you sure this is a sensible fix?  The following lines should be part
+> of the documentation for transfer_one, will that be the case after your
+> change?
 
-> Also please add newlines before and after that define.
-> 
-Will do, thanks.
+Without that, Sphinx will warn and may produce something unexpected.
 
-> 
-> Regards,
-> 
-> 	Joerg
+Yet, right now, kernel-doc is not prepared for the above change.
+When kernel-doc finds a blank line, it just assumes that the
+remaining content is part of the description. That is due to some
+laziness on its parser.
 
-[Jacob Pan]
+This is fixed by patch 20/35 on this series:
+
+	Subject: [PATCH 20/35] docs: scripts/kernel-doc: accept blank lines on parameter description
+
+If this patch is applied after 20/25, the output should produce the
+correct result:
+
+	https://www.infradead.org/~mchehab/kernel_docs/driver-api/spi.html#spi-master-methods
+
+Thanks,
+Mauro
