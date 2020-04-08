@@ -2,75 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B12EF1A1A33
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 05:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41691A1A3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 05:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726512AbgDHDKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 23:10:47 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37057 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgDHDKr (ORCPT
+        id S1726527AbgDHDPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 23:15:03 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:42581 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726453AbgDHDPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 23:10:47 -0400
-Received: by mail-qk1-f195.google.com with SMTP id 130so1786611qke.4;
-        Tue, 07 Apr 2020 20:10:46 -0700 (PDT)
+        Tue, 7 Apr 2020 23:15:03 -0400
+Received: by mail-lf1-f66.google.com with SMTP id s13so3987008lfb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 20:15:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=R41HqWjcCbxYDiIRtOcIY5SZNzrEIQi9LSpnnC9HzOA=;
-        b=MbffZqs5HMwMl9Beq2oGUb2EGJrN+vUBK+nJ9tUZLE6weH0OE/Fja8XC2yAJQTYodQ
-         WC7nj+bifOC0nNwPvyoAYa6AJ2agDyaRr3ton2Ejla4KVt40HbQi4naKbcr8eNDnIxJV
-         Gdo9wVM+NQO6TDvfHJLsbW2ab6lj+UoirauNIOnFpAKuTSHH2oOqC5GtS+oQ2S2SuXgr
-         HzTtqhM3AgBIKirvgSq2oocFB8PifEOFTWelWak0sy4PxkcMJAhAXVWQee2EE9kIQEj5
-         AK0n4DVEZGrHhhPCpy4KT0732QpGBE28HG/Othh0nTnDdVVk9dqHyB/vsz1DzIJFs3+g
-         EDWw==
+        bh=az2sCBqHUEAw3ueI0a9zrJDzRaG8GZZBQbnmAG/MSZ4=;
+        b=FglOBtsNuLq+9GUpr/NY/r5GUPdDlvwYlg/tbeOzEec4q0XyXYKwy52RCXUcXpPDaf
+         uuZhdH9FQL3hZa384XMQhKS8IfoixmWL1SmoOyCkNNfdFHdekQDtOcGMtihZUM/E4b1+
+         sa0pwFzO9ISDjuBzkEVhtwRBTppJfMRC8j2C4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=R41HqWjcCbxYDiIRtOcIY5SZNzrEIQi9LSpnnC9HzOA=;
-        b=P3WFHpZN9/z6Ggj/mY9PhST9g4oxEyAi+FDAnHZNonFIWSS58+HS0503Uzm05gSDOY
-         Ng8IqO5ueCqJn7PKdvD5pFMUXuszao0amG42vjRSc0imc9eTHYzJOGGNXsLW94Vsl5HQ
-         PeSRMBEwGBZ5p6gpPci3tJT7Gz8/aMsxPVIQ4ztFEi40Jm5jqS9y9WgiyNEbGddJOUwp
-         3jFVGqL+jZpi+qDQ285Hn5Qt6nzniLlGOZh3kG2QBh4hWNn8PoLaPIKHP3AB0jo4vjyu
-         1JyhA1HSSyV3GV+xlEIVutdbTq6t7OQxTvjufetPgXjVYGWOpaySUzHMvb8BDCOA+JN7
-         UrRg==
-X-Gm-Message-State: AGi0PubrbxCNm1qDsklsNgIqZJNpyp6+zJc5SiPHaWwhn4+wBgg43ndY
-        kEu/74Un5KOutpQFrnUlGkxaaX52zvMfcnoLHig=
-X-Google-Smtp-Source: APiQypIs/DofL/e/K34XwS0je2W1gC36aclLgh8V94q8AO7e/ckZ527xDMiAROJrk6oXj8M9fi7NWQaXlwQ8qMdY3G8=
-X-Received: by 2002:a37:8707:: with SMTP id j7mr5615646qkd.394.1586315445954;
- Tue, 07 Apr 2020 20:10:45 -0700 (PDT)
+        bh=az2sCBqHUEAw3ueI0a9zrJDzRaG8GZZBQbnmAG/MSZ4=;
+        b=MWBC9wlHYrM9IHoEqo3zJ2qyMOk08W2gwNhDtdfCiTqKOorHQtDlRt5Jsk9SM8mrsM
+         FVMT2Dxi47IRVEw065nF3Ljz/3ypdZTddt0ynsk8CwtYXfK8ePDFD+8aSgCy0AXDLxJN
+         FM3UdDolvYpsJpFMASS88hBJdjA60ZXbF+H8zPq8RE6/RmehMHDz6iZmHJ1pcrL0N7gw
+         /aZPxo8rUgFhgorzNtjYAd56ggdQ5g+JoVLB+8h0yRmaVwNg1i0jbK4KPIhs1/ip1b3/
+         IZtwGO29H96mWImtGx3PZFwogaGq9iQCc1imCESDFANsEwUz3z5ljUJ263jImMCgUNM3
+         DfNQ==
+X-Gm-Message-State: AGi0PuaQnuvLsWPXS+R0VUwEPSI+WZAdEpST0/JLvjQo1nmAmz9zM2Mp
+        9FQe9klCY2AVB41jE2TgY1CsoQ5vIP4=
+X-Google-Smtp-Source: APiQypIrHc2fYOun6STp5cJpkr2VDxqqXya1UfFnR920sAVsMJAIJjEyPBxLLHqnHd56shFIRNKElA==
+X-Received: by 2002:ac2:414f:: with SMTP id c15mr3201225lfi.2.1586315700146;
+        Tue, 07 Apr 2020 20:15:00 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id q30sm17589640lfn.18.2020.04.07.20.14.58
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Apr 2020 20:14:58 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id v16so6034909ljg.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 20:14:58 -0700 (PDT)
+X-Received: by 2002:a2e:b4cb:: with SMTP id r11mr3602189ljm.201.1586315697874;
+ Tue, 07 Apr 2020 20:14:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200407103020.22588-1-lhenriques@suse.com> <20200407103020.22588-3-lhenriques@suse.com>
- <e32db4ef5a0ae4e2002a3d957491c88e49daa5bb.camel@kernel.org>
-In-Reply-To: <e32db4ef5a0ae4e2002a3d957491c88e49daa5bb.camel@kernel.org>
-From:   "Yan, Zheng" <ukernel@gmail.com>
-Date:   Wed, 8 Apr 2020 11:10:34 +0800
-Message-ID: <CAAM7YAmpDKu_WuroNxZ2y+Po8_oT59Bi4_FOY1LD1ttOO0UDgQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ceph: allow rename operation under different quota realms
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     Luis Henriques <lhenriques@suse.com>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Gregory Farnum <gfarnum@redhat.com>,
-        Zheng Yan <zyan@redhat.com>, Frank Schilder <frans@dtu.dk>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <49c5b834-362d-0569-32c5-76d366cb0a44@linaro.org>
+In-Reply-To: <49c5b834-362d-0569-32c5-76d366cb0a44@linaro.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Apr 2020 20:14:41 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjkEYLViZ6zBLaWaiTXZ4RqcR4DHkkY_PKJZ2-0HAX_Pw@mail.gmail.com>
+Message-ID: <CAHk-=wjkEYLViZ6zBLaWaiTXZ4RqcR4DHkkY_PKJZ2-0HAX_Pw@mail.gmail.com>
+Subject: Re: [GIT PULL] thermal for v5.7-rc1
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 7:00 AM Jeff Layton <jlayton@kernel.org> wrote:
-
+On Tue, Apr 7, 2020 at 4:26 AM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
 >
-> Somewhat idle curiosity, but what happens with hardlinked files where
-> one dentry is in one quota domain and another is in a different one?
-> Does it stay in the old quotarealm?
->
-> In any case, this is likely fine as non-hardlinked files are the
-> pessimal case anyway.
+> git://git.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+> tags/thermal-v5.7-rc1
 
-rstat only tracks primary dentry.  inode is in the quota realm where
-its primary linkage is in.
+Ho humm.
+
+This caused a conflict between commit
+
+  f12e4f66ab6a ("thermal/cpu-cooling: Update thermal pressure in case
+of a maximum frequency capping")
+
+that came in through the scheduler updates from Ingo Molnar, and commit
+
+  ff44f672d741 ("thermal/drivers/cpufreq_cooling: Fix return of
+cpufreq_set_cur_state")
+
+from the thermal tree.
+
+The conflict wasn't complicated, but the reason I mention it is that I
+resolved it in a way that neither of those commits had done.
+
+In particular, the thermal tree did
+
+  ret = freq_qos_update_request(..)
+  return ret < 0 ? ret : 0;
+
+where that whole "return negative or zero" logic is new (it used to
+return positive values, the fix was to return zero instead).
+
+The scheduler tree did
+
+  ret = freq_qos_update_request(..)
+  if (ret > 0) {.. do thermal pressure thing ..}
+  return ret;
+
+which obviously still returns that positive value.
+
+My resolution to the conflict was to not take that return with a
+conditional operation, but instead just add a
+
+  ret = 0;
+
+to inside that thermal pressure if-statement, and avoid returning a
+non-zero positive value that way.
+
+I just wanted both sides to be aware of my non-traditional merge
+resolution, and take a look.
+
+               Linus
