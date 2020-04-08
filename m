@@ -2,186 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B53D1A2076
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 13:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE081A207E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 13:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728040AbgDHL4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 07:56:46 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12699 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726345AbgDHL4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 07:56:46 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D9C8B1FD422C2A0619FE;
-        Wed,  8 Apr 2020 19:56:40 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Wed, 8 Apr 2020 19:56:34 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: compress: support lzo-rle compress algorithm
-Date:   Wed, 8 Apr 2020 19:56:32 +0800
-Message-ID: <20200408115632.15712-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.18.0.rc1
+        id S1728640AbgDHL7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 07:59:53 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:45930 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgDHL7w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 07:59:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=D4AVwc5A5TrYE1qiofwcyRs9OblgHBTIRND69C8WOt0=; b=QxIpR9YcW4zlQv0D1PVx1O4w+e
+        6AoH6P9DiQVnTVyvjUFva7uacxcWbVMzi8tT0sThE3M71M9cEiBynkFmchCvGJciEPmeo3/uQvlYR
+        wtFUjR78EFF5ZyjMMkVUsanIFNIoeODac3xPuGtXF4l5LbiIBWKxhIDjLLLc1Q/GLriiDWQze3R+Q
+        HzQxNu0emx30OMndXqf/TY05OZsMHUiUKaWMhp5bxRFdmw1Sri71kup0Kj2ZHNawF6DygdV6PDlKu
+        t+Fxg7riz+HXeU7gVyNlLyFQTkfoS6xNo8kPMIJc0+vSNMB1EinNIuq4wvueXomTQU22Nkr4yCLgo
+        zR0nVTaA==;
+Received: from [2001:4bb8:180:5765:65b6:f11e:f109:b151] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jM9Mf-0001Xh-5a; Wed, 08 Apr 2020 11:59:29 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: decruft the vmalloc API
+Date:   Wed,  8 Apr 2020 13:58:58 +0200
+Message-Id: <20200408115926.1467567-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LZO-RLE extension (run length encoding) was introduced to improve
-performance of LZO algorithm in scenario of data contains many zeros,
-zram has changed to use this extended algorithm by default, this
-patch adds to support this algorithm extension, to enable this
-extension, it needs to enable F2FS_FS_LZO and F2FS_FS_LZORLE config,
-and specifies "compress_algorithm=lzo-rle" mountoption.
+Hi all,
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- Documentation/filesystems/f2fs.txt |  2 +-
- fs/f2fs/Kconfig                    | 10 ++++++++++
- fs/f2fs/compress.c                 | 30 ++++++++++++++++++++++++++++++
- fs/f2fs/f2fs.h                     |  1 +
- fs/f2fs/super.c                    |  7 +++++++
- include/trace/events/f2fs.h        |  3 ++-
- 6 files changed, 51 insertions(+), 2 deletions(-)
+Peter noticed that with some dumb luck you can toast the kernel address
+space with exported vmalloc symbols.
 
-diff --git a/Documentation/filesystems/f2fs.txt b/Documentation/filesystems/f2fs.txt
-index b1a66cf0e967..f3f1184cca29 100644
---- a/Documentation/filesystems/f2fs.txt
-+++ b/Documentation/filesystems/f2fs.txt
-@@ -236,7 +236,7 @@ checkpoint=%s[:%u[%]]     Set to "disable" to turn off checkpointing. Set to "en
-                        would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
-                        This space is reclaimed once checkpoint=enable.
- compress_algorithm=%s  Control compress algorithm, currently f2fs supports "lzo",
--                       "lz4" and "zstd" algorithm.
-+                       "lz4", "zstd" and "lzo-rle" algorithm.
- compress_log_size=%u   Support configuring compress cluster size, the size will
-                        be 4KB * (1 << %u), 16KB is minimum size, also it's
-                        default size.
-diff --git a/fs/f2fs/Kconfig b/fs/f2fs/Kconfig
-index bb68d21e1f8c..d13c5c6a9787 100644
---- a/fs/f2fs/Kconfig
-+++ b/fs/f2fs/Kconfig
-@@ -127,3 +127,13 @@ config F2FS_FS_ZSTD
- 	default y
- 	help
- 	  Support ZSTD compress algorithm, if unsure, say Y.
-+
-+config F2FS_FS_LZORLE
-+	bool "LZO-RLE compression support"
-+	depends on F2FS_FS_COMPRESSION
-+	depends on F2FS_FS_LZO
-+	select LZO_COMPRESS
-+	select LZO_DECOMPRESS
-+	default y
-+	help
-+	  Support LZO-RLE compress algorithm, if unsure, say Y.
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index ac265c6c40b5..498e0c2ba6ea 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -442,6 +442,31 @@ static const struct f2fs_compress_ops f2fs_zstd_ops = {
- };
- #endif
- 
-+#ifdef CONFIG_F2FS_FS_LZO
-+#ifdef CONFIG_F2FS_FS_LZORLE
-+static int lzorle_compress_pages(struct compress_ctx *cc)
-+{
-+	int ret;
-+
-+	ret = lzorle1x_1_compress(cc->rbuf, cc->rlen, cc->cbuf->cdata,
-+					&cc->clen, cc->private);
-+	if (ret != LZO_E_OK) {
-+		printk_ratelimited("%sF2FS-fs (%s): lzo-rle compress failed, ret:%d\n",
-+				KERN_ERR, F2FS_I_SB(cc->inode)->sb->s_id, ret);
-+		return -EIO;
-+	}
-+	return 0;
-+}
-+
-+static const struct f2fs_compress_ops f2fs_lzorle_ops = {
-+	.init_compress_ctx	= lzo_init_compress_ctx,
-+	.destroy_compress_ctx	= lzo_destroy_compress_ctx,
-+	.compress_pages		= lzorle_compress_pages,
-+	.decompress_pages	= lzo_decompress_pages,
-+};
-+#endif
-+#endif
-+
- static const struct f2fs_compress_ops *f2fs_cops[COMPRESS_MAX] = {
- #ifdef CONFIG_F2FS_FS_LZO
- 	&f2fs_lzo_ops,
-@@ -458,6 +483,11 @@ static const struct f2fs_compress_ops *f2fs_cops[COMPRESS_MAX] = {
- #else
- 	NULL,
- #endif
-+#if defined(CONFIG_F2FS_FS_LZO) && defined(CONFIG_F2FS_FS_LZORLE)
-+	&f2fs_lzorle_ops,
-+#else
-+	NULL,
-+#endif
- };
- 
- bool f2fs_is_compress_backend_ready(struct inode *inode)
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index e0d520f2c142..f2071bb72deb 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -1272,6 +1272,7 @@ enum compress_algorithm_type {
- 	COMPRESS_LZO,
- 	COMPRESS_LZ4,
- 	COMPRESS_ZSTD,
-+	COMPRESS_LZORLE,
- 	COMPRESS_MAX,
- };
- 
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 9ad927c4d259..a321d78e8601 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -833,6 +833,10 @@ static int parse_options(struct super_block *sb, char *options)
- 					!strcmp(name, "zstd")) {
- 				F2FS_OPTION(sbi).compress_algorithm =
- 								COMPRESS_ZSTD;
-+			} else if (strlen(name) == 7 &&
-+					!strcmp(name, "lzo-rle")) {
-+				F2FS_OPTION(sbi).compress_algorithm =
-+								COMPRESS_LZORLE;
- 			} else {
- 				kfree(name);
- 				return -EINVAL;
-@@ -1426,6 +1430,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
- 	case COMPRESS_ZSTD:
- 		algtype = "zstd";
- 		break;
-+	case COMPRESS_LZORLE:
-+		algtype = "lzo-rle";
-+		break;
- 	}
- 	seq_printf(seq, ",compress_algorithm=%s", algtype);
- 
-diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-index d97adfc327f0..226ac89cf7c9 100644
---- a/include/trace/events/f2fs.h
-+++ b/include/trace/events/f2fs.h
-@@ -154,7 +154,8 @@ TRACE_DEFINE_ENUM(CP_PAUSE);
- 	__print_symbolic(type,						\
- 		{ COMPRESS_LZO,		"LZO" },			\
- 		{ COMPRESS_LZ4,		"LZ4" },			\
--		{ COMPRESS_ZSTD,	"ZSTD" })
-+		{ COMPRESS_ZSTD,	"ZSTD" },			\
-+		{ COMPRESS_LZORLE,	"LZO-RLE" })
- 
- struct f2fs_sb_info;
- struct f2fs_io_info;
--- 
-2.18.0.rc1
+I used this as an opportunity to decruft the vmalloc.c API and make it
+much more systematic.  This also removes any chance to create vmalloc
+mappings outside the designated areas or using executable permissions
+from modules.  Besides that it removes more than 300 lines of code.
 
+A git tree is also available here:
+
+    git://git.infradead.org/users/hch/misc.git sanitize-vmalloc-api
+
+Gitweb:
+
+    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/sanitize-vmalloc-api
