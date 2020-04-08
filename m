@@ -2,151 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CFD21A1F22
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F461A1F33
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:51:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728350AbgDHKsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 06:48:16 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31400 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726980AbgDHKsQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 06:48:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586342895;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MZtYtcreRWdnZo6HGx0Gzr9jVhTfvPPlSZqe9ZZdt4Q=;
-        b=U1KWFPe3Uwr3m000Lv0aRgvZPrUzo3a2yfJ1MzsWMu1Q6YBP7kk2KpsYF0joMHUuXlvQ6Y
-        h0iqrK5WEXnchQo17HfHm33E1OhwNps4yc4TsRlmWetCYknxIu0yfxrTcul3gkGuGMRT7Q
-        O1CNgqWAJC3ENhp1DZWDRW9WUm5GQ2I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-nMvS2XNPMQ2eYTcYJXs3qA-1; Wed, 08 Apr 2020 06:48:11 -0400
-X-MC-Unique: nMvS2XNPMQ2eYTcYJXs3qA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20813800D4E;
-        Wed,  8 Apr 2020 10:48:09 +0000 (UTC)
-Received: from gondolin (ovpn-113-103.ams2.redhat.com [10.36.113.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B306B5D9CD;
-        Wed,  8 Apr 2020 10:48:03 +0000 (UTC)
-Date:   Wed, 8 Apr 2020 12:48:01 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, pmorel@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
-Subject: Re: [PATCH v7 01/15] s390/vfio-ap: store queue struct in hash table
- for quick access
-Message-ID: <20200408124801.2d61bc5b.cohuck@redhat.com>
-In-Reply-To: <20200407192015.19887-2-akrowiak@linux.ibm.com>
-References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
-        <20200407192015.19887-2-akrowiak@linux.ibm.com>
-Organization: Red Hat GmbH
+        id S1728287AbgDHKvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 06:51:37 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:35027 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726980AbgDHKvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 06:51:37 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 038AoJ0I018419
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Apr 2020 12:50:19 +0200
+Received: from [139.22.119.141] ([139.22.119.141])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 038AoHjp031142;
+        Wed, 8 Apr 2020 12:50:18 +0200
+Subject: Re: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, hch@infradead.org,
+        sean.j.christopherson@intel.com, mingo@redhat.com, bp@alien8.de,
+        hpa@zytor.com, x86@kernel.org, kenny@panix.com, jeyu@kernel.org,
+        rasmus.villemoes@prevas.dk, pbonzini@redhat.com,
+        fenghua.yu@intel.com, xiaoyao.li@intel.com, nadav.amit@gmail.com,
+        thellstrom@vmware.com, tony.luck@intel.com,
+        gregkh@linuxfoundation.org, jannh@google.com,
+        keescook@chromium.org, David.Laight@aculab.com,
+        dcovelli@vmware.com, mhiramat@kernel.org,
+        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>
+References: <20200407110236.930134290@infradead.org>
+ <20200407111007.429362016@infradead.org>
+ <20200407174824.5e97a597@gandalf.local.home>
+ <137fe245-69f3-080e-5f2b-207cd218f199@siemens.com>
+ <20200408085138.GQ20713@hirez.programming.kicks-ass.net>
+ <20200408091306.GN20760@hirez.programming.kicks-ass.net>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <3751b1d5-113e-4a5c-da3b-fd1afbdba2ae@siemens.com>
+Date:   Wed, 8 Apr 2020 12:50:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200408091306.GN20760@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Apr 2020 15:20:01 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On 08.04.20 11:13, Peter Zijlstra wrote:
+> On Wed, Apr 08, 2020 at 10:51:38AM +0200, Peter Zijlstra wrote:
+>> On Wed, Apr 08, 2020 at 07:58:53AM +0200, Jan Kiszka wrote:
+>>> On 07.04.20 23:48, Steven Rostedt wrote:
+>>
+>>>> Hmm, wont this break jailhouse?
+>>
+>> Breaking it isn't a problem, it's out of tree and it should be fixable.
+>>
+>>> Yes, possibly. We load the hypervisor binary via request_firmware into
+>>> executable memory and then jump into it. So most of the "suspicious" code is
+>>
+>> W.T.H. does the firmware loader have the ability to give executable
+>> memory? We need to kill that too. /me goes find.
+> 
+> AFAICT the firmware loader only provides PAGE_KERNEL_RO, so how do you
+> get it executable?
 
-> Rather than looping over potentially 65535 objects, let's store the
-> structures for caching information about queue devices bound to the
-> vfio_ap device driver in a hash table keyed by APQN.
+memcpy(ioremapped_exec_region, firmware_image)
 
-This also looks like a nice code simplification.
+We only use the loader for getting the blob, not for running it. It has 
+to be put at a location that Linux will lose control over anyway.
 
 > 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_drv.c     | 28 +++------
->  drivers/s390/crypto/vfio_ap_ops.c     | 90 ++++++++++++++-------------
->  drivers/s390/crypto/vfio_ap_private.h | 10 ++-
->  3 files changed, 60 insertions(+), 68 deletions(-)
+> I'm thinking the patches Christoph has lined up will take care of this.
 > 
 
-(...)
+It would make sense from a certain POV...
 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 5c0f53c6dde7..134860934fe7 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -26,45 +26,16 @@
->  
->  static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
->  
-> -static int match_apqn(struct device *dev, const void *data)
-> -{
-> -	struct vfio_ap_queue *q = dev_get_drvdata(dev);
-> -
-> -	return (q->apqn == *(int *)(data)) ? 1 : 0;
-> -}
-> -
-> -/**
-> - * vfio_ap_get_queue: Retrieve a queue with a specific APQN from a list
-> - * @matrix_mdev: the associated mediated matrix
-> - * @apqn: The queue APQN
-> - *
-> - * Retrieve a queue with a specific APQN from the list of the
-> - * devices of the vfio_ap_drv.
-> - * Verify that the APID and the APQI are set in the matrix.
-> - *
-> - * Returns the pointer to the associated vfio_ap_queue
+Jan
 
-Any reason you're killing this comment, instead of adapting it? The
-function is even no longer static...
-
-> - */
-> -static struct vfio_ap_queue *vfio_ap_get_queue(
-> -					struct ap_matrix_mdev *matrix_mdev,
-> -					int apqn)
-> +struct vfio_ap_queue *vfio_ap_get_queue(unsigned long apqn)
->  {
->  	struct vfio_ap_queue *q;
-> -	struct device *dev;
-> -
-> -	if (!test_bit_inv(AP_QID_CARD(apqn), matrix_mdev->matrix.apm))
-> -		return NULL;
-> -	if (!test_bit_inv(AP_QID_QUEUE(apqn), matrix_mdev->matrix.aqm))
-> -		return NULL;
-
-These were just optimizations and therefore can be dropped now?
-
-> -
-> -	dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
-> -				 &apqn, match_apqn);
-> -	if (!dev)
-> -		return NULL;
-> -	q = dev_get_drvdata(dev);
-> -	q->matrix_mdev = matrix_mdev;
-> -	put_device(dev);
->  
-> -	return q;
-> +	hash_for_each_possible(matrix_dev->qtable, q, qnode, apqn) {
-> +		if (q && (apqn == q->apqn))
-> +			return q;
-> +	}
-
-Do we need any serialization here? Previously, the driver core made
-sure we could get a reference only if the device was still registered;
-not sure if we need any further guarantees now.
-
-> +
-> +	return NULL;
->  }
->  
->  /**
-
-(...)
-
+-- 
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
