@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3C0E1A2278
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 15:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3358B1A228C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 15:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgDHNCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 09:02:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49787 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727896AbgDHNCF (ORCPT
+        id S1728957AbgDHNFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 09:05:33 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:36583 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728294AbgDHNFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 09:02:05 -0400
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jMALA-0006b0-1S; Wed, 08 Apr 2020 15:02:00 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id 077EB10069D; Wed,  8 Apr 2020 15:01:58 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vivek Goyal <vgoyal@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
-In-Reply-To: <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com>
-References: <20200407172140.GB64635@redhat.com> <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net> <87eeszjbe6.fsf@nanos.tec.linutronix.de> <ce81c95f-8674-4012-f307-8f32d0e386c2@redhat.com> <874ktukhku.fsf@nanos.tec.linutronix.de> <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com>
-Date:   Wed, 08 Apr 2020 15:01:58 +0200
-Message-ID: <87pncib06x.fsf@nanos.tec.linutronix.de>
+        Wed, 8 Apr 2020 09:05:33 -0400
+Received: by mail-lj1-f194.google.com with SMTP id b1so7563688ljp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 06:05:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GBM3DKqxjFqPBu7r80ee330RPi5SgUStiHzhsao8c00=;
+        b=klU2LSQfMNQxZa8JpopxGXOGz/fsc/92q4T9qKbBumLy2uVhDltpjvQ3BKRmFPTLkL
+         ZcCGr4Y/6m29LKkyRIAJD5lGHFwMGdCkn6qG89wDkOZ9GwF26GoX7T/pxsGNZ23GwQ+x
+         5IWxd2fJOJPwF9NgERabUagw0XQTN5Z9fivRSkHBivGx5IgCkb4f12Rxm1l08pc2IOeK
+         hx84RrIhfuinK7RzCxMpvDCmAGCof9zVI4toAA+lb3Uu4I1u5vDwQQGOdwWtjCbgs4h2
+         a/p5/Rq93IpXYfFvTeC/rXhz6Jug8zxA9qa9/5BMiSP6W7NrjYU84r2QPx2124JuG/y/
+         BwWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GBM3DKqxjFqPBu7r80ee330RPi5SgUStiHzhsao8c00=;
+        b=p8GmWvIgni24lf2oASBjVjvNMjGbLHCmJOMjDBVM3rNVCOxJfpKMdkHaL1cXbDXQNi
+         rflsROWn7DRNQG3pCG14aYdjYieGnVpzUfY0c63WjHzuhYclvxs1Pac+LS8l3UpfTX6S
+         nAWnOspqiHJu8oJpJju0GDlxEH6rAhK6IqYDmoKWjifIf9+eIh5Fpv1kR7S8DMTWl+1l
+         KKMPw1WMGcFgoB2wSvIvv7C6AFPZwrCS3iyL5h0gGEm4y52oSUo2zxXQ3z7bVs933Mi7
+         +8aJ6VebohHhy2yvZOMe27RiVDAfeSTuNpY+botpgSKsR+F/R4pf5lYoeBo553kytV1x
+         xItQ==
+X-Gm-Message-State: AGi0PuaH1Eusu/x4gWREjbkIUCFRhYjx0kK14PCIfuuzkWZbHHNkB0SI
+        OFFZh5k7E4IQBPOn5C1+rIWrfQ==
+X-Google-Smtp-Source: APiQypKIUJ4/nEHxqc1YLvFqkFWgvb0Gg5OtNloizFa5PpOayv2HzxVYp+7Rd9m5wD40tzS3EjlLkA==
+X-Received: by 2002:a2e:9c4:: with SMTP id 187mr4986069ljj.89.1586351130188;
+        Wed, 08 Apr 2020 06:05:30 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id j22sm15748998lfg.96.2020.04.08.06.05.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 06:05:29 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id BA5ED101C47; Wed,  8 Apr 2020 16:05:32 +0300 (+03)
+Date:   Wed, 8 Apr 2020 16:05:32 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yang Shi <yang.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCHv2 4/8] khugepaged: Drain LRU add pagevec after swapin
+Message-ID: <20200408130532.ktztqf5fabo3x3cd@box>
+References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
+ <20200403112928.19742-5-kirill.shutemov@linux.intel.com>
+ <620a61ed-be87-f60e-f562-379cd3adbe08@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <620a61ed-be87-f60e-f562-379cd3adbe08@linux.alibaba.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
-> On 08/04/20 01:21, Thomas Gleixner wrote:
->>>> No. Async PF is not a real exception. It has interrupt semantics and it
->>>> can only be injected when the guest has interrupts enabled. It's bad
->>>> design.
->>>
->>> Page-ready async PF has interrupt semantics.
->>>
->>> Page-not-present async PF however does not have interrupt semantics, it
->>> has to be injected immediately or not at all (falling back to host page
->>> fault in the latter case).
->> 
->> If interrupts are disabled in the guest then it is NOT injected and the
->> guest is suspended. So it HAS interrupt semantics. Conditional ones,
->> i.e. if interrupts are disabled, bail, if not then inject it.
->
-> Interrupts can be delayed by TPR or STI/MOV SS interrupt window, async
-> page faults cannot (again, not the page-ready kind).
+On Mon, Apr 06, 2020 at 11:29:11AM -0700, Yang Shi wrote:
+> 
+> 
+> On 4/3/20 4:29 AM, Kirill A. Shutemov wrote:
+> > __collapse_huge_page_isolate() may fail due to extra pin in the LRU add
+> > pagevec. It's petty common for swapin case: we swap in pages just to
+> > fail due to the extra pin.
+> > 
+> > Drain LRU add pagevec on sucessfull swapin.
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >   mm/khugepaged.c | 5 +++++
+> >   1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > index fdc10ffde1ca..57ff287caf6b 100644
+> > --- a/mm/khugepaged.c
+> > +++ b/mm/khugepaged.c
+> > @@ -940,6 +940,11 @@ static bool __collapse_huge_page_swapin(struct mm_struct *mm,
+> >   	}
+> >   	vmf.pte--;
+> >   	pte_unmap(vmf.pte);
+> > +
+> > +	/* Drain LRU add pagevec to remove extra pin on the swapped in pages */
+> > +	if (swapped_in)
+> > +		lru_add_drain();
+> 
+> There is already lru_add_drain() called in swap readahead path, please see
+> swap_vma_readahead() and swap_cluster_readahead().
 
-Can we pretty please stop using the term async page fault? It's just
-wrong and causes more confusion than anything else.
+But not for synchronous case. See SWP_SYNCHRONOUS_IO branch in
+do_swap_page().
 
-What this does is really what I called Opportunistic Make Guest Do Other
-Stuff. And it has neither true exception nor true interrupt semantics.
+Maybe we should drain it in swap_readpage() or in do_swap_page() after
+swap_readpage()? I donno.
 
-It's a software event which is injected into the guest to let the guest
-do something else than waiting for the actual #PF cause to be
-resolved. It's part of a software protocol between host and guest.
-
-And it comes with restrictions:
-
-    The Do Other Stuff event can only be delivered when guest IF=1.
-
-    If guest IF=0 then the host has to suspend the guest until the
-    situation is resolved.
-
-    The 'Situation resolved' event must also wait for a guest IF=1 slot.
-
-> Page-not-present async page faults are almost a perfect match for the
-> hardware use of #VE (and it might even be possible to let the
-> processor deliver the exceptions).  There are other advantages:
->
-> - the only real problem with using #PF (with or without
-> KVM_ASYNC_PF_SEND_ALWAYS) seems to be the NMI reentrancy issue, which
-> would not be there for #VE.
->
-> - #VE are combined the right way with other exceptions (the
-> benign/contributory/pagefault stuff)
->
-> - adjusting KVM and Linux to use #VE instead of #PF would be less than
-> 100 lines of code.
-
-If you just want to solve Viveks problem, then its good enough. I.e. the
-file truncation turns the EPT entries into #VE convertible entries and
-the guest #VE handler can figure it out. This one can be injected
-directly by the hardware, i.e. you don't need a VMEXIT.
-
-If you want the opportunistic do other stuff mechanism, then #VE has
-exactly the same problems as the existing async "PF". It's not magicaly
-making that go away.
-
-One possible solution might be to make all recoverable EPT entries
-convertible and let the HW inject #VE for those.
-
-So the #VE handler in the guest would have to do:
-
-       if (!recoverable()) {
-       		if (user_mode)
-                	send_signal();
-                else if (!fixup_exception())
-                	die_hard();
-                goto done;  
-       }                 
-
-       store_ve_info_in_pv_page();
-
-       if (!user_mode(regs) || !preemptible()) {
-       		hypercall_resolve_ept(can_continue = false);
-       } else {
-                init_completion();
-       		hypercall_resolve_ept(can_continue = true);
-                wait_for_completion();
-       }
-
-or something like that.
-
-The hypercall to resolve the EPT fail on the host acts on the
-can_continue argument.
-
-If false, it suspends the guest vCPU and only returns when done.
-
-If true it kicks the resolve process and returns to the guest which
-suspends the task and tries to do something else.
-
-The wakeup side needs to be a regular interrupt and cannot go through
-#VE.
-
-Thanks,
-
-        tglx
+-- 
+ Kirill A. Shutemov
