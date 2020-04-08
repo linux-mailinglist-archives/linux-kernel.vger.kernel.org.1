@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 142F01A28DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEB71A28DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:54:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbgDHSyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 14:54:02 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:44715 "EHLO
+        id S1729767AbgDHSyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 14:54:39 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:55225 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727963AbgDHSyB (ORCPT
+        with ESMTP id S1727963AbgDHSyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 14:54:01 -0400
+        Wed, 8 Apr 2020 14:54:39 -0400
 Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MgARS-1iniQS3Ncc-00heB6; Wed, 08 Apr 2020 20:53:34 +0200
+ (mreue108 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MOzGc-1jezXZ2dFk-00PNE2; Wed, 08 Apr 2020 20:54:17 +0200
 From:   Arnd Bergmann <arnd@arndb.de>
-To:     Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>
+To:     Yan-Hsuan Chuang <yhchuang@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Chin-Yen Lee <timlee@realtek.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>,
         "David S. Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        YueHaibing <yuehaibing@huawei.com>, linux-crypto@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>,
+        Chris Chiu <chiu@endlessm.com>,
+        Jian-Hong Pan <jian-hong@endlessm.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] cxgb4/chcr: fix building without IPv6
-Date:   Wed,  8 Apr 2020 20:53:06 +0200
-Message-Id: <20200408185330.190658-1-arnd@arndb.de>
+Subject: [PATCH] rtw88: avoid unused function warnings
+Date:   Wed,  8 Apr 2020 20:53:51 +0200
+Message-Id: <20200408185413.218643-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:wAyktI553TRtAYJswrpygJEuztlihckN+PSEPstYcFGyO2DZuG0
- swT5EivRwrnOxA8z729paYsUgWczyE0IxDgOrAFDY7HYvfDjCfSQ5OrNUnQDq1AaYCABvlN
- BeCk63j1UHkRHmGiQhTPFHNZOp3w6JMocotYGqYkOp9VzfHUehhqgnJEHRYv0Ag8cPD1k1r
- +ESsCDrRbIJsUAQe9parQ==
+X-Provags-ID: V03:K1:NcxJ3QwXn+I/rIrGm23TbRtV/rSdt2ck5/p2IEg1r3CmWhFbgeo
+ b+WNMyhAX9E4KZ/3PsT3fuPrA9OgXE36y4NLKM+dm5k2yO2O/Em7jA8u0Ay7U0R93jOwpX9
+ 1f7kt/zVFU/4osp1IXY8rfOsb6NNivxBLWoOKk7hMsyCHvTdrkmQiTadkpONGGQ7QvGe3iz
+ H6OqWAFqZhyqtrZfiyQqA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Gz73c4HLR7A=:tMA24IJYXr+7DJoSwQLnEq
- DiH00rmQA/0to7AMAIRqT5DAoos0rOGPHmLxZy8mFgf9Lh+GCvCYV1g2zyOER57XBylTXQ4R+
- /n95wABJtYahmJBtG3AmesmY/UklE/r4p7EP5ZOzLu80VW2rDNEuc6FVh1llF3y2WVqtWYhoU
- xVvWE1jwrIrN24PggrMfVM3b/uI9p4ZjTSakY9n7M+mabEs9LZz5hR+aq9WSC9FCeDkwWcoD6
- p7tXKfYnCF2+s3FL4BSgwWBrUkyD16hPJ0Td7jInQyed6Y5GY7b1mTUlNxE0+nD103ekxfKGh
- paOKEvWMa5qNU2pWieZ/XQW7Fl4R9BBk+FRU9Ms0jJvzKDBEAvv4uaZaAISXpjY1jwufqc67F
- uy6XhqSrof/VTq0juB5nf0B+YBC4ogv6sWKHXnc/HdvUHdXCx7DQCN9+js2p6/aGEZQqu42kq
- +wP23F8VgWVeKs9jMpR1cS+L2GtU5ca6ozKuoHZmuhydmHQPY5zw7Cty2H2AMftCcNZFh68A1
- XRMAA6O8zQ3HiC5DmRYZNk/4Tr4PEGTrQSA5pcWUCn5tO4QxmjfF/WL9GcyemZe2vDIAF0lPE
- llrNCB8mzeXLd9rSVt6rxzP0E3coZ9u1SAdS44zdsbpfyB4ho4+8hgc0PyqpgpqyEaW0rhgZ9
- v+M+xQe1gqPhE7yLaAJd4op1mBbGjogQUGn3zg2BktORuOiTE8UiK/AEQ/5Zx4CQ++RrmW2OZ
- ktvC5m6W1xYA6a45S4u5qoWMAKg4S06BzrgSKmQWdBDS4F6My3aEgCNF/ocne7wQOoraa/3s6
- 8FeuoczEhHV2I6P1JOoMnC6dDFibOEM1t7cyEn7ITzvb9NPdk8=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ain4j8UjaS4=:xPFq9x2/orRVHsZe2bfhS/
+ 7Fsft5wkuKS9ipxHcAHtN7JkgqgX78LuWM0lJpIVDscesdNeq7rDetOFaYNVuHiQI0u7oYQtK
+ +F34ShN01nQGYKyPysrh8zOg18zwl7Hcpust1GxWMc/IbpH7FgbT0nszYlIfH37pP4XlmlRiw
+ dV+O8rsBgLHn1jnXS/z4hAz8nke9CYmmzdOTced58zBVEFVRTn9q+OdLLSPPBX2S0XmWyr4NW
+ snDsuSD6IcR6/ZI7U752HuqabBeTvWEjqAIwsm71Me3CjOJcQBMv9y6As0lzYLoIC7YuoBr6k
+ Zft67PebPSvYndCdQzPP3xpwOMqfDoCag/i1ev+N/Q260cIlKO8H2f4gjS0tLFCmMi1JAo9/+
+ noVCpVu+YLW4eZdAxIJwMC6V2RVL7GM8E37MD+eNGR7lSvBbOwJ12k8oMaVVbitjQaSqQUnIp
+ RffpvWf2wzYu0OH3NUC7Duy12BMHN0Q+rAllc8wuwrZEfuXAP+zCFeJmysOesdpYsQBnh/T11
+ nTTScIW5YHPQa85/8Zlr9lESMIPg1aISF5fS7+2sVKC/SqBeeYJ6oOItYjz4nPbwEUhL8OcR7
+ oz3YcfWOlnLDnzVQxNFfMlx4C07EFrz/i9uZLAo/PPJtEbyopu8tcmNI3+HCflIQdDRhO9/Jq
+ aOEhh2IgWXX+KMRxfkZSZ83yFGA8xgGLWQHT4s6WG+VV058KoSkizMuc3fEmAEwdzZ5pjCtOT
+ vD4BhwkmPJdRglybncWfi+LFTrstyEKxcto1Q+pV5bFnmLcPyDsDx2RL8+v+LsQp9SjGpRVJD
+ JZgqS1ctSqyfcF+jKHKqp6aEpk+nVc7p/v4kFK0nhGIRxBrPkU=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When IPv6 support is completely disabled, the chelsio driver fails
-to build with
+The rtw88 driver defines emtpy functions with multiple indirections
+but gets one of these wrong:
 
-drivers/crypto/chelsio/chcr_ktls.c: In function 'chcr_ktls_act_open_req6':
-include/net/sock.h:380:37: error: 'struct sock_common' has no member named 'skc_v6_rcv_saddr'; did you mean 'skc_rcv_saddr'?
-  380 | #define sk_v6_rcv_saddr __sk_common.skc_v6_rcv_saddr
-      |                                     ^~~~~~~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c:258:37: note: in expansion of macro 'sk_v6_rcv_saddr'
-  258 |  cpl->local_ip_hi = *(__be64 *)&sk->sk_v6_rcv_saddr.in6_u.u6_addr8[0];
-      |                                     ^~~~~~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c:260:36: note: in expansion of macro 'sk_v6_daddr'
-  260 |  cpl->peer_ip_hi = *(__be64 *)&sk->sk_v6_daddr.in6_u.u6_addr8[0];
-      |                                    ^~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c:261:36: note: in expansion of macro 'sk_v6_daddr'
-  261 |  cpl->peer_ip_lo = *(__be64 *)&sk->sk_v6_daddr.in6_u.u6_addr8[8];
-      |                                    ^~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c:296:27: note: in expansion of macro 'sk_v6_daddr'
-  296 |       ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)) {
-      |                           ^~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c:303:29: note: in expansion of macro 'sk_v6_rcv_saddr'
-  303 |           (const u32 *)&sk->sk_v6_rcv_saddr.in6_u.u6_addr8,
-      |                             ^~~~~~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c: In function 'chcr_ktls_dev_del':
-drivers/crypto/chelsio/chcr_ktls.c:401:26: note: in expansion of macro 'sk_v6_daddr'
-  401 |        (const u32 *)&sk->sk_v6_daddr.in6_u.u6_addr8,
-      |                          ^~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c: In function 'chcr_ktls_dev_add':
-drivers/crypto/chelsio/chcr_ktls.c:495:27: note: in expansion of macro 'sk_v6_daddr'
-  495 |       ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)) {
-      |                           ^~~~~~~~~~~
-drivers/crypto/chelsio/chcr_ktls.c:498:22: note: in expansion of macro 'sk_v6_daddr'
-  498 |   memcpy(daaddr, sk->sk_v6_daddr.in6_u.u6_addr8, 16);
-      |                      ^~~~~~~~~~~
+drivers/net/wireless/realtek/rtw88/pci.c:1347:12: error: 'rtw_pci_resume' defined but not used [-Werror=unused-function]
+ 1347 | static int rtw_pci_resume(struct device *dev)
+      |            ^~~~~~~~~~~~~~
+drivers/net/wireless/realtek/rtw88/pci.c:1342:12: error: 'rtw_pci_suspend' defined but not used [-Werror=unused-function]
+ 1342 | static int rtw_pci_suspend(struct device *dev)
 
-There is probably a good way to fix it, but this patch just adds a
-bunch of #if checks to get it to build again, which gets a bit
-ugly.
+Better simplify it to rely on the conditional reference in
+SIMPLE_DEV_PM_OPS(), and mark the functions as __maybe_unused to avoid
+warning about it.
 
-Fixes: 62370a4f346d ("cxgb4/chcr: Add ipv6 support and statistics")
+I'm not sure if these are needed at all given that the functions
+don't do anything, but they were only recently added.
+
+Fixes: 44bc17f7f5b3 ("rtw88: support wowlan feature for 8822c")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-If you have a better idea to fix it, please send a different patch
-instead and treat this as a bug report. ;-)
----
- drivers/crypto/chelsio/chcr_ktls.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
+ drivers/net/wireless/realtek/rtw88/pci.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/crypto/chelsio/chcr_ktls.c b/drivers/crypto/chelsio/chcr_ktls.c
-index 73658b71d4a3..3d3f8dfa4e96 100644
---- a/drivers/crypto/chelsio/chcr_ktls.c
-+++ b/drivers/crypto/chelsio/chcr_ktls.c
-@@ -222,6 +222,7 @@ static int chcr_ktls_act_open_req(struct sock *sk,
- 	return cxgb4_l2t_send(tx_info->netdev, skb, tx_info->l2te);
+diff --git a/drivers/net/wireless/realtek/rtw88/pci.c b/drivers/net/wireless/realtek/rtw88/pci.c
+index e37c71495c0d..1af87eb2e53a 100644
+--- a/drivers/net/wireless/realtek/rtw88/pci.c
++++ b/drivers/net/wireless/realtek/rtw88/pci.c
+@@ -1338,22 +1338,17 @@ static void rtw_pci_phy_cfg(struct rtw_dev *rtwdev)
+ 	rtw_pci_link_cfg(rtwdev);
  }
  
-+#if IS_ENABLED(CONFIG_IPV6)
- /*
-  * chcr_ktls_act_open_req6: creates TCB entry for ipv6 connection.
-  * @sk - tcp socket.
-@@ -271,6 +272,7 @@ static int chcr_ktls_act_open_req6(struct sock *sk,
- 
- 	return cxgb4_l2t_send(tx_info->netdev, skb, tx_info->l2te);
+-#ifdef CONFIG_PM
+-static int rtw_pci_suspend(struct device *dev)
++static int __maybe_unused rtw_pci_suspend(struct device *dev)
+ {
+ 	return 0;
  }
-+#endif
  
- /*
-  * chcr_setup_connection:  create a TCB entry so that TP will form tcp packets.
-@@ -291,12 +293,16 @@ static int chcr_setup_connection(struct sock *sk,
- 	tx_info->atid = atid;
- 	tx_info->ip_family = sk->sk_family;
+-static int rtw_pci_resume(struct device *dev)
++static int __maybe_unused rtw_pci_resume(struct device *dev)
+ {
+ 	return 0;
+ }
  
--	if (sk->sk_family == AF_INET ||
--	    (sk->sk_family == AF_INET6 && !sk->sk_ipv6only &&
--	     ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)) {
-+	if (sk->sk_family == AF_INET
-+#if IS_ENABLED(CONFIG_IPV6)
-+	    || (sk->sk_family == AF_INET6 && !sk->sk_ipv6only &&
-+	     ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)
-+#endif
-+	    ) {
- 		tx_info->ip_family = AF_INET;
- 		ret = chcr_ktls_act_open_req(sk, tx_info, atid);
- 	} else {
-+#if IS_ENABLED(CONFIG_IPV6)
- 		tx_info->ip_family = AF_INET6;
- 		ret =
- 		cxgb4_clip_get(tx_info->netdev,
-@@ -305,6 +311,7 @@ static int chcr_setup_connection(struct sock *sk,
- 		if (ret)
- 			goto out;
- 		ret = chcr_ktls_act_open_req6(sk, tx_info, atid);
-+#endif
- 	}
+ static SIMPLE_DEV_PM_OPS(rtw_pm_ops, rtw_pci_suspend, rtw_pci_resume);
+-#define RTW_PM_OPS (&rtw_pm_ops)
+-#else
+-#define RTW_PM_OPS NULL
+-#endif
  
- 	/* if return type is NET_XMIT_CN, msg will be sent but delayed, mark ret
-@@ -395,11 +402,13 @@ static void chcr_ktls_dev_del(struct net_device *netdev,
- 	if (tx_info->l2te)
- 		cxgb4_l2t_release(tx_info->l2te);
+ static int rtw_pci_claim(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ {
+@@ -1582,7 +1577,7 @@ static struct pci_driver rtw_pci_driver = {
+ 	.id_table = rtw_pci_id_table,
+ 	.probe = rtw_pci_probe,
+ 	.remove = rtw_pci_remove,
+-	.driver.pm = RTW_PM_OPS,
++	.driver.pm = &rtw_pm_ops,
+ };
+ module_pci_driver(rtw_pci_driver);
  
-+#if IS_ENABLED(CONFIG_IPV6)
- 	/* clear clip entry */
- 	if (tx_info->ip_family == AF_INET6)
- 		cxgb4_clip_release(netdev,
- 				   (const u32 *)&sk->sk_v6_daddr.in6_u.u6_addr8,
- 				   1);
-+#endif
- 
- 	/* clear tid */
- 	if (tx_info->tid != -1) {
-@@ -490,12 +499,17 @@ static int chcr_ktls_dev_add(struct net_device *netdev, struct sock *sk,
- 		goto out2;
- 
- 	/* get peer ip */
--	if (sk->sk_family == AF_INET ||
--	    (sk->sk_family == AF_INET6 && !sk->sk_ipv6only &&
--	     ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)) {
-+	if (sk->sk_family == AF_INET
-+#if IS_ENABLED(CONFIG_IPV6)
-+	    || (sk->sk_family == AF_INET6 && !sk->sk_ipv6only &&
-+	     ipv6_addr_type(&sk->sk_v6_daddr) == IPV6_ADDR_MAPPED)
-+#endif
-+	    ) {
- 		memcpy(daaddr, &sk->sk_daddr, 4);
- 	} else {
-+#if IS_ENABLED(CONFIG_IPV6)
- 		memcpy(daaddr, sk->sk_v6_daddr.in6_u.u6_addr8, 16);
-+#endif
- 	}
- 
- 	/* get the l2t index */
 -- 
 2.26.0
 
