@@ -2,81 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D71B11A1EDC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B067C1A1EAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbgDHKfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 06:35:51 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:43918 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbgDHKfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 06:35:50 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 248741A16DB;
-        Wed,  8 Apr 2020 12:35:49 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6BD031A0153;
-        Wed,  8 Apr 2020 12:35:43 +0200 (CEST)
-Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 3334C40285;
-        Wed,  8 Apr 2020 18:35:36 +0800 (SGT)
-From:   Hui Song <hui.song_1@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Song Hui <hui.song_1@nxp.com>
-Subject: [PATCH] gpio: mpc8xxx: Add shutdown function.
-Date:   Wed,  8 Apr 2020 18:21:18 +0800
-Message-Id: <20200408102118.17572-2-hui.song_1@nxp.com>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200408102118.17572-1-hui.song_1@nxp.com>
-References: <20200408102118.17572-1-hui.song_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728147AbgDHKVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 06:21:33 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33905 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728060AbgDHKVd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 06:21:33 -0400
+Received: by mail-wr1-f67.google.com with SMTP id 65so7212892wrl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 03:21:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fdVczqsLYJ2DIvo2k7kUsz9yNfr4DQ6vZjZROaUu81k=;
+        b=La4Q1q0Vw7qiKlqHhjZMPpYCAg5pSYT0NXEj24KeFO7sLEPDv4Hi8S3SwjGdJUG1z8
+         r801Ll26uroBg5mFa/g3W5TlzhCdSMHcA6waWgZdL2+1FHVFfHlE9eg7udOuwiUnYNzP
+         +QDnMRyGwJ/hQfHMCZDVPwVFhO/mVA/hGmRtX1464gxcXLAeu1EOaZfFMPe7wy/Ty3Lg
+         579MK6qsNQwytDh0ioa/2+QsYksMh1OPMDehOsr2PPJvUA433HK+jZAc6xhPgyYlU93N
+         rbH7WiJnPONLk4AhdVR57EMymRFh0DP3M50SIGHtW51k4HFOYeUBQGbvoRg0+ibBqGQW
+         MpyQ==
+X-Gm-Message-State: AGi0PuZhtb0KE5hfEPm+baxzH6VB4/r8CghvP5W1a5rPYeEcc4+N2rcl
+        4e+JchU2TIH91Z7O6bIQ1R0=
+X-Google-Smtp-Source: APiQypJYp2QwZD21P2CHJAnre1Yfs+Cr+P/d72eYb87+4V1sWEXzF5pCej6nNSz5az7RMys/uBBcNQ==
+X-Received: by 2002:adf:cd0c:: with SMTP id w12mr2248969wrm.12.1586341290985;
+        Wed, 08 Apr 2020 03:21:30 -0700 (PDT)
+Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
+        by smtp.gmail.com with ESMTPSA id u7sm6843865wmg.41.2020.04.08.03.21.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 03:21:29 -0700 (PDT)
+Date:   Wed, 8 Apr 2020 12:21:28 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
+ signal
+Message-ID: <20200408102128.GX18914@dhcp22.suse.cz>
+References: <20200408014010.80428-1-peterx@redhat.com>
+ <20200408014010.80428-2-peterx@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408014010.80428-2-peterx@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Hui <hui.song_1@nxp.com>
+On Tue 07-04-20 21:40:09, Peter Xu wrote:
+> lookup_node() uses gup to pin the page and get node information.  It
+> checks against ret>=0 assuming the page will be filled in.  However
+> it's also possible that gup will return zero, for example, when the
+> thread is quickly killed with a fatal signal.  Teach lookup_node() to
+> gracefully return an error -EFAULT if it happens.
+> 
+> Meanwhile, initialize "page" to NULL to avoid potential risk of
+> exploiting the pointer.
+> 
+> Reported-by: syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
+> Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
 
-The shutdown function needed to make interrupt handler to be NULL
-when kexec execute.
-
-Signed-off-by: Song Hui <hui.song_1@nxp.com>
----
- drivers/gpio/gpio-mpc8xxx.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-index 604dfec..a24e6c5 100644
---- a/drivers/gpio/gpio-mpc8xxx.c
-+++ b/drivers/gpio/gpio-mpc8xxx.c
-@@ -446,9 +446,21 @@ static int mpc8xxx_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int mpc8xxx_shutdown(struct platform_device *pdev)
-+{
-+	struct mpc8xxx_gpio_chip *mpc8xxx_gc = platform_get_drvdata(pdev);
-+
-+	if (mpc8xxx_gc->irq) {
-+		irq_set_chained_handler_and_data(mpc8xxx_gc->irqn, NULL, NULL);
-+		irq_domain_remove(mpc8xxx_gc->irq);
-+	}
-+
-+	return 0;
-+}
- static struct platform_driver mpc8xxx_plat_driver = {
- 	.probe		= mpc8xxx_probe,
- 	.remove		= mpc8xxx_remove,
-+	.shutdown	= mpc8xxx_shutdown,
- 	.driver		= {
- 		.name = "gpio-mpc8xxx",
- 		.of_match_table	= mpc8xxx_gpio_ids,
+I am not familiar with thic commit but shouldn't gup return ERESTARTSYS
+on a fatal signal?
 -- 
-2.9.5
-
+Michal Hocko
+SUSE Labs
