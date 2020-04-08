@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59ACB1A25E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAF91A25CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgDHPrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49388 "EHLO mail.kernel.org"
+        id S1729786AbgDHPqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:46:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729702AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729701AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Apr 2020 11:46:33 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 05490221F6;
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C021221F8;
         Wed,  8 Apr 2020 15:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586360792;
-        bh=4l77Yn2wW/bRDMs12FfVArUGIzMtsVYGB6DvYUarqs0=;
+        bh=6+PaLUkdrL9YIpHZRkQExO+4pmTux8rSySZ5aPWfrTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VF6H0x7Ot7lxgI1ISZI/YaviI/NzcKJPIZRwbZ4mM/xbQrZrwEL38pg10zez1SP5E
-         xuOIgatlYINtigXbwOO+bL9qeFHD/iYMHVqtlniNhRBnLGE6sEwI9jcuhPBLVXWwWK
-         0ZtgiYvnGF9as+3xSzHcfydypiHgf9tO1mkp/qR8=
+        b=IXM6mVVc6zpbzCxvNECW6ftqsz+ax/CHmUvySzX9hf5iPTOv7RYMT0YdtTUEXz7xY
+         FEMwsd63okk+fEppiz2c+VBkeZKC0BShSi1jj4VWOcEDVVAIQ8hgWrsCE1MCXKNTlX
+         NU6DdwTcrVGizEZjqIFzyrkbLXlMvdot9AiSGwUE=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jMCuM-000cCe-6M; Wed, 08 Apr 2020 17:46:30 +0200
+        id 1jMCuM-000cCj-7S; Wed, 08 Apr 2020 17:46:30 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Matthias Brugger <mbrugger@suse.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH 30/35] docs: dt: fix a broken reference for a file converted to json
-Date:   Wed,  8 Apr 2020 17:46:22 +0200
-Message-Id: <402922bc26fe9b340dff8693bab57142820f1fc7.1586359676.git.mchehab+huawei@kernel.org>
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 31/35] powerpc: docs: cxl.rst: mark two section titles as such
+Date:   Wed,  8 Apr 2020 17:46:23 +0200
+Message-Id: <cccd2886af9961aad2a69fce96c0cf4f06995d6d.1586359676.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586359676.git.mchehab+huawei@kernel.org>
 References: <cover.1586359676.git.mchehab+huawei@kernel.org>
@@ -48,31 +49,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 32ced09d7903 ("dt-bindings: serial: Convert slave-device bindings to json-schema")
-moved a binding to json and updated the links. Yet, one link
-was forgotten.
+The User API chapter contains two sub-chapters. Mark them as
+such.
 
-Update this one too.
-
-Fixes: 32ced09d7903 ("dt-bindings: serial: Convert slave-device bindings to json-schema")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/powerpc/cxl.rst | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-index badf597c0e58..aad2632c6443 100644
---- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-+++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-@@ -30,7 +30,7 @@ Required properties for compatible string qcom,wcn399x-bt:
+diff --git a/Documentation/powerpc/cxl.rst b/Documentation/powerpc/cxl.rst
+index 920546d81326..d2d77057610e 100644
+--- a/Documentation/powerpc/cxl.rst
++++ b/Documentation/powerpc/cxl.rst
+@@ -133,6 +133,7 @@ User API
+ ========
  
- Optional properties for compatible string qcom,wcn399x-bt:
+ 1. AFU character devices
++^^^^^^^^^^^^^^^^^^^^^^^^
  
-- - max-speed: see Documentation/devicetree/bindings/serial/slave-device.txt
-+ - max-speed: see Documentation/devicetree/bindings/serial/serial.yaml
-  - firmware-name: specify the name of nvm firmware to load
-  - clocks: clock provided to the controller
+     For AFUs operating in AFU directed mode, two character device
+     files will be created. /dev/cxl/afu0.0m will correspond to a
+@@ -395,6 +396,7 @@ read
  
+ 
+ 2. Card character device (powerVM guest only)
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+     In a powerVM guest, an extra character device is created for the
+     card. The device is only used to write (flash) a new image on the
 -- 
 2.25.2
 
