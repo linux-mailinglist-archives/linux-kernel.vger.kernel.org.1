@@ -2,214 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC1B1A24D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFA61A24DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbgDHPS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:18:26 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36010 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728335AbgDHPSZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:18:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586359103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/ihK2X8/8hKS+Dwwu485A0c8mY5IW2uiYdm2HC3B6+Y=;
-        b=BhHDWiTdgcaMKLBVy+4seDxVv82H3z36zYc9CqqtBaL62K45I+m806+mRH8oWaaebxZYAj
-        QDEPn0TK1PDyKX/6hg9a6UAA4APmvBiHzHDYiTuh7QR0LXPYCJvmJqq+8GVQNGvKSzP7UD
-        aFRm+ZOCCafWujOGxC/Y2S9jeOzUsxA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-6-opA0S_N7GTk_ZHL3NkLg-1; Wed, 08 Apr 2020 11:18:21 -0400
-X-MC-Unique: 6-opA0S_N7GTk_ZHL3NkLg-1
-Received: by mail-wr1-f72.google.com with SMTP id 91so4293895wro.1
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:18:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/ihK2X8/8hKS+Dwwu485A0c8mY5IW2uiYdm2HC3B6+Y=;
-        b=CuJge1HgMUdNxubT7hUwOYwYC/9hBjNl54ywpovjWTb7iTQpwxjhxEwUaLW1uvF6Zl
-         aEFbXZ3W/AQBDX/02eRn5e1WlpZ3OYkVCkDXj4eZtWlBML7jJF4t8ZP8ucEg1aEBecRN
-         deeUrI9TH2VMbosGx6qNGLwpMR4YESQBQzlZ6cu50adZ/teUyERTZ5GYc4ePLkkChYQ/
-         QwxjqFdoNZKPam5zCp33iR0PF1jGC3zY0wtUjcdKP+gfQQEioBgHpbkGgCKprR5IeXGz
-         4UDD4bhIDe1SP5hgHEGJpixkRI1rmbbnyLZTGlJAZ+bS4PChJQcMEGAmCr1UaXk0+Gu0
-         QPMQ==
-X-Gm-Message-State: AGi0PubI3VHXTaGbk5qcJDTkwAEET6TURs7Gxg5yn2SjCMUMAEBHq7aM
-        6shXvjYPhd7m7AgUhgq87SR8/l8cbujx7QXCzV/Pa7nGEhqRwDLgbv38HWV+x6vudh6j6NFqOtE
-        Jy/XLqGVpuA/2EzupDKEuhktz
-X-Received: by 2002:a7b:cf27:: with SMTP id m7mr5209499wmg.58.1586359100709;
-        Wed, 08 Apr 2020 08:18:20 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKUH0Y1rBm9wmvsjZ4/pRfa3T9aubTTViUTWLqlNKYb/3CJkRoSl+Ti6P0oQAD2Pj/rm3IfXA==
-X-Received: by 2002:a7b:cf27:: with SMTP id m7mr5209469wmg.58.1586359100254;
-        Wed, 08 Apr 2020 08:18:20 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::3])
-        by smtp.gmail.com with ESMTPSA id d133sm4292915wmc.27.2020.04.08.08.18.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 08:18:19 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 11:18:15 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+3be1a33f04dc782e9fd5@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, bgeffon@google.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: WARNING in af_alg_make_sg
-Message-ID: <20200408151815.GG66033@xz-x1>
-References: <000000000000f2bc9505a2c2b808@google.com>
- <20200408095849.15236-1-hdanton@sina.com>
- <20200408151213.GE66033@xz-x1>
+        id S1728594AbgDHPVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:21:10 -0400
+Received: from mail-db8eur05olkn2091.outbound.protection.outlook.com ([40.92.89.91]:36398
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726663AbgDHPVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:21:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OJxUoCCiv5bGBtxklFDyEYzVdz4gXWJ6xSiuA1RbSXqgFWQRlW7skoiN3zz5diBpvQEzjWBeu2hDoUEYWAXCzgPCM9/g5pahlYHHJVm259zOgTnLoX6i7wUKikScIQEW3c7DevApIlMuig9EkNjF1w4UvLhaPH/6c/iDjbNW1loDukxgbNffgE2kl2603e1m2tejbpZK2dRa4rIqKedxaIFcpzqz0G8V3v8gPK/lvHBazSFoztMVHOEohTcYOFC8v6RZTnw8enejuN9CkAGfmZZHo9FZJO98Z1cUNTRspyiKxtruvZPS1a9c/Mx2zrY1CvevFgczrJvGHl57pYqcLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a2wSNqV2FCfnJLEenmVM1ywH3Y1Mw2I5Pu2jFlkE5/U=;
+ b=ZZvDbLEq01ss+IzL9Dtx/49YUgAsPktu4eeelMZ9wzs/ODfmi9cJkw4YdLmUSH1ShqQOnKlbwBpVUHGZzgJ6U3crYc4ef1r0QCpn6fRs0ugLVy7qk8ga9IL4WbedHpsVoxGB4MXa5ABpb6c7Pw5vvkAUfPCRDx1Y6sPMvH5b37SxNhAX+Q/tvsYt1qXW0ljdoVzmL4OkGcSzWDyi/WBsZuKpAK+grsjfGbXdAzc3jWdfQan58gP3rqF4hVBqiq8Z+N5gmax7w0fFUVdtjn8xh14zetOVbh3vjRqwl6PA+LTJJ9VsX16E0mspy41c6snhM98thUdfuOgXI1FYDBI1SQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hotmail.de; dmarc=pass action=none header.from=hotmail.de;
+ dkim=pass header.d=hotmail.de; arc=none
+Received: from DB8EUR05FT019.eop-eur05.prod.protection.outlook.com
+ (2a01:111:e400:fc0f::53) by
+ DB8EUR05HT193.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc0f::131)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Wed, 8 Apr
+ 2020 15:21:07 +0000
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2a01:111:e400:fc0f::53) by DB8EUR05FT019.mail.protection.outlook.com
+ (2a01:111:e400:fc0f::290) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend
+ Transport; Wed, 8 Apr 2020 15:21:06 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:24A67598201204E72D5F33CCF1AE63ABDD6B871DD43DE4A0B1E817A38E9C8877;UpperCasedChecksum:3C3164BE561EF0134F2A5CD56B6BED168978B6DA5A560C788AA0037C4BF34FA4;SizeAsReceived:8833;Count:50
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d]) by AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d%7]) with mapi id 15.20.2878.022; Wed, 8 Apr 2020
+ 15:21:06 +0000
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+References: <87blobnq02.fsf@x220.int.ebiederm.org>
+ <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+ <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+ <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
+ <87lfnda3w3.fsf@x220.int.ebiederm.org>
+ <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
+ <87blo45keg.fsf@x220.int.ebiederm.org>
+ <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+ <87v9maxb5q.fsf@x220.int.ebiederm.org>
+From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
+Message-ID: <AM6PR03MB517015F585466ED40113FDEEE4C00@AM6PR03MB5170.eurprd03.prod.outlook.com>
+Date:   Wed, 8 Apr 2020 17:21:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+In-Reply-To: <87v9maxb5q.fsf@x220.int.ebiederm.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR10CA0038.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:20b:150::18) To AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2603:10a6:20b:ca::23)
+X-Microsoft-Original-Message-ID: <d061bb3f-8110-436f-9584-646444ebc00f@hotmail.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200408151213.GE66033@xz-x1>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (92.77.140.102) by AM0PR10CA0038.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend Transport; Wed, 8 Apr 2020 15:21:06 +0000
+X-Microsoft-Original-Message-ID: <d061bb3f-8110-436f-9584-646444ebc00f@hotmail.de>
+X-TMN:  [aaXTtLPw6OfTFCNntz9zaDmeQ5LLVuYx]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 50
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: cc9daaa0-f829-4412-afff-08d7dbd07564
+X-MS-TrafficTypeDiagnostic: DB8EUR05HT193:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eHLi18qWQW/OrEVCWSNTO6T6PpEuAbNgzwHksxw1qRxkncUrAFc9Jl/HzeYkEZLp0eNU38wfL17JXt3obRQ3UdVnqIXmnYTdTOB9aDYJ0dIKL7z1myBiQiNy6UilGcEf3pT5AlyXdjQhNlSaI0t3Hq6Oe62YzCkk4OxnsMZORy1n1eP7XGiOrUUTv9v3iDF8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB5170.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: mlE0bnHtK+/fSidlT/sp0xovsR73YwbLo+QFDzEmPSolavxiCgHkXBxD+9PXf6m0Uja8mxi5z7dv0sWc1uV4rM1XASI97RlJUuSbrn9KDEGgX93x+v4o6hAzE4vmNTdHjRDKxJORix7O3SA8EYECtw==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc9daaa0-f829-4412-afff-08d7dbd07564
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2020 15:21:06.8796
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8EUR05HT193
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 11:12:13AM -0400, Peter Xu wrote:
-> On Wed, Apr 08, 2020 at 05:58:48PM +0800, Hillf Danton wrote:
-> > 
-> > On Wed, 08 Apr 2020 00:48:13 -0700
-> > > syzbot found the following crash on:
-> > > 
-> > > HEAD commit:    763dede1 Merge tag 'for-linus-5.7-rc1' of git://git.kernel..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=12b919c7e00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=12205d036cec317f
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3be1a33f04dc782e9fd5
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=142f3b8fe00000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=159bd23fe00000
-> > > 
-> > > The bug was bisected to:
-> > > 
-> > > commit 4426e945df588f2878affddf88a51259200f7e29
-> > > Author: Peter Xu <peterx@redhat.com>
-> > > Date:   Thu Apr 2 04:08:49 2020 +0000
-> > > 
-> > >     mm/gup: allow VM_FAULT_RETRY for multiple times
-> > > 
-> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1408ea9fe00000
-> > > final crash:    https://syzkaller.appspot.com/x/report.txt?x=1608ea9fe00000
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1208ea9fe00000
-> > > 
-> > > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > > Reported-by: syzbot+3be1a33f04dc782e9fd5@syzkaller.appspotmail.com
-> > > Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
-> > > 
-> > > ------------[ cut here ]------------
-> > > WARNING: CPU: 1 PID: 7094 at crypto/af_alg.c:404 af_alg_make_sg+0x399/0x400 crypto/af_alg.c:404
-> > > Kernel panic - not syncing: panic_on_warn set ...
-> > > CPU: 1 PID: 7094 Comm: syz-executor037 Not tainted 5.6.0-syzkaller #0
-> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > Call Trace:
-> > >  __dump_stack lib/dump_stack.c:77 [inline]
-> > >  dump_stack+0x188/0x20d lib/dump_stack.c:118
-> > >  panic+0x2e3/0x75c kernel/panic.c:221
-> > >  __warn.cold+0x2f/0x35 kernel/panic.c:582
-> > >  report_bug+0x27b/0x2f0 lib/bug.c:195
-> > >  fixup_bug arch/x86/kernel/traps.c:175 [inline]
-> > >  fixup_bug arch/x86/kernel/traps.c:170 [inline]
-> > >  do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
-> > >  do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
-> > >  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-> > > RIP: 0010:af_alg_make_sg+0x399/0x400 crypto/af_alg.c:404
-> > > Code: 5c 24 2b 31 ff 89 de e8 c5 b9 f8 fd 84 db 74 0e e8 8c b8 f8 fd 48 8b 04 24 48 89 44 24 70 e8 7e b8 f8 fd 0f 0b e8 77 b8 f8 fd <0f> 0b c7 44 24 4c ea ff ff ff e9 4b ff ff ff 48 89 df e8 40 6e 36
-> > > RSP: 0018:ffffc900018779a0 EFLAGS: 00010293
-> > > RAX: ffff8880a16b65c0 RBX: ffff8880a4141220 RCX: ffffffff837a763d
-> > > RDX: 0000000000000000 RSI: ffffffff837a78f9 RDI: 0000000000000005
-> > > RBP: 000000001fef2254 R08: ffff8880a16b65c0 R09: ffffed10142d6cb9
-> > > R10: ffff8880a16b65c7 R11: ffffed10142d6cb8 R12: 0000000000000000
-> > > R13: dffffc0000000000 R14: 0000000000000000 R15: dffffc0000000000
-> > >  hash_sendmsg+0x45c/0xad0 crypto/algif_hash.c:94
-> > >  sock_sendmsg_nosec net/socket.c:652 [inline]
-> > >  sock_sendmsg+0xcf/0x120 net/socket.c:672
-> > >  ____sys_sendmsg+0x6bf/0x7e0 net/socket.c:2362
-> > >  ___sys_sendmsg+0x100/0x170 net/socket.c:2416
-> > >  __sys_sendmsg+0xec/0x1b0 net/socket.c:2449
-> > >  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
-> > >  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-> > 
-> > Make gup feed back correct error code in case of bailout.
-> > 
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -1325,8 +1325,11 @@ retry:
-> >  		 * start trying again otherwise it can loop forever.
-> >  		 */
-> >  
-> > -		if (fatal_signal_pending(current))
-> > +		if (fatal_signal_pending(current)) {
-> > +			if (!pages_done)
-> > +				pages_done = -EINTR;
-> >  			break;
-> > +		}
-> >  
-> >  		*locked = 1;
-> >  		down_read(&mm->mmap_sem);
-> > 
+On 4/8/20 5:14 PM, Eric W. Biederman wrote:
+> Linus Torvalds <torvalds@linux-foundation.org> writes:
 > 
-> CC Thomas too.
+>> On Mon, Apr 6, 2020 at 3:20 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>>
+>>> But fundamentally the only reason we need this information stable
+>>> before the point of no return is so that we can return a nice error
+>>> code to the process calling exec.  Instead of terminating the
+>>> process with SIGSEGV.
+>>
+>> I'd suggest doing it the other way around instead: let the thread that
+>> does the security_setprocattr() die, since execve() is terminating
+>> other threads anyway.
+>>
+>> And the easy way to do that is to just make the rule be that anybody
+>> who waits for this thing for write needs to use a killable wait.
+>>
+>> So if the execve() got started earlier, and already took the cred lock
+>> (whatever we'll call it) for reading, then zap_other_threads() will
+>> take care of another thread doing setprocattr().
+>>
+>> That sounds like a really simple model, no?
 > 
-> Sorry for all these mess...
+> Yes.  I missed the fact that we could take the lock killable.
+> We still unfortunately have the deadlock with ptrace.
 > 
-> Frankly speaking I didn't notice get_user_pages_fast() forbids
-> returning zero while __get_user_pages() allowed it...  Ideally I think
-> the gup callers should check against ret>0 to know exactly how many
-> valid pages we've got, but it's not an excuse good enough...
+> It might be simpler to make whichever lock we are dealing with per
+> task_struct instead of per signal_struct.  Then we don't even have to
+> think about what de_thread does or if the lock is taken killable.
 > 
-> Hillf, would you mind kick the syzbot directly next time when post the
-> fix?  I'll make bold to do that for you this time, Thanks!
 
-I got one extra "#"... Doing it again...
+I think you said that already, but I did not understand the difference,
+could you please give some more details about your idea?
 
-#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-8<--------------------------------------------------------------------
-From 380003a56efc125565143c91ee6cefd7b3eba869 Mon Sep 17 00:00:00 2001
-From: Hillf Danton <hdanton@sina.com>
-Date: Wed, 8 Apr 2020 11:01:25 -0400
-Subject: [PATCH] mm/gup: Let __get_user_pages_locked() return -EINTR for fatal
- signal
+Thanks
+Bernd.
 
-__get_user_pages_locked() will return 0 instead of -EINTR after commit
-4426e945df588 which added extra code to allow gup detect fatal signal
-faster.  Restore that behavior.
-
-CC: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Hillf Danton <hdanton@sina.com>
-[peterx: write commit message]
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/gup.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/mm/gup.c b/mm/gup.c
-index afce0bc47e70..6076df8e04a4 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1326,8 +1326,11 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
- 		 * start trying again otherwise it can loop forever.
- 		 */
- 
--		if (fatal_signal_pending(current))
-+		if (fatal_signal_pending(current)) {
-+			if (!pages_done)
-+				pages_done = -EINTR;
- 			break;
-+		}
- 
- 		ret = down_read_killable(&mm->mmap_sem);
- 		if (ret) {
--- 
-2.24.1
-
--- 
-Peter Xu
-
+> 
+> Looking at the code in binfmt_elf.c there are about 11 other places
+> after install_exec_creds where we can fail and would be forced to
+> terminate the application with SIGSEGV instead of causing fork to fail.
+> 
+> 
+> 
+> 
+> I keep wondering if we could do something similar to vfork.  That is
+> allocate an new task_struct and fully set it up for the post exec
+> process, and then make it visible under tasklist_lock.  Finally we could
+> free the old process.
+> 
+> That would appear as if everything happened atomically from
+> the point of view of the rest of the kernel.
+> 
+> As well as fixing all of the deadlocks and making it easy
+> to ensure we don't have any more weird failures in the future.
+> 
+> Eric
+> 
+> p.s. For tasklist_lock I suspect we can put a lock in struct pid
+> and use that to guard the task lists in struct pid.  Which would
+> allow for tasklist_lock to be take much less.  Then we would
+> just need a solution for task->parent and task->real_parent and
+> I think all of the major users of tasklist_lock would be gone.
+> 
+> 
