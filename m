@@ -2,163 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5D31A1D53
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ADEA1A1D7B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726858AbgDHIYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 04:24:08 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27008 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726670AbgDHIYI (ORCPT
+        id S1727254AbgDHIgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 04:36:12 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:39340 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726792AbgDHIgM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 04:24:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586334245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V8GBvWJYx/17VO9qjtI+ZZsm46USQUPFYArvzlSyCX0=;
-        b=GDM3Wioe+IW/y0fjnYWdM5yGCHwHLbtvld69sslB0AVI0f3VnFI4lXG93nRqqphJaFgIn2
-        RD2Z3XvT9MHb3h2PXDtTuBJpPCJtgTsY4kJvsk/uZ/2oZNKIvAIfCPNWT22i0wKHqC6/+Z
-        uOspbJF5LyR+TCpyQlE9UXgLQgn5k/I=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-us2plJ9vNf6IEdOoh2NtCw-1; Wed, 08 Apr 2020 04:24:03 -0400
-X-MC-Unique: us2plJ9vNf6IEdOoh2NtCw-1
-Received: by mail-wr1-f70.google.com with SMTP id g6so3599998wru.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 01:24:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V8GBvWJYx/17VO9qjtI+ZZsm46USQUPFYArvzlSyCX0=;
-        b=VOK54kuSbolQV/Rg2L4PJD3hlqmfKteek39HeoClFJqIBTqri/h08Qar0oGPV2fXON
-         vS4Q2YImeiQ8Mtzo8APDUWowsjbYhg900lXAVSOkwENmPvHZhHB+n6uPavMfu7LJGc6g
-         ri9baFI/V4+xes6yt0+95X45B2wii73qGnjbFmWnoQsRW9Uzi70jJLEwWylPf7RcvNSH
-         gfG6cJQ4qY9+rCHVNEI7IaiGvkBvtaLuJZKIUk0AOV087jfO6/YFKvLvdC9RWtiFFb6C
-         G6KtWKW6VWppJ4oSJCiwhzZg0UQQOTZ28oJeyoSr3hyZgviuDFr7qMFr348ob1YWs+M2
-         ZhFQ==
-X-Gm-Message-State: AGi0PuZCRLeUteHXYVBrWKngW7fOzTYF+QruhqZ3HGDkrn8iW8UcBUAo
-        4Ar9zbL7RewmqX3LrwRSQHNrOoX2xtLbw4oIqNCFE8XeHj695rgoRwb5vM8U69b0srdrn+kaj5l
-        /pNHKGLJyjxFMoAKOYDv+KD9J
-X-Received: by 2002:a1c:7301:: with SMTP id d1mr3651747wmb.26.1586334242038;
-        Wed, 08 Apr 2020 01:24:02 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLRHkZKamZXG95b7dvVdIZL49HfD4EV4KT2DnjNBTmCibYNUX8cjaACuR1soo87T9jeXOkUzA==
-X-Received: by 2002:a1c:7301:: with SMTP id d1mr3651721wmb.26.1586334241722;
-        Wed, 08 Apr 2020 01:24:01 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id f14sm5818101wmb.3.2020.04.08.01.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2020 01:24:01 -0700 (PDT)
-Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vivek Goyal <vgoyal@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
-References: <20200407172140.GB64635@redhat.com>
- <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net>
- <87eeszjbe6.fsf@nanos.tec.linutronix.de>
- <ce81c95f-8674-4012-f307-8f32d0e386c2@redhat.com>
- <874ktukhku.fsf@nanos.tec.linutronix.de>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com>
-Date:   Wed, 8 Apr 2020 10:23:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 8 Apr 2020 04:36:12 -0400
+X-Greylist: delayed 592 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 04:35:07 EDT
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 4BF522824F4;
+        Wed,  8 Apr 2020 16:25:09 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AIQAwAC1CEyk0dn9USjN-4ql.3.1586334309292.Hmail.wenhu.wang@vivo.com>
+To:     Wang Wenhu <wenhu.wang@vivo.com>
+Cc:     akpm@linux-foundation.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Carl Huang <cjhuang@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        Thomas Gleixner <tglx@linutronix.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6W1BBVENIXSBuZXQ6IHFydHI6IHN1cHBvcnQgcXJ0ciBzZXJ2aWNlIGFuZCBsb29rdXAgcm91dGU=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.227
+In-Reply-To: <20200408081657.5876-1-wenhu.wang@vivo.com>
 MIME-Version: 1.0
-In-Reply-To: <874ktukhku.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from wenhu.wang@vivo.com( [58.251.74.227) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 8 Apr 2020 16:25:09 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Wed, 8 Apr 2020 16:25:09 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVCSElCQkJNSktCS0tDQ1lXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSklOSkJPTkhKN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Mio6DDo4Sjg#AhBLHxVCLigRNVZPChdVSFVKTkNNSEhPSEpKT09KVTMWGhIXVQweFRMOVQwa
+        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlMWVdZCAFZQUpLQk5KNwY+
+X-HM-Tid: 0a7158e49bc39395kuws4bf522824f4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/04/20 01:21, Thomas Gleixner wrote:
-> Paolo Bonzini <pbonzini@redhat.com> writes:
-> 
->> On 07/04/20 22:20, Thomas Gleixner wrote:
->>>>> Havind said that, I thought disabling interrupts does not mask exceptions.
->>>>> So page fault exception should have been delivered even with interrupts
->>>>> disabled. Is that correct? May be there was no vm exit/entry during
->>>>> those 10 seconds and that's why.
->>> No. Async PF is not a real exception. It has interrupt semantics and it
->>> can only be injected when the guest has interrupts enabled. It's bad
->>> design.
->>
->> Page-ready async PF has interrupt semantics.
->>
->> Page-not-present async PF however does not have interrupt semantics, it
->> has to be injected immediately or not at all (falling back to host page
->> fault in the latter case).
-> 
-> If interrupts are disabled in the guest then it is NOT injected and the
-> guest is suspended. So it HAS interrupt semantics. Conditional ones,
-> i.e. if interrupts are disabled, bail, if not then inject it.
-
-Interrupts can be delayed by TPR or STI/MOV SS interrupt window, async
-page faults cannot (again, not the page-ready kind).  Page-not-present
-async page faults are almost a perfect match for the hardware use of #VE
-(and it might even be possible to let the processor deliver the
-exceptions).  There are other advantages:
-
-- the only real problem with using #PF (with or without
-KVM_ASYNC_PF_SEND_ALWAYS) seems to be the NMI reentrancy issue, which
-would not be there for #VE.
-
-- #VE are combined the right way with other exceptions (the
-benign/contributory/pagefault stuff)
-
-- adjusting KVM and Linux to use #VE instead of #PF would be less than
-100 lines of code.
-
-Paolo
-
-> But that does not make it an exception by any means.
-> 
-> It never should have been hooked to #PF in the first place and it never
-> should have been named that way. The functionality is to opportunisticly
-> tell the guest to do some other stuff.
-> 
-> So the proper name for this seperate interrupt vector would be:
-> 
->    VECTOR_OMG_DOS - Opportunisticly Make Guest Do Other Stuff
-> 
-> and the counter part
-> 
->    VECTOR_STOP_DOS - Stop Doing Other Stuff 
-> 
->> So page-not-present async PF definitely needs to be an exception, this
->> is independent of whether it can be injected when IF=0.
-> 
-> That wants to be a straight #PF. See my reply to Andy.
-> 
->> Hypervisors do not have any reserved exception vector, and must use
->> vectors up to 31, which is why I believe #PF was used in the first place
->> (though that predates my involvement in KVM by a few years).
-> 
-> No. That was just bad taste or something worse. It has nothing to do
-> with exceptions, see above. Stop proliferating the confusion.
-> 
->> These days, #VE would be a much better exception to use instead (and
->> it also has a defined mechanism to avoid reentrancy).
-> 
-> #VE is not going to solve anything.
-> 
-> The idea of OMG_DOS is to (opportunisticly) avoid that the guest (and
-> perhaps host) sit idle waiting for I/O until the fault has been
-> resolved. That makes sense as there might be enough other stuff to do
-> which does not depend on that particular page. If not then fine, the
-> guest will go idle.
-> 
-> Thanks,
-> 
->         tglx
-> 
-
+UmVhbGx5IFNvcnJ5IGZvciB0aGF0IEkgc2VudCBvdXQgdGhlIHBhdGNoIG9mIHRoZSBkcml2ZXIg
+cGF0Y2ggc2hvdWxkIGJlZW4gc2VudC4KSSB3aWxsIHNlbmQgYSBuZXcgcGF0Y2ggd2l0aCBRU1Ig
+c3VwcG9ydCBsYXRlci4gUGxlYXNlIGp1c3QgaWdub3JlIHRoaXMgb25lLiAKClRoYW5rcywgV2Vu
+aHUuCgpGcm9tOiBXYW5nIFdlbmh1IDx3ZW5odS53YW5nQHZpdm8uY29tPgpEYXRlOiAyMDIwLTA0
+LTA4IDE2OjE2OjU0ClRvOiAgYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZywiRGF2aWQgUy4gTWls
+bGVyIiA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD4sSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9y
+Zz4sQmpvcm4gQW5kZXJzc29uIDxiam9ybi5hbmRlcnNzb25AbGluYXJvLm9yZz4sR3JlZyBLcm9h
+aC1IYXJ0bWFuIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4sQ2FybCBIdWFuZyA8Y2podWFu
+Z0Bjb2RlYXVyb3JhLm9yZz4sQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5kYi5kZT4sTmljaG9sYXMg
+TWMgR3VpcmUgPGhvZnJhdEBvc2FkbC5vcmc+LFRob21hcyBHbGVpeG5lciA8dGdseEBsaW51dHJv
+bml4LmRlPixuZXRkZXZAdmdlci5rZXJuZWwub3JnLGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
+cmcKQ2M6ICBrZXJuZWxAdml2by5jb20sV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2aXZvLmNvbT4K
+U3ViamVjdDogW1BBVENIXSBuZXQ6IHFydHI6IHN1cHBvcnQgcXJ0ciBzZXJ2aWNlIGFuZCBsb29r
+dXAgcm91dGU+UVNSIGltcGxlbWVudHMgbWFpbnRlbmFuY2Ugb2YgcXJ0ciBzZXJ2aWNlcyBhbmQg
+bG9va3Vwcy4gSXQgd291bGQKPmJlIGhlbHBmdWwgZm9yIGRldmVsb3BlcnMgdG8gd29yayB3aXRo
+IFFSVFIgd2l0aG91dCB0aGUgbm9uZS1vcGVuc291cmNlCj51c2VyLXNwYWNlIGltcGxlbWVudGF0
+aW9uIHBhcnQgb2YgSVBDIFJvdXRlci4KPgo+QXMgd2Uga25vdywgdGhlIGV4dHJlbWVseSBpbXBv
+cnRhbnQgcG9pbnQgb2YgSVBDIFJvdXRlciBpcyB0aGUgc3VwcG9ydAo+b2Ygc2VydmljZXMgZm9y
+bSBkaWZmZXJlbnQgbm9kZXMuIEJ1dCBRUlRSIHdhcyBwdXNoZWQgaW50byBtYWlubGluZQo+d2l0
+aG91dCByb3V0ZSBwcm9jZXNzIHN1cHBvcnQgb2Ygc2VydmljZXMsIGFuZCB0aGUgcm91dGVyIHBv
+cnQgcHJvY2Vzcwo+aXMgaW1wbGVtZW50ZWQgaW4gdXNlci1zcGFjZSBhcyBub25lLW9wZW5zb3Vy
+Y2UgY29kZXMsIHdoaWNoIGlzIGFuCj5ncmVhdCB1bmNvbnZlbmllbmNlIGZvciBkZXZlbG9wZXJz
+Lgo+Cj5RU1IgYWxzbyBpbXBsZW1lbnRzIGEgaW50ZXJmYWNlIHZpYSBjaGFyZGV2IGFuZCBhIHNl
+dCBvZiBzeXNmcyBjbGFzcwo+ZmlsZXMgZm9yIHRoZSBjb21tdW5pY2F0aW9uIGFuZCBkZWJ1Z2dp
+bmcgaW4gdXNlci1zcGFjZS4gV2UgY2FuIGdldAo+c2VydmljZSBhbmQgbG9va3VwIGVudHJpZXMg
+Y29udmVuaWVudGx5IHZpYSBzeXNmcyBmaWxlIGluIC9zeXMvY2xhc3MvcXNyLy4KPkN1cnJlbnRs
+eSBhZGQtc2VydmVyLCBkZWwtc2VydmVyLCBhZGQtbG9va3VwIGFuZCBkZWwtbG9va3VwIGNvbnRy
+b2wKPnBhY2thdGV0cyBhcmUgcHJvY2Vzc2VkIGFuZCBlbmhhbmNlbWVudHMgY291bGQgYmUgdGFr
+ZW4gZWFzaWx5IHVwb24KPmN1cnJlbnRseSBpbXBsZW1lbnRhdGlvbi4KPgo+U2lnbmVkLW9mZi1i
+eTogV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2aXZvLmNvbT4KPi0tLQo+IG5ldC9xcnRyL3FydHIu
+YyB8ICAzICsrLQo+IG5ldC9xcnRyL3Fzci5jICB8IDQ3ICsrKysrKysrKysrKysrKysrKysrKysr
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gMiBmaWxlcyBjaGFuZ2VkLCAyNSBpbnNlcnRpb25z
+KCspLCAyNSBkZWxldGlvbnMoLSkKPgo+ZGlmZiAtLWdpdCBhL25ldC9xcnRyL3FydHIuYyBiL25l
+dC9xcnRyL3FydHIuYwo+aW5kZXggMzhmMjVkM2MxYzM5Li4yNjdmN2Q2Yzc0NmYgMTAwNjQ0Cj4t
+LS0gYS9uZXQvcXJ0ci9xcnRyLmMKPisrKyBiL25ldC9xcnRyL3FydHIuYwo+QEAgLTE1OCw3ICsx
+NTgsOCBAQCBzdGF0aWMgaW50IHFydHJfYmNhc3RfZW5xdWV1ZShzdHJ1Y3QgcXJ0cl9ub2RlICpu
+b2RlLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLAo+IHN0YXRpYyBzdHJ1Y3QgcXJ0cl9zb2NrICpxcnRy
+X3BvcnRfbG9va3VwKGludCBwb3J0KTsKPiBzdGF0aWMgdm9pZCBxcnRyX3BvcnRfcHV0KHN0cnVj
+dCBxcnRyX3NvY2sgKmlwYyk7Cj4gCj4tdW5zaWduZWQgaW50IGdldF9xcnRyX2xvY2FsX25pZCh2
+b2lkKSB7Cj4rdW5zaWduZWQgaW50IGdldF9xcnRyX2xvY2FsX25pZCh2b2lkKQo+K3sKPiAJcmV0
+dXJuIHFydHJfbG9jYWxfbmlkOwo+IH0KPiAKPmRpZmYgLS1naXQgYS9uZXQvcXJ0ci9xc3IuYyBi
+L25ldC9xcnRyL3Fzci5jCj5pbmRleCAzZGQ0M2Q0ZTMwMWYuLjI3ZmNiNTFhNjI0YSAxMDA2NDQK
+Pi0tLSBhL25ldC9xcnRyL3Fzci5jCj4rKysgYi9uZXQvcXJ0ci9xc3IuYwo+QEAgLTkxLDEwICs5
+MSw3IEBAIHN0cnVjdCBxc3Igewo+IAo+IHN0cnVjdCBxc3Jfb3BzIHsKPiAJaW50ICgqbmV3X3Nl
+cnZlcikoc3RydWN0IHFzcl9pbmZvICpzdmMpOwo+LQo+LQlpbnQgKCpuZXdfbG9va3VwKShzdHJ1
+Y3QgcXNyX2luZm8gKnN2YywKPi0JCQkJdTMyIG5vZGUsCj4tCQkJCXUzMiBwb3J0KTsKPisJaW50
+ICgqbmV3X2xvb2t1cCkoc3RydWN0IHFzcl9pbmZvICpzdmMsIHUzMiBub2RlLCB1MzIgcG9ydCk7
+Cj4gfTsKPiAKPiBzdGF0aWMgaW50IHFzcl9tYWpvcjsKPkBAIC0xMTIsNyArMTA5LDcgQEAgc3Rh
+dGljIGludCBxc3JfbmV3X3NlcnZlcihzdHJ1Y3QgcXNyX2luZm8gKm5ldykKPiAKPiAJbGlzdF9m
+b3JfZWFjaF9lbnRyeShsb29rdXAsICZxc3ItPmxvb2t1cHMsIGxpc3QpIHsKPiAJCWlmIChsb29r
+dXAtPnNlcnZpY2UgPT0gbmV3LT5zZXJ2aWNlICYmCj4tCQkJCWxvb2t1cC0+aW5zdGFuY2UgPT0g
+bmV3LT5pbnN0YW5jZSkgewo+KwkJCWxvb2t1cC0+aW5zdGFuY2UgPT0gbmV3LT5pbnN0YW5jZSkg
+ewo+IAkJCXJldCA9IG9wcy0+bmV3X2xvb2t1cChuZXcsCj4gCQkJCQkJCWxvb2t1cC0+Y2xpZW50
+Lm5vZGUsCj4gCQkJCQkJCWxvb2t1cC0+Y2xpZW50LnBvcnQpOwo+QEAgLTEyNyw5ICsxMjQsNyBA
+QCBzdGF0aWMgaW50IHFzcl9uZXdfc2VydmVyKHN0cnVjdCBxc3JfaW5mbyAqbmV3KQo+IAlyZXR1
+cm4gMDsKPiB9Cj4gCj4tc3RhdGljIGludCBxc3JfbmV3X2xvb2t1cChzdHJ1Y3QgcXNyX2luZm8g
+KnN2YywKPi0JCQkJdTMyIG5vZGUsCj4tCQkJCXUzMiBwb3J0KQo+K3N0YXRpYyBpbnQgcXNyX25l
+d19sb29rdXAoc3RydWN0IHFzcl9pbmZvICpzdmMsIHUzMiBub2RlLCB1MzIgcG9ydCkKPiB7Cj4g
+CXN0cnVjdCBxcnRyX2N0cmxfcGt0IHBrdDsKPiAJc3RydWN0IHNvY2thZGRyX3FydHIgc3E7Cj5A
+QCAtMTgwLDcgKzE3NSw3IEBAIHN0YXRpYyB2b2lkIHFzcl9yZWN2X25ld19zZXJ2ZXIodTMyIHNl
+cnZpY2UsCj4gCWxpc3RfZm9yX2VhY2hfZW50cnkodGVtcCwgJnFzci0+c2VydmljZXMsIGxpc3Qp
+IHsKPiAJCWlmICh0ZW1wLT5zZXJ2aWNlID09IHNlcnZpY2UgJiYgdGVtcC0+aW5zdGFuY2UgPT0g
+aW5zdGFuY2UpIHsKPiAJCQlwcl9lcnIoIkVycm9yIHNlcnZlciBleGlzdHMsIHNlcnZpY2U6MHgl
+eCBpbnN0YW5jZToweCV4IiwKPi0JCQkJCQkJc2VydmljZSwgaW5zdGFuY2UpOwo+KwkJCQkgICBz
+ZXJ2aWNlLCBpbnN0YW5jZSk7Cj4gCQkJcmV0dXJuOwo+IAkJfQo+IAl9Cj5AQCAtMjMwLDkgKzIy
+NSw5IEBAIHN0YXRpYyB2b2lkIHFzcl9yZWN2X25ld19sb29rdXAodTMyIHNlcnZpY2UsCj4gCj4g
+CWxpc3RfZm9yX2VhY2hfZW50cnkodGVtcCwgJnFzci0+bG9va3VwcywgbGlzdCkgewo+IAkJaWYg
+KHRlbXAtPnNlcnZpY2UgPT0gc2VydmljZSAmJgo+LQkJCQl0ZW1wLT5pbnN0YW5jZSA9PSBpbnN0
+YW5jZSAmJgo+LQkJCQl0ZW1wLT5jbGllbnQubm9kZSA9PSBub2RlICYmCj4tCQkJCXRlbXAtPmNs
+aWVudC5wb3J0ID09IHBvcnQpIHsKPisJCQl0ZW1wLT5pbnN0YW5jZSA9PSBpbnN0YW5jZSAmJgo+
+KwkJCXRlbXAtPmNsaWVudC5ub2RlID09IG5vZGUgJiYKPisJCQl0ZW1wLT5jbGllbnQucG9ydCA9
+PSBwb3J0KSB7Cj4gCQkJcHJfZXJyKCJFcnJvciBsb29rdXAgZXhpc3RzLCBzZXJ2aWNlOjB4JXgg
+aW5zdGFuY2U6MHgleCBub2RlOiVkIHBvcnQ6JWQiLAo+IAkJCQkJCXNlcnZpY2UsIGluc3RhbmNl
+LCBub2RlLCBwb3J0KTsKPiAJCQlyZXR1cm47Cj5AQCAtMjk5LDI4ICsyOTQsMjggQEAgc3RhdGlj
+IHZvaWQgcXNyX3JlY3ZfY3RybF9wa3Qoc3RydWN0IHNvY2thZGRyX3FydHIgKnNxLAo+IAlzd2l0
+Y2ggKGxlMzJfdG9fY3B1KHBrdC0+Y21kKSkgewo+IAljYXNlIFFSVFJfVFlQRV9ORVdfU0VSVkVS
+Ogo+IAkJcXNyX3JlY3ZfbmV3X3NlcnZlcihsZTMyX3RvX2NwdShwa3QtPnNlcnZlci5zZXJ2aWNl
+KSwKPi0JCQkJICAgIGxlMzJfdG9fY3B1KHBrdC0+c2VydmVyLmluc3RhbmNlKSwKPisJCQkJCWxl
+MzJfdG9fY3B1KHBrdC0+c2VydmVyLmluc3RhbmNlKSwKPiAJCQkJICAgIGxlMzJfdG9fY3B1KHBr
+dC0+c2VydmVyLm5vZGUpLAo+IAkJCQkgICAgbGUzMl90b19jcHUocGt0LT5zZXJ2ZXIucG9ydCkp
+Owo+IAkJYnJlYWs7Cj4gCj4gCWNhc2UgUVJUUl9UWVBFX05FV19MT09LVVA6Cj4gCQlxc3JfcmVj
+dl9uZXdfbG9va3VwKGxlMzJfdG9fY3B1KHBrdC0+c2VydmVyLnNlcnZpY2UpLAo+LQkJCQkgICAg
+bGUzMl90b19jcHUocGt0LT5zZXJ2ZXIuaW5zdGFuY2UpLAo+LQkJCQkgICAgc3EtPnNxX25vZGUs
+Cj4tCQkJCSAgICBzcS0+c3FfcG9ydCk7Cj4rCQkJCQlsZTMyX3RvX2NwdShwa3QtPnNlcnZlci5p
+bnN0YW5jZSksCj4rCQkJCQlzcS0+c3Ffbm9kZSwKPisJCQkJCXNxLT5zcV9wb3J0KTsKPiAJCWJy
+ZWFrOwo+IAo+IAljYXNlIFFSVFJfVFlQRV9ERUxfU0VSVkVSOgo+IAkJcXNyX3JlY3ZfZGVsX3Nl
+cnZlcihsZTMyX3RvX2NwdShwa3QtPnNlcnZlci5zZXJ2aWNlKSwKPi0JCQkJICAgIGxlMzJfdG9f
+Y3B1KHBrdC0+c2VydmVyLmluc3RhbmNlKSk7Cj4rCQkJCQlsZTMyX3RvX2NwdShwa3QtPnNlcnZl
+ci5pbnN0YW5jZSkpOwo+IAkJYnJlYWs7Cj4gCj4gCWNhc2UgUVJUUl9UWVBFX0RFTF9MT09LVVA6
+Cj4gCQlxc3JfcmVjdl9kZWxfbG9va3VwKGxlMzJfdG9fY3B1KHBrdC0+c2VydmVyLnNlcnZpY2Up
+LAo+LQkJCQkgICAgbGUzMl90b19jcHUocGt0LT5zZXJ2ZXIuaW5zdGFuY2UpLAo+LQkJCQkgICAg
+c3EtPnNxX25vZGUsCj4tCQkJCSAgICBzcS0+c3FfcG9ydCk7Cj4rCQkJCQlsZTMyX3RvX2NwdShw
+a3QtPnNlcnZlci5pbnN0YW5jZSksCj4rCQkJCQlzcS0+c3Ffbm9kZSwKPisJCQkJCXNxLT5zcV9w
+b3J0KTsKPiAJCWJyZWFrOwo+IAl9Cj4gfQo+QEAgLTM4Niw4ICszODEsMTAgQEAgc3RhdGljIHNz
+aXplX3QgbG9va3Vwc19zaG93KHN0cnVjdCBkZXZpY2UgKmRldiwKPiAJbXV0ZXhfbG9jaygmcXNy
+LT5xc3JfbG9jayk7Cj4gCWxpc3RfZm9yX2VhY2hfZW50cnkobG9va3VwLCAmcXNyLT5sb29rdXBz
+LCBsaXN0KSB7Cj4gCQlyZXQgKz0gc3ByaW50ZihidWYsICJzZXJ2aWNlOjB4JTA0eCBpbnN0YW5j
+ZToweCUwNHggICBub2RlOiUwNGQgcG9ydDolMDRkXG4iLAo+LQkJCQlsb29rdXAtPnNlcnZpY2Us
+IGxvb2t1cC0+aW5zdGFuY2UsCj4tCQkJCWxvb2t1cC0+c2VydmVyLm5vZGUsIGxvb2t1cC0+c2Vy
+dmVyLnBvcnQpOwo+KwkJCQkJbG9va3VwLT5zZXJ2aWNlLAo+KwkJCQkJbG9va3VwLT5pbnN0YW5j
+ZSwKPisJCQkJCWxvb2t1cC0+c2VydmVyLm5vZGUsCj4rCQkJCQlsb29rdXAtPnNlcnZlci5wb3J0
+KTsKPiAJfQo+IAltdXRleF91bmxvY2soJnFzci0+cXNyX2xvY2spOwo+IAo+QEAgLTQwNCw4ICs0
+MDEsMTAgQEAgc3RhdGljIHNzaXplX3Qgc2VydmljZXNfc2hvdyhzdHJ1Y3QgZGV2aWNlICpkZXYs
+Cj4gCW11dGV4X2xvY2soJnFzci0+cXNyX2xvY2spOwo+IAlsaXN0X2Zvcl9lYWNoX2VudHJ5KHN2
+YywgJnFzci0+c2VydmljZXMsIGxpc3QpIHsKPiAJCXJldCArPSBzcHJpbnRmKGJ1ZiwgInNlcnZp
+Y2U6MHglMDR4IGluc3RhbmNlOjB4JTA0eCAgbm9kZTolMDRkIHBvcnQ6JTA0ZFxuIiwKPi0JCQkJ
+c3ZjLT5zZXJ2aWNlLCBzdmMtPmluc3RhbmNlLAo+LQkJCQlzdmMtPnNlcnZlci5ub2RlLCBzdmMt
+PnNlcnZlci5wb3J0KTsKPisJCQkJCXN2Yy0+c2VydmljZSwKPisJCQkJCXN2Yy0+aW5zdGFuY2Us
+Cj4rCQkJCQlzdmMtPnNlcnZlci5ub2RlLAo+KwkJCQkJc3ZjLT5zZXJ2ZXIucG9ydCk7Cj4gCX0K
+PiAJbXV0ZXhfdW5sb2NrKCZxc3ItPnFzcl9sb2NrKTsKPiAKPi0tIAo+Mi4xNy4xCj4KDQoNCg==
