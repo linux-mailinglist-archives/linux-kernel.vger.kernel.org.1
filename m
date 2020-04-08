@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 187491A24DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:22:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87E21A2406
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbgDHPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:22:19 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50887 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726663AbgDHPWT (ORCPT
+        id S1728753AbgDHO0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:26:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49582 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726795AbgDHO0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:22:19 -0400
+        Wed, 8 Apr 2020 10:26:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586359337;
+        s=mimecast20190719; t=1586356011;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=1txRlmT+72ImlSaHrcTVyVV9rPGbS6nrrn3+UD7QLpI=;
-        b=E8fGnG3xf71R9OfRNJIJoKb6ffwTulusG37+cio1YEj+GWlCHYx8jHN/BHeVbkLbbsm+kc
-        3FtNsvBMgBv5kmd6riqbV2HcTctbwbNvBFCV6y0n+QYgBbaFWr/AqdA9z2VB+7r/9cWega
-        wU5bVRH/cz+5bE1hN+VhMgPD/CTX6wQ=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-67-3a2etxdQOD6R8Zka8-SMtw-1; Wed, 08 Apr 2020 11:22:15 -0400
-X-MC-Unique: 3a2etxdQOD6R8Zka8-SMtw-1
-Received: by mail-lf1-f70.google.com with SMTP id i20so1400978lfl.14
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:22:14 -0700 (PDT)
+        bh=jInxb6S6kno8alLpBOp6oo5DZLTgW5u7AbwcRZ4qu+U=;
+        b=HiIccaiHfJFiRExGzSJ8mzj0/A+q0mb/omA6EjIxKFdx1KpeHNMv99LPGIu8lZVnedUucO
+        f393+KXptk6qRKnH+ZJBW1+tSNeou1whLraN4ddtAOT8F7JhaY75JHDjlQdSEPKJfA/8PQ
+        mJoSFgP3kZ9u3Wjwtn3Q1o7n22z2EFY=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-77-49Dx_m0CMMyPtIq9K6n6ew-1; Wed, 08 Apr 2020 10:26:49 -0400
+X-MC-Unique: 49Dx_m0CMMyPtIq9K6n6ew-1
+Received: by mail-wr1-f70.google.com with SMTP id u16so4129060wrp.14
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:26:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1txRlmT+72ImlSaHrcTVyVV9rPGbS6nrrn3+UD7QLpI=;
-        b=TApFEK2X8FeNJ+RmfSveXfRO2AOWuQWyb4eJhBo/d0WlYtI4f+3M2fwpCEjMLVALe7
-         BLuwvYoG30PZWv9awqECO8yiiztOY2N5QVSa2YApISGHXoLc1Q80xUkfufgiePT7rWke
-         zzPxY/zi195WcTB5cIOtddBHdj3xu3r+iIF/rg6YrTleqjAXdCIznHu406a8BaZRcXeD
-         3fNITHraHeVn6TvZYGmqrlA9b3xQaDCXprVMJqysrvLA0aHZFvx9LWutZq3ttDz64QXB
-         eeOOsq1RP+/Y2BgAWlas9dXPi2lbRkhyEda4f1U027i6IKZJIXmBJ/5Fhpm4ZC0q+lu3
-         MA5A==
-X-Gm-Message-State: AGi0PuYRqmcr1HYtEVqXJ1S9tJ0TnBKs+tIncGJ9K8kH3Awnz7OzsJY1
-        VOAqApFH2ulvhYHbWioioZ+XUYPtNv+ztTYkAU3NjgG8gvQVmN1itxaVvVwD9kIBlzr/QBCLrjJ
-        3n5XjcVOryApHT68I2YY2Q3QS
-X-Received: by 2002:a2e:330e:: with SMTP id d14mr5352408ljc.153.1586359332735;
-        Wed, 08 Apr 2020 08:22:12 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJdXz3oUttJhWsuebJFdNpeDsyKWPgAW8IH00jWOSlW8PWM08JGzO56MjZfMCAaMit2yGY3xA==
-X-Received: by 2002:a5d:4611:: with SMTP id t17mr9186294wrq.16.1586355600423;
-        Wed, 08 Apr 2020 07:20:00 -0700 (PDT)
-Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
-        by smtp.gmail.com with ESMTPSA id r20sm6293441wmh.46.2020.04.08.07.19.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2020 07:19:59 -0700 (PDT)
-Subject: Re: [PATCH V2 5/9] objtool: Add support for intra-function calls
-To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        tglx@linutronix.de
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-6-alexandre.chartre@oracle.com>
- <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
- <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
- <7ba6d4c9-c1dc-fa83-2ade-b7d3fba9e7fb@oracle.com>
-From:   Julien Thierry <jthierry@redhat.com>
-Message-ID: <b8d4777e-1c33-7165-33f6-f32007ef7305@redhat.com>
-Date:   Wed, 8 Apr 2020 15:19:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jInxb6S6kno8alLpBOp6oo5DZLTgW5u7AbwcRZ4qu+U=;
+        b=jzt+xVachTDh1CoLRYeEYxYE6ErKDcF+aIKrAjoRqhIvKmN3n6hcmpm3X0CUkNR51D
+         JvhJsONqUO19oTb5FYVj0poco4FX3BQhIxw6ZJ74n0O4h3OC+eGPK7t5im6DbxUBqq06
+         c4/qebTr+yGdkhe6rBh4apnEjpS3hIalaK+FTXcDhUqZuebk+3fLEC32YmPjtLaoRQdt
+         /dZckazFkMXZPjVC3kwWn66VAu/0iU3P0WlriauieDp2QB5JzD0imNA79yohNeMYrVSC
+         1GACFTbZcYIwyqzuf6mre+jr8HywBRbVuBczOrvIt6rhF6I39JwMoP8WE3Eytst84D/c
+         /i/w==
+X-Gm-Message-State: AGi0PubufXH0EVA2Ioc08IKrWjLCzks0vT/SBSuUQ1itqP/ZQHUwyBUH
+        kJ8K3FNr36Z0oSZ9sAiJve4rYfiByx2onhJApJuaADMDcacnaemArB+dTjXbe0z5r3mN8Oi6Qxx
+        SGm3KjxDWZwSrEuKN0GPKjn3h
+X-Received: by 2002:a1c:c302:: with SMTP id t2mr5026690wmf.85.1586356008062;
+        Wed, 08 Apr 2020 07:26:48 -0700 (PDT)
+X-Google-Smtp-Source: APiQypL93j1JGbhmlzyGs7UPvOEjdq8mXYKa70sYn+9u3/NXGRFCEUVRtx7SgpDd3+CMxyGnT4hEMw==
+X-Received: by 2002:a7b:c7cb:: with SMTP id z11mr4837917wmk.15.1586355643514;
+        Wed, 08 Apr 2020 07:20:43 -0700 (PDT)
+Received: from xz-x1 ([2607:9880:19c0:32::3])
+        by smtp.gmail.com with ESMTPSA id u6sm29411783wrm.65.2020.04.08.07.20.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 07:20:42 -0700 (PDT)
+Date:   Wed, 8 Apr 2020 10:20:39 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
+ signal
+Message-ID: <20200408142039.GD66033@xz-x1>
+References: <20200408014010.80428-1-peterx@redhat.com>
+ <20200408014010.80428-2-peterx@redhat.com>
+ <20200408102128.GX18914@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <7ba6d4c9-c1dc-fa83-2ade-b7d3fba9e7fb@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200408102128.GX18914@dhcp22.suse.cz>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 08, 2020 at 12:21:28PM +0200, Michal Hocko wrote:
+> On Tue 07-04-20 21:40:09, Peter Xu wrote:
+> > lookup_node() uses gup to pin the page and get node information.  It
+> > checks against ret>=0 assuming the page will be filled in.  However
+> > it's also possible that gup will return zero, for example, when the
+> > thread is quickly killed with a fatal signal.  Teach lookup_node() to
+> > gracefully return an error -EFAULT if it happens.
+> > 
+> > Meanwhile, initialize "page" to NULL to avoid potential risk of
+> > exploiting the pointer.
+> > 
+> > Reported-by: syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
+> > Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
+> 
+> I am not familiar with thic commit but shouldn't gup return ERESTARTSYS
+> on a fatal signal?
 
+Hi, Michal,
 
-On 4/8/20 3:06 PM, Alexandre Chartre wrote:
-> 
-> 
-> On 4/7/20 3:28 PM, Alexandre Chartre wrote:
->>
->> On 4/7/20 3:07 PM, Peter Zijlstra wrote:
->>> On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
->>>
->>>> index a62e032863a8..7ee1561bf7ad 100644
->>>> --- a/tools/objtool/arch/x86/decode.c
->>>> +++ b/tools/objtool/arch/x86/decode.c
->>>> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct 
->>>> cfi_state *state)
->>>>       state->regs[16].base = CFI_CFA;
->>>>       state->regs[16].offset = -8;
->>>>   }
->>>> +
->>>> +
->>>> +void arch_configure_intra_function_call(struct stack_op *op)
->>>> +{
->>>> +    /*
->>>> +     * For the impact on the stack, make an intra-function
->>>> +     * call behaves like a push of an immediate value (the
->>>> +     * return address).
->>>> +     */
->>>> +    op->src.type = OP_SRC_CONST;
->>>> +    op->dest.type = OP_DEST_PUSH;
->>>> +}
->>>
->>> An alternative is to always set up stack ops for CALL/RET on decode, but
->>> conditionally run update_insn_state() for them.
->>>
->>> Not sure that makes more logical sense, but the patch would be simpler I
->>> think.
->>
->> Right, this would avoid adding a new arch dependent function and the 
->> patch
->> will be simpler. This probably makes sense as the stack impact is the 
->> same
->> for all calls (but objtool will use it only for intra-function calls).
->>
-> 
-> Actually the processing of the ret instruction is more complicated than I
-> anticipated with intra-function calls, and so my implementation is not
-> complete at the moment.
-> 
-> The issue is to correctly handle how the ret is going to behave 
-> depending how
-> the stack (or register on arm) is modified before the ret. Adjusting the 
-> stack
-> offset makes the stack state correct, but objtool still needs to correctly
-> figure out where the ret is going to return and where the code flow 
-> continues.
-> 
+I do see quite a few usages on -ERESTARTSYS, but also some others,
+majorly -EINTR, or even -EFAULT.  I think it could be a more general
+question rather than a specific question to this patch only.
 
-A hint indicating the target "jump" address could be useful. It could be 
-used to add the information on some call/jump dynamic that aren't 
-associated with jump tables. Currently when objtool finds a jump 
-dynamic, if no branches were added to it, it will just return.
+I saw some other discussions about this return value issue, I'll CC
+you in the other thread when I raise this as a general question.
 
-Having such a hint could help make additional links (at least on arm64). 
-I don't know what Peter and Josh would think of that (if that helps in 
-your case of course).
+Thanks,
 
 -- 
-Julien Thierry
+Peter Xu
 
