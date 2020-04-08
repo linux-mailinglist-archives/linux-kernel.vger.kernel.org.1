@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EE71A245A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8C41A23FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729098AbgDHOv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:51:26 -0400
-Received: from mail-ed1-f50.google.com ([209.85.208.50]:42899 "EHLO
-        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbgDHOv0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 10:51:26 -0400
-Received: by mail-ed1-f50.google.com with SMTP id cw6so8836021edb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:51:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3zZRqZBT7bl6XuqCoSGBYjXfPH3OC6gG/jRKiV96AqY=;
-        b=Ac3/nMj52bzfBeFiIMgWtYKLj/5FMVy+22ItcI9qsqUeD/T1Ft6NWOn3nTVsTU8Aa0
-         WW7Ooxi+yy4n7kEuhw9YzxZlaMP1gzZxCCnQQsoeVpic0k3dMQUwCUlUs8Jrz/z7DY2s
-         iZkEx4JRJqfIra3Es0ozbCIEkGLOBODr/LixI1vvDDVLcNIrhQWotmT1dBvrRAxpP2qr
-         MhE3+0nzuRLXHtMGzawaCevFfknnkm9YFuxVGS6kpg1+r7IXysVmjPhyHMbJlvToywSB
-         VV86gH0/S/zCFvnykz88u0YBi/V68L7vcP9yBr5m+t5Sh3HJvRjKpBehM+6wEA3pv1XV
-         8z8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3zZRqZBT7bl6XuqCoSGBYjXfPH3OC6gG/jRKiV96AqY=;
-        b=KMTn/45qLSOJ9m/Vr2ZNRig+6RJoHuA2LTYP5VOM0i2977wAQpZG3n4E8Az8Zx19lD
-         68yUECDJpsAFVDchDh+Z/thNR2wawn1IpLuGHj1g4SrpvayEP4xQjsz4efT0He2M1NZ7
-         BtISxDgvHWjQJ47EJY+vgt0rEv8pZxo0eGVpi0BdX23yX6FfCl0aBFimu6ROxPMDuMam
-         RtuWx/qhflS0DQhHGXnzyR6Pbj/KoXD7AGLU0Ut81XvVqUHUrbSaVrxBfcdVZiTLBfFA
-         Zsx46qXCKrl5TXR+yI5UvkgMSwklm3WDbabCyeoVWI0a+44AhVNWjQgpwupjGG/GQ1at
-         sCIQ==
-X-Gm-Message-State: AGi0Puan1Oy4Lvbh7anExJUPzQcD++lfO53D0VEO1OazrsnPBxhHSQg1
-        CP8dg8FgQ+3CPhxkndZBObtRd202xyA=
-X-Google-Smtp-Source: APiQypK6+uQOMxoqN4nUCCUsZ6n5F+dz2DRbrE9+IZabawptpTewzjtnzQNgsWsjgGlj8uyKBxNAAQ==
-X-Received: by 2002:a2e:988c:: with SMTP id b12mr5251654ljj.138.1586355703999;
-        Wed, 08 Apr 2020 07:21:43 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id v17sm1305530lfe.34.2020.04.08.07.21.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 07:21:43 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id B0613101C47; Wed,  8 Apr 2020 17:21:45 +0300 (+03)
-Date:   Wed, 8 Apr 2020 17:21:45 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, linux-mm@kvack.org,
+        id S1728657AbgDHOXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:23:04 -0400
+Received: from mga02.intel.com ([134.134.136.20]:54100 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727070AbgDHOXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 10:23:04 -0400
+IronPort-SDR: Q4sVnB1sQy9KaF9tayZOi3WKKRmPcXowFhyF41/+7sVrSdF0qTcx2Hjv1i6mBQi1Ku0puN409R
+ BXNye8j/Tm/w==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 07:23:03 -0700
+IronPort-SDR: Gb5W0BceH43BnnIx0UpCQ+0biYB59F70/Vo0XMDBC4kjsoGC5ieJuiRODEtezmcSZtiQ+dFyHR
+ +S3krWP8JVXQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,358,1580803200"; 
+   d="scan'208";a="275457576"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
+  by fmsmga004.fm.intel.com with ESMTP; 08 Apr 2020 07:23:03 -0700
+Date:   Wed, 8 Apr 2020 07:23:03 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCHv2 1/8] khugepaged: Add self test
-Message-ID: <20200408142145.workbzv2n3p27y2w@box>
-References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
- <20200403112928.19742-2-kirill.shutemov@linux.intel.com>
- <D55D6A3A-47A1-41F5-B939-36EEA740CF72@nvidia.com>
- <20200406152035.ga7hk6jfaqzvlete@box>
- <A8449566-7C9E-464E-92AC-46FDBCDC04AA@nvidia.com>
+        syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com
+Subject: Re: [PATCH 0/2] KVM: Fix out-of-bounds memslot access
+Message-ID: <20200408142302.GA10686@linux.intel.com>
+References: <20200408064059.8957-1-sean.j.christopherson@intel.com>
+ <526247ac-4201-8b3d-0f15-d93b12a530b8@de.ibm.com>
+ <20200408101004.09b1f56d.cohuck@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <A8449566-7C9E-464E-92AC-46FDBCDC04AA@nvidia.com>
+In-Reply-To: <20200408101004.09b1f56d.cohuck@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 02:50:32PM -0400, Zi Yan wrote:
->       khugepaged-58    [001] ....  9913.990380: mm_khugepaged_scan_pmd: mm=00000000283d31fc, scan_pfn=0x2ae4bd, writable=0, referenced=512, none_or_zero=0, status=no_writable_page, unmapped=0
+On Wed, Apr 08, 2020 at 10:10:04AM +0200, Cornelia Huck wrote:
+> On Wed, 8 Apr 2020 09:24:27 +0200
+> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> 
+> > On 08.04.20 08:40, Sean Christopherson wrote:
+> > > Two fixes for what are effectively the same bug.  The binary search used
+> > > for memslot lookup doesn't check the resolved index and can access memory
+> > > beyond the end of the memslot array.
+> > > 
+> > > I split the s390 specific change to a separate patch because it's subtly
+> > > different, and to simplify backporting.  The KVM wide fix can be applied
+> > > to stable trees as is, but AFAICT the s390 change would need to be paired
+> > > with the !used_slots check from commit 774a964ef56 ("KVM: Fix out of range  
+> > 
+> > I cannot find the commit id 774a964ef56
+> > 
+> 
+> It's 0774a964ef561b7170d8d1b1bfe6f88002b6d219 in my tree.
 
-Looks like all failures due to lack of writable ptes. That's very strange
-because we write to the page on fill.
-
-You've mentioned that you run it in VM. I wounder if it can be a
-virtualizaiton artefact. I run tests under KVM and they are fine. What is
-your virtualization setup?
-
--- 
- Kirill A. Shutemov
+Argh, I botched the copy.  Thanks for hunting it down!
