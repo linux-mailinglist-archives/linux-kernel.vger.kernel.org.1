@@ -2,458 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 342AA1A19A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76531A19A9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgDHBjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 21:39:17 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:44134 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgDHBjQ (ORCPT
+        id S1726589AbgDHBkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 21:40:20 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55126 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726484AbgDHBkT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 21:39:16 -0400
-Received: by mail-lj1-f196.google.com with SMTP id z26so1739856ljz.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 18:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RCupP6WPc6v8RwWEuu2egqpkN7F9WoGNPUzkiXRaJyg=;
-        b=WyTTBy7CXLXhJvauRTXf1zfVa3EDcbmxzBTnYHJT1WPMGSsl7Oan3cRvubOeRX3WLu
-         Tudztbkdd0o6K+0j9eoCmPYhC0+nrFyQQizHEIWuhmQ7IiubrHzTNNkUPUOe154vzMq0
-         el68bgmz2lN3Q+kAd71fowGCL/3npLBh8aDwN2HlXHNXk54QNBkndA5j17a/VXG9gwBC
-         PBANijMlKx0E2Rfz/wdiKcZcTpVi6UlnyaCTyUFDo+QQL/EJzaeOVMLBgRKHOhxpWsYp
-         FXwRdJ/7GxNQUdLXUghxrV36Z1BePp6bX2BMVxyu/acz4At+fRXeBPe0neEfXFKiSAQa
-         GrTA==
+        Tue, 7 Apr 2020 21:40:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586310019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wl5DI6kAtUJ8k2YGULEZuXgrxTBuaptiox8B/l3QktI=;
+        b=Vgc92owQgkP61Su6rb7lnRwfQwRpKp6MqFRbbvBVYPAxcMq5IAoAUwj1zXvrR11URSJxYO
+        lRlcTTlcB8Hr4/EVgbuc8Vyn8DEpPcXVY98/NdBYxBDkUtnu4T1DxPSSW7ppOygCV1vfaU
+        Yqkdoc0iRE+2AD+WDcTXpsxNQzj9k5A=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-rtbdM2eJOfamBZauj_cL9Q-1; Tue, 07 Apr 2020 21:40:15 -0400
+X-MC-Unique: rtbdM2eJOfamBZauj_cL9Q-1
+Received: by mail-qv1-f70.google.com with SMTP id z14so4839448qvk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 18:40:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RCupP6WPc6v8RwWEuu2egqpkN7F9WoGNPUzkiXRaJyg=;
-        b=kdpcJ2b7T9yYdnlwg3OzZN9seh9D0MItL8z0LGQhJ5UJKDcgPZ1Yh3Ec6zYRsSbzCM
-         MXHkeO3hj3OFXNHpvzJPqXLzjwos5ZLwigP4haENe8J5j4jgsQgn4AOQx9bFemHNTNQM
-         P8PLDAn7NjU6ZKl3YadpPN20Kpjt/pwZlygWbyCIi6CFz6sTCwZzUJ0eOXaf4BpQAClz
-         IHee3uzvVpQZZV4mhII0VD6LU5dLCK8AJMraOMZpv9iRxBib2U470mJOXytXo/ep+1O1
-         kgeGuZ4o/lxrSgczf+LYoMunT+SUKK2lzv5XdOCaEL3slnmcCJ5AXJ51tc+LeEAXqRp4
-         4Rdw==
-X-Gm-Message-State: AGi0PuYfmYUlPWO/HleZZNqKj0vTCVR6ntj++kPoJAfawtVZaDmNuYGY
-        1YWgBbrJsTBm6hl3ttZ/jqoS7GnsrBItaRCPpqNaWQ==
-X-Google-Smtp-Source: APiQypJ+nvagMWy1mmRUKbq6/ja9kHikVtCUoJsNUyHkZqL5/OdYs0NnKL7EY2pXIuuUOKaPRyuRIcZIjCB5psbHQsw=
-X-Received: by 2002:a2e:9a54:: with SMTP id k20mr3296701ljj.272.1586309952468;
- Tue, 07 Apr 2020 18:39:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wl5DI6kAtUJ8k2YGULEZuXgrxTBuaptiox8B/l3QktI=;
+        b=CM4vs8PHjt+KdlNj61iLJq/KOiC8twkJ2qPetT75/Ora8ZvMp7EElC8nsyqzfeqcJz
+         c2WE1xGgWaGx4DYd7cynN5QGr8cuKf5zgZxC3BWqBNF6UtnipX1/lzGSmnH3siYXcqal
+         Awp2dyFLHgaPGvdKAj+FG+Vh6v5b01S6HogQz0SsvUwDfy5cR6q9PLEY26aGn4zPBcJC
+         cMdfNsK2Y7ET2ThnkTWAI0OsIyG6zs15cfbBQUJqSpJoIhjm6JhTOrBYVhurAT5Gf5ry
+         Esad1EU9K3xTiGWbt9VdEcqg01MgkHNUsLaHQyf+3m/Ocmz4qVWoR94VjyedBI05dafv
+         Xxwg==
+X-Gm-Message-State: AGi0PuZhyokT2V/V9+C2YUSSEqSV5z7hGI5vhy8RiFkQE867/NzFvX1R
+        MySWIqnRrLveB1DbXqlrdS83BsR4lCKGk8tRGTj0ykuyp4tRKx+VHglEL5An9jJpdW+4gItKVU8
+        KpDbju4iumxcU0VY4WC6atQGY
+X-Received: by 2002:a05:620a:7eb:: with SMTP id k11mr5218335qkk.282.1586310013173;
+        Tue, 07 Apr 2020 18:40:13 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIck+cZdT2RczXl/himnTKPJmXhgzUtYHMHz0sOupASHZtDDvsQBExfkfjpVMjfuSSjvpLSWQ==
+X-Received: by 2002:a05:620a:7eb:: with SMTP id k11mr5218325qkk.282.1586310012967;
+        Tue, 07 Apr 2020 18:40:12 -0700 (PDT)
+Received: from xz-x1.hitronhub.home ([2607:9880:19c0:32::3])
+        by smtp.gmail.com with ESMTPSA id g10sm18665035qkb.9.2020.04.07.18.40.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Apr 2020 18:40:12 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com
+Subject: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
+Date:   Tue,  7 Apr 2020 21:40:08 -0400
+Message-Id: <20200408014010.80428-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-References: <cover.1585548051.git.ashish.kalra@amd.com> <265ef8a0ab75f01bc673cce6ddcf7988c7623943.1585548051.git.ashish.kalra@amd.com>
- <CABayD+ekEYAS4z=L2r1q+8xaEzqKmJuzuYQhsWX3X=htgTvL5w@mail.gmail.com>
- <20200407052740.GA31821@ashkalra_ubuntu_server> <CABayD+cNdEJxoSHee3s0toy6-nO6Bm4-OsrbBdS8mCWoMBSqLQ@mail.gmail.com>
- <d67a104e-6a01-a766-63b2-3f8b6026ca4c@amd.com> <CABayD+ehZZabp2tA8K-ViB0BXPyjpz-XpXPXoD7MUH0OLz_Z-g@mail.gmail.com>
- <20200408011726.GA3684@ashkalra_ubuntu_server>
-In-Reply-To: <20200408011726.GA3684@ashkalra_ubuntu_server>
-From:   Steve Rutherford <srutherford@google.com>
-Date:   Tue, 7 Apr 2020 18:38:36 -0700
-Message-ID: <CABayD+et6p8UAr1jTFMK2SbYvihveLH6kp=RRqzBxvaU-HPy2Q@mail.gmail.com>
-Subject: Re: [PATCH v6 08/14] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 7, 2020 at 6:17 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
->
-> Hello Steve, Brijesh,
->
-> On Tue, Apr 07, 2020 at 05:35:57PM -0700, Steve Rutherford wrote:
-> > On Tue, Apr 7, 2020 at 5:29 PM Brijesh Singh <brijesh.singh@amd.com> wr=
-ote:
-> > >
-> > >
-> > > On 4/7/20 7:01 PM, Steve Rutherford wrote:
-> > > > On Mon, Apr 6, 2020 at 10:27 PM Ashish Kalra <ashish.kalra@amd.com>=
- wrote:
-> > > >> Hello Steve,
-> > > >>
-> > > >> On Mon, Apr 06, 2020 at 07:17:37PM -0700, Steve Rutherford wrote:
-> > > >>> On Sun, Mar 29, 2020 at 11:22 PM Ashish Kalra <Ashish.Kalra@amd.c=
-om> wrote:
-> > > >>>> From: Brijesh Singh <Brijesh.Singh@amd.com>
-> > > >>>>
-> > > >>>> This hypercall is used by the SEV guest to notify a change in th=
-e page
-> > > >>>> encryption status to the hypervisor. The hypercall should be inv=
-oked
-> > > >>>> only when the encryption attribute is changed from encrypted -> =
-decrypted
-> > > >>>> and vice versa. By default all guest pages are considered encryp=
-ted.
-> > > >>>>
-> > > >>>> Cc: Thomas Gleixner <tglx@linutronix.de>
-> > > >>>> Cc: Ingo Molnar <mingo@redhat.com>
-> > > >>>> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> > > >>>> Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > > >>>> Cc: "Radim Kr=C4=8Dm=C3=A1=C5=99" <rkrcmar@redhat.com>
-> > > >>>> Cc: Joerg Roedel <joro@8bytes.org>
-> > > >>>> Cc: Borislav Petkov <bp@suse.de>
-> > > >>>> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> > > >>>> Cc: x86@kernel.org
-> > > >>>> Cc: kvm@vger.kernel.org
-> > > >>>> Cc: linux-kernel@vger.kernel.org
-> > > >>>> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> > > >>>> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> > > >>>> ---
-> > > >>>>  Documentation/virt/kvm/hypercalls.rst | 15 +++++
-> > > >>>>  arch/x86/include/asm/kvm_host.h       |  2 +
-> > > >>>>  arch/x86/kvm/svm.c                    | 95 ++++++++++++++++++++=
-+++++++
-> > > >>>>  arch/x86/kvm/vmx/vmx.c                |  1 +
-> > > >>>>  arch/x86/kvm/x86.c                    |  6 ++
-> > > >>>>  include/uapi/linux/kvm_para.h         |  1 +
-> > > >>>>  6 files changed, 120 insertions(+)
-> > > >>>>
-> > > >>>> diff --git a/Documentation/virt/kvm/hypercalls.rst b/Documentati=
-on/virt/kvm/hypercalls.rst
-> > > >>>> index dbaf207e560d..ff5287e68e81 100644
-> > > >>>> --- a/Documentation/virt/kvm/hypercalls.rst
-> > > >>>> +++ b/Documentation/virt/kvm/hypercalls.rst
-> > > >>>> @@ -169,3 +169,18 @@ a0: destination APIC ID
-> > > >>>>
-> > > >>>>  :Usage example: When sending a call-function IPI-many to vCPUs,=
- yield if
-> > > >>>>                 any of the IPI target vCPUs was preempted.
-> > > >>>> +
-> > > >>>> +
-> > > >>>> +8. KVM_HC_PAGE_ENC_STATUS
-> > > >>>> +-------------------------
-> > > >>>> +:Architecture: x86
-> > > >>>> +:Status: active
-> > > >>>> +:Purpose: Notify the encryption status changes in guest page ta=
-ble (SEV guest)
-> > > >>>> +
-> > > >>>> +a0: the guest physical address of the start page
-> > > >>>> +a1: the number of pages
-> > > >>>> +a2: encryption attribute
-> > > >>>> +
-> > > >>>> +   Where:
-> > > >>>> +       * 1: Encryption attribute is set
-> > > >>>> +       * 0: Encryption attribute is cleared
-> > > >>>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/=
-asm/kvm_host.h
-> > > >>>> index 98959e8cd448..90718fa3db47 100644
-> > > >>>> --- a/arch/x86/include/asm/kvm_host.h
-> > > >>>> +++ b/arch/x86/include/asm/kvm_host.h
-> > > >>>> @@ -1267,6 +1267,8 @@ struct kvm_x86_ops {
-> > > >>>>
-> > > >>>>         bool (*apic_init_signal_blocked)(struct kvm_vcpu *vcpu);
-> > > >>>>         int (*enable_direct_tlbflush)(struct kvm_vcpu *vcpu);
-> > > >>>> +       int (*page_enc_status_hc)(struct kvm *kvm, unsigned long=
- gpa,
-> > > >>>> +                                 unsigned long sz, unsigned lon=
-g mode);
-> > > >>> Nit: spell out size instead of sz.
-> > > >>>>  };
-> > > >>>>
-> > > >>>>  struct kvm_arch_async_pf {
-> > > >>>> diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
-> > > >>>> index 7c2721e18b06..1d8beaf1bceb 100644
-> > > >>>> --- a/arch/x86/kvm/svm.c
-> > > >>>> +++ b/arch/x86/kvm/svm.c
-> > > >>>> @@ -136,6 +136,8 @@ struct kvm_sev_info {
-> > > >>>>         int fd;                 /* SEV device fd */
-> > > >>>>         unsigned long pages_locked; /* Number of pages locked */
-> > > >>>>         struct list_head regions_list;  /* List of registered re=
-gions */
-> > > >>>> +       unsigned long *page_enc_bmap;
-> > > >>>> +       unsigned long page_enc_bmap_size;
-> > > >>>>  };
-> > > >>>>
-> > > >>>>  struct kvm_svm {
-> > > >>>> @@ -1991,6 +1993,9 @@ static void sev_vm_destroy(struct kvm *kvm=
-)
-> > > >>>>
-> > > >>>>         sev_unbind_asid(kvm, sev->handle);
-> > > >>>>         sev_asid_free(sev->asid);
-> > > >>>> +
-> > > >>>> +       kvfree(sev->page_enc_bmap);
-> > > >>>> +       sev->page_enc_bmap =3D NULL;
-> > > >>>>  }
-> > > >>>>
-> > > >>>>  static void avic_vm_destroy(struct kvm *kvm)
-> > > >>>> @@ -7593,6 +7598,94 @@ static int sev_receive_finish(struct kvm =
-*kvm, struct kvm_sev_cmd *argp)
-> > > >>>>         return ret;
-> > > >>>>  }
-> > > >>>>
-> > > >>>> +static int sev_resize_page_enc_bitmap(struct kvm *kvm, unsigned=
- long new_size)
-> > > >>>> +{
-> > > >>>> +       struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
-> > > >>>> +       unsigned long *map;
-> > > >>>> +       unsigned long sz;
-> > > >>>> +
-> > > >>>> +       if (sev->page_enc_bmap_size >=3D new_size)
-> > > >>>> +               return 0;
-> > > >>>> +
-> > > >>>> +       sz =3D ALIGN(new_size, BITS_PER_LONG) / 8;
-> > > >>>> +
-> > > >>>> +       map =3D vmalloc(sz);
-> > > >>>> +       if (!map) {
-> > > >>>> +               pr_err_once("Failed to allocate encrypted bitmap=
- size %lx\n",
-> > > >>>> +                               sz);
-> > > >>>> +               return -ENOMEM;
-> > > >>>> +       }
-> > > >>>> +
-> > > >>>> +       /* mark the page encrypted (by default) */
-> > > >>>> +       memset(map, 0xff, sz);
-> > > >>>> +
-> > > >>>> +       bitmap_copy(map, sev->page_enc_bmap, sev->page_enc_bmap_=
-size);
-> > > >>>> +       kvfree(sev->page_enc_bmap);
-> > > >>>> +
-> > > >>>> +       sev->page_enc_bmap =3D map;
-> > > >>>> +       sev->page_enc_bmap_size =3D new_size;
-> > > >>>> +
-> > > >>>> +       return 0;
-> > > >>>> +}
-> > > >>>> +
-> > > >>>> +static int svm_page_enc_status_hc(struct kvm *kvm, unsigned lon=
-g gpa,
-> > > >>>> +                                 unsigned long npages, unsigned=
- long enc)
-> > > >>>> +{
-> > > >>>> +       struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
-> > > >>>> +       kvm_pfn_t pfn_start, pfn_end;
-> > > >>>> +       gfn_t gfn_start, gfn_end;
-> > > >>>> +       int ret;
-> > > >>>> +
-> > > >>>> +       if (!sev_guest(kvm))
-> > > >>>> +               return -EINVAL;
-> > > >>>> +
-> > > >>>> +       if (!npages)
-> > > >>>> +               return 0;
-> > > >>>> +
-> > > >>>> +       gfn_start =3D gpa_to_gfn(gpa);
-> > > >>>> +       gfn_end =3D gfn_start + npages;
-> > > >>>> +
-> > > >>>> +       /* out of bound access error check */
-> > > >>>> +       if (gfn_end <=3D gfn_start)
-> > > >>>> +               return -EINVAL;
-> > > >>>> +
-> > > >>>> +       /* lets make sure that gpa exist in our memslot */
-> > > >>>> +       pfn_start =3D gfn_to_pfn(kvm, gfn_start);
-> > > >>>> +       pfn_end =3D gfn_to_pfn(kvm, gfn_end);
-> > > >>>> +
-> > > >>>> +       if (is_error_noslot_pfn(pfn_start) && !is_noslot_pfn(pfn=
-_start)) {
-> > > >>>> +               /*
-> > > >>>> +                * Allow guest MMIO range(s) to be added
-> > > >>>> +                * to the page encryption bitmap.
-> > > >>>> +                */
-> > > >>>> +               return -EINVAL;
-> > > >>>> +       }
-> > > >>>> +
-> > > >>>> +       if (is_error_noslot_pfn(pfn_end) && !is_noslot_pfn(pfn_e=
-nd)) {
-> > > >>>> +               /*
-> > > >>>> +                * Allow guest MMIO range(s) to be added
-> > > >>>> +                * to the page encryption bitmap.
-> > > >>>> +                */
-> > > >>>> +               return -EINVAL;
-> > > >>>> +       }
-> > > >>>> +
-> > > >>>> +       mutex_lock(&kvm->lock);
-> > > >>>> +       ret =3D sev_resize_page_enc_bitmap(kvm, gfn_end);
-> > > >>>> +       if (ret)
-> > > >>>> +               goto unlock;
-> > > >>>> +
-> > > >>>> +       if (enc)
-> > > >>>> +               __bitmap_set(sev->page_enc_bmap, gfn_start,
-> > > >>>> +                               gfn_end - gfn_start);
-> > > >>>> +       else
-> > > >>>> +               __bitmap_clear(sev->page_enc_bmap, gfn_start,
-> > > >>>> +                               gfn_end - gfn_start);
-> > > >>>> +
-> > > >>>> +unlock:
-> > > >>>> +       mutex_unlock(&kvm->lock);
-> > > >>>> +       return ret;
-> > > >>>> +}
-> > > >>>> +
-> > > >>>>  static int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
-> > > >>>>  {
-> > > >>>>         struct kvm_sev_cmd sev_cmd;
-> > > >>>> @@ -7995,6 +8088,8 @@ static struct kvm_x86_ops svm_x86_ops __ro=
-_after_init =3D {
-> > > >>>>         .need_emulation_on_page_fault =3D svm_need_emulation_on_=
-page_fault,
-> > > >>>>
-> > > >>>>         .apic_init_signal_blocked =3D svm_apic_init_signal_block=
-ed,
-> > > >>>> +
-> > > >>>> +       .page_enc_status_hc =3D svm_page_enc_status_hc,
-> > > >>>>  };
-> > > >>>>
-> > > >>>>  static int __init svm_init(void)
-> > > >>>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > > >>>> index 079d9fbf278e..f68e76ee7f9c 100644
-> > > >>>> --- a/arch/x86/kvm/vmx/vmx.c
-> > > >>>> +++ b/arch/x86/kvm/vmx/vmx.c
-> > > >>>> @@ -8001,6 +8001,7 @@ static struct kvm_x86_ops vmx_x86_ops __ro=
-_after_init =3D {
-> > > >>>>         .nested_get_evmcs_version =3D NULL,
-> > > >>>>         .need_emulation_on_page_fault =3D vmx_need_emulation_on_=
-page_fault,
-> > > >>>>         .apic_init_signal_blocked =3D vmx_apic_init_signal_block=
-ed,
-> > > >>>> +       .page_enc_status_hc =3D NULL,
-> > > >>>>  };
-> > > >>>>
-> > > >>>>  static void vmx_cleanup_l1d_flush(void)
-> > > >>>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > >>>> index cf95c36cb4f4..68428eef2dde 100644
-> > > >>>> --- a/arch/x86/kvm/x86.c
-> > > >>>> +++ b/arch/x86/kvm/x86.c
-> > > >>>> @@ -7564,6 +7564,12 @@ int kvm_emulate_hypercall(struct kvm_vcpu=
- *vcpu)
-> > > >>>>                 kvm_sched_yield(vcpu->kvm, a0);
-> > > >>>>                 ret =3D 0;
-> > > >>>>                 break;
-> > > >>>> +       case KVM_HC_PAGE_ENC_STATUS:
-> > > >>>> +               ret =3D -KVM_ENOSYS;
-> > > >>>> +               if (kvm_x86_ops->page_enc_status_hc)
-> > > >>>> +                       ret =3D kvm_x86_ops->page_enc_status_hc(=
-vcpu->kvm,
-> > > >>>> +                                       a0, a1, a2);
-> > > >>>> +               break;
-> > > >>>>         default:
-> > > >>>>                 ret =3D -KVM_ENOSYS;
-> > > >>>>                 break;
-> > > >>>> diff --git a/include/uapi/linux/kvm_para.h b/include/uapi/linux/=
-kvm_para.h
-> > > >>>> index 8b86609849b9..847b83b75dc8 100644
-> > > >>>> --- a/include/uapi/linux/kvm_para.h
-> > > >>>> +++ b/include/uapi/linux/kvm_para.h
-> > > >>>> @@ -29,6 +29,7 @@
-> > > >>>>  #define KVM_HC_CLOCK_PAIRING           9
-> > > >>>>  #define KVM_HC_SEND_IPI                10
-> > > >>>>  #define KVM_HC_SCHED_YIELD             11
-> > > >>>> +#define KVM_HC_PAGE_ENC_STATUS         12
-> > > >>>>
-> > > >>>>  /*
-> > > >>>>   * hypercalls use architecture specific
-> > > >>>> --
-> > > >>>> 2.17.1
-> > > >>>>
-> > > >>> I'm still not excited by the dynamic resizing. I believe the gues=
-t
-> > > >>> hypercall can be called in atomic contexts, which makes me
-> > > >>> particularly unexcited to see a potentially large vmalloc on the =
-host
-> > > >>> followed by filling the buffer. Particularly when the buffer migh=
-t be
-> > > >>> non-trivial in size (~1MB per 32GB, per some back of the envelope
-> > > >>> math).
-> > > >>>
-> > > >> I think looking at more practical situations, most hypercalls will
-> > > >> happen during the boot stage, when device specific initializations=
- are
-> > > >> happening, so typically the maximum page encryption bitmap size wo=
-uld
-> > > >> be allocated early enough.
-> > > >>
-> > > >> In fact, initial hypercalls made by OVMF will probably allocate th=
-e
-> > > >> maximum page bitmap size even before the kernel comes up, especial=
-ly
-> > > >> as they will be setting up page enc/dec status for MMIO, ROM, ACPI
-> > > >> regions, PCI device memory, etc., and most importantly for
-> > > >> "non-existent" high memory range (which will probably be the
-> > > >> maximum size page encryption bitmap allocated/resized).
-> > > >>
-> > > >> Let me know if you have different thoughts on this ?
-> > > > Hi Ashish,
-> > > >
-> > > > If this is not an issue in practice, we can just move past this. If=
- we
-> > > > are basically guaranteed that OVMF will trigger hypercalls that exp=
-and
-> > > > the bitmap beyond the top of memory, then, yes, that should work. T=
-hat
-> > > > leaves me slightly nervous that OVMF might regress since it's not
-> > > > obvious that calling a hypercall beyond the top of memory would be
-> > > > "required" for avoiding a somewhat indirectly related issue in gues=
-t
-> > > > kernels.
-> > >
-> > >
-> > > If possible then we should try to avoid growing/shrinking the bitmap =
-.
-> > > Today OVMF may not be accessing beyond memory but a malicious guest
-> > > could send a hypercall down which can trigger a huge memory allocatio=
-n
-> > > on the host side and may eventually cause denial of service for other=
-.
-> > Nice catch! Was just writing up an email about this.
-> > > I am in favor if we can find some solution to handle this case. How
-> > > about Steve's suggestion about VMM making a call down to the kernel t=
-o
-> > > tell how big the bitmap should be? Initially it should be equal to th=
-e
-> > > guest RAM and if VMM ever did the memory expansion then it can send d=
-own
-> > > another notification to increase the bitmap ?
-> > >
-> > > Optionally, instead of adding a new ioctl, I was wondering if we can
-> > > extend the kvm_arch_prepare_memory_region() to make svm specific x86_=
-ops
-> > > which can take read the userspace provided memory region and calculat=
-e
-> > > the amount of guest RAM managed by the KVM and grow/shrink the bitmap
-> > > based on that information. I have not looked deep enough to see if it=
-s
-> > > doable but if it can work then we can avoid adding yet another ioctl.
-> > We also have the set bitmap ioctl in a later patch in this series. We
-> > could also use the set ioctl for initialization (it's a little
-> > excessive for initialization since there will be an additional
-> > ephemeral allocation and a few additional buffer copies, but that's
-> > probably fine). An enable_cap has the added benefit of probably being
-> > necessary anyway so usermode can disable the migration feature flag.
-> >
-> > In general, userspace is going to have to be in direct control of the
-> > buffer and its size.
->
-> My only practical concern about setting a static bitmap size based on gue=
-st
-> memory is about the hypercalls being made initially by OVMF to set page
-> enc/dec status for ROM, ACPI regions and especially the non-existent
-> high memory range. The new ioctl will statically setup bitmap size to
-> whatever guest RAM is specified, say 4G, 8G, etc., but the OVMF
-> hypercall for non-existent memory will try to do a hypercall for guest
-> physical memory range like ~6G->64G (for 4G guest RAM setup), this
-> hypercall will basically have to just return doing nothing, because
-> the allocated bitmap won't have this guest physical range available ?
->
-> Also, hypercalls for ROM, ACPI, device regions and any memory holes withi=
-n
-> the static bitmap setup as per guest RAM config will work, but what
-> about hypercalls for any device regions beyond the guest RAM config ?
->
-> Thanks,
-> Ashish
-I'm not super familiar with what the address beyond the top of ram is
-used for. If the memory is not backed by RAM, will it even matter for
-migration? Sounds like the encryption for SEV won't even apply to it.
-If we don't need to know what the c-bit state of an address is, we
-don't need to track it. It doesn't hurt to track it (which is why I'm
-not super concerned about tracking the memory holes).
+The two patches should fix below syzbot reports:
+
+  BUG: unable to handle kernel paging request in kernel_get_mempolicy
+  https://lore.kernel.org/lkml/0000000000002b25f105a2a3434d@google.com/
+
+  WARNING: bad unlock balance in __get_user_pages_remote
+  https://lore.kernel.org/lkml/00000000000005c65d05a2b90e70@google.com/
+
+Note that the 1st patch also applied two extra small changes comparing
+to when posted on the list in that: (1) it squashed an "interupt"
+spelling error that Andrew has pointed out when picked up, and (2) it
+also initializes the "page" pointer to NULL.  But I'm fairly confident
+it shouldn't affect the correctness of the patch.
+
+The 2nd patch is exactly the patch posted previously.
+
+Thanks,
+
+Peter Xu (2):
+  mm/mempolicy: Allow lookup_node() to handle fatal signal
+  mm/gup: Mark lock taken only after a successful retake
+
+ mm/gup.c       | 2 +-
+ mm/mempolicy.c | 7 +++++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+-- 
+2.24.1
+
