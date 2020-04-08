@@ -2,60 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A701A2ECB
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 07:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9201A2C94
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 01:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbgDIFeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 01:34:21 -0400
-Received: from mail.dsns.gov.ua ([194.0.148.101]:55928 "EHLO mail.dsns.gov.ua"
+        id S1726589AbgDHXvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 19:51:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725283AbgDIFeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 01:34:21 -0400
-X-Greylist: delayed 13825 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Apr 2020 01:34:19 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.dsns.gov.ua (Postfix) with ESMTP id 8710520A40FB;
-        Thu,  9 Apr 2020 02:48:52 +0300 (EEST)
-Received: from mail.dsns.gov.ua ([127.0.0.1])
-        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id KkgycN2DNVxE; Thu,  9 Apr 2020 02:48:52 +0300 (EEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.dsns.gov.ua (Postfix) with ESMTP id 8BFC420A40FA;
-        Thu,  9 Apr 2020 02:48:50 +0300 (EEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.dsns.gov.ua 8BFC420A40FA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dsns.gov.ua;
-        s=1E60DAC0-2607-11E9-81E6-7A77C2B36653; t=1586389730;
-        bh=JOr226zvJ+gm05fmVWBmBvLIaovPFE3Ssc/vebi6xw8=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=Juu/8ZkM/3QLk0T2jgQ6E3ty6643IE974CIjnQgoYz8xUqqKRZKgdDZdYxvl45dF3
-         GpqujRmshh2BuR6aNoUZavqaFhnT15IKbF3lcHJOreMANXYrUqMZQIh7pwrMUYpG6V
-         R3RWnJfe2lSRS0+YcNp1XD099XHN/HJ/Aqobq1Y0caDnQWSufwm1ryXhwuiC1wTUHE
-         opa9UfulflQdczRw4/y285hSOTt7QSqK2PH3JTZbrT1krti39wnx/L21I8JMAH5u1P
-         VuMZI73YhR23TixoZEXolGMBBOE7QMmvBStISjdw9xlc5jFUUokVZ++3/eAl/lGd+C
-         QFwZMkbcae3vw==
-X-Virus-Scanned: amavisd-new at dsns.gov.ua
-Received: from mail.dsns.gov.ua ([127.0.0.1])
-        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id uZ3A6b6IaTic; Thu,  9 Apr 2020 02:48:50 +0300 (EEST)
-Received: from mail.dsns.gov.ua (localhost [127.0.0.1])
-        by mail.dsns.gov.ua (Postfix) with ESMTP id 1DDA720A40A3;
-        Thu,  9 Apr 2020 02:48:47 +0300 (EEST)
-Date:   Thu, 9 Apr 2020 02:48:47 +0300 (EEST)
-From:   Lerynne West <avia_duty@dsns.gov.ua>
-Reply-To: Lerynne West <lerynnewest584@gmail.com>
-Message-ID: <174884223.7253268.1586389727062.JavaMail.zimbra@dsns.gov.ua>
-Subject: Hello
+        id S1726523AbgDHXvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 19:51:35 -0400
+Received: from localhost (mobile-166-175-188-68.mycingular.net [166.175.188.68])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 050E02082F;
+        Wed,  8 Apr 2020 23:51:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586389895;
+        bh=ohD59jkDFB/7GbrNwOr+RvtEO78AppOEta0uYKkJaOk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=i243TA3iZ14gJyfzqpJx5lW6qxa0I0TWRjoCNJ1pTyAMoKpRNGO9XGXe4feq2IHKZ
+         /N0BFAPMBXb2oHHt5BczVvgIHnz9by1j5vnTFnMQHgRR+xhuiQqEnffDgEQ9BBv+iT
+         0IpSHFoe/PMaOm3RmcfLSyKA8M4gx9tSc9h2n7QQ=
+Date:   Wed, 8 Apr 2020 18:51:33 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        linux-rockchip@lists.infradead.org,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>
+Subject: Re: [PATCH v7 6/8] PCI: rcar: Add support for R-Car PCIe controller
+ in endpoint mode
+Message-ID: <20200408235133.GA151858@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [105.112.106.135, 172.69.253.145]
-X-Mailer: Zimbra 8.8.15_GA_3918 (zclient/8.8.15_GA_3918)
-Thread-Index: b52KInJEu2nn1m0xX3EIBT1R1TbiNA==
-Thread-Topic: Hello
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586360280-10956-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am Lerynne West. Your email was selected for a donation. Please reach me =
-through my private email {lerynnewest584@gmail.com}=C2=A0=C2=A0
+Maybe:
+
+  PCI: rcar: Add endpoint mode support
+
+so the important "endpoint mode" part is early and doesn't get chopped
+off or wrapped.  We already know it's PCIe and rcar-related.
+
+On Wed, Apr 08, 2020 at 04:37:58PM +0100, Lad Prabhakar wrote:
+> This patch adds support for R-Car PCIe controller to work in endpoint mode.
+
+s/This patch adds/Add/
+
+> +static int rcar_pcie_ep_set_bar(struct pci_epc *epc, u8 func_no,
+> +				struct pci_epf_bar *epf_bar)
+> +{
+> +	int flags = epf_bar->flags | LAR_ENABLE | LAM_64BIT;
+> +	struct rcar_pcie_endpoint *ep = epc_get_drvdata(epc);
+> +	u64 size = 1ULL << fls64(epf_bar->size - 1);
+> +	dma_addr_t cpu_addr = epf_bar->phys_addr;
+> +	enum pci_barno bar = epf_bar->barno;
+> +	struct rcar_pcie *pcie = &ep->pcie;
+> +	u32 mask;
+> +	int idx;
+> +	int err;
+> +
+> +	idx = find_first_zero_bit(ep->ib_window_map, ep->num_ib_windows);
+> +	if (idx >= ep->num_ib_windows) {
+> +		dev_err(pcie->dev, "no free inbound window\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if ((flags & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO)
+> +		flags |= IO_SPACE;
+> +
+> +	ep->bar_to_atu[bar] = idx;
+> +	/* use 64 bit bars */
+
+s/64 bit bars/64-bit BARs/
+
+> +static const struct pci_epc_features rcar_pcie_epc_features = {
+> +	.linkup_notifier = false,
+> +	.msi_capable = true,
+> +	.msix_capable = false,
+> +	/* use 64-bit bars so mark bar1/3/5 as reserved */
+
+s/bar/BAR/g
