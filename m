@@ -2,150 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8829E1A28DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5281A28E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729668AbgDHSyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 14:54:20 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:55573 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727963AbgDHSyT (ORCPT
+        id S1729825AbgDHSzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 14:55:19 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:38009 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727963AbgDHSzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 14:54:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586372057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=91TsF2razSUU/bXVnfn+T8gt27hU+LnhQV4OA0J+59M=;
-        b=bK+eAsFs223bTrX9NZ31puKxZDI5hY+MJpWgc1eOWFvFPOnFmAG40IEgxNcE2GuOQteWTx
-        Z/w2OoWnlSRza1YxoLzFh04r6gwaAGu03h2nXJg3JDOmrscLhEKA5W1pBMgo7mzL+CU4II
-        tTKW9GhO3iLNSZqpgi9doZHheqQseww=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-422-z55h2yC-NFWY-uWxmwgqzw-1; Wed, 08 Apr 2020 14:54:13 -0400
-X-MC-Unique: z55h2yC-NFWY-uWxmwgqzw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CABAC8017F3;
-        Wed,  8 Apr 2020 18:54:11 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6656B1001B3F;
-        Wed,  8 Apr 2020 18:54:08 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 038Is7K3014828;
-        Wed, 8 Apr 2020 14:54:07 -0400
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 038Is4f1014822;
-        Wed, 8 Apr 2020 14:54:05 -0400
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Wed, 8 Apr 2020 14:54:04 -0400 (EDT)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Dan Williams <dan.j.williams@intel.com>
-cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        device-mapper development <dm-devel@redhat.com>
-Subject: Re: [PATCH] memcpy_flushcache: use cache flusing for larger
- lengths
-In-Reply-To: <CAPcyv4goJ2jbXNVZbMUKtRUominhuMhuTKrMh=fnhrfvC4jyjw@mail.gmail.com>
-Message-ID: <alpine.LRH.2.02.2004081439080.13932@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2004071029270.8662@file01.intranet.prod.int.rdu2.redhat.com> <CAPcyv4goJ2jbXNVZbMUKtRUominhuMhuTKrMh=fnhrfvC4jyjw@mail.gmail.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Wed, 8 Apr 2020 14:55:18 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MTiHb-1jjihD1mRh-00U4Cr; Wed, 08 Apr 2020 20:54:58 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Boris Pismenny <borisp@mellanox.com>,
+        Aviad Yehezkel <aviadye@mellanox.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Dirk van der Merwe <dirk.vandermerwe@netronome.com>,
+        Simon Horman <simon.horman@netronome.com>,
+        Davide Caratti <dcaratti@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/tls: fix const assignment warning
+Date:   Wed,  8 Apr 2020 20:54:43 +0200
+Message-Id: <20200408185452.279040-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:s2ekPbRiCj8XbJbqCtFITnCU5qx2sljqiQialUMXh9xL7YIesyQ
+ IunrRXr8qvuNMCnleLG6FrI0yMnVmsqFi4lfjeokgQ7crXdqslhjJ/MYxB/rzVvoHv0DcKy
+ UALDPTsBWoN9+NOikWH8mPojs4fvp/DP/QDDkjZo1rwZ6pYJja3ItnjQ/fSGrjHkFs3vB4p
+ aC8RxKTyeqPMu0TNJJ7mg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XNlwvoRgn/I=:GPc09Rlc6JdxKCcvTUiRFh
+ rVW3CTvjmOR2VUuEh66iRj7PaBTRepfr8su6tv1gSuRas/a7FyCISchnCEDz+RyEC1YQiGdj6
+ YEFxUUpZel6OVHm2oGiWQxzJ8HoWNKKmPBk3eqQeDDQiGwtR9WCesMN++w7KOHDYA93dk3BAI
+ OtdkCWVxVMQnBxFzoAiLv1GznKGTAza0Vty89jucwlFYj+nUi1sZxbxCVc8ImcQpBa+fWwdhe
+ p50n8+xQw0XNypgSYclT79I6z66q3HvMIrt/Ief6qVZ1jZGv4WsuNzXasG+yfHhvEaPlDXzgf
+ mI0RYRq2vH1S4/EIC/yx48LZcfUWBWzw3ylWtZ5E6QBLIuQ6dRn7St85jkvppQ5U4IpTy2qJi
+ cKsmhGNcfMUIugnF1mR3z/igT3cnVhvfs6epCK4e1kNXm/Mw/fZgzqPnRQVrjabJZdAoeVf+c
+ MHjhY3tbXLROg1tJx0UG6qMuZf8EOw/xrd/gKUHqPO57fAGrqug6bZBiSI2D9a2DzisbOTiBX
+ KiHT6mIouLIHgXjJHuq3QxbnN1bSTAF2uAkwX0D5MqQeODST8mNy40JAK8O+uz1l6dx5baMpL
+ Z7pXqlrrHHqmJuWXk1pGuX9VwSxt+Sfrroc6zZpTRPidJxXvCr3FR/C1EdqMjf1VnH82stceB
+ ResMdJ68vjD0dpWcMKOiSGwDypGweXtN0DlaVMOqxoBNqSJ/9WKqNEJK2EOOZALIZ3foHtygH
+ +1Fm+Jv6/xj7i37pjTwfRgiyxIjSeYaEINMwROloFYp2Fl/00EW3Y7QPNaIT3CwbZkfUztsLH
+ hY5GP1aH3tOsfc7CZY40wMJHlwatnerCq+0Z9QguDecdZ2/A7c=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Building with some experimental patches, I came across a warning
+in the tls code:
 
+include/linux/compiler.h:215:30: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  215 |  *(volatile typeof(x) *)&(x) = (val);  \
+      |                              ^
+net/tls/tls_main.c:650:4: note: in expansion of macro 'smp_store_release'
+  650 |    smp_store_release(&saved_tcpv4_prot, prot);
 
-On Tue, 7 Apr 2020, Dan Williams wrote:
+This appears to be a legitimate warning about assigning a const pointer
+into the non-const 'saved_tcpv4_prot' global. Annotate both the ipv4 and
+ipv6 pointers 'const' to make the code internally consistent.
 
-> On Tue, Apr 7, 2020 at 8:02 AM Mikulas Patocka <mpatocka@redhat.com> wrote:
-> >
-> > [ resending this to x86 maintainers ]
-> >
-> > Hi
-> >
-> > I tested performance of various methods how to write to optane-based
-> > persistent memory, and found out that non-temporal stores achieve
-> > throughput 1.3 GB/s. 8 cached stores immediatelly followed by clflushopt
-> > or clwb achieve throughput 1.6 GB/s.
-> >
-> > memcpy_flushcache uses non-temporal stores, I modified it to use cached
-> > stores + clflushopt and it improved performance of the dm-writecache
-> > target significantly:
-> >
-> > dm-writecache throughput:
-> > (dd if=/dev/zero of=/dev/mapper/wc bs=64k oflag=direct)
-> > writecache block size   512             1024            2048            4096
-> > movnti                  496 MB/s        642 MB/s        725 MB/s        744 MB/s
-> > clflushopt              373 MB/s        688 MB/s        1.1 GB/s        1.2 GB/s
-> >
-> > For block size 512, movnti works better, for larger block sizes,
-> > clflushopt is better.
-> 
-> This should use clwb instead of clflushopt, the clwb macri
-> automatically converts back to clflushopt if clwb is not supported.
+Fixes: 5bb4c45d466c ("net/tls: Read sk_prot once when building tls proto ops")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ net/tls/tls_main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-But we want to invalidate cache, we do not expect CPU to access these data
-anymore (it will be accessed by a DMA engine during writeback).
-
-> > I was also testing the novafs filesystem, it is not upstream, but it
-> > benefitted from similar change in __memcpy_flushcache and
-> > __copy_user_nocache:
-> > write throughput on big files - movnti: 662 MB/s, clwb: 1323 MB/s
-> > write throughput on small files - movnti: 621 MB/s, clwb: 1013 MB/s
-> >
-> >
-> > I submit this patch for __memcpy_flushcache that improves dm-writecache
-> > performance.
-> >
-> > Other ideas - should we introduce memcpy_to_pmem instead of modifying
-> > memcpy_flushcache and move this logic there? Or should I modify the
-> > dm-writecache target directly to use clflushopt with no change to the
-> > architecture-specific code?
-> 
-> This also needs to mention your analysis that showed that this can
-> have negative cache pollution effects [1], so I'm not sure how to
-> decide when to make the tradeoff. Once we have movdir64b the tradeoff
-> equation changes yet again:
-> 
-> [1]: https://lore.kernel.org/linux-nvdimm/alpine.LRH.2.02.2004010941310.23210@file01.intranet.prod.int.rdu2.redhat.com/
-
-I analyzed it some more. I have created this program that tests writecache 
-w.r.t. cache pollution:
-
-http://people.redhat.com/~mpatocka/testcases/pmem/misc/l1-test-2.c
-
-It fills the cache with a chain of random pointers and then walks these 
-pointers to evaluate cache pollution. Between the walks, it writes data to 
-the dm-writecache target.
-
-With the original kernel, the result is:
-8503 - 11366
-real    0m7.985s
-user    0m0.585s
-sys     0m7.390s
-
-With dm-writecache hacked to use cached writes + clflushopt:
-8513 - 11379
-real    0m5.045s
-user    0m0.670s
-sys     0m4.365s
-
-So, the hacked dm-writecache is significantly faster, while the cache 
-micro-benchmark doesn't show any more cache pollution.
-
-That's for dm-writecache. Are there some other significant users of 
-memcpy_flushcache that need to be checked?
-
-Mikulas
+diff --git a/net/tls/tls_main.c b/net/tls/tls_main.c
+index 156efce50dbd..0e989005bdc2 100644
+--- a/net/tls/tls_main.c
++++ b/net/tls/tls_main.c
+@@ -56,9 +56,9 @@ enum {
+ 	TLS_NUM_PROTS,
+ };
+ 
+-static struct proto *saved_tcpv6_prot;
++static const struct proto *saved_tcpv6_prot;
+ static DEFINE_MUTEX(tcpv6_prot_mutex);
+-static struct proto *saved_tcpv4_prot;
++static const struct proto *saved_tcpv4_prot;
+ static DEFINE_MUTEX(tcpv4_prot_mutex);
+ static struct proto tls_prots[TLS_NUM_PROTS][TLS_NUM_CONFIG][TLS_NUM_CONFIG];
+ static struct proto_ops tls_sw_proto_ops;
+-- 
+2.26.0
 
