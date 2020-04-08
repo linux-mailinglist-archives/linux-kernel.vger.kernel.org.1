@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED7B31A252C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964D71A2538
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgDHPbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:31:20 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:43908 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728157AbgDHPbU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:31:20 -0400
-Received: by mail-wr1-f66.google.com with SMTP id i10so1987013wrv.10;
-        Wed, 08 Apr 2020 08:31:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7g2IDxoHI/17bb2lHkaR7jfy7fINZC4aLcy8p7mbFWU=;
-        b=inLFqxRMp0YUXZfzwpNTxO2qdvdCGGFSPg2/eu5X6Ekj4gon+Ye99IflNCRTgsSzzT
-         8qOf4l6Gv2wG7ik9Dm15p05SY25xKxuKwkyRcxJZUnkOpJ5Pk+ug/soR+ftYZCegFXUh
-         2BaQIheb0nefo0Jcw9RnV05Qc2/pk8C4jxsK4wpBWGjZxmLsoGdHLZ9liMdXngOZh6O/
-         OoUi6tBLTGAP1zgswOYshj1v6b+YcLl+Hja/jBlu9rMyEnlV3cFpYMptGoIwSvbwGbPh
-         Q6TshNfaAsWRp3U5GLSFgYN4YEas2PhMnPzqj43VO1K0jIOEcmdLRQFp7AvkRULA55LD
-         cABQ==
-X-Gm-Message-State: AGi0PuaFSVhNWYjkKIrd6HiiK4hJnGKTAQd3RzOqnAtaPHTMQyV070+R
-        aCrzq0dlPLcG6Uh53hbtYkM=
-X-Google-Smtp-Source: APiQypJ9O8BdKURufjoODCWj6Vu45474Vg3xaJGe9sn6hp0NQRyhqjbMB9htMUc2OA9BeOF5icQonw==
-X-Received: by 2002:adf:fe4b:: with SMTP id m11mr8866703wrs.20.1586359877175;
-        Wed, 08 Apr 2020 08:31:17 -0700 (PDT)
-Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
-        by smtp.gmail.com with ESMTPSA id a7sm7201481wmj.12.2020.04.08.08.31.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 08:31:16 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 17:31:14 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+3be1a33f04dc782e9fd5@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, bgeffon@google.com, davem@davemloft.net,
-        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org
-Subject: Re: WARNING in af_alg_make_sg
-Message-ID: <20200408153114.GB18914@dhcp22.suse.cz>
-References: <000000000000f2bc9505a2c2b808@google.com>
- <20200408095849.15236-1-hdanton@sina.com>
- <20200408151213.GE66033@xz-x1>
+        id S1729000AbgDHPcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:32:54 -0400
+Received: from verein.lst.de ([213.95.11.211]:42854 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727049AbgDHPcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:32:54 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7D40368CEC; Wed,  8 Apr 2020 17:32:45 +0200 (CEST)
+Date:   Wed, 8 Apr 2020 17:32:44 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH 18/28] mm: enforce that vmap can't map pages executable
+Message-ID: <20200408153244.GA27818@lst.de>
+References: <20200408115926.1467567-1-hch@lst.de> <20200408115926.1467567-19-hch@lst.de> <20200408123835.GB36478@lakrids.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200408151213.GE66033@xz-x1>
+In-Reply-To: <20200408123835.GB36478@lakrids.cambridge.arm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 08-04-20 11:12:13, Peter Xu wrote:
-> >From 380003a56efc125565143c91ee6cefd7b3eba869 Mon Sep 17 00:00:00 2001
-> From: Hillf Danton <hdanton@sina.com>
-> Date: Wed, 8 Apr 2020 11:01:25 -0400
-> Subject: [PATCH] mm/gup: Let __get_user_pages_locked() return -EINTR for fatal
->  signal
+On Wed, Apr 08, 2020 at 01:38:36PM +0100, Mark Rutland wrote:
+> > +static inline pgprot_t pgprot_nx(pgprot_t prot)
+> > +{
+> > +	return __pgprot(pgprot_val(prot) | _PAGE_NX);
+> > +}
+> > +#define pgprot_nx pgprot_nx
+> > +
+> >  #ifdef CONFIG_X86_PAE
 > 
-> __get_user_pages_locked() will return 0 instead of -EINTR after commit
-> 4426e945df588 which added extra code to allow gup detect fatal signal
-> faster.  Restore that behavior.
+> I reckon for arm64 we can do similar in our <asm/pgtable.h>:
 > 
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Hillf Danton <hdanton@sina.com>
-> [peterx: write commit message]
+> #define pgprot_nx(pgprot_t prot) \
+> 	__pgprot_modify(prot, 0, PTE_PXN)
+> 
+> ... matching the style of our existing pgprot_*() modifier helpers.
 
-Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  mm/gup.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index afce0bc47e70..6076df8e04a4 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -1326,8 +1326,11 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
->  		 * start trying again otherwise it can loop forever.
->  		 */
->  
-> -		if (fatal_signal_pending(current))
-> +		if (fatal_signal_pending(current)) {
-> +			if (!pages_done)
-> +				pages_done = -EINTR;
->  			break;
-> +		}
->  
->  		ret = down_read_killable(&mm->mmap_sem);
->  		if (ret) {
-> -- 
-> 2.24.1
-> 
-> 
-> -- 
-> Peter Xu
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+I've added that for the next version with attribution to you.
