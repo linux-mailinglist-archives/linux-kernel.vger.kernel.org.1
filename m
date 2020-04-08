@@ -2,152 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 89FC41A23BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47921A23B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgDHOEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:04:39 -0400
-Received: from mga12.intel.com ([192.55.52.136]:63159 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727226AbgDHOEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 10:04:39 -0400
-IronPort-SDR: ecllaeKuKeJ5Wf5oNQbl+rUibCNEJTI3Hcc1hY7kyeDqs94SHx1TMry0AmAAsfPhkAAoGx/P87
- rRLq0OBS9IdQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 07:04:38 -0700
-IronPort-SDR: F5PeZg8HmvVGsgLU55iJsKW/mN7EmYTPufY+rj4qeCcpWRhxqG+2eO0o5VKnDLfDWPG82JUlVD
- Yy/UOTi1h4sQ==
-X-IronPort-AV: E=Sophos;i="5.72,358,1580803200"; 
-   d="scan'208";a="425144596"
-Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.249.174.149]) ([10.249.174.149])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 07:04:36 -0700
-Subject: Re: [PATCH v2] KVM: x86/pmu: Reduce counter period change overhead
- and delay the effective time
-From:   Like Xu <like.xu@linux.intel.com>
-To:     pbonzini@redhat.com
-Cc:     ehankland@google.com, jmattson@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wanpengli@tencent.com
-References: <20200317075315.70933-1-like.xu@linux.intel.com>
- <20200317081458.88714-1-like.xu@linux.intel.com>
- <1528e1b4-3dee-161b-9463-57471263b5a8@linux.intel.com>
-Organization: Intel OTC
-Message-ID: <6a57b701-99a2-3917-3879-bc8141dca9d4@linux.intel.com>
-Date:   Wed, 8 Apr 2020 22:04:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1727907AbgDHOET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:04:19 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:42796 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727226AbgDHOET (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 10:04:19 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 038Dw6X1087445;
+        Wed, 8 Apr 2020 14:03:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=hWI6KSBJwhLBPRk58QK/JNaKG+agLjuCHca2NgnWmtI=;
+ b=kV/HOgs3XEXgeSot3ajlmAUJGkvf3xT/Zf0t0BerQVQ+0s3KEm4tg6TqPsmpSsIM0HVC
+ 8JLJLnIh9Ei1/mnO1hwoXtdDpRxW/VgHTGWrBRBV4qj42oq76/Y3QmGZYYIIX8OiIuyE
+ jRlCdbZ3T7UmIeorA85EY3U/d5MfnDxRtbac6yC1ABt03qaXTzQMKnGRbBz1YJKqdoaZ
+ rKPO3yOavaIewE3vuLsWs+JgBNhsRafqdjPHFqnc16+maF5GJ3A2+o/JTFsA4XKpE/+J
+ fZnnZs0UB4cSIU6EHZA+3I2mA8CKrz/l4nt9VUW64JXsae6DqQMWAkOnR52glrD/EnrA sw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 3091m3br14-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Apr 2020 14:03:57 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 038DuYkf107015;
+        Wed, 8 Apr 2020 14:01:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 3099v92rv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 08 Apr 2020 14:01:55 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 038E1qLg002863;
+        Wed, 8 Apr 2020 14:01:53 GMT
+Received: from linux-1.home (/92.157.90.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 08 Apr 2020 07:01:52 -0700
+Subject: Re: [PATCH V2 5/9] objtool: Add support for intra-function calls
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        jthierry@redhat.com, tglx@linutronix.de
+References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
+ <20200407073142.20659-6-alexandre.chartre@oracle.com>
+ <20200407130729.GZ20730@hirez.programming.kicks-ass.net>
+ <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
+Message-ID: <7ba6d4c9-c1dc-fa83-2ade-b7d3fba9e7fb@oracle.com>
+Date:   Wed, 8 Apr 2020 16:06:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <1528e1b4-3dee-161b-9463-57471263b5a8@linux.intel.com>
+In-Reply-To: <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 mlxscore=0
+ mlxlogscore=999 bulkscore=0 spamscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004080116
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004080116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
 
-Could you please take a look at this patch?
-If there is anything needs to be improved, please let me know.
 
-Thanks,
-Like Xu
-
-On 2020/3/26 20:47, Like Xu wrote:
-> Anyone to help review this change?
+On 4/7/20 3:28 PM, Alexandre Chartre wrote:
 > 
-> Thanks,
-> Like Xu
+> On 4/7/20 3:07 PM, Peter Zijlstra wrote:
+>> On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
+>>
+>>> index a62e032863a8..7ee1561bf7ad 100644
+>>> --- a/tools/objtool/arch/x86/decode.c
+>>> +++ b/tools/objtool/arch/x86/decode.c
+>>> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct cfi_state *state)
+>>>       state->regs[16].base = CFI_CFA;
+>>>       state->regs[16].offset = -8;
+>>>   }
+>>> +
+>>> +
+>>> +void arch_configure_intra_function_call(struct stack_op *op)
+>>> +{
+>>> +    /*
+>>> +     * For the impact on the stack, make an intra-function
+>>> +     * call behaves like a push of an immediate value (the
+>>> +     * return address).
+>>> +     */
+>>> +    op->src.type = OP_SRC_CONST;
+>>> +    op->dest.type = OP_DEST_PUSH;
+>>> +}
+>>
+>> An alternative is to always set up stack ops for CALL/RET on decode, but
+>> conditionally run update_insn_state() for them.
+>>
+>> Not sure that makes more logical sense, but the patch would be simpler I
+>> think.
 > 
-> On 2020/3/17 16:14, Like Xu wrote:
->> The cost of perf_event_period() is unstable, and when the guest samples
->> multiple events, the overhead increases dramatically (5378 ns on E5-2699).
->>
->> For a non-running counter, the effective time of the new period is when
->> its corresponding enable bit is enabled. Calling perf_event_period()
->> in advance is superfluous. For a running counter, it's safe to delay the
->> effective time until the KVM_REQ_PMU event is handled. If there are
->> multiple perf_event_period() calls before handling KVM_REQ_PMU,
->> it helps to reduce the total cost.
->>
->> Signed-off-by: Like Xu <like.xu@linux.intel.com>
->> ---
->>   arch/x86/kvm/pmu.c           | 11 -----------
->>   arch/x86/kvm/pmu.h           | 11 +++++++++++
->>   arch/x86/kvm/vmx/pmu_intel.c | 10 ++++------
->>   3 files changed, 15 insertions(+), 17 deletions(-)
->>
->> diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
->> index d1f8ca57d354..527a8bb85080 100644
->> --- a/arch/x86/kvm/pmu.c
->> +++ b/arch/x86/kvm/pmu.c
->> @@ -437,17 +437,6 @@ void kvm_pmu_init(struct kvm_vcpu *vcpu)
->>       kvm_pmu_refresh(vcpu);
->>   }
->> -static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
->> -{
->> -    struct kvm_pmu *pmu = pmc_to_pmu(pmc);
->> -
->> -    if (pmc_is_fixed(pmc))
->> -        return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
->> -            pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
->> -
->> -    return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
->> -}
->> -
->>   /* Release perf_events for vPMCs that have been unused for a full time 
->> slice.  */
->>   void kvm_pmu_cleanup(struct kvm_vcpu *vcpu)
->>   {
->> diff --git a/arch/x86/kvm/pmu.h b/arch/x86/kvm/pmu.h
->> index d7da2b9e0755..cd112e825d2c 100644
->> --- a/arch/x86/kvm/pmu.h
->> +++ b/arch/x86/kvm/pmu.h
->> @@ -138,6 +138,17 @@ static inline u64 get_sample_period(struct kvm_pmc 
->> *pmc, u64 counter_value)
->>       return sample_period;
->>   }
->> +static inline bool pmc_speculative_in_use(struct kvm_pmc *pmc)
->> +{
->> +    struct kvm_pmu *pmu = pmc_to_pmu(pmc);
->> +
->> +    if (pmc_is_fixed(pmc))
->> +        return fixed_ctrl_field(pmu->fixed_ctr_ctrl,
->> +            pmc->idx - INTEL_PMC_IDX_FIXED) & 0x3;
->> +
->> +    return pmc->eventsel & ARCH_PERFMON_EVENTSEL_ENABLE;
->> +}
->> +
->>   void reprogram_gp_counter(struct kvm_pmc *pmc, u64 eventsel);
->>   void reprogram_fixed_counter(struct kvm_pmc *pmc, u8 ctrl, int fixed_idx);
->>   void reprogram_counter(struct kvm_pmu *pmu, int pmc_idx);
->> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
->> index 7c857737b438..20f654a0c09b 100644
->> --- a/arch/x86/kvm/vmx/pmu_intel.c
->> +++ b/arch/x86/kvm/vmx/pmu_intel.c
->> @@ -263,15 +263,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, 
->> struct msr_data *msr_info)
->>               if (!msr_info->host_initiated)
->>                   data = (s64)(s32)data;
->>               pmc->counter += data - pmc_read_counter(pmc);
->> -            if (pmc->perf_event)
->> -                perf_event_period(pmc->perf_event,
->> -                          get_sample_period(pmc, data));
->> +            if (pmc_speculative_in_use(pmc))
->> +                kvm_make_request(KVM_REQ_PMU, vcpu);
->>               return 0;
->>           } else if ((pmc = get_fixed_pmc(pmu, msr))) {
->>               pmc->counter += data - pmc_read_counter(pmc);
->> -            if (pmc->perf_event)
->> -                perf_event_period(pmc->perf_event,
->> -                          get_sample_period(pmc, data));
->> +            if (pmc_speculative_in_use(pmc))
->> +                kvm_make_request(KVM_REQ_PMU, vcpu);
->>               return 0;
->>           } else if ((pmc = get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0))) {
->>               if (data == pmc->eventsel)
->>
+> Right, this would avoid adding a new arch dependent function and the patch
+> will be simpler. This probably makes sense as the stack impact is the same
+> for all calls (but objtool will use it only for intra-function calls).
 > 
 
+Actually the processing of the ret instruction is more complicated than I
+anticipated with intra-function calls, and so my implementation is not
+complete at the moment.
+
+The issue is to correctly handle how the ret is going to behave depending how
+the stack (or register on arm) is modified before the ret. Adjusting the stack
+offset makes the stack state correct, but objtool still needs to correctly
+figure out where the ret is going to return and where the code flow continues.
+
+alex.
