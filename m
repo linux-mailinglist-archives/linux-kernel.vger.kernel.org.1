@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEB91A2600
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4EED1A25E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729730AbgDHPrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:47:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49170 "EHLO mail.kernel.org"
+        id S1729808AbgDHPrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729699AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729703AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Apr 2020 11:46:33 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08E1A221F7;
+        by mail.kernel.org (Postfix) with ESMTPSA id 11229221F9;
         Wed,  8 Apr 2020 15:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586360792;
-        bh=usYkvESU4Pm1qI9SJ4cKzhimcRKZU8+i2x+WdqicQE4=;
+        bh=i3VqmDuLd/n3AsiTO35YTokWcu5+ERCRSqkQNYVNlZI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RoJNJPA0e7Vn1dRueBWJY/nBqTqZ3Xmi7oVYEJ19BPGorxmppzNbB+LE1Fi1CZAPU
-         tRl7o+AbPuvJ3OGPlLEk6WMBML1yPdlV1iukvKHvPqymnsY+Wcxa5PnHvnXXTjxa7I
-         NHQb2JMsI54oYVHgCEXaAbdgm2Yc+Ji1zDiulDs8=
+        b=s54V+P4U6AAJxn0p6r1WqQYfUIE1T58epdBzP5oK9nRBv/+MAyHmm8dIJ69bxmJin
+         vthRrKVqPsOUGhuVaOriG7p9hYmdOaeAZS7NbxJqbayuN4MYDU/p1dXIwLueHuZoXc
+         dLudP9OXO5v3WeTrka8UJdbAdgxLP0zA9PxWinCM=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jMCuM-000cCo-8F; Wed, 08 Apr 2020 17:46:30 +0200
+        id 1jMCuM-000cCt-9g; Wed, 08 Apr 2020 17:46:30 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 32/35] docs: LaTeX/PDF: drop list of documents
-Date:   Wed,  8 Apr 2020 17:46:24 +0200
-Message-Id: <864e075058c8a3c2c6a27b05ec4231efafd27bb5.1586359676.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Wolfram Sang <wsa@the-dreams.de>, linux-i2c@vger.kernel.org
+Subject: [PATCH 33/35] docs: i2c: rename i2c.svg to i2c_bus.svg
+Date:   Wed,  8 Apr 2020 17:46:25 +0200
+Message-Id: <bb72db28b4b7d867555b345a49703fdca484957e.1586359676.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586359676.git.mchehab+huawei@kernel.org>
 References: <cover.1586359676.git.mchehab+huawei@kernel.org>
@@ -43,70 +44,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The building system can auto-generate a list of documents since
-commit: 9d42afbe6bd4 ("docs: pdf: add all Documentation/*/index.rst to PDF output").
+When generating the PDF output, the Documentation/i2c dir
+will generate an i2c.pdf. The same happens with i2c.svg:
+it will also produce a file with the same name, at the same dir.
 
-The added logic there allows keeping the existing list, but
-there's not real reason to keep it. Now, the media document
-has gone (it was split into tree).
-
-So, it sounds about time to get rid of the manual entries,
-and let the script to generate it automatically instead.
+This causes errors when building the PDF output. So, rename the
+image to i2c_bus.svg.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/conf.py | 38 --------------------------------------
- 1 file changed, 38 deletions(-)
+ Documentation/i2c/{i2c.svg => i2c_bus.svg} | 2 +-
+ Documentation/i2c/summary.rst              | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+ rename Documentation/i2c/{i2c.svg => i2c_bus.svg} (99%)
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 9ae8e9abf846..f6a1bc07c410 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -388,44 +388,6 @@ if major == 1 and minor < 6:
- #  author, documentclass [howto, manual, or own class]).
- # Sorted in alphabetical order
- latex_documents = [
--    ('admin-guide/index', 'linux-user.tex', 'Linux Kernel User Documentation',
--     'The kernel development community', 'manual'),
--    ('core-api/index', 'core-api.tex', 'The kernel core API manual',
--     'The kernel development community', 'manual'),
--    ('crypto/index', 'crypto-api.tex', 'Linux Kernel Crypto API manual',
--     'The kernel development community', 'manual'),
--    ('dev-tools/index', 'dev-tools.tex', 'Development tools for the Kernel',
--     'The kernel development community', 'manual'),
--    ('doc-guide/index', 'kernel-doc-guide.tex', 'Linux Kernel Documentation Guide',
--     'The kernel development community', 'manual'),
--    ('driver-api/index', 'driver-api.tex', 'The kernel driver API manual',
--     'The kernel development community', 'manual'),
--    ('filesystems/index', 'filesystems.tex', 'Linux Filesystems API',
--     'The kernel development community', 'manual'),
--    ('admin-guide/ext4', 'ext4-admin-guide.tex', 'ext4 Administration Guide',
--     'ext4 Community', 'manual'),
--    ('filesystems/ext4/index', 'ext4-data-structures.tex',
--     'ext4 Data Structures and Algorithms', 'ext4 Community', 'manual'),
--    ('gpu/index', 'gpu.tex', 'Linux GPU Driver Developer\'s Guide',
--     'The kernel development community', 'manual'),
--    ('input/index', 'linux-input.tex', 'The Linux input driver subsystem',
--     'The kernel development community', 'manual'),
--    ('kernel-hacking/index', 'kernel-hacking.tex', 'Unreliable Guide To Hacking The Linux Kernel',
--     'The kernel development community', 'manual'),
--    ('media/index', 'media.tex', 'Linux Media Subsystem Documentation',
--     'The kernel development community', 'manual'),
--    ('networking/index', 'networking.tex', 'Linux Networking Documentation',
--     'The kernel development community', 'manual'),
--    ('process/index', 'development-process.tex', 'Linux Kernel Development Documentation',
--     'The kernel development community', 'manual'),
--    ('security/index', 'security.tex', 'The kernel security subsystem manual',
--     'The kernel development community', 'manual'),
--    ('sh/index', 'sh.tex', 'SuperH architecture implementation manual',
--     'The kernel development community', 'manual'),
--    ('sound/index', 'sound.tex', 'Linux Sound Subsystem Documentation',
--     'The kernel development community', 'manual'),
--    ('userspace-api/index', 'userspace-api.tex', 'The Linux kernel user-space API guide',
--     'The kernel development community', 'manual'),
- ]
+diff --git a/Documentation/i2c/i2c.svg b/Documentation/i2c/i2c_bus.svg
+similarity index 99%
+rename from Documentation/i2c/i2c.svg
+rename to Documentation/i2c/i2c_bus.svg
+index 5979405ad1c3..3170de976373 100644
+--- a/Documentation/i2c/i2c.svg
++++ b/Documentation/i2c/i2c_bus.svg
+@@ -9,7 +9,7 @@
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+-   sodipodi:docname="i2c.svg"
++   sodipodi:docname="i2c_bus.svg"
+    inkscape:version="0.92.3 (2405546, 2018-03-11)"
+    version="1.1"
+    id="svg2"
+diff --git a/Documentation/i2c/summary.rst b/Documentation/i2c/summary.rst
+index ce7230025b33..136c4e333be7 100644
+--- a/Documentation/i2c/summary.rst
++++ b/Documentation/i2c/summary.rst
+@@ -34,7 +34,7 @@ Terminology
+ Using the terminology from the official documentation, the I2C bus connects
+ one or more *master* chips and one or more *slave* chips.
  
- # Add all other index files from Documentation/ subdirectories
+-.. kernel-figure::  i2c.svg
++.. kernel-figure::  i2c_bus.svg
+    :alt:    Simple I2C bus with one master and 3 slaves
+ 
+    Simple I2C bus
 -- 
 2.25.2
 
