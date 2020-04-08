@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3628E1A240D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF2C1A240F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728773AbgDHOa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:30:29 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:56118 "EHLO
+        id S1728822AbgDHOa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:30:58 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35264 "EHLO
         mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726774AbgDHOa2 (ORCPT
+        with ESMTP id S1726774AbgDHOa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 10:30:28 -0400
-Received: by mail-wm1-f65.google.com with SMTP id e26so94020wmk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:30:27 -0700 (PDT)
+        Wed, 8 Apr 2020 10:30:58 -0400
+Received: by mail-wm1-f65.google.com with SMTP id r26so143188wmh.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:30:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mLUZTMACgOdZTJqIc//IsSs4hQHzPmyw9T3yzeJY29Q=;
+        b=KkEXcWTpKhPSVYHTzs9Hu9eRt2qWT3m8MI2hK4f1yUyGMa03+nMXoKTvvGd4nVhRtK
+         phKxiQIoYpHfE0wCrOFreaUywWND6BBlHak6ojF8fefiNgUsVRpJcGp5kcsRiRUPWdoI
+         8tG+A4VmGE9Bx4IhwSuV3qXjvRzs6oOD4/j9atnD/SScZ9uoVd6R5TqMWdc3ULO4BgsK
+         BhMRRszWbbX3Ia6uaXvKS4ahUWyw+aOssaOF190au/7Fyj00O7NPFhG2FMNRulpUbvWN
+         MzdNpANFtmO0dGoMDJAQsAhSPXeCKzjzH5Jez3qBQOTiWErwY+qwXKZS21oi0n78+KWP
+         9M9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nL8cPG0DZ29ZLKFrUfdbtamt4Cn3OPj56HGn9oNpqJY=;
-        b=JgalBiFQosIfwoomRbsNSePfxGA/Sk+oxILnuRroQQDzT2RuT5jkkoRWLw2Uxucxad
-         zgNRIvvBx71/QpHh0Iia0/UCNApET+0lbutQdyfvzxhJMnvSFqQR1HdmOlfIVGfSYKJ3
-         h5Zp7sUaZdHBN8C+CV+eO+20aC6FaXPzSA5dOSAykzpALzgM4y5B6xJexI7h4n/fJGdh
-         iwepJszBfMkBuoJS94u+TbZHhFlacMvvy+M6cS6hR/2l9CdYB23Uno9wlJ8Oypw9Vjgv
-         REIy+sNP5Wcevr97LO9NlC1XKrF9kp0oVogu/2ekTameqsKG/0i4So6NlSe5c3kh+IIe
-         O1JA==
-X-Gm-Message-State: AGi0PubRf1jrY88bprlq4Ipd/tnJ5V23ecixoB1ZCphKuDK+N3g1j9ul
-        nP9AGwi+E/xfGuVzH4QAZ2Y=
-X-Google-Smtp-Source: APiQypL28mHffic4DQSxyy7qJ3TxkU/ZG5jsJF1QzPF79fr/2EZmD/5HKZHHKOOKeRXW74AVNd+/5g==
-X-Received: by 2002:a05:600c:2f88:: with SMTP id t8mr4844535wmn.46.1586356226769;
-        Wed, 08 Apr 2020 07:30:26 -0700 (PDT)
-Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
-        by smtp.gmail.com with ESMTPSA id j10sm18707191wru.85.2020.04.08.07.30.25
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mLUZTMACgOdZTJqIc//IsSs4hQHzPmyw9T3yzeJY29Q=;
+        b=ISLYHjLZNwPTeOyn7hJG0NcbNe70J5d66pVN8Ot2wsJpVec4fK+1jTEYkduYxC3sLS
+         UKPf7m5N+yGWBfX2A4hBmgSJYa1m7bNvBFKJQUpVK0ewySd2hxbbYRP4eEtmIhOYcBpM
+         3cKv03e/AoZc8uyChv/iT0hXW7VzmPMJ4yPncFHoWnlVE7puOOSr76oa8yPyMPgs/0Y3
+         HwZnxNXcu0vrTYkNfD69sKIjfcIpu2Yc0YbCjzclTWHE6DWo29X+Q16CF9UqNx0q7yKy
+         PoXt0JXP2SRf6T5OFmqG+EELFmVvINTd/ObKeuRArULAvJ0saQownICIacE468P8Q0Ls
+         DLKQ==
+X-Gm-Message-State: AGi0Pub+6XRtu3sjYtLML44R2nMGGLRPiakdF7RiNAYoNpZsz0V9JDE2
+        7ommmacS1Bi6WAmfuva7tgSCpXusrGg=
+X-Google-Smtp-Source: APiQypI1steOmsQ2Cf3zIOhuPmaJhyAjfO9SJ0wyXh7OuuHQzA91KBz1hqB0Sq9hVig7S+hGpQcxRw==
+X-Received: by 2002:a1c:5f56:: with SMTP id t83mr4729013wmb.61.1586356255686;
+        Wed, 08 Apr 2020 07:30:55 -0700 (PDT)
+Received: from linuxdev2.toradex.int (31-10-206-124.static.upc.ch. [31.10.206.124])
+        by smtp.gmail.com with ESMTPSA id a10sm36268828wrm.87.2020.04.08.07.30.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 07:30:25 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 16:30:24 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
- signal
-Message-ID: <20200408143024.GZ18914@dhcp22.suse.cz>
-References: <20200408014010.80428-1-peterx@redhat.com>
- <20200408014010.80428-2-peterx@redhat.com>
- <20200408102128.GX18914@dhcp22.suse.cz>
- <20200408142039.GD66033@xz-x1>
+        Wed, 08 Apr 2020 07:30:55 -0700 (PDT)
+From:   Max Krummenacher <max.oss.09@gmail.com>
+X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
+To:     Max Krummenacher <max.krummenacher@toradex.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, Vidya Sagar <vidyas@nvidia.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Olof Johansson <olof@lixom.net>,
+        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH v2 0/5] defconfig: fix changed configs and refresh
+Date:   Wed,  8 Apr 2020 16:30:35 +0200
+Message-Id: <20200408143040.57458-1-max.krummenacher@toradex.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200408142039.GD66033@xz-x1>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 08-04-20 10:20:39, Peter Xu wrote:
-> On Wed, Apr 08, 2020 at 12:21:28PM +0200, Michal Hocko wrote:
-> > On Tue 07-04-20 21:40:09, Peter Xu wrote:
-> > > lookup_node() uses gup to pin the page and get node information.  It
-> > > checks against ret>=0 assuming the page will be filled in.  However
-> > > it's also possible that gup will return zero, for example, when the
-> > > thread is quickly killed with a fatal signal.  Teach lookup_node() to
-> > > gracefully return an error -EFAULT if it happens.
-> > > 
-> > > Meanwhile, initialize "page" to NULL to avoid potential risk of
-> > > exploiting the pointer.
-> > > 
-> > > Reported-by: syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-> > > Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
-> > 
-> > I am not familiar with thic commit but shouldn't gup return ERESTARTSYS
-> > on a fatal signal?
-> 
-> Hi, Michal,
-> 
-> I do see quite a few usages on -ERESTARTSYS, but also some others,
-> majorly -EINTR, or even -EFAULT.  I think it could be a more general
-> question rather than a specific question to this patch only.
+Three configs have been renamed and/or changed behaviour.
+Clean that by using the new config name.
+With the name change to DRM_SIMPLE_BRIDGE the related
+DRM_DISPLAY_CONNECTOR got introduced, enable that additionally.
 
-I am sorry but I was probably not clear enough. I was mostly worried
-that gup doesn't return ERESTARTSYS or EINTR when it backed off because
-of fatal signal pending. Your patch is checking for 0 an indicating that
-this is that condition.
+Then refresh the defconfig with make defconfig savedefconfig.
+
+The refreshed defconfig does result in a not changed .config.
+
+Applies on linux-next/master tag: next-20200407
+
+
+Changes in v2:
+- additional patch adding DRM_DISPLAY_CONNECTOR as recommended by Geert and Laurent
+- add reviewed-by tags
+
+Max Krummenacher (5):
+  arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
+  arm64: defconfig: add DRM_DISPLAY_CONNECTOR
+  arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name
+  arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
+  arm64: defconfig: refresh
+
+ arch/arm64/configs/defconfig | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
