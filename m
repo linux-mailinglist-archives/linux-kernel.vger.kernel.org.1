@@ -2,168 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5C81A1EC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374AD1A1EC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgDHK17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 06:27:59 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:38448 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726146AbgDHK16 (ORCPT
+        id S1728173AbgDHK2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 06:28:17 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:37664 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728099AbgDHK2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 06:27:58 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Wed, 8 Apr 2020 06:28:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586341695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EC/D1f86N5vzsKE44T+7aeogRJCUDLjHigmziVHut9I=;
+        b=KA4+i1+dkewsQ02CHXNDydg0TiWld8bvHdvUady9wgqykpwR9w7MfelLAHoc+Xe6Ggz7zb
+        mTdU4a5IYOd5S2Fydwzzm7qZ4XrrMFgpsPmOzbK9677ci3/owMcdlDs9VJXiyS6SP7Hquz
+        zQtfAacBmFMaMtuOISZiayG4JyL/nqE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-381-KVkFh0gbOm2Hxe1TEk_Ytw-1; Wed, 08 Apr 2020 06:28:13 -0400
+X-MC-Unique: KVkFh0gbOm2Hxe1TEk_Ytw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 11FDE20029;
-        Wed,  8 Apr 2020 12:27:55 +0200 (CEST)
-Date:   Wed, 8 Apr 2020 12:27:53 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] drm/panel: NT39016: Add support for multiple modes
-Message-ID: <20200408102753.GA25805@ravnborg.org>
-References: <20200408095830.8131-1-paul@crapouillou.net>
- <20200408100452.GA20795@ravnborg.org>
- <QCSG8Q.N40UK3F20OVT2@crapouillou.net>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1ECA7801E5E;
+        Wed,  8 Apr 2020 10:28:11 +0000 (UTC)
+Received: from [10.36.115.53] (ovpn-115-53.ams2.redhat.com [10.36.115.53])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7591C5D9CD;
+        Wed,  8 Apr 2020 10:28:00 +0000 (UTC)
+Subject: Re: [PATCH v1 5/8] vfio/type1: Report 1st-level/stage-1 format to
+ userspace
+To:     "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "peterx@redhat.com" <peterx@redhat.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wu, Hao" <hao.wu@intel.com>
+References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
+ <1584880325-10561-6-git-send-email-yi.l.liu@intel.com>
+ <cb68e9ab-77b0-7e97-a661-4836962041d9@redhat.com>
+ <A2975661238FB949B60364EF0F2C25743A21DB4E@SHSMSX104.ccr.corp.intel.com>
+ <b47891b1-ece6-c263-9c07-07c09c7d3752@redhat.com>
+ <20200403082305.GA1269501@myrica>
+ <A2975661238FB949B60364EF0F2C25743A2249DF@SHSMSX104.ccr.corp.intel.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <acf8c809-8d29-92d6-2445-3a94fc8b82fd@redhat.com>
+Date:   Wed, 8 Apr 2020 12:27:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <QCSG8Q.N40UK3F20OVT2@crapouillou.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=eMA9ckh1 c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=8nJEP1OIZ-IA:10 a=7gkXJVJtAAAA:8
-        a=ER_8r6IbAAAA:8 a=AWKs0v43Jo1guAmdQeEA:9 a=0BdVxHvGnDqK8inQ:21
-        a=cT1zXbrBXqGS2BQb:21 a=wPNLvfGTeEIA:10 a=E9Po1WZjFZOl8hwRPBS3:22
-        a=9LHmKk7ezEChjTCyhBa9:22
+In-Reply-To: <A2975661238FB949B60364EF0F2C25743A2249DF@SHSMSX104.ccr.corp.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 12:12:26PM +0200, Paul Cercueil wrote:
-> Hi Sam,
-> 
-> 
-> Le mer. 8 avril 2020 à 12:04, Sam Ravnborg <sam@ravnborg.org> a écrit :
-> > Hi Paul.
-> > 
-> > On Wed, Apr 08, 2020 at 11:58:29AM +0200, Paul Cercueil wrote:
-> > >  Add support for multiple drm_display_mode entries. This will allow
-> > > to
-> > >  add a 50 Hz mode later.
-> > > 
-> > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> > Patch looks good.
-> > 
-> > Could we please use lower case in the $subject?
-> 
-> You mean 's/Add/add/' or the panel name as well?
+Hi Yi,
 
-The panel name. We are not consistent if we start sentences in $subject
-with lower or upper case - so Add and add are both fine.
-But the panel name is (almost) always with lower case.
+On 4/7/20 11:43 AM, Liu, Yi L wrote:
+> Hi Jean,
+> 
+>> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+>> Sent: Friday, April 3, 2020 4:23 PM
+>> To: Auger Eric <eric.auger@redhat.com>
+>> userspace
+>>
+>> On Wed, Apr 01, 2020 at 03:01:12PM +0200, Auger Eric wrote:
+>>>>>>  	header = vfio_info_cap_add(caps, sizeof(*nesting_cap),
+>>>>>>  				   VFIO_IOMMU_TYPE1_INFO_CAP_NESTING, 1);
+>> @@ -2254,6 +2309,7
+>>>>>> @@ static int vfio_iommu_info_add_nesting_cap(struct
+>>>>> vfio_iommu *iommu,
+>>>>>>  		/* nesting iommu type supports PASID requests (alloc/free) */
+>>>>>>  		nesting_cap->nesting_capabilities |= VFIO_IOMMU_PASID_REQS;
+>>>>> What is the meaning for ARM?
+>>>>
+>>>> I think it's just a software capability exposed to userspace, on
+>>>> userspace side, it has a choice to use it or not. :-) The reason
+>>>> define it and report it in cap nesting is that I'd like to make the
+>>>> pasid alloc/free be available just for IOMMU with type
+>>>> VFIO_IOMMU_TYPE1_NESTING. Please feel free tell me if it is not good
+>>>> for ARM. We can find a proper way to report the availability.
+>>>
+>>> Well it is more a question for jean-Philippe. Do we have a system wide
+>>> PASID allocation on ARM?
+>>
+>> We don't, the PASID spaces are per-VM on Arm, so this function should consult the
+>> IOMMU driver before setting flags. As you said on patch 3, nested doesn't
+>> necessarily imply PASID support. The SMMUv2 does not support PASID but does
+>> support nesting stages 1 and 2 for the IOVA space.
+>> SMMUv3 support of PASID depends on HW capabilities. So I think this needs to be
+>> finer grained:
+>>
+>> Does the container support:
+>> * VFIO_IOMMU_PASID_REQUEST?
+>>   -> Yes for VT-d 3
+>>   -> No for Arm SMMU
+>> * VFIO_IOMMU_{,UN}BIND_GUEST_PGTBL?
+>>   -> Yes for VT-d 3
+>>   -> Sometimes for SMMUv2
+>>   -> No for SMMUv3 (if we go with BIND_PASID_TABLE, which is simpler due to
+>>      PASID tables being in GPA space.)
+>> * VFIO_IOMMU_BIND_PASID_TABLE?
+>>   -> No for VT-d
+>>   -> Sometimes for SMMUv3
+>>
+>> Any bind support implies VFIO_IOMMU_CACHE_INVALIDATE support.
+> 
+> good summary. do you expect to see any 
+> 
+>>
+>>>>>> +	nesting_cap->stage1_formats = formats;
+>>>>> as spotted by Kevin, since a single format is supported, rename
+>>>>
+>>>> ok, I was believing it may be possible on ARM or so. :-) will rename
+>>>> it.
+>>
+>> Yes I don't think an u32 is going to cut it for Arm :( We need to describe all sorts of
+>> capabilities for page and PASID tables (granules, GPA size, ASID/PASID size, HW
+>> access/dirty, etc etc.) Just saying "Arm stage-1 format" wouldn't mean much. I
+>> guess we could have a secondary vendor capability for these?
+> 
+> Actually, I'm wondering if we can define some formats to stands for a set of
+> capabilities. e.g. VTD_STAGE1_FORMAT_V1 which may indicates the 1st level
+> page table related caps (aw, a/d, SRE, EA and etc.). And vIOMMU can parse
+> the capabilities.
 
-	Sam
+But eventually do we really need all those capability getters? I mean
+can't we simply rely on the actual call to VFIO_IOMMU_BIND_GUEST_PGTBL()
+to detect any mismatch? Definitively the error handling may be heavier
+on userspace but can't we manage. My fear is we end up with an overly
+complex series. This capability getter may be interesting if we can
+switch to a fallback implementation but here I guess we don't have any
+fallback. With smmuv3 nested stage we don't have any fallback solution
+either. For the versions, it is different because the userspace shall be
+able to adapt (or not) to the max version supported by the kernel.
+
+Thanks
+
+Eric
 > 
-> -Paul
+> Regards,
+> Yi Liu
 > 
-> > Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> > 
-> > I asume you will apply yourself.
-> > 
-> > 	Sam
-> > 
-> > >  ---
-> > >   drivers/gpu/drm/panel/panel-novatek-nt39016.c | 33
-> > > +++++++++++++------
-> > >   1 file changed, 23 insertions(+), 10 deletions(-)
-> > > 
-> > >  diff --git a/drivers/gpu/drm/panel/panel-novatek-nt39016.c
-> > > b/drivers/gpu/drm/panel/panel-novatek-nt39016.c
-> > >  index a470810f7dbe..f1286cf6528b 100644
-> > >  --- a/drivers/gpu/drm/panel/panel-novatek-nt39016.c
-> > >  +++ b/drivers/gpu/drm/panel/panel-novatek-nt39016.c
-> > >  @@ -49,7 +49,8 @@ enum nt39016_regs {
-> > >   #define NT39016_SYSTEM_STANDBY	BIT(1)
-> > > 
-> > >   struct nt39016_panel_info {
-> > >  -	struct drm_display_mode display_mode;
-> > >  +	const struct drm_display_mode *display_modes;
-> > >  +	unsigned int num_modes;
-> > >   	u16 width_mm, height_mm;
-> > >   	u32 bus_format, bus_flags;
-> > >   };
-> > >  @@ -212,15 +213,22 @@ static int nt39016_get_modes(struct drm_panel
-> > > *drm_panel,
-> > >   	struct nt39016 *panel = to_nt39016(drm_panel);
-> > >   	const struct nt39016_panel_info *panel_info = panel->panel_info;
-> > >   	struct drm_display_mode *mode;
-> > >  +	unsigned int i;
-> > > 
-> > >  -	mode = drm_mode_duplicate(connector->dev,
-> > > &panel_info->display_mode);
-> > >  -	if (!mode)
-> > >  -		return -ENOMEM;
-> > >  +	for (i = 0; i < panel_info->num_modes; i++) {
-> > >  +		mode = drm_mode_duplicate(connector->dev,
-> > >  +					  &panel_info->display_modes[i]);
-> > >  +		if (!mode)
-> > >  +			return -ENOMEM;
-> > >  +
-> > >  +		drm_mode_set_name(mode);
-> > > 
-> > >  -	drm_mode_set_name(mode);
-> > >  +		mode->type = DRM_MODE_TYPE_DRIVER;
-> > >  +		if (panel_info->num_modes == 1)
-> > >  +			mode->type |= DRM_MODE_TYPE_PREFERRED;
-> > > 
-> > >  -	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-> > >  -	drm_mode_probed_add(connector, mode);
-> > >  +		drm_mode_probed_add(connector, mode);
-> > >  +	}
-> > > 
-> > >   	connector->display_info.bpc = 8;
-> > >   	connector->display_info.width_mm = panel_info->width_mm;
-> > >  @@ -230,7 +238,7 @@ static int nt39016_get_modes(struct drm_panel
-> > > *drm_panel,
-> > >   					 &panel_info->bus_format, 1);
-> > >   	connector->display_info.bus_flags = panel_info->bus_flags;
-> > > 
-> > >  -	return 1;
-> > >  +	return panel_info->num_modes;
-> > >   }
-> > > 
-> > >   static const struct drm_panel_funcs nt39016_funcs = {
-> > >  @@ -316,8 +324,8 @@ static int nt39016_remove(struct spi_device
-> > > *spi)
-> > >   	return 0;
-> > >   }
-> > > 
-> > >  -static const struct nt39016_panel_info kd035g6_info = {
-> > >  -	.display_mode = {
-> > >  +static const struct drm_display_mode kd035g6_display_modes[] = {
-> > >  +	{
-> > >   		.clock = 6000,
-> > >   		.hdisplay = 320,
-> > >   		.hsync_start = 320 + 10,
-> > >  @@ -330,6 +338,11 @@ static const struct nt39016_panel_info
-> > > kd035g6_info = {
-> > >   		.vrefresh = 60,
-> > >   		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-> > >   	},
-> > >  +};
-> > >  +
-> > >  +static const struct nt39016_panel_info kd035g6_info = {
-> > >  +	.display_modes = kd035g6_display_modes,
-> > >  +	.num_modes = ARRAY_SIZE(kd035g6_display_modes),
-> > >   	.width_mm = 71,
-> > >   	.height_mm = 53,
-> > >   	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-> > >  --
-> > >  2.25.1
-> 
+
