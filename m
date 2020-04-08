@@ -2,179 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4C41A1CEE
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020481A1D00
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbgDHH5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:57:30 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:33055 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727515AbgDHH52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:57:28 -0400
-Received: by mail-pj1-f66.google.com with SMTP id cp9so1952645pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 00:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=E4WIiXeGbKDxs9UbyyfZOjVgyCJTWA/AduHG+mw3Ozg=;
-        b=TOZYTN0ZmTo7tkdrjh0d1AhqQRXNkDEiNfrJu4HSuIaIiOkXzgv343+X9uduChlxuH
-         5GPD/mmxsXBoBB14GTJKfsYkmdbX+iUL+dCVfbt+u75yXYegqNi1SrMLOcTYAi4T88lv
-         qtT4EPWIizz8lTpXFwCmAj5VEUJfA30aJ5B+himyfvXRvcepspXbnZEigEMTMyxBRsI1
-         rCfbOUbOO2fuhdV2fehBFtONQJoNk61FccNMvakWX+2TCphrgANZ1IFSPA42eCeWa9OG
-         M+RbsCIz3G7evFBUt61IGLqkg9rI5gPYiJuMTj5URYLiZTZW/IrnKhHTcL/h5ex2W4c1
-         2vRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=E4WIiXeGbKDxs9UbyyfZOjVgyCJTWA/AduHG+mw3Ozg=;
-        b=drAT3cDZ9RWWUtVeBk06ZXpajPno+IkJeRs85YRSoonkqom2VHaglcNio3DqAjD/Nc
-         QGR5AYfGNMlx6L6Or5aLnwanxrVFpc5GjL4a5cg3tjz0YFvRHPoJZoY3S64LzM2RfXmf
-         zRWxTil59GSn4IrtvESFDkncLmU8pN9Omrtl1QYihAmrL5rPlnGG/AOy1FoKJR24YEYK
-         AYwQ2Gwct3i1MvNidvAP01Ftj2L5EkklIsDUys6vbTSpJ8itg7zkeACyg/0iK7khcAKA
-         eSBWosfAn6vh/4yFNnP5pyL2q0H7aLQ/vxdYMWFZepgPYhInymCSKKNRrcSIh3S674r2
-         KNSQ==
-X-Gm-Message-State: AGi0PuZLTzexvEw7CAQR1fGc/iRu9yxWHEEQ7skLYunAEEwZUE4AJHg9
-        fL7fCgRmGKHy0X4pdQqHSpP2xw==
-X-Google-Smtp-Source: APiQypIgaMKX49GV/U1HjE4l3Up0jhdZCobmLhyfkuxFpjq9sh+MzskfqRAcr1tN8QgE7gggnLep2w==
-X-Received: by 2002:a17:90a:714b:: with SMTP id g11mr3741642pjs.17.1586332646601;
-        Wed, 08 Apr 2020 00:57:26 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id d85sm485599pfd.157.2020.04.08.00.57.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 00:57:26 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
-        aou@eecs.berkeley.edu, mhiramat@kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>
-Subject: [PATCH v5 9/9] riscv: add STRICT_KERNEL_RWX support
-Date:   Wed,  8 Apr 2020 15:57:04 +0800
-Message-Id: <100e739c5fd722a96fcc640c8ee0c82fe34fcb6a.1586332296.git.zong.li@sifive.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <cover.1586332296.git.zong.li@sifive.com>
-References: <cover.1586332296.git.zong.li@sifive.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726632AbgDHIA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 04:00:27 -0400
+Received: from mx1.tq-group.com ([62.157.118.193]:52846 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726436AbgDHIA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 04:00:27 -0400
+IronPort-SDR: YZ3oCIIvSezQ2JQprv7PkJSs9xhG+L0gPhn9WtA0MQyxSDcZ6+F/4jpqa7BgGMytfNKrCbfwAk
+ 8gIP04eZuU4tKjreNARONRLOIWlO2jbspw5GTuOMpGYrHAkF0mGmELcJwBSzv8XjItRx7Pgaxi
+ sK+x+Vi22sANcyhu24se/k8ql97mxsakPYO9kasYLJlPgwiSNVe2moN5AeXt+Ww+ZL4OZut4FV
+ HnofLVnBSZlwBzrQFyRUqtCiYHEtFmXBiQiKXTx+28MiB9VDDV9XVToYhQk9QvActXuzTLTh2D
+ IHU=
+X-IronPort-AV: E=Sophos;i="5.72,357,1580770800"; 
+   d="scan'208";a="11741655"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 08 Apr 2020 10:00:25 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Wed, 08 Apr 2020 10:00:25 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Wed, 08 Apr 2020 10:00:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1586332825; x=1617868825;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=FM8vvwRPjqfacbSYX2A3Kn495wuAJwFwLmZF56RyzZk=;
+  b=SSGl/fKBLQ6zBBQzssjXcmB8EQF14VS/VENDmMtuGFzSGZuNELWw3417
+   yr3jV7iUp2tQzDe8hr0iv6V21FDw2B2iXIfjIC6YCT6V49C6JsVi1fHRy
+   JQqyBpJPEvCz8SciMnYRFa3lmdH7SaozPUKqr6P6Yb8S3Ltws0xSsOrWQ
+   FkhfSfxe7rjx73M9YxhFob/R8haRAMlRW6MnOiaI+qCPP8Yh56cpds8Aq
+   Tq+E2HyJ91HUgh2e5xcs3/KGKaihaajhPpGhRyIMLdWs2qToQNF3GJYi+
+   SdthFoR12clqj7+uZfpkTpJfB/x0AxPZy99R6Fgh7XFVrYQFeEbU+3qco
+   w==;
+IronPort-SDR: /L+9vGxeIt5Jv2JplrvfzXRWrsT3Va/pLkDE2tePs1EG/Nah9lvKTPFzxS4rpn+Gf/xHBXJrQV
+ tlbj0T7TD5gHwaro9S6UskRPxmQjgiqhquyEsTMc5bSYgu/7GZcqgsH9k8CSERDXBrTqew5h7P
+ drrI19g/n1WMkP+YhI4SNyLI/wpQ2KUeFcyNXwtduqFROa25ugR4KcEt2+vJOYe0lZapCq92vF
+ prZo/8yA1uTeHVU8TunxvTjncXrc75jSs831Zy7E/7fPJlsLukofq2Rxmvff3KHyojmn3sr/wA
+ Z7E=
+X-IronPort-AV: E=Sophos;i="5.72,357,1580770800"; 
+   d="scan'208";a="11741654"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 08 Apr 2020 10:00:25 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.49.26])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 45945280065;
+        Wed,  8 Apr 2020 10:00:39 +0200 (CEST)
+Message-ID: <405fa9612b52ee9a7c550d2ac5a2df86acb223c1.camel@ew.tq-group.com>
+Subject: Re: (EXT) Re: (EXT) Re: [PATCH 1/4] pwm: pca9685: remove unused
+ duty_cycle struct element
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-pwm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Clemens Gruber <clemens.gruber@pqgruber.com>
+Date:   Wed, 08 Apr 2020 10:00:22 +0200
+In-Reply-To: <3ec5c2bd67cd714f86178a1e7143cd247759aaf8.camel@ew.tq-group.com>
+References: <20200226135229.24929-1-matthias.schiffer@ew.tq-group.com>
+         <20200226151034.7i3h5blmrwre2yzg@pengutronix.de>
+         <32ec35c2b3da119dd2c7bc09742796a0d8a9607e.camel@ew.tq-group.com>
+         <CAGngYiUinGeppRdnsWvX4DBLVcHFBSGWamUKdTC+rTY3kpFWcQ@mail.gmail.com>
+         <3ec5c2bd67cd714f86178a1e7143cd247759aaf8.camel@ew.tq-group.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit contains that make text section as non-writable, rodata
-section as read-only, and data section as non-executable.
+On Tue, 2020-04-07 at 16:46 +0200, Matthias Schiffer wrote:
+> On Fri, 2020-04-03 at 19:47 -0400, Sven Van Asbroeck wrote:
+> > On Wed, Feb 26, 2020 at 12:04 PM Matthias Schiffer
+> > <matthias.schiffer@ew.tq-group.com> wrote:
+> > > 
+> > > >  - Is this racy somehow (i.e. can it happen that when going
+> > > > from
+> > > >    duty_cycle/period = 1000/5000 to duty_cycle/period =
+> > > > 4000/10000
+> > > > the
+> > > >    output is 1000/10000 (or 4000/5000) for one cycle)?
+> > > 
+> > > It currently is racy. It should be possible to fix that either by
+> > > updating all 4 registers in a single I2C write, or by using the
+> > > "update
+> > > on ACK" mode which requires all 4 registers to be updated before
+> > > the
+> > > new setting is applied (I'm not sure if this mode would require
+> > > using a
+> > > single I2C write as well though).
+> > 
+> > Matthias, did you verify experimentally that changing the period is
+> > racy?
+> > 
+> > Looking at the datasheet and driver code, it shouldn't be. This is
+> > because
+> > the OFF time is set as a proportion of the counter range. When the
+> > period
+> > changes from 5000 to 10000, then 5000*20%/5000 and 10000*20%/10000
+> > will result in the same 20% ratio (disregarding rounding errors).
+> > 
+> > This is documented at the beginning of the driver:
+> > 
+> 
+> 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pwm/pwm-pca9685.c?h=v5.6#n25
+> > 
+> > Should we move that comment to pwm_config(), so future versions of
+> > ourselves won't overlook it?
+> 
+> You are right, this results in the same ratio - the absolute on/off
+> times may be wrong for a moment though when the period is changed.
+> 
+> In the attached image, I have changed the period, but kept the
+> absolute
+> duty cycle fixed (note: this is in inverted mode, so the duty cycle
+> controls the low time). It can be seen that after a too long high
+> time
+> (chip is in sleep mode) one period with too long low time follows
+> (new
+> period, old relative duty cycle), before the counter is reprogrammed
+> to
+> match the previous absolute duty cycle.
+> 
+> I don't care too much about the details of the behaviour, as I only
+> control LEDs using this chip and don't need to change the period
+> after
+> initial setup, but we should accurately document the shortcomings of
+> the hardware and the driver (when we have decided how to fix some of
+> the driver issues).
+> 
+> Matthias
 
-The init section should be changed to non-executable.
+And another kind of race condition that should be possible, although I
+haven't seen it in practice:
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
----
- arch/riscv/Kconfig                  |  1 +
- arch/riscv/include/asm/set_memory.h |  8 ++++++
- arch/riscv/mm/init.c                | 44 +++++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+)
+High and low bits of the OFF counter currently aren't programmed
+atomically, so with unlucky timing we get a cycle using new lower 8
+bits with old upper 4 bits of the duty cycle.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 1e1efc998baf..58b556167d59 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -61,6 +61,7 @@ config RISCV
- 	select ARCH_HAS_GIGANTIC_PAGE
- 	select ARCH_HAS_SET_DIRECT_MAP
- 	select ARCH_HAS_SET_MEMORY
-+	select ARCH_HAS_STRICT_KERNEL_RWX
- 	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
- 	select SPARSEMEM_STATIC if 32BIT
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
-diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
-index 4c5bae7ca01c..c38df4771c09 100644
---- a/arch/riscv/include/asm/set_memory.h
-+++ b/arch/riscv/include/asm/set_memory.h
-@@ -22,6 +22,14 @@ static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
- static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
- #endif
- 
-+#ifdef CONFIG_STRICT_KERNEL_RWX
-+void set_kernel_text_ro(void);
-+void set_kernel_text_rw(void);
-+#else
-+static inline void set_kernel_text_ro(void) { }
-+static inline void set_kernel_text_rw(void) { }
-+#endif
-+
- int set_direct_map_invalid_noflush(struct page *page);
- int set_direct_map_default_noflush(struct page *page);
- 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index fab855963c73..b55be44ff9bd 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -12,6 +12,7 @@
- #include <linux/sizes.h>
- #include <linux/of_fdt.h>
- #include <linux/libfdt.h>
-+#include <linux/set_memory.h>
- 
- #include <asm/fixmap.h>
- #include <asm/tlbflush.h>
-@@ -477,6 +478,17 @@ static void __init setup_vm_final(void)
- 	csr_write(CSR_SATP, PFN_DOWN(__pa_symbol(swapper_pg_dir)) | SATP_MODE);
- 	local_flush_tlb_all();
- }
-+
-+void free_initmem(void)
-+{
-+	unsigned long init_begin = (unsigned long)__init_begin;
-+	unsigned long init_end = (unsigned long)__init_end;
-+
-+	/* Make the region as non-execuatble. */
-+	set_memory_nx(init_begin, (init_end - init_begin) >> PAGE_SHIFT);
-+	free_initmem_default(POISON_FREE_INITMEM);
-+}
-+
- #else
- asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- {
-@@ -488,6 +500,38 @@ static inline void setup_vm_final(void)
- }
- #endif /* CONFIG_MMU */
- 
-+#ifdef CONFIG_STRICT_KERNEL_RWX
-+void set_kernel_text_rw(void)
-+{
-+	unsigned long text_start = (unsigned long)_text;
-+	unsigned long text_end = (unsigned long)_etext;
-+
-+	set_memory_rw(text_start, (text_end - text_start) >> PAGE_SHIFT);
-+}
-+
-+void set_kernel_text_ro(void)
-+{
-+	unsigned long text_start = (unsigned long)_text;
-+	unsigned long text_end = (unsigned long)_etext;
-+
-+	set_memory_ro(text_start, (text_end - text_start) >> PAGE_SHIFT);
-+}
-+
-+void mark_rodata_ro(void)
-+{
-+	unsigned long text_start = (unsigned long)_text;
-+	unsigned long text_end = (unsigned long)_etext;
-+	unsigned long rodata_start = (unsigned long)__start_rodata;
-+	unsigned long data_start = (unsigned long)_data;
-+	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
-+
-+	set_memory_ro(text_start, (text_end - text_start) >> PAGE_SHIFT);
-+	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-+	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
-+	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
-+}
-+#endif
-+
- void __init paging_init(void)
- {
- 	setup_vm_final();
--- 
-2.26.0
 
