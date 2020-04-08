@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D011A1C33
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5791A1C3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726586AbgDHHAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:00:19 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:35344 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726146AbgDHHAS (ORCPT
+        id S1726620AbgDHHEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:04:47 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25982 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725932AbgDHHEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:00:18 -0400
-Received: by mail-wm1-f46.google.com with SMTP id r26so4247918wmh.0;
-        Wed, 08 Apr 2020 00:00:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Av/FXNaBuB1VS6RYdqa7OAt6R+J1OLa09arDuXhFBB8=;
-        b=T+ZHquUfU6j0EIHDZXzr/jEwiClinPUpe/O5RXSWTGEjQGeROqiGAewlEmu7BexGDe
-         NYPEU3W6towTqp+RtaaPpEez5xCrP1IRxAt31rqqEoKTzxzR2wX17rVf0C+VoSTBK/W8
-         z5BVv4I+dDZ7TCRXPdR57DezZPf8gW01qwnQPGx/lx7o0xWwYz1pbAmX1nIeWf+5WjE0
-         DGx6AmwupguJmrAj+HFkho/7Kf1xs6L85G80lygTe7SbsJQyUXgZXGdGrqtGHVnorW+f
-         QLMVIMgWhQxboYw/genCflQGWY0s/tu6kv33PmPzgBtiB0VA1EHE+9XERZLqKbuKm6Vs
-         Xyjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Av/FXNaBuB1VS6RYdqa7OAt6R+J1OLa09arDuXhFBB8=;
-        b=a3/7DLY3eLKsyQ0zCPtvF7mMf6U2ZBlAC/tnhNvLSTQUiKFV1BbHX4E1NVriRwIJiU
-         0h4yVlLPuJ6y3c8zkahsHAKxAXMENmpuQhLfA13Wl6eLSee4LUJxTI9jxTlS3ZbSc8xd
-         8zEb3/W0QAOXsJEqiNqiQMlT6NXE4CVX4my7YK5E0lNUz2nN51MXCSFglSIizMJeBux7
-         fFmdqoo/RbF36LW9NJKjiGDLznNzoPn49i1jRCMwOOi5kI8wfqxsI2AGcFyTnDF0tfUo
-         2zlDyX+wWGrCd7Ns59gXCaOwSnktZHGdD5/2xlNMw9y0i2Yt8IAt/XuidQrBmLMCm0gw
-         Kglg==
-X-Gm-Message-State: AGi0PuYXiG0JVcS5iVIzdjlwKatgLVb7xwgFpHTfUZ8j1VYXZvBUPTJ2
-        mWQ/2BxhU7GTP/CUfS66b2/O5AY+Vyw=
-X-Google-Smtp-Source: APiQypJixPuXrjaptS5y9Po9WQMW1X5Hl+YH3AEDcqGn5f02ogSjxVH+HJ7NB+KCHKSrMUgr7AzotA==
-X-Received: by 2002:a1c:6783:: with SMTP id b125mr2635114wmc.69.1586329217465;
-        Wed, 08 Apr 2020 00:00:17 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.194.179])
-        by smtp.gmail.com with ESMTPSA id o9sm29583595wru.29.2020.04.08.00.00.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 00:00:16 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 09:00:13 +0200
-From:   Juri Lelli <juri.lelli@gmail.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [ANNOUNCE] v5.6.2-rt1
-Message-ID: <20200408070013.GB14300@localhost.localdomain>
-References: <20200403170443.pzm24672qo4hufcm@linutronix.de>
+        Wed, 8 Apr 2020 03:04:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586329486;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PL5NL12CLrgF4s0JIXllKLCGUD/J5TZTVhR34cXuYOE=;
+        b=WWqAWRvCJ+2+mc5i275Asd/0iOpLGzYGUcXiehptXU55UKe1dsX1yBvl8y2wINmtB228Um
+        YESj1y8XMAebWxf/E8xYPu5TXdb5RbmDSsVkYLnBE1cMRKGO4l+1QdxUvLY34nKaIWjuie
+        4Q/1XjSfXRqh2T1nKRelpbMvb9dOzKs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-xXQiYdcaPGOk9HzBCfDvfQ-1; Wed, 08 Apr 2020 03:04:44 -0400
+X-MC-Unique: xXQiYdcaPGOk9HzBCfDvfQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40E1E7A28B;
+        Wed,  8 Apr 2020 07:04:43 +0000 (UTC)
+Received: from gondolin (ovpn-113-103.ams2.redhat.com [10.36.113.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E4F1B5DA60;
+        Wed,  8 Apr 2020 07:04:38 +0000 (UTC)
+Date:   Wed, 8 Apr 2020 09:04:36 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com
+Subject: Re: [PATCH 1/2] KVM: Check validity of resolved slot when searching
+ memslots
+Message-ID: <20200408090436.2bd1f303.cohuck@redhat.com>
+In-Reply-To: <20200408064059.8957-2-sean.j.christopherson@intel.com>
+References: <20200408064059.8957-1-sean.j.christopherson@intel.com>
+        <20200408064059.8957-2-sean.j.christopherson@intel.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403170443.pzm24672qo4hufcm@linutronix.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue,  7 Apr 2020 23:40:58 -0700
+Sean Christopherson <sean.j.christopherson@intel.com> wrote:
 
-On 03/04/20 19:04, Sebastian Andrzej Siewior wrote:
-> Dear RT folks!
+> Check that the resolved slot (somewhat confusingly named 'start') is a
+> valid/allocated slot before doing the final comparison to see if the
+> specified gfn resides in the associated slot.  The resolved slot can be
+> invalid if the binary search loop terminated because the search index
+> was incremented beyond the number of used slots.
 > 
-> I'm pleased to announce the v5.6.2-rt1 patch set. 
+> This bug has existed since the binary search algorithm was introduced,
+> but went unnoticed because KVM statically allocated memory for the max
+> number of slots, i.e. the access would only be truly out-of-bounds if
+> all possible slots were allocated and the specified gfn was less than
+> the base of the lowest memslot.  Commit 36947254e5f98 ("KVM: Dynamically
+> size memslot array based on number of used slots") eliminated the "all
+> possible slots allocated" condition and made the bug embarrasingly easy
+> to hit.
 > 
-> Changes since v5.4.28-rt19:
+> Fixes: 9c1a5d38780e6 ("kvm: optimize GFN to memslot lookup with large slots amount")
+> Reported-by: syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  include/linux/kvm_host.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->   - Rebase to v5.6.2
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 6d58beb65454..01276e3d01b9 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1048,7 +1048,7 @@ search_memslots(struct kvm_memslots *slots, gfn_t gfn)
+>  			start = slot + 1;
+>  	}
+>  
+> -	if (gfn >= memslots[start].base_gfn &&
+> +	if (start < slots->used_slots && gfn >= memslots[start].base_gfn &&
+>  	    gfn < memslots[start].base_gfn + memslots[start].npages) {
+>  		atomic_set(&slots->lru_slot, start);
+>  		return &memslots[start];
 
-I was reviewing the new set and I couldn't find v5.4.28-rt19
-6dbbc833c99f ("mm: perform lru_add_drain_all() remotely"). Don't think
-it has been squashed either.
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-Am I wrong? If not, why was that left out?
-
-Thanks!
-
-Juri
