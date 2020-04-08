@@ -2,129 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE33B1A266D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989431A2667
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:54:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgDHPzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:55:07 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:35939 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgDHPzG (ORCPT
+        id S1729844AbgDHPyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:54:44 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:20623 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729632AbgDHPyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:55:06 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MFL8J-1jWtE512Xx-00FjXx; Wed, 08 Apr 2020 17:54:52 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Erin Lo <erin.lo@mediatek.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] remoteproc: mtk_scp: use dma_addr_t for DMA API
-Date:   Wed,  8 Apr 2020 17:54:29 +0200
-Message-Id: <20200408155450.2186471-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.0
+        Wed, 8 Apr 2020 11:54:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586361283;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0jL6OKsl/vevfcCXL5hEg1wpfnw6jRaU0IgVB/aka5A=;
+        b=AVoQ5g/ueJVlFkBs5fPBxag2RIvz9SMLV0y9rh+Pl6vtR6FGYnr85IPnnYmD/3cJXvCwzr
+        UQWp2kDRzoGnTkc/ZxxG7GgwBbdqhFIT7jhgcflMw0WSrffrvZSYaPaDZHcD6kkhnB0mPf
+        3p/37/Q5Sa6csJ+OQ0VnshPCYOhejzk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-x531gaW5NPeoWRiWgTB1xg-1; Wed, 08 Apr 2020 11:54:39 -0400
+X-MC-Unique: x531gaW5NPeoWRiWgTB1xg-1
+Received: by mail-wr1-f69.google.com with SMTP id q9so4404211wrw.22
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:54:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0jL6OKsl/vevfcCXL5hEg1wpfnw6jRaU0IgVB/aka5A=;
+        b=Ifv5bxRn3JU5ljPt3aJ3AFkEk8DfMyTB/qZ1nli68QrrYtcBES7LXD60CAoOA749pe
+         2/Z0Arpy8ar4CEijjq0rQea+zoAPb9poAurof0k08w3BsfyMNBNaZHDNQDZoZnboUuG9
+         IcASDeB6zgEmFIL9D7S/MyVZEsd8iK+tHMDgqalKKo2ZqOu3jsUyinHLBNwXXPoO7nnx
+         No1ZwZvsFHzzFbxXrVOJ1TmuiOMatukWFlHD4ntAmea/Qdu7tmA0jH3crrQtjWcwiJWa
+         qIX2olsk1u3sz+fTXYmUUb3+WgXC7vNU9U0kHKlQLls86paz7f4s0C9q7ilYmSNaEbbo
+         OqQw==
+X-Gm-Message-State: AGi0PuaTqNsXLfX/wCZ/I+Cc/TBGJArEC2ttHu38664j75Eic+X2IMT7
+        RKUDXo6ahWFbIBzS4DoVT2lniLYJY5gkplyIlSmagPJj/Y1kNkOToJoxNkuamD7CikZWh/Qj7ux
+        Ft4+IJVGFveYYKARyE0Mzm50w
+X-Received: by 2002:a7b:ce81:: with SMTP id q1mr5719265wmj.156.1586361278158;
+        Wed, 08 Apr 2020 08:54:38 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJT6MzUUAi0MLdhAAZpBiuYK6o2gfpFrbxz3473qX+5EK7JCJ7DwjwpPhSkpGBI/UrWHw25Mg==
+X-Received: by 2002:a7b:ce81:: with SMTP id q1mr5719247wmj.156.1586361277827;
+        Wed, 08 Apr 2020 08:54:37 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u17sm41238777wra.63.2020.04.08.08.54.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 08:54:36 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Olaf Hering <olaf@aepfle.de>
+Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: Re: [PATCH v1] x86: hyperv: report value of misc_features
+In-Reply-To: <20200407172739.31371-1-olaf@aepfle.de>
+References: <20200407172739.31371-1-olaf@aepfle.de>
+Date:   Wed, 08 Apr 2020 17:54:35 +0200
+Message-ID: <874ktu2csk.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ZXUS0WnSgpDrLDUPXUv4WC9aMIcDFvE3FAcQZyRtm4Fcfz/PImX
- YbWkCxd19WeDTGPPYTgd612QtlZrf+VzZzOOCH0pmwqI038hD+0qc+LvVJdMPjMhgM1pVhu
- go5ASoaJNzp5rdg5N+pmgTNW3g41CDoPdsEkpZtV+L3XewxdrTSjHqU22VZ0PWae5Kwq3Pw
- h3o9mR8BPo8jgPE5vh0FA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5giCQrLFcdI=:WP8aJCXVXjHUf1G2MYPuKx
- yJgLARtxvOSu8qnX/bKwmAycVMI9Ku5uj0yyzrVB9nW58PfVRJs65pUuF0H9Qo2W2ZTAEq49k
- 3y699LxloIhuwMoS6hVUlgwvGGnSJzmojo9Mf02Mhy3Z+xOEIQguuikvibM7y/s/PCWwZ8spK
- IPwHZh1MMY9ecU2slK/xFv8VpyAzGsc/1Sjg7JstBxpCj02136j2qruVF12gi7icZ9SGMaCeX
- 0KX1sJJ3RYI7c2NsBZ3/fuTmMT9temdtJY6QJykBNzjUuelBIzv5uQ57q0kTi5GjZcZ40sos+
- /Prhow+ydB2cQ6XADUXKMdqf7mdWQKxwV6DJnWXnd4uePBWjc/Z6izEFm/qzemKPwMuuKl7/E
- kfvGKCgV2uytBJtiywdWD6YckByPYzdVMoB6NM9rhjF4h7gAAxcsTM1off2NJSezjna6g8wBO
- JFZe//nrHSIdXnsDvQnwAgxoGrg8FsRDQbACxTKdrl2dyUr46J+GjPKfTyshbml4gTpmhFWEj
- fyooy45R9craWPeDTRYesoJojzRqOXKxUEfeNqG8oslev52UPYKWNfq516U34lK624xThg12j
- GCXZi9chpCTIKNkY/yTUtqdpwQA4Cqj+T0WtAStWR8d02WOYb7ddNRZSTYzJJUsBMsG4WCexW
- 7dklVzWRJBNxwLvFhT3WBCHwhRJ7YeXv5YaCatUgzDssoQxxCl4kWjlIsHoWE870RHmlFNRdh
- qiYH1+2a1wdf9Ig4cFndjwm+df8zZFPPNKnyZYtbGEl3BUrY85gfILecuR9g5HEvkdtYtGz2e
- 8Mkud02TZqOwHPqE1+pvDbza+thSWuOz71bUxIf99neDgi6ZCY=
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dma_addr_t and phys_addr_t are distinct types and must not be
-mixed, as both the values and the size of the type may be
-different depending on what the remote device uses.
+Olaf Hering <olaf@aepfle.de> writes:
 
-In this driver the compiler warns when the two types are different:
+> A few kernel features depend on ms_hyperv.misc_features, but unlike its
+> siblings ->features and ->hints, the value was never reported during boot.
+>
+> Signed-off-by: Olaf Hering <olaf@aepfle.de>
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index caa032ce3fe3..53706fb56433 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -227,8 +227,8 @@ static void __init ms_hyperv_init_platform(void)
+>  	ms_hyperv.misc_features = cpuid_edx(HYPERV_CPUID_FEATURES);
+>  	ms_hyperv.hints    = cpuid_eax(HYPERV_CPUID_ENLIGHTMENT_INFO);
+>  
+> -	pr_info("Hyper-V: features 0x%x, hints 0x%x\n",
+> -		ms_hyperv.features, ms_hyperv.hints);
+> +	pr_info("Hyper-V: features 0x%x, hints 0x%x, misc 0x%x\n",
+> +		ms_hyperv.features, ms_hyperv.hints, ms_hyperv.misc_features);
 
-drivers/remoteproc/mtk_scp.c: In function 'scp_map_memory_region':
-drivers/remoteproc/mtk_scp.c:454:9: error: passing argument 3 of 'dma_alloc_coherent' from incompatible pointer type [-Werror=incompatible-pointer-types]
-  454 |         &scp->phys_addr, GFP_KERNEL);
-      |         ^~~~~~~~~~~~~~~
-      |         |
-      |         phys_addr_t * {aka unsigned int *}
-In file included from drivers/remoteproc/mtk_scp.c:7:
-include/linux/dma-mapping.h:642:15: note: expected 'dma_addr_t *' {aka 'long long unsigned int *'} but argument is of type 'phys_addr_t *' {aka 'unsigned int *'}
-  642 |   dma_addr_t *dma_handle, gfp_t gfp)
+Several spare thoughts:
 
-Change the phys_addr member to be typed and named according
-to how it is allocated.
+I'm always struggling to remember what is what here as these names don't
+correspond to TLFS, could we maybe come up with better naming, e.g.
 
-Fixes: 63c13d61eafe ("remoteproc/mediatek: add SCP support for mt8183")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/remoteproc/mtk_common.h | 2 +-
- drivers/remoteproc/mtk_scp.c    | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+"Features.EAX", "Features.EDX", "Recommendations.EAX",...
 
-diff --git a/drivers/remoteproc/mtk_common.h b/drivers/remoteproc/mtk_common.h
-index deb20096146a..0066c83636d0 100644
---- a/drivers/remoteproc/mtk_common.h
-+++ b/drivers/remoteproc/mtk_common.h
-@@ -68,7 +68,7 @@ struct mtk_scp {
- 	wait_queue_head_t ack_wq;
- 
- 	void __iomem *cpu_addr;
--	phys_addr_t phys_addr;
-+	dma_addr_t dma_addr;
- 	size_t dram_size;
- 
- 	struct rproc_subdev *rpmsg_subdev;
-diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
-index ea3743e7e794..2bead57c9cf9 100644
---- a/drivers/remoteproc/mtk_scp.c
-+++ b/drivers/remoteproc/mtk_scp.c
-@@ -330,7 +330,7 @@ static void *scp_da_to_va(struct rproc *rproc, u64 da, size_t len)
- 		if (offset >= 0 && (offset + len) < scp->sram_size)
- 			return (void __force *)scp->sram_base + offset;
- 	} else {
--		offset = da - scp->phys_addr;
-+		offset = da - scp->dma_addr;
- 		if (offset >= 0 && (offset + len) < scp->dram_size)
- 			return (void __force *)scp->cpu_addr + offset;
- 	}
-@@ -451,7 +451,7 @@ static int scp_map_memory_region(struct mtk_scp *scp)
- 	/* Reserved SCP code size */
- 	scp->dram_size = MAX_CODE_SIZE;
- 	scp->cpu_addr = dma_alloc_coherent(scp->dev, scp->dram_size,
--					   &scp->phys_addr, GFP_KERNEL);
-+					   &scp->dma_addr, GFP_KERNEL);
- 	if (!scp->cpu_addr)
- 		return -ENOMEM;
- 
-@@ -461,7 +461,7 @@ static int scp_map_memory_region(struct mtk_scp *scp)
- static void scp_unmap_memory_region(struct mtk_scp *scp)
- {
- 	dma_free_coherent(scp->dev, scp->dram_size, scp->cpu_addr,
--			  scp->phys_addr);
-+			  scp->dma_addr);
- 	of_reserved_mem_device_release(scp->dev);
- }
- 
+On the other hand, there is more, e.g. nested virtualization
+features. How is it useful for all users to see this in dmesg every
+time? If we need it for development purposes, we can always run 'cpuid'
+so maybe let's drop this altogether or print only with pr_debug? 
+
+(Honestly: no strong opinion here, deferring to Microsoft folks).
+
+>  
+>  	ms_hyperv.max_vp_index = cpuid_eax(HYPERV_CPUID_IMPLEMENT_LIMITS);
+>  	ms_hyperv.max_lp_index = cpuid_ebx(HYPERV_CPUID_IMPLEMENT_LIMITS);
+>
+
 -- 
-2.26.0
+Vitaly
 
