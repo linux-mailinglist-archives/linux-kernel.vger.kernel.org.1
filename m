@@ -2,121 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 949D01A1AB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 06:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7931A1AB2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 05:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbgDHEBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 00:01:17 -0400
-Received: from mx04.melco.co.jp ([192.218.140.144]:53674 "EHLO
-        mx04.melco.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725840AbgDHEBR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 00:01:17 -0400
-Received: from mr04.melco.co.jp (mr04 [133.141.98.166])
-        by mx04.melco.co.jp (Postfix) with ESMTP id EA6183A3F22;
-        Wed,  8 Apr 2020 13:01:14 +0900 (JST)
-Received: from mr04.melco.co.jp (unknown [127.0.0.1])
-        by mr04.imss (Postfix) with ESMTP id 48xrDV6GckzRk8X;
-        Wed,  8 Apr 2020 13:01:14 +0900 (JST)
-Received: from mf04_second.melco.co.jp (unknown [192.168.20.184])
-        by mr04.melco.co.jp (Postfix) with ESMTP id 48xrDV5ySczRjnK;
-        Wed,  8 Apr 2020 13:01:14 +0900 (JST)
-Received: from mf04.melco.co.jp (unknown [133.141.98.184])
-        by mf04_second.melco.co.jp (Postfix) with ESMTP id 48xrDV5wWRzRk9n;
-        Wed,  8 Apr 2020 13:01:14 +0900 (JST)
-Received: from JPN01-TY1-obe.outbound.protection.outlook.com (unknown [104.47.93.54])
-        by mf04.melco.co.jp (Postfix) with ESMTP id 48xrDV5kXczRk5B;
-        Wed,  8 Apr 2020 13:01:14 +0900 (JST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CQt5YYyG7NTdHmXyLqhr13wI+9wjbXRczUjulArvafQiedDi56PU2R85KyBtLZS9N3S2GddU0jsubk1OSo+XrTVKyp1oyrFWjyaY77cewXPqYyPUHEmxveHURx6IaVQEYfkJfjJqx/n6gA+3lnwDo/CZeIN7qzVh3+3yeqE7FnI31vfhHWug2P88xfhv/tvZN06fY637nAXADDHHF/PZpEu7ED0SJmWwKkgOcFfMZQuOZw5XbAq6LTucgG5QaBTz8CGu1CExWsOjhD1bl6VKX5R91HctWvaEmqyN6mKaPGa/G9gPv011loLjJR2cCH1m1u9aFgYiRw3CVuUeLjHpiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/YQcHkqTkj5HoqtPWEnuxKX4jz5Ytg39Nn507xmaFBA=;
- b=Jlx/paScw/HpBjQV4e/Tw5p5AmJXQ90G7WKV/L9LgnW8629XhhKVg38KY9Hza2urPFf7KI6sCpxUItL15tb3HMm+0OuB4piJIHlom9hjIK+lZ1I++zo03n67/lAG0wC9wtSXWKl9ylj45pJ/P215IebyTZtpEQJhPiCk9nh4HFJ+A6P7hQQjXoxS14CaIwglm/Ski6vu/zX/+7aRKQ/CP/n9ec3GQwgXLUMBMSyKCfZsFgj5g0cSgn5JOPk9ZRhNyx6Nnwl7cLkWBuKjxU8rMAta+l6HY1271ySty3Xob+jY/5SzG2dNhLs/r/z6TnSdzPuEN4L/QPtXnQXC1qUkzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dc.mitsubishielectric.co.jp; dmarc=pass action=none
- header.from=dc.mitsubishielectric.co.jp; dkim=pass
- header.d=dc.mitsubishielectric.co.jp; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mitsubishielectricgroup.onmicrosoft.com;
- s=selector2-mitsubishielectricgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/YQcHkqTkj5HoqtPWEnuxKX4jz5Ytg39Nn507xmaFBA=;
- b=N54RVh26QJroifmhgVuR+nXLmMuaQLtOME0qC+fRgpHzwj7HQ8jWLbMMio5up//lGNKAv3ZQQYJwKdEkSa5kSTBQUbAocgcr7CEkpr5A66u7igc6j+7+Nsxzdb4dTbx15KvCgEDQWzc+7DISu8bIZvgOS+jnH1Tz8vpBxK03Z1w=
-Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com (52.133.161.22) by
- TY1PR01MB1594.jpnprd01.prod.outlook.com (52.133.161.18) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2878.16; Wed, 8 Apr 2020 04:01:14 +0000
-Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com
- ([fe80::c5d6:a88e:62c6:4b96]) by TY1PR01MB1578.jpnprd01.prod.outlook.com
- ([fe80::c5d6:a88e:62c6:4b96%3]) with mapi id 15.20.2878.022; Wed, 8 Apr 2020
- 04:01:14 +0000
-From:   "Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp" 
-        <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
-To:     "'pali@kernel.org'" <pali@kernel.org>
-CC:     "'linux-fsdevel@vger.kernel.org'" <linux-fsdevel@vger.kernel.org>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'namjae.jeon@samsung.com'" <namjae.jeon@samsung.com>,
-        "'sj1557.seo@samsung.com'" <sj1557.seo@samsung.com>,
-        "'viro@zeniv.linux.org.uk'" <viro@zeniv.linux.org.uk>
-Subject: RE: [PATCH 1/4] exfat: Simplify exfat_utf8_d_hash() for code points
- above U+FFFF
-Thread-Topic: [PATCH 1/4] exfat: Simplify exfat_utf8_d_hash() for code points
- above U+FFFF
-Thread-Index: AQHWCfgm33iC4HYp6U6hpobeaScABqhrVdFggAIevgCAARtD4A==
-Date:   Wed, 8 Apr 2020 03:59:06 +0000
-Deferred-Delivery: Wed, 8 Apr 2020 04:01:00 +0000
-Message-ID: <TY1PR01MB1578892F886C62868F87663B90C00@TY1PR01MB1578.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB15782019FA3094015950830590C70@TY1PR01MB1578.jpnprd01.prod.outlook.com>
- <20200403204037.hs4ae6cl3osogrso@pali>
- <TY1PR01MB1578D63C6F303DE805D75DAA90C20@TY1PR01MB1578.jpnprd01.prod.outlook.com>
- <20200407100648.phkvxbmv2kootyt7@pali>
-In-Reply-To: <20200407100648.phkvxbmv2kootyt7@pali>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-melpop: 1
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp; 
-x-originating-ip: [121.80.0.163]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 16449eaa-8bb6-46cf-e1be-08d7db717b30
-x-ms-traffictypediagnostic: TY1PR01MB1594:
-x-microsoft-antispam-prvs: <TY1PR01MB159470A326D76195848EC20F90C00@TY1PR01MB1594.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-forefront-prvs: 0367A50BB1
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1578.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(39860400002)(396003)(346002)(136003)(376002)(366004)(64756008)(76116006)(66946007)(6666004)(55016002)(186003)(478600001)(66476007)(66556008)(26005)(9686003)(81156014)(33656002)(52536014)(8936002)(54906003)(4744005)(86362001)(7696005)(5660300002)(316002)(66446008)(8676002)(6506007)(71200400001)(2906002)(4326008)(6916009)(81166007)(491001);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: dc.MitsubishiElectric.co.jp does
- not designate permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jUqY/4ml88tkiaMZ8qMFm3bfCuZgtx1u2y6p+ODyesNmjKLeUy7aN1btLqvEAavhqnqXqORn7ed2kYwzuMOPB9RdeuJ1qk4PkZMCAoXF2hldTe45gdBWe85MznfDjI9D6fbUXqhHwWFT0oRYbaklFB94K2xRFn5Igz4hC1coWI229AwsJjYwD4xQx34vgwoJXwMzGXHeZNmDQMrihGTwYOEbrCaFKyq4Ec0oQ+8ntTlMKgj8Je+h5z9tlJHj9aEsiC5jTFATiWW3cgHQCRcU6zAWtw0DFYW6oUC9KhXG2JIZ4TPO3gASJRdhB8myG1bWt+TlPMXIJ76HdppzYvbr4v7WNDMvHX8y1SYXuY/g0GkS51CmLSFu8JHiik23C6UdCT9E8IAHqUzL+FIyVr81htRxaQWiGaRddnzJf+nUeVo/FB9Ss/7/Jb5MHdcN3pB2r1Ss7EfaTeaJqHTOFE3dhdfkxeGFtyB77uTS66MVy0Q=
-x-ms-exchange-antispam-messagedata: PdneWJLrMTA8AXBdYcZ9GFLVt+4DmO8ELCbuBHLjCeJg4gkzBODmAX/R+FPm3xcAMM9ypGvkM7NKwGIdCHrdw3fUi4LfC+8pdSpBrFuws4w+ilwuJW2fefZ6Nz62LWR2O3sPTAcIJk1NtG3MfpGINw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726523AbgDHD7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 23:59:23 -0400
+Received: from mail.itouring.de ([188.40.134.68]:45750 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726464AbgDHD7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Apr 2020 23:59:23 -0400
+Received: from tux.applied-asynchrony.com (p5B07E2B3.dip0.t-ipconnect.de [91.7.226.179])
+        by mail.itouring.de (Postfix) with ESMTPSA id 14A1B4160ED7;
+        Wed,  8 Apr 2020 05:59:21 +0200 (CEST)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id BD004F01600;
+        Wed,  8 Apr 2020 05:59:20 +0200 (CEST)
+Subject: Re: hwmon: drivetemp: bogus values after wake up from suspend
+To:     Guenter Roeck <linux@roeck-us.net>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <1af049a1-63ae-ee55-05d5-0e55eb00bd0e@applied-asynchrony.com>
+ <03b3159b-e9ca-011d-d95c-6572cc07d895@roeck-us.net>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <51052162-6d79-f5c0-a811-b77587b51195@applied-asynchrony.com>
+Date:   Wed, 8 Apr 2020 05:59:20 +0200
 MIME-Version: 1.0
-X-OriginatorOrg: dc.MitsubishiElectric.co.jp
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16449eaa-8bb6-46cf-e1be-08d7db717b30
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2020 04:01:13.9813
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c5a75b62-4bff-4c96-a720-6621ce9978e5
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: L5ZWcUP8GCvdvUycg6qBP+sB96iHjhgl3ZfxVJArKGnW+k8gho2LG/BpmxeurEb7ew7DeXdTy9v8zowO8uHwjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1PR01MB1594
+In-Reply-To: <03b3159b-e9ca-011d-d95c-6572cc07d895@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBTbyBwYXJ0aWFsX25hbWVfaGFzaCgpIGxpa2UgSSB1c2VkIGl0IGluIHRoaXMgcGF0Y2ggc2Vy
-aWVzIGlzIGVub3VnaD8NCg0KSSB0aGluayBwYXJ0aWFsX25hbWVfaGFzaCgpIGlzIGVub3VnaCBm
-b3IgOC8xNi8yMWJpdCBjaGFyYWN0ZXJzLg0KDQpBbm90aGVyIHBvaW50IGFib3V0IHRoZSBkaXNj
-cmltaW5hdGlvbiBvZiAyMWJpdCBjaGFyYWN0ZXJzOg0KSSB0aGluayB0aGF0IGNoZWNraW5nIGlu
-IGV4ZmF0X3RvdXBwZXIgKCkgY2FuIGJlIG1vcmUgc2ltcGxpZmllZC4NCg0KIGV4OiByZXR1cm4g
-YSA8IFBMQU5FX1NJWkUgJiYgc2JpLT52b2xfdXRibFthXSA/IHNiaS0+dm9sX3V0YmxbYV0gOiBh
-Ow0KDQotLS0NCktvaGFkYSBUZXRzdWhpcm8gPEtvaGFkYS5UZXRzdWhpcm9AZGMuTWl0c3ViaXNo
-aUVsZWN0cmljLmNvLmpwPg0KDQo=
+On 4/7/20 3:41 AM, Guenter Roeck wrote:
+> On 4/6/20 9:23 AM, Holger Hoffstätte wrote:
+>>
+>> I've been giving the drivetemp hwmon driver a try and am very happy
+>> with it; works right away and - much to my surprise - doesn't wake up
+>> HDDs that have gone to sleep. Nice!
+>>
+>> I did notice one tiny thing though: after waking up from suspend, my SSD
+>> (Samsung 850 Pro) reports a few initial bogus values - suspiciously -128°,
+>> which is definitely not the temperature in my office. While this is more
+>> a cosmetic problem, it cramps my monitoring setup and leads to wrong graphs.
+>> Can't have that!
+>>
+>> So I looked into the source and found that the values are (understandably)
+>> passed on unfiltered/uncapped. Since it's unlikely any active device has
+>> operating temperature below-zero, I figured the laziest way is to cap the
+>> value to positive:
+>>
+>> diff -rup a/drivers/hwmon/drivetemp.c b/drivers/hwmon/drivetemp.c
+>> --- a/drivers/hwmon/drivetemp.c    2020-04-02 08:02:32.000000000 +0200
+>> +++ b/drivers/hwmon/drivetemp.c    2020-04-06 18:13:04.892554087 +0200
+>> @@ -147,7 +147,7 @@ static LIST_HEAD(drivetemp_devlist);
+>>   #define INVALID_TEMP        0x80
+>>   
+>>   #define temp_is_valid(temp)    ((temp) != INVALID_TEMP)
+>> -#define temp_from_sct(temp)    (((s8)(temp)) * 1000)
+>> +#define temp_from_sct(temp)    (max(0, ((s8)(temp)) * 1000))
+>>   
+>>   static inline bool ata_id_smart_supported(u16 *id)
+>>   {
+>>
+>> The assumption is of course *theoretically* wrong since some
+>> equipment might indeed operate in negative C°. One way might be
+>> to use the device's "low" operating point first, but then that
+>> might not be available and we'd be back to capping to 0.
+>> I'm open to other suggestions. :)
+>>
+> 
+> Looking into the code, 0x80 or -128 indeed reflects an invalid temperature.
+
+Excellent, that's of course much better than just capping to 0.
+
+> Any chance you can apply the following to see if it helps ?
+> 
+> diff --git a/drivers/hwmon/drivetemp.c b/drivers/hwmon/drivetemp.c
+> index 370d0c74eb01..c27239eb28cf 100644
+> --- a/drivers/hwmon/drivetemp.c
+> +++ b/drivers/hwmon/drivetemp.c
+> @@ -264,6 +264,8 @@ static int drivetemp_get_scttemp(struct drivetemp_data *st, u32 attr, long *val)
+>                  return err;
+>          switch (attr) {
+>          case hwmon_temp_input:
+> +               if (!temp_is_valid(buf[SCT_STATUS_TEMP]))
+> +                       return -ENODATA;
+>                  *val = temp_from_sct(buf[SCT_STATUS_TEMP]);
+>                  break;
+>          case hwmon_temp_lowest:
+> 
+> I am not sure what the best error code would be - suggestions welcome.
+
+Gave it a try and had to wait overnight for things to cool down
+(just suspending for an hour wouldn't do it). Right after wakeup sensors
+now shows "N/A" as expected, and no illegal values in drivetemp or my
+monitoring; missing values are perfectly fine.
+After a few minutes correct values show up and all is good.
+
+In case you submit this as official patch feel free to add my
+Reported-by/Tested-by. Thanks for looking into it!
+
+cheers
+Holger
