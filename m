@@ -2,101 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A5E1A2876
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CFE1A287C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730713AbgDHSXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 14:23:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:42060 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730703AbgDHSXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 14:23:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 753527FA;
-        Wed,  8 Apr 2020 11:23:37 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BC5403F73D;
-        Wed,  8 Apr 2020 11:23:32 -0700 (PDT)
-References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com> <20200408113505.2528103-5-jiaxun.yang@flygoat.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
+        id S1730753AbgDHSXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 14:23:49 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51764 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730743AbgDHSXs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 14:23:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586370227;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hqTq2Wy3TNDTzfSsOcRzLQkDhw37DQsS+GCpZMUDZFo=;
+        b=eEPqwTCRBo1Et90qpZ2uWEcLfaRYwP9J7Lb7wybHtfxWpjJl0m+LbWyRvaNVooCCJTDhSq
+        YZsYXsAcZlet3WKjLhj1yqRbx06EfUe8+cYPVRS1lNmPh/mQ5JgjlXSvFIiLglcnWYy2Vw
+        ZticrKC+wqPv+q12vvvWv1aVzPDxKP8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-415-XsFltCapNOamuqjPPB_lXg-1; Wed, 08 Apr 2020 14:23:41 -0400
+X-MC-Unique: XsFltCapNOamuqjPPB_lXg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9ED88017F4;
+        Wed,  8 Apr 2020 18:23:39 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-115-85.rdu2.redhat.com [10.10.115.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AFCA09A253;
+        Wed,  8 Apr 2020 18:23:39 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 169B92202B8; Wed,  8 Apr 2020 14:23:39 -0400 (EDT)
+Date:   Wed, 8 Apr 2020 14:23:39 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robert Richter <rric@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Enrico Weigelt <info@metux.net>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
-        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Matt Redfearn <matt.redfearn@mips.com>,
-        Steve Winslow <swinslow@gmail.com>,
-        Peter Xu <peterx@redhat.com>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
-Subject: Re: [PATCH 04/12] arch_topology: Reset all cpus in reset_cpu_topology
-In-reply-to: <20200408113505.2528103-5-jiaxun.yang@flygoat.com>
-Date:   Wed, 08 Apr 2020 19:23:30 +0100
-Message-ID: <jhjpnchj0pp.mognet@arm.com>
+        Andy Lutomirski <luto@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
+Message-ID: <20200408182339.GC93547@redhat.com>
+References: <877dyqkj3h.fsf@nanos.tec.linutronix.de>
+ <F2BD5266-A9E5-41C8-AC64-CC33EB401B37@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F2BD5266-A9E5-41C8-AC64-CC33EB401B37@amacapital.net>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 07, 2020 at 09:48:02PM -0700, Andy Lutomirski wrote:
 
-On 08/04/20 12:34, Jiaxun Yang wrote:
-> For MIPS platform, when topology isn't probed by DeviceTree,
-> possible_cpu might be empty when calling init_cpu_topology,
-> that may result cpu_topology not fully reseted for all CPUs.
-> So here we can reset all cpus instead of possible cpus.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  drivers/base/arch_topology.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 9c2405d08dae..3398b7ac7dfb 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -542,7 +542,7 @@ void __init reset_cpu_topology(void)
->  {
->       unsigned int cpu;
->
-> -	for_each_possible_cpu(cpu) {
-> +	for (cpu = 0; cpu < NR_CPUS; cpu++) {
+[..]
+> It would be nifty if the host also told the guest what the guest virtual address was if the host knows it.
 
-Hmph, kind of a shame but if you really have to do it then perhaps you
-should go with ARRAY_SIZE(cpu_topology) instead.
+It will be good to know and send guest virtual address as well. While
+sending SIGBUS to guest user space, information about which access
+triggered SIGBUS will be useful.
 
->               struct cpu_topology *cpu_topo = &cpu_topology[cpu];
->
->               cpu_topo->thread_id = -1;
+I thought GUEST_LINEAR_ADDRESS provides guest virtual address if
+EPT_VIOLATION_GLA_VALID bit is set. And it seems to work for my
+simple test case. But when I try to read intel SDM, section "27.2" VM
+exits, EPT violations, I am not so sure.
+
+Somebody who understands this better, can you please help me understand
+what exactly GUEST_LINEAR_ADDRESS is supposed to contain during
+EPT violation. I assumed it is guest virtual address and added a
+patch in my RFC patch series.
+
+https://lore.kernel.org/kvm/20200331194011.24834-3-vgoyal@redhat.com/
+
+But I might have misunderstood it.
+
+Vivek
+
