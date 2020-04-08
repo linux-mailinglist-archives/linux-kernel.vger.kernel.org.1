@@ -2,121 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BE31A213D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0837E1A2159
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:09:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727327AbgDHMDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 08:03:01 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:8014 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726521AbgDHMDB (ORCPT
+        id S1727835AbgDHMJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 08:09:11 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:60028 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbgDHMJK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 08:03:01 -0400
-X-IronPort-AV: E=Sophos;i="5.72,358,1580745600"; 
-   d="scan'208";a="88690985"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 08 Apr 2020 20:02:56 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id 0208F49DF129;
-        Wed,  8 Apr 2020 19:52:33 +0800 (CST)
-Received: from [10.167.226.60] (10.167.226.60) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 8 Apr 2020 20:02:55 +0800
-Subject: Re: Question about prefill_possible_map
-From:   Cao jin <caoj.fnst@cn.fujitsu.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <687566a8-cacd-e0db-6914-d547853c7555@cn.fujitsu.com>
-Message-ID: <2911d6a8-b0fd-6ee4-40d3-a86e1096de80@cn.fujitsu.com>
-Date:   Wed, 8 Apr 2020 20:07:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 8 Apr 2020 08:09:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gWpqrb8j/D9PpMGOmBmpJQdVRqYpPCNDUmBBgbEqzPI=; b=rFulLNFAwNEVG4GU0BsmdMg7eK
+        t6FVtq8m9hscYZajwJqdZl0pQo8RG/h2U6x8LaG/OUIrwk18XgbKlhR5sH+WiMaUkyF8v6NidJRDN
+        JPUpGvXOtQtWrOPXkfxNK/ijhbmmDn37wiBgzbBX+biffyRpwoKqgCXhpgwcszQ1b40icDbkUKgZt
+        gmu/qHBTOYhZOPscGlEGNvR5GUfLUaiMhLCbDtMwrbC9Bb1I2G2fveRJORZQjMkBBZM7+9d9qkgqi
+        IS9N9w3AZn8HsaiEPr7sydKOZJubXh8l9d/eX+QmafvEV9XBQiJWIA4aXabhy+f5caPQ9auA9NHSu
+        /vNODE1g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jM9Vr-0006nF-9T; Wed, 08 Apr 2020 12:08:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 151B030604B;
+        Wed,  8 Apr 2020 14:08:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 08E112BA90A73; Wed,  8 Apr 2020 14:08:56 +0200 (CEST)
+Date:   Wed, 8 Apr 2020 14:08:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, hpa@zytor.com,
+        jpoimboe@redhat.com, namit@vmware.com, mhiramat@kernel.org,
+        jgross@suse.com, bp@alien8.de, vkuznets@redhat.com,
+        pbonzini@redhat.com, boris.ostrovsky@oracle.com,
+        mihai.carabas@oracle.com, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [RFC PATCH 00/26] Runtime paravirt patching
+Message-ID: <20200408120856.GY20713@hirez.programming.kicks-ass.net>
+References: <20200408050323.4237-1-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <687566a8-cacd-e0db-6914-d547853c7555@cn.fujitsu.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.167.226.60]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
-X-yoursite-MailScanner-ID: 0208F49DF129.A05B2
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: caoj.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408050323.4237-1-ankur.a.arora@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+On Tue, Apr 07, 2020 at 10:02:57PM -0700, Ankur Arora wrote:
+> A KVM host (or another hypervisor) might advertise paravirtualized
+> features and optimization hints (ex KVM_HINTS_REALTIME) which might
+> become stale over the lifetime of the guest. For instance, the
+> host might go from being undersubscribed to being oversubscribed
+> (or the other way round) and it would make sense for the guest
+> switch pv-ops based on that.
 
-  Seems you helped improve 2a51fe083eba7f, could you help with this question?
+So what, the paravirt spinlock stuff works just fine when you're not
+oversubscribed.
 
--- 
-Sincerely,
-Cao jin
+> We keep an interesting subset of pv-ops (pv_lock_ops only for now,
+> but PV-TLB ops are also good candidates)
 
-On 3/27/20 2:38 PM, Cao jin wrote:
-> Hi,
-> 
-> At the beginning of this function, there is:
-> 
->     /* No boot processor was found in mptable or ACPI MADT */
->     if (!num_processors) {
->         if (boot_cpu_has(X86_FEATURE_APIC)) {
->             int apicid = boot_cpu_physical_apicid;
->             int cpu = hard_smp_processor_id();
-> 
->             pr_warn("Boot CPU (id %d) not listed by BIOS\n", cpu);
-> 
->             /* Make sure boot cpu is enumerated */
->             if (apic->cpu_present_to_apicid(0) == BAD_APICID &&
->                 apic->apic_id_valid(apicid))
->                 generic_processor_info(apicid, boot_cpu_apic_version);
->         }
-> 
->         if (!num_processors)
->             num_processors = 1;
->     }
-> 
-> I see 3 cases will go through this code chunk,
-> 
-> 1. UP, has no APCI MADT & MP table, but has APIC
-> 2. 2a51fe083eba7f: kdump kernel running on the hot-plugged CPU
-> 3. normal UP(No table, no APIC)
-> 
-> And "if (boot_cpu_has(X86_FEATURE_APIC))" covers case 1 & 2 to my
-> understanding.
-> 
-> But both cases 1 & 2 already have boot_cpu_physical_apicid initialized
-> from APIC ID register:
-> 1. init_apic_mappings --> register_lapic_address
-> 2. early_acpi_boot_init --> early_acpi_process_madt -->...-->
->    register_lapic_address
-> 
-> So my question is: is variable "cpu" redundant? Could it be:
-> 
-> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-> index 69881b2d446c..99fc03511568 100644
-> --- a/arch/x86/kernel/smpboot.c
-> +++ b/arch/x86/kernel/smpboot.c
-> @@ -1456,9 +1456,9 @@ __init void prefill_possible_map(void)
->         if (!num_processors) {
->                 if (boot_cpu_has(X86_FEATURE_APIC)) {
->                         int apicid = boot_cpu_physical_apicid;
-> -                       int cpu = hard_smp_processor_id();
-> 
-> -                       pr_warn("Boot CPU (id %d) not listed by BIOS\n", cpu);
-> +                       pr_warn("Boot CPU (id %d) not listed by BIOS\n", \
-> +                                boot_cpu_physical_apicid);
-> 
->                         /* Make sure boot cpu is enumerated */
->                         if (apic->cpu_present_to_apicid(0) == BAD_APICID &&
-> 
+The PV-TLB ops also work just fine when not oversubscribed. IIRC
+kvm_flush_tlb_others() is pretty much the same in that case.
 
+> in .parainstructions.runtime,
+> while discarding the .parainstructions as usual at init. This is then
+> used for switching back and forth between native and paravirt mode.
+> ([1] lists some representative numbers of the increased memory
+> footprint.)
+> 
+> Mechanism: the patching itself is done using stop_machine(). That is
+> not ideal -- text_poke_stop_machine() was replaced with INT3+emulation
+> via text_poke_bp(), but I'm using this to address two issues:
+>  1) emulation in text_poke() can only easily handle a small set
+>  of instructions and this is problematic for inlined pv-ops (and see
+>  a possible alternatives use-case below.)
+>  2) paravirt patching might have inter-dependendent ops (ex.
+>  lock.queued_lock_slowpath, lock.queued_lock_unlock are paired and
+>  need to be updated atomically.)
 
+And then you hope that the spinlock state transfers.. That is that both
+implementations agree what an unlocked spinlock looks like.
 
+Suppose the native one was a ticket spinlock, where unlocked means 'head
+== tail' while the paravirt one is a test-and-set spinlock, where
+unlocked means 'val == 0'.
 
+That just happens to not be the case now, but it was for a fair while.
 
+> The alternative use-case is a runtime version of apply_alternatives()
+> (not posted with this patch-set) that can be used for some safe subset
+> of X86_FEATUREs. This could be useful in conjunction with the ongoing
+> late microcode loading work that Mihai Carabas and others have been
+> working on.
+
+The whole late-microcode loading stuff is crazy already; you're making
+it take double bonghits.
+
+> Also, there are points of similarity with the ongoing static_call work
+> which does rewriting of indirect calls.
+
+Only in so far as that code patching is involved. An analogy would be
+comparing having a beer with shooting dope. They're both 'drugs'.
+
+> The difference here is that
+> we need to switch a group of calls atomically and given that
+> some of them can be inlined, need to handle a wider variety of opcodes.
+> 
+> To patch safely we need to satisfy these constraints:
+> 
+>  - No references to insn sequences under replacement on any kernel stack
+>    once replacement is in progress. Without this constraint we might end
+>    up returning to an address that is in the middle of an instruction.
+
+Both ftrace and optprobes have that issue, neither of them are quite as
+crazy as this.
+
+>  - handle inter-dependent ops: as above, lock.queued_lock_unlock(),
+>    lock.queued_lock_slowpath() and the rest of the pv_lock_ops are
+>    a good example.
+
+While I'm sure this is a fun problem, why are we solving it?
+
+>  - handle a broader set of insns than CALL and JMP: some pv-ops end up
+>    getting inlined. Alternatives can contain arbitrary instructions.
+
+So can optprobes.
+
+>  - locking operations can be called from interrupt handlers which means
+>    we cannot trivially use IPIs for flushing.
+
+Heck, some NMI handlers use locks..
+
+> Handling these, necessitates that target pv-ops not be preemptible.
+
+I don't think that is a correct inferrence.
+
+> Once that is a given (for safety these need to be explicitly whitelisted
+> in runtime_patch()), use a state-machine with the primary CPU doing the
+> patching and secondary CPUs in a sync_core() loop. 
+> 
+> In case we hit an INT3/BP (in NMI or thread-context) we makes forward
+> progress by continuing the patching instead of emulating.
+> 
+> One remaining issue is inter-dependent pv-ops which are also executed in
+> the NMI handler -- patching can potentially deadlock in case of multiple
+> NMIs. Handle these by pushing some of this work in the NMI handler where
+> we know it will be uninterrupted.
+
+I'm just seeing a lot of bonghits without sane rationale. Why is any of
+this important?
