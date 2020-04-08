@@ -2,95 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C73B11A24CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:15:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9E51A24D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgDHPPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:15:36 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:59280 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727028AbgDHPPf (ORCPT
+        id S1728290AbgDHPSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:18:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:25297 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727707AbgDHPSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:15:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5Zyr+e9ojNxPf0UJbZ9u+v/X52sgt1i2sd8hmR6F47U=; b=L32SowMkDY1Nvkk1P+JH95Mz1a
-        GuD4zRqv2dPCcJVwSn1QwymJ24KIDAK1RGhAyV/QQ+p2QbBtRHvi/a1FYE3qfogJFrnBZkDlThFzK
-        IqCB93D/bsMtpUeC4hD3PyzdzrsUqcglZldNwu/V0g0eR8ChVF9oZFNzWsry73hFTny3aFVqoOety
-        mJ0SNj2FV0h0akd26thCyTTJlDnP3cVMyV9RDiMHzwxr89F3pcghAW072S9K43a3CAhduPy/Qqxhj
-        9VZc0gmBwmCxm9pi6xN0ggQWrzvceGDE2Tt7CjnyWIReAaTLibi/4WD/2QFbaSK0YWgfUD4jZuoHs
-        1qhQI+Mw==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jMCQB-0000vd-W6; Wed, 08 Apr 2020 15:15:19 +0000
-Date:   Wed, 8 Apr 2020 08:15:19 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/28] mm: only allow page table mappings for built-in
- zsmalloc
-Message-ID: <20200408151519.GQ21484@bombadil.infradead.org>
-References: <20200408115926.1467567-1-hch@lst.de>
- <20200408115926.1467567-11-hch@lst.de>
- <c0c86feb-b3d8-78f2-127f-71d682ffc51f@infradead.org>
- <20200408151203.GN20730@hirez.programming.kicks-ass.net>
+        Wed, 8 Apr 2020 11:18:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586359101;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=txDq2shEYUbWPkhOvC0XKx16ATe9dKAosDYh+h4Dtpc=;
+        b=CWhu/2fU8BcdmDBC62xlJ8EnhZvAyUONp9cyIIRzzLkcWPJ5i9k2gUjP4qP9X2Wb7+fOdr
+        bLmj0gxy1rP9KebcNOm7CYXzeC2NJwuQqcpNZlEoOtVfvaCIMijI61HoeDL+o7TaCQDm8z
+        gx5xj5N35cwexMyRNl75twLqnXgM6jc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-IYALPO-pN6azVxpXNkK5-A-1; Wed, 08 Apr 2020 11:18:16 -0400
+X-MC-Unique: IYALPO-pN6azVxpXNkK5-A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5CFC800D5C;
+        Wed,  8 Apr 2020 15:18:14 +0000 (UTC)
+Received: from localhost (ovpn-13-77.pek2.redhat.com [10.72.13.77])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 59E2D272CC;
+        Wed,  8 Apr 2020 15:18:11 +0000 (UTC)
+Date:   Wed, 8 Apr 2020 23:18:08 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        dzickus@redhat.com, dyoung@redhat.com,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: [PATCH v2 0/3] KVM: VMX: Fix for kexec VMCLEAR and VMXON cleanup
+Message-ID: <20200408151808.GS2402@MiWiFi-R3L-srv>
+References: <20200321193751.24985-1-sean.j.christopherson@intel.com>
+ <20200407110115.GA14381@MiWiFi-R3L-srv>
+ <87r1wzlcwn.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200408151203.GN20730@hirez.programming.kicks-ass.net>
+In-Reply-To: <87r1wzlcwn.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 05:12:03PM +0200, Peter Zijlstra wrote:
-> On Wed, Apr 08, 2020 at 08:01:00AM -0700, Randy Dunlap wrote:
-> > Hi,
-> > 
-> > On 4/8/20 4:59 AM, Christoph Hellwig wrote:
-> > > diff --git a/mm/Kconfig b/mm/Kconfig
-> > > index 36949a9425b8..614cc786b519 100644
-> > > --- a/mm/Kconfig
-> > > +++ b/mm/Kconfig
-> > > @@ -702,7 +702,7 @@ config ZSMALLOC
-> > >  
-> > >  config ZSMALLOC_PGTABLE_MAPPING
-> > >  	bool "Use page table mapping to access object in zsmalloc"
-> > > -	depends on ZSMALLOC
-> > > +	depends on ZSMALLOC=y
-> > 
-> > It's a bool so this shouldn't matter... not needed.
+On 04/07/20 at 02:04pm, Vitaly Kuznetsov wrote:
+> Baoquan He <bhe@redhat.com> writes:
 > 
-> My mm/Kconfig has:
+> >
+> > The trace is here. 
+> >
+> > [  132.480817] RIP: 0010:crash_vmclear_local_loaded_vmcss+0x57/0xd0 [kvm_intel] 
 > 
-> config ZSMALLOC
-> 	tristate "Memory allocator for compressed pages"
-> 	depends on MMU
+> This is a known bug,
 > 
-> which I think means it can be modular, no?
+> https://lore.kernel.org/kvm/20200401081348.1345307-1-vkuznets@redhat.com/
 
-Randy means that ZSMALLOC_PGTABLE_MAPPING is a bool, so I think hch's patch
-is wrong ... if ZSMALLOC is 'm' then ZSMALLOC_PGTABLE_MAPPING would become
-'n' instead of 'y'.
+Thanks for telling, Vitaly.
+
+I tested your patch, it works.
+
+One thing is I noticed a warning message when your patch is applied. When
+I changed back to revert this patchset, didn't found this message. I didn't
+look into the detail of network core code and the kvm vmx code, maybe it's
+not relevant.
+
+
+[ 3708.629234] Type was not set for devlink port.
+[ 3708.629258] WARNING: CPU: 3 PID: 60 at net/core/devlink.c:7164 devlink_port_type_warn+0x11/0x20
+[ 3708.632328] Modules linked in: rfkill sunrpc intel_powerclamp coretemp kvm_intel kvm irqbypass intel_cstate iTCO_wdt hpwdt intel_uncore gpio_ich iTCO_vendor_support pcspkr ipmi_ssif hpilo lpc_ich ipmi_si ipmi_devintf ipmi_msghandler acpi_power_meter pcc_cpufreq i7core_edac ip_tables xfs libcrc32c radeon i2c_algo_bit drm_kms_helper cec ttm crc32c_intel serio_raw drm ata_generic pata_acpi mlx4_core bnx2 hpsa scsi_transport_sas
+[ 3708.640782] CPU: 3 PID: 60 Comm: kworker/3:1 Kdump: loaded Tainted: G          I       5.6.0+ #1
+[ 3708.642715] Hardware name: HP ProLiant DL380 G6, BIOS P62 08/16/2015
+[ 3708.644222] Workqueue: events devlink_port_type_warn
+[ 3708.645349] RIP: 0010:devlink_port_type_warn+0x11/0x20
+[ 3708.646535] Code: 0f 84 58 ff ff ff 0f 0b e9 51 ff ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 90 66 66 66 66 90 48 c7 c7 c8 78 41 9d e8 21 c4 7f ff <0f> 0b c3 66 66 2e 0f 1f 84 00 00 00 00 00 90 66 66 66 66 90 ba 20
+[ 3708.650924] RSP: 0018:ffffadd540307e78 EFLAGS: 00010286
+[ 3708.652257] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[ 3708.653889] RDX: 0000000000000002 RSI: ffffffff9df3e3c2 RDI: 0000000000000246
+[ 3708.655601] RBP: ffff9e0f8c1a7350 R08: 0000035f7b873491 R09: 0000000000000022
+[ 3708.657300] R10: ffffadd540307cc0 R11: 0000000000000000 R12: ffff9e0f974ea880
+[ 3708.658952] R13: ffff9e0f974f0700 R14: ffff9e0f958a4d80 R15: ffff9e0f8c1a7358
+[ 3708.660645] FS:  0000000000000000(0000) GS:ffff9e0f974c0000(0000) knlGS:0000000000000000
+[ 3708.662472] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 3708.663719] CR2: 00007f2651a02fa8 CR3: 00000000ac60a000 CR4: 00000000000006e0
+[ 3708.665330] Call Trace:
+[ 3708.665840]  process_one_work+0x1b4/0x380
+[ 3708.666841]  worker_thread+0x50/0x3c0
+[ 3708.667751]  kthread+0xf9/0x130
+[ 3708.668495]  ? process_one_work+0x380/0x380
+[ 3708.669536]  ? kthread_park+0x90/0x90
+[ 3708.670402]  ret_from_fork+0x35/0x40
+[ 3708.671265] ---[ end trace 0fbe622d402fe0cf ]---
+[ 3708.672351] ------------[ cut here ]------------
+[ 3708.673507] Type was not set for devlink port.
+[ 3708.673520] WARNING: CPU: 3 PID: 60 at net/core/devlink.c:7164 devlink_port_type_warn+0x11/0x20
+[ 3708.676731] Modules linked in: rfkill sunrpc intel_powerclamp coretemp kvm_intel kvm irqbypass intel_cstate iTCO_wdt hpwdt intel_uncore gpio_ich iTCO_vendor_support pcspkr ipmi_ssif hpilo lpc_ich ipmi_si ipmi_devintf ipmi_msghandler acpi_power_meter pcc_cpufreq i7core_edac ip_tables xfs libcrc32c radeon i2c_algo_bit drm_kms_helper cec ttm crc32c_intel serio_raw drm ata_generic pata_acpi mlx4_core bnx2 hpsa scsi_transport_sas
+[ 3708.686060] CPU: 3 PID: 60 Comm: kworker/3:1 Kdump: loaded Tainted: G        W I       5.6.0+ #1
+[ 3708.688185] Hardware name: HP ProLiant DL380 G6, BIOS P62 08/16/2015
+[ 3708.689575] Workqueue: events devlink_port_type_warn
+[ 3708.690676] RIP: 0010:devlink_port_type_warn+0x11/0x20
+[ 3708.691794] Code: 0f 84 58 ff ff ff 0f 0b e9 51 ff ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 90 66 66 66 66 90 48 c7 c7 c8 78 41 9d e8 21 c4 7f ff <0f> 0b c3 66 66 2e 0f 1f 84 00 00 00 00 00 90 66 66 66 66 90 ba 20
+[ 3708.696053] RSP: 0018:ffffadd540307e78 EFLAGS: 00010286
+[ 3708.697212] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+[ 3708.698800] RDX: 0000000000000002 RSI: ffffffff9df3e3c2 RDI: 0000000000000246
+[ 3708.700503] RBP: ffff9e0f8c1a5d00 R08: 0000035f7e2abfe6 R09: 0000000000000022
+[ 3708.702228] R10: ffffadd540307cc0 R11: 0000000000000000 R12: ffff9e0f974ea880
+[ 3708.703778] R13: ffff9e0f974f0700 R14: ffff9e0f958a4d80 R15: ffff9e0f8c1a5d08
+[ 3708.705410] FS:  0000000000000000(0000) GS:ffff9e0f974c0000(0000) knlGS:0000000000000000
+[ 3708.707214] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 3708.708462] CR2: 00007f2651a02fa8 CR3: 00000000ac60a000 CR4: 00000000000006e0
+[ 3708.710068] Call Trace:
+[ 3708.710581]  process_one_work+0x1b4/0x380
+[ 3708.711466]  worker_thread+0x50/0x3c0
+[ 3708.712307]  kthread+0xf9/0x130
+[ 3708.713107]  ? process_one_work+0x380/0x380
+[ 3708.714132]  ? kthread_park+0x90/0x90
+[ 3708.714938]  ret_from_fork+0x35/0x40
+[ 3708.715782] ---[ end trace 0fbe622d402fe0d0 ]---
+[10563.256223] perf: interrupt took too long (2566 > 2500), lowering kernel.perf_event_max_sample_rate to 77000
+[14719.477168] perf: interrupt took too long (3546 > 3207), lowering kernel.perf_event_max_sample_rate to 56000
+
