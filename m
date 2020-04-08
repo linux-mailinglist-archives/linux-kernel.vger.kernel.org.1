@@ -2,184 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAD91A2411
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D5F1A2417
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728880AbgDHObD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:31:03 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38611 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728837AbgDHObC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 10:31:02 -0400
-Received: by mail-wr1-f68.google.com with SMTP id 31so8066543wre.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vyDE/DAow1HKfw9siXqu+BUO4Iv4LhO2/XGLlEGwwpM=;
-        b=enzE2lZoy6PK42q1fBJmgw+P8pJ5fQLJlPJ86GI4CsGsBlyLD6VvpsSHVINFHI1pHS
-         6aIeDtCJHV6wGb7MnKhkVpy6oItqyZUBmNz2aEyVFoXRbKAq4zbpaefxR0DwHjjKXalE
-         vtt99ey5Do8kGr1BIfz6ao4QaaYrPcH5w83xQOjR9X8VFVX6CXjrG3ndW4UGYLJdd4iW
-         MVgl83hovMLiv0SnCuEHRI9GNk7qdd7t6zZLFwOHdm4fWfBn/p0O7iuTGVI62bYSfZBA
-         qltMjWIqClDTNa08iPcz6AUao2PWrW68i/Xu4ijxaFCDlVTV4MYmr+hwGSmz0aSvjPeN
-         512g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vyDE/DAow1HKfw9siXqu+BUO4Iv4LhO2/XGLlEGwwpM=;
-        b=eivwIedDBsYkE0PfDhezHufEfnTw3nTo4N8QZM7w2zJ821dSW7QVljctYuTwdcbrIe
-         9aep8L20CSumskf0JtjZbrgvAhG+avJEnD2X/A2GuK+QLtiD7yOC/fJ0ahzriP7/HlDd
-         FCDLELTcbpMtXZhRcmjtNvKEIpZBMz6RK0l1innjMQav/mS64yJinecO9Lqcwl0yI1Oz
-         mwEd758CozRkWOe3ASYuoq5AMl9oSq8WxGk3WmzR40TwsRsSDaWPIu0JynrK8ZYhQcnA
-         vRm9M+L68Uhq+ZITQu5RsFQU2Z1xL0mXxHkSf+VtCyPjs2ZBWhQbuwkdJO6d0W6wnz7q
-         ofuQ==
-X-Gm-Message-State: AGi0PuaFxbgAGVF9e0FAylezSj6fS4Q0TS0wWjNgHX99ydpNEiubF7G6
-        MFaMCoeToCFOSKrHRc7n4u4=
-X-Google-Smtp-Source: APiQypKltU+gZXosQgFXeWbDm5Ug2G9QbX9w0EJMILudxJET+MWXZkyb2dGVrPc548WClfwBq64jkA==
-X-Received: by 2002:a5d:6183:: with SMTP id j3mr8798851wru.83.1586356260277;
-        Wed, 08 Apr 2020 07:31:00 -0700 (PDT)
-Received: from linuxdev2.toradex.int (31-10-206-124.static.upc.ch. [31.10.206.124])
-        by smtp.gmail.com with ESMTPSA id a10sm36268828wrm.87.2020.04.08.07.30.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 07:30:59 -0700 (PDT)
-From:   Max Krummenacher <max.oss.09@gmail.com>
-X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
-To:     Max Krummenacher <max.krummenacher@toradex.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Olof Johansson <olof@lixom.net>,
-        Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH v2 5/5] arm64: defconfig: refresh
-Date:   Wed,  8 Apr 2020 16:30:40 +0200
-Message-Id: <20200408143040.57458-6-max.krummenacher@toradex.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200408143040.57458-1-max.krummenacher@toradex.com>
-References: <20200408143040.57458-1-max.krummenacher@toradex.com>
+        id S1728966AbgDHObN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728908AbgDHObM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 10:31:12 -0400
+Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7191F20B1F;
+        Wed,  8 Apr 2020 14:31:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586356272;
+        bh=tdUriesX2lwl8y1Yv0Uys2nb8BK6YfXv8InWY36V8uI=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=tmMzdEbWKbrVqIOCaJYZwfP9Wovaf2rqvxkxUssc4w0XcmFoUuI2BaUfOjZlXPlD2
+         gGYXo03sfm9rlHanGavJW7T+pVCtGNBQnlkKN7cr5Wih4JsIrn32HmcK0lSHVFMZTD
+         s3cUx73dpmBx4kwyBIgZ4YXTg4DDWGSWn/RQsc0Y=
+Message-ID: <c0942c61c37e3f79dcc88ddba94d65aca2ca9a2c.camel@kernel.org>
+Subject: Re: [PATCH v2 0/2] ceph: support cross-quota-tree renames
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Luis Henriques <lhenriques@suse.com>, Sage Weil <sage@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Gregory Farnum <gfarnum@redhat.com>,
+        Zheng Yan <zyan@redhat.com>
+Cc:     Frank Schilder <frans@dtu.dk>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 08 Apr 2020 10:31:10 -0400
+In-Reply-To: <20200407103020.22588-1-lhenriques@suse.com>
+References: <20200407103020.22588-1-lhenriques@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refresh with make defconfig savedefconfig
+On Tue, 2020-04-07 at 11:30 +0100, Luis Henriques wrote:
+> Hi!
+> 
+> The following patches will make the cephfs kernel client behave the same
+> way as the fuse client when doing renames across different quota realms.
+> 
+> Changes since v1:
+> 
+> - Dropped 'old == new' check in ceph_quota_check_rename() and added back
+>   optimization in ceph_rename(), to only check realms if old_dir and
+>   new_dir are different.
+> 
+> Luis Henriques (2):
+>   ceph: normalize 'delta' parameter usage in check_quota_exceeded
+>   ceph: allow rename operation under different quota realms
+> 
+>  fs/ceph/dir.c   |  9 +++----
+>  fs/ceph/quota.c | 62 +++++++++++++++++++++++++++++++++++++++++++++----
+>  fs/ceph/super.h |  3 ++-
+>  3 files changed, 65 insertions(+), 9 deletions(-)
+> 
 
-Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
+Looks good. Merged into ceph-client/testing.
 
----
-
-Changes in v2:
-- add reviewed-by tags
-
- arch/arm64/configs/defconfig | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 4a361734cfc71..a4baafe01c346 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -165,9 +165,9 @@ CONFIG_QRTR_SMD=m
- CONFIG_QRTR_TUN=m
- CONFIG_BPF_JIT=y
- CONFIG_CAN=m
-+CONFIG_CAN_FLEXCAN=m
- CONFIG_CAN_RCAR=m
- CONFIG_CAN_RCAR_CANFD=m
--CONFIG_CAN_FLEXCAN=m
- CONFIG_BT=m
- CONFIG_BT_HIDP=m
- # CONFIG_BT_HS is not set
-@@ -202,20 +202,19 @@ CONFIG_PCI_HOST_THUNDER_ECAM=y
- CONFIG_PCIE_ROCKCHIP_HOST=m
- CONFIG_PCIE_BRCMSTB=m
- CONFIG_PCI_LAYERSCAPE=y
--CONFIG_PCIE_LAYERSCAPE_GEN4=y
- CONFIG_PCI_HISI=y
- CONFIG_PCIE_QCOM=y
- CONFIG_PCIE_ARMADA_8K=y
- CONFIG_PCIE_KIRIN=y
- CONFIG_PCIE_HISI_STB=y
- CONFIG_PCIE_TEGRA194_HOST=m
-+CONFIG_PCIE_LAYERSCAPE_GEN4=y
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
- CONFIG_FW_LOADER_USER_HELPER=y
- CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
- CONFIG_HISILICON_LPC=y
- CONFIG_SIMPLE_PM_BUS=y
--CONFIG_FSL_MC_BUS=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
-@@ -494,10 +493,10 @@ CONFIG_SENSORS_INA3221=m
- CONFIG_THERMAL_GOV_POWER_ALLOCATOR=y
- CONFIG_CPU_THERMAL=y
- CONFIG_THERMAL_EMULATION=y
--CONFIG_QORIQ_THERMAL=m
--CONFIG_SUN8I_THERMAL=y
- CONFIG_IMX_SC_THERMAL=m
- CONFIG_IMX8MM_THERMAL=m
-+CONFIG_QORIQ_THERMAL=m
-+CONFIG_SUN8I_THERMAL=y
- CONFIG_ROCKCHIP_THERMAL=m
- CONFIG_RCAR_THERMAL=y
- CONFIG_RCAR_GEN3_THERMAL=y
-@@ -610,10 +609,10 @@ CONFIG_DRM_MSM=m
- CONFIG_DRM_TEGRA=m
- CONFIG_DRM_PANEL_LVDS=m
- CONFIG_DRM_PANEL_SIMPLE=m
--CONFIG_DRM_SIMPLE_BRIDGE=m
- CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
- CONFIG_DRM_DISPLAY_CONNECTOR=m
- CONFIG_DRM_SII902X=m
-+CONFIG_DRM_SIMPLE_BRIDGE=m
- CONFIG_DRM_THINE_THC63LVD1024=m
- CONFIG_DRM_TI_SN65DSI86=m
- CONFIG_DRM_I2C_ADV7511=m
-@@ -661,7 +660,6 @@ CONFIG_SND_SOC_WSA881X=m
- CONFIG_SND_SIMPLE_CARD=m
- CONFIG_SND_AUDIO_GRAPH_CARD=m
- CONFIG_I2C_HID=m
--CONFIG_USB_CONN_GPIO=m
- CONFIG_USB=y
- CONFIG_USB_OTG=y
- CONFIG_USB_XHCI_HCD=y
-@@ -796,14 +794,13 @@ CONFIG_QCOM_A53PLL=y
- CONFIG_QCOM_CLK_APCS_MSM8916=y
- CONFIG_QCOM_CLK_SMD_RPM=y
- CONFIG_QCOM_CLK_RPMH=y
--CONFIG_IPQ_GCC_8074=y
- CONFIG_IPQ_GCC_6018=y
-+CONFIG_IPQ_GCC_8074=y
- CONFIG_MSM_GCC_8916=y
- CONFIG_MSM_GCC_8994=y
- CONFIG_MSM_MMCC_8996=y
- CONFIG_MSM_GCC_8998=y
- CONFIG_QCS_GCC_404=y
--CONFIG_SDM_GCC_845=y
- CONFIG_SDM_GPUCC_845=y
- CONFIG_SDM_DISPCC_845=y
- CONFIG_SM_GCC_8150=y
-@@ -932,10 +929,10 @@ CONFIG_FPGA_REGION=m
- CONFIG_OF_FPGA_REGION=m
- CONFIG_TEE=y
- CONFIG_OPTEE=y
-+CONFIG_MUX_MMIO=y
- CONFIG_SLIMBUS=m
- CONFIG_SLIM_QCOM_CTRL=m
- CONFIG_SLIM_QCOM_NGD_CTRL=m
--CONFIG_MUX_MMIO=y
- CONFIG_EXT2_FS=y
- CONFIG_EXT3_FS=y
- CONFIG_EXT4_FS_POSIX_ACL=y
+Thanks!
 -- 
-2.20.1
+Jeff Layton <jlayton@kernel.org>
 
