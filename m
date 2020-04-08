@@ -2,73 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 081351A1C6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3446F1A1C75
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgDHHOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:14:04 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:41623 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725932AbgDHHOE (ORCPT
+        id S1726652AbgDHHUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:20:44 -0400
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:32894 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726453AbgDHHUo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:14:04 -0400
-Received: by mail-io1-f66.google.com with SMTP id b12so6070451ion.8;
-        Wed, 08 Apr 2020 00:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n3pOLajiHp9QNgBFOxW5iWABG0gRZUq3fep3oI+pRP8=;
-        b=NYpEyhHH8YEEcu1QsXmXLw3y8kOTad+w3HVZnR+Y3hyVn62prunYKNT8T4GqQbQpBj
-         l/At2kUjKL8Th079SXupYhtk21aNK7hDaCSwh9agFmmKlcK1CdHlWB2UW04XWDI3jA3m
-         TuoQuBtCLW/G+i1HIPoZo0LfWs2GyJlsNd2SQuwD8vFG2NISI8HYiruCgp71XTTZj9A3
-         rNRMGli6GXwytqzWW+cq3bspNSs7051L9l1d7ACWQYfr6eoBzNYQ//d4wEEumxvFSkdo
-         gxYOGCqvk9aExhalhwO/oAaZIiEdBj0eswBvUf8O0FZrHL5YUJV6MatginpalN+p7TE4
-         h36A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n3pOLajiHp9QNgBFOxW5iWABG0gRZUq3fep3oI+pRP8=;
-        b=MxjCUM5Kh/qViTQqnaR9dOI9lhLvFwjlZ9Bi1B4nfvVuFxvFm0tRd4IxjiGCPE8UjT
-         slNS5u1EUbGu9h4Yk6cSXnAzhREfrIAi3cUb3oi1k+aBPOP7ZsQIoaqgnLBbczP3kEB7
-         T4UZyVwAS82fQgN3HYLT0KGT9Yc4bYvLFiTC6Fkryt5nZ5MZ6RLAN0kAtLlEjgF/sY4I
-         UICyf7c7VEyia8uA0UrqMAhq5bjM6DChj7G0256SGoYTZYD/8McBAYa7yKb0f/OQJ5al
-         5x6X3KrPj9qEeDQImUEggMYPdqOpHZQvRkAxGTOgzQaMTwaiZgVXhRbeVLd0o93YHaRw
-         /KsQ==
-X-Gm-Message-State: AGi0PuZGG33cEexS+iYq6PilpH7alF8ERhpLfeijxUM++I0Ej86l3N91
-        JVET52dYZ70OYYL37hUtUknRI/ccuql6EHIa3F2YcQ==
-X-Google-Smtp-Source: APiQypLby6SoQX8sZccd/LcU0stSsoPaVtQSyNW6q8SgeNId9cCkGs4yVDFZWwGwe5zLBkGQZQA/9vedTzGxJz3dR7I=
-X-Received: by 2002:a5d:948e:: with SMTP id v14mr5715979ioj.112.1586330043053;
- Wed, 08 Apr 2020 00:14:03 -0700 (PDT)
+        Wed, 8 Apr 2020 03:20:44 -0400
+Received: from zxbjmbx2.zhaoxin.com (10.29.252.164) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1261.35; Wed, 8 Apr
+ 2020 15:20:20 +0800
+Received: from [10.28.64.103] (10.28.64.103) by zxbjmbx2.zhaoxin.com
+ (10.29.252.164) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1261.35; Wed, 8 Apr
+ 2020 15:20:19 +0800
+Subject: Re: [PATCH] x86/perf: Add hardware performance events support for
+ Zhaoxin CPU.
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>, <tglx@linutronix.de>, <bp@alien8.de>,
+        <hpa@zytor.com>, <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <cooperyan@zhaoxin.com>
+References: <1585647599-6649-1-git-send-email-CodyYao-oc@zhaoxin.com>
+ <20200331101834.GP20730@hirez.programming.kicks-ass.net>
+From:   CodyYao-oc <CodyYao-oc@zhaoxin.com>
+Message-ID: <238c0da5-c542-55b1-aaed-d4345516b84b@zhaoxin.com>
+Date:   Wed, 8 Apr 2020 15:20:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <1586278391-9061-1-git-send-email-raviteja.narayanam@xilinx.com>
-In-Reply-To: <1586278391-9061-1-git-send-email-raviteja.narayanam@xilinx.com>
-From:   Shubhrajyoti Datta <shubhrajyoti.datta@gmail.com>
-Date:   Wed, 8 Apr 2020 12:43:51 +0530
-Message-ID: <CAKfKVtENc6R2c_h1Vr9AUywXJNGahctAaBz_05_kTY8vNNXeWg@mail.gmail.com>
-Subject: Re: [PATCH] serial: uartps: Wait for tx_empty in console setup
-To:     Raviteja Narayanam <raviteja.narayanam@xilinx.com>
-Cc:     linux-serial@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jslaby@suse.com, Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>, git@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200331101834.GP20730@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.28.64.103]
+X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
+ zxbjmbx2.zhaoxin.com (10.29.252.164)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi ,
-On Tue, Apr 7, 2020 at 10:25 PM Raviteja Narayanam
-<raviteja.narayanam@xilinx.com> wrote:
->
-> On some platforms, the log is corrupted while console is being
-> registered. It is observed that when set_termios is called, there
-> are still some bytes in the FIFO to be transmitted.
->
-> So, wait for tx_empty inside cdns_uart_console_setup before
-> calling set_termios.
->
-Reviewed-by: Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>
+On 2020/3/31 下午6:18, Peter Zijlstra wrote:
+> On Tue, Mar 31, 2020 at 05:39:59PM +0800, CodyYao-oc wrote:
+>> Zhaoxin CPU has provided facilities for monitoring performance
+>> via PMU(Performance Monitor Unit), but the functionality is unused so far.
+>> Therefore, add support for zhaoxin pmu to make performance related
+>> hardware events available.
+> 
+> This looks like an Intel Architectural PMU v2 or so, is that correct? Do
+> you have a link to documentation for your CPU?
+> 
+I'm sorry for such a late reply. Yes, the usage method is the same as 
+Intel PMU v2, but there is no online document at present. For your 
+convenience, provide some event descriptions as follows:
+
+-----------------------------------------------------------------------------------------------------------------------------------
+Event                      | Event  | Umask |          Description
+                            | Select |       |
+-----------------------------------------------------------------------------------------------------------------------------------
+cpu-cycles                 |  82h   |  00h  | unhalt core clock
+instructions               |  00h   |  00h  | number of instructions at 
+retirement.
+cache-references           |  15h   |  05h  | number of fillq pushs at 
+the current cycle.
+cache-misses               |  1ah   |  05h  | number of l2 miss pushed 
+by fillq.
+branch-instructions        |  28h   |  00h  | counts the number of 
+branch instructions retired.
+branch-misses              |  29h   |  00h  | mispredicted branch 
+instructions at retirement.
+bus-cycles                 |  83h   |  00h  | unhalt bus clock
+stalled-cycles-frontend    |  01h   |  01h  | Increments each cycle the 
+# of Uops issued by the RAT to RS.
+stalled-cycles-backend     |  0fh   |  04h  | RS0/1/2/3/45 empty
+L1-dcache-loads            |  68h   |  05h  | number of retire/commit load.
+L1-dcache-load-misses      |  4bh   |  05h  | retired load uops whose 
+data source followed an L1 miss.
+L1-dcache-stores           |  69h   |  06h  | number of retire/commit 
+Store,no LEA
+L1-dcache-store-misses     |  62h   |  05h  | cache lines in M state 
+evicted out of L1D due to Snoop HitM or dirty line replacement.
+L1-icache-loads            |  00h   |  03h  | number of l1i cache access 
+for valid normal fetch,including un-cacheable access.
+L1-icache-load-misses      |  01h   |  03h  | number of l1i cache miss 
+for valid normal fetch,including un-cacheable miss.
+L1-icache-prefetches       |  0ah   |  03h  | number of prefetch.
+L1-icache-prefetch-misses  |  0bh   |  03h  | number of prefetch miss.
+dTLB-loads                 |  68h   |  05h  | number of retire/commit load
+dTLB-load-misses           |  2ch   |  05h  | number of load operations 
+miss all level tlbs and cause a tablewalk.
+dTLB-stores                |  69h   |  06h  | number of retire/commit 
+Store,no LEA
+dTLB-store-misses          |  30h   |  05h  | number of store operations 
+miss all level tlbs and cause a tablewalk.
+dTLB-prefetches            |  64h   |  05h  | number of hardware pte 
+prefetch requests dispatched out of the prefetch FIFO.
+dTLB-prefetch-misses       |  65h   |  05h  | number of hardware pte 
+prefetch requests miss the l1d data cache.
+iTLB-load                  |  00h   |  00h  | actually counter instructions.
+iTLB-load-misses           |  34h   |  05h  | number of code operations 
+miss all level tlbs and cause a tablewalk.
+-----------------------------------------------------------------------------------------------------------------------------------
+
+
+>> +static void zhaoxin_pmu_disable_all(void)
+>> +{
+>> +	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
+>> +}
+>> +
+>> +static void zhaoxin_pmu_enable_all(int added)
+>> +{
+>> +	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, x86_pmu.intel_ctrl);
+>> +}
+>> +
+>> +static inline u64 zhaoxin_pmu_get_status(void)
+>> +{
+>> +	u64 status;
+>> +
+>> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, status);
+>> +
+>> +	return status;
+>> +}
+>> +
+>> +static inline void zhaoxin_pmu_ack_status(u64 ack)
+>> +{
+>> +	wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, ack);
+>> +}
+> 
+>> +static int zhaoxin_pmu_handle_irq(struct pt_regs *regs)
+>> +{
+>> +	struct perf_sample_data data;
+>> +	struct cpu_hw_events *cpuc;
+>> +	int bit;
+>> +	u64 status;
+>> +	bool is_zxc;
+>> +	int handled = 0;
+>> +
+>> +	cpuc = this_cpu_ptr(&cpu_hw_events);
+>> +	apic_write(APIC_LVTPC, APIC_DM_NMI);
+>> +	zhaoxin_pmu_disable_all();
+>> +	status = zhaoxin_pmu_get_status();
+>> +	if (!status)
+>> +		goto done;
+>> +
+>> +	if (boot_cpu_data.x86 == 0x06 &&
+>> +		(boot_cpu_data.x86_model == 0x0f ||
+>> +			boot_cpu_data.x86_model == 0x19))
+>> +		is_zxc = true;
+>> +again:
+>> +
+>> +	/*Clearing status works only if the global control is enable on zxc.*/
+>> +	if (is_zxc)
+>> +		wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, x86_pmu.intel_ctrl);
+>> +
+>> +	zhaoxin_pmu_ack_status(status);
+>> +
+>> +	if (is_zxc)
+>> +		wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
+> 
+> That's an unfortunate errata; perhaps write it like so:
+> 
+
+Thank you very much for your advice, I have changed the code.
+
+> static inline void zxc_pmu_ack_status(u64 status)
+> {
+> 	/*
+> 	 * ZXC needs global control enabled in order to clear status bits.
+> 	 */
+> 	zhaoxin_pmu_enable_all(0);
+> 	zhaoxin_pmu_ack_status(status);
+> 	zhaoxin_pmu_disable_all();
+> }
+> 
+> 	if (is_zxc)
+> 		zxc_pmu_ack_status(status);
+> 	else
+> 		zhaoxin_pmu_ack_status(status);
+> 
+> Alternatively; you can do a whole zxc specific handle_irq() and move the
+> get/ack status before disable_all(). If you do that, then factor this:
+> 
+>> +	/*
+>> +	 * CondChgd bit 63 doesn't mean any overflow status. Ignore
+>> +	 * and clear the bit.
+>> +	 */
+>> +	if (__test_and_clear_bit(63, (unsigned long *)&status)) {
+>> +		if (!status)
+>> +			goto done;
+>> +	}
+>> +
+>> +	for_each_set_bit(bit, (unsigned long *)&status, X86_PMC_IDX_MAX) {
+>> +		struct perf_event *event = cpuc->events[bit];
+>> +
+>> +		handled++;
+>> +
+>> +		if (!test_bit(bit, cpuc->active_mask))
+>> +			continue;
+>> +
+>> +		x86_perf_event_update(event);
+>> +		perf_sample_data_init(&data, 0, event->hw.last_period);
+>> +
+>> +		if (!x86_perf_event_set_period(event))
+>> +			continue;
+>> +
+>> +		if (perf_event_overflow(event, &data, regs))
+>> +			x86_pmu_stop(event, 0);
+>> +	}
+> 
+> bit into it's own function so you don't have to duplicate it. Then the
+> two handle_irq() functions only differ in the status handling.
+> 
+>> +
+>> +	/*
+>> +	 * Repeat if there is more work to be done:
+>> +	 */
+>> +	status = zhaoxin_pmu_get_status();
+>> +	if (status)
+>> +		goto again;
+>> +
+>> +done:
+>> +	zhaoxin_pmu_enable_all(0);
+>> +	return handled;
+>> +}
+> .
+> 
+
