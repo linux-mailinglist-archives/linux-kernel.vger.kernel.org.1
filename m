@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4FC1A2B40
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:34:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 047251A2B43
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730796AbgDHVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 17:34:14 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:41616 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730771AbgDHVeK (ORCPT
+        id S1730810AbgDHVeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 17:34:18 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:35793 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730725AbgDHVeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 17:34:10 -0400
-Received: by mail-lj1-f193.google.com with SMTP id n17so9266159lji.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 14:34:08 -0700 (PDT)
+        Wed, 8 Apr 2020 17:34:13 -0400
+Received: by mail-lf1-f66.google.com with SMTP id r17so6323240lff.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 14:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=KqwTl0YCgxCFoD6QzWeacolgi5eHFyPVK66/B9eGEJU=;
-        b=Rs+1EAWzy1VV58B8ic72umCM2g0DVr+FxSWDqFmuwQmbfcsQpCSPb7ozP5rsx/AY+v
-         WRNLg7tvETXoGITLQpT/VnxMGFH2obCaWmepQI3a9qkWRDDXkdyEQIJCH/3Sj4/nTST0
-         T26x+BW6P1xRvZ0cSj/M70vkWbWi5s+NJMYTnYH/DbwSaaSfOTaD0im2zjRHktmqAotY
-         eTtHSQcVx3L32UzappU/dibiG6+F0TR+g7dexzBVWP8PzFLig3R/qXtGrOiOd9MlGYES
-         aJvKlWhE3FdV0pJwG+LKBZRLJeBP0lQhpN5F530MQF5kQY1xQj/NaWdktwvQT35PKwoy
-         WzIg==
+        bh=i8clFFvhHtURStOSkT8VPHksSoNdpLFd6h/Iv5cyGI4=;
+        b=LnInvZrdIwupNbyGWWNiLyou/EL25bZac5eBr3jTVOIfPEW+fE4DypVYwGBMQR/ohi
+         fz3GmUoCkoIQWq86bcc0NR4/uLND/ulWi1n90PaOt1C4xNZ0rydmjkToAOnIl6dyh2Qz
+         ORP6KVN7HP9MipYbv15xeQf0Khg3Ts99bfLeksOG7tT4GRHGSgpVVlgZnS0zq68BPcJF
+         8GECRu1EQDr7ptBiqZBFqJ0J1LgAyLNLoUaiKTExZB6I4iaOzUQCHMKtWKntxWKWxEdn
+         ga0+B9sf+h5bikFzqacmy/T/YhwbvTU7Z1FEup/UHx2sqyVAAR1NnkFA7lliMFZ8GnPf
+         bp+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=KqwTl0YCgxCFoD6QzWeacolgi5eHFyPVK66/B9eGEJU=;
-        b=i39tG2re0L7NSSG8bemRaq4I+Useet5Ldc7uwAet7qKdTfqQprfPLvQaH54A1/hyVR
-         MmWPs+OEbxN2gmOOYsxUhfnZ99cP1BUcP55I8Kiv0VsFag3focfChrwNQ3G9j+CBwPn6
-         dMYFRcZ8DGi6qHpToQ2UqroHmcYc0rgaQJ463VYhTSLITBp2PsDPi+Mhh8jAGbLcYFTs
-         BfTKrwj/3D0y3HSDS/OcelMPVpQhm3ysDb+xp4hHDgmbqzguaLUswr/uVRA5u33n4Qls
-         vD8xSNrU8EDAfNaWhSB3qjFbiYMx/ZdT0M22EQLvJb/izAzCMjmnR0fgOByYX2CCYtwN
-         hTRw==
-X-Gm-Message-State: AGi0PuauT48R2MavIUdu37kEJAI7htPRIYUr7OOwtFaOV59LYUJU5FeB
-        d1xzRYGts9/pbSAS/v7mGlN7JbvTpr8=
-X-Google-Smtp-Source: APiQypLMz6OhjtqiITix26SHaGKIE/PNn8sq0YjVxchoC3Vnmc57okLBEnC2m/RXu2OROr26JHycvw==
-X-Received: by 2002:a2e:9ccd:: with SMTP id g13mr6174687ljj.147.1586381648068;
-        Wed, 08 Apr 2020 14:34:08 -0700 (PDT)
+        bh=i8clFFvhHtURStOSkT8VPHksSoNdpLFd6h/Iv5cyGI4=;
+        b=rkTa55+1EmtbptYxJkdUqhmUILfTjeSENLK0wcipNsLA3ptfMN0e5BoOjlmFlUjRD7
+         R5D01pv54Lwau/lvxjA2FyCcZnBuk9kl+VVpkdGWGojwOVotFp5Ml3zqbaw1R684BbHr
+         9v7TF4Mk4xp/PMPSKOH72XvkUUbb8eIgaF7rSpsxZABRBIdtYtMb6g93wf6jtOQUAtJX
+         CAHs6lUTYIeh0AxGyex4Feojcm/KF82zmGdPEnusi/aCssPido4hTSCl11O7WN/oMN9q
+         jYI45mOlCLmUdsogCBqjtXZeLECB2nIufSDGwU15f9Vp5D1Q0gN3VeY4mXg+bXFMFQ97
+         O/Gg==
+X-Gm-Message-State: AGi0PuYU6hOwvdH6ZkL+pr1tIguVGID3x8l0W+eDW9ihGnr5u8XwNOj/
+        gyQ3wb+n4NQD+T3z2Dp6Pt8H7Q==
+X-Google-Smtp-Source: APiQypIafYSBQ7sBXl2z33XJ4IVDpuvO6hb/lUDU0fCXq73HvkPJCCXY3/XQQspt3/SUnsH3GZurEQ==
+X-Received: by 2002:ac2:4da7:: with SMTP id h7mr5216375lfe.95.1586381651346;
+        Wed, 08 Apr 2020 14:34:11 -0700 (PDT)
 Received: from localhost.localdomain (212-5-158-138.ip.btc-net.bg. [212.5.158.138])
-        by smtp.gmail.com with ESMTPSA id t6sm15746688lfb.55.2020.04.08.14.34.06
+        by smtp.gmail.com with ESMTPSA id t6sm15746688lfb.55.2020.04.08.14.34.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 14:34:07 -0700 (PDT)
+        Wed, 08 Apr 2020 14:34:10 -0700 (PDT)
 From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
 To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
         Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH 5/7] venus: vdec: Mark flushed buffers with error state
-Date:   Thu,  9 Apr 2020 00:33:28 +0300
-Message-Id: <20200408213330.27665-6-stanimir.varbanov@linaro.org>
+Subject: [PATCH 6/7] venus: vdec: Init registered list unconditionally
+Date:   Thu,  9 Apr 2020 00:33:29 +0300
+Message-Id: <20200408213330.27665-7-stanimir.varbanov@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200408213330.27665-1-stanimir.varbanov@linaro.org>
 References: <20200408213330.27665-1-stanimir.varbanov@linaro.org>
@@ -60,32 +60,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Once the hfi_session_flush is issued by the vdec all queued
-buffers to firmware should be returned to the v4l driver. Some
-of those buffers are not processed at the time of flush command,
-those buffers has filled len zero (no data). Catch that in
-buffer_done callback and mark not filled capture buffers with
-error state so that client can discard them.
+Presently the list initialization is done only in
+dynamic-resolution-change state, which leads to list corruptions
+and use-after-free. Init list_head unconditionally in
+vdec_stop_capture called by vb2 stop_streaming without takeing
+into account current codec state.
 
 Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 ---
- drivers/media/platform/qcom/venus/vdec.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/media/platform/qcom/venus/vdec.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index 7d093accbd59..5823537b3131 100644
+index 5823537b3131..f23cbd812ef4 100644
 --- a/drivers/media/platform/qcom/venus/vdec.c
 +++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -1241,6 +1241,9 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
- 			if (inst->codec_state == VENUS_DEC_STATE_DRAIN)
- 				inst->codec_state = VENUS_DEC_STATE_STOPPED;
- 		}
-+
-+		if (!bytesused)
-+			state = VB2_BUF_STATE_ERROR;
- 	} else {
- 		vbuf->sequence = inst->sequence_out++;
+@@ -1072,13 +1072,14 @@ static int vdec_stop_capture(struct venus_inst *inst)
+ 	case VENUS_DEC_STATE_DRC:
+ 		ret = hfi_session_flush(inst, HFI_FLUSH_OUTPUT);
+ 		inst->codec_state = VENUS_DEC_STATE_CAPTURE_SETUP;
+-		INIT_LIST_HEAD(&inst->registeredbufs);
+ 		venus_helper_free_dpb_bufs(inst);
+ 		break;
+ 	default:
+-		return 0;
++		break;
  	}
+ 
++	INIT_LIST_HEAD(&inst->registeredbufs);
++
+ 	return ret;
+ }
+ 
 -- 
 2.17.1
 
