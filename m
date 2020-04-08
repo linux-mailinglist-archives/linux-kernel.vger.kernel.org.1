@@ -2,47 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 546991A2B27
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B43A1A2B2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730603AbgDHVcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 17:32:20 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:52956 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729613AbgDHVcT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 17:32:19 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id A5C49127D38A4;
-        Wed,  8 Apr 2020 14:32:18 -0700 (PDT)
-Date:   Wed, 08 Apr 2020 14:32:18 -0700 (PDT)
-Message-Id: <20200408.143218.803342029034510068.davem@davemloft.net>
-To:     vadym.kochan@plvision.eu
-Cc:     netdev@vger.kernel.org, kuznet@ms2.inr.ac.ru,
-        yoshfuji@linux-ipv6.org, challa@noironetworks.com,
-        linux-kernel@vger.kernel.org, taras.chornyi@plvision.eu
-Subject: Re: [PATCH net] net: ipv4: devinet: Fix crash when add/del
- multicast IP with autojoin
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200407221328.32603-1-vadym.kochan@plvision.eu>
-References: <20200407221328.32603-1-vadym.kochan@plvision.eu>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 08 Apr 2020 14:32:19 -0700 (PDT)
+        id S1730641AbgDHVc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 17:32:58 -0400
+Received: from mga14.intel.com ([192.55.52.115]:53315 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728005AbgDHVc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 17:32:57 -0400
+IronPort-SDR: cYgaulDCEzTlSFdPYfF+BzxtH07s0N1DEMmXZhiSWDvkoREAQjiCjW7k+4bUv1lt9e9XsR4ehO
+ r/GdmJs7dcBg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 14:32:57 -0700
+IronPort-SDR: rPJeEQSTt1IXwAY/+awhaq7JpNVAyxgFC0lrHf837df6wJfzaot3QGx3f/JLKI4s9lrjziBilM
+ jNBiy0xvpuCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,359,1580803200"; 
+   d="scan'208";a="451752119"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 08 Apr 2020 14:32:56 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jMIJb-000G0D-Vq; Thu, 09 Apr 2020 05:32:55 +0800
+Date:   Thu, 9 Apr 2020 05:32:34 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: net/sunrpc/svcsock.c:527:32: warning: Variable 'uninitialized_var'
+ is assigned a value that is never used. [unreadVariable]
+Message-ID: <202004090524.zHtJ3R2B%lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vadym.kochan@plvision.eu>
-Date: Wed,  8 Apr 2020 01:13:28 +0300
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f5e94d10e4c468357019e5c28d48499f677b284f
+commit: da1661b93bf489cdbc8bcea919b165d31b4810bf SUNRPC: Teach server to use xprt_sock_sendmsg for socket sends
+date:   3 weeks ago
 
-> steps to reptoduse:
-           ^^^^^^^^^
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kbuild test robot <lkp@intel.com>
 
-Typo, should be "reproduce"
+
+cppcheck warnings: (new ones prefixed by >>)
+
+   net/sunrpc/svcsock.c:405:9: warning: union member 'Anonymous0::all' is never used. [unusedStructMember]
+     long  all[SVC_PKTINFO_SPACE / sizeof(long)];
+           ^
+   net/sunrpc/svcsock.c:518:9: warning: union member 'Anonymous1::all' is never used. [unusedStructMember]
+     long  all[SVC_PKTINFO_SPACE / sizeof(long)];
+           ^
+>> net/sunrpc/svcsock.c:527:32: warning: Variable 'uninitialized_var' is assigned a value that is never used. [unreadVariable]
+    unsigned int uninitialized_var(sent);
+                                  ^
+
+vim +/uninitialized_var +527 net/sunrpc/svcsock.c
+
+   504	
+   505	/**
+   506	 * svc_udp_sendto - Send out a reply on a UDP socket
+   507	 * @rqstp: completed svc_rqst
+   508	 *
+   509	 * Returns the number of bytes sent, or a negative errno.
+   510	 */
+   511	static int svc_udp_sendto(struct svc_rqst *rqstp)
+   512	{
+   513		struct svc_xprt *xprt = rqstp->rq_xprt;
+   514		struct svc_sock	*svsk = container_of(xprt, struct svc_sock, sk_xprt);
+   515		struct xdr_buf *xdr = &rqstp->rq_res;
+   516		union {
+   517			struct cmsghdr	hdr;
+   518			long		all[SVC_PKTINFO_SPACE / sizeof(long)];
+   519		} buffer;
+   520		struct cmsghdr *cmh = &buffer.hdr;
+   521		struct msghdr msg = {
+   522			.msg_name	= &rqstp->rq_addr,
+   523			.msg_namelen	= rqstp->rq_addrlen,
+   524			.msg_control	= cmh,
+   525			.msg_controllen	= sizeof(buffer),
+   526		};
+ > 527		unsigned int uninitialized_var(sent);
+   528		int err;
+   529	
+   530		svc_set_cmsg_data(rqstp, cmh);
+   531	
+   532		err = xprt_sock_sendmsg(svsk->sk_sock, &msg, xdr, 0, 0, &sent);
+   533		xdr_free_bvec(xdr);
+   534		if (err == -ECONNREFUSED) {
+   535			/* ICMP error on earlier request. */
+   536			err = xprt_sock_sendmsg(svsk->sk_sock, &msg, xdr, 0, 0, &sent);
+   537			xdr_free_bvec(xdr);
+   538		}
+   539		if (err < 0)
+   540			return err;
+   541		return sent;
+   542	}
+   543	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
