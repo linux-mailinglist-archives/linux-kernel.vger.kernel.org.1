@@ -2,53 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 483C01A294F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 21:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9766C1A2951
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 21:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729926AbgDHTZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 15:25:07 -0400
-Received: from ms.lwn.net ([45.79.88.28]:46376 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727717AbgDHTZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 15:25:07 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id E1426307;
-        Wed,  8 Apr 2020 19:25:06 +0000 (UTC)
-Date:   Wed, 8 Apr 2020 13:25:05 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     LinuxKernel <linux-kernel@vger.kernel.org>
-Subject: Re: Kernel build failed ...SPHINX extension error
-Message-ID: <20200408132505.52e595bc@lwn.net>
-In-Reply-To: <20200408113705.GB1924@ArchLinux>
-References: <20200408113705.GB1924@ArchLinux>
-Organization: LWN.net
+        id S1729958AbgDHT1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 15:27:15 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:32870 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727717AbgDHT1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 15:27:15 -0400
+Received: by mail-qv1-f67.google.com with SMTP id p19so4310108qve.0;
+        Wed, 08 Apr 2020 12:27:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oJV+TvCO+VY9DO+jZTnnzXFI3BZ6Ed8DSfpwoOZDIjE=;
+        b=m8rt2XhycVFsFwCJs971W8tfd4kvUrZ1DGawZM4WWJZfOJO8ATmciRBkiNvxCt+Y22
+         HJvU6OGiO2GBAhyiU0BzCiVe9mEMTgcwAILdykWB+Ei6v9/dtVAreQ1QfwiSfJAYtbp5
+         Hp8jD05EUdJ3kkVb4JnT2lL/ckqY0xg1SF3ESxlBrFSgEDFcCl0ZgQ6WhR/zC6K2zl9U
+         4mQd1QA3rVBTN1cbIRxXZUOoDYW/nEIejkXcbjeMjbNXku8OXka6f5f20dyBv22kJbEd
+         eeKZTgU5UW9cnaFudA5TbukVoXfj8G9Vypqv0pFVmL3AvzfffHeaZZhztoyIqmz6LHm/
+         2zmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oJV+TvCO+VY9DO+jZTnnzXFI3BZ6Ed8DSfpwoOZDIjE=;
+        b=UElA1umSQZj2RORnWYFR2XaVXpiRtVZMN/Nqz0mjKV9HZFLwFLszX1SQdt+cMEH92O
+         xNNcCr3n/DnHlqem+PWkih3M5OSU/tDQZ/1080/CG0hlS0HC9FJb0b4GVWcRk5R8M0ls
+         V5hyG0L8g+wtRYhWjt4o6iUjOwrIbDzItVpKr3RqX9IiwNGHzEBznAj85SI/j1m4O28Y
+         qkoXghMnUv56jntecA/+SaAJl0YWI5jYmPXBUA8/IX7WdF9GCyMhWdea5NWAr7kT+yrU
+         bBeDpUJ9EgMxoK+7qk6QVqsIWBawjxwbslnZa8mvLv5+ERTw4q0zBp+t9/oYBBC6G2lX
+         F+SA==
+X-Gm-Message-State: AGi0PuYlEZTTqj6KUlcLYkKCYOMUQNzJxqhLIj0V46nlsRlNWxAIsDW4
+        4R9JY2W9G7u4aI8gaPysvcQ=
+X-Google-Smtp-Source: APiQypJT1y2+pe84RYUVofBuROMqGUOExowdWQXdnWGTNSf3OUWv6Wa4vkyfGj3ws9+DFIgs9LK74w==
+X-Received: by 2002:ad4:5448:: with SMTP id h8mr9106996qvt.23.1586374033710;
+        Wed, 08 Apr 2020 12:27:13 -0700 (PDT)
+Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
+        by smtp.gmail.com with ESMTPSA id a136sm20267507qkb.15.2020.04.08.12.27.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 Apr 2020 12:27:13 -0700 (PDT)
+Subject: Re: [PATCH] of: remove unneeded variable
+From:   Frank Rowand <frowand.list@gmail.com>
+To:     Ding Xiang <dingxiang@cmss.chinamobile.com>, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1585562702-360-1-git-send-email-dingxiang@cmss.chinamobile.com>
+ <92c6b7e9-4d55-a5c3-8c7f-5611edeb55c9@gmail.com>
+Message-ID: <94145488-c077-4b40-943f-f53f21f660c4@gmail.com>
+Date:   Wed, 8 Apr 2020 14:27:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <92c6b7e9-4d55-a5c3-8c7f-5611edeb55c9@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Apr 2020 17:07:05 +0530
-Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
+On 4/8/20 11:00 AM, Frank Rowand wrote:
+> On 3/30/20 5:05 AM, Ding Xiang wrote:
+>> rc is unneeded, just return 0.
+> 
+> of: of_detach_node() remove unneeded local return variable
 
-> Extension error:
-> Could not import extension cdomain (exception: cannot import name
-> 'c_funcptr_sig_re' from 'sphinx.domains.c'
-> (/usr/lib/python3.8/site-packages/sphinx/domains/c.py))
-> Apr 08 16:48:46 enabling CJK for LaTeX builder
-> Apr 08 16:48:46   CC      kernel/power/poweroff.o
-> make[1]: *** [Documentation/Makefile:81: htmldocs] Error 2
-> make: *** [Makefile:1549: htmldocs] Error 2
-> make: *** Waiting for unfinished jobs....
+never mind, this is not the subject line...  My mistake.
 
-This is weird, to say the least.  But I think the "python3.8" in the
-message above says everything you need to know.  If you're running with
-an unreleased version of Python, it's not entirely surprising that you
-might run into trouble with a complex package.
+-Frank
 
-jon
+> 
+>>
+>> Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
+>> ---
+>>  drivers/of/dynamic.c | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
+>> index 08fd823..fe64430 100644
+>> --- a/drivers/of/dynamic.c
+>> +++ b/drivers/of/dynamic.c
+>> @@ -286,7 +286,6 @@ int of_detach_node(struct device_node *np)
+>>  {
+>>  	struct of_reconfig_data rd;
+>>  	unsigned long flags;
+>> -	int rc = 0;
+>>  
+>>  	memset(&rd, 0, sizeof(rd));
+>>  	rd.dn = np;
+>> @@ -301,7 +300,7 @@ int of_detach_node(struct device_node *np)
+>>  
+>>  	of_reconfig_notify(OF_RECONFIG_DETACH_NODE, &rd);
+>>  
+>> -	return rc;
+>> +	return 0;
+>>  }
+>>  EXPORT_SYMBOL_GPL(of_detach_node);
+>>  
+>>
+> 
+> 
+> Reviewed-by: Frank Rowand <frank.rowand@sony.com>
+> 
+
