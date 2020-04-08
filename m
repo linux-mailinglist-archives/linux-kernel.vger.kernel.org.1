@@ -2,561 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D1F1A26D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F221A26E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730163AbgDHQJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 12:09:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60186 "EHLO mail.kernel.org"
+        id S1730263AbgDHQJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:09:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729808AbgDHQJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:09:19 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        id S1730191AbgDHQJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 12:09:43 -0400
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9A4CC206F5;
-        Wed,  8 Apr 2020 16:09:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A371206F5;
+        Wed,  8 Apr 2020 16:09:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586362157;
-        bh=1QikKK7f/nBK09T2WDiHVYR6Txj2QstjmPb0A/WaPEc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aDJsAhKFgzfu7ivdKiRDoEiSxK3bxiYBYYg3mZi2k8OgL6U+7LHhWuggt/y1wyapH
-         ljpFj63e7ACOSqsY8MBiVKemTjzeQvlfoZ8qo8ByMr6P08/kJkuxrWJfAtzglU6kvW
-         l6tFKFa7vUN9CBfBliBA/WrR7wFFRjr/rXB08MqE=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Jann Horn <jannh@google.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Zhou <David1.Zhou@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH v2] x86: insn: Add insn_is_fpu()
-Date:   Thu,  9 Apr 2020 01:09:11 +0900
-Message-Id: <158636215075.6641.10786116450376715657.stgit@devnote2>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200407155449.GF20730@hirez.programming.kicks-ass.net>
-References: <20200407155449.GF20730@hirez.programming.kicks-ass.net>
-User-Agent: StGit/0.17.1-dirty
+        s=default; t=1586362182;
+        bh=kIreA496xvIapaRTLuMlFLqanuB0f3Kepl2wTRTpIrQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AoEtzue8Eqfa+5ETZ4xoX852d8hgX6nzAq5CipUt2NoS4jErtK5FBjsxuWED09Bf2
+         gXlds6dSYRSMAH9PQsIh0coJEKmU8SZw4H/nKH0iXc+e1IQkfBPekD4e8lKblQBpvv
+         PpD69Duh/TS9CZZDUV2J/9GOWC+dO0Ut70IVAtLw=
+Received: by mail-ed1-f51.google.com with SMTP id c7so9312563edl.2;
+        Wed, 08 Apr 2020 09:09:42 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZWjzOFgk8GLOHrLcNQe2AAJlIQphOSSs4g+x93BBZ/sb7CB2Jn
+        0oRGCpAt3UPOxGexA1R4O/tP2ijGaPWxBpilRg==
+X-Google-Smtp-Source: APiQypKguSiBz1WDycjJcK/7zfMUMEOKbNsIYCiMlmWJEDxjESIp2hRMSGNObcV5FtbjDF7rs+6Ju+PzFKHvOfilMAI=
+X-Received: by 2002:aa7:c544:: with SMTP id s4mr7300400edr.271.1586362178940;
+ Wed, 08 Apr 2020 09:09:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20191118104252.228406-1-hsinyi@chromium.org> <CAFqH_528vidMhTFxNZ=b7SFD2K12UwtdX3uTUzW4YUgeDWkg5A@mail.gmail.com>
+In-Reply-To: <CAFqH_528vidMhTFxNZ=b7SFD2K12UwtdX3uTUzW4YUgeDWkg5A@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 9 Apr 2020 00:09:27 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8RMboOuKVKPANZ1QN+mt0jvOr13o84VhWKGY1QZqbPDg@mail.gmail.com>
+Message-ID: <CAAOTY_8RMboOuKVKPANZ1QN+mt0jvOr13o84VhWKGY1QZqbPDg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8173: Add gce setting in mmsys and display node
+To:     Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add insn_is_fpu(insn) which tells that the insn is
-whether touch the FPU/SSE/MMX register or the instruction
-of FP coprocessor.
+Hi, Hsin-Yi:
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- Changes in v2:
- - Introduce FPU superscript.
- - Fix to add INAT_FPUIFVEX for variant if the first opcode has no
-   last prefix superscript.
----
- tools/arch/x86/include/asm/inat.h          |    7 ++++
- tools/arch/x86/include/asm/insn.h          |   12 ++++++
- tools/arch/x86/lib/x86-opcode-map.txt      |   32 ++++++++++------
- tools/arch/x86/tools/gen-insn-attr-x86.awk |   56 ++++++++++++++++++++++++----
- 4 files changed, 86 insertions(+), 21 deletions(-)
+Enric Balletbo Serra <eballetbo@gmail.com> =E6=96=BC 2020=E5=B9=B44=E6=9C=
+=888=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8811:48=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dl., 18 de nov.
+> 2019 a les 11:43:
+> >
+> > In order to use GCE function, we need add some informations
+> > into display node (mboxes, mediatek,gce-client-reg, mediatek,gce-events=
+).
+> >
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>
+> With the fix provided by Hsin-Yi [1] and after the mmsys patches
+> landed I get GCE function working on mt8173, so
+>
+> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>
+> [1] https://lore.kernel.org/lkml/20200406051131.225748-1-hsinyi@chromium.=
+org/
+>
+> Thanks,
+>  Enric
+>
+> > ---
+> > - This is based on series "support gce on mt8183 platform"
+> >   https://patchwork.kernel.org/cover/11208309/
+> > - gce setting in 8183:
+> >   https://patchwork.kernel.org/patch/11127105/
+> > ---
+> >  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 16 ++++++++++++++++
+> >  1 file changed, 16 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot=
+/dts/mediatek/mt8173.dtsi
+> > index 15f1842f6df3..e84ec3f95d81 100644
+> > --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+> > @@ -911,6 +911,11 @@ mmsys: clock-controller@14000000 {
+> >                         assigned-clocks =3D <&topckgen CLK_TOP_MM_SEL>;
+> >                         assigned-clock-rates =3D <400000000>;
+> >                         #clock-cells =3D <1>;
+> > +                       mboxes =3D <&gce 0 CMDQ_THR_PRIO_HIGHEST 1>,
+> > +                                <&gce 1 CMDQ_THR_PRIO_HIGHEST 1>;
 
-diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
-index 4cf2ad521f65..ffce45178c08 100644
---- a/arch/x86/include/asm/inat.h
-+++ b/arch/x86/include/asm/inat.h
-@@ -77,6 +77,8 @@
- #define INAT_VEXOK	(1 << (INAT_FLAG_OFFS + 5))
- #define INAT_VEXONLY	(1 << (INAT_FLAG_OFFS + 6))
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
-+#define INAT_FPU	(1 << (INAT_FLAG_OFFS + 8))
-+#define INAT_FPUIFVEX	(1 << (INAT_FLAG_OFFS + 9))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-@@ -227,4 +229,9 @@ static inline int inat_must_evex(insn_attr_t attr)
- {
- 	return attr & INAT_EVEXONLY;
- }
-+
-+static inline int inat_is_fpu(insn_attr_t attr)
-+{
-+	return attr & INAT_FPU;
-+}
- #endif
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index 5c1ae3eff9d4..1752c54d2103 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -129,6 +129,18 @@ static inline int insn_is_evex(struct insn *insn)
- 	return (insn->vex_prefix.nbytes == 4);
- }
- 
-+static inline int insn_is_fpu(struct insn *insn)
-+{
-+	if (!insn->opcode.got)
-+		insn_get_opcode(insn);
-+	if (inat_is_fpu(insn->attr)) {
-+		if (insn->attr & INAT_FPUIFVEX)
-+			return insn_is_avx(insn);
-+		return 1;
-+	}
-+	return 0;
-+}
-+
- static inline int insn_has_emulate_prefix(struct insn *insn)
- {
- 	return !!insn->emulate_prefix_size;
-diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
-index ec31f5b60323..3aae11931a0a 100644
---- a/arch/x86/lib/x86-opcode-map.txt
-+++ b/arch/x86/lib/x86-opcode-map.txt
-@@ -33,6 +33,10 @@
- #  - (F2): the last prefix is 0xF2
- #  - (!F3) : the last prefix is not 0xF3 (including non-last prefix case)
- #  - (66&F2): Both 0x66 and 0xF2 prefixes are specified.
-+#
-+# Optional Superscripts
-+#  - {FPU}: this mnemonic doesn't have FPU/MMX/SSE operands but access those
-+#           registers.
- 
- Table: one byte opcode
- Referrer:
-@@ -269,14 +273,16 @@ d4: AAM Ib (i64)
- d5: AAD Ib (i64)
- d6:
- d7: XLAT/XLATB
--d8: ESC
--d9: ESC
--da: ESC
--db: ESC
--dc: ESC
--dd: ESC
--de: ESC
--df: ESC
-+# Intel SDM Appendix A Opcode Map shows these opcode are ESC (Escape to
-+# coprocessor instruction set), the coprocessor means x87 FPU.
-+d8: ESC {FPU}
-+d9: ESC {FPU}
-+da: ESC {FPU}
-+db: ESC {FPU}
-+dc: ESC {FPU}
-+dd: ESC {FPU}
-+de: ESC {FPU}
-+df: ESC {FPU}
- # 0xe0 - 0xef
- # Note: "forced64" is Intel CPU behavior: they ignore 0x66 prefix
- # in 64-bit mode. AMD CPUs accept 0x66 prefix, it causes RIP truncation
-@@ -462,7 +468,7 @@ AVXcode: 1
- 75: pcmpeqw Pq,Qq | vpcmpeqw Vx,Hx,Wx (66),(v1)
- 76: pcmpeqd Pq,Qq | vpcmpeqd Vx,Hx,Wx (66),(v1)
- # Note: Remove (v), because vzeroall and vzeroupper becomes emms without VEX.
--77: emms | vzeroupper | vzeroall
-+77: emms {FPU} | vzeroupper | vzeroall
- 78: VMREAD Ey,Gy | vcvttps2udq/pd2udq Vx,Wpd (evo) | vcvttsd2usi Gv,Wx (F2),(ev) | vcvttss2usi Gv,Wx (F3),(ev) | vcvttps2uqq/pd2uqq Vx,Wx (66),(ev)
- 79: VMWRITE Gy,Ey | vcvtps2udq/pd2udq Vx,Wpd (evo) | vcvtsd2usi Gv,Wx (F2),(ev) | vcvtss2usi Gv,Wx (F3),(ev) | vcvtps2uqq/pd2uqq Vx,Wx (66),(ev)
- 7a: vcvtudq2pd/uqq2pd Vpd,Wx (F3),(ev) | vcvtudq2ps/uqq2ps Vpd,Wx (F2),(ev) | vcvttps2qq/pd2qq Vx,Wx (66),(ev)
-@@ -1036,10 +1042,10 @@ GrpTable: Grp14
- EndTable
- 
- GrpTable: Grp15
--0: fxsave | RDFSBASE Ry (F3),(11B)
--1: fxstor | RDGSBASE Ry (F3),(11B)
--2: vldmxcsr Md (v1) | WRFSBASE Ry (F3),(11B)
--3: vstmxcsr Md (v1) | WRGSBASE Ry (F3),(11B)
-+0: fxsave {FPU} | RDFSBASE Ry (F3),(11B)
-+1: fxrstor {FPU} | RDGSBASE Ry (F3),(11B)
-+2: ldmxcsr {FPU} | vldmxcsr Md (v1),{FPU} | WRFSBASE Ry (F3),(11B)
-+3: stmxcsr {FPU} | vstmxcsr Md (v1),{FPU} | WRGSBASE Ry (F3),(11B)
- 4: XSAVE | ptwrite Ey (F3),(11B)
- 5: XRSTOR | lfence (11B) | INCSSPD/Q Ry (F3),(11B)
- 6: XSAVEOPT | clwb (66) | mfence (11B) | TPAUSE Rd (66),(11B) | UMONITOR Rv (F3),(11B) | UMWAIT Rd (F2),(11B) | CLRSSBSY Mq (F3)
-diff --git a/arch/x86/tools/gen-insn-attr-x86.awk b/arch/x86/tools/gen-insn-attr-x86.awk
-index a42015b305f4..e8a0436d6397 100644
---- a/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -44,7 +44,7 @@ BEGIN {
- 	delete atable
- 
- 	opnd_expr = "^[A-Za-z/]"
--	ext_expr = "^\\("
-+	ext_expr = "^(\\(|\\{)"
- 	sep_expr = "^\\|$"
- 	group_expr = "^Grp[0-9A-Za-z]+"
- 
-@@ -65,7 +65,9 @@ BEGIN {
- 	modrm_expr = "^([CDEGMNPQRSUVW/][a-z]+|NTA|T[012])"
- 	force64_expr = "\\([df]64\\)"
- 	rex_expr = "^REX(\\.[XRWB]+)*"
--	fpu_expr = "^ESC" # TODO
-+
-+	fpureg_expr = "^[HLNPQUVW][a-z]+" # MMX/SSE register operands
-+	fpu_expr = "\\{FPU\\}"
- 
- 	lprefix1_expr = "\\((66|!F3)\\)"
- 	lprefix2_expr = "\\(F3\\)"
-@@ -236,10 +238,11 @@ function add_flags(old,new) {
- }
- 
- # convert operands to flags.
--function convert_operands(count,opnd,       i,j,imm,mod)
-+function convert_operands(count,opnd,       i,j,imm,mod,fpu)
- {
- 	imm = null
- 	mod = null
-+	fpu = null
- 	for (j = 1; j <= count; j++) {
- 		i = opnd[j]
- 		if (match(i, imm_expr) == 1) {
-@@ -253,7 +256,12 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 				imm = imm_flag[i]
- 		} else if (match(i, modrm_expr))
- 			mod = "INAT_MODRM"
-+		if (match(i, fpureg_expr) == 1) {
-+			fpu = "INAT_FPU"
-+		}
- 	}
-+	if (fpu)
-+		imm = add_flags(imm, fpu)
- 	return add_flags(imm, mod)
- }
- 
-@@ -283,6 +291,10 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 	variant = null
- 	# converts
- 	i = 2
-+	lpfpu[0] = 0
-+	lpfpu[1] = 0
-+	lpfpu[2] = 0
-+	lpfpu[3] = 0
- 	while (i <= NF) {
- 		opcode = $(i++)
- 		delete opnds
-@@ -294,6 +306,7 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 			opnd = $i
- 			count = split($(i++), opnds, ",")
- 			flags = convert_operands(count, opnds)
-+
- 		}
- 		if (match($i, ext_expr))
- 			ext = $(i++)
-@@ -318,9 +331,9 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 		if (match(opcode, rex_expr))
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(INAT_PFX_REX)")
- 
--		# check coprocessor escape : TODO
--		if (match(opcode, fpu_expr))
--			flags = add_flags(flags, "INAT_MODRM")
-+		# check FPU/MMX/SSE superscripts
-+		if (match(ext, fpu_expr))
-+			flags = add_flags(flags, "INAT_MODRM | INAT_FPU")
- 
- 		# check VEX codes
- 		if (match(ext, evexonly_expr))
-@@ -336,22 +349,49 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 				semantic_error("Unknown prefix: " opcode)
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(" prefix_num[opcode] ")")
- 		}
--		if (length(flags) == 0)
--			continue
-+
- 		# check if last prefix
- 		if (match(ext, lprefix1_expr)) {
-+			if (lpfpu[1] == 0 && flags !~ "INAT_FPU")
-+				lpfpu[1] = 1
-+			else if (lpfpu[1] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			lptable1[idx] = add_flags(lptable1[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
- 		if (match(ext, lprefix2_expr)) {
-+			if (lpfpu[2] == 0 && flags !~ "INAT_FPU")
-+				lpfpu[2] = 1
-+			else if (lpfpu[2] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			lptable2[idx] = add_flags(lptable2[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
- 		if (match(ext, lprefix3_expr)) {
-+			if (lpfpu[3] == 0 && flags !~ "INAT_FPU")
-+				lpfpu[3] = 1
-+			else if (lpfpu[3] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			lptable3[idx] = add_flags(lptable3[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
- 		if (!match(ext, lprefix_expr)){
-+			if (lpfpu[0] == 0 && flags !~ "INAT_FPU") {
-+				lpfpu[0] = 1
-+				lpfpu[1] = 1
-+				lpfpu[2] = 1
-+				lpfpu[3] = 1
-+			}
-+			else if (lpfpu[0] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			table[idx] = add_flags(table[idx],flags)
- 		}
- 	}
-diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/asm/inat.h
-index 877827b7c2c3..2e6a05290efd 100644
---- a/tools/arch/x86/include/asm/inat.h
-+++ b/tools/arch/x86/include/asm/inat.h
-@@ -77,6 +77,8 @@
- #define INAT_VEXOK	(1 << (INAT_FLAG_OFFS + 5))
- #define INAT_VEXONLY	(1 << (INAT_FLAG_OFFS + 6))
- #define INAT_EVEXONLY	(1 << (INAT_FLAG_OFFS + 7))
-+#define INAT_FPU	(1 << (INAT_FLAG_OFFS + 8))
-+#define INAT_FPUIFVEX	(1 << (INAT_FLAG_OFFS + 9))
- /* Attribute making macros for attribute tables */
- #define INAT_MAKE_PREFIX(pfx)	(pfx << INAT_PFX_OFFS)
- #define INAT_MAKE_ESCAPE(esc)	(esc << INAT_ESC_OFFS)
-@@ -227,4 +229,9 @@ static inline int inat_must_evex(insn_attr_t attr)
- {
- 	return attr & INAT_EVEXONLY;
- }
-+
-+static inline int inat_is_fpu(insn_attr_t attr)
-+{
-+	return attr & INAT_FPU;
-+}
- #endif
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index 568854b14d0a..d9f6bd9059c1 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -129,6 +129,18 @@ static inline int insn_is_evex(struct insn *insn)
- 	return (insn->vex_prefix.nbytes == 4);
- }
- 
-+static inline int insn_is_fpu(struct insn *insn)
-+{
-+	if (!insn->opcode.got)
-+		insn_get_opcode(insn);
-+	if (inat_is_fpu(insn->attr)) {
-+		if (insn->attr & INAT_FPUIFVEX)
-+			return insn_is_avx(insn);
-+		return 1;
-+	}
-+	return 0;
-+}
-+
- static inline int insn_has_emulate_prefix(struct insn *insn)
- {
- 	return !!insn->emulate_prefix_size;
-diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
-index ec31f5b60323..3aae11931a0a 100644
---- a/tools/arch/x86/lib/x86-opcode-map.txt
-+++ b/tools/arch/x86/lib/x86-opcode-map.txt
-@@ -33,6 +33,10 @@
- #  - (F2): the last prefix is 0xF2
- #  - (!F3) : the last prefix is not 0xF3 (including non-last prefix case)
- #  - (66&F2): Both 0x66 and 0xF2 prefixes are specified.
-+#
-+# Optional Superscripts
-+#  - {FPU}: this mnemonic doesn't have FPU/MMX/SSE operands but access those
-+#           registers.
- 
- Table: one byte opcode
- Referrer:
-@@ -269,14 +273,16 @@ d4: AAM Ib (i64)
- d5: AAD Ib (i64)
- d6:
- d7: XLAT/XLATB
--d8: ESC
--d9: ESC
--da: ESC
--db: ESC
--dc: ESC
--dd: ESC
--de: ESC
--df: ESC
-+# Intel SDM Appendix A Opcode Map shows these opcode are ESC (Escape to
-+# coprocessor instruction set), the coprocessor means x87 FPU.
-+d8: ESC {FPU}
-+d9: ESC {FPU}
-+da: ESC {FPU}
-+db: ESC {FPU}
-+dc: ESC {FPU}
-+dd: ESC {FPU}
-+de: ESC {FPU}
-+df: ESC {FPU}
- # 0xe0 - 0xef
- # Note: "forced64" is Intel CPU behavior: they ignore 0x66 prefix
- # in 64-bit mode. AMD CPUs accept 0x66 prefix, it causes RIP truncation
-@@ -462,7 +468,7 @@ AVXcode: 1
- 75: pcmpeqw Pq,Qq | vpcmpeqw Vx,Hx,Wx (66),(v1)
- 76: pcmpeqd Pq,Qq | vpcmpeqd Vx,Hx,Wx (66),(v1)
- # Note: Remove (v), because vzeroall and vzeroupper becomes emms without VEX.
--77: emms | vzeroupper | vzeroall
-+77: emms {FPU} | vzeroupper | vzeroall
- 78: VMREAD Ey,Gy | vcvttps2udq/pd2udq Vx,Wpd (evo) | vcvttsd2usi Gv,Wx (F2),(ev) | vcvttss2usi Gv,Wx (F3),(ev) | vcvttps2uqq/pd2uqq Vx,Wx (66),(ev)
- 79: VMWRITE Gy,Ey | vcvtps2udq/pd2udq Vx,Wpd (evo) | vcvtsd2usi Gv,Wx (F2),(ev) | vcvtss2usi Gv,Wx (F3),(ev) | vcvtps2uqq/pd2uqq Vx,Wx (66),(ev)
- 7a: vcvtudq2pd/uqq2pd Vpd,Wx (F3),(ev) | vcvtudq2ps/uqq2ps Vpd,Wx (F2),(ev) | vcvttps2qq/pd2qq Vx,Wx (66),(ev)
-@@ -1036,10 +1042,10 @@ GrpTable: Grp14
- EndTable
- 
- GrpTable: Grp15
--0: fxsave | RDFSBASE Ry (F3),(11B)
--1: fxstor | RDGSBASE Ry (F3),(11B)
--2: vldmxcsr Md (v1) | WRFSBASE Ry (F3),(11B)
--3: vstmxcsr Md (v1) | WRGSBASE Ry (F3),(11B)
-+0: fxsave {FPU} | RDFSBASE Ry (F3),(11B)
-+1: fxrstor {FPU} | RDGSBASE Ry (F3),(11B)
-+2: ldmxcsr {FPU} | vldmxcsr Md (v1),{FPU} | WRFSBASE Ry (F3),(11B)
-+3: stmxcsr {FPU} | vstmxcsr Md (v1),{FPU} | WRGSBASE Ry (F3),(11B)
- 4: XSAVE | ptwrite Ey (F3),(11B)
- 5: XRSTOR | lfence (11B) | INCSSPD/Q Ry (F3),(11B)
- 6: XSAVEOPT | clwb (66) | mfence (11B) | TPAUSE Rd (66),(11B) | UMONITOR Rv (F3),(11B) | UMWAIT Rd (F2),(11B) | CLRSSBSY Mq (F3)
-diff --git a/tools/arch/x86/tools/gen-insn-attr-x86.awk b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-index a42015b305f4..e8a0436d6397 100644
---- a/tools/arch/x86/tools/gen-insn-attr-x86.awk
-+++ b/tools/arch/x86/tools/gen-insn-attr-x86.awk
-@@ -44,7 +44,7 @@ BEGIN {
- 	delete atable
- 
- 	opnd_expr = "^[A-Za-z/]"
--	ext_expr = "^\\("
-+	ext_expr = "^(\\(|\\{)"
- 	sep_expr = "^\\|$"
- 	group_expr = "^Grp[0-9A-Za-z]+"
- 
-@@ -65,7 +65,9 @@ BEGIN {
- 	modrm_expr = "^([CDEGMNPQRSUVW/][a-z]+|NTA|T[012])"
- 	force64_expr = "\\([df]64\\)"
- 	rex_expr = "^REX(\\.[XRWB]+)*"
--	fpu_expr = "^ESC" # TODO
-+
-+	fpureg_expr = "^[HLNPQUVW][a-z]+" # MMX/SSE register operands
-+	fpu_expr = "\\{FPU\\}"
- 
- 	lprefix1_expr = "\\((66|!F3)\\)"
- 	lprefix2_expr = "\\(F3\\)"
-@@ -236,10 +238,11 @@ function add_flags(old,new) {
- }
- 
- # convert operands to flags.
--function convert_operands(count,opnd,       i,j,imm,mod)
-+function convert_operands(count,opnd,       i,j,imm,mod,fpu)
- {
- 	imm = null
- 	mod = null
-+	fpu = null
- 	for (j = 1; j <= count; j++) {
- 		i = opnd[j]
- 		if (match(i, imm_expr) == 1) {
-@@ -253,7 +256,12 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 				imm = imm_flag[i]
- 		} else if (match(i, modrm_expr))
- 			mod = "INAT_MODRM"
-+		if (match(i, fpureg_expr) == 1) {
-+			fpu = "INAT_FPU"
-+		}
- 	}
-+	if (fpu)
-+		imm = add_flags(imm, fpu)
- 	return add_flags(imm, mod)
- }
- 
-@@ -283,6 +291,10 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 	variant = null
- 	# converts
- 	i = 2
-+	lpfpu[0] = 0
-+	lpfpu[1] = 0
-+	lpfpu[2] = 0
-+	lpfpu[3] = 0
- 	while (i <= NF) {
- 		opcode = $(i++)
- 		delete opnds
-@@ -294,6 +306,7 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 			opnd = $i
- 			count = split($(i++), opnds, ",")
- 			flags = convert_operands(count, opnds)
-+
- 		}
- 		if (match($i, ext_expr))
- 			ext = $(i++)
-@@ -318,9 +331,9 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 		if (match(opcode, rex_expr))
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(INAT_PFX_REX)")
- 
--		# check coprocessor escape : TODO
--		if (match(opcode, fpu_expr))
--			flags = add_flags(flags, "INAT_MODRM")
-+		# check FPU/MMX/SSE superscripts
-+		if (match(ext, fpu_expr))
-+			flags = add_flags(flags, "INAT_MODRM | INAT_FPU")
- 
- 		# check VEX codes
- 		if (match(ext, evexonly_expr))
-@@ -336,22 +349,49 @@ function convert_operands(count,opnd,       i,j,imm,mod)
- 				semantic_error("Unknown prefix: " opcode)
- 			flags = add_flags(flags, "INAT_MAKE_PREFIX(" prefix_num[opcode] ")")
- 		}
--		if (length(flags) == 0)
--			continue
-+
- 		# check if last prefix
- 		if (match(ext, lprefix1_expr)) {
-+			if (lpfpu[1] == 0 && flags !~ "INAT_FPU")
-+				lpfpu[1] = 1
-+			else if (lpfpu[1] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			lptable1[idx] = add_flags(lptable1[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
- 		if (match(ext, lprefix2_expr)) {
-+			if (lpfpu[2] == 0 && flags !~ "INAT_FPU")
-+				lpfpu[2] = 1
-+			else if (lpfpu[2] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			lptable2[idx] = add_flags(lptable2[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
- 		if (match(ext, lprefix3_expr)) {
-+			if (lpfpu[3] == 0 && flags !~ "INAT_FPU")
-+				lpfpu[3] = 1
-+			else if (lpfpu[3] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			lptable3[idx] = add_flags(lptable3[idx],flags)
- 			variant = "INAT_VARIANT"
- 		}
- 		if (!match(ext, lprefix_expr)){
-+			if (lpfpu[0] == 0 && flags !~ "INAT_FPU") {
-+				lpfpu[0] = 1
-+				lpfpu[1] = 1
-+				lpfpu[2] = 1
-+				lpfpu[3] = 1
-+			}
-+			else if (lpfpu[0] != 0 && flags ~ "INAT_FPU")
-+				flags = add_flags(flags, "INAT_FPUIFVEX")
-+			if (length(flags) == 0)
-+				continue;
- 			table[idx] = add_flags(table[idx],flags)
- 		}
- 	}
+Because of patch [1], atomic_exec parameter should be removed.
 
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/com=
+mit/?h=3Dnext-20200408&id=3D19d8e335d58a961a7ed377e5e2e63664b92c0b9c
+
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1400XX=
+XX 0 0x1000>;
+> > +                       mediatek,gce-events =3D <CMDQ_EVENT_MUTEX0_STRE=
+AM_EOF>,
+> > +                                             <CMDQ_EVENT_MUTEX1_STREAM=
+_EOF>;
+
+Because of patch [2], these events should be moved to mutex node.
+
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?h=3Dv5.6&id=3D60fa8c13ab1a33b8b958efb1510ec2fd8a064bcc
+
+Regards,
+Chun-Kuang.
+
+> >                 };
+> >
+> >                 mdp_rdma0: rdma@14001000 {
+> > @@ -991,6 +996,7 @@ ovl0: ovl@1400c000 {
+> >                         clocks =3D <&mmsys CLK_MM_DISP_OVL0>;
+> >                         iommus =3D <&iommu M4U_PORT_DISP_OVL0>;
+> >                         mediatek,larb =3D <&larb0>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1400XX=
+XX 0xc000 0x1000>;
+> >                 };
+> >
+> >                 ovl1: ovl@1400d000 {
+> > @@ -1001,6 +1007,7 @@ ovl1: ovl@1400d000 {
+> >                         clocks =3D <&mmsys CLK_MM_DISP_OVL1>;
+> >                         iommus =3D <&iommu M4U_PORT_DISP_OVL1>;
+> >                         mediatek,larb =3D <&larb4>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1400XX=
+XX 0xd000 0x1000>;
+> >                 };
+> >
+> >                 rdma0: rdma@1400e000 {
+> > @@ -1011,6 +1018,7 @@ rdma0: rdma@1400e000 {
+> >                         clocks =3D <&mmsys CLK_MM_DISP_RDMA0>;
+> >                         iommus =3D <&iommu M4U_PORT_DISP_RDMA0>;
+> >                         mediatek,larb =3D <&larb0>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1400XX=
+XX 0xe000 0x1000>;
+> >                 };
+> >
+> >                 rdma1: rdma@1400f000 {
+> > @@ -1021,6 +1029,7 @@ rdma1: rdma@1400f000 {
+> >                         clocks =3D <&mmsys CLK_MM_DISP_RDMA1>;
+> >                         iommus =3D <&iommu M4U_PORT_DISP_RDMA1>;
+> >                         mediatek,larb =3D <&larb4>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1400XX=
+XX 0xf000 0x1000>;
+> >                 };
+> >
+> >                 rdma2: rdma@14010000 {
+> > @@ -1031,6 +1040,7 @@ rdma2: rdma@14010000 {
+> >                         clocks =3D <&mmsys CLK_MM_DISP_RDMA2>;
+> >                         iommus =3D <&iommu M4U_PORT_DISP_RDMA2>;
+> >                         mediatek,larb =3D <&larb4>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1401XX=
+XX 0 0x1000>;
+> >                 };
+> >
+> >                 wdma0: wdma@14011000 {
+> > @@ -1041,6 +1051,7 @@ wdma0: wdma@14011000 {
+> >                         clocks =3D <&mmsys CLK_MM_DISP_WDMA0>;
+> >                         iommus =3D <&iommu M4U_PORT_DISP_WDMA0>;
+> >                         mediatek,larb =3D <&larb0>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1401XX=
+XX 0x1000 0x1000>;
+> >                 };
+> >
+> >                 wdma1: wdma@14012000 {
+> > @@ -1051,6 +1062,7 @@ wdma1: wdma@14012000 {
+> >                         clocks =3D <&mmsys CLK_MM_DISP_WDMA1>;
+> >                         iommus =3D <&iommu M4U_PORT_DISP_WDMA1>;
+> >                         mediatek,larb =3D <&larb4>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1401XX=
+XX 0x2000 0x1000>;
+> >                 };
+> >
+> >                 color0: color@14013000 {
+> > @@ -1059,6 +1071,7 @@ color0: color@14013000 {
+> >                         interrupts =3D <GIC_SPI 187 IRQ_TYPE_LEVEL_LOW>=
+;
+> >                         power-domains =3D <&scpsys MT8173_POWER_DOMAIN_=
+MM>;
+> >                         clocks =3D <&mmsys CLK_MM_DISP_COLOR0>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1401XX=
+XX 0x3000 0x1000>;
+> >                 };
+> >
+> >                 color1: color@14014000 {
+> > @@ -1067,6 +1080,7 @@ color1: color@14014000 {
+> >                         interrupts =3D <GIC_SPI 188 IRQ_TYPE_LEVEL_LOW>=
+;
+> >                         power-domains =3D <&scpsys MT8173_POWER_DOMAIN_=
+MM>;
+> >                         clocks =3D <&mmsys CLK_MM_DISP_COLOR1>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1401XX=
+XX 0x4000 0x1000>;
+> >                 };
+> >
+> >                 aal@14015000 {
+> > @@ -1075,6 +1089,7 @@ aal@14015000 {
+> >                         interrupts =3D <GIC_SPI 189 IRQ_TYPE_LEVEL_LOW>=
+;
+> >                         power-domains =3D <&scpsys MT8173_POWER_DOMAIN_=
+MM>;
+> >                         clocks =3D <&mmsys CLK_MM_DISP_AAL>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1401XX=
+XX 0x5000 0x1000>;
+> >                 };
+> >
+> >                 gamma@14016000 {
+> > @@ -1083,6 +1098,7 @@ gamma@14016000 {
+> >                         interrupts =3D <GIC_SPI 190 IRQ_TYPE_LEVEL_LOW>=
+;
+> >                         power-domains =3D <&scpsys MT8173_POWER_DOMAIN_=
+MM>;
+> >                         clocks =3D <&mmsys CLK_MM_DISP_GAMMA>;
+> > +                       mediatek,gce-client-reg =3D <&gce SUBSYS_1401XX=
+XX 0x6000 0x1000>;
+> >                 };
+> >
+> >                 merge@14017000 {
+> > --
+> > 2.24.0.432.g9d3f5f5b63-goog
+> >
+> >
+> > _______________________________________________
+> > Linux-mediatek mailing list
+> > Linux-mediatek@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
