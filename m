@@ -2,106 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C59F1A1D10
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A351A1D45
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgDHIDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 04:03:45 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35211 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726436AbgDHIDo (ORCPT
+        id S1727007AbgDHIPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 04:15:53 -0400
+Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:41316 "EHLO
+        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbgDHIPw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 04:03:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586333022;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=edweZzkcUUEqT+LhRV7IQOwxosyO1yq1XXUOfWRxf6s=;
-        b=gBfS9qoFJEzmu+3kUGtidyIMrz3hhf5njenwr+hX1KOsN/BBwsTXS2DxIkXBlvHVhwJ+9C
-        1AWsRSTc8K6NXRkgZIHYs780NpNqhvVRTvKo3yWxEwGTrHGDo5eSIS1bYuPD20myQ49mO1
-        wXO6roSz2Q7y5Y+zLjkdQNKa6c+p78U=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-305-fK_7cskMPzabw7kE3D8sRA-1; Wed, 08 Apr 2020 04:03:40 -0400
-X-MC-Unique: fK_7cskMPzabw7kE3D8sRA-1
-Received: by mail-wm1-f69.google.com with SMTP id f9so2021893wme.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 01:03:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=edweZzkcUUEqT+LhRV7IQOwxosyO1yq1XXUOfWRxf6s=;
-        b=Im3mWNSMhxeQxLCsbn9fB/FZ/rqsd+kcKCcsNgXH3r+0cnuRA8oDe4CVne6gKsR15H
-         Hrp3y6FuID7jGi7FURBh2d4RITu1Zk8ie71QNdO7GwxAZJ8B/k0+sy0aW/tmn195a9PF
-         U+flZvmH/IA5LJwDKjZrz4CvJHF5bdDhJv/X1Nl3Rfw/N5WglocEFkvwFopLRl52n0tv
-         l9TfTOagoGruBM+idHEsXVXbrxOFgKhv+v9WLqUx6X81x0WlPCLI01eLTjPMG8XwNJy2
-         JbcUJUlR4quqre9OUYLK6t3eqH8hQ2Hy3AU1CTDpW8pn09K++dmAZvPqqsf2BwIUqNVe
-         NFrA==
-X-Gm-Message-State: AGi0PuY42moygR/TEkkCLupD52370Vphe9FYtkTFNQcFqwDJzKazPj9S
-        hBacYEbC6Y4dOm4oU/1l91G1YABiwEJbZLuNIOLR3p3X96ldUbAWzR0ownkvMCgbvXxjOyqwbSo
-        ZF96Vbpdg1TKBXEtjHQMZ0oEX
-X-Received: by 2002:adf:fb0a:: with SMTP id c10mr6923337wrr.272.1586333019291;
-        Wed, 08 Apr 2020 01:03:39 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJ+ntn14SYKRydGfMhfPl7s8cCfvT8wtzYAMJBnexLMbuXQusyLBYTAepUs8YwriSCpcYaZKw==
-X-Received: by 2002:adf:fb0a:: with SMTP id c10mr6923298wrr.272.1586333019070;
-        Wed, 08 Apr 2020 01:03:39 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:bd61:914:5c2f:2580? ([2001:b07:6468:f312:bd61:914:5c2f:2580])
-        by smtp.gmail.com with ESMTPSA id t16sm5774974wmi.27.2020.04.08.01.03.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2020 01:03:38 -0700 (PDT)
-Subject: Re: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
-To:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        hch@infradead.org, sean.j.christopherson@intel.com,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        kenny@panix.com, jeyu@kernel.org, rasmus.villemoes@prevas.dk,
-        fenghua.yu@intel.com, xiaoyao.li@intel.com, nadav.amit@gmail.com,
-        thellstrom@vmware.com, tony.luck@intel.com,
-        gregkh@linuxfoundation.org, jannh@google.com,
-        keescook@chromium.org, David.Laight@aculab.com,
-        dcovelli@vmware.com, mhiramat@kernel.org,
-        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>
-References: <20200407110236.930134290@infradead.org>
- <20200407111007.429362016@infradead.org>
- <20200407174824.5e97a597@gandalf.local.home>
- <137fe245-69f3-080e-5f2b-207cd218f199@siemens.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0ed2739b-6961-c476-be2d-020e855796dc@redhat.com>
-Date:   Wed, 8 Apr 2020 10:03:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Wed, 8 Apr 2020 04:15:52 -0400
+X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 04:15:50 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 73A3E200C81B;
+        Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
+X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
+Received: from mail.gtsys.com.hk ([127.0.0.1])
+        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id TKxPGT4tbOR3; Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
+Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
+        by mail.gtsys.com.hk (Postfix) with ESMTP id 4DD4D200C7FA;
+        Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
+Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
+        by s01.gtsys.com.hk (Postfix) with ESMTP id 415F4C01F8A;
+        Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
+Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
+        id 1658F201602; Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
+From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
+Cc:     Chris Ruehl <chris.ruehl@gtsys.com.hk>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stefan Popa <stefan.popa@analog.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Richard Fontana <rfontana@redhat.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] iio: DAC extension for ltc2634-12/10/8
+Date:   Wed,  8 Apr 2020 16:03:29 +0800
+Message-Id: <20200408080338.11080-1-chris.ruehl@gtsys.com.hk>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <137fe245-69f3-080e-5f2b-207cd218f199@siemens.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/04/20 07:58, Jan Kiszka wrote:
->>>
->>>   +        if (insn_is_mov_CRn(&insn) || insn_is_mov_DRn(&insn)) {
->>> +            pr_err("Module writes to CRn or DRn, please use the
->>> proper accessors: %s\n", mod->name);
->>> +            return -ENOEXEC;
->>> +        }
->>
->> Hmm, wont this break jailhouse?
-> 
-> Yes, possibly. We load the hypervisor binary via request_firmware into
-> executable memory and then jump into it. So most of the "suspicious"
-> code is there - except two cr4_init_shadow() calls to propagate the
-> non-transparent update of VMXE into that shadow. We could hide that CR4
-> flag, but that could mislead root Linux to try to use VMX while in jail.
+This patch add support for Analog Devices (Linear Technology)
+LTC26234 Quad 12-/10-/8-Bit Rail-to-Rail DAC.
+The SPI functionality based on them from LTC2632 therefor
+add the definitions only and update the Kconfig.
 
-Why not contribute the Jailhouse loader into Linux?
+Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
+---
+ drivers/iio/dac/Kconfig   |  6 ++--
+ drivers/iio/dac/ltc2632.c | 61 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 64 insertions(+), 3 deletions(-)
 
-Paolo
+diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
+index 93744011b63f..e14c9b14c4de 100644
+--- a/drivers/iio/dac/Kconfig
++++ b/drivers/iio/dac/Kconfig
+@@ -279,12 +279,12 @@ config LTC1660
+ 	  module will be called ltc1660.
+ 
+ config LTC2632
+-	tristate "Linear Technology LTC2632-12/10/8 and LTC2636-12/10/8 DAC spi driver"
++	tristate "Linear Technology LTC2632,LTC2634,LTC2636-12/10/8 DAC spi driver"
+ 	depends on SPI
+ 	help
+ 	  Say yes here to build support for Linear Technology
+-	  LTC2632-12, LTC2632-10, LTC2632-8, LTC2636-12, LTC2636-10 and
+-	  LTC2636-8 converters (DAC).
++	  LTC2632, LTC2634 and LTC2636 DAC resolution 12/10/8 bit
++	  low 0-2.5V and high 0-4,096V range converters.
+ 
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called ltc2632.
+diff --git a/drivers/iio/dac/ltc2632.c b/drivers/iio/dac/ltc2632.c
+index 7adc91056aa1..e939d7f81014 100644
+--- a/drivers/iio/dac/ltc2632.c
++++ b/drivers/iio/dac/ltc2632.c
+@@ -24,6 +24,7 @@
+ /**
+  * struct ltc2632_chip_info - chip specific information
+  * @channels:		channel spec for the DAC
++ * @num_channels:	DAC channel count of the chip
+  * @vref_mv:		internal reference voltage
+  */
+ struct ltc2632_chip_info {
+@@ -53,6 +54,12 @@ enum ltc2632_supported_device_ids {
+ 	ID_LTC2632H12,
+ 	ID_LTC2632H10,
+ 	ID_LTC2632H8,
++	ID_LTC2634L12,
++	ID_LTC2634L10,
++	ID_LTC2634L8,
++	ID_LTC2634H12,
++	ID_LTC2634H10,
++	ID_LTC2634H8,
+ 	ID_LTC2636L12,
+ 	ID_LTC2636L10,
+ 	ID_LTC2636L8,
+@@ -235,6 +242,36 @@ static const struct ltc2632_chip_info ltc2632_chip_info_tbl[] = {
+ 		.num_channels	= 2,
+ 		.vref_mv	= 4096,
+ 	},
++	[ID_LTC2634L12] = {
++		.channels	= ltc2632x12_channels,
++		.num_channels	= 4,
++		.vref_mv	= 2500,
++	},
++	[ID_LTC2634L10] = {
++		.channels	= ltc2632x10_channels,
++		.num_channels	= 4,
++		.vref_mv	= 2500,
++	},
++	[ID_LTC2634L8] =  {
++		.channels	= ltc2632x8_channels,
++		.num_channels	= 4,
++		.vref_mv	= 2500,
++	},
++	[ID_LTC2634H12] = {
++		.channels	= ltc2632x12_channels,
++		.num_channels	= 4,
++		.vref_mv	= 4096,
++	},
++	[ID_LTC2634H10] = {
++		.channels	= ltc2632x10_channels,
++		.num_channels	= 4,
++		.vref_mv	= 4096,
++	},
++	[ID_LTC2634H8] =  {
++		.channels	= ltc2632x8_channels,
++		.num_channels	= 4,
++		.vref_mv	= 4096,
++	},
+ 	[ID_LTC2636L12] = {
+ 		.channels	= ltc2632x12_channels,
+ 		.num_channels	= 8,
+@@ -356,6 +393,12 @@ static const struct spi_device_id ltc2632_id[] = {
+ 	{ "ltc2632-h12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2632H12] },
+ 	{ "ltc2632-h10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2632H10] },
+ 	{ "ltc2632-h8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2632H8] },
++	{ "ltc2634-l12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634L12] },
++	{ "ltc2634-l10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634L10] },
++	{ "ltc2634-l8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634L8] },
++	{ "ltc2634-h12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634H12] },
++	{ "ltc2634-h10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634H10] },
++	{ "ltc2634-h8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634H8] },
+ 	{ "ltc2636-l12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2636L12] },
+ 	{ "ltc2636-l10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2636L10] },
+ 	{ "ltc2636-l8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2636L8] },
+@@ -385,6 +428,24 @@ static const struct of_device_id ltc2632_of_match[] = {
+ 	}, {
+ 		.compatible = "lltc,ltc2632-h8",
+ 		.data = &ltc2632_chip_info_tbl[ID_LTC2632H8]
++	}, {
++		.compatible = "lltc,ltc2634-l12",
++		.data = &ltc2632_chip_info_tbl[ID_LTC2634L12]
++	}, {
++		.compatible = "lltc,ltc2634-l10",
++		.data = &ltc2632_chip_info_tbl[ID_LTC2634L10]
++	}, {
++		.compatible = "lltc,ltc2634-l8",
++		.data = &ltc2632_chip_info_tbl[ID_LTC2634L8]
++	}, {
++		.compatible = "lltc,ltc2634-h12",
++		.data = &ltc2632_chip_info_tbl[ID_LTC2634H12]
++	}, {
++		.compatible = "lltc,ltc2634-h10",
++		.data = &ltc2632_chip_info_tbl[ID_LTC2634H10]
++	}, {
++		.compatible = "lltc,ltc2634-h8",
++		.data = &ltc2632_chip_info_tbl[ID_LTC2634H8]
+ 	}, {
+ 		.compatible = "lltc,ltc2636-l12",
+ 		.data = &ltc2632_chip_info_tbl[ID_LTC2636L12]
+-- 
+2.20.1
 
