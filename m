@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8081A23A6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 15:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C11851A23B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727696AbgDHN43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 09:56:29 -0400
-Received: from mga12.intel.com ([192.55.52.136]:62331 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726663AbgDHN43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 09:56:29 -0400
-IronPort-SDR: 2dPekf3pj2q0oRwW18OJ941CZjHc/lmCDGCKs7YGDjveQteaQb3enmRC4UeC33S/M0NjG4LOHQ
- Y2TSekEZoe+A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 06:56:29 -0700
-IronPort-SDR: 6T27AKxi9WqlYaZn+NUIyFxt0s1YdajtB3TlU333E1f8p+8NwQD2HREi3vlEwTCoIYInkl0giA
- FseFDgKw02+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,358,1580803200"; 
-   d="scan'208";a="244043287"
-Received: from sqa-gate.sh.intel.com (HELO clx-ap-likexu.tsp.org) ([10.239.48.212])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Apr 2020 06:56:26 -0700
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Like Xu <like.xu@linux.intel.com>
-Subject: [PATCH] KVM: x86/pmu: Support full width counting
-Date:   Wed,  8 Apr 2020 21:53:25 +0800
-Message-Id: <20200408135325.3160-1-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.21.1
+        id S1727989AbgDHOE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:04:28 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:53758 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727226AbgDHOE2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 10:04:28 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 9024929117E
+Message-ID: <f2a044b2c9a0d2920ce3cc327b331a790cd128bb.camel@collabora.com>
+Subject: Re: [PATCH v8 4/5] media: rkvdec: Add the rkvdec driver
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc:     DVB_Linux_Media <linux-media@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tomasz Figa <tfiga@chromium.org>, kernel@collabora.com,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Jeffrey Kardatzke <jkardatzke@chromium.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Date:   Wed, 08 Apr 2020 11:04:10 -0300
+In-Reply-To: <abe902f2ebdfa41bd4d99b7beb3b6c7ec91d2a8f.camel@ndufresne.ca>
+References: <20200403221345.16702-1-ezequiel@collabora.com>
+                 <20200403221345.16702-5-ezequiel@collabora.com>
+                 <CAKQmDh_pCX_s2Ze7b1YBqgvEZHNrgzDUfcjPos8_GZq8x6=5Ng@mail.gmail.com>
+                 <5c417620e1baeed7ec4ac750ab481366df2aa590.camel@collabora.com>
+         <abe902f2ebdfa41bd4d99b7beb3b6c7ec91d2a8f.camel@ndufresne.ca>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.0-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -43,171 +46,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel CPUs have a new alternative MSR range (starting from MSR_IA32_PMC0)
-for GP counters that allows writing the full counter width. Enable this
-range from a new capability bit (IA32_PERF_CAPABILITIES.FW_WRITE[bit 13]).
+On Tue, 2020-04-07 at 15:36 -0400, Nicolas Dufresne wrote:
+> Le mardi 07 avril 2020 à 11:35 -0300, Ezequiel Garcia a écrit :
+> > On Mon, 2020-04-06 at 16:27 -0400, Nicolas Dufresne wrote:
+> > > Le ven. 3 avr. 2020 à 18:14, Ezequiel Garcia <ezequiel@collabora.com> a écrit :
+> > > > From: Boris Brezillon <boris.brezillon@collabora.com>
+> > > > 
+> > > > The rockchip vdec block is a stateless decoder that's able to decode
+> > > > H264, HEVC and VP9 content. This commit adds the core infrastructure
+> > > > and the H264 backend. Support for VP9 and HEVS will be added later on.
+> > > > 
+> > > > Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+> > > > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > > 
+> > > Sorry for the late feedback (got a comment lower) ...
+> > > 
+> > > Tested-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+> > > 
+> > 
+> > Nice, thank you.
+> > 
+> > > > --
+> > > > v8:
+> > > > * Fix kfree and style changes, as suggested by Andriy.
+> > > > v7:
+> > > > * hverkuil-cisco@xs4all.nl: replaced VFL_TYPE_GRABBER by _VIDEO
+> > > > * Use macros and ARRAY_SIZE instead of magic numbers,
+> > > >   as suggested by Mauro.
+> > > > * Renamed M_N macro, suggested by Mauro.
+> > > > * Use v4l2_m2m_buf_done_and_job_finish.
+> > > > * Set buffers' zeroth plane payload in .buf_prepare
+> > > > * Refactor try/s_fmt for spec compliance.
+> > > > ---
+> > > >  MAINTAINERS                                |    7 +
+> > > >  drivers/staging/media/Kconfig              |    2 +
+> > > >  drivers/staging/media/Makefile             |    1 +
+> > > >  drivers/staging/media/rkvdec/Kconfig       |   15 +
+> > > >  drivers/staging/media/rkvdec/Makefile      |    3 +
+> > > >  drivers/staging/media/rkvdec/TODO          |   11 +
+> > > >  drivers/staging/media/rkvdec/rkvdec-h264.c | 1156 ++++++++++++++++++++
+> > > >  drivers/staging/media/rkvdec/rkvdec-regs.h |  223 ++++
+> > > >  drivers/staging/media/rkvdec/rkvdec.c      | 1103 +++++++++++++++++++
+> > > >  drivers/staging/media/rkvdec/rkvdec.h      |  121 ++
+> > > >  10 files changed, 2642 insertions(+)
+> > > >  create mode 100644 drivers/staging/media/rkvdec/Kconfig
+> > > >  create mode 100644 drivers/staging/media/rkvdec/Makefile
+> > > >  create mode 100644 drivers/staging/media/rkvdec/TODO
+> > > >  create mode 100644 drivers/staging/media/rkvdec/rkvdec-h264.c
+> > > >  create mode 100644 drivers/staging/media/rkvdec/rkvdec-regs.h
+> > > >  create mode 100644 drivers/staging/media/rkvdec/rkvdec.c
+> > > >  create mode 100644 drivers/staging/media/rkvdec/rkvdec.h
+> > > > 
+> > [..]
+> > > > +
+> > > > +static void set_ps_field(u32 *buf, struct rkvdec_ps_field field, u32 value)
+> > > > +{
+> > > > +       u8 bit = field.offset % 32, word = field.offset / 32;
+> > > > +       u64 mask = GENMASK_ULL(bit + field.len - 1, bit);
+> > > > +       u64 val = ((u64)value << bit) & mask;
+> > > > +
+> > > > +       buf[word] &= ~mask;
+> > > > +       buf[word] |= val;
+> > > > +       if (bit + field.len > 32) {
+> > > > +               buf[word + 1] &= ~(mask >> 32);
+> > > > +               buf[word + 1] |= val >> 32;
+> > > > +       }
+> > > > +}
+> > > > +
+> > > > +static void assemble_hw_pps(struct rkvdec_ctx *ctx,
+> > > > +                           struct rkvdec_h264_run *run)
+> > > > +{
+> > > > +       struct rkvdec_h264_ctx *h264_ctx = ctx->priv;
+> > > > +       const struct v4l2_ctrl_h264_sps *sps = run->sps;
+> > > > +       const struct v4l2_ctrl_h264_pps *pps = run->pps;
+> > > > +       const struct v4l2_ctrl_h264_decode_params *dec_params = run->decode_params;
+> > > > +       const struct v4l2_h264_dpb_entry *dpb = dec_params->dpb;
+> > > > +       struct rkvdec_h264_priv_tbl *priv_tbl = h264_ctx->priv_tbl.cpu;
+> > > > +       struct rkvdec_sps_pps_packet *hw_ps;
+> > > > +       dma_addr_t scaling_list_address;
+> > > > +       u32 scaling_distance;
+> > > > +       u32 i;
+> > > > +
+> > > > +       /*
+> > > > +        * HW read the SPS/PPS information from PPS packet index by PPS id.
+> > > > +        * offset from the base can be calculated by PPS_id * 32 (size per PPS
+> > > > +        * packet unit). so the driver copy SPS/PPS information to the exact PPS
+> > > > +        * packet unit for HW accessing.
+> > > > +        */
+> > > > +       hw_ps = &priv_tbl->param_set[pps->pic_parameter_set_id];
+> > > > +       memset(hw_ps, 0, sizeof(*hw_ps));
+> > > > +
+> > > > +#define WRITE_PPS(value, field) set_ps_field(hw_ps->info, field, value)
+> > > > +       /* write sps */
+> > > > +       WRITE_PPS(0xf, SEQ_PARAMETER_SET_ID);
+> > > > +       WRITE_PPS(0xff, PROFILE_IDC);
+> > > > +       WRITE_PPS(1, CONSTRAINT_SET3_FLAG);
+> > > 
+> > > At first I found that part rather interesting, but I see this
+> > > hardcoding matches what Rockchip do.
+> > > 
+> > > https://github.com/rockchip-linux/mpp/blob/release/mpp/hal/rkdec/h264d/hal_h264d_rkv_reg.c#L266
+> > > 
+> > > > +       WRITE_PPS(sps->chroma_format_idc, CHROMA_FORMAT_IDC);
+> > > 
+> > > But here's it's not so great. This driver does not implement any kind
+> > > of validation. In fact, if I pass 3
+> > > here  (YCbCr 4:4:4) it will accept it, and kind of decode some frames,
+> > > but eventually with crash and
+> > > reboot is needed. We should (as defined in the Statelss CODEC spec)
+> > > validate the SPS and refuse if
+> > > an unsupported profile idc, chroma idc, luma/chroma depth or coded
+> > > size is requested.
+> > 
+> > Perhaps we could validate that at request_validate time,
+> > or maybe ops.try_ctrl is better.
+> > 
+> > </thinking_out_loud>
+> > 
+> > > Validating the
+> > > S_FMT is not sufficient as one can trick the driver in allocating
+> > > buffers that are too small.
+> > > 
+> > 
+> > I am not sure I follow you: how do you think the driver
+> > can be tricked like this?
+> 
+> What I see is that there is no cross validation between the SPS
+> register configuration and the frame allocations done through S_FMT. So
+> if I cheat in S_FMT, and then pass an SPS that is larger then
+> announced, the HW could potentially overrun buffers. That entirely
+> depends on how much robustness there is in the HW implementation iself
+> (and if we have a register to pass the buffer size).
+> 
+> This is of course a gut feeling, I haven't found time to test this yet,
+> but it came to my mind after I notice that passing a 4:4:4 choma_idc
+> stream causes driver failure (no visible memory corruption or overrun
+> though, the driver just stops working). So the resulting issues might
+> not be that bad, but you endup loosing the decoder.
+> 
 
-The perf driver queries CPUID to get the counter width, and sign extends
-the counter values as needed. The traditional MSRs always limit to 32bit,
-even though the counter internally is larger (usually 48 bits).
+Note that this driver (as well as Hantro) programs the hardware
+using the negotiated resolution, and ignores what the SPS says
+about it.
 
-When the new capability is set, use the alternative range which do not
-have these restrictions. This lowers the overhead of perf stat slightly
-because it has to do less interrupts to accumulate the counter value.
+It shouldn't be possible to trick the driver this way.
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/vmx/capabilities.h | 15 +++++++++++++
- arch/x86/kvm/vmx/pmu_intel.c    | 38 +++++++++++++++++++++++++++------
- arch/x86/kvm/vmx/vmx.c          |  2 ++
- 4 files changed, 50 insertions(+), 6 deletions(-)
+OTOH, both drivers should have additional checks for other SPS
+fields such as chroma_format_idc and luma_bit_depth, as you
+pointed out.
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 42a2d0d3984a..1c2e3e79490b 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -481,6 +481,7 @@ struct kvm_pmu {
- 	u64 counter_bitmask[2];
- 	u64 global_ctrl_mask;
- 	u64 global_ovf_ctrl_mask;
-+	u64 perf_capabilities;
- 	u64 reserved_bits;
- 	u8 version;
- 	struct kvm_pmc gp_counters[INTEL_PMC_MAX_GENERIC];
-diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-index 8903475f751e..3624568633bd 100644
---- a/arch/x86/kvm/vmx/capabilities.h
-+++ b/arch/x86/kvm/vmx/capabilities.h
-@@ -367,4 +367,19 @@ static inline bool vmx_pt_mode_is_host_guest(void)
- 	return pt_mode == PT_MODE_HOST_GUEST;
- }
- 
-+#define PMU_CAP_FW_WRITE	(1ULL << 13)
-+
-+static inline u64 vmx_supported_perf_capabilities(void)
-+{
-+	u64 perf_cap = 0;
-+
-+	if (boot_cpu_has(X86_FEATURE_PDCM))
-+		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
-+
-+	/* Currently, KVM only support Full-Width Writes. */
-+	perf_cap &= PMU_CAP_FW_WRITE;
-+
-+	return perf_cap;
-+}
-+
- #endif /* __KVM_X86_VMX_CAPS_H */
-diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
-index 7c857737b438..99563d1ec854 100644
---- a/arch/x86/kvm/vmx/pmu_intel.c
-+++ b/arch/x86/kvm/vmx/pmu_intel.c
-@@ -150,6 +150,12 @@ static struct kvm_pmc *intel_rdpmc_ecx_to_pmc(struct kvm_vcpu *vcpu,
- 	return &counters[array_index_nospec(idx, num_counters)];
- }
- 
-+static inline bool full_width_writes_is_enabled(struct kvm_pmu *pmu)
-+{
-+	return (vmx_supported_perf_capabilities() & PMU_CAP_FW_WRITE) &&
-+		(pmu->perf_capabilities & PMU_CAP_FW_WRITE);
-+}
-+
- static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
- {
- 	struct kvm_pmu *pmu = vcpu_to_pmu(vcpu);
-@@ -162,10 +168,15 @@ static bool intel_is_valid_msr(struct kvm_vcpu *vcpu, u32 msr)
- 	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
- 		ret = pmu->version > 1;
- 		break;
-+	case MSR_IA32_PERF_CAPABILITIES:
-+		ret = guest_cpuid_has(vcpu, X86_FEATURE_PDCM);
-+		break;
- 	default:
- 		ret = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0) ||
- 			get_gp_pmc(pmu, msr, MSR_P6_EVNTSEL0) ||
--			get_fixed_pmc(pmu, msr);
-+			get_fixed_pmc(pmu, msr) ||
-+			(get_gp_pmc(pmu, msr, MSR_IA32_PMC0) &&
-+				full_width_writes_is_enabled(pmu));
- 		break;
- 	}
- 
-@@ -202,8 +213,12 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, u32 msr, u64 *data)
- 	case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
- 		*data = pmu->global_ovf_ctrl;
- 		return 0;
-+	case MSR_IA32_PERF_CAPABILITIES:
-+		*data = pmu->perf_capabilities;
-+		return 0;
- 	default:
--		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0))) {
-+		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0))
-+			|| (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
- 			u64 val = pmc_read_counter(pmc);
- 			*data = val & pmu->counter_bitmask[KVM_PMC_GP];
- 			return 0;
-@@ -258,9 +273,13 @@ static int intel_pmu_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			return 0;
- 		}
- 		break;
-+	case MSR_IA32_PERF_CAPABILITIES:
-+		return 1; /* RO MSR */
- 	default:
--		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0))) {
--			if (!msr_info->host_initiated)
-+		if ((pmc = get_gp_pmc(pmu, msr, MSR_IA32_PERFCTR0))
-+			|| (pmc = get_gp_pmc(pmu, msr, MSR_IA32_PMC0))) {
-+			if (!msr_info->host_initiated &&
-+				!full_width_writes_is_enabled(pmu))
- 				data = (s64)(s32)data;
- 			pmc->counter += data - pmc_read_counter(pmc);
- 			if (pmc->perf_event)
-@@ -303,15 +322,18 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 
- 	entry = kvm_find_cpuid_entry(vcpu, 0xa, 0);
- 	if (!entry)
--		return;
-+		goto end;
- 	eax.full = entry->eax;
- 	edx.full = entry->edx;
- 
- 	pmu->version = eax.split.version_id;
- 	if (!pmu->version)
--		return;
-+		goto end;
- 
- 	perf_get_x86_pmu_capability(&x86_pmu);
-+	pmu->perf_capabilities = vmx_supported_perf_capabilities();
-+	if (!pmu->perf_capabilities)
-+		guest_cpuid_clear(vcpu, X86_FEATURE_PDCM);
- 
- 	pmu->nr_arch_gp_counters = min_t(int, eax.split.num_counters,
- 					 x86_pmu.num_counters_gp);
-@@ -351,6 +373,10 @@ static void intel_pmu_refresh(struct kvm_vcpu *vcpu)
- 		INTEL_PMC_MAX_GENERIC, pmu->nr_arch_fixed_counters);
- 
- 	nested_vmx_pmu_entry_exit_ctls_update(vcpu);
-+	return;
-+
-+end:
-+	guest_cpuid_clear(vcpu, X86_FEATURE_PDCM);
- }
- 
- static void intel_pmu_init(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 4f844257a72d..abc0f15a4de5 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -7112,6 +7112,8 @@ static __init void vmx_set_cpu_caps(void)
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INVPCID);
- 	if (vmx_pt_mode_is_host_guest())
- 		kvm_cpu_cap_check_and_set(X86_FEATURE_INTEL_PT);
-+	if (vmx_supported_perf_capabilities())
-+		kvm_cpu_cap_check_and_set(X86_FEATURE_PDCM);
- 
- 	/* PKU is not yet implemented for shadow paging. */
- 	if (enable_ept && boot_cpu_has(X86_FEATURE_OSPKE))
--- 
-2.21.1
+I'll add this to my TODO list. I think it's doable as follow-up
+patches.
+
+Thank,
+Ezequiel
+
+> > > What I suspect is that we need to be careful with this HW, as it seems
+> > > to be a bit half backed, which
+> > > means it might be supporting more features then supported by the TRM
+> > > or reference code, and we
+> > > must disable this with software.
+> > > 
+> > > (p.s. I can provide a stream to reproduce the 4:4:4 driver failure)
+> > > 
+> > 
+> > Thanks,
+> > Ezequiel
+> > 
+> 
+> 
+
 
