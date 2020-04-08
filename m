@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3C11A27E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 19:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A571F1A27DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 19:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730551AbgDHRXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 13:23:48 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34363 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727327AbgDHRXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 13:23:47 -0400
-IronPort-SDR: 8NsB3U7dQQ260ehjXjx3PmJvpEfhqCQqhb5Wdby0M6aQUUzK0XI/k/cu9rituPfm/UBSkGNwFo
- Z5tk3nGh4xIQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 10:20:18 -0700
-IronPort-SDR: alANrSFQ+jAPj75SvasTFxKWiusMNUm7sDiMVunglpcRpH3YPg0qXdJUn1i88hu299MGPKZ9nm
- 1wY0wwYKR0mQ==
-X-IronPort-AV: E=Sophos;i="5.72,359,1580803200"; 
-   d="scan'208";a="425211159"
-Received: from slinke-mobl.ger.corp.intel.com (HELO localhost) ([10.252.60.237])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 10:20:15 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
+        id S1730538AbgDHRWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 13:22:53 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:60456 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727327AbgDHRWx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 13:22:53 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 036F380519;
+        Wed,  8 Apr 2020 19:22:47 +0200 (CEST)
+Date:   Wed, 8 Apr 2020 19:22:41 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-fbdev@vger.kernel.org, Jani Nikula <jani.nikula@intel.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Enrico Weigelt <info@metux.net>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Enrico Weigelt <info@metux.net>
 Subject: Re: [PATCH] fbdev: mx3fb: avoid warning about psABI change
-In-Reply-To: <20200408162551.3928330-1-arnd@arndb.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Message-ID: <20200408172241.GA8826@ravnborg.org>
 References: <20200408162551.3928330-1-arnd@arndb.de>
-Date:   Wed, 08 Apr 2020 20:20:11 +0300
-Message-ID: <87pnchhp2s.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408162551.3928330-1-arnd@arndb.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8
+        a=OoO7JsEZVcoAkVdgrb8A:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+        a=pHzHmUro8NiASowvMSCR:22 a=nt3jZW36AmriUCFCBwmW:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 08 Apr 2020, Arnd Bergmann <arnd@arndb.de> wrote:
+Hi Arnd.
+
+On Wed, Apr 08, 2020 at 06:25:38PM +0200, Arnd Bergmann wrote:
 > The arm64 gcc-9 release warns about a change in the calling
 > conventions:
->
+> 
 > drivers/video/fbdev/mx3fb.c: In function 'sdc_init_panel':
 > drivers/video/fbdev/mx3fb.c:506:12: note: parameter passing for argument of type 'struct ipu_di_signal_cfg' changed in GCC 9.1
 >   506 | static int sdc_init_panel(struct mx3fb_data *mx3fb, enum ipu_panel panel,
 >       |            ^~~~~~~~~~~~~~
 > drivers/video/fbdev/mx3fb.c: In function '__set_par':
 > drivers/video/fbdev/mx3fb.c:848:7: note: parameter passing for argument of type 'struct ipu_di_signal_cfg' changed in GCC 9.1
->
+> 
 > Change the file to just pass the struct by reference, which is
 > unambiguous and avoids the warning.
->
+> 
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Simple fix - thanks.
+Applied and pushed to drm-misc-next.
+
+I did not queue this in -fixes as it is no regression
+just a compiler trying to help a bit more.
+
+	Sam
+
 > ---
 >  drivers/video/fbdev/mx3fb.c | 20 ++++++++++----------
 >  1 file changed, 10 insertions(+), 10 deletions(-)
->
+> 
 > diff --git a/drivers/video/fbdev/mx3fb.c b/drivers/video/fbdev/mx3fb.c
 > index 4af28e4421e5..e13fea3a292f 100644
 > --- a/drivers/video/fbdev/mx3fb.c
@@ -73,15 +84,6 @@ On Wed, 08 Apr 2020, Arnd Bergmann <arnd@arndb.de> wrote:
 >  			  uint16_t v_sync_width, uint16_t v_end_width,
 > -			  struct ipu_di_signal_cfg sig)
 > +			  struct ipu_di_signal_cfg *sig)
-
-I have no idea why get_maintainer.pl (I presume) is Cc'ing me... but
-since it is, I'll note that the pointer could be const, while the patch
-is
-
-Reviewed-by: Jani Nikula <jani.nikula@intel.com>
-
-either way.
-
 >  {
 >  	unsigned long lock_flags;
 >  	uint32_t reg;
@@ -120,6 +122,10 @@ either way.
 >  			dev_err(fbi->device,
 >  				"mx3fb: Error initializing panel.\n");
 >  			return -EINVAL;
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
+> -- 
+> 2.26.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
