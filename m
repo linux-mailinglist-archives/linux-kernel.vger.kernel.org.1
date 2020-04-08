@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E63EE1A1ED3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13A3F1A1EE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728021AbgDHKd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 06:33:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:22051 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726436AbgDHKd5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 06:33:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586342036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=++RuusisyWa3FOCfbkvyrwom8wa+9JZWrf8CKTDIg3Q=;
-        b=OSFORe1ba6H5qwOxZZHmWhldVrQAKu7iQacSN+aNJAiJOOXV6u3yuqr4PhuyCOY1FeeL1R
-        61L6X3rfJMiXOaMyFZIbF0Y3y0SoKtGshOWRnSsre9qaaiBJbC4ZuWi80c6V5jdrMZ3NWH
-        zlNO7b7HwZLOaOx55osysJWEKV5z71s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-372-K0x25oQUMiiWwzsykewO7A-1; Wed, 08 Apr 2020 06:33:54 -0400
-X-MC-Unique: K0x25oQUMiiWwzsykewO7A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D8169800D4E;
-        Wed,  8 Apr 2020 10:33:52 +0000 (UTC)
-Received: from gondolin (ovpn-113-103.ams2.redhat.com [10.36.113.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7EF145DA60;
-        Wed,  8 Apr 2020 10:33:47 +0000 (UTC)
-Date:   Wed, 8 Apr 2020 12:33:44 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, pmorel@linux.ibm.com, pasic@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
-Subject: Re: [PATCH v7 06/15] s390/vfio-ap: sysfs attribute to display the
- guest CRYCB
-Message-ID: <20200408123344.1a9032e1.cohuck@redhat.com>
-In-Reply-To: <20200407192015.19887-7-akrowiak@linux.ibm.com>
-References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
-        <20200407192015.19887-7-akrowiak@linux.ibm.com>
-Organization: Red Hat GmbH
+        id S1728130AbgDHKmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 06:42:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:36774 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726734AbgDHKmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 06:42:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 75D7931B;
+        Wed,  8 Apr 2020 03:42:22 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 745523F73D;
+        Wed,  8 Apr 2020 03:42:20 -0700 (PDT)
+References: <20200408095012.3819-1-dietmar.eggemann@arm.com> <20200408095012.3819-3-dietmar.eggemann@arm.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Wei Wang <wvw@google.com>, Quentin Perret <qperret@google.com>,
+        Alessio Balsini <balsini@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] sched/deadline: Improve admission control for asymmetric CPU capacities
+Message-ID: <jhjeesyw96u.mognet@arm.com>
+In-reply-to: <20200408095012.3819-3-dietmar.eggemann@arm.com>
+Date:   Wed, 08 Apr 2020 11:42:14 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Apr 2020 15:20:06 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> The matrix of adapters and domains configured in a guest's CRYCB may
-> differ from the matrix of adapters and domains assigned to the matrix mdev,
-> so this patch introduces a sysfs attribute to display the CRYCB of a guest
-> using the matrix mdev. For a matrix mdev denoted by $uuid, the crycb for a
-> guest using the matrix mdev can be displayed as follows:
-> 
->    cat /sys/devices/vfio_ap/matrix/$uuid/guest_matrix
-> 
-> If a guest is not using the matrix mdev at the time the crycb is displayed,
-> an error (ENODEV) will be returned.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_ops.c | 58 +++++++++++++++++++++++++++++++
->  1 file changed, 58 insertions(+)
-
-> +static DEVICE_ATTR_RO(guest_matrix);
-
-Hm... should information like the guest configuration be readable by
-everyone? Or should it be restricted a bit more?
-
+On 08/04/20 10:50, Dietmar Eggemann wrote:
+> +++ b/kernel/sched/sched.h
+> @@ -304,11 +304,14 @@ void __dl_add(struct dl_bw *dl_b, u64 tsk_bw, int cpus)
+>       __dl_update(dl_b, -((s32)tsk_bw / cpus));
+>  }
+>
+> +static inline unsigned long rd_capacity(int cpu);
 > +
->  static struct attribute *vfio_ap_mdev_attrs[] = {
->  	&dev_attr_assign_adapter.attr,
->  	&dev_attr_unassign_adapter.attr,
-> @@ -1050,6 +1107,7 @@ static struct attribute *vfio_ap_mdev_attrs[] = {
->  	&dev_attr_unassign_control_domain.attr,
->  	&dev_attr_control_domains.attr,
->  	&dev_attr_matrix.attr,
-> +	&dev_attr_guest_matrix.attr,
->  	NULL,
->  };
->  
+>  static inline
+> -bool __dl_overflow(struct dl_bw *dl_b, int cpus, u64 old_bw, u64 new_bw)
+> +bool __dl_overflow(struct dl_bw *dl_b, int cpu, u64 old_bw, u64 new_bw)
+>  {
+>       return dl_b->bw != -1 &&
+> -	       dl_b->bw * cpus < dl_b->total_bw - old_bw + new_bw;
+> +	       cap_scale(dl_b->bw, rd_capacity(cpu)) <
+> +	       dl_b->total_bw - old_bw + new_bw;
+>  }
+>
 
+I don't think this is strictly equivalent to what we have now for the SMP
+case. 'cpus' used to come from dl_bw_cpus(), which is an ugly way of
+writing
+
+     cpumask_weight(rd->span AND cpu_active_mask);
+
+The rd->cpu_capacity_orig field you added gets set once per domain rebuild,
+so it also happens in sched_cpu_(de)activate() but is separate from
+touching cpu_active_mask. AFAICT this mean we can observe a CPU as !active
+but still see its capacity_orig accounted in a root_domain.
+
+
+>  extern void init_dl_bw(struct dl_bw *dl_b);
