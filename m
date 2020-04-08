@@ -2,164 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFA61A24DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C5B1A24E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728594AbgDHPVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:21:10 -0400
-Received: from mail-db8eur05olkn2091.outbound.protection.outlook.com ([40.92.89.91]:36398
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726663AbgDHPVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:21:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OJxUoCCiv5bGBtxklFDyEYzVdz4gXWJ6xSiuA1RbSXqgFWQRlW7skoiN3zz5diBpvQEzjWBeu2hDoUEYWAXCzgPCM9/g5pahlYHHJVm259zOgTnLoX6i7wUKikScIQEW3c7DevApIlMuig9EkNjF1w4UvLhaPH/6c/iDjbNW1loDukxgbNffgE2kl2603e1m2tejbpZK2dRa4rIqKedxaIFcpzqz0G8V3v8gPK/lvHBazSFoztMVHOEohTcYOFC8v6RZTnw8enejuN9CkAGfmZZHo9FZJO98Z1cUNTRspyiKxtruvZPS1a9c/Mx2zrY1CvevFgczrJvGHl57pYqcLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a2wSNqV2FCfnJLEenmVM1ywH3Y1Mw2I5Pu2jFlkE5/U=;
- b=ZZvDbLEq01ss+IzL9Dtx/49YUgAsPktu4eeelMZ9wzs/ODfmi9cJkw4YdLmUSH1ShqQOnKlbwBpVUHGZzgJ6U3crYc4ef1r0QCpn6fRs0ugLVy7qk8ga9IL4WbedHpsVoxGB4MXa5ABpb6c7Pw5vvkAUfPCRDx1Y6sPMvH5b37SxNhAX+Q/tvsYt1qXW0ljdoVzmL4OkGcSzWDyi/WBsZuKpAK+grsjfGbXdAzc3jWdfQan58gP3rqF4hVBqiq8Z+N5gmax7w0fFUVdtjn8xh14zetOVbh3vjRqwl6PA+LTJJ9VsX16E0mspy41c6snhM98thUdfuOgXI1FYDBI1SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hotmail.de; dmarc=pass action=none header.from=hotmail.de;
- dkim=pass header.d=hotmail.de; arc=none
-Received: from DB8EUR05FT019.eop-eur05.prod.protection.outlook.com
- (2a01:111:e400:fc0f::53) by
- DB8EUR05HT193.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc0f::131)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Wed, 8 Apr
- 2020 15:21:07 +0000
-Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
- (2a01:111:e400:fc0f::53) by DB8EUR05FT019.mail.protection.outlook.com
- (2a01:111:e400:fc0f::290) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend
- Transport; Wed, 8 Apr 2020 15:21:06 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:24A67598201204E72D5F33CCF1AE63ABDD6B871DD43DE4A0B1E817A38E9C8877;UpperCasedChecksum:3C3164BE561EF0134F2A5CD56B6BED168978B6DA5A560C788AA0037C4BF34FA4;SizeAsReceived:8833;Count:50
-Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
- ([fe80::d57:5853:a396:969d]) by AM6PR03MB5170.eurprd03.prod.outlook.com
- ([fe80::d57:5853:a396:969d%7]) with mapi id 15.20.2878.022; Wed, 8 Apr 2020
- 15:21:06 +0000
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>
-References: <87blobnq02.fsf@x220.int.ebiederm.org>
- <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
- <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
- <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
- <87lfnda3w3.fsf@x220.int.ebiederm.org>
- <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
- <87blo45keg.fsf@x220.int.ebiederm.org>
- <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
- <87v9maxb5q.fsf@x220.int.ebiederm.org>
-From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
-Message-ID: <AM6PR03MB517015F585466ED40113FDEEE4C00@AM6PR03MB5170.eurprd03.prod.outlook.com>
-Date:   Wed, 8 Apr 2020 17:21:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-In-Reply-To: <87v9maxb5q.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR10CA0038.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:20b:150::18) To AM6PR03MB5170.eurprd03.prod.outlook.com
- (2603:10a6:20b:ca::23)
-X-Microsoft-Original-Message-ID: <d061bb3f-8110-436f-9584-646444ebc00f@hotmail.de>
+        id S1729506AbgDHPWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:22:42 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39080 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728733AbgDHPWk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:22:40 -0400
+Received: from ip5f5bd698.dynamic.kabel-deutschland.de ([95.91.214.152] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jMCXA-0001BO-NU; Wed, 08 Apr 2020 15:22:32 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-api@vger.kernel.org
+Cc:     Jonathan Corbet <corbet@lwn.net>, Serge Hallyn <serge@hallyn.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Jan Kara <jack@suse.cz>, David Howells <dhowells@redhat.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        David Rheinsberg <david.rheinsberg@gmail.com>,
+        Tom Gundersen <teg@jklm.no>,
+        Christian Kellner <ckellner@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@ubuntu.com>,
+        linux-doc@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH 0/8] loopfs
+Date:   Wed,  8 Apr 2020 17:21:43 +0200
+Message-Id: <20200408152151.5780-1-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.101] (92.77.140.102) by AM0PR10CA0038.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:150::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend Transport; Wed, 8 Apr 2020 15:21:06 +0000
-X-Microsoft-Original-Message-ID: <d061bb3f-8110-436f-9584-646444ebc00f@hotmail.de>
-X-TMN:  [aaXTtLPw6OfTFCNntz9zaDmeQ5LLVuYx]
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 50
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: cc9daaa0-f829-4412-afff-08d7dbd07564
-X-MS-TrafficTypeDiagnostic: DB8EUR05HT193:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eHLi18qWQW/OrEVCWSNTO6T6PpEuAbNgzwHksxw1qRxkncUrAFc9Jl/HzeYkEZLp0eNU38wfL17JXt3obRQ3UdVnqIXmnYTdTOB9aDYJ0dIKL7z1myBiQiNy6UilGcEf3pT5AlyXdjQhNlSaI0t3Hq6Oe62YzCkk4OxnsMZORy1n1eP7XGiOrUUTv9v3iDF8
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB5170.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: mlE0bnHtK+/fSidlT/sp0xovsR73YwbLo+QFDzEmPSolavxiCgHkXBxD+9PXf6m0Uja8mxi5z7dv0sWc1uV4rM1XASI97RlJUuSbrn9KDEGgX93x+v4o6hAzE4vmNTdHjRDKxJORix7O3SA8EYECtw==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc9daaa0-f829-4412-afff-08d7dbd07564
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2020 15:21:06.8796
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8EUR05HT193
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/20 5:14 PM, Eric W. Biederman wrote:
-> Linus Torvalds <torvalds@linux-foundation.org> writes:
-> 
->> On Mon, Apr 6, 2020 at 3:20 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
->>>
->>> But fundamentally the only reason we need this information stable
->>> before the point of no return is so that we can return a nice error
->>> code to the process calling exec.  Instead of terminating the
->>> process with SIGSEGV.
->>
->> I'd suggest doing it the other way around instead: let the thread that
->> does the security_setprocattr() die, since execve() is terminating
->> other threads anyway.
->>
->> And the easy way to do that is to just make the rule be that anybody
->> who waits for this thing for write needs to use a killable wait.
->>
->> So if the execve() got started earlier, and already took the cred lock
->> (whatever we'll call it) for reading, then zap_other_threads() will
->> take care of another thread doing setprocattr().
->>
->> That sounds like a really simple model, no?
-> 
-> Yes.  I missed the fact that we could take the lock killable.
-> We still unfortunately have the deadlock with ptrace.
-> 
-> It might be simpler to make whichever lock we are dealing with per
-> task_struct instead of per signal_struct.  Then we don't even have to
-> think about what de_thread does or if the lock is taken killable.
-> 
+Hey everyone,
 
-I think you said that already, but I did not understand the difference,
-could you please give some more details about your idea?
+After having been pinged about this by various people recently here's loopfs.
+
+This implements loopfs, a loop device filesystem. It takes inspiration
+from the binderfs filesystem I implemented about two years ago and with
+which we had overall good experiences so far. Parts of it are also
+based on [3] but it's mostly a new, imho cleaner and more complete
+approach.
+
+To experiment, the patchset can be found in the following locations:
+https://git.kernel.org/pub/scm/linux/kernel/git/brauner/linux.git/log/?h=loopfs
+https://gitlab.com/brauner/linux/-/commits/loopfs
+https://github.com/brauner/linux/tree/loopfs
+
+One of the use-cases for loopfs is to allow to dynamically allocate loop
+devices in sandboxed workloads without exposing /dev or
+/dev/loop-control to the workload in question and without having to
+implement a complex and also racy protocol to send around file
+descriptors for loop devices. With loopfs each mount is a new instance,
+i.e. loop devices created in one loopfs instance are independent of any
+loop devices created in another loopfs instance. This allows
+sufficiently privileged tools to have their own private stash of loop
+device instances. Dmitry has expressed his desire to use this for
+syzkaller in a private discussion. And various parties that want to use
+it are Cced here too.
+
+In addition, the loopfs filesystem can be mounted by user namespace root
+and is thus suitable for use in containers. Combined with syscall
+interception this makes it possible to securely delegate mounting of
+images on loop devices, i.e. when a user calls mount -o loop <image>
+<mountpoint> it will be possible to completely setup the loop device.
+The final mount syscall to actually perform the mount will be handled
+through syscall interception and be performed by a sufficiently
+privileged process. Syscall interception is already supported through a
+new seccomp feature we implemented in [1] and extended in [2] and is
+actively used in production workloads. The additional loopfs work will
+be used there and in various other workloads too. You'll find a short
+illustration how this works with syscall interception below in [4].
+
+The number of loop devices available to a loopfs instance can be limited
+by setting the "max" mount option to a positive integer. This e.g.
+allows sufficiently privileged processes to dynamically enforce a limit
+on the number of devices. This limit is dynamic in contrast to the
+max_loop module option in that a sufficiently privileged process can
+update it with a simple remount operation.
+
+The loopfs filesystem is placed under a new config option and special
+care has been taken to not introduce any new code when users do not
+select this config option.
+
+Thanks!
+Christian
+
+[1]: 6a21cc50f0c7 ("seccomp: add a return code to trap to userspace")
+[2]: fb3c5386b382 ("seccomp: add SECCOMP_USER_NOTIF_FLAG_CONTINUE")
+[3]: https://lore.kernel.org/lkml/1401227936-15698-1-git-send-email-seth.forshee@canonical.com
+[4]:
+     root@f1:~# cat /proc/self/uid_map
+              0     100000 1000000000
+     root@f1:~# cat /proc/self/gid_map
+              0     100000 1000000000
+     root@f1:~# mkdir /dev/loopfs
+     root@f1:~# mount -t loop loop /dev/loopfs/
+     root@f1:~# ln -sf /dev/loopfs/loop-control /dev/loop-control
+     root@f1:~# losetup -f
+     /dev/loop9
+     root@f1:~# ln -sf /dev/loopfs/loop9 /dev/loop9
+     root@f1:~# ls -al /sys/class/block/loop9
+     lrwxrwxrwx 1 root root 0 Apr  8 14:53 /sys/class/block/loop9 -> ../../devices/virtual/block/loop9
+     root@f1:~# ls -al /sys/class/block/loop9/
+     total 0
+     drwxr-xr-x  9 root   root       0 Apr  8 14:53 .
+     drwxr-xr-x 13 nobody nogroup    0 Apr  8 14:53 ..
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 alignment_offset
+     lrwxrwxrwx  1 nobody nogroup    0 Apr  8 14:53 bdi -> ../../bdi/7:9
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 capability
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 dev
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 discard_alignment
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 events
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 events_async
+     -rw-r--r--  1 root   root    4096 Apr  8 14:53 events_poll_msecs
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 ext_range
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 hidden
+     drwxr-xr-x  2 nobody nogroup    0 Apr  8 14:53 holders
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 inflight
+     drwxr-xr-x  2 nobody nogroup    0 Apr  8 14:53 integrity
+     drwxr-xr-x  3 nobody nogroup    0 Apr  8 14:53 mq
+     drwxr-xr-x  2 root   root       0 Apr  8 14:53 power
+     drwxr-xr-x  3 nobody nogroup    0 Apr  8 14:53 queue
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 range
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 removable
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 ro
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 size
+     drwxr-xr-x  2 nobody nogroup    0 Apr  8 14:53 slaves
+     -r--r--r--  1 root   root    4096 Apr  8 14:53 stat
+     lrwxrwxrwx  1 nobody nogroup    0 Apr  8 14:53 subsystem -> ../../../../class/block
+     drwxr-xr-x  2 root   root       0 Apr  8 14:53 trace
+     -rw-r--r--  1 root   root    4096 Apr  8 14:53 uevent
+     root@f1:~#  
+     root@f1:~# stat --file-system /bla.img
+       File: "/bla.img"
+         ID: 4396dc4f5f3ffe1b Namelen: 255     Type: btrfs
+     Block size: 4096       Fundamental block size: 4096
+     Blocks: Total: 11230468   Free: 10851929   Available: 10738585
+     Inodes: Total: 0          Free: 0
+     root@f1:~# mount -o loop /bla.img /opt
+     root@f1:~# findmnt | grep opt
+     └─/opt                                /dev/loop9                            btrfs       rw,relatime,ssd,space_cache,subvolid=5,subvol=/
+
+Christian Brauner (8):
+  kobject_uevent: remove unneeded netlink_ns check
+  loopfs: implement loopfs
+  loop: use ns_capable for some loop operations
+  kernfs: handle multiple namespace tags
+  kernfs: let objects opt-in to propagating from the initial namespace
+  genhd: add minimal namespace infrastructure
+  loopfs: start attaching correct namespace during loop_add()
+  loopfs: only show devices in their correct instance
+
+ Documentation/filesystems/sysfs-tagging.txt |   1 -
+ MAINTAINERS                                 |   5 +
+ block/genhd.c                               |  79 ++++
+ drivers/base/devtmpfs.c                     |   4 +-
+ drivers/block/Kconfig                       |   4 +
+ drivers/block/Makefile                      |   1 +
+ drivers/block/loop.c                        | 186 +++++++--
+ drivers/block/loop.h                        |   8 +-
+ drivers/block/loopfs/Makefile               |   3 +
+ drivers/block/loopfs/loopfs.c               | 429 ++++++++++++++++++++
+ drivers/block/loopfs/loopfs.h               |  35 ++
+ fs/kernfs/dir.c                             |  38 +-
+ fs/kernfs/kernfs-internal.h                 |  26 +-
+ fs/kernfs/mount.c                           |  11 +-
+ fs/sysfs/mount.c                            |  14 +-
+ include/linux/device.h                      |   3 +
+ include/linux/genhd.h                       |   3 +
+ include/linux/kernfs.h                      |  44 +-
+ include/linux/kobject_ns.h                  |   7 +-
+ include/linux/sysfs.h                       |   8 +-
+ include/uapi/linux/magic.h                  |   1 +
+ lib/kobject.c                               |  17 +-
+ lib/kobject_uevent.c                        |   2 +-
+ net/core/net-sysfs.c                        |   6 -
+ 24 files changed, 834 insertions(+), 101 deletions(-)
+ create mode 100644 drivers/block/loopfs/Makefile
+ create mode 100644 drivers/block/loopfs/loopfs.c
+ create mode 100644 drivers/block/loopfs/loopfs.h
 
 
-Thanks
-Bernd.
+base-commit: 7111951b8d4973bda27ff663f2cf18b663d15b48
+-- 
+2.26.0
 
-> 
-> Looking at the code in binfmt_elf.c there are about 11 other places
-> after install_exec_creds where we can fail and would be forced to
-> terminate the application with SIGSEGV instead of causing fork to fail.
-> 
-> 
-> 
-> 
-> I keep wondering if we could do something similar to vfork.  That is
-> allocate an new task_struct and fully set it up for the post exec
-> process, and then make it visible under tasklist_lock.  Finally we could
-> free the old process.
-> 
-> That would appear as if everything happened atomically from
-> the point of view of the rest of the kernel.
-> 
-> As well as fixing all of the deadlocks and making it easy
-> to ensure we don't have any more weird failures in the future.
-> 
-> Eric
-> 
-> p.s. For tasklist_lock I suspect we can put a lock in struct pid
-> and use that to guard the task lists in struct pid.  Which would
-> allow for tasklist_lock to be take much less.  Then we would
-> just need a solution for task->parent and task->real_parent and
-> I think all of the major users of tasklist_lock would be gone.
-> 
-> 
