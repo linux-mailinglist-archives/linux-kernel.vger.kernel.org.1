@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 285AC1A2AD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A9B1A2AD8
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730024AbgDHVLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 17:11:34 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:57312 "EHLO
+        id S1730066AbgDHVLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 17:11:38 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57318 "EHLO
         bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729951AbgDHVLe (ORCPT
+        with ESMTP id S1729951AbgDHVLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 17:11:34 -0400
+        Wed, 8 Apr 2020 17:11:36 -0400
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id 567D129746F
+        with ESMTPSA id 97EAB297486
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     laurent.pinchart@ideasonboard.com,
         Collabora Kernel ML <kernel@collabora.com>,
         matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 2/7] drm/bridge_connector: Set default status connected for eDP connectors
-Date:   Wed,  8 Apr 2020 23:11:15 +0200
-Message-Id: <20200408211120.1407512-3-enric.balletbo@collabora.com>
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 3/7] drm/mediatek: mtk_dsi: Rename bridge to next_bridge
+Date:   Wed,  8 Apr 2020 23:11:16 +0200
+Message-Id: <20200408211120.1407512-4-enric.balletbo@collabora.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200408211120.1407512-1-enric.balletbo@collabora.com>
 References: <20200408211120.1407512-1-enric.balletbo@collabora.com>
@@ -39,29 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In an eDP application, HPD is not required and on most bridge chips
-useless. If HPD is not used, we need to set initial status as connected,
-otherwise the connector created by the drm_bridge_connector API remains
-in an unknown state.
+This is really a cosmetic change just to make a bit more readable the
+code after convert the driver to drm_bridge. The bridge variable name
+will be used by the encoder drm_bridge, and the chained bridge will be
+named next_bridge.
 
 Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 ---
 
- drivers/gpu/drm/drm_bridge_connector.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/mediatek/mtk_dsi.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
-index c6994fe673f3..a58cbde59c34 100644
---- a/drivers/gpu/drm/drm_bridge_connector.c
-+++ b/drivers/gpu/drm/drm_bridge_connector.c
-@@ -187,6 +187,7 @@ drm_bridge_connector_detect(struct drm_connector *connector, bool force)
- 		case DRM_MODE_CONNECTOR_DPI:
- 		case DRM_MODE_CONNECTOR_LVDS:
- 		case DRM_MODE_CONNECTOR_DSI:
-+		case DRM_MODE_CONNECTOR_eDP:
- 			status = connector_status_connected;
- 			break;
- 		default:
+diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
+index cfa45d6abd74..44ee884cc31c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_dsi.c
++++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+@@ -182,7 +182,7 @@ struct mtk_dsi {
+ 	struct drm_encoder encoder;
+ 	struct drm_connector conn;
+ 	struct drm_panel *panel;
+-	struct drm_bridge *bridge;
++	struct drm_bridge *next_bridge;
+ 	struct phy *phy;
+ 
+ 	void __iomem *regs;
+@@ -903,8 +903,9 @@ static int mtk_dsi_create_conn_enc(struct drm_device *drm, struct mtk_dsi *dsi)
+ 	dsi->encoder.possible_crtcs = 1;
+ 
+ 	/* If there's a bridge, attach to it and let it create the connector */
+-	if (dsi->bridge) {
+-		ret = drm_bridge_attach(&dsi->encoder, dsi->bridge, NULL, 0);
++	if (dsi->next_bridge) {
++		ret = drm_bridge_attach(&dsi->encoder, dsi->next_bridge, NULL,
++					0);
+ 		if (ret) {
+ 			DRM_ERROR("Failed to attach bridge to drm\n");
+ 			goto err_encoder_cleanup;
+@@ -1185,7 +1186,7 @@ static int mtk_dsi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	ret = drm_of_find_panel_or_bridge(dev->of_node, 0, 0,
+-					  &dsi->panel, &dsi->bridge);
++					  &dsi->panel, &dsi->next_bridge);
+ 	if (ret)
+ 		goto err_unregister_host;
+ 
 -- 
 2.25.1
 
