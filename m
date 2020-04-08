@@ -2,177 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8231A2772
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373781A2775
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730396AbgDHQq6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 8 Apr 2020 12:46:58 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:21587 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728525AbgDHQq6 (ORCPT
+        id S1730416AbgDHQrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:47:06 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:55206 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728955AbgDHQrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:46:58 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-ahXLIbFJMi6Afe24VaB58g-1; Wed, 08 Apr 2020 12:46:50 -0400
-X-MC-Unique: ahXLIbFJMi6Afe24VaB58g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A2BB2EE3;
-        Wed,  8 Apr 2020 16:46:46 +0000 (UTC)
-Received: from krava.redhat.com (unknown [10.40.196.41])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EE2E5C3FA;
-        Wed,  8 Apr 2020 16:46:44 +0000 (UTC)
-From:   Jiri Olsa <jolsa@kernel.org>
-To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        "bibo,mao" <bibo.mao@intel.com>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>
-Subject: [RFC] kretprobe: Prevent triggering kretprobe from within kprobe_flush_task
-Date:   Wed,  8 Apr 2020 18:46:41 +0200
-Message-Id: <20200408164641.3299633-1-jolsa@kernel.org>
+        Wed, 8 Apr 2020 12:47:05 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 535B328CC6F
+Subject: Re: [PATCH] arm64: dts: mt8173: Add gce setting in mmsys and display
+ node
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20191118104252.228406-1-hsinyi@chromium.org>
+ <CAFqH_528vidMhTFxNZ=b7SFD2K12UwtdX3uTUzW4YUgeDWkg5A@mail.gmail.com>
+ <CAAOTY_8RMboOuKVKPANZ1QN+mt0jvOr13o84VhWKGY1QZqbPDg@mail.gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <e22e0400-56e0-2ff4-72d8-5231b7fa58fc@collabora.com>
+Date:   Wed, 8 Apr 2020 18:46:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAAOTY_8RMboOuKVKPANZ1QN+mt0jvOr13o84VhWKGY1QZqbPDg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi,
-Ziqian reported lockup when adding retprobe on _raw_spin_lock_irqsave.
-My test was also able to trigger lockdep output:
+Hi Chun-Kuang
 
- ============================================
- WARNING: possible recursive locking detected
- 5.6.0-rc6+ #6 Not tainted
- --------------------------------------------
- sched-messaging/2767 is trying to acquire lock:
- ffffffff9a492798 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_hash_lock+0x52/0xa0
+Many thanks to let us know this, I completely missed.
 
- but task is already holding lock:
- ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
+On 8/4/20 18:09, Chun-Kuang Hu wrote:
+> Hi, Hsin-Yi:
+> 
+> Enric Balletbo Serra <eballetbo@gmail.com> 於 2020年4月8日 週三 下午11:48寫道：
+>>
+>> Missatge de Hsin-Yi Wang <hsinyi@chromium.org> del dia dl., 18 de nov.
+>> 2019 a les 11:43:
+>>>
+>>> In order to use GCE function, we need add some informations
+>>> into display node (mboxes, mediatek,gce-client-reg, mediatek,gce-events).
+>>>
+>>> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>>
+>> With the fix provided by Hsin-Yi [1] and after the mmsys patches
+>> landed I get GCE function working on mt8173, so
+>>
+>> Tested-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>>
+>> [1] https://lore.kernel.org/lkml/20200406051131.225748-1-hsinyi@chromium.org/
+>>
+>> Thanks,
+>>  Enric
+>>
+>>> ---
+>>> - This is based on series "support gce on mt8183 platform"
+>>>   https://patchwork.kernel.org/cover/11208309/
+>>> - gce setting in 8183:
+>>>   https://patchwork.kernel.org/patch/11127105/
+>>> ---
+>>>  arch/arm64/boot/dts/mediatek/mt8173.dtsi | 16 ++++++++++++++++
+>>>  1 file changed, 16 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+>>> index 15f1842f6df3..e84ec3f95d81 100644
+>>> --- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+>>> +++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+>>> @@ -911,6 +911,11 @@ mmsys: clock-controller@14000000 {
+>>>                         assigned-clocks = <&topckgen CLK_TOP_MM_SEL>;
+>>>                         assigned-clock-rates = <400000000>;
+>>>                         #clock-cells = <1>;
+>>> +                       mboxes = <&gce 0 CMDQ_THR_PRIO_HIGHEST 1>,
+>>> +                                <&gce 1 CMDQ_THR_PRIO_HIGHEST 1>;
+> 
+> Because of patch [1], atomic_exec parameter should be removed.
+> 
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20200408&id=19d8e335d58a961a7ed377e5e2e63664b92c0b9c
+> 
 
- other info that might help us debug this:
-  Possible unsafe locking scenario:
-
-        CPU0
-        ----
-   lock(&(kretprobe_table_locks[i].lock));
-   lock(&(kretprobe_table_locks[i].lock));
-
-  *** DEADLOCK ***
-
-  May be due to missing lock nesting notation
-
- 1 lock held by sched-messaging/2767:
-  #0: ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
-
- stack backtrace:
- CPU: 3 PID: 2767 Comm: sched-messaging Not tainted 5.6.0-rc6+ #6
- Call Trace:
-  dump_stack+0x96/0xe0
-  __lock_acquire.cold.57+0x173/0x2b7
-  ? native_queued_spin_lock_slowpath+0x42b/0x9e0
-  ? lockdep_hardirqs_on+0x590/0x590
-  ? __lock_acquire+0xf63/0x4030
-  lock_acquire+0x15a/0x3d0
-  ? kretprobe_hash_lock+0x52/0xa0
-  _raw_spin_lock_irqsave+0x36/0x70
-  ? kretprobe_hash_lock+0x52/0xa0
-  kretprobe_hash_lock+0x52/0xa0
-  trampoline_handler+0xf8/0x940
-  ? kprobe_fault_handler+0x380/0x380
-  ? find_held_lock+0x3a/0x1c0
-  kretprobe_trampoline+0x25/0x50
-  ? lock_acquired+0x392/0xbc0
-  ? _raw_spin_lock_irqsave+0x50/0x70
-  ? __get_valid_kprobe+0x1f0/0x1f0
-  ? _raw_spin_unlock_irqrestore+0x3b/0x40
-  ? finish_task_switch+0x4b9/0x6d0
-  ? __switch_to_asm+0x34/0x70
-  ? __switch_to_asm+0x40/0x70
-
-The code within the kretprobe handler checks for probe reentrancy,
-so we won't trigger any _raw_spin_lock_irqsave probe in there.
-
-The problem is in outside kprobe_flush_task, where we call:
-
-  kprobe_flush_task
-    kretprobe_table_lock
-      raw_spin_lock_irqsave
-        _raw_spin_lock_irqsave
-
-where _raw_spin_lock_irqsave triggers the kretprobe and installs
-kretprobe_trampoline handler on _raw_spin_lock_irqsave return.
-
-The kretprobe_trampoline handler is then executed with already
-locked kretprobe_table_locks, and first thing it does is to
-lock kretprobe_table_locks ;-) the whole lockup path like:
-
-  kprobe_flush_task
-    kretprobe_table_lock
-      raw_spin_lock_irqsave
-        _raw_spin_lock_irqsave ---> probe triggered, kretprobe_trampoline installed
-
-        ---> kretprobe_table_locks locked
-
-        kretprobe_trampoline
-          trampoline_handler
-            kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
-
-The change below sets current_kprobe in kprobe_flush_task, so the probe
-recursion protection check is hit and the probe is never set. It seems
-to fix the deadlock.
-
-I'm not sure this is the best fix, any ideas are welcome ;-)
-
-thanks,
-jirka
+Many thanks to point this. Hsin-Yi, as the mt8173 device-tree will not land in
+current merge window (Matthias correct me if I am  wrong) maybe you could send a
+new version of the device-tree including these changes?
 
 
----
- kernel/kprobes.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
+>>> +                       mediatek,gce-events = <CMDQ_EVENT_MUTEX0_STREAM_EOF>,
+>>> +                                             <CMDQ_EVENT_MUTEX1_STREAM_EOF>;
+> 
+> Because of patch [2], these events should be moved to mutex node.
+> 
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.6&id=60fa8c13ab1a33b8b958efb1510ec2fd8a064bcc
+> 
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 2625c241ac00..b13247cae752 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1236,6 +1236,10 @@ __releases(hlist_lock)
- }
- NOKPROBE_SYMBOL(kretprobe_table_unlock);
- 
-+static struct kprobe kretprobe_dummy = {
-+        .addr = (void *)kretprobe_trampoline,
-+};
-+
- /*
-  * This function is called from finish_task_switch when task tk becomes dead,
-  * so that we can recycle any function-return probe instances associated
-@@ -1256,12 +1260,14 @@ void kprobe_flush_task(struct task_struct *tk)
- 	INIT_HLIST_HEAD(&empty_rp);
- 	hash = hash_ptr(tk, KPROBE_HASH_BITS);
- 	head = &kretprobe_inst_table[hash];
-+	__this_cpu_write(current_kprobe, &kretprobe_dummy);
- 	kretprobe_table_lock(hash, &flags);
- 	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
- 		if (ri->task == tk)
- 			recycle_rp_inst(ri, &empty_rp);
- 	}
- 	kretprobe_table_unlock(hash, &flags);
-+	__this_cpu_write(current_kprobe, NULL);
- 	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
- 		hlist_del(&ri->hlist);
- 		kfree(ri);
--- 
-2.25.2
+Hsin-Yi, note this will also impact your fixes patch [1].
 
+[1] https://lore.kernel.org/lkml/20200406051131.225748-1-hsinyi@chromium.org/
+
+Thanks,
+ Enric
+
+> Regards,
+> Chun-Kuang.
+> 
+>>>                 };
+>>>
+>>>                 mdp_rdma0: rdma@14001000 {
+>>> @@ -991,6 +996,7 @@ ovl0: ovl@1400c000 {
+>>>                         clocks = <&mmsys CLK_MM_DISP_OVL0>;
+>>>                         iommus = <&iommu M4U_PORT_DISP_OVL0>;
+>>>                         mediatek,larb = <&larb0>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xc000 0x1000>;
+>>>                 };
+>>>
+>>>                 ovl1: ovl@1400d000 {
+>>> @@ -1001,6 +1007,7 @@ ovl1: ovl@1400d000 {
+>>>                         clocks = <&mmsys CLK_MM_DISP_OVL1>;
+>>>                         iommus = <&iommu M4U_PORT_DISP_OVL1>;
+>>>                         mediatek,larb = <&larb4>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xd000 0x1000>;
+>>>                 };
+>>>
+>>>                 rdma0: rdma@1400e000 {
+>>> @@ -1011,6 +1018,7 @@ rdma0: rdma@1400e000 {
+>>>                         clocks = <&mmsys CLK_MM_DISP_RDMA0>;
+>>>                         iommus = <&iommu M4U_PORT_DISP_RDMA0>;
+>>>                         mediatek,larb = <&larb0>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xe000 0x1000>;
+>>>                 };
+>>>
+>>>                 rdma1: rdma@1400f000 {
+>>> @@ -1021,6 +1029,7 @@ rdma1: rdma@1400f000 {
+>>>                         clocks = <&mmsys CLK_MM_DISP_RDMA1>;
+>>>                         iommus = <&iommu M4U_PORT_DISP_RDMA1>;
+>>>                         mediatek,larb = <&larb4>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0xf000 0x1000>;
+>>>                 };
+>>>
+>>>                 rdma2: rdma@14010000 {
+>>> @@ -1031,6 +1040,7 @@ rdma2: rdma@14010000 {
+>>>                         clocks = <&mmsys CLK_MM_DISP_RDMA2>;
+>>>                         iommus = <&iommu M4U_PORT_DISP_RDMA2>;
+>>>                         mediatek,larb = <&larb4>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0 0x1000>;
+>>>                 };
+>>>
+>>>                 wdma0: wdma@14011000 {
+>>> @@ -1041,6 +1051,7 @@ wdma0: wdma@14011000 {
+>>>                         clocks = <&mmsys CLK_MM_DISP_WDMA0>;
+>>>                         iommus = <&iommu M4U_PORT_DISP_WDMA0>;
+>>>                         mediatek,larb = <&larb0>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x1000 0x1000>;
+>>>                 };
+>>>
+>>>                 wdma1: wdma@14012000 {
+>>> @@ -1051,6 +1062,7 @@ wdma1: wdma@14012000 {
+>>>                         clocks = <&mmsys CLK_MM_DISP_WDMA1>;
+>>>                         iommus = <&iommu M4U_PORT_DISP_WDMA1>;
+>>>                         mediatek,larb = <&larb4>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x2000 0x1000>;
+>>>                 };
+>>>
+>>>                 color0: color@14013000 {
+>>> @@ -1059,6 +1071,7 @@ color0: color@14013000 {
+>>>                         interrupts = <GIC_SPI 187 IRQ_TYPE_LEVEL_LOW>;
+>>>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>>                         clocks = <&mmsys CLK_MM_DISP_COLOR0>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x3000 0x1000>;
+>>>                 };
+>>>
+>>>                 color1: color@14014000 {
+>>> @@ -1067,6 +1080,7 @@ color1: color@14014000 {
+>>>                         interrupts = <GIC_SPI 188 IRQ_TYPE_LEVEL_LOW>;
+>>>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>>                         clocks = <&mmsys CLK_MM_DISP_COLOR1>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x4000 0x1000>;
+>>>                 };
+>>>
+>>>                 aal@14015000 {
+>>> @@ -1075,6 +1089,7 @@ aal@14015000 {
+>>>                         interrupts = <GIC_SPI 189 IRQ_TYPE_LEVEL_LOW>;
+>>>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>>                         clocks = <&mmsys CLK_MM_DISP_AAL>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x5000 0x1000>;
+>>>                 };
+>>>
+>>>                 gamma@14016000 {
+>>> @@ -1083,6 +1098,7 @@ gamma@14016000 {
+>>>                         interrupts = <GIC_SPI 190 IRQ_TYPE_LEVEL_LOW>;
+>>>                         power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
+>>>                         clocks = <&mmsys CLK_MM_DISP_GAMMA>;
+>>> +                       mediatek,gce-client-reg = <&gce SUBSYS_1401XXXX 0x6000 0x1000>;
+>>>                 };
+>>>
+>>>                 merge@14017000 {
+>>> --
+>>> 2.24.0.432.g9d3f5f5b63-goog
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-mediatek mailing list
+>>> Linux-mediatek@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>>
+>> _______________________________________________
+>> Linux-mediatek mailing list
+>> Linux-mediatek@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> 
