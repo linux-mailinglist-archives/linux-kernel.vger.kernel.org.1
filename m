@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C87E21A2406
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CF71A23F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgDHO0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:26:52 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49582 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726795AbgDHO0w (ORCPT
+        id S1728627AbgDHOVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:21:47 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:44884 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727486AbgDHOVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 10:26:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586356011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jInxb6S6kno8alLpBOp6oo5DZLTgW5u7AbwcRZ4qu+U=;
-        b=HiIccaiHfJFiRExGzSJ8mzj0/A+q0mb/omA6EjIxKFdx1KpeHNMv99LPGIu8lZVnedUucO
-        f393+KXptk6qRKnH+ZJBW1+tSNeou1whLraN4ddtAOT8F7JhaY75JHDjlQdSEPKJfA/8PQ
-        mJoSFgP3kZ9u3Wjwtn3Q1o7n22z2EFY=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-77-49Dx_m0CMMyPtIq9K6n6ew-1; Wed, 08 Apr 2020 10:26:49 -0400
-X-MC-Unique: 49Dx_m0CMMyPtIq9K6n6ew-1
-Received: by mail-wr1-f70.google.com with SMTP id u16so4129060wrp.14
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:26:49 -0700 (PDT)
+        Wed, 8 Apr 2020 10:21:47 -0400
+Received: by mail-lf1-f67.google.com with SMTP id 131so5226841lfh.11;
+        Wed, 08 Apr 2020 07:21:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jf0MyvNrfZeSllBWGHedtbc9gbfyY6waAa4WK3aei6c=;
+        b=BOgb6KT/XVKYSez/v8+1A9WWPBbubsoob5g6qXsuZVeNs532Z9I6fM8sF6fB8xghkY
+         qP+dEBTK3mVa/tcTlHZM3L5qk2jePUvTQe1EPBVKBd33p1Xhlj+y6CbsghxHEgOzv94M
+         ZbYM+/4LONvDQQCWBTTnaHppKB2T4SUourtCjXjhuDoaaWfkOlIwK1zkdJGHcvQl6w9h
+         Rspvj2ZULbLC2F7ZLyhVDwX0sfTOrnJp23EJi2YOYjm80+kmfuPFnz/CUVaRvR+Xc7gB
+         I+96QbxW8VNPc3bqnM6bQlwDWYsGuGiW8f+Wp3F7wyZ6Jv/bkjTyplevyjSjtwaJV+I9
+         nh+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jInxb6S6kno8alLpBOp6oo5DZLTgW5u7AbwcRZ4qu+U=;
-        b=jzt+xVachTDh1CoLRYeEYxYE6ErKDcF+aIKrAjoRqhIvKmN3n6hcmpm3X0CUkNR51D
-         JvhJsONqUO19oTb5FYVj0poco4FX3BQhIxw6ZJ74n0O4h3OC+eGPK7t5im6DbxUBqq06
-         c4/qebTr+yGdkhe6rBh4apnEjpS3hIalaK+FTXcDhUqZuebk+3fLEC32YmPjtLaoRQdt
-         /dZckazFkMXZPjVC3kwWn66VAu/0iU3P0WlriauieDp2QB5JzD0imNA79yohNeMYrVSC
-         1GACFTbZcYIwyqzuf6mre+jr8HywBRbVuBczOrvIt6rhF6I39JwMoP8WE3Eytst84D/c
-         /i/w==
-X-Gm-Message-State: AGi0PubufXH0EVA2Ioc08IKrWjLCzks0vT/SBSuUQ1itqP/ZQHUwyBUH
-        kJ8K3FNr36Z0oSZ9sAiJve4rYfiByx2onhJApJuaADMDcacnaemArB+dTjXbe0z5r3mN8Oi6Qxx
-        SGm3KjxDWZwSrEuKN0GPKjn3h
-X-Received: by 2002:a1c:c302:: with SMTP id t2mr5026690wmf.85.1586356008062;
-        Wed, 08 Apr 2020 07:26:48 -0700 (PDT)
-X-Google-Smtp-Source: APiQypL93j1JGbhmlzyGs7UPvOEjdq8mXYKa70sYn+9u3/NXGRFCEUVRtx7SgpDd3+CMxyGnT4hEMw==
-X-Received: by 2002:a7b:c7cb:: with SMTP id z11mr4837917wmk.15.1586355643514;
-        Wed, 08 Apr 2020 07:20:43 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::3])
-        by smtp.gmail.com with ESMTPSA id u6sm29411783wrm.65.2020.04.08.07.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 07:20:42 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 10:20:39 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
- signal
-Message-ID: <20200408142039.GD66033@xz-x1>
-References: <20200408014010.80428-1-peterx@redhat.com>
- <20200408014010.80428-2-peterx@redhat.com>
- <20200408102128.GX18914@dhcp22.suse.cz>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jf0MyvNrfZeSllBWGHedtbc9gbfyY6waAa4WK3aei6c=;
+        b=WTayKLloEeaC3ujWOb43MQ5a3oojmf4c9rNljAT6aLJm+mtjwVlXoTu0L/t8OKnra+
+         P6ERGX2U7F7X8kOnqGiKrsTSlPx64tao/Zj1/bqpxsCKXh5AqJIBFlQ58xwf232kYaVJ
+         JKwSfp9M6uQ5qATcdyD0P0irk0xPeazDZ1YX9czzzhr6wQHJyg+b9gpft2+u6Qu+xa2z
+         twvWljQDLapS7I7a9G4PBJRd821LjNKWX0u5aQEcGxSnsmHGlLSwFqDIlvAH5PLBUfLi
+         BlOgI3xTUstb6rB+34E4NKzx2Jm1kEHShRMHjduP0MFtZkeUoQasbJKQ1pFaTAdaSaSN
+         0y3Q==
+X-Gm-Message-State: AGi0Pub+E6AL4WNq+9zipRmww28Qv2974nn9LoSa7anUUC8KxzZDZ2Wa
+        yEyD2/Ew/iUlF2mA4Exq9cdXSBXg
+X-Google-Smtp-Source: APiQypI0mxuc5luIqiw00spdsT9+ePChmhF5+4Scec0luiKkg51AuPK0pfMQqpfnOGXrQXb29jk1/A==
+X-Received: by 2002:ac2:58d7:: with SMTP id u23mr4817315lfo.182.1586355701563;
+        Wed, 08 Apr 2020 07:21:41 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id v9sm13821994ljv.82.2020.04.08.07.21.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Apr 2020 07:21:40 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
+Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
+ <08cd31d5-e8b9-4d3a-fb0e-0e4462947d96@nvidia.com>
+ <12a834ac-52b1-6dc0-7d3a-3e6a1fa85a2a@gmail.com>
+ <e3712e7b-b335-b35b-a94f-24eb85122dca@nvidia.com>
+ <b1726d33-0d35-9323-a747-407148d0104e@gmail.com>
+ <eb80178f-30f4-8f46-51cd-ea3f4914b81d@nvidia.com>
+ <dd16c560-ba8f-e7df-5dc4-5227e0043196@nvidia.com>
+ <fea4f0a1-4a20-34d4-9eda-e4a599eeeffc@nvidia.com>
+ <760d071e-0cbc-b3eb-9231-fb9f9ecb44a6@nvidia.com>
+ <9e317f65-8a02-3b15-cfec-8e0d8374130e@gmail.com>
+ <97b35910-4c93-123a-43a0-eb14476ed0f3@nvidia.com>
+ <84ad4e2d-6ac1-e1f4-1c55-5edaae850631@nvidia.com>
+ <15a879b3-8fb9-6821-3cdc-104ba583ac12@gmail.com>
+ <0c425505-347f-7418-af7e-d121fe0d06dc@nvidia.com>
+ <db7c7051-5674-cdb9-0aa4-ee94125b3024@gmail.com>
+ <1a31cd60-739f-0660-1c45-31487d2f2128@nvidia.com>
+ <603084a5-249a-4fe2-3646-e9335ef9ab43@nvidia.com>
+ <7895b9c6-f27d-8939-73d7-67d785e1a8b7@nvidia.com>
+ <ea60b489-990e-4b15-e215-d93381a1371e@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <b2405c2a-73c0-ad69-ccea-0388caf8045c@gmail.com>
+Date:   Wed, 8 Apr 2020 17:21:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <ea60b489-990e-4b15-e215-d93381a1371e@nvidia.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200408102128.GX18914@dhcp22.suse.cz>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 12:21:28PM +0200, Michal Hocko wrote:
-> On Tue 07-04-20 21:40:09, Peter Xu wrote:
-> > lookup_node() uses gup to pin the page and get node information.  It
-> > checks against ret>=0 assuming the page will be filled in.  However
-> > it's also possible that gup will return zero, for example, when the
-> > thread is quickly killed with a fatal signal.  Teach lookup_node() to
-> > gracefully return an error -EFAULT if it happens.
-> > 
-> > Meanwhile, initialize "page" to NULL to avoid potential risk of
-> > exploiting the pointer.
-> > 
-> > Reported-by: syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-> > Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
+08.04.2020 03:00, Sowjanya Komatineni пишет:
+...
+>>>>> I suppose that taking a shot takes at least few milliseconds, which
+>>>>> should be unacceptable to waste.
+>>>> As long as buffers are in queue we have to keep processing each
+>>>> buffer and between buffers obviously we have to wait for previous
+>>>> frames to finish and this why we have separate thread for frame
+>>>> finish where we can have next buffer capture ready and issue while
+>>>> previous frame memory write happens
+>> Also we specified numbers buffers as 3 to vb2 queue. So this is rare
+>> case but to prevent issuing more than 2 at a time as VI HW is only
+>> double buffered and syncpt fifo max depth is 2 added this to be safer.
 > 
-> I am not familiar with thic commit but shouldn't gup return ERESTARTSYS
-> on a fatal signal?
+> To be more clear, when more buffers are enqueued from userspace always
+> capture list will be full and thread will be busy in capture till either
+> error or stop stream request happens.
+> 
 
-Hi, Michal,
-
-I do see quite a few usages on -ERESTARTSYS, but also some others,
-majorly -EINTR, or even -EFAULT.  I think it could be a more general
-question rather than a specific question to this patch only.
-
-I saw some other discussions about this return value issue, I'll CC
-you in the other thread when I raise this as a general question.
-
-Thanks,
-
--- 
-Peter Xu
-
+If kthreads take more than 1% of CPU time during capture (video) with
+more than 2 buffers in queue, then it's not good and I think you should
+do something about it. If kthreads stay at ~0%, then it should be okay
+as-is.
