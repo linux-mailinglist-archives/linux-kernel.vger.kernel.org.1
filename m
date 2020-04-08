@@ -2,135 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A92101A2A3D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 22:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51FF1A2A42
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 22:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729875AbgDHUTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 16:19:52 -0400
-Received: from mail-dm6nam12on2121.outbound.protection.outlook.com ([40.107.243.121]:35425
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726891AbgDHUTv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 16:19:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K0zXQZ8IIY8lQ2+SmlqgKN6XqyG0bzqyoO1V71rUWKDVQD8LDNmguCKZ+J6lc3CXwaxPUOAH0cwEsV1eKPwq0OBqfeFR56GwtG8LNuoFF3QnEyM8blvEFU3dDijKCueWmvwh3A/ouEYtvrK2COEidxGGA8eGE6F2Hcy29HeuIUuSeLVxpJmsGYsiAEImp9P1LXld7TbHKXsY+LKva9Bbo1NxYSKBtKpoMn74xnEC7X3KCCqBHCGLdUTTGiP3g8NpJiQ12LCRrCTnI1AXl1UgD2J+i4Ct3Y/jy9yLNvNhuwx66BUiBVGK+cigEESncA9SZZy4SZ79naBKLZ6YS5YQ9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vqX0uOBUZZq1mMBJZG/TsuyKJXLWyKd3Z47NmKnK7LU=;
- b=gTtUn5/YP1q7jTK9R/9MEiVPWlMPUeT6uYwQ8u/aPYqkwkGOKyuiQ5bf0cJCP/EypPPKyPG/+bsiBrWbs36LMcxcXu0z0KsKLZuzQFAJuIDXDysZe79zslm73PZ5AHfkR8aVGAVcZXzxSAxM0P43/vtG3rAoWowb7+KEFbDgzqJ53Ois1Vg6Q/wjcrVGbtLotuMkJ2LkbO9ufkVfjtXTL3ppSIhmAW3YIUyBkg7OyMlqVjxykfrQPrS/vdwXulru5DH+v3fA/12qmQnvrUvjOG6n5L/opmiAH6t5rrw5Mf5ogkndXhT8wU0g/rIBH0129dJdfAxZsw8BI8SiDoEqYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vqX0uOBUZZq1mMBJZG/TsuyKJXLWyKd3Z47NmKnK7LU=;
- b=XZpUByJWt5KJAAPnGO6Hpke7oQd8p9HUWhhKSTJ4v+4Y7Eglz0eTuyp+3hLzZPgTgG7JZkawQnYuQeUEdEwbVpvr7zTkIfGEp8yg6wICl39u6tvH9/8SRaJeNjyVOcNoAb6NztsSxfjAiziuBC7uII6sxkHTupf48A/4DIZTTEY=
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com (2603:10b6:302:a::16)
- by MW2PR2101MB0921.namprd21.prod.outlook.com (2603:10b6:302:10::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.9; Wed, 8 Apr
- 2020 20:19:47 +0000
-Received: from MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::71ee:121:71bd:6156]) by MW2PR2101MB1052.namprd21.prod.outlook.com
- ([fe80::71ee:121:71bd:6156%9]) with mapi id 15.20.2900.012; Wed, 8 Apr 2020
- 20:19:47 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "ltykernel@gmail.com" <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "x86@kernel.org" <x86@kernel.org>, "arnd@arndb.de" <arnd@arndb.de>
-CC:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>
-Subject: RE: [PATCH V4 6/6] x86/Hyper-V: Report crash data in die() when
- panic_on_oops is set
-Thread-Topic: [PATCH V4 6/6] x86/Hyper-V: Report crash data in die() when
- panic_on_oops is set
-Thread-Index: AQHWDCuMQ3aW2IzR1UuBUYCKtr2r9ahvrWpQ
-Date:   Wed, 8 Apr 2020 20:19:47 +0000
-Message-ID: <MW2PR2101MB10524CB8CBF3FE49C2EDAA8DD7C00@MW2PR2101MB1052.namprd21.prod.outlook.com>
-References: <20200406155331.2105-1-Tianyu.Lan@microsoft.com>
- <20200406155331.2105-7-Tianyu.Lan@microsoft.com>
-In-Reply-To: <20200406155331.2105-7-Tianyu.Lan@microsoft.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=mikelley@ntdev.microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-08T20:19:45.6671367Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=73197f4a-2e50-4b6b-b494-c5b7595feb6f;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=mikelley@microsoft.com; 
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 2069d018-3cd5-4b1b-f9f9-08d7dbfa2f4d
-x-ms-traffictypediagnostic: MW2PR2101MB0921:|MW2PR2101MB0921:|MW2PR2101MB0921:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MW2PR2101MB09218BE4B31DF3FD8D6A9730D7C00@MW2PR2101MB0921.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:277;
-x-forefront-prvs: 0367A50BB1
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1052.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(346002)(366004)(396003)(376002)(136003)(39860400002)(66446008)(478600001)(8936002)(8676002)(64756008)(66556008)(81156014)(8990500004)(76116006)(5660300002)(81166007)(4744005)(10290500003)(66946007)(7416002)(7696005)(52536014)(33656002)(71200400001)(110136005)(6506007)(54906003)(86362001)(66476007)(4326008)(316002)(82950400001)(2906002)(186003)(82960400001)(9686003)(55016002)(26005)(921003)(1121003);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: microsoft.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: JHNG894KAE/rFoUAte4/6X42aDFXRvCXpzPUkqy7Lx6Qd9V8lc7hL8G4HaUtk7HHmH30KKpVdEZ24FfanMiE/Wvjn42js/XBCW1/pHi9NMVTQg++pxGJg78S2ZtwFPFQlVDF9kcEUcR3ILyb+L+yJEoQHT5J3Nvw2IiqG1R7SZiO1GUr8IiyNjsZTceITHrVZjhxD2Ks+LWIgNJ+yQL3KFSIjPJoVBi7KS2HvuUlF+gJAVZelyLJtsPf4wPRbMEAa0G5IPcPcGIlljQ9FNF/rnb07vk09heAa080wRKygJ4tzvDhq8Ereo1aEG74T/SBVzEMzxo3388dw7EqSNgp++Xom0LeRAYPfErk8JWrA9wNbilpw+RFsZgxCiHS7sgqPYEo3mH/JDM7BcncSzlZAEnVpH0NAluD+SWjx8EucD8ZQ+QX8QQeIHPA2pJi5ExbIcGB6rNKqJp+C+MKNwIAzbjXiRJAuNRyMPq4tB4uHEZn72im7UdZgHTkUv2M11bZ
-x-ms-exchange-antispam-messagedata: 0Ekn5c52LtJ2Kui1X6cgdqyx0+P5sfYzeqX++yFLOFpT0XX8zC7tM9jP1CG0Uso95RImCpGng5y8fs6nopNesaO+ifX1GmpLXxVw/RsGqozDk31pO7InjbVi/3Z+ZVk1JEXuI8P04PQbvVhTJCBCmw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729333AbgDHUXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 16:23:16 -0400
+Received: from mga18.intel.com ([134.134.136.126]:1753 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726876AbgDHUXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 16:23:15 -0400
+IronPort-SDR: hddEMPoyI4RZDre3uzselfBdGCNBlEkGOsh3gt+2JCaIj8W/W23l0IQr1+9zD/ravwcTLvLs6I
+ nlAJsp5bOexg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 13:23:14 -0700
+IronPort-SDR: oNiI2qCReI8/8IoJip/SrNSensKgUAJ5s7+49fxle9m3+mYpRXtFv4DbyyKQXP/W01JKAsTXwC
+ g0ZeMbmSMwzQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,359,1580803200"; 
+   d="scan'208";a="254437308"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 08 Apr 2020 13:23:13 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1jMHE8-000CP3-JT; Thu, 09 Apr 2020 04:23:12 +0800
+Date:   Thu, 09 Apr 2020 04:22:16 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS
+ 9a019db0b6bebc84d6b64636faf73ed6d64cd4bb
+Message-ID: <5e8e3278.QVIQ8DNEFtpxxAKx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2069d018-3cd5-4b1b-f9f9-08d7dbfa2f4d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2020 20:19:47.6391
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: thMmeVQWNE56XlDRYqlH+YrvK8rkHZVdEmVoAtzSKfghuExHbBsopc9yOQsOP+01ExmKMZkUXsU69gpAl2uCkLl2RfIjEK/tz5H0b2BL+e4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0921
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tianyu Lan <Tianyu.Lan@microsoft.com> Sent: Monday, April 6, 2020 8:5=
-4 AM
->=20
-> When oops happens with panic_on_oops unset, the oops
-> thread is killed by die() and system continues to run.
-> In such case, guest should not report crash register
-> data to host since system still runs. Check panic_on_oops
-> and return directly in hyperv_report_panic() when the function
-> is called in the die() and panic_on_oops is unset. Fix it.
->=20
-> Fixes: 7ed4325a44ea ("Drivers: hv: vmbus: Make panic reporting to be more=
- useful")
-> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> ---
-> Change since v3:
-> 	- Fix compile error.
->         - Add fix commit in the change log
-> ---
->  arch/x86/hyperv/hv_init.c      | 6 +++++-
->  drivers/hv/vmbus_drv.c         | 5 +++--
->  include/asm-generic/mshyperv.h | 2 +-
->  3 files changed, 9 insertions(+), 4 deletions(-)
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  locking/urgent
+branch HEAD: 9a019db0b6bebc84d6b64636faf73ed6d64cd4bb  locking/lockdep: Improve 'invalid wait context' splat
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+elapsed time: 481m
+
+configs tested: 149
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+riscv                               defconfig
+s390                          debug_defconfig
+parisc                generic-32bit_defconfig
+nios2                         3c120_defconfig
+s390                             alldefconfig
+openrisc                    or1ksim_defconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                              debian-10.3
+i386                                defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+nios2                         10m50_defconfig
+c6x                        evmc6678_defconfig
+xtensa                          iss_defconfig
+c6x                              allyesconfig
+xtensa                       common_defconfig
+openrisc                 simple_smp_defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                           allyesconfig
+parisc                generic-64bit_defconfig
+x86_64               randconfig-a001-20200408
+x86_64               randconfig-a002-20200408
+x86_64               randconfig-a003-20200408
+i386                 randconfig-a001-20200408
+i386                 randconfig-a002-20200408
+i386                 randconfig-a003-20200408
+alpha                randconfig-a001-20200408
+m68k                 randconfig-a001-20200408
+mips                 randconfig-a001-20200408
+nds32                randconfig-a001-20200408
+parisc               randconfig-a001-20200408
+riscv                randconfig-a001-20200408
+c6x                  randconfig-a001-20200408
+h8300                randconfig-a001-20200408
+microblaze           randconfig-a001-20200408
+nios2                randconfig-a001-20200408
+sparc64              randconfig-a001-20200408
+csky                 randconfig-a001-20200408
+openrisc             randconfig-a001-20200408
+s390                 randconfig-a001-20200408
+sh                   randconfig-a001-20200408
+xtensa               randconfig-a001-20200408
+x86_64               randconfig-b001-20200408
+x86_64               randconfig-b002-20200408
+x86_64               randconfig-b003-20200408
+i386                 randconfig-b001-20200408
+i386                 randconfig-b002-20200408
+i386                 randconfig-b003-20200408
+x86_64               randconfig-c001-20200408
+x86_64               randconfig-c002-20200408
+x86_64               randconfig-c003-20200408
+i386                 randconfig-c001-20200408
+i386                 randconfig-c002-20200408
+i386                 randconfig-c003-20200408
+x86_64               randconfig-d001-20200408
+x86_64               randconfig-d002-20200408
+x86_64               randconfig-d003-20200408
+i386                 randconfig-d001-20200408
+i386                 randconfig-d002-20200408
+i386                 randconfig-d003-20200408
+x86_64               randconfig-e001-20200408
+x86_64               randconfig-e002-20200408
+x86_64               randconfig-e003-20200408
+i386                 randconfig-e001-20200408
+i386                 randconfig-e002-20200408
+i386                 randconfig-e003-20200408
+x86_64               randconfig-h001-20200408
+x86_64               randconfig-h002-20200408
+x86_64               randconfig-h003-20200408
+i386                 randconfig-h001-20200408
+i386                 randconfig-h002-20200408
+i386                 randconfig-h003-20200408
+arc                  randconfig-a001-20200408
+arm                  randconfig-a001-20200408
+arm64                randconfig-a001-20200408
+ia64                 randconfig-a001-20200408
+powerpc              randconfig-a001-20200408
+sparc                randconfig-a001-20200408
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                                  defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
