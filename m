@@ -2,115 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D37BB1A269A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 664D51A26A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730080AbgDHP7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:59:35 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31990 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730045AbgDHP7e (ORCPT
+        id S1730103AbgDHQAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:00:11 -0400
+Received: from mail-io1-f66.google.com ([209.85.166.66]:40815 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727801AbgDHQAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:59:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586361573;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Cv3Uc9k7RiYBuNJnamJbsFgYPRzsKo70MnUziLuuZdQ=;
-        b=CIhF4lRnNCUitwSmA+z3sr89LKVm/jySzKCIbAhUJ1Z6cnuojdu/qlsX3V1DG+qqFS6ktb
-        ghFIO5jGWjOwp20hDxJcDyszYK2MEM9pKUEGqWdGtpEWG8Jnu2W5ZpNgKQXttCKziOoR+N
-        TIV+PfmXzCfynt7a0u/gCuIfeWV54XI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-Me-tmjjHPciFk-E9Thb-Rg-1; Wed, 08 Apr 2020 11:59:29 -0400
-X-MC-Unique: Me-tmjjHPciFk-E9Thb-Rg-1
-Received: by mail-wm1-f69.google.com with SMTP id u6so18710wmm.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:59:29 -0700 (PDT)
+        Wed, 8 Apr 2020 12:00:10 -0400
+Received: by mail-io1-f66.google.com with SMTP id w1so587411iot.7
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 09:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aBgudGsrLZ+TDScEKcorJpGh0gEkG8ZAnpRrRFDsG38=;
+        b=rxcnFhtxDIt8Py8z0ni7LEk9HIXreuu8sDgwnsMq0QQpb9Eyctal58xsa1R2NR6Ybp
+         PXkQPtnFlJpuoGhXmcbBpy8GGwUXBoerGdQvMFLvHZQ2PVF2CICMN5QbxSyF1k57y1CF
+         FXXIqCeuVmkzFhJOU+OHSFjZgjH+9UVYGBRse870CyNHNeMExFE2eeOyyz0161m85uyi
+         ARsNc9aTOTiy68zr282xOEY5qRYjzxLGPf/ievoqEd7kr9aqD3m18bYE7E1oN4a4JYi4
+         5+JNZB1g8ka0CujXw6zDn7BRo5Efh/TFLDz+kjqyq1a9JvVQx4d4gR8bTkVKqmuxC5DK
+         ir4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Cv3Uc9k7RiYBuNJnamJbsFgYPRzsKo70MnUziLuuZdQ=;
-        b=WmVNz2Dcdfb8TNXwohA/ql35He8f0dBMjEYzgjw+fH+YX9wdhg+4AxbV7mmHKUXufW
-         LrNWRnXjUWUD8Gk7WKUDLY/Kf1xD/DpQ9Nux4ztGEZ9bZpgVJ47gL/kWuR2p99E/vLN/
-         2f302WOjzuhqi/3Rz4l4qxzeXA+ddmlNsZgQDV5IE0zOVrJ1cInRsNELToBHV14YBzo5
-         qF+xgsicOQJhwkcJ9NfTDwa03N2Iutn0o0jEJAtk7RspmZNfUgdx0XBXPFRUTZUd0scI
-         qxzYHfZJJt8eRhEYnsxGCE9J/ohmbonxg8H8qSExmR16epGabu1jv/LZ+h8piKzNCTYE
-         lDQQ==
-X-Gm-Message-State: AGi0Pub7psMH003vbrXjrVi3ahduVx6Ye7v/BiCJLNof5BtQg2OyaAXJ
-        Rh7WiX/r/g7h8swrDut4joXs5g5p9wk4P4H4aN6LEzz5Tvof+WUe8Nt677ccoKDAwPOjn+Tavty
-        r94Ao309vsfGdOi58d6bumalt
-X-Received: by 2002:adf:e3c9:: with SMTP id k9mr8478739wrm.33.1586361568685;
-        Wed, 08 Apr 2020 08:59:28 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJCu9BKLGk84AVscL0fKdbMzfDwWwkDvUB3DvqVVHDfVGxmDXVIvCJNVm8g5nLEPbtDXIKktQ==
-X-Received: by 2002:adf:e3c9:: with SMTP id k9mr8478726wrm.33.1586361568473;
-        Wed, 08 Apr 2020 08:59:28 -0700 (PDT)
-Received: from xz-x1.redhat.com ([2607:9880:19c0:32::3])
-        by smtp.gmail.com with ESMTPSA id p5sm38401663wrg.49.2020.04.08.08.59.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 08:59:27 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, peterx@redhat.com,
-        Hillf Danton <hdanton@sina.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzbot+3be1a33f04dc782e9fd5@syzkaller.appspotmail.com,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH] mm/gup: Let __get_user_pages_locked() return -EINTR for fatal signal
-Date:   Wed,  8 Apr 2020 11:59:24 -0400
-Message-Id: <20200408155924.107722-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.24.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aBgudGsrLZ+TDScEKcorJpGh0gEkG8ZAnpRrRFDsG38=;
+        b=bQwJf3cNrdc7pAwkKw0w/FAykj77NOoCwQVIhFZMVZCSF4mAc6JpzHGs7h/48TqawY
+         o5UkokQxqV+KvpsHhUhDuo1mu4/9i2D2DxrqV4PYToerbvpJ2PA7G+ZVs2a0fTZ5bSXD
+         hvlibz/0N1BC8QWUYB386csgKIEtWBVF7wpK5f/k2HJXa81p9O8QFRXd2zOQ6kkfY7G4
+         fUEPxqaOUGvCxd3GwuRKW8lSez3BWUek2e58wBKUY0fcKX+BrobtSc/oNVHdtnKMyhow
+         DcFfqIONy3uQKuF9QPs4QtJZQH0U9Q0oYaKUnGtEU//EZntAFfNasQlQ6+danVRTn734
+         3srA==
+X-Gm-Message-State: AGi0PuY+km1ifKWlJvsc1zsH4Fvrn021v1FVZ7DF/8HP45UvkP1s6ibY
+        uRMJDow7AMx73nWQeSPmamMCBR60riC3ElATd88FKQ==
+X-Google-Smtp-Source: APiQypLxgVDOFKmALnYEXFlwsYIboWx3KPvL9/CwCdQ/v/NGeUfm3pUVWeG9CxNiC/aD2avNcl6gqUSSpj130cXuLAI=
+X-Received: by 2002:a05:6638:186:: with SMTP id a6mr7273559jaq.36.1586361608649;
+ Wed, 08 Apr 2020 09:00:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200310155058.1607-1-mathieu.poirier@linaro.org>
+ <591bd727-32af-9ea2-8c46-98f46ee3711e@ti.com> <CANLsYkyv+4cSCY27kA6qfo2XMzXy_h+DmXTe0nVZuUkC0kyRUQ@mail.gmail.com>
+ <ca77fe73-3baf-64ff-c9e2-b2f35f96ffe3@ti.com> <CANLsYkz8iqiperjdQVcwAC3YGT5cmEvJcu8fPFGF5-X6eKVUDQ@mail.gmail.com>
+ <34d1277f-c35e-5df8-7d0c-ea1e961a127f@st.com> <20200327193602.GA22939@xps15> <77cba22f-5911-e88a-ec25-50cbe9b8fbbe@ti.com>
+In-Reply-To: <77cba22f-5911-e88a-ec25-50cbe9b8fbbe@ti.com>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Wed, 8 Apr 2020 09:59:57 -0600
+Message-ID: <CANLsYkxWSQNA0SqP5p1d_EK6am5rV-ONrvou1UyuNMnMjGW71Q@mail.gmail.com>
+Subject: Re: [PATCH v2] rpmsg: core: Add wildcard match for name service
+To:     Suman Anna <s-anna@ti.com>
+Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hillf Danton <hdanton@sina.com>
+On Tue, 7 Apr 2020 at 17:07, Suman Anna <s-anna@ti.com> wrote:
+>
+> Hi Mathieu, Arnaud,
+>
+> On 3/27/20 2:36 PM, Mathieu Poirier wrote:
+> > On Fri, Mar 27, 2020 at 10:35:34AM +0100, Arnaud POULIQUEN wrote:
+> >> Hi
+> >>
+> >> On 3/26/20 11:01 PM, Mathieu Poirier wrote:
+> >>> On Thu, 26 Mar 2020 at 14:42, Suman Anna <s-anna@ti.com> wrote:
+> >>>>
+> >>>> On 3/26/20 3:21 PM, Mathieu Poirier wrote:
+> >>>>> On Thu, 26 Mar 2020 at 09:06, Suman Anna <s-anna@ti.com> wrote:
+> >>>>>>
+> >>>>>> Hi Mathieu,
+> >>>>>>
+> >>>>>> On 3/10/20 10:50 AM, Mathieu Poirier wrote:
+> >>>>>>> Adding the capability to supplement the base definition published
+> >>>>>>> by an rpmsg_driver with a postfix description so that it is possible
+> >>>>>>> for several entity to use the same service.
+> >>>>>>>
+> >>>>>>> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> >>>>>>> Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> >>>>>>
+> >>>>>> So, the concern I have here is that we are retrofitting this into the
+> >>>>>> existing 32-byte name field, and the question is if it is going to be
+> >>>>>> enough in general. That's the reason I went with the additional 32-byte
+> >>>>>> field with the "rpmsg: add a description field" patch.
+> >>>>>>
+> >>>>>
+> >>>>> That's a valid concern.
+> >>>>>
+> >>>>> Did you consider increasing the size of RPMSG_NAME_SIZE to 64? Have
+> >>>>> you found cases where that wouldn't work?  I did a survey of all the
+> >>>>> places the #define is used and all destination buffers are also using
+> >>>>> the same #define in their definition.  It would also be backward
+> >>>>> compatible with firmware implementations that use 32 byte.
+> >>>>
+> >>>> You can't directly bump the size without breaking the compatibility on
+> >>>> the existing rpmsg_ns_msg in firmwares right? All the Linux-side drivers
+> >>>> will be ok since they use the same macro but rpmsg_ns_msg has presence
+> >>>> on both kernel and firmware-sides.
+> >>>
+> >>> Ah yes yes... The amount of bytes coming out of the pipe won't match.
+> >>> Let me think a little...
+> >>
+> >> +1 for Suman's concern.
+> >>
+> >> Anyway i would like to challenge the need of more than 32 bytes to
+> >> differentiate service instances.
+> >> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", seems to me enough if we only need
+> >> to differentiate the instances.
+>
+> Remember that the rpmsg_device_id name takes some space within here. So,
+> the shorter the rpmsg_device_id table name, the more room you have.
+>
+> >>
+> >> But perhaps the need is also to provide a short description of the service?
+>
+> I am mostly using it to provide a unique instantiation name. In anycase,
+> I have cross-checked against my current firmwares, and so far all of
+> them happen to have the name + desc < 31 bytes.
+>
+>
+> >>
+> >> Suman, could you share some examples of your need?
+> >
+> > Looking at things further it is possible to extend the name of the service to
+> > 64 byte while keeping backward compatibility by looking up the size of @len
+> > in function rpmsg_ns_cb().  From there work with an rpmsg_ns_msg or a new
+> > rpmsg_ns_msg64, pretty much the way you did in your patch[1].  In fact the
+> > approach is the same except you are using 2 arrays of 32 byte and I'm using one
+> > of 64.
+> >
+> > As Arnaud mentioned, is there an immediate need to support a 64-byte name?  If
+> > not than I suggest to move forward with this patch and address the issue when we
+> > get there - at least we know there is room for extention. Otherwise I'll spin
+> > off another revision but it will be bigger and more complex.
+>
+> Yeah ok. I have managed to get my downstream drivers that use the desc
+> field working with this patch after modifying the firmwares to publish
+> using combined name, and adding logic in probe to get the trailing
+> portion of the name.
 
-__get_user_pages_locked() will return 0 instead of -EINTR after commit
-4426e945df588 which added extra code to allow gup detect fatal signal
-faster.  Restore that behavior.
+Perfect
 
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Fixes: 4426e945df58 ("mm/gup: allow VM_FAULT_RETRY for multiple times")
-Reported-by: syzbot+3be1a33f04dc782e9fd5@syzkaller.appspotmail.com
-Signed-off-by: Hillf Danton <hdanton@sina.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
+>
+> So, the only thing that is missing or content for another patch is if we
+> need to add some tooling/helper stuff for giving the trailing stuff to
+> rpmsg drivers?
 
-PS. Patch verified with syzbot.
+So that all rpmsg drivers don't come up with their own parsing that
+ends up doing the same thing.  Let me think about that - I may have to
+get back to you...
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/gup.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/mm/gup.c b/mm/gup.c
-index afce0bc47e70..6076df8e04a4 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1326,8 +1326,11 @@ static __always_inline long __get_user_pages_locked(struct task_struct *tsk,
- 		 * start trying again otherwise it can loop forever.
- 		 */
- 
--		if (fatal_signal_pending(current))
-+		if (fatal_signal_pending(current)) {
-+			if (!pages_done)
-+				pages_done = -EINTR;
- 			break;
-+		}
- 
- 		ret = down_read_killable(&mm->mmap_sem);
- 		if (ret) {
--- 
-2.24.1
-
+>
+> regards
+> Suman
+>
+> >
+> > Thanks,
+> > Mathieu
+> >
+> > [1]. https://patchwork.kernel.org/patch/11096599/
+> >
+> >>>>>>
+> >>>>>>> ---
+> >>>>>>> Changes for V2:
+> >>>>>>> - Added Arnaud's Acked-by.
+> >>>>>>> - Rebased to latest rproc-next.
+> >>>>>>>
+> >>>>>>>  drivers/rpmsg/rpmsg_core.c | 20 +++++++++++++++++++-
+> >>>>>>>  1 file changed, 19 insertions(+), 1 deletion(-)
+> >>>>>>>
+> >>>>>>> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+> >>>>>>> index e330ec4dfc33..bfd25978fa35 100644
+> >>>>>>> --- a/drivers/rpmsg/rpmsg_core.c
+> >>>>>>> +++ b/drivers/rpmsg/rpmsg_core.c
+> >>>>>>> @@ -399,7 +399,25 @@ ATTRIBUTE_GROUPS(rpmsg_dev);
+> >>>>>>>  static inline int rpmsg_id_match(const struct rpmsg_device *rpdev,
+> >>>>>>>                                 const struct rpmsg_device_id *id)
+> >>>>>>>  {
+> >>>>>>> -     return strncmp(id->name, rpdev->id.name, RPMSG_NAME_SIZE) == 0;
+> >>>>>>> +     size_t len = min_t(size_t, strlen(id->name), RPMSG_NAME_SIZE);
+> >>>>>>> +
+> >>>>>>> +     /*
+> >>>>>>> +      * Allow for wildcard matches.  For example if rpmsg_driver::id_table
+> >>>>>>> +      * is:
+> >>>>>>> +      *
+> >>>>>>> +      * static struct rpmsg_device_id rpmsg_driver_sample_id_table[] = {
+> >>>>>>> +      *      { .name = "rpmsg-client-sample" },
+> >>>>>>> +      *      { },
+> >>>>>>> +      * }
+> >>>>>>> +      *
+> >>>>>>> +      * Then it is possible to support "rpmsg-client-sample*", i.e:
+> >>>>>>> +      *      rpmsg-client-sample
+> >>>>>>> +      *      rpmsg-client-sample_instance0
+> >>>>>>> +      *      rpmsg-client-sample_instance1
+> >>>>>>> +      *      ...
+> >>>>>>> +      *      rpmsg-client-sample_instanceX
+> >>>>>>> +      */
+> >>>>>>> +     return strncmp(id->name, rpdev->id.name, len) == 0;
+> >>>>>>>  }
+> >>>>>>>
+> >>>>>>>  /* match rpmsg channel and rpmsg driver */
+> >>>>>>>
+> >>>>>>
+> >>>>
+>
