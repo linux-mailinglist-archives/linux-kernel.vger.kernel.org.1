@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A38C1A2604
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C71801A25DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729914AbgDHPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49290 "EHLO mail.kernel.org"
+        id S1729798AbgDHPrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:47:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729678AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729675AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Apr 2020 11:46:33 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A06372078E;
+        by mail.kernel.org (Postfix) with ESMTPSA id A3A4220936;
         Wed,  8 Apr 2020 15:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586360791;
-        bh=dzEvyUMT+6iAL0bVATxxLcY08y7xtxW1DkpC2XHSTsk=;
+        bh=fEH5MARuDeBm7xykHMdOvvg3KVJtsODv97Cvb7xeU/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gSAqqCvgTqXa/uXKmv6EtznA69C4V8DH+7tAiOQNLcwtHbDUgP+TAlPo8teTWKDnM
-         dC8jqt6R8V70H20R2xBLozYWzJEo+P1t5Z0t4qINbz+1i1Q9o/HBEt19GSNv210olW
-         4Dzs/4ExuoIJYGl5mAM8SIJF6Fw0DUiAD8BAIus8=
+        b=ZITt0PBjJEATt9S90x8hP+JMoPOAEyhwpg6R9WZEHuXo7zP+bw0NQ/Npdx+51AXty
+         GWVn7hnrtJaOlxrEQ7UwWo56SVXy7O01WGLtyIDYYbPcBF/+FBfU9LrBtR9ASrT5DZ
+         Naxdza3tK1yYLjq7b/FymKsXGnA3YUzZyL5YC/ao=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jMCuL-000cBm-QI; Wed, 08 Apr 2020 17:46:29 +0200
+        id 1jMCuL-000cBr-RF; Wed, 08 Apr 2020 17:46:29 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Subject: [PATCH 19/35] docs: infiniband: verbs.c: fix some documentation warnings
-Date:   Wed,  8 Apr 2020 17:46:11 +0200
-Message-Id: <9f9212db13dc19e5d80e3fc94ad26f3b9798d154.1586359676.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 20/35] docs: scripts/kernel-doc: accept blank lines on parameter description
+Date:   Wed,  8 Apr 2020 17:46:12 +0200
+Message-Id: <b7f5bf6cf16a4b7b4e1e4ab028fdcb8d5633599f.1586359676.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586359676.git.mchehab+huawei@kernel.org>
 References: <cover.1586359676.git.mchehab+huawei@kernel.org>
@@ -45,50 +43,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Parsing this file with kernel-doc produce some warnings:
+Sphinx is very pedantic with respect to blank lines. Sometimes,
+in order to make it to properly handle something, we need to
+add a blank line. However, currently, any blank line inside a
+kernel-doc comment like:
 
-	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
-	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
-	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
-	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
-	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
-	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
+	/*
+	 * @foo: bar
+         *
+	 *       foobar
+	 *
+	 * some description
 
-Address them by adding an extra blank line and converting the
-parameters on one of the arguments to a table.
+will be considered as if "foobar" was part of the description.
+
+This patch changes kernel-doc behavior. After it, foobar will
+be considered as part of the parameter text. The description
+will only be considered as such if it starts with:
+
+zero spaces after asterisk:
+
+	*foo
+
+one space after asterisk:
+	* foo
+
+or have a explicit Description section:
+
+	*   Description:
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/infiniband/core/verbs.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ scripts/kernel-doc | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 56a71337112c..3bfadd8effcc 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -2574,6 +2574,7 @@ EXPORT_SYMBOL(ib_map_mr_sg_pi);
-  * @page_size:     page vector desired page size
-  *
-  * Constraints:
-+ *
-  * - The first sg element is allowed to have an offset.
-  * - Each sg element must either be aligned to page_size or virtually
-  *   contiguous to the previous element. In case an sg element has a
-@@ -2607,10 +2608,12 @@ EXPORT_SYMBOL(ib_map_mr_sg);
-  * @mr:            memory region
-  * @sgl:           dma mapped scatterlist
-  * @sg_nents:      number of entries in sg
-- * @sg_offset_p:   IN:  start offset in bytes into sg
-- *                 OUT: offset in bytes for element n of the sg of the first
-+ * @sg_offset_p:   ==== =======================================================
-+ *                 IN   start offset in bytes into sg
-+ *                 OUT  offset in bytes for element n of the sg of the first
-  *                      byte that has not been processed where n is the return
-  *                      value of this function.
-+ *                 ==== =======================================================
-  * @set_page:      driver page assignment function pointer
-  *
-  * Core service helper for drivers to convert the largest
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index b019d8db6502..41ed4202f4ad 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -331,13 +331,14 @@ my $lineprefix="";
+ 
+ # Parser states
+ use constant {
+-    STATE_NORMAL        => 0, # normal code
+-    STATE_NAME          => 1, # looking for function name
+-    STATE_BODY_MAYBE    => 2, # body - or maybe more description
+-    STATE_BODY          => 3, # the body of the comment
+-    STATE_PROTO         => 4, # scanning prototype
+-    STATE_DOCBLOCK      => 5, # documentation block
+-    STATE_INLINE        => 6, # gathering documentation outside main block
++    STATE_NORMAL        => 0,        # normal code
++    STATE_NAME          => 1,        # looking for function name
++    STATE_BODY_MAYBE    => 2,        # body - or maybe more description
++    STATE_BODY          => 3,        # the body of the comment
++    STATE_BODY_WITH_BLANK_LINE => 4, # the body, which has a blank line
++    STATE_PROTO         => 5,        # scanning prototype
++    STATE_DOCBLOCK      => 6,        # documentation block
++    STATE_INLINE        => 7,        # gathering doc outside main block
+ };
+ my $state;
+ my $in_doc_sect;
+@@ -1957,6 +1958,12 @@ sub process_body($$) {
+ 	}
+     }
+ 
++    if ($state == STATE_BODY_WITH_BLANK_LINE && /^\s*\*\s?\S/) {
++	dump_section($file, $section, $contents);
++	$section = $section_default;
++	$contents = "";
++    }
++
+     if (/$doc_sect/i) { # case insensitive for supported section names
+ 	$newsection = $1;
+ 	$newcontents = $2;
+@@ -2010,18 +2017,21 @@ sub process_body($$) {
+ 	$state = STATE_PROTO;
+ 	$brcount = 0;
+     } elsif (/$doc_content/) {
+-	# miguel-style comment kludge, look for blank lines after
+-	# @parameter line to signify start of description
+ 	if ($1 eq "") {
+-	    if ($section =~ m/^@/ || $section eq $section_context) {
++	    if ($section eq $section_context) {
+ 		dump_section($file, $section, $contents);
+ 		$section = $section_default;
+ 		$contents = "";
+ 		$new_start_line = $.;
++		$state = STATE_BODY;
+ 	    } else {
++		if ($section ne $section_default) {
++		    $state = STATE_BODY_WITH_BLANK_LINE;
++		} else {
++		    $state = STATE_BODY;
++		}
+ 		$contents .= "\n";
+ 	    }
+-	    $state = STATE_BODY;
+ 	} elsif ($state == STATE_BODY_MAYBE) {
+ 	    # Continued declaration purpose
+ 	    chomp($declaration_purpose);
+@@ -2173,7 +2183,8 @@ sub process_file($) {
+ 	    process_normal();
+ 	} elsif ($state == STATE_NAME) {
+ 	    process_name($file, $_);
+-	} elsif ($state == STATE_BODY || $state == STATE_BODY_MAYBE) {
++	} elsif ($state == STATE_BODY || $state == STATE_BODY_MAYBE ||
++		 $state == STATE_BODY_WITH_BLANK_LINE) {
+ 	    process_body($file, $_);
+ 	} elsif ($state == STATE_INLINE) { # scanning for inline parameters
+ 	    process_inline($file, $_);
 -- 
 2.25.2
 
