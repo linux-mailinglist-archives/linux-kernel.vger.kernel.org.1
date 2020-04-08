@@ -2,190 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D621A1BC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 08:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C308F1A1BD6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 08:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbgDHGFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 02:05:50 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:37970 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726089AbgDHGFt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 02:05:49 -0400
-Received: by mail-qt1-f194.google.com with SMTP id 13so2870475qtt.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 23:05:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=la175c9DEDIHk3uGIF+L0/B/W9ixXMBxxvxYraHXojQ=;
-        b=qz+ogVx5bzbsbrrMH2avUgVhCc0+CZz48kXXeN4Ftk6sjRa2KdGvP9q73zpEDXcuCT
-         Nw97Q2VkqpOlbBqI6KZLzopH2Uhp4D9/jyyxibHBQRvzGJIKijJJBzZADNBRGar9BRVx
-         +RAfz9T+ZF1T5mp5B2S/wsNEBrVk1QaR+HE4OhLbvypeEjBVkxjAHLAZLM2AvAs+GShQ
-         tVzb1aJBcTc8yLUVZbY3/X19PGk16mAy5bx4+vkUAuBJgtW7LYWTfPWINt7f2MDDLl6/
-         HBGAaTtnXzUFmY4d+gzBArtKYumQ5hYJIoMIIJ5QyLEH5J+wW6bwzhDTJTf77cIRdcN3
-         eiEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=la175c9DEDIHk3uGIF+L0/B/W9ixXMBxxvxYraHXojQ=;
-        b=gK3jKPJi99G6NHnMlg2l1AgPOu3qr2lzUgi5sEJvpOks3gHCLQDv8UqTQtFYVqqpp3
-         vCrKH3DFwdJLMTThPMDG+VMOFpHy0w8yJz9r0/5finsOmZ1gH7RF9YksjbMOJf/MH/OL
-         OPrEFN+hCo4sTEAEwHX+qTvHMAScbLnaqN17ybynmi2lJCkOr4/FCG1bT5Ij7b2y5lgV
-         elIKDU2XHSoRP80yXyZi/iAgcHy4BSk7yA60cONQD1aJchu09eSuLEwAXHS0sxNtsOVr
-         qRMLXkrC1B1qKK9af1PHt5EnbBgrZw1boI+p2TT/soQ3dg57jHSl/BCMFEimomI/Y3XI
-         qFog==
-X-Gm-Message-State: AGi0PuaBg3mUhwdpGn3FrPnUQx1UvIbVGddEyrgWuTT/l4CFOn1B291K
-        xynyp9vVfFiK0wFxKGdCX7A=
-X-Google-Smtp-Source: APiQypIxjg/UarBlnhzp5LojE1qS1IvhJl5fzF/2MxPsw/z48xlte+1dkmItkK+xfp/3YqiH65Fv1w==
-X-Received: by 2002:ac8:2dae:: with SMTP id p43mr5933924qta.341.1586325947491;
-        Tue, 07 Apr 2020 23:05:47 -0700 (PDT)
-Received: from arch.localdomain (189-69-221-86.dial-up.telesp.net.br. [189.69.221.86])
-        by smtp.gmail.com with ESMTPSA id w30sm19664170qtw.21.2020.04.07.23.05.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Apr 2020 23:05:46 -0700 (PDT)
-From:   Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
-To:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, manasi.d.navare@intel.com
-Cc:     Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
-Subject: [PATCH 2/2] drm/vkms: Add 'virtual_hw' module option
-Date:   Wed,  8 Apr 2020 03:05:03 -0300
-Message-Id: <20200408060503.47709-3-gabrielabittencourt00@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200408060503.47709-1-gabrielabittencourt00@gmail.com>
-References: <20200408060503.47709-1-gabrielabittencourt00@gmail.com>
+        id S1726650AbgDHGQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 02:16:13 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:32952 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725932AbgDHGQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 02:16:13 -0400
+Received: from gwarestrin.me.apana.org.au ([192.168.0.7] helo=gwarestrin.arnor.me.apana.org.au)
+        by fornost.hmeau.com with smtp (Exim 4.89 #2 (Debian))
+        id 1jM3zV-0000fQ-Ix; Wed, 08 Apr 2020 16:15:14 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Wed, 08 Apr 2020 16:15:13 +1000
+Date:   Wed, 8 Apr 2020 16:15:13 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+Subject: [GIT PULL] Crypto Fixes for 5.7
+Message-ID: <20200408061513.GA23636@gondor.apana.org.au>
+References: <20190916084901.GA20338@gondor.apana.org.au>
+ <20190923050515.GA6980@gondor.apana.org.au>
+ <20191202062017.ge4rz72ki3vczhgb@gondor.apana.org.au>
+ <20191214084749.jt5ekav5o5pd2dcp@gondor.apana.org.au>
+ <20200115150812.mo2eycc53lbsgvue@gondor.apana.org.au>
+ <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200213033231.xjwt6uf54nu26qm5@gondor.apana.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Virtual Vblank, virtual hardware module option ('virtual_hw')
-allows to skip the timing of vblank routine.
+Hi Linus:
 
-Signed-off-by: Gabriela Bittencourt <gabrielabittencourt00@gmail.com>
----
- drivers/gpu/drm/vkms/vkms_crtc.c | 28 ++++++++++++++++++++++++++--
- drivers/gpu/drm/vkms/vkms_drv.c  | 13 +++++++++++--
- drivers/gpu/drm/vkms/vkms_drv.h  |  2 ++
- 3 files changed, 39 insertions(+), 4 deletions(-)
+This push fixes a Kconfig dependency for hisilicon as well as a
+double free in marvell/octeontx.
 
-diff --git a/drivers/gpu/drm/vkms/vkms_crtc.c b/drivers/gpu/drm/vkms/vkms_crtc.c
-index a72769b81efe..d4aa1ed93bf2 100644
---- a/drivers/gpu/drm/vkms/vkms_crtc.c
-+++ b/drivers/gpu/drm/vkms/vkms_crtc.c
-@@ -58,6 +58,18 @@ static enum hrtimer_restart vkms_vblank_simulate(struct hrtimer *timer)
- 	return HRTIMER_RESTART;
- }
- 
-+static void vkms_virtual_vblank_simulate(struct vkms_output *output,
-+					 struct drm_crtc *crtc)
-+{
-+	struct vkms_crtc_state *state;
-+	bool ret;
-+
-+	state = output->composer_state;
-+	ret = vkms_queue_compose_worker(output, state);
-+	if (!ret)
-+		DRM_DEBUG_DRIVER("Composer worker already queued\n");
-+}
-+
- static int vkms_enable_vblank(struct drm_crtc *crtc)
- {
- 	struct drm_device *dev = crtc->dev;
-@@ -214,16 +226,25 @@ static int vkms_crtc_atomic_check(struct drm_crtc *crtc,
- 	return 0;
- }
- 
-+static bool vkms_crtc_atomic_check_vblank_enable(struct drm_crtc *crtc)
-+{
-+	struct vkms_output *vkms_out = drm_crtc_to_vkms_output(crtc);
-+
-+	return (!vkms_out->disable_vblank);
-+}
-+
- static void vkms_crtc_atomic_enable(struct drm_crtc *crtc,
- 				    struct drm_crtc_state *old_state)
- {
--	drm_crtc_vblank_on(crtc);
-+	if (vkms_crtc_atomic_check_vblank_enable(crtc))
-+		drm_crtc_vblank_on(crtc);
- }
- 
- static void vkms_crtc_atomic_disable(struct drm_crtc *crtc,
- 				     struct drm_crtc_state *old_state)
- {
--	drm_crtc_vblank_off(crtc);
-+	if (vkms_crtc_atomic_check_vblank_enable(crtc))
-+		drm_crtc_vblank_off(crtc);
- }
- 
- static void vkms_crtc_atomic_begin(struct drm_crtc *crtc,
-@@ -258,6 +279,9 @@ static void vkms_crtc_atomic_flush(struct drm_crtc *crtc,
- 	vkms_output->composer_state = to_vkms_crtc_state(crtc->state);
- 
- 	spin_unlock_irq(&vkms_output->lock);
-+
-+	if (vkms_output->disable_vblank)
-+		vkms_virtual_vblank_simulate(vkms_output, crtc);
- }
- 
- static const struct drm_crtc_helper_funcs vkms_crtc_helper_funcs = {
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-index eef85f1a0ce5..f7c25961b083 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.c
-+++ b/drivers/gpu/drm/vkms/vkms_drv.c
-@@ -39,6 +39,11 @@ bool enable_cursor;
- module_param_named(enable_cursor, enable_cursor, bool, 0444);
- MODULE_PARM_DESC(enable_cursor, "Enable/Disable cursor support");
- 
-+bool virtual_hw;
-+module_param_named(virtual_hw, virtual_hw, bool, 0444);
-+MODULE_PARM_DESC(virtual_hw,
-+		 "Enable virtual hardware mode / Disable vblank");
-+
- static const struct file_operations vkms_driver_fops = {
- 	.owner		= THIS_MODULE,
- 	.open		= drm_open,
-@@ -168,9 +173,13 @@ static int __init vkms_init(void)
- 		goto out_put;
- 	}
- 
--	vkms_device->drm.irq_enabled = true;
-+	vkms_device->output.disable_vblank = virtual_hw;
-+	vkms_device->drm.irq_enabled = !virtual_hw;
-+
-+	if (virtual_hw)
-+		DRM_INFO("Virtual hardware mode enabled");
- 
--	ret = drm_vblank_init(&vkms_device->drm, 1);
-+	ret = (virtual_hw) ? 0 : drm_vblank_init(&vkms_device->drm, 1);
- 	if (ret) {
- 		DRM_ERROR("Failed to vblank\n");
- 		goto out_put;
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index eda04ffba7b1..52ad8e06adc5 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.h
-+++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -19,6 +19,7 @@
- #define YRES_MAX  8192
- 
- extern bool enable_cursor;
-+extern bool virtual_hw;
- 
- struct vkms_composer {
- 	struct drm_framebuffer fb;
-@@ -64,6 +65,7 @@ struct vkms_output {
- 	struct drm_encoder encoder;
- 	struct drm_connector connector;
- 	struct hrtimer vblank_hrtimer;
-+	bool disable_vblank;
- 	ktime_t period_ns;
- 	struct drm_pending_vblank_event *event;
- 	/* ordered wq for composer_work */
+The following changes since commit fcb90d51c375d09a034993cda262b68499e233a4:
+
+  crypto: af_alg - bool type cosmetics (2020-03-30 11:50:50 +1100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus 
+
+for you to fetch changes up to 755bddd1e4eaf9178758bd554c60aaab46fc42ba:
+
+  crypto: marvell/octeontx - fix double free of ptr (2020-04-03 15:37:26 +1100)
+
+----------------------------------------------------------------
+Colin Ian King (1):
+      crypto: marvell/octeontx - fix double free of ptr
+
+YueHaibing (1):
+      crypto: hisilicon - Fix build error
+
+ drivers/crypto/hisilicon/Kconfig                 | 2 ++
+ drivers/crypto/marvell/octeontx/otx_cptvf_algs.c | 8 +++++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+Thanks,
 -- 
-2.25.1
-
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
