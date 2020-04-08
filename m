@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 246171A21A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3341A21A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728483AbgDHMUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 08:20:40 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49664 "EHLO
+        id S1728433AbgDHMUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 08:20:35 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49650 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728417AbgDHMUg (ORCPT
+        with ESMTP id S1728290AbgDHMUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 08:20:36 -0400
+        Wed, 8 Apr 2020 08:20:32 -0400
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1jM9gv-000650-QU; Wed, 08 Apr 2020 14:20:25 +0200
+        id 1jM9gx-00065k-7K; Wed, 08 Apr 2020 14:20:27 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7A12C1C047B;
-        Wed,  8 Apr 2020 14:20:25 +0200 (CEST)
-Date:   Wed, 08 Apr 2020 12:20:25 -0000
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D8D7F1C0131;
+        Wed,  8 Apr 2020 14:20:26 +0200 (CEST)
+Date:   Wed, 08 Apr 2020 12:20:26 -0000
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] workqueue: Remove the warning in wq_worker_sleeping()
-Cc:     kernel test robot <lkp@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+Subject: [tip: sched/urgent] sched/fair: Align rq->avg_idle and rq->avg_scan_cost
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Tejun Heo <tj@kernel.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200327074308.GY11705@shao2-debian>
-References: <20200327074308.GY11705@shao2-debian>
+        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200330090127.16294-1-valentin.schneider@arm.com>
+References: <20200330090127.16294-1-valentin.schneider@arm.com>
 MIME-Version: 1.0
-Message-ID: <158634842513.28353.14029698174140162537.tip-bot2@tip-bot2>
+Message-ID: <158634842647.28353.14472807491323595156.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,101 +48,125 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/urgent branch of tip:
 
-Commit-ID:     62849a9612924a655c67cf6962920544aa5c20db
-Gitweb:        https://git.kernel.org/tip/62849a9612924a655c67cf6962920544aa5c20db
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Sat, 28 Mar 2020 00:29:59 +01:00
+Commit-ID:     d76343c6b2b79f5e89c392bc9ce9dabc4c9e90cb
+Gitweb:        https://git.kernel.org/tip/d76343c6b2b79f5e89c392bc9ce9dabc4c9e90cb
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Mon, 30 Mar 2020 10:01:27 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 08 Apr 2020 11:35:20 +02:00
+CommitterDate: Wed, 08 Apr 2020 11:35:18 +02:00
 
-workqueue: Remove the warning in wq_worker_sleeping()
+sched/fair: Align rq->avg_idle and rq->avg_scan_cost
 
-The kernel test robot triggered a warning with the following race:
-   task-ctx A                            interrupt-ctx B
- worker
-  -> process_one_work()
-    -> work_item()
-      -> schedule();
-         -> sched_submit_work()
-           -> wq_worker_sleeping()
-             -> ->sleeping = 1
-               atomic_dec_and_test(nr_running)
-         __schedule();                *interrupt*
-                                       async_page_fault()
-                                       -> local_irq_enable();
-                                       -> schedule();
-                                          -> sched_submit_work()
-                                            -> wq_worker_sleeping()
-                                               -> if (WARN_ON(->sleeping)) return
-                                          -> __schedule()
-                                            ->  sched_update_worker()
-                                              -> wq_worker_running()
-                                                 -> atomic_inc(nr_running);
-                                                 -> ->sleeping = 0;
+sched/core.c uses update_avg() for rq->avg_idle and sched/fair.c uses an
+open-coded version (with the exact same decay factor) for
+rq->avg_scan_cost. On top of that, select_idle_cpu() expects to be able to
+compare these two fields.
 
-      ->  sched_update_worker()
-        -> wq_worker_running()
-          if (!->sleeping) return
+The only difference between the two is that rq->avg_scan_cost is computed
+using a pure division rather than a shift. Turns out it actually matters,
+first of all because the shifted value can be negative, and the standard
+has this to say about it:
 
-In this context the warning is pointless everything is fine.
-An interrupt before wq_worker_sleeping() will perform the ->sleeping
-assignment (0 -> 1 > 0) twice.
-An interrupt after wq_worker_sleeping() will trigger the warning and
-nr_running will be decremented (by A) and incremented once (only by B, A
-will skip it). This is the case until the ->sleeping is zeroed again in
-wq_worker_running().
+  """
+  The result of E1 >> E2 is E1 right-shifted E2 bit positions. [...] If E1
+  has a signed type and a negative value, the resulting value is
+  implementation-defined.
+  """
 
-Remove the WARN statement because this condition may happen. Document
-that preemption around wq_worker_sleeping() needs to be disabled to
-protect ->sleeping and not just as an optimisation.
+Not only this, but (arithmetic) right shifting a negative value (using 2's
+complement) is *not* equivalent to dividing it by the corresponding power
+of 2. Let's look at a few examples:
 
-Fixes: 6d25be5782e48 ("sched/core, workqueues: Distangle worker accounting from rq lock")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+  -4      -> 0xF..FC
+  -4 >> 3 -> 0xF..FF == -1 != -4 / 8
+
+  -8      -> 0xF..F8
+  -8 >> 3 -> 0xF..FF == -1 == -8 / 8
+
+  -9      -> 0xF..F7
+  -9 >> 3 -> 0xF..FE == -2 != -9 / 8
+
+Make update_avg() use a division, and export it to the private scheduler
+header to reuse it where relevant. Note that this still lets compilers use
+a shift here, but should prevent any unwanted surprise. The disassembly of
+select_idle_cpu() remains unchanged on arm64, and ttwu_do_wakeup() gains 2
+instructions; the diff sort of looks like this:
+
+  - sub x1, x1, x0
+  + subs x1, x1, x0 // set condition codes
+  + add x0, x1, #0x7
+  + csel x0, x0, x1, mi // x0 = x1 < 0 ? x0 : x1
+    add x0, x3, x0, asr #3
+
+which does the right thing (i.e. gives us the expected result while still
+using an arithmetic shift)
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Link: https://lkml.kernel.org/r/20200327074308.GY11705@shao2-debian
+Link: https://lkml.kernel.org/r/20200330090127.16294-1-valentin.schneider@arm.com
 ---
- kernel/sched/core.c | 3 ++-
- kernel/workqueue.c  | 6 ++++--
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ kernel/sched/core.c  | 6 ------
+ kernel/sched/fair.c  | 7 ++-----
+ kernel/sched/sched.h | 6 ++++++
+ 3 files changed, 8 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index f6b329b..c3d12e3 100644
+index a2694ba..f6b329b 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4120,7 +4120,8 @@ static inline void sched_submit_work(struct task_struct *tsk)
- 	 * it wants to wake up a task to maintain concurrency.
- 	 * As this function is called inside the schedule() context,
- 	 * we disable preemption to avoid it calling schedule() again
--	 * in the possible wakeup of a kworker.
-+	 * in the possible wakeup of a kworker and because wq_worker_sleeping()
-+	 * requires it.
- 	 */
- 	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
- 		preempt_disable();
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 3816a18..891ccad 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -858,7 +858,8 @@ void wq_worker_running(struct task_struct *task)
-  * @task: task going to sleep
-  *
-  * This function is called from schedule() when a busy worker is
-- * going to sleep.
-+ * going to sleep. Preemption needs to be disabled to protect ->sleeping
-+ * assignment.
-  */
- void wq_worker_sleeping(struct task_struct *task)
+@@ -2119,12 +2119,6 @@ int select_task_rq(struct task_struct *p, int cpu, int sd_flags, int wake_flags)
+ 	return cpu;
+ }
+ 
+-static void update_avg(u64 *avg, u64 sample)
+-{
+-	s64 diff = sample - *avg;
+-	*avg += diff >> 3;
+-}
+-
+ void sched_set_stop_task(int cpu, struct task_struct *stop)
  {
-@@ -875,7 +876,8 @@ void wq_worker_sleeping(struct task_struct *task)
+ 	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1ea3ddd..fb025e9 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6080,8 +6080,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+ 	struct sched_domain *this_sd;
+ 	u64 avg_cost, avg_idle;
+-	u64 time, cost;
+-	s64 delta;
++	u64 time;
+ 	int this = smp_processor_id();
+ 	int cpu, nr = INT_MAX;
  
- 	pool = worker->pool;
+@@ -6119,9 +6118,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	}
  
--	if (WARN_ON_ONCE(worker->sleeping))
-+	/* Return if preempted before wq_worker_running() was reached */
-+	if (worker->sleeping)
- 		return;
+ 	time = cpu_clock(this) - time;
+-	cost = this_sd->avg_scan_cost;
+-	delta = (s64)(time - cost) / 8;
+-	this_sd->avg_scan_cost += delta;
++	update_avg(&this_sd->avg_scan_cost, time);
  
- 	worker->sleeping = 1;
+ 	return cpu;
+ }
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 0f616bf..cd00814 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -195,6 +195,12 @@ static inline int task_has_dl_policy(struct task_struct *p)
+ 
+ #define cap_scale(v, s) ((v)*(s) >> SCHED_CAPACITY_SHIFT)
+ 
++static inline void update_avg(u64 *avg, u64 sample)
++{
++	s64 diff = sample - *avg;
++	*avg += diff / 8;
++}
++
+ /*
+  * !! For sched_setattr_nocheck() (kernel) only !!
+  *
