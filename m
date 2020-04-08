@@ -2,47 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97EE81A2696
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74C81A26B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbgDHP73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:59:29 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:53892 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729889AbgDHP73 (ORCPT
+        id S1730137AbgDHQE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:04:56 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40157 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729686AbgDHQEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:59:29 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 038FeCWe088049;
-        Wed, 8 Apr 2020 15:59:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=suh6+9x2SWoNOKBwtEAB3+9V2UZtf1WztxESTUhqu6o=;
- b=wrsywjVMFNZaYrCXazXnVXP8D+CoQwH9XkRTuyTZkudYdsaAgEuZG4CyffxoIJIWRV62
- nfZvYRgQ7HRr2ZbP+nJeEVPjL15x2A9DKg5DKQ+fAm54yJRJsyiLL6uloVENDDMV4b64
- WLF3xr4RpcEQ3Zv8pptjHOgqx1MWOLR14ndOk/HUNJEflIWGtyF8hC0Zkg496VNejuCB
- eJhI3WwyG30MI+Lqrnb61V0Q4lNuaAO5vvzQXlr1lRWH8HE3SvBFHVkjsArlDN39s1IS
- lxSUdhnfwz6C/B/nX8n8HoJ/E4HIvHFYRtCLs0Zc66pf2iF7Kt2gOvF5/5swP30PT9aw Zw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 3091m3cfc2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Apr 2020 15:59:14 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 038FbeuQ062359;
-        Wed, 8 Apr 2020 15:59:13 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3091m4afq7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 Apr 2020 15:59:13 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 038FxAbK000743;
-        Wed, 8 Apr 2020 15:59:10 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 08 Apr 2020 08:59:10 -0700
+        Wed, 8 Apr 2020 12:04:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586361893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y8cdbHwMPX0L7w/r7EIcNZQtT2x1Zng3ah3sHIrwDA8=;
+        b=Hi0XegoS7GstWykSY+vIhVE0v2hypJNs6uuR88Yma8/mHZRNzvx3zoW/JFkBHCw3v+9o16
+        oYkRZYh3vwG/20KZV2yK7oCyqBf+hUp5IyB7q7S9ir2e1m6A7xqapjn/aZ8AKtdmBChaqh
+        OMrO7nWlqIWvgyosnIJ1opt028NQHAU=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-T9KN9jtoOCuJ9cUN33s8FQ-1; Wed, 08 Apr 2020 12:04:52 -0400
+X-MC-Unique: T9KN9jtoOCuJ9cUN33s8FQ-1
+Received: by mail-wr1-f69.google.com with SMTP id m15so4520171wrb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 09:04:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=y8cdbHwMPX0L7w/r7EIcNZQtT2x1Zng3ah3sHIrwDA8=;
+        b=X/eq79gWem8+S3RfoEIulOqJ90KXHEBSZKrgKOC3Df54ja6m30atMj+UtNablC24E+
+         Vkd530Y3ZbPCyYNI7nCUffxyEsm0/Tj5AccVUTpWWtThfQ4pQDQoHuy0YUaqAobYtb5K
+         waIYDaKlf6jAGlEXobaaKwv3FIwnoxu2qc8iFjd9YqDDyK09NRuhE/0I9c/VqEPf4B/g
+         fi4KXZLYHK4KcvP0UMUk1jndSGHq0oH1nz9DRhxnhqullSmM2aAjZ2nTCv5PDzXGJvh2
+         r5SMHA5X+naTMyIr/jgxGc38ZMsBG6NFxS/yD9LXv8hh0HFVxaZJz6SEXHNrRWfbms2s
+         laFA==
+X-Gm-Message-State: AGi0PuYQOwkSw6iHyt1W/VmH4PpPPGbFAECK50Q9dsI+bDMP5qzn0Whv
+        YucDjl9RiVg/VGsR+D88JJm8pMsgV5bzqexMLj/H5WhroyDkR5+fe8QkJfbe/ZgFPpMiGrryLp/
+        n2zmFXEfRjpY6Hqq9KrW4BHhF
+X-Received: by 2002:a1c:9c15:: with SMTP id f21mr5257748wme.18.1586361890774;
+        Wed, 08 Apr 2020 09:04:50 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJorMTd2Ou0V5GE1PBO4npEfOlfP4EeYVktw3VOtonDVsBtJKP1IAXFP1M8viALw+oSnJW0mg==
+X-Received: by 2002:a1c:9c15:: with SMTP id f21mr5257727wme.18.1586361890533;
+        Wed, 08 Apr 2020 09:04:50 -0700 (PDT)
+Received: from ?IPv6:2a01:cb14:58d:8400:ecf6:58e2:9c06:a308? ([2a01:cb14:58d:8400:ecf6:58e2:9c06:a308])
+        by smtp.gmail.com with ESMTPSA id t124sm16359wmf.19.2020.04.08.09.04.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Apr 2020 09:04:48 -0700 (PDT)
 Subject: Re: [PATCH V2 5/9] objtool: Add support for intra-function calls
-To:     Julien Thierry <jthierry@redhat.com>,
+To:     Alexandre Chartre <alexandre.chartre@oracle.com>,
         Peter Zijlstra <peterz@infradead.org>
 Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
         tglx@linutronix.de
@@ -52,27 +63,17 @@ References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
  <40b19a8e-ae5e-623e-fb3f-261f9fec2ea5@oracle.com>
  <7ba6d4c9-c1dc-fa83-2ade-b7d3fba9e7fb@oracle.com>
  <b8d4777e-1c33-7165-33f6-f32007ef7305@redhat.com>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <cb04c823-3b93-4fe3-9d78-17040b802f82@oracle.com>
-Date:   Wed, 8 Apr 2020 18:03:35 +0200
+ <cb04c823-3b93-4fe3-9d78-17040b802f82@oracle.com>
+From:   Julien Thierry <jthierry@redhat.com>
+Message-ID: <981d7f79-3429-776f-7356-345adc6332bf@redhat.com>
+Date:   Wed, 8 Apr 2020 17:04:46 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <b8d4777e-1c33-7165-33f6-f32007ef7305@redhat.com>
+In-Reply-To: <cb04c823-3b93-4fe3-9d78-17040b802f82@oracle.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- malwarescore=0 spamscore=0 adultscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004080124
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9584 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004080124
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -80,72 +81,97 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 4/8/20 4:19 PM, Julien Thierry wrote:
+On 4/8/20 5:03 PM, Alexandre Chartre wrote:
 > 
 > 
-> On 4/8/20 3:06 PM, Alexandre Chartre wrote:
+> On 4/8/20 4:19 PM, Julien Thierry wrote:
 >>
 >>
->> On 4/7/20 3:28 PM, Alexandre Chartre wrote:
+>> On 4/8/20 3:06 PM, Alexandre Chartre wrote:
 >>>
->>> On 4/7/20 3:07 PM, Peter Zijlstra wrote:
->>>> On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
->>>>
->>>>> index a62e032863a8..7ee1561bf7ad 100644
->>>>> --- a/tools/objtool/arch/x86/decode.c
->>>>> +++ b/tools/objtool/arch/x86/decode.c
->>>>> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct cfi_state *state)
->>>>>       state->regs[16].base = CFI_CFA;
->>>>>       state->regs[16].offset = -8;
->>>>>   }
->>>>> +
->>>>> +
->>>>> +void arch_configure_intra_function_call(struct stack_op *op)
->>>>> +{
->>>>> +    /*
->>>>> +     * For the impact on the stack, make an intra-function
->>>>> +     * call behaves like a push of an immediate value (the
->>>>> +     * return address).
->>>>> +     */
->>>>> +    op->src.type = OP_SRC_CONST;
->>>>> +    op->dest.type = OP_DEST_PUSH;
->>>>> +}
->>>>
->>>> An alternative is to always set up stack ops for CALL/RET on decode, but
->>>> conditionally run update_insn_state() for them.
->>>>
->>>> Not sure that makes more logical sense, but the patch would be simpler I
->>>> think.
 >>>
->>> Right, this would avoid adding a new arch dependent function and the patch
->>> will be simpler. This probably makes sense as the stack impact is the same
->>> for all calls (but objtool will use it only for intra-function calls).
+>>> On 4/7/20 3:28 PM, Alexandre Chartre wrote:
+>>>>
+>>>> On 4/7/20 3:07 PM, Peter Zijlstra wrote:
+>>>>> On Tue, Apr 07, 2020 at 09:31:38AM +0200, Alexandre Chartre wrote:
+>>>>>
+>>>>>> index a62e032863a8..7ee1561bf7ad 100644
+>>>>>> --- a/tools/objtool/arch/x86/decode.c
+>>>>>> +++ b/tools/objtool/arch/x86/decode.c
+>>>>>> @@ -497,3 +497,15 @@ void arch_initial_func_cfi_state(struct 
+>>>>>> cfi_state *state)
+>>>>>>       state->regs[16].base = CFI_CFA;
+>>>>>>       state->regs[16].offset = -8;
+>>>>>>   }
+>>>>>> +
+>>>>>> +
+>>>>>> +void arch_configure_intra_function_call(struct stack_op *op)
+>>>>>> +{
+>>>>>> +    /*
+>>>>>> +     * For the impact on the stack, make an intra-function
+>>>>>> +     * call behaves like a push of an immediate value (the
+>>>>>> +     * return address).
+>>>>>> +     */
+>>>>>> +    op->src.type = OP_SRC_CONST;
+>>>>>> +    op->dest.type = OP_DEST_PUSH;
+>>>>>> +}
+>>>>>
+>>>>> An alternative is to always set up stack ops for CALL/RET on 
+>>>>> decode, but
+>>>>> conditionally run update_insn_state() for them.
+>>>>>
+>>>>> Not sure that makes more logical sense, but the patch would be 
+>>>>> simpler I
+>>>>> think.
+>>>>
+>>>> Right, this would avoid adding a new arch dependent function and the 
+>>>> patch
+>>>> will be simpler. This probably makes sense as the stack impact is 
+>>>> the same
+>>>> for all calls (but objtool will use it only for intra-function calls).
+>>>>
+>>>
+>>> Actually the processing of the ret instruction is more complicated 
+>>> than I
+>>> anticipated with intra-function calls, and so my implementation is not
+>>> complete at the moment.
+>>>
+>>> The issue is to correctly handle how the ret is going to behave 
+>>> depending how
+>>> the stack (or register on arm) is modified before the ret. Adjusting 
+>>> the stack
+>>> offset makes the stack state correct, but objtool still needs to 
+>>> correctly
+>>> figure out where the ret is going to return and where the code flow 
+>>> continues.
 >>>
 >>
->> Actually the processing of the ret instruction is more complicated than I
->> anticipated with intra-function calls, and so my implementation is not
->> complete at the moment.
+>> A hint indicating the target "jump" address could be useful. It could
+>> be used to add the information on some call/jump dynamic that aren't
+>> associated with jump tables. Currently when objtool finds a jump
+>> dynamic, if no branches were added to it, it will just return.
 >>
->> The issue is to correctly handle how the ret is going to behave depending how
->> the stack (or register on arm) is modified before the ret. Adjusting the stack
->> offset makes the stack state correct, but objtool still needs to correctly
->> figure out where the ret is going to return and where the code flow continues.
+>> Having such a hint could help make additional links (at least on
+>> arm64). I don't know what Peter and Josh would think of that (if that
+>> helps in your case of course).
 >>
 > 
-> A hint indicating the target "jump" address could be useful. It could
-> be used to add the information on some call/jump dynamic that aren't
-> associated with jump tables. Currently when objtool finds a jump
-> dynamic, if no branches were added to it, it will just return.
-> 
-> Having such a hint could help make additional links (at least on
-> arm64). I don't know what Peter and Josh would think of that (if that
-> helps in your case of course).
-> 
+> Yes, I am thinking about tracking intra-function call return address,
+> and having hints to specify a return address changes. For example,
+> on x86, when we push the branch address on the stack we overwrite the
+> last return address (the return address of the last intra-function call).
+> Then the return instruction can figure out where to branch.
 
-Yes, I am thinking about tracking intra-function call return address,
-and having hints to specify a return address changes. For example,
-on x86, when we push the branch address on the stack we overwrite the
-last return address (the return address of the last intra-function call).
-Then the return instruction can figure out where to branch.
+I see, I was thinking about a more generic hint, that would just 
+indicate "this instruction actually jumps here". So in your case it 
+would just point that a certain return instruction causes to branch 
+somewhere.
 
-alex.
+This way the hint could also be used for other instructions (e.g. 
+INSN_JUMP_DYNAMIC).
+
+
+
+-- 
+Julien Thierry
+
