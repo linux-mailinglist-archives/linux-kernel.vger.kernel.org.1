@@ -2,156 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD55B1A286D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EF81A2895
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730672AbgDHSXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 14:23:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:41994 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729672AbgDHSXU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 14:23:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30FAE1FB;
-        Wed,  8 Apr 2020 11:23:19 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3EC083F73D;
-        Wed,  8 Apr 2020 11:23:14 -0700 (PDT)
-References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com> <20200408113505.2528103-4-jiaxun.yang@flygoat.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robert Richter <rric@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Enrico Weigelt <info@metux.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Zhou Yanjie <zhouyanjie@zoho.com>,
-        =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmpp?= =?utf-8?B?ZSk=?= 
-        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Matt Redfearn <matt.redfearn@mips.com>,
-        Steve Winslow <swinslow@gmail.com>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Peter Xu <peterx@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: Re: [PATCH 03/12] arch_topology: Make it avilable for MIPS
-In-reply-to: <20200408113505.2528103-4-jiaxun.yang@flygoat.com>
-Date:   Wed, 08 Apr 2020 19:23:04 +0100
-Message-ID: <jhjr1wxj0qf.mognet@arm.com>
+        id S1730847AbgDHSYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 14:24:33 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46411 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729927AbgDHSYc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 14:24:32 -0400
+Received: by mail-pf1-f194.google.com with SMTP id q3so2779185pff.13;
+        Wed, 08 Apr 2020 11:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=+hBr9e40aJPlN6JzFm3li2WZoTHSuvzVnOsQoF7MLJs=;
+        b=DaFrQOyLUNu/v0XYk15kGafUuGoq3b/1SItS1YnyQIBU/NmshkYkI7uKTXpl20lR4L
+         MTtujyR2e4eqvvQ4qz54ltqSA8kF2F9wqWBcIvZnmDVmceRQGw1z5Zshx77iHixEyT9G
+         usLeJtRXDX4O2Fr0iXUh8uQshT2oYw2nS8HE0c6Kg8DQt/gi1cyv+rvVfo991W+fYmfQ
+         ufFLesOXM68jFGmnON09zf9+SznyW2JMoCKD5FNM5ccR8LovEP2OJWfMT4N39YrwKNLi
+         QTE99gnYEBSQMejQylair20MfVg55Z1r+HSBzS4otJSpzIJkIPQjnSgxJxu5AkaV+EVr
+         LH5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=+hBr9e40aJPlN6JzFm3li2WZoTHSuvzVnOsQoF7MLJs=;
+        b=A5bKG91Xg8Xhlk7KtVsauoMRFEU+Xsn5zaXANap+8zdXR6R7V9FAWZEy3kjT3uuYI3
+         +llR+fEbYoDGVLvor1WQyBXd7610xDuyBj3uTn+XkmYjFtUH817/cnXcyRdJOrsM3Rim
+         SO2GoxJx3r9CDUHMnS2aKKoRegHqm3r5DX4pHb6xLo9hE+pm3vMoG2yGGumL2FZmuazI
+         tJ83amJ9VJHenH8yOwKyT9K5A9qTr3IyDwgv3H7Two8qjRD4lVccSUWD7MX+6SRK1g6O
+         Cc7CYv5DR6zKN7AX9Tj7QxF7o1hpUDzyagOQ6iK1RqG3H9xpxDG0JJ0pRW2U9gl66wKC
+         5gbg==
+X-Gm-Message-State: AGi0PuZFIFkUo75eNzbOSlYAFUsqmNky7z9an80rlqkXlIqhsEE/odHo
+        HJEEG/P3wy5zBAYNaKhFfHc=
+X-Google-Smtp-Source: APiQypJSnpMObKDFwPmcE36CCeqFHQdSTP7U+46wHd9/od1bNMtQ99Fl/ebKbT2uHzTcIbyf2QQLbg==
+X-Received: by 2002:a63:1c6:: with SMTP id 189mr8027728pgb.254.1586370271792;
+        Wed, 08 Apr 2020 11:24:31 -0700 (PDT)
+Received: from localhost (89.208.244.140.16clouds.com. [89.208.244.140])
+        by smtp.gmail.com with ESMTPSA id j22sm739699pfh.181.2020.04.08.11.24.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 08 Apr 2020 11:24:31 -0700 (PDT)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     thor.thayer@linux.intel.com, krzysztof.adamski@nokia.com,
+        f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, nsekhar@ti.com,
+        bgolaszewski@baylibre.com, baruch@tkos.co.il,
+        wsa+renesas@sang-engineering.com, kgene@kernel.org,
+        krzk@kernel.org, paul@crapouillou.net, vz@mleia.com,
+        khilman@baylibre.com, gregory.clement@bootlin.com,
+        rrichter@marvell.com, afaerber@suse.de,
+        manivannan.sadhasivam@linaro.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, heiko@sntech.de, baohua@kernel.org,
+        linus.walleij@linaro.org, mripard@kernel.org, wens@csie.org,
+        ardb@kernel.org, gcherian@marvell.com, jun.nie@linaro.org,
+        shawnguo@kernel.org, tglx@linutronix.de, zhouyanjie@wanyeetech.com,
+        martin.blumenstingl@googlemail.com
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v2 17/24] i2c: digicolor: convert to devm_platform_ioremap_resource
+Date:   Thu,  9 Apr 2020 02:23:04 +0800
+Message-Id: <20200408182311.26869-18-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200408182311.26869-1-zhengdejin5@gmail.com>
+References: <20200408182311.26869-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+use devm_platform_ioremap_resource() to simplify code, which
+contains platform_get_resource and devm_ioremap_resource.
 
-(+ Dietmar)
+Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+---
+v1 -> v2:
+	- no changed
 
-On 08/04/20 12:34, Jiaxun Yang wrote:
-> @@ -275,7 +224,64 @@ static void parsing_done_workfn(struct work_struct *work)
->  core_initcall(free_raw_capacity);
->  #endif
->
-> -#if defined(CONFIG_ARM64) || defined(CONFIG_RISCV)
-> +#if defined(CONFIG_OF) && !defined(CONFIG_ARM)
-> +#if defined(CONFIG_COMMON_CLK)
-> +bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
+ drivers/i2c/busses/i2c-digicolor.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-We actually use this for arm:
+diff --git a/drivers/i2c/busses/i2c-digicolor.c b/drivers/i2c/busses/i2c-digicolor.c
+index 3adf72540db1..c199ed3334f9 100644
+--- a/drivers/i2c/busses/i2c-digicolor.c
++++ b/drivers/i2c/busses/i2c-digicolor.c
+@@ -291,7 +291,6 @@ static int dc_i2c_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct dc_i2c *i2c;
+-	struct resource *r;
+ 	int ret = 0, irq;
+ 
+ 	i2c = devm_kzalloc(&pdev->dev, sizeof(struct dc_i2c), GFP_KERNEL);
+@@ -312,8 +311,7 @@ static int dc_i2c_probe(struct platform_device *pdev)
+ 	if (IS_ERR(i2c->clk))
+ 		return PTR_ERR(i2c->clk);
+ 
+-	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	i2c->regs = devm_ioremap_resource(&pdev->dev, r);
++	i2c->regs = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(i2c->regs))
+ 		return PTR_ERR(i2c->regs);
+ 
+-- 
+2.25.0
 
-  arch/arm/kernel/topology.o: In function `init_cpu_topology':
-  topology.c:(.init.text+0xc8): undefined reference to `topology_parse_cpu_capacity'
-
-So that doesn't work. TBH I'd be quite happy to see the ifdef(ARCH) go away
-entirely; it's shame that arm is using some of those names already. I think
-some of that is due to the CPU efficiency faff, if we can't get rid of it /
-align those then perhaps the next best thing is to make some of those
-definitions __weak.
-
-> +{
-> +	struct clk *cpu_clk;
-> +	static bool cap_parsing_failed;
-> +	int ret;
-> +	u32 cpu_capacity;
-> +
-> +	if (cap_parsing_failed)
-> +		return false;
-> +
-> +	ret = of_property_read_u32(cpu_node, "capacity-dmips-mhz",
-> +				   &cpu_capacity);
-> +	if (!ret) {
-> +		if (!raw_capacity) {
-> +			raw_capacity = kcalloc(num_possible_cpus(),
-> +					       sizeof(*raw_capacity),
-> +					       GFP_KERNEL);
-> +			if (!raw_capacity) {
-> +				cap_parsing_failed = true;
-> +				return false;
-> +			}
-> +		}
-> +		raw_capacity[cpu] = cpu_capacity;
-> +		pr_debug("cpu_capacity: %pOF cpu_capacity=%u (raw)\n",
-> +			cpu_node, raw_capacity[cpu]);
-> +
-> +		/*
-> +		 * Update freq_factor for calculating early boot cpu capacities.
-> +		 * For non-clk CPU DVFS mechanism, there's no way to get the
-> +		 * frequency value now, assuming they are running at the same
-> +		 * frequency (by keeping the initial freq_factor value).
-> +		 */
-> +		cpu_clk = of_clk_get(cpu_node, 0);
-> +		if (!PTR_ERR_OR_ZERO(cpu_clk)) {
-> +			per_cpu(freq_factor, cpu) =
-> +				clk_get_rate(cpu_clk) / 1000;
-> +			clk_put(cpu_clk);
-> +		}
-> +	} else {
-> +		if (raw_capacity) {
-> +			pr_err("cpu_capacity: missing %pOF raw capacity\n",
-> +				cpu_node);
-> +			pr_err("cpu_capacity: partial information: fallback to 1024 for all CPUs\n");
-> +		}
-> +		cap_parsing_failed = true;
-> +		free_raw_capacity();
-> +	}
-> +
-> +	return !ret;
-> +}
-> +#else
-> +bool __init topology_parse_cpu_capacity(struct device_node *cpu_node, int cpu)
-> +{
-> +		return false;
-> +}
-> +#endif /* CONFIG_COMMON_CLK */
->  /*
->   * This function returns the logic cpu number of the node.
->   * There are basically three kinds of return values:
