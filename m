@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F65F1A2613
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A38C1A2604
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729948AbgDHPr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49522 "EHLO mail.kernel.org"
+        id S1729914AbgDHPrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:47:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729688AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729678AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Apr 2020 11:46:33 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D9D920787;
+        by mail.kernel.org (Postfix) with ESMTPSA id A06372078E;
         Wed,  8 Apr 2020 15:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586360791;
-        bh=BTPcRwxL5Vi5wneFHtqBCwfk8BpgcAIHfCgs53kcGM8=;
+        bh=dzEvyUMT+6iAL0bVATxxLcY08y7xtxW1DkpC2XHSTsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=De3KAj7YfDooui6IYeglxOGipSe8n8+l6o1vwAcpVxrXMs1mtr8dOlfJdnJOH13sW
-         PCEpEZt5GEdmOqrfNglH61kJMhT1F/S81Dcv1iRZs/vbz3PHqtgTNYY4wHXE7P4c0Y
-         0Pv4rQ5BNzG3GfdGZjzr/B3ZxqfNpcBTI7Xde/RY=
+        b=gSAqqCvgTqXa/uXKmv6EtznA69C4V8DH+7tAiOQNLcwtHbDUgP+TAlPo8teTWKDnM
+         dC8jqt6R8V70H20R2xBLozYWzJEo+P1t5Z0t4qINbz+1i1Q9o/HBEt19GSNv210olW
+         4Dzs/4ExuoIJYGl5mAM8SIJF6Fw0DUiAD8BAIus8=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jMCuL-000cBh-P4; Wed, 08 Apr 2020 17:46:29 +0200
+        id 1jMCuL-000cBm-QI; Wed, 08 Apr 2020 17:46:29 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 18/35] scripts: kernel-doc: accept negation like !@var
-Date:   Wed,  8 Apr 2020 17:46:10 +0200
-Message-Id: <cf4f785b3b67375680a0a48a23192ea4bd5b5764.1586359676.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
+Subject: [PATCH 19/35] docs: infiniband: verbs.c: fix some documentation warnings
+Date:   Wed,  8 Apr 2020 17:46:11 +0200
+Message-Id: <9f9212db13dc19e5d80e3fc94ad26f3b9798d154.1586359676.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586359676.git.mchehab+huawei@kernel.org>
 References: <cover.1586359676.git.mchehab+huawei@kernel.org>
@@ -43,61 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a few places, it sometimes need to indicate a negation of a
-parameter, like:
+Parsing this file with kernel-doc produce some warnings:
 
-	!@fshared
+	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
+	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
+	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
+	./drivers/infiniband/core/verbs.c:2579: WARNING: Unexpected indentation.
+	./drivers/infiniband/core/verbs.c:2581: WARNING: Block quote ends without a blank line; unexpected unindent.
+	./drivers/infiniband/core/verbs.c:2613: WARNING: Unexpected indentation.
 
-This pattern happens, for example, at:
-
-	kernel/futex.c
-
-and it is perfectly valid. However, kernel-doc currently
-transforms it into:
-
-	!**fshared**
-
-This won't do what it would be expected.
-
-Fortunately, fixing the script is a simple matter of storing
-the "!" before "@" and adding it after the bold markup, like:
-
-	**!fshared**
+Address them by adding an extra blank line and converting the
+parameters on one of the arguments to a table.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- scripts/kernel-doc | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/infiniband/core/verbs.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index d15c8ea95d93..b019d8db6502 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -213,6 +213,7 @@ my $type_constant = '\b``([^\`]+)``\b';
- my $type_constant2 = '\%([-_\w]+)';
- my $type_func = '(\w+)\(\)';
- my $type_param = '\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
-+my $type_param_ref = '([\!]?)\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
- my $type_fp_param = '\@(\w+)\(\)';  # Special RST handling for func ptr params
- my $type_fp_param2 = '\@(\w+->\S+)\(\)';  # Special RST handling for structs with func ptr params
- my $type_env = '(\$\w+)';
-@@ -237,6 +238,7 @@ my @highlights_man = (
-                       [$type_typedef, "\\\\fI\$1\\\\fP"],
-                       [$type_union, "\\\\fI\$1\\\\fP"],
-                       [$type_param, "\\\\fI\$1\\\\fP"],
-+                      [$type_param_ref, "\\\\fI\$1\$2\\\\fP"],
-                       [$type_member, "\\\\fI\$1\$2\$3\\\\fP"],
-                       [$type_fallback, "\\\\fI\$1\\\\fP"]
- 		     );
-@@ -258,7 +260,7 @@ my @highlights_rst = (
-                        [$type_union, "\\:c\\:type\\:`\$1 <\$2>`"],
-                        # in rst this can refer to any type
-                        [$type_fallback, "\\:c\\:type\\:`\$1`"],
--                       [$type_param, "**\$1**"]
-+                       [$type_param_ref, "**\$1\$2**"]
- 		      );
- my $blankline_rst = "\n";
- 
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 56a71337112c..3bfadd8effcc 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -2574,6 +2574,7 @@ EXPORT_SYMBOL(ib_map_mr_sg_pi);
+  * @page_size:     page vector desired page size
+  *
+  * Constraints:
++ *
+  * - The first sg element is allowed to have an offset.
+  * - Each sg element must either be aligned to page_size or virtually
+  *   contiguous to the previous element. In case an sg element has a
+@@ -2607,10 +2608,12 @@ EXPORT_SYMBOL(ib_map_mr_sg);
+  * @mr:            memory region
+  * @sgl:           dma mapped scatterlist
+  * @sg_nents:      number of entries in sg
+- * @sg_offset_p:   IN:  start offset in bytes into sg
+- *                 OUT: offset in bytes for element n of the sg of the first
++ * @sg_offset_p:   ==== =======================================================
++ *                 IN   start offset in bytes into sg
++ *                 OUT  offset in bytes for element n of the sg of the first
+  *                      byte that has not been processed where n is the return
+  *                      value of this function.
++ *                 ==== =======================================================
+  * @set_page:      driver page assignment function pointer
+  *
+  * Core service helper for drivers to convert the largest
 -- 
 2.25.2
 
