@@ -2,171 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3341A21A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61EC71A21AD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728433AbgDHMUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 08:20:35 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49650 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728290AbgDHMUc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 08:20:32 -0400
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jM9gx-00065k-7K; Wed, 08 Apr 2020 14:20:27 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D8D7F1C0131;
-        Wed,  8 Apr 2020 14:20:26 +0200 (CEST)
-Date:   Wed, 08 Apr 2020 12:20:26 -0000
-From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: Align rq->avg_idle and rq->avg_scan_cost
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200330090127.16294-1-valentin.schneider@arm.com>
-References: <20200330090127.16294-1-valentin.schneider@arm.com>
+        id S1728643AbgDHMUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 08:20:53 -0400
+Received: from mout.web.de ([212.227.15.3]:51573 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728562AbgDHMUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 08:20:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586348431;
+        bh=VNnQ6Zmj3bQlqQMA5yxB7qWSZuLfYMiaZZL53XywQbU=;
+        h=X-UI-Sender-Class:To:From:Subject:Cc:Date;
+        b=M6vaN3YcLlLdoMMhsHrF3vt0FqDIgaFoeMf4Jbo+wBlGg1VjFmmWJndwtz1N8zc8M
+         K+dtUrTSLn6E13NNOvnAjVyG/1fsjhwMJj40kBZhi0lX/+5WwUTUM7hvnUD6DFZDHo
+         ERQJXfphGZx0eMr9wfB1LmPYImYOrr6cDa2MMMeo=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.48.170.28]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0MV4hR-1jnNEA0ytx-00YTk8; Wed, 08
+ Apr 2020 14:20:31 +0200
+To:     dri-devel@lists.freedesktop.org,
+        Linus Walleij <linus.walleij@linaro.org>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Subject: drm/mcde: Checking for a failed platform_get_irq() call in
+ mcde_probe()
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <abd9674c-adf7-b040-814c-076e32a5a48e@web.de>
+Date:   Wed, 8 Apr 2020 14:20:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Message-ID: <158634842647.28353.14472807491323595156.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:fJsj9EGtQRoIZSX4yIB+H9dYKQ11JanGW+a7+d0e0OVkqcsSRwR
+ Q9SoK5nsw3jZOcPNpbB9t5YTqiHZvygGn9+Zbtlh7djw7YWLbY3Rgpnz0AbHgNBXoAcSxZC
+ qyxRcihT9oSisP4I4/xQ9iXPU7mcBbMMwwfhCOK1fCT7gobUt3ftBy41dvYEuRGPgRgO8O4
+ wwn3bherDf8Wq1qlZnqtQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YitY0hQW7l4=:70MIBtTbWPQO+81QXSQuAH
+ ZbqvU1rGIu1KvNxfSJst9uYiGsUWPGrvvE6I3UriCT/s4+pHK2Qmzb5ncFK7BfoaSyWfylLYU
+ 3eUieZ7+yBB8aX86E8JrtBoSTYiRgme7HvCaTYMUYeWNjwrhCUJqNxtlhF8jKjDnXL4CY+aEm
+ nFhEqnUgv1vXukuvclaSijQJ5sV1WbVxGXJJ2+ZLi8QCVTs8O5P9EtKDPd9QIWWqOZUIdjfeb
+ G7IsIjJ54s5MtUNvSIE7FFNNvP/CVs94XBsEck3h5I0mZp1DRX8sUlGegznwwdAmsHwkumDse
+ PGGNK6Kp15PDVM1fEpyQpPik8MCv5XBp04MyOXv00saJgk/2y38rXoHzrKp/fSgo6fBL/vVeb
+ cgKbp0u8UK/FMha/MJ/Bqe/P+s5ZnOh7KucmJO3fUxrmWAhGrybAU0UI9pHU2plZj1DC8jC3O
+ P6C4VWITadD39+1b/5sBD48NnQyFrCv2euWJdnRTCKMcpDopVMxVBYB9M6ULAP/TVdYOPT3M5
+ ziLTLSCILwTHD/aXUgGDHnwD2RvjNwTVoT4SgWqQbSwZ1bxOLoo2itep2nJ/qVGSB+XbY/Z+t
+ V5z4RwdebSDuiB80suraTjqPJAk+UiBUAxS2JZfRsq5Gue8NMVCTYFa0eHbXwJEt103pZTzJe
+ hcL0uGv/J+4LdVdW6SkRGyIUSdrqSHSdaXcRfPnbP06dHh6Z/j4d2G9xOYYA89raxniGrjLwD
+ kvdQT8WHc5JnCLXV3klFBXOIzkTtjJf9CssG9uPuxZ3FU+kYlngp1dREpxYZ0YJX+3SF90Dfo
+ HJze7RGYHpQAHH7Sw/onXBIcftUfAKHsrnAmm0NViQwDs3f+DgeGUNwB7B6A+jShgkkb4lbw5
+ Yab3c0XhKmOZzbjjmLU66+uD3h1nfTXe2q+qpCJHng3jQSU3TrXHibDEKIzQWH31grQgFMJ+K
+ uvMpyZNiXLdQHvGIJNk2wEQ1qySl9Pqa7YPY3IukKMG5vgmC42PVs/07LsHyAwk1exrJkzI1P
+ Yurdfs0glqpoG57uIAz2Dc8YnsRNuwH9aqrI6T2fF5ep1aH3B2FjL2FGltNsVWQv8c4eusVXV
+ Dmzy5NnnZ53jXc1o9M/8+9lqPpq6Otb90BchvN+IFPTFO3aagBJrUNEpRzfzurbfv7SyV2mIj
+ CKfjtEsRlMjpdUfHbzQoM8soaNkQnsQCCJqovo2BNankCMxrU7X3pOIAglBWSwEMFp/pXEtBr
+ eJt7ZP31rNBTwJ5yL
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Hello,
 
-Commit-ID:     d76343c6b2b79f5e89c392bc9ce9dabc4c9e90cb
-Gitweb:        https://git.kernel.org/tip/d76343c6b2b79f5e89c392bc9ce9dabc4c9e90cb
-Author:        Valentin Schneider <valentin.schneider@arm.com>
-AuthorDate:    Mon, 30 Mar 2020 10:01:27 +01:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 08 Apr 2020 11:35:18 +02:00
+I have taken another look at the implementation of the function =E2=80=9Cm=
+cde_probe=E2=80=9D.
+A software analysis approach points the following source code out for
+further development considerations.
+https://elixir.bootlin.com/linux/v5.6.2/source/drivers/gpu/drm/mcde/mcde_d=
+rv.c#L401
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dr=
+ivers/gpu/drm/mcde/mcde_drv.c?id=3Df5e94d10e4c468357019e5c28d48499f677b284=
+f#n402
 
-sched/fair: Align rq->avg_idle and rq->avg_scan_cost
-
-sched/core.c uses update_avg() for rq->avg_idle and sched/fair.c uses an
-open-coded version (with the exact same decay factor) for
-rq->avg_scan_cost. On top of that, select_idle_cpu() expects to be able to
-compare these two fields.
-
-The only difference between the two is that rq->avg_scan_cost is computed
-using a pure division rather than a shift. Turns out it actually matters,
-first of all because the shifted value can be negative, and the standard
-has this to say about it:
-
-  """
-  The result of E1 >> E2 is E1 right-shifted E2 bit positions. [...] If E1
-  has a signed type and a negative value, the resulting value is
-  implementation-defined.
-  """
-
-Not only this, but (arithmetic) right shifting a negative value (using 2's
-complement) is *not* equivalent to dividing it by the corresponding power
-of 2. Let's look at a few examples:
-
-  -4      -> 0xF..FC
-  -4 >> 3 -> 0xF..FF == -1 != -4 / 8
-
-  -8      -> 0xF..F8
-  -8 >> 3 -> 0xF..FF == -1 == -8 / 8
-
-  -9      -> 0xF..F7
-  -9 >> 3 -> 0xF..FE == -2 != -9 / 8
-
-Make update_avg() use a division, and export it to the private scheduler
-header to reuse it where relevant. Note that this still lets compilers use
-a shift here, but should prevent any unwanted surprise. The disassembly of
-select_idle_cpu() remains unchanged on arm64, and ttwu_do_wakeup() gains 2
-instructions; the diff sort of looks like this:
-
-  - sub x1, x1, x0
-  + subs x1, x1, x0 // set condition codes
-  + add x0, x1, #0x7
-  + csel x0, x0, x1, mi // x0 = x1 < 0 ? x0 : x1
-    add x0, x3, x0, asr #3
-
-which does the right thing (i.e. gives us the expected result while still
-using an arithmetic shift)
-
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20200330090127.16294-1-valentin.schneider@arm.com
----
- kernel/sched/core.c  | 6 ------
- kernel/sched/fair.c  | 7 ++-----
- kernel/sched/sched.h | 6 ++++++
- 3 files changed, 8 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a2694ba..f6b329b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2119,12 +2119,6 @@ int select_task_rq(struct task_struct *p, int cpu, int sd_flags, int wake_flags)
- 	return cpu;
- }
- 
--static void update_avg(u64 *avg, u64 sample)
--{
--	s64 diff = sample - *avg;
--	*avg += diff >> 3;
--}
--
- void sched_set_stop_task(int cpu, struct task_struct *stop)
- {
- 	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1ea3ddd..fb025e9 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6080,8 +6080,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
- 	struct sched_domain *this_sd;
- 	u64 avg_cost, avg_idle;
--	u64 time, cost;
--	s64 delta;
-+	u64 time;
- 	int this = smp_processor_id();
- 	int cpu, nr = INT_MAX;
- 
-@@ -6119,9 +6118,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	irq =3D platform_get_irq(pdev, 0);
+ 	if (!irq) {
+ 		ret =3D -EINVAL;
+ 		goto clk_disable;
  	}
- 
- 	time = cpu_clock(this) - time;
--	cost = this_sd->avg_scan_cost;
--	delta = (s64)(time - cost) / 8;
--	this_sd->avg_scan_cost += delta;
-+	update_avg(&this_sd->avg_scan_cost, time);
- 
- 	return cpu;
- }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0f616bf..cd00814 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -195,6 +195,12 @@ static inline int task_has_dl_policy(struct task_struct *p)
- 
- #define cap_scale(v, s) ((v)*(s) >> SCHED_CAPACITY_SHIFT)
- 
-+static inline void update_avg(u64 *avg, u64 sample)
-+{
-+	s64 diff = sample - *avg;
-+	*avg += diff / 8;
-+}
-+
- /*
-  * !! For sched_setattr_nocheck() (kernel) only !!
-  *
+
+
+The software documentation is providing the following information
+for the used programming interface.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dr=
+ivers/base/platform.c?id=3Df5e94d10e4c468357019e5c28d48499f677b284f#n221
+https://elixir.bootlin.com/linux/v5.6.2/source/drivers/base/platform.c#L20=
+2
+
+=E2=80=9C=E2=80=A6
+ * Return: IRQ number on success, negative error number on failure.
+=E2=80=A6=E2=80=9D
+
+Would you like to reconsider the shown condition check?
+
+Regards,
+Markus
