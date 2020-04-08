@@ -2,136 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA1E1A2294
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 15:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C0E1A2278
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 15:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729005AbgDHNGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 09:06:40 -0400
-Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17893 "EHLO
-        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727902AbgDHNGk (ORCPT
+        id S1728872AbgDHNCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 09:02:05 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49787 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727896AbgDHNCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 09:06:40 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1586351026; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=Xt3QlKHF9gAfs7PFxUfbfSkP2aVAC/tz3Gtn21Vxl34OaxdveVAogbirOWQxjbWyvWuNKvM9EA+oIzKP0hAKyK9keQCVyvtL8Deq/+x3WBcNPj755XaYkAd1Y7bYAyB1LsxBBkNzkhLBGXl25PA+/sKjHm/drvMlIP9cn2IlA7M=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1586351026; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=CuiH5YcI6tCfhJK48jBjzSJsIlmqrJPGhHGDuUriybY=; 
-        b=BvmgYeHKzI358gNXXMatE4R1i71CDcQkWEDt5jfAiSXCugqPHN3bU+6b7QgDbsga98pZlnvyq7UpqADjp3CZYAlmSX+7Sw9OjEzRAJ7E0601qcJsBcbCnBtVpbGg8H6CbksjNjAxbkX1ZeBe2puyLhTEWRNGIwh+fVOEMJXI2A8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=flygoat.com;
-        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
-        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586351026;
-        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
-        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=CuiH5YcI6tCfhJK48jBjzSJsIlmqrJPGhHGDuUriybY=;
-        b=JkkmTwA1xtnZOnvPqGgtJ0KvVe6ewM+F5dVZNsZSTsX9Ms1EI4MxqtL7JHf30NxI
-        8hmOZefcI7oPuh4T+8PLqukQLZgxX3VUx8ArFRvVJNEJqKHKhUl8+PktXp4ir7eJHSs
-        44ZBGWMRoTHvXf0EWiZy1VoLp8Sr9/TAvSqUn4kQ=
-Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
-        with SMTPS id 15863510255787.563914307152345; Wed, 8 Apr 2020 21:03:45 +0800 (CST)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhc@lemote.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robert Richter <rric@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Allison Randal <allison@lohutok.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Matt Redfearn <matt.redfearn@mips.com>,
-        Steve Winslow <swinslow@gmail.com>,
-        Richard Fontana <rfontana@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
-Message-ID: <20200408130024.2529220-7-jiaxun.yang@flygoat.com>
-Subject: [PATCH 12/12] MIPS: ip27: Fix includes
-Date:   Wed,  8 Apr 2020 20:59:54 +0800
-X-Mailer: git-send-email 2.26.0.rc2
-In-Reply-To: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
-References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
+        Wed, 8 Apr 2020 09:02:05 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jMALA-0006b0-1S; Wed, 08 Apr 2020 15:02:00 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 077EB10069D; Wed,  8 Apr 2020 15:01:58 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Vivek Goyal <vgoyal@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
+In-Reply-To: <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com>
+References: <20200407172140.GB64635@redhat.com> <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net> <87eeszjbe6.fsf@nanos.tec.linutronix.de> <ce81c95f-8674-4012-f307-8f32d0e386c2@redhat.com> <874ktukhku.fsf@nanos.tec.linutronix.de> <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com>
+Date:   Wed, 08 Apr 2020 15:01:58 +0200
+Message-ID: <87pncib06x.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Somehow changes in topology messed up headers.
-So just add necessary headers to make it compile again.
+Paolo Bonzini <pbonzini@redhat.com> writes:
+> On 08/04/20 01:21, Thomas Gleixner wrote:
+>>>> No. Async PF is not a real exception. It has interrupt semantics and it
+>>>> can only be injected when the guest has interrupts enabled. It's bad
+>>>> design.
+>>>
+>>> Page-ready async PF has interrupt semantics.
+>>>
+>>> Page-not-present async PF however does not have interrupt semantics, it
+>>> has to be injected immediately or not at all (falling back to host page
+>>> fault in the latter case).
+>> 
+>> If interrupts are disabled in the guest then it is NOT injected and the
+>> guest is suspended. So it HAS interrupt semantics. Conditional ones,
+>> i.e. if interrupts are disabled, bail, if not then inject it.
+>
+> Interrupts can be delayed by TPR or STI/MOV SS interrupt window, async
+> page faults cannot (again, not the page-ready kind).
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/include/asm/mach-ip27/mmzone.h   | 2 ++
- arch/mips/include/asm/mach-ip27/topology.h | 2 ++
- arch/mips/include/asm/sn/addrs.h           | 1 +
- 3 files changed, 5 insertions(+)
+Can we pretty please stop using the term async page fault? It's just
+wrong and causes more confusion than anything else.
 
-diff --git a/arch/mips/include/asm/mach-ip27/mmzone.h b/arch/mips/include/a=
-sm/mach-ip27/mmzone.h
-index 08c36e50a860..e0a53b97b4a8 100644
---- a/arch/mips/include/asm/mach-ip27/mmzone.h
-+++ b/arch/mips/include/asm/mach-ip27/mmzone.h
-@@ -2,6 +2,8 @@
- #ifndef _ASM_MACH_MMZONE_H
- #define _ASM_MACH_MMZONE_H
-=20
-+#include <linux/mmzone.h>
-+
- #include <asm/sn/addrs.h>
- #include <asm/sn/arch.h>
- #include <asm/sn/agent.h>
-diff --git a/arch/mips/include/asm/mach-ip27/topology.h b/arch/mips/include=
-/asm/mach-ip27/topology.h
-index d66cc53feab8..601e350908f7 100644
---- a/arch/mips/include/asm/mach-ip27/topology.h
-+++ b/arch/mips/include/asm/mach-ip27/topology.h
-@@ -2,6 +2,8 @@
- #ifndef _ASM_MACH_TOPOLOGY_H
- #define _ASM_MACH_TOPOLOGY_H=091
-=20
-+#include <linux/numa.h>
-+
- #include <asm/sn/types.h>
- #include <asm/mmzone.h>
-=20
-diff --git a/arch/mips/include/asm/sn/addrs.h b/arch/mips/include/asm/sn/ad=
-drs.h
-index 837d23e24976..1d3945ef2ca4 100644
---- a/arch/mips/include/asm/sn/addrs.h
-+++ b/arch/mips/include/asm/sn/addrs.h
-@@ -13,6 +13,7 @@
- #ifndef __ASSEMBLY__
- #include <linux/smp.h>
- #include <linux/types.h>
-+#include <asm/io.h>
- #endif /* !__ASSEMBLY__ */
-=20
- #include <asm/addrspace.h>
---=20
-2.26.0.rc2
+What this does is really what I called Opportunistic Make Guest Do Other
+Stuff. And it has neither true exception nor true interrupt semantics.
 
+It's a software event which is injected into the guest to let the guest
+do something else than waiting for the actual #PF cause to be
+resolved. It's part of a software protocol between host and guest.
 
+And it comes with restrictions:
+
+    The Do Other Stuff event can only be delivered when guest IF=1.
+
+    If guest IF=0 then the host has to suspend the guest until the
+    situation is resolved.
+
+    The 'Situation resolved' event must also wait for a guest IF=1 slot.
+
+> Page-not-present async page faults are almost a perfect match for the
+> hardware use of #VE (and it might even be possible to let the
+> processor deliver the exceptions).  There are other advantages:
+>
+> - the only real problem with using #PF (with or without
+> KVM_ASYNC_PF_SEND_ALWAYS) seems to be the NMI reentrancy issue, which
+> would not be there for #VE.
+>
+> - #VE are combined the right way with other exceptions (the
+> benign/contributory/pagefault stuff)
+>
+> - adjusting KVM and Linux to use #VE instead of #PF would be less than
+> 100 lines of code.
+
+If you just want to solve Viveks problem, then its good enough. I.e. the
+file truncation turns the EPT entries into #VE convertible entries and
+the guest #VE handler can figure it out. This one can be injected
+directly by the hardware, i.e. you don't need a VMEXIT.
+
+If you want the opportunistic do other stuff mechanism, then #VE has
+exactly the same problems as the existing async "PF". It's not magicaly
+making that go away.
+
+One possible solution might be to make all recoverable EPT entries
+convertible and let the HW inject #VE for those.
+
+So the #VE handler in the guest would have to do:
+
+       if (!recoverable()) {
+       		if (user_mode)
+                	send_signal();
+                else if (!fixup_exception())
+                	die_hard();
+                goto done;  
+       }                 
+
+       store_ve_info_in_pv_page();
+
+       if (!user_mode(regs) || !preemptible()) {
+       		hypercall_resolve_ept(can_continue = false);
+       } else {
+                init_completion();
+       		hypercall_resolve_ept(can_continue = true);
+                wait_for_completion();
+       }
+
+or something like that.
+
+The hypercall to resolve the EPT fail on the host acts on the
+can_continue argument.
+
+If false, it suspends the guest vCPU and only returns when done.
+
+If true it kicks the resolve process and returns to the guest which
+suspends the task and tries to do something else.
+
+The wakeup side needs to be a regular interrupt and cannot go through
+#VE.
+
+Thanks,
+
+        tglx
