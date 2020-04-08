@@ -2,190 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A351A1D45
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B79B1A1D14
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:06:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727007AbgDHIPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 04:15:53 -0400
-Received: from server-x.ipv4.hkg02.ds.network ([27.111.83.178]:41316 "EHLO
-        mail.gtsys.com.hk" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbgDHIPw (ORCPT
+        id S1726760AbgDHIGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 04:06:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60608 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726366AbgDHIGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 04:15:52 -0400
-X-Greylist: delayed 364 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 04:15:50 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 73A3E200C81B;
-        Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
-X-Virus-Scanned: Debian amavisd-new at gtsys.com.hk
-Received: from mail.gtsys.com.hk ([127.0.0.1])
-        by localhost (mail.gtsys.com.hk [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id TKxPGT4tbOR3; Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
-Received: from s01.gtsys.com.hk (unknown [10.128.4.2])
-        by mail.gtsys.com.hk (Postfix) with ESMTP id 4DD4D200C7FA;
-        Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
-Received: from armhf2.gtsys.com.hk (unknown [10.128.4.15])
-        by s01.gtsys.com.hk (Postfix) with ESMTP id 415F4C01F8A;
-        Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
-Received: by armhf2.gtsys.com.hk (Postfix, from userid 1000)
-        id 1658F201602; Wed,  8 Apr 2020 16:09:45 +0800 (HKT)
-From:   Chris Ruehl <chris.ruehl@gtsys.com.hk>
-Cc:     Chris Ruehl <chris.ruehl@gtsys.com.hk>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stefan Popa <stefan.popa@analog.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Richard Fontana <rfontana@redhat.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] iio: DAC extension for ltc2634-12/10/8
-Date:   Wed,  8 Apr 2020 16:03:29 +0800
-Message-Id: <20200408080338.11080-1-chris.ruehl@gtsys.com.hk>
-X-Mailer: git-send-email 2.20.1
+        Wed, 8 Apr 2020 04:06:51 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03884ZWi053893
+        for <linux-kernel@vger.kernel.org>; Wed, 8 Apr 2020 04:06:51 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3091ykm4p3-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 04:06:50 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <schnelle@linux.ibm.com>;
+        Wed, 8 Apr 2020 09:06:24 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 8 Apr 2020 09:06:21 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03886jG531391922
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Apr 2020 08:06:45 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA58442045;
+        Wed,  8 Apr 2020 08:06:44 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 82F634204D;
+        Wed,  8 Apr 2020 08:06:44 +0000 (GMT)
+Received: from oc5500677777.ibm.com (unknown [9.145.62.21])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Apr 2020 08:06:44 +0000 (GMT)
+Subject: Re: [RFC] net/mlx5: Fix failing fw tracer allocation on s390
+To:     Markus Elfring <Markus.Elfring@web.de>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eran Ben Elisha <eranbe@mellanox.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Moshe Shemesh <moshe@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+References: <77241c76-4836-3080-7fa6-e65fc3af5106@web.de>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Date:   Wed, 8 Apr 2020 10:06:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <77241c76-4836-3080-7fa6-e65fc3af5106@web.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+X-TM-AS-GCONF: 00
+x-cbid: 20040808-4275-0000-0000-000003BBDC52
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20040808-4276-0000-0000-000038D13FB0
+Message-Id: <7eaec712-6427-7adf-98cd-2c4347dd9e85@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_10:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
+ clxscore=1015 malwarescore=0 phishscore=0 adultscore=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004080061
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add support for Analog Devices (Linear Technology)
-LTC26234 Quad 12-/10-/8-Bit Rail-to-Rail DAC.
-The SPI functionality based on them from LTC2632 therefor
-add the definitions only and update the Kconfig.
 
-Signed-off-by: Chris Ruehl <chris.ruehl@gtsys.com.hk>
----
- drivers/iio/dac/Kconfig   |  6 ++--
- drivers/iio/dac/ltc2632.c | 61 +++++++++++++++++++++++++++++++++++++++
- 2 files changed, 64 insertions(+), 3 deletions(-)
+On 4/7/20 5:12 PM, Markus Elfring wrote:
+>> On s390 FORCE_MAX_ZONEORDER is 9 instead of 11, thus a larger kzalloc()
+>> allocation as done for the firmware tracer will always fail.
+> 
+> How do you think about to add the tag “Fixes” to the final change description?
+> 
+> Regards,
+> Markus
+> 
+You're right that makes a lot of sense, thanks! I guess this should reference
+the commit that introduced the debug trace, right?
 
-diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-index 93744011b63f..e14c9b14c4de 100644
---- a/drivers/iio/dac/Kconfig
-+++ b/drivers/iio/dac/Kconfig
-@@ -279,12 +279,12 @@ config LTC1660
- 	  module will be called ltc1660.
- 
- config LTC2632
--	tristate "Linear Technology LTC2632-12/10/8 and LTC2636-12/10/8 DAC spi driver"
-+	tristate "Linear Technology LTC2632,LTC2634,LTC2636-12/10/8 DAC spi driver"
- 	depends on SPI
- 	help
- 	  Say yes here to build support for Linear Technology
--	  LTC2632-12, LTC2632-10, LTC2632-8, LTC2636-12, LTC2636-10 and
--	  LTC2636-8 converters (DAC).
-+	  LTC2632, LTC2634 and LTC2636 DAC resolution 12/10/8 bit
-+	  low 0-2.5V and high 0-4,096V range converters.
- 
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called ltc2632.
-diff --git a/drivers/iio/dac/ltc2632.c b/drivers/iio/dac/ltc2632.c
-index 7adc91056aa1..e939d7f81014 100644
---- a/drivers/iio/dac/ltc2632.c
-+++ b/drivers/iio/dac/ltc2632.c
-@@ -24,6 +24,7 @@
- /**
-  * struct ltc2632_chip_info - chip specific information
-  * @channels:		channel spec for the DAC
-+ * @num_channels:	DAC channel count of the chip
-  * @vref_mv:		internal reference voltage
-  */
- struct ltc2632_chip_info {
-@@ -53,6 +54,12 @@ enum ltc2632_supported_device_ids {
- 	ID_LTC2632H12,
- 	ID_LTC2632H10,
- 	ID_LTC2632H8,
-+	ID_LTC2634L12,
-+	ID_LTC2634L10,
-+	ID_LTC2634L8,
-+	ID_LTC2634H12,
-+	ID_LTC2634H10,
-+	ID_LTC2634H8,
- 	ID_LTC2636L12,
- 	ID_LTC2636L10,
- 	ID_LTC2636L8,
-@@ -235,6 +242,36 @@ static const struct ltc2632_chip_info ltc2632_chip_info_tbl[] = {
- 		.num_channels	= 2,
- 		.vref_mv	= 4096,
- 	},
-+	[ID_LTC2634L12] = {
-+		.channels	= ltc2632x12_channels,
-+		.num_channels	= 4,
-+		.vref_mv	= 2500,
-+	},
-+	[ID_LTC2634L10] = {
-+		.channels	= ltc2632x10_channels,
-+		.num_channels	= 4,
-+		.vref_mv	= 2500,
-+	},
-+	[ID_LTC2634L8] =  {
-+		.channels	= ltc2632x8_channels,
-+		.num_channels	= 4,
-+		.vref_mv	= 2500,
-+	},
-+	[ID_LTC2634H12] = {
-+		.channels	= ltc2632x12_channels,
-+		.num_channels	= 4,
-+		.vref_mv	= 4096,
-+	},
-+	[ID_LTC2634H10] = {
-+		.channels	= ltc2632x10_channels,
-+		.num_channels	= 4,
-+		.vref_mv	= 4096,
-+	},
-+	[ID_LTC2634H8] =  {
-+		.channels	= ltc2632x8_channels,
-+		.num_channels	= 4,
-+		.vref_mv	= 4096,
-+	},
- 	[ID_LTC2636L12] = {
- 		.channels	= ltc2632x12_channels,
- 		.num_channels	= 8,
-@@ -356,6 +393,12 @@ static const struct spi_device_id ltc2632_id[] = {
- 	{ "ltc2632-h12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2632H12] },
- 	{ "ltc2632-h10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2632H10] },
- 	{ "ltc2632-h8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2632H8] },
-+	{ "ltc2634-l12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634L12] },
-+	{ "ltc2634-l10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634L10] },
-+	{ "ltc2634-l8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634L8] },
-+	{ "ltc2634-h12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634H12] },
-+	{ "ltc2634-h10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634H10] },
-+	{ "ltc2634-h8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2634H8] },
- 	{ "ltc2636-l12", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2636L12] },
- 	{ "ltc2636-l10", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2636L10] },
- 	{ "ltc2636-l8", (kernel_ulong_t)&ltc2632_chip_info_tbl[ID_LTC2636L8] },
-@@ -385,6 +428,24 @@ static const struct of_device_id ltc2632_of_match[] = {
- 	}, {
- 		.compatible = "lltc,ltc2632-h8",
- 		.data = &ltc2632_chip_info_tbl[ID_LTC2632H8]
-+	}, {
-+		.compatible = "lltc,ltc2634-l12",
-+		.data = &ltc2632_chip_info_tbl[ID_LTC2634L12]
-+	}, {
-+		.compatible = "lltc,ltc2634-l10",
-+		.data = &ltc2632_chip_info_tbl[ID_LTC2634L10]
-+	}, {
-+		.compatible = "lltc,ltc2634-l8",
-+		.data = &ltc2632_chip_info_tbl[ID_LTC2634L8]
-+	}, {
-+		.compatible = "lltc,ltc2634-h12",
-+		.data = &ltc2632_chip_info_tbl[ID_LTC2634H12]
-+	}, {
-+		.compatible = "lltc,ltc2634-h10",
-+		.data = &ltc2632_chip_info_tbl[ID_LTC2634H10]
-+	}, {
-+		.compatible = "lltc,ltc2634-h8",
-+		.data = &ltc2632_chip_info_tbl[ID_LTC2634H8]
- 	}, {
- 		.compatible = "lltc,ltc2636-l12",
- 		.data = &ltc2632_chip_info_tbl[ID_LTC2636L12]
--- 
-2.20.1
+Best regards,
+Niklas
 
