@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C43661A2659
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D79EE1A2662
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729759AbgDHPxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:53:06 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:33573 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729566AbgDHPxG (ORCPT
+        id S1729830AbgDHPyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:54:08 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:49277 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729566AbgDHPyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:53:06 -0400
-Received: by mail-il1-f195.google.com with SMTP id k29so7196427ilg.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KvZGibvdFBA551zpY54wJDMqv1FNrib21JtR9KJeHpU=;
-        b=BrAh2zqYtuqTiIoh65WWnhD7RQu4nZSkqZMJlJOd8IKGw5bNwJpQmVjO1vRHWx5xeW
-         EV81jwHO4+Go7JGhyXoX3JTCM4sC8Liznnbl2V1TZgs2GvIb8CvvjosmTBWj1h2wWSx4
-         Rjdp01wco61log7FoLX04jZY0Kk9XRYpXUdw+qLojeShj/R4zqafz2s8VW7WY1qAb8jW
-         mucpvg/gYO8df04TB/uydF88XA5QWmo3M/Nyw7BuNJtYckU1qCgk4EfEOAD2AUiiQLEf
-         F4oxjb47rEwaPDq60k3ivH/emyV4uOqjPTMHsOGDlak3FNJlxe4vF5ypTVU1GLWQE7Lc
-         nkFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KvZGibvdFBA551zpY54wJDMqv1FNrib21JtR9KJeHpU=;
-        b=W548wcG9xBYVJEwkhKd1B/OzFxnBbc9JFTVtc+BFhzFHcPkgUCjeStLhErPdNtn7jq
-         nErMI5flILwbKs1Dee0GYlE/5JV2r4SKaTvx9YMGOv7OziAUO9DfGY/YPPAm+LA78+q0
-         1S3AGcWhdr7Cu2Jwj8kLY7Z6nMBFlCV2Es2VS78nw5IFD7RV/KWSRGo9v4wX2+CveQAP
-         2i7CF81ukZebZY+LqQ4B3yNzrs624Fi/mpHDHi3BV0PoLl0Lu8OOq2M0X4rKnLTiAPgn
-         wmCqzlRg9DjO3tlrPGy6GMygT9MuDkfsMBiNEMKHHd28JLll9uCV2jvbt2psrfe8gm/f
-         W/ag==
-X-Gm-Message-State: AGi0PuZOnYavaCfz3xSrZmvDvDzONDwzpuIUFJpiQxs1a82DdARjCACk
-        nrpvhFcw9WBB9s7EHRz/V9lm48RkEjfQnq60JF6GmQjgxghwXQ==
-X-Google-Smtp-Source: APiQypLtM2XFsq6ty4ERtciUM0Bz3DEXv4p34A53iYWeDSJ02sokwS5qnzg4zwSKZjNYpUf+mRYWEKhQiODLw2cNjGo=
-X-Received: by 2002:a92:849b:: with SMTP id y27mr8024575ilk.215.1586361183371;
- Wed, 08 Apr 2020 08:53:03 -0700 (PDT)
+        Wed, 8 Apr 2020 11:54:07 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MXYEr-1jns7o1mmd-00YvPf; Wed, 08 Apr 2020 17:54:03 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: asm9260: fix __clk_hw_register_fixed_rate_with_accuracy typo
+Date:   Wed,  8 Apr 2020 17:53:43 +0200
+Message-Id: <20200408155402.2138446-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <20200219171225.5547-1-idryomov@gmail.com> <CAHp75Vf24yNeLEweq_70AUzKwbdyurB6ze9739Qy9djA9dSefg@mail.gmail.com>
- <CAOi1vP9gfMoU14Ax+VLksQ+_3yOO3m3bh0Uh02SUMfPFDDEW9g@mail.gmail.com>
- <CAOi1vP8NN=8e8kW6g7KegUt52auJoE53ZCdEQHv2DMqFe1=g0Q@mail.gmail.com>
- <CAOi1vP9t=kq0M91rJXbXa1pj43eczsHw+0Y5Km30tQP5AJrs2g@mail.gmail.com>
- <CAHp75VfvUN=E-_n8VAKQ9nQ7mr2hbjS38bYCBbCdh02pxphOwg@mail.gmail.com>
- <CAOi1vP-K-AwzPqdHHDFDvef_nLPx3pr2NnQnSo5Emvsc1hF7Cg@mail.gmail.com> <20200408150643.GD3676135@smile.fi.intel.com>
-In-Reply-To: <20200408150643.GD3676135@smile.fi.intel.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Wed, 8 Apr 2020 17:52:52 +0200
-Message-ID: <CAOi1vP_Dqu7i52_BPmR8N8+svAKMEwqHTOQrNV_228tXo8mHaQ@mail.gmail.com>
-Subject: Re: [PATCH v2] vsprintf: don't obfuscate NULL and error pointers
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Tobin C . Harding" <me@tobin.cc>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:TilCS4/VbuvG1KlVdP8CC9XcCXl56DTAeZrXFyWtCRJQJbt3WQY
+ vL1y7YQYEAAEDItmxZwDm1hXg0BmmuqZRGqZ4m8wZ5SK0YYxn9p/oQc8ChpBQEsm0NTEpht
+ UGK5R7q3GcdWN6iNhlwUrBMzGBCYmY34XVELclaI0VWqLnD10cpoxJvsIhIHVTXl7VVZSJC
+ EvMK3h9sJ8jqoLMGHsRmA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oBHlDLZYRwo=:dNKCojhrR5uxAPhnQyNh0S
+ 5Vet3C2JOoi9r5zsd+vx8DicDLfqbkS1NUR0I7NMIWz6yagR1dWAbOZVJ6Lg8koGbQCHc34EU
+ VcehZAHy1RucDAPRs+i7KVUtiPME6o2w6sgasZWA7mMznt3/gEROYbguGHMXVE7yVspnEjbX1
+ UZc1kexz1lYuN0dwDEulAfq/H2Ceknc8XW7aGeRkX7WmTTn/L/znhNA4Gpr/Jf9jgWODLUM1v
+ 0ew9uvvy2WV5WAhADSd7GMPdZYEUByx9yem32RKeYp3A9M4hFuuQ/rKhJXhe7Ch1/MGSwqGcb
+ ea2hAKsEjLG3NnkYrUqUqtmURl9DCxvPhS5lpVnPP/8o3FhagjSgEi/2LCTignL+fOEo8NVZw
+ UqH7TJPHesiMO4a060dqTatQp0c2OFEt5c0labJqWKXqdUxj4UUt7h//e+o1zYnZLXhBw9OE1
+ 8A02Vh3KHqP5qKFDJFsIJ0vFGAO5Mwt6J3IT57lBgbAbScBAAHZCghgl4/ipi6iPEYxN/XRXj
+ qsDteNiDDDMdF0RPtDiJgOdDOvmSCKk/mHvvHTnUZK9QXr2K1JZtXZVw0QVV8suYswqRhrfX+
+ 94ZB25cbszWZ8VkS1hB28bm5O0wkpfgBZDCvGR6CkZ6S7NiNUDFD8IL/qKtD5klpew5oeo4/T
+ z83euCQOUov2rUyYpzmAxUxWnSKTJqMYsLFFvy+Uie9pdFzXZBf0szyx8JZIb70Q0+srnv8EZ
+ pD+Ii+lOtvDIG5EZKg8jKGONIdQzvEtRt/qzGYEdLl+MBlltTIHqXPWgRgpIBOzQwinUL/FxR
+ wYKFNaBLxR33rI5/X0w04H+zaYg78DiXMjqhZGkdPvlEOdo6Go=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 5:06 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Wed, Apr 08, 2020 at 04:38:25PM +0200, Ilya Dryomov wrote:
-> > On Wed, Apr 8, 2020 at 12:31 AM Andy Shevchenko
-> > <andy.shevchenko@gmail.com> wrote:
-> > >
-> > > On Wed, Apr 8, 2020 at 12:45 AM Ilya Dryomov <idryomov@gmail.com> wrote:
-> > > > On Wed, Feb 19, 2020 at 8:23 PM Ilya Dryomov <idryomov@gmail.com> wrote:
-> > >
-> > > > Hi Petr,
-> > > >
-> > > > Bump, as I don't see this in linux-next or other public branches.
-> > > > The discussion was split between several threads, revolving around
-> > > > the vision for how lib/test_printf.c should be structured, but the
-> > > > fix itself wasn't disputed.
-> > > >
-> > > > Could you please pick it up for 5.7-rc1?  If you want to restructure
-> > > > the test suite before adding any new test cases, v1 doesn't have them.
-> > > > Other than the test cases, the only difference between v1 and v2 is
-> > > > added reviews and acks.
-> > >
-> > > Petr has some obstacles that prevent him to pay attention on this and
-> > > actually do anything right now for Linux kernel.
-> > > If Rasmus, Sergey, you and maybe others will got consensus here, I
-> > > think Andrew can take it thru his tree.
-> >
-> > Thanks for letting us know, Andy.
-> >
-> > Other than Petr, two people are listed as maintainers of vsprintf.c:
-> > Sergey and Steve.  Both of them were fine with v1 (no tests) and sent
-> > their acks.
-> >
-> > Rasmus, you wanted to see some tests, so I posted v2.  However Petr
-> > wanted to restructure the test suite first, and it didn't seem like you
-> > him agreed on what exactly that should look like.  Which would you
-> > prefer to be picked by Andrew, v1 or v2?
->
-> I think it's question to maintainers. I'm a reviewer here.
+The __clk_hw_register_fixed_rate_with_accuracy() function (with two '_')
+does not exist, and apparently never did:
 
-This question was directed at Rasmus.  Technically he is also a
-reviewer, but I wanted to hear from him because he authored the test
-suite in question.
+drivers/clk/clk-asm9260.c: In function 'asm9260_acc_init':
+drivers/clk/clk-asm9260.c:279:7: error: implicit declaration of function '__clk_hw_register_fixed_rate_with_accuracy'; did you mean 'clk_hw_register_fixed_rate_with_accuracy'? [-Werror=implicit-function-declaration]
+  279 |  hw = __clk_hw_register_fixed_rate_with_accuracy(NULL, NULL, pll_clk,
+      |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |       clk_hw_register_fixed_rate_with_accuracy
+drivers/clk/clk-asm9260.c:279:5: error: assignment to 'struct clk_hw *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
+  279 |  hw = __clk_hw_register_fixed_rate_with_accuracy(NULL, NULL, pll_clk,
+      |     ^
 
-Sergey and Steve (who are a listed as maintainers) were OK with v1
-which doesn't touch lib/test_printf.c.
+From what I can tell, __clk_hw_register_fixed_rate() is the correct
+API here, so use that instead.
 
-Thanks,
+Fixes: 728e3096741a ("clk: asm9260: Use parent accuracy in fixed rate clk")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/clk/clk-asm9260.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-                Ilya
+diff --git a/drivers/clk/clk-asm9260.c b/drivers/clk/clk-asm9260.c
+index 536b59aabd2c..bacebd457e6f 100644
+--- a/drivers/clk/clk-asm9260.c
++++ b/drivers/clk/clk-asm9260.c
+@@ -276,7 +276,7 @@ static void __init asm9260_acc_init(struct device_node *np)
+ 
+ 	/* TODO: Convert to DT parent scheme */
+ 	ref_clk = of_clk_get_parent_name(np, 0);
+-	hw = __clk_hw_register_fixed_rate_with_accuracy(NULL, NULL, pll_clk,
++	hw = __clk_hw_register_fixed_rate(NULL, NULL, pll_clk,
+ 			ref_clk, NULL, NULL, 0, rate, 0,
+ 			CLK_FIXED_RATE_PARENT_ACCURACY);
+ 
+-- 
+2.26.0
+
