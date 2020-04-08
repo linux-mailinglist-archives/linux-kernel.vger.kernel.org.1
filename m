@@ -2,170 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2521A1B5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 07:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C6E41A1B7F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 07:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbgDHFGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 01:06:46 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:33764 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727077AbgDHFGq (ORCPT
+        id S1726528AbgDHFO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 01:14:28 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:42899 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726192AbgDHFO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 01:06:46 -0400
-Received: by mail-wr1-f68.google.com with SMTP id a25so6311298wrd.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 22:06:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RVqYLzvz5LKqumC9icZHSiO0RIIhX7YU71aDHaxaFJE=;
-        b=mt2UO1ksFUf2Wqcy/GXaoOoCVWX2OeRgET0TvIwM1qEhWK0CR1YeHqkacSxJv/P8fU
-         VRA2yUT2pdNNBlBgUjtuWicF7bp7SIQxCJV403Pr1MDRJ0rxyUehQKnlOvLM1Ut+1qbD
-         YDyaE7xaFAI8xHJ4/UwY5fE1ZAG0sWOpBgYTQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RVqYLzvz5LKqumC9icZHSiO0RIIhX7YU71aDHaxaFJE=;
-        b=qZV9wUNw+m1FXPBGCQUCWy2vuDfu3fJ7sjq+HyKQBQROzz9UuQWZgYzRKrbCL8l5Er
-         XywbRIWVcITHhE4VH2X5B4Tbz/N/Yt+ImVbC/X5W0lOQ4JyXp+eCBA3DJq6InqQ5tAgR
-         8ppnoabnbJ1+SeDEv5V4DFuQfIjWDbCeF26dpiBIHRcCDUe+/YlBvZRbazw4gb5+SuDl
-         pBOqfGxa0ZoyjlJcX/98JaLy8Yq/imp8SMr3ekhSb8VqO5dj8KfcTMjb0f5DFistSjVI
-         970cOVriJfRGnkFx/s6XmrJ1Wk5nZEaK6DKKsyAPC2bEcuVRFm6KPZJF5r0GEXbXlylW
-         ZWYw==
-X-Gm-Message-State: AGi0PuakawNbpDQuCYhmY8hYUYOxszQk8Tq9wLXUTs8/bWWPOOn0Yayo
-        9U/XsChdRrQbiEyFvhRLu7RXDg2qumvnfCJcpw4mKQaI
-X-Google-Smtp-Source: APiQypIN18iGe7EO2INUCjO7GQKpI0EzzwmN1Z1k8o9aPCwEQGXb3Iysg/a12d8h4jfUDp3v4FHpOhNbFw6kY+d81vI=
-X-Received: by 2002:adf:fa51:: with SMTP id y17mr6697995wrr.358.1586322403655;
- Tue, 07 Apr 2020 22:06:43 -0700 (PDT)
+        Wed, 8 Apr 2020 01:14:27 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3471580237;
+        Wed,  8 Apr 2020 17:14:23 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1586322863;
+        bh=YkXvA/8SLVreNAYgan070U1NrymtwAPnJ2gFe0lYFwU=;
+        h=From:To:CC:Subject:Date;
+        b=iLIfvVjXyMiurQkbhtrj+nP2eHl0vJDaMQFOGG5FJk5jISCcl8QHwH6cZcSgWGXzm
+         MrdU9HWY6EjCJ5Mt3twae5mNIAM4OaTFgdSJPmiQ+djtXK/df6zV3wplCtDDaUqWtm
+         FkTJTAQPJ1pWpL1DoNlmIZ2WQO/02cbhTVZ29P+dk1vA8vt7rksqHZ5UCgCRg5wjsl
+         8j0ny5y56prjsBgu7EHITYfVClUGwyPoAITJ1sZeVh4dzffVwlExMeko6myII+zYiQ
+         nSVxNA7eDRdGrPcXaFOLDFP4Vq6zhlyOaTzQp9tg0q6CDRVJzx6v+VWUoZ4ACKBu1t
+         nKLCktG3ruteA==
+Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5e8d5db00000>; Wed, 08 Apr 2020 17:14:24 +1200
+Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
+ svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 8 Apr 2020 17:14:23 +1200
+Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
+ svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
+ 15.00.1497.006; Wed, 8 Apr 2020 17:14:22 +1200
+From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Hamish Martin" <Hamish.Martin@alliedtelesis.co.nz>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Dealing with holes in CPU address space
+Thread-Topic: Dealing with holes in CPU address space
+Thread-Index: AQHWDWSQGXFxFOrcR0ujeloVxC+pHA==
+Date:   Wed, 8 Apr 2020 05:14:22 +0000
+Message-ID: <fcb8f2655452f60a7c734e2ce54ac4d47eec7e92.camel@alliedtelesis.co.nz>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.32.14.96]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <87A62D6F9DDB66408682E8C27463080B@atlnz.lc>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20200327151951.18111-1-ricardo.canuelo@collabora.com>
- <20200327154345.GA3971@ninjato> <CAGAzgsqJznZi83ijxCgQg463Q4AnwiNX-a0Q9+Og9MW5OJ4Vew@mail.gmail.com>
- <CAAEAJfCzquaiCkjxXYOJRH8tpGRkHJBSWnFD--S=C7uAvHwqUg@mail.gmail.com>
-In-Reply-To: <CAAEAJfCzquaiCkjxXYOJRH8tpGRkHJBSWnFD--S=C7uAvHwqUg@mail.gmail.com>
-From:   "dbasehore ." <dbasehore@chromium.org>
-Date:   Tue, 7 Apr 2020 22:06:32 -0700
-Message-ID: <CAGAzgsqCasNOFtP6Yk+HQAn_EiYVQApohmmjrGRukGukua9GyA@mail.gmail.com>
-Subject: Re: [PATCH] i2c: enable async suspend/resume on i2c devices
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Cc:     Wolfram Sang <wsa@the-dreams.de>,
-        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
-        linux-i2c@vger.kernel.org, Guenter Roeck <groeck@chromium.org>,
-        Linux-pm mailing list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Mar 29, 2020 at 5:49 AM Ezequiel Garcia
-<ezequiel@vanguardiasur.com.ar> wrote:
->
-> Hi Derek,
->
-> On Fri, 27 Mar 2020 at 17:26, dbasehore . <dbasehore@chromium.org> wrote:
-> >
-> > On Fri, Mar 27, 2020 at 8:43 AM Wolfram Sang <wsa@the-dreams.de> wrote:
-> > >
-> > > On Fri, Mar 27, 2020 at 04:19:51PM +0100, Ricardo Ca=C3=B1uelo wrote:
-> > > > This enables the async suspend property for i2c devices. This reduc=
-es
-> > > > the suspend/resume time considerably on platforms with multiple i2c
-> > > > devices (such as a trackpad or touchscreen).
-> > > >
-> > > > (am from https://patchwork.ozlabs.org/patch/949922/)
-> > > >
-> > > > Signed-off-by: Derek Basehore <dbasehore@chromium.org>
-> > > > Reviewed-on: https://chromium-review.googlesource.com/1152411
-> > > > Tested-by: Venkateswarlu V Vinjamuri <venkateswarlu.v.vinjamuri@int=
-el.com>
-> > > > Reviewed-by: Venkateswarlu V Vinjamuri <venkateswarlu.v.vinjamuri@i=
-ntel.com>
-> > > > Reviewed-by: Justin TerAvest <teravest@chromium.org>
-> > > > Signed-off-by: Guenter Roeck <groeck@chromium.org>
-> > > > Signed-off-by: Ricardo Ca=C3=B1uelo <ricardo.canuelo@collabora.com>
-> > > > ---
-> > >
-> > > Adding linux-pm to CC. I don't know much about internals of async
-> > > suspend. Is there a guide like "what every maintainer needs to know
-> > > about"?
-> >
-> > For more details, you can look at the function dpm_resume in the
-> > drivers/base/power/main.c file and follow from there.
-> >
-> > I can't find anything in Documentation/, so here's a short overview:
-> > Async devices have suspend/resume callbacks scheduled via
-> > async_schedule at every step (normal, late, noirq, etc.) for
-> > suspending/resuming devices. We wait for all device callbacks to
-> > complete at the end of each of these steps before moving onto the next
-> > one. This means that you won't have a resume_early callback running
-> > when you start the normal device resume callbacks.
-> >
-> > The async callbacks still wait individually for children on suspend
-> > and parents on resume to complete their own callbacks before calling
-> > their own. Because some dependencies may not be tracked by the
-> > parent/child graph (or other unknown reasons), async is off by
-> > default.
-> >
-> > Enabling async is a confirmation that all dependencies to other
-> > devices are properly tracked, whether through the parent/child
-> > relationship or otherwise.
-> >
->
-> Have you noticed the async sysfs attribute [1]?
->
-> Given this allows userspace to enable the async suspend/resume,
-> wouldn't it be simpler to just do that in userspace, on the
-> platforms you want to target (e.g. Apollolake Chromebook devices, and so =
-on) ?
-
-I don't remember much since I attempted this a long time ago. That
-sounds like it would be reasonable under many circumstances though.
-
->
-> Thanks,
-> Ezequiel
->
-> [1] Documentation/ABI/testing/sysfs-devices-power
->
-> > >
-> > > > This patch was originally created for chromeos some time ago and I'=
-m
-> > > > evaluating if it's a good candidate for upstreaming.
-> > > >
-> > > > By the looks of it I think it was done with chromebooks in mind, bu=
-t
-> > > > AFAICT this would impact every i2c client in every platform, so I'd=
- like
-> > > > to know your opinion about it.
-> > > >
-> > > > As far as I know there was no further investigation or testing on i=
-t, so
-> > > > I don't know if it was tested on any other hardware.
-> > > >
-> > > > Best,
-> > > > Ricardo
-> > > >
-> > > >  drivers/i2c/i2c-core-base.c | 1 +
-> > > >  1 file changed, 1 insertion(+)
-> > > >
-> > > > diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-bas=
-e.c
-> > > > index cefad0881942..643bc0fe0281 100644
-> > > > --- a/drivers/i2c/i2c-core-base.c
-> > > > +++ b/drivers/i2c/i2c-core-base.c
-> > > > @@ -769,6 +769,7 @@ i2c_new_client_device(struct i2c_adapter *adap,=
- struct i2c_board_info const *inf
-> > > >       client->dev.of_node =3D of_node_get(info->of_node);
-> > > >       client->dev.fwnode =3D info->fwnode;
-> > > >
-> > > > +     device_enable_async_suspend(&client->dev);
-> > > >       i2c_dev_set_name(adap, client, info);
-> > > >
-> > > >       if (info->properties) {
-> > > > --
-> > > > 2.18.0
-> > > >
+SGkgQWxsLA0KDQpJJ20gdHJ5aW5nIHRvIHBvcnQgYW4gb2xkIEJyb2FkY29tIE1JUFMgQ1BVIChC
+Q001MzAwMykgdG8gYSBzaGlueSBuZXcNCmtlcm5lbC4gSSBoYXZlIHNvbWUgb2xkIGhpc3Rvcmlj
+IHNvdXJjZSBmcm9tIGEgbG9uZyBmb3Jnb3R0ZW4gQnJvYWRjb20NCkxESyBidXQgSSdkIHByZWZl
+ciB0byBkbyB0aGluZ3MgdGhlIG1vZGVybiB3YXkgd2l0aCBkZXZpY2UtdHJlZXMuDQoNClRoZSBw
+cm9ibGVtIEkndmUgYmVlbiBncmFwcGxpbmcgd2l0aCBpcyB0cnlpbmcgdG8gb3BlbiB1cCBhY2Nl
+c3MgdG8gYWxsDQpvZiB0aGUgUkFNIG9uIHRoZSBib2FyZC4gSXQgaGFzIDUxMk1CIG9mIEREUjIu
+IFRoZSBDUFUgaGFzIHR3byBhcmVhcw0Kd2hlcmUgdGhpcyBhcHBlYXJzLiBUaGUgZmlyc3QgMTI4
+TUIgaXMgZnJvbSAwIHRvIDB4MDdmZmZmZmYgdGhlIHNlY29uZA0KYXJlYSBpcyBmcm9tIDB4ODgw
+MDAwMDAgdG8gMHg5ZmZmZmZmZi4NCg0KU29DIHBlcmlwaGVyYWxzIGFyZSBhdCAweDE4MDAwMDAw
+IGFuZCB0aGVyZSBpcyBhbiBJTyB3aW5kb3cgZm9yIGZsYXNoDQphdCAweDIwMDAwMDAwLg0KDQpU
+aGUgb2xkIGNvZGUgaGFzIHNvbWUgY3VzdG9tIHRsYiBpbml0aWFsaXNhdGlvbiB0byBkZWFsIHdp
+dGggdGhpcyBidXQgSQ0KZmlndXJlZCBpdCBzaG91bGQgYmUgcG9zc2libGUgd2l0aCB0aGUgZm9s
+bG93aW5nIGR0cyBzbmlwcGV0Lg0KDQogICAgICAgIG1lbW9yeUAwIHsNCiAgICAgICAgICAgICAg
+ICBkZXZpY2VfdHlwZSA9ICJtZW1vcnkiOw0KICAgICAgICAgICAgICAgIHJlZyA9IDwweDAwMDAw
+MDAwIDB4MDgwMDAwMDANCiAgICAgICAgICAgICAgICAgICAgICAgMHg4ODAwMDAwMCAweDE4MDAw
+MDAwPjsNCiAgICAgICAgfTsNCg0KSSBlbmQgdXAgd2l0aCBvbmx5IDEyOE1CIGF2YWlsYWJsZS4g
+VGhpcyBhcHBlYXJzIHRvIGJlDQpiZWNhdXNlIHRoZSBkZWZhdWx0IEhJR0hNRU1fU1RBUlQgb2Yg
+MHgyMDAwMDAwMCBzdG9wcyB0aGUgcmVzdCBmcm9tDQpiZWluZyBtYWRlIGF2YWlsYWJsZS4gSWYg
+SSBhZGQgYW4gb3ZlcnJpZGUgb2YgSElHSE1FTV9TVEFSVCB0bw0KMHhmZmZmZmZmZiBJIHNlZW0g
+dG8gaGF2ZSB0aGUgZnVsbCA1MTJNQiBhdmFpYWJsZSBidXQgdGhlbiBJIGdldCBhDQprZXJuZWwg
+cGFuaWMNCg0KICBDUFUgMCBVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBwYWdpbmcgcmVxdWVzdCBh
+dCB2aXJ0dWFsIGFkZHJlc3MgMWZjMDAwMDAsIGVwYyA9PSA4MDAxNjdiOCwgcmEgPT0gODAwZTI4
+NjANCg0KMHgxZmMwMDAwMCBpcyBpbiB0aGUgcmFuZ2Ugd2hlcmUgdGhlIFNvQyBwZXJpcGhlcmFs
+cyBhcmUgc28gSSdtDQp0aGlua2luZyB0aGF0IGlzIHRoZSBwcm9ibGVtLiBCdXQgdGhlbiBhZ2Fp
+biB0aGF0IGlzIGEgdmlydHVhbCBhZGRyZXNzDQpzbyBtYXliZSBpdCdzIGp1c3QgYSBjby1pbmNp
+ZGVuY2UuDQoNCkFueXdheSBJJ2QgcmVhbGx5IGFwcHJlY2lhdGUgYW55IGd1aWRhbmNlIHRoYXQg
+YW55b25lIGNvdWxkIHByb3ZpZGUgb24NCnRoaXMuIEV2ZW4gaWYgaXQncyBqdXN0ICJnbyBsb29r
+IGF0IHRoaXMgU29DIi4NCg0KVGhhbmtzLA0KQ2hyaXMNCg0KDQo=
