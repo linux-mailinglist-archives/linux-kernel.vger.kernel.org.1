@@ -2,92 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B79B1A1D14
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CA141A1ECD
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgDHIGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 04:06:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60608 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726366AbgDHIGv (ORCPT
+        id S1728185AbgDHK3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 06:29:40 -0400
+Received: from cepheus.pop-ap.rnp.br ([200.129.167.25]:47788 "EHLO
+        cepheus.pop-ap.rnp.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbgDHK3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 04:06:51 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03884ZWi053893
-        for <linux-kernel@vger.kernel.org>; Wed, 8 Apr 2020 04:06:51 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3091ykm4p3-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 04:06:50 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-kernel@vger.kernel.org> from <schnelle@linux.ibm.com>;
-        Wed, 8 Apr 2020 09:06:24 +0100
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 8 Apr 2020 09:06:21 +0100
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03886jG531391922
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 8 Apr 2020 08:06:45 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA58442045;
-        Wed,  8 Apr 2020 08:06:44 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 82F634204D;
-        Wed,  8 Apr 2020 08:06:44 +0000 (GMT)
-Received: from oc5500677777.ibm.com (unknown [9.145.62.21])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  8 Apr 2020 08:06:44 +0000 (GMT)
-Subject: Re: [RFC] net/mlx5: Fix failing fw tracer allocation on s390
-To:     Markus Elfring <Markus.Elfring@web.de>, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eran Ben Elisha <eranbe@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Moshe Shemesh <moshe@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-References: <77241c76-4836-3080-7fa6-e65fc3af5106@web.de>
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Date:   Wed, 8 Apr 2020 10:06:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Wed, 8 Apr 2020 06:29:39 -0400
+X-Greylist: delayed 6216 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 06:29:39 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by cepheus.pop-ap.rnp.br (Postfix) with ESMTP id 63E5C723C52;
+        Wed,  8 Apr 2020 05:07:05 -0300 (-03)
+Received: from cepheus.pop-ap.rnp.br ([127.0.0.1])
+        by localhost (cepheus.pop-ap.rnp.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id UIgwj1x4niJV; Wed,  8 Apr 2020 05:07:04 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by cepheus.pop-ap.rnp.br (Postfix) with ESMTP id 5E928723C6F;
+        Wed,  8 Apr 2020 05:07:04 -0300 (-03)
+X-Virus-Scanned: amavisd-new at cepheus.pop-ap.rnp.br
+Received: from cepheus.pop-ap.rnp.br ([127.0.0.1])
+        by localhost (cepheus.pop-ap.rnp.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id dI1swJPM2rVx; Wed,  8 Apr 2020 05:07:04 -0300 (-03)
+Received: from cepheus.pop-ap.rnp.br (cepheus.pop-ap.rnp.br [200.129.167.25])
+        by cepheus.pop-ap.rnp.br (Postfix) with ESMTP id D799C723C33;
+        Wed,  8 Apr 2020 05:07:01 -0300 (-03)
+Date:   Wed, 8 Apr 2020 05:07:01 -0300 (BRT)
+From:   Trust Online Credit Bvba <camila.teixeira@pop-ap.rnp.br>
+Reply-To: "trustonlinecreditbvba@outlook.com" 
+          <trustonlinecreditbvba@outlook.com>
+Message-ID: <1175764783.30147.1586333221798.JavaMail.zimbra@pop-ap.rnp.br>
+Subject: lening
 MIME-Version: 1.0
-In-Reply-To: <77241c76-4836-3080-7fa6-e65fc3af5106@web.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-x-cbid: 20040808-4275-0000-0000-000003BBDC52
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20040808-4276-0000-0000-000038D13FB0
-Message-Id: <7eaec712-6427-7adf-98cd-2c4347dd9e85@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-07_10:2020-04-07,2020-04-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 bulkscore=0
- clxscore=1015 malwarescore=0 phishscore=0 adultscore=0 impostorscore=0
- lowpriorityscore=0 suspectscore=0 priorityscore=1501 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004080061
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [200.129.167.25]
+X-Mailer: Zimbra 8.8.8_GA_2009 (zclient/8.8.8_GA_2009)
+Thread-Index: rSN79x8XltfSnl8MwtJUzkx75+wLKg==
+Thread-Topic: lening
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/7/20 5:12 PM, Markus Elfring wrote:
->> On s390 FORCE_MAX_ZONEORDER is 9 instead of 11, thus a larger kzalloc()
->> allocation as done for the firmware tracer will always fail.
-> 
-> How do you think about to add the tag “Fixes” to the final change description?
-> 
-> Regards,
-> Markus
-> 
-You're right that makes a lot of sense, thanks! I guess this should reference
-the commit that introduced the debug trace, right?
-
-Best regards,
-Niklas
-
+Welkom;
+Wist u dat het gebruik van Trust Online Credit Bvba de voordelen van uw bedrijf en diensten kan vergroten? is een geregistreerd kredietbedrijf. Wij bieden hulp bij de ontwikkeling van uw bedrijf door een lening van elk bedrag te verstrekken. openbaar. van individueel tot samenwerking. Onze lening heeft een lage rente van 2%. Wij bieden fondsen aan: 5.000 tot 20.000.000 en met een looptijd van 1 jaar tot 25 jaar.
+Wij geven u een eerste lening, neem dan contact met ons op via
+E-mail: trustonlinecreditbvba@outlook.com
+WhatsApp: +44 7480 726469
+Website: https://trustonlinecreditbvba.com/
+voor kredietverwerking. bereikt uw bankrekening binnen 24 uur na uw verzoek.
+Vriendelijke groeten,
+Trust Online Credit Bvba
