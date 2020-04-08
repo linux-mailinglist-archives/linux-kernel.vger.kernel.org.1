@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FD11A269E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBDC81A26A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730094AbgDHQAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 12:00:05 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45229 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729755AbgDHQAE (ORCPT
+        id S1730111AbgDHQBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:01:22 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:39259 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729808AbgDHQBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:00:04 -0400
-Received: by mail-qk1-f195.google.com with SMTP id m67so619985qke.12;
-        Wed, 08 Apr 2020 09:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aRe2LUZ6th1URyp3FHFKMF3md2te8S/MCUnxkUCOAJM=;
-        b=EKGKiSuRAwpaR5KSV6azvx0CJk9B6N+3O8L0o6RCsmsZsnV/8SEZeGSTVGM7ycSRzu
-         bfNQo0kJ6IPzgBMk26jN14ISooZz+y5lUvv8X1JToguDZIF2bmWSQXP5UrPjxy1NOYqR
-         O40Xym2bar84IcTU+DOguc6ig9ufu04KoDiW9laNk8VyDMWNPEE9fPTKRBtrqLOHNwxo
-         zpHjHVhFEA+mye6b5NVuw6251J/jRZcZwi196jEyd4wpOR/3JZRebAGlqL+8PpPMmVKJ
-         LpVsWggwkWPImJggudamhEXDakbELWE2rGyOJmbxmlso2iCdhI/3/YQx8c5qLbUnQm6+
-         CGeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aRe2LUZ6th1URyp3FHFKMF3md2te8S/MCUnxkUCOAJM=;
-        b=tw4iHB8v62LeGFbPg4zSC78MfM2pBXqqQGKC5lUZG0AnfDw1OqXQcSQEqx9I8izPpK
-         e09u8Q4Mpo9b3c7887HM7Gsrj/a4sswVL4HDCPkphLUMRPekUQdJp0+Mena7teRG7/i7
-         5/A60YRQo15CKlg8sx7JpDX2RA4a/yMlHXtCpigYtW26vrbahE1wcxfv9Tzy5EhAmnFP
-         qIxp1qeb3Vg/B2PnmRdtemvbxCzk24L0GXh91MpdLtq2h8YThZahUTZSVM+lyKDa52eR
-         AfcwgdILIWIOrIaaa89pcUw3yY1P5oci9E3YlKZ34oug1KNESIh6ioQUTrzPDCdkFgnf
-         b+BA==
-X-Gm-Message-State: AGi0PuZ/M3e/ocFdt+cwjgU1sCtk50LHe5O7EgvTPiCMolnH0MCR2eek
-        6lMYp5GJXVD1QlD5E5EuZII=
-X-Google-Smtp-Source: APiQypKEYc/okCZmPC9ScbxhDZtYpLn1KKpByvTqnV75zi20PiEz27HaxIjHrZ1pv227jwLjwU/h3Q==
-X-Received: by 2002:a05:620a:1189:: with SMTP id b9mr7975639qkk.236.1586361603428;
-        Wed, 08 Apr 2020 09:00:03 -0700 (PDT)
-Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
-        by smtp.gmail.com with ESMTPSA id a62sm18131916qkb.134.2020.04.08.09.00.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 Apr 2020 09:00:02 -0700 (PDT)
-Subject: Re: [PATCH] of: remove unneeded variable
-To:     Ding Xiang <dingxiang@cmss.chinamobile.com>, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1585562702-360-1-git-send-email-dingxiang@cmss.chinamobile.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <92c6b7e9-4d55-a5c3-8c7f-5611edeb55c9@gmail.com>
-Date:   Wed, 8 Apr 2020 11:00:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Wed, 8 Apr 2020 12:01:22 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue106 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1MnqbU-1iyNtW0WDK-00pLyR; Wed, 08 Apr 2020 18:00:52 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     catalin.marinas@arm.com, will@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, chunyan.zhang@unisoc.com
+Cc:     gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] [RFC] clk: sprd: fix compile-testing
+Date:   Wed,  8 Apr 2020 18:00:44 +0200
+Message-Id: <20200408160044.2550437-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <1585562702-360-1-git-send-email-dingxiang@cmss.chinamobile.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:J6BJpZg6tGsBXqhtv/w/5/oW9Rnzup92xQ0SjE2vxeldApZgQj9
+ QjIHkGAG9aQIQmH9wpdSxYOE8QHIrmRca7klY5BYRWNRjv+M/rvK7ySHuCj78C/tBmbdtvC
+ FS3jMKblE2ms/X1TDRHMo8xVheCVUPLzBh57wOq6D1AkTFaAVPQ9YI/CwhmuU7H1O+zlmTr
+ FkuoYSJHEbhujCgRBWFNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a5QNQCaQT/k=:DSU4RMPmXjdaZVRs5KjWyf
+ 1YJwTvHrV2NqGLbVw5DcrdAOeBpKGdP6kedqM9Wcaeq5NLG7tK6HzfyMRmn4e2DO4uiAdYU3R
+ HT1hK+gqGMHIpgm60ILZCLXhXQhKTrq4SIy/C4C0UcUx28SjA+UJ3oQDNb/0Rzn3LRCj1w4Lv
+ 5h/cj50kjyCi2pMrd1Ll3x/1kXvKVaL2gi2/35dLlUQUF4bK7N9Sn+Y17zq2NzFvaXlP6X0aU
+ PWieHwNI70NWitkFoOHjnjMq7UK70LlkWfFaIJJwg8fQu4FBTn2WJPl3RAGGB9v7NzHy9Fv6a
+ AhZMFMbARBMtfvxO+k6A9Rb+x+uFTuQSgvkWXUV5zjpIPLQXRQhGYskWtFbZCg+jc4xGJ1wld
+ ukvUrn4CNR25sIC48g19/lvgF0bnnYKQdHwofRfYybe41F5X+pERcRR2bXz6BK7Aw2OBt8nhB
+ qQOpQm3lwdYvfJWe3+9r0MiUlTu9uIyTO2i20UF611jY8g1FyH0q/fwjSsXDpowRZF86/1gsG
+ mFiR8/iocQl4wH1y/PAocYHiVwTFSGx4x5aF/HnQUxAPzqB5JRppW/AsAKdofh2xrN5iN0Zwu
+ e3zo0yvYEuaSowf22S9SnFRNPotXKcFz7R/5Wx/0HrnYK5Ly805H7MkqnrRRbZ5K59JjTA6k/
+ WlBveSvQ8dpe0mEs7CFRr4CfXpEDzssdl7afxlBI3krwXX5ieaCeap7im2BZH7vYWz4yJeqb+
+ VLIklPNdmo1cVMamOWG+bWw+Rf6UxN6N9VGIFhpUgfZwF2k6RnQcvgquIRqeKfVlxfJTZGkVX
+ on5K/cARIyGjlSCw3WWM2LPwOt1GjCCPYEwSK9Y1jC3JaNZFoM=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/30/20 5:05 AM, Ding Xiang wrote:
-> rc is unneeded, just return 0.
+I got a build failure with CONFIG_ARCH_SPRD=m when the
+main portion of the clock driver failed to get linked into
+the kernel:
 
-of: of_detach_node() remove unneeded local return variable
+ERROR: modpost: "sprd_pll_sc_gate_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_pll_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_div_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_comp_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_mux_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_gate_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_sc_gate_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_clk_probe" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_clk_regmap_init" [drivers/clk/sprd/sc9863a-clk.ko] undefined!
+ERROR: modpost: "sprd_pll_ops" [drivers/clk/sprd/sc9860-clk.ko] undefined!
+ERROR: modpost: "sprd_div_ops" [drivers/clk/sprd/sc9860-clk.ko] undefined!
+ERROR: modpost: "sprd_mux_ops" [drivers/clk/sprd/sc9860-clk.ko] undefined!
 
-> 
-> Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
-> ---
->  drivers/of/dynamic.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-> index 08fd823..fe64430 100644
-> --- a/drivers/of/dynamic.c
-> +++ b/drivers/of/dynamic.c
-> @@ -286,7 +286,6 @@ int of_detach_node(struct device_node *np)
->  {
->  	struct of_reconfig_data rd;
->  	unsigned long flags;
-> -	int rc = 0;
->  
->  	memset(&rd, 0, sizeof(rd));
->  	rd.dn = np;
-> @@ -301,7 +300,7 @@ int of_detach_node(struct device_node *np)
->  
->  	of_reconfig_notify(OF_RECONFIG_DETACH_NODE, &rd);
->  
-> -	return rc;
-> +	return 0;
->  }
->  EXPORT_SYMBOL_GPL(of_detach_node);
->  
-> 
+This is a combination of two trivial bugs:
 
+- A platform should not be 'tristate', it should be a 'bool' symbol
+  like the other platforms, if only for consistency, and to avoid
+  surprises like this one.
 
-Reviewed-by: Frank Rowand <frank.rowand@sony.com>
+- The clk Makefile does not traverse into the sprd subdirectory
+  if the platform is disabled but the drivers are enabled for
+  compile-testing.
+
+Fixing either of the two would be sufficient to address the link failure,
+but for correctness, both need to be changed.
+
+Fixes: 2b1b799d7630 ("arm64: change ARCH_SPRD Kconfig to tristate")
+Fixes: d41f59fd92f2 ("clk: sprd: Add common infrastructure")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm64/Kconfig.platforms | 2 +-
+ drivers/clk/Makefile         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index 55d70cfe0f9e..3c7e310fd8bf 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -248,7 +248,7 @@ config ARCH_TEGRA
+ 	  This enables support for the NVIDIA Tegra SoC family.
+ 
+ config ARCH_SPRD
+-	tristate "Spreadtrum SoC platform"
++	bool "Spreadtrum SoC platform"
+ 	help
+ 	  Support for Spreadtrum ARM based SoCs
+ 
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index f4169cc2fd31..60e811d3f226 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -105,7 +105,7 @@ obj-$(CONFIG_CLK_SIFIVE)		+= sifive/
+ obj-$(CONFIG_ARCH_SIRF)			+= sirf/
+ obj-$(CONFIG_ARCH_SOCFPGA)		+= socfpga/
+ obj-$(CONFIG_PLAT_SPEAR)		+= spear/
+-obj-$(CONFIG_ARCH_SPRD)			+= sprd/
++obj-y					+= sprd/
+ obj-$(CONFIG_ARCH_STI)			+= st/
+ obj-$(CONFIG_ARCH_STRATIX10)		+= socfpga/
+ obj-$(CONFIG_ARCH_SUNXI)		+= sunxi/
+-- 
+2.26.0
+
