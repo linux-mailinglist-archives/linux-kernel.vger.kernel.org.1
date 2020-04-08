@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C906C1A275A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872791A2763
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730354AbgDHQlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 12:41:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50183 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728209AbgDHQlw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:41:52 -0400
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jMDlp-0001ln-OL; Wed, 08 Apr 2020 18:41:45 +0200
-Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
-        id E278510069D; Wed,  8 Apr 2020 18:41:44 +0200 (CEST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
-In-Reply-To: <20200408153824.GO20730@hirez.programming.kicks-ass.net>
-References: <20200407172140.GB64635@redhat.com> <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net> <87eeszjbe6.fsf@nanos.tec.linutronix.de> <ce81c95f-8674-4012-f307-8f32d0e386c2@redhat.com> <874ktukhku.fsf@nanos.tec.linutronix.de> <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com> <87pncib06x.fsf@nanos.tec.linutronix.de> <20200408153824.GO20730@hirez.programming.kicks-ass.net>
-Date:   Wed, 08 Apr 2020 18:41:44 +0200
-Message-ID: <87h7xuaq0n.fsf@nanos.tec.linutronix.de>
+        id S1730386AbgDHQmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:42:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730369AbgDHQmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 12:42:15 -0400
+Received: from coco.lan (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CC9420769;
+        Wed,  8 Apr 2020 16:42:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586364134;
+        bh=dZflYwtdOE4WpeF55n3a5433aJ25TRS76smK0BBXLRc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pX91x5p/ex8/LllfJiIeej2SPjWU/d1wcD7IAD90y5SaEHcvFWXo85xGJ6QFBMt1u
+         ZiJGS26q3FFxWcH4/RHQQO1EgOWg5eAFYZtiHFCUXlkUkUnqv1soXL7RpTyJsVE5zd
+         k0B9JNAg2QY85+hKcn3mTGujmOGS6djP0timfAgw=
+Date:   Wed, 8 Apr 2020 18:42:10 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 21/35] docs: spi: spi.h: fix a doc building warning
+Message-ID: <20200408184210.43c4411b@coco.lan>
+In-Reply-To: <20200408161629.GC5177@sirena.org.uk>
+References: <cover.1586359676.git.mchehab+huawei@kernel.org>
+        <d62f3f3536c0da2062bad87524fb184ad5a9a5f2.1586359676.git.mchehab+huawei@kernel.org>
+        <20200408154925.GA5177@sirena.org.uk>
+        <20200408181154.6c290772@coco.lan>
+        <20200408161629.GC5177@sirena.org.uk>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
-> On Wed, Apr 08, 2020 at 03:01:58PM +0200, Thomas Gleixner wrote:
->> And it comes with restrictions:
->> 
->>     The Do Other Stuff event can only be delivered when guest IF=1.
->> 
->>     If guest IF=0 then the host has to suspend the guest until the
->>     situation is resolved.
->> 
->>     The 'Situation resolved' event must also wait for a guest IF=1 slot.
->
-> Moo, can we pretty please already kill that ALWAYS and IF nonsense? That
-> results in that terrifyingly crap HLT loop. That needs to die with
-> extreme prejudice.
->
-> So the host only inject these OMFG_DOS things when the guest is in
-> luserspace -- which it can see in the VMCS state IIRC. And then using
-> #VE for the make-it-go signal is far preferred over the currentl #PF
-> abuse.
+Em Wed, 8 Apr 2020 17:16:29 +0100
+Mark Brown <broonie@kernel.org> escreveu:
 
-Yes, but this requires software based injection.
+> On Wed, Apr 08, 2020 at 06:11:54PM +0200, Mauro Carvalho Chehab wrote:
+> > Mark Brown <broonie@kernel.org> escreveu:  
+> 
+> > > Are you sure this is a sensible fix?  The following lines should be part
+> > > of the documentation for transfer_one, will that be the case after your
+> > > change?  
+> 
+> > Without that, Sphinx will warn and may produce something unexpected.  
+> 
+> Right, but if the warning is telling us something useful we want to
+> handle it rather than just shutting it up.
 
->> If you just want to solve Viveks problem, then its good enough. I.e. the
->> file truncation turns the EPT entries into #VE convertible entries and
->> the guest #VE handler can figure it out. This one can be injected
->> directly by the hardware, i.e. you don't need a VMEXIT.
->
-> That sounds like something that doesn't actually need the whole
-> 'async'/do-something-else-for-a-while crap, right? It's a #PF trap from
-> kernel space where we need to report fail.
+True. Without adding the blank line, kernel-doc would output this as:
 
-Fail or fixup via extable.
+``transfer_one``
+  transfer a single spi_transfer.
+  - return 0 if the transfer is finished,
+  - return 1 if the transfer is still in progress. When
+    the driver is finished with this transfer it must
+    call spi_finalize_current_transfer() so the subsystem
+    can issue the next transfer. Note: transfer_one and
+    transfer_one_message are mutually exclusive; when both
+    are set, the generic subsystem does not call your
+    transfer_one callback.
 
->> If you want the opportunistic do other stuff mechanism, then #VE has
->> exactly the same problems as the existing async "PF". It's not magicaly
->> making that go away.
->
-> We need to somehow have the guest teach the host how to tell if it can
-> inject that OMFG_DOS thing or not. Injecting it only to then instantly
-> exit again is stupid and expensive.
+This would be parsed by Sphinx (newer versions) as if the second line:
 
-Not if the injection is actually done by the hardware. Then the guest
-handles #VE and tells the host what to do.
+	transfer a single spi_transfer.
+	
+would be a sort of subtitle that should be highlighted with a
+vertical line before that. E. g. something equivalent to:
 
-> Clearly we don't want to expose preempt_count and make that ABI, but is
-> there some way we can push a snippet of code to the host that instructs
-> the host how to determine if it can sleep or not? I realize that pushing
-> actual x86 .text is a giant security problem, so perhaps a snipped of
-> BPF that the host can verify, which it can run on the guest image ?
+	 ============
+	|transfer_one|
 
-*SHUDDER*
+	 -------------------------------
+	|transfer a single spi_transfer.|
 
-> Make it a hard error (guest cpu dies) to inject the OMFG_DOS signal on a
-> context that cannot put the task to sleep.
+	  - return 0 if the transfer is finished,
+	  - return 1 if the transfer is still in progress. When
+	    the driver is finished with this transfer it must
+	    call spi_finalize_current_transfer() so the subsystem
+	    can issue the next transfer. Note: transfer_one and
+	    transfer_one_message are mutually exclusive; when both
+	    are set, the generic subsystem does not call your
+	    transfer_one callback.
 
-With the hardware based #VE and a hypercall which tells the host how to
-handle the EPT fixup (suspend the vcpu or let it continue and do the
-completion later) you don't have to play any games on the host. If the
-guest tells the host the wrong thing, then the guest will have to mop up
-the pieces.
+Which is not the desired result.
+
+Adding a blank line after it fixes the issue, making it produce the
+expected output.
+
+> 
+> > If this patch is applied after 20/25, the output should produce the
+> > correct result:  
+> 
+> > 	https://www.infradead.org/~mchehab/kernel_docs/driver-api/spi.html#spi-master-methods  
+> 
+> OK.
+> 
+> Acked-by: Mark Brown <broonie@kernel.org>
 
 Thanks,
-
-        tglx
+Mauro
