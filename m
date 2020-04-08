@@ -2,84 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1A5C1A251A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385B71A251D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728749AbgDHP1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:27:22 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:40858 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727254AbgDHP1V (ORCPT
+        id S1728909AbgDHP1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:27:50 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:35106 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727736AbgDHP1u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:27:21 -0400
-Received: by mail-pl1-f195.google.com with SMTP id h11so2615725plk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:27:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=O7WfNhI8f1lb6PW5kXHujbQHVLkGUotMPukmCgQtvWY=;
-        b=TkbTZ3imLDeHFL3w/n+tfMNRMwjwa9tuBACNwAjcNUWZMbOLPIyh7bEByUqixcSOXC
-         xkZpVv5LVlFb7bI8auY0NpFtQ82qWf6Y5Zm19IQMAk22dNFw09zwOGJS7J03vbbTIP3E
-         FYsi8YR2gA18/wCGK34SabV2govLlWbwYmf1xK0NpZ4Jaai3nYmumE5PeCeWs6knoE5y
-         n45xkh2LgxK4toUsFztNtAqfmApl04H5V8U2dKOHI/GdL1BQ9jM8dle4UgVBvHSBRn5u
-         wdYZKqIBhSLrS5POZknxoFrhC5/oCI5l2NrCEKnbmI2JyEgLvCdqv+RNIrysz+9W15bo
-         MNVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O7WfNhI8f1lb6PW5kXHujbQHVLkGUotMPukmCgQtvWY=;
-        b=ADaj+J4jP2cx+AOpKBN2NGOuyZ8Q3U5FOF+CWhOXfkb8o7edmIM2k2kS7qfQ9RENu+
-         F/f4UCVX8amraqJZzr1nGSpks8kDU83tL1eLZAT/1B/oLdb1Xw197kG8Y+Ep+OYkX+Hf
-         TotN9YGdBbWvnyXuNjRAQkPBZ849HrmLJyD2w5bJGnvQym/Ibi5hfIibmk4ZCKr6Qecf
-         5SsjIeP3eRspbCtTJ4HDsLDFgcT+bQD6jllArFGTCq2brF+RuAKxGmRIAaf9r/6wWhzb
-         TsL2z4WPSiYrzJ5j4L060IDnbuLcJtg7bMcyjGcXfxBaodw8GLBJgDPf6zBkeAAoeMA+
-         qc1Q==
-X-Gm-Message-State: AGi0Pubra0n6fV8y5fq+eUK47ZpCy2smLZR6ow05j6+ZuBNHrIpS1ynP
-        uX7E6GqiPaqTSLKhGbWagznbSdngR4Thqw==
-X-Google-Smtp-Source: APiQypJUFFNkq129tV80J9L/1WuNm/ssIiTfXEAk1yXAaUS/SUq8LNfYq7xWZ4+kPLlPTgl+51rlFw==
-X-Received: by 2002:a17:90b:3656:: with SMTP id nh22mr6013366pjb.71.1586359638209;
-        Wed, 08 Apr 2020 08:27:18 -0700 (PDT)
-Received: from ?IPv6:2605:e000:100e:8c61:4466:6b33:f85b:7770? ([2605:e000:100e:8c61:4466:6b33:f85b:7770])
-        by smtp.gmail.com with ESMTPSA id b68sm1314338pfb.134.2020.04.08.08.27.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2020 08:27:17 -0700 (PDT)
-Subject: Re: [PATCH 0/4] clean early submission path
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        Wed, 8 Apr 2020 11:27:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:To:From:Sender:Reply-To:Cc:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=LInpn8T/KJEl74W1VxRKS8YDYBibxYruEcGZTH25wi0=; b=ErP5IMmiSq2uhxm4ouTry03HYg
+        itLtEOkHeacirm7CffNDLhSrlZsGknNBLXk/KDgdnBc2M1Yqn91pdNedp5n2PumSufRJzD20qPa3/
+        MbYI91bHSziVm8MZRTypaRiOq+uB//eaebmkHxziDu3fsHISC1tq9dClhtQ28fcyQWZhYVMvfRRA7
+        6JyFTJ81Oe8yokCU0Sw5YZ4E3mTsnK7MgvdhAtcNZkugS3AZnuZilhaW5Q884g9AorcKza2OXJMj6
+        gC6It46oqHhJsK+xXExm22sF5SM4KnrLKEyOb4Hgma8C2aTYs7t1+pCoJOfXo1BXQJNrOHH4/7P+y
+        lQwayRbg==;
+Received: from [2001:4bb8:180:5765:65b6:f11e:f109:b151] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jMCcF-0007yh-FJ; Wed, 08 Apr 2020 15:27:47 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     x86@kernel.org, Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         linux-kernel@vger.kernel.org
-References: <cover.1586325467.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0dffba9d-d320-0412-f17d-cc6a19f39772@kernel.dk>
-Date:   Wed, 8 Apr 2020 08:27:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+Subject: hide __pte2cachemode_tbl and __cachemode2pte_tbl
+Date:   Wed,  8 Apr 2020 17:27:41 +0200
+Message-Id: <20200408152745.1565832-1-hch@lst.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <cover.1586325467.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/20 10:58 PM, Pavel Begunkov wrote:
-> This is mainly in preparation for future changes, but looks nice
-> by itself. The last patch fixes a mild vulnerability.
-> 
-> Pavel Begunkov (4):
->   io_uring: simplify io_get_sqring
->   io_uring: alloc req only after getting sqe
->   io_uring: remove req init from io_get_req()
->   io_uring: don't read user-shared sqe flags twice
-> 
->  fs/io_uring.c | 113 ++++++++++++++++++++++++--------------------------
->  1 file changed, 54 insertions(+), 59 deletions(-)
+Hi all,
 
-Looks good to me, applied. Thanks!
-
--- 
-Jens Axboe
-
+this series avoids pointlessly exposing the cachemode to pte bit
+translation tables to modules.
