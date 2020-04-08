@@ -2,99 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A091A1CD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3AE1A1CC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgDHHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:50:51 -0400
-Received: from m177129.mail.qiye.163.com ([123.58.177.129]:21499 "EHLO
-        m177129.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgDHHuv (ORCPT
+        id S1726812AbgDHHnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:43:18 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:53091 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726620AbgDHHnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:50:51 -0400
-X-Greylist: delayed 465 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 03:50:45 EDT
-Received: from vivo.com (wm-2.qy.internal [127.0.0.1])
-        by m177129.mail.qiye.163.com (Hmail) with ESMTP id 909115C3299;
-        Wed,  8 Apr 2020 15:42:53 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ADsAIgAICMOkBsTG35M4NqqB.1.1586331773574.Hmail.tao.li@vivo.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Sergey Organov <sorganov@gmail.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wenhu.wang@vivo.com
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gdXNiOiBnYWRnZXQ6IHNlcmlhbDogRml4ZWQgS0FTQU4gbnVsbC1wdHItZGVyZWYgaW4gdHR5X3dha2V1cA==?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 58.251.74.226
+        Wed, 8 Apr 2020 03:43:18 -0400
+Received: by mail-il1-f199.google.com with SMTP id a79so5912562ill.19
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 00:43:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Yfh2racHXRGiiea0ss2C7ykuBCurPHg2w5+o2zZWepE=;
+        b=KBzq44jj7T+riAc4PBd83E65Q5AwSXQisW0CVyvh3KKoEm0X70gfdwCxlu2ziieSt2
+         n8rvSN4OfLcR9XckHECnlEtJZFnXk+IAws71Es8HNYegV78Ov3v0HC2gNzQbBxBNOcJO
+         X63F+cvafADYLZV9I1FVQKNGEN1IR/Fgl1VTmAsVDzJqVLRTSjzhfrAjSlIMYw/E101v
+         6kZi0X3XiXElszfv4FAJKBUpoMnG4PdxEz46KhSYkPMkvusyyBV2ph+pcufHZUFl7OjG
+         +rN4iRLLTpTfqo/0XMObjpRqkgZRKoVeV8YuFWmHuQ94Z0q9x9q3flgvdibdKHsOU/Bj
+         EzZw==
+X-Gm-Message-State: AGi0PuZKPhFpA5BAqLGkaC5LdpuTTa+GtO2rq5dx0Zdrc9QwgdhnrvhU
+        4hjtjtzqO0G4aAS3/yYIsT25muFJVGWSL/4RsobTHAWZuuMY
+X-Google-Smtp-Source: APiQypKYhNsV7VhUUeknf5ONVUjMGdirW/1J2Rp3wbrY+qYaMmSb2s8pHA6fI3guQfzv6HLR6oXKgFLg/3OagJWEPuvfND9TuLSo
 MIME-Version: 1.0
-Received: from tao.li@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 8 Apr 2020 15:42:53 +0800 (GMT+08:00)
-From:   =?UTF-8?B?5p2O5qGD?= <tao.li@vivo.com>
-Date:   Wed, 8 Apr 2020 15:42:53 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVMQkJLS0tJTUhJSk9KSllXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo*CDoyHDoyODY0EDkILzxITjZP
-        NQoKOVVKVUpOQ01ISEpMTE1MSUJVMxYaEhdVDxoUVRcSOw0SDRRVGBQWRVlXWRILWUFZTkNVSU5K
-        VUxPVUlJTVlXWQgBWUFOQklLNwY+
-X-HM-Tid: 0a7158bdea9e6447kurs909115c3299
+X-Received: by 2002:a05:6638:c44:: with SMTP id g4mr1832688jal.99.1586331797318;
+ Wed, 08 Apr 2020 00:43:17 -0700 (PDT)
+Date:   Wed, 08 Apr 2020 00:43:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004671b105a2c2a702@google.com>
+Subject: general protection fault in kernel_get_mempolicy
+From:   syzbot <syzbot+ceba41fd2d12f822c1bd@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogR3JlZyBLcm9haC1IYXJ0bWFuIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4KRGF0
-ZTogMjAyMC0wMy0xOCAxODoxMjo0MApUbzogIExpIFRhbyA8dGFvLmxpQHZpdm8uY29tPgpDYzog
-IEZlbGlwZSBCYWxiaSA8YmFsYmlAa2VybmVsLm9yZz4sIk1pY2hhxYIgTWlyb3PFgmF3IiA8bWly
-cS1saW51eEByZXJlLnFtcW0ucGw+LFNlcmdleSBPcmdhbm92IDxzb3JnYW5vdkBnbWFpbC5jb20+
-LGxpbnV4LXVzYkB2Z2VyLmtlcm5lbC5vcmcsbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyx3
-ZW5odS53YW5nQHZpdm8uY29tClN1YmplY3Q6IFJlOiBbUEFUQ0hdIHVzYjogZ2FkZ2V0OiBzZXJp
-YWw6IEZpeGVkIEtBU0FOIG51bGwtcHRyLWRlcmVmIGluIHR0eV93YWtldXA+T24gV2VkLCBNYXIg
-MTgsIDIwMjAgYXQgMTA6NTY6MDFBTSArMDgwMCwgTGkgVGFvIHdyb3RlOgo+PiBUaGUgcG9ydC0+
-cG9ydC50dHkgbWF5YmUgcmVzZXQgYXMgTlVMTCwgSWYgZ3NfY2xvc2UoKSB3YXMgaW52b2tlZAo+
-PiB1bmV4cGVjdGVkbHkgZHVyaW5nIHJ1bm5pbmcgZ3NlcmlhbF9jb25uZWN0KCkuCj4+IAo+PiBC
-VUc6IEtBU0FOOiBudWxsLXB0ci1kZXJlZiBpbiB0dHlfd2FrZXVwKzB4MWMvMHg4NAo+PiBDYWxs
-IHRyYWNlOgo+PiBbPDAwMDAwMDAwOTVjM2M4Mzc+XSBkdW1wX2JhY2t0cmFjZSsweDAvMHg2ZDQK
-Pj4gWzwwMDAwMDAwMDQ3NzI2YmI4Pl0gc2hvd19zdGFjaysweDE4LzB4MjAKPj4gWzwwMDAwMDAw
-MGJlZGI0YzFlPl0gLS1kdW1wX3N0YWNrKzB4MjAvMHgyOAo+PiBbPDAwMDAwMDAwNzIyZjJlMmE+
-XSBkdW1wX3N0YWNrKzB4ODQvMHhiMAo+PiBbPDAwMDAwMDAwMzI1NjgzZDQ+XSBrYXNhbl9yZXBv
-cnRfZXJyb3IrMHgxNzgvMHgxZTQKPj4gWzwwMDAwMDAwMDUzMDc5OTk4Pl0ga2FzYW5fcmVwb3J0
-X2Vycm9yKzB4MC8weDFlNAo+PiBbPDAwMDAwMDAwYjZkMzNhZmE+XSAtLWFzYW5fbG9hZDgrMHgx
-NTAvMHgxNWMKPj4gWzwwMDAwMDAwMDE4ODc0NWI4Pl0gdHR5X3dha2V1cCsweDFjLzB4ODQKPj4g
-WzwwMDAwMDAwMDY0ZjZkZDIxPl0gZ3Nfc3RhcnRfaW8rMHhkMC8weDExYwo+PiBbPDAwMDAwMDAw
-NjNkNjdiNmM+XSBnc2VyaWFsX2Nvbm5lY3QrMHgxNWMvMHgxYjAKPj4gWzwwMDAwMDAwMGZhZjdj
-MGY5Pl0gZG1fc2V0X2FsdCsweGE4LzB4MTkwCj4+IFs8MDAwMDAwMDA4ZGViMTkwOT5dIGNvbXBv
-c2l0ZV9zZXR1cCsweGRlNC8weDFlZGMKPj4gWzwwMDAwMDAwMDc5MmVlMTZkPl0gYW5kcm9pZF9z
-ZXR1cCsweDIxMC8weDI5NAo+PiBbPDAwMDAwMDAwYWIzMmVmMzA+XSBkd2MzX2VwMF9kZWxlZ2F0
-ZV9yZXErMHg0OC8weDY4Cj4+IFs8MDAwMDAwMDA1NGUyNmZkMj5dIGR3YzNfZXAwX2ludGVycnVw
-dCsweGYyYy8weDE2ZmMKPj4gWzwwMDAwMDAwMDUwY2IyMjYyPl0gZHdjM19pbnRlcnJ1cHQrMHg0
-NjQvMHgxZjQ0Cj4+IFs8MDAwMDAwMDBmZGNhYTZlOT5dIC0taGFuZGxlX2lycV9ldmVudF9wZXJj
-cHUrMHgxODQvMHgzOTgKPj4gWzwwMDAwMDAwMDNiMjRmZjU2Pl0gaGFuZGxlX2lycV9ldmVudF9w
-ZXJjcHUrMHhhMC8weDEzNAo+PiBbPDAwMDAwMDAwYWVkZGE1ZWU+XSBoYW5kbGVfaXJxX2V2ZW50
-KzB4NjAvMHhhMAo+PiBbPDAwMDAwMDAwNWY1MWE1NzA+XSBoYW5kbGVfZmFzdGVvaV9pcnErMHgy
-M2MvMHgzMWMKPj4gWzwwMDAwMDAwMDhkYjI2MDhkPl0gZ2VuZXJpY19oYW5kbGVfaXJxKzB4NzAv
-MHhhNAo+PiBbPDAwMDAwMDAwMDk4NjgzZmM+XSAtLWhhbmRsZV9kb21haW5faXJxKzB4ODQvMHhl
-MAo+PiBbPDAwMDAwMDAwOGVkMjNiNDY+XSBnaWNfaGFuZGxlX2lycSsweDk4LzB4YjgKPj4gCj4+
-IFNpZ25lZC1vZmYtYnk6IExpIFRhbyA8dGFvLmxpQHZpdm8uY29tPgo+PiAtLS0KPj4gIGRyaXZl
-cnMvdXNiL2dhZGdldC9mdW5jdGlvbi91X3NlcmlhbC5jIHwgMyArKy0KPj4gIDEgZmlsZSBjaGFu
-Z2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV9zZXJpYWwuYyBiL2RyaXZlcnMvdXNiL2dhZGdl
-dC9mdW5jdGlvbi91X3NlcmlhbC5jCj4+IGluZGV4IDgxNjdkMzc5ZTExNS4uM2MxMDlhOGY5ZWM0
-IDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV9zZXJpYWwuYwo+
-PiArKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV9zZXJpYWwuYwo+PiBAQCAtNTY1
-LDcgKzU2NSw4IEBAIHN0YXRpYyBpbnQgZ3Nfc3RhcnRfaW8oc3RydWN0IGdzX3BvcnQgKnBvcnQp
-Cj4+ICAJCWdzX3N0YXJ0X3R4KHBvcnQpOwo+PiAgCQkvKiBVbmJsb2NrIGFueSBwZW5kaW5nIHdy
-aXRlcyBpbnRvIG91ciBjaXJjdWxhciBidWZmZXIsIGluIGNhc2UKPj4gIAkJICogd2UgZGlkbid0
-IGluIGdzX3N0YXJ0X3R4KCkgKi8KPj4gLQkJdHR5X3dha2V1cChwb3J0LT5wb3J0LnR0eSk7Cj4+
-ICsJCWlmIChwb3J0LT5wb3J0LnR0eSkKPj4gKwkJCXR0eV93YWtldXAocG9ydC0+cG9ydC50dHkp
-Owo+Cj5XaGF0IHByZXZlbnRzIHBvcnQudHR5IGZyb20gYmVpbmcgc2V0IHRvIE5VTEwgYmV0d2Vl
-biB0aGUgY2hlY2sgYW5kIHRoZQo+Y2FsbCB0byB0dHlfd2FrZXVwPwo+Cj5TaG91bGRuJ3QgZ3Nf
-Y2xvc2UoKSBhbmQgZ3NlcmlhbF9jb25uZWN0KCkgaGF2ZSBzb21lIHNvcnQgb2YgbG9ja2luZyB0
-bwo+cHJldmVudCB0aGlzPwo+CkkgZW5jb3VudGVyZWQgdGhpcyBpc3N1ZSBvbiBTYW1zdW5nIEVY
-WU5PUzk4MCBwbGF0Zm9ybSwgTWF5YmUgdGhpcyBpcyBwbGF0Zm9ybSBzcGVjaWZpYyBpc3N1ZS4K
-VGhlIFVTQiBpbnRlcnJ1cHQgaGFuZGxlciBnb3QgcG9ydF9sb2NrIG9uIENQVSAwIGluIGdzZXJp
-YWxfY29ubmVjdCB3aGlsZSBnc19jbG9zZSBpcyB3YWl0aW5nIGZvciAKdGhpcyBsb2NrIG9uIENQ
-VSAxLiAgQnV0IHRoaXMgcG9ydF9sb2NrIHdpbGwgdW5sb2NrIGluIGdzX3N0YXJ0X2lvLS0+Z3Nf
-c3RhcnRfcnggdGVtcG9yYXJpbHksIFRoaXMgcmFjZQpjb25kaXRpb24gbWF5IGNhdXNlIHBvcnQu
-dHR5IHNldCBhcyBOVUxMLgoKZ3JlZyBrLWgsIERvIHlvdSBoYXZlIHNvbWUgZ29vZCBzdWdnZXN0
-aW9ucz8KCj50aGFua3MsCj4KPmdyZWcgay1oCgoKDQoNCg==
+Hello,
+
+syzbot found the following crash on:
+
+HEAD commit:    bef7b2a7 Merge tag 'devicetree-for-5.7' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=124974e7e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=91b674b8f0368e69
+dashboard link: https://syzkaller.appspot.com/bug?extid=ceba41fd2d12f822c1bd
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+ceba41fd2d12f822c1bd@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xf223931c0412cd20: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0x911cb8e020966900-0x911cb8e020966907]
+CPU: 1 PID: 21483 Comm: syz-executor.5 Not tainted 5.6.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:page_to_nid include/linux/mm.h:1245 [inline]
+RIP: 0010:lookup_node mm/mempolicy.c:906 [inline]
+RIP: 0010:do_get_mempolicy mm/mempolicy.c:970 [inline]
+RIP: 0010:kernel_get_mempolicy+0x604/0xfb0 mm/mempolicy.c:1615
+Code: 89 c7 e8 2f 37 c5 ff 85 db 0f 88 00 07 00 00 e8 b2 35 c5 ff 4c 8b 7c 24 78 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 fb 08 00 00 49 8b 1f 48 c7 c7 ff ff ff ff 48 89
+RSP: 0018:ffffc900055e7de8 EFLAGS: 00010a02
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90013b96000
+RDX: 1223971c0412cd20 RSI: ffffffff81adaafe RDI: 0000000000000005
+RBP: 0000000000000000 R08: ffff88802e0fe380 R09: ffffed1005c1fc71
+R10: ffff88802e0fe387 R11: ffffed1005c1fc70 R12: 0000000000000000
+R13: 1ffff92000abcfc4 R14: ffffffff89a6df60 R15: 911cb8e020966900
+FS:  00007f93143f7700(0000) GS:ffff8880ae700000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b30b23000 CR3: 0000000052590000 CR4: 00000000001426e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __do_sys_get_mempolicy mm/mempolicy.c:1633 [inline]
+ __se_sys_get_mempolicy mm/mempolicy.c:1629 [inline]
+ __x64_sys_get_mempolicy+0xba/0x150 mm/mempolicy.c:1629
+ do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x45c849
+Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f93143f6c78 EFLAGS: 00000246 ORIG_RAX: 00000000000000ef
+RAX: ffffffffffffffda RBX: 00007f93143f76d4 RCX: 000000000045c849
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 000000000076bf00 R08: 0000000000000003 R09: 0000000000000000
+R10: 000000002073b000 R11: 0000000000000246 R12: 00000000ffffffff
+R13: 00000000000000eb R14: 00000000004c371a R15: 000000000076bf0c
+Modules linked in:
+---[ end trace 4f30e35dce9f5dd6 ]---
+RIP: 0010:page_to_nid include/linux/mm.h:1245 [inline]
+RIP: 0010:lookup_node mm/mempolicy.c:906 [inline]
+RIP: 0010:do_get_mempolicy mm/mempolicy.c:970 [inline]
+RIP: 0010:kernel_get_mempolicy+0x604/0xfb0 mm/mempolicy.c:1615
+Code: 89 c7 e8 2f 37 c5 ff 85 db 0f 88 00 07 00 00 e8 b2 35 c5 ff 4c 8b 7c 24 78 48 b8 00 00 00 00 00 fc ff df 4c 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 fb 08 00 00 49 8b 1f 48 c7 c7 ff ff ff ff 48 89
+RSP: 0018:ffffc900055e7de8 EFLAGS: 00010a02
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90013b96000
+RDX: 1223971c0412cd20 RSI: ffffffff81adaafe RDI: 0000000000000005
+RBP: 0000000000000000 R08: ffff88802e0fe380 R09: ffffed1005c1fc71
+R10: ffff88802e0fe387 R11: ffffed1005c1fc70 R12: 0000000000000000
+R13: 1ffff92000abcfc4 R14: ffffffff89a6df60 R15: 911cb8e020966900
+FS:  00007f93143f7700(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f535ca3c000 CR3: 0000000052590000 CR4: 00000000001426f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
