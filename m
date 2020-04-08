@@ -2,300 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 403451A1DB7
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 11:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B741A1A1DBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 11:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgDHJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 05:01:09 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:62953 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726663AbgDHJBJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 05:01:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586336468; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=ioV0hD7yVG8wHh03kVR20mogkH+ndszSU6pwn+sJw7o=; b=wa11HWxOUQCx8aMaqKqqh/xk9g4dZ+Eh5pSGTed4OnTEAG1jStWKbnM4JQcER1x2zyMb82Og
- TOLCC/5Y4aagaD2C5DQ3q1Ns9x3NMB4P1BsvevMJmJuOIxxTEjfkSkpEcgw7HtcowTpzkFDy
- nkeZFFd0xIpdO//68pt0IjT+zog=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e8d92b0.7f8f48a6be30-smtp-out-n02;
- Wed, 08 Apr 2020 09:00:32 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C792FC43637; Wed,  8 Apr 2020 09:00:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from codeaurora.org (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: stummala)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 89A98C433BA;
-        Wed,  8 Apr 2020 09:00:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 89A98C433BA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=stummala@codeaurora.org
-Date:   Wed, 8 Apr 2020 14:30:24 +0530
-From:   Sahitya Tummala <stummala@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, stummala@codeaurora.org
-Subject: Re: [PATCH v3] f2fs: fix long latency due to discard during umount
-Message-ID: <20200408090024.GC20234@codeaurora.org>
-References: <1585550730-1858-1-git-send-email-stummala@codeaurora.org>
- <20200331184655.GB198665@google.com>
- <20200401092201.GB20234@codeaurora.org>
- <20200403171943.GC68460@google.com>
+        id S1727254AbgDHJBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 05:01:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12624 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726663AbgDHJBP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 05:01:15 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 58A6D33585B02A6E0622;
+        Wed,  8 Apr 2020 17:01:09 +0800 (CST)
+Received: from [127.0.0.1] (10.173.220.25) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Wed, 8 Apr 2020
+ 17:01:01 +0800
+Subject: Re: [RFC PATCH v5 4/8] mm: tlb: Pass struct mmu_gather to
+ flush_pmd_tlb_range
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <mark.rutland@arm.com>, <will@kernel.org>,
+        <catalin.marinas@arm.com>, <aneesh.kumar@linux.ibm.com>,
+        <akpm@linux-foundation.org>, <npiggin@gmail.com>, <arnd@arndb.de>,
+        <rostedt@goodmis.org>, <maz@kernel.org>, <suzuki.poulose@arm.com>,
+        <tglx@linutronix.de>, <yuzhao@google.com>, <Dave.Martin@arm.com>,
+        <steven.price@arm.com>, <broonie@kernel.org>,
+        <guohanjun@huawei.com>, <corbet@lwn.net>, <vgupta@synopsys.com>,
+        <tony.luck@intel.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>
+References: <20200331142927.1237-1-yezhenyu2@huawei.com>
+ <20200331142927.1237-5-yezhenyu2@huawei.com>
+ <20200331151331.GS20730@hirez.programming.kicks-ass.net>
+ <fe12101e-8efe-22ad-0258-e6aeafc798cc@huawei.com>
+ <20200401122004.GE20713@hirez.programming.kicks-ass.net>
+ <53675fb9-21c7-5309-07b8-1bbc1e775f9b@huawei.com>
+ <20200402163849.GM20713@hirez.programming.kicks-ass.net>
+ <d512b28f-99d3-5a26-d189-2ebac7a412c7@huawei.com>
+Message-ID: <1770a141-3c97-94df-eac9-2d1f537516b1@huawei.com>
+Date:   Wed, 8 Apr 2020 17:00:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200403171943.GC68460@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <d512b28f-99d3-5a26-d189-2ebac7a412c7@huawei.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.173.220.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jaegeuk,
+Hi Peter,
 
-On Fri, Apr 03, 2020 at 10:19:43AM -0700, Jaegeuk Kim wrote:
-> On 04/01, Sahitya Tummala wrote:
-> > Hi Jaegeuk,
-> > 
-> > On Tue, Mar 31, 2020 at 11:46:55AM -0700, Jaegeuk Kim wrote:
-> > > On 03/30, Sahitya Tummala wrote:
-> > > > F2FS already has a default timeout of 5 secs for discards that
-> > > > can be issued during umount, but it can take more than the 5 sec
-> > > > timeout if the underlying UFS device queue is already full and there
-> > > > are no more available free tags to be used. In that case, submit_bio()
-> > > > will wait for the already queued discard requests to complete to get
-> > > > a free tag, which can potentially take way more than 5 sec.
-> > > > 
-> > > > Fix this by submitting the discard requests with REQ_NOWAIT
-> > > > flags during umount. This will return -EAGAIN for UFS queue/tag full
-> > > > scenario without waiting in the context of submit_bio(). The FS can
-> > > > then handle these requests by retrying again within the stipulated
-> > > > discard timeout period to avoid long latencies.
-> > > 
-> > > Sorry, Sahitya, but, do we really need to do like this? How about just
-> > > controlling # of outstanding discarding bios in __issue_discard_cmd()?
-> > 
-> > Do you mean something like this?
-> > 
-> > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > index 1a62b27..860dd43 100644
-> > --- a/fs/f2fs/segment.c
-> > +++ b/fs/f2fs/segment.c
-> > @@ -1099,7 +1099,7 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
-> >         } else if (discard_type == DPOLICY_FSTRIM) {
-> >                 dpolicy->io_aware = false;
-> >         } else if (discard_type == DPOLICY_UMOUNT) {
-> > -               dpolicy->max_requests = UINT_MAX;
-> > +               dpolicy->max_requests = 30;
+On 2020/4/3 13:14, Zhenyu Ye wrote:
+> Hi Peter,
 > 
-> Can we use max queue depth of the block device?
+> On 2020/4/3 0:38, Peter Zijlstra wrote:
+>> On Thu, Apr 02, 2020 at 07:24:04PM +0800, Zhenyu Ye wrote:
+>>> Thanks for your detailed explanation.  I notice that you used
+>>> `tlb_end_vma` replace `flush_tlb_range`, which will call `tlb_flush`,
+>>> then finally call `flush_tlb_range` in generic code.  However, some
+>>> architectures define tlb_end_vma|tlb_flush|flush_tlb_range themselves,
+>>> so this may cause problems.
+>>>
+>>> For example, in s390, it defines:
+>>>
+>>> #define tlb_end_vma(tlb, vma)			do { } while (0)
+>>>
+>>> And it doesn't define it's own flush_pmd_tlb_range().  So there will be
+>>> a mistake if we changed flush_pmd_tlb_range() using tlb_end_vma().
+>>>
+>>> Is this really a problem or something I understand wrong ?
+>>
+>> If tlb_end_vma() is a no-op, then tlb_finish_mmu() will do:
+>> tlb_flush_mmu() -> tlb_flush_mmu_tlbonly() -> tlb_flush()
+>>
+>> And s390 has tlb_flush().
+>>
+>> If tlb_end_vma() is not a no-op and it calls tlb_flush_mmu_tlbonly(),
+>> then tlb_finish_mmu()'s invocation of tlb_flush_mmu_tlbonly() will
+>> terniate early due o no flags set.
+>>
+>> IOW, it should all just work.
+>>
+>>
+>> FYI the whole tlb_{start,end}_vma() thing is a only needed when the
+>> architecture doesn't implement tlb_flush() and instead default to using
+>> flush_tlb_range(), at which point we need to provide a 'fake' vma.
+>>
+>> At the time I audited all architectures and they only look at VM_EXEC
+>> (to do $I invalidation) and VM_HUGETLB (for pmd level invalidations),
+>> but I forgot which architectures that were.
+> 
+> Many architectures, such as alpha, arc, arm and so on.
+> I really understand why you hate making vma->vm_flags more important for
+> tlbi :).
+> 
+>> But that is all legacy code; eventually we'll get all archs a native
+>> tlb_flush() and this can go away.
+>>
+> 
+> Thanks for your reply.  Currently, to enable the TTL feature, extending
+> the flush_*tlb_range() may be more convenient.
+> I will send a formal PATCH soon.
+> 
+> Thanks,
+> Zhenyu
+> 
 
-I think it should be limited to 8 or 16 as Chao suggested, so that we can have
-better control on the given timeout value? Thoughts?
+I had sent [PATCH v1] a few days ago[1].  Do you have time to review
+my changes?  Are those changes appropriate?
+
+Waiting for your suggestion.
+
+[1] https://lore.kernel.org/linux-arm-kernel/20200403090048.938-1-yezhenyu2@huawei.com/
 
 Thanks,
+Zhenyu
 
-> 
-> >                 dpolicy->io_aware = false;
-> >                 /* we need to issue all to keep CP_TRIMMED_FLAG */
-> >                 dpolicy->granularity = 1;
-> > @@ -1470,12 +1470,14 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> >         struct list_head *pend_list;
-> >         struct discard_cmd *dc, *tmp;
-> >         struct blk_plug plug;
-> > -       int i, issued = 0;
-> > +       int i, issued;
-> >         bool io_interrupted = false;
-> > 
-> >         if (dpolicy->timeout != 0)
-> >                 f2fs_update_time(sbi, dpolicy->timeout);
-> > 
-> > +retry:
-> > +       issued = 0;
-> >         for (i = MAX_PLIST_NUM - 1; i >= 0; i--) {
-> >                 if (dpolicy->timeout != 0 &&
-> >                                 f2fs_time_over(sbi, dpolicy->timeout))
-> > @@ -1522,6 +1524,11 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> >                         break;
-> >         }
-> > 
-> > +       if (dpolicy->type == DPOLICY_UMOUNT && issued) {
-> > +               __wait_all_discard_cmd(sbi, dpolicy);
-> > +               goto retry;
-> > +       }
-> > +
-> >         if (!issued && io_interrupted)
-> >                 issued = -1;
-> > 
-> > Thanks,
-> > 
-> > > 
-> > > > 
-> > > > Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-> > > > ---
-> > > > v3:
-> > > > -Handle the regression reported by Chao with v2.
-> > > > -simplify the logic to split the dc with multiple bios incase any bio returns
-> > > >  EAGAIN and retry those new dc within 5 sec timeout.
-> > > > 
-> > > >  fs/f2fs/segment.c | 65 +++++++++++++++++++++++++++++++++++++++++++------------
-> > > >  1 file changed, 51 insertions(+), 14 deletions(-)
-> > > > 
-> > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > > > index fb3e531..55d18c7 100644
-> > > > --- a/fs/f2fs/segment.c
-> > > > +++ b/fs/f2fs/segment.c
-> > > > @@ -1029,13 +1029,16 @@ static void f2fs_submit_discard_endio(struct bio *bio)
-> > > >  	struct discard_cmd *dc = (struct discard_cmd *)bio->bi_private;
-> > > >  	unsigned long flags;
-> > > >  
-> > > > -	dc->error = blk_status_to_errno(bio->bi_status);
-> > > > -
-> > > >  	spin_lock_irqsave(&dc->lock, flags);
-> > > > +	if (!dc->error)
-> > > > +		dc->error = blk_status_to_errno(bio->bi_status);
-> > > > +
-> > > >  	dc->bio_ref--;
-> > > > -	if (!dc->bio_ref && dc->state == D_SUBMIT) {
-> > > > -		dc->state = D_DONE;
-> > > > -		complete_all(&dc->wait);
-> > > > +	if (!dc->bio_ref) {
-> > > > +		if (dc->error || dc->state == D_SUBMIT) {
-> > > > +			dc->state = D_DONE;
-> > > > +			complete_all(&dc->wait);
-> > > > +		}
-> > > >  	}
-> > > >  	spin_unlock_irqrestore(&dc->lock, flags);
-> > > >  	bio_put(bio);
-> > > > @@ -1124,10 +1127,13 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > >  	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
-> > > >  	struct list_head *wait_list = (dpolicy->type == DPOLICY_FSTRIM) ?
-> > > >  					&(dcc->fstrim_list) : &(dcc->wait_list);
-> > > > -	int flag = dpolicy->sync ? REQ_SYNC : 0;
-> > > > +	int flag;
-> > > >  	block_t lstart, start, len, total_len;
-> > > >  	int err = 0;
-> > > >  
-> > > > +	flag = dpolicy->sync ? REQ_SYNC : 0;
-> > > > +	flag |= dpolicy->type == DPOLICY_UMOUNT ? REQ_NOWAIT : 0;
-> > > > +
-> > > >  	if (dc->state != D_PREP)
-> > > >  		return 0;
-> > > >  
-> > > > @@ -1192,10 +1198,6 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > >  		dc->bio_ref++;
-> > > >  		spin_unlock_irqrestore(&dc->lock, flags);
-> > > >  
-> > > > -		atomic_inc(&dcc->queued_discard);
-> > > > -		dc->queued++;
-> > > > -		list_move_tail(&dc->list, wait_list);
-> > > > -
-> > > >  		/* sanity check on discard range */
-> > > >  		__check_sit_bitmap(sbi, lstart, lstart + len);
-> > > >  
-> > > > @@ -1203,6 +1205,29 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > >  		bio->bi_end_io = f2fs_submit_discard_endio;
-> > > >  		bio->bi_opf |= flag;
-> > > >  		submit_bio(bio);
-> > > > +		if (flag & REQ_NOWAIT) {
-> > > > +			if (dc->error == -EAGAIN) {
-> > > > +				spin_lock_irqsave(&dc->lock, flags);
-> > > > +				dc->len -= len;
-> > > > +				if (!dc->len) {
-> > > > +					dc->len = total_len;
-> > > > +					dc->state = D_PREP;
-> > > > +					reinit_completion(&dc->wait);
-> > > > +				} else {
-> > > > +					dcc->undiscard_blks -= total_len;
-> > > > +					if (dc->state == D_PARTIAL)
-> > > > +						dc->state = D_SUBMIT;
-> > > > +				}
-> > > > +				err = dc->error;
-> > > > +				dc->error = 0;
-> > > > +				spin_unlock_irqrestore(&dc->lock, flags);
-> > > > +				break;
-> > > > +			}
-> > > > +		}
-> > > > +
-> > > > +		atomic_inc(&dcc->queued_discard);
-> > > > +		dc->queued++;
-> > > > +		list_move_tail(&dc->list, wait_list);
-> > > >  
-> > > >  		atomic_inc(&dcc->issued_discard);
-> > > >  
-> > > > @@ -1214,8 +1239,9 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > >  		len = total_len;
-> > > >  	}
-> > > >  
-> > > > -	if (!err && len)
-> > > > -		__update_discard_tree_range(sbi, bdev, lstart, start, len);
-> > > > +	if ((!err || err == -EAGAIN) && total_len && dc->start != start)
-> > > > +		__update_discard_tree_range(sbi, bdev, lstart, start,
-> > > > +					total_len);
-> > > >  	return err;
-> > > >  }
-> > > >  
-> > > > @@ -1470,12 +1496,15 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > >  	struct list_head *pend_list;
-> > > >  	struct discard_cmd *dc, *tmp;
-> > > >  	struct blk_plug plug;
-> > > > -	int i, issued = 0;
-> > > > +	int i, err, issued = 0;
-> > > >  	bool io_interrupted = false;
-> > > > +	bool retry;
-> > > >  
-> > > >  	if (dpolicy->timeout != 0)
-> > > >  		f2fs_update_time(sbi, dpolicy->timeout);
-> > > >  
-> > > > +retry:
-> > > > +	retry = false;
-> > > >  	for (i = MAX_PLIST_NUM - 1; i >= 0; i--) {
-> > > >  		if (dpolicy->timeout != 0 &&
-> > > >  				f2fs_time_over(sbi, dpolicy->timeout))
-> > > > @@ -1509,7 +1538,12 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > >  				break;
-> > > >  			}
-> > > >  
-> > > > -			__submit_discard_cmd(sbi, dpolicy, dc, &issued);
-> > > > +			err = __submit_discard_cmd(sbi, dpolicy, dc, &issued);
-> > > > +			if (err == -EAGAIN) {
-> > > > +				congestion_wait(BLK_RW_ASYNC,
-> > > > +						DEFAULT_IO_TIMEOUT);
-> > > > +				retry = true;
-> > > > +			}
-> > > >  
-> > > >  			if (issued >= dpolicy->max_requests)
-> > > >  				break;
-> > > > @@ -1522,6 +1556,9 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > >  			break;
-> > > >  	}
-> > > >  
-> > > > +	if (retry)
-> > > > +		goto retry;
-> > > > +
-> > > >  	if (!issued && io_interrupted)
-> > > >  		issued = -1;
-> > > >  
-> > > > -- 
-> > > > Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-> > > > Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> > 
-> > -- 
-> > --
-> > Sent by a consultant of the Qualcomm Innovation Center, Inc.
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
-
--- 
---
-Sent by a consultant of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
