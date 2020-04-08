@@ -2,235 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3446F1A1C75
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F581A1C7A
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgDHHUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:20:44 -0400
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:32894 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726453AbgDHHUo (ORCPT
+        id S1726721AbgDHHVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:21:38 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:29406 "EHLO
+        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbgDHHVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:20:44 -0400
-Received: from zxbjmbx2.zhaoxin.com (10.29.252.164) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1261.35; Wed, 8 Apr
- 2020 15:20:20 +0800
-Received: from [10.28.64.103] (10.28.64.103) by zxbjmbx2.zhaoxin.com
- (10.29.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1261.35; Wed, 8 Apr
- 2020 15:20:19 +0800
-Subject: Re: [PATCH] x86/perf: Add hardware performance events support for
- Zhaoxin CPU.
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
-        <namhyung@kernel.org>, <tglx@linutronix.de>, <bp@alien8.de>,
-        <hpa@zytor.com>, <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <cooperyan@zhaoxin.com>
-References: <1585647599-6649-1-git-send-email-CodyYao-oc@zhaoxin.com>
- <20200331101834.GP20730@hirez.programming.kicks-ass.net>
-From:   CodyYao-oc <CodyYao-oc@zhaoxin.com>
-Message-ID: <238c0da5-c542-55b1-aaed-d4345516b84b@zhaoxin.com>
-Date:   Wed, 8 Apr 2020 15:20:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200331101834.GP20730@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.28.64.103]
-X-ClientProxiedBy: ZXSHCAS2.zhaoxin.com (10.28.252.162) To
- zxbjmbx2.zhaoxin.com (10.29.252.164)
+        Wed, 8 Apr 2020 03:21:37 -0400
+Received: from grover.flets-west.jp (softbank126125134031.bbtec.net [126.125.134.31]) (authenticated)
+        by conuserg-11.nifty.com with ESMTP id 0387L6nE022210;
+        Wed, 8 Apr 2020 16:21:06 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 0387L6nE022210
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1586330467;
+        bh=6lUuBNJgYs6dcwN9xI/lESbFXHdxhnYtXrKDzIR2VN0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Yc3UUKQjgqgMrF7+on+WzmPK44dhT2n3OZEn1U3sZrfnGSMyFwC35myRhtnLcsu4y
+         gS/4W8S9zhG+wyyh3agCPJNLEHqp5RbEXRofqBcaP1g+3iKl4GZjuCPHfIn5gPWZq7
+         2bYalDIdMeBl95KvgEOHzb5+ZbCCHMKUjz/pk6ncnIsZn/HNFoeHHOxdb9ctsu2aWg
+         pcr+TW13Mw4aoj+zjlkJO/eqG91z8ULMpTyDrEyHJOMGFoBTAr83lQaPv+gExRacdU
+         Hm4BcQQZr/iZvRLbRJC2IjuarQ7Ec6e3Hr0fN3wV7se0D0czjwXd6T1HNQPXVbEU6B
+         yatyNnCI8YS3g==
+X-Nifty-SrcIP: [126.125.134.31]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        masahiroy@kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH 1/2] mmc: sdhci: move SDHCI_CAPABILITIES_1 to a more suitable place
+Date:   Wed,  8 Apr 2020 16:21:04 +0900
+Message-Id: <20200408072105.422-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/3/31 下午6:18, Peter Zijlstra wrote:
-> On Tue, Mar 31, 2020 at 05:39:59PM +0800, CodyYao-oc wrote:
->> Zhaoxin CPU has provided facilities for monitoring performance
->> via PMU(Performance Monitor Unit), but the functionality is unused so far.
->> Therefore, add support for zhaoxin pmu to make performance related
->> hardware events available.
-> 
-> This looks like an Intel Architectural PMU v2 or so, is that correct? Do
-> you have a link to documentation for your CPU?
-> 
-I'm sorry for such a late reply. Yes, the usage method is the same as 
-Intel PMU v2, but there is no online document at present. For your 
-convenience, provide some event descriptions as follows:
+In the SDHCI specification, the Capabilities Register (Offset 0x40h)
+is the 64-bit width register, but in Linux, it is represented as two
+registers, SDHCI_CAPABILITIES and SDHCI_CAPABILITIES_1 so that drivers
+can use 32-bit register accessors.
 
------------------------------------------------------------------------------------------------------------------------------------
-Event                      | Event  | Umask |          Description
-                            | Select |       |
------------------------------------------------------------------------------------------------------------------------------------
-cpu-cycles                 |  82h   |  00h  | unhalt core clock
-instructions               |  00h   |  00h  | number of instructions at 
-retirement.
-cache-references           |  15h   |  05h  | number of fillq pushs at 
-the current cycle.
-cache-misses               |  1ah   |  05h  | number of l2 miss pushed 
-by fillq.
-branch-instructions        |  28h   |  00h  | counts the number of 
-branch instructions retired.
-branch-misses              |  29h   |  00h  | mispredicted branch 
-instructions at retirement.
-bus-cycles                 |  83h   |  00h  | unhalt bus clock
-stalled-cycles-frontend    |  01h   |  01h  | Increments each cycle the 
-# of Uops issued by the RAT to RS.
-stalled-cycles-backend     |  0fh   |  04h  | RS0/1/2/3/45 empty
-L1-dcache-loads            |  68h   |  05h  | number of retire/commit load.
-L1-dcache-load-misses      |  4bh   |  05h  | retired load uops whose 
-data source followed an L1 miss.
-L1-dcache-stores           |  69h   |  06h  | number of retire/commit 
-Store,no LEA
-L1-dcache-store-misses     |  62h   |  05h  | cache lines in M state 
-evicted out of L1D due to Snoop HitM or dirty line replacement.
-L1-icache-loads            |  00h   |  03h  | number of l1i cache access 
-for valid normal fetch,including un-cacheable access.
-L1-icache-load-misses      |  01h   |  03h  | number of l1i cache miss 
-for valid normal fetch,including un-cacheable miss.
-L1-icache-prefetches       |  0ah   |  03h  | number of prefetch.
-L1-icache-prefetch-misses  |  0bh   |  03h  | number of prefetch miss.
-dTLB-loads                 |  68h   |  05h  | number of retire/commit load
-dTLB-load-misses           |  2ch   |  05h  | number of load operations 
-miss all level tlbs and cause a tablewalk.
-dTLB-stores                |  69h   |  06h  | number of retire/commit 
-Store,no LEA
-dTLB-store-misses          |  30h   |  05h  | number of store operations 
-miss all level tlbs and cause a tablewalk.
-dTLB-prefetches            |  64h   |  05h  | number of hardware pte 
-prefetch requests dispatched out of the prefetch FIFO.
-dTLB-prefetch-misses       |  65h   |  05h  | number of hardware pte 
-prefetch requests miss the l1d data cache.
-iTLB-load                  |  00h   |  00h  | actually counter instructions.
-iTLB-load-misses           |  34h   |  05h  | number of code operations 
-miss all level tlbs and cause a tablewalk.
------------------------------------------------------------------------------------------------------------------------------------
+The upper 32-bit field is associated with SDHCI_CAPABILITIES_1.
 
+Move the definition of SDHCI_CAPABILITIES_1 to the correct place.
 
->> +static void zhaoxin_pmu_disable_all(void)
->> +{
->> +	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
->> +}
->> +
->> +static void zhaoxin_pmu_enable_all(int added)
->> +{
->> +	wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, x86_pmu.intel_ctrl);
->> +}
->> +
->> +static inline u64 zhaoxin_pmu_get_status(void)
->> +{
->> +	u64 status;
->> +
->> +	rdmsrl(MSR_CORE_PERF_GLOBAL_STATUS, status);
->> +
->> +	return status;
->> +}
->> +
->> +static inline void zhaoxin_pmu_ack_status(u64 ack)
->> +{
->> +	wrmsrl(MSR_CORE_PERF_GLOBAL_OVF_CTRL, ack);
->> +}
-> 
->> +static int zhaoxin_pmu_handle_irq(struct pt_regs *regs)
->> +{
->> +	struct perf_sample_data data;
->> +	struct cpu_hw_events *cpuc;
->> +	int bit;
->> +	u64 status;
->> +	bool is_zxc;
->> +	int handled = 0;
->> +
->> +	cpuc = this_cpu_ptr(&cpu_hw_events);
->> +	apic_write(APIC_LVTPC, APIC_DM_NMI);
->> +	zhaoxin_pmu_disable_all();
->> +	status = zhaoxin_pmu_get_status();
->> +	if (!status)
->> +		goto done;
->> +
->> +	if (boot_cpu_data.x86 == 0x06 &&
->> +		(boot_cpu_data.x86_model == 0x0f ||
->> +			boot_cpu_data.x86_model == 0x19))
->> +		is_zxc = true;
->> +again:
->> +
->> +	/*Clearing status works only if the global control is enable on zxc.*/
->> +	if (is_zxc)
->> +		wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, x86_pmu.intel_ctrl);
->> +
->> +	zhaoxin_pmu_ack_status(status);
->> +
->> +	if (is_zxc)
->> +		wrmsrl(MSR_CORE_PERF_GLOBAL_CTRL, 0);
-> 
-> That's an unfortunate errata; perhaps write it like so:
-> 
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-Thank you very much for your advice, I have changed the code.
+ drivers/mmc/host/sdhci.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> static inline void zxc_pmu_ack_status(u64 status)
-> {
-> 	/*
-> 	 * ZXC needs global control enabled in order to clear status bits.
-> 	 */
-> 	zhaoxin_pmu_enable_all(0);
-> 	zhaoxin_pmu_ack_status(status);
-> 	zhaoxin_pmu_disable_all();
-> }
-> 
-> 	if (is_zxc)
-> 		zxc_pmu_ack_status(status);
-> 	else
-> 		zhaoxin_pmu_ack_status(status);
-> 
-> Alternatively; you can do a whole zxc specific handle_irq() and move the
-> get/ack status before disable_all(). If you do that, then factor this:
-> 
->> +	/*
->> +	 * CondChgd bit 63 doesn't mean any overflow status. Ignore
->> +	 * and clear the bit.
->> +	 */
->> +	if (__test_and_clear_bit(63, (unsigned long *)&status)) {
->> +		if (!status)
->> +			goto done;
->> +	}
->> +
->> +	for_each_set_bit(bit, (unsigned long *)&status, X86_PMC_IDX_MAX) {
->> +		struct perf_event *event = cpuc->events[bit];
->> +
->> +		handled++;
->> +
->> +		if (!test_bit(bit, cpuc->active_mask))
->> +			continue;
->> +
->> +		x86_perf_event_update(event);
->> +		perf_sample_data_init(&data, 0, event->hw.last_period);
->> +
->> +		if (!x86_perf_event_set_period(event))
->> +			continue;
->> +
->> +		if (perf_event_overflow(event, &data, regs))
->> +			x86_pmu_stop(event, 0);
->> +	}
-> 
-> bit into it's own function so you don't have to duplicate it. Then the
-> two handle_irq() functions only differ in the status handling.
-> 
->> +
->> +	/*
->> +	 * Repeat if there is more work to be done:
->> +	 */
->> +	status = zhaoxin_pmu_get_status();
->> +	if (status)
->> +		goto again;
->> +
->> +done:
->> +	zhaoxin_pmu_enable_all(0);
->> +	return handled;
->> +}
-> .
-> 
+diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+index 79dffbb731d3..b786b68e0302 100644
+--- a/drivers/mmc/host/sdhci.h
++++ b/drivers/mmc/host/sdhci.h
+@@ -220,6 +220,7 @@
+ #define  SDHCI_CAN_64BIT_V4	0x08000000
+ #define  SDHCI_CAN_64BIT	0x10000000
+ 
++#define SDHCI_CAPABILITIES_1	0x44
+ #define  SDHCI_SUPPORT_SDR50	0x00000001
+ #define  SDHCI_SUPPORT_SDR104	0x00000002
+ #define  SDHCI_SUPPORT_DDR50	0x00000004
+@@ -236,8 +237,6 @@
+ #define  SDHCI_CAN_DO_ADMA3	0x08000000
+ #define  SDHCI_SUPPORT_HS400	0x80000000 /* Non-standard */
+ 
+-#define SDHCI_CAPABILITIES_1	0x44
+-
+ #define SDHCI_MAX_CURRENT		0x48
+ #define  SDHCI_MAX_CURRENT_LIMIT	0xFF
+ #define  SDHCI_MAX_CURRENT_330_MASK	0x0000FF
+-- 
+2.17.1
 
