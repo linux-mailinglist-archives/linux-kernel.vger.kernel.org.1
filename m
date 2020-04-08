@@ -2,58 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 229E81A1C71
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B7E1A1C78
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgDHHSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:18:14 -0400
-Received: from vkten.in ([104.244.73.96]:45190 "EHLO vkten.in"
+        id S1726681AbgDHHVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:21:33 -0400
+Received: from mga01.intel.com ([192.55.52.88]:42828 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbgDHHSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:18:14 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 03:18:13 EDT
-Received: (qmail 4649 invoked from network); 8 Apr 2020 07:11:31 -0000
-Received: from unknown (HELO localhost) (vkor@vkten.in@117.219.207.72)
-  de/crypted with TLSv1.3: TLS_AES_256_GCM_SHA384 [256/256] DN=none
-  by vkten with ESMTPSA; 8 Apr 2020 07:11:31 -0000
-From:   R Veera Kumar <vkor@vkten.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     R Veera Kumar <vkor@vkten.in>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devel@driverdev.osuosl.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: mt7621-pinctrl: Use correct pointer type argument for sizeof
-Date:   Wed,  8 Apr 2020 12:41:12 +0530
-Message-Id: <20200408071112.11578-1-vkor@vkten.in>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1725763AbgDHHVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 03:21:33 -0400
+IronPort-SDR: 9qIDK1VANMo4fNW2iwJjwnAkj1z7jP6FOBMh6kWDgDY4jjZcy8eTKgE6LkMWXLKODx8tXrlzYz
+ r0FJbG0w8c6Q==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 00:21:32 -0700
+IronPort-SDR: 8DU0rS43X0+q9dh1hmnTkwwNvy5G+AJbotvfyHkVhAtAtrkAB6SWCe/akFWTK0FC7Hnr2U7p4W
+ lJW241t73Enw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,357,1580803200"; 
+   d="scan'208";a="254713673"
+Received: from joy-optiplex-7040.sh.intel.com ([10.239.13.16])
+  by orsmga006.jf.intel.com with ESMTP; 08 Apr 2020 00:21:30 -0700
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     alex.williamson@redhat.com, cohuck@redhat.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: [PATCH] vfio: checking of validity of user vaddr in vfio_dma_rw
+Date:   Wed,  8 Apr 2020 03:11:21 -0400
+Message-Id: <20200408071121.25645-1-yan.y.zhao@intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use correct pointer type argument for sizeof.
-Found using coccinelle.
+instead of calling __copy_to/from_user(), use copy_to_from_user() to
+ensure vaddr range is a valid user address range before accessing them.
 
-Signed-off-by: R Veera Kumar <vkor@vkten.in>
+Cc: Kees Cook <keescook@chromium.org>
+
+Fixes: 8d46c0cca5f4 ("vfio: introduce vfio_dma_rw to read/write a range of IOVAs")
+Signed-off-by: Yan Zhao <yan.y.zhao@intel.com>
 ---
- drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/vfio/vfio_iommu_type1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
-index d0f06790d38f..62babad5ee0b 100644
---- a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
-+++ b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
-@@ -220,7 +220,7 @@ static int rt2880_pinmux_index(struct rt2880_priv *p)
- 	/* allocate our function and group mapping index buffers */
- 	f = p->func = devm_kcalloc(p->dev,
- 				   p->func_count,
--				   sizeof(struct rt2880_pmx_func),
-+				   sizeof(rt2880_pmx_func),
- 				   GFP_KERNEL);
- 	gpio_func.groups = devm_kcalloc(p->dev, p->group_count, sizeof(int),
- 					GFP_KERNEL);
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 3aefcc8e2933..fbc58284b333 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -2345,10 +2345,10 @@ static int vfio_iommu_type1_dma_rw_chunk(struct vfio_iommu *iommu,
+ 	vaddr = dma->vaddr + offset;
+ 
+ 	if (write)
+-		*copied = __copy_to_user((void __user *)vaddr, data,
++		*copied = copy_to_user((void __user *)vaddr, data,
+ 					 count) ? 0 : count;
+ 	else
+-		*copied = __copy_from_user(data, (void __user *)vaddr,
++		*copied = copy_from_user(data, (void __user *)vaddr,
+ 					   count) ? 0 : count;
+ 	if (kthread)
+ 		unuse_mm(mm);
 -- 
-2.20.1
+2.17.1
 
