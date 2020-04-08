@@ -2,53 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 956711A1DC3
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 11:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7561A1DBF
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 11:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727793AbgDHJDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 05:03:01 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:17563 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbgDHJC7 (ORCPT
+        id S1727593AbgDHJCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 05:02:50 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:39808 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726846AbgDHJCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 05:02:59 -0400
+        Wed, 8 Apr 2020 05:02:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1586336579; x=1617872579;
-  h=from:to:cc:subject:date:message-id:mime-version;
-  bh=Yctj+snLI3+lFrXtyXQAbeRqej9FGBlgOHRzr0ajYGA=;
-  b=jSI+qRStTw/ViqXdIj7sWIcltyzmb803m6dJd/aECLIqdgLJH1Sk+Ezu
-   txWa7//NPLh58p8kN7HNgedAeSlzIHdZgnKP+bndOAKMqWyYwHkr/aTLX
-   s+SUvnWThsAQsMBhvpJWLsBruAGAZvi+UQ3+AvKUSc6DaFNbIGskkFkog
-   A=;
-IronPort-SDR: JwBgGlbZOxEGaB8yZfchS6SiFkoJLUzdB6CZBympaPQ+gRaWcybrHiVDVxGoHKlUXfVYnfrL0M
- n/tnC4GN8h4g==
+  t=1586336569; x=1617872569;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version;
+  bh=e5bUYjWbScbzjft6TEIZiCZRtgYcyyX63Xluh9NgdRM=;
+  b=sa3H+P6BiPyoEDoYpnYEyRpglr28XA4GHBMR9exfOegcTlOXwE1iZ93t
+   pSrjX+rtE1HHrjmxAlvhhGu6Of/pP9TwlUxd9jhMiyGbyBSLo3Lozs/Xc
+   VEctFVYTnas/lV1AnPDcdS5JsGXS8jMMI1ml3yWGC3fpcXxK0YCfTR/Hm
+   U=;
+IronPort-SDR: Qdq/WKgx+3/4KMPZauL9lu9cgebFhIPEsvD2PmfT9O2ur/M2RKK9iZUY2YmRXFmthaqLeslJLG
+ fsqlZDZgJdFw==
 X-IronPort-AV: E=Sophos;i="5.72,357,1580774400"; 
-   d="scan'208";a="24735022"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 08 Apr 2020 09:02:46 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 653C1A0288;
-        Wed,  8 Apr 2020 09:02:44 +0000 (UTC)
-Received: from EX13D01UWB003.ant.amazon.com (10.43.161.94) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Apr 2020 09:02:42 +0000
-Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
- EX13d01UWB003.ant.amazon.com (10.43.161.94) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 8 Apr 2020 09:02:41 +0000
-Received: from localhost (10.85.0.235) by mail-relay.amazon.com (10.43.61.243)
+   d="scan'208";a="35938265"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 08 Apr 2020 09:02:47 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id 3AB0DA18E5;
+        Wed,  8 Apr 2020 09:02:47 +0000 (UTC)
+Received: from EX13D01UWA002.ant.amazon.com (10.43.160.74) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Apr 2020 09:02:46 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13d01UWA002.ant.amazon.com (10.43.160.74) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Apr 2020 09:02:45 +0000
+Received: from localhost (10.85.0.235) by mail-relay.amazon.com (10.43.61.169)
  with Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Wed, 8 Apr
- 2020 09:02:40 +0000
+ 2020 09:02:44 +0000
 From:   Balbir Singh <sblbir@amazon.com>
 To:     <tglx@linutronix.de>, <linux-kernel@vger.kernel.org>
 CC:     <jpoimboe@redhat.com>, <tony.luck@intel.com>,
         <keescook@chromium.org>, <benh@kernel.crashing.org>,
         <x86@kernel.org>, <dave.hansen@intel.com>,
         "Balbir Singh" <sblbir@amazon.com>
-Subject: [PATCH v3 0/5] Optionally flush L1D on context switch
-Date:   Wed, 8 Apr 2020 19:02:24 +1000
-Message-ID: <20200408090229.16467-1-sblbir@amazon.com>
+Subject: [PATCH v3 1/5] arch/x86/kvm: Refactor l1d flush lifecycle management
+Date:   Wed, 8 Apr 2020 19:02:25 +1000
+Message-ID: <20200408090229.16467-2-sblbir@amazon.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200408090229.16467-1-sblbir@amazon.com>
+References: <20200408090229.16467-1-sblbir@amazon.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -56,62 +59,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide a mechanism to flush the L1D cache on context switch.  The goal
-is to allow tasks that are paranoid due to the recent snoop assisted data
-sampling vulnerabilites, to flush their L1D on being switched out.
-This protects their data from being snooped or leaked via side channels
-after the task has context switched out.
+Split out the allocation and free routines to be used in a follow
+up set of patches (to reuse for L1D flushing).
 
-The core of the patches is patch 3, the rest largely refactor the code
-so that common bits can be reused.
-
-Changelog v3:
- - Refactor the return value of what flush_l1d_cache_hw() returns
- - Refactor the code, so that the generic setup bits come first
-   (patch 3 from previous posting is now patches 3 and 4)
- - Move from arch_prctl() to the prctl() interface as recommend
-   in the reviews.
-Changelog v2:
- - Fix a miss of mutex_unlock (caught by Borislav Petkov <bp@alien8.de>)
- - Add documentation about the changes (Josh Poimboeuf
-   <jpoimboe@redhat.com>)
-
-Changelog:
- - Refactor the code and reuse cond_ibpb() - code bits provided by tglx
- - Merge mm state tracking for ibpb and l1d flush
- - Rename TIF_L1D_FLUSH to TIF_SPEC_FLUSH_L1D
-
-Changelog RFC:
- - Reuse existing code for allocation and flush
- - Simplify the goto logic in the actual l1d_flush function
- - Optimize the code path with jump labels/static functions
-
-The previous version of this patch posted at:
-
-https://lore.kernel.org/lkml/20200406031946.11815-1-sblbir@amazon.com/
-
-Balbir Singh (5):
-  arch/x86/kvm: Refactor l1d flush lifecycle management
-  arch/x86: Refactor tlbflush and l1d flush
-  arch/x86/mm: Refactor cond_ibpb() to support other use cases
-  arch/x86: Optionally flush L1D on context switch
-  arch/x86: Add L1D flushing Documentation
-
- Documentation/admin-guide/hw-vuln/index.rst   |   1 +
- .../admin-guide/hw-vuln/l1d_flush.rst         |  40 +++++++
- arch/x86/include/asm/cacheflush.h             |   6 +
- arch/x86/include/asm/thread_info.h            |   6 +-
- arch/x86/include/asm/tlbflush.h               |   2 +-
- arch/x86/kernel/Makefile                      |   1 +
- arch/x86/kernel/l1d_flush.c                   |  85 ++++++++++++++
- arch/x86/kvm/vmx/vmx.c                        |  56 ++-------
- arch/x86/mm/tlb.c                             | 109 ++++++++++++++----
- include/uapi/linux/prctl.h                    |   4 +
- kernel/sys.c                                  |  20 ++++
- 11 files changed, 259 insertions(+), 71 deletions(-)
- create mode 100644 Documentation/admin-guide/hw-vuln/l1d_flush.rst
+Signed-off-by: Balbir Singh <sblbir@amazon.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ arch/x86/include/asm/cacheflush.h |  3 +++
+ arch/x86/kernel/Makefile          |  1 +
+ arch/x86/kernel/l1d_flush.c       | 36 +++++++++++++++++++++++++++++++
+ arch/x86/kvm/vmx/vmx.c            | 25 +++------------------
+ 4 files changed, 43 insertions(+), 22 deletions(-)
  create mode 100644 arch/x86/kernel/l1d_flush.c
 
+diff --git a/arch/x86/include/asm/cacheflush.h b/arch/x86/include/asm/cacheflush.h
+index 63feaf2a5f93..6419a4cef0e8 100644
+--- a/arch/x86/include/asm/cacheflush.h
++++ b/arch/x86/include/asm/cacheflush.h
+@@ -6,6 +6,9 @@
+ #include <asm-generic/cacheflush.h>
+ #include <asm/special_insns.h>
+ 
++#define L1D_CACHE_ORDER 4
+ void clflush_cache_range(void *addr, unsigned int size);
++void *alloc_l1d_flush_pages(void);
++void cleanup_l1d_flush_pages(void *l1d_flush_pages);
+ 
+ #endif /* _ASM_X86_CACHEFLUSH_H */
+diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+index d6d61c4455fa..48f443e6c2de 100644
+--- a/arch/x86/kernel/Makefile
++++ b/arch/x86/kernel/Makefile
+@@ -160,3 +160,4 @@ ifeq ($(CONFIG_X86_64),y)
+ endif
+ 
+ obj-$(CONFIG_IMA_SECURE_AND_OR_TRUSTED_BOOT)	+= ima_arch.o
++obj-y						+= l1d_flush.o
+diff --git a/arch/x86/kernel/l1d_flush.c b/arch/x86/kernel/l1d_flush.c
+new file mode 100644
+index 000000000000..05f375c33423
+--- /dev/null
++++ b/arch/x86/kernel/l1d_flush.c
+@@ -0,0 +1,36 @@
++#include <linux/mm.h>
++#include <asm/cacheflush.h>
++
++void *alloc_l1d_flush_pages(void)
++{
++	struct page *page;
++	void *l1d_flush_pages = NULL;
++	int i;
++
++	/*
++	 * This allocation for l1d_flush_pages is not tied to a VM/task's
++	 * lifetime and so should not be charged to a memcg.
++	 */
++	page = alloc_pages(GFP_KERNEL, L1D_CACHE_ORDER);
++	if (!page)
++		return NULL;
++	l1d_flush_pages = page_address(page);
++
++	/*
++	 * Initialize each page with a different pattern in
++	 * order to protect against KSM in the nested
++	 * virtualization case.
++	 */
++	for (i = 0; i < 1u << L1D_CACHE_ORDER; ++i) {
++		memset(l1d_flush_pages + i * PAGE_SIZE, i + 1,
++				PAGE_SIZE);
++	}
++	return l1d_flush_pages;
++}
++EXPORT_SYMBOL_GPL(alloc_l1d_flush_pages);
++
++void cleanup_l1d_flush_pages(void *l1d_flush_pages)
++{
++	free_pages((unsigned long)l1d_flush_pages, L1D_CACHE_ORDER);
++}
++EXPORT_SYMBOL_GPL(cleanup_l1d_flush_pages);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 91749f1254e8..f40c30f9b4d8 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -203,14 +203,10 @@ static const struct {
+ 	[VMENTER_L1D_FLUSH_NOT_REQUIRED] = {"not required", false},
+ };
+ 
+-#define L1D_CACHE_ORDER 4
+ static void *vmx_l1d_flush_pages;
+ 
+ static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
+ {
+-	struct page *page;
+-	unsigned int i;
+-
+ 	if (!boot_cpu_has_bug(X86_BUG_L1TF)) {
+ 		l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_NOT_REQUIRED;
+ 		return 0;
+@@ -253,24 +249,9 @@ static int vmx_setup_l1d_flush(enum vmx_l1d_flush_state l1tf)
+ 
+ 	if (l1tf != VMENTER_L1D_FLUSH_NEVER && !vmx_l1d_flush_pages &&
+ 	    !boot_cpu_has(X86_FEATURE_FLUSH_L1D)) {
+-		/*
+-		 * This allocation for vmx_l1d_flush_pages is not tied to a VM
+-		 * lifetime and so should not be charged to a memcg.
+-		 */
+-		page = alloc_pages(GFP_KERNEL, L1D_CACHE_ORDER);
+-		if (!page)
++		vmx_l1d_flush_pages = alloc_l1d_flush_pages();
++		if (!vmx_l1d_flush_pages)
+ 			return -ENOMEM;
+-		vmx_l1d_flush_pages = page_address(page);
+-
+-		/*
+-		 * Initialize each page with a different pattern in
+-		 * order to protect against KSM in the nested
+-		 * virtualization case.
+-		 */
+-		for (i = 0; i < 1u << L1D_CACHE_ORDER; ++i) {
+-			memset(vmx_l1d_flush_pages + i * PAGE_SIZE, i + 1,
+-			       PAGE_SIZE);
+-		}
+ 	}
+ 
+ 	l1tf_vmx_mitigation = l1tf;
+@@ -7999,7 +7980,7 @@ static struct kvm_x86_init_ops vmx_init_ops __initdata = {
+ static void vmx_cleanup_l1d_flush(void)
+ {
+ 	if (vmx_l1d_flush_pages) {
+-		free_pages((unsigned long)vmx_l1d_flush_pages, L1D_CACHE_ORDER);
++		cleanup_l1d_flush_pages(vmx_l1d_flush_pages);
+ 		vmx_l1d_flush_pages = NULL;
+ 	}
+ 	/* Restore state so sysfs ignores VMX */
 -- 
 2.17.1
 
