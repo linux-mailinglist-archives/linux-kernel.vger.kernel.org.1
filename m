@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D541A1EAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024621A1ED9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728048AbgDHKUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 06:20:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36686 "EHLO mail.kernel.org"
+        id S1728179AbgDHKfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 06:35:46 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:59628 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728014AbgDHKUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 06:20:07 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6201620768;
-        Wed,  8 Apr 2020 10:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586341205;
-        bh=yKozUSAfD7WpYIcWLmx7zfhM5IlRSW9D87rkJqsrJoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=txCudZCBIjpriNoN6AWxW0kYsMzP8IMFLdzHgxanNz3dag6SE4pJWaekq76lMLyVw
-         1N/qZZOl98X/rUYF4BpNskqD9lJDaDyR1dhPwQ8nUSmdRixNO2cq/D+qWMu3/2Kr0x
-         Rdxd25vAoryA4owm+mbaigQJsfVlmzDYs71txn50=
-Date:   Wed, 8 Apr 2020 12:20:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: Export fw_get_builtin_firmware()?
-Message-ID: <20200408102003.GA1070237@kroah.com>
-References: <20200408094526.GC24663@zn.tnic>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200408094526.GC24663@zn.tnic>
+        id S1726436AbgDHKfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 06:35:45 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A4A2F201437;
+        Wed,  8 Apr 2020 12:35:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8311D201436;
+        Wed,  8 Apr 2020 12:35:37 +0200 (CEST)
+Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 48D95402E4;
+        Wed,  8 Apr 2020 18:35:30 +0800 (SGT)
+From:   Hui Song <hui.song_1@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Song Hui <hui.song_1@nxp.com>
+Subject: [PATCH v1] gpio: mpc8xxx: Add shutdown function.
+Date:   Wed,  8 Apr 2020 18:21:17 +0800
+Message-Id: <20200408102118.17572-1-hui.song_1@nxp.com>
+X-Mailer: git-send-email 2.9.5
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 11:45:26AM +0200, Borislav Petkov wrote:
-> Hi guys,
-> 
-> so I've come across this recently where the microcode loader
-> has a trivial helper get_builtin_firmware() which scans through
-> the builtin firmware to find microcode in there. Looking at
-> fw_get_builtin_firmware(), that one does practically the same so how
-> about I export it and have the microcode loader use it instead of
-> homegrowing the same thing?
-> 
-> IOW, something like this below?
-> 
-> If you agree with the approach, I'll split it properly into patches,
-> etc, of course.
+From: Song Hui <hui.song_1@nxp.com>
 
-Looks sane to me, thanks!
+The shutdown function needed to make interrupt handler to be NULL
+when kexec execute.
 
-greg k-h
+Signed-off-by: Song Hui <hui.song_1@nxp.com>
+---
+ drivers/gpio/gpio-mpc8xxx.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
+index 604dfec..a24e6c5 100644
+--- a/drivers/gpio/gpio-mpc8xxx.c
++++ b/drivers/gpio/gpio-mpc8xxx.c
+@@ -446,9 +446,21 @@ static int mpc8xxx_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int mpc8xxx_shutdown(struct platform_device *pdev)
++{
++	struct mpc8xxx_gpio_chip *mpc8xxx_gc = platform_get_drvdata(pdev);
++
++	if (mpc8xxx_gc->irq) {
++		irq_set_chained_handler_and_data(mpc8xxx_gc->irqn, NULL, NULL);
++		irq_domain_remove(mpc8xxx_gc->irq);
++	}
++
++	return 0;
++}
+ static struct platform_driver mpc8xxx_plat_driver = {
+ 	.probe		= mpc8xxx_probe,
+ 	.remove		= mpc8xxx_remove,
++	.shutdown	= mpc8xxx_shutdown,
+ 	.driver		= {
+ 		.name = "gpio-mpc8xxx",
+ 		.of_match_table	= mpc8xxx_gpio_ids,
+-- 
+2.9.5
+
