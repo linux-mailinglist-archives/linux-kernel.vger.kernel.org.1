@@ -2,99 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A6F1A1FE2
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 13:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76761A1FFC
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 13:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728501AbgDHLeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 07:34:02 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:54358 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727902AbgDHLeC (ORCPT
+        id S1728572AbgDHLkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 07:40:10 -0400
+Received: from sender3-op-o12.zoho.com.cn ([124.251.121.243]:17847 "EHLO
+        sender3-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728495AbgDHLkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 07:34:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586345641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iMpv1Tcf8msq6CIz6hAZaaOwWt8dkcRjoWBRfrYNwKk=;
-        b=RoRVKKv8OqqSmOdsNBjN+SXCfrC6dR9pT5+lcHua/Ex+qQDyNWTC0wvqN/+IE349BXb7rJ
-        DCBWeZFn9iUKNIQDUzuUtaAMAA6z9vlh4Ms9L0viXFQDWQe+SJ8B+CXWwQ2YaPz53qEI2N
-        eXIJPskYhxi9bTFUGZ8VFpj3Vk0JCfc=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-50-LJQTftwPM5KjlQlkob7pvg-1; Wed, 08 Apr 2020 07:33:59 -0400
-X-MC-Unique: LJQTftwPM5KjlQlkob7pvg-1
-Received: by mail-wr1-f70.google.com with SMTP id o10so3805931wrj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 04:33:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iMpv1Tcf8msq6CIz6hAZaaOwWt8dkcRjoWBRfrYNwKk=;
-        b=DKmvBigkuLlNTY9IiGSUMqteaEQvjm73c8KR3NGQarPZKzDS0MKWab3Wv0VBu2tZsp
-         7xp3ldWCPKlBsqQ6ghs8ufH+0wi6DRsqgnrsIzVUr0+G4ckinUMemGKlRcVWJ7Zptz4B
-         tkno2xTtzqHZitf3TAz4xQLP7IZW4XcI+ZmNqAMw3qogO7F0CTV5Bes5xFUSya/ngVxW
-         ckYvPWoR+7DhC3ZsBoDf0dehonJOUG4f8vjqHMaakMULXVsypeTLEPoA36hK6GyKdNbv
-         LO7fQ2BK7yiEKerCxXYlj/8gZvQlvAIM9I8Ta66yYSoNibvdFfZjaMQW2lTJv7lIqZfE
-         YlOg==
-X-Gm-Message-State: AGi0PuYtRw0kqJfKOLObF6hJGq3hoGlLtbBWkpY39GUgjfbI/cAushlX
-        +H1olVt1dFcfQ0MqZWAePPJ9UeQUCT4G+cLZ34HHkLt+3lEiO22zfSPH3UF/xu5qUP9BiDrmpYu
-        WNZegaCfPw85wRo7pJDTUS74L
-X-Received: by 2002:a1c:3281:: with SMTP id y123mr4239285wmy.30.1586345637884;
-        Wed, 08 Apr 2020 04:33:57 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLT538fz8uSoawd2IFWIE2g4SRUOixPL/PauE1AvjtumpV89MF+Ihgn7usDfr2aRZ/BhKLoLQ==
-X-Received: by 2002:a1c:3281:: with SMTP id y123mr4239265wmy.30.1586345637681;
-        Wed, 08 Apr 2020 04:33:57 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id f63sm3148639wma.47.2020.04.08.04.33.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2020 04:33:57 -0700 (PDT)
-Subject: Re: [PATCH 2/2] KVM: s390: Return last valid slot if approx index is
- out-of-bounds
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        Wed, 8 Apr 2020 07:40:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1586345803; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=ktM0p/VLgeyxhuHarSGAHIWGuBytEId+BMh4P/kfdRl1DDvMpQG9ufh6qn2Ec764Y0KU1NUtcSrVSzy6yFmyC0Dzpfswe9POwQILYk46/f8DUskxKQOBoDaFSr/CVhSSN4VJV5/TlXnVkn78CxY93aHnqy6X9DbYh1m7LHIckVI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1586345803; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=x1C0J0dW+TFy1A/rQgku1MmxKq3NJPJkkGtqpNKObTQ=; 
+        b=qktwhZsYG7BIHRgBgCH3Ou0bkfmki5IUBj8AXsncoZfT4mp7pyDLpuVo5uPfM78BxZewhsrFHUEIwbla/4yFslxF0GzZjKMl1IVul4BeUB3m2C4xFzC9ZJKEUOpnD+MyUiZ3G0j26jSQ/pGEKck59ZkKYFhH4euxxUEZFOWAS80=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=flygoat.com;
+        spf=pass  smtp.mailfrom=jiaxun.yang@flygoat.com;
+        dmarc=pass header.from=<jiaxun.yang@flygoat.com> header.from=<jiaxun.yang@flygoat.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1586345803;
+        s=mail; d=flygoat.com; i=jiaxun.yang@flygoat.com;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=x1C0J0dW+TFy1A/rQgku1MmxKq3NJPJkkGtqpNKObTQ=;
+        b=agrWO9EgVsZuV6M/NtYZPq/9kvBSLCtvE/CY3de3FNVq7T76ifH8N+uAvd7RbwRi
+        jCnrDk/P5JRLRMsYLEw8z4AXTjv57oErOXthP+KZy7JlR6yrpaNjG4z1vqw3FeLe5DM
+        EHeT/F/YwvYWUnaFxVnPdLYHh/dikNdqPW8hX6X4=
+Received: from localhost.localdomain (39.155.141.144 [39.155.141.144]) by mx.zoho.com.cn
+        with SMTPS id 1586345800507759.7747042437669; Wed, 8 Apr 2020 19:36:40 +0800 (CST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robert Richter <rric@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Enrico Weigelt <info@metux.net>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Zhou Yanjie <zhouyanjie@zoho.com>,
+        =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>, YunQiang Su <syq@debian.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Matt Redfearn <matt.redfearn@mips.com>,
+        Steve Winslow <swinslow@gmail.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Peter Xu <peterx@redhat.com>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
         linux-kernel@vger.kernel.org,
-        syzbot+d889b59b2bb87d4047a2@syzkaller.appspotmail.com
-References: <20200408064059.8957-1-sean.j.christopherson@intel.com>
- <20200408064059.8957-3-sean.j.christopherson@intel.com>
- <20200408122138.71493308@p-imbrenda>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <40b325c7-ca24-3513-b2fa-1e9397c9e353@redhat.com>
-Date:   Wed, 8 Apr 2020 13:33:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
+Message-ID: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH 00/12] MIPS: Topology & DeviceTree CPU rework
+Date:   Wed,  8 Apr 2020 19:34:10 +0800
+X-Mailer: git-send-email 2.26.0.rc2
 MIME-Version: 1.0
-In-Reply-To: <20200408122138.71493308@p-imbrenda>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/04/20 12:21, Claudio Imbrenda wrote:
-> on s390 memory always starts at 0; you can't even boot a system missing
-> the first pages of physical memory, so this means this situation would
-> never happen in practice. 
-> 
-> of course, a malicious userspace program could create an (unbootable) VM
-> and trigger this bug, so the patch itself makes sense.
-> 
-> Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+This set mainly added DeviceTree based CPU probe support and reworked
+topology handling for MIPS. In order to prepare for pure DeviceTree
+boot for Loongson64. It can also convinient Yanjie's Inegnic jz4780/X2000
+SMP/SMT support.
 
-What about using KVM just for isolation and not just to run a full-blown
-OS (that is, you might even only have the guest run in problem state)?
-Would that be feasible on s390?
+I've done build test for bmips, nlm, ip27 and boot test for malta with
+34Kf, I6400 in QEMU, Loongson64 on a Loongson-3B1500 real machine.
 
-Thanks,
+Thanks.
 
-Paolo
+Jiaxun Yang (12):
+  MIPS: setup: Drop prefill_possible_map
+  MIPS: prom: Add helper to parse CPU node in dt
+  arch_topology: Make it avilable for MIPS
+  arch_topology: Reset all cpus in reset_cpu_topology
+  MIPS: Switch to arch_topology
+  MIPS: Kernel: Switch to new topology interface
+  MIPS: CPS & MT: Switch to new topology interface
+  irqchip: mips-cpu: Switch to new topology interface
+  MIPS: bmips: Switch to new topology interface
+  MIPS: nlm: Switch to new topology interface
+  MIPS: Loongson64: Switch to new topology interface
+  MIPS: ip27: Fix includes
+
+ arch/mips/Kconfig                             |   1 +
+ arch/mips/include/asm/cpu-info.h              |  49 -------
+ arch/mips/include/asm/mach-ip27/mmzone.h      |   2 +
+ arch/mips/include/asm/mach-ip27/topology.h    |   2 +
+ .../include/asm/mach-loongson64/topology.h    |   2 +
+ arch/mips/include/asm/mips-cm.h               |   9 +-
+ arch/mips/include/asm/mips-cps.h              |   2 +
+ arch/mips/include/asm/prom.h                  |   2 +
+ arch/mips/include/asm/smp-ops.h               |   2 -
+ arch/mips/include/asm/smp.h                   |   2 -
+ arch/mips/include/asm/sn/addrs.h              |   1 +
+ arch/mips/include/asm/topology.h              |  48 ++++++-
+ arch/mips/kernel/cacheinfo.c                  |   5 +-
+ arch/mips/kernel/cpu-probe.c                  |  43 ------
+ arch/mips/kernel/mips-cm.c                    |   4 +-
+ arch/mips/kernel/mips-cpc.c                   |   4 +-
+ arch/mips/kernel/perf_event_mipsxx.c          |   4 +-
+ arch/mips/kernel/pm-cps.c                     |  12 +-
+ arch/mips/kernel/proc.c                       |   8 +-
+ arch/mips/kernel/prom.c                       |  96 ++++++++++++++
+ arch/mips/kernel/setup.c                      |  22 +---
+ arch/mips/kernel/smp-bmips.c                  |   3 +-
+ arch/mips/kernel/smp-cmp.c                    |   5 +-
+ arch/mips/kernel/smp-cps.c                    |  41 +++---
+ arch/mips/kernel/smp-mt.c                     |   3 +-
+ arch/mips/kernel/smp.c                        |  55 +-------
+ arch/mips/kernel/topology.c                   |  42 ++++++
+ arch/mips/loongson64/smp.c                    |  20 +--
+ arch/mips/mm/c-r4k.c                          |   4 +-
+ arch/mips/mm/context.c                        |   4 +-
+ arch/mips/netlogic/common/smp.c               |   4 +-
+ arch/mips/oprofile/op_model_mipsxx.c          |   4 +-
+ drivers/base/arch_topology.c                  | 123 ++++++++++--------
+ drivers/irqchip/irq-mips-cpu.c                |   2 +-
+ 34 files changed, 337 insertions(+), 293 deletions(-)
+
+--=20
+2.26.0.rc2
+
 
