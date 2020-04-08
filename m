@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0A51A2610
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F65F1A2613
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730002AbgDHPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:48:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49388 "EHLO mail.kernel.org"
+        id S1729948AbgDHPr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729667AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729688AbgDHPqd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Apr 2020 11:46:33 -0400
 Received: from mail.kernel.org (ip5f5ad4d8.dynamic.kabel-deutschland.de [95.90.212.216])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82C4D21841;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D9D920787;
         Wed,  8 Apr 2020 15:46:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586360791;
-        bh=7hTV2dJgIFRro7f3UUMXrrc2L76PI7X8rrq/aKCVMQg=;
+        bh=BTPcRwxL5Vi5wneFHtqBCwfk8BpgcAIHfCgs53kcGM8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xTBlpP4BfPpgOfUQOpoaRRR1e3mDrDzHIjZWBFvMEJSQ+l1c4GfBIdzaMiFPwKKmC
-         gWBw0ll54tMTmUa+GBrB/uljaruycz2DuZHDKD5jpBB9PQHoH2Cj+iVJCZywSzktmq
-         AkoZUBtK6GVs4zBla/p5qlTH2Dbgyurq68e5Q3ZY=
+        b=De3KAj7YfDooui6IYeglxOGipSe8n8+l6o1vwAcpVxrXMs1mtr8dOlfJdnJOH13sW
+         PCEpEZt5GEdmOqrfNglH61kJMhT1F/S81Dcv1iRZs/vbz3PHqtgTNYY4wHXE7P4c0Y
+         0Pv4rQ5BNzG3GfdGZjzr/B3ZxqfNpcBTI7Xde/RY=
 Received: from mchehab by mail.kernel.org with local (Exim 4.92.3)
         (envelope-from <mchehab@kernel.org>)
-        id 1jMCuL-000cBc-NO; Wed, 08 Apr 2020 17:46:29 +0200
+        id 1jMCuL-000cBh-P4; Wed, 08 Apr 2020 17:46:29 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH 17/35] docs: watch_queue.rst: supress some Sphinx warnings
-Date:   Wed,  8 Apr 2020 17:46:09 +0200
-Message-Id: <5ab5d36c72b25c427452b35ef589acae41516319.1586359676.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 18/35] scripts: kernel-doc: accept negation like !@var
+Date:   Wed,  8 Apr 2020 17:46:10 +0200
+Message-Id: <cf4f785b3b67375680a0a48a23192ea4bd5b5764.1586359676.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.25.2
 In-Reply-To: <cover.1586359676.git.mchehab+huawei@kernel.org>
 References: <cover.1586359676.git.mchehab+huawei@kernel.org>
@@ -43,114 +43,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sphinx doesn't like multi-line literal blocks with ``foobar``:
+On a few places, it sometimes need to indicate a negation of a
+parameter, like:
 
-    Documentation/watch_queue.rst:109: WARNING: Inline literal start-string without end-string.
-    Documentation/watch_queue.rst:109: WARNING: Inline emphasis start-string without end-string.
-    Documentation/watch_queue.rst:109: WARNING: Inline emphasis start-string without end-string.
-    Documentation/watch_queue.rst:109: WARNING: Inline emphasis start-string without end-string.
-    Documentation/watch_queue.rst:186: WARNING: Inline literal start-string without end-string.
-    Documentation/watch_queue.rst:186: WARNING: Inline emphasis start-string without end-string.
-    Documentation/watch_queue.rst:185: WARNING: Inline emphasis start-string without end-string.
+	!@fshared
 
-So, let's use the "::" markup instead.
+This pattern happens, for example, at:
 
-While we could do the fix only at the affected lines, let's
-do the same change along the entire file, in order to preserve
-the same look and feel at the entire doc.
+	kernel/futex.c
+
+and it is perfectly valid. However, kernel-doc currently
+transforms it into:
+
+	!**fshared**
+
+This won't do what it would be expected.
+
+Fortunately, fixing the script is a simple matter of storing
+the "!" before "@" and adding it after the bold markup, like:
+
+	**!fshared**
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/watch_queue.rst | 34 +++++++++++++++++++++++++---------
- 1 file changed, 25 insertions(+), 9 deletions(-)
+ scripts/kernel-doc | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/watch_queue.rst b/Documentation/watch_queue.rst
-index d8f70282d247..f1ffe9cdf81f 100644
---- a/Documentation/watch_queue.rst
-+++ b/Documentation/watch_queue.rst
-@@ -105,15 +105,19 @@ watch that specific key).
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index d15c8ea95d93..b019d8db6502 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -213,6 +213,7 @@ my $type_constant = '\b``([^\`]+)``\b';
+ my $type_constant2 = '\%([-_\w]+)';
+ my $type_func = '(\w+)\(\)';
+ my $type_param = '\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
++my $type_param_ref = '([\!]?)\@(\w*((\.\w+)|(->\w+))*(\.\.\.)?)';
+ my $type_fp_param = '\@(\w+)\(\)';  # Special RST handling for func ptr params
+ my $type_fp_param2 = '\@(\w+->\S+)\(\)';  # Special RST handling for structs with func ptr params
+ my $type_env = '(\$\w+)';
+@@ -237,6 +238,7 @@ my @highlights_man = (
+                       [$type_typedef, "\\\\fI\$1\\\\fP"],
+                       [$type_union, "\\\\fI\$1\\\\fP"],
+                       [$type_param, "\\\\fI\$1\\\\fP"],
++                      [$type_param_ref, "\\\\fI\$1\$2\\\\fP"],
+                       [$type_member, "\\\\fI\$1\$2\$3\\\\fP"],
+                       [$type_fallback, "\\\\fI\$1\\\\fP"]
+ 		     );
+@@ -258,7 +260,7 @@ my @highlights_rst = (
+                        [$type_union, "\\:c\\:type\\:`\$1 <\$2>`"],
+                        # in rst this can refer to any type
+                        [$type_fallback, "\\:c\\:type\\:`\$1`"],
+-                       [$type_param, "**\$1**"]
++                       [$type_param_ref, "**\$1\$2**"]
+ 		      );
+ my $blankline_rst = "\n";
  
- To manage a watch list, the following functions are provided:
- 
--  * ``void init_watch_list(struct watch_list *wlist,
--			   void (*release_watch)(struct watch *wlist));``
-+  * ::
-+
-+      void init_watch_list(struct watch_list *wlist,
-+			   void (*release_watch)(struct watch *wlist));
- 
-     Initialise a watch list.  If ``release_watch`` is not NULL, then this
-     indicates a function that should be called when the watch_list object is
-     destroyed to discard any references the watch list holds on the watched
-     object.
- 
--  * ``void remove_watch_list(struct watch_list *wlist);``
-+  * ::
-+
-+      void remove_watch_list(struct watch_list *wlist);
- 
-     This removes all of the watches subscribed to a watch_list and frees them
-     and then destroys the watch_list object itself.
-@@ -127,14 +131,18 @@ records will be written into.  The workings of this are hidden entirely inside
- of the watch_queue device driver, but it is necessary to gain a reference to it
- to set a watch.  These can be managed with:
- 
--  * ``struct watch_queue *get_watch_queue(int fd);``
-+  * ::
-+
-+      struct watch_queue *get_watch_queue(int fd);``
- 
-     Since watch queues are indicated to the kernel by the fd of the pipe that
-     implements the buffer, userspace must hand that fd through a system call.
-     This can be used to look up an opaque pointer to the watch queue from the
-     system call.
- 
--  * ``void put_watch_queue(struct watch_queue *wqueue);``
-+  * ::
-+
-+      void put_watch_queue(struct watch_queue *wqueue);
- 
-     This discards the reference obtained from ``get_watch_queue()``.
- 
-@@ -170,18 +178,24 @@ different ID are ignored.
- 
- The following functions are provided to manage watches:
- 
--  * ``void init_watch(struct watch *watch, struct watch_queue *wqueue);``
-+  * ::
-+
-+      void init_watch(struct watch *watch, struct watch_queue *wqueue);
- 
-     Initialise a watch object, setting its pointer to the watch queue, using
-     appropriate barriering to avoid lockdep complaints.
- 
--  * ``int add_watch_to_object(struct watch *watch, struct watch_list *wlist);``
-+  * ::
-+
-+      int add_watch_to_object(struct watch *watch, struct watch_list *wlist);
- 
-     Subscribe a watch to a watch list (notification source).  The
-     driver-settable fields in the watch struct must have been set before this
-     is called.
- 
--  * ``int remove_watch_from_object(struct watch_list *wlist,
-+  * ::
-+
-+      int remove_watch_from_object(struct watch_list *wlist,
- 				   struct watch_queue *wqueue,
- 				   u64 id, false);``
- 
-@@ -190,7 +204,9 @@ The following functions are provided to manage watches:
-     (``WATCH_META_REMOVAL_NOTIFICATION``) is sent to the watch queue to
-     indicate that the watch got removed.
- 
--  * ``int remove_watch_from_object(struct watch_list *wlist, NULL, 0, true);``
-+  * ::
-+
-+      int remove_watch_from_object(struct watch_list *wlist, NULL, 0, true);
- 
-     Remove all the watches from a watch list.  It is expected that this will be
-     called preparatory to destruction and that the watch list will be
 -- 
 2.25.2
 
