@@ -2,259 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B1A1A1CBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A091A1CD6
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727026AbgDHHgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:36:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:52672 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726687AbgDHHgk (ORCPT
+        id S1726901AbgDHHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:50:51 -0400
+Received: from m177129.mail.qiye.163.com ([123.58.177.129]:21499 "EHLO
+        m177129.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbgDHHuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:36:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586331398;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iszkXZ99fvnojmXd6uAmGEoN9rIMI6BXCafTQwT61lw=;
-        b=TTmgrKJXfSi1In+p9yrfmyqgxN3kE8DLAI84qiXIu5S/pQn0I7IBQq5kRnNp0iM3WppHDW
-        WcujQSP0cZUgUHTMs09T9mWLDwxBj5oFv35R26L74SwJCxyseuYudgQU7ENWVaRD28xoaG
-        xuXzLU60SueYr/4z8xZiKeztVTcBGNo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-FdZU8CX2NcWt56znMO-S3w-1; Wed, 08 Apr 2020 03:36:34 -0400
-X-MC-Unique: FdZU8CX2NcWt56znMO-S3w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4175D18FF66A;
-        Wed,  8 Apr 2020 07:36:32 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-8-32.pek2.redhat.com [10.72.8.32])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57F411001DC0;
-        Wed,  8 Apr 2020 07:36:22 +0000 (UTC)
-Date:   Wed, 8 Apr 2020 15:36:18 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, Salman Qazi <sqazi@google.com>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/4] blk-mq: Rerun dispatching in the case of budget
- contention
-Message-ID: <20200408073618.GA352827@localhost.localdomain>
-References: <20200407220005.119540-1-dianders@chromium.org>
- <20200407145906.v3.3.I28278ef8ea27afc0ec7e597752a6d4e58c16176f@changeid>
- <20200408020936.GB337494@localhost.localdomain>
- <CAD=FV=WY8sTZQq3NtNe4Ux-C0Q0JOR4V1Z+cjVvj791rFDL+=Q@mail.gmail.com>
- <20200408030625.GC337494@localhost.localdomain>
- <CAD=FV=VUAyuMnvVwz7OGoe03o4ty1S=44sjkGsFaDR5OJbeCPg@mail.gmail.com>
+        Wed, 8 Apr 2020 03:50:51 -0400
+X-Greylist: delayed 465 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 03:50:45 EDT
+Received: from vivo.com (wm-2.qy.internal [127.0.0.1])
+        by m177129.mail.qiye.163.com (Hmail) with ESMTP id 909115C3299;
+        Wed,  8 Apr 2020 15:42:53 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ADsAIgAICMOkBsTG35M4NqqB.1.1586331773574.Hmail.tao.li@vivo.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Sergey Organov <sorganov@gmail.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wenhu.wang@vivo.com
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gdXNiOiBnYWRnZXQ6IHNlcmlhbDogRml4ZWQgS0FTQU4gbnVsbC1wdHItZGVyZWYgaW4gdHR5X3dha2V1cA==?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=VUAyuMnvVwz7OGoe03o4ty1S=44sjkGsFaDR5OJbeCPg@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Received: from tao.li@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Wed, 8 Apr 2020 15:42:53 +0800 (GMT+08:00)
+From:   =?UTF-8?B?5p2O5qGD?= <tao.li@vivo.com>
+Date:   Wed, 8 Apr 2020 15:42:53 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZTlVMQkJLS0tJTUhJSk9KSllXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kMHhlZQQ8JDh5XWRIfHhUPWUFZRzo*CDoyHDoyODY0EDkILzxITjZP
+        NQoKOVVKVUpOQ01ISEpMTE1MSUJVMxYaEhdVDxoUVRcSOw0SDRRVGBQWRVlXWRILWUFZTkNVSU5K
+        VUxPVUlJTVlXWQgBWUFOQklLNwY+
+X-HM-Tid: 0a7158bdea9e6447kurs909115c3299
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 09:11:28PM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Tue, Apr 7, 2020 at 8:06 PM Ming Lei <ming.lei@redhat.com> wrote:
-> >
-> > On Tue, Apr 07, 2020 at 07:17:49PM -0700, Doug Anderson wrote:
-> > > Hi,
-> > >
-> > > On Tue, Apr 7, 2020 at 7:09 PM Ming Lei <ming.lei@redhat.com> wrote:
-> > > >
-> > > > On Tue, Apr 07, 2020 at 03:00:04PM -0700, Douglas Anderson wrote:
-> > > > > If ever a thread running blk-mq code tries to get budget and fails it
-> > > > > immediately stops doing work and assumes that whenever budget is freed
-> > > > > up that queues will be kicked and whatever work the thread was trying
-> > > > > to do will be tried again.
-> > > > >
-> > > > > One path where budget is freed and queues are kicked in the normal
-> > > > > case can be seen in scsi_finish_command().  Specifically:
-> > > > > - scsi_finish_command()
-> > > > >   - scsi_device_unbusy()
-> > > > >     - # Decrement "device_busy", AKA release budget
-> > > > >   - scsi_io_completion()
-> > > > >     - scsi_end_request()
-> > > > >       - blk_mq_run_hw_queues()
-> > > > >
-> > > > > The above is all well and good.  The problem comes up when a thread
-> > > > > claims the budget but then releases it without actually dispatching
-> > > > > any work.  Since we didn't schedule any work we'll never run the path
-> > > > > of finishing work / kicking the queues.
-> > > > >
-> > > > > This isn't often actually a problem which is why this issue has
-> > > > > existed for a while and nobody noticed.  Specifically we only get into
-> > > > > this situation when we unexpectedly found that we weren't going to do
-> > > > > any work.  Code that later receives new work kicks the queues.  All
-> > > > > good, right?
-> > > > >
-> > > > > The problem shows up, however, if timing is just wrong and we hit a
-> > > > > race.  To see this race let's think about the case where we only have
-> > > > > a budget of 1 (only one thread can hold budget).  Now imagine that a
-> > > > > thread got budget and then decided not to dispatch work.  It's about
-> > > > > to call put_budget() but then the thread gets context switched out for
-> > > > > a long, long time.  While in this state, any and all kicks of the
-> > > > > queue (like the when we received new work) will be no-ops because
-> > > > > nobody can get budget.  Finally the thread holding budget gets to run
-> > > > > again and returns.  All the normal kicks will have been no-ops and we
-> > > > > have an I/O stall.
-> > > > >
-> > > > > As you can see from the above, you need just the right timing to see
-> > > > > the race.  To start with, the only case it happens if we thought we
-> > > > > had work, actually managed to get the budget, but then actually didn't
-> > > > > have work.  That's pretty rare to start with.  Even then, there's
-> > > > > usually a very small amount of time between realizing that there's no
-> > > > > work and putting the budget.  During this small amount of time new
-> > > > > work has to come in and the queue kick has to make it all the way to
-> > > > > trying to get the budget and fail.  It's pretty unlikely.
-> > > > >
-> > > > > One case where this could have failed is illustrated by an example of
-> > > > > threads running blk_mq_do_dispatch_sched():
-> > > > >
-> > > > > * Threads A and B both run has_work() at the same time with the same
-> > > > >   "hctx".  Imagine has_work() is exact.  There's no lock, so it's OK
-> > > > >   if Thread A and B both get back true.
-> > > > > * Thread B gets interrupted for a long time right after it decides
-> > > > >   that there is work.  Maybe its CPU gets an interrupt and the
-> > > > >   interrupt handler is slow.
-> > > > > * Thread A runs, get budget, dispatches work.
-> > > > > * Thread A's work finishes and budget is released.
-> > > > > * Thread B finally runs again and gets budget.
-> > > > > * Since Thread A already took care of the work and no new work has
-> > > > >   come in, Thread B will get NULL from dispatch_request().  I believe
-> > > > >   this is specifically why dispatch_request() is allowed to return
-> > > > >   NULL in the first place if has_work() must be exact.
-> > > > > * Thread B will now be holding the budget and is about to call
-> > > > >   put_budget(), but hasn't called it yet.
-> > > > > * Thread B gets interrupted for a long time (again).  Dang interrupts.
-> > > > > * Now Thread C (maybe with a different "hctx" but the same queue)
-> > > > >   comes along and runs blk_mq_do_dispatch_sched().
-> > > > > * Thread C won't do anything because it can't get budget.
-> > > >
-> > > > Thread C will re-run queue in this case:
-> > > >
-> > > > Just thought scsi_mq_get_budget() does handle the case via re-run queue:
-> > > >
-> > > >         if (atomic_read(&sdev->device_busy) == 0 && !scsi_device_blocked(sdev))
-> > > >                 blk_mq_delay_run_hw_queue(hctx, SCSI_QUEUE_DELAY);
-> > > >
-> > > > So looks no such race.
-> > >
-> > > Thread B is holding budget and hasn't released it yet, right?  In the
-> > > context of scsi, that means "device_busy >= 1", right?  So how can the
-> > > code you point at help us?  When Thread C reads "device_busy" it will
-> > > be 1 and that code won't run.  What did I miss?
-> >
-> > Oh, this is my fault, sorry for the noise.
-> >
-> > >
-> > >
-> > > > > * Finally Thread B will run again and put the budget without kicking
-> > > > >   any queues.
-> > > > >
-> > > > > Even though the example above is with blk_mq_do_dispatch_sched() I
-> > > > > believe the race is possible any time someone is holding budget but
-> > > > > doesn't do work.
-> > > > >
-> > > > > Unfortunately, the unlikely has become more likely if you happen to be
-> > > > > using the BFQ I/O scheduler.  BFQ, by design, sometimes returns "true"
-> > > > > for has_work() but then NULL for dispatch_request() and stays in this
-> > > > > state for a while (currently up to 9 ms).  Suddenly you only need one
-> > > > > race to hit, not two races in a row.  With my current setup this is
-> > > > > easy to reproduce in reboot tests and traces have actually shown that
-> > > > > we hit a race similar to the one describe above.
-> > > > >
-> > > > > In theory we could choose to just fix blk_mq_do_dispatch_sched() to
-> > > > > kick the queues when it puts budget.  That would fix the BFQ case and
-> > > > > one could argue that all the other cases are just theoretical.  While
-> > > > > that is true, for all the other cases it should be very uncommon to
-> > > > > run into the case where we need put_budget().  Having an extra queue
-> > > > > kick for safety there shouldn't affect much and keeps the race at bay.
-> > > > >
-> > > > > One last note is that (at least in the SCSI case) budget is shared by
-> > > > > all "hctx"s that have the same queue.  Thus we need to make sure to
-> > > > > kick the whole queue, not just re-run dispatching on a single "hctx".
-> > > > >
-> > > > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > > > ---
-> > > > >
-> > > > > Changes in v3:
-> > > > > - Always kick when putting the budget.
-> > > > > - Delay blk_mq_do_dispatch_sched() kick by 3 ms for inexact has_work().
-> > > > > - Totally rewrote commit message.
-> > > > >
-> > > > > Changes in v2:
-> > > > > - Replace ("scsi: core: Fix stall...") w/ ("blk-mq: Rerun dispatch...")
-> > > > >
-> > > > >  block/blk-mq.h | 14 +++++++++++++-
-> > > > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/block/blk-mq.h b/block/blk-mq.h
-> > > > > index 10bfdfb494fa..1270505367ab 100644
-> > > > > --- a/block/blk-mq.h
-> > > > > +++ b/block/blk-mq.h
-> > > > > @@ -180,12 +180,24 @@ unsigned int blk_mq_in_flight(struct request_queue *q, struct hd_struct *part);
-> > > > >  void blk_mq_in_flight_rw(struct request_queue *q, struct hd_struct *part,
-> > > > >                        unsigned int inflight[2]);
-> > > > >
-> > > > > +#define BLK_MQ_BUDGET_DELAY  3               /* ms units */
-> > > > > +
-> > > > >  static inline void blk_mq_put_dispatch_budget(struct blk_mq_hw_ctx *hctx)
-> > > > >  {
-> > > > >       struct request_queue *q = hctx->queue;
-> > > > >
-> > > > > -     if (q->mq_ops->put_budget)
-> > > > > +     if (q->mq_ops->put_budget) {
-> > > > >               q->mq_ops->put_budget(hctx);
-> > > > > +
-> > > > > +             /*
-> > > > > +              * The only time we call blk_mq_put_dispatch_budget() is if
-> > > > > +              * we released the budget without dispatching.  Holding the
-> > > > > +              * budget could have blocked any "hctx"s with the same queue
-> > > > > +              * and if we didn't dispatch then there's no guarantee anyone
-> > > > > +              * will kick the queue.  Kick it ourselves.
-> > > > > +              */
-> > > > > +             blk_mq_delay_run_hw_queues(q, BLK_MQ_BUDGET_DELAY);
-> > > >
-> > > > No, please don't do that un-conditionally we just need to re-run queue
-> > > > when there has work to do.
-> > >
-> > > ...what function would you like me to call to check?  The code you
-> >
-> > At least we only need to call it in blk_mq_do_dispatch_sched() and
-> > blk_mq_do_dispatch_ctx(), in which no request is dequeued yet. Other
-> > callers can handle the run queue cause request has been there.
-> 
-> Sure, I can move it so it's only in blk_mq_do_dispatch_sched() and
-> blk_mq_do_dispatch_ctx().  That would definitely make it so that I
-> can't reproduce problems anymore, at least.
-> 
-> The one thing that worries me is that I couldn't come up with a
-> convincing argument about why the race wasn't possible when we put the
-> budget in blk_mq_dispatch_rq_list() and __blk_mq_try_issue_directly().
-> Perhaps you can explain.  In blk_mq_dispatch_rq_list() I can see that
-> we will call blk_mq_run_hw_queue() or blk_mq_delay_run_hw_queue(), but
-> I guess I'm at least slightly worried that we'd also need to kick the
-> other "hctx"s on the same queue.  In theory holding budget could have
-
-No, if there is one request from any one hctx, when this request is
-dispatched and completed, all hctxs will be run again from
-scsi_end_request().
-
-
-
-Thanks,
-Ming
-
+RnJvbTogR3JlZyBLcm9haC1IYXJ0bWFuIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4KRGF0
+ZTogMjAyMC0wMy0xOCAxODoxMjo0MApUbzogIExpIFRhbyA8dGFvLmxpQHZpdm8uY29tPgpDYzog
+IEZlbGlwZSBCYWxiaSA8YmFsYmlAa2VybmVsLm9yZz4sIk1pY2hhxYIgTWlyb3PFgmF3IiA8bWly
+cS1saW51eEByZXJlLnFtcW0ucGw+LFNlcmdleSBPcmdhbm92IDxzb3JnYW5vdkBnbWFpbC5jb20+
+LGxpbnV4LXVzYkB2Z2VyLmtlcm5lbC5vcmcsbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyx3
+ZW5odS53YW5nQHZpdm8uY29tClN1YmplY3Q6IFJlOiBbUEFUQ0hdIHVzYjogZ2FkZ2V0OiBzZXJp
+YWw6IEZpeGVkIEtBU0FOIG51bGwtcHRyLWRlcmVmIGluIHR0eV93YWtldXA+T24gV2VkLCBNYXIg
+MTgsIDIwMjAgYXQgMTA6NTY6MDFBTSArMDgwMCwgTGkgVGFvIHdyb3RlOgo+PiBUaGUgcG9ydC0+
+cG9ydC50dHkgbWF5YmUgcmVzZXQgYXMgTlVMTCwgSWYgZ3NfY2xvc2UoKSB3YXMgaW52b2tlZAo+
+PiB1bmV4cGVjdGVkbHkgZHVyaW5nIHJ1bm5pbmcgZ3NlcmlhbF9jb25uZWN0KCkuCj4+IAo+PiBC
+VUc6IEtBU0FOOiBudWxsLXB0ci1kZXJlZiBpbiB0dHlfd2FrZXVwKzB4MWMvMHg4NAo+PiBDYWxs
+IHRyYWNlOgo+PiBbPDAwMDAwMDAwOTVjM2M4Mzc+XSBkdW1wX2JhY2t0cmFjZSsweDAvMHg2ZDQK
+Pj4gWzwwMDAwMDAwMDQ3NzI2YmI4Pl0gc2hvd19zdGFjaysweDE4LzB4MjAKPj4gWzwwMDAwMDAw
+MGJlZGI0YzFlPl0gLS1kdW1wX3N0YWNrKzB4MjAvMHgyOAo+PiBbPDAwMDAwMDAwNzIyZjJlMmE+
+XSBkdW1wX3N0YWNrKzB4ODQvMHhiMAo+PiBbPDAwMDAwMDAwMzI1NjgzZDQ+XSBrYXNhbl9yZXBv
+cnRfZXJyb3IrMHgxNzgvMHgxZTQKPj4gWzwwMDAwMDAwMDUzMDc5OTk4Pl0ga2FzYW5fcmVwb3J0
+X2Vycm9yKzB4MC8weDFlNAo+PiBbPDAwMDAwMDAwYjZkMzNhZmE+XSAtLWFzYW5fbG9hZDgrMHgx
+NTAvMHgxNWMKPj4gWzwwMDAwMDAwMDE4ODc0NWI4Pl0gdHR5X3dha2V1cCsweDFjLzB4ODQKPj4g
+WzwwMDAwMDAwMDY0ZjZkZDIxPl0gZ3Nfc3RhcnRfaW8rMHhkMC8weDExYwo+PiBbPDAwMDAwMDAw
+NjNkNjdiNmM+XSBnc2VyaWFsX2Nvbm5lY3QrMHgxNWMvMHgxYjAKPj4gWzwwMDAwMDAwMGZhZjdj
+MGY5Pl0gZG1fc2V0X2FsdCsweGE4LzB4MTkwCj4+IFs8MDAwMDAwMDA4ZGViMTkwOT5dIGNvbXBv
+c2l0ZV9zZXR1cCsweGRlNC8weDFlZGMKPj4gWzwwMDAwMDAwMDc5MmVlMTZkPl0gYW5kcm9pZF9z
+ZXR1cCsweDIxMC8weDI5NAo+PiBbPDAwMDAwMDAwYWIzMmVmMzA+XSBkd2MzX2VwMF9kZWxlZ2F0
+ZV9yZXErMHg0OC8weDY4Cj4+IFs8MDAwMDAwMDA1NGUyNmZkMj5dIGR3YzNfZXAwX2ludGVycnVw
+dCsweGYyYy8weDE2ZmMKPj4gWzwwMDAwMDAwMDUwY2IyMjYyPl0gZHdjM19pbnRlcnJ1cHQrMHg0
+NjQvMHgxZjQ0Cj4+IFs8MDAwMDAwMDBmZGNhYTZlOT5dIC0taGFuZGxlX2lycV9ldmVudF9wZXJj
+cHUrMHgxODQvMHgzOTgKPj4gWzwwMDAwMDAwMDNiMjRmZjU2Pl0gaGFuZGxlX2lycV9ldmVudF9w
+ZXJjcHUrMHhhMC8weDEzNAo+PiBbPDAwMDAwMDAwYWVkZGE1ZWU+XSBoYW5kbGVfaXJxX2V2ZW50
+KzB4NjAvMHhhMAo+PiBbPDAwMDAwMDAwNWY1MWE1NzA+XSBoYW5kbGVfZmFzdGVvaV9pcnErMHgy
+M2MvMHgzMWMKPj4gWzwwMDAwMDAwMDhkYjI2MDhkPl0gZ2VuZXJpY19oYW5kbGVfaXJxKzB4NzAv
+MHhhNAo+PiBbPDAwMDAwMDAwMDk4NjgzZmM+XSAtLWhhbmRsZV9kb21haW5faXJxKzB4ODQvMHhl
+MAo+PiBbPDAwMDAwMDAwOGVkMjNiNDY+XSBnaWNfaGFuZGxlX2lycSsweDk4LzB4YjgKPj4gCj4+
+IFNpZ25lZC1vZmYtYnk6IExpIFRhbyA8dGFvLmxpQHZpdm8uY29tPgo+PiAtLS0KPj4gIGRyaXZl
+cnMvdXNiL2dhZGdldC9mdW5jdGlvbi91X3NlcmlhbC5jIHwgMyArKy0KPj4gIDEgZmlsZSBjaGFu
+Z2VkLCAyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV9zZXJpYWwuYyBiL2RyaXZlcnMvdXNiL2dhZGdl
+dC9mdW5jdGlvbi91X3NlcmlhbC5jCj4+IGluZGV4IDgxNjdkMzc5ZTExNS4uM2MxMDlhOGY5ZWM0
+IDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV9zZXJpYWwuYwo+
+PiArKysgYi9kcml2ZXJzL3VzYi9nYWRnZXQvZnVuY3Rpb24vdV9zZXJpYWwuYwo+PiBAQCAtNTY1
+LDcgKzU2NSw4IEBAIHN0YXRpYyBpbnQgZ3Nfc3RhcnRfaW8oc3RydWN0IGdzX3BvcnQgKnBvcnQp
+Cj4+ICAJCWdzX3N0YXJ0X3R4KHBvcnQpOwo+PiAgCQkvKiBVbmJsb2NrIGFueSBwZW5kaW5nIHdy
+aXRlcyBpbnRvIG91ciBjaXJjdWxhciBidWZmZXIsIGluIGNhc2UKPj4gIAkJICogd2UgZGlkbid0
+IGluIGdzX3N0YXJ0X3R4KCkgKi8KPj4gLQkJdHR5X3dha2V1cChwb3J0LT5wb3J0LnR0eSk7Cj4+
+ICsJCWlmIChwb3J0LT5wb3J0LnR0eSkKPj4gKwkJCXR0eV93YWtldXAocG9ydC0+cG9ydC50dHkp
+Owo+Cj5XaGF0IHByZXZlbnRzIHBvcnQudHR5IGZyb20gYmVpbmcgc2V0IHRvIE5VTEwgYmV0d2Vl
+biB0aGUgY2hlY2sgYW5kIHRoZQo+Y2FsbCB0byB0dHlfd2FrZXVwPwo+Cj5TaG91bGRuJ3QgZ3Nf
+Y2xvc2UoKSBhbmQgZ3NlcmlhbF9jb25uZWN0KCkgaGF2ZSBzb21lIHNvcnQgb2YgbG9ja2luZyB0
+bwo+cHJldmVudCB0aGlzPwo+CkkgZW5jb3VudGVyZWQgdGhpcyBpc3N1ZSBvbiBTYW1zdW5nIEVY
+WU5PUzk4MCBwbGF0Zm9ybSwgTWF5YmUgdGhpcyBpcyBwbGF0Zm9ybSBzcGVjaWZpYyBpc3N1ZS4K
+VGhlIFVTQiBpbnRlcnJ1cHQgaGFuZGxlciBnb3QgcG9ydF9sb2NrIG9uIENQVSAwIGluIGdzZXJp
+YWxfY29ubmVjdCB3aGlsZSBnc19jbG9zZSBpcyB3YWl0aW5nIGZvciAKdGhpcyBsb2NrIG9uIENQ
+VSAxLiAgQnV0IHRoaXMgcG9ydF9sb2NrIHdpbGwgdW5sb2NrIGluIGdzX3N0YXJ0X2lvLS0+Z3Nf
+c3RhcnRfcnggdGVtcG9yYXJpbHksIFRoaXMgcmFjZQpjb25kaXRpb24gbWF5IGNhdXNlIHBvcnQu
+dHR5IHNldCBhcyBOVUxMLgoKZ3JlZyBrLWgsIERvIHlvdSBoYXZlIHNvbWUgZ29vZCBzdWdnZXN0
+aW9ucz8KCj50aGFua3MsCj4KPmdyZWcgay1oCgoKDQoNCg==
