@@ -2,331 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F641A19D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 04:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C153E1A19E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 04:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgDHCPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 22:15:45 -0400
-Received: from m177134.mail.qiye.163.com ([123.58.177.134]:10773 "EHLO
-        m177134.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgDHCPp (ORCPT
+        id S1726484AbgDHCSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 22:18:06 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:44364 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726437AbgDHCSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 22:15:45 -0400
-Received: from lcc-VirtualBox.vivo.xyz (unknown [58.251.74.226])
-        by mail-m127101.qiye.163.com (Hmail) with ESMTPA id BEC7A481D3;
-        Wed,  8 Apr 2020 10:15:35 +0800 (CST)
-From:   Chucheng Luo <luochucheng@vivo.com>
-To:     alex.shi@linux.alibaba.com, Harry Wei <harryxiyou@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH v6,RESEND] Translate debugfs.txt into Chinese and link it to the index.
-Date:   Wed,  8 Apr 2020 10:15:18 +0800
-Message-Id: <20200408021528.14062-1-luochucheng@vivo.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 7 Apr 2020 22:18:05 -0400
+Received: by mail-vs1-f67.google.com with SMTP id s25so1833665vsp.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 19:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aOPDLFZYA1Dm+D8Nads424M0CHTT5zlszmdzq7z08s8=;
+        b=agOKVkKO1G1pYr2YeYAjey7enNCGSZt/4P+q7SHyCkXgIbDnqWa5Vey00JfCSMlwBE
+         hg1O37Xh/AgxbNhou3WH8fZzlQURpV2XE0DQRNIeKlcXYE6b+jGzCSKldFGB6qx62kqS
+         mU9I/OYJQwNl46rMHgknOXYRUGodPW4b39wLw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aOPDLFZYA1Dm+D8Nads424M0CHTT5zlszmdzq7z08s8=;
+        b=Oa65Q6TzpmOUuOrcsSfpDLMB0sEuYCxi5QIs9urOAKrn4TOHHHR5IX7n8dzzQcHMH/
+         JEX5OG3u1Har4cJcR2wEEZwvYZNOpye5iqlRT3hnwd72HDkm3uf+n+CgBBp+gW4YhV9b
+         wuVHmYCoOk2cwEVuC+trCxWNs5PhVLTaSD9M3FTo1kcuT4U0A7oKMRNDUGtS5wFDDraZ
+         JFU2nhprG3Coq0kCuaoy+Yl/DztmB9IT6gQ2P6nwUJQTrt7LdL/8fLePQA6Z7DBlqjbU
+         cSgdKiv2AsQRYPll+xIg4ATHyGi2PIl+AqBoNBzY+DtdNemZEx8UIxSdFN+LwbWSKqSG
+         n5BQ==
+X-Gm-Message-State: AGi0PubvgvUupF5wuuEBFn5ydzOqDeLYmutAMpg+vWP0e9QTCZKZmSsI
+        vukuW4fchHuq5SPk4C60k9FGcQuQnhk=
+X-Google-Smtp-Source: APiQypKZ7khOQVHssneDU7paBS1l4drBVvZUhSND7QPe4FLRpneEp6J7uoG5voe5Q1jCet4oiN67vA==
+X-Received: by 2002:a05:6102:1052:: with SMTP id h18mr4501524vsq.202.1586312282851;
+        Tue, 07 Apr 2020 19:18:02 -0700 (PDT)
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com. [209.85.222.53])
+        by smtp.gmail.com with ESMTPSA id o131sm5696216vsd.23.2020.04.07.19.18.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Apr 2020 19:18:02 -0700 (PDT)
+Received: by mail-ua1-f53.google.com with SMTP id a6so2157024uao.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 19:18:01 -0700 (PDT)
+X-Received: by 2002:a9f:21b8:: with SMTP id 53mr3970465uac.8.1586312281185;
+ Tue, 07 Apr 2020 19:18:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUlXWQgYFAkeWUFZTVVLS0JCQkJMTklLT09NQ1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MT46Fyo6SDg8QxAzED5RTRIp
-        LgNPChJVSlVKTkNNSEpJSkhCSUxPVTMWGhIXVRcOFBgTDhgTHhUcOw0SDRRVGBQWRVlXWRILWUFZ
-        TkNVSU5KVUxPVUlJTVlXWQgBWUFKSE9DTTcG
-X-HM-Tid: 0a715792457e9865kuuubec7a481d3
+References: <20200407220005.119540-1-dianders@chromium.org>
+ <20200407145906.v3.3.I28278ef8ea27afc0ec7e597752a6d4e58c16176f@changeid> <20200408020936.GB337494@localhost.localdomain>
+In-Reply-To: <20200408020936.GB337494@localhost.localdomain>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 7 Apr 2020 19:17:49 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WY8sTZQq3NtNe4Ux-C0Q0JOR4V1Z+cjVvj791rFDL+=Q@mail.gmail.com>
+Message-ID: <CAD=FV=WY8sTZQq3NtNe4Ux-C0Q0JOR4V1Z+cjVvj791rFDL+=Q@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] blk-mq: Rerun dispatching in the case of budget contention
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, Salman Qazi <sqazi@google.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Translate Documentation/filesystems/debugfs.txt into Chinese.
+Hi,
 
-Signed-off-by: Chucheng Luo <luochucheng@vivo.com>
----
-Changelog:
-v6:
- - keep each line less than 80 chars, but also keep each line full
- - remove redundant '=' in caption and all other subheadings
- - send the patch with 'charset=UTF-8'
----
- .../zh_CN/filesystems/debugfs.rst             | 221 ++++++++++++++++++
- .../translations/zh_CN/filesystems/index.rst  |  21 ++
- Documentation/translations/zh_CN/index.rst    |   2 +
- 3 files changed, 244 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/filesystems/debugfs.rst
- create mode 100644 Documentation/translations/zh_CN/filesystems/index.rst
+On Tue, Apr 7, 2020 at 7:09 PM Ming Lei <ming.lei@redhat.com> wrote:
+>
+> On Tue, Apr 07, 2020 at 03:00:04PM -0700, Douglas Anderson wrote:
+> > If ever a thread running blk-mq code tries to get budget and fails it
+> > immediately stops doing work and assumes that whenever budget is freed
+> > up that queues will be kicked and whatever work the thread was trying
+> > to do will be tried again.
+> >
+> > One path where budget is freed and queues are kicked in the normal
+> > case can be seen in scsi_finish_command().  Specifically:
+> > - scsi_finish_command()
+> >   - scsi_device_unbusy()
+> >     - # Decrement "device_busy", AKA release budget
+> >   - scsi_io_completion()
+> >     - scsi_end_request()
+> >       - blk_mq_run_hw_queues()
+> >
+> > The above is all well and good.  The problem comes up when a thread
+> > claims the budget but then releases it without actually dispatching
+> > any work.  Since we didn't schedule any work we'll never run the path
+> > of finishing work / kicking the queues.
+> >
+> > This isn't often actually a problem which is why this issue has
+> > existed for a while and nobody noticed.  Specifically we only get into
+> > this situation when we unexpectedly found that we weren't going to do
+> > any work.  Code that later receives new work kicks the queues.  All
+> > good, right?
+> >
+> > The problem shows up, however, if timing is just wrong and we hit a
+> > race.  To see this race let's think about the case where we only have
+> > a budget of 1 (only one thread can hold budget).  Now imagine that a
+> > thread got budget and then decided not to dispatch work.  It's about
+> > to call put_budget() but then the thread gets context switched out for
+> > a long, long time.  While in this state, any and all kicks of the
+> > queue (like the when we received new work) will be no-ops because
+> > nobody can get budget.  Finally the thread holding budget gets to run
+> > again and returns.  All the normal kicks will have been no-ops and we
+> > have an I/O stall.
+> >
+> > As you can see from the above, you need just the right timing to see
+> > the race.  To start with, the only case it happens if we thought we
+> > had work, actually managed to get the budget, but then actually didn't
+> > have work.  That's pretty rare to start with.  Even then, there's
+> > usually a very small amount of time between realizing that there's no
+> > work and putting the budget.  During this small amount of time new
+> > work has to come in and the queue kick has to make it all the way to
+> > trying to get the budget and fail.  It's pretty unlikely.
+> >
+> > One case where this could have failed is illustrated by an example of
+> > threads running blk_mq_do_dispatch_sched():
+> >
+> > * Threads A and B both run has_work() at the same time with the same
+> >   "hctx".  Imagine has_work() is exact.  There's no lock, so it's OK
+> >   if Thread A and B both get back true.
+> > * Thread B gets interrupted for a long time right after it decides
+> >   that there is work.  Maybe its CPU gets an interrupt and the
+> >   interrupt handler is slow.
+> > * Thread A runs, get budget, dispatches work.
+> > * Thread A's work finishes and budget is released.
+> > * Thread B finally runs again and gets budget.
+> > * Since Thread A already took care of the work and no new work has
+> >   come in, Thread B will get NULL from dispatch_request().  I believe
+> >   this is specifically why dispatch_request() is allowed to return
+> >   NULL in the first place if has_work() must be exact.
+> > * Thread B will now be holding the budget and is about to call
+> >   put_budget(), but hasn't called it yet.
+> > * Thread B gets interrupted for a long time (again).  Dang interrupts.
+> > * Now Thread C (maybe with a different "hctx" but the same queue)
+> >   comes along and runs blk_mq_do_dispatch_sched().
+> > * Thread C won't do anything because it can't get budget.
+>
+> Thread C will re-run queue in this case:
+>
+> Just thought scsi_mq_get_budget() does handle the case via re-run queue:
+>
+>         if (atomic_read(&sdev->device_busy) == 0 && !scsi_device_blocked(sdev))
+>                 blk_mq_delay_run_hw_queue(hctx, SCSI_QUEUE_DELAY);
+>
+> So looks no such race.
 
-diff --git a/Documentation/translations/zh_CN/filesystems/debugfs.rst b/Documentation/translations/zh_CN/filesystems/debugfs.rst
-new file mode 100644
-index 000000000000..f8a28793c277
---- /dev/null
-+++ b/Documentation/translations/zh_CN/filesystems/debugfs.rst
-@@ -0,0 +1,221 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/filesystems/debugfs.txt <debugfs_index>`
-+
-+=======
-+Debugfs
-+=======
-+
-+译者
-+::
-+
-+	中文版维护者： 罗楚成 Chucheng Luo <luochucheng@vivo.com>
-+	中文版翻译者： 罗楚成 Chucheng Luo <luochucheng@vivo.com>
-+	中文版校译者:  罗楚成 Chucheng Luo <luochucheng@vivo.com>
-+
-+
-+
-+版权所有2020 罗楚成 <luochucheng@vivo.com>
-+
-+
-+Debugfs是内核开发人员在用户空间获取信息的简单方法。与/proc不同，proc只提供进程
-+信息。也不像sysfs,具有严格的“每个文件一个值“的规则。debugfs根本没有规则,开发
-+人员可以在这里放置他们想要的任何信息。debugfs文件系统也不能用作稳定的ABI接口。
-+从理论上讲，debugfs导出文件的时候没有任何约束。但是[1]实际情况并不总是那么
-+简单。即使是debugfs接口，也最好根据需要进行设计,并尽量保持接口不变。
-+
-+
-+Debugfs通常使用以下命令安装::
-+
-+    mount -t debugfs none /sys/kernel/debug
-+
-+（或等效的/etc/fstab行）。
-+debugfs根目录默认仅可由root用户访问。要更改对文件树的访问，请使用“ uid”，“ gid”
-+和“ mode”挂载选项。请注意，debugfs API仅按照GPL协议导出到模块。
-+
-+使用debugfs的代码应包含<linux/debugfs.h>。然后，首先是创建至少一个目录来保存
-+一组debugfs文件::
-+
-+    struct dentry *debugfs_create_dir(const char *name, struct dentry *parent);
-+
-+如果成功，此调用将在指定的父目录下创建一个名为name的目录。如果parent参数为空，
-+则会在debugfs根目录中创建。创建目录成功时，返回值是一个指向dentry结构体的指针。
-+该dentry结构体的指针可用于在目录中创建文件（以及最后将其清理干净）。ERR_PTR
-+（-ERROR）返回值表明出错。如果返回ERR_PTR（-ENODEV），则表明内核是在没有debugfs
-+支持的情况下构建的，并且下述函数都不会起作用。
-+
-+在debugfs目录中创建文件的最通用方法是::
-+
-+    struct dentry *debugfs_create_file(const char *name, umode_t mode,
-+				       struct dentry *parent, void *data,
-+				       const struct file_operations *fops);
-+
-+在这里，name是要创建的文件的名称，mode描述了访问文件应具有的权限，parent指向
-+应该保存文件的目录，data将存储在产生的inode结构体的i_private字段中，而fops是
-+一组文件操作函数，这些函数中实现文件操作的具体行为。至少，read（）和/或
-+write（）操作应提供；其他可以根据需要包括在内。同样的，返回值将是指向创建文件
-+的dentry指针，错误时返回ERR_PTR（-ERROR），系统不支持debugfs时返回值为ERR_PTR
-+（-ENODEV）。创建一个初始大小的文件，可以使用以下函数代替::
-+
-+    struct dentry *debugfs_create_file_size(const char *name, umode_t mode,
-+				struct dentry *parent, void *data,
-+				const struct file_operations *fops,
-+				loff_t file_size);
-+
-+file_size是初始文件大小。其他参数跟函数debugfs_create_file的相同。
-+
-+在许多情况下，没必要自己去创建一组文件操作;对于一些简单的情况,debugfs代码提供
-+了许多帮助函数。包含单个整数值的文件可以使用以下任何一项创建::
-+
-+    void debugfs_create_u8(const char *name, umode_t mode,
-+			   struct dentry *parent, u8 *value);
-+    void debugfs_create_u16(const char *name, umode_t mode,
-+			    struct dentry *parent, u16 *value);
-+    struct dentry *debugfs_create_u32(const char *name, umode_t mode,
-+				      struct dentry *parent, u32 *value);
-+    void debugfs_create_u64(const char *name, umode_t mode,
-+			    struct dentry *parent, u64 *value);
-+
-+这些文件支持读取和写入给定值。如果某个文件不支持写入，只需根据需要设置mode
-+参数位。这些文件中的值以十进制表示；如果需要使用十六进制，可以使用以下函数
-+替代::
-+
-+    void debugfs_create_x8(const char *name, umode_t mode,
-+			   struct dentry *parent, u8 *value);
-+    void debugfs_create_x16(const char *name, umode_t mode,
-+			    struct dentry *parent, u16 *value);
-+    void debugfs_create_x32(const char *name, umode_t mode,
-+			    struct dentry *parent, u32 *value);
-+    void debugfs_create_x64(const char *name, umode_t mode,
-+			    struct dentry *parent, u64 *value);
-+
-+这些功能只有在开发人员知道导出值的大小的时候才有用。某些数据类型在不同的架构上
-+有不同的宽度，这样会使情况变得有些复杂。在这种特殊情况下可以使用以下函数::
-+
-+    void debugfs_create_size_t(const char *name, umode_t mode,
-+			       struct dentry *parent, size_t *value);
-+
-+不出所料，此函数将创建一个debugfs文件来表示类型为size_t的变量。
-+
-+同样地，也有导出无符号长整型变量的函数，分别以十进制和十六进制表示如下::
-+
-+    struct dentry *debugfs_create_ulong(const char *name, umode_t mode,
-+					struct dentry *parent,
-+					unsigned long *value);
-+    void debugfs_create_xul(const char *name, umode_t mode,
-+			    struct dentry *parent, unsigned long *value);
-+
-+布尔值可以通过以下方式放置在debugfs中::
-+
-+    struct dentry *debugfs_create_bool(const char *name, umode_t mode,
-+				       struct dentry *parent, bool *value);
-+
-+
-+读取结果文件将产生Y（对于非零值）或N，后跟换行符写入的时候，它只接受大写或小写
-+值或1或0。任何其他输入将被忽略。
-+
-+同样，atomic_t类型的值也可以放置在debugfs中::
-+
-+    void debugfs_create_atomic_t(const char *name, umode_t mode,
-+				 struct dentry *parent, atomic_t *value)
-+
-+读取此文件将获得atomic_t值，写入此文件将设置atomic_t值。
-+
-+另一个选择是通过以下结构体和函数导出一个任意二进制数据块::
-+
-+    struct debugfs_blob_wrapper {
-+	void *data;
-+	unsigned long size;
-+    };
-+
-+    struct dentry *debugfs_create_blob(const char *name, umode_t mode,
-+				       struct dentry *parent,
-+				       struct debugfs_blob_wrapper *blob);
-+
-+读取此文件将返回由指针指向debugfs_blob_wrapper结构体的数据。一些驱动使用“blobs”
-+作为一种返回几行（静态）格式化文本的简单方法。这个函数可用于导出二进制信息，但
-+似乎在主线中没有任何代码这样做。请注意，使用debugfs_create_blob（）命令创建的
-+所有文件是只读的。
-+
-+如果您要转储一个寄存器块（在开发过程中经常会这么做，但是这样的调试代码很少上传
-+到主线中。Debugfs提供两个函数：一个用于创建仅寄存器文件，另一个把一个寄存器块
-+插入一个顺序文件中::
-+
-+    struct debugfs_reg32 {
-+	char *name;
-+	unsigned long offset;
-+    };
-+
-+    struct debugfs_regset32 {
-+	struct debugfs_reg32 *regs;
-+	int nregs;
-+	void __iomem *base;
-+    };
-+
-+    struct dentry *debugfs_create_regset32(const char *name, umode_t mode,
-+				     struct dentry *parent,
-+				     struct debugfs_regset32 *regset);
-+
-+    void debugfs_print_regs32(struct seq_file *s, struct debugfs_reg32 *regs,
-+			 int nregs, void __iomem *base, char *prefix);
-+
-+“base”参数可能为0，但您可能需要使用__stringify构建reg32数组，实际上有许多寄存器
-+名称（宏）是寄存器块在基址上的字节偏移量。
-+
-+如果要在debugfs中转储u32数组，可以使用以下函数创建文件::
-+
-+     void debugfs_create_u32_array(const char *name, umode_t mode,
-+			struct dentry *parent,
-+			u32 *array, u32 elements);
-+
-+“array”参数提供数据，而“elements”参数为数组中元素的数量。注意：数组创建后，数组
-+大小无法更改。
-+
-+有一个函数来创建与设备相关的seq_file::
-+
-+   struct dentry *debugfs_create_devm_seqfile(struct device *dev,
-+				const char *name,
-+				struct dentry *parent,
-+				int (*read_fn)(struct seq_file *s,
-+					void *data));
-+
-+“dev”参数是与此debugfs文件相关的设备，并且“read_fn”是一个函数指针，这个函数在
-+打印seq_file内容的时候被回调。
-+
-+还有一些其他的面向目录的函数::
-+
-+    struct dentry *debugfs_rename(struct dentry *old_dir,
-+		                  struct dentry *old_dentry,
-+		                  struct dentry *new_dir,
-+				  const char *new_name);
-+
-+    struct dentry *debugfs_create_symlink(const char *name,
-+                                          struct dentry *parent,
-+                                          const char *target);
-+
-+调用debugfs_rename()将为现有的debugfs文件重命名，可能同时切换目录。 new_name
-+函数调用之前不能存在；返回值为old_dentry，其中包含更新的信息。可以使用
-+debugfs_create_symlink（）创建符号链接。
-+
-+所有debugfs用户必须考虑的一件事是：
-+
-+debugfs不会自动清除在其中创建的任何目录。如果一个模块在不显式删除debugfs目录的
-+情况下卸载模块，结果将会遗留很多野指针，从而导致系统不稳定。因此，所有debugfs
-+用户-至少是那些可以作为模块构建的用户-必须做模块卸载的时候准备删除在此创建的
-+所有文件和目录。一份文件可以通过以下方式删除::
-+
-+    void debugfs_remove(struct dentry *dentry);
-+
-+dentry值可以为NULL或错误值，在这种情况下，不会有任何文件被删除。
-+
-+很久以前，内核开发者使用debugfs时需要记录他们创建的每个dentry指针，以便最后所有
-+文件都可以被清理掉。但是，现在debugfs用户能调用以下函数递归清除之前创建的文件::
-+
-+    void debugfs_remove_recursive(struct dentry *dentry);
-+
-+如果将对应顶层目录的dentry传递给以上函数，则该目录下的整个层次结构将会被删除。
-+
-+注释：
-+[1] http://lwn.net/Articles/309298/
-diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
-new file mode 100644
-index 000000000000..c2e9e6224931
---- /dev/null
-+++ b/Documentation/translations/zh_CN/filesystems/index.rst
-@@ -0,0 +1,21 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================
-+Linux 内核中的文件系统
-+======================
-+
-+这个不完整的指南在某一天将会提供关于Linux 虚拟文件系统(VFS)层如何工作的完整
-+信息。以及VFS以下的的文件系统。目前为止，我们提供了以下信息。
-+
-+
-+
-+
-+文件系统
-+========
-+
-+关于文件系统实现的文档.
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   debugfs
-diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
-index d3165535ec9e..770f886d081c 100644
---- a/Documentation/translations/zh_CN/index.rst
-+++ b/Documentation/translations/zh_CN/index.rst
-@@ -1,3 +1,4 @@
-+.. SPDX-License-Identifier: GPL-2.0
- .. raw:: latex
- 
- 	\renewcommand\thesection*
-@@ -14,6 +15,7 @@
-    :maxdepth: 2
- 
-    process/index
-+   filesystems/index
- 
- 目录和表格
- ----------
--- 
-2.17.1
+Thread B is holding budget and hasn't released it yet, right?  In the
+context of scsi, that means "device_busy >= 1", right?  So how can the
+code you point at help us?  When Thread C reads "device_busy" it will
+be 1 and that code won't run.  What did I miss?
 
+
+> > * Finally Thread B will run again and put the budget without kicking
+> >   any queues.
+> >
+> > Even though the example above is with blk_mq_do_dispatch_sched() I
+> > believe the race is possible any time someone is holding budget but
+> > doesn't do work.
+> >
+> > Unfortunately, the unlikely has become more likely if you happen to be
+> > using the BFQ I/O scheduler.  BFQ, by design, sometimes returns "true"
+> > for has_work() but then NULL for dispatch_request() and stays in this
+> > state for a while (currently up to 9 ms).  Suddenly you only need one
+> > race to hit, not two races in a row.  With my current setup this is
+> > easy to reproduce in reboot tests and traces have actually shown that
+> > we hit a race similar to the one describe above.
+> >
+> > In theory we could choose to just fix blk_mq_do_dispatch_sched() to
+> > kick the queues when it puts budget.  That would fix the BFQ case and
+> > one could argue that all the other cases are just theoretical.  While
+> > that is true, for all the other cases it should be very uncommon to
+> > run into the case where we need put_budget().  Having an extra queue
+> > kick for safety there shouldn't affect much and keeps the race at bay.
+> >
+> > One last note is that (at least in the SCSI case) budget is shared by
+> > all "hctx"s that have the same queue.  Thus we need to make sure to
+> > kick the whole queue, not just re-run dispatching on a single "hctx".
+> >
+> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > ---
+> >
+> > Changes in v3:
+> > - Always kick when putting the budget.
+> > - Delay blk_mq_do_dispatch_sched() kick by 3 ms for inexact has_work().
+> > - Totally rewrote commit message.
+> >
+> > Changes in v2:
+> > - Replace ("scsi: core: Fix stall...") w/ ("blk-mq: Rerun dispatch...")
+> >
+> >  block/blk-mq.h | 14 +++++++++++++-
+> >  1 file changed, 13 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/block/blk-mq.h b/block/blk-mq.h
+> > index 10bfdfb494fa..1270505367ab 100644
+> > --- a/block/blk-mq.h
+> > +++ b/block/blk-mq.h
+> > @@ -180,12 +180,24 @@ unsigned int blk_mq_in_flight(struct request_queue *q, struct hd_struct *part);
+> >  void blk_mq_in_flight_rw(struct request_queue *q, struct hd_struct *part,
+> >                        unsigned int inflight[2]);
+> >
+> > +#define BLK_MQ_BUDGET_DELAY  3               /* ms units */
+> > +
+> >  static inline void blk_mq_put_dispatch_budget(struct blk_mq_hw_ctx *hctx)
+> >  {
+> >       struct request_queue *q = hctx->queue;
+> >
+> > -     if (q->mq_ops->put_budget)
+> > +     if (q->mq_ops->put_budget) {
+> >               q->mq_ops->put_budget(hctx);
+> > +
+> > +             /*
+> > +              * The only time we call blk_mq_put_dispatch_budget() is if
+> > +              * we released the budget without dispatching.  Holding the
+> > +              * budget could have blocked any "hctx"s with the same queue
+> > +              * and if we didn't dispatch then there's no guarantee anyone
+> > +              * will kick the queue.  Kick it ourselves.
+> > +              */
+> > +             blk_mq_delay_run_hw_queues(q, BLK_MQ_BUDGET_DELAY);
+>
+> No, please don't do that un-conditionally we just need to re-run queue
+> when there has work to do.
+
+...what function would you like me to call to check?  The code you
+wrote in response to v2 only checked work for the given "hctx".  What
+about other "hctx" that are part of the same "queue".  Are we
+guaranteed that has_work() returns the same value for all "hctx"s on
+the same "queue"?  If so, why doesn't has_work() take the "queue" as a
+parameter?
+
+-Doug
