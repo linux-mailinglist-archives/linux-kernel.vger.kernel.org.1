@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D631A1BED
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 08:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08DA1A1BF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 08:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbgDHGfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 02:35:45 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39032 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbgDHGfp (ORCPT
+        id S1726545AbgDHGjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 02:39:46 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:55631 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbgDHGjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 02:35:45 -0400
-Received: by mail-wr1-f67.google.com with SMTP id p10so6431448wrt.6
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 23:35:43 -0700 (PDT)
+        Wed, 8 Apr 2020 02:39:45 -0400
+Received: by mail-wm1-f68.google.com with SMTP id e26so3946591wmk.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 23:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:message-id:mime-version:to:reply-to:subject:date
-         :content-transfer-encoding;
-        bh=RjOpKR64JcF3HJqrI07JmC7nXFZX7asiVKu7icc5Q3U=;
-        b=pdN4ubW6SycZ1TgdlY3d7PwgBARU4apGW1t4laqyQZds4X0LsGZmIvpygGJVhQs+hI
-         6dXAdc9lpsEmkr2qrQR/2DINguV82Vbh1yhorY7ba5vsre4XspIXazDQG6E71aToLip+
-         VL7H/jbPIeXs0rlgl4If7i5grOJiRbrkc+P597wUl83PJx9idFwYaiWyD9Qcmebm+7/V
-         /03yQBekvpPtMAgAsSBKVLBJxOf9Tqkd6smWRtRCnlToWGJJErxLxWqirGH2iMBxFhY0
-         IZM0D9hctzD29xbgS5HmS11PQ+fP7rNIUShS/lXwEO8aaWJeKqu/WkTn9aBgj+cn4NTF
-         8WmA==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=jicnqu+vhNhxRVSZPYvumGPfDc/cdey6jOsGa7cGyZM=;
+        b=QE46/vP8C2fBkxxnHfbz2TZB3rPlsepkYxIv7K8+is5Fi3wRijPvOpKsYubH30TAzR
+         aM6bJZ3uxRP46DY1x2SV8z44rm98QMcmKrpfQeFK3sgEGGfqxqkxKdlCDAPIk2IRPKRb
+         U3s2PTh4NVDoG4WtI4G0YC5/7iPgK6wwMiENqRzGIFWmWiFBu9jw8uq4xQbi7PAy6u03
+         bbkJuigULYGytXYNdI7PxUy+zw6FkWBBrA9MGLgDgMjLg0/3jhuN6e9yGA7qfMcZjD5e
+         6tanU/fpRXtECPs9VjmxF6f4v19xwjzSWzMvzOHArbL/Awo9jCruACsw3nxayCEMXgth
+         z8ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:to:reply-to:subject
-         :date:content-transfer-encoding;
-        bh=RjOpKR64JcF3HJqrI07JmC7nXFZX7asiVKu7icc5Q3U=;
-        b=rhkopFXQx3Mlwkj+LxoYdmEmf3YUZdbUdnk+tuaDsvaT4ZRkfqBztzUW3g/slVlk7Y
-         X4OkoYyC2kabMOkby6tOXo8uiFdRFty40DxH8rcgrtJqAGxM/9IHT7RonX3kzvwf4tbo
-         24ehQDWgMdM/iTluo1yfpeeWKOd1CL1whNUBtg13n4ayymDoz+jXuU5cG+cPssmNqPWh
-         CqNfQdthy9ODiAGxuLeTPjh+DLqfVLVwOgu0H6PfV4Uv1ZbrQ+siISBTs/pTBFeM6PVu
-         FiGbwCjzQdBbWeFNfB3FP9XndcnjWxQXtReq7BczzZGthDRwrvPeGpU9Ol6xi96RLv2t
-         rDcw==
-X-Gm-Message-State: AGi0PubNwlsTj2ooRqjCwoGcSXxq0cWfAmxiJZ6IAR6PC2DsDAms2MXp
-        26oKvYn1IkInIhfMe4Mgfkm3XYnVAVg=
-X-Google-Smtp-Source: APiQypITSNLBbtJfMvQeRAX88xcSWO1xLWkj0w3YUkCkXnowYJwG6CjWkeiEjyooJcSOYOnYJWbI9Q==
-X-Received: by 2002:adf:a308:: with SMTP id c8mr7136487wrb.302.1586327741726;
-        Tue, 07 Apr 2020 23:35:41 -0700 (PDT)
-Received: from [192.168.0.101] ([80.248.78.242])
-        by smtp.gmail.com with ESMTPSA id a67sm5819362wmc.30.2020.04.07.23.35.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Tue, 07 Apr 2020 23:35:41 -0700 (PDT)
-From:   kaleb Omari <alexjolee50@gmail.com>
-X-Google-Original-From: kaleb Omari <ezeobagideon@gmail.com>
-Message-Id: <EFC6TH6O-RJEE-W205-UAE1-DA4AWCFQW8U@gmail.com>
-Mime-Version: 1.0
-To:     "Linux-Kernel" <linux-kernel@vger.kernel.org>
-Reply-To: contact.winwinz.post.20s@gmail.com
-Subject: HELLO WINNER 
-Date:   Tue, 7 Apr 2020 23:35:39 -0700
-X-Mailer: MBM 8.4.1-US
-X-Bounce-Tracking-Info: <TGludXgtS2VybmVsCQkJbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwlIRUxMTyBXSU5ORVIgCTQ2MgkJNzUJYm91bmNlCW5vCW5v>
-Content-type: text/plain; charset=iso-8859-1; format=flowed
-Content-transfer-encoding: quoted-printable
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=jicnqu+vhNhxRVSZPYvumGPfDc/cdey6jOsGa7cGyZM=;
+        b=k/ICfUEdjcXmEnqc3jxEXzhjOfBTohzBokkr0XlZtQbEIdna/aTdchyOfwRkTqJMPk
+         EKrDufOM1AWv6Zpk0+OAcwu36qYKpsTNp1ygX1bEYB83R/uVukF9bN/MJkoraun9sitC
+         T+kVhRlgj/wpx3N3a+Bx/9691+fswH8xsNCThbEibDZXLei+ePx++n7DQv3RSgjpDRkz
+         Ed3Gw7n9NIACgg9ME8dB0LTr+Pp1B5GIkHe8RmzlxLJ73ePlKUZ5l1yx7GJMNNXrPuXV
+         0hh2h+ppi6de5WibGwbLwfa5EP9/9OtQ9PIq6KtA0TxLr4V+gbjWEHghUEI5bY6Le5O1
+         FwNw==
+X-Gm-Message-State: AGi0PuaBfSaMdqYxwmaTJdl/4piAJY2BUPeso88vKpfOvcRKcLpdkxwV
+        hQmcrifQzboyuvH2n9UN1AhwPvbknhSQ411ZjQ==
+X-Google-Smtp-Source: APiQypKlE3KMvqErpz5ooHHheASYK4FzS7NyDB7NIE4jMIr3GtTf8aqtQisaQ255J6+1p4aUDnp26NLgdO9Dd/Ey1mI=
+X-Received: by 2002:a1c:7c18:: with SMTP id x24mr1131510wmc.146.1586327983566;
+ Tue, 07 Apr 2020 23:39:43 -0700 (PDT)
+MIME-Version: 1.0
+Reply-To: maliksanfo1@email.cz
+Received: by 2002:a5d:4bc2:0:0:0:0:0 with HTTP; Tue, 7 Apr 2020 23:39:42 -0700 (PDT)
+From:   Malik Sanfo <maliksanfo1@gmail.com>
+Date:   Tue, 7 Apr 2020 23:39:42 -0700
+X-Google-Sender-Auth: 4PzMkep4ewYfDXjr1_Fk4ox2_EA
+Message-ID: <CAMEhO7t1VVMCky8f3ZpCwa20KPMcYFLd2rN9_VY=qBOsrfEruw@mail.gmail.com>
+Subject: Waiting for your response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Congratulations
+Greetings!!!!
 
- This is to inform you that your email address have won a prize sum of $1=
-=2E200,000,00 One Million Two Hundred Thousand United State Dollars from Mo=
--Lottery award 2020,
+I have a business proposal in the tune of USD$12.3m for you to handle
+with me. I have opportunity to transfer this abandon fund to your bank
+account in your country which belongs to our deceased customer.
 
- https://www=2Elotteryusa=2Ecom/missouri/lotto/year
+I am inviting you in this transaction where this money can be shared
+between us at the ratio of 45% for your kind assistance and 45% for me
+while the remaining 10% will go to charity and the needy around us. Do
+not be afraid of anything I am with you I will instruct you on what
+you will do to claim this fund.
 
-Your Winning Number  is (19-22-24-26-40-44) and check  the link of past win=
-ners reply as soon as possible to claim your prize and choose your choice o=
-f tranfer
+Please kindly get back to me if you are interested.
 
- Contact Claims manager through this email address
 
-Email ( contact=2Ewinwinz=2Epost=2E20s@gmail=2Ecom )
-
-Congratulation in advance
-
-Mr=2E kali Edmonds
-
-contact=2Ewinwinz=2Epost=2E20s@gmail=2Ecom
-
+My regards
+Mr.Malik Sanfo
