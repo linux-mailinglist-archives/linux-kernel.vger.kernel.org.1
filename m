@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8ACA1A1F9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 13:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4696B1A1FA9
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 13:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgDHLMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 07:12:16 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44834 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbgDHLMQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 07:12:16 -0400
-Received: by mail-ed1-f67.google.com with SMTP id i16so8046953edy.11;
-        Wed, 08 Apr 2020 04:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=y6GvbrxPWO38NZY2qniHG/bjP2NH5oiIBjc+DHthlNY=;
-        b=VC5psAUsa1U2CjvoshCFasg2IK8FzsljYRvZ/5QS60xwoyvFBFXQqmt8BkfUpV3HhM
-         wkeRFEaLVqKQIOoZDyHNzLICNc4pgkurJGaKqWSZfacFmPdK86yd+dxBZVQCpzJjJOcA
-         nPceEZnTYX6NJHBHq5pJAT/x9+LSQWopr7Q1En9TwCbD3g2D35OpQY+2TajCjUF+FN1e
-         1nx+MN0TVjZJqCRqNbYlmm5rP8MdMkc4y6G74Frt5V7HwMBNMWLyd3BYzC8p66tFBOa3
-         x+m/N/xyM5Zel3thnTh3qMXI0vUG6+MDW4TbGn4BkVcNFBi01WQ7mnKcOKPmwSSniwZC
-         8YFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=y6GvbrxPWO38NZY2qniHG/bjP2NH5oiIBjc+DHthlNY=;
-        b=KATwr8QcNWNVC17uOY0M097ufa1HW4BjNA/CHKemVGQ+B+B+QlCxpnEuI8oTsvM1sI
-         akkq+HccgM/gIK+0ceqsMikHRXbZsSBfEu6zhJED1nVa8BZ5cmkOqQlFsLFgC6p3VL1t
-         EN9t87EpXPYq1VLJkrcNMWLgSENaszTCZkODgDgP8pNvL0AeHrIGrIgeQJC97JB7wxx7
-         2yJV/b8pLVmIZxokEXdlRcEt0KJwOVssNbI6rUjfph8GBI2WtFgurP0+Iqygzc6cFVcr
-         1yP5CCHZ4FKYJlKDBEMs6IzJZW+BfAyzX9oRC5fTYWs2lz+jJaqbrn28igtS1A+EKvft
-         eAdA==
-X-Gm-Message-State: AGi0PuatYKpvWs2X0cbR1FJHA2ZSwgn35gQ0EbGMuFaCCYjJr2I33nzm
-        hCtTECG8UwX8vtJ/UnUzso9vRZEpwgHDERFmT90=
-X-Google-Smtp-Source: APiQypLakffEooTTK/wIZhPA1UXmX6ePrOgYPFpT6bdDI4nYEdoKNBKYdrg7FinZZVq0sJNuwRcasB3azLK159CjdFg=
-X-Received: by 2002:a05:6402:504:: with SMTP id m4mr6031207edv.367.1586344332475;
- Wed, 08 Apr 2020 04:12:12 -0700 (PDT)
+        id S1728406AbgDHLOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 07:14:20 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:38373 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728321AbgDHLOU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 07:14:20 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 038BDMIQ019751
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Apr 2020 13:13:22 +0200
+Received: from [139.22.119.141] ([139.22.119.141])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 038BDHA3003063;
+        Wed, 8 Apr 2020 13:13:18 +0200
+Subject: Re: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kenny@panix.com" <kenny@panix.com>,
+        "jeyu@kernel.org" <jeyu@kernel.org>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
+        "xiaoyao.li@intel.com" <xiaoyao.li@intel.com>,
+        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
+        "thellstrom@vmware.com" <thellstrom@vmware.com>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "dcovelli@vmware.com" <dcovelli@vmware.com>,
+        "mhiramat@kernel.org" <mhiramat@kernel.org>,
+        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>
+References: <20200407110236.930134290@infradead.org>
+ <20200407111007.429362016@infradead.org>
+ <20200407174824.5e97a597@gandalf.local.home>
+ <137fe245-69f3-080e-5f2b-207cd218f199@siemens.com>
+ <20200408085138.GQ20713@hirez.programming.kicks-ass.net>
+ <aa7a2547-9670-d04f-4ca0-ab52abf30441@siemens.com>
+ <a426788d340b477f8cc87a173a251fcb@AcuMS.aculab.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <c51317cf-2026-22f8-6763-b3efd2c661d7@siemens.com>
+Date:   Wed, 8 Apr 2020 13:13:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Wed, 8 Apr 2020 13:12:01 +0200
-Message-ID: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
-Subject: CLONE_INTO_CGROUP documentation?
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a426788d340b477f8cc87a173a251fcb@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christian,
+On 08.04.20 11:25, David Laight wrote:
+> From: Jan Kiszka
+>> Sent: 08 April 2020 09:59
+> ...
+>> At the risk of cutting our own branch off: That's not the firmware
+>> loader, it's ioremap with PAGE_KERNEL_EXEC.
+> 
+> You could link the 'blob' into the .text part of a normal
+> kernel module and then load that.
 
-I see that CLONE_INTO_CGROUP has been merged? WOuld you be able to
-send a man-pages patch documenting this please?
+Sure, also possible. Was just more convenient so far to replace the 
+hypervisor binary without having to recompile the driver module.
 
-Thanks,
+Jan
 
-Michael
-
-
---
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+-- 
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
