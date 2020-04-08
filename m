@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B44E1A1CD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DD91A1CE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 09:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726910AbgDHHt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 03:49:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726366AbgDHHt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 03:49:27 -0400
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 300B720857;
-        Wed,  8 Apr 2020 07:49:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586332167;
-        bh=LFSPRKgmR8auwK03bWcZlzXa6g+J6cxGqFZeIyDLWBs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=M4A3XfdLzGoCqjFphZs46oHKHPvNRNyaxBpA9xZOfsoCACHV49gh3cMPEQj0HjuuH
-         K5KQp0P7ZX1Za5RsThorpN36rb8kGaUgiaq32dYWGNm/PIEGD7Xe4ymWpTMGYbdsuu
-         gSRBrZ2r52eMPpBPRm9gCBQCDV5PL1qvhKb/3sxc=
-Received: by mail-io1-f54.google.com with SMTP id b12so6153064ion.8;
-        Wed, 08 Apr 2020 00:49:27 -0700 (PDT)
-X-Gm-Message-State: AGi0PuZtXrHE6BJHRoT5TAyDCbab9LHXjcCi6fR3Oyja3IP1Pcug2yr4
-        jZpkLKZnZ/b6PHrWjviDRaWZR8QSdflqXaKQBb4=
-X-Google-Smtp-Source: APiQypJAwEiSBhRkO0KExJ3QXtqZu8DVb4U6xjsYMWHvwGiy5FHwkV4VytajI+cifcoP5E+rtFqkmv24wXCBpeMiAEI=
-X-Received: by 2002:a6b:f413:: with SMTP id i19mr5867611iog.203.1586332166519;
- Wed, 08 Apr 2020 00:49:26 -0700 (PDT)
+        id S1726930AbgDHH5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 03:57:10 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:55179 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgDHH5K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 03:57:10 -0400
+Received: by mail-pj1-f65.google.com with SMTP id np9so842712pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 00:57:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R5l9yaDnHPviFSInTMtO+H9cjGUVnhLTSkCrNG5sx0k=;
+        b=hsIE8Vof28DJJncFl3vY8jPdw0T1oKCjs5IiYyxl69aiOHSiFTj0bX1wenWPJ3kJRJ
+         iIj07JLR0wgA6ZytV1SzqwxkatW3ZHpuqQIIFgLjLm9YXf1otQUmRJfab1OAWw59S6p2
+         RgWZljcud7M27JOTSdcvfdaQd+QNYcK78ifndNxpxIe7UmfEP2abrFi0CblVWumtA3Fe
+         bxHimMyQBCPLy92QZtfcnT6uyM6JDpXPllxJlmdPPfzmrKECAIIsIFelasO0muZUKILY
+         TA0QJ0589Dv1hXf2bIXA4h4y3D99sHzzLVQa4oS+//ptAKKDuPF7i7l9DbG2rMNzjz7C
+         jTyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R5l9yaDnHPviFSInTMtO+H9cjGUVnhLTSkCrNG5sx0k=;
+        b=S92SAaF67DGcpiRNDS3FezNfnCHLNpN3HRRHknj5Nt3nF4QTCYVMkgRkewZ7h/oQaU
+         7x5N0q2wI8ZGwjK9H8iBDV9/tQgAbD+FubC67r0UDK55a49dhNVM5OUAdLPN4QLd8UWB
+         jC6rU/sn+MB3ShNAosIbnGkS2vTL3RTN2dQM5uK8TbwZcRPMbETjJYw/EbUFdARTmOp0
+         b6sOYspoYm0ztv0kK6GwLCJsOUKA20R9tnSmTgBRxmlWIrP64+YEODB23k9Of+n80WDV
+         0KDcnZFIMrYUWdPXxqcNsRTPWWn2CVTA01ZSw0OeF1qRqnvvYZn6QH372TT4775gzvh9
+         QJhA==
+X-Gm-Message-State: AGi0PuZnreaaUMrvbiQ/D84UlltKb5gzqCHfs6x6w/SE1bc/yLr5UpoV
+        JcesrzvZoZ/9QAnZ2Zwrb4Y1gQ==
+X-Google-Smtp-Source: APiQypIdPE+cKH1o87dImXX8C4kNxwaWuMVEsYtc+353GjjJ1cP5svGrxcEtvT6nMOrjhFMmd8aMUA==
+X-Received: by 2002:a17:902:8e84:: with SMTP id bg4mr5738299plb.50.1586332629297;
+        Wed, 08 Apr 2020 00:57:09 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id d85sm485599pfd.157.2020.04.08.00.57.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 00:57:08 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     palmer@dabbelt.com, paul.walmsley@sifive.com,
+        aou@eecs.berkeley.edu, mhiramat@kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH v5 0/9] Support strict kernel memory permissions for security
+Date:   Wed,  8 Apr 2020 15:56:55 +0800
+Message-Id: <cover.1586332296.git.zong.li@sifive.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <CAMj1kXEUkJ1XJ9OTsijeq8tNNYC00bXqEV44OMtX5ugo9WoLKA@mail.gmail.com>
- <20200406180614.429454-1-nivedita@alum.mit.edu> <20200408074334.GA21886@dhcp-128-65.nay.redhat.com>
-In-Reply-To: <20200408074334.GA21886@dhcp-128-65.nay.redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Wed, 8 Apr 2020 09:49:15 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGPOZ6zWtgGScLy0ECrTtf1yhngDTNE1chW-MQw3XQp9Q@mail.gmail.com>
-Message-ID: <CAMj1kXGPOZ6zWtgGScLy0ECrTtf1yhngDTNE1chW-MQw3XQp9Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] efi/x86: Move efi stub globals from .bss to .data
-To:     Dave Young <dyoung@redhat.com>, pjones@redhat.com,
-        daniel.kiper@oracle.com, Leif Lindholm <leif@nuviainc.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@alien8.de>, Sergey Shatunov <me@prok.pw>,
-        hpa@zytor.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
-        initramfs@vger.kernel.org,
-        Donovan Tremura <neurognostic@protonmail.ch>,
-        Harald Hoyer <harald@hoyer.xyz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(add Peter, Leif and Daniel)
+The main purpose of this patch series is changing the kernel mapping permission
+, make sure that code is not writeable, data is not executable, and read-only
+data is neither writable nor executable.
 
-On Wed, 8 Apr 2020 at 09:43, Dave Young <dyoung@redhat.com> wrote:
->
-> On 04/06/20 at 02:06pm, Arvind Sankar wrote:
-> > Commit
-> >
-> >   3ee372ccce4d ("x86/boot/compressed/64: Remove .bss/.pgtable from
-> >   bzImage")
-> >
-> > removed the .bss section from the bzImage.
-> >
-> > However, while a PE loader is required to zero-initialize the .bss
-> > section before calling the PE entry point, the EFI handover protocol
-> > does not currently document any requirement that .bss be initialized by
-> > the bootloader prior to calling the handover entry.
-> >
-> > When systemd-boot is used to boot a unified kernel image [1], the image
-> > is constructed by embedding the bzImage as a .linux section in a PE
-> > executable that contains a small stub loader from systemd together with
-> > additional sections and potentially an initrd. As the .bss section
-> > within the bzImage is no longer explicitly present as part of the file,
-> > it is not initialized before calling the EFI handover entry.
-> > Furthermore, as the size of the embedded .linux section is only the size
-> > of the bzImage file itself, the .bss section's memory may not even have
-> > been allocated.
->
-> I did not follow up the old report, maybe I missed something. But not
-> sure why only systemd-boot is mentioned here.  I also have similar issue
-> with early efi failure.  With these two patches applied, it works well
-> then.
->
-> BTW, I use Fedora 31 + Grub2
->
+This patch series also supports the relevant implementations such as
+ARCH_HAS_SET_MEMORY, ARCH_HAS_SET_DIRECT_MAP,
+ARCH_SUPPORTS_DEBUG_PAGEALLOC and DEBUG_WX.
 
-OK, so I take it this means that GRUB's PE/COFF loader does not
-zero-initialize BSS either? Does it honor the image size in memory if
-it exceeds the file size?
+Changes in v5:
+ - Add lockdep_assert_held and more comments for text_mutex.
+
+Changes in v4:
+ - Use NOKPROBE_SYMBOL instead of __kprobe annotation
+ - Use text_mutex instead of patch_lock
+ - Remove 'riscv_' prefix of function name
+
+Changes in v3:
+ - Fix build error on nommu configuration. We already support nommu on
+   RISC-V, so we should consider nommu case and test not only rv32/64,
+   but also nommu.
+
+Changes in v2:
+ - Use _data to specify the start of data section with write permission.
+ - Change ftrace patch text implementaion.
+ - Separate DEBUG_WX patch to another patchset.
+
+Zong Li (9):
+  riscv: add macro to get instruction length
+  riscv: introduce interfaces to patch kernel code
+  riscv: patch code by fixmap mapping
+  riscv: add ARCH_HAS_SET_MEMORY support
+  riscv: add ARCH_HAS_SET_DIRECT_MAP support
+  riscv: add ARCH_SUPPORTS_DEBUG_PAGEALLOC support
+  riscv: move exception table immediately after RO_DATA
+  riscv: add alignment for text, rodata and data sections
+  riscv: add STRICT_KERNEL_RWX support
+
+ arch/riscv/Kconfig                  |   6 +
+ arch/riscv/include/asm/bug.h        |   8 ++
+ arch/riscv/include/asm/fixmap.h     |   2 +
+ arch/riscv/include/asm/patch.h      |  12 ++
+ arch/riscv/include/asm/set_memory.h |  48 +++++++
+ arch/riscv/kernel/Makefile          |   4 +-
+ arch/riscv/kernel/ftrace.c          |  26 ++--
+ arch/riscv/kernel/patch.c           | 128 +++++++++++++++++++
+ arch/riscv/kernel/traps.c           |   3 +-
+ arch/riscv/kernel/vmlinux.lds.S     |  11 +-
+ arch/riscv/mm/Makefile              |   2 +-
+ arch/riscv/mm/init.c                |  44 +++++++
+ arch/riscv/mm/pageattr.c            | 187 ++++++++++++++++++++++++++++
+ 13 files changed, 466 insertions(+), 15 deletions(-)
+ create mode 100644 arch/riscv/include/asm/patch.h
+ create mode 100644 arch/riscv/include/asm/set_memory.h
+ create mode 100644 arch/riscv/kernel/patch.c
+ create mode 100644 arch/riscv/mm/pageattr.c
+
+-- 
+2.26.0
+
