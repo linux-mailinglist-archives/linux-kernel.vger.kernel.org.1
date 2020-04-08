@@ -2,189 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E961A2153
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BE31A213D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 14:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727795AbgDHMHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 08:07:04 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40507 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgDHMHD (ORCPT
+        id S1727327AbgDHMDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 08:03:01 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:8014 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726521AbgDHMDB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 08:07:03 -0400
-Received: by mail-wr1-f67.google.com with SMTP id s8so7499390wrt.7
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 05:07:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=04au/APisT4u3ZJd0QGSjFIKoPfTw5pesO0fdtrLymc=;
-        b=kJEFQeSnI1uVfFX6eyEXnFmr59bbMNp9Kq8p6qdur6HnMwJfRykaYZqrKCOyxIqS4l
-         gRa1TLDbpgRZVEwdO1gwW5zCoMcHogN3Rrrmy4HM7ZRH6tsX8NvFbTCYnwpwy6ZlLWGt
-         0PSS5z8Q+MJtPOKTk/V0DC4gdkje1IzxCxzSE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=04au/APisT4u3ZJd0QGSjFIKoPfTw5pesO0fdtrLymc=;
-        b=ss+uZbGJkIitiIl41BEsu0pAMqNKUq8Ri1eQDYKq/lFqlK+ifdO2Y9D7pOCDC+8Q/C
-         Lu35bKn3qj/vusEpgRdrGq9Ym/v427NllLCUA0DBinmyGyIkhcVDkUp3tH+SS+hsMmRe
-         RsdBKBhRC0AEZZBmMlwapcJxoPbdkYay6s1tkqlek+H3wdrIk448+gCvN9E7cJQYpv9m
-         /qn9/cyUecrucfvLFuNxa+jpy/KMXnsuY/7s681HOqlpiFZzPlYMyRd/hNGJRmLoh8UJ
-         dEXOJApNJ1rUWAgv3785r5wLl3qSFb6n/RsC1csWLRwHxvessroNp2yT0uPVjjc19ifG
-         aOWA==
-X-Gm-Message-State: AGi0PuZIpGwFEQ54fGlFv4oy0/h6G8RbcVOPei0RImXHkCYTgcQ0TO3i
-        RmWVsjqv7cQah1OBcmQkk9bHNw==
-X-Google-Smtp-Source: APiQypIw1uVDCJzq54weB3MKg/1sOyfu5lDNKgL29rpnZAQ1e/t2RVvpNhAWEBamcNKLB2zMkKbiqw==
-X-Received: by 2002:a5d:4d8c:: with SMTP id b12mr8031430wru.35.1586347621345;
-        Wed, 08 Apr 2020 05:07:01 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id 91sm30402064wrf.79.2020.04.08.05.07.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 05:07:00 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 14:06:58 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] gpu/drm: ingenic: Add option to mmap GEM buffers
- cached
-Message-ID: <20200408120658.GK3456981@phenom.ffwll.local>
-Mail-Followup-To: Paul Cercueil <paul@crapouillou.net>,
-        David Airlie <airlied@linux.ie>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20200226043041.289764-1-paul@crapouillou.net>
- <20200226043041.289764-3-paul@crapouillou.net>
+        Wed, 8 Apr 2020 08:03:01 -0400
+X-IronPort-AV: E=Sophos;i="5.72,358,1580745600"; 
+   d="scan'208";a="88690985"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 08 Apr 2020 20:02:56 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 0208F49DF129;
+        Wed,  8 Apr 2020 19:52:33 +0800 (CST)
+Received: from [10.167.226.60] (10.167.226.60) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 8 Apr 2020 20:02:55 +0800
+Subject: Re: Question about prefill_possible_map
+From:   Cao jin <caoj.fnst@cn.fujitsu.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+CC:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <687566a8-cacd-e0db-6914-d547853c7555@cn.fujitsu.com>
+Message-ID: <2911d6a8-b0fd-6ee4-40d3-a86e1096de80@cn.fujitsu.com>
+Date:   Wed, 8 Apr 2020 20:07:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200226043041.289764-3-paul@crapouillou.net>
-X-Operating-System: Linux phenom 5.3.0-3-amd64 
+In-Reply-To: <687566a8-cacd-e0db-6914-d547853c7555@cn.fujitsu.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.167.226.60]
+X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206)
+X-yoursite-MailScanner-ID: 0208F49DF129.A05B2
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: caoj.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 26, 2020 at 01:30:41AM -0300, Paul Cercueil wrote:
-> Ingenic SoCs are most notably used in cheap chinese handheld gaming
-> consoles. There, the games and applications generally render in software
-> directly in the emulated framebuffer using SDL1.
-> 
-> Since the emulated framebuffer is mapped as write-combine by default,
-> these applications start to run really slow as soon as alpha-blending is
-> used.
-> 
-> Add a 'cached_gem_buffers' option to the ingenic-drm driver to mmap the
-> GEM buffers as fully cached to address this issue.
-> 
-> v2: Use standard noncoherent DMA APIs
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Hi Thomas,
 
-Dumb buffers don't have any cache flushing controls, so without a ->dirty
-callback I'm not sure how this exactly works. I think you need a pile more
-here.
-
-Also there's a prefere_shadow bit that you're supposed to set in this
-case, and which userspace is supposed to obey.
-
-Also kinda surprised that fbdev userspace is this bad, since generally all
-of fbdev is wc. Traditionally at least.
--Daniel
-
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm.c | 35 +++++++++++++++++++++++++--
->  1 file changed, 33 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.c b/drivers/gpu/drm/ingenic/ingenic-drm.c
-> index 3f8cc98d41fe..e51ac8d62d27 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm.c
-> @@ -6,6 +6,8 @@
->  
->  #include <linux/clk.h>
->  #include <linux/dma-mapping.h>
-> +#include <linux/dma-noncoherent.h>
-> +#include <linux/io.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
->  #include <linux/platform_device.h>
-> @@ -30,6 +32,11 @@
->  #include <drm/drm_probe_helper.h>
->  #include <drm/drm_vblank.h>
->  
-> +static bool ingenic_drm_cached_gem_buf;
-> +module_param_named(cached_gem_buffers, ingenic_drm_cached_gem_buf, bool, 0400);
-> +MODULE_PARM_DESC(cached_gem_buffers,
-> +		 "Enable fully cached GEM buffers [default=false]");
-> +
->  #define JZ_REG_LCD_CFG				0x00
->  #define JZ_REG_LCD_VSYNC			0x04
->  #define JZ_REG_LCD_HSYNC			0x08
-> @@ -379,15 +386,23 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->  	struct drm_plane_state *state = plane->state;
->  	unsigned int width, height, cpp;
->  	dma_addr_t addr;
-> +	uint32_t len;
->  
->  	if (state && state->fb) {
->  		addr = drm_fb_cma_get_gem_addr(state->fb, state, 0);
-> +
->  		width = state->src_w >> 16;
->  		height = state->src_h >> 16;
->  		cpp = state->fb->format->cpp[plane->index];
-> +		len = width * height * cpp;
-> +
-> +		if (ingenic_drm_cached_gem_buf) {
-> +			dma_cache_sync(priv->dev, phys_to_virt(addr),
-> +				       len, DMA_TO_DEVICE);
-> +		}
->  
->  		priv->dma_hwdesc->addr = addr;
-> -		priv->dma_hwdesc->cmd = width * height * cpp / 4;
-> +		priv->dma_hwdesc->cmd = len / 4;
->  		priv->dma_hwdesc->cmd |= JZ_LCD_CMD_EOF_IRQ;
->  	}
->  }
-> @@ -532,6 +547,22 @@ static void ingenic_drm_disable_vblank(struct drm_crtc *crtc)
->  
->  DEFINE_DRM_GEM_CMA_FOPS(ingenic_drm_fops);
->  
-> +static int ingenic_drm_gem_mmap(struct drm_gem_object *obj,
-> +				struct vm_area_struct *vma)
-> +{
-> +	struct drm_gem_cma_object *cma_obj = to_drm_gem_cma_obj(obj);
-> +	struct ingenic_drm *priv = drm_device_get_priv(obj->dev);
-> +	unsigned long attrs = DMA_ATTR_NON_CONSISTENT;
-> +
-> +	if (!ingenic_drm_cached_gem_buf)
-> +		return drm_gem_cma_prime_mmap(obj, vma);
-> +
-> +	vma->vm_page_prot = dma_pgprot(priv->dev, vma->vm_page_prot, attrs);
-> +
-> +	return dma_mmap_attrs(priv->dev, vma, cma_obj->vaddr, cma_obj->paddr,
-> +			      vma->vm_end - vma->vm_start, attrs);
-> +}
-> +
->  static struct drm_driver ingenic_drm_driver_data = {
->  	.driver_features	= DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
->  	.name			= "ingenic-drm",
-> @@ -553,7 +584,7 @@ static struct drm_driver ingenic_drm_driver_data = {
->  	.gem_prime_import_sg_table = drm_gem_cma_prime_import_sg_table,
->  	.gem_prime_vmap		= drm_gem_cma_prime_vmap,
->  	.gem_prime_vunmap	= drm_gem_cma_prime_vunmap,
-> -	.gem_prime_mmap		= drm_gem_cma_prime_mmap,
-> +	.gem_prime_mmap		= ingenic_drm_gem_mmap,
->  
->  	.irq_handler		= ingenic_drm_irq_handler,
->  	.release		= ingenic_drm_release,
-> -- 
-> 2.25.0
-> 
+  Seems you helped improve 2a51fe083eba7f, could you help with this question?
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Sincerely,
+Cao jin
+
+On 3/27/20 2:38 PM, Cao jin wrote:
+> Hi,
+> 
+> At the beginning of this function, there is:
+> 
+>     /* No boot processor was found in mptable or ACPI MADT */
+>     if (!num_processors) {
+>         if (boot_cpu_has(X86_FEATURE_APIC)) {
+>             int apicid = boot_cpu_physical_apicid;
+>             int cpu = hard_smp_processor_id();
+> 
+>             pr_warn("Boot CPU (id %d) not listed by BIOS\n", cpu);
+> 
+>             /* Make sure boot cpu is enumerated */
+>             if (apic->cpu_present_to_apicid(0) == BAD_APICID &&
+>                 apic->apic_id_valid(apicid))
+>                 generic_processor_info(apicid, boot_cpu_apic_version);
+>         }
+> 
+>         if (!num_processors)
+>             num_processors = 1;
+>     }
+> 
+> I see 3 cases will go through this code chunk,
+> 
+> 1. UP, has no APCI MADT & MP table, but has APIC
+> 2. 2a51fe083eba7f: kdump kernel running on the hot-plugged CPU
+> 3. normal UP(No table, no APIC)
+> 
+> And "if (boot_cpu_has(X86_FEATURE_APIC))" covers case 1 & 2 to my
+> understanding.
+> 
+> But both cases 1 & 2 already have boot_cpu_physical_apicid initialized
+> from APIC ID register:
+> 1. init_apic_mappings --> register_lapic_address
+> 2. early_acpi_boot_init --> early_acpi_process_madt -->...-->
+>    register_lapic_address
+> 
+> So my question is: is variable "cpu" redundant? Could it be:
+> 
+> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+> index 69881b2d446c..99fc03511568 100644
+> --- a/arch/x86/kernel/smpboot.c
+> +++ b/arch/x86/kernel/smpboot.c
+> @@ -1456,9 +1456,9 @@ __init void prefill_possible_map(void)
+>         if (!num_processors) {
+>                 if (boot_cpu_has(X86_FEATURE_APIC)) {
+>                         int apicid = boot_cpu_physical_apicid;
+> -                       int cpu = hard_smp_processor_id();
+> 
+> -                       pr_warn("Boot CPU (id %d) not listed by BIOS\n", cpu);
+> +                       pr_warn("Boot CPU (id %d) not listed by BIOS\n", \
+> +                                boot_cpu_physical_apicid);
+> 
+>                         /* Make sure boot cpu is enumerated */
+>                         if (apic->cpu_present_to_apicid(0) == BAD_APICID &&
+> 
+
+
+
+
+
