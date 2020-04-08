@@ -2,202 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A67C41A2B75
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C22BF1A2B78
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgDHVtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 17:49:33 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:44429 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726654AbgDHVtb (ORCPT
+        id S1726603AbgDHVyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 17:54:22 -0400
+Received: from sonic306-21.consmr.mail.ir2.yahoo.com ([77.238.176.207]:43100
+        "EHLO sonic306-21.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726494AbgDHVyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 17:49:31 -0400
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 08 Apr 2020 14:49:30 -0700
-Received: from asutoshd-linux1.qualcomm.com ([10.46.160.39])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 08 Apr 2020 14:49:30 -0700
-Received: by asutoshd-linux1.qualcomm.com (Postfix, from userid 92687)
-        id 5DF66209D0; Wed,  8 Apr 2020 14:49:30 -0700 (PDT)
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     cang@codeaurora.org, martin.petersen@oracle.com,
-        Avri.Altman@wdc.com, linux-scsi@vger.kernel.org
-Cc:     Asutosh Das <asutoshd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        Tomas Winkler <tomas.winkler@intel.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v1 3/3] ufs: sysfs: add sysfs entries for write booster
-Date:   Wed,  8 Apr 2020 14:48:41 -0700
-Message-Id: <7d99b5db043072c1b4484d97484b04caae696dab.1586382357.git.asutoshd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1586374414.git.asutoshd@codeaurora.org>
-References: <cover.1586374414.git.asutoshd@codeaurora.org>
-In-Reply-To: <3c186284280c37c76cf77bf482dde725359b8a8a.1586382357.git.asutoshd@codeaurora.org>
-References: <3c186284280c37c76cf77bf482dde725359b8a8a.1586382357.git.asutoshd@codeaurora.org>
+        Wed, 8 Apr 2020 17:54:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1586382858; bh=q1Er/SdqxATomBDx27mJAnsQxxrJWpCL+Y8MaW3053A=; h=Date:From:Reply-To:Subject:References:From:Subject; b=nEBVwclaMtukzYyl98uwbeN/NvQ3WKTVywa4q/5SWeH0IROEabvmGqcqNPoWd8R8hIKzuRE6WtmNaGZvpQgGfxGMebrSnMaQ+8+F8TU5PV8e0DQ5TzKdLOvAMNtEvizIQ2LzAYOonD7xGQr558sCnr46TnMTTyRFYNryvxf9XLDYquRoLk6gLWNsIzSy0l+W/54rvqEaEVN4ET4y1N1/HOJ0Y28c8Y/Ir1u72X6hj2KGboOO70aBChXIE/10vBMyE+LxbRd68QkGN0G1k0augma3Eaax56Ed5C+lMHGi39XhP7OpT6LZfaDDtHDsjLaFwkkeeMnjk82rZAiNhC02TQ==
+X-YMail-OSG: 5usHcjwVM1nCnT3yED6mbEH6lePu6kYsBLbQe2Zhfkp9uY1_J4Jnu37vdUChAG7
+ DYp4x8xq63ATPkgCRvTzXGnH1DZpdxhHMt1zNN8bZP7KLhKAPfyuFYR.7qU._m5Whn3r_7Yiffh_
+ _VwUZCqe_Mia7h2p217r6NS9_JwSM1w6N.dA6R2usLgHoOxlffAYbmKwDCma5Iii8WpE8_ZLkknk
+ z_TIwpuXNsY7OPOCNOcTSefWlhbh7I3e0Bq4HxxpNG9Z_yOzyQQWqHVqfmxp2vHTNhmjlQE_F67i
+ R5kD7B6x9aKBpQPy7U1_M7XE.KvppKSROqb0TE_2f0wU0Iu5HuoX1Hpt0Cr5DXDHQEmlw.nEAMzM
+ 1_2z3Moy9DF.9M91Rmauc_C_Ldx80BAAWnzsF8cBVwcFiM7BDJFTwvhU3M8hTyI.BRcK5UJXeNwM
+ YLt_UFHxrdbSeZE5WafI60FuQQGLlnuC_LRrqLmO0PBB24Rj6FepZXczBfGChek.vFfhHOmCty5f
+ n14GpzTyZOAkfmE0PKOYM0ZAz7EFd360poxm37cazpvs0P_ajmEUYVxHndPt_SkahxqbWK6d3.fc
+ ZK_yZ7em5rXMIUvXbb0o1XG2R0tqTZSgChAZA8gi6CkipJhB99NUSKqTJ_M_W0cZbGdWRs1o3RHI
+ Z2LIZEfE.r4uG4kOOpVh0qshEHVmLgfS_ZuBvTb2RcSZkZbz01XV8duUi1LHaOsXClPitlzWPQak
+ CZI6vrJOIGYbM__KbqEvFsYoRTWHbeXpnpXr0WgxEnMUSg3QmA9CP8CBghUCDC3Bvct2ulnCLviu
+ umnbosw5Nr8VxS5hGaUl5UBk7bQrs3b9dm_DC5_3giavBiSzjmX0krV5FpqESSTnG5cgVe7qr9jf
+ RkGugZrIAT8v_cM90jnEzq0OSxxLPIxS3AJCXZOvXVmQSMlAmBSw2rMIxd8twd3bkvVVv97aXODr
+ 3R8ByvfYoC6.dR92d_YyeApvsIRUgCok6c.vCB3Pbe3tAz1a.xQTyZu5Mp247jpADvGtBrcCwD8.
+ HXazPn1b_QU4GJvh2vB7kgwCLvZmqVJXCqlmZXOVAeFeN2mubdJymVJPhIfY.qjAfy9kqwMt9qpW
+ LRB_CxKwTPxRqhjHpfaaZU.BwH1erjhP005SyNZpNL5rLT4F4bCnR1VOhSz4YnShiqUovc2LFFVR
+ BLQGVJiQnfoIF_HxrYo3rH_.I.hPj6c_8FlE66165mjvsC7eyDBgd1vgWXKakBI7ToIIKV2aihry
+ PG6hduUN8HZ51IrAv8XuktLZUippJsMKVFiSa_pGFe9V_qBAQtvdau1muiQ4rNV4Klr7x_5pOhGQ
+ -
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ir2.yahoo.com with HTTP; Wed, 8 Apr 2020 21:54:18 +0000
+Date:   Wed, 8 Apr 2020 21:54:14 +0000 (UTC)
+From:   "Mrs. Mina A. Brunel" <mrs.minaabrunel209@gmail.com>
+Reply-To: mrs.minaabrunel30@gmail.com
+Message-ID: <1914428890.4990332.1586382854104@mail.yahoo.com>
+Subject: My Dear in the lord
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1914428890.4990332.1586382854104.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15620 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:74.0) Gecko/20100101 Firefox/74.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds unit, device, geometry descriptor sysfs entries.
-Adds flags sysfs entries for write booster.
 
-Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
----
- drivers/scsi/ufs/ufs-sysfs.c | 39 ++++++++++++++++++++++++++++++++++++++-
- drivers/scsi/ufs/ufs.h       |  6 ++++++
- 2 files changed, 44 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index 92a63ee..176a216 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -276,6 +276,10 @@ UFS_DEVICE_DESC_PARAM(device_version, _DEV_VER, 2);
- UFS_DEVICE_DESC_PARAM(number_of_secure_wpa, _NUM_SEC_WPA, 1);
- UFS_DEVICE_DESC_PARAM(psa_max_data_size, _PSA_MAX_DATA, 4);
- UFS_DEVICE_DESC_PARAM(psa_state_timeout, _PSA_TMT, 1);
-+UFS_DEVICE_DESC_PARAM(ext_feature_sup, _EXT_UFS_FEATURE_SUP, 4);
-+UFS_DEVICE_DESC_PARAM(wb_presv_us_en, _WB_US_RED_EN, 1);
-+UFS_DEVICE_DESC_PARAM(wb_type, _WB_TYPE, 1);
-+UFS_DEVICE_DESC_PARAM(wb_shared_alloc_units, _WB_SHARED_ALLOC_UNITS, 4);
- 
- static struct attribute *ufs_sysfs_device_descriptor[] = {
- 	&dev_attr_device_type.attr,
-@@ -304,6 +308,10 @@ static struct attribute *ufs_sysfs_device_descriptor[] = {
- 	&dev_attr_number_of_secure_wpa.attr,
- 	&dev_attr_psa_max_data_size.attr,
- 	&dev_attr_psa_state_timeout.attr,
-+	&dev_attr_ext_feature_sup.attr,
-+	&dev_attr_wb_presv_us_en.attr,
-+	&dev_attr_wb_type.attr,
-+	&dev_attr_wb_shared_alloc_units.attr,
- 	NULL,
- };
- 
-@@ -373,6 +381,12 @@ UFS_GEOMETRY_DESC_PARAM(enh4_memory_max_alloc_units,
- 	_ENM4_MAX_NUM_UNITS, 4);
- UFS_GEOMETRY_DESC_PARAM(enh4_memory_capacity_adjustment_factor,
- 	_ENM4_CAP_ADJ_FCTR, 2);
-+UFS_GEOMETRY_DESC_PARAM(wb_max_alloc_units, _WB_MAX_ALLOC_UNITS, 4);
-+UFS_GEOMETRY_DESC_PARAM(wb_max_wb_luns, _WB_MAX_WB_LUNS, 1);
-+UFS_GEOMETRY_DESC_PARAM(wb_buff_cap_adj, _WB_BUFF_CAP_ADJ, 1);
-+UFS_GEOMETRY_DESC_PARAM(wb_sup_red_type, _WB_SUP_RED_TYPE, 1);
-+UFS_GEOMETRY_DESC_PARAM(wb_sup_wb_type, _WB_SUP_WB_TYPE, 1);
-+
- 
- static struct attribute *ufs_sysfs_geometry_descriptor[] = {
- 	&dev_attr_raw_device_capacity.attr,
-@@ -404,6 +418,11 @@ static struct attribute *ufs_sysfs_geometry_descriptor[] = {
- 	&dev_attr_enh3_memory_capacity_adjustment_factor.attr,
- 	&dev_attr_enh4_memory_max_alloc_units.attr,
- 	&dev_attr_enh4_memory_capacity_adjustment_factor.attr,
-+	&dev_attr_wb_max_alloc_units.attr,
-+	&dev_attr_wb_max_wb_luns.attr,
-+	&dev_attr_wb_buff_cap_adj.attr,
-+	&dev_attr_wb_sup_red_type.attr,
-+	&dev_attr_wb_sup_wb_type.attr,
- 	NULL,
- };
- 
-@@ -616,7 +635,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 	pm_runtime_put_sync(hba->dev);					\
- 	if (ret)							\
- 		return -EINVAL;						\
--	return sprintf(buf, "%s\n", flag ? "true" : "false");		\
-+	return sprintf(buf, "%s\n", flag ? "true" : "false"); \
- }									\
- static DEVICE_ATTR_RO(_name)
- 
-@@ -628,6 +647,9 @@ UFS_FLAG(life_span_mode_enable, _LIFE_SPAN_MODE_ENABLE);
- UFS_FLAG(phy_resource_removal, _FPHYRESOURCEREMOVAL);
- UFS_FLAG(busy_rtc, _BUSY_RTC);
- UFS_FLAG(disable_fw_update, _PERMANENTLY_DISABLE_FW_UPDATE);
-+UFS_FLAG(wb_enable, _WB_EN);
-+UFS_FLAG(wb_flush_en, _WB_BUFF_FLUSH_EN);
-+UFS_FLAG(wb_flush_during_h8, _WB_BUFF_FLUSH_DURING_HIBERN8);
- 
- static struct attribute *ufs_sysfs_device_flags[] = {
- 	&dev_attr_device_init.attr,
-@@ -638,6 +660,9 @@ static struct attribute *ufs_sysfs_device_flags[] = {
- 	&dev_attr_phy_resource_removal.attr,
- 	&dev_attr_busy_rtc.attr,
- 	&dev_attr_disable_fw_update.attr,
-+	&dev_attr_wb_enable.attr,
-+	&dev_attr_wb_flush_en.attr,
-+	&dev_attr_wb_flush_during_h8.attr,
- 	NULL,
- };
- 
-@@ -679,6 +704,11 @@ UFS_ATTRIBUTE(exception_event_status, _EE_STATUS);
- UFS_ATTRIBUTE(ffu_status, _FFU_STATUS);
- UFS_ATTRIBUTE(psa_state, _PSA_STATE);
- UFS_ATTRIBUTE(psa_data_size, _PSA_DATA_SIZE);
-+UFS_ATTRIBUTE(wb_flush_status, _WB_FLUSH_STATUS);
-+UFS_ATTRIBUTE(wb_avail_buf, _AVAIL_WB_BUFF_SIZE);
-+UFS_ATTRIBUTE(wb_life_time_est, _WB_BUFF_LIFE_TIME_EST);
-+UFS_ATTRIBUTE(wb_cur_buf, _CURR_WB_BUFF_SIZE);
-+
- 
- static struct attribute *ufs_sysfs_attributes[] = {
- 	&dev_attr_boot_lun_enabled.attr,
-@@ -697,6 +727,10 @@ static struct attribute *ufs_sysfs_attributes[] = {
- 	&dev_attr_ffu_status.attr,
- 	&dev_attr_psa_state.attr,
- 	&dev_attr_psa_data_size.attr,
-+	&dev_attr_wb_flush_status.attr,
-+	&dev_attr_wb_avail_buf.attr,
-+	&dev_attr_wb_life_time_est.attr,
-+	&dev_attr_wb_cur_buf.attr,
- 	NULL,
- };
- 
-@@ -748,6 +782,8 @@ UFS_UNIT_DESC_PARAM(provisioning_type, _PROVISIONING_TYPE, 1);
- UFS_UNIT_DESC_PARAM(physical_memory_resourse_count, _PHY_MEM_RSRC_CNT, 8);
- UFS_UNIT_DESC_PARAM(context_capabilities, _CTX_CAPABILITIES, 2);
- UFS_UNIT_DESC_PARAM(large_unit_granularity, _LARGE_UNIT_SIZE_M1, 1);
-+UFS_UNIT_DESC_PARAM(wb_buf_alloc_units, _WB_BUF_ALLOC_UNITS, 4);
-+
- 
- static struct attribute *ufs_sysfs_unit_descriptor[] = {
- 	&dev_attr_boot_lun_id.attr,
-@@ -763,6 +799,7 @@ static struct attribute *ufs_sysfs_unit_descriptor[] = {
- 	&dev_attr_physical_memory_resourse_count.attr,
- 	&dev_attr_context_capabilities.attr,
- 	&dev_attr_large_unit_granularity.attr,
-+	&dev_attr_wb_buf_alloc_units.attr,
- 	NULL,
- };
- 
-diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
-index 2c77b3e..5c26659 100644
---- a/drivers/scsi/ufs/ufs.h
-+++ b/drivers/scsi/ufs/ufs.h
-@@ -267,6 +267,7 @@ enum device_desc_param {
- 	DEVICE_DESC_PARAM_PSA_TMT		= 0x29,
- 	DEVICE_DESC_PARAM_PRDCT_REV		= 0x2A,
- 	DEVICE_DESC_PARAM_EXT_UFS_FEATURE_SUP	= 0x4F,
-+	DEVICE_DESC_PARAM_WB_US_RED_EN		= 0x53,
- 	DEVICE_DESC_PARAM_WB_TYPE		= 0x54,
- 	DEVICE_DESC_PARAM_WB_SHARED_ALLOC_UNITS = 0x55,
- };
-@@ -313,6 +314,11 @@ enum geometry_desc_param {
- 	GEOMETRY_DESC_PARAM_ENM4_MAX_NUM_UNITS	= 0x3E,
- 	GEOMETRY_DESC_PARAM_ENM4_CAP_ADJ_FCTR	= 0x42,
- 	GEOMETRY_DESC_PARAM_OPT_LOG_BLK_SIZE	= 0x44,
-+	GEOMETRY_DESC_PARAM_WB_MAX_ALLOC_UNITS	= 0x4F,
-+	GEOMETRY_DESC_PARAM_WB_MAX_WB_LUNS	= 0x53,
-+	GEOMETRY_DESC_PARAM_WB_BUFF_CAP_ADJ	= 0x54,
-+	GEOMETRY_DESC_PARAM_WB_SUP_RED_TYPE	= 0x55,
-+	GEOMETRY_DESC_PARAM_WB_SUP_WB_TYPE	= 0x56,
- };
- 
- /* Health descriptor parameters offsets in bytes*/
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+My Dear in the lord
 
+
+My name is Mrs. Mina A. Brunel I am a Norway Citizen who is living in Burki=
+na Faso, I am married to Mr. Brunel Patrice, a politician who owns a small =
+gold company in Burkina Faso; He died of Leprosy and Radesyge, in the year =
+February 2010, During his lifetime he deposited the sum of =E2=82=AC 8.5 Mi=
+llion Euro) Eight million, Five hundred thousand Euros in a bank in Rome th=
+e capital city of Italy in Southern Europe. The money was from the sale of =
+his company and death benefits payment and entitlements of my deceased husb=
+and by his company.
+
+I am sending you this message with heavy tears in my eyes and great sorrow =
+in my heart, and also praying that it will reach you in good health because=
+ I am not in good health, I sleep every night without knowing if I may be a=
+live to see the next day. I am suffering from long time cancer and presentl=
+y I am partially suffering from Leprosy, which has become difficult for me =
+to move around. I was married to my late husband for more than 6 years with=
+out having a child and my doctor confided that I have less chance to live, =
+having to know when the cup of death will come, I decided to contact you to=
+ claim the fund since I don't have any relation I grew up from an orphanage=
+ home.
+
+I have decided to donate this money for the support of helping Motherless b=
+abies/Less privileged/Widows and churches also to build the house of God be=
+cause I am dying and diagnosed with cancer for about 3 years ago. I have de=
+cided to donate from what I have inherited from my late husband to you for =
+the good work of Almighty God; I will be going in for an operation surgery =
+soon.
+
+Now I want you to stand as my next of kin to claim the funds for charity pu=
+rposes. Because of this money remains unclaimed after my death, the bank ex=
+ecutives or the government will take the money as unclaimed fund and maybe =
+use it for selfishness and worthless ventures, I need a very honest person =
+who can claim this money and use it for Charity works, for orphanages, wido=
+ws and also build schools and churches for less privilege that will be name=
+d after my late husband and my name.
+
+I need your urgent answer to know if you will be able to execute this proje=
+ct, and I will give you more information on how the fund will be transferre=
+d to your bank account or online banking.
+
+Thanks
+Mrs. Mina A. Brunel
