@@ -2,65 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 628531A2B30
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4FC1A2B40
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730677AbgDHVd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 17:33:29 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:53012 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729070AbgDHVd3 (ORCPT
+        id S1730796AbgDHVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 17:34:14 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:41616 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730771AbgDHVeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 17:33:29 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id F363C127D38B8;
-        Wed,  8 Apr 2020 14:33:27 -0700 (PDT)
-Date:   Wed, 08 Apr 2020 14:33:27 -0700 (PDT)
-Message-Id: <20200408.143327.2268546094613330028.davem@davemloft.net>
-To:     wenhu.wang@vivo.com
-Cc:     akpm@linux-foundation.org, kuba@kernel.org,
-        gregkh@linuxfoundation.org, tglx@linutronix.de,
-        bjorn.andersson@linaro.org, hofrat@osadl.org, allison@lohutok.net,
-        johannes.berg@intel.com, arnd@arndb.de, cjhuang@codeaurora.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kernel@vivo.com
-Subject: Re: [PATCH RESEND] net: qrtr: support qrtr service and lookup route
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200408104833.6880-1-wenhu.wang@vivo.com>
-References: <20200408104833.6880-1-wenhu.wang@vivo.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 08 Apr 2020 14:33:28 -0700 (PDT)
+        Wed, 8 Apr 2020 17:34:10 -0400
+Received: by mail-lj1-f193.google.com with SMTP id n17so9266159lji.8
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 14:34:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=KqwTl0YCgxCFoD6QzWeacolgi5eHFyPVK66/B9eGEJU=;
+        b=Rs+1EAWzy1VV58B8ic72umCM2g0DVr+FxSWDqFmuwQmbfcsQpCSPb7ozP5rsx/AY+v
+         WRNLg7tvETXoGITLQpT/VnxMGFH2obCaWmepQI3a9qkWRDDXkdyEQIJCH/3Sj4/nTST0
+         T26x+BW6P1xRvZ0cSj/M70vkWbWi5s+NJMYTnYH/DbwSaaSfOTaD0im2zjRHktmqAotY
+         eTtHSQcVx3L32UzappU/dibiG6+F0TR+g7dexzBVWP8PzFLig3R/qXtGrOiOd9MlGYES
+         aJvKlWhE3FdV0pJwG+LKBZRLJeBP0lQhpN5F530MQF5kQY1xQj/NaWdktwvQT35PKwoy
+         WzIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=KqwTl0YCgxCFoD6QzWeacolgi5eHFyPVK66/B9eGEJU=;
+        b=i39tG2re0L7NSSG8bemRaq4I+Useet5Ldc7uwAet7qKdTfqQprfPLvQaH54A1/hyVR
+         MmWPs+OEbxN2gmOOYsxUhfnZ99cP1BUcP55I8Kiv0VsFag3focfChrwNQ3G9j+CBwPn6
+         dMYFRcZ8DGi6qHpToQ2UqroHmcYc0rgaQJ463VYhTSLITBp2PsDPi+Mhh8jAGbLcYFTs
+         BfTKrwj/3D0y3HSDS/OcelMPVpQhm3ysDb+xp4hHDgmbqzguaLUswr/uVRA5u33n4Qls
+         vD8xSNrU8EDAfNaWhSB3qjFbiYMx/ZdT0M22EQLvJb/izAzCMjmnR0fgOByYX2CCYtwN
+         hTRw==
+X-Gm-Message-State: AGi0PuauT48R2MavIUdu37kEJAI7htPRIYUr7OOwtFaOV59LYUJU5FeB
+        d1xzRYGts9/pbSAS/v7mGlN7JbvTpr8=
+X-Google-Smtp-Source: APiQypLMz6OhjtqiITix26SHaGKIE/PNn8sq0YjVxchoC3Vnmc57okLBEnC2m/RXu2OROr26JHycvw==
+X-Received: by 2002:a2e:9ccd:: with SMTP id g13mr6174687ljj.147.1586381648068;
+        Wed, 08 Apr 2020 14:34:08 -0700 (PDT)
+Received: from localhost.localdomain (212-5-158-138.ip.btc-net.bg. [212.5.158.138])
+        by smtp.gmail.com with ESMTPSA id t6sm15746688lfb.55.2020.04.08.14.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 14:34:07 -0700 (PDT)
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Subject: [PATCH 5/7] venus: vdec: Mark flushed buffers with error state
+Date:   Thu,  9 Apr 2020 00:33:28 +0300
+Message-Id: <20200408213330.27665-6-stanimir.varbanov@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200408213330.27665-1-stanimir.varbanov@linaro.org>
+References: <20200408213330.27665-1-stanimir.varbanov@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Wenhu <wenhu.wang@vivo.com>
-Date: Wed,  8 Apr 2020 03:46:35 -0700
+Once the hfi_session_flush is issued by the vdec all queued
+buffers to firmware should be returned to the v4l driver. Some
+of those buffers are not processed at the time of flush command,
+those buffers has filled len zero (no data). Catch that in
+buffer_done callback and mark not filled capture buffers with
+error state so that client can discard them.
 
-> QSR implements maintenance of qrtr services and lookups. It would
-> be helpful for developers to work with QRTR without the none-opensource
-> user-space implementation part of IPC Router.
-> 
-> As we know, the extremely important point of IPC Router is the support
-> of services form different nodes. But QRTR was pushed into mainline
-> without route process support of services, and the router port process
-> is implemented in user-space as none-opensource codes, which is an
-> great unconvenience for developers.
-> 
-> QSR also implements a interface via chardev and a set of sysfs class
-> files for the communication and debugging in user-space. We can get
-> service and lookup entries conveniently via sysfs file in /sys/class/qsr/.
-> Currently add-server, del-server, add-lookup and del-lookup control
-> packatets are processed and enhancements could be taken easily upon
-> currently implementation.
-> 
-> Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+---
+ drivers/media/platform/qcom/venus/vdec.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-New features are only appropriate for net-next which is closed right now.
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index 7d093accbd59..5823537b3131 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -1241,6 +1241,9 @@ static void vdec_buf_done(struct venus_inst *inst, unsigned int buf_type,
+ 			if (inst->codec_state == VENUS_DEC_STATE_DRAIN)
+ 				inst->codec_state = VENUS_DEC_STATE_STOPPED;
+ 		}
++
++		if (!bytesused)
++			state = VB2_BUF_STATE_ERROR;
+ 	} else {
+ 		vbuf->sequence = inst->sequence_out++;
+ 	}
+-- 
+2.17.1
+
