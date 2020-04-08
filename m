@@ -2,73 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D5F1A2417
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23D21A251B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728966AbgDHObN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:31:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728908AbgDHObM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 10:31:12 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7191F20B1F;
-        Wed,  8 Apr 2020 14:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586356272;
-        bh=tdUriesX2lwl8y1Yv0Uys2nb8BK6YfXv8InWY36V8uI=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=tmMzdEbWKbrVqIOCaJYZwfP9Wovaf2rqvxkxUssc4w0XcmFoUuI2BaUfOjZlXPlD2
-         gGYXo03sfm9rlHanGavJW7T+pVCtGNBQnlkKN7cr5Wih4JsIrn32HmcK0lSHVFMZTD
-         s3cUx73dpmBx4kwyBIgZ4YXTg4DDWGSWn/RQsc0Y=
-Message-ID: <c0942c61c37e3f79dcc88ddba94d65aca2ca9a2c.camel@kernel.org>
-Subject: Re: [PATCH v2 0/2] ceph: support cross-quota-tree renames
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luis Henriques <lhenriques@suse.com>, Sage Weil <sage@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Gregory Farnum <gfarnum@redhat.com>,
-        Zheng Yan <zyan@redhat.com>
-Cc:     Frank Schilder <frans@dtu.dk>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 08 Apr 2020 10:31:10 -0400
-In-Reply-To: <20200407103020.22588-1-lhenriques@suse.com>
-References: <20200407103020.22588-1-lhenriques@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1728853AbgDHP1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:27:36 -0400
+Received: from mail-pg1-f180.google.com ([209.85.215.180]:37009 "EHLO
+        mail-pg1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727832AbgDHP1g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:27:36 -0400
+Received: by mail-pg1-f180.google.com with SMTP id r4so3463626pgg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 08:27:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2pDvcotqin9MFYotH20Ddvllc4oEen5KJQtcAktMMZs=;
+        b=KTj0IrJ2HYAK/59HA7DR7goXWRl3VWt+FPwtTBivhZGMOp5zfVeZ5FfDBBCByd5HJF
+         8y3lJWN/RC/xvlHZ4yDlKm3DAfqcRmuaryIa+n/7T4TZfvcTl/rjq3WRQ21OFXlh8HZ1
+         ALUtiRUJPWuVq7rJHIiMWgZCPemzlXjOqYQhI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2pDvcotqin9MFYotH20Ddvllc4oEen5KJQtcAktMMZs=;
+        b=OqCLG/rRjxR1IInGzxMFPZAJAHqOEsTqIBjBKxHxEC1F0wkyn7/2kJ4OkHDLDOFah8
+         VqBazf3C9LsF4GShFMgeCqud9Gho40QLmMTEi2F9xMV89l+ny9p7d9uZ3j0n1MP8LNHo
+         GTQps7nDmGDNgdOdmmo904C+Ty232De4A31PHiTlnkyHBdt86Z5ayedf0Z3GOu9+bQ0E
+         ZvOoCBnIIAAj+mxb8wj3PPGko3fDFDuEZMiRUmn69GulUlaP6/H+eyLI5U/zmKcOn+Rj
+         mqklm1Sn/L22hcbQAJ9iWL3GdYct+wJLpOAWZGE3kt707+gb3CvY4ouvknlLDTSEOTiC
+         x/uA==
+X-Gm-Message-State: AGi0PuYclGsMSRxDlZIU5ZhTVdylZU06eK6pZe6IZxciJ7WC5U2oHqOU
+        kPnEt93565vwh+xr6pocueZQAN12kh4=
+X-Google-Smtp-Source: APiQypLONBSrUCK2/91ybqycg5zloxXs3oZ/ZGUxaVdqzvgY+i+p9txzzbTVWhUz3ovZsCUiGCitZg==
+X-Received: by 2002:a62:64d5:: with SMTP id y204mr7830184pfb.227.1586357918702;
+        Wed, 08 Apr 2020 07:58:38 -0700 (PDT)
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com. [209.85.216.41])
+        by smtp.gmail.com with ESMTPSA id l62sm15807793pgd.82.2020.04.08.07.58.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Apr 2020 07:58:38 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id np9so103414pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:58:38 -0700 (PDT)
+X-Received: by 2002:a67:2b07:: with SMTP id r7mr6540930vsr.169.1586356481775;
+ Wed, 08 Apr 2020 07:34:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <1573220319-4287-1-git-send-email-ppvk@codeaurora.org>
+ <1573220319-4287-3-git-send-email-ppvk@codeaurora.org> <CAD=FV=WGUasS=UZxFeSS0Cg=9WxHPMWVFyYae7CFmOxV2_yhJw@mail.gmail.com>
+ <001601d60da5$630168d0$29043a70$@codeaurora.org>
+In-Reply-To: <001601d60da5$630168d0$29043a70$@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Wed, 8 Apr 2020 07:34:30 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WR0YBp7ah82Kg7RzxHdO8Agf5uGNb=58iApShXqbum=A@mail.gmail.com>
+Message-ID: <CAD=FV=WR0YBp7ah82Kg7RzxHdO8Agf5uGNb=58iApShXqbum=A@mail.gmail.com>
+Subject: Re: [RFC-v2 2/2] mmc: sdhci-msm: Add support for bus bandwidth voting
+To:     Pradeep P V K <ppvk@codeaurora.org>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Asutosh Das <asutoshd@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Sahitya Tummala <stummala@codeaurora.org>,
+        Sayali Lokhande <sayalil@codeaurora.org>,
+        Ram Prakash Gupta <rampraka@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Andy Gross <agross@kernel.org>,
+        linux-mmc-owner@vger.kernel.org, sbhanu@codeaurora.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-07 at 11:30 +0100, Luis Henriques wrote:
-> Hi!
-> 
-> The following patches will make the cephfs kernel client behave the same
-> way as the fuse client when doing renames across different quota realms.
-> 
-> Changes since v1:
-> 
-> - Dropped 'old == new' check in ceph_quota_check_rename() and added back
->   optimization in ceph_rename(), to only check realms if old_dir and
->   new_dir are different.
-> 
-> Luis Henriques (2):
->   ceph: normalize 'delta' parameter usage in check_quota_exceeded
->   ceph: allow rename operation under different quota realms
-> 
->  fs/ceph/dir.c   |  9 +++----
->  fs/ceph/quota.c | 62 +++++++++++++++++++++++++++++++++++++++++++++----
->  fs/ceph/super.h |  3 ++-
->  3 files changed, 65 insertions(+), 9 deletions(-)
-> 
+Hi,
 
-Looks good. Merged into ceph-client/testing.
+On Wed, Apr 8, 2020 at 5:58 AM <ppvk@codeaurora.org> wrote:
+>
+> Hi Doug,
+>
+> You no longer seeing this warning stack with the latest patch set.
+> https://lkml.org/lkml/2020/3/23/407
+>
+> The latest patch set is based on OPP framework and no workqueue's used to queue the work.
+> Can you give a try with the latest patch and check if this helps ?
 
-Thanks!
--- 
-Jeff Layton <jlayton@kernel.org>
+I was only analyzing an error log provided by someone else.  I will
+let them know that they should make sure they're on the latest patch
+series.
 
+-Doug
