@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 632E71A2496
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291B51A249C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729303AbgDHPGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:06:44 -0400
-Received: from mga12.intel.com ([192.55.52.136]:4138 "EHLO mga12.intel.com"
+        id S1729361AbgDHPHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:07:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:39738 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727847AbgDHPGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:06:44 -0400
-IronPort-SDR: B/ZOfr77uwxDHY7CwRYVz4hna9ZIEv+rnsQ1ViKJaV8d5DlSoG4H3sLHf0Ab114t/QX1zCs+Du
- gx/Ajt7LWs5A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 08:06:44 -0700
-IronPort-SDR: LlYEfILq9fYp4D3uP+cXMTtLzhNNhAr5kEswEiwG4ii4YzqX4eb3oVjs+4xXbI2ZdK05zfwKPA
- RLc2DAGP7/kg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,359,1580803200"; 
-   d="scan'208";a="286571815"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Apr 2020 08:06:41 -0700
-Received: from andy by smile with local (Exim 4.93)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1jMCHr-00Gj7h-Vj; Wed, 08 Apr 2020 18:06:43 +0300
-Date:   Wed, 8 Apr 2020 18:06:43 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Ilya Dryomov <idryomov@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Petr Mladek <pmladek@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Tobin C . Harding" <me@tobin.cc>
-Subject: Re: [PATCH v2] vsprintf: don't obfuscate NULL and error pointers
-Message-ID: <20200408150643.GD3676135@smile.fi.intel.com>
-References: <20200219171225.5547-1-idryomov@gmail.com>
- <CAHp75Vf24yNeLEweq_70AUzKwbdyurB6ze9739Qy9djA9dSefg@mail.gmail.com>
- <CAOi1vP9gfMoU14Ax+VLksQ+_3yOO3m3bh0Uh02SUMfPFDDEW9g@mail.gmail.com>
- <CAOi1vP8NN=8e8kW6g7KegUt52auJoE53ZCdEQHv2DMqFe1=g0Q@mail.gmail.com>
- <CAOi1vP9t=kq0M91rJXbXa1pj43eczsHw+0Y5Km30tQP5AJrs2g@mail.gmail.com>
- <CAHp75VfvUN=E-_n8VAKQ9nQ7mr2hbjS38bYCBbCdh02pxphOwg@mail.gmail.com>
- <CAOi1vP-K-AwzPqdHHDFDvef_nLPx3pr2NnQnSo5Emvsc1hF7Cg@mail.gmail.com>
+        id S1727847AbgDHPHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 11:07:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 23D331063;
+        Wed,  8 Apr 2020 08:07:40 -0700 (PDT)
+Received: from [10.57.55.221] (unknown [10.57.55.221])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6D903F68F;
+        Wed,  8 Apr 2020 08:07:35 -0700 (PDT)
+Subject: Re: [RFC PATCH 17/34] iommu/arm-smmu: Store device instead of group
+ in arm_smmu_s2cr
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+References: <20200407183742.4344-1-joro@8bytes.org>
+ <20200407183742.4344-18-joro@8bytes.org>
+ <98c10a41-d223-e375-9742-b6471c3dc33c@arm.com>
+ <20200408143707.GK3103@8bytes.org>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <f8b541c2-9271-fc48-dde6-166a2ed6679f@arm.com>
+Date:   Wed, 8 Apr 2020 16:07:33 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOi1vP-K-AwzPqdHHDFDvef_nLPx3pr2NnQnSo5Emvsc1hF7Cg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200408143707.GK3103@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 04:38:25PM +0200, Ilya Dryomov wrote:
-> On Wed, Apr 8, 2020 at 12:31 AM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Wed, Apr 8, 2020 at 12:45 AM Ilya Dryomov <idryomov@gmail.com> wrote:
-> > > On Wed, Feb 19, 2020 at 8:23 PM Ilya Dryomov <idryomov@gmail.com> wrote:
-> >
-> > > Hi Petr,
-> > >
-> > > Bump, as I don't see this in linux-next or other public branches.
-> > > The discussion was split between several threads, revolving around
-> > > the vision for how lib/test_printf.c should be structured, but the
-> > > fix itself wasn't disputed.
-> > >
-> > > Could you please pick it up for 5.7-rc1?  If you want to restructure
-> > > the test suite before adding any new test cases, v1 doesn't have them.
-> > > Other than the test cases, the only difference between v1 and v2 is
-> > > added reviews and acks.
-> >
-> > Petr has some obstacles that prevent him to pay attention on this and
-> > actually do anything right now for Linux kernel.
-> > If Rasmus, Sergey, you and maybe others will got consensus here, I
-> > think Andrew can take it thru his tree.
+On 2020-04-08 3:37 pm, Joerg Roedel wrote:
+> Hi Robin,
 > 
-> Thanks for letting us know, Andy.
+> thanks for looking into this.
 > 
-> Other than Petr, two people are listed as maintainers of vsprintf.c:
-> Sergey and Steve.  Both of them were fine with v1 (no tests) and sent
-> their acks.
+> On Wed, Apr 08, 2020 at 01:09:40PM +0100, Robin Murphy wrote:
+>> For a hot-pluggable bus where logical devices may share Stream IDs (like
+>> fsl-mc), this could happen:
+>>
+>>    create device A
+>>    iommu_probe_device(A)
+>>      iommu_device_group(A) -> alloc group X
+>>    create device B
+>>    iommu_probe_device(B)
+>>      iommu_device_group(A) -> lookup returns group X
+>>    ...
+>>    iommu_remove_device(A)
+>>    delete device A
+>>    create device C
+>>    iommu_probe_device(C)
+>>      iommu_device_group(C) -> use-after-free of A
+>>
+>> Preserving the logical behaviour here would probably look *something* like
+>> the mangled diff below, but I haven't thought it through 100%.
 > 
-> Rasmus, you wanted to see some tests, so I posted v2.  However Petr
-> wanted to restructure the test suite first, and it didn't seem like you
-> him agreed on what exactly that should look like.  Which would you
-> prefer to be picked by Andrew, v1 or v2?
+> Yeah, I think you are right. How about just moving the loop which sets
+> s2crs[idx].group to arm_smmu_device_group()? In that case I can drop
+> this patch and leave the group pointer in place.
 
-I think it's question to maintainers. I'm a reviewer here.
+Isn't that exactly what I suggested? :)
 
-For the better understanding the current state of affairs I suggest to respin
-new version after rc1 and we will see again.
+I don't recall for sure, but knowing me, that bit of group bookkeeping 
+is only where it currently is because it cheekily saves iterating the 
+IDs a second time. I don't think there's any technical reason.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Robin.
