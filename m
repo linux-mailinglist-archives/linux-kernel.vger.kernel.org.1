@@ -2,58 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA141A1ECD
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB171A1D19
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgDHK3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 06:29:40 -0400
-Received: from cepheus.pop-ap.rnp.br ([200.129.167.25]:47788 "EHLO
-        cepheus.pop-ap.rnp.br" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbgDHK3j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 06:29:39 -0400
-X-Greylist: delayed 6216 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 06:29:39 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by cepheus.pop-ap.rnp.br (Postfix) with ESMTP id 63E5C723C52;
-        Wed,  8 Apr 2020 05:07:05 -0300 (-03)
-Received: from cepheus.pop-ap.rnp.br ([127.0.0.1])
-        by localhost (cepheus.pop-ap.rnp.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id UIgwj1x4niJV; Wed,  8 Apr 2020 05:07:04 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by cepheus.pop-ap.rnp.br (Postfix) with ESMTP id 5E928723C6F;
-        Wed,  8 Apr 2020 05:07:04 -0300 (-03)
-X-Virus-Scanned: amavisd-new at cepheus.pop-ap.rnp.br
-Received: from cepheus.pop-ap.rnp.br ([127.0.0.1])
-        by localhost (cepheus.pop-ap.rnp.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dI1swJPM2rVx; Wed,  8 Apr 2020 05:07:04 -0300 (-03)
-Received: from cepheus.pop-ap.rnp.br (cepheus.pop-ap.rnp.br [200.129.167.25])
-        by cepheus.pop-ap.rnp.br (Postfix) with ESMTP id D799C723C33;
-        Wed,  8 Apr 2020 05:07:01 -0300 (-03)
-Date:   Wed, 8 Apr 2020 05:07:01 -0300 (BRT)
-From:   Trust Online Credit Bvba <camila.teixeira@pop-ap.rnp.br>
-Reply-To: "trustonlinecreditbvba@outlook.com" 
-          <trustonlinecreditbvba@outlook.com>
-Message-ID: <1175764783.30147.1586333221798.JavaMail.zimbra@pop-ap.rnp.br>
-Subject: lening
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1726826AbgDHIJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 04:09:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726721AbgDHIJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 04:09:41 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5943720730;
+        Wed,  8 Apr 2020 08:09:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586333380;
+        bh=uUSrnD2b+t7jwXeUGhWXZyXgEQB1fI6tRrbRuRU/Ysc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BLVlrHLIZSkcaGQjiBiuUpXhrlJKTZwupV1uerxfAUMUlN2vAWjv/56enCLe+ETex
+         JdBCcWZcuDlalrozNxTpe2cILn1dkMIjnfQN0B0QmohOB6k5f4UbpQt6ADh7mFo3GA
+         JfOUJKDE/aCccRUUVKGVFmMIKIK8KBE/YC+MQfRk=
+Date:   Wed, 8 Apr 2020 17:09:34 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        hch@infradead.org, sean.j.christopherson@intel.com,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
+        kenny@panix.com, jeyu@kernel.org, rasmus.villemoes@prevas.dk,
+        pbonzini@redhat.com, fenghua.yu@intel.com, xiaoyao.li@intel.com,
+        nadav.amit@gmail.com, thellstrom@vmware.com, tony.luck@intel.com,
+        rostedt@goodmis.org, gregkh@linuxfoundation.org, jannh@google.com,
+        keescook@chromium.org, David.Laight@aculab.com,
+        dcovelli@vmware.com, mhiramat@kernel.org
+Subject: Re: [PATCH 3/4] x86,module: Detect VMX vs SLD conflicts
+Message-Id: <20200408170934.7238715574818f31f03e687b@kernel.org>
+In-Reply-To: <20200407111007.352324393@infradead.org>
+References: <20200407110236.930134290@infradead.org>
+        <20200407111007.352324393@infradead.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [200.129.167.25]
-X-Mailer: Zimbra 8.8.8_GA_2009 (zclient/8.8.8_GA_2009)
-Thread-Index: rSN79x8XltfSnl8MwtJUzkx75+wLKg==
-Thread-Topic: lening
-To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Welkom;
-Wist u dat het gebruik van Trust Online Credit Bvba de voordelen van uw bedrijf en diensten kan vergroten? is een geregistreerd kredietbedrijf. Wij bieden hulp bij de ontwikkeling van uw bedrijf door een lening van elk bedrag te verstrekken. openbaar. van individueel tot samenwerking. Onze lening heeft een lage rente van 2%. Wij bieden fondsen aan: 5.000 tot 20.000.000 en met een looptijd van 1 jaar tot 25 jaar.
-Wij geven u een eerste lening, neem dan contact met ons op via
-E-mail: trustonlinecreditbvba@outlook.com
-WhatsApp: +44 7480 726469
-Website: https://trustonlinecreditbvba.com/
-voor kredietverwerking. bereikt uw bankrekening binnen 24 uur na uw verzoek.
-Vriendelijke groeten,
-Trust Online Credit Bvba
+On Tue, 07 Apr 2020 13:02:39 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
+
+> +static bool insn_is_vmx(struct insn *insn)
+> +{
+> +	u8 modrm = insn->modrm.bytes[0];
+> +	u8 modrm_mod = X86_MODRM_MOD(modrm);
+> +	u8 modrm_reg = X86_MODRM_REG(modrm);
+> +
+> +	u8 prefix = insn->prefixes.bytes[0];
+
+This should be the last prefix,
+
+	u8 prefix = insn->prefixes.bytes[3];
+
+(The last prefix always copied on the bytes[3])
+
+> +
+> +	if (insn->opcode.bytes[0] != 0x0f)
+> +		return false;
+> +
+> +	switch (insn->opcode.bytes[1]) {
+> +	case 0x01:
+> +		switch (insn->opcode.bytes[2]) {
+
+Sorry, VMCALL etc. is in Grp7 (0f 01), the 3rd code is embedded
+in modrm instead of opcode. Thus it should be,
+
+		switch (insn->modrm.value) {
+
+> +		case 0xc1: /* VMCALL */
+> +		case 0xc2: /* VMLAUNCH */
+> +		case 0xc3: /* VMRESUME */
+> +		case 0xc4: /* VMXOFF */
+
+		case 0xd4:	/* VMFUNC */
+
+> +			return true;
+> +
+> +		default:
+> +			break;
+> +		}
+> +		break;
+> +
+> +	case 0x78: /* VMREAD */
+> +	case 0x79: /* VMWRITE */
+
+		return !insn_is_evex(insn);
+
+With EVEX prefix, these becomes vcvt* instructions.
+
+> +	case 0xc7:
+> +		/* VMPTRLD, VMPTRST, VMCLEAR, VMXON */
+> +		if (modrm_mod == 0x03)
+> +			break;
+> +
+> +		if ((modrm_reg == 6 && (!prefix || prefix == 0x66 || prefix == 0xf3)) ||
+> +		    (modrm_reg == 7 && (!prefix || prefix == 0xf3)))
+> +			return true;
+> +
+> +		break;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return false;
+> +}
+
+
+Thank you,
+
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
