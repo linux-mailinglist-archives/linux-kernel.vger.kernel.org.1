@@ -2,120 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4DA1A2B06
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143441A2B0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 23:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730452AbgDHVVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 17:21:25 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:41367 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730337AbgDHVVO (ORCPT
+        id S1729222AbgDHVZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 17:25:52 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:41795 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728187AbgDHVZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 17:21:14 -0400
-Received: by mail-pg1-f195.google.com with SMTP id m13so3908312pgd.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 14:21:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=V7GX9LZ+AhHUH4bwOJQnuEHVk4dK2rfBwPONnldpnt4=;
-        b=dffHTmwO0tVlcdXkvNhhaUt0+yiOfFJR8UKtqG72G0vg0UBgDxhDLrmfswe6Iu9nro
-         OfM3598qThzw8CALPlmFLzz+mSr/EBMPtRh/q1725AB+6isUxT1WCFp6PJLsWke3q+Kp
-         tDM9ZsJ8mbLZxaWQYBx+cW4UcLHE4z83i53ZfZoSiJaxfA3sJF0R/Ld+ARI2r6t8zldi
-         ishSudG5ynA3yXMXRidbNmBLcfEd9PtkLwcxLPHAy+6RWBgIPU66jJQ/ocN6oHM1J4Um
-         RWd5EQGsLGa7csSIaQWNG1pqksJpqR8oRNonJEmljmQDqD6U1f4z3WyweSQs2WPUueI+
-         Ljyw==
+        Wed, 8 Apr 2020 17:25:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586381151;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UJBpmrLVUaj5bFLbNbY74eKb6lWRZxALhzam3N9grC8=;
+        b=ZoXf2i3fP1ci9z4jzb2lv1oi33tvwPOImsAWKFa+622VF2T/VlywwTsHIxB+EmMaVDSFMI
+        gCrf9r4qDK5xWoPVPEYED3mH4yI8dHVGag3fA1io2P0szhabBACPkkMVxXH4fm9jPs7lgD
+        1IZXJHn4muj+aXtinRdyYGrKA4Rjocw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-Gk-jcBdRPgebs1cFiDOgZA-1; Wed, 08 Apr 2020 17:25:49 -0400
+X-MC-Unique: Gk-jcBdRPgebs1cFiDOgZA-1
+Received: by mail-wm1-f72.google.com with SMTP id s9so1104730wmh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 14:25:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=V7GX9LZ+AhHUH4bwOJQnuEHVk4dK2rfBwPONnldpnt4=;
-        b=anE4/X83Ti/D/7vzbN+q1Q4NkxMtcdOcK0T7XqWz2fbtcttFLR+86IWUkqPXpWNXB2
-         MP0xb3bOBM9123XJjEJV/YcAc5LQSV6XjOUlNUg2Zpn5UaOcKdy5OxJhmItmOWPJNsNA
-         6u1IGiK0bW45StOy/rP4wejzLsTPUrajocbX7M880BXHJRwDSf8sy17Nd+/QWst/yNYw
-         bGLxLhqAMQZ6QKIhC3lhMB478v9HWB2X0AY2n2S01jCwcP+CSlYH/rL6XnBJJ233BK6S
-         kst5eq0poHPak6aR30XetvCrR4rZXEMKUP2BfycgCXax276VzKmckFc93+RNF1fW9R8/
-         EhQw==
-X-Gm-Message-State: AGi0PuaqXuYYvxzUIc/gak0GOIMcbWy3LMU0WNflUndkMY3rBtnlU/7d
-        K89mjl/A1nItIFn9dqBuXy93dQ==
-X-Google-Smtp-Source: APiQypJCa8TsaplVYhS9P0JzzjDY+IiLIaAE7LUfGVUKFymlGGpsyHJbOAOUCHLqZ/940cF64leUPQ==
-X-Received: by 2002:a62:1cf:: with SMTP id 198mr9933881pfb.246.1586380873275;
-        Wed, 08 Apr 2020 14:21:13 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id q19sm2013938pgt.29.2020.04.08.14.21.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 14:21:12 -0700 (PDT)
-Date:   Wed, 8 Apr 2020 14:21:12 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Christoph Hellwig <hch@lst.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-cc:     "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "Grimm, Jon" <jon.grimm@amd.com>, Joerg Roedel <joro@8bytes.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>
-Subject: [rfc v2 6/6] dma-pool: scale the default DMA coherent pool size with
- memory capacity
-In-Reply-To: <alpine.DEB.2.21.2004081418490.19661@chino.kir.corp.google.com>
-Message-ID: <alpine.DEB.2.21.2004081420360.19661@chino.kir.corp.google.com>
-References: <alpine.DEB.2.21.1912311738130.68206@chino.kir.corp.google.com> <b22416ec-cc28-3fd2-3a10-89840be173fa@amd.com> <alpine.DEB.2.21.2002280118461.165532@chino.kir.corp.google.com> <alpine.DEB.2.21.2003011535510.213582@chino.kir.corp.google.com>
- <alpine.DEB.2.21.2004081418490.19661@chino.kir.corp.google.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UJBpmrLVUaj5bFLbNbY74eKb6lWRZxALhzam3N9grC8=;
+        b=MGCFt8o4BkvEpCrGnJE8xGii7x4vtvgAgJ/8zguX73oC6lAc17KqWNay0tclI6n8C/
+         EOiZ0z9wniRBRjHCmuPvWhRKJ5t/PmoF4QswUJs8Pus9Is2vXJGNMSwG3mrcZ3mC/Nch
+         t+SPQMoNrAFFsoSff6ALDUvI4fousnzaKX1ZCynbnTOx9N8uR+YHrQBCHGkzRUNQlkes
+         6YklaZV6/9xIWAmlSXB38dsmrWjzcQ4JaBgtfZWe7266XGzwWlIU2Sqv0o2v92MSecyb
+         j1OUldTAVHjthxZte8RyDYpFATSDAWScwf3uud6+Dapg8Qf1vBPIdPiO/iY3hpgQvRi6
+         IjYA==
+X-Gm-Message-State: AGi0PuY65tNYEE6P4iaKrAVCBxZtYiXZnGSBi8c6ZOgRwFvnRgqlMV44
+        N+IB+2IFsRkan1A+LnajjVHVe2Ani4OwJaWf+/Y4xToWss2HV0eaxncoGQ1heJia1xs70WPMUhp
+        UV2JqDLfelBWpInyvq8nroba7
+X-Received: by 2002:a1c:2705:: with SMTP id n5mr6375968wmn.94.1586381148142;
+        Wed, 08 Apr 2020 14:25:48 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIEypWtp8IszcU/gyunBrcO7Rg/owcCayhmUqap5hxAkVPpXeNBGcvzCuxiSUBSePrEqghURw==
+X-Received: by 2002:a1c:2705:: with SMTP id n5mr6375955wmn.94.1586381147897;
+        Wed, 08 Apr 2020 14:25:47 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:9c71:ae6b:ee1c:2d9e? ([2001:b07:6468:f312:9c71:ae6b:ee1c:2d9e])
+        by smtp.gmail.com with ESMTPSA id t17sm32671085wrv.53.2020.04.08.14.25.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Apr 2020 14:25:47 -0700 (PDT)
+Subject: Re: KCSAN + KVM = host reset
+To:     Qian Cai <cai@lca.pw>, Elver Marco <elver@google.com>
+Cc:     "paul E. McKenney" <paulmck@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
+References: <E180B225-BF1E-4153-B399-1DBF8C577A82@lca.pw>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <fb39d3d2-063e-b828-af1c-01f91d9be31c@redhat.com>
+Date:   Wed, 8 Apr 2020 23:25:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <E180B225-BF1E-4153-B399-1DBF8C577A82@lca.pw>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When AMD memory encryption is enabled, some devices may use more than
-256KB/sec from the atomic pools.  It would be more appropriate to scale
-the default size based on memory capacity unless the coherent_pool
-option is used on the kernel command line.
+On 08/04/20 22:59, Qian Cai wrote:
+> Running a simple thing on this AMD host would trigger a reset right away.
+> Unselect KCSAN kconfig makes everything work fine (the host would also
+> reset If only "echo off > /sys/kernel/debug/kcsan” before running qemu-kvm).
 
-This provides a slight optimization on initial expansion and is deemed
-appropriate due to the increased reliance on the atomic pools.  Note that
-the default size of 128KB per pool will normally be larger than the
-single coherent pool implementation since there are now up to three
-coherent pools (DMA, DMA32, and kernel).
+Is this a regression or something you've just started to play with?  (If
+anything, the assembly language conversion of the AMD world switch that
+is in linux-next could have reduced the likelihood of such a failure,
+not increased it).
 
-Alternatively, this could be done only when CONFIG_AMD_MEM_ENCRYPT is
-enabled.
+Paolo
 
-Signed-off-by: David Rientjes <rientjes@google.com>
----
- kernel/dma/pool.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 6685ab89cfa7..42bac953548c 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -18,8 +18,8 @@ static struct gen_pool *atomic_pool_dma __ro_after_init;
- static struct gen_pool *atomic_pool_dma32 __ro_after_init;
- static struct gen_pool *atomic_pool_kernel __ro_after_init;
- 
--#define DEFAULT_DMA_COHERENT_POOL_SIZE  SZ_256K
--static size_t atomic_pool_size = DEFAULT_DMA_COHERENT_POOL_SIZE;
-+/* Size can be defined by the coherent_pool command line */
-+static size_t atomic_pool_size;
- 
- /* Dynamic background expansion when the atomic pool is near capacity */
- static struct work_struct atomic_pool_work;
-@@ -132,6 +132,16 @@ static int __init dma_atomic_pool_init(void)
- {
- 	int ret = 0;
- 
-+	/*
-+	 * If coherent_pool was not used on the command line, default the pool
-+	 * sizes to 128KB per 1GB of memory, min 128KB, max MAX_ORDER-1.
-+	 */
-+	if (!atomic_pool_size) {
-+		atomic_pool_size = max(totalram_pages() >> PAGE_SHIFT, 1UL) *
-+					SZ_128K;
-+		atomic_pool_size = min_t(size_t, atomic_pool_size,
-+					 1 << (PAGE_SHIFT + MAX_ORDER-1));
-+	}
- 	INIT_WORK(&atomic_pool_work, atomic_pool_work_fn);
- 
- 	atomic_pool_kernel = __dma_atomic_pool_init(atomic_pool_size,
