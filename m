@@ -2,94 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C751A192D
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 02:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D521A1932
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 02:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgDHAP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 20:15:58 -0400
-Received: from www62.your-server.de ([213.133.104.62]:33280 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726420AbgDHAP5 (ORCPT
+        id S1726520AbgDHAWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 20:22:55 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:3875 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726446AbgDHAWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 20:15:57 -0400
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jLyNl-0003Wt-MF; Wed, 08 Apr 2020 02:15:53 +0200
-Received: from [178.195.186.98] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1jLyNl-000CZ7-Bb; Wed, 08 Apr 2020 02:15:53 +0200
-Subject: Re: Question on "uaccess: Add strict non-pagefault kernel-space read
- function"
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        bgregg@netflix.com
-References: <20200403133533.GA3424@infradead.org>
- <5ddc8c04-279d-9a14-eaa7-755467902ead@iogearbox.net>
- <20200404093105.GA445@infradead.org>
- <2adc77e1-e84d-f303-fd88-133ec950c33f@iogearbox.net>
- <20200407093357.GA24309@infradead.org>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <776e5c99-57c9-b61b-d466-412db440a859@iogearbox.net>
-Date:   Wed, 8 Apr 2020 02:15:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-In-Reply-To: <20200407093357.GA24309@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 7 Apr 2020 20:22:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1586305372; x=1617841372;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=iKq3TgYjgw3nZuEk1LMUMf2SykJq/nlJbGMsASxvgv0=;
+  b=vRaYiOnT9vp2DUvcQt1dB0w/so0VZXhWgJPlntpK63kKjQ/mzstlUAN3
+   rIzwpG6/0L91KXhwucMWL2nzn8e+xhw8QfEbVkISmh5Zk4El6Xaq5aGlO
+   qz850IA9n8qyVgzQgMVagyRYzp0/fikBDB9D2+YpqaAXRHLuzKTEDQKZb
+   I=;
+IronPort-SDR: vZgcunbmelg6GWgKvudrmJgrwnW5YtwkwdKxY3GmOQaLvxPWUVNdxz85bPtbjEIfOIqKUufnAh
+ Zm6kZ+hCEMxQ==
+X-IronPort-AV: E=Sophos;i="5.72,357,1580774400"; 
+   d="scan'208";a="24678441"
+Subject: Re: [PATCH v2 2/4] arch/x86: Refactor tlbflush and l1d flush
+Thread-Topic: [PATCH v2 2/4] arch/x86: Refactor tlbflush and l1d flush
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1e-17c49630.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 08 Apr 2020 00:22:40 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-17c49630.us-east-1.amazon.com (Postfix) with ESMTPS id B9778A2924;
+        Wed,  8 Apr 2020 00:22:37 +0000 (UTC)
+Received: from EX13D01UWB003.ant.amazon.com (10.43.161.94) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Apr 2020 00:22:37 +0000
+Received: from EX13D01UWB002.ant.amazon.com (10.43.161.136) by
+ EX13d01UWB003.ant.amazon.com (10.43.161.94) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 8 Apr 2020 00:22:36 +0000
+Received: from EX13D01UWB002.ant.amazon.com ([10.43.161.136]) by
+ EX13d01UWB002.ant.amazon.com ([10.43.161.136]) with mapi id 15.00.1497.006;
+ Wed, 8 Apr 2020 00:22:36 +0000
+From:   "Singh, Balbir" <sblbir@amazon.com>
+To:     "keescook@chromium.org" <keescook@chromium.org>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Thread-Index: AQHWC8KQbPxrh5g1r06s48CXbhupeqht/CwAgABj6gA=
+Date:   Wed, 8 Apr 2020 00:22:36 +0000
+Message-ID: <c0449b6e82cdfa910615da27bbbfa79427c2e913.camel@amazon.com>
+References: <20200406031946.11815-1-sblbir@amazon.com>
+         <20200406031946.11815-3-sblbir@amazon.com> <202004071122.379AB7D@keescook>
+In-Reply-To: <202004071122.379AB7D@keescook>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25775/Tue Apr  7 14:53:51 2020)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.160.155]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FD0AFC3A0B55C84DAB686C6F5EFF26C8@amazon.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/20 11:33 AM, Christoph Hellwig wrote:
-> On Tue, Apr 07, 2020 at 11:03:23AM +0200, Daniel Borkmann wrote:
->>
->> ... where archs with non-overlapping user and kernel address range would
->> only end up having to implementing kernel_range_ok() check. Or, instead of
->> a generic kernel_range_ok() this could perhaps be more probing-specific as
->> in probe_kernel_range_ok() where this would then also cover the special
->> cases we seem to have in parisc and um. Then, this would allow to get rid
->> of all the __weak aliasing as well which may just be confusing. I could look
->> into coming up with something along these lines. Thoughts?
-> 
-> FYI, this is what I cooked up a few days ago:
-> 
-> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/maccess-fixups
-> 
-> Still misses the final work to switch probe_kernel_read to be the
-> strict version.  Any good naming suggestion for the non-strict one?
-
-Ah great, thanks for working on it including the cleanups in your branch above.
-Good naming suggestion is usually the hardest ... ;-) Maybe adding an _unsafe or
-_lax suffix ...
-
-Regarding commits:
-
-* http://git.infradead.org/users/hch/misc.git/commitdiff/019f5d7894711a8046d1d57640d3db47f690c61e
-
-I think the extra HAVE_PROBE_KERNEL_ALLOWED / HAVE_PROBE_KERNEL_STRICT_ALLOWED
-reads a bit odd. Could we simply have an equivalent for access_ok() that archs
-implement under KERNEL_DS where it covers the allowed/restricted kernel-only range?
-Like mentioned earlier e.g. probe_{user,kernel}_range_ok() helpers where the user
-one defaults to access_ok() internally and the kernel one contains all the range
-restrictions that archs can then define if needed (and if not there could be an
-asm-generic `return true` fallback, for example).
-
-* http://git.infradead.org/users/hch/misc.git/commitdiff/2d6070ac749d0af26367892545d1c288cc00823a
-
-This would still need to set dst[0] = '\0' in that case to be consistent with
-the other error handling cases there when count > 0.
-
-Thanks,
-Daniel
+T24gVHVlLCAyMDIwLTA0LTA3IGF0IDExOjI1IC0wNzAwLCBLZWVzIENvb2sgd3JvdGU6DQo+IA0K
+PiBPbiBNb24sIEFwciAwNiwgMjAyMCBhdCAwMToxOTo0NFBNICsxMDAwLCBCYWxiaXIgU2luZ2gg
+d3JvdGU6DQo+ID4gUmVmYWN0b3IgdGhlIGV4aXN0aW5nIGFzc2VtYmx5IGJpdHMgaW50byBzbWFs
+bGVyIGhlbHBlciBmdW5jdGlvbnMNCj4gPiBhbmQgYWxzbyBhYnN0cmFjdCBMMURfRkxVU0ggaW50
+byBhIGhlbHBlciBmdW5jdGlvbi4gVXNlIHRoZXNlDQo+ID4gZnVuY3Rpb25zIGluIGt2bSBmb3Ig
+TDFEIGZsdXNoaW5nLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEJhbGJpciBTaW5naCA8c2Js
+YmlyQGFtYXpvbi5jb20+DQo+ID4gLS0tDQo+ID4gIGFyY2gveDg2L2luY2x1ZGUvYXNtL2NhY2hl
+Zmx1c2guaCB8ICAzICsrDQo+ID4gIGFyY2gveDg2L2tlcm5lbC9sMWRfZmx1c2guYyAgICAgICB8
+IDQ5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAgYXJjaC94ODYva3ZtL3Zt
+eC92bXguYyAgICAgICAgICAgIHwgMzEgKysrKy0tLS0tLS0tLS0tLS0tLQ0KPiA+ICAzIGZpbGVz
+IGNoYW5nZWQsIDU3IGluc2VydGlvbnMoKyksIDI2IGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRp
+ZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9jYWNoZWZsdXNoLmgNCj4gPiBiL2FyY2gv
+eDg2L2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaA0KPiA+IGluZGV4IDY0MTlhNGNlZjBlOC4uNjZh
+NDZkYjdhYWRkIDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gveDg2L2luY2x1ZGUvYXNtL2NhY2hlZmx1
+c2guaA0KPiA+ICsrKyBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaA0KPiA+IEBA
+IC0xMCw1ICsxMCw4IEBADQo+ID4gIHZvaWQgY2xmbHVzaF9jYWNoZV9yYW5nZSh2b2lkICphZGRy
+LCB1bnNpZ25lZCBpbnQgc2l6ZSk7DQo+ID4gIHZvaWQgKmFsbG9jX2wxZF9mbHVzaF9wYWdlcyh2
+b2lkKTsNCj4gPiAgdm9pZCBjbGVhbnVwX2wxZF9mbHVzaF9wYWdlcyh2b2lkICpsMWRfZmx1c2hf
+cGFnZXMpOw0KPiA+ICt2b2lkIHBvcHVsYXRlX3RsYl93aXRoX2ZsdXNoX3BhZ2VzKHZvaWQgKmwx
+ZF9mbHVzaF9wYWdlcyk7DQo+ID4gK3ZvaWQgZmx1c2hfbDFkX2NhY2hlX3N3KHZvaWQgKmwxZF9m
+bHVzaF9wYWdlcyk7DQo+ID4gK2ludCBmbHVzaF9sMWRfY2FjaGVfaHcodm9pZCk7DQo+ID4gDQo+
+ID4gICNlbmRpZiAvKiBfQVNNX1g4Nl9DQUNIRUZMVVNIX0ggKi8NCj4gPiBkaWZmIC0tZ2l0IGEv
+YXJjaC94ODYva2VybmVsL2wxZF9mbHVzaC5jIGIvYXJjaC94ODYva2VybmVsL2wxZF9mbHVzaC5j
+DQo+ID4gaW5kZXggMDVmMzc1YzMzNDIzLi42MDQ5OWY3NzMwNDYgMTAwNjQ0DQo+ID4gLS0tIGEv
+YXJjaC94ODYva2VybmVsL2wxZF9mbHVzaC5jDQo+ID4gKysrIGIvYXJjaC94ODYva2VybmVsL2wx
+ZF9mbHVzaC5jDQo+ID4gQEAgLTM0LDMgKzM0LDUyIEBAIHZvaWQgY2xlYW51cF9sMWRfZmx1c2hf
+cGFnZXModm9pZCAqbDFkX2ZsdXNoX3BhZ2VzKQ0KPiA+ICAgICAgIGZyZWVfcGFnZXMoKHVuc2ln
+bmVkIGxvbmcpbDFkX2ZsdXNoX3BhZ2VzLCBMMURfQ0FDSEVfT1JERVIpOw0KPiA+ICB9DQo+ID4g
+IEVYUE9SVF9TWU1CT0xfR1BMKGNsZWFudXBfbDFkX2ZsdXNoX3BhZ2VzKTsNCj4gPiArDQo+ID4g
+K3ZvaWQgcG9wdWxhdGVfdGxiX3dpdGhfZmx1c2hfcGFnZXModm9pZCAqbDFkX2ZsdXNoX3BhZ2Vz
+KQ0KPiA+ICt7DQo+ID4gKyAgICAgaW50IHNpemUgPSBQQUdFX1NJWkUgPDwgTDFEX0NBQ0hFX09S
+REVSOw0KPiA+ICsNCj4gPiArICAgICBhc20gdm9sYXRpbGUoDQo+ID4gKyAgICAgICAgICAgICAv
+KiBGaXJzdCBlbnN1cmUgdGhlIHBhZ2VzIGFyZSBpbiB0aGUgVExCICovDQo+ID4gKyAgICAgICAg
+ICAgICAieG9ybCAgICUlZWF4LCAlJWVheFxuIg0KPiA+ICsgICAgICAgICAgICAgIi5McG9wdWxh
+dGVfdGxiOlxuXHQiDQo+ID4gKyAgICAgICAgICAgICAibW92emJsICglW2ZsdXNoX3BhZ2VzXSwg
+JSUiIF9BU01fQVggIiksICUlZWN4XG5cdCINCj4gPiArICAgICAgICAgICAgICJhZGRsICAgJDQw
+OTYsICUlZWF4XG5cdCINCj4gPiArICAgICAgICAgICAgICJjbXBsICAgJSVlYXgsICVbc2l6ZV1c
+blx0Ig0KPiA+ICsgICAgICAgICAgICAgImpuZSAgICAuTHBvcHVsYXRlX3RsYlxuXHQiDQo+ID4g
+KyAgICAgICAgICAgICAieG9ybCAgICUlZWF4LCAlJWVheFxuXHQiDQo+ID4gKyAgICAgICAgICAg
+ICAiY3B1aWRcblx0Ig0KPiA+ICsgICAgICAgICAgICAgOjogW2ZsdXNoX3BhZ2VzXSAiciIgKGwx
+ZF9mbHVzaF9wYWdlcyksDQo+ID4gKyAgICAgICAgICAgICAgICAgW3NpemVdICJyIiAoc2l6ZSkN
+Cj4gPiArICAgICAgICAgICAgIDogImVheCIsICJlYngiLCAiZWN4IiwgImVkeCIpOw0KPiA+ICt9
+DQo+ID4gK0VYUE9SVF9TWU1CT0xfR1BMKHBvcHVsYXRlX3RsYl93aXRoX2ZsdXNoX3BhZ2VzKTsN
+Cj4gPiArDQo+ID4gK2ludCBmbHVzaF9sMWRfY2FjaGVfaHcodm9pZCkNCj4gPiArew0KPiA+ICsg
+ICAgIGlmIChzdGF0aWNfY3B1X2hhcyhYODZfRkVBVFVSRV9GTFVTSF9MMUQpKSB7DQo+ID4gKyAg
+ICAgICAgICAgICB3cm1zcmwoTVNSX0lBMzJfRkxVU0hfQ01ELCBMMURfRkxVU0gpOw0KPiA+ICsg
+ICAgICAgICAgICAgcmV0dXJuIDE7DQo+ID4gKyAgICAgfQ0KPiA+ICsgICAgIHJldHVybiAwOw0K
+PiA+ICt9DQo+IA0KPiBUaGlzIHJldHVybiB2YWx1ZSBpcyBiYWNrd2FyZHMgZnJvbSB0aGUga2Vy
+bmVsJ3Mgbm9ybWFsIHVzZSBvZiAiaW50Ii4gSQ0KPiB3b3VsZCBleHBlY3QgMCB0byBtZWFuICJz
+dWNjZXNzIiBhbmQgbm9uLXplcm8gdG8gbWVhbiAiZmFpbHVyZSIuIEhvdw0KPiBhYm91dDoNCj4g
+DQo+IGludCBmbHVzaF9sMWRfY2FjaGVfaHcodm9pZCkNCj4gew0KPiAgICAgIGlmIChzdGF0aWNf
+Y3B1X2hhcyhYODZfRkVBVFVSRV9GTFVTSF9MMUQpKSB7DQo+ICAgICAgICAgICAgICB3cm1zcmwo
+TVNSX0lBMzJfRkxVU0hfQ01ELCBMMURfRkxVU0gpOw0KPiAgICAgICAgICAgICAgcmV0dXJuIDA7
+DQo+ICAgICAgfQ0KPiAgICAgIHJldHVybiAtRU5PVFNVUFA7DQo+IH0NCj4gDQoNCldpbGwgZG8N
+Cg0KPiANCj4gPiArRVhQT1JUX1NZTUJPTF9HUEwoZmx1c2hfbDFkX2NhY2hlX2h3KTsNCj4gPiAr
+DQo+ID4gK3ZvaWQgZmx1c2hfbDFkX2NhY2hlX3N3KHZvaWQgKmwxZF9mbHVzaF9wYWdlcykNCj4g
+PiArew0KPiA+ICsgICAgIGludCBzaXplID0gUEFHRV9TSVpFIDw8IEwxRF9DQUNIRV9PUkRFUjsN
+Cj4gPiArDQo+ID4gKyAgICAgYXNtIHZvbGF0aWxlKA0KPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAvKiBGaWxsIHRoZSBjYWNoZSAqLw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAieG9ybCAg
+ICUlZWF4LCAlJWVheFxuIg0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAiLkxmaWxsX2NhY2hl
+OlxuIg0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAibW92emJsICglW2ZsdXNoX3BhZ2VzXSwg
+JSUiIF9BU01fQVggIiksICUlZWN4XG5cdCINCj4gPiArICAgICAgICAgICAgICAgICAgICAgImFk
+ZGwgICAkNjQsICUlZWF4XG5cdCINCj4gPiArICAgICAgICAgICAgICAgICAgICAgImNtcGwgICAl
+JWVheCwgJVtzaXplXVxuXHQiDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICJqbmUgICAgLkxm
+aWxsX2NhY2hlXG5cdCINCj4gPiArICAgICAgICAgICAgICAgICAgICAgImxmZW5jZVxuIg0KPiA+
+ICsgICAgICAgICAgICAgICAgICAgICA6OiBbZmx1c2hfcGFnZXNdICJyIiAobDFkX2ZsdXNoX3Bh
+Z2VzKSwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgW3NpemVdICJyIiAoc2l6ZSkNCj4gPiAr
+ICAgICAgICAgICAgICAgICAgICAgOiAiZWF4IiwgImVjeCIpOw0KPiA+ICt9DQo+ID4gK0VYUE9S
+VF9TWU1CT0xfR1BMKGZsdXNoX2wxZF9jYWNoZV9zdyk7DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gv
+eDg2L2t2bS92bXgvdm14LmMgYi9hcmNoL3g4Ni9rdm0vdm14L3ZteC5jDQo+ID4gaW5kZXggMjA5
+ZTYzNzk4NDM1Li4yOWRjNWE1YmI2YWIgMTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC94ODYva3ZtL3Zt
+eC92bXguYw0KPiA+ICsrKyBiL2FyY2gveDg2L2t2bS92bXgvdm14LmMNCj4gPiBAQCAtNTk1Niw4
+ICs1OTU2LDYgQEAgc3RhdGljIGludCB2bXhfaGFuZGxlX2V4aXQoc3RydWN0IGt2bV92Y3B1ICp2
+Y3B1LA0KPiA+ICAgKi8NCj4gPiAgc3RhdGljIHZvaWQgdm14X2wxZF9mbHVzaChzdHJ1Y3Qga3Zt
+X3ZjcHUgKnZjcHUpDQo+ID4gIHsNCj4gPiAtICAgICBpbnQgc2l6ZSA9IFBBR0VfU0laRSA8PCBM
+MURfQ0FDSEVfT1JERVI7DQo+ID4gLQ0KPiA+ICAgICAgIC8qDQo+ID4gICAgICAgICogVGhpcyBj
+b2RlIGlzIG9ubHkgZXhlY3V0ZWQgd2hlbiB0aGUgdGhlIGZsdXNoIG1vZGUgaXMgJ2NvbmQnIG9y
+DQo+ID4gICAgICAgICogJ2Fsd2F5cycNCj4gPiBAQCAtNTk4NiwzMiArNTk4NCwxMyBAQCBzdGF0
+aWMgdm9pZCB2bXhfbDFkX2ZsdXNoKHN0cnVjdCBrdm1fdmNwdSAqdmNwdSkNCj4gPiANCj4gPiAg
+ICAgICB2Y3B1LT5zdGF0LmwxZF9mbHVzaCsrOw0KPiA+IA0KPiA+IC0gICAgIGlmIChzdGF0aWNf
+Y3B1X2hhcyhYODZfRkVBVFVSRV9GTFVTSF9MMUQpKSB7DQo+ID4gLSAgICAgICAgICAgICB3cm1z
+cmwoTVNSX0lBMzJfRkxVU0hfQ01ELCBMMURfRkxVU0gpOw0KPiA+ICsgICAgIGlmIChmbHVzaF9s
+MWRfY2FjaGVfaHcoKSkNCj4gPiAgICAgICAgICAgICAgIHJldHVybjsNCj4gPiAtICAgICB9DQo+
+IA0KPiBUaGVuIHRoaXMgYmVjb21lczoNCj4gDQo+ICAgICAgICAgaWYgKGZsdXNoX2wxZF9jYWNo
+ZV9odygpID09IDApDQo+ICAgICAgICAgICAgICAgICByZXR1cm47DQo+IA0KPiAoT3IgY2hhbmdl
+IGl0IHRvIGEgImJvb2wiIHdpdGggYW5kIHVzZSB0cnVlL2ZhbHNlIGFuZCBsZWF2ZSB0aGUgYWJv
+dmUNCj4gY2FsbCBhcy1pcy4pDQo+IA0KPiBFaXRoZXIgd2F5Og0KPiANCj4gUmV2aWV3ZWQtYnk6
+IEtlZXMgQ29vayA8a2Vlc2Nvb2tAY2hyb21pdW0ub3JnPg0KPiANCg0KVGhhbmtzLA0KQmFsYmly
+IFNpbmdoLg0KDQo=
