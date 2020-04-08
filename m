@@ -2,171 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B62A01A277A
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A181A271F
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730419AbgDHQtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 12:49:10 -0400
-Received: from fudo.makrotopia.org ([185.142.180.71]:52755 "EHLO
-        fudo.makrotopia.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727929AbgDHQtK (ORCPT
+        id S1730290AbgDHQYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:24:49 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:36460 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730280AbgDHQYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:49:10 -0400
-X-Greylist: delayed 1482 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 12:49:08 EDT
-Received: from local
-        by fudo.makrotopia.org with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-         (Exim 4.92.3)
-        (envelope-from <daniel@makrotopia.org>)
-        id 1jMDUv-0002ru-7m; Wed, 08 Apr 2020 18:24:19 +0200
-Date:   Wed, 8 Apr 2020 17:23:49 +0100
-From:   Daniel Golle <daniel@makrotopia.org>
-To:     Imre Kaloz <kaloz@dune.hu>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Paul Spooren <mail@aparcar.org>, Andrew Lunn <andrew@lunn.ch>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "jason@lakedaemon.net" <jason@lakedaemon.net>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "freifunk@adrianschmutzler.de" <freifunk@adrianschmutzler.de>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "kaloz@openwrt.org" <kaloz@openwrt.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "sebastian.hesselbarth@gmail.com" <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH 0/5] arm: dts: linksys: rename codename to model
-Message-ID: <20200408162009.GC1995@makrotopia.org>
-References: <20200407210816.866084-1-mail@aparcar.org>
- <20200407224615.GA359603@lunn.ch>
- <004a2ef9c1e04f9ffbb9c3cc9907ca656a406713.camel@aparcar.org>
- <ecf4dc01-81f8-a33d-b4a7-2065748993ed@gmail.com>
- <VI1PR02MB5325621D39BF0FFAFE3993C4A0C00@VI1PR02MB5325.eurprd02.prod.outlook.com>
+        Wed, 8 Apr 2020 12:24:47 -0400
+Received: by mail-lj1-f193.google.com with SMTP id b1so8316122ljp.3
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 09:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s5aiANvhgix2N64LwK7RWDgOwJhQeHsVBzrYi29ys94=;
+        b=DsqtBI6qRFjNpPkePJmA4uX3kNk0ar1H6f+mDa9WCWCogbW1T44w59UgWS3voTEzVK
+         genV1UO4Or0H2X/qb8IDbOA88OBquO3BkpRlNYz06H9TiREZObOBBJUBZTq+Ufv9WsE4
+         +7C0iZS1MYYzD1pJn+M2c6GEdXyXvNHvkqSWB4XXDBcfiYWq+U6RNTMgvedFjt69dE17
+         14nDpSBj3rkurQYjwNYAGpRsn6UJpZ2eN0cavWpSULcVrBGXx1iDEO77FjTZcDVdSRvX
+         QkJmuqfyrMbk+hWYW2pBub6BYirXJ+pM+Mp0JbV/YyhrzUF5+jieHm0nw0AYVfNnXrxV
+         gdfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s5aiANvhgix2N64LwK7RWDgOwJhQeHsVBzrYi29ys94=;
+        b=q83desGcIvx4+uNA/wHlv27D5nWT3lSMlmeEm1LhGHitvdYEMdgpCjteLz0hAdhBWK
+         oPl+5eMoIHpK23S/UUu3s5ydYvks7CmrRqVKE0f4IJRseJpvzEmO6kaL3rKSgRsbtW/R
+         F3T/84iOnK0G6IhA/b98viZuU2hv5GjVSBExj2VnwFpBpgUNegaM1UuAT7c/tawizzzE
+         Y4XA+O8WKIFH6vDguVjgq1yqn/pxEAWg9wzV0SUOFAEcpsKcgjD8O200omlI1LAJxjEN
+         MQT/7o5bGR7AtVDDlwAQ9bMbXeb1IdKP+uyX4yC0tPdu5lN9Ne6sDrHclAT5c5WgI/5b
+         0jUQ==
+X-Gm-Message-State: AGi0PuY/bnKQhBkNcXLCT+IRrk+ssR3xrxCf/0DorQz4u53d0pc1dfrO
+        cU1RxlQxrZGsUi4g8OGbymPTMFkqpt3133UUMhLaXg==
+X-Google-Smtp-Source: APiQypJwZtEyXK5GJK6816AgkQZ1Cx5TsDhHg1RPi2SPIJaChvEwYWQCWwAp1ip6qeVHQ0/Dbzy1kvzvsVWhJz83qlI=
+X-Received: by 2002:a05:651c:287:: with SMTP id b7mr400146ljo.73.1586363083460;
+ Wed, 08 Apr 2020 09:24:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <VI1PR02MB5325621D39BF0FFAFE3993C4A0C00@VI1PR02MB5325.eurprd02.prod.outlook.com>
+References: <20200408152151.5780-1-christian.brauner@ubuntu.com>
+In-Reply-To: <20200408152151.5780-1-christian.brauner@ubuntu.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Wed, 8 Apr 2020 18:24:16 +0200
+Message-ID: <CAG48ez0KWgLMOp1d3X1AcRNc4-eF1YiCw=PgWiGjtM6PqQqawg@mail.gmail.com>
+Subject: Re: [PATCH 0/8] loopfs
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org, Linux API <linux-api@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Serge Hallyn <serge@hallyn.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Jan Kara <jack@suse.cz>, David Howells <dhowells@redhat.com>,
+        Seth Forshee <seth.forshee@canonical.com>,
+        David Rheinsberg <david.rheinsberg@gmail.com>,
+        Tom Gundersen <teg@jklm.no>,
+        Christian Kellner <ckellner@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@ubuntu.com>,
+        linux-doc@vger.kernel.org,
+        Network Development <netdev@vger.kernel.org>,
+        Matthew Garrett <mjg59@google.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Imre,
+On Wed, Apr 8, 2020 at 5:23 PM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+> One of the use-cases for loopfs is to allow to dynamically allocate loop
+> devices in sandboxed workloads without exposing /dev or
+> /dev/loop-control to the workload in question and without having to
+> implement a complex and also racy protocol to send around file
+> descriptors for loop devices. With loopfs each mount is a new instance,
+> i.e. loop devices created in one loopfs instance are independent of any
+> loop devices created in another loopfs instance. This allows
+> sufficiently privileged tools to have their own private stash of loop
+> device instances. Dmitry has expressed his desire to use this for
+> syzkaller in a private discussion. And various parties that want to use
+> it are Cced here too.
+>
+> In addition, the loopfs filesystem can be mounted by user namespace root
+> and is thus suitable for use in containers. Combined with syscall
+> interception this makes it possible to securely delegate mounting of
+> images on loop devices, i.e. when a user calls mount -o loop <image>
+> <mountpoint> it will be possible to completely setup the loop device.
+> The final mount syscall to actually perform the mount will be handled
+> through syscall interception and be performed by a sufficiently
+> privileged process. Syscall interception is already supported through a
+> new seccomp feature we implemented in [1] and extended in [2] and is
+> actively used in production workloads. The additional loopfs work will
+> be used there and in various other workloads too. You'll find a short
+> illustration how this works with syscall interception below in [4].
 
-On Wed, Apr 08, 2020 at 08:32:41AM +0000, Imre Kaloz wrote:
-> Hi,
-> 
-> I'm on the same page here - this has not an issue for years. The common sense and policy was always to reject kernel changes that would only make the userland's job easier - and here were are not even talking about the userland, but a script that's being used for image generation.
-> 
-> The reason codenames are preffered to marketing names is simple: the same board can be sold under multiple marketing names.
-> 
-> The Linksys Viper has been sold as E4200v2 and EA4500. The Linksys Focus as EA6100 and EA5800. The LeMans is the EA6300 and the EA6200. The Macan is both EA7500 and EA7400 - on the other hand, the EA7500v2 and the EA7400v2 are the Savannah.
+Would that privileged process then allow you to mount your filesystem
+images with things like ext4? As far as I know, the filesystem
+maintainers don't generally consider "untrusted filesystem image" to
+be a strongly enforced security boundary; and worse, if an attacker
+has access to a loop device from which something like ext4 is mounted,
+things like "struct ext4_dir_entry_2" will effectively be in shared
+memory, and an attacker can trivially bypass e.g.
+ext4_check_dir_entry(). At the moment, that's not a huge problem (for
+anything other than kernel lockdown) because only root normally has
+access to loop devices.
 
-What Paul, Adian and others are trying to achieve here is consistency.
-See also the debate on openwrt-devel:
+Ubuntu carries an out-of-tree patch that afaik blocks the shared
+memory thing: <https://git.launchpad.net/~ubuntu-kernel/ubuntu/+source/linux/+git/eoan/commit?id=4bc428fdf5500b7366313f166b7c9c50ee43f2c4>
 
-http://lists.infradead.org/pipermail/openwrt-devel/2020-April/022567.html
-
-The goal is to make it easier for users and semi-automated processes
-to identify the right OpenWrt image for a specific device.
-This especially becomes necessary for OTA updates and we have invested
-quite a bit of work to no longer need to scrape and translate that
-with additional layers of abstraction but simply use the first (ie.
-most significant) compatible from DTS to indentify the right image.
-
-As product-name aliases are indeed very common, we usually deal with it
-in a way that the first product name which hits the OpenWrt tree is
-used for model, compatible, DTS- and image filenames. We then add
-aliases to that in our build-scripts which allows web-based wizards and
-such to match the alternative names as well when entered by the user.
-
-
-> 
-> 
-> Best,
-> 
-> Imre
-> 
-> ________________________________
-> From: Florian Fainelli <f.fainelli@gmail.com>
-> Sent: Wednesday, April 8, 2020 2:07:38 AM
-> To: Paul Spooren <mail@aparcar.org>; Andrew Lunn <andrew@lunn.ch>
-> Cc: devicetree@vger.kernel.org <devicetree@vger.kernel.org>; jason@lakedaemon.net <jason@lakedaemon.net>; gregory.clement@bootlin.com <gregory.clement@bootlin.com>; linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; daniel@makrotopia.org <daniel@makrotopia.org>; freifunk@adrianschmutzler.de <freifunk@adrianschmutzler.de>; robh+dt@kernel.org <robh+dt@kernel.org>; kaloz@openwrt.org <kaloz@openwrt.org>; linux-arm-kernel@lists.infradead.org <linux-arm-kernel@lists.infradead.org>; sebastian.hesselbarth@gmail.com <sebastian.hesselbarth@gmail.com>
-> Subject: Re: [PATCH 0/5] arm: dts: linksys: rename codename to model
-> 
-> 
-> 
-> On 4/7/2020 4:38 PM, Paul Spooren wrote:
-> > Hi Andrew,
-> >
-> > thank you very much for the quick response!
-> >
-> > On Wed, 2020-04-08 at 00:46 +0200, Andrew Lunn wrote:
-> >> On Tue, Apr 07, 2020 at 11:08:10AM -1000, Paul Spooren wrote:
-> >>> Linksys chose to use codenames for a few of their devices and sell
-> >>> their
-> >>> them under an entirely different name.
-> >>>
-> >>> codename  model name
-> >>> rango  -> wrt3200acm
-> >>> mamba  -> wrt1900ac
-> >>> cobra  -> wrt1900ac-v2
-> >>> caiman -> wrt1200ac
-> >>> shelby -> wrt1900acs
-> >>
-> >> Hi Paul
-> >>
-> >> There was quite a bit of discussion about this when the first board
-> >> was added. If i remember correctly, it was Mamba.
-> >>
-> >> Imre Kaloz, <kaloz@openwrt.org> was the one arguing for
-> >> the name armada-xp-linksys-mamba.dts.
-> >>
-> >> So it seems that openwrt.org has now come full circle?
-> >
-> > I talked with three currently active OpenWrt core developers and all
-> > were in favor of a unification. I wasn't aware of any previous
-> > discussions nor any pro arguments to keep code names.
-> >
-> > I've added Imre via CC so maybe he can share his opinion, too.
-> >>
-> >>> This introduces some extra loops in OpenWrt, a distribution
-> >>> specialized
-> >>> on embedded Internet facing devices, as both codename and model
-> >>> name are
-> >>> used within the build system. The double naming requires developers
-> >>> to
-> >>> keep track of that mapping and introduces inconsistencies:
-> >>>
-> >>> To build a specific device in OpenWrt profiles are used, named
-> >>> after the
-> >>> the compatible string for targets using device tree (similar to how
-> >>> .dts
-> >>> files are named in the linux source tree). However, the first item
-> >>> of
-> >>> the DT `compatible` list in this case is `linksys,rango`, which is
-> >>> inconsistent with the model name and not what common users would
-> >>> expect.
-> >>>
-> >>> Such double naming complicates currently the automatic search for
-> >>> firmware upgrade as the build system does not support such mapping.
-> >>> Ideally the first item of the DT `compatible` list would contain a
-> >>> string suitable to be used as a filename recognizable by normal
-> >>> users to
-> >>> belong to that device.
-> >>> With this patch set the Linksys device tree files are moved from
-> >>> containing the codename to contain a sanitized model name and also
-> >>> use
-> >>> it as first entry of the DT `compatible` list.
-> >>
-> >> I've no problems adding another compatible to the list. But i don't
-> >> like the idea of renaming the files. The file names could be
-> >> considered ABI! What installers/bootloaders are you going to break by
-> >> renaming them?
-> >
-> > Are you okay with adding the new compatible string as first element of
-> > the list? This would already simplify the OpenWrt build system.
-> 
-> Having a mapping table between model names in OpenWrt profiles and .dts
-> file names in the kernel sources is not that complicated to maintain,
-> changing the kernel for that reason sounds a bit weak IMHO.
-> --
-> Florian
+But even with that patch, I'm not super excited about exposing
+filesystem image parsing attack surface to containers unless you run
+the filesystem in a sandboxed environment (at which point you don't
+need a loop device anymore either).
