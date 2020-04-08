@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF2C1A240F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3C01A2413
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 16:31:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbgDHOa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 10:30:58 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35264 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726774AbgDHOa6 (ORCPT
+        id S1728844AbgDHObB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 10:31:01 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37349 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728800AbgDHOa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 8 Apr 2020 10:30:58 -0400
-Received: by mail-wm1-f65.google.com with SMTP id r26so143188wmh.0
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:30:56 -0700 (PDT)
+Received: by mail-wm1-f66.google.com with SMTP id z6so127249wml.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 07:30:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mLUZTMACgOdZTJqIc//IsSs4hQHzPmyw9T3yzeJY29Q=;
-        b=KkEXcWTpKhPSVYHTzs9Hu9eRt2qWT3m8MI2hK4f1yUyGMa03+nMXoKTvvGd4nVhRtK
-         phKxiQIoYpHfE0wCrOFreaUywWND6BBlHak6ojF8fefiNgUsVRpJcGp5kcsRiRUPWdoI
-         8tG+A4VmGE9Bx4IhwSuV3qXjvRzs6oOD4/j9atnD/SScZ9uoVd6R5TqMWdc3ULO4BgsK
-         BhMRRszWbbX3Ia6uaXvKS4ahUWyw+aOssaOF190au/7Fyj00O7NPFhG2FMNRulpUbvWN
-         MzdNpANFtmO0dGoMDJAQsAhSPXeCKzjzH5Jez3qBQOTiWErwY+qwXKZS21oi0n78+KWP
-         9M9A==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vNUJmyW/0AurvAI4tkIhYfgnlohv2nTKpbi6mh0xlvI=;
+        b=X8xoTfHrd0Sfw1q3Hr8N4cLgFngKYZapoPfYdenjpWtKorpNb5Bstn+5+41Ssfnj0I
+         3sz44ghiVSqWdxNKPvZAVTk6U9Xo/+gVt2xsodyMvSICQt3vhaoT4F29P1GlyMYj18vR
+         OQbiuMQO46GdndqXdj1hCRBvKM62fSO3lGqYy1DtgPcVMNlHQ6ZOU7R/LecDdCpPjb9u
+         fAsKWiEC/kxAvOCNCnFVSYD6sTRTyRL5r3pZsjjIA7KcZlIVdR3bKpyuqKWQ9kqa0/lG
+         /KmhWjNid1ltzY8w/dkmnagUSdqXvvXy5vqAvGKmFWERKgMQlY9z07CIOiZUBMyMiVxJ
+         7k0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mLUZTMACgOdZTJqIc//IsSs4hQHzPmyw9T3yzeJY29Q=;
-        b=ISLYHjLZNwPTeOyn7hJG0NcbNe70J5d66pVN8Ot2wsJpVec4fK+1jTEYkduYxC3sLS
-         UKPf7m5N+yGWBfX2A4hBmgSJYa1m7bNvBFKJQUpVK0ewySd2hxbbYRP4eEtmIhOYcBpM
-         3cKv03e/AoZc8uyChv/iT0hXW7VzmPMJ4yPncFHoWnlVE7puOOSr76oa8yPyMPgs/0Y3
-         HwZnxNXcu0vrTYkNfD69sKIjfcIpu2Yc0YbCjzclTWHE6DWo29X+Q16CF9UqNx0q7yKy
-         PoXt0JXP2SRf6T5OFmqG+EELFmVvINTd/ObKeuRArULAvJ0saQownICIacE468P8Q0Ls
-         DLKQ==
-X-Gm-Message-State: AGi0Pub+6XRtu3sjYtLML44R2nMGGLRPiakdF7RiNAYoNpZsz0V9JDE2
-        7ommmacS1Bi6WAmfuva7tgSCpXusrGg=
-X-Google-Smtp-Source: APiQypI1steOmsQ2Cf3zIOhuPmaJhyAjfO9SJ0wyXh7OuuHQzA91KBz1hqB0Sq9hVig7S+hGpQcxRw==
-X-Received: by 2002:a1c:5f56:: with SMTP id t83mr4729013wmb.61.1586356255686;
-        Wed, 08 Apr 2020 07:30:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vNUJmyW/0AurvAI4tkIhYfgnlohv2nTKpbi6mh0xlvI=;
+        b=mlb1nUzEWfkKbny4GLr0Rw65SnlKxzP73roCbS8CGl0rv0YfIxmdmfU65GmzjLO2tR
+         O1hJl+u4MIz4BNAgYIqUYlVyCKw7yq8/C7/7yH9J0ihl2fXdUVvVeRW/ZLcYeOX0JoO9
+         o6AXboPYypaVrYVdM6YHPrLTZfPsS7sxfoxTLvx8582Gs6h8VHFui0Z59mirfl0og3x6
+         FWZZSG5vKRgDS4w8CI//u3o6ylzz6JR5vRtpwrmwtjUt2FoVdhT8M0GFc6338VEIXdvX
+         m3PaFVXEhqu40unJsBJXzr+pTbI129its1KDqzOYP1YFV+S7mLA4cA/CJlsZuGwqUQy4
+         5lEA==
+X-Gm-Message-State: AGi0PuaeY3yjQI1miVAjuIGjyuwLiAwauqKdDpFB1RWhR3SdSReR+Ib/
+        CWKatL8VmVGCpYA2IiCLd5E=
+X-Google-Smtp-Source: APiQypKfQ60dQO/USHfHn1Zyi5ma7wDcLwDkDFMWIdbvlhovNGEmXJ2l9V9IELW6acmB3eORhypqLA==
+X-Received: by 2002:a1c:750a:: with SMTP id o10mr4876811wmc.124.1586356256589;
+        Wed, 08 Apr 2020 07:30:56 -0700 (PDT)
 Received: from linuxdev2.toradex.int (31-10-206-124.static.upc.ch. [31.10.206.124])
-        by smtp.gmail.com with ESMTPSA id a10sm36268828wrm.87.2020.04.08.07.30.54
+        by smtp.gmail.com with ESMTPSA id a10sm36268828wrm.87.2020.04.08.07.30.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 07:30:55 -0700 (PDT)
+        Wed, 08 Apr 2020 07:30:56 -0700 (PDT)
 From:   Max Krummenacher <max.oss.09@gmail.com>
 X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
 To:     Max Krummenacher <max.krummenacher@toradex.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Will Deacon <will@kernel.org>, Vidya Sagar <vidyas@nvidia.com>,
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         Olof Johansson <olof@lixom.net>,
         Marcin Juszkiewicz <marcin.juszkiewicz@linaro.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Anson Huang <Anson.Huang@nxp.com>,
         Li Yang <leoyang.li@nxp.com>, Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH v2 0/5] defconfig: fix changed configs and refresh
-Date:   Wed,  8 Apr 2020 16:30:35 +0200
-Message-Id: <20200408143040.57458-1-max.krummenacher@toradex.com>
+Subject: [PATCH v2 1/5] arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
+Date:   Wed,  8 Apr 2020 16:30:36 +0200
+Message-Id: <20200408143040.57458-2-max.krummenacher@toradex.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200408143040.57458-1-max.krummenacher@toradex.com>
+References: <20200408143040.57458-1-max.krummenacher@toradex.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -69,32 +71,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three configs have been renamed and/or changed behaviour.
-Clean that by using the new config name.
-With the name change to DRM_SIMPLE_BRIDGE the related
-DRM_DISPLAY_CONNECTOR got introduced, enable that additionally.
+This occurrence wasn't changed in the original rename commit.
 
-Then refresh the defconfig with make defconfig savedefconfig.
+Fixes commit 0411374bdf2b3 ("drm/bridge: dumb-vga-dac: Rename driver to
+simple-bridge").
 
-The refreshed defconfig does result in a not changed .config.
+Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Applies on linux-next/master tag: next-20200407
+---
 
+Changes in v2: None
 
-Changes in v2:
-- additional patch adding DRM_DISPLAY_CONNECTOR as recommended by Geert and Laurent
-- add reviewed-by tags
+ arch/arm64/configs/defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Max Krummenacher (5):
-  arm64: defconfig: DRM_DUMB_VGA_DAC: follow changed config symbol name
-  arm64: defconfig: add DRM_DISPLAY_CONNECTOR
-  arm64: defconfig: PCIE_TEGRA194: follow changed config symbol name
-  arm64: defconfig: ARCH_R8A7795: follow changed config symbol name
-  arm64: defconfig: refresh
-
- arch/arm64/configs/defconfig | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 24e534d850454..ae908c3f43c76 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -610,7 +610,7 @@ CONFIG_DRM_MSM=m
+ CONFIG_DRM_TEGRA=m
+ CONFIG_DRM_PANEL_LVDS=m
+ CONFIG_DRM_PANEL_SIMPLE=m
+-CONFIG_DRM_DUMB_VGA_DAC=m
++CONFIG_DRM_SIMPLE_BRIDGE=m
+ CONFIG_DRM_PANEL_TRULY_NT35597_WQXGA=m
+ CONFIG_DRM_SII902X=m
+ CONFIG_DRM_THINE_THC63LVD1024=m
 -- 
 2.20.1
 
