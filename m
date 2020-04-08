@@ -2,171 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B1A1A1D76
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FE11A1D7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 10:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbgDHIdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 04:33:50 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:41974 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgDHIdt (ORCPT
+        id S1727354AbgDHIiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 04:38:18 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:39386 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725932AbgDHIiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 04:33:49 -0400
-Received: by mail-lf1-f66.google.com with SMTP id z23so4487038lfh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 01:33:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tvILii5CJ06FrB5H/A/DS06RAK/9uc+M6yIejdDAIMA=;
-        b=t69Xq2ikv0jem5qSN2MzA8dQVEV2UR6xjYO8782vc835XQW8CGHcD+gpUyar4QV3HC
-         mtxzF0oQyyjBQIt7UnJ/m8Kcoc77JPuFSMAZ6k4BywAn7btMJ0F4kgh+ulk3Ku6AEmzj
-         XdLrWRSJs+l88+fX8vG5/Lvx4UFUWDziy1lFu8nnBDttdn9ad6xSXKtbEFyAAPlmPKd8
-         zf63GHwmxiLkHzjbAj+0vnYkFkIujG5PH/FcmxApf7V6B1Lr+xyscfawC+T1A5FdE9RX
-         CX1rw/OquduBwcSBEtP5vJWkXu1jyTojOC93LM6ZDt/vftHnP5IclYcYLOJC9uMmddpl
-         yKdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tvILii5CJ06FrB5H/A/DS06RAK/9uc+M6yIejdDAIMA=;
-        b=ceeWBnA5bp8zB7rxEwMdrE2Z3ui5p6KFbzrWgECWrebB7oMtHUAxqEQDkpJiAwN59h
-         xxe4ucLSrdZDbogvI+ILjgwimFMu+zfx4ynP3zSMP/63bbSjYlAqJKaAsgy+f2DBmCvc
-         pmogbifjjkJ23dnezZ6/GeG2ns9SPXcOZz9miDVkuxUjOYOzWA8ZvmNk6zwDNLjvLJId
-         oCkeDBLmATs0cBgMK2Fq+vkT/+/M5xyzvRX6fIh2Ed25zS0mRxyLTJq8b1BJNsTPkExm
-         0Wa6qkSOMQjHy3TGWoZ8nvXBYSr9Cth+qA5z2oPwoQBhkvayehkZK/79FVYaR9f8QfCJ
-         Hguw==
-X-Gm-Message-State: AGi0PuZho0L1kEym9cVYtf0Per63DMN/LQD19yJHIvc8P+QA25EJhEZL
-        QpzHNRWADfirT7tw+yNustivJwFNmrHvsr8gXtk8drwevzg=
-X-Google-Smtp-Source: APiQypITME2yJfcGPeX/mq09A/VOU2OcgdoVkUCAOPRENd0OVCBzgf7+1A2Mzt/AOn4LG05KhuntnKaaZk1HF30R7YI=
-X-Received: by 2002:a19:4014:: with SMTP id n20mr3760109lfa.6.1586334825919;
- Wed, 08 Apr 2020 01:33:45 -0700 (PDT)
+        Wed, 8 Apr 2020 04:38:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ACkspuPIfoQ3/5/zaLoUtXyvTpTXAnBFfLWAYMZ/rzs=; b=Ly7jlU8l1rKqdWtymw+5P8Us5L
+        zj0u5X2Sk/xu4B6bimPchBI9xQJzfL+rp6mT1HAivIcL6kb/bgwF+gaol4/0MhsD6bhwwXwZWfLv+
+        MHff0X6MDVM7nsWpSujSjZ0YqY+srJPWBn7DBlpedVY+yyliB4WS4aB2mQ/rLVDi9gEFHMqsy5qOq
+        C6bbz6a4sAhvAf0sUsVb1iMXpOKlfF65TVnLZZ1t9uCGPSw8oB9E+1B2eszB7/esrz6PbeENtWt5H
+        DNCQARtypj9TUiug8vb+FI6Jsv819f8UWAttNcyK12wTCIqR+mhK2fNt1MX57cn+BBcDAa4hcc0sP
+        dLsIFGGA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jM6DO-00067X-DJ; Wed, 08 Apr 2020 08:37:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1586F3025C3;
+        Wed,  8 Apr 2020 10:37:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id EEC9B2BA879E0; Wed,  8 Apr 2020 10:37:38 +0200 (CEST)
+Date:   Wed, 8 Apr 2020 10:37:38 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, hch@infradead.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        mingo <mingo@redhat.com>, bp <bp@alien8.de>, hpa@zytor.com,
+        x86 <x86@kernel.org>, "Kenneth R. Crudup" <kenny@panix.com>,
+        Jessica Yu <jeyu@kernel.org>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        jannh@google.com, keescook@chromium.org, David.Laight@aculab.com,
+        Doug Covelli <dcovelli@vmware.com>, mhiramat@kernel.org
+Subject: Re: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
+Message-ID: <20200408083738.GO20713@hirez.programming.kicks-ass.net>
+References: <20200407110236.930134290@infradead.org>
+ <20200407111007.429362016@infradead.org>
+ <10ABBCEE-A74D-4100-99D9-05B4C1758FF6@gmail.com>
+ <20200407193853.GP2452@worktop.programming.kicks-ass.net>
+ <90B32DAE-0BB5-4455-8F73-C43037695E7C@gmail.com>
+ <20200407205042.GT2452@worktop.programming.kicks-ass.net>
+ <96C2F23A-D6F4-4A04-82B6-284788C5D2CC@gmail.com>
+ <04f4fc03-95cd-df2e-e93d-e9c4fa221ae4@citrix.com>
+ <a263df2d-6dd7-83c1-baff-301625ef60a2@redhat.com>
 MIME-Version: 1.0
-References: <20200407154755.973323425@linuxfoundation.org>
-In-Reply-To: <20200407154755.973323425@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 8 Apr 2020 14:03:34 +0530
-Message-ID: <CA+G9fYuAC3Aj_Vy0gg5FxM4_p70+Fh1vA71QdFe=PGSEE1cYow@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/38] 5.4.31-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a263df2d-6dd7-83c1-baff-301625ef60a2@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Apr 2020 at 22:08, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.31 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Thu, 09 Apr 2020 15:46:32 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.31-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Wed, Apr 08, 2020 at 02:22:45AM +0200, Paolo Bonzini wrote:
+> On 08/04/20 01:15, Andrew Cooper wrote:
+> >> Anyhow, I do not think it is the only use-case which is not covered by your
+> >> patches (even considering CRs/DRs alone). For example, there is no kernel
+> >> function to turn on CR4.VMXE, which is required to run hypervisors on x86.
+> > How about taking this opportunity to see if there is a way to improve on
+> > the status quo for co-existing hypervisor modules?
+> 
+> Almost serious question: why?  I can understand VMware, but why can't at
+> least VirtualBox use KVM on Linux?  I am not sure if they are still
+> running device emulation in ring zero, but if so do you really want to
+> do that these days?
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Having had the 'joy' of looking at the virtual-puke^Wbox code recently,
+nobody with half a hair of sense on their head will want to ever touch
+that thing again.
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.31-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: 23c04177b89f23d80a3b5dfa54a4babfc32bea3b
-git describe: v5.4.30-39-g23c04177b89f
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-5.4-oe/bui=
-ld/v5.4.30-39-g23c04177b89f
-
-
-No regressions (compared to build v5.4.30)
-
-No fixes (compared to build v5.4.30)
-
-Ran 25033 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* perf
-* ltp-commands-tests
-* ltp-dio-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-fs-tests
-* ltp-open-posix-tests
-* spectre-meltdown-checker-test
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+It's a security nightmare, and that's the best part of it.
