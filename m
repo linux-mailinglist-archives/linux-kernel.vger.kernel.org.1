@@ -2,103 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9201A2C94
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 01:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C5F1A2CA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 01:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgDHXvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 19:51:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43314 "EHLO mail.kernel.org"
+        id S1726619AbgDHXxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 19:53:43 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:40794 "EHLO mail5.wrs.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726523AbgDHXvf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 19:51:35 -0400
-Received: from localhost (mobile-166-175-188-68.mycingular.net [166.175.188.68])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 050E02082F;
-        Wed,  8 Apr 2020 23:51:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586389895;
-        bh=ohD59jkDFB/7GbrNwOr+RvtEO78AppOEta0uYKkJaOk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=i243TA3iZ14gJyfzqpJx5lW6qxa0I0TWRjoCNJ1pTyAMoKpRNGO9XGXe4feq2IHKZ
-         /N0BFAPMBXb2oHHt5BczVvgIHnz9by1j5vnTFnMQHgRR+xhuiQqEnffDgEQ9BBv+iT
-         0IpSHFoe/PMaOm3RmcfLSyKA8M4gx9tSc9h2n7QQ=
-Date:   Wed, 8 Apr 2020 18:51:33 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        linux-rockchip@lists.infradead.org,
-        Lad Prabhakar <prabhakar.csengg@gmail.com>
-Subject: Re: [PATCH v7 6/8] PCI: rcar: Add support for R-Car PCIe controller
- in endpoint mode
-Message-ID: <20200408235133.GA151858@google.com>
+        id S1726578AbgDHXxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 19:53:42 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 038NqZ8o002758
+        (version=TLSv1 cipher=AES256-SHA bits=256 verify=FAIL);
+        Wed, 8 Apr 2020 16:52:45 -0700
+Received: from sc2600cp.corp.ad.wrs.com (128.224.56.62) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 8 Apr 2020 16:52:24 -0700
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH] perf/x86/intel/pt: drop pointless NULL assignment.
+Date:   Wed, 8 Apr 2020 19:52:16 -0400
+Message-ID: <20200408235216.108980-1-paul.gortmaker@windriver.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586360280-10956-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe:
+Only a few lines below this removed line is this:
 
-  PCI: rcar: Add endpoint mode support
+  attrs = kzalloc(size, GFP_KERNEL);
 
-so the important "endpoint mode" part is early and doesn't get chopped
-off or wrapped.  We already know it's PCIe and rcar-related.
+and since there is no code path where this could be avoided, the
+NULL assignment is a pointless relic of history and can be removed.
 
-On Wed, Apr 08, 2020 at 04:37:58PM +0100, Lad Prabhakar wrote:
-> This patch adds support for R-Car PCIe controller to work in endpoint mode.
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 
-s/This patch adds/Add/
+diff --git a/arch/x86/events/intel/pt.c b/arch/x86/events/intel/pt.c
+index 1db7a51d9792..e94af4a54d0d 100644
+--- a/arch/x86/events/intel/pt.c
++++ b/arch/x86/events/intel/pt.c
+@@ -226,8 +226,6 @@ static int __init pt_pmu_hw_init(void)
+ 			pt_pmu.vmx = true;
+ 	}
+ 
+-	attrs = NULL;
+-
+ 	for (i = 0; i < PT_CPUID_LEAVES; i++) {
+ 		cpuid_count(20, i,
+ 			    &pt_pmu.caps[CPUID_EAX + i*PT_CPUID_REGS_NUM],
+-- 
+2.17.1
 
-> +static int rcar_pcie_ep_set_bar(struct pci_epc *epc, u8 func_no,
-> +				struct pci_epf_bar *epf_bar)
-> +{
-> +	int flags = epf_bar->flags | LAR_ENABLE | LAM_64BIT;
-> +	struct rcar_pcie_endpoint *ep = epc_get_drvdata(epc);
-> +	u64 size = 1ULL << fls64(epf_bar->size - 1);
-> +	dma_addr_t cpu_addr = epf_bar->phys_addr;
-> +	enum pci_barno bar = epf_bar->barno;
-> +	struct rcar_pcie *pcie = &ep->pcie;
-> +	u32 mask;
-> +	int idx;
-> +	int err;
-> +
-> +	idx = find_first_zero_bit(ep->ib_window_map, ep->num_ib_windows);
-> +	if (idx >= ep->num_ib_windows) {
-> +		dev_err(pcie->dev, "no free inbound window\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if ((flags & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO)
-> +		flags |= IO_SPACE;
-> +
-> +	ep->bar_to_atu[bar] = idx;
-> +	/* use 64 bit bars */
-
-s/64 bit bars/64-bit BARs/
-
-> +static const struct pci_epc_features rcar_pcie_epc_features = {
-> +	.linkup_notifier = false,
-> +	.msi_capable = true,
-> +	.msix_capable = false,
-> +	/* use 64-bit bars so mark bar1/3/5 as reserved */
-
-s/bar/BAR/g
