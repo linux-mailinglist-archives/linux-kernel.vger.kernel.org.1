@@ -2,85 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 712A11A1E03
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 11:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88121A1EC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 12:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727848AbgDHJZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 05:25:49 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([146.101.78.151]:22037 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726534AbgDHJZt (ORCPT
+        id S1727919AbgDHK1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 06:27:38 -0400
+Received: from www.linux-watchdog.org ([185.87.125.42]:33188 "EHLO
+        www.linux-watchdog.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgDHK1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 05:25:49 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-103-umjWl9uwPP6HXCkUhJmNkA-1; Wed, 08 Apr 2020 10:25:46 +0100
-X-MC-Unique: umjWl9uwPP6HXCkUhJmNkA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Wed, 8 Apr 2020 10:25:45 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Wed, 8 Apr 2020 10:25:45 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jan Kiszka' <jan.kiszka@siemens.com>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kenny@panix.com" <kenny@panix.com>,
-        "jeyu@kernel.org" <jeyu@kernel.org>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "xiaoyao.li@intel.com" <xiaoyao.li@intel.com>,
-        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-        "thellstrom@vmware.com" <thellstrom@vmware.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "dcovelli@vmware.com" <dcovelli@vmware.com>,
-        "mhiramat@kernel.org" <mhiramat@kernel.org>,
-        Wolfgang Mauerer <wolfgang.mauerer@oth-regensburg.de>
-Subject: RE: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
-Thread-Topic: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
-Thread-Index: AQHWDYP6qgl1fjDEE0GOF/TmmkoV06hu88Kw
-Date:   Wed, 8 Apr 2020 09:25:45 +0000
-Message-ID: <a426788d340b477f8cc87a173a251fcb@AcuMS.aculab.com>
-References: <20200407110236.930134290@infradead.org>
- <20200407111007.429362016@infradead.org>
- <20200407174824.5e97a597@gandalf.local.home>
- <137fe245-69f3-080e-5f2b-207cd218f199@siemens.com>
- <20200408085138.GQ20713@hirez.programming.kicks-ass.net>
- <aa7a2547-9670-d04f-4ca0-ab52abf30441@siemens.com>
-In-Reply-To: <aa7a2547-9670-d04f-4ca0-ab52abf30441@siemens.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 8 Apr 2020 06:27:37 -0400
+X-Greylist: delayed 467 seconds by postgrey-1.27 at vger.kernel.org; Wed, 08 Apr 2020 06:27:36 EDT
+Received: by www.linux-watchdog.org (Postfix, from userid 500)
+        id 2F644409E5; Wed,  8 Apr 2020 11:27:03 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 www.linux-watchdog.org 2F644409E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-watchdog.org;
+        s=odk20180602; t=1586338023;
+        bh=VOzQum+z/bArM7BjUmo6thZ+xFwIvAwR6O4velNsQqo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pZ8XIefn1emLE9xMV+JoG+3kGpmswKdMySQYzKX43ZwEHJY6FlCOdBiXY8OZM+O7L
+         S7L8wVVmUrwILUz0aOYbrFcEKs80A6hqgvx/dms+XfGQXmwWBPHQ06xMQZUrhRGuMB
+         UMzG3bw7kJZyDm11MWrJ0R5AUS2m690cwpXt+hQ8=
+Date:   Wed, 8 Apr 2020 11:27:03 +0200
+From:   Wim Van Sebroeck <wim@linux-watchdog.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Dmitry Safonov <dima@arista.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Tero Kristo <t-kristo@ti.com>,
+        Tomer Maimon <tmaimon77@gmail.com>
+Subject: [GIT PULL REQUEST] watchdog - v5.7 Merge window
+Message-ID: <20200408092702.GA27984@www.linux-watchdog.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.20 (2009-12-10)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSmFuIEtpc3prYQ0KPiBTZW50OiAwOCBBcHJpbCAyMDIwIDA5OjU5DQouLi4NCj4gQXQg
-dGhlIHJpc2sgb2YgY3V0dGluZyBvdXIgb3duIGJyYW5jaCBvZmY6IFRoYXQncyBub3QgdGhlIGZp
-cm13YXJlDQo+IGxvYWRlciwgaXQncyBpb3JlbWFwIHdpdGggUEFHRV9LRVJORUxfRVhFQy4NCg0K
-WW91IGNvdWxkIGxpbmsgdGhlICdibG9iJyBpbnRvIHRoZSAudGV4dCBwYXJ0IG9mIGEgbm9ybWFs
-DQprZXJuZWwgbW9kdWxlIGFuZCB0aGVuIGxvYWQgdGhhdC4NCg0KCURhdmlkDQoNCi0NClJlZ2lz
-dGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24g
-S2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi Linus,
+
+Please pull the watchdog changes for the v5.7 release cycle.
+
+This series contains:
+* Add TI K3 RTI watchdog
+* Add stop_on_reboot parameter to control reboot policy
+* wm831x_wdt: Remove GPIO handling
+* Several small fixes, improvements and clean-ups
+
+The output from git request-pull:
+----------------------------------------------------------------
+The following changes since commit fb33c6510d5595144d585aa194d377cf74d31911:
+
+  Linux 5.6-rc6 (2020-03-15 15:01:23 -0700)
+
+are available in the git repository at:
+
+  git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-5.7-rc1
+
+for you to fetch changes up to 2d63908bdbfbce0d98195b22236ad5105dc6eba2:
+
+  watchdog: Add K3 RTI watchdog support (2020-04-01 11:35:23 +0200)
+
+----------------------------------------------------------------
+linux-watchdog 5.7-rc1 tag
+
+----------------------------------------------------------------
+Anson Huang (3):
+      watchdog: imx_sc_wdt: Remove unused includes
+      watchdog: imx7ulp: Remove unused include of init.h
+      watchdog: imx2_wdt: Drop .remove callback
+
+Ansuel Smith (1):
+      watchdog: qcom-wdt: disable pretimeout on timer platform
+
+Chris Packham (1):
+      watchdog: orion: use 0 for unset heartbeat
+
+Dmitry Safonov (1):
+      watchdog: Add stop_on_reboot parameter to control reboot policy
+
+Linus Walleij (1):
+      watchdog: wm831x_wdt: Remove GPIO handling
+
+Loic Poulain (1):
+      watchdog: pm8916_wdt: Add system sleep callbacks
+
+Lucas Stach (1):
+      watchdog: ziirave_wdt: change name to be more specific
+
+Stephen Boyd (1):
+      watchdog: qcom: Use irq flags from firmware
+
+Tero Kristo (3):
+      watchdog: reset last_hw_keepalive time at start
+      dt-bindings: watchdog: Add support for TI K3 RTI watchdog
+      watchdog: Add K3 RTI watchdog support
+
+Tomer Maimon (1):
+      watchdog: npcm: remove whitespaces
+
+ .../devicetree/bindings/watchdog/ti,rti-wdt.yaml   |  65 ++++++
+ drivers/watchdog/Kconfig                           |   8 +
+ drivers/watchdog/Makefile                          |   1 +
+ drivers/watchdog/imx2_wdt.c                        |  37 +--
+ drivers/watchdog/imx7ulp_wdt.c                     |   1 -
+ drivers/watchdog/imx_sc_wdt.c                      |   2 -
+ drivers/watchdog/npcm_wdt.c                        |  19 +-
+ drivers/watchdog/orion_wdt.c                       |   2 +-
+ drivers/watchdog/pm8916_wdt.c                      |  25 ++
+ drivers/watchdog/qcom-wdt.c                        |  34 ++-
+ drivers/watchdog/rti_wdt.c                         | 255 +++++++++++++++++++++
+ drivers/watchdog/watchdog_core.c                   |  12 +
+ drivers/watchdog/watchdog_dev.c                    |   1 +
+ drivers/watchdog/wm831x_wdt.c                      |  27 ---
+ drivers/watchdog/ziirave_wdt.c                     |   2 +-
+ include/linux/mfd/wm831x/pdata.h                   |   1 -
+ 16 files changed, 412 insertions(+), 80 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/watchdog/ti,rti-wdt.yaml
+ create mode 100644 drivers/watchdog/rti_wdt.c
+----------------------------------------------------------------
+
+Kind regards,
+Wim.
 
