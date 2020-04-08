@@ -2,103 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E84A51A2568
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E369F1A259B
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 17:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729376AbgDHPiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 11:38:08 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:42844 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728895AbgDHPiI (ORCPT
+        id S1729686AbgDHPi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 11:38:59 -0400
+Received: from relmlor2.renesas.com ([210.160.252.172]:22084 "EHLO
+        relmlie6.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729674AbgDHPi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 11:38:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=zXlIsbDM28OKmK+7j6iTmvR4wjllvC+TzshTZOZR7TU=; b=gBMMD0VVRRKgOhHzpjDt/lZU1Y
-        u9BILt8VLhw0sO34uaQF8z0/PQuXdH0k8rq6aufu410mYc/h3uYsHE3q9jGtAR4M+g6usA+9c6hXK
-        qRLaLBonqPUOIZaYwx8mMo+2EsEG9nTiAccNRbs6mfHNotxOLNwE+DlKy1V2XzHirfFfsMPOVzUym
-        kj+8W0aL1LC5SGUCy/9LavI/NBI3tZTJ8tgBbvnAEsg8PZoPaY6ZqgBKJJoDlEFMhPCgeRUq/t2tJ
-        UNV8tw5S5/pX84WeHyxnsmLcEBTrdKEA6VvzmozcQ0Sa3ZoJrnu5VhBf+PUP8I8OdfHleFuFcY7pQ
-        OYfbsiKQ==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jMCm9-0006Y5-CG; Wed, 08 Apr 2020 15:38:07 +0000
-Subject: Re: [PATCH 10/28] mm: only allow page table mappings for built-in
- zsmalloc
-To:     Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200408115926.1467567-1-hch@lst.de>
- <20200408115926.1467567-11-hch@lst.de>
- <c0c86feb-b3d8-78f2-127f-71d682ffc51f@infradead.org>
- <20200408151203.GN20730@hirez.programming.kicks-ass.net>
- <20200408151519.GQ21484@bombadil.infradead.org>
- <20200408153602.GA28081@lst.de>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ce1cb560-2670-c79d-48eb-e4dd423aecb0@infradead.org>
-Date:   Wed, 8 Apr 2020 08:37:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200408153602.GA28081@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 8 Apr 2020 11:38:58 -0400
+X-IronPort-AV: E=Sophos;i="5.72,359,1580742000"; 
+   d="scan'208";a="43920588"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie6.idc.renesas.com with ESMTP; 09 Apr 2020 00:38:57 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id DF4114004BDB;
+        Thu,  9 Apr 2020 00:38:52 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        Chris Paterson <Chris.Paterson2@renesas.com>,
+        linux-rockchip@lists.infradead.org,
+        Lad Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH v7 8/8] MAINTAINERS: Add file patterns for rcar PCI device tree bindings
+Date:   Wed,  8 Apr 2020 16:38:00 +0100
+Message-Id: <1586360280-10956-9-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1586360280-10956-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <1586360280-10956-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/20 8:36 AM, Christoph Hellwig wrote:
-> On Wed, Apr 08, 2020 at 08:15:19AM -0700, Matthew Wilcox wrote:
->>>>>  config ZSMALLOC_PGTABLE_MAPPING
->>>>>  	bool "Use page table mapping to access object in zsmalloc"
->>>>> -	depends on ZSMALLOC
->>>>> +	depends on ZSMALLOC=y
->>>>
->>>> It's a bool so this shouldn't matter... not needed.
->>>
->>> My mm/Kconfig has:
->>>
->>> config ZSMALLOC
->>> 	tristate "Memory allocator for compressed pages"
->>> 	depends on MMU
->>>
->>> which I think means it can be modular, no?
->>
->> Randy means that ZSMALLOC_PGTABLE_MAPPING is a bool, so I think hch's patch
->> is wrong ... if ZSMALLOC is 'm' then ZSMALLOC_PGTABLE_MAPPING would become
->> 'n' instead of 'y'.
-> 
-> In Linus' tree you can select PGTABLE_MAPPING=y with ZSMALLOC=m,
-> and that fits my understanding of the kbuild language.  With this
-> patch I can't anymore.
-> 
+Add file pattern entry for rcar PCI devicetree binding, so that when
+people run ./scripts/get_maintainer.pl the rcar PCI maintainers could also
+be listed.
 
-Makes sense. thanks.
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3f0f2ee2af32..87df2d31a54b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12933,6 +12933,7 @@ L:	linux-pci@vger.kernel.org
+ L:	linux-renesas-soc@vger.kernel.org
+ S:	Maintained
+ F:	drivers/pci/controller/*rcar*
++F:	Documentation/devicetree/bindings/pci/*rcar*
+ 
+ PCI DRIVER FOR SAMSUNG EXYNOS
+ M:	Jingoo Han <jingoohan1@gmail.com>
 -- 
-~Randy
+2.20.1
 
