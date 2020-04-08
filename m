@@ -2,218 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 774341A19A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB951A1999
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 03:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgDHBh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Apr 2020 21:37:56 -0400
-Received: from conuserg-12.nifty.com ([210.131.2.79]:51797 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726407AbgDHBh4 (ORCPT
+        id S1726446AbgDHBhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Apr 2020 21:37:17 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36852 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726417AbgDHBhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Apr 2020 21:37:56 -0400
-Received: from grover.flets-west.jp (softbank126125134031.bbtec.net [126.125.134.31]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 0381aPHk015816;
-        Wed, 8 Apr 2020 10:36:26 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 0381aPHk015816
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1586309787;
-        bh=VX8um7le6Uy6ER5XPnM1U84P87XfhXDwxlFRA+5ZbG0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eUsvDlbQbvcaCGRqQfwO2U/mL1iR8lQyK/ePzFpozGB0B/NniW9h/7THVCl6N67jK
-         hnrgkoCm2u0IRC4jRVzLH9jgySj83mfKHSxwkR2lJioS1n124Ka1ZSKbX4TTUMVNij
-         BM5QfGMcxpbfU/uJHVi3yFyfKNgF8s6UplUNUcO6d2NqMypA+UPJHK+vsHiM7Vv7I5
-         PAX6n8mIZHLuyd2GH3Ru4O2n6BpK2vqJhrCc3wNNifbhK9ysICupf3eOCEWYfh7wzf
-         1XwiNaAAIbMIoh6blGUbMCW38sHOK86H+oJSSt4gXMMnena6VaydhYLL6f4gsff4oc
-         eVb8sWP4GhCmw==
-X-Nifty-SrcIP: [126.125.134.31]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     clang-built-linux@googlegroups.com,
-        Fangrui Song <maskray@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] kbuild: support LLVM=1 to switch the default tools to Clang/LLVM
-Date:   Wed,  8 Apr 2020 10:36:23 +0900
-Message-Id: <20200408013623.31974-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200408013623.31974-1-masahiroy@kernel.org>
-References: <20200408013623.31974-1-masahiroy@kernel.org>
+        Tue, 7 Apr 2020 21:37:17 -0400
+Received: by mail-il1-f198.google.com with SMTP id e5so5297909ilg.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Apr 2020 18:37:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=iTgwp6BguOdJAZ/PeO1dtbonSopyEraPaAZfeMz81ms=;
+        b=VFrsVh3zjtZUFquheLlUomAu/u0CKfcL9Vt/b2+H5jyvcIxMMaMF0UjrkeA+78dshH
+         sG/uYRh4zX60bBHJJZo5aptDZeBG5FuaHwif8gYH0TV/zWUeI7ajig9rGK/kgs+bOmJF
+         pj2KXtU3zt6un5PGEE+sRA6avUlYCe5k3Ykj9fRYAOaXr8aoeX085yB2Ia4EQ0Efx37i
+         wL1CHC5+qRqlNoVMsDcFDLNXGiwaAWJROPo31WJazkuEmRJLZsn2YMlR5zc7gaxR7DQM
+         CHRBRyWnmdvcjbOX+OFCtIIbz42wyM7sTYxKU5WlSg9KqzizVfdfzjDWuOiugzChsD1g
+         Rjlg==
+X-Gm-Message-State: AGi0PuZP8FzuAWbNyWwfNl3QG0jZtZcWD1I/BCyui3wiQTiYup4fxXSo
+        qjcHYgg1NCCh12aiFGcYy9ZL4n9IN1Mtg31Yx0wgu2j4OtK4
+X-Google-Smtp-Source: APiQypJoZ+PLIMyU+FBlf/9o4hbRkZbgCiJpClZPLiVFx5BXXXgRP+Xs4zPCgzyN+hW9Ww8pJkEV2/pevvcAba6PfBQUlo7EPwTK
+MIME-Version: 1.0
+X-Received: by 2002:a92:8659:: with SMTP id g86mr5656827ild.267.1586309835938;
+ Tue, 07 Apr 2020 18:37:15 -0700 (PDT)
+Date:   Tue, 07 Apr 2020 18:37:15 -0700
+In-Reply-To: <00000000000005c65d05a2b90e70@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000046629905a2bd8acc@google.com>
+Subject: Re: WARNING: bad unlock balance in __get_user_pages_remote
+From:   syzbot <syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bgeffon@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        peterx@redhat.com, syzkaller-bugs@googlegroups.com,
+        torvalds@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Documentation/kbuild/llvm.rst implies, building the kernel with a
-full set of LLVM tools gets very verbose and unwieldy.
+syzbot has found a reproducer for the following crash on:
 
-Provide a single switch LLVM=1 to use Clang and LLVM tools instead
-of GCC and Binutils. You can pass it from the command line or as an
-environment variable.
+HEAD commit:    763dede1 Merge tag 'for-linus-5.7-rc1' of git://git.kernel..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17731b0be00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=12205d036cec317f
+dashboard link: https://syzkaller.appspot.com/bug?extid=a8c70b7f3579fc0587dc
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+userspace arch: i386
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=135855cde00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149ea07de00000
 
-Please note LLVM=1 does not turn on the integrated assembler. You need
-to pass LLVM_IAS=1 to use it. When the upstream kernel is ready for the
-integrated assembler, I think we can make it default.
+The bug was bisected to:
 
-We discussed what we need, and we agreed to go with a simple boolean
-flag that switches both target and host tools:
+commit 71335f37c5e8ec9225285206f7f875057b9737ad
+Author: Peter Xu <peterx@redhat.com>
+Date:   Thu Apr 2 04:08:53 2020 +0000
 
-  https://lkml.org/lkml/2020/3/28/494
-  https://lkml.org/lkml/2020/4/3/43
+    mm/gup: allow to react to fatal signals
 
-Some items discussed, but not adopted:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17dba9b3e00000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=143ba9b3e00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=103ba9b3e00000
 
-- LLVM_DIR
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+a8c70b7f3579fc0587dc@syzkaller.appspotmail.com
+Fixes: 71335f37c5e8 ("mm/gup: allow to react to fatal signals")
 
-  When multiple versions of LLVM are installed, I just thought supporting
-  LLVM_DIR=/path/to/my/llvm/bin/ might be useful.
+=====================================
+WARNING: bad unlock balance detected!
+5.6.0-syzkaller #0 Not tainted
+-------------------------------------
+syz-executor151/7052 is trying to release lock (&mm->mmap_sem) at:
+[<ffffffff819fbf60>] __get_user_pages_locked mm/gup.c:1366 [inline]
+[<ffffffff819fbf60>] __get_user_pages_remote mm/gup.c:1831 [inline]
+[<ffffffff819fbf60>] __get_user_pages_remote+0x540/0x740 mm/gup.c:1806
+but there are no more locks to release!
 
-  CC      = $(LLVM_DIR)clang
-  LD      = $(LLVM_DIR)ld.lld
-    ...
+other info that might help us debug this:
+no locks held by syz-executor151/7052.
 
-  However, we can handle this by modifying PATH. So, we decided to not do
-  this.
-
-- LLVM_SUFFIX
-
-  Some distributions (e.g. Debian) package specific versions of LLVM with
-  naming conventions that use the version as a suffix.
-
-  CC      = clang$(LLVM_SUFFIX)
-  LD      = ld.lld(LLVM_SUFFIX)
-    ...
-
-  will allow a user to pass LLVM_SUFFIX=-11 to use clang-11 etc.,
-  but the suffixed versions in /usr/bin/ are symlinks to binaries in
-  /usr/lib/llvm-#/bin/, so this can also be handled by PATH.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
----
-
-Changes in v3: None
-Changes in v2:
-  - Switch host compilers as well, as requested by Nick and Nathan
-
- Documentation/kbuild/kbuild.rst |  5 +++++
- Documentation/kbuild/llvm.rst   |  8 ++++++--
- Makefile                        | 29 +++++++++++++++++++++++------
- tools/objtool/Makefile          |  6 ++++++
- 4 files changed, 40 insertions(+), 8 deletions(-)
-
-diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
-index 510f38d7e78a..2d1fc03d346e 100644
---- a/Documentation/kbuild/kbuild.rst
-+++ b/Documentation/kbuild/kbuild.rst
-@@ -262,3 +262,8 @@ KBUILD_BUILD_USER, KBUILD_BUILD_HOST
- These two variables allow to override the user@host string displayed during
- boot and in /proc/version. The default value is the output of the commands
- whoami and host, respectively.
-+
-+LLVM
-+----
-+If this variable is set to 1, Kbuild will use Clang and LLVM utilities instead
-+of GCC and GNU binutils to build the kernel.
-diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
-index 0fefdf1737e9..c0a98c20e34c 100644
---- a/Documentation/kbuild/llvm.rst
-+++ b/Documentation/kbuild/llvm.rst
-@@ -47,8 +47,12 @@ example:
- LLVM Utilities
- --------------
- 
--LLVM has substitutes for GNU binutils utilities. These can be invoked as
--additional parameters to `make`.
-+LLVM has substitutes for GNU binutils utilities. Kbuild supports `LLVM=1`
-+to enable them.
-+
-+	make LLVM=1
-+
-+They can be enabled individually. The full list of the parameters:
- 
- 	make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \\
- 	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size \\
-diff --git a/Makefile b/Makefile
-index a2aadcf8a36c..d5c907c0beb8 100644
---- a/Makefile
-+++ b/Makefile
-@@ -399,8 +399,13 @@ HOST_LFS_CFLAGS := $(shell getconf LFS_CFLAGS 2>/dev/null)
- HOST_LFS_LDFLAGS := $(shell getconf LFS_LDFLAGS 2>/dev/null)
- HOST_LFS_LIBS := $(shell getconf LFS_LIBS 2>/dev/null)
- 
--HOSTCC       = gcc
--HOSTCXX      = g++
-+ifneq ($(LLVM),)
-+HOSTCC	= clang
-+HOSTCXX	= clang++
-+else
-+HOSTCC	= gcc
-+HOSTCXX	= g++
-+endif
- KBUILD_HOSTCFLAGS   := -Wall -Wmissing-prototypes -Wstrict-prototypes -O2 \
- 		-fomit-frame-pointer -std=gnu89 $(HOST_LFS_CFLAGS) \
- 		$(HOSTCFLAGS)
-@@ -409,16 +414,28 @@ KBUILD_HOSTLDFLAGS  := $(HOST_LFS_LDFLAGS) $(HOSTLDFLAGS)
- KBUILD_HOSTLDLIBS   := $(HOST_LFS_LIBS) $(HOSTLDLIBS)
- 
- # Make variables (CC, etc...)
--LD		= $(CROSS_COMPILE)ld
--CC		= $(CROSS_COMPILE)gcc
- CPP		= $(CC) -E
-+ifneq ($(LLVM),)
-+CC		= clang
-+LD		= ld.lld
-+AR		= llvm-ar
-+NM		= llvm-nm
-+OBJCOPY		= llvm-objcopy
-+OBJDUMP		= llvm-objdump
-+READELF		= llvm-readelf
-+OBJSIZE		= llvm-size
-+STRIP		= llvm-strip
-+else
-+CC		= $(CROSS_COMPILE)gcc
-+LD		= $(CROSS_COMPILE)ld
- AR		= $(CROSS_COMPILE)ar
- NM		= $(CROSS_COMPILE)nm
--STRIP		= $(CROSS_COMPILE)strip
- OBJCOPY		= $(CROSS_COMPILE)objcopy
- OBJDUMP		= $(CROSS_COMPILE)objdump
--OBJSIZE		= $(CROSS_COMPILE)size
- READELF		= $(CROSS_COMPILE)readelf
-+OBJSIZE		= $(CROSS_COMPILE)size
-+STRIP		= $(CROSS_COMPILE)strip
-+endif
- PAHOLE		= pahole
- LEX		= flex
- YACC		= bison
-diff --git a/tools/objtool/Makefile b/tools/objtool/Makefile
-index ee08aeff30a1..f591c4d1b6fe 100644
---- a/tools/objtool/Makefile
-+++ b/tools/objtool/Makefile
-@@ -3,9 +3,15 @@ include ../scripts/Makefile.include
- include ../scripts/Makefile.arch
- 
- # always use the host compiler
-+ifneq ($(LLVM),)
-+HOSTAR	?= llvm-ar
-+HOSTCC	?= clang
-+HOSTLD	?= ld.lld
-+else
- HOSTAR	?= ar
- HOSTCC	?= gcc
- HOSTLD	?= ld
-+endif
- AR	 = $(HOSTAR)
- CC	 = $(HOSTCC)
- LD	 = $(HOSTLD)
--- 
-2.17.1
+stack backtrace:
+CPU: 0 PID: 7052 Comm: syz-executor151 Not tainted 5.6.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x188/0x20d lib/dump_stack.c:118
+ __lock_release kernel/locking/lockdep.c:4633 [inline]
+ lock_release+0x586/0x800 kernel/locking/lockdep.c:4941
+ up_read+0x79/0x750 kernel/locking/rwsem.c:1573
+ __get_user_pages_locked mm/gup.c:1366 [inline]
+ __get_user_pages_remote mm/gup.c:1831 [inline]
+ __get_user_pages_remote+0x540/0x740 mm/gup.c:1806
+ pin_user_pages_remote+0x67/0xa0 mm/gup.c:2897
+ process_vm_rw_single_vec mm/process_vm_access.c:108 [inline]
+ process_vm_rw_core.isra.0+0x423/0x940 mm/process_vm_access.c:218
+ compat_process_vm_rw+0x21f/0x240 mm/process_vm_access.c:343
+ __do_compat_sys_process_vm_writev mm/process_vm_access.c:370 [inline]
+ __se_compat_sys_process_vm_writev mm/process_vm_access.c:363 [inline]
+ __ia32_compat_sys_process_vm_writev+0xdc/0x1b0 mm/process_vm_access.c:363
+ do_syscall_32_irqs_on arch/x86/entry/common.c:337 [inline]
+ do_fast_syscall_32+0x270/0xe90 arch/x86/entry/common.c:396
+ entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+------------[ cut here ]------------
+DEBUG_RWSEMS_WARN_ON(tmp < 0): count = 0xffffffffffffff00, magic = 0xffff88809e2392f8, owner = 0x3, curr 0xffff88809a6c6240, list empty
+WARNING: CPU: 1 PID: 7052 at kernel/locking/rwsem.c:1435 __up_read kernel/locking/rwsem.c:1435 [inline]
+WARNING: CPU: 1 PID: 7052 at kernel/locking/rwsem.c:1435 up_read+0x5f9/0x750 kernel/locking/rwsem.c:1574
 
