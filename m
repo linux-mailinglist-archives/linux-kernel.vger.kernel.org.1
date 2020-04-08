@@ -2,84 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CFE1A287C
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2990D1A28B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 20:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730753AbgDHSXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 14:23:49 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51764 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730743AbgDHSXs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 14:23:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586370227;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hqTq2Wy3TNDTzfSsOcRzLQkDhw37DQsS+GCpZMUDZFo=;
-        b=eEPqwTCRBo1Et90qpZ2uWEcLfaRYwP9J7Lb7wybHtfxWpjJl0m+LbWyRvaNVooCCJTDhSq
-        YZsYXsAcZlet3WKjLhj1yqRbx06EfUe8+cYPVRS1lNmPh/mQ5JgjlXSvFIiLglcnWYy2Vw
-        ZticrKC+wqPv+q12vvvWv1aVzPDxKP8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-415-XsFltCapNOamuqjPPB_lXg-1; Wed, 08 Apr 2020 14:23:41 -0400
-X-MC-Unique: XsFltCapNOamuqjPPB_lXg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9ED88017F4;
-        Wed,  8 Apr 2020 18:23:39 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-115-85.rdu2.redhat.com [10.10.115.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AFCA09A253;
-        Wed,  8 Apr 2020 18:23:39 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id 169B92202B8; Wed,  8 Apr 2020 14:23:39 -0400 (EDT)
-Date:   Wed, 8 Apr 2020 14:23:39 -0400
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
-Message-ID: <20200408182339.GC93547@redhat.com>
-References: <877dyqkj3h.fsf@nanos.tec.linutronix.de>
- <F2BD5266-A9E5-41C8-AC64-CC33EB401B37@amacapital.net>
+        id S1729855AbgDHS0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 14:26:06 -0400
+Received: from mga02.intel.com ([134.134.136.20]:9897 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727801AbgDHS0F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 14:26:05 -0400
+IronPort-SDR: WPZG6HhFA53Fr8YR0v5ZLwQWzHb8P//uMhtvTw1XRZmWu/3KUXXjXL2i9ziGNAWxmbqYFRd5HC
+ lYj3cj/JMTLw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 11:25:57 -0700
+IronPort-SDR: kzvi+KBl4k5fsZ2oCipAYSwCzSGcXbflV+yrjvAb05aE9aOA86S/6zKzG+UrgYrTmt3oKadiT6
+ 9CwsxJ+UDTDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,359,1580803200"; 
+   d="scan'208";a="251643727"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003.jf.intel.com with ESMTP; 08 Apr 2020 11:25:54 -0700
+Received: from andy by smile with local (Exim 4.93)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1jMFOf-00Gles-95; Wed, 08 Apr 2020 21:25:57 +0300
+Date:   Wed, 8 Apr 2020 21:25:57 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Al Cooper <alcooperx@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Alan Stern <stern@rowland.harvard.edu>,
+        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 0/4] Add XHCI, EHCI and OHCI support for Broadcom STB
+ SoS's
+Message-ID: <20200408182557.GR3676135@smile.fi.intel.com>
+References: <20200408181406.40389-1-alcooperx@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <F2BD5266-A9E5-41C8-AC64-CC33EB401B37@amacapital.net>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20200408181406.40389-1-alcooperx@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 07, 2020 at 09:48:02PM -0700, Andy Lutomirski wrote:
+On Wed, Apr 08, 2020 at 02:14:02PM -0400, Al Cooper wrote:
+> v3 - Addressed all of Andy Shevchenko's review comments for
+>      ehci-brcm.c.
+>    - Fixed the brcm,bcm7445-ehci.yaml dt-bindings document,
+>      dt_binding_check now passes.
+>    - Added the XHCI functionality to xhci-plat.c instead of creating
+>      new brcmstb files, as suggested by Mathias Nyman.
 
-[..]
-> It would be nifty if the host also told the guest what the guest virtual address was if the host knows it.
+It's nice, but have you heard what Mathias asked / proposed?
 
-It will be good to know and send guest virtual address as well. While
-sending SIGBUS to guest user space, information about which access
-triggered SIGBUS will be useful.
+> v2 - Addressed Andy Shevchenko's review comments.
+>    - Fixed dt_binding_check error pointed out by Rob Herring.
+>    - Removed pr_info message in ehci_brcm_init as suggested by
+>      Greg Kroah-Hartman.
+> 
+> This adds support for the XHCI, EHCI and OHCI host controllers found
+> in Broadcom STB SoC's. These drivers depend on getting access to the
+> new Broadcom STB USB PHY driver through a device-tree phandle and
+> will fail if the driver is not available.
+> 
+> Al Cooper (4):
+>   dt-bindings: Add Broadcom STB USB support
+>   usb: xhci: xhci-plat: Add support for Broadcom STB SoC's
+>   usb: ehci: Add new EHCI driver for Broadcom STB SoC's
+>   usb: host: Add ability to build new Broadcom STB USB drivers
+> 
+>  .../bindings/usb/brcm,bcm7445-ehci.yaml       |  60 ++++
+>  .../devicetree/bindings/usb/usb-xhci.txt      |   1 +
+>  MAINTAINERS                                   |   8 +
+>  drivers/usb/host/Kconfig                      |  16 +
+>  drivers/usb/host/Makefile                     |  16 +-
+>  drivers/usb/host/ehci-brcm.c                  | 286 ++++++++++++++++++
+>  drivers/usb/host/xhci-plat.c                  |  10 +
+>  7 files changed, 391 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml
+>  create mode 100644 drivers/usb/host/ehci-brcm.c
+> 
+> -- 
+> 2.17.1
+> 
 
-I thought GUEST_LINEAR_ADDRESS provides guest virtual address if
-EPT_VIOLATION_GLA_VALID bit is set. And it seems to work for my
-simple test case. But when I try to read intel SDM, section "27.2" VM
-exits, EPT violations, I am not so sure.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Somebody who understands this better, can you please help me understand
-what exactly GUEST_LINEAR_ADDRESS is supposed to contain during
-EPT violation. I assumed it is guest virtual address and added a
-patch in my RFC patch series.
-
-https://lore.kernel.org/kvm/20200331194011.24834-3-vgoyal@redhat.com/
-
-But I might have misunderstood it.
-
-Vivek
 
