@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CADE1A2757
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C72CD1A2750
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Apr 2020 18:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgDHQlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 12:41:24 -0400
-Received: from lelv0142.ext.ti.com ([198.47.23.249]:35280 "EHLO
-        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728209AbgDHQlY (ORCPT
+        id S1730330AbgDHQi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 12:38:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3818 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728781AbgDHQi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 12:41:24 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 038GfLOD050250;
-        Wed, 8 Apr 2020 11:41:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1586364081;
-        bh=rMszB/0i6reIacLieAmAbTwgpXpWTaMMrVxKQH7QCmI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=kuf+AuGAA4bLp/fVjWr/SD6pYDrWUrOVIZQGBCRAevWAza7hTp1xSY9ep6vu20iWO
-         PR2mPJfzGhqFo1RzQipoKoiZL0G72iT3H/ppkW3WEitg4ygs4TKnJ8q2WaOao+0McN
-         nA6mTyraLmoaCXUrs7ugJVEKJyV0ep+JleHm0oqQ=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 038GfLiX088090
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 8 Apr 2020 11:41:21 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 8 Apr
- 2020 11:41:21 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
- Frontend Transport; Wed, 8 Apr 2020 11:41:21 -0500
-Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 038GfKmY095071;
-        Wed, 8 Apr 2020 11:41:21 -0500
-Subject: Re: [PATCH v19 04/18] leds: multicolor: Introduce a multicolor class
- definition
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>
-CC:     <linux-leds@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20200402204311.14998-1-dmurphy@ti.com>
- <20200402204311.14998-5-dmurphy@ti.com>
-From:   Dan Murphy <dmurphy@ti.com>
-Message-ID: <e5a789d5-b622-df23-d540-99816851d5f1@ti.com>
-Date:   Wed, 8 Apr 2020 11:35:33 -0500
+        Wed, 8 Apr 2020 12:38:57 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 038GYXJ6176022;
+        Wed, 8 Apr 2020 12:38:53 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30920rr6rb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Apr 2020 12:38:53 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 038GYblU176183;
+        Wed, 8 Apr 2020 12:38:53 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30920rr6r2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Apr 2020 12:38:53 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id 038GUoPT032378;
+        Wed, 8 Apr 2020 16:38:52 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma04dal.us.ibm.com with ESMTP id 3091me03td-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 08 Apr 2020 16:38:52 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 038GcoAZ48562468
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 8 Apr 2020 16:38:50 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5CDA1AE063;
+        Wed,  8 Apr 2020 16:38:50 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 913C2AE05F;
+        Wed,  8 Apr 2020 16:38:49 +0000 (GMT)
+Received: from cpe-172-100-173-215.stny.res.rr.com (unknown [9.85.151.56])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed,  8 Apr 2020 16:38:49 +0000 (GMT)
+Subject: Re: [PATCH v7 06/15] s390/vfio-ap: sysfs attribute to display the
+ guest CRYCB
+To:     Cornelia Huck <cohuck@redhat.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        mjrosato@linux.ibm.com, pmorel@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        jjherne@linux.ibm.com, fiuczy@linux.ibm.com
+References: <20200407192015.19887-1-akrowiak@linux.ibm.com>
+ <20200407192015.19887-7-akrowiak@linux.ibm.com>
+ <20200408123344.1a9032e1.cohuck@redhat.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <60c6bfb6-dd0a-75dc-1043-8dffe983220a@linux.ibm.com>
+Date:   Wed, 8 Apr 2020 12:38:49 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200402204311.14998-5-dmurphy@ti.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20200408123344.1a9032e1.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-07_10:2020-04-07,2020-04-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
+ priorityscore=1501 bulkscore=0 clxscore=1015 lowpriorityscore=0
+ spamscore=0 suspectscore=3 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004080125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel
 
-On 4/2/20 3:42 PM, Dan Murphy wrote:
-> Introduce a multicolor class that groups colored LEDs
-> within a LED node.
+
+On 4/8/20 6:33 AM, Cornelia Huck wrote:
+> On Tue,  7 Apr 2020 15:20:06 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 >
-> The multi color class groups monochrome LEDs and allows controlling two
-> aspects of the final combined color: hue and lightness. The former is
-> controlled via <color>_intensity files and the latter is controlled
-> via brightness file.
+>> The matrix of adapters and domains configured in a guest's CRYCB may
+>> differ from the matrix of adapters and domains assigned to the matrix mdev,
+>> so this patch introduces a sysfs attribute to display the CRYCB of a guest
+>> using the matrix mdev. For a matrix mdev denoted by $uuid, the crycb for a
+>> guest using the matrix mdev can be displayed as follows:
+>>
+>>     cat /sys/devices/vfio_ap/matrix/$uuid/guest_matrix
+>>
+>> If a guest is not using the matrix mdev at the time the crycb is displayed,
+>> an error (ENODEV) will be returned.
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_ops.c | 58 +++++++++++++++++++++++++++++++
+>>   1 file changed, 58 insertions(+)
+>> +static DEVICE_ATTR_RO(guest_matrix);
+> Hm... should information like the guest configuration be readable by
+> everyone? Or should it be restricted a bit more?
 
-When you get a chance I would like to get your review on this patch as 
-well before I submit v20
+Why? The matrix attribute already displays the APQNs of the queues
+assigned to the matrix mdev. The guest_matrix attribute merely displays
+a subset of the matrix (i.e., the APQNs assigned to the mdev that reference
+queue devices bound to the vfio_ap device driver).
 
-Dan
+How can this be restricted?
+
+>
+>> +
+>>   static struct attribute *vfio_ap_mdev_attrs[] = {
+>>   	&dev_attr_assign_adapter.attr,
+>>   	&dev_attr_unassign_adapter.attr,
+>> @@ -1050,6 +1107,7 @@ static struct attribute *vfio_ap_mdev_attrs[] = {
+>>   	&dev_attr_unassign_control_domain.attr,
+>>   	&dev_attr_control_domains.attr,
+>>   	&dev_attr_matrix.attr,
+>> +	&dev_attr_guest_matrix.attr,
+>>   	NULL,
+>>   };
+>>   
 
