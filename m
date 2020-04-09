@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43CAF1A3B46
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 22:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8672E1A3B4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 22:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727035AbgDIUZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 16:25:19 -0400
-Received: from mail-il1-f196.google.com ([209.85.166.196]:40858 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgDIUZT (ORCPT
+        id S1727126AbgDIUZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 16:25:34 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:42516 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgDIUZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 16:25:19 -0400
-Received: by mail-il1-f196.google.com with SMTP id o11so966341ilq.7;
-        Thu, 09 Apr 2020 13:25:18 -0700 (PDT)
+        Thu, 9 Apr 2020 16:25:34 -0400
+Received: by mail-il1-f193.google.com with SMTP id f16so953444ilj.9;
+        Thu, 09 Apr 2020 13:25:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=qql7LMZDN/GlsmtXFLbpmj2338yu7zQz69wHu+w3jzc=;
-        b=L2grPdJSvKIzdI43JUEr27HQBgIIkXKLmHiRvkIi3LBDVpIRtAQZctay1/wgddkp4h
-         w8GqXM0f58HlpcU+GQuFUbotYI1aAja0p+jlgB0SULG3VURtO3kJ263ci5/Gkyu7Pshl
-         t8A8QnWM9UtW4pCW+YDJqdoMcc+/EIxp3zyRdfbD9WwsEnJW/ddBLGIvHp2ReKigLrjO
-         mflaN/Ri3bFmMx4XAFEAvxvP42GS5jL4NKLiuKXL0BWYgC9eNyL8rkcRzL9jQVLUH+f0
-         C6Vj8yAKd4ZjUH6xzk5JGUuxHfe71uVGnVApDm8rPQKPcpM8WvdFlYFA7W7lTceI9iD+
-         MqfQ==
-X-Gm-Message-State: AGi0Pua2VDPPRVUghRqYHp4WAEM74pQdsrQQ/tOlLQ0wq3RdsiqpyaA4
-        E6nQg2n5qAAXcgdzpbTWW6xQ0vU=
-X-Google-Smtp-Source: APiQypIFT8rqGvjqADkH8en1FLZx6WHUeR1Segx7uCrAwUPEqXOjwNZMSvlbLghQDdSTnV3uisyFwA==
-X-Received: by 2002:a92:8316:: with SMTP id f22mr1686531ild.169.1586463917475;
-        Thu, 09 Apr 2020 13:25:17 -0700 (PDT)
+        bh=gXUwa06vZwL6x1t/SJK4W0bICpt4Py/Wq2j3O5BCR6s=;
+        b=fAD0j4BQT84Jiw3Z7B4+tnjEE8hQtV/N60Dro0QiFQd7EZTTTNvc9Msk5wIgPFxqW8
+         XHygXwHkv5s2KDKb5MxBD8Oxkf6Cf25TOgBxsy6m6JWoTBiBN0hxDaEgUO3ZWSi8OW6G
+         kxZ3XrHPfxeOK0Oj6R/OUHYkriSWJ+XcOUYwxqmRfpqi/EjepBk6A+KNwjlqI6paloOn
+         VOG5/Zq9+GDCt5AsYcJbJwpDr7aZRUiyYbXhAkJUQ7iOgrlAPI72SK6BJ5/jEDIK+dhJ
+         N7hwjfVSO/XpIuOXcYajlxVNgAFNUGSfifGOnJaz6/eE0I7cwrMjkc+xknRC9fxLL1Ug
+         BHpw==
+X-Gm-Message-State: AGi0PuaRlw+FbegMdLAIkkbTxUjCsyhuMyogl/+HktxeI6gAlJzdlfjv
+        faCig3RvdcfJMVCMXFTbz9G4uuQ=
+X-Google-Smtp-Source: APiQypIKKEX2iOUPUALGPbiTMi7yg5LcSctrYW9Lt5dTuemdG/CaezitWE9LCXuToVcYeYtb6lgphA==
+X-Received: by 2002:a92:7e07:: with SMTP id z7mr1713542ilc.289.1586463932044;
+        Thu, 09 Apr 2020 13:25:32 -0700 (PDT)
 Received: from xps15.herring.priv ([64.188.179.248])
-        by smtp.googlemail.com with ESMTPSA id j2sm4724567ioq.13.2020.04.09.13.25.16
+        by smtp.googlemail.com with ESMTPSA id x15sm26202ilg.29.2020.04.09.13.25.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 13:25:16 -0700 (PDT)
+        Thu, 09 Apr 2020 13:25:31 -0700 (PDT)
 From:   Rob Herring <robh@kernel.org>
 To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Subject: [PATCH] dt-bindings: hwmon: Fix incorrect $id paths
-Date:   Thu,  9 Apr 2020 14:25:15 -0600
-Message-Id: <20200409202516.25282-1-robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH] dt-bindings: interrupt-controller: Fix loongson,parent_int_map property schema
+Date:   Thu,  9 Apr 2020 14:25:29 -0600
+Message-Id: <20200409202529.25699-1-robh@kernel.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the path warnings in the adi,axi-fan-control and adt7475 bindings:
+'loongson,parent_int_map' is an array, but the schema is defining a
+matrix resulting in the follow warnings:
 
-Documentation/devicetree/bindings/hwmon/adt7475.yaml: $id:
-  relative path/filename doesn't match actual path or filename
-  expected: http://devicetree.org/schemas/hwmon/adt7475.yaml#
-Documentation/devicetree/bindings/hwmon/adi,axi-fan-control.yaml: $id:
-  relative path/filename doesn't match actual path or filename
-  expected: http://devicetree.org/schemas/hwmon/adi,axi-fan-control.yaml#
+Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.example.dt.yaml:
+  interrupt-controller@3ff01400: loongson,parent_int_map:0: [4043309055] is too short
+Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.example.dt.yaml:
+  interrupt-controller@3ff01400: loongson,parent_int_map:1: [251658240] is too short
+Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.example.dt.yaml:
+  interrupt-controller@3ff01400: loongson,parent_int_map:2: [0] is too short
+Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.example.dt.yaml:
+  interrupt-controller@3ff01400: loongson,parent_int_map:3: [0] is too short
 
-Cc: "Nuno Sá" <nuno.sa@analog.com>
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-hwmon@vger.kernel.org
+The correct way to define an array is a list in 'items' and/or a size
+defined by 'minItems' and 'maxItems'.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Jason Cooper <jason@lakedaemon.net>
+Cc: Marc Zyngier <maz@kernel.org>
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
 Will take this via the DT tree.
 
 Rob
 
- .../devicetree/bindings/hwmon/adi,axi-fan-control.yaml          | 2 +-
- Documentation/devicetree/bindings/hwmon/adt7475.yaml            | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../bindings/interrupt-controller/loongson,liointc.yaml      | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hwmon/adi,axi-fan-control.yaml b/Documentation/devicetree/bindings/hwmon/adi,axi-fan-control.yaml
-index 29bb2c778c59..7db78767c02d 100644
---- a/Documentation/devicetree/bindings/hwmon/adi,axi-fan-control.yaml
-+++ b/Documentation/devicetree/bindings/hwmon/adi,axi-fan-control.yaml
-@@ -2,7 +2,7 @@
- # Copyright 2019 Analog Devices Inc.
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/bindings/hwmon/adi,axi-fan-control.yaml#
-+$id: http://devicetree.org/schemas/hwmon/adi,axi-fan-control.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+index 9c6b91fee477..26f1fcf0857a 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+@@ -56,9 +56,8 @@ properties:
+       cell with zero.
+     allOf:
+       - $ref: /schemas/types.yaml#/definitions/uint32-array
+-      - items:
+-          minItems: 4
+-          maxItems: 4
++      - minItems: 4
++        maxItems: 4
  
- title: Analog Devices AXI FAN Control Device Tree Bindings
-diff --git a/Documentation/devicetree/bindings/hwmon/adt7475.yaml b/Documentation/devicetree/bindings/hwmon/adt7475.yaml
-index 76985034ea73..46c441574f98 100644
---- a/Documentation/devicetree/bindings/hwmon/adt7475.yaml
-+++ b/Documentation/devicetree/bindings/hwmon/adt7475.yaml
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/adt7475.yaml#
-+$id: http://devicetree.org/schemas/hwmon/adt7475.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
  
- title: ADT7475 hwmon sensor
+ required:
 -- 
 2.20.1
 
