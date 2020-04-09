@@ -2,91 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC41B1A3925
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F210C1A395F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgDIRvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:51:46 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:39817 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgDIRvp (ORCPT
+        id S1726609AbgDIRyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:54:25 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:37279 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgDIRyZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:51:45 -0400
-Received: by mail-lf1-f65.google.com with SMTP id m2so305321lfo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 10:51:44 -0700 (PDT)
+        Thu, 9 Apr 2020 13:54:25 -0400
+Received: by mail-qv1-f67.google.com with SMTP id n1so5957064qvz.4
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 10:54:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Zm8DFopuwC2QUaIC0B+S/jPJIiq7sgNNsjYHbSi6B8g=;
-        b=brLMEHKsLxQS/mXRonp0tnS65ifhtX+aGx3P1Zd+nyVvr7TqzJ/j7mDabxm2r9FyZ8
-         Iq8pKJNR34gw2pOatRbQZUfC2Xpt5XGXsOAz3RYH+hVfNRIlj9HinhWv0whAVLNa54Cy
-         tCgERca2zB20B2lI/kSjpHGDO9Fs8BlGzH2ZU=
+        bh=T68rPewmf4BnEjG4gbV45voMaldyLN/fs5q/Sve6O4Q=;
+        b=ElcSoZ2hSryP0NOI23Sav6u//9KLZnBNbbDNdDAFlJUKPjBMd6LSrzm4JBSbhIibDI
+         RugUq4rXBOiK5q74PQvz+Rr5OBy3zs/+JzARqs7Hxn8W1QMYF7VjvQoI/ZJqaUM0JcUq
+         WASmRHLJAdqjqnD2GXR75v+X6Mht85cQRNyDg461zHBvDF+JcapAGerWNerh520g94YR
+         uTnzlDFskAlG65RcrdwVHdsAn8X7MCVfXj9eTEy7+beAwuKsisiUkwfLelk2F0TwXsch
+         9a/6xlSgI+dFKGtYt8AKNBc5ZtiuMbXCty24Uv3HmKrEHao6MUa+bmhPFyOT49OveEWg
+         71mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Zm8DFopuwC2QUaIC0B+S/jPJIiq7sgNNsjYHbSi6B8g=;
-        b=MvWqB7aa7N8ekQU6w5iNMsYyjh565q0MgUYAewFA82v43xfdrgSX8wDvWIEtZmPAFz
-         kx4YYZbHsAKlS1PrxmWvPW8ZaOw2Mu4G0lbiUgFErJO79I0ln1s7a1Rg2vzGSi8j311y
-         eDlY+Il75Ntgw1Owy80Mrr6Kgml8BIxs0LpJpjYU2t+ilNgDkMzatFAgLbT87Rdajwn/
-         ksddAlUI5XRhlkcL/05Om9nSHt7UaFkc8dOPqh5Ius48+mjMwzCoeIQhb7GXqYt35EOD
-         g44udEnGtabsrokD/4cdOeqvDuyCk7MmX3XxI0M3WwTK7DvQURhIBL//+6KKMa3Tjm/D
-         ZNZg==
-X-Gm-Message-State: AGi0Pub7SKbg+1WDexcfJY2MGx+V/lyfUQAQPU7Wc6tIsE1JkoA9xLAP
-        ySJfzLxsS8yuNWfwkooTQCjmxdNxdik=
-X-Google-Smtp-Source: APiQypLhiAFwLrxJ4JBTbxvzPeGnHielQgl3tHaLXlYBsdQHenQD1oUr+/3uOZSPxDw6rwkNtn/k7A==
-X-Received: by 2002:a19:d3:: with SMTP id 202mr291975lfa.24.1586454703195;
-        Thu, 09 Apr 2020 10:51:43 -0700 (PDT)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id s30sm8585944lfc.93.2020.04.09.10.51.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Apr 2020 10:51:42 -0700 (PDT)
-Received: by mail-lf1-f46.google.com with SMTP id m2so305267lfo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 10:51:42 -0700 (PDT)
-X-Received: by 2002:ac2:5ec5:: with SMTP id d5mr291121lfq.142.1586454701653;
- Thu, 09 Apr 2020 10:51:41 -0700 (PDT)
+        bh=T68rPewmf4BnEjG4gbV45voMaldyLN/fs5q/Sve6O4Q=;
+        b=il9txihcUg3KLCPCSWYTFSOLjnEEo5N8M5CBI5m7hRxx3RsfyZheNVTMOc9pv1iTwp
+         IOF0axPoWDu1hWfEqXChiBrCKSEaphSSs73UefkPsAvcxqm6Npf6JbU2aKfCRzByTljQ
+         OCrAyFQuOtMLTIF063gYliqKocuXiK2pP/aaOt2J1Zl7kIShhmdvkKynIdF+DwtaFRXT
+         miDTd5tKKlU8dlnw2Q7moffMXTKQt8Y0Cyx94pJ2W5eeUcBGdOo43liHpcsOW07qn1fh
+         hf9f/igyr/XXOvy3hv7yxavgfB+IV4P/9cgDj0lbIm0iEOtcgxA8BiXhCWj/P5M6MK4Z
+         t+rQ==
+X-Gm-Message-State: AGi0Pub6oxnPY0cgUR1avjXoAAeYJZ6+4M7/Ql7WpdoxNs0eSz4GGr9X
+        GI1s2D0LYTCxQ8jVz2NXmdJfZljJ2UKbZeNatrh0Sg==
+X-Google-Smtp-Source: APiQypL4GIZ16krMeIYz180+JcjeFeUo3/PF+/HzEK8g/KUfeZ/nh0KVBZ8b2keh/jk0MTTeoDu8oOMCvuE3H7r1Gcw=
+X-Received: by 2002:ad4:4c85:: with SMTP id bs5mr1274772qvb.213.1586454864517;
+ Thu, 09 Apr 2020 10:54:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <mhng-e58ec1f9-86f2-451e-ac9f-9add83693752@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-e58ec1f9-86f2-451e-ac9f-9add83693752@palmerdabbelt-glaptop1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Apr 2020 10:51:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgay_mPN5R5k7hjnLmHPy9wU7xm681CVw5rYKa7-HHoDw@mail.gmail.com>
-Message-ID: <CAHk-=wgay_mPN5R5k7hjnLmHPy9wU7xm681CVw5rYKa7-HHoDw@mail.gmail.com>
-Subject: Re: [GIT PULL] RISC-V Patches for the 5.7 Merge Window, Part 1
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-riscv@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <855831b59e1b3774b11c3e33050eac4cc4639f06.1583332765.git.vpillai@digitalocean.com>
+ <20200401114215.36640-1-cj.chengjian@huawei.com>
+In-Reply-To: <20200401114215.36640-1-cj.chengjian@huawei.com>
+From:   Joel Fernandes <joelaf@google.com>
+Date:   Thu, 9 Apr 2020 13:54:13 -0400
+Message-ID: <CAJWu+ooyRsFFA13=rqMBCFgf_JeHsOr16-ayuECaQ5Xz48mrqQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/arm64: store cpu topology before notify_cpu_starting
+To:     Cheng Jian <cj.chengjian@huawei.com>
+Cc:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        aaron.lwe@gmail.com, aubrey.intel@gmail.com,
+        aubrey.li@linux.intel.com,
+        "Cc: Frederic Weisbecker" <fweisbec@gmail.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, mgorman@techsingularity.net,
+        Ingo Molnar <mingo@kernel.org>, naravamudan@digitalocean.com,
+        pauld@redhat.com, pawan.kumar.gupta@linux.intel.com,
+        pbonzini@redhat.com, Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        tim.c.chen@linux.intel.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        xiexiuqi@huawei.com, huawei.libin@huawei.com, w.f@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 8, 2020 at 9:50 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+On Wed, Apr 1, 2020 at 7:27 AM Cheng Jian <cj.chengjian@huawei.com> wrote:
 >
-> This builds and boots for me.  There is one merge conflict, it's just a Kconfig
-> merge issue.  I can publish a resolved branch if you'd like.
+> when SCHED_CORE enabled, sched_cpu_starting() uses thread_sibling as
+> SMT_MASK to initialize rq->core, but only after store_cpu_topology(),
+> the thread_sibling is ready for use.
+>
+>         notify_cpu_starting()
+>             -> sched_cpu_starting()     # use thread_sibling
+>
+>         store_cpu_topology(cpu)
+>             -> update_siblings_masks    # set thread_sibling
+>
+> Fix this by doing notify_cpu_starting later, just like x86 do.
+>
+> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
 
-It's not the _resolution_ that's the problem.
+Just a high-level question, why does core-scheduling matter on ARM64?
+Is it for HPC workloads?
 
-The problem is that your tree is garbage.
+Thanks,
 
-Your commit c48c4a4c7ead ("riscv: Add Kendryte K210 SoC support") is
-wrong. It doesn't do what it says it does. It _also_ adds that
-(broken) Kconfig entry for the virtual SoC (aka qemu) that isn't
-mentioned at all in the commit message.
+ - Joel
 
-It looks like you mixed up commits when you did some development.
-Possibly because of bad resolutions when rebasing or whatever.
 
-I don't know what happened, but your tree is a mess.
-
-There's also a duplicate commit 9f40b6e77d2f that is a copy of commit
-2191b4f298fa ("RISC-V: Move all address space definition macros to one
-place") that you sent earlier.
-
-I fixed things up and pulled this, but you're doing something wrong.
-
-               Linus
+> ---
+>  arch/arm64/kernel/smp.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index 5407bf5d98ac..a427c14e82af 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -236,13 +236,18 @@ asmlinkage notrace void secondary_start_kernel(void)
+>         cpuinfo_store_cpu();
+>
+>         /*
+> -        * Enable GIC and timers.
+> +        * Store cpu topology before notify_cpu_starting,
+> +        * CPUHP_AP_SCHED_STARTING requires SMT topology
+> +        * been initialized for SCHED_CORE.
+>          */
+> -       notify_cpu_starting(cpu);
+> -
+>         store_cpu_topology(cpu);
+>         numa_add_cpu(cpu);
+>
+> +       /*
+> +        * Enable GIC and timers.
+> +        */
+> +       notify_cpu_starting(cpu);
+> +
+>         /*
+>          * OK, now it's safe to let the boot CPU continue.  Wait for
+>          * the CPU migration code to notice that the CPU is online
+> --
+> 2.17.1
+>
