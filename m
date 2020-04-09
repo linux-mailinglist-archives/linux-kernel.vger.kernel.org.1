@@ -2,144 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F791A3B69
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 22:36:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E2A41A3B6D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 22:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgDIUg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 16:36:28 -0400
-Received: from mail-db8eur05olkn2031.outbound.protection.outlook.com ([40.92.89.31]:3456
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726623AbgDIUg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 16:36:28 -0400
+        id S1726847AbgDIUkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 16:40:39 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23244 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726650AbgDIUkj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 16:40:39 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 039Kc7EZ007245;
+        Thu, 9 Apr 2020 13:40:27 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=5gtFpV967e88E9WRcDvmoL70hSMhzoPc+rauaC7gh34=;
+ b=RNNWKzzj3SfGtyyaPHdokoFHLfnMiPqd5xH+Lwrg+7hHKe8kikBMFwkpepEOkIWtj+n4
+ bWJ4ttaNYMWSi//B07S3tdjcvWXNiItCXNpzPtDcvP7osWFlrFkJknUf+r/FwUFSGB1d
+ MS7d0+1E+XW5vn7yKShS/yKkqDEqPmKD7OQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30a4b7tc1d-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 09 Apr 2020 13:40:27 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 9 Apr 2020 13:40:26 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y+hqzsOcsPNSqd3jcCb+ZTestW1QcqIAYdT6KfWw5Tx9dFz2knW3Kw/DMHcZm81VBEXXqMSpumUYFE+D9x04AZ9mtOt/Bv4q1KS4mSnpBDUhsUkQ4vV4MrJrMDP6Oh6krkso4Q+39EZyc41FD6OxX5/KXB+qhMHiLnlASY3P9fTNh8CGPaHNE7p6kFgiJ4u3eaGmaC/+Vy2JaGdkSx4Kh+KCmiRUDIPsh0SHV8CkV/73wSLFcKv69qLHM5TNvM/iOeLOB5334iPeuNz3826ZcwOaTuP+mMrKOsxrL/if47XKy/MgZZ26EwZ7ElugSiONyHPuIf/WpRgvni/vvakQBg==
+ b=QXbcMR8JpKgWDIYm7zciGuyXCC+aW9ksG2NQf44Rpv0mhtMXYUmX+Te94QOEFEx9sGFsuIGjNQec0iv7I/aNsjn3wl3B14UMd5leAsNuXplgaB5oMHU7HkDxCnLP7v7z/X5rUZYGQX0Tvy7K0czSurzOEIyjPs8Xl+VR272RcNRo6DEuSHZ+ARKqeT6ugIq7lsruzvhGdUkNDIs+fbgJayy6J0mgvKnNAJSs+6VqzhphIkPcARcHqbciYXRpyCHEW5UVulzJpt2huNzspbJA6vvLZ2e0oYKFzhMez+NoGk1Xtqsvm5qc1D1mUuzz9IcQwdtK/b4z87gcqvyvTV7erA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RjgOdk/XLN4/zWKrIP5EI/CbXAwhJ8jakWruGG3/YHo=;
- b=YlkAAD3r+KkcpGmgbhQf3WScJFBy0fu3Q9AwWbTukMZaPvFstXlclR7MBfcbCad2luGlwbMDis5OCuAc+Wd1pcKz5PfBCRRRDNvMe2wEkcv/0wz1ucjtxiHttAWFJSJdulaF9xXekN+Faxs2w+U/oACl9PXTPkoTy6xSO0ag8HTBzf+xvKG+6AGs9SAFbt2+48RemWi4n5U6FCbAYbDIwAd7PlDJlflhgPCCEokllZrXBFSQHfv1qgF2J9MGw3GDzFDlCU8qpUGAbe+0xZMzeIqgDMWg0+SbFiT4JC96slMpAVvozLwJ0xkiWvRdxiw0tgI4gloMnl3xHd+k2404tQ==
+ bh=5gtFpV967e88E9WRcDvmoL70hSMhzoPc+rauaC7gh34=;
+ b=GlYVstR/5ycMrJyWQ1I/clJqrGfDWOvdHTa3APzBiqOq8XijFb2QUofm3VhppddlQeQctiTDgtgskXF4pok7pQhrcln7r6/hDiImIwt/zD1PUWtKrOrvta9wNMaLhGCJ5xzG4x2z5IzV/s0lCER3d1KoA8n8CsL3ym16Nsw2c0I4THyFn0zoiUfZD5VbhQCINCfy79FnrVyQI2BrN3yBo9X5xtOvqqd14FJ+tgxLF6NIgSQcG1HHK9DZwa0KbzMBK8LFQSA2ng8eJkS+/Mz2wPK8a4+Gck1CWKzImO/WGS3bCQxyW3jk14AP4G3fpbjbYcEa6rFifKmX296OpO1JMA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hotmail.de; dmarc=pass action=none header.from=hotmail.de;
- dkim=pass header.d=hotmail.de; arc=none
-Received: from DB8EUR05FT042.eop-eur05.prod.protection.outlook.com
- (2a01:111:e400:fc0f::52) by
- DB8EUR05HT148.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc0f::175)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Thu, 9 Apr
- 2020 20:36:26 +0000
-Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
- (2a01:111:e400:fc0f::4b) by DB8EUR05FT042.mail.protection.outlook.com
- (2a01:111:e400:fc0f::328) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend
- Transport; Thu, 9 Apr 2020 20:36:26 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:D22402EA3F5027C3C4274605A6EC12483B73E052BCCCB8128B5868BB038DF3C7;UpperCasedChecksum:2ECADAD848B11E248AF783765E384E5E980FF23B7858055FD656D3168884EC64;SizeAsReceived:10015;Count:50
-Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
- ([fe80::d57:5853:a396:969d]) by AM6PR03MB5170.eurprd03.prod.outlook.com
- ([fe80::d57:5853:a396:969d%7]) with mapi id 15.20.2878.022; Thu, 9 Apr 2020
- 20:36:26 +0000
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-References: <87blobnq02.fsf@x220.int.ebiederm.org>
- <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
- <87v9maxb5q.fsf@x220.int.ebiederm.org>
- <CAHk-=wih4BqW7GTLaYxewynuT-iFHrXroip0wNo0CyPtmYGUow@mail.gmail.com>
- <87y2r4so3i.fsf@x220.int.ebiederm.org>
- <CAHk-=wjhAvv6s_7OVeZJiHaY7bBrHyiPTkSpq-TLr6qxYqxUUw@mail.gmail.com>
- <CAHk-=wi0jrKv9x6vJ9FDgTrSUbdbZYDX-79T-E87C48MGSn5=g@mail.gmail.com>
- <87wo6or3pg.fsf@x220.int.ebiederm.org>
- <AM6PR03MB51708FD4226E07AB7CB0D6A7E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wjaoYM4gXdAyYY=u8PaYj2LXUvcfp=8DKum8f1DM+Ws0A@mail.gmail.com>
- <AM6PR03MB5170F924EA69A81D79BD0929E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=whMKC5F-=QQP=fCNRuTF+ZGiNtLEKvx7KekpK1JtrwDhw@mail.gmail.com>
- <CAHk-=whJ8khGBqfqh6ZmHsKjcyyBLm5xgkgLW_AC_=82iFBWoQ@mail.gmail.com>
- <AM6PR03MB51700B243E34BF4A59FF33CFE4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
-From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
-Message-ID: <AM6PR03MB51708E5625468251BC75C799E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
-Date:   Thu, 9 Apr 2020 22:36:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-In-Reply-To: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5gtFpV967e88E9WRcDvmoL70hSMhzoPc+rauaC7gh34=;
+ b=jySjD80PtCaT9UEgr3uO8npLQAg1cak2fN42FhyECVuRirHzZEk7eRV9YUSaxfZ2PGHEn1RgyRhbWGcRN1gC1QBsQzx6X/BLAiLlkoqrnd8ToeEfHnAmKgjiWduKuUZypmUiRGvBR8r09xYNUEUcqsXZql/rQE0u2qC0QZ86o+E=
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com (2603:10b6:303:49::11)
+ by MW3PR15MB3804.namprd15.prod.outlook.com (2603:10b6:303:49::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.19; Thu, 9 Apr
+ 2020 20:40:25 +0000
+Received: from MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5]) by MW3PR15MB3882.namprd15.prod.outlook.com
+ ([fe80::c570:6c46:cc47:5ca5%5]) with mapi id 15.20.2878.018; Thu, 9 Apr 2020
+ 20:40:25 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Tejun Heo" <tj@kernel.org>,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [PATCH v12] perf: Sharing PMU counters across compatible events
+Thread-Topic: [PATCH v12] perf: Sharing PMU counters across compatible events
+Thread-Index: AQHWBzHW5dF+e/R99EaK1PXwCxhLFqhxT8wA
+Date:   Thu, 9 Apr 2020 20:40:25 +0000
+Message-ID: <47BDB3EA-2DF6-4FB1-AF06-F63A342861DF@fb.com>
+References: <20200331075533.2347393-1-songliubraving@fb.com>
+In-Reply-To: <20200331075533.2347393-1-songliubraving@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR01CA0140.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:168::45) To AM6PR03MB5170.eurprd03.prod.outlook.com
- (2603:10a6:20b:ca::23)
-X-Microsoft-Original-Message-ID: <e0f2ce75-c01d-320c-40b0-7baf70ae23e7@hotmail.de>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.60.0.2.5)
+x-originating-ip: [2620:10d:c090:400::5:dd4a]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5868ee0a-5beb-421e-525b-08d7dcc63b4c
+x-ms-traffictypediagnostic: MW3PR15MB3804:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW3PR15MB38049CAAC52F3600CC01C850B3C10@MW3PR15MB3804.namprd15.prod.outlook.com>
+x-fb-source: Internal
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0368E78B5B
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW3PR15MB3882.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(376002)(39860400002)(366004)(346002)(396003)(136003)(2906002)(8676002)(66476007)(33656002)(316002)(86362001)(66446008)(64756008)(81156014)(5660300002)(66946007)(66556008)(2616005)(81166007)(76116006)(54906003)(53546011)(71200400001)(6512007)(6486002)(186003)(8936002)(110136005)(6506007)(36756003)(4326008)(478600001);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: LjVge/OozAOp1AzNfFDSwputNbNeQUj8jjBI3OOK/TIjCBHcf2MZqYpM2R31tuGzKUEpCAJxIxc5wPHFyzbDoJ3K2rdDR6WbLwn2yfvgKidXEQDu5ng83sLDgyDRbIVjrwZBxeGl3FOpXqTEAH4M9fFbre+kN138hOZ2otGQl3sEOpnOhZluT2g2Nna+8NhwVz4rV6lYSop6r4t0LqYTvjgkokUZRWYPq+wN0Tmd3p7UXG0ZJjkRrAKON2yh3D+u2ZI8rJ8RihAz0mcPhqu1VHJH/y2gVsEPw7gzFz74Tnk7jpnlqzww9JC5KktW9nrbXc+KUt8+E+iKrm6YXneBZApJPiM7jNmJPZ6R0Zu+dJLPNQyD8L5xyqkrIJODNnG8cpHMy3mfZkp9E3TtD19ciUZprSaldgwQTo/f4fWhGo9js1rEqoLPVu+kMxWSkKPv
+x-ms-exchange-antispam-messagedata: Ut+m5D8nmszRnRmCM5ARNTunlVa9lZzijGIWeL8FIdUEScuWZ1X1XWr7sWcoXaEHYelt0xOlSMTRZDGWuxu7kxIyeVj840YVIxQE558uVT1/mxS15tAI/vT3Ngi49tIAft8JFjbeeXxAyP/1A+X0skRLTtsaxcexWFMhLWSSIMjMGI4bCYN3uaImQ/mWCMCU
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <78FAB02D15DA034B8D88D7870AE29AA0@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.101] (92.77.140.102) by AM0PR01CA0140.eurprd01.prod.exchangelabs.com (2603:10a6:208:168::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend Transport; Thu, 9 Apr 2020 20:36:25 +0000
-X-Microsoft-Original-Message-ID: <e0f2ce75-c01d-320c-40b0-7baf70ae23e7@hotmail.de>
-X-TMN:  [3sOWdNKmVyUGjKP31fwW+zSD1r55U0cJ]
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 50
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 09810bb4-03fa-4b30-60a8-08d7dcc5acb7
-X-MS-TrafficTypeDiagnostic: DB8EUR05HT148:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZwEWBzCz+0DnqTn/RaZrwrfxRmlZ7JEQHRZcmYfFFDX8Jq92bhIe+ZyFUYXvRow0A7+7x0pA3nEXrKt6U1ijV9bzXS489G27ELWWzQneW+yKCMvh7y+zNKYKGpW3QjCC746GkEpddnvqv3OZ0iTHEA+Me9hESFwDAQlY75P6Muc6obuUJIV7ym48At5fIzWv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB5170.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
-X-MS-Exchange-AntiSpam-MessageData: s8SNnUH7N1h4LS9tuFX14OVztd2bM5aMGVYKfzjpHBzWniraiSS3uMpi9wk5mOuTKy6FE8eg1YeboQRYYOk9cRPlYJEgPT8k2ntwfhO/+oX+x8D0oxw6OvQvpz3ACjZByjY10hCG4+OEV9pUjLsojw==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 09810bb4-03fa-4b30-60a8-08d7dcc5acb7
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2020 20:36:26.3769
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5868ee0a-5beb-421e-525b-08d7dcc63b4c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2020 20:40:25.1403
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8EUR05HT148
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +z0cYGwN2iDTwWnrj4/7GLhhA0FaC/QWM0F/wEDVwIvxrlpsjw8hf+pyjichHyIb9bFffDYG30A7dJzYOo7C/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR15MB3804
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-09_08:2020-04-07,2020-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0 mlxscore=0
+ mlxlogscore=999 priorityscore=1501 adultscore=0 clxscore=1015
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004090145
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/20 10:04 PM, Linus Torvalds wrote:
-> On Thu, Apr 9, 2020 at 12:57 PM Bernd Edlinger
-> <bernd.edlinger@hotmail.de> wrote:
->>
->> The use case where this may happen with strace
->> when you call strace with lots of -p <pid> arguments,
->> and one of them is a bomb. strace stuck.
-> 
-> Yeah, so from a convenience angle I do agree that it would be nicer to
-> just not count dead threads.
-> 
-> You can test that by just moving the
-> 
->                 /* Don't bother with already dead threads */
->                 if (t->exit_state)
->                         continue;
-> 
-> test in zap_other_threads() to above the
-> 
->                 count++;
-> 
-> line instead.
-> 
-> NOTE! That is *NOT* the correct true fix. I'm just suggesting that you
 
-Eric, I think he means you, I am too busy with other work ;-) right now.
+Hi Peter,
 
-> try if it fixes that particular test-case (I did not try it myself -
-> because .. lazy)
-> 
-> If Oleg agrees that we could take the approach that we can share a
-> signal struct with dead threads, we'd also need to change the
-> accounting to do that notify_count not when the signal struct is
-> unlinked, but when exit_state is first set.
-> 
-> I'm not convinced that's the right solution, but I do agree that it's
-> annoying how easily strace can get stuck, since one of the main uses
-> for strace is for debugging nasty situations.
-> 
->                 Linus
-> 
+> On Mar 31, 2020, at 12:55 AM, Song Liu <songliubraving@fb.com> wrote:
+>=20
+> This patch tries to enable PMU sharing. When multiple perf_events are
+> counting the same metric, they can share the hardware PMU counter. We
+> call these events as "compatible events".
+>=20
+> The PMU sharing are limited to events within the same perf_event_context
+> (ctx). When a event is installed or enabled, search the ctx for compatibl=
+e
+> events. This is implemented in perf_event_setup_dup(). One of these
+> compatible events are picked as the master (stored in event->dup_master).
+> Similarly, when the event is removed or disabled, perf_event_remove_dup()
+> is used to clean up sharing.
+>=20
+> If the master event is a cgroup event or a event in a group, it is
+> possible that some slave events are ACTIVE, but the master event is not.
+> To handle this scenario, we introduced PERF_EVENT_STATE_ENABLED. Also,
+> since PMU drivers write into event->count, master event needs another
+> variable (master_count) for the reading of this event.
+>=20
+> On the critical paths (add, del read), sharing PMU counters doesn't
+> increase the complexity. Helper functions event_pmu_[add|del|read]() are
+> introduced to cover these cases. All these functions have O(1) time
+> complexity.
+>=20
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Alexey Budankov <alexey.budankov@linux.intel.com>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+
+Could you please share your comments on this version?=20
+
+Thanks,
+Song
