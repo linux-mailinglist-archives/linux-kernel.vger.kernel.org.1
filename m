@@ -2,96 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C284F1A2FE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8138F1A2FF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgDIHTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 03:19:11 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:38075 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbgDIHTI (ORCPT
+        id S1726595AbgDIHY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 03:24:26 -0400
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:41028 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726521AbgDIHYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 03:19:08 -0400
-Received: by mail-pj1-f67.google.com with SMTP id t40so914257pjb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 00:19:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=LjDNwr9hc6zw/ovFuo79eJ6mPjftFJLQluVccfJfC3k=;
-        b=NKXt6L0809wT59OoC/lxSzJTR/UhuAL8l4ljcZw8g/LXk21E2/u9QSdKICUqqR4hFB
-         Kj0m46XD1krSFWYdBJHCE/WBkPJg5m3EHH09usJkGeB8T9OFga6heaY6VbhAS6MagfXR
-         r5sQCipeSlfTjBS5ftg48k0uPBTwKt4QjIhc0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=LjDNwr9hc6zw/ovFuo79eJ6mPjftFJLQluVccfJfC3k=;
-        b=oZ/2RLm1PvGajp2R4B/g5/PcAX5VTxLqDZqv7cud0YkMCP4zvfxzu9HjfqSBnmTObd
-         wFq3CHQP3fMdUYNfV2NDnbtik2mfK+pGsN6xnWpJrTK68n8M1y78XBN2bu6Xeo0MHvxH
-         hxF9+NRkApJl562bsyZgGQ1udl4Hv3k5uDEZYjN8QiAoWuD5pE0OjquknY3n1dzQ5UqR
-         iQJTqDtPpzRwoM5KReiTdTKT8aTsLR0HOT8HgZR2sdqQGbpRYkm1nyhxrKR3kBpYtsfG
-         1HtzCLdvuxKY++dtf29zCm2oNNH6oLZUOF0KqTKJaf3frF3NW5AspwkjaMOOCXT9Nl9j
-         nRgg==
-X-Gm-Message-State: AGi0PuY/OY1yKsBONqP27gqfX49J32+phi/suZ7Fx5FKzjprFU7FmIhB
-        TmRHtmr66KLZQ0L9uhrVQ8LEEQ==
-X-Google-Smtp-Source: APiQypLfHMzDBFeHC74nZCdgQnkXwa/dP0kQJyTECHQenBLHI/lAQcGvJrKgOqIVxBsQpLgBNehlfQ==
-X-Received: by 2002:a17:90a:a40d:: with SMTP id y13mr10027316pjp.116.1586416748619;
-        Thu, 09 Apr 2020 00:19:08 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id l18sm17273400pgc.26.2020.04.09.00.19.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 00:19:08 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 9 Apr 2020 03:24:25 -0400
+Received: from [192.168.42.210] ([93.22.150.119])
+        by mwinf5d77 with ME
+        id QXQN2200T2aoYT903XQPU3; Thu, 09 Apr 2020 09:24:24 +0200
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 09 Apr 2020 09:24:24 +0200
+X-ME-IP: 93.22.150.119
+Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
+ message
+To:     Joe Perches <joe@perches.com>, apw@canonical.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Newsgroups: gmane.linux.kernel,gmane.linux.kernel.janitors
+References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
+ <8617a6b94c0644bce1fd4ca77309d67a612e6300.camel@perches.com>
+ <4b7e1cf3-6fa7-60af-a1d3-2457339dbe8a@wanadoo.fr>
+ <efb5a518fdc47f0120b94a7e8a95d275c0f4ad43.camel@perches.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <60c732a1-aa4e-afab-d223-894a67713003@wanadoo.fr>
+Date:   Thu, 9 Apr 2020 09:24:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <351f1091af0b6d6e0537382fad0c1c51db45edc5.1584689229.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1584689229.git.saiprakash.ranjan@codeaurora.org> <351f1091af0b6d6e0537382fad0c1c51db45edc5.1584689229.git.saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7180: Add Coresight support
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Brown <david.brown@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        devicetree@vger.kernel.org
-Date:   Thu, 09 Apr 2020 00:19:07 -0700
-Message-ID: <158641674726.126188.15598430709257198656@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <efb5a518fdc47f0120b94a7e8a95d275c0f4ad43.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sai Prakash Ranjan (2020-03-20 00:44:29)
-> Add coresight components found on Qualcomm SC7180 SoC.
->=20
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 507 +++++++++++++++++++++++++++
->  1 file changed, 507 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/q=
-com/sc7180.dtsi
-> index 998f101ad623..d8fe960d6ace 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -1294,6 +1294,513 @@
->                         };
->                 };
-> =20
-> +               stm@6002000 {
-> +                       compatible =3D "arm,coresight-stm", "arm,primecel=
-l";
+Le 09/04/2020 à 05:10, Joe Perches a écrit :
+> On Wed, 2020-04-08 at 22:23 +0200, Marion & Christophe JAILLET wrote:
+>> Le 08/04/2020 à 04:14, Joe Perches a écrit :
+>>> This works rather better:
+>>>
+>>> Perhaps you could test?
+>>> ---
+>>>
+>>> v2:
+>>>
+>>> o Avoid pr_cont
+>>> o Use only last format line if split across multiple lines
+>>>
+>>>    scripts/checkpatch.pl | 22 ++++++++++++++++++++++
+>>>    1 file changed, 22 insertions(+)
+>>>
+>>> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+>>> index d64c67..f00a6c8 100755
+>>> --- a/scripts/checkpatch.pl
+>>> +++ b/scripts/checkpatch.pl
+>>> @@ -5673,6 +5673,28 @@ sub process {
+>>>    			}
+>>>    		}
+>>>    
+>>> +# check for possible missing newlines at the end of common logging functions
+>>> +		if (defined($stat) &&
+>>> +		    $stat =~ /^\+\s*($logFunctions)\s*\((?:\s*$FuncArg\s*,\s*){0,3}\s*$String/ &&
+>>> +		    $1 !~ /_cont$/ && $1 =~ /^(?:pr|dev|netdev|netif|wiphy)_/) {
+>>> +			my $cnt = statement_rawlines($stat);
+>>> +			my $extracted_string = "";
+>>> +			for (my $i = 0; $i < $cnt; $i++) {
+>>> +				next if ($lines[$linenr + $i - 1] !~ /$String\s*[,\)]/);
+>>> +				$extracted_string = get_quoted_string($lines[$linenr + $i - 1],
+>>> +								      $rawlines[$linenr + $i - 1]);
+>>> +				last if ($extracted_string ne "");
+>>> +			}
+>>> +			if ($extracted_string ne "" && $extracted_string !~ /\\n"$/) {
+>>> +				my $herectx = $here . "\n";
+>>> +				for (my $n = 0; $n < $cnt; $n++) {
+>>> +					$herectx .=  raw_line($linenr, $n) . "\n";
+>>> +				}
+>>> +				WARN("MISSING_FORMAT_NEWLINE",
+>>> +				     "Possible missing '\\n' at the end of a logging message format string\n" . $herectx);
+>>> +			}
+>>> +		}
+>>> +
+>>>    # check for logging functions with KERN_<LEVEL>
+>>>    		if ($line !~ /printk(?:_ratelimited|_once)?\s*\(/ &&
+>>>    		    $line =~ /\b$logFunctions\s*\(.*\b(KERN_[A-Z]+)\b/) {
+>>>
+>> For what I wanted to check and according to the few tests I've made, it
+>> looks fine.
+>>
+>> Thank you very much for sharing this much more robust (and working)
+>> alternative.
+>>
+>> For what it worth: (i.e. much more tests should be done)
+>> Tested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Then I think you really haven't tested it very thoroughly.
+>
+> For instance:
+>
+> $ git ls-files -- 'drivers/*.[ch]' | \
+>    xargs ./scripts/checkpatch.pl -f --quiet --no-summary --types=MISSING_FORMAT_NEWLINE
+>
+> emits many false positives.
+>
+> Some types of false positives:
+>
+> o Many of the formats seem to end in a ':' or a ' '
+>    maybe those should be excluded
+>     #86: FILE: drivers/android/binder_alloc_selftest.c:86:
+>     +	pr_err("free seq: ");
+>
+>     o Split string formats should be excluded better
+>       as only the first string fragment is checked:
+>     #1001: FILE: drivers/ata/pata_octeon_cf.c:1001:
+>     +	dev_info(&pdev->dev, "version " DRV_VERSION" %d bit%s.\n",
+>     +		 is_16bit ? 16 : 8,
+>     +		 cf_port->is_true_ide ? ", True IDE" : "");
+>
+>     probably a few others, including a desire to check
+>     if a pr_cont is below the use within a few lines.
+>
+>     > Maybe, at least a Suggested-By: would be appreciated.
+>
+> No worries, when it's cooked, it'll have that.
+>
+> cheers, Joe
+>
+>
+I think that, at least printk(), WARN() and co, and panic() should also 
+be handled the same way.
 
-Does this SoC have a cpu-debug coresight component? Specifically
-wondering if there's an 'arm,coresight-cpu-debug' compatible node that
-can be added to this dtsi file.
+
+A few files (5 according to my grep) also have something like:
+    #define pr_fmt(fmt) "bcache: %s()" fmt "\n", __func__
+and then sometimes a mix of pr_xxx() with either trailing \n or not.
+
+Maybe those should be handled manually to be consistent and avoid a "\n" 
+in pr_fmt which is not widely used in other files
+
+CJ
+
