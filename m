@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5A91A30EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B93081A30F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgDIIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:30:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58724 "EHLO mail.kernel.org"
+        id S1726683AbgDIIcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:32:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgDIIan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:30:43 -0400
+        id S1725862AbgDIIcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 04:32:07 -0400
 Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D2E620784;
-        Thu,  9 Apr 2020 08:30:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6BE120784;
+        Thu,  9 Apr 2020 08:32:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586421042;
-        bh=tecY0VJsbe8EdmmXXtksU0Y0zBQ4pnIaVfI2igeka+g=;
+        s=default; t=1586421128;
+        bh=HHg0BqEx2wX4+fY3s+CC32jN5T6NYFSdDY3cPqUsvzM=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ptohimgNcSS6YVP6voh44L9Sg9U4vla0zIuPhH//YJlP0Pij9fyw2K+ZNUAEHVrPo
-         Ro/p1DceVy1DmnpHiLRWeBbTqOmFjwO56VpfspN5AASuHpAIJ7hqo6PYHpZolmT3RQ
-         PQprX0YetLoQeGYubZAI1tdqQfcS3ncgfxC7byN4=
+        b=iyZWNiM2+06Wrw83+BipkEQbvQmZUxRzpeELkS1Sd4fm+uqGxE2UOtinJ7dEH7lZx
+         zZo4v1dctQs+Xhggv3a7OWPLwq+HQmoVFJt81XJN1Qfs2caGTnW6m3LiHiwK4hU8P7
+         bzMBRZrh2Itd7VHUSb1ja1OheDJvNLYtAzdgEmoE=
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200408160044.2550437-1-arnd@arndb.de>
-References: <20200408160044.2550437-1-arnd@arndb.de>
-Subject: Re: [PATCH] [RFC] clk: sprd: fix compile-testing
+In-Reply-To: <20200406193050.GA53133@roeck-us.net>
+References: <20200309194254.29009-1-lkundrak@v3.sk> <20200309194254.29009-5-lkundrak@v3.sk> <20200406193050.GA53133@roeck-us.net>
+Subject: Re: [PATCH v2 04/17] clk: mmp2: Add support for PLL clock sources
 From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-To:     Arnd Bergmann <arnd@arndb.de>, catalin.marinas@arm.com,
-        chunyan.zhang@unisoc.com, mturquette@baylibre.com, will@kernel.org
-Date:   Thu, 09 Apr 2020 01:30:41 -0700
-Message-ID: <158642104168.126188.8440219577017239983@swboyd.mtv.corp.google.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+To:     Guenter Roeck <linux@roeck-us.net>, Lubomir Rintel <lkundrak@v3.sk>
+Date:   Thu, 09 Apr 2020 01:32:04 -0700
+Message-ID: <158642112482.126188.12721741681509681049@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Arnd Bergmann (2020-04-08 09:00:44)
-> I got a build failure with CONFIG_ARCH_SPRD=3Dm when the
-> main portion of the clock driver failed to get linked into
-> the kernel:
+Quoting Guenter Roeck (2020-04-06 12:30:50)
+> On Mon, Mar 09, 2020 at 08:42:41PM +0100, Lubomir Rintel wrote:
+> > The clk-of-mmp2 driver pretends that the clock outputs from the PLLs are
+> > constant, but in fact they are configurable.
+> >=20
+> > Add logic for obtaining the actual clock rates on MMP2 as well as MMP3.
+> > There is no documentation for either SoC, but the "systemsetting" drive=
+rs
+> > from Marvell GPL code dump provide some clue as far as MPMU registers on
+> > MMP2 [1] and MMP3 [2] go.
+> >=20
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/lkundrak/linux-mmp3=
+-dell-ariel.git/tree/drivers/char/mmp2_systemsetting.c
+> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/lkundrak/linux-mmp3=
+-dell-ariel.git/tree/drivers/char/mmp3_systemsetting.c
+> >=20
+> > A separate commit will adjust the clk-of-mmp2 driver.
+> >=20
+> > Tested on a MMP3-based Dell Wyse 3020 as well as MMP2-based OLPC
+> > XO-1.75 laptop.
+> >=20
+> > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 >=20
-> ERROR: modpost: "sprd_pll_sc_gate_ops" [drivers/clk/sprd/sc9863a-clk.ko] =
-undefined!
-> ERROR: modpost: "sprd_pll_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefine=
-d!
-> ERROR: modpost: "sprd_div_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefine=
-d!
-> ERROR: modpost: "sprd_comp_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefin=
-ed!
-> ERROR: modpost: "sprd_mux_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefine=
-d!
-> ERROR: modpost: "sprd_gate_ops" [drivers/clk/sprd/sc9863a-clk.ko] undefin=
-ed!
-> ERROR: modpost: "sprd_sc_gate_ops" [drivers/clk/sprd/sc9863a-clk.ko] unde=
-fined!
-> ERROR: modpost: "sprd_clk_probe" [drivers/clk/sprd/sc9863a-clk.ko] undefi=
-ned!
-> ERROR: modpost: "sprd_clk_regmap_init" [drivers/clk/sprd/sc9863a-clk.ko] =
-undefined!
-> ERROR: modpost: "sprd_pll_ops" [drivers/clk/sprd/sc9860-clk.ko] undefined!
-> ERROR: modpost: "sprd_div_ops" [drivers/clk/sprd/sc9860-clk.ko] undefined!
-> ERROR: modpost: "sprd_mux_ops" [drivers/clk/sprd/sc9860-clk.ko] undefined!
+> This patch results in:
 >=20
-> This is a combination of two trivial bugs:
+> arm-linux-gnueabi-ld: drivers/clk/mmp/clk.o: in function `mmp_register_pl=
+l_clks':
+> drivers/clk/mmp/clk.c:192: undefined reference to `mmp_clk_register_pll'
 >=20
-> - A platform should not be 'tristate', it should be a 'bool' symbol
->   like the other platforms, if only for consistency, and to avoid
->   surprises like this one.
+> when building arm:pxa910_defconfig.
 >=20
-> - The clk Makefile does not traverse into the sprd subdirectory
->   if the platform is disabled but the drivers are enabled for
->   compile-testing.
->=20
-> Fixing either of the two would be sufficient to address the link failure,
-> but for correctness, both need to be changed.
->=20
-> Fixes: 2b1b799d7630 ("arm64: change ARCH_SPRD Kconfig to tristate")
-> Fixes: d41f59fd92f2 ("clk: sprd: Add common infrastructure")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/arm64/Kconfig.platforms | 2 +-
->  drivers/clk/Makefile         | 2 +-
 
-For clk part
+Thanks. I see that Arnd has sent a fix for this.
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+https://lore.kernel.org/r/20200408160518.2798571-1-arnd@arndb.de
