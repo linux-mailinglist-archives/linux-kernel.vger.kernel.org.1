@@ -2,140 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B87FD1A308B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:57:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC631A30A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgDIH51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 03:57:27 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:33299 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgDIH51 (ORCPT
+        id S1726574AbgDIIJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:09:12 -0400
+Received: from mx59.baidu.com ([61.135.168.59]:58021 "EHLO
+        tc-sys-mailedm04.tc.baidu.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726470AbgDIIJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 03:57:27 -0400
-Received: by mail-pl1-f195.google.com with SMTP id ay1so3575705plb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 00:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=L7od/SNZMrY/OjIFPZaOv2b3TyvmNPhMcosqFxdfLDI=;
-        b=zjqx5W8KkmMneK16/D9nuMPmygTIPqYWf4Vd6eGnm9gqUtAR3j4xQ69VfkXrUrueFJ
-         wPPakZoHREs2u/wgG411nGZEm/Y42jUKzHKJxi6KSNP8wUGJeblM4qpVMl5Mud58YCzU
-         g+nbcTwV1kb8VpNDz1WuTeZ10EAZ0HPwcdoyPmjHyxE/VzQpQAliTqjYnWaACN+g2L+M
-         zKjKsRNm1YGNcORWUHsVXAXhcrgn0pS8OPzTY+CT3/Gsph3YCiRXsusWJEZ7CBFDu3Mi
-         YTpCeVvfRTjFi/lVDisiukzfFdX3mIm2pOfazX9Qbb/UpwnJVK/zYP+ipFnxwN3PBN6O
-         hrvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=L7od/SNZMrY/OjIFPZaOv2b3TyvmNPhMcosqFxdfLDI=;
-        b=Sj7ryCfYtnPPMFArRb+OuTGq/B/koC1YJGALaCACWwxY14dRwH1f3LGIl+8YTZ8hf4
-         dKbbVfs1yctuFea/H02tytVKlocj5mpVXwBLBYfLcrkp+0z86AwJTDunrFRjm/i8/b7p
-         uIunqE0C5TwDC5210mWJLI2qcFNkrjPSXw0r2l06+hLApVoMzVopww9WGv6K0AeaDREC
-         3Ev9ANmZahcs+tAKxZ+hV5PJNWh1lVbtoFUL0MCsgw/+mw7q3bBJfyx8acKtwvLSGiTe
-         5oN9IwaNxGBiA0AKfC/n+TTG2Ec+3JkfASBs66WNuDZCDJdcp9xF9wwqwXU60E4HJ8V7
-         qieQ==
-X-Gm-Message-State: AGi0Pub5ZPOuHZD13D/p0ib4Z7Iqa8v21QmP1E3mEcXZKAEz3JHy21wa
-        JKhvgvJ7//S4FagXUGOfWi0rGw==
-X-Google-Smtp-Source: APiQypIbnONC53q1xfm0EUVTCTkmGKZw7M3bRHyS3PLNupv2XFGRAdPfR+MCxXrsAGCMVmpUbkBJig==
-X-Received: by 2002:a17:902:db83:: with SMTP id m3mr10079907pld.143.1586419046993;
-        Thu, 09 Apr 2020 00:57:26 -0700 (PDT)
-Received: from localhost ([122.171.118.46])
-        by smtp.gmail.com with ESMTPSA id x4sm18314073pfi.202.2020.04.09.00.57.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Apr 2020 00:57:26 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 13:27:24 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rajendra Nayak <rnayak@codeaurora.org>
-Cc:     sboyd@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/21] opp: Manage empty OPP tables with clk handle
-Message-ID: <20200409075724.7t3bt3oxaxoygldb@vireshk-i7>
-References: <1586353607-32222-1-git-send-email-rnayak@codeaurora.org>
- <1586353607-32222-2-git-send-email-rnayak@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586353607-32222-2-git-send-email-rnayak@codeaurora.org>
-User-Agent: NeoMutt/20180716-391-311a52
+        Thu, 9 Apr 2020 04:09:11 -0400
+X-Greylist: delayed 652 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Apr 2020 04:09:10 EDT
+Received: from localhost (cp01-cos-dev01.cp01.baidu.com [10.92.119.46])
+        by tc-sys-mailedm04.tc.baidu.com (Postfix) with ESMTP id 3B2A1236C00A;
+        Thu,  9 Apr 2020 15:57:55 +0800 (CST)
+From:   Li RongQing <lirongqing@baidu.com>
+To:     peterz@infradead.org, frederic@kernel.org, tglx@linutronix.de,
+        mingo@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][RFC] sched/isolation: allow isolcpus and nohz_full for different cpus
+Date:   Thu,  9 Apr 2020 15:57:56 +0800
+Message-Id: <1586419076-6301-1-git-send-email-lirongqing@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-04-20, 19:16, Rajendra Nayak wrote:
-> With OPP core now supporting DVFS for IO devices, we have instances of
-> IO devices (same IP block) which require an OPP on some platforms/SoCs
+when both isolcpus and nohz_full are set, their cpus must be
+same now, in fact isolcpus and nohz_full are not related, and
+different cpus are expected for some cases, for example, some
+cores for polling threads wants to isolcpus, and some cores for
+dedicated threads, only nohz_full is expected
 
-By OPP you mean both freq and voltage here ?
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+---
+ kernel/sched/isolation.c | 79 ++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 53 insertions(+), 26 deletions(-)
 
-> while just needing to scale the clock on some others.
-
-And only freq here ?
-
-> In order to avoid conditional code in every driver which supports such
-> devices (to check for availability of OPPs and then deciding to do
-> either dev_pm_opp_set_rate() or clk_set_rate()) add support to manage
-> empty OPP tables with a clk handle.
-
-Why can't these devices have an opp table with just rate mentioned in each node
-?
-
-> This makes dev_pm_opp_set_rate() equivalent of a clk_set_rate() for
-> devices with just a clk and no OPPs specified, and makes
-> dev_pm_opp_set_rate(0) bail out without throwing an error.
-> 
-> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> ---
->  drivers/opp/core.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-> index ba43e6a..e4f01e7 100644
-> --- a/drivers/opp/core.c
-> +++ b/drivers/opp/core.c
-> @@ -819,6 +819,8 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  	if (unlikely(!target_freq)) {
->  		if (opp_table->required_opp_tables) {
->  			ret = _set_required_opps(dev, opp_table, NULL);
-> +		} else if (!_get_opp_count(opp_table)) {
-> +			return 0;
-
-Why should anyone call this with target_freq = 0 ? I know it was required to
-drop votes in the above case, but why here ?
-
->  		} else {
->  			dev_err(dev, "target frequency can't be 0\n");
->  			ret = -EINVAL;
-> @@ -849,6 +851,18 @@ int dev_pm_opp_set_rate(struct device *dev, unsigned long target_freq)
->  		goto put_opp_table;
->  	}
->  
-> +	/*
-> +	 * For IO devices which require an OPP on some platforms/SoCs
-> +	 * while just needing to scale the clock on some others
-> +	 * we look for empty OPP tables with just a clock handle and
-> +	 * scale only the clk. This makes dev_pm_opp_set_rate()
-> +	 * equivalent to a clk_set_rate()
-> +	 */
-> +	if (!_get_opp_count(opp_table)) {
-> +		ret = _generic_set_opp_clk_only(dev, clk, freq);
-> +		goto put_opp_table;
-> +	}
-> +
-
-Is this enough? _of_add_opp_table_v2() returns with error if there is no OPP
-node within the table. Please give an example of how DT looks for the case you
-want to support.
-
->  	temp_freq = old_freq;
->  	old_opp = _find_freq_ceil(opp_table, &temp_freq);
->  	if (IS_ERR(old_opp)) {
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 008d6ac2342b..6e6be34bb796 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -11,7 +11,8 @@
+ 
+ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+ EXPORT_SYMBOL_GPL(housekeeping_overridden);
+-static cpumask_var_t housekeeping_mask;
++static cpumask_var_t housekeeping_mask_isolcpus;
++static cpumask_var_t housekeeping_mask_nohz_full;
+ static unsigned int housekeeping_flags;
+ 
+ bool housekeeping_enabled(enum hk_flags flags)
+@@ -20,12 +21,26 @@ bool housekeeping_enabled(enum hk_flags flags)
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_enabled);
+ 
++static cpumask_var_t housekeeping_get_mask(enum hk_flags flags)
++{
++	if (flags & (HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ))
++		return housekeeping_mask_isolcpus;
++
++	/* set by isolcpus=nohz only */
++	if ((flags & HK_FLAG_TICK) && !(housekeeping_flags & HK_FLAG_RCU))
++		return housekeeping_mask_isolcpus;
++
++	return housekeeping_mask_nohz_full;
++}
++
+ int housekeeping_any_cpu(enum hk_flags flags)
+ {
++	cpumask_var_t housekeeping_mask;
+ 	int cpu;
+ 
+ 	if (static_branch_unlikely(&housekeeping_overridden)) {
+ 		if (housekeeping_flags & flags) {
++			housekeeping_mask = housekeeping_get_mask(flags);
+ 			cpu = sched_numa_find_closest(housekeeping_mask, smp_processor_id());
+ 			if (cpu < nr_cpu_ids)
+ 				return cpu;
+@@ -41,7 +56,7 @@ const struct cpumask *housekeeping_cpumask(enum hk_flags flags)
+ {
+ 	if (static_branch_unlikely(&housekeeping_overridden))
+ 		if (housekeeping_flags & flags)
+-			return housekeeping_mask;
++			return housekeeping_get_mask(flags);
+ 	return cpu_possible_mask;
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+@@ -49,16 +64,24 @@ EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+ void housekeeping_affine(struct task_struct *t, enum hk_flags flags)
+ {
+ 	if (static_branch_unlikely(&housekeeping_overridden))
+-		if (housekeeping_flags & flags)
++		if (housekeeping_flags & flags) {
++			cpumask_var_t housekeeping_mask;
++
++			housekeeping_mask = housekeeping_get_mask(flags);
+ 			set_cpus_allowed_ptr(t, housekeeping_mask);
++		}
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_affine);
+ 
+ bool housekeeping_test_cpu(int cpu, enum hk_flags flags)
+ {
+ 	if (static_branch_unlikely(&housekeeping_overridden))
+-		if (housekeeping_flags & flags)
++		if (housekeeping_flags & flags) {
++			cpumask_var_t housekeeping_mask;
++
++			housekeeping_mask = housekeeping_get_mask(flags);
+ 			return cpumask_test_cpu(cpu, housekeeping_mask);
++		}
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+@@ -74,10 +97,14 @@ void __init housekeeping_init(void)
+ 		sched_tick_offload_init();
+ 
+ 	/* We need at least one CPU to handle housekeeping work */
+-	WARN_ON_ONCE(cpumask_empty(housekeeping_mask));
++	if (housekeeping_mask_isolcpus)
++		WARN_ON_ONCE(cpumask_empty(housekeeping_mask_isolcpus));
++	if (housekeeping_mask_nohz_full)
++		WARN_ON_ONCE(cpumask_empty(housekeeping_mask_nohz_full));
+ }
+ 
+-static int __init housekeeping_setup(char *str, enum hk_flags flags)
++static int __init housekeeping_setup(char *str, enum hk_flags flags,
++		cpumask_var_t *housekeeping_mask)
+ {
+ 	cpumask_var_t non_housekeeping_mask;
+ 	cpumask_var_t tmp;
+@@ -92,25 +119,25 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
+ 	}
+ 
+ 	alloc_bootmem_cpumask_var(&tmp);
+-	if (!housekeeping_flags) {
+-		alloc_bootmem_cpumask_var(&housekeeping_mask);
+-		cpumask_andnot(housekeeping_mask,
+-			       cpu_possible_mask, non_housekeeping_mask);
+-
+-		cpumask_andnot(tmp, cpu_present_mask, non_housekeeping_mask);
+-		if (cpumask_empty(tmp)) {
+-			pr_warn("Housekeeping: must include one present CPU, "
++	alloc_bootmem_cpumask_var(housekeeping_mask);
++	cpumask_andnot(*housekeeping_mask,
++				   cpu_possible_mask, non_housekeeping_mask);
++
++	cpumask_andnot(tmp, cpu_present_mask, non_housekeeping_mask);
++	if (cpumask_empty(tmp)) {
++		pr_warn("Housekeeping: must include one present CPU, "
+ 				"using boot CPU:%d\n", smp_processor_id());
+-			__cpumask_set_cpu(smp_processor_id(), housekeeping_mask);
+-			__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
+-		}
+-	} else {
+-		cpumask_andnot(tmp, cpu_present_mask, non_housekeeping_mask);
+-		if (cpumask_empty(tmp))
+-			__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
+-		cpumask_andnot(tmp, cpu_possible_mask, non_housekeeping_mask);
+-		if (!cpumask_equal(tmp, housekeeping_mask)) {
+-			pr_warn("Housekeeping: nohz_full= must match isolcpus=\n");
++		__cpumask_set_cpu(smp_processor_id(), *housekeeping_mask);
++		__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
++	}
++
++	/* cpus should match when both nohz_full and isolcpus
++	 * with nohz are passed into kernel
++	 */
++	if (housekeeping_flags & flags & HK_FLAG_TICK) {
++		if (!cpumask_equal(housekeeping_mask_nohz_full,
++					housekeeping_mask_isolcpus)) {
++			pr_warn("Housekeeping: nohz_full= must match isolcpus=nohz\n");
+ 			free_bootmem_cpumask_var(tmp);
+ 			free_bootmem_cpumask_var(non_housekeeping_mask);
+ 			return 0;
+@@ -142,7 +169,7 @@ static int __init housekeeping_nohz_full_setup(char *str)
+ 
+ 	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU | HK_FLAG_MISC;
+ 
+-	return housekeeping_setup(str, flags);
++	return housekeeping_setup(str, flags, &housekeeping_mask_nohz_full);
+ }
+ __setup("nohz_full=", housekeeping_nohz_full_setup);
+ 
+@@ -177,6 +204,6 @@ static int __init housekeeping_isolcpus_setup(char *str)
+ 	if (!flags)
+ 		flags |= HK_FLAG_DOMAIN;
+ 
+-	return housekeeping_setup(str, flags);
++	return housekeeping_setup(str, flags, &housekeeping_mask_isolcpus);
+ }
+ __setup("isolcpus=", housekeeping_isolcpus_setup);
 -- 
-viresh
+2.16.2
+
