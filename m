@@ -2,80 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4C91A3656
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 16:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4177F1A35E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 16:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgDIOzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 10:55:21 -0400
-Received: from mail.xenproject.org ([104.130.215.37]:40796 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726940AbgDIOzU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 10:55:20 -0400
-X-Greylist: delayed 1617 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Apr 2020 10:55:20 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=88CLnI9d7vqlxpuj08ZyNiGa+C1+B5g5kceeRwldYQw=; b=po8LC+iHiziy3E2x/Sb34Szt44
-        iStb7gSnx4kP/LR9uZ+C2vryyP6l98PNHg54l8mzGKJORo1GC7Dl6jHR3cTCFKvbnJZY72/dZhAR4
-        w8fdyOBDM8fhMhaDd4yJNPaUl23wnaPUU6iM0ZN92lVm/ppPnP/rGK4KXDrHgdMMLsPk=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.89)
-        (envelope-from <wl@xen.org>)
-        id 1jMYAC-0007As-PA; Thu, 09 Apr 2020 14:28:16 +0000
-Received: from 44.142.6.51.dyn.plus.net ([51.6.142.44] helo=debian)
-        by xenbits.xenproject.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <wl@xen.org>)
-        id 1jMYAC-00041C-Ep; Thu, 09 Apr 2020 14:28:16 +0000
-Date:   Thu, 9 Apr 2020 15:28:13 +0100
-From:   Wei Liu <wl@xen.org>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Wei Liu <wl@xen.org>,
-        Bob Liu <bob.liu@oracle.com>,
-        "Durrant, Paul" <pdurrant@amazon.com>,
-        Konrad Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: Re: Use of VM_IOREMAP in xenbus
-Message-ID: <20200409142813.lbxembj7b63b2wmi@debian>
-References: <20200409061846.GA30241@lst.de>
- <8074b77d-d784-95ee-8d47-069827855876@suse.com>
+        id S1727486AbgDIObD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 10:31:03 -0400
+Received: from 8bytes.org ([81.169.241.247]:58886 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726977AbgDIObC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 10:31:02 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 40578391; Thu,  9 Apr 2020 16:31:01 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 16:30:59 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Joerg Roedel <jroedel@suse.de>
+Subject: Re: [PATCH] iommu/exynos: Get rid of 'struct exynos_iommu_owner'
+ exynos_iommu_owner
+Message-ID: <20200409143059.GP3103@8bytes.org>
+References: <20200407183742.4344-1-joro@8bytes.org>
+ <CGME20200407184501eucas1p25407bc96e4345df406cf6ba061ae6a82@eucas1p2.samsung.com>
+ <20200407183742.4344-32-joro@8bytes.org>
+ <449e7f16-e719-9617-ec92-63b82c0bc33f@samsung.com>
+ <f59b0bb3-8c08-9cc9-bb1a-e69b7b226f60@samsung.com>
+ <20200409114620.GA16298@8bytes.org>
+ <40af831b-d00c-0cf9-0a06-e60c048a9ab8@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8074b77d-d784-95ee-8d47-069827855876@suse.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <40af831b-d00c-0cf9-0a06-e60c048a9ab8@samsung.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph
+Hi Marek,
 
-On Thu, Apr 09, 2020 at 08:37:48AM +0200, Jürgen Groß wrote:
-> Adjusting recipient list (dropping David, new mail addresses for Wei and
-> Paul).
-> 
-> On 09.04.20 08:18, Christoph Hellwig wrote:
-> > Hi Wei,
-> > 
-> > commit ccc9d90a9a8b5 ("xenbus_client: Extend interface to support
-> > multi-page ring") addes a use of vmap in what is now
-> > xenbus_map_ring_valloc_hvm, and uses the VM_IOREMAP flag that is
-> > only really intended for implementing ioremap.  Do you remember
-> > what the reason is that this flag was used?
-> > 
+On Thu, Apr 09, 2020 at 03:58:00PM +0200, Marek Szyprowski wrote:
+> The main problem after your conversion is the fact that ->probe_device() 
+> is called very early, before any other platform device (thus IOMMU 
+> controller) is is probed. It doesn't handle EPROBE_DEFER too.
 
-I don't remember the reason. I can that flag can be dropped per your
-reasoning.
+I don't quite understand why probe_device() is called too early, as it
+is called at the same time add_device() was called before. But anyway,
+I have seen a similar problem on OMAP. If the SYSMMU for a master is not
+probed yet when probe_device() is called, it can just return -ENODEV and
+in your driver you just call but_iommu_probe() when a new SYSMMU got
+initialized to re-probe uninitialized masters on the bus. This patch-set
+contains a change to export bus_iommu_probe() for exactly that reason.
 
-Wei.
+What do you think?
 
-> 
-> Juergen
+Regards,
+
+	Joerg
