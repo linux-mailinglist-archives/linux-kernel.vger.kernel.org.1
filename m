@@ -2,176 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 909AA1A3547
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 15:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258901A3552
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 16:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbgDIN74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 09:59:56 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:34291 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726951AbgDIN7z (ORCPT
+        id S1727162AbgDIOBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 10:01:50 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:60576 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbgDIOBu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 09:59:55 -0400
-Received: by mail-ua1-f68.google.com with SMTP id d23so3964565uak.1
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 06:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6jkl82fMmpPtjMZVRujvoQOTRneX3UQjhsTCNuv3S3s=;
-        b=FxVC96kMHeavDRhR9NWDUmy5X49gFWh+0HDbaZ+6UAnMrYLIJRBzFUzjIg5nPzxoBt
-         5TBgUZVAHEdP1R0TyuZ9lnFvvuIHvJBobOtbitVPPXKY/vCVO3XVZYahbUJoDoTnPZNZ
-         yqxmWfG17xufkMVcpF2SWFHvkVpXZk7zp+AM0WYwKew0o4xf3jubzWh/IKVh692yiXTG
-         BK/OC78W9NuBBh4XwFtoL0dnoumlFR41FMU//UDE4T5k8Iae0juCPjjByqkCIX5G+Lve
-         FjYpYaR8S3OAGW8iSoabqVJmnJk8LaYyh56y27V3s/ThIjWI03x7Dfs5AkWDG1u28hQI
-         W+ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6jkl82fMmpPtjMZVRujvoQOTRneX3UQjhsTCNuv3S3s=;
-        b=kmqve16uetWOPqYyMM7fEWPl6mY+Kv8YVw0puLQ+ZzONNWqlJk8Rz8x5q5u4WoWruw
-         oKucfJTAAJubgw8068+9vaP6VVHiXIH1fDBSDhWhiehLDoD+br9DltxB0zQ3jVAUoxpm
-         lEjn2N+KrBI4A5ru0kW93qHFZ3Fqd+3EaXdMbXoVBtogYpxtFd9DjOpC93SqYdHdDKax
-         rUeoTyDRBlgnvzPtR4U1NMG2GCwXPkj/0kVqL6xPBQdOBUgvNDfNjdclY9Jn1ZP2Sw5+
-         5kfx2yVLYBU1sqQ+Eo3SZK34CZYv08LC1pXBqKGsEz1HGtTj8ZLgUeA33necv435HLKo
-         2mEw==
-X-Gm-Message-State: AGi0PuYR2s9oVuSPVxlBJd4lNnj+mLGvzzZpzvO4FhNnTXwEOtfbGI+M
-        ZZi+nEUDAJAkWcaJeSZV+IP+Huzoepgwwey8nJ4g5w==
-X-Google-Smtp-Source: APiQypIDFpo4gH1UScb4MbAQVnWTILN06mQONvAjwMuBOpgK2p9AlvbueRBggIkJbzWGyZJKZKNcrD7wzAfLjecKsWE=
-X-Received: by 2002:ab0:608b:: with SMTP id i11mr9020160ual.94.1586440794633;
- Thu, 09 Apr 2020 06:59:54 -0700 (PDT)
+        Thu, 9 Apr 2020 10:01:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586440909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bw7u+5j7ITPvTdArG6JXONPD18tDn7QLSy7rD70/Hok=;
+        b=ZHEX9CkaB5M641AbX8hCUMiLw5qgfNkmLa58v4PORCYmRy9S5HqJAaFIeCoSdnMlhr5Ofa
+        JaxGktKekhkHJ7EGeYnTzjAmaqIdLOtp/XKTaRFJtQp8UdyaNiWVmRZsKWn4tiLLF+vHW7
+        6Xy5tscZkmJVnSu5M2w0mx6qZ3l6iLE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-VpEONoBOOVWAdN2cI4LHBQ-1; Thu, 09 Apr 2020 10:01:45 -0400
+X-MC-Unique: VpEONoBOOVWAdN2cI4LHBQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24D068018A9;
+        Thu,  9 Apr 2020 14:01:43 +0000 (UTC)
+Received: from [10.72.8.19] (ovpn-8-19.pek2.redhat.com [10.72.8.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DED3352735;
+        Thu,  9 Apr 2020 14:01:33 +0000 (UTC)
+Subject: Re: [PATCH v1 1/2] powerpc/pseries/hotplug-memory: stop checking
+ is_mem_section_removable()
+To:     David Hildenbrand <david@redhat.com>, Baoquan He <bhe@redhat.com>
+References: <20200407135416.24093-1-david@redhat.com>
+ <20200407135416.24093-2-david@redhat.com>
+ <20200408024630.GQ2402@MiWiFi-R3L-srv>
+ <16187f69-0e5b-c9c2-a31b-8658425758aa@redhat.com>
+ <85637e60-4d11-2b69-f2a9-1505e0342ce3@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@gmail.com>
+From:   piliu <piliu@redhat.com>
+X-Enigmail-Draft-Status: N1110
+Message-ID: <efb1f5f1-b1af-ee39-f89e-805f48944d73@redhat.com>
+Date:   Thu, 9 Apr 2020 22:01:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-References: <1586402293-30579-1-git-send-email-Anson.Huang@nxp.com>
-In-Reply-To: <1586402293-30579-1-git-send-email-Anson.Huang@nxp.com>
-From:   Amit Kucheria <amit.kucheria@verdurent.com>
-Date:   Thu, 9 Apr 2020 19:29:43 +0530
-Message-ID: <CAHLCerNonZ7qJi8Qihmj87QteEnxTF0PRS6vw5GPemMurOfS9Q@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: thermal: Convert i.MX8MM to json-schema
-To:     Anson Huang <Anson.Huang@nxp.com>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
-        Fabio Estevam <festevam@gmail.com>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        lakml <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <Linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <85637e60-4d11-2b69-f2a9-1505e0342ce3@redhat.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anson,
 
-On Thu, Apr 9, 2020 at 8:56 AM Anson Huang <Anson.Huang@nxp.com> wrote:
->
-> Convert the i.MX8MM thermal binding to DT schema format using json-schema
 
-Would it be possible to have a single yaml file for all i.MX thermal
-sensors by playing with required and optional properties ?
+On 04/09/2020 03:26 PM, David Hildenbrand wrote:
+> On 09.04.20 04:59, piliu wrote:
+>>
+>>
+>> On 04/08/2020 10:46 AM, Baoquan He wrote:
+>>> Add Pingfan to CC since he usually handles ppc related bugs for RHEL.
+>>>
+>>> On 04/07/20 at 03:54pm, David Hildenbrand wrote:
+>>>> In commit 53cdc1cb29e8 ("drivers/base/memory.c: indicate all memory
+>>>> blocks as removable"), the user space interface to compute whether a memory
+>>>> block can be offlined (exposed via
+>>>> /sys/devices/system/memory/memoryX/removable) has effectively been
+>>>> deprecated. We want to remove the leftovers of the kernel implementation.
+>>>
+>>> Pingfan, can you have a look at this change on PPC?  Please feel free to
+>>> give comments if any concern, or offer ack if it's OK to you.
+>>>
+>>>>
+>>>> When offlining a memory block (mm/memory_hotplug.c:__offline_pages()),
+>>>> we'll start by:
+>>>> 1. Testing if it contains any holes, and reject if so
+>>>> 2. Testing if pages belong to different zones, and reject if so
+>>>> 3. Isolating the page range, checking if it contains any unmovable pages
+>>>>
+>>>> Using is_mem_section_removable() before trying to offline is not only racy,
+>>>> it can easily result in false positives/negatives. Let's stop manually
+>>>> checking is_mem_section_removable(), and let device_offline() handle it
+>>>> completely instead. We can remove the racy is_mem_section_removable()
+>>>> implementation next.
+>>>>
+>>>> We now take more locks (e.g., memory hotplug lock when offlining and the
+>>>> zone lock when isolating), but maybe we should optimize that
+>>>> implementation instead if this ever becomes a real problem (after all,
+>>>> memory unplug is already an expensive operation). We started using
+>>>> is_mem_section_removable() in commit 51925fb3c5c9 ("powerpc/pseries:
+>>>> Implement memory hotplug remove in the kernel"), with the initial
+>>>> hotremove support of lmbs.
+>>>>
+>>>> Cc: Nathan Fontenot <nfont@linux.vnet.ibm.com>
+>>>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>>>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>>>> Cc: Paul Mackerras <paulus@samba.org>
+>>>> Cc: Michal Hocko <mhocko@suse.com>
+>>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>>> Cc: Oscar Salvador <osalvador@suse.de>
+>>>> Cc: Baoquan He <bhe@redhat.com>
+>>>> Cc: Wei Yang <richard.weiyang@gmail.com>
+>>>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>>>> ---
+>>>>  .../platforms/pseries/hotplug-memory.c        | 26 +++----------------
+>>>>  1 file changed, 3 insertions(+), 23 deletions(-)
+>>>>
+>>>> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>>> index b2cde1732301..5ace2f9a277e 100644
+>>>> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>>> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+>>>> @@ -337,39 +337,19 @@ static int pseries_remove_mem_node(struct device_node *np)
+>>>>  
+>>>>  static bool lmb_is_removable(struct drmem_lmb *lmb)
+>>>>  {
+>>>> -	int i, scns_per_block;
+>>>> -	bool rc = true;
+>>>> -	unsigned long pfn, block_sz;
+>>>> -	u64 phys_addr;
+>>>> -
+>>>>  	if (!(lmb->flags & DRCONF_MEM_ASSIGNED))
+>>>>  		return false;
+>>>>  
+>>>> -	block_sz = memory_block_size_bytes();
+>>>> -	scns_per_block = block_sz / MIN_MEMORY_BLOCK_SIZE;
+>>>> -	phys_addr = lmb->base_addr;
+>>>> -
+>>>>  #ifdef CONFIG_FA_DUMP
+>>>>  	/*
+>>>>  	 * Don't hot-remove memory that falls in fadump boot memory area
+>>>>  	 * and memory that is reserved for capturing old kernel memory.
+>>>>  	 */
+>>>> -	if (is_fadump_memory_area(phys_addr, block_sz))
+>>>> +	if (is_fadump_memory_area(lmb->base_addr, memory_block_size_bytes()))
+>>>>  		return false;
+>>>>  #endif
+>>>> -
+>>>> -	for (i = 0; i < scns_per_block; i++) {
+>>>> -		pfn = PFN_DOWN(phys_addr);
+>>>> -		if (!pfn_in_present_section(pfn)) {
+>>>> -			phys_addr += MIN_MEMORY_BLOCK_SIZE;
+>>>> -			continue;
+>>>> -		}
+>>>> -
+>>>> -		rc = rc && is_mem_section_removable(pfn, PAGES_PER_SECTION);
+>>>> -		phys_addr += MIN_MEMORY_BLOCK_SIZE;
+>>>> -	}
+>>>> -
+>>>> -	return rc;
+>>>> +	/* device_offline() will determine if we can actually remove this lmb */
+>>>> +	return true;
+>> So I think here swaps the check and do sequence. At least it breaks
+>> dlpar_memory_remove_by_count(). It is doable to remove
+>> is_mem_section_removable(), but here should be more effort to re-arrange
+>> the code.
+>>
+> 
+> Thanks Pingfan,
+> 
+> 1. "swaps the check and do sequence":
+> 
+> Partially. Any caller of dlpar_remove_lmb() already has to deal with
+> false positives. device_offline() can easily fail after
+> dlpar_remove_lmb() == true. It's inherently racy.
+> 
+> 2. "breaks dlpar_memory_remove_by_count()"
+> 
+> Can you elaborate why it "breaks" it? It will simply try to
+> offline+remove lmbs, detect that it wasn't able to offline+remove as
+> much as it wanted (which could happen before as well easily), and re-add
+> the already offlined+removed ones.
+> 
+I overlooked the re-add logic. Then I think
+dlpar_memory_remove_by_count() is OK with this patch.
+> 3. "more effort to re-arrange the code"
+> 
+> What would be your suggestion?
+> 
+I had thought about merging the two loop "for_each_drmem_lmb()", and do
+check inside the loop. But now it is needless.
 
-> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-> ---
->  .../devicetree/bindings/thermal/imx8mm-thermal.txt | 15 ------
->  .../bindings/thermal/imx8mm-thermal.yaml           | 53 ++++++++++++++++++++++
->  2 files changed, 53 insertions(+), 15 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
->  create mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
->
-> diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
-> deleted file mode 100644
-> index 3629d3c..0000000
-> --- a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
-> +++ /dev/null
-> @@ -1,15 +0,0 @@
-> -* Thermal Monitoring Unit (TMU) on Freescale i.MX8MM SoC
-> -
-> -Required properties:
-> -- compatible : Must be "fsl,imx8mm-tmu" or "fsl,imx8mp-tmu".
-> -- reg : Address range of TMU registers.
-> -- clocks : TMU's clock source.
-> -- #thermal-sensor-cells : Should be 0 or 1. See ./thermal.txt for a description.
-> -
-> -Example:
-> -tmu: tmu@30260000 {
-> -       compatible = "fsl,imx8mm-tmu";
-> -       reg = <0x30260000 0x10000>;
-> -       clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
-> -       #thermal-sensor-cells = <0>;
-> -};
-> diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
-> new file mode 100644
-> index 0000000..53a42b3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
-> @@ -0,0 +1,53 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/thermal/imx8mm-thermal.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX8M Mini Thermal Binding
-> +
-> +maintainers:
-> +  - Anson Huang <Anson.Huang@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - fsl,imx8mm-tmu
-> +              - fsl,imx8mp-tmu
-> +  reg:
-> +    description: |
-> +      Address range of TMU registers.
-> +    maxItems: 1
-> +  clocks:
-> +    description: |
-> +      TMU's clock source.
-> +    maxItems: 1
-> +
-> +  # See ./thermal.txt for details
+The only concerned left is "if (lmbs_available < lmbs_to_remove)" fails
+to alarm due to the weaken checking in lmb_is_removable(). Then after
+heavy migration in offline_pages, we encounters this limit, and need to
+re-add them back.
 
-Don't point to thermal.txt anymore. thermal.txt will be replaced by
-thermal-*.yaml files at some point soon.
+But I think it is a rare case plus hot-remove is also not a quite
+frequent event. So it is worth to simplify the code by this patch.
 
-> +  "#thermal-sensor-cells":
-> +    enum:
-> +      - 0
+Thanks for your classification.
 
-Don't you have multiple sensors connected to this controller? In that
-case, 0 won't be a valid value.
+For [1/2]
+Reviewed-by: Pingfan Liu <piliu@redhat.com>
 
-> +      - 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - '#thermal-sensor-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8mm-clock.h>
-> +
-> +    tmu: tmu@30260000 {
-> +         compatible = "fsl,imx8mm-tmu";
-> +         reg = <0x30260000 0x10000>;
-> +         clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
-> +         #thermal-sensor-cells = <0>;
-> +    };
-> +
-> +...
-> --
-> 2.7.4
->
