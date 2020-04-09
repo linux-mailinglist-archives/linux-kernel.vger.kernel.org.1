@@ -2,105 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B81C61A2FF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BED651A2FFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgDIHWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 03:22:44 -0400
-Received: from mga17.intel.com ([192.55.52.151]:47861 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgDIHWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 03:22:43 -0400
-IronPort-SDR: 0vPt4cJWilpsQck50W/1zsUeZpJlU4UzS/CLttzZcPuX+zG+BIzdFHNJ3JSuzT20/cqXLgk0DU
- Nklue3W18RTA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2020 00:22:43 -0700
-IronPort-SDR: 6XOc5M4HbeA8bKGiQtkTU5WQw1NgvovaLe6aJCgH/RNdDmJIkcNAeU10WAG2Xhc4jxlKb6RxOp
- 53TMjtLstInA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,361,1580803200"; 
-   d="scan'208";a="425418098"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga005.jf.intel.com with ESMTP; 09 Apr 2020 00:22:40 -0700
-Subject: Re: [PATCH v3 2/4] usb: xhci: xhci-plat: Add support for Broadcom STB
- SoC's
-To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Alan Stern <stern@rowland.harvard.edu>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org, Mathias Nyman <mathias.nyman@intel.com>,
+        id S1726666AbgDIH0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 03:26:38 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:57112 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725985AbgDIH0h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 03:26:37 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 67894804E6;
+        Thu,  9 Apr 2020 09:26:00 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 09:25:59 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Paul Boddie <paul@boddie.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20200408181406.40389-1-alcooperx@gmail.com>
- <20200408181406.40389-3-alcooperx@gmail.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <568aaebe-5810-a603-6d38-a76ea1344f0f@linux.intel.com>
-Date:   Thu, 9 Apr 2020 10:25:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        mips-creator-ci20-dev@googlegroups.com,
+        letux-kernel@openphoenux.org
+Subject: Re: [RFC v3 1/8] dt-bindings: display: convert ingenic, lcd.txt to
+ ingenic, lcd.yaml
+Message-ID: <20200409072559.GB12367@ravnborg.org>
+References: <cover.1585503354.git.hns@goldelico.com>
+ <a75c77fa8528f44832993f9780ae4ea409125a90.1585503354.git.hns@goldelico.com>
 MIME-Version: 1.0
-In-Reply-To: <20200408181406.40389-3-alcooperx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a75c77fa8528f44832993f9780ae4ea409125a90.1585503354.git.hns@goldelico.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8
+        a=7gkXJVJtAAAA:8 a=ztCEdXhiAAAA:8 a=VwQbUJbxAAAA:8 a=gEfo2CItAAAA:8
+        a=EOonHDGkKxT7KvGTIpcA:9 a=gAFmQjLz7WC3uhn-:21 a=lEZKnLxH932zqgqy:21
+        a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22 a=E9Po1WZjFZOl8hwRPBS3:22
+        a=nCm3ceeH17rKjHWsMeRo:22 a=AjGcO6oz07-iQ99wixmX:22
+        a=sptkURWiP4Gy88Gu7hUp:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8.4.2020 21.14, Al Cooper wrote:
-> Add support for Broadcom STB SoC's to the xhci platform driver
+Hi Nikolaus
+
+
+Some comments below that will result in a simplee binding that passes
+the checks.
+Thanks for pushing this.
+
+	Sam
+
+On Sun, Mar 29, 2020 at 07:35:47PM +0200, H. Nikolaus Schaller wrote:
+> and add compatible: jz4780-lcd, including an example how to
+> configure both lcd controllers.
 > 
-> Signed-off-by: Al Cooper <alcooperx@gmail.com>
+> Also fix the clock names and examples.
+> 
+> Based on work by Paul Cercueil <paul@crapouillou.net> and
+> Sam Ravnborg <sam@ravnborg.org>
+> 
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: devicetree@vger.kernel.org
 > ---
+>  .../bindings/display/ingenic,lcd.txt          |  45 ------
+>  .../bindings/display/ingenic,lcd.yaml         | 128 ++++++++++++++++++
+>  2 files changed, 128 insertions(+), 45 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/display/ingenic,lcd.txt
+>  create mode 100644 Documentation/devicetree/bindings/display/ingenic,lcd.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/ingenic,lcd.txt b/Documentation/devicetree/bindings/display/ingenic,lcd.txt
+> deleted file mode 100644
+> index 01e3261defb6..000000000000
+> --- a/Documentation/devicetree/bindings/display/ingenic,lcd.txt
+> +++ /dev/null
+> @@ -1,45 +0,0 @@
+> -Ingenic JZ47xx LCD driver
+> -
+> -Required properties:
+> -- compatible: one of:
+> -  * ingenic,jz4740-lcd
+> -  * ingenic,jz4725b-lcd
+> -  * ingenic,jz4770-lcd
+> -- reg: LCD registers location and length
+> -- clocks: LCD pixclock and device clock specifiers.
+> -	   The device clock is only required on the JZ4740.
+> -- clock-names: "lcd_pclk" and "lcd"
+> -- interrupts: Specifies the interrupt line the LCD controller is connected to.
+> -
+> -Example:
+> -
+> -panel {
+> -	compatible = "sharp,ls020b1dd01d";
+> -
+> -	backlight = <&backlight>;
+> -	power-supply = <&vcc>;
+> -
+> -	port {
+> -		panel_input: endpoint {
+> -			remote-endpoint = <&panel_output>;
+> -		};
+> -	};
+> -};
+> -
+> -
+> -lcd: lcd-controller@13050000 {
+> -	compatible = "ingenic,jz4725b-lcd";
+> -	reg = <0x13050000 0x1000>;
+> -
+> -	interrupt-parent = <&intc>;
+> -	interrupts = <31>;
+> -
+> -	clocks = <&cgu JZ4725B_CLK_LCD>;
+> -	clock-names = "lcd";
+> -
+> -	port {
+> -		panel_output: endpoint {
+> -			remote-endpoint = <&panel_input>;
+> -		};
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/display/ingenic,lcd.yaml b/Documentation/devicetree/bindings/display/ingenic,lcd.yaml
+> new file mode 100644
+> index 000000000000..8b6467cfc191
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/ingenic,lcd.yaml
+> @@ -0,0 +1,128 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/ingenic,lcd.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bindings for Ingenic JZ4780 LCD Controller
+> +
+> +maintainers:
+> +  - Paul Cercueil <paul@crapouillou.net>
+> +
+> +description: |
+> +  LCD Controller is the Display Controller for the Ingenic JZ47xx SoC
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +     - const: ingenic,jz4725b-lcd
+> +     - const: ingenic,jz4740-lcd
+> +     - const: ingenic,jz4770-lcd
+> +     - const: ingenic,jz4780-lcd
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: LCD registers location and length
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: Specifies the interrupt provided by parent
+> +
+> +  clocks:
+> +    maxItems: 2
+> +    description: Clock specifiers for LCD pixclock and device clock.
+> +      The device clock is only required on the JZ4740 and JZ4780
+> +
+> +  clock-names:
+> +    items:
+> +      - const: lcd
+> +      - const: lcd_pclk
+> +
+> +  port:
+> +    type: object
+> +    description: |
+> +      A port node with endpoint definitions as defined in
+> +      Documentation/devicetree/bindings/media/video-interfaces.txt
+> +
+> +required:
+> +    - compatible
+> +    - reg
+> +    - interrupts
+> +    - clocks
+> +    - clock-names
+> +    - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/jz4725b-cgu.h>
+> +
+> +    panel {
+> +      compatible = "sharp,ls020b1dd01d";
+> +
+> +      backlight = <&backlight>;
+> +      power-supply = <&vcc>;
+> +
+> +      port {
+> +        panel_input: endpoint {
+> +          remote-endpoint = <&panel_output>;
+> +          };
+> +        };
+> +      };
+The panel part is not needed - better to drop it.
 
-Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 
+> +
+> +    lcd: lcd-controller@13050000 {
+> +      compatible = "ingenic,jz4725b-lcd";
+> +      reg = <0x13050000 0x1000>;
+> +
+> +      interrupt-parent = <&intc>;
+> +      interrupts = <31>;
+> +
+> +      clocks = <&cgu JZ4725B_CLK_LCD>;
+> +      clock-names = "lcd", "lcd_pclk";
+> +
+> +      port {
+> +        panel_output: endpoint {
+> +          remote-endpoint = <&panel_input>;
+> +          };
+> +        };
+> +      };
+We know this example will not pass the check, as there is only
+one clock specified.
+I suggest to drop this example.
+If it later turns out that jz4725b only have one clock, then the binding
+needs to be updated. But the best guess is that the example is wrong.
 
+The example below for jz4780-lcd cover all relevant parts - so
+just keep it as the only example.
+
+> +
+> +  - |
+> +    #include <dt-bindings/clock/jz4780-cgu.h>
+> +
+> +    lcdc0: lcdc0@13050000 {
+Name this lcdc
+And drop "lcdc0@13050000" as this is not relevant for this example.
+
+Remember - the examples exist to explain the binding. They are
+just examples.
+
+> +        compatible = "ingenic,jz4780-lcd";
+> +        reg = <0x13050000 0x1800>;
+> +
+> +        clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD0PIXCLK>;
+> +        clock-names = "lcd", "lcd_pclk";
+> +
+> +        interrupt-parent = <&intc>;
+> +        interrupts = <31>;
+> +
+> +        jz4780_lcd_out: port {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            jz4780_out_hdmi: endpoint@0 {
+> +                reg = <0>;
+> +                remote-endpoint = <&hdmi_in_lcd>;
+> +            };
+> +        };
+> +    };
+> +
+
+And drop this as it does not add anything extra.
+> +    lcdc1: lcdc1@130a0000 {
+> +        compatible = "ingenic,jz4780-lcd";
+> +        reg = <0x130a0000 0x1800>;
+> +
+> +        clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD1PIXCLK>;
+> +        clock-names = "lcd", "lcd_pclk";
+> +
+> +        interrupt-parent = <&intc>;
+> +        interrupts = <31>;
+> +
+> +        status = "disabled";
+> +    };
+
+	Sam
