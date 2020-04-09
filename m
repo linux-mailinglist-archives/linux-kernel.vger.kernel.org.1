@@ -2,140 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A3C91A3256
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 12:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E3D1A3265
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 12:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbgDIKPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 06:15:07 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:43693 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgDIKPG (ORCPT
+        id S1726623AbgDIKRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 06:17:33 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49790 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgDIKRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 06:15:06 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n25so7286341otr.10;
-        Thu, 09 Apr 2020 03:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/NSZZSKSu5WJt1RNoef9dBjCn8fIK10WqZ6WGC2+h/M=;
-        b=iQL+Gq3QA9xSB0G77RYT1DZl9zxaKwiQKV7PF57j5DmP4f7Z+K389I+vbjLtPG0pyw
-         TsgkfIqwbahrRJXW8+QzFOO4x6LTG5trpY7ZUktLi8S7PL9Ekma4X2V2Cx+W6nUc/hBP
-         o8WvUlKV5Pm80i7lOPwWp7H6C8ljw9sMS24M3L83ZVjo8e/XavF7iDhLPZJuU6P8JADJ
-         ROC17jM7JvA/1li4pUqoH2bNUu+g3zK4qs0i8GBIPfm6oJBciuxGe5xjvSUfcOJB1XQF
-         ZnBjsViCtVXvHYEeBNexwrm34bN3C5mE/kI0lc084QX8A9v2+w7IAa67TUTcdks1+NHE
-         UKFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/NSZZSKSu5WJt1RNoef9dBjCn8fIK10WqZ6WGC2+h/M=;
-        b=pw90wKgMwoIxtYdUcUHsBgOAwcvDYSe4Wr6vnRAAhDL6zesqJpmqf+/+g9xBUR5qwt
-         97ot9VL4Djn4C//HuMPV/+CJrThTwyaFJDTSbSWEfHptCSN6UZmI+crPPLoN00ZWQE2b
-         OTSI8Lf/ge3dKJsXk+3UL9YgIQjpkpOaN7AxF5+f2i8uAgPN+wdBkd6Br8FPrDX9Wrjv
-         JamGcXzHyB8uaw+Mu/9woybBzxAUO30G8e0m1wW1CiNBfFQTiM5D18YapWKB/e4PUD8p
-         flGhkGSX0LgINmYRh7lTChuJjN/mW9zr1f2EN6WQr8f3yiaKIsJ8odDxMb4Dvh/C6foY
-         tQng==
-X-Gm-Message-State: AGi0PuYt0N/PZ1sbSRhXPL2m1XLUcDJwvgPfijtuhR2AQhMtWkkDYYdi
-        obZ0487HEJnrCQNzxWt+BTi2C+PQEH0xzGlzXHE=
-X-Google-Smtp-Source: APiQypJZ7ipa4bMCkW9mI2xrPpPXDZ+7ffNf67WIS2NRxz3lWs1SiJCULWWWchWx+Is+aY4H+ame5VIgN7uLwHuVtno=
-X-Received: by 2002:a9d:895:: with SMTP id 21mr8780254otf.365.1586427305866;
- Thu, 09 Apr 2020 03:15:05 -0700 (PDT)
+        Thu, 9 Apr 2020 06:17:33 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039AD75n162883;
+        Thu, 9 Apr 2020 10:17:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=BQv+SFU9p0BAD68jJoZGU4GuYeJmyCacIu0TxHC5XrE=;
+ b=zCw7BJTh6xHuF4KLGeTZOLnqIpZz43sntnvBpt26ZiOKmw2KhKwVxRVn7W+YXXYGZdu5
+ +ZhUeDrec4ZKkm9AN/SiK4Orvstru5aSFF3o8tovRmAW8ZNkKzariO8xffXafpJ5UgNv
+ XO1Qy4XVI+r5x3nKdOc/7DvAr8Xnk8uAGQ1rmDxS39XrCBDNCreD8RnfmNvlKdA2vyQm
+ Mo7SSMqt/u/Qd8fAkWHG4i2qaMUlqpdkq7kNGAhQPp6OZa7pYhlVLElo4sPqjkGXeZaq
+ Yf0SWAFRFlclEoz4/Q3Mh12H3X3/bBSUV5GRi8ZvbEvULiYajmBPjud25mgk+elCe4+U Kg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 309gw4chm5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Apr 2020 10:17:26 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039AClOb148569;
+        Thu, 9 Apr 2020 10:15:26 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 309ag478ey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Apr 2020 10:15:26 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 039AFPpT017318;
+        Thu, 9 Apr 2020 10:15:25 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 09 Apr 2020 03:15:24 -0700
+Date:   Thu, 9 Apr 2020 13:15:17 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Oliver Graute <oliver.graute@gmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-fbdev@vger.kernel.org,
+        Oliver Graute <oliver.graute@kococonnector.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v1] staging: fbtft: fb_st7789v: enabled inversion
+Message-ID: <20200409101517.GO2001@kadam>
+References: <1586424250-25897-1-git-send-email-oliver.graute@gmail.com>
 MIME-Version: 1.0
-References: <1586360280-10956-7-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20200408235133.GA151858@google.com>
-In-Reply-To: <20200408235133.GA151858@google.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Thu, 9 Apr 2020 11:14:39 +0100
-Message-ID: <CA+V-a8taA-CYNC2vLoPPm9WHZwTOFoHe-c2zus_n5=qr4x32WQ@mail.gmail.com>
-Subject: Re: [PATCH v7 6/8] PCI: rcar: Add support for R-Car PCIe controller
- in endpoint mode
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Chris Paterson <Chris.Paterson2@renesas.com>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586424250-25897-1-git-send-email-oliver.graute@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 malwarescore=0
+ phishscore=0 mlxscore=0 bulkscore=0 mlxlogscore=667 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004090077
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ phishscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1015
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=745 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004090077
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn,
+On Thu, Apr 09, 2020 at 11:24:05AM +0200, Oliver Graute wrote:
+> From: Oliver Graute <oliver.graute@kococonnector.com>
+> 
+> Enable inversion mode
 
-Thank you for the review.
+What the heck is an inversion mode and why would you want it?
 
-On Thu, Apr 9, 2020 at 12:51 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> Maybe:
->
->   PCI: rcar: Add endpoint mode support
->
-> so the important "endpoint mode" part is early and doesn't get chopped
-> off or wrapped.  We already know it's PCIe and rcar-related.
->
-Agreed will change it.
+regards,
+dasn carpenter
 
-> On Wed, Apr 08, 2020 at 04:37:58PM +0100, Lad Prabhakar wrote:
-> > This patch adds support for R-Car PCIe controller to work in endpoint mode.
->
-> s/This patch adds/Add/
->
-OK
-
-> > +static int rcar_pcie_ep_set_bar(struct pci_epc *epc, u8 func_no,
-> > +                             struct pci_epf_bar *epf_bar)
-> > +{
-> > +     int flags = epf_bar->flags | LAR_ENABLE | LAM_64BIT;
-> > +     struct rcar_pcie_endpoint *ep = epc_get_drvdata(epc);
-> > +     u64 size = 1ULL << fls64(epf_bar->size - 1);
-> > +     dma_addr_t cpu_addr = epf_bar->phys_addr;
-> > +     enum pci_barno bar = epf_bar->barno;
-> > +     struct rcar_pcie *pcie = &ep->pcie;
-> > +     u32 mask;
-> > +     int idx;
-> > +     int err;
-> > +
-> > +     idx = find_first_zero_bit(ep->ib_window_map, ep->num_ib_windows);
-> > +     if (idx >= ep->num_ib_windows) {
-> > +             dev_err(pcie->dev, "no free inbound window\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     if ((flags & PCI_BASE_ADDRESS_SPACE) == PCI_BASE_ADDRESS_SPACE_IO)
-> > +             flags |= IO_SPACE;
-> > +
-> > +     ep->bar_to_atu[bar] = idx;
-> > +     /* use 64 bit bars */
->
-> s/64 bit bars/64-bit BARs/
->
-OK shall replace it.
-
-> > +static const struct pci_epc_features rcar_pcie_epc_features = {
-> > +     .linkup_notifier = false,
-> > +     .msi_capable = true,
-> > +     .msix_capable = false,
-> > +     /* use 64-bit bars so mark bar1/3/5 as reserved */
->
-> s/bar/BAR/g
-OK shall replace it.
-
-Cheers,
---Prabhakar
