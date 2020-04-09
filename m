@@ -2,153 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EB41A30BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01DC1A30BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726627AbgDIIQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:16:18 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:39462 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725862AbgDIIQS (ORCPT
+        id S1726651AbgDIIRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:17:01 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:33932 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgDIIRA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:16:18 -0400
-Received: by mail-pg1-f193.google.com with SMTP id g32so4644652pgb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 01:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=XCQYTOYKkewyzGEcrkL/TPuusUnX/PYbV/+OIgYCWvQ=;
-        b=Vmm10K769J1HIMC7p1bb5XvOdIpocHqm8j0y9IBwFe4G23ehp2zyzcQjIPELsa/Sr3
-         I4YkJg9W5ekMScQSLrRa7iNKsSGbye8bWDns7OLjaNv+ecLmlZyX5T8LtN7ekwhyQJTa
-         SkKw8EPdXlE4sGbstb5D5ZpUE/IJdnVzDXRRc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=XCQYTOYKkewyzGEcrkL/TPuusUnX/PYbV/+OIgYCWvQ=;
-        b=Le1gY8Oe5MPy2dNqjsXgtrhcbQxjEKIbqcFOEtvTBLRww8+J91ppjqZo44PVcFc7xy
-         T8naA9ZJvNd6qwGdpeKYu2rzwbZasG5qEcdIETcP6WuL+NqHFYGBnANN2zLSPxQE9/Ad
-         zalWx1UPUz81epIheHrhqIGiWOftX0BtF50ne2AcGCpyJRRoUiJCul38fgDRyODzgfrj
-         1MYhilTIJElCr2uhREnVIarJyf09cEafVa0Kr1jwwCFoRZual/lnTRCWmFwKswo3BfYI
-         xlHcfdlMLHGB4fTtbpKQUJUrHp4JDel4IrYBrO1F7HhlP2+EaE8nMJ/GERV9lroZ/NGX
-         r6pQ==
-X-Gm-Message-State: AGi0Puaj4NBsVLzWKSt6nFtXuqsFo6Aj4IVci2rGXUoC5NXLAyJZ6l4w
-        6G77uEKY+c0wmfSh3sXzCOAf5Gfd0I4=
-X-Google-Smtp-Source: APiQypJQ1I6e+EfrgM2OYM3xD+1/9Nx4wNrauyUjPBovQPpK7Q3a1uSLtv/N2GNalrOSPd1O2KBobg==
-X-Received: by 2002:aa7:97a6:: with SMTP id d6mr12498752pfq.154.1586420177564;
-        Thu, 09 Apr 2020 01:16:17 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id y9sm19190490pfo.135.2020.04.09.01.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 01:16:16 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 9 Apr 2020 04:17:00 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0398D2q2150408;
+        Thu, 9 Apr 2020 08:16:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=W3Fcv0vtVlBpP+vayNy1UphJ5VAFqs7bWIftYjvmokA=;
+ b=sdP23vw+oDrhMFFx+SNitXNFmxPrcFcQmSLsHfK+hMESQUaUzGvc74EIg32sbubHnwWf
+ WYNwDfO/vzqZFVVmXZJdGceh7+85U7AHf7hJPu/rsYhCJ/Sjd5AodX99PC5BhdZQAZD5
+ Z4ei3NewcCwCtNzNE+84E2Hp5FyrDc6OPw0gB/NsmMIVTaKZL1WhoSZD0akhxKDzZ4ce
+ Jfggv+FP/MaPyC0UgDfrtELH5h468pBWInL9N+ErcRt+GbOy60Cias06kU5quSoeVOaV
+ cWykczdJ82SzQ+X1BHknh3uS3xfBs0pDyMTxQMuaCtM0z/XplRO68H7wpfIEIgfbRtrZ Dw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 309gw4bxts-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Apr 2020 08:16:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03987YNS096999;
+        Thu, 9 Apr 2020 08:14:30 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 3091m3dpt8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Apr 2020 08:14:29 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0398ESFE027101;
+        Thu, 9 Apr 2020 08:14:28 GMT
+Received: from linux-1.home (/92.157.90.160)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 09 Apr 2020 01:14:28 -0700
+Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
+ ANNOTATE_NOSPEC_ALTERNATIVE directives
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jthierry@redhat.com,
+        tglx@linutronix.de
+References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
+ <20200407073142.20659-10-alexandre.chartre@oracle.com>
+ <20200407132837.GA20730@hirez.programming.kicks-ass.net>
+ <20200407133454.n55u5nx33ruj73gx@treble>
+ <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
+ <3eb36fd2-9827-4c1b-681c-9c1d65c7582f@oracle.com>
+ <20200407162838.5hlh6oom4oa45ugt@treble>
+ <20200407172739.GI20730@hirez.programming.kicks-ass.net>
+ <20200408213508.GA4496@worktop.programming.kicks-ass.net>
+From:   Alexandre Chartre <alexandre.chartre@oracle.com>
+Message-ID: <da6efbb5-2610-6721-77ca-9833d13b9398@oracle.com>
+Date:   Thu, 9 Apr 2020 10:18:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <8553ce0f-6dda-b0e0-d67a-f76ce3c0f945@codeaurora.org>
-References: <1586154741-8293-1-git-send-email-mkshah@codeaurora.org> <1586154741-8293-5-git-send-email-mkshah@codeaurora.org> <158631424318.216820.1843109743502322053@swboyd.mtv.corp.google.com> <8553ce0f-6dda-b0e0-d67a-f76ce3c0f945@codeaurora.org>
-Subject: Re: [PATCH v16 4/6] soc: qcom: rpmh: Invoke rpmh_flush() for dirty caches
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, mka@chromium.org, rnayak@codeaurora.org,
-        ilina@codeaurora.org, lsrao@codeaurora.org
-To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
-        dianders@chromium.org, evgreen@chromium.org
-Date:   Thu, 09 Apr 2020 01:16:16 -0700
-Message-ID: <158642017601.126188.6125314877042857783@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200408213508.GA4496@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004090062
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
+ phishscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1015
+ suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004090062
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maulik Shah (2020-04-08 00:08:48)
-> Hi,
->=20
-> On 4/8/2020 8:20 AM, Stephen Boyd wrote:
-> > Quoting Maulik Shah (2020-04-05 23:32:19)
-> >> for CPU PM notification. They may be in autonomous mode executing
-> >> low power mode and do not require rpmh_flush() to happen from CPU
-> >> PM notification.
-> >>
-> >> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> >> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> >> ---
-> >>   drivers/soc/qcom/rpmh-internal.h |  25 +++++---
-> >>   drivers/soc/qcom/rpmh-rsc.c      | 123 +++++++++++++++++++++++++++++=
-++++++----
-> >>   drivers/soc/qcom/rpmh.c          |  26 +++------
-> >>   3 files changed, 137 insertions(+), 37 deletions(-)
-> >>
-> >> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-> >> index b718221..fbe1f3e 100644
-> >> --- a/drivers/soc/qcom/rpmh-rsc.c
-> >> +++ b/drivers/soc/qcom/rpmh-rsc.c
-> >> @@ -6,6 +6,7 @@
-> > [...]
-> >> +
-> >> +static int rpmh_rsc_cpu_pm_callback(struct notifier_block *nfb,
-> >> +                                   unsigned long action, void *v)
-> >> +{
-> >> +       struct rsc_drv *drv =3D container_of(nfb, struct rsc_drv, rsc_=
-pm);
-> >> +       int ret =3D NOTIFY_OK;
-> >> +
-> >> +       spin_lock(&drv->pm_lock);
-> >> +
-> >> +       switch (action) {
-> >> +       case CPU_PM_ENTER:
-> > I thought CPU_PM notifiers weren't supposed to be used anymore? Or at
-> > least, the genpd work that has gone on for cpuidle could be used here in
-> > place of CPU_PM notifiers?
->=20
-> genpd was used in v3 and v4 of this series, where from pd's .power_off=C2=
-=A0=20
-> function, rpmh_flush() was invoked.
->=20
-> genpd can be useful if target firmware supports PSCI's OSI mode, while=20
-> sc7180 is non-OSI target.
->=20
-> The current approch (using cpu pm notification) can be used for both OSI =
 
-> and non-OSI targets to invoke rpmh_flush() when last cpu goes to power do=
-wn.
+On 4/8/20 11:35 PM, Peter Zijlstra wrote:
+> On Tue, Apr 07, 2020 at 07:27:39PM +0200, Peter Zijlstra wrote:
+>> On Tue, Apr 07, 2020 at 11:28:38AM -0500, Josh Poimboeuf wrote:
+>>> Again, we should warn on stack changes inside alternatives, and then
+>>> look at converting RSB and retpolines to use static branches so they
+>>> have deterministic stacks.
+>>
+>> I don't think we need static brancher, we should just out-of-line the
+>> whole thing.
+>>
+>> Let me sort this CFI error Thomas is getting and then I'll attempt a
+>> patch along the lines I outlined in earlier emails.
+> 
+> Something like so.. seems to build and boot.
+> 
+> ---
+> From: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Subject: x86: Out-of-line retpoline
+> 
+> Since GCC generated code already uses out-of-line retpolines and objtool
+> has trouble with retpolines in alternatives, out-of-line them entirely.
+> 
+> This will enable objtool (once it's been taught a few more tricks) to
+> generate valid ORC data for the out-of-line copies, which means we can
+> correctly and reliably unwind through a retpoline.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   arch/x86/crypto/aesni-intel_asm.S            |  4 +--
+>   arch/x86/crypto/camellia-aesni-avx-asm_64.S  |  2 +-
+>   arch/x86/crypto/camellia-aesni-avx2-asm_64.S |  2 +-
+>   arch/x86/crypto/crc32c-pcl-intel-asm_64.S    | 26 ++++++++---------
+>   arch/x86/entry/entry_32.S                    |  6 ++--
+>   arch/x86/entry/entry_64.S                    |  2 +-
+>   arch/x86/include/asm/asm-prototypes.h        |  8 ++++--
+>   arch/x86/include/asm/nospec-branch.h         | 42 ++++------------------------
+>   arch/x86/kernel/ftrace_32.S                  |  2 +-
+>   arch/x86/kernel/ftrace_64.S                  |  4 +--
+>   arch/x86/lib/checksum_32.S                   |  4 +--
+>   arch/x86/lib/retpoline.S                     | 27 +++++++++++++++---
+>   arch/x86/platform/efi/efi_stub_64.S          |  2 +-
+>   13 files changed, 62 insertions(+), 69 deletions(-)
+> 
+...
+>   /*
+>    * JMP_NOSPEC and CALL_NOSPEC macros can be used instead of a simple
+>    * indirect jmp/call which may be susceptible to the Spectre variant 2
+> @@ -111,10 +83,9 @@
+>    */
+>   .macro JMP_NOSPEC reg:req
+>   #ifdef CONFIG_RETPOLINE
+> -	ANNOTATE_NOSPEC_ALTERNATIVE
+> -	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *\reg),	\
+> -		__stringify(RETPOLINE_JMP \reg), X86_FEATURE_RETPOLINE,	\
+> -		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *\reg), X86_FEATURE_RETPOLINE_AMD
+> +	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg),	\
+> +		__stringify(jmp __x86_retpoline_\()\reg), X86_FEATURE_RETPOLINE,	\
+> +		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
+>   #else
+>   	jmp	*\reg
+>   #endif
+> @@ -122,10 +93,9 @@
+> 
+>   .macro CALL_NOSPEC reg:req
+>   #ifdef CONFIG_RETPOLINE
+> -	ANNOTATE_NOSPEC_ALTERNATIVE
+> -	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *\reg),	\
+> -		__stringify(RETPOLINE_CALL \reg), X86_FEATURE_RETPOLINE,\
+> -		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *\reg), X86_FEATURE_RETPOLINE_AMD
+> +	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *%\reg),	\
+> +		__stringify(call __x86_retpoline_\()\reg), X86_FEATURE_RETPOLINE,\
+> +		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *%\reg), X86_FEATURE_RETPOLINE_AMD
 
-Ok. Doug and I talked today and I re-read the earlier series and I think
-Sudeep was suggesting that if we're doing last man down activities here
-then we're better off using OSI vs. PC mode. But I can only assume
-that's because the concern is something here requires software's help
-for last man down activities like lowering a CPU voltage setting or
-turning off some power switch to a hardware block through some i2c
-message. The way I understand it the last man down activities here are
-just setting up the sleep and wake TCS FIFOs to "do the right thing"
-when the last CPU actually goes down and the first CPU wakes up by
-running through the pile of "instructions" that we program into the
-FIFOs.
+For X86_FEATURE_RETPOLINE_AMD, the call won't be aligned like the others,
+it will be after the lfence instruction so ORC data won't be at the same
+place. I am adding some code in objtool to check that alternatives don't
+change the stack, but I should actually be checking if all alternatives
+have the same unwind instructions at the same place.
 
-The execution of those instructions is all done in hardware so any
-aggregation or coordination between CPUs is not really important here.
-All that matters is that we set up the sleep and wake TCS FIFOs properly
-so that _if_ the whole CPU subsystem goes to sleep we're going to let
-the hardware turn off the right stuff and lower voltages, etc. and
-vice-versa for wake. If we didn't have to share the TCS FIFOs with
-active mode control then we could just tweak the sleep and wake TCS
-buckets at runtime and let the hardware state of the CPUs decide to
-trigger them at the right time. Unfortunately, we don't have that luxury
-and we're stuck repurposing the sleep TCS FIFO to control things like
-regulator voltages when the CPU is awake. Yuck!
+Other than that, my only question would be any impact on performances.
+Retpoline code was added with trying to limit performance impact.
+Here, JMP_NOSPEC has now an additional (long) jump, and CALL_NOSPEC
+is doing a long call instead of a near call. But I have no idea if this
+has a visible impact.
 
->=20
-> > And so this isn't actually any different
-> > than what was proposed originally to use genpd for this?
-> >
-
-I guess this answer to this is yes. Which is fine. CPU PM notifiers are
-still used by various drivers to do things like save/restore state of
-devices that lose state when the CPUs power down. The use of genpd is
-helpful for OSI mode because it can describe how/when big and little
-clusters are powered off by putting them in different genpds. For
-counting the last CPU to turn off it seems simpler to just register for
-CPU PM notifiers and not care about genpd logic and nesting clusters,
-etc. I'm happy to see this not be a blocker.
+alex.
