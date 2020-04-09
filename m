@@ -2,132 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A121A3BA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 23:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D971A3BA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 23:03:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgDIVAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 17:00:21 -0400
-Received: from sonic313-15.consmr.mail.ne1.yahoo.com ([66.163.185.38]:46761
-        "EHLO sonic313-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726650AbgDIVAS (ORCPT
+        id S1727359AbgDIVDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 17:03:37 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:33786 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727002AbgDIVDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 17:00:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1586466017; bh=i6dQubm4eW55xOW2CHC5ihX3T7Nv1NxSndsDNtFfxzQ=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject; b=PzE0eKJcAfZ/dqy1GX2F7bw3KIFpq6QHdkejRchwIZsfLubHTcA0NDmmOO42qhxvoRwbVKaHEs03tjH+/ra869bFTA4C0R9UdBoaBCxxiZhZt5IYuZlRM8SzeiA1TRcQ5U7zQt6AWIguM6aXAaa2TExNPrKJBJz2ez+mmjU89e7q9jY6UiGWJtG3VvMybl/wu3Hp/FvkQ+xwZTDfwhtbmEjy/2NUQyOf1o9Nfin6j/4Dp5lKNl6KvSur2zHk9AMf1rVineUBUidJd1mBhA/7fAWDJFo0Ld4oZe70pClD5/z/QTg5iVN3A/OLAeWsAcqXcyjP7mA3VvO1uwd6v44r0g==
-X-YMail-OSG: C5hNu1EVM1loB1ekDhNsJO2A4G6GesNj8.wNoJRN4Kgb9QjEPv4Pq3DDWfGnmUU
- 4b..CP9aEpy_bchcVoIP6aMcK6..NQmnk5HH9Dmud4su9RFC2UQmS6F7bwpAH.tQOMGyOxzwj7Sb
- 3lJrxWBJxGJZnX_mJEOig1oTyd3O1aYOoyq7zYLcgBf8MHsNaXEYd2Hs8UC9K7cBbTWErt39_dAs
- AkERexTxYTtx.9YHnL4VbmgCOTTT6YXCVyMbbi4yH.fdRMTpDCKmXvy1Zf07a.jAyF9zcVZzDK9r
- tOEj5ImIbxWTVeg2BdIJE9Ww3TFghf.KCwwkl0S3zynWudSetvUkU5UGwTfYvnjHNQS2OTyrr3Nv
- LNbbF0f5DU3ueOyM71pzpSz196cYNYBH9f7EtwG2BnKSczVQ1_tfG84jf5Bxcxrr4AliEdkBcZGN
- XXKlWGr8YjzFiv19Uf5GdtQtJ0kjvCGcoOcuW7SE35GjxBwI26hB1j52EBNnzHqxGQxrs51DO4Ok
- giOQHLWB2QRHl4ztXFSjmgc32hGtt6wN3zcl3C_TSusmhOslhyoV7I8djO7RUOVDd4LCl95AIESp
- g3sTmrrxngaIIKwo6TgfOOEbvwJtUerZY1YD7AKtPhHxTQfF701Damf.jQUNvAdlmQ1P9UJX4JBL
- BrrjJwRHo._uXw1COrvcO2xM05RnU146hImGbhbi0OjtcxFPwbmNlPT_P2d4lgB0qfRt3xiWDe52
- HLYF0jlf465ePy2So8x_RD0x1.taCspFczxMDu1RxMs4bLncB93CgQSuzr5NU0t6joQQZKHcQqRB
- FxwWDH0xS2CFhvCP0pR4kcjhvYmEWwQ75k_HyNggi2l8THz.hSWrSEOY6EyJsva0eSpUOkmohcIJ
- Tw80WCz6NmMZlLW5k6zI1vb48ZALMSJNElNL5iXjS.iHFiDEPQVu8yi85BEKU_C7Fbz04VPcfrrJ
- 6379YT1M0S3aekR0Kz3j_byVyRLDgeF_NaYR4EELoVJ4eRw4JcTQqxHl4CyAni0W.6PTHtRDKTx0
- twdXy2lJibIvigWOoR0kh6HS95NNb.yn0xLkF6BMBfLCGCA5qUMi5uX4u5ENHqtVO3AJIsQR2HYM
- vrNr1L4Q3qTlHdoD5Wg4KS6feIQuwk7Csdzc0Uz9XQ3bHF7KL1VSP9Rfg33CW30SpyoK5ZwBQrrm
- 1KyFDD2j1fm95niQeAxmUKeaXJqPFRW5gx2OGcrzyDMm.HDatUchD5rV1x2l79uX4VJ6JX6dKLqA
- o3D7HdPW3mEC.bLGrlcIgfXklUHAvxvDa0Qmqo3qcJvjprtJwiCBlYoQO_g0wNapcKdh7heEfVVM
- AH0i7H1mFStFpoWrDENc0nAih.Og9t_6qVVXMRAK1w8X5iYZLVmM2t4QUemr3no_wHNxf_CGs0xa
- w_SLomTDJGFQ3TGJT7Xu5Kd3C6nBtiAqJ5ziTnAU-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Thu, 9 Apr 2020 21:00:17 +0000
-Received: by smtp428.mail.ne1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID 9a9f5023a1c147644711e2ec456bbe3d;
-          Thu, 09 Apr 2020 21:00:13 +0000 (UTC)
-Subject: Re: [PATCH 1/1] smack: remove redundant structure variable from
- header.
-To:     Maninder Singh <maninder1.s@samsung.com>, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, a.sahrawat@samsung.com,
-        v.narang@samsung.com, Casey Schaufler <casey@schaufler-ca.com>
-References: <CGME20200409124013epcas5p33036c008f30327378a6ff02050261626@epcas5p3.samsung.com>
- <1586435998-18921-1-git-send-email-maninder1.s@samsung.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Autocrypt: addr=casey@schaufler-ca.com; keydata=
- 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
- abzjfg==
-Message-ID: <91af6ae1-919a-bc48-1f62-6ba3b4c62dac@schaufler-ca.com>
-Date:   Thu, 9 Apr 2020 14:00:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Thu, 9 Apr 2020 17:03:36 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jMeKm-0002v9-0w; Thu, 09 Apr 2020 15:03:36 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jMeKl-00061C-6c; Thu, 09 Apr 2020 15:03:35 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <87blobnq02.fsf@x220.int.ebiederm.org>
+        <87lfnda3w3.fsf@x220.int.ebiederm.org>
+        <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
+        <87blo45keg.fsf@x220.int.ebiederm.org>
+        <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+        <87v9maxb5q.fsf@x220.int.ebiederm.org>
+        <CAHk-=wih4BqW7GTLaYxewynuT-iFHrXroip0wNo0CyPtmYGUow@mail.gmail.com>
+        <87y2r4so3i.fsf@x220.int.ebiederm.org>
+        <CAHk-=wjhAvv6s_7OVeZJiHaY7bBrHyiPTkSpq-TLr6qxYqxUUw@mail.gmail.com>
+        <CAHk-=wi0jrKv9x6vJ9FDgTrSUbdbZYDX-79T-E87C48MGSn5=g@mail.gmail.com>
+        <87wo6or3pg.fsf@x220.int.ebiederm.org>
+        <AM6PR03MB51708FD4226E07AB7CB0D6A7E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=wjaoYM4gXdAyYY=u8PaYj2LXUvcfp=8DKum8f1DM+Ws0A@mail.gmail.com>
+        <AM6PR03MB5170F924EA69A81D79BD0929E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=whMKC5F-=QQP=fCNRuTF+ZGiNtLEKvx7KekpK1JtrwDhw@mail.gmail.com>
+        <CAHk-=whJ8khGBqfqh6ZmHsKjcyyBLm5xgkgLW_AC_=82iFBWoQ@mail.gmail.com>
+        <AM6PR03MB51700B243E34BF4A59FF33CFE4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+Date:   Thu, 09 Apr 2020 16:00:43 -0500
+In-Reply-To: <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 9 Apr 2020 13:04:34 -0700")
+Message-ID: <87imi8nzlw.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <1586435998-18921-1-git-send-email-maninder1.s@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Mailer: WebService/1.1.15620 hermes Apache-HttpAsyncClient/4.1.4 (Java/11.0.6)
+Content-Type: text/plain
+X-XM-SPF: eid=1jMeKl-00061C-6c;;;mid=<87imi8nzlw.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19JRmi+gUReXsDfhEwoU+RTCX9qYs//mhU=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.3 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3983]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 352 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 10 (2.7%), b_tie_ro: 8 (2.4%), parse: 1.58 (0.4%),
+         extract_message_metadata: 24 (6.8%), get_uri_detail_list: 1.86 (0.5%),
+         tests_pri_-1000: 35 (10.0%), tests_pri_-950: 1.78 (0.5%),
+        tests_pri_-900: 1.26 (0.4%), tests_pri_-90: 71 (20.0%), check_bayes:
+        68 (19.4%), b_tokenize: 8 (2.2%), b_tok_get_all: 6 (1.8%),
+        b_comp_prob: 2.3 (0.7%), b_tok_touch_all: 47 (13.5%), b_finish: 1.06
+        (0.3%), tests_pri_0: 194 (55.1%), check_dkim_signature: 0.73 (0.2%),
+        check_dkim_adsp: 2.7 (0.8%), poll_dns_idle: 0.45 (0.1%), tests_pri_10:
+        2.3 (0.6%), tests_pri_500: 7 (2.0%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/2020 5:39 AM, Maninder Singh wrote:
-> commit afb1cbe37440 ("LSM: Infrastructure management
-> of the inode security") removed usage of smk_rcu,
-> thus removing it from structure.
->
-> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Thank you. I will take this.
-
-> ---
->  security/smack/smack.h | 1 -
->  1 file changed, 1 deletion(-)
+> On Thu, Apr 9, 2020 at 12:57 PM Bernd Edlinger
+> <bernd.edlinger@hotmail.de> wrote:
+>>
+>> The use case where this may happen with strace
+>> when you call strace with lots of -p <pid> arguments,
+>> and one of them is a bomb. strace stuck.
 >
-> diff --git a/security/smack/smack.h b/security/smack/smack.h
-> index 62529f3..5ebd0bb 100644
-> --- a/security/smack/smack.h
-> +++ b/security/smack/smack.h
-> @@ -111,7 +111,6 @@ struct inode_smack {
->  	struct smack_known	*smk_mmap;	/* label of the mmap domain */
->  	struct mutex		smk_lock;	/* initialization lock */
->  	int			smk_flags;	/* smack inode flags */
-> -	struct rcu_head         smk_rcu;	/* for freeing inode_smack */
->  };
->  
->  struct task_smack {
+> Yeah, so from a convenience angle I do agree that it would be nicer to
+> just not count dead threads.
+>
+> You can test that by just moving the
+>
+>                 /* Don't bother with already dead threads */
+>                 if (t->exit_state)
+>                         continue;
+>
+> test in zap_other_threads() to above the
+>
+>                 count++;
+>
+> line instead.
+
+That looks like a legitimate race, and something worth addressing.  It
+doesn't look like t->exit_state has siglock protection so I don't think
+testing it under siglock would fix that race.  But something like that
+certainly should.
+
+But no.  While you are goind a good job at spotting odd corner
+cases that need to be fixed.  This also is not the cause of the
+deadlock.  It is nothing that subtle.
+
+Eric
