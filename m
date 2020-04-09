@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 424481A38D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DE51A38EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgDIRX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:23:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54370 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726705AbgDIRX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:23:26 -0400
-Received: from tzanussi-mobl (c-98-220-238-81.hsd1.il.comcast.net [98.220.238.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C981B20768;
-        Thu,  9 Apr 2020 17:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586453006;
-        bh=64LlGCCv4Ujdsj2HjK37xEdnG7YXQ8NbifNQr7sh4yM=;
-        h=Subject:From:To:Date:From;
-        b=DGsrSHs/eLYC41ZAlE1CHLK7q4AiiyzjoROJlfTR1MRi5K2uAmF1vCBQyA8hffmt1
-         GtD3dkdiJCCI2y7BpSRzo25JrC9T4LVsgPTF4d6c8tLf7P9gbCLmaIQW4SwWH9TH8i
-         HJ2lCpnI4maQuwvjX2UHw/G2TVxwPopKPVb4iPZE=
-Message-ID: <d238dd91974af6b667eca52d6890be39db9acd0e.camel@kernel.org>
-Subject: [ANNOUNCE] 4.14.175-rt80
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Date:   Thu, 09 Apr 2020 12:23:24 -0500
+        id S1726637AbgDIRcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:32:24 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:40774 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgDIRcX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 13:32:23 -0400
+Received: by mail-yb1-f193.google.com with SMTP id a5so6126380ybo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 10:32:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mp9ron0QEbR+5PIC/6wd8mlHTQ3C2lOlQANEcm1kIPk=;
+        b=LhxWNog6VVrgOvZOd6G3ZQJUpCHiuIk6yxEutecouJO6tGdNTsHulwM91owTqIFmwP
+         EaLc+m4veWreX5at+Shm1YjJCHjf/9mO1338i0wUmlRtT2+UE6KywrnJx0THLhVzE+Ql
+         LVaMQbvPW0YZAQe6YZGOfc/qV97n6E4QTclaY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mp9ron0QEbR+5PIC/6wd8mlHTQ3C2lOlQANEcm1kIPk=;
+        b=aR0W5kL4NCXT7xNmKpE/isAO10zxrESgxw7+S9VFRGjgh94NJIt/n6muc8NkPfBwCg
+         9mr01JN9BmsQdhbk19dvRelx8BIWxT1hv6gdFQ+02Vrn+fe9059AaY4+tu5dGBuFMveX
+         2SicevFGB/g4d3Y5v0RRcg3wAahK6ZwJD+e/kuinBgt6Zi7lqpIGylsF0QB3ln7XQDqT
+         qQisrW+LFEO9TtmRIUefls5vJm+xQ2HDQOklFocjKNvWFMn2mmV3/tyqkqh63y2Bg+AF
+         hwOf+DlTuRrDmAIv14YSjLgfn99jymtrNS22C+b0Oplv1/3v0Wfpf/JXaRkiSjxz6Tms
+         1mHA==
+X-Gm-Message-State: AGi0PuZFuUDkEHO6qcivdEQUJAPv/p82U/U9YzbnlMKvrNer2A2cx2oM
+        XsDRd9P7s0xAvSLUHNO6S/pU8Vl1F8hHphWt3jB4LtgGiqk=
+X-Google-Smtp-Source: APiQypKnHP7JJ/UOIb1NWR+NfOlMqkd3p1ZIQezrHa0Qko3rdv4wDaUQCokFL88/t/g7xBGI58BoGwPTa3THk2T+axA=
+X-Received: by 2002:ab0:3154:: with SMTP id e20mr160174uam.136.1586453077481;
+ Thu, 09 Apr 2020 10:24:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200304010650.259961-1-abhishekpandit@chromium.org> <20200409170742.27865-1-youling257@gmail.com>
+In-Reply-To: <20200409170742.27865-1-youling257@gmail.com>
+From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
+Date:   Thu, 9 Apr 2020 10:24:25 -0700
+Message-ID: <CANFp7mV_bTKwMPt44BpvkuUtnYz5yh2qhzprbgwhDaqwR8duvw@mail.gmail.com>
+Subject: Re: [RFC PATCH v4 0/5] Bluetooth: Handle system suspend gracefully
+To:     youling257 <youling257@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Bluez mailing list <linux-bluetooth@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, hdegoede@redhat.com
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT Folks!
+Hi,
 
-I'm pleased to announce the 4.14.175-rt80 stable release.
+Could you collect more logs w/ dynamic debug and post on the bug?
 
-This release is just an update to the new stable 4.14.175
-version and no RT specific changes have been made.
+Dyndebug instructions:
+https://www.kernel.org/doc/html/latest/admin-guide/dynamic-debug-howto.html
 
-You can get this release via the git tree at:
+Please enable debug for files hci_core.c, hci_request.c and hci_event.c:
+(for example: echo 'file hci_core.c +p' > <debugfs>/dynamic_debug/control)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+Thanks
+Abhishek
 
-  branch: v4.14-rt
-  Head SHA1: 4bfc4a805b681b2320f9e9c11636ee8543616583
-
-Or to build 4.14.175-rt80 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.175.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.175-rt80.patch.xz
-
-Enjoy!
-
-   Tom
-
+On Thu, Apr 9, 2020 at 10:08 AM youling257 <youling257@gmail.com> wrote:
+>
+> This patch series cause a suspend problem on BYT/CHT device, https://bugzilla.kernel.org/show_bug.cgi?id=207169
