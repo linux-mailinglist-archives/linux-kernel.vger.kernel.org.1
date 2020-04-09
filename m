@@ -2,184 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D49D1A2D56
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 03:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1951A2D5D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 03:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726701AbgDIB20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 21:28:26 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38458 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbgDIB2Z (ORCPT
+        id S1726641AbgDIBdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 21:33:11 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:46950 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgDIBdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 21:28:25 -0400
-Received: by mail-qt1-f196.google.com with SMTP id 13so1603378qtt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 18:28:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=aurabindo.in; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n5kw2Wbvm+jeuA0TKaixDRv8+MULXqVay3QBIHkyklY=;
-        b=IdhsTx1X7K+gu0qszXrpQefgwGzG8CB0RvoL1PoE6xMluCGUybvuH1Y1hDU0yhH3lb
-         S7ZxnE671zW/V5dVCMIOgpJYyC6qX5dEi8rT9ldP5rLRXGT846mhZ4uTxSNMgJq8hgiy
-         DVf+/oXW92XTx+Ke/57DO0CfcC3ryfBU3gwHz3BbjYvxCYPFGah+zYcwZG7q8cWAt+Bn
-         VIcoN22EpwE9vvdtIKTtUjvSq0zQv4hHLEppbWzfwOwGFjYq+r3btl1GVxJzPRz8Otf/
-         qDz08PtlqeYREFn5SzmohAt6B1fCFjcFdODvQ8szTdoaDTK7sYBdq6qNVFfqbhUZsGdf
-         gcXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n5kw2Wbvm+jeuA0TKaixDRv8+MULXqVay3QBIHkyklY=;
-        b=MSELH8Y+rdalHFDgXkt/7G7c0j0JS5R30xfK0IkH1HcxEYylu1HxB7FHVq1jahaYzR
-         QpeOe5vCRwC/oF9Ql3ex1G+jxteKdJ77I3YcBm4TBFxoKRIcCixH63uz0W06w9sxZQI+
-         L7WV0AI4wY7fv/XchgjryA97WiU/78l3nHyhDsCK/TJbAAj6sILbkn7jmXqZPHtZf51e
-         Amw9iEV8Ts9m29ihEvpryI1Y+LSyEybVnlBZf4sAxpMhBBc3V8K3yg1+rXVaY56D+ynZ
-         m7CQabv0s4sS+GMzuRr3bNf9LZWqm5yCL6ObELAJfPXgg6Vg0H60RP++DAKmOdn9zlDO
-         9psw==
-X-Gm-Message-State: AGi0PuZ9wVeosTZdseKm952CjwGydOCyLOWDP+hPvKUGUWFxea4wr687
-        EpZEfqnopgCv+m7SQtee/CfA1Q==
-X-Google-Smtp-Source: APiQypKkLtyEqv2exCrhc0LFffwP7h8eu9YlvpRilNhQ13nMJibLG+kUqVy7Zkjty2jLqU3zF9iILA==
-X-Received: by 2002:ac8:6719:: with SMTP id e25mr10113060qtp.367.1586395704610;
-        Wed, 08 Apr 2020 18:28:24 -0700 (PDT)
-Received: from localhost.localdomain (135-23-249-169.cpe.pppoe.ca. [135.23.249.169])
-        by smtp.gmail.com with ESMTPSA id h13sm11710186qkj.21.2020.04.08.18.28.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 18:28:24 -0700 (PDT)
-From:   Aurabindo Pillai <mail@aurabindo.in>
-To:     christian.koenig@amd.com, alexander.deucher@amd.com,
-        David1.Zhou@amd.com
-Cc:     airlied@linux.ie, daniel@ffwll.ch, Felix.Kuehling@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] drm/amd/amdgpu: remove hardcoded module name in prints
-Date:   Wed,  8 Apr 2020 21:28:15 -0400
-Message-Id: <20200409012815.22309-4-mail@aurabindo.in>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200409012815.22309-1-mail@aurabindo.in>
-References: <20200409012815.22309-1-mail@aurabindo.in>
+        Wed, 8 Apr 2020 21:33:10 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0391EdTD153108;
+        Thu, 9 Apr 2020 01:33:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=nC0hotMCkDEImZuhn5g19CJQWF6/roFMX6Kw1NNt2q4=;
+ b=XFtnRUCIunxaXzcPVR28Ij2Xw96h3Ob7sHo8ySZfqVwq4AKSYBjxz2lYi2QIUIZE4TKk
+ 9U8o6T2eCr9l/aXFn4828Api3H5gjQsuBNv1G9Yg7kQlL25BR9xtsQYwx2bVyzpSyb7A
+ 25E43UGU4IO/mOIzONOg+vBIlVTwHWPS3mXah+Q3UXAa/YaDIAmGVKQAAqfk2C6SQEwL
+ CKLF5qvTRi0r0WvgBee95Q8FUz6Z/U96PmX7qTEJfLv59x3hOqJzICMaKp2hOJwqE+Gf
+ ecv2ivw+ClG72uVbkizl7c27EF2LA6dOeVlI0NFjFSyShlyLGJ9DMLuptAD7JfEwKkDQ LQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 3091m0xrha-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Apr 2020 01:33:07 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0391BYgA039095;
+        Thu, 9 Apr 2020 01:31:07 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 3091m614ub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 09 Apr 2020 01:31:07 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0391V6Wr031746;
+        Thu, 9 Apr 2020 01:31:06 GMT
+Received: from localhost.localdomain (/10.159.148.185)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 08 Apr 2020 18:31:06 -0700
+Subject: Re: [PATCH v4 2/2] selftests: kvm: Add mem_slot_test test
+To:     Wainer dos Santos Moschetta <wainersm@redhat.com>,
+        pbonzini@redhat.com, kvm@vger.kernel.org
+Cc:     drjones@redhat.com, david@redhat.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20200408220818.4306-1-wainersm@redhat.com>
+ <20200408220818.4306-3-wainersm@redhat.com>
+From:   Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Message-ID: <0009f75a-4c09-139e-c793-574291ad20dc@oracle.com>
+Date:   Wed, 8 Apr 2020 18:31:05 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200408220818.4306-3-wainersm@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 adultscore=0 suspectscore=2 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004090006
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 phishscore=0 suspectscore=2 bulkscore=0
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004090006
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let format prefixes take care of printing the module name
-through pr_fmt and dev_fmt definitions.
 
-Signed-off-by: Aurabindo Pillai <mail@aurabindo.in>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c | 6 +++---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c       | 4 ++--
- drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c          | 2 +-
- drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c            | 2 +-
- drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c            | 2 +-
- drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c            | 2 +-
- 6 files changed, 9 insertions(+), 9 deletions(-)
+On 4/8/20 3:08 PM, Wainer dos Santos Moschetta wrote:
+> This patch introduces the mem_slot_test test which checks
+> an VM can have added memory slots up to the limit defined in
+> KVM_CAP_NR_MEMSLOTS. Then attempt to add one more slot to
+> verify it fails as expected.
+>
+> Signed-off-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
+> ---
+>   tools/testing/selftests/kvm/.gitignore      |  1 +
+>   tools/testing/selftests/kvm/Makefile        |  3 +
+>   tools/testing/selftests/kvm/mem_slot_test.c | 76 +++++++++++++++++++++
+>   3 files changed, 80 insertions(+)
+>   create mode 100644 tools/testing/selftests/kvm/mem_slot_test.c
+>
+> diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+> index 16877c3daabf..127d27188427 100644
+> --- a/tools/testing/selftests/kvm/.gitignore
+> +++ b/tools/testing/selftests/kvm/.gitignore
+> @@ -21,4 +21,5 @@
+>   /demand_paging_test
+>   /dirty_log_test
+>   /kvm_create_max_vcpus
+> +/mem_slot_test
+>   /steal_time
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 712a2ddd2a27..338b6cdce1a0 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -32,12 +32,14 @@ TEST_GEN_PROGS_x86_64 += clear_dirty_log_test
+>   TEST_GEN_PROGS_x86_64 += demand_paging_test
+>   TEST_GEN_PROGS_x86_64 += dirty_log_test
+>   TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_x86_64 += mem_slot_test
+>   TEST_GEN_PROGS_x86_64 += steal_time
+>   
+>   TEST_GEN_PROGS_aarch64 += clear_dirty_log_test
+>   TEST_GEN_PROGS_aarch64 += demand_paging_test
+>   TEST_GEN_PROGS_aarch64 += dirty_log_test
+>   TEST_GEN_PROGS_aarch64 += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_aarch64 += mem_slot_test
+>   TEST_GEN_PROGS_aarch64 += steal_time
+>   
+>   TEST_GEN_PROGS_s390x = s390x/memop
+> @@ -46,6 +48,7 @@ TEST_GEN_PROGS_s390x += s390x/sync_regs_test
+>   TEST_GEN_PROGS_s390x += demand_paging_test
+>   TEST_GEN_PROGS_s390x += dirty_log_test
+>   TEST_GEN_PROGS_s390x += kvm_create_max_vcpus
+> +TEST_GEN_PROGS_s390x += mem_slot_test
+>   
+>   TEST_GEN_PROGS += $(TEST_GEN_PROGS_$(UNAME_M))
+>   LIBKVM += $(LIBKVM_$(UNAME_M))
+> diff --git a/tools/testing/selftests/kvm/mem_slot_test.c b/tools/testing/selftests/kvm/mem_slot_test.c
+> new file mode 100644
+> index 000000000000..7c1009f0bc07
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/mem_slot_test.c
+> @@ -0,0 +1,76 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * mem_slot_test
+> + *
+> + * Copyright (C) 2020, Red Hat, Inc.
+> + *
+> + * Test suite for memory region operations.
+> + */
+> +#define _GNU_SOURCE /* for program_invocation_short_name */
+> +#include <linux/kvm.h>
+> +#include <sys/mman.h>
+> +
+> +#include "test_util.h"
+> +#include "kvm_util.h"
+> +
+> +/*
+> + * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
+> + * tentative to add further slots should fail.
+> + */
+> +static void test_add_max_slots(void)
+> +{
+> +	int ret;
+> +	struct kvm_vm *vm;
+> +	uint32_t max_mem_slots;
+> +	uint32_t slot;
+> +	uint64_t guest_addr;
+> +	uint64_t mem_reg_npages;
+> +	uint64_t mem_reg_size;
+> +	void *mem;
+> +
+> +	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
+> +	TEST_ASSERT(max_mem_slots > 0,
+> +		    "KVM_CAP_NR_MEMSLOTS should be greater than 0");
+> +	pr_info("Allowed number of memory slots: %i\n", max_mem_slots);
+> +
+> +	vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
+> +
+> +	/*
+> +	 * Uses 1MB sized/aligned memory region since this is the minimal
+> +	 * required on s390x.
+> +	 */
+> +	mem_reg_size = 0x100000;
+> +	mem_reg_npages = vm_calc_num_guest_pages(VM_MODE_DEFAULT, mem_reg_size);
+> +
+> +	guest_addr = 0x0;
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-index fa8ac9d19..4afd4ef54 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd_gpuvm.c
-@@ -325,13 +325,13 @@ static int vm_validate_pt_pd_bos(struct amdgpu_vm *vm)
- 	ret = amdgpu_vm_validate_pt_bos(adev, vm, amdgpu_amdkfd_validate,
- 					&param);
- 	if (ret) {
--		pr_err("amdgpu: failed to validate PT BOs\n");
-+		pr_err("failed to validate PT BOs\n");
- 		return ret;
- 	}
- 
- 	ret = amdgpu_amdkfd_validate(&param, pd);
- 	if (ret) {
--		pr_err("amdgpu: failed to validate PD\n");
-+		pr_err("failed to validate PD\n");
- 		return ret;
- 	}
- 
-@@ -340,7 +340,7 @@ static int vm_validate_pt_pd_bos(struct amdgpu_vm *vm)
- 	if (vm->use_cpu_for_update) {
- 		ret = amdgpu_bo_kmap(pd, NULL);
- 		if (ret) {
--			pr_err("amdgpu: failed to kmap PD, ret=%d\n", ret);
-+			pr_err("failed to kmap PD, ret=%d\n", ret);
- 			return ret;
- 		}
- 	}
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index b8975857d..0a8c4a266 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -1092,7 +1092,7 @@ static void amdgpu_switcheroo_set_state(struct pci_dev *pdev, enum vga_switchero
- 		return;
- 
- 	if (state == VGA_SWITCHEROO_ON) {
--		pr_info("amdgpu: switched on\n");
-+		pr_info("switched on\n");
- 		/* don't suspend or resume card normally */
- 		dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
- 
-@@ -1106,7 +1106,7 @@ static void amdgpu_switcheroo_set_state(struct pci_dev *pdev, enum vga_switchero
- 		dev->switch_power_state = DRM_SWITCH_POWER_ON;
- 		drm_kms_helper_poll_enable(dev);
- 	} else {
--		pr_info("amdgpu: switched off\n");
-+		pr_info("switched off\n");
- 		drm_kms_helper_poll_disable(dev);
- 		dev->switch_power_state = DRM_SWITCH_POWER_CHANGING;
- 		amdgpu_device_suspend(dev, true);
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
-index 5ed4227f3..0cc4c67f9 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_irq.c
-@@ -260,7 +260,7 @@ int amdgpu_irq_init(struct amdgpu_device *adev)
- 		nvec = pci_alloc_irq_vectors(adev->pdev, 1, 1, flags);
- 		if (nvec > 0) {
- 			adev->irq.msi_enabled = true;
--			dev_dbg(adev->dev, "amdgpu: using MSI/MSI-X.\n");
-+			dev_dbg(adev->dev, "using MSI/MSI-X.\n");
- 		}
- 	}
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
-index b20503935..c1a530dbe 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v6_0.c
-@@ -858,7 +858,7 @@ static int gmc_v6_0_sw_init(void *handle)
- 
- 	r = dma_set_mask_and_coherent(adev->dev, DMA_BIT_MASK(44));
- 	if (r) {
--		dev_warn(adev->dev, "amdgpu: No suitable DMA available.\n");
-+		dev_warn(adev->dev, "No suitable DMA available.\n");
- 		return r;
- 	}
- 	adev->need_swiotlb = drm_need_swiotlb(44);
-diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-index 9da9596a3..e8529e244 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-@@ -1019,7 +1019,7 @@ static int gmc_v7_0_sw_init(void *handle)
- 
- 	r = dma_set_mask_and_coherent(adev->dev, DMA_BIT_MASK(40));
- 	if (r) {
--		pr_warn("amdgpu: No suitable DMA available\n");
-+		pr_warn("No suitable DMA available\n");
- 		return r;
- 	}
- 	adev->need_swiotlb = drm_need_swiotlb(40);
-diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-index 27d83204f..0aa5b8280 100644
---- a/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-+++ b/drivers/gpu/drm/amd/amdgpu/gmc_v8_0.c
-@@ -1144,7 +1144,7 @@ static int gmc_v8_0_sw_init(void *handle)
- 
- 	r = dma_set_mask_and_coherent(adev->dev, DMA_BIT_MASK(40));
- 	if (r) {
--		pr_warn("amdgpu: No suitable DMA available\n");
-+		pr_warn("No suitable DMA available\n");
- 		return r;
- 	}
- 	adev->need_swiotlb = drm_need_swiotlb(40);
--- 
-2.26.0
 
+Nit: Can't this be initialized where it's defined above ?
+
+> +
+> +	/* Check it can be added memory slots up to the maximum allowed */
+> +	pr_info("Adding slots 0..%i, each memory region with %ldK size\n",
+> +		(max_mem_slots - 1), mem_reg_size >> 10);
+> +	for (slot = 0; slot < max_mem_slots; slot++) {
+> +		vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+> +					    guest_addr, slot, mem_reg_npages,
+> +					    0);
+> +		guest_addr += mem_reg_size;
+> +	}
+> +
+> +	/* Check it cannot be added memory slots beyond the limit */
+> +	mem = mmap(NULL, mem_reg_size, PROT_READ | PROT_WRITE,
+> +		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+> +	TEST_ASSERT(mem != MAP_FAILED, "Failed to mmap() host");
+> +
+> +	ret = ioctl(vm_get_fd(vm), KVM_SET_USER_MEMORY_REGION,
+> +		    &(struct kvm_userspace_memory_region) {slot, 0, guest_addr,
+> +		    mem_reg_size, (uint64_t) mem});
+> +	TEST_ASSERT(ret == -1 && errno == EINVAL,
+> +		    "Adding one more memory slot should fail with EINVAL");
+
+
+Why not add a test here for adding memory at an existing slot ?
+
+> +
+> +	munmap(mem, mem_reg_size);
+> +	kvm_vm_free(vm);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	test_add_max_slots();
+> +	return 0;
+> +}
