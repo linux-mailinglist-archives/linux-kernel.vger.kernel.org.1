@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F08501A2E2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 06:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0881A2E2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 06:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgDIEF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 00:05:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39592 "EHLO mail.kernel.org"
+        id S1726780AbgDIEFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 00:05:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726740AbgDIEF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726538AbgDIEF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Apr 2020 00:05:27 -0400
-Subject: Re: [git pull] IOMMU Updates for Linux v5.7
+Subject: Re: [GIT PULL] Second batch of KVM changes for Linux 5.7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586405127;
-        bh=/iCiFLfNiF3lDS9yAdPdQdDcxKFBzlt/5vNI9IAYhjU=;
+        bh=1xW8kN2yqWmv57JHAaFToSciFy2sqNwu2DUej9DniPQ=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=OaL50o8N/S53pWagcp6RAbqUFlYFfG+1qWIbyI5wkvAEyQyME5S8c1f214kKSmMC4
-         nQbOG5HYbkW54Zn4+vndYAkj0ovdM+FXj1fSvLjSqSHSQAVdq2C8RYYGrhdbDdinrY
-         /s4EF0cQfdYApC/krqOC26Hmjf9yu/s0+qH3Zdgs=
+        b=K4AxF5CNOiXnQqUeTdl/NyYDjLTjk/1+60dk9GLkLjds0QK0u7C3nbI7fp8LSG6fs
+         akowsmy37yK2sgHYJ7f1cbPlpkJ/I17iPoRTA1GIO/+R6tWsXbxtC4Md/1g/wC0b8J
+         LBShwEUJLd8q4QwwP0ZRH00STsRvVVukRdBMIiWI=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200407152635.GA10588@8bytes.org>
-References: <20200407152635.GA10588@8bytes.org>
+In-Reply-To: <20200407182111.23659-1-pbonzini@redhat.com>
+References: <20200407182111.23659-1-pbonzini@redhat.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200407152635.GA10588@8bytes.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git
- tags/iommu-updates-v5.7
-X-PR-Tracked-Commit-Id: ff68eb23308e6538ec7864c83d39540f423bbe90
+X-PR-Tracked-Message-Id: <20200407182111.23659-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git
+ tags/for-linus
+X-PR-Tracked-Commit-Id: dbef2808af6c594922fe32833b30f55f35e9da6d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0906d8b975ff713cfb55328e4f3bf6de5967415e
-Message-Id: <158640512732.12302.9078407130199098833.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 0339eb95403fb4664219be344a9399a3fdf1fae1
+Message-Id: <158640512788.12302.996590418957242955.pr-tracker-bot@kernel.org>
 Date:   Thu, 09 Apr 2020 04:05:27 +0000
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 7 Apr 2020 17:26:40 +0200:
+The pull request you sent on Tue,  7 Apr 2020 14:21:11 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v5.7
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0906d8b975ff713cfb55328e4f3bf6de5967415e
+https://git.kernel.org/torvalds/c/0339eb95403fb4664219be344a9399a3fdf1fae1
 
 Thank you!
 
