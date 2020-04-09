@@ -2,53 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0881A2E2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 06:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE421A2E34
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 06:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbgDIEFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 00:05:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726538AbgDIEF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 00:05:27 -0400
-Subject: Re: [GIT PULL] Second batch of KVM changes for Linux 5.7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586405127;
-        bh=1xW8kN2yqWmv57JHAaFToSciFy2sqNwu2DUej9DniPQ=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=K4AxF5CNOiXnQqUeTdl/NyYDjLTjk/1+60dk9GLkLjds0QK0u7C3nbI7fp8LSG6fs
-         akowsmy37yK2sgHYJ7f1cbPlpkJ/I17iPoRTA1GIO/+R6tWsXbxtC4Md/1g/wC0b8J
-         LBShwEUJLd8q4QwwP0ZRH00STsRvVVukRdBMIiWI=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200407182111.23659-1-pbonzini@redhat.com>
-References: <20200407182111.23659-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200407182111.23659-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git
- tags/for-linus
-X-PR-Tracked-Commit-Id: dbef2808af6c594922fe32833b30f55f35e9da6d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0339eb95403fb4664219be344a9399a3fdf1fae1
-Message-Id: <158640512788.12302.996590418957242955.pr-tracker-bot@kernel.org>
-Date:   Thu, 09 Apr 2020 04:05:27 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        id S1725892AbgDIELv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 00:11:51 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:34837 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbgDIELu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 00:11:50 -0400
+Received: by mail-lf1-f67.google.com with SMTP id r17so6853473lff.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 21:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HZV2tyyn5kRqCcuYzyXRvuvJ3LvB/Ij4cHXWeK01HzY=;
+        b=gwLIomC7wLBmb6JFfXV96AHH+ECKwQVO7CEBA3QESJy1aFRjCCjozlVwvUf1aCLCsj
+         8jaUU8mqD94X0bBewdTWHRVlAhvr8lSsF8tT+bastkAziEMAu/ftwTQbFrchjedOpQw7
+         UWlNvtjMfgbVHPwRtbHBjzt9Zvmeqs6ZbdTVo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HZV2tyyn5kRqCcuYzyXRvuvJ3LvB/Ij4cHXWeK01HzY=;
+        b=oJLRstI+S8aBbc7enkftpwvf1wzYG2v7yCEVrR3gwHRKWDdojTFC8nn/dQjQCMR2xW
+         D6jZoFwYfykkS7gpRAXrcoiyhutWSd9zCwP2JK1AC+uywNHen29y1zM95GMr8k/DJ1pH
+         CpMlx++BVh+4EmRJUCtIS9/qmaM2Kk7z2ckHdh9rSoSImI/1F27c13FiB4y2meW+apnP
+         W2Vxrn37zvj9RM9tTm+Z9tcTN7/5Dz2juczHIGXUE4yRRvm5ES7BBhKRsG8Fst6TzXjr
+         cSC63BvPVhqmSqLdW5DjlxD/4GGRzWnXoju500a+t5/y1XLBRlL97kIv7HATWYf3H36M
+         ufNQ==
+X-Gm-Message-State: AGi0Pub/3ONWWzfyNlaz3Uhba/Dc/nm8ag+t9PjpAcXwRMnwaKxzyYo4
+        EKEC8fOW9BuLgF6UTwJYGM12uLxzhP0=
+X-Google-Smtp-Source: APiQypJ9zVumkSqJgPe7ylhvy8n8U5Zo9ZM+DmNlzhI0xp7Dvx+ynpciL+olWUmYagcNXW/9I/FdfA==
+X-Received: by 2002:a05:6512:3135:: with SMTP id p21mr5005209lfd.36.1586405507445;
+        Wed, 08 Apr 2020 21:11:47 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id e8sm2241096lja.3.2020.04.08.21.11.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Apr 2020 21:11:46 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id r24so10008602ljd.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 21:11:46 -0700 (PDT)
+X-Received: by 2002:a2e:a58e:: with SMTP id m14mr6845493ljp.204.1586405505983;
+ Wed, 08 Apr 2020 21:11:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAPcyv4gKr57qNnMEupjcjQmH9Vy_iZuLPE1VA36QAkKhzEbzSA@mail.gmail.com>
+In-Reply-To: <CAPcyv4gKr57qNnMEupjcjQmH9Vy_iZuLPE1VA36QAkKhzEbzSA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 8 Apr 2020 21:11:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whm-J+j86gqWA93tpBHDfOwsLGt=dV2px8bUL7pbRR4ug@mail.gmail.com>
+Message-ID: <CAHk-=whm-J+j86gqWA93tpBHDfOwsLGt=dV2px8bUL7pbRR4ug@mail.gmail.com>
+Subject: Re: [GIT PULL] libnvdimm for v5.7
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue,  7 Apr 2020 14:21:11 -0400:
+On Tue, Apr 7, 2020 at 1:12 PM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+>       mm/memremap_pages: Introduce memremap_compat_align()
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+Why is this an exported function that just returns a constant?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0339eb95403fb4664219be344a9399a3fdf1fae1
+Why isn't it just a #define (or inline) in a header file?
 
-Thank you!
+Yes, yes, it would need to be conditional on not having that
+CONFIG_ARCH_HAS_MEMREMAP_COMPAT_ALIGN, but it does look strange.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+I've pulled it, since it doesn't matter that much, but I find it silly
+to have full-fledged functions - and exported them GPL-only - to
+return a constant. Crazy.
+
+             Linus
