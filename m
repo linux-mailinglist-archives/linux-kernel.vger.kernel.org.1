@@ -2,79 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B78D41A388E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BA01A3890
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgDIRFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:05:53 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:41839 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727849AbgDIRFx (ORCPT
+        id S1728055AbgDIRHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:07:13 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39756 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728026AbgDIRHM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:05:53 -0400
-Received: by mail-lj1-f196.google.com with SMTP id n17so430612lji.8
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 10:05:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sTzH1Bhr1hDM1qjv9jkCYGCa68nXo9HmCjXfmtTX3vU=;
-        b=Or+5V8+WP93RTeSd9r7vwKWDbL50ajg+ekJ83WIjflsqZzEAZPjHAfTt8hEKToRfbK
-         iU/Se9eyWg4gFlQ0PytYEYzVIQbDOvDw55/vAL3JQP3cnPRzf5ex5xCP38S9Pd+rI2Cx
-         CpkaVxAdYcOmFAZVfsZg4fOGxnBT/RWf5YQGs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sTzH1Bhr1hDM1qjv9jkCYGCa68nXo9HmCjXfmtTX3vU=;
-        b=ZSbVLBKN6WG9kdGgelsNcKONPqxs7Xz5PbuDbDGbQD09x0bGwF7AuZvH7HnsLYTG9/
-         e8p1O83b6ldIVDceokovnRSF7ivATkI4OtG3iNQROUxByNzLbPIp+aO4r+o6qQWTytMa
-         DSyA4LBL9HQs/f6sTgTz+AMc5AglMg0Y8B8BILlIhHOxkP0ivwfJr+a78CuVDwxCJ63z
-         24ePSr7e3jGQptaAFeKULQ0Oqve/pzsGqEHvq4XM0W7+bn0lpweBT+RVe6qCKxv18AqR
-         hvTu9G/HpJa23ajdla7Kg9zcklshW/q7oY+6EWktH7i5GjVYBfHuYPYSSSlyAjuNpJxJ
-         BqUw==
-X-Gm-Message-State: AGi0PuZ02MsEvv9YsukfLl9OuG3g+Gvm0u+2SqQ43FDJ6geBkqPHTLfV
-        fZHUykgBxs4RiTEeRP2c0LhdsQgHyVE=
-X-Google-Smtp-Source: APiQypL654hUlS10v2IVDNYVUNTIlKtDPksErESlDhYqVWf2qUA6GL/aoi9SZDQ6UCffQnl2C1kkww==
-X-Received: by 2002:a2e:9e89:: with SMTP id f9mr486668ljk.234.1586451949031;
-        Thu, 09 Apr 2020 10:05:49 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id u1sm1814227ljo.65.2020.04.09.10.05.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Apr 2020 10:05:48 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id q22so493855ljg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 10:05:47 -0700 (PDT)
-X-Received: by 2002:a2e:870f:: with SMTP id m15mr507650lji.16.1586451947460;
- Thu, 09 Apr 2020 10:05:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wgjGgfUfVm_DpTay5TS03pLCgUWqRpQS++90fSE2V-e=g@mail.gmail.com>
- <BB768A53-4A6F-4C69-8FBC-8BCAB1F4F280@lca.pw>
-In-Reply-To: <BB768A53-4A6F-4C69-8FBC-8BCAB1F4F280@lca.pw>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Apr 2020 10:05:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjfngA7nHAsie7bW_JmKBhUyV9oV7zmDbZuchkJK3sR1w@mail.gmail.com>
-Message-ID: <CAHk-=wjfngA7nHAsie7bW_JmKBhUyV9oV7zmDbZuchkJK3sR1w@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
-To:     Qian Cai <cai@lca.pw>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
+        Thu, 9 Apr 2020 13:07:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586452031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f8hRg5EYNwvd8gy24wDwcLfYiAk7Uf7td7X5fprQc0g=;
+        b=W4cuyUmnrHIGL3v2T9+u7YjyI2N0E7dDj9UAjfXkAVupOKjOvhzjxP78BVzp35bEnwjo2X
+        atER6l5c+XRCh+qriqYFdtYK3kMByKXZksy1BclT4GtTNizEE8MsGF92bTQhBj4wAEaorY
+        vb4FNbRvJ3ghFis2lcBTZ1G2g6lDp8s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-wbcQ8QmgNVGmmCDUvSS3tA-1; Thu, 09 Apr 2020 13:07:08 -0400
+X-MC-Unique: wbcQ8QmgNVGmmCDUvSS3tA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D58F18AB2CF;
+        Thu,  9 Apr 2020 17:07:07 +0000 (UTC)
+Received: from ovpn-113-89.phx2.redhat.com (ovpn-113-89.phx2.redhat.com [10.3.113.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 626165D9CA;
+        Thu,  9 Apr 2020 17:07:06 +0000 (UTC)
+Message-ID: <1b1be267b80404dc8ca5a14b3e26710c53f50fb4.camel@redhat.com>
+Subject: Re: [PATCH] scsi: core: Rate limit "rejecting I/O" messages
+From:   "Ewan D. Milne" <emilne@redhat.com>
+To:     Joe Perches <joe@perches.com>, Daniel Wagner <dwagner@suse.de>,
+        linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Date:   Thu, 09 Apr 2020 13:07:05 -0400
+In-Reply-To: <2de69a35463317f5eca2ce665b0ee8b90b8c717b.camel@perches.com>
+References: <20200408171012.76890-1-dwagner@suse.de>
+         <120ce7f4cd1fd070e1f7c353223c21b8e4f29337.camel@redhat.com>
+         <2de69a35463317f5eca2ce665b0ee8b90b8c717b.camel@perches.com>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 9, 2020 at 9:58 AM Qian Cai <cai@lca.pw> wrote:
->
-> On the other hand, this makes me worry who is testing on linux-next every day.
+On Wed, 2020-04-08 at 12:49 -0700, Joe Perches wrote:
+> 
+> Could add a ratelimit_state to struct scsi_device.
+> 
+> Something like:
+> ---
+>  drivers/scsi/scsi_scan.c   | 2 ++
+>  include/scsi/scsi_device.h | 2 ++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/drivers/scsi/scsi_scan.c b/drivers/scsi/scsi_scan.c
+> index f2437a..938c83f 100644
+> --- a/drivers/scsi/scsi_scan.c
+> +++ b/drivers/scsi/scsi_scan.c
+> @@ -279,6 +279,8 @@ static struct scsi_device *scsi_alloc_sdev(struct
+> scsi_target *starget,
+>  	scsi_change_queue_depth(sdev, sdev->host->cmd_per_lun ?
+>  					sdev->host->cmd_per_lun : 1);
+>  
+> +	ratelimit_state_init(&sdev->rs, DEFAULT_RATELIMIT_INTERVAL,
+> +			     DEFAULT_RATELIMIT_BURST);
+>  	scsi_sysfs_device_initialize(sdev);
+>  
+>  	if (shost->hostt->slave_alloc) {
+> diff --git a/include/scsi/scsi_device.h b/include/scsi/scsi_device.h
+> index c3cba2..2600de7 100644
+> --- a/include/scsi/scsi_device.h
+> +++ b/include/scsi/scsi_device.h
+> @@ -8,6 +8,7 @@
+>  #include <linux/blkdev.h>
+>  #include <scsi/scsi.h>
+>  #include <linux/atomic.h>
+> +#include <linux/ratelimit.h>
+>  
+>  struct device;
+>  struct request_queue;
+> @@ -233,6 +234,7 @@ struct scsi_device {
+>  	struct mutex		state_mutex;
+>  	enum scsi_device_state sdev_state;
+>  	struct task_struct	*quiesced_by;
+> +	struct ratelimit_state	rs;
+>  	unsigned long		sdev_data[];
+>  } __attribute__((aligned(sizeof(unsigned long))));
+>  
 
-Well, probably not very many people outside of robots.
+We could but in our experience this may not work well enough.  We do
+wants to see the message when the device goes offline, so we can look
+at logs from SAN failures to see when that happened, but logging more
+than one message per device is worthless.  And there can be *LOTS*
+of LUNs behind targets that go away.  Hundreds.  Thousands, even.
 
-Which is fine, but is also why I'd like robot failures to then be a big deal.
+I keep getting crash dumps with nothing useful in the dmesg buffer.
+And we see a lot of serial console lockups.
 
-           Linus
+-Ewan
+
