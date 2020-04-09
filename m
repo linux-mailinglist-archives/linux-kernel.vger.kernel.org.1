@@ -2,167 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2991A3101
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AA91A3104
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726641AbgDIIeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:34:46 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.87.133]:38222 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726470AbgDIIeq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:34:46 -0400
-Received: from mailhost.synopsys.com (badc-mailhost1.synopsys.com [10.192.0.17])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 9795FC0096;
-        Thu,  9 Apr 2020 08:34:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1586421285; bh=aPvWWoQPPbWz3eEHamlJxtStGFNMMOx6llPM2vKOieY=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=bcuczVG0Q96JnmFO5qkI93IArA0p7h+lFFNjMUPS3wdXEct6qP3CS+m+nkSRKpSEk
-         p+78ITtBGkqSyHblIYlFrmUxCCupc2PLNoceY92HBt+LPVK7vM397nUXjZyGYd3G+e
-         tZDtzR/PJEitE1+IlXLiERH4CbXFYjkvv265s7XJgKesQKNfyIZWwUvlpEn5grVwjO
-         hvHFU3JJALtwoTa/n5DVr3eeZnMzA5KrbJi5oYWZoTWQqVvyFJzueQAtrpiLBkli6m
-         qjVYLsKATIUQh4tibPpp/+dm1i9+vPYO2nbEfOVzoT/HsOT3g/qF9jSgHa/sMkhTyf
-         ampwTiy/dg9gg==
-Received: from US01WEHTC3.internal.synopsys.com (us01wehtc3.internal.synopsys.com [10.15.84.232])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailhost.synopsys.com (Postfix) with ESMTPS id B1653A0085;
-        Thu,  9 Apr 2020 08:34:43 +0000 (UTC)
-Received: from us01hybrid1.internal.synopsys.com (10.200.27.51) by
- US01WEHTC3.internal.synopsys.com (10.15.84.232) with Microsoft SMTP Server
- (TLS) id 14.3.408.0; Thu, 9 Apr 2020 01:34:40 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.202.3.67) by
- mrs.synopsys.com (10.200.27.51) with Microsoft SMTP Server (TLS) id
- 14.3.408.0; Thu, 9 Apr 2020 01:34:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lUdFS2h7KDzCvNZ8if+ajeuw2K7CjWHl6KyZKhqZQ/POVI7B/Rs8Ju3TydukVUNxyCZvSapwyogsDo2wiBlxLuuVpL1AkeyqtscCC2Wa2oQsm9gMJ00JeeJ4v2f3yhM9fimyqwU84W6ixhgMsupHoX8222un0T/+3MbCzx8Oc3KRpnhC/INjTfWMbDmc6wSbHVWkydGsLxiFc5KBrGW6pEjpcHi1D2dh9rsLbFxcSaa/3SLhOQlIF7g/X+E5Oxms9w3oyMokknfJQlz5dg+QjXS8uoAYcmN+s3B/2w3DKGgBGPmsftPKMn4e+04B7a4vwYaKuGw4RkEWnsFMsKdpXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aPvWWoQPPbWz3eEHamlJxtStGFNMMOx6llPM2vKOieY=;
- b=cwaDgKgdz6/L+5nVfBazAnPGpdQrA/RuWIteQInHaJg8N/Kd1yNNQ4MQzxTijpWuUyXYq4lfdpowEIQo9Y1JcG4d86K9RFIOh+OO9KkBvPXN2YejPn8LY4NULvgUMzFMzcDk+eKShdIIWbWWM2COB/0st/tAap84O04DepTCY/dYBvN2Ce6+ACakehkc9rmSgNbBEgMlZZAeWMWhPzPFgEVqIhUgTYJhXXiYtOGFz9K48ozh3VDg0jWz0UHziQOn1VswA04ZGRwAN3I+RftciOzLANqR9YsHBESEwfvfXmvOIMjDKHLGJmeh77S7Pcvab88GhmBYE30Ut63ZGJ3eGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
- dkim=pass header.d=synopsys.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aPvWWoQPPbWz3eEHamlJxtStGFNMMOx6llPM2vKOieY=;
- b=PiT1r0Xe9+NTSF43kMef5RNHAhLS3f2CjafbR8O7Pa0HuMBXPLVajpITDizacZFkIyTWXCr69EMF+F3OnjXWk1bF0K7xHbFGDWh0d6ZQOO6hl9CjAdxra+pKcP3MyK2sCjgqfmeZ4BLySmGB39zNn4ADGcT++zWwzWQJA4YQSTo=
-Received: from SN1PR12MB2557.namprd12.prod.outlook.com (2603:10b6:802:22::15)
- by SN1PR12MB2477.namprd12.prod.outlook.com (2603:10b6:802:28::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Thu, 9 Apr
- 2020 08:34:38 +0000
-Received: from SN1PR12MB2557.namprd12.prod.outlook.com
- ([fe80::20d2:fe98:5580:932d]) by SN1PR12MB2557.namprd12.prod.outlook.com
- ([fe80::20d2:fe98:5580:932d%7]) with mapi id 15.20.2900.015; Thu, 9 Apr 2020
- 08:34:38 +0000
-From:   Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
-To:     Nishad Kamdar <nishadkamdar@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Joe Perches <joe@perches.com>
-CC:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] USB: dwc2: Use the correct style for SPDX License
- Identifier
-Thread-Topic: [PATCH] USB: dwc2: Use the correct style for SPDX License
- Identifier
-Thread-Index: AQHWBOYaswZ3iHR0EUe/0qe1zJ1nB6hwiZuA
-Date:   Thu, 9 Apr 2020 08:34:38 +0000
-Message-ID: <878f972e-211d-f51d-66f9-5b12602f15c3@synopsys.com>
-References: <20200328094828.GA5016@nishad>
-In-Reply-To: <20200328094828.GA5016@nishad>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=hminas@synopsys.com; 
-x-originating-ip: [149.117.75.12]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bd35d39f-c1e1-48ac-d10c-08d7dc60d75c
-x-ms-traffictypediagnostic: SN1PR12MB2477:
-x-microsoft-antispam-prvs: <SN1PR12MB2477B6A4450C74D395DA5444A7C10@SN1PR12MB2477.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2150;
-x-forefront-prvs: 0368E78B5B
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2557.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(396003)(39860400002)(376002)(366004)(346002)(136003)(66446008)(26005)(66556008)(66946007)(2906002)(5660300002)(6512007)(53546011)(71200400001)(2616005)(478600001)(64756008)(966005)(110136005)(36756003)(6506007)(76116006)(186003)(8936002)(66476007)(6486002)(4326008)(81166007)(31696002)(86362001)(316002)(81156014)(54906003)(8676002)(31686004);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: synopsys.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MTYRSa582XJ0W6g6ypteh21BaGtR8FIAp0XEFmXhmq7O0ZrHG4/Z5rQSvzwE+4HXgYO+cewoDC7rkS8cCV569RXjeEGWVm1+LTAbwiJASrFo4Iz0BDwPs7hDcYIUhrX56+r+t3vWPiPa0YWdmfjvm13RbgIw/NoA3VGT1+WXuae9LZHeMc6IfS2K/3IL1Wqz0D3csiMnnxToVHdDooFor+J+N95wWJ5Ghl/WnVDOAC80CS9tKraqncn8GLurba+Wn0ZbJn4ZE3qzx+4hAVfx5Cd5Otyb9czGVNpG63C12gUS8MWxOmjYgWFO2ardkgqGu2X7KYtDtSSNwPdIex/T2phpPw6S/nGPcGUaDv1mI8yFY3B+7GOFw6nm+ZwaZVMHaShacs8UI2f85l4XdLOHKQCeVQvSj8Y0Yhsf/CDdj9/WcTReHss8Op3vAL33GiHETmiRKCMKbMlO7iPC0fZejroM60YQVT6r09BNkvOYSfvRFTHafYyiLcSJvv2WFpeEaxVISyXeNOzAVz9wSIhBsQ==
-x-ms-exchange-antispam-messagedata: 5xHnY+PP/kU5Ecrm2g+tN8pMuDQ1a0yzg3aaODJ5ZBMehjQxrTo+OurKAYpczUWiC8+u3YXtybRh9qWNhzWjUKxYPZMw40gZewkaylrLstDoW1rwb/0h2AZdGXidUjbWyubHuCh6jbEwdVjEZlzd3g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7EB8F7C91304A944BFD73B28CD14C488@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726663AbgDIIeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:34:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726470AbgDIIet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 04:34:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 693F2ACBA;
+        Thu,  9 Apr 2020 08:34:47 +0000 (UTC)
+Subject: Re: [PATCH 05/13] efi/x86: don't map the entire kernel text RW for
+ mixed mode
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Gary Lin <glin@suse.com>, linux-efi <linux-efi@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        Saravana Kannan <saravanak@google.com>
+References: <20200113172245.27925-1-ardb@kernel.org>
+ <20200113172245.27925-6-ardb@kernel.org>
+ <63b125a4-6c62-fcdf-de22-d3bebe2dcbf5@suse.cz>
+ <CAMj1kXGiT_zYjc6X-msRXVozhpDAY0UesEW3_4fOgiH4FyMgDw@mail.gmail.com>
+ <972b66a9-92c7-9a15-1aa1-e3236abe90df@suse.cz>
+ <CAMj1kXFGkOM9fbqr44_TbdxqFjH1i3d8dkO64C1mQmH=AqrUSQ@mail.gmail.com>
+ <20200409080626.GV5951@GaryWorkstation>
+ <984a2b3c-a9d4-e733-6372-4abf0f99be1f@suse.cz>
+ <CAMj1kXFHUusU9dDgqhU_qswDVgYWx_kpaDEroj4ZSt3hr-AFsA@mail.gmail.com>
+From:   Jiri Slaby <jslaby@suse.cz>
+Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <d38fd829-b944-da10-58c0-180f80e8264d@suse.cz>
+Date:   Thu, 9 Apr 2020 10:34:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd35d39f-c1e1-48ac-d10c-08d7dc60d75c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2020 08:34:38.2860
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: f9slbLqI5+C3mqjnPmem/roKBou61iO3Dyrp6XQd1sDCvnOfG2ta6qnJ/+v4AqUw1pBb5chdLwNjMPrnpUbZOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2477
-X-OriginatorOrg: synopsys.com
+In-Reply-To: <CAMj1kXFHUusU9dDgqhU_qswDVgYWx_kpaDEroj4ZSt3hr-AFsA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCk9uIDMvMjgvMjAyMCAxOjQ4IFBNLCBOaXNoYWQgS2FtZGFyIHdyb3RlOg0KPiBUaGlzIHBh
-dGNoIGNvcnJlY3RzIHRoZSBTUERYIExpY2Vuc2UgSWRlbnRpZmllciBzdHlsZSBpbg0KPiBoZWFk
-ZXIgZmlsZXMgcmVsYXRlZCB0byBEZXNpZ25XYXJlIFVTQjIgRFJEIENvcmUgU3VwcG9ydC4NCj4g
-Rm9yIEMgaGVhZGVyIGZpbGVzIERvY3VtZW50YXRpb24vcHJvY2Vzcy9saWNlbnNlLXJ1bGVzLnJz
-dA0KPiBtYW5kYXRlcyBDLWxpa2UgY29tbWVudHMgKG9wcG9zZWQgdG8gQyBzb3VyY2UgZmlsZXMg
-d2hlcmUNCj4gQysrIHN0eWxlIHNob3VsZCBiZSB1c2VkKS4NCj4gDQo+IENoYW5nZXMgbWFkZSBi
-eSB1c2luZyBhIHNjcmlwdCBwcm92aWRlZCBieSBKb2UgUGVyY2hlcyBoZXJlOg0KPiBodHRwczov
-L3VybGRlZmVuc2UucHJvb2Zwb2ludC5jb20vdjIvdXJsP3U9aHR0cHMtM0FfX2xrbWwub3JnX2xr
-bWxfMjAxOV8yXzdfNDYmZD1Ed0lCQWcmYz1EUEw2X1hfNkprWEZ4N0FYV3FCMHRnJnI9Y1FCS3Q0
-cS1xek5WQzUzck5Bd3V3cGxIMjNWNjFySFFoaFVMdmRMQTBVOCZtPTBqOU1zaWdMMngyQUtrOUhQ
-Yk1DLWRJUmhmZTItVGVqbG5GaXlnLWhqTG8mcz1oa3ZPREYwLUJlbTVVRTIzM1FQOFBKOC1FMk5o
-bk8za2REaTZldUtCSU1JJmU9IC4NCj4gDQo+IFN1Z2dlc3RlZC1ieTogSm9lIFBlcmNoZXMgPGpv
-ZUBwZXJjaGVzLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogTmlzaGFkIEthbWRhciA8bmlzaGFka2Ft
-ZGFyQGdtYWlsLmNvbT4NCg0KQWNrZWQtYnk6IE1pbmFzIEhhcnV0eXVueWFuIDxobWluYXNAc3lu
-b3BzeXMuY29tPg0KDQo+IC0tLQ0KPiAgIGRyaXZlcnMvdXNiL2R3YzIvY29yZS5oICB8IDIgKy0N
-Cj4gICBkcml2ZXJzL3VzYi9kd2MyL2RlYnVnLmggfCAyICstDQo+ICAgZHJpdmVycy91c2IvZHdj
-Mi9oY2QuaCAgIHwgMiArLQ0KPiAgIGRyaXZlcnMvdXNiL2R3YzIvaHcuaCAgICB8IDIgKy0NCj4g
-ICA0IGZpbGVzIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gDQo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9kd2MyL2NvcmUuaCBiL2RyaXZlcnMvdXNiL2R3YzIv
-Y29yZS5oDQo+IGluZGV4IDk5YjBiZGZlMDAxMi4uNjY4ZDFhZDY0NmE0IDEwMDY0NA0KPiAtLS0g
-YS9kcml2ZXJzL3VzYi9kd2MyL2NvcmUuaA0KPiArKysgYi9kcml2ZXJzL3VzYi9kd2MyL2NvcmUu
-aA0KPiBAQCAtMSw0ICsxLDQgQEANCj4gLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAoR1BM
-LTIuMCsgT1IgQlNELTMtQ2xhdXNlKQ0KPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IChH
-UEwtMi4wKyBPUiBCU0QtMy1DbGF1c2UpICovDQo+ICAgLyoNCj4gICAgKiBjb3JlLmggLSBEZXNp
-Z25XYXJlIEhTIE9URyBDb250cm9sbGVyIGNvbW1vbiBkZWNsYXJhdGlvbnMNCj4gICAgKg0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy91c2IvZHdjMi9kZWJ1Zy5oIGIvZHJpdmVycy91c2IvZHdjMi9k
-ZWJ1Zy5oDQo+IGluZGV4IGE4YzU2NWI2YmMzNC4uNDcyNTJjNTZkNDEwIDEwMDY0NA0KPiAtLS0g
-YS9kcml2ZXJzL3VzYi9kd2MyL2RlYnVnLmgNCj4gKysrIGIvZHJpdmVycy91c2IvZHdjMi9kZWJ1
-Zy5oDQo+IEBAIC0xLDQgKzEsNCBAQA0KPiAtLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQ
-TC0yLjANCj4gKy8qIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wICovDQo+ICAgLyoN
-Cj4gICAgKiBkZWJ1Zy5oIC0gRGVzaWdud2FyZSBVU0IyIERSRCBjb250cm9sbGVyIGRlYnVnIGhl
-YWRlcg0KPiAgICAqDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9kd2MyL2hjZC5oIGIvZHJp
-dmVycy91c2IvZHdjMi9oY2QuaA0KPiBpbmRleCAxMjI0ZmE5ZGY2MDQuLmVhMDJlZTYzYWM2ZCAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy91c2IvZHdjMi9oY2QuaA0KPiArKysgYi9kcml2ZXJzL3Vz
-Yi9kd2MyL2hjZC5oDQo+IEBAIC0xLDQgKzEsNCBAQA0KPiAtLy8gU1BEWC1MaWNlbnNlLUlkZW50
-aWZpZXI6IChHUEwtMi4wKyBPUiBCU0QtMy1DbGF1c2UpDQo+ICsvKiBTUERYLUxpY2Vuc2UtSWRl
-bnRpZmllcjogKEdQTC0yLjArIE9SIEJTRC0zLUNsYXVzZSkgKi8NCj4gICAvKg0KPiAgICAqIGhj
-ZC5oIC0gRGVzaWduV2FyZSBIUyBPVEcgQ29udHJvbGxlciBob3N0LW1vZGUgZGVjbGFyYXRpb25z
-DQo+ICAgICoNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2R3YzIvaHcuaCBiL2RyaXZlcnMv
-dXNiL2R3YzIvaHcuaA0KPiBpbmRleCBjNDAyN2JiY2VkZWMuLjg2NGI3NmEwYjk1NCAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy91c2IvZHdjMi9ody5oDQo+ICsrKyBiL2RyaXZlcnMvdXNiL2R3YzIv
-aHcuaA0KPiBAQCAtMSw0ICsxLDQgQEANCj4gLS8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAo
-R1BMLTIuMCsgT1IgQlNELTMtQ2xhdXNlKQ0KPiArLyogU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6
-IChHUEwtMi4wKyBPUiBCU0QtMy1DbGF1c2UpICovDQo+ICAgLyoNCj4gICAgKiBody5oIC0gRGVz
-aWduV2FyZSBIUyBPVEcgQ29udHJvbGxlciBoYXJkd2FyZSBkZWZpbml0aW9ucw0KPiAgICAqDQo+
-IA0K
+On 09. 04. 20, 10:19, Ard Biesheuvel wrote:
+>>>> $ rpm -qlp ~/Downloads/ovmf-202002-1.1.i586.rpm
+>>>> warning: /home/ardbie01/Downloads/ovmf-202002-1.1.i586.rpm: Header V3
+>>>> RSA/SHA256 Signature, key ID 3dbdc284: NOKEY
+>>>> /usr/share/doc/packages/ovmf
+>>>> /usr/share/doc/packages/ovmf/README
+>>>
+>>> Hmmm, it's weird that OBS doesn't list all derived files.
+>>> Anyway, the ia32 ovmf is available in
+>>> http://download.opensuse.org/tumbleweed/repo/oss/noarch/qemu-ovmf-ia32-202002-1.1.noarch.rpm
+>>
+>> It indeed does:
+>> https://build.opensuse.org/package/binaries/openSUSE:Factory/ovmf/standard
+>>
+>> Note that the ia32 version is noarch, built on i586.
+>>
+> 
+> I am not able to reproduce this issue using the linked firmware image
+> and a 5.6 x86_64_defconfig with efivarfs built in.
+
+Yeah, I had to use the distro config too. Not sure what the trigger is.
+Maybe some NUMA configs or something.
+
+> Could anyone share the full log, please, along with the kernel config
+> that was used?
+
+Both uploaded:
+http://decibel.fi.muni.cz/~xslaby/err/
+
+Note that I switched the for-me-necessary =m configs to =y. So that it
+is enough to build bzImage, w/o modules...
+
+> Also, it would be good to know if it is reproducible
+> using a kernel built from upstream.
+
+Sure, I was bisecting the upstream kernel:
+git bisect start
+# bad: [7111951b8d4973bda27ff663f2cf18b663d15b48] Linux 5.6
+git bisect bad 7111951b8d4973bda27ff663f2cf18b663d15b48
+# good: [d5226fa6dbae0569ee43ecfc08bdcd6770fc4755] Linux 5.5
+git bisect good d5226fa6dbae0569ee43ecfc08bdcd6770fc4755
+# skip: [9f68e3655aae6d49d6ba05dd263f99f33c2567af] Merge tag
+'drm-next-2020-01-30' of git://anongit.freedesktop.org/drm/drm
+git bisect skip 9f68e3655aae6d49d6ba05dd263f99f33c2567af
+# good: [b4a4bd0f2629ec2ece7690de1b4721529da29871] irqchip/gic-v4.1: Add
+VPE INVALL callback
+git bisect good b4a4bd0f2629ec2ece7690de1b4721529da29871
+# good: [c130d2dc93cd03323494d82dbe7b5fb0d101ab62] rcu: Rename some
+instance of CONFIG_PREEMPTION to CONFIG_PREEMPT_RCU
+git bisect good c130d2dc93cd03323494d82dbe7b5fb0d101ab62
+# good: [0aee99a1ea53de1aedcf96a4d52d6161ffba011a] iio: gyro: adis16136:
+rework locks using ADIS library's state lock
+git bisect good 0aee99a1ea53de1aedcf96a4d52d6161ffba011a
+# bad: [83576e32a71717d1912b7dcb247a0f15613272da] Merge branch
+'macb-TSO-bug-fixes'
+git bisect bad 83576e32a71717d1912b7dcb247a0f15613272da
+# bad: [7ba31c3f2f1ee095d8126f4d3757fc3b2bc3c838] Merge tag
+'staging-5.6-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging
+git bisect bad 7ba31c3f2f1ee095d8126f4d3757fc3b2bc3c838
+# good: [f76e4c167ea2212e23c15ee7e601a865e822c291] net: phy: add default
+ARCH_BCM_IPROC for MDIO_BCM_IPROC
+git bisect good f76e4c167ea2212e23c15ee7e601a865e822c291
+# bad: [bd2463ac7d7ec51d432f23bf0e893fb371a908cd] Merge
+git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next
+git bisect bad bd2463ac7d7ec51d432f23bf0e893fb371a908cd
+# good: [e279160f491392f1345f6eb4b0eeec5a6a2ecdd7] Merge tag
+'timers-core-2020-01-27' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect good e279160f491392f1345f6eb4b0eeec5a6a2ecdd7
+# bad: [511fdb78442229ac11057b4a55c3f03c253c062f] Merge branch
+'x86-mtrr-for-linus' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect bad 511fdb78442229ac11057b4a55c3f03c253c062f
+# bad: [2180f214f4a5d8e2d8b7138d9a59246ee05753b9] Merge branch
+'locking-core-for-linus' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect bad 2180f214f4a5d8e2d8b7138d9a59246ee05753b9
+# good: [d99391ec2b42d827d92003dcdcb96fadac9d862b] Merge branch
+'core-rcu-for-linus' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect good d99391ec2b42d827d92003dcdcb96fadac9d862b
+# good: [57ad87ddce79b6d54f8e442d0ecf4b5bbe8c5a9e] Merge branch 'x86/mm'
+into efi/core, to pick up dependencies
+git bisect good 57ad87ddce79b6d54f8e442d0ecf4b5bbe8c5a9e
+# good: [ac3c76cc6d6deef573dd8c14232f20c6aa744f83] efi/libstub/x86: Use
+mandatory 16-byte stack alignment in mixed mode
+git bisect good ac3c76cc6d6deef573dd8c14232f20c6aa744f83
+# bad: [484a418d075488c6999528247cc711d12c373447] efi: Fix handling of
+multiple efi_fake_mem= entries
+git bisect bad 484a418d075488c6999528247cc711d12c373447
+# bad: [1f299fad1e312947c974c6a1d8a3a484f27a6111] efi/x86: Limit EFI old
+memory map to SGI UV machines
+git bisect bad 1f299fad1e312947c974c6a1d8a3a484f27a6111
+# good: [75fbef0a8b6b4bb19b9a91b5214f846c2dc5139e] x86/mm: Fix NX bit
+clearing issue in kernel_map_pages_in_pgd
+git bisect good 75fbef0a8b6b4bb19b9a91b5214f846c2dc5139e
+# bad: [97bb9cdc32108036170d9d0d208257168f80d9e9] efi/x86: Avoid RWX
+mappings for all of DRAM
+git bisect bad 97bb9cdc32108036170d9d0d208257168f80d9e9
+# bad: [d9e3d2c4f103200d87f2c243a84c1fd3b3bfea8c] efi/x86: Don't map the
+entire kernel text RW for mixed mode
+git bisect bad d9e3d2c4f103200d87f2c243a84c1fd3b3bfea8c
+# first bad commit: [d9e3d2c4f103200d87f2c243a84c1fd3b3bfea8c] efi/x86:
+Don't map the entire kernel text RW for mixed mode
+
+thanks,
+-- 
+js
+suse labs
