@@ -2,146 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59EE11A31EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E77D11A31F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgDIJit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:38:49 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:46595 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725997AbgDIJis (ORCPT
+        id S1726666AbgDIJkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:40:22 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:43738 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725972AbgDIJkW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:38:48 -0400
-Received: by mail-wr1-f68.google.com with SMTP id f13so4553400wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:38:48 -0700 (PDT)
+        Thu, 9 Apr 2020 05:40:22 -0400
+Received: by mail-lj1-f194.google.com with SMTP id h25so833843lja.10
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:40:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TUDoLKMMdHMR1rZNFcHOOtCZYFU9bh9JO/aemHvhjFk=;
-        b=jYpPR8OTb2GGh/MMhOBz3qkV5a8N2A6Gz3Of3JWdBmSlWODObZq+oeuRnxnFnyrov1
-         TALT9vbCUEF14fW9cphDRYFxAFq4fWeB/IBODCAdEBKDh1i80RzE3AkmZiKSk+aIrFQm
-         3AARvtT5Kb0HTFBjcA4VwdDfk1x0QFZmiWIizxLG18zsQDj31PwUpJhjs9dfPzp+X4La
-         /AmaK5dH9ZSPvQueveNNFLTAOapbu+XgTg/y0LNqXd9T7Vub0E5dmLiYcLLDefOeqmaj
-         NaU5ezsjDcIgctN7UpNnTD7r/Sn/F2KpybWn7ajy+B7uS5/Ojud58INLA7awb4/CPxNg
-         w33A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LgFkSUz0v3R4bkB5V+D5UMhS2cYsaT9/1pL+etapsD4=;
+        b=JPNexXEeIt/U33OVj4WP/94syOFkeqUwHdMIq5H7RWXe/OPXbAdyMUgK5wZq3sWUNL
+         imvoRp5Hm+NfjsOvyfqYeYGoB681I+J5FB7oUydEX/h/RPt3UQZvy+0LjaIhLDpgsB+h
+         0NGnPZ8vb7rkKg6hES58shForkhPwzm7TAiqRSSkG6+biZ9mMP9uwQuflpspRklJEbGQ
+         1TpUAhkJIJPHIf5vnwk6wSiCWg1Hw1yu/ONv654UmU15YcPhgWOu8XRH8iPAoAMdYzJY
+         Qxw+VqkfJgqp6HqILw1wM87TCGOUbmhk0KOtw7wqMUQWBY54Py/oXaFg8qpLhOs0+jpU
+         /bjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TUDoLKMMdHMR1rZNFcHOOtCZYFU9bh9JO/aemHvhjFk=;
-        b=s5mL3XRZLCSfvuNGsRiCzJ2v7hi0/76ZQH1WOowrE7ADxeOXodrNqXZTOj5f+3OKyB
-         cTn+0j3R7THr6Wrk5UFuqgNtHoavCQKVHXx91oRP9no6XiCCilY2zx+wQ3CxfHd6RrP+
-         lHnkbrnHizfOBwpEs3tvG5Fp7tBGirWK7JmBwUA1qia8uOSI/rOrz2bJHnklKQ+sgxYy
-         KSlDdVjlYTl+6K5K/ghRN2fvAqkouLTfFzafFUj+EG/bQaG4uF3/X/JynYcg2moCZpPp
-         pfCI/FAA70xq6YzutkmbalNoZ3tTPKd9iYzwswuTP3DFJJFWPhoU726H0DwjHHKYZy3w
-         OdMw==
-X-Gm-Message-State: AGi0PubQmUB5DpAUerDKIPAuMfjUh6rpAiuOv6AJUMUNNQrwx2lRduzC
-        1XUvpY99o8IG+cWwzmFmlXvtbA==
-X-Google-Smtp-Source: APiQypJ/bOyornodYdSyYMQSu94F2GYB/q88uLGGOOtbI4H/O4Jr8LdPoj7N2VqvqFNCove+bm0Wfw==
-X-Received: by 2002:a5d:5143:: with SMTP id u3mr13924339wrt.64.1586425127458;
-        Thu, 09 Apr 2020 02:38:47 -0700 (PDT)
-Received: from myrica ([2001:171b:226b:54a0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id m8sm2922990wmc.28.2020.04.09.02.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 02:38:46 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 11:38:39 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Liu, Yi L" <yi.l.liu@intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>
-Subject: Re: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
-Message-ID: <20200409093839.GH2435@myrica>
-References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
- <1584880325-10561-7-git-send-email-yi.l.liu@intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D7FF98F@SHSMSX104.ccr.corp.intel.com>
- <A2975661238FB949B60364EF0F2C25743A21D8C6@SHSMSX104.ccr.corp.intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D805F75@SHSMSX104.ccr.corp.intel.com>
- <A2975661238FB949B60364EF0F2C25743A21ED01@SHSMSX104.ccr.corp.intel.com>
- <20200403083407.GB1269501@myrica>
- <A2975661238FB949B60364EF0F2C25743A224C8F@SHSMSX104.ccr.corp.intel.com>
- <20200409082846.GE2435@myrica>
- <A2975661238FB949B60364EF0F2C25743A228CCA@SHSMSX104.ccr.corp.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LgFkSUz0v3R4bkB5V+D5UMhS2cYsaT9/1pL+etapsD4=;
+        b=lwH3KO61twHiM+PVeNnXGuhFlfgebcwrbmz4Qy57EQhUcaseMW85nYbU6w3aWaGui0
+         XLhu6uKiPddV1+5BImnj4T4jROlAWKFiQ7uOMuZmKSTyt0bWg7E1ruq6+eCJO/K5bdo9
+         OapIkNqTSGKJFa0lV3kmktEmk3VtlVRGIFqfLTqch2hU3nl0NSLuOoxntgzFt5IBpITh
+         AT7O88uOmIax3vnaZZX5nq0uZ/E1xcRxyS4UrsQRPuEZXETUUMO5BsowSd38wbB4fip1
+         Oh0wrRp1zVS+cYl7N8ZksaqezLfZBxW3oDgN4xypoF6Vl41gsLlZpPuN+m9pfql0AMW+
+         yUrQ==
+X-Gm-Message-State: AGi0PuaBtI0iyIGSfRJxNM/PqL9zB+f0bZmyDtDFgUVV8Q3mscAfVSkp
+        oDZ/jjvDmHGtMxWn/jl305M1+ASlHZJwmTh6rUE=
+X-Google-Smtp-Source: APiQypKo8LVXqoYVtBrVuYWmZZJdh2e+KxaobbXQfvZgNQnkc/ER8sfgHVJboqMyLu9tpe5TL8wloOsVOP6LiaWj28U=
+X-Received: by 2002:a2e:89c5:: with SMTP id c5mr7351482ljk.48.1586425219621;
+ Thu, 09 Apr 2020 02:40:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A2975661238FB949B60364EF0F2C25743A228CCA@SHSMSX104.ccr.corp.intel.com>
+References: <cover.1586422035.git.baolin.wang7@gmail.com> <CAK8P3a1rWuL-mSeFBN0Dk7u3wnDmPgknEM3Em734KP64-Wv0ZQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a1rWuL-mSeFBN0Dk7u3wnDmPgknEM3Em734KP64-Wv0ZQ@mail.gmail.com>
+From:   Baolin Wang <baolin.wang7@gmail.com>
+Date:   Thu, 9 Apr 2020 17:40:08 +0800
+Message-ID: <CADBw62qEfdLM9e2oyPKz1qRk4mZaFPbXRYpLfVHzxKj0Cz90kw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] Add new reg_update_bits() support
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 09:15:29AM +0000, Liu, Yi L wrote:
-> > From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> > Sent: Thursday, April 9, 2020 4:29 PM
-> > To: Liu, Yi L <yi.l.liu@intel.com>
-> > 
-> > On Tue, Apr 07, 2020 at 10:33:25AM +0000, Liu, Yi L wrote:
-> > > Hi Jean,
-> > >
-> > > > From: Jean-Philippe Brucker < jean-philippe@linaro.org >
-> > > > Sent: Friday, April 3, 2020 4:35 PM
-> > > > Subject: Re: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
-> > > >
-> > > > On Thu, Apr 02, 2020 at 08:05:29AM +0000, Liu, Yi L wrote:
-> > > > > > > > > static long vfio_iommu_type1_ioctl(void *iommu_data,
-> > > > > > > > >  		default:
-> > > > > > > > >  			return -EINVAL;
-> > > > > > > > >  		}
-> > > > > > > > > +
-> > > > > > > > > +	} else if (cmd == VFIO_IOMMU_BIND) {
-> > > > > > > >
-> > > > > > > > BIND what? VFIO_IOMMU_BIND_PASID sounds clearer to me.
-> > > > > > >
-> > > > > > > Emm, it's up to the flags to indicate bind what. It was proposed to
-> > > > > > > cover the three cases below:
-> > > > > > > a) BIND/UNBIND_GPASID
-> > > > > > > b) BIND/UNBIND_GPASID_TABLE
-> > > > > > > c) BIND/UNBIND_PROCESS
-> > > > > > > <only a) is covered in this patch>
-> > > > > > > So it's called VFIO_IOMMU_BIND.
-> > > > > >
-> > > > > > but aren't they all about PASID related binding?
-> > > > >
-> > > > > yeah, I can rename it. :-)
-> > > >
-> > > > I don't know if anyone intends to implement it, but SMMUv2 supports
-> > > > nesting translation without any PASID support. For that case the name
-> > > > VFIO_IOMMU_BIND_GUEST_PGTBL without "PASID" anywhere makes more
-> > sense.
-> > > > Ideally we'd also use a neutral name for the IOMMU API instead of
-> > > > bind_gpasid(), but that's easier to change later.
-> > >
-> > > I agree VFIO_IOMMU_BIND is somehow not straight-forward. Especially, it may
-> > > cause confusion when thinking about VFIO_SET_IOMMU. How about using
-> > > VFIO_NESTING_IOMMU_BIND_STAGE1 to cover a) and b)? And has another
-> > > VFIO_BIND_PROCESS in future for the SVA bind case.
-> > 
-> > I think minimizing the number of ioctls is more important than finding the
-> > ideal name. VFIO_IOMMU_BIND was fine to me, but if it's too vague then
-> > rename it to VFIO_IOMMU_BIND_PASID and we'll just piggy-back on it for
-> > non-PASID things (they should be rare enough).
-> maybe we can start with VFIO_IOMMU_BIND_PASID. Actually, there is
-> also a discussion on reusing the same ioctl and vfio structure for
-> pasid_alloc/free, bind/unbind_gpasid. and cache_inv. how about your
-> opinion?
+On Thu, Apr 9, 2020 at 5:15 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Thu, Apr 9, 2020 at 10:58 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
+> >
+> > The Spreadtrum platform uses a special set/clear method to update
+> > registers' bits, thus this patch set introduces a new reg_update_bits()
+> > callback, as well as adding a helper in syscon driver to support
+> > this feature.
+> >
+> > Any comments are welcome. Thanks.
+>
+> This looks like a good idea to me, both the concept and the implementation.
 
-Merging bind with unbind and alloc with free makes sense. I'd leave at
-least invalidate a separate ioctl, because alloc/bind/unbind/free are
-setup functions while invalidate is a runtime thing and performance
-sensitive. But I can't see a good reason not to merge them all together,
-so either way is fine by me.
+Thanks for your quick response :)
 
-Thanks,
-Jean
+>
+> The one thing I'd note is that we have a similar mechanism for devices made
+> by Sigmatel and later Freescale after they acquired them.
+> include/linux/stmp_device.h only holds a couple of definitions, so it's much
+> less abstract than your approach, but the idea is similar.
+
+Ah, yes, sigmatel devices' idea is similar with ours.
+
+>
+> It would be nice in theory to move the sigmatel devices over to
+> reg_update_bits() in theory, but this seems unlikely to actually happen,
+> given that these are mostly obsolete drivers at this point.
+
+I checked all sigmatel devices (about 10 drivers), I think there will
+be more work to change them to use syscon/regmap when changing to
+reg_update_bits(). I am afraid I can not thelp to convert them without
+a hardware, and as you said, some drivers are already dead. So I think
+it would be nice if the driver owners can help to convert these
+drivers, if we get a consensus about the reg_update_bits()
+implementation at last.
+
+-- 
+Baolin Wang
