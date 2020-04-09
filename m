@@ -2,92 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CD01A38B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:14:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82C11A38BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbgDIROA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:14:00 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:38257 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgDIRN7 (ORCPT
+        id S1727007AbgDIRO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:14:58 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:39510 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726691AbgDIRO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:13:59 -0400
-Received: by mail-lf1-f68.google.com with SMTP id l11so221022lfc.5;
-        Thu, 09 Apr 2020 10:13:57 -0700 (PDT)
+        Thu, 9 Apr 2020 13:14:58 -0400
+Received: by mail-pg1-f195.google.com with SMTP id g32so5257661pgb.6;
+        Thu, 09 Apr 2020 10:14:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=j5y9erjap5VmHy0BQLWCh9oVMJ7PdliECGnV0deEBC0=;
-        b=TgZGStOXa5YzcE/XeS59qlX6qIX4dKczf+omjTRlYVc7kUr+CaxrRkwrJqreMAAO3Q
-         P0X2hEjUYmMKnQMlHldzMz64AcvhudBeAnFqfyuzNLDVkwuZiFUVl6GiRn/mOm4dmPlg
-         Vcxl0iRHBtyOcX34+UNkZGfSwroNn7P440DSyaeDDOWbdAjbNfJcc9ObMi8fJS8NbODD
-         Q9xg7pYCHLLwxDQRSA0DwaQTLoWcRIYM3licsf7mnjoC7S07X3koZpY8pV6K50XjZK+Q
-         /RDHJOAU1VGceZJl0hY5o/BVxBAUWl00hD6Bc1fEGBP+sShBLFjTUCzk4M+AtyMn0uhE
-         4PdA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qABVumhieKrODuYVGr+5avf5kX3MFltmBukZWdasrJA=;
+        b=KQOphPMznphyoGYIkuOBFaK7lS1caRVnAjSOCj1o3XXzL25YoQx47gLuRzS4KoQMB6
+         uFSPipgTodee39w/yS8gQKrDugkI9yPwClPKKEMZDb3eoZLXkTqjHv8uBy3aGBMwQKJZ
+         82SWo6adAZkCdV/Nc3NrQLMMv5OVRkYZGq5G0nv3j08rVdEm1P4IkDwxA5Oxcwfk+3pP
+         0Y3Ji7pWRBmR4717x8UMy7yORtw9HPhrVtgQL43WJ2Uq4PypyMhKOwnOcl9O7XJYILol
+         /xAKPLQYnLRueFMQmD4u/c3iFA4Qp46bbxb8I5BCGKmHV5lmWlyBFMPLVPJagN34J/B5
+         moFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=j5y9erjap5VmHy0BQLWCh9oVMJ7PdliECGnV0deEBC0=;
-        b=Qg+QhXYPaBBd/l7qOPIBNBOChoT8BMyu4ODmmoux1p5AMmAJJYHgcR9Z/vQe8VcWYR
-         6FBXFROUEEdAJWO0k0Js6mBxB6gvcFPAKQPC9ZsFJqQc+77qeYH8YYhE4p3k3x7oNQrc
-         znEzmMtYj5HiqlP+D+9DYV2p3taf7eUrBA+MeX5zcPaDhX2RT3luVRNdTMzzm6AGkRxb
-         QXEWz+OKjc1PGG90cNOtli3sjhsYQ6Fz84wwvQR9YIwWoVR3piltxu2j37YYDrU//bNC
-         YCacDPoDrOmW/V1vPZbKNQjF/gBe5ztm8BmNLW2tKunyWwlLAmK2mRody6nEKeBjmwac
-         BHHw==
-X-Gm-Message-State: AGi0Pubb7HIEy/3tUxRLGGcEILbSFKAVr5mH3t1H4HaWCPpKWALYWWIe
-        o9d8kx+gHoIcSwijgwNxPjxcy2bm
-X-Google-Smtp-Source: APiQypLZXt4t1Gkrg5L1En5p1CGXycKYgR724EWJAl4RMO/nyeZQwzbZ97CZnMFl6YDIVLqtyOEw8Q==
-X-Received: by 2002:a19:f611:: with SMTP id x17mr182866lfe.51.1586452435969;
-        Thu, 09 Apr 2020 10:13:55 -0700 (PDT)
-Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
-        by smtp.googlemail.com with ESMTPSA id v9sm15934908ljj.31.2020.04.09.10.13.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Apr 2020 10:13:55 -0700 (PDT)
-Subject: Re: [PATCH v1 0/2] Support headset on Tegra boards that use WM8903
-To:     Stephen Warren <swarren@wwwdotorg.org>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20200330204011.18465-1-digetx@gmail.com>
- <5c9c995a-a571-e543-e680-30739cb1561c@gmail.com>
- <848cc6c5-e8e4-2796-3ee1-3e12a3e92c54@wwwdotorg.org>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a7159a8e-4987-0c08-ce3a-fa82d926218e@gmail.com>
-Date:   Thu, 9 Apr 2020 20:13:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qABVumhieKrODuYVGr+5avf5kX3MFltmBukZWdasrJA=;
+        b=LumiNC7OLTNjgNWy6h7Z+ZNyxuw+NTX5hkJHDyvBFXAjgwZivZ3FlISiUvI4PT0mnR
+         rSZX6IhvmUoEGkDOzWHVCNr29L/ljXpPP2MWaL7ImmxZZPl4sDFHcGs4s+Vbb8bPZiMx
+         0G9K3xjtzb68Qo2EPi5v7QfkVNRJ/h8mDIatIDD65Wod48mnelv3xAKkNvPtE/cJ5Rty
+         Qi/liaOfUjO1R/xqoQA5rpsOSxU6w12RSmAz7IffXzf53HcsISWcdh7wCRXpH3lr+ydm
+         bq7CMB947MLyG7EcE71gWLLGpMg+0Tq7IqfNMlWcAxx/oPtDMpv6Kgo/fg+q/7etlUoQ
+         c6Og==
+X-Gm-Message-State: AGi0PuY1n2c6AAG7G3rCSc1q4/32sfpsPmtcdA/eVN2cJKYcuDiz5FVA
+        dkhhEI0Jp6vWMBthY5XDIKU=
+X-Google-Smtp-Source: APiQypINADUHV8gYck9k/TH3dnArn3EZzgu0Jzkvj/9quYGuYenA0XnNfZzwHaIVO7tHVCjQ0YtwPQ==
+X-Received: by 2002:aa7:949d:: with SMTP id z29mr561451pfk.111.1586452497196;
+        Thu, 09 Apr 2020 10:14:57 -0700 (PDT)
+Received: from localhost.localdomain ([2408:821b:3c17:6960:4f7:54ff:5542:dca3])
+        by smtp.gmail.com with ESMTPSA id i2sm19715030pfr.203.2020.04.09.10.14.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 10:14:56 -0700 (PDT)
+From:   youling257 <youling257@gmail.com>
+To:     abhishekpandit@chromium.org
+Cc:     marcel@holtmann.org, luiz.dentz@gmail.com,
+        linux-bluetooth@vger.kernel.org, davem@davemloft.net,
+        johan.hedberg@gmail.com, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, hdegoede@redhat.com,
+        youling257 <youling257@gmail.com>
+Subject: Re: [RFC PATCH v6 0/5] Bluetooth: Handle system suspend gracefully
+Date:   Fri, 10 Apr 2020 01:14:29 +0800
+Message-Id: <20200409171429.5990-1-youling257@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200311155404.209990-1-abhishekpandit@chromium.org>
+References: <20200311155404.209990-1-abhishekpandit@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <848cc6c5-e8e4-2796-3ee1-3e12a3e92c54@wwwdotorg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-09.04.2020 19:54, Stephen Warren пишет:
-...
->> Jon / Stephen, are you okay with this patchset? Could you please ack it?
->> Thanks in advance.
-> 
-> It looks plausible based on commit descriptions, but I don't remember
-> the details of those APIs well enough to actually review the code change.
-> 
-
-The code change doesn't affect any of the old users, so it should be
-safe anyways.
-
-I understand that you don't feel comfortable to give an ACK if you're
-unsure, but I assume that Jon is in the same position, and thus, I'm not
-sure how to move forward.
-
-Mark, could you please help with reviewing this series?
+This patch series cause a suspend problem on BYT/CHT device, https://bugzilla.kernel.org/show_bug.cgi?id=207169
