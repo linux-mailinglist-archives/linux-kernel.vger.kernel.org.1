@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65CB81A39DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 20:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6141A39E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 20:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgDISgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 14:36:51 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:34853 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726470AbgDISgu (ORCPT
+        id S1726671AbgDISn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 14:43:29 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47298 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726571AbgDISn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 14:36:50 -0400
-Received: by mail-lf1-f66.google.com with SMTP id r17so431767lff.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 11:36:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N/+se2UHgrfLQE0M/DBpN86UleQ7BkRzq/fVSWTmR4I=;
-        b=Uk3vkLLnOL8XH6hpPhWCArhvSElp5DkPZZzfl19oy8vdkPSomq+LC2ORDEWY3tg5f7
-         JWg1VC2w6K5RpT0TCfi+IeafFwg0poVjQ3qfy8Bf3l075rFYIX4vvPbLh/8hObqy/sPc
-         s9QtrG5hqTX3HzcVkUn7y1E6VqDG3uEfihU2w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N/+se2UHgrfLQE0M/DBpN86UleQ7BkRzq/fVSWTmR4I=;
-        b=OhZixVk6+Q979KwVy7aq9hLF+NOOQM8x08rhqfIpeZYHRQ1kcpff6QS7O0/unoMO9Z
-         rIgiMxSL5k8i/vOUO2U62Xnd6D5Uqoprmkk4ekhhl5ny6kZHFfzNfLfVbYvNxUhWs1/l
-         LvFVNzoCKD9HbuGOmMfMHX4seOSEEC+TK8GiEijxv307VnQKopJ+bUf8VnQjUxGI1Vgy
-         etgHuHi/KPMwGbM2QB/h0EOEwK7zm7b9hsR3HSYCQWP2ITuGMykR1yN6v+1MHqv60Ts9
-         3PYr2AkXVt1+C7Xg7Jbvo01XzhEwTBHIj5aJ1ReZQDgcqTZFCdRavKUFpyM3D1IeVJew
-         bjfw==
-X-Gm-Message-State: AGi0PuZcqpjq8/uMmSlTfMfQnMHAoDcazUN383hzjiIxrUpbUqDsV9Ds
-        nX/ckoDT7xRGZ550pqcdczZpScj1Mto=
-X-Google-Smtp-Source: APiQypKMQfZhmsvDNsVHW69OQ9GMHA5oULTEGffIP0ICMUKEV6A6tXmd87DH+Hvw6U7PVWonmeS0Ug==
-X-Received: by 2002:ac2:4d10:: with SMTP id r16mr387094lfi.180.1586457408104;
-        Thu, 09 Apr 2020 11:36:48 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id j22sm18335872lfg.96.2020.04.09.11.36.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Apr 2020 11:36:46 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id t17so720395ljc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 11:36:45 -0700 (PDT)
-X-Received: by 2002:a2e:7c1a:: with SMTP id x26mr652422ljc.209.1586457405165;
- Thu, 09 Apr 2020 11:36:45 -0700 (PDT)
+        Thu, 9 Apr 2020 14:43:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586457808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FGIoWblQspo3MfzxITLqHdYTxq74FCJBAwHgoQJO7I0=;
+        b=AVVuyJpdek3wsMYdrvEZLUIyiOcm0tb34cczMUfSh3o0qZtgsFzthe1AoQI8/e6R1npbdC
+        6CopsRxyHFLPjjPDGtkTreZ4s5r740bvR3rfnUVEVR7+JNDULwCBmeAHTIkrmqP584/7QZ
+        9qP1im9aYHRCXGUPrpn4BvXe/mZjdpY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376-p0pocOJGPlWSeWE05F_Qpg-1; Thu, 09 Apr 2020 14:43:19 -0400
+X-MC-Unique: p0pocOJGPlWSeWE05F_Qpg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 066BA8017F3;
+        Thu,  9 Apr 2020 18:43:18 +0000 (UTC)
+Received: from krava (unknown [10.40.196.41])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 01FE9114818;
+        Thu,  9 Apr 2020 18:43:09 +0000 (UTC)
+Date:   Thu, 9 Apr 2020 20:43:02 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc:     Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "bibo,mao" <bibo.mao@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Ziqian SUN (Zamir)" <zsun@redhat.com>
+Subject: Re: [RFC] kretprobe: Prevent triggering kretprobe from within
+ kprobe_flush_task
+Message-ID: <20200409184302.GF3309111@krava>
+References: <20200408164641.3299633-1-jolsa@kernel.org>
+ <1586422762.2z1fgtvri9.naveen@linux.ibm.com>
 MIME-Version: 1.0
-References: <87blobnq02.fsf@x220.int.ebiederm.org> <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
- <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
- <87lfnda3w3.fsf@x220.int.ebiederm.org> <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
- <87blo45keg.fsf@x220.int.ebiederm.org> <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
- <87v9maxb5q.fsf@x220.int.ebiederm.org> <CAHk-=wih4BqW7GTLaYxewynuT-iFHrXroip0wNo0CyPtmYGUow@mail.gmail.com>
- <87y2r4so3i.fsf@x220.int.ebiederm.org> <CAHk-=wjhAvv6s_7OVeZJiHaY7bBrHyiPTkSpq-TLr6qxYqxUUw@mail.gmail.com>
- <CAHk-=wi0jrKv9x6vJ9FDgTrSUbdbZYDX-79T-E87C48MGSn5=g@mail.gmail.com>
- <87wo6or3pg.fsf@x220.int.ebiederm.org> <AM6PR03MB51708FD4226E07AB7CB0D6A7E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
- <CAHk-=wjaoYM4gXdAyYY=u8PaYj2LXUvcfp=8DKum8f1DM+Ws0A@mail.gmail.com> <AM6PR03MB5170F924EA69A81D79BD0929E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
-In-Reply-To: <AM6PR03MB5170F924EA69A81D79BD0929E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 9 Apr 2020 11:36:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whMKC5F-=QQP=fCNRuTF+ZGiNtLEKvx7KekpK1JtrwDhw@mail.gmail.com>
-Message-ID: <CAHk-=whMKC5F-=QQP=fCNRuTF+ZGiNtLEKvx7KekpK1JtrwDhw@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
-To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Waiman Long <longman@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586422762.2z1fgtvri9.naveen@linux.ibm.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 9, 2020 at 10:46 AM Bernd Edlinger
-<bernd.edlinger@hotmail.de> wrote:
->
-> Test case 1/2 is working 2/2 is failing, deadlocking,
-> I think even the time-out handler does not kill the dead-lock
-> if I remember correctly.
+On Thu, Apr 09, 2020 at 02:32:21PM +0530, Naveen N. Rao wrote:
 
-Ok, I get
+SNIP
 
-  [==========] Running 2 tests from 1 test cases.
-  [ RUN      ] global.vmaccess
-  [       OK ] global.vmaccess
-  [ RUN      ] global.attach
-  global.attach: Test terminated by timeout
-  [     FAIL ] global.attach
-  [==========] 1 / 2 tests passed.
-  [  FAILED  ]
+> > ---
+> >  kernel/kprobes.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> > index 2625c241ac00..b13247cae752 100644
+> > --- a/kernel/kprobes.c
+> > +++ b/kernel/kprobes.c
+> > @@ -1236,6 +1236,10 @@ __releases(hlist_lock)
+> >  }
+> >  NOKPROBE_SYMBOL(kretprobe_table_unlock);
+> > +static struct kprobe kretprobe_dummy = {
+> > +        .addr = (void *)kretprobe_trampoline,
+> > +};
+> > +
+> 
+> Perhaps a more meaningful name, say, kprobe_flush_task_protect ?
 
-but reading that test it's not doing what I thought it was doing.
+ok, will rename together with Masami's changes
 
-I thought it was doing the ptrace from within a thread. But it's doing
-a proper fork() and doing the attach from the parent, just doing the
-TRACEME from a thread that exits.
+> 
+> >  /*
+> >   * This function is called from finish_task_switch when task tk becomes dead,
+> >   * so that we can recycle any function-return probe instances associated
+> > @@ -1256,12 +1260,14 @@ void kprobe_flush_task(struct task_struct *tk)
+> >  	INIT_HLIST_HEAD(&empty_rp);
+> >  	hash = hash_ptr(tk, KPROBE_HASH_BITS);
+> >  	head = &kretprobe_inst_table[hash];
+> > +	__this_cpu_write(current_kprobe, &kretprobe_dummy);
+> >  	kretprobe_table_lock(hash, &flags);
+> >  	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+> >  		if (ri->task == tk)
+> >  			recycle_rp_inst(ri, &empty_rp);
+> >  	}
+> >  	kretprobe_table_unlock(hash, &flags);
+> > +	__this_cpu_write(current_kprobe, NULL);
+> 
+> I would move this to the end of the function to also cover the below code.
+> kprobe_flush_task() is marked NOKPROBE, so it is good to prevent probe
+> handling in the below code too.
 
-I guess I need to look at what that test is actually testing, because
-it wasn't what I thought.
+ok, will do
 
-               Linus
+thanks,
+jirka
+
+> 
+> >  	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+> >  		hlist_del(&ri->hlist);
+> >  		kfree(ri);
+> 
+> 
+> - Naveen
+> 
+
