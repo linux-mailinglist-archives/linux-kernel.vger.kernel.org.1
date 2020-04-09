@@ -2,95 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6464A1A3205
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171011A320A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbgDIJnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:43:13 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:45046 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbgDIJnL (ORCPT
+        id S1726734AbgDIJnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:43:35 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:23092 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726620AbgDIJne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:43:11 -0400
-Received: by mail-wr1-f65.google.com with SMTP id c15so11106216wro.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GOxv76VTNJn0re7QfDmZ3EwQKAGpjmry3VNCaBN+aEQ=;
-        b=IP59XrEseUrCjteD617L7bdHWtqsEZx8Lje5p2DC45Lafpf/q/phhPrG3hBxueq9Ag
-         mFiuXzx5ii8IdBh8hvy21u1TxyLVcX0UHUlQQgQhzKwkUv5/qSlMKzJ6BQK6/ahmvV0K
-         Ir9Uq+fOX4Z8TgsnRGv7fRCz2LaXFVDwAYdOHZztVpYY/zf/batqId6+Adzxf2oYB5oR
-         kYc2dTbk+T761BuKJFa5qohcQ6l7yDLjEYFjTeURoq+WkkuBYEWoMKWIcmX6Jy3ttCKJ
-         YTSTwkxhg2LqycUBJgIzGn+FMiBUutTRjSNI1g0uaD58HLt9VD7ITU4D8ywEDfFAL6iM
-         gJPg==
+        Thu, 9 Apr 2020 05:43:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586425414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nIzy0tnj6FqxJz87TqjmoYX4nTo+jUF+UzNkvXq35po=;
+        b=CWHb6jj9XUCtKDWBKVYt/8XTkI6wPC6Kpjgm00CsZMbodTfSegehsICtZ1W/kZZcn8CT/z
+        9h6L0HpZAr0KzC8lKH9NvbtEnVwMU+nHMaZyXPKdwEwsBwpTmQZKd9lR5thaCaBcsWauNx
+        49ET/3C36a9qZXoqHqSmuCDf8AHJBcs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-grGV2qmtN7SOmTm6asXyDw-1; Thu, 09 Apr 2020 05:43:33 -0400
+X-MC-Unique: grGV2qmtN7SOmTm6asXyDw-1
+Received: by mail-wr1-f69.google.com with SMTP id r17so431304wrg.19
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:43:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=GOxv76VTNJn0re7QfDmZ3EwQKAGpjmry3VNCaBN+aEQ=;
-        b=HnMX/CZ8sc0wzCV+sQQzCPX6MIRCDg5Ft2DgbPn/KE2DYSQfHmFAG1iLrBVr437te/
-         v6uxZCkaEghnjWdD9Pa2jRvbXHx9+scnPxn+/hyEvXPHzhbXdWgwaZjOzZmVtQ7CoUj/
-         bPeoxrgdbt6rGCyLrAdnq/ot7ioQIflktqG05cT9J89wvsDV9R1GxPachUMLDgusjt95
-         ST/B5Qsu0x8khhMQvwfbG+poGpZk27YoWOaupVsocPq3OY/Cvw+oYVUKaSIAiWZ/yZJ4
-         QzD9AgDWyqY3Hn7ukFu/4vv5+3rqoj9vGqmu6dcQ5qQ7Jn3uW4VZtSKCoJhg3P8y6g8B
-         6u8Q==
-X-Gm-Message-State: AGi0PuaCV/QfEsYAV//lBZh4AnxfL/9Tmm9TLGfyF+4yjQMipm5e40AO
-        myN/XpdEHG+5ZYbYBSAgqSxozWO33ww=
-X-Google-Smtp-Source: APiQypIIn+KJTOqwwGo0FkMWMplK9DMO0NpY4o/cCriwOi5mFiBWE9LHKwJ1GNBC8+FkmGeRaP0qew==
-X-Received: by 2002:adf:fa51:: with SMTP id y17mr14071155wrr.358.1586425390597;
-        Thu, 09 Apr 2020 02:43:10 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:e1dc:4371:fecd:8292? ([2a01:e34:ed2f:f020:e1dc:4371:fecd:8292])
-        by smtp.googlemail.com with ESMTPSA id f1sm41701387wrv.37.2020.04.09.02.43.09
+        bh=nIzy0tnj6FqxJz87TqjmoYX4nTo+jUF+UzNkvXq35po=;
+        b=Nq8yOA0Gy3povALRks0pALZXUvgmPobohvYBOnliSKGwXCnS2UPhO9zzLRrxBvrNKm
+         j6pBbvwkdzHR3iZVWQp0aMOhLeCdtrI46q+3Ovdr9T4pIc4ynuueg8WtHdLFbqemo/+p
+         ccj3Ytm5ttFZCETDzmtxMm9wOP42JYUKTMjbCGAf7WAFD+OApJoWyOZIJFdrOYnh9pFn
+         HXLYUBE5ybW68JlvtHrvREb4TF2e70s68IwONs+2r1Xyn+ctPEws1s7y7/Yj0Yp3J1Dm
+         5RsVP/BK47NR6sCSO/cvSdCROilGwJUON6+h8VYEm6He7cdWxPPWDpvJGb4NxadxnCR9
+         2wiA==
+X-Gm-Message-State: AGi0PuZkmfbOAFrehrEdjCu9GLpUDEYIqfuAB2msVvIlHSuKP2vP5+Ro
+        O8YaFbb9CfBWZokYibTD6cLpbuI7kZABLztILfN9aEmYuRAUfS+3N8BjUi2w3pLEMAF9dS02BPk
+        eb2GaQy0PR46ibAcHPPpcpv3e
+X-Received: by 2002:a1c:a7d7:: with SMTP id q206mr5695585wme.45.1586425411855;
+        Thu, 09 Apr 2020 02:43:31 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJgQiZCrWZvCGiHqYLqjts+lmOUoOTw70VVOHDzOH/wMxfRJcVDU494OZ3lliAXWnRamte4kQ==
+X-Received: by 2002:a1c:a7d7:: with SMTP id q206mr5695574wme.45.1586425411623;
+        Thu, 09 Apr 2020 02:43:31 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:bddb:697c:bea8:abc? ([2001:b07:6468:f312:bddb:697c:bea8:abc])
+        by smtp.gmail.com with ESMTPSA id g3sm25430861wrw.47.2020.04.09.02.43.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Apr 2020 02:43:09 -0700 (PDT)
-Subject: Re: [PATCH] clocksource: davinci: avoid trailing '\n' hidden in
- pr_fmt()
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20200409092543.14727-1-christophe.jaillet@wanadoo.fr>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <54def81a-5065-93d6-3397-5086f2d86994@linaro.org>
-Date:   Thu, 9 Apr 2020 11:43:09 +0200
+        Thu, 09 Apr 2020 02:43:31 -0700 (PDT)
+Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
+To:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
+References: <20200407172140.GB64635@redhat.com>
+ <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net>
+ <87eeszjbe6.fsf@nanos.tec.linutronix.de>
+ <ce81c95f-8674-4012-f307-8f32d0e386c2@redhat.com>
+ <874ktukhku.fsf@nanos.tec.linutronix.de>
+ <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com>
+ <20200408153413.GA11322@linux.intel.com>
+ <ce28e893-2ed0-ea6f-6c36-b08bb0d814f2@redhat.com>
+ <87d08hc0vz.fsf@nanos.tec.linutronix.de>
+ <CALCETrWG2Y4SPmVkugqgjZcMfpQiq=YgsYBmWBm1hj_qx3JNVQ@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <47a7593e-e035-1b48-c6d7-cd6f78a2f6e2@redhat.com>
+Date:   Thu, 9 Apr 2020 11:43:29 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200409092543.14727-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <CALCETrWG2Y4SPmVkugqgjZcMfpQiq=YgsYBmWBm1hj_qx3JNVQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/2020 11:25, Christophe JAILLET wrote:
-> pr_xxx() functions usually have '\n' at the end of the logging message.
-> Here, this '\n' is added via the 'pr_fmt' macro.
-> 
-> In order to be more consistent with other files, use a more standard
-> convention and put these '\n' back in the messages themselves and remove it
-> from the pr_fmt macro.
-> 
-> While at it, remove a useless message in case of 'kzalloc' failure,
-> especially with a __GFP_NOFAIL flag.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+On 09/04/20 06:50, Andy Lutomirski wrote:
+> The big problem is that #VE doesn't exist on AMD, and I really think
+> that any fancy protocol we design should work on AMD.  I have no
+> problem with #VE being a nifty optimization to the protocol on Intel,
+> but it should *work* without #VE.
 
-Applied, thanks
+Yes and unfortunately AMD does not like to inject a non-existing
+exception.  Intel only requires the vector to be <=31, but AMD wants the
+vector to correspond to an exception.
 
-> ---
-> Not sure that the __GFP_NOFAIL is relevant here.
+However, software injection is always possible and AMD even suggests
+that you use software injection for ICEBP and, on older processors, the
+INT instruction.
 
-No, it is not relevant.
+Paolo
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
