@@ -2,225 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48A211A3A3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9F91A3A35
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgDITNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 15:13:07 -0400
-Received: from mail-mw2nam12on2074.outbound.protection.outlook.com ([40.107.244.74]:24545
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726791AbgDITM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 15:12:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bez90T6EfcdTJ7Fh1NKfQkaCEg2D/Rawa+4hTpI4nztnlBrM/F/K5GnN0xoPgLAkN8zCYe4KydoZX+DWcgekwiKbR4Z5MGHxuB1Y/s/2RMICOSuh/jzGN0fHOMk23tV2gNWaz1f9LZsQbUY9K28j1z1cg9QZVmJR0R+s6JJSaNFTQ8sOqaWMRIXWbQp/w8WIXqXrjhLlYnNkEfi6WQLT8ODjJP4xbPJRiAezqxA8RwkClqZmYZ4QL+eW034wQB2ew9k+zamN1/8fklAm/j/KY+Bo74fpecYcA/BZEwip6fJ6xe8rgcWazUNOMsUNj+Fzyv7peE4g5MxCFEsf8DeRQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yTMAvD5IyJaFssNJx7zMyBTmn1sGBgNjbcebgA75PlE=;
- b=kfZddZ1thF9yCdiEMsJF1Vfn3qOhxsAfLjc3F/tU2unkWhln11ewfqRwJQakv8b3OBN2f1D1QUat6u+6Wg6vkl7mV/7Al0SucJnqh7KF7LvFixrdQ18WsfQzrVtHAjdVJdGXxuF4vy+Z8zkISvAQZC2UH9EyMeCCQCTDZbjcwEM/xUPk2wsNZEaF/GN9/UHo10VlOJ0rGiPMF8d/ADhXmbRJqWJiK3r00waE3G2P5eS4ezbhvJ7rsc3CfSJeyQ8z+eUGhLo6RvAyiJQDti9dREUacHMWRrDo39vdc8PUohLoWbF2Zy8IeHEIWwcFAYBpQhghviXwzJj5Z0pmyW0ZkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.60.83) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
- dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
- not signed); arc=none
+        id S1726713AbgDITMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 15:12:13 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:46042 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726598AbgDITMN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 15:12:13 -0400
+Received: by mail-io1-f65.google.com with SMTP id i19so654182ioh.12;
+        Thu, 09 Apr 2020 12:12:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yTMAvD5IyJaFssNJx7zMyBTmn1sGBgNjbcebgA75PlE=;
- b=LUXCrnOcRH7n6c/VPsdYAF3MxjUpfxOV9ngJ7/DN/gnMvReCMKAUdDIRX0D5acLXo4Kpa+KJafxnd0mDRQhKdGmBNYlGFpaUNVIAf4f/FH9F4Rid++QgvmFiFBwbA1g6AOXyjK1XzX8U+viezG7aPFW7Xs5M8qJwyK5BA4DYkbU=
-Received: from MN2PR05CA0008.namprd05.prod.outlook.com (2603:10b6:208:c0::21)
- by DM6PR02MB4057.namprd02.prod.outlook.com (2603:10b6:5:9d::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15; Thu, 9 Apr
- 2020 19:12:52 +0000
-Received: from BL2NAM02FT061.eop-nam02.prod.protection.outlook.com
- (2603:10b6:208:c0:cafe::a5) by MN2PR05CA0008.outlook.office365.com
- (2603:10b6:208:c0::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.12 via Frontend
- Transport; Thu, 9 Apr 2020 19:12:51 +0000
-Authentication-Results: spf=pass (sender IP is 149.199.60.83)
- smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=bestguesspass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
-Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
- BL2NAM02FT061.mail.protection.outlook.com (10.152.77.7) with Microsoft SMTP
- Server id 15.20.2900.18 via Frontend Transport; Thu, 9 Apr 2020 19:12:51
- +0000
-Received: from [149.199.38.66] (port=44415 helo=xsj-pvapsmtp01)
-        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
-        (envelope-from <jolly.shah@xilinx.com>)
-        id 1jMcbA-00060z-Ll; Thu, 09 Apr 2020 12:12:24 -0700
-Received: from [127.0.0.1] (helo=localhost)
-        by xsj-pvapsmtp01 with smtp (Exim 4.63)
-        (envelope-from <jolly.shah@xilinx.com>)
-        id 1jMcbb-0007NV-3v; Thu, 09 Apr 2020 12:12:51 -0700
-Received: from [172.19.2.91] (helo=xsjjollys50.xilinx.com)
-        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
-        (envelope-from <jolly.shah@xilinx.com>)
-        id 1jMcbS-0007La-EF; Thu, 09 Apr 2020 12:12:42 -0700
-From:   Jolly Shah <jolly.shah@xilinx.com>
-To:     ard.biesheuvel@linaro.org, mingo@kernel.org,
-        gregkh@linuxfoundation.org, matt@codeblueprint.co.uk,
-        sudeep.holla@arm.com, hkallweit1@gmail.com, keescook@chromium.org,
-        dmitry.torokhov@gmail.com, michal.simek@xilinx.com
-Cc:     rajanv@xilinx.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rajan Vaja <rajan.vaja@xilinx.com>,
-        Jolly Shah <jolly.shah@xilinx.com>
-Subject: [PATCH v4 12/25] firmware: xilinx: Remove eemi ops for reset_assert
-Date:   Thu,  9 Apr 2020 12:12:01 -0700
-Message-Id: <1586459534-8997-13-git-send-email-jolly.shah@xilinx.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586459534-8997-1-git-send-email-jolly.shah@xilinx.com>
-References: <1586459534-8997-1-git-send-email-jolly.shah@xilinx.com>
-X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
-X-TM-AS-User-Approved-Sender: Yes;Yes
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(396003)(376002)(136003)(346002)(46966005)(478600001)(6636002)(2906002)(54906003)(7416002)(82740400003)(7696005)(316002)(8676002)(81156014)(5660300002)(9786002)(47076004)(8936002)(70206006)(336012)(426003)(6666004)(186003)(356004)(2616005)(44832011)(26005)(4326008)(81166007)(36756003)(107886003)(70586007);DIR:OUT;SFP:1101;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Ntgh7ggRVyuTK7qYbcPinZghAPb2Fm06PKgbVvN1RvE=;
+        b=q8W7U/8pcYPRtd6rGVYf5YkCnHWc6GrAAcojXVxhKKIg6PUumFKbYS0c59k+DsSqvz
+         We45F23OlwIMWCngXFh04gSJP9ctlLpUPd86rVOe7Jpm0wv7YumBWVHCsbVpDXk+yO/j
+         7GkrBhmp+RtdQX4fmiUSKPhEgDoDoVAXFuuahkGa0/TUvEsbGGRZTGBtegNAbli0pKSj
+         t4uAc6ShrxlxGa1fPyQoSfQTPl16WtpgobgR7+JWSfnY27SXa3pECzidFsMFd1uiimGv
+         BDKOblegXhzr8rDZ3hRSGPCkl69MT0PFIQWQq259IzuxLGtjHfO17jC4NESm+FgI1wlD
+         n9OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=Ntgh7ggRVyuTK7qYbcPinZghAPb2Fm06PKgbVvN1RvE=;
+        b=uKw401/mKRuJchvW6eyu3Gs6g1eVwDh2XbzuahZsCZZpzC5hgUhwVV8O4fpGjrE35C
+         i6BMrSIXLG2rgXjFPiPrLe4rhPKyApzGjto1P9GeGmjGZdhjrGBYmoP9nJMajC5JDBbK
+         Wq8Gc4QYTX9NLm2mly702hl3I1xIoWrImD7vCLicktzgt6d/v5IFhlHEbpAfWay/RA6o
+         ofbQHvITv4lCxzw+2EOjaEp2blevoGChekys0WVJiTV9DcTJYu9CdDnhF3CLV/xsb7cN
+         GDG95p+ZjQHRiOPXyY5IoyRStHLQwFnsqm8i/ZBF4n+fCf2aFkvfXXd64pQzyF7u+eoI
+         9SHQ==
+X-Gm-Message-State: AGi0PuZyPd2rHWEWJoPaa5aqRXLUwbRk5lv8geEzQbCn6PHJtHlWZGB2
+        +XOEz1pMU2pBMnOLa2sw37I9Gg17x53uvmQP9bcdQBTry2i3Jw==
+X-Google-Smtp-Source: APiQypLgpUstaEz8/6gOw4FLChsJa3c6p1VXDui4wrbFATLOmMOPJkZRwm6qC54ibmu6jbUZth/+jtAzxx11F9NYQjk=
+X-Received: by 2002:a02:8445:: with SMTP id l5mr949692jah.43.1586459532202;
+ Thu, 09 Apr 2020 12:12:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c9af6053-bca4-46ad-ee18-08d7dcb9ffd7
-X-MS-TrafficTypeDiagnostic: DM6PR02MB4057:
-X-Microsoft-Antispam-PRVS: <DM6PR02MB4057AAF5FC3BB794F647E697B8C10@DM6PR02MB4057.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:612;
-X-Forefront-PRVS: 0368E78B5B
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DHP1iBqTzd45K1dox3coIbHTmiR/cFLW9SMXnzCDQuqVihhXSosN0NMUXgASQXIxM8jmTk+VF+a7NlEpMjRsdqvQZmZM1wrEC8SdfPPYT+zK8C8dw9Xnv/C6i589SV2K4LXFCsGEWZJVKF2ysBWjXjgOblm9nGQpyrqPj1fA2GohhYUzrGYUzrwO3K1Aoe4+KdMJBv33rkTIKzhA9E4YMNaUeA8DA3ebJy3PCJ92yujWIvxTA+FqjcefnZ4y/AR05nZFlqE8YnQ39hROLltYrMnEfg9IXuKaLKoxBBCkUQkFvwCDhfdsTNv4a+oVqduimT8PTnxjbKT7FunUdeIbZt+YLv5nI9/gLaY4X/6CbIRmwIog0036gofqyE2GVhrpLQ7FgiqQv+RJa2N4k9lsEspHPfWMiDElyf8jthwEp4r5RCiIcxUTRInaKblgpntm+8w9wePLZDfECZOJL4GXVGRWdnyJY0pAPdQbk5uZCANKn/3zjUvK3tXkogobnc3qsw8ifh6yUhKWhi6fLeOO8w==
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2020 19:12:51.5466
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9af6053-bca4-46ad-ee18-08d7dcb9ffd7
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4057
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Fri, 10 Apr 2020 00:12:01 +0500
+Message-ID: <CABXGCsPpD+ExaeA6v+gSPPgtxcVzpKLWJNwGPPDKGFkPCv5kDg@mail.gmail.com>
+Subject: [Bug report] Kernel 5.7 become unbootable
+To:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        linux-x86_64@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajan Vaja <rajan.vaja@xilinx.com>
+Hi folks.
+I use Fedora Rawhide and today's update came with the new kernel
+5.7.0-0.rc0.git6.1.
+As it turned out this kernel won't boot. Instead, I see the black
+screen and some times see messages:
+exit_boot() failed!
+efi_main() failed!
 
-Use direct function call instead of using eemi ops for
-reset_assert.
+The last working kernel is kernel-core-5.7.0-0.rc0.git2.1
 
-Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
-Signed-off-by: Jolly Shah <jolly.shah@xilinx.com>
----
- drivers/firmware/xilinx/zynqmp.c     |  6 +++---
- drivers/reset/reset-zynqmp.c         | 18 ++++++------------
- include/linux/firmware/xlnx-zynqmp.h |  9 +++++++--
- 3 files changed, 16 insertions(+), 17 deletions(-)
+I looked at the spec file and found out that the last bootable kernel
+was related to the commit cad18da0afb1
+(https://src.fedoraproject.org/rpms/kernel/c/9949db6070c6ca501d7235760ca8aba120db7448?branch=master),
+and the first non-bootable kernel related to the commit a10c9c710f9e
+(https://src.fedoraproject.org/rpms/kernel/c/0561e0bf0e459dd4b27a77670de838128b87bd0e?branch=master)
 
-diff --git a/drivers/firmware/xilinx/zynqmp.c b/drivers/firmware/xilinx/zynqmp.c
-index 94fd755..2a79091 100644
---- a/drivers/firmware/xilinx/zynqmp.c
-+++ b/drivers/firmware/xilinx/zynqmp.c
-@@ -627,12 +627,13 @@ EXPORT_SYMBOL_GPL(zynqmp_pm_sd_dll_reset);
-  *
-  * Return: Returns status, either success or error+reason
-  */
--static int zynqmp_pm_reset_assert(const enum zynqmp_pm_reset reset,
--				  const enum zynqmp_pm_reset_action assert_flag)
-+int zynqmp_pm_reset_assert(const enum zynqmp_pm_reset reset,
-+			   const enum zynqmp_pm_reset_action assert_flag)
- {
- 	return zynqmp_pm_invoke_fn(PM_RESET_ASSERT, reset, assert_flag,
- 				   0, 0, NULL);
- }
-+EXPORT_SYMBOL_GPL(zynqmp_pm_reset_assert);
- 
- /**
-  * zynqmp_pm_reset_get_status - Get status of the reset
-@@ -807,7 +808,6 @@ static int zynqmp_pm_aes_engine(const u64 address, u32 *out)
- }
- 
- static const struct zynqmp_eemi_ops eemi_ops = {
--	.reset_assert = zynqmp_pm_reset_assert,
- 	.reset_get_status = zynqmp_pm_reset_get_status,
- 	.init_finalize = zynqmp_pm_init_finalize,
- 	.set_suspend_mode = zynqmp_pm_set_suspend_mode,
-diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
-index 0144075..4a01b7e 100644
---- a/drivers/reset/reset-zynqmp.c
-+++ b/drivers/reset/reset-zynqmp.c
-@@ -27,19 +27,15 @@ to_zynqmp_reset_data(struct reset_controller_dev *rcdev)
- static int zynqmp_reset_assert(struct reset_controller_dev *rcdev,
- 			       unsigned long id)
- {
--	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
--
--	return priv->eemi_ops->reset_assert(ZYNQMP_RESET_ID + id,
--					    PM_RESET_ACTION_ASSERT);
-+	return zynqmp_pm_reset_assert(ZYNQMP_RESET_ID + id,
-+				      PM_RESET_ACTION_ASSERT);
- }
- 
- static int zynqmp_reset_deassert(struct reset_controller_dev *rcdev,
- 				 unsigned long id)
- {
--	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
--
--	return priv->eemi_ops->reset_assert(ZYNQMP_RESET_ID + id,
--					    PM_RESET_ACTION_RELEASE);
-+	return zynqmp_pm_reset_assert(ZYNQMP_RESET_ID + id,
-+				      PM_RESET_ACTION_RELEASE);
- }
- 
- static int zynqmp_reset_status(struct reset_controller_dev *rcdev,
-@@ -58,10 +54,8 @@ static int zynqmp_reset_status(struct reset_controller_dev *rcdev,
- static int zynqmp_reset_reset(struct reset_controller_dev *rcdev,
- 			      unsigned long id)
- {
--	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
--
--	return priv->eemi_ops->reset_assert(ZYNQMP_RESET_ID + id,
--					    PM_RESET_ACTION_PULSE);
-+	return zynqmp_pm_reset_assert(ZYNQMP_RESET_ID + id,
-+				      PM_RESET_ACTION_PULSE);
- }
- 
- static const struct reset_control_ops zynqmp_reset_ops = {
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 5aff896..22b2bbe 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -296,8 +296,6 @@ struct zynqmp_pm_query_data {
- struct zynqmp_eemi_ops {
- 	int (*fpga_load)(const u64 address, const u32 size, const u32 flags);
- 	int (*fpga_get_status)(u32 *value);
--	int (*reset_assert)(const enum zynqmp_pm_reset reset,
--			    const enum zynqmp_pm_reset_action assert_flag);
- 	int (*reset_get_status)(const enum zynqmp_pm_reset reset, u32 *status);
- 	int (*init_finalize)(void);
- 	int (*set_suspend_mode)(u32 mode);
-@@ -336,6 +334,8 @@ int zynqmp_pm_set_pll_frac_data(u32 clk_id, u32 data);
- int zynqmp_pm_get_pll_frac_data(u32 clk_id, u32 *data);
- int zynqmp_pm_set_sd_tapdelay(u32 node_id, u32 type, u32 value);
- int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type);
-+int zynqmp_pm_reset_assert(const enum zynqmp_pm_reset reset,
-+			   const enum zynqmp_pm_reset_action assert_flag);
- #else
- static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
- {
-@@ -414,6 +414,11 @@ static inline int zynqmp_pm_sd_dll_reset(u32 node_id, u32 type)
- {
- 	return -ENODEV;
- }
-+static inline int zynqmp_pm_reset_assert(const enum zynqmp_pm_reset reset,
-+			   const enum zynqmp_pm_reset_action assert_flag)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* __FIRMWARE_ZYNQMP_H__ */
--- 
-2.7.4
+Of course, knowing these two commits, I made bisecting with the vanilla kernel:
 
+$ git bisect log
+git bisect start
+# good: [cad18da0afb1bc7b37d73a74067ab7ff5974897c] Merge tag
+'please-pull-ia64_for_5.7' of
+git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux
+git bisect good cad18da0afb1bc7b37d73a74067ab7ff5974897c
+# bad: [a10c9c710f9ecea87b9f4bbb837467893b4bef01] Merge tag 'for-v5.7'
+of git://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply
+git bisect bad a10c9c710f9ecea87b9f4bbb837467893b4bef01
+# bad: [f365ab31efacb70bed1e821f7435626e0b2528a6] Merge tag
+'drm-next-2020-04-01' of git://anongit.freedesktop.org/drm/drm
+git bisect bad f365ab31efacb70bed1e821f7435626e0b2528a6
+# good: [7f80ccfe996871ca69648efee74a60ae7ad0dcd9] net: ipv6:
+rpl_iptunnel: Fix potential memory leak in rpl_do_srh_inline
+git bisect good 7f80ccfe996871ca69648efee74a60ae7ad0dcd9
+# good: [9001b17698d86f842e2b13e0cafe8021d43209e9] Merge tag
+'drm-intel-next-2020-03-13' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-next
+git bisect good 9001b17698d86f842e2b13e0cafe8021d43209e9
+# bad: [dfabb077d62552797ca0ae7756cb30d3e195ead5] Merge tag 'mmc-v5.7'
+of git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc
+git bisect bad dfabb077d62552797ca0ae7756cb30d3e195ead5
+# bad: [15c981d16d70e8a5be297fa4af07a64ab7e080ed] Merge tag
+'for-5.7-tag' of
+git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux
+git bisect bad 15c981d16d70e8a5be297fa4af07a64ab7e080ed
+# good: [dc9492c14c758639d7b2468d4ed3c77e785c1a35] btrfs: hold a ref
+on the root on the dead roots list
+git bisect good dc9492c14c758639d7b2468d4ed3c77e785c1a35
+# good: [3cd86a58f7734bf9cef38f6f899608ebcaa3da13] Merge tag
+'arm64-upstream' of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux
+git bisect good 3cd86a58f7734bf9cef38f6f899608ebcaa3da13
+# bad: [fdf5563a720004199324371c08071b8ea27bd994] Merge branch
+'x86-cleanups-for-linus' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect bad fdf5563a720004199324371c08071b8ea27bd994
+# skip: [cf122cfba5b1d9daf64009d143f51dfec4b1705a] kill uaccess_try()
+git bisect skip cf122cfba5b1d9daf64009d143f51dfec4b1705a
+# skip: [4dd2a1b92b91b5f2acf853ee1dc0df135054698f] x86: Replace
+setup_irq() by request_irq()
+git bisect skip 4dd2a1b92b91b5f2acf853ee1dc0df135054698f
+# skip: [5c1f178094631e8b9acc67e4a9b6e03abfbc2529] x86:
+__setup_frame(): consolidate uaccess areas
+git bisect skip 5c1f178094631e8b9acc67e4a9b6e03abfbc2529
+# skip: [3add42c29cebb1d5f83c6205c59466a06ccf8da1] x86: get rid of
+get_user_ex() in restore_sigcontext()
+git bisect skip 3add42c29cebb1d5f83c6205c59466a06ccf8da1
+# skip: [ead8e4e7e2c75ced6fcd9a53d3e9a2ecd7368553] x86:
+__setup_rt_frame(): consolidate uaccess areas
+git bisect skip ead8e4e7e2c75ced6fcd9a53d3e9a2ecd7368553
+# skip: [31a9122058bc5f042cb04bcdb8cd9e6c77fdae8d] x86/mm: Drop
+pud_mknotpresent()
+git bisect skip 31a9122058bc5f042cb04bcdb8cd9e6c77fdae8d
+# skip: [791612e9668cecbf5dd24d13400ac74e099f005c] x86:
+x32_setup_rt_frame(): consolidate uaccess areas
+git bisect skip 791612e9668cecbf5dd24d13400ac74e099f005c
+# skip: [77f3c6166ddc7567455b244074b3ebb63862b56f] x86: kill
+get_user_{try,catch,ex}
+git bisect skip 77f3c6166ddc7567455b244074b3ebb63862b56f
+# skip: [b00d8f8f0b2b39223c3fd6713d318aba95420264] x86:
+setup_sigcontext(): list user_access_{begin,end}() into callers
+git bisect skip b00d8f8f0b2b39223c3fd6713d318aba95420264
+# skip: [0e79ad863df43b01090ae18c97de5c3787f069c6] x86/cpu: Fix a
+-Wmissing-prototypes warning for init_ia32_feat_ctl()
+git bisect skip 0e79ad863df43b01090ae18c97de5c3787f069c6
+# skip: [b87df6594486626a9ae5944807307f2604cea3e2] x86:
+unsafe_put-style macro for sigmask
+git bisect skip b87df6594486626a9ae5944807307f2604cea3e2
+# skip: [a37d01ead405e3aa14d72d284721fe46422b3b63] x86: switch
+save_v86_state() to unsafe_put_user()
+git bisect skip a37d01ead405e3aa14d72d284721fe46422b3b63
+# skip: [119cd59fcfbe70fb3fcab4e64cd232bcc3807585] x86: get rid of
+put_user_try in __setup_rt_frame() (both 32bit and 64bit)
+git bisect skip 119cd59fcfbe70fb3fcab4e64cd232bcc3807585
+# skip: [119cd59fcfbe70fb3fcab4e64cd232bcc3807585] x86: get rid of
+put_user_try in __setup_rt_frame() (both 32bit and 64bit)
+git bisect skip 119cd59fcfbe70fb3fcab4e64cd232bcc3807585
+# bad: [9589351ccf47a85a75180a430627c16bc28da929] Merge branch
+'x86-boot-for-linus' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+git bisect bad 9589351ccf47a85a75180a430627c16bc28da929
+# skip: [003602ad5516e59940de42e44c8d8033387bb363] x86/*/Makefile: Use
+-fno-asynchronous-unwind-tables to suppress .eh_frame sections
+git bisect skip 003602ad5516e59940de42e44c8d8033387bb363
+# skip: [0eea39a234dc52063d14541fabcb2c64516a2328]
+x86/boot/compressed: Remove .eh_frame section from bzImage
+git bisect skip 0eea39a234dc52063d14541fabcb2c64516a2328
+# skip: [bac59d18c7018a2fd5e800a1e72a8271bf404977] x86/setup: Fix
+static memory detection
+git bisect skip bac59d18c7018a2fd5e800a1e72a8271bf404977
+# skip: [3ee372ccce4d4e7c610748d0583979d3ed3a0cf4]
+x86/boot/compressed/64: Remove .bss/.pgtable from bzImage
+git bisect skip 3ee372ccce4d4e7c610748d0583979d3ed3a0cf4
+# skip: [a86255fe5258714e1f7c1bdfe95f08e4d098d450]
+x86/boot/compressed/64: Use 32-bit (zero-extended) MOV for
+z_output_len
+git bisect skip a86255fe5258714e1f7c1bdfe95f08e4d098d450
+# skip: [6f8f0dc980028e98ae339876a8403edae4d20e39] x86/vmlinux: Drop
+unneeded linker script discard of .eh_frame
+git bisect skip 6f8f0dc980028e98ae339876a8403edae4d20e39
+# skip: [48bfdb9deffdc6b683feb25e15f4f26aac503501]
+x86/boot/compressed/64: Use LEA to initialize boot stack pointer
+git bisect skip 48bfdb9deffdc6b683feb25e15f4f26aac503501
+# skip: [c90beea22a2bece4b0bbb39789bf835504421594]
+x86/boot/compressed: Fix debug_puthex() parameter type
+git bisect skip c90beea22a2bece4b0bbb39789bf835504421594
+# only skipped commits left to test
+# possible first bad commit:
+[9589351ccf47a85a75180a430627c16bc28da929] Merge branch
+'x86-boot-for-linus' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip
+# possible first bad commit:
+[c90beea22a2bece4b0bbb39789bf835504421594] x86/boot/compressed: Fix
+debug_puthex() parameter type
+# possible first bad commit:
+[bac59d18c7018a2fd5e800a1e72a8271bf404977] x86/setup: Fix static
+memory detection
+# possible first bad commit:
+[6f8f0dc980028e98ae339876a8403edae4d20e39] x86/vmlinux: Drop unneeded
+linker script discard of .eh_frame
+# possible first bad commit:
+[003602ad5516e59940de42e44c8d8033387bb363] x86/*/Makefile: Use
+-fno-asynchronous-unwind-tables to suppress .eh_frame sections
+# possible first bad commit:
+[0eea39a234dc52063d14541fabcb2c64516a2328] x86/boot/compressed: Remove
+.eh_frame section from bzImage
+# possible first bad commit:
+[3ee372ccce4d4e7c610748d0583979d3ed3a0cf4] x86/boot/compressed/64:
+Remove .bss/.pgtable from bzImage
+# possible first bad commit:
+[a86255fe5258714e1f7c1bdfe95f08e4d098d450] x86/boot/compressed/64: Use
+32-bit (zero-extended) MOV for z_output_len
+# possible first bad commit:
+[48bfdb9deffdc6b683feb25e15f4f26aac503501] x86/boot/compressed/64: Use
+LEA to initialize boot stack pointer
+
+Unfortunately, kernel bisecting not telling exactly which commit is blame.
+In my bisecting a lot of skipping commits because of the unsuccessful builds:
+ld: arch/x86/boot/compressed/pgtable_64.o:(.bss+0x0): multiple
+definition of `__force_order';
+arch/x86/boot/compressed/kaslr_64.o:(.bss+0x0): first defined here
+make[2]: *** [arch/x86/boot/compressed/Makefile:120:
+arch/x86/boot/compressed/vmlinux] Error 1
+make[1]: *** [arch/x86/boot/Makefile:114:
+arch/x86/boot/compressed/vmlinux] Error 2
+make: *** [arch/x86/Makefile:283: bzImage] Error 2
+
+Can anyone here help me with this issue?
+
+Thanks.
+
+Downstream bugreport:
+https://bugzilla.redhat.com/show_bug.cgi?id=1822731
+
+--
+Best Regards,
+Mike Gavrilov.
