@@ -2,97 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 268E91A37B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 18:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83901A3799
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgDIQFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 12:05:25 -0400
-Received: from mail.secom.com.pl ([213.216.87.26]:43528 "EHLO
-        mail.secom.com.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728167AbgDIQFZ (ORCPT
+        id S1728351AbgDIP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 11:58:33 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:42766 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727865AbgDIP6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 12:05:25 -0400
-Received: from localhost.localdomain
-        (host-85.14.70.3.static.3s.pl [85.14.70.3])
-        by mail.secom.com.pl; Thu, 09 Apr 2020 18:05:02 +0200
-From:   =?UTF-8?q?Rafa=C5=82=20Hibner?= <rafal.hibner@secom.com.pl>
-Cc:     =?UTF-8?q?Rafa=C5=82=20Hibner?= <rafal.hibner@secom.com.pl>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        Thu, 9 Apr 2020 11:58:32 -0400
+Received: by mail-pf1-f195.google.com with SMTP id 22so4300064pfa.9;
+        Thu, 09 Apr 2020 08:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4HttX7fnLVCaSn2ezS9sZMy4gjMZf1fmvfPjQPq5pBk=;
+        b=GL7pvYxPnMFE/RUkudbo0OnaSeJX1Z9cEfl12pKTTNNPaEUvrY93DOa4hnpQhip+e0
+         mCNYLWoIvaEid3RqLowMU173EkQBW74a/4wj53gJrjtu5iGvyQ4V4Uizsth5YR49eHI+
+         Pi23TvOOKtPWsCPmuTvsMHPw/iJt8VjSbg9aOk0gnjKpR3Pc89dnA5UrVY1pzPrelNv3
+         FEqDD9d5myKczUnzW+7ctfz0DFtavg66cJY3dj43wzXgcPJSBC2NOc4CZYlBlA6rUALw
+         4+yEEGfzuLkWPjCynyLa/wn+TNV0/JiWxQ7GSdpYCRp2Y3XtjuOJmuiXzhezb6EghIvE
+         Aayg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4HttX7fnLVCaSn2ezS9sZMy4gjMZf1fmvfPjQPq5pBk=;
+        b=t2qiPD++V8PkVF04t3WLrUWuAa/9Ml3l9M6lj5ZtYAed8x6QABFvgiK3L1bFwM8xM5
+         12wxJ9LTGrceTRYEvcuaFkUteoN3OnsElzoOQHaC+ynVTpfxOKfR320BJFw/Xwn/Db23
+         waGdPyTmR0o8RJZ+rN8GVcGQQUYnHqj6r6Johd3dSoZqjbOeP0tCcnzVDrZyK7Ckfq4c
+         eamqd+i96bpl0Qqzi8XtqWu2wz01QQ1uLdyzZpaRWCmAbqdBUW5HrIIdLyARFYTFJNRp
+         GYSnBUfV+u4PwjfTGmRG9Ec/wkGqbh7pz3hovBFiJZG6bNMhbJrMVnOUkRHaF3v9VGTD
+         tNsg==
+X-Gm-Message-State: AGi0Puao0Xa6g3Fn9MU/CEbixAI0sIno/rW0fxvaddVy7Zqlza7JMidY
+        wTblXS2bNIit3ANSR/hSPVs=
+X-Google-Smtp-Source: APiQypJ8B3DMZmM2Yv12592zLTV5MRsJQH0aU8e2WQ3tTwqMDsenkDCcW/skwUVPy3VLGpAepFxE/A==
+X-Received: by 2002:a63:b954:: with SMTP id v20mr136164pgo.100.1586447912058;
+        Thu, 09 Apr 2020 08:58:32 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m14sm2564094pje.19.2020.04.09.08.58.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 09 Apr 2020 08:58:31 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 08:58:30 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jason Yan <yanaijie@huawei.com>
+Cc:     clemens@ladisch.de, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] spi: spi-axi-spi-engine: Access register after clock  initialization
-Date:   Thu,  9 Apr 2020 17:56:21 +0200
-Message-Id: <20200409155621.12174-1-rafal.hibner@secom.com.pl>
-X-Mailer: git-send-email 2.24.1
+Subject: Re: [PATCH RESEND] hwmon: (k10temp) make some symbols static
+Message-ID: <20200409155830.GA99897@roeck-us.net>
+References: <20200409084502.42126-1-yanaijie@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200409084502.42126-1-yanaijie@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move register access after clock initialization.
-Clock "s_axi_aclk" is needed for register access. Without the clock running
-AXI bus hangs and causes kernel freeze.
+On Thu, Apr 09, 2020 at 04:45:02PM +0800, Jason Yan wrote:
+> Fix the following sparse warning:
+> 
+> drivers/hwmon/k10temp.c:189:12: warning: symbol 'k10temp_temp_label' was
+> not declared. Should it be static?
+> drivers/hwmon/k10temp.c:202:12: warning: symbol 'k10temp_in_label' was
+> not declared. Should it be static?
+> drivers/hwmon/k10temp.c:207:12: warning: symbol 'k10temp_curr_label' was
+> not declared. Should it be static?
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
 
-Cc: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Signed-off-by: Rafał Hibner <rafal.hibner@secom.com.pl>
----
- drivers/spi/spi-axi-spi-engine.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+Applied.
 
-diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-engine.c
-index eb9b78a90d..af86e6d6e1 100644
---- a/drivers/spi/spi-axi-spi-engine.c
-+++ b/drivers/spi/spi-axi-spi-engine.c
-@@ -489,22 +489,6 @@ static int spi_engine_probe(struct platform_device *pdev)
- 
- 	spin_lock_init(&spi_engine->lock);
- 
--	spi_engine->base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(spi_engine->base)) {
--		ret = PTR_ERR(spi_engine->base);
--		goto err_put_master;
--	}
--
--	version = readl(spi_engine->base + SPI_ENGINE_REG_VERSION);
--	if (SPI_ENGINE_VERSION_MAJOR(version) != 1) {
--		dev_err(&pdev->dev, "Unsupported peripheral version %u.%u.%c\n",
--			SPI_ENGINE_VERSION_MAJOR(version),
--			SPI_ENGINE_VERSION_MINOR(version),
--			SPI_ENGINE_VERSION_PATCH(version));
--		ret = -ENODEV;
--		goto err_put_master;
--	}
--
- 	spi_engine->clk = devm_clk_get(&pdev->dev, "s_axi_aclk");
- 	if (IS_ERR(spi_engine->clk)) {
- 		ret = PTR_ERR(spi_engine->clk);
-@@ -525,6 +509,22 @@ static int spi_engine_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_clk_disable;
- 
-+	spi_engine->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(spi_engine->base)) {
-+		ret = PTR_ERR(spi_engine->base);
-+		goto err_ref_clk_disable;
-+	}
-+
-+	version = readl(spi_engine->base + SPI_ENGINE_REG_VERSION);
-+	if (SPI_ENGINE_VERSION_MAJOR(version) != 1) {
-+		dev_err(&pdev->dev, "Unsupported peripheral version %u.%u.%c\n",
-+			SPI_ENGINE_VERSION_MAJOR(version),
-+			SPI_ENGINE_VERSION_MINOR(version),
-+			SPI_ENGINE_VERSION_PATCH(version));
-+		ret = -ENODEV;
-+		goto err_ref_clk_disable;
-+	}
-+
- 	writel_relaxed(0x00, spi_engine->base + SPI_ENGINE_REG_RESET);
- 	writel_relaxed(0xff, spi_engine->base + SPI_ENGINE_REG_INT_PENDING);
- 	writel_relaxed(0x00, spi_engine->base + SPI_ENGINE_REG_INT_ENABLE);
--- 
-2.24.1
-
+Thanks,
+Guenter
