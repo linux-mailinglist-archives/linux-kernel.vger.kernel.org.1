@@ -2,129 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C61A1A3B37
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 22:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D54E1A3C44
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 00:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbgDIUXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 16:23:18 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:47024 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbgDIUXR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 16:23:17 -0400
-Received: by mail-pl1-f196.google.com with SMTP id x2so1626539plv.13
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 13:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=sBJcOnwg24jleMutN+HP4yNIjd4URpK+S2uxHFb+3BM=;
-        b=PvHz7dF20As5sbbYhB4q2ZvdzPKLTHniMisQ6lTKn6fL1VKD9aT+MsurZd5T4Fv5ay
-         qj11BWf5ZcmpCRPmF20yYNN0PA7qRI6ovhUYTvUx37Fpt8ufd3xInESvlq9hOzs0Vx81
-         z7jN2AMxqMEh4XWww6NDXOnw+Cs/pYKSa+yM4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=sBJcOnwg24jleMutN+HP4yNIjd4URpK+S2uxHFb+3BM=;
-        b=dUUYE/Gxt9kfTNT9bs7IwoTMCtCTkJfQjF7j8UXlTpqA8z0uydlSN5lSPkyHsignLI
-         TRZ5ZgeqS6sQzPjRJNR4cXgrq1aM/GjVs5ffz8gTlJ4MP3ZVoyQuFF87woxiooeQwUsN
-         /UX7nBku6iKsTV6eN4NjmgGcLkvoVR2lkTpCxwYHwuRHl7J1Qe8m1OFHeTMCdEN18Yim
-         tEmsbIz3La/ueQriCdIGw1XX++fpHSuAWV+9ggN71XtryZOxJrx1myeU3zNammML7gEw
-         KcFnfFJCDOaiE0B2kqIFh1zvABHeKxNLoFeuSTiFA0IQf9XnRXDFOBc5HCda/xz5D/CY
-         EDwA==
-X-Gm-Message-State: AGi0PuahsvngfsN7Gc8bRponNDmyRdTZJHpbkAVvwBjsjDygw1hoPHy8
-        VKsPcjC14Tv9bp4RI8/Lh0iyqzxHNtg=
-X-Google-Smtp-Source: APiQypLbn4cmz+FXdn7gXrnO7qPuX2QK1uwvFuORE9G27aRb5HAsQ3Iu8eAoYmuET7GFLdrJviAD2g==
-X-Received: by 2002:a17:902:14b:: with SMTP id 69mr1346044plb.121.1586463796146;
-        Thu, 09 Apr 2020 13:23:16 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id h10sm18856937pgf.23.2020.04.09.13.23.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 13:23:15 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1726810AbgDIWNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 18:13:51 -0400
+Received: from mail.dsns.gov.ua ([194.0.148.101]:35510 "EHLO mail.dsns.gov.ua"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726632AbgDIWNv (ORCPT <rfc822;Linux-Kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 18:13:51 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id 3A0F91D228A0;
+        Thu,  9 Apr 2020 23:23:25 +0300 (EEST)
+Received: from mail.dsns.gov.ua ([127.0.0.1])
+        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Wn49I0Xhr5L3; Thu,  9 Apr 2020 23:23:24 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id 84B1D1D228AF;
+        Thu,  9 Apr 2020 23:23:21 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.dsns.gov.ua 84B1D1D228AF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dsns.gov.ua;
+        s=1E60DAC0-2607-11E9-81E6-7A77C2B36653; t=1586463801;
+        bh=njlCkWFc0hcw8eBX6ul4CN7Q0eDgIqGtksJn7ge99kc=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=F7iiyS+ziJ5XNuUf21dNwSs0jU0n0NUwot9gJ6WADGig0JcL74aeOU7CtO5A7nfZ8
+         eoXX0DtyW3dG1neY7uoWvVU9ml47nA4sFy+N5bWVvRaNex0To4vtsJgoMsUdOmGYUd
+         keC4BcKu+Gohn5AtFge0pRw6TywOhqE0Co7QikUVYP4haaSfjgvhxERo4IhFToJIM3
+         M7UgHxnvuaE4HXEgjh05yo/fHLX2Skf1KxnhIhNhBI3bNS4ac+TbGfGbDUv8J0Ew9x
+         W1ZdGjKiPpXku3RtAL3a8QSnTFzSF0M2r9nD2HFepRg1VK6aeNdxZQCW8xcMGTB3h5
+         TUH7b7KzZJfYQ==
+X-Virus-Scanned: amavisd-new at dsns.gov.ua
+Received: from mail.dsns.gov.ua ([127.0.0.1])
+        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MZkcvsGbToS4; Thu,  9 Apr 2020 23:23:21 +0300 (EEST)
+Received: from mail.dsns.gov.ua (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id 6AF201D22883;
+        Thu,  9 Apr 2020 23:23:17 +0300 (EEST)
+Date:   Thu, 9 Apr 2020 23:23:17 +0300 (EEST)
+From:   Peter Wong <avia_duty@dsns.gov.ua>
+Message-ID: <994991429.15324.1586463797387.JavaMail.zimbra@dsns.gov.ua>
+Subject: Hello
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1586154741-8293-4-git-send-email-mkshah@codeaurora.org>
-References: <1586154741-8293-1-git-send-email-mkshah@codeaurora.org> <1586154741-8293-4-git-send-email-mkshah@codeaurora.org>
-Subject: Re: [PATCH v16 3/6] soc: qcom: rpmh: Invalidate SLEEP and WAKE TCSes before flushing new data
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        agross@kernel.org, mka@chromium.org, rnayak@codeaurora.org,
-        ilina@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
-        dianders@chromium.org, evgreen@chromium.org
-Date:   Thu, 09 Apr 2020 13:23:14 -0700
-Message-ID: <158646379456.77611.8638840660664120750@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [45.56.137.91, 162.158.150.7]
+X-Mailer: Zimbra 8.8.15_GA_3918 (zclient/8.8.15_GA_3918)
+Thread-Index: 197nvIpptV/uhU6e3vmjpmGDsukOvw==
+Thread-Topic: Hello
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maulik Shah (2020-04-05 23:32:18)
-> TCSes have previously programmed data when rpmh_flush is called.
 
-rpmh_flush()
 
-> This can cause old data to trigger along with newly flushed.
->=20
-> Fix this by cleaning SLEEP and WAKE TCSes before new data is flushed.
->=20
-> With this there is no need to invoke rpmh_rsc_invalidate() call from
-> rpmh_invalidate().
->=20
-> Simplify rpmh_invalidate() by moving invalidate_batch() inside.
->=20
-> Fixes: 600513dfeef3 ("drivers: qcom: rpmh: cache sleep/wake state request=
-s")
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> ---
->  drivers/soc/qcom/rpmh.c | 41 ++++++++++++++++++-----------------------
->  1 file changed, 18 insertions(+), 23 deletions(-)
->=20
-> diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
-> index 03630ae..a75f3df 100644
-> --- a/drivers/soc/qcom/rpmh.c
-> +++ b/drivers/soc/qcom/rpmh.c
-> @@ -498,24 +492,25 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
->  }
-> =20
->  /**
-> - * rpmh_invalidate: Invalidate all sleep and active sets
-> - * sets.
-> + * rpmh_invalidate: Invalidate sleep and wake sets in batch_cache
->   *
->   * @dev: The device making the request
->   *
-> - * Invalidate the sleep and active values in the TCS blocks.
-> + * Invalidate the sleep and wake values in batch_cache.
->   */
->  int rpmh_invalidate(const struct device *dev)
->  {
->         struct rpmh_ctrlr *ctrlr =3D get_rpmh_ctrlr(dev);
-> -       int ret;
-> -
-> -       invalidate_batch(ctrlr);
-> +       struct batch_cache_req *req, *tmp;
-> +       unsigned long flags;
-> =20
-> -       do {
-> -               ret =3D rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
-> -       } while (ret =3D=3D -EAGAIN);
-> +       spin_lock_irqsave(&ctrlr->cache_lock, flags);
-> +       list_for_each_entry_safe(req, tmp, &ctrlr->batch_cache, list)
-> +               kfree(req);
-> +       INIT_LIST_HEAD(&ctrlr->batch_cache);
-> +       ctrlr->dirty =3D true;
-> +       spin_unlock_irqrestore(&ctrlr->cache_lock, flags);
-> =20
-> -       return ret;
-> +       return 0;
-
-Now this always returns 0. Maybe it should become a void function, but
-doing that requires a change in the interconnect code so maybe do it
-later.
+Can we talk now?
