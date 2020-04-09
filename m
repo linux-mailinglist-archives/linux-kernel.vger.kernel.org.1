@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0EF1A3A91
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B7ED1A3A9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbgDITeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 15:34:25 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:45572 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbgDITeZ (ORCPT
+        id S1726878AbgDITf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 15:35:59 -0400
+Received: from mail.efficios.com ([167.114.26.124]:47080 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgDITf6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 15:34:25 -0400
-Received: by mail-pf1-f196.google.com with SMTP id r14so4580850pfl.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 12:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=1/Ya+QtKcRpkMO5L+OVhHFCN4pIxugi14ksnOnlBROQ=;
-        b=jx7XlSJ4M/6PnQzbIIUuevI0BuVrVwXZ/Sc1VEop+ig1SDYs0IcFtvRvqs1X1xOjAp
-         9j+pcKvKonLf3DcG1zkKnJSvmpr4dUWgqJKIk5OdEggAr48hgEo2XPllceIsLJ2V8gLB
-         544uFuCCJb6hBOo5UUKfTAItvfSnPI5ePf1HY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=1/Ya+QtKcRpkMO5L+OVhHFCN4pIxugi14ksnOnlBROQ=;
-        b=Ld3PrbMuVPnZfh8DzKAn1nx8DgwCCHkOscfwJCIF7j/iAkRG2xuUh8u1Cb5dLpw+rn
-         2/ll5RHBQvKPvVMEX+DdfmeITHXvIcrQISGtuqopf0R9lVgf9j8IOfJliEyVRkX1JLxm
-         rjkNq4gsSOAMZasdUWlRKfX1xElOgLSLBE89INaoos0jMLFAgKtV6JsmP4DFDO3qQgn4
-         p/ZkBFujagGTVru/v/vudddGMwR74ga+8E86Zezih1Z/82rgMeJGSPbK+zq7fOZuyOBO
-         YgsS902nUfbkx2J59tFK0jkqm1pD25jtvGUKMfw7Qx9qYt95CkJPF6FE4t8P6Bzq93Vh
-         spuQ==
-X-Gm-Message-State: AGi0PuZbrX1+AIeZkyo+TPRHJ5behLJmsBv8mu7pgfwEB3cW9DBNZ+I1
-        9JhsWLiT9818WNQLcGyDTNcPQQ==
-X-Google-Smtp-Source: APiQypJaE149E9NVXPyDN7sUtJ95tAnrr/bsf+utPigo+nVxEnJuRB77gP8AkUxYHUC6bWjTW9rrmw==
-X-Received: by 2002:aa7:9695:: with SMTP id f21mr1219522pfk.93.1586460864774;
-        Thu, 09 Apr 2020 12:34:24 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id d7sm19924914pfa.106.2020.04.09.12.34.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 12:34:24 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200409113538.5008-1-saiprakash.ranjan@codeaurora.org>
-References: <20200409113538.5008-1-saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH] coresight: tmc: Read TMC mode only when TMC hw is enabled
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        mike.leach@linaro.org
-Date:   Thu, 09 Apr 2020 12:34:23 -0700
-Message-ID: <158646086329.126188.18130247986266503723@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        Thu, 9 Apr 2020 15:35:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id D4BC0280E4A;
+        Thu,  9 Apr 2020 15:35:57 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Z3bz5x_ThC_U; Thu,  9 Apr 2020 15:35:57 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8C4A2280F9F;
+        Thu,  9 Apr 2020 15:35:57 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8C4A2280F9F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1586460957;
+        bh=bFhrhpt5ayVzAtr+tHRZxRzvaCMpTrddBYhYmZJwKh8=;
+        h=From:To:Date:Message-Id;
+        b=I4TsXVgueNcO87QkVwS+xuOyaPnhPSoWCz2NIuSXPKbKIEy01I8/k69y9iJ0Vc3et
+         CSPVZ8BZSSAW42UTyOFsquOHTsg/S/w4kXhMZBkvhjP6Rgoak7hIBhIn8kxX0GTy9U
+         sXhV0p3Q7vT4L3JUhiMhC9VCAA9hWmWq2ecnLRZdKtcwWpRwz1m0FhT3/UWnhZrDBJ
+         SvMhQS8MIcnmUR6bwXsz69fj2zpHTIIFDgELOVXtAuzqiBKkO/FzCSGNbqbmkU449J
+         746cI//nRsDurw0B9wtY4z3HIu75tsLWYb64QJb51OiCVIc84N7NAJD8xfYk/1a3uD
+         SB0pm5ieeptrw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id h5vuHugWsql6; Thu,  9 Apr 2020 15:35:57 -0400 (EDT)
+Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
+        by mail.efficios.com (Postfix) with ESMTPSA id 3B04A280D67;
+        Thu,  9 Apr 2020 15:35:57 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, akpm@linux-foundation.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "K . Prasad" <prasad@linux.vnet.ibm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>, rostedt@goodmis.org,
+        Alexei Starovoitov <ast@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH 0/9] Export information needed by the LTTng kernel tracer
+Date:   Thu,  9 Apr 2020 15:35:34 -0400
+Message-Id: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sai Prakash Ranjan (2020-04-09 04:35:38)
-> Reading TMC mode register in tmc_read_prepare_etb without
-> enabling the TMC hardware leads to async exceptions like
-> the one in the call trace below. This can happen if the
-> user tries to read the TMC etf data via device node without
-> setting up source and the sink first which enables the TMC
-> hardware in the path. So make sure that the TMC is enabled
-> before we try to read TMC data.
->=20
->  Kernel panic - not syncing: Asynchronous SError Interrupt
->  CPU: 7 PID: 2605 Comm: hexdump Tainted: G S                5.4.30 #122
->  Call trace:
->   dump_backtrace+0x0/0x188
->   show_stack+0x20/0x2c
->   dump_stack+0xdc/0x144
->   panic+0x168/0x36c
->   panic+0x0/0x36c
->   arm64_serror_panic+0x78/0x84
->   do_serror+0x130/0x138
->   el1_error+0x84/0xf8
->   tmc_read_prepare_etb+0x88/0xb8
->   tmc_open+0x40/0xd8
->   misc_open+0x120/0x158
->   chrdev_open+0xb8/0x1a4
->   do_dentry_open+0x268/0x3a0
->   vfs_open+0x34/0x40
->   path_openat+0x39c/0xdf4
->   do_filp_open+0x90/0x10c
->   do_sys_open+0x150/0x3e8
->   __arm64_compat_sys_openat+0x28/0x34
->   el0_svc_common+0xa8/0x160
->   el0_svc_compat_handler+0x2c/0x38
->   el0_svc_compat+0x8/0x10
->=20
-> Fixes: 4525412a5046 ("coresight: tmc: making prepare/unprepare functions =
-generic")
-> Reported-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
+Recently commit 0bd476e6c6 "kallsyms: unexport kallsyms_lookup_name()
+and kallsyms_on_each_symbol()" was merged upstream. As discussed
+previously [1], LTTng-modules (a GPL kernel tracer module) currently
+uses kallsyms to lookup some missing symbols.
 
-Tested-by: Stephen Boyd <swboyd@chromium.org>
+This patch set integrates the required changes to the kernel code
+wherever those changes are generally useful, and adds a few GPL-exports
+targeting the information currently missing so LTTng modules can be
+entirely free of kallsyms.
+
+Feedback is welcome,
+
+Thanks,
+
+Mathieu
+
+[1] https://lore.kernel.org/r/20200302192811.n6o5645rsib44vco@localhost
+
+Mathieu Desnoyers (9):
+  tracepoint: call vmalloc_sync_mappings() on registration
+  bpf: allow up to 13 arguments for tracepoints
+  writeback: tracing: pass global_wb_domain as tracepoint parameter
+  stacktrace: export-GPL stack_trace_save_user
+  sched: export-GPL task_prio
+  mm: export-GPL get_pageblock_migratetype
+  block: genhd: export-GPL gendisk_name
+  block: genhd: export-GPL generic disk device type
+  block: genhd: export-GPL generic disk block class
+
+ block/bio.c                      |  2 +-
+ block/blk-settings.c             |  2 +-
+ block/blk.h                      |  2 +-
+ block/genhd.c                    | 38 ++++++++++++++++++++++++--------
+ block/partitions/core.c          |  4 ++--
+ drivers/base/class.c             |  2 +-
+ drivers/base/core.c              | 15 +++++++------
+ drivers/base/devtmpfs.c          |  2 +-
+ include/linux/genhd.h            |  4 +++-
+ include/linux/kernel.h           |  6 ++---
+ include/linux/trace_events.h     |  3 +++
+ include/trace/bpf_probe.h        |  3 ++-
+ include/trace/events/writeback.h | 17 ++++++++------
+ init/do_mounts.c                 |  4 ++--
+ kernel/sched/core.c              |  1 +
+ kernel/stacktrace.c              |  1 +
+ kernel/trace/bpf_trace.c         |  8 ++++---
+ kernel/tracepoint.c              |  2 ++
+ mm/page-writeback.c              |  9 ++++----
+ mm/page_alloc.c                  |  1 +
+ 20 files changed, 82 insertions(+), 44 deletions(-)
+
+-- 
+2.17.1
+
