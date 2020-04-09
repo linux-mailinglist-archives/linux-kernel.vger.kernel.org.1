@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD081A2FCE
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E79F1A2FD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726561AbgDIHNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 03:13:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgDIHNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 03:13:31 -0400
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26EC62072F;
-        Thu,  9 Apr 2020 07:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586416411;
-        bh=JgiMBGfZhpUSnuOXnmCkjKaPdsAoKkBZS0y1xY2mt00=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=El6AfiS6YSRy9Lw+pB+izIrgx7a6FngsQUqkstXkrFoOdp6eCqtzENzIhll1ENYuE
-         E/wHw5zZ3ONMkSfRAhN4tZUamfSTSAWMAh3YQcuPmJ9spGckAE/mzmiefNAPHghMGk
-         8yr6X8ehxE5tJWIPPfP7AilDHnAr69uDnNvDZsnM=
-Received: by mail-io1-f47.google.com with SMTP id i19so2799858ioh.12;
-        Thu, 09 Apr 2020 00:13:31 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYCHPXuEKjpoPcYcKY7IMzpOlzYW8UxdnqlgzOJgU4fdxHDhr9m
-        fXYtZ20gfQgRP3D/m7N1ApGaFD7KL2pPHDD4lY0=
-X-Google-Smtp-Source: APiQypJh3rzZP8mt6xsce1xFtz4clEGStPSrzwRXFSCYSYnd/LgxWcO9wM+Fa2Et4eNLHjeEHycvHuylR17603R11Zc=
-X-Received: by 2002:a5e:8b47:: with SMTP id z7mr10538624iom.16.1586416410563;
- Thu, 09 Apr 2020 00:13:30 -0700 (PDT)
+        id S1726502AbgDIHRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 03:17:01 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:45903 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgDIHRB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 03:17:01 -0400
+Received: by mail-pg1-f196.google.com with SMTP id w11so404212pga.12
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 00:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=iYpXbB+2GsvCwjKsECWDukpuW5ZXW1FAu5vdGFQwGEE=;
+        b=ZgflRxtbTc+6b4ilENSCoDXtvy7jk7YTfNcDWTxb3W6KhOlG3O5zKZc4QCdlOV1ffe
+         zV4tXWWZLwxyAC8u4LXoHdlq6/P3LIS+c8QljW6BF6Z3+UHxdk0pgcqTCAWdF0yCEmKL
+         dIXtWWgdvPIixHnzp2xtqGnu/ipQf1SzDbPh4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=iYpXbB+2GsvCwjKsECWDukpuW5ZXW1FAu5vdGFQwGEE=;
+        b=R9/JuIUKNZxgRIvjLx5pOos805fuTNkvylLMcTe3nwP64j+yF7McCwcUjCi7Xpjefx
+         nkWiuwS2WMtQhivaA+/v1cy1jsbOQ73rZ/2PTmZ5RnYiDgLbO/6ElRMa5GprF344ueMJ
+         00aWgsUskAwje1Zx/FJYv9PLiDY9gpCrVzLNNyAV6MMnmMcoC8rkXfUSMD15Q+2ruEvL
+         JsFemlKSVQJUg7+sqdFP143VDgejj/fXLYcMboMc7QHF6GuT1O03OGzJPXaG2QNOdieO
+         CpK3Mvp72SAl0GaxGjJmistEb5nisTGX30Ro4tHoSrnjJOaYczFeF32uzrxP0/gDoYWx
+         CXmg==
+X-Gm-Message-State: AGi0PuZVp7cSavd8Y4qyMlYst4ehDtrgQnxcO0CRQhu2xm2aOjnLQkXe
+        Fsda1L6WQ09njrBrZYZ/ODI7wg==
+X-Google-Smtp-Source: APiQypKXx+N7ncEb0/fmCRSM1ldHSjKZvK5jY3qy9bLSvb50reXJFujfIv9LNDl8lR+wmuN1MU4RDw==
+X-Received: by 2002:a63:e443:: with SMTP id i3mr10565042pgk.436.1586416621418;
+        Thu, 09 Apr 2020 00:17:01 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id e187sm17883679pfe.143.2020.04.09.00.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 00:17:00 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200326135041.3264-1-b.thiel@posteo.de> <CAMj1kXF6UF318wCL74T9orJk=+LafZ3VFXUGmqoBefYVaP2gNw@mail.gmail.com>
- <20200408175756.GG24663@zn.tnic>
-In-Reply-To: <20200408175756.GG24663@zn.tnic>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 9 Apr 2020 09:13:19 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFuhw8kOFP_x0QfVTD1-PW+WS9PwJpUYwN1WHDjQZHQeQ@mail.gmail.com>
-Message-ID: <CAMj1kXFuhw8kOFP_x0QfVTD1-PW+WS9PwJpUYwN1WHDjQZHQeQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/efi: Add a prototype for efi_arch_mem_reserve()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Benjamin Thiel <b.thiel@posteo.de>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200408224347.GA388414@ewhatever.cambridge.arm.com>
+References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org> <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com> <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org> <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com> <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org> <bb209f80-ac02-6321-dac4-ebf9ee6fa9a0@arm.com> <bd05b31c2391edfff5044f22f2f83edf@codeaurora.org> <e9c299c4-caeb-9eb8-f019-b311bfce756a@arm.com> <a7074f44ebbde720b5e0189801eab7c9@codeaurora.org> <20200408224347.GA388414@ewhatever.cambridge.arm.com>
+Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of multiple connections
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, suzuki.poulose@arm.com
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Suzuki K Poulose <Suzuki.Poulose@arm.com>
+Date:   Thu, 09 Apr 2020 00:16:59 -0700
+Message-ID: <158641661949.126188.2854214876274328570@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Apr 2020 at 19:58, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Apr 08, 2020 at 07:39:56PM +0200, Ard Biesheuvel wrote:
-> > On Thu, 26 Mar 2020 at 14:50, Benjamin Thiel <b.thiel@posteo.de> wrote:
-> > >
-> > > ... in order to fix a -Wmissing-ptototypes warning:
-> > >
-> > > arch/x86/platform/efi/quirks.c:245:13: warning:
-> > > no previous prototype for =E2=80=98efi_arch_mem_reserve=E2=80=99 [-Wm=
-issing-prototypes]
-> > > void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
-> > >
-> > > Signed-off-by: Benjamin Thiel <b.thiel@posteo.de>
-> >
-> > Thanks. I'll queue this as a fix.
->
-> I already took that one, see:
->
-> 860f89e61824 ("x86/efi: Add a prototype for efi_arch_mem_reserve()")
->
-> but forgot to Cc: linux-efi@.
->
-> Sorry about that.
->
+Quoting Suzuki K Poulose (2020-04-08 15:43:47)
+> On Tue, Apr 07, 2020 at 08:48:54PM +0530, Sai Prakash Ranjan wrote:
+> >=20
+> > Thanks, I can test it out.
+>=20
+> Please find the untested patch below.
+>=20
+> ---8>---
+>=20
+> [untested] coresight: Fix support for sparse port numbers
+>=20
+> On some systems the firmware may not describe all the ports
+> connected to a component (e.g, for security reasons). This
+> could be especially problematic for "funnels" where we could
+> end up in modifying memory beyond the allocated space for
+> refcounts.
+>=20
+> e.g, for a funnel with input ports listed 0, 3, 5, nr_inport =3D 3.
+> However the we could access refcnts[5] while checking for
+> references.
+>=20
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
 
-No worries.
+Things don't blow up for me anymore with KASAN, so feel free to add
+
+Tested-by: Stephen Boyd <swboyd@chromium.org>
