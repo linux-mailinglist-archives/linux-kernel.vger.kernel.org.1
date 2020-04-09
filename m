@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCDE1A3143
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67AA1A3144
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgDIIwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:52:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:56882 "EHLO huawei.com"
+        id S1726671AbgDIIxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:53:04 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:57344 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725783AbgDIIwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:52:35 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6385CDAECBD1790F8FE7;
-        Thu,  9 Apr 2020 16:52:20 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Apr 2020
- 16:52:14 +0800
+        id S1725783AbgDIIxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 04:53:04 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B15C5BECF9A5BA504953;
+        Thu,  9 Apr 2020 16:52:52 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Apr 2020
+ 16:52:43 +0800
 From:   Jason Yan <yanaijie@huawei.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
+To:     <linux@roeck-us.net>, <heikki.krogerus@linux.intel.com>,
+        <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] virtio-balloon: make virtballoon_free_page_report() static
-Date:   Thu, 9 Apr 2020 16:50:47 +0800
-Message-ID: <20200409085047.45483-1-yanaijie@huawei.com>
+Subject: [PATCH] usb: typec: tcpm: remove tcpm_altmode_ops and associations
+Date:   Thu, 9 Apr 2020 16:51:17 +0800
+Message-ID: <20200409085117.45819-1-yanaijie@huawei.com>
 X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Originating-IP: [10.175.124.28]
 X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
@@ -35,30 +36,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Fix the following gcc warning:
 
-drivers/virtio/virtio_balloon.c:168:5: warning: symbol
-'virtballoon_free_page_report' was not declared. Should it be static?
+drivers/usb/typec/tcpm/tcpm.c:1551:39: warning: ‘tcpm_altmode_ops’
+defined but not used [-Wunused-const-variable=]
+ static const struct typec_altmode_ops tcpm_altmode_ops = {
+                                       ^~~~~~~~~~~~~~~~
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Jason Yan <yanaijie@huawei.com>
 ---
- drivers/virtio/virtio_balloon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/typec/tcpm/tcpm.c | 51 -----------------------------------
+ 1 file changed, 51 deletions(-)
 
-diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-index 0ef16566c3f3..8c964b3eebdf 100644
---- a/drivers/virtio/virtio_balloon.c
-+++ b/drivers/virtio/virtio_balloon.c
-@@ -165,7 +165,7 @@ static void tell_host(struct virtio_balloon *vb, struct virtqueue *vq)
- 
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index de3576e6530a..0fcb1023bdbe 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -1503,57 +1503,6 @@ static int tcpm_validate_caps(struct tcpm_port *port, const u32 *pdo,
+ 	return 0;
  }
  
--int virtballoon_free_page_report(struct page_reporting_dev_info *pr_dev_info,
-+static int virtballoon_free_page_report(struct page_reporting_dev_info *pr_dev_info,
- 				   struct scatterlist *sg, unsigned int nents)
- {
- 	struct virtio_balloon *vb =
+-static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
+-{
+-	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+-	u32 header;
+-
+-	mutex_lock(&port->lock);
+-	header = VDO(altmode->svid, vdo ? 2 : 1, CMD_ENTER_MODE);
+-	header |= VDO_OPOS(altmode->mode);
+-
+-	tcpm_queue_vdm(port, header, vdo, vdo ? 1 : 0);
+-	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+-	mutex_unlock(&port->lock);
+-
+-	return 0;
+-}
+-
+-static int tcpm_altmode_exit(struct typec_altmode *altmode)
+-{
+-	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+-	u32 header;
+-
+-	mutex_lock(&port->lock);
+-	header = VDO(altmode->svid, 1, CMD_EXIT_MODE);
+-	header |= VDO_OPOS(altmode->mode);
+-
+-	tcpm_queue_vdm(port, header, NULL, 0);
+-	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+-	mutex_unlock(&port->lock);
+-
+-	return 0;
+-}
+-
+-static int tcpm_altmode_vdm(struct typec_altmode *altmode,
+-			    u32 header, const u32 *data, int count)
+-{
+-	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
+-
+-	mutex_lock(&port->lock);
+-	tcpm_queue_vdm(port, header, data, count - 1);
+-	mod_delayed_work(port->wq, &port->vdm_state_machine, 0);
+-	mutex_unlock(&port->lock);
+-
+-	return 0;
+-}
+-
+-static const struct typec_altmode_ops tcpm_altmode_ops = {
+-	.enter = tcpm_altmode_enter,
+-	.exit = tcpm_altmode_exit,
+-	.vdm = tcpm_altmode_vdm,
+-};
+-
+ /*
+  * PD (data, control) command handling functions
+  */
 -- 
 2.17.2
 
