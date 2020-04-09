@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AF41A3AA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89C581A3AA5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbgDITgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 15:36:17 -0400
-Received: from mail.efficios.com ([167.114.26.124]:47216 "EHLO
+        id S1727045AbgDITgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 15:36:18 -0400
+Received: from mail.efficios.com ([167.114.26.124]:47226 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726881AbgDITgA (ORCPT
+        with ESMTP id S1726882AbgDITgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Apr 2020 15:36:00 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 4943728109F;
+        by mail.efficios.com (Postfix) with ESMTP id 9AB86280F66;
         Thu,  9 Apr 2020 15:36:00 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id JnZREeYoa-WA; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
+        with ESMTP id 5bU-wLzZK8f4; Thu,  9 Apr 2020 15:36:00 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 81984280F61;
+        by mail.efficios.com (Postfix) with ESMTP id A0F8C280AF0;
         Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 81984280F61
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com A0F8C280AF0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
         s=default; t=1586460959;
-        bh=N8TR0WBVz7Tv+O6fhb3AiUPKDYJHpnVQhxqixbF58TU=;
+        bh=dS2j/RfoCvb6S/7DuXu9SUgFlAK346t8v78OVR21ay0=;
         h=From:To:Date:Message-Id;
-        b=V6uA8uRMceSCMBYKENb90JPRfqzw+pAhRrJSTH1B7mUvzXjb60PSnvoHZQRRPsnJq
-         Puwc2IwMmgWG0QhVXxHb6nRrUzL8mxkVK0yrD+Ad4xk7Eurb2a5HPCu5D/kfB6vR+4
-         bx1Z7cjUa7poTL37OmnmQyZpvXZHFxc+LgM1xVlofD9/r8569/WvoMbbEI1v+zkzDX
-         AhOJfAK7oQ9WnvQk26HiD3g+ECKdn1ohG+zzuPDdMfkeGxzMDJWh7Zf+N9dVcPFpdh
-         uVoUVAm6hQvdWF6Q+iGXr+q3gGWIxTLduIxFhRXcToOENnlyWZlc2EZ/iddmAIQ5An
-         8hhd8eatcr8eg==
+        b=tBx8aRUw0PewCktQArATxmKEQoI8Hxs24WB5p4gBw8M0c920y4wKP8Xgd+pH6h+Qd
+         n8NulPyTFwH8IiiXuA7pqtW3jNtnMxSv7G0K41BZSGRC9gcFS2qyS+XOgdXs2u8vx6
+         Frgjs2ZCIPSo21ZjPgmfbI0l8BPFCaU4yXC37Sxt/q6LQVZzvmYALzL3wBKV3Ibpdj
+         5sW7Uilj9zSxtAWzhcVvKaWQ4LJBmucAuURlA/J8CUA+4Og426j3NHDFbNXtTlLlkL
+         6ej3KGMNcCUfEcFulkGchFBIYrAMrlEmSQh+CjzAXnA00No8G8bKfQVnQZBfChIm9N
+         E4QPnlnC03sFA==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id LIQbuK6txhh7; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
+        with ESMTP id W2aLUYIx0DZj; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
 Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id B57DA280CC0;
+        by mail.efficios.com (Postfix) with ESMTPSA id F290D280F5C;
         Thu,  9 Apr 2020 15:35:58 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -48,11 +48,10 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Alexei Starovoitov <ast@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [RFC PATCH 5/9] sched: export-GPL task_prio
-Date:   Thu,  9 Apr 2020 15:35:39 -0400
-Message-Id: <20200409193543.18115-6-mathieu.desnoyers@efficios.com>
+        linux-mm@kvack.org
+Subject: [RFC PATCH 6/9] mm: export-GPL get_pageblock_migratetype
+Date:   Thu,  9 Apr 2020 15:35:40 -0400
+Message-Id: <20200409193543.18115-7-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
 References: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
@@ -61,32 +60,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Exporting the task_prio() symbol to GPL modules is useful for kernel
-tracers implemented as kernel modules. It exports information which is
-already available through /proc in a way which allows it to be sampled
-by kernel tracers with low overhead.
+The macro include/linux/mmzone.h:get_pageblock_migratetype() uses
+the symbol get_pfnblock_flags_mask, which is not exported. That macro is
+used within the kmem and page_ref trace events to trace the migrate type
+of the target page.
+
+Exporting this symbol to GPL modules allows GPL kernel tracers to be
+implemented as modules.
 
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mm@kvack.org
 ---
- kernel/sched/core.c | 1 +
+ mm/page_alloc.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a2694ba82874..f87cffef317a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4629,6 +4629,7 @@ int task_prio(const struct task_struct *p)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 114c56c3685d..390febb028a0 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -501,6 +501,7 @@ unsigned long get_pfnblock_flags_mask(struct page *page, unsigned long pfn,
  {
- 	return p->prio - MAX_RT_PRIO;
+ 	return __get_pfnblock_flags_mask(page, pfn, end_bitidx, mask);
  }
-+EXPORT_SYMBOL_GPL(task_prio);
++EXPORT_SYMBOL_GPL(get_pfnblock_flags_mask);
  
- /**
-  * idle_cpu - is a given CPU idle currently?
+ static __always_inline int get_pfnblock_migratetype(struct page *page, unsigned long pfn)
+ {
 -- 
 2.17.1
 
