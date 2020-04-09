@@ -2,115 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C671A367A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B7261A367F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:02:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727918AbgDIPBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 11:01:49 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:5968 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbgDIPBt (ORCPT
+        id S1727884AbgDIPCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 11:02:39 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:47027 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727930AbgDIPCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 11:01:49 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8f38d00000>; Thu, 09 Apr 2020 08:01:36 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 09 Apr 2020 08:01:49 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 09 Apr 2020 08:01:49 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Apr
- 2020 15:01:48 +0000
-Received: from localhost (10.124.1.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Apr 2020 15:01:48
- +0000
-Date:   Thu, 9 Apr 2020 17:01:46 +0200
-From:   Thierry Reding <treding@nvidia.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memory: tegra: avoid unused function warnings
-Message-ID: <20200409150146.GA3505571@ulmo>
-References: <20200408190043.532711-1-arnd@arndb.de>
-MIME-Version: 1.0
-In-Reply-To: <20200408190043.532711-1-arnd@arndb.de>
-X-NVConfidentiality: public
-User-Agent: Mutt/1.13.1 (2019-12-14)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
-Content-Disposition: inline
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586444496; bh=230bk55FM60HDeEDaVtGNsbVY+5/gRY3TT5xB7NycJQ=;
-        h=X-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
-         MIME-Version:In-Reply-To:X-NVConfidentiality:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:
-         Content-Disposition;
-        b=jjpV0xYDrI5Jh1DdqRNFyUEGGwgYhpf7tDYD3Ia41t3pixcPKpQPNo+Wc6h+r4Jpk
-         6tE3V0VhfWkegayHAVLVoK+/ATDwEtPMrR7ZHrXTp899PB/kCcCz1hn0Qf+E7+7yec
-         D0fX3FXFuHl9Rqfy0yxbrpAK2EF33ZgllfFbyxgsulQ4w7WdL64hrnCb0R1g1Oy+/N
-         Tv42Jp6GGBhcItUpf69xckICWh7fMt35EAkYBjjn3x00JJA7WiMYEEV8p9+6Ff3pYB
-         j4H7PPB33dALl5r3nGt/fDiQRvDQ0ol03WtHsZr/AsmgWy32JeRjk/jCkGCLIGtgre
-         IKZJG42c1OMPg==
+        Thu, 9 Apr 2020 11:02:38 -0400
+Received: by mail-pg1-f196.google.com with SMTP id k191so5079326pgc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 08:02:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sslab.ics.keio.ac.jp; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=dvyI036P6l3pT4bwTfgpCwEd0qlAqIVfCnEFYrQjFgY=;
+        b=f4PZ9Bp7DWyP45o1+1dY6OVR9t/Zn2U4t5xNaMLvMds4J0mo8zf/NBp6vUIk9mngXh
+         Y/A5NFrZtyE6uz8iwlOW5p/92lllpK6egMiWRFzyA+Ba9vXeCKQMG+IHqkdKSwo5rgGa
+         OEFxEe6JIVdZf8iaj0THuN4IQubcC6Di5dUeA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=dvyI036P6l3pT4bwTfgpCwEd0qlAqIVfCnEFYrQjFgY=;
+        b=qlawE4hBmr/5bUCwB0JtbQP0NwYPgAy0IJizWd0AOBtI7ru90AJCOLrZKzqR1f0T5N
+         Nypok4aWThdfjCAqbr6OUuvAecQmoyF75L+DfVEPis+PXI2FgbC14pirB6iWBpFaUJVn
+         qiUfpfwP6qvPSE681IE79GJ/EDw7qfPLBHbMiWS2WqrycIlO/Ehnz+eOF+7eoGfnChgh
+         7t0L/O5UR5RyCIsb0gEVJGJqydQBAhV+J2IU+I0q71cVcT7eag2FAcAGv8yM2gNX8Gxw
+         Bii3A0SLiy7KoZN2wVhN3HaZWJGeB3I8LExW/df0rqoT8jkrfBo/mJhbKk1b5Di830V0
+         oV6A==
+X-Gm-Message-State: AGi0PuY/9ew1DCiXxsdubFAG5HW+ss51Vc/DJHCQV5ga2cvGpXG+5Mrz
+        1bUD4sRa+/pmLFhIXcYMYg8m4A==
+X-Google-Smtp-Source: APiQypJTXJxBJ9WbxJJfFI/qBsLnEp2Iq0pi46An/bRVCiraAMsH8JrHzqke9DjnO90Z7gNY5xGcAw==
+X-Received: by 2002:a63:6cc5:: with SMTP id h188mr12079390pgc.337.1586444557551;
+        Thu, 09 Apr 2020 08:02:37 -0700 (PDT)
+Received: from brooklyn.i.sslab.ics.keio.ac.jp (sslab-relay.ics.keio.ac.jp. [131.113.126.173])
+        by smtp.googlemail.com with ESMTPSA id a3sm2823068pfi.60.2020.04.09.08.02.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 08:02:36 -0700 (PDT)
+From:   Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Cc:     keitasuzuki.park@sslab.ics.keio.ac.jp,
+        takafumi.kubota1012@sslab.ics.keio.ac.jp,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        oss-drivers@netronome.com (open list:NETRONOME ETHERNET DRIVERS),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] nfp: Fix memory leak in nfp_resource_acquire()
+Date:   Thu,  9 Apr 2020 15:02:07 +0000
+Message-Id: <20200409150210.15488-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch fixes a memory leak in nfp_resource_acquire(). res->mutex is
+alllocated in nfp_resource_try_acquire(). However, when
+msleep_interruptible() or time_is_before_eq_jiffies() fails, it falls
+into err_fails path where res is freed, but res->mutex is not.
 
-On Wed, Apr 08, 2020 at 09:00:30PM +0200, Arnd Bergmann wrote:
-> The suspend/resume functions have no callers depending on
-> configuration, so they must be marked __maybe_unused to
-> avoid these harmless warnings:
->=20
-> drivers/memory/tegra/tegra186.c:1578:12: error: 'tegra186_mc_resume' defi=
-ned but not used [-Werror=3Dunused-function]
->  1578 | static int tegra186_mc_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~
-> drivers/memory/tegra/tegra186.c:1573:12: error: 'tegra186_mc_suspend' def=
-ined but not used [-Werror=3Dunused-function]
->  1573 | static int tegra186_mc_suspend(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~
->=20
-> Fixes: 177602b00641 ("memory: tegra: Add system sleep support")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/memory/tegra/tegra186.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Fix this by changing call to free to nfp_resource_release().
 
-Do you want to apply this to ARM SoC directly or would you prefer if I
-collected fixes and send a PR sometime later in the cycle?
+Signed-off-by: Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+---
+ drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If the former:
+diff --git a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c
+index ce7492a6a98f..95e7bdc95652 100644
+--- a/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c
++++ b/drivers/net/ethernet/netronome/nfp/nfpcore/nfp_resource.c
+@@ -200,7 +200,7 @@ nfp_resource_acquire(struct nfp_cpp *cpp, const char *name)
+ 
+ err_free:
+ 	nfp_cpp_mutex_free(dev_mutex);
+-	kfree(res);
++	nfp_resource_relase(res);
+ 	return ERR_PTR(err);
+ }
+ 
+-- 
+2.17.1
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6PONkACgkQ3SOs138+
-s6GwCxAAqz/EbclxuLXTI0bmj3b7UG7+js/fzr2oWdIIu3SkJWJfoxyfxdWXZDUG
-M5989jPwZxiqyZU68dplxAED6TzPTMFJHYqvtk+Ex73gwRidRj5Jpoa8sXuOVsLL
-Io7Us/Zhd233Qi+QyfSfmR3Gvq6X9M/HKvLIVj8x/lbLinnunGlmMBE0i4VTt0e0
-1yK6L2wMWTolXwmJqRYtZ8Ct8HbSJUfOQnrx4dvrthrxYpEGe9c3mqj7b2ds7TeQ
-Y7tAoPxqOmMbju5BKHhmMkY+xpIfE4NNxyCGfiLcGaPuJ0DQtrIqrLGWAtD7RpMj
-CXAqI7YUvp3fF/CUIDgVrPRt17G/VR98EYYuyu0YO7Frr3eUx9p7LsWtmC0vQvb5
-I2c+crnGHhnb8Rw9I4B9xH3pYt+7bLPg5wz/4stF8SWE3oq3FZc41Dd9k2jir7vy
-daz7SxTC++0aBIa3gwk2tXWLbb90fZuMOi0T8QVz5uaGWUpGygaT/WyUBucMTGQ3
-qtJJe7nJ6RHwQZL8tvsuxDR6djl0zV3jHtOvT5s17ET/HNCgANp1cSr8UOJOgqdg
-F+ape+W428Hgpkp+6Kj6IbCtVHbW1lgmEcLxuLb4BvPIR4mroQNg5ffYzpWZ5TTL
-8iUv9Z4kedsuVwd01glV7uMV6+aW3n2u5P34R5s21OTFlF2C8e4=
-=KD63
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
