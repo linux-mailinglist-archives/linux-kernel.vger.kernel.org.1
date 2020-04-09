@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E509E1A31B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3ED71A31CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726637AbgDIJVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:21:17 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12704 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725828AbgDIJVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:21:17 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2D00AA03DCD767EA6773;
-        Thu,  9 Apr 2020 17:21:08 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Apr 2020
- 17:20:59 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <khuong@os.amperecomputing.com>, <bp@alien8.de>,
-        <mchehab@kernel.org>, <tony.luck@intel.com>, <james.morse@arm.com>,
-        <rrichter@marvell.com>, <linux-edac@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] EDAC, xgene: remove set but not used 'address'
-Date:   Thu, 9 Apr 2020 17:19:33 +0800
-Message-ID: <20200409091933.16347-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.17.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+        id S1726627AbgDIJeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:34:06 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55138 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgDIJeG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 05:34:06 -0400
+Received: by mail-wm1-f65.google.com with SMTP id h2so3194505wmb.4;
+        Thu, 09 Apr 2020 02:34:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Q+Y8y+xM8vAvx70ujvAzR4mi6uLfRgpj02F8stEfpIA=;
+        b=ofMneNF5Y0aAD9253NDdrUw9Mge6LX6y60ilTfxLFZHKQdoCjmQ2N7ZJQHoGhhyCyf
+         NRTI8H1syvnJCdM0lr8dWnZXMK+1GG1pTce74JM4dqgFCelwqBeZD34gi0DD6VAhwla1
+         K7LiJG+IxuChBO6y5/NwWy24mJkHXw5Z38Z2y0HimI8yTxTyFbCDPpLBuBB/n8DC1Spd
+         0qAWGXtu2mSC4+1jvrrqhlHAB1+ASiSYOCG7q+YJy4h1V0vHENgr5KkmaR26Gd+8uKqg
+         MOM12l0mrWytNgMI2RiOYyFbinuJjeWk66VKevVXwJ3vinfLuJqQkj/D4s/MkjZvnZMw
+         Pu2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Q+Y8y+xM8vAvx70ujvAzR4mi6uLfRgpj02F8stEfpIA=;
+        b=KdNgosNnZVLi9APjSjHvpEXz0fM2jUmUR+eA69GsjSORCFFv4NzAuqyBDg9wPK8+11
+         4TqFvO60RAKJd2X5oia++zukQWV3Z7xXrhXUrOwSG9ofBb11KUkyOei8GN9vlAJcK3JK
+         SwWxxYDHUfVMHBeuRrEL2dfcuhcImApEC19cMv6FTOUG1GmCUmyG7xeqAAorT6LtL+v+
+         1bNTBawy5DEM/oMui8j8E9VZ6wqewJXundSzYNa6yCRdE5aA+cdnQ/1GCDfRaPKm0141
+         VNvL4LU67YHGA44/GQVbWowKxY06MSWtg6DDGXUJA2Onwf05Le9Ppm3mCxivvsD8tX9u
+         LOgw==
+X-Gm-Message-State: AGi0PuZmVDPd9OPP1V+jf3gkF971nHPTrpX2Kn3B02eEbhujIEeovfQh
+        lKGg6mExtWRGyDRExCElTCo=
+X-Google-Smtp-Source: APiQypKmYqD8YLDmepZyhhgWsPaAGtq8nWuP47xQWFlkBa278hJ29MRxmwYNHkqIpqqk3tgrP67MKQ==
+X-Received: by 2002:a1c:5a41:: with SMTP id o62mr2048499wmb.43.1586424844697;
+        Thu, 09 Apr 2020 02:34:04 -0700 (PDT)
+Received: from localhost (ip1f115f16.dynamic.kabel-deutschland.de. [31.17.95.22])
+        by smtp.gmail.com with ESMTPSA id y7sm3150319wmb.43.2020.04.09.02.34.03
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Apr 2020 02:34:03 -0700 (PDT)
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     dmitry.torokhov@gmail.com
+Cc:     oliver.graute@gmail.com,
+        Oliver Graute <oliver.graute@kococonnector.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] Input: edt-ft5x06 - added case for EDT EP0110M09
+Date:   Thu,  9 Apr 2020 11:21:52 +0200
+Message-Id: <1586424116-25739-1-git-send-email-oliver.graute@gmail.com>
+X-Mailer: git-send-email 2.7.4
+X-Patchwork-Bot: notify
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+From: Oliver Graute <oliver.graute@kococonnector.com>
 
-drivers/edac/xgene_edac.c:1486:7: warning: variable ‘address’ set but
-not used [-Wunused-but-set-variable]
-   u32 address;
-       ^~~~~~~
-And remove the unused macro RBERRADDR_RD after that.
+Add Support for EP011M09 Firmware
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
+Signed-off-by: Oliver Graute <oliver.graute@kococonnector.com>
 ---
- drivers/edac/xgene_edac.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/input/touchscreen/edt-ft5x06.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
-index e4a1032ba0b5..1d2c27a00a4a 100644
---- a/drivers/edac/xgene_edac.c
-+++ b/drivers/edac/xgene_edac.c
-@@ -1349,7 +1349,6 @@ static int xgene_edac_l3_remove(struct xgene_edac_dev_ctx *l3)
- #define WORD_ALIGNED_ERR_MASK		BIT(28)
- #define PAGE_ACCESS_ERR_MASK		BIT(27)
- #define WRITE_ACCESS_MASK		BIT(26)
--#define RBERRADDR_RD(src)		((src) & 0x03FFFFFF)
- 
- static const char * const soc_mem_err_v1[] = {
- 	"10GbE0",
-@@ -1483,13 +1482,11 @@ static void xgene_edac_rb_report(struct edac_device_ctl_info *edac_dev)
- 		return;
- 	if (reg & STICKYERR_MASK) {
- 		bool write;
--		u32 address;
- 
- 		dev_err(edac_dev->dev, "IOB bus access error(s)\n");
- 		if (regmap_read(ctx->edac->rb_map, RBEIR, &reg))
- 			return;
- 		write = reg & WRITE_ACCESS_MASK ? 1 : 0;
--		address = RBERRADDR_RD(reg);
- 		if (reg & AGENT_OFFLINE_ERR_MASK)
- 			dev_err(edac_dev->dev,
- 				"IOB bus %s access to offline agent error\n",
+diff --git a/drivers/input/touchscreen/edt-ft5x06.c b/drivers/input/touchscreen/edt-ft5x06.c
+index d2587724c52a..13665389d28c 100644
+--- a/drivers/input/touchscreen/edt-ft5x06.c
++++ b/drivers/input/touchscreen/edt-ft5x06.c
+@@ -879,6 +879,7 @@ static int edt_ft5x06_ts_identify(struct i2c_client *client,
+ 		 * the identification registers.
+ 		 */
+ 		switch (rdbuf[0]) {
++		case 0x11:   /* EDT EP0110M09 */
+ 		case 0x35:   /* EDT EP0350M09 */
+ 		case 0x43:   /* EDT EP0430M09 */
+ 		case 0x50:   /* EDT EP0500M09 */
 -- 
-2.17.2
+2.17.1
 
