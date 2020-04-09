@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDFF1A317D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18F41A3130
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgDIJEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:04:14 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:50806 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbgDIJEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:04:14 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 05A8B1A03EC;
-        Thu,  9 Apr 2020 11:04:13 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4D3B61A01DE;
-        Thu,  9 Apr 2020 11:04:07 +0200 (CEST)
-Received: from titan.ap.freescale.net (titan.ap.freescale.net [10.192.208.233])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 13F2840294;
-        Thu,  9 Apr 2020 17:04:00 +0800 (SGT)
-From:   Hui Song <hui.song_1@nxp.com>
-To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Song Hui <hui.song_1@nxp.com>
-Subject: [PATCH] gpio: mpc8xxx: Add shutdown function.
-Date:   Thu,  9 Apr 2020 16:49:53 +0800
-Message-Id: <20200409084953.46265-1-hui.song_1@nxp.com>
-X-Mailer: git-send-email 2.9.5
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726621AbgDIIuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:50:19 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:29077 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725828AbgDIIuS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 04:50:18 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586422218; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=lKT87G/6eCqsB9hKN0EhH/E4zdNG9T0d5yHU6lAPE3w=; b=Fa9hRfH4V4ynrJSC47UTXldAQdThy4p32eY5XlnHrN9edrgkFeNL5eO/s6BYzu7Gg2f3soJB
+ djntuDAjFJN4pPN21az9LgUloDePk0keC6u0dMBgiswxVahozgoqp97eQ3n0HHp7HC8ci5QH
+ bvvJmSGUjcSGxI0AHbSmVaeBgnU=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8ee1bf.7fe9308f8420-smtp-out-n02;
+ Thu, 09 Apr 2020 08:50:07 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1E288C43636; Thu,  9 Apr 2020 08:50:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AB618C433CB;
+        Thu,  9 Apr 2020 08:50:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AB618C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        ath11k@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ath11k: fix missing return in ath11k_thermal_set_throttling
+References: <20200408190606.870098-1-arnd@arndb.de>
+Date:   Thu, 09 Apr 2020 11:50:01 +0300
+In-Reply-To: <20200408190606.870098-1-arnd@arndb.de> (Arnd Bergmann's message
+        of "Wed, 8 Apr 2020 21:05:57 +0200")
+Message-ID: <87h7xtujpi.fsf@kamboji.qca.qualcomm.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Song Hui <hui.song_1@nxp.com>
+Arnd Bergmann <arnd@arndb.de> writes:
 
-When the kexec command is executed, the memory area will be re-paginated.
-The shutdown function needed to make interrupt handler to be NULL.If
-not, an interrupt will be generated during this period. When the interrupt
-handler is executed,the handler function address changed and crash will
-occur.
+> The empty stub version of this function causes a compile-time
+> warning:
+>
+> In file included from drivers/net/wireless/ath/ath11k/core.h:23,
+>                  from drivers/net/wireless/ath/ath11k/dp_rx.h:8,
+>                  from drivers/net/wireless/ath/ath11k/ce.c:6:
+> drivers/net/wireless/ath/ath11k/thermal.h: In function 'ath11k_thermal_set_throttling':
+> drivers/net/wireless/ath/ath11k/thermal.h:45:1: error: no return statement in function returning non-void [-Werror=return-type]
+>
+> Just return success here.
+>
+> Fixes: a41d10348b01 ("ath11k: add thermal sensor device support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/wireless/ath/ath11k/thermal.h | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath11k/thermal.h b/drivers/net/wireless/ath/ath11k/thermal.h
+> index 459b8d49c184..f1395a14748c 100644
+> --- a/drivers/net/wireless/ath/ath11k/thermal.h
+> +++ b/drivers/net/wireless/ath/ath11k/thermal.h
+> @@ -42,6 +42,7 @@ static inline void ath11k_thermal_unregister(struct ath11k *ar)
+>  
+>  static inline int ath11k_thermal_set_throttling(struct ath11k *ar, u32 throttle_state)
+>  {
+> +	return 0;
+>  }
 
-Signed-off-by: Song Hui <hui.song_1@nxp.com>
----
- drivers/gpio/gpio-mpc8xxx.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Already fixed by this commit:
 
-diff --git a/drivers/gpio/gpio-mpc8xxx.c b/drivers/gpio/gpio-mpc8xxx.c
-index 604dfec..a24e6c5 100644
---- a/drivers/gpio/gpio-mpc8xxx.c
-+++ b/drivers/gpio/gpio-mpc8xxx.c
-@@ -446,9 +446,21 @@ static int mpc8xxx_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static int mpc8xxx_shutdown(struct platform_device *pdev)
-+{
-+	struct mpc8xxx_gpio_chip *mpc8xxx_gc = platform_get_drvdata(pdev);
-+
-+	if (mpc8xxx_gc->irq) {
-+		irq_set_chained_handler_and_data(mpc8xxx_gc->irqn, NULL, NULL);
-+		irq_domain_remove(mpc8xxx_gc->irq);
-+	}
-+
-+	return 0;
-+}
- static struct platform_driver mpc8xxx_plat_driver = {
- 	.probe		= mpc8xxx_probe,
- 	.remove		= mpc8xxx_remove,
-+	.shutdown	= mpc8xxx_shutdown,
- 	.driver		= {
- 		.name = "gpio-mpc8xxx",
- 		.of_match_table	= mpc8xxx_gpio_ids,
+https://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers.git/commit/?id=c9be1a642a7b9ec021e3f32e084dc781b3e5216d
+
 -- 
-2.9.5
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
