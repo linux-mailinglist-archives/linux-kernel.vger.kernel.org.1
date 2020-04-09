@@ -2,120 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA611A3156
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3FA1A314B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbgDII4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:56:18 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:42176 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725783AbgDII4R (ORCPT
+        id S1726561AbgDIIyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:54:20 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:50388 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725972AbgDIIyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:56:17 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 0398s3us004063
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 9 Apr 2020 03:54:07 -0500
-Message-ID: <eb48f7b6327e482ea9911b129210c0417ab48345.camel@kernel.crashing.org>
-Subject: Re: [PATCH 19/28] gpu/drm: remove the powerpc hack in
- drm_legacy_sg_alloc
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Daniel Vetter <daniel@ffwll.ch>, Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 09 Apr 2020 18:54:01 +1000
-In-Reply-To: <20200408122504.GO3456981@phenom.ffwll.local>
-References: <20200408115926.1467567-1-hch@lst.de>
-         <20200408115926.1467567-20-hch@lst.de>
-         <20200408122504.GO3456981@phenom.ffwll.local>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        Thu, 9 Apr 2020 04:54:19 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0398s6wD028951;
+        Thu, 9 Apr 2020 10:54:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=CmoutC0W8WZlASEipmjSnN2qdkVdCXVJOAEJkp9FQOg=;
+ b=qqnLh2JLoNbSlDythMFLuO+XTtJmamANLPiFnC/MWniwACpJhwJ5bKRG42OjSz5NjJiw
+ bCcb49XNg/e+zYq4TcfSW2OZ4KxVnCQ8JNKbJFC51/qAIFCGwXw2oQQacckQGPC8wKBH
+ u5B0V96vwwrMbr+M9gmDQAttA6U62C6OI3jnrgdsscNdhwHS9K7BLNY21/L87pODaIFX
+ nx2Gir27O+dZ+gLef2Oox3tcv/2RdytIa98VvpeXYtLUDilEzqpj/hmUx9OQnuRAJMA4
+ GWnVPDORCF0fK5+io5OQdso/jzgFOc3KiWOAo77kSPhRa3n74BLy10AnP9IuBnV091bH lg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 309vr98qkw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 09 Apr 2020 10:54:12 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A440C10004F;
+        Thu,  9 Apr 2020 10:54:11 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 8EC2721FE9D;
+        Thu,  9 Apr 2020 10:54:11 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Apr
+ 2020 10:54:10 +0200
+Subject: Re: [PATCH v2] rpmsg: core: Add wildcard match for name service
+To:     Suman Anna <s-anna@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200310155058.1607-1-mathieu.poirier@linaro.org>
+ <591bd727-32af-9ea2-8c46-98f46ee3711e@ti.com>
+ <CANLsYkyv+4cSCY27kA6qfo2XMzXy_h+DmXTe0nVZuUkC0kyRUQ@mail.gmail.com>
+ <ca77fe73-3baf-64ff-c9e2-b2f35f96ffe3@ti.com>
+ <CANLsYkz8iqiperjdQVcwAC3YGT5cmEvJcu8fPFGF5-X6eKVUDQ@mail.gmail.com>
+ <34d1277f-c35e-5df8-7d0c-ea1e961a127f@st.com> <20200327193602.GA22939@xps15>
+ <77cba22f-5911-e88a-ec25-50cbe9b8fbbe@ti.com>
+ <CANLsYkxWSQNA0SqP5p1d_EK6am5rV-ONrvou1UyuNMnMjGW71Q@mail.gmail.com>
+ <56a34534-f005-1e1c-a8c5-8bef02664eac@ti.com>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <e618244f-905b-9796-4e0e-c9d2a2c2341f@st.com>
+Date:   Thu, 9 Apr 2020 10:54:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <56a34534-f005-1e1c-a8c5-8bef02664eac@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-08_09:2020-04-07,2020-04-08 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-04-08 at 14:25 +0200, Daniel Vetter wrote:
-> On Wed, Apr 08, 2020 at 01:59:17PM +0200, Christoph Hellwig wrote:
-> > If this code was broken for non-coherent caches a crude powerpc hack
-> > isn't going to help anyone else.  Remove the hack as it is the last
-> > user of __vmalloc passing a page protection flag other than PAGE_KERNEL.
+Hi Suman,
+
+On 4/8/20 10:52 PM, Suman Anna wrote:
+> On 4/8/20 10:59 AM, Mathieu Poirier wrote:
+>> On Tue, 7 Apr 2020 at 17:07, Suman Anna <s-anna@ti.com> wrote:
+>>>
+>>> Hi Mathieu, Arnaud,
+>>>
+>>> On 3/27/20 2:36 PM, Mathieu Poirier wrote:
+>>>> On Fri, Mar 27, 2020 at 10:35:34AM +0100, Arnaud POULIQUEN wrote:
+>>>>> Hi
+>>>>>
+>>>>> On 3/26/20 11:01 PM, Mathieu Poirier wrote:
+>>>>>> On Thu, 26 Mar 2020 at 14:42, Suman Anna <s-anna@ti.com> wrote:
+>>>>>>>
+>>>>>>> On 3/26/20 3:21 PM, Mathieu Poirier wrote:
+>>>>>>>> On Thu, 26 Mar 2020 at 09:06, Suman Anna <s-anna@ti.com> wrote:
+>>>>>>>>>
+>>>>>>>>> Hi Mathieu,
+>>>>>>>>>
+>>>>>>>>> On 3/10/20 10:50 AM, Mathieu Poirier wrote:
+>>>>>>>>>> Adding the capability to supplement the base definition published
+>>>>>>>>>> by an rpmsg_driver with a postfix description so that it is possible
+>>>>>>>>>> for several entity to use the same service.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>>>>>>>> Acked-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>>>>>>>>
+>>>>>>>>> So, the concern I have here is that we are retrofitting this into the
+>>>>>>>>> existing 32-byte name field, and the question is if it is going to be
+>>>>>>>>> enough in general. That's the reason I went with the additional 32-byte
+>>>>>>>>> field with the "rpmsg: add a description field" patch.
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> That's a valid concern.
+>>>>>>>>
+>>>>>>>> Did you consider increasing the size of RPMSG_NAME_SIZE to 64? Have
+>>>>>>>> you found cases where that wouldn't work?  I did a survey of all the
+>>>>>>>> places the #define is used and all destination buffers are also using
+>>>>>>>> the same #define in their definition.  It would also be backward
+>>>>>>>> compatible with firmware implementations that use 32 byte.
+>>>>>>>
+>>>>>>> You can't directly bump the size without breaking the compatibility on
+>>>>>>> the existing rpmsg_ns_msg in firmwares right? All the Linux-side drivers
+>>>>>>> will be ok since they use the same macro but rpmsg_ns_msg has presence
+>>>>>>> on both kernel and firmware-sides.
+>>>>>>
+>>>>>> Ah yes yes... The amount of bytes coming out of the pipe won't match.
+>>>>>> Let me think a little...
+>>>>>
+>>>>> +1 for Suman's concern.
+>>>>>
+>>>>> Anyway i would like to challenge the need of more than 32 bytes to
+>>>>> differentiate service instances.
+>>>>> "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", seems to me enough if we only need
+>>>>> to differentiate the instances.
+>>>
+>>> Remember that the rpmsg_device_id name takes some space within here. So,
+>>> the shorter the rpmsg_device_id table name, the more room you have.
+>>>
+>>>>>
+>>>>> But perhaps the need is also to provide a short description of the service?
+>>>
+>>> I am mostly using it to provide a unique instantiation name. In anycase,
+>>> I have cross-checked against my current firmwares, and so far all of
+>>> them happen to have the name + desc < 31 bytes.
+>>>
+>>>
+>>>>>
+>>>>> Suman, could you share some examples of your need?
+>>>>
+>>>> Looking at things further it is possible to extend the name of the service to
+>>>> 64 byte while keeping backward compatibility by looking up the size of @len
+>>>> in function rpmsg_ns_cb().  From there work with an rpmsg_ns_msg or a new
+>>>> rpmsg_ns_msg64, pretty much the way you did in your patch[1].  In fact the
+>>>> approach is the same except you are using 2 arrays of 32 byte and I'm using one
+>>>> of 64.
+>>>>
+>>>> As Arnaud mentioned, is there an immediate need to support a 64-byte name?  If
+>>>> not than I suggest to move forward with this patch and address the issue when we
+>>>> get there - at least we know there is room for extention. Otherwise I'll spin
+>>>> off another revision but it will be bigger and more complex.
+>>>
+>>> Yeah ok. I have managed to get my downstream drivers that use the desc
+>>> field working with this patch after modifying the firmwares to publish
+>>> using combined name, and adding logic in probe to get the trailing
+>>> portion of the name.
+>>
+>> Perfect
+>>
+>>>
+>>> So, the only thing that is missing or content for another patch is if we
+>>> need to add some tooling/helper stuff for giving the trailing stuff to
+>>> rpmsg drivers?
+>>
+>> So that all rpmsg drivers don't come up with their own parsing that
+>> ends up doing the same thing.  Let me think about that - I may have to
+>> get back to you...
 > 
-> Well Ben added this to make stuff work on ppc, ofc the home grown dma
-> layer in drm from back then isn't going to work in other places. I guess
-> should have at least an ack from him, in case anyone still cares about
-> this on ppc. Adding Ben to cc.
-
-This was due to some drivers (radeon ?) trying to use vmalloc pages for
-coherent DMA, which means on those 4xx powerpc's need to be non-cached.
-
-There were machines using that (440 based iirc), though I honestly
-can't tell if anybody still uses any of it.
-
-Cheers,
-Ben.
-
-> -Daniel
+> Yep. Sure no problem. It can be a patch on top of this as well.
 > 
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  drivers/gpu/drm/drm_scatter.c | 11 +----------
-> >  1 file changed, 1 insertion(+), 10 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_scatter.c b/drivers/gpu/drm/drm_scatter.c
-> > index ca520028b2cb..f4e6184d1877 100644
-> > --- a/drivers/gpu/drm/drm_scatter.c
-> > +++ b/drivers/gpu/drm/drm_scatter.c
-> > @@ -43,15 +43,6 @@
-> >  
-> >  #define DEBUG_SCATTER 0
-> >  
-> > -static inline void *drm_vmalloc_dma(unsigned long size)
-> > -{
-> > -#if defined(__powerpc__) && defined(CONFIG_NOT_COHERENT_CACHE)
-> > -	return __vmalloc(size, GFP_KERNEL, pgprot_noncached_wc(PAGE_KERNEL));
-> > -#else
-> > -	return vmalloc_32(size);
-> > -#endif
-> > -}
-> > -
-> >  static void drm_sg_cleanup(struct drm_sg_mem * entry)
-> >  {
-> >  	struct page *page;
-> > @@ -126,7 +117,7 @@ int drm_legacy_sg_alloc(struct drm_device *dev, void *data,
-> >  		return -ENOMEM;
-> >  	}
-> >  
-> > -	entry->virtual = drm_vmalloc_dma(pages << PAGE_SHIFT);
-> > +	entry->virtual = vmalloc_32(pages << PAGE_SHIFT);
-> >  	if (!entry->virtual) {
-> >  		kfree(entry->busaddr);
-> >  		kfree(entry->pagelist);
-> > -- 
-> > 2.25.1
-> > 
+> Arnaud,
+> Do you have immediate need for the tooling stuff for the rpmsg-tty driver?
+
+Before moving forward on rpmsg_tty i would prefer that we are aligned with Bjorn
+on the implementation of the rpmsg_tty itself and the evolution of the service name...
+Then rpmsg_tty could be a good threadfor a first implementation...
+
+
+Concerning the name service, having a discussion around the name service skeleton would
+be nice. This could be an good input for the helpers function definition.
+
+Propositions in rpmsg_tty thread are
+
+<service_name>-<feature>
+or
+<service_name>-<feature>-<sub_service>
+
+don't hesitate to comment and/or propose alternatives
+
+Regards,
+Arnaud
+
+> 
+> regards
+> Suman
 > 
 > 
-
+>>
+>>>
+>>> regards
+>>> Suman
+>>>
+>>>>
+>>>> Thanks,
+>>>> Mathieu
+>>>>
+>>>> [1]. https://patchwork.kernel.org/patch/11096599/
+>>>>
+>>>>>>>>>
+>>>>>>>>>> ---
+>>>>>>>>>> Changes for V2:
+>>>>>>>>>> - Added Arnaud's Acked-by.
+>>>>>>>>>> - Rebased to latest rproc-next.
+>>>>>>>>>>
+>>>>>>>>>>  drivers/rpmsg/rpmsg_core.c | 20 +++++++++++++++++++-
+>>>>>>>>>>  1 file changed, 19 insertions(+), 1 deletion(-)
+>>>>>>>>>>
+>>>>>>>>>> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+>>>>>>>>>> index e330ec4dfc33..bfd25978fa35 100644
+>>>>>>>>>> --- a/drivers/rpmsg/rpmsg_core.c
+>>>>>>>>>> +++ b/drivers/rpmsg/rpmsg_core.c
+>>>>>>>>>> @@ -399,7 +399,25 @@ ATTRIBUTE_GROUPS(rpmsg_dev);
+>>>>>>>>>>  static inline int rpmsg_id_match(const struct rpmsg_device *rpdev,
+>>>>>>>>>>                                 const struct rpmsg_device_id *id)
+>>>>>>>>>>  {
+>>>>>>>>>> -     return strncmp(id->name, rpdev->id.name, RPMSG_NAME_SIZE) == 0;
+>>>>>>>>>> +     size_t len = min_t(size_t, strlen(id->name), RPMSG_NAME_SIZE);
+>>>>>>>>>> +
+>>>>>>>>>> +     /*
+>>>>>>>>>> +      * Allow for wildcard matches.  For example if rpmsg_driver::id_table
+>>>>>>>>>> +      * is:
+>>>>>>>>>> +      *
+>>>>>>>>>> +      * static struct rpmsg_device_id rpmsg_driver_sample_id_table[] = {
+>>>>>>>>>> +      *      { .name = "rpmsg-client-sample" },
+>>>>>>>>>> +      *      { },
+>>>>>>>>>> +      * }
+>>>>>>>>>> +      *
+>>>>>>>>>> +      * Then it is possible to support "rpmsg-client-sample*", i.e:
+>>>>>>>>>> +      *      rpmsg-client-sample
+>>>>>>>>>> +      *      rpmsg-client-sample_instance0
+>>>>>>>>>> +      *      rpmsg-client-sample_instance1
+>>>>>>>>>> +      *      ...
+>>>>>>>>>> +      *      rpmsg-client-sample_instanceX
+>>>>>>>>>> +      */
+>>>>>>>>>> +     return strncmp(id->name, rpdev->id.name, len) == 0;
+>>>>>>>>>>  }
+>>>>>>>>>>
+>>>>>>>>>>  /* match rpmsg channel and rpmsg driver */
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>
+>>>
+> 
