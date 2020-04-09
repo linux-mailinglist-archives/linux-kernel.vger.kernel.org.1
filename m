@@ -2,68 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08DD01A336D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6B31A3369
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgDILo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 07:44:29 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:55692 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726622AbgDILo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 07:44:28 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id D67071A3D8173519489F;
-        Thu,  9 Apr 2020 19:44:13 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Apr 2020
- 19:44:06 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <dave@stgolabs.net>, <paulmck@kernel.org>, <josh@joshtriplett.org>,
-        <rostedt@goodmis.org>, <mathieu.desnoyers@efficios.com>,
-        <jiangshanlai@gmail.com>, <joel@joelfernandes.org>,
-        <linux-kernel@vger.kernel.org>, <rcu@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>
-Subject: [PATCH] rcutorture: make rcu_fwds and rcu_fwd_emergency_stop static
-Date:   Thu, 9 Apr 2020 19:42:38 +0800
-Message-ID: <20200409114238.39765-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.17.2
+        id S1726729AbgDILoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 07:44:10 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:42677 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726623AbgDILoI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 07:44:08 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586432649; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=TXEhcyucuYKWLJsGT3T9vXlvyVf4FPT2niPKR6PH99s=; b=OgwlLdl44WSr79/sjNcHuDXtwFOMgJFAAaDpO2Eemtg9dG0gMLMzAHGUGNX4G3ms/SQICvRb
+ FkjfRX2xkaD+g7nQ4FihsP6WXuwX9ONPg7NkJgg1PSUpRXq5kZh4O8O1kbpRLoV+Ev+h5vbb
+ dPNWDA4PWNMc85h9Y87RqOWcDHs=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8f0a77.7f02fd888d18-smtp-out-n02;
+ Thu, 09 Apr 2020 11:43:51 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 338F6C4478F; Thu,  9 Apr 2020 11:43:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-311.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0766BC433D2;
+        Thu,  9 Apr 2020 11:43:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0766BC433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        mike.leach@linaro.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCHv2 0/3] Add coresight support for QCOM SC7180 SoC
+Date:   Thu,  9 Apr 2020 17:13:35 +0530
+Message-Id: <cover.1586263250.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warning:
+Patch 1 adds the ETM UCI IDs for Kryo 4XX CPU cores.
+Patch 2 adds the DT nodes for coresight components on SC7180.
+Patch 3 replaces ETM PIDs with UCI IDs for Kryo385 CPUs on SDM845.
 
-kernel/rcu/rcutorture.c:1695:16: warning: symbol 'rcu_fwds' was not
-declared. Should it be static?
-kernel/rcu/rcutorture.c:1696:6: warning: symbol 'rcu_fwd_emergency_stop'
-was not declared. Should it be static?
+v2:
+ * Placed the DT properties for ports in one line as suggested by Stephen.
+ * Add UCI IDs for SC7180 and SDM845(Kryo385 CPUs) as suggested by Suzuki.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- kernel/rcu/rcutorture.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Sai Prakash Ranjan (3):
+  coresight: etm4x: Add support for Qualcomm SC7180 SoC
+  arm64: dts: qcom: sc7180: Add Coresight support
+  coresight: etm4x: Replace ETM PIDs with UCI IDs for Kryo385
 
-diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-index 5453bd557f43..d621a31de8a4 100644
---- a/kernel/rcu/rcutorture.c
-+++ b/kernel/rcu/rcutorture.c
-@@ -1692,8 +1692,8 @@ struct rcu_fwd {
- 	unsigned long rcu_launder_gp_seq_start;
- };
- 
--struct rcu_fwd *rcu_fwds;
--bool rcu_fwd_emergency_stop;
-+static struct rcu_fwd *rcu_fwds;
-+static bool rcu_fwd_emergency_stop;
- 
- static void rcu_torture_fwd_cb_hist(struct rcu_fwd *rfp)
- {
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          | 471 ++++++++++++++++++
+ drivers/hwtracing/coresight/coresight-etm4x.c |   6 +-
+ 2 files changed, 475 insertions(+), 2 deletions(-)
+
 -- 
-2.17.2
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
