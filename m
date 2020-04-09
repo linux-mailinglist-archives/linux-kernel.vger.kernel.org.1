@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 18B061A3AB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFFC1A3A7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726905AbgDITmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 15:42:50 -0400
-Received: from peace.netnation.com ([204.174.223.2]:46842 "EHLO
-        peace.netnation.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbgDITmt (ORCPT
+        id S1726734AbgDIT13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 15:27:29 -0400
+Received: from mail-qk1-f177.google.com ([209.85.222.177]:36552 "EHLO
+        mail-qk1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgDIT13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 15:42:49 -0400
-X-Greylist: delayed 1023 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Apr 2020 15:42:49 EDT
-Received: from sim by peace.netnation.com with local (Exim 4.92)
-        (envelope-from <sim@hostway.ca>)
-        id 1jMco4-0008Me-5I; Thu, 09 Apr 2020 12:25:44 -0700
-Date:   Thu, 9 Apr 2020 12:25:44 -0700
-From:   Simon Kirby <sim@hostway.ca>
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org,
-        Lech Perczak <l.perczak@camlintechnologies.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        John Ogness <john.ogness@linutronix.de>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCHv2] printk: queue wake_up_klogd irq_work only if per-CPU
- areas are ready
-Message-ID: <20200409192543.GA30816@hostway.ca>
-References: <20200303113002.63089-1-sergey.senozhatsky@gmail.com>
- <20200304152159.2p7d7dnztf433i24@pathway.suse.cz>
- <20200305013014.GA174444@google.com>
- <20200305185348.GB2141048@kroah.com>
+        Thu, 9 Apr 2020 15:27:29 -0400
+Received: by mail-qk1-f177.google.com with SMTP id l25so5273251qkk.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 12:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RG3gSBKGM8ltosSJXHmaTU9e/PnH4whIeagTJUsf01U=;
+        b=qOvDR8mZ+R2P/pBCPur/uFS4KPcxxPU4GRNDbR2brI6PuFndGkz+pTeEnmzy2GeuSf
+         KyxiXDY3TBfq2J9Z8HqMzuPzIWuzO4mqGvAigP0Y1025qKyDCoHRc3mhumePZD9eTfQg
+         xrp+5XxJk4iMCC4DqA+1GkKqtCsAMZzf9b3lJHupmOT31GkSIB0mXjC31BbZi3lyqOWc
+         9dGVeEl/zAoZEBrmCmI+56hjpS/Uj27e8j/V+LAIcvR3SHn6NRn8JLoBUEumjSM9SplX
+         ks3VLxHF/wgzP0W2Ot1vMd9R3pgBoukZjIy0TvSQNenXEc1ZRKOEbf0H2SKVto+qVC/n
+         Jbcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=RG3gSBKGM8ltosSJXHmaTU9e/PnH4whIeagTJUsf01U=;
+        b=LfOL4jLAPV3i4bsKEJCu7AkodUozdRdFplEIYkI0LVG43Pq8NG+79MgO1103LoJsXr
+         3lmjUjJR32oXiEA9nVib6YyFYe3tLiXJy+kJ4HZxeDTMZaPvbRYo25KWko/ZvlB+1VKx
+         X9mgUQwEmzKamXH5ZbEvc5GP9rSdDVl3CrE6x4ObmV5JikuIgff34EORQhyiSsQH/Ak0
+         mi1pl9NDeC+s2DCcbW3Bs584GiGctkYRPUeyAIdqiuuU/c1mUOvN25h+3j563MtC/Hw7
+         nw0iya2Na8kpSxWfcOxJHgvyT9PWLJ0SAj48BMmo/w9LWb9HdFijQTv3OnYXsEh9nn4L
+         sekA==
+X-Gm-Message-State: AGi0PuZp09vIDBuuhyzcJ6I7h7oGj8Nu9Gx1sjujDKAVBQhd7DR1UyTq
+        D8KrUXwxUBrmG4wA485iPeQMtRKpmfc=
+X-Google-Smtp-Source: APiQypJpzwpF1vlLs8mzfP+ER3V87Q4QR+jmVn/Mg7qSl/ONPPZvQQB4y1GHmpNxecmiwKIlvbklug==
+X-Received: by 2002:a37:a8c7:: with SMTP id r190mr468315qke.65.1586460448590;
+        Thu, 09 Apr 2020 12:27:28 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::74a8])
+        by smtp.gmail.com with ESMTPSA id g63sm18324078qkb.89.2020.04.09.12.27.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 12:27:27 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 15:27:25 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Cgroup memory barrier usage and call frequency from scheduler
+Message-ID: <20200409192725.GC37608@mtj.thefacebook.com>
+References: <20200409154413.GK3818@techsingularity.net>
+ <20200409175621.GA37608@mtj.thefacebook.com>
+ <20200409182055.GM3818@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200305185348.GB2141048@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200409182055.GM3818@techsingularity.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 07:53:48PM +0100, Greg Kroah-Hartman wrote:
+Hello,
 
-> On Thu, Mar 05, 2020 at 10:30:14AM +0900, Sergey Senozhatsky wrote:
-> > On (20/03/04 16:21), Petr Mladek wrote:
-> > [..]
-> > > > Fix printk_deferred() and do not queue per-CPU irq_work
-> > > > before per-CPU areas are initialized.
-> > > >
-> > > > [0] https://lore.kernel.org/lkml/aa0732c6-5c4e-8a8b-a1c1-75ebe3dca05b@camlintechnologies.com/
-> > > >
-> > > > Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> > > > Reported-by: Lech Perczak <l.perczak@camlintechnologies.com>
-> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Cc: Theodore Ts'o <tytso@mit.edu>
-> > > > Cc: John Ogness <john.ogness@linutronix.de>
-> > >
-> > > Reviewed-by: Petr Mladek <pmladek@suse.com>
+On Thu, Apr 09, 2020 at 07:20:55PM +0100, Mel Gorman wrote:
+> > Given
 > > 
-> > Thanks!
+> >    A    C
+> >   ---  ---
+> >    B    D
 > > 
-> > > Now, the question is whether to hurry this fix into 5.6 or if
-> > > it could wait for 5.7.
-> > >
-> > > I think that it could wait because 5.6 is not affected by
-> > > the particular printk_deferred(). This patch fixes a long-term
-> > > generic problem. But I am open for other opinions.
+> > the code is trying to guarantee that either B sees C or D sees A, so it does
+> > need full ordering.
 > > 
-> > Good question. My 5 cents, I would _probably_ push it now. Not
-> > because it fixes any known issues on 5.6, but because we have
-> > a number of LTS kernel (4.19, 4.14, 4.9, 4.4, 3.16) that can be
-> > affected should 1b710b1b10eff9d4 be backported to those kernels.
 > 
-> It was backported there, and now has been reverted.  So no big rush from
-> what I can tell.
+> Ok, still not particularly clear given where they are used and how
+> it's related to updated_children but like you say later it's "kinda
+> irrelevant" :)
 
-This causes "dmesg -w" or "cat /dev/kmsg" to not print new messages after
-dumping the current ring. I hit this on v5.5.9, v5.5.15, v5.6.3, and
-Linus HEAD. This prints no "hi":
+Hahaha, yeah, just to make sure that I am understanding it correctly:
 
-(sleep 1;echo hi > /dev/kmsg)& dmesg -w
+There are two parties - "updater" updating the local stat and trying to queue
+itself on the updated list, "reader" walking the updated list trying to
+collect all the numbers which changed since it last walked it.
 
-...curiously, "strace dmesg -w" shows the data received once ^C is hit.
+There are two misbehaviors which can result from lack of interlocking:
 
-Jann pointed me to this patch. Applying it or reverting 1b710b1b10eff9d4
-does fix it for me. However, Linus HEAD is still broken and, AFAICS,
-remains unreverted and unfixed in stable/linux-5.4.y through linux-5.6.y.
-It was introduced in 5.6 but backported to those, not just the LTS above.
+1. If the updater puts itself on the list and the reader takes it off the list
+   and then reads a stale value, the reader may end up reporting a stale value
+   to user possibly breaking synchronity of events. This can be addressed by
+   adding matching (data-dependency) barriers - wmb in updater, rmb in reader.
 
-Simon-
+2. If the updater checking whether it's already on the list races against
+   reader clearing it from the updated list, while the current on-going read
+   is correct, the updater may incorrectly skip adding itself to the updated
+   list and the next read may miss the event. This can be addressed by
+   interlocking both directions - either the reader sees the new value or the
+   updater sees itself cleared off the updated list - mb between stat update
+   and "am I already on the updated list?" check in updater, mb between
+   clearing the updater off the updated list and reading the stats in reader.
+
+Thanks.
+
+-- 
+tejun
