@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8923E1A2D55
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 03:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B561A2D57
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 03:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgDIB2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 21:28:24 -0400
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:39425 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726539AbgDIB2W (ORCPT
+        id S1726713AbgDIB22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 21:28:28 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:33644 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726669AbgDIB2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 21:28:22 -0400
-Received: by mail-qv1-f65.google.com with SMTP id v38so4755044qvf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 18:28:21 -0700 (PDT)
+        Wed, 8 Apr 2020 21:28:24 -0400
+Received: by mail-qv1-f67.google.com with SMTP id p19so4779986qve.0
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 18:28:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=aurabindo.in; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=a8mBf/x6tKmxXEyAN6VSKYHc9JSU+mIaA50Z6TnFau4=;
-        b=NlMqSZt8QFI8sd/DDnRRiuydXjaYLzxItlei1QSWHbiyShTaKKSGURBOkhrkk91CxW
-         /X+Qgb5kT/Tps0tzjntpYhBtxqSIyEiUAJrD28KSW+Ak6UERz5KiIAuFmidnFOXF3saq
-         y5hxwSo82HWB2DKzD+N3OLxUlzmHRmC7x9lEqr/VOOaWRmBSLLr5JZ1o1m2bcGFp2N8K
-         CMMceFTqTpBOdT8lUa6F6lNm7O38kfcGVYWCp2tJIxAZHD7mDG/r8vp2SL6SxRNJ0j6b
-         ewLTd/FthX6hcv+JmkjXbKfzvZNfibmvWUqRC0qmB1IZrqJkjbZSCFgDsIDSquzFIxOR
-         J1KQ==
+        bh=iAZ49xsLFafBw1eWwQbQgcyCMLWhUsSohaRadPz3t44=;
+        b=gGAFmj/fpiuOrhiYazOd8ZJKb6FeO5AcwBXbcykszik2Cxb11C6INXDPGjZMgX/IFL
+         +8D0QXaBjKOfXqrfiz6uxYMOaI+BTDldCTv+XLW5SH3eY3eJ9F4BdJAQvelqu8zm58RA
+         kOFtmJcThBkMtMItCWkwgfjkzJVC141uKOV6IXm/dAyZ0eueS4wO3b437dyZRrVzdG6I
+         601kOarVFZTFtZOMcPJkE9U7ugiUoPFoXsFT+CLNnzBlQ5DKbHJQpeHrHCMSO18ArPJ6
+         5XSjo+2ShjDn/GNQK7IhGamQxv+BtZuN4R9pV98ffL7O6gPAENUwTiasoXfWUWVkjRf1
+         j2ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=a8mBf/x6tKmxXEyAN6VSKYHc9JSU+mIaA50Z6TnFau4=;
-        b=MSMUrJ+CvOnUHe0975JspBNQeFz68TV/klWKT8ZyKGJ5DeDiE1tdM3Kq0q1OQ255sl
-         tX3S0I87jl7+1Uli4nLmG5YwMXY3XxQ979S3kJHqx1rWD8VyJSQy2BNLXhEv1N2frqrR
-         cftzXeZ38JEVdocYQcq43TIIV2qqICHn0+U59T0mjfundeBOugMCFOS5CHdgFWtXnIl4
-         OH+F7BB9kukCvfd48q6M67GxhRZDEfckTgGF0plnp7pLL8puVVGgfeLWANuJWHFTHR+E
-         A4nNkfzA8a3FgoSVnv9DhO6sYN38fiWCszHrWDynnyXXFepZox5iZ/1b45RtneApUyDw
-         0mnQ==
-X-Gm-Message-State: AGi0PuY5hm1u18mX0U0XT21CcCuu4k7h4XozoPpiBCd0YG7Q6PK5OBAI
-        gSJb3n1Ugv3Xsn1xhnIx1OpMsw==
-X-Google-Smtp-Source: APiQypLHyltpW2woM041SGTay/GRNOYCz+x3AjvXnaurPcRm5EFzWLaZMasX8iJ0rPqFFM0GH+KX3Q==
-X-Received: by 2002:a0c:bd99:: with SMTP id n25mr10491345qvg.149.1586395700553;
-        Wed, 08 Apr 2020 18:28:20 -0700 (PDT)
+        bh=iAZ49xsLFafBw1eWwQbQgcyCMLWhUsSohaRadPz3t44=;
+        b=t64Qx2dvsulTSxOaHapV3iA9grhT21zgni1Ya22L1oiEI69tPB4ASi+3SO9po8jNng
+         SwYdfpORRiEDBv2n9uK1MEyV4mzclm+EHUb0CcnGC/j2zzJESkLoXPc9E5g74Zrp+9MX
+         ObWh7o2CR7HwC6bBNGsv9GrFwYxiLDeP/wAeC0JENfI5aZzeGYRrtt7QgIrDmherIg9b
+         VIbPDBYR+xFC1tQ6swJaqH1PHhROEcfhChLrRQJW1dk43nvMbiFzqlt1eI8wZGNwl08Y
+         akH5/Stz0vgzRI/C5WaUozaq91uumuqAph9WPxPzOfaA42MBpFsz7/h+OCKSWsKXvZsJ
+         Y1jg==
+X-Gm-Message-State: AGi0PuaH1AR4opmpXJz6FSUw5z85mN/y+R2fSpAK2W2Xd/obGUjvxaLE
+        dpZbEPD1vpKMFY+lzqIpEry/5Q==
+X-Google-Smtp-Source: APiQypJc2DhYwtTtM+Ce7usYBK/yFp24XNfCDvHn8AqXL3/muK8IGYc5YthGfwGZy0C04JbdRiUWqQ==
+X-Received: by 2002:a05:6214:9cb:: with SMTP id dp11mr9948057qvb.60.1586395702443;
+        Wed, 08 Apr 2020 18:28:22 -0700 (PDT)
 Received: from localhost.localdomain (135-23-249-169.cpe.pppoe.ca. [135.23.249.169])
-        by smtp.gmail.com with ESMTPSA id h13sm11710186qkj.21.2020.04.08.18.28.19
+        by smtp.gmail.com with ESMTPSA id h13sm11710186qkj.21.2020.04.08.18.28.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Apr 2020 18:28:20 -0700 (PDT)
+        Wed, 08 Apr 2020 18:28:22 -0700 (PDT)
 From:   Aurabindo Pillai <mail@aurabindo.in>
 To:     christian.koenig@amd.com, alexander.deucher@amd.com,
         David1.Zhou@amd.com
 Cc:     airlied@linux.ie, daniel@ffwll.ch, Felix.Kuehling@amd.com,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] drm/amd/amdgpu: add prefix for pr_* prints
-Date:   Wed,  8 Apr 2020 21:28:13 -0400
-Message-Id: <20200409012815.22309-2-mail@aurabindo.in>
+Subject: [PATCH v2 2/3] drm/amd/amdgpu: add print prefix for dev_* variants
+Date:   Wed,  8 Apr 2020 21:28:14 -0400
+Message-Id: <20200409012815.22309-3-mail@aurabindo.in>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200409012815.22309-1-mail@aurabindo.in>
 References: <20200409012815.22309-1-mail@aurabindo.in>
@@ -64,13 +64,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-amdgpu uses lots of pr_* calls for printing error messages.
-With this prefix, errors shall be more obvious to the end
-use regarding its origin, and may help debugging.
-
-Prefix format:
-
-[xxx.xxxxx] amdgpu: ...
+Define dev_fmt macro for informative print messages
 
 Signed-off-by: Aurabindo Pillai <mail@aurabindo.in>
 ---
@@ -78,18 +72,18 @@ Signed-off-by: Aurabindo Pillai <mail@aurabindo.in>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index da3bcff61..67d654a89 100644
+index 67d654a89..7a52d37e6 100644
 --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
 +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -28,6 +28,12 @@
- #ifndef __AMDGPU_H__
- #define __AMDGPU_H__
+@@ -34,6 +34,12 @@
  
-+#ifdef pr_fmt
-+#undef pr_fmt
+ #define pr_fmt(fmt) "amdgpu: " fmt
+ 
++#ifdef dev_fmt
++#undef dev_fmt
 +#endif
 +
-+#define pr_fmt(fmt) "amdgpu: " fmt
++#define dev_fmt(fmt) "amdgpu: " fmt
 +
  #include "amdgpu_ctx.h"
  
