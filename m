@@ -2,192 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2C6D1A3615
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 16:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A2871A3610
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 16:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727813AbgDIOkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 10:40:16 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:44564 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727327AbgDIOkP (ORCPT
+        id S1727793AbgDIOjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 10:39:14 -0400
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:37699 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727368AbgDIOjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 10:40:15 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039EcF15058098;
-        Thu, 9 Apr 2020 14:40:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=gIlObyBd/X6vtrruLSVOV91EVZH8HEpDqenNYw1Pv2s=;
- b=ThmeQBVEZA9YXGKybMhq5miGhOexi3IrV3yJJRDGq89msT8uA5OJJxW68UrrquA8sBWb
- mgxh547W2eQg6VjMGUGQ0+P3Cdu+J/6aCGWy7kt2aqi+0i7nO7z6RQtb3K9LgvaM2wgS
- fq1lgm/Q5Os56bZTINOtqvzno7lstZJ6p3af4JQ94PWb56VPU9f1Pa3aYnEIxLdQOfE2
- G0wUcOmiBOAQsrTf6so4NOo2zgr1A2Zu7dbk86++XCTG0WX3s8bM+J40WUIWU96/Q3ps
- +l8Lg4iiysyTcmoqY6B9302h91SVI0zXc+uO+ub8ed8tFHflWHsp35o8YQfLsrE0AVvT +A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 3091m3hw3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 14:40:08 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039EbbiO008064;
-        Thu, 9 Apr 2020 14:38:08 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 3091m48k2u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 14:38:08 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 039Ec6an031611;
-        Thu, 9 Apr 2020 14:38:06 GMT
-Received: from anon-dhcp-153.1015granger.net (/68.61.232.219)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 09 Apr 2020 07:38:06 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [kbuild-all] Re: net/sunrpc/svcsock.c:527:32: warning: Variable
- 'uninitialized_var' is assigned a value that is never used. [unreadVariable]
-From:   Chuck Lever <chuck.lever@oracle.com>
-In-Reply-To: <2342285b-3bb6-32cd-2611-264bc0773150@intel.com>
-Date:   Thu, 9 Apr 2020 10:38:05 -0400
-Cc:     kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <997058C9-4AAE-4B70-93E0-4CC6E3DE4FA0@oracle.com>
-References: <202004090524.zHtJ3R2B%lkp@intel.com>
- <76A08BC7-C37A-495D-998A-2E9DADF454A7@oracle.com>
- <2342285b-3bb6-32cd-2611-264bc0773150@intel.com>
-To:     Rong Chen <rong.a.chen@intel.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9586 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090115
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9586 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- impostorscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
- priorityscore=1501 clxscore=1011 bulkscore=0 phishscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090115
+        Thu, 9 Apr 2020 10:39:14 -0400
+Received: by mail-qv1-f67.google.com with SMTP id n1so5584722qvz.4;
+        Thu, 09 Apr 2020 07:39:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V0peUcS4xyy6xzU2lui7tASWzqbXgbJ8PVWPkgOy87s=;
+        b=RFiloriPPxNl0UwUwYFNvjkQ9B8zNeV1F2WqXq8W32IOtZkfIxpqRPoQrEYtCYyGUP
+         ygUK3mwr7qTV3R6x8c7ilNyb/V1tKjGSoxfVd5uk1mp91hKB4e6iTYzJ0ZlvioPmNVRM
+         Ei/Cs1woOrhsRMK6jreFMlLIw/OEfu28s/R4mdDneKg4oXIx66ZB1+lW6q6g5KBnrSt8
+         E+BwdceRHn3cKMcDs3BDS+PXeCbeUep+wrB699VInBE+9LiXh2MXQF09JDQ3VFU5bdXr
+         LdESYtYUavSLYVJPT+NWFqzgpDOYfKYoxuG69prZloX3HDfMBk3GUU5Eh99dRkgVMVmv
+         Ih4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=V0peUcS4xyy6xzU2lui7tASWzqbXgbJ8PVWPkgOy87s=;
+        b=XsfQ5aIFojdZtSPqc1gD/XTFKj4GEkEZf7m2O7U4/oJyA7jtzvv3XIs5YoMxn1x51o
+         b53wWIPyEyn0T5nxHHmXfpo+PHJXXPVkdIMVQA1GJx2wLpLYbMW5yhuwUdPtWsHWIVh+
+         D4Komwmrpv059FeJFJcVSMj/JiN5pFLcv1XG11hcmNwATcrHpj++BUx2GW9PVlD0uGrv
+         Fu1Q1a+3vCZVxkXFzru48R893nfeupzCKnyxbN1if4znoWRrQrNYOlEZnt0S9o9buzN9
+         DrCfKiq7uALw//JizA1Lu/X5h1EJADvH9Jxw7nueTWkM+8W9HKZZUKRIZUicdjb/4F57
+         xuCA==
+X-Gm-Message-State: AGi0PubLwm8Nzo1o86rrKi9TkltyZZFMvm1RZgDcfV9cfdSImvcYLZ4Z
+        kRQPUKzcJmCBZLjQpe2QNvk=
+X-Google-Smtp-Source: APiQypKR9/XpDamJYVfxyRTxLwmb+HIiAdic1PwWBGZ+2jeo+4tSTFUem5fLxgYZEwsb3kHKg+JU5Q==
+X-Received: by 2002:a0c:9aee:: with SMTP id k46mr307996qvf.7.1586443153294;
+        Thu, 09 Apr 2020 07:39:13 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id d24sm20629143qkl.8.2020.04.09.07.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 07:39:12 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 9 Apr 2020 10:39:10 -0400
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dave Young <dyoung@redhat.com>, pjones@redhat.com,
+        daniel.kiper@oracle.com, Leif Lindholm <leif@nuviainc.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@alien8.de>, Sergey Shatunov <me@prok.pw>,
+        hpa@zytor.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
+        initramfs@vger.kernel.org,
+        Donovan Tremura <neurognostic@protonmail.ch>,
+        Harald Hoyer <harald@hoyer.xyz>
+Subject: Re: [PATCH 1/2] efi/x86: Move efi stub globals from .bss to .data
+Message-ID: <20200409143910.GA727557@rani.riverdale.lan>
+References: <CAMj1kXEUkJ1XJ9OTsijeq8tNNYC00bXqEV44OMtX5ugo9WoLKA@mail.gmail.com>
+ <20200406180614.429454-1-nivedita@alum.mit.edu>
+ <20200408074334.GA21886@dhcp-128-65.nay.redhat.com>
+ <CAMj1kXGPOZ6zWtgGScLy0ECrTtf1yhngDTNE1chW-MQw3XQp9Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGPOZ6zWtgGScLy0ECrTtf1yhngDTNE1chW-MQw3XQp9Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Apr 08, 2020 at 09:49:15AM +0200, Ard Biesheuvel wrote:
+> (add Peter, Leif and Daniel)
+> 
+> On Wed, 8 Apr 2020 at 09:43, Dave Young <dyoung@redhat.com> wrote:
+> >
+> > On 04/06/20 at 02:06pm, Arvind Sankar wrote:
+> > > Commit
+> > >
+> > >   3ee372ccce4d ("x86/boot/compressed/64: Remove .bss/.pgtable from
+> > >   bzImage")
+> > >
+> > > removed the .bss section from the bzImage.
+> > >
+> > > However, while a PE loader is required to zero-initialize the .bss
+> > > section before calling the PE entry point, the EFI handover protocol
+> > > does not currently document any requirement that .bss be initialized by
+> > > the bootloader prior to calling the handover entry.
+> > >
+> > > When systemd-boot is used to boot a unified kernel image [1], the image
+> > > is constructed by embedding the bzImage as a .linux section in a PE
+> > > executable that contains a small stub loader from systemd together with
+> > > additional sections and potentially an initrd. As the .bss section
+> > > within the bzImage is no longer explicitly present as part of the file,
+> > > it is not initialized before calling the EFI handover entry.
+> > > Furthermore, as the size of the embedded .linux section is only the size
+> > > of the bzImage file itself, the .bss section's memory may not even have
+> > > been allocated.
+> >
+> > I did not follow up the old report, maybe I missed something. But not
+> > sure why only systemd-boot is mentioned here.  I also have similar issue
+> > with early efi failure.  With these two patches applied, it works well
+> > then.
+> >
+> > BTW, I use Fedora 31 + Grub2
+> >
+> 
+> OK, so I take it this means that GRUB's PE/COFF loader does not
+> zero-initialize BSS either? Does it honor the image size in memory if
+> it exceeds the file size?
 
+Dave, that comment was because the previous report was for systemd-boot
+stub.
 
-> On Apr 8, 2020, at 11:04 PM, Rong Chen <rong.a.chen@intel.com> wrote:
->=20
->=20
->=20
-> On 4/9/20 5:35 AM, Chuck Lever wrote:
->>=20
->>> On Apr 8, 2020, at 5:32 PM, kbuild test robot <lkp@intel.com> wrote:
->>>=20
->>> tree:   =
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git =
-master
->>> head:   f5e94d10e4c468357019e5c28d48499f677b284f
->>> commit: da1661b93bf489cdbc8bcea919b165d31b4810bf SUNRPC: Teach =
-server to use xprt_sock_sendmsg for socket sends
->>> date:   3 weeks ago
->>>=20
->>> If you fix the issue, kindly add following tag as appropriate
->>> Reported-by: kbuild test robot <lkp@intel.com>
->>>=20
->>>=20
->>> cppcheck warnings: (new ones prefixed by >>)
->>>=20
->>>   net/sunrpc/svcsock.c:405:9: warning: union member =
-'Anonymous0::all' is never used. [unusedStructMember]
->>>     long  all[SVC_PKTINFO_SPACE / sizeof(long)];
->>>           ^
->>>   net/sunrpc/svcsock.c:518:9: warning: union member =
-'Anonymous1::all' is never used. [unusedStructMember]
->>>     long  all[SVC_PKTINFO_SPACE / sizeof(long)];
->>>           ^
->>>>> net/sunrpc/svcsock.c:527:32: warning: Variable 'uninitialized_var' =
-is assigned a value that is never used. [unreadVariable]
->>>    unsigned int uninitialized_var(sent);
->>>                                  ^
->>>=20
->>> vim +/uninitialized_var +527 net/sunrpc/svcsock.c
->>>=20
->>>   504=09
->>>   505	/**
->>>   506	 * svc_udp_sendto - Send out a reply on a UDP socket
->>>   507	 * @rqstp: completed svc_rqst
->>>   508	 *
->>>   509	 * Returns the number of bytes sent, or a negative =
-errno.
->>>   510	 */
->>>   511	static int svc_udp_sendto(struct svc_rqst *rqstp)
->>>   512	{
->>>   513		struct svc_xprt *xprt =3D rqstp->rq_xprt;
->>>   514		struct svc_sock	*svsk =3D container_of(xprt, =
-struct svc_sock, sk_xprt);
->>>   515		struct xdr_buf *xdr =3D &rqstp->rq_res;
->>>   516		union {
->>>   517			struct cmsghdr	hdr;
->>>   518			long		all[SVC_PKTINFO_SPACE / =
-sizeof(long)];
->>>   519		} buffer;
->>>   520		struct cmsghdr *cmh =3D &buffer.hdr;
->>>   521		struct msghdr msg =3D {
->>>   522			.msg_name	=3D &rqstp->rq_addr,
->>>   523			.msg_namelen	=3D rqstp->rq_addrlen,
->>>   524			.msg_control	=3D cmh,
->>>   525			.msg_controllen	=3D sizeof(buffer),
->>>   526		};
->>>> 527		unsigned int uninitialized_var(sent);
->>>   528		int err;
->>>   529=09
->>>   530		svc_set_cmsg_data(rqstp, cmh);
->>>   531=09
->>>   532		err =3D xprt_sock_sendmsg(svsk->sk_sock, &msg, =
-xdr, 0, 0, &sent);
->>>   533		xdr_free_bvec(xdr);
->>>   534		if (err =3D=3D -ECONNREFUSED) {
->>>   535			/* ICMP error on earlier request. */
->>>   536			err =3D xprt_sock_sendmsg(svsk->sk_sock, =
-&msg, xdr, 0, 0, &sent);
->>>   537			xdr_free_bvec(xdr);
->>>   538		}
->>>   539		if (err < 0)
->>>   540			return err;
->>>   541		return sent;
->> Wha? "sent" is used right here. Can someone explain this warning?
->=20
-> Hi Chuck,
->=20
-> Sorry for the inconvenience, it should be a false warning,
-> It's every odd that removing uninitialized_var can silence this =
-warning.
+Ard, should I revise the commit message to make it clear it's not
+restricted to systemd-boot but anything using handover entry may be
+affected? Maybe just a "for example, when systemd-boot..." and then a
+line to say grub2 with the EFI stub patches is also impacted?
 
-Rong, thanks for your response! I will leave the code as-is, then.
+https://src.fedoraproject.org/rpms/grub2/blob/f31/f/0001-Add-support-for-Linux-EFI-stub-loading.patch#_743
 
++  kernel_mem = grub_efi_allocate_pages_max(lh.pref_address,
++					   BYTES_TO_PAGES(lh.init_size));
 
-> Best Regards,
-> Rong Chen
->=20
->>=20
->>=20
->>>   542	}
->>>   543=09
->>>=20
->>> ---
->>> 0-DAY CI Kernel Test Service, Intel Corporation
->>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->> --
->> Chuck Lever
->>=20
->>=20
->> _______________________________________________
->> kbuild-all mailing list -- kbuild-all@lists.01.org
->> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+Looking at this, grub does allocate init_size for the image, but it
+doesn't zero it out.
 
---
-Chuck Lever
+This call also looks wrong to me though. It allocates at max address of
+pref_address, which, if it succeeds, will guarantee that the kernel gets
+loaded entirely below pref_address == LOAD_PHYSICAL_ADDR. In native
+mode, if it weren't for the EFI stub copying the kernel again, this
+would cause the startup code to relocate the kernel into unallocated
+memory. On a mixed-mode boot, this would cause the early page tables
+setup prior to transitioning to 64-bit mode to be in unallocated memory
+and potentially get clobbered by the EFI stub.
 
-
-
+The first try to allocate pref_address should be calling
+grub_efi_allocate_fixed instead.
