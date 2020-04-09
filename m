@@ -2,144 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D2F1A3476
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 15:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE7B1A3478
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 15:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726766AbgDINAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 09:00:23 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:27111 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726477AbgDINAX (ORCPT
+        id S1726789AbgDINAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 09:00:33 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:46824 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgDINAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 09:00:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586437222;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6J81ztz61bi/hNuEa9vgW8/L4CIx+oFB9L/c9ZjgtAk=;
-        b=E9A1T5RBzB56PU+LAplZsZuxUJHFvqCpg3jWVxM5qy3hGhB2VqZh+yA8E6AtyfdSJFDyII
-        Yf/snEdMkb4iV26oHX3L75EoDXTugigl62KBaS+IbYBCTMKkptxSSc/BQsau/M70TuQFrG
-        SfZg/pC5DspJXe5yZEz0W0t0Q+rhJZQ=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-9WVD-n3HNIikzWPfycV8nA-1; Thu, 09 Apr 2020 09:00:19 -0400
-X-MC-Unique: 9WVD-n3HNIikzWPfycV8nA-1
-Received: by mail-qk1-f200.google.com with SMTP id m1so3289935qkh.23
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 06:00:19 -0700 (PDT)
+        Thu, 9 Apr 2020 09:00:32 -0400
+Received: by mail-qk1-f196.google.com with SMTP id g74so3719422qke.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 06:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vnCZohwRHsmDtT2P5HcB+/NPRFz35HKFKOK1nLu0P0s=;
+        b=CezAMW14TlE0+D8/bfCgQuMMzdla4tMTrjWEu6fghtWPYSzUiBcRIwfcAnMnqUkMam
+         rFeLfKjk9NXXL4knaW1u0Y5cVIsQlTwekApdTj3hDfsyjfuh0jUG+tKqL6FxWlIoQy/s
+         Q5V/fyVVqsJPCAwX6tvW7FEtkiSsTWe8BNVqRHkdow/awj4WmDt09mK4bHHpGewgOCc6
+         ulIJslpf9/T4reX0gSpVjR3XdWaL1/aqgLZ8Sy68sLEU2tw+Tj1uqvgjxCi+UgVrphYt
+         bH643HlPFmWaVkosyJEoMm9uNd7SczdPcyNd5d2lUuzw1uLDYp+yWcUUP30FrwxRyzhv
+         T0aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6J81ztz61bi/hNuEa9vgW8/L4CIx+oFB9L/c9ZjgtAk=;
-        b=rdsR8JgPhW4Cjiwz4uV//+WW13pV5GP8UzHUKZis25abF1ATgeqyfU/rX24meAp7Ev
-         z3aU3GCvOJ77qCvqOG13LPKtemQYQhFSqN3O/IBuP0ZDVi8pT3/dcaUHVoVjYB/uCL3m
-         PZreKEni4oJG+vBHSUup+p7W1FH5oBMBVY/A2XnLGCxQ3/AeaUJ3BNF41h5Sp93jw8cw
-         7aUdcbD6a/jtg5Wew7bfp97hHoMmO0kE2iLPzC9KbbnpfPS3CgO/+kEAwigkD+kAHu1k
-         YlrDyWKIi181RZJnJxizXxCllK21eqQd7eyFhaBN/ZGTScUCIzUORNkS832+gA9/VxnL
-         3rcg==
-X-Gm-Message-State: AGi0PuZzLbdY8E1tUu1zsivNQSM15seX56l8KXddfQc02mHV1hX7Nl/I
-        OFdgCVa9+qMoIUwDfG3eEQSkWuRz9KjG3fgKY7dx5vIuitVUnUoOsFfybEtaEZRaak4S7/+4f+y
-        xo2/VveyiAorl9gPEfjGvG4CC
-X-Received: by 2002:a0c:efc2:: with SMTP id a2mr11942256qvt.249.1586437218649;
-        Thu, 09 Apr 2020 06:00:18 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIoRkPNMgjwKKbdOwgwgkyc1pKaD7FffW909TJ3FYJkgLt1d2W8qr7/cJUmXARzVhUpeSL3Gg==
-X-Received: by 2002:a0c:efc2:: with SMTP id a2mr11942238qvt.249.1586437218392;
-        Thu, 09 Apr 2020 06:00:18 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id l22sm22074735qkj.120.2020.04.09.06.00.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 06:00:17 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 09:00:16 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        syzbot+693dc11fcb53120b5559@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/2] mm/mempolicy: Allow lookup_node() to handle fatal
- signal
-Message-ID: <20200409130016.GB362416@xz-x1>
-References: <20200408014010.80428-1-peterx@redhat.com>
- <20200408014010.80428-2-peterx@redhat.com>
- <20200409070253.GB18386@dhcp22.suse.cz>
- <20200409125258.GA362416@xz-x1>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vnCZohwRHsmDtT2P5HcB+/NPRFz35HKFKOK1nLu0P0s=;
+        b=TDNuMdHZnItDqeEYbRdLQoRVJvRihdvGB41TYOKJvuBkRZeCsu0ErmGK7CV1NsDVjz
+         RuaQxYVS8RYW7yJgt/f6bNqI196TCViP3i2KQOgVYtBDFCPB9NKwilLnIGUythdOq9gh
+         qevpOwJsoRqDE8UBF4STJ7IslI6hB5hRPAn5435HvVwyGNTpGO9o2yU+K3IZx8vTjcsR
+         Iz0KJJEqwQAxcvwidgMhpHxtSvdymPGrREkuxlnXVkLmoOh2nynYOHMNflQ5CtK0ixvs
+         RXzVzp6/cT6niZ/iuZE67tMyP6p0aBhYtSCsB3ykOiAXRFL6JKplAZO6m7Rp5ZpWTrJH
+         fLWQ==
+X-Gm-Message-State: AGi0PuYmreAyGqCDdBo7VgS+Iva4872tFY2Rsb/BeACkYC92HkRA8lTp
+        C9Iu/Ja2fZWxnYVeqNKRcvhhc9X0nr1IIugdPhF9JA==
+X-Google-Smtp-Source: APiQypJO7EzrDHF7D4zbkHdxOft7urOwT8fTJFGKxGTIPP2qJenCpoCClzj0s7F/4yq6bc/4hcBgpcxxpQtaBKEy9i4=
+X-Received: by 2002:a05:620a:348:: with SMTP id t8mr11025765qkm.407.1586437231649;
+ Thu, 09 Apr 2020 06:00:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200409125258.GA362416@xz-x1>
+References: <20200408014010.80428-1-peterx@redhat.com> <20200408174732.bc448bbe41d190bfe5cc252e@linux-foundation.org>
+ <20200409114940.GT21484@bombadil.infradead.org>
+In-Reply-To: <20200409114940.GT21484@bombadil.infradead.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 9 Apr 2020 15:00:20 +0200
+Message-ID: <CACT4Y+ZvQ9UvVAwTjjD8Zxo0X_nfxa3+6n6TqWk2g+hahBwdCw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        syzkaller <syzkaller@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 08:52:58AM -0400, Peter Xu wrote:
-> On Thu, Apr 09, 2020 at 09:02:53AM +0200, Michal Hocko wrote:
-> > This patch has been merged and it is actually wrong after ae46d2aa6a7f
-> > has been merged. We can either revert or I suggest just handling >0,
-> > like the patch below:
-> > 
-> > From 03fbe30ec61e65b0927d0d41bccc7dff5f7eafd8 Mon Sep 17 00:00:00 2001
-> > From: Michal Hocko <mhocko@suse.com>
-> > Date: Thu, 9 Apr 2020 08:26:57 +0200
-> > Subject: [PATCH] mm, mempolicy: fix up gup usage in lookup_node
-> > 
-> > ba841078cd05 ("mm/mempolicy: Allow lookup_node() to handle fatal signal") has
-> > added a special casing for 0 return value because that was a possible
-> > gup return value when interrupted by fatal signal. This has been fixed
-> > by ae46d2aa6a7f ("mm/gup: Let __get_user_pages_locked() return -EINTR
-> > for fatal signal") in the mean time so ba841078cd05 can be reverted.
-> > This patch however doesn't go all the way to revert it because 0 return
-> > value is impossible. We always get an error or 1 for a single page
-> > request.
-> > 
-> > Fixes: ba841078cd05 ("mm/mempolicy: Allow lookup_node() to handle fatal signal")
-> > Signed-off-by: Michal Hocko <mhocko@suse.com>
-> > ---
-> >  mm/mempolicy.c | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > 
-> > diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> > index 48ba9729062e..1965e2681877 100644
-> > --- a/mm/mempolicy.c
-> > +++ b/mm/mempolicy.c
-> > @@ -927,10 +927,7 @@ static int lookup_node(struct mm_struct *mm, unsigned long addr)
-> >  
-> >  	int locked = 1;
-> >  	err = get_user_pages_locked(addr & PAGE_MASK, 1, 0, &p, &locked);
-> > -	if (err == 0) {
-> > -		/* E.g. GUP interrupted by fatal signal */
-> > -		err = -EFAULT;
-> > -	} else if (err > 0) {
-> > +	if (err > 0) {
-> >  		err = page_to_nid(p);
-> >  		put_page(p);
-> >  	}
-> 
-> Hi, Michal,
-> 
-> I'm totally not against this, but note that get_user_pages_locked()
-> could still return zero. Although I'm not 100% sure now on whether
-> npages==0 will be the only case, it won't hurt to keep this ret==0
-> check until we consolidate the whole gup code to never return zero.
-> 
-> Assuming there's another case (even possible for a future gup bug)
-> that could return a zero, your patch will let err be anything (which
-> you didn't initialize err with your patch), then the function will
-> return a random value.  So even if you really want this change, I
-> would suggest you initialize err to some error code.
+On Thu, Apr 9, 2020 at 1:49 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Wed, Apr 08, 2020 at 05:47:32PM -0700, Andrew Morton wrote:
+> > On Tue,  7 Apr 2020 21:40:08 -0400 Peter Xu <peterx@redhat.com> wrote:
+> >
+> > > The two patches should fix below syzbot reports:
+> > >
+> > >   BUG: unable to handle kernel paging request in kernel_get_mempolicy
+> > >   https://lore.kernel.org/lkml/0000000000002b25f105a2a3434d@google.com/
+> > >
+> > >   WARNING: bad unlock balance in __get_user_pages_remote
+> > >   https://lore.kernel.org/lkml/00000000000005c65d05a2b90e70@google.com/
+> >
+> > (Is there an email address for the syzbot operators?)
+>
+> I'd suggest syzkaller-bugs@googlegroups.com (added to the Cc).
 
-I'm sorry, not a random value, but err=0 will be returned as the mem
-policy by lookup_node().
+syzkaller@googlegroups.com is a better one.
+syzkaller-bugs@googlegroups.com plays more of an LKML role.
 
-> 
-> I just don't see much gain we get from removing that check.
-> 
-> Thanks,
-> 
-> -- 
-> Peter Xu
+> But there's a deeper problem in that we don't have anywhere to stash
+> that kind of information in the kernel tree right now.  Perhaps a special
+> entry in the MAINTAINERS file for bot operators?  Or one entry per bot?
 
--- 
-Peter Xu
+I don't mind adding syzkaller. Some time ago I wanted to contact
+KernelCI, CKI, LKFT, 0-day owners, finding relevant lists wasn't
+impossible, but for some it was hard.
 
+For syzkaller it would be:
+
+https://github.com/google/syzkaller/issues for bugs/feature requests.
+syzkaller@googlegroups.com for discussions.
