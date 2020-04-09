@@ -2,154 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D101A3199
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3831A31B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgDIJMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:12:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:47422 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725972AbgDIJMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:12:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8850331B;
-        Thu,  9 Apr 2020 02:12:22 -0700 (PDT)
-Received: from [10.37.12.112] (unknown [10.37.12.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A2AC3F73D;
-        Thu,  9 Apr 2020 02:12:20 -0700 (PDT)
-Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
- multiple connections
-To:     saiprakash.ranjan@codeaurora.org
-Cc:     mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
-        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
- <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
- <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
- <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
- <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
- <bb209f80-ac02-6321-dac4-ebf9ee6fa9a0@arm.com>
- <bd05b31c2391edfff5044f22f2f83edf@codeaurora.org>
- <e9c299c4-caeb-9eb8-f019-b311bfce756a@arm.com>
- <a7074f44ebbde720b5e0189801eab7c9@codeaurora.org>
- <20200408224347.GA388414@ewhatever.cambridge.arm.com>
- <9ad167836b0a22694d58d24f39db89a6@codeaurora.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <671892c3-b90d-73f0-4706-b74b40002260@arm.com>
-Date:   Thu, 9 Apr 2020 10:17:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.7.0
+        id S1726642AbgDIJTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:19:41 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22964 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726579AbgDIJTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 05:19:40 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03993Xd5109923
+        for <linux-kernel@vger.kernel.org>; Thu, 9 Apr 2020 05:19:39 -0400
+Received: from e06smtp04.uk.ibm.com (e06smtp04.uk.ibm.com [195.75.94.100])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 309210ybs5-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 05:19:39 -0400
+Received: from localhost
+        by e06smtp04.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <rppt@linux.ibm.com>;
+        Thu, 9 Apr 2020 10:19:10 +0100
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (9.149.109.196)
+        by e06smtp04.uk.ibm.com (192.168.101.134) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 9 Apr 2020 10:19:01 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0399JRTc48169080
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Apr 2020 09:19:27 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24E3CA405D;
+        Thu,  9 Apr 2020 09:19:27 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 757FDA404D;
+        Thu,  9 Apr 2020 09:19:24 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.148.207.228])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  9 Apr 2020 09:19:24 +0000 (GMT)
+Date:   Thu, 9 Apr 2020 12:19:22 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robert Richter <rric@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Allison Randal <allison@lohutok.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Matt Redfearn <matt.redfearn@mips.com>,
+        Steve Winslow <swinslow@gmail.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, oprofile-list@lists.sf.net
+Subject: Re: [PATCH 12/12] MIPS: ip27: Fix includes
+References: <20200408113505.2528103-1-jiaxun.yang@flygoat.com>
+ <20200408130024.2529220-7-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-In-Reply-To: <9ad167836b0a22694d58d24f39db89a6@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408130024.2529220-7-jiaxun.yang@flygoat.com>
+X-TM-AS-GCONF: 00
+x-cbid: 20040909-0016-0000-0000-000003014CE8
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20040909-0017-0000-0000-000033653176
+Message-Id: <20200409091922.GA17293@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-09_03:2020-04-07,2020-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ mlxscore=0 impostorscore=0 suspectscore=1 adultscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 priorityscore=1501 mlxlogscore=423
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004090066
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sai,
+On Wed, Apr 08, 2020 at 08:59:54PM +0800, Jiaxun Yang wrote:
+> Somehow changes in topology messed up headers.
+> So just add necessary headers to make it compile again.
 
-
-Thanks for the quick testing ! Please see below for the
-tmc_etr probe failure.
-
-On 04/09/2020 08:51 AM, Sai Prakash Ranjan wrote:
-> Hi Suzuki,
+Please avoid aftermath build fixes because it breaks bisection.
+Each commit should be buildable, so this changes should go into the patches
+that actually require them.
+ 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/include/asm/mach-ip27/mmzone.h   | 2 ++
+>  arch/mips/include/asm/mach-ip27/topology.h | 2 ++
+>  arch/mips/include/asm/sn/addrs.h           | 1 +
+>  3 files changed, 5 insertions(+)
 > 
-> On 2020-04-09 04:13, Suzuki K Poulose wrote:
->> On Tue, Apr 07, 2020 at 08:48:54PM +0530, Sai Prakash Ranjan wrote:
->>
->> Please find the untested patch below.
->>
->> ---8>---
->>
->> [untested] coresight: Fix support for sparse port numbers
->>
->> On some systems the firmware may not describe all the ports
->> connected to a component (e.g, for security reasons). This
->> could be especially problematic for "funnels" where we could
->> end up in modifying memory beyond the allocated space for
->> refcounts.
->>
->> e.g, for a funnel with input ports listed 0, 3, 5, nr_inport = 3.
->> However the we could access refcnts[5] while checking for
->> references.
->>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>  .../hwtracing/coresight/coresight-platform.c  | 74 ++++++++++++-------
->>  drivers/hwtracing/coresight/coresight.c       |  8 +-
->>  2 files changed, 56 insertions(+), 26 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-platform.c
->> b/drivers/hwtracing/coresight/coresight-platform.c
->> index 3c5bee429105..1c610d6e944b 100644
->> --- a/drivers/hwtracing/coresight/coresight-platform.c
->> +++ b/drivers/hwtracing/coresight/coresight-platform.c
->> @@ -67,6 +67,7 @@ static void of_coresight_get_ports_legacy(const
-
-[...]
-
->> @@ -684,8 +702,13 @@ static int acpi_coresight_parse_graph(struct
->> acpi_device *adev,
->>          return rc;
->>
->>      /* Copy the connection information to the final location */
->> -    for (i = 0; i < pdata->nr_outport; i++)
->> -        pdata->conns[i] = conns[i];
->> +    for (i = 0; conns + i < ptr; i++) {
->> +        int port = conns[i].outport;
->> +
->> +        /* Duplicate output port */
->> +        WARN_ON(pdata->conns[port].child_fwnode);
->> +        pdata->conns[port] = conns[i];
->> +    }
->>
->>      devm_kfree(&adev->dev, conns);
->>      return 0;
->> @@ -787,6 +810,7 @@ coresight_get_platform_data(struct device *dev)
->>          goto error;
->>
->>      pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
->> +    pdata->nr_outport = pdata->nr_inport = -1;
-
-
-Please could you remove this hunk and test it ? I forgot to update the
-commit before I sent this over.
-
-
->>              /* Does it match this newly added device? */
->> @@ -1029,6 +1032,9 @@ static void coresight_fixup_device_conns(struct
->> coresight_device *csdev)
->>          struct coresight_connection *conn = &csdev->pdata->conns[i];
->>          struct device *dev = NULL;
->>
->> +        if (!conn->child_fwnode)
->> +            continue;
->> +
->>          dev = bus_find_device_by_fwnode(&coresight_bustype, 
->> conn->child_fwnode);
->>          if (dev) {
->>              conn->child_dev = to_coresight_device(dev);
->> @@ -1061,7 +1067,7 @@ static int coresight_remove_match(struct device
->> *dev, void *data)
->>      for (i = 0; i < iterator->pdata->nr_outport; i++) {
->>          conn = &iterator->pdata->conns[i];
->>
->> -        if (conn->child_dev == NULL)
->> +        if (conn->child_dev == NULL || conn->child_fwnode == NULL)
->>              continue;
->>
->>          if (csdev->dev.fwnode == conn->child_fwnode) {
+> diff --git a/arch/mips/include/asm/mach-ip27/mmzone.h b/arch/mips/include/asm/mach-ip27/mmzone.h
+> index 08c36e50a860..e0a53b97b4a8 100644
+> --- a/arch/mips/include/asm/mach-ip27/mmzone.h
+> +++ b/arch/mips/include/asm/mach-ip27/mmzone.h
+> @@ -2,6 +2,8 @@
+>  #ifndef _ASM_MACH_MMZONE_H
+>  #define _ASM_MACH_MMZONE_H
+>  
+> +#include <linux/mmzone.h>
+> +
+>  #include <asm/sn/addrs.h>
+>  #include <asm/sn/arch.h>
+>  #include <asm/sn/agent.h>
+> diff --git a/arch/mips/include/asm/mach-ip27/topology.h b/arch/mips/include/asm/mach-ip27/topology.h
+> index d66cc53feab8..601e350908f7 100644
+> --- a/arch/mips/include/asm/mach-ip27/topology.h
+> +++ b/arch/mips/include/asm/mach-ip27/topology.h
+> @@ -2,6 +2,8 @@
+>  #ifndef _ASM_MACH_TOPOLOGY_H
+>  #define _ASM_MACH_TOPOLOGY_H	1
+>  
+> +#include <linux/numa.h>
+> +
+>  #include <asm/sn/types.h>
+>  #include <asm/mmzone.h>
+>  
+> diff --git a/arch/mips/include/asm/sn/addrs.h b/arch/mips/include/asm/sn/addrs.h
+> index 837d23e24976..1d3945ef2ca4 100644
+> --- a/arch/mips/include/asm/sn/addrs.h
+> +++ b/arch/mips/include/asm/sn/addrs.h
+> @@ -13,6 +13,7 @@
+>  #ifndef __ASSEMBLY__
+>  #include <linux/smp.h>
+>  #include <linux/types.h>
+> +#include <asm/io.h>
+>  #endif /* !__ASSEMBLY__ */
+>  
+>  #include <asm/addrspace.h>
+> -- 
+> 2.26.0.rc2
 > 
 > 
-> Thanks Suzuki, I don't see the KASAN warning anymore with this patch.
-> But somehow tmc_etr probe fails with error -12(ENOMEM).
 
-See the above suggestion.
+-- 
+Sincerely yours,
+Mike.
 
-Cheers
-Suzuki
