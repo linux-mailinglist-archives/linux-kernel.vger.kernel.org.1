@@ -2,149 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EC941A3314
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B801A331D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgDILUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 07:20:55 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17408 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgDILUz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 07:20:55 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8f04ae0000>; Thu, 09 Apr 2020 04:19:10 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 09 Apr 2020 04:20:54 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 09 Apr 2020 04:20:54 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Apr
- 2020 11:20:54 +0000
-Received: from [10.24.37.103] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Apr 2020
- 11:20:49 +0000
-Subject: Re: [TEGRA194_CPUFREQ Patch 2/3] cpufreq: Add Tegra194 cpufreq driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rjw@rjwysocki.net>, <catalin.marinas@arm.com>, <will@kernel.org>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-        <talho@nvidia.com>, <linux-pm@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <bbasu@nvidia.com>,
-        <mperttunen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <1575394348-17649-1-git-send-email-sumitg@nvidia.com>
- <1575394348-17649-2-git-send-email-sumitg@nvidia.com>
- <20200326115023.xy3n5bl7uetuw7mx@vireshk-i7>
- <d233b26b-6b50-7d41-9f33-a5dc151e0e7d@nvidia.com>
- <20200406025549.qfwzlk3745y3r274@vireshk-i7>
- <3ab4136c-8cca-c2f9-d286-b82dac23e720@nvidia.com>
- <20200408055301.jhvu5bc2luu3b5qr@vireshk-i7>
- <08307e54-0e14-14a3-7d6a-d59e1e04a683@nvidia.com>
- <20200409074415.twpzu2n4frqlde7b@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-Message-ID: <00390070-38a1-19aa-ca59-42c4658bee7e@nvidia.com>
-Date:   Thu, 9 Apr 2020 16:51:13 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726597AbgDILWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 07:22:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33002 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725987AbgDILW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 07:22:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 9634EAE24;
+        Thu,  9 Apr 2020 11:22:27 +0000 (UTC)
+Date:   Thu, 9 Apr 2020 13:22:26 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Christophe Leroy <christophe.leroy@c-s.fr>
+Cc:     linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpcs: perf: consolidate perf_callchain_user_64 and
+ perf_callchain_user_32
+Message-ID: <20200409112226.GT25468@kitsune.suse.cz>
+References: <1585896170.ohti800w9v.astroid@bobo.none>
+ <20200406210022.32265-1-msuchanek@suse.de>
+ <8786906b-edd5-e4a3-8286-33a05f39668c@c-s.fr>
 MIME-Version: 1.0
-In-Reply-To: <20200409074415.twpzu2n4frqlde7b@vireshk-i7>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586431150; bh=qMj+7UqSwh6oU1fngw5KoRbQ6xPzFrPcGepKTB1mVZk=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Rjpp4cG4bDTXrC6kQByGu9sXXULFmZfKueFslkBwG7MqdgPN4ewhwHCClI/UlFr1d
-         g6vaC3CTN0fXLX0i7vcueUHYBa25tt4wGFjyidi3w7T5dnKEKSkoMJcZV9z4/bmhVs
-         ByaVYwf6aGGyg/syi9vdzrlI0cpmWKa+OxAwB+FqGzoMZlKD5d9KQf2CT/hL1Uh/Tu
-         2nOWyBtV7AD4CnOOCSnc98IrrljSfAXLEYGcPAfN1pzi0zi604lvPQev+KkSPctUtk
-         +yX1OQGsBistlrxX97ZqQNJ+K8RFRHUawTd+BDj+Q70YcTWAnUTMU629pspUBI7unW
-         Ic82eu3GUyjkg==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8786906b-edd5-e4a3-8286-33a05f39668c@c-s.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Apr 07, 2020 at 07:21:06AM +0200, Christophe Leroy wrote:
+> 
+> 
+> Le 06/04/2020 à 23:00, Michal Suchanek a écrit :
+> > perf_callchain_user_64 and perf_callchain_user_32 are nearly identical.
+> > Consolidate into one function with thin wrappers.
+> > 
+> > Suggested-by: Nicholas Piggin <npiggin@gmail.com>
+> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> > ---
+> >   arch/powerpc/perf/callchain.h    | 24 +++++++++++++++++++++++-
+> >   arch/powerpc/perf/callchain_32.c | 21 ++-------------------
+> >   arch/powerpc/perf/callchain_64.c | 14 ++++----------
+> >   3 files changed, 29 insertions(+), 30 deletions(-)
+> > 
+> > diff --git a/arch/powerpc/perf/callchain.h b/arch/powerpc/perf/callchain.h
+> > index 7a2cb9e1181a..7540bb71cb60 100644
+> > --- a/arch/powerpc/perf/callchain.h
+> > +++ b/arch/powerpc/perf/callchain.h
+> > @@ -2,7 +2,7 @@
+> >   #ifndef _POWERPC_PERF_CALLCHAIN_H
+> >   #define _POWERPC_PERF_CALLCHAIN_H
+> > -int read_user_stack_slow(void __user *ptr, void *buf, int nb);
+> > +int read_user_stack_slow(const void __user *ptr, void *buf, int nb);
+> 
+> Does the constification of ptr has to be in this patch ?
+It was in the original patch. The code is touched anyway.
+> Wouldn't it be better to have it as a separate patch ?
+Don't care much either way. Can resend it as separate patches.
+> 
+> >   void perf_callchain_user_64(struct perf_callchain_entry_ctx *entry,
+> >   			    struct pt_regs *regs);
+> >   void perf_callchain_user_32(struct perf_callchain_entry_ctx *entry,
+> > @@ -16,4 +16,26 @@ static inline bool invalid_user_sp(unsigned long sp)
+> >   	return (!sp || (sp & mask) || (sp > top));
+> >   }
+> > +/*
+> > + * On 32-bit we just access the address and let hash_page create a
+> > + * HPTE if necessary, so there is no need to fall back to reading
+> > + * the page tables.  Since this is called at interrupt level,
+> > + * do_page_fault() won't treat a DSI as a page fault.
+> > + */
+> > +static inline int __read_user_stack(const void __user *ptr, void *ret,
+> > +				    size_t size)
+> > +{
+> > +	int rc;
+> > +
+> > +	if ((unsigned long)ptr > TASK_SIZE - size ||
+> > +			((unsigned long)ptr & (size - 1)))
+> > +		return -EFAULT;
+> > +	rc = probe_user_read(ret, ptr, size);
+> > +
+> > +	if (rc && IS_ENABLED(CONFIG_PPC64))
+> 
+> gcc is probably smart enough to deal with it efficiently, but it would
+> be more correct to test rc after checking CONFIG_PPC64.
+IS_ENABLED(CONFIG_PPC64) is constant so that part of the check should be
+compiled out in any case.
 
+Thanks
 
-On 09/04/20 1:14 PM, Viresh Kumar wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On 08-04-20, 16:54, sumitg wrote:
->>
->>
->> On 08/04/20 11:23 AM, Viresh Kumar wrote:
->>> External email: Use caution opening links or attachments
->>>
->>>
->>> On 07-04-20, 23:48, sumitg wrote:
->>>> On 06/04/20 8:25 AM, Viresh Kumar wrote:
->>>>> On 05-04-20, 00:08, sumitg wrote:
->>>>>> On 26/03/20 5:20 PM, Viresh Kumar wrote:
->>>>>>> On 03-12-19, 23:02, Sumit Gupta wrote:
->>>>>>>> diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
->>>>>>>> +static unsigned int tegra194_get_speed_common(u32 cpu, u32 delay)
->>>>>>>> +{
->>>>>>>> +     struct read_counters_work read_counters_work;
->>>>>>>> +     struct tegra_cpu_ctr c;
->>>>>>>> +     u32 delta_refcnt;
->>>>>>>> +     u32 delta_ccnt;
->>>>>>>> +     u32 rate_mhz;
->>>>>>>> +
->>>>>>>> +     read_counters_work.c.cpu = cpu;
->>>>>>>> +     read_counters_work.c.delay = delay;
->>>>>>>> +     INIT_WORK_ONSTACK(&read_counters_work.work, tegra_read_counters);
-> 
-> Initialize the work only once from init routine.
-> 
-We are using "read_counters_work" as local variable. So every invocation 
-the function will have its own copy of counters for corresponding cpu. 
-That's why are doing INIT_WORK_ONSTACK here.
-
->>>>>>>> +     queue_work_on(cpu, read_counters_wq, &read_counters_work.work);
->>>>>>>> +     flush_work(&read_counters_work.work);
->>>>>>>
->>>>>>> Why can't this be done in current context ?
->>>>>>>
->>>>>> We used work queue instead of smp_call_function_single() to have long delay.
->>>>>
->>>>> Please explain completely, you have raised more questions than you
->>>>> answered :)
->>>>>
->>>>> Why do you want to have long delays ?
->>>>>
->>>> Long delay value is used to have the observation window long enough for
->>>> correctly reconstructing the CPU frequency considering noise.
->>>> In next patch version, changed delay value to 500us which in our tests is
->>>> considered reliable.
->>>
->>> I understand that you need to put a udelay() while reading the freq from
->>> hardware, that is fine, but why do you need a workqueue for that? Why can't you
->>> just read the values directly from the same context ?
->>>
->> The register to read frequency is per core and not accessible to other
->> cores. So, we have to execute the function remotely as the target core to
->> read frequency might be different from current.
->> The functions for that are smp_call_function_single or queue_work_on.
->> We used queue_work_on() to avoid long delay inside ipi interrupt context
->> with interrupts disabled.
-> 
-> Okay, I understand this now, finally :)
-> 
-> But if the interrupts are disabled during some call, won't workqueues face the
-> same problem ?
-> 
-Yes, we are trying to minimize the case.
-
-> --
-> viresh
-> 
+Michal
