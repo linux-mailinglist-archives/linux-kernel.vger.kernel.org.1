@@ -2,141 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 047A41A319C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A521A31A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:16:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbgDIJPg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 9 Apr 2020 05:15:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:2570 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725783AbgDIJPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:15:36 -0400
-IronPort-SDR: YE+BXvrsLWuYVgaf4Gu4roxVU1q/OOKvm/V9Af2Q/X3Cln6wMKJQSr34u2D9dUBz8+2X1/hUff
- wcPAacJBbuNg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2020 02:15:35 -0700
-IronPort-SDR: LKI2mMlF5gRpfCpUQKmtzZ9HxbE2ZCqbs8lOz4VEi0+4c9z2xO8vzNilg/v2NJuYCA6ZkGE25f
- Tbc1DvUcnVCA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,362,1580803200"; 
-   d="scan'208";a="270024062"
-Received: from fmsmsx107.amr.corp.intel.com ([10.18.124.205])
-  by orsmga002.jf.intel.com with ESMTP; 09 Apr 2020 02:15:35 -0700
-Received: from fmsmsx111.amr.corp.intel.com (10.18.116.5) by
- fmsmsx107.amr.corp.intel.com (10.18.124.205) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 9 Apr 2020 02:15:34 -0700
-Received: from shsmsx107.ccr.corp.intel.com (10.239.4.96) by
- fmsmsx111.amr.corp.intel.com (10.18.116.5) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 9 Apr 2020 02:15:33 -0700
-Received: from shsmsx104.ccr.corp.intel.com ([169.254.5.225]) by
- SHSMSX107.ccr.corp.intel.com ([169.254.9.191]) with mapi id 14.03.0439.000;
- Thu, 9 Apr 2020 17:15:30 +0800
-From:   "Liu, Yi L" <yi.l.liu@intel.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-CC:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>
-Subject: RE: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
-Thread-Topic: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
-Thread-Index: AQHWAEUdkW8K+/kg/06c7098DvJyv6hgm8wAgANYlCCAAK00AIAA6IawgAEUvACABu4SMIACfjcAgACRzFA=
-Date:   Thu, 9 Apr 2020 09:15:29 +0000
-Message-ID: <A2975661238FB949B60364EF0F2C25743A228CCA@SHSMSX104.ccr.corp.intel.com>
-References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
- <1584880325-10561-7-git-send-email-yi.l.liu@intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D7FF98F@SHSMSX104.ccr.corp.intel.com>
- <A2975661238FB949B60364EF0F2C25743A21D8C6@SHSMSX104.ccr.corp.intel.com>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D805F75@SHSMSX104.ccr.corp.intel.com>
- <A2975661238FB949B60364EF0F2C25743A21ED01@SHSMSX104.ccr.corp.intel.com>
- <20200403083407.GB1269501@myrica>
- <A2975661238FB949B60364EF0F2C25743A224C8F@SHSMSX104.ccr.corp.intel.com>
- <20200409082846.GE2435@myrica>
-In-Reply-To: <20200409082846.GE2435@myrica>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-version: 11.2.0.6
-dlp-reaction: no-action
-x-originating-ip: [10.239.127.40]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726681AbgDIJP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:15:59 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:46619 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgDIJP7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 05:15:59 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mnq0K-1ixZfo1qzi-00pIOx for <linux-kernel@vger.kernel.org>; Thu, 09 Apr
+ 2020 11:15:58 +0200
+Received: by mail-qt1-f176.google.com with SMTP id m33so2221988qtb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:15:58 -0700 (PDT)
+X-Gm-Message-State: AGi0PuY9q7a2o9AUQOpsPIHz1+jrXktyDH/TbnTw99sAvY3/xAjkcqXi
+        BP8gOSvSNDWrylNNJTIu9ZzoeIBHsmTD4JxJoRg=
+X-Google-Smtp-Source: APiQypL7rQnHFaV/J6F3l245EdvqvQj9PERdkX/il6/aFT9qPOaOo3CSPC1MiajWcrHTUGea8JinG7bbRXX2zZD+/vM=
+X-Received: by 2002:ac8:7292:: with SMTP id v18mr11168094qto.304.1586423757348;
+ Thu, 09 Apr 2020 02:15:57 -0700 (PDT)
 MIME-Version: 1.0
+References: <cover.1586422035.git.baolin.wang7@gmail.com>
+In-Reply-To: <cover.1586422035.git.baolin.wang7@gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 9 Apr 2020 11:15:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1rWuL-mSeFBN0Dk7u3wnDmPgknEM3Em734KP64-Wv0ZQ@mail.gmail.com>
+Message-ID: <CAK8P3a1rWuL-mSeFBN0Dk7u3wnDmPgknEM3Em734KP64-Wv0ZQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] Add new reg_update_bits() support
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:fUhXbTmZBtgfIdnCHrnbaNFrzDFemHcsnDPQJYaNGwA5wX13a/l
+ 023S48tDTzi7qkGJ1uZdTe6djI+qnP9nM06NkXas8RdbSzUKlcVbs9hmIYA3ymRWOX2JZtG
+ NVIjySDoPn97zDUqrPmkd2hYN8DfxSJdOgY/MoyYiTfSO9yFZ5zxe9Sxljm9tplOOYO4I9Y
+ JPflSpvqCc4cETm/Ct38g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1u9vBiRz+RU=:FTWZ+MGzd54cIQJ/UsMI6c
+ eR9j5KksWsUCBgS9KItox/2BJ+EaQFXpQSxL7z2Om9k/Y7+HOfDk/SxIYIHsRICvBBKNpVGHE
+ 1I5NkucpIJMMR0boCdi7NJL98pw05FZQe4yKhUbRTss6f7l0mK2xDwp+4d74r5p5Fv6Tx9NyC
+ 3/fHaAcEcwSwUT7qfip9zdltnaOTXuBnc7i+5TTWU1AuY8tt9npwqt6uAUSrqcI8f8Eez8Txu
+ GaBAAR34H+EuQ0Y0Z53u8AuTpt9nDTxDzceg14pHQOhKLIcak6UXXxCWcLOQrDiQNZV4y/J3L
+ XgiK+8oTrNaZ+gQ5a2HLbvR1pjFL+Gs19XAFkq4ggcKjztqpM1ZNh8INOcsgQr56arSi8QeWI
+ a2sa1T0EpipOPXP8txlgPg2XoZGoIikmbbY4D0ogfmU3wYPKpwJHcVfnZwhNYwVt3jrMEV7Bi
+ reGKVeHb1A/nV70GBYwkgSjpQZz7dGzuItojgDwM99AvjfDZwW6EqEYt12UlslFC3gjBD3W3u
+ nE6nUCKsW+DzOSgHsIBrCLKIBKEAU08D+9bFswJroqBrZ+BwEpWue16i2cEMosNxGawxiS1Q0
+ 8/14LRvnfQGj3Hi+w5s2WXTvXGm+ZJCerGzADac5mflXqwML0KhS8stnALlayOWX9aDVMSWhW
+ JWQq8nIhdBau1oGKxJ8QYWGpC+CAaqTud2Z3vs3i1d/fqDg5FllLVOlFGr64Bxm9jCddL8QDK
+ GRYWF0kb2fQmQyY+XpwrzkIIP7Y64m6YUKnXhMezXYeHV0ip6LcS76sBEWH9msl/oQdkc+nzD
+ WCQWom1n2DOYVnmovAQ7cq5ADFabZk5XBItxVEbTcvf6f3GhD4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Sent: Thursday, April 9, 2020 4:29 PM
-> To: Liu, Yi L <yi.l.liu@intel.com>
-> 
-> On Tue, Apr 07, 2020 at 10:33:25AM +0000, Liu, Yi L wrote:
-> > Hi Jean,
-> >
-> > > From: Jean-Philippe Brucker < jean-philippe@linaro.org >
-> > > Sent: Friday, April 3, 2020 4:35 PM
-> > > Subject: Re: [PATCH v1 6/8] vfio/type1: Bind guest page tables to host
-> > >
-> > > On Thu, Apr 02, 2020 at 08:05:29AM +0000, Liu, Yi L wrote:
-> > > > > > > > static long vfio_iommu_type1_ioctl(void *iommu_data,
-> > > > > > > >  		default:
-> > > > > > > >  			return -EINVAL;
-> > > > > > > >  		}
-> > > > > > > > +
-> > > > > > > > +	} else if (cmd == VFIO_IOMMU_BIND) {
-> > > > > > >
-> > > > > > > BIND what? VFIO_IOMMU_BIND_PASID sounds clearer to me.
-> > > > > >
-> > > > > > Emm, it's up to the flags to indicate bind what. It was proposed to
-> > > > > > cover the three cases below:
-> > > > > > a) BIND/UNBIND_GPASID
-> > > > > > b) BIND/UNBIND_GPASID_TABLE
-> > > > > > c) BIND/UNBIND_PROCESS
-> > > > > > <only a) is covered in this patch>
-> > > > > > So it's called VFIO_IOMMU_BIND.
-> > > > >
-> > > > > but aren't they all about PASID related binding?
-> > > >
-> > > > yeah, I can rename it. :-)
-> > >
-> > > I don't know if anyone intends to implement it, but SMMUv2 supports
-> > > nesting translation without any PASID support. For that case the name
-> > > VFIO_IOMMU_BIND_GUEST_PGTBL without "PASID" anywhere makes more
-> sense.
-> > > Ideally we'd also use a neutral name for the IOMMU API instead of
-> > > bind_gpasid(), but that's easier to change later.
-> >
-> > I agree VFIO_IOMMU_BIND is somehow not straight-forward. Especially, it may
-> > cause confusion when thinking about VFIO_SET_IOMMU. How about using
-> > VFIO_NESTING_IOMMU_BIND_STAGE1 to cover a) and b)? And has another
-> > VFIO_BIND_PROCESS in future for the SVA bind case.
-> 
-> I think minimizing the number of ioctls is more important than finding the
-> ideal name. VFIO_IOMMU_BIND was fine to me, but if it's too vague then
-> rename it to VFIO_IOMMU_BIND_PASID and we'll just piggy-back on it for
-> non-PASID things (they should be rare enough).
-maybe we can start with VFIO_IOMMU_BIND_PASID. Actually, there is
-also a discussion on reusing the same ioctl and vfio structure for
-pasid_alloc/free, bind/unbind_gpasid. and cache_inv. how about your
-opinion?
+On Thu, Apr 9, 2020 at 10:58 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
+>
+> The Spreadtrum platform uses a special set/clear method to update
+> registers' bits, thus this patch set introduces a new reg_update_bits()
+> callback, as well as adding a helper in syscon driver to support
+> this feature.
+>
+> Any comments are welcome. Thanks.
 
-https://lkml.org/lkml/2020/4/3/833
+This looks like a good idea to me, both the concept and the implementation.
 
-Regards,
-Yi Liu
+The one thing I'd note is that we have a similar mechanism for devices made
+by Sigmatel and later Freescale after they acquired them.
+include/linux/stmp_device.h only holds a couple of definitions, so it's much
+less abstract than your approach, but the idea is similar.
 
+It would be nice in theory to move the sigmatel devices over to
+reg_update_bits() in theory, but this seems unlikely to actually happen,
+given that these are mostly obsolete drivers at this point.
 
-
+      Arnd
