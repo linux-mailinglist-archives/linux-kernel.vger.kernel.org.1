@@ -2,70 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA35A1A38B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CD01A38B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:14:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgDIRNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:13:31 -0400
-Received: from vkten.in ([104.244.73.96]:45266 "EHLO vkten.in"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726589AbgDIRNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:13:30 -0400
-Received: (qmail 1341 invoked from network); 9 Apr 2020 17:13:26 -0000
-Received: from unknown (HELO localhost) (vkor@vkten.in@117.209.168.92)
-  de/crypted with TLSv1.3: TLS_AES_256_GCM_SHA384 [256/256] DN=none
-  by vkten with ESMTPSA; 9 Apr 2020 17:13:26 -0000
-From:   R Veera Kumar <vkor@vkten.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     R Veera Kumar <vkor@vkten.in>, Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: android: ion: use macro DEFINE_DEBUGFS_ATTRIBUTE to define debugfs fops
-Date:   Thu,  9 Apr 2020 22:43:18 +0530
-Message-Id: <20200409171318.1730-1-vkor@vkten.in>
-X-Mailer: git-send-email 2.20.1
+        id S1726933AbgDIROA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:14:00 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:38257 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726650AbgDIRN7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 13:13:59 -0400
+Received: by mail-lf1-f68.google.com with SMTP id l11so221022lfc.5;
+        Thu, 09 Apr 2020 10:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j5y9erjap5VmHy0BQLWCh9oVMJ7PdliECGnV0deEBC0=;
+        b=TgZGStOXa5YzcE/XeS59qlX6qIX4dKczf+omjTRlYVc7kUr+CaxrRkwrJqreMAAO3Q
+         P0X2hEjUYmMKnQMlHldzMz64AcvhudBeAnFqfyuzNLDVkwuZiFUVl6GiRn/mOm4dmPlg
+         Vcxl0iRHBtyOcX34+UNkZGfSwroNn7P440DSyaeDDOWbdAjbNfJcc9ObMi8fJS8NbODD
+         Q9xg7pYCHLLwxDQRSA0DwaQTLoWcRIYM3licsf7mnjoC7S07X3koZpY8pV6K50XjZK+Q
+         /RDHJOAU1VGceZJl0hY5o/BVxBAUWl00hD6Bc1fEGBP+sShBLFjTUCzk4M+AtyMn0uhE
+         4PdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j5y9erjap5VmHy0BQLWCh9oVMJ7PdliECGnV0deEBC0=;
+        b=Qg+QhXYPaBBd/l7qOPIBNBOChoT8BMyu4ODmmoux1p5AMmAJJYHgcR9Z/vQe8VcWYR
+         6FBXFROUEEdAJWO0k0Js6mBxB6gvcFPAKQPC9ZsFJqQc+77qeYH8YYhE4p3k3x7oNQrc
+         znEzmMtYj5HiqlP+D+9DYV2p3taf7eUrBA+MeX5zcPaDhX2RT3luVRNdTMzzm6AGkRxb
+         QXEWz+OKjc1PGG90cNOtli3sjhsYQ6Fz84wwvQR9YIwWoVR3piltxu2j37YYDrU//bNC
+         YCacDPoDrOmW/V1vPZbKNQjF/gBe5ztm8BmNLW2tKunyWwlLAmK2mRody6nEKeBjmwac
+         BHHw==
+X-Gm-Message-State: AGi0Pubb7HIEy/3tUxRLGGcEILbSFKAVr5mH3t1H4HaWCPpKWALYWWIe
+        o9d8kx+gHoIcSwijgwNxPjxcy2bm
+X-Google-Smtp-Source: APiQypLZXt4t1Gkrg5L1En5p1CGXycKYgR724EWJAl4RMO/nyeZQwzbZ97CZnMFl6YDIVLqtyOEw8Q==
+X-Received: by 2002:a19:f611:: with SMTP id x17mr182866lfe.51.1586452435969;
+        Thu, 09 Apr 2020 10:13:55 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id v9sm15934908ljj.31.2020.04.09.10.13.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Apr 2020 10:13:55 -0700 (PDT)
+Subject: Re: [PATCH v1 0/2] Support headset on Tegra boards that use WM8903
+To:     Stephen Warren <swarren@wwwdotorg.org>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20200330204011.18465-1-digetx@gmail.com>
+ <5c9c995a-a571-e543-e680-30739cb1561c@gmail.com>
+ <848cc6c5-e8e4-2796-3ee1-3e12a3e92c54@wwwdotorg.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <a7159a8e-4987-0c08-ce3a-fa82d926218e@gmail.com>
+Date:   Thu, 9 Apr 2020 20:13:54 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <848cc6c5-e8e4-2796-3ee1-3e12a3e92c54@wwwdotorg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is more clear to use DEFINE_DEBUGFS_ATTRIBUTE to define debugfs file
-operation rather than DEFINE_SIMPLE_ATTRIBUTE.
+09.04.2020 19:54, Stephen Warren пишет:
+...
+>> Jon / Stephen, are you okay with this patchset? Could you please ack it?
+>> Thanks in advance.
+> 
+> It looks plausible based on commit descriptions, but I don't remember
+> the details of those APIs well enough to actually review the code change.
+> 
 
-Found using coccinelle.
+The code change doesn't affect any of the old users, so it should be
+safe anyways.
 
-Signed-off-by: R Veera Kumar <vkor@vkten.in>
----
-Changes in v2:
- - Give correct explanation for patch
- - Adjust git commit tag and msg accordingly
----
- drivers/staging/android/ion/ion.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I understand that you don't feel comfortable to give an ACK if you're
+unsure, but I assume that Jon is in the same position, and thus, I'm not
+sure how to move forward.
 
-diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/android/ion/ion.c
-index 38b51eace4f9..dbe4018a6f83 100644
---- a/drivers/staging/android/ion/ion.c
-+++ b/drivers/staging/android/ion/ion.c
-@@ -554,8 +554,8 @@ static int debug_shrink_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(debug_shrink_fops, debug_shrink_get,
--			debug_shrink_set, "%llu\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(debug_shrink_fops, debug_shrink_get,
-+			 debug_shrink_set, "%llu\n");
- 
- void ion_device_add_heap(struct ion_heap *heap)
- {
--- 
-2.20.1
-
+Mark, could you please help with reviewing this series?
