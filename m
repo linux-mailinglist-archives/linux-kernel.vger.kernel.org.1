@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F60A1A31C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BE71A31DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgDIJby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:31:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgDIJbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:31:53 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5518220730;
-        Thu,  9 Apr 2020 09:31:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586424713;
-        bh=yu1DxhA5goDLvRx/GPY7agiWxznEHMQNlRX0ba5w0Mk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gSUHo4+B6MWf9VBolg2AvbN+t9D926yHPJkK5bSTa93ofzCplHB/Tgjl/uBT29NPL
-         FShJubWHD3/RVb6Eersg/7hprxFTloZioz9EWSAD75N2SEGcmCaF5QKHyCi0+mJsJ6
-         IeNija7yfMYeS2fVSiSWK2GSiQuRTHgDh6yUCyPE=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jMTXG-001rlN-39; Thu, 09 Apr 2020 10:31:46 +0100
-Date:   Thu, 9 Apr 2020 10:31:44 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Nishanth Menon <nm@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] irqchip/ti-sci-inta: fix processing of masked irqs
-Message-ID: <20200409103144.3b2169bf@why>
-In-Reply-To: <20200408191532.31252-1-grygorii.strashko@ti.com>
-References: <20200408191532.31252-1-grygorii.strashko@ti.com>
-Organization: Approximate
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726721AbgDIJew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:34:52 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:52750 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726571AbgDIJew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 05:34:52 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 3AF08A7135E5C9A07FE2;
+        Thu,  9 Apr 2020 17:34:36 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Thu, 9 Apr 2020
+ 17:34:26 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <khuong@os.amperecomputing.com>, <bp@alien8.de>,
+        <mchehab@kernel.org>, <tony.luck@intel.com>, <james.morse@arm.com>,
+        <rrichter@marvell.com>, <linux-edac@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH v2] EDAC, xgene: remove set but not used 'address'
+Date:   Thu, 9 Apr 2020 17:32:59 +0800
+Message-ID: <20200409093259.20069-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: grygorii.strashko@ti.com, nm@ti.com, t-kristo@ti.com, ssantosh@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, lokeshvutla@ti.com, peter.ujfalusi@ti.com, nsekhar@ti.com, linux-kernel@vger.kernel.org, vigneshr@ti.com, linux-arm-kernel@lists.infradead.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 8 Apr 2020 22:15:32 +0300
-Grygorii Strashko <grygorii.strashko@ti.com> wrote:
+Fix the following gcc warning:
 
-> The ti_sci_inta_irq_handler() does not take into account INTA IRQs state
-> (masked/unmasked) as it uses INTA_STATUS_CLEAR_j register to get INTA IRQs
-> status, which provides raw status value.
-> This causes hard IRQ handlers to be called or threaded handlers to be
-> scheduled many times even if corresponding INTA IRQ is masked.
-> Above, first of all, affects the LEVEL interrupts processing and causes
-> unexpected behavior up the system stack or crash.
-> 
-> Fix it by using the Interrupt Masked Status INTA_STATUSM_j register which
-> provides masked INTA IRQs status.
-> 
-> Fixes: 9f1463b86c13 ("irqchip/ti-sci-inta: Add support for Interrupt Aggregator driver")
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+drivers/edac/xgene_edac.c:1486:7: warning: variable ‘address’ set but
+not used [-Wunused-but-set-variable]
+   u32 address;
+       ^~~~~~~
+And remove the unused macro RBERRADDR_RD after that.
 
-Given the failure mode, doesn't this deserve a Cc stable?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/edac/xgene_edac.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> ---
->  drivers/irqchip/irq-ti-sci-inta.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-ti-sci-inta.c b/drivers/irqchip/irq-ti-sci-inta.c
-> index 8f6e6b08eadf..7e3ebf6ed2cd 100644
-> --- a/drivers/irqchip/irq-ti-sci-inta.c
-> +++ b/drivers/irqchip/irq-ti-sci-inta.c
-> @@ -37,6 +37,7 @@
->  #define VINT_ENABLE_SET_OFFSET	0x0
->  #define VINT_ENABLE_CLR_OFFSET	0x8
->  #define VINT_STATUS_OFFSET	0x18
-> +#define VINT_STATUS_MASKED_OFFSET	0x20
->  
->  /**
->   * struct ti_sci_inta_event_desc - Description of an event coming to
-> @@ -116,7 +117,7 @@ static void ti_sci_inta_irq_handler(struct irq_desc *desc)
->  	chained_irq_enter(irq_desc_get_chip(desc), desc);
->  
->  	val = readq_relaxed(inta->base + vint_desc->vint_id * 0x1000 +
-> -			    VINT_STATUS_OFFSET);
-> +			    VINT_STATUS_MASKED_OFFSET);
->  
->  	for_each_set_bit(bit, &val, MAX_EVENTS_PER_VINT) {
->  		virq = irq_find_mapping(domain, vint_desc->events[bit].hwirq);
-
-
-Otherwise queued for post -rc1.
-
-Thanks,
-
-	M.
+diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
+index e4a1032ba0b5..1d2c27a00a4a 100644
+--- a/drivers/edac/xgene_edac.c
++++ b/drivers/edac/xgene_edac.c
+@@ -1349,7 +1349,6 @@ static int xgene_edac_l3_remove(struct xgene_edac_dev_ctx *l3)
+ #define WORD_ALIGNED_ERR_MASK		BIT(28)
+ #define PAGE_ACCESS_ERR_MASK		BIT(27)
+ #define WRITE_ACCESS_MASK		BIT(26)
+-#define RBERRADDR_RD(src)		((src) & 0x03FFFFFF)
+ 
+ static const char * const soc_mem_err_v1[] = {
+ 	"10GbE0",
+@@ -1483,13 +1482,11 @@ static void xgene_edac_rb_report(struct edac_device_ctl_info *edac_dev)
+ 		return;
+ 	if (reg & STICKYERR_MASK) {
+ 		bool write;
+-		u32 address;
+ 
+ 		dev_err(edac_dev->dev, "IOB bus access error(s)\n");
+ 		if (regmap_read(ctx->edac->rb_map, RBEIR, &reg))
+ 			return;
+ 		write = reg & WRITE_ACCESS_MASK ? 1 : 0;
+-		address = RBERRADDR_RD(reg);
+ 		if (reg & AGENT_OFFLINE_ERR_MASK)
+ 			dev_err(edac_dev->dev,
+ 				"IOB bus %s access to offline agent error\n",
 -- 
-Jazz is not dead. It just smells funny...
+2.17.2
+
