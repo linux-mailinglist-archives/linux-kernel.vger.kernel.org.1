@@ -2,73 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F0B1A2DDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6822E1A2DEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgDIDRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 23:17:17 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:45873 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgDIDRR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 23:17:17 -0400
-X-Originating-IP: 50.39.163.217
-Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
-        (Authenticated sender: josh@joshtriplett.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A55BDFF806;
-        Thu,  9 Apr 2020 03:17:11 +0000 (UTC)
-Date:   Wed, 8 Apr 2020 20:17:08 -0700
-From:   Josh Triplett <josh@joshtriplett.org>
-To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v3 1/3] fs: Support setting a minimum fd for "lowest
- available fd" allocation
-Message-ID: <20200409031708.GC6149@localhost>
-References: <cover.1586321767.git.josh@joshtriplett.org>
- <90bf6fd43343ca862e7f61b0834baf2bdbd0e24c.1586321767.git.josh@joshtriplett.org>
- <20200408120040.mtkqmymfazrv3lqk@yavin.dot.cyphar.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200408120040.mtkqmymfazrv3lqk@yavin.dot.cyphar.com>
+        id S1726609AbgDID0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 23:26:12 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:34704 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726545AbgDID0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 23:26:11 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E56C21A02A7;
+        Thu,  9 Apr 2020 05:26:09 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4F94A1A02B7;
+        Thu,  9 Apr 2020 05:26:03 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1BD4C40294;
+        Thu,  9 Apr 2020 11:25:55 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
+        amit.kucheria@verdurent.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: thermal: Convert i.MX8MM to json-schema
+Date:   Thu,  9 Apr 2020 11:18:13 +0800
+Message-Id: <1586402293-30579-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 10:00:40PM +1000, Aleksa Sarai wrote:
-> On 2020-04-07, Josh Triplett <josh@joshtriplett.org> wrote:
-> > Some applications want to prevent the usual "lowest available fd"
-> > allocation from allocating certain file descriptors. For instance, they
-> > may want to prevent allocation of a closed fd 0, 1, or 2 other than via
-> > dup2/dup3, or reserve some low file descriptors for other purposes.
-> > 
-> > Add a prctl to increase the minimum fd and return the previous minimum.
-> > 
-> > System calls that allocate a specific file descriptor, such as
-> > dup2/dup3, ignore this minimum.
-> > 
-> > exec resets the minimum fd, to prevent one program from interfering with
-> > another program's expectations about fd allocation.
-> 
-> Why is it implemented as an "increase the value" interface? It feels
-> like this is meant to avoid some kind of security trap (with a library
-> reducing the value) but it means that if you want to temporarily raise
-> the minimum fd number it's not possible (without re-exec()ing yourself,
-> which is hardly a fun thing to do).
-> 
-> Then again, this might've been discussed before and I missed it...
+Convert the i.MX8MM thermal binding to DT schema format using json-schema
 
-It was: the previous version was a "get" and "set" interface. That
-interface didn't allow for the possibility that something else in the
-process had already set a minimum. This new atomic increase interface
-(which also serves as a "get" interface if you pass 0) makes it possible
-for a userspace library to reserve a range. (You have no guarantee about
-previously allocated descriptors in that range, but you know that no
-*new* automatically allocated descriptors will appear in that range,
-which suffices; userspace can do the rest.)
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ .../devicetree/bindings/thermal/imx8mm-thermal.txt | 15 ------
+ .../bindings/thermal/imx8mm-thermal.yaml           | 53 ++++++++++++++++++++++
+ 2 files changed, 53 insertions(+), 15 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
+ create mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
 
-- Josh Triplett
+diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
+deleted file mode 100644
+index 3629d3c..0000000
+--- a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-* Thermal Monitoring Unit (TMU) on Freescale i.MX8MM SoC
+-
+-Required properties:
+-- compatible : Must be "fsl,imx8mm-tmu" or "fsl,imx8mp-tmu".
+-- reg : Address range of TMU registers.
+-- clocks : TMU's clock source.
+-- #thermal-sensor-cells : Should be 0 or 1. See ./thermal.txt for a description.
+-
+-Example:
+-tmu: tmu@30260000 {
+-	compatible = "fsl,imx8mm-tmu";
+-	reg = <0x30260000 0x10000>;
+-	clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
+-	#thermal-sensor-cells = <0>;
+-};
+diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+new file mode 100644
+index 0000000..53a42b3
+--- /dev/null
++++ b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/thermal/imx8mm-thermal.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP i.MX8M Mini Thermal Binding
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - fsl,imx8mm-tmu
++              - fsl,imx8mp-tmu
++  reg:
++    description: |
++      Address range of TMU registers.
++    maxItems: 1
++  clocks:
++    description: |
++      TMU's clock source.
++    maxItems: 1
++
++  # See ./thermal.txt for details
++  "#thermal-sensor-cells":
++    enum:
++      - 0
++      - 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#thermal-sensor-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mm-clock.h>
++
++    tmu: tmu@30260000 {
++         compatible = "fsl,imx8mm-tmu";
++         reg = <0x30260000 0x10000>;
++         clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
++         #thermal-sensor-cells = <0>;
++    };
++
++...
+-- 
+2.7.4
+
