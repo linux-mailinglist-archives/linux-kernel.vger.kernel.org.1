@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC3F1A3A9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AF41A3AA3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbgDITgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 15:36:07 -0400
-Received: from mail.efficios.com ([167.114.26.124]:47244 "EHLO
+        id S1727009AbgDITgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 15:36:17 -0400
+Received: from mail.efficios.com ([167.114.26.124]:47216 "EHLO
         mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbgDITgD (ORCPT
+        with ESMTP id S1726881AbgDITgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 15:36:03 -0400
+        Thu, 9 Apr 2020 15:36:00 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id C2231280F71;
-        Thu,  9 Apr 2020 15:36:03 -0400 (EDT)
+        by mail.efficios.com (Postfix) with ESMTP id 4943728109F;
+        Thu,  9 Apr 2020 15:36:00 -0400 (EDT)
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id lC_i8lCrEUZf; Thu,  9 Apr 2020 15:36:03 -0400 (EDT)
+        with ESMTP id JnZREeYoa-WA; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 579F7281090;
+        by mail.efficios.com (Postfix) with ESMTP id 81984280F61;
         Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 579F7281090
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 81984280F61
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
         s=default; t=1586460959;
-        bh=i7YJaBdodyswtMtM5mlqG58TPDPhAxSk6tVePqUUpaI=;
+        bh=N8TR0WBVz7Tv+O6fhb3AiUPKDYJHpnVQhxqixbF58TU=;
         h=From:To:Date:Message-Id;
-        b=dYQcBCM9EQc2bIwBBMuXoSUxgn7aHD4t36A9Jmv62ymw4frKBGk9dFqlykdbU/1e3
-         oxMQTjz3QSB1IV/QwNrMrF3x1GlErqgFy1+HEsejYb4791Odua4qhPEJHHPNhz//qJ
-         5xa41CLfOCEJOTQw7uscpzE+XeGMve/vH3vV+uC68U2oHMI7Poj+99FLw/M631E/bm
-         zZ3JJ/1zS5oHaqJJjEWA5LRCqmKjUK9rC45VKuX03vBM4cfylnvAAhv3dv0xaer5wH
-         yJb1T8OKvP7SENEUO4LXqk0i9XlPgs8RgNfK08/T5B6z9BXNpa296kK6aHO9K+h4Z8
-         A++4RrlcNu/fw==
+        b=V6uA8uRMceSCMBYKENb90JPRfqzw+pAhRrJSTH1B7mUvzXjb60PSnvoHZQRRPsnJq
+         Puwc2IwMmgWG0QhVXxHb6nRrUzL8mxkVK0yrD+Ad4xk7Eurb2a5HPCu5D/kfB6vR+4
+         bx1Z7cjUa7poTL37OmnmQyZpvXZHFxc+LgM1xVlofD9/r8569/WvoMbbEI1v+zkzDX
+         AhOJfAK7oQ9WnvQk26HiD3g+ECKdn1ohG+zzuPDdMfkeGxzMDJWh7Zf+N9dVcPFpdh
+         uVoUVAm6hQvdWF6Q+iGXr+q3gGWIxTLduIxFhRXcToOENnlyWZlc2EZ/iddmAIQ5An
+         8hhd8eatcr8eg==
 X-Virus-Scanned: amavisd-new at efficios.com
 Received: from mail.efficios.com ([127.0.0.1])
         by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qGJct0Y9jzXT; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
+        with ESMTP id LIQbuK6txhh7; Thu,  9 Apr 2020 15:35:59 -0400 (EDT)
 Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
-        by mail.efficios.com (Postfix) with ESMTPSA id 6D36D28097B;
+        by mail.efficios.com (Postfix) with ESMTPSA id B57DA280CC0;
         Thu,  9 Apr 2020 15:35:58 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -48,10 +48,11 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         Alexei Starovoitov <ast@kernel.org>
 Cc:     linux-kernel@vger.kernel.org,
         Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [RFC PATCH 4/9] stacktrace: export-GPL stack_trace_save_user
-Date:   Thu,  9 Apr 2020 15:35:38 -0400
-Message-Id: <20200409193543.18115-5-mathieu.desnoyers@efficios.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [RFC PATCH 5/9] sched: export-GPL task_prio
+Date:   Thu,  9 Apr 2020 15:35:39 -0400
+Message-Id: <20200409193543.18115-6-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
 References: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
@@ -60,30 +61,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The stack_trace_save symbol is already exported GPL. Add a GPL export
-for the stack_trace_save_user symbol as well.
-
-This is useful for tracers implemented as kernel modules.
+Exporting the task_prio() symbol to GPL modules is useful for kernel
+tracers implemented as kernel modules. It exports information which is
+already available through /proc in a way which allows it to be sampled
+by kernel tracers with low overhead.
 
 Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
 ---
- kernel/stacktrace.c | 1 +
+ kernel/sched/core.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/kernel/stacktrace.c b/kernel/stacktrace.c
-index 2af66e449aa6..c8c48444bd39 100644
---- a/kernel/stacktrace.c
-+++ b/kernel/stacktrace.c
-@@ -240,6 +240,7 @@ unsigned int stack_trace_save_user(unsigned long *store, unsigned int size)
- 
- 	return c.len;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index a2694ba82874..f87cffef317a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4629,6 +4629,7 @@ int task_prio(const struct task_struct *p)
+ {
+ 	return p->prio - MAX_RT_PRIO;
  }
-+EXPORT_SYMBOL_GPL(stack_trace_save_user);
- #endif
++EXPORT_SYMBOL_GPL(task_prio);
  
- #else /* CONFIG_ARCH_STACKWALK */
+ /**
+  * idle_cpu - is a given CPU idle currently?
 -- 
 2.17.1
 
