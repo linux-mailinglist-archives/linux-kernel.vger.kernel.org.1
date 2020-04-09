@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2431A338A
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EECB1A3390
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726726AbgDILuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 07:50:04 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:41049 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbgDILuE (ORCPT
+        id S1726594AbgDILvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 07:51:40 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:44491 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgDILvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 07:50:04 -0400
-Received: by mail-io1-f68.google.com with SMTP id b12so3493438ion.8;
-        Thu, 09 Apr 2020 04:50:03 -0700 (PDT)
+        Thu, 9 Apr 2020 07:51:39 -0400
+Received: by mail-lf1-f65.google.com with SMTP id 131so7640794lfh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 04:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+XqP7Ap1vUorR0W4ROT/4/sK/I8YLfCYd/qeR1cdEgE=;
-        b=pb9aAJmgSBJLFZELTtD91Tc95hIg9mDY+5kW6+GTYkZaHen2JQf7wzds/IJmGDXHUe
-         C5XEesCYKp3GfC6zLjKW6/rvD1Yrj3DHNXFn1DbVZQ8i7epRLwih8GTlFT1vZSK/iYU8
-         vlTFysaBrWnf11tqcUfcGUNE46VNhUcf8ztZzk/5FRvhWUb3VEOSNVyBh0nlgN6nh2d8
-         YTMQ6vxxVkgVp4cgEPHpp42L2cxkjxsoMNvWzg53KTRQONuKukD05S9tegwhGPsq396I
-         FmAQwmI57WYF2vX58i/su/H2kvtQmacL17KBJJy8pNhDaC8XurNV8rGaHkA8bQGfYj5k
-         ELYQ==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=LMHpPi6/qVUiDTlAK1s76ZubaKVQAN/wyb4WRDwVA1A=;
+        b=HT2p7i0YSotlXgzTXhU3dPkjKSIv01ZAX3aVDbDkmjeEIb344KbMhNhXKvr1R+a2Rc
+         DFEzyNxwnBnGGmJa+bo5cWfClqtPBQYkeog/x3gQpvRJ9mfbovQODwxqKz3zQrNORGUf
+         DwrPAPGD7W2eTjXHv/QYn1sjaHgoXTGnqGIL1uP0CCCj5PQQRcl4BgCNX5dfPnks0nlz
+         T87yxmGlZqtG2mwyR1D8+IoBWUFLqPl21gsnzP5GqYh4OJBMi5ULbr8u8uFhgRymFZYs
+         2/DMybZ8fzMj+/y6vsaIVk8g+oIXxN60qJh6tgYUd6TDNDlyrFj3segaFFcv4GGLwxHE
+         t6JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+XqP7Ap1vUorR0W4ROT/4/sK/I8YLfCYd/qeR1cdEgE=;
-        b=ASPO49B6wmSm9iVAe2Tzq9BLkM/gYshECuOECmlDZ9ra3LzNf3VI4jb0gVgNHuB+GD
-         VSe7Kfh8hN02osjyDKZpwzQjNE4RdEiT9GFqLz1uBpBCiXJXI8OYrU637MIk/uIZHjrf
-         XUHxcpwtBpAq8QXdz8cemW1+k6rxMRAEL94GYUg646qs/kp6nufpxek/OIy/MZ4LzVs5
-         m95X8ALrTWZqGKz5g1v0BlMll4k3q8Moig/wQhPuJdnkQV+H/4qmMXdfknAX1iOKGG7x
-         fvZLHaLnT4000iysc4TPJD/u+BxY3+XuJqCd1HFA2JwGxk6j2GnkGtOUHfTVMud3YwCS
-         sZug==
-X-Gm-Message-State: AGi0PuYzy2PdlbjhheieVSrC32Pw1AwUL0QIy5/3uhzzGoEwWyjs59lI
-        EKR7LATooYnSqrb5wd/v/PTeOlSuyMyfPNyJ76BMtpHaErY=
-X-Google-Smtp-Source: APiQypJQhXszQeNXb++KfW2iCUidd5W34HBnZ+kUn+qj+aseYfrFokyXuutDqIhvyASuZlMs6VaFb/5bfk17ypWr05s=
-X-Received: by 2002:a6b:5116:: with SMTP id f22mr11568386iob.15.1586433003478;
- Thu, 09 Apr 2020 04:50:03 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=LMHpPi6/qVUiDTlAK1s76ZubaKVQAN/wyb4WRDwVA1A=;
+        b=HxeIKoDcnzH98RKyFwOSrF42U35x9ui0lYmxL5L9el5qse4jxRMKhmeejTCP+ygbuS
+         74faqfNwxrcFxZiPcYmxGnCJL3/s9N4nA9pmqc25wxpRse6xYwZ/ih9WWqmlTFnd4yYO
+         PV6TS9rNnogHc29dItccnvvZf+UX9MsiEJhB5x7jBd3TI7VGCahTK8FdWldWkFQZJkl/
+         uO98m8N6ix2i+n/gsiQ5RD/EB665QPd8AaNCYC9BDmftPqmLMISB2p4uAn4UNJtNhCQp
+         C878tcb5aCzi+VrEDA7ODlRhEWUikKaw9h7ng9ZGe1flX9no27zjbUZTcmzawP+qVAxY
+         aRHQ==
+X-Gm-Message-State: AGi0PuYamV6lPMoAkWYokWwmxnQtr+O/Z2aqmxLaN7GwflR6ty9PFRj8
+        Zw5ZtZcOc5rZyibC/18SyM3tPRnw9y66J0ehsp0=
+X-Google-Smtp-Source: APiQypJXW2MKFWv3Ej7/aFzDxiZxxMotdpCRfJ4W3BUdj2r/OvufxaqdeJgDi4q6b1pWHqvmU/BHn7SNjP53TtdVlOE=
+X-Received: by 2002:a19:c607:: with SMTP id w7mr7532522lff.32.1586433097633;
+ Thu, 09 Apr 2020 04:51:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200408181406.40389-1-alcooperx@gmail.com> <20200408181406.40389-5-alcooperx@gmail.com>
- <CAHp75Vd_nbgwdE5Fbm3oxd_+51BJZ=67sVyjKiN2zLS+J4X-Fw@mail.gmail.com>
-In-Reply-To: <CAHp75Vd_nbgwdE5Fbm3oxd_+51BJZ=67sVyjKiN2zLS+J4X-Fw@mail.gmail.com>
-From:   Alan Cooper <alcooperx@gmail.com>
-Date:   Thu, 9 Apr 2020 07:49:52 -0400
-Message-ID: <CAOGqxeXQE0z=+6yuEME48am__2vtJhBpetYd_sZamJmm1h_TLQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] usb: host: Add ability to build new Broadcom STB
- USB drivers
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        USB <linux-usb@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reply-To: mrshenritapieres1@gmail.com
+Received: by 2002:ac2:5971:0:0:0:0:0 with HTTP; Thu, 9 Apr 2020 04:51:36 -0700 (PDT)
+From:   Henrita Pieres <piereshenrita61@gmail.com>
+Date:   Thu, 9 Apr 2020 04:51:36 -0700
+X-Google-Sender-Auth: Knx-5TMUbhm0glBY30SY6acyBcs
+Message-ID: <CAB-RZ6jTRE1R=7tgtA_wcwPRBOaTkvHjCyaBwVHFZ2VozLQjiw@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 9, 2020 at 5:08 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Apr 9, 2020 at 12:52 AM Al Cooper <alcooperx@gmail.com> wrote:
-> >
-> > Add the build system changes needed to get the Broadcom STB XHCI,
-> > EHCI and OHCI functionality working. The OHCI support does not
-> > require anything unique to Broadcom so the standard ohci-platform
-> > driver is being used. The link order for XHCI was changed in the
-> > Makefile because of the way STB XHCI, EHCI and OHCI controllers
-> > share a port which requires that the XHCI driver be initialized
-> > first. Also update MAINTAINERS.
->
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3477,6 +3477,14 @@ S:       Supported
-> >  F:     drivers/i2c/busses/i2c-brcmstb.c
-> >  F:     Documentation/devicetree/bindings/i2c/brcm,brcmstb-i2c.yaml
-> >
-> > +BROADCOM BRCMSTB USB EHCI DRIVER
-> > +M:     Al Cooper <alcooperx@gmail.com>
-> > +L:     linux-usb@vger.kernel.org
-> > +L:     bcm-kernel-feedback-list@broadcom.com
-> > +S:     Maintained
-> > +F:     drivers/usb/host/ehci-brcm.*
-> > +F:     Documentation/devicetree/bindings/usb/brcm,bcm7445-ehci.yaml
->
-> This has ordering issues.
-> Run parse-maintainer.pl to fix. (Note, it creates by default a new
-> file, you might need to run diff manually to see the difference).
+Hello Dear,
 
-I'm not sure what you mean.
-I ran "./scripts/parse-maintainers.pl" and did "diff MAINTAINERS
-MAINTAINERS.new" and there are no differences in or around my entry.
+Please forgive me for stressing you with my predicaments as I know
+that this letter may come to you as big surprise.  Actually, I came
+across your E-mail from my personal search afterward I decided to
+email you directly believing that you will be honest to fulfill my
+final wish before i die. Meanwhile, I am Mrs. Henrita Pieres, 62 years
+old, from France, and I am  suffering from a long time cancer and from
+all indication my condition is really deteriorating as my doctors have
+confirmed and courageously Advised me that I may not live beyond two
+months from now for the reason that my tumor has reached a  critical
+stage which has defiled all forms of medical treatment, As a matter of
+fact, registered nurse by profession while my  husband was dealing on
+Gold Dust and Gold Dory Bars till his sudden death the year 2016 then
+I took over his business till date. In fact, at this moment I have a
+deposit sum of four million five hundred thousand US dollars
+[$4,500,000.00] with one of the leading bank but unfortunately I
+cannot visit the bank since I=E2=80=99m critically sick and powerless to do
+anything myself but my bank account officer advised me to assign any
+of my trustworthy relative, friends or partner with authorization
+letter to stand as the recipient of my money but sorrowfully I don=E2=80=99=
+t
+have any reliable relative and no child.
 
-Al
+Therefore, I want you to receive the money and take 50% to take care
+of yourself and family while 50% should be use basically  on
+humanitarian purposes mostly to orphanages home, Motherless babies
+home, less privileged and disable citizens and widows around the
+world. And as soon as I receive your respond I shall send you the full
+details with my pictures, banking records and with full contacts of my
+banking institution to communicate them on the matter.
 
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+Hope to hear from you soon.
+Yours Faithfully,
+Mrs. Henrita Pieres
