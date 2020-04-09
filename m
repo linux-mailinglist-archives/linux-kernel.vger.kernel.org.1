@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 274DB1A346C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 14:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0196D1A346E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 14:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgDIMza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 08:55:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726650AbgDIMza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 08:55:30 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EECF20B1F;
-        Thu,  9 Apr 2020 12:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586436930;
-        bh=ouqY93umzCgNrgbre1T56T3qF+4V8KNH3EWaJaSL00Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dAsFkmOCqOEblMO+YurrQIDGlK+ibLPqbQH6IgSjK7cSFtOpljw13l1iBvg4FtfEE
-         tHkZMSReJ+q3n5pAX3qgKzxG+1AvCFOOehg+3hYSfFrU7RQMNj2LQQDTjN9iovbeXD
-         sKSd0caPqkuyr8Ke4ssonZdwoT1LRCYyUfWD7ufU=
-Date:   Thu, 9 Apr 2020 13:55:26 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/6] arm64/cpufeature: Add DIT and CSV2 feature bits in
- ID_PFR0 register
-Message-ID: <20200409125526.GC13078@willie-the-truck>
-References: <1580215149-21492-1-git-send-email-anshuman.khandual@arm.com>
- <1580215149-21492-3-git-send-email-anshuman.khandual@arm.com>
+        id S1726729AbgDIMzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 08:55:55 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:41285 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbgDIMzz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 08:55:55 -0400
+Received: by mail-qk1-f195.google.com with SMTP id y3so3741256qky.8
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 05:55:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jAXAQOk0ErVc2APrR6OinTn7FZoQNNgdHYwvSLGe2yc=;
+        b=fjomRjM4YA1sWzArY/6IvCLtRmgdXIsOkn+ejcLJ33W+TsvSbfN8V6vZqD8KEv9qcD
+         LKtS1OGfk7WKZ6S63AjKKpNbyLI0IJN//oK3icStX1HZl/UXYsg+xxmWFyuPCdGGqmKb
+         ukFQzIhW9gJx9WRhaPdP00U7BRTn2LvCEXyGmEdaC7Gvp3FEY+G03cReqaYBU61TViY6
+         R4twEnNB2lbUs9UH0lz8lPiFBIHGLBBQ6D1O+7tOU3GsY/q2672MRWe3Q6bsvR/5lBtE
+         PU6nBXTDuRdNnujb4SkdrR3qWmdF0nGZY4j8FYO1vRvMm6FVFJzMR9BDQWMHyxXbTgjX
+         IW7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jAXAQOk0ErVc2APrR6OinTn7FZoQNNgdHYwvSLGe2yc=;
+        b=T0nhthDgMqg38HNy+ePyM6IkMHDx/VqdarslCyXcXhA+oqw70SvpJeK/e5cBd7hMWh
+         WlO7pJy+lJMVuzyA17jwJQ3WjzvveOPTUp7jjPFGxgLLXLlB+jWO0d7RXdiBtQY/Hksw
+         kZK8DGGSBIcboymnrK0CRmNESuaKscEGLzxJ6ad19FOrWRZ/DNoTBSwvzll6T8nc/+og
+         thsYgkLVkNPuqggLNEGq2AydtYVmtGB1toLZTXHgJNC3EQSZ9WUgWDnt6gWnAMsnIsBF
+         4ObR7DqE/X2Esy1zy8//eiNCMzzwuNJHQfvNf//OeTdWvGJffGeiq9AXgJKTcAQZxNu4
+         PXOA==
+X-Gm-Message-State: AGi0PuaDC0Cw2/h8MkyvUJeDnUv//NEwg4DVQjduoYVV7f9LnezIMRPt
+        by2OSk4FGHzv1wohrWHZyDjY72EKaT2V2al5lx0wVA==
+X-Google-Smtp-Source: APiQypJgYrBXlCxuuAQfsdESu3sOZUB8jewml+8aR9cEdCQX8DHlXGwINB+Y0v2ChKiBtjQlmnBl37BBspufq/L7nls=
+X-Received: by 2002:a05:620a:348:: with SMTP id t8mr11010209qkm.407.1586436954251;
+ Thu, 09 Apr 2020 05:55:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1580215149-21492-3-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200408014010.80428-1-peterx@redhat.com> <20200408174732.bc448bbe41d190bfe5cc252e@linux-foundation.org>
+In-Reply-To: <20200408174732.bc448bbe41d190bfe5cc252e@linux-foundation.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 9 Apr 2020 14:55:42 +0200
+Message-ID: <CACT4Y+bhQVcpSkSh_OZ5ZanfFZUqn2iypLhG_Z-nWKTkaYr1jw@mail.gmail.com>
+Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Peter Xu <peterx@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 06:09:05PM +0530, Anshuman Khandual wrote:
-> Enable DIT and CSV2 feature bits in ID_PFR0 register as per ARM DDI 0487E.a
-> specification. Except RAS and AMU, all other feature bits are now enabled.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/include/asm/sysreg.h | 3 +++
->  arch/arm64/kernel/cpufeature.c  | 2 ++
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index 054aab7ebf1b..469d61c8fabf 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -718,6 +718,9 @@
->  #define ID_ISAR6_DP_SHIFT		4
->  #define ID_ISAR6_JSCVT_SHIFT		0
->  
-> +#define ID_PFR0_DIT_SHIFT		24
-> +#define ID_PFR0_CSV2_SHIFT		16
-> +
->  #define ID_PFR2_SSBS_SHIFT		4
->  #define ID_PFR2_CSV3_SHIFT		0
->  
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index c1e837fc8f97..9e4dab15c608 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -341,6 +341,8 @@ static const struct arm64_ftr_bits ftr_id_isar6[] = {
->  };
->  
->  static const struct arm64_ftr_bits ftr_id_pfr0[] = {
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR0_DIT_SHIFT, 4, 0),
-> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR0_CSV2_SHIFT, 4, 0),
+On Thu, Apr 9, 2020 at 2:49 AM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Tue,  7 Apr 2020 21:40:08 -0400 Peter Xu <peterx@redhat.com> wrote:
+>
+> > The two patches should fix below syzbot reports:
+> >
+> >   BUG: unable to handle kernel paging request in kernel_get_mempolicy
+> >   https://lore.kernel.org/lkml/0000000000002b25f105a2a3434d@google.com/
+> >
+> >   WARNING: bad unlock balance in __get_user_pages_remote
+> >   https://lore.kernel.org/lkml/00000000000005c65d05a2b90e70@google.com/
+>
+> (Is there an email address for the syzbot operators?)
+>
+> sysbot does test linux-next, yet these patches sat in linux-next for a
+> month without a peep, but all hell broke loose when they hit Linus's
+> tree.  How could this have happened?
 
-Same comment as CSV3 here. Why is CSV2 being treated as strict here, but not
-in the aa64* register?
+The same thing:
+https://groups.google.com/d/msg/syzkaller-bugs/phowYdNXHck/qU1P0TsjBAAJ
 
-Will
+linux-next is boot-broken for more than a month and bugs are piling
+onto bugs, I've seen at least 3 different ones.
+syzbot can't get any working linux-next build for testing for a very
+long time now.
