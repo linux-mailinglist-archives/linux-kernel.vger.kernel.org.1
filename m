@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2131E1A2DD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:10:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F111A2DD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbgDIDKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 23:10:53 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:41078 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726521AbgDIDKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 23:10:53 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx794mko5etI0lAA--.30S2;
-        Thu, 09 Apr 2020 11:10:32 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH] MIPS: Limit check_bugs32() under CONFIG_32BIT
-Date:   Thu,  9 Apr 2020 11:10:29 +0800
-Message-Id: <1586401829-22242-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx794mko5etI0lAA--.30S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ArW8Jr48tr13tr43WryxGrg_yoW8GFy3pF
-        sFyw4kJr4UuFyDAa9Yyr1kWryYqr1kGr45KrW0gFWDAF15XF4UGFn3Kr45Jrn7ZryfKa4r
-        uF9aqr1ftF4Iyw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        Gr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
-        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI
-        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
-        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU2FALUUU
-        UU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1726648AbgDIDM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 23:12:59 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:39985 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726521AbgDIDM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 23:12:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 48yR6K01pzz9sSh;
+        Thu,  9 Apr 2020 13:12:56 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1586401978;
+        bh=a8wJcXOoSO96vrw4kf8n/9jQq4/HbjP3dnRcSeSQqSg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=JfeFkrWMTgI4DUrgJEzI7zzictqFUcjkDb0NyNWSLWIYDjddP4aSFepFDzVX7Q9lU
+         fcgK0WZInCdk8SPKnp079Gc0bE/lr2BjApcKkG54crMlIgN1A/rsufJ/jbg0QylJqh
+         CBKEFKFEEnLWJqSpQSRyOkYs0mbaLd8lvUFcWwqnK5dg8y6qEnDd3Qi3d0UTetWgwZ
+         NHyP2yw2XTnLqQvd03Mo9ousSRpO9WzObPPWikfyVkqiA9qkR5afD/cktOieawrXi/
+         xlhiyk+Qzl9tGtCBPhuXgMd9sKw7xd5B3tcRIJRRL+5MboMlbSDEnwE7LTNJ7N7F4N
+         WPM1XDDpFxEBw==
+Date:   Thu, 9 Apr 2020 13:12:52 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marek =?UTF-8?B?QmVow7pu?= <marek.behun@nic.cz>
+Subject: linux-next: manual merge of the leds tree with Linus' tree
+Message-ID: <20200409131252.2dfde0b7@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/GPKmm5.xLW2paourexw5EdS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to build and call check_bugs32() under CONFIG_64BIT,
-just limit it under CONFIG_32BIT.
+--Sig_/GPKmm5.xLW2paourexw5EdS
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/bugs.h | 4 +++-
- arch/mips/kernel/cpu-probe.c | 2 ++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+Hi all,
 
-diff --git a/arch/mips/include/asm/bugs.h b/arch/mips/include/asm/bugs.h
-index d72dc6e..5f8d2bf 100644
---- a/arch/mips/include/asm/bugs.h
-+++ b/arch/mips/include/asm/bugs.h
-@@ -35,7 +35,9 @@ static inline void check_bugs(void)
- 	unsigned int cpu = smp_processor_id();
- 
- 	cpu_data[cpu].udelay_val = loops_per_jiffy;
--	check_bugs32();
-+
-+	if (IS_ENABLED(CONFIG_32BIT))
-+		check_bugs32();
- 
- 	if (IS_ENABLED(CONFIG_CPU_R4X00_BUGS64))
- 		check_bugs64();
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index f21a230..85d7273 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -461,6 +461,7 @@ static inline void cpu_set_mt_per_tc_perf(struct cpuinfo_mips *c)
- 		c->options |= MIPS_CPU_MT_PER_TC_PERF_COUNTERS;
- }
- 
-+#ifdef CONFIG_32BIT
- static inline void check_errata(void)
- {
- 	struct cpuinfo_mips *c = &current_cpu_data;
-@@ -484,6 +485,7 @@ void __init check_bugs32(void)
- {
- 	check_errata();
- }
-+#endif /* CONFIG_32BIT */
- 
- /*
-  * Probe whether cpu has config register by trying to play with
--- 
-2.1.0
+Today's linux-next merge of the leds tree got a conflict in:
 
+  drivers/leds/Makefile
+
+between commit:
+
+  457386350e6a ("leds: sort Makefile entries")
+
+from Linus' tree and commit:
+
+  3953d1908b2c ("From: Marek Beh=C3=BAn <marek.behun@nic.cz>")
+  53cb3df9dd2d ("Sort Makefile entries to reduce risk of rejects.")
+
+from the leds tree.
+
+I fixed it up (I used the latter version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+BTW, commit 3953d1908b2c clearly did not get applied correctly :-(
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/GPKmm5.xLW2paourexw5EdS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6OkrQACgkQAVBC80lX
+0Gy0aQf/c9NSIkhqI3H7e0exL3hHsZd54Ls7wOV0y98kK0pQ3rWrBzmXPIddBvhe
+zhNqVJWbB40lLNLsUlGI0P10NX7fBUcBmyNIubm3LrIcInXLqDDVd5bWqgpzqCGm
+7n3RiFgN7IIIUx5yW/gBte9EMZOG3YJcNjX7I18hq1NuU4mxbYw2/y8yauu8OqPg
+E4yu1uwBrHH1wIXgfCwIy8OjC7h+IBQBhd27ckjDMY96OsCOIUSEw8stsh/vhpb8
+V2WD25JoEUGZgmFPJZC3zMeX3Cc3xZZusw6But6mR81D0Qrc+mWtTHGCmYRrr0A5
+VXTDmJaFzzz3u5mYZBNdox51YcbkaA==
+=f5DQ
+-----END PGP SIGNATURE-----
+
+--Sig_/GPKmm5.xLW2paourexw5EdS--
