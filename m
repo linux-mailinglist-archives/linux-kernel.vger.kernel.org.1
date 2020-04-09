@@ -2,144 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 850181A2F48
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 08:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA2C1A2F54
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 08:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgDIGkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 02:40:19 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:53076 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgDIGkS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 02:40:18 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200409064017epoutp039f376113a66a6b0e1296789b0360abf8~EE4HeMrpk0923709237epoutp03U
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Apr 2020 06:40:17 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200409064017epoutp039f376113a66a6b0e1296789b0360abf8~EE4HeMrpk0923709237epoutp03U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1586414417;
-        bh=f5+1LXv2hzm9xQgGaKBt4kmJuet/OawIw/50bcl0rVg=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=hjnCnTVt4kUrKS/1BWC8KV+dDsrIXtl1JytiLPkfcyaPYJauUAqGzk3liDq+cdaxB
-         XojVVGbrJR8mWpAC/ehD0ReCQo+pmbLCk5JGPIvVAZT7O4h0fXzpkKJhVpr8v6fAmn
-         3hgFciDIbl6bN0hD4KnsRLWwaujVa/5WEbnfs0AU=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200409064015epcas1p284d8a7e7300f7d8c4564c57d0fa7a3e8~EE4F_QXd_0424204242epcas1p2N;
-        Thu,  9 Apr 2020 06:40:15 +0000 (GMT)
-Received: from epsmges1p5.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 48yWjV2JzyzMqYkn; Thu,  9 Apr
-        2020 06:40:14 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
-        58.BD.04658.E43CE8E5; Thu,  9 Apr 2020 15:40:14 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200409064012epcas1p11be838e56ea23ea52019e03fabf5442f~EE4DSZJKS0214302143epcas1p1H;
-        Thu,  9 Apr 2020 06:40:12 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200409064012epsmtrp238a5cdbcd8706e56b8daf1bd26b08643~EE4DRt1h50769107691epsmtrp2I;
-        Thu,  9 Apr 2020 06:40:12 +0000 (GMT)
-X-AuditID: b6c32a39-a81ff70000001232-7d-5e8ec34e02dd
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        00.6D.04158.C43CE8E5; Thu,  9 Apr 2020 15:40:12 +0900 (KST)
-Received: from [10.253.105.163] (unknown [10.253.105.163]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200409064012epsmtip2886c641577e888295928c8a664185f97~EE4DLu-i70744707447epsmtip2h;
-        Thu,  9 Apr 2020 06:40:12 +0000 (GMT)
-Subject: Re: [PATCH] dm verity fec: Don't add data_blocks to block
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        device-mapper development <dm-devel@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, sunwook5492@gmail.com
-From:   Sunwook Eom <speed.eom@samsung.com>
-Message-ID: <4a4a914c-c020-4b45-7cba-5aed816f0545@samsung.com>
-Date:   Thu, 9 Apr 2020 15:40:07 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.9.1
+        id S1726583AbgDIGoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 02:44:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725283AbgDIGoS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 02:44:18 -0400
+Received: from mail.kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DD14206F7;
+        Thu,  9 Apr 2020 06:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586414658;
+        bh=F/JmU3GTrtOwoY/DqKHIQ/xPGXNoOD3KdlAlsXkovuw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=VIFA9hMRljgDWPtZhApOTUcSlKy7rTtE9Mmhq1LB5x7Likj7e2tXJaNJ9W8MXvE9t
+         CZL/0G5QvGLjZRcsREw1PN23JK4jeNSM9qcqHSNxNPdfDbvECcHtH0Wn8jZsGHrqU7
+         saKjrha9GrGBY38FOlE8Xe6y+RCzgknxI8nYenKE=
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Alexander Shiyan <shc_work@mail.ru>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, chenhc@lemote.com,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Guan Xuetao <gxt@pku.edu.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-c6x-dev@linux-c6x.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-sh@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Mark Salter <msalter@redhat.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Paul Walmsley <paul@pwsan.com>, Rich Felker <dalias@libc.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thierry Reding <treding@nvidia.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        uclinux-h8-devel@lists.sourceforge.jp,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Will Deacon <will@kernel.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: [PATCH v2 00/10] Allow COMMON_CLK to be selectable
+Date:   Wed,  8 Apr 2020 23:44:06 -0700
+Message-Id: <20200409064416.83340-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
 MIME-Version: 1.0
-In-Reply-To: <CABCJKudWRmdyJAxjnTs+NiRJVnhDUQfzGO3sVKZNJoQ5Qi-aew@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNJsWRmVeSWpSXmKPExsWy7bCmga7f4b44g6UNAhbrTx1jttj7bjar
-        xeVdc9gslq54y2rRtvEro0X//g1sDmweO2fdZfdYsKnU4/2+q2wenzfJBbBE5dhkpCampBYp
-        pOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAO1WUihLzCkFCgUkFhcr
-        6dvZFOWXlqQqZOQXl9gqpRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZCxYPIGxoJ2j
-        YtKfeSwNjJPYuhg5OSQETCSO7nnF2MXIxSEksINRouXUbiYI5xOjxNwLJ6Gcb4wSq+afY4dp
-        6Z93gxkisZdR4kTnUqiq94wSL3atBqsSFnCSePCrFWyJiIC2xM2rfWAdzCBL/jxexQqSYBPQ
-        lDjUc4wFxOYVsJPYs66HGcRmEVCRuHDlI1izqECExL2lB5khagQlTs58AlbPKRAosXP7I7A4
-        s4C8RPPW2VC2uMStJ/PBLpIQOMMmceLfYaBlHECOi8TUUxkQLwhLvDq+BeodKYnP7/ZCQ6Na
-        4sqJi0wQdo1E7/VbrBC2sURvzwVmkDHMQDev36UPEVaU2Pl7LiPEWj6Jd197oDbxSnS0CUGU
-        KEu8PX6eBcKWlDj9dyrURA+JU0/us09gVJyF5LFZSJ6ZheSZWQiLFzCyrGIUSy0ozk1PLTYs
-        MEWO7U2M4ISpZbmD8dg5n0OMAhyMSjy8Evt744RYE8uKK3MPMUpwMCuJ8Ho3AYV4UxIrq1KL
-        8uOLSnNSiw8xmgLDfSKzlGhyPjCZ55XEG5oaGRsbW5iYmZuZGiuJ8069nhMnJJCeWJKanZpa
-        kFoE08fEwSnVwFixcW5GJ1ul8fVPxRfct9hNYbr2b5lIYevadTPf1tpNXMvQr6PcdkaZhePr
-        J0VxbdnjMR7M8zKC9xpdXCTcnRDo9uZzxTlOtwT+hC8JtrLe2xcfXzh7k1pBY7OzyWmLcyIH
-        MgX2cQUXv6njmvpF6M6KF6cE7sRenD5DKtnzvfctJ7OZSaumfVNiKc5INNRiLipOBABdHL/U
-        rgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFLMWRmVeSWpSXmKPExsWy7bCSvK7P4b44gxvHtS3WnzrGbLH33WxW
-        i8u75rBZLF3xltWibeNXRov+/RvYHNg8ds66y+6xYFOpx/t9V9k8Pm+SC2CJ4rJJSc3JLEst
-        0rdL4MpYsHgCY0E7R8WkP/NYGhgnsXUxcnJICJhI9M+7wdzFyMUhJLCbUWLfri+sEAlJiTdN
-        lxm7GDmAbGGJw4eLIWreMkrcOH+aEaRGWMBJ4sGvVrBBIgLaEjev9oENYhbYwShx5N1CJoiO
-        m4wSbzs/glWxCWhKHOo5xgJi8wrYSexZ18MMYrMIqEhcuAJRIyoQIdF69xYzRI2gxMmZT8Dq
-        OQUCJXZufwQWZxYwk5i3+SGULS/RvHU2lC0ucevJfKYJjEKzkLTPQtIyC0nLLCQtCxhZVjFK
-        phYU56bnFhsWGOWllusVJ+YWl+al6yXn525iBMeIltYOxhMn4g8xCnAwKvHwSuzvjRNiTSwr
-        rsw9xCjBwawkwuvdBBTiTUmsrEotyo8vKs1JLT7EKM3BoiTOK59/LFJIID2xJDU7NbUgtQgm
-        y8TBKdXAuGrjU12x/W5fatzd2G2+ROnoRF9d8nO1lt3/bXyvKud89f10MeGEk8bGy3d2yQfP
-        Vixet+lba8ssEz+Rjyr+X1fYMZ3OOPG5vWbPXobSbSG2Fktzv3JHsm6z8spdclFpQ6NbvOOT
-        QpOyxo22Kj+vsB85slhY+sem6MSYTI11ve0Nz//VzEmXUGIpzkg01GIuKk4EAAVcjQ+NAgAA
-X-CMS-MailID: 20200409064012epcas1p11be838e56ea23ea52019e03fabf5442f
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200407065340epcas1p13e6e5ad6131f0a94d3ed1e8360353a82
-References: <CGME20200407065340epcas1p13e6e5ad6131f0a94d3ed1e8360353a82@epcas1p1.samsung.com>
-        <317e0073-a6f7-4232-3b95-a4bc3ddbcdec@samsung.com>
-        <CABCJKudWRmdyJAxjnTs+NiRJVnhDUQfzGO3sVKZNJoQ5Qi-aew@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch series cleans up a handful of selects that were redundant and
+deletes presumably dead code with the goal of making it possible to add
+kunit tests for the CCF in the future. To do that, we introduce a
+"legacy" clk Kconfig option to mark code that hasn't migrated to the
+common clk framework and then make the COMMON_CLK config option visible
+in the menuconfig as long as that legacy option isn't enabled. I've also
+included a couple patches at the end that may be more controversial but
+helped me consolidate all this logic/code.
 
-On 20. 4. 8. 오전 12:55, Sami Tolvanen wrote:
-> On Mon, Apr 6, 2020 at 11:54 PM Sunwook Eom <speed.eom@samsung.com> wrote:
->> Even if block type is metadata,
->> block in verity_fec_decode() has already the right block number.
->> So there is no need to add data_blocks to block.
-> Is this also true if the hashes are on a separate block device?
->
-> The idea here is that the error correction data was computed over both
-> data and hash blocks, as if they were concatenated, and we want to
-> calculate the logical block number based on that. I agree that the
-> code doesn't look quite right though. Should we use something like
-> this instead?
->
->      if (type == DM_VERITY_BLOCK_TYPE_METADATA)
->              block = block - v->hash_start + v->data_blocks;
->
-> Sami
->
->
-You're right. I missed the case that hashes are on a separate block device.
+I haven't done more than compile test a few configs for arm, arm64,
+h8300, and mips. More testing is welcome.
 
-And, the code you wrote seems to be correct.
+The plan is that I'll just merge the whole pile through the clk tree. If
+the first five patches or the last three patches are better going
+through another tree like arm-soc or architecture trees that's fine too,
+but there are potential conflicts between trees so maybe it's better to
+just leave it all in one tree.
 
-If you don't mind, I'll send a new version of this patch.
+Changes from v1:
+ * Fixed MIPS ralink build problem pointed out by Arnd
+ * Fixed meson mx sdio build due to bad Kconfig exposed by this change
+ * Picked up acks
 
-Thank you for the review.
+Stephen Boyd (10):
+  ARM: Remove redundant COMMON_CLK selects
+  ARM: Remove redundant CLKDEV_LOOKUP selects
+  arm64: tegra: Remove redundant CLKDEV_LOOKUP selects
+  h8300: Remove redundant CLKDEV_LOOKUP selects
+  MIPS: Remove redundant CLKDEV_LOOKUP selects
+  mmc: meson-mx-sdio: Depend on OF_ADDRESS and not just OF
+  clk: Allow the common clk framework to be selectable
+  ARM: mmp: Remove legacy clk code
+  MIPS: Loongson64: Drop asm/clock.h include
+  clk: Move HAVE_CLK config out of architecture layer
+
+Cc: Alexander Shiyan <shc_work@mail.ru>
+Cc: "Andreas Färber" <afaerber@suse.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: <chenhc@lemote.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Guan Xuetao <gxt@pku.edu.cn>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <linux-c6x-dev@linux-c6x.org>
+Cc: <linux-m68k@lists.linux-m68k.org>
+Cc: <linux-mips@vger.kernel.org>
+Cc: <linux-sh@vger.kernel.org>
+Cc: Lubomir Rintel <lkundrak@v3.sk>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Paul Walmsley <paul@pwsan.com>
+Cc: Rich Felker <dalias@libc.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Thierry Reding <treding@nvidia.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Tony Prisk <linux@prisktech.co.nz>
+Cc: uclinux-h8-devel@lists.sourceforge.jp
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Will Deacon <will@kernel.org>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+
+ arch/Kconfig                     |   6 --
+ arch/arm/Kconfig                 |   5 +-
+ arch/arm/mach-actions/Kconfig    |   1 -
+ arch/arm/mach-clps711x/Kconfig   |   1 -
+ arch/arm/mach-mmp/Kconfig        |   1 -
+ arch/arm/mach-mmp/Makefile       |   6 --
+ arch/arm/mach-mmp/clock-mmp2.c   | 114 -------------------------------
+ arch/arm/mach-mmp/clock-pxa168.c |  94 -------------------------
+ arch/arm/mach-mmp/clock-pxa910.c |  70 -------------------
+ arch/arm/mach-mmp/clock.c        | 105 ----------------------------
+ arch/arm/mach-mmp/clock.h        |  65 ------------------
+ arch/arm/mach-vt8500/Kconfig     |   1 -
+ arch/arm64/Kconfig.platforms     |   1 -
+ arch/c6x/Kconfig                 |   1 +
+ arch/h8300/Kconfig               |   1 -
+ arch/m68k/Kconfig.cpu            |   2 +-
+ arch/mips/Kconfig                |   7 +-
+ arch/mips/loongson2ef/Kconfig    |   2 +-
+ arch/mips/loongson64/smp.c       |   1 -
+ arch/mips/ralink/Kconfig         |   4 ++
+ arch/sh/boards/Kconfig           |   5 ++
+ arch/unicore32/Kconfig           |   2 +-
+ drivers/clk/Kconfig              |  23 +++++--
+ drivers/mmc/host/Kconfig         |   2 +-
+ 24 files changed, 38 insertions(+), 482 deletions(-)
+ delete mode 100644 arch/arm/mach-mmp/clock-mmp2.c
+ delete mode 100644 arch/arm/mach-mmp/clock-pxa168.c
+ delete mode 100644 arch/arm/mach-mmp/clock-pxa910.c
+ delete mode 100644 arch/arm/mach-mmp/clock.c
+ delete mode 100644 arch/arm/mach-mmp/clock.h
 
 
-Sunwook
-
-
-
-
-
+base-commit: 7111951b8d4973bda27ff663f2cf18b663d15b48
+-- 
+Sent by a computer, using git, on the internet
 
