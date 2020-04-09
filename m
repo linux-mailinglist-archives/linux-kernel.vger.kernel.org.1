@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A27961A3210
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84C181A3212
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726816AbgDIJoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:44:09 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:1456 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgDIJoH (ORCPT
+        id S1726773AbgDIJof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:44:35 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:19563 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726678AbgDIJof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:44:07 -0400
+        Thu, 9 Apr 2020 05:44:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1586425447; x=1617961447;
+  t=1586425475; x=1617961475;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=DQOaqgUeRZ7W8RMsPCocm8k0cuRNjH4lt231zETKFlg=;
-  b=VONU9WBn4TcvsIX98Ab0ccbFopZjlZtZsr7HlFkhKFNB4LnFwZ2FRbo1
-   iNkIFW2shF5yI1F5J6M8tpoSja9WyyIIyiCgwDchlA7X4pqx7YX8WTpPo
-   /d8Y49UqBaxBo0jzn3IDATs0V1I1syPvBreX3a0u2LxJ/4FGOYMDEPfJW
-   0=;
-IronPort-SDR: H6WmciwMKvPvXMRrZo6To41lLKCMJ4ne5p/aVW5SfQm9/LK71jyq0F2lToYeWqvoo4Db5m5F0g
- hwN0S292SDYg==
+  bh=JM5sUrNXKRJcdMGMKqju9wpkLsnMHLh8mrvocthSOiA=;
+  b=ORcpdwju5i36mdlhScsr5feYqn7wswQiF7gNifwq4GdzTs6EOeQnPWL5
+   WHkNtin8tXavIu8lkDEwZ+XOqOuYhc3h9ESvpgUhHLhR3kcJ4uEnW+nN1
+   1scQ8HPCA/MH/YOczarcCztNrE4FJ+Lei7vSOIOqi8KvOAO9Va0BT6TP3
+   Q=;
+IronPort-SDR: GznbAMVH7ewBpKdtsJ3sQUEMtalWl/P2BFIN4vgfkQARSVI5kXIJ4bsAcXOgyKormsKvROOcNu
+ Dt2pMSgWnnSw==
 X-IronPort-AV: E=Sophos;i="5.72,362,1580774400"; 
-   d="scan'208";a="36177728"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-6f38efd9.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 09 Apr 2020 09:44:05 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-6f38efd9.us-west-2.amazon.com (Postfix) with ESMTPS id A6DFDA1CA8;
-        Thu,  9 Apr 2020 09:44:02 +0000 (UTC)
+   d="scan'208";a="24913339"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 09 Apr 2020 09:44:20 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id E2548A2391;
+        Thu,  9 Apr 2020 09:44:17 +0000 (UTC)
 Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
  EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 9 Apr 2020 09:44:02 +0000
+ id 15.0.1497.2; Thu, 9 Apr 2020 09:44:17 +0000
 Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.115) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 9 Apr 2020 09:43:48 +0000
+ id 15.0.1497.2; Thu, 9 Apr 2020 09:44:03 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -54,9 +54,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 3/4] mm/damon: Make monitoring target regions init/update configurable
-Date:   Thu, 9 Apr 2020 11:42:31 +0200
-Message-ID: <20200409094232.29680-4-sjpark@amazon.com>
+Subject: [RFC PATCH 4/4] mm/damon: Make access check configurable
+Date:   Thu, 9 Apr 2020 11:42:32 +0200
+Message-ID: <20200409094232.29680-5-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200409094232.29680-1-sjpark@amazon.com>
 References: <20200409094232.29680-1-sjpark@amazon.com>
@@ -72,114 +72,133 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-This commit allows DAMON users to configure their own monitoring target
-regions initializer / updater.  Using this, users can confine the
-monitoring address spaces as they want.  For example, users can track
-only stack, heap, or shared memory area, as they want.
+DAMON assumes the target region is in virtual address space and
+therefore uses PTE Accessed bit checking for access checking.  However,
+some users might want to use architecture-specific, more accurate and
+light-weight access checking features.  Also, some users might want to
+use DAMON for different address spaces such as physical memory space,
+which needs different ways to check the access.
+
+This commit allows DAMON users to configure the access check function to
+their own version.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
  include/linux/damon.h |  2 ++
- mm/damon.c            | 20 +++++++++++++-------
- 2 files changed, 15 insertions(+), 7 deletions(-)
+ mm/damon.c            | 22 +++++++++++++---------
+ 2 files changed, 15 insertions(+), 9 deletions(-)
 
 diff --git a/include/linux/damon.h b/include/linux/damon.h
-index d72dd524924f..a051b5d966ed 100644
+index a051b5d966ed..188d5b89b303 100644
 --- a/include/linux/damon.h
 +++ b/include/linux/damon.h
-@@ -93,6 +93,8 @@ struct damon_ctx {
- 	struct list_head schemes_list;	/* 'damos' objects */
- 
+@@ -95,6 +95,8 @@ struct damon_ctx {
  	/* callbacks */
-+	void (*init_target_regions)(struct damon_ctx *context);
-+	void (*update_target_regions)(struct damon_ctx *context);
+ 	void (*init_target_regions)(struct damon_ctx *context);
+ 	void (*update_target_regions)(struct damon_ctx *context);
++	void (*prepare_access_checks)(struct damon_ctx *context);
++	unsigned int (*check_accesses)(struct damon_ctx *context);
  	void (*sample_cb)(struct damon_ctx *context);
  	void (*aggregate_cb)(struct damon_ctx *context);
  };
 diff --git a/mm/damon.c b/mm/damon.c
-index 80fa3cab7720..da0e7efdf1e1 100644
+index da0e7efdf1e1..20a66a6307d1 100644
 --- a/mm/damon.c
 +++ b/mm/damon.c
-@@ -57,6 +57,9 @@
- /* Get a random number in [l, r) */
- #define damon_rand(ctx, l, r) (l + prandom_u32_state(&ctx->rndseed) % (r - l))
+@@ -59,6 +59,8 @@
  
-+static void kdamond_init_vm_regions(struct damon_ctx *ctx);
-+static void kdamond_update_vm_regions(struct damon_ctx *ctx);
-+
+ static void kdamond_init_vm_regions(struct damon_ctx *ctx);
+ static void kdamond_update_vm_regions(struct damon_ctx *ctx);
++static void kdamond_prepare_vm_access_checks(struct damon_ctx *ctx);
++static unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx);
+ 
  /* A monitoring context for debugfs interface users. */
  static struct damon_ctx damon_user_ctx = {
- 	.sample_interval = 5 * 1000,
-@@ -64,6 +67,9 @@ static struct damon_ctx damon_user_ctx = {
- 	.regions_update_interval = 1000 * 1000,
- 	.min_nr_regions = 10,
- 	.max_nr_regions = 1000,
-+
-+	.init_target_regions = kdamond_init_vm_regions,
-+	.update_target_regions = kdamond_update_vm_regions,
+@@ -70,6 +72,8 @@ static struct damon_ctx damon_user_ctx = {
+ 
+ 	.init_target_regions = kdamond_init_vm_regions,
+ 	.update_target_regions = kdamond_update_vm_regions,
++	.prepare_access_checks = kdamond_prepare_vm_access_checks,
++	.check_accesses = kdamond_check_vm_accesses,
  };
  
  /*
-@@ -327,7 +333,7 @@ static void swap_ranges(struct damon_addr_range *r1,
-  *
-  * This function receives an address space and finds three regions in it which
-  * separated by the two biggest unmapped regions in the space.  Please refer to
-- * below comments of 'damon_init_regions_of()' function to know why this is
-+ * below comments of 'damon_init_vm_regions_of()' function to know why this is
-  * necessary.
-  *
-  * Returns 0 if success, or negative error code otherwise.
-@@ -439,7 +445,7 @@ static int damon_three_regions_of(struct damon_task *t,
-  *   <BIG UNMAPPED REGION 2>
-  *   <stack>
-  */
--static void damon_init_regions_of(struct damon_ctx *c, struct damon_task *t)
-+static void damon_init_vm_regions_of(struct damon_ctx *c, struct damon_task *t)
- {
- 	struct damon_region *r;
- 	struct damon_addr_range regions[3];
-@@ -463,12 +469,12 @@ static void damon_init_regions_of(struct damon_ctx *c, struct damon_task *t)
+@@ -506,7 +510,7 @@ static void damon_mkold(struct mm_struct *mm, unsigned long addr)
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
  }
  
- /* Initialize '->regions_list' of every task */
--static void kdamond_init_regions(struct damon_ctx *ctx)
-+static void kdamond_init_vm_regions(struct damon_ctx *ctx)
+-static void damon_prepare_access_check(struct damon_ctx *ctx,
++static void damon_prepare_vm_access_check(struct damon_ctx *ctx,
+ 			struct mm_struct *mm, struct damon_region *r)
  {
- 	struct damon_task *t;
- 
- 	damon_for_each_task(ctx, t)
--		damon_init_regions_of(ctx, t);
-+		damon_init_vm_regions_of(ctx, t);
+ 	r->sampling_addr = damon_rand(ctx, r->ar.start, r->ar.end);
+@@ -514,7 +518,7 @@ static void damon_prepare_access_check(struct damon_ctx *ctx,
+ 	damon_mkold(mm, r->sampling_addr);
  }
  
- static void damon_mkold(struct mm_struct *mm, unsigned long addr)
-@@ -1074,7 +1080,7 @@ static void damon_apply_three_regions(struct damon_ctx *ctx,
- /*
-  * Update regions for current memory mappings
-  */
--static void kdamond_update_regions(struct damon_ctx *ctx)
-+static void kdamond_update_vm_regions(struct damon_ctx *ctx)
+-static void kdamond_prepare_access_checks(struct damon_ctx *ctx)
++static void kdamond_prepare_vm_access_checks(struct damon_ctx *ctx)
  {
- 	struct damon_addr_range three_regions[3];
  	struct damon_task *t;
-@@ -1126,7 +1132,7 @@ static int kdamond_fn(void *data)
- 	unsigned int max_nr_accesses = 0;
- 
- 	pr_info("kdamond (%d) starts\n", ctx->kdamond->pid);
--	kdamond_init_regions(ctx);
-+	ctx->init_target_regions(ctx);
- 	while (!kdamond_need_stop(ctx)) {
- 		kdamond_prepare_access_checks(ctx);
- 		if (ctx->sample_cb)
-@@ -1147,7 +1153,7 @@ static int kdamond_fn(void *data)
- 		}
- 
- 		if (kdamond_need_update_regions(ctx))
--			kdamond_update_regions(ctx);
-+			ctx->update_target_regions(ctx);
+ 	struct mm_struct *mm;
+@@ -525,7 +529,7 @@ static void kdamond_prepare_access_checks(struct damon_ctx *ctx)
+ 		if (!mm)
+ 			continue;
+ 		damon_for_each_region(r, t)
+-			damon_prepare_access_check(ctx, mm, r);
++			damon_prepare_vm_access_check(ctx, mm, r);
+ 		mmput(mm);
  	}
- 	damon_flush_rbuffer(ctx);
- 	damon_for_each_task(ctx, t) {
+ }
+@@ -563,7 +567,7 @@ static bool damon_young(struct mm_struct *mm, unsigned long addr,
+  * mm	'mm_struct' for the given virtual address space
+  * r	the region to be checked
+  */
+-static void damon_check_access(struct damon_ctx *ctx,
++static void damon_check_vm_access(struct damon_ctx *ctx,
+ 			struct mm_struct *mm, struct damon_region *r)
+ {
+ 	static struct mm_struct *last_mm;
+@@ -587,7 +591,7 @@ static void damon_check_access(struct damon_ctx *ctx,
+ 	last_addr = r->sampling_addr;
+ }
+ 
+-static unsigned int kdamond_check_accesses(struct damon_ctx *ctx)
++static unsigned int kdamond_check_vm_accesses(struct damon_ctx *ctx)
+ {
+ 	struct damon_task *t;
+ 	struct mm_struct *mm;
+@@ -599,12 +603,12 @@ static unsigned int kdamond_check_accesses(struct damon_ctx *ctx)
+ 		if (!mm)
+ 			continue;
+ 		damon_for_each_region(r, t) {
+-			damon_check_access(ctx, mm, r);
++			damon_check_vm_access(ctx, mm, r);
+ 			max_nr_accesses = max(r->nr_accesses, max_nr_accesses);
+ 		}
+-
+ 		mmput(mm);
+ 	}
++
+ 	return max_nr_accesses;
+ }
+ 
+@@ -1134,13 +1138,13 @@ static int kdamond_fn(void *data)
+ 	pr_info("kdamond (%d) starts\n", ctx->kdamond->pid);
+ 	ctx->init_target_regions(ctx);
+ 	while (!kdamond_need_stop(ctx)) {
+-		kdamond_prepare_access_checks(ctx);
++		ctx->prepare_access_checks(ctx);
+ 		if (ctx->sample_cb)
+ 			ctx->sample_cb(ctx);
+ 
+ 		usleep_range(ctx->sample_interval, ctx->sample_interval + 1);
+ 
+-		max_nr_accesses = kdamond_check_accesses(ctx);
++		max_nr_accesses = ctx->check_accesses(ctx);
+ 
+ 		if (kdamond_aggregate_interval_passed(ctx)) {
+ 			kdamond_merge_regions(ctx, max_nr_accesses / 10);
 -- 
 2.17.1
 
