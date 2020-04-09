@@ -2,375 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC5A1A30A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8187A1A30B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgDIILV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:11:21 -0400
-Received: from mout-p-202.mailbox.org ([80.241.56.172]:28880 "EHLO
-        mout-p-202.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgDIILU (ORCPT
+        id S1726622AbgDIIMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:12:32 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:35200 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725828AbgDIIMb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:11:20 -0400
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
+        Thu, 9 Apr 2020 04:12:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586419950;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=1oEhsZS3AKZKX3xaATSdurKYTMszIQ2hjphKj4FRwmg=;
+        b=DIe7T36yEKa1RlCgnqUJ9tU9V35iIPzYG2V+glJ4wnfkSrfzyKvjPOERKaeM75OrjuFU2D
+        EZQi6vC4n+dIK4TKFjyzKcvSydcr8bFGcTOOOOTsRckK1QJ9RVsdHzTSYyWTTmvpwuhusj
+        H2d7D8y3/owzYGKLHe5wYfVFNs1CI8M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-230-WBpehaiqPhqlG0gGfE2EmQ-1; Thu, 09 Apr 2020 04:12:26 -0400
+X-MC-Unique: WBpehaiqPhqlG0gGfE2EmQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 48yYkY6q0fzQlD2;
-        Thu,  9 Apr 2020 10:11:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by spamfilter03.heinlein-hosting.de (spamfilter03.heinlein-hosting.de [80.241.56.117]) (amavisd-new, port 10030)
-        with ESMTP id 9Q7EAP2wxF0K; Thu,  9 Apr 2020 10:11:12 +0200 (CEST)
-Date:   Thu, 9 Apr 2020 18:10:51 +1000
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Josh Triplett <josh@joshtriplett.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH v3 2/3] fs: openat2: Extend open_how to allow
- userspace-selected fds
-Message-ID: <20200409081051.el65ngp4cixyhdqd@yavin.dot.cyphar.com>
-References: <cover.1586321767.git.josh@joshtriplett.org>
- <e598110f71a4e2346860b94e91de3e6e75a4b82a.1586321767.git.josh@joshtriplett.org>
- <20200408122330.5vorg2bwtth2dp5k@yavin.dot.cyphar.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1C0FA802560;
+        Thu,  9 Apr 2020 08:12:24 +0000 (UTC)
+Received: from [10.36.113.222] (ovpn-113-222.ams2.redhat.com [10.36.113.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AA39E99E03;
+        Thu,  9 Apr 2020 08:12:21 +0000 (UTC)
+Subject: Re: [PATCH v1 1/2] powerpc/pseries/hotplug-memory: stop checking
+ is_mem_section_removable()
+To:     Michal Hocko <mhocko@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Fontenot <nfont@linux.vnet.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Baoquan He <bhe@redhat.com>,
+        Wei Yang <richard.weiyang@gmail.com>
+References: <20200407135416.24093-1-david@redhat.com>
+ <20200407135416.24093-2-david@redhat.com> <87sghdjf1y.fsf@mpe.ellerman.id.au>
+ <20200409075927.GC18386@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <0a0ed3ed-f792-f8f7-07f4-cacc2b565a95@redhat.com>
+Date:   Thu, 9 Apr 2020 10:12:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cie7xeqd2msvbcgv"
-Content-Disposition: inline
-In-Reply-To: <20200408122330.5vorg2bwtth2dp5k@yavin.dot.cyphar.com>
-X-Rspamd-Queue-Id: 7817217EF
-X-Rspamd-Score: -7.75 / 15.00 / 15.00
+In-Reply-To: <20200409075927.GC18386@dhcp22.suse.cz>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 09.04.20 09:59, Michal Hocko wrote:
+> On Thu 09-04-20 17:26:01, Michael Ellerman wrote:
+>> David Hildenbrand <david@redhat.com> writes:
+>>
+>>> In commit 53cdc1cb29e8 ("drivers/base/memory.c: indicate all memory
+>>> blocks as removable"), the user space interface to compute whether a memory
+>>> block can be offlined (exposed via
+>>> /sys/devices/system/memory/memoryX/removable) has effectively been
+>>> deprecated. We want to remove the leftovers of the kernel implementation.
+>>>
+>>> When offlining a memory block (mm/memory_hotplug.c:__offline_pages()),
+>>> we'll start by:
+>>> 1. Testing if it contains any holes, and reject if so
+>>> 2. Testing if pages belong to different zones, and reject if so
+>>> 3. Isolating the page range, checking if it contains any unmovable pages
+>>>
+>>> Using is_mem_section_removable() before trying to offline is not only racy,
+>>> it can easily result in false positives/negatives. Let's stop manually
+>>> checking is_mem_section_removable(), and let device_offline() handle it
+>>> completely instead. We can remove the racy is_mem_section_removable()
+>>> implementation next.
+>>>
+>>> We now take more locks (e.g., memory hotplug lock when offlining and the
+>>> zone lock when isolating), but maybe we should optimize that
+>>> implementation instead if this ever becomes a real problem (after all,
+>>> memory unplug is already an expensive operation). We started using
+>>> is_mem_section_removable() in commit 51925fb3c5c9 ("powerpc/pseries:
+>>> Implement memory hotplug remove in the kernel"), with the initial
+>>> hotremove support of lmbs.
+>>
+>> It's also not very pretty in dmesg.
+>>
+>> Before:
+>>
+>>   pseries-hotplug-mem: Attempting to hot-add 10 LMB(s)
+>>   pseries-hotplug-mem: Memory hot-add failed, removing any added LMBs
+>>   dlpar: Could not handle DLPAR request "memory add count 10"
+> 
+> Yeah, there is more output but isn't that useful? Or put it differently
+> what is the actual problem from having those messages in the kernel log?
+> 
+> From the below you can clearly tell that there are kernel allocations
+> which prevent hot remove from happening.
+> 
+> If the overall size of the debugging output is a concern then we can
+> think of a way to reduce it. E.g. once you have a couple of pages
+> reported then all others from the same block are likely not interesting
+> much.
+> 
 
---cie7xeqd2msvbcgv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+IIRC, we only report one page per block already. (and stop, as we
+detected something unmovable)
 
-On 2020-04-08, Aleksa Sarai <cyphar@cyphar.com> wrote:
-> On 2020-04-07, Josh Triplett <josh@joshtriplett.org> wrote:
-> > Inspired by the X protocol's handling of XIDs, allow userspace to select
-> > the file descriptor opened by openat2, so that it can use the resulting
-> > file descriptor in subsequent system calls without waiting for the
-> > response to openat2.
-> >=20
-> > In io_uring, this allows sequences like openat2/read/close without
-> > waiting for the openat2 to complete. Multiple such sequences can
-> > overlap, as long as each uses a distinct file descriptor.
-> >=20
-> > Add a new O_SPECIFIC_FD open flag to enable this behavior, only accepted
-> > by openat2 for now (ignored by open/openat like all unknown flags). Add
-> > an fd field to struct open_how (along with appropriate padding, and
-> > verify that the padding is 0 to allow replacing the padding with a field
-> > in the future).
-> >=20
-> > The file table has a corresponding new function
-> > get_specific_unused_fd_flags, which gets the specified file descriptor
-> > if O_SPECIFIC_FD is set (and the fd isn't -1); otherwise it falls back
-> > to get_unused_fd_flags, to simplify callers.
->=20
-> >=20
-> > The specified file descriptor must not already be open; if it is,
-> > get_specific_unused_fd_flags will fail with -EBUSY. This helps catch
-> > userspace errors.
-> >=20
-> > When O_SPECIFIC_FD is set, and fd is not -1, openat2 will use the
-> > specified file descriptor rather than finding the lowest available one.
-> >=20
-> > Test program:
-> >=20
-> >     #include <err.h>
-> >     #include <fcntl.h>
-> >     #include <stdio.h>
-> >     #include <unistd.h>
-> >=20
-> >     int main(void)
-> >     {
-> >         struct open_how how =3D {
-> > 	    .flags =3D O_RDONLY | O_SPECIFIC_FD,
-> > 	    .fd =3D 42
-> > 	};
-> >         int fd =3D openat2(AT_FDCWD, "/dev/null", &how, sizeof(how));
-> >         if (fd < 0)
-> >             err(1, "openat2");
-> >         printf("fd=3D%d\n", fd); // prints fd=3D42
-> >         return 0;
-> >     }
-> >=20
-> > Signed-off-by: Josh Triplett <josh@joshtriplett.org>
-> > Signed-off-by: Jens Axboe <axboe@kernel.dk>
->=20
-> Maybe I'm misunderstanding something, but this Signed-off-by looks
-> strange -- was it Co-developed-by Jens?
->=20
-> > ---
-> >  fs/fcntl.c                       |  2 +-
-> >  fs/file.c                        | 39 ++++++++++++++++++++++++++++++++
-> >  fs/io_uring.c                    |  3 ++-
-> >  fs/open.c                        |  6 +++--
-> >  include/linux/fcntl.h            |  5 ++--
-> >  include/linux/file.h             |  3 +++
-> >  include/uapi/asm-generic/fcntl.h |  4 ++++
-> >  include/uapi/linux/openat2.h     |  2 ++
-> >  8 files changed, 58 insertions(+), 6 deletions(-)
-> >=20
-> > diff --git a/fs/fcntl.c b/fs/fcntl.c
-> > index 2e4c0fa2074b..0357ad667563 100644
-> > --- a/fs/fcntl.c
-> > +++ b/fs/fcntl.c
-> > @@ -1033,7 +1033,7 @@ static int __init fcntl_init(void)
-> >  	 * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
-> >  	 * is defined as O_NONBLOCK on some platforms and not on others.
-> >  	 */
-> > -	BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=3D
-> > +	BUILD_BUG_ON(22 - 1 /* for O_RDONLY being 0 */ !=3D
-> >  		HWEIGHT32(
-> >  			(VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
-> >  			__FMODE_EXEC | __FMODE_NONOTIFY));
-> > diff --git a/fs/file.c b/fs/file.c
-> > index ba06140d89af..0c34206314dc 100644
-> > --- a/fs/file.c
-> > +++ b/fs/file.c
-> > @@ -567,6 +567,45 @@ void put_unused_fd(unsigned int fd)
-> > =20
-> >  EXPORT_SYMBOL(put_unused_fd);
-> > =20
-> > +int __get_specific_unused_fd_flags(unsigned int fd, unsigned int flags,
-> > +				   unsigned long nofile)
-> > +{
-> > +	int ret;
-> > +	struct fdtable *fdt;
-> > +	struct files_struct *files =3D current->files;
-> > +
-> > +	if (!(flags & O_SPECIFIC_FD) || fd =3D=3D -1)
-> > +		return __get_unused_fd_flags(flags, nofile);
->=20
-> This check should just be (flags & O_SPECIFIC_FD) -- see my comment
-> below about ->fd being negative.
+-- 
+Thanks,
 
-Ah, I missed that the pipe2 patch allows you to choose which fd is being
-specifically chosen by setting it to -1. So this check is fine but my
-comment for openat2 still applies.
+David / dhildenb
 
-> > +
-> > +	if (fd >=3D nofile)
-> > +		return -EBADF;
-> > +
-> > +	spin_lock(&files->file_lock);
-> > +	ret =3D expand_files(files, fd);
-> > +	if (unlikely(ret < 0))
-> > +		goto out_unlock;
-> > +	fdt =3D files_fdtable(files);
-> > +	if (fdt->fd[fd]) {
-> > +		ret =3D -EBUSY;
-> > +		goto out_unlock;
->=20
-> It would be remiss of me to not mention that this is inconsistent with
-> the other way of explicitly picking a file descriptor on Unix -- the dup
-> family closes newfd if it's already used.
->=20
-> But that being said, I do actually prefer this behaviour since it means
-> that two threads trying to open a file with the same specific file
-> descriptor won't see the file descriptor change underneath them (leading
-> to who knows how much head-scratching).
->=20
-> > +	}
-> > +	__set_open_fd(fd, fdt);
-> > +	if (flags & O_CLOEXEC)
-> > +		__set_close_on_exec(fd, fdt);
-> > +	else
-> > +		__clear_close_on_exec(fd, fdt);
-> > +	ret =3D fd;
-> > +
-> > +out_unlock:
-> > +	spin_unlock(&files->file_lock);
-> > +	return ret;
-> > +}
-> > +
-> > +int get_specific_unused_fd_flags(unsigned int fd, unsigned int flags)
-> > +{
-> > +	return __get_specific_unused_fd_flags(fd, flags, rlimit(RLIMIT_NOFILE=
-));
-> > +}
-> > +
-> >  /*
-> >   * Install a file pointer in the fd array.
-> >   *
-> > diff --git a/fs/io_uring.c b/fs/io_uring.c
-> > index 358f97be9c7b..4a69e1daf3fe 100644
-> > --- a/fs/io_uring.c
-> > +++ b/fs/io_uring.c
-> > @@ -2997,7 +2997,8 @@ static int io_openat2(struct io_kiocb *req, bool =
-force_nonblock)
-> >  	if (ret)
-> >  		goto err;
-> > =20
-> > -	ret =3D __get_unused_fd_flags(req->open.how.flags, req->open.nofile);
-> > +	ret =3D __get_specific_unused_fd_flags(req->open.how.fd,
-> > +			req->open.how.flags, req->open.nofile);
-> >  	if (ret < 0)
-> >  		goto err;
-> > =20
-> > diff --git a/fs/open.c b/fs/open.c
-> > index 719b320ede52..d4225e6f9d4c 100644
-> > --- a/fs/open.c
-> > +++ b/fs/open.c
-> > @@ -958,7 +958,7 @@ EXPORT_SYMBOL(open_with_fake_path);
-> >  inline struct open_how build_open_how(int flags, umode_t mode)
-> >  {
-> >  	struct open_how how =3D {
-> > -		.flags =3D flags & VALID_OPEN_FLAGS,
-> > +		.flags =3D flags & VALID_OPEN_FLAGS & ~O_SPECIFIC_FD,
->=20
-> This is getting a little ugly, maybe filter out O_SPECIFIC_FD later on
-> in build_open_how() -- where we handle O_PATH.
->=20
-> >  		.mode =3D mode & S_IALLUGO,
-> >  	};
-> > =20
-> > @@ -1143,7 +1143,7 @@ static long do_sys_openat2(int dfd, const char __=
-user *filename,
-> >  	if (IS_ERR(tmp))
-> >  		return PTR_ERR(tmp);
-> > =20
-> > -	fd =3D get_unused_fd_flags(how->flags);
-> > +	fd =3D get_specific_unused_fd_flags(how->fd, how->flags);
-> >  	if (fd >=3D 0) {
-> >  		struct file *f =3D do_filp_open(dfd, tmp, &op);
-> >  		if (IS_ERR(f)) {
-> > @@ -1193,6 +1193,8 @@ SYSCALL_DEFINE4(openat2, int, dfd, const char __u=
-ser *, filename,
-> >  	err =3D copy_struct_from_user(&tmp, sizeof(tmp), how, usize);
-> >  	if (err)
-> >  		return err;
-> > +	if (tmp.pad !=3D 0)
-> > +		return -EINVAL;
->=20
-> This check should be done in build_open_flags(), where the other sanity
-> checks are done. In addition, there must be an additional check like
->=20
->   if (!(flags & O_SPECIFIC_FD) && how->fd !=3D 0)
->     return -EINVAL;
->=20
-> Since we must not allow garbage values to be passed and ignored by us in
-> openat2().
->=20
-> >  	/* O_LARGEFILE is only allowed for non-O_PATH. */
-> >  	if (!(tmp.flags & O_PATH) && force_o_largefile())
-> > diff --git a/include/linux/fcntl.h b/include/linux/fcntl.h
-> > index 7bcdcf4f6ab2..728849bcd8fa 100644
-> > --- a/include/linux/fcntl.h
-> > +++ b/include/linux/fcntl.h
-> > @@ -10,7 +10,7 @@
-> >  	(O_RDONLY | O_WRONLY | O_RDWR | O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC=
- | \
-> >  	 O_APPEND | O_NDELAY | O_NONBLOCK | O_NDELAY | __O_SYNC | O_DSYNC | \
-> >  	 FASYNC	| O_DIRECT | O_LARGEFILE | O_DIRECTORY | O_NOFOLLOW | \
-> > -	 O_NOATIME | O_CLOEXEC | O_PATH | __O_TMPFILE)
-> > +	 O_NOATIME | O_CLOEXEC | O_PATH | __O_TMPFILE | O_SPECIFIC_FD)
-> > =20
-> >  /* List of all valid flags for the how->upgrade_mask argument: */
-> >  #define VALID_UPGRADE_FLAGS \
-> > @@ -23,7 +23,8 @@
-> > =20
-> >  /* List of all open_how "versions". */
-> >  #define OPEN_HOW_SIZE_VER0	24 /* sizeof first published struct */
-> > -#define OPEN_HOW_SIZE_LATEST	OPEN_HOW_SIZE_VER0
-> > +#define OPEN_HOW_SIZE_VER1	32 /* added fd and pad */
-> > +#define OPEN_HOW_SIZE_LATEST	OPEN_HOW_SIZE_VER1
-> > =20
-> >  #ifndef force_o_largefile
-> >  #define force_o_largefile() (!IS_ENABLED(CONFIG_ARCH_32BIT_OFF_T))
-> > diff --git a/include/linux/file.h b/include/linux/file.h
-> > index b67986f818d2..a63301864a36 100644
-> > --- a/include/linux/file.h
-> > +++ b/include/linux/file.h
-> > @@ -87,6 +87,9 @@ extern void set_close_on_exec(unsigned int fd, int fl=
-ag);
-> >  extern bool get_close_on_exec(unsigned int fd);
-> >  extern int __get_unused_fd_flags(unsigned flags, unsigned long nofile);
-> >  extern int get_unused_fd_flags(unsigned flags);
-> > +extern int __get_specific_unused_fd_flags(unsigned int fd, unsigned in=
-t flags,
-> > +	unsigned long nofile);
-> > +extern int get_specific_unused_fd_flags(unsigned int fd, unsigned int =
-flags);
-> >  extern void put_unused_fd(unsigned int fd);
-> >  extern unsigned int increase_min_fd(unsigned int num);
-> > =20
-> > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generi=
-c/fcntl.h
-> > index 9dc0bf0c5a6e..d3de5b8b3955 100644
-> > --- a/include/uapi/asm-generic/fcntl.h
-> > +++ b/include/uapi/asm-generic/fcntl.h
-> > @@ -89,6 +89,10 @@
-> >  #define __O_TMPFILE	020000000
-> >  #endif
-> > =20
-> > +#ifndef O_SPECIFIC_FD
-> > +#define O_SPECIFIC_FD	01000000000	/* open as specified fd */
-> > +#endif
->=20
-> Maybe you've already done this (since you skipped several bits in the
-> O_* flag space), but I would double-check that there is no conflict on
-> other architectures. I faintly recall that FMODE_NOTIFY has a different
-> value on sparc, and there was some oddness on alpha too... But as long
-> as fcntl.c builds on all the arches then it's fine.
->=20
-> > +
-> >  /* a horrid kludge trying to make sure that this will fail on old kern=
-els */
-> >  #define O_TMPFILE (__O_TMPFILE | O_DIRECTORY)
-> >  #define O_TMPFILE_MASK (__O_TMPFILE | O_DIRECTORY | O_CREAT)     =20
-> > diff --git a/include/uapi/linux/openat2.h b/include/uapi/linux/openat2.h
-> > index 58b1eb711360..50d1206b64c2 100644
-> > --- a/include/uapi/linux/openat2.h
-> > +++ b/include/uapi/linux/openat2.h
-> > @@ -20,6 +20,8 @@ struct open_how {
-> >  	__u64 flags;
-> >  	__u64 mode;
-> >  	__u64 resolve;
-> > +	__s32 fd;
-> > +	__u32 pad; /* Must be 0 in the current version */
->=20
-> I'm not sure I see why the new field is an s32 -- there should be no
-> situation where a user specifies O_SPECIFIC_FD and a negative file
-> descriptor (if we keep it as an s32, you should get an -EINVAL in that
-> case). If you don't want O_SPECIFIC_FD, don't specify it.
->=20
-> But I think this should be a u32. I'm tempted to argue this should
-> actually be a u64, but nothing supports 64-bit file descriptor numbers
-> (including the return type of openat2).
->=20
-> --=20
-> Aleksa Sarai
-> Senior Software Engineer (Containers)
-> SUSE Linux GmbH
-> <https://www.cyphar.com/>
-
-
-
-
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---cie7xeqd2msvbcgv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXo7YhwAKCRCdlLljIbnQ
-EqoIAP9InkKje+n9HX4jnfDxB8IkdmrIR3vx46uVHdd6DXmIcgD/Z9uB8aBLbAc9
-X/4tWPlMbQMDw0vD1glyBV2ZYHjG2QM=
-=xlRb
------END PGP SIGNATURE-----
-
---cie7xeqd2msvbcgv--
