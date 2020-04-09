@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8551A3497
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 15:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3D81A3496
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 15:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726922AbgDINFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 09:05:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44238 "EHLO mail.kernel.org"
+        id S1726726AbgDINFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 09:05:25 -0400
+Received: from mout.web.de ([212.227.15.14]:44593 "EHLO mout.web.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726890AbgDINFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 09:05:20 -0400
-Received: from e123331-lin.home (amontpellier-657-1-18-247.w109-210.abo.wanadoo.fr [109.210.65.247])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD3762083E;
-        Thu,  9 Apr 2020 13:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586437520;
-        bh=qZCGqLyDsrfWvTIBZIFUaR8x9EPxCLTQDYBA4Nrfm2Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fOMA3Q/mK1X8bDIQ+0ZRU7tylCDlsiuObwFpiFlS5z1I71NcsaOXh0H2Zwf5CbPAy
-         +paleQA0IGfdtxP4WZ+yJowXMgfgtaqtcnjQ4Ql1tupFurzvr1UUjmob+Kqvfc4XY7
-         zSRffMajdRpGfpe6Oxhg3fdrEp8Vk8g9GK7oE0q8=
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-efi@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        Gary Lin <glin@suse.com>, Jiri Slaby <jslaby@suse.cz>,
-        Sergey Shatunov <me@prok.pw>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 9/9] efi/x86: Don't remap text<->rodata gap read-only for mixed mode
-Date:   Thu,  9 Apr 2020 15:04:34 +0200
-Message-Id: <20200409130434.6736-10-ardb@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200409130434.6736-1-ardb@kernel.org>
-References: <20200409130434.6736-1-ardb@kernel.org>
+        id S1726924AbgDINFX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 09:05:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586437519;
+        bh=pdTvAlI3N4fXOnDTP/rTIVU30iaj/Z2obJ7/NGxzl6M=;
+        h=X-UI-Sender-Class:To:From:Subject:Cc:Date;
+        b=mzrdEIiLKsjxXs2TwVnX6X6JIjVYOhlT64xwsNMWsPYOIeXYQwMxs+RoJ354OXBXv
+         AFQUTSsKZzZJe7VuhiETP+9GcBY7v6SqCVUEEVXmARmypWQWanq9CBLBURFvrxKhVL
+         saUVqRuEos2R/Co+XhKxF3SI/+rx1iT1+Y27l4Kw=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([93.133.77.56]) by smtp.web.de (mrweb003
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0ML8Vd-1jMFkl3iQT-000Ixb; Thu, 09
+ Apr 2020 15:05:19 +0200
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org
+From:   Markus Elfring <Markus.Elfring@web.de>
+Subject: drm/tve200: Checking for a failed platform_get_irq() call in
+ tve200_probe()
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Message-ID: <0263f4fb-c349-7651-b590-8722cdd30c85@web.de>
+Date:   Thu, 9 Apr 2020 15:05:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wjsT6tNGG/h3uDxJEg4/4mXra+qdNJxG1omsKT7lgkRF5XcgI2Q
+ uKdtczR1znRwgemW8s3KkD/iBdBbmlAf6fgUk2Fi/wpa7O9arz8oW9KJLQkyhismGunNZ3m
+ PRMRDBg5x+CDDRyqqwp0pOps1Sp9pudMfUNEYIH1g9fwnBDBhpWQu21NFDyWWk58sReD3N8
+ Jww1Q6u60QxZ769MEVM8A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9hS6Z0RwO1A=:xOb6oXpb2KFdWHAUuHreN4
+ nMf1ubiIWbiIvQ0GBG1i30WLMR7dOlWOP8we44+VSX00Y7HMBYBC2Beq0kK868qrWETY6jBTm
+ qROz/cHDM6Ujjj6ZYtlsChlRs9Zr/DV81VeAN/QpQFXAHjGO1BqojV1qjvo98N7Gd8mhTkadP
+ qE1t+0Itg6X/PkgnFnQ5o4hKajRQYjV6y/UVrmqgM++r033ZB3OBrP7cHWzYliIJ3DV1Sifjp
+ Ogl9I5gKsqSYrmgFCMMiiAXKYLssl+FGXW5pIDt8PYrns/iXU0AbV3p61h4T7p3jv6It67WZw
+ ouejn0Dj1usi1E7gxvlSMhFYzyUbzFET8GUIeF5PVnEeSt/8CV7hJgakQCFo6IJJZXyV6gH8z
+ +AFw1A0v4kNmWVc8A2wkxiuptpO3dQwC8KRWzO850dHLwW4sTx/Z5HuBg0Oj7uCtXFzX+4Lum
+ J5OKMIMlK3/hloL2TgAi01vttRE58OSaFhROMoJ9ePOB/KvVN5+JPim8Mf0oDdR1QMZq+trPX
+ Qvyj0EKnmjLxnN7MS/FJHoVx3m2zquJ8X+pIw6MjCzB7DIjLCxUX58vcd5afPCD1tjg6THMs9
+ wY1hEyoqR60G/8OsFIMXrgVx7SNmjBSVHLZ1cTe2rA0F4rzFI74Cor36bz4HVAmQhSnKhVrQV
+ gyoD5sIbbCwu0fKlxp2aM12Y1OHnIfscgHv0AJijpCNOH/bn47GbdvS0dpF7nU6EttitY0swQ
+ yiafL7MqqKjE6UxvBDbpnwSRC4ZphBLzwCebbAOaUeMZ728IGTZbKTwn92wiinnq1KvMPg2UW
+ L8qYoz+PCbN+NkquWN09D+nnvii0EFGftQczfG+PM97ALJ7pRft+ZHnz0uuz0tcBhlnU3zim7
+ itBTdk81c9JpwyWnTkvF31ixVX5m37Mt2lJ6GIOlsVU6JAPaIN7grcyJIXiub94JsFkSwILt8
+ nojCHU8R3P8Tb2BxOKhDvf9nCdUVBwxzFFAgMTGro6ptEKsU5WJfcv1Fmf6pP3qGqUghQ4c5i
+ Cg3/x9v9TcBpPG720Dag6InnQeyDbC0mN9GrnJ6x0pKHQevCs4wUc5j4PGpuQS8Qe3shavMf4
+ gEM1mNwOmuf9mUWHIVZIOr2X6mFTilBf0rBL1HaTsgHkg/qJq7/o0lcKlGdqPTVvgdomUic8j
+ A3Wx3S0cg+VTGyfPlNPGtcQV0oDeesPQEnOAu2oYkYVWwjPUlh/rThwWTqcp5DmFzV5wkPMs8
+ ePbD9S6qcbAwpTFyL
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit
+Hello,
 
-  d9e3d2c4f10320 ("efi/x86: Don't map the entire kernel text RW for mixed mode")
+I have taken another look at the implementation of the function =E2=80=9Ct=
+ve200_probe=E2=80=9D.
+A software analysis approach points the following source code out for
+further development considerations.
+https://elixir.bootlin.com/linux/v5.6.3/source/drivers/gpu/drm/tve200/tve2=
+00_drv.c#L212
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dr=
+ivers/gpu/drm/tve200/tve200_drv.c?id=3D5d30bcacd91af6874481129797af364a53c=
+d9b46#n212
 
-updated the code that creates the 1:1 memory mapping to use read-only
-attributes for the 1:1 alias of the kernel's text and rodata sections, to
-protect it from inadvertent modification. However, it failed to take into
-account that the unused gap between text and rodata is given to the page
-allocator for general use.
+	irq =3D platform_get_irq(pdev, 0);
+	if (!irq) {
+		ret =3D -EINVAL;
+		goto clk_disable;
+	}
 
-If the vmap'ed stack happens to be allocated from this region, any by-ref
-output arguments passed to EFI runtime services that are allocated on the
-stack (such as the 'datasize' argument taken by GetVariable() when invoked
-from efivar_entry_size()) will be referenced via a read-only mapping,
-resulting in a page fault if the EFI code tries to write to it:
 
-  BUG: unable to handle page fault for address: 00000000386aae88
-  #PF: supervisor write access in kernel mode
-  #PF: error_code(0x0003) - permissions violation
-  PGD fd61063 P4D fd61063 PUD fd62063 PMD 386000e1
-  Oops: 0003 [#1] SMP PTI
-  CPU: 2 PID: 255 Comm: systemd-sysv-ge Not tainted 5.6.0-rc4-default+ #22
-  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-  RIP: 0008:0x3eaeed95
-  Code: ...  <89> 03 be 05 00 00 80 a1 74 63 b1 3e 83 c0 48 e8 44 d2 ff ff eb 05
-  RSP: 0018:000000000fd73fa0 EFLAGS: 00010002
-  RAX: 0000000000000001 RBX: 00000000386aae88 RCX: 000000003e9f1120
-  RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000001
-  RBP: 000000000fd73fd8 R08: 00000000386aae88 R09: 0000000000000000
-  R10: 0000000000000002 R11: 0000000000000000 R12: 0000000000000000
-  R13: ffffc0f040220000 R14: 0000000000000000 R15: 0000000000000000
-  FS:  00007f21160ac940(0000) GS:ffff9cf23d500000(0000) knlGS:0000000000000000
-  CS:  0008 DS: 0018 ES: 0018 CR0: 0000000080050033
-  CR2: 00000000386aae88 CR3: 000000000fd6c004 CR4: 00000000003606e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-  Modules linked in:
-  CR2: 00000000386aae88
-  ---[ end trace a8bfbd202e712834 ]---
+The software documentation is providing the following information
+for the used programming interface.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/dr=
+ivers/base/platform.c?id=3D5d30bcacd91af6874481129797af364a53cd9b46#n221
+https://elixir.bootlin.com/linux/v5.6.3/source/drivers/base/platform.c#L20=
+2
 
-Let's fix this by remapping text and rodata individually, and leave the
-gaps mapped read-write.
+=E2=80=9C=E2=80=A6
+ * Return: IRQ number on success, negative error number on failure.
+=E2=80=A6=E2=80=9D
 
-Fixes: d9e3d2c4f10320 ("efi/x86: Don't map the entire kernel text RW for mixed mode")
-Reported-by: Jiri Slaby <jslaby@suse.cz>
-Tested-by: Jiri Slaby <jslaby@suse.cz>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- arch/x86/platform/efi/efi_64.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+Would you like to reconsider the shown condition check?
 
-diff --git a/arch/x86/platform/efi/efi_64.c b/arch/x86/platform/efi/efi_64.c
-index e0e2e8136cf5..c5e393f8bb3f 100644
---- a/arch/x86/platform/efi/efi_64.c
-+++ b/arch/x86/platform/efi/efi_64.c
-@@ -202,7 +202,7 @@ virt_to_phys_or_null_size(void *va, unsigned long size)
- 
- int __init efi_setup_page_tables(unsigned long pa_memmap, unsigned num_pages)
- {
--	unsigned long pfn, text, pf;
-+	unsigned long pfn, text, pf, rodata;
- 	struct page *page;
- 	unsigned npages;
- 	pgd_t *pgd = efi_mm.pgd;
-@@ -256,7 +256,7 @@ int __init efi_setup_page_tables(unsigned long pa_memmap, unsigned num_pages)
- 
- 	efi_scratch.phys_stack = page_to_phys(page + 1); /* stack grows down */
- 
--	npages = (__end_rodata_aligned - _text) >> PAGE_SHIFT;
-+	npages = (_etext - _text) >> PAGE_SHIFT;
- 	text = __pa(_text);
- 	pfn = text >> PAGE_SHIFT;
- 
-@@ -266,6 +266,14 @@ int __init efi_setup_page_tables(unsigned long pa_memmap, unsigned num_pages)
- 		return 1;
- 	}
- 
-+	npages = (__end_rodata - __start_rodata) >> PAGE_SHIFT;
-+	rodata = __pa(__start_rodata);
-+	pfn = rodata >> PAGE_SHIFT;
-+	if (kernel_map_pages_in_pgd(pgd, pfn, rodata, npages, pf)) {
-+		pr_err("Failed to map kernel rodata 1:1\n");
-+		return 1;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.17.1
-
+Regards,
+Markus
