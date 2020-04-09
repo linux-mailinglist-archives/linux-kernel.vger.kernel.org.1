@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EECB1A3390
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BF481A33A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 14:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbgDILvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 07:51:40 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:44491 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgDILvj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 07:51:39 -0400
-Received: by mail-lf1-f65.google.com with SMTP id 131so7640794lfh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 04:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=LMHpPi6/qVUiDTlAK1s76ZubaKVQAN/wyb4WRDwVA1A=;
-        b=HT2p7i0YSotlXgzTXhU3dPkjKSIv01ZAX3aVDbDkmjeEIb344KbMhNhXKvr1R+a2Rc
-         DFEzyNxwnBnGGmJa+bo5cWfClqtPBQYkeog/x3gQpvRJ9mfbovQODwxqKz3zQrNORGUf
-         DwrPAPGD7W2eTjXHv/QYn1sjaHgoXTGnqGIL1uP0CCCj5PQQRcl4BgCNX5dfPnks0nlz
-         T87yxmGlZqtG2mwyR1D8+IoBWUFLqPl21gsnzP5GqYh4OJBMi5ULbr8u8uFhgRymFZYs
-         2/DMybZ8fzMj+/y6vsaIVk8g+oIXxN60qJh6tgYUd6TDNDlyrFj3segaFFcv4GGLwxHE
-         t6JQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=LMHpPi6/qVUiDTlAK1s76ZubaKVQAN/wyb4WRDwVA1A=;
-        b=HxeIKoDcnzH98RKyFwOSrF42U35x9ui0lYmxL5L9el5qse4jxRMKhmeejTCP+ygbuS
-         74faqfNwxrcFxZiPcYmxGnCJL3/s9N4nA9pmqc25wxpRse6xYwZ/ih9WWqmlTFnd4yYO
-         PV6TS9rNnogHc29dItccnvvZf+UX9MsiEJhB5x7jBd3TI7VGCahTK8FdWldWkFQZJkl/
-         uO98m8N6ix2i+n/gsiQ5RD/EB665QPd8AaNCYC9BDmftPqmLMISB2p4uAn4UNJtNhCQp
-         C878tcb5aCzi+VrEDA7ODlRhEWUikKaw9h7ng9ZGe1flX9no27zjbUZTcmzawP+qVAxY
-         aRHQ==
-X-Gm-Message-State: AGi0PuYamV6lPMoAkWYokWwmxnQtr+O/Z2aqmxLaN7GwflR6ty9PFRj8
-        Zw5ZtZcOc5rZyibC/18SyM3tPRnw9y66J0ehsp0=
-X-Google-Smtp-Source: APiQypJXW2MKFWv3Ej7/aFzDxiZxxMotdpCRfJ4W3BUdj2r/OvufxaqdeJgDi4q6b1pWHqvmU/BHn7SNjP53TtdVlOE=
-X-Received: by 2002:a19:c607:: with SMTP id w7mr7532522lff.32.1586433097633;
- Thu, 09 Apr 2020 04:51:37 -0700 (PDT)
+        id S1726583AbgDIMA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 08:00:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:49250 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725970AbgDIMA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 08:00:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0726730E;
+        Thu,  9 Apr 2020 05:00:29 -0700 (PDT)
+Received: from [192.168.1.172] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB4323F73D;
+        Thu,  9 Apr 2020 05:00:27 -0700 (PDT)
+Subject: Re: [PATCH v2 1/6] arm64/vdso: use the fault callback to map vvar
+ pages
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <dima@arista.com>
+References: <20200225073731.465270-1-avagin@gmail.com>
+ <20200225073731.465270-2-avagin@gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <fd287633-a383-e1ee-2c4a-b961e1b95d66@arm.com>
+Date:   Thu, 9 Apr 2020 13:01:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Reply-To: mrshenritapieres1@gmail.com
-Received: by 2002:ac2:5971:0:0:0:0:0 with HTTP; Thu, 9 Apr 2020 04:51:36 -0700 (PDT)
-From:   Henrita Pieres <piereshenrita61@gmail.com>
-Date:   Thu, 9 Apr 2020 04:51:36 -0700
-X-Google-Sender-Auth: Knx-5TMUbhm0glBY30SY6acyBcs
-Message-ID: <CAB-RZ6jTRE1R=7tgtA_wcwPRBOaTkvHjCyaBwVHFZ2VozLQjiw@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200225073731.465270-2-avagin@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+On 2/25/20 7:37 AM, Andrei Vagin wrote:
+> This is required to support time namespaces where a time namespace data
+> page is different for each namespace.
+> 
+> Signed-off-by: Andrei Vagin <avagin@gmail.com>
 
-Please forgive me for stressing you with my predicaments as I know
-that this letter may come to you as big surprise.  Actually, I came
-across your E-mail from my personal search afterward I decided to
-email you directly believing that you will be honest to fulfill my
-final wish before i die. Meanwhile, I am Mrs. Henrita Pieres, 62 years
-old, from France, and I am  suffering from a long time cancer and from
-all indication my condition is really deteriorating as my doctors have
-confirmed and courageously Advised me that I may not live beyond two
-months from now for the reason that my tumor has reached a  critical
-stage which has defiled all forms of medical treatment, As a matter of
-fact, registered nurse by profession while my  husband was dealing on
-Gold Dust and Gold Dory Bars till his sudden death the year 2016 then
-I took over his business till date. In fact, at this moment I have a
-deposit sum of four million five hundred thousand US dollars
-[$4,500,000.00] with one of the leading bank but unfortunately I
-cannot visit the bank since I=E2=80=99m critically sick and powerless to do
-anything myself but my bank account officer advised me to assign any
-of my trustworthy relative, friends or partner with authorization
-letter to stand as the recipient of my money but sorrowfully I don=E2=80=99=
-t
-have any reliable relative and no child.
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Therefore, I want you to receive the money and take 50% to take care
-of yourself and family while 50% should be use basically  on
-humanitarian purposes mostly to orphanages home, Motherless babies
-home, less privileged and disable citizens and widows around the
-world. And as soon as I receive your respond I shall send you the full
-details with my pictures, banking records and with full contacts of my
-banking institution to communicate them on the matter.
+> ---
+>  arch/arm64/kernel/vdso.c | 24 +++++++++++++++---------
+>  1 file changed, 15 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
+> index 354b11e27c07..290c36d74e03 100644
+> --- a/arch/arm64/kernel/vdso.c
+> +++ b/arch/arm64/kernel/vdso.c
+> @@ -114,28 +114,32 @@ static int __vdso_init(enum arch_vdso_type arch_index)
+>  			PAGE_SHIFT;
+>  
+>  	/* Allocate the vDSO pagelist, plus a page for the data. */
+> -	vdso_pagelist = kcalloc(vdso_lookup[arch_index].vdso_pages + 1,
+> +	vdso_pagelist = kcalloc(vdso_lookup[arch_index].vdso_pages,
+>  				sizeof(struct page *),
+>  				GFP_KERNEL);
+>  	if (vdso_pagelist == NULL)
+>  		return -ENOMEM;
+>  
+> -	/* Grab the vDSO data page. */
+> -	vdso_pagelist[0] = phys_to_page(__pa_symbol(vdso_data));
+> -
+> -
+>  	/* Grab the vDSO code pages. */
+>  	pfn = sym_to_pfn(vdso_lookup[arch_index].vdso_code_start);
+>  
+>  	for (i = 0; i < vdso_lookup[arch_index].vdso_pages; i++)
+> -		vdso_pagelist[i + 1] = pfn_to_page(pfn + i);
+> +		vdso_pagelist[i] = pfn_to_page(pfn + i);
+>  
+> -	vdso_lookup[arch_index].dm->pages = &vdso_pagelist[0];
+> -	vdso_lookup[arch_index].cm->pages = &vdso_pagelist[1];
+> +	vdso_lookup[arch_index].cm->pages = vdso_pagelist;
+>  
+>  	return 0;
+>  }
+>  
+> +static vm_fault_t vvar_fault(const struct vm_special_mapping *sm,
+> +			     struct vm_area_struct *vma, struct vm_fault *vmf)
+> +{
+> +	if (vmf->pgoff == 0)
+> +		return vmf_insert_pfn(vma, vmf->address,
+> +				sym_to_pfn(vdso_data));
+> +	return VM_FAULT_SIGBUS;
+> +}
+> +
+>  static int __setup_additional_pages(enum arch_vdso_type arch_index,
+>  				    struct mm_struct *mm,
+>  				    struct linux_binprm *bprm,
+> @@ -155,7 +159,7 @@ static int __setup_additional_pages(enum arch_vdso_type arch_index,
+>  	}
+>  
+>  	ret = _install_special_mapping(mm, vdso_base, PAGE_SIZE,
+> -				       VM_READ|VM_MAYREAD,
+> +				       VM_READ|VM_MAYREAD|VM_PFNMAP,
+>  				       vdso_lookup[arch_index].dm);
+>  	if (IS_ERR(ret))
+>  		goto up_fail;
+> @@ -215,6 +219,7 @@ static struct vm_special_mapping aarch32_vdso_spec[C_PAGES] = {
+>  #ifdef CONFIG_COMPAT_VDSO
+>  	{
+>  		.name = "[vvar]",
+> +		.fault = vvar_fault,
+>  	},
+>  	{
+>  		.name = "[vdso]",
+> @@ -396,6 +401,7 @@ static int vdso_mremap(const struct vm_special_mapping *sm,
+>  static struct vm_special_mapping vdso_spec[A_PAGES] __ro_after_init = {
+>  	{
+>  		.name	= "[vvar]",
+> +		.fault = vvar_fault,
+>  	},
+>  	{
+>  		.name	= "[vdso]",
+> 
 
-Hope to hear from you soon.
-Yours Faithfully,
-Mrs. Henrita Pieres
+-- 
+Regards,
+Vincenzo
