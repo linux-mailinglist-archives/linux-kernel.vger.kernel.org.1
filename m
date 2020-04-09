@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8471A3898
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D661A389F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgDIRIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:08:19 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:45387 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbgDIRIS (ORCPT
+        id S1728154AbgDIRJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:09:27 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:46044 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbgDIRJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:08:18 -0400
-Received: by mail-pg1-f194.google.com with SMTP id w11so1077230pga.12;
-        Thu, 09 Apr 2020 10:08:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bQvrRMm1xrJntOiYTsW2Lx5FztmdO0PKJyWqixStKZM=;
-        b=SMSIs7zBXCYahuaxAxR+LoWlUnZeIr9zTb2pf+IjX3ssSGO4f/LJ71rs7cs+jdg3O/
-         IC2318r5GGhJcELuDl/Ze0uwNXia0OcIjwna6k5blB77mj0Y4XtCiMcbIK8st3rNlQ+e
-         osVfwDBBL2rIaU7lZns6ACclP5PoeUh8qegQnwkKt4YjmRM4qERNzP7oJBRDLPzgJljZ
-         qy1lKCQ8rFVztGlVzfI/Rkmzy7LEt8LalUdIpP0YHvwYF+bjfC0BE4mFZcwtZ0vyDnDC
-         IIFREURwImK0S68ylJtyrSaPkrzDPGZiOeOLFfr2hQJsER61wmNg7KZF/yKS5L8L3Igm
-         o7XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=bQvrRMm1xrJntOiYTsW2Lx5FztmdO0PKJyWqixStKZM=;
-        b=i3nkaZ13ETB5IUczlsyQYc9Thcx/YHhjSVhB6zhwj1wGO7PkZIEa6KzjIM2eTvuzeV
-         VhoVoJa0Fp1Zm1+Io1kOZxgm0T9P4SXeu08JuiXSS636dOvB3VPRlDpOQ3Ud/is5Q4JU
-         HVd1YybmDVTykG4wtC8DYe6ce3/XHFzmlCT/o7xYk6E3XwQBnN5uWX2JgWmaAbR6Ky+0
-         /ieUaHVV0NvprR31j0ZxEJfAoZNTI65EEbPugMNnZnf0EeM/JuwJia9D7J87dUmhx6HA
-         /uscLSKdpmxDn9pZUVolGR0Ra7RmB+Y5cCHhLRSelCQs9EcXPxwt3b7QAIBXMsV7bqMD
-         Ny7w==
-X-Gm-Message-State: AGi0PuahRDUn8Tv1zLIE7P0ApJYSh0GbBOnoGIPeVUMxDm31Gv0Zog2S
-        kW17R47N+UzkY32rOCOpEVI=
-X-Google-Smtp-Source: APiQypIGXl7ptK897jLts3QdF+EDBFxPJWcYJ6uqbpmOLvOgFWAldqFqZYwLtwgtv4/3t4lh0qbzWw==
-X-Received: by 2002:a63:d143:: with SMTP id c3mr401112pgj.171.1586452097545;
-        Thu, 09 Apr 2020 10:08:17 -0700 (PDT)
-Received: from google.com ([2601:647:4001:3000::50e3])
-        by smtp.gmail.com with ESMTPSA id w142sm1167934pff.111.2020.04.09.10.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 10:08:16 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 10:08:13 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sergey.senozhatsky@gmail.com
-Subject: Re: [PATCH 10/28] mm: only allow page table mappings for built-in
- zsmalloc
-Message-ID: <20200409170813.GD247701@google.com>
-References: <20200408115926.1467567-1-hch@lst.de>
- <20200408115926.1467567-11-hch@lst.de>
- <20200409160826.GC247701@google.com>
- <20200409165030.GG20713@hirez.programming.kicks-ass.net>
+        Thu, 9 Apr 2020 13:09:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=Q65ZfxGCOXDyibkgNECB3F/5D7aJifSXBHv+qldYJ4g=; b=MrlwWZIsNnQ2mG7aaGTWEbjnCd
+        FirzPIE+4XpQBOJCKeQ2d6jvFPS7IydlAlmLxaRD2AwYoi5kEFhQfr8ecUoNr57+/o63f7qGpqRyL
+        5iDM1XSBaGOUJAIHykTX1byif1cvY4fEKaiTcE/5yHrc63rTSl7z3rsrUThVxpQKDjq6xOSun9n1O
+        vNnuLw7jgRMm2PEAe8hMyuj29I5/uSFVFV5J3K9oGMqMJG+qPQQZbtsioQc8B3OGqgsnan65dK/vi
+        D+M+ZdTO4zoUmtSMCnm8PKHrpTZM/eQy5HKY2wJqZ76MukwVYrxOHe6vrWkIdzMXNuWLyaJWBjEWc
+        AfWTennA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jMag1-0004ql-UG; Thu, 09 Apr 2020 17:09:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3D18B300B38;
+        Thu,  9 Apr 2020 19:09:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 28EA62BA1D82B; Thu,  9 Apr 2020 19:09:16 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 19:09:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        mhiramat@kernel.org
+Subject: Re: AMD DC graphics display code enables -mhard-float, -msse, -msse2
+ without any visible FPU state protection
+Message-ID: <20200409170916.GR20760@hirez.programming.kicks-ass.net>
+References: <CAG48ez2Sx4ELkM94aD_h_J7K7KBOeuGmvZLKRkg3n_f2WoZ_cg@mail.gmail.com>
+ <4c5fe55d-9db9-2f61-59b2-1fb2e1b45ed0@amd.com>
+ <20200402141308.GB20730@hirez.programming.kicks-ass.net>
+ <20200409155956.GQ20760@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200409165030.GG20713@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200409155956.GQ20760@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 06:50:30PM +0200, Peter Zijlstra wrote:
-> On Thu, Apr 09, 2020 at 09:08:26AM -0700, Minchan Kim wrote:
-> > On Wed, Apr 08, 2020 at 01:59:08PM +0200, Christoph Hellwig wrote:
-> > > This allows to unexport map_vm_area and unmap_kernel_range, which are
-> > > rather deep internal and should not be available to modules.
-> > 
-> > Even though I don't know how many usecase we have using zsmalloc as
-> > module(I heard only once by dumb reason), it could affect existing
-> > users. Thus, please include concrete explanation in the patch to
-> > justify when the complain occurs.
+On Thu, Apr 09, 2020 at 05:59:56PM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 02, 2020 at 04:13:08PM +0200, Peter Zijlstra wrote:
+> > On Thu, Apr 02, 2020 at 09:33:54AM +0200, Christian König wrote:
 > 
-> The justification is 'we can unexport functions that have no sane reason
-> of being exported in the first place'.
-> 
-> The Changelog pretty much says that.
+> > > yes, using the floating point calculations in the display code has been a
+> > > source of numerous problems and confusion in the past.
+> > > 
+> > > The calls to kernel_fpu_begin() and kernel_fpu_end() are hidden behind the
+> > > DC_FP_START() and DC_FP_END() macros which are supposed to hide the
+> > > architecture depend handling for x86 and PPC64.
+> > > 
+> > > This originated from the graphics block integrated into AMD CPU (where we
+> > > knew which fp unit we had), but as far as I know is now also used for
+> > > dedicated AMD GPUs as well.
+> > > 
+> > > I'm not really a fan of this either, but so far we weren't able to convince
+> > > the hardware engineers to not use floating point calculations for the
+> > > display stuff.
 
-Okay, I hope there is no affected user since this patch.
-If there are someone, they need to provide sane reason why they want
-to have zsmalloc as module.
+> I'll need another approach, let me consider.
 
-Acked-by: Minchan Kim <minchan@kernel.org>
+Christian; it says these files are generated, does that generator know
+which functions are wholly in FPU context and which are not?
+
+My current thinking is that if I annotate all functions that are wholly
+inside kernel_fpu_start() with an __fpu function attribute, then I can
+verify that any call from regular text to fpu text only happens inside
+kernel_fpu_begin()/end(). And I can ensure that all !__fpu annotation
+fuctions only contain !fpu instructions.
+
+Can that generator add the __fpu function attribute or is that something
+that would need to be done manually (which seems like it would be
+painful, since it is quite a bit of code) ?
