@@ -2,145 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0321A31F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78121A31FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:41:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgDIJlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:41:12 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:37342 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgDIJlM (ORCPT
+        id S1726736AbgDIJld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:41:33 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42013 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbgDIJld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:41:12 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200409094110epoutp02160d45ad30db9745c0dc7e5c8f0c7145~EHWDNLxky1435114351epoutp02I
-        for <linux-kernel@vger.kernel.org>; Thu,  9 Apr 2020 09:41:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200409094110epoutp02160d45ad30db9745c0dc7e5c8f0c7145~EHWDNLxky1435114351epoutp02I
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1586425270;
-        bh=hYOGH5QzXR9eOJyz65hhkK+8y7rMO7Q72pB3emsDqBc=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Kbnu945vdA1AlwdyCr75hNjp2ZPIoLgVYAQweZ/NpC2oZXShDic+4XtpA9hB0urit
-         VD7ADAcWWImD3iNXmzSKwdItJVOL0VpVMbjFWEqE5iUzoNSd4+pr6s3PriM6jfhaVd
-         CPaeQ/CoCYArgObageMhlWAZ4zPAhBjfEGqxSaa8=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200409094109epcas1p463018479d21645ca68dadc15c6fd2c0e~EHWCrmu1f2551725517epcas1p48;
-        Thu,  9 Apr 2020 09:41:09 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 48ybkC2vnNzMqYls; Thu,  9 Apr
-        2020 09:41:07 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EF.1E.04544.3BDEE8E5; Thu,  9 Apr 2020 18:41:07 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200409094106epcas1p4ab88dab9bddc5c2c40fca2bcbece3b17~EHV-9zi6u2865028650epcas1p4L;
-        Thu,  9 Apr 2020 09:41:06 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200409094106epsmtrp1c525a99a6ad794aa28f9f1d7e9b2ea83~EHV-89LIx0118101181epsmtrp1F;
-        Thu,  9 Apr 2020 09:41:06 +0000 (GMT)
-X-AuditID: b6c32a36-7e7ff700000011c0-46-5e8eedb3f279
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B2.3C.04158.2BDEE8E5; Thu,  9 Apr 2020 18:41:06 +0900 (KST)
-Received: from jaewon-linux.10.32.193.11 (unknown [10.253.104.82]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200409094106epsmtip18b9418a6856bcd27593376af15aa22c9~EHV-xcjo42924329243epsmtip12;
-        Thu,  9 Apr 2020 09:41:06 +0000 (GMT)
-From:   Jaewon Kim <jaewon31.kim@samsung.com>
-To:     willy@infradead.org, walken@google.com, bp@suse.de,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        jaewon31.kim@gmail.com, Jaewon Kim <jaewon31.kim@samsung.com>
-Subject: [PATCH] mm: mmap: initialize align_offset explicitly for
- vm_unmapped_area
-Date:   Thu,  9 Apr 2020 18:40:35 +0900
-Message-Id: <20200409094035.19457-1-jaewon31.kim@samsung.com>
-X-Mailer: git-send-email 2.13.7
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNKsWRmVeSWpSXmKPExsWy7bCmge7mt31xBvPOi1vMWb+GzWJiv6ZF
-        9+aZjBa9718xWVzeNYfN4t6a/6wW/ybVWvz+MYfNgcNj56y77B4LNpV6bF6h5bHp0yR2jxMz
-        frN49G1Zxeix+XS1x+dNcgEcUTk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koK
-        eYm5qbZKLj4Bum6ZOUBXKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKDA0K9IoT
-        c4tL89L1kvNzrQwNDIxMgSoTcjJO7gstmMZT8fVyJ2sD40quLkZODgkBE4l1L2YydjFycQgJ
-        7GCUuH1rCTOE84lRYt7Kj1CZb4wSWzb+YIVpmdb6mA0isZdRovvERiYI5zujxKqJIMM4OdgE
-        tCXeL5gE1MHBISIQLPF4JhtImFmgVOLtmxPMILawQIjE9KOLGUFKWARUJU7cUQYJ8wrYSvxt
-        7gPrlBCQl1j4H+wgCYE5bBK3Xp1jg7jBRWLfvW1QtrDEq+Nb2CFsKYmX/W3sEA3NjBJvZ25m
-        hHBaGCXubuplhKgylujtucAMsoFZQFNi/S59iLCixM7fcxkh7uSTePe1B+oIXomONiGIEjWJ
-        lmdfoeEgI/H33zMo20Pi+OXvYG8JCcRKrDp1jXUCo+wshAULGBlXMYqlFhTnpqcWGxYYIcfR
-        JkZwQtMy28G46JzPIUYBDkYlHt4De3rjhFgTy4orcw8xSnAwK4nwejcBhXhTEiurUovy44tK
-        c1KLDzGaAgNvIrOUaHI+MNnmlcQbmhoZGxtbmJiZm5kaK4nzTr2eEyckkJ5YkpqdmlqQWgTT
-        x8TBKdXAGBwq9eZ01gTbdQLnX8wVPruHSfnkXmuWe4fWfz8wo8TE7tzytwGa9Y9Odt7ftyKP
-        pcH9xuZfjcahsx+scy6P1oqRFGw7KSo3Pe3jzI/Vz9yksyYtmvPJc8dhUQa2ZZcKnZ49nsqo
-        Jf909+dExZsP9h+/+/Du2ievP8/M8ax5UC2+1s2Ik7Mi46ASS3FGoqEWc1FxIgDyX343fgMA
-        AA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprGLMWRmVeSWpSXmKPExsWy7bCSnO6mt31xBts/61jMWb+GzWJiv6ZF
-        9+aZjBa9718xWVzeNYfN4t6a/6wW/ybVWvz+MYfNgcNj56y77B4LNpV6bF6h5bHp0yR2jxMz
-        frN49G1Zxeix+XS1x+dNcgEcUVw2Kak5mWWpRfp2CVwZJ/eFFkzjqfh6uZO1gXElVxcjJ4eE
-        gInEtNbHbF2MXBxCArsZJb5d3ccMkZCReHP+KUsXIweQLSxx+HAxRM1XRom5+34xgtSwCWhL
-        vF8wiRWkRkQgXGLq9gqQMLNApcS/27dYQWxhgSCJvpl7GEFKWARUJU7cUQYJ8wrYSvxt7mOF
-        mC4vsfA/8wRGngWMDKsYJVMLinPTc4sNC4zyUsv1ihNzi0vz0vWS83M3MYJDS0trB+OJE/GH
-        GAU4GJV4eCX298YJsSaWFVfmHmKU4GBWEuH1bgIK8aYkVlalFuXHF5XmpBYfYpTmYFES55XP
-        PxYpJJCeWJKanZpakFoEk2Xi4JRqYMxVWb3y6/pLt63cOx8wNa5bxlXlv95qbXbonT9rmBIb
-        N/42DP5ULLD65v/zDzpO+ssz7yo0mnKk2zbppuG9WucZZ+brTuRx0WyQyE9T5dLnne3oG31w
-        V6raD/lHc9dNN/Occvn7e7kbz9ovLJ48t/peV0DAP6Nb+5hPXzlzmbvgYI7juj+sOXVKLMUZ
-        iYZazEXFiQBW7JP+KQIAAA==
-X-CMS-MailID: 20200409094106epcas1p4ab88dab9bddc5c2c40fca2bcbece3b17
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200409094106epcas1p4ab88dab9bddc5c2c40fca2bcbece3b17
-References: <CGME20200409094106epcas1p4ab88dab9bddc5c2c40fca2bcbece3b17@epcas1p4.samsung.com>
+        Thu, 9 Apr 2020 05:41:33 -0400
+Received: by mail-ot1-f65.google.com with SMTP id t92so923669otb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:41:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AAmPcakirZ+49aStGKItq0c+j+VEsXqfcBH/BMyGspk=;
+        b=WXfJC2xvujS1NMEJmo8auNqU+zz3KoHNnFI/ZwIoQGqsenIlj1/rLp7i8g0wrHhNMA
+         tB4UaPYqL8fo1FBLJD1QspR85zqLl/OHQQ2XW2wZhxbVmnvXaj4OEg2HGRtpK4xkfIA5
+         QryyOXVdb1eBXsQfmBlDoe7W6QRuDag4YOw+c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AAmPcakirZ+49aStGKItq0c+j+VEsXqfcBH/BMyGspk=;
+        b=kowpc6XCYZvbzW+5awK96cfMJLZVrhdirwB6Vm2ybc1RZMf7vuAv/lWqMopIYrI2dt
+         nf1unBjaPAKv/AsIP3n+ZnwqFkwxLYNYaV/Ytz8TiukK8PdSVKpYMTX4GklSHDXmFWzt
+         awKBjY6ri2clmUkQsNtQsxonzbMMujkod+B9PIuGD0j1RckNbuKWM5U6j81w9JeQ4fFV
+         D/DPz6psK5FvH99UuNDrqkICZ7UjzMdbAirci3vKKC5qOotusK0xionuqBPuSj1hmEse
+         oUebLRNpxhZl4050v0W8uq+uByxkL2CQ6j46JYBDAKjfHvHlHLkbItPc8jxtT3VofV1G
+         hXgQ==
+X-Gm-Message-State: AGi0Pub6B3aK4yZOTJ2PE9whf0TQBQbhQyI/8o/EOtQEVEY9eUG5Bp5e
+        hD9CRDAYHq6zBUsICE8DA88DHYNiSaUiyoZKd9u7kA==
+X-Google-Smtp-Source: APiQypLHBVJAv55CZxyRjUHHZPFErxI7m2EAB+edMw28HekqHKAMU8pcbynFySqYUgFQY0OpR/l48dylQu4jTtXwGxw=
+X-Received: by 2002:a4a:4190:: with SMTP id x138mr9186341ooa.35.1586425291875;
+ Thu, 09 Apr 2020 02:41:31 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200408115926.1467567-1-hch@lst.de> <20200408115926.1467567-20-hch@lst.de>
+ <20200408122504.GO3456981@phenom.ffwll.local> <eb48f7b6327e482ea9911b129210c0417ab48345.camel@kernel.crashing.org>
+In-Reply-To: <eb48f7b6327e482ea9911b129210c0417ab48345.camel@kernel.crashing.org>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 9 Apr 2020 11:41:20 +0200
+Message-ID: <CAKMK7uHtkLvdsWFGiAtkzVa5mpnDvXkn3CHZQ6bgJ_enbyAc8A@mail.gmail.com>
+Subject: Re: [PATCH 19/28] gpu/drm: remove the powerpc hack in drm_legacy_sg_alloc
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, X86 ML <x86@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-hyperv@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-s390@vger.kernel.org, bpf <bpf@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On passing requirement to vm_unmapped_area, arch_get_unmapped_area and
-arch_get_unmapped_area_topdown did not set align_offset. Internally on
-both unmapped_area and unmapped_area_topdown, if info->align_mask is 0,
-then info->align_offset was meaningless.
+On Thu, Apr 9, 2020 at 10:54 AM Benjamin Herrenschmidt
+<benh@kernel.crashing.org> wrote:
+>
+> On Wed, 2020-04-08 at 14:25 +0200, Daniel Vetter wrote:
+> > On Wed, Apr 08, 2020 at 01:59:17PM +0200, Christoph Hellwig wrote:
+> > > If this code was broken for non-coherent caches a crude powerpc hack
+> > > isn't going to help anyone else.  Remove the hack as it is the last
+> > > user of __vmalloc passing a page protection flag other than PAGE_KERNEL.
+> >
+> > Well Ben added this to make stuff work on ppc, ofc the home grown dma
+> > layer in drm from back then isn't going to work in other places. I guess
+> > should have at least an ack from him, in case anyone still cares about
+> > this on ppc. Adding Ben to cc.
+>
+> This was due to some drivers (radeon ?) trying to use vmalloc pages for
+> coherent DMA, which means on those 4xx powerpc's need to be non-cached.
+>
+> There were machines using that (440 based iirc), though I honestly
+> can't tell if anybody still uses any of it.
 
-But commit df529cabb7a2 ("mm: mmap: add trace point of
-vm_unmapped_area") always prints info->align_offset even though it is
-uninitialized. Fix this uninitialized value issue by setting it to 0
-explicitly.
+agp subsystem still seems to happily do that (vmalloc memory for
+device access), never having been ported to dma apis (or well
+converted to iommu drivers, which they kinda are really). So I think
+this all still works exactly as back then, even with the kms radeon
+drivers. Question really is whether we have users left, and I have no
+clue about that either.
 
-Before
-92.291104: vm_unmapped_area: addr=0x755b155000 err=0 total_vm=0x15aaf0 flags=0x1 len=0x109000 lo=0x8000 hi=0x75eed48000 mask=0x0 ofs=0x4022
+Now if these boxes didn't ever have agp then I think we can get away
+with deleting this, since we've already deleted the legacy radeon
+driver. And that one used vmalloc for everything. The new kms one does
+use the dma-api if the gpu isn't connected through agp.
+-Daniel
 
-After
-68.584210: vm_unmapped_area: addr=0x74a4ca1000 err=0 total_vm=0x168ab1 flags=0x1 len=0x9000 lo=0x8000 hi=0x753d94b000 mask=0x0 ofs=0x0
+> Cheers,
+> Ben.
+>
+> > -Daniel
+> >
+> > >
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > > ---
+> > >  drivers/gpu/drm/drm_scatter.c | 11 +----------
+> > >  1 file changed, 1 insertion(+), 10 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/drm_scatter.c b/drivers/gpu/drm/drm_scatter.c
+> > > index ca520028b2cb..f4e6184d1877 100644
+> > > --- a/drivers/gpu/drm/drm_scatter.c
+> > > +++ b/drivers/gpu/drm/drm_scatter.c
+> > > @@ -43,15 +43,6 @@
+> > >
+> > >  #define DEBUG_SCATTER 0
+> > >
+> > > -static inline void *drm_vmalloc_dma(unsigned long size)
+> > > -{
+> > > -#if defined(__powerpc__) && defined(CONFIG_NOT_COHERENT_CACHE)
+> > > -   return __vmalloc(size, GFP_KERNEL, pgprot_noncached_wc(PAGE_KERNEL));
+> > > -#else
+> > > -   return vmalloc_32(size);
+> > > -#endif
+> > > -}
+> > > -
+> > >  static void drm_sg_cleanup(struct drm_sg_mem * entry)
+> > >  {
+> > >     struct page *page;
+> > > @@ -126,7 +117,7 @@ int drm_legacy_sg_alloc(struct drm_device *dev, void *data,
+> > >             return -ENOMEM;
+> > >     }
+> > >
+> > > -   entry->virtual = drm_vmalloc_dma(pages << PAGE_SHIFT);
+> > > +   entry->virtual = vmalloc_32(pages << PAGE_SHIFT);
+> > >     if (!entry->virtual) {
+> > >             kfree(entry->busaddr);
+> > >             kfree(entry->pagelist);
+> > > --
+> > > 2.25.1
+> > >
+> >
+> >
+>
 
-Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
----
- mm/mmap.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 8d77dbbb80fe..de07bbc0e21f 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2123,6 +2123,7 @@ arch_get_unmapped_area(struct file *filp, unsigned long addr,
- 	info.low_limit = mm->mmap_base;
- 	info.high_limit = mmap_end;
- 	info.align_mask = 0;
-+	info.align_offset = 0;
- 	return vm_unmapped_area(&info);
- }
- #endif
-@@ -2164,6 +2165,7 @@ arch_get_unmapped_area_topdown(struct file *filp, unsigned long addr,
- 	info.low_limit = max(PAGE_SIZE, mmap_min_addr);
- 	info.high_limit = arch_get_mmap_base(addr, mm->mmap_base);
- 	info.align_mask = 0;
-+	info.align_offset = 0;
- 	addr = vm_unmapped_area(&info);
- 
- 	/*
 -- 
-2.13.7
-
+Daniel Vetter
+Software Engineer, Intel Corporation
++41 (0) 79 365 57 48 - http://blog.ffwll.ch
