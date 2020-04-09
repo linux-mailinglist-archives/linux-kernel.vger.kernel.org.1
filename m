@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3225E1A36A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A392B1A36A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728030AbgDIPKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 11:10:33 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:45598 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727771AbgDIPKc (ORCPT
+        id S1728002AbgDIPLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 11:11:44 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:39393 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726977AbgDIPLo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 11:10:32 -0400
-Received: by mail-qk1-f196.google.com with SMTP id m67so4208168qke.12
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 08:10:30 -0700 (PDT)
+        Thu, 9 Apr 2020 11:11:44 -0400
+Received: by mail-pj1-f67.google.com with SMTP id z3so1394297pjr.4;
+        Thu, 09 Apr 2020 08:11:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=DIocbXZ/GrySYJM2qjlB0aVfLDG/I+8RC+5beeuDqKQ=;
-        b=rropwxWiFn2w4WZ/eqv8MdbJFi26bRLRbgBUG9wGB+0VCTjauS8nU81/N8kxvdyVnD
-         R4UvF4evvwf2RWu7qI44owvQYpgghZYQE7g2936Uc0Wamem2nJTvqwbKYpWxXMfBN+Td
-         ybZn1+3VDLyLj6y12q5q52UK0I+8kWOaMfyk1Y1+cZBFcK7KxU3yUcdtkJLu5puQIvp2
-         UMSRjN0cbdDNmQBCpno7rcnePcplHvCOKqxA3OuMF0VHiHnJaB2h0aZwVYX4sqrUAlpl
-         MD52i3KsjWHxtvJNSvCQrHlfU0D6H11iF7PJHSf3JJhA3QpS8Oq7MXAFkFIlltUtKJb6
-         1bTQ==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=Uyv/46Juj5lfxcr3X6PKHvpdHN5/CAT3a4tPfLzARdM=;
+        b=pnlwXTJGzos2ogii+pXTu2z1dU1WlWajjcD9NxY6gBuekvamSXZTdOZiB/DAIr/wsH
+         TG87wBTFk5jBzdeez1DuQe6H6DlPvRz4GFgceEaeQh/ruyeiVhR610KoG+WIVAPBOuIO
+         +u4jh/ujyvta9oWDtpzEXQM/q9HoIPXemre6qYRz6cS2LROgykzVj0GNZ4fatX8G9NEP
+         7Ql5ru+fn077/80MqdqcJUNH/lVJkwUj13GxCT0zP/L/Craz1AXpgAYn+oK6nUkK8mfz
+         jweku9IBKesjmlxrvRlH43f9PJrAgcwzUz21KqToVjydwo+jPyj4+CJMcTJbdWTiDGlA
+         wlyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=DIocbXZ/GrySYJM2qjlB0aVfLDG/I+8RC+5beeuDqKQ=;
-        b=VKAMGx7aoZlKc4fZe0rZxY+ikTHEQUQjYaIkTDk7lST1dbfpcI7rbTG5rczXxVmtVc
-         JmKCs4mqW5mencGOkoDpiJ9iNeUj3of6Rvda5/JWJHheWgMCym25Z1K8q7VCaGf8yZFv
-         X66LlhHmSUnwhGDkSSueplKL39vcsjeUzRzyKeCkzuIJD8pEXODumL1zaE92Bx1IDQTu
-         j+6sNHgrHcrp0Aw2g/8RS7rpf3Qgju7d2LXQ49t6ikjtinKYwtj6W0ilNyQbuhn//DGo
-         aXGVGxqD5bzNO9TLeDxfES5EBB+rIVO/AWWnru92HQpiX6RNM8MMJctb2+9RGh8Vsaku
-         3cxg==
-X-Gm-Message-State: AGi0PuYaGruQ1gy0oX0R/etsQHS2yj2PTVY+3fNC3jcxCsJJ14hhjc/D
-        5F+A7ViuxyD8Z3w2om/3tSekPg==
-X-Google-Smtp-Source: APiQypLqKqGGiP1/sf/taBiiQNFrD+V9RPMvEkZHZME7janiP8RehwEHD0O/256zPiMPw8/rVadCwg==
-X-Received: by 2002:a05:620a:12fa:: with SMTP id f26mr282331qkl.374.1586445030295;
-        Thu, 09 Apr 2020 08:10:30 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id y21sm21347011qka.37.2020.04.09.08.10.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Apr 2020 08:10:29 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: KCSAN + KVM = host reset
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <CANpmjNMiHNVh3BVxZUqNo4jW3DPjoQPrn-KEmAJRtSYORuryEA@mail.gmail.com>
-Date:   Thu, 9 Apr 2020 11:10:28 -0400
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "paul E. McKenney" <paulmck@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B7F7F73E-EE27-48F4-A5D0-EBB29292913E@lca.pw>
-References: <E180B225-BF1E-4153-B399-1DBF8C577A82@lca.pw>
- <fb39d3d2-063e-b828-af1c-01f91d9be31c@redhat.com>
- <017E692B-4791-46AD-B9ED-25B887ECB56B@lca.pw>
- <CANpmjNMiHNVh3BVxZUqNo4jW3DPjoQPrn-KEmAJRtSYORuryEA@mail.gmail.com>
-To:     Marco Elver <elver@google.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=Uyv/46Juj5lfxcr3X6PKHvpdHN5/CAT3a4tPfLzARdM=;
+        b=j7BMHSpyvCtATkcuU1tXB5aM20cNmid5dkzW2c+2oewlvnoc1EJ54YDYSGeHHTHJ/Q
+         LBWeRUu99YQNE4WCyVBqedJ35wxzIZ3pfzfxUk4Nv9OInEPq0ih5ru1qLBfUG+3OW2QR
+         6YrqSnCeKxuBNk9P9G/ilG6exHBGkSUkYkWqoLbPHYT0GtVXjw7BboB1DRJ158YfDZ+a
+         hq54qlssn1tCWsVK0dNNgaiC231VAGeF/wWK8m8xnBvWQX4FcH+bUJExBcfryeXxsGbW
+         0rQRBBPKva4AEWFDe1qUxUcxN8AWhmUpthet2SC0+BZr/ghXovuRQgpuzgeH+r3YTwOT
+         5E7A==
+X-Gm-Message-State: AGi0PuY/ZzsRdwcvZAi4cgbY/L0oAG4Nol4CryOjwREoi6pM0d+qcqDS
+        og7inRDdNekx1e9pr6Y9dio=
+X-Google-Smtp-Source: APiQypIRB49qL8jGLWw50RsGEtKpAFea2tTVz3FzmbuF4LyW3fyWIJKa8TcU+jZhRNPayvyUyvafUA==
+X-Received: by 2002:a17:902:8bc7:: with SMTP id r7mr91051plo.12.1586445103298;
+        Thu, 09 Apr 2020 08:11:43 -0700 (PDT)
+Received: from localhost.localdomain ([2409:4072:700:a20f:d50:b01b:c4e4:35ad])
+        by smtp.gmail.com with ESMTPSA id s39sm2493358pjb.10.2020.04.09.08.11.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 08:11:42 -0700 (PDT)
+From:   Aishwarya R <aishwaryarj100@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Allison Randal <allison@lohutok.net>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Aishwarya R <aishwaryarj100@gmail.com>,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: adc: at91-adc: Use devm_platform_ioremap_resource
+Date:   Thu,  9 Apr 2020 20:41:23 +0530
+Message-Id: <20200409151125.32677-1-aishwaryarj100@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use the helper function that wraps the calls to
+platform_get_resource() and devm_ioremap_resource()
+together.
 
+Signed-off-by: Aishwarya R <aishwaryarj100@gmail.com>
+---
+ drivers/iio/adc/at91_adc.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-> On Apr 9, 2020, at 3:03 AM, Marco Elver <elver@google.com> wrote:
->=20
-> On Wed, 8 Apr 2020 at 23:29, Qian Cai <cai@lca.pw> wrote:
->>=20
->>=20
->>=20
->>> On Apr 8, 2020, at 5:25 PM, Paolo Bonzini <pbonzini@redhat.com> =
-wrote:
->>>=20
->>> On 08/04/20 22:59, Qian Cai wrote:
->>>> Running a simple thing on this AMD host would trigger a reset right =
-away.
->>>> Unselect KCSAN kconfig makes everything work fine (the host would =
-also
->>>> reset If only "echo off > /sys/kernel/debug/kcsan=E2=80=9D before =
-running qemu-kvm).
->>>=20
->>> Is this a regression or something you've just started to play with?  =
-(If
->>> anything, the assembly language conversion of the AMD world switch =
-that
->>> is in linux-next could have reduced the likelihood of such a =
-failure,
->>> not increased it).
->>=20
->> I don=E2=80=99t remember I had tried this combination before, so =
-don=E2=80=99t know if it is a
->> regression or not.
->=20
-> What happens with KASAN? My guess is that, since it also happens with
-> "off", something that should not be instrumented is being
-> instrumented.
-
-No, KASAN + KVM works fine.
-
->=20
-> What happens if you put a 'KCSAN_SANITIZE :=3D n' into
-> arch/x86/kvm/Makefile? Since it's hard for me to reproduce on this
-
-Yes, that works, but this below alone does not work,
-
-KCSAN_SANITIZE_kvm-amd.o :=3D n
-
-I have been able to reproduce this on a few AMD hosts.
-
-> exact system, I'd ask you to narrow it down by placing 'KCSAN_SANITIZE
-> :=3D n' into suspect subsystems' Makefiles. Once you get it to work =
-with
-> that, we can refine the solution.
->=20
-> Thanks,
-> -- Marco
+diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
+index abe99856c823..0368b6dc6d60 100644
+--- a/drivers/iio/adc/at91_adc.c
++++ b/drivers/iio/adc/at91_adc.c
+@@ -1152,7 +1152,6 @@ static int at91_adc_probe(struct platform_device *pdev)
+ 	int ret;
+ 	struct iio_dev *idev;
+ 	struct at91_adc_state *st;
+-	struct resource *res;
+ 	u32 reg;
+ 
+ 	idev = devm_iio_device_alloc(&pdev->dev, sizeof(struct at91_adc_state));
+@@ -1182,9 +1181,7 @@ static int at91_adc_probe(struct platform_device *pdev)
+ 	if (st->irq < 0)
+ 		return -ENODEV;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	st->reg_base = devm_ioremap_resource(&pdev->dev, res);
++	st->reg_base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(st->reg_base))
+ 		return PTR_ERR(st->reg_base);
+ 
+-- 
+2.17.1
 
