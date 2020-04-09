@@ -2,99 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 339271A31A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D101A3199
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbgDIJQU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 9 Apr 2020 05:16:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42197 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726521AbgDIJQU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:16:20 -0400
-Received: from mail-pj1-f70.google.com ([209.85.216.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1jMTIJ-0002bD-9r
-        for linux-kernel@vger.kernel.org; Thu, 09 Apr 2020 09:16:19 +0000
-Received: by mail-pj1-f70.google.com with SMTP id s10so2035147pjc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:16:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=I/aLOBCPPw94GG/u9hj9C2FG+LS8AZRo+ZKiDRcnxfs=;
-        b=Z+MG/YWqeTePeEHwzlYX089h6h1tOVFbvpF74cPVN87SPn91qWnC1GuExSe3LOKMzT
-         WAlYrSXsRpsHLM0no3BCWAjd1NP/jKh2tqhNtg/z551X7I2IAZGICPXOUtjzdsHZW+MI
-         X0EtqJeVUF42NY7mhXpYC8fhKaXzQDYBGtiBzesbQd9pdMYExlgemykyTItHJLv2OTmE
-         n8rtaYwJlV4GwwPt6He0uJH5gNz2H7BVSndeNkJvn8pr/Yw1yX2ynwr2SNK2UvutCB1S
-         h/M5xT758pjPay/XI7whcwcv8AitqskvhlPpqb3jdCM30j314cPlAyxZqUDfcXUcsJMU
-         pbtA==
-X-Gm-Message-State: AGi0Pubui4v7lzJkj3DrVfFt2Anj4HGnxZ6cHDc/x3ftfwh5GKuBfYfQ
-        NZa/JQBWIcBqB7QtAC8bxxYFUtVebd1EzzFgcobEJGPKXZmL2tJ+HHWpM13coenPqwwKYEX7/ID
-        BOLJ/MduAx9LNEOSh6uvDELO46z1vn+RnW9rkE3KCsw==
-X-Received: by 2002:a17:902:242:: with SMTP id 60mr11378509plc.245.1586423777939;
-        Thu, 09 Apr 2020 02:16:17 -0700 (PDT)
-X-Google-Smtp-Source: APiQypLJyMKRHAg8InQnK0BXiYiqShBnT1RbYLk74TbMNSG8JiX0/iAUbWhQOBWAi7mt/UsWbh2v1w==
-X-Received: by 2002:a17:902:242:: with SMTP id 60mr11378491plc.245.1586423777606;
-        Thu, 09 Apr 2020 02:16:17 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id 6sm18624250pfx.69.2020.04.09.02.16.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Apr 2020 02:16:17 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH] ahci: Add Intel Comet Lake PCH RAID PCI ID
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <20191128081041.6948-1-jian-hong@endlessm.com>
-Date:   Thu, 9 Apr 2020 17:16:14 +0800
-Cc:     "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, linux@endlessm.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <EF580FD3-2C0F-4268-8B39-8B339D590353@canonical.com>
-References: <20191128081041.6948-1-jian-hong@endlessm.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Jian-Hong Pan <jian-hong@endlessm.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1726663AbgDIJMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:12:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:47422 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725972AbgDIJMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 05:12:22 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8850331B;
+        Thu,  9 Apr 2020 02:12:22 -0700 (PDT)
+Received: from [10.37.12.112] (unknown [10.37.12.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A2AC3F73D;
+        Thu,  9 Apr 2020 02:12:20 -0700 (PDT)
+Subject: Re: [RFC PATCH] coresight: dynamic-replicator: Fix handling of
+ multiple connections
+To:     saiprakash.ranjan@codeaurora.org
+Cc:     mike.leach@linaro.org, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, alexander.shishkin@linux.intel.com,
+        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20200405102819.28460-1-saiprakash.ranjan@codeaurora.org>
+ <CAJ9a7VgQzK1XSCvLwuqODwkWfvo=6Wwps7Db+pL5xYDeCuktrg@mail.gmail.com>
+ <6c0f45488f8a44bf860759e00fcabd09@codeaurora.org>
+ <906d374d-a4d6-f2f2-6845-88b97a5ff7d9@arm.com>
+ <39a2b3fff165a108fa59d72b630b5f14@codeaurora.org>
+ <bb209f80-ac02-6321-dac4-ebf9ee6fa9a0@arm.com>
+ <bd05b31c2391edfff5044f22f2f83edf@codeaurora.org>
+ <e9c299c4-caeb-9eb8-f019-b311bfce756a@arm.com>
+ <a7074f44ebbde720b5e0189801eab7c9@codeaurora.org>
+ <20200408224347.GA388414@ewhatever.cambridge.arm.com>
+ <9ad167836b0a22694d58d24f39db89a6@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <671892c3-b90d-73f0-4706-b74b40002260@arm.com>
+Date:   Thu, 9 Apr 2020 10:17:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.7.0
+MIME-Version: 1.0
+In-Reply-To: <9ad167836b0a22694d58d24f39db89a6@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
+Hi Sai,
 
-> On Nov 28, 2019, at 16:10, Jian-Hong Pan <jian-hong@endlessm.com> wrote:
-> 
-> Intel Comet Lake should use the default LPM policy for mobile chipsets.
-> So, add the PCI ID to the driver list of supported devices.
-> 
-> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
 
-Would it be possible to also merge this patch?
-We also have some system that use this controller.
+Thanks for the quick testing ! Please see below for the
+tmc_etr probe failure.
 
-Kai-Heng
+On 04/09/2020 08:51 AM, Sai Prakash Ranjan wrote:
+> Hi Suzuki,
+> 
+> On 2020-04-09 04:13, Suzuki K Poulose wrote:
+>> On Tue, Apr 07, 2020 at 08:48:54PM +0530, Sai Prakash Ranjan wrote:
+>>
+>> Please find the untested patch below.
+>>
+>> ---8>---
+>>
+>> [untested] coresight: Fix support for sparse port numbers
+>>
+>> On some systems the firmware may not describe all the ports
+>> connected to a component (e.g, for security reasons). This
+>> could be especially problematic for "funnels" where we could
+>> end up in modifying memory beyond the allocated space for
+>> refcounts.
+>>
+>> e.g, for a funnel with input ports listed 0, 3, 5, nr_inport = 3.
+>> However the we could access refcnts[5] while checking for
+>> references.
+>>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>>  .../hwtracing/coresight/coresight-platform.c  | 74 ++++++++++++-------
+>>  drivers/hwtracing/coresight/coresight.c       |  8 +-
+>>  2 files changed, 56 insertions(+), 26 deletions(-)
+>>
+>> diff --git a/drivers/hwtracing/coresight/coresight-platform.c
+>> b/drivers/hwtracing/coresight/coresight-platform.c
+>> index 3c5bee429105..1c610d6e944b 100644
+>> --- a/drivers/hwtracing/coresight/coresight-platform.c
+>> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+>> @@ -67,6 +67,7 @@ static void of_coresight_get_ports_legacy(const
 
-> ---
-> drivers/ata/ahci.c | 1 +
-> 1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-> index ec6c64fce74a..d9b3a9f7a4ee 100644
-> --- a/drivers/ata/ahci.c
-> +++ b/drivers/ata/ahci.c
-> @@ -405,6 +405,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
-> 	{ PCI_VDEVICE(INTEL, 0x22a3), board_ahci_mobile }, /* Cherry Tr. AHCI */
-> 	{ PCI_VDEVICE(INTEL, 0x5ae3), board_ahci_mobile }, /* ApolloLake AHCI */
-> 	{ PCI_VDEVICE(INTEL, 0x34d3), board_ahci_mobile }, /* Ice Lake LP AHCI */
-> +	{ PCI_VDEVICE(INTEL, 0x02d7), board_ahci_mobile }, /* Comet Lake PCH RAID */
-> 
-> 	/* JMicron 360/1/3/5/6, match class to avoid IDE function */
-> 	{ PCI_VENDOR_ID_JMICRON, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
-> -- 
-> 2.20.1
-> 
+[...]
 
+>> @@ -684,8 +702,13 @@ static int acpi_coresight_parse_graph(struct
+>> acpi_device *adev,
+>>          return rc;
+>>
+>>      /* Copy the connection information to the final location */
+>> -    for (i = 0; i < pdata->nr_outport; i++)
+>> -        pdata->conns[i] = conns[i];
+>> +    for (i = 0; conns + i < ptr; i++) {
+>> +        int port = conns[i].outport;
+>> +
+>> +        /* Duplicate output port */
+>> +        WARN_ON(pdata->conns[port].child_fwnode);
+>> +        pdata->conns[port] = conns[i];
+>> +    }
+>>
+>>      devm_kfree(&adev->dev, conns);
+>>      return 0;
+>> @@ -787,6 +810,7 @@ coresight_get_platform_data(struct device *dev)
+>>          goto error;
+>>
+>>      pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
+>> +    pdata->nr_outport = pdata->nr_inport = -1;
+
+
+Please could you remove this hunk and test it ? I forgot to update the
+commit before I sent this over.
+
+
+>>              /* Does it match this newly added device? */
+>> @@ -1029,6 +1032,9 @@ static void coresight_fixup_device_conns(struct
+>> coresight_device *csdev)
+>>          struct coresight_connection *conn = &csdev->pdata->conns[i];
+>>          struct device *dev = NULL;
+>>
+>> +        if (!conn->child_fwnode)
+>> +            continue;
+>> +
+>>          dev = bus_find_device_by_fwnode(&coresight_bustype, 
+>> conn->child_fwnode);
+>>          if (dev) {
+>>              conn->child_dev = to_coresight_device(dev);
+>> @@ -1061,7 +1067,7 @@ static int coresight_remove_match(struct device
+>> *dev, void *data)
+>>      for (i = 0; i < iterator->pdata->nr_outport; i++) {
+>>          conn = &iterator->pdata->conns[i];
+>>
+>> -        if (conn->child_dev == NULL)
+>> +        if (conn->child_dev == NULL || conn->child_fwnode == NULL)
+>>              continue;
+>>
+>>          if (csdev->dev.fwnode == conn->child_fwnode) {
+> 
+> 
+> Thanks Suzuki, I don't see the KASAN warning anymore with this patch.
+> But somehow tmc_etr probe fails with error -12(ENOMEM).
+
+See the above suggestion.
+
+Cheers
+Suzuki
