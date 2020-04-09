@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C901A3C08
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 23:44:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A99701A3C0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 23:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727232AbgDIVo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 17:44:57 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:54766 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726866AbgDIVo4 (ORCPT
+        id S1727798AbgDIVpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 17:45:41 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:43883 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727738AbgDIVpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 17:44:56 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039Lh6gl051871;
-        Thu, 9 Apr 2020 21:44:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=KVyrR7Ev5APxOYVha5QcIl4uYw2bqBLsnRLs8f9X/Zo=;
- b=JVWpMDaFxV/Xn08SFhcnwE+kgFdAVQyxbDj8C/1buG1gAWbip/BW23tkFw70Lx8ghAj9
- YmMXoxpxmkLRSZef9thxMjHriDKdyZRDCcSyRLQzT1VXm/h7TOsRzng8QLLo/OxBbUfD
- ZeGkO0b7QdVOL9bUiTpKmuvoZHd362724REh9k0uNeDe4GolPiBU9J7Fe06vTl2B2Hsn
- lGTj0sMslkluHAT5JxcQv9P/sjot3EIlyIXNd1Ct9Zjsoz56um7D8sVa/VAWpQM05FdA
- 7ogw1cGBuSWnw8v9qmLhqP7oa79pfV96LfTZcyNGqY5iQu4lN2wkOy1uJcQISJ8hmSHC /Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 309gw4fuu1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 21:44:55 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039LfdM1180988;
-        Thu, 9 Apr 2020 21:44:54 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 3091m9p5sh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 21:44:54 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 039Lirng016549;
-        Thu, 9 Apr 2020 21:44:53 GMT
-Received: from toshiba-tecra.hsd1.ca.comcast.net (/10.159.132.43)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 09 Apr 2020 14:44:53 -0700
-From:   Victor Erminpour <victor.erminpour@oracle.com>
-To:     ardb@kernel.org
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        victor.erminpour@oracle.com
-Subject: [PATCH] efi/libstub/arm64: Enable __efistub_global define in .data section
-Date:   Thu,  9 Apr 2020 14:44:29 -0700
-Message-Id: <1586468669-21456-1-git-send-email-victor.erminpour@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9586 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
- malwarescore=0 spamscore=0 adultscore=0 suspectscore=1 mlxlogscore=979
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004090152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9586 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1011
- suspectscore=1 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090152
+        Thu, 9 Apr 2020 17:45:40 -0400
+Received: by mail-pf1-f195.google.com with SMTP id l1so129033pff.10;
+        Thu, 09 Apr 2020 14:45:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gy1UfSr56zzS49pk3P0leehV/LFyixVBPxU1Vl/ddsw=;
+        b=qNGQhR0K1sHgMSL09FKzUNO0VDZhBunTcCuJmjYt09v4UY7O8LNb6IwgubOByrPSFX
+         prRWw7I/vwAo/O2noEteLWNnocEjay/PBZEOh4oirzr4PU7twQJn1wO52rdYH/+SeU3l
+         doLuBQ1oFixqlSimikeuiypbfdDepzje4dzLKGD2j1xhW9BP68rz1GK6x7QaD23cPJTD
+         4f1I7Cu4q7vcbiXMdLgxllpB2hnpxN8NlmFQG/zFvBrFamrEoPTDVZJK8AZM+1fbOeoL
+         1EYdu/ztS4iY1U1mmupe3Ht+QmGtMTbIUAYCzyok/uvb+oUGAOPOkww3hldXPn09lSHW
+         7MWQ==
+X-Gm-Message-State: AGi0PuY2hI0caNgSY1+JeAwAvabHEYEYwPe+6l4NP7fujmXZE0P3cL79
+        hsayvsKqcwglr3ofS3qUtJ8=
+X-Google-Smtp-Source: APiQypIRu35uCdJrL/5JzRDGZkG7eCJZdWSQQYH/I+boGDvDxSG5cHBQsRqIpIeV686q3aFn7ST2rg==
+X-Received: by 2002:aa7:8bda:: with SMTP id s26mr1667719pfd.142.1586468739160;
+        Thu, 09 Apr 2020 14:45:39 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id c15sm67565pgk.66.2020.04.09.14.45.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 14:45:37 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 1753940246; Thu,  9 Apr 2020 21:45:32 +0000 (UTC)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
+        akpm@linux-foundation.org
+Cc:     mhocko@suse.com, yukuai3@huawei.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
+Subject: [RFC v2 0/5] blktrace: fix use after free
+Date:   Thu,  9 Apr 2020 21:45:25 +0000
+Message-Id: <20200409214530.2413-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.23.0.rc1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the __efistub_global define to place variables in the
-.data section for both CONFIG_ARM and CONFIG_ARM64.
+This series fixes a use after free on block trace. This v2 adjusts the
+commit log feedback from the first iteration, and also expands on the
+series to include a few additional fixes which would be needed for us
+to continue with a synchronous request_queue removal. The refcount added
+for blktrace resolves the kobject issues pointed out by yukuai. Note
+that CONFIG_DEBUG_KOBJECT_RELEASE purposely was added to create
+situations where drivers misbehave, and so you should not use it to
+test expected userspace behaviour, but just to catch possible kernel
+issues. For details refer to the commit which introduced it, which
+actually helps a bit more than just reading the kconfig description,
+its commit was c817a67ecba7 ("kobject: delayed kobject release: help
+find buggy drivers"). This series also fixes a small build issue
+discovered by 0-day.
 
-This places the EFIstub sys_table variable and other EFIstub
-static variables in the .data section for both CONFIG_ARM and
-CONFIG_ARM64.
+The QUEUE_FLAG_DEFER_REMOVAL flag is added as part of the last patch,
+just in case for now. However, given creative use of refcounting
+I don't think we need it anymore. An example use case of creative
+use of refcounting is provided for mm/swapfile.
 
-Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
----
- drivers/firmware/efi/libstub/efistub.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I've extended break-blktrace [0] with 3 test cases which now pass
+for the most part:
 
-diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
-index c244b16..59932d6 100644
---- a/drivers/firmware/efi/libstub/efistub.h
-+++ b/drivers/firmware/efi/libstub/efistub.h
-@@ -25,7 +25,7 @@
- #define EFI_ALLOC_ALIGN		EFI_PAGE_SIZE
- #endif
- 
--#ifdef CONFIG_ARM
-+#if defined(CONFIG_ARM) || defined(CONFIG_ARM64)
- #define __efistub_global	__section(.data)
- #else
- #define __efistub_global
+run_0001.sh
+run_0002.sh
+run_0003.sh
+
+The exception to this is when we get an EBUSY on loopback removal. This
+only happens every now and then, and upon further investigation, I
+suspect this is happening due to the same race Dave Chinner ran into
+with using loopback devices and fstests, which made explicit loopback
+destruction lazy via commit a1ecac3b0656 ("loop: Make explicit loop
+device destruction lazy"). Further eyeballs on this are appreciated,
+perhaps break-blktrace can be extended a bit to account for this.
+
+After a bit of brushing up, I am considering just upstreaming this
+as a self tests for blktrace, instead of keeping this out of tree.
+
+Worth noting as well was that it seems odd we didn't consider the
+userspace impact of commit dc9edc44de6c ("block: Fix a blk_exit_rl()
+regression") merged on v4.12 moved, as that deferral work sure did
+have an impact what userspace can expect upon device removal or races
+on addition/removal. Its not clear if mentioning any of this on the
+commit logs is worth it... Shouldn't have that deferral been a
+userspace regression?
+
+If you want this on a git tree you can find it on my 20200409-blktrace-fix-uaf
+branch on kernel.org based on linux-next next-20200409.
+
+Feedback, reviews, rants are all greatly appreciated.
+
+[0] https://github.com/mcgrof/break-blktrace
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20200409-blktrace-fix-uaf
+
+Luis Chamberlain (5):
+  block: move main block debugfs initialization to its own file
+  blktrace: fix debugfs use after free
+  blktrace: ref count the request_queue during ioctl
+  mm/swapfile: refcount block and queue before using
+    blkcg_schedule_throttle()
+  block: revert back to synchronous request_queue removal
+
+ block/Makefile               |  1 +
+ block/blk-core.c             |  9 +-------
+ block/blk-debugfs.c          | 27 ++++++++++++++++++++++
+ block/blk-mq-debugfs.c       |  5 -----
+ block/blk-sysfs.c            | 43 +++++++++++++++++++++++++++++-------
+ block/blk.h                  | 17 ++++++++++++++
+ include/linux/blkdev.h       |  7 +++++-
+ include/linux/blktrace_api.h |  1 -
+ kernel/trace/blktrace.c      | 25 ++++++++++++---------
+ mm/swapfile.c                | 11 +++++++++
+ 10 files changed, 112 insertions(+), 34 deletions(-)
+ create mode 100644 block/blk-debugfs.c
+
+-- 
+2.25.1
+
