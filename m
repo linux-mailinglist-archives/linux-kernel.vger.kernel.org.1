@@ -2,170 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D01DC1A30BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9661A30C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgDIIRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:17:01 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:33932 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbgDIIRA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:17:00 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0398D2q2150408;
-        Thu, 9 Apr 2020 08:16:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=W3Fcv0vtVlBpP+vayNy1UphJ5VAFqs7bWIftYjvmokA=;
- b=sdP23vw+oDrhMFFx+SNitXNFmxPrcFcQmSLsHfK+hMESQUaUzGvc74EIg32sbubHnwWf
- WYNwDfO/vzqZFVVmXZJdGceh7+85U7AHf7hJPu/rsYhCJ/Sjd5AodX99PC5BhdZQAZD5
- Z4ei3NewcCwCtNzNE+84E2Hp5FyrDc6OPw0gB/NsmMIVTaKZL1WhoSZD0akhxKDzZ4ce
- Jfggv+FP/MaPyC0UgDfrtELH5h468pBWInL9N+ErcRt+GbOy60Cias06kU5quSoeVOaV
- cWykczdJ82SzQ+X1BHknh3uS3xfBs0pDyMTxQMuaCtM0z/XplRO68H7wpfIEIgfbRtrZ Dw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 309gw4bxts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 08:16:30 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03987YNS096999;
-        Thu, 9 Apr 2020 08:14:30 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 3091m3dpt8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 08:14:29 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0398ESFE027101;
-        Thu, 9 Apr 2020 08:14:28 GMT
-Received: from linux-1.home (/92.157.90.160)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 09 Apr 2020 01:14:28 -0700
-Subject: Re: [PATCH V2 9/9] x86/speculation: Remove all
- ANNOTATE_NOSPEC_ALTERNATIVE directives
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jthierry@redhat.com,
-        tglx@linutronix.de
-References: <20200407073142.20659-1-alexandre.chartre@oracle.com>
- <20200407073142.20659-10-alexandre.chartre@oracle.com>
- <20200407132837.GA20730@hirez.programming.kicks-ass.net>
- <20200407133454.n55u5nx33ruj73gx@treble>
- <89b10eb8-c030-b954-6be3-8830fc6a8daa@oracle.com>
- <3eb36fd2-9827-4c1b-681c-9c1d65c7582f@oracle.com>
- <20200407162838.5hlh6oom4oa45ugt@treble>
- <20200407172739.GI20730@hirez.programming.kicks-ass.net>
- <20200408213508.GA4496@worktop.programming.kicks-ass.net>
-From:   Alexandre Chartre <alexandre.chartre@oracle.com>
-Message-ID: <da6efbb5-2610-6721-77ca-9833d13b9398@oracle.com>
-Date:   Thu, 9 Apr 2020 10:18:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S1726559AbgDIITe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:19:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725828AbgDIITe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 04:19:34 -0400
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5E7D206F5;
+        Thu,  9 Apr 2020 08:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586420373;
+        bh=W/nixM4Oi/VzLBVtTFDmUh394dSfQ8nzuUewfPJ+Vxg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u/2lFNtOcX6OMxFuWpdDUKnk5wGSi7l9l8TJq/RNU7ut6gHeiryipE7e2YO21Va3j
+         OS059n/fdTPV+YgmTXg0YCjDbDAk1o0dY7Y7oUlGF1/FT0nLfvZlVbLkZJ26SBDwdn
+         WeVS2LjqQZxveiUu9uz2NiRv0rebEmmPzbgwVm1E=
+Received: by mail-io1-f50.google.com with SMTP id f3so3020301ioj.1;
+        Thu, 09 Apr 2020 01:19:33 -0700 (PDT)
+X-Gm-Message-State: AGi0PubcwfMRu3dyQTugUAykS97KIdQhNrX75VBrW3uDd0nsaNmmC++r
+        TcSdKoQzXDrLae+opXQ1NcNWjynSwL2RxkLNuWM=
+X-Google-Smtp-Source: APiQypJ8sS5bP8UnFCC5IOTIE/mcXrrclkovcihKSJMmmXBhGgZaVJIahO+oMpxhKurh8GQ2C6WvD6l+YFBUqa/FaxU=
+X-Received: by 2002:a6b:f413:: with SMTP id i19mr10971407iog.203.1586420373143;
+ Thu, 09 Apr 2020 01:19:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200408213508.GA4496@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 spamscore=0 adultscore=0 suspectscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090062
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9585 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 bulkscore=0
- phishscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090062
+References: <20200113172245.27925-1-ardb@kernel.org> <20200113172245.27925-6-ardb@kernel.org>
+ <63b125a4-6c62-fcdf-de22-d3bebe2dcbf5@suse.cz> <CAMj1kXGiT_zYjc6X-msRXVozhpDAY0UesEW3_4fOgiH4FyMgDw@mail.gmail.com>
+ <972b66a9-92c7-9a15-1aa1-e3236abe90df@suse.cz> <CAMj1kXFGkOM9fbqr44_TbdxqFjH1i3d8dkO64C1mQmH=AqrUSQ@mail.gmail.com>
+ <20200409080626.GV5951@GaryWorkstation> <984a2b3c-a9d4-e733-6372-4abf0f99be1f@suse.cz>
+In-Reply-To: <984a2b3c-a9d4-e733-6372-4abf0f99be1f@suse.cz>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 9 Apr 2020 10:19:22 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFHUusU9dDgqhU_qswDVgYWx_kpaDEroj4ZSt3hr-AFsA@mail.gmail.com>
+Message-ID: <CAMj1kXFHUusU9dDgqhU_qswDVgYWx_kpaDEroj4ZSt3hr-AFsA@mail.gmail.com>
+Subject: Re: [PATCH 05/13] efi/x86: don't map the entire kernel text RW for
+ mixed mode
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Gary Lin <glin@suse.com>, linux-efi <linux-efi@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Young <dyoung@redhat.com>,
+        Saravana Kannan <saravanak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 9 Apr 2020 at 10:10, Jiri Slaby <jslaby@suse.cz> wrote:
+>
+> On 09. 04. 20, 10:06, Gary Lin wrote:
+> > On Thu, Apr 09, 2020 at 09:51:20AM +0200, Ard Biesheuvel wrote:
+> >> On Wed, 8 Apr 2020 at 12:51, Jiri Slaby <jslaby@suse.cz> wrote:
+> >>>
+> >>> Ccing Gary.
+> >>>
+> >>> On 08. 04. 20, 12:47, Ard Biesheuvel wrote:
+> >>>> On Wed, 8 Apr 2020 at 12:42, Jiri Slaby <jslaby@suse.cz> wrote:
+> >>>>>
+> >>>>> On 13. 01. 20, 18:22, Ard Biesheuvel wrote:
+> >>>>>> The mixed mode thunking routine requires a part of it to be
+> >>>>>> mapped 1:1, and for this reason, we currently map the entire
+> >>>>>> kernel .text read/write in the EFI page tables, which is bad.
+> >>>>>>
+> >>>>>> In fact, the kernel_map_pages_in_pgd() invocation that installs
+> >>>>>> this mapping is entirely redundant, since all of DRAM is already
+> >>>>>> 1:1 mapped read/write in the EFI page tables when we reach this
+> >>>>>> point, which means that .rodata is mapped read-write as well.
+> >>>>>>
+> >>>>>> So let's remap both .text and .rodata read-only in the EFI
+> >>>>>> page tables.
+> >>>>>
+> >>>>> This patch causes unhandled page faults in mixed mode:
+> >>>>>
+> >>>>>> BUG: unable to handle page fault for address: 000000001557ee88
+> >>>>>> #PF: supervisor write access in kernel mode
+> >>>>>> #PF: error_code(0x0003) - permissions violation
+> >>>>>> PGD fd52063 P4D fd52063 PUD fd53063 PMD 154000e1
+> >>>>>> Oops: 0003 [#1] SMP PTI
+> >>>>>> CPU: 1 PID: 191 Comm: systemd-escape Not tainted
+> >>>>> 5.6.2-20.gb22bc26-default #1 openSUSE Tumbleweed (unreleased)
+> >>>>>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0
+> >>>>> 02/06/2015
+> >>>>>> RIP: 0008:0x3d2eed95
+> >>>>>> Code: 8b 45 d4 8b 4d 10 8b 40 04 89 01 89 3b 50 6a 00 8b 55 0c 6a 00
+> >>>>> 8b 45 08 0f b6 4d e4 6a 01 31 f6 e8 ee c5 fc ff 83 c4 10 eb 07 <89> 03
+> >>>>> be 05 00 00 80 a1 74 63 31 3d 83 c0 48 e8 44 d2 ff ff eb 05
+> >>>>>> RSP: 0018:000000000fd66fa0 EFLAGS: 00010002
+> >>>>>> RAX: 0000000000000001 RBX: 000000001557ee88 RCX: 000000003d1f1120
+> >>>>>> RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000001
+> >>>>>> RBP: 000000000fd66fd8 R08: 000000001557ee88 R09: 0000000000000000
+> >>>>>> R10: 0000000000000055 R11: 0000000000000000 R12: 0000000015bcf000
+> >>>>>> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> >>>>>> FS:  00007f36ee9dc940(0000) GS:ffff9b903d700000(0000)
+> >>>>> knlGS:0000000000000000
+> >>>>>> CS:  0008 DS: 0018 ES: 0018 CR0: 0000000080050033
+> >>>>>> CR2: 000000001557ee88 CR3: 000000000fd5e000 CR4: 00000000000006e0
+> >>>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> >>>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >>>>>> Call Trace:
+> >>>>>> Modules linked in: efivarfs
+> >>>>>> CR2: 000000001557ee88
+> >>>>>
+> >>>>> EFI apparently tries to write to now read-only memory.
+> >>>>>
+> >>>>> See:
+> >>>>> https://bugzilla.suse.com/show_bug.cgi?id=1168645
+> >>>>>
+> >>>>> Reverting it on the top of 5.6 fixes the issue.
+> >>>>>
+> >>>>> I am using
+> >>>>> /usr/share/qemu/ovmf-ia32-code.bin
+> >>>>> /usr/share/qemu/ovmf-ia32-vars.bin
+> >>>>> from qemu-ovmf-ia32-202002-1.1.noarch rpm.
+> >>>>>
+> >>>>
+> >>>> Do you have a git tree for Suse's OVMF fork? I did a lot of testing
+> >>>> with upstream OVMF, and never ran into this issue.
+> >>>
+> >>> Not really a git tree, but the sources are here:
+> >>> https://build.opensuse.org/package/show/openSUSE:Factory/ovmf
+> >>>
+> >>
+> >>
+> >> Anywhere I can get an actual build? The src rpm only has the sources,
+> >> and the i586 rpm has nothing except
+> >>
+> >> $ rpm -qlp ~/Downloads/ovmf-202002-1.1.i586.rpm
+> >> warning: /home/ardbie01/Downloads/ovmf-202002-1.1.i586.rpm: Header V3
+> >> RSA/SHA256 Signature, key ID 3dbdc284: NOKEY
+> >> /usr/share/doc/packages/ovmf
+> >> /usr/share/doc/packages/ovmf/README
+> >
+> > Hmmm, it's weird that OBS doesn't list all derived files.
+> > Anyway, the ia32 ovmf is available in
+> > http://download.opensuse.org/tumbleweed/repo/oss/noarch/qemu-ovmf-ia32-202002-1.1.noarch.rpm
+>
+> It indeed does:
+> https://build.opensuse.org/package/binaries/openSUSE:Factory/ovmf/standard
+>
+> Note that the ia32 version is noarch, built on i586.
+>
 
-On 4/8/20 11:35 PM, Peter Zijlstra wrote:
-> On Tue, Apr 07, 2020 at 07:27:39PM +0200, Peter Zijlstra wrote:
->> On Tue, Apr 07, 2020 at 11:28:38AM -0500, Josh Poimboeuf wrote:
->>> Again, we should warn on stack changes inside alternatives, and then
->>> look at converting RSB and retpolines to use static branches so they
->>> have deterministic stacks.
->>
->> I don't think we need static brancher, we should just out-of-line the
->> whole thing.
->>
->> Let me sort this CFI error Thomas is getting and then I'll attempt a
->> patch along the lines I outlined in earlier emails.
-> 
-> Something like so.. seems to build and boot.
-> 
-> ---
-> From: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Subject: x86: Out-of-line retpoline
-> 
-> Since GCC generated code already uses out-of-line retpolines and objtool
-> has trouble with retpolines in alternatives, out-of-line them entirely.
-> 
-> This will enable objtool (once it's been taught a few more tricks) to
-> generate valid ORC data for the out-of-line copies, which means we can
-> correctly and reliably unwind through a retpoline.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->   arch/x86/crypto/aesni-intel_asm.S            |  4 +--
->   arch/x86/crypto/camellia-aesni-avx-asm_64.S  |  2 +-
->   arch/x86/crypto/camellia-aesni-avx2-asm_64.S |  2 +-
->   arch/x86/crypto/crc32c-pcl-intel-asm_64.S    | 26 ++++++++---------
->   arch/x86/entry/entry_32.S                    |  6 ++--
->   arch/x86/entry/entry_64.S                    |  2 +-
->   arch/x86/include/asm/asm-prototypes.h        |  8 ++++--
->   arch/x86/include/asm/nospec-branch.h         | 42 ++++------------------------
->   arch/x86/kernel/ftrace_32.S                  |  2 +-
->   arch/x86/kernel/ftrace_64.S                  |  4 +--
->   arch/x86/lib/checksum_32.S                   |  4 +--
->   arch/x86/lib/retpoline.S                     | 27 +++++++++++++++---
->   arch/x86/platform/efi/efi_stub_64.S          |  2 +-
->   13 files changed, 62 insertions(+), 69 deletions(-)
-> 
-...
->   /*
->    * JMP_NOSPEC and CALL_NOSPEC macros can be used instead of a simple
->    * indirect jmp/call which may be susceptible to the Spectre variant 2
-> @@ -111,10 +83,9 @@
->    */
->   .macro JMP_NOSPEC reg:req
->   #ifdef CONFIG_RETPOLINE
-> -	ANNOTATE_NOSPEC_ALTERNATIVE
-> -	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *\reg),	\
-> -		__stringify(RETPOLINE_JMP \reg), X86_FEATURE_RETPOLINE,	\
-> -		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *\reg), X86_FEATURE_RETPOLINE_AMD
-> +	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; jmp *%\reg),	\
-> +		__stringify(jmp __x86_retpoline_\()\reg), X86_FEATURE_RETPOLINE,	\
-> +		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; jmp *%\reg), X86_FEATURE_RETPOLINE_AMD
->   #else
->   	jmp	*\reg
->   #endif
-> @@ -122,10 +93,9 @@
-> 
->   .macro CALL_NOSPEC reg:req
->   #ifdef CONFIG_RETPOLINE
-> -	ANNOTATE_NOSPEC_ALTERNATIVE
-> -	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *\reg),	\
-> -		__stringify(RETPOLINE_CALL \reg), X86_FEATURE_RETPOLINE,\
-> -		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *\reg), X86_FEATURE_RETPOLINE_AMD
-> +	ALTERNATIVE_2 __stringify(ANNOTATE_RETPOLINE_SAFE; call *%\reg),	\
-> +		__stringify(call __x86_retpoline_\()\reg), X86_FEATURE_RETPOLINE,\
-> +		__stringify(lfence; ANNOTATE_RETPOLINE_SAFE; call *%\reg), X86_FEATURE_RETPOLINE_AMD
+I am not able to reproduce this issue using the linked firmware image
+and a 5.6 x86_64_defconfig with efivarfs built in.
 
-For X86_FEATURE_RETPOLINE_AMD, the call won't be aligned like the others,
-it will be after the lfence instruction so ORC data won't be at the same
-place. I am adding some code in objtool to check that alternatives don't
-change the stack, but I should actually be checking if all alternatives
-have the same unwind instructions at the same place.
-
-Other than that, my only question would be any impact on performances.
-Retpoline code was added with trying to limit performance impact.
-Here, JMP_NOSPEC has now an additional (long) jump, and CALL_NOSPEC
-is doing a long call instead of a near call. But I have no idea if this
-has a visible impact.
-
-alex.
+Could anyone share the full log, please, along with the kernel config
+that was used? Also, it would be good to know if it is reproducible
+using a kernel built from upstream.
