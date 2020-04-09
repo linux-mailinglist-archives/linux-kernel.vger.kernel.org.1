@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 487181A2F4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 08:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE1D1A2F5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 08:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgDIGoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 02:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38004 "EHLO mail.kernel.org"
+        id S1726702AbgDIGoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 02:44:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbgDIGoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726595AbgDIGoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 9 Apr 2020 02:44:20 -0400
 Received: from mail.kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 39B612137B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C03A20BED;
         Thu,  9 Apr 2020 06:44:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1586414660;
-        bh=pMU5hjfEYql1E5373yITTzoPsv8h4BkUjm9FjPsRF6Y=;
+        bh=2N0GMdLYc2FyQxaMRo7QOJwiClWsmWmQoTEOT+XZN4g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t0ObWNqNYbBXcHNBmJ/VZBKiqi28Ia1JFPwGr9kBh+HZtyjk3fhb5Z1CesnasvObu
-         aVmgLMeQHo752wkkefR5vmjBi27R+JANWJY81WaV1aH/KBLL7PMTVUTwbHVBg9rZY4
-         Jxh9+Zkdhpm48Q6/oGsHZwgNHJA07djaHgcup4dM=
+        b=Hs5rRolwq+W+EUuMWw+q/+Mbdv3EjLUqPL7ByM1DnrZNmfsdc54YSgQaJSSubvY5L
+         NQ7kNSzAj9MquxJ+TVcbmYbUTlXlEHwSy3J1Ph0f1z+5hdbsoLZdq9BYLqCIZduJnZ
+         fDSUrXV2BUKPEi+5sEGNMfF98N+dwITkpyfuw64w=
 From:   Stephen Boyd <sboyd@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v2 05/10] MIPS: Remove redundant CLKDEV_LOOKUP selects
-Date:   Wed,  8 Apr 2020 23:44:11 -0700
-Message-Id: <20200409064416.83340-6-sboyd@kernel.org>
+        kbuild test robot <lkp@intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH v2 06/10] mmc: meson-mx-sdio: Depend on OF_ADDRESS and not just OF
+Date:   Wed,  8 Apr 2020 23:44:12 -0700
+Message-Id: <20200409064416.83340-7-sboyd@kernel.org>
 X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
 In-Reply-To: <20200409064416.83340-1-sboyd@kernel.org>
 References: <20200409064416.83340-1-sboyd@kernel.org>
@@ -42,31 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ATH79 config selects COMMON_CLK already, and the COMMON_CLK config
-option already selects CLKDEV_LOOKUP, and CLKDEV_LOOKUP already selects
-HAVE_CLK so it's redundant to have these selected again.
+Making COMMON_CLK a visible option causes the sparc allyesconfig to fail
+to build like so:
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: <linux-mips@vger.kernel.org>
+   sparc64-linux-ld: drivers/mmc/host/meson-mx-sdio.o: in function `meson_mx_mmc_remove':
+   meson-mx-sdio.c:(.text+0x70): undefined reference to `of_platform_device_destroy'
+   sparc64-linux-ld: drivers/mmc/host/meson-mx-sdio.o: in function `meson_mx_mmc_probe':
+   meson-mx-sdio.c:(.text+0x9e4): undefined reference to `of_platform_device_create'
+   sparc64-linux-ld: meson-mx-sdio.c:(.text+0xdd4): undefined reference to `of_platform_device_destroy'
+
+This is because the implementation of of_platform_device_destroy() is
+inside an #ifdef CONFIG_OF_ADDRESS section of drivers/of/platform.c.
+This driver already depends on OF being enabled, so let's tighten that
+constrain a little more so that it depends on OF_ADDRESS instead. This
+way we won't try to build this driver on platforms that don't have this
+function.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 ---
- arch/mips/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mmc/host/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 797d7f1ad5fe..e53a8dd5c19b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -209,9 +209,7 @@ config ATH79
- 	select DMA_NONCOHERENT
- 	select GPIOLIB
- 	select PINCTRL
--	select HAVE_CLK
- 	select COMMON_CLK
--	select CLKDEV_LOOKUP
- 	select IRQ_MIPS_CPU
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_HAS_EARLY_PRINTK
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 3a5089f0332c..31b2a8826b30 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -409,7 +409,7 @@ config MMC_MESON_MX_SDIO
+ 	tristate "Amlogic Meson6/Meson8/Meson8b SD/MMC Host Controller support"
+ 	depends on ARCH_MESON || COMPILE_TEST
+ 	depends on COMMON_CLK
+-	depends on OF
++	depends on OF_ADDRESS
+ 	help
+ 	  This selects support for the SD/MMC Host Controller on
+ 	  Amlogic Meson6, Meson8 and Meson8b SoCs.
 -- 
 Sent by a computer, using git, on the internet
 
