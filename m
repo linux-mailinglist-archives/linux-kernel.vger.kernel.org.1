@@ -2,150 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 791CC1A3734
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446A91A3738
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728357AbgDIPaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 11:30:20 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:38307 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728221AbgDIPaT (ORCPT
+        id S1728308AbgDIPcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 11:32:07 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:39799 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728167AbgDIPcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 11:30:19 -0400
-Received: by mail-qk1-f193.google.com with SMTP id h14so4318334qke.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 08:30:18 -0700 (PDT)
+        Thu, 9 Apr 2020 11:32:07 -0400
+Received: by mail-pg1-f196.google.com with SMTP id g32so5133135pgb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 08:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KqSuwj1Lnw+46mOu5HvLLZOQhrSTpPUDCk9ASXa3iQI=;
-        b=d5ONUE0gQuF4hk3cd/VSQKPVX4IwjmtsLuFUsGMclkB/xhBWg0Pty34wvNvc39ykJY
-         EeNCzEYGA7j2gcFtlgPiNjUWg8c6M0knlzWB6nESPIxtc+rgA5b7sSENhNQ6odJr7BZz
-         vEJ+caBJy71h0A3ced/bVeO/0yznbAH8hnAIqlR8XB9lGuhcqDF10KXkRO/0HYSlZihc
-         ZVaJfb0whw0kt/8yQWVRemzmsgloGMzzFFi0FNeM4wz24m15M+JDmlyhxmZSpwczlwci
-         rECKrsLhuRCPExqIiyyikfex584HV2NssvHiAUbdW146oHVg8609ybuqOMJVZfpFSI2x
-         8JCw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gUkBJIwjL6c1i80rJw/jRyY4YU7YY837/BAt+IGwYg0=;
+        b=OIR5ZNUF36cxDqFK9L+J5igMg8ZCS7m3/g4zeqjdYhRCeED7eVs3NHmmSI0EdjJgkB
+         rVNodL3o4YQpEV5p9c+mzXvSh0dnUETR9FiY4QJwBHc4p2Jv65GZuAcH/NrZHHmIojXF
+         ZcvTFfvROV0g1qXiPsqRvXx78jZiikIpG5enR4tYVPtoYr7WVRjKkIFHNxnjg3gO6M40
+         J0OwHXdpxEFXEFjifMLdXoTdTVXKmjQ3VxXyxOj2GShkyPELSof8sSxhUeuTUtZfv6Va
+         B0lT1seoHucYiXeEGlqivmxbGZP5nrK7uBduc81YznOIb56eU7WT4edzfOh+akOOF6V7
+         Sb0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KqSuwj1Lnw+46mOu5HvLLZOQhrSTpPUDCk9ASXa3iQI=;
-        b=XNmyeMh1Ycg169WhJS7fq+WjGWgGbnzZ5WVdZidYNn/rhROKPn8ydG40zUFaBqZ71J
-         BUvttGZNRrgMktOK7hzywTLPcDExNdF7TnZCmEitLpApuUHsiYuq2wIEMI5f0wqWnjJJ
-         ZATfuxk8rJV/yCFWXpFaqQfhsDiPBBKjOurIStAH7hzLvv+iXvLcpXmgu8Min5X9j2l+
-         0oaaDepIOeRj67TsUdgSgNh9vTD+mwe5Bi8vM++TTX9d+f+jDZEhelkkawknloxTBqwX
-         LwgqQHA6nZJV9RVI5IQxTSPkx+2TlD6OixhzKqFeG/PzvYlPNYCk8C4R5gFYCV4Qp7BG
-         vXLw==
-X-Gm-Message-State: AGi0PuaIgj19xeLdbC5kK5zX4Imh/jYmProQGg3fMUxnBp1yIuYZ0RV/
-        giQVw/VQbZPL7C7ICC5YX4TXnCCR2bv4eA==
-X-Google-Smtp-Source: APiQypJMWSnwBHUdttlGDzAqxcTAqgSmmePEX1OyQXfyS73FbkDipkvmd1HaJVn7qa3wYZyMldtW2Q==
-X-Received: by 2002:ae9:e80f:: with SMTP id a15mr352621qkg.367.1586446218111;
-        Thu, 09 Apr 2020 08:30:18 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id q5sm11214109qkn.59.2020.04.09.08.30.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Apr 2020 08:30:17 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: KCSAN + KVM = host reset
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <CANpmjNMEgc=+bLU472jy37hYPYo5_c+Kbyti8-mubPsEGBrm3A@mail.gmail.com>
-Date:   Thu, 9 Apr 2020 11:30:14 -0400
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        "paul E. McKenney" <paulmck@kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2730C0CC-B8B5-4A65-A4ED-9DFAAE158AA6@lca.pw>
-References: <E180B225-BF1E-4153-B399-1DBF8C577A82@lca.pw>
- <fb39d3d2-063e-b828-af1c-01f91d9be31c@redhat.com>
- <017E692B-4791-46AD-B9ED-25B887ECB56B@lca.pw>
- <CANpmjNMiHNVh3BVxZUqNo4jW3DPjoQPrn-KEmAJRtSYORuryEA@mail.gmail.com>
- <B7F7F73E-EE27-48F4-A5D0-EBB29292913E@lca.pw>
- <CANpmjNMEgc=+bLU472jy37hYPYo5_c+Kbyti8-mubPsEGBrm3A@mail.gmail.com>
-To:     Marco Elver <elver@google.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gUkBJIwjL6c1i80rJw/jRyY4YU7YY837/BAt+IGwYg0=;
+        b=TO2KsJhCb457bZCUFBJkqY2pxjVkTX9UptPTg6SZAH1nbHt80LWNn+NSeqJpKoej14
+         pNOZi/EQHk7tY+Frh4rELk0aDGlQVDNP+giXlYCO/nNUIoC0ZjKt5xYph4L96tuU3qsC
+         /9pznwcrshLTm5Qv3XWZDfQGIOYLtxmtnPGeKJ+m++tc7Wq72BbrodT9pou6m8j90nJ5
+         5cXxWHgZ8F15fcCkQowo4hxzcpapKZA+Dj+sJ5+R58h9LiZOWNNCSYMovpStGFvcVCyd
+         E0tZq12ttILct36gEX0cTl6HBHCN+Cy+5q/nTr4POFwsEaUS6ITP0lihK13zWAWt1A+B
+         XIfA==
+X-Gm-Message-State: AGi0PuaXLFvkS7mIkWSUU/JHrt1q2YN8MmXOgws4KnUgNtZGprEi2tw5
+        lkmpnfHwDM2mCbiSlD3BYFDMOg==
+X-Google-Smtp-Source: APiQypKNlZ14U/uT0xMe60gkPySojlMSCRNf1ct5gzQHU5iSCR/MVLk9gSTb62on9UaJm0iLABTgAQ==
+X-Received: by 2002:a63:1705:: with SMTP id x5mr51086pgl.12.1586446326856;
+        Thu, 09 Apr 2020 08:32:06 -0700 (PDT)
+Received: from ?IPv6:2605:e000:100e:8c61:70f8:a8e1:daca:d677? ([2605:e000:100e:8c61:70f8:a8e1:daca:d677])
+        by smtp.gmail.com with ESMTPSA id y18sm4525174pfe.82.2020.04.09.08.32.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Apr 2020 08:32:06 -0700 (PDT)
+Subject: Re: [PATCH] ahci: Add Intel Comet Lake PCH RAID PCI ID
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jian-Hong Pan <jian-hong@endlessm.com>
+Cc:     "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
+        <linux-ide@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, linux@endlessm.com
+References: <20191128081041.6948-1-jian-hong@endlessm.com>
+ <EF580FD3-2C0F-4268-8B39-8B339D590353@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <86bd45f8-8868-0ec9-b5f6-19dc1a528b57@kernel.dk>
+Date:   Thu, 9 Apr 2020 08:32:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <EF580FD3-2C0F-4268-8B39-8B339D590353@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/9/20 2:16 AM, Kai-Heng Feng wrote:
+> Hi Jens,
+> 
+>> On Nov 28, 2019, at 16:10, Jian-Hong Pan <jian-hong@endlessm.com> wrote:
+>>
+>> Intel Comet Lake should use the default LPM policy for mobile chipsets.
+>> So, add the PCI ID to the driver list of supported devices.
+>>
+>> Signed-off-by: Jian-Hong Pan <jian-hong@endlessm.com>
+> 
+> Would it be possible to also merge this patch?
+> We also have some system that use this controller.
 
+Added, thanks.
 
-> On Apr 9, 2020, at 11:22 AM, Marco Elver <elver@google.com> wrote:
->=20
-> On Thu, 9 Apr 2020 at 17:10, Qian Cai <cai@lca.pw> wrote:
->>=20
->>=20
->>=20
->>> On Apr 9, 2020, at 3:03 AM, Marco Elver <elver@google.com> wrote:
->>>=20
->>> On Wed, 8 Apr 2020 at 23:29, Qian Cai <cai@lca.pw> wrote:
->>>>=20
->>>>=20
->>>>=20
->>>>> On Apr 8, 2020, at 5:25 PM, Paolo Bonzini <pbonzini@redhat.com> =
-wrote:
->>>>>=20
->>>>> On 08/04/20 22:59, Qian Cai wrote:
->>>>>> Running a simple thing on this AMD host would trigger a reset =
-right away.
->>>>>> Unselect KCSAN kconfig makes everything work fine (the host would =
-also
->>>>>> reset If only "echo off > /sys/kernel/debug/kcsan=E2=80=9D before =
-running qemu-kvm).
->>>>>=20
->>>>> Is this a regression or something you've just started to play =
-with?  (If
->>>>> anything, the assembly language conversion of the AMD world switch =
-that
->>>>> is in linux-next could have reduced the likelihood of such a =
-failure,
->>>>> not increased it).
->>>>=20
->>>> I don=E2=80=99t remember I had tried this combination before, so =
-don=E2=80=99t know if it is a
->>>> regression or not.
->>>=20
->>> What happens with KASAN? My guess is that, since it also happens =
-with
->>> "off", something that should not be instrumented is being
->>> instrumented.
->>=20
->> No, KASAN + KVM works fine.
->>=20
->>>=20
->>> What happens if you put a 'KCSAN_SANITIZE :=3D n' into
->>> arch/x86/kvm/Makefile? Since it's hard for me to reproduce on this
->>=20
->> Yes, that works, but this below alone does not work,
->>=20
->> KCSAN_SANITIZE_kvm-amd.o :=3D n
->=20
-> There are some other files as well, that you could try until you hit
-> the right one.
->=20
-> But since this is in arch, 'KCSAN_SANITIZE :=3D n' wouldn't be too bad
-> for now. If you can't narrow it down further, do you want to send a
-> patch?
-
-No, that would be pretty bad because it will disable KCSAN for Intel
-KVM as well which is working perfectly fine right now. It is only AMD
-is broken.
-
->=20
-> Thanks,
-> -- Marco
->=20
->> I have been able to reproduce this on a few AMD hosts.
->>=20
->>> exact system, I'd ask you to narrow it down by placing =
-'KCSAN_SANITIZE
->>> :=3D n' into suspect subsystems' Makefiles. Once you get it to work =
-with
->>> that, we can refine the solution.
->>>=20
->>> Thanks,
->>> -- Marco
+-- 
+Jens Axboe
 
