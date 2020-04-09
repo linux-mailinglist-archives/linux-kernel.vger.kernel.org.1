@@ -2,312 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A81881A2E7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 06:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FC31A2E85
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 06:51:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbgDIEu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 00:50:28 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:44914 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgDIEu1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 00:50:27 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3CE848066C;
-        Thu,  9 Apr 2020 16:50:25 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1586407825;
-        bh=2a+QvJeEMgfgD8MYgpqL0txx98rA8ewZrzs/v7cLI4U=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=QtJEoauo9se31Krx156LMcL6r11M6YxhedYJLhgA9PrOq0hCfyrPc0NcUzwp8dUjR
-         hRHNXGhcwbUo3UsqG0cDrI9X4cF+SApW8LTWBhEnQGqkNxXWlAH3SHEqDEhy8StevT
-         7NxC55ddIY7zTYmwRRj6y5crQoPeWnbpZVSPowAJVRfE7Y4L/izlzNEwL/IhyHpvEZ
-         Mc6GvdRyhMrMblcyM761IXx9+AshhzFp1Jnu2R6dtBWQcP/NMfW9BUEsRIHvjjYYHL
-         xVAmppUHq8gMuOS7gH2qGCuMShZeP61tUTB7/eD4u1H+4x6MRRJfhPn4PjXxlQHL/r
-         eE7SUSh7tRYOw==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[10.32.16.77]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5e8ea9910001>; Thu, 09 Apr 2020 16:50:25 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 9 Apr 2020 16:50:24 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.006; Thu, 9 Apr 2020 16:50:24 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     "jiaxun.yang@flygoat.com" <jiaxun.yang@flygoat.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hamish Martin" <Hamish.Martin@alliedtelesis.co.nz>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: Dealing with holes in CPU address space
-Thread-Topic: Dealing with holes in CPU address space
-Thread-Index: AQHWDWSQGXFxFOrcR0ujeloVxC+pHKhuCuQAgADrvoCAAGz3gIAADTWA
-Date:   Thu, 9 Apr 2020 04:50:23 +0000
-Message-ID: <f5c7a3387dde5667be4fc462838edfaefae31e16.camel@alliedtelesis.co.nz>
-References: <fcb8f2655452f60a7c734e2ce54ac4d47eec7e92.camel@alliedtelesis.co.nz>
-         <20200408152922.14f90ff3@flygoat-x1e>
-         <2e10a19b6608a6c3413b52180c69500aa255a701.camel@alliedtelesis.co.nz>
-         <dd91aa7f-ed7d-44de-6887-ad25c7e4d4ff@gmail.com>
-In-Reply-To: <dd91aa7f-ed7d-44de-6887-ad25c7e4d4ff@gmail.com>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.14.96]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <AD512F97C0BD0040B1C13BCBB461D74F@atlnz.lc>
-Content-Transfer-Encoding: base64
+        id S1726638AbgDIEvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 00:51:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726595AbgDIEvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 00:51:13 -0400
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 192642145D
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Apr 2020 04:51:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586407872;
+        bh=zL/sv2TnFIJcsZ2qzDSKXB1+v/r4O04Hzf+kLlRD5uM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=brDq42+AmbPxTcoT+JX097pz4y1ytIBS0yRdNpTqmslO0W5B+fZFLnKNDtoScaxn7
+         58tAIs4txYUMc6vpLdZrt/1ecuql1v97bl54MQRlMzWM6UyzrvidDXg46b39HDGXhe
+         fok5B7ZthGhCtddZoJIErgd6czecKHNk/FAuGelo=
+Received: by mail-wm1-f45.google.com with SMTP id h2so2465273wmb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 21:51:12 -0700 (PDT)
+X-Gm-Message-State: AGi0PuZeqtybEwPawMku9KXSYdaxqla+PvXxawCA0y7igVK7LfRd30Nl
+        bwVSJRB0npGAHYsFfZfBk9ymLYV31+VlNAhbbsTtlw==
+X-Google-Smtp-Source: APiQypKr49vnhnHEoFubJa3hBO/w1Qt2bg9d+RaftXenVgRyZDqyimV5rs4ZBOhDQYb7yQpUNIx/wET63DxM6De5mSI=
+X-Received: by 2002:a1c:1904:: with SMTP id 4mr7903255wmz.21.1586407870332;
+ Wed, 08 Apr 2020 21:51:10 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200407172140.GB64635@redhat.com> <772A564B-3268-49F4-9AEA-CDA648F6131F@amacapital.net>
+ <87eeszjbe6.fsf@nanos.tec.linutronix.de> <ce81c95f-8674-4012-f307-8f32d0e386c2@redhat.com>
+ <874ktukhku.fsf@nanos.tec.linutronix.de> <274f3d14-08ac-e5cc-0b23-e6e0274796c8@redhat.com>
+ <20200408153413.GA11322@linux.intel.com> <ce28e893-2ed0-ea6f-6c36-b08bb0d814f2@redhat.com>
+ <87d08hc0vz.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87d08hc0vz.fsf@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 8 Apr 2020 21:50:58 -0700
+X-Gmail-Original-Message-ID: <CALCETrWG2Y4SPmVkugqgjZcMfpQiq=YgsYBmWBm1hj_qx3JNVQ@mail.gmail.com>
+Message-ID: <CALCETrWG2Y4SPmVkugqgjZcMfpQiq=YgsYBmWBm1hj_qx3JNVQ@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIwLTA0LTA4IGF0IDIxOjAzIC0wNzAwLCBGbG9yaWFuIEZhaW5lbGxpIHdyb3Rl
-Og0KPiANCj4gT24gNC84LzIwMjAgMjozMyBQTSwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4gPiBP
-biBXZWQsIDIwMjAtMDQtMDggYXQgMTU6MjkgKzA4MDAsIEppYXh1biBZYW5nIHdyb3RlOg0KPiA+
-ID4gT24gV2VkLCA4IEFwciAyMDIwIDA1OjE0OjIyICswMDAwDQo+ID4gPiBDaHJpcyBQYWNraGFt
-IDxDaHJpcy5QYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+IHdyb3RlOg0KPiA+ID4gDQo+ID4g
-PiA+IEhpIEFsbCwNCj4gPiA+ID4gDQo+ID4gPiA+IEknbSB0cnlpbmcgdG8gcG9ydCBhbiBvbGQg
-QnJvYWRjb20gTUlQUyBDUFUgKEJDTTUzMDAzKSB0byBhDQo+ID4gPiA+IHNoaW55DQo+ID4gPiA+
-IG5ldw0KPiA+ID4gPiBrZXJuZWwuIEkgaGF2ZSBzb21lIG9sZCBoaXN0b3JpYyBzb3VyY2UgZnJv
-bSBhIGxvbmcgZm9yZ290dGVuDQo+ID4gPiA+IEJyb2FkY29tDQo+ID4gPiA+IExESyBidXQgSSdk
-IHByZWZlciB0byBkbyB0aGluZ3MgdGhlIG1vZGVybiB3YXkgd2l0aCBkZXZpY2UtDQo+ID4gPiA+
-IHRyZWVzLg0KPiA+ID4gPiANCj4gPiA+ID4gVGhlIHByb2JsZW0gSSd2ZSBiZWVuIGdyYXBwbGlu
-ZyB3aXRoIGlzIHRyeWluZyB0byBvcGVuIHVwDQo+ID4gPiA+IGFjY2VzcyB0bw0KPiA+ID4gPiBh
-bGwgb2YgdGhlIFJBTSBvbiB0aGUgYm9hcmQuIEl0IGhhcyA1MTJNQiBvZiBERFIyLiBUaGUgQ1BV
-IGhhcw0KPiA+ID4gPiB0d28NCj4gPiA+ID4gYXJlYXMgd2hlcmUgdGhpcyBhcHBlYXJzLiBUaGUg
-Zmlyc3QgMTI4TUIgaXMgZnJvbSAwIHRvDQo+ID4gPiA+IDB4MDdmZmZmZmYNCj4gPiA+ID4gdGhl
-DQo+ID4gPiA+IHNlY29uZCBhcmVhIGlzIGZyb20gMHg4ODAwMDAwMCB0byAweDlmZmZmZmZmLg0K
-PiA+ID4gPiANCj4gPiA+ID4gU29DIHBlcmlwaGVyYWxzIGFyZSBhdCAweDE4MDAwMDAwIGFuZCB0
-aGVyZSBpcyBhbiBJTyB3aW5kb3cgZm9yDQo+ID4gPiA+IGZsYXNoDQo+ID4gPiA+IGF0IDB4MjAw
-MDAwMDAuDQo+ID4gPiA+IA0KPiA+ID4gPiBUaGUgb2xkIGNvZGUgaGFzIHNvbWUgY3VzdG9tIHRs
-YiBpbml0aWFsaXNhdGlvbiB0byBkZWFsIHdpdGgNCj4gPiA+ID4gdGhpcw0KPiA+ID4gPiBidXQN
-Cj4gPiA+ID4gSSBmaWd1cmVkIGl0IHNob3VsZCBiZSBwb3NzaWJsZSB3aXRoIHRoZSBmb2xsb3dp
-bmcgZHRzIHNuaXBwZXQuDQo+ID4gPiA+IA0KPiA+ID4gPiAgICAgICAgIG1lbW9yeUAwIHsNCj4g
-PiA+ID4gICAgICAgICAgICAgICAgIGRldmljZV90eXBlID0gIm1lbW9yeSI7DQo+ID4gPiA+ICAg
-ICAgICAgICAgICAgICByZWcgPSA8MHgwMDAwMDAwMCAweDA4MDAwMDAwDQo+ID4gPiA+ICAgICAg
-ICAgICAgICAgICAgICAgICAgMHg4ODAwMDAwMCAweDE4MDAwMDAwPjsNCj4gPiA+ID4gICAgICAg
-ICB9Ow0KPiA+ID4gPiANCj4gPiA+ID4gSSBlbmQgdXAgd2l0aCBvbmx5IDEyOE1CIGF2YWlsYWJs
-ZS4gVGhpcyBhcHBlYXJzIHRvIGJlDQo+ID4gPiA+IGJlY2F1c2UgdGhlIGRlZmF1bHQgSElHSE1F
-TV9TVEFSVCBvZiAweDIwMDAwMDAwIHN0b3BzIHRoZSByZXN0DQo+ID4gPiA+IGZyb20NCj4gPiA+
-ID4gYmVpbmcgbWFkZSBhdmFpbGFibGUuIElmIEkgYWRkIGFuIG92ZXJyaWRlIG9mIEhJR0hNRU1f
-U1RBUlQgdG8NCj4gPiA+ID4gMHhmZmZmZmZmZiBJIHNlZW0gdG8gaGF2ZSB0aGUgZnVsbCA1MTJN
-QiBhdmFpYWJsZSBidXQgdGhlbiBJDQo+ID4gPiA+IGdldCBhDQo+ID4gPiA+IGtlcm5lbCBwYW5p
-Yw0KPiA+ID4gDQo+ID4gPiBIaSwNCj4gPiA+IA0KPiA+ID4gSGF2ZSB5b3UgdHJpZWQgdG8gZW5h
-YmxlIENPTkZJR19ISUdITUVNPw0KPiA+ID4gDQo+ID4gDQo+ID4gSSBoYXZlIGJ1dCB0aGF0IGRp
-ZG4ndCBzZWVtIHRvIGhlbHAuIEFzIEkgdW5kZXJzdGFuZCBpdCBISUdITUVNIGlzDQo+ID4gaW50
-ZW5kZWQgZm9yIHNpdHVhdGlvbnMgd2hlbiB5b3UgaGF2ZSBtb3JlIHBoeXNpY2FsIFJBTSB0aGF0
-IGNhbiBiZQ0KPiA+IGFkZHJlc3NlZCAoZS5nLiA+NEdCIG9uIGEgMzItYml0IHN5c3RlbSkuDQo+
-IA0KPiBPbiBNSVBTIHlvdSBtYXkgaGF2ZSB0byBlbmFibGUgSElHSE1FTSBhcyBzb29uIGFzIHlv
-dSBydW4gb3V0IG9mDQo+IHZpcnR1YWwNCj4ga2VybmVsIGFkZHJlc3Mgc3BhY2UgdG8gbWFwIHRo
-ZSBlbnRpcmUgYW1vdW50IG9mIG1lbW9yeSB0aGF0IGlzDQo+IHBvcHVsYXRlZCBBRkFJQ1QuIFRo
-ZSBrZXJuZWwgaGFzIGEgbGl0dGxlIHVuZGVyIDFHQiBvZiB2aXJ0dWFsDQo+IGFkZHJlc3MNCj4g
-c3BhY2UgdGhhdCBjYW4gYmUgbWFwcGVkIHZpYSB0aGUgVExCIHNpbmNlIHRoZSBmaXJzdCA1MTJN
-QiBhcmUNCj4gb2NjdXBpZWQNCj4gYnkgS1NFRzAvMS4NCj4gDQoNCk15IGFkdmVudHVyZXMgdGh1
-cyBmYXIgd2l0aCBISUdITUVNIGhhdmUgZ290IGFzIGZhciBhcw0KDQogIFRoaXMgcHJvY2Vzc29y
-IGRvZXNuJ3Qgc3VwcG9ydCBoaWdobWVtLiAyNDkwMzY4ayBoaWdobWVtIGlnbm9yZWQNCg0KV2hp
-Y2ggSSB0aGluayBoYXMgc29tZXRoaW5nIHRvIGRvIHdpdGggdGhlIG1heF9sb3dfcGZuIGFuZCBo
-aWdoZW5kX3Bmbg0KYmVpbmcgZGlmZmVyZW50Lg0KDQoNCj4gPiANCj4gPiA+ID4gDQo+ID4gPiA+
-ICAgQ1BVIDAgVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQgdmlydHVh
-bA0KPiA+ID4gPiBhZGRyZXNzDQo+ID4gPiA+IDFmYzAwMDAwLCBlcGMgPT0gODAwMTY3YjgsIHJh
-ID09IDgwMGUyODYwDQo+ID4gPiA+IA0KPiA+ID4gPiAweDFmYzAwMDAwIGlzIGluIHRoZSByYW5n
-ZSB3aGVyZSB0aGUgU29DIHBlcmlwaGVyYWxzIGFyZSBzbyBJJ20NCj4gPiA+ID4gdGhpbmtpbmcg
-dGhhdCBpcyB0aGUgcHJvYmxlbS4gQnV0IHRoZW4gYWdhaW4gdGhhdCBpcyBhIHZpcnR1YWwNCj4g
-PiA+ID4gYWRkcmVzcw0KPiA+ID4gPiBzbyBtYXliZSBpdCdzIGp1c3QgYSBjby1pbmNpZGVuY2Uu
-DQo+ID4gPiANCj4gPiA+IDB4MWZjMDAwMDAgc2hvdWxkIGJlIHRoZSBCb290IFJPTSdzIHBoeXNp
-Y2FsIGFkZHJlc3MuIFByb2JhYmx5DQo+ID4gPiB5b3UNCj4gPiA+IGZvcmdvdCB0byBjb252ZXJ0
-IGl0IGludG8gdmlydHVhbCBhZGRyZXNzIGluIHlvdXIgcGxhdGZvcm0gY29kZT8NCj4gPiANCj4g
-PiBZZXMgdGhhdCdzIHJpZ2h0IGl0J3MgdGhlIGJvb3Ryb21zIFBBLiBJJ20gbm90IGludGl0ZW50
-aW9uYWxseQ0KPiA+IGRvaW5nDQo+ID4gYW55dGhpbmcgd2l0aCBpdCBidXQgbWF5YmUgdGhhdCdz
-IHRoZSBwcm9ibGVtLg0KPiANCj4gSWYgeW91IHdlcmUgYWNjZXNzaW5nIHRoaXMgYXMgYSB2aXJ0
-dWFsIGFkZHJlc3MgdGhlbiBpdCB3b3VsZCBiZQ0KPiBlaXRoZXINCj4gdmlhIEtTRUcwLzEgYW5k
-IHRoZSBhZGRyZXNzZXMgd291bGQgYmUgMHgxZmMwXzAwMDAgKyAweDgwMDBfMDAwMCBvcg0KPiAw
-eDFmYzBfMDAwMCArIDB4YTAwMF8wMDAwIGJ1dCBoZXJlIGl0IGxvb2tzIGxpa2UgdGhlIHJhdyBw
-aHlzaWNhbA0KPiBhZGRyZXNzIGlzIGJlaW5nIGFjY2Vzc2VkIHdoaWNoIHN1Z2dlc3RzIHRoZSBU
-TEIgaXMgaW5jb3JyZWN0bHkNCj4gcHJvZ3JhbW1lZCBzb21laG93Lg0KPiANCj4gPiANCj4gPiA+
-IA0KPiA+ID4gQ2hlY2sgdGhlIEVQQyBvZiBleGNlcHRpb24gaW4gdm1saW51eCB3aXRoIGFkZHIy
-bGluZSBtYXkgaGVscC4NCj4gPiA+IChEb24ndA0KPiA+ID4gZm9yZ2V0IHRvIGNvbXBpbGUgeW91
-ciBrZXJuZWwgd2l0aCBkZWJ1Z2luZm8pLiANCj4gPiA+IA0KPiA+IA0KPiA+IFRoZSBmdWxsIHBh
-bmljIGlzDQo+ID4gDQo+ID4gQ1BVIDAgVW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJl
-cXVlc3QgYXQgdmlydHVhbCBhZGRyZXNzDQo+ID4gMWZjMDAwMDAsIGVwYyA9PSA4MDAxNjdiOCwg
-cmEgPT0NCj4gPiA4MDBlMjg2MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgIA0KPiA+IE9v
-cHNbIzFdOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+IENQVTogMCBQSUQ6IDAgQ29tbTogc3dhcHBl
-ciBOb3QgdGFpbnRlZCA1LjUuMC1hdDENCj4gPiAjNDYgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0K
-PiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-DQo+ID4gJCAwICAgOiAwMDAwMDAwMCAwMDAwMDAwMSAwMDAwMDAwMQ0KPiA+IDgwN2U0MjcwICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAN
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICANCj4gPiAkIDQgICA6IDFmYzAw
-MDAwIDAwMDAwMDAwIDFmYzAwZjgwDQo+ID4gMDAwMDAwMDEgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gIA0KPiA+ICQgOCAgIDogODNlNTJhMDAgODNlNTJhMjQgODA3ZjYy
-OGMNCj4gPiA4MDgwZmEwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAg
-DQo+ID4gJDEyICAgOiBmZmZmZmZmZiAwMDAwMDAwMSAwMDAwMDAwYg0KPiA+IGZmZmZmZmZmICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAN
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICANCj4gPiAkMTYgICA6IDgzZTUy
-YTIwIDgwMDAwMDAwIDgwODcwMDAwDQo+ID4gODNlNTJhMDAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gIA0KPiA+ICQyMCAgIDogODA4MGZkZDQgODA3ZGRlMDAgMDAwMDAw
-MDANCj4gPiA4MDgwZjliYyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAg
-DQo+ID4gJDI0ICAgOiA4MDgwZmI2OA0KPiA+IGZmZmZmZjdmICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+
-ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICANCj4gPiAkMjggICA6IDgwN2Rj
-MDAwIDgwN2RkZDM4IDgzZTUyYTAwDQo+ID4gODAwZTI4NjAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gIA0KPiA+IEhpICAgIDoNCj4gPiAwMDAwMDAwMCAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-DQo+ID4gTG8gICAgOg0KPiA+IDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiBlcGMgICA6IDgwMDE2
-N2I4DQo+ID4gY2xlYXJfcGFnZSsweDE4LzB4MTI4ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4g
-ICAgICAgICAgICAgICAgICAgIA0KPiA+IHJhICAgIDogODAwZTI4NjANCj4gPiBnZXRfcGFnZV9m
-cm9tX2ZyZWVsaXN0KzB4YTk0LzB4ZGQ0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-DQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAg
-DQo+ID4gU3RhdHVzOiAxMTAwMDAwMiAgICAgICAgS0VSTkVMDQo+ID4gRVhMICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICANCj4gPiBDYXVzZSA6IDQwODAw
-MDBjIChFeGNDb2RlDQo+ID4gMDMpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgDQo+ID4gICAgICAgICAgIA0KPiA+IEJhZFZBIDoNCj4gPiAxZmMwMDAwMCAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-DQo+ID4gUHJJZCAgOiAwMDAxOTc0OSAoTUlQUw0KPiA+IDc0S2MpICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICANCj4gPiBNb2R1bGVzIGxpbmtl
-ZA0KPiA+IGluOiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAg
-ICAgICAgICAgICAgICAgICAgIA0KPiA+IFByb2Nlc3Mgc3dhcHBlciAocGlkOiAwLCB0aHJlYWRp
-bmZvPShwdHJ2YWwpLCB0YXNrPShwdHJ2YWwpLA0KPiA+IHRscz0wMDAwMDAwMCkgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4g
-Kkh3VExTOg0KPiA+IGUxOWY3ZDNhICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0K
-PiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiBTdGFjayA6IDgwN2UwMDAwIDgw
-N2RkZTk4IDgwODY3Y2Q4IDgwNzkxODE0IDAwMDAwMDAxIDgwNjg3OTc0DQo+ID4gODA3ZGRlMTgN
-Cj4gPiAwMDAwMDAwMCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gICAgICAgICA4MDdmNWVkMCA4MDdmNjI4YyA4MDdmNjI4YyA4MDgw
-ZmRkNCA4MDg3MDAwMCAwMDAwMDAwMQ0KPiA+IDgwN2UwMDAwDQo+ID4gMDAwMDAwNDQgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAg
-ICAgICAgMDAwMDAwNWMgODA3ZGRlMDAgMDAwMDAwMDAgMDAwMDAwMDEgODA4MTAwMDAgODA3NWE2
-NjANCj4gPiA4MDg3MDAwMQ0KPiA+IDAwMDAwMDAwICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgIDAwMDAwMTAwIDAwMDAw
-MDAwIDgwN2UwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAxDQo+ID4gODA4NjAwMDANCj4g
-PiA4MDg0OTJiNCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgDQo+ID4gICAgICAgICA4N2Q3NTYwOCA4MDBlMzAyOCAwMDAwMDEwMCAwMDAwMDAw
-MCAwMDAwMDAwMSA4MDA1OGMwOA0KPiA+IDgwODcwMDAwDQo+ID4gODA4NzAwMDAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAg
-ICAgLi4uICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIA0KPiA+IENhbGwNCj4gPiBUcmFjZTogICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgDQo+ID4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgDQo+ID4gWzw4MDAxNjdiOD5dDQo+ID4gY2xlYXJfcGFnZSsweDE4LzB4MTI4ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICANCj4gPiBbPDgwMGUyODYw
-Pl0NCj4gPiBnZXRfcGFnZV9mcm9tX2ZyZWVsaXN0KzB4YTk0LzB4ZGQ0ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAg
-ICAgICAgICAgICAgICAgICAgICAgIA0KPiA+IFs8ODAwZTMwMjg+XQ0KPiA+IF9fYWxsb2NfcGFn
-ZXNfbm9kZW1hc2srMHhmNC8weGJiOCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAN
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAg
-ICAgDQo+ID4gWzw4MDBlM2IwOD5dDQo+ID4gX19nZXRfZnJlZV9wYWdlcysweDFjLzB4NTggICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICANCj4gPiBbPDgwMDEzNDMw
-Pl0NCj4gPiBzZXR1cF96ZXJvX3BhZ2VzKzB4M2MvMHhlNCAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4gPiAg
-ICAgICAgICAgICAgICAgICAgICAgIA0KPiA+IFs8ODA4MjZlYWM+XQ0KPiA+IG1lbV9pbml0KzB4
-NDAvMHg1MCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAN
-Cj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAgICAgICAg
-ICAgDQo+ID4gWzw4MDgyMTljMD5dDQo+ID4gc3RhcnRfa2VybmVsKzB4MjUwLzB4NTEwICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KPiA+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICANCj4gPiBDb2RlOiBjYzll
-MDA0MCAgY2M5ZTAwNjAgIGNjOWUwMDgwIDxhYzgwMDAwMD4NCj4gPiBhYzgwMDAwNCAgYWM4MDAw
-MDggIGFjODAwMDBjICAyNDg0MDAyMCAgYWM4MGZmZjAgIA0KPiA+IA0KPiA+IEkgdGhpbmsgdGhp
-cyBpcyBqdXN0IHRoZSBlYXJseSBzZXR1cCBvZiB0aGUgcGFnZXMuDQo+ID4gDQo+ID4gPiA+IA0K
-PiA+ID4gPiBBbnl3YXkgSSdkIHJlYWxseSBhcHByZWNpYXRlIGFueSBndWlkYW5jZSB0aGF0IGFu
-eW9uZSBjb3VsZA0KPiA+ID4gPiBwcm92aWRlDQo+ID4gPiA+IG9uDQo+ID4gPiA+IHRoaXMuIEV2
-ZW4gaWYgaXQncyBqdXN0ICJnbyBsb29rIGF0IHRoaXMgU29DIi4NCj4gPiA+ID4gDQo+ID4gPiA+
-IFRoYW5rcywNCj4gPiA+ID4gQ2hyaXMNCj4gPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4gDQo+ID4g
-PiAtLQ0KPiA+ID4gSmlheHVuIFlhbmcNCj4gDQo+IA0K
+On Wed, Apr 8, 2020 at 11:01 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Paolo Bonzini <pbonzini@redhat.com> writes:
+> > On 08/04/20 17:34, Sean Christopherson wrote:
+> >> On Wed, Apr 08, 2020 at 10:23:58AM +0200, Paolo Bonzini wrote:
+> >>> Page-not-present async page faults are almost a perfect match for the
+> >>> hardware use of #VE (and it might even be possible to let the processor
+> >>> deliver the exceptions).
+> >>
+> >> My "async" page fault knowledge is limited, but if the desired behavior is
+> >> to reflect a fault into the guest for select EPT Violations, then yes,
+> >> enabling EPT Violation #VEs in hardware is doable.  The big gotcha is that
+> >> KVM needs to set the suppress #VE bit for all EPTEs when allocating a new
+> >> MMU page, otherwise not-present faults on zero-initialized EPTEs will get
+> >> reflected.
+> >>
+> >> Attached a patch that does the prep work in the MMU.  The VMX usage would be:
+> >>
+> >>      kvm_mmu_set_spte_init_value(VMX_EPT_SUPPRESS_VE_BIT);
+> >>
+> >> when EPT Violation #VEs are enabled.  It's 64-bit only as it uses stosq to
+> >> initialize EPTEs.  32-bit could also be supported by doing memcpy() from
+> >> a static page.
+> >
+> > The complication is that (at least according to the current ABI) we
+> > would not want #VE to kick if the guest currently has IF=0 (and possibly
+> > CPL=0).  But the ABI is not set in stone, and anyway the #VE protocol is
+> > a decent one and worth using as a base for whatever PV protocol we design.
+>
+> Forget the current pf async semantics (or the lack of). You really want
+> to start from scratch and igore the whole thing.
+>
+> The charm of #VE is that the hardware can inject it and it's not nesting
+> until the guest cleared the second word in the VE information area. If
+> that word is not 0 then you get a regular vmexit where you suspend the
+> vcpu until the nested problem is solved.
+
+Can you point me at where the SDM says this?
+
+Anyway, I see two problems with #VE, one big and one small.  The small
+(or maybe small) one is that any fancy protocol where the guest
+returns from an exception by doing, logically:
+
+Hey I'm done;  /* MOV somewhere, hypercall, MOV to CR4, whatever */
+IRET;
+
+is fundamentally racy.  After we say we're done and before IRET, we
+can be recursively reentered.  Hi, NMI!
+
+The big problem is that #VE doesn't exist on AMD, and I really think
+that any fancy protocol we design should work on AMD.  I have no
+problem with #VE being a nifty optimization to the protocol on Intel,
+but it should *work* without #VE.
+
+>
+> So you really don't worry about the guest CPU state at all. The guest
+> side #VE handler has to decide what it wants from the host depending on
+> it's internal state:
+>
+>      - Suspend me and resume once the EPT fail is solved
+
+I'm not entirely convinced this is better than the HLT loop.  It's
+*prettier*, but the HLT loop avoids an extra hypercall and has the
+potentially useful advantage that the guest can continue to process
+interrupts even if it is unable to make progress otherwise.
+
+Anyway, the whole thing can be made to work reasonably well without
+#VE, #MC or any other additional special exception, like this:
+
+First, when the guest accesses a page that is not immediately
+available (paged out or failed), the host attempts to deliver the
+"page not present -- try to do other stuff" event.  This event has an
+associated per-vCPU data structure along these lines:
+
+struct page_not_present_data {
+  u32 inuse;  /* 1: the structure is in use.  0: free */
+  u32 token;
+  u64 gpa;
+  u64 gva;  /* if known, and there should be a way to indicate that
+it's not known. */
+};
+
+Only the host ever changes inuse from 0 to 1 and only the guest ever
+changes inuse from 1 to 0.
+
+The "page not present -- try to do other stuff" event has interrupt
+semantics -- it is only delivered if the vCPU can currently receive an
+interrupt.  This means IF = 1 and STI and MOV SS shadows are not
+active.  Arguably TPR should be checked too.  It is also only
+delivered if page_not_present_data.inuse == 0 and if there are tokens
+available -- see below.  If the event can be delivered, then
+page_not_present_data is filled out and the event is delivered.  If
+the event is not delivered, then one of three things happens:
+
+a) If the page not currently known to be failed (e.g. paged out or the
+host simply does not know yet until it does some IO), then the vCPU
+goes to sleep until the host is ready.
+b) If the page is known to be failed, and no fancy #VE / #MC is
+available, then the guest is killed and the host logs an error.
+c) If some fancy recovery mechanism is implemented, which is optional,
+then the guest gets an appropriate fault.
+
+If a page_not_present event is delivered, then the host promises to
+eventually resolve it.  Resolving it looks like this:
+
+struct page_not_present_resolution {
+  u32 result;  /* 0: guest should try again.  1: page is failed */
+  u32 token;
+};
+
+struct page_not_present_resolutions {
+  struct page_not_present_resolution events[N];
+  u32 head, tail;
+};
+
+Only N page-not-presents can be outstanding and unresolved at a time.
+it is entirely legal for the host to write the resolution to the
+resolution list before delivering page-not-present.
+
+When a page-not-present is resolved, the host writes the outcome to
+the page_not_present_resolutions ring.  If there is no space, this
+means that either the host or guest messed up (the host will not
+allocate more tokens than can fit in the ring) and the guest is
+killed.  The host also sends the guest an interrupt.  This is a
+totally normal interrupt.
+
+If the guest gets a "page is failed" resolution, the page is failed.
+If the guest accesses the failed page again, then the host will try to
+send a page-not-present event again.  If there is no space in the
+ring, then the rules above are followed.
+
+This will allow the sensible cases of memory failure to be recovered
+by the guest without the introduction of any super-atomic faults. :)
+
+
+Obviously there is more than one way to rig up the descriptor ring.
+My proposal above is just one way to do it, not necessarily the best
+way.
