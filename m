@@ -2,65 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 103301A2D1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 02:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B221A2D1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 02:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbgDIAxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 20:53:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726545AbgDIAxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 20:53:12 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5BAC20857;
-        Thu,  9 Apr 2020 00:53:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586393593;
-        bh=RSc+yL/VO14aC0/210vKAc1GSuXmJW4M6U6zQD4b218=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=QKaVHmmZTVK06npEemcudHoYOCs2BsKd1rtjMEamtNH9TuaYl0m3r23pii1GGoB7w
-         sGGggHbJca+Om5vA/10uh/w+qIkBiexKeIS2OUkSNvwzRGpLjFYZFdmfDGoV7RtWpk
-         6ioNgLu7cV57PV0gFVa1W7QbXe/CZUV5gg1GGtqc=
-Date:   Wed, 8 Apr 2020 17:53:12 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Aslan Bakirov <aslan@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        <linux-mm@kvack.org>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>, Rik van Riel <riel@surriel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v5 1/2] mm: cma: NUMA node interface
-Message-Id: <20200408175312.14a055276b676edaefe636e2@linux-foundation.org>
-In-Reply-To: <20200407163840.92263-2-guro@fb.com>
-References: <20200407163840.92263-1-guro@fb.com>
-        <20200407163840.92263-2-guro@fb.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726642AbgDIAyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 20:54:12 -0400
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:34727 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726539AbgDIAyL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 20:54:11 -0400
+Received: by mail-qv1-f66.google.com with SMTP id s18so4748068qvn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 17:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=J9ZemQiFWGsfMWPldp5QKBMKNYMMZinRnYJeMxAKRQM=;
+        b=dN9bpb8pfU8byZSrixWq3Kv0mxxA25dUnMe8pPGKg69WFoiB6zg7Q3JO4Q5NJrnbRo
+         IKypobdgiceAqzlC+qsTMZKbqst1KQAVcsuqLalBh42j/0jH6IAqthwMJk+Vq2kZHydN
+         yVUPRDZDoDgyQFIHrF7e5QZwXASKVnrtljndr0qGNNhKbGl+pSZX5BTNxWhY05jUsIf2
+         5mZfO15tfQYN8BoASLHztE0inUG4CJqUJwA812paJYgn50YSRxCupQ9JXRbciNGmijCP
+         Bhj76cOjpjH0FxeeKQexMAmKFIlAe1WrB5l4u1uXdXOfWxY85dkx+JGvJYNat5gd7tw2
+         eGag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=J9ZemQiFWGsfMWPldp5QKBMKNYMMZinRnYJeMxAKRQM=;
+        b=gHFYLnNmoU/7TAyBD7qhQC49+2SYh8SbCBsuttMijBHTzBU7+q95reZNG2GWp3e09u
+         sM/R/W3wapoyIth6Rmagj36MoQDrtJPY8AjzVxx1o6UyvfkFZwaeglzkBHsPmLIJpDlL
+         +LIalHx0dwThDHmKDxAlZscp9l1NaGXDqT9/O24kSxdxB6Tnumj7eu9a8S4Aj83MlUef
+         yw7hOa/u60Zism9iyBskJqGDgatn3X9TekhEraxSsViEc25ezw5yYZ9+P56PaOofaeec
+         gv5Hx4A4ZO5fiRfge541G1diBq6E9hhiI9FGR5Tpc/74lWLZcBr0XS7x3ufCjLOrVbjo
+         l/oQ==
+X-Gm-Message-State: AGi0PuYtEAdVLFhFMZ/MINIWwnuEhVZiLCWV3R71PLDjIDny9nGyfJvg
+        pm7a62wyQAuI26/2czsg1kwxUJS+qY1jU7I/ckM=
+X-Google-Smtp-Source: APiQypLotMAy0bbszGNimqOa7muZH2bnF2Un4RKY3qBFMk53l/gdC/gkclCYkXpzku7IVWiMQVQNoHVJWusgAR93lEc=
+X-Received: by 2002:ad4:5244:: with SMTP id s4mr5019325qvq.88.1586393650767;
+ Wed, 08 Apr 2020 17:54:10 -0700 (PDT)
+MIME-Version: 1.0
+References: <1585892447-32059-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <20200406115804.4440-1-hdanton@sina.com> <20200407022144.11164-1-hdanton@sina.com>
+In-Reply-To: <20200407022144.11164-1-hdanton@sina.com>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Thu, 9 Apr 2020 09:53:59 +0900
+Message-ID: <CAAmzW4MANwv6OS646Tkbvs1Db+kn6f2=WDJHi9EAXsz0vp1sXA@mail.gmail.com>
+Subject: Re: [PATCH v5 05/10] mm/swap: charge the page when adding to the swap cache
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mel Gorman <mgorman@techsingularity.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Apr 2020 09:38:39 -0700 Roman Gushchin <guro@fb.com> wrote:
+2020=EB=85=84 4=EC=9B=94 7=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 11:21, H=
+illf Danton <hdanton@sina.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+>
+> On Tue, 7 Apr 2020 09:42:54 +0900 Joonsoo Kim wrote:
+> >
+> > 2020=3DEB=3D85=3D84 4=3DEC=3D9B=3D94 6=3DEC=3D9D=3DBC (=3DEC=3D9B=3D94)=
+ =3DEC=3D98=3DA4=3DED=3D9B=3D84 8:58, Hi=3D
+> > llf Danton <hdanton@sina.com>=3DEB=3D8B=3D98=3DEC=3D9D=3DB4 =3DEC=3D9E=
+=3D91=3DEC=3D84=3DB1:
+> > >
+> > >
+> > > On Fri,  3 Apr 2020 14:40:43 +0900 Joonsoo Kim wrote:
+> > > >
+> > > > @@ -153,11 +165,16 @@ int add_to_swap_cache(struct page *page, swp_=
+entr=3D
+> > y_t entry,
+> > > >               xas_unlock_irq(&xas);
+> > > >       } while (xas_nomem(&xas, gfp));
+> > > >
+> > > > -     if (!xas_error(&xas))
+> > > > +     if (!xas_error(&xas)) {
+> > > > +             mem_cgroup_commit_charge(page, memcg, false, compound=
+);
+> > >
+> > > Add a tp
+> > >                 trace_mm_add_to_swap_cache(page);
+> >
+> > Please let me know the reason of this comment.
+>
+> It is derived from
+>
+>         trace_mm_filemap_add_to_page_cache(page);
+>
+> in __add_to_page_cache_locked().
 
-> From: Aslan Bakirov <aslan@fb.com>
-> 
-> I've noticed that there is no interfaces exposed by CMA which would let me
-> to declare contigous memory on particular NUMA node.
-> 
-> This patchset adds the ability to try to allocate contiguous memory on
-> specific node. It will fallback to other nodes if the specified one
-> doesn't work.
-> 
-> Implement a new method for declaring contigous memory on particular node
-> and keep cma_declare_contiguous() as a wrapper.
-> 
-> Signed-off-by: Aslan Bakirov <aslan@fb.com>
-> Acked-by: Michal Hocko <mhocko@kernel.org>
+Maybe, it has it's own purpose and it would not be applied here. If
+someone want to add
+a tp here, it can be done with a justification, after this patchset.
 
-This should have had your signed-off-by, as you were on the patch
-delivery path.  Please send it along?
-
+Thanks.
