@@ -2,166 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B81251A3CE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 01:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0AC71A3CE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 01:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727048AbgDIXd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 19:33:29 -0400
-Received: from mail-qk1-f170.google.com ([209.85.222.170]:40494 "EHLO
-        mail-qk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726858AbgDIXd3 (ORCPT
+        id S1727226AbgDIXeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 19:34:04 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:20071 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726871AbgDIXeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 19:33:29 -0400
-Received: by mail-qk1-f170.google.com with SMTP id z15so600728qki.7
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 16:33:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :cc:to;
-        bh=wgkRZRi8nt7Sf7G72jvNnmXYWgvPJ9i4m7QAjv8A1Q4=;
-        b=eLkZUa7uSnG9us9m8iieDngtLxC+HG8pwltFYbdcs1NrzCJ1z3j+wxkNs3NqTPdiFP
-         MB5ptKIKgNVb9MAykm/y4xfy/zxJ6uC9yZIRf4ym7kjk420gx5der2gbEGnkHcTlAfW5
-         VFONC2kJFuzKqfWOxd3DsyyC9ADMR0PVZafQqj5DMAUNJomT2s8FjsnRTwDf8cjlEMCw
-         MjQv/woOdikoiIjG4NfBeicUqRY6QOBFzYkE3f/h58uQT+yc6yzDQ8MJVQUwS02YaFsM
-         LRDjjuAaYaaKPTWVlyERWBcaSg/wwEhfLVTeAk2WriI0eqtNkz+EZjrL2Q3cU9MaVTEV
-         2CaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=wgkRZRi8nt7Sf7G72jvNnmXYWgvPJ9i4m7QAjv8A1Q4=;
-        b=l/UNPbRbDzqMGXlu+pkWXBfzqCvhc+bXLWB0rCdbfZEkLHjsanNcJJAJY75KQsV2Ws
-         S6UDhftYED7ZVhBNmF1CKza8XcJfXncQUQXjvGsQ7G+E/KlSWPsIaPjxC2bem3gEiiYE
-         V05C+dAcFfGJDvOFGn6MiHEzL99pA/P7NE5Fg8zuhNCHxZitdpFQnA9U/VbcLvcQ3Lou
-         ZGPAJUE3KBTRUkZCuOxSYzg1YlNF5mOkZVliwntJeMyFY4OY4CssEnI2IEB6WZT9Byn2
-         hi7rZDh2oWnw5w/3V9DM92TyGPbHeP/nXbn9iYKxaIeCi1TkGcJ26LquSPvqQHT5IFo4
-         8cog==
-X-Gm-Message-State: AGi0PuZIvFU+6zbDa5ESsa8z4hi+pFTDMrPc3lXxi0d08vfOm8bl/4TS
-        rfhWjgP/n6RnQBBaucM8ynsjlg==
-X-Google-Smtp-Source: APiQypIzSPzGROYB8GlTbojz86NPjyo4ppagaRVsPbtzp2x4iX5szJMdNvssk3f7fl49ywb/72hn2A==
-X-Received: by 2002:a37:b93:: with SMTP id 141mr1489123qkl.192.1586475208596;
-        Thu, 09 Apr 2020 16:33:28 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id o16sm281681qki.110.2020.04.09.16.33.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Apr 2020 16:33:28 -0700 (PDT)
-From:   Qian Cai <cai@lca.pw>
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: s390 boot woe due to "block: fix busy device checking in
- blk_drop_partitions"
-Message-Id: <AD16A450-794F-4EEA-A7BF-42452F18294A@lca.pw>
-Date:   Thu, 9 Apr 2020 19:33:25 -0400
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-block@vger.kernel.org, linux-s390@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-To:     Christoph Hellwig <hch@lst.de>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Thu, 9 Apr 2020 19:34:03 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586475242; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=HLu3LXKVdwRi2myzF6VISXReouVgdhBst/ZOPq5Z52I=; b=eNbe1pDptanY0FYy2/b1d0ZtgZwGVTyMxjjOXcsWvwgdFtq9JOmQyjwHoh70UDkRxWlr8GMz
+ at7+QlwcFTy343vZ15nTWoGAlItWXXxEEogiHjFnoCNUU5q7og4q4IhZ8UUsLwPMMMblkxT2
+ kBXkb1zr0JwXotyKqBV4OLZXCJQ=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e8fb0ea.7f4d407926f8-smtp-out-n05;
+ Thu, 09 Apr 2020 23:34:02 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 93CC8C38557; Thu,  9 Apr 2020 23:33:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from localhost.localdomain (c-71-237-101-98.hsd1.co.comcast.net [71.237.101.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0FF5C433D2;
+        Thu,  9 Apr 2020 23:33:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A0FF5C433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     iommu@lists.linux-foundation.org
+Cc:     linux-arm-msm@vger.kernel.org, robin.murphy@arm.com,
+        will@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        Allison Randal <allison@lohutok.net>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Brian Masney <masneyb@onstation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Drew Davenport <ddavenport@chromium.org>,
+        Enrico Weigelt <info@metux.net>,
+        Fabio Estevam <festevam@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Wambui Karuga <wambui.karugax@gmail.com>,
+        Wen Yang <wen.yang99@zte.com.cn>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, tongtiangen <tongtiangen@huawei.com>,
+        zhengbin <zhengbin13@huawei.com>
+Subject: [PATCH v6 0/5] iommu/arm-smmu: Split pagetable support for arm-smmu-v2
+Date:   Thu,  9 Apr 2020 17:33:45 -0600
+Message-Id: <20200409233350.6343-1-jcrouse@codeaurora.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reverted the linux-next commit on today=E2=80=99s tree,
+This is another iteration for the split pagetable support based on the
+suggestions from Robin and Will [1].
 
-d3ef5536274f (=E2=80=9Cblock: fix busy device checking in =
-blk_drop_partitions=E2=80=9D)
+Background: In order to support per-context pagetables the GPU needs to enable
+split tables so that we can store global buffers in the TTBR1 space leaving the
+GPU free to program the TTBR0 register with the address of a context specific
+pagetable.
 
-makes IBM partition to be recognized again on s390 rootfs,
+If the DOMAIN_ATTR_SPLIT_TABLES attribute is set on the domain before attaching,
+the context bank assigned to the domain will be programmed to allow translations
+in the TTBR1 space. Translations in the TTBR0 region will be disallowed because,
+as Robin pointe out, having a un-programmed TTBR0 register is dangerous.
 
-01: [   83.443963]  dasda:VOL1/  0X0121: dasda1                          =
-      =20
-01: [   85.124667] qeth 0.0.8000 enc8000: renamed from eth0              =
-      =20
-01: [   85.731860] dasd-eckd 0.0.0120: DASD with 4 KB/block, 72122400 KB =
-total s
-01: ize, 48 KB/track, compatible disk layout                             =
-      =20
-01: [   86.076722]  dasdb:VOL1/  0X0120: dasdb1 dasdb2
+The driver can determine if TTBR1 was successfully programmed by querying
+DOMAIN_ATTR_SPLIT_TABLES after attaching. The domain geometry will also be
+updated to reflect the virtual address space for the TTBR1 range.
 
-Otherwise, it is DOA,
+Upcoming changes will allow auxiliary domains to be attached to the device which
+will enable and program TTBR0.
 
-00:          Starting Show Plymouth Boot Screen...                       =
-      =20
-00: [   37.202263] qeth 0.0.8000: portname is deprecated and is ignored  =
-      =20
-00: [   37.677993] qdio: 0.0.8002 OSA on SC 4 using AI:1 QEBSM:0 PRI:1 =
-TDD:1 SIG
-00: A:RW A                                                               =
-      =20
-00: [   37.770970] qeth 0.0.8000: MAC address 02:de:ad:be:ef:87 =
-successfully reg
-00: istered                                                              =
-      =20
-00: [   37.771547] qeth 0.0.8000: Device is a Virtual NIC QDIO card =
-(level: V642
-00: )                                                                    =
-      =20
-00: [   37.771547] with link type Virt.NIC QDIO.                         =
-      =20
-00: [   38.036231] ccw_init (415) used greatest stack depth: 56496 bytes =
-left  =20
-00:          Starting dracut initqueue hook...                           =
-      =20
-00: [   39.176304] dasd-eckd 0.0.0120: A channel path to the device has =
-become o
-00: perational                                                           =
-      =20
-00: [   39.453273] dasd-eckd 0.0.0120: New DASD 3390/0E (CU 3990/01) =
-with 100170
-00:  cylinders, 15 heads, 224 sectors                                    =
-      =20
-00: [   39.655564] dasd-eckd 0.0.0121: A channel path to the device has =
-become o
-00: perational                                                           =
-      =20
-00: [   39.722706] dasd-eckd 0.0.0121: New DASD 3390/0E (CU 3990/01) =
-with 100170
-00:  cylinders, 15 heads, 224 sectors                                    =
-      =20
-01: [   41.133963] dasd-eckd 0.0.0121: DASD with 4 KB/block, 72122400 KB =
-total s
-01: ize, 48 KB/track, compatible disk layout                             =
-      =20
-01: [   41.145510] dasd-eckd 0.0.0120: DASD with 4 KB/block, 72122400 KB =
-total s
-01: ize, 48 KB/track, compatible disk layout                             =
-      =20
-01: [   41.609625] qeth 0.0.8000 enc8000: renamed from eth0 =20
-01: [   41.609625] qeth 0.0.8000 enc8000: renamed from eth0              =
-      =20
-01: Warning: /dev/mapper/rhel_ibm--z--135-root does not exist            =
-      =20
-01: Warning: /dev/rhel_ibm-z-135/root does not exist                     =
-      =20
-01: Warning: /dev/rhel_ibm-z-135/swap does not exist                     =
-      =20
-01:                                                                      =
-      =20
-01: Generating "/run/initramfs/rdsosreport.txt"                          =
-      =20
-01:                                                                      =
-      =20
-01:                                                                      =
-      =20
-01: Entering emergency mode. Exit the shell to continue.                 =
-      =20
-01: Type "journalctl" to view system logs.                               =
-      =20
-01: You might want to save "/run/initramfs/rdsosreport.txt" to a USB =
-stick or /b
-01: oot                                                                  =
-      =20
-01: after mounting them and attach it to a bug report.                   =
-      =20
-01:                                                                      =
-      =20
-01:                                                                      =
-      =20
-00: dracut:/#=20
+This patchset is based on top of linux-next-20200409
 
+Change log:
+
+v6: Cleanups for the arm-smmu TTBR1 patch from Will Deacon
+v4: Only program TTBR1 when split pagetables are requested. TTBR0 will be
+enabled later when an auxiliary domain is attached
+v3: Remove the implementation specific and make split pagetable support
+part of the generic configuration
+
+[1] https://lists.linuxfoundation.org/pipermail/iommu/2020-January/041373.html
+
+
+Jordan Crouse (5):
+  iommu: Add DOMAIN_ATTR_SPLIT_TABLES
+  iommu/arm-smmu: Add support for TTBR1
+  drm/msm: Attach the IOMMU device during initialization
+  drm/msm: Refactor address space initialization
+  drm/msm/a6xx: Support split pagetables
+
+ drivers/gpu/drm/msm/adreno/a2xx_gpu.c    | 16 ++++++++
+ drivers/gpu/drm/msm/adreno/a3xx_gpu.c    |  1 +
+ drivers/gpu/drm/msm/adreno/a4xx_gpu.c    |  1 +
+ drivers/gpu/drm/msm/adreno/a5xx_gpu.c    |  1 +
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c    | 51 ++++++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c  | 23 ++++++++---
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h  |  8 ++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c  | 18 +++------
+ drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c | 18 ++++-----
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c |  4 --
+ drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c | 18 ++++-----
+ drivers/gpu/drm/msm/msm_drv.h            |  8 +---
+ drivers/gpu/drm/msm/msm_gem_vma.c        | 36 +++--------------
+ drivers/gpu/drm/msm/msm_gpu.c            | 49 +----------------------
+ drivers/gpu/drm/msm/msm_gpu.h            |  4 +-
+ drivers/gpu/drm/msm/msm_gpummu.c         |  6 ---
+ drivers/gpu/drm/msm/msm_iommu.c          | 18 +++++----
+ drivers/gpu/drm/msm/msm_mmu.h            |  1 -
+ drivers/iommu/arm-smmu.c                 | 48 ++++++++++++++++++----
+ drivers/iommu/arm-smmu.h                 | 24 ++++++++---
+ include/linux/iommu.h                    |  2 +
+ 21 files changed, 200 insertions(+), 155 deletions(-)
+
+-- 
+2.17.1
