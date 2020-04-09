@@ -2,117 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E0E1A367E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDDB1A3683
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbgDIPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 11:02:35 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6001 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727884AbgDIPCf (ORCPT
+        id S1727980AbgDIPDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 11:03:16 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:33919 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727963AbgDIPDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 11:02:35 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5e8f38fe0000>; Thu, 09 Apr 2020 08:02:22 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Thu, 09 Apr 2020 08:02:35 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Thu, 09 Apr 2020 08:02:35 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Apr
- 2020 15:02:35 +0000
-Received: from localhost (10.124.1.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 9 Apr 2020 15:02:34
- +0000
-Date:   Thu, 9 Apr 2020 17:02:31 +0200
-From:   Thierry Reding <treding@nvidia.com>
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     <soc@kernel.org>, Thierry Reding <thierry.reding@gmail.com>,
-        "Jonathan Hunter" <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Venkat Reddy Talla <vreddytalla@nvidia.com>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] soc: tegra: fix tegra_pmc_get_suspend_mode definition
-Message-ID: <20200409150231.GB3505571@ulmo>
-References: <20200408190127.587768-1-arnd@arndb.de>
-MIME-Version: 1.0
-In-Reply-To: <20200408190127.587768-1-arnd@arndb.de>
-X-NVConfidentiality: public
-User-Agent: Mutt/1.13.1 (2019-12-14)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="neYutvxvOLaeuPCA"
-Content-Disposition: inline
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1586444542; bh=ntEzEcDK7qFFQ5MRDfSpyPN3i0B0OGhn7ZR8O7yPDEg=;
-        h=X-PGP-Universal:Date:From:To:CC:Subject:Message-ID:References:
-         MIME-Version:In-Reply-To:X-NVConfidentiality:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:
-         Content-Disposition;
-        b=rryVHpI+ggy0ulgypiiSLZINLweYm/+7Q/qWKjDXHk0z67QEUCHqF3O3hNYXNj6UE
-         u859EIPaDUS/HPa7HIfMP8EnwJ5Ab6Zsix5MebiHKK5UObENw+GEqTbS/DcVX7R9lj
-         6g575bxuYjjCN/jkHsURVbUg79seg/yzCvgqflHwkdbmCIggisPaCErADpkBdfkrjX
-         LSkTYlQ36XZtWuxr8lNQdbg/W6URMv5R1ok0rGTLc9a6/+DivPTVOoh5xwQAAIvhDx
-         vVbbZWUXwc4NLYzWTtu1DXsbh+7z6pXfSBjKgZ+eeW0La2xm9AX3jqjdBzRmX/Xz5f
-         qJVkcZz5QHmjw==
+        Thu, 9 Apr 2020 11:03:16 -0400
+Received: by mail-pg1-f194.google.com with SMTP id l14so5115007pgb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 08:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=vti+QulpjK02SSgR5ooO7HQioSPVHwldN19SASyEiDY=;
+        b=upbS40tfJGsurJN7/mZHHFDliZikCZoIqFpXUGM/QaX+XuaD80GaYleZ8Q5F5rFQw/
+         hg5GsRuF/YZFNrKs46ev2JPQE6CZ6zwFE9+U9flddA1uwIqdhpgRZlt7k4l+/d3zM1vs
+         jEZbhwHPLDu1rPZtLSIutcjRdcxN4ipu7eH1+ygqELUoA9SQUoAxXJussghke9nuhlf+
+         piDd35eola4QOziF01AiaD6EWaY1HmgpYaL4eYp5vA5XrJpU2vEVXm/WdKCpWa799jiv
+         XCM/P3yqtmVbZOT6W7+Epwo8ep7ZlXlfg7Ry7R4zR7JXskDfrJQ78E5psLgnhQkACxPo
+         O+hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=vti+QulpjK02SSgR5ooO7HQioSPVHwldN19SASyEiDY=;
+        b=NJ80noFNjbkx0pJg5szVALOUa7vDXi89DGls094tHkQwOag83O1K0IkoDoar4bhM5e
+         VY2YA+VbErC3bly6np2ZJso0l3GvZy/YqPmTQQWHBg3VIYMdPkRXeNmZbc7O+0PPV5Ip
+         pOrEaNEN456U3ELLO3SjmhBEzaohLexdNmEyBusYmzLsFwWK17nEwXfBmGf2iQFCuLOG
+         BsjJWDI6onsMmytK8ZuhxAXs30TktbmcKWrDe+GiDk2Mhajtc+CRe9SDYktZA/0LAHcF
+         oxTyI3nL3OcArec+iIcGIMfJpM7vkhdwkL3/n4kOUnId1btcYGYg248uEzz4EInt+t0Y
+         GbOA==
+X-Gm-Message-State: AGi0PuaHoi448QzrbyVwK2BYtUII/r4nKvwp4fuPf97TWyUUfYKR0UIG
+        YtWEvRqIR6+lUmdejtt0hFM8dg==
+X-Google-Smtp-Source: APiQypLj56yP6feP8J+oTUBnBLkI9ELSEhd5pzgk/Fpw9mVbT1NODELR0bH6iBDE7Bhy+q0sfUedoQ==
+X-Received: by 2002:aa7:969b:: with SMTP id f27mr2820pfk.116.1586444593655;
+        Thu, 09 Apr 2020 08:03:13 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:d3f:18b:ffcb:12f6? ([2601:646:c200:1ef2:d3f:18b:ffcb:12f6])
+        by smtp.gmail.com with ESMTPSA id y193sm18125956pgd.87.2020.04.09.08.03.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Apr 2020 08:03:12 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
+Date:   Thu, 9 Apr 2020 08:03:09 -0700
+Message-Id: <4EB5D96F-F322-45BB-9169-6BF932D413D4@amacapital.net>
+References: <c09dd91f-c280-85a6-c2a2-d44a0d378bbc@redhat.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
+In-Reply-To: <c09dd91f-c280-85a6-c2a2-d44a0d378bbc@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+X-Mailer: iPhone Mail (17E255)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---neYutvxvOLaeuPCA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 08, 2020 at 09:01:15PM +0200, Arnd Bergmann wrote:
-> When CONFIG_PM_SLEEP is disabled, the function is not defined,
-> causing a link failure:
+
+> On Apr 9, 2020, at 7:32 AM, Paolo Bonzini <pbonzini@redhat.com> wrote:
 >=20
-> arm-linux-gnueabi-ld: drivers/cpuidle/cpuidle-tegra.o: in function `tegra=
-_cpuidle_probe':
-> cpuidle-tegra.c:(.text+0x24): undefined reference to `tegra_pmc_get_suspe=
-nd_mode'
+> =EF=BB=BFOn 09/04/20 16:13, Andrew Cooper wrote:
+>>> On 09/04/2020 13:47, Paolo Bonzini wrote:
+>>> On 09/04/20 06:50, Andy Lutomirski wrote:
+>>>> The small
+>>>> (or maybe small) one is that any fancy protocol where the guest
+>>>> returns from an exception by doing, logically:
+>>>>=20
+>>>> Hey I'm done;  /* MOV somewhere, hypercall, MOV to CR4, whatever */
+>>>> IRET;
+>>>>=20
+>>>> is fundamentally racy.  After we say we're done and before IRET, we
+>>>> can be recursively reentered.  Hi, NMI!
+>>> That's possible in theory.  In practice there would be only two levels
+>>> of nesting, one for the original page being loaded and one for the tail
+>>> of the #VE handler.  The nested #VE would see IF=3D0, resolve the EPT
+>>> violation synchronously and both handlers would finish.  For the tail
+>>> page to be swapped out again, leading to more nesting, the host's LRU
+>>> must be seriously messed up.
+>>>=20
+>>> With IST it would be much messier, and I haven't quite understood why
+>>> you believe the #VE handler should have an IST.
+>>=20
+>> Any interrupt/exception which can possibly occur between a SYSCALL and
+>> re-establishing a kernel stack (several instructions), must be IST to
+>> avoid taking said exception on a user stack and being a trivial
+>> privilege escalation.
 >=20
-> Change the #ifdef check according to the definition.
+> Doh, of course.  I always confuse SYSCALL and SYSENTER.
 >=20
-> Fixes: 382ac8e22b90 ("cpuidle: tegra: Disable CC6 state if LP2 unavailabl=
-e")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/soc/tegra/pmc.h | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+>> Therefore, it doesn't really matter if KVM's paravirt use of #VE does
+>> respect the interrupt flag.  It is not sensible to build a paravirt
+>> interface using #VE who's safety depends on never turning on
+>> hardware-induced #VE's.
+>=20
+> No, I think we wouldn't use a paravirt #VE at this point, we would use
+> the real thing if available.
+>=20
+> It would still be possible to switch from the IST to the main kernel
+> stack before writing 0 to the reentrancy word.
+>=20
+>=20
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Almost but not quite. We do this for NMI-from-usermode, and it=E2=80=99s ugl=
+y. But we can=E2=80=99t do this for NMI-from-kernel or #VE-from-kernel becau=
+se there might not be a kernel stack.  Trying to hack around this won=E2=80=99=
+t be pretty.
 
-Let me know if you'd prefer me to send this in a pull request later on.
+Frankly, I think that we shouldn=E2=80=99t even try to report memory failure=
+ to the guest if it happens with interrupts off. Just kill the guest cleanly=
+ and keep it simple. Or inject an intentionally unrecoverable IST exception.=
 
-Thanks,
-Thierry
-
---neYutvxvOLaeuPCA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6POQcACgkQ3SOs138+
-s6F7ZhAAvVQ5d5Dr9bT31eAT6TA/weF92Mw2WXqCGnhT/tDE5mSqIkGHnhLvMHXa
-h334Mk0SNxcgKec5lXumw2TFlnvfFy2aEItOrMP4U4CIe99AYpknMfE+LvQplfb4
-JDzqugOFS7c9rUOPfQQy9WJ0YL/7qYm01gPtTAor+yGY5dJJW3vHl8I/issqJQnU
-xPbY0EzD4qPyKe8e3T1OwpgiF1vHQCDrNtFsNt6otc/2lV5t+/OxLWxRx9skp9A4
-zTMFVOK8CuhyUnE5Ik0y/ZmzmUFbrjOqOntuvO/NUotkPB95x5/AYy+P3Eu+qBqT
-/3510BE94NojOZu7rY7PKlCkI0DuwXV4qV6FrRLvpAWa3xf/Y6/afJMgRSWNKKHj
-ODOfgPrR71u0om9DG+/CrlD7QpYWXbpGQUB1JUtoQTU53UNSo9ZNgsvngzEwcqUY
-6WYVi5EWitfVXcmvyEWyJ002EJAvLNgnwxmPZl1zVDAVB8NOsQhV0Qvi5lwLFGhF
-u4Qmc9b+WndPwHaELLB3ScUPCD3+gT8WSOLavYZdQl3x48aFySWjm1OeXiBGfebq
-4mVHghjV3/7YVPIvOom+EhAoEAJox5WnZzeRht1AleTmDt7IqNvPSUygNk2L/lrQ
-XRZcVXx3nNe+vcwsJaW6Ln8z0gtTlKmUjN8Xzmy2wRhtPFaSziU=
-=lZ2U
------END PGP SIGNATURE-----
-
---neYutvxvOLaeuPCA--
