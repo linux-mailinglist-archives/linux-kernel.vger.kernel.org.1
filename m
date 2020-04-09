@@ -2,50 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA8F1A38B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA35A1A38B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgDIRMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:12:07 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:33244 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgDIRMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:12:06 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4E55F128C0940;
-        Thu,  9 Apr 2020 10:12:06 -0700 (PDT)
-Date:   Thu, 09 Apr 2020 10:12:05 -0700 (PDT)
-Message-Id: <20200409.101205.1131645111037893713.davem@davemloft.net>
-To:     vadym.kochan@plvision.eu
-Cc:     netdev@vger.kernel.org, yoshfuji@linux-ipv6.org,
-        challa@noironetworks.com, linux-kernel@vger.kernel.org,
-        taras.chornyi@plvision.eu
-Subject: Re: [PATCH net v2] net: ipv4: devinet: Fix crash when add/del
- multicast IP with autojoin
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200409053932.22902-1-vadym.kochan@plvision.eu>
-References: <20200409053932.22902-1-vadym.kochan@plvision.eu>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 09 Apr 2020 10:12:06 -0700 (PDT)
+        id S1726795AbgDIRNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:13:31 -0400
+Received: from vkten.in ([104.244.73.96]:45266 "EHLO vkten.in"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726589AbgDIRNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 13:13:30 -0400
+Received: (qmail 1341 invoked from network); 9 Apr 2020 17:13:26 -0000
+Received: from unknown (HELO localhost) (vkor@vkten.in@117.209.168.92)
+  de/crypted with TLSv1.3: TLS_AES_256_GCM_SHA384 [256/256] DN=none
+  by vkten with ESMTPSA; 9 Apr 2020 17:13:26 -0000
+From:   R Veera Kumar <vkor@vkten.in>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     R Veera Kumar <vkor@vkten.in>, Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Christian Brauner <christian@brauner.io>,
+        devel@driverdev.osuosl.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: android: ion: use macro DEFINE_DEBUGFS_ATTRIBUTE to define debugfs fops
+Date:   Thu,  9 Apr 2020 22:43:18 +0530
+Message-Id: <20200409171318.1730-1-vkor@vkten.in>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vadym.kochan@plvision.eu>
-Date: Thu,  9 Apr 2020 08:39:32 +0300
+It is more clear to use DEFINE_DEBUGFS_ATTRIBUTE to define debugfs file
+operation rather than DEFINE_SIMPLE_ATTRIBUTE.
 
-> Fixes: 93a714d (multicast: Extend ip address command to enable multicast group join/leave on)
+Found using coccinelle.
 
-Fixes tags must specify commit IDs with 12 digits of significance.
-Please fix this and resubmit.
+Signed-off-by: R Veera Kumar <vkor@vkten.in>
+---
+Changes in v2:
+ - Give correct explanation for patch
+ - Adjust git commit tag and msg accordingly
+---
+ drivers/staging/android/ion/ion.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-And in the parenthesis, the commit header text should also be surrounded
-by double quotes like ("...")
+diff --git a/drivers/staging/android/ion/ion.c b/drivers/staging/android/ion/ion.c
+index 38b51eace4f9..dbe4018a6f83 100644
+--- a/drivers/staging/android/ion/ion.c
++++ b/drivers/staging/android/ion/ion.c
+@@ -554,8 +554,8 @@ static int debug_shrink_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(debug_shrink_fops, debug_shrink_get,
+-			debug_shrink_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(debug_shrink_fops, debug_shrink_get,
++			 debug_shrink_set, "%llu\n");
+ 
+ void ion_device_add_heap(struct ion_heap *heap)
+ {
+-- 
+2.20.1
+
