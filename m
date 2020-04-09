@@ -2,80 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE5A1A35F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 16:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CFE1A35F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 16:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727736AbgDIOdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 10:33:02 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:56634 "EHLO vps0.lunn.ch"
+        id S1727787AbgDIOdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 10:33:09 -0400
+Received: from raptor.unsafe.ru ([5.9.43.93]:45052 "EHLO raptor.unsafe.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727368AbgDIOdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 10:33:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=t108aSZwNrLLBTSbxD8GRa59ihUeOfYwdyM3oFc/ymk=; b=yegRnYyS0d6o7FbYu4mfEk7ndZ
-        iDEx32RSJY5N+n8TtYqGlRN7WkPP+mAX7DIwPl+nJFE52m+xtOchIwo0CIzlQ/RmS5UVlD39ynfBQ
-        UGa4HGYpMu2HG5t0Rt0CrY0dDDZA5IRTtYF1SpVbWuUZuUJd0hPXZXPu29igqxPcix5Q=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jMYEV-001omz-2C; Thu, 09 Apr 2020 16:32:43 +0200
-Date:   Thu, 9 Apr 2020 16:32:43 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pawel Dembicki <paweldembicki@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] ARM: dts: kirkwood: Add Check Point L-50 board
-Message-ID: <20200409143243.GK389953@lunn.ch>
-References: <20200409070448.3209-1-paweldembicki@gmail.com>
- <20200409070448.3209-2-paweldembicki@gmail.com>
+        id S1727368AbgDIOdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 10:33:08 -0400
+Received: from comp-core-i7-2640m-0182e6 (ip-89-102-33-211.net.upcbroadband.cz [89.102.33.211])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 9128E209C3;
+        Thu,  9 Apr 2020 14:32:56 +0000 (UTC)
+Date:   Thu, 9 Apr 2020 16:32:51 +0200
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux Security Module <linux-security-module@vger.kernel.org>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Daniel Micay <danielmicay@gmail.com>,
+        Djalal Harouni <tixxdz@gmail.com>,
+        "Dmitry V . Levin" <ldv@altlinux.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "J . Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@poochiereds.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH v10 8/9] proc: use human-readable values for hidehid
+Message-ID: <20200409143251.pqoprbjnetoup5vw@comp-core-i7-2640m-0182e6>
+References: <20200327172331.418878-1-gladkov.alexey@gmail.com>
+ <20200327172331.418878-9-gladkov.alexey@gmail.com>
+ <87d08pkh4u.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200409070448.3209-2-paweldembicki@gmail.com>
+In-Reply-To: <87d08pkh4u.fsf@x220.int.ebiederm.org>
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Thu, 09 Apr 2020 14:33:06 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 09:04:44AM +0200, Pawel Dembicki wrote:
-> This patch adds dts for the Check Point L-50 from 600/1100 series
-> routers.
+On Thu, Apr 02, 2020 at 11:05:21AM -0500, Eric W. Biederman wrote:
+> Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+> 
+> > The hidepid parameter values are becoming more and more and it becomes
+> > difficult to remember what each new magic number means.
+> 
+> In principle I like this change.  In practice I think you have just
+> broken ABI compatiblity with the new mount ABI.
+> 
+> In particular the following line seems broken.
+> 
+> > diff --git a/fs/proc/root.c b/fs/proc/root.c
+> > index dbcd96f07c7a..ba782d6e6197 100644
+> > --- a/fs/proc/root.c
+> > +++ b/fs/proc/root.c
+> > @@ -45,7 +45,7 @@ enum proc_param {
+> >  
+> >  static const struct fs_parameter_spec proc_fs_parameters[] = {
+> >  	fsparam_u32("gid",	Opt_gid),
+> > -	fsparam_u32("hidepid",	Opt_hidepid),
+> > +	fsparam_string("hidepid",	Opt_hidepid),
+> >  	fsparam_string("subset",	Opt_subset),
+> >  	{}
+> >  };
+> 
+> As I read fs_parser.c fs_param_is_u32 handles string inputs and turns them
+> into numbers, and it handles binary numbers.
 
-Hi Pawel
+Yes, you can use: fsconfig(fsfd, FSCONFIG_SET_BINARY, ...); but in this
+case the type of parameter will be fs_value_is_blob [1]. This kind of
+parameters is handled by fs_param_is_blob(). The fs_param_is_u32 can
+handle only parametes with fs_value_is_string type [2].
 
-Looks very good. Just a minor comment:
+Am I missing something?
 
-> +&eth1 {
-> +	status = "okay";
-> +	ethernet1-port@0 {
-> +		speed = <1000>;
-> +		duplex = <1>;
-> +	};
-> +};
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/fsopen.c#n405
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/fs_parser.c#n215
 
-This is a non-standard way of doing a fixed link.  But looking at the
-driver, that is all it supports. I also don't think it is worth the
-effort converting it. Kirkwood is so old we hardly see any new boards
-using it.
+> However fs_param_is_string
+> appears to only handle strings.  It appears to have not capacity to turn
+> raw binary numbers into strings.
+> 
+> So I think we probably need to fix fs_param_is_string to raw binary
+> numbers before we can safely make this change to fs/proc/root.c
+> 
+> David am I reading the fs_parser.c code correctly?  If I am are you ok
+> with a change like the above?
+> 
+> Eric
+> 
 
-So:
+-- 
+Rgrds, legion
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-Since we are in the merge window at the moment, this won't be merged
-for a while.
-
-    Andrew
