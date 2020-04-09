@@ -2,286 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACB51A387E
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 18:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC711A388F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgDIQ7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 12:59:46 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:49242 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726728AbgDIQ7p (ORCPT
+        id S1728010AbgDIRGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:06:49 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:38906 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727984AbgDIRGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 12:59:45 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039Gi6JY002917;
-        Thu, 9 Apr 2020 16:59:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=2vbxrvgNae4PvH58+vdCGOVIxMP0N5RBuClEHaxXJNk=;
- b=xKvnTo5bcC8lhUbN1W6Pkt877W06I5m5K9sh5mqZG9i25ksVkM/TKL61eX1HVto3EFUd
- Jl4pYSK7hpt/9LfhTfXf0+okBQjUXUuRQZOE1CGHuZUFaP9Fw9aPkxI6cw5mHDGckNMe
- vEOzzuJaJg1IZRN+nA6lVmMYpKy0qmljq0xtRNXbvoID3jBLnvUd3GGefuSszEetAW4m
- 1nbCB9oAm40GV+nX8mg2dKU9EWeirp1nAhXOnWq9kfIb//HnwbbNg/9JqzmjS5FAY+Y6
- It7gr1+xAW3Lh6qDwRvGS92HthaG+WcptQkT5Jhu5O9OKoROM8L/CzK+hc6lo18uPNWB IQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 3091m12qja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 16:59:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 039Ggc4F168728;
-        Thu, 9 Apr 2020 16:59:31 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 309gdc7ysq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 09 Apr 2020 16:59:30 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 039GxSSX028659;
-        Thu, 9 Apr 2020 16:59:29 GMT
-Received: from localhost (/10.159.158.178)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 09 Apr 2020 09:59:28 -0700
-Date:   Thu, 9 Apr 2020 09:59:27 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Ira Weiny <ira.weiny@intel.com>
-Cc:     Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V6 6/8] fs/xfs: Combine xfs_diflags_to_linux() and
- xfs_diflags_to_iflags()
-Message-ID: <20200409165927.GD6741@magnolia>
-References: <20200407182958.568475-1-ira.weiny@intel.com>
- <20200407182958.568475-7-ira.weiny@intel.com>
- <20200408020827.GI24067@dread.disaster.area>
- <20200408170923.GC569068@iweiny-DESK2.sc.intel.com>
- <20200408210236.GK24067@dread.disaster.area>
- <20200408220734.GA664132@iweiny-DESK2.sc.intel.com>
- <20200408232106.GO24067@dread.disaster.area>
- <20200409001206.GD664132@iweiny-DESK2.sc.intel.com>
- <20200409003021.GJ6742@magnolia>
- <20200409152944.GA801705@iweiny-DESK2.sc.intel.com>
+        Thu, 9 Apr 2020 13:06:49 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out03.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jMadb-0000tW-PT; Thu, 09 Apr 2020 11:06:47 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jMada-0005PU-Py; Thu, 09 Apr 2020 11:06:47 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Bernd Edlinger <bernd.edlinger@hotmail.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <87blobnq02.fsf@x220.int.ebiederm.org>
+        <CAHk-=wgYCUbEmwieOBzVNZbSAM9wCZA8Z0665onpNnEcC-UpDg@mail.gmail.com>
+        <AM6PR03MB5170B606F9AC663225EC9609E4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=whM3r7zrm8mSi7HJhuZbYiXx9PFU5VQYeKm6Low=r15eQ@mail.gmail.com>
+        <AM6PR03MB517003D5965F48AC5FE7283DE4C60@AM6PR03MB5170.eurprd03.prod.outlook.com>
+        <CAHk-=wg5LvjumW9PVQiF7jB8yig98K8XTk4tHo9W-sYmxzW+9g@mail.gmail.com>
+        <87lfnda3w3.fsf@x220.int.ebiederm.org>
+        <CAHk-=wjxyGCj9675mf31uhoJCyHn74ON_+O6SjSqBSSvqWxC1Q@mail.gmail.com>
+        <87blo45keg.fsf@x220.int.ebiederm.org>
+        <CAHk-=whES-KCO6Bs93-QBK1tS5CfiWSi+v5D1a7Sc1TD5RFoaA@mail.gmail.com>
+        <87v9maxb5q.fsf@x220.int.ebiederm.org>
+        <CAHk-=wih4BqW7GTLaYxewynuT-iFHrXroip0wNo0CyPtmYGUow@mail.gmail.com>
+        <87y2r4so3i.fsf@x220.int.ebiederm.org>
+        <CAHk-=wjhAvv6s_7OVeZJiHaY7bBrHyiPTkSpq-TLr6qxYqxUUw@mail.gmail.com>
+        <CAHk-=wi0jrKv9x6vJ9FDgTrSUbdbZYDX-79T-E87C48MGSn5=g@mail.gmail.com>
+Date:   Thu, 09 Apr 2020 12:03:55 -0500
+In-Reply-To: <CAHk-=wi0jrKv9x6vJ9FDgTrSUbdbZYDX-79T-E87C48MGSn5=g@mail.gmail.com>
+        (Linus Torvalds's message of "Thu, 9 Apr 2020 09:24:23 -0700")
+Message-ID: <87wo6or3pg.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200409152944.GA801705@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9586 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- adultscore=0 mlxscore=0 spamscore=0 bulkscore=0 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9586 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999 mlxscore=0
- priorityscore=1501 phishscore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004090121
+Content-Type: text/plain
+X-XM-SPF: eid=1jMada-0005PU-Py;;;mid=<87wo6or3pg.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19xiliuIjxQOTWcYhWi4aqPdImDYESOPcY=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
+X-Spam-Level: **
+X-Spam-Status: No, score=2.1 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        XMSubMetaSxObfu_03,XMSubMetaSx_00 autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4848]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  1.0 XMSubMetaSx_00 1+ Sexy Words
+        *  1.2 XMSubMetaSxObfu_03 Obfuscated Sexy Noun-People
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 469 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 14 (3.0%), b_tie_ro: 12 (2.6%), parse: 1.28
+        (0.3%), extract_message_metadata: 13 (2.7%), get_uri_detail_list: 2.2
+        (0.5%), tests_pri_-1000: 13 (2.8%), tests_pri_-950: 1.29 (0.3%),
+        tests_pri_-900: 1.16 (0.2%), tests_pri_-90: 210 (44.8%), check_bayes:
+        208 (44.3%), b_tokenize: 6 (1.3%), b_tok_get_all: 10 (2.1%),
+        b_comp_prob: 2.9 (0.6%), b_tok_touch_all: 184 (39.2%), b_finish: 1.39
+        (0.3%), tests_pri_0: 202 (43.1%), check_dkim_signature: 0.49 (0.1%),
+        check_dkim_adsp: 3.1 (0.7%), poll_dns_idle: 1.44 (0.3%), tests_pri_10:
+        2.1 (0.5%), tests_pri_500: 7 (1.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 08:29:44AM -0700, Ira Weiny wrote:
-> On Wed, Apr 08, 2020 at 05:30:21PM -0700, Darrick J. Wong wrote:
-> 
-> [snip]
-> 
-> > 
-> > But you're right, this thing keeps swirling around and around and around
-> > because we can't ever get to agreement on this.  Maybe I'll just become
-> > XFS BOFH MAINTAINER and make a decision like this:
-> > 
-> >  1 Applications must call statx to discover the current S_DAX state.
-> > 
-> >  2 There exists an advisory file inode flag FS_XFLAG_DAX that is set based on
-> >    the parent directory FS_XFLAG_DAX inode flag.  This advisory flag can be
-> >    changed after file creation, but it does not immediately affect the S_DAX
-> >    state.
-> > 
-> >    If FS_XFLAG_DAX is set and the fs is on pmem then it will enable S_DAX at
-> >    inode load time; if FS_XFLAG_DAX is not set, it will not enable S_DAX.
-> >    Unless overridden...
-> > 
-> >  3 There exists a dax= mount option.
-> > 
-> >    "-o dax=never" means "never set S_DAX, ignore FS_XFLAG_DAX"
-> >    "-o dax=always" means "always set S_DAX (at least on pmem), ignore FS_XFLAG_DAX"
-> >         "-o dax" by itself means "dax=always"
-> >    "-o dax=iflag" means "follow FS_XFLAG_DAX" and is the default
-> 
-> per-Dave '-o dax=inode'
 
-Ok.
+Adding Oleg to the conversation if for no other reason that he can see
+it is happening.
 
-> > 
-> >  4 There exists an advisory directory inode flag FS_XFLAG_DAX that can be
-> >    changed at any time.  The flag state is copied into any files or
-> >    subdirectories when they are created within that directory.
-> 
-> Good.
-> 
-> >    If programs
-> >    require file access runs in S_DAX mode, they must create those files
-> >    inside a directory with FS_XFLAG_DAX set, or mount the fs with an
-> >    appropriate dax mount option.
-> 
-> Why do we need this to be true?  If the FS_XFLAG_DAX flag can be cleared why
-> not set it and allow the S_DAX change to occur later just like clearing it?
-> The logic is exactly the same.
+Oleg has had a test case where this can happen for years and nothing
+has come out as an obvious proper fix for this deadlock issue.
 
-I think I'll just delete this sentence since I started pushing all that
-verbiage towards (5).
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-To answer your question, yes, FS_XFLAG_DAX can be set on a file at any
-time, the same as it can be cleared at any time.  Sorry that was
-unclear, I'll fix that for the next draft (below).
+> On Thu, Apr 9, 2020 at 9:15 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> may_ptrace_stop() is supposed to stop the blocking exactly so that it
+>> doesn't deadlock.
+>>
+>> I wonder why that doesn't work..
+>>
+>> [ Goes and look ]
+>>
+>> Oh. I see.
+>>
+>> That ptrace_may_stop() only ever considered core-dumping, not execve().
+>>
+>> But if _that_ is the reason for the deadlock, then it's trivially fixed.
+>
+> So maybe may_ptrace_stop() should just do something like this
+> (ENTIRELY UNTESTED):
+>
+>         struct task_struct *me = current, *parent = me->parent;
+>
+>         if (!likely(me->ptrace))
+>                 return false;
+>
+>         /* If the parent is exiting or core-dumping, it's not
+> listening to our signals */
+>         if (parent->signal->flags & (SIGNAL_GROUP_EXIT | SIGNAL_GROUP_COREDUMP))
+>                 return false;
+>
+>         /* if the parent is going through a execve(), it's not listening */
+>         if (parent->signal->group_exit_task)
+>                 return false;
+>
+>         return true;
+>
+> instead of the fairly ad-hoc tests for core-dumping.
+>
+> The above is hand-wavy - I didn't think a lot about locking.
+> may_ptrace_stop() is already called under the tasklist_lock, so the
+> parent won't change, but maybe it should take the signal lock?
+>
+> So the above very much is *not* meant to be a "do it like this", more
+> of a "this direction, maybe"?
+>
+> The existing code is definitely broken. It special-cases core-dumping
+> probably simply because that's the only case people had realized, and
+> not thought of the execve() thing.
 
-> > 
-> >  5 Programs that require a specific file access mode (DAX or not DAX) must
-> 
-> s/must/can/
 
-Ok.
+I don't see how there can be a complete solution in may_ptrace_stop.
 
-> >    do one of the following:
-> > 
-> >    (a) create files in directories with the FS_XFLAG_DAX flag set as needed;
-> 
-> Again if we allow clearing the flag why not setting?  So this is 1 option they
-> 'can' do.
-> 
-> > 
-> >    (b) have the administrator set an override via mount option;
-> > 
-> >    (c) if they need to change a file's FS_XFLAG_DAX flag so that it does not
-> >        match the S_DAX state (as reported by statx), they must cause the
-> >        kernel to evict the inode from memory.  This can be done by:
-> > 
-> >        i>   closing the file;
-> >        ii>  re-opening the file and using statx to see if the fs has
-> >             changed the S_DAX flag;
-> 
-> i and ii need to be 1 step the user must follow.
+a) We must stop in PTRACE_EVENT_EXIT during exec or userspace *breaks*.
 
-Ok, I'll combine these.
+   Those are the defined semantics and I believe it is something
+   as common as strace that depends on them.
 
-> >        iii> if not, either unmount and remount the filesystem, or
-> >             closing the file and using drop_caches.
-> > 
-> >  6 I no longer think it's too wild to require that users who want to
-> >    squeeze every last bit of performance out of the particular rough and
-> >    tumble bits of their storage also be exposed to the difficulties of
-> >    what happens when the operating system can't totally virtualize those
-> >    hardware capabilities.  Your high performance sports car is not a
-> >    Toyota minivan, as it were.
-> 
-> I'm good with this statement.  But I think we need to clean up the verbiage for
-> the documentation...  ;-)
+b) Even if we added a test for our ptrace parent blocking in a ptrace
+   attach of an ongoing exec, it still wouldn't help.
 
-Heh. :)
+   That ptrace attach could legitimately come after the thread in
+   question has stopped and notified it's parent it is stopped.
 
-> Thanks for the summary.  I like these to get everyone on the same page.  :-D
 
-And today:
 
- 1. There exists an in-kernel access mode flag S_DAX that is set when
-    file accesses go directly to persistent memory, bypassing the page
-    cache.  Applications must call statx to discover the current S_DAX
-    state (STATX_ATTR_DAX).
+None of this is to say I like the semantics of PTRACE_EVENT_EXIT.  It is
+just we will violate the no regressions rule if we don't stop there
+during exec.
 
- 2. There exists an advisory file inode flag FS_XFLAG_DAX that is
-    inherited from the parent directory FS_XFLAG_DAX inode flag at file
-    creation time.  This advisory flag can be set or cleared at any
-    time, but doing so does not immediately affect the S_DAX state.
+The normal case is that the strace or whomever is already attached to
+all of the threads during exec and no deadlock occurs.  So the current
+behavior is quite usable.
 
-    Unless overridden by mount options (see (3)), if FS_XFLAG_DAX is set
-    and the fs is on pmem then it will enable S_DAX at inode load time;
-    if FS_XFLAG_DAX is not set, it will not enable S_DAX.
 
- 3. There exists a dax= mount option.
 
-    "-o dax=never"  means "never set S_DAX, ignore FS_XFLAG_DAX."
+Maybe my memory is wrong that userspace cares but I really don't think
+so.
 
-    "-o dax=always" means "always set S_DAX (at least on pmem),
-                    and ignore FS_XFLAG_DAX."
 
-    "-o dax"        is an alias for "dax=always".
-
-    "-o dax=inode"  means "follow FS_XFLAG_DAX" and is the default.
-
- 4. There exists an advisory directory inode flag FS_XFLAG_DAX that can
-    be set or cleared at any time.  The flag state is copied into any
-    files or subdirectories when they are created within that directory.
-
- 5. Programs that require a specific file access mode (DAX or not DAX)
-    can do one of the following:
-
-    (a) Create files in directories that the FS_XFLAG_DAX flag set as
-        needed; or
-
-    (b) Have the administrator set an override via mount option; or
-
-    (c) Set or clear the file's FS_XFLAG_DAX flag as needed.  Programs
-        must then cause the kernel to evict the inode from memory.  This
-        can be done by:
-
-        i>  Closing the file and re-opening the file and using statx to
-            see if the fs has changed the S_DAX flag; and
-
-        ii> If the file still does not have the desired S_DAX access
-            mode, either unmount and remount the filesystem, or close
-            the file and use drop_caches.
-
- 6. It's not unreasonable that users who want to squeeze every last bit
-    of performance out of the particular rough and tumble bits of their
-    storage also be exposed to the difficulties of what happens when the
-    operating system can't totally virtualize those hardware
-    capabilities.  Your high performance sports car is not a Toyota
-    minivan, as it were.
-
-Given our overnight discussions, I don't think it'll be difficult to
-hoist XFS_IDONTCACHE to the VFS so that 5.c.i is enough to change the
-S_DAX state if nobody else is using the file.
-
---D
-
-> > 
-> > > Furthermore, if we did want an interface like that why not allow
-> > > the on-disk flag to be set as well as cleared?
-> > 
-> > Well, why not - it's why I implemented the flag in the first place!
-> > The only problem we have here is how to safely change the in-memory
-> > DAX state, and that largely has nothing to do with setting/clearing
-> > the on-disk flag....
-> 
-> With the above change to xfs_diflags_to_iflags() I think we are ok here.
-> 
-> Ira
-> 
---D
-
-> Ira
-> 
-> > 
-> > I think (like Dave said) that if you set XFS_IDONTCACHE on the inode
-> > when you change the DAX flag, the VFS will kill the inode the instant
-> > the last user close()s the file.  Then 5.c.ii will actually work.
-> > 
-> > --D
-> > 
-> > > > 
-> > > > > Furthermore, if we did want an interface like that why not allow
-> > > > > the on-disk flag to be set as well as cleared?
-> > > > 
-> > > > Well, why not - it's why I implemented the flag in the first place!
-> > > > The only problem we have here is how to safely change the in-memory
-> > > > DAX state, and that largely has nothing to do with setting/clearing
-> > > > the on-disk flag....
-> > > 
-> > > With the above change to xfs_diflags_to_iflags() I think we are ok here.
-> > > 
-> > > Ira
-> > > 
+Eric
