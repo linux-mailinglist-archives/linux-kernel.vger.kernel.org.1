@@ -2,145 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BAA1A34C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 15:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E091A34CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 15:24:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbgDINWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 09:22:50 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:36823 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726589AbgDINWt (ORCPT
+        id S1726864AbgDINYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 09:24:40 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:55484 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbgDINYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 09:22:49 -0400
-Received: by mail-il1-f194.google.com with SMTP id p13so10163610ilp.3;
-        Thu, 09 Apr 2020 06:22:49 -0700 (PDT)
+        Thu, 9 Apr 2020 09:24:39 -0400
+Received: by mail-wm1-f66.google.com with SMTP id e26so3876711wmk.5;
+        Thu, 09 Apr 2020 06:24:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UI/hdw9L/EtadFnpRAH+lSsEEcGuj9UA8ITbxu7mZq8=;
-        b=eMVZ2RTfhkxdL1Oca25VgLMEnU6ttfOQjhA8YSWKKsCsAP0X3ghVEhrWTOyiL5lDNf
-         TmuVGr5zl2HgjX+VqThJfwADC3jT3Qp6PVmw52pRE+iPlO95bjfY5pPWjwc0DZo2GPJD
-         i5zRqdxYRJzFxuZ5jQ3xfcbef7NXeVQLe5bqOVwLObwnmEep5wiPX1+aKATv7QrG1W++
-         5gOZvRWJiHI+WxF3ntXHS1wt7XgpvpUkV+KR0bK+0N0Vr7RdHXiNThFlYp2mqFNAwoKF
-         ecP0TJDqtYE03Tlvwa7eqwsQd+kPmga1YCvUIuwaJ9cLgrZmSOkRMP41+eqw7/YjgImq
-         1LRw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=M+0i2IZ12XX4E1L28f3PjjMPxx7ophkum/Bqx8qALSk=;
+        b=JY/kUCscGqgH+h2xeupK2s/TOWMJV7oXUl95+66lyD2DcGB7XaoE9ck2lB75k3xs0V
+         qmrGgIaO8DiMroAtR6MdBi24gLl5QHElboEUcQSFhEDdwId9VoTtJjn0Z+uFwZSAguD9
+         YAjxhCVhYDxDq3WU4J5gKJANOIqFH3wyqDkivyzDag1KksEE/vS0Lfl2bPEEfogIgIFV
+         IIgY+6kZiMvsXlnlL6vMT+gAKotSty+9VUdw1cbx4kw27PG6Zcs9a1JXRn5EUreqCatS
+         WjTzxiXKUVV2XbbwAosjnSQWjm41H3ec3mev6gg7PWXWRKRZj3ZOtetlJGzujipG4Lzg
+         D1xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UI/hdw9L/EtadFnpRAH+lSsEEcGuj9UA8ITbxu7mZq8=;
-        b=rwJkpt9FlbLQpzzvD5CbInsExK89FJx+XPB72/NdVJogwh0+50FV9+h1Xh+ZhteyD4
-         3Tzo1S8b6GkYlED0VjIn+AZhY5tf9+aR3nu4Sy+aL3rP2WPw17JHWEQhsyG5o6EWVwI6
-         TwHeydlBbK7tqAORSgMCnRr2uWIWjMRFdFWgxChOjTrji+HekCA+Wjtyh/An4iP4WRZb
-         yAK8Q8wwQ3CTy3ZzefMnzlx03MapXaWxZnbcd/UQwJ5Tcez+tUAUWtkpbB0jY+S7C2oQ
-         rOBiYlqFle/jhNc57vetEItC6qi/aIODGZB0X+6nYunxTeN76zVSteKGF9gnOIqK7piX
-         6odw==
-X-Gm-Message-State: AGi0PuZLIqNp1l0oBpEdl1ttn4MwOznJ8netSGFfq7QpSv4L7qlsCOzW
-        /9kKHL3gJKDTpoP2wD6YxvmSynm2La0vYH8U94U=
-X-Google-Smtp-Source: APiQypKI2Ole0cnTO37YLRWq4xrZa3vPlVGaSws9tGvaibcgtxxUJjE0UJqBQyCcqv+/Jq8zlnMwSJ16XEzSxnaqtLA=
-X-Received: by 2002:a92:7303:: with SMTP id o3mr13156038ilc.275.1586438569209;
- Thu, 09 Apr 2020 06:22:49 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=M+0i2IZ12XX4E1L28f3PjjMPxx7ophkum/Bqx8qALSk=;
+        b=mCRuQQeDSlti3jTHs/TmQT59fa1XaBg9FF1ZezlPtIUU3yM2W14NsAuJRJbvMtuiPa
+         PQ5/cx73401Cg01dSMu8ZLML6c1uX09FvBwrnX8ajEIaJRCwCEuqt6PhvCIOStTBrB7R
+         KoF6z/0fYmjDI4GWOVeYcf+cxpMVSKO3ZYi802Ki2mT2xoAg2Dgoc6S1cVp9IvqVrzc/
+         l9E1Dz6xvFWHRiZ11IiEkNSURja5StM6N094FSIU0sl1LI2oua7geoYROmkG5ENBO5Y/
+         j6Nk9QpsM1zbkNc+oN4m9QccGHpggNi/zSG25vcdoGCHRpXj0JweVsE38cBqrLKvtbff
+         /6OA==
+X-Gm-Message-State: AGi0Puaum+JpvO3uSunqjaTXZc1MCZ+2QAjVXVT6XRPpxSqDtRGYQsXW
+        0Xd/5nroYgGjz152KWI1ZL8=
+X-Google-Smtp-Source: APiQypIZe+5WHzOMXYBgJE5wOnJb+Kbv+aH+bMUmgGFFvTjM/qblCMf5ND4WJkqQmi07eCqUkjdkHw==
+X-Received: by 2002:a1c:5a41:: with SMTP id o62mr2984219wmb.43.1586438677943;
+        Thu, 09 Apr 2020 06:24:37 -0700 (PDT)
+Received: from localhost (pD9E51D62.dip0.t-ipconnect.de. [217.229.29.98])
+        by smtp.gmail.com with ESMTPSA id v131sm489754wmb.19.2020.04.09.06.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 06:24:36 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 15:24:35 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Corentin Labbe <clabbe@baylibre.com>,
+        Nagarjuna Kristam <nkristam@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Vidya Sagar <vidyas@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH] phy: tegra: fix USB dependencies
+Message-ID: <20200409132435.GA3263479@ulmo>
+References: <20200408200828.124139-1-arnd@arndb.de>
 MIME-Version: 1.0
-References: <158642098777.5635.10501704178160375549.stgit@buzz>
- <CAOQ4uxgTtbb-vDQNnY1_7EzQ=p5p2MqkfyZo2zkFQ1Wv29uqCA@mail.gmail.com>
- <67bdead3-a29f-a8af-5e7b-193a72cd4b86@yandex-team.ru> <CAOQ4uxgeCc=_b1FG3vfMWF50qCousXxEWa63Wn3iCHmLXDNCNA@mail.gmail.com>
- <6af394f4-7cfd-5303-0042-9e37e43cf346@yandex-team.ru>
-In-Reply-To: <6af394f4-7cfd-5303-0042-9e37e43cf346@yandex-team.ru>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 9 Apr 2020 16:22:38 +0300
-Message-ID: <CAOQ4uxiqSuvxyW-C8L9A4AV-cTrEgdpspwWkpq1RWuoZq0FM+Q@mail.gmail.com>
-Subject: Re: [PATCH] ovl: skip overlayfs superblocks at global sync
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Theodore Tso <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5vNYLRcllDrimb99"
+Content-Disposition: inline
+In-Reply-To: <20200408200828.124139-1-arnd@arndb.de>
+User-Agent: Mutt/1.13.1 (2019-12-14)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 9, 2020 at 3:04 PM Konstantin Khlebnikov
-<khlebnikov@yandex-team.ru> wrote:
->
->
->
-> On 09/04/2020 14.48, Amir Goldstein wrote:
-> > On Thu, Apr 9, 2020 at 2:28 PM Konstantin Khlebnikov
-> > <khlebnikov@yandex-team.ru> wrote:
-> >>
-> >> On 09/04/2020 13.23, Amir Goldstein wrote:
-> >>> On Thu, Apr 9, 2020 at 11:30 AM Konstantin Khlebnikov
-> >>> <khlebnikov@yandex-team.ru> wrote:
-> >>>>
-> >>>> Stacked filesystems like overlayfs has no own writeback, but they have to
-> >>>> forward syncfs() requests to backend for keeping data integrity.
-> >>>>
-> >>>> During global sync() each overlayfs instance calls method ->sync_fs()
-> >>>> for backend although it itself is in global list of superblocks too.
-> >>>> As a result one syscall sync() could write one superblock several times
-> >>>> and send multiple disk barriers.
-> >>>>
-> >>>> This patch adds flag SB_I_SKIP_SYNC into sb->sb_iflags to avoid that.
-> >>>>
-> >>>> Reported-by: Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
-> >>>> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> >>>> ---
-> >>>
-> >>> Seems reasonable.
-> >>> You may add:
-> >>> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> >>>
-> >>> +CC: containers list
-> >>
-> >> Thanks
-> >>
-> >>>
-> >>> This bring up old memories.
-> >>> I posted this way back to fix handling of emergency_remount() in the
-> >>> presence of loop mounted fs:
-> >>> https://lore.kernel.org/linux-ext4/CAA2m6vfatWKS1CQFpaRbii2AXiZFvQUjVvYhGxWTSpz+2rxDyg@mail.gmail.com/
-> >>>
-> >>> But seems to me that emergency_sync() and sync(2) are equally broken
-> >>> for this use case.
-> >>>
-> >>> I wonder if anyone cares enough about resilience of loop mounted fs to try
-> >>> and change the iterate_* functions to iterate supers/bdevs in reverse order...
-> >>
-> >> Now I see reason behind "sync; sync; sync; reboot" =)
-> >>
-> >> Order old -> new allows to not miss new items if list modifies.
-> >> Might be important for some users.
-> >>
-> >
-> > That's not the reason I suggested reverse order.
-> > The reason is that with loop mounted fs, the correct order of flushing is:
-> > 1. sync loop mounted fs inodes => writes to loop image file
-> > 2. sync loop mounted fs sb => fsyncs the loop image file
-> > 3. sync the loop image host fs sb
-> >
-> > With forward sb iteration order, #3 happens before #1, so the
-> > loop mounted fs changes are not really being made durable by
-> > a single sync(2) call.
->
-> If fs in loop mounted with barriers then sync_fs will issue
-> REQ_OP_FLUSH to loop device and trigger fsync() for image file.
-> Sync() might write something twice but data should be safe.
-> Without barriers this scenario is broken for sure.
->
-> Emergency remount R/O is other thing. It really needs reverse order.
->
 
-Correct. There is no problem with durability.
-Although for some filesystems it would be more efficient to first
-write and fsync the loop images and then sync_fs().
-I can potentially result in less overall disk barriers.
+--5vNYLRcllDrimb99
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
-Amir.
+On Wed, Apr 08, 2020 at 10:08:14PM +0200, Arnd Bergmann wrote:
+> Without CONFIG_USB_SUPPORT, we can get a couple of warnings for
+> missing dependencies:
+>=20
+> WARNING: unmet direct dependencies detected for USB_PHY
+>   Depends on [n]: USB_SUPPORT [=3Dn]
+>   Selected by [m]:
+>   - PHY_TEGRA_XUSB [=3Dm] && ARCH_TEGRA [=3Dy]
+>=20
+> WARNING: unmet direct dependencies detected for USB_CONN_GPIO
+>   Depends on [n]: USB_SUPPORT [=3Dn] && GPIOLIB [=3Dy]
+>   Selected by [m]:
+>   - PHY_TEGRA_XUSB [=3Dm] && ARCH_TEGRA [=3Dy]
+>=20
+> Fixes: 6835bdc99580 ("phy: tegra: Select USB_PHY")
+> Fixes: f67213cee2b3 ("phy: tegra: xusb: Add usb-role-switch support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/phy/tegra/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+I sent a similar patch a couple of days ago:
+
+	http://patchwork.ozlabs.org/patch/1263865/
+
+This should be applied by Greg on top of the PR that I sent for USB. I
+did get the semi-automated "we're in the merge window" reply from Greg,
+but I was under the impression that he still applied fixes during the
+merge window. It seems like he didn't pick this up yet, though.
+
+Greg, anything I should've done differently for you to notice this?
+
+Thierry
+
+> diff --git a/drivers/phy/tegra/Kconfig b/drivers/phy/tegra/Kconfig
+> index a208aca4ba7b..4f8c61863411 100644
+> --- a/drivers/phy/tegra/Kconfig
+> +++ b/drivers/phy/tegra/Kconfig
+> @@ -1,7 +1,7 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  config PHY_TEGRA_XUSB
+>  	tristate "NVIDIA Tegra XUSB pad controller driver"
+> -	depends on ARCH_TEGRA
+> +	depends on ARCH_TEGRA && USB_SUPPORT
+>  	select USB_CONN_GPIO
+>  	select USB_PHY
+>  	help
+> --=20
+> 2.26.0
+>=20
+
+--5vNYLRcllDrimb99
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl6PIhAACgkQ3SOs138+
+s6E8iw//Y9WWnboPxDt/ZMifr8p+Redn8CloOlGCXq6Howr3MxpgVeSK1Zbn5hMN
+CmLozFxfT9CCQ1QLFZWsBJB7xlZ4rVWKWNTlkWuAO8nW1R2nXlE6rLyd4z6/M63P
+31f9MgD1fcBcr7y3bfus6MXwfWvwaMJV6VQPi2Kcvk5VIiJDCMZkA8zgHikcxlzh
+0OBBpzIViwSvclojJP8XaF7DqXz76fhfzNaPyDFlu3H3fDu5/KxMZ4O8bv0v+N2L
+KR7XAlLNfbUsLk28NvCddpmkByCOsD2yhvdasuEeAb4Tb+tDSc8NYauwISjKgYAh
+ifpC/+YudVHCVdiJ7hlv/zyL/R7YrQtyxoPSXXLoot6HIz1jSJK361uaPJy1lJ3Z
+dkVKxfE1F9vI2zCy6NJZ2dhBgHm1jjaP6P863xPZXOJxO5qMriHxvN+UsBa6Uyvp
+e9FzjNMmVkKkkwMISJBvLWRUH6+lykFPNvVR4rsTUZPmMLqS68VhC2bCDFU5BVsZ
+3jdegKdz8OKxLN7cCnQHSp0MhS12RqKia9fH9Nir3bmdnwpYiHEVxoNBP9ZWuuZX
+Db26zPPhWokIDHJEcIWIrOWrjbTL9GokUW0WIUpck4u1tnJRqr7S27rDMEK/PK9W
+6vqSi4uYf9xt1RiJDmp6c0VgcfkCBE0n8v3POT4bp+rvIF9gyhE=
+=3Kkl
+-----END PGP SIGNATURE-----
+
+--5vNYLRcllDrimb99--
