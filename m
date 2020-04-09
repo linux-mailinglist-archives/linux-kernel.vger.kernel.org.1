@@ -2,132 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6822E1A2DEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549D51A2DE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgDID0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 23:26:12 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:34704 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726545AbgDID0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 23:26:11 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E56C21A02A7;
-        Thu,  9 Apr 2020 05:26:09 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4F94A1A02B7;
-        Thu,  9 Apr 2020 05:26:03 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 1BD4C40294;
-        Thu,  9 Apr 2020 11:25:55 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] dt-bindings: thermal: Convert i.MX8MM to json-schema
-Date:   Thu,  9 Apr 2020 11:18:13 +0800
-Message-Id: <1586402293-30579-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726626AbgDIDT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 23:19:26 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:38009 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgDIDT0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 23:19:26 -0400
+Received: from localhost (50-39-163-217.bvtn.or.frontiernet.net [50.39.163.217])
+        (Authenticated sender: josh@joshtriplett.org)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id ED5FD200002;
+        Thu,  9 Apr 2020 03:19:20 +0000 (UTC)
+Date:   Wed, 8 Apr 2020 20:19:18 -0700
+From:   Josh Triplett <josh@joshtriplett.org>
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH v3 0/3] Support userspace-selected fds
+Message-ID: <20200409031918.GD6149@localhost>
+References: <cover.1586321767.git.josh@joshtriplett.org>
+ <20200408122601.kvrdjksjkl7ktgt4@yavin.dot.cyphar.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200408122601.kvrdjksjkl7ktgt4@yavin.dot.cyphar.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX8MM thermal binding to DT schema format using json-schema
+On Wed, Apr 08, 2020 at 10:26:01PM +1000, Aleksa Sarai wrote:
+> On 2020-04-07, Josh Triplett <josh@joshtriplett.org> wrote:
+> > (Note: numbering this updated version v3, to avoid confusion with Jens'
+> > v2 that built on my v1. Jens, if you like this approach, please feel
+> > free to stack your additional patches from the io_uring-fd-select branch
+> > atop this series. 5.8 material, not intended for the current merge window.)
+> > 
+> > Inspired by the X protocol's handling of XIDs, allow userspace to select
+> > the file descriptor opened by a call like openat2, so that it can use
+> > the resulting file descriptor in subsequent system calls without waiting
+> > for the response to the initial openat2 syscall.
+> > 
+> > The first patch is independent of the other two; it allows reserving
+> > file descriptors below a certain minimum for userspace-selected fd
+> > allocation only.
+> > 
+> > The second patch implements userspace-selected fd allocation for
+> > openat2, introducing a new O_SPECIFIC_FD flag and an fd field in struct
+> > open_how. In io_uring, this allows sequences like openat2/read/close
+> > without waiting for the openat2 to complete. Multiple such sequences can
+> > overlap, as long as each uses a distinct file descriptor.
+> > 
+> > The third patch adds userspace-selected fd allocation to pipe2 as well.
+> > I did this partly as a demonstration of how simple it is to wire up
+> > O_SPECIFIC_FD support for any fd-allocating system call, and partly in
+> > the hopes that this may make it more useful to wire up io_uring support
+> > for pipe2 in the future.
+> > 
+> > If this gets accepted, I'm happy to also write corresponding manpage
+> > patches.
+> > 
+> > v3:
+> > This new version has an API to atomically increase the minimum fd and
+> > return the previous minimum, rather than just getting and setting the
+> > minimum; this makes it easier to allocate a range. (A library that might
+> > initialize after the program has already opened other file descriptors
+> > may need to check for existing open fds in the range after reserving it,
+> > and reserve more fds if needed; this can be done entirely in userspace,
+> > and we can't really do anything simpler in the kernel due to limitations
+> > on file-descriptor semantics, so this patch series avoids introducing
+> > any extra complexity in the kernel.)
+> > 
+> > This new version also supports a __get_specific_unused_fd_flags call
+> > which accepts the limit for RLIMIT_NOFILE as an argument, analogous to
+> > __get_unused_fd_flags, since io_uring needs that to correctly handle
+> > RLIMIT_NOFILE.
+> > 
+> > Josh Triplett (3):
+> >   fs: Support setting a minimum fd for "lowest available fd" allocation
+> >   fs: openat2: Extend open_how to allow userspace-selected fds
+> >   fs: pipe2: Support O_SPECIFIC_FD
+> 
+> Aside from my specific comments and questions, the changes to openat2
+> deserve at least one or two selftests.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- .../devicetree/bindings/thermal/imx8mm-thermal.txt | 15 ------
- .../bindings/thermal/imx8mm-thermal.yaml           | 53 ++++++++++++++++++++++
- 2 files changed, 53 insertions(+), 15 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
- create mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+Agreed. I don't expect this to get merged until it has tests and
+manpage patches.
 
-diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
-deleted file mode 100644
-index 3629d3c..0000000
---- a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--* Thermal Monitoring Unit (TMU) on Freescale i.MX8MM SoC
--
--Required properties:
--- compatible : Must be "fsl,imx8mm-tmu" or "fsl,imx8mp-tmu".
--- reg : Address range of TMU registers.
--- clocks : TMU's clock source.
--- #thermal-sensor-cells : Should be 0 or 1. See ./thermal.txt for a description.
--
--Example:
--tmu: tmu@30260000 {
--	compatible = "fsl,imx8mm-tmu";
--	reg = <0x30260000 0x10000>;
--	clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
--	#thermal-sensor-cells = <0>;
--};
-diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
-new file mode 100644
-index 0000000..53a42b3
---- /dev/null
-+++ b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
-@@ -0,0 +1,53 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/thermal/imx8mm-thermal.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP i.MX8M Mini Thermal Binding
-+
-+maintainers:
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,imx8mm-tmu
-+              - fsl,imx8mp-tmu
-+  reg:
-+    description: |
-+      Address range of TMU registers.
-+    maxItems: 1
-+  clocks:
-+    description: |
-+      TMU's clock source.
-+    maxItems: 1
-+
-+  # See ./thermal.txt for details
-+  "#thermal-sensor-cells":
-+    enum:
-+      - 0
-+      - 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - '#thermal-sensor-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx8mm-clock.h>
-+
-+    tmu: tmu@30260000 {
-+         compatible = "fsl,imx8mm-tmu";
-+         reg = <0x30260000 0x10000>;
-+         clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
-+         #thermal-sensor-cells = <0>;
-+    };
-+
-+...
--- 
-2.7.4
-
+- Josh Triplett
