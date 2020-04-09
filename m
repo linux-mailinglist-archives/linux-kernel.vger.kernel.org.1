@@ -2,76 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC1F1A3359
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E811A335B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 13:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgDILmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 07:42:17 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:46218 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbgDILmR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 07:42:17 -0400
-Received: by mail-ot1-f67.google.com with SMTP id 88so907470otx.13;
-        Thu, 09 Apr 2020 04:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QSdmLn/47rBWdzKSuy9mWSxAVccVvsu0MtzKNdTSVJs=;
-        b=TQKvrRs72fLHco+11O8lbJRsVzpW+nmiLZg9JT2qYME6dfk909CrQi8VK4Znmzt9wF
-         Jo0oPrDaNXJbB2lgXSml/x6zCoBvahhmyJgmWBPOLTfc5TgytB3ifSSNDmWzVpiaaV8W
-         /ZmLmENX0mjBGyNA8/d20SWJhTeXI3G4KrPwHO50GQX/5+1Neoz466ZOLYwymWYQzI62
-         5hvZdxzNjJrfkPIO3Rd2DaJ6BCAuSoCQ8kjtqPJMudpf9oEAW5vxAR0QhOIo8pQIJcQl
-         axn3n1wlVHRLITZcIdyFPjJSd0Wam4tfOxVw2AcF2zF8UM1/JGIKHZn5gTQ5gWkQoBBW
-         FszA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QSdmLn/47rBWdzKSuy9mWSxAVccVvsu0MtzKNdTSVJs=;
-        b=hkHa0LUtftxkjPdxUvt2LPhIrgF3MBs7XWA7e7kbnGrjzNS7kCiAi8ZCp3rkfPh3K4
-         R2Tx4ZuKbsD2i3LaEbxteBPEsh0ivt9ryBM2OJnp1324NysCeB3hD4LdETLAvZ6axGux
-         SDZiXSpZ9z6l8C0gAtfbr29G9w4I5hROfDR6YJKVaRhcBq5v5JaPD7vCdBi3mcJpLgRp
-         c4dk/lvjmGkYCG4bWYQNiJIt+M0Vn8R7KVoJfhv9MWVASrgdoY85MXcmnaUEZsYcuK8g
-         IpXTnRrkhS1MA4JUVECU3f+a0IwneJ6Jr42HiopspmD8xI4cbVl8n0wndjgZjVKuVqm/
-         jU2w==
-X-Gm-Message-State: AGi0PuZnG30ekppm+HnYmh9S/3w2XMxp9BWKgBv7p815H3k+OxRCffvU
-        Ubqpxv1rMCnsMREBuTUB56TJ5EZyyxSKLGMzL4s=
-X-Google-Smtp-Source: APiQypJMFPyFCIIC/zZqgeb5ciZU4mgfNDDmqfwmYgNfamEqORgmLs/i8FWeNYIkHVPlaejOKAMgEtoUWlUMpWOy4rs=
-X-Received: by 2002:a9d:19ca:: with SMTP id k68mr9439579otk.232.1586432536695;
- Thu, 09 Apr 2020 04:42:16 -0700 (PDT)
+        id S1726671AbgDILmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 07:42:54 -0400
+Received: from mout.gmx.net ([212.227.17.21]:38561 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725971AbgDILmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 07:42:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1586432547;
+        bh=zXoV8mONuOHe3NZaogQahCljW9xYioAIbgcWd2tUaVU=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=HTXXTn7q4GZuBcnzUvqu6M4v+rQaB/qHDMl2sNF0Ggckk0UAWjzm1PJDCkfm6q/mu
+         nJaZDVYYPTNUW9iPVPzfj0Nx4s+1rH9mwtx33OCmJb730CO3HvsnSGcWv+k9pYFdlt
+         JfhvCwz9oA3exGDnioQH2U2HIkTMB1Pb2zL51PmA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from medion ([82.19.195.159]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N6bfq-1jEVjw420M-018507; Thu, 09
+ Apr 2020 13:42:27 +0200
+Date:   Thu, 9 Apr 2020 12:42:18 +0100
+From:   Alex Dewar <alex.dewar@gmx.co.uk>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Allison Randal <allison@lohutok.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Himanshu Madhani <hmadhani@marvell.com>,
+        "James E. J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Richard Fontana <rfontana@redhat.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-scsi@vger.kernel.org, aacraid@microsemi.com,
+        MPT-FusionLinux.pdl@broadcom.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: Remove unnecessary calls to memset after
+ dma_alloc_coherent
+Message-ID: <20200409114218.5muicchv37ulrjxf@medion>
+References: <e2401a31-e9fd-e849-e27c-6e079f5556d2@web.de>
+ <20200407160213.qh64de6ebrj7qkmx@lenovo-laptop>
+ <807090f6-f2ee-0e5b-6e35-b0c148c7a22f@web.de>
 MIME-Version: 1.0
-References: <20200226135229.24929-1-matthias.schiffer@ew.tq-group.com>
- <20200226151034.7i3h5blmrwre2yzg@pengutronix.de> <32ec35c2b3da119dd2c7bc09742796a0d8a9607e.camel@ew.tq-group.com>
- <20200330151231.GA1650@workstation.tuxnet> <CAGngYiUe-tihBJUcXQ738_5aA9pzgp_-NSs4iCrz3eWO6rMukA@mail.gmail.com>
- <20200404173546.GA55833@workstation.tuxnet> <CAGngYiWpO_N+t74k-==RNaXkZcp6TZvVOJzXPOi84cpQ6PHbhw@mail.gmail.com>
- <20200406095124.GA475759@ulmo>
-In-Reply-To: <20200406095124.GA475759@ulmo>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Thu, 9 Apr 2020 07:42:05 -0400
-Message-ID: <CAGngYiWz-XCenfWAnTFR9jKuQpGQXi26B5-K0T3dvB_g54h6qA@mail.gmail.com>
-Subject: Re: (EXT) Re: [PATCH 1/4] pwm: pca9685: remove unused duty_cycle
- struct element
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <807090f6-f2ee-0e5b-6e35-b0c148c7a22f@web.de>
+X-Provags-ID: V03:K1:4zeiGXMkks1kx7Grv2qN9KRNpqbPHQnG9kRTNUVQ/dMG/lGeSUe
+ LUIgWwH6+C6/jTv0YehqdzYSutUKOeP2eDeCGEMuYo0nqdObmRrBGjcGJXp/XEHfeymgBue
+ ppuQWTFz2bZ2nJKrehU1PPm19gXETpwWPm5CJcQ1t5wABXPFGazd6o1Wwbzikt2WUrtVPYm
+ BfZ/LNKHYKhg4FU5I5RoQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MkITTkrvp20=:Ipi8kwJdrolvAArUjDpLSq
+ jlweAMsLyRwR6anr8m9I9AqWrZa6j5dbjytVg5jz2QVhEgVvHJgrfwY1DvIdXN3Pu6FQGJ/Jf
+ wLN/ustLTbtYIuDXWKfu6jkhtKpebHfSHPSqvIof7fTIZ/sgemuWrh7RiXfec5m5uVmhG5Xoe
+ SFgHZIVoWoiseiQOIEqnhI/NPIMfdg69Umop/GSVmG+BdN3R2zyvooDS+Kl09FHi4sgKTb3nx
+ fBgKPRnjZlIFJumeX/K9H4KCrSnX4sTgwfdlqK5z4kFSHd5fS4oqhJYg6wnPiZRjXLG7MfQeL
+ eCdJbzZPGD0RxbwsaHl/Qhj0Q7cYuH5EXIGLOtdNa+VYmBrpW6t2wbjsL37PUvbcbs4RUCf30
+ KCAOxfRQo5a9AcZTOZbUjEVXCWo5GB0aE1us+/uVRSr4iq4hil2l7hJ8Bak9z3MlC0usKkMZT
+ +MxAcAZvS3BRCPOS0IhXi9cM1ftm+oKUXdWyM+vrKEcVmoUYqM6/ZVNSZjrhMl8xJomkGIXtg
+ y1TqOiq5B5TrkzUY9HrZYIqEYAPfc8pIgIixRwbu3bTvkcZIHbm7D5SSEcAuKoirsZkW2QQRN
+ jTk7W1RVGx77SpfxllTBdVL1uxmpItx29jQqdUNLbGTWdYryvT12Mf62T7uOcWRm85UQEt3U/
+ AWuDrMaNczx9Wc3Aau99EwynuV1DENHkosv5xRpeKMTaTWL0KofIexpO/AG3Wsb9/VCXdrdnB
+ xgUwtabV5zN61HUk5Pa0KBr9nMuHut4LOWyi5zdoKT0kJIPuwbRIi+VKBZ+FQ1EiKJixkzq2+
+ OtoXNUHRYpYcoaAh0IMA7Hg7RqC7QoubA1xrNRXhlTbRefLZ0hYh1CH9D4/jq6lDTugpsc8rR
+ qz1RThMxIB0/9gCvloDmY3iYEAZaPeWvSiKCRKPGxdg/TY/k9aXGaAABMRVp5Socvwh+w/ae6
+ uAhmGVFagonhI0nVf8eT0pO4ZtZiV+VmbfkaNc3LZRDk7E4EzeQrbiuak9+UCAIHoYSPtt4WY
+ rQhQ7Mp4pPDsLH+Da4HE2D6AE5srppAJ4P/vwMXrTajd4HSb/MukTHiquSIWRKfxckTRp/inq
+ SxfIqcPAXlUWSvN9pcjZ3AgcuHizAPlnrXTN/9S6nrs0O53+gioTffCZxYlyG6iHvUvAbe5aJ
+ ebmXdBMH4a7wCbAkrmVlmXzrPk16efgjbjzGiZg9gOOy7IyRX+NvnwZAO7QlqhbzVLtwNxJhj
+ CfLZfQyOrEV5Dxe3h
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 5:51 AM Thierry Reding <thierry.reding@gmail.com> wrote:
+On Tue, Apr 07, 2020 at 06:56:28PM +0200, Markus Elfring wrote:
+> >> =E2=80=A6
+> >>> +++ b/drivers/scsi/qla2xxx/qla_mbx.c
+> >>> @@ -4887,15 +4887,13 @@ qla25xx_set_els_cmds_supported(scsi_qla_host=
+_t *vha)
+> >>>  	    "Entered %s.\n", __func__);
+> >>>
+> >>>  	els_cmd_map =3D dma_alloc_coherent(&ha->pdev->dev, ELS_CMD_MAP_SIZ=
+E,
+> >>> -	    &els_cmd_map_dma, GFP_KERNEL);
+> >>> +					 &els_cmd_map_dma, GFP_KERNEL);
+> >>>  	if (!els_cmd_map) {
+> >> =E2=80=A6
+> >>
+> >> I find it safer to integrate such source code reformattings by
+> >> another update step which will be separated from the proposed deletio=
+n
+> >> of unwanted function calls.
+> >
+> > Good point. This whitespace was autoformatted by Coccinelle,
+> > probably due to my bad SmPL skills.
 >
-> There are other chips where a single period is shared across multiple
-> PWM channels. Typically what we do there is once a period is configured
-> for a given channel, all subsequent PWM channel configurations must use
-> the same period, or otherwise the driver will return an error code.
+> Some system factors can be involved here.
+>
+> * The source code formatting can occasionally be improvable
+>   in further ways (despite of help by a software like Coccinelle).
+>
+> * A change mixture can become more challenging.
+>
+> * Would you like to extend your skills in corresponding areas anyhow?
 
-Thank you for the clarification Thierry. Do you think this method would be
-appropriate for this chip?
+Sure, I'd love to. Are there any resources you'd recommend? I'm just
+starting out with kernel stuff and would be grateful for any pointers
+you can offer :-)
+
+Best,
+Alex
+
+
+>
+> Regards,
+> Markus
