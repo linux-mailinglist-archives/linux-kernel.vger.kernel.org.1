@@ -2,67 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6982A1A38E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB671A38F0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 19:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgDIRa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 13:30:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55656 "EHLO mail.kernel.org"
+        id S1726678AbgDIRcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 13:32:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726622AbgDIRa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 13:30:57 -0400
-Received: from localhost (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726652AbgDIRcx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 13:32:53 -0400
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D81E720753;
-        Thu,  9 Apr 2020 17:30:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57670208FE
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Apr 2020 17:32:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586453458;
-        bh=6bcDf97ASpJTxAYOqpWx0e2gOIt5ERptaNd2MAMPc4I=;
-        h=From:To:Cc:Subject:Date:From;
-        b=W9ng68913sTnRs3JV8IUWA2y7YIqCEESBXw8Fzj6WYmIshTp0myEQVRELhV3IEHIT
-         m1Wl8ZC4cMOL6xMjdNoLXUyeDdHWtw3lhrjyfG/8zUQlPQSFqaSQWNRqnPgybJ1Zzv
-         C3Q3BHx1Ox5Ubs11vi2IsgysrtsZmWCpsJENmY00=
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: fix quota_sync failure due to f2fs_lock_op
-Date:   Thu,  9 Apr 2020 10:30:56 -0700
-Message-Id: <20200409173056.229855-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+        s=default; t=1586453573;
+        bh=IBuZEgijyAZREsl+G4BQjvkNizxCg7cks8fO++AV2XA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kFEzwXHDig+6mpRJP27Lvw+9no7VIbkjMrVguBlJqMoPADnJXy15cQD67IadXBR5u
+         fxXeDn5OkQ/p+8cSUhhW+LeX5Dh3Jgzhnb+ybqMccG8bSjw1lgwgksU/TZz20gZ/64
+         xInCI3KMBKixQaZsTEqS33BJKp2UqR6jeIxy3QGk=
+Received: by mail-wr1-f46.google.com with SMTP id k1so12887507wrm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 10:32:53 -0700 (PDT)
+X-Gm-Message-State: AGi0PuYSHOZT78G4g+3/AkX3ljsZ+N0uPo1VCjdLtkSbY3FCkOOtzKGA
+        S4RqdAlF4yqRp6lWceF1nI8Tqrh7tCfQEw8gTiCP/A==
+X-Google-Smtp-Source: APiQypLEiHQsMq8szXbLnpQbM1VupAPJctZFhnFSSXM3V5XoGXOx1XbOz0uCtxrbjmBSCYE2gAQxGXqRHjzPLG1/z74=
+X-Received: by 2002:adf:aad7:: with SMTP id i23mr254511wrc.184.1586453571673;
+ Thu, 09 Apr 2020 10:32:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <c09dd91f-c280-85a6-c2a2-d44a0d378bbc@redhat.com>
+ <4EB5D96F-F322-45BB-9169-6BF932D413D4@amacapital.net> <931f6e6d-ac17-05f9-0605-ac8f89f40b2b@redhat.com>
+In-Reply-To: <931f6e6d-ac17-05f9-0605-ac8f89f40b2b@redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 9 Apr 2020 10:32:39 -0700
+X-Gmail-Original-Message-ID: <CALCETrUpWBKHHyfMoqD2ZT3CnDdguNnK=KoZiTmN5PnbnD_k0A@mail.gmail.com>
+Message-ID: <CALCETrUpWBKHHyfMoqD2ZT3CnDdguNnK=KoZiTmN5PnbnD_k0A@mail.gmail.com>
+Subject: Re: [PATCH v2] x86/kvm: Disable KVM_ASYNC_PF_SEND_ALWAYS
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-f2fs_quota_sync() uses f2fs_lock_op() before flushing dirty pages, but
-f2fs_write_data_page() returns EAGAIN.
-Likewise dentry blocks, we can just bypass getting the lock, since quota
-blocks are also maintained by checkpoint.
+Hi, Tony.  I'm adding you because, despite the fact that everyone in
+this thread is allergic to #MC, this seems to be one of your favorite
+topics :)
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/data.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> On Apr 9, 2020, at 8:17 AM, Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> =EF=BB=BFOn 09/04/20 17:03, Andy Lutomirski wrote:
+>>> No, I think we wouldn't use a paravirt #VE at this point, we would
+>>> use the real thing if available.
+>>>
+>>> It would still be possible to switch from the IST to the main
+>>> kernel stack before writing 0 to the reentrancy word.
+>>
+>> Almost but not quite. We do this for NMI-from-usermode, and it=E2=80=99s
+>> ugly. But we can=E2=80=99t do this for NMI-from-kernel or #VE-from-kerne=
+l
+>> because there might not be a kernel stack.  Trying to hack around
+>> this won=E2=80=99t be pretty.
+>>
+>> Frankly, I think that we shouldn=E2=80=99t even try to report memory fai=
+lure
+>> to the guest if it happens with interrupts off. Just kill the guest
+>> cleanly and keep it simple. Or inject an intentionally unrecoverable
+>> IST exception.
+>
+> But it would be nice to use #VE for all host-side page faults, not just
+> for memory failure.
+>
+> So the solution would be the same as for NMIs, duplicating the stack
+> frame and patching the outer handler's stack from the recursive #VE
+> (https://lwn.net/Articles/484932/).  It's ugly but it's a known ugliness.
+>
+>
 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 358c5f0bd6346..1139d8cf4b8d1 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2707,8 +2707,8 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 			f2fs_available_free_memory(sbi, BASE_CHECK))))
- 		goto redirty_out;
- 
--	/* Dentry blocks are controlled by checkpoint */
--	if (S_ISDIR(inode->i_mode)) {
-+	/* Dentry/quota blocks are controlled by checkpoint */
-+	if (S_ISDIR(inode->i_mode) || IS_NOQUOTA(inode)) {
- 		fio.need_lock = LOCK_DONE;
- 		err = f2fs_do_write_data_page(&fio);
- 		goto done;
--- 
-2.26.0.110.g2183baf09c-goog
+Believe me, I know all about how ugly it is, since I=E2=80=99m the one who
+fixed most of the bugs in the first few implementations.  And, before
+I wrote or ack any such thing for #VE, I want to know why.  What,
+exactly, is a sufficiently strong motivation for using #VE *at all*
+that Linux should implement a #VE handler?
 
+As I see it, #VE has several downsides:
+
+1. Intel only.
+
+2. Depending on precisely what it's used for, literally any memory
+access in the kernel can trigger it as a fault.  This means that it
+joins NMI and #MC (and, to a limited extent, #DB) in the horrible
+super-atomic-happens-in-bad-contexts camp.  IST is mandatory, and IST
+is not so great.
+
+3. Just like NMI and MCE, it comes with a fundamentally broken
+don't-recurse-me mechanism.
+
+If we do support #VE, I would suggest we do it roughly like this.  The
+#VE handler is a regular IST entry -- there's a single IST stack, and
+#VE from userspace stack-switches to the regular kernel stack.  The C
+handler (do_virtualization_exception?) is permitted to panic if
+something is horribly wrong, but is *not* permitted to clear the word
+at byte 4 to re-enable #VE.  Instead, it does something to trigger a
+deferred re-enable.  For example, it sends IPI to self and the IPI
+handler clears the magic re-enable flag.
+
+There are definitely horrible corner cases here.  For example, suppose
+user code mmaps() some kind of failable memory (due to NVDIMM hardware
+failures, truncation, whatever).  Then user code points RBP at it and
+we get a perf NMI.  Now the perf code tries to copy_from_user_nmi()
+the user stack and hits the failure.  It gets #MC or #VE or some
+paravirt thing.  Now we're in a situation where we got an IST
+exception in the middle of NMI processing and we're expected to do
+something intelligent about it.  Sure, we can invoke the extable
+handler, but it's not really clear how to recover if we somehow hit
+the same type of failure again in the same NMI.
+
+A model that could actually work, perhaps for #VE and #MC, is to have
+the extable code do the re-enabling.  So ex_handler_uaccess() and
+ex_handler_mcsafe() will call something like rearm_memory_failure(),
+and that will do whatever is needed to re-arm the specific memory
+failure reporting mechanism in use.
+
+But, before I touch that with a ten-foot pole, I want to know *why*.
+What's the benefit?  Why do we want convertible EPT violations?
