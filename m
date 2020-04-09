@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E8E1A39B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 20:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A25D1A39BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 20:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgDISQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 14:16:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgDISQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 14:16:06 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D6A120753;
-        Thu,  9 Apr 2020 18:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586456165;
-        bh=F6A6L95TfXC9Im6RVIrucsqTA1aJkk1UedJweoXMcSk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xS2XsRgbixRosOGdswcztdxrrAqR+maXoBdL50w69tFnh+onBl9XlwiD/6jJ4qxBE
-         AOoS+IXD/fMCgEIfDfuxao9shM7e26y9iWMCWoCDlA8S4XpKdTghLElrP0BXNMq0Xn
-         BAn/KfTK1Aj1GN0GRsoqi9/CI53qS+X2IIrdRzxY=
-Date:   Thu, 9 Apr 2020 11:16:04 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
-Message-Id: <20200409111604.c778ff091c00fab5db095e48@linux-foundation.org>
-In-Reply-To: <CACT4Y+ZvQ9UvVAwTjjD8Zxo0X_nfxa3+6n6TqWk2g+hahBwdCw@mail.gmail.com>
-References: <20200408014010.80428-1-peterx@redhat.com>
-        <20200408174732.bc448bbe41d190bfe5cc252e@linux-foundation.org>
-        <20200409114940.GT21484@bombadil.infradead.org>
-        <CACT4Y+ZvQ9UvVAwTjjD8Zxo0X_nfxa3+6n6TqWk2g+hahBwdCw@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726571AbgDISUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 14:20:24 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:55789 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgDISUY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 14:20:24 -0400
+Received: by mail-pj1-f66.google.com with SMTP id a32so1628703pje.5
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 11:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BeycGXQuoBVYG9ONaPHpfk62jXqpOs5+cJRriF7c/i8=;
+        b=eiWw9hPGWIX/zUVRY9wkUwIv1FnbbBOrbahsPi5dTo5e/FwwwapcN5dyzIuiSgY9mp
+         Ip1Ixj5snBlO6YG3cKudB8PLfCHgRRXnoRMswLYfbVE8jle0nx7NR5kBBGLjagEPSx9f
+         koHAPmeN6wPc3hT3KTb+hLuL7RlUjRVgdH+Oo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BeycGXQuoBVYG9ONaPHpfk62jXqpOs5+cJRriF7c/i8=;
+        b=WRU6mvYJsg5Q+65s6Sn3npVTLVoiMjP/6JfokctnJUJlmJuxFuipK4LS+dBP0QMM/U
+         WrZbsWaRqysRXVygkciuH5pvYI+gpn02ZOhnQTRR/DA5LbrCc3Jiutq7e72oBNnZvDn4
+         gTLQuni2FExduiq+yzxXBSxw3P5utrzNssLSOvTCkI9Tbn5P1pppgkZgI/CMDajBDkPk
+         e52VFbO/83LX/n+r6n31ryzfTUXRZwoRYdjTsvK5/bwymKF5bXRCG+hiHSb0nL0t1qdE
+         kxq0yqWEOkrPPdB0DAKFK8aEnmsiykNzydReuGhp7gbtq0e1Y7Uwl9nG3ydLm4FW8umf
+         Csrw==
+X-Gm-Message-State: AGi0Pub/HYvLs/fxM5t2huKlwoZMf30zYbJhY3jmApqXD08nQNogvg7C
+        VfaiIBkz4FHrixncAHhctS3lqBWpnKk=
+X-Google-Smtp-Source: APiQypLNbNT42VEJbPyenbCADnqH7UTIDCwf3AhvZbUz4pn+NCvzf8moNTIgUtBVxtsTfY0oYZ7a9w==
+X-Received: by 2002:a17:90a:198b:: with SMTP id 11mr879240pji.23.1586456423630;
+        Thu, 09 Apr 2020 11:20:23 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
+        by smtp.gmail.com with ESMTPSA id h13sm6213736pfr.1.2020.04.09.11.20.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Apr 2020 11:20:22 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 11:20:21 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org,
+        bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alok Chauhan <alokc@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 03/21] spi: spi-geni-qcom: Use OPP API to set clk/perf
+ state
+Message-ID: <20200409182021.GT199755@google.com>
+References: <1586353607-32222-1-git-send-email-rnayak@codeaurora.org>
+ <1586353607-32222-4-git-send-email-rnayak@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1586353607-32222-4-git-send-email-rnayak@codeaurora.org>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Apr 2020 15:00:20 +0200 Dmitry Vyukov <dvyukov@google.com> wrote:
+Hi Rajendra,
 
-> On Thu, Apr 9, 2020 at 1:49 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Wed, Apr 08, 2020 at 05:47:32PM -0700, Andrew Morton wrote:
-> > > On Tue,  7 Apr 2020 21:40:08 -0400 Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > > The two patches should fix below syzbot reports:
-> > > >
-> > > >   BUG: unable to handle kernel paging request in kernel_get_mempolicy
-> > > >   https://lore.kernel.org/lkml/0000000000002b25f105a2a3434d@google.com/
-> > > >
-> > > >   WARNING: bad unlock balance in __get_user_pages_remote
-> > > >   https://lore.kernel.org/lkml/00000000000005c65d05a2b90e70@google.com/
-> > >
-> > > (Is there an email address for the syzbot operators?)
-> >
-> > I'd suggest syzkaller-bugs@googlegroups.com (added to the Cc).
+On Wed, Apr 08, 2020 at 07:16:29PM +0530, Rajendra Nayak wrote:
+> geni spi needs to express a perforamnce state requirement on CX
+> depending on the frequency of the clock rates. Use OPP table from
+> DT to register with OPP framework and use dev_pm_opp_set_rate() to
+> set the clk/perf state.
 > 
-> syzkaller@googlegroups.com is a better one.
-> syzkaller-bugs@googlegroups.com plays more of an LKML role.
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Cc: Alok Chauhan <alokc@codeaurora.org>
+> Cc: Akash Asthana <akashast@codeaurora.org>
+> Cc: linux-spi@vger.kernel.org
+> ---
+>  drivers/spi/spi-geni-qcom.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 > 
-> > But there's a deeper problem in that we don't have anywhere to stash
-> > that kind of information in the kernel tree right now.  Perhaps a special
-> > entry in the MAINTAINERS file for bot operators?  Or one entry per bot?
-> 
-> I don't mind adding syzkaller. Some time ago I wanted to contact
-> KernelCI, CKI, LKFT, 0-day owners, finding relevant lists wasn't
-> impossible, but for some it was hard.
-> 
-> For syzkaller it would be:
-> 
-> https://github.com/google/syzkaller/issues for bugs/feature requests.
-> syzkaller@googlegroups.com for discussions.
+> diff --git a/drivers/spi/spi-geni-qcom.c b/drivers/spi/spi-geni-qcom.c
+> index c397242..ce387dc 100644
+> --- a/drivers/spi/spi-geni-qcom.c
+> +++ b/drivers/spi/spi-geni-qcom.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/log2.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/qcom-geni-se.h>
+>  #include <linux/spi/spi.h>
+> @@ -95,7 +96,6 @@ static int get_spi_clk_cfg(unsigned int speed_hz,
+>  {
+>  	unsigned long sclk_freq;
+>  	unsigned int actual_hz;
+> -	struct geni_se *se = &mas->se;
+>  	int ret;
+>  
+>  	ret = geni_se_clk_freq_match(&mas->se,
+> @@ -112,9 +112,9 @@ static int get_spi_clk_cfg(unsigned int speed_hz,
+>  
+>  	dev_dbg(mas->dev, "req %u=>%u sclk %lu, idx %d, div %d\n", speed_hz,
+>  				actual_hz, sclk_freq, *clk_idx, *clk_div);
+> -	ret = clk_set_rate(se->clk, sclk_freq);
+> +	ret = dev_pm_opp_set_rate(mas->dev, sclk_freq);
+>  	if (ret)
+> -		dev_err(mas->dev, "clk_set_rate failed %d\n", ret);
+> +		dev_err(mas->dev, "dev_pm_opp_set_rate failed %d\n", ret);
+>  	return ret;
+>  }
+>  
+> @@ -553,6 +553,7 @@ static int spi_geni_probe(struct platform_device *pdev)
+>  	if (!spi)
+>  		return -ENOMEM;
+>  
+> +
+>  	platform_set_drvdata(pdev, spi);
+>  	mas = spi_master_get_devdata(spi);
+>  	mas->irq = irq;
+> @@ -561,6 +562,8 @@ static int spi_geni_probe(struct platform_device *pdev)
+>  	mas->se.wrapper = dev_get_drvdata(dev->parent);
+>  	mas->se.base = base;
+>  	mas->se.clk = clk;
+> +	mas->se.opp = dev_pm_opp_set_clkname(&pdev->dev, "se");
 
-OK, thanks.  A MAINTAINERS entry would be great.
+As commented on the serial patch, it seems an error check is needed
+and the OPP table saved in 'struct geni_se' is never used.
 
-Could I please direct attention back to my original question regarding
-the problems we've recently discovered in 4426e945df58 ("mm/gup: allow
-VM_FAULT_RETRY for multiple times") and 71335f37c5e8 ("mm/gup: allow to
-react to fatal signals")?
+> +	dev_pm_opp_of_add_table(&pdev->dev);
 
-> sysbot does test linux-next, yet these patches sat in linux-next for a
-> month without a peep, but all hell broke loose when they hit Linus's
-> tree.  How could this have happened?
-> 
-> Possibly I've been carrying a later patch which fixed all this up, but
-> I'm not seeing anything like that.  Nothing at all against mm/gup.c.
+This function could also fail for multiple reasons, so the return value
+should be checked.
 
+From patch "[01/21] opp: Manage empty OPP tables with clk handle" it seems
+ignoring errors is intended to be able to operate when no OPP table is
+specified. But even with that you want to return in case of certain errors,
+like an invalid OPP table, out of memory or -EPROBE_DEFER.
