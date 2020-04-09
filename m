@@ -2,82 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DCC1A2FC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E2A1A2FD0
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726137AbgDIHLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 03:11:42 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:53031 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbgDIHLm (ORCPT
+        id S1726623AbgDIHNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 03:13:40 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:55786 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725795AbgDIHNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 03:11:42 -0400
-Received: by mail-wm1-f65.google.com with SMTP id t203so2767015wmt.2
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 00:11:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5eSqljophK3J9QMb2IVJwDYwOtfnnEmsDgtCr/TVwbc=;
-        b=g+VdDocBUMc7YkfrlGnOBmSeZKLad8EJkluGT+HvtTsBY9v9IAnZKIblY/097oINC9
-         rNn5X9eaApO/7mVS549G+9AITMdLt3Ew7DoL3kF3iYVQnaLR435jeL9iIXJ64jImPlfw
-         MWj9JnS/tsD4Dl3/bgWvQHrh69WhL2jZCC5XpJscZM8HN6K4WwDtWfsIDkxcDzidO8/6
-         yGYdYP+hJErvKs90X7Zfvdf/os7ciUKLKiN1yJ9294yzH75j1pRmDekN+JdsJSwKMe0v
-         9jX7JMC6nu6nK1fwbvkIrzdTKdYYEq3jybVJvhvQZBVQIJx6F/J12cgzi1w95XB4JHYh
-         evuw==
-X-Gm-Message-State: AGi0PubVL2cN8BJcCAVw06wF4NU5ihNqRT9G3NaJW6fubC/AoXhd+31f
-        jjI12VZh3BW6o06WCrWfy0s18BkO
-X-Google-Smtp-Source: APiQypJ9YxTqJw7coXnf6Q2zGizMBjvKOUWP9ykWZFEHY+j0GH24P0x9faxr/NX2H95YcLo04gU1BA==
-X-Received: by 2002:a1c:1904:: with SMTP id 4mr8426305wmz.21.1586416300444;
-        Thu, 09 Apr 2020 00:11:40 -0700 (PDT)
-Received: from tiehlicka.suse.cz (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
-        by smtp.gmail.com with ESMTPSA id v186sm2570051wme.24.2020.04.09.00.11.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 00:11:39 -0700 (PDT)
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Hillf Danton <hdanton@sina.com>,
-        <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH] mm, gup: return EINTR when gup is interrupted by fatal signals
-Date:   Thu,  9 Apr 2020 09:11:33 +0200
-Message-Id: <20200409071133.31734-1-mhocko@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        Thu, 9 Apr 2020 03:13:39 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id EA82A8053D;
+        Thu,  9 Apr 2020 09:12:43 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 09:12:37 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Paul Boddie <paul@boddie.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        mips-creator-ci20-dev@googlegroups.com,
+        letux-kernel@openphoenux.org
+Subject: Re: [RFC v3 4/8] dt-bindings: display: add ingenic-jz4780-hdmi DT
+ Schema
+Message-ID: <20200409071237.GA12367@ravnborg.org>
+References: <cover.1585503354.git.hns@goldelico.com>
+ <a1a5075ae6c970e97fb74c8dd5c626c35421cd4d.1585503354.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1a5075ae6c970e97fb74c8dd5c626c35421cd4d.1585503354.git.hns@goldelico.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=7gkXJVJtAAAA:8
+        a=ztCEdXhiAAAA:8 a=VwQbUJbxAAAA:8 a=gEfo2CItAAAA:8 a=e5mUnYsNAAAA:8
+        a=_8fMXE9GZWbPDF1RzQ4A:9 a=NMQYXjR_ngKk-wD3:21 a=NsfBtDKyZ6-kNe2x:21
+        a=CjuIK1q_8ugA:10 a=E9Po1WZjFZOl8hwRPBS3:22 a=nCm3ceeH17rKjHWsMeRo:22
+        a=AjGcO6oz07-iQ99wixmX:22 a=sptkURWiP4Gy88Gu7hUp:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michal Hocko <mhocko@suse.com>
+Hi Nikolaus.
 
-EINTR is the usual error code which other killable interfaces return.
-This is the case for the other fatal_signal_pending break out from
-the same function. Make the code consistent.
+On Sun, Mar 29, 2020 at 07:35:50PM +0200, H. Nikolaus Schaller wrote:
+> From: Sam Ravnborg <sam@ravnborg.org>
+> 
+> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
+> Based on .txt binding from Zubair Lutfullah Kakakhel
+> 
+> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: devicetree@vger.kernel.org
 
-ERESTARTSYS is also quite confusing because the signal is fatal and so
-no handling will happen before returning to the userspace.
+There is a few mistakes that originate from my original patch - sorry.
 
-Signed-off-by: Michal Hocko <mhocko@suse.com>
----
- mm/gup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> ---
+>  .../bindings/display/ingenic-jz4780-hdmi.yaml | 82 +++++++++++++++++++
+>  1 file changed, 82 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> new file mode 100644
+> index 000000000000..a545ff8704eb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+> @@ -0,0 +1,82 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/ingenic-jz4780-hdmi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bindings for Ingenic JZ4780 HDMI Transmitter
+> +
+> +maintainers:
+> +  - H. Nikolaus Schaller <hns@goldelico.com>
+> +
+> +description: |
+> +  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys DesignWare HDMI 1.4
+> +  TX controller IP with accompanying PHY IP.
+> +
+> +allOf:
+> +  - $ref: panel/panel-common.yaml#
+panel-common is only supposed to be used by panels.
+There is a few users in display/ but this is bindings that are
+candidates to be moved to panel/ - and this binding describes a
+display controller and not a panel.
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 6076df8e04a4..50681f0286de 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -1088,7 +1088,7 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
- 		 * potentially allocating memory.
- 		 */
- 		if (fatal_signal_pending(current)) {
--			ret = -ERESTARTSYS;
-+			ret = -EINTR;
- 			goto out;
- 		}
- 		cond_resched();
--- 
-2.25.1
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: ingenic,jz4780-hdmi
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: the address & size of the LCD controller registers
+> +
+> +  reg-io-width:
+> +    const: 4
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: Specifies the interrupt provided by parent
+> +
+> +  clocks:
+> +    maxItems: 2
+> +    description: Clock specifiers for isrf and iahb clocks
+> +
+> +  clock-names:
+> +    items:
+> +      - const: isfr
+> +      - const: iahb
+> +
+> +  ddc-i2c-bus: true
+> +  ports: true
+As we no longer rely on panel-common this needs to be fully specified -
+for example like this:
 
+  ddc-i2c-bus:
+    $ref: /schemas/types.yaml#/definitions/phandle
+    description: phandle to the I2C bus that is connected to DDC
+
+  ports:
+    type: object
+    description: |
+      A ports node with endpoint definitions as defined in
+      Documentation/devicetree/bindings/media/video-interfaces.txt.
+
+
+Thanks for taking care of this binding.
+
+	Sam
+
+
+> +
+> +required:
+> +    - compatible
+> +    - clocks
+> +    - clock-names
+> +    - ports
+> +    - reg-io-width
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/jz4780-cgu.h>
+> +
+> +    hdmi: hdmi@10180000 {
+> +        compatible = "ingenic,jz4780-hdmi";
+> +        reg = <0x10180000 0x8000>;
+> +        reg-io-width = <4>;
+> +        ddc-i2c-bus = <&i2c4>;
+> +        interrupt-parent = <&intc>;
+> +        interrupts = <3>;
+> +        clocks = <&cgu JZ4780_CLK_HDMI>, <&cgu JZ4780_CLK_AHB0>;
+> +        clock-names = "isfr", "iahb";
+> +
+> +        ports {
+> +            hdmi_in: port {
+> +                #address-cells = <1>;
+> +                #size-cells = <0>;
+> +                hdmi_in_lcd: endpoint@0 {
+> +                    reg = <0>;
+> +                    remote-endpoint = <&jz4780_out_hdmi>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.25.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
