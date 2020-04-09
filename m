@@ -2,200 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 089B51A3CAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 01:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283E81A3CA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 01:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbgDIXBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 19:01:15 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:34086 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726722AbgDIXBP (ORCPT
+        id S1726825AbgDIXAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 19:00:34 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:33698 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbgDIXAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 19:01:15 -0400
-Received: by mail-lf1-f68.google.com with SMTP id x23so155065lfq.1;
-        Thu, 09 Apr 2020 16:01:14 -0700 (PDT)
+        Thu, 9 Apr 2020 19:00:34 -0400
+Received: by mail-qt1-f196.google.com with SMTP id x2so263711qtr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 16:00:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XgDTQTaRBDUklcxuKHaLcBMeTWXjmOCFSHQMoVbCiNk=;
-        b=qYjkAKzfXiacUud1aDXy841UDPUZQW8mRD/GqsC7kX9tjO8W7vdcBdG+EL75p8vVN5
-         osOu/EnTmu0Dogp57X5jUMkELxjJOkRD+Drh/cprsNi70IUqxiAMXaBzvo2eVOl+akIu
-         eAsYGjyAX+PmlsFGeBwFN03ilgDS3CKZzMbvpvqmnG8+za7QYErY7I1Oxuc4SbMpYHcx
-         ViK6dfKX+l2OlsyfZwIEm2miNZ/aR9LppaE9Pel8TCgM7Dp6s0iaUvPxmc3NdoH6XIvN
-         aj9HqVNq3JlcPjqkNUljA7OjuvA/G5xizVPpzlE+aPynr6bm3/GWpBsm3wGihvKu5FY/
-         WABg==
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=9za1cgL5saDGUL4ncdk/vOmVKH89NTfUqWctXJV+wKg=;
+        b=E55hQkfn3hQcBkJrMLs3sEnbbLpotAAeVJqDeDykwBSnbW0eLW6xgjXoIWc2skM5lr
+         qGc8uv0RURI88S2jAw6upuDwEtQI09MviDMZR9fIR8NjL8PTWvnrUJOgvGIyLBYS2cR1
+         f+NHmTKB9MgRErhKbEdkCHgyJ0gBiVSS1SPM1Xbkrjes67HLpXSIa8Oo1w6rdrjEYUFX
+         0Z+NQhrLstrEmFjchg9kT+TcmmUewZIPmh8J79bIN7Pgv/8IH4ZCYBhoTi9o0alszVmm
+         LhOgV+yhdrMnO01IN9AJVrQKMs9kQsMDh2WItUR55E3y99PWT7e1YM2WTSQCRP/UOuc7
+         4Iow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XgDTQTaRBDUklcxuKHaLcBMeTWXjmOCFSHQMoVbCiNk=;
-        b=VSxpc3dSQMVMyZIohTKGdCJPTY4RQTCyu2ryxTrDKRIU9PCbn897IjsPLjG/y6IYrB
-         o/caAjVr7YQ28wnFz0qkwlCM7YeVimvyesos505VxaAgBpcbUOx+9SDq58/YorpJfM4S
-         TacHmyKTOcC8frBDxYyDsivCGK2nguOMyFh+gfow3wazCKoxMaZrDRm5fIY5nG2xDDWH
-         okPZUx8gC/JGfuId3TmMX8SemPP3C6IsPmnu8qYMfbmzBMVdCHA9iNk41lms88zXgXzK
-         JKOCffeB1B+AUC+/szPrCLQMQMp2oC20LyVkz5ZXbEJZDjgnBo4brACbsJbT+MZkXmWm
-         GZZg==
-X-Gm-Message-State: AGi0PuYNZqWavTGe1Tnst1mzD39TtCrWYkorrcnbjMOGk4kR5veVxZOS
-        9jjiuRfOLn4M+vnewZ02yco=
-X-Google-Smtp-Source: APiQypJpazaoUZ7uu/Vxt+qSFD5Lays9gPVB6WMgwiDlVNoLOA+5xBQWKJYsEfnTV8W1A1cyz5oBsQ==
-X-Received: by 2002:a19:c385:: with SMTP id t127mr877176lff.117.1586473273192;
-        Thu, 09 Apr 2020 16:01:13 -0700 (PDT)
-Received: from localhost.localdomain ([85.173.88.81])
-        by smtp.googlemail.com with ESMTPSA id v18sm325079lfd.0.2020.04.09.16.01.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 16:01:12 -0700 (PDT)
-From:   Artem Borisov <dedsa2002@gmail.com>
-Cc:     jikos@kernel.org, masaki.ota@jp.alps.com,
-        Artem Borisov <dedsa2002@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] HID: alps: Refactor axis resolution logic
-Date:   Fri, 10 Apr 2020 03:00:08 +0400
-Message-Id: <20200409230009.22551-1-dedsa2002@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <nycvar.YFH.7.76.2004100019450.19713@cbobk.fhfr.pm>
-References: <nycvar.YFH.7.76.2004100019450.19713@cbobk.fhfr.pm>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=9za1cgL5saDGUL4ncdk/vOmVKH89NTfUqWctXJV+wKg=;
+        b=mjV9denXTvavVWgCbtEOYRjdvJfCrUuImq/FbX+gzae+pSDj7TmTsZgjpiCWUs+lNb
+         Kx4+MQCGuZiZu/9hu7tHhCrVWejKZUO5XpySdwolk2uKcAwYlse7uB3eECaZrug788kC
+         prjVb0VVhn0fkBrusPUYVpoBc1TjXrP6Yh5MX93uXx+Jops6GAQDf8RuETN47L27blfq
+         c1xYeBgMHHtIBrqzBJ/JvjueEF2U1AONVeJxT5cCN0Qr2UjE2Qa6fzemndFHJZA3fR+X
+         mxe6ahtajLa28ofj8la6N6TG67gusRgSlS+VqRMsATNtTMcdErILxj7S3/YtPpV8nHr/
+         bW+w==
+X-Gm-Message-State: AGi0PuZyOhym8UCCVTL2edyPuOsqhg+eEy53bOMOkD0+IMMuIDdZEL40
+        QX+6Y/QZWQ8TKZ4fIIZJjPpFtA==
+X-Google-Smtp-Source: APiQypJdEEO70ZVe9KDCzZVVqzsacezTot/Ht3b6zFQgwbRkUwZNwI5Z7LJvvFZfXqg9UKnMME8f3g==
+X-Received: by 2002:ac8:7286:: with SMTP id v6mr1775597qto.299.1586473233327;
+        Thu, 09 Apr 2020 16:00:33 -0700 (PDT)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id 69sm226385qki.131.2020.04.09.16.00.32
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 09 Apr 2020 16:00:32 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: KCSAN + KVM = host reset
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <B5F0F530-911E-4B75-886A-9D8C54FF49C8@lca.pw>
+Date:   Thu, 9 Apr 2020 19:00:31 -0400
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "paul E. McKenney" <paulmck@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DF45D739-59F3-407C-BE8C-2B1E164B493B@lca.pw>
+References: <E180B225-BF1E-4153-B399-1DBF8C577A82@lca.pw>
+ <fb39d3d2-063e-b828-af1c-01f91d9be31c@redhat.com>
+ <017E692B-4791-46AD-B9ED-25B887ECB56B@lca.pw>
+ <CANpmjNMiHNVh3BVxZUqNo4jW3DPjoQPrn-KEmAJRtSYORuryEA@mail.gmail.com>
+ <B7F7F73E-EE27-48F4-A5D0-EBB29292913E@lca.pw>
+ <CANpmjNMEgc=+bLU472jy37hYPYo5_c+Kbyti8-mubPsEGBrm3A@mail.gmail.com>
+ <2730C0CC-B8B5-4A65-A4ED-9DFAAE158AA6@lca.pw>
+ <CANpmjNNUn9_Q30CSeqbU_TNvaYrMqwXkKCA23xO4ZLr2zO0w9Q@mail.gmail.com>
+ <B5F0F530-911E-4B75-886A-9D8C54FF49C8@lca.pw>
+To:     Marco Elver <elver@google.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AUI1657 doesn't follow the same logic for resolution calculation, since
-the resulting values are incorrect. Instead, it reports the actual
-resolution values in place of the pitch ones.
-While we're at it, also refactor the whole resolution logic to make it more
-generic and sensible for multiple device support.
 
-There are two main logical problems with the current code:
-1. active_len_mm values are only used for resolution calculation on U1,
-yet are exposed globally as part of alps_dev structure.
-2. The resolution calculation process happens in alps_input_configured,
-while everything else is calculated in u1_init function.
 
-These problems become more apparent when we try to support a device
-that doesn't follow the same resolution calculation logic as U1.
-Since alps_input_configured is a device-agnostic function, we should
-avoid doing any measurements there and handle them in device-specific
-init functions like u1/T4_init instead.
+> On Apr 9, 2020, at 5:28 PM, Qian Cai <cai@lca.pw> wrote:
+>=20
+>=20
+>=20
+>> On Apr 9, 2020, at 12:03 PM, Marco Elver <elver@google.com> wrote:
+>>=20
+>> On Thu, 9 Apr 2020 at 17:30, Qian Cai <cai@lca.pw> wrote:
+>>>=20
+>>>=20
+>>>=20
+>>>> On Apr 9, 2020, at 11:22 AM, Marco Elver <elver@google.com> wrote:
+>>>>=20
+>>>> On Thu, 9 Apr 2020 at 17:10, Qian Cai <cai@lca.pw> wrote:
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>> On Apr 9, 2020, at 3:03 AM, Marco Elver <elver@google.com> wrote:
+>>>>>>=20
+>>>>>> On Wed, 8 Apr 2020 at 23:29, Qian Cai <cai@lca.pw> wrote:
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>> On Apr 8, 2020, at 5:25 PM, Paolo Bonzini <pbonzini@redhat.com> =
+wrote:
+>>>>>>>>=20
+>>>>>>>> On 08/04/20 22:59, Qian Cai wrote:
+>>>>>>>>> Running a simple thing on this AMD host would trigger a reset =
+right away.
+>>>>>>>>> Unselect KCSAN kconfig makes everything work fine (the host =
+would also
+>>>>>>>>> reset If only "echo off > /sys/kernel/debug/kcsan=E2=80=9D =
+before running qemu-kvm).
+>>>>>>>>=20
+>>>>>>>> Is this a regression or something you've just started to play =
+with?  (If
+>>>>>>>> anything, the assembly language conversion of the AMD world =
+switch that
+>>>>>>>> is in linux-next could have reduced the likelihood of such a =
+failure,
+>>>>>>>> not increased it).
+>>>>>>>=20
+>>>>>>> I don=E2=80=99t remember I had tried this combination before, so =
+don=E2=80=99t know if it is a
+>>>>>>> regression or not.
+>>>>>>=20
+>>>>>> What happens with KASAN? My guess is that, since it also happens =
+with
+>>>>>> "off", something that should not be instrumented is being
+>>>>>> instrumented.
+>>>>>=20
+>>>>> No, KASAN + KVM works fine.
+>>>>>=20
+>>>>>>=20
+>>>>>> What happens if you put a 'KCSAN_SANITIZE :=3D n' into
+>>>>>> arch/x86/kvm/Makefile? Since it's hard for me to reproduce on =
+this
+>>>>>=20
+>>>>> Yes, that works, but this below alone does not work,
+>>>>>=20
+>>>>> KCSAN_SANITIZE_kvm-amd.o :=3D n
+>>>>=20
+>>>> There are some other files as well, that you could try until you =
+hit
+>>>> the right one.
+>>>>=20
+>>>> But since this is in arch, 'KCSAN_SANITIZE :=3D n' wouldn't be too =
+bad
+>>>> for now. If you can't narrow it down further, do you want to send a
+>>>> patch?
+>>>=20
+>>> No, that would be pretty bad because it will disable KCSAN for Intel
+>>> KVM as well which is working perfectly fine right now. It is only =
+AMD
+>>> is broken.
+>>=20
+>> Interesting. Unfortunately I don't have access to an AMD machine =
+right now.
+>>=20
+>> Actually I think it should be:
+>>=20
+>> KCSAN_SANITIZE_svm.o :=3D n
+>> KCSAN_SANITIZE_pmu_amd.o :=3D n
+>>=20
+>> If you want to disable KCSAN for kvm-amd.
+>=20
+> KCSAN_SANITIZE_svm.o :=3D n
+>=20
+> That alone works fine. I am wondering which functions there could =
+trigger
+> perhaps some kind of recursing with KCSAN?
 
-To eliminate these problems we add global x_res and y_res values
-and populate them on a device-specific basis in the according init
-functions.
-
-Signed-off-by: Artem Borisov <dedsa2002@gmail.com>
----
- drivers/hid/hid-alps.c | 41 +++++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/hid/hid-alps.c b/drivers/hid/hid-alps.c
-index c2a2bd528890..494c08cca645 100644
---- a/drivers/hid/hid-alps.c
-+++ b/drivers/hid/hid-alps.c
-@@ -83,8 +83,8 @@ enum dev_num {
-  * @max_fingers: total number of fingers
-  * @has_sp: boolean of sp existense
-  * @sp_btn_info: button information
-- * @x_active_len_mm: active area length of X (mm)
-- * @y_active_len_mm: active area length of Y (mm)
-+ * @x_res: resolution of X
-+ * @y_res: resolution of Y
-  * @x_max: maximum x coordinate value
-  * @y_max: maximum y coordinate value
-  * @x_min: minimum x coordinate value
-@@ -100,9 +100,10 @@ struct alps_dev {
- 	enum dev_num dev_type;
- 	u8  max_fingers;
- 	u8  has_sp;
-+	u8  no_pitch;
- 	u8	sp_btn_info;
--	u32	x_active_len_mm;
--	u32	y_active_len_mm;
-+	u32	x_res;
-+	u32	y_res;
- 	u32	x_max;
- 	u32	y_max;
- 	u32	x_min;
-@@ -550,10 +551,6 @@ static int u1_init(struct hid_device *hdev, struct alps_dev *pri_data)
- 		dev_err(&hdev->dev, "failed U1_RESO_DWN_ABS (%d)\n", ret);
- 		goto exit;
- 	}
--	pri_data->x_active_len_mm =
--		(pitch_x * (sen_line_num_x - 1)) / 10;
--	pri_data->y_active_len_mm =
--		(pitch_y * (sen_line_num_y - 1)) / 10;
- 
- 	pri_data->x_max =
- 		(resolution << 2) * (sen_line_num_x - 1);
-@@ -562,6 +559,18 @@ static int u1_init(struct hid_device *hdev, struct alps_dev *pri_data)
- 		(resolution << 2) * (sen_line_num_y - 1);
- 	pri_data->y_min = 1;
- 
-+	if (pri_data->no_pitch) {
-+		pri_data->x_res = pitch_x;
-+		pri_data->y_res = pitch_y;
-+	} else {
-+		pri_data->x_res =
-+			(pri_data->x_max - 1) /
-+			((pitch_x * (sen_line_num_x - 1)) / 10);
-+		pri_data->y_res =
-+			(pri_data->y_max - 1) /
-+			((pitch_y * (sen_line_num_y - 1)) / 10);
-+	}
-+
- 	ret = u1_read_write_register(hdev, ADDRESS_U1_PAD_BTN,
- 			&tmp, 0, true);
- 	if (ret < 0) {
-@@ -622,7 +631,7 @@ static int T4_init(struct hid_device *hdev, struct alps_dev *pri_data)
- 	pri_data->x_min = T4_COUNT_PER_ELECTRODE;
- 	pri_data->y_max = sen_line_num_y * T4_COUNT_PER_ELECTRODE;
- 	pri_data->y_min = T4_COUNT_PER_ELECTRODE;
--	pri_data->x_active_len_mm = pri_data->y_active_len_mm = 0;
-+	pri_data->x_res = pri_data->y_res = 0;
- 	pri_data->btn_cnt = 1;
- 
- 	ret = t4_read_write_register(hdev, PRM_SYS_CONFIG_1, &tmp, 0, true);
-@@ -675,7 +684,7 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
- 	struct alps_dev *data = hid_get_drvdata(hdev);
- 	struct input_dev *input = hi->input, *input2;
- 	int ret;
--	int res_x, res_y, i;
-+	int i;
- 
- 	data->input = input;
- 
-@@ -706,12 +715,9 @@ static int alps_input_configured(struct hid_device *hdev, struct hid_input *hi)
- 	input_set_abs_params(input, ABS_MT_POSITION_Y,
- 						data->y_min, data->y_max, 0, 0);
- 
--	if (data->x_active_len_mm && data->y_active_len_mm) {
--		res_x = (data->x_max - 1) / data->x_active_len_mm;
--		res_y = (data->y_max - 1) / data->y_active_len_mm;
--
--		input_abs_set_res(input, ABS_MT_POSITION_X, res_x);
--		input_abs_set_res(input, ABS_MT_POSITION_Y, res_y);
-+	if (data->x_res && data->y_res) {
-+		input_abs_set_res(input, ABS_MT_POSITION_X, data->x_res);
-+		input_abs_set_res(input, ABS_MT_POSITION_Y, data->y_res);
- 	}
- 
- 	input_set_abs_params(input, ABS_MT_PRESSURE, 0, 64, 0, 0);
-@@ -802,8 +808,11 @@ static int alps_probe(struct hid_device *hdev, const struct hid_device_id *id)
- 		break;
- 	case HID_DEVICE_ID_ALPS_U1_DUAL:
- 	case HID_DEVICE_ID_ALPS_U1:
-+		data->dev_type = U1;
-+		break;
- 	case HID_DEVICE_ID_ALPS_1657:
- 		data->dev_type = U1;
-+		data->no_pitch = 1;
- 		break;
- 	default:
- 		data->dev_type = UNKNOWN;
--- 
-2.26.0
-
+Another data point is set CONFIG_KCSAN_INTERRUPT_WATCHER=3Dn alone
+also fixed the issue. I saw quite a few interrupt related function in =
+svm.c, so
+some interrupt-related recursion going on?=
