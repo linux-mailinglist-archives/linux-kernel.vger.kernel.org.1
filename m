@@ -2,140 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 565DF1A2DD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:04:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEDD1A2DD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 05:12:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgDIDEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 23:04:25 -0400
-Received: from mga01.intel.com ([192.55.52.88]:2898 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726523AbgDIDEY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 23:04:24 -0400
-IronPort-SDR: 8fGZOQaZfkjSsyaBGX7Jtmsy4p6YDjR6oQBWvfMZTBH3RqGCBalUv+33U6hOEAVur6Zn0toml1
- ctLSMsSm7+ag==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2020 20:04:24 -0700
-IronPort-SDR: vDxBV0AmCbLH8/faC998XO8FxwbfFq0sCtpWv9QL7v+DmQ75QXKmjn896vWB+xDwh2D9wWub/i
- hDw5A+U3Ffdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,361,1580803200"; 
-   d="scan'208";a="297404358"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
-  by FMSMGA003.fm.intel.com with ESMTP; 08 Apr 2020 20:04:23 -0700
-Subject: Re: [kbuild-all] Re: net/sunrpc/svcsock.c:527:32: warning: Variable
- 'uninitialized_var' is assigned a value that is never used. [unreadVariable]
-To:     Chuck Lever <chuck.lever@oracle.com>,
-        kbuild test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202004090524.zHtJ3R2B%lkp@intel.com>
- <76A08BC7-C37A-495D-998A-2E9DADF454A7@oracle.com>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <2342285b-3bb6-32cd-2611-264bc0773150@intel.com>
-Date:   Thu, 9 Apr 2020 11:04:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726626AbgDIDMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 23:12:25 -0400
+Received: from smtprelay0078.hostedemail.com ([216.40.44.78]:45098 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726521AbgDIDMZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 8 Apr 2020 23:12:25 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 8D166181D396F;
+        Thu,  9 Apr 2020 03:12:24 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 93,11,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2110:2196:2197:2198:2199:2200:2201:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:4385:4605:5007:6119:8957:10004:10400:10848:11026:11232:11473:11658:11914:12043:12257:12291:12295:12296:12297:12438:12555:12740:12895:13095:13161:13229:13439:13618:13894:14181:14659:14721:21080:21212:21221:21433:21451:21505:21627:21660:21740:21741:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: brick58_894f471779363
+X-Filterd-Recvd-Size: 4187
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Thu,  9 Apr 2020 03:12:23 +0000 (UTC)
+Message-ID: <efb5a518fdc47f0120b94a7e8a95d275c0f4ad43.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
+ message
+From:   Joe Perches <joe@perches.com>
+To:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        apw@canonical.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Date:   Wed, 08 Apr 2020 20:10:23 -0700
+In-Reply-To: <4b7e1cf3-6fa7-60af-a1d3-2457339dbe8a@wanadoo.fr>
+References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
+         <8617a6b94c0644bce1fd4ca77309d67a612e6300.camel@perches.com>
+         <4b7e1cf3-6fa7-60af-a1d3-2457339dbe8a@wanadoo.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-In-Reply-To: <76A08BC7-C37A-495D-998A-2E9DADF454A7@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2020-04-08 at 22:23 +0200, Marion & Christophe JAILLET wrote:
+> Le 08/04/2020 à 04:14, Joe Perches a écrit :
+> > This works rather better:
+> > 
+> > Perhaps you could test?
+> > ---
+> > 
+> > v2:
+> > 
+> > o Avoid pr_cont
+> > o Use only last format line if split across multiple lines
+> > 
+> >   scripts/checkpatch.pl | 22 ++++++++++++++++++++++
+> >   1 file changed, 22 insertions(+)
+> > 
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > index d64c67..f00a6c8 100755
+> > --- a/scripts/checkpatch.pl
+> > +++ b/scripts/checkpatch.pl
+> > @@ -5673,6 +5673,28 @@ sub process {
+> >   			}
+> >   		}
+> >   
+> > +# check for possible missing newlines at the end of common logging functions
+> > +		if (defined($stat) &&
+> > +		    $stat =~ /^\+\s*($logFunctions)\s*\((?:\s*$FuncArg\s*,\s*){0,3}\s*$String/ &&
+> > +		    $1 !~ /_cont$/ && $1 =~ /^(?:pr|dev|netdev|netif|wiphy)_/) {
+> > +			my $cnt = statement_rawlines($stat);
+> > +			my $extracted_string = "";
+> > +			for (my $i = 0; $i < $cnt; $i++) {
+> > +				next if ($lines[$linenr + $i - 1] !~ /$String\s*[,\)]/);
+> > +				$extracted_string = get_quoted_string($lines[$linenr + $i - 1],
+> > +								      $rawlines[$linenr + $i - 1]);
+> > +				last if ($extracted_string ne "");
+> > +			}
+> > +			if ($extracted_string ne "" && $extracted_string !~ /\\n"$/) {
+> > +				my $herectx = $here . "\n";
+> > +				for (my $n = 0; $n < $cnt; $n++) {
+> > +					$herectx .=  raw_line($linenr, $n) . "\n";
+> > +				}
+> > +				WARN("MISSING_FORMAT_NEWLINE",
+> > +				     "Possible missing '\\n' at the end of a logging message format string\n" . $herectx);
+> > +			}
+> > +		}
+> > +
+> >   # check for logging functions with KERN_<LEVEL>
+> >   		if ($line !~ /printk(?:_ratelimited|_once)?\s*\(/ &&
+> >   		    $line =~ /\b$logFunctions\s*\(.*\b(KERN_[A-Z]+)\b/) {
+> > 
+> For what I wanted to check and according to the few tests I've made, it 
+> looks fine.
+> 
+> Thank you very much for sharing this much more robust (and working) 
+> alternative.
+> 
+> For what it worth: (i.e. much more tests should be done)
+> Tested-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
+Then I think you really haven't tested it very thoroughly.
 
-On 4/9/20 5:35 AM, Chuck Lever wrote:
->
->> On Apr 8, 2020, at 5:32 PM, kbuild test robot <lkp@intel.com> wrote:
->>
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   f5e94d10e4c468357019e5c28d48499f677b284f
->> commit: da1661b93bf489cdbc8bcea919b165d31b4810bf SUNRPC: Teach server to use xprt_sock_sendmsg for socket sends
->> date:   3 weeks ago
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kbuild test robot <lkp@intel.com>
->>
->>
->> cppcheck warnings: (new ones prefixed by >>)
->>
->>    net/sunrpc/svcsock.c:405:9: warning: union member 'Anonymous0::all' is never used. [unusedStructMember]
->>      long  all[SVC_PKTINFO_SPACE / sizeof(long)];
->>            ^
->>    net/sunrpc/svcsock.c:518:9: warning: union member 'Anonymous1::all' is never used. [unusedStructMember]
->>      long  all[SVC_PKTINFO_SPACE / sizeof(long)];
->>            ^
->>>> net/sunrpc/svcsock.c:527:32: warning: Variable 'uninitialized_var' is assigned a value that is never used. [unreadVariable]
->>     unsigned int uninitialized_var(sent);
->>                                   ^
->>
->> vim +/uninitialized_var +527 net/sunrpc/svcsock.c
->>
->>    504	
->>    505	/**
->>    506	 * svc_udp_sendto - Send out a reply on a UDP socket
->>    507	 * @rqstp: completed svc_rqst
->>    508	 *
->>    509	 * Returns the number of bytes sent, or a negative errno.
->>    510	 */
->>    511	static int svc_udp_sendto(struct svc_rqst *rqstp)
->>    512	{
->>    513		struct svc_xprt *xprt = rqstp->rq_xprt;
->>    514		struct svc_sock	*svsk = container_of(xprt, struct svc_sock, sk_xprt);
->>    515		struct xdr_buf *xdr = &rqstp->rq_res;
->>    516		union {
->>    517			struct cmsghdr	hdr;
->>    518			long		all[SVC_PKTINFO_SPACE / sizeof(long)];
->>    519		} buffer;
->>    520		struct cmsghdr *cmh = &buffer.hdr;
->>    521		struct msghdr msg = {
->>    522			.msg_name	= &rqstp->rq_addr,
->>    523			.msg_namelen	= rqstp->rq_addrlen,
->>    524			.msg_control	= cmh,
->>    525			.msg_controllen	= sizeof(buffer),
->>    526		};
->>> 527		unsigned int uninitialized_var(sent);
->>    528		int err;
->>    529	
->>    530		svc_set_cmsg_data(rqstp, cmh);
->>    531	
->>    532		err = xprt_sock_sendmsg(svsk->sk_sock, &msg, xdr, 0, 0, &sent);
->>    533		xdr_free_bvec(xdr);
->>    534		if (err == -ECONNREFUSED) {
->>    535			/* ICMP error on earlier request. */
->>    536			err = xprt_sock_sendmsg(svsk->sk_sock, &msg, xdr, 0, 0, &sent);
->>    537			xdr_free_bvec(xdr);
->>    538		}
->>    539		if (err < 0)
->>    540			return err;
->>    541		return sent;
-> Wha? "sent" is used right here. Can someone explain this warning?
+For instance:
 
-Hi Chuck,
+$ git ls-files -- 'drivers/*.[ch]' | \
+  xargs ./scripts/checkpatch.pl -f --quiet --no-summary --types=MISSING_FORMAT_NEWLINE
 
-Sorry for the inconvenience, it should be a false warning,
-It's every odd that removing uninitialized_var can silence this warning.
+emits many false positives.
 
-Best Regards,
-Rong Chen
+Some types of false positives:
 
->
->
->>    542	}
->>    543	
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> --
-> Chuck Lever
->
->
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+o Many of the formats seem to end in a ':' or a ' '
+  maybe those should be excluded
+   #86: FILE: drivers/android/binder_alloc_selftest.c:86:
+   +	pr_err("free seq: ");
+
+   o Split string formats should be excluded better
+     as only the first string fragment is checked:
+   #1001: FILE: drivers/ata/pata_octeon_cf.c:1001:
+   +	dev_info(&pdev->dev, "version " DRV_VERSION" %d bit%s.\n",
+   +		 is_16bit ? 16 : 8,
+   +		 cf_port->is_true_ide ? ", True IDE" : "");
+
+   probably a few others, including a desire to check
+   if a pr_cont is below the use within a few lines.
+
+   > Maybe, at least a Suggested-By: would be appreciated.
+
+No worries, when it's cooked, it'll have that.
+
+cheers, Joe
 
