@@ -2,117 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B99691A2FBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7E81A2FC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbgDIHHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 03:07:38 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:39973 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725283AbgDIHHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 03:07:37 -0400
-Received: by mail-wm1-f67.google.com with SMTP id a81so3010936wmf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 00:07:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3fzlk+1a2b3q0EKRRkBiDFhrc/J/PvVywQ93uFwgEgk=;
-        b=SFCS+RErUyseIyzdWmRg7SzDZMib4Xfg2GXUyA+nAt+SYSGs/E1Ed5M78k0qjfj4uG
-         1h0es5fAaghIusxx0DGZw84ApN8oVuD8UmwsSjZvtRNYy6+JCL5FSe9W9tsQi+gKmBIs
-         4g97B8u6ragxgWcFUotn0rOizq64hf2vkgLsA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=3fzlk+1a2b3q0EKRRkBiDFhrc/J/PvVywQ93uFwgEgk=;
-        b=S4+sUsgj+Ie6dIu/vVLfmH9xDeYNa4aCRInDjvsjU4d6hy3Y6OQhTokcusdBVOujFB
-         dsutcc0lQ2CWckplxMBEetmsSqITVJAtSOuI8lD7/AZPuembG3L2teImLTu1vnLcRH9U
-         d8UENJmt9hB4JVP21WdswqT8vqd6vEMBgvR6lX+CFBNmVwCz7Qrxl7ILDpvIR0Enu69x
-         VsGYsMPWzhyaF8PqX93jXw7WDyFk2gpP2ERUGLEJQowFfPW9AAsvJ9gmLQbjt3uv1oqy
-         gMyKOkvhRw6iiDOA5LURo4vCZKhrsbuSlPCH6PuJqZHfAvbOAn/l9xRRkW1DYBlBg23y
-         d2Rg==
-X-Gm-Message-State: AGi0PuY84+/JIuMtaJwzSvKsYr8HcDpPwv/pBWRUFi/gARmyCEm1eVVa
-        V0+f/m1Nx+NlnKff+/jnbeszRQ==
-X-Google-Smtp-Source: APiQypJejUoX6TC2lyEVkPMafhE+khuYPp3is5HDsmNy2y6qcIUU0KFigHolaP5n7n03Cz1IWsvzbg==
-X-Received: by 2002:a1c:dc8b:: with SMTP id t133mr8610965wmg.117.1586416056950;
-        Thu, 09 Apr 2020 00:07:36 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id h6sm2627936wmf.31.2020.04.09.00.07.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 00:07:36 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 09:07:34 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH] drm/legacy: Fix type for drm_local_map.offset
-Message-ID: <20200409070734.GP3456981@phenom.ffwll.local>
-Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-References: <20200402203317.GA34560@ubuntu-m2-xlarge-x86>
- <20200402215926.30714-1-chris@chris-wilson.co.uk>
- <20200403013420.GA11516@ubuntu-m2-xlarge-x86>
- <CAKMK7uE9pv23edViQBC=Jy5fQV=-NQTNdk1qi91Z8shpeuL7FA@mail.gmail.com>
- <CAHk-=whMhCTdx0fDRnNT4doKGYw1BBBei0KcXDZcmtVpk_GvEw@mail.gmail.com>
- <CAKMK7uE2t=z71dtJitmoKwrrZxgciEDRrNPMQ1FyiLO7s-VKag@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uE2t=z71dtJitmoKwrrZxgciEDRrNPMQ1FyiLO7s-VKag@mail.gmail.com>
-X-Operating-System: Linux phenom 5.3.0-3-amd64 
+        id S1726623AbgDIHKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 03:10:05 -0400
+Received: from mga14.intel.com ([192.55.52.115]:29893 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725795AbgDIHKB (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 03:10:01 -0400
+IronPort-SDR: LSmecBvBJAT6KiOL+jGpKh6J1VzRcLSZNXdFPaNcEwHgqotRpYPdlOpJK7b7xhV0LZ0CEvi7Tn
+ T5N5edKGaqLw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2020 00:10:00 -0700
+IronPort-SDR: 4VB3nF+R5QKwZ0SsgQHo8Po3NfB4+eC6+4SN+qar5tuOsS14D9h3K4NnqKXgBJhi012eXam+Pq
+ C1nF8MBIwRaA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,361,1580803200"; 
+   d="scan'208";a="362078582"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.118])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2020 00:09:58 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf stat: Zero ena and run for interval mode
+Date:   Thu,  9 Apr 2020 15:07:55 +0800
+Message-Id: <20200409070755.17261-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 03, 2020 at 07:16:28PM +0200, Daniel Vetter wrote:
-> On Fri, Apr 3, 2020 at 7:14 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Fri, Apr 3, 2020 at 1:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > > Tested-by: Nathan Chancellor <natechancellor@gmail.com> # build
-> > >
-> > > This works too, missed it when replying to Linus
-> > >
-> > > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > >
-> > > Linus I guess this one is better, but like I explained it really
-> > > doesn't matter what we do with drm legacy code, it's a horror show
-> > > that should be disabled on all modern distros anyway. We just keep it
-> > > because of "never break old uapi".
-> >
-> > Ok, That patch from Chris looks fine to me too.
-> >
-> > dma_addr_t and resource_size_t aren't the same, but at least
-> > dma_addr_t should always be the bigger one.
-> >
-> > And it does look like nothing else ever takes the address of this
-> > field, so the ones that might want just the resource_size_t part will
-> > at least have enough bits.
-> >
-> > So I think Chris' patch is the way to go. I'm assuming I'll get it
-> > through the normal drm tree channels, this doesn't sound _so_ urgent
-> > that I'd need to expedite that patch into my tree and apply it
-> > directly.
-> 
-> Ok, sounds good.
-> 
-> Chris can you pls push this to drm-misc-next-fixes? That should be
-> enough for the pull request train next week.
+As the code comments in perf_stat_process_counter() say,
+we calculate counter's data every interval, and the display
+code shows ps->res_stats avg value. We need to zero the stats
+for interval mode.
 
-Ok I applied this now, seems to have fallen through a few cracks. Might
-only make it after easter :-/
--Daniel
+But the current code only zeros the res_stats[0], it doesn't
+zero the res_stats[1] and res_stats[2], which are for ena
+and run of counter.
+
+This patch zeros the whole res_stats[] for interval mode.
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/util/stat.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/util/stat.c b/tools/perf/util/stat.c
+index 5f26137b8d60..242476eb808c 100644
+--- a/tools/perf/util/stat.c
++++ b/tools/perf/util/stat.c
+@@ -368,8 +368,10 @@ int perf_stat_process_counter(struct perf_stat_config *config,
+ 	 * interval mode, otherwise overall avg running
+ 	 * averages will be shown for each interval.
+ 	 */
+-	if (config->interval)
+-		init_stats(ps->res_stats);
++	if (config->interval) {
++		for (i = 0; i < 3; i++)
++			init_stats(&ps->res_stats[i]);
++	}
+ 
+ 	if (counter->per_pkg)
+ 		zero_per_pkg(counter);
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.17.1
+
