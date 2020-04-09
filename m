@@ -2,137 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC091A3A31
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0561A3A53
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 21:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgDITIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 15:08:17 -0400
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:46786 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726632AbgDITIR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 15:08:17 -0400
-Received: by mail-qv1-f67.google.com with SMTP id bu9so6054902qvb.13;
-        Thu, 09 Apr 2020 12:08:15 -0700 (PDT)
+        id S1727185AbgDITOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 15:14:04 -0400
+Received: from mail-eopbgr700059.outbound.protection.outlook.com ([40.107.70.59]:38477
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726741AbgDITMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 15:12:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JWAhXmK+iSjMLtkmb74k0Ng4H+KkF1+75d6C4NWwP+w+K8wvKANLx3opS08/xDby7mgB8GFxB3/yDKuhJbxAF/Hju41iglicH7GwOJxcw58qy8S0EOUwOJwOEHduQEa9UAeraQ/7eIYFymTAyp7cnywzxTrmHUvj+DdstLvPNZ9YPYrwCrhnHtg7dbJXQ6CHdhcrLjNw2Z1DE7LITt3YFwmkhmv/2CmDq0hffiZgqxLxVD+kBOtJhUEbb4bPMHE6VZA1mEtRlVD9Z+B1HwiL31IsYX1swI53lol535whIS5UrZAkxKyMNcKFwxrqGw+CyEoiMd9O7Mp0oDP15UaAzg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyaQQSBoqnt3cHq0TsKtRSqzQWFJuf15o19UstUhrds=;
+ b=aFo42Ai8QrRzM32Xeie8vMfU6GkAmmMarmWMnqkstCWg7I2T6pAud76n+JQDzN4Lrhi7KGMf0qlks+4P3gGAcvJIhFd1f5zxeqH4Na3m2qfqYOO9AicPNU1cX8LojuF9UUpeNP0iqAKwXauHahF4jln1wntkzJRazm/3VR0YHq8Anwy2Aved3PR1tBglHf0LBsN5vCRlB2uA/48EehYg7FznbhIBIVKtK7czpznZNTKlDiqkB11muLKMOzJ8tyT36PAsQhE1/OHzuQljOqDhO5SYtNp1N494IjYCnqIt/FSGFjATaFS9SMjZ8jO7eBRL5oBSY7mAI4/evv1zeDGJTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.60.83) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ayL215ffxl6RjJBBrVofm8B1vxSMDd7VbUsUyBtw+QM=;
-        b=bCjHWWd3Hfo9Zwt/UN+F0Hmriun0dZN9aT7DnbdFO67O+uTY8o4uHtiVMRsX+dpyJN
-         uqSC7XBHSdVmBnjTb+GzXMxHG0leQir/TIZQehT1LbKR5q3MGPV4VDAXhy2xrBN7l9Gh
-         ZajFf8FvKF10zqVXppmyPMPJ4I1g3bRutLOaQ2tdae0/BtP0lFDAlUfDlz9TyG8YvKsR
-         s29MqYvn1Pi0UMZ5IDyJ2dEiekkwhXDhzTXrlcT5uetSE3RTRP55s7Qfd0nuI1BagM2J
-         9eI0erzZctXjuuGgwj504H5ML+j0VUeK7dfkRyPIo7Tjr+6brZ00OPJwJqwjqtr8LsFS
-         9S+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ayL215ffxl6RjJBBrVofm8B1vxSMDd7VbUsUyBtw+QM=;
-        b=kLdrvgp6ZoCK1ABIC8YzTrvmVe7K1J+XzQhqOUJ4l7436FL/8sfkrsbWcmwileVW8a
-         Vx8fJJ7jRzhbd+CbhZEyFXZ91aJkfV3IGGjRY+HmpyWmFjCC2PKDPESP3qnWcQvdjtU6
-         RyJ2XMUw+rq20tAnfBkD81ddU0z0P4STqbslbi7kKmzo0m4C02D9Uut3UcjXmRQsk7Ch
-         aO+E3phZDra51NQp14Eq32A9Hbg1LkRgqLdZJCaiiC5NEYOHdiiMwOW2rPBN2nmvik0h
-         q5Xk9foJaeUQYGXH9E+X8c1OnGMbuMjVTF2xro0m+jqsO2GuDDNKJNJmgrq8iC4asuAA
-         3OrQ==
-X-Gm-Message-State: AGi0PuY34/uq8SncUJkkaPGscwAFR1y1COf0q8+6L7+4iiK/tXMto/xp
-        PkT8POQ3YmXLdtw0JzRAwIY=
-X-Google-Smtp-Source: APiQypLnt+6zVmfQ9hqx9DH8q8ecuGIo+Iqvzrff47Vh7roL00Z5OuaUYmLyG6u64qYsJWLh+i3QeQ==
-X-Received: by 2002:a0c:ee81:: with SMTP id u1mr1635057qvr.187.1586459294676;
-        Thu, 09 Apr 2020 12:08:14 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::74a8])
-        by smtp.gmail.com with ESMTPSA id z43sm23415759qtb.92.2020.04.09.12.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 12:08:13 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 15:08:12 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org
-Subject: [PATCH cgroup/for-5.7-fixes] Revert "cgroup: Add memory barriers to
- plug cgroup_rstat_updated() race window"
-Message-ID: <20200409190812.GB37608@mtj.thefacebook.com>
-References: <20200409154413.GK3818@techsingularity.net>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LyaQQSBoqnt3cHq0TsKtRSqzQWFJuf15o19UstUhrds=;
+ b=ZjSJj9CRqOFpXLLtkf3t3YTH3pDVhXDn2yMKfTH8CjGzFjUn55LramdSQRw/Vdp2Cig52npRFnQwww/TFryHJVEYh0Z1P3RYi+TzofujwAo43nh3Ivwy7EwghfEzhYUn2INPhkwI0e7n1oIgiiGdqagc2cWcN6Kpc0NFfX4JpCY=
+Received: from SN4PR0701CA0002.namprd07.prod.outlook.com
+ (2603:10b6:803:28::12) by BN6PR02MB2708.namprd02.prod.outlook.com
+ (2603:10b6:404:fa::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.15; Thu, 9 Apr
+ 2020 19:12:51 +0000
+Received: from SN1NAM02FT026.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:28:cafe::41) by SN4PR0701CA0002.outlook.office365.com
+ (2603:10b6:803:28::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2878.19 via Frontend
+ Transport; Thu, 9 Apr 2020 19:12:50 +0000
+Authentication-Results: spf=pass (sender IP is 149.199.60.83)
+ smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.60.83 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.60.83; helo=xsj-pvapsmtpgw01;
+Received: from xsj-pvapsmtpgw01 (149.199.60.83) by
+ SN1NAM02FT026.mail.protection.outlook.com (10.152.72.97) with Microsoft SMTP
+ Server id 15.20.2900.15 via Frontend Transport; Thu, 9 Apr 2020 19:12:50
+ +0000
+Received: from [149.199.38.66] (port=44327 helo=xsj-pvapsmtp01)
+        by xsj-pvapsmtpgw01 with esmtp (Exim 4.90)
+        (envelope-from <jolly.shah@xilinx.com>)
+        id 1jMcb9-00060W-KX; Thu, 09 Apr 2020 12:12:23 -0700
+Received: from [127.0.0.1] (helo=localhost)
+        by xsj-pvapsmtp01 with smtp (Exim 4.63)
+        (envelope-from <jolly.shah@xilinx.com>)
+        id 1jMcba-0007NV-2v; Thu, 09 Apr 2020 12:12:50 -0700
+Received: from [172.19.2.91] (helo=xsjjollys50.xilinx.com)
+        by xsj-pvapsmtp01 with esmtp (Exim 4.63)
+        (envelope-from <jolly.shah@xilinx.com>)
+        id 1jMcbR-0007La-Le; Thu, 09 Apr 2020 12:12:41 -0700
+From:   Jolly Shah <jolly.shah@xilinx.com>
+To:     ard.biesheuvel@linaro.org, mingo@kernel.org,
+        gregkh@linuxfoundation.org, matt@codeblueprint.co.uk,
+        sudeep.holla@arm.com, hkallweit1@gmail.com, keescook@chromium.org,
+        dmitry.torokhov@gmail.com, michal.simek@xilinx.com
+Cc:     rajanv@xilinx.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Jolly Shah <jolly.shah@xilinx.com>
+Subject: [PATCH v4 00/25] firmware: xilinx: Add xilinx specific sysfs interface
+Date:   Thu,  9 Apr 2020 12:11:49 -0700
+Message-Id: <1586459534-8997-1-git-send-email-jolly.shah@xilinx.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-Product-Ver: IMSS-7.1.0.1224-8.2.0.1013-23620.005
+X-TM-AS-User-Approved-Sender: Yes;Yes
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:149.199.60.83;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapsmtpgw01;PTR:unknown-60-83.xilinx.com;CAT:NONE;SFTY:;SFS:(10009020)(4636009)(39860400002)(376002)(346002)(396003)(136003)(46966005)(26005)(316002)(2906002)(47076004)(6636002)(336012)(478600001)(36756003)(426003)(82740400003)(5660300002)(7416002)(186003)(44832011)(70206006)(107886003)(4326008)(70586007)(81166007)(8936002)(7696005)(9786002)(81156014)(8676002)(2616005)(356004);DIR:OUT;SFP:1101;
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200409154413.GK3818@techsingularity.net>
+Content-Type: text/plain
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bdf666ed-5d19-4139-37d6-08d7dcb9ff2d
+X-MS-TrafficTypeDiagnostic: BN6PR02MB2708:
+X-Microsoft-Antispam-PRVS: <BN6PR02MB27083ADEEDFC9AA5F09F7F82B8C10@BN6PR02MB2708.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 0368E78B5B
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Aq/INaOCBQuHtqQnjFIWRZaNx5FUkmeI67DfMCnhC+FIzjFNUbciCukF/WUGP5gUlnjTjTW4KafJZm+++633Crk5DnklfgHaf6olUvk6vrknm+Ca2TjIPbFO4wlZoeWnyUUj/5ASP/eK1GeOL3lqEvjQg2WQh6OXh3hpCbnFvGeFR3QKuQK0ENm/AWDONBdVWErsj0O1nOOFdBdxxiWGtFSvpKyAAsPY4hQbEsPCNnVcw14x6S7G8Li5FzkMeRJ+AWWTwIL/gXM1tySJeBP648bDc1WN/cbyfriEfKzoLDod23UNRipApxWKS2QagEy3RT7XUOD4bFnrG4Jtsg6L6bd3lLAHlXGN8s8HxdRM6kOz9tB9PnY+k0D4mYx3CX+s5jH+YODizKcYqVR6QEpzRJvYXLhttPJwOuFmAySXXgs7pDgHQLJB3oYLNIISUakbew/J9kjK4zMgQRl1EIZY/dC2xF+C7CkjuC+lYFnA7YyG7WywRo5ZKrzZaU4DvkWDOo/OLFV2cPxaIGuodUdVLA==
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2020 19:12:50.4278
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: bdf666ed-5d19-4139-37d6-08d7dcb9ff2d
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.60.83];Helo=[xsj-pvapsmtpgw01]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2708
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From d8ef4b38cb69d907f9b0e889c44d05fc0f890977 Mon Sep 17 00:00:00 2001
-From: Tejun Heo <tj@kernel.org>
-Date: Thu, 9 Apr 2020 14:55:35 -0400
+This patch series adds xilinx specific sysfs interface for below
+purposes:
+- Register access
+- Set shutdown scope
+- Set boot health status bit
 
-This reverts commit 9a9e97b2f1f2 ("cgroup: Add memory barriers to plug
-cgroup_rstat_updated() race window").
+Also this patch series removes eemi ops and adds API
+corresponding to each eemi ops.
 
-The commit was added in anticipation of memcg rstat conversion which needed
-synchronous accounting for the event counters (e.g. oom kill count). However,
-the conversion didn't get merged due to percpu memory overhead concern which
-couldn't be addressed at the time.
+Rajan Vaja (25):
+  firmware: xilinx: Remove eemi ops for get_api_version
+  firmware: xilinx: Remove eemi ops for get_chipid
+  firmware: xilinx: Remove eemi ops for query_data
+  firmware: xilinx: Remove eemi ops for clock_enable
+  firmware: xilinx: Remove eemi ops for clock_disable
+  firmware: xilinx: Remove eemi ops for clock_getstate
+  firmware: xilinx: Remove eemi ops for clock_setdivider
+  firmware: xilinx: Remove eemi ops for clock_getdivider
+  firmware: xilinx: Remove eemi ops for clock set/get rate
+  firmware: xilinx: Remove eemi ops for clock set/get parent
+  firmware: xilinx: Use APIs instead of IOCTLs
+  firmware: xilinx: Remove eemi ops for reset_assert
+  firmware: xilinx: Remove eemi ops for reset_get_status
+  firmware: xilinx: Remove eemi ops for init_finalize
+  firmware: xilinx: Remove eemi ops for set_suspend_mode
+  firmware: xilinx: Remove eemi ops for request_node
+  firmware: xilinx: Remove eemi ops for release_node
+  firmware: xilinx: Remove eemi ops for set_requirement
+  firmware: xilinx: Remove eemi ops for aes engine
+  firmware: xilinx: Remove eemi ops for fpga related APIs
+  firmware: xilinx: Add APIs to read/write GGS/PGGS registers
+  firmware: xilinx: Add sysfs interface
+  firmware: xilinx: Add system shutdown API interface
+  firmware: xilinx: Add sysfs to set shutdown scope
+  firmware: xilinx: Add sysfs and API to set boot health status
 
-Unfortunately, the patch's addition of smp_mb() to cgroup_rstat_updated()
-meant that every scheduling event now had to go through an additional full
-barrier and Mel Gorman noticed it as 1% regression in netperf UDP_STREAM test.
+ .../ABI/stable/sysfs-driver-firmware-zynqmp        | 103 ++++
+ drivers/clk/zynqmp/clk-gate-zynqmp.c               |   9 +-
+ drivers/clk/zynqmp/clk-mux-zynqmp.c                |   6 +-
+ drivers/clk/zynqmp/clkc.c                          |  17 +-
+ drivers/clk/zynqmp/divider.c                       |  12 +-
+ drivers/clk/zynqmp/pll.c                           |  29 +-
+ drivers/crypto/xilinx/zynqmp-aes-gcm.c             |  12 +-
+ drivers/firmware/xilinx/zynqmp-debug.c             |   5 +-
+ drivers/firmware/xilinx/zynqmp.c                   | 601 +++++++++++++++++----
+ drivers/fpga/zynqmp-fpga.c                         |  12 +-
+ drivers/mmc/host/sdhci-of-arasan.c                 |  38 +-
+ drivers/nvmem/zynqmp_nvmem.c                       |  11 +-
+ drivers/reset/reset-zynqmp.c                       |  26 +-
+ drivers/soc/xilinx/zynqmp_pm_domains.c             |  26 +-
+ drivers/soc/xilinx/zynqmp_power.c                  |  17 +-
+ drivers/spi/spi-zynqmp-gqspi.c                     |   5 -
+ include/linux/firmware/xlnx-zynqmp.h               | 237 ++++++--
+ 17 files changed, 861 insertions(+), 305 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-driver-firmware-zynqmp
 
-There's no need to have this barrier in tree now and even if we need
-synchronous accounting in the future, the right thing to do is separating that
-out to a separate function so that hot paths which don't care about
-synchronous behavior don't have to pay the overhead of the full barrier. Let's
-revert.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Mel Gorman <mgorman@techsingularity.net>
-Link: http://lkml.kernel.org/r/20200409154413.GK3818@techsingularity.net
-Cc: v4.18+
----
-Applying to cgroup/for-5.7-fixes.
-
-Thanks!
-
- kernel/cgroup/rstat.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
-
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 6f87352f8219..41ca996568df 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -33,12 +33,9 @@ void cgroup_rstat_updated(struct cgroup *cgrp, int cpu)
- 		return;
- 
- 	/*
--	 * Paired with the one in cgroup_rstat_cpu_pop_updated().  Either we
--	 * see NULL updated_next or they see our updated stat.
--	 */
--	smp_mb();
--
--	/*
-+	 * Speculative already-on-list test. This may race leading to
-+	 * temporary inaccuracies, which is fine.
-+	 *
- 	 * Because @parent's updated_children is terminated with @parent
- 	 * instead of NULL, we can tell whether @cgrp is on the list by
- 	 * testing the next pointer for NULL.
-@@ -134,13 +131,6 @@ static struct cgroup *cgroup_rstat_cpu_pop_updated(struct cgroup *pos,
- 		*nextp = rstatc->updated_next;
- 		rstatc->updated_next = NULL;
- 
--		/*
--		 * Paired with the one in cgroup_rstat_cpu_updated().
--		 * Either they see NULL updated_next or we see their
--		 * updated stat.
--		 */
--		smp_mb();
--
- 		return pos;
- 	}
- 
+--
+Changes in v4:
+ - Rebased on latest repository.
+ - Resolve compilation errors from patch #1 - #20.
+ - Add patch #19 to remove eemi ops for aes engine.
+ - [PATCH 11/25]:
+   - Add API for SD DLL reset.
+   - Rebase on latest repository.
+ - [PATCH 21/25]:
+   - Use explicit values for enums.
+ - [PATCH 22/25]:
+   - Remove function header for static functions.
+   - Remove unnecessary condition checks.
+   - Use one value per file.
+   - Use ATTRIBUTE_GROUPS() macro for assigning attribute groups.
+   - Remove unnecessary inclusion of header file.
+ - [PATCH 23/25]:
+   - Use explicit values for enums.
+ - [PATCH 24/25]:
+   - Use ATTRIBUTE_GROUPS() macro for assigning attribute groups.
+ - [PATCH 25/25]:
+   - Use dev_err() instead of pr_err().
+   - Use ATTRIBUTE_GROUPS() macro for assigning attribute groups.
+Changes in v3:
+ - add patch #1/24 to #11/24 and #12/24 to #20/24 to remove eemi apis
+   and use direct function call.
+ - Add patch #11/24 to use ZynqMP APIs of IOCTLs instead of IOCTLs
+   and remove IOCTLs for ZynqMP.
+ - Add patch #20/24 to add APIs for read/write GGS and PGGS registers.
+ - [PATCH 21/24]:
+   - Add GGS sysfs interface in zynqmp.c file instead of zynqmp_ggs.c.
+   - Use platform device directory for sysfs instead of creating new
+     directory in firmware.
+   - Change kernel version to 5.6.
+   - Set count variable to the error value instead of testing ret
+     variable at the end of function to store GGS/PGGS.
+   - Use ZynqMP firmware API for write/read PGGS and GGS instead of
+     ioctls.
+   - Use platform device attribute off instead of creating new kobject.
+   - Change Date field in documentation.
+ - [PATCH 23/24]:
+   - Use platform device directory for sysfs instead of creating new
+     directory in firmware.
+   - Change kernel version to 5.6.
+   - Change Date field in documentation.
+ - [PATCH 24/24]:
+   - Use platform device directory for sysfs instead of creating new
+     directory in firmware.
+   - Change kernel version to 5.6.
+   - Change Date field in documentation.
+   - Add eemi API to set boot health status instead of IOCTL.
+Changes in v2:
+ - Removed patch #1 for register access sysfs.
+ - Updated kernel version in documentation.
+ - Used DEVICE_ATTR_* and ATTRIBUTE_GROUPS macros.
+ - Correct typo
+ - Free Kobject structure in case of error.
+ - Resolved smatch errors.
+ - Updated Signed-off-by sequence.
 -- 
-2.25.2
-
+2.7.4
