@@ -2,189 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED891A30B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19EB41A30BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgDIIOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:14:53 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39660 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbgDIIOw (ORCPT
+        id S1726627AbgDIIQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:16:18 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:39462 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgDIIQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:14:52 -0400
-Received: by mail-wr1-f65.google.com with SMTP id p10so10824198wrt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 01:14:51 -0700 (PDT)
+        Thu, 9 Apr 2020 04:16:18 -0400
+Received: by mail-pg1-f193.google.com with SMTP id g32so4644652pgb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 01:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZlTF/KafXlJgMPlRdN0G/mkK/4LzjBx/AGs4C/dxm9w=;
-        b=vLrAAclOkO4iGm6s+MQ5nyroD7N3UCquUO8bDswFNMDWivwTEnrCUSy9Bpax0xxEX+
-         zNeV3rAPs6TD8o1rfFyk9bhJeamRtxbDzwRdKSboiD3TpcxJ3OeE4wa2iTF/PR8NjWG4
-         ECsTsuZEMeV6KnrXb34BwmebUUPnTfRi8bjrslKQqitgVff8FRgMqDHVD4bL0DXrx+cy
-         BULpYVT7PNivcVyx1949ICtMl3Z/n8kw1WGOjcj1nBReB663wD+JH7Uy2mEDMqtXJwpn
-         6W7KRDRKpMZh0SBlcNtuItov0+c4MPFBXo+zRR8zH3ZgjQkPaikWSmpbRkAAmmUt9+fV
-         KSFw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=XCQYTOYKkewyzGEcrkL/TPuusUnX/PYbV/+OIgYCWvQ=;
+        b=Vmm10K769J1HIMC7p1bb5XvOdIpocHqm8j0y9IBwFe4G23ehp2zyzcQjIPELsa/Sr3
+         I4YkJg9W5ekMScQSLrRa7iNKsSGbye8bWDns7OLjaNv+ecLmlZyX5T8LtN7ekwhyQJTa
+         SkKw8EPdXlE4sGbstb5D5ZpUE/IJdnVzDXRRc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZlTF/KafXlJgMPlRdN0G/mkK/4LzjBx/AGs4C/dxm9w=;
-        b=rtkQeyhzxjCcjVhjM+MkTFyNvJ1gIXQKiG7jn4H8iYyjkcjQ054qKtXEu2H7+yyk1E
-         6oafgMLPZqGfFKkTZsKeRRU3CrehIjpyy7HVkrdyoryiQHZEWKF9aVMQ/P9AwdJpH8xI
-         yJJq+MGoKEFfi2bwSEVMzSmfWcbXpB18IE4cxFSUCknwslIj00VqxUyf13qiQ/gN84gV
-         OExVldi5+phQAX4S+p4i9CY7qMi9lC82Vg+6UfTeC6JXGaJDpbWlN0TE5hHSbhft7TFE
-         MdK/DyP3ezUQCBkY4jj8XQJctVPU4bv3LPnyuAYAY66gkyDzqUdYepSatIo7m/Dd9Edj
-         WDOg==
-X-Gm-Message-State: AGi0PuaNEiG6mQkQvaKVmDU+yd69KCeaCuZ46wmoxIb0VQ8TJg1TJWF/
-        oeQPFNwu4Qo49zhxYR+t495Upg==
-X-Google-Smtp-Source: APiQypJemfydeaVCk96UzkWnWUlTWfH71DnX8DVMs/2o85G9/BiV9p3xiyhSRllpGeBIVPIEZJ8UfQ==
-X-Received: by 2002:a5d:4081:: with SMTP id o1mr13432498wrp.114.1586420091068;
-        Thu, 09 Apr 2020 01:14:51 -0700 (PDT)
-Received: from myrica ([2001:171b:226b:54a0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id o16sm39322467wrs.44.2020.04.09.01.14.49
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=XCQYTOYKkewyzGEcrkL/TPuusUnX/PYbV/+OIgYCWvQ=;
+        b=Le1gY8Oe5MPy2dNqjsXgtrhcbQxjEKIbqcFOEtvTBLRww8+J91ppjqZo44PVcFc7xy
+         T8naA9ZJvNd6qwGdpeKYu2rzwbZasG5qEcdIETcP6WuL+NqHFYGBnANN2zLSPxQE9/Ad
+         zalWx1UPUz81epIheHrhqIGiWOftX0BtF50ne2AcGCpyJRRoUiJCul38fgDRyODzgfrj
+         1MYhilTIJElCr2uhREnVIarJyf09cEafVa0Kr1jwwCFoRZual/lnTRCWmFwKswo3BfYI
+         xlHcfdlMLHGB4fTtbpKQUJUrHp4JDel4IrYBrO1F7HhlP2+EaE8nMJ/GERV9lroZ/NGX
+         r6pQ==
+X-Gm-Message-State: AGi0Puaj4NBsVLzWKSt6nFtXuqsFo6Aj4IVci2rGXUoC5NXLAyJZ6l4w
+        6G77uEKY+c0wmfSh3sXzCOAf5Gfd0I4=
+X-Google-Smtp-Source: APiQypJQ1I6e+EfrgM2OYM3xD+1/9Nx4wNrauyUjPBovQPpK7Q3a1uSLtv/N2GNalrOSPd1O2KBobg==
+X-Received: by 2002:aa7:97a6:: with SMTP id d6mr12498752pfq.154.1586420177564;
+        Thu, 09 Apr 2020 01:16:17 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id y9sm19190490pfo.135.2020.04.09.01.16.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 01:14:50 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 10:14:42 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>
-Subject: Re: [PATCH v1 5/8] vfio/type1: Report 1st-level/stage-1 format to
- userspace
-Message-ID: <20200409081442.GD2435@myrica>
-References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
- <1584880325-10561-6-git-send-email-yi.l.liu@intel.com>
- <cb68e9ab-77b0-7e97-a661-4836962041d9@redhat.com>
- <A2975661238FB949B60364EF0F2C25743A21DB4E@SHSMSX104.ccr.corp.intel.com>
- <b47891b1-ece6-c263-9c07-07c09c7d3752@redhat.com>
- <20200403082305.GA1269501@myrica>
- <A2975661238FB949B60364EF0F2C25743A2249DF@SHSMSX104.ccr.corp.intel.com>
- <acf8c809-8d29-92d6-2445-3a94fc8b82fd@redhat.com>
+        Thu, 09 Apr 2020 01:16:16 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acf8c809-8d29-92d6-2445-3a94fc8b82fd@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <8553ce0f-6dda-b0e0-d67a-f76ce3c0f945@codeaurora.org>
+References: <1586154741-8293-1-git-send-email-mkshah@codeaurora.org> <1586154741-8293-5-git-send-email-mkshah@codeaurora.org> <158631424318.216820.1843109743502322053@swboyd.mtv.corp.google.com> <8553ce0f-6dda-b0e0-d67a-f76ce3c0f945@codeaurora.org>
+Subject: Re: [PATCH v16 4/6] soc: qcom: rpmh: Invoke rpmh_flush() for dirty caches
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, mka@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org
+To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
+        dianders@chromium.org, evgreen@chromium.org
+Date:   Thu, 09 Apr 2020 01:16:16 -0700
+Message-ID: <158642017601.126188.6125314877042857783@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 08, 2020 at 12:27:58PM +0200, Auger Eric wrote:
-> Hi Yi,
-> 
-> On 4/7/20 11:43 AM, Liu, Yi L wrote:
-> > Hi Jean,
-> > 
-> >> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> >> Sent: Friday, April 3, 2020 4:23 PM
-> >> To: Auger Eric <eric.auger@redhat.com>
-> >> userspace
+Quoting Maulik Shah (2020-04-08 00:08:48)
+> Hi,
+>=20
+> On 4/8/2020 8:20 AM, Stephen Boyd wrote:
+> > Quoting Maulik Shah (2020-04-05 23:32:19)
+> >> for CPU PM notification. They may be in autonomous mode executing
+> >> low power mode and do not require rpmh_flush() to happen from CPU
+> >> PM notification.
 > >>
-> >> On Wed, Apr 01, 2020 at 03:01:12PM +0200, Auger Eric wrote:
-> >>>>>>  	header = vfio_info_cap_add(caps, sizeof(*nesting_cap),
-> >>>>>>  				   VFIO_IOMMU_TYPE1_INFO_CAP_NESTING, 1);
-> >> @@ -2254,6 +2309,7
-> >>>>>> @@ static int vfio_iommu_info_add_nesting_cap(struct
-> >>>>> vfio_iommu *iommu,
-> >>>>>>  		/* nesting iommu type supports PASID requests (alloc/free) */
-> >>>>>>  		nesting_cap->nesting_capabilities |= VFIO_IOMMU_PASID_REQS;
-> >>>>> What is the meaning for ARM?
-> >>>>
-> >>>> I think it's just a software capability exposed to userspace, on
-> >>>> userspace side, it has a choice to use it or not. :-) The reason
-> >>>> define it and report it in cap nesting is that I'd like to make the
-> >>>> pasid alloc/free be available just for IOMMU with type
-> >>>> VFIO_IOMMU_TYPE1_NESTING. Please feel free tell me if it is not good
-> >>>> for ARM. We can find a proper way to report the availability.
-> >>>
-> >>> Well it is more a question for jean-Philippe. Do we have a system wide
-> >>> PASID allocation on ARM?
+> >> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> >> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> >> ---
+> >>   drivers/soc/qcom/rpmh-internal.h |  25 +++++---
+> >>   drivers/soc/qcom/rpmh-rsc.c      | 123 +++++++++++++++++++++++++++++=
+++++++----
+> >>   drivers/soc/qcom/rpmh.c          |  26 +++------
+> >>   3 files changed, 137 insertions(+), 37 deletions(-)
 > >>
-> >> We don't, the PASID spaces are per-VM on Arm, so this function should consult the
-> >> IOMMU driver before setting flags. As you said on patch 3, nested doesn't
-> >> necessarily imply PASID support. The SMMUv2 does not support PASID but does
-> >> support nesting stages 1 and 2 for the IOVA space.
-> >> SMMUv3 support of PASID depends on HW capabilities. So I think this needs to be
-> >> finer grained:
-> >>
-> >> Does the container support:
-> >> * VFIO_IOMMU_PASID_REQUEST?
-> >>   -> Yes for VT-d 3
-> >>   -> No for Arm SMMU
-> >> * VFIO_IOMMU_{,UN}BIND_GUEST_PGTBL?
-> >>   -> Yes for VT-d 3
-> >>   -> Sometimes for SMMUv2
-> >>   -> No for SMMUv3 (if we go with BIND_PASID_TABLE, which is simpler due to
-> >>      PASID tables being in GPA space.)
-> >> * VFIO_IOMMU_BIND_PASID_TABLE?
-> >>   -> No for VT-d
-> >>   -> Sometimes for SMMUv3
-> >>
-> >> Any bind support implies VFIO_IOMMU_CACHE_INVALIDATE support.
-> > 
-> > good summary. do you expect to see any 
-> > 
-> >>
-> >>>>>> +	nesting_cap->stage1_formats = formats;
-> >>>>> as spotted by Kevin, since a single format is supported, rename
-> >>>>
-> >>>> ok, I was believing it may be possible on ARM or so. :-) will rename
-> >>>> it.
-> >>
-> >> Yes I don't think an u32 is going to cut it for Arm :( We need to describe all sorts of
-> >> capabilities for page and PASID tables (granules, GPA size, ASID/PASID size, HW
-> >> access/dirty, etc etc.) Just saying "Arm stage-1 format" wouldn't mean much. I
-> >> guess we could have a secondary vendor capability for these?
-> > 
-> > Actually, I'm wondering if we can define some formats to stands for a set of
-> > capabilities. e.g. VTD_STAGE1_FORMAT_V1 which may indicates the 1st level
-> > page table related caps (aw, a/d, SRE, EA and etc.). And vIOMMU can parse
-> > the capabilities.
-> 
-> But eventually do we really need all those capability getters? I mean
-> can't we simply rely on the actual call to VFIO_IOMMU_BIND_GUEST_PGTBL()
-> to detect any mismatch? Definitively the error handling may be heavier
-> on userspace but can't we manage.
+> >> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> >> index b718221..fbe1f3e 100644
+> >> --- a/drivers/soc/qcom/rpmh-rsc.c
+> >> +++ b/drivers/soc/qcom/rpmh-rsc.c
+> >> @@ -6,6 +6,7 @@
+> > [...]
+> >> +
+> >> +static int rpmh_rsc_cpu_pm_callback(struct notifier_block *nfb,
+> >> +                                   unsigned long action, void *v)
+> >> +{
+> >> +       struct rsc_drv *drv =3D container_of(nfb, struct rsc_drv, rsc_=
+pm);
+> >> +       int ret =3D NOTIFY_OK;
+> >> +
+> >> +       spin_lock(&drv->pm_lock);
+> >> +
+> >> +       switch (action) {
+> >> +       case CPU_PM_ENTER:
+> > I thought CPU_PM notifiers weren't supposed to be used anymore? Or at
+> > least, the genpd work that has gone on for cpuidle could be used here in
+> > place of CPU_PM notifiers?
+>=20
+> genpd was used in v3 and v4 of this series, where from pd's .power_off=C2=
+=A0=20
+> function, rpmh_flush() was invoked.
+>=20
+> genpd can be useful if target firmware supports PSCI's OSI mode, while=20
+> sc7180 is non-OSI target.
+>=20
+> The current approch (using cpu pm notification) can be used for both OSI =
 
-I think we need to present these capabilities at boot time, long before
-the guest triggers a bind(). For example if the host SMMU doesn't support
-16-bit ASID, we need to communicate that to the guest using vSMMU ID
-registers or PROBE properties. Otherwise a bind() will succeed, but if the
-guest uses 16-bit ASIDs in its CD, DMA will result in C_BAD_CD events
-which we'll inject into the guest, for no apparent reason from their
-perspective.
+> and non-OSI targets to invoke rpmh_flush() when last cpu goes to power do=
+wn.
 
-In addition some VMMs may have fallbacks if shared page tables are not
-available. They could fall back to a MAP/UNMAP interface, or simply not
-present a vIOMMU to the guest.
+Ok. Doug and I talked today and I re-read the earlier series and I think
+Sudeep was suggesting that if we're doing last man down activities here
+then we're better off using OSI vs. PC mode. But I can only assume
+that's because the concern is something here requires software's help
+for last man down activities like lowering a CPU voltage setting or
+turning off some power switch to a hardware block through some i2c
+message. The way I understand it the last man down activities here are
+just setting up the sleep and wake TCS FIFOs to "do the right thing"
+when the last CPU actually goes down and the first CPU wakes up by
+running through the pile of "instructions" that we program into the
+FIFOs.
 
-Thanks,
-Jean
+The execution of those instructions is all done in hardware so any
+aggregation or coordination between CPUs is not really important here.
+All that matters is that we set up the sleep and wake TCS FIFOs properly
+so that _if_ the whole CPU subsystem goes to sleep we're going to let
+the hardware turn off the right stuff and lower voltages, etc. and
+vice-versa for wake. If we didn't have to share the TCS FIFOs with
+active mode control then we could just tweak the sleep and wake TCS
+buckets at runtime and let the hardware state of the CPUs decide to
+trigger them at the right time. Unfortunately, we don't have that luxury
+and we're stuck repurposing the sleep TCS FIFO to control things like
+regulator voltages when the CPU is awake. Yuck!
 
-> My fear is we end up with an overly
-> complex series. This capability getter may be interesting if we can
-> switch to a fallback implementation but here I guess we don't have any
-> fallback. With smmuv3 nested stage we don't have any fallback solution
-> either. For the versions, it is different because the userspace shall be
-> able to adapt (or not) to the max version supported by the kernel.
-> 
-> Thanks
-> 
-> Eric
-> > 
-> > Regards,
-> > Yi Liu
-> > 
-> 
+>=20
+> > And so this isn't actually any different
+> > than what was proposed originally to use genpd for this?
+> >
+
+I guess this answer to this is yes. Which is fine. CPU PM notifiers are
+still used by various drivers to do things like save/restore state of
+devices that lose state when the CPUs power down. The use of genpd is
+helpful for OSI mode because it can describe how/when big and little
+clusters are powered off by putting them in different genpds. For
+counting the last CPU to turn off it seems simpler to just register for
+CPU PM notifiers and not care about genpd logic and nesting clusters,
+etc. I'm happy to see this not be a blocker.
