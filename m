@@ -2,198 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC631A30A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD341A308F
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 09:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbgDIIJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:09:12 -0400
-Received: from mx59.baidu.com ([61.135.168.59]:58021 "EHLO
-        tc-sys-mailedm04.tc.baidu.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726470AbgDIIJL (ORCPT
+        id S1726663AbgDIH6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 03:58:22 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53052 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgDIH6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:09:11 -0400
-X-Greylist: delayed 652 seconds by postgrey-1.27 at vger.kernel.org; Thu, 09 Apr 2020 04:09:10 EDT
-Received: from localhost (cp01-cos-dev01.cp01.baidu.com [10.92.119.46])
-        by tc-sys-mailedm04.tc.baidu.com (Postfix) with ESMTP id 3B2A1236C00A;
-        Thu,  9 Apr 2020 15:57:55 +0800 (CST)
-From:   Li RongQing <lirongqing@baidu.com>
-To:     peterz@infradead.org, frederic@kernel.org, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][RFC] sched/isolation: allow isolcpus and nohz_full for different cpus
-Date:   Thu,  9 Apr 2020 15:57:56 +0800
-Message-Id: <1586419076-6301-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        Thu, 9 Apr 2020 03:58:22 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 58DD41C55CF; Thu,  9 Apr 2020 09:58:21 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 09:58:20 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>
+Subject: Re: linux-next: manual merge of the leds tree with Linus' tree
+Message-ID: <20200409075820.GA2414@amd.ucw.cz>
+References: <20200409131252.2dfde0b7@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
+Content-Disposition: inline
+In-Reply-To: <20200409131252.2dfde0b7@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-when both isolcpus and nohz_full are set, their cpus must be
-same now, in fact isolcpus and nohz_full are not related, and
-different cpus are expected for some cases, for example, some
-cores for polling threads wants to isolcpus, and some cores for
-dedicated threads, only nohz_full is expected
 
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- kernel/sched/isolation.c | 79 ++++++++++++++++++++++++++++++++----------------
- 1 file changed, 53 insertions(+), 26 deletions(-)
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 008d6ac2342b..6e6be34bb796 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -11,7 +11,8 @@
- 
- DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
- EXPORT_SYMBOL_GPL(housekeeping_overridden);
--static cpumask_var_t housekeeping_mask;
-+static cpumask_var_t housekeeping_mask_isolcpus;
-+static cpumask_var_t housekeeping_mask_nohz_full;
- static unsigned int housekeeping_flags;
- 
- bool housekeeping_enabled(enum hk_flags flags)
-@@ -20,12 +21,26 @@ bool housekeeping_enabled(enum hk_flags flags)
- }
- EXPORT_SYMBOL_GPL(housekeeping_enabled);
- 
-+static cpumask_var_t housekeeping_get_mask(enum hk_flags flags)
-+{
-+	if (flags & (HK_FLAG_DOMAIN | HK_FLAG_MANAGED_IRQ))
-+		return housekeeping_mask_isolcpus;
-+
-+	/* set by isolcpus=nohz only */
-+	if ((flags & HK_FLAG_TICK) && !(housekeeping_flags & HK_FLAG_RCU))
-+		return housekeeping_mask_isolcpus;
-+
-+	return housekeeping_mask_nohz_full;
-+}
-+
- int housekeeping_any_cpu(enum hk_flags flags)
- {
-+	cpumask_var_t housekeeping_mask;
- 	int cpu;
- 
- 	if (static_branch_unlikely(&housekeeping_overridden)) {
- 		if (housekeeping_flags & flags) {
-+			housekeeping_mask = housekeeping_get_mask(flags);
- 			cpu = sched_numa_find_closest(housekeeping_mask, smp_processor_id());
- 			if (cpu < nr_cpu_ids)
- 				return cpu;
-@@ -41,7 +56,7 @@ const struct cpumask *housekeeping_cpumask(enum hk_flags flags)
- {
- 	if (static_branch_unlikely(&housekeeping_overridden))
- 		if (housekeeping_flags & flags)
--			return housekeeping_mask;
-+			return housekeeping_get_mask(flags);
- 	return cpu_possible_mask;
- }
- EXPORT_SYMBOL_GPL(housekeeping_cpumask);
-@@ -49,16 +64,24 @@ EXPORT_SYMBOL_GPL(housekeeping_cpumask);
- void housekeeping_affine(struct task_struct *t, enum hk_flags flags)
- {
- 	if (static_branch_unlikely(&housekeeping_overridden))
--		if (housekeeping_flags & flags)
-+		if (housekeeping_flags & flags) {
-+			cpumask_var_t housekeeping_mask;
-+
-+			housekeeping_mask = housekeeping_get_mask(flags);
- 			set_cpus_allowed_ptr(t, housekeeping_mask);
-+		}
- }
- EXPORT_SYMBOL_GPL(housekeeping_affine);
- 
- bool housekeeping_test_cpu(int cpu, enum hk_flags flags)
- {
- 	if (static_branch_unlikely(&housekeeping_overridden))
--		if (housekeeping_flags & flags)
-+		if (housekeeping_flags & flags) {
-+			cpumask_var_t housekeeping_mask;
-+
-+			housekeeping_mask = housekeeping_get_mask(flags);
- 			return cpumask_test_cpu(cpu, housekeeping_mask);
-+		}
- 	return true;
- }
- EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
-@@ -74,10 +97,14 @@ void __init housekeeping_init(void)
- 		sched_tick_offload_init();
- 
- 	/* We need at least one CPU to handle housekeeping work */
--	WARN_ON_ONCE(cpumask_empty(housekeeping_mask));
-+	if (housekeeping_mask_isolcpus)
-+		WARN_ON_ONCE(cpumask_empty(housekeeping_mask_isolcpus));
-+	if (housekeeping_mask_nohz_full)
-+		WARN_ON_ONCE(cpumask_empty(housekeeping_mask_nohz_full));
- }
- 
--static int __init housekeeping_setup(char *str, enum hk_flags flags)
-+static int __init housekeeping_setup(char *str, enum hk_flags flags,
-+		cpumask_var_t *housekeeping_mask)
- {
- 	cpumask_var_t non_housekeeping_mask;
- 	cpumask_var_t tmp;
-@@ -92,25 +119,25 @@ static int __init housekeeping_setup(char *str, enum hk_flags flags)
- 	}
- 
- 	alloc_bootmem_cpumask_var(&tmp);
--	if (!housekeeping_flags) {
--		alloc_bootmem_cpumask_var(&housekeeping_mask);
--		cpumask_andnot(housekeeping_mask,
--			       cpu_possible_mask, non_housekeeping_mask);
--
--		cpumask_andnot(tmp, cpu_present_mask, non_housekeeping_mask);
--		if (cpumask_empty(tmp)) {
--			pr_warn("Housekeeping: must include one present CPU, "
-+	alloc_bootmem_cpumask_var(housekeeping_mask);
-+	cpumask_andnot(*housekeeping_mask,
-+				   cpu_possible_mask, non_housekeeping_mask);
-+
-+	cpumask_andnot(tmp, cpu_present_mask, non_housekeeping_mask);
-+	if (cpumask_empty(tmp)) {
-+		pr_warn("Housekeeping: must include one present CPU, "
- 				"using boot CPU:%d\n", smp_processor_id());
--			__cpumask_set_cpu(smp_processor_id(), housekeeping_mask);
--			__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
--		}
--	} else {
--		cpumask_andnot(tmp, cpu_present_mask, non_housekeeping_mask);
--		if (cpumask_empty(tmp))
--			__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
--		cpumask_andnot(tmp, cpu_possible_mask, non_housekeeping_mask);
--		if (!cpumask_equal(tmp, housekeeping_mask)) {
--			pr_warn("Housekeeping: nohz_full= must match isolcpus=\n");
-+		__cpumask_set_cpu(smp_processor_id(), *housekeeping_mask);
-+		__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
-+	}
-+
-+	/* cpus should match when both nohz_full and isolcpus
-+	 * with nohz are passed into kernel
-+	 */
-+	if (housekeeping_flags & flags & HK_FLAG_TICK) {
-+		if (!cpumask_equal(housekeeping_mask_nohz_full,
-+					housekeeping_mask_isolcpus)) {
-+			pr_warn("Housekeeping: nohz_full= must match isolcpus=nohz\n");
- 			free_bootmem_cpumask_var(tmp);
- 			free_bootmem_cpumask_var(non_housekeeping_mask);
- 			return 0;
-@@ -142,7 +169,7 @@ static int __init housekeeping_nohz_full_setup(char *str)
- 
- 	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU | HK_FLAG_MISC;
- 
--	return housekeeping_setup(str, flags);
-+	return housekeeping_setup(str, flags, &housekeeping_mask_nohz_full);
- }
- __setup("nohz_full=", housekeeping_nohz_full_setup);
- 
-@@ -177,6 +204,6 @@ static int __init housekeeping_isolcpus_setup(char *str)
- 	if (!flags)
- 		flags |= HK_FLAG_DOMAIN;
- 
--	return housekeeping_setup(str, flags);
-+	return housekeeping_setup(str, flags, &housekeeping_mask_isolcpus);
- }
- __setup("isolcpus=", housekeeping_isolcpus_setup);
--- 
-2.16.2
+Hi!
 
+> Today's linux-next merge of the leds tree got a conflict in:
+>=20
+>   drivers/leds/Makefile
+>=20
+> between commit:
+>=20
+>   457386350e6a ("leds: sort Makefile entries")
+>=20
+> from Linus' tree and commit:
+>=20
+>   3953d1908b2c ("From: Marek Beh=FAn <marek.behun@nic.cz>")
+>   53cb3df9dd2d ("Sort Makefile entries to reduce risk of rejects.")
+>=20
+> from the leds tree.
+>=20
+> I fixed it up (I used the latter version) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
+>=20
+> BTW, commit 3953d1908b2c clearly did not get applied correctly :-(
+
+Um, sorry about that. My tree got merged to Linus, so for-next is now
+for-next-next and I need to empty it.
+
+Best regards,
+									Pavel
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--1yeeQ81UyVL57Vl7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXo7VnAAKCRAw5/Bqldv6
+8sxeAKDAPr0fwbVzQxim0lnNx1hwXqyj8wCfe6tpHj3PNAbhu2do5IEpy7DwnvA=
+=Rfml
+-----END PGP SIGNATURE-----
+
+--1yeeQ81UyVL57Vl7--
