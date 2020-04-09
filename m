@@ -2,88 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4541B1A379C
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 17:59:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2F31A37A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 18:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728382AbgDIP7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 11:59:40 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:36003 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727865AbgDIP7j (ORCPT
+        id S1728401AbgDIQAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 12:00:17 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:42286 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727736AbgDIQAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 11:59:39 -0400
-X-Originating-IP: 86.202.105.35
-Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id E02C2FF802;
-        Thu,  9 Apr 2020 15:59:36 +0000 (UTC)
-Date:   Thu, 9 Apr 2020 17:59:36 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Aishwarya R <aishwaryarj100@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Thu, 9 Apr 2020 12:00:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=+QafbTq/Q9yqKTo3ARbM1UcuTBEh4naVLmVm4hSiglA=; b=PeUyRbjhfLr//+qioYrcb52pyx
+        1gPzoVTySgsqzuRiFFD6AuPZD2a6l8nmp6xC57ssmfP0vKIy6O6cyMq6A4EeRJ9pJpMp7TwhrY3wn
+        xx4sUXh3pDGKNborPt/ACpkypAy15RDo/P+lhpoQffCNDMOks1tPKbi8pGHtXHGYh2IFgT7QyUs71
+        OApf/OJjCw+YUN4pThHKlafXc/56NbIvlHHGxviuc1JG3hotx2fE3dTyVssMS6itGCpYopOVMaoCc
+        8oJnBBzzVhP9GesDbEe/EKz36y7w0kc5U/LIoZCNwR1vmNWWQ7IH/+N0hbAf/g2eV1GbwrmJU2YPd
+        5Xi5ak8A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jMZax-0003VU-ID; Thu, 09 Apr 2020 15:59:59 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 614FD304D58;
+        Thu,  9 Apr 2020 17:59:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4C6EC2BA1D848; Thu,  9 Apr 2020 17:59:56 +0200 (CEST)
+Date:   Thu, 9 Apr 2020 17:59:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "David (ChunMing) Zhou" <David1.Zhou@amd.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Allison Randal <allison@lohutok.net>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Stephen Boyd <swboyd@chromium.org>, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: at91-adc: Use devm_platform_ioremap_resource
-Message-ID: <20200409155936.GV3628@piout.net>
-References: <20200409151125.32677-1-aishwaryarj100@gmail.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        mhiramat@kernel.org
+Subject: Re: AMD DC graphics display code enables -mhard-float, -msse, -msse2
+ without any visible FPU state protection
+Message-ID: <20200409155956.GQ20760@hirez.programming.kicks-ass.net>
+References: <CAG48ez2Sx4ELkM94aD_h_J7K7KBOeuGmvZLKRkg3n_f2WoZ_cg@mail.gmail.com>
+ <4c5fe55d-9db9-2f61-59b2-1fb2e1b45ed0@amd.com>
+ <20200402141308.GB20730@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200409151125.32677-1-aishwaryarj100@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200402141308.GB20730@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/2020 20:41:23+0530, Aishwarya R wrote:
-> Use the helper function that wraps the calls to
-> platform_get_resource() and devm_ioremap_resource()
-> together.
-> 
+On Thu, Apr 02, 2020 at 04:13:08PM +0200, Peter Zijlstra wrote:
+> On Thu, Apr 02, 2020 at 09:33:54AM +0200, Christian König wrote:
 
-Please elaborate the actual value of doing that.
-
-> Signed-off-by: Aishwarya R <aishwaryarj100@gmail.com>
-> ---
->  drivers/iio/adc/at91_adc.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> > yes, using the floating point calculations in the display code has been a
+> > source of numerous problems and confusion in the past.
+> > 
+> > The calls to kernel_fpu_begin() and kernel_fpu_end() are hidden behind the
+> > DC_FP_START() and DC_FP_END() macros which are supposed to hide the
+> > architecture depend handling for x86 and PPC64.
+> > 
+> > This originated from the graphics block integrated into AMD CPU (where we
+> > knew which fp unit we had), but as far as I know is now also used for
+> > dedicated AMD GPUs as well.
+> > 
+> > I'm not really a fan of this either, but so far we weren't able to convince
+> > the hardware engineers to not use floating point calculations for the
+> > display stuff.
 > 
-> diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
-> index abe99856c823..0368b6dc6d60 100644
-> --- a/drivers/iio/adc/at91_adc.c
-> +++ b/drivers/iio/adc/at91_adc.c
-> @@ -1152,7 +1152,6 @@ static int at91_adc_probe(struct platform_device *pdev)
->  	int ret;
->  	struct iio_dev *idev;
->  	struct at91_adc_state *st;
-> -	struct resource *res;
->  	u32 reg;
->  
->  	idev = devm_iio_device_alloc(&pdev->dev, sizeof(struct at91_adc_state));
-> @@ -1182,9 +1181,7 @@ static int at91_adc_probe(struct platform_device *pdev)
->  	if (st->irq < 0)
->  		return -ENODEV;
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -
-> -	st->reg_base = devm_ioremap_resource(&pdev->dev, res);
-> +	st->reg_base = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(st->reg_base))
->  		return PTR_ERR(st->reg_base);
->  
-> -- 
-> 2.17.1
+> Might I complain that:
 > 
+> 	make O=allmodconfig-build drivers/gpu/drm/amd/display/dc/
+> 
+> does not in fact work?
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Worse; allmodconfig doesn't select these, and hence I did not in fact
+build-test them for a while :/
+
+Anyway, I now have a config that includes them and I get plenty fail
+with my objtool patch. In part because this is spread over multiple
+object files and in part because of the forrest of indirect calls Jann
+already mentioned.
+
+The multi-unit issue can be fixed by simply sticking all the related .o
+files in an archive and running objtool on that, but the pointer crap is
+much harder.
+
+I'll need another approach, let me consider.
