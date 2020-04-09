@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C9F1A2F5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 08:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DCA1A2F69
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 08:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgDIGoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 02:44:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726690AbgDIGoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 02:44:22 -0400
-Received: from mail.kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DD4620BED;
-        Thu,  9 Apr 2020 06:44:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586414662;
-        bh=PfUikIBTXspGc+39UOUujO6Ld9bq2yeVd1JILOFiYkc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZetZ7gnfpkdwUseH1r6bxNNA1el+rz7oYz4LyevmNTO9t3OPj+7t2uJiVVGepT7X7
-         YDdST0PO679vPjqL2Ply5/38kf/3L517WUPEpPrSx4NmTzYyn1ubV91mZZRo+q393D
-         jjETfRsJm0zkR7or/H93LlOWljQK7OAlOUs1M/6k=
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 10/10] clk: Move HAVE_CLK config out of architecture layer
-Date:   Wed,  8 Apr 2020 23:44:16 -0700
-Message-Id: <20200409064416.83340-11-sboyd@kernel.org>
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-In-Reply-To: <20200409064416.83340-1-sboyd@kernel.org>
-References: <20200409064416.83340-1-sboyd@kernel.org>
+        id S1726806AbgDIGpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 02:45:14 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:60640 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgDIGpN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 02:45:13 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 0396ix9U027169;
+        Thu, 9 Apr 2020 01:44:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1586414699;
+        bh=vdhHAqjD6KP/c72S1QR0R+EvzV4ffIQ2S0zwlWNW4fI=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=IPfcJLrPfAQJk2ml4I0UtMDVqPON9fKBS/4V5zp26L/WrhwTcjxlQ0j2Dodf37xem
+         ljRWxQJe6iEb63WgvnS6PwK3aDUrBFQNOOqOtTtl2bZWPwJvx9Y6J/CVg1pthsIQI7
+         /8WaOvK3ygzM1KWGHNp2D/+9Utz3HurOPNDuCCpI=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 0396ixNK088950
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 9 Apr 2020 01:44:59 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Thu, 9 Apr
+ 2020 01:44:58 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Thu, 9 Apr 2020 01:44:58 -0500
+Received: from [192.168.2.6] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 0396iu6b123222;
+        Thu, 9 Apr 2020 01:44:56 -0500
+Subject: Re: [PATCH] dmaengine: ti: k3-psil: fix deadlock on error path
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <dmaengine@vger.kernel.org>
+CC:     Sekhar Nori <nsekhar@ti.com>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200408185501.30776-1-grygorii.strashko@ti.com>
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+Message-ID: <d4a71f25-8a25-76bc-bbf7-749e20268339@ti.com>
+Date:   Thu, 9 Apr 2020 09:45:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200408185501.30776-1-grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The implementation of 'struct clk' is not really an architectual detail
-anymore now that most architectures have migrated to the common clk
-framework. To sway new architecture ports away from trying to implement
-their own 'struct clk', move the config next to the common clk framework
-config.
 
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
----
- arch/Kconfig        | 6 ------
- drivers/clk/Kconfig | 6 ++++++
- 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 17fe351cdde0..903ac5547ee8 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -321,12 +321,6 @@ config HAVE_FUNCTION_ARG_ACCESS_API
- 	  the API needed to access function arguments from pt_regs,
- 	  declared in asm/ptrace.h
- 
--config HAVE_CLK
--	bool
--	help
--	  The <linux/clk.h> calls support software clock gating and
--	  thus are a key power management tool on many systems.
--
- config HAVE_HW_BREAKPOINT
- 	bool
- 	depends on PERF_EVENTS
-diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-index 890bed62196d..6ea0631e3956 100644
---- a/drivers/clk/Kconfig
-+++ b/drivers/clk/Kconfig
-@@ -1,5 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0
- 
-+config HAVE_CLK
-+	bool
-+	help
-+	  The <linux/clk.h> calls support software clock gating and
-+	  thus are a key power management tool on many systems.
-+
- config CLKDEV_LOOKUP
- 	bool
- 	select HAVE_CLK
--- 
-Sent by a computer, using git, on the internet
+On 08/04/2020 21.55, Grygorii Strashko wrote:
+> The mutex_unlock() is missed on error path of psil_get_ep_config()
+> which causes deadlock, so add missed mutex_unlock().
 
+Ah, you are right, thanks for catching it!
+
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+> Fixes: 8c6bb62f6b4a ("dmaengine: ti: k3 PSI-L remote endpoint configuration")
+> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+> ---
+>  drivers/dma/ti/k3-psil.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/dma/ti/k3-psil.c b/drivers/dma/ti/k3-psil.c
+> index d7b965049ccb..fb7c8150b0d1 100644
+> --- a/drivers/dma/ti/k3-psil.c
+> +++ b/drivers/dma/ti/k3-psil.c
+> @@ -27,6 +27,7 @@ struct psil_endpoint_config *psil_get_ep_config(u32 thread_id)
+>  			soc_ep_map = &j721e_ep_map;
+>  		} else {
+>  			pr_err("PSIL: No compatible machine found for map\n");
+> +			mutex_unlock(&ep_map_mutex);
+>  			return ERR_PTR(-ENOTSUPP);
+>  		}
+>  		pr_debug("%s: Using map for %s\n", __func__, soc_ep_map->name);
+> 
+
+- Péter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
