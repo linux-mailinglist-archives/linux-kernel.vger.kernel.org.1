@@ -2,166 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B78121A31FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473A31A3203
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgDIJld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:41:33 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:42013 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbgDIJld (ORCPT
+        id S1726689AbgDIJnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:43:10 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:34683 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726620AbgDIJnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:41:33 -0400
-Received: by mail-ot1-f65.google.com with SMTP id t92so923669otb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:41:32 -0700 (PDT)
+        Thu, 9 Apr 2020 05:43:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AAmPcakirZ+49aStGKItq0c+j+VEsXqfcBH/BMyGspk=;
-        b=WXfJC2xvujS1NMEJmo8auNqU+zz3KoHNnFI/ZwIoQGqsenIlj1/rLp7i8g0wrHhNMA
-         tB4UaPYqL8fo1FBLJD1QspR85zqLl/OHQQ2XW2wZhxbVmnvXaj4OEg2HGRtpK4xkfIA5
-         QryyOXVdb1eBXsQfmBlDoe7W6QRuDag4YOw+c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AAmPcakirZ+49aStGKItq0c+j+VEsXqfcBH/BMyGspk=;
-        b=kowpc6XCYZvbzW+5awK96cfMJLZVrhdirwB6Vm2ybc1RZMf7vuAv/lWqMopIYrI2dt
-         nf1unBjaPAKv/AsIP3n+ZnwqFkwxLYNYaV/Ytz8TiukK8PdSVKpYMTX4GklSHDXmFWzt
-         awKBjY6ri2clmUkQsNtQsxonzbMMujkod+B9PIuGD0j1RckNbuKWM5U6j81w9JeQ4fFV
-         D/DPz6psK5FvH99UuNDrqkICZ7UjzMdbAirci3vKKC5qOotusK0xionuqBPuSj1hmEse
-         oUebLRNpxhZl4050v0W8uq+uByxkL2CQ6j46JYBDAKjfHvHlHLkbItPc8jxtT3VofV1G
-         hXgQ==
-X-Gm-Message-State: AGi0Pub6B3aK4yZOTJ2PE9whf0TQBQbhQyI/8o/EOtQEVEY9eUG5Bp5e
-        hD9CRDAYHq6zBUsICE8DA88DHYNiSaUiyoZKd9u7kA==
-X-Google-Smtp-Source: APiQypLHBVJAv55CZxyRjUHHZPFErxI7m2EAB+edMw28HekqHKAMU8pcbynFySqYUgFQY0OpR/l48dylQu4jTtXwGxw=
-X-Received: by 2002:a4a:4190:: with SMTP id x138mr9186341ooa.35.1586425291875;
- Thu, 09 Apr 2020 02:41:31 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1586425390; x=1617961390;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=A3o7iwNYKZ7O2kghXsLkm2MqLsk9mCv8wiHQj4pLUK8=;
+  b=IxjUOPF2lOfppCOPNOeYcy83ZKs65nW/7eJ7JckTdikwYBzlHTd3lbtq
+   e0liv2uPaVFN8xT7CzNuwYDBifunJJQRvENVYdQdOpyDq0YJ8WmogQkwM
+   6q+YB69jyUcmmDDFUNUBegbumkF+XofIzHPBxu2SqCgn2EbjLORBVEhDO
+   o=;
+IronPort-SDR: v3D4vMoCWVdOhLTBHJE/sCYO8YnRcak74zexDsowtMi2dnxT5bknVRPyMtc2mZRRyW0dvlPHs7
+ /G4kT01Gsc8Q==
+X-IronPort-AV: E=Sophos;i="5.72,362,1580774400"; 
+   d="scan'208";a="27833870"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-2225282c.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 09 Apr 2020 09:43:07 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-2225282c.us-west-2.amazon.com (Postfix) with ESMTPS id 244A8A2426;
+        Thu,  9 Apr 2020 09:43:05 +0000 (UTC)
+Received: from EX13D31EUA001.ant.amazon.com (10.43.165.15) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 9 Apr 2020 09:43:04 +0000
+Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.115) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 9 Apr 2020 09:42:50 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <brendan.d.gregg@gmail.com>, <brendanhiggins@google.com>,
+        <cai@lca.pw>, <colin.king@canonical.com>, <corbet@lwn.net>,
+        <dwmw@amazon.com>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH 0/4] DAMON: Make Configurable for Various Address Spaces Including Physical Memory
+Date:   Thu, 9 Apr 2020 11:42:28 +0200
+Message-ID: <20200409094232.29680-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20200408115926.1467567-1-hch@lst.de> <20200408115926.1467567-20-hch@lst.de>
- <20200408122504.GO3456981@phenom.ffwll.local> <eb48f7b6327e482ea9911b129210c0417ab48345.camel@kernel.crashing.org>
-In-Reply-To: <eb48f7b6327e482ea9911b129210c0417ab48345.camel@kernel.crashing.org>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 9 Apr 2020 11:41:20 +0200
-Message-ID: <CAKMK7uHtkLvdsWFGiAtkzVa5mpnDvXkn3CHZQ6bgJ_enbyAc8A@mail.gmail.com>
-Subject: Re: [PATCH 19/28] gpu/drm: remove the powerpc hack in drm_legacy_sg_alloc
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, X86 ML <x86@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Laura Abbott <labbott@redhat.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-hyperv@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        "open list:GENERIC INCLUDE/A..." <linux-arch@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-s390@vger.kernel.org, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.115]
+X-ClientProxiedBy: EX13D15UWB003.ant.amazon.com (10.43.161.138) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 9, 2020 at 10:54 AM Benjamin Herrenschmidt
-<benh@kernel.crashing.org> wrote:
->
-> On Wed, 2020-04-08 at 14:25 +0200, Daniel Vetter wrote:
-> > On Wed, Apr 08, 2020 at 01:59:17PM +0200, Christoph Hellwig wrote:
-> > > If this code was broken for non-coherent caches a crude powerpc hack
-> > > isn't going to help anyone else.  Remove the hack as it is the last
-> > > user of __vmalloc passing a page protection flag other than PAGE_KERNEL.
-> >
-> > Well Ben added this to make stuff work on ppc, ofc the home grown dma
-> > layer in drm from back then isn't going to work in other places. I guess
-> > should have at least an ack from him, in case anyone still cares about
-> > this on ppc. Adding Ben to cc.
->
-> This was due to some drivers (radeon ?) trying to use vmalloc pages for
-> coherent DMA, which means on those 4xx powerpc's need to be non-cached.
->
-> There were machines using that (440 based iirc), though I honestly
-> can't tell if anybody still uses any of it.
+From: SeongJae Park <sjpark@amazon.de>
 
-agp subsystem still seems to happily do that (vmalloc memory for
-device access), never having been ported to dma apis (or well
-converted to iommu drivers, which they kinda are really). So I think
-this all still works exactly as back then, even with the kms radeon
-drivers. Question really is whether we have users left, and I have no
-clue about that either.
+DAMON[1] is currently supporing only virtual memory address spaces of several
+target processes.  Therefore, the user of DAMON should first select the target
+processes.  This could be cumbersome in some cases and even makes no sense if
+the user want to monitor non-virtual address spaces.  Especially, there were
+many requests and questions for support of physical memory monitoring.
 
-Now if these boxes didn't ever have agp then I think we can get away
-with deleting this, since we've already deleted the legacy radeon
-driver. And that one used vmalloc for everything. The new kms one does
-use the dma-api if the gpu isn't connected through agp.
--Daniel
+There were also many questions about use of different access check mechanisms
+such as dedicated H/W features[2], idle page tracking, or perf-mem, instead of
+the PTE Accessed bit checking, which is currently used by DAMON.  Supporting
+various access check mechanisms will make DAMON to be highly tunable for
+specific cases.
 
-> Cheers,
-> Ben.
->
-> > -Daniel
-> >
-> > >
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > ---
-> > >  drivers/gpu/drm/drm_scatter.c | 11 +----------
-> > >  1 file changed, 1 insertion(+), 10 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/drm_scatter.c b/drivers/gpu/drm/drm_scatter.c
-> > > index ca520028b2cb..f4e6184d1877 100644
-> > > --- a/drivers/gpu/drm/drm_scatter.c
-> > > +++ b/drivers/gpu/drm/drm_scatter.c
-> > > @@ -43,15 +43,6 @@
-> > >
-> > >  #define DEBUG_SCATTER 0
-> > >
-> > > -static inline void *drm_vmalloc_dma(unsigned long size)
-> > > -{
-> > > -#if defined(__powerpc__) && defined(CONFIG_NOT_COHERENT_CACHE)
-> > > -   return __vmalloc(size, GFP_KERNEL, pgprot_noncached_wc(PAGE_KERNEL));
-> > > -#else
-> > > -   return vmalloc_32(size);
-> > > -#endif
-> > > -}
-> > > -
-> > >  static void drm_sg_cleanup(struct drm_sg_mem * entry)
-> > >  {
-> > >     struct page *page;
-> > > @@ -126,7 +117,7 @@ int drm_legacy_sg_alloc(struct drm_device *dev, void *data,
-> > >             return -ENOMEM;
-> > >     }
-> > >
-> > > -   entry->virtual = drm_vmalloc_dma(pages << PAGE_SHIFT);
-> > > +   entry->virtual = vmalloc_32(pages << PAGE_SHIFT);
-> > >     if (!entry->virtual) {
-> > >             kfree(entry->busaddr);
-> > >             kfree(entry->pagelist);
-> > > --
-> > > 2.25.1
-> > >
-> >
-> >
->
+Fortunately, the core mechanisms of DAMON, the region-based sampling and
+adaptive regions adjustment, are not coupled with the virtual memory spaces and
+Accessed bit based access check.  As long as there is a way to 1) address every
+region in the space and 2) check access to specific address, the core
+mechanisms could be applied.  Nonetheless, current implementation of DAMON is
+highly coupled with the virtual memory address spaces.
 
+[1] https://lore.kernel.org/linux-mm/20200406130938.14066-1-sjpark@amazon.com/
+[2] https://images.anandtech.com/doci/10591/HC28.AMD.Mike%20Clark.final-page-016.jpg
+
+
+Baseline and Complete Git Trees
+===============================
+
+The patches are based on the v5.6 plus DAMON v8 patchset[1] and DAMOS RFC v6[2]
+patchset.  You can also clone the complete git tree:
+
+    $ git clone git://github.com/sjp38/linux -b cdamon/rfc/v1
+
+The web is also available:
+https://github.com/sjp38/linux/releases/tag/cdamon/rfc/v1
+
+This patchset breaks the couplings and allows the target region definition and
+the access check to be configurable by users so that it can support various
+types of address spaces and use cases.  Based on this patchset, you can
+configure DAMON to monitor physical memory or other special address spaces with
+your preferred access check mechanism.
+
+[1] https://lore.kernel.org/linux-mm/20200406130938.14066-1-sjpark@amazon.com/
+[2] https://lore.kernel.org/linux-mm/20200407100007.3894-1-sjpark@amazon.com/
+
+
+Sequence of Patches
+===================
+
+The sequence of patches is as follow.  The first patch defines the monitoring
+region again based on pure address range abstraction so that there is no
+assumption of virtual memory in there.  The following patch cleans up code
+using the new abstraction.  The third patch allows users to configure the
+initialization and dynamic update of the target address regions, which were
+highly coupled with virtual memory area, with their own things.  Finally, the
+fourth patch further make the access check mechanism, which were based on PTE
+Accessed bit, configurable.
+
+SeongJae Park (4):
+  mm/damon: Use vm-independent address range concept
+  mm/damon: Clean up code using 'struct damon_addr_range'
+  mm/damon: Make monitoring target regions init/update configurable
+  mm/damon: Make access check configurable
+
+ include/linux/damon.h |  15 +++-
+ mm/damon-test.h       |  82 ++++++++++----------
+ mm/damon.c            | 174 ++++++++++++++++++++----------------------
+ 3 files changed, 136 insertions(+), 135 deletions(-)
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+2.17.1
+
