@@ -2,136 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E8C1A3216
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:45:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1101A321D
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:53:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgDIJpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:45:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgDIJpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:45:15 -0400
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C855E214D8;
-        Thu,  9 Apr 2020 09:45:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586425514;
-        bh=A5ttw0wxiG440jjRYkFi9rF7N++NdUJK1VjeW4v3ff8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Z/aNYOEskI02i3kV8H6MN7za7LVank8U2o2tYU8YcETBlzAWs4C7ojNrbZ1xig3xN
-         6e68iiI15dDlfc6dVwiDXfb2INj+BxMJIRKNUFXPLS1eLACrogF/I7VF5cWUnJi4Pz
-         qldO0c18PlAnvcaKs/O1mMZKvWvnsNsOvkC34s/M=
-Received: by mail-io1-f52.google.com with SMTP id b12so3185395ion.8;
-        Thu, 09 Apr 2020 02:45:14 -0700 (PDT)
-X-Gm-Message-State: AGi0PuYLUZere7WF/zYFZlg3bIqRfoWKQj/aaPWn9nDsciS/lG7uLTrg
-        ZrMTTQvdfcj3vQt6dPbmIPox/P6Dsk1Fd1FazZE=
-X-Google-Smtp-Source: APiQypKYlj97ebVeCKMbb/G38jXlGKLN2lQo+owDPErNhcVXNc3z3B626baI93YbEqM6CsakelBElxB1zRGYlduAMz4=
-X-Received: by 2002:a5d:8b57:: with SMTP id c23mr11156147iot.161.1586425514263;
- Thu, 09 Apr 2020 02:45:14 -0700 (PDT)
+        id S1726706AbgDIJww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 05:52:52 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:44241 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbgDIJww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 05:52:52 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MUog3-1jn3Fy3czR-00Qhna for <linux-kernel@vger.kernel.org>; Thu, 09 Apr
+ 2020 11:52:52 +0200
+Received: by mail-qt1-f176.google.com with SMTP id o10so1117357qtr.6
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 02:52:51 -0700 (PDT)
+X-Gm-Message-State: AGi0PubZ+QhTMV0IW/+5f9irbcFpQBZxi8Ct2qWwme70GX/RqBXUVvNf
+        5bDN9yapY9okY25egx01rfvndS+wXFNBOljc5Jg=
+X-Google-Smtp-Source: APiQypL+DwHH2ZguxZLXN8OA5ycsBeUoFtHigT4vFuKKbtUbT4QIjDNqDn6MdopgZgREkiqjW4wiglbzubeOCiv08nY=
+X-Received: by 2002:ac8:7292:: with SMTP id v18mr11264133qto.304.1586425970748;
+ Thu, 09 Apr 2020 02:52:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200113172245.27925-1-ardb@kernel.org> <20200113172245.27925-6-ardb@kernel.org>
- <63b125a4-6c62-fcdf-de22-d3bebe2dcbf5@suse.cz> <CAMj1kXGiT_zYjc6X-msRXVozhpDAY0UesEW3_4fOgiH4FyMgDw@mail.gmail.com>
- <972b66a9-92c7-9a15-1aa1-e3236abe90df@suse.cz> <CAMj1kXFGkOM9fbqr44_TbdxqFjH1i3d8dkO64C1mQmH=AqrUSQ@mail.gmail.com>
- <20200409080626.GV5951@GaryWorkstation> <984a2b3c-a9d4-e733-6372-4abf0f99be1f@suse.cz>
- <CAMj1kXFHUusU9dDgqhU_qswDVgYWx_kpaDEroj4ZSt3hr-AFsA@mail.gmail.com>
- <d38fd829-b944-da10-58c0-180f80e8264d@suse.cz> <CAMj1kXG4F+WzJX8_FyRAxQmDwqvbQMzh3Ji1KcpH_eO3Zt3-WQ@mail.gmail.com>
-In-Reply-To: <CAMj1kXG4F+WzJX8_FyRAxQmDwqvbQMzh3Ji1KcpH_eO3Zt3-WQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 9 Apr 2020 11:45:03 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFBoM03po-nmi+BWXOh6RQRNPmpkxnNFe-bf2bsVNW4Cg@mail.gmail.com>
-Message-ID: <CAMj1kXFBoM03po-nmi+BWXOh6RQRNPmpkxnNFe-bf2bsVNW4Cg@mail.gmail.com>
-Subject: Re: [PATCH 05/13] efi/x86: don't map the entire kernel text RW for
- mixed mode
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     Gary Lin <glin@suse.com>, linux-efi <linux-efi@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Young <dyoung@redhat.com>,
-        Saravana Kannan <saravanak@google.com>
+References: <cover.1586422035.git.baolin.wang7@gmail.com> <CAK8P3a1rWuL-mSeFBN0Dk7u3wnDmPgknEM3Em734KP64-Wv0ZQ@mail.gmail.com>
+ <CADBw62qEfdLM9e2oyPKz1qRk4mZaFPbXRYpLfVHzxKj0Cz90kw@mail.gmail.com>
+In-Reply-To: <CADBw62qEfdLM9e2oyPKz1qRk4mZaFPbXRYpLfVHzxKj0Cz90kw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 9 Apr 2020 11:52:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3rFKVukWk7U1abHnW4a-5TV4e57f=9Lt9Xbfytm7H09A@mail.gmail.com>
+Message-ID: <CAK8P3a3rFKVukWk7U1abHnW4a-5TV4e57f=9Lt9Xbfytm7H09A@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] Add new reg_update_bits() support
+To:     Baolin Wang <baolin.wang7@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:ukI8mr9iL59Bz0uuiB4N0ZZtSMVBLLSIhU44Wy8tIBCvQpQZ1cY
+ 5LbkevPtle+07lq9OGqfyPCDsBwtQtZ0CGjDuTieB2Ta4tHJOipPkPfycyIF11NTaaOUdIp
+ L6fdmsBpYgY0FnY6Nx+InqC69pNeT8M7dLSa7a6zFZlxMe8exe9ySNUMUssRmi/YNLp7h2Z
+ SuXTpV6KqHOcvm6tsQrPQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BE3k4PoYWps=:Y+IOHy/sTJvz749kizmGjw
+ Eajge275lCu9WQ7iHmd4PSRjXowqMsAN3Xwk4YSEh00eQHzgNNZcTfdPN8oyMIiFDOf4NQVl2
+ cb4V66ASJmYsFrEITBiyLyOtqFgqXJi6XoWjwxJtIcss3sfXirB2dSxdgw59DdItj2gYVtVhR
+ qEh0dMZGJpIlG7agbKyLl2x4yC3/EbcQdQYnySPkc7hH94vN+8SHNUqS6P19KP/uoaESnUwuk
+ luu4qvf6o9UwDQQb382uOs9YpLzAF5soGM4i+bKDk9kbnwtf0QVGAyi2iCUvpwO2dhYQH0lM1
+ HUBZy7gXLOax5Y/Gxk5opkaS24HgED3n0SDjB0kacH52ZqvGMHbFUg2parS8JePTuZfRhSBmW
+ P9q6HaL71zt1d9yyRmFn9TgJ7uel2m92pJTKUTJxmcWzRf/1hC0h7WYmF22HE6hpYcN46+4wx
+ NQAN8QFyWfIqeLFP108xdwj/r6aqyo8lL+OvsJp1yuYJd5wHIl63kYfTdVPbrEdaWqPUcQVin
+ 8nHDl4Sqf9EY4VezTG04zwPINsoCx8oskOF/hhad9Nbh0Oj4FbCiAH12DPZ8eUf0/P5gxBck+
+ FOR1QE52SDxoo6p4lZVeLMjUurh7X8jgLwM38GUrVrSkKDgrj3K9kHysVjO1w1ol7X1+gJ52f
+ /ZfKowDL4pytu5o7LbmtH7A2aKIy3PFbFdHg8K++WvJg+1kBJldlsMnHZBLEBz/RM6oxRTYWr
+ 2dTeO5t76FmCrkoHKKJtmOk7oQhNtELA2JrKlm0v6lhWSpkryADkKOHbIEmyeQYe4qdI6br87
+ x4nv9PqqlYLTk3M0iJpsRKkvsfXKwzcU9OxyFbXLyyzdjErG9k=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Apr 2020 at 11:09, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Thu, 9 Apr 2020 at 10:36, Jiri Slaby <jslaby@suse.cz> wrote:
-> >
-> > On 09. 04. 20, 10:19, Ard Biesheuvel wrote:
-> > >>>> $ rpm -qlp ~/Downloads/ovmf-202002-1.1.i586.rpm
-> > >>>> warning: /home/ardbie01/Downloads/ovmf-202002-1.1.i586.rpm: Header V3
-> > >>>> RSA/SHA256 Signature, key ID 3dbdc284: NOKEY
-> > >>>> /usr/share/doc/packages/ovmf
-> > >>>> /usr/share/doc/packages/ovmf/README
-> > >>>
-> > >>> Hmmm, it's weird that OBS doesn't list all derived files.
-> > >>> Anyway, the ia32 ovmf is available in
-> > >>> http://download.opensuse.org/tumbleweed/repo/oss/noarch/qemu-ovmf-ia32-202002-1.1.noarch.rpm
-> > >>
-> > >> It indeed does:
-> > >> https://build.opensuse.org/package/binaries/openSUSE:Factory/ovmf/standard
-> > >>
-> > >> Note that the ia32 version is noarch, built on i586.
-> > >>
-> > >
-> > > I am not able to reproduce this issue using the linked firmware image
-> > > and a 5.6 x86_64_defconfig with efivarfs built in.
-> >
-> > Yeah, I had to use the distro config too. Not sure what the trigger is.
-> > Maybe some NUMA configs or something.
-> >
-> > > Could anyone share the full log, please, along with the kernel config
-> > > that was used?
-> >
-> > Both uploaded:
-> > http://decibel.fi.muni.cz/~xslaby/err/
-> >
->
-> With the same config, I am still not seeing the issue.
->
->
-> > Note that I switched the for-me-necessary =m configs to =y. So that it
-> > is enough to build bzImage, w/o modules...
-> >
->
-> Could you please try running it again with CONFIG_EFI_PGT_DUMP=y enabled?
->
-> In the mean time, I will try to install Tumbleweed from scratch. Do
-> you have any steps I could follow to reproduce your setup?
->
+On Thu, Apr 9, 2020 at 11:40 AM Baolin Wang <baolin.wang7@gmail.com> wrote:
 
-The faulting code decodes to
+> > It would be nice in theory to move the sigmatel devices over to
+> > reg_update_bits() in theory, but this seems unlikely to actually happen,
+> > given that these are mostly obsolete drivers at this point.
+>
+> I checked all sigmatel devices (about 10 drivers), I think there will
+> be more work to change them to use syscon/regmap when changing to
+> reg_update_bits(). I am afraid I can not thelp to convert them without
+> a hardware, and as you said, some drivers are already dead. So I think
+> it would be nice if the driver owners can help to convert these
+> drivers, if we get a consensus about the reg_update_bits()
+> implementation at last.
 
-  2a:* 89 03                mov    %eax,(%ebx) <-- trapping instruction
-  2c: be 05 00 00 80        mov    $0x80000005,%esi
-  31: a1 74 63 31 3d        mov    0x3d316374,%eax
-  36: 83 c0 48              add    $0x48,%eax
-  39: e8 44 d2 ff ff        call   0xffffd282
-  3e: eb 05                 jmp    0x45
+Thanks for taking a closer look. I didn't want to imply that you should
+fix them, just saying that it might have been nice if they had been
+done like this in the first place. Of course, when the drivers were
+written, we did not even have the regmap-mmio helpers at all.
 
-which looks suspiciously like
-
-MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c-2390-  } else {
-MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c-2391-
-*DataSize = VarDataSize;
-MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c:2392:    Status
-= EFI_BUFFER_TOO_SMALL;
-MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c-2393-    goto Done;
-MdeModulePkg/Universal/Variable/RuntimeDxe/Variable.c-2394-  }
-
-in EDK2, so it seems like the GetVariable() is being called with a
-datasize pointer that resides in r/o memory
-
-It would be very helpful if we could get the memory dump that
-CONFIG_EFI_PGT_DUMP=y provides, as well as some idea of the call stack
-that performs get GetVariable() call at this point. The mixed mode
-code just passes the address it gets, but it does translate it to a
-physical address, which means it accesses the memory via a different
-mapping.
+      Arnd
