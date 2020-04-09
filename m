@@ -2,105 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5C71A3CFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 01:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E2A1A3D0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 01:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727302AbgDIXeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 19:34:08 -0400
-Received: from ozlabs.org ([203.11.71.1]:37169 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727195AbgDIXeF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 19:34:05 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 48yyCG5dd0z9sQt;
-        Fri, 10 Apr 2020 09:34:02 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1586475243;
-        bh=iDTVLKuqXJrCBfSTzDq+b5Cuz3DDrj7b2y5pTvSP+lA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bT828MiueJAlvr8WUvLkOGX5mDc99OjEY+pWZ04WC5QeQAMpxFeWVrQ2RvlTfEPD5
-         rG/YEtMF/ET7pkpt3zzgddG7LtkP5ZdhJV3H0Kcdgw9eowu8ethxrWB6a6MziYtc06
-         ujObB8s6lSOLjmRoH+nzMqUVrgIRH/gJ44bO9Ur5cmb5KauQ9sKvf8CnPpLjY6ae/r
-         jX4wJExOT3ktEAraOSocj2fmjiRNZXmrHkgSNh40mB5gzuNQhKyY0wXek+WnklqWIm
-         JWQVsxBR/jndTbTjayibKrCigCAFL7TFRNIBcSaFJPovvDQf9QyU48KZDlj1gEXOJH
-         Lp+TK4j08SlPw==
-Date:   Fri, 10 Apr 2020 09:34:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
-Message-ID: <20200410093402.304ac89b@canb.auug.org.au>
-In-Reply-To: <CAHk-=wj64Uw1O9-f=XYCraLgbqBqqBHSdyO1JG80smvC-01Nug@mail.gmail.com>
-References: <20200408014010.80428-1-peterx@redhat.com>
-        <20200408174732.bc448bbe41d190bfe5cc252e@linux-foundation.org>
-        <20200409114940.GT21484@bombadil.infradead.org>
-        <CACT4Y+ZvQ9UvVAwTjjD8Zxo0X_nfxa3+6n6TqWk2g+hahBwdCw@mail.gmail.com>
-        <20200409111604.c778ff091c00fab5db095e48@linux-foundation.org>
-        <CAHk-=wiU77DeNxQsU4XrDCk59asyTs=Hn+mnTx6-SHB1_fA2NQ@mail.gmail.com>
-        <20200409121250.d6bba6965b86c8dfcf325fbc@linux-foundation.org>
-        <CAHk-=wgy3XRiyRP7vdfF6bHwWGaB1RwyWJmyphh+Q3qYk6w27w@mail.gmail.com>
-        <20200409195633.GZ21484@bombadil.infradead.org>
-        <CAHk-=wi50jKXOFpsRkxrqu4upNnEKm1oRZ_SG1yJB9QVh=VJZQ@mail.gmail.com>
-        <20200409202751.GA7976@gmail.com>
-        <CAHk-=wj64Uw1O9-f=XYCraLgbqBqqBHSdyO1JG80smvC-01Nug@mail.gmail.com>
+        id S1726949AbgDIXqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 19:46:30 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:37850 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726726AbgDIXq3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 19:46:29 -0400
+Received: by mail-pf1-f193.google.com with SMTP id u65so291667pfb.4;
+        Thu, 09 Apr 2020 16:46:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=X1Y8bnD3QMGmRcwUVI82L0iDUV1q8Fy3GQNmvFYnS2I=;
+        b=EBxEUf08dMeA2iEQohC5/R3ZVAHRMWWtefrFAHbK3WBKDA3GsxHCGkxIMncKubJ14s
+         ZqP447beS2tDu8NLH1Z44HuydTaUOJwx4UvmH8w9UE66LnWULAeThpHVGv7KL/t1IQ0z
+         nXGlMIXpzqjB9hMb2IcXye17mn11vmGodw94zXUXdpypQtgltIkMQUBpX3lpyQLcQhKs
+         kQI2/Tz08GLv0yr0aet1S8RRQlqzSM7yN+zQ+e+KhdgepQmmcXKW4fxnkQaG1Dt82L0h
+         xYs6faP7szYqAUT2Vq+a4PoC+D7liwiWUMPO1Y6tmyF0KcAKHRiKCImaEY+I5eSH5Prx
+         zO6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=X1Y8bnD3QMGmRcwUVI82L0iDUV1q8Fy3GQNmvFYnS2I=;
+        b=k3dyzjRdfrMbravnNC7lg4kpvJooy29jyo12cVeKxCEmoS3vzkmAVw14WfU7OW2yfo
+         KPX7f9WMvwSsMzcYdNwKHtd0/LwC94g5LiA87rfWPKtbevl/uBe/qfLOr5TsLTejdU17
+         zCCyjBwhjnnZGlZPG1lZvYNL0GwBHr4J/CIds4kugSQG8E5uRSkH2KMERlrqj9ZE///j
+         uQXdvnAT3Q7OEELy8rR6pSJ+rk2B5nVjEYkJ51oKUhxfcOeQ2UEBb4aFiqoS6rmK12Aq
+         7pPR6slOjykBp9so88CzHkjWnlebwn9aa+s5/HMFKShF4eVL5NQCBkJNz5QmInh3b1OX
+         3DvQ==
+X-Gm-Message-State: AGi0PuZN9pfwlIF0s84F8nh8IhiSLoIpQ8SuXdlQOcLvnvPDYvZ/APzM
+        y0z/J7Vjusud9n7qOW1iqpc=
+X-Google-Smtp-Source: APiQypJ1xTM0Kzl/R2WKceZ2kuvIzhM7XWOQrpUymOEdXWNA+ZOn9J7ew7DVykXrVkUi5rHMe4xDrg==
+X-Received: by 2002:a62:648f:: with SMTP id y137mr2268339pfb.199.1586475986437;
+        Thu, 09 Apr 2020 16:46:26 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:3c2a:73a9:c2cf:7f45])
+        by smtp.gmail.com with ESMTPSA id w27sm191851pfq.211.2020.04.09.16.46.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 16:46:25 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 16:46:23 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 2/3] Input: rotary-encoder-counter: add DT bindings
+Message-ID: <20200409234623.GU75430@dtor-ws>
+References: <20200406155806.1295169-1-kamel.bouhara@bootlin.com>
+ <20200406155806.1295169-3-kamel.bouhara@bootlin.com>
+ <20200409222115.GT75430@dtor-ws>
+ <20200409223907.GW3628@piout.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Cyo+WHzp6CCvCDaVjoZLMqd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200409223907.GW3628@piout.net>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Cyo+WHzp6CCvCDaVjoZLMqd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Apr 10, 2020 at 12:39:07AM +0200, Alexandre Belloni wrote:
+> Hi Dmitry,
+> 
+> On 09/04/2020 15:21:15-0700, Dmitry Torokhov wrote:
+> > On Mon, Apr 06, 2020 at 05:58:05PM +0200, Kamel Bouhara wrote:
+> > > Add dt binding for the counter variant of the rotary encoder driver.
+> > > 
+> > > Signed-off-by: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > > ---
+> > >  .../input/rotary-encoder-counter.yaml         | 67 +++++++++++++++++++
+> > >  1 file changed, 67 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
+> > > new file mode 100644
+> > > index 000000000000..a59f7c1faf0c
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/input/rotary-encoder-counter.yaml
+> > > @@ -0,0 +1,67 @@
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/input/rotary-encoder-counter.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Rotary Encoder Counter
+> > > +
+> > > +maintainers:
+> > > +  - Kamel Bouhara <kamel.bouhara@bootlin.com>
+> > > +
+> > > +description:
+> > > +  Registers a Rotary encoder connected through a counter device.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: rotary-encoder-counter
+> > 
+> > I wonder if a separate driver is really needed. The original driver be
+> > taught to use counter device when available?
+> > 
+> 
+> By the original driver, do you mean drivers/input/misc/rotary_encoder.c
+> that is using gpios ?
 
-Hi all,
+Yes.
 
-On Thu, 9 Apr 2020 13:34:18 -0700 Linus Torvalds <torvalds@linux-foundation=
-.org> wrote:
->
-> On Thu, Apr 9, 2020 at 1:27 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> >
-> > Would it help if bugs blocking testing on linux-next were Cc'ed to
-> > linux-next@vger.kernel.org, so that Stephen could investigate? =20
->=20
-> Maybe. I'll let Stephen say.
+> 
+> > > +
+> > > +  counter:
+> > > +    description: Phandle for the counter device providing rotary position.
+> > > +
+> > > +  linux-axis:
+> > > +    description: The input subsystem axis to map to this rotary encoder.
+> > > +    type: boolean
+> > > +
+> > > +  qdec-mode:
+> > > +    description: |
+> > > +      Quadrature decoder function to set in the counter device.
+> > > +      3: x1-PHA
+> > > +      4: x1-PHB
+> > > +      5: x2-PHA
+> > > +      6: x2-PHB
+> > > +      7: x4-PHA and PHB
+> > 
+> > Is it really property of the rotary encoder itself or property of the
+> > counter device?
+> > 
+> 
+> The mode the quadrature decoder has to be put in depends on both the
+> rotary encoder and the qdec.
 
-It would certainly help so I could at least chase people and maybe
-revert commits.  Dropping trees can be problematic once Andrew has
-built his quilt series on top of them, so I try not to drop whole trees.
-I can also use a previous version of a tree (which is usually what I
-do if I discover a build problem).
+OK.
 
---=20
-Cheers,
-Stephen Rothwell
+> 
+> > > +
+> > > +  steps:
+> > > +    description: Number of steps in a full turnaround of the encoder.
+> > > +      Only relevant for absolute axis. Defaults to 24 which is a typical
+> > > +      value for such devices.
+> > > +
+> > > +  relative-axis:
+> > > +    description: Register a relative axis rather than an absolute one.
+> > > +    type: boolean
+> > > +
+> > > +  rollover:
+> > > +    description: Automatic rollover when the rotary value becomes greater
+> > > +      than the specified steps or smaller than 0. For absolute axis only.
+> > > +    type: boolean
+> > > +
+> > > +  poll-interval:
+> > > +    description: Poll interval at which the position is read from the counter
+> > > +      device (default 500ms).
+> > 
+> > Is there a way found counters to signal an interrupt?
+> > 
+> 
+> For some counters, there are interrupts available, this is not trivial
+> with the counter that is the target of this work but this is on the TODO
+> list. Of course, this will also require adding a bit more to the
+> in-kernel counter API to allow registering a callback that would be
+> called when an interrupt happens.
 
---Sig_/Cyo+WHzp6CCvCDaVjoZLMqd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Should it be a callback, or can counter create an irqchip so that users
+do not need to know how exactly it is wired up?
 
------BEGIN PGP SIGNATURE-----
+Thanks.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6PsOoACgkQAVBC80lX
-0GxWLggAgmL7x+eqNfGwjUwzwkR4SsmGhiMBB64I7FHl3YEYFmnGcpuy45CJRUTF
-QE4pclJV1QJEFbJ6ubyevuNvdp/kEbSiJZd/XeuGTc4SNX16sY+I4DHEKIe28zlO
-RU767VR4GGrZWICQKsIWygH/qn1vIwvRTNmxK/jxcSLabxVmth9gmLH1VOIeIUvz
-JwtpFkk+ZlvCw3vdm7XZ9UnsCimylrr3Nd4DdkxFtq6bwLIepCGQ0MW5Rg8nVUE5
-wM5qMKStGjDt4BJnjJ3WvaabpIq45X8msM6/YWzVgxXEGlIsU4Tk8OABEyY9to0f
-ez0nXrcOZ5h0tfYSpSNIXfN+Ninjcw==
-=7JuK
------END PGP SIGNATURE-----
-
---Sig_/Cyo+WHzp6CCvCDaVjoZLMqd--
+-- 
+Dmitry
