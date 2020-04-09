@@ -2,89 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6591A3298
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 12:40:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137031A329B
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 12:40:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726623AbgDIKkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 06:40:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:48398 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbgDIKkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 06:40:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6697631B;
-        Thu,  9 Apr 2020 03:40:25 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E2E0E3F73D;
-        Thu,  9 Apr 2020 03:40:22 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 11:40:16 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        jinho lim <jordan.lim@samsung.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        opensource.kernel@vivo.com
-Subject: Re: [PATCH] ARM64: fixed dump_backtrace() when task running on
- another cpu
-Message-ID: <20200409104016.GA2183@C02TD0UTHF1T.local>
-References: <1586425106-7369-1-git-send-email-wangqing@vivo.com>
+        id S1726683AbgDIKkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 06:40:37 -0400
+Received: from outbound-smtp46.blacknight.com ([46.22.136.58]:46387 "EHLO
+        outbound-smtp46.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725828AbgDIKkh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 06:40:37 -0400
+Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
+        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id 5E507FACA9
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Apr 2020 11:40:36 +0100 (IST)
+Received: (qmail 26492 invoked from network); 9 Apr 2020 10:40:36 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.18.57])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Apr 2020 10:40:36 -0000
+Date:   Thu, 9 Apr 2020 11:40:34 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [PATCH] tracing: Remove obsolete PREEMPTIRQ_EVENTS kconfig option
+Message-ID: <20200409104034.GJ3818@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <1586425106-7369-1-git-send-email-wangqing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The PREEMPTIRQ_EVENTS option is unused after commit c3bc8fd637a9 ("tracing:
+Centralize preemptirq tracepoints and unify their usage"). Remove it.
 
-On Thu, Apr 09, 2020 at 05:38:16PM +0800, Wang Qing wrote:
-> We cannot get FP and PC when the task is running on another CPU,
-> task->thread.cpu_context is the last time the task was switched out,
-> it's better to give a reminder than to provide wrong information.
-> 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+Note that this option is hazardous as it stands. It enables TRACE_IRQFLAGS
+event on non-preempt configurations without the irqsoff tracer enabled.
+TRACE_IRQFLAGS as it stands incurs significant overhead on each IRQ
+entry/exit. This is because trace_hardirqs_[on|off] does all the per-cpu
+manipulations and NMI checks even if tracing is completely disabled for
+some insane reason.  For example, netperf running UDP_STREAM on localhost
+incurs a 4-6% performance penalty without any tracing if IRQFLAGS is
+set. It can be put behind a static brach but even the function entry/exit
+costs a little bit.
 
-Are you seeing this happen anywhere in particular today?
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ kernel/trace/Kconfig | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-> ---
->  arch/arm64/kernel/traps.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
-> index cf402be..c04e3e8 100644
-> --- a/arch/arm64/kernel/traps.c
-> +++ b/arch/arm64/kernel/traps.c
-> @@ -106,6 +106,14 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk)
->  		start_backtrace(&frame,
->  				(unsigned long)__builtin_frame_address(0),
->  				(unsigned long)dump_backtrace);
-> +	} else if (tsk->on_cpu) {
-> +		/*
-> +		 * The task is running in another cpu, so the call stack
-> +		 * is changing and we cannot get it.
-> +		 */
-> +		pr_warn("tsk: %s is running in CPU%d, Don't call trace!\n",
-> +			tsk->comm, tsk->cpu);
-
-I believe that we can race with a concurrent write to tsk->cpu in both
-cases above. We could use READ_ONCE() to get a snapshot, but we can
-still race and miss cases where the task was runnning as we backtrace
-it.
-
-Thanks,
-Mark.
-
-> +		return;
->  	} else {
->  		/*
->  		 * task blocked in __switch_to
-> -- 
-> 2.7.4
-> 
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index 402eef84c859..568ad371e19c 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -258,15 +258,6 @@ config TRACE_PREEMPT_TOGGLE
+ 	  Enables hooks which will be called when preemption is first disabled,
+ 	  and last enabled.
+ 
+-config PREEMPTIRQ_EVENTS
+-	bool "Enable trace events for preempt and irq disable/enable"
+-	select TRACE_IRQFLAGS
+-	select TRACE_PREEMPT_TOGGLE if PREEMPTION
+-	select GENERIC_TRACER
+-	default n
+-	help
+-	  Enable tracing of disable and enable events for preemption and irqs.
+-
+ config IRQSOFF_TRACER
+ 	bool "Interrupts-off Latency Tracer"
+ 	default n
