@@ -2,179 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B356C1A3A11
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 20:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7CB21A3A15
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 20:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgDIS5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 14:57:50 -0400
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:56594 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbgDIS5u (ORCPT
+        id S1726701AbgDIS7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 14:59:41 -0400
+Received: from mail-il1-f193.google.com ([209.85.166.193]:44154 "EHLO
+        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726632AbgDIS7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 14:57:50 -0400
-Received: by mail-pf1-f202.google.com with SMTP id s8so9341923pfd.23
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 11:57:48 -0700 (PDT)
+        Thu, 9 Apr 2020 14:59:40 -0400
+Received: by mail-il1-f193.google.com with SMTP id i14so681807ilr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 11:59:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=dV55i5OKu53gCjPKMaS+sZiUvBZF3vLXGMZJy5h6XOc=;
-        b=ZiYfLRBaKJhlf9CX1sSOjJ7CgSo0ClqkHyg8VYmtwE4byvPBDaP/lfX/FPo9rHWn4H
-         6D8mz+kHbyKmgS4X9kuwgWN8LjOihcIEzej/lBr7aQBAyL1GXPfhw7UyAE/7voDE07So
-         AtPFxbF8v10HGuCUcFZ38oXkvyUaDAU+JXNnMKvQ1/IvDlsqeQnJUWLaXlOPbnmlCTde
-         3yYMLF5owG4wd1GPyjYUEt4O5KbbqRtkGu6mdSAqwa1NBX4mRaQwndjLwn+YSmiIpjEc
-         S4LZfMsc00nakMKVnGdFeAIYpdtVSvahkVclTa0NnNk0yTh76kXdu4/ViQoh3UHlrlRb
-         1l8Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=XapjivXGkGsUmtlpUpEqP8y7iiz+mzopvTm3cK2sD+c=;
+        b=VOVPND08BpC28BgAGXOAhRLNjSN53Jd1vGntIRkopRH+0s+GgEIJ3xswzqvnuJ9boB
+         gAyNB7zYQA1872hnVRtAFZ3ewNKwstGPl5ea2GtrX/ZUmkOimH8Y2q6ll9cSa+tDnzcB
+         3jVaXvY5zHEj4bknf115cViBKLOY+1BD7TUUZU6MffawcTbvuL+QTOS+3rQQSfzf2VrY
+         h9haJOM9MHN4/KYXNXnGrdFFXnWx/M+divtrdiFb462BpFipyARaiiGFaGrO/hbKwog8
+         qjbQcpmg+6gOgB2tiSxrRndRccohGDtt2FpRj4yRwcHG925khGSB9t+exkOTwBqQswlE
+         m70g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=dV55i5OKu53gCjPKMaS+sZiUvBZF3vLXGMZJy5h6XOc=;
-        b=NpyiHSO/F0eHQ1hBabmSy+O0kW+PqYDCXv/iD0BCAyjnPvcS/LVlovfUszMNn8YNRz
-         m5yfkCO/6ulbDPcn5ZHeicB8JjBWEPwb8kkBhLUPYOSKr1Rq/N7zId/ESZgfEjp8efcN
-         dOXLHz36H8LlnNThMWMOZrdtHaU6WZSHs7dZPiDXY721nkIZcYzfoyH1FVhrBjhxQ+Ah
-         6ewPtMcvN28pcUgCMWAUiWCJLl2de5H+xNFllUEJUU5d9EYfB5PbrL0Buviyv3guXz85
-         ExdCtcko2BLYSLhNXb89O9/0V7RVhBEWLgnqXu100lOqUIG7rchRuCWsrIiwAknSTSmp
-         +a5A==
-X-Gm-Message-State: AGi0Pub8EH/nxirYV2u0jeLjT7JsL7Ooh39DzSFdpQ8dXLwAsnBa2dOD
-        r5TDHjgn7XmdmSQLfuCD/KJh9QfiNKmx
-X-Google-Smtp-Source: APiQypKY6/nEHpXGGlZxKpfFrwe1RhKQeuZaRgXMLoMRAsPbVhfI5AHYA213uY15Qcz8QxRxiZ3cU9XmYS6S
-X-Received: by 2002:a63:ee0b:: with SMTP id e11mr939106pgi.80.1586458667642;
- Thu, 09 Apr 2020 11:57:47 -0700 (PDT)
-Date:   Thu,  9 Apr 2020 11:57:44 -0700
-Message-Id: <20200409185744.255881-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.26.0.292.g33ef6b2f38-goog
-Subject: [PATCH] perf data: if a bad header size, retry in pipe mode
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=XapjivXGkGsUmtlpUpEqP8y7iiz+mzopvTm3cK2sD+c=;
+        b=EBh3nL/GT55OaY3oWyw+WYutF39niSHYqn8qj7ca1VSKdxSUqLWwYSWl9xpj8BwtYN
+         1XepcxYAfqekxiQ1ZmjxUfiCxpkgZFGmcugCFav96rM4Lf4ftTRUl+b6AfJXMODvpc+l
+         iyDu1xHUUApGk5CZUwPoQ7IdtUQsO6RDd3rBTlLJbUexl1TJqW8wDdG/tmI+p2Knkgfx
+         FZI2/Q0HJ+PcUbg2F8NsKpLgUEm+oDld8brQdHlfFvnepB7CynG82HS+Q++SjPzd4XVQ
+         naRu+tEUiVr+z+icX9LThdFCGzNtl/vYE0uuGfL6HT87s8DWwNIfjJ7ngULSDVQVO+ML
+         1+yA==
+X-Gm-Message-State: AGi0PuZXRM+f/5WKT6hMXJIuFutCBtrEbXBICVGy3jkgxqUJVrvBfcvF
+        gF2ykT3y4tF4JqcHNQTEi9k7r3DVrEIBeh4EkT0=
+X-Google-Smtp-Source: APiQypJaSC/8XzcAZlDWxucArJTFMZ6ivB3lJq/s1ZBA/YigwvX8Xy6CjkxVO2eqoMyuz3EveCKbBut+eGC+JZ+VHTM=
+X-Received: by 2002:a92:1596:: with SMTP id 22mr1236840ilv.89.1586458778253;
+ Thu, 09 Apr 2020 11:59:38 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a6b:5c0d:0:0:0:0:0 with HTTP; Thu, 9 Apr 2020 11:59:37 -0700 (PDT)
+From:   Mohamed Abdullah <mohabdu0011@gmail.com>
+Date:   Thu, 9 Apr 2020 11:59:37 -0700
+X-Google-Sender-Auth: TjvITrC-Jtrtw7mvUYoxWsfYDJk
+Message-ID: <CAP6GkrimFCB-yNRG_-FDtq3tMM58k_1bk2f2TXP-UtnEY4V66g@mail.gmail.com>
+Subject: ASSALAMU ALAIKUM
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently pipe mode files fail like:
-$ perf record -o - sleep 1 > /tmp/perf.pipe.data
-$ perf report -i /tmp/perf.pipe.data
-incompatible file format (rerun with -v to learn more)
+Dearest Friend,
 
-This change makes it so that if a perf.data file's header size is wrong
-it is re-checked in pipe mode, where if wrong it fails as it currently
-does.
+I am Mohamed Abdullah, I want to seek your assistance after my
+discovery during auditing in my bank as I'm the manager of Bill and
+Exchange at the Foreign Remittance Department in Banque Centrale des
+Etats de l'Afrique de l'Ouest (BCEAO) Ouagadougou Burkina Faso.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/header.c | 35 ++++++++++++++++++++++++++---------
- tools/perf/util/header.h |  5 -----
- 2 files changed, 26 insertions(+), 14 deletions(-)
+In my department we discovered a sum of $27.500.000 million in an
+account that belonged to one of our foreign customer. Upon maturity,
+we sent a routine notifications to his forwarding addresses but got no
+response. After some months, we sent a reminder and finally discovered
+that our customer died from an automobile accident. On further
+investigation, I found out that he did not leave a will and all
+attempts to trace his next of kin were fruitless, I therefore, i want
+to used my position at the Bill and Exchange Manager to have the fund
+transferred out of the deceased account to your account, I therefore
+made further investigation and discovered that the person did not
+declare any next of kin in all his official documents, including his
+bank deposit paperwork.
 
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index acbd046bf95c..1df00a4a71b6 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -3329,8 +3329,15 @@ static int check_magic_endian(u64 magic, uint64_t hdr_sz,
- 	return 0;
- }
- 
--int perf_file_header__read(struct perf_file_header *header,
--			   struct perf_header *ph, int fd)
-+enum header_read_status {
-+	HEADER_READ_OK,
-+	HEADER_READ_BAD_SIZE,
-+	HEADER_READ_BAD,
-+};
-+
-+static enum header_read_status
-+perf_file_header__read(struct perf_file_header *header,
-+		       struct perf_header *ph, int fd)
- {
- 	ssize_t ret;
- 
-@@ -3338,12 +3345,12 @@ int perf_file_header__read(struct perf_file_header *header,
- 
- 	ret = readn(fd, header, sizeof(*header));
- 	if (ret <= 0)
--		return -1;
-+		return HEADER_READ_BAD;
- 
- 	if (check_magic_endian(header->magic,
- 			       header->attr_size, false, ph) < 0) {
- 		pr_debug("magic/endian check failed\n");
--		return -1;
-+		return HEADER_READ_BAD;
- 	}
- 
- 	if (ph->needs_swap) {
-@@ -3356,7 +3363,7 @@ int perf_file_header__read(struct perf_file_header *header,
- 		if (header->size == offsetof(typeof(*header), adds_features))
- 			bitmap_zero(header->adds_features, HEADER_FEAT_BITS);
- 		else
--			return -1;
-+			return HEADER_READ_BAD_SIZE;
- 	} else if (ph->needs_swap) {
- 		/*
- 		 * feature bitmap is declared as an array of unsigned longs --
-@@ -3398,7 +3405,7 @@ int perf_file_header__read(struct perf_file_header *header,
- 	ph->data_offset  = header->data.offset;
- 	ph->data_size	 = header->data.size;
- 	ph->feat_offset  = header->data.offset + header->data.size;
--	return 0;
-+	return HEADER_READ_OK;
- }
- 
- static int perf_file_section__process(struct perf_file_section *section,
-@@ -3580,12 +3587,22 @@ int perf_session__read_header(struct perf_session *session)
- 
- 	session->evlist->env = &header->env;
- 	session->machines.host.env = &header->env;
-+
-+	if (!perf_data__is_pipe(data)) {
-+		enum header_read_status status =
-+			perf_file_header__read(&f_header, header, fd);
-+		if (status == HEADER_READ_BAD)
-+			return -EINVAL;
-+		if (status == HEADER_READ_BAD_SIZE) {
-+			pr_debug("Data had a bad header size, retrying in pipe mode\n");
-+			lseek(fd, 0, SEEK_SET);
-+			data->is_pipe = true;
-+		}
-+	}
-+
- 	if (perf_data__is_pipe(data))
- 		return perf_header__read_pipe(session);
- 
--	if (perf_file_header__read(&f_header, header, fd) < 0)
--		return -EINVAL;
--
- 	/*
- 	 * Sanity check that perf.data was written cleanly; data size is
- 	 * initialized to 0 and updated only if the on_exit function is run.
-diff --git a/tools/perf/util/header.h b/tools/perf/util/header.h
-index 840f95cee349..3d7f39358265 100644
---- a/tools/perf/util/header.h
-+++ b/tools/perf/util/header.h
-@@ -73,11 +73,6 @@ struct perf_pipe_file_header {
- 	u64				size;
- };
- 
--struct perf_header;
--
--int perf_file_header__read(struct perf_file_header *header,
--			   struct perf_header *ph, int fd);
--
- struct perf_header {
- 	enum perf_header_version	version;
- 	bool				needs_swap;
--- 
-2.26.0.292.g33ef6b2f38-goog
+It is therefore upon this discovery that I decided as the head of my
+department to make this business proposal to you, to apply for the
+money as the next of kin or relation to the deceased for safety and
+subsequent disbursement, and you will be given 35% of the total
+amount, 60% will be for me and my colleague in my bank, while 5% will
+be for expenses both parties might have incurred during the process of
+transferring. We will conclude this operation within 21 banking days
+based on the amount of co-operation you will contribute.
 
+You will apply and start the first transfer with Eleven million
+[$11,000.000] upon successful transaction without any disappoint from
+your side, then you shall re-apply for the payment of the remaining
+amount to your account.
+
+upon your positive response and once I am convinced that you are
+capable and will meet up with instruction of a key bank official who
+is deeply involved with me in this business. I need your strong
+assurance that you will never,never let me down. With my influence and
+the position of the bank official we can transfer this money to any
+foreigner's reliable account which you can provide with assurance that
+this money will be intact pending my physical arrival in your country
+for sharing.
+
+Thank you for your understanding as I await your urgent response in
+order to give you more details,
+
+
+Yours faithfully,
+Mohamed Abdullah.
