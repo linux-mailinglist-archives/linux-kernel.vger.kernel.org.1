@@ -2,180 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 257B51A340F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 14:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F25921A345E
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 14:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgDIMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 08:38:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgDIMiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 08:38:12 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EF682078E;
-        Thu,  9 Apr 2020 12:38:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586435892;
-        bh=WARbwZGnUZV2UnK9Vejh4wss2lITzfHqNzx1x0ZnRIg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NRBW2/AFGuzYC27wZRpNJxuLpZcvmamSLi8xTBrmfGTW/VHHGTuNRYnjX/TDoVsC3
-         hdSQDu38KHTMS6fjLPT0j+mcYbHpwQddILv8v1hWocS6Pu3W0ya3HJAc3Jk0KywbBB
-         150KxrFUbK1j4cIG0WpZRnKg1SWYhOaS8AMPD3Es=
-Date:   Thu, 9 Apr 2020 21:38:06 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jiri Olsa <jolsa@kernel.org>
-Cc:     "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "bibo,mao" <bibo.mao@intel.com>,
-        "Ziqian SUN (Zamir)" <zsun@redhat.com>
-Subject: Re: [RFC] kretprobe: Prevent triggering kretprobe from within
- kprobe_flush_task
-Message-Id: <20200409213806.7657ec27d1b5cbd8243505b9@kernel.org>
-In-Reply-To: <20200408164641.3299633-1-jolsa@kernel.org>
-References: <20200408164641.3299633-1-jolsa@kernel.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726725AbgDIMuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 08:50:00 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:41553 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725987AbgDIMt7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 08:49:59 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200409124957epoutp03a70acfe904bc40925a14aafe20ab8926~EJ64c2R001562515625epoutp034
+        for <linux-kernel@vger.kernel.org>; Thu,  9 Apr 2020 12:49:57 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200409124957epoutp03a70acfe904bc40925a14aafe20ab8926~EJ64c2R001562515625epoutp034
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1586436597;
+        bh=k127lAaemQMj/UxuaYJHqu26q7MPrNgzRaknKbgSsf0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=aH9lC/5sYSfdgu0FWppKJyeFctE7U9niFnQ5lD/3vYVSg2lg8F/TgO69aU3MPh7dy
+         xw6WUb2WG+aqtV77iACLwenOWc4q5v/mZ+w/4uDMkS4wNaDUKLJSBRZYlXs5tnCdcv
+         fA2ky4L/iXDZHy6l8FycjiF6QDylXZGM/mCzzAf4=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20200409124957epcas5p3dfbf7b1eda2f7fbb79cea1a1f234cfdf~EJ64IgjDX0948209482epcas5p3s;
+        Thu,  9 Apr 2020 12:49:57 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        69.E7.04736.5F91F8E5; Thu,  9 Apr 2020 21:49:57 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20200409124013epcas5p33036c008f30327378a6ff02050261626~EJyY8LLLP3207032070epcas5p3i;
+        Thu,  9 Apr 2020 12:40:13 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200409124013epsmtrp10b7baeb055849648c1ebca84be825506~EJyY7dqyu3224132241epsmtrp1J;
+        Thu,  9 Apr 2020 12:40:13 +0000 (GMT)
+X-AuditID: b6c32a4b-ae3ff70000001280-4a-5e8f19f5c79f
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        69.B3.04158.DA71F8E5; Thu,  9 Apr 2020 21:40:13 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.109.224.135]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200409124012epsmtip272daa145077cb78ee405e314a1f6a06a~EJyXWxDKh1242112421epsmtip2l;
+        Thu,  9 Apr 2020 12:40:12 +0000 (GMT)
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com
+Cc:     linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, a.sahrawat@samsung.com,
+        v.narang@samsung.com, Maninder Singh <maninder1.s@samsung.com>
+Subject: [PATCH 1/1] smack: remove redundant structure variable from header.
+Date:   Thu,  9 Apr 2020 18:09:58 +0530
+Message-Id: <1586435998-18921-1-git-send-email-maninder1.s@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGIsWRmVeSWpSXmKPExsWy7bCmpu5Xyf44g+d7WCwu7k61uLftF5vF
+        uvWLmSwu75rDZvGh5xGbxeH5bSwW5y+cY7c4dHIuowOHx7XdkR4935M9+rasYvQ4un8Rm8fn
+        TXIBrFFcNimpOZllqUX6dglcGf3HIwsms1V07dvJ3sDYxNrFyMkhIWAi8ar7JksXIxeHkMBu
+        RonVy7axQjifGCX+tv9hB6kSEvjGKDGvWwam483cFVAdexklnn46CeV8ZZRYt2gjE0gVm4Ce
+        xKpde1hAbBEBe4nJ2++xgdjMAosZJd42KoDYwgI+Ejt/LgKq5+BgEVCV2HarGiTMK+Au8fr0
+        R2aIZXISN891MoPMlxDoYJNY2rWNESLhInHnWhM7hC0s8er4FihbSuJlfxs7REMzo8SnfWsZ
+        IZwpjBJLL36E+tpe4nVzA9hmZgFNifW79CHCshJTT61jgjiUT6L39xMmiDivxI55MLaqRMvN
+        DVBjpCU+f/zIAmF7SEza9hFspJBArMTsf6kTGGVnISxYwMi4ilEytaA4Nz212LTAOC+1XK84
+        Mbe4NC9dLzk/dxMjOPa1vHcwbjrnc4hRgINRiYe3g6k/Tog1say4MvcQowQHs5IIr3dTb5wQ
+        b0piZVVqUX58UWlOavEhRmkOFiVx3kmsV2OEBNITS1KzU1MLUotgskwcnFINjJ7th3IWlTvY
+        P97yIG+yu/+dt32T+Ca5lh0XTUz7IvWS6YPGob4HvvLaJ7K3RV22OZqh9v7xwvcHrG52Wtfq
+        Rax1r1l7NP5VUlLn7x+yCzuDbum+O/4mzjR7gs41YSHZr0acm4IXdTatV1m0Y292YGxEWbR+
+        M9OBdkkzm7AjNxXdJlTxzw68oMRSnJFoqMVcVJwIAH46SEf5AgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphluLIzCtJLcpLzFFi42LZdlhJXneteH+cwf8rphYXd6da3Nv2i81i
+        3frFTBaXd81hs/jQ84jN4vD8NhaL8xfOsVscOjmX0YHD49ruSI+e78kefVtWMXoc3b+IzePz
+        JrkA1igum5TUnMyy1CJ9uwSujP7jkQWT2Sq69u1kb2BsYu1i5OSQEDCReDN3BUsXIxeHkMBu
+        RolD+94zQiSkJX7+e88CYQtLrPz3nB2i6DOjxPqfh8GK2AT0JFbt2gNUxMEhIuAs8Ws5M0gN
+        s8ByRomDxx6BbRAW8JHY+XMRE0gNi4CqxLZb1SBhXgF3idenPzJDzJeTuHmuk3kCI88CRoZV
+        jJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBYaSltYPxxIn4Q4wCHIxKPLwGDP1xQqyJ
+        ZcWVuYcYJTiYlUR4vZt644R4UxIrq1KL8uOLSnNSiw8xSnOwKInzyucfixQSSE8sSc1OTS1I
+        LYLJMnFwSjUwys16bZCxzWfn3WmPpHQr8sysotY3BJR0LH3zpOLn7F93WxsXHRJ3qPtS/tak
+        +NQCoRszO9c+q9i4QOa9stXMPJuzzEz37m+RVp/J8s3229xFS8ubH7Dt2X0koZthJw9H7IUr
+        Sy4v/2cgbDljQtkUgYr5FbZXVFh3zIt8nZZ98ShzhNA8mY1dAUosxRmJhlrMRcWJAF/bcy8f
+        AgAA
+X-CMS-MailID: 20200409124013epcas5p33036c008f30327378a6ff02050261626
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200409124013epcas5p33036c008f30327378a6ff02050261626
+References: <CGME20200409124013epcas5p33036c008f30327378a6ff02050261626@epcas5p3.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+commit afb1cbe37440 ("LSM: Infrastructure management
+of the inode security") removed usage of smk_rcu,
+thus removing it from structure.
 
-On Wed,  8 Apr 2020 18:46:41 +0200
-Jiri Olsa <jolsa@kernel.org> wrote:
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+---
+ security/smack/smack.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-> hi,
-> Ziqian reported lockup when adding retprobe on _raw_spin_lock_irqsave.
-
-Hmm, kprobe is lockless, but kretprobe involves spinlock.
-Thus, eventually, I will blacklist the _raw_spin_lock_irqsave()
-for kretprobe.
-If you need to trace spinlock return, please consider to putting
-kprobe at "ret" instruction.
-
-> My test was also able to trigger lockdep output:
-> 
->  ============================================
->  WARNING: possible recursive locking detected
->  5.6.0-rc6+ #6 Not tainted
->  --------------------------------------------
->  sched-messaging/2767 is trying to acquire lock:
->  ffffffff9a492798 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_hash_lock+0x52/0xa0
-> 
->  but task is already holding lock:
->  ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
-> 
->  other info that might help us debug this:
->   Possible unsafe locking scenario:
-> 
->         CPU0
->         ----
->    lock(&(kretprobe_table_locks[i].lock));
->    lock(&(kretprobe_table_locks[i].lock));
-> 
->   *** DEADLOCK ***
-> 
->   May be due to missing lock nesting notation
-> 
->  1 lock held by sched-messaging/2767:
->   #0: ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
-> 
->  stack backtrace:
->  CPU: 3 PID: 2767 Comm: sched-messaging Not tainted 5.6.0-rc6+ #6
->  Call Trace:
->   dump_stack+0x96/0xe0
->   __lock_acquire.cold.57+0x173/0x2b7
->   ? native_queued_spin_lock_slowpath+0x42b/0x9e0
->   ? lockdep_hardirqs_on+0x590/0x590
->   ? __lock_acquire+0xf63/0x4030
->   lock_acquire+0x15a/0x3d0
->   ? kretprobe_hash_lock+0x52/0xa0
->   _raw_spin_lock_irqsave+0x36/0x70
->   ? kretprobe_hash_lock+0x52/0xa0
->   kretprobe_hash_lock+0x52/0xa0
->   trampoline_handler+0xf8/0x940
->   ? kprobe_fault_handler+0x380/0x380
->   ? find_held_lock+0x3a/0x1c0
->   kretprobe_trampoline+0x25/0x50
->   ? lock_acquired+0x392/0xbc0
->   ? _raw_spin_lock_irqsave+0x50/0x70
->   ? __get_valid_kprobe+0x1f0/0x1f0
->   ? _raw_spin_unlock_irqrestore+0x3b/0x40
->   ? finish_task_switch+0x4b9/0x6d0
->   ? __switch_to_asm+0x34/0x70
->   ? __switch_to_asm+0x40/0x70
-> 
-> The code within the kretprobe handler checks for probe reentrancy,
-> so we won't trigger any _raw_spin_lock_irqsave probe in there.
-> 
-> The problem is in outside kprobe_flush_task, where we call:
-> 
->   kprobe_flush_task
->     kretprobe_table_lock
->       raw_spin_lock_irqsave
->         _raw_spin_lock_irqsave
-> 
-> where _raw_spin_lock_irqsave triggers the kretprobe and installs
-> kretprobe_trampoline handler on _raw_spin_lock_irqsave return.
-
-Hmm, OK. In this case, I think we should mark this process is
-going to die and never try to kretprobe on it.
-
-> 
-> The kretprobe_trampoline handler is then executed with already
-> locked kretprobe_table_locks, and first thing it does is to
-> lock kretprobe_table_locks ;-) the whole lockup path like:
-> 
->   kprobe_flush_task
->     kretprobe_table_lock
->       raw_spin_lock_irqsave
->         _raw_spin_lock_irqsave ---> probe triggered, kretprobe_trampoline installed
-> 
->         ---> kretprobe_table_locks locked
-> 
->         kretprobe_trampoline
->           trampoline_handler
->             kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
-> 
-> The change below sets current_kprobe in kprobe_flush_task, so the probe
-> recursion protection check is hit and the probe is never set. It seems
-> to fix the deadlock.
-> 
-> I'm not sure this is the best fix, any ideas are welcome ;-)
-
-Hmm, this is a bit tricky to fix this issue. Of course, temporary disable
-kprobes (and kretprobe) on an area by filling current_kprobe might
-be a good idea, but it also involves other kprobes.
-
-How about let kretprobe skip the task which state == TASK_DEAD ?
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 627fc1b7011a..3f207d2e0afb 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1874,9 +1874,12 @@ static int pre_handler_kretprobe(struct kprobe *p, struct pt_regs *regs)
- 	 * To avoid deadlocks, prohibit return probing in NMI contexts,
- 	 * just skip the probe and increase the (inexact) 'nmissed'
- 	 * statistical counter, so that the user is informed that
--	 * something happened:
-+	 * something happened.
-+	 * Also, if the current task is dead, we will already in the process
-+	 * to reclaim kretprobe instances from hash list. To avoid memory
-+	 * leak, skip to run the kretprobe on such task.
- 	 */
--	if (unlikely(in_nmi())) {
-+	if (unlikely(in_nmi()) || current->state == TASK_DEAD) {
- 		rp->nmissed++;
- 		return 0;
- 	}
-
+diff --git a/security/smack/smack.h b/security/smack/smack.h
+index 62529f3..5ebd0bb 100644
+--- a/security/smack/smack.h
++++ b/security/smack/smack.h
+@@ -111,7 +111,6 @@ struct inode_smack {
+ 	struct smack_known	*smk_mmap;	/* label of the mmap domain */
+ 	struct mutex		smk_lock;	/* initialization lock */
+ 	int			smk_flags;	/* smack inode flags */
+-	struct rcu_head         smk_rcu;	/* for freeing inode_smack */
+ };
+ 
+ struct task_smack {
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+1.9.1
+
