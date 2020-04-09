@@ -2,198 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4EC1A316D
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAF71A3174
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 11:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbgDIJBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 05:01:40 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:47699 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726082AbgDIJBk (ORCPT
+        id S1726684AbgDIJCe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 9 Apr 2020 05:02:34 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:3900 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726470AbgDIJCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 05:01:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586422899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=msTkXhnouvwVtlF7/78TkiH9nVYNya7vCxTaw1gbKMk=;
-        b=Mn4dIaBiUGlkQQvGjJ50BEnVgvcmpzeZ/NjCnn7/pz8HCIjuWyQqx3OorYHtIUp6fIo2/n
-        Y3cCnd9rnOIqULb85bfdjbG1gRoYx3W+u4mSDQC11Q/p98WY5CQ81ueCLBZ75FsCwDJhWI
-        DexeS/qkuigD+QaBdx5ollJOwMN8Nno=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-4d7R36GENiiwKgaxvAcgYQ-1; Thu, 09 Apr 2020 05:01:37 -0400
-X-MC-Unique: 4d7R36GENiiwKgaxvAcgYQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 88F18107ACCA;
-        Thu,  9 Apr 2020 09:01:35 +0000 (UTC)
-Received: from [10.36.115.53] (ovpn-115-53.ams2.redhat.com [10.36.115.53])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8122AA63D6;
-        Thu,  9 Apr 2020 09:01:26 +0000 (UTC)
-Subject: Re: [PATCH v1 5/8] vfio/type1: Report 1st-level/stage-1 format to
- userspace
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>
-References: <1584880325-10561-1-git-send-email-yi.l.liu@intel.com>
- <1584880325-10561-6-git-send-email-yi.l.liu@intel.com>
- <cb68e9ab-77b0-7e97-a661-4836962041d9@redhat.com>
- <A2975661238FB949B60364EF0F2C25743A21DB4E@SHSMSX104.ccr.corp.intel.com>
- <b47891b1-ece6-c263-9c07-07c09c7d3752@redhat.com>
- <20200403082305.GA1269501@myrica>
- <A2975661238FB949B60364EF0F2C25743A2249DF@SHSMSX104.ccr.corp.intel.com>
- <acf8c809-8d29-92d6-2445-3a94fc8b82fd@redhat.com>
- <20200409081442.GD2435@myrica>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <f9ed6639-35f2-af32-2d2c-78929d52b763@redhat.com>
-Date:   Thu, 9 Apr 2020 11:01:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.4.0
+        Thu, 9 Apr 2020 05:02:34 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0398X5fw096166
+        for <linux-kernel@vger.kernel.org>; Thu, 9 Apr 2020 05:02:34 -0400
+Received: from e06smtp03.uk.ibm.com (e06smtp03.uk.ibm.com [195.75.94.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30920682bm-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 05:02:33 -0400
+Received: from localhost
+        by e06smtp03.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <naveen.n.rao@linux.ibm.com>;
+        Thu, 9 Apr 2020 10:02:18 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp03.uk.ibm.com (192.168.101.133) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 9 Apr 2020 10:02:13 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03992QOX58392830
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 9 Apr 2020 09:02:26 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1CF02AE04D;
+        Thu,  9 Apr 2020 09:02:26 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B0ACAAE053;
+        Thu,  9 Apr 2020 09:02:25 +0000 (GMT)
+Received: from localhost (unknown [9.85.116.227])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  9 Apr 2020 09:02:25 +0000 (GMT)
+Date:   Thu, 09 Apr 2020 14:32:21 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [RFC] kretprobe: Prevent triggering kretprobe from within
+ kprobe_flush_task
+To:     Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     "bibo,mao" <bibo.mao@intel.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Ziqian SUN (Zamir)" <zsun@redhat.com>
+References: <20200408164641.3299633-1-jolsa@kernel.org>
+In-Reply-To: <20200408164641.3299633-1-jolsa@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200409081442.GD2435@myrica>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+x-cbid: 20040909-0012-0000-0000-000003A13F7A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20040909-0013-0000-0000-000021DE6892
+Message-Id: <1586422762.2z1fgtvri9.naveen@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-09_02:2020-04-07,2020-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 bulkscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 mlxscore=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004090066
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jean,
+Hi Jiri,
 
-On 4/9/20 10:14 AM, Jean-Philippe Brucker wrote:
-> On Wed, Apr 08, 2020 at 12:27:58PM +0200, Auger Eric wrote:
->> Hi Yi,
->>
->> On 4/7/20 11:43 AM, Liu, Yi L wrote:
->>> Hi Jean,
->>>
->>>> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
->>>> Sent: Friday, April 3, 2020 4:23 PM
->>>> To: Auger Eric <eric.auger@redhat.com>
->>>> userspace
->>>>
->>>> On Wed, Apr 01, 2020 at 03:01:12PM +0200, Auger Eric wrote:
->>>>>>>>  	header = vfio_info_cap_add(caps, sizeof(*nesting_cap),
->>>>>>>>  				   VFIO_IOMMU_TYPE1_INFO_CAP_NESTING, 1);
->>>> @@ -2254,6 +2309,7
->>>>>>>> @@ static int vfio_iommu_info_add_nesting_cap(struct
->>>>>>> vfio_iommu *iommu,
->>>>>>>>  		/* nesting iommu type supports PASID requests (alloc/free) */
->>>>>>>>  		nesting_cap->nesting_capabilities |= VFIO_IOMMU_PASID_REQS;
->>>>>>> What is the meaning for ARM?
->>>>>>
->>>>>> I think it's just a software capability exposed to userspace, on
->>>>>> userspace side, it has a choice to use it or not. :-) The reason
->>>>>> define it and report it in cap nesting is that I'd like to make the
->>>>>> pasid alloc/free be available just for IOMMU with type
->>>>>> VFIO_IOMMU_TYPE1_NESTING. Please feel free tell me if it is not good
->>>>>> for ARM. We can find a proper way to report the availability.
->>>>>
->>>>> Well it is more a question for jean-Philippe. Do we have a system wide
->>>>> PASID allocation on ARM?
->>>>
->>>> We don't, the PASID spaces are per-VM on Arm, so this function should consult the
->>>> IOMMU driver before setting flags. As you said on patch 3, nested doesn't
->>>> necessarily imply PASID support. The SMMUv2 does not support PASID but does
->>>> support nesting stages 1 and 2 for the IOVA space.
->>>> SMMUv3 support of PASID depends on HW capabilities. So I think this needs to be
->>>> finer grained:
->>>>
->>>> Does the container support:
->>>> * VFIO_IOMMU_PASID_REQUEST?
->>>>   -> Yes for VT-d 3
->>>>   -> No for Arm SMMU
->>>> * VFIO_IOMMU_{,UN}BIND_GUEST_PGTBL?
->>>>   -> Yes for VT-d 3
->>>>   -> Sometimes for SMMUv2
->>>>   -> No for SMMUv3 (if we go with BIND_PASID_TABLE, which is simpler due to
->>>>      PASID tables being in GPA space.)
->>>> * VFIO_IOMMU_BIND_PASID_TABLE?
->>>>   -> No for VT-d
->>>>   -> Sometimes for SMMUv3
->>>>
->>>> Any bind support implies VFIO_IOMMU_CACHE_INVALIDATE support.
->>>
->>> good summary. do you expect to see any 
->>>
->>>>
->>>>>>>> +	nesting_cap->stage1_formats = formats;
->>>>>>> as spotted by Kevin, since a single format is supported, rename
->>>>>>
->>>>>> ok, I was believing it may be possible on ARM or so. :-) will rename
->>>>>> it.
->>>>
->>>> Yes I don't think an u32 is going to cut it for Arm :( We need to describe all sorts of
->>>> capabilities for page and PASID tables (granules, GPA size, ASID/PASID size, HW
->>>> access/dirty, etc etc.) Just saying "Arm stage-1 format" wouldn't mean much. I
->>>> guess we could have a secondary vendor capability for these?
->>>
->>> Actually, I'm wondering if we can define some formats to stands for a set of
->>> capabilities. e.g. VTD_STAGE1_FORMAT_V1 which may indicates the 1st level
->>> page table related caps (aw, a/d, SRE, EA and etc.). And vIOMMU can parse
->>> the capabilities.
->>
->> But eventually do we really need all those capability getters? I mean
->> can't we simply rely on the actual call to VFIO_IOMMU_BIND_GUEST_PGTBL()
->> to detect any mismatch? Definitively the error handling may be heavier
->> on userspace but can't we manage.
+Jiri Olsa wrote:
+> hi,
+> Ziqian reported lockup when adding retprobe on _raw_spin_lock_irqsave.
+> My test was also able to trigger lockdep output:
 > 
-> I think we need to present these capabilities at boot time, long before
-> the guest triggers a bind(). For example if the host SMMU doesn't support
-> 16-bit ASID, we need to communicate that to the guest using vSMMU ID
-> registers or PROBE properties. Otherwise a bind() will succeed, but if the
-> guest uses 16-bit ASIDs in its CD, DMA will result in C_BAD_CD events
-> which we'll inject into the guest, for no apparent reason from their
-> perspective.
-OK I understand this case as in this situation we may be able to change
-the way to iommu is exposed to the guest.
+>  ============================================
+>  WARNING: possible recursive locking detected
+>  5.6.0-rc6+ #6 Not tainted
+>  --------------------------------------------
+>  sched-messaging/2767 is trying to acquire lock:
+>  ffffffff9a492798 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_hash_lock+0x52/0xa0
 > 
-> In addition some VMMs may have fallbacks if shared page tables are not
-> available. They could fall back to a MAP/UNMAP interface, or simply not
-> present a vIOMMU to the guest.
-fair enough, there is a need for such capability checker in the mid
-term. But this patch introduces the capability to check whether system
-wide PASID alloc is supported and this may not be requested at that
-stage for the whole vSVM integration?
+>  but task is already holding lock:
+>  ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
+> 
+>  other info that might help us debug this:
+>   Possible unsafe locking scenario:
+> 
+>         CPU0
+>         ----
+>    lock(&(kretprobe_table_locks[i].lock));
+>    lock(&(kretprobe_table_locks[i].lock));
+> 
+>   *** DEADLOCK ***
+> 
+>   May be due to missing lock nesting notation
+> 
+>  1 lock held by sched-messaging/2767:
+>   #0: ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
+> 
+>  stack backtrace:
+>  CPU: 3 PID: 2767 Comm: sched-messaging Not tainted 5.6.0-rc6+ #6
+>  Call Trace:
+>   dump_stack+0x96/0xe0
+>   __lock_acquire.cold.57+0x173/0x2b7
+>   ? native_queued_spin_lock_slowpath+0x42b/0x9e0
+>   ? lockdep_hardirqs_on+0x590/0x590
+>   ? __lock_acquire+0xf63/0x4030
+>   lock_acquire+0x15a/0x3d0
+>   ? kretprobe_hash_lock+0x52/0xa0
+>   _raw_spin_lock_irqsave+0x36/0x70
+>   ? kretprobe_hash_lock+0x52/0xa0
+>   kretprobe_hash_lock+0x52/0xa0
+>   trampoline_handler+0xf8/0x940
+>   ? kprobe_fault_handler+0x380/0x380
+>   ? find_held_lock+0x3a/0x1c0
+>   kretprobe_trampoline+0x25/0x50
+>   ? lock_acquired+0x392/0xbc0
+>   ? _raw_spin_lock_irqsave+0x50/0x70
+>   ? __get_valid_kprobe+0x1f0/0x1f0
+>   ? _raw_spin_unlock_irqrestore+0x3b/0x40
+>   ? finish_task_switch+0x4b9/0x6d0
+>   ? __switch_to_asm+0x34/0x70
+>   ? __switch_to_asm+0x40/0x70
+> 
+> The code within the kretprobe handler checks for probe reentrancy,
+> so we won't trigger any _raw_spin_lock_irqsave probe in there.
+> 
+> The problem is in outside kprobe_flush_task, where we call:
+> 
+>   kprobe_flush_task
+>     kretprobe_table_lock
+>       raw_spin_lock_irqsave
+>         _raw_spin_lock_irqsave
+> 
+> where _raw_spin_lock_irqsave triggers the kretprobe and installs
+> kretprobe_trampoline handler on _raw_spin_lock_irqsave return.
+> 
+> The kretprobe_trampoline handler is then executed with already
+> locked kretprobe_table_locks, and first thing it does is to
+> lock kretprobe_table_locks ;-) the whole lockup path like:
+> 
+>   kprobe_flush_task
+>     kretprobe_table_lock
+>       raw_spin_lock_irqsave
+>         _raw_spin_lock_irqsave ---> probe triggered, kretprobe_trampoline installed
+> 
+>         ---> kretprobe_table_locks locked
+> 
+>         kretprobe_trampoline
+>           trampoline_handler
+>             kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
+> 
+> The change below sets current_kprobe in kprobe_flush_task, so the probe
+> recursion protection check is hit and the probe is never set. It seems
+> to fix the deadlock.
 
-Thanks
+Good analysis!
 
-Eric
 > 
-> Thanks,
-> Jean
+> I'm not sure this is the best fix, any ideas are welcome ;-)
+
+I think this is a good way to address this issue.
+
 > 
->> My fear is we end up with an overly
->> complex series. This capability getter may be interesting if we can
->> switch to a fallback implementation but here I guess we don't have any
->> fallback. With smmuv3 nested stage we don't have any fallback solution
->> either. For the versions, it is different because the userspace shall be
->> able to adapt (or not) to the max version supported by the kernel.
->>
->> Thanks
->>
->> Eric
->>>
->>> Regards,
->>> Yi Liu
->>>
->>
+> thanks,
+> jirka
 > 
+> 
+> ---
+>  kernel/kprobes.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index 2625c241ac00..b13247cae752 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1236,6 +1236,10 @@ __releases(hlist_lock)
+>  }
+>  NOKPROBE_SYMBOL(kretprobe_table_unlock);
+>  
+> +static struct kprobe kretprobe_dummy = {
+> +        .addr = (void *)kretprobe_trampoline,
+> +};
+> +
+
+Perhaps a more meaningful name, say, kprobe_flush_task_protect ?
+
+>  /*
+>   * This function is called from finish_task_switch when task tk becomes dead,
+>   * so that we can recycle any function-return probe instances associated
+> @@ -1256,12 +1260,14 @@ void kprobe_flush_task(struct task_struct *tk)
+>  	INIT_HLIST_HEAD(&empty_rp);
+>  	hash = hash_ptr(tk, KPROBE_HASH_BITS);
+>  	head = &kretprobe_inst_table[hash];
+> +	__this_cpu_write(current_kprobe, &kretprobe_dummy);
+>  	kretprobe_table_lock(hash, &flags);
+>  	hlist_for_each_entry_safe(ri, tmp, head, hlist) {
+>  		if (ri->task == tk)
+>  			recycle_rp_inst(ri, &empty_rp);
+>  	}
+>  	kretprobe_table_unlock(hash, &flags);
+> +	__this_cpu_write(current_kprobe, NULL);
+
+I would move this to the end of the function to also cover the below 
+code. kprobe_flush_task() is marked NOKPROBE, so it is good to prevent 
+probe handling in the below code too.
+
+>  	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+>  		hlist_del(&ri->hlist);
+>  		kfree(ri);
+
+
+- Naveen
 
