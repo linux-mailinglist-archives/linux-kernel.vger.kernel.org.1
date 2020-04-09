@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 881C51A3BA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 23:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F2D1A3BAC
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 23:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbgDIVBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 17:01:47 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:41980 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbgDIVBr (ORCPT
+        id S1727368AbgDIVIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 17:08:50 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:44963 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727242AbgDIVIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 17:01:47 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 079EF290E5E
-Subject: Re: [PATCH 1/3] platform/chrome: typec: Use notifier for updates
-To:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>
-References: <20200407010940.155490-1-pmalani@chromium.org>
- <20200407010940.155490-2-pmalani@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <12997222-5df5-1e16-3eb1-1e26252315f8@collabora.com>
-Date:   Thu, 9 Apr 2020 23:01:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Thu, 9 Apr 2020 17:08:50 -0400
+Received: by mail-qt1-f193.google.com with SMTP id w24so1160214qts.11;
+        Thu, 09 Apr 2020 14:08:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JAFZ7dRQi+ZOH9Y8t0oetajrdlB2KVsPn/jdlE5Lqu8=;
+        b=h1nvXDASszQ1WwOt9WNXBoOojysLq8SkPN5wJWJ4DGeIkbwZ93UTMZbWZ2GPgBQHdX
+         ijBQhLAtvQx8D5+z8xJmCwupRrOeVnzKUDFcYnW9O0I5xuGAIjTju2d1kMiGp6wH9NeF
+         hV/unsWb8/7q44lH7/dJMTsuKfhY6AClitGR/GrnxeeqnshYYT845hWAfihecRYSNhtd
+         /SMjcBIFUNc1RBOaMSHNvj6EMgV2pt4nPcLMdE7psHhV1zxkWf0vNBZA6Buu5BoSu+6z
+         XDpeznLmHXTpjHPpvJbmSnu7zoIsMxKTE/m9gGjvQp8GJvDG3QgqbWDSQYnFCdYBH2Jn
+         dm0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=JAFZ7dRQi+ZOH9Y8t0oetajrdlB2KVsPn/jdlE5Lqu8=;
+        b=I+Uho8fXe0X8DUWi9dyDWh1Ns6zLQklCkSaNOVHryC9dk3ik/xiDQy/9tBbYuxCQLF
+         Wb++5Drk71PhhQJctFL2Gds6PzUxCtPmx2NJKn1Z0RLiXYCOHGhH/GpE5MZXAgGFxtu0
+         lzcKKpecEGsHOxd+m3xQDjycwx1cdA3vI5u8J/DQDb0+Wx30d7GdtoB/p3AfgXlkATcN
+         Q6PcGOR9vQ4XrpWcGWLBAOteBTM2QTuXD3oqbFVI9b7A+vltDSs4H7O/ThlviOSdXaNV
+         gjQQkaCPXzqcXK6Y2ebxv+vwuXHJGNFdysrrqIvjxTRnKv4xGtxeDQLTYJC5As2tcgpj
+         7erQ==
+X-Gm-Message-State: AGi0PuYDDJKO2L199p6TPYUIy+siaq+WJDLqY/E4IUEN48tkaLEa6fjA
+        RJr781IcI3BESYEs8cJqd3g=
+X-Google-Smtp-Source: APiQypKUI8F7x+uXX0jMQDWk+uGhTnngIA1mZuj8V8As/1y8qQui6+b8jgX+ZoSRuGYgYDl1OTw0pg==
+X-Received: by 2002:ac8:4a98:: with SMTP id l24mr1407893qtq.223.1586466529986;
+        Thu, 09 Apr 2020 14:08:49 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id h11sm41075qtr.38.2020.04.09.14.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 14:08:49 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Thu, 9 Apr 2020 17:08:47 -0400
+To:     Brian Gerst <brgerst@gmail.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Gary Lin <glin@suse.com>, Jiri Slaby <jslaby@suse.cz>,
+        Sergey Shatunov <me@prok.pw>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [PATCH 3/9] efi/x86: Move efi stub globals from .bss to .data
+Message-ID: <20200409210847.GA1312580@rani.riverdale.lan>
+References: <20200409130434.6736-1-ardb@kernel.org>
+ <20200409130434.6736-4-ardb@kernel.org>
+ <CAMzpN2gJWwVun1Kp6vGuza9LM5KpB=0EwsP8x8eOJQuDGh38Hg@mail.gmail.com>
+ <CAMzpN2jFbf8k99pWaTYRBmSB+iNAKYsufjEhqO6Vv0qxAcHyGA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200407010940.155490-2-pmalani@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAMzpN2jFbf8k99pWaTYRBmSB+iNAKYsufjEhqO6Vv0qxAcHyGA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prashant,
-
-Thank you for the patch.
-
-On 7/4/20 3:09, Prashant Malani wrote:
-> Register a listener for the cros-usbpd-notifier, and update port state
-> when a notification comes in.
+On Thu, Apr 09, 2020 at 04:53:07PM -0400, Brian Gerst wrote:
+> > Can we use the -fno-zero-initialized-in-bss compiler flag instead of
+> > explicitly marking global variables?
 > 
-> Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> ---
->  drivers/platform/chrome/cros_ec_typec.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
+> Scratch that.  Apparently it only works when a variable is explicitly
+> initialized to zero.
 > 
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-> index 874269c070739..cf7c2652a1d6d 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -11,6 +11,7 @@
->  #include <linux/of.h>
->  #include <linux/platform_data/cros_ec_commands.h>
->  #include <linux/platform_data/cros_ec_proto.h>
-> +#include <linux/platform_data/cros_usbpd_notify.h>
+> --
+> Brian Gerst
 
-I think you need to add a kconfig dependency/selection in order to don't have
-build problems.
-
->  #include <linux/platform_device.h>
->  #include <linux/usb/typec.h>
->  
-> @@ -26,6 +27,7 @@ struct cros_typec_data {
->  	struct typec_port *ports[EC_USB_PD_MAX_PORTS];
->  	/* Initial capabilities for each port. */
->  	struct typec_capability *caps[EC_USB_PD_MAX_PORTS];
-> +	struct notifier_block nb;
->  };
->  
->  static int cros_typec_parse_port_props(struct typec_capability *cap,
-> @@ -272,6 +274,22 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
->  	return 0;
->  }
->  
-> +static int cros_ec_typec_event(struct notifier_block *nb,
-> +			       unsigned long host_event, void *_notify)
-> +{
-> +	struct cros_typec_data *typec = container_of(nb, struct cros_typec_data,
-> +						     nb);
-> +	int ret, i;
-> +
-> +	for (i = 0; i < typec->num_ports; i++) {
-> +		ret = cros_typec_port_update(typec, i);
-> +		if (ret < 0)
-> +			dev_warn(typec->dev, "Update failed for port:%d\n", i);
-
-nit: space between : and %d
-
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
->  #ifdef CONFIG_ACPI
->  static const struct acpi_device_id cros_typec_acpi_id[] = {
->  	{ "GOOG0014", 0 },
-> @@ -332,6 +350,13 @@ static int cros_typec_probe(struct platform_device *pdev)
->  			goto unregister_ports;
->  	}
->  
-> +	typec->nb.notifier_call = cros_ec_typec_event;
-> +	ret = cros_usbpd_register_notify(&typec->nb);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to register notifier\n");
-
-Currently cros_usbpd_register_notfity calls blocking_notifier_chain_register
-that always return zero. Is fine to check the error but the print is unneded. If
-probe fails will report the error.
-
-> +		goto unregister_ports;
-> +	}
-> +
->  	return 0;
->  
->  unregister_ports:
-> 
+Right, there doesn't seem to be a compiler option to turn off the use of
+.bss altogether.
