@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62DE51A30A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAD91A30AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 10:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbgDIIJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 04:09:43 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:44533 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgDIIJm (ORCPT
+        id S1726657AbgDIILb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 04:11:31 -0400
+Received: from mout.kundenserver.de ([212.227.17.13]:39415 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbgDIILb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 04:09:42 -0400
-Received: by mail-wr1-f65.google.com with SMTP id c15so10776475wro.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 01:09:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8sy4G5azWTKdTXq+AdUl0zD/LRk0rxdNkxqKpvpQpIY=;
-        b=Ub+cvW4qPcoyju7stMqHNCY9mG4W16VmOP7o7wsid4KfyBJ7tVQAaip7m2mce5JNQO
-         ZrwGiw/DAe1iLK4MjTlUkU/Ipmgyle2egAlE1fpaqWT2ezJ/dG8aAgA1y0+daQ5XLlp1
-         8BmECLDJ6+QOgEn8Vjc5/iwsQmfLo0jgKyMgJUEedtTmKx+RK8J5Cs/puhxSzjzmRd/z
-         za+JZ+7oYtbTZocIiokPVzcKbyLHdY5vSn9Vn/YZSj9dHUp0bo1qSHBejrdmfcL+vX9G
-         o99r2crd17VMswUCfQ/rJJBTvuQcBBetCV3WXnkg7gRBTtUMn9qjD5XaWlivtFtYfoc9
-         jgJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8sy4G5azWTKdTXq+AdUl0zD/LRk0rxdNkxqKpvpQpIY=;
-        b=WUqTTrgUteBeKfDyerQNNLr6Zpok/Yu8g/00ca20zuV2zodCUreqJ7WIjd6wOGOgXZ
-         +B5x9jf6p+rKWnx2hzP9Kyq2ujB231O11zvHvdKO/NlJw+Bfkn4xP5phTuzxO7cIPqf7
-         GZrTH6CtfQBaFbbRA1EgrWAWiYh+tXYrXSOtSh3jZjEg8aO6j12AhV3gvGVkLUx5uk46
-         tKIY4ZHn75XTN9DCgE7ZEIizQjzTk7zeDk9h66znxxangQ/aYFcPIz8kQBrXU/IGTRmS
-         InEczNr4ZodJjsk923LgMekDoQVP7vQiijTRjctzw4ieCWxIAfpPHJDfb9w1DWg9ZM6z
-         1nWQ==
-X-Gm-Message-State: AGi0PuY3nJsRZcpXCcyL4VfgupYjm3KbyFOW9iZvyhXHPwBqB/NkZX3M
-        Sp2bThHzPNMbr4zvgk69L3o=
-X-Google-Smtp-Source: APiQypKOBXf1impEVnCXiydzFXK12RgSkh6b1k6ncuRlmPQvU/JwtvGTu4paHsopdxtGdAYzF8Nizg==
-X-Received: by 2002:a5d:43c6:: with SMTP id v6mr4059110wrr.395.1586419782074;
-        Thu, 09 Apr 2020 01:09:42 -0700 (PDT)
-Received: from localhost.localdomain (dslb-092-073-054-213.092.073.pools.vodafone-ip.de. [92.73.54.213])
-        by smtp.gmail.com with ESMTPSA id m15sm2648283wmc.35.2020.04.09.01.09.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 01:09:41 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: rtl8188eu: remove 5 GHz if test
-Date:   Thu,  9 Apr 2020 10:08:02 +0200
-Message-Id: <20200409080802.16645-1-straube.linux@gmail.com>
+        Thu, 9 Apr 2020 04:11:31 -0400
+Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
+ 1Mqrjz-1j0c1O016v-00moPq; Thu, 09 Apr 2020 10:09:19 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Brian Foster <bfoster@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Eric Sandeen <sandeen@redhat.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] xfs: stop CONFIG_XFS_DEBUG from changing compiler flags
+Date:   Thu,  9 Apr 2020 10:08:56 +0200
+Message-Id: <20200409080909.3646059-1-arnd@arndb.de>
 X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:IoKJ889AecgOScKrn8FN6R5/hy7yMIO15rGFoYkNx5UwRxeI8Pc
+ 11fHZN0d2fYCi+5PHbyyyWORRQ3ZD64dSBV/S6JxoV///MdUb1jErmO4rVR5oDX1lSmOxA6
+ QT9KiCmxxrQjBaK/1ZayTtMddCz9C55RnZQQM6aAM04Amlaq7Aa9uQEeBX8B+DCIHSZzXSq
+ oyDYhvFA8T8hL8SmrEMCQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:vwtos7LEcOM=:uz1COH1mSJtUcTxQOoynRh
+ 8Qr87Yw5Kxk3KHR13NU/dXPnuXk3ticYJ8fWYmYZyqAnwy17cvQfg8cpvK/GQvz6SI6gn0rcU
+ 2846I+PtIo8tfobiGM+x5ZgLM+czo3kLpAWAsTQWeb5+qJte0Rm8qRp5P6EmnMkzd3tsFkvEk
+ hSlMasVKHZveo7R+yhHIk7xRhFP5Q/QoZ+e8GMQfT5YAV63s/qVuRGfJcgtF6ONSEicGpvk9o
+ ffwpdKwI4tyCRaJ6xnn139Uu1S3ubGc016fif8YzX/DwjPzqmDl4V6EtdHBJtmtxhcmH48X/h
+ UY+7slDfKijY91bR1jUDlzLzuILRqINY/o+pHWJJdhCxn+vqWhtttD7XI847VGVWsazcg4FnW
+ 0MGHZeg4lPFCqxGaXhHw/UMFiXFssPKFREwONf/OKQbzrKPEiOMhTk+log9gr2iQQBWi5Do90
+ RQtGEJCoyycefJTXnU/6j++EX5vzOBh8duQ8bUSnWzJMnXaYQJcqfg2f0yiCu6NPlXktk62jM
+ V7zN6fpkJ10PF5L2jMifKkMGRYm6AlP8z67b2RYqzsFHCsC0AIXfzzGVWUSxjbSbY8C62oT7R
+ 8kG3i7/kuRVoPU+Y30weVqovaIzmG9wI/CXdWue4wskslO28v84J79C1qOa1c1iJQM+KiEEt/
+ 0RV6m2/RqqnwOYVTI9AjN80MIEQcKdt0qXnnhTXeutmhVO1DbnixQ3fGPaM/zZkwW0jP/fTjA
+ SkPAv8RnUzKS9jsx0ot9P+JUIRHofW1cMUEUoNaTKe4Z18VaVFzmh1vZMhwhIBFVDVRnbl5tf
+ i+pRy/xPoXLL6J4C+l8HBF22kouCHBPdNoOtXPN0wph1thzjn4=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cleanup a line over 80 characters by removing an if test that is valid
-only for 5 GHz. According to the TODO 5 GHz code should be removed.
+I ran into a linker warning in XFS that originates from a mismatch
+between libelf, binutils and objtool when certain files in the kernel
+are built with "gcc -g":
 
-- find and remove remaining code valid only for 5 GHz. Most of the obvious
-  ones have been removed, but things like channel > 14 still exist.
+x86_64-linux-ld: fs/xfs/xfs_trace.o: unable to initialize decompress status for section .debug_info
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
+After some discussion, nobody could identify why xfs sets this flag
+here. CONFIG_XFS_DEBUG used to enable lots of unrelated settings, but
+now its main purpose is to enable extra consistency checks and assertions
+that are unrelated to the debug info.
+
+Remove the Makefile logic to set the flag here. If anyone relies
+on the debug info, this can simply be enabled again with the global
+CONFIG_DEBUG_INFO option.
+
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Link: https://lore.kernel.org/lkml/20200409074130.GD21033@infradead.org/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/xfs/Makefile | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-index bce777e4bf6c..8d035f67ef61 100644
---- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-@@ -1781,7 +1781,7 @@ static void issue_action_BSSCoexistPacket(struct adapter *padapter)
+diff --git a/fs/xfs/Makefile b/fs/xfs/Makefile
+index 4f95df476181..ff94fb90a2ee 100644
+--- a/fs/xfs/Makefile
++++ b/fs/xfs/Makefile
+@@ -7,8 +7,6 @@
+ ccflags-y += -I $(srctree)/$(src)		# needed for trace events
+ ccflags-y += -I $(srctree)/$(src)/libxfs
  
- 			p = rtw_get_ie(pbss_network->ies + _FIXED_IE_LENGTH_, _HT_CAPABILITY_IE_, &len, pbss_network->ie_length - _FIXED_IE_LENGTH_);
- 			if (!p || len == 0) { /* non-HT */
--				if ((pbss_network->Configuration.DSConfig <= 0) || (pbss_network->Configuration.DSConfig > 14))
-+				if (pbss_network->Configuration.DSConfig <= 0)
- 					continue;
+-ccflags-$(CONFIG_XFS_DEBUG) += -g
+-
+ obj-$(CONFIG_XFS_FS)		+= xfs.o
  
- 				ICS[0][pbss_network->Configuration.DSConfig] = 1;
+ # this one should be compiled first, as the tracing macros can easily blow up
 -- 
 2.26.0
 
