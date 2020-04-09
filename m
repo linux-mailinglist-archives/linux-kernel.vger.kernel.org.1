@@ -2,132 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 880FA1A2CB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 02:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0211A2CB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 02:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgDIAKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 8 Apr 2020 20:10:15 -0400
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:36388 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbgDIAKP (ORCPT
+        id S1726591AbgDIAKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 8 Apr 2020 20:10:40 -0400
+Received: from mail-io1-f68.google.com ([209.85.166.68]:34961 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726508AbgDIAKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 8 Apr 2020 20:10:15 -0400
-Received: by mail-vs1-f65.google.com with SMTP id 184so5898342vsu.3
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 17:10:15 -0700 (PDT)
+        Wed, 8 Apr 2020 20:10:39 -0400
+Received: by mail-io1-f68.google.com with SMTP id w20so2081630iob.2
+        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 17:10:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B6pS9OgAcPsD6CSPKpIIvHEG5zqVSzQLTTYkVt8jyck=;
-        b=QzNPLo5RL3lO4TmcYcF4V23HmCtH6zvc/crCSse2osUeXKghPrIz35H3jROp57Pjgn
-         bNzydnCYuDad7TyqCSU8b4kqNffY3kKjr7V85Po1uBZTiSt9EqlzUwi3Ra7nIr2/HtKy
-         U+Y0d1OkSTzwAv2urvP556j42eGzCmag+ojsI=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
+        b=YvwQmG0ey32MfI7TwMMUYPUEqHSVa7N6UFUCFWrHzYV7f92ApwTpZRsrkK2NxuHK9N
+         lf7tDDbi8WACtwm6qhXPq930kv0vAjHrVYBNOs+aLxjcT7JbESmsCaA7Rx79zsubMh94
+         TvprauLapts7WB2UKzfQn8wWQ0qeJlDGbXV/Ljdwaw9luZP6QK5z2DqI0o/I7PT1O7vJ
+         pIhrJvGe5Qxahj/Vo/+YjcXUQsd37X8M0mjhqozuxkzFuQAo7eVFMveIm8iNhkO08D2A
+         ELH9JlJ0aKIgECoQetIxtB+4eTFcKsSiTxXSxEsBT2IRJjAALT61L08PUK0r4Pa1vQNO
+         sZgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B6pS9OgAcPsD6CSPKpIIvHEG5zqVSzQLTTYkVt8jyck=;
-        b=N/A8s9VaJscnH0N41TkmoA7+wNfL0iPGaUeq0HfsPxqLq176d5L3whWx2bXtB8/aSP
-         Og8chIUmJq8s/2HCx4wejHRyTHVBb+uGvVIjwDNQ0cM/RScq4avs8/CM/4KXq95AgsgF
-         3aCh/VaedSAMZBZ6aSzL5RKVZy6JDpzzN/brUW/urmrCGXvnkeniz2BEtYuL5LFiU3MA
-         o65QZNqgLasIlIPv4GR1M/4Q+Nu8YjtFHRYtBymilCz+leJwqlIUMr5+bXPSwwvqSDuB
-         ElDesCLHXsZ2hzYquugnk2tt0xyub965BVEzk/uq5wjTpBn5HUyEDRyD69C7fWFQ6W6i
-         6LnQ==
-X-Gm-Message-State: AGi0PuYbd52bUr7DK4yJOTANAcRX2v+guCyc3BDsm/o17ec09wzFaEFe
-        T5wTg3rnnnZtZTTLGxfVKlNxxQYX0Vc=
-X-Google-Smtp-Source: APiQypKJekb7wML7baI7rjx0gIln2lOUGDaGe1BYA+x1B39L81gWZyIOV+I3hIZK2C3UZp8NgyQZ8g==
-X-Received: by 2002:a67:320f:: with SMTP id y15mr8798396vsy.157.1586391014611;
-        Wed, 08 Apr 2020 17:10:14 -0700 (PDT)
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
-        by smtp.gmail.com with ESMTPSA id d83sm6829264vka.34.2020.04.08.17.10.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Apr 2020 17:10:13 -0700 (PDT)
-Received: by mail-ua1-f49.google.com with SMTP id g24so3327813uan.10
-        for <linux-kernel@vger.kernel.org>; Wed, 08 Apr 2020 17:10:12 -0700 (PDT)
-X-Received: by 2002:ab0:2389:: with SMTP id b9mr7355490uan.120.1586391012513;
- Wed, 08 Apr 2020 17:10:12 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=Xs1c6/A8GmpgdbMBrIroEWmoFbf3qfcFFbhS2ULR81Q=;
+        b=sNi+roJdtczRUHtm9xapHw7KEeAA9P8/9KbRRwlXoo3OD5P5xANmoXAALbukuu6+86
+         ZCGQQJzQRKBWnZQ/6f3yIgJp5KCKOxMdjo66qHs4j7/4Li0p5eYyVLY1blpT7F+uQF+I
+         QsFH3DjPgiHjCmIOJyZJmfz7R9aX+504ewqdsGUFF84hrGwU+4iSCxyuY6ErwpnYdNrJ
+         KejIGnJuZYkBrY5+GFOczXHcs55+kWfoZE3keOVyPNMjg3iS7t8jcGR6FaCAa/FnP4hB
+         z9sYdOMafn6kbovY/XwqrxSg3p6VZQDp2wwfLA4CxI0s2/zkDWou3Er/Og5T/yb58iVa
+         1V9w==
+X-Gm-Message-State: AGi0PuZD1qm8L4hb7V9J/Soq5Sj/b8E50Kc4frBSiacG6Z1sJoC8XsMd
+        /eav1wIEllN66ClZmozj9wGu+TY7ajgr2zynbcY=
+X-Google-Smtp-Source: APiQypJidDLRkLokK84weFsdDoAB7CRo2HApKk+EMwDobfV2KopOPKVfNoZo9Rk3rz1Eg1WKjbtLVFkUWB0TkqFt9DA=
+X-Received: by 2002:a5e:8b01:: with SMTP id g1mr5841606iok.154.1586391038740;
+ Wed, 08 Apr 2020 17:10:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200407235024.260460-1-dianders@chromium.org>
- <20200407164915.v3.8.I8e187cdfb7a31f5bb7724f1f937f2862ee464a35@changeid> <b61a5b31-d614-93f2-7fdd-ec372fba3080@codeaurora.org>
-In-Reply-To: <b61a5b31-d614-93f2-7fdd-ec372fba3080@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 8 Apr 2020 17:10:01 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XQbtrkK1u6jTuc-pP4fUx0av3eMYznSkUSC2io7BGmmg@mail.gmail.com>
-Message-ID: <CAD=FV=XQbtrkK1u6jTuc-pP4fUx0av3eMYznSkUSC2io7BGmmg@mail.gmail.com>
-Subject: Re: [PATCH v3 08/10] drivers: qcom: rpmh-rsc: Don't double-check rpmh
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Evan Green <evgreen@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+Reply-To: mrahmedmuzashah@gmail.com
+Received: by 2002:a05:6602:134e:0:0:0:0 with HTTP; Wed, 8 Apr 2020 17:10:38
+ -0700 (PDT)
+From:   "Mr.Ahmed Muzashah" <ahmedmuzashah@gmail.com>
+Date:   Thu, 9 Apr 2020 01:10:38 +0100
+X-Google-Sender-Auth: 72FqM7PvAqa_uK6PCrtaRKXTXgc
+Message-ID: <CAMavnFmuAqK+UK-mjvuNJeChfKL9z0TJzpDdDn3--n-+a37N0A@mail.gmail.com>
+Subject: From: Mr.Ahmed Muzashah
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Good Day,
 
-On Wed, Apr 8, 2020 at 5:24 AM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> Hi,
->
-> In rpmh.c, rpmh_write_async() and rpmh_write_batch() uses
-> __fill_rpmh_msg() which already checks for below payload conditions.
->
-> so i am ok to remove duplicate checks from rpmh-rsc.c
->
-> can you please add payload at the end of subject.
->
-> drivers: qcom: rpmh-rsc: Don't double-check rpmh payload
->
-> Other than this.
->
-> Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
-> Tested-by: Maulik Shah <mkshah@codeaurora.org>
+Please accept my apologies for writing you a surprise letter.I am Mr.
+Ahmed Muzashah, account Manager with an investment bank here in
+Burkina Faso.I have a very important business I want to discuss with
+you.There is a draft account opened in my firm by a long-time client
+of our bank.I have the opportunity of transferring the left over fund
+(15.8 Million UsDollars)Fiftheen Million Eight Hundred Thousand United
+States of American Dollars of one of my Bank clients who died at the
+collapsing of the world trade center at the United States on September
+11th 2001.
 
-Thanks!  Bjorn / Andy: if you want me to spin my series I'm happy to.
-I'm also happy to just let you fix this nit in the commit message and
-the other one Maulik had when applying.  Just let me know.
+I want to invest this funds and introduce you to our bank for this
+deal.All I require is your honest co-operation and I guarantee you
+that this will be executed under a legitimate arrangement that will
+protect us from any breach of the law.I agree that 40% of this money
+will be for you as my foreign partner,50% for me while 10% is for
+establishing of foundation for the less privilleges in your country.If
+you are really interested in my proposal further details of the
+Transfer will be forwarded unto you as soon as I receive your
+willingness mail for a successful transfer.
 
-
-> Note:
->
-> rpmh_write() is not using __fill_rpmh_msg() and have replica as below,
-> probably since it was declares message on stack instead of using malloc()
->
->          if (!cmd || !n || n > MAX_RPMH_PAYLOAD)
->                  return -EINVAL;
->
->          memcpy(rpm_msg.cmd, cmd, n * sizeof(*cmd));
->          rpm_msg.msg.num_cmds = n;
->
-> Making a note to remove above if check and start using __fill_rpmh_msg()
-> here as well to do memcpy() and num_cmds initilization.
->
-> Although it may end up writing msg.state and msg.cmd twice (once during
-> defining msg on stack and then during fill rpmh msg) but it should be ok.
->
-> Below two lines from __rpmh_write() can be removed as well.
->
->          rpm_msg->msg.state = state;
->
-> DEFINE_RPMH_MSG_ONSTACK() and __fill_rpmh_msg() seems taking care of
-> initializing msg.state already, so we should be good.
->
-> if you are spinning a new version and want to include above change as
-> well, i am ok.
->
-> if not, i can push separate patch to update this as well once my series
-> to invoke rpmh_flush() gets picked up.
-
-I'd sorta be inclined to wait and do this later just because it seems
-like we've got enough changes stacked together right now...
-
--Doug
+Yours Sincerely,
+Mr.Ahmed Muzashah,
