@@ -2,123 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D5A1A3B51
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Apr 2020 22:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A9A1A3C72
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 00:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbgDIU2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 16:28:55 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:43320 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726291AbgDIU2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 16:28:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586464134;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bMeEAF8ikRSF8tzmPg03tQqSmmh0LSA2vooaQUzRW3Q=;
-        b=HpHutjuLsSf8d6yUCwro5yMmEXTIYbS4+jinVF53BixOGTeBNiq1SdIfxvTcC7kE6cAwwp
-        LET1F/1Atd/Bksodk+CkAf61JJfWOQP1av5qh1qZayc83YnHIfY8wyuuPjbWqJf5b2mDcw
-        InLZAkWJc5ov+YlZ3SMkMiDeNv8dgQM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-mOC_oU0-M8WCcjJY-inooA-1; Thu, 09 Apr 2020 16:28:53 -0400
-X-MC-Unique: mOC_oU0-M8WCcjJY-inooA-1
-Received: by mail-wr1-f72.google.com with SMTP id j22so4083035wrb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 13:28:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=bMeEAF8ikRSF8tzmPg03tQqSmmh0LSA2vooaQUzRW3Q=;
-        b=rQsKA7pdrc0hhjvkUtOS81B9Nh43SU/wzQNgMLJYr3y0GvkbReGlfyOSrd+MMZkSwT
-         Wu5DU0hQYNhvGRaGTa6NhaCz1IsQ6kbHiFBpDgxSk+NaKmWVwjyuJiyB2Bbh+n0iDAyP
-         Op+xdHGQL520RNajiJZc0FUsfzIihs0j6dtvTEbDPuTVMruHkDEhiItLtUuBTW3F0dTC
-         UNzdLUgbXjChJ6CR2py44UHU+MdzNLfqsSlbSMAuS0Pm2EA4GyF6r20mhjtKXBi9q2dG
-         NCHaFgWviXs0y/S8D/L8y+0BeZDQOI7gxLVYBBVL8evNTTiholfkV/g9iTTGqkOB5dPT
-         RkjQ==
-X-Gm-Message-State: AGi0PuYrBgMt+uJgEbWWABDuq7tk5UPSLlIwSfMtsUCDgKH56HvTNwXw
-        lrH2FBtR5VeXcLwoCLXeq4x2Z/tgRsHvtfmrq4Qayg31CJAff5w/Fz8Ca9w71PlRD0svanyglM1
-        9JgyAxYdSRUl+AvYVGjzKnUrn
-X-Received: by 2002:adf:eed1:: with SMTP id a17mr879994wrp.287.1586464131938;
-        Thu, 09 Apr 2020 13:28:51 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJNn3RyOEcDrD6y8m+kaEcsbwziqz3QQkLPQ+QKzSv0QJhgUW1mk0pmUaP+kkcnSLyMEA1ftw==
-X-Received: by 2002:adf:eed1:: with SMTP id a17mr879972wrp.287.1586464131731;
-        Thu, 09 Apr 2020 13:28:51 -0700 (PDT)
-Received: from redhat.com (bzq-109-67-97-76.red.bezeqint.net. [109.67.97.76])
-        by smtp.gmail.com with ESMTPSA id t67sm5404037wmg.40.2020.04.09.13.28.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Apr 2020 13:28:51 -0700 (PDT)
-Date:   Thu, 9 Apr 2020 16:28:49 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH] vdpa: allow a 32 bit vq alignment
-Message-ID: <20200409202825.10115-1-mst@redhat.com>
+        id S1726921AbgDIWgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 18:36:18 -0400
+Received: from mail.dsns.gov.ua ([194.0.148.101]:58052 "EHLO mail.dsns.gov.ua"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726828AbgDIWgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 18:36:17 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id 867541D2305D;
+        Thu,  9 Apr 2020 23:30:30 +0300 (EEST)
+Received: from mail.dsns.gov.ua ([127.0.0.1])
+        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id R0fOkk2uCcCw; Thu,  9 Apr 2020 23:30:30 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id D28EE1D2303D;
+        Thu,  9 Apr 2020 23:30:21 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.dsns.gov.ua D28EE1D2303D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dsns.gov.ua;
+        s=1E60DAC0-2607-11E9-81E6-7A77C2B36653; t=1586464222;
+        bh=njlCkWFc0hcw8eBX6ul4CN7Q0eDgIqGtksJn7ge99kc=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=Z2q8zqUBpz+vpsMA9jvAWx8wF2QtNlwKkUlrYJVZsZXVgOzp5Ot7eYL3PS3v+Fb0W
+         dYdjEIN35I7dn/ydky1n7LFq4rePe/myftgBJW2S8R7DdU4WDyYh6af2nxZzraajo2
+         YrLti7dwGZjLzZBcuvZseVSbqNGKSiYYySMzfStlaOiBL/j9uGWnGsWtmOcCxd8qyL
+         lOkPmWkcQLTKIu/DiN4p99Et4gYJtvsPGy4KkRmZ4nnl60R8Cwg6oajXVyJXIeeHYQ
+         44RvPktLCTFIDsN0TlQR/EO3DOUK370gPz06qcCOPJDF7KVWhtCNjTMp5Doitd3EIk
+         YVLWs+bn5Wtkw==
+X-Virus-Scanned: amavisd-new at dsns.gov.ua
+Received: from mail.dsns.gov.ua ([127.0.0.1])
+        by localhost (mail.dsns.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UNrnE-0ZxQXu; Thu,  9 Apr 2020 23:30:21 +0300 (EEST)
+Received: from mail.dsns.gov.ua (localhost [127.0.0.1])
+        by mail.dsns.gov.ua (Postfix) with ESMTP id D5E3E1D23005;
+        Thu,  9 Apr 2020 23:30:12 +0300 (EEST)
+Date:   Thu, 9 Apr 2020 23:30:12 +0300 (EEST)
+From:   Peter Wong <avia_duty@dsns.gov.ua>
+Message-ID: <967128813.17948.1586464212719.JavaMail.zimbra@dsns.gov.ua>
+Subject: Hello
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.24.1.751.gd10ce2899c
-X-Mutt-Fcc: =sent
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [45.56.137.91, 162.158.150.7]
+X-Mailer: Zimbra 8.8.15_GA_3918 (zclient/8.8.15_GA_3918)
+Thread-Index: u//V3EIJiunm5n9Av39vqIjlgBzZAQ==
+Thread-Topic: Hello
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_vq_align returns u16 now, but that's not enough for
-systems/devices with 64K pages. All callers assign it to
-a u32 variable anyway, so let's just change the return
-value type to u32.
 
-Cc: "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/vdpa/ifcvf/ifcvf_main.c  | 2 +-
- drivers/vdpa/vdpa_sim/vdpa_sim.c | 2 +-
- include/linux/vdpa.h             | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
-index 28d9e5de5675..abf6a061cab6 100644
---- a/drivers/vdpa/ifcvf/ifcvf_main.c
-+++ b/drivers/vdpa/ifcvf/ifcvf_main.c
-@@ -226,7 +226,7 @@ static u32 ifcvf_vdpa_get_vendor_id(struct vdpa_device *vdpa_dev)
- 	return IFCVF_SUBSYS_VENDOR_ID;
- }
- 
--static u16 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
-+static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
- {
- 	return IFCVF_QUEUE_ALIGNMENT;
- }
-diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-index 72863d01a12a..7957d2d41fc4 100644
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -435,7 +435,7 @@ static u64 vdpasim_get_vq_state(struct vdpa_device *vdpa, u16 idx)
- 	return vrh->last_avail_idx;
- }
- 
--static u16 vdpasim_get_vq_align(struct vdpa_device *vdpa)
-+static u32 vdpasim_get_vq_align(struct vdpa_device *vdpa)
- {
- 	return VDPASIM_QUEUE_ALIGN;
- }
-diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-index 733acfb7ef84..5453af87a33e 100644
---- a/include/linux/vdpa.h
-+++ b/include/linux/vdpa.h
-@@ -164,7 +164,7 @@ struct vdpa_config_ops {
- 	u64 (*get_vq_state)(struct vdpa_device *vdev, u16 idx);
- 
- 	/* Device ops */
--	u16 (*get_vq_align)(struct vdpa_device *vdev);
-+	u32 (*get_vq_align)(struct vdpa_device *vdev);
- 	u64 (*get_features)(struct vdpa_device *vdev);
- 	int (*set_features)(struct vdpa_device *vdev, u64 features);
- 	void (*set_config_cb)(struct vdpa_device *vdev,
--- 
-MST
-
+Can we talk now?
