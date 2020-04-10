@@ -2,87 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 302BF1A4AD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA301A4ACB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:47:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgDJTsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:48:52 -0400
-Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:49888 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726177AbgDJTsw (ORCPT
+        id S1726719AbgDJTrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:47:13 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:34281 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbgDJTrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:48:52 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BD81B2C8B;
-        Fri, 10 Apr 2020 19:48:51 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2110:2198:2199:2393:2559:2562:2689:2692:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3873:3874:4250:4321:4605:5007:7903:10004:10400:10848:11232:11658:11914:12050:12297:12663:12740:12895:13069:13161:13229:13311:13357:13439:13894:14096:14097:14181:14659:14721:21080:21212:21324:21611:21627:21660:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: wind68_130abdd8b8d4c
-X-Filterd-Recvd-Size: 1972
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf18.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 10 Apr 2020 19:48:50 +0000 (UTC)
-Message-ID: <c9fd4bc75812fed4799c2fb87b452b809a7e9a7a.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
- message
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        apw@canonical.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Date:   Fri, 10 Apr 2020 12:46:49 -0700
-In-Reply-To: <6e52383e-100d-b016-32c2-6fb54938b6fe@wanadoo.fr>
-References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
-         <8617a6b94c0644bce1fd4ca77309d67a612e6300.camel@perches.com>
-         <6e52383e-100d-b016-32c2-6fb54938b6fe@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Fri, 10 Apr 2020 15:47:13 -0400
+Received: by mail-lf1-f65.google.com with SMTP id x23so2111904lfq.1;
+        Fri, 10 Apr 2020 12:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dILpLY/RP2wcDzSbj72jyGMLBjeMuausjjMKgpvaDRU=;
+        b=X6QMmeePvLV4n/dgT+K/oDmMU7P/Ells2l8mj9Pg1lk0c01hCibVY8vQGjzoZ9c5LV
+         oy2x3du6uWvyAnh3EHBgN28HNmtJccbD03EysGTJuFAzuA5e+hMDCF9JUYFto2Ikkk0y
+         K0NNUsYHkvKq580GXSyAPEl2CwDALp4NXIpNp7oHFHz0CStHMj4QUXmEpAsHNsfV8OZG
+         4vy1NJPyNjfDeCDQg6Hira8xPKGVNL2lDhpWL7Epgg7daVYxQeot+GvxQlVOwavd+vqb
+         U4oPcypI+chrRQfMBgyOq4oklb+Au3/A6il3Cr4mPwIlMq6ndf0I7P50dXqd5vFF5bjo
+         10mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dILpLY/RP2wcDzSbj72jyGMLBjeMuausjjMKgpvaDRU=;
+        b=NsSW9e1JXykKUno4yJW1uAexsNB1g+9J5UGKKO8Lkri69myTiHkgtq86Wo7oGp9LoX
+         D4IQZ0i9wowHKO0qVHzov0KOYhdlQ40FfwXdxDSF2kTd32KPm4b2F7QvY5HJvRdQlGVk
+         sBfpOxcqnlywr5KGlO2CQZ6mAyZQcDs7i9RhpVC4UTUxDb23aJy4lH5lwHot+Qkpogfq
+         gaz9bojNca7ONGpxTX9DvaBgWf3BDFMDSuuQCqrqlsj9gmcr6m0jpg8u8XWTycvVkkXD
+         gtWXWYTO0Ut0a3eFAA0LXr4d2cCGyGMAjl3fwjJMlzTK6BkCvsoyIhbfmVjAIkKYCaLs
+         XCeQ==
+X-Gm-Message-State: AGi0PubYCxmWuphwMDKcfMkFsZa541gDlD5COBe8PNI262Z3IMDDTPIm
+        UwSKZkPK8pLD4TvVCHbqOnNubMt8
+X-Google-Smtp-Source: APiQypLG++tIcwCbPanZnLJBiwkWExq7H8E4oHcLpvvJ2dehkL3FZEzK2HIVJTwwXXAirt9wFpuC2g==
+X-Received: by 2002:a19:f206:: with SMTP id q6mr3523608lfh.85.1586548031661;
+        Fri, 10 Apr 2020 12:47:11 -0700 (PDT)
+Received: from [192.168.2.145] (ppp91-78-208-152.pppoe.mtu-net.ru. [91.78.208.152])
+        by smtp.googlemail.com with ESMTPSA id n24sm1697083lji.19.2020.04.10.12.47.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 12:47:10 -0700 (PDT)
+Subject: Re: [RFC PATCH v6 6/9] media: tegra: Add Tegra210 Video input driver
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, frankc@nvidia.com,
+        hverkuil@xs4all.nl, sakari.ailus@iki.fi, helen.koike@collabora.com
+Cc:     sboyd@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1585963507-12610-1-git-send-email-skomatineni@nvidia.com>
+ <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <775fa216-a010-4785-d6f8-28ac7c39333f@gmail.com>
+Date:   Fri, 10 Apr 2020 22:47:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
+In-Reply-To: <1585963507-12610-7-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-04-10 at 19:35 +0200, Christophe JAILLET wrote:
-> Le 08/04/2020 � 04:14, Joe Perches a �crit :
-> > This works rather better:
-> > Perhaps you could test?
-[]
-> I'm looking at some modification done in the last month that could have 
-> been spotted by the above script.
-> 
->      ./scripts/checkpatch.pl -f drivers/usb/phy/phy-jz4770.c
-> 
-> correctly spots the 3 first cases, but the 3 last (line 202, 210 and 
-> 217) are missed.
-> I don't understand why.
+04.04.2020 04:25, Sowjanya Komatineni пишет:
+> +	/* wait for syncpt counter to reach frame start event threshold */
+> +	err = host1x_syncpt_wait(chan->frame_start_sp, thresh,
+> +				 TEGRA_VI_SYNCPT_WAIT_TIMEOUT, &value);
+> +	if (err) {
+> +		dev_err(&chan->video.dev,
+> +			"frame start syncpt timeout: %d\n", err);
 
-It has to do with checkpatch's single statement parsing.
-
-This case:
-
-	if (foo)
-		dev_warn(...);
-
-is parsed as a single statement but
-
-	if (foo) {
-		dev_warn(...);
-	};
-
-is parsed as multiple statements so for the
-second case
-
-		dev_warn(...);
-
-is analyzed as a separate statement.
-
-The regex match for this missing newline test expects
-that each printk is a separate statement so the first
-case doesn't match.
-
-Clearly the regex can be improved here.
-
-cheers, Joe
-
+I guess this and the other timeout should be dev_err_ratelimited().
