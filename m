@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE6B1A4B4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 22:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56CC1A4B53
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 22:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgDJUk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 16:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47642 "EHLO mail.kernel.org"
+        id S1726729AbgDJUkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 16:40:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726792AbgDJUkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 16:40:25 -0400
-Subject: Re: [GIT PULL] sound fixes for 5.7-rc1
+        id S1726793AbgDJUk2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 16:40:28 -0400
+Subject: Re: [GIT PULL] pwm: Changes for v5.7-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586551225;
-        bh=8yhGWbBlNuwLDJGgWdQH1Js7cmNmudrETKsU/1Ccf3A=;
+        s=default; t=1586551227;
+        bh=AqHynHzXeo73zkGEcdSrTM4EGM0Eiioyl8TfaY+4xtI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=jjIHXPv4W9TGGmPWNr3LOIEdkvJruSOzi8BoLcDZxnBZ6dOxGBUTPggwR0zL4esFl
-         5zdK9dZ2YtewDXEbAXhFcGekutvVkYCOThXpKqNF+DZL07251RScc3aeiIvKqs8CnS
-         Exsh4N40O6tAAR3tXanlu8HeTEdFsXgRSttOKNoA=
+        b=LpWh0DNo4WfS9C5+tkIKJ08eVm4o4ACXafHBfCiQL4TQ92b0XVYsc09W+Acs9eTAw
+         VBO0L/rtmPES7kSmy0kYMXl4XqKz2zZMne9yK/2FvmK4ji8mTP+IlPkL+nE9J5Aez0
+         6SsNSEgr7y3BzBnUWWNHJUO5l3kqae1lQAbF1g+0=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5hd08goieb.wl-tiwai@suse.de>
-References: <s5hd08goieb.wl-tiwai@suse.de>
+In-Reply-To: <20200409145443.3494659-1-thierry.reding@gmail.com>
+References: <20200409145443.3494659-1-thierry.reding@gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5hd08goieb.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git
- tags/sound-fix-5.7-rc1
-X-PR-Tracked-Commit-Id: ddd5609fe8b682fbe81f71b27561f14d3611d856
+X-PR-Tracked-Message-Id: <20200409145443.3494659-1-thierry.reding@gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git
+ tags/pwm/for-5.7-rc1
+X-PR-Tracked-Commit-Id: 9cc5f232a4b6a0ef6e9b57876d61b88f61bdd7c2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4aafdf688360bacd4b48c87e9a3d0c208baf31c4
-Message-Id: <158655122587.24997.12603451192488007555.pr-tracker-bot@kernel.org>
-Date:   Fri, 10 Apr 2020 20:40:25 +0000
-To:     Takashi Iwai <tiwai@suse.de>
+X-PR-Merge-Commit-Id: 75bdc9293dfd1c1dea297bbc65b37c7f6dcb2bd6
+Message-Id: <158655122740.24997.9848280182754920032.pr-tracker-bot@kernel.org>
+Date:   Fri, 10 Apr 2020 20:40:27 +0000
+To:     Thierry Reding <thierry.reding@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 09 Apr 2020 16:14:52 +0200:
+The pull request you sent on Thu,  9 Apr 2020 16:54:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-5.7-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git tags/pwm/for-5.7-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4aafdf688360bacd4b48c87e9a3d0c208baf31c4
+https://git.kernel.org/torvalds/c/75bdc9293dfd1c1dea297bbc65b37c7f6dcb2bd6
 
 Thank you!
 
