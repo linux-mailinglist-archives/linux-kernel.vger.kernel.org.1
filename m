@@ -2,198 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8BA1A4A0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 20:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E46A1A4A15
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgDJS7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 14:59:07 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:41510 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726582AbgDJS7H (ORCPT
+        id S1726757AbgDJTAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:00:43 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:1954 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726695AbgDJTAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 14:59:07 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 979BE8030791;
-        Fri, 10 Apr 2020 18:59:01 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 9ygsVCdspucH; Fri, 10 Apr 2020 21:58:59 +0300 (MSK)
-Date:   Fri, 10 Apr 2020 21:59:34 +0300
-From:   Sergey Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 5/7] watchdog: dw_wdt: Support devices with asynch clocks
-Message-ID: <20200410185934.o4aucef2xhbradlp@ubsrv2.baikal.int>
-References: <20200306132747.14701-1-Sergey.Semin@baikalelectronics.ru>
- <20200306132831.89B658030706@mail.baikalelectronics.ru>
- <20200315142207.GA8424@roeck-us.net>
+        Fri, 10 Apr 2020 15:00:43 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5e90c24e0000>; Fri, 10 Apr 2020 12:00:30 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Fri, 10 Apr 2020 12:00:43 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Fri, 10 Apr 2020 12:00:43 -0700
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 10 Apr
+ 2020 19:00:43 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 10 Apr
+ 2020 19:00:42 +0000
+Subject: Re: [PATCH] mm: mmap: Fix a typo in comment
+ "compatbility"->"compatibility"
+To:     Ethon Paul <ethp@qq.com>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20200410163206.14016-1-ethp@qq.com>
+X-Nvconfidentiality: public
+From:   Ralph Campbell <rcampbell@nvidia.com>
+Message-ID: <fe7aba6e-3fc0-1c9d-c18e-d1179a7e9dfe@nvidia.com>
+Date:   Fri, 10 Apr 2020 12:00:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200315142207.GA8424@roeck-us.net>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200410163206.14016-1-ethp@qq.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1586545230; bh=8kdNTTwtIm8EhuVGWiIb+CzxLfpi2hgYnUNz95DqTuU=;
+        h=X-PGP-Universal:Subject:To:References:X-Nvconfidentiality:From:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=QDmuuTcaaVKtW/VCiLZUT2KLttqzbJ8KKT5nBnoX2bdQp/rawpfuuX+ZtzjlZADi0
+         JbUnN4B9UMZ7//4y3GLVkp2sP25L4oq5s4ZoJIPwJITGLDoUOQ16fnEogCmUhsGavL
+         11ulyVS1yI0iJO7EKcE1yoaRqKAmOv1AVsylRHKaesJIEteX3InKC2Q378g3ZeGeVD
+         y3l/j7+59SYOeTe54tVIwS+mChRJMnhLrwARh/vATNyRZWSEuUiY2YUrPP6oyJ+8IH
+         qGCU9X630R+dZH23vckoEi2jF254dNaSo/fAHydzvd92+sx5RWJ15+ngVEYhzjfkaM
+         9Ka+8BtYuJX1A==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael, Stephen, could you take a look at the issue we've got here?
 
-Guenter, my comment is below.
-
-On Sun, Mar 15, 2020 at 07:22:07AM -0700, Guenter Roeck wrote:
-> On Fri, Mar 06, 2020 at 04:27:45PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
-> > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > DW Watchdog IP core can be synthesised with asynchronous timer/APB
-> > clocks support (WDT_ASYNC_CLK_MODE_ENABLE == 1). In this case
-> > separate clock signals are supposed to be used to feed watchdog timer
-> > and APB interface of the device. Currently the driver supports
-> > the synchronous mode only. Since there is no way to determine which
-> > mode was actually activated for device from its registers, we have to
-> > rely on the platform device configuration data. If optional "pclk"
-> > clock source is supplied, we consider the device working in asynchronous
-> > mode, otherwise the driver falls back to the synchronous configuration.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Paul Burton <paulburton@kernel.org>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > ---
-> >  drivers/watchdog/dw_wdt.c | 48 +++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 43 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
-> > index 4a57b7d777dc..eb909c63a1b5 100644
-> > --- a/drivers/watchdog/dw_wdt.c
-> > +++ b/drivers/watchdog/dw_wdt.c
-> > @@ -61,6 +61,7 @@ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started "
-> >  struct dw_wdt {
-> >  	void __iomem		*regs;
-> >  	struct clk		*clk;
-> > +	struct clk		*pclk;
-> >  	unsigned long		rate;
-> >  	unsigned int		max_top;
-> >  	unsigned int		timeouts[DW_WDT_NUM_TOPS];
-> > @@ -270,6 +271,7 @@ static int dw_wdt_suspend(struct device *dev)
-> >  	dw_wdt->control = readl(dw_wdt->regs + WDOG_CONTROL_REG_OFFSET);
-> >  	dw_wdt->timeout = readl(dw_wdt->regs + WDOG_TIMEOUT_RANGE_REG_OFFSET);
-> >  
-> > +	clk_disable_unprepare(dw_wdt->pclk);
-> >  	clk_disable_unprepare(dw_wdt->clk);
-> >  
-> >  	return 0;
-> > @@ -283,6 +285,12 @@ static int dw_wdt_resume(struct device *dev)
-> >  	if (err)
-> >  		return err;
-> >  
-> > +	err = clk_prepare_enable(dw_wdt->pclk);
-> > +	if (err) {
-> > +		clk_disable_unprepare(dw_wdt->clk);
-> > +		return err;
-> > +	}
-> > +
-> >  	writel(dw_wdt->timeout, dw_wdt->regs + WDOG_TIMEOUT_RANGE_REG_OFFSET);
-> >  	writel(dw_wdt->control, dw_wdt->regs + WDOG_CONTROL_REG_OFFSET);
-> >  
-> > @@ -344,9 +352,18 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
-> >  	if (IS_ERR(dw_wdt->regs))
-> >  		return PTR_ERR(dw_wdt->regs);
-> >  
-> > -	dw_wdt->clk = devm_clk_get(dev, NULL);
-> > -	if (IS_ERR(dw_wdt->clk))
-> > -		return PTR_ERR(dw_wdt->clk);
-> > +	/*
-> > +	 * Try to request the watchdog dedicated timer clock source. It must
-> > +	 * be supplied if asynchronous mode is enabled. Otherwise fallback
-> > +	 * to the common timer/bus clocks configuration, in which the very first
-> > +	 * found clocks supply both timer and APB signals.
-> > +	 */
-> > +	dw_wdt->clk = devm_clk_get(dev, "tclk");
-> > +	if (IS_ERR(dw_wdt->clk)) {
-> > +		dw_wdt->clk = devm_clk_get(dev, NULL);
-> > +		if (IS_ERR(dw_wdt->clk))
-> > +			return PTR_ERR(dw_wdt->clk);
-> > +	}
-> >  
-> >  	ret = clk_prepare_enable(dw_wdt->clk);
-> >  	if (ret)
-> > @@ -358,10 +375,27 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
-> >  		goto out_disable_clk;
-> >  	}
-> >  
-> > +	/*
-> > +	 * Request APB clocks if device is configured with async clocks mode.
-> > +	 * In this case both tclk and pclk clocks are supposed to be specified.
-> > +	 * Alas we can't know for sure whether async mode was really activated,
-> > +	 * so the pclk reference is left optional. If it it's failed to be
-> > +	 * found we consider the device configured in synchronous clocks mode.
-> > +	 */
-> > +	dw_wdt->pclk = devm_clk_get_optional(dev, "pclk");
-> > +	if (IS_ERR(dw_wdt->pclk)) {
-> > +		ret = PTR_ERR(dw_wdt->pclk);
-> > +		goto out_disable_clk;
-> > +	}
-> > +
-> > +	ret = clk_prepare_enable(dw_wdt->pclk);
+On 4/10/20 9:32 AM, Ethon Paul wrote:
+> There is a typo in comment, fix it.
 > 
-> Not every implementation of clk_enable() checks for a NULL parameter.
-> Some return an error. This can not be trusted to work on all platforms /
-> architectures.
+> Signed-off-by: Ethon Paul <ethp@qq.com>
 
-Hm, this was unexpected twist. I've submitted not a single patch with optional
-clock API usage. It was first time I've got a comment like this, that the
-API isn't cross-platform. As I see it this isn't the patch problem, but the
-platforms/common clock bug. The platforms code must have been submitted before
-the optional clock API was introduced or the API hasn't been properly
-implemented or we don't understand something.
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
 
-Stephen, Michael could you clarify the situation with the
-cross-platformness of the optional clock API.
-
--Sergey
-
+> ---
+>   mm/mmap.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> > +	if (ret)
-> > +		goto out_disable_clk;
-> > +
-> >  	dw_wdt->rst = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
-> >  	if (IS_ERR(dw_wdt->rst)) {
-> >  		ret = PTR_ERR(dw_wdt->rst);
-> > -		goto out_disable_clk;
-> > +		goto out_disable_pclk;
-> >  	}
-> >  
-> >  	reset_control_deassert(dw_wdt->rst);
-> > @@ -399,10 +433,13 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
-> >  
-> >  	ret = watchdog_register_device(wdd);
-> >  	if (ret)
-> > -		goto out_disable_clk;
-> > +		goto out_disable_pclk;
-> >  
-> >  	return 0;
-> >  
-> > +out_disable_pclk:
-> > +	clk_disable_unprepare(dw_wdt->pclk);
-> > +
-> >  out_disable_clk:
-> >  	clk_disable_unprepare(dw_wdt->clk);
-> >  	return ret;
-> > @@ -414,6 +451,7 @@ static int dw_wdt_drv_remove(struct platform_device *pdev)
-> >  
-> >  	watchdog_unregister_device(&dw_wdt->wdd);
-> >  	reset_control_assert(dw_wdt->rst);
-> > +	clk_disable_unprepare(dw_wdt->pclk);
-> >  	clk_disable_unprepare(dw_wdt->clk);
-> >  
-> >  	return 0;
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 8d77dbbb80fe..e14230d11845 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -1207,7 +1207,7 @@ struct vm_area_struct *vma_merge(struct mm_struct *mm,
+>   }
+>   
+>   /*
+> - * Rough compatbility check to quickly see if it's even worth looking
+> + * Rough compatibility check to quickly see if it's even worth looking
+>    * at sharing an anon_vma.
+>    *
+>    * They need to have the same vm_file, and the flags can only differ
+> 
