@@ -2,344 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E16D31A4812
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 18:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D611A47FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 17:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbgDJQAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 12:00:53 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:58474 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgDJQAv (ORCPT
+        id S1726626AbgDJPuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 11:50:13 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:36897 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgDJPuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 12:00:51 -0400
-Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id ebbf3e2dfb3ed491; Fri, 10 Apr 2020 18:00:48 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 2/7] PM: sleep: core: Fold functions into their callers
-Date:   Fri, 10 Apr 2020 17:48:45 +0200
-Message-ID: <3637853.KA6EFo2J0E@kreacher>
-In-Reply-To: <1888197.j9z7NJ8yPn@kreacher>
-References: <1888197.j9z7NJ8yPn@kreacher>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+        Fri, 10 Apr 2020 11:50:13 -0400
+Received: by mail-qk1-f194.google.com with SMTP id 130so2545702qke.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 08:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ngAyglUW6GXylRlLf8NoeOB2cXhi0dD+XxTxvWca+JA=;
+        b=K2kWQODXWLuYx5R27QDJ/1YBbK+LdcmowXrNptveX2l/RRJTGBA5u7KLRWjt17zNXL
+         /QjyFOThqQfqtasPrjkGjpOg71A6aJ9TVgjPOuyIbe4YxmEYBDyCkAbgsWMFHYy/PFG6
+         kHsPRqtqm76RasWplqB7SvdyTmfaOrplCG73DT+tBEvWJvM0okK2oKDC7hbOzw+RGwz1
+         7Ob46NxTz3aro3/g6NTAzBXLMNMS0FSpQ8U7ipa+jo2EJC9ntFdPF0Tt3wqS1HDYF5F5
+         WA21Oza8jeY/pL4MaqgX6NI44qhss4GPx4+Xv0oUhqj8UTCW7mR8GKbqAWMwJwFhhKe7
+         tisQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ngAyglUW6GXylRlLf8NoeOB2cXhi0dD+XxTxvWca+JA=;
+        b=GjpOjfgeFseLaPmDe/acCKjkuisH6OiUKnijBo1OS6gGTBLOlc8IyWUXKktiCiqUsu
+         1izq/hZeefWWL/W0y/gzOSHgEjv1LBnk11GIpxB2rpkrdDi/4f6XACZvkdQ9s+cOSvlb
+         AvQA4AN5AnHCmJLssW3AIAPER3V8MnjJ+BxmXHWMHFCX9Qdy79A8ZFlth+LN17qLewQ7
+         2QlF62K+YnaiwzC7hKAqAeY0JWvyT6HAYclPZcXuwacqIDhxsCYITE+w0OnMJdW3EGAQ
+         3f9f/GRUBNbZ4/4SyY/zC99Hd1PCA1LnWV/U0iXsCD9JvJI9lCnTAjrvx5XNfMUj8of3
+         MPoQ==
+X-Gm-Message-State: AGi0PuaIuoqDdgymNavMgNVEzRcbkyxMYeir0Bc5pSaXxgyJx+0yCVUR
+        xeDKT5bLVILq4aNB9Vn/eYVA3GnPt/U0fg==
+X-Google-Smtp-Source: APiQypLFOkY2MclQ2lu0q6f6QboQgyR0N7WDHwSzvVZfEn5RgSTVV9jckZIxYvSmg1o+CRpa/sHTMw==
+X-Received: by 2002:a37:9c4f:: with SMTP id f76mr4535161qke.294.1586533812612;
+        Fri, 10 Apr 2020 08:50:12 -0700 (PDT)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id 206sm1897059qkn.36.2020.04.10.08.50.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Apr 2020 08:50:11 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: KCSAN + KVM = host reset
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <CANpmjNPqQHKUjqAzcFym5G8kHX0mjProOpGu8e4rBmuGRykAUg@mail.gmail.com>
+Date:   Fri, 10 Apr 2020 11:50:10 -0400
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "paul E. McKenney" <paulmck@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B798749E-F2F0-4A14-AFE3-F386AB632AEB@lca.pw>
+References: <CANpmjNMR4BgfCxL9qXn0sQrJtQJbEPKxJ5_HEa2VXWi6UY4wig@mail.gmail.com>
+ <AC8A5393-B817-4868-AA85-B3019A1086F9@lca.pw>
+ <CANpmjNPqQHKUjqAzcFym5G8kHX0mjProOpGu8e4rBmuGRykAUg@mail.gmail.com>
+To:     Marco Elver <elver@google.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 
-Fold four functions in the PM core that each have only one caller
-now into their callers.
 
-No intentional functional impact.
+> On Apr 10, 2020, at 7:35 AM, Marco Elver <elver@google.com> wrote:
+>=20
+> On Fri, 10 Apr 2020 at 13:25, Qian Cai <cai@lca.pw> wrote:
+>>=20
+>>=20
+>>=20
+>>> On Apr 10, 2020, at 5:47 AM, Marco Elver <elver@google.com> wrote:
+>>>=20
+>>> That would contradict what you said about it working if KCSAN is
+>>> "off". What kernel are you attempting to use in the VM?
+>=20
+> Ah, sorry this was a typo,
+>  s/working if KCSAN/not working if KCSAN/
+>=20
+>> Well, I said set KCSAN debugfs to =E2=80=9Coff=E2=80=9D did not help, =
+i.e., it will reset the host running kvm.sh. It is the vanilla ubuntu =
+18.04 kernel in VM.
+>>=20
+>> github.com/cailca/linux-mm/blob/master/kvm.sh
+>=20
+> So, if you say that CONFIG_KCSAN_INTERRUPT_WATCHER=3Dn works, that
+> contradicts it not working when KCSAN is "off". Because if KCSAN is
+> off, it never sets up any watchpoints, and whether or not
+> KCSAN_INTERRUPT_WATCHER is selected or not shouldn't matter. Does that
+> make more sense?
+>=20
+> But from what you say, it's not the type of kernel run in VM. I just
+> thought there may be some strange interaction if you also run a KCSAN
+> kernel inside the VM.
+>=20
+> Since I have no way to help debug right now, if you say that
+> "KCSAN_SANITIZE_svm.o :=3D n" works, I'd suggest that you just send a
+> patch for that. If you think that's not adequate, it may be possible
+> to try and find the offending function(s) in that file and add
+> __no_kcsan to the  function(s) that cause problems.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/base/power/main.c | 198 ++++++++++++++--------------------------------
- 1 file changed, 60 insertions(+), 138 deletions(-)
+This works,
 
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index 5d0225573bbe..75d7cdb4de9c 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -573,43 +573,6 @@ bool dev_pm_may_skip_resume(struct device *dev)
- 	return !dev->power.must_resume && pm_transition.event != PM_EVENT_RESTORE;
- }
- 
--static pm_callback_t dpm_subsys_resume_noirq_cb(struct device *dev,
--						pm_message_t state,
--						const char **info_p)
--{
--	pm_callback_t callback;
--	const char *info;
--
--	if (dev->pm_domain) {
--		info = "noirq power domain ";
--		callback = pm_noirq_op(&dev->pm_domain->ops, state);
--	} else if (dev->type && dev->type->pm) {
--		info = "noirq type ";
--		callback = pm_noirq_op(dev->type->pm, state);
--	} else if (dev->class && dev->class->pm) {
--		info = "noirq class ";
--		callback = pm_noirq_op(dev->class->pm, state);
--	} else if (dev->bus && dev->bus->pm) {
--		info = "noirq bus ";
--		callback = pm_noirq_op(dev->bus->pm, state);
--	} else {
--		return NULL;
--	}
--
--	if (info_p)
--		*info_p = info;
--
--	return callback;
--}
--
--static pm_callback_t dpm_subsys_suspend_noirq_cb(struct device *dev,
--						 pm_message_t state,
--						 const char **info_p);
--
--static pm_callback_t dpm_subsys_suspend_late_cb(struct device *dev,
--						pm_message_t state,
--						const char **info_p);
--
- /**
-  * device_resume_noirq - Execute a "noirq resume" callback for given device.
-  * @dev: Device to handle.
-@@ -621,8 +584,8 @@ static pm_callback_t dpm_subsys_suspend_late_cb(struct device *dev,
-  */
- static int device_resume_noirq(struct device *dev, pm_message_t state, bool async)
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3278,7 +3278,7 @@ static void svm_cancel_injection(struct kvm_vcpu =
+*vcpu)
+=20
+ bool __svm_vcpu_run(unsigned long vmcb_pa, unsigned long *regs);
+=20
+-static void svm_vcpu_run(struct kvm_vcpu *vcpu)
++static __no_kcsan void svm_vcpu_run(struct kvm_vcpu *vcpu)
  {
--	pm_callback_t callback;
--	const char *info;
-+	pm_callback_t callback = NULL;
-+	const char *info = NULL;
- 	bool skip_resume;
- 	int error = 0;
- 
-@@ -638,7 +601,19 @@ static int device_resume_noirq(struct device *dev, pm_message_t state, bool asyn
- 	if (!dpm_wait_for_superior(dev, async))
- 		goto Out;
- 
--	callback = dpm_subsys_resume_noirq_cb(dev, state, &info);
-+	if (dev->pm_domain) {
-+		info = "noirq power domain ";
-+		callback = pm_noirq_op(&dev->pm_domain->ops, state);
-+	} else if (dev->type && dev->type->pm) {
-+		info = "noirq type ";
-+		callback = pm_noirq_op(dev->type->pm, state);
-+	} else if (dev->class && dev->class->pm) {
-+		info = "noirq class ";
-+		callback = pm_noirq_op(dev->class->pm, state);
-+	} else if (dev->bus && dev->bus->pm) {
-+		info = "noirq bus ";
-+		callback = pm_noirq_op(dev->bus->pm, state);
-+	}
- 	if (callback) {
- 		skip_resume = false;
- 		goto Run;
-@@ -791,35 +766,6 @@ void dpm_resume_noirq(pm_message_t state)
- 	cpuidle_resume();
- }
- 
--static pm_callback_t dpm_subsys_resume_early_cb(struct device *dev,
--						pm_message_t state,
--						const char **info_p)
--{
--	pm_callback_t callback;
--	const char *info;
--
--	if (dev->pm_domain) {
--		info = "early power domain ";
--		callback = pm_late_early_op(&dev->pm_domain->ops, state);
--	} else if (dev->type && dev->type->pm) {
--		info = "early type ";
--		callback = pm_late_early_op(dev->type->pm, state);
--	} else if (dev->class && dev->class->pm) {
--		info = "early class ";
--		callback = pm_late_early_op(dev->class->pm, state);
--	} else if (dev->bus && dev->bus->pm) {
--		info = "early bus ";
--		callback = pm_late_early_op(dev->bus->pm, state);
--	} else {
--		return NULL;
--	}
--
--	if (info_p)
--		*info_p = info;
--
--	return callback;
--}
--
- /**
-  * device_resume_early - Execute an "early resume" callback for given device.
-  * @dev: Device to handle.
-@@ -830,8 +776,8 @@ static pm_callback_t dpm_subsys_resume_early_cb(struct device *dev,
-  */
- static int device_resume_early(struct device *dev, pm_message_t state, bool async)
- {
--	pm_callback_t callback;
--	const char *info;
-+	pm_callback_t callback = NULL;
-+	const char *info = NULL;
- 	int error = 0;
- 
- 	TRACE_DEVICE(dev);
-@@ -846,9 +792,19 @@ static int device_resume_early(struct device *dev, pm_message_t state, bool asyn
- 	if (!dpm_wait_for_superior(dev, async))
- 		goto Out;
- 
--	callback = dpm_subsys_resume_early_cb(dev, state, &info);
--
--	if (!callback && dev->driver && dev->driver->pm) {
-+	if (dev->pm_domain) {
-+		info = "early power domain ";
-+		callback = pm_late_early_op(&dev->pm_domain->ops, state);
-+	} else if (dev->type && dev->type->pm) {
-+		info = "early type ";
-+		callback = pm_late_early_op(dev->type->pm, state);
-+	} else if (dev->class && dev->class->pm) {
-+		info = "early class ";
-+		callback = pm_late_early_op(dev->class->pm, state);
-+	} else if (dev->bus && dev->bus->pm) {
-+		info = "early bus ";
-+		callback = pm_late_early_op(dev->bus->pm, state);
-+	} else if (dev->driver && dev->driver->pm) {
- 		info = "early driver ";
- 		callback = pm_late_early_op(dev->driver->pm, state);
- 	}
-@@ -1226,35 +1182,6 @@ static void dpm_superior_set_must_resume(struct device *dev)
- 	device_links_read_unlock(idx);
- }
- 
--static pm_callback_t dpm_subsys_suspend_noirq_cb(struct device *dev,
--						 pm_message_t state,
--						 const char **info_p)
--{
--	pm_callback_t callback;
--	const char *info;
--
--	if (dev->pm_domain) {
--		info = "noirq power domain ";
--		callback = pm_noirq_op(&dev->pm_domain->ops, state);
--	} else if (dev->type && dev->type->pm) {
--		info = "noirq type ";
--		callback = pm_noirq_op(dev->type->pm, state);
--	} else if (dev->class && dev->class->pm) {
--		info = "noirq class ";
--		callback = pm_noirq_op(dev->class->pm, state);
--	} else if (dev->bus && dev->bus->pm) {
--		info = "noirq bus ";
--		callback = pm_noirq_op(dev->bus->pm, state);
--	} else {
--		return NULL;
--	}
--
--	if (info_p)
--		*info_p = info;
--
--	return callback;
--}
--
- /**
-  * __device_suspend_noirq - Execute a "noirq suspend" callback for given device.
-  * @dev: Device to handle.
-@@ -1266,8 +1193,8 @@ static pm_callback_t dpm_subsys_suspend_noirq_cb(struct device *dev,
-  */
- static int __device_suspend_noirq(struct device *dev, pm_message_t state, bool async)
- {
--	pm_callback_t callback;
--	const char *info;
-+	pm_callback_t callback = NULL;
-+	const char *info = NULL;
- 	int error = 0;
- 
- 	TRACE_DEVICE(dev);
-@@ -1281,7 +1208,19 @@ static int __device_suspend_noirq(struct device *dev, pm_message_t state, bool a
- 	if (dev->power.syscore || dev->power.direct_complete)
- 		goto Complete;
- 
--	callback = dpm_subsys_suspend_noirq_cb(dev, state, &info);
-+	if (dev->pm_domain) {
-+		info = "noirq power domain ";
-+		callback = pm_noirq_op(&dev->pm_domain->ops, state);
-+	} else if (dev->type && dev->type->pm) {
-+		info = "noirq type ";
-+		callback = pm_noirq_op(dev->type->pm, state);
-+	} else if (dev->class && dev->class->pm) {
-+		info = "noirq class ";
-+		callback = pm_noirq_op(dev->class->pm, state);
-+	} else if (dev->bus && dev->bus->pm) {
-+		info = "noirq bus ";
-+		callback = pm_noirq_op(dev->bus->pm, state);
-+	}
- 	if (callback)
- 		goto Run;
- 
-@@ -1429,35 +1368,6 @@ static void dpm_propagate_wakeup_to_parent(struct device *dev)
- 	spin_unlock_irq(&parent->power.lock);
- }
- 
--static pm_callback_t dpm_subsys_suspend_late_cb(struct device *dev,
--						pm_message_t state,
--						const char **info_p)
--{
--	pm_callback_t callback;
--	const char *info;
--
--	if (dev->pm_domain) {
--		info = "late power domain ";
--		callback = pm_late_early_op(&dev->pm_domain->ops, state);
--	} else if (dev->type && dev->type->pm) {
--		info = "late type ";
--		callback = pm_late_early_op(dev->type->pm, state);
--	} else if (dev->class && dev->class->pm) {
--		info = "late class ";
--		callback = pm_late_early_op(dev->class->pm, state);
--	} else if (dev->bus && dev->bus->pm) {
--		info = "late bus ";
--		callback = pm_late_early_op(dev->bus->pm, state);
--	} else {
--		return NULL;
--	}
--
--	if (info_p)
--		*info_p = info;
--
--	return callback;
--}
--
- /**
-  * __device_suspend_late - Execute a "late suspend" callback for given device.
-  * @dev: Device to handle.
-@@ -1468,8 +1378,8 @@ static pm_callback_t dpm_subsys_suspend_late_cb(struct device *dev,
-  */
- static int __device_suspend_late(struct device *dev, pm_message_t state, bool async)
- {
--	pm_callback_t callback;
--	const char *info;
-+	pm_callback_t callback = NULL;
-+	const char *info = NULL;
- 	int error = 0;
- 
- 	TRACE_DEVICE(dev);
-@@ -1490,7 +1400,19 @@ static int __device_suspend_late(struct device *dev, pm_message_t state, bool as
- 	if (dev->power.syscore || dev->power.direct_complete)
- 		goto Complete;
- 
--	callback = dpm_subsys_suspend_late_cb(dev, state, &info);
-+	if (dev->pm_domain) {
-+		info = "late power domain ";
-+		callback = pm_late_early_op(&dev->pm_domain->ops, state);
-+	} else if (dev->type && dev->type->pm) {
-+		info = "late type ";
-+		callback = pm_late_early_op(dev->type->pm, state);
-+	} else if (dev->class && dev->class->pm) {
-+		info = "late class ";
-+		callback = pm_late_early_op(dev->class->pm, state);
-+	} else if (dev->bus && dev->bus->pm) {
-+		info = "late bus ";
-+		callback = pm_late_early_op(dev->bus->pm, state);
-+	}
- 	if (callback)
- 		goto Run;
- 
--- 
-2.16.4
+        struct vcpu_svm *svm =3D to_svm(vcpu);
 
+Does anyone has any idea why svm_vcpu_run() would be a problem for =
+KCSAN_INTERRUPT_WATCHER=3Dy?
 
-
-
+I can only see there are a bunch of assembly code in __svm_vcpu_run() =
+that might be related?=
