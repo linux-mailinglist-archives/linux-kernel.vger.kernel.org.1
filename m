@@ -2,148 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB10C1A4AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7745E1A4AAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgDJTlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:41:32 -0400
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36243 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726783AbgDJTl3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:41:29 -0400
-Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 10 Apr 2020 12:39:39 -0700
-Received: from sc9-mailhost3.vmware.com (unknown [10.166.69.226])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 68E18B2D1A;
-        Fri, 10 Apr 2020 15:39:43 -0400 (EDT)
-From:   Matt Helsley <mhelsley@vmware.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Julien Thierry <jthierry@redhat.com>,
+        id S1726817AbgDJTi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:38:29 -0400
+Received: from mout.web.de ([212.227.17.11]:56425 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726773AbgDJTi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 15:38:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1586547440;
+        bh=PGEeqxNlVBCsSOG4LIqFOF2BvoLw4Q31E+UCkpke5aA=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=FzwYaxzvptZn7OAXoibSOtHQglzrbu9Q404Q6WbomdRhGmd/q7Q+UXjil5U+Dw/2J
+         JOA+rKrp/nuQy3efkyVK1XVrgIr2uiCynGKQ9OyHvjGgH7hiBHwISQR985GlFJ36Ix
+         f5SwiIq/+I7AQjXAZBqvBnDPSgFhdpuRDdjurOHs=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.3] ([78.48.110.107]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0Lhvpu-1iseZu1Q9a-00nBTJ; Fri, 10
+ Apr 2020 21:37:20 +0200
+To:     Luis Chamberlain <mcgrof@kernel.org>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hannes Reinecke <hare@suse.com>, Jan Kara <jack@suse.cz>,
+        Michal Hocko <mhocko@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Ming Lei <ming.lei@redhat.com>,
         Ingo Molnar <mingo@redhat.com>,
+        Nicolai Stange <nstange@suse.de>,
+        Omar Sandoval <osandov@fb.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH 36/36] objtool: mcount: Remove wordsized endian wrappers
-Date:   Fri, 10 Apr 2020 12:35:59 -0700
-Message-ID: <a08788c1bcb5a0a67906b15cf68a936ed48bc970.1586468801.git.mhelsley@vmware.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1586468801.git.mhelsley@vmware.com>
-References: <cover.1586468801.git.mhelsley@vmware.com>
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Yu Kuai <yukuai3@huawei.com>,
+        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 2/5] blktrace: fix debugfs use after free
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <ccc51229-ae0c-4c41-842b-f267eed96843@web.de>
+Date:   Fri, 10 Apr 2020 21:37:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-Provags-ID: V03:K1:SqcB46BVWuHcsp34+t7mjQ4lYXatYFAbVT0yn5wReMaLmawsuKa
+ nmZa04tGZABhR4ZvIl6hLcs4eMfbCEkuTLn9rrGpujiMhGUEglOB5bcIa4OkLvEyw0O3AGO
+ cDkTMM1gVq4zbHZjHxoKRIgHyFY2kEfHAVlJHDu2E0WGLyqOj6eoYoh7B+RX56fmPBKOnb1
+ 8Lm3lvGxYqQaeyd5Ldoaw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Hy4Do2hsiqw=:xA7n8QnkZxeSx8p4Cloh4C
+ q33RG+if7wj0s8c0xcKLmFRsg7uw+zT3Ya8CjMz3uJzkG5AyhpLMvWbyIhl0ORbAZ5fHHvaNH
+ etOK2G0QO5FpOQoPsZUA79zJvKBhpG8hxA49JVGZuJlGwYUysUD5AVj7LBdRtWhtEOXoOtft9
+ DJ3gM6vTSWz9I9Kf0ELav3wo6hZhGoOF8dblZaM0qO+JuIQZO/KF51JXR8x9/B6+pP7K2P1CV
+ DuM9geZgfvaAfrAPYvLTts7yfYJqhKa36J70MV2EwmrOxF4sb4wCIEjCa1pX2q/SLH8yB5D2f
+ D9KC9lo4YYfO3+l37rRQCsVB+SveaxRdh3VwGHEo7ZMf8Zbx8qi3KUiXweaKZeBc28v8lvCte
+ D5e97yBiD+zb084CqjvU/rwQdWfMR3UJltXSHGZAX2tHJ0AxwTS0xvJ8ApNeBpPPU3awN7d2l
+ oSjJtxZT7hNb4s0znAMxAYbUzJc0M8uYktYqyCmRRmUrpxPLtSdOclzp0I7AFkEtJRBEjiOpZ
+ ZKSfR3HjJ9W15DvJvhMFIpXiXuQxsZBXYAyenAyV+oAqffdWPfQXr7QS+SLi8Fy7RUw0wQcoM
+ fJkJbKtwPb1odnh4koB94Nc9pC20Br3ml0NKNwlesipehRdGVmerMvuOukb0vU3IdrLAAYihY
+ aTlkIl2J4+orlP9QzZQ5Kiw7sU4+BiW6URTXumYjqDohQWbVmxhqMxzkCfOWV2x09glTMnV4B
+ CZc1kaZIC8pFNgqNhspMzBNcEAir7YRIbVOHs4ua2b3lCYywyPYwfawRgR0rVUZvjNybUpfbD
+ JFWQWCQea9ZNeUCuZh8ZU5cEIXDGcq76DZ4jorszGuOSCePVTegDW/t/DnyNwR+C2W8gOJdTN
+ 9Ud+kwhNRd7l615bd0QLH8bu8FaDkg1TwSRS5gupVWfaawwY13RtIamB31gnXqmOuFlLIpTj1
+ WuyuIN7uAv8rK61tSbX+CsuWqW/pm0beUwFOSuRGW/VUt2EjIDzuL2Q+fLuNSn/lEG6kvOUh+
+ YaPkynKNoF6UtBNZoQDMvTe2VdEuZVu5rsl98hmcriqMSYGScRXE9PPfnIuW7kYi+TJvNewRN
+ dXnXU9Tyl3G/rxQhNu7mY+noq5Il0mErH6F9i2W+Rk5G1cw3nwwL2q6GlzXRNJGVysYR9IwI0
+ rH8gl7fRhTbgiGY56g733JT2JkzmZLzM63KRt2eH2Sw5cPHz3fruDOFPP203a/3aV6Nw31X8A
+ Jl0MeTrwRoewM83bu
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that they're no longer used we can remove these endian wrappers.
+> Fiexes: 6ac93117ab00 ("blktrace: use existing disk debugfs directory")
 
-Signed-off-by: Matt Helsley <mhelsley@vmware.com>
----
- tools/objtool/recordmcount.c | 63 ------------------------------------
- 1 file changed, 63 deletions(-)
+Please avoid a typo for this tag.
 
-diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
-index 50834b065e16..fd66e26f21a8 100644
---- a/tools/objtool/recordmcount.c
-+++ b/tools/objtool/recordmcount.c
-@@ -149,53 +149,6 @@ static int make_nop_arm64(struct section *txts, size_t const offset)
- 	return 0;
- }
- 
--/* w8rev, w8nat, ...: Handle endianness. */
--
--static uint64_t w8rev(uint64_t const x)
--{
--	return   ((0xff & (x >> (0 * 8))) << (7 * 8))
--	       | ((0xff & (x >> (1 * 8))) << (6 * 8))
--	       | ((0xff & (x >> (2 * 8))) << (5 * 8))
--	       | ((0xff & (x >> (3 * 8))) << (4 * 8))
--	       | ((0xff & (x >> (4 * 8))) << (3 * 8))
--	       | ((0xff & (x >> (5 * 8))) << (2 * 8))
--	       | ((0xff & (x >> (6 * 8))) << (1 * 8))
--	       | ((0xff & (x >> (7 * 8))) << (0 * 8));
--}
--
--static uint32_t w4rev(uint32_t const x)
--{
--	return   ((0xff & (x >> (0 * 8))) << (3 * 8))
--	       | ((0xff & (x >> (1 * 8))) << (2 * 8))
--	       | ((0xff & (x >> (2 * 8))) << (1 * 8))
--	       | ((0xff & (x >> (3 * 8))) << (0 * 8));
--}
--
--static uint32_t w2rev(uint16_t const x)
--{
--	return   ((0xff & (x >> (0 * 8))) << (1 * 8))
--	       | ((0xff & (x >> (1 * 8))) << (0 * 8));
--}
--
--static uint64_t w8nat(uint64_t const x)
--{
--	return x;
--}
--
--static uint32_t w4nat(uint32_t const x)
--{
--	return x;
--}
--
--static uint32_t w2nat(uint16_t const x)
--{
--	return x;
--}
--
--static uint64_t (*w8)(uint64_t);
--static uint32_t (*w)(uint32_t);
--static uint32_t (*w2)(uint16_t);
--
- /* Names of the sections that could contain calls to mcount. */
- static int is_mcounted_section_name(char const *const txtname)
- {
-@@ -579,22 +532,12 @@ static int do_file(char const *const fname)
- 		goto out;
- 	}
- 
--	w = w4nat;
--	w2 = w2nat;
--	w8 = w8nat;
- 	switch (lf->ehdr.e_ident[EI_DATA]) {
--		static unsigned int const endian = 1;
- 	default:
- 		fprintf(stderr, "unrecognized ELF data encoding %d: %s\n",
- 			lf->ehdr.e_ident[EI_DATA], fname);
- 		goto out;
- 	case ELFDATA2LSB:
--		if (*(unsigned char const *)&endian != 1) {
--			/* objtool is big endian, file.o is little endian. */
--			w = w4rev;
--			w2 = w2rev;
--			w8 = w8rev;
--		}
- 		ideal_nop4_arm = ideal_nop4_arm_le;
- 		bl_mcount_arm = bl_mcount_arm_le;
- 		push_arm = push_arm_le;
-@@ -602,12 +545,6 @@ static int do_file(char const *const fname)
- 		push_bl_mcount_thumb = push_bl_mcount_thumb_le;
- 		break;
- 	case ELFDATA2MSB:
--		if (*(unsigned char const *)&endian != 0) {
--			/*  objtool is little endian, file.o is big endian. */
--			w = w4rev;
--			w2 = w2rev;
--			w8 = w8rev;
--		}
- 		ideal_nop4_arm = ideal_nop4_arm_be;
- 		bl_mcount_arm = bl_mcount_arm_be;
- 		push_arm = push_arm_be;
--- 
-2.20.1
-
+Regards,
+Markus
