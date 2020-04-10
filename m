@@ -2,118 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6481A42B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 08:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E1691A42C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 08:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726177AbgDJGxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 02:53:44 -0400
-Received: from esa2.mentor.iphmx.com ([68.232.141.98]:3985 "EHLO
-        esa2.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbgDJGxn (ORCPT
+        id S1726669AbgDJG4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 02:56:39 -0400
+Received: from mail27.static.mailgun.info ([104.130.122.27]:35610 "EHLO
+        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726647AbgDJG4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 02:53:43 -0400
-IronPort-SDR: U2DmNUMOmEaRTNv3w56LX2kzv2X4EyQNLqsJHagvuuLkFcEh0QCnfRkbPj0CqY3tETT/9ZWrAN
- TPzGuUq8gvgAOas9aAEjwhgGsj93XFWoUCah8SGxUBcX4PF8klxzDljwc6Ny7S9UsYZJNxynuX
- 9GfAp4+D8FSpQx6NFMOU7PGzNkJ/tH3At+0NQ6XAvY7lbQoPdIA1kYDP05rWC4CLH5naIpHtR9
- rlMq5vuTZmhSWWT96GxxalWF0EXMJEzwU+RBUgUAi3gBy1rHnyq9oHhcPH0DrTOd9tCqw5Yosf
- GNc=
-X-IronPort-AV: E=Sophos;i="5.72,364,1580803200"; 
-   d="scan'208";a="47549097"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa2.mentor.iphmx.com with ESMTP; 09 Apr 2020 22:53:43 -0800
-IronPort-SDR: KfhfzDl3cuQJF/PMnO2Z0QuhtBDRaI6p2RHRH4v0qywLwCY2YFPNiVRZMuRmgchkCvAMJWW991
- hQ/E3XQ+Yw8qh1w/vhcpMgHkVT2UYSJduS/Sgp/Bx32dSV+nYGhzruJUgIMxA+oXSZkDe4vGsF
- 5IXf0X9dWkKyEgfuJsRIP9E0lKmlB13n+hcbopky5TJfihxTYmOzdF8lyYSJaNEWc93WVXUmfZ
- XV6YyQt6XQWyXbOahEWSG4adErPVhs5SIronAS9J4QIYTOW7U+7KkqZ3pP1Qu/1AGWZUTjk4b6
- dBY=
-Subject: Re: [PATCH v10 43/55] dt-bindings: input: atmel: support to set max
- bytes transferred
-To:     Dmitry Osipenko <digetx@gmail.com>, <nick@shmanahar.org>,
-        <dmitry.torokhov@gmail.com>, <jikos@kernel.org>,
-        <benjamin.tissoires@redhat.com>, <bsz@semihalf.com>
-CC:     <linux-input@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <Andrew_Gabbasov@mentor.com>,
-        <Balasubramani_Vivekanandan@mentor.com>
-References: <20200331105051.58896-1-jiada_wang@mentor.com>
- <20200331105051.58896-44-jiada_wang@mentor.com>
- <a15d312d-587e-5b10-e031-dde1965f6f89@gmail.com>
- <9b98a3fc-b7ee-fc01-dc5c-248df507d4a2@mentor.com>
- <008d019c-2de7-4fe4-0c22-2668312f808b@gmail.com>
- <5abe310f-094c-9355-d533-fb64efcbf726@mentor.com>
- <270812bc-8c2c-c564-be8e-4cc18de8670f@gmail.com>
-From:   "Wang, Jiada" <jiada_wang@mentor.com>
-Message-ID: <fa4c4352-a368-5c83-2c72-a077946b7975@mentor.com>
-Date:   Fri, 10 Apr 2020 15:53:38 +0900
+        Fri, 10 Apr 2020 02:56:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586501798; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=/7DOlq/mZIuFniPGwb6fsgLKfPBaw3AbbYqpvORj+k8=; b=IoSCfIFZ9wdUOtlUBQ4ZTWLxOE+QnOnGqmWpk3QtUZjkJxFTM9JA6hRm7anlgNaibFgVgDDE
+ J4PcU/eBL8/qyvfSVQ5ZEaD4s8yQAQe25KRTl0gPEdTAzK0OfbSjfoD5Y9U0EAz3+UyDFAG8
+ JAfWlct9vHgcyWGomNHhO008tnY=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9018a5.7f5008108ea0-smtp-out-n02;
+ Fri, 10 Apr 2020 06:56:37 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 153FEC433BA; Fri, 10 Apr 2020 06:56:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.10] (unknown [183.83.138.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D623CC433D2;
+        Fri, 10 Apr 2020 06:56:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D623CC433D2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH 02/21] tty: serial: qcom_geni_serial: Use OPP API to set
+ clk/perf state
+To:     Rajendra Nayak <rnayak@codeaurora.org>, viresh.kumar@linaro.org,
+        sboyd@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+References: <1586353607-32222-1-git-send-email-rnayak@codeaurora.org>
+ <1586353607-32222-3-git-send-email-rnayak@codeaurora.org>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <5eb6c05e-893a-ef8a-c53e-a775b2f837d1@codeaurora.org>
+Date:   Fri, 10 Apr 2020 12:26:18 +0530
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <270812bc-8c2c-c564-be8e-4cc18de8670f@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <1586353607-32222-3-git-send-email-rnayak@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: svr-orw-mbx-03.mgc.mentorg.com (147.34.90.203) To
- SVR-ORW-MBX-04.mgc.mentorg.com (147.34.90.204)
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry
+Hi Rajendra,
 
-On 2020/04/10 0:10, Dmitry Osipenko wrote:
-> 09.04.2020 09:25, Wang, Jiada пишет:
->> Hi Dmitry
->>
->> On 2020/04/07 23:47, Dmitry Osipenko wrote:
->>> 07.04.2020 12:27, Wang, Jiada пишет:
->>> ..
->>>>> Is this a software (firmware) limitation which varies from version to
->>>>> version?
->>>>>
->>>>
->>>> the timeout issue trying to be addressed in this patch is from software,
->>>> one of our board a Serializer/Deserializer bridge exists between the SoC
->>>> (imx6) and the Atmel touch controller.
->>>> imx6 i2c controller driver has a timeout value(100ms) for each i2c
->>>> transaction,
->>>> Large i2c read transaction failed to complete within this timeout value
->>>> and therefore imx6 i2c controller driver aborts the transaction
->>>> and returns failure.
->>>>
->>>> Therefore this patch was created to split the large i2c transaction into
->>>> smaller chunks which can complete
->>>> within the timeout defined by i2c controller driver.
->>>
->>> Isn't it possible to use the max_read/write_len of the generic struct
->>> i2c_adapter_quirks for limiting the transfer size?
->>>
->>> BTW, it looks like the i.MX I2C driver doesn't specify the
->>> i2c_adapter_quirks, which probably needs to be fixed.
->>>
->> yes, i.MX I2C driver can specify i2c_adapter_quirks to limit the size be
->> transferred in one transaction.
->>
->> But even in this case, mxt_process_messages_t44() fails when it tries to
->> transfer data count larger than max_read/write_len set in i.MX I2C
->> driver, which we would like to avoid.
-> 
-> IIUC, the transfer's limitation is a part of I2C controller hardware and
-> not the touch controller, so it should be wrong to describe that
-> limitation in the maxtouch's DT node.
-> 
-> I meant that we probably could set the data->mtu based on
-> i2c_client->adapter->quirks->max_read and then the DT property shouldn't
-> be needed, couldn't this be done?
->Thanks, now I understand your point,
-and yes, by this way, we can address the I2C controller limitation issue
-by its own configuration.
+On 4/8/2020 7:16 PM, Rajendra Nayak wrote:
+> geni serial needs to express a perforamnce state requirement on CX
+*performance
+> depending on the frequency of the clock rates. Use OPP table from
+> DT to register with OPP framework and use dev_pm_opp_set_rate() to
+> set the clk/perf state.
+>
+> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> Cc: Akash Asthana <akashast@codeaurora.org>
+> Cc: linux-serial@vger.kernel.org
+> ---
+>   drivers/tty/serial/qcom_geni_serial.c | 20 +++++++++++++++-----
+>   include/linux/qcom-geni-se.h          |  2 ++
+>   2 files changed, 17 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/tty/serial/qcom_geni_serial.c b/drivers/tty/serial/qcom_geni_serial.c
+> index 6119090..754eaf6 100644
+> --- a/drivers/tty/serial/qcom_geni_serial.c
+> +++ b/drivers/tty/serial/qcom_geni_serial.c
+> @@ -9,6 +9,7 @@
+>   #include <linux/module.h>
+>   #include <linux/of.h>
+>   #include <linux/of_device.h>
+> +#include <linux/pm_opp.h>
+>   #include <linux/platform_device.h>
+>   #include <linux/pm_runtime.h>
+>   #include <linux/pm_wakeirq.h>
+> @@ -961,7 +962,7 @@ static void qcom_geni_serial_set_termios(struct uart_port *uport,
+>   		goto out_restart_rx;
+>   
+>   	uport->uartclk = clk_rate;
+> -	clk_set_rate(port->se.clk, clk_rate);
+> +	dev_pm_opp_set_rate(uport->dev, clk_rate);
 
-I will replace this commit with your proposed solution
+Is this change not intended for backward compatibility? If I don't pick 
+DT change for Geni drivers,  dev_pm_opp_set_rate is failing and causing 
+functionality issues.
 
-Thanks,
-jiada
+>   	ser_clk_cfg = SER_CLK_EN;
+>   	ser_clk_cfg |= clk_div << CLK_DIV_SHFT;
+>   
+> @@ -1198,8 +1199,10 @@ static void qcom_geni_serial_pm(struct uart_port *uport,
+>   	if (new_state == UART_PM_STATE_ON && old_state == UART_PM_STATE_OFF)
+>   		geni_se_resources_on(&port->se);
+>   	else if (new_state == UART_PM_STATE_OFF &&
+> -			old_state == UART_PM_STATE_ON)
+> +			old_state == UART_PM_STATE_ON) {
+> +		dev_pm_opp_set_rate(uport->dev, 0);
+>   		geni_se_resources_off(&port->se);
+> +	}
+>   }
+>   
+>   static const struct uart_ops qcom_geni_console_pops = {
+> @@ -1318,13 +1321,16 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
+>   	if (of_property_read_bool(pdev->dev.of_node, "cts-rts-swap"))
+>   		port->cts_rts_swap = true;
+>   
+> +	port->se.opp = dev_pm_opp_set_clkname(&pdev->dev, "se");
+> +	dev_pm_opp_of_add_table(&pdev->dev);
+> +
+>   	uport->private_data = drv;
+>   	platform_set_drvdata(pdev, port);
+>   	port->handle_rx = console ? handle_rx_console : handle_rx_uart;
+>   
+>   	ret = uart_add_one_port(drv, uport);
+>   	if (ret)
+> -		return ret;
+> +		goto err;
+>   
+>   	irq_set_status_flags(uport->irq, IRQ_NOAUTOEN);
+>   	ret = devm_request_irq(uport->dev, uport->irq, qcom_geni_serial_isr,
+> @@ -1332,7 +1338,7 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
+>   	if (ret) {
+>   		dev_err(uport->dev, "Failed to get IRQ ret %d\n", ret);
+>   		uart_remove_one_port(drv, uport);
+> -		return ret;
+> +		goto err;
+>   	}
+>   
+>   	/*
+> @@ -1349,11 +1355,14 @@ static int qcom_geni_serial_probe(struct platform_device *pdev)
+>   		if (ret) {
+>   			device_init_wakeup(&pdev->dev, false);
+>   			uart_remove_one_port(drv, uport);
+> -			return ret;
+> +			goto err;
+>   		}
+>   	}
+>   
+>   	return 0;
+> +err:
+> +	dev_pm_opp_of_remove_table(&pdev->dev);
+do we need to call "dev_pm_opp_put_clkname" here and in remove to 
+release clk resource grabbed by
 
+dev_pm_opp_set_clkname(&pdev->dev, "se");?
 
-> The I2C core only rejects transfers that don't fit into the
-> max_read/write_len and nothing more.
-> 
+Regards,
+Akash
+
+> +	return ret;
+>   }
+>   
+>   static int qcom_geni_serial_remove(struct platform_device *pdev)
+> @@ -1361,6 +1370,7 @@ static int qcom_geni_serial_remove(struct platform_device *pdev)
+>   	struct qcom_geni_serial_port *port = platform_get_drvdata(pdev);
+>   	struct uart_driver *drv = port->uport.private_data;
+>   
+> +	dev_pm_opp_of_remove_table(&pdev->dev);
+>   	dev_pm_clear_wake_irq(&pdev->dev);
+>   	device_init_wakeup(&pdev->dev, false);
+>   	uart_remove_one_port(drv, &port->uport);
+> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+> index dd46494..737e713 100644
+> --- a/include/linux/qcom-geni-se.h
+> +++ b/include/linux/qcom-geni-se.h
+> @@ -24,6 +24,7 @@ enum geni_se_protocol_type {
+>   
+>   struct geni_wrapper;
+>   struct clk;
+> +struct opp_table;
+>   
+>   /**
+>    * struct geni_se - GENI Serial Engine
+> @@ -39,6 +40,7 @@ struct geni_se {
+>   	struct device *dev;
+>   	struct geni_wrapper *wrapper;
+>   	struct clk *clk;
+> +	struct opp_table *opp;
+>   	unsigned int num_clk_levels;
+>   	unsigned long *clk_perf_tbl;
+>   };
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
