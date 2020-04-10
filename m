@@ -2,182 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F611A4246
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 07:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD8F1A4256
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 07:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725991AbgDJFhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 01:37:24 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:44606 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgDJFhY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 01:37:24 -0400
-Received: by mail-pg1-f193.google.com with SMTP id n13so554783pgp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 22:37:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Qe24B+23cv+PIIpVHdJo0boX8ah4ju8gQaUITPU+VoI=;
-        b=VshMhl2K1MfwxuNjWLiVEpnOxw1iEL8wgxKPgltnyxmpKGonuslDwd9KbBtvZ1Zqme
-         SaRFYOsTLeIEQpvmOIxY0oPaK2L5ZFPF+iJtgd5514BWPxWxp86QcAr3AvtnDzKqmDL5
-         RjxaTLwObqy46peDJFjSERs1MjMCajfCD3OEqhCE+hs5UCZwdSyt+yaFgFsbSZHDRM9b
-         RFH4eypQNwDN92nP66RwgRehL0ZWEJnUXW6umElX/OMr4rmsSFGH++AzRkb4LkNgi6mQ
-         ZHk+73XFN7T6TK8vtrO9eN9dPDBngGdEVYjgB81Qvk4s/+9ZlLIvB4hvP1g+SjkVNQ1E
-         ad6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Qe24B+23cv+PIIpVHdJo0boX8ah4ju8gQaUITPU+VoI=;
-        b=kaw4sTamdTxrxrqT3ee1tkvigOGHcl1I8rNnlDWxios4HxiATTcBN8oh5qFSx26mom
-         /hQ8jztp5kBAjVJkyxr3sPN/o5/0r98KXOewc5WOrNYQIRM64IziZfzn6JFyb8nb+Y/u
-         B6h+WS783WVSdmpMQoNF5p3GxpoG5hAUB1FcFHDqG1FgOQ26n8SfiAl7FAXjGSz2pTw5
-         IKF4AuDRbiOcKZ85O0RTC9iDs36cj2qHllxRoCUeLCC+iddlMwLomvHPXuFyZhBI3iQ8
-         eYyClTzq3XbYBLzVnQCEaXU4wteG4J4xkBVb9ozUfF5n1kmvFcnqcvVxmxSkRcH0kw48
-         t+SA==
-X-Gm-Message-State: AGi0PuaL/S+OPnofRyUkBGPI/MWX9G3d7s1z1qH+IoqFWZFPZm0nZyq0
-        XxeEsUAbyce6NUVfdUg0OxE=
-X-Google-Smtp-Source: APiQypLq7mqq7TnLCZc8hHSvWLfXQ1w70HzQ93yIb9mrJteaU6PW1MgzxYAswVaMA3G9WblmoR0y+Q==
-X-Received: by 2002:aa7:9823:: with SMTP id q3mr3170488pfl.219.1586497035595;
-        Thu, 09 Apr 2020 22:37:15 -0700 (PDT)
-Received: from ?IPv6:2601:647:4700:9b2:d8e9:9b3c:bb20:8b56? ([2601:647:4700:9b2:d8e9:9b3c:bb20:8b56])
-        by smtp.gmail.com with ESMTPSA id k1sm702842pgh.72.2020.04.09.22.37.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 Apr 2020 22:37:14 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 4/4] x86,module: Detect CRn and DRn manipulation
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20200409181823.00bcd14a@gandalf.local.home>
-Date:   Thu, 9 Apr 2020 22:37:12 -0700
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        mingo <mingo@redhat.com>, bp <bp@alien8.de>, hpa@zytor.com,
-        x86 <x86@kernel.org>, "Kenneth R. Crudup" <kenny@panix.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jannh@google.com, keescook@chromium.org, David.Laight@aculab.com,
-        Doug Covelli <dcovelli@vmware.com>, mhiramat@kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <92E51AF2-D763-4B73-A573-6E24A6B46831@gmail.com>
-References: <20200407110236.930134290@infradead.org>
- <20200407111007.429362016@infradead.org>
- <20200408092726.7c2bda01@gandalf.local.home>
- <20200408154419.GP20730@hirez.programming.kicks-ass.net>
- <20200408154602.GA24869@infradead.org>
- <2b0dc69c-f7f9-985d-fc40-8b7bbd927e4f@redhat.com>
- <20200409085632.GB20713@hirez.programming.kicks-ass.net>
- <9A25271A-71F7-4EA1-9D1C-23B53E35C281@gmail.com>
- <87imi8pdl9.fsf@nanos.tec.linutronix.de>
- <20200409181823.00bcd14a@gandalf.local.home>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        id S1725914AbgDJFyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 01:54:45 -0400
+Received: from mga03.intel.com ([134.134.136.65]:35347 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725839AbgDJFyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 01:54:45 -0400
+IronPort-SDR: ynbHn0OZQEf6/IbWgb4DejDaRHB2+0xaYb9NZFsXM8Su+ffUQXvVhBB4Ht8dZeJ2RQM8P03LnR
+ gMvp+y5pKi7w==
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2020 22:54:44 -0700
+IronPort-SDR: neQ7V9BrtVs+lpG9al2irFFnbVHHjZ/ITmulTc10fSr/Ts1diyctt1UOZJ8ozUdvILKsu1W89J
+ v9yq1WSKecDw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,364,1580803200"; 
+   d="asc'?scan'208";a="255386528"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
+  by orsmga006.jf.intel.com with ESMTP; 09 Apr 2020 22:54:41 -0700
+Date:   Fri, 10 Apr 2020 13:41:08 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        intel-gfx@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        dri-devel@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drm/i915: remove gvt/Makefile
+Message-ID: <20200410054108.GK11247@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20200409150627.29205-1-masahiroy@kernel.org>
+ <20200409150627.29205-2-masahiroy@kernel.org>
+ <87h7xsgw3r.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="KIzF6Cje4W/osXrF"
+Content-Disposition: inline
+In-Reply-To: <87h7xsgw3r.fsf@intel.com>
+User-Agent: Mutt/1.10.0 (2018-05-17)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Apr 9, 2020, at 3:18 PM, Steven Rostedt <rostedt@goodmis.org> =
-wrote:
+
+--KIzF6Cje4W/osXrF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 2020.04.10 00:58:16 +0300, Jani Nikula wrote:
+> On Fri, 10 Apr 2020, Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > Including subdirectory Makefile from the driver main Makefile does not
+> > buy us much because this is not real isolation.
 >=20
-> On Thu, 09 Apr 2020 23:13:22 +0200
-> Thomas Gleixner <tglx@linutronix.de> wrote:
->>=20
->> __vmx_vcpu_run() is roughly the scope, but that wont work.
->>=20
->> Looking at the vmmon source:
->>=20
->>=20
-
-[ Snip ]
-
->>=20
->>    8) Invoke monitor on some magic page which switches CR3 and GDT =
-and
->>       clears CR4.PCIDE (at least thats what the comments claim)
->>=20
->>       The monitor code is loaded from a binary only blob and that =
-does
->>       the actual vmlaunch/vmresume ...
+> The isolation it does buy us is that gvt/ subdirectory is developed and
+> maintained on a separate mailing list and separate git repo. I think at
+> some point there were plans to make it an actual module too.
 >=20
-> =46rom what I understand (never looked at the code), is that this =
-binary blob
-> is the same for Windows and Apple. It's basically its own operating =
-system
-> that does all the work and vmmon is the way to switch to and from it. =
-When
-> this blob gets an interrupt that it doesn't know about, it assumes it
-> belongs to the operating system its sharing the machine with and exits =
-back
-> to it, whether that's Linux, Windows or OSX.
+> So while you could quip about Conway's law here, I think it might be
+> better to keep this as it is.
 >=20
-> It's not too unlike what jailhouse does with its hypervisor, to take =
-over
-> the machine and place the running Linux into its own "cell", except =
-that it
-> will switch full control of the machine back to Linux.
+> Zhenyu, Zhi, what do you think?
+
+Yeah, I have the same feeling, maybe we can add some comment in gvt Makefile
+to state that point.
+
+Thanks
+
+> >
+> > Having a single Makefile at the top of the module is clearer, and
+> > it is what this driver almost does.
+> >
+> > Move all gvt objects to the i915 main Makefile.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  drivers/gpu/drm/i915/Makefile     | 28 ++++++++++++++++++++++++----
+> >  drivers/gpu/drm/i915/gvt/Makefile |  8 --------
+> >  2 files changed, 24 insertions(+), 12 deletions(-)
+> >  delete mode 100644 drivers/gpu/drm/i915/gvt/Makefile
+> >
+> > diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makef=
+ile
+> > index 6cd1f6253814..74e965882a98 100644
+> > --- a/drivers/gpu/drm/i915/Makefile
+> > +++ b/drivers/gpu/drm/i915/Makefile
+> > @@ -275,10 +275,30 @@ i915-$(CONFIG_DRM_I915_SELFTEST) +=3D \
+> >  # virtual gpu code
+> >  i915-y +=3D i915_vgpu.o
+> > =20
+> > -ifeq ($(CONFIG_DRM_I915_GVT),y)
+> > -i915-y +=3D intel_gvt.o
+> > -include $(src)/gvt/Makefile
+> > -endif
+> > +i915-$(CONFIG_DRM_I915_GVT) +=3D \
+> > +	intel_gvt.o \
+> > +	gvt/gvt.o \
+> > +	gvt/aperture_gm.o \
+> > +	gvt/handlers.o \
+> > +	gvt/vgpu.o \
+> > +	gvt/trace_points.o \
+> > +	gvt/firmware.o \
+> > +	gvt/interrupt.o \
+> > +	gvt/gtt.o \
+> > +	gvt/cfg_space.o \
+> > +	gvt/opregion.o \
+> > +	gvt/mmio.o \
+> > +	gvt/display.o \
+> > +	gvt/edid.o \
+> > +	gvt/execlist.o \
+> > +	gvt/scheduler.o \
+> > +	gvt/sched_policy.o \
+> > +	gvt/mmio_context.o \
+> > +	gvt/cmd_parser.o \
+> > +	gvt/debugfs.o \
+> > +	gvt/fb_decoder.o \
+> > +	gvt/dmabuf.o \
+> > +	gvt/page_track.o
+> > =20
+> >  obj-$(CONFIG_DRM_I915) +=3D i915.o
+> >  obj-$(CONFIG_DRM_I915_GVT_KVMGT) +=3D gvt/kvmgt.o
+> > diff --git a/drivers/gpu/drm/i915/gvt/Makefile b/drivers/gpu/drm/i915/g=
+vt/Makefile
+> > deleted file mode 100644
+> > index 4d70f4689479..000000000000
+> > --- a/drivers/gpu/drm/i915/gvt/Makefile
+> > +++ /dev/null
+> > @@ -1,8 +0,0 @@
+> > -# SPDX-License-Identifier: GPL-2.0
+> > -GVT_DIR :=3D gvt
+> > -GVT_SOURCE :=3D gvt.o aperture_gm.o handlers.o vgpu.o trace_points.o f=
+irmware.o \
+> > -	interrupt.o gtt.o cfg_space.o opregion.o mmio.o display.o edid.o \
+> > -	execlist.o scheduler.o sched_policy.o mmio_context.o cmd_parser.o deb=
+ugfs.o \
+> > -	fb_decoder.o dmabuf.o page_track.o
+> > -
+> > -i915-y					+=3D $(addprefix $(GVT_DIR)/, $(GVT_SOURCE))
 >=20
-> -- Steve
->=20
->=20
->>       And as this runs with a completely different CR3 sharing that
->>       code is impossible.
+> --=20
+> Jani Nikula, Intel Open Source Graphics Center
 
+--=20
+Open Source Technology Center, Intel ltd.
 
-To complement Steven=E2=80=99s response, we are fully aware in VMware =
-about this
-issue since the patches were sent, and the hypervisor developers =
-consider
-how to address it. Indeed, vmmon does something similar to VirtualBox =
-and
-Jailhouse. The planned restriction on the creation of executable =
-mappings by
-modules would require changes in all of these hypervisors.
+$gpg --keyserver wwwkeys.pgp.net --recv-keys 4D781827
 
-Actually, IIUC, even Mircosoft Hyper-V might be broken by the proposed
-changes that prevent the creation of executable mappings. It may appear =
-as
-if there is no issue since the __vmalloc() that hyperv_init() uses in =
-the
-kernel to setup the hypercall pages will be changed into vmalloc_exec() =
-[1].
-But, AFAICT Microsoft can also setup the hypercall page in a module as =
-part
-of its Linux Integration Services. This code uses
-__vmalloc(=E2=80=A6PAGE_KERNEL_RX), and would therefore be broken. [2]
+--KIzF6Cje4W/osXrF
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It seems to me that the proposed restrictions on which instructions a =
-module
-is allowed to run are completely new, have significant implications, and
-therefore would hopefully not be rushed in. Alternatively, a transition
-period in which the checks only trigger warnings would be beneficial.
+-----BEGIN PGP SIGNATURE-----
 
-I am not a developer of the VMware hypervisor, but my understanding is =
-that
-developers have every intention to fully comply with the new =
-restrictions on
-memory mappings and instructions that a module is allowed to run. They =
-can
-consider sharing VM-entry/exit code with KVM even if requires code =
-changes
-for VMware. They just ask for sufficient time to make the required
-adaptations. It would help to have a reasonable timeline for when each
-of the proposed changes (__vmalloc(), MOV-CR/DR, other instructions)
-is expected to be merged.
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCXpAG9AAKCRCxBBozTXgY
+J5rLAJ45nWTbStFQsqc5yvlIr+XX8Ig8YACdFQ67J8jqCGmeYx/Y196ZAH2skGM=
+=Zhzu
+-----END PGP SIGNATURE-----
 
-[1] https://lore.kernel.org/lkml/20200408115926.1467567-2-hch@lst.de/
-[2] =
-https://github.com/LIS/lis-next/blob/master/hv-rhel7.x/hv/arch/x86/hyperv/=
-hv_init.c#L187
-
+--KIzF6Cje4W/osXrF--
