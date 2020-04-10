@@ -2,116 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B351A4650
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 14:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9AB1A4658
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 14:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726595AbgDJMdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 08:33:16 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:33066 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725930AbgDJMdQ (ORCPT
+        id S1726666AbgDJMeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 08:34:18 -0400
+Received: from pandora.armlinux.org.uk ([78.32.30.218]:60780 "EHLO
+        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgDJMeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 08:33:16 -0400
-Received: by mail-lj1-f196.google.com with SMTP id q22so1838535ljg.0;
-        Fri, 10 Apr 2020 05:33:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=oZ4mTa/knZg2c3uydTiSH3iGohdOLCMYiOTGruiDB44=;
-        b=INLqcIST63qUP2L0bEZpAvS/9RIaV7Qr6MrQkTXbpyKTxw2bckSqzVlr/UTU5vJPlV
-         V0/BMJh/wM7nRQi3FBU/Gj9zVpdevlnc6EdAE4Q7v1uG5VEFStrbYDW0fdPQFdvMzt+4
-         u0IlEl1z+syacsjqSgJtLhOpUOQuTnS5e1ggOXUIdORCvZLPKW77Bdo3WVNILoxWWuLx
-         GcoDzdSxxOwH75+8UgRtDZVrdx9aSb6m4xuGAvn0/ovmVIfggkzmNBYZ7tz6579hYP1h
-         q0YGuBtlequ5w64x2mpCl0PKJ2fMEpdABifPhEi0OZLfNV1ZArdkYh9f1znVgUdgfgam
-         9mYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=oZ4mTa/knZg2c3uydTiSH3iGohdOLCMYiOTGruiDB44=;
-        b=J3LAUvLnzqwVSfQo0+faf9EbrM74NngDUSNwTDLqs6HqsRYNxROarKwB2ykz6hIIX6
-         D+ZAgrJiBUYTCyhmkRQtRubHGAFvr3n/YCgKaFJkE7dbTJ+hhhrf15eBLP6G1BlEFuGF
-         sg6ENBOh1/EDQmQKSabMjQ5lGAuMOeRSVKmNW0PSBSJeD65wHRSDMCamOHlfDUfsNdDc
-         BwPX0vKijw1QpR/SSXorP8Xa9J0SKPaXcGs4Hb9KO4QL7mdIIImw5QO1HXTM0fPXshK+
-         7tz8EbixTrO/MffHart4vRdR/PG5M57sxUWJsptXSfaz1gM62qIfnrH6lIKhnzmp8Ons
-         sG1g==
-X-Gm-Message-State: AGi0PuasSP30BUKAweNKM1q3Mzme24sToHVtfPkNep2UXV6VR1erTSiJ
-        ajuOdyzbDvPCcsmJxwrMAkg=
-X-Google-Smtp-Source: APiQypI1WtuGNzKw6wZJX6wI33yCJEpZK1zTnaPinzEQNJpD/F835Vr6wwyW2yatQgL9RvoCtK3ivg==
-X-Received: by 2002:a2e:8745:: with SMTP id q5mr2936178ljj.157.1586521993889;
-        Fri, 10 Apr 2020 05:33:13 -0700 (PDT)
-Received: from work.bb.dnainternet.fi (dffyyyyyyyyyyyysyd4py-3.rev.dnainternet.fi. [2001:14ba:2100::1e0:1e18])
-        by smtp.gmail.com with ESMTPSA id r23sm1012619ljh.34.2020.04.10.05.33.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 05:33:13 -0700 (PDT)
-From:   Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
-To:     johannes@sipsolutions.net
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+6693adf1698864d21734@syzkaller.appspotmail.com,
-        Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>, stable@kernel.org
-Subject: [PATCH] mac80211_hwsim: Use kstrndup() in place of kasprintf()
-Date:   Fri, 10 Apr 2020 15:32:57 +0300
-Message-Id: <20200410123257.14559-1-tuomas.tynkkynen@iki.fi>
-X-Mailer: git-send-email 2.17.1
+        Fri, 10 Apr 2020 08:34:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=E1lO6MOH92TXjApRphPPU5REy5FFZ6ZxwRqdljo4K0I=; b=l4BUxrAoEycXsvzjLPbLhvRWn
+        YmPDjlzo97j79NsDCZtIMpz+tOfJ6KLwqm+t16Gc3OahvC/q8epEK3btHhPJNFVvr2sM8sdKkSn0O
+        4dqEY51qKb2+5UdFgeMYM+wTw0sXrrvHXl39ewXQXl5F0x5+LLa2OlyZWp7kIhy4tA3+R0NzIIOgN
+        kItZyIUPPxOA1wiAS+fi/bo/hE4vTQXzskPL5uLJRtijka6wht30pxwQV3PLU/MYve1PNywLKPCPg
+        CFQndh/X1J624Qe8ASBS0LUWvin4+mitfm5r9Ev/oGnDniUty9HF16ILDX85hnwTYHwUrPUbXS9b1
+        IcuRBqUUA==;
+Received: from shell.armlinux.org.uk ([2001:4d48:ad52:3201:5054:ff:fe00:4ec]:36520)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jMsqM-0001Tt-Nz; Fri, 10 Apr 2020 13:33:10 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jMsqD-0003m7-Pl; Fri, 10 Apr 2020 13:33:01 +0100
+Date:   Fri, 10 Apr 2020 13:33:01 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jian Cai <caij2003@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Peter Smith <Peter.Smith@arm.com>,
+        Stefan Agner <stefan@agner.ch>,
+        David Howells <dhowells@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Manoj Gupta <manojgupta@google.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ilie Halip <ilie.halip@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        jiancai@google.com, Doug Anderson <armlinux@m.disordat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] ARM: do not assemble iwmmxt.S with LLVM toolchain
+Message-ID: <20200410123301.GX25745@shell.armlinux.org.uk>
+References: <20200409232728.231527-1-caij2003@gmail.com>
+ <CAK8P3a3uj7AHbAo4sNzr6KQx5Fk6v99k4ZixCgKo1tUuGoat9Q@mail.gmail.com>
+ <CAMj1kXGXNxXGiC4dmNXHkZ6n=J0Fhim3oSwNx4Bz5m9fEphJvQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXGXNxXGiC4dmNXHkZ6n=J0Fhim3oSwNx4Bz5m9fEphJvQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reports a warning:
+On Fri, Apr 10, 2020 at 01:15:08PM +0200, Ard Biesheuvel wrote:
+> On Fri, 10 Apr 2020 at 11:56, Arnd Bergmann <arnd@arndb.de> wrote:
+> >
+> > On Fri, Apr 10, 2020 at 1:28 AM Jian Cai <caij2003@gmail.com> wrote:
+> > >
+> > > iwmmxt.S contains XScale instructions LLVM ARM backend does not support.
+> > > Skip this file if LLVM integrated assemmbler or LLD is used to build ARM
+> > > kernel.
+> > >
+> > > Signed-off-by: Jian Cai <caij2003@gmail.com>
+> >
+> > It clearly makes sense to limit the Kconfig option to compilers that
+> > can actually build it.
+> > A few questions though:
+> >
+> > - Given that Armada XP with its PJ4B was still marketed until fairly
+> > recently[1],
+> >   wouldn't it make sense to still add support for it? Is it a lot of work?
+> >
+> 
+> The part of that file that the assembler chokes on hasn't been touched
+> by anyone since Nico added it 15+ years ago. It can only be built in
+> ARM mode, and it disassembles to the sequence below (the ld/st fe/fp
+> mnemonics are not document in recent versions of the ARM ARM, and
+> aren't understood by Clang either)
 
-precision 33020 too large
-WARNING: CPU: 0 PID: 9618 at lib/vsprintf.c:2471 set_precision+0x150/0x180 lib/vsprintf.c:2471
- vsnprintf+0xa7b/0x19a0 lib/vsprintf.c:2547
- kvasprintf+0xb2/0x170 lib/kasprintf.c:22
- kasprintf+0xbb/0xf0 lib/kasprintf.c:59
- hwsim_del_radio_nl+0x63a/0x7e0 drivers/net/wireless/mac80211_hwsim.c:3625
- genl_family_rcv_msg_doit net/netlink/genetlink.c:672 [inline]
- ...
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+For older CPUs, it doesn't matter what the latest ARM ARM says, the
+appropriate version of the ARM ARM is the one relevant for the CPU
+architecture.  This is a mistake frequently made, and it's been pointed
+out by Arm Ltd in the past (before ARMv6 even came on the scene) that
+keeping older revisions is necessary if you want to be interested in
+the older architectures.
 
-Thus it seems that kasprintf() with "%.*s" format can not be used for
-duplicating a string with arbitrary length. Replace it with kstrndup().
+However, there's an additional complication here: DEC's license from
+Arm Ltd back in the days of StrongARM allowed them to make changes to
+the architecture - that was passed over to Intel when they bought that
+part of DEC.  Consequently, these "non-Arm vendor" cores contain
+extensions that are not part of the ARM ARM.  iWMMXT is one such
+example, which first appeared in the Intel PXA270 SoC (an ARMv5
+derived CPU).
 
-Reported-by: syzbot+6693adf1698864d21734@syzkaller.appspotmail.com
-Cc: stable@kernel.org
-Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
----
-Compile tested only.
----
- drivers/net/wireless/mac80211_hwsim.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+In fact, several of the features found in later versions of the ARM
+architecture came from DEC and Intel enhancements.
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index 7fe8207db6ae..7c4b7c31d07a 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -3669,9 +3669,9 @@ static int hwsim_new_radio_nl(struct sk_buff *msg, struct genl_info *info)
- 	}
- 
- 	if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
--		hwname = kasprintf(GFP_KERNEL, "%.*s",
--				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
--				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
-+		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  GFP_KERNEL);
- 		if (!hwname)
- 			return -ENOMEM;
- 		param.hwname = hwname;
-@@ -3691,9 +3691,9 @@ static int hwsim_del_radio_nl(struct sk_buff *msg, struct genl_info *info)
- 	if (info->attrs[HWSIM_ATTR_RADIO_ID]) {
- 		idx = nla_get_u32(info->attrs[HWSIM_ATTR_RADIO_ID]);
- 	} else if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
--		hwname = kasprintf(GFP_KERNEL, "%.*s",
--				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
--				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
-+		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
-+				  GFP_KERNEL);
- 		if (!hwname)
- 			return -ENOMEM;
- 	} else
+If your compiler/assembler only implements what is in the latest ARM
+ARM, then it is not going to be suitable for these older CPUs and
+alternate vendor "ARM compatible" CPUs.
+
+> Instead of playing all these tricks with Kconfig, couldn't we simply
+> insert the bare opcodes and be done with it?
+
+That gets close to a GPL violation; the GPL requires that source code
+be in the preferred form for making modifications. Encoding raw opcodes
+can in no way be argued to be the preferred form. Arguing that raw
+opcodes is acceptable sets a precedent that makes it acceptable for
+other "works" to do the same, which makes arguments against firmware
+supplied as a hexdump null and void.
+
+Using macros to emulate the instructions and create the appropriate
+opcodes is an alternative; we already have that for some of the VFP
+code as early toolchains had no support for the VFP instructions.
+
+So no, bare opcodes are unacceptable.
+
 -- 
-2.17.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
