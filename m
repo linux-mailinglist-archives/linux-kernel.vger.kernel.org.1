@@ -2,140 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F86C1A4AA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE471A4ABF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbgDJTiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726203AbgDJTiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:38:03 -0400
-Received: from localhost (mobile-166-170-220-109.mycingular.net [166.170.220.109])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB1CC20732;
-        Fri, 10 Apr 2020 19:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586547482;
-        bh=76FW6bsyi+GvI3cA1295vPvYzfcdLfIdfR/uMK0cqIM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=f5aqyeY5H8P+Dg0VtR5VXhNEaIBxx4R/gGzchOa7w+V/JIMrsYuYNV7aLVSvrZntH
-         WWv3dp0kGmlDxfECQgMchX8GExkaXAsoMWQhr1nrjc+24qlq2ngw+8X5Yw7mD9qxHN
-         rCJAnLyi2B0qmE9qQBazZ/B4H3+CIp6g7so4MwFk=
-Date:   Fri, 10 Apr 2020 14:38:00 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        id S1726884AbgDJTlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:41:40 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:37594 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726773AbgDJTlh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 15:41:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=POIx3XHs+z1B1LYmbchLvd+6mRZG4jjVrzB1XvFaETU=; b=K5H6j5Z8UAjUqgnZal2eZP5NdF
+        8pu9HK6BV/ZEhIieqpKOXdk68oFiI4nbhRz2MI/Uwpfujyjt6vQLnEWT/9LN2igNpanJvPAC7t2S5
+        R9w13AOCdEc/ifa0GmlR2HWuM/jDnQa0/7GHk1Va9Q7lfAsIUYt6/lgxhQ0CdpNjWWyKCfTllO9vK
+        NuMHm2hxTf4yj+7kwjDE86avOS51voEMAGm81QUuHSau3Si7EUc1pkcPZhPqClC9h++d7z/UU0ILG
+        eOOihowmxiMDHtTOTz10tCt/Uo/UhdPwrEs7HpAK32RLIyZRE9aPj/1k4sPDqL/taDiUmX/bU9Eiz
+        G4i41mtA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jMzWy-0000T1-MB; Fri, 10 Apr 2020 19:41:36 +0000
+Subject: Re: linux-next: Tree for Apr 10 (lib/test_printf.ko)
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        DRI-devel <dri-devel@lists.freedesktop.org>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH 5/7] PM: sleep: core: Rename DPM_FLAG_NEVER_SKIP
-Message-ID: <20200410193800.GA5202@google.com>
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+References: <20200410132706.170811b7@canb.auug.org.au>
+ <27c212c4-b522-561d-411c-e74dc0ff0b74@infradead.org>
+ <CAHk-=wjhsM-n_NzSh=cSdpThX+62-x3EmyKjhMqGHFYEyG0nPg@mail.gmail.com>
+ <2b0f5d2e-3fe5-10c9-2a9a-9a0b341a52d5@infradead.org>
+ <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <bfbcaa67-9656-3a80-fc66-c937297c8be0@infradead.org>
+Date:   Fri, 10 Apr 2020 12:41:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5092680.jloV5Ae5OO@kreacher>
+In-Reply-To: <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 05:56:13PM +0200, Rafael J. Wysocki wrote:
-> From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On 4/10/20 12:05 PM, Linus Torvalds wrote:
+> On Fri, Apr 10, 2020 at 11:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>>> I wonder if these scripts aren't well enough known, I see a lot of raw
+>>> dumps that could be immensely improved with a little scripting - but
+>>> they need the original vmlinux binary with debug info, so you can't do
+>>> it after-the-fact somewhere else..
+>>
+
+> But even dump_stack.sh can't sort out how it got from test_printf_init
+> to software_node_unregister_nodes even though it usually is good about
+> following all the inlining (in this case selftest -> test_pointer ->
+> fwnode_pointer).
 > 
-> Rename DPM_FLAG_NEVER_SKIP to DPM_FLAG_NO_DIRECT_COMPLETE which
-> matches its purpose more closely.
+> That may be because of something like a DEBUG_INFO_REDUCED option.
+
+No, that's enabled. (see below)
+
+
+>> [  561.071144] _raw_spin_lock_irqsave (linux-next-20200410/rdd64/../include/linux/instrumented.h:71 linux-next-20200410/rdd64/../include/asm-generic/atomic-instrumented.h:695 linux-next-20200410/rdd64/../include/asm-generic/qspinlock.h:78 linux-next-20200410/rdd64/../include/linux/spinlock.h:194 linux-next-20200410/rdd64/../include/linux/spinlock_api_smp.h:119 linux-next-20200410/rdd64/../kernel/locking/spinlock.c:159)
+>> [  561.074868] ? _raw_write_unlock_bh (linux-next-20200410/rdd64/../kernel/locking/spinlock.c:158)
+>> [  561.078495] ? ida_destroy (linux-next-20200410/rdd64/../lib/idr.c:538)
+>> [  561.082144] ida_free (linux-next-20200410/rdd64/../lib/idr.c:495 (discriminator 2))
+>> [  561.085694] ? fprop_new_period.cold (linux-next-20200410/rdd64/../lib/idr.c:486)
+>> [  561.089228] ? kasan_slab_free (linux-next-20200410/rdd64/../mm/kasan/common.c:466)
+>> [  561.092738] ? kfree (linux-next-20200410/rdd64/../mm/slub.c:1478 linux-next-20200410/rdd64/../mm/slub.c:3035 linux-next-20200410/rdd64/../mm/slub.c:4003)
+>> [  561.096183] software_node_release (linux-next-20200410/rdd64/../include/linux/list.h:132 linux-next-20200410/rdd64/../include/linux/list.h:146 linux-next-20200410/rdd64/../drivers/base/swnode.c:613)
+>> [  561.099644] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:697 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
+>> [  561.103109] kobject_del (linux-next-20200410/rdd64/../lib/kobject.c:629)
+>> [  561.106457] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:690 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
+>> [  561.109785] fwnode_remove_software_node (linux-next-20200410/rdd64/../drivers/base/swnode.c:784)
+>> [  561.113061] software_node_unregister_nodes (linux-next-20200410/rdd64/../drivers/base/swnode.c:721 (discriminator 2))
+>> [  561.116274] test_printf_init (linux-next-20200410/rdd64/../lib/test_printf.c:685 linux-next-20200410/rdd64/../lib/test_printf.c:688) test_printf
 > 
-> No functional impact.
+> It does print out those multiple lines for some things, but doesn't
+> have the nice "inlined by XYZ" I sometimes see that makes it really
+> obvious.
 > 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com> # for PCI parts
+This is with FRAME_POINTER, not UNWIND_ORC. Maybe that's the difference?
 
-> ---
->  Documentation/driver-api/pm/devices.rst    |  6 +++---
->  Documentation/power/pci.rst                | 10 +++++-----
->  drivers/base/power/main.c                  |  2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c    |  2 +-
->  drivers/gpu/drm/i915/intel_runtime_pm.c    |  2 +-
->  drivers/gpu/drm/radeon/radeon_kms.c        |  2 +-
->  drivers/misc/mei/pci-me.c                  |  2 +-
->  drivers/misc/mei/pci-txe.c                 |  2 +-
->  drivers/net/ethernet/intel/e1000e/netdev.c |  2 +-
->  drivers/net/ethernet/intel/igb/igb_main.c  |  2 +-
->  drivers/net/ethernet/intel/igc/igc_main.c  |  2 +-
->  drivers/pci/pcie/portdrv_pci.c             |  2 +-
->  include/linux/pm.h                         |  6 +++---
->  13 files changed, 21 insertions(+), 21 deletions(-)
+
+> So it ends up still just looking like ida_free -> _raw_spin_lock_irqsave.
 > 
-> diff --git a/Documentation/driver-api/pm/devices.rst b/Documentation/driver-api/pm/devices.rst
-> index f66c7b9126ea..4ace0eba4506 100644
-> --- a/Documentation/driver-api/pm/devices.rst
-> +++ b/Documentation/driver-api/pm/devices.rst
-> @@ -361,9 +361,9 @@ the phases are: ``prepare``, ``suspend``, ``suspend_late``, ``suspend_noirq``.
->  	runtime PM disabled.
+> Strange. But it's all the same freeing path:
+> 
+>> [  561.278921] Freed by task 1454:
+>> [  561.289528] kfree (linux-next-20200410/rdd64/../mm/slub.c:1478 linux-next-20200410/rdd64/../mm/slub.c:3035 linux-next-20200410/rdd64/../mm/slub.c:4003)
+>> [  561.292183] software_node_release (linux-next-20200410/rdd64/../drivers/base/swnode.c:624)
+>> [  561.294865] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:697 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
+>> [  561.297501] kobject_del (linux-next-20200410/rdd64/../lib/kobject.c:629)
+>> [  561.300154] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:690 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
+>> [  561.302784] kobject_del (linux-next-20200410/rdd64/../lib/kobject.c:629)
+>> [  561.305344] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:690 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
+>> [  561.307914] fwnode_remove_software_node (linux-next-20200410/rdd64/../drivers/base/swnode.c:784)
+> 
+> so it at least superficially looks like software_node_release() might
+> be called twice.
+> 
+> Maybe the child node is released after the parent node - and the child
+> node seems to do the
+> 
+>         ida_simple_remove(&swnode->parent->child_ids, swnode->id);
+> 
+> and maybe it's that the parent->child_ids was already free'd by the
+> previous software_node_release() call? Do children not keep a refcount
+> to their parent, perhaps?
+> 
+> Somebody who knows the driver core thing needs to look at it. And
+> since I don't play with linux-next apart from checking when I pull, I
+> don't know what might have happened in this area..
+> 
+> Adding some driver core people to the cc.
+> 
+>                 Linus-- 
+~Randy
 
-Minor question about a preceding paragraph that ends:
-
-  In that case, the ``->complete`` callback will be invoked directly
-  after the ``->prepare`` callback and is entirely responsible for
-  putting the device into a consistent state as appropriate.
-
-What does" a consistent state as appropriate" mean?  I know this is
-generic documentation at a high level, so maybe there's no good
-explanation for "consistent state," but I don't know what to imagine
-there.
-
-And what does "as appropriate" mean?  Would it change the meaning to
-drop those two words, or are there situations where it's not
-appropriate to put the device into a consistent state?  Or maybe it's
-just that the type of device determines what the consistent state is?
-
->  	This feature also can be controlled by device drivers by using the
-> -	``DPM_FLAG_NEVER_SKIP`` and ``DPM_FLAG_SMART_PREPARE`` driver power
-> -	management flags.  [Typically, they are set at the time the driver is
-> -	probed against the device in question by passing them to the
-> +	``DPM_FLAG_NO_DIRECT_COMPLETE`` and ``DPM_FLAG_SMART_PREPARE`` driver
-> +	power management flags.  [Typically, they are set at the time the driver
-> +	is probed against the device in question by passing them to the
->  	:c:func:`dev_pm_set_driver_flags` helper function.]  If the first of
->  	these flags is set, the PM core will not apply the direct-complete
->  	procedure described above to the given device and, consequenty, to any
-
-s/consequenty/consequently/
-
-Drive-by comment: I looked for a definition of "direct-complete".  The
-closest I found is a couple paragraphs above this, where it says "Note
-that this direct-complete procedure ...," but that leaves me to try to
-reconstruct the definition from the preceding text.
-
-AFAICT, going to freeze, standby, or memory sleep includes these
-callbacks:
-
-  ->prepare
-  ->suspend
-  ->suspend_late
-  ->suspend_noirq
-  ->complete         (not mentioned in the list of phases)
-
-And "direct-complete" means we skip the suspend, suspend_late,
-and suspend_noirq callbacks so we only use these:
-
-  ->prepare
-  ->complete
-
-And apparently we skip those callbacks for device X if ->prepare() for
-X and all its descendents returns a positive value AND they are all
-runtime-suspended, except if a driver for X or a descendent sets
-DPM_FLAG_NO_DIRECT_COMPLETE.
-
-Bjorn
