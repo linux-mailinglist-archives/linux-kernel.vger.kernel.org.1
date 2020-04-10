@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2E431A434A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 10:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208E71A4353
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 10:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgDJIDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 04:03:46 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:22326 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725880AbgDJIDq (ORCPT
+        id S1726654AbgDJIHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 04:07:23 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:41884 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbgDJIHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 04:03:46 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.7]) by rmmx-syy-dmz-app01-12001 (RichMail) with SMTP id 2ee15e9028460d8-00087; Fri, 10 Apr 2020 16:03:18 +0800 (CST)
-X-RM-TRANSID: 2ee15e9028460d8-00087
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.21.224] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr04-12004 (RichMail) with SMTP id 2ee45e902845dfb-d74bd;
-        Fri, 10 Apr 2020 16:03:18 +0800 (CST)
-X-RM-TRANSID: 2ee45e902845dfb-d74bd
-Subject: Re: [PATCH] usb: gadget: fsl: Fix a wrong judgment in fsl_udc_probe()
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Li Yang <leoyang.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20200410015832.8012-1-tangbin@cmss.chinamobile.com>
- <be8cd229-884a-40e6-3363-7c4680a51b30@web.de>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <0b718268-d330-dfc1-aca3-3dd3203363d7@cmss.chinamobile.com>
-Date:   Fri, 10 Apr 2020 16:05:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 10 Apr 2020 04:07:22 -0400
+Received: by mail-wr1-f67.google.com with SMTP id h9so1411868wrc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 01:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Cyd0/zn6vVsVdCI+cOjuAuX6u7ft9nArtNzLtQs2SlE=;
+        b=J5zd79c2q+x9msDB0nyJ6/Dc8VmRYiV0qSG9gdFyYfkUauqH6RLRsFCfeOdTgUaBIr
+         3hDjfvx3BTx7he9s8HzmGH851vbzztklDzobR4qYWHzwkWC3QCtzRBhBWGWcaRprMT9n
+         yMGZKm5wgVhhFvWVXDj/wIxYN5WzMdG3Jud5yKTJoJWL/TjJr58aih1GWoLhj1+shi3H
+         iCY7B61HixYHwG96yK+Yj2noPmPJglGWifI6CE5rtYuTGB+uxGxnYDpu+Mf+DI3W6Yxr
+         qMtOcMLPPLf0WR8bAjivksPmDZ8W2ODFR0yRgFW4V3gUoawAWUIG1MkHMkyt8FqXwwSr
+         EaPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Cyd0/zn6vVsVdCI+cOjuAuX6u7ft9nArtNzLtQs2SlE=;
+        b=BzN7TuQ/LwBCMtgwETKeXvMDcyO+lX/BK2ElyDd0quiG7UQsLJng3CQbV1pjAHwmvz
+         7zYBt23HRfmqtXecdMyc7eVdrN9rJNv7ZtToXwQHl/xfi+oz7oz6A83m1xU1A5bzYR/b
+         E/hYinUJOLl+gRTNFCCk4MQS2otVr3np7whTWEgUbH9Tqm2w3LlBnUTsXqVrwz5ybsz9
+         7LB/l1tmo1y7f76dGvoEJDNXeJS62VsRDWRbmEG6pfRpyT+sYYLQHhgsNlq2Lq+cLKTE
+         OyoD4lv9i4r5PJCLjbADi+bJyB6YF5KPHGOtCe735UN9I9Amtmi82ICYgIMbovlPacWZ
+         Nihw==
+X-Gm-Message-State: AGi0PuaIJ/mythFO4G/aTCGH8S7gblxvW5NvVnw0QiVcN+RTpr7zKbVL
+        L4DOhJ9Kpq4J+/DHpijx71jFgwrUy1g=
+X-Google-Smtp-Source: APiQypLJ/AhfVfdGw21h2zMaH3hRKUa9ZBO/Tg2vojgaHJfFdPRYdFtBZNy6pY6DxfK/e3EWyMBt4A==
+X-Received: by 2002:a5d:468b:: with SMTP id u11mr3224240wrq.89.1586506039960;
+        Fri, 10 Apr 2020 01:07:19 -0700 (PDT)
+Received: from [192.168.1.5] (212-5-158-142.ip.btc-net.bg. [212.5.158.142])
+        by smtp.googlemail.com with ESMTPSA id v131sm1843409wmb.19.2020.04.10.01.07.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 01:07:19 -0700 (PDT)
+Subject: Re: [PATCH 1/7] venus: core: Add missing mutex destroy
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>
+References: <20200408213330.27665-1-stanimir.varbanov@linaro.org>
+ <20200408213330.27665-2-stanimir.varbanov@linaro.org>
+ <20200409214734.GV199755@google.com>
+From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Message-ID: <0dbcaf04-20a4-c5e4-4be2-64d2f9466d06@linaro.org>
+Date:   Fri, 10 Apr 2020 11:07:18 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <be8cd229-884a-40e6-3363-7c4680a51b30@web.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200409214734.GV199755@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Markus
+Hi Matthias,
 
-On 2020/4/10 15:33, Markus Elfring wrote:
->> If the function "platform_get_irq()" failed, the negative value
->> returned will not be detected here, including "-EPROBE_DEFER",
-> I suggest to adjust this change description.
->
-> Wording alternative:
->    The negative return value (which could eventually be “-EPROBE_DEFER”)
->    will not be detected here from a failed call of the function “platform_get_irq”.
-Hardware experiments show that the negative return value is not just 
-"-EPROBE_DEFER".
->
->> which causes the application to fail to get the correct error message.
-> Will another fine-tuning become relevant also for this wording?
-Maybe that's not quite accurate.
->
->
->> Thus it must be fixed.
-> Wording alternative:
->    Thus adjust the error detection and corresponding exception handling.
-Got it.
->
->
->> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->> Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-> How do you think about to add the tags “Fixes”, “Link” and “Reported-by”?
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=c0cc271173b2e1c2d8d0ceaef14e4dfa79eefc0d#n584
->
-> usb: gadget: fsl_udc_core: Checking for a failed platform_get_irq() call in fsl_udc_probe()
-> https://lore.kernel.org/linux-usb/36341bb1-1e00-5eb1-d032-60dcc614ddaf@web.de/
-> https://lkml.org/lkml/2020/4/8/442
->
-> …
->> +++ b/drivers/usb/gadget/udc/fsl_udc_core.c
->> @@ -2441,8 +2441,8 @@ static int fsl_udc_probe(struct platform_device *pdev)
->>   	udc_controller->max_ep = (dccparams & DCCPARAMS_DEN_MASK) * 2;
+On 4/10/20 12:47 AM, Matthias Kaehlcke wrote:
+> Hi Stanimir,
+> 
+> On Thu, Apr 09, 2020 at 12:33:24AM +0300, Stanimir Varbanov wrote:
+>> This adds missing mutex_destroy in remove method of venus core driver.
 >>
->>   	udc_controller->irq = platform_get_irq(pdev, 0);
->> -	if (!udc_controller->irq) {
->> -		ret = -ENODEV;
->> +	if (udc_controller->irq <= 0) {
-> Will such a failure predicate need any more clarification?
->
-> How does this check fit to the current software documentation?
-Maybe my tags are not suitable.
->
->
->> +		ret = udc_controller->irq ? : -ENODEV;
-> Will it be clearer to specify values for all cases in such a conditional operator
-> (instead of leaving one case empty)?
+>> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+>> ---
+>>  drivers/media/platform/qcom/venus/core.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+>> index 4395cb96fb04..f8b9a732bc65 100644
+>> --- a/drivers/media/platform/qcom/venus/core.c
+>> +++ b/drivers/media/platform/qcom/venus/core.c
+>> @@ -335,6 +335,7 @@ static int venus_remove(struct platform_device *pdev)
+>>  
+>>  	v4l2_device_unregister(&core->v4l2_dev);
+>>  	mutex_destroy(&core->pm_lock);
+>> +	mutex_destroy(&core->lock);
+>>  
+>>  	return ret;
+>>  }
+> 
+> On which tree is this series based? From the context it seems that the
+> tree includes the patch "venus: vdec: Use pmruntime autosuspend"
+> (https://lore.kernel.org/patchwork/patch/1187829/), however I can not
+> find this patch in any of the branches of your git tree
+> (https://git.linuxtv.org/svarbanov/media_tree.git/)
 
-I don't know what you mean of "instead of leaving one case empty". But 
-by experiment, "ret = udc_controller->irq ? : -ENODEV" or "ret = 
-udc_controller->irq < 0 ? udc_controller->irq : -ENODEV" should be 
-suitable here.
+Yes, sorry about that. It is based on runtime suspend patch and few
+others. I prepared a pull request but did not send it nor publish the
+branch yet cause I wait for rc1 tag.
 
+> 
+> Am I looking in the wrong place?
+> 
 
-Thank you for your guidance.
+No, you are on right place. I will update my linuxtv tree with material
+for v5.8.
 
-Tang Bin
-
-
-
+-- 
+regards,
+Stan
