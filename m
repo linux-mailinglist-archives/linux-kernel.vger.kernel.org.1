@@ -2,53 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA44E1A48EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DAA1A48EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgDJRaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 13:30:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58110 "EHLO mail.kernel.org"
+        id S1726826AbgDJRa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 13:30:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726582AbgDJRaE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 13:30:04 -0400
-Subject: Re: [GIT PULL] xfs: new code for 5.7, part 2
+        id S1726694AbgDJRa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 13:30:27 -0400
+Subject: Re: [GIT PULL] libata fixes for 5.7-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586539804;
-        bh=zO5L6bExP9Vn6H54tOeXhCYaOoSrMwNm1GL0YwwAzNM=;
+        s=default; t=1586539827;
+        bh=OnM+gj60yVrV4BewUmzpN0FbBrIr6zGDE5biggxrUG0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=gFiG4RaC3ploy5R6VzEfsvQGQwgGFlZwTA3qRYZkszO6WLs98FDfbtppzrxyEBlzc
-         YV4+Mhr4S82c1YqOhADCWcRf1am6593mEh6Nh5k63NM1p1QZy+lkyWAQe9A7YrR1sn
-         0QWZ+bsz16fGyBv6uAZSUvjxC8lp/RMvw0McD7DA=
+        b=sHdJhafSCpVA7qZHxNCUaZti/98MiyBl9nrTcmgkj9hWRonzi9VxiJ+Iwcax9nwto
+         WEv8x+vNjGT3Xj9s+FEyuRsvZafiiLuwtVLG2Rp0z7J7U+ttbc1b3XYOhLqHx2IicA
+         KUhR7k8H+mGMuNURnbrPxSOgr+V1GYXZIJcLB9Is=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200409181526.GM6742@magnolia>
-References: <20200409181526.GM6742@magnolia>
-X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200409181526.GM6742@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git
- tags/xfs-5.7-merge-12
-X-PR-Tracked-Commit-Id: 5833112df7e9a306af9af09c60127b92ed723962
+In-Reply-To: <9069bb0a-c338-4516-52d7-99d85aca5297@kernel.dk>
+References: <9069bb0a-c338-4516-52d7-99d85aca5297@kernel.dk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <9069bb0a-c338-4516-52d7-99d85aca5297@kernel.dk>
+X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git
+ tags/libata-5.7-2020-04-09
+X-PR-Tracked-Commit-Id: 7667e63c8af90e287f9e2d070599024cbabe63f5
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8c3c07439e1d793d8803a404df86e487875f3340
-Message-Id: <158653980468.6431.14242531724269213337.pr-tracker-bot@kernel.org>
-Date:   Fri, 10 Apr 2020 17:30:04 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
+X-PR-Merge-Commit-Id: f8693b3eb59f9055edca86b0789fd6593a57edf4
+Message-Id: <158653982761.6431.708298111896222198.pr-tracker-bot@kernel.org>
+Date:   Fri, 10 Apr 2020 17:30:27 +0000
+To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
+        IDE/ATA development list <linux-ide@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 9 Apr 2020 11:15:26 -0700:
+The pull request you sent on Thu, 9 Apr 2020 18:08:55 -0700:
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.7-merge-12
+> git://git.kernel.dk/linux-block.git tags/libata-5.7-2020-04-09
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8c3c07439e1d793d8803a404df86e487875f3340
+https://git.kernel.org/torvalds/c/f8693b3eb59f9055edca86b0789fd6593a57edf4
 
 Thank you!
 
