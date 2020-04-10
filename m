@@ -2,113 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AC471A427F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 08:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4766F1A4286
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 08:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgDJGYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 02:24:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5451 "EHLO mga11.intel.com"
+        id S1726181AbgDJGeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 02:34:44 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:44782 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725776AbgDJGYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 02:24:39 -0400
-IronPort-SDR: Gv7qfjxm+gQcA08UsOIHA+p0OF0Py1d9ibN5o6HmpdUif0FqfSvnoFU3Gv/1IAREHqcNe+lFzf
- 9RrtjSH9oG8A==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2020 23:24:39 -0700
-IronPort-SDR: Nz8s7/Lni2JGlHWWeGn+1eHvhQeRASmLxgkhIL3lj49IBv8FkTYJJhyz9RbnY3RbEpofEkVMgZ
- eSEJXJWvWchQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,364,1580803200"; 
-   d="scan'208";a="240862325"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.255.30.81]) ([10.255.30.81])
-  by orsmga007.jf.intel.com with ESMTP; 09 Apr 2020 23:24:38 -0700
-Subject: Re: [PATCH] vdpa: allow a 32 bit vq alignment
-To:     Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        virtualization@lists.linux-foundation.org
-References: <20200409202825.10115-1-mst@redhat.com>
- <bed03b3a-ebc0-2a93-7e6b-8f884eab747b@redhat.com>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <1c164046-cc4c-f5fb-bed1-a650b5078b6f@intel.com>
-Date:   Fri, 10 Apr 2020 14:24:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <bed03b3a-ebc0-2a93-7e6b-8f884eab747b@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S1725839AbgDJGeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 02:34:44 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4A2442007B2;
+        Fri, 10 Apr 2020 08:34:43 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 50C282007A2;
+        Fri, 10 Apr 2020 08:34:39 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id E884C402AE;
+        Fri, 10 Apr 2020 14:34:33 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     catalin.marinas@arm.com, will@kernel.org,
+        daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH 1/2] clocksource: Add support for i.MX TPM driver with ARM64
+Date:   Fri, 10 Apr 2020 14:26:47 +0800
+Message-Id: <1586500008-4418-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Allows building and compile-testing the i.MX TPM driver for ARM64.
 
-On 4/10/2020 2:21 PM, Jason Wang wrote:
-> Cc Ling Shan.
->
-> On 2020/4/10 上午4:28, Michael S. Tsirkin wrote:
->> get_vq_align returns u16 now, but that's not enough for
->> systems/devices with 64K pages. All callers assign it to
->> a u32 variable anyway, so let's just change the return
->> value type to u32.
->>
->> Cc: "Zhu, Lingshan" <lingshan.zhu@intel.com>
->> Reported-by: Arnd Bergmann <arnd@arndb.de>
->> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
->> ---
->>   drivers/vdpa/ifcvf/ifcvf_main.c  | 2 +-
->>   drivers/vdpa/vdpa_sim/vdpa_sim.c | 2 +-
->>   include/linux/vdpa.h             | 2 +-
->>   3 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c 
->> b/drivers/vdpa/ifcvf/ifcvf_main.c
->> index 28d9e5de5675..abf6a061cab6 100644
->> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->> @@ -226,7 +226,7 @@ static u32 ifcvf_vdpa_get_vendor_id(struct 
->> vdpa_device *vdpa_dev)
->>       return IFCVF_SUBSYS_VENDOR_ID;
->>   }
->>   -static u16 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->> +static u32 ifcvf_vdpa_get_vq_align(struct vdpa_device *vdpa_dev)
->>   {
->>       return IFCVF_QUEUE_ALIGNMENT;
->>   }
->> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c 
->> b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->> index 72863d01a12a..7957d2d41fc4 100644
->> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
->> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
->> @@ -435,7 +435,7 @@ static u64 vdpasim_get_vq_state(struct 
->> vdpa_device *vdpa, u16 idx)
->>       return vrh->last_avail_idx;
->>   }
->>   -static u16 vdpasim_get_vq_align(struct vdpa_device *vdpa)
->> +static u32 vdpasim_get_vq_align(struct vdpa_device *vdpa)
->>   {
->>       return VDPASIM_QUEUE_ALIGN;
->>   }
->> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->> index 733acfb7ef84..5453af87a33e 100644
->> --- a/include/linux/vdpa.h
->> +++ b/include/linux/vdpa.h
->> @@ -164,7 +164,7 @@ struct vdpa_config_ops {
->>       u64 (*get_vq_state)(struct vdpa_device *vdev, u16 idx);
->>         /* Device ops */
->> -    u16 (*get_vq_align)(struct vdpa_device *vdev);
->> +    u32 (*get_vq_align)(struct vdpa_device *vdev);
->>       u64 (*get_features)(struct vdpa_device *vdev);
->>       int (*set_features)(struct vdpa_device *vdev, u64 features);
->>       void (*set_config_cb)(struct vdpa_device *vdev,
->
-looks good to me
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ drivers/clocksource/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-BR
-Zhu Lingshan
+diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
+index f2142e6..e9e7fe1 100644
+--- a/drivers/clocksource/Kconfig
++++ b/drivers/clocksource/Kconfig
+@@ -617,7 +617,7 @@ config CLKSRC_IMX_GPT
+ 
+ config CLKSRC_IMX_TPM
+ 	bool "Clocksource using i.MX TPM" if COMPILE_TEST
+-	depends on ARM && CLKDEV_LOOKUP
++	depends on (ARM || ARM64) && CLKDEV_LOOKUP
+ 	select CLKSRC_MMIO
+ 	help
+ 	  Enable this option to use IMX Timer/PWM Module (TPM) timer as
+-- 
+2.7.4
 
