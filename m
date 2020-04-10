@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC6D1A4AD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BAA1A4ADE
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgDJTxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:53:45 -0400
-Received: from mail-pf1-f175.google.com ([209.85.210.175]:40842 "EHLO
-        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbgDJTxo (ORCPT
+        id S1726650AbgDJT5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:57:16 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:42215 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgDJT5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:53:44 -0400
-Received: by mail-pf1-f175.google.com with SMTP id x3so1190522pfp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 12:53:43 -0700 (PDT)
+        Fri, 10 Apr 2020 15:57:15 -0400
+Received: by mail-qv1-f65.google.com with SMTP id e5so691486qvo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 12:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GnS+iKPshB2H+iJx2B0bBeNxXYNge8mXSC0GNXOAR6E=;
-        b=qAg92dm1m90uJbKfYO0c0g0rgZ3OyQah5Ijz3Nx2D7DW9+pNksOZBVrn6JtbETCaup
-         QVTWEdPHIf8gAcaZJExiXN7j8owgBiGl0/9c+aqvFUWIrCLnvu9AvqJRfwQndqsXxV96
-         zueVO/zOpS/xkC0zEgDXwm2Jnz1+pfnODPV5iwLbrwkNg8diNhhl0dlLaELC3PjlxGLt
-         PCXN+Ab5Pr3GB6D3NnyGPFYrA2/9fx1VP7z6cTvD5IaTEcQsAZOnbrgDyaZrtHGTXooI
-         7+6v0TZiL1GYqwWSZUpywkSn/1iG/LoEbPp5gMmbBsmHvQV8buJvcSX//wx9w6jcYxJq
-         hlDQ==
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=pS46DIfpY3lCgLGWiwz/LrxVk7ZBGeU+Fv83QXgtneM=;
+        b=nq1ZWmiuWSEQ+KIE3v28/I0n8D7ft/MTnPl9hHDCzXRYS4ySeY5iCyuGKWm7XrXEwy
+         Sn5GIsHCo+oGNjNPyctS+fovdWZ5njHDgAhqTQQ2tj0zLF/HtII47YK8TqSSxfq0WwB4
+         3SMOh8CdjE8s7s5SPEvPWdlYzNzRZES93OKTOSmuYTQGxCwNGxvVtnROvyoZBv0YKida
+         Wzo7jar5Qf1F/TDQH8lwX5/W9Wg31j+ywJdbp6vCvu+jeyCmjfmpK8To5k+fnQBzjyYX
+         TXIc18k5PMF96XKOd/nOIMEW0YAeCBJMN07XLH4DTa8iY5QAIsldeLeiMlX20uAHF+zK
+         mKBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GnS+iKPshB2H+iJx2B0bBeNxXYNge8mXSC0GNXOAR6E=;
-        b=tqU3sGIP2KWHxSYIbGKyqHvDMQhai31V8tA4b+YYNWNQI0bqzVjf7LP8Q58JiyLozi
-         0MjjtQTNfRrNVSEpNaesRDWLbHXfSjLFAEdaPYQfsdJWRnOUneZ11zqiqZ/u3uPXbltV
-         Ke7UeGUw/HPxqM94dEny6RtiJ2hynRo7FKyrpQ0VA8PaBeSJsNjcBgMc0nNGpwVQguzl
-         0MpfDf0JcjdCBPDYxV3AQR2OAVlvYRg7tTCvtuHItqS8Q12BJN3byONIKlo4z93FhOMx
-         EpnK3Pq0ybSr8NAEOZK1Vc7gGjPkSOffqQcLs+JpxQvIeUPyyLo/vBHfZZAHpoENcSPY
-         Qb1w==
-X-Gm-Message-State: AGi0PuaJHGorsrw1n14gp3RFSsEvzP9KgcHYCdeG7rSTAGh4VcLZnSvb
-        rbCkOFSLNl2oH3UrD5CDBK4=
-X-Google-Smtp-Source: APiQypKtqv3FkYH83kX4elGfmQtsEbuXFeu29FerD++flwUmaRjooBkKO+s8F/RccjUYQxUoI3jMCQ==
-X-Received: by 2002:a62:5341:: with SMTP id h62mr6375982pfb.183.1586548422818;
-        Fri, 10 Apr 2020 12:53:42 -0700 (PDT)
-Received: from octofox.hsd1.ca.comcast.net ([2601:641:400:63f0:a487:3b8:7ffc:c9e4])
-        by smtp.gmail.com with ESMTPSA id w142sm2468983pff.111.2020.04.10.12.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 12:53:42 -0700 (PDT)
-From:   Max Filippov <jcmvbkbc@gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>
-Subject: [PULL 0/3] xtensa updates for v5.7
-Date:   Fri, 10 Apr 2020 12:53:31 -0700
-Message-Id: <20200410195331.12735-1-jcmvbkbc@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=pS46DIfpY3lCgLGWiwz/LrxVk7ZBGeU+Fv83QXgtneM=;
+        b=ClT7weImMIRaTeGhT12c1lT2IQacqAhanWbWAzwMTfLeca8tmPiGR/k2TlfY/3kP7r
+         Ym2Y32Zlwz3tNFcw/vJ9XhjfHTNZMBM7wSg2+gqoitEr0uTwWCv+gajYgbJ55ycuJurL
+         OfVFPfzv/lyd2IqC0oM0luEmUhXNF43SblnkzyckEV2ha9so3fKnGs26fcR2WfinGhlF
+         H5ybBIHDImKo8qhQneENT2K1GinB9PcqHQX68KpSQyj0tfW/AWQHw0FB2SdGvJIKmviM
+         qkXXWj3wEXy+3+SVa0+ykeJt0VwsvBL0mTMoLcb/77yK8whyYMQ0ZnfEyC3CdEkA+qb7
+         LiRA==
+X-Gm-Message-State: AGi0PualeOP9amHPdEWKCFTZjh74qnGCAxnmlOeTpHcsrfBXv2j309lP
+        2AhVKvuLpBorZ6zOfhi+3hEK6HFraT/dIA==
+X-Google-Smtp-Source: APiQypI8lAZSlQsy9qjWnpjBDL35RuvUd1Z3Euh3p3MgvqmI82eGjZxIE7ObFJeipLZphFmozZmMoQ==
+X-Received: by 2002:a0c:9068:: with SMTP id o95mr6816196qvo.101.1586548634028;
+        Fri, 10 Apr 2020 12:57:14 -0700 (PDT)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id m1sm2439743qtm.22.2020.04.10.12.57.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Apr 2020 12:57:13 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: KCSAN + KVM = host reset
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <CANpmjNPqQHKUjqAzcFym5G8kHX0mjProOpGu8e4rBmuGRykAUg@mail.gmail.com>
+Date:   Fri, 10 Apr 2020 15:57:12 -0400
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        "paul E. McKenney" <paulmck@kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C4FED226-E3DE-44AE-BBED-2B56B9F5B12F@lca.pw>
+References: <CANpmjNMR4BgfCxL9qXn0sQrJtQJbEPKxJ5_HEa2VXWi6UY4wig@mail.gmail.com>
+ <AC8A5393-B817-4868-AA85-B3019A1086F9@lca.pw>
+ <CANpmjNPqQHKUjqAzcFym5G8kHX0mjProOpGu8e4rBmuGRykAUg@mail.gmail.com>
+To:     Marco Elver <elver@google.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-please pull the following Xtensa architecture updates for v5.7:
 
-The following changes since commit 98d54f81e36ba3bf92172791eba5ca5bd813989b:
+> On Apr 10, 2020, at 7:35 AM, Marco Elver <elver@google.com> wrote:
+>=20
+> On Fri, 10 Apr 2020 at 13:25, Qian Cai <cai@lca.pw> wrote:
+>>=20
+>>=20
+>>=20
+>>> On Apr 10, 2020, at 5:47 AM, Marco Elver <elver@google.com> wrote:
+>>>=20
+>>> That would contradict what you said about it working if KCSAN is
+>>> "off". What kernel are you attempting to use in the VM?
+>=20
+> Ah, sorry this was a typo,
+>  s/working if KCSAN/not working if KCSAN/
+>=20
+>> Well, I said set KCSAN debugfs to =E2=80=9Coff=E2=80=9D did not help, =
+i.e., it will reset the host running kvm.sh. It is the vanilla ubuntu =
+18.04 kernel in VM.
+>>=20
+>> github.com/cailca/linux-mm/blob/master/kvm.sh
+>=20
+> So, if you say that CONFIG_KCSAN_INTERRUPT_WATCHER=3Dn works, that
+> contradicts it not working when KCSAN is "off". Because if KCSAN is
+> off, it never sets up any watchpoints, and whether or not
+> KCSAN_INTERRUPT_WATCHER is selected or not shouldn't matter. Does that
+> make more sense?
 
-  Linux 5.6-rc4 (2020-03-01 16:38:46 -0600)
+Yes, you are right. CONFIG_KCSAN_INTERRUPT_WATCHER=3Dn does not
+make it work. It was a mistake when I tested it because there was a =
+stale svm.o
+leftover from the previous run, and then it will not trigger a rebuild =
+(a bug?) when
+only modify the Makefile to remove KCSAN_SANITIZE :=3D n. Sorry for the =
+misleading
+information. I should be checking if svm.o was really recompiled in the =
+first place.
 
-are available in the Git repository at:
+Anyway, I=E2=80=99ll send a patch to add __no_kcsan for svm_vcpu_run() =
+because I tried
+to narrow down more with a kcsan_[disable|enable]_current() pair, but it =
+does NOT
+work even by enclosing the almost whole function below until Marcro has =
+more ideas?
 
-  git://github.com/jcmvbkbc/linux-xtensa.git tags/xtensa-20200410
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 2be5bbae3a40..e58b2d5a575c 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3286,6 +3286,7 @@ static void svm_vcpu_run(struct kvm_vcpu *vcpu)
+        svm->vmcb->save.rsp =3D vcpu->arch.regs[VCPU_REGS_RSP];
+        svm->vmcb->save.rip =3D vcpu->arch.regs[VCPU_REGS_RIP];
+=20
++       kcsan_disable_current();
+        /*
+         * A vmexit emulation is required before the vcpu can be =
+executed
+         * again.
+@@ -3410,6 +3411,7 @@ static void svm_vcpu_run(struct kvm_vcpu *vcpu)
+                svm_handle_mce(svm);
+=20
+        mark_all_clean(svm->vmcb);
++       kcsan_enable_current();
+ }
+ STACK_FRAME_NON_STANDARD(svm_vcpu_run);
+=20
 
-for you to fetch changes up to 70cbddb973859158731ce77ab20cd5e53822c089:
+=20
 
-  arch/xtensa: fix grammar in Kconfig help text (2020-03-30 13:35:31 -0700)
 
-----------------------------------------------------------------
-Xtensa updates for v5.7:
 
-- replace setup_irq() by request_irq();
-- cosmetic fixes in xtensa Kconfig and boot/Makefile.
-
-----------------------------------------------------------------
-Hu Haowen (1):
-      arch/xtensa: fix grammar in Kconfig help text
-
-Masahiro Yamada (1):
-      xtensa: remove meaningless export ccflags-y
-
-afzal mohammed (1):
-      xtensa: replace setup_irq() by request_irq()
-
- arch/xtensa/Kconfig       |  2 +-
- arch/xtensa/boot/Makefile |  1 -
- arch/xtensa/kernel/smp.c  |  8 ++------
- arch/xtensa/kernel/time.c | 12 +++++-------
- 4 files changed, 8 insertions(+), 15 deletions(-)
-
--- 
-Thanks.
--- Max
