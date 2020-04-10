@@ -2,65 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB371A4301
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 09:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB0E1A4309
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 09:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbgDJHcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 03:32:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgDJHcP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 03:32:15 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F13B420757;
-        Fri, 10 Apr 2020 07:32:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586503934;
-        bh=CktXQo4G0AH1jtaGrkHCxrmPkUOrXFFdVEeFuTWCX1w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vNe4xBieXjLUnuCmwRfYb0ygHCl6jpZrIcHotzcXZxcDa5nvLPO86R0g/HsbALL5f
-         X3PTRuNoU8e+pJuzFG0KnKAWQJWy7gPgoKTLP0wlgT2ATPiURJEc2ikV0xx3g9RwPL
-         TrDiWll6JvJAe7JDSlOnwdC6hIn8oGFVvdjEKPOU=
-Date:   Fri, 10 Apr 2020 09:32:11 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     R Veera Kumar <vkor@vkten.in>
-Cc:     devel@driverdev.osuosl.org, Todd Kjos <tkjos@android.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Laura Abbott <labbott@redhat.com>,
-        Martijn Coenen <maco@android.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Brauner <christian@brauner.io>
-Subject: Re: [PATCH v2] staging: android: ion: use macro
- DEFINE_DEBUGFS_ATTRIBUTE to define debugfs fops
-Message-ID: <20200410073211.GA1668699@kroah.com>
-References: <20200409171318.1730-1-vkor@vkten.in>
+        id S1726671AbgDJHex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 03:34:53 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33018 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725912AbgDJHex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 03:34:53 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 58349A7B08DB092E22CC;
+        Fri, 10 Apr 2020 15:34:51 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Apr 2020
+ 15:34:43 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <rostedt@goodmis.org>, <mingo@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>
+Subject: [PATCH] tracing: make some symbols static in tracing_map.c
+Date:   Fri, 10 Apr 2020 15:33:12 +0800
+Message-ID: <20200410073312.38855-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.17.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200409171318.1730-1-vkor@vkten.in>
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 10:43:18PM +0530, R Veera Kumar wrote:
-> It is more clear to use DEFINE_DEBUGFS_ATTRIBUTE to define debugfs file
-> operation rather than DEFINE_SIMPLE_ATTRIBUTE.
+Fix the following sparse warning:
 
-No, it is not "more clear", the two defines are not the same thing, they
-do different things.  If they were just identical, we would not need
-them both :)
+kernel/trace/tracing_map.c:286:6: warning: symbol
+'tracing_map_array_clear' was not declared. Should it be static?
+kernel/trace/tracing_map.c:297:6: warning: symbol
+'tracing_map_array_free' was not declared. Should it be static?
+kernel/trace/tracing_map.c:319:26: warning: symbol
+'tracing_map_array_alloc' was not declared. Should it be static?
 
-So please be very explicit as to _why_ you want to change this, and show
-how you have verified that changing this is the correct thing to do, and
-how you tested.  Because the user-visible change can be quite different
-with this type of kernel change.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ kernel/trace/tracing_map.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-thanks,
+diff --git a/kernel/trace/tracing_map.c b/kernel/trace/tracing_map.c
+index 9e31bfc818ff..74738c9856f1 100644
+--- a/kernel/trace/tracing_map.c
++++ b/kernel/trace/tracing_map.c
+@@ -283,7 +283,7 @@ int tracing_map_add_key_field(struct tracing_map *map,
+ 	return idx;
+ }
+ 
+-void tracing_map_array_clear(struct tracing_map_array *a)
++static void tracing_map_array_clear(struct tracing_map_array *a)
+ {
+ 	unsigned int i;
+ 
+@@ -294,7 +294,7 @@ void tracing_map_array_clear(struct tracing_map_array *a)
+ 		memset(a->pages[i], 0, PAGE_SIZE);
+ }
+ 
+-void tracing_map_array_free(struct tracing_map_array *a)
++static void tracing_map_array_free(struct tracing_map_array *a)
+ {
+ 	unsigned int i;
+ 
+@@ -316,7 +316,7 @@ void tracing_map_array_free(struct tracing_map_array *a)
+ 	kfree(a);
+ }
+ 
+-struct tracing_map_array *tracing_map_array_alloc(unsigned int n_elts,
++static struct tracing_map_array *tracing_map_array_alloc(unsigned int n_elts,
+ 						  unsigned int entry_size)
+ {
+ 	struct tracing_map_array *a;
+-- 
+2.17.2
 
-greg k-h
