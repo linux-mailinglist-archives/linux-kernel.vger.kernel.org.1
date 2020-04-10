@@ -2,132 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECB421A4A4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEAB1A4A52
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgDJTUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:20:22 -0400
-Received: from mail-eopbgr680132.outbound.protection.outlook.com ([40.107.68.132]:21059
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726203AbgDJTUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:20:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ALh1zzl3fq83aIhtB9KsbNgEnrsb3nJ2W4GRQ3MHByQASOhixXZpVTCRC3lmObNCL+ZokbQaa9HmDJxKrjMOFcoCK9pldJ4VEe2qNhguE2Bdskudr/iDtE0O+i7TJgUemoxJo8QvLz9ArgiCW0LD8/OhrAh4lDwDPUl+IMCbzZIvaxGWdMFdzfbEIZOC+GNTl1t9W26bnr3LYXXcvcVz2VmvnqbMRW3QMHlLntRMF6fISor4RL5FTbr+qMzJ/QSWGaaqjd2skqbXc3UzjMj26lC+Y7aiCsn7iJ+EqCRONpnNGzFx2UmZSIQgf6c2gJGBdXnUneJpVt5RCFKDPYvsCg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TDNk3yyR7YSxaM8yUD73rkTQlaEOj3/TA3eFBGmJel8=;
- b=hb8d6nemgoiV0n4viXeQMrwxSwqPvnRwZ+sau+iXCLC9x6SuZ5vYtjSCWYhExRhpUJaBOaLyfkTq6igG2dAiLp0IPP11zeDKnmd/+UfvyKAMqTzPsv3vTww6aKSQrFyIvppIDeGPqlw4xZbwzfImYFWMcUinlaHlIyrNQJYNCRXEvYOw0TVJsTejJU9cu3eGhabxt6xbTYf679SewLMGYxMwAM+3kdilMPDcr5mf04ACA5aRuwi0bTUMTp1SCt8q6JtA+uJkMMvu4zivFHkzPX5mn/Ygb64fJJC4WEjM7gbwVsPzCrVa5hQKRBbYnu4dwOT37Xc/2dKU5ERpmA2EjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TDNk3yyR7YSxaM8yUD73rkTQlaEOj3/TA3eFBGmJel8=;
- b=OY6+RkKX72OxowetOgAMxv3ZokVZtTLz2p4s/jnVfG+1Ss65jCWe7Su8zMXZ+Ymemi46M3CI2k04poQx6TXE8EqAzuqGvVO5HpF+84wsieEDSoqn8Ohnld816SFv4OCEjXfexKnmpTeEBCciWoZfi1VElt1So2pDME8KQtP5OKA=
-Received: from DM5PR2101MB1047.namprd21.prod.outlook.com (2603:10b6:4:9e::16)
- by DM5PR2101MB0920.namprd21.prod.outlook.com (2603:10b6:4:a7::37) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.4; Fri, 10 Apr
- 2020 19:20:16 +0000
-Received: from DM5PR2101MB1047.namprd21.prod.outlook.com
- ([fe80::f54c:68f0:35cd:d3a2]) by DM5PR2101MB1047.namprd21.prod.outlook.com
- ([fe80::f54c:68f0:35cd:d3a2%9]) with mapi id 15.20.2921.009; Fri, 10 Apr 2020
- 19:20:16 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        vkuznets <vkuznets@redhat.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH 04/11] hv_netvsc: Disable NAPI before closing the VMBus
- channel
-Thread-Topic: [PATCH 04/11] hv_netvsc: Disable NAPI before closing the VMBus
- channel
-Thread-Index: AQHWC6iqL0HJm9zpvUqAkD991LoOl6hywpug
-Date:   Fri, 10 Apr 2020 19:20:16 +0000
-Message-ID: <DM5PR2101MB1047792102EAE9C52D4ED5E9D7DE0@DM5PR2101MB1047.namprd21.prod.outlook.com>
-References: <20200406001514.19876-1-parri.andrea@gmail.com>
- <20200406001514.19876-5-parri.andrea@gmail.com>
-In-Reply-To: <20200406001514.19876-5-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=True;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Owner=mikelley@ntdev.microsoft.com;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2020-04-10T19:20:14.1433724Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=General;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=28bfb3eb-fa58-4ccc-bc6d-1806b048cde5;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Extended_MSFT_Method=Automatic
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=mikelley@microsoft.com; 
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3291aecf-8fd7-41db-e530-08d7dd843384
-x-ms-traffictypediagnostic: DM5PR2101MB0920:|DM5PR2101MB0920:|DM5PR2101MB0920:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <DM5PR2101MB0920472717C0034345D7E4ADD7DE0@DM5PR2101MB0920.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-forefront-prvs: 0369E8196C
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR2101MB1047.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(76116006)(81156014)(66556008)(55016002)(66476007)(82960400001)(33656002)(186003)(86362001)(4326008)(10290500003)(7696005)(9686003)(5660300002)(478600001)(4744005)(8676002)(6506007)(26005)(8936002)(82950400001)(316002)(71200400001)(110136005)(54906003)(64756008)(66946007)(66446008)(2906002)(52536014)(8990500004);DIR:OUT;SFP:1102;
-received-spf: None (protection.outlook.com: microsoft.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1UjPg1kSXi7mbXButWltsv/g9ktCMimOaBJdlbT0vS+Z50EGUcHlEEIs2CAWUhOJwNCAtMQPaG/Cy920gZluO2DjNzxSM8ZMgzv7F6kSyWkZuiqPk8tBy8xBqz6/R6mGzxA+QhhgSxxl4KlxJxWLKkNugtoY4SQjIoSdiMjFtcb7Zk2SnLw0hFIjiUMiCBpUbsDRzxdtRFQ/RqfTvrD2Ltudiu6agJsE4Y2XdsBJ3ERC09RSCg+NGnJunuW2alUrq2fLkVKYm3OkXeGqL3TCfQgM/iV0e5bXxybv8Nog4mus5Vff+0e7d05qS0mHEeSx/nLBvQJEW/OA1UFp8M2aG/d9bPNrjjW5o4dIF4V2cGOIRAGADQDdfhi+h+UhySFNwc6KcBQqL7ozCQq9+3xweR7q+2tkqscCANINhU2GrD0KzOCmIYy+QoychUV8R94i
-x-ms-exchange-antispam-messagedata: mIvebLqxcpN+Cz0/dCoEBHNOMhhRwuHKKimeBEtRG/Fa3fGV91rQ9F6kA66jCWi0qtm5JQwC5lMlBgPj6RumVu3v6xs8KCFVRNwZgtLCPDpTiShB45pxjKWmQIvKgiXZITchZ3m6mdMm3sOPgeTfTQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726761AbgDJTU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:20:58 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:28012 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726741AbgDJTU5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 15:20:57 -0400
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 10 Apr 2020 12:20:41 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 10 Apr 2020 12:20:41 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 617194BED; Fri, 10 Apr 2020 12:20:41 -0700 (PDT)
+Date:   Fri, 10 Apr 2020 12:20:41 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     linux-pwm@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v12 08/11] pwm: sun4i: Use nsecs_to_jiffies to avoid a
+ division
+Message-ID: <20200410192041.GC21571@codeaurora.org>
+References: <cover.1586414867.git.gurus@codeaurora.org>
+ <436e1a50e603eefb24c8e7b2bd7f7e4838b90e12.1586414867.git.gurus@codeaurora.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3291aecf-8fd7-41db-e530-08d7dd843384
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Apr 2020 19:20:16.5054
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hQCSVXbYN3y5Y+0OjLdoJBumRMXBelTx/hEflO/KYPrcikuO9TOZl4hYJGtwxHICQDPsjjl1QAo+16NQbPaLEcrGHOOdPFndXi8Lob7AIIM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR2101MB0920
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <436e1a50e603eefb24c8e7b2bd7f7e4838b90e12.1586414867.git.gurus@codeaurora.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Sunday, April=
- 5, 2020 5:15 PM
->=20
-> vmbus_chan_sched() might call the netvsc driver callback function that
-> ends up scheduling NAPI work.  This "work" can access the channel ring
-> buffer, so we must ensure that any such work is completed and that the
-> ring buffer is no longer being accessed before freeing the ring buffer
-> data structure in the channel closure path.  To this end, disable NAPI
-> before calling vmbus_close() in netvsc_device_remove().
->=20
-> Suggested-by: Michael Kelley <mikelley@microsoft.com>
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Acked-by: Stephen Hemminger <stephen@networkplumber.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: <netdev@vger.kernel.org>
+On Wed, Apr 08, 2020 at 11:52:37PM -0700, Guru Das Srinagesh wrote:
+> Since the PWM framework is switching struct pwm_state.period's datatype
+> to u64, prepare for this transition by using nsecs_to_jiffies() which
+> does away with the need for a division operation.
+> 
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Chen-Yu Tsai <wens@csie.org>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
 > ---
->  drivers/hv/channel.c        | 6 ++++++
->  drivers/net/hyperv/netvsc.c | 7 +++++--
->  2 files changed, 11 insertions(+), 2 deletions(-)
->=20
+>  drivers/pwm/pwm-sun4i.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pwm/pwm-sun4i.c b/drivers/pwm/pwm-sun4i.c
+> index 5c677c5..1694e69 100644
+> --- a/drivers/pwm/pwm-sun4i.c
+> +++ b/drivers/pwm/pwm-sun4i.c
+> @@ -285,7 +285,7 @@ static int sun4i_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+>  	val = (duty & PWM_DTY_MASK) | PWM_PRD(period);
+>  	sun4i_pwm_writel(sun4i_pwm, val, PWM_CH_PRD(pwm->hwpwm));
+>  	sun4i_pwm->next_period[pwm->hwpwm] = jiffies +
+> -		usecs_to_jiffies(cstate.period / 1000 + 1);
+> +		nsecs_to_jiffies(cstate.period + 1000);
+>  
+>  	if (state->polarity != PWM_POLARITY_NORMAL)
+>  		ctrl &= ~BIT_CH(PWM_ACT_STATE, pwm->hwpwm);
+> -- 
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+Hi Chen-Yu,
+
+You had provided your "Acked-by:" [1] for an earlier version of this
+patch but now that I've revised the patch based on a review comment I
+received [2], could you please review this patch once again?
+
+Thank you.
+
+Guru Das.
+
+[1] https://www.spinics.net/lists/linux-pwm/msg11755.html
+[2] https://www.spinics.net/lists/linux-pwm/msg11956.html
