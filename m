@@ -2,210 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E241A4BD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 00:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3321A4C0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 00:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbgDJWSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 18:18:11 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:34926 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726641AbgDJWSL (ORCPT
+        id S1726679AbgDJW1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 18:27:02 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:28127 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgDJW1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 18:18:11 -0400
-Received: by mail-pf1-f195.google.com with SMTP id a13so1602228pfa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 15:18:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eg7KB2UmJiacn5HMhVr3STCxlXC7Ncdbl28teyA/qnE=;
-        b=RF5Go9aJ2nuQ4sJRdmrw+wT5SZwrNy/InkqPYjDgpYTW2iSw1VH+4Jv+JF6QAeMePV
-         K/Hv+YvYhCqz0c8xAbzjbedG9Z/FrERSQmzjx0c1aTJJojWrAn0lIvqEdF1Af4oOArqn
-         SjtCA39xxKgApKVTqoPk8c56zrxfw0MiFRYW4BB70wsIUMGuTFR5kZtTWO2Un4WpJYOW
-         fdqHAlIbGHi/nggKl50By9FBuNfsGVU7uo9Dye7dSMUCvuLoPSTn7ElqOww1i2jrVqrS
-         qYn1Tez4IB9MU1lxkE70v3VZna2OTUQLCKtp3C9e6YGrwMMUPe3xgQb0TjvsUwFhyilx
-         LpCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eg7KB2UmJiacn5HMhVr3STCxlXC7Ncdbl28teyA/qnE=;
-        b=gJLe8rEt3GFvC/NwdKVcn/oamUSsXxAS7JvJQlXkIKJACff9pTFw42/f6i76TbG4ZL
-         lrV59F7X0G5BATthBfKcYV9OJTqA5xtCXu4nfRy6X+9z34lty17GSWKCLIY/Y75nQ4VU
-         Dm/jXNUFv+alnBNCZmxTm4xSjw1YGn8WS8PP6Q6K2Mt7UM5gSReWRi5BDha2GtJ4wqB2
-         QJUXQCoukVUgQTZilCoTRPKM2dAhWLN0K4fCKIPVVtycGhKmmdVHNGG8oPEnr59xo4RD
-         0T2DvGHAI3aZM7iqXm1CsHZVla7hHmD1lqgnlNMOAV9kvA8aa054kEeuiQnlM0cXUs1K
-         FvEA==
-X-Gm-Message-State: AGi0PubvX9mp4rVQ9mVm09QzBHLayztnDBthYkNOAPQRXL9Jpefpb4mv
-        CwoCp67HoAjK+h+/x6GlIKqQj3dftIk=
-X-Google-Smtp-Source: APiQypKuGog96mc6Yc47EvysrBnEd7V/DVsXoRgNLK+vUHBherAsLMJ/s5zJhZVcB+q1LdTVeX7W6w==
-X-Received: by 2002:a63:8c51:: with SMTP id q17mr6606761pgn.320.1586557088739;
-        Fri, 10 Apr 2020 15:18:08 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id g4sm2629429pfb.169.2020.04.10.15.18.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 15:18:08 -0700 (PDT)
-Date:   Fri, 10 Apr 2020 15:18:18 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>
-Cc:     agross@kernel.org, kishon@ti.com, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Balaji Prakash J <bjagadee@codeaurora.org>
-Subject: Re: [PATCH 2/3] phy: qcom-qmp: Add USB QMP PHY support for IPQ8074
-Message-ID: <20200410221818.GE20625@builder.lan>
-References: <1586543372-13969-1-git-send-email-sivaprak@codeaurora.org>
- <1586543372-13969-3-git-send-email-sivaprak@codeaurora.org>
+        Fri, 10 Apr 2020 18:27:02 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 56E6F240006;
+        Fri, 10 Apr 2020 22:26:59 +0000 (UTC)
+Date:   Sat, 11 Apr 2020 00:26:58 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     a.zummo@towertech.it, robh+dt@kernel.org, mark.rutland@arm.com,
+        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] ARM: dts: sam9x60: add rtt
+Message-ID: <20200410222658.GB3628@piout.net>
+References: <1586536019-12348-1-git-send-email-claudiu.beznea@microchip.com>
+ <1586536019-12348-5-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1586543372-13969-3-git-send-email-sivaprak@codeaurora.org>
+In-Reply-To: <1586536019-12348-5-git-send-email-claudiu.beznea@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 10 Apr 11:29 PDT 2020, Sivaprakash Murugesan wrote:
-
-> Add QMP USB PHY found in IPQ8074
+On 10/04/2020 19:26:58+0300, Claudiu Beznea wrote:
+> Add RTT.
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-> Co-developed-by: Balaji Prakash J <bjagadee@codeaurora.org>
-> Signed-off-by: Balaji Prakash J <bjagadee@codeaurora.org>
-> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  drivers/phy/qualcomm/phy-qcom-qmp.c | 102 ++++++++++++++++++++++++++++++++++++
->  1 file changed, 102 insertions(+)
+>  arch/arm/boot/dts/at91-sam9x60ek.dts | 5 +++++
+>  arch/arm/boot/dts/sam9x60.dtsi       | 7 +++++++
+>  2 files changed, 12 insertions(+)
 > 
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> index c190406..8e9a8a4 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> @@ -188,6 +188,81 @@ static const unsigned int sm8150_ufsphy_regs_layout[] = {
->  	[QPHY_SW_RESET]			= QPHY_V4_SW_RESET,
+> diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
+> index ab3d2d9a420a..4020e79a958e 100644
+> --- a/arch/arm/boot/dts/at91-sam9x60ek.dts
+> +++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
+> @@ -617,6 +617,11 @@
+>  	};
 >  };
 >  
-> +static const struct qmp_phy_init_tbl ipq8074_usb3_serdes_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SYSCLK_EN_SEL, 0x1a),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_BIAS_EN_CLKBUFLR_EN, 0x08),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_CLK_SELECT, 0x30),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_BG_TRIM, 0x0f),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_UCDR_FASTLOCK_FO_GAIN, 0x0b),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SVS_MODE_CLK_SEL, 0x01),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_HSCLK_SEL, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_CMN_CONFIG, 0x06),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_PLL_IVCO, 0x0f),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SYS_CLK_CTRL, 0x06),
-> +	/* PLL and Loop filter settings */
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_DEC_START_MODE0, 0x82),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_DIV_FRAC_START1_MODE0, 0x55),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_DIV_FRAC_START2_MODE0, 0x55),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_DIV_FRAC_START3_MODE0, 0x03),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_CP_CTRL_MODE0, 0x0b),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_PLL_RCTRL_MODE0, 0x16),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_PLL_CCTRL_MODE0, 0x28),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_INTEGLOOP_GAIN0_MODE0, 0x80),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_LOCK_CMP1_MODE0, 0x15),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_LOCK_CMP2_MODE0, 0x34),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_LOCK_CMP3_MODE0, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_CORE_CLK_EN, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_LOCK_CMP_CFG, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_VCO_TUNE_MAP, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_BG_TIMER, 0x0a),
-> +	/* SSC settings */
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_EN_CENTER, 0x01),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_PER1, 0x31),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_PER2, 0x01),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_ADJ_PER1, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_ADJ_PER2, 0x00),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_STEP_SIZE1, 0xde),
-> +	QMP_PHY_INIT_CFG(QSERDES_COM_SSC_STEP_SIZE2, 0x07),
+> +&rtt {
+> +	atmel,rtt-rtc-time-reg = <&gpbr 0x0>;
+> +	status = "okay";
+
+Is there any point using a gpbr register while there is already a much
+better RTC in the system?
+
+In any case, this diff should be merge with the other at91-sam9x60ek.dts
+change instead of being with the dtsi change.
+
 > +};
 > +
-> +static const struct qmp_phy_init_tbl ipq8074_usb3_rx_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_UCDR_SO_GAIN, 0x06),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_RX_EQU_ADAPTOR_CNTRL2, 0x02),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_RX_EQU_ADAPTOR_CNTRL3, 0x4c),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_RX_EQU_ADAPTOR_CNTRL4, 0xb8),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x77),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x80),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_SIGDET_CNTRL, 0x03),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_SIGDET_DEGLITCH_CNTRL, 0x16),
-> +	QMP_PHY_INIT_CFG(QSERDES_RX_SIGDET_ENABLES, 0x0),
-> +};
-> +
-> +static const struct qmp_phy_init_tbl ipq8074_usb3_pcs_tbl[] = {
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_TXDEEMPH_M6DB_V0, 0x15),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_TXDEEMPH_M3P5DB_V0, 0x0e),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_FLL_CNTRL2, 0x83),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_FLL_CNTRL1, 0x02),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_FLL_CNT_VAL_L, 0x09),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_FLL_CNT_VAL_H_TOL, 0xa2),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_FLL_MAN_CODE, 0x85),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_LOCK_DETECT_CONFIG1, 0xd1),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_LOCK_DETECT_CONFIG2, 0x1f),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_LOCK_DETECT_CONFIG3, 0x47),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_POWER_STATE_CONFIG2, 0x1b),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_RXEQTRAINING_WAIT_TIME, 0x75),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_RXEQTRAINING_RUN_TIME, 0x13),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_LFPS_TX_ECSTART_EQTLOCK, 0x86),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_PWRUP_RESET_DLY_TIME_AUXCLK, 0x04),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_TSYNC_RSYNC_TIME, 0x44),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_RCVR_DTCT_DLY_U3_L, 0x40),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_RCVR_DTCT_DLY_U3_H, 0x00),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_RX_SIGDET_LVL, 0x88),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_TXDEEMPH_M6DB_V0, 0x17),
-> +	QMP_PHY_INIT_CFG(QPHY_V3_PCS_TXDEEMPH_M3P5DB_V0, 0x0f),
-> +};
-> +
->  static const struct qmp_phy_init_tbl msm8996_pcie_serdes_tbl[] = {
->  	QMP_PHY_INIT_CFG(QSERDES_COM_BIAS_EN_CLKBUFLR_EN, 0x1c),
->  	QMP_PHY_INIT_CFG(QSERDES_COM_CLK_ENABLE1, 0x10),
-> @@ -1467,6 +1542,30 @@ static const char * const qmp_phy_vreg_l[] = {
->  	"vdda-phy", "vdda-pll",
->  };
+>  &shutdown_controller {
+>  	atmel,shdwc-debouncer = <976>;
+>  	status = "okay";
+> diff --git a/arch/arm/boot/dts/sam9x60.dtsi b/arch/arm/boot/dts/sam9x60.dtsi
+> index 326b39328b58..e1d8e3a4cb0b 100644
+> --- a/arch/arm/boot/dts/sam9x60.dtsi
+> +++ b/arch/arm/boot/dts/sam9x60.dtsi
+> @@ -661,6 +661,13 @@
+>  				status = "disabled";
+>  			};
 >  
-> +static const struct qmp_phy_cfg ipq8074_usb3phy_cfg = {
-> +	.type			= PHY_TYPE_USB3,
-> +	.nlanes			= 1,
+> +			rtt: rtt@fffffe20 {
+> +				compatible = "microchip,sam9x60-rtt";
+> +				reg = <0xfffffe20 0x20>;
+> +				interrupts = <1 IRQ_TYPE_LEVEL_HIGH 7>;
+> +				clocks = <&clk32k 0>;
+> +			};
 > +
-> +	.serdes_tbl		= ipq8074_usb3_serdes_tbl,
-> +	.serdes_tbl_num		= ARRAY_SIZE(ipq8074_usb3_serdes_tbl),
-> +	.tx_tbl			= msm8996_usb3_tx_tbl,
-> +	.tx_tbl_num		= ARRAY_SIZE(msm8996_usb3_tx_tbl),
-> +	.rx_tbl			= ipq8074_usb3_rx_tbl,
-> +	.rx_tbl_num		= ARRAY_SIZE(ipq8074_usb3_rx_tbl),
-> +	.pcs_tbl		= ipq8074_usb3_pcs_tbl,
-> +	.pcs_tbl_num		= ARRAY_SIZE(ipq8074_usb3_pcs_tbl),
-> +	.clk_list		= msm8996_phy_clk_l,
-> +	.num_clks		= ARRAY_SIZE(msm8996_phy_clk_l),
-> +	.reset_list		= msm8996_usb3phy_reset_l,
-> +	.num_resets		= ARRAY_SIZE(msm8996_usb3phy_reset_l),
-> +	.vreg_list		= qmp_phy_vreg_l,
-> +	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
-> +	.regs			= usb3phy_regs_layout,
-> +
-> +	.start_ctrl		= SERDES_START | PCS_START,
-> +	.pwrdn_ctrl		= SW_PWRDN,
-> +};
-> +
->  static const struct qmp_phy_cfg msm8996_pciephy_cfg = {
->  	.type			= PHY_TYPE_PCIE,
->  	.nlanes			= 3,
-> @@ -2498,6 +2597,9 @@ int qcom_qmp_phy_create(struct device *dev, struct device_node *np, int id)
->  
->  static const struct of_device_id qcom_qmp_phy_of_match_table[] = {
->  	{
-> +		.compatible = "qcom,ipq8074-qmp-usb3-phy",
-> +		.data = &ipq8074_usb3phy_cfg,
-> +	}, {
->  		.compatible = "qcom,msm8996-qmp-pcie-phy",
->  		.data = &msm8996_pciephy_cfg,
->  	}, {
+>  			pit: timer@fffffe40 {
+>  				compatible = "atmel,at91sam9260-pit";
+>  				reg = <0xfffffe40 0x10>;
 > -- 
 > 2.7.4
 > 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
