@@ -2,137 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C69C1A4387
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 10:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CE11A4396
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 10:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbgDJIa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 04:30:27 -0400
-Received: from mout.web.de ([212.227.17.12]:51041 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgDJIa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 04:30:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1586507414;
-        bh=4u5hhrm6knmxsZ/NzhdPF/OsRQ8bfrQ8/6bsWh990a4=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=UUOyec0IZR6HnJWe4vqIjMxCq96sfVj4sA2WhW4CNuVJHVEb5LbzShotDs6h4WOoH
-         KUC9aHbwJMKbXY+JHGrlTzf0Y/tqiY6pW4krMrw17BJkxGxb6Vs6dNldmpFgsTQ2CC
-         WiFhZZsCidFz7EQWSj4PwYvLfbTw52WX0313h0xU=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.3] ([78.48.110.107]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MSJC3-1jqGqM3OXb-00TS5n; Fri, 10
- Apr 2020 10:30:13 +0200
-Subject: Re: usb: gadget: fsl: Fix a wrong judgment in fsl_udc_probe()
-To:     Tang Bin <tangbin@cmss.chinamobile.com>, linux-usb@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Li Yang <leoyang.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-References: <20200410015832.8012-1-tangbin@cmss.chinamobile.com>
- <be8cd229-884a-40e6-3363-7c4680a51b30@web.de>
- <0b718268-d330-dfc1-aca3-3dd3203363d7@cmss.chinamobile.com>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- mQINBFg2+xABEADBJW2hoUoFXVFWTeKbqqif8VjszdMkriilx90WB5c0ddWQX14h6w5bT/A8
- +v43YoGpDNyhgA0w9CEhuwfZrE91GocMtjLO67TAc2i2nxMc/FJRDI0OemO4VJ9RwID6ltwt
- mpVJgXGKkNJ1ey+QOXouzlErVvE2fRh+KXXN1Q7fSmTJlAW9XJYHS3BDHb0uRpymRSX3O+E2
- lA87C7R8qAigPDZi6Z7UmwIA83ZMKXQ5stA0lhPyYgQcM7fh7V4ZYhnR0I5/qkUoxKpqaYLp
- YHBczVP+Zx/zHOM0KQphOMbU7X3c1pmMruoe6ti9uZzqZSLsF+NKXFEPBS665tQr66HJvZvY
- GMDlntZFAZ6xQvCC1r3MGoxEC1tuEa24vPCC9RZ9wk2sY5Csbva0WwYv3WKRZZBv8eIhGMxs
- rcpeGShRFyZ/0BYO53wZAPV1pEhGLLxd8eLN/nEWjJE0ejakPC1H/mt5F+yQBJAzz9JzbToU
- 5jKLu0SugNI18MspJut8AiA1M44CIWrNHXvWsQ+nnBKHDHHYZu7MoXlOmB32ndsfPthR3GSv
- jN7YD4Ad724H8fhRijmC1+RpuSce7w2JLj5cYj4MlccmNb8YUxsE8brY2WkXQYS8Ivse39MX
- BE66MQN0r5DQ6oqgoJ4gHIVBUv/ZwgcmUNS5gQkNCFA0dWXznQARAQABtCZNYXJrdXMgRWxm
- cmluZyA8TWFya3VzLkVsZnJpbmdAd2ViLmRlPokCVAQTAQgAPhYhBHDP0hzibeXjwQ/ITuU9
- Figxg9azBQJYNvsQAhsjBQkJZgGABQsJCAcCBhUICQoLAgQWAgMBAh4BAheAAAoJEOU9Figx
- g9azcyMP/iVihZkZ4VyH3/wlV3nRiXvSreqg+pGPI3c8J6DjP9zvz7QHN35zWM++1yNek7Ar
- OVXwuKBo18ASlYzZPTFJZwQQdkZSV+atwIzG3US50ZZ4p7VyUuDuQQVVqFlaf6qZOkwHSnk+
- CeGxlDz1POSHY17VbJG2CzPuqMfgBtqIU1dODFLpFq4oIAwEOG6fxRa59qbsTLXxyw+PzRaR
- LIjVOit28raM83Efk07JKow8URb4u1n7k9RGAcnsM5/WMLRbDYjWTx0lJ2WO9zYwPgRykhn2
- sOyJVXk9xVESGTwEPbTtfHM+4x0n0gC6GzfTMvwvZ9G6xoM0S4/+lgbaaa9t5tT/PrsvJiob
- kfqDrPbmSwr2G5mHnSM9M7B+w8odjmQFOwAjfcxoVIHxC4Cl/GAAKsX3KNKTspCHR0Yag78w
- i8duH/eEd4tB8twcqCi3aCgWoIrhjNS0myusmuA89kAWFFW5z26qNCOefovCx8drdMXQfMYv
- g5lRk821ZCNBosfRUvcMXoY6lTwHLIDrEfkJQtjxfdTlWQdwr0mM5ye7vd83AManSQwutgpI
- q+wE8CNY2VN9xAlE7OhcmWXlnAw3MJLW863SXdGlnkA3N+U4BoKQSIToGuXARQ14IMNvfeKX
- NphLPpUUnUNdfxAHu/S3tPTc/E/oePbHo794dnEm57LuuQINBFg2+xABEADZg/T+4o5qj4cw
- nd0G5pFy7ACxk28mSrLuva9tyzqPgRZ2bdPiwNXJUvBg1es2u81urekeUvGvnERB/TKekp25
- 4wU3I2lEhIXj5NVdLc6eU5czZQs4YEZbu1U5iqhhZmKhlLrhLlZv2whLOXRlLwi4jAzXIZAu
- 76mT813jbczl2dwxFxcT8XRzk9+dwzNTdOg75683uinMgskiiul+dzd6sumdOhRZR7YBT+xC
- wzfykOgBKnzfFscMwKR0iuHNB+VdEnZw80XGZi4N1ku81DHxmo2HG3icg7CwO1ih2jx8ik0r
- riIyMhJrTXgR1hF6kQnX7p2mXe6K0s8tQFK0ZZmYpZuGYYsV05OvU8yqrRVL/GYvy4Xgplm3
- DuMuC7/A9/BfmxZVEPAS1gW6QQ8vSO4zf60zREKoSNYeiv+tURM2KOEj8tCMZN3k3sNASfoG
- fMvTvOjT0yzMbJsI1jwLwy5uA2JVdSLoWzBD8awZ2X/eCU9YDZeGuWmxzIHvkuMj8FfX8cK/
- 2m437UA877eqmcgiEy/3B7XeHUipOL83gjfq4ETzVmxVswkVvZvR6j2blQVr+MhCZPq83Ota
- xNB7QptPxJuNRZ49gtT6uQkyGI+2daXqkj/Mot5tKxNKtM1Vbr/3b+AEMA7qLz7QjhgGJcie
- qp4b0gELjY1Oe9dBAXMiDwARAQABiQI8BBgBCAAmFiEEcM/SHOJt5ePBD8hO5T0WKDGD1rMF
- Alg2+xACGwwFCQlmAYAACgkQ5T0WKDGD1rOYSw/+P6fYSZjTJDAl9XNfXRjRRyJSfaw6N1pA
- Ahuu0MIa3djFRuFCrAHUaaFZf5V2iW5xhGnrhDwE1Ksf7tlstSne/G0a+Ef7vhUyeTn6U/0m
- +/BrsCsBUXhqeNuraGUtaleatQijXfuemUwgB+mE3B0SobE601XLo6MYIhPh8MG32MKO5kOY
- hB5jzyor7WoN3ETVNQoGgMzPVWIRElwpcXr+yGoTLAOpG7nkAUBBj9n9TPpSdt/npfok9ZfL
- /Q+ranrxb2Cy4tvOPxeVfR58XveX85ICrW9VHPVq9sJf/a24bMm6+qEg1V/G7u/AM3fM8U2m
- tdrTqOrfxklZ7beppGKzC1/WLrcr072vrdiN0icyOHQlfWmaPv0pUnW3AwtiMYngT96BevfA
- qlwaymjPTvH+cTXScnbydfOQW8220JQwykUe+sHRZfAF5TS2YCkQvsyf7vIpSqo/ttDk4+xc
- Z/wsLiWTgKlih2QYULvW61XU+mWsK8+ZlYUrRMpkauN4CJ5yTpvp+Orcz5KixHQmc5tbkLWf
- x0n1QFc1xxJhbzN+r9djSGGN/5IBDfUqSANC8cWzHpWaHmSuU3JSAMB/N+yQjIad2ztTckZY
- pwT6oxng29LzZspTYUEzMz3wK2jQHw+U66qBFk8whA7B2uAU1QdGyPgahLYSOa4XAEGb6wbI FEE=
-Message-ID: <aa7006c9-8b83-5f30-86a6-8d60d290f824@web.de>
-Date:   Fri, 10 Apr 2020 10:30:11 +0200
+        id S1725993AbgDJIf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 04:35:56 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:43994 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgDJIfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 04:35:55 -0400
+Received: by mail-lf1-f65.google.com with SMTP id k28so833678lfe.10;
+        Fri, 10 Apr 2020 01:35:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:autocrypt:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=DcH37kFw3pA3TszaAlB4FxdsO6scQAKynKBKosGJvw8=;
+        b=NNfvw6+PavF+mc8vRL6F585DhlDMhbFQul6ultsRxTpdBQh0Q5icTrp6cGPm0iRAj0
+         6I9xcKKta4iK2ZNdBXaI3FLcGplWpfhFsmYAAKFu/8v1CW//xWxIEnxXQEUZxkmQycsS
+         CBddePTUiwTD1Naw7h3lWAhoWTLMWy9xaWAgYVSfnMKv01UMEq4hWXcsLeNIKGVTtqjP
+         qd+xL47UEwbo5gf0kQb4GCVNRNtdtVppSruWM0D20tRMSWmzUYWO52iwf0JMAK3R5MyZ
+         4kzlfwXGXHAYMqcuuXdGJBq2+F1M2zolsqXP4OYY6Ea9P2M9XUcdJkGAf9t1PQzAb8Rg
+         EAwA==
+X-Gm-Message-State: AGi0PuY2Hm3q0DzBzWY1NCiIkna7SpF1pZ2A0ysJfOjeR/1HpOPPdYrs
+        bu5OaUUi+sadIV7NbxLX+dBr0/KnNZ4=
+X-Google-Smtp-Source: APiQypJCdNAwb1kOP3vYH3Df/92yjIoG2YCAIQhGV7XlAyX7GLcVkjbB1jVG0LvJh2DJL9zCr0i1Qw==
+X-Received: by 2002:a05:6512:1046:: with SMTP id c6mr2050367lfb.115.1586507753158;
+        Fri, 10 Apr 2020 01:35:53 -0700 (PDT)
+Received: from [10.68.32.192] (broadband-188-32-231-41.ip.moscow.rt.ru. [188.32.231.41])
+        by smtp.gmail.com with ESMTPSA id i20sm895855lfe.15.2020.04.10.01.35.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 01:35:52 -0700 (PDT)
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200331094054.24441-1-w@1wt.eu>
+ <20200331094054.24441-23-w@1wt.eu>
+From:   Denis Efremov <efremov@linux.com>
+Autocrypt: addr=efremov@linux.com; keydata=
+ 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
+Subject: Re: [PATCH 22/23] floppy: cleanup: do not iterate on current_fdc in
+ DMA grab/release functions
+Message-ID: <f5fb363f-8c2c-3aca-6b71-4a45544d067a@linux.com>
+Date:   Fri, 10 Apr 2020 11:35:51 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <0b718268-d330-dfc1-aca3-3dd3203363d7@cmss.chinamobile.com>
+In-Reply-To: <20200331094054.24441-23-w@1wt.eu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Acaxx2xRoOiUA8kGa6WeArQ4GquR37GMWjz+R8tYsrRc8V3TbFd
- zb6r/Y7pBEV2FDmqBkMr44apeniUobUFMZ6P+GZijdy/jr/lMV0UHDcimd6b13U+MrprqTs
- 2CwIQEOOE0up3JjjyQJ5du2K3BJJSlEOtix6LwxC4zucUbCmAUqor5gl5r1WSOH+PJ5ulY+
- zyATaqchFEO5P+Lqq0jMg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Bx+2OvcS+mY=:/BQwNB8CoMq0k1c4AyDBdx
- K88g9gV7QdLJCRSYI+ICsqTRtaYbXKpymBXQqkDTZWHxO2fmMgqXRwGDCGcdeea1olFH/MI1A
- G2zqj1l0gWlsO6Q/wn8q2bk3oTDv0uUebIdR9JHaAVelr7vH8ds/G3jhhfSYEAuWoI6rcZXYC
- vy5m5xzosfiaIoLiDvJSa35vcko5Zqvvcc/w5kGi2JVj9Z7kNVImLfu5ecD3KYXAVqAE+Sbxp
- 5TgPZEoq9b/vig7oRftlYf5eYIup6yW5CFxpezmw8wAAfkZmqvNPWu2pWaWQQB7QH13NdRzGA
- nk9iFU/cU6LT1PO9f6AxF7FIMmUPAVvER8x+tX9eIXjxLw+PeoTCQn1C5fWknqo3qwa5Xe/Pm
- IT5A+VLxGAkRLtP12dhlmERabc+MMQFVmqm6cONk8FZpZD1jG+3xM1DYDQpSwJFU8QDFpg/xT
- KbVDGsfEMImNnAB+GT5D1hTD3BrHkWIdJhvR9xMo3bpSbARX3LHlOUx14dBFc06PRbUk1Kj9n
- V47LhT+c8zILwGlI5CCnf0Zjajiaclq5SfvNavoscxnCPIGpZo4Q9vtvFLPcdA5KikAQTbkuN
- SPQK1tnQyTP6MwG+9ndf+2PS90BmkNAuUiGjNzFEN1V883Y57fE/qgk9h151E5/lnvxeQ41XU
- 0sPFUkqlhpiAMiJLEZvtaqKrPrmp18clVh0GNdXYz7w8LuFsfIrooz0gqbc9UaLrIAUjOoiSb
- 5fxL5oBwhsKgCpZzb2mQpAZkDtGZiBL0NRz9jQE4/gC9UEKPMwAcPtVX8MgUj9lVfbbHHJWeu
- E9ufWLVR+CUjtdMBQ39O/9rbVUXvsSPdn7tYF+drMj2FUz7YhgKwTcWgK+Tm2ln/f/5YzZ8wx
- EZIiESoOMUDfLz5JwSofBK4Hvcx4o+9zZ8o4XxCybE4atTFq34lbDGfqolYwaQx6vq8KWidVk
- RiarxI5U9C1ncoaF7nb2KCAXzVYflL+HHSCwH7L36r+YvmjPIpJid9rrWE6i5mIcQnU/COGjf
- RFHwl8PlcVWhyd4KD9mSMtJXzMzEuuzWaGGOabKCscYDxLgL9SK7Y3MqmJNCefoLgAySDEC/B
- glip4JQX6RfLENu35ISNwSA0xxJ4RZ4P5r/K4XZZHlL10kxKPYiJmrHzQ8fiU4kXvjHzJu3P+
- ZG4cxcw9ZdeyIWudv9+CqQCdf4wFod1YH0eUsa63kW7j0Q73whXCevCIhjpv1eMN+N6qh82ZH
- o0WWx10uHfuNAnkDR
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hardware experiments show that the negative return value is not just "-E=
-PROBE_DEFER".
+I see a couple of similar cycles in do_floppy_init:
 
-How much will this specific error code influence our understanding
-of the discussed software situation?
+for (i = 0; i < N_FDC; i++) {
+        current_fdc = i;
+        memset(&fdc_state[current_fdc], 0, sizeof(*fdc_state));
+        fdc_state[current_fdc].dtr = -1;
+        fdc_state[current_fdc].dor = 0x4;
+...
+}
 
+for (i = 0; i < N_FDC; i++) {
+        current_fdc = i;
+        fdc_state[current_fdc].driver_version = FD_DRIVER_VERSION;
+...
+}
 
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D udc_controller->ir=
-q ? : -ENODEV;
->> Will it be clearer to specify values for all cases in such a conditiona=
-l operator
->> (instead of leaving one case empty)?
->
-> I don't know what you mean of "instead of leaving one case empty".
-
-I suggest to reconsider also the proposed specification =E2=80=9C=E2=80=A6=
- ? : =E2=80=A6=E2=80=9D.
-
-Regards,
-Markus
+On 3/31/20 12:40 PM, Willy Tarreau wrote:
+> Both floppy_grab_irq_and_dma() and floppy_release_irq_and_dma() used to
+> iterate on the global variable while setting up or freeing resources.
+> Now that they exclusively rely on functions which take the fdc as an
+> argument, so let's not touch the global one anymore.
+> 
+> Signed-off-by: Willy Tarreau <w@1wt.eu>
+> ---
+>  drivers/block/floppy.c | 39 ++++++++++++++++++++-------------------
+>  1 file changed, 20 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+> index 8850baa3372a..77bb9a5fcd33 100644
+> --- a/drivers/block/floppy.c
+> +++ b/drivers/block/floppy.c
+> @@ -4854,6 +4854,8 @@ static void floppy_release_regions(int fdc)
+>  
+>  static int floppy_grab_irq_and_dma(void)
+>  {
+> +	int fdc;
+> +
+>  	if (atomic_inc_return(&usage_count) > 1)
+>  		return 0;
+>  
+> @@ -4881,24 +4883,24 @@ static int floppy_grab_irq_and_dma(void)
+>  		}
+>  	}
+>  
+> -	for (current_fdc = 0; current_fdc < N_FDC; current_fdc++) {
+> -		if (fdc_state[current_fdc].address != -1) {
+> -			if (floppy_request_regions(current_fdc))
+> +	for (fdc = 0; fdc < N_FDC; fdc++) {
+> +		if (fdc_state[fdc].address != -1) {
+> +			if (floppy_request_regions(fdc))
+>  				goto cleanup;
+>  		}
+>  	}
+> -	for (current_fdc = 0; current_fdc < N_FDC; current_fdc++) {
+> -		if (fdc_state[current_fdc].address != -1) {
+> -			reset_fdc_info(current_fdc, 1);
+> -			fdc_outb(fdc_state[current_fdc].dor, current_fdc, FD_DOR);
+> +	for (fdc = 0; fdc < N_FDC; fdc++) {
+> +		if (fdc_state[fdc].address != -1) {
+> +			reset_fdc_info(fdc, 1);
+> +			fdc_outb(fdc_state[fdc].dor, fdc, FD_DOR);
+>  		}
+>  	}
+> -	current_fdc = 0;
+> +
+>  	set_dor(0, ~0, 8);	/* avoid immediate interrupt */
+>  
+> -	for (current_fdc = 0; current_fdc < N_FDC; current_fdc++)
+> -		if (fdc_state[current_fdc].address != -1)
+> -			fdc_outb(fdc_state[current_fdc].dor, current_fdc, FD_DOR);
+> +	for (fdc = 0; fdc < N_FDC; fdc++)
+> +		if (fdc_state[fdc].address != -1)
+> +			fdc_outb(fdc_state[fdc].dor, fdc, FD_DOR);
+>  	/*
+>  	 * The driver will try and free resources and relies on us
+>  	 * to know if they were allocated or not.
+> @@ -4909,15 +4911,16 @@ static int floppy_grab_irq_and_dma(void)
+>  cleanup:
+>  	fd_free_irq();
+>  	fd_free_dma();
+> -	while (--current_fdc >= 0)
+> -		floppy_release_regions(current_fdc);
+> +	while (--fdc >= 0)
+> +		floppy_release_regions(fdc);
+> +	current_fdc = 0;
+>  	atomic_dec(&usage_count);
+>  	return -1;
+>  }
+>  
+>  static void floppy_release_irq_and_dma(void)
+>  {
+> -	int old_fdc;
+> +	int fdc;
+>  #ifndef __sparc__
+>  	int drive;
+>  #endif
+> @@ -4958,11 +4961,9 @@ static void floppy_release_irq_and_dma(void)
+>  		pr_info("auxiliary floppy timer still active\n");
+>  	if (work_pending(&floppy_work))
+>  		pr_info("work still pending\n");
+> -	old_fdc = current_fdc;
+> -	for (current_fdc = 0; current_fdc < N_FDC; current_fdc++)
+> -		if (fdc_state[current_fdc].address != -1)
+> -			floppy_release_regions(current_fdc);
+> -	current_fdc = old_fdc;
+> +	for (fdc = 0; fdc < N_FDC; fdc++)
+> +		if (fdc_state[fdc].address != -1)
+> +			floppy_release_regions(fdc);
+>  }
+>  
+>  #ifdef MODULE
+> 
