@@ -2,135 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A731A4809
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 17:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034721A4832
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 18:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbgDJP7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 11:59:30 -0400
-Received: from mout.gmx.net ([212.227.17.22]:45641 "EHLO mout.gmx.net"
+        id S1726652AbgDJQDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 12:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgDJP7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 11:59:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586534365;
-        bh=1F93Ep3etTDE7a506QogajIZjQjOu07qM6i9ZlQqgik=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=AI8iO1seAAXv7gLlfOonQDJadbyZEEVwZ/KxcDsROwOqKIZKapwUomeZRtm71s62o
-         YoGGCu84CYhUfWD9md3mIdDv8wnqs8o/XVj44eS1JfKli9ErJ9t96/kg43auPw2iuY
-         HPg6VSGRh/GPZFxYAcppjn5jUuaDL1287kxVmlS0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ubuntu ([83.52.229.196]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MGQj7-1jUvkP48HV-00GoHi; Fri, 10
- Apr 2020 17:59:25 +0200
-Date:   Fri, 10 Apr 2020 17:59:11 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Malcolm Priestley <tvboxspy@gmail.com>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] staging: vt6656: Refactor the assignment of the
- phy->signal variable
-Message-ID: <20200410155911.GA3426@ubuntu>
-References: <20200410112834.17490-1-oscar.carter@gmx.com>
- <20200410112834.17490-2-oscar.carter@gmx.com>
- <986e8e5e-245a-cc70-2c6f-8ac3a4a485c9@gmail.com>
+        id S1726145AbgDJQDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 12:03:50 -0400
+Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5EAC20CC7;
+        Fri, 10 Apr 2020 16:03:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586534629;
+        bh=BdB60nUXn9u2TACtpWcd00QkWUVoCM7XwHfa5QxDaDA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mmOI4iypZSjrrhzKzzTiGYLWosQ+A4Gc6krVGIC3hfqWktkg1y0f1+Wrq9HRJBo4n
+         MQut9uhi4AmU6jr8Md9jtplSmempAazKmG8Ll+TT/SykqrNHuupCKDmddFwPcxFOnE
+         KFGuzOM8ZdcEVzUP9P1dGDONSWUQDmAKC+Xjonrg=
+Received: by mail-il1-f172.google.com with SMTP id i75so2194134ild.13;
+        Fri, 10 Apr 2020 09:03:49 -0700 (PDT)
+X-Gm-Message-State: AGi0PubLLCxhKfFH8drQQamUEIpU5M7OOaGKFTE5+0USaHBkXaKMJSI8
+        AmmGjJ0SYTTFd5forIkD7fHQHyPLQhT1rrsS7xU=
+X-Google-Smtp-Source: APiQypLcQDYp4amLwYnTaARjQHhwHmsDFGf5tAAH/ESw6u2ocPuIw6EkPhdNATpjcr9xniuYFEEZneq3fS/9UVzYoLo=
+X-Received: by 2002:a92:443:: with SMTP id 64mr238786ile.258.1586534629266;
+ Fri, 10 Apr 2020 09:03:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <986e8e5e-245a-cc70-2c6f-8ac3a4a485c9@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Provags-ID: V03:K1:ou8M4Ssva0Szw+pYRlRW+QGxsgzYCNwOuEqt2DeZalYu9o6IK0t
- BbVvcNUZHNR0a31haR2XMfPU+3sL1v3raf0MQ0kPrWicL9JoyaKvZ75VOM47MI7QBvDJuY3
- XL+JjN58HJ6ujvnyMooID3Oz4t/AjtctiNuY6T2uRYlAVQqFhzBEqkKSWNnHYV/nporOhKP
- bZKbxFeLoqFk/i0cn6wKg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9VV6u/D4l7Y=:mO2wgneHoaRuHlHrH/uy+1
- BXUGpgMTrZi5hIfwjO+1wbqyJplB8rgr8dVLOHDGhUE++fluahrepCOUlSIpv7v9uJTaBaQTI
- EBNT6XLw3LNI/I2gq0vic4EMa1Ii/iGpwiTeFKrcZp+f+88K6nstfTTcFwY+cD40O3KQO4PGz
- kanEFarjWh1IQRRjQB54g0WGAOoqjlQ1JyDUQKQUt2KcUq9w/kMIquGFTxzorysuq+1/cwBmg
- V4ub/73/engaDboqcFSUuhZS1fYsn+BUYUlFyfDB6v/yHKFU25P/tlpTOTzUab07QLh9n644V
- +T5Qm9gJz0epZTfqJtLqqV+f2F6Apyb6QhUocKWTny3mx4b1jHKGHyF5z+SQ+i5SQsx1TXlhp
- Wzs2Vx/zk6oixG6KGea2Kk8M+Ffpkm70BhG6GkGo4CdYd6YXNI0XsonwMoLTYJbuf+PgNiJp0
- WVayK7U1GbKGKprUdTNVWxbRBfbo8gtzXeYQAUXv7VZmO26YZloKFRpw2bpAnPgvpeZ0rgiN6
- 7gFwNGUNripkYdjFrA2a1TORd9WJo/L8oL55i4OiupFIq5MEl1ET2H9o3wFUMQY/HerOevIRw
- YODlvCFLXqfotOzHB/wDh9Wha3ZVeoX6S7MsG5yAQHFqBNdSkux7IIn42byYKpn4mef0RFUVD
- RbNyGqqO5w4sYdM18YjXbVQlynmkaWqriQiyUTAuzh12FnNo+j01Gk5JCQelr4JcRH68TUi0L
- M716fjE3wc15HDjuYugwdbctHXdNx1yR+UTPpibrAh5/gpYKx7EED+TI0t6WPHr/CzaVGn5VR
- v2u9L1qt+m5qXC9CW3mdip+chDkyC4k+OdHMqghMuJEulF4lIpuxNpjWMPC6yZcPVJeXRC2zL
- dNIjV15NiDkTd7Li53Rb69fw+95I20N1iqhPu4Z0CzIbwsoDwgbOLBLgfkLSmFxjb+96wU9HS
- 1R91/Ab+hlnWOOmD5uKtH/7tZWf4ULWFHhpk8hTGXGH0CFNwlYsRM+wYzvbehnq0ilqkcJ4uY
- KABExsxbO42Ji1Pp2y2E0iyJ3ovas55qH6iXgJJJgLCqlkIxrmlebwvOcrYkfcT2QZR/Adyw7
- OvcNg9jTBgLFy5+3NZfqcvoQWTq73g7UDEBUElZG5U4aZSocaxa2geqxaooa6t3SWvs8ontD7
- WRQUtjx0CceirQXf9G4QxYbILlxQFpTDKxG5fWIcpVD70VRkvY0Aydz3B7azbUwPCT0FGOMBY
- N8buYtYIKv9QzqVbq
-Content-Transfer-Encoding: quoted-printable
+References: <20200409130434.6736-1-ardb@kernel.org> <20200409130434.6736-4-ardb@kernel.org>
+ <CAMzpN2gJWwVun1Kp6vGuza9LM5KpB=0EwsP8x8eOJQuDGh38Hg@mail.gmail.com>
+ <CAMzpN2jFbf8k99pWaTYRBmSB+iNAKYsufjEhqO6Vv0qxAcHyGA@mail.gmail.com>
+ <20200409210847.GA1312580@rani.riverdale.lan> <CAMj1kXFhtK=FRDKBE5OtenNEtpK=kVwyo+0nqJZ_K80RmtYxEg@mail.gmail.com>
+ <20200410151612.GA970420@rani.riverdale.lan>
+In-Reply-To: <20200410151612.GA970420@rani.riverdale.lan>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 10 Apr 2020 18:03:38 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGMNMdgjinYNgrN2wGRFG4rKE2YHo-=3s4Ofv2KPUMqKQ@mail.gmail.com>
+Message-ID: <CAMj1kXGMNMdgjinYNgrN2wGRFG4rKE2YHo-=3s4Ofv2KPUMqKQ@mail.gmail.com>
+Subject: Re: [PATCH 3/9] efi/x86: Move efi stub globals from .bss to .data
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Brian Gerst <brgerst@gmail.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@suse.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Gary Lin <glin@suse.com>, Jiri Slaby <jslaby@suse.cz>,
+        Sergey Shatunov <me@prok.pw>, Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 04:37:59PM +0100, Malcolm Priestley wrote:
+On Fri, 10 Apr 2020 at 17:16, Arvind Sankar <nivedita@alum.mit.edu> wrote:
 >
->
-> On 10/04/2020 12:28, Oscar Carter wrote:
-> > Create a constant array with the values of the "phy->signal" for every
-> > rate. Remove all "phy->signal" assignments inside the switch statement
-> > and replace these with a single reading from the new vnt_phy_signal
-> > array.
+> On Fri, Apr 10, 2020 at 10:20:42AM +0200, Ard Biesheuvel wrote:
+> > On Thu, 9 Apr 2020 at 23:08, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+> > >
+> > > On Thu, Apr 09, 2020 at 04:53:07PM -0400, Brian Gerst wrote:
+> > > > > Can we use the -fno-zero-initialized-in-bss compiler flag instead of
+> > > > > explicitly marking global variables?
+> > > >
+> > > > Scratch that.  Apparently it only works when a variable is explicitly
+> > > > initialized to zero.
+> > > >
+> > > > --
+> > > > Brian Gerst
+> > >
+> > > Right, there doesn't seem to be a compiler option to turn off the use of
+> > > .bss altogether.
 > >
-> > Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> > ---
-> >   drivers/staging/vt6656/baseband.c | 101 +++++++---------------------=
---
-> >   1 file changed, 21 insertions(+), 80 deletions(-)
-> >
-> > diff --git a/drivers/staging/vt6656/baseband.c b/drivers/staging/vt665=
-6/baseband.c
-> > index a19a563d8bcc..47f93bf6e07b 100644
-> > --- a/drivers/staging/vt6656/baseband.c
-> > +++ b/drivers/staging/vt6656/baseband.c
-> > @@ -115,6 +115,21 @@ static const u16 vnt_frame_time[MAX_RATE] =3D {
-> >   	10, 20, 55, 110, 24, 36, 48, 72, 96, 144, 192, 216
-> >   };
+> > Yeah. I'll try to come up with a way to consolidate this a bit across
+> > architectures (which is a bit easier now that all of the EFI stub C
+> > code lives in the same place). It is probably easiest to use a section
+> > renaming trick similar to the one I added for ARM (as Arvind suggested
+> > as well, IIRC), and get rid of the per-symbol annotations altogether.
 >
-> Actually you don't need the second values
-
-Great.
-> >
-> > +static const u8 vnt_phy_signal[][2] =3D {
-> > +	{0x00, 0x00},	/* RATE_1M  */
-> The driver would never attempt use preamble at this rate
-> so it's safe to include in with the next 3 rates
+> Does that work for 32-bit ARM, or does it need to be .data to tell the
+> compiler to avoid generating GOT references? If that's fine, we don't
+> actually need to rename sections -- linker script magic is enough. For
+> eg, the below pulls the EFI stub bss into .data for x86 without the need
+> for the annotations.
 >
-> > +	{0x01, 0x09},	/* RATE_2M  */
-> > +	{0x02, 0x0a},	/* RATE_5M  */
-> > +	{0x03, 0x0b},	/* RATE_11M */
-> just |=3D BIT(3) for preamble.
->
-Ok, I apply this OR operation.
+> diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
+> index 508cfa6828c5..e324819c95bc 100644
+> --- a/arch/x86/boot/compressed/vmlinux.lds.S
+> +++ b/arch/x86/boot/compressed/vmlinux.lds.S
+> @@ -52,6 +52,7 @@ SECTIONS
+>                 _data = . ;
+>                 *(.data)
+>                 *(.data.*)
+> +               drivers/firmware/efi/libstub/lib.a:(.bss .bss.*)
+>                 _edata = . ;
+>         }
+>         . = ALIGN(L1_CACHE_BYTES);
 
-> > +	{0x8b, 0x9b},	/* RATE_6M  */
-> > +	{0x8f, 0x9f},	/* RATE_9M  */
-> > +	{0x8a, 0x9a},	/* RATE_12M */
-> > +	{0x8e, 0x9e},	/* RATE_18M */
-> > +	{0x89, 0x99},	/* RATE_24M */
-> > +	{0x8d, 0x9d},	/* RATE_36M */
-> > +	{0x88, 0x98},	/* RATE_48M */
-> > +	{0x8c, 0x9c}	/* RATE_54M */
->
-> Again just |=3D BIT(4) for PK_TYPE_11A
->
-And this one.
+No, we can add this to ARM as well, and get rid of the
+__efistub_global annotations entirely.
 
-> Regards
->
-> Malcolm
-
-I will create a new version of this patch and I will resend it.
-
-Thanks,
-
-Oscar Carter
+We'll still need .data.efistub for the .data pieces, but that is a
+separate issue.
