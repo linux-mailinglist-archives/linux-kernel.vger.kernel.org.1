@@ -2,278 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1677D1A49E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 20:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3DA1A49EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 20:35:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726760AbgDJS3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 14:29:44 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:46018 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726725AbgDJS3n (ORCPT
+        id S1726663AbgDJSfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 14:35:23 -0400
+Received: from pandora.armlinux.org.uk ([78.32.30.218]:36854 "EHLO
+        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgDJSfX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 14:29:43 -0400
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 10 Apr 2020 11:29:40 -0700
-Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 10 Apr 2020 11:29:37 -0700
-Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
-        id 625632168E; Fri, 10 Apr 2020 23:59:36 +0530 (IST)
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        Balaji Prakash J <bjagadee@codeaurora.org>
-Subject: [PATCH 3/3] arm64: dts: ipq8074: enable USB support
-Date:   Fri, 10 Apr 2020 23:59:32 +0530
-Message-Id: <1586543372-13969-4-git-send-email-sivaprak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586543372-13969-1-git-send-email-sivaprak@codeaurora.org>
-References: <1586543372-13969-1-git-send-email-sivaprak@codeaurora.org>
+        Fri, 10 Apr 2020 14:35:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=iE3hzL/9X7rG7H3ZLH0Kx2JNDMI6UfSi0bHUIshctfk=; b=TKMLGyc44N6rFRxM8pK0FRxg9
+        E1N11nA7yKnQnQV9Wx7lJKK8uMbQ+ZzClB0zVKA2GUJuF4BE8VkPUs3DX6xPLwmchc/MFkFTAZo79
+        74Il9X8AheqK1S41djmmvwLmVLy8IV3E3euxtC6YfSVwIEXNIJMfWwAMWCZS187WgJH2vh2BVKPPq
+        5RJJ8reztG64yD59k5vz5+emm3sys/r+t7dr0SKNULKkUvpBICIBwoj3He4JQvjk4sD1BEM40SSBX
+        zkwqtkTYb4ekXAunYE5bN+kaolyIuPXAmsT4msjInHEqXw14VQtlnhQbrHU2xlVAgRkaIXVWn3B/S
+        7iJ0qG+Iw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48304)
+        by pandora.armlinux.org.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jMyU0-0002yv-1a; Fri, 10 Apr 2020 19:34:28 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jMyTs-0004Fo-Dw; Fri, 10 Apr 2020 19:34:20 +0100
+Date:   Fri, 10 Apr 2020 19:34:20 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Jian Cai <caij2003@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>, Peter.Smith@arm.com,
+        stefan@agner.ch, David Howells <dhowells@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        manojgupta@google.com,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        clang-built-linux@googlegroups.com, ilie.halip@gmail.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        samitolvanen@google.com,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        jiancai@google.com, Doug Anderson <armlinux@m.disordat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] ARM: do not assemble iwmmxt.S with LLVM toolchain
+Message-ID: <20200410183420.GE25745@shell.armlinux.org.uk>
+References: <20200409232728.231527-1-caij2003@gmail.com>
+ <20200410165948.GD448831@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200410165948.GD448831@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ8074 has two super speed usb ports, add phy and dwc3 nodes
-to enable them.
+On Fri, Apr 10, 2020 at 06:59:48PM +0200, Andrew Lunn wrote:
+> On Thu, Apr 09, 2020 at 04:27:26PM -0700, Jian Cai wrote:
+> > iwmmxt.S contains XScale instructions
+> 
+> Dumb question....
+> 
+> Are these Xscale instructions? My understanding is that they are an
+> instruction set of their own, implementing something similar to IA-32
+> MMX. 
+> 
+> Would it be more accurate to say CLANG does not support the iwmmxt
+> instruction set?
 
-Co-developed-by: Balaji Prakash J <bjagadee@codeaurora.org>
-Signed-off-by: Balaji Prakash J <bjagadee@codeaurora.org>
-Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq8074-hk01.dts |  24 +++++
- arch/arm64/boot/dts/qcom/ipq8074.dtsi     | 168 ++++++++++++++++++++++++++++++
- 2 files changed, 192 insertions(+)
+Yes, because the XScale core on its own (otherwise known as 80200)
+doesn't support iWMMXT.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-index 70be3f9..dd27d84 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq8074-hk01.dts
-@@ -26,6 +26,22 @@
- 	};
- 
- 	soc {
-+		ssphy@58000 {
-+			status = "ok";
-+		};
-+
-+		qusb@59000 {
-+			status = "ok";
-+		};
-+
-+		ssphy@78000 {
-+			status = "ok";
-+		};
-+
-+		qusb@79000 {
-+			status = "ok";
-+		};
-+
- 		serial@78b3000 {
- 			status = "ok";
- 		};
-@@ -65,6 +81,14 @@
- 			};
- 		};
- 
-+		usb3@8A00000 {
-+			status = "ok";
-+		};
-+
-+		usb3@8C00000 {
-+			status = "ok";
-+		};
-+
- 		phy@86000 {
- 			status = "ok";
- 		};
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 2b31823..47bb9ad 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -16,6 +16,92 @@
- 		ranges = <0 0 0 0xffffffff>;
- 		compatible = "simple-bus";
- 
-+		ssphy_1: ssphy@58000 {
-+			compatible = "qcom,ipq8074-qmp-usb3-phy";
-+			reg = <0x00058000 0x1c4>;
-+			status = "disabled";
-+			#clock-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_USB1_AUX_CLK>,
-+				 <&gcc GCC_USB1_PHY_CFG_AHB_CLK>,
-+				 <&xo>;
-+			clock-names = "aux", "cfg_ahb", "ref";
-+
-+			resets =  <&gcc GCC_USB1_PHY_BCR>,
-+				 <&gcc GCC_USB3PHY_1_PHY_BCR>;
-+			reset-names = "phy","common";
-+
-+			usb1_ssphy: lane@58200 {
-+				reg = <0x00058200 0x130>,	/* Tx */
-+				      <0x00058400 0x200>,	/* Rx */
-+				      <0x00058800 0x1F8>,	/* PCS  */
-+				      <0x00058600 0x044>;	/* PCS misc */
-+				#phy-cells = <0>;
-+				clocks = <&gcc GCC_USB1_PIPE_CLK>;
-+				clock-names = "pipe0";
-+				clock-output-names = "gcc_usb1_pipe_clk_src";
-+			};
-+		};
-+
-+		qusb_phy_1: qusb@59000 {
-+		    compatible = "qcom,msm8996-qusb2-phy";
-+		    reg = <0x00059000 0x180>;
-+		    status = "disabled";
-+		    #phy-cells = <0>;
-+
-+		    clocks = <&gcc GCC_USB1_PHY_CFG_AHB_CLK>,
-+			     <&xo>;
-+		    clock-names = "cfg_ahb", "ref";
-+
-+		    resets = <&gcc GCC_QUSB2_1_PHY_BCR>;
-+		};
-+
-+		ssphy_0: ssphy@78000 {
-+			compatible = "qcom,ipq8074-qmp-usb3-phy";
-+			reg = <0x00078000 0x1c4>;
-+			status = "disabled";
-+			#clock-cells = <1>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_USB0_AUX_CLK>,
-+				 <&gcc GCC_USB0_PHY_CFG_AHB_CLK>,
-+				 <&xo>;
-+			clock-names = "aux", "cfg_ahb", "ref";
-+
-+			resets =  <&gcc GCC_USB0_PHY_BCR>,
-+				 <&gcc GCC_USB3PHY_0_PHY_BCR>;
-+			reset-names = "phy","common";
-+
-+			usb0_ssphy: lane@78200 {
-+				reg = <0x00078200 0x130>,	/* Tx */
-+				      <0x00078400 0x200>,	/* Rx */
-+				      <0x00078800 0x1F8>,	/* PCS  */
-+				      <0x00078600 0x044>;	/* PCS misc */
-+				#phy-cells = <0>;
-+				clocks = <&gcc GCC_USB0_PIPE_CLK>;
-+				clock-names = "pipe0";
-+				clock-output-names = "gcc_usb0_pipe_clk_src";
-+			};
-+		};
-+
-+		qusb_phy_0: qusb@79000 {
-+		    compatible = "qcom,msm8996-qusb2-phy";
-+		    reg = <0x00079000 0x180>;
-+		    status = "disabled";
-+		    #phy-cells = <0>;
-+
-+		    clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>,
-+			     <&xo>;
-+		    clock-names = "cfg_ahb", "ref";
-+
-+		    resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
-+		};
-+
- 		tlmm: pinctrl@1000000 {
- 			compatible = "qcom,ipq8074-pinctrl";
- 			reg = <0x1000000 0x300000>;
-@@ -272,6 +358,88 @@
- 			status = "disabled";
- 		};
- 
-+		usb3_0: usb3@8A00000 {
-+			compatible = "qcom,dwc3";
-+			reg = <0x08af8800 0x400>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_SYS_NOC_USB0_AXI_CLK>,
-+				<&gcc GCC_USB0_MASTER_CLK>,
-+				<&gcc GCC_USB0_SLEEP_CLK>,
-+				<&gcc GCC_USB0_MOCK_UTMI_CLK>;
-+			clock-names = "sys_noc_axi",
-+				"master",
-+				"sleep",
-+				"mock_utmi";
-+
-+			assigned-clocks = <&gcc GCC_SYS_NOC_USB0_AXI_CLK>,
-+					  <&gcc GCC_USB0_MASTER_CLK>,
-+					  <&gcc GCC_USB0_MOCK_UTMI_CLK>;
-+			assigned-clock-rates = <133330000>,
-+					       <133330000>,
-+					       <19200000>;
-+
-+			resets = <&gcc GCC_USB0_BCR>;
-+			status = "disabled";
-+
-+			dwc_0: dwc3@8A00000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x8A00000 0xcd00>;
-+				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-+				phys = <&qusb_phy_0>, <&usb0_ssphy>;
-+				phy-names = "usb2-phy", "usb3-phy";
-+				tx-fifo-resize;
-+				snps,is-utmi-l1-suspend;
-+				snps,hird-threshold = /bits/ 8 <0x0>;
-+				snps,dis_u2_susphy_quirk;
-+				snps,dis_u3_susphy_quirk;
-+				dr_mode = "host";
-+			};
-+		};
-+
-+		usb3_1: usb3@8C00000 {
-+			compatible = "qcom,dwc3";
-+			reg = <0x08cf8800 0x400>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges;
-+
-+			clocks = <&gcc GCC_SYS_NOC_USB1_AXI_CLK>,
-+				<&gcc GCC_USB1_MASTER_CLK>,
-+				<&gcc GCC_USB1_SLEEP_CLK>,
-+				<&gcc GCC_USB1_MOCK_UTMI_CLK>;
-+			clock-names = "sys_noc_axi",
-+				"master",
-+				"sleep",
-+				"mock_utmi";
-+
-+			assigned-clocks = <&gcc GCC_SYS_NOC_USB1_AXI_CLK>,
-+					  <&gcc GCC_USB1_MASTER_CLK>,
-+					  <&gcc GCC_USB1_MOCK_UTMI_CLK>;
-+			assigned-clock-rates = <133330000>,
-+					       <133330000>,
-+					       <19200000>;
-+
-+			resets = <&gcc GCC_USB1_BCR>;
-+			status = "disabled";
-+
-+			dwc_1: dwc3@8C00000 {
-+				compatible = "snps,dwc3";
-+				reg = <0x8C00000 0xcd00>;
-+				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
-+				phys = <&qusb_phy_1>, <&usb1_ssphy>;
-+				phy-names = "usb2-phy", "usb3-phy";
-+				tx-fifo-resize;
-+				snps,is-utmi-l1-suspend;
-+				snps,hird-threshold = /bits/ 8 <0x0>;
-+				snps,dis_u2_susphy_quirk;
-+				snps,dis_u3_susphy_quirk;
-+				dr_mode = "host";
-+			};
-+		};
-+
- 		pcie_phy0: phy@86000 {
- 			compatible = "qcom,ipq8074-qmp-pcie-phy";
- 			reg = <0x86000 0x1000>;
+It's worth pointing out that the iWMMXT instruction set uses the
+co-processor #1 instruction space as defined by the ARMv5 ARM ARM,
+which is also the FPA (floating point accelerator) instruction
+space - which is the FP instruction set prior to VFP.
+
+The LDFP and similar instructions that binutils decodes the opcodes
+as are FPA instructions, and the LDC2 instructions are their "generic
+co-processor" versions where there's no FPA instruction that matches
+the op-code.
+
+I'll also point out that the reason the iWMMXT code has never been
+ported to Thumb2 is because there are no equivalents for the
+co-processor instructions in the Thumb2 instruction set defined in
+ARMv5.  Hence why the file has a .arm.  So, the fact the file hasn't
+changed for a long time and hasn't been updated with "improvements"
+such as Thumb2 kernels is because that's completely irrelevent to
+the ISA.
+
+It is an example of code that has become stable and mature, and
+requires no maintanence with GNU toolchains.
+
 -- 
-2.7.4
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTC broadband for 0.8mile line in suburbia: sync at 10.2Mbps down 587kbps up
