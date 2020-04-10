@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E4E1A4ACA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302BF1A4AD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgDJTqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:46:32 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36381 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgDJTqc (ORCPT
+        id S1726692AbgDJTsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:48:52 -0400
+Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:49888 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726177AbgDJTsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:46:32 -0400
-Received: by mail-qt1-f195.google.com with SMTP id w29so1922595qtv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 12:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=F5y8G2ip4xuhyU3WnBDbQ1uPS5AxvvCzzzUjKWHG9gc=;
-        b=RdcC29kc5rL57CBoaT4QFEsJaBb9aP5kNW/84IgWgru4NTv2z1oN/vpUwgEn4E27Hd
-         IYKtm19F7wu2McF10fcwc0YtUcVhxSrSmIJxfszq5+Dxo77bHgdGhXIo6zWNs01RnWTw
-         xQA7zR5uP40nHyp6EeefSUtcERNO9FJ4VmVvwKwXFgvVr/v3xmu/cDlZtydiTZG4gNXD
-         tdVa1z8SU1h5RHXegOFlFfqf6VMfyU7cJItiCoO7k22wx05eQDaXniz3iL4N3X5S9bEB
-         dyadyCxdxxdQYR/E1lVVjFuy2zXdMGnegb9s/MqpuYcqxFAdn8NDfJSD/YbN73foU7Sg
-         ROYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=F5y8G2ip4xuhyU3WnBDbQ1uPS5AxvvCzzzUjKWHG9gc=;
-        b=NoIg6GUmZ7alU5YKwqegohgKG8lvhGVypOVphU2YlW92/s+b94c1Am6KJJl3Xb6VcL
-         zfus3bCyyHLSUjrV4Xz2KSdZocBOSNstKDg/s4qNngajk0CaEwClkXTxMryz8O7VrY3J
-         khiB0cA/CHeAwXi11YYBVbEpqrZl8Af6cqgpjCceb55UFA3OXUBu7NS6VvQfM5S1w1bC
-         ngVas3KACVXJRNFAYiM6BZq2LIgeZAnx0nKWvZCRJup8PDL80g0OmPbq+TaMQJOPpwxO
-         bRKCyaYqCK9CPdCIzrjh5snSqc4j5b+S4+VrcBB4DwgRUy1pGyejZoe1A+l0Gdzr+S+9
-         +GOw==
-X-Gm-Message-State: AGi0PuZ2lgC+Wo+cSFsjtlHJDE2lMZaoZUN9qTQAzkE2VVBtnU6utk2c
-        Zuh8MYydio4reN84KjNnharGgg==
-X-Google-Smtp-Source: APiQypLzUx9NLNu8LTprK3q7/R9+mSDTk92NE6bqb0JzWoLhJXFKnE4hoN4DQl4jVYoZ8afqSwfZfw==
-X-Received: by 2002:aed:370a:: with SMTP id i10mr840704qtb.114.1586547991375;
-        Fri, 10 Apr 2020 12:46:31 -0700 (PDT)
-Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id d23sm2258415qtj.9.2020.04.10.12.46.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 Apr 2020 12:46:30 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
-From:   Qian Cai <cai@lca.pw>
-In-Reply-To: <20200410102609.245f93639ece2667c3f70e5c@linux-foundation.org>
-Date:   Fri, 10 Apr 2020 15:46:29 -0400
-Cc:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9846F450-528E-4690-9A34-9EF4FA151B7A@lca.pw>
-References: <CAHk-=wjfngA7nHAsie7bW_JmKBhUyV9oV7zmDbZuchkJK3sR1w@mail.gmail.com>
- <AFD0DADD-0558-463F-B219-5F098E6C2EDF@lca.pw>
- <CAHk-=wgFn4rHZM8ttPWvdSzV3pL1nS3EDcAh+83OObObkot4-g@mail.gmail.com>
- <9C21961E-24D3-4C97-A5AB-B70451E4F952@lca.pw>
- <76e8bbed-21d1-22e1-4148-5a5766652c0d@I-love.SAKURA.ne.jp>
- <22DAFAC7-9F39-4042-BC79-B27963A13E3D@lca.pw>
- <20200410102609.245f93639ece2667c3f70e5c@linux-foundation.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Fri, 10 Apr 2020 15:48:52 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BD81B2C8B;
+        Fri, 10 Apr 2020 19:48:51 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2110:2198:2199:2393:2559:2562:2689:2692:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3870:3871:3872:3873:3874:4250:4321:4605:5007:7903:10004:10400:10848:11232:11658:11914:12050:12297:12663:12740:12895:13069:13161:13229:13311:13357:13439:13894:14096:14097:14181:14659:14721:21080:21212:21324:21611:21627:21660:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: wind68_130abdd8b8d4c
+X-Filterd-Recvd-Size: 1972
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf18.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 10 Apr 2020 19:48:50 +0000 (UTC)
+Message-ID: <c9fd4bc75812fed4799c2fb87b452b809a7e9a7a.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
+ message
+From:   Joe Perches <joe@perches.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        apw@canonical.com, Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Date:   Fri, 10 Apr 2020 12:46:49 -0700
+In-Reply-To: <6e52383e-100d-b016-32c2-6fb54938b6fe@wanadoo.fr>
+References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
+         <8617a6b94c0644bce1fd4ca77309d67a612e6300.camel@perches.com>
+         <6e52383e-100d-b016-32c2-6fb54938b6fe@wanadoo.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 2020-04-10 at 19:35 +0200, Christophe JAILLET wrote:
+> Le 08/04/2020 à 04:14, Joe Perches a écrit :
+> > This works rather better:
+> > Perhaps you could test?
+[]
+> I'm looking at some modification done in the last month that could have 
+> been spotted by the above script.
+> 
+>      ./scripts/checkpatch.pl -f drivers/usb/phy/phy-jz4770.c
+> 
+> correctly spots the 3 first cases, but the 3 last (line 202, 210 and 
+> 217) are missed.
+> I don't understand why.
 
+It has to do with checkpatch's single statement parsing.
 
-> On Apr 10, 2020, at 1:26 PM, Andrew Morton <akpm@linux-foundation.org> =
-wrote:
->=20
-> On Fri, 10 Apr 2020 10:26:23 -0400 Qian Cai <cai@lca.pw> wrote:
->=20
->> I don't set panic_on_warn. I'll deal with warnings afterwards.
->=20
-> I'm not understanding why sysbot sets panic_on_warn.  This decision
-> will needlessly turn many kernel errors into wont-boot situations and
-> will block further testing?
+This case:
 
-I can feel that it is very reasonable to set panic_on_warn for the fully
-automatic systems because once those warnings happen, the rest of
-things can no longer to be trusted, so the goal to kill the first enemy
-on sight, and then deal the next one.
+	if (foo)
+		dev_warn(...);
 
-It could be a good idea for some trees more stable like the mainline,
-but for linux-next, I could only dream of set it one day.=
+is parsed as a single statement but
+
+	if (foo) {
+		dev_warn(...);
+	};
+
+is parsed as multiple statements so for the
+second case
+
+		dev_warn(...);
+
+is analyzed as a separate statement.
+
+The regex match for this missing newline test expects
+that each printk is a separate statement so the first
+case doesn't match.
+
+Clearly the regex can be improved here.
+
+cheers, Joe
+
