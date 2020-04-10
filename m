@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 578841A4586
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415CE1A458A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:15:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbgDJLPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 07:15:03 -0400
-Received: from smtp.domeneshop.no ([194.63.252.55]:34741 "EHLO
-        smtp.domeneshop.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgDJLPC (ORCPT
+        id S1726657AbgDJLPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 07:15:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54390 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgDJLPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 07:15:02 -0400
-Received: from [2a02:fe0:c700:2:781f:1a82:338:d2b7] (port=49454)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Sami_Lands_Media@samilands.eu>)
-        id 1jMrcj-0001ys-4O
-        for linux-kernel@vger.kernel.org; Fri, 10 Apr 2020 13:15:01 +0200
-To:     linux-kernel@vger.kernel.org
-From:   Sami Lands Media <Sami_Lands_Media@samilands.eu>
-Subject: Fair Pay: Some afterthoughts on Ubuntu
-Message-ID: <bd5def08-4194-5c98-bf0e-e2966bc556bc@samilands.eu>
-Date:   Fri, 10 Apr 2020 13:14:42 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 10 Apr 2020 07:15:31 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jMrcd-0004L1-Hu; Fri, 10 Apr 2020 13:14:55 +0200
+Received: by nanos.tec.linutronix.de (Postfix, from userid 1000)
+        id 968FF100C1D; Fri, 10 Apr 2020 13:14:54 +0200 (CEST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     x86@kernel.org, "Kenneth R . Crudup" <kenny@panix.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] x86: KVM: VMX: Add basic split-lock #AC handling
+In-Reply-To: <b3f2a8d0-fa73-709e-8942-c1597184889f@redhat.com>
+References: <20200402124205.334622628@linutronix.de> <20200402155554.27705-1-sean.j.christopherson@intel.com> <b3f2a8d0-fa73-709e-8942-c1597184889f@redhat.com>
+Date:   Fri, 10 Apr 2020 13:14:54 +0200
+Message-ID: <875ze7pp75.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ubuntu Karmic Koala was a very influental release. It seemed Linux was 
-going to happen on the desktop. But with incremental releases, it seemed 
-politics went wrong here aswell. Reminiscent of Amiga.
+Paolo Bonzini <pbonzini@redhat.com> writes:
+> On 02/04/20 17:55, Sean Christopherson wrote:
+>> First three patches from Xiaoyao's series to add split-lock #AC support
+>> in KVM.
+>> 
+>> Xiaoyao Li (3):
+>>   KVM: x86: Emulate split-lock access as a write in emulator
+>>   x86/split_lock: Refactor and export handle_user_split_lock() for KVM
+>>   KVM: VMX: Extend VMX's #AC interceptor to handle split lock #AC in
+>>     guest
+>
+> Sorry I was out of the loop on this (I'm working part time and it's a
+> mess).  Sean, can you send the patches as a top-level message?  I'll
+> queue them and get them to Linus over the weekend.
 
-Mir, not Mir.
-Loading scripts, that obscured things, such as kernel compilation.
-Linux Audio generally suits more a tracker idea, rather than "pro" 
-sequencers, and from the things we see on KvR, that is a good way to go. 
-A compact fileformat, including the pop DSP, is really better. And many 
-were much more famous here, than any KvR artist (who?).
+I have a reworked version. I'll post it after lunch.
 
-So really things just needs tightening up, and intergration with digital 
-euro, or similar, and a good related Linux distro may finally conquer 
-the desktop. As Apple also have used BSD. And Apple & Pear cider, being 
-mesopotamian influence viking fuel to support.
+Thanks,
 
-And the satanic element seems the worst. Mesopotamian gods are out 
-though the drinking habits still are in.
-
-As a thought experiment I constructed a pseudoidol for "satan", "Xin". 
-That states just this, and has properties of an optimal linux distribution.
-
-For those who like that side of things. Satan will never be right 
-ofcourse, so I am hoping for something better in my research.
-
-Serene Greetings.
-Ywe.
-The Fair Pay Initiative.
-youtube.com/channel/UCR3gmLVjHS5A702wo4bol_Q
-
-
-
+        tglx
