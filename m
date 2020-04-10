@@ -2,108 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8881E1A4B7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 23:05:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBB01A4B89
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 23:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726678AbgDJVAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 17:00:13 -0400
-Received: from mga14.intel.com ([192.55.52.115]:62407 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726626AbgDJVAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 17:00:13 -0400
-IronPort-SDR: /6Jpw9AjGqv0HfoXe12urdgNlo3fNMB+cC6dJbUyuYgpQf4Y4SAlFuKlLhITyKAzABTCGGcrgP
- C1oCBkrvuJJQ==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2020 14:00:12 -0700
-IronPort-SDR: hw8vPaWSQRseTrREmDo4wEHF8666mtcHFEvvy/V5KhBxJx+IhmwkOEeDDxYKUMPmn9738D0XY4
- XhMcrt1ZGmBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,368,1580803200"; 
-   d="scan'208";a="331278002"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001.jf.intel.com with ESMTP; 10 Apr 2020 14:00:12 -0700
-Date:   Fri, 10 Apr 2020 14:06:04 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Auger Eric <eric.auger@redhat.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Yi L <yi.l.liu@linux.intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH v11 05/10] iommu/vt-d: Add bind guest PASID support
-Message-ID: <20200410140604.403cb5b2@jacob-builder>
-In-Reply-To: <ab57b85b-235f-dc80-1c25-9b3d42dc5f4e@redhat.com>
-References: <1585939334-21396-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1585939334-21396-6-git-send-email-jacob.jun.pan@linux.intel.com>
-        <ab57b85b-235f-dc80-1c25-9b3d42dc5f4e@redhat.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        id S1726626AbgDJVYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 17:24:32 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:38090 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgDJVYb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 17:24:31 -0400
+Received: by mail-pf1-f195.google.com with SMTP id c21so1543967pfo.5
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 14:24:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jdcox-net.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6euz7U5YmKmQz+Yak4JttZC+1uZLCYust3fRq/4fkpg=;
+        b=SX2J+TtvzD270OPTYyuhQ2jU2CbOtdPyRV5PGnOSRxdTBYQtdlUuDOkrYm5V7Y2JZd
+         EIjHTgxJvBvuiVikzjw9i0yjZetMJTTQfuU9lCVFwTTjGpBuBYW83pgVWtdMIelyRlJK
+         jc8cqoKYSuuqFsLIQp39Ge688T8MYg9+YNdicnd/YMmZa+Diwm7+9NTO4nIVnmaiC5FZ
+         mDoiMrHo+fQcAoiXR6MNHgJCSYQyQIzRzPaUN7Osh6I5phEDnSqVhQKqL4+JcVY0uJQj
+         UY2i1Fz5mhXCkpGkIxBdHrflV+dfHPIK2jwarn/uKvTmrv6KTZ2OBkD/nr96dlWJ6kVh
+         cohQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6euz7U5YmKmQz+Yak4JttZC+1uZLCYust3fRq/4fkpg=;
+        b=pSHEyOR3lKO5U9heEU8ANi+0JkpNU/DlJ0I5G2PtqD4xc9+C3Nppnrjg2DDVQxwE5g
+         LIFLqRPpgH0RT3X7XvUgo9H3SbYNAM07Wcr0Ek7Bq+xhDpeOq40U4tZZ8iKPfNnLS/nK
+         xFSCeofRxOncGrdDEsFyCflkTzPNBzWxnkx5romE78swu9HrPqRGJk1ZYT9nVgd08ecG
+         wXKu9/PDDbe9Iqt0ei566fHi0uYFah1LUhi2xpOCTwy7o9JicOJxsKpe/xJ1FpFGxrrQ
+         MsYcdKZ2njVyG1P+Sv/kCX9emU5QjBBguyA32EbNHGIUxwP6i6pmAiNU1fdNqeVdn5JE
+         lWeA==
+X-Gm-Message-State: AGi0PuZ2Ca59kzDcylavkfVBOOVnitvFtdlgn40wYgGZ0cfv2Jzcawsh
+        JVbdRwLhudiUamrt7fpN0uduN3Gk4U4N9g==
+X-Google-Smtp-Source: APiQypLZyOFacadxGHhWqNzCFh/+JR8Ig7PHf8QWbtHrovZ7A84jUsb1d5U1qKmvuXYyvQa9t9sE2A==
+X-Received: by 2002:a63:5050:: with SMTP id q16mr6191693pgl.118.1586553871316;
+        Fri, 10 Apr 2020 14:24:31 -0700 (PDT)
+Received: from jonathan-desk.jdc.local ([2605:e000:100d:4c16:feaa:14ff:fe96:2161])
+        by smtp.gmail.com with ESMTPSA id y123sm2512075pfb.13.2020.04.10.14.24.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 14:24:30 -0700 (PDT)
+From:   Jonathan Cox <jonathan@jdcox.net>
+To:     gregkh@suse.de
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cox <jonathan@jdcox.net>
+Subject: [PATCH] USB: Add USB_QUIRK_DELAY_CTRL_MSG and USB_QUIRK_DELAY_INIT for Corsair K70 RGB RAPIDFIRE
+Date:   Fri, 10 Apr 2020 14:24:27 -0700
+Message-Id: <20200410212427.2886-1-jonathan@jdcox.net>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+The Corsair K70 RGB RAPIDFIRE needs the USB_QUIRK_DELAY_INIT and 
+USB_QUIRK_DELAY_CTRL_MSG to function or it will randomly not 
+respond on boot, just like other Corsair keyboards
 
-Missed a few things in the last reply.
+Signed-off-by: Jonathan Cox <jonathan@jdcox.net>
+---
+ drivers/usb/core/quirks.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-On Thu, 9 Apr 2020 09:41:32 +0200
-Auger Eric <eric.auger@redhat.com> wrote:
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index da30b5664ff3..4ed60e110a99 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -430,6 +430,10 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	/* Corsair K70 LUX */
+ 	{ USB_DEVICE(0x1b1c, 0x1b36), .driver_info = USB_QUIRK_DELAY_INIT },
+ 
++	/* Corsair K70 RGB RAPDIFIRE */
++	{ USB_DEVICE(0x1b1c, 0x1b38), .driver_info = USB_QUIRK_DELAY_INIT |
++	  USB_QUIRK_DELAY_CTRL_MSG },
++
+ 	/* MIDI keyboard WORLDE MINI */
+ 	{ USB_DEVICE(0x1c75, 0x0204), .driver_info =
+ 			USB_QUIRK_CONFIG_INTF_STRINGS },
+-- 
+2.26.0
 
-> > +			intel_pasid_tear_down_entry(iommu, dev,
-> > svm->pasid);  
-> intel_svm_unbind_mm() calls intel_flush_svm_range_dev(svm, sdev, 0,
-> -1, 0); Don't we need to flush the (DEV-)IOTLBs as well?
-Right, pasid tear down should always include (DEV-)IOTLB flush, I
-initially thought it is taken care of by intel_pasid_tear_down_entry().
-
-> > +			/* TODO: Drain in flight PRQ for the PASID
-> > since it
-> > +			 * may get reused soon, we don't want to
-> > +			 * confuse with its previous life.
-> > +			 * intel_svm_drain_prq(dev, pasid);
-> > +			 */
-> > +			kfree_rcu(sdev, rcu);
-> > +
-> > +			if (list_empty(&svm->devs)) {
-> > +				/*
-> > +				 * We do not free the IOASID here
-> > in that
-> > +				 * IOMMU driver did not allocate
-> > it.  
-> s/in/as?
-I meant to say "in that" as "for the reason that"
-
-> > +				 * Unlike native SVM, IOASID for
-> > guest use was
-> > +				 * allocated prior to the bind
-> > call.> +				 * In any case, if the free
-> > call comes before
-> > +				 * the unbind, IOMMU driver will
-> > get notified
-> > +				 * and perform cleanup.
-> > +				 */
-> > +				ioasid_set_data(pasid, NULL);
-> > +				kfree(svm);
-> > +			}  
-> nit: you may use intel_svm_free_if_empty()
-True, but I meant to insert ioasid_notifier under the list_empty
-condition in the following ioasid patch.
-
-
-Thanks,
-
-Jacob
