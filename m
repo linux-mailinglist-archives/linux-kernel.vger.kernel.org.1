@@ -2,64 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D915A1A45F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE4C1A4605
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgDJLwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 07:52:43 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:41990 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725990AbgDJLwm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 07:52:42 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 943DABBDCEB1263387E0;
-        Fri, 10 Apr 2020 19:52:41 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Apr 2020
- 19:52:34 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <piotrs@cadence.com>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <vigneshr@ti.com>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] mtd: rawnand: cadence: Make cadence_nand_attach_chip static
-Date:   Fri, 10 Apr 2020 19:52:28 +0800
-Message-ID: <20200410115228.30440-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.173.223.234]
-X-CFilter-Loop: Reflected
+        id S1726702AbgDJL4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 07:56:11 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54448 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725913AbgDJL4K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 07:56:10 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jMsGO-0004bg-2S; Fri, 10 Apr 2020 13:56:00 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id 744F3100BB6;
+        Fri, 10 Apr 2020 13:55:59 +0200 (CEST)
+Message-Id: <20200410115359.242241855@linutronix.de>
+User-Agent: quilt/0.65
+Date:   Fri, 10 Apr 2020 13:53:59 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, "Kenneth R. Crudup" <kenny@panix.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Nadav Amit <namit@vmware.com>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: [patch 0/3] x86/kvm: Basic split lock #AC handling
+Content-transfer-encoding: 8-bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sparse warning:
+This is a reworked version of the patches posted by Sean:
 
-drivers/mtd/nand/raw/cadence-nand-controller.c:2595:5:
- warning: symbol 'cadence_nand_attach_chip' was not declared. Should it be static?
+ https://lore.kernel.org/r/20200402155554.27705-1-sean.j.christopherson@intel.com
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/mtd/nand/raw/cadence-nand-controller.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The changes vs. this are:
 
-diff --git a/drivers/mtd/nand/raw/cadence-nand-controller.c b/drivers/mtd/nand/raw/cadence-nand-controller.c
-index efddc5c68afb..acc0a24e5816 100644
---- a/drivers/mtd/nand/raw/cadence-nand-controller.c
-+++ b/drivers/mtd/nand/raw/cadence-nand-controller.c
-@@ -2592,7 +2592,7 @@ cadence_nand_setup_data_interface(struct nand_chip *chip, int chipnr,
- 	return 0;
- }
- 
--int cadence_nand_attach_chip(struct nand_chip *chip)
-+static int cadence_nand_attach_chip(struct nand_chip *chip)
- {
- 	struct cdns_nand_ctrl *cdns_ctrl = to_cdns_nand_ctrl(chip->controller);
- 	struct cdns_nand_chip *cdns_chip = to_cdns_nand_chip(chip);
--- 
-2.17.1
+    1) Use a separate function for guest split lock handling
 
+    2) Force SIGBUS when SLD mode fatal
 
+    3) Rename the misnomed helper function which decides whether
+       #AC is injected into the guest or not and move the feature
+       check and the comments into that helper.
+
+Thanks,
+
+	tglx
