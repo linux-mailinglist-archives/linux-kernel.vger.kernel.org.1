@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A81501A4A96
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F86C1A4AA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbgDJThY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:37:24 -0400
-Received: from mail-pg1-f176.google.com ([209.85.215.176]:41797 "EHLO
-        mail-pg1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbgDJThX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:37:23 -0400
-Received: by mail-pg1-f176.google.com with SMTP id m13so1370776pgd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 12:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=eY+CI9YUMAjOh4YqmN7BSzI+LQc+sWyi0ugJbjXN5uQ=;
-        b=XelkJSeZVTY87SNnF2pKDT8Yg39E+gB8zoKeQ8MPaxZqUDd978lszegCGThMWc7fTW
-         JhoatwplKpp+4hzFROpAZlqL/SeW9RSGw0hdpiKlmNOix5QRrvezLXVzSqQI3lxWwETC
-         IQ1pPPDJiF3e5GyK3vOcz7UlNAW/bZK1jPyCe0P1hmWuYt5fj7fKHdtaJ0hpXf0PZKIf
-         9p7CEOtWTub3VLD4phzxv1Ut1/kfFoMI+NPHc7YztpEGULG6rXcGbU0pDNs/bisWZqqM
-         OFxDfNir4pgu8QctwGDEynFvUJY3BlVHvoKe3SHiz4sqzSEAm3vQYzPG7jWNsF68C9VI
-         3Vsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=eY+CI9YUMAjOh4YqmN7BSzI+LQc+sWyi0ugJbjXN5uQ=;
-        b=NsSELx4ioJ8r6jGJxnbP5sxyc/ZZjyQb25Izf/BH/qjpu9mGfXWUGWBtaXvpJC5JWo
-         zcO0HTevuAT/Wj+txlSyDi9Rm47bs+YH9grx/KwacmzbpcwnqjdaxZFLFc8bbnNiSlbh
-         tpW6gWqN8Y6iwTCuG1Y5nxMiX5sVj3/J9J2fbV+/pOINAHkZfBu3EbasTSRjGu98qUbz
-         KXbL79+bJFq+PpB8gVg1s6MLDp0L3eTuCoZnZXIhQdGMtieneVUyAuTNM1heX+GPXJVZ
-         HzBuA0qIbWQxmZfA0cZrPIWPPaFAF1KmbzznBcE9kL6BbK1OdwUBdtFlt5rs0bJIoogK
-         Hhow==
-X-Gm-Message-State: AGi0PuY4Dm5h7664zRcvCjlqj00i3qAnsSmpINI2d5a0v6t/3tuRso9z
-        KjF91Nz5NbD0TJMQjM9ZfWR91w==
-X-Google-Smtp-Source: APiQypJap4XYb6OLfN6N3dmdOCNtdz9IVqLUzAY0Gi5Syeddt2+rDTEaLZ+aoQkdrBGcOUnmAt+dkg==
-X-Received: by 2002:a62:5cc2:: with SMTP id q185mr6421328pfb.125.1586547441997;
-        Fri, 10 Apr 2020 12:37:21 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id n21sm2282025pgf.36.2020.04.10.12.37.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 12:37:21 -0700 (PDT)
-Date:   Fri, 10 Apr 2020 12:37:20 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Hillf Danton <hdanton@sina.com>
-cc:     Christoph Hellwig <hch@lst.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "Grimm, Jon" <jon.grimm@amd.com>, Joerg Roedel <joro@8bytes.org>,
-        linux <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>
-Subject: Re: [rfc v2 3/6] dma-pool: dynamically expanding atomic pools
-In-Reply-To: <20200410145520.17864-1-hdanton@sina.com>
-Message-ID: <alpine.DEB.2.21.2004101231240.249689@chino.kir.corp.google.com>
-References: <alpine.DEB.2.21.1912311738130.68206@chino.kir.corp.google.com> <b22416ec-cc28-3fd2-3a10-89840be173fa@amd.com> <alpine.DEB.2.21.2002280118461.165532@chino.kir.corp.google.com> <alpine.DEB.2.21.2003011535510.213582@chino.kir.corp.google.com>
- <alpine.DEB.2.21.2004081418490.19661@chino.kir.corp.google.com> <20200410145520.17864-1-hdanton@sina.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726707AbgDJTiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:38:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52560 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726203AbgDJTiD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 15:38:03 -0400
+Received: from localhost (mobile-166-170-220-109.mycingular.net [166.170.220.109])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB1CC20732;
+        Fri, 10 Apr 2020 19:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586547482;
+        bh=76FW6bsyi+GvI3cA1295vPvYzfcdLfIdfR/uMK0cqIM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=f5aqyeY5H8P+Dg0VtR5VXhNEaIBxx4R/gGzchOa7w+V/JIMrsYuYNV7aLVSvrZntH
+         WWv3dp0kGmlDxfECQgMchX8GExkaXAsoMWQhr1nrjc+24qlq2ngw+8X5Yw7mD9qxHN
+         rCJAnLyi2B0qmE9qQBazZ/B4H3+CIp6g7so4MwFk=
+Date:   Fri, 10 Apr 2020 14:38:00 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        DRI-devel <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH 5/7] PM: sleep: core: Rename DPM_FLAG_NEVER_SKIP
+Message-ID: <20200410193800.GA5202@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5092680.jloV5Ae5OO@kreacher>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Apr 2020, Hillf Danton wrote:
-
+On Fri, Apr 10, 2020 at 05:56:13PM +0200, Rafael J. Wysocki wrote:
+> From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 > 
-> On Wed, 8 Apr 2020 14:21:06 -0700 (PDT) David Rientjes wrote:
-> > 
-> > When an atomic pool becomes fully depleted because it is now relied upon
-> > for all non-blocking allocations through the DMA API, allow background
-> > expansion of each pool by a kworker.
-> > 
-> > When an atomic pool has less than the default size of memory left, kick
-> > off a kworker to dynamically expand the pool in the background.  The pool
-> > is doubled in size, up to MAX_ORDER-1.  If memory cannot be allocated at
-> > the requested order, smaller allocation(s) are attempted.
-> > 
-> What is proposed looks like a path of single lane without how to
-> dynamically shrink the pool taken into account. Thus the risk may
-> rise in corner cases where pools are over-expanded in long run
-> after one-off peak allocation requests.
+> Rename DPM_FLAG_NEVER_SKIP to DPM_FLAG_NO_DIRECT_COMPLETE which
+> matches its purpose more closely.
 > 
+> No functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-To us, this is actually a benefit: we prefer the peak size to be 
-maintained so that we do not need to dynamic resize the pool later at the 
-cost of throughput.  Genpool also does not have great support for 
-scavenging and freeing unused chunks.
+Acked-by: Bjorn Helgaas <bhelgaas@google.com> # for PCI parts
 
-Perhaps we could enforce a maximum size on the pools just as we allow the 
-default size to be defined by coherent_size= on the command line.  Our use 
-case would not set this, however, since we have not seen egregious genpool 
-sizes as the result of non-blockable DMA allocations (perhaps the drivers 
-we use just play friendlier and you have seen excessive usage?).
+> ---
+>  Documentation/driver-api/pm/devices.rst    |  6 +++---
+>  Documentation/power/pci.rst                | 10 +++++-----
+>  drivers/base/power/main.c                  |  2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c    |  2 +-
+>  drivers/gpu/drm/i915/intel_runtime_pm.c    |  2 +-
+>  drivers/gpu/drm/radeon/radeon_kms.c        |  2 +-
+>  drivers/misc/mei/pci-me.c                  |  2 +-
+>  drivers/misc/mei/pci-txe.c                 |  2 +-
+>  drivers/net/ethernet/intel/e1000e/netdev.c |  2 +-
+>  drivers/net/ethernet/intel/igb/igb_main.c  |  2 +-
+>  drivers/net/ethernet/intel/igc/igc_main.c  |  2 +-
+>  drivers/pci/pcie/portdrv_pci.c             |  2 +-
+>  include/linux/pm.h                         |  6 +++---
+>  13 files changed, 21 insertions(+), 21 deletions(-)
+> 
+> diff --git a/Documentation/driver-api/pm/devices.rst b/Documentation/driver-api/pm/devices.rst
+> index f66c7b9126ea..4ace0eba4506 100644
+> --- a/Documentation/driver-api/pm/devices.rst
+> +++ b/Documentation/driver-api/pm/devices.rst
+> @@ -361,9 +361,9 @@ the phases are: ``prepare``, ``suspend``, ``suspend_late``, ``suspend_noirq``.
+>  	runtime PM disabled.
 
-I'll rely on Christoph to determine whether it makes sense to add some 
-periodic scavening of the atomic pools, whether that's needed for this to 
-be merged, or wheter we should enforce some maximum pool size.
+Minor question about a preceding paragraph that ends:
+
+  In that case, the ``->complete`` callback will be invoked directly
+  after the ``->prepare`` callback and is entirely responsible for
+  putting the device into a consistent state as appropriate.
+
+What does" a consistent state as appropriate" mean?  I know this is
+generic documentation at a high level, so maybe there's no good
+explanation for "consistent state," but I don't know what to imagine
+there.
+
+And what does "as appropriate" mean?  Would it change the meaning to
+drop those two words, or are there situations where it's not
+appropriate to put the device into a consistent state?  Or maybe it's
+just that the type of device determines what the consistent state is?
+
+>  	This feature also can be controlled by device drivers by using the
+> -	``DPM_FLAG_NEVER_SKIP`` and ``DPM_FLAG_SMART_PREPARE`` driver power
+> -	management flags.  [Typically, they are set at the time the driver is
+> -	probed against the device in question by passing them to the
+> +	``DPM_FLAG_NO_DIRECT_COMPLETE`` and ``DPM_FLAG_SMART_PREPARE`` driver
+> +	power management flags.  [Typically, they are set at the time the driver
+> +	is probed against the device in question by passing them to the
+>  	:c:func:`dev_pm_set_driver_flags` helper function.]  If the first of
+>  	these flags is set, the PM core will not apply the direct-complete
+>  	procedure described above to the given device and, consequenty, to any
+
+s/consequenty/consequently/
+
+Drive-by comment: I looked for a definition of "direct-complete".  The
+closest I found is a couple paragraphs above this, where it says "Note
+that this direct-complete procedure ...," but that leaves me to try to
+reconstruct the definition from the preceding text.
+
+AFAICT, going to freeze, standby, or memory sleep includes these
+callbacks:
+
+  ->prepare
+  ->suspend
+  ->suspend_late
+  ->suspend_noirq
+  ->complete         (not mentioned in the list of phases)
+
+And "direct-complete" means we skip the suspend, suspend_late,
+and suspend_noirq callbacks so we only use these:
+
+  ->prepare
+  ->complete
+
+And apparently we skip those callbacks for device X if ->prepare() for
+X and all its descendents returns a positive value AND they are all
+runtime-suspended, except if a driver for X or a descendent sets
+DPM_FLAG_NO_DIRECT_COMPLETE.
+
+Bjorn
