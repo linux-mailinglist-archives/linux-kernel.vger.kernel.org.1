@@ -2,185 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2925C1A4801
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 17:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251C41A482F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 18:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726663AbgDJPzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 11:55:49 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:33756 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726080AbgDJPzs (ORCPT
+        id S1726836AbgDJQBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 12:01:16 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42545 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726646AbgDJQAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 11:55:48 -0400
-Received: by mail-lf1-f68.google.com with SMTP id h6so1677886lfc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 08:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wu3QFPy2u02irBlE9rfNz4x/NqhgeVrVQTYnGJ11NYo=;
-        b=uS8y2cKR1FfXqahoaPTcszOGRTwbPpTELgbZQoR3u9B7Lvyac8wFhWrptev/dAJMiw
-         53OCXKiazqb+yZob4y0e9GoKGvdfP3GL5wTS4Rux8cvLKFEKoMcO0JdQuf8Zc3DWCZDQ
-         ruu1L/FSPpqTT4+TjcyWnaZYAKvyEkJtjyRvEh47at78e20FWiFn8GB56b3IuZ4aAjIF
-         BDj2L/LTNuCbjJAXxPH4O6B60kmKca6zwASadExwJTNZeN/YqcUSyR+hlUPp3e0JMVYn
-         rd1qvhjvh75W7MIHhdXR7Lf4JKrRs5RgsnR4bF6NZslbOIbULzx8/+CLEPG4982Oqknn
-         O50A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wu3QFPy2u02irBlE9rfNz4x/NqhgeVrVQTYnGJ11NYo=;
-        b=GWVy4ik4C+yUvmOUy5NquOUQ2rA7j4hMU0OzxLd+3g5iv4EezKA+1pyH2XbT47VK2s
-         sgJEvAESwxU3E2Ly7cUMKqBnV2teEspGxz4n8o+8UYdTd18jVENtbfmEvg8jW3pdsUpQ
-         N9FbQI3XVm8hpk8rFSGqK9jdQG9Sa3dpfJJ07aXAazqn2TXjforMIBp6+WGIQDPGI+AK
-         m2H+SN+WOBhxdbI//9u+bWlmuuivH+lZRb60wazblEtJ94LqfCckRg3n5vOtwX/wVHa1
-         GE18Kbn8/1vJWVzgZWEv5Ibmi2JfEJILnXD4/IZjaVnXxTTdWz0P5MyJwZZkYU9LrTsQ
-         Y9Nw==
-X-Gm-Message-State: AGi0PuZL+7Huz35UonmTa4l+awHFvWZVtJvKK5SCjdcqRmHOvYTInUOk
-        vjpKsKSEl27Cs2JCF9Y4mDwhoQ==
-X-Google-Smtp-Source: APiQypKqhD0biYJV7Fu66NPT1AkQUwiqPCbO74jBZ9Rt7b+f2jDah+wGcy+H7J0rwD1hhJH2g1ANsw==
-X-Received: by 2002:ac2:5611:: with SMTP id v17mr2990420lfd.137.1586534144915;
-        Fri, 10 Apr 2020 08:55:44 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id c22sm1285409ljh.66.2020.04.10.08.55.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 08:55:44 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 4C005102110; Fri, 10 Apr 2020 18:55:43 +0300 (+03)
-Date:   Fri, 10 Apr 2020 18:55:43 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCHv2 5/8] khugepaged: Allow to callapse a page shared across
- fork
-Message-ID: <20200410155543.i66uz6pbynfvkhak@box>
-References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
- <20200403112928.19742-6-kirill.shutemov@linux.intel.com>
- <5a57635b-ed75-8f09-6f0c-5623f557fc55@nvidia.com>
+        Fri, 10 Apr 2020 12:00:49 -0400
+Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 3a80db90d5ade516; Fri, 10 Apr 2020 18:00:46 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        DRI-devel <dri-devel@lists.freedesktop.org>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        intel-wired-lan@lists.osuosl.org
+Subject: [PATCH 5/7] PM: sleep: core: Rename DPM_FLAG_NEVER_SKIP
+Date:   Fri, 10 Apr 2020 17:56:13 +0200
+Message-ID: <5092680.jloV5Ae5OO@kreacher>
+In-Reply-To: <1888197.j9z7NJ8yPn@kreacher>
+References: <1888197.j9z7NJ8yPn@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a57635b-ed75-8f09-6f0c-5623f557fc55@nvidia.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 02:30:07PM -0700, John Hubbard wrote:
-> On 4/3/20 4:29 AM, Kirill A. Shutemov wrote:
-> > The page can be included into collapse as long as it doesn't have extra
-> > pins (from GUP or otherwise).
-> 
-> Hi Kirill,
-> 
-> s/callapse/collapse/ in the Subject line.
-> 
-> The commit message should mention that you're also removing a
-> VM_BUG_ON_PAGE().
-> 
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >   mm/khugepaged.c | 25 ++++++++++++++-----------
-> >   1 file changed, 14 insertions(+), 11 deletions(-)
-> > 
-> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> > index 57ff287caf6b..1e7e6543ebca 100644
-> > --- a/mm/khugepaged.c
-> > +++ b/mm/khugepaged.c
-> > @@ -581,11 +581,18 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
-> >   		}
-> >   		/*
-> > -		 * cannot use mapcount: can't collapse if there's a gup pin.
-> > -		 * The page must only be referenced by the scanned process
-> > -		 * and page swap cache.
-> > +		 * Check if the page has any GUP (or other external) pins.
-> > +		 *
-> > +		 * The page table that maps the page has been already unlinked
-> > +		 * from the page table tree and this process cannot get
-> > +		 * additinal pin on the page.
-> 
-> 
-> I'd recommend this wording instead, for the last two lines:
-> 
-> 		 * from the page table tree. Therefore, this page will not
-> 		 * normally receive any additional pins.
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
 
-I guess I'm not clear enough.
+Rename DPM_FLAG_NEVER_SKIP to DPM_FLAG_NO_DIRECT_COMPLETE which
+matches its purpose more closely.
 
-The point is that the page cannot get any new pins from this process. It
-can get new pin from other process after the check. But it is fine because
-if the page is mapped multiple times it has to be write-protected (CoW
-after fork()) and we can rely that page's content will not change under
-us.
+No functional impact.
 
-Does it make sense? Wording suggestions are welcome.
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ Documentation/driver-api/pm/devices.rst    |  6 +++---
+ Documentation/power/pci.rst                | 10 +++++-----
+ drivers/base/power/main.c                  |  2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c    |  2 +-
+ drivers/gpu/drm/i915/intel_runtime_pm.c    |  2 +-
+ drivers/gpu/drm/radeon/radeon_kms.c        |  2 +-
+ drivers/misc/mei/pci-me.c                  |  2 +-
+ drivers/misc/mei/pci-txe.c                 |  2 +-
+ drivers/net/ethernet/intel/e1000e/netdev.c |  2 +-
+ drivers/net/ethernet/intel/igb/igb_main.c  |  2 +-
+ drivers/net/ethernet/intel/igc/igc_main.c  |  2 +-
+ drivers/pci/pcie/portdrv_pci.c             |  2 +-
+ include/linux/pm.h                         |  6 +++---
+ 13 files changed, 21 insertions(+), 21 deletions(-)
 
-> > +		 *
-> > +		 * New pins can come later if the page is shared across fork,
-> > +		 * but not for the this process. It is fine. The other process
-> > +		 * cannot write to the page, only trigger CoW.
-> >   		 */
-> > -		if (page_count(page) != 1 + PageSwapCache(page)) {
-> > +		if (total_mapcount(page) + PageSwapCache(page) !=
-> > +				page_count(page)) {
-> 
-> 
-> I think it's time to put that logic ( "does this page have any extra references")
-> into a small function. It's already duplicated once below. And the documentation is
-> duplicated as well.
-
-Fair enough.
-
-But comments have to stay where they are. Because the context is
-different. The first time we check speculatively, before the page table is
-unlinked from the page table tree and this check is inherintly racy.
-Unlike the second one.
-
-> I took a quick peek at this patch because, after adding pin_user_pages*() APIs earlier
-> to complement get_user_pages*(), I had a moment of doubt here: what if I'd done  it in
-> a way that required additional logic here? Fortunately, that's not the case: all
-> pin_user_pages() calls on huge pages take a "primary/real" refcount, in addition
-> to scribbling into the compound_pincount_ptr() area. whew. :)
-> 
-> 
-> 
-> >   			unlock_page(page);
-> >   			result = SCAN_PAGE_COUNT;
-> >   			goto out;
-> > @@ -672,7 +679,6 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
-> >   		} else {
-> >   			src_page = pte_page(pteval);
-> >   			copy_user_highpage(page, src_page, address, vma);
-> > -			VM_BUG_ON_PAGE(page_mapcount(src_page) != 1, src_page);
-> >   			release_pte_page(src_page);
-> >   			/*
-> >   			 * ptl mostly unnecessary, but preempt has to
-> > @@ -1206,12 +1212,9 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
-> >   			goto out_unmap;
-> >   		}
-> > -		/*
-> > -		 * cannot use mapcount: can't collapse if there's a gup pin.
-> > -		 * The page must only be referenced by the scanned process
-> > -		 * and page swap cache.
-> > -		 */
-> > -		if (page_count(page) != 1 + PageSwapCache(page)) {
-> > +		/* Check if the page has any GUP (or other external) pins */
-> > +		if (total_mapcount(page) + PageSwapCache(page) !=
-> > +				page_count(page)) {>   			result = SCAN_PAGE_COUNT;
-> >   			goto out_unmap;
-> >   		}
-> > 
-> 
-> 
-> 
-> thanks,
-> -- 
-> John Hubbard
-> NVIDIA
-
+diff --git a/Documentation/driver-api/pm/devices.rst b/Documentation/driver-api/pm/devices.rst
+index f66c7b9126ea..4ace0eba4506 100644
+--- a/Documentation/driver-api/pm/devices.rst
++++ b/Documentation/driver-api/pm/devices.rst
+@@ -361,9 +361,9 @@ the phases are: ``prepare``, ``suspend``, ``suspend_late``, ``suspend_noirq``.
+ 	runtime PM disabled.
+ 
+ 	This feature also can be controlled by device drivers by using the
+-	``DPM_FLAG_NEVER_SKIP`` and ``DPM_FLAG_SMART_PREPARE`` driver power
+-	management flags.  [Typically, they are set at the time the driver is
+-	probed against the device in question by passing them to the
++	``DPM_FLAG_NO_DIRECT_COMPLETE`` and ``DPM_FLAG_SMART_PREPARE`` driver
++	power management flags.  [Typically, they are set at the time the driver
++	is probed against the device in question by passing them to the
+ 	:c:func:`dev_pm_set_driver_flags` helper function.]  If the first of
+ 	these flags is set, the PM core will not apply the direct-complete
+ 	procedure described above to the given device and, consequenty, to any
+diff --git a/Documentation/power/pci.rst b/Documentation/power/pci.rst
+index aa1c7fce6cd0..9e1408121bea 100644
+--- a/Documentation/power/pci.rst
++++ b/Documentation/power/pci.rst
+@@ -1004,11 +1004,11 @@ including the PCI bus type.  The flags should be set once at the driver probe
+ time with the help of the dev_pm_set_driver_flags() function and they should not
+ be updated directly afterwards.
+ 
+-The DPM_FLAG_NEVER_SKIP flag prevents the PM core from using the direct-complete
+-mechanism allowing device suspend/resume callbacks to be skipped if the device
+-is in runtime suspend when the system suspend starts.  That also affects all of
+-the ancestors of the device, so this flag should only be used if absolutely
+-necessary.
++The DPM_FLAG_NO_DIRECT_COMPLETE flag prevents the PM core from using the
++direct-complete mechanism allowing device suspend/resume callbacks to be skipped
++if the device is in runtime suspend when the system suspend starts.  That also
++affects all of the ancestors of the device, so this flag should only be used if
++absolutely necessary.
+ 
+ The DPM_FLAG_SMART_PREPARE flag instructs the PCI bus type to only return a
+ positive value from pci_pm_prepare() if the ->prepare callback provided by the
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index 21187ee37b22..aa9c8df9fc4b 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -1850,7 +1850,7 @@ static int device_prepare(struct device *dev, pm_message_t state)
+ 	spin_lock_irq(&dev->power.lock);
+ 	dev->power.direct_complete = state.event == PM_EVENT_SUSPEND &&
+ 		(ret > 0 || dev->power.no_pm_callbacks) &&
+-		!dev_pm_test_driver_flags(dev, DPM_FLAG_NEVER_SKIP);
++		!dev_pm_test_driver_flags(dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 	spin_unlock_irq(&dev->power.lock);
+ 	return 0;
+ }
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+index fd1dc3236eca..a9086ea1ab60 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+@@ -191,7 +191,7 @@ int amdgpu_driver_load_kms(struct drm_device *dev, unsigned long flags)
+ 	}
+ 
+ 	if (adev->runpm) {
+-		dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NEVER_SKIP);
++		dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 		pm_runtime_use_autosuspend(dev->dev);
+ 		pm_runtime_set_autosuspend_delay(dev->dev, 5000);
+ 		pm_runtime_set_active(dev->dev);
+diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
+index ad719c9602af..9cb2d7548daa 100644
+--- a/drivers/gpu/drm/i915/intel_runtime_pm.c
++++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
+@@ -549,7 +549,7 @@ void intel_runtime_pm_enable(struct intel_runtime_pm *rpm)
+ 	 * becaue the HDA driver may require us to enable the audio power
+ 	 * domain during system suspend.
+ 	 */
+-	dev_pm_set_driver_flags(kdev, DPM_FLAG_NEVER_SKIP);
++	dev_pm_set_driver_flags(kdev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 
+ 	pm_runtime_set_autosuspend_delay(kdev, 10000); /* 10s */
+ 	pm_runtime_mark_last_busy(kdev);
+diff --git a/drivers/gpu/drm/radeon/radeon_kms.c b/drivers/gpu/drm/radeon/radeon_kms.c
+index 58176db85952..372962358a18 100644
+--- a/drivers/gpu/drm/radeon/radeon_kms.c
++++ b/drivers/gpu/drm/radeon/radeon_kms.c
+@@ -158,7 +158,7 @@ int radeon_driver_load_kms(struct drm_device *dev, unsigned long flags)
+ 	}
+ 
+ 	if (radeon_is_px(dev)) {
+-		dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NEVER_SKIP);
++		dev_pm_set_driver_flags(dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 		pm_runtime_use_autosuspend(dev->dev);
+ 		pm_runtime_set_autosuspend_delay(dev->dev, 5000);
+ 		pm_runtime_set_active(dev->dev);
+diff --git a/drivers/misc/mei/pci-me.c b/drivers/misc/mei/pci-me.c
+index 3d21c38e2dbb..53f16f3bd091 100644
+--- a/drivers/misc/mei/pci-me.c
++++ b/drivers/misc/mei/pci-me.c
+@@ -240,7 +240,7 @@ static int mei_me_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	 * MEI requires to resume from runtime suspend mode
+ 	 * in order to perform link reset flow upon system suspend.
+ 	 */
+-	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NEVER_SKIP);
++	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 
+ 	/*
+ 	 * ME maps runtime suspend/resume to D0i states,
+diff --git a/drivers/misc/mei/pci-txe.c b/drivers/misc/mei/pci-txe.c
+index beacf2a2f2b5..4bf26ce61044 100644
+--- a/drivers/misc/mei/pci-txe.c
++++ b/drivers/misc/mei/pci-txe.c
+@@ -128,7 +128,7 @@ static int mei_txe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	 * MEI requires to resume from runtime suspend mode
+ 	 * in order to perform link reset flow upon system suspend.
+ 	 */
+-	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NEVER_SKIP);
++	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 
+ 	/*
+ 	 * TXE maps runtime suspend/resume to own power gating states,
+diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+index 177c6da80c57..2730b1c7dddb 100644
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -7549,7 +7549,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 
+ 	e1000_print_device_info(adapter);
+ 
+-	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NEVER_SKIP);
++	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 
+ 	if (pci_dev_run_wake(pdev) && hw->mac.type < e1000_pch_cnp)
+ 		pm_runtime_put_noidle(&pdev->dev);
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index b46bff8fe056..8bb3db2cbd41 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -3445,7 +3445,7 @@ static int igb_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		}
+ 	}
+ 
+-	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NEVER_SKIP);
++	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 	return 0;
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 69fa1ce1f927..59fc0097438f 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -4825,7 +4825,7 @@ static int igc_probe(struct pci_dev *pdev,
+ 	pcie_print_link_status(pdev);
+ 	netdev_info(netdev, "MAC: %pM\n", netdev->dev_addr);
+ 
+-	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NEVER_SKIP);
++	dev_pm_set_driver_flags(&pdev->dev, DPM_FLAG_NO_DIRECT_COMPLETE);
+ 
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 
+diff --git a/drivers/pci/pcie/portdrv_pci.c b/drivers/pci/pcie/portdrv_pci.c
+index 160d67c59310..3acf151ae015 100644
+--- a/drivers/pci/pcie/portdrv_pci.c
++++ b/drivers/pci/pcie/portdrv_pci.c
+@@ -115,7 +115,7 @@ static int pcie_portdrv_probe(struct pci_dev *dev,
+ 
+ 	pci_save_state(dev);
+ 
+-	dev_pm_set_driver_flags(&dev->dev, DPM_FLAG_NEVER_SKIP |
++	dev_pm_set_driver_flags(&dev->dev, DPM_FLAG_NO_DIRECT_COMPLETE |
+ 					   DPM_FLAG_SMART_SUSPEND);
+ 
+ 	if (pci_bridge_d3_possible(dev)) {
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+index d89b7099f241..28fd444fb5c9 100644
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -544,7 +544,7 @@ struct pm_subsys_data {
+  * These flags can be set by device drivers at the probe time.  They need not be
+  * cleared by the drivers as the driver core will take care of that.
+  *
+- * NEVER_SKIP: Do not skip all system suspend/resume callbacks for the device.
++ * NO_DIRECT_COMPLETE: Do not apply direct-complete optimization to the device.
+  * SMART_PREPARE: Check the return value of the driver's ->prepare callback.
+  * SMART_SUSPEND: No need to resume the device from runtime suspend.
+  * LEAVE_SUSPENDED: Avoid resuming the device during system resume if possible.
+@@ -554,7 +554,7 @@ struct pm_subsys_data {
+  * their ->prepare callbacks if the driver's ->prepare callback returns 0 (in
+  * other words, the system suspend/resume callbacks can only be skipped for the
+  * device if its driver doesn't object against that).  This flag has no effect
+- * if NEVER_SKIP is set.
++ * if NO_DIRECT_COMPLETE is set.
+  *
+  * Setting SMART_SUSPEND instructs bus types and PM domains which may want to
+  * runtime resume the device upfront during system suspend that doing so is not
+@@ -565,7 +565,7 @@ struct pm_subsys_data {
+  * Setting LEAVE_SUSPENDED informs the PM core and middle-layer code that the
+  * driver prefers the device to be left in suspend after system resume.
+  */
+-#define DPM_FLAG_NEVER_SKIP		BIT(0)
++#define DPM_FLAG_NO_DIRECT_COMPLETE	BIT(0)
+ #define DPM_FLAG_SMART_PREPARE		BIT(1)
+ #define DPM_FLAG_SMART_SUSPEND		BIT(2)
+ #define DPM_FLAG_LEAVE_SUSPENDED	BIT(3)
 -- 
- Kirill A. Shutemov
+2.16.4
+
+
+
+
