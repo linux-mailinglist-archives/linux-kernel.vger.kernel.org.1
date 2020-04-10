@@ -2,160 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C128D1A4002
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 05:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288811A41A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 06:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgDJDvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 23:51:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726819AbgDJDvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 23:51:31 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76E7421556;
-        Fri, 10 Apr 2020 03:51:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586490691;
-        bh=ZfU77++yMcL770c3ZrBqDkny1zBJBG8/lLNTflP8DkQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wGED3q+ftYwhcTWXD27P24x0K6Y5o09d2f1R34CKTQuKW0MIyF+uaJ2/PvqKjyHve
-         Er0L1o6e3JgM/M9CFNpI6cw2Q1AWqTmv1EkeDsXfExTbeuwKp9VhvTUvP30p91jOTA
-         HNn6Zw/Lg+6LFUC+MIENppoC7CyD5q3zVBqc2DYk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 8/8] btrfs: track reloc roots based on their commit root bytenr
-Date:   Thu,  9 Apr 2020 23:51:21 -0400
-Message-Id: <20200410035122.10065-8-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200410035122.10065-1-sashal@kernel.org>
-References: <20200410035122.10065-1-sashal@kernel.org>
+        id S1726177AbgDJEPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 00:15:38 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:36683 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725838AbgDJEPi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 00:15:38 -0400
+Received: by mail-pl1-f193.google.com with SMTP id g2so295035plo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 21:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=gEB6hREJEktFWL2i0vdfy1ZM0oVuZ9cuA3ZTnPrry/E=;
+        b=L9/zOm1wXSp82yeBUotLf+3/A3y3RCe/ABJ6hUH3SwrMI1ei5iUZitd37//69XQaIj
+         NzZdD/D0HY7c76STlcGkUv3UR4MIMDsRMh4gVqV6H5ImXGTwcV6pfUR3CDDN4VOUCLeZ
+         MOvG6sfx0WsHxrwgE5blbxmxLUscfXN/Sc2/4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=gEB6hREJEktFWL2i0vdfy1ZM0oVuZ9cuA3ZTnPrry/E=;
+        b=GIKFCRz4sN81MU3gAshHQyGhvrKwOqMH6eXL/HZ8F/CSIUcF8X9N3lT6VdpFVLESZ1
+         qeXh3tHZ9vqWaGze0aX9ceXhvV6XrfSKoYUF21eJmRnnQ7nSUl/sUq+vRes05E/vKSAp
+         YcjE4a8wuTHHOpzagqooMS7XSSfAD6Xny1a1Re5HLZ8bXtV7MGgW7wbSBICz648iDoS1
+         efY1e16R8zyT4OyM3garh7kIz3J9STfCgxubEbA+EglKwSUbsWKz+aiaFST50y4eHkF9
+         fZYXYjQ8uGPvEr6QhVHd2iJG207DFFVC1AuhO2h3YCFcdgoSwi2gfpj0hPKuoDLPUdj/
+         IPXg==
+X-Gm-Message-State: AGi0PuaFdIDb7Rro+7TG0gv33OGJWXlCB5q7o3ORJJNS85EKLI0aPmkM
+        M5aOiEIrubgLnrFwQgaN5OQ0zap8wJ4=
+X-Google-Smtp-Source: APiQypJTGbdX1SoxYcJculWqCkc6CQzCANNnPZpVTKgxdIg0kn6SGQWqA/xfj8NFLQXbGMtxs7cAkA==
+X-Received: by 2002:a17:902:8ec8:: with SMTP id x8mr2914059plo.204.1586492133589;
+        Thu, 09 Apr 2020 21:15:33 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id d22sm555698pgh.11.2020.04.09.21.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 21:15:32 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1586154741-8293-5-git-send-email-mkshah@codeaurora.org>
+References: <1586154741-8293-1-git-send-email-mkshah@codeaurora.org> <1586154741-8293-5-git-send-email-mkshah@codeaurora.org>
+Subject: Re: [PATCH v16 4/6] soc: qcom: rpmh: Invoke rpmh_flush() for dirty caches
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, mka@chromium.org, rnayak@codeaurora.org,
+        ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+To:     Maulik Shah <mkshah@codeaurora.org>, bjorn.andersson@linaro.org,
+        dianders@chromium.org, evgreen@chromium.org
+Date:   Thu, 09 Apr 2020 21:15:31 -0700
+Message-ID: <158649213142.77611.5740203322498170248@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+Quoting Maulik Shah (2020-04-05 23:32:19)
+> Add changes to invoke rpmh flush() from CPU PM notification.
+> This is done when the last the cpu is entering power collapse and
 
-[ Upstream commit ea287ab157c2816bf12aad4cece41372f9d146b4 ]
+'power collapse' is a qcom-ism. Maybe say something like "deep CPU idle
+states"?
 
-We always search the commit root of the extent tree for looking up back
-references, however we track the reloc roots based on their current
-bytenr.
+> controller is not busy.
+>=20
+> Controllers that do have 'HW solver' mode do not need to register
+> for CPU PM notification. They may be in autonomous mode executing
+> low power mode and do not require rpmh_flush() to happen from CPU
+> PM notification.
 
-This is wrong, if we commit the transaction between relocating tree
-blocks we could end up in this code in build_backref_tree
+Can you provide an example of a HW solver mode controller? Presumably
+the display RSC is one of these?
 
-  if (key.objectid == key.offset) {
-	  /*
-	   * Only root blocks of reloc trees use backref
-	   * pointing to itself.
-	   */
-	  root = find_reloc_root(rc, cur->bytenr);
-	  ASSERT(root);
-	  cur->root = root;
-	  break;
-  }
+>=20
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-find_reloc_root() is looking based on the bytenr we had in the commit
-root, but if we've COWed this reloc root we will not find that bytenr,
-and we will trip over the ASSERT(root).
+> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+> index b718221..fbe1f3e 100644
+> --- a/drivers/soc/qcom/rpmh-rsc.c
+> +++ b/drivers/soc/qcom/rpmh-rsc.c
+> @@ -521,8 +527,86 @@ int rpmh_rsc_write_ctrl_data(struct rsc_drv *drv, co=
+nst struct tcs_request *msg)
+>         return tcs_ctrl_write(drv, msg);
+>  }
+> =20
+> +/**
+> + * rpmh_rsc_ctrlr_is_busy() - Check if any of the AMCs are busy.
+> + *
+> + * @drv: The controller
+> + *
+> + * Checks if any of the AMCs are busy in handling ACTIVE sets.
+> + * This is called from the last cpu powering down before flushing
+> + * SLEEP and WAKE sets. If AMCs are busy, controller can not enter
+> + * power collapse, so deny from the last cpu's pm notification.
+> + *
+> + * Return:
+> + * * False             - AMCs are idle
+> + * * True              - AMCs are busy
+> + */
+> +static bool rpmh_rsc_ctrlr_is_busy(struct rsc_drv *drv)
 
-Fix this by using the commit_root->start bytenr for indexing the commit
-root.  Then we change the __update_reloc_root() caller to be used when
-we switch the commit root for the reloc root during commit.
+Can drv be const? Would be nice to make it const in some places in this
+driver.
 
-This fixes the panic I was seeing when we started throttling relocation
-for delayed refs.
+> +{
+> +       int m;
+> +       struct tcs_group *tcs =3D get_tcs_of_type(drv, ACTIVE_TCS);
+> +
+> +       /*
+> +        * If we made an active request on a RSC that does not have a
+> +        * dedicated TCS for active state use, then re-purposed wake TCSes
+> +        * should be checked for not busy.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/relocation.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+not busy, because we use wake TCSes for active requests in this case.
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 246754b31619e..df04309390bba 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1289,7 +1289,7 @@ static int __must_check __add_reloc_root(struct btrfs_root *root)
- 	if (!node)
- 		return -ENOMEM;
- 
--	node->bytenr = root->node->start;
-+	node->bytenr = root->commit_root->start;
- 	node->data = root;
- 
- 	spin_lock(&rc->reloc_root_tree.lock);
-@@ -1321,10 +1321,11 @@ static void __del_reloc_root(struct btrfs_root *root)
- 	if (rc && root->node) {
- 		spin_lock(&rc->reloc_root_tree.lock);
- 		rb_node = tree_search(&rc->reloc_root_tree.rb_root,
--				      root->node->start);
-+				      root->commit_root->start);
- 		if (rb_node) {
- 			node = rb_entry(rb_node, struct mapping_node, rb_node);
- 			rb_erase(&node->rb_node, &rc->reloc_root_tree.rb_root);
-+			RB_CLEAR_NODE(&node->rb_node);
- 		}
- 		spin_unlock(&rc->reloc_root_tree.lock);
- 		if (!node)
-@@ -1342,7 +1343,7 @@ static void __del_reloc_root(struct btrfs_root *root)
-  * helper to update the 'address of tree root -> reloc tree'
-  * mapping
-  */
--static int __update_reloc_root(struct btrfs_root *root, u64 new_bytenr)
-+static int __update_reloc_root(struct btrfs_root *root)
- {
- 	struct rb_node *rb_node;
- 	struct mapping_node *node = NULL;
-@@ -1350,7 +1351,7 @@ static int __update_reloc_root(struct btrfs_root *root, u64 new_bytenr)
- 
- 	spin_lock(&rc->reloc_root_tree.lock);
- 	rb_node = tree_search(&rc->reloc_root_tree.rb_root,
--			      root->node->start);
-+			      root->commit_root->start);
- 	if (rb_node) {
- 		node = rb_entry(rb_node, struct mapping_node, rb_node);
- 		rb_erase(&node->rb_node, &rc->reloc_root_tree.rb_root);
-@@ -1362,7 +1363,7 @@ static int __update_reloc_root(struct btrfs_root *root, u64 new_bytenr)
- 	BUG_ON((struct btrfs_root *)node->data != root);
- 
- 	spin_lock(&rc->reloc_root_tree.lock);
--	node->bytenr = new_bytenr;
-+	node->bytenr = root->node->start;
- 	rb_node = tree_insert(&rc->reloc_root_tree.rb_root,
- 			      node->bytenr, &node->rb_node);
- 	spin_unlock(&rc->reloc_root_tree.lock);
-@@ -1503,6 +1504,7 @@ int btrfs_update_reloc_root(struct btrfs_trans_handle *trans,
- 	}
- 
- 	if (reloc_root->commit_root != reloc_root->node) {
-+		__update_reloc_root(reloc_root);
- 		btrfs_set_root_node(root_item, reloc_root->node);
- 		free_extent_buffer(reloc_root->commit_root);
- 		reloc_root->commit_root = btrfs_root_node(reloc_root);
-@@ -4578,11 +4580,6 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
- 	BUG_ON(rc->stage == UPDATE_DATA_PTRS &&
- 	       root->root_key.objectid == BTRFS_DATA_RELOC_TREE_OBJECTID);
- 
--	if (root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID) {
--		if (buf == root->node)
--			__update_reloc_root(root, cow->start);
--	}
--
- 	level = btrfs_header_level(buf);
- 	if (btrfs_header_generation(buf) <=
- 	    btrfs_root_last_snapshot(&root->root_item))
--- 
-2.20.1
+> +        *
+> +        * Since this is called from the last cpu, need not take drv or t=
+cs
+> +        * lock before checking tcs_is_free().
+> +        */
+> +       if (!tcs->num_tcs)
+> +               tcs =3D get_tcs_of_type(drv, WAKE_TCS);
+> +
+> +       for (m =3D tcs->offset; m < tcs->offset + tcs->num_tcs; m++) {
+> +               if (!tcs_is_free(drv, m))
+> +                       return true;
+> +       }
+> +
+> +       return false;
+> +}
+[...]
+> +
+> diff --git a/drivers/soc/qcom/rpmh.c b/drivers/soc/qcom/rpmh.c
+> index a75f3df..88f8801 100644
+> --- a/drivers/soc/qcom/rpmh.c
+> +++ b/drivers/soc/qcom/rpmh.c
+> @@ -433,16 +430,17 @@ static int send_single(struct rpmh_ctrlr *ctrlr, en=
+um rpmh_state state,
+>  }
+> =20
+>  /**
+> - * rpmh_flush: Flushes the buffered active and sleep sets to TCS
+> + * rpmh_flush() - Flushes the buffered sleep and wake sets to TCSes
+>   *
+> - * @ctrlr: controller making request to flush cached data
+> + * @ctrlr: Controller making request to flush cached data
+>   *
+> - * Return: -EBUSY if the controller is busy, probably waiting on a respo=
+nse
+> - * to a RPMH request sent earlier.
+> + * This function is called from sleep code on the last CPU
+> + * (thus no spinlock needed).
 
+Might be good to stick a lockdep_assert_irqs_disabled() in this function
+then. That would document that this function should only be called when
+irqs are disabled.
+
+>   *
+> - * This function is always called from the sleep code from the last CPU
+> - * that is powering down the entire system. Since no other RPMH API woul=
+d be
+> - * executing at this time, it is safe to run lockless.
+> + * Return:
+> + * * 0          - Success
+> + * * -EAGAIN    - Retry again
+> + * * Error code - Otherwise
+>   */
+>  int rpmh_flush(struct rpmh_ctrlr *ctrlr)
+
+This function name keeps throwing me off. Can we please call it
+something like rpmh_configure_tcs_sleep_wake()? The word "flush" seems
+to imply there's some sort of cache going on, but that's not really the
+case. We're programming a couple TCS FIFOs so that they can be used
+across deep CPU sleep states.
+
+>  {
+> @@ -455,9 +453,7 @@ int rpmh_flush(struct rpmh_ctrlr *ctrlr)
+>         }
+> =20
+>         /* Invalidate the TCSes first to avoid stale data */
+> -       do {
+> -               ret =3D rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
+> -       } while (ret =3D=3D -EAGAIN);
+> +       ret =3D rpmh_rsc_invalidate(ctrlr_to_drv(ctrlr));
+>         if (ret)
+>                 return ret;
+>
