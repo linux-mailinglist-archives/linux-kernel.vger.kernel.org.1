@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E861A470F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 15:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7381A4731
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 16:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgDJNth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 09:49:37 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49360 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726092AbgDJNth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 09:49:37 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 596B9A9B2A27F0B6AE9F;
-        Fri, 10 Apr 2020 21:49:32 +0800 (CST)
-Received: from [127.0.0.1] (10.133.217.205) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Apr 2020
- 21:49:21 +0800
-Subject: Re: [PATCH] sched/arm64: store cpu topology before
- notify_cpu_starting
-To:     Joel Fernandes <joelaf@google.com>
-CC:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        <aaron.lwe@gmail.com>, <aubrey.intel@gmail.com>,
-        <aubrey.li@linux.intel.com>,
-        "Cc: Frederic Weisbecker" <fweisbec@gmail.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Kees Cook <keescook@chromium.org>,
-        Greg Kerr <kerrnel@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        <mgorman@techsingularity.net>, Ingo Molnar <mingo@kernel.org>,
-        <naravamudan@digitalocean.com>, <pauld@redhat.com>,
-        <pawan.kumar.gupta@linux.intel.com>, <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paul Turner <pjt@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        <tim.c.chen@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>, <w.f@huawei.com>,
-        "chengjian (D)" <cj.chengjian@huawei.com>,
-        "wxf.wang@hisilicon.com >> Xuefeng Wang" <wxf.wang@hisilicon.com>
-References: <855831b59e1b3774b11c3e33050eac4cc4639f06.1583332765.git.vpillai@digitalocean.com>
- <20200401114215.36640-1-cj.chengjian@huawei.com>
- <CAJWu+ooyRsFFA13=rqMBCFgf_JeHsOr16-ayuECaQ5Xz48mrqQ@mail.gmail.com>
-From:   "chengjian (D)" <cj.chengjian@huawei.com>
-Message-ID: <5cf3996f-0a35-1d98-ec11-9247e95e01e6@huawei.com>
-Date:   Fri, 10 Apr 2020 21:49:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726680AbgDJOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 10:12:32 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:48581 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726177AbgDJOMb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 10:12:31 -0400
+Received: from [5.157.111.77] (port=57222 helo=[192.168.77.62])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1jMu2M-004dr7-2a; Fri, 10 Apr 2020 15:49:38 +0200
+Subject: Re: [RFC PATCH v2 2/6] i2c: allow DT nodes without 'compatible'
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org, linux-i3c@lists.infradead.org,
+        Kieran Bingham <kieran@ksquared.org.uk>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>
+References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
+ <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <11ca7487-ac07-f714-8573-20d1a0040212@lucaceresoli.net>
+Date:   Fri, 10 Apr 2020 15:49:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <CAJWu+ooyRsFFA13=rqMBCFgf_JeHsOr16-ayuECaQ5Xz48mrqQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.133.217.205]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 2020/4/10 1:54, Joel Fernandes wrote:
-> On Wed, Apr 1, 2020 at 7:27 AM Cheng Jian <cj.chengjian@huawei.com> wrote:
->> when SCHED_CORE enabled, sched_cpu_starting() uses thread_sibling as
->> SMT_MASK to initialize rq->core, but only after store_cpu_topology(),
->> the thread_sibling is ready for use.
->>
->>          notify_cpu_starting()
->>              -> sched_cpu_starting()     # use thread_sibling
->>
->>          store_cpu_topology(cpu)
->>              -> update_siblings_masks    # set thread_sibling
->>
->> Fix this by doing notify_cpu_starting later, just like x86 do.
->>
->> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
-> Just a high-level question, why does core-scheduling matter on ARM64?
-> Is it for HPC workloads?
->
-> Thanks,
->
->   - Joel
+On 18/03/20 16:00, Wolfram Sang wrote:
+> Sometimes, we have unknown devices in a system and still want to block
+> their address. For that, we allow DT nodes with only a 'reg' property.
+> These devices will be bound to the "dummy" driver but with the name
+> "reserved". That way, we can distinguish them and even hand them over to
+> the "dummy" driver later when they are really requested using
+> i2c_new_ancillary_device().
+> 
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Hi, Joel
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-I am analyzing the mainline scheduling patches and find this problem.
+As I said in the reply to v1, I think we should reserve addresses also
+when there is a compatible string but no matching driver, but this is
+another story and can be handled separately.
 
-
-ARM has some platforms that support SMT, and provides some emulate
-
-can be used.
-
-
-
-Thanks.
-
---Cheng Jian
-
-
+-- 
+Luca
