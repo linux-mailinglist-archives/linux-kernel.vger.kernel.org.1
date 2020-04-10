@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 386261A4A9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3495D1A4A9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbgDJTht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:37:49 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:28684 "EHLO
+        id S1726991AbgDJTh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:37:56 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:28692 "EHLO
         EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726646AbgDJThs (ORCPT
+        by vger.kernel.org with ESMTP id S1726203AbgDJThy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:37:48 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
+        Fri, 10 Apr 2020 15:37:54 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
  EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 10 Apr 2020 12:37:43 -0700
+ 15.0.1156.6; Fri, 10 Apr 2020 12:37:49 -0700
 Received: from sc9-mailhost3.vmware.com (unknown [10.166.69.226])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id D9E6F40BC0;
-        Fri, 10 Apr 2020 12:37:47 -0700 (PDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id A39C5B2C87;
+        Fri, 10 Apr 2020 15:37:53 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -27,9 +27,9 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Miroslav Benes <mbenes@suse.cz>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH 17/36] objtool: mcount: Replace MIPS offset types
-Date:   Fri, 10 Apr 2020 12:35:40 -0700
-Message-ID: <0a1ccd4cc3fbf0dfb0b9b912d9af5d5ee759f028.1586468801.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH 18/36] objtool: mcount: Move is_fake_mcount()
+Date:   Fri, 10 Apr 2020 12:35:41 -0700
+Message-ID: <2ba56706710215ddbcc73d1b7cb4045c4e1a11a4.1586468801.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1586468801.git.mhelsley@vmware.com>
 References: <cover.1586468801.git.mhelsley@vmware.com>
@@ -43,59 +43,184 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace MIPS is_fake_mcount code using Elf_Addr with
-unsigned long for the offsets. This is consistent with the way
-that objtool more generally treats offsets and removes the
-last use of the Elf_Addr wrapper.
+Promote this now-bit-independent code out of the old
+recordmcount ELF wrapper.
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/recordmcount.h | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ tools/objtool/recordmcount.c | 48 +++++++++++++++++++++++++++++++---
+ tools/objtool/recordmcount.h | 50 ------------------------------------
+ 2 files changed, 45 insertions(+), 53 deletions(-)
 
+diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
+index 91d14743218a..6c499fe86132 100644
+--- a/tools/objtool/recordmcount.c
++++ b/tools/objtool/recordmcount.c
+@@ -438,6 +438,48 @@ static unsigned get_mcountsym(struct rela *rela)
+ 	return 0;
+ }
+ 
++/*
++ * MIPS mcount long call has 2 _mcount symbols, only the position of the 1st
++ * _mcount symbol is needed for dynamic function tracer, with it, to disable
++ * tracing(ftrace_make_nop), the instruction in the position is replaced with
++ * the "b label" instruction, to enable tracing(ftrace_make_call), replace the
++ * instruction back. So, here, we set the 2nd one as fake and filter it.
++ *
++ * c:	3c030000	lui	v1,0x0		<-->	b	label
++ *		c: R_MIPS_HI16	_mcount
++ *		c: R_MIPS_NONE	*ABS*
++ *		c: R_MIPS_NONE	*ABS*
++ * 10:	64630000	daddiu	v1,v1,0
++ *		10: R_MIPS_LO16	_mcount
++ *		10: R_MIPS_NONE	*ABS*
++ *		10: R_MIPS_NONE	*ABS*
++ * 14:	03e0082d	move	at,ra
++ * 18:	0060f809	jalr	v1
++ * label:
++ */
++#define MIPS_FAKEMCOUNT_OFFSET	4
++
++static int MIPS_is_fake_mcount(struct rela const *rela)
++{
++	unsigned long old_r_offset = ~0UL;
++	unsigned long current_r_offset = rela->offset;
++	int is_fake;
++
++	is_fake = (old_r_offset != ~0UL) &&
++		(current_r_offset - old_r_offset == MIPS_FAKEMCOUNT_OFFSET);
++	old_r_offset = current_r_offset;
++
++	return is_fake;
++}
++
++/* Functions and pointers that do_file() may override for specific e_machine. */
++static int fn_is_fake_mcount(struct rela const *rela)
++{
++	return 0;
++}
++
++static int (*is_fake_mcount)(struct rela const *rela) = fn_is_fake_mcount;
++
+ static const unsigned int missing_sym = (unsigned int)-1;
+ 
+ /* 32 bit and 64 bit are very similar */
+@@ -557,7 +599,7 @@ static int do_file(char const *const fname)
+ 		altmcount = "__gnu_mcount_nc";
+ 		make_nop = make_nop_arm;
+ 		rel_type_nop = R_ARM_NONE;
+-		is_fake_mcount32 = arm_is_fake_mcount;
++		is_fake_mcount = arm_is_fake_mcount;
+ 		gpfx = 0;
+ 		break;
+ 	case EM_AARCH64:
+@@ -597,7 +639,7 @@ static int do_file(char const *const fname)
+ 		}
+ 		if (w2(ehdr->e_machine) == EM_MIPS) {
+ 			reltype = R_MIPS_32;
+-			is_fake_mcount32 = MIPS32_is_fake_mcount;
++			is_fake_mcount = MIPS_is_fake_mcount;
+ 		}
+ 		if (do32(ehdr, reltype) < 0)
+ 			goto out;
+@@ -617,7 +659,7 @@ static int do_file(char const *const fname)
+ 		if (w2(ghdr->e_machine) == EM_MIPS) {
+ 			reltype = R_MIPS_64;
+ 			Elf64_r_info = MIPS64_r_info;
+-			is_fake_mcount64 = MIPS64_is_fake_mcount;
++			is_fake_mcount = MIPS_is_fake_mcount;
+ 		}
+ 		if (do64(ghdr, reltype) < 0)
+ 			goto out;
 diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
-index 9bba41ee2db2..f99851034fa8 100644
+index f99851034fa8..d61892597731 100644
 --- a/tools/objtool/recordmcount.h
 +++ b/tools/objtool/recordmcount.h
-@@ -28,7 +28,6 @@
- #undef has_rel_mcount
- #undef tot_relsize
- #undef do_func
--#undef Elf_Addr
- #undef Elf_Ehdr
- #undef Elf_Shdr
- #undef Elf_Rel
-@@ -53,7 +52,6 @@
- # define fn_is_fake_mcount	fn_is_fake_mcount64
- # define MIPS_is_fake_mcount	MIPS64_is_fake_mcount
+@@ -18,9 +18,6 @@
+  * Copyright 2010 Steven Rostedt <srostedt@redhat.com>, Red Hat Inc.
+  */
+ #undef append_func
+-#undef is_fake_mcount
+-#undef fn_is_fake_mcount
+-#undef MIPS_is_fake_mcount
+ #undef mcount_adjust
+ #undef sift_rel_mcount
+ #undef nop_mcount
+@@ -48,9 +45,6 @@
+ # define has_rel_mcount		has64_rel_mcount
+ # define tot_relsize		tot64_relsize
+ # define do_func		do64
+-# define is_fake_mcount		is_fake_mcount64
+-# define fn_is_fake_mcount	fn_is_fake_mcount64
+-# define MIPS_is_fake_mcount	MIPS64_is_fake_mcount
  # define mcount_adjust		mcount_adjust_64
--# define Elf_Addr		Elf64_Addr
  # define Elf_Ehdr		Elf64_Ehdr
  # define Elf_Shdr		Elf64_Shdr
- # define Elf_Rel		Elf64_Rel
-@@ -77,7 +75,6 @@
- # define fn_is_fake_mcount	fn_is_fake_mcount32
- # define MIPS_is_fake_mcount	MIPS32_is_fake_mcount
+@@ -71,9 +65,6 @@
+ # define has_rel_mcount		has32_rel_mcount
+ # define tot_relsize		tot32_relsize
+ # define do_func		do32
+-# define is_fake_mcount		is_fake_mcount32
+-# define fn_is_fake_mcount	fn_is_fake_mcount32
+-# define MIPS_is_fake_mcount	MIPS32_is_fake_mcount
  # define mcount_adjust		mcount_adjust_32
--# define Elf_Addr		Elf32_Addr
  # define Elf_Ehdr		Elf32_Ehdr
  # define Elf_Shdr		Elf32_Shdr
- # define Elf_Rel		Elf32_Rel
-@@ -129,11 +126,11 @@ static int mcount_adjust = 0;
+@@ -88,13 +79,6 @@
+ # define _size			4
+ #endif
  
- static int MIPS_is_fake_mcount(struct rela const *rela)
+-/* Functions and pointers that do_file() may override for specific e_machine. */
+-static int fn_is_fake_mcount(struct rela const *rela)
+-{
+-	return 0;
+-}
+-static int (*is_fake_mcount)(struct rela const *rela) = fn_is_fake_mcount;
+-
+ static void fn_ELF_R_INFO(Elf_Rel *const rp, unsigned sym, unsigned type)
  {
--	static Elf_Addr old_r_offset = ~(Elf_Addr)0;
--	Elf_Addr current_r_offset = rela->offset;
-+	static unsigned long old_r_offset = ~0UL;
-+	unsigned long current_r_offset = rela->offset;
- 	int is_fake;
+ 	rp->r_info = _w(ELF_R_INFO(sym, type));
+@@ -103,40 +87,6 @@ static void (*Elf_r_info)(Elf_Rel *const rp, unsigned sym, unsigned type) = fn_E
  
--	is_fake = (old_r_offset != ~(Elf_Addr)0) &&
-+	is_fake = (old_r_offset != ~0UL) &&
- 		(current_r_offset - old_r_offset == MIPS_FAKEMCOUNT_OFFSET);
- 	old_r_offset = current_r_offset;
+ static int mcount_adjust = 0;
  
+-/*
+- * MIPS mcount long call has 2 _mcount symbols, only the position of the 1st
+- * _mcount symbol is needed for dynamic function tracer, with it, to disable
+- * tracing(ftrace_make_nop), the instruction in the position is replaced with
+- * the "b label" instruction, to enable tracing(ftrace_make_call), replace the
+- * instruction back. So, here, we set the 2nd one as fake and filter it.
+- *
+- * c:	3c030000	lui	v1,0x0		<-->	b	label
+- *		c: R_MIPS_HI16	_mcount
+- *		c: R_MIPS_NONE	*ABS*
+- *		c: R_MIPS_NONE	*ABS*
+- * 10:	64630000	daddiu	v1,v1,0
+- *		10: R_MIPS_LO16	_mcount
+- *		10: R_MIPS_NONE	*ABS*
+- *		10: R_MIPS_NONE	*ABS*
+- * 14:	03e0082d	move	at,ra
+- * 18:	0060f809	jalr	v1
+- * label:
+- */
+-#define MIPS_FAKEMCOUNT_OFFSET	4
+-
+-static int MIPS_is_fake_mcount(struct rela const *rela)
+-{
+-	static unsigned long old_r_offset = ~0UL;
+-	unsigned long current_r_offset = rela->offset;
+-	int is_fake;
+-
+-	is_fake = (old_r_offset != ~0UL) &&
+-		(current_r_offset - old_r_offset == MIPS_FAKEMCOUNT_OFFSET);
+-	old_r_offset = current_r_offset;
+-
+-	return is_fake;
+-}
+-
+ /* Append the new shstrtab, Elf_Shdr[], __mcount_loc and its relocations. */
+ static int append_func(Elf_Ehdr *const ehdr,
+ 			Elf_Shdr *const shstr,
 -- 
 2.20.1
 
