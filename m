@@ -2,273 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4618B1A47E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 17:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C041A47E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 17:38:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726669AbgDJPfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 11:35:40 -0400
-Received: from mga02.intel.com ([134.134.136.20]:54397 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbgDJPfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 11:35:39 -0400
-IronPort-SDR: wNCj1aBuv82jBABk6SduVyGxaclEuovYgNezRJk/3gKbpiBZAVd09UVDji56/Rrb6elFtdSbrT
- ZAj9BVi5GXEA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2020 08:35:39 -0700
-IronPort-SDR: 0qzb4equE8alWcIEYcRDAw7+hsh0diCKuAveWpvUzI5ER2F+uodgLsjmVyarxAR0pnBOZ0BneQ
- LBsRsmROXsZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,367,1580803200"; 
-   d="scan'208";a="240969201"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.202])
-  by orsmga007.jf.intel.com with ESMTP; 10 Apr 2020 08:35:39 -0700
-Date:   Fri, 10 Apr 2020 08:35:39 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Subject: Re: [PATCH v2] KVM: X86: Ultra fast single target IPI fastpath
-Message-ID: <20200410153539.GD22482@linux.intel.com>
-References: <1586480607-5408-1-git-send-email-wanpengli@tencent.com>
+        id S1726680AbgDJPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 11:38:04 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:43961 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726049AbgDJPiE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 11:38:04 -0400
+Received: by mail-wr1-f68.google.com with SMTP id i10so2652499wrv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 08:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VBKczGYLsv2GTJSTGN6d+Mg13l565iovwK7tDtM0eCo=;
+        b=QrxPr+6Zokq+E+HKmNBf8y79Ddlaewwn8GP1PRaMIzBz9Upg9gtVX0v8e5qSXAgslp
+         HP5QTgLW81HquXtdESlyoaeThSFU0YEmpYBldvPfh0CB6q+oUI+eFyhsAjzCf1qwKLrE
+         QAjRqMDNksMQfm85mfIu4ar0m8IvhAnj0oE1dcX3cfbYoOdk5Se3LK5zjXliq2JUYvA7
+         HH1A2ziGB860hMbI5hU++6fDjkRXUKkodvIliFCej/nWPuoCIGx4fnzUIv7P0Nk+V9m5
+         kCVV1vB3eC3JwhadPiqKt0cPjcjWTKZZcD/fTmlac66dSpBoR0rG+0tzsLoX59hPB0IM
+         3r+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VBKczGYLsv2GTJSTGN6d+Mg13l565iovwK7tDtM0eCo=;
+        b=YcxOYRMYqNZcOGDLubuoj62nqtdIoN1RyBXNJnk+tsSAF9T4GBgh1G+mRQ+eW2/rDf
+         eWXniY30X4YQpM3Dn4Xhet+VN9F7aR84rmxRn/RMjHEFQGv1GXnjNHMCe2jMmC1XobDZ
+         8BRzbcwVmm7PB1tdUEktCpV1dM2qS1TAK+KSdSuog6XXGehmJOuN0U0pVQ3TDIMlyh0A
+         uFKJQUgSHLcoEAsOAJAbrRpNoOz7u4Me6q4mw89S+ln3mBHovVdngJS1ggNjrbPaHPdU
+         H2syVr9fUQSPh1qMB473JZwhCCDjZnqcNJW1w+cRCoJowavnvnOVgwd36/bdhn7xtOjX
+         enww==
+X-Gm-Message-State: AGi0PuYsj8I6AYxs1jyvnpWtG0dkDLJQaTCiirkR03MfqgkmLzliOfNQ
+        p8XMX24rAK8i79zPLO6jMyq0pppq
+X-Google-Smtp-Source: APiQypKRu6/ZfCk4+n3XAujm26yEhTNUYNWNybtmWmBhGqeG9bDSQnILKiY37xpy0jq4aInGx/BmNg==
+X-Received: by 2002:a5d:5230:: with SMTP id i16mr5097555wra.15.1586533081703;
+        Fri, 10 Apr 2020 08:38:01 -0700 (PDT)
+Received: from [192.168.43.227] (94.197.121.102.threembb.co.uk. [94.197.121.102])
+        by smtp.gmail.com with ESMTPSA id c17sm3298882wrp.28.2020.04.10.08.38.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 08:38:01 -0700 (PDT)
+Subject: Re: [PATCH 1/2] staging: vt6656: Refactor the assignment of the
+ phy->signal variable
+To:     Oscar Carter <oscar.carter@gmx.com>,
+        Forest Bond <forest@alittletooquiet.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
+        Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20200410112834.17490-1-oscar.carter@gmx.com>
+ <20200410112834.17490-2-oscar.carter@gmx.com>
+From:   Malcolm Priestley <tvboxspy@gmail.com>
+Message-ID: <986e8e5e-245a-cc70-2c6f-8ac3a4a485c9@gmail.com>
+Date:   Fri, 10 Apr 2020 16:37:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586480607-5408-1-git-send-email-wanpengli@tencent.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200410112834.17490-2-oscar.carter@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 09:03:27AM +0800, Wanpeng Li wrote:
-> From: Wanpeng Li <wanpengli@tencent.com>
+
+
+On 10/04/2020 12:28, Oscar Carter wrote:
+> Create a constant array with the values of the "phy->signal" for every
+> rate. Remove all "phy->signal" assignments inside the switch statement
+> and replace these with a single reading from the new vnt_phy_signal
+> array.
 > 
-> IPI and Timer cause the main MSRs write vmexits in cloud environment 
-> observation, let's optimize virtual IPI latency more aggressively to 
-> inject target IPI as soon as possible.
-> 
-> Running kvm-unit-tests/vmexit.flat IPI testing on SKX server, disable 
-> adaptive advance lapic timer and adaptive halt-polling to avoid the 
-> interference, this patch can give another 7% improvement.
-> 
-> w/o fastpath -> fastpath            4238 -> 3543  16.4%
-> fastpath     -> ultra fastpath      3543 -> 3293     7%
-> w/o fastpath -> ultra fastpath      4238 -> 3293  22.3% 
-> 
-> This also revises the performance data in commit 1e9e2622a1 (KVM: VMX: 
-> FIXED+PHYSICAL mode single target IPI fastpath), that testing adds
-> --overcommit cpu-pm=on to kvm-unit-tests guest which is unnecessary.
-> 
-> Tested-by: Haiwei Li <lihaiwei@tencent.com>
-> Cc: Haiwei Li <lihaiwei@tencent.com>
-> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
 > ---
-> v1 -> v2:
->  * rebase on latest kvm/queue
->  * update patch description
+>   drivers/staging/vt6656/baseband.c | 101 +++++++-----------------------
+>   1 file changed, 21 insertions(+), 80 deletions(-)
 > 
->  arch/x86/include/asm/kvm_host.h |  6 +++---
->  arch/x86/kvm/svm/svm.c          | 21 ++++++++++++++-------
->  arch/x86/kvm/vmx/vmx.c          | 19 +++++++++++++------
->  arch/x86/kvm/x86.c              |  4 ++--
->  4 files changed, 32 insertions(+), 18 deletions(-)
+> diff --git a/drivers/staging/vt6656/baseband.c b/drivers/staging/vt6656/baseband.c
+> index a19a563d8bcc..47f93bf6e07b 100644
+> --- a/drivers/staging/vt6656/baseband.c
+> +++ b/drivers/staging/vt6656/baseband.c
+> @@ -115,6 +115,21 @@ static const u16 vnt_frame_time[MAX_RATE] = {
+>   	10, 20, 55, 110, 24, 36, 48, 72, 96, 144, 192, 216
+>   };
+
+Actually you don't need the second values
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index c7da23a..e667cf3 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1124,7 +1124,8 @@ struct kvm_x86_ops {
->  	 */
->  	void (*tlb_flush_guest)(struct kvm_vcpu *vcpu);
->  
-> -	void (*run)(struct kvm_vcpu *vcpu);
-> +	void (*run)(struct kvm_vcpu *vcpu,
-> +		enum exit_fastpath_completion *exit_fastpath);
->  	int (*handle_exit)(struct kvm_vcpu *vcpu,
->  		enum exit_fastpath_completion exit_fastpath);
->  	int (*skip_emulated_instruction)(struct kvm_vcpu *vcpu);
-> @@ -1174,8 +1175,7 @@ struct kvm_x86_ops {
->  			       struct x86_instruction_info *info,
->  			       enum x86_intercept_stage stage,
->  			       struct x86_exception *exception);
-> -	void (*handle_exit_irqoff)(struct kvm_vcpu *vcpu,
-> -		enum exit_fastpath_completion *exit_fastpath);
-> +	void (*handle_exit_irqoff)(struct kvm_vcpu *vcpu);
->  
->  	int (*check_nested_events)(struct kvm_vcpu *vcpu);
->  	void (*request_immediate_exit)(struct kvm_vcpu *vcpu);
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 27f4684..c019332 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3283,9 +3283,20 @@ static void svm_cancel_injection(struct kvm_vcpu *vcpu)
->  	svm_complete_interrupts(svm);
->  }
->  
-> +static enum exit_fastpath_completion svm_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
-> +{
-> +	if (!is_guest_mode(vcpu) &&
-> +	    to_svm(vcpu)->vmcb->control.exit_code == SVM_EXIT_MSR &&
-> +	    to_svm(vcpu)->vmcb->control.exit_info_1)
-> +		return handle_fastpath_set_msr_irqoff(vcpu);
-> +
-> +	return EXIT_FASTPATH_NONE;
-> +}
-> +
->  bool __svm_vcpu_run(unsigned long vmcb_pa, unsigned long *regs);
->  
-> -static void svm_vcpu_run(struct kvm_vcpu *vcpu)
-> +static void svm_vcpu_run(struct kvm_vcpu *vcpu,
-> +	enum exit_fastpath_completion *exit_fastpath)
->  {
->  	struct vcpu_svm *svm = to_svm(vcpu);
->  
-> @@ -3388,6 +3399,7 @@ static void svm_vcpu_run(struct kvm_vcpu *vcpu)
->  	kvm_load_host_xsave_state(vcpu);
->  	stgi();
->  
-> +	*exit_fastpath = svm_exit_handlers_fastpath(vcpu);
->  	/* Any pending NMI will happen here */
->  
->  	if (unlikely(svm->vmcb->control.exit_code == SVM_EXIT_NMI))
-> @@ -3719,13 +3731,8 @@ static int svm_check_intercept(struct kvm_vcpu *vcpu,
->  	return ret;
->  }
->  
-> -static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu,
-> -	enum exit_fastpath_completion *exit_fastpath)
-> +static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->  {
-> -	if (!is_guest_mode(vcpu) &&
-> -	    to_svm(vcpu)->vmcb->control.exit_code == SVM_EXIT_MSR &&
-> -	    to_svm(vcpu)->vmcb->control.exit_info_1)
-> -		*exit_fastpath = handle_fastpath_set_msr_irqoff(vcpu);
->  }
->  
->  static void svm_sched_in(struct kvm_vcpu *vcpu, int cpu)
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 1d2bb57..61a1725 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6354,8 +6354,7 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
->  }
->  STACK_FRAME_NON_STANDARD(handle_external_interrupt_irqoff);
->  
-> -static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu,
-> -	enum exit_fastpath_completion *exit_fastpath)
-> +static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
->  
-> @@ -6363,9 +6362,6 @@ static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu,
->  		handle_external_interrupt_irqoff(vcpu);
->  	else if (vmx->exit_reason == EXIT_REASON_EXCEPTION_NMI)
->  		handle_exception_nmi_irqoff(vmx);
-> -	else if (!is_guest_mode(vcpu) &&
-> -		vmx->exit_reason == EXIT_REASON_MSR_WRITE)
-> -		*exit_fastpath = handle_fastpath_set_msr_irqoff(vcpu);
->  }
->  
->  static bool vmx_has_emulated_msr(int index)
-> @@ -6570,9 +6566,19 @@ void vmx_update_host_rsp(struct vcpu_vmx *vmx, unsigned long host_rsp)
->  	}
->  }
->  
-> +static enum exit_fastpath_completion vmx_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
-> +{
-> +	if (!is_guest_mode(vcpu) &&
-> +		to_vmx(vcpu)->exit_reason == EXIT_REASON_MSR_WRITE)
+> +static const u8 vnt_phy_signal[][2] = {
+> +	{0x00, 0x00},	/* RATE_1M  */
+The driver would never attempt use preamble at this rate
+so it's safe to include in with the next 3 rates
 
-Bad indentation.
+> +	{0x01, 0x09},	/* RATE_2M  */
+> +	{0x02, 0x0a},	/* RATE_5M  */
+> +	{0x03, 0x0b},	/* RATE_11M */
+just |= BIT(3) for preamble.
 
-> +		return handle_fastpath_set_msr_irqoff(vcpu);
-> +
-> +	return EXIT_FASTPATH_NONE;
-> +}
-> +
->  bool __vmx_vcpu_run(struct vcpu_vmx *vmx, unsigned long *regs, bool launched);
->  
-> -static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
-> +static void vmx_vcpu_run(struct kvm_vcpu *vcpu,
-> +	enum exit_fastpath_completion *exit_fastpath)
+> +	{0x8b, 0x9b},	/* RATE_6M  */
+> +	{0x8f, 0x9f},	/* RATE_9M  */
+> +	{0x8a, 0x9a},	/* RATE_12M */
+> +	{0x8e, 0x9e},	/* RATE_18M */
+> +	{0x89, 0x99},	/* RATE_24M */
+> +	{0x8d, 0x9d},	/* RATE_36M */
+> +	{0x88, 0x98},	/* RATE_48M */
+> +	{0x8c, 0x9c}	/* RATE_54M */
 
-Why pass a pointer instead of returning the enum?
+Again just |= BIT(4) for PK_TYPE_11A
 
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
->  	unsigned long cr3, cr4;
-> @@ -6737,6 +6743,7 @@ static void vmx_vcpu_run(struct kvm_vcpu *vcpu)
->  	vmx->idt_vectoring_info = 0;
->  
->  	vmx->exit_reason = vmx->fail ? 0xdead : vmcs_read32(VM_EXIT_REASON);
-> +	*exit_fastpath = vmx_exit_handlers_fastpath(vcpu);
+Regards
 
-IMO, this should come at the very end of vmx_vcpu_run().  At a minimum, it
-needs to be moved below the #MC handling and below
-
-	if (vmx->fail || (vmx->exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY))
-		return;
-
-KVM more or less assumes vmx->idt_vectoring_info is always valid, and it's
-not obvious that a generic fastpath call can safely run before
-vmx_complete_interrupts(), e.g. the kvm_clear_interrupt_queue() call.
-
-In a normal scenario, the added latency is <50 cycles.  ~30 for the VMREAD
-of IDT_VECTORING_INFO_FIELD, a handful of zeroing instructions, and a few
-CMP+Jcc style uops to skip NMI blocking and interrupt completion.
-
-And if the result is returned, it means VMX won't need a local variable, e.g.:
-
-	vmx->exit_reason = vmx->fail ? 0xdead : vmcs_read32(VM_EXIT_REASON);
-	if ((u16)vmx->exit_reason == EXIT_REASON_MCE_DURING_VMENTRY)
-		kvm_machine_check();
-
-	if (vmx->fail || (vmx->exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY))
-		return EXIT_FASTPATH_NONE;
-
-	vmx->loaded_vmcs->launched = 1;
-	vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
-
-	vmx_recover_nmi_blocking(vmx);
-	vmx_complete_interrupts(vmx);
-
-	return vmx_exit_handlers_fastpath(vcpu);
-}
-
->  	if ((u16)vmx->exit_reason == EXIT_REASON_MCE_DURING_VMENTRY)
->  		kvm_machine_check();
->  
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3089aa4..eed31e2 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -8409,7 +8409,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
->  	}
->  
-> -	kvm_x86_ops.run(vcpu);
-> +	kvm_x86_ops.run(vcpu, &exit_fastpath);
-
-Pretty sre 
->  
->  	/*
->  	 * Do this here before restoring debug registers on the host.  And
-> @@ -8441,7 +8441,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  	vcpu->mode = OUTSIDE_GUEST_MODE;
->  	smp_wmb();
->  
-> -	kvm_x86_ops.handle_exit_irqoff(vcpu, &exit_fastpath);
-> +	kvm_x86_ops.handle_exit_irqoff(vcpu);
->  
->  	/*
->  	 * Consume any pending interrupts, including the possible source of
-> -- 
-> 2.7.4
-> 
+Malcolm
