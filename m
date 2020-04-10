@@ -2,221 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BEA1A49A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 20:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 006691A49B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 20:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726695AbgDJSEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 14:04:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:49836 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgDJSEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 14:04:15 -0400
-IronPort-SDR: 3EUpRiOu8EE81TNhHGoN6PT6iNlslShPc8EAR1a6YobXIr5QFrI2oUqozrDTjGfRP0FR8vI90w
- x9z8V/EZQ2ig==
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2020 11:04:13 -0700
-IronPort-SDR: SQyx2cnF3tsoRbiwqWSRTvPrK0CDofXhnuRrE3K4hKTI+VenVF0mo+o73EecWKK9Fk7NEUkO8H
- WG4doaYKjnrA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,367,1580803200"; 
-   d="gz'50?scan'50,208,50";a="255542304"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 10 Apr 2020 11:04:10 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jMy0f-0001u5-BA; Sat, 11 Apr 2020 02:04:09 +0800
-Date:   Sat, 11 Apr 2020 02:03:55 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: arch/riscv/kernel/stacktrace.c:78:8: error: 'sp_in_global' undeclared
-Message-ID: <202004110252.LxN9MU4e%lkp@intel.com>
+        id S1726676AbgDJSIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 14:08:53 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:33928 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbgDJSIw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 14:08:52 -0400
+Received: by mail-lj1-f196.google.com with SMTP id m8so2764083lji.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 11:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sUhp16JyAXiuVZD+Xq/KGWGIHPf1KuPIByY5iiC9qGE=;
+        b=Pjv35RyZcGbHR85jkyImo8PhzNnoQxCpYkhbz/5VLfr3tEhXbbX4nCBArGbuQn/wND
+         68oXi9ipS2kWbdyuH3pLf0icGWoY3j7e5cE6ZKk03+HyMlC7yH7KFOul/6SHJ6rbs6/W
+         Mmuht38PoZGLUlN4WbvW+EtCcgzPJWzG5UvgChsgVu0yhv6DMObr/HYof09zISDqxy9l
+         fzUXmQ021l8t3MCmOlRFdpX+KJy2r/UhVOIMtvIEmE3FzHUViBOg3cYlKiylQIaOCM6H
+         G5ekC0rS07AXo5GLApal76t/Z3YuPnhN4rdGX7qlbOAvhWVMHE/vJpg0XISjjUhBW1Cq
+         pFHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sUhp16JyAXiuVZD+Xq/KGWGIHPf1KuPIByY5iiC9qGE=;
+        b=UErpH7HNS3ZkHr3u/JM/sLCAmDCqXRX9VLLR1n/uDHyFYTk4I4PndCu7MJ/1peRs/L
+         AarVwP0nHW4l+Ujq8JIIBV1aAY8ZDki+n1sC0Ya6p7k+m0CMeAKEZbv0zRaWbbTQlSjO
+         Vc1f7af8eajNVcd4WjlvLdqRNy0xZD+zpJEtFEN9Zr0Mez8vdHZT9GVkmfkkfrlSSjLg
+         mlg4u3HaF9qZ/4iy34jq3kSRDB7eIHoUZeeZ5mn4w0GifXHAPzP30GsGs81zubYZJNR7
+         Fd7HsqFlXFR/mUz7Cw9VXXTP+QA9JQoMzxSnfkqAEyDwWnvISCsm4K/rcuM4zBHDuSVl
+         qg9A==
+X-Gm-Message-State: AGi0PubUIowPlekCoQX5kZKe6sXZNv8ytoRa87Mi66a5uR0Uh8P0vlkK
+        zw1SKgyjASZJ1PJo0ojdwBOMqpQh4BL6Z45RarAqng==
+X-Google-Smtp-Source: APiQypKHvfgserAeoFRk1o+7Z0zZDqBZMYE0tshy0+mimORB23QPIz7B0BzVxSMN11AkHDyEb5QjhoUrzNf5YKQJeSo=
+X-Received: by 2002:a05:651c:c7:: with SMTP id 7mr3628374ljr.124.1586542127789;
+ Fri, 10 Apr 2020 11:08:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1585548051.git.ashish.kalra@amd.com> <4d4fbe2b9acda82c04834682900acf782182ec23.1585548051.git.ashish.kalra@amd.com>
+ <CABayD+eOCpTGjvxwhtP85j98BKvCxtG8QDBYSC0E08GnaA12jw@mail.gmail.com>
+ <20200408014852.GA27608@ashkalra_ubuntu_server> <CABayD+eaeLZ++Hh8RC=5gWehgJs+tN3Ad39Nx7bF4foEido7jw@mail.gmail.com>
+ <20200410012344.GA19168@ashkalra_ubuntu_server>
+In-Reply-To: <20200410012344.GA19168@ashkalra_ubuntu_server>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Fri, 10 Apr 2020 11:08:11 -0700
+Message-ID: <CABayD+f1kcyX9BWMAm2aCCrNGxMc4Ks1pqLPG+-FWiZh3UK09Q@mail.gmail.com>
+Subject: Re: [PATCH v6 11/14] KVM: x86: Introduce KVM_SET_PAGE_ENC_BITMAP ioctl
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 9, 2020 at 6:23 PM Ashish Kalra <ashish.kalra@amd.com> wrote:
+>
+> Hello Steve,
+>
+> On Thu, Apr 09, 2020 at 05:06:21PM -0700, Steve Rutherford wrote:
+> > On Tue, Apr 7, 2020 at 6:49 PM Ashish Kalra <ashish.kalra@amd.com> wrot=
+e:
+> > >
+> > > Hello Steve,
+> > >
+> > > On Tue, Apr 07, 2020 at 05:26:33PM -0700, Steve Rutherford wrote:
+> > > > On Sun, Mar 29, 2020 at 11:23 PM Ashish Kalra <Ashish.Kalra@amd.com=
+> wrote:
+> > > > >
+> > > > > From: Brijesh Singh <Brijesh.Singh@amd.com>
+> > > > >
+> > > > > The ioctl can be used to set page encryption bitmap for an
+> > > > > incoming guest.
+> > > > >
+> > > > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > > > Cc: Ingo Molnar <mingo@redhat.com>
+> > > > > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > > > > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > > > > Cc: "Radim Kr=C4=8Dm=C3=A1=C5=99" <rkrcmar@redhat.com>
+> > > > > Cc: Joerg Roedel <joro@8bytes.org>
+> > > > > Cc: Borislav Petkov <bp@suse.de>
+> > > > > Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> > > > > Cc: x86@kernel.org
+> > > > > Cc: kvm@vger.kernel.org
+> > > > > Cc: linux-kernel@vger.kernel.org
+> > > > > Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> > > > > Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> > > > > ---
+> > > > >  Documentation/virt/kvm/api.rst  | 22 +++++++++++++++++
+> > > > >  arch/x86/include/asm/kvm_host.h |  2 ++
+> > > > >  arch/x86/kvm/svm.c              | 42 +++++++++++++++++++++++++++=
+++++++
+> > > > >  arch/x86/kvm/x86.c              | 12 ++++++++++
+> > > > >  include/uapi/linux/kvm.h        |  1 +
+> > > > >  5 files changed, 79 insertions(+)
+> > > > >
+> > > > > diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/=
+kvm/api.rst
+> > > > > index 8ad800ebb54f..4d1004a154f6 100644
+> > > > > --- a/Documentation/virt/kvm/api.rst
+> > > > > +++ b/Documentation/virt/kvm/api.rst
+> > > > > @@ -4675,6 +4675,28 @@ or shared. The bitmap can be used during t=
+he guest migration, if the page
+> > > > >  is private then userspace need to use SEV migration commands to =
+transmit
+> > > > >  the page.
+> > > > >
+> > > > > +4.126 KVM_SET_PAGE_ENC_BITMAP (vm ioctl)
+> > > > > +---------------------------------------
+> > > > > +
+> > > > > +:Capability: basic
+> > > > > +:Architectures: x86
+> > > > > +:Type: vm ioctl
+> > > > > +:Parameters: struct kvm_page_enc_bitmap (in/out)
+> > > > > +:Returns: 0 on success, -1 on error
+> > > > > +
+> > > > > +/* for KVM_SET_PAGE_ENC_BITMAP */
+> > > > > +struct kvm_page_enc_bitmap {
+> > > > > +       __u64 start_gfn;
+> > > > > +       __u64 num_pages;
+> > > > > +       union {
+> > > > > +               void __user *enc_bitmap; /* one bit per page */
+> > > > > +               __u64 padding2;
+> > > > > +       };
+> > > > > +};
+> > > > > +
+> > > > > +During the guest live migration the outgoing guest exports its p=
+age encryption
+> > > > > +bitmap, the KVM_SET_PAGE_ENC_BITMAP can be used to build the pag=
+e encryption
+> > > > > +bitmap for an incoming guest.
+> > > > >
+> > > > >  5. The kvm_run structure
+> > > > >  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> > > > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/a=
+sm/kvm_host.h
+> > > > > index 27e43e3ec9d8..d30f770aaaea 100644
+> > > > > --- a/arch/x86/include/asm/kvm_host.h
+> > > > > +++ b/arch/x86/include/asm/kvm_host.h
+> > > > > @@ -1271,6 +1271,8 @@ struct kvm_x86_ops {
+> > > > >                                   unsigned long sz, unsigned long=
+ mode);
+> > > > >         int (*get_page_enc_bitmap)(struct kvm *kvm,
+> > > > >                                 struct kvm_page_enc_bitmap *bmap)=
+;
+> > > > > +       int (*set_page_enc_bitmap)(struct kvm *kvm,
+> > > > > +                               struct kvm_page_enc_bitmap *bmap)=
+;
+> > > > >  };
+> > > > >
+> > > > >  struct kvm_arch_async_pf {
+> > > > > diff --git a/arch/x86/kvm/svm.c b/arch/x86/kvm/svm.c
+> > > > > index bae783cd396a..313343a43045 100644
+> > > > > --- a/arch/x86/kvm/svm.c
+> > > > > +++ b/arch/x86/kvm/svm.c
+> > > > > @@ -7756,6 +7756,47 @@ static int svm_get_page_enc_bitmap(struct =
+kvm *kvm,
+> > > > >         return ret;
+> > > > >  }
+> > > > >
+> > > > > +static int svm_set_page_enc_bitmap(struct kvm *kvm,
+> > > > > +                                  struct kvm_page_enc_bitmap *bm=
+ap)
+> > > > > +{
+> > > > > +       struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
+> > > > > +       unsigned long gfn_start, gfn_end;
+> > > > > +       unsigned long *bitmap;
+> > > > > +       unsigned long sz, i;
+> > > > > +       int ret;
+> > > > > +
+> > > > > +       if (!sev_guest(kvm))
+> > > > > +               return -ENOTTY;
+> > > > > +
+> > > > > +       gfn_start =3D bmap->start_gfn;
+> > > > > +       gfn_end =3D gfn_start + bmap->num_pages;
+> > > > > +
+> > > > > +       sz =3D ALIGN(bmap->num_pages, BITS_PER_LONG) / 8;
+> > > > > +       bitmap =3D kmalloc(sz, GFP_KERNEL);
+> > > > > +       if (!bitmap)
+> > > > > +               return -ENOMEM;
+> > > > > +
+> > > > > +       ret =3D -EFAULT;
+> > > > > +       if (copy_from_user(bitmap, bmap->enc_bitmap, sz))
+> > > > > +               goto out;
+> > > > > +
+> > > > > +       mutex_lock(&kvm->lock);
+> > > > > +       ret =3D sev_resize_page_enc_bitmap(kvm, gfn_end);
+> > > > I realize now that usermode could use this for initializing the
+> > > > minimum size of the enc bitmap, which probably solves my issue from
+> > > > the other thread.
+> > > > > +       if (ret)
+> > > > > +               goto unlock;
+> > > > > +
+> > > > > +       i =3D gfn_start;
+> > > > > +       for_each_clear_bit_from(i, bitmap, (gfn_end - gfn_start))
+> > > > > +               clear_bit(i + gfn_start, sev->page_enc_bmap);
+> > > > This API seems a bit strange, since it can only clear bits. I would
+> > > > expect "set" to force the values to match the values passed down,
+> > > > instead of only ensuring that cleared bits in the input are also
+> > > > cleared in the kernel.
+> > > >
+> > >
+> > > The sev_resize_page_enc_bitmap() will allocate a new bitmap and
+> > > set it to all 0xFF's, therefore, the code here simply clears the bits
+> > > in the bitmap as per the cleared bits in the input.
+> >
+> > If I'm not mistaken, resize only reinitializes the newly extended part
+> > of the buffer, and copies the old values for the rest.
+> > With the API you proposed you could probably reimplement a normal set
+> > call by calling get, then reset, and then set, but this feels
+> > cumbersome.
+> >
+>
+> As i mentioned earlier, the set api is basically meant for the incoming
+> VM, the resize will initialize the incoming VM's bitmap to all 0xFF's
+> and as there won't be any bitmap allocated initially on the incoming VM,
+> therefore, the bitmap copy will not do anything and the clear_bit later
+> will clear the incoming VM's bits as per the input.
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The documentation does not make that super clear. A typical set call
+in the KVM API let's you go to any state, not just a subset of states.
+Yes, this works in the common case of migrating a VM to a particular
+target, once. I find the behavior of the current API surprising. I
+prefer APIs that are unsurprising. If I were to not have read the
+code, it would be very easy for me to have assumed it worked like a
+normal set call. You could rename the ioctl something like
+"CLEAR_BITS", but a set based API is more common.
 
-Hi Palmer,
-
-FYI, the error/warning still remains.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c0cc271173b2e1c2d8d0ceaef14e4dfa79eefc0d
-commit: 52e7c52d2ded5908e6a4f8a7248e5fa6e0d6809a RISC-V: Stop relying on GCC's register allocator's hueristics
-date:   5 weeks ago
-config: riscv-allnoconfig (attached as .config)
-compiler: riscv64-linux-gcc (GCC) 9.3.0
-reproduce:
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        git checkout 52e7c52d2ded5908e6a4f8a7248e5fa6e0d6809a
-        # save the attached .config to linux build tree
-        GCC_VERSION=9.3.0 make.cross ARCH=riscv 
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kbuild test robot <lkp@intel.com>
-
-All errors (new ones prefixed by >>):
-
-   arch/riscv/kernel/stacktrace.c: In function 'walk_stackframe':
->> arch/riscv/kernel/stacktrace.c:78:8: error: 'sp_in_global' undeclared (first use in this function)
-      78 |   sp = sp_in_global;
-         |        ^~~~~~~~~~~~
-   arch/riscv/kernel/stacktrace.c:78:8: note: each undeclared identifier is reported only once for each function it appears in
-
-vim +/sp_in_global +78 arch/riscv/kernel/stacktrace.c
-
-    67	
-    68	static void notrace walk_stackframe(struct task_struct *task,
-    69		struct pt_regs *regs, bool (*fn)(unsigned long, void *), void *arg)
-    70	{
-    71		unsigned long sp, pc;
-    72		unsigned long *ksp;
-    73	
-    74		if (regs) {
-    75			sp = user_stack_pointer(regs);
-    76			pc = instruction_pointer(regs);
-    77		} else if (task == NULL || task == current) {
-  > 78			sp = sp_in_global;
-    79			pc = (unsigned long)walk_stackframe;
-    80		} else {
-    81			/* task blocked in __switch_to */
-    82			sp = task->thread.sp;
-    83			pc = task->thread.ra;
-    84		}
-    85	
-    86		if (unlikely(sp & 0x7))
-    87			return;
-    88	
-    89		ksp = (unsigned long *)sp;
-    90		while (!kstack_end(ksp)) {
-    91			if (__kernel_text_address(pc) && unlikely(fn(pc, arg)))
-    92				break;
-    93			pc = (*ksp++) - 0x4;
-    94		}
-    95	}
-    96	
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
---FCuugMFkClbJLl1L
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
-
-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
-3WKCrf8FLDdmSuxJAAA=
-
---FCuugMFkClbJLl1L--
+Thanks,
+Steve
