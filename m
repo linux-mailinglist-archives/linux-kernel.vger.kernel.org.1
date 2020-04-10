@@ -2,73 +2,360 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 528441A4953
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F2A1A48D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbgDJRjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 13:39:07 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:46506 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbgDJRjH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 13:39:07 -0400
-Received: by mail-ot1-f68.google.com with SMTP id w12so1609870otm.13;
-        Fri, 10 Apr 2020 10:39:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sMpQBRP8FS5/1RZ8Jd5Q+SlXPKexMnkYQKuvOFERAmM=;
-        b=aQJ26UrHV6SolvPod/srOeI3JJGxPcx8oCaqXy2L4OqZ/FMYHF39Wa+J2LMe3xt20k
-         lvSN8GFoUIUHO1FFCsdTggrFIzdlH5Ajz/UpJ4gj0V0qxcp7J7QQdtlO3JLBwMCNEv4V
-         w09GOu8lhg36V0EzySw3lEQZxb3TQKairBGj4TxkBoC6TmiDrwF5yIYYb2I+PbFvls1N
-         0vK2rJi4milwgisuapHXrsbkxHk4x1pQZWwdVB6c/VAS0ubz3W6ZOLB7ASoGxZWVY803
-         XBKsMWrJvwlAwpo87oHwf84XVE4+oqKts+2mrERMw1Cg4M6Q2zAgPVh0SjBN3egCcqex
-         T5FQ==
-X-Gm-Message-State: AGi0PuateItOKQG0Rs1NPnxJYrYu6tTtx6nAWdhETXcpLZrJoQnM0MdU
-        4SJ783QWb7+OD5KeX8q+lBGqqM8=
-X-Google-Smtp-Source: APiQypLOpDs/VWOK6XL5g7aYp34maDUCWLeFvZay6f1FWhW6f3+p9gzEOnFLor7ULmSrlOR2HJ54hg==
-X-Received: by 2002:a05:6830:1e79:: with SMTP id m25mr4962035otr.36.1586540345966;
-        Fri, 10 Apr 2020 10:39:05 -0700 (PDT)
-Received: from rob-hp-laptop (ip-99-203-29-27.pools.cgn.spcsdns.net. [99.203.29.27])
-        by smtp.gmail.com with ESMTPSA id r24sm1518599otq.9.2020.04.10.10.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 10:39:05 -0700 (PDT)
-Received: (nullmailer pid 11877 invoked by uid 1000);
-        Fri, 10 Apr 2020 17:14:05 -0000
-Date:   Fri, 10 Apr 2020 12:14:05 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-Subject: Re: [PATCH v4 1/5] dt-bindings: vendor-prefixes: Add an entry for
- Protonic Holland
-Message-ID: <20200410171405.GA11823@bogus>
-References: <20200330120640.9810-1-o.rempel@pengutronix.de>
- <20200330120640.9810-2-o.rempel@pengutronix.de>
+        id S1726638AbgDJRQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 13:16:42 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:43560 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726177AbgDJRQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 13:16:42 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 5227A413D7;
+        Fri, 10 Apr 2020 17:16:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-type:content-type:content-transfer-encoding:mime-version
+        :x-mailer:message-id:date:date:subject:subject:from:from
+        :received:received:received; s=mta-01; t=1586538997; x=
+        1588353398; bh=Nk510nQQHnv9mw6eQeK7OVssrV86+FMDkHAG/ixoCMk=; b=X
+        A8yV+du5A9a281krAkk5X1i8gK1IYUd+MzGGpFqN1EWt40A/fz8xZiljmLa5UOBK
+        76zHPYpseVd+qZSz52cLYDSVUSXUwcaEzwYkP6FDuVXGXnW7uLf3a1Yptl468p0I
+        +RKzH0PP1u/Ujn55rwz1ChkVN75xRjT1u9QVwPlbc0=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bxhFev6NtRmu; Fri, 10 Apr 2020 20:16:37 +0300 (MSK)
+Received: from T-EXCH-02.corp.yadro.com (t-exch-02.corp.yadro.com [172.17.10.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 2AF6D404CF;
+        Fri, 10 Apr 2020 20:16:36 +0300 (MSK)
+Received: from bbwork.com (172.17.14.122) by T-EXCH-02.corp.yadro.com
+ (172.17.10.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Fri, 10
+ Apr 2020 20:16:37 +0300
+From:   Alexander Filippov <a.filippov@yadro.com>
+To:     <linux-aspeed@lists.ozlabs.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexander Filippov <a.filippov@yadro.com>
+Subject: [PATCH v2] ARM: DTS: Aspeed: Add YADRO Nicole BMC
+Date:   Fri, 10 Apr 2020 20:16:13 +0300
+Message-ID: <20200410171613.30260-1-a.filippov@yadro.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200330120640.9810-2-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.17.14.122]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-02.corp.yadro.com (172.17.10.102)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Mar 2020 14:06:36 +0200, Oleksij Rempel wrote:
-> Add "prt" entry for Protonic Holland: https://www.protonic.nl/en/
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+Nicole is an OpenPower machine with an Aspeed 2500 BMC SoC manufactured
+by YADRO.
 
-Applied, thanks.
+Signed-off-by: Alexander Filippov <a.filippov@yadro.com>
+---
+ arch/arm/boot/dts/Makefile                  |   1 +
+ arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts | 270 ++++++++++++++++++++
+ 2 files changed, 271 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts
 
-Rob
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index e8dd99201397..6f9fe0f959f2 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1347,6 +1347,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+ 	aspeed-bmc-microsoft-olympus.dtb \
+ 	aspeed-bmc-opp-lanyang.dtb \
+ 	aspeed-bmc-opp-mihawk.dtb \
++	aspeed-bmc-opp-nicole.dtb \
+ 	aspeed-bmc-opp-palmetto.dtb \
+ 	aspeed-bmc-opp-romulus.dtb \
+ 	aspeed-bmc-opp-swift.dtb \
+diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts b/arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts
+new file mode 100644
+index 000000000000..3f1d92bab07b
+--- /dev/null
++++ b/arch/arm/boot/dts/aspeed-bmc-opp-nicole.dts
+@@ -0,0 +1,270 @@
++// SPDX-License-Identifier: GPL-2.0+
++// Copyright 2019 YADRO
++/dts-v1/;
++#include "aspeed-g5.dtsi"
++#include <dt-bindings/gpio/aspeed-gpio.h>
++
++/ {
++	model = "Nicole BMC";
++	compatible = "yadro,nicole-bmc", "aspeed,ast2500";
++
++	chosen {
++		stdout-path = &uart5;
++		bootargs = "console=ttyS4,115200 earlyprintk";
++	};
++
++	memory@80000000 {
++		reg = <0x80000000 0x20000000>;
++	};
++
++	reserved-memory {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges;
++
++		vga_memory: framebuffer@9f000000 {
++			no-map;
++			reg = <0x9f000000 0x01000000>; /* 16M */
++		};
++
++		flash_memory: region@98000000 {
++			no-map;
++			reg = <0x98000000 0x04000000>; /* 64M */
++		};
++
++		coldfire_memory: codefire_memory@9ef00000 {
++			reg = <0x9ef00000 0x00100000>;
++			no-map;
++		};
++
++		gfx_memory: framebuffer {
++			size = <0x01000000>;
++			alignment = <0x01000000>;
++			compatible = "shared-dma-pool";
++			reusable;
++		};
++
++		video_engine_memory: jpegbuffer {
++			size = <0x02000000>;	/* 32M */
++			alignment = <0x01000000>;
++			compatible = "shared-dma-pool";
++			reusable;
++		};
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		power {
++			gpios = <&gpio ASPEED_GPIO(AA, 4) GPIO_ACTIVE_HIGH>;
++		};
++
++		identify {
++			gpios = <&gpio ASPEED_GPIO(AA, 7) GPIO_ACTIVE_HIGH>;
++		};
++
++		alarm_red {
++			gpios = <&gpio ASPEED_GPIO(AA, 3) GPIO_ACTIVE_HIGH>;
++		};
++
++		alarm_yellow {
++			gpios = <&gpio ASPEED_GPIO(AA, 1) GPIO_ACTIVE_HIGH>;
++		};
++	};
++
++	fsi: gpio-fsi {
++		compatible = "aspeed,ast2500-cf-fsi-master", "fsi-master";
++		#address-cells = <2>;
++		#size-cells = <0>;
++		no-gpio-delays;
++
++		memory-region = <&coldfire_memory>;
++		aspeed,sram = <&sram>;
++		aspeed,cvic = <&cvic>;
++
++		clock-gpios = <&gpio ASPEED_GPIO(AA, 0) GPIO_ACTIVE_HIGH>;
++		data-gpios = <&gpio ASPEED_GPIO(AA, 2) GPIO_ACTIVE_HIGH>;
++		mux-gpios = <&gpio ASPEED_GPIO(A, 6) GPIO_ACTIVE_HIGH>;
++		enable-gpios = <&gpio ASPEED_GPIO(D, 0) GPIO_ACTIVE_HIGH>;
++		trans-gpios = <&gpio ASPEED_GPIO(P, 1) GPIO_ACTIVE_HIGH>;
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		checkstop {
++			label = "checkstop";
++			gpios = <&gpio ASPEED_GPIO(J, 2) GPIO_ACTIVE_LOW>;
++			linux,code = <ASPEED_GPIO(J, 2)>;
++		};
++	};
++
++	iio-hwmon-battery {
++		compatible = "iio-hwmon";
++		io-channels = <&adc 12>;
++	};
++};
++
++&fmc {
++	status = "okay";
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "bmc";
++		spi-max-frequency = <50000000>;
++#include "openbmc-flash-layout.dtsi"
++	};
++};
++
++&spi1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_spi1_default>;
++
++	flash@0 {
++		status = "okay";
++		m25p,fast-read;
++		label = "pnor";
++		spi-max-frequency = <100000000>;
++	};
++};
++
++&lpc_ctrl {
++	status = "okay";
++	memory-region = <&flash_memory>;
++	flash = <&spi1>;
++};
++
++&uart1 {
++	/* Rear RS-232 connector */
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_txd1_default
++			&pinctrl_rxd1_default
++			&pinctrl_nrts1_default
++			&pinctrl_ndtr1_default
++			&pinctrl_ndsr1_default
++			&pinctrl_ncts1_default
++			&pinctrl_ndcd1_default
++			&pinctrl_nri1_default>;
++};
++
++&uart5 {
++	status = "okay";
++};
++
++&mac0 {
++	status = "okay";
++
++	use-ncsi;
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_rmii1_default>;
++	clocks = <&syscon ASPEED_CLK_GATE_MAC1CLK>,
++		 <&syscon ASPEED_CLK_MAC1RCLK>;
++	clock-names = "MACCLK", "RCLK";
++};
++
++&i2c0 {
++	status = "okay";
++
++	eeprom@50 {
++		compatible = "atmel,24c256";
++		reg = <0x50>;
++		pagesize = <64>;
++	};
++};
++
++&i2c2 {
++	status = "okay";
++    /* CPU0 characterization connector */
++};
++
++&i2c3 {
++	status = "okay";
++    /* CLK GEN SI5338 */
++};
++
++&i2c4 {
++	status = "okay";
++    /* Voltage regulators for CPU0 */
++};
++
++&i2c5 {
++	status = "okay";
++    /* Voltage regulators for CPU1 */
++};
++
++&i2c6 {
++	status = "okay";
++
++	rtc@32 {
++		compatible = "epson,rx8900";
++		reg = <0x32>;
++	};
++};
++
++&i2c7 {
++	status = "okay";
++    /* CPLD */
++};
++
++&gpio {
++	nic_func_mode0 {
++		gpio-hog;
++		gpios = <ASPEED_GPIO(D, 3) GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "nic_func_mode0";
++	};
++	nic_func_mode1 {
++		gpio-hog;
++		gpios = <ASPEED_GPIO(D, 4) GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "nic_func_mode1";
++	};
++	seq_cont {
++		gpio-hog;
++		gpios = <ASPEED_GPIO(S, 7) GPIO_ACTIVE_HIGH>;
++		output-low;
++		line-name = "seq_cont";
++	};
++	ncsi_cfg {
++		gpio-hog;
++		input;
++		gpios = <ASPEED_GPIO(E, 1) GPIO_ACTIVE_HIGH>;
++		line-name = "ncsi_cfg";
++	};
++};
++
++&vuart {
++	status = "okay";
++};
++
++&gfx {
++	status = "okay";
++	memory-region = <&gfx_memory>;
++};
++
++&pinctrl {
++	aspeed,external-nodes = <&gfx &lhc>;
++};
++
++&ibt {
++	status = "okay";
++};
++
++&vhub {
++	status = "okay";
++};
++
++&adc {
++	status = "okay";
++};
++
++&video {
++	status = "okay";
++	memory-region = <&video_engine_memory>;
++};
++
++#include "ibm-power9-dual.dtsi"
+-- 
+2.21.1
+
