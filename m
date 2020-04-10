@@ -2,61 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA641A4501
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 12:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253631A450B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 12:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726142AbgDJKJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 06:09:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42708 "EHLO mx2.suse.de"
+        id S1726173AbgDJKOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 06:14:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45500 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725893AbgDJKJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 06:09:45 -0400
+        id S1725893AbgDJKOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 06:14:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 86C23AB5F;
-        Fri, 10 Apr 2020 10:09:43 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 55CB3AB5F;
+        Fri, 10 Apr 2020 10:14:44 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 965AEDA72D; Fri, 10 Apr 2020 12:09:06 +0200 (CEST)
-Date:   Fri, 10 Apr 2020 12:09:06 +0200
+        id 5FC56DA72D; Fri, 10 Apr 2020 12:14:06 +0200 (CEST)
+Date:   Fri, 10 Apr 2020 12:14:06 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.6 64/68] btrfs: hold a ref on the root in
- btrfs_recover_relocation
-Message-ID: <20200410100906.GH5920@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        David Sterba <dsterba@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Leonard Lausen <leonard@lausen.nl>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@01.org
+Subject: Re: [LKP] [btrfs] 8d47a0d8f7: fio.write_bw_MBps -28.6% regression
+Message-ID: <20200410101406.GI5920@suse.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20200410034634.7731-1-sashal@kernel.org>
- <20200410034634.7731-64-sashal@kernel.org>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        David Sterba <dsterba@suse.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Leonard Lausen <leonard@lausen.nl>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@01.org
+References: <20190513031733.GI31424@shao2-debian>
+ <d82835ec-c99c-bb40-be9f-f49f8101e921@linux.intel.com>
+ <a52f10f7-cdf6-9b00-9e49-b1344c17a190@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200410034634.7731-64-sashal@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a52f10f7-cdf6-9b00-9e49-b1344c17a190@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 11:46:29PM -0400, Sasha Levin wrote:
-> From: Josef Bacik <josef@toxicpanda.com>
+On Fri, Apr 10, 2020 at 02:44:55PM +0800, Qu Wenruo wrote:
+> On 2020/4/10 下午2:34, Xing Zhengjun wrote:
+> > Hi Wenruo,
+> > 
+> >    We test it in v5.6, the issue still exist, do you have time to take a
+> > look at this? Thanks.
 > 
-> [ Upstream commit 932fd26df8125a5b14438563c4d3e33f59ba80f7 ]
+> This is expected.
 > 
-> We look up the fs root in various places in here when recovering from a
-> crashed relcoation.  Make sure we hold a ref on the root whenever we
-> look them up.
+> The extra check brings new overhead mostly equal to another CRC32 run.
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> We believe it's worthy, as our read time tree checker has exposed quite
+> some bit flip corruption.
 
-Please drop this patch from all stable versions. It's part of a
-larger series that is preparatory switching from SRCU to refcounts, so
-the patch on itself does not fix anything.
+The test probably runs on a PMEM device so there's no slowdown from the
+actual IO and the in-memory checks are measurable, though 28% is a lot,
+I'd expect something like 5-10% at most.
