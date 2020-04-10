@@ -2,134 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D248E1A4602
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88A01A45FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgDJL4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 07:56:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54441 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725990AbgDJL4J (ORCPT
+        id S1726143AbgDJLyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 07:54:11 -0400
+Received: from mail.efficios.com ([167.114.26.124]:56282 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgDJLyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 07:56:09 -0400
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jMsGR-0004cu-KI; Fri, 10 Apr 2020 13:56:03 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 2C311100BB6;
-        Fri, 10 Apr 2020 13:56:03 +0200 (CEST)
-Message-Id: <20200410115517.176308876@linutronix.de>
-User-Agent: quilt/0.65
-Date:   Fri, 10 Apr 2020 13:54:02 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [patch 3/3] KVM: VMX: Extend VMXs #AC interceptor to handle split
- lock #AC in guest
-References: <20200410115359.242241855@linutronix.de>
+        Fri, 10 Apr 2020 07:54:10 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 65477286A26;
+        Fri, 10 Apr 2020 07:54:10 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id OhLL-sJwWh0w; Fri, 10 Apr 2020 07:54:10 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id E8B8E2869AC;
+        Fri, 10 Apr 2020 07:54:09 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com E8B8E2869AC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1586519650;
+        bh=Kx29Iw92OSXy/7Br9e44Ry8pSnBhQoTqdlzG5LH6z+I=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=mrrR35HUGZSzy+NZ0lff/kgO/vY/SPCeCemzFSZwzT2Xido3zbebm8VooRF5JGH5w
+         K/mcB46yYWlgjHx2KzzSPOk1jDe8g6GEN2EVunnnO6z1gfCXMvwhPiJVj0wXrgD2w7
+         rDNeNfwOSjluxTVqkt9UEy2Wvd7NVEkIi92PU7HF16u5AahMBXW87wbza3ErQ5Gnrz
+         3JFE04nAM5/PDTpIOV+gwXiWuIAR81DlrqYsBGaoWFk9OmMl4OdUdQj420XkWjGR7P
+         8FGFRfzUlkfFY8OyX6QfTpIlBdPZPD35GNmZYA986NcEKmR2JsFn3rplbx6z0z5yHw
+         XfgQOjDjpdmUw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 6dCVKayr5x8p; Fri, 10 Apr 2020 07:54:09 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id D7DE42869AB;
+        Fri, 10 Apr 2020 07:54:09 -0400 (EDT)
+Date:   Fri, 10 Apr 2020 07:54:09 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        K <prasad@linux.vnet.ibm.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Ingo Molnar <mingo@redhat.com>, bpf <bpf@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>
+Message-ID: <1752398220.29905.1586519649766.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200409223335.ovetfovkm2d2ca36@ast-mbp.dhcp.thefacebook.com>
+References: <20200409193543.18115-1-mathieu.desnoyers@efficios.com> <20200409193543.18115-4-mathieu.desnoyers@efficios.com> <20200409223335.ovetfovkm2d2ca36@ast-mbp.dhcp.thefacebook.com>
+Subject: Re: [RFC PATCH 3/9] writeback: tracing: pass global_wb_domain as
+ tracepoint parameter
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3918 (ZimbraWebClient - FF74 (Linux)/8.8.15_GA_3895)
+Thread-Topic: writeback: tracing: pass global_wb_domain as tracepoint parameter
+Thread-Index: e+wVNcVKwMIZDlfQgTHJ8mySzrviLA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaoyao Li <xiaoyao.li@intel.com>
+----- On Apr 9, 2020, at 6:33 PM, Alexei Starovoitov alexei.starovoitov@gmail.com wrote:
 
-Two types of #AC can be generated in Intel CPUs:
- 1. legacy alignment check #AC
- 2. split lock #AC
+> On Thu, Apr 09, 2020 at 03:35:37PM -0400, Mathieu Desnoyers wrote:
+>>  		if (pause < min_pause) {
+>> -			trace_balance_dirty_pages(wb,
+>> +			trace_balance_dirty_pages(&global_wb_domain,
+>> +						  wb,
+>>  						  sdtc->thresh,
+>>  						  sdtc->bg_thresh,
+>>  						  sdtc->dirty,
+> 
+> argh. 13 arguments to single function ?!
+> Currently the call site looks like:
+>                        trace_balance_dirty_pages(wb,
+>                                                  sdtc->thresh,
+>                                                  sdtc->bg_thresh,
+>                                                  sdtc->dirty,
+>                                                  sdtc->wb_thresh,
+>                                                  sdtc->wb_dirty,
+>                                                  dirty_ratelimit,
+>                                                  task_ratelimit,
+>                                                  pages_dirtied,
+>                                                  period,
+>                                                  min(pause, 0L),
+>                                                  start_time);
+> Just pass sdtc as a pointer instead.
+> Then another wb argument will be fine.
 
-Reflect #AC back into the guest if the guest has legacy alignment checks
-enabled or if split lock detection is disabled.
+Good point! In order to do that I would need to move the declaration
+of struct dirty_throttle_control from mm/page-writeback.c to
+include/linux/writeback.h so it can be used from the tracepoint.
 
-If the #AC is not a legacy one and split lock detection is enabled, then
-invoke handle_guest_split_lock() which will either warn and disable split
-lock detection for this task or force SIGBUS on it.
+Seems fair ?
 
-[ tglx: Switch it to handle_guest_split_lock() and renamed the misnomed
-  	helper function ]
+Thanks,
 
-Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kvm/vmx/vmx.c |   37 ++++++++++++++++++++++++++++++++++---
- 1 file changed, 34 insertions(+), 3 deletions(-)
+Mathieu
 
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4592,6 +4592,26 @@ static int handle_machine_check(struct k
- 	return 1;
- }
- 
-+/*
-+ * If the host has split lock detection disabled, then #AC is
-+ * unconditionally injected into the guest, which is the pre split lock
-+ * detection behaviour.
-+ *
-+ * If the host has split lock detection enabled then #AC is
-+ * only injected into the guest when:
-+ *  - Guest CPL == 3 (user mode)
-+ *  - Guest has #AC detection enabled in CR0
-+ *  - Guest EFLAGS has AC bit set
-+ */
-+static inline bool guest_inject_ac(struct kvm_vcpu *vcpu)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
-+		return true;
-+
-+	return vmx_get_cpl(vcpu) == 3 && kvm_read_cr0_bits(vcpu, X86_CR0_AM) &&
-+	       (kvm_get_rflags(vcpu) & X86_EFLAGS_AC);
-+}
-+
- static int handle_exception_nmi(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
-@@ -4657,9 +4677,6 @@ static int handle_exception_nmi(struct k
- 		return handle_rmode_exception(vcpu, ex_no, error_code);
- 
- 	switch (ex_no) {
--	case AC_VECTOR:
--		kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
--		return 1;
- 	case DB_VECTOR:
- 		dr6 = vmcs_readl(EXIT_QUALIFICATION);
- 		if (!(vcpu->guest_debug &
-@@ -4688,6 +4705,20 @@ static int handle_exception_nmi(struct k
- 		kvm_run->debug.arch.pc = vmcs_readl(GUEST_CS_BASE) + rip;
- 		kvm_run->debug.arch.exception = ex_no;
- 		break;
-+	case AC_VECTOR:
-+		if (guest_inject_ac(vcpu)) {
-+			kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
-+			return 1;
-+		}
-+
-+		/*
-+		 * Handle split lock. Depending on detection mode this will
-+		 * either warn and disable split lock detection for this
-+		 * task or force SIGBUS on it.
-+		 */
-+		if (handle_guest_split_lock(kvm_rip_read(vcpu)))
-+			return 1;
-+		fallthrough;
- 	default:
- 		kvm_run->exit_reason = KVM_EXIT_EXCEPTION;
- 		kvm_run->ex.exception = ex_no;
 
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
