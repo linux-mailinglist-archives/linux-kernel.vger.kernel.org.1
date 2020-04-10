@@ -2,107 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF641A4745
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 16:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7161A4738
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 16:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbgDJORR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 10:17:17 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:36881 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbgDJORR (ORCPT
+        id S1726648AbgDJOQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 10:16:52 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:33800 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726009AbgDJOQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 10:17:17 -0400
-Received: by mail-pg1-f193.google.com with SMTP id r4so1041992pgg.4;
-        Fri, 10 Apr 2020 07:17:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=S9YQFX4SpFglrYLDPLCc6f7rGd8ZglNwGTg2V85a1Fo=;
-        b=qEUxkTHBLvran8qf1Qwn6S4HMffiCXwct6Clh0UCEwXlHmmKvv0SGBLtSYLRxOR3rY
-         /qfQ8TlJVY7H4Laxn6v0KjoY2Ii9IPF3vE752E7CmRFrLS5KMSaixBg9s8WnJeGPny4k
-         FdlpRK0OtwhATB32eSQGK1IfRaTB3qC+Jr3G9gZsNAKc7uMj7ZDFCQOYEwptOX9T843W
-         Xa4HlsG5HhnKvlZjx63cZNLH9Siro5vvu5AJ8vM0PvOP7Jne6GPUYAySvtrr77Ixeozw
-         rRANhXAmHdU/7bLyGxfpG2abJ/Q3+NPm5XCrqJAyCOqi4cf9uZnaXYaVwNvAnRaogQND
-         iz/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S9YQFX4SpFglrYLDPLCc6f7rGd8ZglNwGTg2V85a1Fo=;
-        b=gRKCBOKKO1qPpwRoZRqF4m2e7L33AAmBX+SY3emTMJvU89vLfSivhZ3M5bDvnrcTQC
-         xXFjVM8gl+j3RE19CjxIchoxSLXBCeuBElYW+6CzlW60hmVb/FucQdZa6T9GnGVnzX54
-         WeakzwDUIUyb/otVNzmhQt/RSx3z+SVJCXHp6un9UxRJyckmFEBQC3FB4oxLIj3+n0ol
-         ne+0jX1DnmMRmHUxGwjY5EU/NUf5b5tu9orHf5T9/57g0Yd56vCVh9xUFu/drgs6+DAn
-         dbxClrC0kh9pHhVXQqvUxkJXAG4id/Zz0JrpZHPPmr7fKMcxIaa27mJt9MZNeihIRQZI
-         /BDw==
-X-Gm-Message-State: AGi0PuYzmm1rNPB7MbIyCgiSZRJWpK0QevuvH6lQNeIi4qvREbjlISL2
-        S+gn6refSUoSQsC4/Sj7OfetHFvW9EA=
-X-Google-Smtp-Source: APiQypIcV+o7TpoI/V4DV8iEfnkSgcbSa282dRJEVNqGWkONAyTxeubcBRqxixNo9rIAn+QUY602tQ==
-X-Received: by 2002:a65:5606:: with SMTP id l6mr2907086pgs.446.1586528236702;
-        Fri, 10 Apr 2020 07:17:16 -0700 (PDT)
-Received: from i7.zsun.org ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id c12sm1969191pji.19.2020.04.10.07.17.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Apr 2020 07:17:16 -0700 (PDT)
-Subject: Re: [PATCH 0/1] Bluetooth: btrtl: Add support for RTL8761B
-To:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, icenowy@aosc.io
-References: <20200410140010.105317-1-sztsian@gmail.com>
-From:   Zamir SUN <sztsian@gmail.com>
-Message-ID: <595a5b19-bb32-92c8-2575-d24fcb542df1@gmail.com>
-Date:   Fri, 10 Apr 2020 22:17:06 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 10 Apr 2020 10:16:52 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03AEEhFO027147;
+        Fri, 10 Apr 2020 10:16:39 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3091nb1brp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 10 Apr 2020 10:16:39 -0400
+Received: from ASHBMBX8.ad.analog.com (ashbmbx8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 03AEGch6010429
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 10 Apr 2020 10:16:38 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 10 Apr 2020 10:16:37 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Fri, 10 Apr 2020 10:16:37 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 10 Apr 2020 10:16:37 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 03AEGZWt028552;
+        Fri, 10 Apr 2020 10:16:35 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v3 0/5] iio: core,buffer: re-organize chardev creation
+Date:   Fri, 10 Apr 2020 17:17:24 +0300
+Message-ID: <20200410141729.82834-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20200410140010.105317-1-sztsian@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-10_05:2020-04-09,2020-04-10 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 clxscore=1015 suspectscore=2
+ mlxscore=0 phishscore=0 adultscore=0 priorityscore=1501 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004100119
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The main intent is to be able to add more chardevs per IIO device, one
+for each buffer. To get there, some rework is needed, and one important
+facet is to move the creation of the current chardev into
+'industrialio-buffer.c', so that control/logic of these chardevs is
+localized in that file.
 
+This changeset does that [incrementally] by moving the common chardev
+creation from 'industrialio-core.c' to 'industrialio-buffer.c' &
+'industrialio-event.c'.
+The common chardev is required for both IIO buffers & IIO events.
+In order to make this work, the 'iio_device_event_ioctl()' needs to be
+passed from 'industrialio-event.c' to 'industrialio-buffer.c' flying past
+'industrialio-core.c'. This sounds a bit wrong [at first] but it has the
+effect of reducing inter-dependencies between 'industrialio-core.c' to
+'industrialio-buffer.c' quite a bit.
+The IIO buffer also has a CONFIG_IIO_BUFFER symbol which can turn it
+off. No idea how widely this is used [as disabled], but this changeset
+also takes that into consideration.
 
-On 4/10/20 10:00 PM, sztsian@gmail.com wrote:
-> From: Zamir SUN <sztsian@gmail.com>
-> 
-> This patch adds support for the RTL8761B USB Bluetooth dongle.
-> 
-> When I got the RTL8761B dongle, I see it is actually recognised as
-> RTL8761A in my system (5.5.15-200.fc31.x86_64 on Fedora). And the
-> userspace cannot detect bluetooth devices in such situation.
-> 
-> [34689.158047] Bluetooth: hci0: RTL: examining hci_ver=0a hci_rev=000b lmp_ver=0a lmp_subver=8761
-> [34689.159083] Bluetooth: hci0: RTL: rom_version status=0 version=1
-> [34689.159088] Bluetooth: hci0: RTL: loading rtl_bt/rtl8761a_fw.bin
-> [34689.159498] Bluetooth: hci0: RTL: loading rtl_bt/rtl8761a_config.bin
-> [34689.159522] bluetooth hci0: Direct firmware load for rtl_bt/rtl8761a_config.bin failed with error -2
-> [34689.159529] Bluetooth: hci0: RTL: cfg_sz -2, total sz 20204
-> [34691.248484] Bluetooth: hci0: command 0xfc20 tx timeout
-> 
-> With great help from Icenowy Zheng she helped identifying the firmware
-> from the vendor-provided Windows driver. After applying this patch along
-> with the firmware I am able to use this dongle.
-> 
-> Note, I don't have RTL8761A device, so I would appreciate if someone
-> can help test in case this patch breaks RTL8761A.
-> 
-> Ziqian SUN (Zamir) (1):
->    Bluetooth: btrtl: Add support for RTL8761B
-> 
->   drivers/bluetooth/btrtl.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
-> 
+So, now the logic [for __iio_device_register() with regard to chardev
+init] is:
+1. iio_device_buffers_init() will init buffer and the chardev, if that
+   works, the 'iio_device_event_ioctl()' will be attached to the chardev
+2. if CONFIG_IIO_BUFFER is not defined or 'indio_dev->buffer == NULL'
+   (no buffter attached), -ENOTSUPP should be returned from
+   iio_device_buffers_init(), in which case the chardev should be
+   initialized in  'industrialio-event.c' via
+   'iio_device_register_event_chrdev()'
 
-Oh sorry, Self-NAK.
-I sent only partial of my patch.
+One neat side effect of this logic, is that we can also move the buffer
+sysfs alloc/cleanup into 'industrialio-buffer.c' under the new
+'iio_device_buffers_{un}init()' functions.
+
+Changelog v2 -> v3:
+* removed double init in
+  'iio: event: move event-only chardev in industrialio-event.c'
+
+Changelog v1 -> v2:
+* re-reviewed some exit-paths and cleanup some potential leaks on those
+  exit paths:
+  - for 'iio: buffer: move iio buffer chrdev in industrialio-buffer.c'
+    add iio_device_buffers_put() helper and calling iio_buffers_uninit()
+    on device un-regsiter
+  - for 'move sysfs alloc/free in industrialio-buffer.c'
+    call 'iio_buffer_free_sysfs_and_mask()' on exit path if
+    cdev_device_add() fails
+  - for 'move event-only chardev in industrialio-event.c'
+    check if event_interface is NULL in
+    iio_device_unregister_event_chrdev()
+
+Alexandru Ardelean (5):
+  iio: core: register buffer fileops only if buffer present
+  iio: buffer: add back-ref from iio_buffer to iio_dev
+  iio: buffer: move iio buffer chrdev in industrialio-buffer.c
+  iio: buffer: move sysfs alloc/free in industrialio-buffer.c
+  iio: event: move event-only chardev in industrialio-event.c
+
+ drivers/iio/iio_core.h            |  30 +++----
+ drivers/iio/industrialio-buffer.c | 144 ++++++++++++++++++++++++++----
+ drivers/iio/industrialio-core.c   | 107 +++-------------------
+ drivers/iio/industrialio-event.c  | 122 ++++++++++++++++++++++++-
+ include/linux/iio/buffer_impl.h   |  10 +++
+ include/linux/iio/iio.h           |   4 -
+ 6 files changed, 285 insertions(+), 132 deletions(-)
 
 -- 
-Zamir SUN
-Fedora user
-GPG : 1D86 6D4A 49CE 4BBD 72CF FCF5 D856 6E11 F2A0 525E
+2.17.1
+
