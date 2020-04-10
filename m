@@ -2,89 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2281A4A90
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 647A71A4A87
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgDJThA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:37:00 -0400
-Received: from smtprelay0204.hostedemail.com ([216.40.44.204]:32880 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726847AbgDJTg7 (ORCPT
+        id S1726765AbgDJTgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:36:24 -0400
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:55107 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726142AbgDJTgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:36:59 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 48CFC1802EB4E;
-        Fri, 10 Apr 2020 19:36:59 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:196:355:379:599:800:960:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1622:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3868:3871:3872:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6119:6671:7903:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12555:12740:12760:12895:12986:13007:13069:13095:13311:13357:13439:14181:14659:14721:21067:21080:21212:21433:21451:21627:21660:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: time34_3ce4cfa07334d
-X-Filterd-Recvd-Size: 2629
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 10 Apr 2020 19:36:58 +0000 (UTC)
-Message-ID: <a5c555e6853e9103a871127cafaea34583f426fb.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
- message
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        apw@canonical.com
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Date:   Fri, 10 Apr 2020 12:34:56 -0700
-In-Reply-To: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
-References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Fri, 10 Apr 2020 15:36:23 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Fri, 10 Apr 2020 12:36:05 -0700
+Received: from sc9-mailhost3.vmware.com (unknown [10.166.69.226])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id D5E72B2C7E;
+        Fri, 10 Apr 2020 15:36:09 -0400 (EDT)
+From:   Matt Helsley <mhelsley@vmware.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Matt Helsley <mhelsley@vmware.com>
+Subject: [RFC][PATCH 00/36] objtool: Make recordmcount a subcommand
+Date:   Fri, 10 Apr 2020 12:35:23 -0700
+Message-ID: <cover.1586468801.git.mhelsley@vmware.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
+ designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-04-07 at 22:49 +0200, Christophe JAILLET wrote:
-> Strings logged with pr_xxx and dev_xxx often lack a trailing '\n'.
-> Introduce new tests to try to catch them early.
+recordmcount has its own ELF wrapper code and could utilize
+objtool's ELF code to more-portably handle architecture variations.
+This series makes recordmcount a subcommand of objtool.
 
-Unintentional resend?
+The initial 5 patches make objtool compilable for more than x86.
+Unlike recordmcount the check command and orc tools are not currently
+checking other architectures so we need a way to cleanly build
+objtool for those architectures that don't support check / orc. I
+went with using weak symbols and added a "missing" architecture
+which can be used to indicate the tool is not implemented while
+avoiding the need for every architecture to explicitly specify
+which subcommands / features are not implemented. I'm curious if
+there are better approaches folks recommend though -- this is the
+one I landed on. The patches do not add HAVE_OBJTOOL to all
+architectures.
 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> This is more a PoC for now.
-> 
-> Regex could be improved, merged, ...
-> We could also check for surrounding pr_cont...
-> 
-> This patch is based on idea from [1]. coccinelle spots too many places
-> where \n are missing (~ 2800 with the heuristic I've used).
-> Fixing them would be painful.
-> I instead propose to teach checkpatch.pl about it to try to spot cases
-> early and avoid introducing new cases.
-> 
-> [1]: https://marc.info/?l=kernel-janitors&m=158619533629657&w=4
-> ---
->  scripts/checkpatch.pl | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index c392ab8ea12e..792804bd6ad9 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -5676,6 +5676,16 @@ sub process {
->  			}
->  		}
->  
-> +# check for missing \n at the end of logging function
-> +		if ($line =~ /\bpr_(emerg|alert|crit|err|warning|warn|notice|info|debug|dbg)\s*\("([^"]*(?<!\\n))"/) {
-> +			WARN("MISSING NL",
-> +			     "Possible missing '\\n' at the end of a log message\n" . $hereprev);
-> +		}
-> +		if ($line =~ /\bdev_(emerg|alert|crit|err|warning|warn|notice|info|debug|dbg)\s*\([^,]*,\s*"([^"]*(?<!\\n))"/) {
-> +			WARN("MISSING NL",
-> +			     "Possible missing '\\n' at the end of a log message\n" . $hereprev);
-> +		}
-> +
->  # check for logging functions with KERN_<LEVEL>
->  		if ($line !~ /printk(?:_ratelimited|_once)?\s*\(/ &&
->  		    $line =~ /\b$logFunctions\s*\(.*\b(KERN_[A-Z]+)\b/) {
+Note:
+I've been following some of the discussion around making check work
+for arm64. So I'd say this series moves check into arch/x86 to
+reflect its current status and demonstrates how a command relevant
+to a single arch could be handled -- not necessarily what
+will/should happen to check.
+
+Subsequent patches, the bulk of the set, very gradually convert
+recordmcount to become a subcommand of objtool and then reuse
+parts of objtool's ELF code. recordmcount maps the file in and
+collects simple information it needs to append a section to the
+object file. The only part of the original file it modifies is the
+address of new section tables -- interestingly enough this
+resembles RCU in that we don't really trim the old tables so
+much as unlink them via one critical offset and then rely on
+future (tooling in this case) to drop the unused bits. So much of
+the recordmcount ELF code is only reading and walking the data
+structures to collect the mcount locations it records in a separate
+area of memory. This means it's safe to mix access to the mapped
+file with access to the objtool-style linked data
+structures as we gradually convert it to using only the linked data
+structures. Once the old ELF code is no longer in use we can drop it
+and use objtool to take over the task of writing the results without
+using the RCU-like trick any more.
+
+Testing so far:
+
+I've been using scripts to test compilation, execution of objtool,
+and mcount output for x86, ppc64le, arm64, s390, and sparc.
+
+Matt Helsley (36):
+  objtool: Exit successfully when requesting help
+  objtool: Move struct objtool_file into arch-independent header
+  objtool: Enable compilation of objtool for all architectures
+  objtool: Report missing support for subcommands
+  objtool: Add support for relocations without addends
+  objtool: Prepare to merge recordmcount
+  objtool: Make recordmcount into mcount subcmd
+  objtool: recordmcount: Start using objtool's elf wrapper
+  objtool: recordmcount: Search for __mcount_loc before walking the
+    sections
+  objtool: recordmcount: Convert do_func() relhdrs
+  objtool: mcount: Remove unused fname parameter
+  objtool: mcount: Use libelf for section header names
+  objtool: mcount: Walk objtool Elf structs in find_secsym_ndx
+  objtool: mcount: Use symbol structs to find mcount relocations
+  objtool: mcount: Walk relocation lists
+  objtool: mcount: Move get_mcountsym
+  objtool: mcount: Replace MIPS offset types
+  objtool: mcount: Move is_fake_mcount()
+  objtool: mcount: Stop using ehdr in find_section_sym_index
+  objtool: mcount: Move find_section_sym_index()
+  objtool: mcount: Restrict using ehdr in append_func()
+  objtool: mcount: Use objtool ELF to write
+  objtool: mcount: Move nop_mcount()
+  objtool: mcount: Move helpers out of ELF wrapper
+  objtool: mcount: Move relocation entry size detection
+  objtool: mcount: Only keep ELF file size
+  objtool: mcount: Use ELF header from objtool
+  objtool: mcount: Remove unused file mapping
+  objtool: mcount: Reduce usage of _size wrapper
+  objtool: mcount: Move mcount_adjust out of wrapper
+  objtool: mcount: Pre-allocate new ELF sections
+  objtool: mcount: Generic location and relocation table types
+  objtool: mcount: Move sift_rel_mcount out of wrapper file
+  objtool: mcount: Remove wrapper for ELF relocation type
+  objtool: mcount: Remove wrapper double-include trick
+  objtool: mcount: Remove wordsized endian wrappers
+
+ Documentation/dontdiff                     |   2 +-
+ Documentation/trace/ftrace-design.rst      |   4 +-
+ Documentation/trace/ftrace.rst             |   6 +-
+ Makefile                                   |   6 +-
+ arch/arm64/include/asm/ftrace.h            |   2 +-
+ arch/x86/include/asm/ftrace.h              |   2 +-
+ kernel/trace/Kconfig                       |   2 +-
+ scripts/.gitignore                         |   1 -
+ scripts/Makefile                           |   1 -
+ scripts/Makefile.build                     |  24 +-
+ scripts/recordmcount.c                     | 663 --------------------
+ scripts/recordmcount.h                     | 606 ------------------
+ scripts/sorttable.h                        |   2 +-
+ tools/objtool/.gitignore                   |   1 +
+ tools/objtool/Build                        |   6 +-
+ tools/objtool/Makefile                     |   1 +
+ tools/objtool/arch/missing/Build           |   4 +
+ tools/objtool/arch/missing/check.c         |  16 +
+ tools/objtool/arch/missing/mcount.c        |  16 +
+ tools/objtool/arch/missing/orc_dump.c      |  13 +
+ tools/objtool/arch/missing/orc_gen.c       |  16 +
+ tools/objtool/arch/x86/Build               |   4 +
+ tools/objtool/{ => arch/x86}/arch.h        |  42 +-
+ tools/objtool/{ => arch/x86}/cfi.h         |   0
+ tools/objtool/{ => arch/x86}/check.c       |  11 +-
+ tools/objtool/arch/x86/decode.c            |   2 +-
+ tools/objtool/{ => arch/x86}/orc_dump.c    |   5 +-
+ tools/objtool/{ => arch/x86}/orc_gen.c     |   9 +-
+ tools/objtool/{ => arch/x86}/special.c     |   4 +-
+ tools/objtool/{ => arch/x86}/special.h     |   2 +-
+ tools/objtool/builtin-check.c              |   5 +
+ tools/objtool/builtin-mcount.c             |  56 ++
+ tools/objtool/builtin-orc.c                |   9 +-
+ tools/objtool/builtin.h                    |   4 +
+ tools/objtool/check.h                      |  48 +-
+ tools/objtool/elf.c                        |  60 +-
+ tools/objtool/elf.h                        |   7 +-
+ tools/objtool/mcount.h                     |  14 +
+ tools/objtool/objtool.c                    |  40 +-
+ tools/objtool/objtool.h                    |  20 +
+ tools/objtool/orc.h                        |   3 +-
+ tools/objtool/recordmcount.c               | 682 +++++++++++++++++++++
+ {scripts => tools/objtool}/recordmcount.pl |   0
+ 43 files changed, 1038 insertions(+), 1383 deletions(-)
+ delete mode 100644 scripts/recordmcount.c
+ delete mode 100644 scripts/recordmcount.h
+ create mode 100644 tools/objtool/arch/missing/Build
+ create mode 100644 tools/objtool/arch/missing/check.c
+ create mode 100644 tools/objtool/arch/missing/mcount.c
+ create mode 100644 tools/objtool/arch/missing/orc_dump.c
+ create mode 100644 tools/objtool/arch/missing/orc_gen.c
+ rename tools/objtool/{ => arch/x86}/arch.h (59%)
+ rename tools/objtool/{ => arch/x86}/cfi.h (100%)
+ rename tools/objtool/{ => arch/x86}/check.c (99%)
+ rename tools/objtool/{ => arch/x86}/orc_dump.c (98%)
+ rename tools/objtool/{ => arch/x86}/orc_gen.c (96%)
+ rename tools/objtool/{ => arch/x86}/special.c (98%)
+ rename tools/objtool/{ => arch/x86}/special.h (95%)
+ create mode 100644 tools/objtool/builtin-mcount.c
+ create mode 100644 tools/objtool/mcount.h
+ create mode 100644 tools/objtool/objtool.h
+ create mode 100644 tools/objtool/recordmcount.c
+ rename {scripts => tools/objtool}/recordmcount.pl (100%)
+
+-- 
+2.20.1
 
