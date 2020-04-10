@@ -2,103 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1EA1A472F
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 16:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E861A470F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 15:49:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgDJOMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 10:12:30 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:32976 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726177AbgDJOMa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 10:12:30 -0400
-X-Greylist: delayed 1510 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Apr 2020 10:12:29 EDT
-Received: from [5.157.111.77] (port=57208 helo=[192.168.77.62])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jMu02-004cjm-LM; Fri, 10 Apr 2020 15:47:14 +0200
-Subject: Re: [RFC PATCH 3/7] i2c: allow DT nodes without 'compatible'
-To:     Wolfram Sang <wsa@the-dreams.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linux I2C <linux-i2c@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-i3c@lists.infradead.org,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-References: <20200220172403.26062-1-wsa+renesas@sang-engineering.com>
- <20200220172403.26062-4-wsa+renesas@sang-engineering.com>
- <CAMuHMdWaPfc050dZiRr+gAFzsdjSo9Vo70ztWgrMGPJxLUqupw@mail.gmail.com>
- <e43eaaf1-a294-902f-9a52-ebf8b29acab1@lucaceresoli.net>
- <20200312111950.GA1013@ninjato>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <62896a27-9df0-ef84-9724-2ff34b9bc9a7@lucaceresoli.net>
-Date:   Fri, 10 Apr 2020 15:47:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726657AbgDJNth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 09:49:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:49360 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726092AbgDJNth (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 09:49:37 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 596B9A9B2A27F0B6AE9F;
+        Fri, 10 Apr 2020 21:49:32 +0800 (CST)
+Received: from [127.0.0.1] (10.133.217.205) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Apr 2020
+ 21:49:21 +0800
+Subject: Re: [PATCH] sched/arm64: store cpu topology before
+ notify_cpu_starting
+To:     Joel Fernandes <joelaf@google.com>
+CC:     Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        <aaron.lwe@gmail.com>, <aubrey.intel@gmail.com>,
+        <aubrey.li@linux.intel.com>,
+        "Cc: Frederic Weisbecker" <fweisbec@gmail.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        <mgorman@techsingularity.net>, Ingo Molnar <mingo@kernel.org>,
+        <naravamudan@digitalocean.com>, <pauld@redhat.com>,
+        <pawan.kumar.gupta@linux.intel.com>, <pbonzini@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        <tim.c.chen@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        <xiexiuqi@huawei.com>, <huawei.libin@huawei.com>, <w.f@huawei.com>,
+        "chengjian (D)" <cj.chengjian@huawei.com>,
+        "wxf.wang@hisilicon.com >> Xuefeng Wang" <wxf.wang@hisilicon.com>
+References: <855831b59e1b3774b11c3e33050eac4cc4639f06.1583332765.git.vpillai@digitalocean.com>
+ <20200401114215.36640-1-cj.chengjian@huawei.com>
+ <CAJWu+ooyRsFFA13=rqMBCFgf_JeHsOr16-ayuECaQ5Xz48mrqQ@mail.gmail.com>
+From:   "chengjian (D)" <cj.chengjian@huawei.com>
+Message-ID: <5cf3996f-0a35-1d98-ec11-9247e95e01e6@huawei.com>
+Date:   Fri, 10 Apr 2020 21:49:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20200312111950.GA1013@ninjato>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+In-Reply-To: <CAJWu+ooyRsFFA13=rqMBCFgf_JeHsOr16-ayuECaQ5Xz48mrqQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Language: en-US
+X-Originating-IP: [10.133.217.205]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
 
-On 12/03/20 12:19, Wolfram Sang wrote:
-> Hi Luca,
-> 
->> But the kernel currently ignores nodes that have no matching driver,
->> right? So in this case the kernel knows that that address is used, but
->> ignores this information and considers the address as available.
-> 
-> I'd rather call it "unbound" than available. See later.
-> 
->> Seen in this perspective, we should have a "compatible" for all nodes:
->> it is just describing the hardware and could be out of the kernel
->> control. But instead of discarding all nodes without a matching driver,
-> 
-> And what compatible value would you use if you know there is something
-> sitting there and don't know what? This is what this series aims to
-> address because we thought a compatible name like "reserved" would not
-> be a good idea.
+On 2020/4/10 1:54, Joel Fernandes wrote:
+> On Wed, Apr 1, 2020 at 7:27 AM Cheng Jian <cj.chengjian@huawei.com> wrote:
+>> when SCHED_CORE enabled, sched_cpu_starting() uses thread_sibling as
+>> SMT_MASK to initialize rq->core, but only after store_cpu_topology(),
+>> the thread_sibling is ready for use.
+>>
+>>          notify_cpu_starting()
+>>              -> sched_cpu_starting()     # use thread_sibling
+>>
+>>          store_cpu_topology(cpu)
+>>              -> update_siblings_masks    # set thread_sibling
+>>
+>> Fix this by doing notify_cpu_starting later, just like x86 do.
+>>
+>> Signed-off-by: Cheng Jian <cj.chengjian@huawei.com>
+> Just a high-level question, why does core-scheduling matter on ARM64?
+> Is it for HPC workloads?
+>
+> Thanks,
+>
+>   - Joel
 
-The scenario I have in mind is when DT has a proper compatible string,
-but the kernel has no driver for that chip. Could be not implemented or
-simply not compiled.
+Hi, Joel
 
-There are 3 cases generally:
+I am analyzing the mainline scheduling patches and find this problem.
 
- 1. compatible string present, kernel has a matching driver
- 2. compatible string present, kernel has no matching driver
- 3. compatible string not present
 
-Case 1 is obvious. Case 3 is currently ignored, with your patch the
-address will be reserved. Case 2 is currently ignored, but we have all
-the information to reserve the address just like in case 2, but there's
-no plan to reserve it. Why not? (not necessarily in this series, I'm
-just trying to understand if the idea is correct)
+ARM has some platforms that support SMT, and provides some emulate
 
--- 
-Luca
+can be used.
+
+
+
+Thanks.
+
+--Cheng Jian
+
+
