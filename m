@@ -2,282 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7CD61A4A30
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:12:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC491A4A34
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726719AbgDJTMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:12:06 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:41564 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgDJTMF (ORCPT
+        id S1726680AbgDJTPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:15:04 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:63184 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726142AbgDJTPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:12:05 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 659858030791;
-        Fri, 10 Apr 2020 19:12:02 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jMQJVX8R95mn; Fri, 10 Apr 2020 22:12:01 +0300 (MSK)
-Date:   Fri, 10 Apr 2020 22:12:37 +0300
-From:   Sergey Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Guenter Roeck <linux@roeck-us.net>
-CC:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 7/7] watchdog: dw_wdt: Add DebugFS files
-Message-ID: <20200410191236.ifi6kus23r5xeyb6@ubsrv2.baikal.int>
-References: <20200306132747.14701-1-Sergey.Semin@baikalelectronics.ru>
- <20200306132836.763718030786@mail.baikalelectronics.ru>
- <20200306151248.DE1EC80307C4@mail.baikalelectronics.ru>
+        Fri, 10 Apr 2020 15:15:04 -0400
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 10 Apr 2020 12:15:04 -0700
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 10 Apr 2020 12:15:04 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 06A1F4BED; Fri, 10 Apr 2020 12:15:03 -0700 (PDT)
+Date:   Fri, 10 Apr 2020 12:15:03 -0700
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     linux-pwm@vger.kernel.org
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        David Laight <David.Laight@ACULAB.COM>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v12 10/11] clk: pwm: Use 64-bit division function
+Message-ID: <20200410191503.GA21571@codeaurora.org>
+References: <cover.1586414867.git.gurus@codeaurora.org>
+ <d5127aa19a128edf7c3dd437291b366b77be4ac5.1586414867.git.gurus@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200306151248.DE1EC80307C4@mail.baikalelectronics.ru>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <d5127aa19a128edf7c3dd437291b366b77be4ac5.1586414867.git.gurus@codeaurora.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 06, 2020 at 07:12:32AM -0800, Guenter Roeck wrote:
-> On 3/6/20 5:27 AM, Sergey.Semin@baikalelectronics.ru wrote:
-> > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > For the sake of the easier device-driver debug procedure, we added a
-> > few DebugFS files with the next content: watchdog timeout, watchdog
-> > pre-timeout, watchdog ping/kick operation, watchdog start/stop, device
-> > registers dump. They are available only if kernel is configured with
-> > DebugFS support.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Paul Burton <paulburton@kernel.org>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > ---
-> >  drivers/watchdog/dw_wdt.c | 150 ++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 150 insertions(+)
-> > 
-> > diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
-> > index 3000120f7e39..9353d83f3e45 100644
-> > --- a/drivers/watchdog/dw_wdt.c
-> > +++ b/drivers/watchdog/dw_wdt.c
-> > @@ -27,6 +27,7 @@
-> >  #include <linux/platform_device.h>
-> >  #include <linux/reset.h>
-> >  #include <linux/watchdog.h>
-> > +#include <linux/debugfs.h>
-> >  
-> >  #define WDOG_CONTROL_REG_OFFSET		    0x00
-> >  #define WDOG_CONTROL_REG_WDT_EN_MASK	    0x01
-> > @@ -38,8 +39,14 @@
-> >  #define WDOG_COUNTER_RESTART_KICK_VALUE	    0x76
-> >  #define WDOG_INTERRUPT_STATUS_REG_OFFSET    0x10
-> >  #define WDOG_INTERRUPT_CLEAR_REG_OFFSET     0x14
-> > +#define WDOG_COMP_PARAMS_5_REG_OFFSET       0xe4
-> > +#define WDOG_COMP_PARAMS_4_REG_OFFSET       0xe8
-> > +#define WDOG_COMP_PARAMS_3_REG_OFFSET       0xec
-> > +#define WDOG_COMP_PARAMS_2_REG_OFFSET       0xf0
-> >  #define WDOG_COMP_PARAMS_1_REG_OFFSET       0xf4
-> >  #define WDOG_COMP_PARAMS_1_USE_FIX_TOP      BIT(6)
-> > +#define WDOG_COMP_VERSION_REG_OFFSET        0xf8
-> > +#define WDOG_COMP_TYPE_REG_OFFSET           0xfc
-> >  
-> >  /* There are sixteen TOPs (timeout periods) that can be set in the watchdog. */
-> >  #define DW_WDT_NUM_TOPS		16
-> > @@ -79,6 +86,10 @@ struct dw_wdt {
-> >  	/* Save/restore */
-> >  	u32			control;
-> >  	u32			timeout;
-> > +
-> > +#ifdef CONFIG_DEBUG_FS
-> > +	struct dentry		*dbgfs_dir;
-> > +#endif
-> >  };
-> >  
-> >  #define to_dw_wdt(wdd)	container_of(wdd, struct dw_wdt, wdd)
-> > @@ -430,6 +441,141 @@ static void dw_wdt_init_timeouts(struct dw_wdt *dw_wdt, struct device *dev)
-> >  			mult_frac(tops[idx], MSEC_PER_SEC, dw_wdt->rate);
-> >  }
-> >  
-> > +#ifdef CONFIG_DEBUG_FS
-> > +
-> > +static int dw_wdt_dbgfs_timeout_get(void *priv, u64 *val)
-> > +{
-> > +	struct dw_wdt *dw_wdt = priv;
-> > +
-> > +	*val = dw_wdt_get_timeout(dw_wdt) / MSEC_PER_SEC;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int dw_wdt_dbgfs_timeout_set(void *priv, u64 val)
-> > +{
-> > +	struct dw_wdt *dw_wdt = priv;
-> > +
-> > +	return dw_wdt_set_timeout(&dw_wdt->wdd, val);
-> > +}
-> > +DEFINE_DEBUGFS_ATTRIBUTE(dw_wdt_dbgfs_timeout_fops,
-> > +	dw_wdt_dbgfs_timeout_get, dw_wdt_dbgfs_timeout_set, "%llu\n");
-> > +
-> > +static int dw_wdt_dbgfs_pretimeout_get(void *priv, u64 *val)
-> > +{
-> > +	struct dw_wdt *dw_wdt = priv;
-> > +
-> > +	*val = dw_wdt->wdd.pretimeout;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int dw_wdt_dbgfs_pretimeout_set(void *priv, u64 val)
-> > +{
-> > +	struct dw_wdt *dw_wdt = priv;
-> > +
-> > +	return dw_wdt_set_pretimeout(&dw_wdt->wdd, val);
-> > +}
-> > +DEFINE_DEBUGFS_ATTRIBUTE(dw_wdt_dbgfs_pretimeout_fops,
-> > +	dw_wdt_dbgfs_pretimeout_get, dw_wdt_dbgfs_pretimeout_set, "%llu\n");
-> > +
-> > +static int dw_wdt_dbgfs_ping_set(void *priv, u64 val)
-> > +{
-> > +	struct dw_wdt *dw_wdt = priv;
-> > +
-> > +	dw_wdt_ping(&dw_wdt->wdd);
-> > +
-> > +	return 0;
-> > +}
-> > +DEFINE_DEBUGFS_ATTRIBUTE(dw_wdt_dbgfs_ping_fops,
-> > +	NULL, dw_wdt_dbgfs_ping_set, "%llu\n");
-> > +
-> > +static int dw_wdt_dbgfs_en_get(void *priv, u64 *val)
-> > +{
-> > +	struct dw_wdt *dw_wdt = priv;
-> > +
-> > +	*val = !!dw_wdt_is_enabled(dw_wdt);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int dw_wdt_dbgfs_en_set(void *priv, u64 val)
-> > +{
-> > +	struct dw_wdt *dw_wdt = priv;
-> > +
-> > +	if (val)
-> > +		dw_wdt_start(&dw_wdt->wdd);
-> > +	else
-> > +		dw_wdt_stop(&dw_wdt->wdd);
-> > +
-> > +	return 0;
-> > +}
-> > +DEFINE_DEBUGFS_ATTRIBUTE(dw_wdt_dbgfs_en_fops,
-> > +	dw_wdt_dbgfs_en_get, dw_wdt_dbgfs_en_set, "%llu\n");
-> > +
-> > +#define DW_WDT_DBGFS_REG(_name, _off) \
-> > +{				      \
-> > +	.name = _name,		      \
-> > +	.offset = _off		      \
-> > +}
-> > +
-> > +static const struct debugfs_reg32 dw_wdt_dbgfs_regs[] = {
-> > +	DW_WDT_DBGFS_REG("cr", WDOG_CONTROL_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("torr", WDOG_TIMEOUT_RANGE_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("ccvr", WDOG_CURRENT_COUNT_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("crr", WDOG_COUNTER_RESTART_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("stat", WDOG_INTERRUPT_STATUS_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("param5", WDOG_COMP_PARAMS_5_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("param4", WDOG_COMP_PARAMS_4_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("param3", WDOG_COMP_PARAMS_3_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("param2", WDOG_COMP_PARAMS_2_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("param1", WDOG_COMP_PARAMS_1_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("version", WDOG_COMP_VERSION_REG_OFFSET),
-> > +	DW_WDT_DBGFS_REG("type", WDOG_COMP_TYPE_REG_OFFSET)
-> > +};
-> > +
-> > +static void dw_wdt_dbgfs_init(struct dw_wdt *dw_wdt)
-> > +{
-> > +	struct device *dev = dw_wdt->wdd.parent;
-> > +	struct debugfs_regset32 *regset;
-> > +
-> > +	regset = devm_kzalloc(dev, sizeof(*regset), GFP_KERNEL);
-> > +	if (!regset)
-> > +		return;
-> > +
-> > +	regset->regs = dw_wdt_dbgfs_regs;
-> > +	regset->nregs = ARRAY_SIZE(dw_wdt_dbgfs_regs);
-> > +	regset->base = dw_wdt->regs;
-> > +
-> > +	dw_wdt->dbgfs_dir = debugfs_create_dir(dev_name(dev), NULL);
-> > +
-> > +	debugfs_create_regset32("registers", 0444, dw_wdt->dbgfs_dir, regset);
-> > +
-> > +	debugfs_create_file_unsafe("timeout", 0600, dw_wdt->dbgfs_dir,
-> > +				   dw_wdt, &dw_wdt_dbgfs_timeout_fops);
-> > +
-> > +	debugfs_create_file_unsafe("pretimeout", 0600, dw_wdt->dbgfs_dir,
-> > +				   dw_wdt, &dw_wdt_dbgfs_pretimeout_fops);
-> > +
-> > +	debugfs_create_file_unsafe("ping", 0200, dw_wdt->dbgfs_dir,
-> > +				   dw_wdt, &dw_wdt_dbgfs_ping_fops);
-> > +
-> > +	debugfs_create_file_unsafe("enable", 0600, dw_wdt->dbgfs_dir,
-> > +				   dw_wdt, &dw_wdt_dbgfs_en_fops);
-> > +}
-> 
-> I don't oppose debugfs support in general, but I really don't see
-> the point replicating watchdog core functionality for it - even more so
-> since this bypasses the watchdog core. This lets one, for example,
-> enable the watchdog and then unload the driver with the watchdog
-> running. This is not only unnecessary, it is way too dangerous,
-> debugfs or not.
-> 
-> NACK for that part.
++ Arnd, David
 
-I see your point. What if I keep the registers dump and read-only
-timeout, pretimeout, enable and timeleft nodes? This won't be harmful,
-but the info still can be useful to debug the driver.
+On Wed, Apr 08, 2020 at 11:52:39PM -0700, Guru Das Srinagesh wrote:
+> Since the PWM framework is switching struct pwm_args.period's datatype
+> to u64, prepare for this transition by using div64_u64 to handle a
+> 64-bit divisor.
+> 
+> Also ensure that divide-by-zero (with fixed_rate as denominator) does
+> not happen with an explicit check with probe failure as a consequence.
+> 
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: linux-clk@vger.kernel.org
+> 
+> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> ---
+>  drivers/clk/clk-pwm.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/clk-pwm.c b/drivers/clk/clk-pwm.c
+> index 87fe0b0e..86f2e2d 100644
+> --- a/drivers/clk/clk-pwm.c
+> +++ b/drivers/clk/clk-pwm.c
+> @@ -89,7 +89,12 @@ static int clk_pwm_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	if (of_property_read_u32(node, "clock-frequency", &clk_pwm->fixed_rate))
+> -		clk_pwm->fixed_rate = NSEC_PER_SEC / pargs.period;
+> +		clk_pwm->fixed_rate = div64_u64(NSEC_PER_SEC, pargs.period);
+> +
+> +	if (!clk_pwm->fixed_rate) {
+> +		dev_err(&pdev->dev, "fixed_rate cannot be zero\n");
+> +		return -EINVAL;
+> +	}
+>  
+>  	if (pargs.period != NSEC_PER_SEC / clk_pwm->fixed_rate &&
+>  	    pargs.period != DIV_ROUND_UP(NSEC_PER_SEC, clk_pwm->fixed_rate)) {
+> -- 
 
--Sergey
+Hello Arnd, David:
 
-> 
-> Guenter
-> 
-> > +
-> > +static void dw_wdt_dbgfs_clear(struct dw_wdt *dw_wdt)
-> > +{
-> > +	debugfs_remove_recursive(dw_wdt->dbgfs_dir);
-> > +}
-> > +
-> > +#else /* !CONFIG_DEBUG_FS */
-> > +
-> > +static void dw_wdt_dbgfs_init(struct dw_wdt *dw_wdt) {}
-> > +static void dw_wdt_dbgfs_clear(struct dw_wdt *dw_wdt) {}
-> > +
-> > +#endif /* !CONFIG_DEBUG_FS */
-> > +
-> >  static int dw_wdt_drv_probe(struct platform_device *pdev)
-> >  {
-> >  	struct device *dev = &pdev->dev;
-> > @@ -544,6 +690,8 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
-> >  	if (ret)
-> >  		goto out_disable_pclk;
-> >  
-> > +	dw_wdt_dbgfs_init(dw_wdt);
-> > +
-> >  	return 0;
-> >  
-> >  out_disable_pclk:
-> > @@ -558,6 +706,8 @@ static int dw_wdt_drv_remove(struct platform_device *pdev)
-> >  {
-> >  	struct dw_wdt *dw_wdt = platform_get_drvdata(pdev);
-> >  
-> > +	dw_wdt_dbgfs_clear(dw_wdt);
-> > +
-> >  	watchdog_unregister_device(&dw_wdt->wdd);
-> >  	reset_control_assert(dw_wdt->rst);
-> >  	clk_disable_unprepare(dw_wdt->pclk);
-> > 
-> 
+Sorry, missed cc-ing you both to this patch while sending it out. Could
+you please review it when you get a chance to?
+
+Thank you.
+
+Guru Das.
