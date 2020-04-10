@@ -2,89 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8455D1A3DA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 03:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD551A3DAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 03:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726622AbgDJBMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 21:12:06 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39282 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725987AbgDJBMG (ORCPT
+        id S1726669AbgDJBU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 21:20:27 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46711 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbgDJBU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 21:12:06 -0400
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03A1BYn0032116
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 9 Apr 2020 21:11:35 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 4500142013D; Thu,  9 Apr 2020 21:11:34 -0400 (EDT)
-Date:   Thu, 9 Apr 2020 21:11:34 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Eric Biggers <ebiggers@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
-Message-ID: <20200410011134.GG45598@mit.edu>
-References: <20200409114940.GT21484@bombadil.infradead.org>
- <CACT4Y+ZvQ9UvVAwTjjD8Zxo0X_nfxa3+6n6TqWk2g+hahBwdCw@mail.gmail.com>
- <20200409111604.c778ff091c00fab5db095e48@linux-foundation.org>
- <CAHk-=wiU77DeNxQsU4XrDCk59asyTs=Hn+mnTx6-SHB1_fA2NQ@mail.gmail.com>
- <20200409121250.d6bba6965b86c8dfcf325fbc@linux-foundation.org>
- <CAHk-=wgy3XRiyRP7vdfF6bHwWGaB1RwyWJmyphh+Q3qYk6w27w@mail.gmail.com>
- <20200409195633.GZ21484@bombadil.infradead.org>
- <CAHk-=wi50jKXOFpsRkxrqu4upNnEKm1oRZ_SG1yJB9QVh=VJZQ@mail.gmail.com>
- <20200409202751.GA7976@gmail.com>
- <CAHk-=wj64Uw1O9-f=XYCraLgbqBqqBHSdyO1JG80smvC-01Nug@mail.gmail.com>
+        Thu, 9 Apr 2020 21:20:27 -0400
+Received: by mail-pf1-f194.google.com with SMTP id q3so373262pff.13
+        for <linux-kernel@vger.kernel.org>; Thu, 09 Apr 2020 18:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Se150hiWquIt6SCF9Ml3hopQBuNGZRuaatmKyZ4D96Q=;
+        b=BM8HZBDiTR8VA1t/ImCY3ODYEL5MfbnNFgbWkxxhgcE7K468DD/Qul6d/YBRwrEugb
+         1Ft/5X1HW3yh9GVR6OLl8kGmz5uHuSNUfp5oSuFySe0akBkMBt1HHTzWYAEbZCj+B3f9
+         lmA48WHpmT0Z5AzrJWfZV5bh/gxeiC/fUoTiwNgZa67vxDfMbLgJMNFoI2wuDT0MRx0w
+         cusdL6BVntZcfnxgO55pOc6pYsuf5rutX53r4A6yzU904URmDv8uW0flWCZ1bivLJnIy
+         mhzI0uIHxvpBNlo6pStJOQZvsfVb2umBMXnXvxi8t4WUJjk0ajNQUi0ZHD+9qeAG4fIF
+         A3LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Se150hiWquIt6SCF9Ml3hopQBuNGZRuaatmKyZ4D96Q=;
+        b=Td2t4zVv0IoUtiYfZYsxqjFRGT0VsqHQug6eP3zQVdqs3RjTmmpvtxWnzslX8ABA+x
+         161kW88N4h1/kxNpBHvCnOLjdCPZUW/z1744miD+TuzgNwv2jbE1QFfbAudQ45ctJYGY
+         VVtjAj/qh/LEYyclvDWu49LlcPTntWH4holR0xQFjmlNd2jwvmoZva9/HfqPkgc4ZyZl
+         QSukvpcK/+se/4tJx69PG0lwNvHG9FrVEqF5uwHTHj7SGbCfRyNBUkfOAg63ad4dwv2R
+         cjHPtemJRmuCeUJ5Uyx5kv4cV3i+vjas4M3k5nBSbnhpp01VrZfHZy4Z1MsGm4vj+mg9
+         sY2A==
+X-Gm-Message-State: AGi0PuapwIIEyT0AcSoqZWBw65T5U9IVp0oNUb2qwkhpdYK//oiR7G9o
+        loaHnpJk20sYHy1T2tTJEJbIGg==
+X-Google-Smtp-Source: APiQypIUx0ejv6KHG5NNwU/7MFHaj3uJKApTKGer6Hzadc9PbSsk4YjGxx6GdQZp8VpaXPdWSTCggQ==
+X-Received: by 2002:a63:3d04:: with SMTP id k4mr2198376pga.115.1586481626752;
+        Thu, 09 Apr 2020 18:20:26 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id g11sm330131pfm.4.2020.04.09.18.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 18:20:26 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 18:20:34 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH 1/2] remoteproc: drop memset when loading elf segments
+Message-ID: <20200410012034.GU20625@builder.lan>
+References: <1586420572-28353-1-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wj64Uw1O9-f=XYCraLgbqBqqBHSdyO1JG80smvC-01Nug@mail.gmail.com>
+In-Reply-To: <1586420572-28353-1-git-send-email-peng.fan@nxp.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 09, 2020 at 01:34:18PM -0700, Linus Torvalds wrote:
-> > FWIW, the issue of "syzbot report sent and ignored for months/years" is actually
-> > a much broader one which applies to all bugs, not just build / test breakages.
+On Thu 09 Apr 01:22 PDT 2020, Peng Fan wrote:
+
+> To arm64, "dc      zva, dst" is used in memset.
+> Per ARM DDI 0487A.j, chapter C5.3.8 DC ZVA, Data Cache Zero by VA,
 > 
-> I don't  know what to do about that, but it may be that people just
-> don't judge the bugs interesting or assume that they are old.
+> "If the memory region being zeroed is any type of Device memory,
+> this instruction can give an alignment fault which is prioritized
+> in the same way as other alignment faults that are determined
+> by the memory type."
+> 
+> On i.MX platforms, when elf is loaded to onchip TCM area, the region
+> is ioremapped, so "dc zva, dst" will trigger abort.
+> 
+> Since memset is not strictly required, let's drop it.
+> 
 
-Syzkaller bugs which requuire (a) root privileges to trigger, or (b)
-require a deliberately corrupted file system are things which I don't
-consider super interesting.  (For the latter, I'll usually wait for
-some other file system fuzzer to find it, such as Hydra, because
-Syzkaller makes it painful extract out the file system image, where as
-other file system fuzzers are *much* more file system developer
-friendly.)
+This would imply that we trust that the firmware doesn't expect
+remoteproc to zero out the memory, which we've always done. So I don't
+think we can say that it's not required.
 
-This shouldn't be a surprise to Dmitry, because I've given these
-feedbacks to him before.
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/remoteproc/remoteproc_elf_loader.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_elf_loader.c b/drivers/remoteproc/remoteproc_elf_loader.c
+> index 16e2c496fd45..cc50fe70d50c 100644
+> --- a/drivers/remoteproc/remoteproc_elf_loader.c
+> +++ b/drivers/remoteproc/remoteproc_elf_loader.c
+> @@ -238,14 +238,11 @@ int rproc_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>  			memcpy(ptr, elf_data + offset, filesz);
+>  
+>  		/*
+> -		 * Zero out remaining memory for this segment.
+> +		 * No need zero out remaining memory for this segment.
+>  		 *
+>  		 * This isn't strictly required since dma_alloc_coherent already
+> -		 * did this for us. albeit harmless, we may consider removing
+> -		 * this.
+> +		 * did this for us.
 
-It would be nice if there was some way we could triage Syzkaller bugs
-into different buckets (requires root, lower to P2; requires a
-corrupted file system image, lower to P2).  Unfortunately, that would
-require Syzkaller to have some kind of login system and way to track
-state, and Dmitry doesn't want to replicate the functionality of a bug
-tracker.
+In the case of recovery this comment is wrong, we do not
+dma_alloc_coherent() the carveout during a recovery.
 
-> That's what made bugzilla so useless - being flooded with stale bugs
-> that might not be worth worrying about, and no way to really tell.
+And in your case you ioremapped existing TCM, so it's never true.
 
-At least with Bugzilla, it becomes possible to attach priorities and
-flags to them, instead of trying to assume that developers should
-treat all Syzkaller bugs as the same priority.  Because when you do
-insist that all bugs be treated as high priority, many people will
-just treat them *all* as a P2 bug, especially when there are so many.
+>  		 */
+> -		if (memsz > filesz)
+> -			memset(ptr + filesz, 0, memsz - filesz);
 
-      	   	       	    	       	     	- Ted
+So I think you do want to zero out this region. Question is how we do
+it...
+
+Regards,
+Bjorn
+
+>  	}
+>  
+>  	if (ret == 0)
+> -- 
+> 2.16.4
+> 
