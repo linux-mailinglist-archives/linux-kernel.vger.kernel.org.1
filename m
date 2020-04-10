@@ -2,67 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED281A44FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 12:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3F11A44FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 12:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbgDJKGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 06:06:35 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:35837 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgDJKGf (ORCPT
+        id S1726181AbgDJKIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 06:08:04 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:47994 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725893AbgDJKIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 06:06:35 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35e904511a46-04c7f; Fri, 10 Apr 2020 18:06:10 +0800 (CST)
-X-RM-TRANSID: 2ee35e904511a46-04c7f
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.21.224] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15e904511e7f-1e29e;
-        Fri, 10 Apr 2020 18:06:10 +0800 (CST)
-X-RM-TRANSID: 2ee15e904511e7f-1e29e
-Subject: Re: [PATCH] EDAC/altera:Use platform_get_irq_optional()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     rrichter <rrichter@marvell.com>,
-        "thor.thayer" <thor.thayer@linux.intel.com>,
-        mchehab <mchehab@kernel.org>, "tony.luck" <tony.luck@intel.com>,
-        "james.morse" <james.morse@arm.com>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200402112740.15580-1-tangbin@cmss.chinamobile.com>
- <20200402123001.obgzqmlure4cfvh7@rric.localdomain>
- <202004022106312118022@cmss.chinamobile.com>
- <20200408071022.ft6aamptrxlaz23f@rric.localdomain>
- <2020040819334451781313@cmss.chinamobile.com>
- <20200408113658.GE24663@zn.tnic>
- <1b9a872f-f616-8eaf-1cca-d73647f696e3@cmss.chinamobile.com>
- <20200410095206.GA8205@zn.tnic>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <e9c88384-f807-4f9f-a3c1-d35675c3dd7d@cmss.chinamobile.com>
-Date:   Fri, 10 Apr 2020 18:07:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 10 Apr 2020 06:08:04 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id A98152A0160
+Subject: Re: [PATCH v3 0/3] platform/chrome: typec: Add port partner
+ registration
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     heikki.krogerus@linux.intel.com,
+        Benson Leung <bleung@chromium.org>,
+        Guenter Roeck <groeck@chromium.org>
+References: <20200410002316.202107-1-pmalani@chromium.org>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <85643207-bb30-55d4-1a10-d3c9a6266269@collabora.com>
+Date:   Fri, 10 Apr 2020 12:08:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-In-Reply-To: <20200410095206.GA8205@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200410002316.202107-1-pmalani@chromium.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Borislav:
+Hi Prashant,
 
-On 2020/4/10 17:52, Borislav Petkov wrote:
-> On Fri, Apr 10, 2020 at 04:25:24PM +0800, Tang Bin wrote:
->> I am sorry for the previous writing mistake(top-post). I have consulted
->> others and hope it's right this time. Sorry again and thanks for teaching. I
->> hope to continuously improve myself and regulate myself under your guidance.
-> That looks better, thanks!
+Thanks for your patches.
 
-Thanks for your patienct, thank you.
+On 10/4/20 2:23, Prashant Malani wrote:
+> The following series adds port-partner registration when
+> connects/disconnects are detected. In order to do that, we also register
+> a listener for the cros-usbpd-notifier, which will inform the driver of
+> EC PD events. While we are here, separate out the Type C port data
+> objects into a separate struct.
+> 
+> v2: https://lkml.org/lkml/2020/4/9/861
+> v1: https://lkml.org/lkml/2020/4/6/1155
+> 
+> Changes in v3:
+> - Fixed trivial Kconfig dependency ordering error.
+> 
+> Prashant Malani (3):
+>   platform/chrome: typec: Use notifier for updates
+>   platform/chrome: typec: Add struct for port data
+>   platform/chrome: typec: Register port partner
+> 
+>  drivers/platform/chrome/Kconfig         |   1 +
+>  drivers/platform/chrome/cros_ec_typec.c | 119 ++++++++++++++++++++----
+>  2 files changed, 103 insertions(+), 17 deletions(-)
+> 
 
-Tang Bin
+Would be nice have the Heikki review on those.
 
-
-
+Thanks,
+ Enric
