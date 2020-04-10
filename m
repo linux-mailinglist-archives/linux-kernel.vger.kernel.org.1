@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C601A4BF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 00:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EA01A4BE1
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 00:18:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbgDJWSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 18:18:46 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:37110 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726760AbgDJWSX (ORCPT
+        id S1726810AbgDJWSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 18:18:25 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:45458 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726776AbgDJWSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 18:18:23 -0400
-Received: by mail-pg1-f193.google.com with SMTP id r4so1531310pgg.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 15:18:21 -0700 (PDT)
+        Fri, 10 Apr 2020 18:18:22 -0400
+Received: by mail-pg1-f194.google.com with SMTP id w11so1509864pga.12
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 15:18:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3LahRNEc8NZpH6NlGKTJK2B5A2bd6uVChU8p3hPZnzw=;
-        b=STTfAg/5L1KOesfw7jIs6oFNooK9Uk19XuSGpBvcQqc/azMYWEFgleBbD3sjcN/bwf
-         s7FvIKlaHfR38aKmYxpOBfhKK8pGSdFuZ0UPWiniE9vFXmpojXdwSd/DiZl7vrB8FCaZ
-         N5Ioc4gW4S+wBKII3cqGgoJSfAOQABzaIYv9w=
+        bh=L0Maiike3Zqtjiw4mAzlWQi4TBhmHVZQSmvVBr2Jy4Q=;
+        b=NMmjH38J0ExMl+YBVD63eYaGwtXphEizF8BjX2CNS0PF64pWfnbDFftXvzBSp8Ro4u
+         mnN6xzZdvaAPCb3Fo6yNp//8cAwrZDekda5lz7oi3h+yro3qkfO6hYm11FMEbSIaiH6K
+         QWWzcmM1LotMGSzJcWtC5PftcuUGU9CQHD+nA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3LahRNEc8NZpH6NlGKTJK2B5A2bd6uVChU8p3hPZnzw=;
-        b=jmArtN9D/us0v6oTkg1SltsZHGwFZ2N2w1kzhgUesMYSvHAjIIdXAuhpOLv8Ne0Izs
-         6Go3Ifx5QgblW+URn8RNUxk+KlfoTPNrWJWdTTAbzjO79dixHyXvxkW0hH/ImDUXHByc
-         Z3GCkEPd8LuDFkI0P1FBm/tZNEC4+X19BM44RbC2PxvEG5n4WeV63uFMyQQvn2LaSsln
-         E/jGU9bL1Ex/ylTwjPlNo6Vmbu0MJ2mUpiIlccWSN9CJ35jqzy+8tIFJ2O7f8disBpOM
-         Mache671+8SE+TwV1U1GxkCppqQJzuAiMepdKjfkZRzcjx66U0HpFHpkEK4pJR5H1hfk
-         3OnA==
-X-Gm-Message-State: AGi0PubXnRe05hhAJwPCCw32CcwhK/tKMdrHEjlZm9ZurK6PgxARcgtv
-        JR5hUtumnZQpRLuzL4LUm744dA==
-X-Google-Smtp-Source: APiQypIiuN6UDZ0FydqXjZJ8s/J+IS48bp/hUfvF47JjI/mnhBmAWeU118kPEebv28h1d2XKICDUTw==
-X-Received: by 2002:a65:4107:: with SMTP id w7mr6124188pgp.438.1586557100792;
-        Fri, 10 Apr 2020 15:18:20 -0700 (PDT)
+        bh=L0Maiike3Zqtjiw4mAzlWQi4TBhmHVZQSmvVBr2Jy4Q=;
+        b=N4E9H9WJn+wkoAsMfhmEP3SBb873oKlDJ20HL7AGohwwz3G3Dj8i6iJT3ICfEV5h4T
+         LrMd1PwOfKnROcqHIGUmv3E4skkftYL1dPJrdyrdtib3VBefEDXy9TbPnWzm9lgR/RxG
+         FLBceBb3gx9pZo8dkF1qhlTDaQxgNqY3WXPE078sFGuwbe1fyFdfuB224thyPIiZN0KB
+         up7BYhdjF34yTKlJae7gvoKJSBhv05WcSdW7PmE9KfgxlhtzcQb6qVINQ3DXOboNDV/i
+         vF/U2ODFNaEm/l1E3frnIzTBy18+x3l9dXPUmLsYZZl5xSjTTQPbefkQcF8NN8HBm1aC
+         VazA==
+X-Gm-Message-State: AGi0PuZm5Lo1gQUd9Thz8YvPhfbDmUOcc85c9iHGo/yDYVitjRv1nvoh
+        j2+xJUNwb/WiXdOXnTmW50No3w==
+X-Google-Smtp-Source: APiQypIBnXvzdbw/OX1em/Ecnsb3TFH93OOMVhvCVz9SFtBrpQc0u9FiEyzZmnPz0tkUHIJoEF2XSA==
+X-Received: by 2002:a62:55c7:: with SMTP id j190mr6850717pfb.65.1586557102025;
+        Fri, 10 Apr 2020 15:18:22 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:24fa:e766:52c9:e3b2])
-        by smtp.gmail.com with ESMTPSA id x2sm2646600pfq.92.2020.04.10.15.18.19
+        by smtp.gmail.com with ESMTPSA id x2sm2646600pfq.92.2020.04.10.15.18.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 15:18:20 -0700 (PDT)
+        Fri, 10 Apr 2020 15:18:21 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
         gregkh@linuxfoundation.org
@@ -51,10 +51,13 @@ Cc:     hpa@zytor.com, kgdb-bugreport@lists.sourceforge.net,
         will@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
         bp@alien8.de, catalin.marinas@arm.com,
         Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/7] kgdboc: Use a platform device to handle tty drivers showing up late
-Date:   Fri, 10 Apr 2020 15:17:20 -0700
-Message-Id: <20200410151632.1.I4a493cfb0f9f740ce8fd2ab58e62dc92d18fed30@changeid>
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Matt Mullins <mmullins@fb.com>, Nadav Amit <namit@vmware.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [PATCH 2/7] kgdb: Delay "kgdbwait" to dbg_late_init() by default
+Date:   Fri, 10 Apr 2020 15:17:21 -0700
+Message-Id: <20200410151632.2.I3113aea1b08d8ce36dc3720209392ae8b815201b@changeid>
 X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
 In-Reply-To: <20200410221726.36442-1-dianders@chromium.org>
 References: <20200410221726.36442-1-dianders@chromium.org>
@@ -65,266 +68,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If you build CONFIG_KGDB_SERIAL_CONSOLE into the kernel then you
-should be able to have KGDB init itself at bootup by specifying the
-"kgdboc=..." kernel command line parameter.  This has worked OK for me
-for many years, but on a new device I switched to it stopped working.
+Using kgdb requires at least some level of architecture-level
+initialization.  If nothing else, it relies on the architecture to
+pass breakpoints / crashes onto kgdb.
 
-The problem is that on this new device the serial driver gets its
-probe deferred.  Now when kgdb initializes it can't find the tty
-driver and when it gives up it never tries again.
+On some architectures this all works super early, specifically it
+starts working at some point in time before Linux parses
+early_params's.  On other architectures it doesn't.  A survey of a few
+platforms:
 
-We could try to find ways to move up the initialization of the serial
-driver and such a thing might be worthwhile, but it's nice to be
-robust against serial drivers that load late.  We could move kgdb to
-init itself later but that penalizes our ability to debug early boot
-code on systems where the driver inits early.  We could roll our own
-system of detecting when new tty drivers get loaded and then use that
-to figure out when kgdb can init, but that's ugly.
+a) x86: Presumably it all works early since "ekgdboc" is documented to
+   work here.
+b) arm64: Catching crashes works; with a simple patch breakpoints can
+   also be made to work.
+c) arm: Nothing in kgdb works until
+   paging_init() -> devicemaps_init() -> early_trap_init()
 
-Instead, let's jump on the -EPROBE_DEFER bandwagon.  We'll create a
-singleton instance of a "kgdboc" platform device.  If we can't find
-our tty device when the singleton "kgdboc" probes we'll return
--EPROBE_DEFER which means that the system will call us back later to
-try again when the tty device might be there.
+Let's be conservative and, by default, process "kgdbwait" (which tells
+the kernel to drop into the debugger ASAP at boot) a bit later at
+dbg_late_init() time.  If an architecture has tested it and wants to
+re-enable super early debugging, they can implement the weak function
+kgdb_arch_can_debug_early() to return true.  We'll do this for x86 to
+start.  It should be noted that dbg_late_init() is still called quite
+early in the system.
 
-We won't fully transition all of the kgdboc to a platform device
-because early kgdb initialization (via the "ekgdboc" kernel command
-line parameter) still runs before the platform device has been
-created.  The kgdb platform device is merely used as a convenient way
-to hook into the system's normal probe deferral mechanisms.
+Note that this patch doesn't affect when kgdb runs its init.  If kgdb
+is set to initialize early it will still initialize when parsing
+early_params's.  This patch _only_ inhibits the initial breakpoint
+from "kgdbwait".  This means:
 
-As part of this, we'll ever-so-slightly change how the "kgdboc=..."
-kernel command line parameter works.  Previously if you booted up and
-kgdb couldn't find the tty driver then later reading
-'/sys/module/kgdboc/parameters/kgdboc' would return a blank string.
-Now kgdb will keep track of the string that came as part of the
-command line and give it back to you.  It's expected that this should
-be an OK change.
+* Without any extra patches arm64 platforms will at least catch
+  crashes after kgdb inits.
+* arm platforms will catch crashes (and could handle a hardcoded
+  kgdb_breakpoint()) any time after early_trap_init() runs, even
+  before dbg_late_init().
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
 ---
 
- drivers/tty/serial/kgdboc.c | 126 +++++++++++++++++++++++++++++-------
- 1 file changed, 101 insertions(+), 25 deletions(-)
+ arch/x86/kernel/kgdb.c    |  5 +++++
+ include/linux/kgdb.h      | 22 ++++++++++++++++++++++
+ kernel/debug/debug_core.c | 29 +++++++++++++++++++----------
+ 3 files changed, 46 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index c7d51b51898f..9ace39fc4f95 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -20,6 +20,7 @@
- #include <linux/vt_kern.h>
- #include <linux/input.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
- 
- #define MAX_CONFIG_LEN		40
- 
-@@ -27,6 +28,7 @@ static struct kgdb_io		kgdboc_io_ops;
- 
- /* -1 = init not run yet, 0 = unconfigured, 1 = configured. */
- static int configured		= -1;
-+DEFINE_MUTEX(config_mutex);
- 
- static char config[MAX_CONFIG_LEN];
- static struct kparam_string kps = {
-@@ -38,6 +40,8 @@ static int kgdboc_use_kms;  /* 1 if we use kernel mode switching */
- static struct tty_driver	*kgdb_tty_driver;
- static int			kgdb_tty_line;
- 
-+static struct platform_device *kgdboc_pdev;
-+
- #ifdef CONFIG_KDB_KEYBOARD
- static int kgdboc_reset_connect(struct input_handler *handler,
- 				struct input_dev *dev,
-@@ -133,11 +137,13 @@ static void kgdboc_unregister_kbd(void)
- 
- static void cleanup_kgdboc(void)
- {
-+	if (configured != 1)
-+		return;
-+
- 	if (kgdb_unregister_nmi_console())
- 		return;
- 	kgdboc_unregister_kbd();
--	if (configured == 1)
--		kgdb_unregister_io_module(&kgdboc_io_ops);
-+	kgdb_unregister_io_module(&kgdboc_io_ops);
+diff --git a/arch/x86/kernel/kgdb.c b/arch/x86/kernel/kgdb.c
+index c44fe7d8d9a4..60c47787c588 100644
+--- a/arch/x86/kernel/kgdb.c
++++ b/arch/x86/kernel/kgdb.c
+@@ -673,6 +673,11 @@ void kgdb_arch_late(void)
+ 	}
  }
  
- static int configure_kgdboc(void)
-@@ -200,20 +206,79 @@ static int configure_kgdboc(void)
- 	kgdb_unregister_io_module(&kgdboc_io_ops);
- noconfig:
- 	kgdboc_unregister_kbd();
--	config[0] = 0;
- 	configured = 0;
--	cleanup_kgdboc();
- 
- 	return err;
- }
- 
-+static int kgdboc_probe(struct platform_device *pdev)
++bool kgdb_arch_can_debug_early(void)
 +{
-+	int ret = 0;
-+
-+	mutex_lock(&config_mutex);
-+	if (configured != 1) {
-+		ret = configure_kgdboc();
-+
-+		/* Convert "no device" to "defer" so we'll keep trying */
-+		if (ret == -ENODEV)
-+			ret = -EPROBE_DEFER;
-+	}
-+	mutex_unlock(&config_mutex);
-+
-+	return ret;
++	return true;
 +}
 +
-+static struct platform_driver kgdboc_platform_driver = {
-+	.probe = kgdboc_probe,
-+	.driver = {
-+		.name = "kgdboc",
-+		.suppress_bind_attrs = true,
-+	},
-+};
-+
- static int __init init_kgdboc(void)
- {
--	/* Already configured? */
--	if (configured == 1)
-+	int ret;
-+
-+	/*
-+	 * kgdboc is a little bit of an odd "platform_driver".  It can be
-+	 * up and running long before the platform_driver object is
-+	 * created and thus doesn't actually store anything in it.  There's
-+	 * only one instance of kgdb so anything is stored as global state.
-+	 * The platform_driver is only created so that we can leverage the
-+	 * kernel's mechanisms (like -EPROBE_DEFER) to call us when our
-+	 * underlying tty is ready.  Here we init our platform driver and
-+	 * then create the single kgdboc instance.
-+	 */
-+	ret = platform_driver_register(&kgdboc_platform_driver);
-+	if (ret)
-+		return ret;
-+
-+	kgdboc_pdev = platform_device_alloc("kgdboc", PLATFORM_DEVID_NONE);
-+	if (!kgdboc_pdev) {
-+		ret = -ENOMEM;
-+		goto err_did_register;
-+	}
-+
-+	ret = platform_device_add(kgdboc_pdev);
-+	if (!ret)
- 		return 0;
+ /**
+  *	kgdb_arch_exit - Perform any architecture specific uninitalization.
+  *
+diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+index b072aeb1fd78..7371517aeacc 100644
+--- a/include/linux/kgdb.h
++++ b/include/linux/kgdb.h
+@@ -226,6 +226,28 @@ extern int kgdb_arch_remove_breakpoint(struct kgdb_bkpt *bpt);
+  */
+ extern void kgdb_arch_late(void);
  
--	return configure_kgdboc();
-+	platform_device_put(kgdboc_pdev);
++/**
++ *	kgdb_arch_can_debug_early - Check if OK to break before dbg_late_init()
++ *
++ *	If an architecture can definitely handle entering the debugger when
++ *	early_param's are parsed then it can override this function to return
++ *	true.  Otherwise if "kgdbwait" is passed on the kernel command line it
++ *	won't actually be processed until dbg_late_init() just after the call
++ *	to kgdb_arch_late() is made.
++ *
++ *	NOTE: Even if this returns false we will still try to register kgdb to
++ *	handle breakpoints and crashes when early_params's are parsed, we just
++ *	won't act on the "kgdbwait" parameter until dbg_late_init().  If you
++ *	get a crash and try to drop into kgdb somewhere between these two
++ *	places you might or might not end up being able to use kgdb depending
++ *	on exactly how far along the architecture has initted.
++ *
++ *	ALSO: dbg_late_init() is actually still fairly early in the system
++ *	boot process.
++ *
++ *	Return: true if platform can handle kgdb early.
++ */
++extern bool kgdb_arch_can_debug_early(void);
+ 
+ /**
+  * struct kgdb_arch - Describe architecture specific values.
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 2b7c9b67931d..9a4551a0fb4b 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -946,16 +946,32 @@ void kgdb_panic(const char *msg)
+ 	kgdb_breakpoint();
+ }
+ 
++static void kgdb_initial_breakpoint(void)
++{
++	kgdb_break_asap = 0;
 +
-+err_did_register:
-+	platform_driver_unregister(&kgdboc_platform_driver);
-+	return ret;
++	pr_crit("Waiting for connection from remote gdb...\n");
++	kgdb_breakpoint();
 +}
 +
-+static void exit_kgdboc(void)
+ void __weak kgdb_arch_late(void)
+ {
+ }
+ 
++bool __weak kgdb_arch_can_debug_early(void)
 +{
-+	mutex_lock(&config_mutex);
-+	cleanup_kgdboc();
-+	mutex_unlock(&config_mutex);
++	return false;
++}
 +
-+	platform_device_unregister(kgdboc_pdev);
-+	platform_driver_unregister(&kgdboc_platform_driver);
+ void __init dbg_late_init(void)
+ {
+ 	dbg_is_early = false;
+ 	if (kgdb_io_module_registered)
+ 		kgdb_arch_late();
+ 	kdb_init(KDB_INIT_FULL);
++
++	if (kgdb_io_module_registered && kgdb_break_asap)
++		kgdb_initial_breakpoint();
  }
  
- static int kgdboc_get_char(void)
-@@ -236,24 +301,20 @@ static int param_set_kgdboc_var(const char *kmessage,
- 				const struct kernel_param *kp)
- {
- 	size_t len = strlen(kmessage);
-+	int ret = 0;
- 
- 	if (len >= MAX_CONFIG_LEN) {
- 		pr_err("config string too long\n");
- 		return -ENOSPC;
- 	}
- 
--	/* Only copy in the string if the init function has not run yet */
--	if (configured < 0) {
--		strcpy(config, kmessage);
--		return 0;
--	}
--
- 	if (kgdb_connected) {
- 		pr_err("Cannot reconfigure while KGDB is connected.\n");
--
- 		return -EBUSY;
- 	}
- 
-+	mutex_lock(&config_mutex);
-+
- 	strcpy(config, kmessage);
- 	/* Chop out \n char as a result of echo */
- 	if (len && config[len - 1] == '\n')
-@@ -262,8 +323,30 @@ static int param_set_kgdboc_var(const char *kmessage,
- 	if (configured == 1)
- 		cleanup_kgdboc();
- 
--	/* Go and configure with the new params. */
--	return configure_kgdboc();
-+	/*
-+	 * Configure with the new params as long as init already ran.
-+	 * Note that we can get called before init if someone loads us
-+	 * with "modprobe kgdboc kgdboc=..." or if they happen to use the
-+	 * the odd syntax of "kgdboc.kgdboc=..." on the kernel command.
-+	 */
-+	if (configured >= 0)
-+		ret = configure_kgdboc();
-+
-+	/*
-+	 * If we couldn't configure then clear out the config.  Note that
-+	 * specifying an invalid config on the kernel command line vs.
-+	 * through sysfs have slightly different behaviors.  If we fail
-+	 * to configure what was specified on the kernel command line
-+	 * we'll leave it in the 'config' and return -EPROBE_DEFER from
-+	 * our probe.  When specified through sysfs userspace is
-+	 * responsible for loading the tty driver before setting up.
-+	 */
-+	if (ret)
-+		config[0] = '\0';
-+
-+	mutex_unlock(&config_mutex);
-+
-+	return ret;
+ static int
+@@ -1051,14 +1067,6 @@ void kgdb_schedule_breakpoint(void)
  }
+ EXPORT_SYMBOL_GPL(kgdb_schedule_breakpoint);
  
- static int dbg_restore_graphics;
-@@ -326,15 +409,8 @@ __setup("kgdboc=", kgdboc_option_setup);
- /* This is only available if kgdboc is a built in for early debugging */
- static int __init kgdboc_early_init(char *opt)
- {
--	/* save the first character of the config string because the
--	 * init routine can destroy it.
--	 */
--	char save_ch;
+-static void kgdb_initial_breakpoint(void)
+-{
+-	kgdb_break_asap = 0;
 -
- 	kgdboc_option_setup(opt);
--	save_ch = config[0];
--	init_kgdboc();
--	config[0] = save_ch;
-+	configure_kgdboc();
+-	pr_crit("Waiting for connection from remote gdb...\n");
+-	kgdb_breakpoint();
+-}
+-
+ /**
+  *	kgdb_register_io_module - register KGDB IO module
+  *	@new_dbg_io_ops: the io ops vector
+@@ -1095,7 +1103,8 @@ int kgdb_register_io_module(struct kgdb_io *new_dbg_io_ops)
+ 	/* Arm KGDB now. */
+ 	kgdb_register_callbacks();
+ 
+-	if (kgdb_break_asap)
++	if (kgdb_break_asap &&
++	    (!dbg_is_early || kgdb_arch_can_debug_early()))
+ 		kgdb_initial_breakpoint();
+ 
  	return 0;
- }
+@@ -1165,7 +1174,7 @@ static int __init opt_kgdb_wait(char *str)
+ 	kgdb_break_asap = 1;
  
-@@ -342,7 +418,7 @@ early_param("ekgdboc", kgdboc_early_init);
- #endif /* CONFIG_KGDB_SERIAL_CONSOLE */
+ 	kdb_init(KDB_INIT_EARLY);
+-	if (kgdb_io_module_registered)
++	if (kgdb_io_module_registered && kgdb_arch_can_debug_early())
+ 		kgdb_initial_breakpoint();
  
- module_init(init_kgdboc);
--module_exit(cleanup_kgdboc);
-+module_exit(exit_kgdboc);
- module_param_call(kgdboc, param_set_kgdboc_var, param_get_string, &kps, 0644);
- MODULE_PARM_DESC(kgdboc, "<serial_device>[,baud]");
- MODULE_DESCRIPTION("KGDB Console TTY Driver");
+ 	return 0;
 -- 
 2.26.0.110.g2183baf09c-goog
 
