@@ -2,131 +2,421 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE471A4ABF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CFB1A4AC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgDJTlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:41:40 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:37594 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgDJTlh (ORCPT
+        id S1726671AbgDJToo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:44:44 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:41604 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgDJTon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:41:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=POIx3XHs+z1B1LYmbchLvd+6mRZG4jjVrzB1XvFaETU=; b=K5H6j5Z8UAjUqgnZal2eZP5NdF
-        8pu9HK6BV/ZEhIieqpKOXdk68oFiI4nbhRz2MI/Uwpfujyjt6vQLnEWT/9LN2igNpanJvPAC7t2S5
-        R9w13AOCdEc/ifa0GmlR2HWuM/jDnQa0/7GHk1Va9Q7lfAsIUYt6/lgxhQ0CdpNjWWyKCfTllO9vK
-        NuMHm2hxTf4yj+7kwjDE86avOS51voEMAGm81QUuHSau3Si7EUc1pkcPZhPqClC9h++d7z/UU0ILG
-        eOOihowmxiMDHtTOTz10tCt/Uo/UhdPwrEs7HpAK32RLIyZRE9aPj/1k4sPDqL/taDiUmX/bU9Eiz
-        G4i41mtA==;
-Received: from [2601:1c0:6280:3f0::19c2]
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jMzWy-0000T1-MB; Fri, 10 Apr 2020 19:41:36 +0000
-Subject: Re: linux-next: Tree for Apr 10 (lib/test_printf.ko)
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-References: <20200410132706.170811b7@canb.auug.org.au>
- <27c212c4-b522-561d-411c-e74dc0ff0b74@infradead.org>
- <CAHk-=wjhsM-n_NzSh=cSdpThX+62-x3EmyKjhMqGHFYEyG0nPg@mail.gmail.com>
- <2b0f5d2e-3fe5-10c9-2a9a-9a0b341a52d5@infradead.org>
- <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <bfbcaa67-9656-3a80-fc66-c937297c8be0@infradead.org>
-Date:   Fri, 10 Apr 2020 12:41:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 10 Apr 2020 15:44:43 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mail.baikalelectronics.ru (Postfix) with ESMTP id 88A348030791;
+        Fri, 10 Apr 2020 19:44:39 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at baikalelectronics.ru
+Received: from mail.baikalelectronics.ru ([127.0.0.1])
+        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id huB9Io0Nb37F; Fri, 10 Apr 2020 22:44:38 +0300 (MSK)
+Date:   Fri, 10 Apr 2020 22:45:13 +0300
+From:   Sergey Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/7] watchdog: dw_wdt: Support devices with non-fixed TOP
+ values
+Message-ID: <20200410194513.tdnhmrpo7sgupn35@ubsrv2.baikal.int>
+References: <20200306132747.14701-1-Sergey.Semin@baikalelectronics.ru>
+ <20200306132829.E508B8030705@mail.baikalelectronics.ru>
+ <20200315141238.GA7245@roeck-us.net>
+ <20200410125904.bdrr3jpi47mwvfkf@ubsrv2.baikal.int>
+ <9dd40847-a2c7-d30c-0af4-07ff606a61f8@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjXZSPPWzPs=KBDsLZWuq8qO=9qWfiKHw=yV10fFrDv9Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9dd40847-a2c7-d30c-0af4-07ff606a61f8@roeck-us.net>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/20 12:05 PM, Linus Torvalds wrote:
-> On Fri, Apr 10, 2020 at 11:29 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->>> I wonder if these scripts aren't well enough known, I see a lot of raw
->>> dumps that could be immensely improved with a little scripting - but
->>> they need the original vmlinux binary with debug info, so you can't do
->>> it after-the-fact somewhere else..
->>
+On Fri, Apr 10, 2020 at 09:21:35AM -0700, Guenter Roeck wrote:
+> On 4/10/20 5:59 AM, Sergey Semin wrote:
+> > On Sun, Mar 15, 2020 at 07:12:38AM -0700, Guenter Roeck wrote:
+> >> On Fri, Mar 06, 2020 at 04:27:44PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
+> >>> From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> >>>
+> >>> In case if the DW Watchdog IP core is synthesised with
+> >>> WDT_USE_FIX_TOP == false, the TOP interval indexes make the device
+> >>> to load a custom periods to the counter. These periods are hardwired
+> >>> at the synthesis stage and can be within [2^8, 2^(WDT_CNT_WIDTH - 1)].
+> >>> Alas their values can't be detected at runtime and must be somehow
+> >>> supplied to the driver so one could properly determine the watchdog
+> >>> timeout intervals. For this purpose we suggest to have a vendor-
+> >>> specific dts property "snps,watchdog-tops" utilized, which would
+> >>> provide an array of sixteen counter values. At device probe stage they
+> >>> will be used to initialize the watchdog device timeouts determined
+> >>> from the array values and current clocks source rate.
+> >>>
+> >>> In order to have custom TOP values supported the driver must be
+> >>> altered in the following way. First of all the fixed-top values
+> >>> ready-to-use array must be determined for compatibility with currently
+> >>> supported devices, which were synthesised with WDT_USE_FIX_TOP == true.
+> >>> Secondly we must redefine the timer period search functions. For
+> >>> generality they are redesigned in a way to support the TOP array with
+> >>> no limitations on the items order or value. Finally an array with
+> >>> pre-defined timeouts must be calculated at probe stage from either
+> >>> the custom or fixed TOP values depending on the DW watchdog component
+> >>> parameter WDT_USE_FIX_TOP value.
+> >>>
+> >>> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> >>> Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+> >>> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> >>> Cc: Paul Burton <paulburton@kernel.org>
+> >>> Cc: Ralf Baechle <ralf@linux-mips.org>
+> >>> ---
+> >>>  drivers/watchdog/dw_wdt.c | 145 +++++++++++++++++++++++++++++++-------
+> >>>  1 file changed, 119 insertions(+), 26 deletions(-)
+> >>>
+> >>> diff --git a/drivers/watchdog/dw_wdt.c b/drivers/watchdog/dw_wdt.c
+> >>> index fba21de2bbad..4a57b7d777dc 100644
+> >>> --- a/drivers/watchdog/dw_wdt.c
+> >>> +++ b/drivers/watchdog/dw_wdt.c
+> >>> @@ -13,6 +13,7 @@
+> >>>   */
+> >>>  
+> >>>  #include <linux/bitops.h>
+> >>> +#include <linux/limits.h>
+> >>>  #include <linux/clk.h>
+> >>>  #include <linux/delay.h>
+> >>>  #include <linux/err.h>
+> >>> @@ -34,12 +35,24 @@
+> >>>  #define WDOG_CURRENT_COUNT_REG_OFFSET	    0x08
+> >>>  #define WDOG_COUNTER_RESTART_REG_OFFSET     0x0c
+> >>>  #define WDOG_COUNTER_RESTART_KICK_VALUE	    0x76
+> >>> +#define WDOG_COMP_PARAMS_1_REG_OFFSET       0xf4
+> >>> +#define WDOG_COMP_PARAMS_1_USE_FIX_TOP      BIT(6)
+> >>>  
+> >>> -/* The maximum TOP (timeout period) value that can be set in the watchdog. */
+> >>> -#define DW_WDT_MAX_TOP		15
+> >>> +/* There are sixteen TOPs (timeout periods) that can be set in the watchdog. */
+> >>> +#define DW_WDT_NUM_TOPS		16
+> >>> +#define DW_WDT_FIX_TOP(_idx)	(1U << (16 + _idx))
+> >>>  
+> >>>  #define DW_WDT_DEFAULT_SECONDS	30
+> >>>  
+> >>> +static const u32 dw_wdt_fix_tops[DW_WDT_NUM_TOPS] = {
+> >>> +	DW_WDT_FIX_TOP(0), DW_WDT_FIX_TOP(1), DW_WDT_FIX_TOP(2),
+> >>> +	DW_WDT_FIX_TOP(3), DW_WDT_FIX_TOP(4), DW_WDT_FIX_TOP(5),
+> >>> +	DW_WDT_FIX_TOP(6), DW_WDT_FIX_TOP(7), DW_WDT_FIX_TOP(8),
+> >>> +	DW_WDT_FIX_TOP(9), DW_WDT_FIX_TOP(10), DW_WDT_FIX_TOP(11),
+> >>> +	DW_WDT_FIX_TOP(12), DW_WDT_FIX_TOP(13), DW_WDT_FIX_TOP(14),
+> >>> +	DW_WDT_FIX_TOP(15)
+> >>> +};
+> >>> +
+> >>>  static bool nowayout = WATCHDOG_NOWAYOUT;
+> >>>  module_param(nowayout, bool, 0);
+> >>>  MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started "
+> >>> @@ -49,6 +62,8 @@ struct dw_wdt {
+> >>>  	void __iomem		*regs;
+> >>>  	struct clk		*clk;
+> >>>  	unsigned long		rate;
+> >>> +	unsigned int		max_top;
+> >>> +	unsigned int		timeouts[DW_WDT_NUM_TOPS];
+> >>>  	struct watchdog_device	wdd;
+> >>>  	struct reset_control	*rst;
+> >>>  	/* Save/restore */
+> >>> @@ -64,20 +79,68 @@ static inline int dw_wdt_is_enabled(struct dw_wdt *dw_wdt)
+> >>>  		WDOG_CONTROL_REG_WDT_EN_MASK;
+> >>>  }
+> >>>  
+> >>> -static inline int dw_wdt_top_in_seconds(struct dw_wdt *dw_wdt, unsigned top)
+> >>> +static unsigned int dw_wdt_find_best_top(struct dw_wdt *dw_wdt,
+> >>> +					 unsigned int timeout, u32 *top)
+> >>>  {
+> >>> +	u32 diff = UINT_MAX, tmp;
+> >>> +	int idx;
+> >>> +
+> >>>  	/*
+> >>> -	 * There are 16 possible timeout values in 0..15 where the number of
+> >>> -	 * cycles is 2 ^ (16 + i) and the watchdog counts down.
+> >>> +	 * In general case of non-fixed timeout values they can be arranged in
+> >>> +	 * any order so we have to traverse all the array values. We also try
+> >>> +	 * to find a closest timeout number and make sure its value is greater
+> >>> +	 * than the requested timeout. Note we'll return a maximum timeout
+> >>> +	 * if reachable value couldn't be found.
+> >>>  	 */
+> >>> -	return (1U << (16 + top)) / dw_wdt->rate;
+> >>> +	for (*top = dw_wdt->max_top, idx = 0; idx < DW_WDT_NUM_TOPS; ++idx) {
+> >>> +		if (dw_wdt->timeouts[idx] < timeout)
+> >>> +			continue;
+> >>> +
+> >>> +		tmp = dw_wdt->timeouts[idx] - timeout;
+> >>> +		if (tmp < diff) {
+> >>> +			diff = tmp;
+> >>> +			*top = idx;
+> >>> +		}
+> >>> +	}
+> >>> +
+> >>> +	return dw_wdt->timeouts[*top];
+> >>> +}
+> >>> +
+> >>> +static unsigned int dw_wdt_find_min_timeout(struct dw_wdt *dw_wdt)
+> >>
+> >> I would appreciate if the names of functions returning ms end with _ms
+> >> to avoid confusion.
+> > 
+> > Ok. I'll also modify the functions a bit, so only the
+> > dw_wdt_find_best_top_ms() and dw_wdt_find_max_top_ms() methods would
+> > return timeouts in milliseconds. Though if you insist in keeping seconds
+> > in the timeouts array (see the comment after the next one), it'll be
+> > dw_wdt_find_max_top_ms() only.
+> > 
+> >>
+> >>> +{
+> >>> +	u32 min_timeout = UINT_MAX, top;
+> >>> +	int idx;
+> >>> +
+> >>> +	for (top = 0, idx = 0; idx < DW_WDT_NUM_TOPS; ++idx) {
+> >>> +		if (dw_wdt->timeouts[idx] <= min_timeout) {
+> >>> +			min_timeout = dw_wdt->timeouts[idx];
+> >>> +			top = idx;
+> >>> +		}
+> >>> +	}
+> >>> +
+> >>> +	return dw_wdt->timeouts[top];
+> >>> +}
+> >>> +
+> >>> +static unsigned int dw_wdt_find_max_top(struct dw_wdt *dw_wdt, u32 *top)
+> >>> +{
+> >>> +	u32 max_timeout = 0;
+> >>> +	int idx;
+> >>> +
+> >>> +	for (*top = 0, idx = 0; idx < DW_WDT_NUM_TOPS; ++idx) {
+> >>> +		if (dw_wdt->timeouts[idx] >= max_timeout) {
+> >>> +			max_timeout = dw_wdt->timeouts[idx];
+> >>> +			*top = idx;
+> >>> +		}
+> >>> +	}
+> >>> +
+> >>> +	return dw_wdt->timeouts[*top];
+> >>>  }
+> >>>  
+> >>> -static int dw_wdt_get_top(struct dw_wdt *dw_wdt)
+> >>> +static unsigned int dw_wdt_get_timeout(struct dw_wdt *dw_wdt)
+> >>>  {
+> >>>  	int top = readl(dw_wdt->regs + WDOG_TIMEOUT_RANGE_REG_OFFSET) & 0xF;
+> >>>  
+> >>> -	return dw_wdt_top_in_seconds(dw_wdt, top);
+> >>> +	return dw_wdt->timeouts[top];
+> >>>  }
+> >>>  
+> >>>  static int dw_wdt_ping(struct watchdog_device *wdd)
+> >>> @@ -90,20 +153,13 @@ static int dw_wdt_ping(struct watchdog_device *wdd)
+> >>>  	return 0;
+> >>>  }
+> >>>  
+> >>> -static int dw_wdt_set_timeout(struct watchdog_device *wdd, unsigned int top_s)
+> >>> +static int dw_wdt_set_timeout(struct watchdog_device *wdd, unsigned int req)
+> >>>  {
+> >>>  	struct dw_wdt *dw_wdt = to_dw_wdt(wdd);
+> >>> -	int i, top_val = DW_WDT_MAX_TOP;
+> >>> +	unsigned int timeout;
+> >>> +	u32 top;
+> >>>  
+> >>> -	/*
+> >>> -	 * Iterate over the timeout values until we find the closest match. We
+> >>> -	 * always look for >=.
+> >>> -	 */
+> >>> -	for (i = 0; i <= DW_WDT_MAX_TOP; ++i)
+> >>> -		if (dw_wdt_top_in_seconds(dw_wdt, i) >= top_s) {
+> >>> -			top_val = i;
+> >>> -			break;
+> >>> -		}
+> >>> +	timeout = dw_wdt_find_best_top(dw_wdt, req * MSEC_PER_SEC, &top);
+> >>>  
+> >>>  	/*
+> >>>  	 * Set the new value in the watchdog.  Some versions of dw_wdt
+> >>> @@ -111,7 +167,7 @@ static int dw_wdt_set_timeout(struct watchdog_device *wdd, unsigned int top_s)
+> >>>  	 * CP_WDT_DUAL_TOP in WDT_COMP_PARAMS_1).  On those we
+> >>>  	 * effectively get a pat of the watchdog right here.
+> >>>  	 */
+> >>> -	writel(top_val | top_val << WDOG_TIMEOUT_RANGE_TOPINIT_SHIFT,
+> >>> +	writel(top | top << WDOG_TIMEOUT_RANGE_TOPINIT_SHIFT,
+> >>>  	       dw_wdt->regs + WDOG_TIMEOUT_RANGE_REG_OFFSET);
+> >>>  
+> >>>  	/*
+> >>> @@ -119,10 +175,10 @@ static int dw_wdt_set_timeout(struct watchdog_device *wdd, unsigned int top_s)
+> >>>  	 * kernel(watchdog_dev.c) helps to feed watchdog before
+> >>>  	 * wdd->max_hw_heartbeat_ms
+> >>>  	 */
+> >>> -	if (top_s * 1000 <= wdd->max_hw_heartbeat_ms)
+> >>> -		wdd->timeout = dw_wdt_top_in_seconds(dw_wdt, top_val);
+> >>> +	if (req * MSEC_PER_SEC > wdd->max_hw_heartbeat_ms)
+> >>> +		wdd->timeout = req;
+> >>>  	else
+> >>> -		wdd->timeout = top_s;
+> >>> +		wdd->timeout = timeout / MSEC_PER_SEC;
+> >>>  
+> >>>  	return 0;
+> >>>  }
+> >>> @@ -238,6 +294,41 @@ static int dw_wdt_resume(struct device *dev)
+> >>>  
+> >>>  static SIMPLE_DEV_PM_OPS(dw_wdt_pm_ops, dw_wdt_suspend, dw_wdt_resume);
+> >>>  
+> >>> +static void dw_wdt_init_timeouts(struct dw_wdt *dw_wdt, struct device *dev)
+> >>> +{
+> >>> +	u32 data, of_tops[DW_WDT_NUM_TOPS];
+> >>> +	const u32 *tops;
+> >>> +	int ret, idx;
+> >>> +
+> >>> +	/*
+> >>> +	 * Retrieve custom or fixed counter values depending on the
+> >>> +	 * WDT_USE_FIX_TOP flag found in the component specific parameters
+> >>> +	 * #1 register.
+> >>> +	 */
+> >>> +	data = readl(dw_wdt->regs + WDOG_COMP_PARAMS_1_REG_OFFSET);
+> >>> +	if (data & WDOG_COMP_PARAMS_1_USE_FIX_TOP) {
+> >>> +		tops = dw_wdt_fix_tops;
+> >>> +	} else {
+> >>> +		ret = of_property_read_variable_u32_array(dev_of_node(dev),
+> >>> +			"snps,watchdog-tops", of_tops, DW_WDT_NUM_TOPS,
+> >>> +			DW_WDT_NUM_TOPS);
+> >>> +		if (ret < 0) {
+> >>> +			dev_warn(dev, "No valid TOPs array specified\n");
+> >>> +			tops = dw_wdt_fix_tops;
+> >>> +		} else {
+> >>> +			tops = of_tops;
+> >>> +		}
+> >>> +	}
+> >>> +
+> >>> +	/*
+> >>> +	 * We'll keep the timeout values in ms to approximate requested
+> >>> +	 * timeouts with better accuracy.
+> >>> +	 */
+> >>> +	for (idx = 0; idx < DW_WDT_NUM_TOPS; ++idx)
+> >>> +		dw_wdt->timeouts[idx] =
+> >>> +			mult_frac(tops[idx], MSEC_PER_SEC, dw_wdt->rate);
+> >>
+> >> tops[idx] type is u32. Its value can be up to 0xffffffff. That means
+> >> dw_wdt->rate must be >= 1000 to avoid overflow, which you should check.
+> > 
+> > Right. I don't think that TOPs with timeouts bigger than
+> > 0xffffffff milliseconds have any valuable usecases, so I'll just round
+> > the overflows down to FFs.
+> > 
+> 
+> Neither do unsorted random timeouts milli-seconds apart. You see the need
+> to address one, so addressing other weaknesses is appropriate.
 
-> But even dump_stack.sh can't sort out how it got from test_printf_init
-> to software_node_unregister_nodes even though it usually is good about
-> following all the inlining (in this case selftest -> test_pointer ->
-> fwnode_pointer).
-> 
-> That may be because of something like a DEBUG_INFO_REDUCED option.
+Don't really understand what you mean. Do you intend to filter the
+unreachable timeouts out from the timeouts array? If so this isn't
+possible with current design. I would have to implement a more complex
+data structure, like an array of pairs {TOP, timeout} and refactor the
+timeout search algorithm. Don't really think this optimization is required
+seeing watchdog timeout set operation is normally performed just a few times
+per watchdog usage session.
 
-No, that's enabled. (see below)
+> 
+> >>
+> >> Note that I don't see the point of keeping the timeout values in ms.
+> >> The code selects a larger value (in seconds) anyway. All this does is
+> >> to add a lot of multiply and divide operations, plus a source of bugs
+> >> and confusion, for little if any gain.
+> > 
+> > As I said in the comment to the code the idea of keeping values in ms was
+> > to better approximate the requested timeouts. This is necessary since
+> > unlike the fixed TOPs case in which each next timeout is doubled with
+> > respect to a previous one (65536, 131072, etc), the unfixed TOPs set may
+> > have any values within [2^8; (2^WDT_CNT_WIDTH - 1)]. Actual numerical
+> > values of the set are defined by a SoC engineer at the moment of the
+> > IP-core synthesis. So in general they can be unordered and can differ one
+> > from another in very small time deltas, like ms and even us. It depends
+> > on the ways the watchdog was supposed to be utilized in accordance with
+> > the system requirements and the reference clock rate. In this case how to
+> > distinguish the values if we had only seconds array? In this patch I
+> > suggest an approach to at least cover the case of the TOPs with
+> > milliseconds granularity.
+> > 
+> > I don't deny that this might be not that much gain seeing the watchdog
+> > core supports the timeouts in seconds only, but at least it provides a
+> > way to distinguish one TOP from another instead of picking a first found
+> > one. As I see it there aren't that much multiplication and division
+> > caused by such solution and it's a small prices with respect to an
+> > ability to find a better timeout approximation. A few tens nsecs of
+> > the code execution is much smaller than milliseconds accuracy of the
+> > watchdog timeout. Though OS-wise such accuracy might be redundant.
+> > 
+> > Regarding bugs and confusion. Well I find confusing a numerical literals
+> > usage while there are self-documented macros in the kernel available,
+> > which would better represent the code context and would point out what
+> > they are used for.) That's why I've sent the previous patch in the first
+> > place. But as I said in the response to your review comments there, while
+> > it doesn't contradict to the kernel requirements with ceteris paribus
+> > it's up to you which approach to choose since you are the subsystem
+> > maintainer and it will be your duty to continue the code maintenance in
+> > future. The same thing is here. It's up to you what approach to choose.
+> > So if my reasoning above didn't make you to change your mind, could you
+> > please explicitly respond to this message that you'd better see the
+> > timeouts array having seconds instead of milliseconds?
+> > 
+> Please include a summary of the above in the driver to explain the need
+> for the complexity for others in the future.
 
+Ok.
 
->> [  561.071144] _raw_spin_lock_irqsave (linux-next-20200410/rdd64/../include/linux/instrumented.h:71 linux-next-20200410/rdd64/../include/asm-generic/atomic-instrumented.h:695 linux-next-20200410/rdd64/../include/asm-generic/qspinlock.h:78 linux-next-20200410/rdd64/../include/linux/spinlock.h:194 linux-next-20200410/rdd64/../include/linux/spinlock_api_smp.h:119 linux-next-20200410/rdd64/../kernel/locking/spinlock.c:159)
->> [  561.074868] ? _raw_write_unlock_bh (linux-next-20200410/rdd64/../kernel/locking/spinlock.c:158)
->> [  561.078495] ? ida_destroy (linux-next-20200410/rdd64/../lib/idr.c:538)
->> [  561.082144] ida_free (linux-next-20200410/rdd64/../lib/idr.c:495 (discriminator 2))
->> [  561.085694] ? fprop_new_period.cold (linux-next-20200410/rdd64/../lib/idr.c:486)
->> [  561.089228] ? kasan_slab_free (linux-next-20200410/rdd64/../mm/kasan/common.c:466)
->> [  561.092738] ? kfree (linux-next-20200410/rdd64/../mm/slub.c:1478 linux-next-20200410/rdd64/../mm/slub.c:3035 linux-next-20200410/rdd64/../mm/slub.c:4003)
->> [  561.096183] software_node_release (linux-next-20200410/rdd64/../include/linux/list.h:132 linux-next-20200410/rdd64/../include/linux/list.h:146 linux-next-20200410/rdd64/../drivers/base/swnode.c:613)
->> [  561.099644] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:697 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
->> [  561.103109] kobject_del (linux-next-20200410/rdd64/../lib/kobject.c:629)
->> [  561.106457] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:690 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
->> [  561.109785] fwnode_remove_software_node (linux-next-20200410/rdd64/../drivers/base/swnode.c:784)
->> [  561.113061] software_node_unregister_nodes (linux-next-20200410/rdd64/../drivers/base/swnode.c:721 (discriminator 2))
->> [  561.116274] test_printf_init (linux-next-20200410/rdd64/../lib/test_printf.c:685 linux-next-20200410/rdd64/../lib/test_printf.c:688) test_printf
-> 
-> It does print out those multiple lines for some things, but doesn't
-> have the nice "inlined by XYZ" I sometimes see that makes it really
-> obvious.
-> 
+-Sergey
 
-This is with FRAME_POINTER, not UNWIND_ORC. Maybe that's the difference?
-
-
-> So it ends up still just looking like ida_free -> _raw_spin_lock_irqsave.
 > 
-> Strange. But it's all the same freeing path:
+> Guenter
 > 
->> [  561.278921] Freed by task 1454:
->> [  561.289528] kfree (linux-next-20200410/rdd64/../mm/slub.c:1478 linux-next-20200410/rdd64/../mm/slub.c:3035 linux-next-20200410/rdd64/../mm/slub.c:4003)
->> [  561.292183] software_node_release (linux-next-20200410/rdd64/../drivers/base/swnode.c:624)
->> [  561.294865] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:697 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
->> [  561.297501] kobject_del (linux-next-20200410/rdd64/../lib/kobject.c:629)
->> [  561.300154] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:690 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
->> [  561.302784] kobject_del (linux-next-20200410/rdd64/../lib/kobject.c:629)
->> [  561.305344] kobject_put (linux-next-20200410/rdd64/../lib/kobject.c:690 linux-next-20200410/rdd64/../lib/kobject.c:722 linux-next-20200410/rdd64/../include/linux/kref.h:65 linux-next-20200410/rdd64/../lib/kobject.c:739)
->> [  561.307914] fwnode_remove_software_node (linux-next-20200410/rdd64/../drivers/base/swnode.c:784)
+> >>
+> >>> +}
+> >>> +
+> >>>  static int dw_wdt_drv_probe(struct platform_device *pdev)
+> >>>  {
+> >>>  	struct device *dev = &pdev->dev;
+> >>> @@ -275,12 +366,14 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
+> >>>  
+> >>>  	reset_control_deassert(dw_wdt->rst);
+> >>>  
+> >>> +	dw_wdt_init_timeouts(dw_wdt, dev);
+> >>> +
+> >>>  	wdd = &dw_wdt->wdd;
+> >>>  	wdd->info = &dw_wdt_ident;
+> >>>  	wdd->ops = &dw_wdt_ops;
+> >>> -	wdd->min_timeout = 1;
+> >>> +	wdd->min_timeout = dw_wdt_find_min_timeout(dw_wdt) / MSEC_PER_SEC;
+> >>
+> >> dw_wdt_find_min_timeout can return a value < 1000. In that case min_timeout
+> >> would be 0, ie unspecified.
+> > 
+> > Ok. I'll implement this limitation in the dw_wdt_find_min_timeout()
+> > method. It will return seconds in v2.
+> > 
+> > Regards,
+> > -Sergey
+> > 
+> >>
+> >>>  	wdd->max_hw_heartbeat_ms =
+> >>> -		dw_wdt_top_in_seconds(dw_wdt, DW_WDT_MAX_TOP) * 1000;
+> >>> +		dw_wdt_find_max_top(dw_wdt, &dw_wdt->max_top);
+> >>>  	wdd->parent = dev;
+> >>>  
+> >>>  	watchdog_set_drvdata(wdd, dw_wdt);
+> >>> @@ -293,7 +386,7 @@ static int dw_wdt_drv_probe(struct platform_device *pdev)
+> >>>  	 * devicetree.
+> >>>  	 */
+> >>>  	if (dw_wdt_is_enabled(dw_wdt)) {
+> >>> -		wdd->timeout = dw_wdt_get_top(dw_wdt);
+> >>> +		wdd->timeout = dw_wdt_get_timeout(dw_wdt) / MSEC_PER_SEC;
+> >>>  		set_bit(WDOG_HW_RUNNING, &wdd->status);
+> >>>  	} else {
+> >>>  		wdd->timeout = DW_WDT_DEFAULT_SECONDS;
 > 
-> so it at least superficially looks like software_node_release() might
-> be called twice.
-> 
-> Maybe the child node is released after the parent node - and the child
-> node seems to do the
-> 
->         ida_simple_remove(&swnode->parent->child_ids, swnode->id);
-> 
-> and maybe it's that the parent->child_ids was already free'd by the
-> previous software_node_release() call? Do children not keep a refcount
-> to their parent, perhaps?
-> 
-> Somebody who knows the driver core thing needs to look at it. And
-> since I don't play with linux-next apart from checking when I pull, I
-> don't know what might have happened in this area..
-> 
-> Adding some driver core people to the cc.
-> 
->                 Linus-- 
-~Randy
-
