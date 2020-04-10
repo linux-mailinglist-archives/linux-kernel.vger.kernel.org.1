@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CEEB51A4AAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7139C1A4AB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgDJTjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:39:04 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:28742 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726626AbgDJTjD (ORCPT
+        id S1726755AbgDJTl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:41:27 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36243 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbgDJTlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:39:03 -0400
+        Fri, 10 Apr 2020 15:41:25 -0400
 Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 10 Apr 2020 12:38:59 -0700
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Fri, 10 Apr 2020 12:39:05 -0700
 Received: from sc9-mailhost3.vmware.com (unknown [10.166.69.226])
-        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 3966DB2C9B;
-        Fri, 10 Apr 2020 15:39:03 -0400 (EDT)
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id 5E464B2D03;
+        Fri, 10 Apr 2020 15:39:09 -0400 (EDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -27,78 +27,116 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Miroslav Benes <mbenes@suse.cz>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH 29/36] objtool: mcount: Reduce usage of _size wrapper
-Date:   Fri, 10 Apr 2020 12:35:52 -0700
-Message-ID: <395fa2069e8280d57c1509bdbac9eafb1c6badf9.1586468801.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH 30/36] objtool: mcount: Move mcount_adjust out of wrapper
+Date:   Fri, 10 Apr 2020 12:35:53 -0700
+Message-ID: <531409b6dbb2df74056ba03269e311b8248ba7ae.1586468801.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1586468801.git.mhelsley@vmware.com>
 References: <cover.1586468801.git.mhelsley@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
  designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use loc_size, which will be passed in from outside the wrapper, rather
-than the _size wrapper since the location size is determined outside
-the wrapper anyway.
+The mcount_adjust variable defines how many bytes to move back
+from the relocation address in order to be able to get to the
+start of the function call instruction(s) needed to turn it
+into a no-op. The values are very small and signed so we don't
+need to worry about changing the size of the variable's type
+inside the wrapper -- we can just use a regular int.
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/recordmcount.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ tools/objtool/recordmcount.c | 12 +++++++++---
+ tools/objtool/recordmcount.h |  5 -----
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
+diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
+index 5fdef8b2ac28..52d8d9800bf9 100644
+--- a/tools/objtool/recordmcount.c
++++ b/tools/objtool/recordmcount.c
+@@ -385,6 +385,12 @@ static unsigned tot_relsize(unsigned int *rel_entsize)
+ 	}
+ 	return totrelsz;
+ }
++
++/* zero or a small negative offset added to get the start of the call
++ * instruction
++ */
++static int mcount_adjust = 0;
++
+ /* 32 bit and 64 bit are very similar */
+ #include "recordmcount.h"
+ #define RECORD_MCOUNT_64
+@@ -495,7 +501,7 @@ static int do_file(char const *const fname)
+ 		rel_type_nop = R_386_NONE;
+ 		make_nop = make_nop_x86;
+ 		ideal_nop = ideal_nop5_x86_32;
+-		mcount_adjust_32 = -1;
++		mcount_adjust = -1;
+ 		gpfx = 0;
+ 		break;
+ 	case EM_ARM:
+@@ -524,7 +530,7 @@ static int do_file(char const *const fname)
+ 		ideal_nop = ideal_nop5_x86_64;
+ 		reltype = R_X86_64_64;
+ 		rel_type_nop = R_X86_64_NONE;
+-		mcount_adjust_64 = -1;
++		mcount_adjust = -1;
+ 		gpfx = 0;
+ 		break;
+ 	}  /* end switch */
+@@ -556,7 +562,7 @@ static int do_file(char const *const fname)
+ 		}
+ 		if (lf->ehdr.e_machine == EM_S390) {
+ 			reltype = R_390_64;
+-			mcount_adjust_64 = -14;
++			mcount_adjust = -14;
+ 		}
+ 		if (lf->ehdr.e_machine == EM_MIPS) {
+ 			reltype = R_MIPS_64;
 diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
-index 9ce2d74df89a..353c7d082631 100644
+index 353c7d082631..b4d3c55f2c9c 100644
 --- a/tools/objtool/recordmcount.h
 +++ b/tools/objtool/recordmcount.h
-@@ -72,6 +72,7 @@ static int append_func(uint_t const *const mloc0,
+@@ -18,7 +18,6 @@
+  * Copyright 2010 Steven Rostedt <srostedt@redhat.com>, Red Hat Inc.
+  */
+ #undef append_func
+-#undef mcount_adjust
+ #undef sift_rel_mcount
+ #undef do_func
+ #undef Elf_Shdr
+@@ -35,7 +34,6 @@
+ # define append_func		append64
+ # define sift_rel_mcount	sift64_rel_mcount
+ # define do_func		do64
+-# define mcount_adjust		mcount_adjust_64
+ # define Elf_Rel		Elf64_Rel
+ # define Elf_Rela		Elf64_Rela
+ # define ELF_R_INFO		ELF64_R_INFO
+@@ -48,7 +46,6 @@
+ # define append_func		append32
+ # define sift_rel_mcount	sift32_rel_mcount
+ # define do_func		do32
+-# define mcount_adjust		mcount_adjust_32
+ # define Elf_Rel		Elf32_Rel
+ # define Elf_Rela		Elf32_Rela
+ # define ELF_R_INFO		ELF32_R_INFO
+@@ -65,8 +62,6 @@ static void fn_ELF_R_INFO(Elf_Rel *const rp, unsigned sym, unsigned type)
+ }
+ static void (*Elf_r_info)(Elf_Rel *const rp, unsigned sym, unsigned type) = fn_ELF_R_INFO;
+ 
+-static int mcount_adjust = 0;
+-
+ /* Append the new  __mcount_loc and its relocations. */
+ static int append_func(uint_t const *const mloc0,
  			uint_t const *const mlocp,
- 			Elf_Rel const *const mrel0,
- 			Elf_Rel const *const mrelp,
-+			unsigned int const loc_size,
- 			unsigned int const rel_entsize,
- 			unsigned int const symsec_sh_link)
- {
-@@ -83,14 +84,14 @@ static int append_func(uint_t const *const mloc0,
- 	unsigned const old_shnum = lf->ehdr.e_shnum;
- 
- 	/* add section: __mcount_loc */
--	sec = elf_create_section(lf, mc_name + (sizeof(Elf_Rela) == rel_entsize) + strlen(".rel"), _size, mlocp - mloc0);
-+	sec = elf_create_section(lf, mc_name + (sizeof(Elf_Rela) == rel_entsize) + strlen(".rel"), loc_size, mlocp - mloc0);
- 	if (!sec)
- 		return -1;
- 
- 	// created sec->sh.sh_size = (void *)mlocp - (void *)mloc0;
- 	sec->sh.sh_link = 0;/* TODO objtool uses this? */
- 	sec->sh.sh_info = 0;/* TODO objtool uses this? */
--	sec->sh.sh_addralign = _size;
-+	sec->sh.sh_addralign = loc_size;
- 	// created sec->sh.sh_entsize = _size;
- 
- 	// assert sec->data->d_size == (void *)mlocp - (void *)mloc0
-@@ -109,7 +110,7 @@ static int append_func(uint_t const *const mloc0,
- 	sec->sh.sh_flags = 0;
- 	sec->sh.sh_link = find_section_by_name(lf, ".symtab")->idx;
- 	sec->sh.sh_info = old_shnum;
--	sec->sh.sh_addralign = _size;
-+	sec->sh.sh_addralign = loc_size;
- 
- 	// assert sec->data->d_size == (void *)mrelp - (void *)mrel0
- 	memcpy(sec->data->d_buf, mrel0, sec->data->d_size);
-@@ -231,7 +232,7 @@ static int do_func(unsigned const reltype)
- 	}
- 	if (!result && mloc0 != mlocp)
- 		result = append_func(mloc0, mlocp, mrel0, mrelp,
--				     rel_entsize, symsec_sh_link);
-+				     _size, rel_entsize, symsec_sh_link);
- out:
- 	free(mrel0);
- 	free(mloc0);
 -- 
 2.20.1
 
