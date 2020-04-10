@@ -2,84 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6611A4643
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 14:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B351A4650
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 14:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726646AbgDJMad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 08:30:33 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:47047 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbgDJMad (ORCPT
+        id S1726595AbgDJMdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 08:33:16 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:33066 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725930AbgDJMdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 08:30:33 -0400
-Received: by mail-lf1-f66.google.com with SMTP id m19so1226324lfq.13;
-        Fri, 10 Apr 2020 05:30:32 -0700 (PDT)
+        Fri, 10 Apr 2020 08:33:16 -0400
+Received: by mail-lj1-f196.google.com with SMTP id q22so1838535ljg.0;
+        Fri, 10 Apr 2020 05:33:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/wxc7mReIW0I/9bGXTr0ixTFqsRHmu5x96+RkLeeN6c=;
-        b=UhdOUThDXUsEVxm+BcFPoLrZbBISCqLbMnOIO/+ksl/iwGQHXK3T1IW0amcnMn/D7o
-         b7WR7IVdaR1vh0IEOCs7T3aESfBr8WerWgHuOqOfwflaChJolVe2Q+1zMXQW3mwqvbkN
-         hpa9JCs3OxbAtaB9qBquyWPyGIapVOVmhE5VzYsmd21eAqaHIXeZMlZ06TfMD/CMsKU5
-         brdw62stUhFRn2sTkPcSf76O5ane6G7uKY+5oDpe/vwLH0R6CITKNsFX0iJL2PTjk6b5
-         GZtH4lbj1RCvXIdLUmj70Y55HAF2B1rI6d4fJN459gL1mfBMRaXAq0AhE09Ux8rxpvBx
-         VFPw==
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=oZ4mTa/knZg2c3uydTiSH3iGohdOLCMYiOTGruiDB44=;
+        b=INLqcIST63qUP2L0bEZpAvS/9RIaV7Qr6MrQkTXbpyKTxw2bckSqzVlr/UTU5vJPlV
+         V0/BMJh/wM7nRQi3FBU/Gj9zVpdevlnc6EdAE4Q7v1uG5VEFStrbYDW0fdPQFdvMzt+4
+         u0IlEl1z+syacsjqSgJtLhOpUOQuTnS5e1ggOXUIdORCvZLPKW77Bdo3WVNILoxWWuLx
+         GcoDzdSxxOwH75+8UgRtDZVrdx9aSb6m4xuGAvn0/ovmVIfggkzmNBYZ7tz6579hYP1h
+         q0YGuBtlequ5w64x2mpCl0PKJ2fMEpdABifPhEi0OZLfNV1ZArdkYh9f1znVgUdgfgam
+         9mYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/wxc7mReIW0I/9bGXTr0ixTFqsRHmu5x96+RkLeeN6c=;
-        b=Y32xGH1IuMy/QAhLQGuQ9BKJsyuuumVoWcyAuuF3rr0o2xIIUczZSP1bilF9l/A2IY
-         PjFmRn2zAV41mTblR29YLuLLJQdO6ky4iU7/zEq7r9/ctVJznRZqWuzoe9pxIugCbbZU
-         Utv8ObYrsc+iJIukj3DJ5JAIKEZNNUr7QQpbx0eTUieldQQho/nUcrcTCZs1uTYG1QtE
-         8gyy93DOEZDvTTgl1Svw6MjnIbptOwdmdaZ/TdMvxZi4bqgSM4wnS4b+TDvz9sSEif6B
-         y37OeOoCagKTRhcoaEZfJEdqfGICASIsJlbW14oEE6xm7CTnrP/hn3U4fupOwuBTKtA2
-         MFVg==
-X-Gm-Message-State: AGi0PuaR9jU4mbrhrjcMd2pnETxpJcsEOvEHIFosbi4tpuibWc4Kw++y
-        Lva1+3tDeq5jN9ieSqRjUN3IULzEeVX8CxwIDh8IjKGp
-X-Google-Smtp-Source: APiQypKbT1f0FIBVJXC+bXz14yNA1I+1UT6w/M7bmkAigetfHQuvslFLulfIjNzdwy6W3aAIolbWZMQR+WwhVNs5wLc=
-X-Received: by 2002:ac2:57cc:: with SMTP id k12mr2456508lfo.69.1586521831805;
- Fri, 10 Apr 2020 05:30:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200410004738.19668-1-ansuelsmth@gmail.com> <20200410004738.19668-3-ansuelsmth@gmail.com>
- <CAOMZO5AKYO3xLsp4k6_fJCV9qW=rAtRKEGWnxksixU794dOw8A@mail.gmail.com> <003401d60f28$3d045190$b70cf4b0$@gmail.com>
-In-Reply-To: <003401d60f28$3d045190$b70cf4b0$@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Fri, 10 Apr 2020 09:31:00 -0300
-Message-ID: <CAOMZO5B+rEoQD_ujt9cx9VXO-i2oqfW2UN2cVeB5hZB3aVpGeQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] drivers: pci: dwc: pci-imx6: update binding to
- generic name
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        linux-pci@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=oZ4mTa/knZg2c3uydTiSH3iGohdOLCMYiOTGruiDB44=;
+        b=J3LAUvLnzqwVSfQo0+faf9EbrM74NngDUSNwTDLqs6HqsRYNxROarKwB2ykz6hIIX6
+         D+ZAgrJiBUYTCyhmkRQtRubHGAFvr3n/YCgKaFJkE7dbTJ+hhhrf15eBLP6G1BlEFuGF
+         sg6ENBOh1/EDQmQKSabMjQ5lGAuMOeRSVKmNW0PSBSJeD65wHRSDMCamOHlfDUfsNdDc
+         BwPX0vKijw1QpR/SSXorP8Xa9J0SKPaXcGs4Hb9KO4QL7mdIIImw5QO1HXTM0fPXshK+
+         7tz8EbixTrO/MffHart4vRdR/PG5M57sxUWJsptXSfaz1gM62qIfnrH6lIKhnzmp8Ons
+         sG1g==
+X-Gm-Message-State: AGi0PuasSP30BUKAweNKM1q3Mzme24sToHVtfPkNep2UXV6VR1erTSiJ
+        ajuOdyzbDvPCcsmJxwrMAkg=
+X-Google-Smtp-Source: APiQypI1WtuGNzKw6wZJX6wI33yCJEpZK1zTnaPinzEQNJpD/F835Vr6wwyW2yatQgL9RvoCtK3ivg==
+X-Received: by 2002:a2e:8745:: with SMTP id q5mr2936178ljj.157.1586521993889;
+        Fri, 10 Apr 2020 05:33:13 -0700 (PDT)
+Received: from work.bb.dnainternet.fi (dffyyyyyyyyyyyysyd4py-3.rev.dnainternet.fi. [2001:14ba:2100::1e0:1e18])
+        by smtp.gmail.com with ESMTPSA id r23sm1012619ljh.34.2020.04.10.05.33.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 05:33:13 -0700 (PDT)
+From:   Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+To:     johannes@sipsolutions.net
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+6693adf1698864d21734@syzkaller.appspotmail.com,
+        Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>, stable@kernel.org
+Subject: [PATCH] mac80211_hwsim: Use kstrndup() in place of kasprintf()
+Date:   Fri, 10 Apr 2020 15:32:57 +0300
+Message-Id: <20200410123257.14559-1-tuomas.tynkkynen@iki.fi>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ansuel,
+syzbot reports a warning:
 
-On Fri, Apr 10, 2020 at 8:07 AM <ansuelsmth@gmail.com> wrote:
+precision 33020 too large
+WARNING: CPU: 0 PID: 9618 at lib/vsprintf.c:2471 set_precision+0x150/0x180 lib/vsprintf.c:2471
+ vsnprintf+0xa7b/0x19a0 lib/vsprintf.c:2547
+ kvasprintf+0xb2/0x170 lib/kasprintf.c:22
+ kasprintf+0xbb/0xf0 lib/kasprintf.c:59
+ hwsim_del_radio_nl+0x63a/0x7e0 drivers/net/wireless/mac80211_hwsim.c:3625
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:672 [inline]
+ ...
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-> so no chance of changing this?
+Thus it seems that kasprintf() with "%.*s" format can not be used for
+duplicating a string with arbitrary length. Replace it with kstrndup().
 
-Reading the commit log I don't see any explanation as to why you need
-to change the current bindings.
+Reported-by: syzbot+6693adf1698864d21734@syzkaller.appspotmail.com
+Cc: stable@kernel.org
+Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+---
+Compile tested only.
+---
+ drivers/net/wireless/mac80211_hwsim.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-What is the motivation for doing this? Is this really worth it?
+diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
+index 7fe8207db6ae..7c4b7c31d07a 100644
+--- a/drivers/net/wireless/mac80211_hwsim.c
++++ b/drivers/net/wireless/mac80211_hwsim.c
+@@ -3669,9 +3669,9 @@ static int hwsim_new_radio_nl(struct sk_buff *msg, struct genl_info *info)
+ 	}
+ 
+ 	if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
+-		hwname = kasprintf(GFP_KERNEL, "%.*s",
+-				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
+-				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
++		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  GFP_KERNEL);
+ 		if (!hwname)
+ 			return -ENOMEM;
+ 		param.hwname = hwname;
+@@ -3691,9 +3691,9 @@ static int hwsim_del_radio_nl(struct sk_buff *msg, struct genl_info *info)
+ 	if (info->attrs[HWSIM_ATTR_RADIO_ID]) {
+ 		idx = nla_get_u32(info->attrs[HWSIM_ATTR_RADIO_ID]);
+ 	} else if (info->attrs[HWSIM_ATTR_RADIO_NAME]) {
+-		hwname = kasprintf(GFP_KERNEL, "%.*s",
+-				   nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
+-				   (char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]));
++		hwname = kstrndup((char *)nla_data(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  nla_len(info->attrs[HWSIM_ATTR_RADIO_NAME]),
++				  GFP_KERNEL);
+ 		if (!hwname)
+ 			return -ENOMEM;
+ 	} else
+-- 
+2.17.1
+
