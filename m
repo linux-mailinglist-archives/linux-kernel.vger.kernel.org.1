@@ -2,90 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C061A45C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DAAF1A45A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:26:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbgDJLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 07:42:59 -0400
-Received: from www17.your-server.de ([213.133.104.17]:59768 "EHLO
-        www17.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbgDJLm7 (ORCPT
+        id S1726059AbgDJL0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 07:26:31 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:34232 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgDJL0a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 07:42:59 -0400
-X-Greylist: delayed 1007 seconds by postgrey-1.27 at vger.kernel.org; Fri, 10 Apr 2020 07:42:58 EDT
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www17.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <thomas@m3y3r.de>)
-        id 1jMrnU-00033v-Fi; Fri, 10 Apr 2020 13:26:08 +0200
-Received: from [2a02:908:4c22:ec00:8ad5:993:4cda:a89f] (helo=localhost.localdomain)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <thomas@m3y3r.de>)
-        id 1jMrnU-0008wV-2k; Fri, 10 Apr 2020 13:26:08 +0200
-Date:   Fri, 10 Apr 2020 13:26:05 +0200
-From:   Thomas Meyer <thomas@m3y3r.de>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Sergey Shatunov <me@prok.pw>, hpa@zytor.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
-        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
-        initramfs@vger.kernel.org,
-        Donovan Tremura <neurognostic@protonmail.ch>,
-        Harald Hoyer <harald@hoyer.xyz>
-Subject: Re: [PATCH 1/2] efi/x86: Move efi stub globals from .bss to .data
-Message-ID: <20200410112605.GA3344@localhost.localdomain>
-References: <CAMj1kXEUkJ1XJ9OTsijeq8tNNYC00bXqEV44OMtX5ugo9WoLKA@mail.gmail.com>
- <20200406180614.429454-1-nivedita@alum.mit.edu>
+        Fri, 10 Apr 2020 07:26:30 -0400
+Received: by mail-wr1-f67.google.com with SMTP id 65so2018825wrl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 04:26:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yb6LpB8U1nM4uGZdoPTUGIuLgZwodT4yPN9UVySkWAA=;
+        b=NedzWrksTu/mbEEoMMisw2+Nz6mapbFOjbmwdDjw4do5FE6CmFietyQVIq7lRNL32Q
+         wlIt46UPimibuZ1znfvrmfFuL0fnRFXNHPrZFGzjaRJce2V8z9GMDlFIuVBcvDp4ae8K
+         Ile86wzc8RBNv8Ua2NyHNhQZumJ1D3x0SKuctsHOKzZbL/rjQMVPFBDlraSkf8nvNHsr
+         8wIaYcVpOxozOz3QSe+36YUkAHXWE2UlCMlhAK+8s8rc8+A0POW+P+/OkdKoUjc0s1Ct
+         AzOySg7spDvJwZrftsWehPvbgch/7fz9AVRoIjBAmyeYGr8omtzCQgHot7jB3QwSlWa/
+         arLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yb6LpB8U1nM4uGZdoPTUGIuLgZwodT4yPN9UVySkWAA=;
+        b=UUTPvuaiEESK0PyIYQJqjwAuSRIAbuE9igeqgSun3RFSkl8+RnfHmUbi/ZKWnZ3hb1
+         6UILQq6MdZ1wSAU8Nq4PU4ijrJKocxxwHIfsPUYF4gapCSo3HLCNRwu2MWshZO9B561m
+         9hD26LMPCx8Aw/i/orrg2Sa8grbOZmhwOFGPM9XbLzjbolwi/zlW13Q+0lBBhBDyojyJ
+         9T+8Wag/Eq7jI55hSWv3zgNXoUs+obmIjSDkokIVvsPYY114cwJGMyGlRreeRag3z5XV
+         H4OXXi5+CAGjEs4ME0ynCSjiagbeHhOmL7lCfbXwX6UkEHR33M/n/jtUX4vTJt5cAf78
+         jkzQ==
+X-Gm-Message-State: AGi0PuZSyaOBZAyfnYIVgCR1fUu5W7s1qvwSr8obiBIi/2/y/ApIUBbw
+        JUwakwX7cBJ3ybq1j6qOS7BGqw==
+X-Google-Smtp-Source: APiQypKfF0TvXUP39/kWLwli35uk69bEkj7PzRJ1E39JhRzPVp742toAsqaJx4dNlnXARvZGYzNqtA==
+X-Received: by 2002:adf:ee06:: with SMTP id y6mr4343897wrn.187.1586517986823;
+        Fri, 10 Apr 2020 04:26:26 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:4e:2ab3:ef46:7bda? ([2a01:e34:ed2f:f020:4e:2ab3:ef46:7bda])
+        by smtp.googlemail.com with ESMTPSA id q4sm6702974wmj.1.2020.04.10.04.26.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 04:26:26 -0700 (PDT)
+Subject: Re: [PATCH 1/2] thermal: core: Move thermal_cdev_update next to
+ updated=false
+To:     Zhang Rui <rui.zhang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, amit.kucheria@verdurent.com,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>
+References: <20200409151515.6607-1-daniel.lezcano@linaro.org>
+ <8e4c2825d71e5bf5602b92937a49c04187c68e17.camel@intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <0c9796c5-95fe-0349-d128-393da9b344d6@linaro.org>
+Date:   Fri, 10 Apr 2020 13:26:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200406180614.429454-1-nivedita@alum.mit.edu>
-X-Authenticated-Sender: thomas@m3y3r.de
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25777/Thu Apr  9 13:52:18 2020)
+In-Reply-To: <8e4c2825d71e5bf5602b92937a49c04187c68e17.camel@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 06, 2020 at 02:06:13PM -0400, Arvind Sankar wrote:
+On 10/04/2020 12:14, Zhang Rui wrote:
+> Hi, Daniel,
+> 
+> On Thu, 2020-04-09 at 17:15 +0200, Daniel Lezcano wrote:
+>> The call to the thermal_cdev_update() function is done after browsing
+>> the thermal instances which sets the updated flag by browsing them
+>> again.
+>>
+>> Instead of doing this, let's move the call right after setting the
+>> cooling device 'updated' flag as it is done in the other governors.
+> 
+> The reason we do this in two steps is that we want to avoid redundant
+> cooling device state changes.
+> 
+> Further more, I think it is better to move the thermal_cdev_update out
+> of .throllte() callback, to thermal_zone_device_update(). So that we do
+> not need to update the cooling device for each trip point.
+> 
+> is there any specific reason we need to do thermal_cdev_update() for
+> every potential change?
 
-Hi,
+I agree we can go further and move the cooling device update in the
+thermal_zone_device_update() by letting the throttle callback let us
+know an update is needed with the return value.
 
-I did write an email to x86@kernel.org, which sadly seems to have no
-mailing list archive, I wonder if my problem has anything to do with the
-patches you are discussing here:
+Makes sense to provide more changes on top of those two patches ?
 
-I found this reply, which contains my original email in my inbox:
+>> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>> ---
+>>  drivers/thermal/gov_bang_bang.c | 10 +---------
+>>  drivers/thermal/step_wise.c     | 10 +---------
+>>  2 files changed, 2 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/drivers/thermal/gov_bang_bang.c
+>> b/drivers/thermal/gov_bang_bang.c
+>> index 991a1c54296d..c292a69845bb 100644
+>> --- a/drivers/thermal/gov_bang_bang.c
+>> +++ b/drivers/thermal/gov_bang_bang.c
+>> @@ -64,6 +64,7 @@ static void thermal_zone_trip_update(struct
+>> thermal_zone_device *tz, int trip)
+>>  		mutex_lock(&instance->cdev->lock);
+>>  		instance->cdev->updated = false; /* cdev needs update
+>> */
+>>  		mutex_unlock(&instance->cdev->lock);
+>> +		thermal_cdev_update(instance->cdev);
+>>  	}
+>>  
+>>  	mutex_unlock(&tz->lock);
+>> @@ -98,17 +99,8 @@ static void thermal_zone_trip_update(struct
+>> thermal_zone_device *tz, int trip)
+>>   */
+>>  static int bang_bang_control(struct thermal_zone_device *tz, int
+>> trip)
+>>  {
+>> -	struct thermal_instance *instance;
+>> -
+>>  	thermal_zone_trip_update(tz, trip);
+>>  
+>> -	mutex_lock(&tz->lock);
+>> -
+>> -	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
+>> -		thermal_cdev_update(instance->cdev);
+>> -
+>> -	mutex_unlock(&tz->lock);
+>> -
+>>  	return 0;
+>>  }
+>>  
+>> diff --git a/drivers/thermal/step_wise.c
+>> b/drivers/thermal/step_wise.c
+>> index 2ae7198d3067..298eedac0293 100644
+>> --- a/drivers/thermal/step_wise.c
+>> +++ b/drivers/thermal/step_wise.c
+>> @@ -167,6 +167,7 @@ static void thermal_zone_trip_update(struct
+>> thermal_zone_device *tz, int trip)
+>>  		mutex_lock(&instance->cdev->lock);
+>>  		instance->cdev->updated = false; /* cdev needs update
+>> */
+>>  		mutex_unlock(&instance->cdev->lock);
+>> +		thermal_cdev_update(instance->cdev);
+>>  	}
+>>  
+>>  	mutex_unlock(&tz->lock);
+>> @@ -185,20 +186,11 @@ static void thermal_zone_trip_update(struct
+>> thermal_zone_device *tz, int trip)
+>>   */
+>>  static int step_wise_throttle(struct thermal_zone_device *tz, int
+>> trip)
+>>  {
+>> -	struct thermal_instance *instance;
+>> -
+>>  	thermal_zone_trip_update(tz, trip);
+>>  
+>>  	if (tz->forced_passive)
+>>  		thermal_zone_trip_update(tz, THERMAL_TRIPS_NONE);
+>>  
+>> -	mutex_lock(&tz->lock);
+>> -
+>> -	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
+>> -		thermal_cdev_update(instance->cdev);
+>> -
+>> -	mutex_unlock(&tz->lock);
+>> -
+>>  	return 0;
+>>  }
+>>  
+> 
 
-Subject: Kernel v5.5 doesn't boot on my x86 laptop
 
-Hi,
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-I'm using an old MacBookPro1,1 to run Fedora 30 (the last one to support
-x86) and a upstream up-to-date kernel, currently 5.4.16.
-
-I'm using sd-boot to boot into an EFI-enabled kernel which contains
-an embedded initram cpio image (because loading the image from kernel's
-EFI stub doesn't seem to work for some unknown reason, I tried to debug
-this but my early debugging foo is too weak).
-
-Kernel 5.4.x works correctly with this setup (but resuming from disk
-seems to have broken in 5.4.x or maybe even earlier - when resuming from
-disk I get all kind of funky OOPSes/errors, but that's another story, hopefully
-5.5.x was fixed in this regards).
-
-So I did have a look at the commits under arch/x86/boot and "x86/boot:
-Introduce setup_indirect" (b3c72fc9a78e74161f9d05ef7191706060628f8c) did
-talk about "bump setup_header version in arch/x86/boot/header.S", so I
-did revert above commit and I was finally able to boot into v5.5 kernel!
-
-So either sd-boot also needs an upgrade or this commit does break
-something.
-Any help is welcome, don't hesitate to get in contact with me if you
-have any questions.
-
-mfg
-thomas
- 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
