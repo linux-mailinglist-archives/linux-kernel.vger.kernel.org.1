@@ -2,149 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B301A495A
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84401A48FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726891AbgDJRjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 13:39:25 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:42505 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726595AbgDJRjZ (ORCPT
+        id S1726650AbgDJRei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 13:34:38 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:53198 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgDJReh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 13:39:25 -0400
-Received: by mail-oi1-f195.google.com with SMTP id e4so1954361oig.9;
-        Fri, 10 Apr 2020 10:39:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UVlxIE0CSKdKwuyXIBQDvbaJJFV3N43f9jUNTBByOKM=;
-        b=oV6SLID4+Gi2Tugy1dlLl9zVvXhpadhUPmlPgEKPqC+Q5ihE9il4EtDc/MavWkerEI
-         3aK5pQ7zZMvzX3ovdmDRnU3z/SjNR1OWYWJ+A88l/2W+uypQ/7iJYS+No/UoQHmM84X8
-         NNIFqjgtH/PDr1tikW+DsYjuqVYxp/IjUFUezNgtiNjgq5ktZkm6mqo/6danKssxzvl0
-         +WGJ9b4zyFlNfeNqzta3zZE6veCtzQr68/7ZSU2nuJ8v6M3X4e9WgoYOqmS1J2qK4E2Q
-         JN+xp3vDqQ8oIUo4L/4iIa3oxHWajHiL1iAsw1ZFeAuYcj3TEH/nIuiTNaPSKwUt9fYQ
-         mLgA==
-X-Gm-Message-State: AGi0PuZtGcZmcqwCtMX79L4accWSNqkKSrxrvQiBCpV3yYqjF0tcNORg
-        XDQQP933XWIaXlMQjbs/rA==
-X-Google-Smtp-Source: APiQypIbEr9eAuDn8ap/2ErWe8F05Nq4R1u7xjJ+3zCkjJKKNwFWVUzijYYdI42B6WOSqS3yiJsmAw==
-X-Received: by 2002:a05:6808:1c1:: with SMTP id x1mr3845478oic.55.1586540363863;
-        Fri, 10 Apr 2020 10:39:23 -0700 (PDT)
-Received: from rob-hp-laptop (ip-99-203-29-27.pools.cgn.spcsdns.net. [99.203.29.27])
-        by smtp.gmail.com with ESMTPSA id d21sm1480776otp.39.2020.04.10.10.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 10:39:23 -0700 (PDT)
-Received: (nullmailer pid 6854 invoked by uid 1000);
-        Fri, 10 Apr 2020 17:33:24 -0000
-Date:   Fri, 10 Apr 2020 12:33:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com,
-        sfr@canb.auug.org.au, maz@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        Alistair Popple <alistair@popple.id.au>,
-        Allison Randal <allison@lohutok.net>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Desnes A. Nunes do Rosario" <desnesn@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Enrico Weigelt <info@metux.net>,
-        Fabio Estevam <festevam@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wei Hu <weh@microsoft.com>, YueHaibing <yuehaibing@huawei.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 2/2] powerpc: Remove Xilinx PPC405/PPC440 support
-Message-ID: <20200410173324.GA28512@bogus>
-References: <cover.1585575111.git.michal.simek@xilinx.com>
- <9c3e02ffa9812c6f046708b45932d40f33e8817a.1585575111.git.michal.simek@xilinx.com>
+        Fri, 10 Apr 2020 13:34:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=/BH0IgNlSHJxLpwuSusWI+KfqHgIwoFPpOst/Q8hJnY=; b=CAS0f916pyKBi6t5s2FxrSAY8Q
+        MoAShfrK6TaQBW2Kc4lvZPFT9L865mFtF/qENKtTgYeDHZpBo6q/0oY5ZeqPLOL3idiALpHnaq4ls
+        3c8T6z0u3FiYfUC/fFMSZAAl+HUJfTV6L5nKofL9zsAgC29DbJ9ekVbSFQeWe+zxKGfP/YkLYnIXe
+        WSFWsKkzggVMzgsJI/sRNywOjhWkaM+1qexCxQt6uAojSa6JNMKiVVRwZXgpNlo6uKwj2MK6NhobT
+        7i0pwwzpMaTLKXTHNuRf3D8nFhoUMshJemM5VCfJKZB0MkpaSVfIiqSL+WLDeYhyhwnttaT53O0Ei
+        ARKdHHJA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jMxY4-0003Cu-MJ; Fri, 10 Apr 2020 17:34:36 +0000
+Subject: Re: [PATCH 1/3] counter: add an inkernel API
+To:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+References: <20200406155806.1295169-1-kamel.bouhara@bootlin.com>
+ <20200406155806.1295169-2-kamel.bouhara@bootlin.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7651ea0d-91c2-49db-9af7-b01a78868d7e@infradead.org>
+Date:   Fri, 10 Apr 2020 10:34:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c3e02ffa9812c6f046708b45932d40f33e8817a.1585575111.git.michal.simek@xilinx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200406155806.1295169-2-kamel.bouhara@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 30, 2020 at 03:32:17PM +0200, Michal Simek wrote:
-> The latest Xilinx design tools called ISE and EDK has been released in
-> October 2013. New tool doesn't support any PPC405/PPC440 new designs.
-> These platforms are no longer supported and tested.
-> 
-> PowerPC 405/440 port is orphan from 2013 by
-> commit cdeb89943bfc ("MAINTAINERS: Fix incorrect status tag") and
-> commit 19624236cce1 ("MAINTAINERS: Update Grant's email address and maintainership")
-> that's why it is time to remove the support fot these platforms.
-> 
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
+Hi--
+
+On 4/6/20 8:58 AM, Kamel Bouhara wrote:
 > ---
+>  drivers/counter/counter.c | 213 ++++++++++++++++++++++++++++++++++++++
+>  include/linux/counter.h   |  27 +++++
+>  2 files changed, 240 insertions(+)
 > 
-> Changes in v2:
-> - Based on my chat with Arnd I removed arch/powerpc/xmon/ changes done in
->   v1 to keep them the same as before. (kbuild reported some issues with it
->   too)
-> 
->  Documentation/devicetree/bindings/xilinx.txt | 143 ------
+> diff --git a/drivers/counter/counter.c b/drivers/counter/counter.c
+> index 6a683d086008..f81d2d1dbca7 100644
+> --- a/drivers/counter/counter.c
+> +++ b/drivers/counter/counter.c
 
-Acked-by: Rob Herring <robh@kernel.org>
+[snip]
 
->  Documentation/powerpc/bootwrapper.rst        |  28 +-
->  MAINTAINERS                                  |   6 -
->  arch/powerpc/Kconfig.debug                   |   2 +-
->  arch/powerpc/boot/Makefile                   |   7 +-
->  arch/powerpc/boot/dts/Makefile               |   1 -
->  arch/powerpc/boot/dts/virtex440-ml507.dts    | 406 ----------------
->  arch/powerpc/boot/dts/virtex440-ml510.dts    | 466 -------------------
->  arch/powerpc/boot/ops.h                      |   1 -
->  arch/powerpc/boot/serial.c                   |   5 -
->  arch/powerpc/boot/uartlite.c                 |  79 ----
->  arch/powerpc/boot/virtex.c                   |  97 ----
->  arch/powerpc/boot/virtex405-head.S           |  31 --
->  arch/powerpc/boot/wrapper                    |   8 -
->  arch/powerpc/configs/40x/virtex_defconfig    |  75 ---
->  arch/powerpc/configs/44x/virtex5_defconfig   |  74 ---
->  arch/powerpc/configs/ppc40x_defconfig        |   8 -
->  arch/powerpc/configs/ppc44x_defconfig        |   8 -
->  arch/powerpc/include/asm/xilinx_intc.h       |  16 -
->  arch/powerpc/include/asm/xilinx_pci.h        |  21 -
->  arch/powerpc/kernel/cputable.c               |  39 --
->  arch/powerpc/platforms/40x/Kconfig           |  31 --
->  arch/powerpc/platforms/40x/Makefile          |   1 -
->  arch/powerpc/platforms/40x/virtex.c          |  54 ---
->  arch/powerpc/platforms/44x/Kconfig           |  37 --
->  arch/powerpc/platforms/44x/Makefile          |   2 -
->  arch/powerpc/platforms/44x/virtex.c          |  60 ---
->  arch/powerpc/platforms/44x/virtex_ml510.c    |  30 --
->  arch/powerpc/platforms/Kconfig               |   4 -
->  arch/powerpc/sysdev/Makefile                 |   2 -
->  arch/powerpc/sysdev/xilinx_intc.c            |  88 ----
->  arch/powerpc/sysdev/xilinx_pci.c             | 132 ------
->  drivers/char/Kconfig                         |   2 +-
->  drivers/video/fbdev/Kconfig                  |   2 +-
->  34 files changed, 7 insertions(+), 1959 deletions(-)
+Please use
+/**
+on these functions so that kernel-doc will process them.
+
+> +
+> +/*
+> + * devm_counter_get - Obtain an exclusive access to a counter.
+> + * @dev: device for counter "consumer"
+> + *
+> + * Returns a struct counter_device matching the counter producer, or
+> + * IS_ERR() condition containing errno.
+> + *
+> + */
+> +struct counter_device *devm_counter_get(struct device *dev)
+> +{
+> +	struct counter_device **ptr, *counter;
+> +
+> +	ptr = devres_alloc(devm_counter_release, sizeof(*ptr), GFP_KERNEL);
+> +	if (!ptr)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	counter = counter_get(dev);
+> +	if (IS_ERR(counter)) {
+> +		devres_free(ptr);
+> +		return counter;
+> +	}
+> +
+> +	*ptr = counter;
+> +	devres_add(dev, ptr);
+> +
+> +	return counter;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_counter_get);
+> +
+> +/*
+> + * counter_action_get - get counter synapse mode
+> + * @counter: counter device to operate with
+> + * @action: pointer to store the current counter synapse mode
+
+should be @mode: ^^^^^
+
+> + * returns:
+> + *	0 on success, error code on failure.
+> + */
+> +int counter_action_get(struct counter_device *counter, int *mode)
+> +{
+> +	struct counter_synapse *synapse = counter->counts->synapses;
+> +	size_t action_index;
+> +	int err;
+> +
+> +	err = counter->ops->action_get(counter, counter->counts, synapse,
+> +				       &action_index);
+> +	if (err)
+> +		return err;
+> +
+> +	*mode = synapse->actions_list[action_index];
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(counter_action_get);
+> +
+> +/*
+> + * counter_action_set - set counter device synapse
+> + * @counter: counter device to operate with
+> + * @action: enum of the synapse mode
+> + * returns:
+> + *	0 on success, error code on failure.
+> + */
+> +int counter_action_set(struct counter_device *counter,
+> +		       enum counter_synapse_action action)
+> +{
+> +	struct counter_synapse *synapse = counter->counts->synapses;
+> +	const size_t num_actions = synapse->num_actions;
+> +	size_t action_index;
+> +
+> +	/* Find requested action mode */
+> +	for (action_index = 0; action_index < num_actions; action_index++) {
+> +		if (action == synapse->actions_list[action_index])
+> +			break;
+> +	}
+> +
+> +	if (action_index >= num_actions)
+> +		return -EINVAL;
+> +
+> +	return counter->ops->action_set(counter, counter->counts, synapse,
+> +					action_index);
+> +}
+> +EXPORT_SYMBOL_GPL(counter_action_set);
+> +
+> +/*
+> + * counter_function_get - get the count function
+> + * @counter: pointer to counter device to operate with
+> + * @mode: pointer to store the current counter function mode
+> + * returns:
+> + *	0 on success, error code on failure.
+> + */
+> +int counter_function_get(struct counter_device *counter, int *mode)
+> +{
+> +	size_t func_index;
+> +	int err;
+> +
+> +	err = counter->ops->function_get(counter, counter->counts,
+> +					 &func_index);
+> +	if (err)
+> +		return err;
+> +
+> +	*mode = counter->counts->functions_list[func_index];
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(counter_function_get);
+> +
+> +/*
+> + * counter_function_set - set a count function
+> + * @counter: pointer to a counter device to operate with
+> + * @function: enum of the function mode
+> + * returns:
+> + *	0 on success, error code on failure.
+> + */
+> +int counter_function_set(struct counter_device *counter,
+> +			  enum counter_count_function function)
+> +{
+> +	const size_t num_functions = counter->counts->num_functions;
+> +	size_t func_index;
+> +
+> +	for (func_index = 0; func_index < num_functions; func_index++) {
+> +		if (function == counter->counts->functions_list[func_index])
+> +			break;
+> +	}
+> +
+> +	if (func_index >= num_functions)
+> +		return -EINVAL;
+> +
+> +	return counter->ops->function_set(counter, counter->counts, func_index);
+> +}
+> +EXPORT_SYMBOL_GPL(counter_function_set);
+> +
+> +/*
+> + * counter_count_set - set a count value
+> + * @counter: pointer to the counter device to operate with
+> + * @val: count value to write into the counter
+> + * @len: length of the value written to the counter
+> + * returns:
+> + *	bytes length of the value on success, error code on failure.
+> + */
+> +size_t counter_count_set(struct counter_device *counter,
+> +			 unsigned long val, size_t len)
+> +{
+> +	return counter->ops->count_write(counter, counter->counts, val);
+> +}
+> +EXPORT_SYMBOL_GPL(counter_count_set);
+> +
+> +/*
+> + * counter_count_get - read the count value
+> + * @counter: pointer to the counter device to operate with
+> + * @val: pointer to store the count value
+> + * returns:
+> + *  0 on success, error code on failure.
+> + */
+> +int counter_count_get(struct counter_device *counter, unsigned long *val)
+> +{
+> +	return counter->ops->count_read(counter, counter->counts, val);
+> +}
+> +EXPORT_SYMBOL_GPL(counter_count_get);
+> +
+>  /**
+>   * devm_counter_unregister - Resource-managed counter_unregister
+>   * @dev:	device this counter_device belongs to
+
+
+thanks.
+-- 
+~Randy
+
