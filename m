@@ -2,166 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA151A4C89
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 01:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8743A1A4C99
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 01:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726874AbgDJXR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 19:17:26 -0400
-Received: from mga02.intel.com ([134.134.136.20]:20816 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726832AbgDJXRN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 19:17:13 -0400
-IronPort-SDR: RO2yQBpYIN6MucWmw10fWEH4mTuHtf6D4wuY5DIF/p4PLOdUq22NfoHfq1Vx7eEEEZHWfJV54S
- KyDeQLxYjObA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2020 16:17:13 -0700
-IronPort-SDR: QT+kpRQhbqvgKW1eisSsS9c1ktxCZOJx2y/GvV787IdmprlyMFxnU4e+Its1dQgeHPOF3GL23s
- MwuG7bXa09WQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,368,1580803200"; 
-   d="scan'208";a="452542254"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.202])
-  by fmsmga005.fm.intel.com with ESMTP; 10 Apr 2020 16:17:13 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
+        id S1726702AbgDJXVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 19:21:46 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:46344 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726626AbgDJXVq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 19:21:46 -0400
+Received: by mail-pl1-f194.google.com with SMTP id x2so1122105plv.13
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 16:21:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c9rr1VKWyEALbXbYJDgG44N0IBV573QpeNjixpL7Fps=;
+        b=EqHPtwF0RAZT4eXEJWBVBQ8dOXG6ulZO6UMNH2v/78ClluLlL1vDcoWJbif5qsSEtv
+         x+GGmYWBdY7NxyF+21S9e8nWUPgoUvCYIvKu5SyN5KRq+A0M6v26neEPR7crnPd26js/
+         mMl7XuvQYVvhBmiudRHFS07XxEpekk4ykegXOyi7Wn0+PQ9rEBb+ui26Nq4V7PKD011L
+         fk7zwbd96BgSA8aKONpPbyw5p8fgyE81m/gHg+KW9bLxPM1UlClWV/lBEdCiUJyTA5OA
+         6wstgUtZxzu8bk70wAafPGnD0ATSvpDk7oQhi925Q7mgId/X1MHAxX0SblDHujoOx3iw
+         Bp3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c9rr1VKWyEALbXbYJDgG44N0IBV573QpeNjixpL7Fps=;
+        b=O+bzaxr04+BEDSYK+m2qw0yM9jifqN66aYhSd58Wl0e7p7+a7eROKHi+KOcZIvN7Ug
+         T4Mgg2lfGCF8ZGa8AG1oU657RQb51gE6BDc/QSsNfj4L5ufhbEB/AkvMm8ca50KHXVs+
+         nlHHFAvIGKCNR9NTZyA7p816Z74bO1JAVg/mR0koedofWUa6GBSYyWqiEYyIt+nHRuKT
+         QNvnRZyQpJYB/QbldqgwQsyExPAf3kJqdaNlOvPIalyYv7Dgxm/nQ/n4mWYJk3c9NJQK
+         tYGmaZdZ5bIQuX81LmHFuNxurdVCQG7F+Z7X4/GxKNdy3Q+/VveRce4LG4HKP6ClPS5y
+         vCmA==
+X-Gm-Message-State: AGi0PuaBWVTjLvNOR9TRbU+UdP8heAdhulcNfTdJVzNkJSHXSCPyUMyx
+        /rQ7lgHxCvYQJPiKrSyD7Uo=
+X-Google-Smtp-Source: APiQypILPAptqcOulWb0e7t8xSRyv3ELPqp+EdUIrsuLARwBeGrwGBfhkdn02rNxEBk8TS7LEGv/Fg==
+X-Received: by 2002:a17:902:9b89:: with SMTP id y9mr240416plp.75.1586560905307;
+        Fri, 10 Apr 2020 16:21:45 -0700 (PDT)
+Received: from localhost (181.56.30.125.dy.iij4u.or.jp. [125.30.56.181])
+        by smtp.gmail.com with ESMTPSA id t3sm314439pgi.84.2020.04.10.16.21.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 16:21:44 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Sat, 11 Apr 2020 08:21:41 +0900
+To:     Simon Kirby <sim@hostway.ca>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Wainer dos Santos Moschetta <wainersm@redhat.com>
-Subject: [PATCH 10/10] selftests: kvm: Add testcase for creating max number of memslots
-Date:   Fri, 10 Apr 2020 16:17:07 -0700
-Message-Id: <20200410231707.7128-11-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200410231707.7128-1-sean.j.christopherson@intel.com>
-References: <20200410231707.7128-1-sean.j.christopherson@intel.com>
+        Lech Perczak <l.perczak@camlintechnologies.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        John Ogness <john.ogness@linutronix.de>,
+        Jann Horn <jannh@google.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCHv2] printk: queue wake_up_klogd irq_work only if per-CPU
+ areas are ready
+Message-ID: <20200410232141.GA497@jagdpanzerIV.localdomain>
+References: <20200303113002.63089-1-sergey.senozhatsky@gmail.com>
+ <20200304152159.2p7d7dnztf433i24@pathway.suse.cz>
+ <20200305013014.GA174444@google.com>
+ <20200305185348.GB2141048@kroah.com>
+ <20200409192543.GA30816@hostway.ca>
+ <20200410030704.GA20227@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200410030704.GA20227@jagdpanzerIV.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wainer dos Santos Moschetta <wainersm@redhat.com>
+On (20/04/10 12:07), Sergey Senozhatsky wrote:
+> On (20/04/09 12:25), Simon Kirby wrote:
+> > This causes "dmesg -w" or "cat /dev/kmsg" to not print new messages after
+> > dumping the current ring. I hit this on v5.5.9, v5.5.15, v5.6.3, and
+> > Linus HEAD. This prints no "hi":
+>
 
-This patch introduces test_add_max_memory_regions(), which checks
-that a VM can have added memory slots up to the limit defined in
-KVM_CAP_NR_MEMSLOTS. Then attempt to add one more slot to
-verify it fails as expected.
+[..]
 
-Signed-off-by: Wainer dos Santos Moschetta <wainersm@redhat.com>
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- .../selftests/kvm/set_memory_region_test.c    | 65 +++++++++++++++++--
- 1 file changed, 60 insertions(+), 5 deletions(-)
+> I'm trying to land this patch. Give me a moment, I'll come back to
+> you shortly.
 
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index 0f36941ebb96..cdf5024b2452 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -9,6 +9,7 @@
- #include <stdlib.h>
- #include <string.h>
- #include <sys/ioctl.h>
-+#include <sys/mman.h>
- 
- #include <linux/compiler.h>
- 
-@@ -18,14 +19,18 @@
- 
- #define VCPU_ID 0
- 
--#ifdef __x86_64__
- /*
-- * Somewhat arbitrary location and slot, intended to not overlap anything.  The
-- * location and size are specifically 2mb sized/aligned so that the initial
-- * region corresponds to exactly one large page.
-+ * s390x needs at least 1MB alignment, and the x86_64 MOVE/DELETE tests need a
-+ * 2MB sized and aligned region so that the initial region corresponds to
-+ * exactly one large page.
-  */
--#define MEM_REGION_GPA		0xc0000000
- #define MEM_REGION_SIZE		0x200000
-+
-+#ifdef __x86_64__
-+/*
-+ * Somewhat arbitrary location and slot, intended to not overlap anything.
-+ */
-+#define MEM_REGION_GPA		0xc0000000
- #define MEM_REGION_SLOT		10
- 
- static const uint64_t MMIO_VAL = 0xbeefull;
-@@ -318,6 +323,54 @@ static void test_zero_memory_regions(void)
- 	kvm_vm_free(vm);
- }
- 
-+/*
-+ * Test it can be added memory slots up to KVM_CAP_NR_MEMSLOTS, then any
-+ * tentative to add further slots should fail.
-+ */
-+static void test_add_max_memory_regions(void)
-+{
-+	int ret;
-+	struct kvm_vm *vm;
-+	uint32_t max_mem_slots;
-+	uint32_t slot;
-+	uint64_t guest_addr = 0x0;
-+	uint64_t mem_reg_npages;
-+	void *mem;
-+
-+	max_mem_slots = kvm_check_cap(KVM_CAP_NR_MEMSLOTS);
-+	TEST_ASSERT(max_mem_slots > 0,
-+		    "KVM_CAP_NR_MEMSLOTS should be greater than 0");
-+	pr_info("Allowed number of memory slots: %i\n", max_mem_slots);
-+
-+	vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
-+
-+	mem_reg_npages = vm_calc_num_guest_pages(VM_MODE_DEFAULT, MEM_REGION_SIZE);
-+
-+	/* Check it can be added memory slots up to the maximum allowed */
-+	pr_info("Adding slots 0..%i, each memory region with %dK size\n",
-+		(max_mem_slots - 1), MEM_REGION_SIZE >> 10);
-+	for (slot = 0; slot < max_mem_slots; slot++) {
-+		vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
-+					    guest_addr, slot, mem_reg_npages,
-+					    0);
-+		guest_addr += MEM_REGION_SIZE;
-+	}
-+
-+	/* Check it cannot be added memory slots beyond the limit */
-+	mem = mmap(NULL, MEM_REGION_SIZE, PROT_READ | PROT_WRITE,
-+		   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+	TEST_ASSERT(mem != MAP_FAILED, "Failed to mmap() host");
-+
-+	ret = ioctl(vm_get_fd(vm), KVM_SET_USER_MEMORY_REGION,
-+		    &(struct kvm_userspace_memory_region) {slot, 0, guest_addr,
-+		    MEM_REGION_SIZE, (uint64_t) mem});
-+	TEST_ASSERT(ret == -1 && errno == EINVAL,
-+		    "Adding one more memory slot should fail with EINVAL");
-+
-+	munmap(mem, MEM_REGION_SIZE);
-+	kvm_vm_free(vm);
-+}
-+
- int main(int argc, char *argv[])
- {
- #ifdef __x86_64__
-@@ -329,6 +382,8 @@ int main(int argc, char *argv[])
- 
- 	test_zero_memory_regions();
- 
-+	test_add_max_memory_regions();
-+
- #ifdef __x86_64__
- 	if (argc > 1)
- 		loops = atoi(argv[1]);
--- 
-2.26.0
+Applied. Commit ab6f762f0f53162d Linus' HEAD.
 
+	-ss
