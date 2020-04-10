@@ -2,77 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 530081A4376
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 10:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040C01A437C
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 10:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbgDJIUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 04:20:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbgDJIUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 04:20:53 -0400
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726145AbgDJIYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 04:24:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43016 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726007AbgDJIYL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 04:24:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586507050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jhbDWM/COmRzn52zE0cD200v2Q1E5S+PCb8ygVpftN0=;
+        b=SbPFVbLgc7HgyREdbYOlM4AxdxFZCYuJxMhftIJVC+gPzcKpYfJ7KHhGVBWkbRKSzDMxdu
+        7SYakwNFWh8gl0e2UIDXs9mk/Mp7H0DLwq1KKGlAG4nn5qXI0vcDOaX8lk07p6Cbe6zici
+        aEvCK7ZaTz8nN3nLAFxtaLd1v/8mFoY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-jQWAT0sWMkGl3PDpjBe6gA-1; Fri, 10 Apr 2020 04:24:05 -0400
+X-MC-Unique: jQWAT0sWMkGl3PDpjBe6gA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AB5421556;
-        Fri, 10 Apr 2020 08:20:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586506853;
-        bh=5k2owslALNv4JQUFd76NSg+vxcF3iacavyDaDEKz6so=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mdiHg9r9Nsg8z9iAJPD1dpeagLc0bAVvUmW+3NmVjSPG/4TtLUyFQ0NRDuZbrM2Ju
-         DZmaI7sFZqVbqF1j9lBUF+XSwvaAVNK1O8EiCx/SEagBBJ99cN5urm+0rIlNkJcgrN
-         lXMa8YhK+KFQ68twSAgBYZ/YAT8lUNh0uy86HLik=
-Received: by mail-il1-f177.google.com with SMTP id p13so1203454ilp.3;
-        Fri, 10 Apr 2020 01:20:53 -0700 (PDT)
-X-Gm-Message-State: AGi0PuY6JGIBrch6AVJ9AcRJCPwk0sENvo0pcYvSZuPRmCB8m73bHe/N
-        hb3v3+i/KLjUtVW7dO8L9Ojwe7Qc2iZO5AAVntA=
-X-Google-Smtp-Source: APiQypIKE0UGN7ziuo+6K0SRPgC+zVoVPqcK1SO1VFVqbW7C4JolbA+dHo9egsBlDpl5rYSZu1dKu4ThJgoeL80ZcOY=
-X-Received: by 2002:a92:dcd1:: with SMTP id b17mr4073059ilr.80.1586506852792;
- Fri, 10 Apr 2020 01:20:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200409130434.6736-1-ardb@kernel.org> <20200409130434.6736-4-ardb@kernel.org>
- <CAMzpN2gJWwVun1Kp6vGuza9LM5KpB=0EwsP8x8eOJQuDGh38Hg@mail.gmail.com>
- <CAMzpN2jFbf8k99pWaTYRBmSB+iNAKYsufjEhqO6Vv0qxAcHyGA@mail.gmail.com> <20200409210847.GA1312580@rani.riverdale.lan>
-In-Reply-To: <20200409210847.GA1312580@rani.riverdale.lan>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 10 Apr 2020 10:20:42 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFhtK=FRDKBE5OtenNEtpK=kVwyo+0nqJZ_K80RmtYxEg@mail.gmail.com>
-Message-ID: <CAMj1kXFhtK=FRDKBE5OtenNEtpK=kVwyo+0nqJZ_K80RmtYxEg@mail.gmail.com>
-Subject: Re: [PATCH 3/9] efi/x86: Move efi stub globals from .bss to .data
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Brian Gerst <brgerst@gmail.com>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4DD6DB60;
+        Fri, 10 Apr 2020 08:24:02 +0000 (UTC)
+Received: from [10.72.12.205] (ovpn-12-205.pek2.redhat.com [10.72.12.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CB11760BFB;
+        Fri, 10 Apr 2020 08:23:40 +0000 (UTC)
+Subject: Re: [PATCH V9 8/9] vdpasim: vDPA device simulator
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@suse.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        Gary Lin <glin@suse.com>, Jiri Slaby <jslaby@suse.cz>,
-        Sergey Shatunov <me@prok.pw>, Takashi Iwai <tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+        KVM list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        netdev <netdev@vger.kernel.org>,
+        Jason Gunthorpe <jgg@mellanox.com>, maxime.coquelin@redhat.com,
+        cunming.liang@intel.com, zhihong.wang@intel.com,
+        rob.miller@broadcom.com, xiao.w.wang@intel.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        parav@mellanox.com, kevin.tian@intel.com, stefanha@redhat.com,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, aadam@redhat.com,
+        Jiri Pirko <jiri@mellanox.com>, shahafs@mellanox.com,
+        hanand@xilinx.com, Martin Habets <mhabets@solarflare.com>,
+        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn
+References: <20200326140125.19794-1-jasowang@redhat.com>
+ <20200326140125.19794-9-jasowang@redhat.com>
+ <CAMuHMdUis3O_mJKOb2s=_=Zs61iHus5Aq74N3-xs7kmjN+egoQ@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <108f65dd-f1b1-54ec-ae26-49842f3686b6@redhat.com>
+Date:   Fri, 10 Apr 2020 16:23:38 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdUis3O_mJKOb2s=_=Zs61iHus5Aq74N3-xs7kmjN+egoQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Apr 2020 at 23:08, Arvind Sankar <nivedita@alum.mit.edu> wrote:
->
-> On Thu, Apr 09, 2020 at 04:53:07PM -0400, Brian Gerst wrote:
-> > > Can we use the -fno-zero-initialized-in-bss compiler flag instead of
-> > > explicitly marking global variables?
-> >
-> > Scratch that.  Apparently it only works when a variable is explicitly
-> > initialized to zero.
-> >
-> > --
-> > Brian Gerst
->
-> Right, there doesn't seem to be a compiler option to turn off the use of
-> .bss altogether.
 
-Yeah. I'll try to come up with a way to consolidate this a bit across
-architectures (which is a bit easier now that all of the EFI stub C
-code lives in the same place). It is probably easiest to use a section
-renaming trick similar to the one I added for ARM (as Arvind suggested
-as well, IIRC), and get rid of the per-symbol annotations altogether.
+On 2020/4/10 =E4=B8=8B=E5=8D=883:45, Geert Uytterhoeven wrote:
+> Hi Jason,
+>
+> On Thu, Mar 26, 2020 at 3:07 PM Jason Wang <jasowang@redhat.com> wrote:
+>> This patch implements a software vDPA networking device. The datapath
+>> is implemented through vringh and workqueue. The device has an on-chip
+>> IOMMU which translates IOVA to PA. For kernel virtio drivers, vDPA
+>> simulator driver provides dma_ops. For vhost driers, set_map() methods
+>> of vdpa_config_ops is implemented to accept mappings from vhost.
+>>
+>> Currently, vDPA device simulator will loopback TX traffic to RX. So
+>> the main use case for the device is vDPA feature testing, prototyping
+>> and development.
+>>
+>> Note, there's no management API implemented, a vDPA device will be
+>> registered once the module is probed. We need to handle this in the
+>> future development.
+>>
+>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> This is now commit 2c53d0f64c06f458 ("vdpasim: vDPA device simulator").
+>
+>> --- a/drivers/virtio/vdpa/Kconfig
+>> +++ b/drivers/virtio/vdpa/Kconfig
+>> @@ -5,3 +5,22 @@ config VDPA
+>>            Enable this module to support vDPA device that uses a
+>>            datapath which complies with virtio specifications with
+>>            vendor specific control path.
+>> +
+>> +menuconfig VDPA_MENU
+>> +       bool "VDPA drivers"
+>> +       default n
+>      *
+>      * VDPA drivers
+>      *
+>      VDPA drivers (VDPA_MENU) [N/y/?] (NEW) ?
+>
+>      There is no help available for this option.
+>      Symbol: VDPA_MENU [=3Dn]
+>      Type  : bool
+>      Defined at drivers/vdpa/Kconfig:9
+>       Prompt: VDPA drivers
+>       Location:
+>         -> Device Drivers
+>
+> I think this deserves a help text, so users know if they want to enable=
+ this
+> option or not.
+
+
+Will add a help text for this.
+
+
+>
+> I had a quick look, but couldn't find the meaning of "vdpa" in the whol=
+e kernel
+> source tree.
+
+
+The meaning was explained in the commit log of=20
+961e9c84077f6c8579d7a628cbe94a675cb67ae4 and help text for CONFIG_VDPA.
+
+Thanks
+
+
+>
+> Thanks!
+>
+>> +
+>> +if VDPA_MENU
+>> +
+>> +config VDPA_SIM
+>> +       tristate "vDPA device simulator"
+>> +       depends on RUNTIME_TESTING_MENU
+>> +       select VDPA
+>> +       select VHOST_RING
+>> +       default n
+>> +       help
+>> +         vDPA networking device simulator which loop TX traffic back
+>> +         to RX. This device is used for testing, prototyping and
+>> +         development of vDPA.
+>> +
+>> +endif # VDPA_MENU
+> Gr{oetje,eeting}s,
+>
+>                          Geert
+>
+
