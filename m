@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 683F61A4601
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69D8B1A4606
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbgDJL4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 07:56:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54440 "EHLO
+        id S1726734AbgDJL4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 07:56:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54453 "EHLO
         Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725913AbgDJL4I (ORCPT
+        with ESMTP id S1726708AbgDJL4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 07:56:08 -0400
+        Fri, 10 Apr 2020 07:56:12 -0400
 Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tglx@linutronix.de>)
-        id 1jMsGP-0004bl-BG; Fri, 10 Apr 2020 13:56:01 +0200
+        id 1jMsGQ-0004bo-E8; Fri, 10 Apr 2020 13:56:02 +0200
 Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id ADEF2100BB6;
-        Fri, 10 Apr 2020 13:56:00 +0200 (CEST)
-Message-Id: <20200410115516.978037132@linutronix.de>
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id E7880100BB6;
+        Fri, 10 Apr 2020 13:56:01 +0200 (CEST)
+Message-Id: <20200410115517.084300242@linutronix.de>
 User-Agent: quilt/0.65
-Date:   Fri, 10 Apr 2020 13:54:00 +0200
+Date:   Fri, 10 Apr 2020 13:54:01 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, "Kenneth R. Crudup" <kenny@panix.com>,
+Cc:     x86@kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        "Kenneth R. Crudup" <kenny@panix.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
         Nadav Amit <namit@vmware.com>,
         Thomas Hellstrom <thellstrom@vmware.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
         Tony Luck <tony.luck@intel.com>
-Subject: [patch 1/3] x86/split_lock: Provide handle_guest_split_lock()
+Subject: [patch 2/3] KVM: x86: Emulate split-lock access as a write in emulator
 References: <20200410115359.242241855@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,100 +47,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Xiaoyao Li <xiaoyao.li@intel.com>
 
-Without at least minimal handling for split lock detection induced #AC, VMX
-will just run into the same problem as the VMWare hypervisor, which was
-reported by Kenneth.
+Emulate split-lock accesses as writes if split lock detection is on to
+avoid #AC during emulation, which will result in a panic().  This should
+never occur for a well behaved guest, but a malicious guest can
+manipulate the TLB to trigger emulation of a locked instruction[1].
 
-It will inject the #AC blindly into the guest whether the guest is prepared
-or not.
+More discussion can be found [2][3].
 
-Provide a function for guest mode which acts depending on the host SLD
-mode.  If mode == sld_warn, treat it like user space, i.e. emit a warning
-disable SLD and mark the task accordingly. Otherwise force SIGBUS.
+[1] https://lkml.kernel.org/r/8c5b11c9-58df-38e7-a514-dc12d687b198@redhat.com
+[2] https://lkml.kernel.org/r/20200131200134.GD18946@linux.intel.com
+[3] https://lkml.kernel.org/r/20200227001117.GX9940@linux.intel.com
 
+Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: "Kenneth R. Crudup" <kenny@panix.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: Nadav Amit <namit@vmware.com>
-Cc: Thomas Hellstrom <thellstrom@vmware.com>
-Cc: Sean Christopherson <sean.j.christopherson@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>
 
 ---
- arch/x86/include/asm/cpu.h  |    1 +
- arch/x86/kernel/cpu/intel.c |   33 ++++++++++++++++++++++++++++-----
- 2 files changed, 29 insertions(+), 5 deletions(-)
+ arch/x86/kvm/x86.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/cpu.h
-+++ b/arch/x86/include/asm/cpu.h
-@@ -44,6 +44,7 @@ unsigned int x86_stepping(unsigned int s
- extern void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c);
- extern void switch_to_sld(unsigned long tifn);
- extern bool handle_user_split_lock(struct pt_regs *regs, long error_code);
-+extern bool handle_guest_split_lock(unsigned long ip);
- #else
- static inline void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c) {}
- static inline void switch_to_sld(unsigned long tifn) {}
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -21,6 +21,7 @@
- #include <asm/elf.h>
- #include <asm/cpu_device_id.h>
- #include <asm/cmdline.h>
-+#include <asm/traps.h>
- 
- #ifdef CONFIG_X86_64
- #include <linux/topology.h>
-@@ -1066,13 +1067,10 @@ static void split_lock_init(void)
- 	split_lock_verify_msr(sld_state != sld_off);
- }
- 
--bool handle_user_split_lock(struct pt_regs *regs, long error_code)
-+static void split_lock_warn(unsigned long ip)
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5838,6 +5838,7 @@ static int emulator_cmpxchg_emulated(str
  {
--	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
--		return false;
--
- 	pr_warn_ratelimited("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
--			    current->comm, current->pid, regs->ip);
-+			    current->comm, current->pid, ip);
+ 	struct kvm_host_map map;
+ 	struct kvm_vcpu *vcpu = emul_to_vcpu(ctxt);
++	u64 page_line_mask;
+ 	gpa_t gpa;
+ 	char *kaddr;
+ 	bool exchanged;
+@@ -5852,7 +5853,16 @@ static int emulator_cmpxchg_emulated(str
+ 	    (gpa & PAGE_MASK) == APIC_DEFAULT_PHYS_BASE)
+ 		goto emul_write;
  
- 	/*
- 	 * Disable the split lock detection for this task so it can make
-@@ -1081,6 +1079,31 @@ bool handle_user_split_lock(struct pt_re
- 	 */
- 	sld_update_msr(false);
- 	set_tsk_thread_flag(current, TIF_SLD);
-+}
+-	if (((gpa + bytes - 1) & PAGE_MASK) != (gpa & PAGE_MASK))
++	/*
++	 * Emulate the atomic as a straight write to avoid #AC if SLD is
++	 * enabled in the host and the access splits a cache line.
++	 */
++	if (boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
++		page_line_mask = ~(cache_line_size() - 1);
++	else
++		page_line_mask = PAGE_MASK;
 +
-+bool handle_guest_split_lock(unsigned long ip)
-+{
-+	if (sld_state == sld_warn) {
-+		split_lock_warn(ip);
-+		return true;
-+	}
-+
-+	pr_warn_once("#AC: %s/%d %s split_lock trap at address: 0x%lx\n",
-+		     current->comm, current->pid,
-+		     sld_state == sld_fatal ? "fatal" : "bogus", ip);
-+
-+	current->thread.error_code = 0;
-+	current->thread.trap_nr = X86_TRAP_AC;
-+	force_sig_fault(SIGBUS, BUS_ADRALN, NULL);
-+	return false;
-+}
-+EXPORT_SYMBOL_GPL(handle_guest_split_lock);
-+
-+bool handle_user_split_lock(struct pt_regs *regs, long error_code)
-+{
-+	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
-+		return false;
-+	split_lock_warn(regs->ip);
- 	return true;
- }
++	if (((gpa + bytes - 1) & page_line_mask) != (gpa & page_line_mask))
+ 		goto emul_write;
  
+ 	if (kvm_vcpu_map(vcpu, gpa_to_gfn(gpa), &map))
 
