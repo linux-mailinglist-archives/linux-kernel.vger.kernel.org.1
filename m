@@ -2,146 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 760991A3DAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 03:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8455D1A3DA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 03:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgDJBSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 21:18:50 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47294 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725970AbgDJBSu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 21:18:50 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 88AF32006B9;
-        Fri, 10 Apr 2020 03:18:43 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id E6F47200531;
-        Fri, 10 Apr 2020 03:18:36 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B21B1402B6;
-        Fri, 10 Apr 2020 09:18:28 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amit.kucheria@verdurent.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH V2] dt-bindings: thermal: Convert i.MX8MM to json-schema
-Date:   Fri, 10 Apr 2020 09:10:44 +0800
-Message-Id: <1586481044-19283-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726622AbgDJBMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 21:12:06 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:39282 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725987AbgDJBMG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Apr 2020 21:12:06 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03A1BYn0032116
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 9 Apr 2020 21:11:35 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 4500142013D; Thu,  9 Apr 2020 21:11:34 -0400 (EDT)
+Date:   Thu, 9 Apr 2020 21:11:34 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Eric Biggers <ebiggers@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [PATCH 0/2] mm: Two small fixes for recent syzbot reports
+Message-ID: <20200410011134.GG45598@mit.edu>
+References: <20200409114940.GT21484@bombadil.infradead.org>
+ <CACT4Y+ZvQ9UvVAwTjjD8Zxo0X_nfxa3+6n6TqWk2g+hahBwdCw@mail.gmail.com>
+ <20200409111604.c778ff091c00fab5db095e48@linux-foundation.org>
+ <CAHk-=wiU77DeNxQsU4XrDCk59asyTs=Hn+mnTx6-SHB1_fA2NQ@mail.gmail.com>
+ <20200409121250.d6bba6965b86c8dfcf325fbc@linux-foundation.org>
+ <CAHk-=wgy3XRiyRP7vdfF6bHwWGaB1RwyWJmyphh+Q3qYk6w27w@mail.gmail.com>
+ <20200409195633.GZ21484@bombadil.infradead.org>
+ <CAHk-=wi50jKXOFpsRkxrqu4upNnEKm1oRZ_SG1yJB9QVh=VJZQ@mail.gmail.com>
+ <20200409202751.GA7976@gmail.com>
+ <CAHk-=wj64Uw1O9-f=XYCraLgbqBqqBHSdyO1JG80smvC-01Nug@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj64Uw1O9-f=XYCraLgbqBqqBHSdyO1JG80smvC-01Nug@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the i.MX8MM thermal binding to DT schema format using json-schema
+On Thu, Apr 09, 2020 at 01:34:18PM -0700, Linus Torvalds wrote:
+> > FWIW, the issue of "syzbot report sent and ignored for months/years" is actually
+> > a much broader one which applies to all bugs, not just build / test breakages.
+> 
+> I don't  know what to do about that, but it may be that people just
+> don't judge the bugs interesting or assume that they are old.
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
-Changes since V1:
-	- Add description to mention that i.MX8MM thermal driver supports
-	  both i.MX8MM(1 sensor) and i.MX8MP(2 sensors).
-	- Remove ./thermal.txt reference.
----
- .../devicetree/bindings/thermal/imx8mm-thermal.txt | 15 ------
- .../bindings/thermal/imx8mm-thermal.yaml           | 62 ++++++++++++++++++++++
- 2 files changed, 62 insertions(+), 15 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
- create mode 100644 Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
+Syzkaller bugs which requuire (a) root privileges to trigger, or (b)
+require a deliberately corrupted file system are things which I don't
+consider super interesting.  (For the latter, I'll usually wait for
+some other file system fuzzer to find it, such as Hydra, because
+Syzkaller makes it painful extract out the file system image, where as
+other file system fuzzers are *much* more file system developer
+friendly.)
 
-diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
-deleted file mode 100644
-index 3629d3c..0000000
---- a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--* Thermal Monitoring Unit (TMU) on Freescale i.MX8MM SoC
--
--Required properties:
--- compatible : Must be "fsl,imx8mm-tmu" or "fsl,imx8mp-tmu".
--- reg : Address range of TMU registers.
--- clocks : TMU's clock source.
--- #thermal-sensor-cells : Should be 0 or 1. See ./thermal.txt for a description.
--
--Example:
--tmu: tmu@30260000 {
--	compatible = "fsl,imx8mm-tmu";
--	reg = <0x30260000 0x10000>;
--	clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
--	#thermal-sensor-cells = <0>;
--};
-diff --git a/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
-new file mode 100644
-index 0000000..71807e5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/thermal/imx8mm-thermal.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/thermal/imx8mm-thermal.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP i.MX8M Mini Thermal Binding
-+
-+maintainers:
-+  - Anson Huang <Anson.Huang@nxp.com>
-+
-+description: |
-+  i.MX8MM has TMU IP to allow temperature measurement, there are
-+  currently two distinct major versions of the IP that is supported
-+  by a single driver. The IP versions are named v1 and v2, v1 is
-+  for i.MX8MM which has ONLY 1 sensor, v2 is for i.MX8MP which has
-+  2 sensors.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,imx8mm-tmu
-+              - fsl,imx8mp-tmu
-+  reg:
-+    description: |
-+      Address range of TMU registers.
-+    maxItems: 1
-+  clocks:
-+    description: |
-+      TMU's clock source.
-+    maxItems: 1
-+
-+  "#thermal-sensor-cells":
-+    description: |
-+      Number of cells required to uniquely identify the thermal
-+      sensors, 0 for ONLY one sensor and 1 for multiple sensors.
-+    enum:
-+      - 0
-+      - 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - '#thermal-sensor-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx8mm-clock.h>
-+
-+    tmu: tmu@30260000 {
-+         compatible = "fsl,imx8mm-tmu";
-+         reg = <0x30260000 0x10000>;
-+         clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
-+         #thermal-sensor-cells = <0>;
-+    };
-+
-+...
--- 
-2.7.4
+This shouldn't be a surprise to Dmitry, because I've given these
+feedbacks to him before.
 
+It would be nice if there was some way we could triage Syzkaller bugs
+into different buckets (requires root, lower to P2; requires a
+corrupted file system image, lower to P2).  Unfortunately, that would
+require Syzkaller to have some kind of login system and way to track
+state, and Dmitry doesn't want to replicate the functionality of a bug
+tracker.
+
+> That's what made bugzilla so useless - being flooded with stale bugs
+> that might not be worth worrying about, and no way to really tell.
+
+At least with Bugzilla, it becomes possible to attach priorities and
+flags to them, instead of trying to assume that developers should
+treat all Syzkaller bugs as the same priority.  Because when you do
+insist that all bugs be treated as high priority, many people will
+just treat them *all* as a P2 bug, especially when there are so many.
+
+      	   	       	    	       	     	- Ted
