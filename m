@@ -2,62 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 857581A47F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 17:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6521A4811
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 18:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgDJPor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 11:44:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726177AbgDJPor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 11:44:47 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CC7020679;
-        Fri, 10 Apr 2020 15:44:46 +0000 (UTC)
-Date:   Fri, 10 Apr 2020 11:44:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, akpm@linux-foundation.org,
-        "K . Prasad" <prasad@linux.vnet.ibm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>
-Subject: Re: [RFC PATCH 8/9] block: genhd: export-GPL generic disk device
- type
-Message-ID: <20200410114444.73be173a@gandalf.local.home>
-In-Reply-To: <20200410063357.GA1663942@kroah.com>
-References: <20200409193543.18115-1-mathieu.desnoyers@efficios.com>
-        <20200409193543.18115-9-mathieu.desnoyers@efficios.com>
-        <20200410063357.GA1663942@kroah.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726776AbgDJQAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 12:00:52 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:57670 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726725AbgDJQAv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 12:00:51 -0400
+Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 08258914799ae752; Fri, 10 Apr 2020 18:00:49 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans De Goede <hdegoede@redhat.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 0/7] PM: sleep: core: Rearrange the handling of driver power management flags
+Date:   Fri, 10 Apr 2020 17:46:27 +0200
+Message-ID: <1888197.j9z7NJ8yPn@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Apr 2020 08:33:57 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+Hi Alan,
 
-> I understand your need here, however we do not export things for
-> modules, when there are no in-kernel module users, sorry.
+Following our recent discussion regarding the DPM_FLAG_* family of flags [1],
+I have decided to follow some of your recommendations and make changes to the
+core code handling those flags.
 
-This "we don't cater to out-of-tree modules" even when they are GPL seems
-to always baffle me. Especially since we have a high bar of accepting out
-of tree modules especially if they duplicate some functionality of an
-existing infrastructure of the kernel. I like choice, and coming from
-someone that spent over a decade working on code that has been out of tree,
-I'm a little sympathetic to the cause ;-)
+The purpose of this is basically to make the code more consistent internally,
+easier to follow and better documented.
 
-I guess we should be open to allowing LTTng modules in the kernel as well,
-even though it is yet another tracing framework. It's not like its going
-away. And perhaps by doing so, ftrace and perf could start taking advantage
-of anything that LTTng brings.
+First of all, patch [1/7] changes the PM core to skip driver-level "late"
+and "noirq" suspend callbacks for devices with SMART_SUSPEND set if they are
+still runtime-suspended during the "late" system-wide suspend phase (without
+the patch it does that only if subsystem-level late/noirq/early suspend/resume
+callbacks are not present for the device, which is demonstrably inconsistent)
+and updates the resume part of the code accordingly (it doesn't need to check
+whether or not the subsystem-level callbacks are present any more).
 
--- Steve
+The next patch, [2/7], is purely cosmetic and its only purpose is to reduce
+the LOC number and move related pieces of code closer to each other.
+
+Patch [3/7] changes the PM core so that it doesn't skip any subsystem-level
+callbacks during system-wide resume (without the patch they may be skipped in
+the "early resume" and "resume" phases due to LEAVE_SUSPENDED being set which
+may be problematic) and to always run the driver's ->resume callback if the
+corresponding subsystem-level callback is not present (without the patch it
+may be skipped if LEAVE_SUSPENDED is set) to let it reverse the changes made
+by the driver's ->suspend callback (which always runs too) if need be.
+
+Patches [4-6/7] rename one function in the PM core and two driver PM flags to
+make their names better reflect their purpose.
+
+Finally, patch [7/7] updates the documentation of the driver PM flags to
+reflect the new code flows.
+
+This patch series have been available in the git branch at
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-sleep-core
+
+for easier web and git access.
+
+Cheers!
+
+
+[1] https://lore.kernel.org/linux-pm/Pine.LNX.4.44L0.2003251631360.1724-100000@netrider.rowland.org/
+
+
+
