@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A33831A48C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13BC1A491A
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgDJRFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 13:05:18 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:33895 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726142AbgDJRFS (ORCPT
+        id S1726821AbgDJRhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 13:37:11 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:42313 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726203AbgDJRhK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 13:05:18 -0400
-Received: from [5.157.111.77] (port=58954 helo=[192.168.77.62])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jMx5f-005r4M-Q0; Fri, 10 Apr 2020 19:05:15 +0200
-Subject: Re: [RFC PATCH v2 5/6] i2c: of: mark a whole array of regs as
- reserved
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, linux-i3c@lists.infradead.org,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>, linux-kernel@vger.kernel.org
-References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
- <20200318150059.21714-6-wsa+renesas@sang-engineering.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <6ebd789e-879c-6f58-2c20-abecad2ce57f@lucaceresoli.net>
-Date:   Fri, 10 Apr 2020 19:05:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 10 Apr 2020 13:37:10 -0400
+Received: by mail-ot1-f68.google.com with SMTP id j20so1783985otl.9;
+        Fri, 10 Apr 2020 10:37:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OvsHNilOxSyiwGW3V/imzWzd5sgcwB1R86uU7/0uLTg=;
+        b=kigp8dttzmLP+Qsad67IeMe62x4ooQks84vN4tj5l3ca55HbNzWVpIAXuB0MA0YdQZ
+         UOeVvtMT3Dm4cXed5fr6RgNxE/L6n9IH86LHlpFmg4wdP36DpCsQW/sDELZjqjGsHDuW
+         axX8cJ0eaYzZucghVbrYxgTezp4hkPnAYx5DbxfLTGQ5V6rgwHUoyKGUjTcOAzOn710Z
+         3SczSPgrBWHOSHvBqIEUfaGtmae2Q+5V52WRCHg37KE/fvg5PdUmpVy8huO1NJOXqL9g
+         cN7ztYF5mQcYyx3Rs8nleJc5afOIr0bZ6Hin6nBkBY8zc4nM2t+NHIO+1dW5Q0iTNqpf
+         nP8w==
+X-Gm-Message-State: AGi0PubHbGu6y0d2WiXy5P3ProwKM+fpbvWN/GmkyuQn0DgOO3aaqxJS
+        I/qIWw/5WfiOKRhRvOPtXw==
+X-Google-Smtp-Source: APiQypL0WB5tGIuunT3qritEJX9PvG/EVqigMCAxoki77FmP/HPVGri3fzYS6+Bezx2cJ8PtdYYb+Q==
+X-Received: by 2002:a4a:9cd8:: with SMTP id d24mr4988155ook.84.1586540230111;
+        Fri, 10 Apr 2020 10:37:10 -0700 (PDT)
+Received: from rob-hp-laptop (ip-99-203-29-27.pools.cgn.spcsdns.net. [99.203.29.27])
+        by smtp.gmail.com with ESMTPSA id d3sm1480526oth.81.2020.04.10.10.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 10:37:08 -0700 (PDT)
+Received: (nullmailer pid 30639 invoked by uid 1000);
+        Fri, 10 Apr 2020 17:05:13 -0000
+Date:   Fri, 10 Apr 2020 12:05:13 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Artur =?utf-8?B?xZp3aWdvxYQ=?= <a.swigon@samsung.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 01/22] dt-bindings: memory: tegra20: mc: Document new
+ interconnect property
+Message-ID: <20200410170513.GA30556@bogus>
+References: <20200330010904.27643-1-digetx@gmail.com>
+ <20200330010904.27643-2-digetx@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200318150059.21714-6-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200330010904.27643-2-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/03/20 16:00, Wolfram Sang wrote:
-> Back then, 'reg' properties in I2C DT bindings only contained one
-> address and this address was assigned a device and, thus, blocked.
-> Meanwhile, chips using multiple addresses are common and the 'reg'
-> property can be an array described by 'reg-names'. This code enhances
-> I2C DT parsing, so it will reserve all addresses described in an array.
-> They will be bound to the 'dummy' driver as 'reserved' iff the first
-> address can be assigned successfully. If that is not the case, the array
-> is not further considered. If one later address of the array can not be
-> assigned, it will be reported but we don't bail out. The driver has to
-> decide if that address is critical or not.
+On Mon, 30 Mar 2020 04:08:43 +0300, Dmitry Osipenko wrote:
+> Memory controller is interconnected with memory clients and with the
+> external memory controller. Document new interconnect property which
+> turns memory controller into interconnect provider.
 > 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/memory-controllers/nvidia,tegra20-mc.txt          | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
-
--- 
-Luca
+Acked-by: Rob Herring <robh@kernel.org>
