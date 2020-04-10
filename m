@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED7F1A4AB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E341A4ABA
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 21:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbgDJTj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 15:39:27 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:28773 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726861AbgDJTj1 (ORCPT
+        id S1726834AbgDJTlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 15:41:31 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:36243 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726203AbgDJTl2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 15:39:27 -0400
+        Fri, 10 Apr 2020 15:41:28 -0400
 Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 10 Apr 2020 12:39:22 -0700
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Fri, 10 Apr 2020 12:39:27 -0700
 Received: from sc9-mailhost3.vmware.com (unknown [10.166.69.226])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 6136240BC0;
-        Fri, 10 Apr 2020 12:39:26 -0700 (PDT)
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 0C8B240BC0;
+        Fri, 10 Apr 2020 12:39:32 -0700 (PDT)
 From:   Matt Helsley <mhelsley@vmware.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
@@ -27,162 +27,86 @@ CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Miroslav Benes <mbenes@suse.cz>,
         Matt Helsley <mhelsley@vmware.com>
-Subject: [RFC][PATCH 33/36] objtool: mcount: Move sift_rel_mcount out of wrapper file
-Date:   Fri, 10 Apr 2020 12:35:56 -0700
-Message-ID: <0442618da2678ee6bc657bfda6137140239f58be.1586468801.git.mhelsley@vmware.com>
+Subject: [RFC][PATCH 34/36] objtool: mcount: Remove wrapper for ELF relocation type
+Date:   Fri, 10 Apr 2020 12:35:57 -0700
+Message-ID: <d3f91be1b3be23c1647750fa4bdb534192d4fbb9.1586468801.git.mhelsley@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1586468801.git.mhelsley@vmware.com>
 References: <cover.1586468801.git.mhelsley@vmware.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: mhelsley@vmware.com does not
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: mhelsley@vmware.com does not
  designate permitted sender hosts)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that this function no longer uses any of the old recordmcount
-wrapper code we can move it out of the wrapper too.
+Remove the last use of the Elf_Rela wrapper #defines by passing
+the size of the relocations we're dealing with as a parameter.
 
 Signed-off-by: Matt Helsley <mhelsley@vmware.com>
 ---
- tools/objtool/recordmcount.c | 47 +++++++++++++++++++++++++++++++++
- tools/objtool/recordmcount.h | 51 ------------------------------------
- 2 files changed, 47 insertions(+), 51 deletions(-)
+ tools/objtool/recordmcount.c | 4 ++--
+ tools/objtool/recordmcount.h | 7 ++-----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/tools/objtool/recordmcount.c b/tools/objtool/recordmcount.c
-index 89765870b0dd..a16611a352e5 100644
+index a16611a352e5..e6aa1feb234d 100644
 --- a/tools/objtool/recordmcount.c
 +++ b/tools/objtool/recordmcount.c
-@@ -394,6 +394,53 @@ static int mcount_adjust = 0;
- /* Size of an entry in __mcount_loc; 4 or 8 */
- static size_t loc_size;
- 
-+/*
-+ * Look at the relocations in order to find the calls to mcount.
-+ * Accumulate the section offsets that are found, and their relocation info,
-+ * onto the end of the existing arrays.
-+ */
-+static void sift_rel_mcount(GElf_Addr **mlocpp,
-+			    GElf_Sxword *r_offsetp,
-+			    void **const mrelpp,
-+			    const struct section * const rels,
-+			    unsigned const recsym_index,
-+			    unsigned long const recval,
-+			    unsigned const reltype,
-+			    bool is_rela)
-+{
-+	GElf_Rel *mrelp = *mrelpp;
-+	GElf_Rela *mrelap = *mrelpp;
-+	unsigned int mcount_sym_info = 0;
-+	struct rela *rela;
-+
-+	list_for_each_entry(rela, &rels->rela_list, list) {
-+		unsigned long addend;
-+
-+		if (!mcount_sym_info)
-+			mcount_sym_info = get_mcount_sym_info(rela);
-+
-+		if (mcount_sym_info != GELF_R_INFO(rela->sym->idx, rela->type) || is_fake_mcount(rela))
-+			continue;
-+
-+		addend = rela->offset - recval + mcount_adjust;
-+		if (is_rela) {
-+			mrelap->r_offset = *r_offsetp;
-+			mrelap->r_info = GELF_R_INFO(recsym_index, reltype);
-+			mrelap->r_addend = addend;
-+			mrelap++;
-+			**mlocpp = 0;
-+		} else {
-+			mrelp->r_offset = *r_offsetp;
-+			mrelp->r_info = GELF_R_INFO(recsym_index, reltype);
-+			mrelp++;
-+			**mlocpp = addend;
-+		}
-+		(*mlocpp)++;
-+		r_offsetp += loc_size;
-+	}
-+	*mrelpp = is_rela ? (void *)mrelap : (void *)mrelp;
-+}
-+
- /* 32 bit and 64 bit are very similar */
- #include "recordmcount.h"
- #define RECORD_MCOUNT_64
+@@ -574,7 +574,7 @@ static int do_file(char const *const fname)
+ 			is_fake_mcount = MIPS_is_fake_mcount;
+ 		}
+ 		loc_size = 4;
+-		rc = do32(reltype);
++		rc = do32(reltype, sizeof(Elf32_Rela));
+ 		break;
+ 	case ELFCLASS64: {
+ 		if (lf->ehdr.e_ehsize != sizeof(Elf64_Ehdr)
+@@ -592,7 +592,7 @@ static int do_file(char const *const fname)
+ 			is_fake_mcount = MIPS_is_fake_mcount;
+ 		}
+ 		loc_size = 8;
+-		rc = do64(reltype);
++		rc = do64(reltype, sizeof(Elf64_Rela));
+ 		break;
+ 	}
+ 	}  /* end switch */
 diff --git a/tools/objtool/recordmcount.h b/tools/objtool/recordmcount.h
-index bdf77172da58..7db08ad9b4a7 100644
+index 7db08ad9b4a7..d116032522e1 100644
 --- a/tools/objtool/recordmcount.h
 +++ b/tools/objtool/recordmcount.h
-@@ -17,68 +17,17 @@
-  * This conversion to macros was done by:
+@@ -18,18 +18,15 @@
   * Copyright 2010 Steven Rostedt <srostedt@redhat.com>, Red Hat Inc.
   */
--#undef sift_rel_mcount
  #undef do_func
- #undef Elf_Rela
+-#undef Elf_Rela
  
  #ifdef RECORD_MCOUNT_64
--# define sift_rel_mcount	sift64_rel_mcount
  # define do_func		do64
- # define Elf_Rela		Elf64_Rela
+-# define Elf_Rela		Elf64_Rela
  #else
--# define sift_rel_mcount	sift32_rel_mcount
  # define do_func		do32
- # define Elf_Rela		Elf32_Rela
+-# define Elf_Rela		Elf32_Rela
  #endif
  
--/*
-- * Look at the relocations in order to find the calls to mcount.
-- * Accumulate the section offsets that are found, and their relocation info,
-- * onto the end of the existing arrays.
-- */
--static void sift_rel_mcount(GElf_Addr **mlocpp,
--			       GElf_Sxword *r_offsetp,
--			       void **const mrelpp,
--			       const struct section * const rels,
--			       unsigned const recsym_index,
--			       unsigned long const recval,
--			       unsigned const reltype,
--			       bool is_rela)
--{
--	GElf_Rel *mrelp = *mrelpp;
--	GElf_Rela *mrelap = *mrelpp;
--	unsigned int mcount_sym_info = 0;
--	struct rela *rela;
--
--	list_for_each_entry(rela, &rels->rela_list, list) {
--		unsigned long addend;
--
--		if (!mcount_sym_info)
--			mcount_sym_info = get_mcount_sym_info(rela);
--
--		if (mcount_sym_info != GELF_R_INFO(rela->sym->idx, rela->type) || is_fake_mcount(rela))
--			continue;
--
--		addend = rela->offset - recval + mcount_adjust;
--		if (is_rela) {
--			mrelap->r_offset = *r_offsetp;
--			mrelap->r_info = GELF_R_INFO(recsym_index, reltype);
--			mrelap->r_addend = addend;
--			mrelap++;
--			**mlocpp = 0;
--		} else {
--			mrelp->r_offset = *r_offsetp;
--			mrelp->r_info = GELF_R_INFO(recsym_index, reltype);
--			mrelp++;
--			**mlocpp = addend;
--		}
--		(*mlocpp)++;
--		r_offsetp += loc_size;
--	}
--	*mrelpp = is_rela ? (void *)mrelap : (void *)mrelp;
--}
--
--
  /* Overall supervision for Elf32 ET_REL file. */
- static int do_func(unsigned const reltype)
+-static int do_func(unsigned const reltype)
++static int do_func(unsigned const reltype, size_t rela_size)
  {
+ 	/* Upper bound on space: assume all relevant relocs are for mcount. */
+ 	unsigned       totrelsz;
+@@ -70,7 +67,7 @@ static int do_func(unsigned const reltype)
+ 		return -1;
+ 	}
+ 
+-	is_rela = (sizeof(Elf_Rela) == rel_entsize);
++	is_rela = (rela_size == rel_entsize);
+ 	mc_name = is_rela
+ 			? ".rela__mcount_loc"
+ 			:  ".rel__mcount_loc";
 -- 
 2.20.1
 
