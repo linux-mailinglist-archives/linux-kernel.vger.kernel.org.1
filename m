@@ -2,27 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0E01A4600
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECC81A4613
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 13:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgDJLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 07:55:31 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:13149 "EHLO huawei.com"
+        id S1726141AbgDJL4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 07:56:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:46008 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726234AbgDJLzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 07:55:31 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 66CABBA4FA78403941D0;
-        Fri, 10 Apr 2020 19:55:26 +0800 (CST)
-Received: from localhost (10.173.223.234) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Apr 2020
- 19:55:18 +0800
+        id S1726826AbgDJL4f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 07:56:35 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 036C678809575001BBEA;
+        Fri, 10 Apr 2020 19:56:34 +0800 (CST)
+Received: from localhost (10.173.223.234) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Fri, 10 Apr 2020
+ 19:56:23 +0800
 From:   YueHaibing <yuehaibing@huawei.com>
-To:     <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] mfd: stpmic1: Make stpmic1_regmap_config static
-Date:   Fri, 10 Apr 2020 19:55:14 +0800
-Message-ID: <20200410115514.41916-1-yuehaibing@huawei.com>
+To:     <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
+        <sstabellini@kernel.org>
+CC:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] xen/pvcalls: Make pvcalls_back_global static
+Date:   Fri, 10 Apr 2020 19:56:20 +0800
+Message-ID: <20200410115620.33024-1-yuehaibing@huawei.com>
 X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -35,28 +37,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix sparse warning:
 
-drivers/mfd/stpmic1.c:62:28: warning:
- symbol 'stpmic1_regmap_config' was not declared. Should it be static?
+drivers/xen/pvcalls-back.c:30:3: warning:
+ symbol 'pvcalls_back_global' was not declared. Should it be static?
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
- drivers/mfd/stpmic1.c | 2 +-
+ drivers/xen/pvcalls-back.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/stpmic1.c b/drivers/mfd/stpmic1.c
-index 7dfbe8906cb8..eb3da558c3fb 100644
---- a/drivers/mfd/stpmic1.c
-+++ b/drivers/mfd/stpmic1.c
-@@ -59,7 +59,7 @@ static const struct regmap_access_table stpmic1_volatile_table = {
- 	.n_yes_ranges = ARRAY_SIZE(stpmic1_volatile_ranges),
- };
+diff --git a/drivers/xen/pvcalls-back.c b/drivers/xen/pvcalls-back.c
+index cf4ce3e9358d..4807704f8d69 100644
+--- a/drivers/xen/pvcalls-back.c
++++ b/drivers/xen/pvcalls-back.c
+@@ -24,7 +24,7 @@
+ #define PVCALLS_VERSIONS "1"
+ #define MAX_RING_ORDER XENBUS_MAX_RING_GRANT_ORDER
  
--const struct regmap_config stpmic1_regmap_config = {
-+static const struct regmap_config stpmic1_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 	.cache_type = REGCACHE_RBTREE,
+-struct pvcalls_back_global {
++static struct pvcalls_back_global {
+ 	struct list_head frontends;
+ 	struct semaphore frontends_lock;
+ } pvcalls_back_global;
 -- 
 2.17.1
 
