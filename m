@@ -2,96 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D04A81A3E28
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 04:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83741A3E39
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 04:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726647AbgDJCXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Apr 2020 22:23:47 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:34548 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725987AbgDJCXr (ORCPT
+        id S1726721AbgDJC2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Apr 2020 22:28:46 -0400
+Received: from smtprelay0082.hostedemail.com ([216.40.44.82]:47184 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725987AbgDJC2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Apr 2020 22:23:47 -0400
-Received: by mail-lj1-f196.google.com with SMTP id m8so637419lji.1;
-        Thu, 09 Apr 2020 19:23:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C7nub2iC7HflOtCQHAAafbgeNv5reSfX1ICVh/feaUg=;
-        b=JFVBcnHtGbIdWIzex5YH9WvtY0JYL61bG3IWoWHDvhab8sS7zyKzabEW+N1KhP6CDJ
-         o//t4xh1c9ED3fWEGmYjw8T9ATBMJ/HsSaaCo2OzTHaNWXgova2j3RPoUf7Jcb/KRTfd
-         thrhVzgcQM1Cdxy4FaObzOCGdPDYBMaTZAh9N14VKmxdNK2cxmxyAuU5S+jBoK6qlwH9
-         SdXdmi1R2j4UVjl94PbHzLTiGa8dXQ+8UN2Tj2PggHIHyEcZC9GQblO15j3CWmobYXZQ
-         C2ZtS8XrVOnIW0U/pRCtlF/VPDHqKhnaU/byLhjlQEN/YjHPMXbO8ctaE6Hs/jQceDBx
-         YdHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C7nub2iC7HflOtCQHAAafbgeNv5reSfX1ICVh/feaUg=;
-        b=n4G6UUqCEOwFvUajwDSbGJJPrEP+oQpcAixfc1+MFZ6dFQ0Iy1V+ldKMxIMiT/j/Qy
-         ABqR6kU/NQACLDCqdmIOW3RVRvlYCXSrCPlY7BUWpS/G3xMw6n2UkNbQz0287tNX04Yk
-         eLgYJk0PwLyPib5veJK2XhUEWWQz2MsZetd5F8fV2zXB3pBYNfHPhUd5CE91ijlDNwd3
-         y8GBGmxz2rZkn5dyfP/PkRLNGrAhl9JPXvzqLXOvsZNlyp2NlpETQPVzeKgvF4Ax+guN
-         Gu72Ifpyp1NVrJnUuCmlty01WzEADhaWUfx6wF2SbzrNsng729W34Fc2aLDboFjVs2/u
-         ug4g==
-X-Gm-Message-State: AGi0PubsqSAgavwT35JvSnmqBgb2eGSDrKcMdj02tlajLkJSWkZyGnl5
-        NMwq0wEoXPVvxP9YO2SX3o5TEgA3yrIbxO1MVtQ=
-X-Google-Smtp-Source: APiQypLnZGTvqOGESVBjKQo4/Lj3hRB1ay/3mDXASjqrLo7VK00BjILY9FTR5FqYsL8gYvGI1WpmBu69VNNGszWlHjI=
-X-Received: by 2002:a2e:974d:: with SMTP id f13mr1694240ljj.178.1586485424861;
- Thu, 09 Apr 2020 19:23:44 -0700 (PDT)
+        Thu, 9 Apr 2020 22:28:46 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id CA3A9182CCCD0;
+        Fri, 10 Apr 2020 02:28:45 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2911:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3867:3868:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4425:5007:8985:9025:10004:10400:10848:11232:11658:11914:12043:12297:12438:12555:12663:12740:12760:12895:13019:13069:13311:13357:13439:14180:14181:14659:14721:21060:21080:21451:21627:21811:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: cart95_697e48a2c6740
+X-Filterd-Recvd-Size: 1458
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 10 Apr 2020 02:28:44 +0000 (UTC)
+Message-ID: <135aaf66d6e9bf38e1d64edbdca9929743c33e4b.camel@perches.com>
+Subject: Re: [PATCH v2] staging: rtl8192u: Corrects 'Avoid CamelCase' for
+ variables
+From:   Joe Perches <joe@perches.com>
+To:     Camylla Cantanheide <c.cantanheide@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        lkcamp@lists.libreplanetbr.org
+Date:   Thu, 09 Apr 2020 19:26:43 -0700
+In-Reply-To: <CAG3pErLnRA-02XfG1pbvv7F=gU06=yTMByuvpX0QjiZvDVqFxw@mail.gmail.com>
+References: <20200318211205.188-1-c.cantanheide@gmail.com>
+         <bb163d6b706a7b07e8b2e1c51b0da72a5923af97.camel@perches.com>
+         <CAG3pErLnRA-02XfG1pbvv7F=gU06=yTMByuvpX0QjiZvDVqFxw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-References: <20200410004738.19668-1-ansuelsmth@gmail.com> <20200410004738.19668-3-ansuelsmth@gmail.com>
-In-Reply-To: <20200410004738.19668-3-ansuelsmth@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Thu, 9 Apr 2020 23:24:12 -0300
-Message-ID: <CAOMZO5AKYO3xLsp4k6_fJCV9qW=rAtRKEGWnxksixU794dOw8A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] drivers: pci: dwc: pci-imx6: update binding to
- generic name
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Andrew Murray <amurray@thegoodpenguin.co.uk>,
-        linux-pci@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ansuel,
+On Thu, 2020-04-09 at 23:09 -0300, Camylla Cantanheide wrote:
+> Hi Joe,
+> 
+> Thanks for your review, I'm new to this and I would like to learn.
+> 
+> I didn't undertand your coment, I was hoping if you could help me clarify a
+> bit.
 
-On Thu, Apr 9, 2020 at 9:47 PM Ansuel Smith <ansuelsmth@gmail.com> wrote:
->
-> Rename specific bindings to generic name.
->
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index acfbd34032a8..4ac140e007b4 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1146,28 +1146,28 @@ static int imx6_pcie_probe(struct platform_device *pdev)
->         }
->
->         /* Grab PCIe PHY Tx Settings */
-> -       if (of_property_read_u32(node, "fsl,tx-deemph-gen1",
-> +       if (of_property_read_u32(node, "tx-deemph-gen1",
+I sent you a suggested patch clarifying the code
+rather than clarifying the naming just before this.
 
-This breaks compatibility with older dtbs.
+https://lore.kernel.org/lkml/a421ed974d7c675a7d41405d483c7645004d4125.camel@perches.com/
+
+
+
