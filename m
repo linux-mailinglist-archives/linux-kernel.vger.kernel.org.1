@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AED1C1A4877
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 18:28:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5F21A490F
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726793AbgDJQ1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 12:27:53 -0400
-Received: from esa1.microchip.iphmx.com ([68.232.147.91]:8228 "EHLO
-        esa1.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726638AbgDJQ1v (ORCPT
+        id S1726787AbgDJRgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 13:36:55 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:40918 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgDJRgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 12:27:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1586536071; x=1618072071;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=Eo6p7pz7SWCokkfrt5eRPXSs0G7FQfJNhTJCV7p33Xs=;
-  b=vWMNP9Ddq56yCpl3iP08c6qMbrwpY+FR/l/sOcMzJS62+xQyyzv3GQxf
-   cGQmAF7tYLvjEm4H6tG/tJea8B2laadKcsGMlRx/hSapdlKzESCA1qGMA
-   CUBH7RND0P0uG6oXxtFGkb5RzV1AaTdI79QtBIvc4Up4z5eHThJ56NN5y
-   h3asfbpsKV5GShefpaDnF55YuQXemkrrEsnOZ6q/VWpUZYwudL9ztcEiI
-   0IpEWZORYmuH/t8iN5ylmMkiFQ++LkKgH+zxvgHTk6lnMeJ86ulJFaNkj
-   9ElOQtzhJGQXGwmzwVb0anxbA5tPLRauegm40UqyyYFTbqelN/5WaIcZd
-   Q==;
-IronPort-SDR: 6AjG0RliC4W9S/dyMTnwaFK7Z5jnQrNDSajrnRVi9WQ8FDMQwgDLEfEQyQfYdt/XDsiKYVDPX2
- PCJ+pboexCDMyPhDPUk+mzAWX/KPZgyYzRBRRJwRiQM0dziGw9l8Y5BRXWUfkMTqf9FIXsGHNJ
- A+VmcUd5+RTxtIK21lubyhRLqL4HkweQmOtAv+pA4ojIWulof504n7U9yuerGxH+Z6+xJfiXzA
- P42OQnNy2pPHlp4j/yO3rqGBZBMHt7gLBUAOmgeBSu1nrD5optfq6bsrhxk5plyq3d84ibci03
- 89E=
-X-IronPort-AV: E=Sophos;i="5.72,367,1580799600"; 
-   d="scan'208";a="75498407"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 10 Apr 2020 09:27:51 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 10 Apr 2020 09:27:51 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.1713.5 via Frontend Transport; Fri, 10 Apr 2020 09:27:42 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <nicolas.ferre@microchip.com>, <ludovic.desroches@microchip.com>,
-        <tglx@linutronix.de>, <jason@lakedaemon.net>, <maz@kernel.org>
-CC:     <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 5/5] rtc: at91sam9: add microchip,sam9x60-rtt
-Date:   Fri, 10 Apr 2020 19:26:59 +0300
-Message-ID: <1586536019-12348-6-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1586536019-12348-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1586536019-12348-1-git-send-email-claudiu.beznea@microchip.com>
+        Fri, 10 Apr 2020 13:36:55 -0400
+Received: by mail-ot1-f65.google.com with SMTP id q2so2489275otk.7;
+        Fri, 10 Apr 2020 10:36:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MzwM/gQ/NLaRvDFMI25L91K+i3EhNsGz95soTyWuQBo=;
+        b=WCAbFeh/+b8aiImco+FcjemeUmUjLuH7pSK3E8H/CC9dnOB2DjOatVw/kXjZgLkrGe
+         FLuNW+hcRyh4BlHgz0aSQRYUcxIFZHBuE91bwhRF/xlOTb72sRqDGxTf5cfMYxR+NKbH
+         ZPL+hQJh3WCpaIbzJxDJFeyIcXDGTh2f5ptJSihmiw7mnnDlo9hTrYe0LH4dWOom12VT
+         7kKCuRcFbFt/EF0gK86SEWNqTJ0PudWpFctKR/8ZJnj5WVbG4z1VSo/JNWMqFLAiSPy4
+         SxxEhzM24qZqXEQJwhXCCA0dSwERA9L8JMXBO6avJ/T1AmotlIvNLi8SF06VjFYh7+cO
+         TmJg==
+X-Gm-Message-State: AGi0PuYyslzXsjDds9AkvAeScoCAKxfAur09hvknncm0vRxnS+VHzOSj
+        hEo3UeLoRBd1NEP1LDwkhA==
+X-Google-Smtp-Source: APiQypLnAMIYEtn1snzAX7XsnL8YdEKpMgCeNLiH6hW+fVNoQm1scqQIshatQunCogs3B6D0xJoNWA==
+X-Received: by 2002:a4a:c819:: with SMTP id s25mr4930618ooq.6.1586540215007;
+        Fri, 10 Apr 2020 10:36:55 -0700 (PDT)
+Received: from rob-hp-laptop (ip-99-203-29-27.pools.cgn.spcsdns.net. [99.203.29.27])
+        by smtp.gmail.com with ESMTPSA id d25sm1625369ooh.34.2020.04.10.10.36.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 10:36:54 -0700 (PDT)
+Received: (nullmailer pid 13792 invoked by uid 1000);
+        Fri, 10 Apr 2020 16:31:08 -0000
+Date:   Fri, 10 Apr 2020 11:31:08 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH 1/2] dt-bindings: usb: generic-ehci: Document
+ power-domains property
+Message-ID: <20200410163108.GA13579@bogus>
+References: <20200326163807.23216-1-geert+renesas@glider.be>
+ <20200326163807.23216-2-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200326163807.23216-2-geert+renesas@glider.be>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add microchip,sam9x60-rtt to compatible list.
+On Thu, 26 Mar 2020 17:38:05 +0100, Geert Uytterhoeven wrote:
+> It is quite common for a generic EHCI block to be embedded in an SoC in
+> its own power domain.  Hence allow the DTS writer to describe the
+> controller's position in the power hierarchy, by documenting the
+> optional presence of a "power-domains" property.
+> 
+> This gets rid of "make dtbs_check" warnings like:
+> 
+>     arch/arm64/boot/dts/renesas/r8a774a1-hihope-rzg2m.dt.yaml: usb@ee080100: 'power-domains' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  Documentation/devicetree/bindings/usb/generic-ehci.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Applied, thanks.
 
-diff --git a/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt b/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt
-index 6ae79d1843f3..b2f913ff6c69 100644
---- a/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt
-+++ b/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt
-@@ -1,7 +1,7 @@
- Atmel AT91SAM9260 Real Time Timer
- 
- Required properties:
--- compatible: should be: "atmel,at91sam9260-rtt"
-+- compatible: should be: "atmel,at91sam9260-rtt" or "microchip,sam9x60-rtt"
- - reg: should encode the memory region of the RTT controller
- - interrupts: rtt alarm/event interrupt
- - clocks: should contain the 32 KHz slow clk that will drive the RTT block.
--- 
-2.7.4
-
+Rob
