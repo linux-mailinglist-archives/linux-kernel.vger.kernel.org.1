@@ -2,103 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 461621A4B37
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 22:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 868E11A4B3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 22:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbgDJUiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 16:38:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45686 "EHLO mail.kernel.org"
+        id S1726736AbgDJUj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 16:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47184 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726651AbgDJUiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 16:38:15 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726706AbgDJUj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 16:39:27 -0400
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8798B20936;
-        Fri, 10 Apr 2020 20:38:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D7C020936;
+        Fri, 10 Apr 2020 20:39:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586551095;
-        bh=Jwd7+bpe1SIQcdL6R7LZyMhh+O+5rSVAOt78pIxPBDo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=wqLWQQm3In8Q1L3xWTZ7/HFW7+etSGFgoS1VlknT1qU5kAm+E+Sl2HwrvMj6sz8dV
-         AZVzX4guXnpoMnulNV7F+42QmJkCvhGix39/wh6uiRWlpX49h2WLhw2z9WU2XgIqu8
-         Fjdwf+DVSjCAtOiLMKhs9QMyfjReSFw5AhJHOCMg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5D62B35226A3; Fri, 10 Apr 2020 13:38:15 -0700 (PDT)
-Date:   Fri, 10 Apr 2020 13:38:15 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] kcsan: Fix function matching in report
-Message-ID: <20200410203815.GV17661@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200410164418.65808-1-elver@google.com>
+        s=default; t=1586551167;
+        bh=fx/YNx4dh/aRYlOkh+d8yQlgMojYPrhWbJbg1ZKbAn4=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jURIy8M8FEXXB1EpC8iZakWlnt+L9s03r6fN4IvDeGeFcgziPpQvGZFT0T4ru1dDU
+         +u6gVkEECNvjwZNRyc/DhrSvze9xqhZSdg4xko38D4yMY7FSPjBxjZXlk9vRKMKZ0Q
+         LwH6LMx17f7XJnJr8KGaf0Ji+hY1leOfEZThBNbc=
+Subject: Re: [PATCH] selftests/seccomp: allow clock_nanosleep instead of
+ nanosleep
+To:     Kees Cook <keescook@chromium.org>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Cc:     bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luto@amacapital.net, wad@chromium.org, shuah <shuah@kernel.org>
+References: <20200408235753.8566-1-cascardo@canonical.com>
+ <202004101328.075568852D@keescook>
+From:   shuah <shuah@kernel.org>
+Message-ID: <0d4e5356-d40a-8d17-1c61-d5c3c92fd11e@kernel.org>
+Date:   Fri, 10 Apr 2020 14:38:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200410164418.65808-1-elver@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <202004101328.075568852D@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 06:44:17PM +0200, Marco Elver wrote:
-> Pass string length as returned by scnprintf() to strnstr(), since
-> strnstr() searches exactly len bytes in haystack, even if it contains a
-> NUL-terminator before haystack+len.
+On 4/10/20 2:29 PM, Kees Cook wrote:
+> On Wed, Apr 08, 2020 at 08:57:53PM -0300, Thadeu Lima de Souza Cascardo wrote:
+>> glibc 2.31 calls clock_nanosleep when its nanosleep function is used. So
+>> the restart_syscall fails after that. In order to deal with it, we trace
+>> clock_nanosleep and nanosleep. Then we check for either.
+>>
+>> This works just fine on systems with both glibc 2.30 and glibc 2.31,
+>> whereas it failed before on a system with glibc 2.31.
+>>
+>> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
 > 
-> Signed-off-by: Marco Elver <elver@google.com>
-
-I queued both for testing and review, thank you, Marco!
-
-							Thanx, Paul
-
-> ---
->  kernel/kcsan/report.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
+> Actually, sorry, this should go via Shuah's tree. :) Shuah, do you have
+> anything going Linus's way already for -rc2?
 > 
-> diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-> index ddc18f1224a4..cf41d63dd0cd 100644
-> --- a/kernel/kcsan/report.c
-> +++ b/kernel/kcsan/report.c
-> @@ -192,11 +192,11 @@ skip_report(enum kcsan_value_change value_change, unsigned long top_frame)
->  		 * maintainers.
->  		 */
->  		char buf[64];
-> +		int len = scnprintf(buf, sizeof(buf), "%ps", (void *)top_frame);
->  
-> -		snprintf(buf, sizeof(buf), "%ps", (void *)top_frame);
-> -		if (!strnstr(buf, "rcu_", sizeof(buf)) &&
-> -		    !strnstr(buf, "_rcu", sizeof(buf)) &&
-> -		    !strnstr(buf, "_srcu", sizeof(buf)))
-> +		if (!strnstr(buf, "rcu_", len) &&
-> +		    !strnstr(buf, "_rcu", len) &&
-> +		    !strnstr(buf, "_srcu", len))
->  			return true;
->  	}
->  
-> @@ -262,15 +262,15 @@ static const char *get_thread_desc(int task_id)
->  static int get_stack_skipnr(const unsigned long stack_entries[], int num_entries)
->  {
->  	char buf[64];
-> +	int len;
->  	int skip = 0;
->  
->  	for (; skip < num_entries; ++skip) {
-> -		snprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skip]);
-> -		if (!strnstr(buf, "csan_", sizeof(buf)) &&
-> -		    !strnstr(buf, "tsan_", sizeof(buf)) &&
-> -		    !strnstr(buf, "_once_size", sizeof(buf))) {
-> +		len = scnprintf(buf, sizeof(buf), "%ps", (void *)stack_entries[skip]);
-> +		if (!strnstr(buf, "csan_", len) &&
-> +		    !strnstr(buf, "tsan_", len) &&
-> +		    !strnstr(buf, "_once_size", len))
->  			break;
-> -		}
->  	}
->  	return skip;
->  }
-> -- 
-> 2.26.0.110.g2183baf09c-goog
+> Acked-by: Kees Cook <keescook@chromium.org>
 > 
+
+I have a few patches for rc2. I will pick this up.
+
+thanks,
+-- Shuah
