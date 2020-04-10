@@ -2,199 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DE61A482B
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 18:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2925C1A4801
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 17:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbgDJQBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 12:01:11 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:61041 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726678AbgDJQAt (ORCPT
+        id S1726663AbgDJPzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 11:55:49 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:33756 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726080AbgDJPzs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 12:00:49 -0400
-Received: from 185.80.35.16 (185.80.35.16) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id a6c6ebd28b772ae9; Fri, 10 Apr 2020 18:00:47 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans De Goede <hdegoede@redhat.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Subject: [PATCH 4/7] PM: sleep: core: Rename dev_pm_may_skip_resume()
-Date:   Fri, 10 Apr 2020 17:51:35 +0200
-Message-ID: <3171765.oZItDzeFuC@kreacher>
-In-Reply-To: <1888197.j9z7NJ8yPn@kreacher>
-References: <1888197.j9z7NJ8yPn@kreacher>
+        Fri, 10 Apr 2020 11:55:48 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h6so1677886lfc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 08:55:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wu3QFPy2u02irBlE9rfNz4x/NqhgeVrVQTYnGJ11NYo=;
+        b=uS8y2cKR1FfXqahoaPTcszOGRTwbPpTELgbZQoR3u9B7Lvyac8wFhWrptev/dAJMiw
+         53OCXKiazqb+yZob4y0e9GoKGvdfP3GL5wTS4Rux8cvLKFEKoMcO0JdQuf8Zc3DWCZDQ
+         ruu1L/FSPpqTT4+TjcyWnaZYAKvyEkJtjyRvEh47at78e20FWiFn8GB56b3IuZ4aAjIF
+         BDj2L/LTNuCbjJAXxPH4O6B60kmKca6zwASadExwJTNZeN/YqcUSyR+hlUPp3e0JMVYn
+         rd1qvhjvh75W7MIHhdXR7Lf4JKrRs5RgsnR4bF6NZslbOIbULzx8/+CLEPG4982Oqknn
+         O50A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wu3QFPy2u02irBlE9rfNz4x/NqhgeVrVQTYnGJ11NYo=;
+        b=GWVy4ik4C+yUvmOUy5NquOUQ2rA7j4hMU0OzxLd+3g5iv4EezKA+1pyH2XbT47VK2s
+         sgJEvAESwxU3E2Ly7cUMKqBnV2teEspGxz4n8o+8UYdTd18jVENtbfmEvg8jW3pdsUpQ
+         N9FbQI3XVm8hpk8rFSGqK9jdQG9Sa3dpfJJ07aXAazqn2TXjforMIBp6+WGIQDPGI+AK
+         m2H+SN+WOBhxdbI//9u+bWlmuuivH+lZRb60wazblEtJ94LqfCckRg3n5vOtwX/wVHa1
+         GE18Kbn8/1vJWVzgZWEv5Ibmi2JfEJILnXD4/IZjaVnXxTTdWz0P5MyJwZZkYU9LrTsQ
+         Y9Nw==
+X-Gm-Message-State: AGi0PuZL+7Huz35UonmTa4l+awHFvWZVtJvKK5SCjdcqRmHOvYTInUOk
+        vjpKsKSEl27Cs2JCF9Y4mDwhoQ==
+X-Google-Smtp-Source: APiQypKqhD0biYJV7Fu66NPT1AkQUwiqPCbO74jBZ9Rt7b+f2jDah+wGcy+H7J0rwD1hhJH2g1ANsw==
+X-Received: by 2002:ac2:5611:: with SMTP id v17mr2990420lfd.137.1586534144915;
+        Fri, 10 Apr 2020 08:55:44 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id c22sm1285409ljh.66.2020.04.10.08.55.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 Apr 2020 08:55:44 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 4C005102110; Fri, 10 Apr 2020 18:55:43 +0300 (+03)
+Date:   Fri, 10 Apr 2020 18:55:43 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCHv2 5/8] khugepaged: Allow to callapse a page shared across
+ fork
+Message-ID: <20200410155543.i66uz6pbynfvkhak@box>
+References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
+ <20200403112928.19742-6-kirill.shutemov@linux.intel.com>
+ <5a57635b-ed75-8f09-6f0c-5623f557fc55@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5a57635b-ed75-8f09-6f0c-5623f557fc55@nvidia.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+On Mon, Apr 06, 2020 at 02:30:07PM -0700, John Hubbard wrote:
+> On 4/3/20 4:29 AM, Kirill A. Shutemov wrote:
+> > The page can be included into collapse as long as it doesn't have extra
+> > pins (from GUP or otherwise).
+> 
+> Hi Kirill,
+> 
+> s/callapse/collapse/ in the Subject line.
+> 
+> The commit message should mention that you're also removing a
+> VM_BUG_ON_PAGE().
+> 
+> > 
+> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> > ---
+> >   mm/khugepaged.c | 25 ++++++++++++++-----------
+> >   1 file changed, 14 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > index 57ff287caf6b..1e7e6543ebca 100644
+> > --- a/mm/khugepaged.c
+> > +++ b/mm/khugepaged.c
+> > @@ -581,11 +581,18 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
+> >   		}
+> >   		/*
+> > -		 * cannot use mapcount: can't collapse if there's a gup pin.
+> > -		 * The page must only be referenced by the scanned process
+> > -		 * and page swap cache.
+> > +		 * Check if the page has any GUP (or other external) pins.
+> > +		 *
+> > +		 * The page table that maps the page has been already unlinked
+> > +		 * from the page table tree and this process cannot get
+> > +		 * additinal pin on the page.
+> 
+> 
+> I'd recommend this wording instead, for the last two lines:
+> 
+> 		 * from the page table tree. Therefore, this page will not
+> 		 * normally receive any additional pins.
 
-The name of dev_pm_may_skip_resume() may be easily confused with the
-power.may_skip_resume flag which is not checked by that function, so
-rename the former as dev_pm_skip_resume().
+I guess I'm not clear enough.
 
-No functional impact.
+The point is that the page cannot get any new pins from this process. It
+can get new pin from other process after the check. But it is fine because
+if the page is mapped multiple times it has to be write-protected (CoW
+after fork()) and we can rely that page's content will not change under
+us.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- Documentation/power/pci.rst | 2 +-
- drivers/acpi/acpi_lpss.c    | 4 ++--
- drivers/acpi/device_pm.c    | 4 ++--
- drivers/base/power/main.c   | 8 ++++----
- drivers/pci/pci-driver.c    | 4 ++--
- include/linux/pm.h          | 2 +-
- 6 files changed, 12 insertions(+), 12 deletions(-)
+Does it make sense? Wording suggestions are welcome.
 
-diff --git a/Documentation/power/pci.rst b/Documentation/power/pci.rst
-index a39b2461919a..aa1c7fce6cd0 100644
---- a/Documentation/power/pci.rst
-+++ b/Documentation/power/pci.rst
-@@ -1034,7 +1034,7 @@ device to be left in suspend after system-wide transitions to the working state.
- This flag is checked by the PM core, but the PCI bus type informs the PM core
- which devices may be left in suspend from its perspective (that happens during
- the "noirq" phase of system-wide suspend and analogous transitions) and next it
--uses the dev_pm_may_skip_resume() helper to decide whether or not to return from
-+uses the dev_pm_skip_resume() helper to decide whether or not to return from
- pci_pm_resume_noirq() and pci_pm_resume_early() upfront.
- 
- 3.2. Device Runtime Power Management
-diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-index c4a84df6cc98..7632df1a5be3 100644
---- a/drivers/acpi/acpi_lpss.c
-+++ b/drivers/acpi/acpi_lpss.c
-@@ -1093,7 +1093,7 @@ static int acpi_lpss_resume_early(struct device *dev)
- 	if (pdata->dev_desc->resume_from_noirq)
- 		return 0;
- 
--	if (dev_pm_may_skip_resume(dev))
-+	if (dev_pm_skip_resume(dev))
- 		return 0;
- 
- 	return acpi_lpss_do_resume_early(dev);
-@@ -1105,7 +1105,7 @@ static int acpi_lpss_resume_noirq(struct device *dev)
- 	int ret;
- 
- 	/* Follow acpi_subsys_resume_noirq(). */
--	if (dev_pm_may_skip_resume(dev))
-+	if (dev_pm_skip_resume(dev))
- 		return 0;
- 
- 	ret = pm_generic_resume_noirq(dev);
-diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-index 399684085f85..b9a3ade17587 100644
---- a/drivers/acpi/device_pm.c
-+++ b/drivers/acpi/device_pm.c
-@@ -1129,7 +1129,7 @@ EXPORT_SYMBOL_GPL(acpi_subsys_suspend_noirq);
-  */
- static int acpi_subsys_resume_noirq(struct device *dev)
- {
--	if (dev_pm_may_skip_resume(dev))
-+	if (dev_pm_skip_resume(dev))
- 		return 0;
- 
- 	return pm_generic_resume_noirq(dev);
-@@ -1147,7 +1147,7 @@ static int acpi_subsys_resume_early(struct device *dev)
- {
- 	int ret;
- 
--	if (dev_pm_may_skip_resume(dev))
-+	if (dev_pm_skip_resume(dev))
- 		return 0;
- 
- 	ret = acpi_dev_resume(dev);
-diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index 66f205d7c7a3..21187ee37b22 100644
---- a/drivers/base/power/main.c
-+++ b/drivers/base/power/main.c
-@@ -562,7 +562,7 @@ static void dpm_watchdog_clear(struct dpm_watchdog *wd)
- /*------------------------- Resume routines -------------------------*/
- 
- /**
-- * dev_pm_may_skip_resume - System-wide device resume optimization check.
-+ * dev_pm_skip_resume - System-wide device resume optimization check.
-  * @dev: Target device.
-  *
-  * Driver-level resume callbacks can be skipped for @dev if its configuration is
-@@ -574,7 +574,7 @@ static void dpm_watchdog_clear(struct dpm_watchdog *wd)
-  * device remains in runtime suspend), so running the "thaw" callbacks for it
-  * may be invalid.
-  */
--bool dev_pm_may_skip_resume(struct device *dev)
-+bool dev_pm_skip_resume(struct device *dev)
- {
- 	return (!dev->power.must_resume &&
- 		pm_transition.event != PM_EVENT_RESTORE) ||
-@@ -610,7 +610,7 @@ static int device_resume_noirq(struct device *dev, pm_message_t state, bool asyn
- 	if (!dpm_wait_for_superior(dev, async))
- 		goto Out;
- 
--	skip_resume = dev_pm_may_skip_resume(dev);
-+	skip_resume = dev_pm_skip_resume(dev);
- 	/*
- 	 * If the driver callback is skipped below or by the middle layer
- 	 * callback and device_resume_early() also skips the driver callback for
-@@ -796,7 +796,7 @@ static int device_resume_early(struct device *dev, pm_message_t state, bool asyn
- 	if (callback)
- 		goto Run;
- 
--	if (dev_pm_may_skip_resume(dev))
-+	if (dev_pm_skip_resume(dev))
- 		goto Skip;
- 
- 	if (dev->driver && dev->driver->pm) {
-diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-index 685fbf044911..ff2fc93e7a3b 100644
---- a/drivers/pci/pci-driver.c
-+++ b/drivers/pci/pci-driver.c
-@@ -893,7 +893,7 @@ static int pci_pm_resume_noirq(struct device *dev)
- 	pci_power_t prev_state = pci_dev->current_state;
- 	bool skip_bus_pm = pci_dev->skip_bus_pm;
- 
--	if (dev_pm_may_skip_resume(dev))
-+	if (dev_pm_skip_resume(dev))
- 		return 0;
- 
- 	/*
-@@ -922,7 +922,7 @@ static int pci_pm_resume_noirq(struct device *dev)
- 
- static int pci_pm_resume_early(struct device *dev)
- {
--	if (dev_pm_may_skip_resume(dev))
-+	if (dev_pm_skip_resume(dev))
- 		return 0;
- 
- 	return pm_generic_resume_early(dev);
-diff --git a/include/linux/pm.h b/include/linux/pm.h
-index e057d1fa2469..d89b7099f241 100644
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -758,7 +758,7 @@ extern int pm_generic_poweroff_late(struct device *dev);
- extern int pm_generic_poweroff(struct device *dev);
- extern void pm_generic_complete(struct device *dev);
- 
--extern bool dev_pm_may_skip_resume(struct device *dev);
-+extern bool dev_pm_skip_resume(struct device *dev);
- extern bool dev_pm_smart_suspend_and_suspended(struct device *dev);
- 
- #else /* !CONFIG_PM_SLEEP */
+> > +		 *
+> > +		 * New pins can come later if the page is shared across fork,
+> > +		 * but not for the this process. It is fine. The other process
+> > +		 * cannot write to the page, only trigger CoW.
+> >   		 */
+> > -		if (page_count(page) != 1 + PageSwapCache(page)) {
+> > +		if (total_mapcount(page) + PageSwapCache(page) !=
+> > +				page_count(page)) {
+> 
+> 
+> I think it's time to put that logic ( "does this page have any extra references")
+> into a small function. It's already duplicated once below. And the documentation is
+> duplicated as well.
+
+Fair enough.
+
+But comments have to stay where they are. Because the context is
+different. The first time we check speculatively, before the page table is
+unlinked from the page table tree and this check is inherintly racy.
+Unlike the second one.
+
+> I took a quick peek at this patch because, after adding pin_user_pages*() APIs earlier
+> to complement get_user_pages*(), I had a moment of doubt here: what if I'd done  it in
+> a way that required additional logic here? Fortunately, that's not the case: all
+> pin_user_pages() calls on huge pages take a "primary/real" refcount, in addition
+> to scribbling into the compound_pincount_ptr() area. whew. :)
+> 
+> 
+> 
+> >   			unlock_page(page);
+> >   			result = SCAN_PAGE_COUNT;
+> >   			goto out;
+> > @@ -672,7 +679,6 @@ static void __collapse_huge_page_copy(pte_t *pte, struct page *page,
+> >   		} else {
+> >   			src_page = pte_page(pteval);
+> >   			copy_user_highpage(page, src_page, address, vma);
+> > -			VM_BUG_ON_PAGE(page_mapcount(src_page) != 1, src_page);
+> >   			release_pte_page(src_page);
+> >   			/*
+> >   			 * ptl mostly unnecessary, but preempt has to
+> > @@ -1206,12 +1212,9 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
+> >   			goto out_unmap;
+> >   		}
+> > -		/*
+> > -		 * cannot use mapcount: can't collapse if there's a gup pin.
+> > -		 * The page must only be referenced by the scanned process
+> > -		 * and page swap cache.
+> > -		 */
+> > -		if (page_count(page) != 1 + PageSwapCache(page)) {
+> > +		/* Check if the page has any GUP (or other external) pins */
+> > +		if (total_mapcount(page) + PageSwapCache(page) !=
+> > +				page_count(page)) {>   			result = SCAN_PAGE_COUNT;
+> >   			goto out_unmap;
+> >   		}
+> > 
+> 
+> 
+> 
+> thanks,
+> -- 
+> John Hubbard
+> NVIDIA
+
 -- 
-2.16.4
-
-
-
-
+ Kirill A. Shutemov
