@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F641A424C
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 07:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850ED1A425E
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 08:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgDJFps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 01:45:48 -0400
-Received: from verein.lst.de ([213.95.11.211]:49645 "EHLO verein.lst.de"
+        id S1725914AbgDJGHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 02:07:14 -0400
+Received: from gofer.mess.org ([88.97.38.141]:57043 "EHLO gofer.mess.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgDJFpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 01:45:47 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D2EFD68C4E; Fri, 10 Apr 2020 07:45:44 +0200 (CEST)
-Date:   Fri, 10 Apr 2020 07:45:44 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-block@vger.kernel.org, linux-s390@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: s390 boot woe due to "block: fix busy device checking in
- blk_drop_partitions"
-Message-ID: <20200410054544.GA17923@lst.de>
-References: <AD16A450-794F-4EEA-A7BF-42452F18294A@lca.pw>
+        id S1725776AbgDJGHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 02:07:13 -0400
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 49514C63A8; Fri, 10 Apr 2020 07:07:12 +0100 (BST)
+Date:   Fri, 10 Apr 2020 07:07:12 +0100
+From:   Sean Young <sean@mess.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Mohammad Rasim <mohammad.rasim96@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 5.6 11/68] media: arm64: dts: amlogic: add
+ rc-videostrong-kii-pro keymap
+Message-ID: <20200410060712.GA13759@gofer.mess.org>
+References: <20200410034634.7731-1-sashal@kernel.org>
+ <20200410034634.7731-11-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <AD16A450-794F-4EEA-A7BF-42452F18294A@lca.pw>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20200410034634.7731-11-sashal@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please try this patch:
+On Thu, Apr 09, 2020 at 11:45:36PM -0400, Sasha Levin wrote:
+> From: Mohammad Rasim <mohammad.rasim96@gmail.com>
+> 
+> [ Upstream commit 806d06161af045dba29f3c7747550c93b2ea3ca9 ]
+> 
+> videostrong kii pro comes with a nec rc, add the keymap to the dts
+> 
+> Signed-off-by: Mohammad Rasim <mohammad.rasim96@gmail.com>
+> Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+> Signed-off-by: Sean Young <sean@mess.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts
+> index 2f1f829450a29..6c9cc45fb417e 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-kii-pro.dts
+> @@ -76,3 +76,7 @@
+>  		};
+>  	};
+>  };
+> +
+> +&ir {
+> +	linux,rc-map-name = "rc-videostrong-kii-pro";
+> +};
 
----
-From f42fb98cc627f9b960fd5b9a3a229da5c5dcf54a Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Fri, 10 Apr 2020 07:14:13 +0200
-Subject: block: fix busy device checking in blk_drop_partitions again
+The will need the keymap itself as well. It was added in commit
+30defecb98400575349a7d32f0526e1dc42ea83e.
 
-The previous fix had an off by one in the bd_openers checking, counting
-the callers blkdev_get.
 
-Fixes: d3ef5536274f ("block: fix busy device checking in blk_drop_partitions")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- block/partitions/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index 1a0a829d8416..bc1ded1331b1 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -496,7 +496,7 @@ int blk_drop_partitions(struct gendisk *disk, struct block_device *bdev)
- 
- 	if (!disk_part_scan_enabled(disk))
- 		return 0;
--	if (bdev->bd_part_count || bdev->bd_openers)
-+	if (bdev->bd_part_count || bdev->bd_openers > 1)
- 		return -EBUSY;
- 	res = invalidate_partition(disk, 0);
- 	if (res)
--- 
-2.25.1
-
+Sean
