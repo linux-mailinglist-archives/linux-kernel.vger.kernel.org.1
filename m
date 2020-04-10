@@ -2,102 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5EE1A44EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 12:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDC3F1A44FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 12:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbgDJKDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 06:03:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:60105 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725861AbgDJKDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 06:03:03 -0400
-Received: from mail-wm1-f71.google.com ([209.85.128.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1jMqV4-0003SV-Aq
-        for linux-kernel@vger.kernel.org; Fri, 10 Apr 2020 10:03:02 +0000
-Received: by mail-wm1-f71.google.com with SMTP id f8so640841wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 03:03:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Z3P5ra7nIgSjErTUHVmG2gVsvgQADuW5sfZ4PtTp618=;
-        b=GxWkhB7Wy3Igiw72UkP/nkR3jq7za2kszsrQbmj7XiWYv+0Ks8cQrhS1ovGSbs9iq8
-         NQAuP8vwlPzU2OXvBNH6qihzfUc0msP+FxRulgWSwTfVOvKMfwvkdYCmZx4OzZlWbyjc
-         7aDwOlk/l1XtsE6UE1b+WoNQGegT3ccHqroiKLwfMln6EmJjqjmttuTkpmh9ss7n3Yck
-         rZyBn1nUS6Aw+g9a4W239JaYFZhl7yC24HWnGJcRYE9v3AKu66G/kkESdBmZ4aDnVOcN
-         KhztPdwtKSizOYkXy7mn3gwdzqgcX5GwH5mEwpwUNwF8a2GDYjk9+fymcnX9xqqcuOZC
-         GsyA==
-X-Gm-Message-State: AGi0PubGlsb8qfDZoVoJcYaWDbf18FfMomsW8ZkqOJyMhaApca+3hYFZ
-        XjRs4uPJ3N4HYS9lv3YNFL9uDSWYBnZlf/PL6ELuWO9bH6iIT4lNbJNSJPviDYABVnd07KreDt0
-        mjC2DlM4tq3j2JAkfJHdH2U9XSKC6bZ60tnKeDltmRQ==
-X-Received: by 2002:a1c:6787:: with SMTP id b129mr4574991wmc.165.1586512981979;
-        Fri, 10 Apr 2020 03:03:01 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJk4lRxcFGUzlhlWkYg2asplSW+TWRRfdgc31OMNALo4BRjm4RdCfBoPSErXWDJWfmQ9WWwhQ==
-X-Received: by 2002:a1c:6787:: with SMTP id b129mr4574957wmc.165.1586512981640;
-        Fri, 10 Apr 2020 03:03:01 -0700 (PDT)
-Received: from localhost (host123-127-dynamic.36-79-r.retail.telecomitalia.it. [79.36.127.123])
-        by smtp.gmail.com with ESMTPSA id k84sm2243972wmk.2.2020.04.10.03.03.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 03:03:01 -0700 (PDT)
-Date:   Fri, 10 Apr 2020 12:02:59 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] kselftest/runner: allow to properly deliver signals to tests
-Message-ID: <20200410100259.GA457752@xps-13>
+        id S1726143AbgDJKHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 06:07:34 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:48524 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725893AbgDJKHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 10 Apr 2020 06:07:34 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B0C7AB7B63F072865E4C;
+        Fri, 10 Apr 2020 18:07:32 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 10 Apr 2020 18:07:23 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix to handle error path of f2fs_ra_meta_pages()
+Date:   Fri, 10 Apr 2020 18:07:20 +0800
+Message-ID: <20200410100720.65723-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.18.0.rc1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While running seccomp_bpf, kill_after_ptrace() gets stuck if we run it
-via /usr/bin/timeout (that is the default), until the timeout expires.
+In f2fs_ra_meta_pages(), if f2fs_submit_page_bio() failed, we need to
+unlock page, fix it.
 
-This is because /usr/bin/timeout is preventing to properly deliver
-signals to ptrace'd children (SIGSYS in this case).
-
-This problem can be easily reproduced by running:
-
- $ sudo make TARGETS=seccomp kselftest
- ...
-
- # [ RUN      ] TRACE_syscall.skip_a#
- not ok 1 selftests: seccomp: seccomp_bpf # TIMEOUT
-
-The test is hanging at this point until the timeout expires and then it
-reports the timeout error.
-
-Prevent this problem by passing --foreground to /usr/bin/timeout,
-allowing to properly deliver signals to children processes.
-
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
 ---
- tools/testing/selftests/kselftest/runner.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/f2fs/checkpoint.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-index e84d901f8567..676b3a8b114d 100644
---- a/tools/testing/selftests/kselftest/runner.sh
-+++ b/tools/testing/selftests/kselftest/runner.sh
-@@ -33,7 +33,7 @@ tap_timeout()
- {
- 	# Make sure tests will time out if utility is available.
- 	if [ -x /usr/bin/timeout ] ; then
--		/usr/bin/timeout "$kselftest_timeout" "$1"
-+		/usr/bin/timeout --foreground "$kselftest_timeout" "$1"
- 	else
- 		"$1"
- 	fi
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 852890b72d6a..6be357c8e002 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -220,6 +220,7 @@ int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
+ 		.is_por = (type == META_POR),
+ 	};
+ 	struct blk_plug plug;
++	int err;
+ 
+ 	if (unlikely(type == META_POR))
+ 		fio.op_flags &= ~REQ_META;
+@@ -263,8 +264,8 @@ int f2fs_ra_meta_pages(struct f2fs_sb_info *sbi, block_t start, int nrpages,
+ 		}
+ 
+ 		fio.page = page;
+-		f2fs_submit_page_bio(&fio);
+-		f2fs_put_page(page, 0);
++		err = f2fs_submit_page_bio(&fio);
++		f2fs_put_page(page, err ? 1 : 0);
+ 	}
+ out:
+ 	blk_finish_plug(&plug);
 -- 
-2.25.1
+2.18.0.rc1
 
