@@ -2,55 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B67C71A4907
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6511A4965
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:41:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgDJRgq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 10 Apr 2020 13:36:46 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:38400 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbgDJRgp (ORCPT
+        id S1726669AbgDJRlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 13:41:17 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:38333 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726177AbgDJRlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 13:36:45 -0400
-Received: from marcel-macbook.fritz.box (p4FEFC5A7.dip0.t-ipconnect.de [79.239.197.167])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 40251CED0F;
-        Fri, 10 Apr 2020 19:46:20 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: [PATCH v2 1/1] Bluetooth: btrtl: Add support for RTL8761B
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200410145420.108868-2-sztsian@gmail.com>
-Date:   Fri, 10 Apr 2020 19:36:44 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, icenowy@aosc.io
-Content-Transfer-Encoding: 8BIT
-Message-Id: <5CD9EBAA-44A6-4DFF-870E-4F862FB7A60E@holtmann.org>
-References: <20200410145420.108868-1-sztsian@gmail.com>
- <20200410145420.108868-2-sztsian@gmail.com>
-To:     sztsian@gmail.com
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
+        Fri, 10 Apr 2020 13:41:16 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 445DBFF810;
+        Fri, 10 Apr 2020 17:41:14 +0000 (UTC)
+Date:   Fri, 10 Apr 2020 19:41:13 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     a.zummo@towertech.it, robh+dt@kernel.org, mark.rutland@arm.com,
+        nicolas.ferre@microchip.com, ludovic.desroches@microchip.com,
+        tglx@linutronix.de, jason@lakedaemon.net, maz@kernel.org,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] rtc: at91sam9: add microchip,sam9x60-rtt
+Message-ID: <20200410174113.GZ3628@piout.net>
+References: <1586536019-12348-1-git-send-email-claudiu.beznea@microchip.com>
+ <1586536019-12348-6-git-send-email-claudiu.beznea@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1586536019-12348-6-git-send-email-claudiu.beznea@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zamir,
+Hi,
 
-> Add new compatible device RTL8761B.
+This patch must come first. Also, the correct prefix is
+dt-bindings: rtc:
+
+On 10/04/2020 19:26:59+0300, Claudiu Beznea wrote:
+> Add microchip,sam9x60-rtt to compatible list.
 > 
-> Signed-off-by: Ziqian SUN (Zamir) <sztsian@gmail.com>
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
-> drivers/bluetooth/btrtl.c | 10 +++++++++-
-> 1 file changed, 9 insertions(+), 1 deletion(-)
+>  Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt b/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt
+> index 6ae79d1843f3..b2f913ff6c69 100644
+> --- a/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt
+> +++ b/Documentation/devicetree/bindings/rtc/atmel,at91sam9-rtc.txt
+> @@ -1,7 +1,7 @@
+>  Atmel AT91SAM9260 Real Time Timer
+>  
+>  Required properties:
+> -- compatible: should be: "atmel,at91sam9260-rtt"
+> +- compatible: should be: "atmel,at91sam9260-rtt" or "microchip,sam9x60-rtt"
 
-can you also please include the content of /sys/kernel/debug/usb/devices for this device in the commit message.
+If you had a fallback on atmel,at91sam9260-rtt, this would make merging
+this series easier as this removes the need for 1/5 and 2/5.
 
-And if you run btmon before plugging it in, I like to see what LE Features of Bluetooth 5.0 this dongle really offers.
+I think 2/5 may be useful in the future but as far as the aic fixup
+is concerned, both IPs are identical.
 
-Regards
+>  - reg: should encode the memory region of the RTT controller
+>  - interrupts: rtt alarm/event interrupt
+>  - clocks: should contain the 32 KHz slow clk that will drive the RTT block.
+> -- 
+> 2.7.4
+> 
 
-Marcel
-
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
