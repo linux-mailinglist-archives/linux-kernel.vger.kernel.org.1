@@ -2,79 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7381A4731
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 16:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7EE41A4711
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 15:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgDJOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 10:12:32 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:48581 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726177AbgDJOMb (ORCPT
+        id S1726680AbgDJNuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 09:50:17 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36437 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726181AbgDJNuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 10:12:31 -0400
-Received: from [5.157.111.77] (port=57222 helo=[192.168.77.62])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jMu2M-004dr7-2a; Fri, 10 Apr 2020 15:49:38 +0200
-Subject: Re: [RFC PATCH v2 2/6] i2c: allow DT nodes without 'compatible'
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-i2c@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org, linux-i3c@lists.infradead.org,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund@ragnatech.se>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Herring <robh@kernel.org>
-References: <20200318150059.21714-1-wsa+renesas@sang-engineering.com>
- <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <11ca7487-ac07-f714-8573-20d1a0040212@lucaceresoli.net>
-Date:   Fri, 10 Apr 2020 15:49:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 10 Apr 2020 09:50:17 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1jMu2x-00080m-2C; Fri, 10 Apr 2020 13:50:15 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: pwc-ctl: remove redundant assignment to variable ret
+Date:   Fri, 10 Apr 2020 14:50:14 +0100
+Message-Id: <20200410135014.26396-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200318150059.21714-3-wsa+renesas@sang-engineering.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Colin Ian King <colin.king@canonical.com>
 
-On 18/03/20 16:00, Wolfram Sang wrote:
-> Sometimes, we have unknown devices in a system and still want to block
-> their address. For that, we allow DT nodes with only a 'reg' property.
-> These devices will be bound to the "dummy" driver but with the name
-> "reserved". That way, we can distinguish them and even hand them over to
-> the "dummy" driver later when they are really requested using
-> i2c_new_ancillary_device().
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Acked-by: Rob Herring <robh@kernel.org>
+The variable ret is being initialized with a value that is never read
+and it is being updated later with a new value.  The initialization is
+redundant and can be removed.
 
-Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/media/usb/pwc/pwc-ctrl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As I said in the reply to v1, I think we should reserve addresses also
-when there is a compatible string but no matching driver, but this is
-another story and can be handled separately.
-
+diff --git a/drivers/media/usb/pwc/pwc-ctrl.c b/drivers/media/usb/pwc/pwc-ctrl.c
+index 315c55927f5c..cff64d872058 100644
+--- a/drivers/media/usb/pwc/pwc-ctrl.c
++++ b/drivers/media/usb/pwc/pwc-ctrl.c
+@@ -523,7 +523,7 @@ int pwc_set_leds(struct pwc_device *pdev, int on_value, int off_value)
+ #ifdef CONFIG_USB_PWC_DEBUG
+ int pwc_get_cmos_sensor(struct pwc_device *pdev, int *sensor)
+ {
+-	int ret = -1, request;
++	int ret, request;
+ 
+ 	if (pdev->type < 675)
+ 		request = SENSOR_TYPE_FORMATTER1;
 -- 
-Luca
+2.25.1
+
