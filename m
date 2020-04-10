@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A6A1A496E
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB8A1A4905
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 19:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726716AbgDJRl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 13:41:58 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:39968 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726142AbgDJRl6 (ORCPT
+        id S1726708AbgDJRgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 13:36:35 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:40866 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbgDJRge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 13:41:58 -0400
-Received: by mail-oi1-f193.google.com with SMTP id a7so1968215oid.7;
-        Fri, 10 Apr 2020 10:41:56 -0700 (PDT)
+        Fri, 10 Apr 2020 13:36:34 -0400
+Received: by mail-ot1-f66.google.com with SMTP id q2so2488335otk.7;
+        Fri, 10 Apr 2020 10:36:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0iuTTuHAKQBLl6wYTyl9B3rSSI6V9IdcCwjtYPwLnRg=;
-        b=gGO/6Xop18l/5MqHN4rGO6fFxI1foVkHiGQoCukidIfXPqbTCsKjkst6pRzbZ4Fpmh
-         ue3EGld4ESrbxFBE0pJPLb8A0URnDOmEa0PjbyzB6K3qEd8/ffotgCQ9VmxJj+DcxTws
-         e8Cpc7bPs+hIt1A+Fgjl7oGERwNw5fYB0KWtBACgbEgAAvUED8IgQRHhBV8yHy05H2eg
-         2ppZWth5fZMLT1kST9hN6FeqUJZ2vNC/iIb7uaDVPMoh2ey7/VOZalnyqX4SAGov1Xn1
-         ba0yRsG3LgBGMz1AmUxPv1L8Kyi3yMe/IxUiX/cJkA95gmQK0XyRv6Xr4WuA2RZGlWdi
-         iYnw==
-X-Gm-Message-State: AGi0PubaH8IxxRq933bmTyUcU97giax+ReXJebeUV18v8nQjnIQPPazL
-        ldWmua58MlBYps2M6lxagWhFEeI=
-X-Google-Smtp-Source: APiQypJG6wzg7b39i/tEaYyjfDn8nBkJ24exIHhxeEzgkKcAtLcxB+Cs60pyg4ubvZSd15mI/BYhPw==
-X-Received: by 2002:aca:7251:: with SMTP id p78mr4240717oic.32.1586540516474;
-        Fri, 10 Apr 2020 10:41:56 -0700 (PDT)
+        bh=kssj1wITYRFq+YYk9S6XmdagGwSQwnZ2pdBZ58b9W2U=;
+        b=umFyUYpLw848vZCa6db7JAOfh4RXh3/Jvlt/FLTvoUUh3Rb3on1+InRe16oSiU7AYN
+         wrMBP2oq++AzlYXXUzbsSY2gtWZq26E6i6oYval66gFggctbWMPAZjck5L8mofqSsWpD
+         v1jLzKpcQi3BMNoOrS2dfHXC0YtCdvP0lfo/IUMorYOyjf1v0jCMPNlD0w5JWnCdQEhy
+         LfyoDDTbq0mZc8M3LXT8w4HoQYq8W9Nm/+k6Rznj3BfXyCXS8DVOf3N6ULVyZIlsA5YA
+         bwpQQIiK/ebyMHnW3hxKPL0T5L7B+yVzCgpg0Uxqpu28qUCBLzRoS+PEDUPfVJS/8mVF
+         736g==
+X-Gm-Message-State: AGi0Pub1Ym/661Hoz1cBu+2Mf3u+ONxcooUDGK/+98tP25Su4/zhd7rB
+        btazZJOqc5PkuP1Y7SvLQw==
+X-Google-Smtp-Source: APiQypJRsXEEAdg3zxrOIYnNN3A/bp6+1SPF81f8l0UyoKWAhK5Elh8UzZPnGRQfKpe/JCDOyYnsdQ==
+X-Received: by 2002:a9d:6ac3:: with SMTP id m3mr4647264otq.175.1586540194370;
+        Fri, 10 Apr 2020 10:36:34 -0700 (PDT)
 Received: from rob-hp-laptop (ip-99-203-29-27.pools.cgn.spcsdns.net. [99.203.29.27])
-        by smtp.gmail.com with ESMTPSA id h10sm1489399otq.47.2020.04.10.10.41.51
+        by smtp.gmail.com with ESMTPSA id o128sm1536880oih.41.2020.04.10.10.36.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 10:41:55 -0700 (PDT)
-Received: (nullmailer pid 6756 invoked by uid 1000);
-        Fri, 10 Apr 2020 17:10:44 -0000
-Date:   Fri, 10 Apr 2020 12:10:44 -0500
+        Fri, 10 Apr 2020 10:36:33 -0700 (PDT)
+Received: (nullmailer pid 7240 invoked by uid 1000);
+        Fri, 10 Apr 2020 17:11:02 -0000
+Date:   Fri, 10 Apr 2020 12:11:02 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Artur =?utf-8?B?xZp3aWdvxYQ=?= <a.swigon@samsung.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 07/22] dt-bindings: memory: tegra30: Add memory client
- IDs
-Message-ID: <20200410171044.GA6675@bogus>
-References: <20200330010904.27643-1-digetx@gmail.com>
- <20200330010904.27643-8-digetx@gmail.com>
+To:     Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Mark Rutland <mark.rutland@arm.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: Re: [PATCH 2/4] dt-bindings: clk: sprd: add mipi_csi_xx clocks for
+ SC9863A
+Message-ID: <20200410171102.GA7186@bogus>
+References: <20200330071451.7899-1-zhang.lyra@gmail.com>
+ <20200330071451.7899-3-zhang.lyra@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200330010904.27643-8-digetx@gmail.com>
+In-Reply-To: <20200330071451.7899-3-zhang.lyra@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Mar 2020 04:08:49 +0300, Dmitry Osipenko wrote:
-> Each memory client have a unique hardware ID, this patch adds these IDs.
+On Mon, 30 Mar 2020 15:14:49 +0800, Chunyan Zhang wrote:
+> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> mipi_csi_xx clocks are used by camera sensors.
+> 
+> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
 > ---
->  include/dt-bindings/memory/tegra30-mc.h | 67 +++++++++++++++++++++++++
->  1 file changed, 67 insertions(+)
+>  Documentation/devicetree/bindings/clock/sprd,sc9863a-clk.yaml | 1 +
+>  1 file changed, 1 insertion(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
