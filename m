@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4E91A4B11
-	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 22:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F52C1A4B19
+	for <lists+linux-kernel@lfdr.de>; Fri, 10 Apr 2020 22:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgDJUUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 16:20:10 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:33191 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726759AbgDJUUF (ORCPT
+        id S1726652AbgDJU0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 10 Apr 2020 16:26:09 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:36869 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgDJU0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 16:20:05 -0400
-Received: by mail-wm1-f65.google.com with SMTP id v8so5485656wma.0;
-        Fri, 10 Apr 2020 13:20:03 -0700 (PDT)
+        Fri, 10 Apr 2020 16:26:09 -0400
+Received: by mail-lj1-f196.google.com with SMTP id r24so3103363ljd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 13:26:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=6QvXfJZlpggMK4ANi6m9pBKzrWALkcbq78l8N8OifPg=;
-        b=ZREyo9VAamNGHEpM0RaThvIV8s6WxHv1ooboukJgXL81fWWwgcZs8q6WmfpVEi4m6+
-         2ROUPGY99aRffzWJaiINTYvm0ITfwANQQxYXuKxFcXrd7Y9R5DLfNguP3Vbdt2dfkvqw
-         P+1HlXK7flzOA5YUeWhmcQZcA0ekVfKJwW6brOa8LbcP2PqFffF0Y4RlghClAyzjQJKc
-         Xz38dGzqggoAd8IBmLoVUi0fEbK2O/BdBkD5bIU4avX4rDoj3i9DaOGMhrVmqADc6J7y
-         pSUVSgd/vLUW0UGhDWhYqBMhR9ijamNAXra8KBu9AJK7VTRgu2/IHAVXsKkocjnCeTha
-         KB0w==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VL5G+feLpx+wDhm+cmewwW7uP4NJGohhURRIHJyNA5g=;
+        b=aIMiwRDsWaUzyY5lHMTHg1j4RJqrDex4FJ60YJcBuy+jRWovody2HZlxK+o2RIqO1S
+         80/xhFpE6dAHEbmgGjIsTUsOachersAnIL8wwBbnEbFh9iwbx60G20XadHndczVNkHr7
+         x3daGlDhxgT25W5BJwOrK6PI6Ue2SzcK/l8kA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=6QvXfJZlpggMK4ANi6m9pBKzrWALkcbq78l8N8OifPg=;
-        b=jCq5J9SrPBXrn75VH3Td8LHr/dOy54K1V+nmKvWTCl6H7YZ5MBS+b4JoAxEhp4dWEw
-         UwrVtACRTqf1hBFsccQ4iNseaMUXSEt/9XZfHuC/7LTwhQZQ2FCreMbm1wbnwRSs2HrX
-         eWej7W61QEz3NcvEDkDqdbaky3vcwCtjFk1pEZt5fv+ddymyh42dpE7Nkxv0torAJvFp
-         nbRpzJ4DHwYZqm4HNolmh2uhIT9pRkGmAUBIarBBg3RbM8l8xlrExQ/4e36IwbLrQPNC
-         z5Rni6wAQqGhOwzw4r4N1c/oCYUry4goZSU1zXCCyqTGO9KeFLD1b0RRiXto9fqdizoL
-         qkxw==
-X-Gm-Message-State: AGi0PuYLjsGqQavhBOFu1pK1kPND7Tn0gbAFdd2hFtmQ1XQmscGnDR+p
-        vtD60kjgU9ohyn/06c1XNn9mGYpOtYQ=
-X-Google-Smtp-Source: APiQypIOjRvoPTITCeRplqz25ybqmtiKlMNHbnLrVW5teKaW+xj8O9sZrrYB3gfYPHVk32XR8fZKgw==
-X-Received: by 2002:a1c:8084:: with SMTP id b126mr6494234wmd.135.1586550003241;
-        Fri, 10 Apr 2020 13:20:03 -0700 (PDT)
-Received: from localhost.localdomain (p5B3F6388.dip0.t-ipconnect.de. [91.63.99.136])
-        by smtp.gmail.com with ESMTPSA id n11sm4405187wrg.72.2020.04.10.13.20.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2020 13:20:02 -0700 (PDT)
-From:   Saravanan Sekar <sravanhome@gmail.com>
-To:     lee.jones@linaro.org, andy.shevchenko@gmail.com,
-        robh+dt@kernel.org, jic23@kernel.org, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, sre@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-pm@vger.kernel.org,
-        Saravanan Sekar <sravanhome@gmail.com>
-Subject: [PATCH v7 5/5] MAINTAINERS: Add entry for mp2629 Battery Charger driver
-Date:   Fri, 10 Apr 2020 22:19:48 +0200
-Message-Id: <20200410201948.1293-6-sravanhome@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200410201948.1293-1-sravanhome@gmail.com>
-References: <20200410201948.1293-1-sravanhome@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VL5G+feLpx+wDhm+cmewwW7uP4NJGohhURRIHJyNA5g=;
+        b=q0BItLLRgAt1OXHThXFCvw/0aM7F8su6U1Aayle7UnXUdc6MBdbv/Ekjq5IICRzkRd
+         uyQ7OEL7hOCnxR+Gn15p58aUL581at+2Kbxh2l26TYIxF0Atp4kTdPfFo+jW9awFxOhW
+         W86vRAgbD10xyvviUr7PytGSgwq75wM8HOB6ahUY/B0mSMRTDoCb8mekMHsm94Oju7BU
+         RimW8+Vlo5z6yyIQBWAEntK6PjcHzohn5rRtEwEE2cKSsyJnFGVlVu2q6eJil7YiwQgy
+         HUopStJO4ywyiZR11hUjZIsK9rqI8aC/PxEOmaNHo4oHxa/US/NSo9vtWp/JL2sx+Y/v
+         VJnA==
+X-Gm-Message-State: AGi0Puap3PbV9dPWWVGJQpC4WWVCjmUQU+IpJO+wIwuQ3BKVHFYNdbaV
+        PhNDqDZQ73UlbgSnDUF3Wrr+T09Bq9g=
+X-Google-Smtp-Source: APiQypLmycSzU09OveMAoaN3E7qGET3QfcGT8w4rAaB/cQzczJJFAKwrF5qhJVhfcIQNpmY9g+nqeQ==
+X-Received: by 2002:a2e:3612:: with SMTP id d18mr4047484lja.97.1586550366019;
+        Fri, 10 Apr 2020 13:26:06 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id a14sm1716305ljn.60.2020.04.10.13.26.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 Apr 2020 13:26:04 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id m19so2137916lfq.13
+        for <linux-kernel@vger.kernel.org>; Fri, 10 Apr 2020 13:26:03 -0700 (PDT)
+X-Received: by 2002:a05:6512:14a:: with SMTP id m10mr3550865lfo.152.1586550363330;
+ Fri, 10 Apr 2020 13:26:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200407072047.GA18532@amd.ucw.cz> <158624426770.4794.6070200474948860768@build.alporthouse.com>
+ <20200407074841.GB18673@amd.ucw.cz>
+In-Reply-To: <20200407074841.GB18673@amd.ucw.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 10 Apr 2020 13:25:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wixvbCie+EQ-vTPdyrzmdopM_BQc=uetneuSSa7PtCt2g@mail.gmail.com>
+Message-ID: <CAHk-=wixvbCie+EQ-vTPdyrzmdopM_BQc=uetneuSSa7PtCt2g@mail.gmail.com>
+Subject: Re: Linus, please revert 7dc8f11437: regression in 5.7-rc0, hangs
+ while attempting to run X
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Dave Airlie <airlied@redhat.com>,
+        intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        matthew.auld@intel.com, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Anvin <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MAINTAINERS entry for Monolithic Power Systems mp2629 Charger driver.
+On Tue, Apr 7, 2020 at 12:48 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> >
+> > Beyond the fix already submitted?
+>
+> I did not get that one, can I have a pointer?
 
-Signed-off-by: Saravanan Sekar <sravanhome@gmail.com>
----
- MAINTAINERS | 5 +++++
- 1 file changed, 5 insertions(+)
+What's the status of this one?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 32a95d162f06..0f82d5a7a614 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11358,10 +11358,15 @@ F:	drivers/tty/mxser.*
- MONOLITHIC POWER SYSTEM PMIC DRIVER
- M:	Saravanan Sekar <sravanhome@gmail.com>
- S:	Maintained
-+F:	Documentation/devicetree/bindings/mfd/mps,mp2629.yaml
- F:	Documentation/devicetree/bindings/regulator/mps,mp*.yaml
-+F:	drivers/iio/adc/mp2629_adc.c
-+F:	drivers/mfd/mp2629.c
-+F:	drivers/power/supply/mp2629_charger.c
- F:	drivers/regulator/mp5416.c
- F:	drivers/regulator/mpq7920.c
- F:	drivers/regulator/mpq7920.h
-+F:	include/linux/mfd/mp2629.h
- 
- MR800 AVERMEDIA USB FM RADIO DRIVER
- M:	Alexey Klimov <klimov.linux@gmail.com>
--- 
-2.17.1
+I'm assuming the fix is commit 721017cf4bd8 ("drm/i915/gem: Ignore
+readonly failures when updating relics"), but didn't see a reply to
+the query or a confirmation of things working..
 
+Btw, Chris, that __put_user() not testing the error should at least
+have a comment. We don't have a working "__must_check" for those
+things (because they are subtle macros, not functions), but if we did,
+we'd get a compiler warning for not checking the error value.
+
+            Linus
