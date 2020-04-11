@@ -2,90 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6483C1A5347
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 20:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F601A535C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 20:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgDKSV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 14:21:29 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:43370 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726129AbgDKSV2 (ORCPT
+        id S1726695AbgDKS2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 14:28:15 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55420 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgDKS2P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 14:21:28 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id D8BA18030786;
-        Sat, 11 Apr 2020 18:21:26 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id jxLEWrmPJugI; Sat, 11 Apr 2020 21:21:26 +0300 (MSK)
-Date:   Sat, 11 Apr 2020 21:21:59 +0300
-From:   Sergey Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Rob Herring <robh@kernel.org>
-CC:     Vinod Koul <vkoul@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        <dmaengine@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/5] dt-bindings: dma: dw: Add max burst transaction
- length property bindings
-Message-ID: <20200411182159.fjjazqn6jjl3icep@ubsrv2.baikal.int>
-References: <20200306131035.10937-1-Sergey.Semin@baikalelectronics.ru>
- <20200306131049.37EDD8030708@mail.baikalelectronics.ru>
- <20200312213330.GA30463@bogus>
+        Sat, 11 Apr 2020 14:28:15 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 15EB81C6385; Sat, 11 Apr 2020 20:28:14 +0200 (CEST)
+Date:   Sat, 11 Apr 2020 20:28:13 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Qiujun Huang <hqjagain@gmail.com>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        syzbot+cea71eec5d6de256d54d@syzkaller.appspotmail.com
+Subject: Re: [PATCH 4.19 03/54] sctp: fix refcount bug in sctp_wfree
+Message-ID: <20200411182813.GA18221@duo.ucw.cz>
+References: <20200411115508.284500414@linuxfoundation.org>
+ <20200411115508.593027768@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
 Content-Disposition: inline
-In-Reply-To: <20200312213330.GA30463@bogus>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200411115508.593027768@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 04:33:30PM -0500, Rob Herring wrote:
-> On Fri, Mar 06, 2020 at 04:10:31PM +0300, Sergey.Semin@baikalelectronics.ru wrote:
-> > From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > This array property is used to indicate the maximum burst transaction
-> > length supported by each DMA channel.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Cc: Paul Burton <paulburton@kernel.org>
-> > Cc: Ralf Baechle <ralf@linux-mips.org>
-> > ---
-> >  .../devicetree/bindings/dma/snps,dma-spear1340.yaml  | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
-> > index d7f9383ceb8f..308ec6482064 100644
-> > --- a/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
-> > +++ b/Documentation/devicetree/bindings/dma/snps,dma-spear1340.yaml
-> > @@ -126,6 +126,18 @@ properties:
-> >            enum: [0, 1]
-> >            default: 0
-> >  
-> > +  snps,max-burst-len:
-> > +    description: |
-> > +      Maximum length of burst transactions supported by hardware.
-> > +      It's an array property with one cell per channel in units of
-> > +      CTLx register SRC_TR_WIDTH/DST_TR_WIDTH field.
-> > +    allOf:
-> > +      - $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +      - maxItems: 8
-> > +        items:
-> > +          enum: [4, 8, 16, 32, 64, 128, 256]
-> > +          default: 0
-> 
-> The default needs to be an allowed value in the enum.
 
-Right. I'll fix it.
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--Sergey
+Hi!
 
-> 
-> Rob
+> The following case cause the bug:
+> for the trouble SKB, it was in outq->transmitted list
+
+Ok... but this is one hell of "interesting" code.
+
+> --- a/net/sctp/socket.c
+> +++ b/net/sctp/socket.c
+> @@ -165,29 +165,44 @@ static void sctp_clear_owner_w(struct sc
+>  	skb_orphan(chunk->skb);
+>  }
+> =20
+> +#define traverse_and_process()	\
+> +do {				\
+> +	msg =3D chunk->msg;	\
+> +	if (msg =3D=3D prev_msg)	\
+> +		continue;	\
+> +	list_for_each_entry(c, &msg->chunks, frag_list) {	\
+> +		if ((clear && asoc->base.sk =3D=3D c->skb->sk) ||	\
+> +		    (!clear && asoc->base.sk !=3D c->skb->sk))	\
+> +			cb(c);	\
+> +	}			\
+> +	prev_msg =3D msg;		\
+> +} while (0)
+
+Should this be function?
+
+Do you see how it does "continue"? But the do {} while(0) wrapper eats
+the continue. "break" would be more clear here, but they are really
+equivalent due to way this macro is used.
+
+It is just very, very confusing.
+
+Best regards,
+								Pavel
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXpIMPQAKCRAw5/Bqldv6
+8nGRAJ9i+7V6V7ICNl35CSsTotQAtMT4QACeP2kjyhviB509AsRsg+Jcj713Q1A=
+=8Hn4
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
