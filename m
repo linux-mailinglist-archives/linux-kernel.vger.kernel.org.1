@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF821A5041
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE581A5086
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbgDKMQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:16:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50148 "EHLO mail.kernel.org"
+        id S1728657AbgDKMSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:18:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53742 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728222AbgDKMP7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:15:59 -0400
+        id S1728637AbgDKMSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:18:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88EF520787;
-        Sat, 11 Apr 2020 12:15:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5FB420692;
+        Sat, 11 Apr 2020 12:18:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607359;
-        bh=9/F1HgN1yJlGKSkllksxsM4rLDTTAM51nN0ITD+mQ4A=;
+        s=default; t=1586607520;
+        bh=r6Cz7tXqvWMM41FcH1w8UekDGqn7bcSLJ/soebx9cR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Htw6t2qu9PYhmekiuW2t2rdqtu1t83oMGRDWEl3is8X3MZZhFyOqBDEi3Nvg2GcsI
-         CgjT6UcmAwuEKIscYfWSFz0ceVvhUPn5NtqBIsvpLiKWRW2+JAY1pbLRvDOK8ZQnK1
-         QKqeuiFO/X2Q0UIJDYy7PJZKANDutXQzvi9PiRQ0=
+        b=i31oQDNIWZ3CNrdxHPs8203QKb3jjI9HueL2eumqf/TssylOS/+Ur4EwFRwVrGddq
+         q8YfR/olpOP4QHzNB06LG5bm/064lo+gzrNzVFIlDi56grigsK1ST//8fzhWJIQJX+
+         klC4HwcJRx2fXdI+bSujxIO77RfG/kZHyKJFYnDk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH 4.19 41/54] IB/hfi1: Fix memory leaks in sysfs registration and unregistration
-Date:   Sat, 11 Apr 2020 14:09:23 +0200
-Message-Id: <20200411115512.696605410@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.5 04/44] net: dsa: bcm_sf2: Ensure correct sub-node is parsed
+Date:   Sat, 11 Apr 2020 14:09:24 +0200
+Message-Id: <20200411115457.263566921@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
+References: <20200411115456.934174282@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,81 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 5c15abc4328ad696fa61e2f3604918ed0c207755 upstream.
+[ Upstream commit afa3b592953bfaecfb4f2f335ec5f935cff56804 ]
 
-When the hfi1 driver is unloaded, kmemleak will report the following
-issue:
+When the bcm_sf2 was converted into a proper platform device driver and
+used the new dsa_register_switch() interface, we would still be parsing
+the legacy DSA node that contained all the port information since the
+platform firmware has intentionally maintained backward and forward
+compatibility to client programs. Ensure that we do parse the correct
+node, which is "ports" per the revised DSA binding.
 
-unreferenced object 0xffff8888461a4c08 (size 8):
-comm "kworker/0:0", pid 5, jiffies 4298601264 (age 2047.134s)
-hex dump (first 8 bytes):
-73 64 6d 61 30 00 ff ff sdma0...
-backtrace:
-[<00000000311a6ef5>] kvasprintf+0x62/0xd0
-[<00000000ade94d9f>] kobject_set_name_vargs+0x1c/0x90
-[<0000000060657dbb>] kobject_init_and_add+0x5d/0xb0
-[<00000000346fe72b>] 0xffffffffa0c5ecba
-[<000000006cfc5819>] 0xffffffffa0c866b9
-[<0000000031c65580>] 0xffffffffa0c38e87
-[<00000000e9739b3f>] local_pci_probe+0x41/0x80
-[<000000006c69911d>] work_for_cpu_fn+0x16/0x20
-[<00000000601267b5>] process_one_work+0x171/0x380
-[<0000000049a0eefa>] worker_thread+0x1d1/0x3f0
-[<00000000909cf2b9>] kthread+0xf8/0x130
-[<0000000058f5f874>] ret_from_fork+0x35/0x40
-
-This patch fixes the issue by:
-
-- Releasing dd->per_sdma[i].kobject in hfi1_unregister_sysfs().
-  - This will fix the memory leak.
-
-- Calling kobject_put() to unwind operations only for those entries in
-   dd->per_sdma[] whose operations have succeeded (including the current
-   one that has just failed) in hfi1_verbs_register_sysfs().
-
-Cc: <stable@vger.kernel.org>
-Fixes: 0cb2aa690c7e ("IB/hfi1: Add sysfs interface for affinity setup")
-Link: https://lore.kernel.org/r/20200326163807.21129.27371.stgit@awfm-01.aw.intel.com
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Fixes: d9338023fb8e ("net: dsa: bcm_sf2: Make it a real platform device driver")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vivien Didelot <vivien.didelot@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/infiniband/hw/hfi1/sysfs.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/net/dsa/bcm_sf2.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
---- a/drivers/infiniband/hw/hfi1/sysfs.c
-+++ b/drivers/infiniband/hw/hfi1/sysfs.c
-@@ -861,8 +861,13 @@ bail:
- 	for (i = 0; i < ARRAY_SIZE(hfi1_attributes); ++i)
- 		device_remove_file(&dev->dev, hfi1_attributes[i]);
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -1069,6 +1069,7 @@ static int bcm_sf2_sw_probe(struct platf
+ 	const struct bcm_sf2_of_data *data;
+ 	struct b53_platform_data *pdata;
+ 	struct dsa_switch_ops *ops;
++	struct device_node *ports;
+ 	struct bcm_sf2_priv *priv;
+ 	struct b53_device *dev;
+ 	struct dsa_switch *ds;
+@@ -1136,7 +1137,11 @@ static int bcm_sf2_sw_probe(struct platf
+ 	set_bit(0, priv->cfp.used);
+ 	set_bit(0, priv->cfp.unique);
  
--	for (i = 0; i < dd->num_sdma; i++)
--		kobject_del(&dd->per_sdma[i].kobj);
-+	/*
-+	 * The function kobject_put() will call kobject_del() if the kobject
-+	 * has been added successfully. The sysfs files created under the
-+	 * kobject directory will also be removed during the process.
-+	 */
-+	for (; i >= 0; i--)
-+		kobject_put(&dd->per_sdma[i].kobj);
+-	bcm_sf2_identify_ports(priv, dn->child);
++	ports = of_find_node_by_name(dn, "ports");
++	if (ports) {
++		bcm_sf2_identify_ports(priv, ports);
++		of_node_put(ports);
++	}
  
- 	return ret;
- }
-@@ -875,6 +880,10 @@ void hfi1_verbs_unregister_sysfs(struct
- 	struct hfi1_pportdata *ppd;
- 	int i;
- 
-+	/* Unwind operations in hfi1_verbs_register_sysfs() */
-+	for (i = 0; i < dd->num_sdma; i++)
-+		kobject_put(&dd->per_sdma[i].kobj);
-+
- 	for (i = 0; i < dd->num_pports; i++) {
- 		ppd = &dd->pport[i];
- 
+ 	priv->irq0 = irq_of_parse_and_map(dn, 0);
+ 	priv->irq1 = irq_of_parse_and_map(dn, 1);
 
 
