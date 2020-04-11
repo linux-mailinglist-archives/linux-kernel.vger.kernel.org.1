@@ -2,111 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE841A52B6
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 18:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19A71A52BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 18:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726257AbgDKQEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 12:04:11 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:38340 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgDKQEK (ORCPT
+        id S1726702AbgDKQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 12:04:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55238 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726070AbgDKQEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 12:04:10 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y25so133950pfn.5;
-        Sat, 11 Apr 2020 09:04:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=uH/uW4uuwVc/sUawxiLaFcYoWaZecblOcPGAeVmrbRA=;
-        b=bpDd2PphtMcSemGxsrV2MW+BLa4JF/TZ9SPOkaI7IE8DsUJNM8Kugv5GA2SSkjKynG
-         M5PGUpytCyWBwp2GtTY/kdyooJF5UKajhfg5+GJgysfUrG5v9pdv9bmHfiY21C+tRDA8
-         H6QOu7cfT7F+ZDCCkZOJ68BuQy4yZy1M7jFcIXf+UuXeo24MdCYOH13d/ERfUYY7rDCn
-         lVsl56il3TN6e7ma+5n1yZKve/huDJRF0+m7ZYNPApriP5n2RBxS4tQDuDDPU+XUwpGX
-         PSqMjlsJRf2AzZAdOpzahXVHH+I6ai1+WEHk5YO1BvjwB6Lzg2aP4rbZFH9mBclETUut
-         US5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=uH/uW4uuwVc/sUawxiLaFcYoWaZecblOcPGAeVmrbRA=;
-        b=es1piTxgJB/h0NYtWFqTWiEVVaftAo2YPXHIVUbN7p8PLrBwY+U+MrIzcB6oR++4p5
-         53M2LDaO+H5ykNSstbkRSqUyUcja8/WYYOUQZivTgxJ2BEngN5Un0AXAonxTi1RSqNw3
-         NC4LvJz1DzpUNv2bUhDR/ZpC7wFXG+ZGLQ+bMkzu+VqUfiEeEfbxEebw8Wo3hy8AxVxQ
-         mRsjZO5nhGpU7oJwAtqPRyLN+j9m/9dUJe+xUrrjUmPoX3BYSgX8S133RXmU3DeE6c0z
-         2zmZn1GFJfJSMTrh680bVtJAT21MXan4LS4/oZjkAMF71IbOPtxTeMV8/XLrBJbRr3GF
-         npLg==
-X-Gm-Message-State: AGi0PuZu/UEXWHSw7W0Tno0wfHX6emu2L/+dRZKvP6tlUmglyUMv9QuK
-        vTS9oMSpBr9aZoMnU4Z+64c=
-X-Google-Smtp-Source: APiQypLdNiYiF+7hS+5k0UH+NUie1b5tew65NkXTnDcayarF6ShrqWloGrmA4pOce85bpSbWi3Slvg==
-X-Received: by 2002:a62:1946:: with SMTP id 67mr10618076pfz.0.1586621050221;
-        Sat, 11 Apr 2020 09:04:10 -0700 (PDT)
-Received: from localhost ([183.82.183.27])
-        by smtp.gmail.com with ESMTPSA id nl7sm4661950pjb.36.2020.04.11.09.04.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 11 Apr 2020 09:04:09 -0700 (PDT)
-Date:   Sat, 11 Apr 2020 21:34:07 +0530
-From:   afzal mohammed <afzal.mohd.ma@gmail.com>
-To:     Thomas Bogendoerfer <tbogendoerfer@suse.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: [PATCH 0/3] Remove setup_percpu_irq() & remove_percpu_irq
-Message-ID: <cover.1586434781.git.afzal.mohd.ma@gmail.com>
+        Sat, 11 Apr 2020 12:04:21 -0400
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jNIc6-0007WY-17; Sat, 11 Apr 2020 18:04:10 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 4414D1C0051;
+        Sat, 11 Apr 2020 18:04:09 +0200 (CEST)
+Date:   Sat, 11 Apr 2020 16:04:08 -0000
+From:   "tip-bot2 for Xiaoyao Li" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] KVM: VMX: Extend VMXs #AC interceptor to handle
+ split lock #AC in guest
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200410115517.176308876@linutronix.de>
+References: <20200410115517.176308876@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.3 (2018-01-21)
+Message-ID: <158662104885.28353.13755017568373064491.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following commit has been merged into the x86/urgent branch of tip:
 
-While doing the removal of setup_irq(), it was observed that
-setup_percpu_irq() also can be removed similarly by replacing it w/
-request_percpu_irq(), which does allocate memory. In the initial
-setup_irq() removal cover letters [1], it was mentioned that
-setup_percpu_irq() is untouched.
+Commit-ID:     e6f8b6c12f03818baacc5f504fe83fa5e20771d6
+Gitweb:        https://git.kernel.org/tip/e6f8b6c12f03818baacc5f504fe83fa5e20771d6
+Author:        Xiaoyao Li <xiaoyao.li@intel.com>
+AuthorDate:    Fri, 10 Apr 2020 13:54:02 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Sat, 11 Apr 2020 16:42:41 +02:00
 
-After removing setup_irq(), it does not look good to let live
-setup_percpu_irq(), especially since it being a low hanging fruit. Hence
-replace setup_percpu_irq() by it's allocator equivalent.
-request_percpu_irq() cannot be used since all the users need to pass
-IRQF_TIMER flag, which it would not allow. Thus it's variant,
-__request_percpu_irq() is used.
+KVM: VMX: Extend VMXs #AC interceptor to handle split lock #AC in guest
 
-In addition to removing setup_percpu_irq() definition,
-remove_percpu_irq(), unused, is also removed.
+Two types of #AC can be generated in Intel CPUs:
+ 1. legacy alignment check #AC
+ 2. split lock #AC
 
-It seems setup_percpu_irq() is used only by MIPS (even the one outside
-MIPS arch dir, i.e. the clocksource driver). The series has been build
-tested, though i would have loved to do a qemu test as well, i do not
-see a qemu machine type that can test the changes done here (in malta
-machine, in which clocksource changes are getting built, the changes
-done here are not being runtime tested).
+Reflect #AC back into the guest if the guest has legacy alignment checks
+enabled or if split lock detection is disabled.
 
-Regards
-afzal
+If the #AC is not a legacy one and split lock detection is enabled, then
+invoke handle_guest_split_lock() which will either warn and disable split
+lock detection for this task or force SIGBUS on it.
 
-[1] https://lkml.kernel.org/r/cover.1581478323.git.afzal.mohd.ma@gmail.com
+[ tglx: Switch it to handle_guest_split_lock() and rename the misnamed
+  helper function. ]
 
-afzal mohammed (3):
-  MIPS: Replace setup_percpu_irq() by request_percpu_irq() variant
-  clocksource/drivers/mips-gic-timer: Replace setup_percpu_irq() by
-    request_percpu_irq() variant
-  genirq: Remove setup_percpu_irq() and remove_percpu_irq()
+Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Link: https://lkml.kernel.org/r/20200410115517.176308876@linutronix.de
+---
+ arch/x86/kvm/vmx/vmx.c | 37 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 34 insertions(+), 3 deletions(-)
 
- arch/mips/include/asm/cevt-r4k.h     |  1 -
- arch/mips/kernel/cevt-r4k.c          | 11 --------
- arch/mips/sgi-ip27/ip27-timer.c      | 13 ++++-----
- arch/mips/sgi-ip30/ip30-timer.c      |  6 ++--
- drivers/clocksource/mips-gic-timer.c | 10 ++-----
- include/linux/irq.h                  |  2 --
- kernel/irq/manage.c                  | 42 ----------------------------
- 7 files changed, 10 insertions(+), 75 deletions(-)
-
--- 
-2.18.0
-
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 8959514..8305097 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4588,6 +4588,26 @@ static int handle_machine_check(struct kvm_vcpu *vcpu)
+ 	return 1;
+ }
+ 
++/*
++ * If the host has split lock detection disabled, then #AC is
++ * unconditionally injected into the guest, which is the pre split lock
++ * detection behaviour.
++ *
++ * If the host has split lock detection enabled then #AC is
++ * only injected into the guest when:
++ *  - Guest CPL == 3 (user mode)
++ *  - Guest has #AC detection enabled in CR0
++ *  - Guest EFLAGS has AC bit set
++ */
++static inline bool guest_inject_ac(struct kvm_vcpu *vcpu)
++{
++	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
++		return true;
++
++	return vmx_get_cpl(vcpu) == 3 && kvm_read_cr0_bits(vcpu, X86_CR0_AM) &&
++	       (kvm_get_rflags(vcpu) & X86_EFLAGS_AC);
++}
++
+ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+@@ -4653,9 +4673,6 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+ 		return handle_rmode_exception(vcpu, ex_no, error_code);
+ 
+ 	switch (ex_no) {
+-	case AC_VECTOR:
+-		kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
+-		return 1;
+ 	case DB_VECTOR:
+ 		dr6 = vmcs_readl(EXIT_QUALIFICATION);
+ 		if (!(vcpu->guest_debug &
+@@ -4684,6 +4701,20 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+ 		kvm_run->debug.arch.pc = vmcs_readl(GUEST_CS_BASE) + rip;
+ 		kvm_run->debug.arch.exception = ex_no;
+ 		break;
++	case AC_VECTOR:
++		if (guest_inject_ac(vcpu)) {
++			kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
++			return 1;
++		}
++
++		/*
++		 * Handle split lock. Depending on detection mode this will
++		 * either warn and disable split lock detection for this
++		 * task or force SIGBUS on it.
++		 */
++		if (handle_guest_split_lock(kvm_rip_read(vcpu)))
++			return 1;
++		fallthrough;
+ 	default:
+ 		kvm_run->exit_reason = KVM_EXIT_EXCEPTION;
+ 		kvm_run->ex.exception = ex_no;
