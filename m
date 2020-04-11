@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BDF1A4EA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B704F1A4E9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbgDKHoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 03:44:46 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:61810 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726178AbgDKHon (ORCPT
+        id S1726171AbgDKHom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 03:44:42 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:33198 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725901AbgDKHol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 03:44:43 -0400
-X-UUID: ac2d969db3de4dee952271d4b6244625-20200411
+        Sat, 11 Apr 2020 03:44:41 -0400
+X-UUID: ca20f138f2294eeaa206a373a3003f2a-20200411
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=VL/uIEJeOh4V+RzzjIL7SOp5c2Ln6Wq9deMdt7EQdfo=;
-        b=sB43eeK+G0tuhcF5a8a8QM2WBi7iA64YFUJIh4BzIoMkbbmUOFQjSZGk1D+L9+nzcpb+ZJsxGQ/xn5eT1lZFR1l7CBt9m8aH+JWKiUKJrJGwxES+AsV4Sn1YM5T+KNienUyLoerC2V9Ra8a94rqQU+3ZsHN0n4jzMtmkA2ZT9s0=;
-X-UUID: ac2d969db3de4dee952271d4b6244625-20200411
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=oXyxi7IUgBNHR+VYtiCeIx+6ezK7zPDvVd2okeNBTBs=;
+        b=eY4Ajc6lPfU6UoW6d+Zgyi8zWN6CEIVkaop2Eb0I4YNX1i8E+kxlL5OeFlEmVxZNscTTrraLVNIpIa3K2eLXQFE3Q0/MKnPBP0qR1m854F1ZXCubDeHJgeK2zXNdpVVZCgtIOn1Mm0Y5n8KI/MwI+SgW4eSDXODvKmm+1gatLQQ=;
+X-UUID: ca20f138f2294eeaa206a373a3003f2a-20200411
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
         (envelope-from <jitao.shi@mediatek.com>)
         (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 1165974946; Sat, 11 Apr 2020 15:44:28 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33DR.mediatek.inc
- (172.27.6.106) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 11 Apr
- 2020 15:44:25 +0800
+        with ESMTP id 1935581233; Sat, 11 Apr 2020 15:44:28 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 11 Apr
+ 2020 15:44:26 +0800
 Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
  MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Sat, 11 Apr 2020 15:44:22 +0800
+ 15.0.1497.2 via Frontend Transport; Sat, 11 Apr 2020 15:44:23 +0800
 From:   Jitao Shi <jitao.shi@mediatek.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
@@ -40,14 +40,17 @@ CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
         <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
         <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v6 0/4] Config mipi tx current and impedance
-Date:   Sat, 11 Apr 2020 15:44:04 +0800
-Message-ID: <20200411074408.38090-1-jitao.shi@mediatek.com>
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Subject: [PATCH v6 1/4] dt-bindings: display: mediatek: add property to control mipi tx drive current
+Date:   Sat, 11 Apr 2020 15:44:05 +0800
+Message-ID: <20200411074408.38090-2-jitao.shi@mediatek.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200411074408.38090-1-jitao.shi@mediatek.com>
+References: <20200411074408.38090-1-jitao.shi@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: F06F78ACE077B8F53AD26555B0EACD516F8A1379DB458BC6BF1268D245B0AFD52000:8
+X-TM-SNTS-SMTP: 0005373B2C71D73AF1CED7A230B00BB7B6A072EA461E12CD676996CB520C10192000:8
 X-MTK:  N
 Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
@@ -55,23 +58,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2hhbmdlcyBzaW5jZSB2NToNCiAtIHJlbW92ZSBtZW1zZXQoKQ0KIC0gYWRkIHJldHVybiB0byBy
-ZW1vdmUgImVsc2UiDQoNCkNoYW5nZXMgc2luY2UgdjQ6DQogLSBhZGQgUmV2aWV3ZWQtYnk6DQog
-LSBtb3ZlIHRoZSBnZXQgdGhlIGNhbGlicmF0aW9uIGRhdGEgY29kZSB0byBwcm9iZS4NCg0KQ2hh
-bmdlcyBzaW5jZSB2MzoNCiAtIHJlZmluZSBkcml2ZS1zdHJlbmd0aC1taWNyb2FtcCBhcyBmcm9t
-IDMwMDAgdG8gNjAwMC4NCg0KQ2hhbmdlcyBzaW5jZSB2MjoNCiAtIGZpeCB0aGUgdGl0bGUgb2Yg
-Y29tbWl0IG1lc3NhZ2UuDQogLSByZW5hbWUgbWlwaXR4LWN1cnJlbnQtZHJpdmUgdG8gZHJpdmUt
-c3RyZW5ndGgtbWljcm9hbXANCg0KQ2hhbmdlcyBzaW5jZSB2MToNCiAtIGZpeCBjb2Rpbmcgc3R5
-bGUuDQogLSBjaGFuZ2UgbXRrX21pcGlfdHhfY29uZmlnX2NhbGlicmF0aW9uX2RhdGEoKSB0byB2
-b2lkDQoNCkppdGFvIFNoaSAoNCk6DQogIGR0LWJpbmRpbmdzOiBkaXNwbGF5OiBtZWRpYXRlazog
-YWRkIHByb3BlcnR5IHRvIGNvbnRyb2wgbWlwaSB0eCBkcml2ZQ0KICAgIGN1cnJlbnQNCiAgZHQt
-YmluZGluZ3M6IGRpc3BsYXk6IG1lZGlhdGVrOiBnZXQgbWlwaXR4IGNhbGlicmF0aW9uIGRhdGEg
-ZnJvbSBudm1lbQ0KICBkcm0vbWVkaWF0ZWs6IGFkZCB0aGUgbWlwaXR4IGRyaXZpbmcgY29udHJv
-bA0KICBkcm0vbWVkaWF0ZWs6IGNvbmZpZyBtaXBpdHggaW1wZWRhbmNlIHdpdGggY2FsaWJyYXRp
-b24gZGF0YQ0KDQogLi4uL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssZHNpLnR4dCAgICAgICAg
-IHwgMTAgKysrKw0KIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfbWlwaV90eC5jICAgICAg
-ICB8IDU0ICsrKysrKysrKysrKysrKysrKysNCiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRr
-X21pcGlfdHguaCAgICAgICAgfCAgNCArKw0KIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
-bXQ4MTgzX21pcGlfdHguYyB8IDI4ICsrKysrKysrKysNCiA0IGZpbGVzIGNoYW5nZWQsIDk2IGlu
-c2VydGlvbnMoKykNCg0KLS0gDQoyLjIxLjANCg==
+QWRkIGEgcHJvcGVydHkgdG8gY29udHJvbCBtaXBpIHR4IGRyaXZlIGN1cnJlbnQ6DQoiZHJpdmUt
+c3RyZW5ndGgtbWljcm9hbXAiDQoNClJldmlld2VkLWJ5OiBDaHVuLUt1YW5nIEh1IDxjaHVua3Vh
+bmcuaHVAa2VybmVsLm9yZz4NClNpZ25lZC1vZmYtYnk6IEppdGFvIFNoaSA8aml0YW8uc2hpQG1l
+ZGlhdGVrLmNvbT4NCi0tLQ0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0
+ZWsvbWVkaWF0ZWssZHNpLnR4dCAgICB8IDUgKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNl
+cnRpb25zKCspDQoNCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxkc2kudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvbWVkaWF0ZWsvbWVkaWF0ZWssZHNpLnR4dA0KaW5kZXgg
+YTE5YTZjYzM3NWVkLi5kNzhiNmQ2ZDhmYWIgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRpYXRlayxkc2kudHh0DQorKysg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9tZWRpYXRlay9tZWRp
+YXRlayxkc2kudHh0DQpAQCAtMzMsNiArMzMsMTAgQEAgUmVxdWlyZWQgcHJvcGVydGllczoNCiAt
+ICNjbG9jay1jZWxsczogbXVzdCBiZSA8MD47DQogLSAjcGh5LWNlbGxzOiBtdXN0IGJlIDwwPi4N
+CiANCitPcHRpb25hbCBwcm9wZXJ0aWVzOg0KKy0gZHJpdmUtc3RyZW5ndGgtbWljcm9hbXA6IGFk
+anVzdCBkcml2aW5nIGN1cnJlbnQsIHNob3VsZCBiZSAzMDAwIH4gNjAwMC4gQW5kDQorCQkJCQkJ
+ICAgdGhlIHN0ZXAgaXMgMjAwLg0KKw0KIEV4YW1wbGU6DQogDQogbWlwaV90eDA6IG1pcGktZHBo
+eUAxMDIxNTAwMCB7DQpAQCAtNDIsNiArNDYsNyBAQCBtaXBpX3R4MDogbWlwaS1kcGh5QDEwMjE1
+MDAwIHsNCiAJY2xvY2stb3V0cHV0LW5hbWVzID0gIm1pcGlfdHgwX3BsbCI7DQogCSNjbG9jay1j
+ZWxscyA9IDwwPjsNCiAJI3BoeS1jZWxscyA9IDwwPjsNCisJZHJpdmUtc3RyZW5ndGgtbWljcm9h
+bXAgPSA8NDYwMD47DQogfTsNCiANCiBkc2kwOiBkc2lAMTQwMWIwMDAgew0KLS0gDQoyLjIxLjAN
+Cg==
 
