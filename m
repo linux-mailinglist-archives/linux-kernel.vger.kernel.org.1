@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 508161A4E75
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF6A1A4E7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgDKHNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 03:13:51 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:25069 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbgDKHNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 03:13:51 -0400
-Received: from [192.168.42.210] ([93.22.135.18])
-        by mwinf5d37 with ME
-        id RKDp220060Pz5GD03KDpNY; Sat, 11 Apr 2020 09:13:50 +0200
-X-ME-Helo: [192.168.42.210]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 11 Apr 2020 09:13:50 +0200
-X-ME-IP: 93.22.135.18
-Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
- message
-From:   Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Joe Perches <joe@perches.com>, apw@canonical.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
- <8617a6b94c0644bce1fd4ca77309d67a612e6300.camel@perches.com>
- <6e52383e-100d-b016-32c2-6fb54938b6fe@wanadoo.fr>
- <c9fd4bc75812fed4799c2fb87b452b809a7e9a7a.camel@perches.com>
- <db2730700ab3eb7008413a1e7bba94ca7c49a031.camel@perches.com>
- <26b49cf5-453b-9a81-b045-fdc99c42fcf8@wanadoo.fr>
-Message-ID: <af3166a9-c463-2645-05c5-441cc87abb6c@wanadoo.fr>
-Date:   Sat, 11 Apr 2020 09:13:49 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1725953AbgDKHU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 03:20:57 -0400
+Received: from verein.lst.de ([213.95.11.211]:52955 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbgDKHU4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 03:20:56 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4505168BFE; Sat, 11 Apr 2020 09:20:52 +0200 (CEST)
+Date:   Sat, 11 Apr 2020 09:20:52 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, x86@kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laura Abbott <labbott@redhat.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        linuxppc-dev@lists.ozlabs.org, linux-hyperv@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/28] mm: only allow page table mappings for built-in
+ zsmalloc
+Message-ID: <20200411072052.GA31242@lst.de>
+References: <20200408115926.1467567-1-hch@lst.de> <20200408115926.1467567-11-hch@lst.de> <20200409160826.GC247701@google.com> <20200409165030.GG20713@hirez.programming.kicks-ass.net> <20200409170813.GD247701@google.com> <20200410023845.GA2354@jagdpanzerIV.localdomain> <20200410231136.GA101325@google.com>
 MIME-Version: 1.0
-In-Reply-To: <26b49cf5-453b-9a81-b045-fdc99c42fcf8@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200410231136.GA101325@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Minchan,
 
-Le 11/04/2020 à 09:12, Christophe JAILLET a écrit :
->
-> Hi,
->
->     ./scripts/checkpatch.pl -f drivers/soc/kendryte/k210-sysctl.c
->
-> is missing line 189, even if it looks like a construction correctly 
-> spotted in some other files:
->     if (foo) {
->         dev_err(...);
->         ...
->     };
->
-> CJ
->
->
-Oops, my mistake, this one is correctly spotted :)
+On Fri, Apr 10, 2020 at 04:11:36PM -0700, Minchan Kim wrote:
+> It doesn't mean we couldn't use zsmalloc as module any longer. It means
+> we couldn't use zsmalloc as module with pgtable mapping whcih was little
+> bit faster on microbenchmark in some architecutre(However, I usually temped
+> to remove it since it had several problems). However, we could still use
+> zsmalloc as module as copy way instead of pgtable mapping. Thus, if someone
+> really want to rollback the feature, they should provide reasonable reason
+> why it doesn't work for them. "A little fast" wouldn't be enough to exports
+> deep internal to the module.
 
-CJ
+do you have any data how much faster it is on arm (and does that include
+arm64 as well)?  Besides the exports which were my prime concern,
+zsmalloc with pgtable mappings also is the only user of map_kernel_range
+outside of vmalloc.c, if it really is another code base for tiny
+improvements we could mark map_kernel_range or in fact remove it entirely
+and open code it in the remaining callers.
 
+(unmap_kernel_range is a different story, it has a bunch of callers,
+and most look odd)
