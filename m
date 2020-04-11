@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1207E1A50B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7681A505D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728936AbgDKMUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:20:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
+        id S1728358AbgDKMRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728588AbgDKMUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:20:14 -0400
+        id S1728181AbgDKMRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:17:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B4F3206A1;
-        Sat, 11 Apr 2020 12:20:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97EAD20692;
+        Sat, 11 Apr 2020 12:17:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607614;
-        bh=6aGlnK1MW0SGlCS6W+zlqMW7TuFhIRSPsZs1IRDKQZM=;
+        s=default; t=1586607424;
+        bh=43PTV1RJIcy3DrgRfaIJb5QuhUb2LTSBZASiS8wq7uI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xqkPgHJvQU7t714occK1cSRnGx1drZgI6nhThfmx6m8Z2xOIivAMHRZta4nNhB6zO
-         UO5HCk6nSHW9dREu7dwd1m2EZldO7NebQqiTmlnTjLZ1o5rGtZKwoKvZcyAZ3Ag0+p
-         C/08OaR/5Y3RnZ2D/HS2NnX5e9HFPkGxiddUdPho=
+        b=mK76+ROtvza8wVwADZxvdoXVBZ21fjSFQ1VBugDKlgH0MOFEhR2AWpWlsJ/SkYhk0
+         wagh/QOSUqjMAuh25nyzQXXweYGzbOo4Gp2TCbTp2Yk2hkOri2BLLDiRkCtGurykaG
+         n/Xul1tNV246l5XDe4K+pmd0Gqx5GPeTeuuJImKQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.5 03/44] net: dsa: bcm_sf2: Do not register slave MDIO bus with OF
+        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>
+Subject: [PATCH 5.4 14/41] r8169: change back SG and TSO to be disabled by default
 Date:   Sat, 11 Apr 2020 14:09:23 +0200
-Message-Id: <20200411115457.209824015@linuxfoundation.org>
+Message-Id: <20200411115505.093276503@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
-References: <20200411115456.934174282@linuxfoundation.org>
+In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
+References: <20200411115504.124035693@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +42,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Heiner Kallweit <hkallweit1@gmail.com>
 
-[ Upstream commit 536fab5bf5826404534a6c271f622ad2930d9119 ]
+[ Upstream commit 95099c569a9fdbe186a27447dfa8a5a0562d4b7f ]
 
-We were registering our slave MDIO bus with OF and doing so with
-assigning the newly created slave_mii_bus of_node to the master MDIO bus
-controller node. This is a bad thing to do for a number of reasons:
+There has been a number of reports that using SG/TSO on different chip
+versions results in tx timeouts. However for a lot of people SG/TSO
+works fine. Therefore disable both features by default, but allow users
+to enable them. Use at own risk!
 
-- we are completely lying about the slave MII bus is arranged and yet we
-  still want to control which MDIO devices it probes. It was attempted
-  before to play tricks with the bus_mask to perform that:
-  https://www.spinics.net/lists/netdev/msg429420.html but the approach
-  was rightfully rejected
-
-- the device_node reference counting is messed up and we are effectively
-  doing a double probe on the devices we already probed using the
-  master, this messes up all resources reference counts (such as clocks)
-
-The proper fix for this as indicated by David in his reply to the
-thread above is to use a platform data style registration so as to
-control exactly which devices we probe:
-https://www.spinics.net/lists/netdev/msg430083.html
-
-By using mdiobus_register(), our slave_mii_bus->phy_mask value is used
-as intended, and all the PHY addresses that must be redirected towards
-our slave MDIO bus is happening while other addresses get redirected
-towards the master MDIO bus.
-
-Fixes: 461cd1b03e32 ("net: dsa: bcm_sf2: Register our slave MDIO bus")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Vivien Didelot <vivien.didelot@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 93681cd7d94f ("r8169: enable HW csum and TSO")
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/bcm_sf2.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/realtek/r8169_main.c |   34 ++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 18 deletions(-)
 
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -472,7 +472,7 @@ static int bcm_sf2_mdio_register(struct
- 	priv->slave_mii_bus->parent = ds->dev->parent;
- 	priv->slave_mii_bus->phy_mask = ~priv->indir_phy_mask;
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -7167,12 +7167,10 @@ static int rtl_init_one(struct pci_dev *
  
--	err = of_mdiobus_register(priv->slave_mii_bus, dn);
-+	err = mdiobus_register(priv->slave_mii_bus);
- 	if (err && dn)
- 		of_node_put(dn);
+ 	netif_napi_add(dev, &tp->napi, rtl8169_poll, NAPI_POLL_WEIGHT);
+ 
+-	dev->features |= NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_TSO |
+-		NETIF_F_RXCSUM | NETIF_F_HW_VLAN_CTAG_TX |
+-		NETIF_F_HW_VLAN_CTAG_RX;
+-	dev->hw_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_TSO |
+-		NETIF_F_RXCSUM | NETIF_F_HW_VLAN_CTAG_TX |
+-		NETIF_F_HW_VLAN_CTAG_RX;
++	dev->features |= NETIF_F_IP_CSUM | NETIF_F_RXCSUM |
++			 NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX;
++	dev->hw_features = NETIF_F_IP_CSUM | NETIF_F_RXCSUM |
++			   NETIF_F_HW_VLAN_CTAG_TX | NETIF_F_HW_VLAN_CTAG_RX;
+ 	dev->vlan_features = NETIF_F_SG | NETIF_F_IP_CSUM | NETIF_F_TSO |
+ 		NETIF_F_HIGHDMA;
+ 	dev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+@@ -7190,25 +7188,25 @@ static int rtl_init_one(struct pci_dev *
+ 		dev->hw_features &= ~NETIF_F_HW_VLAN_CTAG_RX;
+ 
+ 	if (rtl_chip_supports_csum_v2(tp)) {
+-		dev->hw_features |= NETIF_F_IPV6_CSUM | NETIF_F_TSO6;
+-		dev->features |= NETIF_F_IPV6_CSUM | NETIF_F_TSO6;
++		dev->hw_features |= NETIF_F_IPV6_CSUM;
++		dev->features |= NETIF_F_IPV6_CSUM;
++	}
++
++	/* There has been a number of reports that using SG/TSO results in
++	 * tx timeouts. However for a lot of people SG/TSO works fine.
++	 * Therefore disable both features by default, but allow users to
++	 * enable them. Use at own risk!
++	 */
++	if (rtl_chip_supports_csum_v2(tp)) {
++		dev->hw_features |= NETIF_F_SG | NETIF_F_TSO | NETIF_F_TSO6;
+ 		dev->gso_max_size = RTL_GSO_MAX_SIZE_V2;
+ 		dev->gso_max_segs = RTL_GSO_MAX_SEGS_V2;
+ 	} else {
++		dev->hw_features |= NETIF_F_SG | NETIF_F_TSO;
+ 		dev->gso_max_size = RTL_GSO_MAX_SIZE_V1;
+ 		dev->gso_max_segs = RTL_GSO_MAX_SEGS_V1;
+ 	}
+ 
+-	/* RTL8168e-vl and one RTL8168c variant are known to have a
+-	 * HW issue with TSO.
+-	 */
+-	if (tp->mac_version == RTL_GIGA_MAC_VER_34 ||
+-	    tp->mac_version == RTL_GIGA_MAC_VER_22) {
+-		dev->vlan_features &= ~(NETIF_F_ALL_TSO | NETIF_F_SG);
+-		dev->hw_features &= ~(NETIF_F_ALL_TSO | NETIF_F_SG);
+-		dev->features &= ~(NETIF_F_ALL_TSO | NETIF_F_SG);
+-	}
+-
+ 	dev->hw_features |= NETIF_F_RXALL;
+ 	dev->hw_features |= NETIF_F_RXFCS;
  
 
 
