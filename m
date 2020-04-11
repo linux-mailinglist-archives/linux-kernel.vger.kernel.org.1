@@ -2,62 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8081A52CF
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 18:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CDF11A52D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 18:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726679AbgDKQHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 12:07:54 -0400
-Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:51760 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726167AbgDKQHy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 12:07:54 -0400
-Received: from localhost.localdomain ([90.126.162.40])
-        by mwinf5d41 with ME
-        id RU7r2200N0scBcy03U7rZa; Sat, 11 Apr 2020 18:07:53 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 11 Apr 2020 18:07:53 +0200
-X-ME-IP: 90.126.162.40
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, NShubin@topcon.com
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] remoteproc: Add missing '\n' in log messages
-Date:   Sat, 11 Apr 2020 18:07:50 +0200
-Message-Id: <20200411160750.32573-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.20.1
+        id S1726676AbgDKQJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 12:09:35 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:51454 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726094AbgDKQJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 12:09:35 -0400
+Received: from zn.tnic (p200300EC2F1EE2004DDA4FC6A7F1C076.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:e200:4dda:4fc6:a7f1:c076])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 28E3A1EC06D9;
+        Sat, 11 Apr 2020 18:09:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1586621374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=qm/3nlJuwIj0hv0o26e3JxUbSvRk5X7to6T2hRUsu40=;
+        b=g0u24ShjV8WWPtOwQlGtrSaDFCRYf0GizwjbmZJfgZ4U3tlLwZ6zEMO/Nnxh+rrPjK/ld5
+        BE6MU4b7eOAHxBu5al4Pu6H3fjoJYfLoKqpWMw18zAIptu6gysAvg66yuVM0nm000yYjux
+        B4YfdpKtjJxHsio+6BV3lYurrsOTWrM=
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     KVM <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] KVM: SVM: Fix build error due to missing release_pages() include
+Date:   Sat, 11 Apr 2020 18:09:27 +0200
+Message-Id: <20200411160927.27954-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Message logged by 'dev_xxx()' or 'pr_xxx()' should end with a '\n'.
+From: Borislav Petkov <bp@suse.de>
 
-Fixes: 791c13b709dd ("remoteproc: Fix NULL pointer dereference in rproc_virtio_notify")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fix:
+
+  arch/x86/kvm/svm/sev.c: In function ‘sev_pin_memory’:
+  arch/x86/kvm/svm/sev.c:360:3: error: implicit declaration of function ‘release_pages’;\
+	  did you mean ‘reclaim_pages’? [-Werror=implicit-function-declaration]
+    360 |   release_pages(pages, npinned);
+        |   ^~~~~~~~~~~~~
+        |   reclaim_pages
+
+because svm.c includes pagemap.h but the carved out sev.c needs it too.
+Triggered by a randconfig build.
+
+Fixes: eaf78265a4ab ("KVM: SVM: Move SEV code to separate file")
+Signed-off-by: Borislav Petkov <bp@suse.de>
 ---
- drivers/remoteproc/remoteproc_virtio.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/kvm/svm/sev.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/remoteproc/remoteproc_virtio.c b/drivers/remoteproc/remoteproc_virtio.c
-index b48b78e00284..0d4cc0fc5858 100644
---- a/drivers/remoteproc/remoteproc_virtio.c
-+++ b/drivers/remoteproc/remoteproc_virtio.c
-@@ -337,8 +337,7 @@ int rproc_add_virtio_dev(struct rproc_vdev *rvdev, int id)
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 0e3fc311d7da..0208ab2179d5 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -12,6 +12,7 @@
+ #include <linux/kernel.h>
+ #include <linux/highmem.h>
+ #include <linux/psp-sev.h>
++#include <linux/pagemap.h>
+ #include <linux/swap.h>
  
- 	if (rproc->ops->kick == NULL) {
- 		ret = -EINVAL;
--		dev_err(dev, ".kick method not defined for %s",
--				rproc->name);
-+		dev_err(dev, ".kick method not defined for %s\n", rproc->name);
- 		goto out;
- 	}
- 
+ #include "x86.h"
 -- 
-2.20.1
+2.21.0
 
