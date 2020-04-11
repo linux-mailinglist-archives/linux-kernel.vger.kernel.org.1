@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 175B31A5032
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107DB1A51F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728101AbgDKMPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:15:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49114 "EHLO mail.kernel.org"
+        id S1727223AbgDKMMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:12:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728086AbgDKMPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:15:18 -0400
+        id S1727192AbgDKMMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:12:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F81520692;
-        Sat, 11 Apr 2020 12:15:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4E0920787;
+        Sat, 11 Apr 2020 12:12:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607317;
-        bh=AOAvaLVkDHeMRUUOp5dsa0b0RO3eEiCYm6DzGZdjcBU=;
+        s=default; t=1586607136;
+        bh=s0u7lDLLVe++4Weesyk9XvhvqRchgRX/r1SYmiD7pWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Em0bDT56uhdl0SXCNeuDHFjijs17p4xRv1w61GUm/tQPj4xoFT9amxQRNorhX/3OA
-         /gj98MBj4Kz0ZB93RPe56jetdUceK6Q2Qrk8lUi3FZehndYsH4CiciUd6wiOdWw2wt
-         5hkC747IPY5aKklpLjb7zDvOmF5sgs6g7TRn4IOQ=
+        b=tp6x0WWthpBvUgUE0Vt34DQGhKv4sjeVKzgSwxfGbsniPe2RFMPJWamkUhsk+qTxJ
+         3a1GOCnWXWgbQQecdi+JW3I1wgrWa91/SsYbeUEXElIUpNwvNbKNkp+DKCxqvz1J25
+         jWQH9WjtCpex4vGOOkQO3nFDlgMxcZ1ReEDPDSS0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eugene Syromiatnikov <esyr@redhat.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: [PATCH 4.19 17/54] coresight: do not use the BIT() macro in the UAPI header
-Date:   Sat, 11 Apr 2020 14:08:59 +0200
-Message-Id: <20200411115510.152374519@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 21/32] ASoC: jz4740-i2s: Fix divider written at incorrect offset in register
+Date:   Sat, 11 Apr 2020 14:09:00 +0200
+Message-Id: <20200411115421.513567057@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
+References: <20200411115418.455500023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugene Syromiatnikov <esyr@redhat.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 9b6eaaf3db5e5888df7bca7fed7752a90f7fd871 upstream.
+commit 9401d5aa328e64617d87abd59af1c91cace4c3e4 upstream.
 
-The BIT() macro definition is not available for the UAPI headers
-(moreover, it can be defined differently in the user space); replace
-its usage with the _BITUL() macro that is defined in <linux/const.h>.
+The 4-bit divider value was written at offset 8, while the jz4740
+programming manual locates it at offset 0.
 
-Fixes: 237483aa5cf4 ("coresight: stm: adding driver for CoreSight STM component")
-Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20200324042213.GA10452@asgard.redhat.com
+Fixes: 26b0aad80a86 ("ASoC: jz4740: Add dynamic sampling rate support to jz4740-i2s")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200306222931.39664-2-paul@crapouillou.net
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/uapi/linux/coresight-stm.h |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/jz4740/jz4740-i2s.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/include/uapi/linux/coresight-stm.h
-+++ b/include/uapi/linux/coresight-stm.h
-@@ -2,8 +2,10 @@
- #ifndef __UAPI_CORESIGHT_STM_H_
- #define __UAPI_CORESIGHT_STM_H_
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -92,7 +92,7 @@
+ #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
  
--#define STM_FLAG_TIMESTAMPED   BIT(3)
--#define STM_FLAG_GUARANTEED    BIT(7)
-+#include <linux/const.h>
-+
-+#define STM_FLAG_TIMESTAMPED   _BITUL(3)
-+#define STM_FLAG_GUARANTEED    _BITUL(7)
- 
- /*
-  * The CoreSight STM supports guaranteed and invariant timing
+ #define JZ_AIC_CLK_DIV_MASK 0xf
+-#define I2SDIV_DV_SHIFT 8
++#define I2SDIV_DV_SHIFT 0
+ #define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
+ #define I2SDIV_IDV_SHIFT 8
+ #define I2SDIV_IDV_MASK (0xf << I2SDIV_IDV_SHIFT)
 
 
