@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F301A57E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406871A55F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730971AbgDKX0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 19:26:19 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:35359 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730026AbgDKXLz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:11:55 -0400
-Received: by mail-ed1-f65.google.com with SMTP id c7so7116709edl.2
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 16:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j1v+KX0c0vN9YAU7uM6QypK1ttzUW4y+OxpBn0M3m3M=;
-        b=S6ObeyaX8+WvxpzJV4Jp692S50a2yGFQh+4wOaDJVvpFjCLDrfQyw1CF8MiCC/Hkoo
-         Wu2yLceSH7wqAkDDS78Nm3CM0oxEYnNWKTuOzNspGDbKt70Ov+mkz08p+UqjRthkXDQe
-         7g+ywrKByPcQX7Z4VirISCe93FyM5bqM/Cd59h6IO7TQQfn6Ng/bQpFzYYyC988z8brO
-         WuH/iPJkS3KW0lt7gA2tvIDd86Q1P6r+mGijPNe3owwUZGobTjXFX8e6fSWQ1NTiM+AQ
-         JfKFxArsy6uKqudGjR9mqyzywvRJikOWlwke+x9Hw9HGnRe5ql+mTFQAETohZEZ+DwUZ
-         T40Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j1v+KX0c0vN9YAU7uM6QypK1ttzUW4y+OxpBn0M3m3M=;
-        b=MJ++UtvYaUjn/5FDFsv2b2javtyMkwrYw5uSSQ0zHr1AekhZBKk2zpGtCUxOLsHj+o
-         0Vl5Ybolxx2wKFdUA8zKZHhwCmYzSm1oIqGABG2NQMZYxzK4+z0AMwfsEsiKyj49wICG
-         bnQUqjK0G496dq9WrCn+Sw6sX68v9hSP/948PaC1jVL++FzmeWSEbJeLS7slHUm9sgNB
-         S7WfJ+AZar1QmWWETesYXpGeOgjkUIN2rKb/okbHHyYF3xU9d2/VLCVnJgN1lQ97M/id
-         V+fnnGQuvaKR3kKOKBBy3130oQfI7DXky9B784+jxsPs9UQNcxU1lMYt+/QSPjhJOQMo
-         R27Q==
-X-Gm-Message-State: AGi0PuYH5ZdMP3IrjY4JLEpmK2Uv6kZdj4WGtCt4s+rV8EX5j58TtcjK
-        LflV/NMqe9pzPqiIry1rtoIWqnBTyreHsU/mpFU1JQ==
-X-Google-Smtp-Source: APiQypIQV+O4plRu4V7wCIyi5dxeIfE6EeeB3ExaZvqvAUx/G7mUWqkxg21V766Y2OZi676a3KrW4JA/WqDlJwvAoNw=
-X-Received: by 2002:a17:906:2994:: with SMTP id x20mr9475367eje.156.1586646714555;
- Sat, 11 Apr 2020 16:11:54 -0700 (PDT)
+        id S1730386AbgDKXNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 19:13:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730316AbgDKXNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:13:01 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBEFB21835;
+        Sat, 11 Apr 2020 23:13:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586646781;
+        bh=k+HtzTIFd+fXXiVKekcLzGuQPzWQbVWRP6oOPwdIAbQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=BgfqJaGO0yLAy0xanJPbZ4R74e97JrdCnDRpPgZmNvNg0ODMQ6T4jflDrkkzuUEsx
+         REcMJjswK1s3RaGeV9qCGY18Kcf8CmlY/pcq7+qNHOAccX7oVp/eeKJJi9EqADwqNO
+         ISX7q3o+3vwpNnxKSgIRZQ6vMqn/0LYAb1YqVYIw=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Pavel Machek <pavel@denx.de>, Rob Clark <robdclark@chromium.org>,
+        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 4.19 47/66] drm/msm: fix leaks if initialization fails
+Date:   Sat, 11 Apr 2020 19:11:44 -0400
+Message-Id: <20200411231203.25933-47-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200411231203.25933-1-sashal@kernel.org>
+References: <20200411231203.25933-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20200410141813.29497-1-colin.king@canonical.com>
-In-Reply-To: <20200410141813.29497-1-colin.king@canonical.com>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Sat, 11 Apr 2020 20:11:43 -0300
-Message-ID: <CAAEAJfB3D7KxruC2TzeEhyeF8qGHOWUa2hKmqcptub5gciSAxQ@mail.gmail.com>
-Subject: Re: [PATCH] media: gspca: remove redundant assignment to variable status
-To:     Colin King <colin.king@canonical.com>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 10 Apr 2020 at 11:18, Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable status is being assigned a value that is never read.
-> The assignment is redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+From: Pavel Machek <pavel@denx.de>
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+[ Upstream commit 66be340f827554cb1c8a1ed7dea97920b4085af2 ]
 
-> ---
->  drivers/media/usb/gspca/mr97310a.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/media/usb/gspca/mr97310a.c b/drivers/media/usb/gspca/mr97310a.c
-> index 502fc2eaffe0..464aa61cd914 100644
-> --- a/drivers/media/usb/gspca/mr97310a.c
-> +++ b/drivers/media/usb/gspca/mr97310a.c
-> @@ -287,7 +287,6 @@ static int zero_the_pointer(struct gspca_dev *gspca_dev)
->                         return err_code;
->
->                 err_code = cam_get_response16(gspca_dev, 0x21, 0);
-> -               status = data[0];
->                 tries++;
->                 if (err_code < 0)
->                         return err_code;
-> --
-> 2.25.1
->
+We should free resources in unlikely case of allocation failure.
+
+Signed-off-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/gpu/drm/msm/msm_drv.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index 6f81de85fb860..01524009dede8 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -495,8 +495,10 @@ static int msm_drm_init(struct device *dev, struct drm_driver *drv)
+ 	if (!dev->dma_parms) {
+ 		dev->dma_parms = devm_kzalloc(dev, sizeof(*dev->dma_parms),
+ 					      GFP_KERNEL);
+-		if (!dev->dma_parms)
+-			return -ENOMEM;
++		if (!dev->dma_parms) {
++			ret = -ENOMEM;
++			goto err_msm_uninit;
++		}
+ 	}
+ 	dma_set_max_seg_size(dev, DMA_BIT_MASK(32));
+ 
+-- 
+2.20.1
+
