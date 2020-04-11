@@ -2,76 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C88F1A5CDB
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 06:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9346D1A5397
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 21:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgDLEue convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Apr 2020 00:50:34 -0400
-Received: from pmg.slemankab.go.id ([103.71.191.178]:45204 "EHLO
-        pmg.slemankab.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbgDLEue (ORCPT
+        id S1726752AbgDKT4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 15:56:04 -0400
+Received: from smtprelay0073.hostedemail.com ([216.40.44.73]:33056 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726182AbgDKT4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 00:50:34 -0400
-Received: from pmg.slemankab.go.id (localhost.localdomain [127.0.0.1])
-        by pmg.slemankab.go.id (Proxmox) with ESMTP id 2AFA83407FE;
-        Sun, 12 Apr 2020 11:07:05 +0700 (WIB)
-Received: from mailserver.slemankab.go.id (mail.slemankab.go.id [192.168.90.92])
-        by pmg.slemankab.go.id (Proxmox) with ESMTPS id 6A1D5341097;
-        Sun, 12 Apr 2020 11:06:20 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mailserver.slemankab.go.id (Postfix) with ESMTP id C26D63454A2;
-        Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
-Received: from mailserver.slemankab.go.id ([127.0.0.1])
-        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id bx25gMa0wG-O; Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
-Received: from localhost (localhost [127.0.0.1])
-        by mailserver.slemankab.go.id (Postfix) with ESMTP id 7BF20345235;
-        Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
-X-Virus-Scanned: amavisd-new at mailserver.slemankab.go.id
-Received: from mailserver.slemankab.go.id ([127.0.0.1])
-        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id cr3lYZ-xjLUS; Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
-Received: from [100.87.73.9] (unknown [223.225.44.235])
-        by mailserver.slemankab.go.id (Postfix) with ESMTPSA id EC20B3454A1;
-        Sun, 12 Apr 2020 02:48:32 +0700 (WIB)
-Content-Type: text/plain; charset="iso-8859-1"
+        Sat, 11 Apr 2020 15:56:04 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A47C9180033FB;
+        Sat, 11 Apr 2020 19:56:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2110:2198:2199:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:5007:7514:7576:7904:10004:10400:10450:10455:10848:11026:11232:11473:11658:11914:12043:12297:12555:12679:12740:12895:13069:13071:13311:13357:13439:13894:14096:14097:14180:14181:14659:14721:19904:19999:21080:21451:21627:21795:30051:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
+X-HE-Tag: neck78_8c18d92872d09
+X-Filterd-Recvd-Size: 2758
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 11 Apr 2020 19:56:02 +0000 (UTC)
+Message-ID: <aef59a0b1364b0058a183f0e913a828b1b80f1b8.camel@perches.com>
+Subject: Re: [PATCH] Staging: kernel: user: fixed some coding style issues
+From:   Joe Perches <joe@perches.com>
+To:     carlosteniswarrior@gmail.com, gregkh@linuxfoundation.org
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Date:   Sat, 11 Apr 2020 12:53:57 -0700
+In-Reply-To: <20200411194242.11336-1-carlosteniswarrior@gmail.com>
+References: <20200411194242.11336-1-carlosteniswarrior@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: ATTENZIONE
-To:     Recipients <administrator@ancol.com>
-From:   Sistemi amministratore <administrator@ancol.com>
-Date:   Sun, 12 Apr 2020 01:18:19 +0530
-Reply-To: mailsss@mail2world.com
-Message-Id: <20200411194832.EC20B3454A1@mailserver.slemankab.go.id>
-X-SPAM-LEVEL: Spam detection results:  0
-        ALL_TRUSTED                -1 Passed through trusted hosts only via SMTP
-        AWL                    -0.143 Adjusted score from AWL reputation of From: address
-        BAYES_05                 -0.5 Bayes spam probability is 1 to 5%
-        FREEMAIL_FORGED_REPLYTO  2.095 Freemail in Reply-To, but not From
-        KAM_DMARC_STATUS         0.01 Test Rule for DKIM or SPF Failure with Strict Alignment
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ATTENZIONE;
+On Sat, 2020-04-11 at 21:42 +0200, carlosteniswarrior@gmail.com wrote:
+> From: porfavorde <carlosteniswarrior@gmail.com>
 
-La cassetta postale ha superato il limite di archiviazione, che è 5 GB come definiti dall'amministratore, che è attualmente in esecuzione su 10.9GB, non si può essere in grado di inviare o ricevere nuovi messaggi fino a ri-convalidare la tua mailbox. Per rinnovare la vostra casella di posta, inviare le seguenti informazioni qui di seguito:
+Hello.
 
-nome:
-Nome utente:
-Password:
-Conferma Password:
-E-mail:
-telefono:
+> Fixed a coding style issue with a for loop and a trailing whitespace in
+> the comments
+> 
+> Signed-off-by: Carlos Guerrero Álvarez <carlosteniswarrior@gmail.com>
 
-Se non si riesce a rinnovare la vostra casella di posta, la vostra caselladi posta sarà disabilitato!
+A From: line is generally used when sending a patch authored
+by someone else.
 
-Ci dispiace per l'inconvenienza.
-Codice di verifica: en:0085362LK.00000.2020
-Mail Technical Support ©2020
+It would be better here not to use a From: line at all as you
+are both the author and sender.
 
-grazie
-Sistemi amministratore 
+Also please make your first patch somewhere in drivers/staging
+and not any other directory until you are familiar with the
+kernel styles and tools.  kernel/ isn't really a good place
+for a first patch to be accepted, though I don't see anything
+wrong with this patch other than the From: line.
+
+But whitespace only changes outside of drivers/staging and a
+few other directories are generally not accepted unless sent
+as a patch series along with some other change such as
+refactoring or a logical change for a defect.
+
+cheers, Joe
+---
+>  kernel/user.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/user.c b/kernel/user.c
+> index 5235d7f49982..4228ec04678d 100644
+> --- a/kernel/user.c
+> +++ b/kernel/user.c
+> @@ -6,7 +6,7 @@
+>   *
+>   * We have a per-user structure to keep track of how many
+>   * processes, files etc the user has claimed, in order to be
+> - * able to have per-user limits for system resources. 
+> + * able to have per-user limits for system resources.
+>   */
+>  
+>  #include <linux/init.h>
+> @@ -216,7 +216,7 @@ static int __init uid_cache_init(void)
+>  	uid_cachep = kmem_cache_create("uid_cache", sizeof(struct user_struct),
+>  			0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+>  
+> -	for(n = 0; n < UIDHASH_SZ; ++n)
+> +	for (n = 0; n < UIDHASH_SZ; ++n)
+>  		INIT_HLIST_HEAD(uidhash_table + n);
+>  
+>  	/* Insert the root user immediately (init already runs as root) */
 
