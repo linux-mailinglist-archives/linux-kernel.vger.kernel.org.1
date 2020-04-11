@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AC631A517B
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B025D1A5058
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgDKMPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:15:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49850 "EHLO mail.kernel.org"
+        id S1728320AbgDKMQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:16:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728184AbgDKMPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:15:46 -0400
+        id S1726777AbgDKMQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:16:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 686D820644;
-        Sat, 11 Apr 2020 12:15:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E709620692;
+        Sat, 11 Apr 2020 12:16:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607346;
-        bh=eDlxJIK+ajyAnrucoaBRW3ShFGqsrmf8FtcH3vNKYgc=;
+        s=default; t=1586607414;
+        bh=H5wRBl9usrRxdoGd6XIwiwpgDi0f0gC2vbxAzrEVrZQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MabmURGBp/Mz2S0P6QWurpIWiOYQHg8GxL/9r+NuavWUIGXoF3D1KRUzrBf/tOt97
-         UgLoex0fGKsb7Q7+3vpkYXsq/S/KuGv3USz6iJW/wbam2qJhG8FA7xKA5nw/FQT4td
-         JP/mhoR6z9WUWHy3v1/vGxk82JSMd0Ue7UXxQXmg=
+        b=UoOEEFbeCIIFowrIRdduIHcJppbK0RA0HNNlsfq/2IpyxuXjx4uZc/vjl/E29FVKs
+         dnt8l5Ek9AIHXJvoJb/sYn712vm0DlVTubl2SLyL0+3ynQINo8ymWCS91+zrF2mNKI
+         Lk6Y3eWSybwAhOYXtGBsLGY4pt0AtzObjAI5hHqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 4.19 36/54] usb: dwc3: gadget: Wrap around when skip TRBs
-Date:   Sat, 11 Apr 2020 14:09:18 +0200
-Message-Id: <20200411115512.087843119@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 10/41] net: stmmac: dwmac1000: fix out-of-bounds mac address reg setting
+Date:   Sat, 11 Apr 2020 14:09:19 +0200
+Message-Id: <20200411115504.829363202@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
+References: <20200411115504.124035693@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-commit 2dedea035ae82c5af0595637a6eda4655532b21e upstream.
+[ Upstream commit 3e1221acf6a8f8595b5ce354bab4327a69d54d18 ]
 
-When skipping TRBs, we need to account for wrapping around the ring
-buffer and not modifying some invalid TRBs. Without this fix, dwc3 won't
-be able to check for available TRBs.
+Commit 9463c4455900 ("net: stmmac: dwmac1000: Clear unused address
+entries") cleared the unused mac address entries, but introduced an
+out-of bounds mac address register programming bug -- After setting
+the secondary unicast mac addresses, the "reg" value has reached
+netdev_uc_count() + 1, thus we should only clear address entries
+if (addr < perfect_addr_number)
 
-Cc: stable <stable@vger.kernel.org>
-Fixes: 7746a8dfb3f9 ("usb: dwc3: gadget: extract dwc3_gadget_ep_skip_trbs()")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Fixes: 9463c4455900 ("net: stmmac: dwmac1000: Clear unused address entries")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/dwc3/gadget.c |    2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1369,7 +1369,7 @@ static void dwc3_gadget_ep_skip_trbs(str
- 	for (i = 0; i < req->num_trbs; i++) {
- 		struct dwc3_trb *trb;
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+@@ -209,7 +209,7 @@ static void dwmac1000_set_filter(struct
+ 			reg++;
+ 		}
  
--		trb = req->trb + i;
-+		trb = &dep->trb_pool[dep->trb_dequeue];
- 		trb->ctrl &= ~DWC3_TRB_CTRL_HWO;
- 		dwc3_ep_inc_deq(dep);
- 	}
+-		while (reg <= perfect_addr_number) {
++		while (reg < perfect_addr_number) {
+ 			writel(0, ioaddr + GMAC_ADDR_HIGH(reg));
+ 			writel(0, ioaddr + GMAC_ADDR_LOW(reg));
+ 			reg++;
 
 
