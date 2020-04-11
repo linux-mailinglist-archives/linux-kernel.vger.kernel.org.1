@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5701A5059
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BCF1A500B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbgDKMQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51262 "EHLO mail.kernel.org"
+        id S1726826AbgDKMNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:13:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727051AbgDKMQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:16:51 -0400
+        id S1726760AbgDKMNs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:13:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80A8721744;
-        Sat, 11 Apr 2020 12:16:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFB3520787;
+        Sat, 11 Apr 2020 12:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607412;
-        bh=rsMivg6zxnUZe5+q19pH3VNg+un8uCnbdFiR+2ak1+Y=;
+        s=default; t=1586607228;
+        bh=9/F1HgN1yJlGKSkllksxsM4rLDTTAM51nN0ITD+mQ4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KsGAoHzejQYUx8wyGlKMadxQFBVxi7zRcqCw7iRoj6DgNKRC90uN8D7BWMARu49/+
-         KVIt6pw34kpgFb4+XXnf7WIXh6DPZl3Jy8y45nFy3QclDXGCj5pZa09f1FPFNV9G4G
-         eyfGIB7EaAaaxJHUSSuCd6VDtDTfhzjpdABhbbTU=
+        b=Wczh+E5m5JD0Mf20635jD5YrmDVwYFtZvfh5fOk/XOQdJ9aZ6k6/zsm3ooWZXfg49
+         0V9f+NuMxL7uLo1GEHRNFkmS+HiA/N7IM4YBS7ffm6YJsfRhA4B+S6dYTfJX7sNRLg
+         Dj4ejRj7XfKlGVmYiTdCtYXH398P6yT7ZDdWtxXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: [PATCH 5.4 01/41] net: phy: realtek: fix handling of RTL8105e-integrated PHY
+        Mike Marciniszyn <mike.marciniszyn@intel.com>,
+        Kaike Wan <kaike.wan@intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Subject: [PATCH 4.14 26/38] IB/hfi1: Fix memory leaks in sysfs registration and unregistration
 Date:   Sat, 11 Apr 2020 14:09:10 +0200
-Message-Id: <20200411115504.231402605@linuxfoundation.org>
+Message-Id: <20200411115440.545010044@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
-References: <20200411115504.124035693@linuxfoundation.org>
+In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
+References: <20200411115437.795556138@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,41 +46,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Kaike Wan <kaike.wan@intel.com>
 
-[ No applicable upstream commit ]
+commit 5c15abc4328ad696fa61e2f3604918ed0c207755 upstream.
 
-After the referenced fix it turned out that one particular RTL8168
-chip version (RTL8105e) does not work on 5.4 because no dedicated PHY
-driver exists. Adding this PHY driver was done for fixing a different
-issue for versions from 5.5 already. I re-send the same change for 5.4
-because the commit message differs.
+When the hfi1 driver is unloaded, kmemleak will report the following
+issue:
 
-Fixes: 2e8c339b4946 ("r8169: fix PHY driver check on platforms w/o module softdeps")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+unreferenced object 0xffff8888461a4c08 (size 8):
+comm "kworker/0:0", pid 5, jiffies 4298601264 (age 2047.134s)
+hex dump (first 8 bytes):
+73 64 6d 61 30 00 ff ff sdma0...
+backtrace:
+[<00000000311a6ef5>] kvasprintf+0x62/0xd0
+[<00000000ade94d9f>] kobject_set_name_vargs+0x1c/0x90
+[<0000000060657dbb>] kobject_init_and_add+0x5d/0xb0
+[<00000000346fe72b>] 0xffffffffa0c5ecba
+[<000000006cfc5819>] 0xffffffffa0c866b9
+[<0000000031c65580>] 0xffffffffa0c38e87
+[<00000000e9739b3f>] local_pci_probe+0x41/0x80
+[<000000006c69911d>] work_for_cpu_fn+0x16/0x20
+[<00000000601267b5>] process_one_work+0x171/0x380
+[<0000000049a0eefa>] worker_thread+0x1d1/0x3f0
+[<00000000909cf2b9>] kthread+0xf8/0x130
+[<0000000058f5f874>] ret_from_fork+0x35/0x40
+
+This patch fixes the issue by:
+
+- Releasing dd->per_sdma[i].kobject in hfi1_unregister_sysfs().
+  - This will fix the memory leak.
+
+- Calling kobject_put() to unwind operations only for those entries in
+   dd->per_sdma[] whose operations have succeeded (including the current
+   one that has just failed) in hfi1_verbs_register_sysfs().
+
+Cc: <stable@vger.kernel.org>
+Fixes: 0cb2aa690c7e ("IB/hfi1: Add sysfs interface for affinity setup")
+Link: https://lore.kernel.org/r/20200326163807.21129.27371.stgit@awfm-01.aw.intel.com
+Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
+Signed-off-by: Kaike Wan <kaike.wan@intel.com>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/phy/realtek.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/infiniband/hw/hfi1/sysfs.c |   13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
---- a/drivers/net/phy/realtek.c
-+++ b/drivers/net/phy/realtek.c
-@@ -457,6 +457,15 @@ static struct phy_driver realtek_drvs[]
- 		.read_page	= rtl821x_read_page,
- 		.write_page	= rtl821x_write_page,
- 	}, {
-+		PHY_ID_MATCH_MODEL(0x001cc880),
-+		.name		= "RTL8208 Fast Ethernet",
-+		.read_mmd	= genphy_read_mmd_unsupported,
-+		.write_mmd	= genphy_write_mmd_unsupported,
-+		.suspend	= genphy_suspend,
-+		.resume		= genphy_resume,
-+		.read_page	= rtl821x_read_page,
-+		.write_page	= rtl821x_write_page,
-+	}, {
- 		PHY_ID_MATCH_EXACT(0x001cc910),
- 		.name		= "RTL8211 Gigabit Ethernet",
- 		.config_aneg	= rtl8211_config_aneg,
+--- a/drivers/infiniband/hw/hfi1/sysfs.c
++++ b/drivers/infiniband/hw/hfi1/sysfs.c
+@@ -861,8 +861,13 @@ bail:
+ 	for (i = 0; i < ARRAY_SIZE(hfi1_attributes); ++i)
+ 		device_remove_file(&dev->dev, hfi1_attributes[i]);
+ 
+-	for (i = 0; i < dd->num_sdma; i++)
+-		kobject_del(&dd->per_sdma[i].kobj);
++	/*
++	 * The function kobject_put() will call kobject_del() if the kobject
++	 * has been added successfully. The sysfs files created under the
++	 * kobject directory will also be removed during the process.
++	 */
++	for (; i >= 0; i--)
++		kobject_put(&dd->per_sdma[i].kobj);
+ 
+ 	return ret;
+ }
+@@ -875,6 +880,10 @@ void hfi1_verbs_unregister_sysfs(struct
+ 	struct hfi1_pportdata *ppd;
+ 	int i;
+ 
++	/* Unwind operations in hfi1_verbs_register_sysfs() */
++	for (i = 0; i < dd->num_sdma; i++)
++		kobject_put(&dd->per_sdma[i].kobj);
++
+ 	for (i = 0; i < dd->num_pports; i++) {
+ 		ppd = &dd->pport[i];
+ 
 
 
