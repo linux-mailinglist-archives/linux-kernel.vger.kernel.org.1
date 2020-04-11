@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0001A5020
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8A11A503F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgDKMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48092 "EHLO mail.kernel.org"
+        id S1728213AbgDKMPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:15:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727078AbgDKMOg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:36 -0400
+        id S1728202AbgDKMPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:15:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F81B20692;
-        Sat, 11 Apr 2020 12:14:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 41E1C21744;
+        Sat, 11 Apr 2020 12:15:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607276;
-        bh=o+4mYtswxyny3XsI8zlDx+U3Pz3LrrKAh0UyVtGB1Tc=;
+        s=default; t=1586607351;
+        bh=fGQ3NIWRcW6xTVFkaMNy4C8P5PvXObkGaNqnFg7hcjQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LWBWHXetOLXuNvp6IhY01ZVwerBJbIvHIVwHntck3RCOyXfauUXdKCGPMMaMujiEo
-         gq38lEsX2f+9tdsBVX0tBAjH8yVkm4bgA5Z5f+LJNIa4A3cs7dQzcr3Iyk0JzpIAze
-         NFvIJwwkCNAzJ9AhBws/u5YIahbidiV1B1giBKNE=
+        b=A2XfWeKXAQIaX7E1SWhvBxbvBawWwcDoQPwJWMJR1JxzefKVEq2ar5D3iOvUvcJo9
+         y+y6sZ+v6K7KPGgmWgo1xA5oECWxPckD+koW1D7x5ldViKnJN4iO15ST8knBAZ7Zu3
+         uTUVmHTRlpqo5GNJjtydY3E5zbMcjJmMegZgXxR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Lew <clew@codeaurora.org>,
-        Arun Kumar Neelakantam <aneela@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.14 36/38] rpmsg: glink: Remove chunk size word align warning
+        stable@vger.kernel.org,
+        PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 4.19 38/54] hwrng: imx-rngc - fix an error path
 Date:   Sat, 11 Apr 2020 14:09:20 +0200
-Message-Id: <20200411115441.303886448@linuxfoundation.org>
+Message-Id: <20200411115512.341196553@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-References: <20200411115437.795556138@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,35 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Lew <clew@codeaurora.org>
+From: Martin Kaiser <martin@kaiser.cx>
 
-commit f0beb4ba9b185d497c8efe7b349363700092aee0 upstream.
+commit 47a1f8e8b3637ff5f7806587883d7d94068d9ee8 upstream.
 
-It is possible for the chunk sizes coming from the non RPM remote procs
-to not be word aligned. Remove the alignment warning and continue to
-read from the FIFO so execution is not stalled.
+Make sure that the rngc interrupt is masked if the rngc self test fails.
+Self test failure means that probe fails as well. Interrupts should be
+masked in this case, regardless of the error.
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Cc: stable@vger.kernel.org
+Fixes: 1d5449445bd0 ("hwrng: mx-rngc - add a driver for Freescale RNGC")
+Reviewed-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/rpmsg/qcom_glink_native.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/char/hw_random/imx-rngc.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/rpmsg/qcom_glink_native.c
-+++ b/drivers/rpmsg/qcom_glink_native.c
-@@ -811,9 +811,6 @@ static int qcom_glink_rx_data(struct qco
- 		return -EAGAIN;
+--- a/drivers/char/hw_random/imx-rngc.c
++++ b/drivers/char/hw_random/imx-rngc.c
+@@ -111,8 +111,10 @@ static int imx_rngc_self_test(struct imx
+ 		return -ETIMEDOUT;
  	}
  
--	if (WARN(chunk_size % 4, "Incoming data must be word aligned\n"))
--		return -EINVAL;
--
- 	rcid = le16_to_cpu(hdr.msg.param1);
- 	spin_lock_irqsave(&glink->idr_lock, flags);
- 	channel = idr_find(&glink->rcids, rcid);
+-	if (rngc->err_reg != 0)
++	if (rngc->err_reg != 0) {
++		imx_rngc_irq_mask_clear(rngc);
+ 		return -EIO;
++	}
+ 
+ 	return 0;
+ }
 
 
