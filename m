@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 029B71A5021
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 617081A4FE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgDKMOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48148 "EHLO mail.kernel.org"
+        id S1727314AbgDKMMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:12:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727980AbgDKMOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:39 -0400
+        id S1727296AbgDKMMc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:12:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2AD220644;
-        Sat, 11 Apr 2020 12:14:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FB7320787;
+        Sat, 11 Apr 2020 12:12:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607279;
-        bh=3p1hq6BIBuc0+vFYbTPfMRq7iCHk0swCK/hCdXftwMM=;
+        s=default; t=1586607150;
+        bh=QUNfx0fl/3F2TqlBfgAIigsiluA3ED6SyNGF8lVFlpk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G9cGlSiBdKVAtlHXf0OSPqNXC4GZnUN/CVdZcjiG3qZjqubgD5Yyc0zO957tTODhc
-         VTPSmM53h9opVYml3BLZq7RPV/+z5aIdJg+XQA4hsRMcqfBGkVGpimtL/VuDoHHs+p
-         cEzE97yyQlzJuTUcLH3/UCTQjRQOlWIOB2pxoVdY=
+        b=I/1jGvbGXeg7BMHiw0J4xLr5vjXyAWZVVSxAwfxeBJQg54ZfIq5kmwnhTQ+HuaFNW
+         w6SXEErCq8J2C6Z7I8KSHuE19H3ISWlh2igOsP9hc8Pp/pA2pryrWT6dpOD9asWxxN
+         qSXiXCkWqGcA2trxsuYBSa4dYwTB2c0lpnSqJgvw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
         Eric Dumazet <edumazet@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 01/54] ipv4: fix a RCU-list lock in fib_triestat_seq_show
+Subject: [PATCH 4.9 04/32] ipv4: fix a RCU-list lock in fib_triestat_seq_show
 Date:   Sat, 11 Apr 2020 14:08:43 +0200
-Message-Id: <20200411115508.424171453@linuxfoundation.org>
+Message-Id: <20200411115419.180478735@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
+References: <20200411115418.455500023@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -86,15 +84,15 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/net/ipv4/fib_trie.c
 +++ b/net/ipv4/fib_trie.c
-@@ -2337,6 +2337,7 @@ static int fib_triestat_seq_show(struct
- 		   " %zd bytes, size of tnode: %zd bytes.\n",
+@@ -2256,6 +2256,7 @@ static int fib_triestat_seq_show(struct
+ 		   " %Zd bytes, size of tnode: %Zd bytes.\n",
  		   LEAF_SIZE, TNODE_SIZE(0));
  
 +	rcu_read_lock();
  	for (h = 0; h < FIB_TABLE_HASHSZ; h++) {
  		struct hlist_head *head = &net->ipv4.fib_table_hash[h];
  		struct fib_table *tb;
-@@ -2356,7 +2357,9 @@ static int fib_triestat_seq_show(struct
+@@ -2275,7 +2276,9 @@ static int fib_triestat_seq_show(struct
  			trie_show_usage(seq, t->stats);
  #endif
  		}
