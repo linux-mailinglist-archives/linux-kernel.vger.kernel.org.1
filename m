@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 134041A5220
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3E61A5221
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgDKMvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:51:37 -0400
-Received: from mout.gmx.net ([212.227.15.18]:38889 "EHLO mout.gmx.net"
+        id S1726317AbgDKMvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:51:48 -0400
+Received: from mout.gmx.net ([212.227.15.15]:51291 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgDKMvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:51:37 -0400
+        id S1726037AbgDKMvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:51:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586609492;
-        bh=P+/BvTIcjH35iVjfgxMJNRM/IZEW2+XYyu9OfnCgY5g=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=QMamHu5fxDtFfF3z/9dcjn/pHbSeAk0+WkTZZqwMnrEHZ6Xed42AKKkXAmavB46K6
-         zEUs9ES7+4twBXIbzNdXXGOu8yE2ssxe8TyQmNiMaWPlxTy1is/XpRlverGWr3qtXW
-         J8GjJ6hnWHecb2ySghhValLNVl/MjSk6jPGWmXqg=
+        s=badeba3b8450; t=1586609503;
+        bh=nTa7HOtzBAyYvqCf5UKKR4MsPgngH6j/QGDhtC+XUJI=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=acPUgjh22YDKWrgaAaaR7ytINdi8BGD9T0VWP/ctNa2B80Cu/av1QPrxceU1/pcdO
+         Y9TSMdOnUGJqIgXJ+YKuPBqaz5jM0n2ZoaC8scJfjlFpwkjJZ2nY+zk06RkjaVGS3A
+         K/+DUxcK9sp4p1QFhxv32pwPkRWpNEkWrMMbVdyI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
  (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1M26vL-1jPALq3pxB-002aPT; Sat, 11 Apr 2020 14:51:32 +0200
+ 1MXp5a-1jmYMN21ZE-00Y83K; Sat, 11 Apr 2020 14:51:43 +0200
 From:   Oscar Carter <oscar.carter@gmx.com>
 To:     Forest Bond <forest@alittletooquiet.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
@@ -30,55 +30,134 @@ Cc:     Oscar Carter <oscar.carter@gmx.com>,
         Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
         Amir Mahdi Ghorbanian <indigoomega021@gmail.com>,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] staging: vt6656: Refactor the vnt_vt3184_init function
-Date:   Sat, 11 Apr 2020 14:51:02 +0200
-Message-Id: <20200411125104.9625-1-oscar.carter@gmx.com>
+Subject: [PATCH 1/2] staging: vt6656: Remove duplicate code in vnt_vt3184_init function
+Date:   Sat, 11 Apr 2020 14:51:03 +0200
+Message-Id: <20200411125104.9625-2-oscar.carter@gmx.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200411125104.9625-1-oscar.carter@gmx.com>
+References: <20200411125104.9625-1-oscar.carter@gmx.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UuQ0UtGMGBD59o4VJV5Zs3yYW9zRx6GV7q+pOX0p7VMKaXmWZMI
- l9z5FRQ6UezFd8tsg/CS0lwNBZW+yGUu8PMR3TeDBNKTAt9AI4/SZm2SEJKtIjDSBS23K2I
- oJHE63boNIiud9XMuisxKVlvjY7DUZvZOtEX7C/27+BnIfmg+bJaC2wtZjZ27KtQlFbte8b
- BB3Ke5zfXKM7u5aiMlUrQ==
+X-Provags-ID: V03:K1:uZExSfYV5udqcg6iGFAofrLuWYVWILFw9DwS3V2x5QdDJfb9GAm
+ iaNORMSdwZTivGom5aF3GnudM/SpQj19UbX8pmpsrcbhUqYNc1J90n6ELdmglUMOh2qOl0B
+ ZKwKyE8ckGRvi/WwUFX7Tx0gZglkba9F5JlixIv1j9Xt/XVkFXxfzsi545LJzDySebOSvjH
+ NlROT6ly2jtTYI7SGIhqg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DDDFHtDXciw=:BJsLz2FqPiuICJT1vgj3rL
- xXU0RwJtrN+om0sb4WMKh0ACrkGPgVwJo9k37Z/pSwH5aJrs1Up0Kn1RednwsxAuOEmsJKsFu
- c7TaoNzH2sNyevGF66pjQFaT0vZ6nxh7xxe0cxGn+0EKdM01/23xVtj580UxDLFDsj+PsrHAv
- x4EQ6xmNwKUGAHyzl230mMksz4LEycTPI9vNc+TXSLm4G9uYe2EmHdjaHDUgw4odCYGYbvyM4
- oebpKt8baYxThMPRbMywpYqkflRa7Qmxb6TOcL1MxxVumQW78Vb0T1ddcUw6DwrCYSCR/ezqF
- m2yqrekRIxWvGdKzXFt3Ka+RHKUdmCtQRAG2BnmFHgQGbNbgzVGu+X/0W67RKhX6lhzG0/yuo
- uTnFgLrOFQTvAkzsLKPD0n+TCpR3qRRcWp+zOYCdheP3W131/7gJstfPfIklRVti6xX22rLVO
- Av1oq8OQWur61fcYXcy3Rg3+TB7oP+P+m2u1oh+llCcL70IteZGRf57LEUcv8gWPDfeLt4+J8
- kgKqWQNd2ytYwfI4iVVcWBIC+R1sSHBArmsG45SzynQdClKllOj0snswGjhNfdcHhRwukWRGK
- EGtfZBZp7EKDwKFCTNCowWz8a1TZV/4W1crTCpnn/TOMzVp5vhNfhjtQ6BeF+/QdJNDaOCRBX
- cZoJ4mQFg3d7uHwmeFQRvk7Com2blusni6hQsV+yMuFWxE1VtmpVS1tU4IPSNzXbR4tGBYMfk
- OSk67N/uLO4ExWRefO9KUi1bSMC1X9Sm/G6VpsT+qDJyELvx0AiFX0Iy1RTPR2FdhYJ3Gqlr1
- P13Sj4+98QGreOfTcG1pON2W5IjPKOlb7Lq6AmL0jwlwsuXCWK9OrT9nxnDIgHJKGMMcY9L8b
- cT14i4amGN046JjOD5GyHQYfHISj9IouINwdpj8OPpXhAcNR71KevIgfZyZuGKNdsasdKLqzW
- cvSDAJEIjPH1U6XEEgV6Ob1FjBPqpSiWiL0QW2jp5Aoa92j0tNRY/P7a/IOrRXuTVt7yvvBUZ
- xK0IFq6zM3nu9jizpFd75DRMp2hyQye5PSrpacBWeJcYYEz5m2WxIlAB1123TCNev2oNk224q
- IndIxAjeKrMHRkvZDZaGu5mYdihKTQYP6sLiYyYWIOU7irFq8adoYbYum6d3I85bhh+Qr4fQS
- k/Bn+1CvHMOOjsJYrML9GlGJxpZyjEoMCozGY93mzoNnD8r2iyjFRdRqFSGAXi4kstyU7bTZF
- hQ2oRbFh3hFdcXHf4
+X-UI-Out-Filterresults: notjunk:1;V03:K0:w49Ddo/k2FQ=:laOUdd0v8usfgjg41SkhPF
+ YEiWoL9+QV/PX/bPDE//smI9hWcYT4jZmySDqM+8CPhw+u/maTQY5JL3yDCv395fKRsENYwJH
+ ktLjXZAuDxgEpY+W7qw23xcHYPQ7NPYp8YrwBwEtTScH+0ILw0ppwEOd5UDPAfvuh9VO89jTi
+ EmKidwqHw0r+RpWrkQdAzST4oxcto5xdy1NchI1Rro6ckN/IGH6j6sfi4Mzacb7z6sSjdHSaM
+ h6Juu59t81zlUbpZyQ9Mjvr58BDu8tlrRynTLTjKUR/ULn1MJ3HW9wS3YmQaBUfUavGgFj5vF
+ 6Vb6aJFBgqX25ITSD7cMRGCPST4pW3kbOhAKUwaDF82HQKIcBppwWoOIaAwlEb7rFe2FpoWb1
+ q2YB209UQkqU6rRLyQZIyl/fHHiqdISIDIB/jYrW4yQlumAOnQxT8iQ5en3p9Fu+DocKIlo4H
+ Vf5hSOoDllnxHIev4Jr377mVFwIRyRiIA07JNQFRULAsRuSgT86v1HYModWSFBoyE5zA79BBo
+ I6p9/IH6ZsfxoWbT35UizGwAnfAVoLB/XfFxb3Uywbrf5zyDTw/G3yZHYKppLg3BYx5dMI+dz
+ NdR5ZfHkIFDws1BclycacMfgqyTcl5HAL5FgnOicnUfWb7W7U/clAv32Swj7E2Z5cWKZtYZ/F
+ t4bJfxaHhuBChMdzaWgHc1m0AE6DJXLCMMCx/hx6c/1fKKOopcKHNlrdZ8WFgyBuglMjJcH7Z
+ tvvIvFJgkh+yJbZAWKVRDT53vEWFjBTAvX4Qel0z9mmP9zPHKq5zmX+AzpGC2D3IOjPtzqMWV
+ 9snFAQKBi+8Rn7UbSo/Qd5JRbCySKBwItqD6QEpqz6cSkDPDDs+L0vdBsYsxADSI6e7pKxGkk
+ mCiu2Kr92xSmICL3VWnb6fLTFcCXbWSoX1MoGFIpiFBotTW51csF82/1iIa5cqiL+5rU4OgN4
+ 4l5mV3q7AevryigqwV5a5xrC94sggYaj96zkVkIsQCf3dlqajZ0utWNElaO/NMpX7Fjrk/SRY
+ wsS7mfWG274lGXPqqPU0zJnTQITtDREiKzVGz7fWhOqxbE2Yuo2tEKc0CuQQAUr8fWp1dk05Z
+ KcDjfdDt4Yb0wguE6LKhOPzqynea9HHb1cYBV+DBQSB3jzRGovgfIEjLaMpKSR3g07CWIRz0G
+ bkn8OMqqJ29wXVZ+7AGZPxImz75De7fm2Vz6Y7PZxtyLXSK7yA0Y8srtSXiqpC89A3eV0bpZA
+ LfYOmq6dk7ypdOeZ0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series makes a refactor of the vnt_vt3184_init function through
-two patches.
+Remove duplicate code in "if" statements because different branches are
+almost the same.
 
-The first one removes duplicate code in the if statements because
-different branches are almost the same.
+Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+=2D--
+ drivers/staging/vt6656/baseband.c | 52 +++++++------------------------
+ 1 file changed, 12 insertions(+), 40 deletions(-)
 
-The second patch remove unnecessary local variable initialization.
+diff --git a/drivers/staging/vt6656/baseband.c b/drivers/staging/vt6656/ba=
+seband.c
+index a19a563d8bcc..276210a7284e 100644
+=2D-- a/drivers/staging/vt6656/baseband.c
++++ b/drivers/staging/vt6656/baseband.c
+@@ -366,23 +366,15 @@ int vnt_vt3184_init(struct vnt_private *priv)
 
-Oscar Carter (2):
-  staging: vt6656: Remove duplicate code in vnt_vt3184_init function
-  staging: vt6656: Remove unnecessary local variable initialization
+ 	dev_dbg(&priv->usb->dev, "RF Type %d\n", priv->rf_type);
 
- drivers/staging/vt6656/baseband.c | 54 ++++++++-----------------------
- 1 file changed, 13 insertions(+), 41 deletions(-)
+-	if (priv->rf_type =3D=3D RF_AL2230 ||
+-	    priv->rf_type =3D=3D RF_AL2230S) {
++	if ((priv->rf_type =3D=3D RF_AL2230) ||
++	    (priv->rf_type =3D=3D RF_AL2230S) ||
++	    (priv->rf_type =3D=3D RF_AIROHA7230)) {
+ 		priv->bb_rx_conf =3D vnt_vt3184_al2230[10];
+ 		length =3D sizeof(vnt_vt3184_al2230);
+ 		addr =3D vnt_vt3184_al2230;
+
+-		priv->bb_vga[0] =3D 0x1C;
+-		priv->bb_vga[1] =3D 0x10;
+-		priv->bb_vga[2] =3D 0x0;
+-		priv->bb_vga[3] =3D 0x0;
+-
+-	} else if (priv->rf_type =3D=3D RF_AIROHA7230) {
+-		priv->bb_rx_conf =3D vnt_vt3184_al2230[10];
+-		length =3D sizeof(vnt_vt3184_al2230);
+-		addr =3D vnt_vt3184_al2230;
+-
+-		addr[0xd7] =3D 0x06;
++		if (priv->rf_type =3D=3D RF_AIROHA7230)
++			addr[0xd7] =3D 0x06;
+
+ 		priv->bb_vga[0] =3D 0x1c;
+ 		priv->bb_vga[1] =3D 0x10;
+@@ -390,22 +382,8 @@ int vnt_vt3184_init(struct vnt_private *priv)
+ 		priv->bb_vga[3] =3D 0x0;
+
+ 	} else if ((priv->rf_type =3D=3D RF_VT3226) ||
+-			(priv->rf_type =3D=3D RF_VT3226D0)) {
+-		priv->bb_rx_conf =3D vnt_vt3184_vt3226d0[10];
+-		length =3D sizeof(vnt_vt3184_vt3226d0);
+-		addr =3D vnt_vt3184_vt3226d0;
+-
+-		priv->bb_vga[0] =3D 0x20;
+-		priv->bb_vga[1] =3D 0x10;
+-		priv->bb_vga[2] =3D 0x0;
+-		priv->bb_vga[3] =3D 0x0;
+-
+-		/* Fix VT3226 DFC system timing issue */
+-		ret =3D vnt_mac_reg_bits_on(priv, MAC_REG_SOFTPWRCTL2,
+-					  SOFTPWRCTL_RFLEOPT);
+-		if (ret)
+-			goto end;
+-	} else if (priv->rf_type =3D=3D RF_VT3342A0) {
++		   (priv->rf_type =3D=3D RF_VT3226D0) ||
++		   (priv->rf_type =3D=3D RF_VT3342A0)) {
+ 		priv->bb_rx_conf =3D vnt_vt3184_vt3226d0[10];
+ 		length =3D sizeof(vnt_vt3184_vt3226d0);
+ 		addr =3D vnt_vt3184_vt3226d0;
+@@ -435,19 +413,13 @@ int vnt_vt3184_init(struct vnt_private *priv)
+ 	if (ret)
+ 		goto end;
+
+-	if (priv->rf_type =3D=3D RF_VT3226 ||
+-	    priv->rf_type =3D=3D RF_VT3342A0) {
+-		ret =3D vnt_control_out_u8(priv, MESSAGE_REQUEST_MACREG,
+-					 MAC_REG_ITRTMSET, 0x23);
+-		if (ret)
+-			goto end;
++	if ((priv->rf_type =3D=3D RF_VT3226) ||
++	    (priv->rf_type =3D=3D RF_VT3342A0) ||
++	    (priv->rf_type =3D=3D RF_VT3226D0)) {
++		data =3D (priv->rf_type =3D=3D RF_VT3226D0) ? 0x11 : 0x23;
+
+-		ret =3D vnt_mac_reg_bits_on(priv, MAC_REG_PAPEDELAY, BIT(0));
+-		if (ret)
+-			goto end;
+-	} else if (priv->rf_type =3D=3D RF_VT3226D0) {
+ 		ret =3D vnt_control_out_u8(priv, MESSAGE_REQUEST_MACREG,
+-					 MAC_REG_ITRTMSET, 0x11);
++					 MAC_REG_ITRTMSET, data);
+ 		if (ret)
+ 			goto end;
 
 =2D-
 2.20.1
