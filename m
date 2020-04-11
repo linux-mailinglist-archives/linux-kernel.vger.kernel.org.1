@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F15A31A5796
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4807E1A582F
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729885AbgDKXMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 19:12:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729910AbgDKXMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:12:07 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E87C215A4;
-        Sat, 11 Apr 2020 23:12:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586646727;
-        bh=ETcWrkRMIIoIzX5+0HwSPbVs7draC4pNdBhKN+uIrxw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tn6IDLlQiDNpI5U1tVRQaskcQbHw9tZ8rDBjFt2zAkS4WoHQSUXkj4jYBFzEjXgDc
-         T5GxNRbfH7po4qoE9fZW7cd1DsWdEgsekBKOxoJwx38QJhFJXKEyhszB33Gpl3WAD4
-         Nrgz65bDf0Js8TXR8/QjYhpbOIxRW6yLhT76SLbU=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zhu Yanjun <yanjunz@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 03/66] RDMA/rxe: Set sys_image_guid to be aligned with HW IB devices
-Date:   Sat, 11 Apr 2020 19:11:00 -0400
-Message-Id: <20200411231203.25933-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200411231203.25933-1-sashal@kernel.org>
-References: <20200411231203.25933-1-sashal@kernel.org>
+        id S1729862AbgDKXLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 19:11:18 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:36948 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729829AbgDKXLN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:11:13 -0400
+Received: by mail-ed1-f67.google.com with SMTP id w2so613333edx.4
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 16:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hM2xNoRDEOsCQMc/8ffTH/ZtgmObtgZL7f9RJCSssp8=;
+        b=mp/DOoPQsfzm3B0+5t9StX5Kkk2y5KlqsKysolBoZDoYSBzOEC4TJOKuasReGBbIaz
+         4zXqJYGie8jGh1yvbaKdzJ2Fn7pj24ghTcW3cv9RYgl1K64lwn+TESkQBZDMc6lLTQ/O
+         WIpQHW5HmVTC4jMKFMXjxfReNhnG7BwT4IYe3tRv2yFa99oRRbOzOWaOVJbPb3PNvtuH
+         /t3BxBpCpzESLw8UiEcuT6ufBsM5CwHzV1h+hpO0wUmlPLgwgDkp8sfjMIUE99KjthN2
+         Jg31cAf7fG1boxi/Pah5y6dc8maleWaTl6ifq326DuWTQ17S/MkS6srMLP5yr6y2nLW9
+         rJdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hM2xNoRDEOsCQMc/8ffTH/ZtgmObtgZL7f9RJCSssp8=;
+        b=UxxNEK02m67wWr/g/S4YiAyoq9pi0aJ0RaNHQ3Qj1onDos/YMaDvueyWYC0nGb9aqJ
+         EV/wac0T4TKmNGkLaB0PDi+xeERBa7d2HZbWrw3shYSDS4jxB+VEkkP78sSPZKgxWKYo
+         J3cC1nLRrl7G6kxRtZkzIXwpKY9coo6+dGvww/CEoMZSg9EU6VLg5bD2HKqOJYxYjcsl
+         Ti8WIJq3rOeeSE/RWFGjWwjpf6I+fltIUN/WqmAzQocfuTUrFT3NN348GAnlyZ99nxQb
+         m8oV+xlXTY19Wv8BcZXYsVl/QdG2+yfX6o5m2hQL9XlwIZCGZsGexNrtq4okZTVPK2vo
+         en9w==
+X-Gm-Message-State: AGi0PuZ0fWzk+DUzA7TI53rmT4wy7D1lNlKkR6zORi6B/SjjXPus3hzf
+        u6fNv4QQmtTUtqrv54+krGnXPizK022/NGp8jeH7Nw==
+X-Google-Smtp-Source: APiQypJQE2qPgi1xoI94y8AB90tOMDYjsDYUMuc9MPy0tLvmBy917MrKoq5KDglXColsDfnLnEhRWmNu1NxR4UTerNo=
+X-Received: by 2002:a17:906:7f10:: with SMTP id d16mr10139135ejr.318.1586646672949;
+ Sat, 11 Apr 2020 16:11:12 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+References: <20200410135014.26396-1-colin.king@canonical.com>
+In-Reply-To: <20200410135014.26396-1-colin.king@canonical.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Sat, 11 Apr 2020 20:11:01 -0300
+Message-ID: <CAAEAJfA2PQOUWbKu=CLPaA-bx2T3MWGpsviq7DBaJ9DxOqCTbg@mail.gmail.com>
+Subject: Re: [PATCH] media: pwc-ctl: remove redundant assignment to variable ret
+To:     Colin King <colin.king@canonical.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhu Yanjun <yanjunz@mellanox.com>
+On Fri, 10 Apr 2020 at 10:50, Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable ret is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit d0ca2c35dd15a3d989955caec02beea02f735ee6 ]
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
 
-The RXE driver doesn't set sys_image_guid and user space applications see
-zeros. This causes to pyverbs tests to fail with the following traceback,
-because the IBTA spec requires to have valid sys_image_guid.
-
- Traceback (most recent call last):
-   File "./tests/test_device.py", line 51, in test_query_device
-     self.verify_device_attr(attr)
-   File "./tests/test_device.py", line 74, in verify_device_attr
-     assert attr.sys_image_guid != 0
-
-In order to fix it, set sys_image_guid to be equal to node_guid.
-
-Before:
- 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
- 0000:0000:0000:0000
-
-After:
- 5: rxe0: ... node_guid 5054:00ff:feaa:5363 sys_image_guid
- 5054:00ff:feaa:5363
-
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Link: https://lore.kernel.org/r/20200323112800.1444784-1-leon@kernel.org
-Signed-off-by: Zhu Yanjun <yanjunz@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/infiniband/sw/rxe/rxe.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
-index 10999fa692818..157d08f167345 100644
---- a/drivers/infiniband/sw/rxe/rxe.c
-+++ b/drivers/infiniband/sw/rxe/rxe.c
-@@ -121,6 +121,8 @@ static void rxe_init_device_param(struct rxe_dev *rxe)
- 	rxe->attr.max_fast_reg_page_list_len	= RXE_MAX_FMR_PAGE_LIST_LEN;
- 	rxe->attr.max_pkeys			= RXE_MAX_PKEYS;
- 	rxe->attr.local_ca_ack_delay		= RXE_LOCAL_CA_ACK_DELAY;
-+	addrconf_addr_eui48((unsigned char *)&rxe->attr.sys_image_guid,
-+			rxe->ndev->dev_addr);
- 
- 	rxe->max_ucontext			= RXE_MAX_UCONTEXT;
- }
--- 
-2.20.1
-
+> ---
+>  drivers/media/usb/pwc/pwc-ctrl.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/usb/pwc/pwc-ctrl.c b/drivers/media/usb/pwc/pwc-ctrl.c
+> index 315c55927f5c..cff64d872058 100644
+> --- a/drivers/media/usb/pwc/pwc-ctrl.c
+> +++ b/drivers/media/usb/pwc/pwc-ctrl.c
+> @@ -523,7 +523,7 @@ int pwc_set_leds(struct pwc_device *pdev, int on_value, int off_value)
+>  #ifdef CONFIG_USB_PWC_DEBUG
+>  int pwc_get_cmos_sensor(struct pwc_device *pdev, int *sensor)
+>  {
+> -       int ret = -1, request;
+> +       int ret, request;
+>
+>         if (pdev->type < 675)
+>                 request = SENSOR_TYPE_FORMATTER1;
+> --
+> 2.25.1
+>
