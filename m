@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 913B31A5018
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2721A502D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbgDKMOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47626 "EHLO mail.kernel.org"
+        id S1727719AbgDKMPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:15:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727191AbgDKMOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:18 -0400
+        id S1727368AbgDKMPI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:15:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4DE620787;
-        Sat, 11 Apr 2020 12:14:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABF7320692;
+        Sat, 11 Apr 2020 12:15:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607257;
+        s=default; t=1586607308;
         bh=TOlzQZqFBlXXk6vVW3nEQ7OnPHurudRh2uEU+6f1lvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2XkE/AlDiIsaVjljswxFm3RbVwQ8iMcgywa9hunQKb7uqPj0J9OYVxNMHTNjqHJDZ
-         phTcY24RMdAGs+oNT21xn3uewPCIUUeQ0Sg6xriCKSm/9IsTtOBsrIMrbgMpfTgdBo
-         3UztAiTfFZ9ZtXXsO6WBKnwsH5hWJYnOkXD0a5m0=
+        b=Ner4ZNgcEJDLL6uhIILRhJ7TZZgJSPneX9prSs388UCdtaQMdodPSXrw/3R9GTYVK
+         uj2k7vvK3v8ZEnALX4jER1phSDA1k83FWVnrJ6uXgx+5AeEg21E2mtNcYQanF38ExQ
+         C4I4r2nV+iwBbzCKydg+irUF7Z7OU2ZBN3sRN2bg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,12 +32,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Gerd Hoffmann <kraxel@redhat.com>,
         Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 05/38] drm/bochs: downgrade pci_request_region failure from error to warning
+Subject: [PATCH 4.19 07/54] drm/bochs: downgrade pci_request_region failure from error to warning
 Date:   Sat, 11 Apr 2020 14:08:49 +0200
-Message-Id: <20200411115438.431429906@linuxfoundation.org>
+Message-Id: <20200411115509.052519082@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-References: <20200411115437.795556138@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
