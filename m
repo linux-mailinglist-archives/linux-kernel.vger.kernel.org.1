@@ -2,530 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2231B1A4F37
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 11:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0751A4F3B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 11:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726171AbgDKJyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 05:54:01 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:64526 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgDKJyA (ORCPT
+        id S1726054AbgDKJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 05:56:51 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:37227 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725945AbgDKJ4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 05:54:00 -0400
-Received: from ubuntu.localdomain (unknown [58.251.74.227])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id A59014E141C;
-        Sat, 11 Apr 2020 17:53:47 +0800 (CST)
-From:   Wang Wenhu <wenhu.wang@vivo.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Cc:     Wang Wenhu <wenhu.wang@vivo.com>
-Subject: [PATCH 3/3] driver: rpmon: add rpmon_qmi driver
-Date:   Sat, 11 Apr 2020 02:53:01 -0700
-Message-Id: <20200411095301.18780-4-wenhu.wang@vivo.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200411095301.18780-1-wenhu.wang@vivo.com>
-References: <20200411095301.18780-1-wenhu.wang@vivo.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZSFVISUhCQkJDQ0pMT09IQ1lXWShZQU
-        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PFE6PSo4VjgzAhQXATgvIgE1
-        Ky0wCT9VSlVKTkNNTkJDQ0lMQkJOVTMWGhIXVQweFRMOVQwaFRw7DRINFFUYFBZFWVdZEgtZQVlO
-        Q1VJTkpVTE9VSUlMWVdZCAFZQUpPSEJJNwY+
-X-HM-Tid: 0a7168a8d7019376kuwsa59014e141c
+        Sat, 11 Apr 2020 05:56:51 -0400
+Received: by mail-wm1-f66.google.com with SMTP id z6so5019174wml.2
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 02:56:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=reply-to:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language;
+        bh=qjMYQ0iAaWweXpTQNNyUqpGALrond8OJMZAVfeor5uE=;
+        b=gKCzKNvYbTjjCQWsKK5GfxCraMEvmCQe4PCQ/UnyXe35Sx+GthUxQilgo+0h+WjjwC
+         sHTbbIWVB+l/6KNv3suodO4DWwauFMOzns8LbmJo+i/2S/kS63aSn2sHX8xmP2Dfx9FU
+         Ipn54irWHuKvohwaQKyUSbzoLeuanUGXV8tOvTQkOH6sHLrWwIGgai224itQtHM41wmL
+         68BY+lpw0aqq1Ubtkxcc8pbek9NyEhgOr3NlcoC8ot1Rr6Kabnm0YBkttTnbWatOEwgh
+         kXt/kEh7TrIPf/1CRnOEPNF97jW/iMnNIUKdkhcqmvlOUBJJhmHlhF8Y4rXMYMFqQuG2
+         99Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language;
+        bh=qjMYQ0iAaWweXpTQNNyUqpGALrond8OJMZAVfeor5uE=;
+        b=nRMfo+fgir9eHtKfWZY/7IyfI5YY7qpfa4NJXmVWMCRwVqqGFtNop7JpgAHuNVvmxk
+         J1QuTJ9dZpXe8JSX0Lxs4B1wL7pycIMHLiRPdmo983idCjCR2TmgORfZ5KIP/U5e/C5g
+         bWHlHocrA4xCnTXew86iAAVfUSa7XU4nOVx3Wl4qQ5WjhxClsbR8dxG43D3HkieFsgyZ
+         QKo3EONM550aTr+u77d+R8hz38AffPlFZMPJzR5l1UdpAD+2XeSskNbKLqR+uOUOlPx7
+         z03bv+tiS5gbMRgPs2wCs7NtBvws0PfYgYQDkNkwRAZilKEda+cm6t2dWr8al+fUCJOl
+         eY2w==
+X-Gm-Message-State: AGi0Pua5zbj8jynxnUnxjYptABiyJtbQlPCuJNgkKpZyZso8wKRpAEJ5
+        3rUs3KgAJN3qbEjgM52wA8w=
+X-Google-Smtp-Source: APiQypKE+RThIscaTwtKUIzXMFyYjxqapK6SyURz8SwYEokLVce/ecr1hceGQPRbg8Oh5bVkNafRjw==
+X-Received: by 2002:a1c:7905:: with SMTP id l5mr9722699wme.5.1586599008565;
+        Sat, 11 Apr 2020 02:56:48 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id 17sm3331505wmo.2.2020.04.11.02.56.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 11 Apr 2020 02:56:48 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
+Subject: Re: BUG: kernel NULL pointer dereference, address: 0000000000000026
+ after switching to 5.7 kernel
+To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        "Grodzovsky, Andrey" <Andrey.Grodzovsky@amd.com>,
+        "Russell, Kent" <Kent.Russell@amd.com>
+References: <CABXGCsN=SNp7Ub3KHmsGrg+5R1g13HMea2+Jw+hTer3g74q21Q@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <4a9ae285-f126-c83b-b55f-36bd7a4403a0@gmail.com>
+Date:   Sat, 11 Apr 2020 11:56:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CABXGCsN=SNp7Ub3KHmsGrg+5R1g13HMea2+Jw+hTer3g74q21Q@mail.gmail.com>
+Content-Type: multipart/mixed;
+ boundary="------------508D5A2C9492BF1F16DFD628"
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RPMON_QMI is used by RPMON to communicate with remote processors
-with QMI APIs if enabled. RPMON_QMI itself is designed as a modular
-framework that would introduce different kinds of message sets
-which may be updated for versions.
+This is a multi-part message in MIME format.
+--------------508D5A2C9492BF1F16DFD628
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-RPMON_QMI creates a device of rpmon_device type for each remote
-processor endpoint. All the endpoint devices shares an unique set
-of QMI suite.
+Yeah, that is a known issue.
 
-Signed-off-by: Wang Wenhu <wenhu.wang@vivo.com>
+You could try the attached patch, but please be aware that it is not 
+even compile tested because of the Easter holidays here.
+
+Thanks,
+Christian.
+
+Am 10.04.20 um 21:51 schrieb Mikhail Gavrilov:
+> Hi folks.
+> After upgrade kernel to 5.7 I see every boot in kernel log following
+> error messages:
+>
+> [    2.569513] [drm] Found UVD firmware ENC: 1.2 DEC: .43 Family ID: 19
+> [    2.569538] [drm] PSP loading UVD firmware
+> [    2.570038] BUG: kernel NULL pointer dereference, address: 0000000000000026
+> [    2.570045] #PF: supervisor read access in kernel mode
+> [    2.570050] #PF: error_code(0x0000) - not-present page
+> [    2.570055] PGD 0 P4D 0
+> [    2.570060] Oops: 0000 [#1] SMP NOPTI
+> [    2.570065] CPU: 5 PID: 667 Comm: uvd_enc_1.1 Not tainted
+> 5.7.0-0.rc0.git6.1.2.fc33.x86_64 #1
+> [    2.570072] Hardware name: System manufacturer System Product
+> Name/ROG STRIX X570-I GAMING, BIOS 1405 11/19/2019
+> [    2.570085] RIP: 0010:__kthread_should_park+0x5/0x30
+> [    2.570090] Code: 00 e9 fe fe ff ff e8 ca 3a 08 00 e9 49 fe ff ff
+> 48 89 df e8 dd 38 08 00 84 c0 0f 84 6a ff ff ff e9 a6 fe ff ff 0f 1f
+> 44 00 00 <f6> 47 26 20 74 12 48 8b 87 88 09 00 00 48 8b 00 48 c1 e8 02
+> 83 e0
+> [    2.570103] RSP: 0018:ffffad8141723e50 EFLAGS: 00010246
+> [    2.570107] RAX: 7fffffffffffffff RBX: ffff8a8d1d116ed8 RCX: 0000000000000000
+> [    2.570112] RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 0000000000000000
+> [    2.570116] RBP: ffff8a8d28c11300 R08: 0000000000000000 R09: 0000000000000000
+> [    2.570120] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8a8d1d152e40
+> [    2.570125] R13: ffff8a8d1d117280 R14: ffff8a8d1d116ed8 R15: ffff8a8d1ca68000
+> [    2.570131] FS:  0000000000000000(0000) GS:ffff8a8d3aa00000(0000)
+> knlGS:0000000000000000
+> [    2.570137] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.570142] CR2: 0000000000000026 CR3: 00000007e3dc6000 CR4: 00000000003406e0
+> [    2.570147] Call Trace:
+> [    2.570157]  drm_sched_get_cleanup_job+0x42/0x130 [gpu_sched]
+> [    2.570166]  drm_sched_main+0x6f/0x530 [gpu_sched]
+> [    2.570173]  ? lockdep_hardirqs_on+0x11e/0x1b0
+> [    2.570179]  ? drm_sched_get_cleanup_job+0x130/0x130 [gpu_sched]
+> [    2.570185]  kthread+0x131/0x150
+> [    2.570189]  ? __kthread_bind_mask+0x60/0x60
+> [    2.570196]  ret_from_fork+0x27/0x50
+> [    2.570203] Modules linked in: fjes(-) amdgpu(+) amd_iommu_v2
+> gpu_sched ttm drm_kms_helper drm crc32c_intel igb nvme nvme_core dca
+> i2c_algo_bit wmi pinctrl_amd br_netfilter bridge stp llc fuse
+> [    2.570223] CR2: 0000000000000026
+> [    2.570228] ---[ end trace 80c25d326e1e0d7c ]---
+> [    2.570233] RIP: 0010:__kthread_should_park+0x5/0x30
+> [    2.570238] Code: 00 e9 fe fe ff ff e8 ca 3a 08 00 e9 49 fe ff ff
+> 48 89 df e8 dd 38 08 00 84 c0 0f 84 6a ff ff ff e9 a6 fe ff ff 0f 1f
+> 44 00 00 <f6> 47 26 20 74 12 48 8b 87 88 09 00 00 48 8b 00 48 c1 e8 02
+> 83 e0
+> [    2.570250] RSP: 0018:ffffad8141723e50 EFLAGS: 00010246
+> [    2.570255] RAX: 7fffffffffffffff RBX: ffff8a8d1d116ed8 RCX: 0000000000000000
+> [    2.570260] RDX: 0000000000000000 RSI: 00000000ffffffff RDI: 0000000000000000
+> [    2.570265] RBP: ffff8a8d28c11300 R08: 0000000000000000 R09: 0000000000000000
+> [    2.570271] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8a8d1d152e40
+> [    2.570276] R13: ffff8a8d1d117280 R14: ffff8a8d1d116ed8 R15: ffff8a8d1ca68000
+> [    2.570281] FS:  0000000000000000(0000) GS:ffff8a8d3aa00000(0000)
+> knlGS:0000000000000000
+> [    2.570287] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    2.570292] CR2: 0000000000000026 CR3: 00000007e3dc6000 CR4: 00000000003406e0
+> [    2.570299] BUG: sleeping function called from invalid context at
+> include/linux/percpu-rwsem.h:49
+> [    2.570306] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid:
+> 667, name: uvd_enc_1.1
+> [    2.570311] INFO: lockdep is turned off.
+> [    2.570315] irq event stamp: 14
+> [    2.570319] hardirqs last  enabled at (13): [<ffffffffb1b8c976>]
+> _raw_spin_unlock_irqrestore+0x46/0x60
+> [    2.570330] hardirqs last disabled at (14): [<ffffffffb1004932>]
+> trace_hardirqs_off_thunk+0x1a/0x1c
+> [    2.570338] softirqs last  enabled at (0): [<ffffffffb10e04f6>]
+> copy_process+0x706/0x1bc0
+> [    2.570345] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> [    2.570351] CPU: 5 PID: 667 Comm: uvd_enc_1.1 Tainted: G      D
+>        5.7.0-0.rc0.git6.1.2.fc33.x86_64 #1
+> [    2.570358] Hardware name: System manufacturer System Product
+> Name/ROG STRIX X570-I GAMING, BIOS 1405 11/19/2019
+> [    2.570365] Call Trace:
+> [    2.570373]  dump_stack+0x8b/0xc8
+> [    2.570380]  ___might_sleep.cold+0xb6/0xc6
+> [    2.570385]  exit_signals+0x1c/0x2d0
+> [    2.570390]  do_exit+0xb1/0xc30
+> [    2.570395]  ? kthread+0x131/0x150
+> [    2.570400]  rewind_stack_do_exit+0x17/0x20
+> [    2.570559] [drm] Found VCE firmware Version: 57.6 Binary ID: 4
+> [    2.570572] [drm] PSP loading VCE firmware
+> [    3.146462] [drm] reserve 0x400000 from 0x83fe800000 for PSP TMR
+>
+> $ /usr/src/kernels/`uname -r`/scripts/faddr2line
+> /lib/debug/lib/modules/`uname -r`/vmlinux __kthread_should_park+0x5
+> __kthread_should_park+0x5/0x30:
+> to_kthread at kernel/kthread.c:75
+> (inlined by) __kthread_should_park at kernel/kthread.c:109
+>
+> I think this issue related to amdgpu driver.
+> Can anyone look into it?
+>
+> Thanks.
+>
+> Full kernel log here:
+> https://pastebin.com/RrSp6KYL
+>
+> --
+> Best Regards,
+> Mike Gavrilov.
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+
+
+--------------508D5A2C9492BF1F16DFD628
+Content-Type: text/x-patch;
+ name="0001-drm-scheduler-fix-drm_sched_get_cleanup_job.patch"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment;
+ filename="0001-drm-scheduler-fix-drm_sched_get_cleanup_job.patch"
+
+From 66585faf442465bd71dd10c4601eab23f235aa29 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Date: Sat, 11 Apr 2020 11:54:01 +0200
+Subject: [PATCH] drm/scheduler: fix drm_sched_get_cleanup_job
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+We are racing to initialize sched->thread here, just always check the
+current thread.
+
+Signed-off-by: Christian König <christian.koenig@amd.com>
 ---
- drivers/rpmon/Kconfig     |  15 ++
- drivers/rpmon/Makefile    |   1 +
- drivers/rpmon/rpmon_qmi.c | 434 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 450 insertions(+)
- create mode 100644 drivers/rpmon/rpmon_qmi.c
+ drivers/gpu/drm/scheduler/sched_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rpmon/Kconfig b/drivers/rpmon/Kconfig
-index 4118d4fab433..e44d587db0d2 100644
---- a/drivers/rpmon/Kconfig
-+++ b/drivers/rpmon/Kconfig
-@@ -23,6 +23,21 @@ config RPMON
- 	  Currently RPMON_QMI is available which uses QMI infrastructures
- 	  on Qualcomm SoC Platforms.
+diff --git a/drivers/gpu/drm/scheduler/sched_main.c b/drivers/gpu/drm/scheduler/sched_main.c
+index a18eabf692e4..9380fa58c8f1 100644
+--- a/drivers/gpu/drm/scheduler/sched_main.c
++++ b/drivers/gpu/drm/scheduler/sched_main.c
+@@ -674,7 +674,7 @@ drm_sched_get_cleanup_job(struct drm_gpu_scheduler *sched)
+ 	 */
+ 	if ((sched->timeout != MAX_SCHEDULE_TIMEOUT &&
+ 	    !cancel_delayed_work(&sched->work_tdr)) ||
+-	    __kthread_should_park(sched->thread))
++	    kthread_should_park())
+ 		return NULL;
  
-+config RPMON_QMI
-+	tristate "RPMON QMI Driver Engine"
-+	select RPMON_QMI_MSG_V1
-+	depends on RPMON
-+	depends on QCOM_QMI_HELPERS
-+	help
-+	  RPMON_QMI is used by RPMON to communicate with remote processors
-+	  with QMI APIs if enabled. RPMON_QMI itself is designed as a modular
-+	  framework that would introduce different kinds of message sets
-+	  which may be updated for versions.
-+
-+	  RPMON_QMI creates a device of rpmon_device type for each remote
-+	  processor endpoint. All the endpoint devices shares an unique set
-+	  of QMI suite.
-+
- config RPMON_QMI_MSG_V1
- 	tristate "RPMON QMI Message Version 1.0"
- 	depends on RPMON
-diff --git a/drivers/rpmon/Makefile b/drivers/rpmon/Makefile
-index 25f468a73a20..76d9525339d9 100644
---- a/drivers/rpmon/Makefile
-+++ b/drivers/rpmon/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_RPMON) += rpmon.o
-+obj-$(CONFIG_RPMON_QMI) += rpmon_qmi.o
- obj-$(CONFIG_RPMON_QMI_MSG_V1)	+= rpmon_qmi_msg_v1.o
-diff --git a/drivers/rpmon/rpmon_qmi.c b/drivers/rpmon/rpmon_qmi.c
-new file mode 100644
-index 000000000000..ae49510cbb83
---- /dev/null
-+++ b/drivers/rpmon/rpmon_qmi.c
-@@ -0,0 +1,434 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2020 Vivo Communication Technology Co. Ltd.
-+ * Copyright (C) 2020 Wang Wenhu <wenhu.wang@vivo.com>
-+ * All rights reserved.
-+ *
-+ * RPMON: An implementation of remote processor monitor freamwork
-+ * for platforms that multi-processors exists. RPMON is implemented
-+ * with chardev and sysfs class as interfaces to communicate with
-+ * the user level. It supports different communication interfaces
-+ * added modularly with remote processors. Currently QMI implementation
-+ * is available.
-+ *
-+ * RPMON could be used to detect the stabilities of remote processors,
-+ * collect any kinds of information you are interested with, take
-+ * actions like connection status check, and so on. Enhancements can
-+ * be made upon current implementation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/rpmon.h>
-+#include <linux/soc/qcom/qmi.h>
-+#include <linux/of_platform.h>
-+#include "rpmon_qmi.h"
-+
-+#define DRIVER_NAME "rpmon_qmi_drv"
-+
-+/*
-+ * Remote processor registered.
-+ */
-+#define RP_REGISTERED		0x0001
-+
-+/*
-+ * work struct for message processing.
-+ */
-+struct recv_work {
-+	struct work_struct work;
-+	struct sockaddr_qrtr sq;
-+	void *msg;
-+};
-+
-+/*
-+ * Delayed work to take a reset action when a failure is detected.
-+ */
-+struct exec_cb_work {
-+	struct delayed_work		dwk;
-+	struct rpmon_qmi_device *rdev;
-+	u32			checks;
-+};
-+
-+struct rpmon_qmi_exec_fn {
-+	int (*exec_call)(struct rpmon_qmi_device *rdev);
-+};
-+
-+struct rpmon_qmi_cb_fn {
-+	void (*callback)(struct work_struct *work);
-+	u32 msg_len;
-+};
-+
-+static DEFINE_MUTEX(rdev_list_lock);
-+static LIST_HEAD(rdev_list);
-+static struct rpmon_qmi *rpqmi;
-+static struct workqueue_struct *rpqmi_wq;
-+
-+static void rpmon_qmi_register_req_cb(struct work_struct *work)
-+{
-+	struct rpmon_register_req *req;
-+	struct rpmon_qmi_device *rdev;
-+	struct recv_work *rwk = container_of(work, struct recv_work, work);
-+
-+	req = (struct rpmon_register_req *)rwk->msg;
-+
-+	mutex_lock(&rdev_list_lock);
-+	list_for_each_entry(rdev, &rdev_list, list) {
-+		if (strncmp(rdev->info->name, req->name, RP_NAME_LEN))
-+			continue;
-+
-+		rdev->flag |= RP_REGISTERED;
-+		memcpy(&rdev->addr, &rwk->sq, sizeof(rwk->sq));
-+		if (req->timeout_valid)
-+			rdev->timeout = req->timeout;
-+		else
-+			rdev->timeout = 5000;
-+		rpmon_event_notify(rdev->info, RPMON_EVENT_REGISTER);
-+		break;
-+	}
-+	mutex_unlock(&rdev_list_lock);
-+
-+	kfree(rwk->msg);
-+	kfree(rwk);
-+}
-+
-+void rpmon_qmi_conn_check_resp_cb(struct work_struct *work)
-+{
-+	struct rpmon_conn_check_resp *cc_resp;
-+	struct rpmon_qmi_device *rdev;
-+	struct sockaddr_qrtr *addr;
-+	struct recv_work *rwk =
-+			container_of(work, struct recv_work, work);
-+
-+	cc_resp = (struct rpmon_conn_check_resp *)rwk->msg;
-+	mutex_lock(&rdev_list_lock);
-+	list_for_each_entry(rdev, &rdev_list, list) {
-+		addr = &rdev->addr;
-+		if (addr->sq_node != rwk->sq.sq_node ||
-+		    addr->sq_port != rwk->sq.sq_port)
-+			continue;
-+
-+		if (!cc_resp->result.error)
-+			atomic_inc(&rdev->reports);
-+		break;
-+	}
-+	mutex_unlock(&rdev_list_lock);
-+
-+	kfree(rwk->msg);
-+	kfree(rwk);
-+}
-+
-+/**
-+ * rpmon_qmi_exec_cb_worker - callback worker for execution
-+ * @work: work to been done
-+ *
-+ * Called as worker handler by the signle worker thread of rpmon_wq.
-+ * The worker is scheduled after timeout ms duration since the execution.
-+ */
-+static void rpmon_qmi_exec_cb_worker(struct work_struct *work)
-+{
-+	struct delayed_work *dwk = to_delayed_work(work);
-+	struct exec_cb_work *ewk =
-+			container_of(dwk, struct exec_cb_work, dwk);
-+	struct rpmon_qmi_device *rdev = ewk->rdev;
-+
-+	mutex_lock(&rdev_list_lock);
-+	if (ewk->checks <= atomic_read(&rdev->reports)) {
-+		pr_debug("%s health check success", rdev->info->name);
-+		goto out;
-+	}
-+
-+	pr_err("subsystem %s failed to respond in time", rdev->info->name);
-+
-+	rpmon_event_notify(rdev->info, RPMON_EVENT_CHKCONN_FAIL);
-+
-+out:
-+	mutex_unlock(&rdev_list_lock);
-+	kfree(ewk);
-+}
-+
-+static struct rpmon_qmi_cb_fn rpmon_qmi_event_callbacks[] = {
-+	{
-+		.callback = rpmon_qmi_register_req_cb,
-+		.msg_len = sizeof(struct rpmon_register_req),
-+	},
-+	{
-+		.callback = rpmon_qmi_conn_check_resp_cb,
-+		.msg_len = sizeof(struct rpmon_conn_check_resp),
-+	},
-+};
-+
-+/**
-+ * rpmon_qmi_conn_check - send indication, initiate and queue callback work
-+ * @rdev: device interface of specific remote processor to be checked
-+ */
-+static int rpmon_qmi_conn_check(struct rpmon_qmi_device *rdev)
-+{
-+	struct exec_cb_work *ewk;
-+
-+	mutex_lock(&rdev_list_lock);
-+	if (!(rdev->flag & RP_REGISTERED)) {
-+		pr_err("%s has not registered", rdev->info->name);
-+		return -ENOANO;
-+	}
-+
-+	if (!__ratelimit(&rdev->ratelimit)) {
-+		pr_err("%s rate-limited", rdev->info->name);
-+		return 0;
-+	}
-+	mutex_unlock(&rdev_list_lock);
-+
-+	rdev->rqmi->sendmsg(rdev, NULL, 0);
-+
-+	ewk = kzalloc(sizeof(*ewk), GFP_KERNEL);
-+	if (!ewk)
-+		return -ENOANO;
-+
-+	ewk->rdev = rdev;
-+	ewk->checks = atomic_inc_return(&rdev->checks);
-+	INIT_DELAYED_WORK(&ewk->dwk, rpmon_qmi_exec_cb_worker);
-+	queue_delayed_work(rpqmi_wq,
-+			   &ewk->dwk, msecs_to_jiffies(rdev->timeout));
-+
-+	return 0;
-+}
-+
-+static struct rpmon_qmi_exec_fn rpmon_qmi_exec_calls[] = {
-+	{.exec_call = rpmon_qmi_conn_check},
-+};
-+
-+static int rpmon_qmi_monitor(struct rpmon_info *info, u32 event)
-+{
-+	struct rpmon_qmi_device *rdev = (struct rpmon_qmi_device *)info->priv;
-+	int i;
-+
-+	for (i = 0; i < RPMON_EXEC_MAX; i++) {
-+		if (event & RPMON_ACTION(i)) {
-+			if (i >= (sizeof(rpmon_qmi_exec_calls) /
-+				  sizeof(struct rpmon_qmi_exec_fn)))
-+				return -ENOTSUPP;
-+
-+			if (rpmon_qmi_exec_calls[i].exec_call)
-+				return rpmon_qmi_exec_calls[i].exec_call(rdev);
-+			else
-+				return -ENOTSUPP;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int rpmon_qmi_drv_probe(struct platform_device *pdev)
-+{
-+	struct rpmon_info *info = pdev->dev.platform_data;
-+	struct rpmon_qmi_device *rdev;
-+	struct device_node *node = pdev->dev.of_node;
-+	const char *name;
-+	int ret = -ENODEV;
-+
-+	if (node) {
-+		/* Allocate info for one device */
-+		info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-+		if (!info) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+
-+		if (!of_property_read_string(node, "linux,subsys", &name))
-+			info->name = devm_kstrdup(&pdev->dev, name, GFP_KERNEL);
-+		else
-+			info->name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
-+						       "%pOFn", node);
-+		info->version = "devicetree";
-+	}
-+
-+	if (!info || !info->name || !info->version) {
-+		dev_dbg(&pdev->dev, "%s: err_info\n", __func__);
-+		return ret;
-+	}
-+
-+	/* Allocate device for qmi specific reference */
-+	rdev = devm_kzalloc(&pdev->dev, sizeof(*rdev), GFP_KERNEL);
-+	if (!rdev) {
-+		ret = -ENOMEM;
-+		goto err_info_free;
-+	}
-+
-+	rdev->rqmi = rpqmi;
-+	rdev->info = info;
-+	info->priv = rdev;
-+	info->monitor = rpmon_qmi_monitor;
-+	platform_set_drvdata(pdev, rdev);
-+
-+	ret = rpmon_register_device(&pdev->dev, info);
-+	if (ret) {
-+		dev_err(&pdev->dev, "unable to register rpmon_qmi_device\n");
-+		goto err_rdev_free;
-+	}
-+
-+	mutex_lock(&rdev_list_lock);
-+	list_add_tail(&rdev->list, &rdev_list);
-+	mutex_unlock(&rdev_list_lock);
-+
-+	return ret;
-+
-+err_rdev_free:
-+	devm_kfree(&pdev->dev, rdev);
-+err_info_free:
-+	devm_kfree(&pdev->dev, info);
-+out:
-+	return ret;
-+}
-+
-+static int rpmon_qmi_drv_remove(struct platform_device *pdev)
-+{
-+	struct rpmon_qmi_device *rdev = platform_get_drvdata(pdev);
-+
-+	rpmon_unregister_device(rdev->info);
-+
-+	return 0;
-+}
-+static void rpmon_qmi_msg_callback(enum rpmon_qmi_msg_type type,
-+			struct sockaddr_qrtr *sq,
-+			const void *msg)
-+{
-+	struct recv_work *rwk;
-+
-+	if (type >= (sizeof(rpmon_qmi_event_callbacks) /
-+		     sizeof(struct rpmon_qmi_cb_fn))) {
-+		pr_err("Error none supported message type.\n");
-+		return;
-+	}
-+
-+	if (rpmon_qmi_event_callbacks[type].callback) {
-+		rwk = kzalloc(sizeof(*rwk), GFP_KERNEL);
-+		if (!rwk) {
-+			pr_err("Error to alloc recv_work");
-+			return;
-+		}
-+
-+		INIT_WORK(&rwk->work, rpmon_qmi_event_callbacks[type].callback);
-+		memcpy(&rwk->sq, sq, sizeof(*sq));
-+
-+		rwk->msg = kzalloc(rpmon_qmi_event_callbacks[type].msg_len,
-+				   GFP_KERNEL);
-+		if (!rwk->msg) {
-+			pr_err("Error to alloc message of recv_work");
-+			kfree(rwk);
-+			return;
-+		}
-+
-+		memcpy(rwk->msg, msg, rpmon_qmi_event_callbacks[type].msg_len);
-+		queue_work(rpqmi_wq, &rwk->work);
-+	}
-+}
-+
-+static const struct of_device_id rpmon_of_qmi_match[] = {
-+	{ .compatible = "rpmon-qmi" },
-+	{ /* Sentinel */ },
-+};
-+
-+static struct platform_driver rpmon_qmi_drv = {
-+	.probe = rpmon_qmi_drv_probe,
-+	.remove = rpmon_qmi_drv_remove,
-+	.driver = {
-+		.name = DRIVER_NAME,
-+		.owner = THIS_MODULE,
-+		.of_match_table = of_match_ptr(rpmon_of_qmi_match),
-+	},
-+};
-+
-+static int __init rpmon_qmi_drv_init(void)
-+{
-+	int ret;
-+
-+	rpqmi_wq = create_singlethread_workqueue("rpmon_qmi_wq");
-+	if (!rpqmi_wq) {
-+		pr_err("Error creating workqueue\n");
-+		ret = -EFAULT;
-+		goto out;
-+	}
-+
-+	rpqmi = kzalloc(sizeof(*rpqmi), GFP_KERNEL);
-+	if (!rpqmi) {
-+		ret = -ENOMEM;
-+		goto err_wq_free;
-+	}
-+
-+	ret = rpmon_qmi_handle_init(rpqmi, rpmon_qmi_msg_callback);
-+	if (ret)
-+		goto err_rpqmi_free;
-+
-+	ret = qmi_handle_init(&rpqmi->qmi,
-+			      RPQMI_BUF_SIZE, NULL, rpqmi->handlers);
-+	if (ret < 0) {
-+		pr_err("Error init qmi handle, %d", ret);
-+		goto err_rpqmi_free;
-+	}
-+
-+	ret = qmi_add_server(&rpqmi->qmi,
-+			     rpqmi->svc->service,
-+			     rpqmi->svc->version,
-+			     rpqmi->svc->instance);
-+	if (ret < 0) {
-+		pr_err("Error add qmi server, %d", ret);
-+		goto err_rpqmi_free;
-+	}
-+	mutex_init(&rdev_list_lock);
-+
-+	return platform_driver_register(&rpmon_qmi_drv);
-+
-+err_rpqmi_free:
-+	kfree(rpqmi);
-+err_wq_free:
-+	destroy_workqueue(rpqmi_wq);
-+out:
-+	return ret;
-+}
-+late_initcall_sync(rpmon_qmi_drv_init);
-+
-+static void rpmon_qmi_del_server(void)
-+{
-+	struct qrtr_ctrl_pkt pkt;
-+	struct sockaddr_qrtr sq;
-+	struct msghdr msg = { };
-+	struct kvec iv = { &pkt, sizeof(pkt) };
-+	struct qmi_service *svc = rpqmi->svc;
-+	struct qmi_handle *qmi = &rpqmi->qmi;
-+	int ret;
-+
-+	memset(&pkt, 0, sizeof(pkt));
-+	pkt.cmd = cpu_to_le32(QRTR_TYPE_DEL_SERVER);
-+	pkt.server.service = cpu_to_le32(svc->service);
-+	pkt.server.instance = cpu_to_le32(svc->version | svc->instance << 8);
-+	pkt.server.node = cpu_to_le32(qmi->sq.sq_node);
-+	pkt.server.port = cpu_to_le32(qmi->sq.sq_port);
-+
-+	sq.sq_family = qmi->sq.sq_family;
-+	sq.sq_node = qmi->sq.sq_node;
-+	sq.sq_port = QRTR_PORT_CTRL;
-+
-+	msg.msg_name = &sq;
-+	msg.msg_namelen = sizeof(sq);
-+
-+	mutex_lock(&qmi->sock_lock);
-+	if (qmi->sock) {
-+		ret = kernel_sendmsg(qmi->sock, &msg, &iv, 1, sizeof(pkt));
-+		if (ret < 0)
-+			pr_err("send service delete message failed: %d\n", ret);
-+	}
-+	mutex_unlock(&qmi->sock_lock);
-+}
-+
-+static void __exit rpmon_qmi_drv_exit(void)
-+{
-+	rpmon_qmi_del_server();
-+
-+	qmi_handle_release(&rpqmi->qmi);
-+
-+	platform_driver_unregister(&rpmon_qmi_drv);
-+}
-+module_exit(rpmon_qmi_drv_exit);
-+
-+MODULE_AUTHOR("Wang Wenhu");
-+MODULE_DESCRIPTION("Subsystem Monitor via QMI platform driver");
-+MODULE_ALIAS("platform:" DRIVER_NAME);
-+MODULE_LICENSE("GPL v2");
+ 	spin_lock(&sched->job_list_lock);
 -- 
-2.17.1
+2.20.1
 
+
+--------------508D5A2C9492BF1F16DFD628--
