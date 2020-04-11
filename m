@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BE31A5063
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1891A506E
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbgDKMRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:17:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51954 "EHLO mail.kernel.org"
+        id S1728485AbgDKMRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:17:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728387AbgDKMRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:17:18 -0400
+        id S1727239AbgDKMRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:17:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BE6520787;
-        Sat, 11 Apr 2020 12:17:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CFC420644;
+        Sat, 11 Apr 2020 12:17:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607438;
-        bh=oDOR3nIjgOc1MJbGlBKDQMZunaN6N06rFE3HEbc8H3g=;
+        s=default; t=1586607465;
+        bh=ZOZLhi1wgZ1KCiSc5ynZD9XDsGPp6+H9laCsQzK4XIw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0euV8sRDp40v6TIl/0E403/TZZKhk0/uooXcatH2a5GygAhU+LaiAAZpsXf3xkDne
-         09Wo3S1OP2+uVVaUUwrkcG+W/P25th9NTo86jat8rEkIuJ29D60tnMiuavdi6NhgnK
-         YchVJNiIyLSmYzlrWIL1N2Lgy0Tc6IrIkijfizb0=
+        b=nziEdpRd3Az0a/8oUzpOxL6b04HNB+1kih3KF9XH8Q4dHflEIKcrVSCsU8rPzHkIy
+         BF0Vn3HwzOsUk0EgxfKUbIzw+Cys2HiFsVQECUgFGUZB8Ih/lcuUT6I7ANaJ/8CtOS
+         KR6qteJzDussyDhkrdXyDvc35aDPwCx8IRDyR/Ss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herat Ramani <herat@chelsio.com>,
-        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        stable@vger.kernel.org, Moshe Levi <moshele@mellanox.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Marcelo Ricardo Leitner <mleitner@redhat.com>,
+        netdev@vger.kernel.org, Jarod Wilson <jarod@redhat.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 02/41] cxgb4: fix MPS index overwrite when setting MAC address
-Date:   Sat, 11 Apr 2020 14:09:11 +0200
-Message-Id: <20200411115504.288266729@linuxfoundation.org>
+Subject: [PATCH 5.4 03/41] ipv6: dont auto-add link-local address to lag ports
+Date:   Sat, 11 Apr 2020 14:09:12 +0200
+Message-Id: <20200411115504.360628454@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
 References: <20200411115504.124035693@linuxfoundation.org>
@@ -44,42 +46,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herat Ramani <herat@chelsio.com>
+From: Jarod Wilson <jarod@redhat.com>
 
-[ Upstream commit 41aa8561ca3fc5748391f08cc5f3e561923da52c ]
+[ Upstream commit 744fdc8233f6aa9582ce08a51ca06e59796a3196 ]
 
-cxgb4_update_mac_filt() earlier requests firmware to add a new MAC
-address into MPS TCAM. The MPS TCAM index returned by firmware is
-stored in pi->xact_addr_filt. However, the saved MPS TCAM index gets
-overwritten again with the return value of cxgb4_update_mac_filt(),
-which is wrong.
+Bonding slave and team port devices should not have link-local addresses
+automatically added to them, as it can interfere with openvswitch being
+able to properly add tc ingress.
 
-When trying to update to another MAC address later, the wrong MPS TCAM
-index is sent to firmware, which causes firmware to return error,
-because it's not the same MPS TCAM index that firmware had sent
-earlier to driver.
+Basic reproducer, courtesy of Marcelo:
 
-So, fix by removing the wrong overwrite being done after call to
-cxgb4_update_mac_filt().
+$ ip link add name bond0 type bond
+$ ip link set dev ens2f0np0 master bond0
+$ ip link set dev ens2f1np2 master bond0
+$ ip link set dev bond0 up
+$ ip a s
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN
+group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: ens2f0np0: <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP> mtu 1500 qdisc
+mq master bond0 state UP group default qlen 1000
+    link/ether 00:0f:53:2f:ea:40 brd ff:ff:ff:ff:ff:ff
+5: ens2f1np2: <NO-CARRIER,BROADCAST,MULTICAST,SLAVE,UP> mtu 1500 qdisc
+mq master bond0 state DOWN group default qlen 1000
+    link/ether 00:0f:53:2f:ea:40 brd ff:ff:ff:ff:ff:ff
+11: bond0: <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP> mtu 1500 qdisc
+noqueue state UP group default qlen 1000
+    link/ether 00:0f:53:2f:ea:40 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::20f:53ff:fe2f:ea40/64 scope link
+       valid_lft forever preferred_lft forever
 
-Fixes: 3f8cfd0d95e6 ("cxgb4/cxgb4vf: Program hash region for {t4/t4vf}_change_mac()")
-Signed-off-by: Herat Ramani <herat@chelsio.com>
-Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
+(above trimmed to relevant entries, obviously)
+
+$ sysctl net.ipv6.conf.ens2f0np0.addr_gen_mode=0
+net.ipv6.conf.ens2f0np0.addr_gen_mode = 0
+$ sysctl net.ipv6.conf.ens2f1np2.addr_gen_mode=0
+net.ipv6.conf.ens2f1np2.addr_gen_mode = 0
+
+$ ip a l ens2f0np0
+2: ens2f0np0: <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP> mtu 1500 qdisc
+mq master bond0 state UP group default qlen 1000
+    link/ether 00:0f:53:2f:ea:40 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::20f:53ff:fe2f:ea40/64 scope link tentative
+       valid_lft forever preferred_lft forever
+$ ip a l ens2f1np2
+5: ens2f1np2: <NO-CARRIER,BROADCAST,MULTICAST,SLAVE,UP> mtu 1500 qdisc
+mq master bond0 state DOWN group default qlen 1000
+    link/ether 00:0f:53:2f:ea:40 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::20f:53ff:fe2f:ea40/64 scope link tentative
+       valid_lft forever preferred_lft forever
+
+Looks like addrconf_sysctl_addr_gen_mode() bypasses the original "is
+this a slave interface?" check added by commit c2edacf80e15, and
+results in an address getting added, while w/the proposed patch added,
+no address gets added. This simply adds the same gating check to another
+code path, and thus should prevent the same devices from erroneously
+obtaining an ipv6 link-local address.
+
+Fixes: d35a00b8e33d ("net/ipv6: allow sysctl to change link-local address generation mode")
+Reported-by: Moshe Levi <moshele@mellanox.com>
+CC: Stephen Hemminger <stephen@networkplumber.org>
+CC: Marcelo Ricardo Leitner <mleitner@redhat.com>
+CC: netdev@vger.kernel.org
+Signed-off-by: Jarod Wilson <jarod@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c |    1 -
- 1 file changed, 1 deletion(-)
+ net/ipv6/addrconf.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-@@ -3032,7 +3032,6 @@ static int cxgb_set_mac_addr(struct net_
- 		return ret;
+--- a/net/ipv6/addrconf.c
++++ b/net/ipv6/addrconf.c
+@@ -3296,6 +3296,10 @@ static void addrconf_addr_gen(struct ine
+ 	if (netif_is_l3_master(idev->dev))
+ 		return;
  
- 	memcpy(dev->dev_addr, addr->sa_data, dev->addr_len);
--	pi->xact_addr_filt = ret;
- 	return 0;
- }
++	/* no link local addresses on devices flagged as slaves */
++	if (idev->dev->flags & IFF_SLAVE)
++		return;
++
+ 	ipv6_addr_set(&addr, htonl(0xFE800000), 0, 0, 0);
  
+ 	switch (idev->cnf.addr_gen_mode) {
 
 
