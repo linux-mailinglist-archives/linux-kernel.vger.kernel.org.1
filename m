@@ -2,97 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B6071A538D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 21:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86BB1A5394
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 21:44:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbgDKTmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 15:42:45 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:39589 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726204AbgDKTmo (ORCPT
+        id S1726799AbgDKToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 15:44:46 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57761 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726167AbgDKTop (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 15:42:44 -0400
-Received: by mail-wm1-f67.google.com with SMTP id y24so5975427wma.4
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 12:42:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iwv88gfngC3+mKBn+a2Sxg57sJmAfdLK0rq5K5qywRA=;
-        b=kTSvacljX8WfMC9fgKFd9BqZ16srEoIVnxcM1xKXs+9DCn2U+y5kenxg4pdu1cIYhK
-         l4dZmfTabEUFxYYijLccRrI5NONNGTt1Q/Llb5Q+fGJUCKIZJmcITSj4q6xkaAQHbcpr
-         TG7JWdaDYXxSzlgi+JskK0mvktpAaCI0eJjAd03sIYztVF6k6FmybfKADhWX6P0ycSUO
-         Ww2DcNxNnL3pBKyEAFM+VsWZ71Ucy06yDY5rUGnNqUErFGiq0cMDXZmMUS/39butGQIH
-         mazGTeJKhDltYO4bAbbWBZbOIXisR9X8L0FnLL43Ga5gJdz1GG6TtUwo2FnC9ModXfze
-         d1IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Iwv88gfngC3+mKBn+a2Sxg57sJmAfdLK0rq5K5qywRA=;
-        b=gnsNxkd+zphmRVPRgoiq/cpbGt93HkOfQFQhHazhuccJl9hgIAlTneZPgwrSNEEq5j
-         xP9bQWhjzvd5XHz/eWfNs2ZVkUbAW7m2NkGEaIctAa7AhewSMUp+RBrHl1mG0fevE5zl
-         mQzsF7IOJe+RlaiJ6c+GxHtzUGenvkZmm2xSptysN0zoiTeL27QZ8U+gWWC4HyuOWTFT
-         Tb5M1tGdE3dDYe2IIgDU0OhHZJSIR468Vks2yCRNH6Jf4K/ld/UJn5lvjJY52o1qm7fd
-         gJ2gOU6IaGfilG5CWt2KilVmCtX76UHOQ9tQYDjJ5TY9hToQ0K49Sw5ey7Wz0v97EX7o
-         rMSQ==
-X-Gm-Message-State: AGi0PuZBf+XmrSPiOoNBeNCsUyh6vpsydyOY5ZbZ+bRBgHZK82SesTAD
-        x61ffdxR2OyiqlI0pFFNaA8=
-X-Google-Smtp-Source: APiQypL0b73v1QwPz38ShgqICbSGYQJxv7JcmrTNJPerG4umMCJ16ibxr5ICX8clyccFcXRv5V26kg==
-X-Received: by 2002:a1c:1d92:: with SMTP id d140mr10954413wmd.67.1586634163707;
-        Sat, 11 Apr 2020 12:42:43 -0700 (PDT)
-Received: from localhost.localdomain ([31.4.236.212])
-        by smtp.gmail.com with ESMTPSA id z10sm5954581wrg.69.2020.04.11.12.42.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Apr 2020 12:42:42 -0700 (PDT)
-From:   carlosteniswarrior@gmail.com
-To:     gregkh@linuxfoundation.org
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        porfavorde <carlosteniswarrior@gmail.com>
-Subject: [PATCH] Staging: kernel: user: fixed some coding style issues
-Date:   Sat, 11 Apr 2020 21:42:42 +0200
-Message-Id: <20200411194242.11336-1-carlosteniswarrior@gmail.com>
-X-Mailer: git-send-email 2.26.0
+        Sat, 11 Apr 2020 15:44:45 -0400
+Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03BJhp5B029461
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 11 Apr 2020 15:43:52 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9189742013D; Sat, 11 Apr 2020 15:43:51 -0400 (EDT)
+Date:   Sat, 11 Apr 2020 15:43:51 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Dave Young <dyoung@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kexec@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>,
+        Colin Ian King <colin.king@canonical.com>,
+        Gary Lin <glin@suse.com>, Jiri Slaby <jslaby@suse.cz>,
+        Sergey Shatunov <me@prok.pw>, Takashi Iwai <tiwai@suse.de>
+Subject: Re: [GIT PULL 0/9] EFI fixes for v5.7-rc
+Message-ID: <20200411194351.GQ45598@mit.edu>
+References: <20200409130434.6736-1-ardb@kernel.org>
+ <20200409190109.GB45598@mit.edu>
+ <CAMj1kXGiA3PAybR7r9tatL7WV5iU7B1OQxQok3d-JmRnhX1TnA@mail.gmail.com>
+ <20200409201632.GC45598@mit.edu>
+ <CAMj1kXFqKGSqm_y+ht4mmmu10TrhSyiTG8V3PxRYGodpZ=xNFQ@mail.gmail.com>
+ <20200409235716.GF45598@mit.edu>
+ <CAMj1kXH4VtNcJugpG_UR10ewGiOApTiw=C3FsuyAQQyg67Q8Aw@mail.gmail.com>
+ <20200410135442.GA6772@dhcp-128-65.nay.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200410135442.GA6772@dhcp-128-65.nay.redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: porfavorde <carlosteniswarrior@gmail.com>
+On Fri, Apr 10, 2020 at 09:54:42PM +0800, Dave Young wrote:
+> 
+> The runtime cleanup looks a very good one, but I also missed that,
+> userspace kexec-tools will break with the efi setup_data changes. But
+> kexec_file_load will just work with the cleanup applied.
 
-Fixed a coding style issue with a for loop and a trailing whitespace in
-the comments
+Hmmm, I wonder if there could be some kselftest or kunit tests that
+would make it easier to pick up these sorts of regressions earlier?
 
-Signed-off-by: Carlos Guerrero Álvarez <carlosteniswarrior@gmail.com>
----
- kernel/user.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/user.c b/kernel/user.c
-index 5235d7f49982..4228ec04678d 100644
---- a/kernel/user.c
-+++ b/kernel/user.c
-@@ -6,7 +6,7 @@
-  *
-  * We have a per-user structure to keep track of how many
-  * processes, files etc the user has claimed, in order to be
-- * able to have per-user limits for system resources. 
-+ * able to have per-user limits for system resources.
-  */
- 
- #include <linux/init.h>
-@@ -216,7 +216,7 @@ static int __init uid_cache_init(void)
- 	uid_cachep = kmem_cache_create("uid_cache", sizeof(struct user_struct),
- 			0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
- 
--	for(n = 0; n < UIDHASH_SZ; ++n)
-+	for (n = 0; n < UIDHASH_SZ; ++n)
- 		INIT_HLIST_HEAD(uidhash_table + n);
- 
- 	/* Insert the root user immediately (init already runs as root) */
--- 
-2.25.1
-
+      	      	     	     	      	    - Ted
