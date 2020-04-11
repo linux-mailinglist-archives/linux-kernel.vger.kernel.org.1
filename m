@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2111A5195
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D841A4FC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbgDKMPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:15:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48944 "EHLO mail.kernel.org"
+        id S1727030AbgDKMLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:11:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727709AbgDKMPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:15:11 -0400
+        id S1727014AbgDKMLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:11:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1877120787;
-        Sat, 11 Apr 2020 12:15:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 103E3215A4;
+        Sat, 11 Apr 2020 12:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607310;
-        bh=XMf7QVap6ODLiVJo0XE8+jiJoxTHwXWjdNCTTv0ulBk=;
+        s=default; t=1586607097;
+        bh=wjsPonv04TDwjYRoFnqSJdDu9tOwOMFKJaUUT5iV0x0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PKvLsbRXrHVVQQRyyrZ8qRYubb5cdFXv33M7H8n9Bbx9XkCo68/y8reHpTLCV46IJ
-         o/T9McH4xenGAzlnlJ1huINGfr8txpCT+A5GpqAMKPsumnuIsEsJ0EXqHI+148VVr6
-         Wwt3nmDQDzruTpTzWmHq17oktt+nD7UvJP0gKwt8=
+        b=ok/qvI/mn2079ro2kaIMv8x2T72dSme+C3wmCBPGJDbm2hsz8rYdEIYVvkK2+2BXI
+         GW5vAXLTYBby1q89BW6wPHIaTPARLD1o+WqZ2lX8U+Xjbw4x9vrzlttCBEww0BKc3n
+         B6e/JWQ+qj0Wo1V3mCuKD0rEnkQVEKnX4l78MrJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/54] initramfs: restore default compression behavior
+        stable@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Shailabh Nagar <nagar@watson.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 20/29] tools/accounting/getdelays.c: fix netlink attribute length
 Date:   Sat, 11 Apr 2020 14:08:50 +0200
-Message-Id: <20200411115509.125222779@linuxfoundation.org>
+Message-Id: <20200411115411.267967922@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
+References: <20200411115407.651296755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,79 +47,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
+From: David Ahern <dsahern@kernel.org>
 
-[ Upstream commit 785d74ec3bbf26ac7f6e92e6e96a259aec0f107a ]
+commit 4054ab64e29bb05b3dfe758fff3c38a74ba753bb upstream.
 
-Even though INITRAMFS_SOURCE kconfig option isn't set in most of
-defconfigs it is used (set) extensively by various build systems.
-Commit f26661e12765 ("initramfs: make initramfs compression choice
-non-optional") has changed default compression mode. Previously we
-compress initramfs using available compression algorithm. Now
-we don't use any compression at all by default.
-It significantly increases the image size in case of build system
-chooses embedded initramfs. Initially I faced with this issue while
-using buildroot.
+A recent change to the netlink code: 6e237d099fac ("netlink: Relax attr
+validation for fixed length types") logs a warning when programs send
+messages with invalid attributes (e.g., wrong length for a u32).  Yafang
+reported this error message for tools/accounting/getdelays.c.
 
-As of today it's not possible to set preferred compression mode
-in target defconfig as this option depends on INITRAMFS_SOURCE
-being set. Modification of all build systems either doesn't look
-like good option.
+send_cmd() is wrongly adding 1 to the attribute length.  As noted in
+include/uapi/linux/netlink.h nla_len should be NLA_HDRLEN + payload
+length, so drop the +1.
 
-Let's instead rewrite initramfs compression mode choices list
-the way that "INITRAMFS_COMPRESSION_NONE" will be the last option
-in the list. In that case it will be chosen only if all other
-options (which implements any compression) are not available.
+Fixes: 9e06d3f9f6b1 ("per task delay accounting taskstats interface: documentation fix")
+Reported-by: Yafang Shao <laoar.shao@gmail.com>
+Signed-off-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Shailabh Nagar <nagar@watson.ibm.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200327173111.63922-1-dsahern@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- usr/Kconfig | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ Documentation/accounting/getdelays.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/usr/Kconfig b/usr/Kconfig
-index 43658b8a975e5..8b4826de1189f 100644
---- a/usr/Kconfig
-+++ b/usr/Kconfig
-@@ -131,17 +131,6 @@ choice
+--- a/Documentation/accounting/getdelays.c
++++ b/Documentation/accounting/getdelays.c
+@@ -135,7 +135,7 @@ static int send_cmd(int sd, __u16 nlmsg_
+ 	msg.g.version = 0x1;
+ 	na = (struct nlattr *) GENLMSG_DATA(&msg);
+ 	na->nla_type = nla_type;
+-	na->nla_len = nla_len + 1 + NLA_HDRLEN;
++	na->nla_len = nla_len + NLA_HDRLEN;
+ 	memcpy(NLA_DATA(na), nla_data, nla_len);
+ 	msg.n.nlmsg_len += NLMSG_ALIGN(na->nla_len);
  
- 	  If in doubt, select 'None'
- 
--config INITRAMFS_COMPRESSION_NONE
--	bool "None"
--	help
--	  Do not compress the built-in initramfs at all. This may sound wasteful
--	  in space, but, you should be aware that the built-in initramfs will be
--	  compressed at a later stage anyways along with the rest of the kernel,
--	  on those architectures that support this. However, not compressing the
--	  initramfs may lead to slightly higher memory consumption during a
--	  short time at boot, while both the cpio image and the unpacked
--	  filesystem image will be present in memory simultaneously
--
- config INITRAMFS_COMPRESSION_GZIP
- 	bool "Gzip"
- 	depends on RD_GZIP
-@@ -214,6 +203,17 @@ config INITRAMFS_COMPRESSION_LZ4
- 	  If you choose this, keep in mind that most distros don't provide lz4
- 	  by default which could cause a build failure.
- 
-+config INITRAMFS_COMPRESSION_NONE
-+	bool "None"
-+	help
-+	  Do not compress the built-in initramfs at all. This may sound wasteful
-+	  in space, but, you should be aware that the built-in initramfs will be
-+	  compressed at a later stage anyways along with the rest of the kernel,
-+	  on those architectures that support this. However, not compressing the
-+	  initramfs may lead to slightly higher memory consumption during a
-+	  short time at boot, while both the cpio image and the unpacked
-+	  filesystem image will be present in memory simultaneously
-+
- endchoice
- 
- config INITRAMFS_COMPRESSION
--- 
-2.20.1
-
 
 
