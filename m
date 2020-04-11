@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E6B1A507A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD671A50D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728559AbgDKMSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:18:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53086 "EHLO mail.kernel.org"
+        id S1729151AbgDKMV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:21:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728552AbgDKMSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:18:11 -0400
+        id S1728438AbgDKMVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:21:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED60F2084D;
-        Sat, 11 Apr 2020 12:18:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 951CF2084D;
+        Sat, 11 Apr 2020 12:21:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607491;
-        bh=7MBKtwa4tRHahvFw4Af19dmy1uXDFxo92bRC11xqOHM=;
+        s=default; t=1586607683;
+        bh=ac9LB+mggSg1L55NuykFTX4QFSdgB8uLvduZC4UzgWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sBWfZih4u/GjMK29e2xY2P6tOkfwarMuQvmu7bjh3SAdEBiZMQPo8+5dFqPx8OXkF
-         WQoAcf8bD0UCcq2qUJceF1ra3Lw9H1i8tvTMUOfKPcMgn5P3C80payKojc+wNWJ/Z0
-         m3PRh0mclVyNFfeKSIqoyqWmf4Dpegk0rdtrOdks=
+        b=qptXVOpFPpoxU6HMTRP5JVlcGRNVM5rXCGzZgHUHvVvzSKOUNlJmh4XCV/vuAqRxi
+         OZH233y8n+aq/U2ZOeNQvY+bKaofRQnqVr+AkPr5rkRquWTLiFENIoNR5bUKhLQB2O
+         LZa7nzy8WqZXu7zEK+FOYch8+nhhufGfORXtoxrk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH 5.4 34/41] RDMA/cma: Teach lockdep about the order of rtnl and lock
+        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 06/38] net: phy: micrel: kszphy_resume(): add delay after genphy_resume() before accessing PHY registers
 Date:   Sat, 11 Apr 2020 14:09:43 +0200
-Message-Id: <20200411115506.552669509@linuxfoundation.org>
+Message-Id: <20200411115500.067229418@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
-References: <20200411115504.124035693@linuxfoundation.org>
+In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
+References: <20200411115459.324496182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,48 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-commit 32ac9e4399b12d3e54d312a0e0e30ed5cd19bd4e upstream.
+[ Upstream commit 6110dff776f7fa65c35850ef65b41d3b39e2fac2 ]
 
-This lock ordering only happens when bonding is enabled and a certain
-bonding related event fires. However, since it can happen this is a global
-restriction on lock ordering.
+After the power-down bit is cleared, the chip internally triggers a
+global reset. According to the KSZ9031 documentation, we have to wait at
+least 1ms for the reset to finish.
 
-Teach lockdep about the order directly and unconditionally so bugs here
-are found quickly.
+If the chip is accessed during reset, read will return 0xffff, while
+write will be ignored. Depending on the system performance and MDIO bus
+speed, we may or may not run in to this issue.
 
-See https://syzkaller.appspot.com/bug?extid=55de90ab5f44172b0c90
+This bug was discovered on an iMX6QP system with KSZ9031 PHY and
+attached PHY interrupt line. If IRQ was used, the link status update was
+lost. In polling mode, the link status update was always correct.
 
-Link: https://lore.kernel.org/r/20200227203651.GA27185@ziepe.ca
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+The investigation showed, that during a read-modify-write access, the
+read returned 0xffff (while the chip was still in reset) and
+corresponding write hit the chip _after_ reset and triggered (due to the
+0xffff) another reset in an undocumented bit (register 0x1f, bit 1),
+resulting in the next write being lost due to the new reset cycle.
+
+This patch fixes the issue by adding a 1...2 ms sleep after the
+genphy_resume().
+
+Fixes: 836384d2501d ("net: phy: micrel: Add specific suspend")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/infiniband/core/cma.c |   13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/net/phy/micrel.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -4719,6 +4719,19 @@ static int __init cma_init(void)
- {
- 	int ret;
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -25,6 +25,7 @@
+ #include <linux/micrel_phy.h>
+ #include <linux/of.h>
+ #include <linux/clk.h>
++#include <linux/delay.h>
  
-+	/*
-+	 * There is a rare lock ordering dependency in cma_netdev_callback()
-+	 * that only happens when bonding is enabled. Teach lockdep that rtnl
-+	 * must never be nested under lock so it can find these without having
-+	 * to test with bonding.
+ /* Operation Mode Strap Override */
+ #define MII_KSZPHY_OMSO				0x16
+@@ -902,6 +903,12 @@ static int kszphy_resume(struct phy_devi
+ 
+ 	genphy_resume(phydev);
+ 
++	/* After switching from power-down to normal mode, an internal global
++	 * reset is automatically generated. Wait a minimum of 1 ms before
++	 * read/write access to the PHY registers.
 +	 */
-+	if (IS_ENABLED(CONFIG_LOCKDEP)) {
-+		rtnl_lock();
-+		mutex_lock(&lock);
-+		mutex_unlock(&lock);
-+		rtnl_unlock();
-+	}
++	usleep_range(1000, 2000);
 +
- 	cma_wq = alloc_ordered_workqueue("rdma_cm", WQ_MEM_RECLAIM);
- 	if (!cma_wq)
- 		return -ENOMEM;
+ 	ret = kszphy_config_reset(phydev);
+ 	if (ret)
+ 		return ret;
 
 
