@@ -2,88 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A05D1A582B
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA221A58BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730594AbgDKX2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 19:28:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728821AbgDKX21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:28:27 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9276720787;
-        Sat, 11 Apr 2020 23:28:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586647706;
-        bh=VJVMs1ty4aklYcknxXSyG4+HJQ94axF1UzhRTrFSIW4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BNMeb6gh6oZRFmHIvDKwnglHNapVVyGPi3dcxR0Swnshxs6nODmwJMN02UuRHnVZL
-         EJtXrd+uaB/rM7humfEMsBIefc4aJGdzX6/BdcdUNLsWJqxWWdn2T0IK/Ke379Xlp4
-         7xouNBvYkutFYjAFMx/MbiTswjpVdlyUlo2Z+e2U=
-Date:   Sat, 11 Apr 2020 16:28:24 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: phy: marvell: Fix pause frame negotiation
-Message-ID: <20200411162824.59791b84@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200411165125.1091-1-clemens.gruber@pqgruber.com>
-References: <20200411165125.1091-1-clemens.gruber@pqgruber.com>
+        id S1730800AbgDKXbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 19:31:55 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:60361 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728753AbgDKXbs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:31:48 -0400
+X-Originating-IP: 86.202.105.35
+Received: from localhost (lfbn-lyo-1-9-35.w86-202.abo.wanadoo.fr [86.202.105.35])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C998520004;
+        Sat, 11 Apr 2020 23:31:45 +0000 (UTC)
+Date:   Sun, 12 Apr 2020 01:31:45 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     Kamel Bouhara <kamel.bouhara@bootlin.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 0/3] Introduce a counter inkernel API
+Message-ID: <20200411233145.GC3628@piout.net>
+References: <20200406155806.1295169-1-kamel.bouhara@bootlin.com>
+ <20200411172259.GB95806@icarus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200411172259.GB95806@icarus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Apr 2020 18:51:25 +0200 Clemens Gruber wrote:
-> The negotiation of flow control / pause frame modes was broken since
-> commit fcf1f59afc67 ("net: phy: marvell: rearrange to use
-> genphy_read_lpa()") moved the setting of phydev->duplex below the
-> phy_resolve_aneg_pause call. Due to a check of DUPLEX_FULL in that
-> function, phydev->pause was no longer set.
-> 
-> Fix it by moving the parsing of the status variable before the blocks
-> dealing with the pause frames.
-> 
-> As the Marvell 88E1510 datasheet does not specify the timing between the
-> link status and the "Speed and Duplex Resolved" bit, we have to force
-> the link down as long as the resolved bit is not set, to avoid reporting
-> link up before we even have valid Speed/Duplex.
-> 
-> Tested with a Marvell 88E1510 (RGMII to Copper/1000Base-T)
-> 
-> Fixes: fcf1f59afc67 ("net: phy: marvell: rearrange to use genphy_read_lpa()")
-> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> ---
-> Changes since v1:
-> - Force link to 0 if resolved bit is not set as suggested by Russell King
-> 
->  drivers/net/phy/marvell.c | 46 ++++++++++++++++++++-------------------
->  1 file changed, 24 insertions(+), 22 deletions(-)
-> 
-> diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
-> index 9a8badafea8a..561df5e33f65 100644
-> --- a/drivers/net/phy/marvell.c
-> +++ b/drivers/net/phy/marvell.c
-> @@ -1278,6 +1278,30 @@ static int marvell_read_status_page_an(struct phy_device *phydev,
->  	int lpa;
->  	int err;
->  
-> +	if (!(status & MII_M1011_PHY_STATUS_RESOLVED)) {
-> +		phydev->link = 0;
-> +		return 0;
-> +	}
+Hi,
 
-This doesn't address my comment, so was I wrong? What I was trying to
-say is that the function updates the established link info as well as
-autoneg advertising info. If the link is not resolved we can't read the
-link info, but we should still report the advertising modes. No?
+On 11/04/2020 13:22:59-0400, William Breathitt Gray wrote:
+> I'm not inherently opposed to adding an in-kernel API for the Counter
+> subsystem, but I'm not sure yet if it's necessary for this particular
+> situation.
+> 
+> Is the purpose of this driver to allow users to poll on the rotary
+> encoder position value? If so, perhaps instead of an in-kernel API, the
+> polling functionality should be added as part of the Counter subsystem;
+> I can see this being a useful feature for many counter devices, and
+> it'll keep the code contained to a single subsystem.
+> 
+> By the way, I'm going to be submitting a major update to the Counter
+> subsystem code in the next couple weeks that isolates the sysfs code
+> from the rest of the subsystem -- it'll likely affect the interface and
+> code here -- so I'll probably wait to decide for certain until that
+> patch lands; I anticipate it making things easier for you here after
+> it's merged.
+> 
+> For now, I want to get a better high-level understanding about how users
+> would interact with this driver to use the device (input_setup_polling
+> is a new call for me). That should help me understand whether an
+> in-kernel API is the best choice here.
+> 
+
+Well, the goal is not really polling the counters but mainly exposing
+the correct userspace interface for the rotary encoders that are
+connected to quadrature decoders.
+
+The input driver is using polling because this reduces the complexity of
+the patches but the ultimate goal is to also have interrupts working.
+
+I'm pretty sure the in-kernel interface can also have other usages like
+for example iio triggers. I could envision having to read an ADC after x
+turns of a motor to check for the torque.
+
+I also think that having the sysfs code separate would help as it could
+be considered as one of the in-kernel interface user.
+
+BTW, do you have plans to add a character device interface?
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
