@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 732D11A50DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188401A514C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729230AbgDKMVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:21:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729221AbgDKMVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:21:52 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C20DD20644;
-        Sat, 11 Apr 2020 12:21:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607712;
-        bh=G/fsmouMPqeGL+ojewb25nKuHbsV2AApGz5o0aVaTkg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M/I2ip3EA3M4B+SXx+GTrcQZVW7/LprBoO11nv5YfyCbg6yktv4nTWO3THRp/mMmK
-         F9QRzEu1b2n+eo3oqRmlvKnEpV2s5MRlivSHGNmj2c8TF67bQdliT/LHiBPcr6El+S
-         Uq7Vt0N5H1LJtvFpk13osbcRDFvkQOg773lwL0/Q=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Saravana Kannan <saravanak@google.com>
-Subject: [PATCH 5.6 38/38] driver core: Reevaluate dev->links.need_for_probe as suppliers are added
-Date:   Sat, 11 Apr 2020 14:10:15 +0200
-Message-Id: <20200411115503.533001557@linuxfoundation.org>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
-References: <20200411115459.324496182@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1726190AbgDKMQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:16:47 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13152 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726794AbgDKMQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:16:43 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 2AAC2DD93474802C528B;
+        Sat, 11 Apr 2020 20:16:30 +0800 (CST)
+Received: from huawei.com (10.151.151.243) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.487.0; Sat, 11 Apr 2020
+ 20:16:20 +0800
+From:   Dongjiu Geng <gengdongjiu@huawei.com>
+To:     <maz@kernel.org>, <james.morse@arm.com>,
+        <julien.thierry.kdev@gmail.com>, <suzuki.poulose@arm.com>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
+CC:     <zhengxiang9@huawei.com>, <tanxiaofei@huawei.com>,
+        <gengdongjiu@huawei.com>, <linuxarm@huawei.com>
+Subject: [PATCH] KVM: handle the right RAS SEA(Synchronous External Abort) type
+Date:   Sat, 11 Apr 2020 20:17:40 +0800
+Message-ID: <20200411121740.37615-1-gengdongjiu@huawei.com>
+X-Mailer: git-send-email 2.18.0.huawei.25
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.151.151.243]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saravana Kannan <saravanak@google.com>
+When the RAS Extension is implemented, b0b011000, 0b011100,
+0b011101, 0b011110, and 0b011111, are not used and reserved
+to the DFSC[5:0] of ESR_ELx, but the code still checks these
+unused bits, so remove them.
 
-commit 1745d299af5b373abad08fa29bff0d31dc6aff21 upstream.
+If the handling of guest ras data error fails, it should
+inject data instead of SError to let the guest recover as
+much as possible.
 
-A previous patch 03324507e66c ("driver core: Allow
-fwnode_operations.add_links to differentiate errors") forgot to update
-all call sites to fwnode_operations.add_links. This patch fixes that.
-
-Legend:
--> Denotes RHS is an optional/potential supplier for LHS
-=> Denotes RHS is a mandatory supplier for LHS
-
-Example:
-
-Device A => Device X
-Device A -> Device Y
-
-Before this patch:
-1. Device A is added.
-2. Device A is marked as waiting for mandatory suppliers
-3. Device X is added
-4. Device A is left marked as waiting for mandatory suppliers
-
-Step 4 is wrong since all mandatory suppliers of Device A have been
-added.
-
-After this patch:
-1. Device A is added.
-2. Device A is marked as waiting for mandatory suppliers
-3. Device X is added
-4. Device A is no longer considered as waiting for mandatory suppliers
-
-This is the correct behavior.
-
-Fixes: 03324507e66c ("driver core: Allow fwnode_operations.add_links to differentiate errors")
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Link: https://lore.kernel.org/r/20200222014038.180923-2-saravanak@google.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+CC: Xiang Zheng <zhengxiang9@huawei.com>
+CC: Xiaofei Tan <tanxiaofei@huawei.com>
+CC: James Morse <james.morse@arm.com>
+Signed-off-by: Dongjiu Geng <gengdongjiu@huawei.com>
 ---
- drivers/base/core.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Abort DFSC of ESR_EL2, below web site[1] has clarified:
+"When the RAS Extension is implemented, 0b011000, 0b011100, 0b011101, 0b011110, and 0b011111, are reserved."
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -523,9 +523,13 @@ static void device_link_add_missing_supp
- 
- 	mutex_lock(&wfs_lock);
- 	list_for_each_entry_safe(dev, tmp, &wait_for_suppliers,
--				 links.needs_suppliers)
--		if (!fwnode_call_int_op(dev->fwnode, add_links, dev))
-+				 links.needs_suppliers) {
-+		int ret = fwnode_call_int_op(dev->fwnode, add_links, dev);
-+		if (!ret)
- 			list_del_init(&dev->links.needs_suppliers);
-+		else if (ret != -ENODEV)
-+			dev->links.need_for_probe = false;
-+	}
- 	mutex_unlock(&wfs_lock);
- }
- 
+[1]: https://developer.arm.com/docs/ddi0595/b/aarch64-system-registers/esr_el2
+---
+ arch/arm64/include/asm/kvm_emulate.h | 5 -----
+ virt/kvm/arm/mmu.c                   | 2 +-
+ 2 files changed, 1 insertion(+), 6 deletions(-)
 
+diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+index a30b4eec7cb4..857fbc79d678 100644
+--- a/arch/arm64/include/asm/kvm_emulate.h
++++ b/arch/arm64/include/asm/kvm_emulate.h
+@@ -380,11 +380,6 @@ static __always_inline bool kvm_vcpu_dabt_isextabt(const struct kvm_vcpu *vcpu)
+ 	case FSC_SEA_TTW1:
+ 	case FSC_SEA_TTW2:
+ 	case FSC_SEA_TTW3:
+-	case FSC_SECC:
+-	case FSC_SECC_TTW0:
+-	case FSC_SECC_TTW1:
+-	case FSC_SECC_TTW2:
+-	case FSC_SECC_TTW3:
+ 		return true;
+ 	default:
+ 		return false;
+diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
+index e3b9ee268823..3c7972ed7fc5 100644
+--- a/virt/kvm/arm/mmu.c
++++ b/virt/kvm/arm/mmu.c
+@@ -1926,7 +1926,7 @@ int kvm_handle_guest_abort(struct kvm_vcpu *vcpu, struct kvm_run *run)
+ 			return 1;
+ 
+ 		if (unlikely(!is_iabt)) {
+-			kvm_inject_vabt(vcpu);
++			kvm_inject_dabt(vcpu, kvm_vcpu_get_hfar(vcpu));
+ 			return 1;
+ 		}
+ 	}
+-- 
+2.18.0.huawei.25
 
