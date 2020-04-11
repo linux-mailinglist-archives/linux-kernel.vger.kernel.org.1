@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E183D1A507D
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B5431A50E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728599AbgDKMST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:18:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53204 "EHLO mail.kernel.org"
+        id S1727310AbgDKMWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:22:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728564AbgDKMSP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:18:15 -0400
+        id S1728953AbgDKMV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:21:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF71020692;
-        Sat, 11 Apr 2020 12:18:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7243820644;
+        Sat, 11 Apr 2020 12:21:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607496;
-        bh=Jttk726tXOUzFy4Zy+whTq1rsrkJW0mjXnvp9/CaKi0=;
+        s=default; t=1586607687;
+        bh=datS3IKUZA9bgjNevrozUDfBcVDSvmpXzGjOJIW+x4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nCCMRmJjFuxRjFb3rD8kzkDKEwei0TVf4ed2TV1GsldcN70k0rhl+nomdBUn72bCY
-         vuonQUO5of9LMnl+VVP68rNjP2PwhBTGc8gOhttVhFhyhfokN5J7YWKbWx/GwSHekZ
-         EBtV6i9mti0JasmsYJWlTBEfIrxzOU9Nm8Y5OuUY=
+        b=M31vO071URnDQyCs4bae2rQbCVSGfZQvqO1Ko+8v+s825Ejv9euU2nahwQ6pNbgSY
+         gL+CNeFIk6nss+C0ff/unzHtqd4JpBDskykvXLM3be2+Sh8e+4kDUhYpbdwx8Gd5uF
+         OwVZJvv4AKns9dOQprrbIIryhPdZMzDCp3cMhaI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+4496e82090657320efc6@syzkaller.appspotmail.com,
-        Qiujun Huang <hqjagain@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.4 36/41] Bluetooth: RFCOMM: fix ODEBUG bug in rfcomm_dev_ioctl
+        syzbot+8325e509a1bf83ec741d@syzkaller.appspotmail.com,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.6 08/38] net_sched: fix a missing refcnt in tcindex_init()
 Date:   Sat, 11 Apr 2020 14:09:45 +0200
-Message-Id: <20200411115506.718633162@linuxfoundation.org>
+Message-Id: <20200411115500.208523742@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
-References: <20200411115504.124035693@linuxfoundation.org>
+In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
+References: <20200411115459.324496182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,36 +48,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Cong Wang <xiyou.wangcong@gmail.com>
 
-commit 71811cac8532b2387b3414f7cd8fe9e497482864 upstream.
+[ Upstream commit a8eab6d35e22f4f21471f16147be79529cd6aaf7 ]
 
-Needn't call 'rfcomm_dlc_put' here, because 'rfcomm_dlc_exists' didn't
-increase dlc->refcnt.
+The initial refcnt of struct tcindex_data should be 1,
+it is clear that I forgot to set it to 1 in tcindex_init().
+This leads to a dec-after-zero warning.
 
-Reported-by: syzbot+4496e82090657320efc6@syzkaller.appspotmail.com
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Reported-by: syzbot+8325e509a1bf83ec741d@syzkaller.appspotmail.com
+Fixes: 304e024216a8 ("net_sched: add a temporary refcnt for struct tcindex_data")
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Jiri Pirko <jiri@resnulli.us>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Cong Wang <xiyou.wangcong@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/bluetooth/rfcomm/tty.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/sched/cls_tcindex.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/bluetooth/rfcomm/tty.c
-+++ b/net/bluetooth/rfcomm/tty.c
-@@ -413,10 +413,8 @@ static int __rfcomm_create_dev(struct so
- 		dlc = rfcomm_dlc_exists(&req.src, &req.dst, req.channel);
- 		if (IS_ERR(dlc))
- 			return PTR_ERR(dlc);
--		else if (dlc) {
--			rfcomm_dlc_put(dlc);
-+		if (dlc)
- 			return -EBUSY;
--		}
- 		dlc = rfcomm_dlc_alloc(GFP_KERNEL);
- 		if (!dlc)
- 			return -ENOMEM;
+--- a/net/sched/cls_tcindex.c
++++ b/net/sched/cls_tcindex.c
+@@ -151,6 +151,7 @@ static int tcindex_init(struct tcf_proto
+ 	p->mask = 0xffff;
+ 	p->hash = DEFAULT_HASH_SIZE;
+ 	p->fall_through = 1;
++	refcount_set(&p->refcnt, 1); /* Paired with tcindex_destroy_work() */
+ 
+ 	rcu_assign_pointer(tp->root, p);
+ 	return 0;
 
 
