@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 997E51A501A
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE961A502F
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727928AbgDKMOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47738 "EHLO mail.kernel.org"
+        id S1726874AbgDKMPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:15:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727916AbgDKMOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:21 -0400
+        id S1727709AbgDKMPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:15:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBB0920644;
-        Sat, 11 Apr 2020 12:14:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8CF6520787;
+        Sat, 11 Apr 2020 12:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607262;
-        bh=h2eGqPeixL/ya52/luORgsLdlKSXvpz5U783GSmKz9E=;
+        s=default; t=1586607313;
+        bh=m4etkLiEepcr0k8zXYpPGtfTEbrDtzPIjZMv44ZiuqE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kN9SxxiuU3SN9cJwZrrEFQGNLkGn2andXndK9UUGbrzjj5Duh5FdHozZBtyhdayMv
-         sLV/an5bqrjq5TprR+cRZ/BBVtZkjHKQ3ogiRi0PsZ9NDy8btWH9u5Ru4riZCRoa7H
-         3Hl9RAZwXmZj3LZCWWpplvIhbQ72mYu7O7OvA5xM=
+        b=tr3H90ue1nrpMqLIEj6Ti50zFEmp22djcfbk7KbdrhmbPvhH2uObIhZG75dan4JgU
+         TLXnC1JvEzZWATlMmFCj8oUX5zBZVrRo6xOvyP5/CkSBbF4eI3wUXSU1/k8uNIrTw1
+         2stHBb9AL0RTP/2yAdx3aeHY2gK0x6IBz1RetIWw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Len Brown <len.brown@intel.com>,
+        stable@vger.kernel.org, James Zhu <James.Zhu@amd.com>,
+        Leo Liu <leo.liu@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 07/38] tools/power turbostat: Fix gcc build warnings
+Subject: [PATCH 4.19 09/54] drm/amdgpu: fix typo for vcn1 idle check
 Date:   Sat, 11 Apr 2020 14:08:51 +0200
-Message-Id: <20200411115438.659823721@linuxfoundation.org>
+Message-Id: <20200411115509.193111462@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-References: <20200411115437.795556138@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,38 +45,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Len Brown <len.brown@intel.com>
+From: James Zhu <James.Zhu@amd.com>
 
-[ Upstream commit d8d005ba6afa502ca37ced5782f672c4d2fc1515 ]
+[ Upstream commit acfc62dc68770aa665cc606891f6df7d6d1e52c0 ]
 
-Warning: ‘__builtin_strncpy’ specified bound 20 equals destination size
-	[-Wstringop-truncation]
+fix typo for vcn1 idle check
 
-reduce param to strncpy, to guarantee that a null byte is always copied
-into destination buffer.
-
-Signed-off-by: Len Brown <len.brown@intel.com>
+Signed-off-by: James Zhu <James.Zhu@amd.com>
+Reviewed-by: Leo Liu <leo.liu@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 19e345cf8193e..0692f2efc25ef 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -4650,9 +4650,9 @@ int add_counter(unsigned int msr_num, char *path, char *name,
- 	}
+diff --git a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+index 4f8f3bb218320..a54f8943ffa34 100644
+--- a/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c
+@@ -857,7 +857,7 @@ static int vcn_v1_0_set_clockgating_state(void *handle,
  
- 	msrp->msr_num = msr_num;
--	strncpy(msrp->name, name, NAME_BYTES);
-+	strncpy(msrp->name, name, NAME_BYTES - 1);
- 	if (path)
--		strncpy(msrp->path, path, PATH_BYTES);
-+		strncpy(msrp->path, path, PATH_BYTES - 1);
- 	msrp->width = width;
- 	msrp->type = type;
- 	msrp->format = format;
+ 	if (enable) {
+ 		/* wait for STATUS to clear */
+-		if (vcn_v1_0_is_idle(handle))
++		if (!vcn_v1_0_is_idle(handle))
+ 			return -EBUSY;
+ 		vcn_v1_0_enable_clock_gating(adev);
+ 	} else {
 -- 
 2.20.1
 
