@@ -2,137 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C89B1A4F4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 12:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D551C1A4F51
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 12:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726256AbgDKKRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 06:17:07 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:36454 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbgDKKRH (ORCPT
+        id S1726107AbgDKKTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 06:19:09 -0400
+Received: from smtprelay0147.hostedemail.com ([216.40.44.147]:60856 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725951AbgDKKTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 06:17:07 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g2so1514734plo.3;
-        Sat, 11 Apr 2020 03:17:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+KhT4Lw+E5hrVuuvNZOtXCA2e1KBZDLsYmSlwMgDSyg=;
-        b=TWEUX3Fl2swRdWz1CPY9/HNUxPMMtmhelCLQ8zPb4wYHGuGI9SpL/HzaYcX16EELqZ
-         BXN0p1OBYoA6HjRK8EbmVcQ1UZ7YnhYSjkdTzBSnSG88f+VjOjHU/r5cB1ZBQA12+vNO
-         UFD4IP8e817V2PQN5efSqYJ6nKR1zEZ7tPW8Zl9koZbPe/2xF89FZYc1/zxm5baDE8kR
-         UsJnvbCyQgDwxGBDIGIj4TCs2IFCUvTzlj4n0H24f4cGsOkd1BVmmc0PR51dMFRuEdEd
-         p1ZbT0tzx+EcKlQWZslSb8Th5r5btoHG5z/Fg7+HD0Ab/ITdri8x2ja6kfGVPsgndwIi
-         JFIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+KhT4Lw+E5hrVuuvNZOtXCA2e1KBZDLsYmSlwMgDSyg=;
-        b=bwzUHxvckPq+1Ghycx8SnGAooZAWyPvAV8wdncb0QdnHacnHqvKZGZ05AkAfvTt3UX
-         SKoJaiKusU+0KIeixKZDJQseg+hfoKO+v/imkAA1YascDDfKs4O4ySifOJR0aBptziYU
-         lFFeF3LN1VMSe6yG20VRn9JZ6AnpdyRsVFPPa2GbhgLNc7M2iiCD4lxRgliefbKOSSCW
-         mYAAdnrmL0JuU3I2mnlmeVG/1QDeI/vP0k8BUnttuVVePunqKYikZtGLH2goYe/cTUcv
-         KKB3ai1FwkNPO3/++GvMieB3+kBBu6Znx3nkQW3vjgD8YhHGtdJdP9cN1XpxOIXyg6b9
-         jrJw==
-X-Gm-Message-State: AGi0PubRyEezX6gwpzvoyfXf17u0UFOl8x98LnFalGOcjCiW1Cyesvya
-        S5rNZLhn7ngCLjMznFQ/zpqM7wWGd/lHSVLofAg=
-X-Google-Smtp-Source: APiQypKBxqyP2VTpmEejb05I4p492JmmrAy8Kn3YOkmqKWJ44ajFN7cG6Yd4Z7a8ByaUsXFQr/6Fx/zuKiqXXAhbmLo=
-X-Received: by 2002:a17:902:5985:: with SMTP id p5mr4048369pli.262.1586600225472;
- Sat, 11 Apr 2020 03:17:05 -0700 (PDT)
+        Sat, 11 Apr 2020 06:19:09 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id C797118224D6B;
+        Sat, 11 Apr 2020 10:19:08 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3867:3870:3871:3872:3873:4250:4321:5007:10004:10400:10848:11658:11914:12043:12297:12679:12740:12760:12895:13069:13071:13095:13311:13357:13439:13972:14180:14181:14659:14721:21060:21080:21212:21433:21451:21627:21660:30054:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: alley38_32a60c789110b
+X-Filterd-Recvd-Size: 1745
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 11 Apr 2020 10:19:07 +0000 (UTC)
+Message-ID: <159680bb287fc43bb2129d3b731e15931bd9979c.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
+ message
+From:   Joe Perches <joe@perches.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org
+Date:   Sat, 11 Apr 2020 03:17:03 -0700
+In-Reply-To: <26b49cf5-453b-9a81-b045-fdc99c42fcf8@wanadoo.fr>
+References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
+         <8617a6b94c0644bce1fd4ca77309d67a612e6300.camel@perches.com>
+         <6e52383e-100d-b016-32c2-6fb54938b6fe@wanadoo.fr>
+         <c9fd4bc75812fed4799c2fb87b452b809a7e9a7a.camel@perches.com>
+         <db2730700ab3eb7008413a1e7bba94ca7c49a031.camel@perches.com>
+         <26b49cf5-453b-9a81-b045-fdc99c42fcf8@wanadoo.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-References: <20200410201948.1293-1-sravanhome@gmail.com>
-In-Reply-To: <20200410201948.1293-1-sravanhome@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 11 Apr 2020 13:16:53 +0300
-Message-ID: <CAHp75Vem_Uifke36hZrWJutddJbar1t2CK7qrydg91=Fdu_GzQ@mail.gmail.com>
-Subject: Re: [PATCH v7 0/5] Add battery charger driver support for MP2629
-To:     Saravanan Sekar <sravanhome@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald <pmeerw@pmeerw.net>,
-        Sebastian Reichel <sre@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 11:19 PM Saravanan Sekar <sravanhome@gmail.com> wrote:
->
-> changes in v7:
->  - fixed probe/remove order, managed and unmanaged call mix use in adc.
->  - Documentation dual license, i2c node with controller address
+On Sat, 2020-04-11 at 09:12 +0200, Christophe JAILLET wrote:
+> 	./scripts/checkpatch.pl -f drivers/soc/kendryte/k210-sysctl.c
+> 
+> is missing line 189, even if it looks like a construction correctly spotted in some other files:
+> 	if (foo) {
+> 		dev_err(...);
+> 		...
+> 	};
 
-Overall looks good to me, FWIW,
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Hi Christophe, many thanks for doing more testing
 
-One question though in reply to patch 4.
+Are you sure about this one?  I get:
 
-> changes in v6:
->  - removed includes types.h in mfd, of_device.h in adc.
->  - fixed review comments parentheses, err check, kstrtouint
->
-> changes in v5:
->  - removed platfrom data stored in mfd and directly accessed mfd struct in child
->  - fixed spell check and capitalization in mfd and documentation
->
-> changes in v4:
->  - fixed capitalization in mfg Kconfig and documentation
->
-> changes in v3:
->  - regmap for children passed using platform data and remove mfd driver info
->    access directly from children
->
-> changes in v2:
->  - removed EXPORT_SYMBOL of register set/get helper
->  - regmap bit filed used, fixed other review comments
->
-> This patch series add support for Battery charger control driver for Monolithic
-> Power System's MP2629 chipset, includes MFD driver for ADC battery & input
-> power supply measurement and battery charger control driver.
->
-> Thanks,
-> Saravanan
->
-> Saravanan Sekar (5):
->   dt-bindings: mfd: add document bindings for mp2629
->   mfd: mp2629: Add support for mps battery charger
->   iio: adc: mp2629: Add support for mp2629 ADC driver
->   power: supply: Add support for mps mp2629 battery charger
->   MAINTAINERS: Add entry for mp2629 Battery Charger driver
->
->  .../devicetree/bindings/mfd/mps,mp2629.yaml   |  60 ++
->  MAINTAINERS                                   |   5 +
->  drivers/iio/adc/Kconfig                       |  10 +
->  drivers/iio/adc/Makefile                      |   1 +
->  drivers/iio/adc/mp2629_adc.c                  | 208 ++++++
->  drivers/mfd/Kconfig                           |   9 +
->  drivers/mfd/Makefile                          |   2 +
->  drivers/mfd/mp2629.c                          |  86 +++
->  drivers/power/supply/Kconfig                  |  10 +
->  drivers/power/supply/Makefile                 |   1 +
->  drivers/power/supply/mp2629_charger.c         | 687 ++++++++++++++++++
->  include/linux/mfd/mp2629.h                    |  28 +
->  12 files changed, 1107 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/mps,mp2629.yaml
->  create mode 100644 drivers/iio/adc/mp2629_adc.c
->  create mode 100644 drivers/mfd/mp2629.c
->  create mode 100644 drivers/power/supply/mp2629_charger.c
->  create mode 100644 include/linux/mfd/mp2629.h
->
-> --
-> 2.17.1
->
+$ ./scripts/checkpatch.pl -f drivers/soc/kendryte/k210-sysctl.c
+WARNING: Possible missing '\n' at the end of a logging message format string
+#189: FILE: drivers/soc/kendryte/k210-sysctl.c:189:
++		dev_err(&pdev->dev, "failed to register clk");
 
 
--- 
-With Best Regards,
-Andy Shevchenko
