@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8721A5061
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE7E1A509C
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728378AbgDKMRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51732 "EHLO mail.kernel.org"
+        id S1728825AbgDKMTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:19:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728370AbgDKMRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:17:11 -0400
+        id S1728808AbgDKMTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:19:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D493520644;
-        Sat, 11 Apr 2020 12:17:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DE2F2084D;
+        Sat, 11 Apr 2020 12:19:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607431;
-        bh=E03Dhfc2oBH5Q3tpRD5N2QLqFY+7GVOS9HYPb0ME0ak=;
+        s=default; t=1586607573;
+        bh=ac9LB+mggSg1L55NuykFTX4QFSdgB8uLvduZC4UzgWg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dpYfEFkmz590dJT5cZlDJA9QiEo0ZcYUZr2Mruk6klVWCtmnZmBKRSGAl6ifxRcRh
-         Q9zdHVUhdOnppZvMgXrgFprswEplQVJiS0tM3yncdx1S5RPHzuSTsjitTdoGYScN80
-         zRaBEROgk4+Vjm9kD3nslPJNhLMD5PAObV08eVoU=
+        b=vxROhwuCWALl10m6xCyJ8cuTvdbN41vcSRceo2XD+3K6EoTN/NJUuMmMFk1X0gjFX
+         5Xi7rOYIr1KFqr/Uym7l80eklQlk3P/tOmc3mRS0tPMa/idS5EifjBWFMP5wCAssRG
+         UhKkcGsHzUuOETTQ/t6tbCUcOaX7tHNQNJnAzTCo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
-        Felipe Balbi <balbi@kernel.org>
-Subject: [PATCH 5.4 17/41] usb: dwc3: gadget: Wrap around when skip TRBs
+        stable@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.5 06/44] net: phy: micrel: kszphy_resume(): add delay after genphy_resume() before accessing PHY registers
 Date:   Sat, 11 Apr 2020 14:09:26 +0200
-Message-Id: <20200411115505.281877775@linuxfoundation.org>
+Message-Id: <20200411115457.413602141@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
-References: <20200411115504.124035693@linuxfoundation.org>
+In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
+References: <20200411115456.934174282@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Oleksij Rempel <o.rempel@pengutronix.de>
 
-commit 2dedea035ae82c5af0595637a6eda4655532b21e upstream.
+[ Upstream commit 6110dff776f7fa65c35850ef65b41d3b39e2fac2 ]
 
-When skipping TRBs, we need to account for wrapping around the ring
-buffer and not modifying some invalid TRBs. Without this fix, dwc3 won't
-be able to check for available TRBs.
+After the power-down bit is cleared, the chip internally triggers a
+global reset. According to the KSZ9031 documentation, we have to wait at
+least 1ms for the reset to finish.
 
-Cc: stable <stable@vger.kernel.org>
-Fixes: 7746a8dfb3f9 ("usb: dwc3: gadget: extract dwc3_gadget_ep_skip_trbs()")
-Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+If the chip is accessed during reset, read will return 0xffff, while
+write will be ignored. Depending on the system performance and MDIO bus
+speed, we may or may not run in to this issue.
+
+This bug was discovered on an iMX6QP system with KSZ9031 PHY and
+attached PHY interrupt line. If IRQ was used, the link status update was
+lost. In polling mode, the link status update was always correct.
+
+The investigation showed, that during a read-modify-write access, the
+read returned 0xffff (while the chip was still in reset) and
+corresponding write hit the chip _after_ reset and triggered (due to the
+0xffff) another reset in an undocumented bit (register 0x1f, bit 1),
+resulting in the next write being lost due to the new reset cycle.
+
+This patch fixes the issue by adding a 1...2 ms sleep after the
+genphy_resume().
+
+Fixes: 836384d2501d ("net: phy: micrel: Add specific suspend")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/dwc3/gadget.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/phy/micrel.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1518,7 +1518,7 @@ static void dwc3_gadget_ep_skip_trbs(str
- 	for (i = 0; i < req->num_trbs; i++) {
- 		struct dwc3_trb *trb;
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -25,6 +25,7 @@
+ #include <linux/micrel_phy.h>
+ #include <linux/of.h>
+ #include <linux/clk.h>
++#include <linux/delay.h>
  
--		trb = req->trb + i;
-+		trb = &dep->trb_pool[dep->trb_dequeue];
- 		trb->ctrl &= ~DWC3_TRB_CTRL_HWO;
- 		dwc3_ep_inc_deq(dep);
- 	}
+ /* Operation Mode Strap Override */
+ #define MII_KSZPHY_OMSO				0x16
+@@ -902,6 +903,12 @@ static int kszphy_resume(struct phy_devi
+ 
+ 	genphy_resume(phydev);
+ 
++	/* After switching from power-down to normal mode, an internal global
++	 * reset is automatically generated. Wait a minimum of 1 ms before
++	 * read/write access to the PHY registers.
++	 */
++	usleep_range(1000, 2000);
++
+ 	ret = kszphy_config_reset(phydev);
+ 	if (ret)
+ 		return ret;
 
 
