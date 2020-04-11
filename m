@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A021A5023
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FD91A501D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728017AbgDKMOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48248 "EHLO mail.kernel.org"
+        id S1727950AbgDKMOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:14:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726953AbgDKMOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:43 -0400
+        id S1727052AbgDKMO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:14:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 817BD20692;
-        Sat, 11 Apr 2020 12:14:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9716D20692;
+        Sat, 11 Apr 2020 12:14:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607284;
-        bh=FIQyZpGeWjGjICZFpF4bFafvr3BU4jUe3KlA1RozA18=;
+        s=default; t=1586607267;
+        bh=pZKyy5V/dyvl9aN9yRiWhzx5+CIPNaBdMMhXTjYbJL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XBjzNiaSdhvyhLSNEyA9y8sFBUW7SOmNm3QZFfiPryKhNOkfydLc4yBZ9+Pp/dy4d
-         8eYDIXbqujFdcMvH+eoN1m4+QxiJEpbvHPWvVefZntu6Ltd47AuWuChTkDsAn1MWlu
-         q869xzlPZrslEKNtDIUanUvffkBUw1sTVBZVZIE8=
+        b=Ye28ex9YIZnVicSYKYtrA98IfCCcI4t6rxubezMZNDsvwHV9jYjp74iIiP1ctR+fE
+         7id2R8drCojLp756WMCY0FGd5sjRYrCFVRUSh5lXE8B2UM9jwWZQinyX+zQAX8LBeg
+         peCkcPksZ7WfT8TFQtRLmAtuTz9LqwAwyjEr4xVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Len Brown <len.brown@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/54] tools/power turbostat: Fix missing SYS_LPI counter on some Chromebooks
+        stable@vger.kernel.org, Jianchao Wang <jianchao.w.wang@oracle.com>,
+        Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Giuliano Procida <gprocida@google.com>
+Subject: [PATCH 4.14 09/38] blk-mq: sync the update nr_hw_queues with blk_mq_queue_tag_busy_iter
 Date:   Sat, 11 Apr 2020 14:08:53 +0200
-Message-Id: <20200411115509.374022389@linuxfoundation.org>
+Message-Id: <20200411115438.939741034@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
+References: <20200411115437.795556138@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,83 +44,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Len Brown <len.brown@intel.com>
+From: Jianchao Wang <jianchao.w.wang@oracle.com>
 
-[ Upstream commit 1f81c5efc020314b2db30d77efe228b7e117750d ]
+commit f5bbbbe4d63577026f908a809f22f5fd5a90ea1f upstream.
 
-Some Chromebook BIOS' do not export an ACPI LPIT, which is how
-Linux finds the residency counter for CPU and SYSTEM low power states,
-that is exports in /sys/devices/system/cpu/cpuidle/*residency_us
+For blk-mq, part_in_flight/rw will invoke blk_mq_in_flight/rw to
+account the inflight requests. It will access the queue_hw_ctx and
+nr_hw_queues w/o any protection. When updating nr_hw_queues and
+blk_mq_in_flight/rw occur concurrently, panic comes up.
 
-When these sysfs attributes are missing, check the debugfs attrubte
-from the pmc_core driver, which accesses the same counter value.
+Before update nr_hw_queues, the q will be frozen. So we could use
+q_usage_counter to avoid the race. percpu_ref_is_zero is used here
+so that we will not miss any in-flight request. The access to
+nr_hw_queues and queue_hw_ctx in blk_mq_queue_tag_busy_iter are
+under rcu critical section, __blk_mq_update_nr_hw_queues could use
+synchronize_rcu to ensure the zeroed q_usage_counter to be globally
+visible.
 
-Signed-off-by: Len Brown <len.brown@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Jianchao Wang <jianchao.w.wang@oracle.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: Giuliano Procida <gprocida@google.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- tools/power/x86/turbostat/turbostat.c |   23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ block/blk-mq-tag.c |   14 +++++++++++++-
+ block/blk-mq.c     |    4 ++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -299,6 +299,10 @@ int *irqs_per_cpu;		/* indexed by cpu_nu
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -334,6 +334,18 @@ void blk_mq_queue_tag_busy_iter(struct r
+ 	struct blk_mq_hw_ctx *hctx;
+ 	int i;
  
- void setup_all_buffers(void);
- 
-+char *sys_lpi_file;
-+char *sys_lpi_file_sysfs = "/sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us";
-+char *sys_lpi_file_debugfs = "/sys/kernel/debug/pmc_core/slp_s0_residency_usec";
-+
- int cpu_is_not_present(int cpu)
- {
- 	return !CPU_ISSET_S(cpu, cpu_present_setsize, cpu_present_set);
-@@ -2844,8 +2848,6 @@ int snapshot_gfx_mhz(void)
-  *
-  * record snapshot of
-  * /sys/devices/system/cpu/cpuidle/low_power_idle_cpu_residency_us
-- *
-- * return 1 if config change requires a restart, else return 0
-  */
- int snapshot_cpu_lpi_us(void)
- {
-@@ -2865,17 +2867,14 @@ int snapshot_cpu_lpi_us(void)
- /*
-  * snapshot_sys_lpi()
-  *
-- * record snapshot of
-- * /sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us
-- *
-- * return 1 if config change requires a restart, else return 0
-+ * record snapshot of sys_lpi_file
-  */
- int snapshot_sys_lpi_us(void)
- {
- 	FILE *fp;
- 	int retval;
- 
--	fp = fopen_or_die("/sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us", "r");
-+	fp = fopen_or_die(sys_lpi_file, "r");
- 
- 	retval = fscanf(fp, "%lld", &cpuidle_cur_sys_lpi_us);
- 	if (retval != 1)
-@@ -4743,10 +4742,16 @@ void process_cpuid()
- 	else
- 		BIC_NOT_PRESENT(BIC_CPU_LPI);
- 
--	if (!access("/sys/devices/system/cpu/cpuidle/low_power_idle_system_residency_us", R_OK))
-+	if (!access(sys_lpi_file_sysfs, R_OK)) {
-+		sys_lpi_file = sys_lpi_file_sysfs;
- 		BIC_PRESENT(BIC_SYS_LPI);
--	else
-+	} else if (!access(sys_lpi_file_debugfs, R_OK)) {
-+		sys_lpi_file = sys_lpi_file_debugfs;
-+		BIC_PRESENT(BIC_SYS_LPI);
-+	} else {
-+		sys_lpi_file_sysfs = NULL;
- 		BIC_NOT_PRESENT(BIC_SYS_LPI);
++	/*
++	 * __blk_mq_update_nr_hw_queues will update the nr_hw_queues and
++	 * queue_hw_ctx after freeze the queue. So we could use q_usage_counter
++	 * to avoid race with it. __blk_mq_update_nr_hw_queues will users
++	 * synchronize_rcu to ensure all of the users go out of the critical
++	 * section below and see zeroed q_usage_counter.
++	 */
++	rcu_read_lock();
++	if (percpu_ref_is_zero(&q->q_usage_counter)) {
++		rcu_read_unlock();
++		return;
 +	}
  
- 	if (!quiet)
- 		decode_misc_feature_control();
+ 	queue_for_each_hw_ctx(q, hctx, i) {
+ 		struct blk_mq_tags *tags = hctx->tags;
+@@ -349,7 +361,7 @@ void blk_mq_queue_tag_busy_iter(struct r
+ 			bt_for_each(hctx, &tags->breserved_tags, fn, priv, true);
+ 		bt_for_each(hctx, &tags->bitmap_tags, fn, priv, false);
+ 	}
+-
++	rcu_read_unlock();
+ }
+ 
+ static int bt_alloc(struct sbitmap_queue *bt, unsigned int depth,
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2748,6 +2748,10 @@ static void __blk_mq_update_nr_hw_queues
+ 
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list)
+ 		blk_mq_unfreeze_queue(q);
++	/*
++	 * Sync with blk_mq_queue_tag_busy_iter.
++	 */
++	synchronize_rcu();
+ }
+ 
+ void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues)
 
 
