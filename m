@@ -2,185 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 080DE1A4DB3
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 05:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD561A4DBB
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 06:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbgDKD4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 10 Apr 2020 23:56:24 -0400
-Received: from mail27.static.mailgun.info ([104.130.122.27]:21267 "EHLO
-        mail27.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726678AbgDKD4Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 10 Apr 2020 23:56:24 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1586577384; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=oalPl2CS9AIelSHim6uYF/0X3b0FIeVCWAC33NxRrxg=; b=usElmalndwxY9dJdLbhiBTtZAh1P4O+ByA+1/F43+tCI3w8RCHvWY7p+zKUxEijWYU0pFbeL
- j8q4Lmv0kHeYBh5n1li9t1WXGz6hhV8yWvBZoTYbV003KW8BnsTnOrfzyZIe4UNPLL/7b8FU
- rLluKXApi8YZqXQZvaBGEZRxLMU=
-X-Mailgun-Sending-Ip: 104.130.122.27
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
- by mxa.mailgun.org with ESMTP id 5e913fe8.7fcf59aa63e8-smtp-out-n04;
- Sat, 11 Apr 2020 03:56:24 -0000 (UTC)
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E77E9C433BA; Sat, 11 Apr 2020 03:56:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.110.2.190] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7259CC433CB;
-        Sat, 11 Apr 2020 03:56:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7259CC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v3 1/4] dt-bindings: phy: Add binding for qcom,usb-hs-7nm
-To:     Stephen Boyd <sboyd@kernel.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, mark.rutland@arm.com,
-        mturquette@baylibre.com, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        vinod.koul@linaro.org
-References: <1586298209-4589-1-git-send-email-wcheng@codeaurora.org>
- <1586298209-4589-2-git-send-email-wcheng@codeaurora.org>
- <158657118788.199533.6157625397469536329@swboyd.mtv.corp.google.com>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <6ee1a80b-e19d-072d-ad50-37af65853e3e@codeaurora.org>
-Date:   Fri, 10 Apr 2020 20:56:21 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <158657118788.199533.6157625397469536329@swboyd.mtv.corp.google.com>
+        id S1725900AbgDKEH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 00:07:56 -0400
+Received: from mail-oln040092069088.outbound.protection.outlook.com ([40.92.69.88]:23982
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725847AbgDKEH4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 00:07:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JSM4tUe5dR9psexG0ixcSfE4JqMqpnTfWA5e2SlIiNZ8cvMKeAKODvrV4k9QOWCN4mIEQx6PVc2KeDZKomYY//n5a7NZp7F+dv6jCV3QyOZMVH1oPsKIZ21ZDZHJuLp633c0t+dIKhzsdRi1BlEQqS9mkFV9SQF5gSle8wIo14HfFvmaN3d9sTb9vEg3eZBny0j22HeYIxqq2Lh2jKdpUo5QJakrclnqABEkNFRN7AVJB2de6tCiV+cQCO+hbh3Zon9qY/DhaVwc/Gjp2DKMk/nAvddo8iNEKBIepJDckrJpik4vaachlh9SqJ9ae7NmHlQOdA4C5toz5GGC52VKyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6CVlM3+nr4ib42WseD8asH8eCMh7KnLh3nM117zAT/A=;
+ b=IwCocVy0Tk/Z/dsf2PJfAG87dv3yz50zjObXWU6AU59SnQeFov4pBVyJsU+SJIol5pvfGXkwgleLoKlWzjCeKAacm6CMF2duWH17ILg9n1siIS5Va33NxXi5wMcNWoWtzub18zfgXIe2yCSgznMnraf56XvmW1+LZlAUS5QKRoZjE95KOLYMkYs8qcGcCEOlAGqvX8TWo3D6t0jvMsueQqMA3duXeS3OaYzN9TGMF7u4Z/XqNu1GQaCZ0RI2iQNpoKIkmwH47RTGuG5+0r1/pav+oOHDJ4JcFLI28bFMhFqgdSDSYoZypt2bMOIBSxWdIFYbE7L01PMvrrmsp3rfBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hotmail.de; dmarc=pass action=none header.from=hotmail.de;
+ dkim=pass header.d=hotmail.de; arc=none
+Received: from VE1EUR02FT026.eop-EUR02.prod.protection.outlook.com
+ (2a01:111:e400:7e1e::44) by
+ VE1EUR02HT127.eop-EUR02.prod.protection.outlook.com (2a01:111:e400:7e1e::356)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.18; Sat, 11 Apr
+ 2020 04:07:49 +0000
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2a01:111:e400:7e1e::47) by VE1EUR02FT026.mail.protection.outlook.com
+ (2a01:111:e400:7e1e::77) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend
+ Transport; Sat, 11 Apr 2020 04:07:49 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:817416C312856FA78D3C597E2003B48B9F7D4118F45A93CCBC4B4BB9195E861B;UpperCasedChecksum:80EC4C266AAB70BFB255EE9709518F425BE5D111BA8FDAD50C3ED0F363956B57;SizeAsReceived:10029;Count:50
+Received: from AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d]) by AM6PR03MB5170.eurprd03.prod.outlook.com
+ ([fe80::d57:5853:a396:969d%7]) with mapi id 15.20.2878.023; Sat, 11 Apr 2020
+ 04:07:49 +0000
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>
+References: <87blobnq02.fsf@x220.int.ebiederm.org>
+ <CAHk-=wjhAvv6s_7OVeZJiHaY7bBrHyiPTkSpq-TLr6qxYqxUUw@mail.gmail.com>
+ <CAHk-=wi0jrKv9x6vJ9FDgTrSUbdbZYDX-79T-E87C48MGSn5=g@mail.gmail.com>
+ <87wo6or3pg.fsf@x220.int.ebiederm.org>
+ <AM6PR03MB51708FD4226E07AB7CB0D6A7E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wjaoYM4gXdAyYY=u8PaYj2LXUvcfp=8DKum8f1DM+Ws0A@mail.gmail.com>
+ <AM6PR03MB5170F924EA69A81D79BD0929E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whMKC5F-=QQP=fCNRuTF+ZGiNtLEKvx7KekpK1JtrwDhw@mail.gmail.com>
+ <CAHk-=whJ8khGBqfqh6ZmHsKjcyyBLm5xgkgLW_AC_=82iFBWoQ@mail.gmail.com>
+ <AM6PR03MB51700B243E34BF4A59FF33CFE4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+ <87imi8nzlw.fsf@x220.int.ebiederm.org>
+ <CAHk-=wgh4zts+3hdkGzHLJ6pBGumcJ=23gRbMfubDrLstis2Bg@mail.gmail.com>
+ <CAHk-=whKHpERyVv2-C+kxq9KV_mJPW3hkGDpn6f4yOvs+au8SA@mail.gmail.com>
+ <CAHk-=wjmQREQzDa8LEoA2L=v=nWASk4n9R=G8SuAZ-1NK4FGPA@mail.gmail.com>
+From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
+Message-ID: <AM6PR03MB5170714861EE813BF3EE51DEE4DF0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+Date:   Sat, 11 Apr 2020 06:07:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+In-Reply-To: <CAHk-=wjmQREQzDa8LEoA2L=v=nWASk4n9R=G8SuAZ-1NK4FGPA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM3PR07CA0107.eurprd07.prod.outlook.com
+ (2603:10a6:207:7::17) To AM6PR03MB5170.eurprd03.prod.outlook.com
+ (2603:10a6:20b:ca::23)
+X-Microsoft-Original-Message-ID: <7ca8b273-3222-b13f-51a5-53e70bba4074@hotmail.de>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.101] (92.77.140.102) by AM3PR07CA0107.eurprd07.prod.outlook.com (2603:10a6:207:7::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2921.20 via Frontend Transport; Sat, 11 Apr 2020 04:07:48 +0000
+X-Microsoft-Original-Message-ID: <7ca8b273-3222-b13f-51a5-53e70bba4074@hotmail.de>
+X-TMN:  [bD67wqo8RC7fxLaBVOHOYug3Oq8KXNpF]
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 50
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: d8931ce9-20a8-4975-b29a-08d7ddcde601
+X-MS-TrafficTypeDiagnostic: VE1EUR02HT127:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NNg9YWaKu0eZCfE4BxcH6qpMmuwwMseLeIJCCucsOBzVfytZTQ9kBphIRhIhkzWfL4pCGMnJuIKkAB5A+j2H+i0HPU1oWd/FcK4/z8SliCS519eM/ExIsryuXGzCAuflU4HfNLltKCcmmUHv5dryo/hd+fuy5UYB1tM4xdodyFY6gK7FJL/r6RFPWYy/sjUD
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:0;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR03MB5170.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:;DIR:OUT;SFP:1901;
+X-MS-Exchange-AntiSpam-MessageData: yChoIlmXTVKsZzDse2wULXMFmWbPb2DKUVep6uuReiIBhgNBY2E91t57rdGYolzmJI2sOEu1TRfFlOwZW9sQgK+dSzXl/v8lMq6Io3n6CwEcnH6Pvft8DXuhBCRPVj9ezQYDFKc9f9R6JjOUZXQUNA==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8931ce9-20a8-4975-b29a-08d7ddcde601
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2020 04:07:49.7297
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1EUR02HT127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/10/2020 7:13 PM, Stephen Boyd wrote:
-> Quoting Wesley Cheng (2020-04-07 15:23:26)
->> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-hs-7nm.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-hs-7nm.yaml
->> new file mode 100644
->> index 0000000..7292e27
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-hs-7nm.yaml
->> @@ -0,0 +1,76 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: "http://devicetree.org/schemas/phy/qcom,usb-hs-7nm.yaml#"
->> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->> +
->> +title: Qualcomm Synopsys 7nm High-Speed USB PHY
->> +
->> +maintainers:
->> +  - Wesley Cheng <wcheng@codeaurora.org>
->> +
->> +description: |
->> +  Qualcomm Hi-Speed 7nm USB PHY
+On 4/10/20 2:32 AM, Linus Torvalds wrote:
+> On Thu, Apr 9, 2020 at 5:30 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> Instead of trying to change how notify_count gets decremented, we
+>> could do something like the attached patch: wait for it to go down to
+>> zero, yes, but go back and re-check until you don't have to wait any
+>> more. That should fix the underflow situation. The comment says it
+>> all.
 > 
-> High?
+> The "attached" patch wasn't.
+> 
+> Blush.
+> 
+> Here it is. Still entirely and utterly untested.
 > 
 
-Hi Stephen,
+Okay, if this works, please do not only make sure that our own test case
+works, but also that the strace-5.5 test suite does not regress.
 
-Will fix it.
+So currently at least one of the test cases was failing
+before my totally crazy patch.
+After my patch exactly the same test was failing.
 
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,usb-snps-hs-7nm-phy
->> +      - qcom,sm8150-usb-hs-phy
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  "#phy-cells":
->> +    const: 0
->> +
->> +  clocks:
->> +    items:
->> +      - description: rpmhcc ref clock
->> +
->> +  clock-names:
->> +    items:
->> +      - const: ref
->> +
->> +  resets:
->> +    items:
->> +      - description: PHY core reset
->> +
->> +  vdda-pll-supply:
->> +    description: phandle to the regulator VDD supply node.
->> +
->> +  vdda18-supply:
->> +    description: phandle to the regulator 1.8V supply node.
->> +
->> +  vdda33-supply:
->> +    description: phandle to the regulator 3.3V supply node.
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - "#phy-cells"
->> +  - clocks
->> +  - clock-names
->> +  - resets
->> +  - vdda-pll-supply
->> +  - vdda18-supply
->> +  - vdda33-supply
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/clock/qcom,rpmh.h>
->> +    #include <dt-bindings/clock/qcom,gcc-sm8150.h>
->> +    usb_1_hsphy: phy@88e2000 {
+So please make sure you don't break their tests.
+
+
+Thanks
+Bernd.
+
+>            Linus
 > 
-> Is the label necessary? Best to drop it if not.
-> 
-
-I'll drop the label.
-
->> +        compatible = "qcom,sm8150-usb-hs-phy";
->> +        reg = <0 0x088e2000 0 0x400>;
->> +        status = "disabled";
-> 
-> I think we can leave out status in examples.
-> 
-
-Will do.
-
->> +        #phy-cells = <0>;
->> +
->> +        clocks = <&rpmhcc RPMH_CXO_CLK>;
->> +        clock-names = "ref";
->> +
->> +        resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
->> +    };
->> +...
->> \ No newline at end of file
-> 
-> Why no newline at end of file?
-> 
-
-Got it, I'll add a newline.
-
->> -- 
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> a Linux Foundation Collaborative Project
-
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
