@@ -2,101 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD141A52E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 18:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 155321A52EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 18:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726715AbgDKQi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 12:38:26 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:43494 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726256AbgDKQi0 (ORCPT
+        id S1726462AbgDKQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 12:45:47 -0400
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:36892 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726124AbgDKQpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 12:38:26 -0400
-Received: by mail-lj1-f194.google.com with SMTP id h25so4775669lja.10
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 09:38:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HHjNiAPiJ1Oz2tFcDWgKOCe+L+oTgqAXQPJRZQ/4hzk=;
-        b=fURPhmhZDafu3/qkIgLMIEfe4A4py1LqcCqCeBR+aVwJ7drlaVanUhZYjyx5KCUiZx
-         KGDD6HlS++yVH8L88Y7vc/HiMTfe8JLWu5zgSXu8r7QLGa8LZ7tfbZa2cOHm/M603dUP
-         wu/c+M9wGg8Em1o8TiiYeR2NppvuUZeOBDKjA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HHjNiAPiJ1Oz2tFcDWgKOCe+L+oTgqAXQPJRZQ/4hzk=;
-        b=K4VAo7EXVOBW8e9Mvw11xganXe8SzcmHp2wi1CcuFsavf1wo5LhMloa7ERkxNe63h4
-         4oYirma3DoQTWWWPpaxGU4iYxYgdPRET/AeImA+CLaP68MCJ5sQTcJp7SzsDkljzZdwp
-         We6c4rdyVHxIE4ABLkRuJZ7Zjii6sbydrpjHjIi7PwssYnjAYvt74Rvn56G5ZdbEPlwG
-         Ygnbu2j7T8S7/oGRA3pgWvuM/RmC8dWu6vcQc2M0AL/j9LKG424q1EvnmMc02PEUqPKO
-         l5kw1aHo+feStjTPXhFH2orTQupnalafEURlbYS+yr2EHp0X/hh//eLMbT/Vzgtd/k9M
-         3Wsg==
-X-Gm-Message-State: AGi0Puav7g/zZnZ4Cjr6RS3v2Y9wbe2V6m6rs6+7/AVXS9FQUvO4vcFj
-        sUcM5wNDDlsjUfi1cPwmAcXN7jHcoWg=
-X-Google-Smtp-Source: APiQypL9Vuw965azEuZjRW/p70wsgwiazczG97R5I3Y5zRXGKh+giIrFh7YdJkACVJZaAQdXFaLsXw==
-X-Received: by 2002:a2e:8e98:: with SMTP id z24mr5977666ljk.23.1586623103405;
-        Sat, 11 Apr 2020 09:38:23 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id w10sm3656188ljh.85.2020.04.11.09.38.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 11 Apr 2020 09:38:22 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id n17so4780822lji.8
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 09:38:21 -0700 (PDT)
-X-Received: by 2002:a2e:8652:: with SMTP id i18mr6327984ljj.265.1586623101184;
- Sat, 11 Apr 2020 09:38:21 -0700 (PDT)
+        Sat, 11 Apr 2020 12:45:46 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 7B64F182CCCD1;
+        Sat, 11 Apr 2020 16:45:46 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1560:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3865:3866:3867:3868:3870:3871:4362:5007:10004:10400:10848:11658:11914:12043:12297:12663:12760:13069:13311:13357:13439:13868:14659:21080:21212:21627:21987:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: swing79_4f67ea8b28904
+X-Filterd-Recvd-Size: 1213
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 11 Apr 2020 16:45:45 +0000 (UTC)
+Message-ID: <af4673918a3f6bfba51118d68d554d4a1ff3dad4.camel@perches.com>
+Subject: Request to sort MAINTAINERS again just before an -rc1 release
+From:   Joe Perches <joe@perches.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Sat, 11 Apr 2020 09:43:40 -0700
+In-Reply-To: <f53fdf2283e1c847a4c44ea7bea4cb6600c06991.camel@perches.com>
+References: <f53fdf2283e1c847a4c44ea7bea4cb6600c06991.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-References: <20200406171124-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20200406171124-mutt-send-email-mst@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 11 Apr 2020 09:38:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg7sMywb2V8gifhpUDE=DWQTvg1wDieKVc0UoOSsOrynw@mail.gmail.com>
-Message-ID: <CAHk-=wg7sMywb2V8gifhpUDE=DWQTvg1wDieKVc0UoOSsOrynw@mail.gmail.com>
-Subject: Re: [GIT PULL] vhost: fixes, vdpa
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     KVM list <kvm@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>, eperezma@redhat.com,
-        "Cc: stable@vger.kernel.org, david@redhat.com, dverkamp@chromium.org,
-        hch@lst.de, jasowang@redhat.com, liang.z.li@intel.com, mst@redhat.com,
-        tiny.windzz@gmail.com," <jasowang@redhat.com>,
-        lingshan.zhu@intel.com, Michal Hocko <mhocko@kernel.org>,
-        Nadav Amit <namit@vmware.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        David Rientjes <rientjes@google.com>, tiwei.bie@intel.com,
-        tysand@google.com,
-        "Cc: stable@vger.kernel.org, david@redhat.com, dverkamp@chromium.org,
-        hch@lst.de, jasowang@redhat.com, liang.z.li@intel.com, mst@redhat.com,
-        tiny.windzz@gmail.com," <wei.w.wang@intel.com>,
-        xiao.w.wang@intel.com, yuri.benditovich@daynix.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 6, 2020 at 2:11 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> The new vdpa subsystem with two first drivers.
+Please consider running and committing:
 
-So this one is really annoying to configure.
+$ ./scripts/parse-maintainers.pl --input=MAINTAINERS --output=MAINTAINERS --order
 
-First it asks for vDPA driver for virtio devices (VIRTIO_VDPA) support.
+Immediately before any upcoming -rc1 is released.
 
-If you say 'n', it then asks *again* for VDPA drivers (VDPA_MENU).
+Relatively few of any pending patches to MAINTAINERS
+in -next would be impacted and there would be better
+consistency in the file.
 
-And then when you say 'n' to *that* it asks you for Vhost driver for
-vDPA-based backend (VHOST_VDPA).
+Thanks.
 
-This kind of crazy needs to stop.
-
-Doing kernel configuration is not supposed to be like some truly
-horrendously boring Colossal Cave Adventure game where you have to
-search for a way out of maze of twisty little passages, all alike.
-
-                Linus
