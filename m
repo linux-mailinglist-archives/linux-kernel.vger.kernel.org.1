@@ -2,38 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8652D1A51A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B919A1A4FB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727256AbgDKMOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48170 "EHLO mail.kernel.org"
+        id S1726860AbgDKMLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:11:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727998AbgDKMOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:41 -0400
+        id S1726834AbgDKMLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:11:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1742220692;
-        Sat, 11 Apr 2020 12:14:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C50521655;
+        Sat, 11 Apr 2020 12:11:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607281;
-        bh=wE60NzE6a4XNodsKvRma5brB+q02opg97ymdIJvL9Rg=;
+        s=default; t=1586607063;
+        bh=DX7Y/bTjcDckIPhehW9XWnDnMdMo6W/bQggp6rDI8+U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WKDowyYA0cAwZ2pbXeZMCLe5WhDmyPdoTFoIKOk7IHHkrQ60zKCr2uH6kRbn3JEha
-         3hDY49Awh1aD++Svd9zTRRrgFUWrjTH8NGlpPC+koF7Yk27GCcQQ4SUO/zcuOLRTH+
-         QOZiUT3UQjQygmIdveRJjZrMYn/MbJwfb8XEjs5M=
+        b=0/Rb44oZRiop+ksQVKq5NYzYSSolZnNm63xeD+zlsGYK+kkE9E6iU29yKV2oSUrxS
+         5TSh+aPzvr8CYa6wDqM5nkJO1ux/TslUBMlx5FbMWXbA0jE7sGfR0RiofLT2U0NwsM
+         DVgHDESLnEMihvLXtzyNJ9w+yDhEB2yOE0pnfYG0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Len Brown <len.brown@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 10/54] tools/power turbostat: Fix gcc build warnings
+        stable@vger.kernel.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        Ross Lagerwall <ross.lagerwall@citrix.com>,
+        Juergen Gross <jgross@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.4 22/29] xen-netfront: Fix mismatched rtnl_unlock
 Date:   Sat, 11 Apr 2020 14:08:52 +0200
-Message-Id: <20200411115509.251668935@linuxfoundation.org>
+Message-Id: <20200411115411.523635527@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
+References: <20200411115407.651296755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +47,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Len Brown <len.brown@intel.com>
+From: Ross Lagerwall <ross.lagerwall@citrix.com>
 
-[ Upstream commit d8d005ba6afa502ca37ced5782f672c4d2fc1515 ]
+commit cb257783c2927b73614b20f915a91ff78aa6f3e8 upstream.
 
-Warning: ‘__builtin_strncpy’ specified bound 20 equals destination size
-	[-Wstringop-truncation]
+Fixes: f599c64fdf7d ("xen-netfront: Fix race between device setup and open")
+Reported-by: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Signed-off-by: Ross Lagerwall <ross.lagerwall@citrix.com>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-reduce param to strncpy, to guarantee that a null byte is always copied
-into destination buffer.
-
-Signed-off-by: Len Brown <len.brown@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/power/x86/turbostat/turbostat.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/xen-netfront.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 02d123871ef95..fb665fdc722a4 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -5144,9 +5144,9 @@ int add_counter(unsigned int msr_num, char *path, char *name,
+--- a/drivers/net/xen-netfront.c
++++ b/drivers/net/xen-netfront.c
+@@ -1835,7 +1835,7 @@ static int talk_to_netback(struct xenbus
+ 	err = xen_net_read_mac(dev, info->netdev->dev_addr);
+ 	if (err) {
+ 		xenbus_dev_fatal(dev, err, "parsing %s/mac", dev->nodename);
+-		goto out;
++		goto out_unlocked;
  	}
  
- 	msrp->msr_num = msr_num;
--	strncpy(msrp->name, name, NAME_BYTES);
-+	strncpy(msrp->name, name, NAME_BYTES - 1);
- 	if (path)
--		strncpy(msrp->path, path, PATH_BYTES);
-+		strncpy(msrp->path, path, PATH_BYTES - 1);
- 	msrp->width = width;
- 	msrp->type = type;
- 	msrp->format = format;
--- 
-2.20.1
-
+ 	rtnl_lock();
+@@ -1950,6 +1950,7 @@ abort_transaction_no_dev_fatal:
+ 	xennet_destroy_queues(info);
+  out:
+ 	rtnl_unlock();
++out_unlocked:
+ 	device_unregister(&dev->dev);
+ 	return err;
+ }
 
 
