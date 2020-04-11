@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDB91A5065
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3A11A50AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbgDKMRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:17:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52072 "EHLO mail.kernel.org"
+        id S1728927AbgDKMUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:20:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727092AbgDKMRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:17:23 -0400
+        id S1728929AbgDKMUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:20:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB67A20644;
-        Sat, 11 Apr 2020 12:17:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4AB120644;
+        Sat, 11 Apr 2020 12:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607443;
-        bh=cxaqw+gj13L48qPCR+g9Lk8enKGNLTboZwEzcZD5KLs=;
+        s=default; t=1586607607;
+        bh=EmfY0OTG7JZDE8KriKilKrAHF7WbXWBGs5/1e/lrTow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KqKiTU8cW1D3eJW6H+qmxqfdWXv2JxM2+D6wzN2VFdj7gNTHVsMJ+Bm/n/Z3QQKCI
-         zJp1SqgMdOGhNfwtfyYRffm/BMsM4CIuKsSvBsikVxFI6aMWMMAnOI2cw5QvQapE3D
-         iWPdbDkLTi/XA/r0Z4dZJoiXSGx3O4e+j492JAQ0=
+        b=RJzVYaYmkzDh88xwbDyOCT/KiQpwdZQy+QjP7qfyQ7jEfWiDaOqT9vYenlnFGwIWg
+         9JUwzpnCOFUJbrP5ws+1LKibAOAYdsfpIW8bomQQT4FSBZ8y7/MfoETdqgnJ8VgdqO
+         pFo+J2wZ7uN8o4uAryYhJ7zvVOlqlYXyc7EZlohw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 21/41] hwrng: imx-rngc - fix an error path
+        stable@vger.kernel.org, Richard Palethorpe <rpalethorpe@suse.com>,
+        Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com,
+        mkl@pengutronix.de, davem@davemloft.net
+Subject: [PATCH 5.5 10/44] slcan: Dont transmit uninitialized stack data in padding
 Date:   Sat, 11 Apr 2020 14:09:30 +0200
-Message-Id: <20200411115505.564083016@linuxfoundation.org>
+Message-Id: <20200411115457.729173605@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
-References: <20200411115504.124035693@linuxfoundation.org>
+In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
+References: <20200411115456.934174282@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,38 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Kaiser <martin@kaiser.cx>
+From: Richard Palethorpe <rpalethorpe@suse.com>
 
-commit 47a1f8e8b3637ff5f7806587883d7d94068d9ee8 upstream.
+[ Upstream commit b9258a2cece4ec1f020715fe3554bc2e360f6264 ]
 
-Make sure that the rngc interrupt is masked if the rngc self test fails.
-Self test failure means that probe fails as well. Interrupts should be
-masked in this case, regardless of the error.
+struct can_frame contains some padding which is not explicitly zeroed in
+slc_bump. This uninitialized data will then be transmitted if the stack
+initialization hardening feature is not enabled (CONFIG_INIT_STACK_ALL).
 
-Cc: stable@vger.kernel.org
-Fixes: 1d5449445bd0 ("hwrng: mx-rngc - add a driver for Freescale RNGC")
-Reviewed-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+This commit just zeroes the whole struct including the padding.
+
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Fixes: a1044e36e457 ("can: add slcan driver for serial/USB-serial CAN adapters")
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: security@kernel.org
+Cc: wg@grandegger.com
+Cc: mkl@pengutronix.de
+Cc: davem@davemloft.net
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/char/hw_random/imx-rngc.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/can/slcan.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/char/hw_random/imx-rngc.c
-+++ b/drivers/char/hw_random/imx-rngc.c
-@@ -105,8 +105,10 @@ static int imx_rngc_self_test(struct imx
- 		return -ETIMEDOUT;
- 	}
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -148,7 +148,7 @@ static void slc_bump(struct slcan *sl)
+ 	u32 tmpid;
+ 	char *cmd = sl->rbuff;
  
--	if (rngc->err_reg != 0)
-+	if (rngc->err_reg != 0) {
-+		imx_rngc_irq_mask_clear(rngc);
- 		return -EIO;
-+	}
+-	cf.can_id = 0;
++	memset(&cf, 0, sizeof(cf));
  
- 	return 0;
- }
+ 	switch (*cmd) {
+ 	case 'r':
+@@ -187,8 +187,6 @@ static void slc_bump(struct slcan *sl)
+ 	else
+ 		return;
+ 
+-	*(u64 *) (&cf.data) = 0; /* clear payload */
+-
+ 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
+ 	if (!(cf.can_id & CAN_RTR_FLAG)) {
+ 		for (i = 0; i < cf.can_dlc; i++) {
 
 
