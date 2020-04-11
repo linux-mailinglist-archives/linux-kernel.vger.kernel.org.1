@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 500A41A4EF3
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAD31A4EF2
 	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 10:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725966AbgDKImL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 04:42:11 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:37007 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgDKImL (ORCPT
+        id S1726029AbgDKIpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 04:45:43 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:43704 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbgDKIpn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 04:42:11 -0400
-Received: from mail-qt1-f179.google.com ([209.85.160.179]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MFbmS-1jVV2l2xUU-00H3rK for <linux-kernel@vger.kernel.org>; Sat, 11 Apr
- 2020 10:42:09 +0200
-Received: by mail-qt1-f179.google.com with SMTP id 71so3228083qtc.12
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 01:42:09 -0700 (PDT)
-X-Gm-Message-State: AGi0PuaWleGPhd7l+zmIchiChOLi+yv+azJit4kA/OVkf4GJc0jrRbgz
-        qziwQfNBfKm24zdvlmv34zPGdRmDINMUoJvXPeg=
-X-Google-Smtp-Source: APiQypKx65/p6WW92zSZ2CyKhh2cuZ0iET7gTdxYbdQ2/4iyVb3rc1yA58jI/FaC5SOkJs2zhW/0Vbu58ZufulEQPi0=
-X-Received: by 2002:aed:20e3:: with SMTP id 90mr2735437qtb.142.1586594528587;
- Sat, 11 Apr 2020 01:42:08 -0700 (PDT)
+        Sat, 11 Apr 2020 04:45:43 -0400
+Received: by mail-vs1-f67.google.com with SMTP id u11so2619149vsu.10
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 01:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZGD5Q+AXHBbgDKOxDpFZnvNrU6j32BnvOPI9sVfvoXE=;
+        b=m2jz8PLFzTmbfZPOsVPx+t4nmAMjP2Q5FuB9r2gufwhJ/D1gq8n+HnMoZ3iXNLauKD
+         7kfwgNEI3bLfn2eNmWYLx/jAUbpPD4jTgBMCiJW8SDKtqVmtEVeAVb8qsy9hqqGk5T5k
+         LlGcELO/Rek2t17FpEneN23rmTnaDXp1Yx891eWY2DgykYRvEfkut+6+gYnuHjLfX60Q
+         /izTdzcPIZxZxwl4FX3ucR8ApsR3X056xMi6cKwbi51HI+BasmD6fyhadGn7EP9fAmbv
+         xYjuIkSDxIaT13T44CqsnfXGiq6rmz3eTtM1AKWTP9V8BSHMWgC/SSpZJ87Icx1bWHgD
+         O35w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=ZGD5Q+AXHBbgDKOxDpFZnvNrU6j32BnvOPI9sVfvoXE=;
+        b=PGkeq8rsNDB0nVqxiJ2l+/+6Jia9koxe+FX3EoGx2UN0Vj8AWP7jCbRlDGCcR7zPqN
+         mmB2L3nDrDKXztzJXxtvVLLwv6kdPwpevn/vATOJXqlTMzYhdTB6y2BpiW8xTmrN9Alm
+         Mk3GhGuWVNqmseclLMxhwcmOylNp+k8oJF58rc6xi9Orh3OEV4ASXuouTYdHgEu3smHh
+         lqYIVUNH0J0CoezLQryQ38fnK6/fjY6BvdP9mbMq4dCgRRH8ii1shwfonMPjml9RD5bY
+         HN3C+W6K3OOJXj/srimFHHMb8ISUXMyrueOQzN3ES1gPD0ggVHwlBURDrH0golmXnS5Z
+         KCsA==
+X-Gm-Message-State: AGi0PubRD6taZozseP7TmmNDMJf50JqvIT07vovO5ZuQe/q7rRBueeXl
+        i2Rb+hz7j9p5rat9Y9FoxDnI0dUPZenwrt/dX+g=
+X-Google-Smtp-Source: APiQypITWBG7eC5E5AEH9i1KeCWbocYZ0N351yscllEkqRq4Dk+mj2apLh3JKEyYhvtF8r62nBl4TDZ3946hk3cj0t0=
+X-Received: by 2002:a67:6f84:: with SMTP id k126mr6428604vsc.112.1586594740576;
+ Sat, 11 Apr 2020 01:45:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <s5h5zgwouw8.wl-tiwai@suse.de>
-In-Reply-To: <s5h5zgwouw8.wl-tiwai@suse.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 11 Apr 2020 10:41:52 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1La1gbSp0A9JaQ5KavGELQ8NsKQvCdAdya24agJzTOJA@mail.gmail.com>
-Message-ID: <CAK8P3a1La1gbSp0A9JaQ5KavGELQ8NsKQvCdAdya24agJzTOJA@mail.gmail.com>
-Subject: ASoC: s3c-i2s-v2 regression, was: [GIT PULL] sound updates for 5.6-rc1
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Sangbeom Kim <sbkim73@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>
+Reply-To: sebastient766@gmail.com
+Received: by 2002:a05:6102:2041:0:0:0:0 with HTTP; Sat, 11 Apr 2020 01:45:39
+ -0700 (PDT)
+From:   =?UTF-8?B?TXIuU8OpYmFzdGllbiBUb25p?= <sebastient766@gmail.com>
+Date:   Sat, 11 Apr 2020 01:45:39 -0700
+X-Google-Sender-Auth: 2HESH9GB-rfJ5vDzXt1tJHGIrME
+Message-ID: <CAKnjU4aKCFfDDnqV-Zc=7YjTUZxuO+dkQ=LvPborNaocNtnWEw@mail.gmail.com>
+Subject: VERY URGENT
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:IoC/nyrA7CFklGQgxRZQPL7EcnHdAjQ7winHI3GqA1dPnV//w5o
- 1HclXw5EYYo/8ENKe0XxArkeX0Gn6GG5SRhzsBplWHJtstCQQLkI/Vtl4ymMt6kOz9EPwO0
- 9EvfCl9Ir9Da7D+9h+0BV72jVcC5SxSSepKxPCncmDZ6xMiDSLN1ym2DIysLNqWduzS1cYC
- A+23DCU2SZdR7OYqlmQ0A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wDmURRlnq2U=:pEX9WWH24KMo288TMXCgri
- Qb+pRNJP7YFk7Mn1Jie0MZW2uiQg7drEg/scxrZZahJQUsowEO59aD0ZuuLS/l1GWMHbp5vLG
- JxuhX/tr0Y412sW/4EcWqP2qFbhOTIz/8Zr5J+cKF76nQNZbHXeKh6TdJw8Eehvpc1TjPH0lJ
- HD4KDrQf6g29Vy7ovtPYCiCB6Q8w77upxq37pZDU36OFFepCtjMgZkMcTB8oLEEJeGsNNC/VN
- PFymGXAJBmpPAlQw2EHtoaBi+Gx4fZgN3J/SVytfxQXFzC822Tx6A3n4vrXKetD7PoARWEVCR
- b5SRB+YOY+GeLkVTbWjPTTh5TFOuLV2KQHZ5qJBAPhMp7fB3SBw69xP4syCftoLip5V/GGMWi
- jUwh2ogzE6XQVW/nNFvukCC+dVVeQ1sa7ziwg7TsCbl0y0pHvvOg6cIXiieXph+hLeZ01texJ
- vrraJ7SC07nngYFnOX1UzifGrM1QIfvZxLQT5Bm7PduC1SAalRsZqCtl3io5q8ENY7mpRWyJs
- MsMrX/D5GdJh1rb5ca0wQQxf2m1wl1xr6KmmVvam+0X8BpybrtjRsgfrGPpXNk0GUbwn+GmUu
- DmCRhIckNPbAxTovPlZQ1DBqCX/dpd/vvEAb8xw4BzKJYcRP2CX4mdhqFif3Ju8cdd0FObs3G
- UPxGwWjTR5rpPXSZLlVkLnM+bfNtZjXD53oVPuw+xe3r+WVSx4/A9/XVudEBngrji/3B6HdoV
- NrS8+F/Xb36HKrkYJh+aBslJQlbdJ7dEK/0hYYr4PoxuZKYIVF30mIVvWU7Ppv0MHJeDhK8jg
- P03O7wo3k5+Ggfh2IX+FR86763YFvQ83uMkB0w6FlCCfpmnb50=
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 28, 2020 at 9:21 AM Takashi Iwai <tiwai@suse.de> wrote:
+FROM MR.S=C3=89BASTIEN TONI
+AUDIT& ACCOUNT MANAGER
+BANK OF AFRICA (B.O.A)
+OUAGADOUGOU BURKINA FASO
+WEST AFRICA.
 
-> Kuninori Morimoto (66):
->       ASoC: bcm: cygnus-ssp: move .suspend/.resume to component
->       ASoC: atmel: atmel_ssc_dai: move .suspend/.resume to component
->       ASoC: cirrus: ep93xx-i2s: move .suspend/.resume to component
->       ASoC: jz4740: jz4740-i2s: move .suspend/.resume to component
->       ASoC: mediatek: move .suspend/.resume to component
->       ASoC: samsung: s3c24xx-i2s: move .suspend/.resume to component
->       ASoC: samsung: spdif: move .suspend/.resume to component
->       ASoC: sti: sti_uniperif: move .suspend/.resume to component
->       ASoC: ti: omap-mcpdm: move .suspend/.resume to component
->       ASoC: uniphier: move .suspend/.resume to component
->       ASoC: dwc: dwc-i2s: move .suspend/.resume to component
->       ASoC: samsung: i2s: move .suspend/.resume to component
->       ASoC: ux500: ux500_msp_dai: remove unused DAI .suspend/.resume
->       ASoC: pxa: pxa-ssp: move .suspend/.resume to component
->       ASoC: pxa: pxa2xx-i2s: move .suspend/.resume to component
->       ASoC: soc-core: remove DAI suspend/resume
+Dear Friend,
 
-I only found it now during randconfig testing, but it seems that there is
-(at least) one patching in this conversion series that was part of linux-5.6:
+With due respect, I have decided to contact you on abusiness
+transaction  that will be benefit both of us. At the bank last account
+and  auditing evaluation, my staffs came across an old account which
+was being maintained by a foreign client who we learn was among the
+deceased passengers of motor accident on November.2003, the deceased
+was unable to run this account since his death. The account has
+remained dormant without the knowledge of his family since it was put
+in a  safe deposit account in the bank for future investment by the
+client.
 
-sound/soc/samsung/s3c-i2s-v2.c: In function 's3c_i2sv2_register_component':
-sound/soc/samsung/s3c-i2s-v2.c:726:9: error: 'struct
-snd_soc_dai_driver' has no member named 'suspend'
-  726 |  dai_drv->suspend = s3c2412_i2s_suspend;
-      |         ^~
-sound/soc/samsung/s3c-i2s-v2.c:727:9: error: 'struct
-snd_soc_dai_driver' has no member named 'resume'
-  727 |  dai_drv->resume = s3c2412_i2s_resume;
-      |         ^~
+Since his demise, even the members of his family haven't applied for
+claims  over this fund and it has been in the safe deposit account
+until I  discovered that it cannot be claimed since our client is
+aforeign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department, this
+discovery was brought to my office so as to decide what is to be
+done.I  decided to seek ways through which to transfer this money out
+of the bank  and
+out of the country too.
 
-I tried fixing it myself but could not see an obvious solution. Can someone
-else who understands this code better than me have a look?
+The total amount in the account is 18.6 million with my positions as
+staffs  of the bank, I am handicapped because I cannot operate foreign
+accounts and  cannot lay bonafide claim over this money. The client
+was a foreign  national and you will only be asked to act as his next
+of kin and I will  supply you all the necessary information and bank
+datas to assist you in being able to transfer this fund to any bank of
+your  choice where this money could be transferred into.The total sum
+will be shared as follows: 50% for me, 50% for you and expenses
+incidental occur  during the transfer will be incur by both of us. The
+transfer is risk free on both sides hence you are going to follow my
+instruction till the fund  transfer to your account. Since I work in
+this bank that is why
+you should  be confident in the success of this transaction because
+you will be updated with information as at when desired.
 
-       Arnd
+I will like you to keep this transaction secret and confidential as I
+am  hoping to retire with my share of this money at the end of
+transaction  which will be when this money is safety in your account.
+I will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May  God help you to help me to a restive retirement,Amen,And
+You have to  contact me through my private e-mail
+at(sebastient766@gmail.com)Please for further information and inquires
+feel free to contact me back immediately for more explanation and
+better  understanding I want you to assure me your capability of
+handling this  project with trust by providing me your following
+information details such as:
+
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:.....................
+(6)YOUR COUNTRY:.....................
+
+Yours sincerely,
+Mr.S=C3=A9bastien Toni
