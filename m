@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDAF1A5209
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDB01A4FFA
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726921AbgDKM3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:29:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43196 "EHLO mail.kernel.org"
+        id S1727706AbgDKMNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:13:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726892AbgDKMLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:11:14 -0400
+        id S1727664AbgDKMNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:13:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E2CC6215A4;
-        Sat, 11 Apr 2020 12:11:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BCB02137B;
+        Sat, 11 Apr 2020 12:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607073;
-        bh=Jttk726tXOUzFy4Zy+whTq1rsrkJW0mjXnvp9/CaKi0=;
+        s=default; t=1586607192;
+        bh=AOAvaLVkDHeMRUUOp5dsa0b0RO3eEiCYm6DzGZdjcBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MmsAfVC9yREbaPCFETivkAC1UAjVpy/+lGXX/BjMMmSjzB4Hwj8LGLfVNQK0og01W
-         g7GAzviEAVG34E8+OidQuVPRSTyZuxLXozHwxmZ4/yBCAwqIc6UMxJ52Yp8vbSiIw/
-         aEnY69dMth4WIBAa3m33T5X7MQGHV3VehAoxHmE8=
+        b=BuKPA4KYbZzrZQVFmrnQ7CB02HU3oU9Rd868wT4eW2ik3n2++0vtuvTBERhqPfRyL
+         dEw9/iqIpSE0gi8DmIGZOFNylK+SERaOp7mGaVm8hetjDkcSIiS2a1et8IXuPXmfrX
+         FX2VT5PCACm2MsxE62XGa8WLRf4g6B0k+5exX9co=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+4496e82090657320efc6@syzkaller.appspotmail.com,
-        Qiujun Huang <hqjagain@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.4 26/29] Bluetooth: RFCOMM: fix ODEBUG bug in rfcomm_dev_ioctl
+        stable@vger.kernel.org, Eugene Syromiatnikov <esyr@redhat.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: [PATCH 4.14 12/38] coresight: do not use the BIT() macro in the UAPI header
 Date:   Sat, 11 Apr 2020 14:08:56 +0200
-Message-Id: <20200411115412.206046292@linuxfoundation.org>
+Message-Id: <20200411115439.195299970@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
-References: <20200411115407.651296755@linuxfoundation.org>
+In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
+References: <20200411115437.795556138@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,36 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Eugene Syromiatnikov <esyr@redhat.com>
 
-commit 71811cac8532b2387b3414f7cd8fe9e497482864 upstream.
+commit 9b6eaaf3db5e5888df7bca7fed7752a90f7fd871 upstream.
 
-Needn't call 'rfcomm_dlc_put' here, because 'rfcomm_dlc_exists' didn't
-increase dlc->refcnt.
+The BIT() macro definition is not available for the UAPI headers
+(moreover, it can be defined differently in the user space); replace
+its usage with the _BITUL() macro that is defined in <linux/const.h>.
 
-Reported-by: syzbot+4496e82090657320efc6@syzkaller.appspotmail.com
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Suggested-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 237483aa5cf4 ("coresight: stm: adding driver for CoreSight STM component")
+Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+Cc: stable <stable@vger.kernel.org>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Link: https://lore.kernel.org/r/20200324042213.GA10452@asgard.redhat.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/bluetooth/rfcomm/tty.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ include/uapi/linux/coresight-stm.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/net/bluetooth/rfcomm/tty.c
-+++ b/net/bluetooth/rfcomm/tty.c
-@@ -413,10 +413,8 @@ static int __rfcomm_create_dev(struct so
- 		dlc = rfcomm_dlc_exists(&req.src, &req.dst, req.channel);
- 		if (IS_ERR(dlc))
- 			return PTR_ERR(dlc);
--		else if (dlc) {
--			rfcomm_dlc_put(dlc);
-+		if (dlc)
- 			return -EBUSY;
--		}
- 		dlc = rfcomm_dlc_alloc(GFP_KERNEL);
- 		if (!dlc)
- 			return -ENOMEM;
+--- a/include/uapi/linux/coresight-stm.h
++++ b/include/uapi/linux/coresight-stm.h
+@@ -2,8 +2,10 @@
+ #ifndef __UAPI_CORESIGHT_STM_H_
+ #define __UAPI_CORESIGHT_STM_H_
+ 
+-#define STM_FLAG_TIMESTAMPED   BIT(3)
+-#define STM_FLAG_GUARANTEED    BIT(7)
++#include <linux/const.h>
++
++#define STM_FLAG_TIMESTAMPED   _BITUL(3)
++#define STM_FLAG_GUARANTEED    _BITUL(7)
+ 
+ /*
+  * The CoreSight STM supports guaranteed and invariant timing
 
 
