@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE241A4FC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8F41A51F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726950AbgDKMLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:11:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43328 "EHLO mail.kernel.org"
+        id S1727211AbgDKMMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:12:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726926AbgDKMLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:11:21 -0400
+        id S1727119AbgDKMMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:12:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3346E20787;
-        Sat, 11 Apr 2020 12:11:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70D0220787;
+        Sat, 11 Apr 2020 12:12:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607080;
-        bh=MesyVyOKCevRf+2TnmIg4GCFkNmuAs9DzQo/LPs8jfg=;
+        s=default; t=1586607133;
+        bh=pJNv+CG/2FEsqgq69UaXmxV9zczulRKLMvJHVyKDbQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tlxn/cIGHJwETNGG3tF4Nflkdvxs7BZU08TIog3246WfnsMgpkaASgrRzCWZ54A+c
-         hqVWJ84XbInLtwUHdBsIBL0lGwxuGFzW0ulZP+0/3W78Mh1r3xohRfu6vDN0pKoi3x
-         3o2J86VbfPmdqGogZ6kry2gOdcG3FzSfHcM6HfnY=
+        b=l9Pd6Xsw/Vytz+2M5aioPWnR3po/kqtbFFTictnOdc0AOhI1t9b39Dciu42JIievU
+         +q+wHbJGFAWRrx8kdf+2pRGfCxNsqCzMMx/rkyI5Gk1/Zn3Ls0sgAub3Lw+k3nGmtz
+         naELC2VzQxKjCUURcs0YMQP9aybQx0JubFQooAJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hans.verkuil@cisco.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.4 29/29] drm_dp_mst_topology: fix broken drm_dp_sideband_parse_remote_dpcd_read()
+        stable@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Shailabh Nagar <nagar@watson.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 20/32] tools/accounting/getdelays.c: fix netlink attribute length
 Date:   Sat, 11 Apr 2020 14:08:59 +0200
-Message-Id: <20200411115412.719714953@linuxfoundation.org>
+Message-Id: <20200411115421.341669636@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
-References: <20200411115407.651296755@linuxfoundation.org>
+In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
+References: <20200411115418.455500023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +47,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hans.verkuil@cisco.com>
+From: David Ahern <dsahern@kernel.org>
 
-commit a4c30a4861c54af78c4eb8b7855524c1a96d9f80 upstream.
+commit 4054ab64e29bb05b3dfe758fff3c38a74ba753bb upstream.
 
-When parsing the reply of a DP_REMOTE_DPCD_READ DPCD command the
-result is wrong due to a missing idx increment.
+A recent change to the netlink code: 6e237d099fac ("netlink: Relax attr
+validation for fixed length types") logs a warning when programs send
+messages with invalid attributes (e.g., wrong length for a u32).  Yafang
+reported this error message for tools/accounting/getdelays.c.
 
-This was never noticed since DP_REMOTE_DPCD_READ is currently not
-used, but if you enable it, then it is all wrong.
+send_cmd() is wrongly adding 1 to the attribute length.  As noted in
+include/uapi/linux/netlink.h nla_len should be NLA_HDRLEN + payload
+length, so drop the +1.
 
-Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/e72ddac2-1dc0-100a-d816-9ac98ac009dd@xs4all.nl
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Fixes: 9e06d3f9f6b1 ("per task delay accounting taskstats interface: documentation fix")
+Reported-by: Yafang Shao <laoar.shao@gmail.com>
+Signed-off-by: David Ahern <dsahern@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Tested-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Shailabh Nagar <nagar@watson.ibm.com>
+Cc: <stable@vger.kernel.org>
+Link: http://lkml.kernel.org/r/20200327173111.63922-1-dsahern@kernel.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |    1 +
- 1 file changed, 1 insertion(+)
+ tools/accounting/getdelays.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -431,6 +431,7 @@ static bool drm_dp_sideband_parse_remote
- 	if (idx > raw->curlen)
- 		goto fail_len;
- 	repmsg->u.remote_dpcd_read_ack.num_bytes = raw->msg[idx];
-+	idx++;
- 	if (idx > raw->curlen)
- 		goto fail_len;
+--- a/tools/accounting/getdelays.c
++++ b/tools/accounting/getdelays.c
+@@ -135,7 +135,7 @@ static int send_cmd(int sd, __u16 nlmsg_
+ 	msg.g.version = 0x1;
+ 	na = (struct nlattr *) GENLMSG_DATA(&msg);
+ 	na->nla_type = nla_type;
+-	na->nla_len = nla_len + 1 + NLA_HDRLEN;
++	na->nla_len = nla_len + NLA_HDRLEN;
+ 	memcpy(NLA_DATA(na), nla_data, nla_len);
+ 	msg.n.nlmsg_len += NLMSG_ALIGN(na->nla_len);
  
 
 
