@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6801A53DD
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 00:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F291A53E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 00:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726818AbgDKWEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 18:04:25 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:36375 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbgDKWEY (ORCPT
+        id S1726871AbgDKWEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 18:04:33 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:36953 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgDKWEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 18:04:24 -0400
-Received: by mail-wm1-f68.google.com with SMTP id a201so5852852wme.1
+        Sat, 11 Apr 2020 18:04:32 -0400
+Received: by mail-wm1-f66.google.com with SMTP id z6so6238592wml.2
         for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 15:04:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QMdbDycZrI66Fi6FRwlCFSGbMp0sxstyHyqa3xK8LHE=;
-        b=b34uiPk8DspIRoaI9c9aiomfii/cLTu7bX5PVltOE8SOJ5d5Es3i5PYKW+sWtc0b5L
-         bDRvSPOYP9q6DRCOtHZODpDMbzEgKQvlAyW3GPOLawRWvbHDZSMtMNKVu+1ghxstAQN2
-         AcKDFSFTv5+tH7QbyhgkqF7Zuh/iYttF+Ga+9WKDPq4cHo0S9Hos3iSWcQez2yJO7/e1
-         trBvvZMQDr4iO+mHO2JZ0mD1GP5IoG+gMmhmfNdtmuX9r5aH6K/LUTzM4Z8fs3QcirMp
-         x7ljeF/2xJk/mEN2G+mj953+sNd4jwfqqnR+AA698bGUyCkbHugqPJVeXKebnNy/FXMI
-         lFvg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=7awknHCHreVUL7HOgEtOc8fPTfDMmoiQP0NsrxPQ1o8=;
+        b=cgf+yG0ytzZcljetiqszYQFSLXzHNdp4ie3DCzZjeBS7YN3iEEtZTMmns/RaStrAJl
+         dNx0Cx9XpgZEpCvqS+85DM9C/qN0T2ydqQF71ExyeHpWmkkW0FjiCRp/GK8ft5rH6NlW
+         HQG7uT88zPJGoHg39qODkdBkDYncSd1pC7oX7NWFUNGeYHxvUW86wXT6PLCA2q17Cju3
+         29ffg1/dakVM7ZJyBSKF+3f8K1QZLF05AEQqNPVdFx43ft6xY6ICPb4bpRIpVL0i45UC
+         jwpeFQQRqkYtFzerBwFdtR6u4znwFKE4dE7A9gmA28ArizyHXcbGELzv2duPsSZbpCy6
+         Oryg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QMdbDycZrI66Fi6FRwlCFSGbMp0sxstyHyqa3xK8LHE=;
-        b=K7ntOZ5LVVWxOWkyMCwfmBgSqiPIsyTQyhhVZBsMeGfq9mqdPspXznfLVeK5GL0WTd
-         r3+/7dhcMSCfaGTK30j4Bk1IKKtVvgtuwkSnLmYIOrgbYiznYoSSO40KhCC9g9CI5v6S
-         mAjg4jEfh8VmTjrk3h1DqpdfzHvAy0gQCZfftD9+AqnVladCHMokWVB/slilh8VACXdE
-         1bWpNtwZvuzz1828UJvaHDHBpaOEV2F4e29k5bHsn6z3KMyegSx59p90yuoCVDGok8qO
-         60PvRjV48xxdqenoq8OYZqPfFs95uc33IUJ3qq/u3OEcdtzPYkNpN/oYSysmCe8d561G
-         Jdww==
-X-Gm-Message-State: AGi0PuawnY7BAYIF77qe1F0PFNG9j87EAVJ1Vt4xblYCAEyNz3ApS9+h
-        dOWFCyFhwVf106k7KVOwY5o=
-X-Google-Smtp-Source: APiQypJ82oh4/G08ff48aHX9dGZ3bYQ8b8lp5rlV0inaqsaWiN27iHoABuUrsxN6SWGuH/lBn9Q++A==
-X-Received: by 2002:a1c:1bcb:: with SMTP id b194mr12052738wmb.4.1586642663437;
-        Sat, 11 Apr 2020 15:04:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=7awknHCHreVUL7HOgEtOc8fPTfDMmoiQP0NsrxPQ1o8=;
+        b=JgTlHfy9n3mA7/WUqNG7PZlUsghkl0Z6ZuerRzQ0WDJ1mCXaH+ls+XIKNgZiuNJiXe
+         TIZkeC3hVvkCF1/QKKo+QinGy1BmVh9Oh4FAxNJ7vUyBSv9vrp5eLGAcw9wTWz1xBGnY
+         GoEbRQ/fRKBzPJtgGXMl3dUkOsjbeZdnG+7on2grnwUKD+4jL/5VBS8BJarfKrDlH60V
+         tTfKBT2TJgopY7adwwbMZYKj0+KADyz1gXgOH3Gd8NVP5l5842o5siZZUpbDwZ288xrD
+         AputBmhQohDrzJhyL32UCX1WMPjtYIxc64eRZ+RlkG5OJOrIhk3KjTUbbwqQRlbIE/KD
+         /qXg==
+X-Gm-Message-State: AGi0PuZgjblO6WeCFBpSqDqoGdrlrLmLbXMiGAyT+QiRvO33D2e0UlEP
+        2S+L1F3qbb6l6DLek1A0GnU=
+X-Google-Smtp-Source: APiQypLJte/8h1XPH3mWhbw57nwf2wLT6tGlCTzV7+vyIqii7e/6lamZUdFuOsmP/vekvPKrUbGV2g==
+X-Received: by 2002:a1c:8106:: with SMTP id c6mr11350070wmd.88.1586642664302;
+        Sat, 11 Apr 2020 15:04:24 -0700 (PDT)
 Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id g74sm8338160wme.44.2020.04.11.15.04.22
+        by smtp.gmail.com with ESMTPSA id h2sm7939369wmb.16.2020.04.11.15.04.23
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 11 Apr 2020 15:04:22 -0700 (PDT)
+        Sat, 11 Apr 2020 15:04:23 -0700 (PDT)
 From:   Wei Yang <richard.weiyang@gmail.com>
 To:     akpm@linux-foundation.org
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         rientjes@google.com, anshuman.khandual@arm.com, david@redhat.com,
         Wei Yang <richard.weiyang@gmail.com>
-Subject: [Patch v3 0/5] mm/page_alloc.c: cleanup on check page
-Date:   Sat, 11 Apr 2020 22:03:52 +0000
-Message-Id: <20200411220357.9636-1-richard.weiyang@gmail.com>
+Subject: [Patch v3 1/5] mm/page_alloc.c: bad_[reason|flags] is not necessary when PageHWPoison
+Date:   Sat, 11 Apr 2020 22:03:53 +0000
+Message-Id: <20200411220357.9636-2-richard.weiyang@gmail.com>
 X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200411220357.9636-1-richard.weiyang@gmail.com>
+References: <20200411220357.9636-1-richard.weiyang@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch set does some cleanup related to check page.
+Since function returns directly, bad_[reason|flags] is not used any
+where. And move this to the first.
 
-1. Remove unnecessary bad_reason assignment
-2. Remove bad_flags to bad_page()
-3. Rename function for naming convention
-4. Extract common part to check page
+This is a following cleanup for commit e570f56cccd21 ("mm:
+check_new_page_bad() directly returns in __PG_HWPOISON case")
 
-Thanks suggestions from David Rientjes and Anshuman Khandual.
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Wei Yang (5):
-  mm/page_alloc.c: bad_[reason|flags] is not necessary when PageHWPoison
-  mm/page_alloc.c: bad_flags is not necessary for bad_page()
-  mm/page_alloc.c: rename free_pages_check_bad() to
-    check_free_page_bad()
-  mm/page_alloc.c: rename free_pages_check() to check_free_page()
-  mm/page_alloc.c: extract check_[new|free]_page_bad() common part to
-    page_bad_reason()
+---
+v3:
+  * move this handling to the first case
+---
+ mm/page_alloc.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
- mm/page_alloc.c | 74 +++++++++++++++++++------------------------------
- 1 file changed, 28 insertions(+), 46 deletions(-)
-
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index f49f28f1220b..7327dc039069 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2037,19 +2037,17 @@ static void check_new_page_bad(struct page *page)
+ 	const char *bad_reason = NULL;
+ 	unsigned long bad_flags = 0;
+ 
++	if (unlikely(page->flags & __PG_HWPOISON)) {
++		/* Don't complain about hwpoisoned pages */
++		page_mapcount_reset(page); /* remove PageBuddy */
++		return;
++	}
+ 	if (unlikely(atomic_read(&page->_mapcount) != -1))
+ 		bad_reason = "nonzero mapcount";
+ 	if (unlikely(page->mapping != NULL))
+ 		bad_reason = "non-NULL mapping";
+ 	if (unlikely(page_ref_count(page) != 0))
+ 		bad_reason = "nonzero _refcount";
+-	if (unlikely(page->flags & __PG_HWPOISON)) {
+-		bad_reason = "HWPoisoned (hardware-corrupted)";
+-		bad_flags = __PG_HWPOISON;
+-		/* Don't complain about hwpoisoned pages */
+-		page_mapcount_reset(page); /* remove PageBuddy */
+-		return;
+-	}
+ 	if (unlikely(page->flags & PAGE_FLAGS_CHECK_AT_PREP)) {
+ 		bad_reason = "PAGE_FLAGS_CHECK_AT_PREP flag set";
+ 		bad_flags = PAGE_FLAGS_CHECK_AT_PREP;
 -- 
 2.23.0
 
