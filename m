@@ -2,156 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E891D1A539C
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 22:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA9C51A539D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 22:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgDKUG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 16:06:56 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:53119 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726767AbgDKUGz (ORCPT
+        id S1726827AbgDKUIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 16:08:11 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:43192 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726713AbgDKUIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 16:06:55 -0400
-Received: by mail-wm1-f67.google.com with SMTP id o81so132004wmo.2
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 13:06:47 -0700 (PDT)
+        Sat, 11 Apr 2020 16:08:11 -0400
+Received: by mail-lj1-f194.google.com with SMTP id h25so5099203lja.10
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 13:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zoldyKJXtADkuzgLMxvc+aHQ8la7JVhSLGXOECKmOcc=;
-        b=hrjRuhiQBhcZ1WdJ1Gq9N8RInWD2+8L6tzMXKTt9nRC+YJSlhe8o2apD1lBuGHue63
-         Gz72gk10Zomzi4uGEfF3sk1XpJPCLdmSGvztUeSx3G8GrSFxCKwtL4OLh4Nou5ySW1HH
-         NbtcXX3XCTFKitlpLdHotw/U0MXkWnNWhIVU3/EH+tzgY6BG/FM9cIY0Ztba2yNOkKew
-         1S14PgZe1f14Nigk4Q+Vmhmidu2QglqQ4QBLWgKPeGfdufLgIGe2YLL8yxP41aLV/BNw
-         1EcNjmXLluI3nk18jkOu3nxiT0sq/SymW2ZYG0wT+LqRc+fjijZuJ1wXbP/V0I1yzIJy
-         bxww==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ckETjyKs3wJXPyqZgyPwa/yV7VS5IBRDAAJU3FEjkSI=;
+        b=EL+bYpcUnaTcXWuvXtH0M/jVlt2lX7v0fF2yiZ5VLTU81EC49R9knRc+9ab/5P+SQ9
+         bYI1m/YaM57oGAi1kIj73BgK9hW/nwhCsOn68BOUKcggV+vF04VxsRpVWnlJmyAtZ9EI
+         yOSqQP8XwRRu3KF6LTK1e/gBPk63JS4N4Cbbs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zoldyKJXtADkuzgLMxvc+aHQ8la7JVhSLGXOECKmOcc=;
-        b=tzInJrwyrpZmnlopqcmSTKJTpZ4EAopz1GEVclsp8j9nJMzVOTcktPePimwtE1MDRk
-         4VVHNThIBuAwkdzKhtts45LpsEknjARDu0Y/D1ZWGc05lj0u6iENkOHuH6kF64bj2DAP
-         wNZJHuFJTBbx15nWys0eFvsRh/6yT7N4/VMHGaTJz5dgiG6Je9jlV3c6wDQmkouXtL58
-         lbhVTeuiZ1TkB9dQn+XelX3CjbEewbpXra5ALqobMWwWxm75gN+EPTAmHZaaJ9Ps8Pvk
-         YxwxYmrWOMAT64twqoYfC0kT391NwfJvqvXwvHhm5v+zStxnKZNwZ/QpkJkF54PA+D3u
-         C8ug==
-X-Gm-Message-State: AGi0PubMwBKMleuYbmId0pKJzZo6D76keDEbAt0Bo9830aEaAzxx1aSZ
-        SwuXawlqitgMH880xRz6Jwk=
-X-Google-Smtp-Source: APiQypLbsvsk9zLeeFB8Obt5V3v8jpdg3Qf2EvxxzUQlswj5qD7Vw52StvIIPRQTWSewjjjJ1SYvAg==
-X-Received: by 2002:a1c:9aca:: with SMTP id c193mr10824862wme.38.1586635606681;
-        Sat, 11 Apr 2020 13:06:46 -0700 (PDT)
-Received: from localhost.localdomain (91-167-199-67.subs.proxad.net. [91.167.199.67])
-        by smtp.gmail.com with ESMTPSA id y5sm8712670wru.15.2020.04.11.13.06.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Apr 2020 13:06:45 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH 2/2] drm/panfrost: add devfreq regulator support
-Date:   Sat, 11 Apr 2020 22:06:32 +0200
-Message-Id: <20200411200632.4045-2-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200411200632.4045-1-peron.clem@gmail.com>
-References: <20200411200632.4045-1-peron.clem@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ckETjyKs3wJXPyqZgyPwa/yV7VS5IBRDAAJU3FEjkSI=;
+        b=M23UZ2bnj76T7lQM4zBLAGclmbOB8kMXADSvi2pTq9MNDM2ll9WEwkxoLN6z6vjVaQ
+         Id6/lbNY69n901SELXWC6sHUFB5Zy4Tfcu7ribPGhDx/PtlYbxT5P9dQwVpVnWRmC9Cl
+         FIP09SWD0xm1YRFArI51X2i7Hh30V4gaJBqTvgZC2N0QZXcGZgAL3CgMBXjT7omGyRxb
+         H0Vu/cdRXYdG3TALx+mffl+y2Q0jgHuBk34ZiyOmecLY2jcnqXCKkjywe2Pj/N2iARou
+         17yRBr7oPgHg4j6XBKFuAdFGOEiAnXsofksI1VwG72Q8jQeCw+3ppwclhd5gwQFyV4yM
+         L7jA==
+X-Gm-Message-State: AGi0PuYxIiX43mc17kO0VRQDuMQPQwE8RC65Cr1gmRvAnEXWOyX4M35d
+        xqaf4KlR584M1tfs/DlkxrK7CFuXSJc=
+X-Google-Smtp-Source: APiQypL9Ak47nyqNi9Gmwblw2m8gvMDsvTuFLIqGLkiphc8UCZQ9tkfS4LGnlULmalH5uFhvUIpN4g==
+X-Received: by 2002:a2e:4942:: with SMTP id b2mr6592014ljd.135.1586635687047;
+        Sat, 11 Apr 2020 13:08:07 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id b16sm4462453lfj.2.2020.04.11.13.08.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 11 Apr 2020 13:08:05 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id l11so3707319lfc.5
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 13:08:05 -0700 (PDT)
+X-Received: by 2002:a19:6144:: with SMTP id m4mr5889906lfk.192.1586635685181;
+ Sat, 11 Apr 2020 13:08:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <AM6PR03MB51708FD4226E07AB7CB0D6A7E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=wjaoYM4gXdAyYY=u8PaYj2LXUvcfp=8DKum8f1DM+Ws0A@mail.gmail.com>
+ <AM6PR03MB5170F924EA69A81D79BD0929E4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whMKC5F-=QQP=fCNRuTF+ZGiNtLEKvx7KekpK1JtrwDhw@mail.gmail.com>
+ <CAHk-=whJ8khGBqfqh6ZmHsKjcyyBLm5xgkgLW_AC_=82iFBWoQ@mail.gmail.com>
+ <AM6PR03MB51700B243E34BF4A59FF33CFE4C10@AM6PR03MB5170.eurprd03.prod.outlook.com>
+ <CAHk-=whJttTNFQn1fMYp91LZ90iHE7B2THZ8NjQ7fBwmWX9k6w@mail.gmail.com>
+ <87imi8nzlw.fsf@x220.int.ebiederm.org> <CAHk-=wgh4zts+3hdkGzHLJ6pBGumcJ=23gRbMfubDrLstis2Bg@mail.gmail.com>
+ <CAHk-=whKHpERyVv2-C+kxq9KV_mJPW3hkGDpn6f4yOvs+au8SA@mail.gmail.com>
+ <20200411182043.GA3136@redhat.com> <CAHk-=wgwXpKepChGi4ZhQVxZxD0ic8s2CDXvUmqBTMaKGz-fjg@mail.gmail.com>
+ <AM6PR03MB5170660DA597EAAAC0AC1B5BE4DF0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+In-Reply-To: <AM6PR03MB5170660DA597EAAAC0AC1B5BE4DF0@AM6PR03MB5170.eurprd03.prod.outlook.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 11 Apr 2020 13:07:48 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjXxM0VnLN6iwVeORwxED5QgXS_AXUJ4+Af3jUeFY21gw@mail.gmail.com>
+Message-ID: <CAHk-=wjXxM0VnLN6iwVeORwxED5QgXS_AXUJ4+Af3jUeFY21gw@mail.gmail.com>
+Subject: Re: [GIT PULL] Please pull proc and exec work for 5.7-rc1
+To:     Bernd Edlinger <bernd.edlinger@hotmail.de>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Waiman Long <longman@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-OPP table can defined both frequency and voltage.
+On Sat, Apr 11, 2020 at 12:15 PM Bernd Edlinger
+<bernd.edlinger@hotmail.de> wrote:
+>
+> But won't the dead thread's lifetime overlap the new thread's lifetime
+> from the tracer's POV?
 
-Register the mali regulator if it exist.
+What new thread?
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- drivers/gpu/drm/panfrost/panfrost_devfreq.c | 34 ++++++++++++++++++---
- drivers/gpu/drm/panfrost/panfrost_device.h  |  1 +
- 2 files changed, 31 insertions(+), 4 deletions(-)
+execve() doesn't create any new thread.
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-index 62541f4edd81..2dc8e2355358 100644
---- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-@@ -78,12 +78,26 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
- 	struct device *dev = &pfdev->pdev->dev;
- 	struct devfreq *devfreq;
- 	struct thermal_cooling_device *cooling;
-+	const char *mali = "mali";
-+	struct opp_table *opp_table = NULL;
-+
-+	/* Regulator is optional */
-+	opp_table = dev_pm_opp_set_regulators(dev, &mali, 1);
-+	if (IS_ERR(opp_table)) {
-+		ret = PTR_ERR(opp_table);
-+		if (ret != -ENODEV) {
-+			DRM_DEV_ERROR(dev, "Failed to set regulator: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+	pfdev->devfreq.opp_table = opp_table;
- 
- 	ret = dev_pm_opp_of_add_table(dev);
--	if (ret == -ENODEV) /* Optional, continue without devfreq */
--		return 0;
--	else if (ret)
--		return ret;
-+	if (ret) {
-+		if (ret == -ENODEV) /* Optional, continue without devfreq */
-+			ret = 0;
-+		goto err_opp_reg;
-+	}
- 
- 	panfrost_devfreq_reset(pfdev);
- 
-@@ -119,6 +133,12 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
- err_opp:
- 	dev_pm_opp_of_remove_table(dev);
- 
-+err_opp_reg:
-+	if (pfdev->devfreq.opp_table) {
-+		dev_pm_opp_put_regulators(pfdev->devfreq.opp_table);
-+		pfdev->devfreq.opp_table = NULL;
-+	}
-+
- 	return ret;
- }
- 
-@@ -126,7 +146,13 @@ void panfrost_devfreq_fini(struct panfrost_device *pfdev)
- {
- 	if (pfdev->devfreq.cooling)
- 		devfreq_cooling_unregister(pfdev->devfreq.cooling);
-+
- 	dev_pm_opp_of_remove_table(&pfdev->pdev->dev);
-+
-+	if (pfdev->devfreq.opp_table) {
-+		dev_pm_opp_put_regulators(pfdev->devfreq.opp_table);
-+		pfdev->devfreq.opp_table = NULL;
-+	}
- }
- 
- void panfrost_devfreq_resume(struct panfrost_device *pfdev)
-diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-index 06713811b92c..f6b0c779dfe5 100644
---- a/drivers/gpu/drm/panfrost/panfrost_device.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-@@ -86,6 +86,7 @@ struct panfrost_device {
- 	struct {
- 		struct devfreq *devfreq;
- 		struct thermal_cooling_device *cooling;
-+		struct opp_table *opp_table;
- 		ktime_t busy_time;
- 		ktime_t idle_time;
- 		ktime_t time_last_update;
--- 
-2.20.1
+But yes, an external tracer could see the (old) thread that did
+execve() do new system calls before it sees the (other old) thread
+that was a zombie.
 
+But that is already somethign that can happen, simply because the
+events aren't ordered. The whole issue is that the zombie thread
+already died, but the tracer just didn't bother to read that state
+change.
+
+So it's not that the dead thread somehow _dies_ after the execve(). It
+already died.
+
+It's just that whoever is to reap it (or traces it) just hasn't cared
+to read the status of that thing yet.
+
+             Linus
