@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AAD31A4EF2
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 10:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CFC1A4EF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 10:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726029AbgDKIpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 04:45:43 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:43704 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgDKIpn (ORCPT
+        id S1725959AbgDKIuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 04:50:07 -0400
+Received: from www17.your-server.de ([213.133.104.17]:46416 "EHLO
+        www17.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbgDKIuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 04:45:43 -0400
-Received: by mail-vs1-f67.google.com with SMTP id u11so2619149vsu.10
-        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 01:45:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ZGD5Q+AXHBbgDKOxDpFZnvNrU6j32BnvOPI9sVfvoXE=;
-        b=m2jz8PLFzTmbfZPOsVPx+t4nmAMjP2Q5FuB9r2gufwhJ/D1gq8n+HnMoZ3iXNLauKD
-         7kfwgNEI3bLfn2eNmWYLx/jAUbpPD4jTgBMCiJW8SDKtqVmtEVeAVb8qsy9hqqGk5T5k
-         LlGcELO/Rek2t17FpEneN23rmTnaDXp1Yx891eWY2DgykYRvEfkut+6+gYnuHjLfX60Q
-         /izTdzcPIZxZxwl4FX3ucR8ApsR3X056xMi6cKwbi51HI+BasmD6fyhadGn7EP9fAmbv
-         xYjuIkSDxIaT13T44CqsnfXGiq6rmz3eTtM1AKWTP9V8BSHMWgC/SSpZJ87Icx1bWHgD
-         O35w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=ZGD5Q+AXHBbgDKOxDpFZnvNrU6j32BnvOPI9sVfvoXE=;
-        b=PGkeq8rsNDB0nVqxiJ2l+/+6Jia9koxe+FX3EoGx2UN0Vj8AWP7jCbRlDGCcR7zPqN
-         mmB2L3nDrDKXztzJXxtvVLLwv6kdPwpevn/vATOJXqlTMzYhdTB6y2BpiW8xTmrN9Alm
-         Mk3GhGuWVNqmseclLMxhwcmOylNp+k8oJF58rc6xi9Orh3OEV4ASXuouTYdHgEu3smHh
-         lqYIVUNH0J0CoezLQryQ38fnK6/fjY6BvdP9mbMq4dCgRRH8ii1shwfonMPjml9RD5bY
-         HN3C+W6K3OOJXj/srimFHHMb8ISUXMyrueOQzN3ES1gPD0ggVHwlBURDrH0golmXnS5Z
-         KCsA==
-X-Gm-Message-State: AGi0PubRD6taZozseP7TmmNDMJf50JqvIT07vovO5ZuQe/q7rRBueeXl
-        i2Rb+hz7j9p5rat9Y9FoxDnI0dUPZenwrt/dX+g=
-X-Google-Smtp-Source: APiQypITWBG7eC5E5AEH9i1KeCWbocYZ0N351yscllEkqRq4Dk+mj2apLh3JKEyYhvtF8r62nBl4TDZ3946hk3cj0t0=
-X-Received: by 2002:a67:6f84:: with SMTP id k126mr6428604vsc.112.1586594740576;
- Sat, 11 Apr 2020 01:45:40 -0700 (PDT)
+        Sat, 11 Apr 2020 04:50:07 -0400
+Received: from sslproxy01.your-server.de ([78.46.139.224])
+        by www17.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <thomas@m3y3r.de>)
+        id 1jNBpy-0002q9-Rm; Sat, 11 Apr 2020 10:50:02 +0200
+Received: from [2a02:908:4c22:ec00:8ad5:993:4cda:a89f] (helo=localhost.localdomain)
+        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <thomas@m3y3r.de>)
+        id 1jNBpy-000Byu-EZ; Sat, 11 Apr 2020 10:50:02 +0200
+Date:   Sat, 11 Apr 2020 10:50:01 +0200
+From:   Thomas Meyer <thomas@m3y3r.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Sergey Shatunov <me@prok.pw>, hpa@zytor.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mingo@redhat.com, Thomas Gleixner <tglx@linutronix.de>,
+        x86@kernel.org, linux-efi <linux-efi@vger.kernel.org>,
+        initramfs@vger.kernel.org,
+        Donovan Tremura <neurognostic@protonmail.ch>,
+        Harald Hoyer <harald@hoyer.xyz>
+Subject: Re: [PATCH 1/2] efi/x86: Move efi stub globals from .bss to .data
+Message-ID: <20200411085001.GA28742@localhost.localdomain>
+References: <CAMj1kXEUkJ1XJ9OTsijeq8tNNYC00bXqEV44OMtX5ugo9WoLKA@mail.gmail.com>
+ <20200406180614.429454-1-nivedita@alum.mit.edu>
+ <20200410112605.GA3344@localhost.localdomain>
+ <20200410143821.GB936997@rani.riverdale.lan>
 MIME-Version: 1.0
-Reply-To: sebastient766@gmail.com
-Received: by 2002:a05:6102:2041:0:0:0:0 with HTTP; Sat, 11 Apr 2020 01:45:39
- -0700 (PDT)
-From:   =?UTF-8?B?TXIuU8OpYmFzdGllbiBUb25p?= <sebastient766@gmail.com>
-Date:   Sat, 11 Apr 2020 01:45:39 -0700
-X-Google-Sender-Auth: 2HESH9GB-rfJ5vDzXt1tJHGIrME
-Message-ID: <CAKnjU4aKCFfDDnqV-Zc=7YjTUZxuO+dkQ=LvPborNaocNtnWEw@mail.gmail.com>
-Subject: VERY URGENT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200410143821.GB936997@rani.riverdale.lan>
+X-Authenticated-Sender: thomas@m3y3r.de
+X-Virus-Scanned: Clear (ClamAV 0.102.2/25778/Fri Apr 10 13:52:37 2020)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-FROM MR.S=C3=89BASTIEN TONI
-AUDIT& ACCOUNT MANAGER
-BANK OF AFRICA (B.O.A)
-OUAGADOUGOU BURKINA FASO
-WEST AFRICA.
+On Fri, Apr 10, 2020 at 10:38:21AM -0400, Arvind Sankar wrote:
+> On Fri, Apr 10, 2020 at 01:26:05PM +0200, Thomas Meyer wrote:
+> > On Mon, Apr 06, 2020 at 02:06:13PM -0400, Arvind Sankar wrote:
+> > 
+> > Hi,
+> > 
+> > I did write an email to x86@kernel.org, which sadly seems to have no
+> > mailing list archive, I wonder if my problem has anything to do with the
+> > patches you are discussing here:
+> > 
+> > I found this reply, which contains my original email in my inbox:
+> > 
+> > Subject: Kernel v5.5 doesn't boot on my x86 laptop
+> > 
+> > Hi,
+> > 
+> > I'm using an old MacBookPro1,1 to run Fedora 30 (the last one to support
+> > x86) and a upstream up-to-date kernel, currently 5.4.16.
+> > 
+> > I'm using sd-boot to boot into an EFI-enabled kernel which contains
+> > an embedded initram cpio image (because loading the image from kernel's
+> > EFI stub doesn't seem to work for some unknown reason, I tried to debug
+> > this but my early debugging foo is too weak).
+> > 
+> > Kernel 5.4.x works correctly with this setup (but resuming from disk
+> > seems to have broken in 5.4.x or maybe even earlier - when resuming from
+> > disk I get all kind of funky OOPSes/errors, but that's another story, hopefully
+> > 5.5.x was fixed in this regards).
+> > 
+> > So I did have a look at the commits under arch/x86/boot and "x86/boot:
+> > Introduce setup_indirect" (b3c72fc9a78e74161f9d05ef7191706060628f8c) did
+> > talk about "bump setup_header version in arch/x86/boot/header.S", so I
+> > did revert above commit and I was finally able to boot into v5.5 kernel!
+> > 
+> > So either sd-boot also needs an upgrade or this commit does break
+> > something.
+> > Any help is welcome, don't hesitate to get in contact with me if you
+> > have any questions.
+> > 
+> > mfg
+> > thomas
+> >  
+> 
+> If it is a problem with 5.5, it would be unrelated to this thread, which
+> is about problems introduced by patches for the upcoming 5.7.
 
-Dear Friend,
+okay, ping me if I should test something on real hardware.
 
-With due respect, I have decided to contact you on abusiness
-transaction  that will be benefit both of us. At the bank last account
-and  auditing evaluation, my staffs came across an old account which
-was being maintained by a foreign client who we learn was among the
-deceased passengers of motor accident on November.2003, the deceased
-was unable to run this account since his death. The account has
-remained dormant without the knowledge of his family since it was put
-in a  safe deposit account in the bank for future investment by the
-client.
-
-Since his demise, even the members of his family haven't applied for
-claims  over this fund and it has been in the safe deposit account
-until I  discovered that it cannot be claimed since our client is
-aforeign national and we are sure that he has no next of kin here to
-file claims over the money. As the director of the department, this
-discovery was brought to my office so as to decide what is to be
-done.I  decided to seek ways through which to transfer this money out
-of the bank  and
-out of the country too.
-
-The total amount in the account is 18.6 million with my positions as
-staffs  of the bank, I am handicapped because I cannot operate foreign
-accounts and  cannot lay bonafide claim over this money. The client
-was a foreign  national and you will only be asked to act as his next
-of kin and I will  supply you all the necessary information and bank
-datas to assist you in being able to transfer this fund to any bank of
-your  choice where this money could be transferred into.The total sum
-will be shared as follows: 50% for me, 50% for you and expenses
-incidental occur  during the transfer will be incur by both of us. The
-transfer is risk free on both sides hence you are going to follow my
-instruction till the fund  transfer to your account. Since I work in
-this bank that is why
-you should  be confident in the success of this transaction because
-you will be updated with information as at when desired.
-
-I will like you to keep this transaction secret and confidential as I
-am  hoping to retire with my share of this money at the end of
-transaction  which will be when this money is safety in your account.
-I will then come over to your country for sharing according to the
-previously agreed percentages. You might even have to advise me on
-possibilities of investment in your country or elsewhere of our
-choice. May  God help you to help me to a restive retirement,Amen,And
-You have to  contact me through my private e-mail
-at(sebastient766@gmail.com)Please for further information and inquires
-feel free to contact me back immediately for more explanation and
-better  understanding I want you to assure me your capability of
-handling this  project with trust by providing me your following
-information details such as:
-
-(1)NAME..............
-(2)AGE:................
-(3)SEX:.....................
-(4)PHONE NUMBER:.................
-(5)OCCUPATION:.....................
-(6)YOUR COUNTRY:.....................
-
-Yours sincerely,
-Mr.S=C3=A9bastien Toni
+> 
+> Thanks.
