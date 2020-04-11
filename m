@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8901A5062
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5BDA1A50AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgDKMRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:17:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
+        id S1728981AbgDKMUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:20:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728377AbgDKMRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:17:16 -0400
+        id S1728437AbgDKMUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:20:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AEDAB2084D;
-        Sat, 11 Apr 2020 12:17:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6596020787;
+        Sat, 11 Apr 2020 12:20:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607436;
-        bh=3U31o4yGOnNiR49KeK2YQEL9DTX9nMcz4WtgW1tGyy8=;
+        s=default; t=1586607604;
+        bh=V95yCoTcpXvKvc9AZwVut5NcTNGJwYI7B6vPWp1OYV4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=seU1SC/NHkqR14NvdRo8XcPrbZTtmzTuUPIrQZFK/RkKUGiDSu8RLF4qFwCwETc8H
-         GscyyQ3bLsWDyl8oxWHNbUtE48VvXPTPcxNZO8X5KQdQCi6xZG/x7H8+dVEm12Sqi5
-         LFhIg5ArfPuEO5XyUAfEyIum3ePXJWwDoGP/6g7E=
+        b=B67aCjaKpGU5S7uR0E/5dF0JpHO3DuwjwysrLMeKhPIyatL6YqGsdgiTmCqCYNHN4
+         3wKWpHn9gZPvrRfe8ymKiLiKd1EOgftMJbqdIjTkrmn6vd6bePzW7mlRrJs+N0PrGV
+         DJWZs+pJSRCWBfq7KBPEl8LDEswE0Kl14Aj9gYmE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Silvio Cesare <silvio.cesare@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 19/41] slub: improve bit diffusion for freelist ptr obfuscation
-Date:   Sat, 11 Apr 2020 14:09:28 +0200
-Message-Id: <20200411115505.401838270@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.5 09/44] net: stmmac: dwmac1000: fix out-of-bounds mac address reg setting
+Date:   Sat, 11 Apr 2020 14:09:29 +0200
+Message-Id: <20200411115457.673476383@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
-References: <20200411115504.124035693@linuxfoundation.org>
+In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
+References: <20200411115456.934174282@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,69 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
+From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
 
-commit 1ad53d9fa3f6168ebcf48a50e08b170432da2257 upstream.
+[ Upstream commit 3e1221acf6a8f8595b5ce354bab4327a69d54d18 ]
 
-Under CONFIG_SLAB_FREELIST_HARDENED=y, the obfuscation was relatively weak
-in that the ptr and ptr address were usually so close that the first XOR
-would result in an almost entirely 0-byte value[1], leaving most of the
-"secret" number ultimately being stored after the third XOR.  A single
-blind memory content exposure of the freelist was generally sufficient to
-learn the secret.
+Commit 9463c4455900 ("net: stmmac: dwmac1000: Clear unused address
+entries") cleared the unused mac address entries, but introduced an
+out-of bounds mac address register programming bug -- After setting
+the secondary unicast mac addresses, the "reg" value has reached
+netdev_uc_count() + 1, thus we should only clear address entries
+if (addr < perfect_addr_number)
 
-Add a swab() call to mix bits a little more.  This is a cheap way (1
-cycle) to make attacks need more than a single exposure to learn the
-secret (or to know _where_ the exposure is in memory).
-
-kmalloc-32 freelist walk, before:
-
-ptr              ptr_addr            stored value      secret
-ffff90c22e019020@ffff90c22e019000 is 86528eb656b3b5bd (86528eb656b3b59d)
-ffff90c22e019040@ffff90c22e019020 is 86528eb656b3b5fd (86528eb656b3b59d)
-ffff90c22e019060@ffff90c22e019040 is 86528eb656b3b5bd (86528eb656b3b59d)
-ffff90c22e019080@ffff90c22e019060 is 86528eb656b3b57d (86528eb656b3b59d)
-ffff90c22e0190a0@ffff90c22e019080 is 86528eb656b3b5bd (86528eb656b3b59d)
-...
-
-after:
-
-ptr              ptr_addr            stored value      secret
-ffff9eed6e019020@ffff9eed6e019000 is 793d1135d52cda42 (86528eb656b3b59d)
-ffff9eed6e019040@ffff9eed6e019020 is 593d1135d52cda22 (86528eb656b3b59d)
-ffff9eed6e019060@ffff9eed6e019040 is 393d1135d52cda02 (86528eb656b3b59d)
-ffff9eed6e019080@ffff9eed6e019060 is 193d1135d52cdae2 (86528eb656b3b59d)
-ffff9eed6e0190a0@ffff9eed6e019080 is f93d1135d52cdac2 (86528eb656b3b59d)
-
-[1] https://blog.infosectcbr.com.au/2020/03/weaknesses-in-linux-kernel-heap.html
-
-Fixes: 2482ddec670f ("mm: add SLUB free list pointer obfuscation")
-Reported-by: Silvio Cesare <silvio.cesare@gmail.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christoph Lameter <cl@linux.com>
-Cc: Pekka Enberg <penberg@kernel.org>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/202003051623.AF4F8CB@keescook
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 9463c4455900 ("net: stmmac: dwmac1000: Clear unused address entries")
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- mm/slub.c |    2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -261,7 +261,7 @@ static inline void *freelist_ptr(const s
- 	 * freepointer to be restored incorrectly.
- 	 */
- 	return (void *)((unsigned long)ptr ^ s->random ^
--			(unsigned long)kasan_reset_tag((void *)ptr_addr));
-+			swab((unsigned long)kasan_reset_tag((void *)ptr_addr)));
- #else
- 	return ptr;
- #endif
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+@@ -207,7 +207,7 @@ static void dwmac1000_set_filter(struct
+ 			reg++;
+ 		}
+ 
+-		while (reg <= perfect_addr_number) {
++		while (reg < perfect_addr_number) {
+ 			writel(0, ioaddr + GMAC_ADDR_HIGH(reg));
+ 			writel(0, ioaddr + GMAC_ADDR_LOW(reg));
+ 			reg++;
 
 
