@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A45A1A50EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3471A50F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:22:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728947AbgDKMVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:21:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57526 "EHLO mail.kernel.org"
+        id S1729013AbgDKMW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:22:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728949AbgDKMVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:21:19 -0400
+        id S1728015AbgDKMVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:21:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD120214D8;
-        Sat, 11 Apr 2020 12:21:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 24E8D20644;
+        Sat, 11 Apr 2020 12:21:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607678;
-        bh=r6Cz7tXqvWMM41FcH1w8UekDGqn7bcSLJ/soebx9cR8=;
+        s=default; t=1586607680;
+        bh=sZNG7zph7/w0mKXrXaRvWNUrnikRbDELWru8OvLv/v4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LDYHGMcPClXWM1aeJi2B0bOdgfzxV0AhkBBPh4dD0F0rdZ2diojYyzOGj/5EXIkL/
-         v8C5CuLlCFYBH2rfoeCbyCFlfRZ7ggl+pAAYvcaR+0rrxue7919VqdHepPhSwAgiQP
-         M7SCkgBsBDZzrSu4jytqXKFLZm0JTDAkwGuW77KU=
+        b=AvUSLuzii7hXrPg1BSMT5AZ/VsPp4zitJI0WseT2U97Yy2jWf2YPWEDgOj0TrLr6Q
+         ksKWqzXFN6SzhjhRIDctjNuHGjCCQC2yC2vvaF/NC69eHgN2j+yCmnY6uXHW8gQth5
+         e96N7VrPbiEWTTyOS18CE643mPTUyPzMqjlpiIrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Chuanhong Guo <gch981213@gmail.com>,
         Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 04/38] net: dsa: bcm_sf2: Ensure correct sub-node is parsed
-Date:   Sat, 11 Apr 2020 14:09:41 +0200
-Message-Id: <20200411115459.715904176@linuxfoundation.org>
+Subject: [PATCH 5.6 05/38] net: dsa: mt7530: fix null pointer dereferencing in port5 setup
+Date:   Sat, 11 Apr 2020 14:09:42 +0200
+Message-Id: <20200411115459.998115250@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
 References: <20200411115459.324496182@linuxfoundation.org>
@@ -44,48 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Chuanhong Guo <gch981213@gmail.com>
 
-[ Upstream commit afa3b592953bfaecfb4f2f335ec5f935cff56804 ]
+[ Upstream commit 0452800f6db4ed0a42ffb15867c0acfd68829f6a ]
 
-When the bcm_sf2 was converted into a proper platform device driver and
-used the new dsa_register_switch() interface, we would still be parsing
-the legacy DSA node that contained all the port information since the
-platform firmware has intentionally maintained backward and forward
-compatibility to client programs. Ensure that we do parse the correct
-node, which is "ports" per the revised DSA binding.
+The 2nd gmac of mediatek soc ethernet may not be connected to a PHY
+and a phy-handle isn't always available.
+Unfortunately, mt7530 dsa driver assumes that the 2nd gmac is always
+connected to switch port 5 and setup mt7530 according to phy address
+of 2nd gmac node, causing null pointer dereferencing when phy-handle
+isn't defined in dts.
+This commit fix this setup code by checking return value of
+of_parse_phandle before using it.
 
-Fixes: d9338023fb8e ("net: dsa: bcm_sf2: Make it a real platform device driver")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 38f790a80560 ("net: dsa: mt7530: Add support for port 5")
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
 Reviewed-by: Vivien Didelot <vivien.didelot@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Tested-by: René van Dorst <opensource@vdorst.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/bcm_sf2.c |    7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/dsa/mt7530.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/dsa/bcm_sf2.c
-+++ b/drivers/net/dsa/bcm_sf2.c
-@@ -1069,6 +1069,7 @@ static int bcm_sf2_sw_probe(struct platf
- 	const struct bcm_sf2_of_data *data;
- 	struct b53_platform_data *pdata;
- 	struct dsa_switch_ops *ops;
-+	struct device_node *ports;
- 	struct bcm_sf2_priv *priv;
- 	struct b53_device *dev;
- 	struct dsa_switch *ds;
-@@ -1136,7 +1137,11 @@ static int bcm_sf2_sw_probe(struct platf
- 	set_bit(0, priv->cfp.used);
- 	set_bit(0, priv->cfp.unique);
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1356,6 +1356,9 @@ mt7530_setup(struct dsa_switch *ds)
+ 				continue;
  
--	bcm_sf2_identify_ports(priv, dn->child);
-+	ports = of_find_node_by_name(dn, "ports");
-+	if (ports) {
-+		bcm_sf2_identify_ports(priv, ports);
-+		of_node_put(ports);
-+	}
- 
- 	priv->irq0 = irq_of_parse_and_map(dn, 0);
- 	priv->irq1 = irq_of_parse_and_map(dn, 1);
+ 			phy_node = of_parse_phandle(mac_np, "phy-handle", 0);
++			if (!phy_node)
++				continue;
++
+ 			if (phy_node->parent == priv->dev->of_node->parent) {
+ 				ret = of_get_phy_mode(mac_np, &interface);
+ 				if (ret && ret != -ENODEV)
 
 
