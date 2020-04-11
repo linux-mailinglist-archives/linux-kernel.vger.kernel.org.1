@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B1E1A50A6
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC3D1A50F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728903AbgDKMT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55548 "EHLO mail.kernel.org"
+        id S1729025AbgDKMWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:22:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728891AbgDKMTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:19:54 -0400
+        id S1729112AbgDKMVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:21:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2D282084D;
-        Sat, 11 Apr 2020 12:19:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E56B20644;
+        Sat, 11 Apr 2020 12:21:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607595;
-        bh=RBwdeau2UXjuzCvH96Qfxh/rR+Du1Zjk34A0ZOmqfvg=;
+        s=default; t=1586607663;
+        bh=5hacpNxYZe7Twig3n1RyG6eCOLtCL2UyVsUDwGr3d/A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0UDnRc0q2SObP9ncGW2G3zUeFWcjERk+Xlppk2xHXAU4HVlGDEz0w5xYZJLaxw4Uz
-         QqlJ2qeDUjQukte6o0cyx/lXD22Z9qinQCUvUeSCWM/RFcV2ynyUr78NN2eGVE6Krp
-         8DNRYe2N63dIkOpk5JJ7tijKHiOI6LkrldsbkM60=
+        b=vL8dErtAk2JrvpndLnVq4wwdWMi5IsDxnPLG5E4uF0zE4mnRkauUJX2DiCd/kzMSo
+         4ODSNUAOIPkEZ65BW0zkNfONVEmUUbGcV/pMIyV1CNU5POJa8pHoF+wfLxB2WI49CC
+         PG5IpvKsk9I9NV307M3q5RNDz4LxuveY3lA7tRTU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anson Huang <Anson.Huang@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Christian Eggers <ceggers@arri.de>
-Subject: [PATCH 5.5 41/44] ARM: imx: Enable ARM_ERRATA_814220 for i.MX6UL and i.MX7D
-Date:   Sat, 11 Apr 2020 14:10:01 +0200
-Message-Id: <20200411115500.892167067@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.6 25/38] ASoC: jz4740-i2s: Fix divider written at incorrect offset in register
+Date:   Sat, 11 Apr 2020 14:10:02 +0200
+Message-Id: <20200411115502.533889995@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
-References: <20200411115456.934174282@linuxfoundation.org>
+In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
+References: <20200411115459.324496182@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,49 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anson Huang <Anson.Huang@nxp.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 4562fa4c86c92a2df635fe0697c9e06379738741 upstream.
+commit 9401d5aa328e64617d87abd59af1c91cace4c3e4 upstream.
 
-ARM_ERRATA_814220 has below description:
+The 4-bit divider value was written at offset 8, while the jz4740
+programming manual locates it at offset 0.
 
-The v7 ARM states that all cache and branch predictor maintenance
-operations that do not specify an address execute, relative to
-each other, in program order.
-However, because of this erratum, an L2 set/way cache maintenance
-operation can overtake an L1 set/way cache maintenance operation.
-This ERRATA only affected the Cortex-A7 and present in r0p2, r0p3,
-r0p4, r0p5.
-
-i.MX6UL and i.MX7D have Cortex-A7 r0p5 inside, need to enable
-ARM_ERRATA_814220 for proper workaround.
-
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Cc: Christian Eggers <ceggers@arri.de>
+Fixes: 26b0aad80a86 ("ASoC: jz4740: Add dynamic sampling rate support to jz4740-i2s")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200306222931.39664-2-paul@crapouillou.net
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/mach-imx/Kconfig |    2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/jz4740/jz4740-i2s.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/mach-imx/Kconfig
-+++ b/arch/arm/mach-imx/Kconfig
-@@ -520,6 +520,7 @@ config SOC_IMX6UL
- 	bool "i.MX6 UltraLite support"
- 	select PINCTRL_IMX6UL
- 	select SOC_IMX6
-+	select ARM_ERRATA_814220
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -83,7 +83,7 @@
+ #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
  
- 	help
- 	  This enables support for Freescale i.MX6 UltraLite processor.
-@@ -556,6 +557,7 @@ config SOC_IMX7D
- 	select PINCTRL_IMX7D
- 	select SOC_IMX7D_CA7 if ARCH_MULTI_V7
- 	select SOC_IMX7D_CM4 if ARM_SINGLE_ARMV7M
-+	select ARM_ERRATA_814220
- 	help
- 		This enables support for Freescale i.MX7 Dual processor.
- 
+ #define JZ_AIC_CLK_DIV_MASK 0xf
+-#define I2SDIV_DV_SHIFT 8
++#define I2SDIV_DV_SHIFT 0
+ #define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
+ #define I2SDIV_IDV_SHIFT 8
+ #define I2SDIV_IDV_MASK (0xf << I2SDIV_IDV_SHIFT)
 
 
