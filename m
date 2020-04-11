@@ -2,78 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3769B1A538F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 21:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6071A538D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 21:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgDKTne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 15:43:34 -0400
-Received: from smtprelay0010.hostedemail.com ([216.40.44.10]:41654 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726204AbgDKTnd (ORCPT
+        id S1726725AbgDKTmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 15:42:45 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:39589 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726204AbgDKTmo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 15:43:33 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 70B222C9D;
-        Sat, 11 Apr 2020 19:43:33 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2915:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3873:4321:5007:7576:7903:8957:10004:10400:10450:10455:10848:11026:11232:11658:11914:12043:12296:12297:12438:12555:12740:12760:12895:12986:13069:13095:13311:13357:13439:14181:14659:14721:19904:19999:21080:21433:21451:21627:30029:30054:30069:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: owl05_1ed6d11cbc207
-X-Filterd-Recvd-Size: 1962
-Received: from XPS-9350.home (unknown [47.151.136.130])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 11 Apr 2020 19:43:31 +0000 (UTC)
-Message-ID: <8d097283a4676f7e1050c9d6664d89d710e21bcf.camel@perches.com>
-Subject: Re: [PATCH] taging: android: ashmem: Declared const key
-From:   Joe Perches <joe@perches.com>
-To:     MugilRaj <dmugil2000@gmail.com>
-Cc:     mugil2301 <110117057@nitt.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Sat, 11 Apr 2020 12:41:26 -0700
-In-Reply-To: <1586633396-24237-1-git-send-email-dmugil2000@gmail.com>
-References: <1586633396-24237-1-git-send-email-dmugil2000@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        Sat, 11 Apr 2020 15:42:44 -0400
+Received: by mail-wm1-f67.google.com with SMTP id y24so5975427wma.4
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 12:42:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iwv88gfngC3+mKBn+a2Sxg57sJmAfdLK0rq5K5qywRA=;
+        b=kTSvacljX8WfMC9fgKFd9BqZ16srEoIVnxcM1xKXs+9DCn2U+y5kenxg4pdu1cIYhK
+         l4dZmfTabEUFxYYijLccRrI5NONNGTt1Q/Llb5Q+fGJUCKIZJmcITSj4q6xkaAQHbcpr
+         TG7JWdaDYXxSzlgi+JskK0mvktpAaCI0eJjAd03sIYztVF6k6FmybfKADhWX6P0ycSUO
+         Ww2DcNxNnL3pBKyEAFM+VsWZ71Ucy06yDY5rUGnNqUErFGiq0cMDXZmMUS/39butGQIH
+         mazGTeJKhDltYO4bAbbWBZbOIXisR9X8L0FnLL43Ga5gJdz1GG6TtUwo2FnC9ModXfze
+         d1IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Iwv88gfngC3+mKBn+a2Sxg57sJmAfdLK0rq5K5qywRA=;
+        b=gnsNxkd+zphmRVPRgoiq/cpbGt93HkOfQFQhHazhuccJl9hgIAlTneZPgwrSNEEq5j
+         xP9bQWhjzvd5XHz/eWfNs2ZVkUbAW7m2NkGEaIctAa7AhewSMUp+RBrHl1mG0fevE5zl
+         mQzsF7IOJe+RlaiJ6c+GxHtzUGenvkZmm2xSptysN0zoiTeL27QZ8U+gWWC4HyuOWTFT
+         Tb5M1tGdE3dDYe2IIgDU0OhHZJSIR468Vks2yCRNH6Jf4K/ld/UJn5lvjJY52o1qm7fd
+         gJ2gOU6IaGfilG5CWt2KilVmCtX76UHOQ9tQYDjJ5TY9hToQ0K49Sw5ey7Wz0v97EX7o
+         rMSQ==
+X-Gm-Message-State: AGi0PuZBf+XmrSPiOoNBeNCsUyh6vpsydyOY5ZbZ+bRBgHZK82SesTAD
+        x61ffdxR2OyiqlI0pFFNaA8=
+X-Google-Smtp-Source: APiQypL0b73v1QwPz38ShgqICbSGYQJxv7JcmrTNJPerG4umMCJ16ibxr5ICX8clyccFcXRv5V26kg==
+X-Received: by 2002:a1c:1d92:: with SMTP id d140mr10954413wmd.67.1586634163707;
+        Sat, 11 Apr 2020 12:42:43 -0700 (PDT)
+Received: from localhost.localdomain ([31.4.236.212])
+        by smtp.gmail.com with ESMTPSA id z10sm5954581wrg.69.2020.04.11.12.42.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 Apr 2020 12:42:42 -0700 (PDT)
+From:   carlosteniswarrior@gmail.com
+To:     gregkh@linuxfoundation.org
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        porfavorde <carlosteniswarrior@gmail.com>
+Subject: [PATCH] Staging: kernel: user: fixed some coding style issues
+Date:   Sat, 11 Apr 2020 21:42:42 +0200
+Message-Id: <20200411194242.11336-1-carlosteniswarrior@gmail.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-04-12 at 00:59 +0530, MugilRaj wrote:
-> From: mugil2301 <110117057@nitt.edu>
+From: porfavorde <carlosteniswarrior@gmail.com>
 
-You need to verify the patch subject.
-You need a change log message too.
+Fixed a coding style issue with a for loop and a trailing whitespace in
+the comments
 
-> Signed-off-by: mugil2301 <110117057@nitt.edu>
+Signed-off-by: Carlos Guerrero Álvarez <carlosteniswarrior@gmail.com>
+---
+ kernel/user.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-You need to put your legal name here
-
-> diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
-[]
-> @@ -367,7 +367,7 @@ ashmem_vmfile_get_unmapped_area(struct file *file, unsigned long addr,
->  
->  static int ashmem_mmap(struct file *file, struct vm_area_struct *vma)
->  {
-> -	static struct file_operations vmfile_fops;
-> +	static const  struct file_operations vmfile_fops;
->  	struct ashmem_area *asma = file->private_data;
->  	int ret = 0;
-
-(this won't compile)
-
-checkpatch is not always right.
-
-Do please compile the files changed by your patch
-and verify change correctness before sending any
-proposed patch.
-
+diff --git a/kernel/user.c b/kernel/user.c
+index 5235d7f49982..4228ec04678d 100644
+--- a/kernel/user.c
++++ b/kernel/user.c
+@@ -6,7 +6,7 @@
+  *
+  * We have a per-user structure to keep track of how many
+  * processes, files etc the user has claimed, in order to be
+- * able to have per-user limits for system resources. 
++ * able to have per-user limits for system resources.
+  */
+ 
+ #include <linux/init.h>
+@@ -216,7 +216,7 @@ static int __init uid_cache_init(void)
+ 	uid_cachep = kmem_cache_create("uid_cache", sizeof(struct user_struct),
+ 			0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+ 
+-	for(n = 0; n < UIDHASH_SZ; ++n)
++	for (n = 0; n < UIDHASH_SZ; ++n)
+ 		INIT_HLIST_HEAD(uidhash_table + n);
+ 
+ 	/* Insert the root user immediately (init already runs as root) */
+-- 
+2.25.1
 
