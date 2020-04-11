@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6DE1A4FE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29301A4FCA
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbgDKMMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45088 "EHLO mail.kernel.org"
+        id S1727040AbgDKMLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:11:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727267AbgDKMM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:12:29 -0400
+        id S1727023AbgDKMLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:11:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0456521556;
-        Sat, 11 Apr 2020 12:12:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA358215A4;
+        Sat, 11 Apr 2020 12:11:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607148;
-        bh=TOlzQZqFBlXXk6vVW3nEQ7OnPHurudRh2uEU+6f1lvY=;
+        s=default; t=1586607102;
+        bh=gPN1K6D1ZcKJkDxrR7qi0zm3+QP6Ap5Mf7z/+M9TD2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A899TSdEoSyT1T9PwZLu+2sQ8W7BiULCW2uC1SLDuzuppRWEVBvAtK25vPxq2uC9t
-         unxRJjW0Shq4Fu0ILNDPnU1EnmwRXnmmwUj9is6354tc5aCtQ9gLLiXXB/o3zYSpST
-         PfV6mH6Bb7SLCsw4iF/vke/EilIz001f8ET3qOJE=
+        b=UGBX+HAcFO2uGnelsYw9BP7kSSIUVpAb/rlNk7qKMFtZBusb63lGjJ9cQiOM7Rgu8
+         Gn34VIay0jCHbMKwEwVkYhB2RjaoxUXwi7A6Oqj9n68TWMwO69kDmC7BpLrjJ3tY1i
+         7y8M2FBlPVuShXEfPFVPdvF6ov9l4ZZmWKJsdW3k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 03/32] drm/bochs: downgrade pci_request_region failure from error to warning
+        stable@vger.kernel.org, Guillaume Nault <g.nault@alphalink.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Will Deacon <will@kernel.org>
+Subject: [PATCH 4.4 12/29] l2tp: fix race between l2tp_session_delete() and l2tp_tunnel_closeall()
 Date:   Sat, 11 Apr 2020 14:08:42 +0200
-Message-Id: <20200411115419.093781023@linuxfoundation.org>
+Message-Id: <20200411115409.765238394@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
-References: <20200411115418.455500023@linuxfoundation.org>
+In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
+References: <20200411115407.651296755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,45 +44,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gerd Hoffmann <kraxel@redhat.com>
+From: Guillaume Nault <g.nault@alphalink.fr>
 
-[ Upstream commit 8c34cd1a7f089dc03933289c5d4a4d1489549828 ]
+commit b228a94066406b6c456321d69643b0d7ce11cfa6 upstream.
 
-Shutdown of firmware framebuffer has a bunch of problems.  Because
-of this the framebuffer region might still be reserved even after
-drm_fb_helper_remove_conflicting_pci_framebuffers() returned.
+There are several ways to remove L2TP sessions:
 
-Don't consider pci_request_region() failure for the framebuffer
-region as fatal error to workaround this issue.
+  * deleting a session explicitly using the netlink interface (with
+    L2TP_CMD_SESSION_DELETE),
+  * deleting the session's parent tunnel (either by closing the
+    tunnel's file descriptor or using the netlink interface),
+  * closing the PPPOL2TP file descriptor of a PPP pseudo-wire.
 
-Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Link: http://patchwork.freedesktop.org/patch/msgid/20200313084152.2734-1-kraxel@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In some cases, when these methods are used concurrently on the same
+session, the session can be removed twice, leading to use-after-free
+bugs.
+
+This patch adds a 'dead' flag, used by l2tp_session_delete() and
+l2tp_tunnel_closeall() to prevent them from stepping on each other's
+toes.
+
+The session deletion path used when closing a PPPOL2TP file descriptor
+doesn't need to be adapted. It already has to ensure that a session
+remains valid for the lifetime of its PPPOL2TP file descriptor.
+So it takes an extra reference on the session in the ->session_close()
+callback (pppol2tp_session_close()), which is eventually dropped
+in the ->sk_destruct() callback of the PPPOL2TP socket
+(pppol2tp_session_destruct()).
+Still, __l2tp_session_unhash() and l2tp_session_queue_purge() can be
+called twice and even concurrently for a given session, but thanks to
+proper locking and re-initialisation of list fields, this is not an
+issue.
+
+Signed-off-by: Guillaume Nault <g.nault@alphalink.fr>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/bochs/bochs_hw.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ net/l2tp/l2tp_core.c |    6 ++++++
+ net/l2tp/l2tp_core.h |    1 +
+ 2 files changed, 7 insertions(+)
 
-diff --git a/drivers/gpu/drm/bochs/bochs_hw.c b/drivers/gpu/drm/bochs/bochs_hw.c
-index a39b0343c197d..401c218567af9 100644
---- a/drivers/gpu/drm/bochs/bochs_hw.c
-+++ b/drivers/gpu/drm/bochs/bochs_hw.c
-@@ -97,10 +97,8 @@ int bochs_hw_init(struct drm_device *dev, uint32_t flags)
- 		size = min(size, mem);
- 	}
+--- a/net/l2tp/l2tp_core.c
++++ b/net/l2tp/l2tp_core.c
+@@ -1351,6 +1351,9 @@ again:
  
--	if (pci_request_region(pdev, 0, "bochs-drm") != 0) {
--		DRM_ERROR("Cannot request framebuffer\n");
--		return -EBUSY;
--	}
-+	if (pci_request_region(pdev, 0, "bochs-drm") != 0)
-+		DRM_WARN("Cannot request framebuffer, boot fb still active?\n");
+ 			hlist_del_init(&session->hlist);
  
- 	bochs->fb_map = ioremap(addr, size);
- 	if (bochs->fb_map == NULL) {
--- 
-2.20.1
-
++			if (test_and_set_bit(0, &session->dead))
++				goto again;
++
+ 			if (session->ref != NULL)
+ 				(*session->ref)(session);
+ 
+@@ -1799,6 +1802,9 @@ EXPORT_SYMBOL_GPL(__l2tp_session_unhash)
+  */
+ int l2tp_session_delete(struct l2tp_session *session)
+ {
++	if (test_and_set_bit(0, &session->dead))
++		return 0;
++
+ 	if (session->ref)
+ 		(*session->ref)(session);
+ 	__l2tp_session_unhash(session);
+--- a/net/l2tp/l2tp_core.h
++++ b/net/l2tp/l2tp_core.h
+@@ -85,6 +85,7 @@ struct l2tp_session_cfg {
+ struct l2tp_session {
+ 	int			magic;		/* should be
+ 						 * L2TP_SESSION_MAGIC */
++	long			dead;
+ 
+ 	struct l2tp_tunnel	*tunnel;	/* back pointer to tunnel
+ 						 * context */
 
 
