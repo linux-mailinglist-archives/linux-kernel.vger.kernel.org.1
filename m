@@ -2,38 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0071A5070
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73CC1A5138
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728500AbgDKMRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:17:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52598 "EHLO mail.kernel.org"
+        id S1728813AbgDKMYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:24:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727582AbgDKMRv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:17:51 -0400
+        id S1727764AbgDKMSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:18:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E73220673;
-        Sat, 11 Apr 2020 12:17:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16B3B20692;
+        Sat, 11 Apr 2020 12:18:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607469;
-        bh=DelRnnfitD8DFupggQP7ZHvuuUpyQlAHwyYb4axTYcE=;
+        s=default; t=1586607510;
+        bh=VrMPaKFm6ypDIqYIXp1tYQR4zQFtrc/XT4gLeSmT1Jg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HqBClu8LXN+G3BbIhGN/OZ46GrwdnweshPKULilySJZ1j19n6DlHB7MPeQjy0MLYB
-         v3a9zLocpJZ2Gl3dvTvJgs+3zHm6aB1khjl+JErcYIchDZfD932rB3rhJ2yuVdIb6p
-         UaFm2PsYg3TL5ZiIhOjhKVDldjFJLOO2KBl85U/U=
+        b=PVswl3HL+i7BbvzuCAL1cSUH0ymk/ckh61OSpuBilQ8St6m9iGh+Ey9iqJ6yC8X/D
+         cIKlznHSnNBv20y9Vl248QUB0t/OoFLtij4uXBl5lxMIbCFh8/UCxR1M9xDyNLd91c
+         zJRldZgJfe+VWyEu9iTu6wmuABUUGshS7xYbq7+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+98704a51af8e3d9425a9@syzkaller.appspotmail.com,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Luis Henriques <lhenriques@suse.com>
-Subject: [PATCH 5.4 31/41] ceph: canonicalize server path in place
-Date:   Sat, 11 Apr 2020 14:09:40 +0200
-Message-Id: <20200411115506.291405841@linuxfoundation.org>
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yury Norov <yury.norov@gmail.com>,
+        Allison Randal <allison@lohutok.net>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Torsten Hilbrich <torsten.hilbrich@secunet.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 32/41] include/uapi/linux/swab.h: fix userspace breakage, use __BITS_PER_LONG for swap
+Date:   Sat, 11 Apr 2020 14:09:41 +0200
+Message-Id: <20200411115506.424699070@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
 References: <20200411115504.124035693@linuxfoundation.org>
@@ -46,220 +51,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Dryomov <idryomov@gmail.com>
+From: Christian Borntraeger <borntraeger@de.ibm.com>
 
-commit b27a939e8376a3f1ed09b9c33ef44d20f18ec3d0 upstream.
+commit 467d12f5c7842896d2de3ced74e4147ee29e97c8 upstream.
 
-syzbot reported that 4fbc0c711b24 ("ceph: remove the extra slashes in
-the server path") had caused a regression where an allocation could be
-done under a spinlock -- compare_mount_options() is called by sget_fc()
-with sb_lock held.
+QEMU has a funny new build error message when I use the upstream kernel
+headers:
 
-We don't really need the supplied server path, so canonicalize it
-in place and compare it directly.  To make this work, the leading
-slash is kept around and the logic in ceph_real_mount() to skip it
-is restored.  CEPH_MSG_CLIENT_SESSION now reports the same (i.e.
-canonicalized) path, with the leading slash of course.
+      CC      block/file-posix.o
+    In file included from /home/cborntra/REPOS/qemu/include/qemu/timer.h:4,
+                     from /home/cborntra/REPOS/qemu/include/qemu/timed-average.h:29,
+                     from /home/cborntra/REPOS/qemu/include/block/accounting.h:28,
+                     from /home/cborntra/REPOS/qemu/include/block/block_int.h:27,
+                     from /home/cborntra/REPOS/qemu/block/file-posix.c:30:
+    /usr/include/linux/swab.h: In function `__swab':
+    /home/cborntra/REPOS/qemu/include/qemu/bitops.h:20:34: error: "sizeof" is not defined, evaluates to 0 [-Werror=undef]
+       20 | #define BITS_PER_LONG           (sizeof (unsigned long) * BITS_PER_BYTE)
+          |                                  ^~~~~~
+    /home/cborntra/REPOS/qemu/include/qemu/bitops.h:20:41: error: missing binary operator before token "("
+       20 | #define BITS_PER_LONG           (sizeof (unsigned long) * BITS_PER_BYTE)
+          |                                         ^
+    cc1: all warnings being treated as errors
+    make: *** [/home/cborntra/REPOS/qemu/rules.mak:69: block/file-posix.o] Error 1
+    rm tests/qemu-iotests/socket_scm_helper.o
 
-Fixes: 4fbc0c711b24 ("ceph: remove the extra slashes in the server path")
-Reported-by: syzbot+98704a51af8e3d9425a9@syzkaller.appspotmail.com
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Luis Henriques <lhenriques@suse.com>
+This was triggered by commit d5767057c9a ("uapi: rename ext2_swab() to
+swab() and share globally in swab.h").  That patch is doing
+
+  #include <asm/bitsperlong.h>
+
+but it uses BITS_PER_LONG.
+
+The kernel file asm/bitsperlong.h provide only __BITS_PER_LONG.
+
+Let us use the __ variant in swap.h
+
+Link: http://lkml.kernel.org/r/20200213142147.17604-1-borntraeger@de.ibm.com
+Fixes: d5767057c9a ("uapi: rename ext2_swab() to swab() and share globally in swab.h")
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Yury Norov <yury.norov@gmail.com>
+Cc: Allison Randal <allison@lohutok.net>
+Cc: Joe Perches <joe@perches.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc: Torsten Hilbrich <torsten.hilbrich@secunet.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/ceph/super.c |  118 ++++++++++++--------------------------------------------
- fs/ceph/super.h |    2 
- 2 files changed, 28 insertions(+), 92 deletions(-)
 
---- a/fs/ceph/super.c
-+++ b/fs/ceph/super.c
-@@ -214,6 +214,26 @@ static match_table_t fsopt_tokens = {
- 	{-1, NULL}
- };
+---
+ include/uapi/linux/swab.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/include/uapi/linux/swab.h
++++ b/include/uapi/linux/swab.h
+@@ -135,9 +135,9 @@ static inline __attribute_const__ __u32
  
-+/*
-+ * Remove adjacent slashes and then the trailing slash, unless it is
-+ * the only remaining character.
-+ *
-+ * E.g. "//dir1////dir2///" --> "/dir1/dir2", "///" --> "/".
-+ */
-+static void canonicalize_path(char *path)
-+{
-+	int i, j = 0;
-+
-+	for (i = 0; path[i] != '\0'; i++) {
-+		if (path[i] != '/' || j < 1 || path[j - 1] != '/')
-+			path[j++] = path[i];
-+	}
-+
-+	if (j > 1 && path[j - 1] == '/')
-+		j--;
-+	path[j] = '\0';
-+}
-+
- static int parse_fsopt_token(char *c, void *private)
+ static __always_inline unsigned long __swab(const unsigned long y)
  {
- 	struct ceph_mount_options *fsopt = private;
-@@ -429,73 +449,6 @@ static int strcmp_null(const char *s1, c
- 	return strcmp(s1, s2);
+-#if BITS_PER_LONG == 64
++#if __BITS_PER_LONG == 64
+ 	return __swab64(y);
+-#else /* BITS_PER_LONG == 32 */
++#else /* __BITS_PER_LONG == 32 */
+ 	return __swab32(y);
+ #endif
  }
- 
--/**
-- * path_remove_extra_slash - Remove the extra slashes in the server path
-- * @server_path: the server path and could be NULL
-- *
-- * Return NULL if the path is NULL or only consists of "/", or a string
-- * without any extra slashes including the leading slash(es) and the
-- * slash(es) at the end of the server path, such as:
-- * "//dir1////dir2///" --> "dir1/dir2"
-- */
--static char *path_remove_extra_slash(const char *server_path)
--{
--	const char *path = server_path;
--	const char *cur, *end;
--	char *buf, *p;
--	int len;
--
--	/* if the server path is omitted */
--	if (!path)
--		return NULL;
--
--	/* remove all the leading slashes */
--	while (*path == '/')
--		path++;
--
--	/* if the server path only consists of slashes */
--	if (*path == '\0')
--		return NULL;
--
--	len = strlen(path);
--
--	buf = kmalloc(len + 1, GFP_KERNEL);
--	if (!buf)
--		return ERR_PTR(-ENOMEM);
--
--	end = path + len;
--	p = buf;
--	do {
--		cur = strchr(path, '/');
--		if (!cur)
--			cur = end;
--
--		len = cur - path;
--
--		/* including one '/' */
--		if (cur != end)
--			len += 1;
--
--		memcpy(p, path, len);
--		p += len;
--
--		while (cur <= end && *cur == '/')
--			cur++;
--		path = cur;
--	} while (path < end);
--
--	*p = '\0';
--
--	/*
--	 * remove the last slash if there has and just to make sure that
--	 * we will get something like "dir1/dir2"
--	 */
--	if (*(--p) == '/')
--		*p = '\0';
--
--	return buf;
--}
--
- static int compare_mount_options(struct ceph_mount_options *new_fsopt,
- 				 struct ceph_options *new_opt,
- 				 struct ceph_fs_client *fsc)
-@@ -503,7 +456,6 @@ static int compare_mount_options(struct
- 	struct ceph_mount_options *fsopt1 = new_fsopt;
- 	struct ceph_mount_options *fsopt2 = fsc->mount_options;
- 	int ofs = offsetof(struct ceph_mount_options, snapdir_name);
--	char *p1, *p2;
- 	int ret;
- 
- 	ret = memcmp(fsopt1, fsopt2, ofs);
-@@ -513,21 +465,12 @@ static int compare_mount_options(struct
- 	ret = strcmp_null(fsopt1->snapdir_name, fsopt2->snapdir_name);
- 	if (ret)
- 		return ret;
-+
- 	ret = strcmp_null(fsopt1->mds_namespace, fsopt2->mds_namespace);
- 	if (ret)
- 		return ret;
- 
--	p1 = path_remove_extra_slash(fsopt1->server_path);
--	if (IS_ERR(p1))
--		return PTR_ERR(p1);
--	p2 = path_remove_extra_slash(fsopt2->server_path);
--	if (IS_ERR(p2)) {
--		kfree(p1);
--		return PTR_ERR(p2);
--	}
--	ret = strcmp_null(p1, p2);
--	kfree(p1);
--	kfree(p2);
-+	ret = strcmp_null(fsopt1->server_path, fsopt2->server_path);
- 	if (ret)
- 		return ret;
- 
-@@ -595,6 +538,8 @@ static int parse_mount_options(struct ce
- 			err = -ENOMEM;
- 			goto out;
- 		}
-+
-+		canonicalize_path(fsopt->server_path);
- 	} else {
- 		dev_name_end = dev_name + strlen(dev_name);
- 	}
-@@ -1022,7 +967,9 @@ static struct dentry *ceph_real_mount(st
- 	mutex_lock(&fsc->client->mount_mutex);
- 
- 	if (!fsc->sb->s_root) {
--		const char *path, *p;
-+		const char *path = fsc->mount_options->server_path ?
-+				     fsc->mount_options->server_path + 1 : "";
-+
- 		err = __ceph_open_session(fsc->client, started);
- 		if (err < 0)
- 			goto out;
-@@ -1034,22 +981,11 @@ static struct dentry *ceph_real_mount(st
- 				goto out;
- 		}
- 
--		p = path_remove_extra_slash(fsc->mount_options->server_path);
--		if (IS_ERR(p)) {
--			err = PTR_ERR(p);
--			goto out;
--		}
--		/* if the server path is omitted or just consists of '/' */
--		if (!p)
--			path = "";
--		else
--			path = p;
- 		dout("mount opening path '%s'\n", path);
- 
- 		ceph_fs_debugfs_init(fsc);
- 
- 		root = open_root_dentry(fsc, path, started);
--		kfree(p);
- 		if (IS_ERR(root)) {
- 			err = PTR_ERR(root);
- 			goto out;
---- a/fs/ceph/super.h
-+++ b/fs/ceph/super.h
-@@ -92,7 +92,7 @@ struct ceph_mount_options {
- 
- 	char *snapdir_name;   /* default ".snap" */
- 	char *mds_namespace;  /* default NULL */
--	char *server_path;    /* default  "/" */
-+	char *server_path;    /* default NULL (means "/") */
- 	char *fscache_uniq;   /* default NULL */
- };
- 
 
 
