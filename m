@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09B3A1A5207
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D151A51D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgDKM3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:29:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43478 "EHLO mail.kernel.org"
+        id S1727382AbgDKMMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:12:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726945AbgDKMLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:11:25 -0400
+        id S1727349AbgDKMMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:12:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 033AA214D8;
-        Sat, 11 Apr 2020 12:11:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA576214D8;
+        Sat, 11 Apr 2020 12:12:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607085;
-        bh=TPs/zfXxgu5n1ahCUyC/YvqGIa4uQRBW16J8baoC9fM=;
+        s=default; t=1586607158;
+        bh=ZqHvatSPzRk+QCybljXT7i9Cn32I8PBiHPd4xHlCI08=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RX/2iTbL6PzCNVjAcGHwARTN5Rr218HkQmOLh3FE6jan2h7j8IKpZYJqDtb/A+SQE
-         xQ21c01+yGKIBO6g9TEpU7mKc+a2lgrgE+jpib6h9qpwXbRfo5bG0OD+TlcHQ107PN
-         IT5dFzE+bLpJ8evKLL1dLBchTXl2atbbcNiLBJN0=
+        b=hnGHG6MKbe6rgkIYufV06+RDePMwwhWJ/BPzR6sN9rVIjp1YKW+B8ijxQba8JLnLQ
+         oPVeA2FJn7pJn7zyuxVWGp/0L+EmdPx9761NMWlPptdqaVVfyygCFF1shogLc0nSb3
+         dX/I2q5jN+glLoKDCemZHSpLYQGYXrzC/GWHWIpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        linux-crypto@vger.kernel.org
-Subject: [PATCH 4.4 15/29] padata: always acquire cpu_hotplug_lock before pinst->lock
-Date:   Sat, 11 Apr 2020 14:08:45 +0200
-Message-Id: <20200411115410.319586680@linuxfoundation.org>
+        stable@vger.kernel.org, Jin Meng <meng.a.jin@nokia-sbell.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 07/32] sctp: fix possibly using a bad saddr with a given dst
+Date:   Sat, 11 Apr 2020 14:08:46 +0200
+Message-Id: <20200411115419.504610902@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
-References: <20200411115407.651296755@linuxfoundation.org>
+In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
+References: <20200411115418.455500023@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,67 +45,187 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jordan <daniel.m.jordan@oracle.com>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-commit 38228e8848cd7dd86ccb90406af32de0cad24be3 upstream.
+[ Upstream commit 582eea230536a6f104097dd46205822005d5fe3a ]
 
-lockdep complains when padata's paths to update cpumasks via CPU hotplug
-and sysfs are both taken:
+Under certain circumstances, depending on the order of addresses on the
+interfaces, it could be that sctp_v[46]_get_dst() would return a dst
+with a mismatched struct flowi.
 
-  # echo 0 > /sys/devices/system/cpu/cpu1/online
-  # echo ff > /sys/kernel/pcrypt/pencrypt/parallel_cpumask
+For example, if when walking through the bind addresses and the first
+one is not a match, it saves the dst as a fallback (added in
+410f03831c07), but not the flowi. Then if the next one is also not a
+match, the previous dst will be returned but with the flowi information
+for the 2nd address, which is wrong.
 
-  ======================================================
-  WARNING: possible circular locking dependency detected
-  5.4.0-rc8-padata-cpuhp-v3+ #1 Not tainted
-  ------------------------------------------------------
-  bash/205 is trying to acquire lock:
-  ffffffff8286bcd0 (cpu_hotplug_lock.rw_sem){++++}, at: padata_set_cpumask+0x2b/0x120
+The fix is to use a locally stored flowi that can be used for such
+attempts, and copy it to the parameter only in case it is a possible
+match, together with the corresponding dst entry.
 
-  but task is already holding lock:
-  ffff8880001abfa0 (&pinst->lock){+.+.}, at: padata_set_cpumask+0x26/0x120
+The patch updates IPv6 code mostly just to be in sync. Even though the issue
+is also present there, it fallback is not expected to work with IPv6.
 
-  which lock already depends on the new lock.
-
-padata doesn't take cpu_hotplug_lock and pinst->lock in a consistent
-order.  Which should be first?  CPU hotplug calls into padata with
-cpu_hotplug_lock already held, so it should have priority.
-
-Fixes: 6751fb3c0e0c ("padata: Use get_online_cpus/put_online_cpus")
-Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 410f03831c07 ("sctp: add routing output fallback")
+Reported-by: Jin Meng <meng.a.jin@nokia-sbell.com>
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Tested-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- kernel/padata.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ net/sctp/ipv6.c     |   20 ++++++++++++++------
+ net/sctp/protocol.c |   28 +++++++++++++++++++---------
+ 2 files changed, 33 insertions(+), 15 deletions(-)
 
---- a/kernel/padata.c
-+++ b/kernel/padata.c
-@@ -640,8 +640,8 @@ int padata_set_cpumask(struct padata_ins
- 	struct cpumask *serial_mask, *parallel_mask;
- 	int err = -EINVAL;
+--- a/net/sctp/ipv6.c
++++ b/net/sctp/ipv6.c
+@@ -235,7 +235,8 @@ static void sctp_v6_get_dst(struct sctp_
+ {
+ 	struct sctp_association *asoc = t->asoc;
+ 	struct dst_entry *dst = NULL;
+-	struct flowi6 *fl6 = &fl->u.ip6;
++	struct flowi _fl;
++	struct flowi6 *fl6 = &_fl.u.ip6;
+ 	struct sctp_bind_addr *bp;
+ 	struct ipv6_pinfo *np = inet6_sk(sk);
+ 	struct sctp_sockaddr_entry *laddr;
+@@ -245,7 +246,7 @@ static void sctp_v6_get_dst(struct sctp_
+ 	__u8 matchlen = 0;
+ 	sctp_scope_t scope;
  
--	mutex_lock(&pinst->lock);
- 	get_online_cpus();
-+	mutex_lock(&pinst->lock);
+-	memset(fl6, 0, sizeof(struct flowi6));
++	memset(&_fl, 0, sizeof(_fl));
+ 	fl6->daddr = daddr->v6.sin6_addr;
+ 	fl6->fl6_dport = daddr->v6.sin6_port;
+ 	fl6->flowi6_proto = IPPROTO_SCTP;
+@@ -269,8 +270,11 @@ static void sctp_v6_get_dst(struct sctp_
+ 	rcu_read_unlock();
  
- 	switch (cpumask_type) {
- 	case PADATA_CPU_PARALLEL:
-@@ -659,8 +659,8 @@ int padata_set_cpumask(struct padata_ins
- 	err =  __padata_set_cpumasks(pinst, parallel_mask, serial_mask);
+ 	dst = ip6_dst_lookup_flow(sk, fl6, final_p);
+-	if (!asoc || saddr)
++	if (!asoc || saddr) {
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
+ 		goto out;
++	}
  
- out:
--	put_online_cpus();
- 	mutex_unlock(&pinst->lock);
-+	put_online_cpus();
+ 	bp = &asoc->base.bind_addr;
+ 	scope = sctp_scope(daddr);
+@@ -293,6 +297,8 @@ static void sctp_v6_get_dst(struct sctp_
+ 			if ((laddr->a.sa.sa_family == AF_INET6) &&
+ 			    (sctp_v6_cmp_addr(&dst_saddr, &laddr->a))) {
+ 				rcu_read_unlock();
++				t->dst = dst;
++				memcpy(fl, &_fl, sizeof(_fl));
+ 				goto out;
+ 			}
+ 		}
+@@ -331,6 +337,8 @@ static void sctp_v6_get_dst(struct sctp_
+ 			if (!IS_ERR_OR_NULL(dst))
+ 				dst_release(dst);
+ 			dst = bdst;
++			t->dst = dst;
++			memcpy(fl, &_fl, sizeof(_fl));
+ 			break;
+ 		}
  
- 	return err;
+@@ -344,6 +352,8 @@ static void sctp_v6_get_dst(struct sctp_
+ 			dst_release(dst);
+ 		dst = bdst;
+ 		matchlen = bmatchlen;
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
+ 	}
+ 	rcu_read_unlock();
+ 
+@@ -352,14 +362,12 @@ out:
+ 		struct rt6_info *rt;
+ 
+ 		rt = (struct rt6_info *)dst;
+-		t->dst = dst;
+ 		t->dst_cookie = rt6_get_cookie(rt);
+ 		pr_debug("rt6_dst:%pI6/%d rt6_src:%pI6\n",
+ 			 &rt->rt6i_dst.addr, rt->rt6i_dst.plen,
+-			 &fl6->saddr);
++			 &fl->u.ip6.saddr);
+ 	} else {
+ 		t->dst = NULL;
+-
+ 		pr_debug("no route\n");
+ 	}
  }
+--- a/net/sctp/protocol.c
++++ b/net/sctp/protocol.c
+@@ -430,14 +430,15 @@ static void sctp_v4_get_dst(struct sctp_
+ {
+ 	struct sctp_association *asoc = t->asoc;
+ 	struct rtable *rt;
+-	struct flowi4 *fl4 = &fl->u.ip4;
++	struct flowi _fl;
++	struct flowi4 *fl4 = &_fl.u.ip4;
+ 	struct sctp_bind_addr *bp;
+ 	struct sctp_sockaddr_entry *laddr;
+ 	struct dst_entry *dst = NULL;
+ 	union sctp_addr *daddr = &t->ipaddr;
+ 	union sctp_addr dst_saddr;
+ 
+-	memset(fl4, 0x0, sizeof(struct flowi4));
++	memset(&_fl, 0x0, sizeof(_fl));
+ 	fl4->daddr  = daddr->v4.sin_addr.s_addr;
+ 	fl4->fl4_dport = daddr->v4.sin_port;
+ 	fl4->flowi4_proto = IPPROTO_SCTP;
+@@ -455,8 +456,11 @@ static void sctp_v4_get_dst(struct sctp_
+ 		 &fl4->saddr);
+ 
+ 	rt = ip_route_output_key(sock_net(sk), fl4);
+-	if (!IS_ERR(rt))
++	if (!IS_ERR(rt)) {
+ 		dst = &rt->dst;
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
++	}
+ 
+ 	/* If there is no association or if a source address is passed, no
+ 	 * more validation is required.
+@@ -519,27 +523,33 @@ static void sctp_v4_get_dst(struct sctp_
+ 		odev = __ip_dev_find(sock_net(sk), laddr->a.v4.sin_addr.s_addr,
+ 				     false);
+ 		if (!odev || odev->ifindex != fl4->flowi4_oif) {
+-			if (!dst)
++			if (!dst) {
+ 				dst = &rt->dst;
+-			else
++				t->dst = dst;
++				memcpy(fl, &_fl, sizeof(_fl));
++			} else {
+ 				dst_release(&rt->dst);
++			}
+ 			continue;
+ 		}
+ 
+ 		dst_release(dst);
+ 		dst = &rt->dst;
++		t->dst = dst;
++		memcpy(fl, &_fl, sizeof(_fl));
+ 		break;
+ 	}
+ 
+ out_unlock:
+ 	rcu_read_unlock();
+ out:
+-	t->dst = dst;
+-	if (dst)
++	if (dst) {
+ 		pr_debug("rt_dst:%pI4, rt_src:%pI4\n",
+-			 &fl4->daddr, &fl4->saddr);
+-	else
++			 &fl->u.ip4.daddr, &fl->u.ip4.saddr);
++	} else {
++		t->dst = NULL;
+ 		pr_debug("no route\n");
++	}
+ }
+ 
+ /* For v4, the source address is cached in the route entry(dst). So no need
 
 
