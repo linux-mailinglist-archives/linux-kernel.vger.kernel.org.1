@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6DD1A5769
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A05D1A582B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730330AbgDKXWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 19:22:38 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:54748 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728949AbgDKXWE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:22:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kQkDW0nh6/SfP4OPM8VhrnzpbvEqadvFvedQUkcdAZw=; b=MwXAfGgw1DYwAIj42DDJRJxpi8
-        lOeqwfBQzpC1GCKO/kqjSXId1O3AJyZk7Y/nf88jms+vOJlN1O7nC6M/pdX+dxi+/7M8FLPVZMm7p
-        qAQbgsYA7fpbytNPN2ux44QglDhxGrjUFCfZ5sUgsjDBR8oE8Hm9uF/FmBz6kyu5YgCnlpO89jcUL
-        naLX3uHkXsfIU/XXqwcue1vzkxpqh2Ec3+SvIIrJpH2MWQLQk66ayvCm+0UPGzM1fXTrCP7yWJI6Q
-        bGp04EULVg5zXezCjDZcPtDyzi8ROk8i3Xzum6JLZ6pme6aZMSi5yuMB1JwTsgdu+jq4K6WfejwOr
-        C/lJQNdQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jNPRt-0005TR-7h; Sat, 11 Apr 2020 23:22:05 +0000
-Date:   Sat, 11 Apr 2020 16:22:05 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] Rename page_offset() to page_pos()
-Message-ID: <20200411232205.GJ21484@bombadil.infradead.org>
-References: <20200411203220.GG21484@bombadil.infradead.org>
- <CAHk-=wgCAGVwAVTuaoJu4bF99JEG66iN7_vzih=Z33GMmOTC_Q@mail.gmail.com>
- <20200411214818.GH21484@bombadil.infradead.org>
- <CAHk-=wj71d1ExE-_W0hy87r3d=2URMwx0f6oh+bvdfve6G71ew@mail.gmail.com>
- <20200411220603.GI21484@bombadil.infradead.org>
- <CAHk-=whFfcUEMq5C9Xy=c=sJrT-+3uOE2bAwEQo9MUdbhP2X3Q@mail.gmail.com>
+        id S1730594AbgDKX2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 19:28:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728821AbgDKX21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 19:28:27 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9276720787;
+        Sat, 11 Apr 2020 23:28:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586647706;
+        bh=VJVMs1ty4aklYcknxXSyG4+HJQ94axF1UzhRTrFSIW4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BNMeb6gh6oZRFmHIvDKwnglHNapVVyGPi3dcxR0Swnshxs6nODmwJMN02UuRHnVZL
+         EJtXrd+uaB/rM7humfEMsBIefc4aJGdzX6/BdcdUNLsWJqxWWdn2T0IK/Ke379Xlp4
+         7xouNBvYkutFYjAFMx/MbiTswjpVdlyUlo2Z+e2U=
+Date:   Sat, 11 Apr 2020 16:28:24 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     netdev@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] net: phy: marvell: Fix pause frame negotiation
+Message-ID: <20200411162824.59791b84@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200411165125.1091-1-clemens.gruber@pqgruber.com>
+References: <20200411165125.1091-1-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whFfcUEMq5C9Xy=c=sJrT-+3uOE2bAwEQo9MUdbhP2X3Q@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 03:09:35PM -0700, Linus Torvalds wrote:
-> On Sat, Apr 11, 2020 at 3:06 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > But we _have_ an offset_in_page() and it doesn't take a struct page
-> > argument.
+On Sat, 11 Apr 2020 18:51:25 +0200 Clemens Gruber wrote:
+> The negotiation of flow control / pause frame modes was broken since
+> commit fcf1f59afc67 ("net: phy: marvell: rearrange to use
+> genphy_read_lpa()") moved the setting of phydev->duplex below the
+> phy_resolve_aneg_pause call. Due to a check of DUPLEX_FULL in that
+> function, phydev->pause was no longer set.
 > 
-> .. it doesn't take a struct page argument because a struct page always
-> has one compile-time fixed size.
+> Fix it by moving the parsing of the status variable before the blocks
+> dealing with the pause frames.
 > 
-> The only reason you seem to want to get the new interface is because
-> you want to change that fact.
+> As the Marvell 88E1510 datasheet does not specify the timing between the
+> link status and the "Speed and Duplex Resolved" bit, we have to force
+> the link down as long as the resolved bit is not set, to avoid reporting
+> link up before we even have valid Speed/Duplex.
 > 
-> So yes, you'd have to change the _existing_ offset_in_page() to take
-> that extra "which page" argument.
+> Tested with a Marvell 88E1510 (RGMII to Copper/1000Base-T)
 > 
-> That's not confusing.
+> Fixes: fcf1f59afc67 ("net: phy: marvell: rearrange to use genphy_read_lpa()")
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+> Changes since v1:
+> - Force link to 0 if resolved bit is not set as suggested by Russell King
+> 
+>  drivers/net/phy/marvell.c | 46 ++++++++++++++++++++-------------------
+>  1 file changed, 24 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
+> index 9a8badafea8a..561df5e33f65 100644
+> --- a/drivers/net/phy/marvell.c
+> +++ b/drivers/net/phy/marvell.c
+> @@ -1278,6 +1278,30 @@ static int marvell_read_status_page_an(struct phy_device *phydev,
+>  	int lpa;
+>  	int err;
+>  
+> +	if (!(status & MII_M1011_PHY_STATUS_RESOLVED)) {
+> +		phydev->link = 0;
+> +		return 0;
+> +	}
 
-Unfortunately there isn't always a struct page around.  For example:
-
-int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
-                struct list_head *uf, bool downgrade)
-{
-        unsigned long end;
-        struct vm_area_struct *vma, *prev, *last;
-
-        if ((offset_in_page(start)) || start > TASK_SIZE || len > TASK_SIZE-start)
-                return -EINVAL;
-
-where we don't care _which_ page, we just want to know the offset relative
-to the architecturally defined page size.  In this specific case, it
-should probably be changed to is_page_aligned(start).
-
-There are trickier ones like on powerpc:
-
-unsigned long vmalloc_to_phys(void *va)
-{
-        unsigned long pfn = vmalloc_to_pfn(va);
-
-        BUG_ON(!pfn);
-        return __pa(pfn_to_kaddr(pfn)) + offset_in_page(va);
-}
-
-where there actually _is_ a struct page, but it will need to be found.
-Maybe we can pass in NULL to indicate to use the base page size.  Or
-rename all current callers to offset_in_base_page() before adding a
-struct page pointer to offset_in_page().  Tedious, but doable.
+This doesn't address my comment, so was I wrong? What I was trying to
+say is that the function updates the established link info as well as
+autoneg advertising info. If the link is not resolved we can't read the
+link info, but we should still report the advertising modes. No?
