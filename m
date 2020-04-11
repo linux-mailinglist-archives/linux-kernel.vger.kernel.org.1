@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DE61A5010
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634A91A5073
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727876AbgDKMOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47290 "EHLO mail.kernel.org"
+        id S1726910AbgDKMSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726824AbgDKMOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:02 -0400
+        id S1728514AbgDKMR4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:17:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6597C2166E;
-        Sat, 11 Apr 2020 12:14:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9EBB220673;
+        Sat, 11 Apr 2020 12:17:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607242;
-        bh=iGsE+U9DnD/v9N3Au/gt5Nukp6ciVSTUMneMAPVjTu0=;
+        s=default; t=1586607477;
+        bh=sqva4+Ggkq97LE42151fQKh3k+UYPryCd/RE+EzPuJM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O+2MpP16fX5cSiNz8UmH2vlfhCeVurkiW3rGG+yEn3OBagNUVPwJNQtBBAh20ow03
-         fdBc1aDkTZ5xX2FxiaxdYk0ne5/svgc4przJTSY9fGmWSssEpwkta+u42jumBxfxsC
-         w934MKbIunfv/LEJzuxcISxEVDqczE7P+TQ3PRCQ=
+        b=dHDkDHi1c045JTTAR3RTab3WytgMfBCxqqVifF1fUz8opuFRkQWz/gB7rUihYQqx4
+         OYuRx8x4dwbKLHy2COE6f29YyUJym2mzd03VwzEWWE84yJ8vCU6ZHx7ot/2L5Yqg++
+         pW5mMY6Yf1ZxkE8tmOM5vg7CLzZBUgIo2Iuxtxww=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+732528bae351682f1f27@syzkaller.appspotmail.com,
-        Qiujun Huang <hqjagain@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Subject: [PATCH 4.14 31/38] fbcon: fix null-ptr-deref in fbcon_switch
+        stable@vger.kernel.org, Chuanhong Guo <gch981213@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 06/41] net: dsa: mt7530: fix null pointer dereferencing in port5 setup
 Date:   Sat, 11 Apr 2020 14:09:15 +0200
-Message-Id: <20200411115440.870083532@linuxfoundation.org>
+Message-Id: <20200411115504.545233797@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-References: <20200411115437.795556138@linuxfoundation.org>
+In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
+References: <20200411115504.124035693@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,58 +46,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+From: Chuanhong Guo <gch981213@gmail.com>
 
-commit b139f8b00db4a8ea75a4174346eafa48041aa489 upstream.
+[ Upstream commit 0452800f6db4ed0a42ffb15867c0acfd68829f6a ]
 
-Set logo_shown to FBCON_LOGO_CANSHOW when the vc was deallocated.
+The 2nd gmac of mediatek soc ethernet may not be connected to a PHY
+and a phy-handle isn't always available.
+Unfortunately, mt7530 dsa driver assumes that the 2nd gmac is always
+connected to switch port 5 and setup mt7530 according to phy address
+of 2nd gmac node, causing null pointer dereferencing when phy-handle
+isn't defined in dts.
+This commit fix this setup code by checking return value of
+of_parse_phandle before using it.
 
-syzkaller report: https://lkml.org/lkml/2020/3/27/403
-general protection fault, probably for non-canonical address
-0xdffffc000000006c: 0000 [#1] SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000360-0x0000000000000367]
-RIP: 0010:fbcon_switch+0x28f/0x1740
-drivers/video/fbdev/core/fbcon.c:2260
-
-Call Trace:
-redraw_screen+0x2a8/0x770 drivers/tty/vt/vt.c:1008
-vc_do_resize+0xfe7/0x1360 drivers/tty/vt/vt.c:1295
-fbcon_init+0x1221/0x1ab0 drivers/video/fbdev/core/fbcon.c:1219
-visual_init+0x305/0x5c0 drivers/tty/vt/vt.c:1062
-do_bind_con_driver+0x536/0x890 drivers/tty/vt/vt.c:3542
-do_take_over_console+0x453/0x5b0 drivers/tty/vt/vt.c:4122
-do_fbcon_takeover+0x10b/0x210 drivers/video/fbdev/core/fbcon.c:588
-fbcon_fb_registered+0x26b/0x340 drivers/video/fbdev/core/fbcon.c:3259
-do_register_framebuffer drivers/video/fbdev/core/fbmem.c:1664 [inline]
-register_framebuffer+0x56e/0x980 drivers/video/fbdev/core/fbmem.c:1832
-dlfb_usb_probe.cold+0x1743/0x1ba3 drivers/video/fbdev/udlfb.c:1735
-usb_probe_interface+0x310/0x800 drivers/usb/core/driver.c:374
-
-accessing vc_cons[logo_shown].d->vc_top causes the bug.
-
-Reported-by: syzbot+732528bae351682f1f27@syzkaller.appspotmail.com
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200329085647.25133-1-hqjagain@gmail.com
+Fixes: 38f790a80560 ("net: dsa: mt7530: Add support for port 5")
+Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
+Reviewed-by: Vivien Didelot <vivien.didelot@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Tested-by: René van Dorst <opensource@vdorst.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/video/fbdev/core/fbcon.c |    3 +++
+ drivers/net/dsa/mt7530.c |    3 +++
  1 file changed, 3 insertions(+)
 
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1221,6 +1221,9 @@ finished:
- 	if (!con_is_bound(&fb_con))
- 		fbcon_exit();
+--- a/drivers/net/dsa/mt7530.c
++++ b/drivers/net/dsa/mt7530.c
+@@ -1353,6 +1353,9 @@ mt7530_setup(struct dsa_switch *ds)
+ 				continue;
  
-+	if (vc->vc_num == logo_shown)
-+		logo_shown = FBCON_LOGO_CANSHOW;
+ 			phy_node = of_parse_phandle(mac_np, "phy-handle", 0);
++			if (!phy_node)
++				continue;
 +
- 	return;
- }
- 
+ 			if (phy_node->parent == priv->dev->of_node->parent) {
+ 				interface = of_get_phy_mode(mac_np);
+ 				id = of_mdio_parse_addr(ds->dev, phy_node);
 
 
