@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 273EF1A503E
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A287B1A505A
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728195AbgDKMPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:15:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        id S1728344AbgDKMRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:17:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727238AbgDKMPt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:15:49 -0400
+        id S1728160AbgDKMQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:16:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD74120644;
-        Sat, 11 Apr 2020 12:15:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 57B4B20644;
+        Sat, 11 Apr 2020 12:16:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607349;
-        bh=4+TtjYr36O5SbE+Sa5S/2ejVsVC84drhWt7x+7rn2KI=;
+        s=default; t=1586607416;
+        bh=EmfY0OTG7JZDE8KriKilKrAHF7WbXWBGs5/1e/lrTow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CtZTyPkfFdYNZHRFcz/9NKVg99l9pmVFAx5JKqmUCJoq1hjXeDJ9jO0QLqBKg1VzP
-         5J812BTt6Ho31L/m4qGz+bKewpkCsgnL3IpaRfVdNSqBlSe5bc0iMfoUvCdWe791Ws
-         NjLsIjWlwDp6SXhQ+7t5dshSIN5NOjFsA4cA/T94=
+        b=EknbZN8V4zl/2D7qudtICkum+53KytjJkKejc23m1PbcK9fTPbAGL6W7Qq+SX/46V
+         0G6DYkQjMexd9t14sfTsYmO9Lerv+0cldQffvxnaZE9x14v2hbDU08eLYxFFCzZSvu
+         QPjIrrc8ISzE1VNuWC9rIqXIPT6qDQnnO1r3fpKI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Shailabh Nagar <nagar@watson.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 37/54] tools/accounting/getdelays.c: fix netlink attribute length
-Date:   Sat, 11 Apr 2020 14:09:19 +0200
-Message-Id: <20200411115512.207596545@linuxfoundation.org>
+        stable@vger.kernel.org, Richard Palethorpe <rpalethorpe@suse.com>,
+        Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com,
+        mkl@pengutronix.de, davem@davemloft.net
+Subject: [PATCH 5.4 11/41] slcan: Dont transmit uninitialized stack data in padding
+Date:   Sat, 11 Apr 2020 14:09:20 +0200
+Message-Id: <20200411115504.898395559@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
-References: <20200411115508.284500414@linuxfoundation.org>
+In-Reply-To: <20200411115504.124035693@linuxfoundation.org>
+References: <20200411115504.124035693@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,45 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ahern <dsahern@kernel.org>
+From: Richard Palethorpe <rpalethorpe@suse.com>
 
-commit 4054ab64e29bb05b3dfe758fff3c38a74ba753bb upstream.
+[ Upstream commit b9258a2cece4ec1f020715fe3554bc2e360f6264 ]
 
-A recent change to the netlink code: 6e237d099fac ("netlink: Relax attr
-validation for fixed length types") logs a warning when programs send
-messages with invalid attributes (e.g., wrong length for a u32).  Yafang
-reported this error message for tools/accounting/getdelays.c.
+struct can_frame contains some padding which is not explicitly zeroed in
+slc_bump. This uninitialized data will then be transmitted if the stack
+initialization hardening feature is not enabled (CONFIG_INIT_STACK_ALL).
 
-send_cmd() is wrongly adding 1 to the attribute length.  As noted in
-include/uapi/linux/netlink.h nla_len should be NLA_HDRLEN + payload
-length, so drop the +1.
+This commit just zeroes the whole struct including the padding.
 
-Fixes: 9e06d3f9f6b1 ("per task delay accounting taskstats interface: documentation fix")
-Reported-by: Yafang Shao <laoar.shao@gmail.com>
-Signed-off-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Shailabh Nagar <nagar@watson.ibm.com>
-Cc: <stable@vger.kernel.org>
-Link: http://lkml.kernel.org/r/20200327173111.63922-1-dsahern@kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Fixes: a1044e36e457 ("can: add slcan driver for serial/USB-serial CAN adapters")
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Cc: linux-can@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: security@kernel.org
+Cc: wg@grandegger.com
+Cc: mkl@pengutronix.de
+Cc: davem@davemloft.net
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- tools/accounting/getdelays.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/slcan.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/tools/accounting/getdelays.c
-+++ b/tools/accounting/getdelays.c
-@@ -136,7 +136,7 @@ static int send_cmd(int sd, __u16 nlmsg_
- 	msg.g.version = 0x1;
- 	na = (struct nlattr *) GENLMSG_DATA(&msg);
- 	na->nla_type = nla_type;
--	na->nla_len = nla_len + 1 + NLA_HDRLEN;
-+	na->nla_len = nla_len + NLA_HDRLEN;
- 	memcpy(NLA_DATA(na), nla_data, nla_len);
- 	msg.n.nlmsg_len += NLMSG_ALIGN(na->nla_len);
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -148,7 +148,7 @@ static void slc_bump(struct slcan *sl)
+ 	u32 tmpid;
+ 	char *cmd = sl->rbuff;
  
+-	cf.can_id = 0;
++	memset(&cf, 0, sizeof(cf));
+ 
+ 	switch (*cmd) {
+ 	case 'r':
+@@ -187,8 +187,6 @@ static void slc_bump(struct slcan *sl)
+ 	else
+ 		return;
+ 
+-	*(u64 *) (&cf.data) = 0; /* clear payload */
+-
+ 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
+ 	if (!(cf.can_id & CAN_RTR_FLAG)) {
+ 		for (i = 0; i < cf.can_dlc; i++) {
 
 
