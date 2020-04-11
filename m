@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D271A5012
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BEFC1A5179
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgDKMOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47320 "EHLO mail.kernel.org"
+        id S1728176AbgDKMPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:15:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727867AbgDKMOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:06 -0400
+        id S1728121AbgDKMPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:15:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBE1F216FD;
-        Sat, 11 Apr 2020 12:14:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 81C87214D8;
+        Sat, 11 Apr 2020 12:15:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607245;
-        bh=wGXvAvLnfJ6NWQrIy69NGR+MFT+eCM2KgZp7EqI1qx4=;
+        s=default; t=1586607342;
+        bh=C36/UM24Ib+reJOzn3QAWtdjKAstIRHb1g+mYTY2dwk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=so9GzSVB9oZ2tZxTR15tgG8WTwznQfDkd5Yt3+fZzWT2uiV/x9BW3nibVIKNRDohO
-         lOvZLF4KA3/WN7ZU1DpzRFGak9v7KKlQbQoMkEn9WjDcfJheU2ZFbg15xJNubtebWd
-         FRfXM7/xYCGtiErH/Z8svEfPmIxqsIYXgO7YooN0=
+        b=UVV+mIrcOxj+/QIYK01u8JbVF35HLVf/FARkkuLZImWsWExgTmumm02bmUIw5WMec
+         w5lRySby5+dTfVi+nZrZmNtY8tigG3whDh+w/RQSbV4fSA2k3KXeXPb20mHlz6JAKG
+         LK7BLOZWN0yOlD6cd/4ZG0SAywg8hCTBXzTmWUck=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vishal Verma <vishal.l.verma@intel.com>,
-        Grzegorz Burzynski <grzegorz.burzynski@intel.com>,
-        Jeff Moyer <jmoyer@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 4.14 32/38] acpi/nfit: Fix bus command validation
-Date:   Sat, 11 Apr 2020 14:09:16 +0200
-Message-Id: <20200411115440.974333990@linuxfoundation.org>
+        stable@vger.kernel.org, "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.19 35/54] random: always use batched entropy for get_random_u{32,64}
+Date:   Sat, 11 Apr 2020 14:09:17 +0200
+Message-Id: <20200411115511.985292690@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-References: <20200411115437.795556138@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,110 +43,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Jason A. Donenfeld <Jason@zx2c4.com>
 
-commit ebe9f6f19d80d8978d16078dff3d5bd93ad8d102 upstream.
+commit 69efea712f5b0489e67d07565aad5c94e09a3e52 upstream.
 
-Commit 11189c1089da "acpi/nfit: Fix command-supported detection" broke
-ND_CMD_CALL for bus-level commands. The "func = cmd" assumption is only
-valid for:
+It turns out that RDRAND is pretty slow. Comparing these two
+constructions:
 
-    ND_CMD_ARS_CAP
-    ND_CMD_ARS_START
-    ND_CMD_ARS_STATUS
-    ND_CMD_CLEAR_ERROR
+  for (i = 0; i < CHACHA_BLOCK_SIZE; i += sizeof(ret))
+    arch_get_random_long(&ret);
 
-The function number otherwise needs to be pulled from the command
-payload for:
+and
 
-    NFIT_CMD_TRANSLATE_SPA
-    NFIT_CMD_ARS_INJECT_SET
-    NFIT_CMD_ARS_INJECT_CLEAR
-    NFIT_CMD_ARS_INJECT_GET
+  long buf[CHACHA_BLOCK_SIZE / sizeof(long)];
+  extract_crng((u8 *)buf);
 
-Update cmd_to_func() for the bus case and call it in the common path.
+it amortizes out to 352 cycles per long for the top one and 107 cycles
+per long for the bottom one, on Coffee Lake Refresh, Intel Core i9-9880H.
 
-Fixes: 11189c1089da ("acpi/nfit: Fix command-supported detection")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Vishal Verma <vishal.l.verma@intel.com>
-Reported-by: Grzegorz Burzynski <grzegorz.burzynski@intel.com>
-Tested-by: Jeff Moyer <jmoyer@redhat.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+And importantly, the top one has the drawback of not benefiting from the
+real rng, whereas the bottom one has all the nice benefits of using our
+own chacha rng. As get_random_u{32,64} gets used in more places (perhaps
+beyond what it was originally intended for when it was introduced as
+get_random_{int,long} back in the md5 monstrosity era), it seems like it
+might be a good thing to strengthen its posture a tiny bit. Doing this
+should only be stronger and not any weaker because that pool is already
+initialized with a bunch of rdrand data (when available). This way, we
+get the benefits of the hardware rng as well as our own rng.
+
+Another benefit of this is that we no longer hit pitfalls of the recent
+stream of AMD bugs in RDRAND. One often used code pattern for various
+things is:
+
+  do {
+  	val = get_random_u32();
+  } while (hash_table_contains_key(val));
+
+That recent AMD bug rendered that pattern useless, whereas we're really
+very certain that chacha20 output will give pretty distributed numbers,
+no matter what.
+
+So, this simplification seems better both from a security perspective
+and from a performance perspective.
+
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20200221201037.30231-1-Jason@zx2c4.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-
 ---
- drivers/acpi/nfit/core.c |   24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ drivers/char/random.c |   20 ++++----------------
+ 1 file changed, 4 insertions(+), 16 deletions(-)
 
---- a/drivers/acpi/nfit/core.c
-+++ b/drivers/acpi/nfit/core.c
-@@ -214,7 +214,7 @@ static int cmd_to_func(struct nfit_mem *
- 	if (call_pkg) {
- 		int i;
+--- a/drivers/char/random.c
++++ b/drivers/char/random.c
+@@ -2280,11 +2280,11 @@ struct batched_entropy {
  
--		if (nfit_mem->family != call_pkg->nd_family)
-+		if (nfit_mem && nfit_mem->family != call_pkg->nd_family)
- 			return -ENOTTY;
+ /*
+  * Get a random word for internal kernel use only. The quality of the random
+- * number is either as good as RDRAND or as good as /dev/urandom, with the
+- * goal of being quite fast and not depleting entropy. In order to ensure
++ * number is good as /dev/urandom, but there is no backtrack protection, with
++ * the goal of being quite fast and not depleting entropy. In order to ensure
+  * that the randomness provided by this function is okay, the function
+- * wait_for_random_bytes() should be called and return 0 at least once
+- * at any point prior.
++ * wait_for_random_bytes() should be called and return 0 at least once at any
++ * point prior.
+  */
+ static DEFINE_PER_CPU(struct batched_entropy, batched_entropy_u64) = {
+ 	.batch_lock	= __SPIN_LOCK_UNLOCKED(batched_entropy_u64.lock),
+@@ -2297,15 +2297,6 @@ u64 get_random_u64(void)
+ 	struct batched_entropy *batch;
+ 	static void *previous;
  
- 		for (i = 0; i < ARRAY_SIZE(call_pkg->nd_reserved2); i++)
-@@ -223,6 +223,10 @@ static int cmd_to_func(struct nfit_mem *
- 		return call_pkg->nd_command;
- 	}
+-#if BITS_PER_LONG == 64
+-	if (arch_get_random_long((unsigned long *)&ret))
+-		return ret;
+-#else
+-	if (arch_get_random_long((unsigned long *)&ret) &&
+-	    arch_get_random_long((unsigned long *)&ret + 1))
+-	    return ret;
+-#endif
+-
+ 	warn_unseeded_randomness(&previous);
  
-+	/* In the !call_pkg case, bus commands == bus functions */
-+	if (!nfit_mem)
-+		return cmd;
-+
- 	/* Linux ND commands == NVDIMM_FAMILY_INTEL function numbers */
- 	if (nfit_mem->family == NVDIMM_FAMILY_INTEL)
- 		return cmd;
-@@ -238,6 +242,7 @@ int acpi_nfit_ctl(struct nvdimm_bus_desc
- 		unsigned int cmd, void *buf, unsigned int buf_len, int *cmd_rc)
- {
- 	struct acpi_nfit_desc *acpi_desc = to_acpi_nfit_desc(nd_desc);
-+	struct nfit_mem *nfit_mem = nvdimm_provider_data(nvdimm);
- 	union acpi_object in_obj, in_buf, *out_obj;
- 	const struct nd_cmd_desc *desc = NULL;
- 	struct device *dev = acpi_desc->dev;
-@@ -252,18 +257,18 @@ int acpi_nfit_ctl(struct nvdimm_bus_desc
- 	if (cmd_rc)
- 		*cmd_rc = -EINVAL;
+ 	batch = raw_cpu_ptr(&batched_entropy_u64);
+@@ -2330,9 +2321,6 @@ u32 get_random_u32(void)
+ 	struct batched_entropy *batch;
+ 	static void *previous;
  
-+	if (cmd == ND_CMD_CALL)
-+		call_pkg = buf;
-+	func = cmd_to_func(nfit_mem, cmd, call_pkg);
-+	if (func < 0)
-+		return func;
-+
- 	if (nvdimm) {
--		struct nfit_mem *nfit_mem = nvdimm_provider_data(nvdimm);
- 		struct acpi_device *adev = nfit_mem->adev;
+-	if (arch_get_random_int(&ret))
+-		return ret;
+-
+ 	warn_unseeded_randomness(&previous);
  
- 		if (!adev)
- 			return -ENOTTY;
- 
--		if (cmd == ND_CMD_CALL)
--			call_pkg = buf;
--		func = cmd_to_func(nfit_mem, cmd, call_pkg);
--		if (func < 0)
--			return func;
- 		dimm_name = nvdimm_name(nvdimm);
- 		cmd_name = nvdimm_cmd_name(cmd);
- 		cmd_mask = nvdimm_cmd_mask(nvdimm);
-@@ -274,12 +279,9 @@ int acpi_nfit_ctl(struct nvdimm_bus_desc
- 	} else {
- 		struct acpi_device *adev = to_acpi_dev(acpi_desc);
- 
--		func = cmd;
- 		cmd_name = nvdimm_bus_cmd_name(cmd);
- 		cmd_mask = nd_desc->cmd_mask;
--		dsm_mask = cmd_mask;
--		if (cmd == ND_CMD_CALL)
--			dsm_mask = nd_desc->bus_dsm_mask;
-+		dsm_mask = nd_desc->bus_dsm_mask;
- 		desc = nd_cmd_bus_desc(cmd);
- 		guid = to_nfit_uuid(NFIT_DEV_BUS);
- 		handle = adev->handle;
+ 	batch = raw_cpu_ptr(&batched_entropy_u32);
 
 
