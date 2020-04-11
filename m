@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78D361A4FDE
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403021A516D
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbgDKMM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:12:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45032 "EHLO mail.kernel.org"
+        id S1728532AbgDKMZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:25:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727219AbgDKMM0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:12:26 -0400
+        id S1727788AbgDKMQj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:16:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E77D20787;
-        Sat, 11 Apr 2020 12:12:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7085420692;
+        Sat, 11 Apr 2020 12:16:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607146;
-        bh=bhyXZUyrEZprzBnlfxEr/cNsc9HK41U73bqTX+ZLs08=;
+        s=default; t=1586607399;
+        bh=WLjTGfAMIh/dxbygmZhyz+9HAKYXuj2WS8AFJSWjkck=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bmt9TSHEc7aWHcFGn8wDsW27MAELjI1R3m3MrkatCTZG0w4T8x60i0VqSbcqDgG74
-         5IiWpLgXra3LIqaX3ZOKY/afkmTRGMr3E4jyNp3zdmeFCcMET0q/pm7n2do0I7OP7V
-         kutl1LgZRGLtuP8VN3CJf+8CkM8aml0xh8ww4bTY=
+        b=j/CJL9xZErB6US2fSGzXl3U67ugv05eOfR7tEQdCtWN8Jfc9hqI0pGcMptWrveV1v
+         IdKp5S/EBiiMt4YUTGN2yVhgoXybluv+MoUX+mBX7Z5QZkh9+NsZrVYvNxvRCwkkLs
+         AQufKc4ERsCgdQ7dWVqPhUVZnfLIHbE9hZyJDfTw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+98704a51af8e3d9425a9@syzkaller.appspotmail.com,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Luis Henriques <lhenriques@suse.com>
-Subject: [PATCH 4.9 25/32] ceph: canonicalize server path in place
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>
+Subject: [PATCH 4.19 22/54] rxrpc: Fix sendmsg(MSG_WAITALL) handling
 Date:   Sat, 11 Apr 2020 14:09:04 +0200
-Message-Id: <20200411115422.109122991@linuxfoundation.org>
+Message-Id: <20200411115510.720343132@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
-References: <20200411115418.455500023@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,219 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Dryomov <idryomov@gmail.com>
+From: David Howells <dhowells@redhat.com>
 
-commit b27a939e8376a3f1ed09b9c33ef44d20f18ec3d0 upstream.
+commit 498b577660f08cef5d9e78e0ed6dcd4c0939e98c upstream.
 
-syzbot reported that 4fbc0c711b24 ("ceph: remove the extra slashes in
-the server path") had caused a regression where an allocation could be
-done under a spinlock -- compare_mount_options() is called by sget_fc()
-with sb_lock held.
+Fix the handling of sendmsg() with MSG_WAITALL for userspace to round the
+timeout for when a signal occurs up to at least two jiffies as a 1 jiffy
+timeout may end up being effectively 0 if jiffies wraps at the wrong time.
 
-We don't really need the supplied server path, so canonicalize it
-in place and compare it directly.  To make this work, the leading
-slash is kept around and the logic in ceph_real_mount() to skip it
-is restored.  CEPH_MSG_CLIENT_SESSION now reports the same (i.e.
-canonicalized) path, with the leading slash of course.
-
-Fixes: 4fbc0c711b24 ("ceph: remove the extra slashes in the server path")
-Reported-by: syzbot+98704a51af8e3d9425a9@syzkaller.appspotmail.com
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Luis Henriques <lhenriques@suse.com>
+Fixes: bc5e3a546d55 ("rxrpc: Use MSG_WAITALL to tell sendmsg() to temporarily ignore signals")
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/ceph/super.c |  118 ++++++++++++--------------------------------------------
- fs/ceph/super.h |    2 
- 2 files changed, 28 insertions(+), 92 deletions(-)
 
---- a/fs/ceph/super.c
-+++ b/fs/ceph/super.c
-@@ -177,6 +177,26 @@ static match_table_t fsopt_tokens = {
- 	{-1, NULL}
- };
+---
+ net/rxrpc/sendmsg.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/net/rxrpc/sendmsg.c
++++ b/net/rxrpc/sendmsg.c
+@@ -62,8 +62,8 @@ static int rxrpc_wait_for_tx_window_noni
  
-+/*
-+ * Remove adjacent slashes and then the trailing slash, unless it is
-+ * the only remaining character.
-+ *
-+ * E.g. "//dir1////dir2///" --> "/dir1/dir2", "///" --> "/".
-+ */
-+static void canonicalize_path(char *path)
-+{
-+	int i, j = 0;
-+
-+	for (i = 0; path[i] != '\0'; i++) {
-+		if (path[i] != '/' || j < 1 || path[j - 1] != '/')
-+			path[j++] = path[i];
-+	}
-+
-+	if (j > 1 && path[j - 1] == '/')
-+		j--;
-+	path[j] = '\0';
-+}
-+
- static int parse_fsopt_token(char *c, void *private)
- {
- 	struct ceph_mount_options *fsopt = private;
-@@ -320,73 +340,6 @@ static int strcmp_null(const char *s1, c
- 	return strcmp(s1, s2);
- }
+ 	rtt = READ_ONCE(call->peer->rtt);
+ 	rtt2 = nsecs_to_jiffies64(rtt) * 2;
+-	if (rtt2 < 1)
+-		rtt2 = 1;
++	if (rtt2 < 2)
++		rtt2 = 2;
  
--/**
-- * path_remove_extra_slash - Remove the extra slashes in the server path
-- * @server_path: the server path and could be NULL
-- *
-- * Return NULL if the path is NULL or only consists of "/", or a string
-- * without any extra slashes including the leading slash(es) and the
-- * slash(es) at the end of the server path, such as:
-- * "//dir1////dir2///" --> "dir1/dir2"
-- */
--static char *path_remove_extra_slash(const char *server_path)
--{
--	const char *path = server_path;
--	const char *cur, *end;
--	char *buf, *p;
--	int len;
--
--	/* if the server path is omitted */
--	if (!path)
--		return NULL;
--
--	/* remove all the leading slashes */
--	while (*path == '/')
--		path++;
--
--	/* if the server path only consists of slashes */
--	if (*path == '\0')
--		return NULL;
--
--	len = strlen(path);
--
--	buf = kmalloc(len + 1, GFP_KERNEL);
--	if (!buf)
--		return ERR_PTR(-ENOMEM);
--
--	end = path + len;
--	p = buf;
--	do {
--		cur = strchr(path, '/');
--		if (!cur)
--			cur = end;
--
--		len = cur - path;
--
--		/* including one '/' */
--		if (cur != end)
--			len += 1;
--
--		memcpy(p, path, len);
--		p += len;
--
--		while (cur <= end && *cur == '/')
--			cur++;
--		path = cur;
--	} while (path < end);
--
--	*p = '\0';
--
--	/*
--	 * remove the last slash if there has and just to make sure that
--	 * we will get something like "dir1/dir2"
--	 */
--	if (*(--p) == '/')
--		*p = '\0';
--
--	return buf;
--}
--
- static int compare_mount_options(struct ceph_mount_options *new_fsopt,
- 				 struct ceph_options *new_opt,
- 				 struct ceph_fs_client *fsc)
-@@ -394,7 +347,6 @@ static int compare_mount_options(struct
- 	struct ceph_mount_options *fsopt1 = new_fsopt;
- 	struct ceph_mount_options *fsopt2 = fsc->mount_options;
- 	int ofs = offsetof(struct ceph_mount_options, snapdir_name);
--	char *p1, *p2;
- 	int ret;
- 
- 	ret = memcmp(fsopt1, fsopt2, ofs);
-@@ -404,21 +356,12 @@ static int compare_mount_options(struct
- 	ret = strcmp_null(fsopt1->snapdir_name, fsopt2->snapdir_name);
- 	if (ret)
- 		return ret;
-+
- 	ret = strcmp_null(fsopt1->mds_namespace, fsopt2->mds_namespace);
- 	if (ret)
- 		return ret;
- 
--	p1 = path_remove_extra_slash(fsopt1->server_path);
--	if (IS_ERR(p1))
--		return PTR_ERR(p1);
--	p2 = path_remove_extra_slash(fsopt2->server_path);
--	if (IS_ERR(p2)) {
--		kfree(p1);
--		return PTR_ERR(p2);
--	}
--	ret = strcmp_null(p1, p2);
--	kfree(p1);
--	kfree(p2);
-+	ret = strcmp_null(fsopt1->server_path, fsopt2->server_path);
- 	if (ret)
- 		return ret;
- 
-@@ -482,6 +425,8 @@ static int parse_mount_options(struct ce
- 			err = -ENOMEM;
- 			goto out;
- 		}
-+
-+		canonicalize_path(fsopt->server_path);
- 	} else {
- 		dev_name_end = dev_name + strlen(dev_name);
- 	}
-@@ -903,21 +848,13 @@ static struct dentry *ceph_real_mount(st
- 	mutex_lock(&fsc->client->mount_mutex);
- 
- 	if (!fsc->sb->s_root) {
--		const char *path, *p;
-+		const char *path = fsc->mount_options->server_path ?
-+				     fsc->mount_options->server_path + 1 : "";
-+
- 		err = __ceph_open_session(fsc->client, started);
- 		if (err < 0)
- 			goto out;
- 
--		p = path_remove_extra_slash(fsc->mount_options->server_path);
--		if (IS_ERR(p)) {
--			err = PTR_ERR(p);
--			goto out;
--		}
--		/* if the server path is omitted or just consists of '/' */
--		if (!p)
--			path = "";
--		else
--			path = p;
- 		dout("mount opening path '%s'\n", path);
- 
- 		err = ceph_fs_debugfs_init(fsc);
-@@ -925,7 +862,6 @@ static struct dentry *ceph_real_mount(st
- 			goto out;
- 
- 		root = open_root_dentry(fsc, path, started);
--		kfree(p);
- 		if (IS_ERR(root)) {
- 			err = PTR_ERR(root);
- 			goto out;
---- a/fs/ceph/super.h
-+++ b/fs/ceph/super.h
-@@ -70,7 +70,7 @@ struct ceph_mount_options {
- 
- 	char *snapdir_name;   /* default ".snap" */
- 	char *mds_namespace;  /* default NULL */
--	char *server_path;    /* default  "/" */
-+	char *server_path;    /* default NULL (means "/") */
- };
- 
- struct ceph_fs_client {
+ 	timeout = rtt2;
+ 	tx_start = READ_ONCE(call->tx_hard_ack);
 
 
