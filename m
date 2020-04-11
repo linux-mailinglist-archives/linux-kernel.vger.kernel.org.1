@@ -2,65 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D86BB1A5394
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 21:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C88F1A5CDB
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 06:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbgDKToq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 15:44:46 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57761 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726167AbgDKTop (ORCPT
+        id S1725911AbgDLEue convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Apr 2020 00:50:34 -0400
+Received: from pmg.slemankab.go.id ([103.71.191.178]:45204 "EHLO
+        pmg.slemankab.go.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgDLEue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 15:44:45 -0400
-Received: from callcc.thunk.org (pool-72-93-95-157.bstnma.fios.verizon.net [72.93.95.157])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 03BJhp5B029461
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 11 Apr 2020 15:43:52 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 9189742013D; Sat, 11 Apr 2020 15:43:51 -0400 (EDT)
-Date:   Sat, 11 Apr 2020 15:43:51 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Dave Young <dyoung@redhat.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kexec@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        Gary Lin <glin@suse.com>, Jiri Slaby <jslaby@suse.cz>,
-        Sergey Shatunov <me@prok.pw>, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [GIT PULL 0/9] EFI fixes for v5.7-rc
-Message-ID: <20200411194351.GQ45598@mit.edu>
-References: <20200409130434.6736-1-ardb@kernel.org>
- <20200409190109.GB45598@mit.edu>
- <CAMj1kXGiA3PAybR7r9tatL7WV5iU7B1OQxQok3d-JmRnhX1TnA@mail.gmail.com>
- <20200409201632.GC45598@mit.edu>
- <CAMj1kXFqKGSqm_y+ht4mmmu10TrhSyiTG8V3PxRYGodpZ=xNFQ@mail.gmail.com>
- <20200409235716.GF45598@mit.edu>
- <CAMj1kXH4VtNcJugpG_UR10ewGiOApTiw=C3FsuyAQQyg67Q8Aw@mail.gmail.com>
- <20200410135442.GA6772@dhcp-128-65.nay.redhat.com>
+        Sun, 12 Apr 2020 00:50:34 -0400
+Received: from pmg.slemankab.go.id (localhost.localdomain [127.0.0.1])
+        by pmg.slemankab.go.id (Proxmox) with ESMTP id 2AFA83407FE;
+        Sun, 12 Apr 2020 11:07:05 +0700 (WIB)
+Received: from mailserver.slemankab.go.id (mail.slemankab.go.id [192.168.90.92])
+        by pmg.slemankab.go.id (Proxmox) with ESMTPS id 6A1D5341097;
+        Sun, 12 Apr 2020 11:06:20 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id C26D63454A2;
+        Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id bx25gMa0wG-O; Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mailserver.slemankab.go.id (Postfix) with ESMTP id 7BF20345235;
+        Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at mailserver.slemankab.go.id
+Received: from mailserver.slemankab.go.id ([127.0.0.1])
+        by localhost (mailserver.slemankab.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id cr3lYZ-xjLUS; Sun, 12 Apr 2020 02:48:40 +0700 (WIB)
+Received: from [100.87.73.9] (unknown [223.225.44.235])
+        by mailserver.slemankab.go.id (Postfix) with ESMTPSA id EC20B3454A1;
+        Sun, 12 Apr 2020 02:48:32 +0700 (WIB)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200410135442.GA6772@dhcp-128-65.nay.redhat.com>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: ATTENZIONE
+To:     Recipients <administrator@ancol.com>
+From:   Sistemi amministratore <administrator@ancol.com>
+Date:   Sun, 12 Apr 2020 01:18:19 +0530
+Reply-To: mailsss@mail2world.com
+Message-Id: <20200411194832.EC20B3454A1@mailserver.slemankab.go.id>
+X-SPAM-LEVEL: Spam detection results:  0
+        ALL_TRUSTED                -1 Passed through trusted hosts only via SMTP
+        AWL                    -0.143 Adjusted score from AWL reputation of From: address
+        BAYES_05                 -0.5 Bayes spam probability is 1 to 5%
+        FREEMAIL_FORGED_REPLYTO  2.095 Freemail in Reply-To, but not From
+        KAM_DMARC_STATUS         0.01 Test Rule for DKIM or SPF Failure with Strict Alignment
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 09:54:42PM +0800, Dave Young wrote:
-> 
-> The runtime cleanup looks a very good one, but I also missed that,
-> userspace kexec-tools will break with the efi setup_data changes. But
-> kexec_file_load will just work with the cleanup applied.
+ATTENZIONE;
 
-Hmmm, I wonder if there could be some kselftest or kunit tests that
-would make it easier to pick up these sorts of regressions earlier?
+La cassetta postale ha superato il limite di archiviazione, che è 5 GB come definiti dall'amministratore, che è attualmente in esecuzione su 10.9GB, non si può essere in grado di inviare o ricevere nuovi messaggi fino a ri-convalidare la tua mailbox. Per rinnovare la vostra casella di posta, inviare le seguenti informazioni qui di seguito:
 
-      	      	     	     	      	    - Ted
+nome:
+Nome utente:
+Password:
+Conferma Password:
+E-mail:
+telefono:
+
+Se non si riesce a rinnovare la vostra casella di posta, la vostra caselladi posta sarà disabilitato!
+
+Ci dispiace per l'inconvenienza.
+Codice di verifica: en:0085362LK.00000.2020
+Mail Technical Support ©2020
+
+grazie
+Sistemi amministratore 
+
