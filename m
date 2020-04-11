@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 486861A5104
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99571A5122
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728524AbgDKMW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56226 "EHLO mail.kernel.org"
+        id S1728748AbgDKMXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:23:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727091AbgDKMUW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:20:22 -0400
+        id S1728702AbgDKMS5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:18:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8052320692;
-        Sat, 11 Apr 2020 12:20:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B273F20644;
+        Sat, 11 Apr 2020 12:18:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607622;
-        bh=/mVB4dxxa6Op14ZLRfZd4X9RoKfUPxmOA1g5JRq+tog=;
+        s=default; t=1586607537;
+        bh=gEa7ZsGQJJwe1Lbv3f9ZrcIEEZjZ69oRQJWfv5TR+Lc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qwk4XPeFRq/UkDVYOgsY2mMwGtwiJoJOTsFYtyEsHqY/SnwstM8990UsoKVZ+ePvQ
-         Sz759Lg8eYHij041WZSDnjvIfZfAY8Il9oXpqEdJV+7YWuwMfX0CqiRLlPYAJjwIis
-         n+8nngQ/+pPSfgULbuHKeOt6V2g99eqwSQxeorTA=
+        b=UJJVsV7JRUE2Hwm7+P3Mw6bQbYE42uw5+QoxpT3YohBc+JkpsKYfqGEE7q7ZENNzH
+         842wt0i/6t7YgHyOAidKskRhqR03K7nZKoxYNE9DJ7KmxTxKgZj21vdae60mh6njWA
+         jd2xHgHzBFKUHUljdWZkuCTr4Yp87tzwlfoQUv24=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Herat Ramani <herat@chelsio.com>,
-        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.6 01/38] cxgb4: fix MPS index overwrite when setting MAC address
-Date:   Sat, 11 Apr 2020 14:09:38 +0200
-Message-Id: <20200411115459.436059123@linuxfoundation.org>
+        stable@vger.kernel.org, Yury Norov <yury.norov@gmail.com>,
+        Allison Randal <allison@lohutok.net>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.5 19/44] uapi: rename ext2_swab() to swab() and share globally in swab.h
+Date:   Sat, 11 Apr 2020 14:09:39 +0200
+Message-Id: <20200411115458.679771748@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115459.324496182@linuxfoundation.org>
-References: <20200411115459.324496182@linuxfoundation.org>
+In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
+References: <20200411115456.934174282@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,42 +48,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Herat Ramani <herat@chelsio.com>
+From: Yury Norov <yury.norov@gmail.com>
 
-[ Upstream commit 41aa8561ca3fc5748391f08cc5f3e561923da52c ]
+commit d5767057c9a76a29f073dad66b7fa12a90e8c748 upstream.
 
-cxgb4_update_mac_filt() earlier requests firmware to add a new MAC
-address into MPS TCAM. The MPS TCAM index returned by firmware is
-stored in pi->xact_addr_filt. However, the saved MPS TCAM index gets
-overwritten again with the return value of cxgb4_update_mac_filt(),
-which is wrong.
+ext2_swab() is defined locally in lib/find_bit.c However it is not
+specific to ext2, neither to bitmaps.
 
-When trying to update to another MAC address later, the wrong MPS TCAM
-index is sent to firmware, which causes firmware to return error,
-because it's not the same MPS TCAM index that firmware had sent
-earlier to driver.
+There are many potential users of it, so rename it to just swab() and
+move to include/uapi/linux/swab.h
 
-So, fix by removing the wrong overwrite being done after call to
-cxgb4_update_mac_filt().
+ABI guarantees that size of unsigned long corresponds to BITS_PER_LONG,
+therefore drop unneeded cast.
 
-Fixes: 3f8cfd0d95e6 ("cxgb4/cxgb4vf: Program hash region for {t4/t4vf}_change_mac()")
-Signed-off-by: Herat Ramani <herat@chelsio.com>
-Signed-off-by: Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: http://lkml.kernel.org/r/20200103202846.21616-1-yury.norov@gmail.com
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+Cc: Allison Randal <allison@lohutok.net>
+Cc: Joe Perches <joe@perches.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: William Breathitt Gray <vilhelm.gray@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c |    1 -
- 1 file changed, 1 deletion(-)
 
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c
-@@ -3138,7 +3138,6 @@ static int cxgb_set_mac_addr(struct net_
- 		return ret;
+---
+ include/linux/swab.h      |    1 +
+ include/uapi/linux/swab.h |   10 ++++++++++
+ lib/find_bit.c            |   16 ++--------------
+ 3 files changed, 13 insertions(+), 14 deletions(-)
+
+--- a/include/linux/swab.h
++++ b/include/linux/swab.h
+@@ -7,6 +7,7 @@
+ # define swab16 __swab16
+ # define swab32 __swab32
+ # define swab64 __swab64
++# define swab __swab
+ # define swahw32 __swahw32
+ # define swahb32 __swahb32
+ # define swab16p __swab16p
+--- a/include/uapi/linux/swab.h
++++ b/include/uapi/linux/swab.h
+@@ -4,6 +4,7 @@
  
- 	memcpy(dev->dev_addr, addr->sa_data, dev->addr_len);
--	pi->xact_addr_filt = ret;
- 	return 0;
+ #include <linux/types.h>
+ #include <linux/compiler.h>
++#include <asm/bitsperlong.h>
+ #include <asm/swab.h>
+ 
+ /*
+@@ -132,6 +133,15 @@ static inline __attribute_const__ __u32
+ 	__fswab64(x))
+ #endif
+ 
++static __always_inline unsigned long __swab(const unsigned long y)
++{
++#if BITS_PER_LONG == 64
++	return __swab64(y);
++#else /* BITS_PER_LONG == 32 */
++	return __swab32(y);
++#endif
++}
++
+ /**
+  * __swahw32 - return a word-swapped 32-bit value
+  * @x: value to wordswap
+--- a/lib/find_bit.c
++++ b/lib/find_bit.c
+@@ -149,18 +149,6 @@ EXPORT_SYMBOL(find_last_bit);
+ 
+ #ifdef __BIG_ENDIAN
+ 
+-/* include/linux/byteorder does not support "unsigned long" type */
+-static inline unsigned long ext2_swab(const unsigned long y)
+-{
+-#if BITS_PER_LONG == 64
+-	return (unsigned long) __swab64((u64) y);
+-#elif BITS_PER_LONG == 32
+-	return (unsigned long) __swab32((u32) y);
+-#else
+-#error BITS_PER_LONG not defined
+-#endif
+-}
+-
+ #if !defined(find_next_bit_le) || !defined(find_next_zero_bit_le)
+ static inline unsigned long _find_next_bit_le(const unsigned long *addr1,
+ 		const unsigned long *addr2, unsigned long nbits,
+@@ -177,7 +165,7 @@ static inline unsigned long _find_next_b
+ 	tmp ^= invert;
+ 
+ 	/* Handle 1st word. */
+-	tmp &= ext2_swab(BITMAP_FIRST_WORD_MASK(start));
++	tmp &= swab(BITMAP_FIRST_WORD_MASK(start));
+ 	start = round_down(start, BITS_PER_LONG);
+ 
+ 	while (!tmp) {
+@@ -191,7 +179,7 @@ static inline unsigned long _find_next_b
+ 		tmp ^= invert;
+ 	}
+ 
+-	return min(start + __ffs(ext2_swab(tmp)), nbits);
++	return min(start + __ffs(swab(tmp)), nbits);
  }
+ #endif
  
 
 
