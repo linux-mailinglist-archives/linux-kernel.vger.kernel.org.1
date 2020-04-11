@@ -2,115 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CDA1A4E74
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:13:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 889191A4E77
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbgDKHMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 03:12:23 -0400
-Received: from ciao.gmane.io ([159.69.161.202]:39736 "EHLO ciao.gmane.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725905AbgDKHMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 03:12:22 -0400
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <glk-linux-kernel-4@m.gmane-mx.org>)
-        id 1jNAJR-0009WP-Dk
-        for linux-kernel@vger.kernel.org; Sat, 11 Apr 2020 09:12:21 +0200
-X-Injected-Via-Gmane: http://gmane.org/
-To:     linux-kernel@vger.kernel.org
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: Re: [PATCH] checkpatch: check for missing \n at the end of logging
- message
-Date:   Sat, 11 Apr 2020 09:12:16 +0200
-Message-ID: <26b49cf5-453b-9a81-b045-fdc99c42fcf8@wanadoo.fr>
-References: <20200407204908.10420-1-christophe.jaillet@wanadoo.fr>
- <8617a6b94c0644bce1fd4ca77309d67a612e6300.camel@perches.com>
- <6e52383e-100d-b016-32c2-6fb54938b6fe@wanadoo.fr>
- <c9fd4bc75812fed4799c2fb87b452b809a7e9a7a.camel@perches.com>
- <db2730700ab3eb7008413a1e7bba94ca7c49a031.camel@perches.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-In-Reply-To: <db2730700ab3eb7008413a1e7bba94ca7c49a031.camel@perches.com>
-Content-Language: en-US
-Cc:     kernel-janitors@vger.kernel.org
+        id S1726190AbgDKHOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 03:14:19 -0400
+Received: from mail-il1-f171.google.com ([209.85.166.171]:36408 "EHLO
+        mail-il1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726162AbgDKHOS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 03:14:18 -0400
+Received: by mail-il1-f171.google.com with SMTP id p13so3811083ilp.3
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 00:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=juliacomputing-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Fa9OKlPgIZsak2scOJMVIYdvh3KbHmtnaJtoH8ECQUs=;
+        b=kXVfw/kF5eBaxzDv2RdRg4ZFnoDgQgTMISSlNx2qkoB9vyyQ9HYivF0/+IsZqQVx/i
+         pCRxwTu6cQLwcwoS5sD56tZV+q47fcJTgnhr8rH5Iyw03kBTPikug6pcRbRy7ztC05pc
+         G/VIGgCTNaRx6JGhShZ8sGcHHJs0dogWNHIEQKA8dYwjd3IITvZ5XOyYxLlQriZA/1ey
+         Lq5p7IaFjCwtGNNEuk+gxR7S+abV0tBSwj3VKkPT7ykjVW5B4mzSIpxfBWxpqNqIjhIw
+         wpS5UExRpyto6Xmj+OT47kJcxinSBkwNxlz8+QY8OfUlKrN/obcumn+D19H5yD4/fwya
+         PtYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Fa9OKlPgIZsak2scOJMVIYdvh3KbHmtnaJtoH8ECQUs=;
+        b=c3gDhipcEiVack44papN1C7puH1MepMRcPYyMS+rbmHRyhKpZ3Y70JW8cDhkk0wFtr
+         QZ45I/oR3RSDQT/t1BM2XkSYAkpu0ry587AkJvvwikeqtLVJzxKC5EjJeswc9lkET40d
+         NlU91Vvs2BCT5lq6drmGHrmtmaTW/q4W9xzr7VWqlSZW/9Esw0uEtgi95fDrGYIZUg92
+         lWZBAeZYqCbiKKmK5Ej+NlQW3CwmZA6EBx9M0mid/Km0QLesb+z59AEzqXWuedy/qJoq
+         Eni5xdaIaqRrKHTjl5VIGdvpzdIjlnvCY9k5UQJ5OuJkeYh9dAj9gm4gUfplgl2Fwquw
+         BBNQ==
+X-Gm-Message-State: AGi0PubzmeDD3Oq74sEGcoc+9zh8/GZLGyQUYSJhNG7gBHqRocKri1WU
+        f1xXWHf3m+e1ptZTQDXikEALq/QEUMA+0gA6d0umeGbFMVzxjg==
+X-Google-Smtp-Source: APiQypJ8bBwlpWCEOAaP7pQmusztAtregiRXSth7aeBUBAsSi6NeAou1FzNCIAbLTy4fkplT61U92IwOnEzRYHaEo2M=
+X-Received: by 2002:a92:250e:: with SMTP id l14mr8544680ill.201.1586589256485;
+ Sat, 11 Apr 2020 00:14:16 -0700 (PDT)
+MIME-Version: 1.0
+From:   Keno Fischer <keno@juliacomputing.com>
+Date:   Sat, 11 Apr 2020 03:13:40 -0400
+Message-ID: <CABV8kRzzs5ktyJTrs+m1uY3QY1v+XS5NrOUB+H4CuhfRS_vvdw@mail.gmail.com>
+Subject: ptrace and SIGNAL_UNKILLABLE
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Jamie Iles <jamie.iles@oracle.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 10/04/2020 à 21:53, Joe Perches a écrit :
-> On Fri, 2020-04-10 at 12:46 -0700, Joe Perches wrote:
->> On Fri, 2020-04-10 at 19:35 +0200, Christophe JAILLET wrote:
->>> Le 08/04/2020 à 04:14, Joe Perches a écrit :
->>>> This works rather better:
->>>> Perhaps you could test?
->> []
->>> I'm looking at some modification done in the last month that could have
->>> been spotted by the above script.
->>>
->>>       ./scripts/checkpatch.pl -f drivers/usb/phy/phy-jz4770.c
->>>
->>> correctly spots the 3 first cases, but the 3 last (line 202, 210 and
->>> 217) are missed.
->>> I don't understand why.
->> It has to do with checkpatch's single statement parsing.
->>
->> This case:
->>
->> 	if (foo)
->> 		dev_warn(...);
->>
->> is parsed as a single statement but
->>
->> 	if (foo) {
->> 		dev_warn(...);
->> 	};
->>
->> is parsed as multiple statements so for the
->> second case
->>
->> 		dev_warn(...);
->>
->> is analyzed as a separate statement.
->>
->> The regex match for this missing newline test expects
->> that each printk is a separate statement so the first
->> case doesn't match.
->>
->> Clearly the regex can be improved here.
-> So on top of the original patch:
-> ---
->   scripts/checkpatch.pl | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index f00a6c8..54eaa7 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -5675,8 +5675,8 @@ sub process {
->   
->   # check for possible missing newlines at the end of common logging functions
->   		if (defined($stat) &&
-> -		    $stat =~ /^\+\s*($logFunctions)\s*\((?:\s*$FuncArg\s*,\s*){0,3}\s*$String/ &&
-> -		    $1 !~ /_cont$/ && $1 =~ /^(?:pr|dev|netdev|netif|wiphy)_/) {
-> +		    $stat =~ /^\+\s*(?:if\s*$balanced_parens\s*)?($logFunctions)\s*\((?:\s*$FuncArg\s*,\s*){0,3}\s*$String/ &&
-> +		    $2 !~ /_cont$/ && $2 =~ /^(?:pr|dev|netdev|netif|wiphy)_/) {
->   			my $cnt = statement_rawlines($stat);
->   			my $extracted_string = "";
->   			for (my $i = 0; $i < $cnt; $i++) {
+Hi folks,
 
-Hi,
+I was seeing some unexpected hangs when ptracing
+a buggy container init, that I didn't see when just running
+it regularly. Some investigation pointed me to commit
 
-	./scripts/checkpatch.pl -f drivers/soc/kendryte/k210-sysctl.c
+[eb61b5911] signal: don't remove SIGNAL_UNKILLABLE for traced tasks
 
-is missing line 189, even if it looks like a construction correctly spotted in some other files:
-	if (foo) {
-		dev_err(...);
-		...
-	};
+In particular, consider a container init that just segfaults:
 
-CJ
+segv.c:
+int main(void) {
+    return *((int*)-1);
+}
 
+$ gcc -o segv segv.c
+unshare -p -U -r -f ./segv
+Segmentation fault
+$ strace -f unshare -p -U -r -f ./segv
+[hangs]
 
+The reason this hangs is that above commit prevents ptrace'd
+tasks from having their SIGNAL_UNKILLABLE flag removed,
+so when the SIGSEGV gets generated, that flag does not get
+unset. When strace re-injects the SIGSEGV, it simply gets
+ignored, the process re-enters user space and the whole
+ordeal starts over.
+
+I considered sending a patch that updates that code-path
+to only preserve SIGNAL_UNKILLABLE for SIGTRAP
+signals, but I figured that may yet be insufficient as well.
+
+I think a proper solution would probably refactor the signal
+code to allow the call side to decide whether or not to clear
+this flag (such that ptrace could elect not to, but otherwise
+the process is undisturbed), but I'm not familiar enough with
+the code to attempt a patch for that.
+
+If this is what's supposed to happen, or it is infeasible to
+correct it, it would be useful to have a ptrace option that
+can be set, to nevertheless make the injected signal final.
+At the moment, I can't think of a good way to inject such a
+signal.
+
+Thanks,
+Keno
