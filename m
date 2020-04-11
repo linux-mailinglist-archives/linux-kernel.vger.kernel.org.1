@@ -2,137 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7E31A4EA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44281A4EB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 09:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726440AbgDKHor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 03:44:47 -0400
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:24843 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725905AbgDKHoi (ORCPT
+        id S1726178AbgDKHqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 03:46:40 -0400
+Received: from mail-pg1-f202.google.com ([209.85.215.202]:56962 "EHLO
+        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725927AbgDKHqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 03:44:38 -0400
-X-UUID: 8929f2f7a1e948c88716c9e1cffa2c02-20200411
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=GY6kkVqQdoO6pb5HRhb6+TbQErdD2FZ5VWwTRBcTUlY=;
-        b=mL+jfjiho+ZbId8z+3DJ3Hy0SXHhfmso+RWzUGhHubKEFfdozV5tC7TTuE1TyStWiVKtynSjloaOKFdOLPB1BpYn9R8dYFqrgQqdVeH1R+U/buV/4Iye3HDfucW9+CCkSKXGFPXASsQ/RnTv8JKfz9X708EXkgbvBLOLES8PK84=;
-X-UUID: 8929f2f7a1e948c88716c9e1cffa2c02-20200411
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLS)
-        with ESMTP id 346581309; Sat, 11 Apr 2020 15:44:28 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 11 Apr
- 2020 15:44:29 +0800
-Received: from mszsdclx1018.gcn.mediatek.inc (10.16.6.18) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Sat, 11 Apr 2020 15:44:27 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
+        Sat, 11 Apr 2020 03:46:38 -0400
+Received: by mail-pg1-f202.google.com with SMTP id 71so1684230pgg.23
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 00:46:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=yOxiCW0isZEaHIJFpWjXqFOzFywpzj8dLyjA3GIE96w=;
+        b=aaUnopzdDTRJV+cjRXrIpEEGuXlkFqsEBC8cR23USCiau8Nx9kYoggAXZxwYNXRFZv
+         soNcYuf5pbWjQFhoZJWlYIw+1DMfkZ0j9fRM4u8WeU0Khijpo/2c8CPHuL5dPT2ElWqd
+         LImnKf6Nlcl+q+lPfxbr2+udjvdOU9Ua4cEz88yLKsm0T7AlE/miI8VWg8K43bHAdezr
+         dss5Dh1MuOjAX416k9Dsm8FicOuEJNW/Gx59ON1JwZJ/W+398xm6V4muxU3H1nRUrBVy
+         WFmZtOd2r92yhrDM3RGPBCDrDQLKgQKG3kvgS9TAgn7q3jPebA0t444+nanKU/vMKcGX
+         6/2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=yOxiCW0isZEaHIJFpWjXqFOzFywpzj8dLyjA3GIE96w=;
+        b=BOhnb9N48lbrIsPvBoMH66VjCa+4gq2ukNdeUmSuubHCZr/nul558pY724XdzXernu
+         aktnVkm+sbI48BJotlp532VTzud6zxqhLM+nApAKS66tWKh63WmX2NejciignA20MItx
+         P/WoUH0kGHe8cEB/qMoM/uyvfig9EAXXyfeuejuSkNMGOnZHNV98L7ja94UHod3mWSFZ
+         c81JzLeppqnptI+fmAHmBkrzGsk13V4PfyHUr5olx14LQoqPGeit8mF0HVajG/8lL9De
+         mdZB30Mpz11fLo2Is8oqaoKVb48oUc64W7VhX2Sd7USXC/ICoVEJKa1v2ZO/OOhB9BfM
+         V3PQ==
+X-Gm-Message-State: AGi0PuavnvKykWPaLxh9qC0Mzx4J9UZQDixXc8CL/fnag4j+kDzkF32d
+        S48l5SaXvy4EDTrOl5pUAxFEOh/f244l
+X-Google-Smtp-Source: APiQypJol+oijd/s0c00Dcu9CWbs7k7Dh80PRNHTzkcuFOCj9s0+Vqc24YvdVt9By36epwGCnhusOQHLkG3z
+X-Received: by 2002:a17:90a:c708:: with SMTP id o8mr8506314pjt.190.1586591195829;
+ Sat, 11 Apr 2020 00:46:35 -0700 (PDT)
+Date:   Sat, 11 Apr 2020 00:46:27 -0700
+Message-Id: <20200411074631.9486-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.0.110.g2183baf09c-goog
+Subject: [PATCH v8 0/4] perf tools: add support for libpfm4
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
-        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v6 4/4] drm/mediatek: config mipitx impedance with calibration data
-Date:   Sat, 11 Apr 2020 15:44:08 +0800
-Message-ID: <20200411074408.38090-5-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200411074408.38090-1-jitao.shi@mediatek.com>
-References: <20200411074408.38090-1-jitao.shi@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: AFB922CAAE16CBA39DB068B9B2C548EFCE1B0533F1A41542C3961D0FDA54E06B2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Igor Lubashev <ilubashe@akamai.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jiwei Sun <jiwei.sun@windriver.com>,
+        yuzhoujian <yuzhoujian@didichuxing.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UmVhZCBjYWxpYnJhdGlvbiBkYXRhIGZyb20gbnZtZW0sIGFuZCBjb25maWcgbWlwaXR4IGltcGVk
-YW5jZSB3aXRoDQpjYWxpYnJhdGlvbiBkYXRhIHRvIG1ha2Ugc3VyZSB0aGVpciBpbXBlZGFuY2Ug
-YXJlIDEwMG9obS4NCg0KU2lnbmVkLW9mZi1ieTogSml0YW8gU2hpIDxqaXRhby5zaGlAbWVkaWF0
-ZWsuY29tPg0KLS0tDQogZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4LmMgICAg
-ICAgIHwgNDAgKysrKysrKysrKysrKysrKysrKw0KIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
-dGtfbWlwaV90eC5oICAgICAgICB8ICAzICsrDQogZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
-a19tdDgxODNfbWlwaV90eC5jIHwgMjEgKysrKysrKysrKw0KIDMgZmlsZXMgY2hhbmdlZCwgNjQg
-aW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
-a19taXBpX3R4LmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX21pcGlfdHguYw0KaW5k
-ZXggZTMwMWFmNjQ4MDllLi44Y2VlMjU5MWU3MjggMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vbWVkaWF0ZWsvbXRrX21pcGlfdHguYw0KKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVr
-L210a19taXBpX3R4LmMNCkBAIC04OCw2ICs4OCw0NCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHBo
-eV9vcHMgbXRrX21pcGlfdHhfb3BzID0gew0KIAkub3duZXIgPSBUSElTX01PRFVMRSwNCiB9Ow0K
-IA0KK3N0YXRpYyB2b2lkIG10a19taXBpX3R4X2dldF9jYWxpYnJhdGlvbl9kYXRhbChzdHJ1Y3Qg
-bXRrX21pcGlfdHggKm1pcGlfdHgpDQorew0KKwlzdHJ1Y3QgbnZtZW1fY2VsbCAqY2VsbDsNCisJ
-c2l6ZV90IGxlbjsNCisJdTMyICpidWY7DQorDQorCWNlbGwgPSBudm1lbV9jZWxsX2dldChtaXBp
-X3R4LT5kZXYsICJjYWxpYnJhdGlvbi1kYXRhIik7DQorCWlmIChJU19FUlIoY2VsbCkpIHsNCisJ
-CWRldl9pbmZvKG1pcGlfdHgtPmRldiwgImNhbid0IGdldCBudm1lbV9jZWxsX2dldCwgaWdub3Jl
-IGl0XG4iKTsNCisJCXJldHVybjsNCisJfQ0KKwlidWYgPSAodTMyICopbnZtZW1fY2VsbF9yZWFk
-KGNlbGwsICZsZW4pOw0KKwludm1lbV9jZWxsX3B1dChjZWxsKTsNCisNCisJaWYgKElTX0VSUihi
-dWYpKSB7DQorCQlkZXZfaW5mbyhtaXBpX3R4LT5kZXYsICJjYW4ndCBnZXQgZGF0YSwgaWdub3Jl
-IGl0XG4iKTsNCisJCXJldHVybjsNCisJfQ0KKw0KKwlpZiAobGVuIDwgMyAqIHNpemVvZih1MzIp
-KSB7DQorCQlkZXZfaW5mbyhtaXBpX3R4LT5kZXYsICJpbnZhbGlkIGNhbGlicmF0aW9uIGRhdGFc
-biIpOw0KKwkJa2ZyZWUoYnVmKTsNCisJCXJldHVybjsNCisJfQ0KKw0KKwltaXBpX3R4LT5ydF9j
-b2RlWzBdID0gKChidWZbMF0gPj4gNiAmIDB4MWYpIDw8IDUpIHwNCisJCQkgICAgICAgKGJ1Zlsw
-XSA+PiAxMSAmIDB4MWYpOw0KKwltaXBpX3R4LT5ydF9jb2RlWzFdID0gKChidWZbMV0gPj4gMjcg
-JiAweDFmKSA8PCA1KSB8DQorCQkJICAgICAgIChidWZbMF0gPj4gMSAmIDB4MWYpOw0KKwltaXBp
-X3R4LT5ydF9jb2RlWzJdID0gKChidWZbMV0gPj4gMTcgJiAweDFmKSA8PCA1KSB8DQorCQkJICAg
-ICAgIChidWZbMV0gPj4gMjIgJiAweDFmKTsNCisJbWlwaV90eC0+cnRfY29kZVszXSA9ICgoYnVm
-WzFdID4+IDcgJiAweDFmKSA8PCA1KSB8DQorCQkJICAgICAgIChidWZbMV0gPj4gMTIgJiAweDFm
-KTsNCisJbWlwaV90eC0+cnRfY29kZVs0XSA9ICgoYnVmWzJdID4+IDI3ICYgMHgxZikgPDwgNSkg
-fA0KKwkJCSAgICAgICAoYnVmWzFdID4+IDIgJiAweDFmKTsNCisJa2ZyZWUoYnVmKTsNCit9DQor
-DQogc3RhdGljIGludCBtdGtfbWlwaV90eF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpw
-ZGV2KQ0KIHsNCiAJc3RydWN0IGRldmljZSAqZGV2ID0gJnBkZXYtPmRldjsNCkBAIC0xNzQsNiAr
-MjEyLDggQEAgc3RhdGljIGludCBtdGtfbWlwaV90eF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2
-aWNlICpwZGV2KQ0KIA0KIAltaXBpX3R4LT5kZXYgPSBkZXY7DQogDQorCW10a19taXBpX3R4X2dl
-dF9jYWxpYnJhdGlvbl9kYXRhbChtaXBpX3R4KTsNCisNCiAJcmV0dXJuIG9mX2Nsa19hZGRfcHJv
-dmlkZXIoZGV2LT5vZl9ub2RlLCBvZl9jbGtfc3JjX3NpbXBsZV9nZXQsDQogCQkJCSAgIG1pcGlf
-dHgtPnBsbCk7DQogfQ0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
-bWlwaV90eC5oIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19taXBpX3R4LmgNCmluZGV4
-IGVlYTQ0MzI3ZmU5Zi4uYzc2ZjA3YzNmZGViIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L21lZGlhdGVrL210a19taXBpX3R4LmgNCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
-dGtfbWlwaV90eC5oDQpAQCAtMTIsOSArMTIsMTEgQEANCiAjaW5jbHVkZSA8bGludXgvZGVsYXku
-aD4NCiAjaW5jbHVkZSA8bGludXgvaW8uaD4NCiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQor
-I2luY2x1ZGUgPGxpbnV4L252bWVtLWNvbnN1bWVyLmg+DQogI2luY2x1ZGUgPGxpbnV4L29mX2Rl
-dmljZS5oPg0KICNpbmNsdWRlIDxsaW51eC9wbGF0Zm9ybV9kZXZpY2UuaD4NCiAjaW5jbHVkZSA8
-bGludXgvcGh5L3BoeS5oPg0KKyNpbmNsdWRlIDxsaW51eC9zbGFiLmg+DQogDQogc3RydWN0IG10
-a19taXBpdHhfZGF0YSB7DQogCWNvbnN0IHUzMiBtcHBsbF9wcmVzZXJ2ZTsNCkBAIC0yOCw2ICsz
-MCw3IEBAIHN0cnVjdCBtdGtfbWlwaV90eCB7DQogCXZvaWQgX19pb21lbSAqcmVnczsNCiAJdTMy
-IGRhdGFfcmF0ZTsNCiAJdTMyIG1pcGl0eF9kcml2ZTsNCisJdTMyIHJ0X2NvZGVbNV07DQogCWNv
-bnN0IHN0cnVjdCBtdGtfbWlwaXR4X2RhdGEgKmRyaXZlcl9kYXRhOw0KIAlzdHJ1Y3QgY2xrX2h3
-IHBsbF9odzsNCiAJc3RydWN0IGNsayAqcGxsOw0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
-bS9tZWRpYXRlay9tdGtfbXQ4MTgzX21pcGlfdHguYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRl
-ay9tdGtfbXQ4MTgzX21pcGlfdHguYw0KaW5kZXggZTRjYzk2Nzc1MGNiLi45ZjNlNTVhZWViYjIg
-MTAwNjQ0DQotLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX210ODE4M19taXBpX3R4
-LmMNCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfbXQ4MTgzX21pcGlfdHguYw0K
-QEAgLTI4LDYgKzI4LDcgQEANCiAjZGVmaW5lIE1JUElUWF9QTExfQ09ONAkJMHgwMDNjDQogI2Rl
-ZmluZSBSR19EU0lfUExMX0lCSUFTCQkoMyA8PCAxMCkNCiANCisjZGVmaW5lIE1JUElUWF9EMlBf
-UlRDT0RFCTB4MDEwMA0KICNkZWZpbmUgTUlQSVRYX0QyX1NXX0NUTF9FTgkweDAxNDQNCiAjZGVm
-aW5lIE1JUElUWF9EMF9TV19DVExfRU4JMHgwMjQ0DQogI2RlZmluZSBNSVBJVFhfQ0tfQ0tNT0RF
-X0VOCTB4MDMyOA0KQEAgLTEwOCw2ICsxMDksMjQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBjbGtf
-b3BzIG10a19taXBpX3R4X3BsbF9vcHMgPSB7DQogCS5yZWNhbGNfcmF0ZSA9IG10a19taXBpX3R4
-X3BsbF9yZWNhbGNfcmF0ZSwNCiB9Ow0KIA0KK3N0YXRpYyB2b2lkIG10a19taXBpX3R4X2NvbmZp
-Z19jYWxpYnJhdGlvbl9kYXRhKHN0cnVjdCBtdGtfbWlwaV90eCAqbWlwaV90eCkNCit7DQorCWlu
-dCBpLCBqOw0KKw0KKwlmb3IgKGkgPSAwOyBpIDwgNTsgaSsrKSB7DQorCQlpZiAoKG1pcGlfdHgt
-PnJ0X2NvZGVbaV0gJiAweDFmKSA9PSAwKQ0KKwkJCW1pcGlfdHgtPnJ0X2NvZGVbaV0gfD0gMHgx
-MDsNCisNCisJCWlmICgobWlwaV90eC0+cnRfY29kZVtpXSA+PiA1ICYgMHgxZikgPT0gMCkNCisJ
-CQltaXBpX3R4LT5ydF9jb2RlW2ldIHw9IDB4MTAgPDwgNTsNCisNCisJCWZvciAoaiA9IDA7IGog
-PCAxMDsgaisrKQ0KKwkJCW10a19taXBpX3R4X3VwZGF0ZV9iaXRzKG1pcGlfdHgsDQorCQkJCU1J
-UElUWF9EMlBfUlRDT0RFICogKGkgKyAxKSArIGogKiA0LA0KKwkJCQkxLCBtaXBpX3R4LT5ydF9j
-b2RlW2ldID4+IGogJiAxKTsNCisJfQ0KK30NCisNCiBzdGF0aWMgdm9pZCBtdGtfbWlwaV90eF9w
-b3dlcl9vbl9zaWduYWwoc3RydWN0IHBoeSAqcGh5KQ0KIHsNCiAJc3RydWN0IG10a19taXBpX3R4
-ICptaXBpX3R4ID0gcGh5X2dldF9kcnZkYXRhKHBoeSk7DQpAQCAtMTMwLDYgKzE0OSw4IEBAIHN0
-YXRpYyB2b2lkIG10a19taXBpX3R4X3Bvd2VyX29uX3NpZ25hbChzdHJ1Y3QgcGh5ICpwaHkpDQog
-CQkJCVJHX0RTSV9IU1RYX0xET19SRUZfU0VMLA0KIAkJCQkobWlwaV90eC0+bWlwaXR4X2RyaXZl
-IC0gMzAwMCkgLyAyMDAgPDwgNik7DQogDQorCW10a19taXBpX3R4X2NvbmZpZ19jYWxpYnJhdGlv
-bl9kYXRhKG1pcGlfdHgpOw0KKw0KIAltdGtfbWlwaV90eF9zZXRfYml0cyhtaXBpX3R4LCBNSVBJ
-VFhfQ0tfQ0tNT0RFX0VOLCBEU0lfQ0tfQ0tNT0RFX0VOKTsNCiB9DQogDQotLSANCjIuMjEuMA0K
+This patch links perf with the libpfm4 library if it is available
+and NO_LIBPFM4 isn't passed to the build. The libpfm4 library
+contains hardware event tables for all processors supported by
+perf_events. It is a helper library that helps convert from a
+symbolic event name to the event encoding required by the
+underlying kernel interface. This library is open-source and
+available from: http://perfmon2.sf.net.
+    
+With this patch, it is possible to specify full hardware events
+by name. Hardware filters are also supported. Events must be
+specified via the --pfm-events and not -e option. Both options
+are active at the same time and it is possible to mix and match:
+    
+$ perf stat --pfm-events inst_retired:any_p:c=1:i -e cycles ....
+    
+v8 addresses review comments from jolsa@redhat.com.
+   Breaks the patch into 4, adds a test and moves the libpfm code into its
+   own file. perf list encoding tries to be closer to existing:
+...
+skx pfm-events
+  UNHALTED_CORE_CYCLES
+    [Count core clock cycles whenever the clock signal on the specific ...
+  UNHALTED_REFERENCE_CYCLES
+    [Unhalted reference cycles]
+  INSTRUCTION_RETIRED
+    [Number of instructions at retirement]
+  INSTRUCTIONS_RETIRED
+    [This is an alias for INSTRUCTION_RETIRED]
+  BRANCH_INSTRUCTIONS_RETIRED
+    [Count branch instructions at retirement. Specifically, this event ...
+  MISPREDICTED_BRANCH_RETIRED
+    [Count mispredicted branch instructions at retirement. ...
+  BACLEARS
+    [Branch re-steered]
+      BACLEARS:ANY
+        [Number of front-end re-steers due to BPU misprediction]
+  BR_INST_RETIRED
+    [Branch instructions retired (Precise Event)]
+      BR_INST_RETIRED:CONDITIONAL
+        [Counts all taken and not taken macro conditional branch ...
+...
+  and supports --long-desc/-v:
+...
+  BACLEARS
+    [Branch re-steered]
+      Code  : 0xe6
+      BACLEARS:ANY
+        [Number of front-end re-steers due to BPU misprediction]
+        Umask : 0x01 : PMU: [default] 
+      Modif : PMU: [e] : edge level (may require counter-mask >= 1) ...
+      Modif : PMU: [i] : invert (boolean)
+      Modif : PMU: [c] : counter-mask in range [0-255] (integer)
+      Modif : PMU: [t] : measure any thread (boolean)
+      Modif : PMU: [intx] : monitor only inside transactional memory ...
+      Modif : PMU: [intxcp] : do not count occurrences inside aborted ...
+      Modif : perf_event: [u] : monitor at user level (boolean)
+      Modif : perf_event: [k] : monitor at kernel level (boolean)
+      Modif : perf_event: [period] : sampling period (integer)
+      Modif : perf_event: [freq] : sampling frequency (Hz) (integer)
+      Modif : perf_event: [excl] : exclusive access (boolean)
+      Modif : perf_event: [mg] : monitor guest execution (boolean)
+      Modif : perf_event: [mh] : monitor host execution (boolean)
+      Modif : perf_event: [cpu] : CPU to program (integer)
+      Modif : perf_event: [pinned] : pin event to counters (boolean)
+  BR_INST_RETIRED
+    [Branch instructions retired (Precise Event)]
+      Code  : 0xc4
+      BR_INST_RETIRED:CONDITIONAL
+        [Counts all taken and not taken macro conditional branch ...
+        Umask : 0x01 : PMU: [precise]
+
+v7 rebases and adds fallback code for libpfm4 events.
+   The fallback code is to force user only priv level in case the
+   perf_event_open() syscall failed for permissions reason.
+   the fallback forces a user privilege level restriction on the event
+   string, so depending on the syntax either u or :u is needed.
+    
+   But libpfm4 can use a : or . as the separator, so simply searching
+   for ':' vs. '/' is not good enough to determine the syntax needed.
+   Therefore, this patch introduces a new evsel boolean field to mark
+   events coming from  libpfm4. The field is then used to adjust the
+   fallback string.
+v6 was a rebase.
+v5 was a rebase.
+v4 was a rebase on
+   git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+   branch perf/core and re-adds the tools/build/feature/test-libpfm4.c
+   missed in v3.
+v3 is against acme/perf/core and removes a diagnostic warning.
+v2 of this patch makes the --pfm-events man page documentation
+   conditional on libpfm4 behing configured. It tidies some of the
+   documentation and adds the feature test missed in the v1 patch.
+
+Ian Rogers (1):
+  perf doc: allow ASCIIDOC_EXTRA to be an argument
+
+Stephane Eranian (3):
+  tools feature: add support for detecting libpfm4
+  perf pmu: add perf_pmu__find_by_type helper
+  perf tools: add support for libpfm4
+
+ tools/build/Makefile.feature             |   6 +-
+ tools/build/feature/Makefile             |   6 +-
+ tools/build/feature/test-libpfm4.c       |   9 +
+ tools/perf/Documentation/Makefile        |   4 +-
+ tools/perf/Documentation/perf-record.txt |  11 +
+ tools/perf/Documentation/perf-stat.txt   |  10 +
+ tools/perf/Documentation/perf-top.txt    |  11 +
+ tools/perf/Makefile.config               |  12 +
+ tools/perf/Makefile.perf                 |   6 +-
+ tools/perf/builtin-list.c                |  14 +-
+ tools/perf/builtin-record.c              |  13 ++
+ tools/perf/builtin-stat.c                |  13 ++
+ tools/perf/builtin-top.c                 |  13 ++
+ tools/perf/tests/Build                   |   1 +
+ tools/perf/tests/builtin-test.c          |   9 +
+ tools/perf/tests/pfm.c                   | 206 +++++++++++++++++
+ tools/perf/tests/tests.h                 |   3 +
+ tools/perf/util/Build                    |   2 +
+ tools/perf/util/evsel.c                  |   6 +
+ tools/perf/util/evsel.h                  |   3 +
+ tools/perf/util/parse-events.c           |  37 ++-
+ tools/perf/util/parse-events.h           |   5 +
+ tools/perf/util/pfm.c                    | 272 +++++++++++++++++++++++
+ tools/perf/util/pfm.h                    |  19 ++
+ tools/perf/util/pmu.c                    |  11 +
+ tools/perf/util/pmu.h                    |   1 +
+ 26 files changed, 687 insertions(+), 16 deletions(-)
+ create mode 100644 tools/build/feature/test-libpfm4.c
+ create mode 100644 tools/perf/tests/pfm.c
+ create mode 100644 tools/perf/util/pfm.c
+ create mode 100644 tools/perf/util/pfm.h
+
+-- 
+2.26.0.110.g2183baf09c-goog
 
