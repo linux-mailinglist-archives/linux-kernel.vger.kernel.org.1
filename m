@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E811A5203
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539721A519B
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728081AbgDKM3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:29:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43656 "EHLO mail.kernel.org"
+        id S1727065AbgDKMPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726988AbgDKMLd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:11:33 -0400
+        id S1726934AbgDKMPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:15:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E4E2215A4;
-        Sat, 11 Apr 2020 12:11:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46BA620692;
+        Sat, 11 Apr 2020 12:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607092;
-        bh=GDBkdFyQwNJy3s7hikLvymUoDDGW7i4bveuG7EFg1oA=;
+        s=default; t=1586607305;
+        bh=64g/FuVY4FkADB9UpvuwvHmWfRLDc5mR7iw725sbOe8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2IGMiB6iPrXY87/YrTqVhpZ8W20afLAL8TzHXSTSoBEiu9DsbPoJQ0r6XXhDg35yh
-         UCt8r4Ogc89QOW0yNz7cRPrLyvkjb2bVea4n3BhWbBFc2zJW1AxMZ+WiUSQgx5flsq
-         wKjIcn8eXZ9LuXzETpmUsWP4xWLoN1CrR8F/X+4s=
+        b=xEhBmJgBrboQWKRA8HHhCvzQ/m1SwjX47inhuE+6UbDsP9e9pQ/s4ys5NnZB5Eezn
+         7ZgRBM5JZYEl1JeNCIlgWolvMcIHLChtHFcAD9uoBSbjIrQX5EOpWhzAjBr/R26GC/
+         ofgQVyKDeOsGO+MW7xAsqyZaXWdYSu6Xd/uCwIig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Richard Palethorpe <rpalethorpe@suse.com>,
-        Kees Cook <keescook@chromium.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, security@kernel.org, wg@grandegger.com,
-        mkl@pengutronix.de, davem@davemloft.net
-Subject: [PATCH 4.4 18/29] slcan: Dont transmit uninitialized stack data in padding
+        stable@vger.kernel.org, Mario Kleiner <mario.kleiner.de@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 06/54] drm/amd/display: Add link_rate quirk for Apple 15" MBP 2017
 Date:   Sat, 11 Apr 2020 14:08:48 +0200
-Message-Id: <20200411115411.003822206@linuxfoundation.org>
+Message-Id: <20200411115508.931334215@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115407.651296755@linuxfoundation.org>
-References: <20200411115407.651296755@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,51 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Palethorpe <rpalethorpe@suse.com>
+From: Mario Kleiner <mario.kleiner.de@gmail.com>
 
-[ Upstream commit b9258a2cece4ec1f020715fe3554bc2e360f6264 ]
+[ Upstream commit dec9de2ada523b344eb2428abfedf9d6cd0a0029 ]
 
-struct can_frame contains some padding which is not explicitly zeroed in
-slc_bump. This uninitialized data will then be transmitted if the stack
-initialization hardening feature is not enabled (CONFIG_INIT_STACK_ALL).
+This fixes a problem found on the MacBookPro 2017 Retina panel:
 
-This commit just zeroes the whole struct including the padding.
+The panel reports 10 bpc color depth in its EDID, and the
+firmware chooses link settings at boot which support enough
+bandwidth for 10 bpc (324000 kbit/sec aka LINK_RATE_RBR2
+aka 0xc), but the DP_MAX_LINK_RATE dpcd register only reports
+2.7 Gbps (multiplier value 0xa) as possible, in direct
+contradiction of what the firmware successfully set up.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-Fixes: a1044e36e457 ("can: add slcan driver for serial/USB-serial CAN adapters")
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: linux-can@vger.kernel.org
-Cc: netdev@vger.kernel.org
-Cc: security@kernel.org
-Cc: wg@grandegger.com
-Cc: mkl@pengutronix.de
-Cc: davem@davemloft.net
-Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This restricts the panel to 8 bpc, not providing the full
+color depth of the panel on Linux <= 5.5. Additionally, commit
+'4a8ca46bae8a ("drm/amd/display: Default max bpc to 16 for eDP")'
+introduced into Linux 5.6-rc1 will unclamp panel depth to
+its full 10 bpc, thereby requiring a eDP bandwidth for all
+modes that exceeds the bandwidth available and causes all modes
+to fail validation -> No modes for the laptop panel -> failure
+to set any mode -> Panel goes dark.
+
+This patch adds a quirk specific to the MBP 2017 15" Retina
+panel to override reported max link rate to the correct maximum
+of 0xc = LINK_RATE_RBR2 to fix the darkness and reduced display
+precision.
+
+Please apply for Linux 5.6+ to avoid regressing Apple MBP panel
+support.
+
+Signed-off-by: Mario Kleiner <mario.kleiner.de@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/slcan.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -147,7 +147,7 @@ static void slc_bump(struct slcan *sl)
- 	u32 tmpid;
- 	char *cmd = sl->rbuff;
+diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+index 122249da03ab7..a4928854a3de5 100644
+--- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
++++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
+@@ -2440,6 +2440,17 @@ static bool retrieve_link_cap(struct dc_link *link)
+ 		sink_id.ieee_device_id,
+ 		sizeof(sink_id.ieee_device_id));
  
--	cf.can_id = 0;
-+	memset(&cf, 0, sizeof(cf));
- 
- 	switch (*cmd) {
- 	case 'r':
-@@ -186,8 +186,6 @@ static void slc_bump(struct slcan *sl)
- 	else
- 		return;
- 
--	*(u64 *) (&cf.data) = 0; /* clear payload */
--
- 	/* RTR frames may have a dlc > 0 but they never have any data bytes */
- 	if (!(cf.can_id & CAN_RTR_FLAG)) {
- 		for (i = 0; i < cf.can_dlc; i++) {
++	/* Quirk Apple MBP 2017 15" Retina panel: Wrong DP_MAX_LINK_RATE */
++	{
++		uint8_t str_mbp_2017[] = { 101, 68, 21, 101, 98, 97 };
++
++		if ((link->dpcd_caps.sink_dev_id == 0x0010fa) &&
++		    !memcmp(link->dpcd_caps.sink_dev_id_str, str_mbp_2017,
++			    sizeof(str_mbp_2017))) {
++			link->reported_link_cap.link_rate = 0x0c;
++		}
++	}
++
+ 	core_link_read_dpcd(
+ 		link,
+ 		DP_SINK_HW_REVISION_START,
+-- 
+2.20.1
+
 
 
