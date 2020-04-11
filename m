@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8A11A503F
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DDC1A5040
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728213AbgDKMPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:15:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49958 "EHLO mail.kernel.org"
+        id S1728220AbgDKMPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:15:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728202AbgDKMPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:15:51 -0400
+        id S1728215AbgDKMPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:15:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41E1C21744;
-        Sat, 11 Apr 2020 12:15:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AFEC320787;
+        Sat, 11 Apr 2020 12:15:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607351;
-        bh=fGQ3NIWRcW6xTVFkaMNy4C8P5PvXObkGaNqnFg7hcjQ=;
+        s=default; t=1586607354;
+        bh=s0u7lDLLVe++4Weesyk9XvhvqRchgRX/r1SYmiD7pWo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A2XfWeKXAQIaX7E1SWhvBxbvBawWwcDoQPwJWMJR1JxzefKVEq2ar5D3iOvUvcJo9
-         y+y6sZ+v6K7KPGgmWgo1xA5oECWxPckD+koW1D7x5ldViKnJN4iO15ST8knBAZ7Zu3
-         uTUVmHTRlpqo5GNJjtydY3E5zbMcjJmMegZgXxR8=
+        b=O0wRSDRv37uOySErELb8XBCpIk2npJjZwzHqvhKYO09268bYaoDh370893xsqXsyX
+         //VnQH+Rvg82y20vsWj/cBRHZ4WFEMmxoSnTNP/ZoN0TL0ptJ0OT7LkAybKxgVY5tY
+         nBJhdaZFm8vNgZQtbzmzUD4Vqn5k8x9XOTfCvuxA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.19 38/54] hwrng: imx-rngc - fix an error path
-Date:   Sat, 11 Apr 2020 14:09:20 +0200
-Message-Id: <20200411115512.341196553@linuxfoundation.org>
+        stable@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 39/54] ASoC: jz4740-i2s: Fix divider written at incorrect offset in register
+Date:   Sat, 11 Apr 2020 14:09:21 +0200
+Message-Id: <20200411115512.445236380@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
 In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
 References: <20200411115508.284500414@linuxfoundation.org>
@@ -45,38 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Kaiser <martin@kaiser.cx>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 47a1f8e8b3637ff5f7806587883d7d94068d9ee8 upstream.
+commit 9401d5aa328e64617d87abd59af1c91cace4c3e4 upstream.
 
-Make sure that the rngc interrupt is masked if the rngc self test fails.
-Self test failure means that probe fails as well. Interrupts should be
-masked in this case, regardless of the error.
+The 4-bit divider value was written at offset 8, while the jz4740
+programming manual locates it at offset 0.
 
+Fixes: 26b0aad80a86 ("ASoC: jz4740: Add dynamic sampling rate support to jz4740-i2s")
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Cc: stable@vger.kernel.org
-Fixes: 1d5449445bd0 ("hwrng: mx-rngc - add a driver for Freescale RNGC")
-Reviewed-by: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Link: https://lore.kernel.org/r/20200306222931.39664-2-paul@crapouillou.net
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/hw_random/imx-rngc.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/jz4740/jz4740-i2s.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/char/hw_random/imx-rngc.c
-+++ b/drivers/char/hw_random/imx-rngc.c
-@@ -111,8 +111,10 @@ static int imx_rngc_self_test(struct imx
- 		return -ETIMEDOUT;
- 	}
+--- a/sound/soc/jz4740/jz4740-i2s.c
++++ b/sound/soc/jz4740/jz4740-i2s.c
+@@ -92,7 +92,7 @@
+ #define JZ_AIC_I2S_STATUS_BUSY BIT(2)
  
--	if (rngc->err_reg != 0)
-+	if (rngc->err_reg != 0) {
-+		imx_rngc_irq_mask_clear(rngc);
- 		return -EIO;
-+	}
- 
- 	return 0;
- }
+ #define JZ_AIC_CLK_DIV_MASK 0xf
+-#define I2SDIV_DV_SHIFT 8
++#define I2SDIV_DV_SHIFT 0
+ #define I2SDIV_DV_MASK (0xf << I2SDIV_DV_SHIFT)
+ #define I2SDIV_IDV_SHIFT 8
+ #define I2SDIV_IDV_MASK (0xf << I2SDIV_IDV_SHIFT)
 
 
