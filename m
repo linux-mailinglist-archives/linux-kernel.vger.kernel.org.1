@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDCD1A4FDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42DBB1A5051
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbgDKMMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:12:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44904 "EHLO mail.kernel.org"
+        id S1727868AbgDKMQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727219AbgDKMMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:12:21 -0400
+        id S1728262AbgDKMQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:16:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB9832137B;
-        Sat, 11 Apr 2020 12:12:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9868B20692;
+        Sat, 11 Apr 2020 12:16:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607141;
-        bh=9/F1HgN1yJlGKSkllksxsM4rLDTTAM51nN0ITD+mQ4A=;
+        s=default; t=1586607395;
+        bh=Z/eHiKT7CyAUIb68xV6ks0mm2WcJfo7+yQbJgWoiuG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JPd/b4wJ2UlCXTvJGzq/5mIXceNNgqTrBrL6uyHIenEVOOSDKi2Q9GcFyWwpT0Kbv
-         +p3k2hr24eGbafQHncRrfzsPY3e4NmFxg6oxwtb2tRVCAQG21xqts36UG7Sg8YnvKm
-         7cEnT/hLyiCF17LLZCRBZBBV51nH7Qqu5guR6UhM=
+        b=LZXSC45SEDhp8L7sJQtb5vMXeo2kWH44UiZOMGPQ413zlab2xl5/0M3EIwrDmLUCM
+         XLhUDFjvb/XTxBtbopHOoBVHAE0+d5LZ4nC36AO7r5nuQnAd1I6XISEsO+E6QHoGYc
+         y0v3tlNJK0PvZ86NmblVuiVMDvs+GZmAakuhFwss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@intel.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Subject: [PATCH 4.9 23/32] IB/hfi1: Fix memory leaks in sysfs registration and unregistration
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: [PATCH 4.19 20/54] power: supply: axp288_charger: Add special handling for HP Pavilion x2 10
 Date:   Sat, 11 Apr 2020 14:09:02 +0200
-Message-Id: <20200411115421.785525506@linuxfoundation.org>
+Message-Id: <20200411115510.523425293@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115418.455500023@linuxfoundation.org>
-References: <20200411115418.455500023@linuxfoundation.org>
+In-Reply-To: <20200411115508.284500414@linuxfoundation.org>
+References: <20200411115508.284500414@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,81 +43,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaike Wan <kaike.wan@intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 5c15abc4328ad696fa61e2f3604918ed0c207755 upstream.
+commit 9c80662a74cd2a5d1113f5c69d027face963a556 upstream.
 
-When the hfi1 driver is unloaded, kmemleak will report the following
-issue:
+Some HP Pavilion x2 10 models use an AXP288 for charging and fuel-gauge.
+We use a native power_supply / PMIC driver in this case, because on most
+models with an AXP288 the ACPI AC / Battery code is either completely
+missing or relies on custom / proprietary ACPI OpRegions which Linux
+does not implement.
 
-unreferenced object 0xffff8888461a4c08 (size 8):
-comm "kworker/0:0", pid 5, jiffies 4298601264 (age 2047.134s)
-hex dump (first 8 bytes):
-73 64 6d 61 30 00 ff ff sdma0...
-backtrace:
-[<00000000311a6ef5>] kvasprintf+0x62/0xd0
-[<00000000ade94d9f>] kobject_set_name_vargs+0x1c/0x90
-[<0000000060657dbb>] kobject_init_and_add+0x5d/0xb0
-[<00000000346fe72b>] 0xffffffffa0c5ecba
-[<000000006cfc5819>] 0xffffffffa0c866b9
-[<0000000031c65580>] 0xffffffffa0c38e87
-[<00000000e9739b3f>] local_pci_probe+0x41/0x80
-[<000000006c69911d>] work_for_cpu_fn+0x16/0x20
-[<00000000601267b5>] process_one_work+0x171/0x380
-[<0000000049a0eefa>] worker_thread+0x1d1/0x3f0
-[<00000000909cf2b9>] kthread+0xf8/0x130
-[<0000000058f5f874>] ret_from_fork+0x35/0x40
+The native drivers mostly work fine, but there are 2 problems:
 
-This patch fixes the issue by:
+1. These model uses a Type-C connector for charging which the AXP288 does
+not support. As long as a Type-A charger (which uses the USB data pins for
+charger type detection) is used everything is fine. But if a Type-C
+charger is used (such as the charger shipped with the device) then the
+charger is not recognized.
 
-- Releasing dd->per_sdma[i].kobject in hfi1_unregister_sysfs().
-  - This will fix the memory leak.
+So we end up slowly discharging the device even though a charger is
+connected, because we are limiting the current from the charger to 500mA.
+To make things worse this happens with the device's official charger.
 
-- Calling kobject_put() to unwind operations only for those entries in
-   dd->per_sdma[] whose operations have succeeded (including the current
-   one that has just failed) in hfi1_verbs_register_sysfs().
+Looking at the ACPI tables HP has "solved" the problem of the AXP288 not
+being able to recognize Type-C chargers by simply always programming the
+input-current-limit at 3000mA and relying on a Vhold setting of 4.7V
+(normally 4.4V) to limit the current intake if the charger cannot handle
+this.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 0cb2aa690c7e ("IB/hfi1: Add sysfs interface for affinity setup")
-Link: https://lore.kernel.org/r/20200326163807.21129.27371.stgit@awfm-01.aw.intel.com
-Reviewed-by: Mike Marciniszyn <mike.marciniszyn@intel.com>
-Signed-off-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@intel.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+2. If no charger is connected when the machine boots then it boots with the
+vbus-path disabled. On other devices this is done when a 5V boost converter
+is active to avoid the PMIC trying to charge from the 5V boost output.
+This is done when an OTG host cable is inserted and the ID pin on the
+micro-B receptacle is pulled low, the ID pin has an ACPI event handler
+associated with it which re-enables the vbus-path when the ID pin is pulled
+high when the OTG cable is removed. The Type-C connector has no ID pin,
+there is no ID pin handler and there appears to be no 5V boost converter,
+so we end up not charging because the vbus-path is disabled, until we
+unplug the charger which automatically clears the vbus-path disable bit and
+then on the second plug-in of the adapter we start charging.
+
+The HP Pavilion x2 10 models with an AXP288 do have mostly working ACPI
+AC / Battery code which does not rely on custom / proprietary ACPI
+OpRegions. So one possible solution would be to blacklist the AXP288
+native power_supply drivers and add the HP Pavilion x2 10 with AXP288
+DMI ids to the list of devices which should use the ACPI AC / Battery
+code even though they have an AXP288 PMIC. This would require changes to
+4 files: drivers/acpi/ac.c, drivers/power/supply/axp288_charger.c,
+drivers/acpi/battery.c and drivers/power/supply/axp288_fuel_gauge.c.
+
+Beside needing adding the same DMI matches to 4 different files, this
+approach also triggers problem 2. from above, but then when suspended,
+during suspend the machine will not wakeup because the vbus path is
+disabled by the AML code when not charging, so the Vbus low-to-high
+IRQ is not triggered, the CPU never wakes up and the device does not
+charge even though the user likely things it is charging, esp. since
+the charge status LED is directly coupled to an adapter being plugged
+in and does not reflect actual charging.
+
+This could be worked by enabling vbus-path explicitly from say the
+axp288_charger driver's suspend handler.
+
+So neither situation is ideal, in both cased we need to explicitly enable
+the vbus-path to work around different variants of problem 2 above, this
+requires a quirk in the axp288_charger code.
+
+If we go the route of using the ACPI AC / Battery drivers then we need
+modifications to 3 other drivers; and we need to partially disable the
+axp288_charger code, while at the same time keeping it around to enable
+vbus-path on suspend.
+
+OTOH we can copy the hardcoding of 3A input-current-limit (we never touch
+Vhold, so that would stay at 4.7V) to the axp288_charger code, which needs
+changes regardless, then we concentrate all special handling of this
+interesting device model in the axp288_charger code. That is what this
+commit does.
+
+Cc: stable@vger.kernel.org
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1791098
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/infiniband/hw/hfi1/sysfs.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ drivers/power/supply/axp288_charger.c |   57 +++++++++++++++++++++++++++++++++-
+ 1 file changed, 56 insertions(+), 1 deletion(-)
 
---- a/drivers/infiniband/hw/hfi1/sysfs.c
-+++ b/drivers/infiniband/hw/hfi1/sysfs.c
-@@ -861,8 +861,13 @@ bail:
- 	for (i = 0; i < ARRAY_SIZE(hfi1_attributes); ++i)
- 		device_remove_file(&dev->dev, hfi1_attributes[i]);
+--- a/drivers/power/supply/axp288_charger.c
++++ b/drivers/power/supply/axp288_charger.c
+@@ -28,6 +28,7 @@
+ #include <linux/property.h>
+ #include <linux/mfd/axp20x.h>
+ #include <linux/extcon.h>
++#include <linux/dmi.h>
  
--	for (i = 0; i < dd->num_sdma; i++)
--		kobject_del(&dd->per_sdma[i].kobj);
-+	/*
-+	 * The function kobject_put() will call kobject_del() if the kobject
-+	 * has been added successfully. The sysfs files created under the
-+	 * kobject directory will also be removed during the process.
-+	 */
-+	for (; i >= 0; i--)
-+		kobject_put(&dd->per_sdma[i].kobj);
- 
- 	return ret;
+ #define PS_STAT_VBUS_TRIGGER		(1 << 0)
+ #define PS_STAT_BAT_CHRG_DIR		(1 << 2)
+@@ -552,6 +553,49 @@ out:
+ 	return IRQ_HANDLED;
  }
-@@ -875,6 +880,10 @@ void hfi1_verbs_unregister_sysfs(struct
- 	struct hfi1_pportdata *ppd;
- 	int i;
  
-+	/* Unwind operations in hfi1_verbs_register_sysfs() */
-+	for (i = 0; i < dd->num_sdma; i++)
-+		kobject_put(&dd->per_sdma[i].kobj);
++/*
++ * The HP Pavilion x2 10 series comes in a number of variants:
++ * Bay Trail SoC    + AXP288 PMIC, DMI_BOARD_NAME: "815D"
++ * Cherry Trail SoC + AXP288 PMIC, DMI_BOARD_NAME: "813E"
++ * Cherry Trail SoC + TI PMIC,     DMI_BOARD_NAME: "827C" or "82F4"
++ *
++ * The variants with the AXP288 PMIC are all kinds of special:
++ *
++ * 1. All variants use a Type-C connector which the AXP288 does not support, so
++ * when using a Type-C charger it is not recognized. Unlike most AXP288 devices,
++ * this model actually has mostly working ACPI AC / Battery code, the ACPI code
++ * "solves" this by simply setting the input_current_limit to 3A.
++ * There are still some issues with the ACPI code, so we use this native driver,
++ * and to solve the charging not working (500mA is not enough) issue we hardcode
++ * the 3A input_current_limit like the ACPI code does.
++ *
++ * 2. If no charger is connected the machine boots with the vbus-path disabled.
++ * Normally this is done when a 5V boost converter is active to avoid the PMIC
++ * trying to charge from the 5V boost converter's output. This is done when
++ * an OTG host cable is inserted and the ID pin on the micro-B receptacle is
++ * pulled low and the ID pin has an ACPI event handler associated with it
++ * which re-enables the vbus-path when the ID pin is pulled high when the
++ * OTG host cable is removed. The Type-C connector has no ID pin, there is
++ * no ID pin handler and there appears to be no 5V boost converter, so we
++ * end up not charging because the vbus-path is disabled, until we unplug
++ * the charger which automatically clears the vbus-path disable bit and then
++ * on the second plug-in of the adapter we start charging. To solve the not
++ * charging on first charger plugin we unconditionally enable the vbus-path at
++ * probe on this model, which is safe since there is no 5V boost converter.
++ */
++static const struct dmi_system_id axp288_hp_x2_dmi_ids[] = {
++	{
++		/*
++		 * Bay Trail model has "Hewlett-Packard" as sys_vendor, Cherry
++		 * Trail model has "HP", so we only match on product_name.
++		 */
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "HP Pavilion x2 Detachable"),
++		},
++	},
++	{} /* Terminating entry */
++};
 +
- 	for (i = 0; i < dd->num_pports; i++) {
- 		ppd = &dd->pport[i];
+ static void axp288_charger_extcon_evt_worker(struct work_struct *work)
+ {
+ 	struct axp288_chrg_info *info =
+@@ -575,7 +619,11 @@ static void axp288_charger_extcon_evt_wo
+ 	}
  
+ 	/* Determine cable/charger type */
+-	if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
++	if (dmi_check_system(axp288_hp_x2_dmi_ids)) {
++		/* See comment above axp288_hp_x2_dmi_ids declaration */
++		dev_dbg(&info->pdev->dev, "HP X2 with Type-C, setting inlmt to 3A\n");
++		current_limit = 3000000;
++	} else if (extcon_get_state(edev, EXTCON_CHG_USB_SDP) > 0) {
+ 		dev_dbg(&info->pdev->dev, "USB SDP charger is connected\n");
+ 		current_limit = 500000;
+ 	} else if (extcon_get_state(edev, EXTCON_CHG_USB_CDP) > 0) {
+@@ -692,6 +740,13 @@ static int charger_init_hw_regs(struct a
+ 		return ret;
+ 	}
+ 
++	if (dmi_check_system(axp288_hp_x2_dmi_ids)) {
++		/* See comment above axp288_hp_x2_dmi_ids declaration */
++		ret = axp288_charger_vbus_path_select(info, true);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	/* Read current charge voltage and current limit */
+ 	ret = regmap_read(info->regmap, AXP20X_CHRG_CTRL1, &val);
+ 	if (ret < 0) {
 
 
