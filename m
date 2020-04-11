@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F7A1A51AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1207E1A50B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 14:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgDKMOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 08:14:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48032 "EHLO mail.kernel.org"
+        id S1728936AbgDKMUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 08:20:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727954AbgDKMOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 08:14:35 -0400
+        id S1728588AbgDKMUO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 08:20:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0CFA20644;
-        Sat, 11 Apr 2020 12:14:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B4F3206A1;
+        Sat, 11 Apr 2020 12:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586607274;
-        bh=kn6do4sZUl1m9RB0bbgLrYd5xmWGiUYapZhBmgCfQGI=;
+        s=default; t=1586607614;
+        bh=6aGlnK1MW0SGlCS6W+zlqMW7TuFhIRSPsZs1IRDKQZM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zJ5wc2JU/pTcE+e68J98YUvmmSsHE8me/atNWo8s2SMVV7Z9NJdVeWTRz1La7naWt
-         qziuHGykIjRbNl5JKVMrNPIefMS7EWPU8Py1YUJcwTpkODNB3w0THM5xjxUy+hQRgQ
-         pvEc2dm77yFczr1FMuqdFPInOSwU+/W6cV9Hbd+4=
+        b=xqkPgHJvQU7t714occK1cSRnGx1drZgI6nhThfmx6m8Z2xOIivAMHRZta4nNhB6zO
+         UO5HCk6nSHW9dREu7dwd1m2EZldO7NebQqiTmlnTjLZ1o5rGtZKwoKvZcyAZ3Ag0+p
+         C/08OaR/5Y3RnZ2D/HS2NnX5e9HFPkGxiddUdPho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans Verkuil <hans.verkuil@cisco.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.14 38/38] drm_dp_mst_topology: fix broken drm_dp_sideband_parse_remote_dpcd_read()
-Date:   Sat, 11 Apr 2020 14:09:22 +0200
-Message-Id: <20200411115441.432558800@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.5 03/44] net: dsa: bcm_sf2: Do not register slave MDIO bus with OF
+Date:   Sat, 11 Apr 2020 14:09:23 +0200
+Message-Id: <20200411115457.209824015@linuxfoundation.org>
 X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-References: <20200411115437.795556138@linuxfoundation.org>
+In-Reply-To: <20200411115456.934174282@linuxfoundation.org>
+References: <20200411115456.934174282@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans Verkuil <hans.verkuil@cisco.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit a4c30a4861c54af78c4eb8b7855524c1a96d9f80 upstream.
+[ Upstream commit 536fab5bf5826404534a6c271f622ad2930d9119 ]
 
-When parsing the reply of a DP_REMOTE_DPCD_READ DPCD command the
-result is wrong due to a missing idx increment.
+We were registering our slave MDIO bus with OF and doing so with
+assigning the newly created slave_mii_bus of_node to the master MDIO bus
+controller node. This is a bad thing to do for a number of reasons:
 
-This was never noticed since DP_REMOTE_DPCD_READ is currently not
-used, but if you enable it, then it is all wrong.
+- we are completely lying about the slave MII bus is arranged and yet we
+  still want to control which MDIO devices it probes. It was attempted
+  before to play tricks with the bus_mask to perform that:
+  https://www.spinics.net/lists/netdev/msg429420.html but the approach
+  was rightfully rejected
 
-Signed-off-by: Hans Verkuil <hans.verkuil@cisco.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/e72ddac2-1dc0-100a-d816-9ac98ac009dd@xs4all.nl
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
+- the device_node reference counting is messed up and we are effectively
+  doing a double probe on the devices we already probed using the
+  master, this messes up all resources reference counts (such as clocks)
+
+The proper fix for this as indicated by David in his reply to the
+thread above is to use a platform data style registration so as to
+control exactly which devices we probe:
+https://www.spinics.net/lists/netdev/msg430083.html
+
+By using mdiobus_register(), our slave_mii_bus->phy_mask value is used
+as intended, and all the PHY addresses that must be redirected towards
+our slave MDIO bus is happening while other addresses get redirected
+towards the master MDIO bus.
+
+Fixes: 461cd1b03e32 ("net: dsa: bcm_sf2: Register our slave MDIO bus")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vivien Didelot <vivien.didelot@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/dsa/bcm_sf2.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -433,6 +433,7 @@ static bool drm_dp_sideband_parse_remote
- 	if (idx > raw->curlen)
- 		goto fail_len;
- 	repmsg->u.remote_dpcd_read_ack.num_bytes = raw->msg[idx];
-+	idx++;
- 	if (idx > raw->curlen)
- 		goto fail_len;
+--- a/drivers/net/dsa/bcm_sf2.c
++++ b/drivers/net/dsa/bcm_sf2.c
+@@ -472,7 +472,7 @@ static int bcm_sf2_mdio_register(struct
+ 	priv->slave_mii_bus->parent = ds->dev->parent;
+ 	priv->slave_mii_bus->phy_mask = ~priv->indir_phy_mask;
+ 
+-	err = of_mdiobus_register(priv->slave_mii_bus, dn);
++	err = mdiobus_register(priv->slave_mii_bus);
+ 	if (err && dn)
+ 		of_node_put(dn);
  
 
 
