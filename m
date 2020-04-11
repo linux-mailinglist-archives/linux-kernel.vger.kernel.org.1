@@ -2,69 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 495D81A52A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 17:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA791A52AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 11 Apr 2020 17:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbgDKPsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 11:48:03 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7575 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726070AbgDKPsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 11:48:03 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85e91e69f3a8-16554; Sat, 11 Apr 2020 23:47:43 +0800 (CST)
-X-RM-TRANSID: 2ee85e91e69f3a8-16554
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[223.104.145.126])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35e91e69cf7b-7c289;
-        Sat, 11 Apr 2020 23:47:42 +0800 (CST)
-X-RM-TRANSID: 2ee35e91e69cf7b-7c289
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] btrfs: Fix backref.c selftest compilation warning
-Date:   Sat, 11 Apr 2020 23:49:15 +0800
-Message-Id: <20200411154915.9408-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S1726462AbgDKP4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 11:56:30 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49344 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726054AbgDKP4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 11:56:30 -0400
+Received: from zn.tnic (p200300EC2F1EE2004DDA4FC6A7F1C076.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:e200:4dda:4fc6:a7f1:c076])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 404AB1EC085F;
+        Sat, 11 Apr 2020 17:56:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1586620589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=0QgKfyD3UcjRgzIwSEmTFwH1FvRCThOAFzQ5S67+qsI=;
+        b=olq7daV2ItKU/slSpda7p8nzWckB9HYez1JCJ44uiLmdHYcn/3sb1KyxX0N4bSYLkeByEc
+        tJIDbMt8m1/bjY7Pw0bZ4MMIIVKiNkPj1a+NKhcxS+2lDfEnuIHXkBiWRUKxiT0XVVWQPq
+        DrnfQ0kcqIextkY2FMCiztRhZDUYQUs=
+Date:   Sat, 11 Apr 2020 17:56:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Don Fry <pcnet32@frontier.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>, linux-acenic@sunsite.dk,
+        Maxime Ripard <mripard@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        linux-rockchip@lists.infradead.org,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        David Dillow <dave@thedillows.org>,
+        Netanel Belgazal <netanel@amazon.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Andreas Larsson <andreas@gaisler.com>,
+        Andy Gospodarek <andy@greyhouse.net>, netdev@vger.kernel.org,
+        Thor Thayer <thor.thayer@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Ion Badulescu <ionut@badula.org>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        Jes Sorensen <jes@trained-monkey.org>,
+        nios2-dev@lists.rocketboards.org, Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH] net/3com/3c515: Fix MODULE_ARCH_VERMAGIC redefinition
+Message-ID: <20200411155623.GA22175@zn.tnic>
+References: <20200224085311.460338-1-leon@kernel.org>
+ <20200224085311.460338-4-leon@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200224085311.460338-4-leon@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix missing braces compilation warning in the ARM
-compiler environment:
-    fs/btrfs/backref.c: In function ‘is_shared_data_backref’:
-    fs/btrfs/backref.c:394:9: warning: missing braces around initializer [-Wmissing-braces]
-      struct prelim_ref target = {0};
-    fs/btrfs/backref.c:394:9: warning: (near initialization for ‘target.rbnode’) [-Wmissing-braces]
+From: Borislav Petkov <bp@suse.de>
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+Change the include order so that MODULE_ARCH_VERMAGIC from the arch
+header arch/x86/include/asm/module.h gets used instead of the fallback
+from include/linux/vermagic.h and thus fix:
+
+  In file included from ./include/linux/module.h:30,
+                   from drivers/net/ethernet/3com/3c515.c:56:
+  ./arch/x86/include/asm/module.h:73: warning: "MODULE_ARCH_VERMAGIC" redefined
+     73 | # define MODULE_ARCH_VERMAGIC MODULE_PROC_FAMILY
+        |
+  In file included from drivers/net/ethernet/3com/3c515.c:25:
+  ./include/linux/vermagic.h:28: note: this is the location of the previous definition
+     28 | #define MODULE_ARCH_VERMAGIC ""
+        |
+
+Fixes: 6bba2e89a88c ("net/3com: Delete driver and module versions from 3com drivers")
+Signed-off-by: Borislav Petkov <bp@suse.de>
 ---
- fs/btrfs/backref.c | 2 +-
+ drivers/net/ethernet/3com/3c515.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 9c380e7..0cc0257 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -391,7 +391,7 @@ static int is_shared_data_backref(struct preftrees *preftrees, u64 bytenr)
- 	struct rb_node **p = &preftrees->direct.root.rb_root.rb_node;
- 	struct rb_node *parent = NULL;
- 	struct prelim_ref *ref = NULL;
--	struct prelim_ref target = {0};
-+	struct prelim_ref target = {};
- 	int result;
+diff --git a/drivers/net/ethernet/3com/3c515.c b/drivers/net/ethernet/3com/3c515.c
+index 90312fcd6319..cdceef891dbd 100644
+--- a/drivers/net/ethernet/3com/3c515.c
++++ b/drivers/net/ethernet/3com/3c515.c
+@@ -22,7 +22,6 @@
  
- 	target.parent = bytenr;
+ */
+ 
+-#include <linux/vermagic.h>
+ #define DRV_NAME		"3c515"
+ 
+ #define CORKSCREW 1
+@@ -67,6 +66,7 @@ static int max_interrupt_work = 20;
+ #include <linux/timer.h>
+ #include <linux/ethtool.h>
+ #include <linux/bitops.h>
++#include <linux/vermagic.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/io.h>
 -- 
-2.7.4
+2.21.0
 
+-- 
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
