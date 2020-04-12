@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6269F1A5B8E
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 01:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD241A5BA9
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 02:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730224AbgDKXud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 19:50:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727415AbgDKXub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 19:50:31 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8526720936;
-        Sat, 11 Apr 2020 23:50:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586649031;
-        bh=GrmMSd83oRr7yDkchC4S4UHDHr94N0l328ftQ/s1suc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IfCoR5eegu4iaVZvOa1j8RZ/3DrAETQOIkN15zO5inDIcQo7KLjMBOzooL02CI+fJ
-         XkxH1lHcuKkoeEaMA5SyNNlNSoq/RFnb4+lJ6XGyTUOpokevYENX/WXQRmyDKbc34n
-         NRhr5roPXt2fbsXJ+Q2Jf5YXSAkE6cHtJ9gbygC4=
-Date:   Sat, 11 Apr 2020 16:50:29 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
-        netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: phy: marvell: Fix pause frame negotiation
-Message-ID: <20200411165029.694a1b8b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200411234559.GL25745@shell.armlinux.org.uk>
-References: <20200411165125.1091-1-clemens.gruber@pqgruber.com>
-        <20200411162824.59791b84@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20200411234559.GL25745@shell.armlinux.org.uk>
+        id S1726843AbgDLAdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 20:33:51 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:37801 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726708AbgDLAdv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 11 Apr 2020 20:33:51 -0400
+Received: by mail-lf1-f66.google.com with SMTP id t11so3952452lfe.4
+        for <linux-kernel@vger.kernel.org>; Sat, 11 Apr 2020 17:33:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zsyaQJSTyWtQU6SNb3d/B5KGEXk22uVClxXXTgsbd6E=;
+        b=kV/LeCGT51tDEQA6jixYwmFJMhwu+sfWPjZdgnLCFvMfPYUoeMciBwTxKz8slhIA9Q
+         QWA2SQ0DoEF4KcBJ2ugrGlY6oybNlOP3mTjUj02Wr0RrkcNl2xtc81cOXyImM4uRmfCh
+         qHFe6s3jbXCLQZHpY1gfAD4pb0z7WUFQaZtVlYfD3husYMs4QPBsa7IqM7dVgNiBcm0j
+         l+CqzwLgWhQyQ6lYBMOXmRaHGTqL3jxOCcQSriocgol9p2VvpZTL7/pWWZWy4UhhPTI8
+         w07GlQOHtAFmejubyEhftiSAWmxQa3xOjY0uZlHCLUd6DBp11BdB5BddyZZUhdfxf268
+         Yyrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zsyaQJSTyWtQU6SNb3d/B5KGEXk22uVClxXXTgsbd6E=;
+        b=D2AshuO+g+G5mT9pjJg6U1A69PWQ4S1Ldk6vzDYUIIpjV8HNJAFpo6+wI6zHzi0Fxo
+         HUh9yCQxt4+1/heQSO6aRBWq2nMlQemgyV9BjXNaVv/zy6yEFXQ2wsX9JbFoKW4kecaU
+         QoNqhhcXRad8u2cMIlV8TsITqcnm1MyCNHYcAAZSlTYWTjamiXl29CEc8jDjLTWyEC63
+         iFJkGeyyEnwR1pLl2TrTRtYEAa8bHo9yiXDUZZ++3QtkK9nPh6e2RgPy++8GiIghO0aB
+         USe0Uky+1h1OK62mzbxeHafO3EA1TRGSV+ilN0ZhzQsg1g7XApkBuLoOK/JhkWJEVtGQ
+         8Puw==
+X-Gm-Message-State: AGi0PuZreMS2hJiIQdOQLFVs1SreqqJUodvnOaWLeuG2CfFKwoeMWGeu
+        vdOYr8zfuxxihs+7t75UlHDPBQt89VwVwzZE1qkGmQ==
+X-Google-Smtp-Source: APiQypL4dP3s3w7dYreIWE/U9Pw7ftEq+ZzcH56ILtKHt9LXITsoPKEt+dyrtZrmqSv0ag9Tqx6r+iOrde8l3AYonrY=
+X-Received: by 2002:a19:48c3:: with SMTP id v186mr6282470lfa.194.1586651629741;
+ Sat, 11 Apr 2020 17:33:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200117224839.23531-1-f.fainelli@gmail.com> <20200117224839.23531-8-f.fainelli@gmail.com>
+ <CAKv+Gu_6wWhi418=GpMjfMpE2E+XHbL-DYKT8MJ1jE3+VybrAg@mail.gmail.com>
+In-Reply-To: <CAKv+Gu_6wWhi418=GpMjfMpE2E+XHbL-DYKT8MJ1jE3+VybrAg@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 12 Apr 2020 02:33:38 +0200
+Message-ID: <CACRpkdbR2VG422X0-nhOeWtS3Mhm7M1+RKMozBZbg0Jv5c_TTQ@mail.gmail.com>
+Subject: Re: [PATCH v7 7/7] ARM: Enable KASan for ARM
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Andrey Ryabinin <ryabinin@virtuozzo.com>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Christoffer Dall <christoffer.dall@arm.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jinbum Park <jinb.park7@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Philippe Ombredanne <pombredanne@nexb.com>,
+        Rob Landley <rob@landley.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Garnier <thgarnie@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Philip Derrin <philip@cog.systems>,
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kvmarm <kvmarm@lists.cs.columbia.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 12 Apr 2020 00:45:59 +0100 Russell King - ARM Linux admin wrote:
-> On Sat, Apr 11, 2020 at 04:28:24PM -0700, Jakub Kicinski wrote:
-> > On Sat, 11 Apr 2020 18:51:25 +0200 Clemens Gruber wrote:  
-> > > The negotiation of flow control / pause frame modes was broken since
-> > > commit fcf1f59afc67 ("net: phy: marvell: rearrange to use
-> > > genphy_read_lpa()") moved the setting of phydev->duplex below the
-> > > phy_resolve_aneg_pause call. Due to a check of DUPLEX_FULL in that
-> > > function, phydev->pause was no longer set.
-> > > 
-> > > Fix it by moving the parsing of the status variable before the blocks
-> > > dealing with the pause frames.
-> > > 
-> > > As the Marvell 88E1510 datasheet does not specify the timing between the
-> > > link status and the "Speed and Duplex Resolved" bit, we have to force
-> > > the link down as long as the resolved bit is not set, to avoid reporting
-> > > link up before we even have valid Speed/Duplex.
-> > > 
-> > > Tested with a Marvell 88E1510 (RGMII to Copper/1000Base-T)
-> > > 
-> > > Fixes: fcf1f59afc67 ("net: phy: marvell: rearrange to use genphy_read_lpa()")
-> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > > ---
-> > > Changes since v1:
-> > > - Force link to 0 if resolved bit is not set as suggested by Russell King
-> > > 
-> > >  drivers/net/phy/marvell.c | 46 ++++++++++++++++++++-------------------
-> > >  1 file changed, 24 insertions(+), 22 deletions(-)
-> > > 
-> > > diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
-> > > index 9a8badafea8a..561df5e33f65 100644
-> > > --- a/drivers/net/phy/marvell.c
-> > > +++ b/drivers/net/phy/marvell.c
-> > > @@ -1278,6 +1278,30 @@ static int marvell_read_status_page_an(struct phy_device *phydev,
-> > >  	int lpa;
-> > >  	int err;
-> > >  
-> > > +	if (!(status & MII_M1011_PHY_STATUS_RESOLVED)) {
-> > > +		phydev->link = 0;
-> > > +		return 0;
-> > > +	}  
-> > 
-> > This doesn't address my comment, so was I wrong? What I was trying to
-> > say is that the function updates the established link info as well as
-> > autoneg advertising info. If the link is not resolved we can't read the
-> > link info, but we should still report the advertising modes. No?  
-> 
-> If we report that the link is down, then the advertising modes are
-> irrelevent.
+On Fri, Apr 10, 2020 at 12:45 PM Ard Biesheuvel <ardb@kernel.org> wrote:
 
-Ugh, these are link partner modes...
+> > +CFLAGS_KERNEL          += -D__SANITIZE_ADDRESS__
+(...)
+> > -                                  $(call cc-option,-mno-single-pic-base)
+> > +                                  $(call cc-option,-mno-single-pic-base) \
+> > +                                  -D__SANITIZE_ADDRESS__
+>
+> I am not too crazy about this need to unconditionally 'enable' KASAN
+> on the command line like this, in order to be able to disable it again
+> when CONFIG_KASAN=y.
+>
+> Could we instead add something like this at the top of
+> arch/arm/boot/compressed/string.c?
+>
+> #ifdef CONFIG_KASAN
+> #undef memcpy
+> #undef memmove
+> #undef memset
+> void *__memcpy(void *__dest, __const void *__src, size_t __n) __alias(memcpy);
+> void *__memmove(void *__dest, __const void *__src, size_t count)
+> __alias(memmove);
+> void *__memset(void *s, int c, size_t count) __alias(memset);
+> #endif
 
-Applied, thanks!
+I obviously missed this before I sent out my new version of the series.
+It bothers me too.
+
+I will try this approach when I prepare the next iteration.
+
+Thanks a lot!
+
+Yours,
+Linus Walleij
