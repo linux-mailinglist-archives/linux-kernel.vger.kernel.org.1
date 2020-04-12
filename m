@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1F71A5F39
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 17:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7911A5F45
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 18:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727084AbgDLPpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 11:45:30 -0400
-Received: from mout.gmx.net ([212.227.17.21]:42493 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726818AbgDLPpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 11:45:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586706324;
-        bh=Ozo3Pc+S3y/l2oIB0mqBuzQkGUe1bcJdHUx4viCHUBo=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=B4SxjzeZ2Ll+UJqAsNnGYmHVoNs7jquH7NdyI1yBIcQmhk3hwyno7tJy0k0P0XAZm
-         i3D0+Rv3VZIc7OoKAz8B5zBLhOCikqbWzf9RJlsnOteOINsXMFyqmzC+S109hAOuGD
-         hVWl3AplEbu4fua6DRFHYwjXvvc8FjGdH+4KCKl8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([82.19.195.159]) by mail.gmx.com
- (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1MmlTC-1ixuAX3jOw-00jqWo; Sun, 12 Apr 2020 17:45:24 +0200
-From:   Alex Dewar <alex.dewar@gmx.co.uk>
-To:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Cc:     Alex Dewar <alex.dewar@gmx.co.uk>
-Subject: [PATCH] KVM: PPC: Book3S: Remove unneeded NULL check before kfree()
-Date:   Sun, 12 Apr 2020 16:45:09 +0100
-Message-Id: <20200412154510.36496-1-alex.dewar@gmx.co.uk>
-X-Mailer: git-send-email 2.26.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zvL24rS43N3XslrqBtPvrvM5md1EmfOJKzhOuGBfpkdurmKL1sy
- uTI3dwu+5jue0RbfeTpwSienBHxg8f8T3xXFOQLLczXuLOaoONOFEHKMYK2NLTSgSwLm7VA
- vPUpyMYOVgqJbwZXqSP4pW2KOvNV69AGK3HL1VFG+GVx2I55airIC82U+LZtruRyUGAVd9f
- Axncb1CsQHTVM9/rg3zow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:mS3sETiRlb4=:G9c88SfyOlwhRW67sgdigT
- mK9Xc0CCQpjZgPCIFUXJDTVV3oWMXVKNTrAKcuDIxrk7J4nKiZpKHpZwwW8ZHoG/5ucNe34gT
- 68mYlQNNvq3AQFigV2lGKiE2xLR629TntbKayBNaaxLu2OOQIHez/4LIGbn13P3dXPA2zFRdv
- h3HizeE8vHr6wN3+yBj+kzR/AEqem7kbnKrJAm5VAkISdiB8d6oAdygv/K5rQ4TeZS6zOafuA
- 0MoaymEBdh8NYKIm3mZWVG/Ci5pkeGyTaZ6oBa5JVU2g4IRqb4QN+2gOkABaeZRixjn6Ed1Yi
- Lv3wmRxGH+vjQP5TpM7Hz2cA72HnH3QRRFtbi9K73V/tBgq+ZCvPA1LbN0Om8cQ66BLGwyrEu
- a1q4GosjhzebhYndZ/DoKN3JcLpV2DrShpD50aUn8V8Q1uDLSRfg0XcI8T7Osh+OHzUNjHQjt
- cXThgmPAeZ7uRvivanAjTB2LevnxyutAprklH6P5RyWcUHYQU66432mB4XJNEaq2TlysmEXm/
- T3DWOWSmnxdAPnG4mVjJxh3d7LG2WT5wwr1aWmE+R4vbHhIJtObWhgkN0BW595p8WdnqvYu+t
- zZ8dQ2eFSFBDnQN9Jxqjp8+qlM6UrbEteiDDfhH+fTV80pY/k9JvU29ga6ZGBc8WkS0jwHXF4
- Xw39HOcqZMzx1zrtWJPm/aqqmsIhFA0yg7V3FPr6VAldq4U7tdIYyiXmc//2xoAYJFvG2zkWN
- 6yat7VxiSgTvnhPpREeh9p3nLWknWMsL4S1Zb160cz5MBC2sMbc+ECOtfShj/1fonklbjg19t
- WJN7J8IeVyNubvD47znU9ggc7R1gYdxnZ0Ew3BYAfk4yfqnGWOXMDEjzI3li0vdvoJtt9LypT
- e0rYZJpk1yMPO3JzQfOV2AmLc/GTd66EONQjKoqqEakLJ8wEpD14ynyC+bey1pZjiNz6hMRhx
- oxy580iSpMcCXp0sS54q2+KuovwpqBe3S3QN1IKjsYm7MejO/DyWVhp+sNHqoSJFDq/JCYOEA
- o6GQr5SiZX4q/J7esGbeCHMTkNnWKxLEWpawA2rdi22TJKEVh18G6tfFxrBXL3HG9gw+z/CdH
- Ag37WpQk7nO2UfNFfoH0OE+bTcFhoKexi7S5kTUKbCsZlSlu+YewR46FGQj3rQCD8gx4X6SqB
- OQO0WqtR5s/361G64CZBw/tMLAYvYBxLSTNgRo4c40tvRDotgybadOto+M4DcA/jJGzV3buQ3
- HMqLQ+XM7kvnsw4DI
+        id S1727154AbgDLQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 12:00:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:47424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727089AbgDLQAG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Apr 2020 12:00:06 -0400
+Received: from mail27.static.mailgun.info (mail27.static.mailgun.info [104.130.122.27])
+        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id 74902C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 08:54:07 -0700 (PDT)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586706851; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=JNwr0CYpXlkkkH3QmBGoB9z4dUS/S2kpKt/5/ceO538=; b=OWCrSURBFUEutljmJJacKXblDfkoMZHI0t4Xpw+i96zm+y4VbGgvy2DooJEP6JefZdO8IhQ8
+ MReDi+H/d+C832UE9+Dd3PdG0g9SR74qB0AlPe03ru+14b+o003WwvoIt8FY8vFKOev9HmCJ
+ z4NQ+PiHs404UfNc6iHffCdtIb8=
+X-Mailgun-Sending-Ip: 104.130.122.27
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e93399a.7ff158e6bd88-smtp-out-n02;
+ Sun, 12 Apr 2020 15:54:02 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1A268C43636; Sun, 12 Apr 2020 15:54:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from vbadigan-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 305C7C433CB;
+        Sun, 12 Apr 2020 15:53:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 305C7C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     bjorn.andersson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Subject: [PATCH V1 0/4] Minor fixes to sdhci-msm 
+Date:   Sun, 12 Apr 2020 21:23:24 +0530
+Message-Id: <1586706808-27337-1-git-send-email-vbadigan@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kfree() already checks for NULL arguments, so this check is reduntant.
-Remove it.
+Enable a couple of CAPS that qcom sd host controller supports.
+Set a quirk for enabling support for auto cmd12.
+And enable adma length mismatch error interrupt.
 
-Signed-off-by: Alex Dewar <alex.dewar@gmx.co.uk>
-=2D--
- arch/powerpc/kvm/book3s_hv_nested.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Veerabhadrarao Badiganti (4):
+  mmc: sdhci-msm: Enable MMC_CAP_WAIT_WHILE_BUSY host capability
+  mmc: sdhci-msm: Enable MMC_CAP_NEED_RSP_BUSY host capability
+  mmc: sdhci-msm: Set SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12 quirk
+  mmc: sdhci-msm: Enable ADMA length mismatch error interrupt
 
-diff --git a/arch/powerpc/kvm/book3s_hv_nested.c b/arch/powerpc/kvm/book3s=
-_hv_nested.c
-index dc97e5be76f61..cad324312040b 100644
-=2D-- a/arch/powerpc/kvm/book3s_hv_nested.c
-+++ b/arch/powerpc/kvm/book3s_hv_nested.c
-@@ -1416,8 +1416,7 @@ static long int __kvmhv_nested_page_fault(struct kvm=
-_run *run,
- 	rmapp =3D &memslot->arch.rmap[gfn - memslot->base_gfn];
- 	ret =3D kvmppc_create_pte(kvm, gp->shadow_pgtable, pte, n_gpa, level,
- 				mmu_seq, gp->shadow_lpid, rmapp, &n_rmap);
--	if (n_rmap)
--		kfree(n_rmap);
-+	kfree(n_rmap);
- 	if (ret =3D=3D -EAGAIN)
- 		ret =3D RESUME_GUEST;	/* Let the guest try again */
+ drivers/mmc/host/sdhci-msm.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-=2D-
-2.26.0
-
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
