@@ -2,201 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E49F21A5FA6
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 20:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6EF1A5FAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 20:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727462AbgDLSAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 14:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:39006 "EHLO
+        id S1727515AbgDLSPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 14:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727444AbgDLSAG (ORCPT
+        with ESMTP id S1727240AbgDLSPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 14:00:06 -0400
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1937C0A3BF8;
-        Sun, 12 Apr 2020 10:54:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=cz+sECi5B33RA2Hk3YBuRFj9oUh57xTGLg7pjrXt1hE=; b=MdWd9PfDOwHlAOT+K+IpO6rrgb
-        ubDeyh2oEPp/pcaZ9g1jKb5kHeNNvE2RibAmJo6tRbeskxtRQ7Ztbgm32Vv6DKyyiEYl2k7LL4ZP/
-        Fh1CkDGTBIMRGJJKJjY46Ci5/nC5qi4VbJ+PpvpFqI+6Ztgt+K2XAAJP/ke3n+rvov6obZi6fBD/o
-        PHMf3VlmtAAaPwlUTLnjjtXoeTKL1aCscOH1T1UlHAPRe3yqSpFo22gcZx95/nbm8Bm9LeDzKpNMm
-        QX3TzI18a3/IooWQuEUP74lvbO+7hiTqlbRT0twUmR2NcTzVMRcFRBlk9+fAvNy47m9XcmXngeCfA
-        uhlfU+fA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www381.your-server.de with esmtpsa (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.89_1)
-        (envelope-from <lars@metafoo.de>)
-        id 1jNgoR-0007Vk-80; Sun, 12 Apr 2020 19:54:31 +0200
-Received: from [82.135.69.30] (helo=[192.168.178.20])
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1jNgoQ-000Pmc-Vl; Sun, 12 Apr 2020 19:54:31 +0200
-Subject: Re: [PATCH] iio: buffer: remove null-checks for 'indio_dev->info'
-To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>,
-        "jic23@kernel.org" <jic23@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
-References: <20200407145918.6833-1-alexandru.ardelean@analog.com>
- <20200412143008.3fa722a9@archlinux>
- <950bed7e142e7aa1cbd74fe15e560fe7d584af95.camel@analog.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <1f16c600-0181-438c-8741-7a2438e3209f@metafoo.de>
-Date:   Sun, 12 Apr 2020 19:54:30 +0200
+        Sun, 12 Apr 2020 14:15:06 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60EFDC0A3BF7
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 11:08:19 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g12so117724wmh.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 11:08:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G7A0r4JUqARkX7IMofNwZ/y7BM8uD5N9xl0sjaTO+x0=;
+        b=oFtAxf5znxgMMF5tE9ElyDpRsBD1PKKsrBEr2EHxMRHROtoDRoVrk/ry3nlcb/0gkZ
+         Gpcn1e5K87YWpebCzcHUbAw/tsCIodFRF2JjZxerAtkLRljbE68u3DD4GxajSLx2/+nd
+         Vs7i0U7yCxXPKXF0Hy3M1lTjHPa91aMYnILn+tNpF0J/H46p6qj2MVZe+3lH32KWjFhS
+         VpId7an3Q7d1bYIoOhqqSjWPXiw7oCe1G3SGGjEspApu1SaWdaV/25C7ne0evA8IWlKW
+         v9IXrlBr8rnP4qdrxCSZhE3+3ttDYP/IfMMPj3DcwsT6bcZzTGjD2wbGjh3poIsUi2cH
+         DsZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G7A0r4JUqARkX7IMofNwZ/y7BM8uD5N9xl0sjaTO+x0=;
+        b=LtExhLij21a3WGWaQ+HHBqCWYJTdJshbpGb7PoPa4idqP1i1pDmc4orE/AVx9VSnaC
+         24i7/jWDCoF4in69NhqFKS4A/RMZcB942xw9B3z89vSeuaDWgdOLT4hNL18gVJTkJJqY
+         /ABZyWKM6wta8hEO4beS/cU8Bwg/jTC8G3E8kJYQC1yK0yviCDcdTxK7BAFJoB00BgNQ
+         PMQJ39HAxFwXeoTHJ8DgKCQ6iDSMCmFufl8gLKMqfxuzygHuJZftrbEni5wSBxbVMPbg
+         LoKWhQWWDHWZgS/NY5/qTyRTrfubbVxZT9vefTUeHw9RDl1J1SlMyWTuzfZ40K+uw4Pu
+         LRUQ==
+X-Gm-Message-State: AGi0PuYcxGnQXylkdtmmIL/KH3DB+RsbkC0lLM/uxdMhb4rxdWS/BRUl
+        Q2cs1JpGoBiN2eQfcNRwZxL9TmMQLDU=
+X-Google-Smtp-Source: APiQypKwHr3lRwcD+BBa7YFbVWW5NXzsQ9QvJh3397D/+e7rwwlz8dnW3xv5Lz9TfQ3dm5zbLeR5Kg==
+X-Received: by 2002:a1c:9e43:: with SMTP id h64mr12221022wme.0.1586714897600;
+        Sun, 12 Apr 2020 11:08:17 -0700 (PDT)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
+        by smtp.googlemail.com with ESMTPSA id n131sm11216077wmf.35.2020.04.12.11.08.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Apr 2020 11:08:17 -0700 (PDT)
+Subject: Re: [PATCH 2/4] dt-bindings: thermal: Add the idle cooling device
+To:     Rob Herring <robh@kernel.org>
+Cc:     rafael@kernel.org, Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200329220324.8785-1-daniel.lezcano@linaro.org>
+ <20200329220324.8785-2-daniel.lezcano@linaro.org>
+ <20200410165915.GA12708@bogus>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <4ca7b16f-c0b0-23c3-08a3-8731c2bf5f35@linaro.org>
+Date:   Sun, 12 Apr 2020 20:08:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <950bed7e142e7aa1cbd74fe15e560fe7d584af95.camel@analog.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200410165915.GA12708@bogus>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.2/25780/Sun Apr 12 13:57:54 2020)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/20 4:31 PM, Ardelean, Alexandru wrote:
-> On Sun, 2020-04-12 at 14:30 +0100, Jonathan Cameron wrote:
->> [External]
->>
->> On Tue, 7 Apr 2020 17:59:18 +0300
->> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->>
->>> Checking for 'indio_dev->info' is an impossible condition, since an IIO
->>> device should NOT be able to register without that information.
->>> The iio_device_register() function won't allow an IIO device to register if
->>> 'indio_dev->info' is NULL.
->>>
->>> If that information somehow becomes NULL, then we're likely busted anyway
->>> and we should crash the system, if we haven't already.
->>>
->>> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->> I'm glad there was a comment in there to remind me of what was going on here.
->>
->> This is the result of an ancient set from (I think) Lars hardening IIO
->> against forced removal.
->>
->> The indio_dev->info == NULL is deliberately set to true by the IIO core
->> during device remove in order to deal with any inflight data.
->>
->> Reference counting should ensure the device doesn't go away but we need
->> to avoid actually doing anything if this occurs.  That pointer was a
->> convenient option to avoid having to add an explicit flag or 'going away'.
->>
->> Now, it's possible we don't need this any more due to other changes but
->> I certainly don't want to remove it without that being very thoroughly
->> verified!
->>
-> Agreed.
-> Thanks for the info.
->
-> Will think about this a bit later.
->
-> Thanks
-> Alex
 
-I'm pretty sure we need this. It is to handle the case when the device 
-is removed while there a still open file handles. This is necessary 
-since we can't stop a physical device from being remove.
+Hi Rob,
+
+thanks for the review.
+
+On 10/04/2020 18:59, Rob Herring wrote:
+> On Mon, Mar 30, 2020 at 12:03:18AM +0200, Daniel Lezcano wrote:
+
+[ ... ]
+
+>> +   '#cooling-cells':
+>> +      const: 2
+>> +      description: |
+>> +         Must be 2, in order to specify minimum and maximum cooling state used in
+>> +         the cooling-maps reference. The first cell is the minimum cooling state
+>> +         and the second cell is the maximum cooling state requested.
+>> +
+>> +   duration:
+>> +      $ref: /schemas/types.yaml#/definitions/uint32
+>> +      description: |
+>> +         The idle duration in microsecond the device begins to cool down.
+>> +
+>> +   latency:
+>> +      $ref: /schemas/types.yaml#/definitions/uint32
+>> +      description: |
+>> +         The exit latency constraint in microsecond for the injected
+>> +         idle state for the device.
+> 
+> Both of these should have unit suffix. And then they don't need a type 
+> def.
+
+Do you mean I should remove the $ref:
+/schemas/types.yaml#/definitions/uint32 and change the name to
+duration_us and latency_us ?
+
+[ ... ]
 
 
-E.g. thing a USB device, if somebody pulls it out you can't access it 
-anymore. This means you can do any USB requests anymore, but there might 
-still be an open file handle. So that means even while the physical 
-device has already been removed the open file still has a reference to 
-the iio_dev, which means it is kept around and it is possible to do 
-read(), poll(), ... on it.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-In fact as soon as the remove() callback has finished the underlying 
-device is gone, even the module that implements the code might have been 
-removed. So we must make sure to not call into any of the callbacks 
-anymore. For this reason we set info to NULL.
-
-
-- Lars
-
-
->
->
->> Thanks,
->>
->> Jonathan
->>
->>> ---
->>>   drivers/iio/industrialio-buffer.c | 19 +------------------
->>>   1 file changed, 1 insertion(+), 18 deletions(-)
->>>
->>> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-
->>> buffer.c
->>> index e6fa1a4e135d..c96071bfada8 100644
->>> --- a/drivers/iio/industrialio-buffer.c
->>> +++ b/drivers/iio/industrialio-buffer.c
->>> @@ -54,10 +54,6 @@ static bool iio_buffer_ready(struct iio_dev *indio_dev,
->>> struct iio_buffer *buf,
->>>   	size_t avail;
->>>   	int flushed = 0;
->>>   
->>> -	/* wakeup if the device was unregistered */
->> This comment makes it clear this isn't as 'obvious' as it might at first seem
->> ;)
->>
->>> -	if (!indio_dev->info)
->>> -		return true;
->>> -
->>>   	/* drain the buffer if it was disabled */
->>>   	if (!iio_buffer_is_active(buf)) {
->>>   		to_wait = min_t(size_t, to_wait, 1);
->>> @@ -109,9 +105,6 @@ ssize_t iio_buffer_read_outer(struct file *filp, char
->>> __user *buf,
->>>   	size_t to_wait;
->>>   	int ret = 0;
->>>   
->>> -	if (!indio_dev->info)
->>> -		return -ENODEV;
->>> -
->>>   	if (!rb || !rb->access->read)
->>>   		return -EINVAL;
->>>   
->>> @@ -131,11 +124,6 @@ ssize_t iio_buffer_read_outer(struct file *filp, char
->>> __user *buf,
->>>   
->>>   	add_wait_queue(&rb->pollq, &wait);
->>>   	do {
->>> -		if (!indio_dev->info) {
->>> -			ret = -ENODEV;
->>> -			break;
->>> -		}
->>> -
->>>   		if (!iio_buffer_ready(indio_dev, rb, to_wait, n / datum_size)) {
->>>   			if (signal_pending(current)) {
->>>   				ret = -ERESTARTSYS;
->>> @@ -171,7 +159,7 @@ __poll_t iio_buffer_poll(struct file *filp,
->>>   	struct iio_dev *indio_dev = filp->private_data;
->>>   	struct iio_buffer *rb = indio_dev->buffer;
->>>   
->>> -	if (!indio_dev->info || rb == NULL)
->>> +	if (rb == NULL)
->>>   		return 0;
->>>   
->>>   	poll_wait(filp, &rb->pollq, wait);
->>> @@ -1100,11 +1088,6 @@ int iio_update_buffers(struct iio_dev *indio_dev,
->>>   		goto out_unlock;
->>>   	}
->>>   
->>> -	if (indio_dev->info == NULL) {
->>> -		ret = -ENODEV;
->>> -		goto out_unlock;
->>> -	}
->>> -
->>>   	ret = __iio_update_buffers(indio_dev, insert_buffer, remove_buffer);
->>>   
->>>   out_unlock:
-
-
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
