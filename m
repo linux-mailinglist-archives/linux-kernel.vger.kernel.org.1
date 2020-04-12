@@ -1,168 +1,140 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F1FE21A5F51
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 18:20:08 +0200 (CEST)
+Received: from vger.kernel.org (unknown [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id 24BC51A5F5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 18:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbgDLQUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 12:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:50618 "EHLO
+        id S1727193AbgDLQaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 12:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:52232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727093AbgDLQUG (ORCPT
+        with ESMTP id S1727173AbgDLQaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 12:20:06 -0400
-X-Greylist: delayed 421 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Apr 2020 12:20:06 EDT
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B09C0A3BF1;
-        Sun, 12 Apr 2020 09:13:06 -0700 (PDT)
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03CGA4xS067338;
-        Sun, 12 Apr 2020 16:12:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=k/PHXmE1tFF4uwo/11j/QXvuGih1LNDMw3dj5UKLqms=;
- b=CTGwsCdJuFJ4C3jpBtgQYXWIBjyk4Nxfl4g0rFUjZ86pwSO0kHA/le2EEn+q1XQ3v+fz
- DToJZKVvciAyWzzsM0P/kf3DJqLcOnHIBD/CQayRWbCXBXJFqudQHPaYs/2v/XnkCHG8
- hNByy//xNMT4y5VMRGWyVgR+/RQq/R+C6I5xLSUR1SHPZ+lB7KTFc/h41jMJ4OxUDvyN
- lUop2aISJrE0fPbrXnS/gwJxjVRp0vMu+A0CxYYIn+EA1/MZCj8YVxyy8Dpzo0oTwL/C
- FflEbLKOm+xJn6uGE6/lSrZEi/W/fls0pejZ590XmT/2aXGuIH/XrMzksQ/mPSf3khVB Mg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 30b5ukud8g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 12 Apr 2020 16:12:38 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03CGBbEU009877;
-        Sun, 12 Apr 2020 16:12:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 30bqcbfd6q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 12 Apr 2020 16:12:37 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03CGCT5R016047;
-        Sun, 12 Apr 2020 16:12:30 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 12 Apr 2020 09:12:29 -0700
-Date:   Sun, 12 Apr 2020 09:12:27 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     syzbot <syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com>,
-        hch@infradead.org, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        riteshh@linux.ibm.com, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Subject: Re: WARNING in iomap_apply
-Message-ID: <20200412161227.GE6749@magnolia>
-References: <00000000000048518b05a2fef23a@google.com>
- <20200411092558.20856-1-hdanton@sina.com>
+        Sun, 12 Apr 2020 12:30:06 -0400
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07CDC0A3BF8
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 09:25:05 -0700 (PDT)
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200412162501epoutp02dcc9eaa74c4d17be34443fa1bc3873db~FHygssHIi2127321273epoutp02e
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 16:25:01 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200412162501epoutp02dcc9eaa74c4d17be34443fa1bc3873db~FHygssHIi2127321273epoutp02e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1586708701;
+        bh=7gehAhvPd0bQ/3Pb49DoC4efoIHtTlTiKUVA2ybcyCc=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=Y1Ic/brO5Q4p1E7KdT+B4Pt8Ikb4MRKjswj3wN12wAQlD5iuqviWPm86R/AoLOVHb
+         TlfYDEcNomw75Z6tK5s38u0QvQ4iKm8e7Dr9B8zu3U61Mihrl6679WlpQ4K9r9cIOa
+         Ez9b1hEUZc+TIfs3FHQ/+XiT4964B0wxmdx8ve8Y=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20200412162500epcas5p348d02863b15b9d63e3ca730d2ae126b3~FHygIYJOc2939929399epcas5p3p;
+        Sun, 12 Apr 2020 16:25:00 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        41.91.04778.CD0439E5; Mon, 13 Apr 2020 01:25:00 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200412162459epcas5p299fae74f80ad5ec2f68a9df865b4bff2~FHye6aPd-2705227052epcas5p2k;
+        Sun, 12 Apr 2020 16:24:59 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200412162459epsmtrp1f6f67211c3b49863ed1db785630a8cf8~FHye2ymy70693706937epsmtrp1s;
+        Sun, 12 Apr 2020 16:24:59 +0000 (GMT)
+X-AuditID: b6c32a4a-353ff700000012aa-fc-5e9340dc000e
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DB.15.04024.AD0439E5; Mon, 13 Apr 2020 01:24:59 +0900 (KST)
+Received: from alimakhtar02 (unknown [107.108.234.165]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200412162455epsmtip2882de67d478a270b552da62c75357cad~FHybmFtyD2101821018epsmtip27;
+        Sun, 12 Apr 2020 16:24:55 +0000 (GMT)
+From:   "Alim Akhtar" <alim.akhtar@samsung.com>
+To:     "'Christoph Hellwig'" <hch@infradead.org>
+Cc:     <robh@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linux-samsung-soc@vger.kernel.org>,
+        <martin.petersen@oracle.com>, <linux-kernel@vger.kernel.org>,
+        <krzk@kernel.org>, <kwmad.kim@samsung.com>, <avri.altman@wdc.com>,
+        <cang@codeaurora.org>, "'Seungwon Jeon'" <essuuj@gmail.com>,
+        <stanley.chu@mediatek.com>, <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <20200412080947.GA6524@infradead.org>
+Subject: RE: [PATCH v5 4/5] scsi: ufs-exynos: add UFS host support for
+ Exynos SoCs
+Date:   Sun, 12 Apr 2020 21:54:53 +0530
+Message-ID: <000001d610e6$e8b11450$ba133cf0$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200411092558.20856-1-hdanton@sina.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9589 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004120148
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9589 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 bulkscore=0 mlxscore=0
- mlxlogscore=999 lowpriorityscore=0 impostorscore=0 adultscore=0
- phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004120147
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHr+Y8xYXIsvNQeqORDaXjXFCUqCgIAvgGXAbEacNoBTCAGf6gh6cLQ
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Se0hTYRTvu69dR7PbLDzN6DGQcmClGd2ih4TEpYIK6o8ispUXHzmV3dQS
+        I+lhti0fJZFDNDNn2sOaVsss17KVmlq+ykeaNkt7CCpIYlRud5L//c45v8c5Hx+Nyz+TCjoy
+        5hivjVFHKykp8fCF33L/7uDLB1cVGhTs0EQbxY6WmUg2v6aRZIvf3sDY+szrGNvUdE/CdlS8
+        JFjz53aSbanMpdirTc8wVv/eQrHFr/5g7N8qi4QtetCBgj25lvSLGPfY+FHCld9UcebSCxRX
+        fuMUd7a2muBGBjoJLr2iFHFj5kXcease2yXdL90QxkdHJvDalZsOSSOG345jcWkex0c/eaag
+        9xId8qCBCYJqSwbSISktZ54gsPb0uItRBNkTJZiTJWfGETS9WzitsN7vokTSUwS2kkfu4geC
+        IV2Ny5di/MFSmEo58bwp3FAw6LLFmdM4/DbnuEgeTCDcLrEhJ/Zi9kB1d+uUgKYJxhdGHa62
+        jFkHFvs5QsRzoTbH4cI4sxge/czFxY2WwMSAiRSztkLv86tujje8nDDgzlxgbBLIrjMTTn9g
+        QsCkOylqveDbqwr3WyhgKCNVIlKOgqFytdhOhqI8OyHizWBtzXW54IwflFWuFJM84eKkAxOV
+        MkhLlYtsXzgz3OZW+kCWXk+KmIPqwX4iEy01zrjLOOMu44z9jf/DriGiFC3g4wRNOC+siQuM
+        4RNXCGqNEB8TvuJIrMaMXF9Ptc2CTI07bIihkXK2zNqedVBOqhOEExobAhpXzpM5EqdasjD1
+        iSReGxuqjY/mBRvyoQmlt+wS2XZAzoSrj/FHeT6O105PMdpDkYJMezYmPwjaYiorff1V26+S
+        To6U1EfVDXw3DG/wb46X5H/xvKvI3fJ1+MPIsiu3euz2fSHZswbG7hT1betbG5IfED45Od6F
+        Og1EfU2dI287tTvpcF2WLjR0772dsxmVPXE++eZT5+uGZk1B/lO5XvDKvPtrzpqqqN71OweD
+        pfKo9eNKQohQB6hwraD+Bza284Z2AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsWy7bCSvO5th8lxBqd3MVm8/HmVzeLT+mWs
+        FvOPnGO1WH5hCZPF6QmLmCzOn9/AbnFzy1EWi02Pr7FaXN41h81ixvl9TBbd13ewWSw//o/J
+        4v+eHewWS7feZHTg87jc18vksXPWXXaPzSu0PDat6mTz2Lyk3qPl5H4Wj49Pb7F49G1Zxejx
+        eZOcR/uBbqYArigum5TUnMyy1CJ9uwSujHcXvjEVdHBWfHrA18B4nb2LkZNDQsBE4sDG22wg
+        tpDAbkaJw+0VEHFpiesbJ0DVCEus/PecHaLmFaPEnasJIDabgK7EjsVtYL0iQPbZhS8Yuxi5
+        OJgFJjBLnLg3kwXEERJ4yiixYcsnZpAqTgEjiTUrDzGC2MICQRL/ex4CdXNwsAioSnx6Ahbm
+        FbCU2HGslQXCFpQ4OfMJC0gJs4CeRNtGsBJmAXmJ7W/nMEPcpiDx8+kyVogb3CTuH5zBAlEj
+        LnH0Zw/zBEbhWUgmzUKYNAvJpFlIOhYwsqxilEwtKM5Nzy02LDDMSy3XK07MLS7NS9dLzs/d
+        xAiOXS3NHYyXl8QfYhTgYFTi4T1wbWKcEGtiWXFl7iFGCQ5mJRHeJ+VAId6UxMqq1KL8+KLS
+        nNTiQ4zSHCxK4rxP845FCgmkJ5akZqemFqQWwWSZODilGhjjLI4/DDJ4/fx+71uPrxdKTry+
+        oR15o8K2KoJ7zarXsxyO37eamMz77fcM3vApC97uXe9UOPml720BrVnH7+sWPTh8enmh8MVr
+        GzOrpfaxTW+rllsr9e/uk5YJy7Xfuv9ZGdbNJCGwflGhjIrNv5OMXtd7n3F8rvFcmDBL38mE
+        YUrtg41hHzesVGIpzkg01GIuKk4EAORK9mLZAgAA
+X-CMS-MailID: 20200412162459epcas5p299fae74f80ad5ec2f68a9df865b4bff2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200412074218epcas5p3ef7973c8a47533a15a359b069da8003c
+References: <20200412073159.37747-1-alim.akhtar@samsung.com>
+        <CGME20200412074218epcas5p3ef7973c8a47533a15a359b069da8003c@epcas5p3.samsung.com>
+        <20200412073159.37747-5-alim.akhtar@samsung.com>
+        <20200412080947.GA6524@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 05:25:58PM +0800, Hillf Danton wrote:
+Hello Christoph,
+
+> -----Original Message-----
+> From: Christoph Hellwig <hch@infradead.org>
+> Sent: 12 April 2020 13:40
+> To: Alim Akhtar <alim.akhtar@samsung.com>
+> Cc: robh@kernel.org; devicetree@vger.kernel.org;
+linux-scsi@vger.kernel.org;
+> linux-samsung-soc@vger.kernel.org; martin.petersen@oracle.com; linux-
+> kernel@vger.kernel.org; krzk@kernel.org; kwmad.kim@samsung.com;
+> avri.altman@wdc.com; cang@codeaurora.org; Seungwon Jeon
+> <essuuj@gmail.com>; stanley.chu@mediatek.com; linux-arm-
+> kernel@lists.infradead.org
+> Subject: Re: [PATCH v5 4/5] scsi: ufs-exynos: add UFS host support for
+Exynos
+> SoCs
 > 
-> On Sat, 11 Apr 2020 00:39:13 -0700
-> > syzbot found the following crash on:
-> > 
-> > HEAD commit:    7e634208 Merge tag 'acpi-5.7-rc1-2' of git://git.kernel.or..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=127ebeb3e00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=12205d036cec317f
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=77fa5bdb65cc39711820
-> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1196f257e00000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c336c7e00000
-> > 
-> > The bug was bisected to:
-> > 
-> > commit d3b6f23f71670007817a5d59f3fbafab2b794e8c
-> > Author: Ritesh Harjani <riteshh@linux.ibm.com>
-> > Date:   Fri Feb 28 09:26:58 2020 +0000
-> > 
-> >     ext4: move ext4_fiemap to use iomap framework
-> > 
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16c62a57e00000
-> > final crash:    https://syzkaller.appspot.com/x/report.txt?x=15c62a57e00000
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=11c62a57e00000
-> > 
-> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
-> > Reported-by: syzbot+77fa5bdb65cc39711820@syzkaller.appspotmail.com
-> > Fixes: d3b6f23f7167 ("ext4: move ext4_fiemap to use iomap framework")
-> > 
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 7023 at fs/iomap/apply.c:51 iomap_apply+0xa0c/0xcb0 fs/iomap/apply.c:51
-> > Kernel panic - not syncing: panic_on_warn set ...
-> > CPU: 0 PID: 7023 Comm: syz-executor296 Not tainted 5.6.0-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x188/0x20d lib/dump_stack.c:118
-> >  panic+0x2e3/0x75c kernel/panic.c:221
-> >  __warn.cold+0x2f/0x35 kernel/panic.c:582
-> >  report_bug+0x27b/0x2f0 lib/bug.c:195
-> >  fixup_bug arch/x86/kernel/traps.c:175 [inline]
-> >  fixup_bug arch/x86/kernel/traps.c:170 [inline]
-> >  do_error_trap+0x12b/0x220 arch/x86/kernel/traps.c:267
-> >  do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
-> >  invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
-> > RIP: 0010:iomap_apply+0xa0c/0xcb0 fs/iomap/apply.c:51
-> > Code: ff e9 0e fd ff ff e8 23 30 96 ff 0f 0b e9 07 f7 ff ff e8 17 30 96 ff 0f 0b 49 c7 c4 fb ff ff ff e9 35 f9 ff ff e8 04 30 96 ff <0f> 0b 49 c7 c4 fb ff ff ff e9 22 f9 ff ff e8 f1 2f 96 ff 0f 0b e9
-> > RSP: 0018:ffffc90000f87968 EFLAGS: 00010293
-> > RAX: ffff8880a1b00480 RBX: ffffc90000f879c8 RCX: ffffffff81dcf934
-> > RDX: 0000000000000000 RSI: ffffffff81dd016c RDI: 0000000000000007
-> > RBP: 0000000000000000 R08: ffff8880a1b00480 R09: ffffed1015cc70fc
-> > R10: ffff8880ae6387db R11: ffffed1015cc70fb R12: 0000000000000000
-> > R13: ffff888085e716b8 R14: 0000000000000000 R15: ffffc90000f87b50
-> >  iomap_fiemap+0x184/0x2c0 fs/iomap/fiemap.c:88
-> >  _ext4_fiemap+0x178/0x4f0 fs/ext4/extents.c:4860
-> >  ovl_fiemap+0x13f/0x200 fs/overlayfs/inode.c:467
-> >  ioctl_fiemap fs/ioctl.c:226 [inline]
-> >  do_vfs_ioctl+0x8d7/0x12d0 fs/ioctl.c:715
-> >  ksys_ioctl+0xa3/0x180 fs/ioctl.c:761
-> >  __do_sys_ioctl fs/ioctl.c:772 [inline]
-> >  __se_sys_ioctl fs/ioctl.c:770 [inline]
-> >  __x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:770
-> >  do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
-> >  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+> On Sun, Apr 12, 2020 at 01:01:58PM +0530, Alim Akhtar wrote:
+> > This patch introduces Exynos UFS host controller driver, which mainly
+> > handles vendor-specific operations including link startup, power mode
+> > change and hibernation/unhibernation.
 > 
-> Check out-of-bound parameters.
+> So this doesn't actually require the various removed or not added quirks
+after
+> all?
+This driver is actual consumer of those quirks, so those are still needed.
+On Martin's 5.7/scsi-queue need to revert " 492001990f64 scsi: ufshcd:
+remove unused quirks"
 
-No SOB, this patch cannot be taken.
-
-> --- a/fs/iomap/fiemap.c
-> +++ b/fs/iomap/fiemap.c
-> @@ -70,6 +70,9 @@ int iomap_fiemap(struct inode *inode, st
->  	struct fiemap_ctx ctx;
->  	loff_t ret;
->  
-> +	if (start < 0 || len < 0)
-> +		return -EINVAL;
-
-FIEMAP parameters ought to be range-checked in ioctl_fiemap().
-
---D
-
-> +
->  	memset(&ctx, 0, sizeof(ctx));
->  	ctx.fi = fi;
->  	ctx.prev.type = IOMAP_HOLE;
-> 
