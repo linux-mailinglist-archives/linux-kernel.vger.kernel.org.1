@@ -2,121 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6EF1A5FAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 20:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920FB1A5FB1
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 20:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727515AbgDLSPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 14:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41440 "EHLO
+        id S1727532AbgDLSPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 14:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727240AbgDLSPG (ORCPT
+        with ESMTP id S1727240AbgDLSPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 14:15:06 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60EFDC0A3BF7
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 11:08:19 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g12so117724wmh.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 11:08:19 -0700 (PDT)
+        Sun, 12 Apr 2020 14:15:07 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE25C0A88B5
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 11:09:17 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id w145so4990156lff.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 11:09:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G7A0r4JUqARkX7IMofNwZ/y7BM8uD5N9xl0sjaTO+x0=;
-        b=oFtAxf5znxgMMF5tE9ElyDpRsBD1PKKsrBEr2EHxMRHROtoDRoVrk/ry3nlcb/0gkZ
-         Gpcn1e5K87YWpebCzcHUbAw/tsCIodFRF2JjZxerAtkLRljbE68u3DD4GxajSLx2/+nd
-         Vs7i0U7yCxXPKXF0Hy3M1lTjHPa91aMYnILn+tNpF0J/H46p6qj2MVZe+3lH32KWjFhS
-         VpId7an3Q7d1bYIoOhqqSjWPXiw7oCe1G3SGGjEspApu1SaWdaV/25C7ne0evA8IWlKW
-         v9IXrlBr8rnP4qdrxCSZhE3+3ttDYP/IfMMPj3DcwsT6bcZzTGjD2wbGjh3poIsUi2cH
-         DsZw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9h/VHDAipBx0jF2b7D17h8FJCGnqVlCluR/r3Xtn0BU=;
+        b=Ij4GQLJZsh3MKHveLeyeI08E/AvICQr2ocvTVNPEs3GMobICHj68ZgWwiR/Nkj/FSL
+         JLkRsQVjisUCeSfigv8WYvBziaRdGlfZILOLwyyyNOUi8jUtSV2JK35eIuNup2FDbBq1
+         bT1hZiZa9TvXc7Ucc1YurFyg0WJ+HEZSHlSPM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G7A0r4JUqARkX7IMofNwZ/y7BM8uD5N9xl0sjaTO+x0=;
-        b=LtExhLij21a3WGWaQ+HHBqCWYJTdJshbpGb7PoPa4idqP1i1pDmc4orE/AVx9VSnaC
-         24i7/jWDCoF4in69NhqFKS4A/RMZcB942xw9B3z89vSeuaDWgdOLT4hNL18gVJTkJJqY
-         /ABZyWKM6wta8hEO4beS/cU8Bwg/jTC8G3E8kJYQC1yK0yviCDcdTxK7BAFJoB00BgNQ
-         PMQJ39HAxFwXeoTHJ8DgKCQ6iDSMCmFufl8gLKMqfxuzygHuJZftrbEni5wSBxbVMPbg
-         LoKWhQWWDHWZgS/NY5/qTyRTrfubbVxZT9vefTUeHw9RDl1J1SlMyWTuzfZ40K+uw4Pu
-         LRUQ==
-X-Gm-Message-State: AGi0PuYcxGnQXylkdtmmIL/KH3DB+RsbkC0lLM/uxdMhb4rxdWS/BRUl
-        Q2cs1JpGoBiN2eQfcNRwZxL9TmMQLDU=
-X-Google-Smtp-Source: APiQypKwHr3lRwcD+BBa7YFbVWW5NXzsQ9QvJh3397D/+e7rwwlz8dnW3xv5Lz9TfQ3dm5zbLeR5Kg==
-X-Received: by 2002:a1c:9e43:: with SMTP id h64mr12221022wme.0.1586714897600;
-        Sun, 12 Apr 2020 11:08:17 -0700 (PDT)
-Received: from [192.168.0.41] (lns-bzn-59-82-252-135-148.adsl.proxad.net. [82.252.135.148])
-        by smtp.googlemail.com with ESMTPSA id n131sm11216077wmf.35.2020.04.12.11.08.16
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9h/VHDAipBx0jF2b7D17h8FJCGnqVlCluR/r3Xtn0BU=;
+        b=tUskAc/MsWT8oE8hEWJzB6berpPkoAcGmdp+cdD4Q31/pquNTfD7DrgU0LaICpvT03
+         cJ/SlFYes5hIQ6bAW3XpAgnj1gAYNLpg5AngA8FlS9pQgrs8KsPhq2Rh1ci8sjsy/x7w
+         QN3eQWmUrv2ClenKiTL3nQRarAnvBv+KAdex6ltiAAIamrE8v5LRWsd7YvsI0lrTnYzD
+         /9wppv2uko40Jn2ummmJuvN2X0paDg5aOiJZ6gC+FrKkzqbwJnOKD7XNW2xlCdrUV7Pd
+         V2Qkb34f0vW5Ce1L80fmkIg1RB+qlhptBX9wZGNQ+bGUaJCBzFrzG+xorFzNWaOpgYuc
+         wCiw==
+X-Gm-Message-State: AGi0PuZD6k3xjj4laveqopPRRUyEH1Ia1K0CSDWIIIlf2B3EynF/u5/C
+        L4tAdbmD2atgU/g/4H0CgJb28SpWsqw=
+X-Google-Smtp-Source: APiQypIDTJjn214KFp9sADAh+hzvag95t28A+gKCOKE9gueT8gNdaqC+CrSk9ifNychkR4VfBdqlJQ==
+X-Received: by 2002:ac2:47f0:: with SMTP id b16mr8505379lfp.81.1586714954866;
+        Sun, 12 Apr 2020 11:09:14 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id d15sm6368092lfl.77.2020.04.12.11.09.13
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Apr 2020 11:08:17 -0700 (PDT)
-Subject: Re: [PATCH 2/4] dt-bindings: thermal: Add the idle cooling device
-To:     Rob Herring <robh@kernel.org>
-Cc:     rafael@kernel.org, Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200329220324.8785-1-daniel.lezcano@linaro.org>
- <20200329220324.8785-2-daniel.lezcano@linaro.org>
- <20200410165915.GA12708@bogus>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <4ca7b16f-c0b0-23c3-08a3-8731c2bf5f35@linaro.org>
-Date:   Sun, 12 Apr 2020 20:08:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Sun, 12 Apr 2020 11:09:13 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id h25so6703041lja.10
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 11:09:13 -0700 (PDT)
+X-Received: by 2002:a2e:b619:: with SMTP id r25mr8646337ljn.150.1586714952848;
+ Sun, 12 Apr 2020 11:09:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200410165915.GA12708@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <f53fdf2283e1c847a4c44ea7bea4cb6600c06991.camel@perches.com> <af4673918a3f6bfba51118d68d554d4a1ff3dad4.camel@perches.com>
+In-Reply-To: <af4673918a3f6bfba51118d68d554d4a1ff3dad4.camel@perches.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 12 Apr 2020 11:08:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whs8jNmbrXVyOekWD2zugN=jweHrspPqYVx59+0c5BWhQ@mail.gmail.com>
+Message-ID: <CAHk-=whs8jNmbrXVyOekWD2zugN=jweHrspPqYVx59+0c5BWhQ@mail.gmail.com>
+Subject: Re: Request to sort MAINTAINERS again just before an -rc1 release
+To:     Joe Perches <joe@perches.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Apr 11, 2020 at 9:45 AM Joe Perches <joe@perches.com> wrote:
+>
+> Please consider running and committing:
+>
+> $ ./scripts/parse-maintainers.pl --input=MAINTAINERS --output=MAINTAINERS --order
 
-Hi Rob,
+Ok, done. Let's see how painful this ends up being..
 
-thanks for the review.
-
-On 10/04/2020 18:59, Rob Herring wrote:
-> On Mon, Mar 30, 2020 at 12:03:18AM +0200, Daniel Lezcano wrote:
-
-[ ... ]
-
->> +   '#cooling-cells':
->> +      const: 2
->> +      description: |
->> +         Must be 2, in order to specify minimum and maximum cooling state used in
->> +         the cooling-maps reference. The first cell is the minimum cooling state
->> +         and the second cell is the maximum cooling state requested.
->> +
->> +   duration:
->> +      $ref: /schemas/types.yaml#/definitions/uint32
->> +      description: |
->> +         The idle duration in microsecond the device begins to cool down.
->> +
->> +   latency:
->> +      $ref: /schemas/types.yaml#/definitions/uint32
->> +      description: |
->> +         The exit latency constraint in microsecond for the injected
->> +         idle state for the device.
-> 
-> Both of these should have unit suffix. And then they don't need a type 
-> def.
-
-Do you mean I should remove the $ref:
-/schemas/types.yaml#/definitions/uint32 and change the name to
-duration_us and latency_us ?
-
-[ ... ]
-
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+               Linus
