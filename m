@@ -2,130 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF331A5EEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 16:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B0D1A5EF2
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 16:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727060AbgDLOS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 10:18:56 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:57146 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726805AbgDLOS4 (ORCPT
+        id S1727118AbgDLOTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 10:19:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41461 "EHLO
+        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727078AbgDLOTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 10:18:56 -0400
-Received: from ravnborg.org (unknown [158.248.194.18])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 835BC804A3;
-        Sun, 12 Apr 2020 16:18:49 +0200 (CEST)
-Date:   Sun, 12 Apr 2020 16:18:42 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     puck.chen@hisilicon.com, airlied@linux.ie, daniel@ffwll.ch,
-        tzimmermann@suse.de, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH] drm/hisilicon: Add the shutdown for hibmc_pci_driver
-Message-ID: <20200412141842.GA12313@ravnborg.org>
-References: <1586573370-41945-1-git-send-email-tiantao6@hisilicon.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Sun, 12 Apr 2020 10:19:33 -0400
+Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tglx@linutronix.de>)
+        id 1jNdSN-0001Ww-4U; Sun, 12 Apr 2020 16:19:31 +0200
+Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
+        by nanos.tec.linutronix.de (Postfix) with ESMTP id A99B6100E35;
+        Sun, 12 Apr 2020 16:19:30 +0200 (CEST)
+Date:   Sun, 12 Apr 2020 14:18:42 -0000
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] x86/urgent for 5.7-rc1
+References: <158670111777.20085.1305752188791047060.tglx@nanos.tec.linutronix.de>
+Message-ID: <158670112259.20085.6131532982985666749.tglx@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Content-Disposition: inline
-In-Reply-To: <1586573370-41945-1-git-send-email-tiantao6@hisilicon.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
-        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=BTeA3XvPAAAA:8
-        a=e5mUnYsNAAAA:8 a=AGzG8Xd3EExtzCPMGWIA:9 a=CjuIK1q_8ugA:10
-        a=tafbbOV3vt1XuEhzTjGK:22 a=Vxmtnl_E_bksehYqCbjh:22
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tian.
+Linus,
 
-On Sat, Apr 11, 2020 at 10:49:30AM +0800, Tian Tao wrote:
-> add the shutdown function to release the resource.
-> 
+please pull the latest x86/urgent branch from:
 
-Why it the release of the memory required in the shutdown method?
-The memory is allocated using devm_ioremap() which
-will let device management handle the release of the resources when
-he driver is released.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-04-12
 
-The patch also introduces a pci_disable_device()
-The better approch would be to use pcim_enable_device()
-so you let the device management about releasing the
-resources.
+up to:  e6f8b6c12f03: KVM: VMX: Extend VMXs #AC interceptor to handle split lock #AC in guest
 
-	Sam
 
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> index a6fd0c2..126d4f4 100644
-> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
-> @@ -232,6 +232,21 @@ static int hibmc_hw_map(struct hibmc_drm_private *priv)
->  	return 0;
->  }
->  
-> +static void hibmc_hw_unmap(struct hibmc_drm_private *priv)
-> +{
-> +	struct drm_device *dev = priv->dev;
-> +
-> +	if (priv->mmio)	{
-> +		devm_iounmap(dev->dev, priv->mmio);
-> +		priv->mmio = NULL;
-> +	}
-> +
-> +	if (priv->fb_map) {
-> +		devm_iounmap(dev->dev, priv->fb_map);
-> +		priv->fb_map = NULL;
-> +	}
-> +}
-> +
->  static int hibmc_hw_init(struct hibmc_drm_private *priv)
->  {
->  	int ret;
-> @@ -258,6 +273,7 @@ static int hibmc_unload(struct drm_device *dev)
->  
->  	hibmc_kms_fini(priv);
->  	hibmc_mm_fini(priv);
-> +	hibmc_hw_unmap(priv);
->  	dev->dev_private = NULL;
->  	return 0;
->  }
-> @@ -374,6 +390,12 @@ static void hibmc_pci_remove(struct pci_dev *pdev)
->  	drm_dev_unregister(dev);
->  	hibmc_unload(dev);
->  	drm_dev_put(dev);
-> +	pci_disable_device(pdev);
-> +}
-> +
-> +static void hibmc_pci_shutdown(struct pci_dev *pdev)
-> +{
-> +	hibmc_pci_remove(pdev);
->  }
->  
->  static struct pci_device_id hibmc_pci_table[] = {
-> @@ -386,6 +408,7 @@ static struct pci_driver hibmc_pci_driver = {
->  	.id_table =	hibmc_pci_table,
->  	.probe =	hibmc_pci_probe,
->  	.remove =	hibmc_pci_remove,
-> +	.shutdown = hibmc_pci_shutdown,
->  	.driver.pm =    &hibmc_pm_ops,
->  };
->  
-> -- 
-> 2.7.4
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+A set of three patches to fix the fallout of the newly added split lock
+detection feature.
+
+They address the case where a KVM guest triggers a split lock #AC and KVM
+reinjects it into the guest which is not prepared to handle it.
+
+Adds proper sanity checks which prevent the unconditional injection into
+the guest and handles the #AC on the host side in the same way as user
+space detections are handled. Depending on the detection mode it either
+warns and disables detection for the task or kills the task if the mode is
+set to fatal.
+
+
+
+Thanks,
+
+	tglx
+
+------------------>
+Thomas Gleixner (1):
+      x86/split_lock: Provide handle_guest_split_lock()
+
+Xiaoyao Li (2):
+      KVM: x86: Emulate split-lock access as a write in emulator
+      KVM: VMX: Extend VMXs #AC interceptor to handle split lock #AC in guest
+
+
+ arch/x86/include/asm/cpu.h  |  6 ++++++
+ arch/x86/kernel/cpu/intel.c | 33 ++++++++++++++++++++++++++++-----
+ arch/x86/kvm/vmx/vmx.c      | 37 ++++++++++++++++++++++++++++++++++---
+ arch/x86/kvm/x86.c          | 12 +++++++++++-
+ 4 files changed, 79 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+index ff6f3ca649b3..dd17c2da1af5 100644
+--- a/arch/x86/include/asm/cpu.h
++++ b/arch/x86/include/asm/cpu.h
+@@ -44,6 +44,7 @@ unsigned int x86_stepping(unsigned int sig);
+ extern void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c);
+ extern void switch_to_sld(unsigned long tifn);
+ extern bool handle_user_split_lock(struct pt_regs *regs, long error_code);
++extern bool handle_guest_split_lock(unsigned long ip);
+ #else
+ static inline void __init cpu_set_core_cap_bits(struct cpuinfo_x86 *c) {}
+ static inline void switch_to_sld(unsigned long tifn) {}
+@@ -51,5 +52,10 @@ static inline bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+ {
+ 	return false;
+ }
++
++static inline bool handle_guest_split_lock(unsigned long ip)
++{
++	return false;
++}
+ #endif
+ #endif /* _ASM_X86_CPU_H */
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 9a26e972cdea..bf08d4508ecb 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -21,6 +21,7 @@
+ #include <asm/elf.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/cmdline.h>
++#include <asm/traps.h>
+ 
+ #ifdef CONFIG_X86_64
+ #include <linux/topology.h>
+@@ -1066,13 +1067,10 @@ static void split_lock_init(void)
+ 	split_lock_verify_msr(sld_state != sld_off);
+ }
+ 
+-bool handle_user_split_lock(struct pt_regs *regs, long error_code)
++static void split_lock_warn(unsigned long ip)
+ {
+-	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
+-		return false;
+-
+ 	pr_warn_ratelimited("#AC: %s/%d took a split_lock trap at address: 0x%lx\n",
+-			    current->comm, current->pid, regs->ip);
++			    current->comm, current->pid, ip);
+ 
+ 	/*
+ 	 * Disable the split lock detection for this task so it can make
+@@ -1081,6 +1079,31 @@ bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+ 	 */
+ 	sld_update_msr(false);
+ 	set_tsk_thread_flag(current, TIF_SLD);
++}
++
++bool handle_guest_split_lock(unsigned long ip)
++{
++	if (sld_state == sld_warn) {
++		split_lock_warn(ip);
++		return true;
++	}
++
++	pr_warn_once("#AC: %s/%d %s split_lock trap at address: 0x%lx\n",
++		     current->comm, current->pid,
++		     sld_state == sld_fatal ? "fatal" : "bogus", ip);
++
++	current->thread.error_code = 0;
++	current->thread.trap_nr = X86_TRAP_AC;
++	force_sig_fault(SIGBUS, BUS_ADRALN, NULL);
++	return false;
++}
++EXPORT_SYMBOL_GPL(handle_guest_split_lock);
++
++bool handle_user_split_lock(struct pt_regs *regs, long error_code)
++{
++	if ((regs->flags & X86_EFLAGS_AC) || sld_state == sld_fatal)
++		return false;
++	split_lock_warn(regs->ip);
+ 	return true;
+ }
+ 
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 8959514eaf0f..83050977490c 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -4588,6 +4588,26 @@ static int handle_machine_check(struct kvm_vcpu *vcpu)
+ 	return 1;
+ }
+ 
++/*
++ * If the host has split lock detection disabled, then #AC is
++ * unconditionally injected into the guest, which is the pre split lock
++ * detection behaviour.
++ *
++ * If the host has split lock detection enabled then #AC is
++ * only injected into the guest when:
++ *  - Guest CPL == 3 (user mode)
++ *  - Guest has #AC detection enabled in CR0
++ *  - Guest EFLAGS has AC bit set
++ */
++static inline bool guest_inject_ac(struct kvm_vcpu *vcpu)
++{
++	if (!boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
++		return true;
++
++	return vmx_get_cpl(vcpu) == 3 && kvm_read_cr0_bits(vcpu, X86_CR0_AM) &&
++	       (kvm_get_rflags(vcpu) & X86_EFLAGS_AC);
++}
++
+ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+ {
+ 	struct vcpu_vmx *vmx = to_vmx(vcpu);
+@@ -4653,9 +4673,6 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+ 		return handle_rmode_exception(vcpu, ex_no, error_code);
+ 
+ 	switch (ex_no) {
+-	case AC_VECTOR:
+-		kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
+-		return 1;
+ 	case DB_VECTOR:
+ 		dr6 = vmcs_readl(EXIT_QUALIFICATION);
+ 		if (!(vcpu->guest_debug &
+@@ -4684,6 +4701,20 @@ static int handle_exception_nmi(struct kvm_vcpu *vcpu)
+ 		kvm_run->debug.arch.pc = vmcs_readl(GUEST_CS_BASE) + rip;
+ 		kvm_run->debug.arch.exception = ex_no;
+ 		break;
++	case AC_VECTOR:
++		if (guest_inject_ac(vcpu)) {
++			kvm_queue_exception_e(vcpu, AC_VECTOR, error_code);
++			return 1;
++		}
++
++		/*
++		 * Handle split lock. Depending on detection mode this will
++		 * either warn and disable split lock detection for this
++		 * task or force SIGBUS on it.
++		 */
++		if (handle_guest_split_lock(kvm_rip_read(vcpu)))
++			return 1;
++		fallthrough;
+ 	default:
+ 		kvm_run->exit_reason = KVM_EXIT_EXCEPTION;
+ 		kvm_run->ex.exception = ex_no;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 027dfd278a97..3bf2ecafd027 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5839,6 +5839,7 @@ static int emulator_cmpxchg_emulated(struct x86_emulate_ctxt *ctxt,
+ {
+ 	struct kvm_host_map map;
+ 	struct kvm_vcpu *vcpu = emul_to_vcpu(ctxt);
++	u64 page_line_mask;
+ 	gpa_t gpa;
+ 	char *kaddr;
+ 	bool exchanged;
+@@ -5853,7 +5854,16 @@ static int emulator_cmpxchg_emulated(struct x86_emulate_ctxt *ctxt,
+ 	    (gpa & PAGE_MASK) == APIC_DEFAULT_PHYS_BASE)
+ 		goto emul_write;
+ 
+-	if (((gpa + bytes - 1) & PAGE_MASK) != (gpa & PAGE_MASK))
++	/*
++	 * Emulate the atomic as a straight write to avoid #AC if SLD is
++	 * enabled in the host and the access splits a cache line.
++	 */
++	if (boot_cpu_has(X86_FEATURE_SPLIT_LOCK_DETECT))
++		page_line_mask = ~(cache_line_size() - 1);
++	else
++		page_line_mask = PAGE_MASK;
++
++	if (((gpa + bytes - 1) & page_line_mask) != (gpa & page_line_mask))
+ 		goto emul_write;
+ 
+ 	if (kvm_vcpu_map(vcpu, gpa_to_gfn(gpa), &map))
+
