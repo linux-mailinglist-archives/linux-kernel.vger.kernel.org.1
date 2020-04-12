@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 231231A5F80
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 19:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C491A5F76
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 19:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727223AbgDLRPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 13:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:59792 "EHLO
+        id S1727225AbgDLRJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 13:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:58852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727196AbgDLRPG (ORCPT
+        with ESMTP id S1727121AbgDLRJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 13:15:06 -0400
-X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Apr 2020 13:15:06 EDT
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC26C0A3BF0;
-        Sun, 12 Apr 2020 10:07:22 -0700 (PDT)
-IronPort-SDR: lQDYthYjuAhHSUjxlcGVfMtCP9BdVf6pRYeZsIEuLVgv+aw+RpPPs5rzS9wUfFIRnTXLOuamr0
- GUJasPAqg8Yw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2020 10:07:22 -0700
-IronPort-SDR: SmiQxsz75gR7NkwXRwXj40onoVS8+6VYMMeh1GH4lu/xkkcnBrYaSGbxy/tBJmQF4cCgOa6TwY
- sgONkR7vLNfw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,375,1580803200"; 
-   d="scan'208";a="453997712"
-Received: from apresura-mobl.ger.corp.intel.com (HELO localhost) ([10.252.61.246])
-  by fmsmga006.fm.intel.com with ESMTP; 12 Apr 2020 10:07:20 -0700
-Date:   Sun, 12 Apr 2020 20:07:19 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Ezra Buehler <ezra@easyb.ch>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        Tadeusz Struk <tadeusz.struk@intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] selftests/tpm2: Change exception handling to be Python 3
- compatible
-Message-ID: <20200412170719.GA324408@linux.intel.com>
-References: <20200412143656.72955-1-jarkko.sakkinen@linux.intel.com>
- <1FE03B4F-C42C-4B5F-A4B5-8169705911FA@easyb.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1FE03B4F-C42C-4B5F-A4B5-8169705911FA@easyb.ch>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        Sun, 12 Apr 2020 13:09:26 -0400
+Received: from mail26.static.mailgun.info (mail26.static.mailgun.info [104.130.122.26])
+        by lindbergh.monkeyblade.net (Postfix) with UTF8SMTPS id D80A9C0A3BFB
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 10:09:23 -0700 (PDT)
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586711366; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=K5BbQ2KZUyrV8meYfqfpKKLeqOc3xQqj4eCow+xfX+M=; b=Moa69rG0YvY7dIP+it+yzPI8H5kzv4aWN6E+iYEKlImYfa+JAt8Y6noq7U7y5CaeVXsvuDPm
+ V9z8GP5yt6L0v7FqsbVVyD8VVbcs23aCnHYQunYgc13/9TYG8QWFm8KQUeRS9ZnSMM4mpSg2
+ IKens67zBdUls8TRObv7V10zN/c=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e934b32.7fe9100163e8-smtp-out-n01;
+ Sun, 12 Apr 2020 17:09:06 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9255EC433BA; Sun, 12 Apr 2020 17:09:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from vbadigan-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6ADA3C433F2;
+        Sun, 12 Apr 2020 17:09:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6ADA3C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=vbadigan@codeaurora.org
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     bjorn.andersson@linaro.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Andy Gross <agross@kernel.org>
+Subject: [PATCH V1] mmc: sdhci-msm: Enable ADMA length mismatch error interrupt
+Date:   Sun, 12 Apr 2020 22:37:34 +0530
+Message-Id: <1586711302-3552-1-git-send-email-vbadigan@codeaurora.org>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1586706808-27337-5-git-send-email-vbadigan@codeaurora.org>
+References: <1586706808-27337-5-git-send-email-vbadigan@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 05:02:27PM +0200, Ezra Buehler wrote:
-> Hi Jarkkon,
-> 
-> > On 12 Apr 2020, at 16:36, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com> wrote:
-> > +        except ProtocolError(e):
-> 
-> Should this not be
-> 
->         except ProtocolError as e:
+ADMA_ERR_SIZE_EN bit of VENDOR_SPECIFIC_FUNC register controls
+ADMA length mismatch error interrupt. Enable it by default.
 
-Unless there is a functional difference, does it matter?
+And update all bit shift defines with BIT macro.
 
-/Jarkko
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+---
+ drivers/mmc/host/sdhci-msm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
+index 482045b..7d744f9 100644
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -56,19 +56,19 @@
+ #define CORE_FLL_CYCLE_CNT	BIT(18)
+ #define CORE_DLL_CLOCK_DISABLE	BIT(21)
+ 
+-#define CORE_VENDOR_SPEC_POR_VAL 0xa1c
++#define CORE_VENDOR_SPEC_POR_VAL 0xa9c
+ #define CORE_CLK_PWRSAVE	BIT(1)
+ #define CORE_HC_MCLK_SEL_DFLT	(2 << 8)
+ #define CORE_HC_MCLK_SEL_HS400	(3 << 8)
+ #define CORE_HC_MCLK_SEL_MASK	(3 << 8)
+-#define CORE_IO_PAD_PWR_SWITCH_EN	(1 << 15)
+-#define CORE_IO_PAD_PWR_SWITCH  (1 << 16)
++#define CORE_IO_PAD_PWR_SWITCH_EN	BIT(15)
++#define CORE_IO_PAD_PWR_SWITCH	BIT(16)
+ #define CORE_HC_SELECT_IN_EN	BIT(18)
+ #define CORE_HC_SELECT_IN_HS400	(6 << 19)
+ #define CORE_HC_SELECT_IN_MASK	(7 << 19)
+ 
+-#define CORE_3_0V_SUPPORT	(1 << 25)
+-#define CORE_1_8V_SUPPORT	(1 << 26)
++#define CORE_3_0V_SUPPORT	BIT(25)
++#define CORE_1_8V_SUPPORT	BIT(26)
+ #define CORE_VOLT_SUPPORT	(CORE_3_0V_SUPPORT | CORE_1_8V_SUPPORT)
+ 
+ #define CORE_CSR_CDC_CTLR_CFG0		0x130
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc., is a member of Code Aurora Forum, a Linux Foundation Collaborative Project
