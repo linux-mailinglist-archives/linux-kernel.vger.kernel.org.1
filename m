@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 381AB1A5E08
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 12:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 235181A5E24
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 12:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbgDLKZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 06:25:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725909AbgDLKZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 06:25:47 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ABE820708;
-        Sun, 12 Apr 2020 10:25:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586687146;
-        bh=GPoR6fO9oT8HCa7+VFKYGXh0NeNqRhagYkJ4iTjJt/U=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BXF89qPSLNzeNHt80CdhfT3Z5f0uYHt7THlNdM3epKAaCVFqrCGjxeERp/OjeSI/S
-         Jxjhr83g+1iBKcB85v67YpHhBaPhL6Gz2EJZhPbLCej2+3M1+KUZDibLqgxxon0o0m
-         eI/GChqvxjQF1CloTeeJyHa4Ynu6YN6Q05784YwQ=
-Date:   Sun, 12 Apr 2020 11:25:41 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Aishwarya R <aishwaryarj100@gmail.com>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Enrico Weigelt <info@metux.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kate Stewart <kstewart@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iio: adc: fsl-imx25-gcq: Use
- devm_platform_ioremap_resource
-Message-ID: <20200412112541.2a2097fa@archlinux>
-In-Reply-To: <20200409151306.308-1-aishwaryarj100@gmail.com>
-References: <20200409151306.308-1-aishwaryarj100@gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726998AbgDLK5K convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 12 Apr 2020 06:57:10 -0400
+Received: from mail.lintas.net.id ([103.242.106.93]:38332 "EHLO
+        mail.lintas.net.id" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726043AbgDLK5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Apr 2020 06:57:09 -0400
+X-Greylist: delayed 1219 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Apr 2020 06:57:06 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 7511530599B66;
+        Sun, 12 Apr 2020 17:34:13 +0700 (WIB)
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 2c5Y4A-LHVja; Sun, 12 Apr 2020 17:34:12 +0700 (WIB)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.lintas.net.id (Postfix) with ESMTP id 91AE930565B74;
+        Sun, 12 Apr 2020 17:34:12 +0700 (WIB)
+X-Virus-Scanned: amavisd-new at lintas.net.id
+Received: from mail.lintas.net.id ([127.0.0.1])
+        by localhost (mail.lintas.net.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id yo1wP-9uoIfC; Sun, 12 Apr 2020 17:34:12 +0700 (WIB)
+Received: from mail.lintas.net.id (mail.lintas.net.id [103.242.106.93])
+        by mail.lintas.net.id (Postfix) with ESMTP id A2BB23059AB01;
+        Sun, 12 Apr 2020 17:34:11 +0700 (WIB)
+Date:   Sun, 12 Apr 2020 17:34:11 +0700 (WIB)
+From:   =?utf-8?B?0KHQuNGB0YLQtdC80L3Ri9C5INCw0LTQvNC40L3QuNGB0YLRgNCw0YLQvtGA?= 
+        <ricky@lintas.net.id>
+Reply-To: mailsss@mail2world.com
+Message-ID: <1436105409.24276.1586687651609.JavaMail.zimbra@lintas.net.id>
+Subject: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+X-Originating-IP: [103.242.106.93]
+X-Mailer: Zimbra 8.8.15_GA_3888 (zclient/8.8.15_GA_3888)
+Thread-Index: pu96ZTRMa+3UnuH9nFxOe5WEAO4RzA==
+Thread-Topic: 
+Content-Transfer-Encoding: 8BIT
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  9 Apr 2020 20:43:05 +0530
-Aishwarya R <aishwaryarj100@gmail.com> wrote:
+ВНИМАНИЕ;
 
-> Use the helper function that wraps the calls to
-> platform_get_resource() and devm_ioremap_resource()
-> together.
-> 
-> Signed-off-by: Aishwarya R <aishwaryarj100@gmail.com>
-Please update the commit message for v2. In particular if an automated
-tool was used to identify this location then mention that.  If not just
-say 'by inspection' or similar!
+В вашем почтовом ящике превышен лимит хранилища, который составляет 5 ГБ, как определено администратором, который в настоящее время работает на 10,9 ГБ. Возможно, вы не сможете отправлять или получать новую почту, пока вы не подтвердите свою почту. Чтобы подтвердить свой почтовый ящик, отправьте следующую информацию ниже:
 
-Also, same thing about the signed-off-by as in previous patch.
+название:
+Имя пользователя: 
+пароль:
+Подтвердите Пароль: 
+Эл. адрес:
+Телефон: 
 
-Thanks,
+Если вы не сможете подтвердить свой почтовый ящик, ваш почтовый ящик будет отключен!
 
-Jonathan
+Приносим извинения за неудобства.
+Код подтверждения: en: 006,524.RU
+Техническая поддержка почты © 2020
 
-> ---
->  drivers/iio/adc/fsl-imx25-gcq.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/fsl-imx25-gcq.c b/drivers/iio/adc/fsl-imx25-gcq.c
-> index fa71489195c6..b0a4dc88ba9b 100644
-> --- a/drivers/iio/adc/fsl-imx25-gcq.c
-> +++ b/drivers/iio/adc/fsl-imx25-gcq.c
-> @@ -294,7 +294,6 @@ static int mx25_gcq_probe(struct platform_device *pdev)
->  	struct mx25_gcq_priv *priv;
->  	struct mx25_tsadc *tsadc = dev_get_drvdata(pdev->dev.parent);
->  	struct device *dev = &pdev->dev;
-> -	struct resource *res;
->  	void __iomem *mem;
->  	int ret;
->  	int i;
-> @@ -305,8 +304,7 @@ static int mx25_gcq_probe(struct platform_device *pdev)
->  
->  	priv = iio_priv(indio_dev);
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	mem = devm_ioremap_resource(dev, res);
-> +	mem = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(mem))
->  		return PTR_ERR(mem);
->  
-
+благодарю вас
+Системный администратор
