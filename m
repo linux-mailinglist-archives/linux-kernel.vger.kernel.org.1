@@ -2,160 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A34F1A60C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 23:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE531A60D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 00:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbgDLVpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 17:45:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:50946 "EHLO
+        id S1726105AbgDLWVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 18:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:56482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727388AbgDLVpw (ORCPT
+        with ESMTP id S1725954AbgDLWVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 17:45:52 -0400
-Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com [205.139.110.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAAECC0A3BF5
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 14:45:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586727951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gDOZbGbYc6a0ITpk5OWVoS7nLueP9baBRaeKv2m/AsE=;
-        b=bKxRtOU9M86FRrdFRljo6imbElJXMN+Bq7pfCe/MKCFOPqH59FOmJK8GSdN5aLh1zicJeD
-        lFhg3oZ2HcRNjeZjifgTTRTeLQNxN4FCGH4FBuA4FRXlPeDaEEYwNBzxUetNc/PfeIhgGI
-        uTd0lGG1kmY0wvcbR5dLXjbFnC9W1cE=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-6H7jhS_jPq2Q4KJLWsXsSw-1; Sun, 12 Apr 2020 17:45:47 -0400
-X-MC-Unique: 6H7jhS_jPq2Q4KJLWsXsSw-1
-Received: by mail-qk1-f200.google.com with SMTP id r64so6972821qkc.17
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 14:45:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gDOZbGbYc6a0ITpk5OWVoS7nLueP9baBRaeKv2m/AsE=;
-        b=JRxzmEVmY56pF8y6MYeX0NePZ0L3FOYPIcagIj+HglCNjOk0unpu4cKvfx5CEQyY+o
-         IRxP+CA2NUP+WSsib5u/vjNZ/GazhS6bmp2dhU9xoNwFQ4kdU5+lnmRFd08kVDze/OiN
-         fYmh5LWSRYxhJ0qIWFDY8qXLa2c7MZOpxLfhEwffIdT/iIAL+bSkqiszdXEqe3+D9H+n
-         f7igszZwefKJoDPzunQQZ3ErO4hSXLW+zMm9TbHmIl/BawHWhh6BxylOEkmXlid7kmME
-         hKUuDhX8I4IxpVYb0t620Z7qyMXCSBuUFMq6VUvvOBug/PEH7SZNa/ZpphbWGyvMm5Ny
-         Fbnw==
-X-Gm-Message-State: AGi0PuasEaW/Tq9it/6PSIYAXfVgL2aoixMYjQHVVzjB5NkAtxg1Cbzs
-        R/S5/z4s938uVWYlbC/BAkoi/E0F8eQyCAHociLEvYZN5wQqqmc04hFoyysZXhUDhQnnxnAVi3C
-        Q4jIcaEb93+FlYmyAHVE5FIzq
-X-Received: by 2002:a0c:ffcb:: with SMTP id h11mr2115023qvv.166.1586727946967;
-        Sun, 12 Apr 2020 14:45:46 -0700 (PDT)
-X-Google-Smtp-Source: APiQypJHpqxXU+mPC9x54gU9Fp9TiGbPpXJJG6ATF65B0HQPWkrjAxOez+nEQRO0BEdJ//5gIJignA==
-X-Received: by 2002:a0c:ffcb:: with SMTP id h11mr2115009qvv.166.1586727946729;
-        Sun, 12 Apr 2020 14:45:46 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id u14sm6944716qtq.41.2020.04.12.14.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Apr 2020 14:45:46 -0700 (PDT)
-Date:   Sun, 12 Apr 2020 17:45:45 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     mm <linux-mm@kvack.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: f45ec5ff16 ("userfaultfd: wp: support swap and page migration"):
- [  140.777858] BUG: Bad rss-counter state mm:b278fc66 type:MM_ANONPAGES
- val:1
-Message-ID: <20200412214545.GC38470@xz-x1>
-References: <20200410002518.GG8179@shao2-debian>
- <20200410073209.11164-1-hdanton@sina.com>
- <20200412125408.18008-1-hdanton@sina.com>
+        Sun, 12 Apr 2020 18:21:01 -0400
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67C0C0A88B5
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 15:21:01 -0700 (PDT)
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03CMKOMv043305;
+        Sun, 12 Apr 2020 22:20:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=ZFzvXlEz3aQDYueL7xZArt573VAUwf+OIG6zYzoJ7PE=;
+ b=RMRd5UgeaxFfVeeAWOGvLDZPxueA8mJFi5pBoUb7GRdTa4iTj6B3OjOuJ6MWe2BwiPER
+ I8/masZwLRSu3MooKJpkBl1r0rOFJTo+urNNmkwhPXRtdr9zjeHO5FIgIqCLyRYIVOrk
+ ATP1z3zpp3qy/sRwSYMx1rQdd4t4sJlLyckumATrp2onED/6NY6GD0DIHxtPKVe+rGkL
+ vljHC5nBKi6NXOe0ioA4pIN7VptWF5Xa0E1JoiBLfrxSYtL0L0rpi8hZ24licjuMiEQu
+ dvtpbcrso18wtQnvK+3IgF8weGHZLvDs3aoOeWDaatgmJ1nFCIFNJfb/AAMhY4nyjuYf +Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30b5aquutp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 12 Apr 2020 22:20:51 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03CMHpm2022319;
+        Sun, 12 Apr 2020 22:20:50 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 30bqp95gys-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 12 Apr 2020 22:20:50 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 03CMKl98023513;
+        Sun, 12 Apr 2020 22:20:48 GMT
+Received: from [10.0.0.251] (/24.5.189.83)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 12 Apr 2020 15:20:47 -0700
+Subject: Re: [PATCH 1/1] mm: slub: fix corrupted freechain in
+ deactivate_slab()
+To:     linux-mm@kvack.org
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, joe.jin@oracle.com
+References: <20200331031450.12182-1-dongli.zhang@oracle.com>
+From:   Dongli Zhang <dongli.zhang@oracle.com>
+Message-ID: <343df8bf-9a30-fd33-ef0b-c2ac3cc3baa5@oracle.com>
+Date:   Sun, 12 Apr 2020 15:20:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20200331031450.12182-1-dongli.zhang@oracle.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200412125408.18008-1-hdanton@sina.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9589 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=1 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004120202
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9589 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=1 adultscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004120202
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 08:54:08PM +0800, Hillf Danton wrote:
+Hi,
+
+May I get the feedback for this patch?
+
+This reduces the chance of page fault when freepointer is corrupted while
+"slub_debug=F" is set.
+
+Thank you very much!
+
+Dongli Zhang
+
+On 3/30/20 8:14 PM, Dongli Zhang wrote:
+> The slub_debug is able to fix the corrupted slab freelist/page. However,
+> alloc_debug_processing() only checks the validity of current and next
+> freepointer during allocation path. As a result, once some objects have
+> their freepointers corrupted, deactivate_slab() may lead to page fault.
 > 
-> On Fri, 10 Apr 2020 11:32:34 -0400 Peter Xu wrote:
-> > 
-> > I'm not sure this is correct.  As I mentioned, the commit wanted to
-> > apply the uffd-wp bit even for the swap entries so that even the swap
-> > entries got swapped in, the page will still be write protected.  So
-> > IIUC think we can't remove that.
+> Below is from a test kernel module when
+> 'slub_debug=PUF,kmalloc-128 slub_nomerge'. The test kernel corrupts the
+> freepointer of one free object on purpose. Unfortunately, deactivate_slab()
+> does not detect it when iterating the freechain.
 > 
-> Yes you are right.
+> [ 92.665260] BUG: unable to handle page fault for address: 00000000123456f8
+> [ 92.671597] #PF: supervisor read access in kernel mode
+> [ 92.676159] #PF: error_code(0x0000) - not-present page
+> [ 92.681666] PGD 0 P4D 0
+> [ 92.684923] Oops: 0000 [#1] SMP PTI
+> ... ...
+> [ 92.706684] RIP: 0010:deactivate_slab.isra.92+0xed/0x490
+> ... ...
+> [ 92.819781] Call Trace:
+> [ 92.823129]  ? ext4_htree_store_dirent+0x30/0xf0
+> [ 92.829488]  ? ext4_htree_store_dirent+0x30/0xf0
+> [ 92.834852]  ? stack_trace_save+0x46/0x70
+> [ 92.839342]  ? init_object+0x66/0x80
+> [ 92.843729]  ? ___slab_alloc+0x536/0x570
+> [ 92.847664]  ___slab_alloc+0x536/0x570
+> [ 92.851696]  ? __find_get_block+0x23d/0x2c0
+> [ 92.856763]  ? ext4_htree_store_dirent+0x30/0xf0
+> [ 92.862258]  ? _cond_resched+0x10/0x40
+> [ 92.866925]  ? __getblk_gfp+0x27/0x2a0
+> [ 92.872136]  ? ext4_htree_store_dirent+0x30/0xf0
+> [ 92.878394]  ? __slab_alloc+0x17/0x30
+> [ 92.883222]  __slab_alloc+0x17/0x30
+> [ 92.887210]  __kmalloc+0x1d9/0x200
+> [ 92.891448]  ext4_htree_store_dirent+0x30/0xf0
+> [ 92.896748]  htree_dirblock_to_tree+0xcb/0x1c0
+> [ 92.902398]  ext4_htree_fill_tree+0x1bc/0x2d0
+> [ 92.907749]  ext4_readdir+0x54f/0x920
+> [ 92.912725]  iterate_dir+0x88/0x190
+> [ 92.917072]  __x64_sys_getdents+0xa6/0x140
+> [ 92.922760]  ? fillonedir+0xb0/0xb0
+> [ 92.927020]  ? do_syscall_64+0x49/0x170
+> [ 92.931603]  ? __ia32_sys_getdents+0x130/0x130
+> [ 92.937012]  do_syscall_64+0x49/0x170
+> [ 92.940754]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> Now both CONFIG_MIGRATION and swap entry are restored after making uffd_wq
-> survive migrate the same way as soft_dirty.
+> Therefore, this patch adds extra consistency check in deactivate_slab().
+> Once an object's freepointer is corrupted, all following objects starting
+> at this object are isolated.
 > 
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -236,6 +236,8 @@ static bool remove_migration_pte(struct
->  		pte = pte_mkold(mk_pte(new, READ_ONCE(vma->vm_page_prot)));
->  		if (pte_swp_soft_dirty(*pvmw.pte))
->  			pte = pte_mksoft_dirty(pte);
-> +		if (pte_swp_uffd_wp(*pvmw.pte))
-> +			pte = pte_mkuffd_wp(pte);
+> Signed-off-by: Dongli Zhang <dongli.zhang@oracle.com>
+> ---
+>  mm/slub.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 6589b41d5a60..c27e2d993535 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2082,6 +2082,20 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+>  		void *prior;
+>  		unsigned long counters;
 >  
->  		/*
->  		 * Recheck VMA as permissions can change since migration started
-> @@ -243,15 +245,11 @@ static bool remove_migration_pte(struct
->  		entry = pte_to_swp_entry(*pvmw.pte);
->  		if (is_write_migration_entry(entry))
->  			pte = maybe_mkwrite(pte, vma);
-> -		else if (pte_swp_uffd_wp(*pvmw.pte))
-> -			pte = pte_mkuffd_wp(pte);
->  
->  		if (unlikely(is_zone_device_page(new))) {
->  			if (is_device_private_page(new)) {
->  				entry = make_device_private_entry(new, pte_write(pte));
->  				pte = swp_entry_to_pte(entry);
-> -				if (pte_swp_uffd_wp(*pvmw.pte))
-> -					pte = pte_mkuffd_wp(pte);
->  			}
->  		}
->  
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -139,11 +139,13 @@ static unsigned long change_pte_range(st
->  			}
->  			ptep_modify_prot_commit(vma, addr, pte, oldpte, ptent);
->  			pages++;
-> -		} else if (is_swap_pte(oldpte)) {
-> +		} else if (IS_ENABLED(CONFIG_MIGRATION)) {
->  			swp_entry_t entry = pte_to_swp_entry(oldpte);
->  			pte_t newpte;
->  
-> -			if (is_write_migration_entry(entry)) {
-> +			if (!non_swap_entry(entry)) {
-> +				newpte = oldpte;
-> +			} else if (is_write_migration_entry(entry)) {
->  				/*
->  				 * A protection check is difficult so
->  				 * just be safe and disable write
-> @@ -164,7 +166,7 @@ static unsigned long change_pte_range(st
->  				if (pte_swp_uffd_wp(oldpte))
->  					newpte = pte_swp_mkuffd_wp(newpte);
->  			} else {
-> -				newpte = oldpte;
-> +				continue;
->  			}
->  
->  			if (uffd_wp)
+> +		if ((s->flags & SLAB_CONSISTENCY_CHECKS) &&
+> +		    !check_valid_pointer(s, page, nextfree)) {
+> +			/*
+> +			 * If 'nextfree' is invalid, it is possible that
+> +			 * the object at 'freelist' is already corrupted.
+> +			 * Therefore, all objects starting at 'freelist'
+> +			 * are isolated.
+> +			 */
+> +			object_err(s, page, freelist, "Freechain corrupt");
+> +			freelist = NULL;
+> +			slab_fix(s, "Isolate corrupted freechain");
+> +			break;
+> +		}
+> +
+>  		do {
+>  			prior = page->freelist;
+>  			counters = page->counters;
 > 
-> 
-
-Hi, Hillf,
-
-Feel free to have a look at another report, which I think is the same
-issue of this:
-
-https://lore.kernel.org/lkml/CA+G9fYsRGvkqtpdGv_aVr+Hn17KgYq04Q=EE=pB774qVxRqOeg@mail.gmail.com/
-
-IMHO this bisected commit is correct itself, it's just that we
-shouldn't enable uffd-wp on 32bit system.
-
-Thanks,
-
--- 
-Peter Xu
-
