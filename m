@@ -1,535 +1,187 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5D71DFFE5
-	for <lists+linux-kernel@lfdr.de>; Sun, 24 May 2020 17:34:52 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id 836981A5E31
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 13:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387684AbgEXPen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 24 May 2020 11:34:43 -0400
-Received: from saturn.retrosnub.co.uk ([46.235.226.198]:40010 "EHLO
-        saturn.retrosnub.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726506AbgEXPem (ORCPT
+        id S1726982AbgDLLMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 07:12:07 -0400
+Received: from m176151.mail.qiye.163.com ([59.111.176.151]:45206 "EHLO
+        m176151.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725909AbgDLLMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 24 May 2020 11:34:42 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        by saturn.retrosnub.co.uk (Postfix; Retrosnub mail submission) with ESMTPSA id 1D7469E6A54;
-        Sun, 24 May 2020 16:34:35 +0100 (BST)
-Date:   Sun, 12 Apr 2020 12:06:48 +0100
-From:   Jonathan Cameron <jic23@jic23.retrosnub.co.uk>
-To:     Gwendal Grignou <gwendal@chromium.org>
-Cc:     bleung@chromium.org, vilhelm.gray@gmail.com,
-        enric.balletbo@collabora.com, ic23@kernel.org, groeck@chromium.org,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH] drivers: counter: Add Cros EC Sync counter
-Message-ID: <20200412120648.414cf624@archlinux>
-In-Reply-To: <20200408053655.99957-1-gwendal@chromium.org>
-References: <20200408053655.99957-1-gwendal@chromium.org>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Sun, 12 Apr 2020 07:12:07 -0400
+Received: from vivo.com (wm-11.qy.internal [127.0.0.1])
+        by m176151.mail.qiye.163.com (Hmail) with ESMTP id 9B1094829A1;
+        Sun, 12 Apr 2020 19:12:00 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ALoA6ACVCNCor3KnbEO6yarq.3.1586689920621.Hmail.wenhu.wang@vivo.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6IFtQQVRDSCAzLzNdIGRyaXZlcjogcnBtb246IGFkZCBycG1vbl9xbWkgZHJpdmVy?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 58.251.74.226
+In-Reply-To: <4aea2dc0-3378-9da0-9123-115a5c3e9893@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from wenhu.wang@vivo.com( [58.251.74.226) ] by ajax-webmail ( [127.0.0.1] ) ; Sun, 12 Apr 2020 19:12:00 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5paH6JmO?= <wenhu.wang@vivo.com>
+Date:   Sun, 12 Apr 2020 19:12:00 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZT1VMTUxCQkJNT0JLT0xDTllXWShZQU
+        hPN1dZLVlBSVdZCQ4XHghZQVk1NCk2OjckKS43PlkG
+X-HM-Sender-Digest: e1kJHlYWEh9ZQUhMSkNPSklMTElLN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6NxQ6TTo4LTg1OBQJSDAVGT40TQIaCQpVSFVKTkNNTUNCQklJTEpPVTMWGhIXVQweFRMOVQwa
+        FRw7DRINFFUYFBZFWVdZEgtZQVlOQ1VJTkpVTE9VSUlNWVdZCAFZQUpJQklONwY+
+X-HM-Tid: 0a716e16ce7c93b5kuws9b1094829a1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Apr 2020 22:36:55 -0700
-Gwendal Grignou <gwendal@chromium.org> wrote:
-
-> When the camera vsync pin is connected to the embedded controller (EC) of
-> a chromebook, the EC reports a sensor with a counter that increases
-> at each GPIO rising edge.
-> 
-> The sensor is presented using the counter subsystem.
-> In addition, it is also presented via the IIO subsystem with a timestamp,
-> allowing synchronisation with sensors connected to the same EC, for
-> image stabilisation or augmented reality applications.
-> 
-> To enable the counter:
-> via counter ABI:
-> echo "rising edge" > counterX/count0/signal_action
-> via iio ABI
-> echo 1 > iio:deviceY/en
-> 
-> To disable the counter:
-> via counter ABI:
-> echo "none" > counterX/count0/signal_action
-> via iio ABI
-> echo 0 > iio:deviceY/en
-> 
-> To read the current counter value:
-> via counter ABI:
-> cat counterX/count0/count
-> via iio ABI
-> cat iio:deviceY/in_count_raw
-> We can also read the value through the IIO buffer:
-> echo 1 > iio:deviceY/scan_elements/in_timestamp_en
-> echo 1 > iio:deviceY/scan_elements/in_count_en
-> echo 1 > iio:deviceY/buffer/enable
-> 
-> and each time to counter increase, the following binary blob
-> will be appended to dev/iio:deviceY:
-> 000f 0000 0000 0000 dc66 816c 0071 0000
->  \   <-- padding -> <-- timestamp ---->
->   count
-> 
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
-> ---
-> An initial version of the driver was presented few month ago at
-> https://patchwork.kernel.org/patch/11037009/
-> 
->  drivers/counter/Kconfig                       |  11 +
->  drivers/counter/Makefile                      |   1 +
->  drivers/counter/cros_ec_sync.c                | 342 ++++++++++++++++++
->  .../cros_ec_sensors/cros_ec_sensors_core.c    |  15 +
->  drivers/platform/chrome/cros_ec_sensorhub.c   |   3 +
->  .../linux/iio/common/cros_ec_sensors_core.h   |   4 +-
->  6 files changed, 375 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/counter/cros_ec_sync.c
-> 
-> diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
-> index c80fa76bb5311..18fde918ff40b 100644
-> --- a/drivers/counter/Kconfig
-> +++ b/drivers/counter/Kconfig
-> @@ -29,6 +29,17 @@ config 104_QUAD_8
->  	  The base port addresses for the devices may be configured via the base
->  	  array module parameter.
->  
-> +config CROS_EC_SYNC
-> +	tristate "ChromeOS EC Counter driver"
-> +	depends on IIO_CROS_EC_SENSORS_CORE
-> +	help
-> +	  Module to handle synchronisation sensor presented by the ChromeOS EC
-> +	  Sensor hub.
-> +	  Synchronisation sensor sends event to the host when the camera
-> +	  take a picture. It allows synchronisation with other MEMS sensor,
-> +	  like gyroscope for image statbilization or augmented reality
-> +	  application (AR).
-> +
->  config STM32_TIMER_CNT
->  	tristate "STM32 Timer encoder counter driver"
->  	depends on MFD_STM32_TIMERS || COMPILE_TEST
-> diff --git a/drivers/counter/Makefile b/drivers/counter/Makefile
-> index 55142d1f4c436..98378fca50ad6 100644
-> --- a/drivers/counter/Makefile
-> +++ b/drivers/counter/Makefile
-> @@ -6,6 +6,7 @@
->  obj-$(CONFIG_COUNTER) += counter.o
->  
->  obj-$(CONFIG_104_QUAD_8)	+= 104-quad-8.o
-> +obj-$(CONFIG_CROS_EC_SYNC)	+= cros_ec_sync.o
->  obj-$(CONFIG_STM32_TIMER_CNT)	+= stm32-timer-cnt.o
->  obj-$(CONFIG_STM32_LPTIMER_CNT)	+= stm32-lptimer-cnt.o
->  obj-$(CONFIG_TI_EQEP)		+= ti-eqep.o
-> diff --git a/drivers/counter/cros_ec_sync.c b/drivers/counter/cros_ec_sync.c
-> new file mode 100644
-> index 0000000000000..94b3ababab4bd
-> --- /dev/null
-> +++ b/drivers/counter/cros_ec_sync.c
-> @@ -0,0 +1,342 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Driver for synchronisation sensor behind CrOS EC.
-> + *
-> + * Copyright 2020 Google, Inc
-> + *
-> + * This software is licensed under the terms of the GNU General Public
-> + * License version 2, as published by the Free Software Foundation, and
-> + * may be copied, distributed, and modified under those terms.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * This driver uses the cros-ec interface to communicate with the Chrome OS
-> + * EC about counter sensors. Counters are presented through
-> + * iio sysfs.
-> + */
-> +
-> +#include <linux/counter.h>
-> +#include <linux/device.h>
-> +#include <linux/iio/buffer.h>
-> +#include <linux/iio/common/cros_ec_sensors_core.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_data/cros_ec_commands.h>
-> +#include <linux/platform_data/cros_ec_proto.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/slab.h>
-> +
-> +/*
-> + * One channel for counter, the other for timestamp.
-> + */
-> +#define MAX_CHANNELS (1 + 1)
-> +
-> +/**
-> + * struct cros_ec_sync_state - device structure
-> + *
-> + * @core: common structure for all cros_ec sensor.
-> + *        Must be at the beggining.
-> + * @channels: presented iio channels(2).
-> + * @counter: counter data structure.
-> + */
-> +struct cros_ec_sync_state {
-> +	struct cros_ec_sensors_core_state core;
-> +	struct iio_chan_spec channels[MAX_CHANNELS];
-> +	struct counter_device counter;
-> +};
-> +
-> +/**
-> + * cros_ec_sync_get_enable() - Check if the counter is enabled.
-> + *
-> + * @st:     core cros_ec sensor
-> + * @val:    status: 0: disabled, 1 enabled.
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +static int cros_ec_sync_get_enable(struct cros_ec_sensors_core_state *st,
-> +				   int *val)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&st->cmd_lock);
-> +	st->param.cmd = MOTIONSENSE_CMD_SENSOR_ODR;
-> +	st->param.sensor_odr.data = EC_MOTION_SENSE_NO_VALUE;
-> +
-> +	ret = cros_ec_motion_send_host_cmd(st, 0);
-> +	mutex_unlock(&st->cmd_lock);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*val = !!st->resp->sensor_odr.ret;
-> +	return 0;
-> +}
-> +
-> +/**
-> + * cros_ec_sync_set_enable() - Allow the counter to count.
-> + *
-> + * When enable, the counter will increase for each VSYNC rising edge
-> + * and will produce an event in the iio buffer, if enabled.
-> + *
-> + * @st:     core cros_ec sensor
-> + * @val:    0: disable, 1 enable.
-> + *
-> + * Return: 0 on success, -errno on failure.
-> + */
-> +static int cros_ec_sync_set_enable(struct cros_ec_sensors_core_state *st,
-> +				   int val)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&st->cmd_lock);
-> +	st->param.cmd = MOTIONSENSE_CMD_SENSOR_ODR;
-> +	st->param.sensor_odr.data = val;
-> +	st->param.sensor_odr.roundup = 1;
-> +
-> +	ret = cros_ec_motion_send_host_cmd(st, 0);
-> +	mutex_unlock(&st->cmd_lock);
-> +	return ret;
-> +}
-> +
-> +static int cros_ec_sync_iio_read(struct iio_dev *indio_dev,
-> +				 struct iio_chan_spec const *chan,
-> +				 int *val, int *val2, long mask)
-> +{
-> +	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
-> +	u16 data;
-> +	int ret;
-> +	int idx = chan->scan_index;
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		mutex_lock(&st->cmd_lock);
-> +		ret = cros_ec_sensors_read_cmd(indio_dev, 1 << idx, &data);
-> +		mutex_unlock(&st->cmd_lock);
-> +		if (ret < 0)
-> +			break;
-> +		ret = IIO_VAL_INT;
-> +		*val = data;
-> +		break;
-> +	case IIO_CHAN_INFO_ENABLE:
-> +		ret = cros_ec_sync_get_enable(st, val);
-> +		if (ret < 0)
-> +			break;
-> +		ret = IIO_VAL_INT;
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +		break;
-> +	}
-> +	mutex_unlock(&st->cmd_lock);
-> +	return ret;
-> +}
-> +
-> +static int cros_ec_sync_iio_write(struct iio_dev *indio_dev,
-> +				  struct iio_chan_spec const *chan,
-> +				  int val, int val2, long mask)
-> +{
-> +	struct cros_ec_sensors_core_state *st = iio_priv(indio_dev);
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_ENABLE:
-> +		if (val < 0 || val > 1)
-> +			return -EINVAL;
-> +
-> +		return cros_ec_sync_set_enable(st, val);
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
-> +static const struct iio_info cros_ec_sync_info = {
-> +	.read_raw = &cros_ec_sync_iio_read,
-> +	.write_raw = &cros_ec_sync_iio_write,
-> +};
-> +
-> +/* The counter can only increase, so only one function present. */
-> +static enum counter_count_function cros_ec_sync_functions[] = {
-> +	COUNTER_COUNT_FUNCTION_INCREASE,
-> +};
-> +
-> +/* 2 synapse actions allowed: count for each rising edge, or not. */
-> +static enum counter_synapse_action cros_ec_sync_synapse_actions[] = {
-> +	COUNTER_SYNAPSE_ACTION_NONE,
-> +	COUNTER_SYNAPSE_ACTION_RISING_EDGE,
-> +};
-> +
-> +static int cros_ec_sync_read_count(struct counter_device *counter,
-> +				   struct counter_count *count,
-> +				   unsigned long *val)
-> +{
-> +	struct cros_ec_sensors_core_state *st = counter->priv;
-> +	u16 raw;
-> +	int ret;
-> +
-> +	mutex_lock(&st->cmd_lock);
-> +	ret = cros_ec_sensors_read_cmd(iio_priv_to_dev(st), 1, &raw);
-> +	mutex_unlock(&st->cmd_lock);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*val = raw;
-> +	return 0;
-> +}
-> +
-> +static int cros_ec_sync_function_get(struct counter_device *counter,
-> +				     struct counter_count *count,
-> +				     size_t *function)
-> +{
-> +	*function = 0;
-> +	return 0;
-> +}
-> +
-> +static int cros_ec_sync_action_get(struct counter_device *counter,
-> +				   struct counter_count *count,
-> +				   struct counter_synapse *synapse,
-> +				   size_t *action)
-> +{
-> +	struct cros_ec_sensors_core_state *st = counter->priv;
-> +	int ret;
-> +	int raw;
-> +
-> +	ret = cros_ec_sync_get_enable(st, &raw);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*action = !!raw;
-> +	return 0;
-> +}
-> +
-> +static int cros_ec_sync_action_set(struct counter_device *counter,
-> +				   struct counter_count *count,
-> +				   struct counter_synapse *synapse,
-> +				   size_t action)
-> +{
-> +	struct cros_ec_sensors_core_state *st = counter->priv;
-> +
-> +	return cros_ec_sync_set_enable(st, action);
-> +}
-> +
-> +static const struct counter_ops cros_ec_sync_ops = {
-> +	.count_read = cros_ec_sync_read_count,
-> +	.function_get = cros_ec_sync_function_get,
-> +	.action_get = cros_ec_sync_action_get,
-> +	.action_set = cros_ec_sync_action_set,
-> +};
-> +
-> +static struct counter_signal cros_ec_sync_signals[] = {
-> +	{
-> +		.id = 0,
-> +		.name = "vsync"
-> +	}
-> +};
-> +
-> +static struct counter_synapse cros_ec_sync_synapses[] = {
-> +	{
-> +		.actions_list = cros_ec_sync_synapse_actions,
-> +		.num_actions = ARRAY_SIZE(cros_ec_sync_synapse_actions),
-> +		.signal = cros_ec_sync_signals
-> +	}
-> +};
-> +
-> +static struct counter_count cros_ec_sync_counts[] = {
-> +	{
-> +		.id = 0,
-> +		.name = "vsync",
-> +		.functions_list = cros_ec_sync_functions,
-> +		.num_functions = ARRAY_SIZE(cros_ec_sync_functions),
-> +		.synapses = cros_ec_sync_synapses,
-> +		.num_synapses = ARRAY_SIZE(cros_ec_sync_synapses),
-> +	}
-> +};
-> +
-> +static int cros_ec_sync_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct iio_dev *indio_dev;
-> +	struct cros_ec_sync_state *state;
-> +	struct iio_chan_spec *channel;
-> +	int ret;
-> +
-> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*state));
-> +	if (!indio_dev)
-> +		return -ENOMEM;
-> +
-> +	ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> +					cros_ec_sensors_capture,
-> +					cros_ec_sensors_push_data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	indio_dev->info = &cros_ec_sync_info;
-> +	state = iio_priv(indio_dev);
-> +
-> +	/* Initialize IIO device */
-> +	channel = state->channels;
-> +
-> +	/* Counter channel */
-> +	channel->type = IIO_COUNT;
-> +	channel->info_mask_separate = BIT(IIO_CHAN_INFO_RAW);
-> +	channel->info_mask_shared_by_all = BIT(IIO_CHAN_INFO_ENABLE);
-> +	channel->scan_type.realbits = CROS_EC_SENSOR_BITS;
-> +	channel->scan_type.storagebits = CROS_EC_SENSOR_BITS;
-> +	channel->scan_type.shift = 0;
-> +	channel->scan_index = 0;
-> +	channel->ext_info = cros_ec_sensors_limited_info;
-> +	channel->scan_type.sign = 'u';
-> +
-> +	/* Timestamp channel */
-> +	channel++;
-> +	channel->type = IIO_TIMESTAMP;
-> +	channel->channel = -1;
-> +	channel->scan_index = 1;
-> +	channel->scan_type.sign = 's';
-> +	channel->scan_type.realbits = 64;
-> +	channel->scan_type.storagebits = 64;
-> +
-> +	indio_dev->channels = state->channels;
-> +	indio_dev->num_channels = MAX_CHANNELS;
-> +
-> +	state->core.read_ec_sensors_data = cros_ec_sensors_read_cmd;
-> +
-> +	/* Initialize Counter device */
-> +	state->counter.name = dev_name(&pdev->dev);
-> +	state->counter.parent = &pdev->dev;
-> +	state->counter.ops = &cros_ec_sync_ops;
-> +	state->counter.counts = cros_ec_sync_counts;
-> +	state->counter.num_counts = ARRAY_SIZE(cros_ec_sync_counts);
-> +	state->counter.signals = cros_ec_sync_signals;
-> +	state->counter.num_signals = ARRAY_SIZE(cros_ec_sync_signals);
-> +	state->counter.priv = state;
-> +
-> +	ret = devm_iio_device_register(dev, indio_dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return devm_counter_register(dev, &state->counter);
-> +}
-> +
-> +static const struct platform_device_id cros_ec_sync_ids[] = {
-> +	{
-> +		.name = "cros-ec-sync",
-> +	},
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(platform, cros_ec_sync_ids);
-> +
-> +static struct platform_driver cros_ec_sync_platform_driver = {
-> +	.driver = {
-> +		.name	= "cros-ec-sync",
-> +	},
-> +	.probe		= cros_ec_sync_probe,
-> +	.id_table	= cros_ec_sync_ids,
-> +};
-> +module_platform_driver(cros_ec_sync_platform_driver);
-> +
-> +MODULE_AUTHOR("Gwendal Grignou <gwendal@chromium.org>");
-> +MODULE_DESCRIPTION("ChromeOS EC synchronisation sensor driver");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> index c831915ca7e56..3a15094616710 100644
-> --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> @@ -31,6 +31,7 @@
->  static char *cros_ec_loc[] = {
->  	[MOTIONSENSE_LOC_BASE] = "base",
->  	[MOTIONSENSE_LOC_LID] = "lid",
-> +	[MOTIONSENSE_LOC_CAMERA] = "camera",
->  	[MOTIONSENSE_LOC_MAX] = "unknown",
->  };
->  
-> @@ -467,6 +468,20 @@ const struct iio_chan_spec_ext_info cros_ec_sensors_ext_info[] = {
->  };
->  EXPORT_SYMBOL_GPL(cros_ec_sensors_ext_info);
->  
-> +const struct iio_chan_spec_ext_info cros_ec_sensors_limited_info[] = {
-> +	{
-> +		.name = "id",
-> +		.shared = IIO_SHARED_BY_ALL,
-> +		.read = cros_ec_sensors_id
-> +	},
-> +	{
-> +		.name = "location",
-> +		.shared = IIO_SHARED_BY_ALL,
-> +		.read = cros_ec_sensors_loc
-> +	},
-> +	{ },
-> +};
-> +EXPORT_SYMBOL_GPL(cros_ec_sensors_limited_info);
->  /**
->   * cros_ec_sensors_idx_to_reg - convert index into offset in shared memory
->   * @st:		pointer to state information for device
-> diff --git a/drivers/platform/chrome/cros_ec_sensorhub.c b/drivers/platform/chrome/cros_ec_sensorhub.c
-> index b7f2c00db5e1e..e4ae0868d1e06 100644
-> --- a/drivers/platform/chrome/cros_ec_sensorhub.c
-> +++ b/drivers/platform/chrome/cros_ec_sensorhub.c
-> @@ -106,6 +106,9 @@ static int cros_ec_sensorhub_register(struct device *dev,
->  		case MOTIONSENSE_TYPE_ACTIVITY:
->  			name = "cros-ec-activity";
->  			break;
-> +		case MOTIONSENSE_TYPE_SYNC:
-> +			name = "cros-ec-sync";
-> +			break;
->  		default:
->  			dev_warn(dev, "unknown type %d\n",
->  				 sensorhub->resp->info.type);
-> diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
-> index 7bc961defa87e..e416b28cf24c7 100644
-> --- a/include/linux/iio/common/cros_ec_sensors_core.h
-> +++ b/include/linux/iio/common/cros_ec_sensors_core.h
-> @@ -114,7 +114,9 @@ int cros_ec_sensors_core_write(struct cros_ec_sensors_core_state *st,
->  			       struct iio_chan_spec const *chan,
->  			       int val, int val2, long mask);
->  
-> -/* List of extended channel specification for all sensors */
-> +/* List of extended channel specification for all sensors. */
-> +extern const struct iio_chan_spec_ext_info cros_ec_sensors_limited_info[];
-> +/* Add calibration to set above. */
->  extern const struct iio_chan_spec_ext_info cros_ec_sensors_ext_info[];
->  extern const struct attribute *cros_ec_sensor_fifo_attributes[];
->  
-
+SGksCkZyb206IFJhbmR5IER1bmxhcCA8cmR1bmxhcEBpbmZyYWRlYWQub3JnPgpEYXRlOiAyMDIw
+LTA0LTEyIDAzOjIzOjAwClRvOiAgV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2aXZvLmNvbT4sZ3Jl
+Z2toQGxpbnV4Zm91bmRhdGlvbi5vcmcsbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwpTdWJq
+ZWN0OiBSZTogW1BBVENIIDMvM10gZHJpdmVyOiBycG1vbjogYWRkIHJwbW9uX3FtaSBkcml2ZXI+
+SGktLQo+Cj5PbiA0LzExLzIwIDI6NTMgQU0sIFdhbmcgV2VuaHUgd3JvdGU6Cj4+IFJQTU9OX1FN
+SSBpcyB1c2VkIGJ5IFJQTU9OIHRvIGNvbW11bmljYXRlIHdpdGggcmVtb3RlIHByb2Nlc3NvcnMK
+Pj4gd2l0aCBRTUkgQVBJcyBpZiBlbmFibGVkLiBSUE1PTl9RTUkgaXRzZWxmIGlzIGRlc2lnbmVk
+IGFzIGEgbW9kdWxhcgo+PiBmcmFtZXdvcmsgdGhhdCB3b3VsZCBpbnRyb2R1Y2UgZGlmZmVyZW50
+IGtpbmRzIG9mIG1lc3NhZ2Ugc2V0cwo+PiB3aGljaCBtYXkgYmUgdXBkYXRlZCBmb3IgdmVyc2lv
+bnMuCj4+IAo+PiBSUE1PTl9RTUkgY3JlYXRlcyBhIGRldmljZSBvZiBycG1vbl9kZXZpY2UgdHlw
+ZSBmb3IgZWFjaCByZW1vdGUKPj4gcHJvY2Vzc29yIGVuZHBvaW50LiBBbGwgdGhlIGVuZHBvaW50
+IGRldmljZXMgc2hhcmVzIGFuIHVuaXF1ZSBzZXQKPj4gb2YgUU1JIHN1aXRlLgo+PiAKPj4gU2ln
+bmVkLW9mZi1ieTogV2FuZyBXZW5odSA8d2VuaHUud2FuZ0B2aXZvLmNvbT4KPj4gLS0tCj4+ICBk
+cml2ZXJzL3JwbW9uL0tjb25maWcgICAgIHwgIDE1ICsrCj4+ICBkcml2ZXJzL3JwbW9uL01ha2Vm
+aWxlICAgIHwgICAxICsKPj4gIGRyaXZlcnMvcnBtb24vcnBtb25fcW1pLmMgfCA0MzQgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gIDMgZmlsZXMgY2hhbmdlZCwgNDUw
+IGluc2VydGlvbnMoKykKPj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3JwbW9uL3JwbW9u
+X3FtaS5jCj4+IAo+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3JwbW9uL3JwbW9uX3FtaS5jIGIv
+ZHJpdmVycy9ycG1vbi9ycG1vbl9xbWkuYwo+PiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+PiBpbmRl
+eCAwMDAwMDAwMDAwMDAuLmFlNDk1MTBjYmI4Mwo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL2Ry
+aXZlcnMvcnBtb24vcnBtb25fcW1pLmMKPj4gQEAgLTAsMCArMSw0MzQgQEAKPj4gKy8vIFNQRFgt
+TGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wLW9ubHkKPj4gKy8qCj4+ICsgKiBDb3B5cmlnaHQg
+KEMpIDIwMjAgVml2byBDb21tdW5pY2F0aW9uIFRlY2hub2xvZ3kgQ28uIEx0ZC4KPj4gKyAqIENv
+cHlyaWdodCAoQykgMjAyMCBXYW5nIFdlbmh1IDx3ZW5odS53YW5nQHZpdm8uY29tPgo+PiArICog
+QWxsIHJpZ2h0cyByZXNlcnZlZC4KPj4gKyAqCj4+ICsgKiBSUE1PTjogQW4gaW1wbGVtZW50YXRp
+b24gb2YgcmVtb3RlIHByb2Nlc3NvciBtb25pdG9yIGZyZWFtd29yawo+Cj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGZyYW1ld29yawo+
+CgpBZGRyZXNzZWQgaW4gdjIKCj4+ICsgKiBmb3IgcGxhdGZvcm1zIHRoYXQgbXVsdGktcHJvY2Vz
+c29ycyBleGlzdHMuIFJQTU9OIGlzIGltcGxlbWVudGVkCj4KPiAgICAgIGNvbmZ1c2luZyBzZW50
+ZW5jZSBhYm92ZS4KPgoKQWRkcmVzc2VkIGluIHYyCgo+PiArICogd2l0aCBjaGFyZGV2IGFuZCBz
+eXNmcyBjbGFzcyBhcyBpbnRlcmZhY2VzIHRvIGNvbW11bmljYXRlIHdpdGgKPj4gKyAqIHRoZSB1
+c2VyIGxldmVsLiBJdCBzdXBwb3J0cyBkaWZmZXJlbnQgY29tbXVuaWNhdGlvbiBpbnRlcmZhY2Vz
+Cj4+ICsgKiBhZGRlZCBtb2R1bGFybHkgd2l0aCByZW1vdGUgcHJvY2Vzc29ycy4gQ3VycmVudGx5
+IFFNSSBpbXBsZW1lbnRhdGlvbgo+PiArICogaXMgYXZhaWxhYmxlLgo+PiArICoKPj4gKyAqIFJQ
+TU9OIGNvdWxkIGJlIHVzZWQgdG8gZGV0ZWN0IHRoZSBzdGFiaWxpdGllcyBvZiByZW1vdGUgcHJv
+Y2Vzc29ycywKPj4gKyAqIGNvbGxlY3QgYW55IGtpbmRzIG9mIGluZm9ybWF0aW9uIHlvdSBhcmUg
+aW50ZXJlc3RlZCB3aXRoLCB0YWtlCj4KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaW50ZXJlc3RlZCBpbiwgdGFrZQo+CgpBZGRyZXNzZWQgaW4gdjIKCj4+
+ICsgKiBhY3Rpb25zIGxpa2UgY29ubmVjdGlvbiBzdGF0dXMgY2hlY2ssIGFuZCBzbyBvbi4gRW5o
+YW5jZW1lbnRzIGNhbgo+PiArICogYmUgbWFkZSB1cG9uIGN1cnJlbnQgaW1wbGVtZW50YXRpb24u
+Cj4+ICsgKi8KPj4gKwo+PiArI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgo+PiArI2luY2x1ZGUg
+PGxpbnV4L3JwbW9uLmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvc29jL3Fjb20vcW1pLmg+Cj4+ICsj
+aW5jbHVkZSA8bGludXgvb2ZfcGxhdGZvcm0uaD4KPj4gKyNpbmNsdWRlICJycG1vbl9xbWkuaCIK
+Pj4gKwo+PiArI2RlZmluZSBEUklWRVJfTkFNRSAicnBtb25fcW1pX2RydiIKPj4gKwo+PiArLyoK
+Pj4gKyAqIFJlbW90ZSBwcm9jZXNzb3IgcmVnaXN0ZXJlZC4KPj4gKyAqLwo+PiArI2RlZmluZSBS
+UF9SRUdJU1RFUkVECQkweDAwMDEKPj4gKwo+PiArLyoKPj4gKyAqIHdvcmsgc3RydWN0IGZvciBt
+ZXNzYWdlIHByb2Nlc3NpbmcuCj4+ICsgKi8KPj4gK3N0cnVjdCByZWN2X3dvcmsgewo+PiArCXN0
+cnVjdCB3b3JrX3N0cnVjdCB3b3JrOwo+PiArCXN0cnVjdCBzb2NrYWRkcl9xcnRyIHNxOwo+PiAr
+CXZvaWQgKm1zZzsKPj4gK307Cj4+ICsKPj4gKy8qCj4+ICsgKiBEZWxheWVkIHdvcmsgdG8gdGFr
+ZSBhIHJlc2V0IGFjdGlvbiB3aGVuIGEgZmFpbHVyZSBpcyBkZXRlY3RlZC4KPj4gKyAqLwo+PiAr
+c3RydWN0IGV4ZWNfY2Jfd29yayB7Cj4+ICsJc3RydWN0IGRlbGF5ZWRfd29yawkJZHdrOwo+PiAr
+CXN0cnVjdCBycG1vbl9xbWlfZGV2aWNlICpyZGV2Owo+PiArCXUzMgkJCWNoZWNrczsKPj4gK307
+Cj4+ICsKPj4gK3N0cnVjdCBycG1vbl9xbWlfZXhlY19mbiB7Cj4+ICsJaW50ICgqZXhlY19jYWxs
+KShzdHJ1Y3QgcnBtb25fcW1pX2RldmljZSAqcmRldik7Cj4+ICt9Owo+PiArCj4+ICtzdHJ1Y3Qg
+cnBtb25fcW1pX2NiX2ZuIHsKPj4gKwl2b2lkICgqY2FsbGJhY2spKHN0cnVjdCB3b3JrX3N0cnVj
+dCAqd29yayk7Cj4+ICsJdTMyIG1zZ19sZW47Cj4+ICt9Owo+PiArCj4+ICtzdGF0aWMgREVGSU5F
+X01VVEVYKHJkZXZfbGlzdF9sb2NrKTsKPj4gK3N0YXRpYyBMSVNUX0hFQUQocmRldl9saXN0KTsK
+Pj4gK3N0YXRpYyBzdHJ1Y3QgcnBtb25fcW1pICpycHFtaTsKPj4gK3N0YXRpYyBzdHJ1Y3Qgd29y
+a3F1ZXVlX3N0cnVjdCAqcnBxbWlfd3E7Cj4KPltzbmlwXQo+Cj4+ICsvKioKPj4gKyAqIHJwbW9u
+X3FtaV9leGVjX2NiX3dvcmtlciAtIGNhbGxiYWNrIHdvcmtlciBmb3IgZXhlY3V0aW9uCj4+ICsg
+KiBAd29yazogd29yayB0byBiZWVuIGRvbmUKPj4gKyAqCj4+ICsgKiBDYWxsZWQgYXMgd29ya2Vy
+IGhhbmRsZXIgYnkgdGhlIHNpZ25sZSB3b3JrZXIgdGhyZWFkIG9mIHJwbW9uX3dxLgo+Cj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpbmdsZQo+CgpBZGRyZXNzZWQgaW4g
+djIKCj4+ICsgKiBUaGUgd29ya2VyIGlzIHNjaGVkdWxlZCBhZnRlciB0aW1lb3V0IG1zIGR1cmF0
+aW9uIHNpbmNlIHRoZSBleGVjdXRpb24uCj4+ICsgKi8KPj4gK3N0YXRpYyB2b2lkIHJwbW9uX3Ft
+aV9leGVjX2NiX3dvcmtlcihzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCj4+ICt7Cj4+ICsJc3Ry
+dWN0IGRlbGF5ZWRfd29yayAqZHdrID0gdG9fZGVsYXllZF93b3JrKHdvcmspOwo+PiArCXN0cnVj
+dCBleGVjX2NiX3dvcmsgKmV3ayA9Cj4+ICsJCQljb250YWluZXJfb2YoZHdrLCBzdHJ1Y3QgZXhl
+Y19jYl93b3JrLCBkd2spOwo+PiArCXN0cnVjdCBycG1vbl9xbWlfZGV2aWNlICpyZGV2ID0gZXdr
+LT5yZGV2Owo+PiArCj4+ICsJbXV0ZXhfbG9jaygmcmRldl9saXN0X2xvY2spOwo+PiArCWlmIChl
+d2stPmNoZWNrcyA8PSBhdG9taWNfcmVhZCgmcmRldi0+cmVwb3J0cykpIHsKPj4gKwkJcHJfZGVi
+dWcoIiVzIGhlYWx0aCBjaGVjayBzdWNjZXNzIiwgcmRldi0+aW5mby0+bmFtZSk7Cj4+ICsJCWdv
+dG8gb3V0Owo+PiArCX0KPj4gKwo+PiArCXByX2Vycigic3Vic3lzdGVtICVzIGZhaWxlZCB0byBy
+ZXNwb25kIGluIHRpbWUiLCByZGV2LT5pbmZvLT5uYW1lKTsKPj4gKwo+PiArCXJwbW9uX2V2ZW50
+X25vdGlmeShyZGV2LT5pbmZvLCBSUE1PTl9FVkVOVF9DSEtDT05OX0ZBSUwpOwo+PiArCj4+ICtv
+dXQ6Cj4+ICsJbXV0ZXhfdW5sb2NrKCZyZGV2X2xpc3RfbG9jayk7Cj4+ICsJa2ZyZWUoZXdrKTsK
+Pj4gK30KPj4gKwo+PiArc3RhdGljIHN0cnVjdCBycG1vbl9xbWlfY2JfZm4gcnBtb25fcW1pX2V2
+ZW50X2NhbGxiYWNrc1tdID0gewo+PiArCXsKPj4gKwkJLmNhbGxiYWNrID0gcnBtb25fcW1pX3Jl
+Z2lzdGVyX3JlcV9jYiwKPj4gKwkJLm1zZ19sZW4gPSBzaXplb2Yoc3RydWN0IHJwbW9uX3JlZ2lz
+dGVyX3JlcSksCj4+ICsJfSwKPj4gKwl7Cj4+ICsJCS5jYWxsYmFjayA9IHJwbW9uX3FtaV9jb25u
+X2NoZWNrX3Jlc3BfY2IsCj4+ICsJCS5tc2dfbGVuID0gc2l6ZW9mKHN0cnVjdCBycG1vbl9jb25u
+X2NoZWNrX3Jlc3ApLAo+PiArCX0sCj4+ICt9Owo+PiArCj4+ICsvKioKPj4gKyAqIHJwbW9uX3Ft
+aV9jb25uX2NoZWNrIC0gc2VuZCBpbmRpY2F0aW9uLCBpbml0aWF0ZSBhbmQgcXVldWUgY2FsbGJh
+Y2sgd29yawo+PiArICogQHJkZXY6IGRldmljZSBpbnRlcmZhY2Ugb2Ygc3BlY2lmaWMgcmVtb3Rl
+IHByb2Nlc3NvciB0byBiZSBjaGVja2VkCj4+ICsgKi8KPj4gK3N0YXRpYyBpbnQgcnBtb25fcW1p
+X2Nvbm5fY2hlY2soc3RydWN0IHJwbW9uX3FtaV9kZXZpY2UgKnJkZXYpCj4+ICt7Cj4+ICsJc3Ry
+dWN0IGV4ZWNfY2Jfd29yayAqZXdrOwo+PiArCj4+ICsJbXV0ZXhfbG9jaygmcmRldl9saXN0X2xv
+Y2spOwo+PiArCWlmICghKHJkZXYtPmZsYWcgJiBSUF9SRUdJU1RFUkVEKSkgewo+PiArCQlwcl9l
+cnIoIiVzIGhhcyBub3QgcmVnaXN0ZXJlZCIsIHJkZXYtPmluZm8tPm5hbWUpOwo+PiArCQlyZXR1
+cm4gLUVOT0FOTzsKPgo+V2h5IEVOT0FOTz8KPgpNeSBmYXVsdCwgc2hvdWxkIGJlIEVOT05FVCBj
+YXVzZSB0aGUgcmVtb3RlIGVuZHBvaW50IGhhcyBub3QgcmVnaXN0ZXJlZCwKbWVhbmluZyAiTWFj
+aGluZSBpcyBub3Qgb24gdGhlIG5ldHdvcmsiLgoKQWRkcmVzc2VkIGluIHYyCgo+PiArCX0KPj4g
+Kwo+PiArCWlmICghX19yYXRlbGltaXQoJnJkZXYtPnJhdGVsaW1pdCkpIHsKPj4gKwkJcHJfZXJy
+KCIlcyByYXRlLWxpbWl0ZWQiLCByZGV2LT5pbmZvLT5uYW1lKTsKPj4gKwkJcmV0dXJuIDA7Cj4+
+ICsJfQo+PiArCW11dGV4X3VubG9jaygmcmRldl9saXN0X2xvY2spOwo+PiArCj4+ICsJcmRldi0+
+cnFtaS0+c2VuZG1zZyhyZGV2LCBOVUxMLCAwKTsKPj4gKwo+PiArCWV3ayA9IGt6YWxsb2Moc2l6
+ZW9mKCpld2spLCBHRlBfS0VSTkVMKTsKPj4gKwlpZiAoIWV3aykKPj4gKwkJcmV0dXJuIC1FTk9B
+Tk87Cj4KPmRpdHRvLgoKTXkgZmF1bHQsIHNob3VsZCBiZSBFTk9NRU07CkFkZHJlc3NlZCBpbiB2
+MgoKPgo+PiArCWV3ay0+cmRldiA9IHJkZXY7Cj4+ICsJZXdrLT5jaGVja3MgPSBhdG9taWNfaW5j
+X3JldHVybigmcmRldi0+Y2hlY2tzKTsKPj4gKwlJTklUX0RFTEFZRURfV09SSygmZXdrLT5kd2ss
+IHJwbW9uX3FtaV9leGVjX2NiX3dvcmtlcik7Cj4+ICsJcXVldWVfZGVsYXllZF93b3JrKHJwcW1p
+X3dxLAo+PiArCQkJICAgJmV3ay0+ZHdrLCBtc2Vjc190b19qaWZmaWVzKHJkZXYtPnRpbWVvdXQp
+KTsKPj4gKwo+PiArCXJldHVybiAwOwo+PiArfQo+PiArCj4+ICtzdGF0aWMgc3RydWN0IHJwbW9u
+X3FtaV9leGVjX2ZuIHJwbW9uX3FtaV9leGVjX2NhbGxzW10gPSB7Cj4+ICsJey5leGVjX2NhbGwg
+PSBycG1vbl9xbWlfY29ubl9jaGVja30sCj4+ICt9Owo+PiArCj4+ICtzdGF0aWMgaW50IHJwbW9u
+X3FtaV9tb25pdG9yKHN0cnVjdCBycG1vbl9pbmZvICppbmZvLCB1MzIgZXZlbnQpCj4+ICt7Cj4+
+ICsJc3RydWN0IHJwbW9uX3FtaV9kZXZpY2UgKnJkZXYgPSAoc3RydWN0IHJwbW9uX3FtaV9kZXZp
+Y2UgKilpbmZvLT5wcml2Owo+PiArCWludCBpOwo+PiArCj4+ICsJZm9yIChpID0gMDsgaSA8IFJQ
+TU9OX0VYRUNfTUFYOyBpKyspIHsKPj4gKwkJaWYgKGV2ZW50ICYgUlBNT05fQUNUSU9OKGkpKSB7
+Cj4+ICsJCQlpZiAoaSA+PSAoc2l6ZW9mKHJwbW9uX3FtaV9leGVjX2NhbGxzKSAvCj4+ICsJCQkJ
+ICBzaXplb2Yoc3RydWN0IHJwbW9uX3FtaV9leGVjX2ZuKSkpCj4+ICsJCQkJcmV0dXJuIC1FTk9U
+U1VQUDsKPj4gKwo+Cj5JJ20gbm90IHRvdGFsbHkgdXAgYWJvdXQgc3BlY3VsYXRpdmUgZmV0Y2hl
+cywgYnV0IGlzIGFueSBvZgo+PGxpbnV4L25vc3BlYy5oPiBuZWVkZWQgaGVyZT8KPgoKU3VyZWx5
+LCBhZGRyZXNzZWQgaW4gdjIKCj4+ICsJCQlpZiAocnBtb25fcW1pX2V4ZWNfY2FsbHNbaV0uZXhl
+Y19jYWxsKQo+PiArCQkJCXJldHVybiBycG1vbl9xbWlfZXhlY19jYWxsc1tpXS5leGVjX2NhbGwo
+cmRldik7Cj4+ICsJCQllbHNlCj4+ICsJCQkJcmV0dXJuIC1FTk9UU1VQUDsKPj4gKwkJfQo+PiAr
+CX0KPj4gKwo+PiArCXJldHVybiAtRUlOVkFMOwo+PiArfQo+Cj5bc25pcF0KPgo+PiArc3RhdGlj
+IHZvaWQgcnBtb25fcW1pX21zZ19jYWxsYmFjayhlbnVtIHJwbW9uX3FtaV9tc2dfdHlwZSB0eXBl
+LAo+PiArCQkJc3RydWN0IHNvY2thZGRyX3FydHIgKnNxLAo+PiArCQkJY29uc3Qgdm9pZCAqbXNn
+KQo+PiArewo+PiArCXN0cnVjdCByZWN2X3dvcmsgKnJ3azsKPj4gKwo+PiArCWlmICh0eXBlID49
+IChzaXplb2YocnBtb25fcW1pX2V2ZW50X2NhbGxiYWNrcykgLwo+PiArCQkgICAgIHNpemVvZihz
+dHJ1Y3QgcnBtb25fcW1pX2NiX2ZuKSkpIHsKPj4gKwkJcHJfZXJyKCJFcnJvciBub25lIHN1cHBv
+cnRlZCBtZXNzYWdlIHR5cGUuXG4iKTsKPgo+CQkgICAgICAgICAgICAgIG5vbi1zdXBwb3J0ZWQK
+PgoKQWRkcmVzc2VkIGluIHYyCgo+PiArCQlyZXR1cm47Cj4+ICsJfQo+PiArCj4+ICsJaWYgKHJw
+bW9uX3FtaV9ldmVudF9jYWxsYmFja3NbdHlwZV0uY2FsbGJhY2spIHsKPj4gKwkJcndrID0ga3ph
+bGxvYyhzaXplb2YoKnJ3ayksIEdGUF9LRVJORUwpOwo+PiArCQlpZiAoIXJ3aykgewo+PiArCQkJ
+cHJfZXJyKCJFcnJvciB0byBhbGxvYyByZWN2X3dvcmsiKTsKPj4gKwkJCXJldHVybjsKPj4gKwkJ
+fQo+PiArCj4+ICsJCUlOSVRfV09SSygmcndrLT53b3JrLCBycG1vbl9xbWlfZXZlbnRfY2FsbGJh
+Y2tzW3R5cGVdLmNhbGxiYWNrKTsKPj4gKwkJbWVtY3B5KCZyd2stPnNxLCBzcSwgc2l6ZW9mKCpz
+cSkpOwo+PiArCj4+ICsJCXJ3ay0+bXNnID0ga3phbGxvYyhycG1vbl9xbWlfZXZlbnRfY2FsbGJh
+Y2tzW3R5cGVdLm1zZ19sZW4sCj4+ICsJCQkJICAgR0ZQX0tFUk5FTCk7Cj4+ICsJCWlmICghcndr
+LT5tc2cpIHsKPj4gKwkJCXByX2VycigiRXJyb3IgdG8gYWxsb2MgbWVzc2FnZSBvZiByZWN2X3dv
+cmsiKTsKPj4gKwkJCWtmcmVlKHJ3ayk7Cj4+ICsJCQlyZXR1cm47Cj4+ICsJCX0KPj4gKwo+PiAr
+CQltZW1jcHkocndrLT5tc2csIG1zZywgcnBtb25fcW1pX2V2ZW50X2NhbGxiYWNrc1t0eXBlXS5t
+c2dfbGVuKTsKPj4gKwkJcXVldWVfd29yayhycHFtaV93cSwgJnJ3ay0+d29yayk7Cj4+ICsJfQo+
+PiArfQo+Cj5bc25pcF0KPgo+PiArc3RhdGljIHZvaWQgX19leGl0IHJwbW9uX3FtaV9kcnZfZXhp
+dCh2b2lkKQo+PiArewo+PiArCXJwbW9uX3FtaV9kZWxfc2VydmVyKCk7Cj4+ICsKPj4gKwlxbWlf
+aGFuZGxlX3JlbGVhc2UoJnJwcW1pLT5xbWkpOwo+PiArCj4+ICsJcGxhdGZvcm1fZHJpdmVyX3Vu
+cmVnaXN0ZXIoJnJwbW9uX3FtaV9kcnYpOwo+PiArfQo+PiArbW9kdWxlX2V4aXQocnBtb25fcW1p
+X2Rydl9leGl0KTsKPj4gKwo+PiArTU9EVUxFX0FVVEhPUigiV2FuZyBXZW5odSIpOwo+Cj5QbGVh
+c2UgYWRkIGVtYWlsIGFkZHJlc3MgYWJvdmUuCj4KCkFkZHJlc3NlZCBpbiB2MgoKPj4gK01PRFVM
+RV9ERVNDUklQVElPTigiU3Vic3lzdGVtIE1vbml0b3IgdmlhIFFNSSBwbGF0Zm9ybSBkcml2ZXIi
+KTsKPj4gK01PRFVMRV9BTElBUygicGxhdGZvcm06IiBEUklWRVJfTkFNRSk7Cj4+ICtNT0RVTEVf
+TElDRU5TRSgiR1BMIHYyIik7Cj4+IAo+Cj50aGFua3MuCj4tLSAKPn5SYW5keQo+CgpUaGFua3Ms
+Cldlbmh1DQoNCg==
