@@ -1,68 +1,58 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C00861A63C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:34:29 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id B371A1A5D61
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 10:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgDMHe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:33564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbgDMHeZ (ORCPT
+        id S1726154AbgDLIJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 04:09:49 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:35304 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbgDLIJt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:34:25 -0400
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE40AC008651;
-        Mon, 13 Apr 2020 00:34:24 -0700 (PDT)
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07FFD2076A;
-        Mon, 13 Apr 2020 07:34:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586763264;
-        bh=5tRMSuqLMFSJVVCs9qTWdKiqGZSNGUKDkz5sxOAY5zc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J1roHItHnG9VDqm0mzs/8c0nQGN2w5upyltGdgywOzIqSNbWKpfPsYQWsrZykR6zL
-         xemjjCf8Cb8ZYp+U5bt1yMx2iOufFRoSAvgYotyK/dgdQ0IBBltm2tzkmEkAf/HqjM
-         YCtbGPV2KGIsSgIn4oGyPF3SS/Dyfhtb+lQiet1M=
-Date:   Sun, 12 Apr 2020 10:07:28 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 5.6 00/38] 5.6.4-rc1 review
-Message-ID: <20200412080728.GA2710231@kroah.com>
-References: <20200411115459.324496182@linuxfoundation.org>
- <001e15f7-a755-82ca-0c43-aa8c0c2ab573@roeck-us.net>
+        Sun, 12 Apr 2020 04:09:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JDEA4aSSIckcWLhH+0n2OyNXRY6oS0EWJxgESd0P7Gg=; b=m+nJBszFbsHkAkcCRyWRhrX4Zv
+        5NtrbyIG4/Y5IncFEmp2qIQxkoEF5KFIIq48pM7xQgC1GMz4xjGbLUc718zSdW5Od0AlqYbbbUax9
+        r88iM9tt2iOXp8h6GmY7QELnSiQFhrHv2j+RSSShbmeiJqSDp8qk0B6wK5X2elJHHhLBi9GCj8Snh
+        2SfJH+iY9pIJGHcV73jjj1fj2wjZjpqO3MQEVyJnZ+UMaZNjLly9DqLf3iJhc6qSxzGdhP74sZiRg
+        BWVggmTXTwsTbb01g/NvP5TG34P3zzYcg42vAhWEZUeooECbyY62rKILwUSjEs/AYYL3tKeBNCOMr
+        sfWZU0Mg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jNXgZ-0001kE-Rp; Sun, 12 Apr 2020 08:09:47 +0000
+Date:   Sun, 12 Apr 2020 01:09:47 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Alim Akhtar <alim.akhtar@samsung.com>
+Cc:     robh@kernel.org, devicetree@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        martin.petersen@oracle.com, linux-kernel@vger.kernel.org,
+        krzk@kernel.org, kwmad.kim@samsung.com, avri.altman@wdc.com,
+        cang@codeaurora.org, Seungwon Jeon <essuuj@gmail.com>,
+        stanley.chu@mediatek.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 4/5] scsi: ufs-exynos: add UFS host support for Exynos
+ SoCs
+Message-ID: <20200412080947.GA6524@infradead.org>
+References: <20200412073159.37747-1-alim.akhtar@samsung.com>
+ <CGME20200412074218epcas5p3ef7973c8a47533a15a359b069da8003c@epcas5p3.samsung.com>
+ <20200412073159.37747-5-alim.akhtar@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <001e15f7-a755-82ca-0c43-aa8c0c2ab573@roeck-us.net>
+In-Reply-To: <20200412073159.37747-5-alim.akhtar@samsung.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 11, 2020 at 01:43:16PM -0700, Guenter Roeck wrote:
-> On 4/11/20 5:09 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.6.4 release.
-> > There are 38 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 428 pass: 428 fail: 0
+On Sun, Apr 12, 2020 at 01:01:58PM +0530, Alim Akhtar wrote:
+> This patch introduces Exynos UFS host controller driver,
+> which mainly handles vendor-specific operations including
+> link startup, power mode change and hibernation/unhibernation.
 
-THanks for testing all of these and letting me know.
-
-greg k-h
+So this doesn't actually require the various removed or not added quirks
+after all?
