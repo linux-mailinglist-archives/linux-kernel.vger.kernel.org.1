@@ -1,336 +1,115 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D831A6546
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:38:06 +0200 (CEST)
+Received: from vger.kernel.org (unknown [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id 32B921A60F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 00:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgDMKiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:38:03 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:57546 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727776AbgDMKiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:38:02 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <heiko@sntech.de>)
-        id 1jNlJh-0006wK-EU; Mon, 13 Apr 2020 00:43:05 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     jic23@kernel.org
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        heiko@sntech.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        xxm@rock-chips.com, kever.yang@rock-chips.com,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH v3] iio: adc: rockchip_saradc: Add support iio buffers
-Date:   Mon, 13 Apr 2020 00:42:51 +0200
-Message-Id: <20200412224251.2919182-1-heiko@sntech.de>
-X-Mailer: git-send-email 2.24.1
+        id S1726329AbgDLWuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 18:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:32982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgDLWuq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Apr 2020 18:50:46 -0400
+Received: from ozlabs.org (ozlabs.org [203.11.71.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF6DC0A88B5;
+        Sun, 12 Apr 2020 15:50:46 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 490n5p0vMFz9sP7;
+        Mon, 13 Apr 2020 08:50:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1586731839;
+        bh=ouvuSGWpY8zCYwGIJvJauHXD9yFe7/WcWfZ8JgoLDwU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eipor2GOTvcm006DPDbtrDSZB/YjCbiYO3yQYcPDPl/QN1bVpIZtMVv/oY8LPAAWi
+         mQ0tVSIJPYVTMLq4M9TE7FS5Tx8esBJ+Q/TcrHSD7Iouux3PQl5B4xh6lAipip0Bu+
+         bVg1yM+E6+xa+BMWfnsAovG1wOKkyVitnqB4kOmKUpD1IDaH3yCT1WPomoQ90kPz21
+         krXUqp5HcSU9zaBsiav4I9ro42v/v5ARPthKE8BNoTz0ZaA4LJezb0ivt20J++18wU
+         4C0FzzxJGHWDEMB7g0UWOCVW+XFBlBrH4v1ufnU3lWGo3HVQSjvguxpg+1v4rSb/1g
+         EDp4YdcBD4fEQ==
+Date:   Mon, 13 Apr 2020 08:50:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>
+Subject: linux-next: manual merge of the realtek tree with Linus' tree
+Message-ID: <20200413085034.5e77f236@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/SUqht2mkXPQtYMW.duPijK.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Xue <xxm@rock-chips.com>
+--Sig_/SUqht2mkXPQtYMW.duPijK.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Add the ability to also support access via (triggered) buffers
-next to the existing direct mode.
+Hi all,
 
-Device in question is the Odroid Go Advance that connects a joystick
-to two of the saradc channels for X and Y axis and the new (and still
-pending) adc joystick driver of course wants to use triggered buffers
-from the iio subsystem.
+Today's linux-next merge of the realtek tree got a conflict in:
 
-Signed-off-by: Simon Xue <xxm@rock-chips.com>
-[some simplifications and added commit description]
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
----
-changes in v3:
-- split buffer struct into values and timestamp area similar to dln2-adc
-  and make sure timestamp gets 8-byte aligned - ALIGN uses 4 as it aligns
-  u16 elements not bytes - hopefully I got it right this time ;-)
-changes in v2:
-- use devm_iio_triggered_buffer_setup
-- calculate data array size from channel number (curtesy of at91-sama5d2_adc)
+  MAINTAINERS
 
- drivers/iio/adc/Kconfig           |   2 +
- drivers/iio/adc/rockchip_saradc.c | 146 ++++++++++++++++++++++--------
- 2 files changed, 112 insertions(+), 36 deletions(-)
+between commit:
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 12bb8b7ca1ff..8d2dd60614c6 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -809,6 +809,8 @@ config ROCKCHIP_SARADC
- 	tristate "Rockchip SARADC driver"
- 	depends on ARCH_ROCKCHIP || (ARM && COMPILE_TEST)
- 	depends on RESET_CONTROLLER
-+	select IIO_BUFFER
-+	select IIO_TRIGGERED_BUFFER
- 	help
- 	  Say yes here to build support for the SARADC found in SoCs from
- 	  Rockchip.
-diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
-index 582ba047c4a6..0713363a4b43 100644
---- a/drivers/iio/adc/rockchip_saradc.c
-+++ b/drivers/iio/adc/rockchip_saradc.c
-@@ -15,7 +15,11 @@
- #include <linux/delay.h>
- #include <linux/reset.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/iio/buffer.h>
- #include <linux/iio/iio.h>
-+#include <linux/iio/trigger.h>
-+#include <linux/iio/trigger_consumer.h>
-+#include <linux/iio/triggered_buffer.h>
- 
- #define SARADC_DATA			0x00
- 
-@@ -32,9 +36,12 @@
- #define SARADC_DLY_PU_SOC_MASK		0x3f
- 
- #define SARADC_TIMEOUT			msecs_to_jiffies(100)
-+#define SARADC_MAX_CHANNELS		6
-+
-+/* buffer elements are u16, timestamp needs to be 8-byte aligned */
-+#define SARADC_BUFFER_NUM_U16	ALIGN(SARADC_MAX_CHANNELS, 4)
- 
- struct rockchip_saradc_data {
--	int				num_bits;
- 	const struct iio_chan_spec	*channels;
- 	int				num_channels;
- 	unsigned long			clk_rate;
-@@ -49,8 +56,37 @@ struct rockchip_saradc {
- 	struct reset_control	*reset;
- 	const struct rockchip_saradc_data *data;
- 	u16			last_val;
-+	const struct iio_chan_spec *last_chan;
- };
- 
-+static void rockchip_saradc_power_down(struct rockchip_saradc *info)
-+{
-+	/* Clear irq & power down adc */
-+	writel_relaxed(0, info->regs + SARADC_CTRL);
-+}
-+
-+static int rockchip_saradc_conversion(struct rockchip_saradc *info,
-+				   struct iio_chan_spec const *chan)
-+{
-+	reinit_completion(&info->completion);
-+
-+	/* 8 clock periods as delay between power up and start cmd */
-+	writel_relaxed(8, info->regs + SARADC_DLY_PU_SOC);
-+
-+	info->last_chan = chan;
-+
-+	/* Select the channel to be used and trigger conversion */
-+	writel(SARADC_CTRL_POWER_CTRL
-+			| (chan->channel & SARADC_CTRL_CHN_MASK)
-+			| SARADC_CTRL_IRQ_ENABLE,
-+		   info->regs + SARADC_CTRL);
-+
-+	if (!wait_for_completion_timeout(&info->completion, SARADC_TIMEOUT))
-+		return -ETIMEDOUT;
-+
-+	return 0;
-+}
-+
- static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
- 				    struct iio_chan_spec const *chan,
- 				    int *val, int *val2, long mask)
-@@ -62,24 +98,12 @@ static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
- 	case IIO_CHAN_INFO_RAW:
- 		mutex_lock(&indio_dev->mlock);
- 
--		reinit_completion(&info->completion);
--
--		/* 8 clock periods as delay between power up and start cmd */
--		writel_relaxed(8, info->regs + SARADC_DLY_PU_SOC);
--
--		/* Select the channel to be used and trigger conversion */
--		writel(SARADC_CTRL_POWER_CTRL
--				| (chan->channel & SARADC_CTRL_CHN_MASK)
--				| SARADC_CTRL_IRQ_ENABLE,
--		       info->regs + SARADC_CTRL);
--
--		if (!wait_for_completion_timeout(&info->completion,
--						 SARADC_TIMEOUT)) {
--			writel_relaxed(0, info->regs + SARADC_CTRL);
-+		ret = rockchip_saradc_conversion(info, chan);
-+		if (ret) {
-+			rockchip_saradc_power_down(info);
- 			mutex_unlock(&indio_dev->mlock);
--			return -ETIMEDOUT;
-+			return ret;
- 		}
--
- 		*val = info->last_val;
- 		mutex_unlock(&indio_dev->mlock);
- 		return IIO_VAL_INT;
-@@ -91,7 +115,7 @@ static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
- 		}
- 
- 		*val = ret / 1000;
--		*val2 = info->data->num_bits;
-+		*val2 = chan->scan_type.realbits;
- 		return IIO_VAL_FRACTIONAL_LOG2;
- 	default:
- 		return -EINVAL;
-@@ -104,10 +128,9 @@ static irqreturn_t rockchip_saradc_isr(int irq, void *dev_id)
- 
- 	/* Read value */
- 	info->last_val = readl_relaxed(info->regs + SARADC_DATA);
--	info->last_val &= GENMASK(info->data->num_bits - 1, 0);
-+	info->last_val &= GENMASK(info->last_chan->scan_type.realbits - 1, 0);
- 
--	/* Clear irq & power down adc */
--	writel_relaxed(0, info->regs + SARADC_CTRL);
-+	rockchip_saradc_power_down(info);
- 
- 	complete(&info->completion);
- 
-@@ -118,51 +141,55 @@ static const struct iio_info rockchip_saradc_iio_info = {
- 	.read_raw = rockchip_saradc_read_raw,
- };
- 
--#define ADC_CHANNEL(_index, _id) {				\
-+#define ADC_CHANNEL(_index, _id, _res) {			\
- 	.type = IIO_VOLTAGE,					\
- 	.indexed = 1,						\
- 	.channel = _index,					\
- 	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
- 	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
- 	.datasheet_name = _id,					\
-+	.scan_index = _index,					\
-+	.scan_type = {						\
-+		.sign = 'u',					\
-+		.realbits = _res,				\
-+		.storagebits = 16,				\
-+		.endianness = IIO_LE,				\
-+	},							\
- }
- 
- static const struct iio_chan_spec rockchip_saradc_iio_channels[] = {
--	ADC_CHANNEL(0, "adc0"),
--	ADC_CHANNEL(1, "adc1"),
--	ADC_CHANNEL(2, "adc2"),
-+	ADC_CHANNEL(0, "adc0", 10),
-+	ADC_CHANNEL(1, "adc1", 10),
-+	ADC_CHANNEL(2, "adc2", 10),
- };
- 
- static const struct rockchip_saradc_data saradc_data = {
--	.num_bits = 10,
- 	.channels = rockchip_saradc_iio_channels,
- 	.num_channels = ARRAY_SIZE(rockchip_saradc_iio_channels),
- 	.clk_rate = 1000000,
- };
- 
- static const struct iio_chan_spec rockchip_rk3066_tsadc_iio_channels[] = {
--	ADC_CHANNEL(0, "adc0"),
--	ADC_CHANNEL(1, "adc1"),
-+	ADC_CHANNEL(0, "adc0", 12),
-+	ADC_CHANNEL(1, "adc1", 12),
- };
- 
- static const struct rockchip_saradc_data rk3066_tsadc_data = {
--	.num_bits = 12,
- 	.channels = rockchip_rk3066_tsadc_iio_channels,
- 	.num_channels = ARRAY_SIZE(rockchip_rk3066_tsadc_iio_channels),
- 	.clk_rate = 50000,
- };
- 
- static const struct iio_chan_spec rockchip_rk3399_saradc_iio_channels[] = {
--	ADC_CHANNEL(0, "adc0"),
--	ADC_CHANNEL(1, "adc1"),
--	ADC_CHANNEL(2, "adc2"),
--	ADC_CHANNEL(3, "adc3"),
--	ADC_CHANNEL(4, "adc4"),
--	ADC_CHANNEL(5, "adc5"),
-+	ADC_CHANNEL(0, "adc0", 10),
-+	ADC_CHANNEL(1, "adc1", 10),
-+	ADC_CHANNEL(2, "adc2", 10),
-+	ADC_CHANNEL(3, "adc3", 10),
-+	ADC_CHANNEL(4, "adc4", 10),
-+	ADC_CHANNEL(5, "adc5", 10),
- };
- 
- static const struct rockchip_saradc_data rk3399_saradc_data = {
--	.num_bits = 10,
- 	.channels = rockchip_rk3399_saradc_iio_channels,
- 	.num_channels = ARRAY_SIZE(rockchip_rk3399_saradc_iio_channels),
- 	.clk_rate = 1000000,
-@@ -193,6 +220,42 @@ static void rockchip_saradc_reset_controller(struct reset_control *reset)
- 	reset_control_deassert(reset);
- }
- 
-+static irqreturn_t rockchip_saradc_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *i_dev = pf->indio_dev;
-+	struct rockchip_saradc *info = iio_priv(i_dev);
-+	struct {
-+		u16 values[SARADC_BUFFER_NUM_U16];
-+		int64_t timestamp;
-+	} data;
-+	int ret;
-+	int i, j = 0;
-+
-+	mutex_lock(&i_dev->mlock);
-+
-+	for_each_set_bit(i, i_dev->active_scan_mask, i_dev->masklength) {
-+		const struct iio_chan_spec *chan = &i_dev->channels[i];
-+
-+		ret = rockchip_saradc_conversion(info, chan);
-+		if (ret) {
-+			rockchip_saradc_power_down(info);
-+			goto out;
-+		}
-+
-+		data.values[j] = info->last_val;
-+		j++;
-+	}
-+
-+	iio_push_to_buffers_with_timestamp(i_dev, &data, iio_get_time_ns(i_dev));
-+out:
-+	mutex_unlock(&i_dev->mlock);
-+
-+	iio_trigger_notify_done(i_dev->trig);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int rockchip_saradc_probe(struct platform_device *pdev)
- {
- 	struct rockchip_saradc *info = NULL;
-@@ -221,6 +284,11 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
- 
- 	info->data = match->data;
- 
-+	if (info->data->num_channels > SARADC_MAX_CHANNELS) {
-+		dev_err(&pdev->dev, "max channels exceeded");
-+		return -EINVAL;
-+	}
-+
- 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	info->regs = devm_ioremap_resource(&pdev->dev, mem);
- 	if (IS_ERR(info->regs))
-@@ -315,6 +383,12 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
- 	indio_dev->channels = info->data->channels;
- 	indio_dev->num_channels = info->data->num_channels;
- 
-+	ret = devm_iio_triggered_buffer_setup(&indio_dev->dev, indio_dev, NULL,
-+					      rockchip_saradc_trigger_handler,
-+					      NULL);
-+	if (ret)
-+		goto err_clk;
-+
- 	ret = iio_device_register(indio_dev);
- 	if (ret)
- 		goto err_clk;
--- 
-2.24.1
+  3b50142d8528 ("MAINTAINERS: sort field names for all entries")
 
+from Linus' tree and commit:
+
+  d6656fa4c621 ("ARM: Prepare Realtek RTD1195")
+
+from the realtek tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc MAINTAINERS
+index 6851ef7cf1bd,1b15d2dd2535..000000000000
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@@ -2269,8 -2203,10 +2269,9 @@@ M:	Andreas F=C3=A4rber <afaerber@suse.de
+  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+  L:	linux-realtek-soc@lists.infradead.org (moderated for non-subscribers)
+  S:	Maintained
+ -F:	arch/arm/boot/dts/rtd*
+ +F:	Documentation/devicetree/bindings/arm/realtek.yaml
++ F:	arch/arm/mach-realtek/
+  F:	arch/arm64/boot/dts/realtek/
+ -F:	Documentation/devicetree/bindings/arm/realtek.yaml
+ =20
+  ARM/RENESAS ARM64 ARCHITECTURE
+  M:	Geert Uytterhoeven <geert+renesas@glider.be>
+
+--Sig_/SUqht2mkXPQtYMW.duPijK.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl6TmzoACgkQAVBC80lX
+0GxJGgf/RKvJlfNRD23g7ndl1Mslb/0aHL2rcRiLKabQPWEKZJqtjcCV8P7qbOq+
+4uFmQRGuIJwwwTSLcvX72iNc1gHKTeND56m9GMPjoS8nR/7Ia+vwmtJjWgLIRVFA
+g8cO/20M8dfYLhlCtm+SIxUbTWdSbBdRhJ5bl1xR0GvF/dchf1ceDS2uNRSfoeNO
+91UX81eg4MRh4YHbjO2KdyC0wbyYL1c+30p1/lWcfrbNWafCY13UMk/HkvMl7b6c
+7w6Zc6LnfnOPFN9zoFZ6ey4ic04QMSAHWXEfYBgXYKa/vBZPK0u4Dmz/fGicDLt3
+HR6Kzm3/ux34J2uSlDAi9jidvmje2g==
+=r51D
+-----END PGP SIGNATURE-----
+
+--Sig_/SUqht2mkXPQtYMW.duPijK.--
