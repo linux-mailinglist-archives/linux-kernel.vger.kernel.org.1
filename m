@@ -2,132 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 568AB1A5EF1
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 16:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF331A5EEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 16:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbgDLOTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 10:19:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41457 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726962AbgDLOTc (ORCPT
+        id S1727060AbgDLOS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 10:18:56 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:57146 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726805AbgDLOS4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 10:19:32 -0400
-Received: from p5de0bf0b.dip0.t-ipconnect.de ([93.224.191.11] helo=nanos.tec.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tglx@linutronix.de>)
-        id 1jNdSL-0001Wh-TU; Sun, 12 Apr 2020 16:19:30 +0200
-Received: from nanos.tec.linutronix.de (localhost [IPv6:::1])
-        by nanos.tec.linutronix.de (Postfix) with ESMTP id 741EB100E35;
-        Sun, 12 Apr 2020 16:19:29 +0200 (CEST)
-Date:   Sun, 12 Apr 2020 14:18:41 -0000
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] timers/urgent for 5.7-rc1
-References: <158670111777.20085.1305752188791047060.tglx@nanos.tec.linutronix.de>
-Message-ID: <158670112139.20085.3639703190488837403.tglx@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sun, 12 Apr 2020 10:18:56 -0400
+Received: from ravnborg.org (unknown [158.248.194.18])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 835BC804A3;
+        Sun, 12 Apr 2020 16:18:49 +0200 (CEST)
+Date:   Sun, 12 Apr 2020 16:18:42 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     puck.chen@hisilicon.com, airlied@linux.ie, daniel@ffwll.ch,
+        tzimmermann@suse.de, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH] drm/hisilicon: Add the shutdown for hibmc_pci_driver
+Message-ID: <20200412141842.GA12313@ravnborg.org>
+References: <1586573370-41945-1-git-send-email-tiantao6@hisilicon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+In-Reply-To: <1586573370-41945-1-git-send-email-tiantao6@hisilicon.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=XpTUx2N9 c=1 sm=1 tr=0
+        a=UWs3HLbX/2nnQ3s7vZ42gw==:117 a=UWs3HLbX/2nnQ3s7vZ42gw==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=BTeA3XvPAAAA:8
+        a=e5mUnYsNAAAA:8 a=AGzG8Xd3EExtzCPMGWIA:9 a=CjuIK1q_8ugA:10
+        a=tafbbOV3vt1XuEhzTjGK:22 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Tian.
 
-please pull the latest timers/urgent branch from:
+On Sat, Apr 11, 2020 at 10:49:30AM +0800, Tian Tao wrote:
+> add the shutdown function to release the resource.
+> 
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-04-12
+Why it the release of the memory required in the shutdown method?
+The memory is allocated using devm_ioremap() which
+will let device management handle the release of the resources when
+he driver is released.
 
-up to:  0f538e3e712a: ucount: Make sure ucounts in /proc/sys/user don't regress again
+The patch also introduces a pci_disable_device()
+The better approch would be to use pcim_enable_device()
+so you let the device management about releasing the
+resources.
 
+	Sam
 
-Time(keeping) updates:
-
- - Fix the time_for_children symlink in /proc/$PID/ so it properly reflects
-   that it part of the 'time' namespace
-
- - Add the missing userns limit for the allowed number of time namespaces,
-   which was half defined but the actual array member was not added.  This
-   went unnoticed as the array has an exessive empty member at the end but
-   introduced a user visible regression as the output was corrupted.
-
- - Prevent further silent ucount corruption by adding a BUILD_BUG_ON() to
-   catch half updated data.
-
-Thanks,
-
-	tglx
-
------------------->
-Dmitry Safonov (1):
-      time/namespace: Add max_time_namespaces ucount
-
-Jan Kara (1):
-      ucount: Make sure ucounts in /proc/sys/user don't regress again
-
-Michael Kerrisk (man-pages) (1):
-      time/namespace: Fix time_for_children symlink
-
-
- Documentation/admin-guide/sysctl/user.rst | 6 ++++++
- kernel/time/namespace.c                   | 1 +
- kernel/ucount.c                           | 3 +++
- 3 files changed, 10 insertions(+)
-
-diff --git a/Documentation/admin-guide/sysctl/user.rst b/Documentation/admin-guide/sysctl/user.rst
-index 650eaa03f15e..c45824589339 100644
---- a/Documentation/admin-guide/sysctl/user.rst
-+++ b/Documentation/admin-guide/sysctl/user.rst
-@@ -65,6 +65,12 @@ max_pid_namespaces
-   The maximum number of pid namespaces that any user in the current
-   user namespace may create.
- 
-+max_time_namespaces
-+===================
-+
-+  The maximum number of time namespaces that any user in the current
-+  user namespace may create.
-+
- max_user_namespaces
- ===================
- 
-diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
-index e6ba064ce773..3b30288793fe 100644
---- a/kernel/time/namespace.c
-+++ b/kernel/time/namespace.c
-@@ -447,6 +447,7 @@ const struct proc_ns_operations timens_operations = {
- 
- const struct proc_ns_operations timens_for_children_operations = {
- 	.name		= "time_for_children",
-+	.real_ns_name	= "time",
- 	.type		= CLONE_NEWTIME,
- 	.get		= timens_for_children_get,
- 	.put		= timens_put,
-diff --git a/kernel/ucount.c b/kernel/ucount.c
-index a53cc2b4179c..11b1596e2542 100644
---- a/kernel/ucount.c
-+++ b/kernel/ucount.c
-@@ -69,6 +69,7 @@ static struct ctl_table user_table[] = {
- 	UCOUNT_ENTRY("max_net_namespaces"),
- 	UCOUNT_ENTRY("max_mnt_namespaces"),
- 	UCOUNT_ENTRY("max_cgroup_namespaces"),
-+	UCOUNT_ENTRY("max_time_namespaces"),
- #ifdef CONFIG_INOTIFY_USER
- 	UCOUNT_ENTRY("max_inotify_instances"),
- 	UCOUNT_ENTRY("max_inotify_watches"),
-@@ -81,6 +82,8 @@ bool setup_userns_sysctls(struct user_namespace *ns)
- {
- #ifdef CONFIG_SYSCTL
- 	struct ctl_table *tbl;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(user_table) != UCOUNT_COUNTS + 1);
- 	setup_sysctl_set(&ns->set, &set_root, set_is_seen);
- 	tbl = kmemdup(user_table, sizeof(user_table), GFP_KERNEL);
- 	if (tbl) {
-
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+> ---
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> index a6fd0c2..126d4f4 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+> @@ -232,6 +232,21 @@ static int hibmc_hw_map(struct hibmc_drm_private *priv)
+>  	return 0;
+>  }
+>  
+> +static void hibmc_hw_unmap(struct hibmc_drm_private *priv)
+> +{
+> +	struct drm_device *dev = priv->dev;
+> +
+> +	if (priv->mmio)	{
+> +		devm_iounmap(dev->dev, priv->mmio);
+> +		priv->mmio = NULL;
+> +	}
+> +
+> +	if (priv->fb_map) {
+> +		devm_iounmap(dev->dev, priv->fb_map);
+> +		priv->fb_map = NULL;
+> +	}
+> +}
+> +
+>  static int hibmc_hw_init(struct hibmc_drm_private *priv)
+>  {
+>  	int ret;
+> @@ -258,6 +273,7 @@ static int hibmc_unload(struct drm_device *dev)
+>  
+>  	hibmc_kms_fini(priv);
+>  	hibmc_mm_fini(priv);
+> +	hibmc_hw_unmap(priv);
+>  	dev->dev_private = NULL;
+>  	return 0;
+>  }
+> @@ -374,6 +390,12 @@ static void hibmc_pci_remove(struct pci_dev *pdev)
+>  	drm_dev_unregister(dev);
+>  	hibmc_unload(dev);
+>  	drm_dev_put(dev);
+> +	pci_disable_device(pdev);
+> +}
+> +
+> +static void hibmc_pci_shutdown(struct pci_dev *pdev)
+> +{
+> +	hibmc_pci_remove(pdev);
+>  }
+>  
+>  static struct pci_device_id hibmc_pci_table[] = {
+> @@ -386,6 +408,7 @@ static struct pci_driver hibmc_pci_driver = {
+>  	.id_table =	hibmc_pci_table,
+>  	.probe =	hibmc_pci_probe,
+>  	.remove =	hibmc_pci_remove,
+> +	.shutdown = hibmc_pci_shutdown,
+>  	.driver.pm =    &hibmc_pm_ops,
+>  };
+>  
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
