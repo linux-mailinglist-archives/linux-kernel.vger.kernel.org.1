@@ -2,170 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 930C81A5D95
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 10:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F331A5DAC
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 11:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbgDLIvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 04:51:38 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:45608 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbgDLIvh (ORCPT
+        id S1726880AbgDLJNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 05:13:02 -0400
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:36193 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbgDLJNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 04:51:37 -0400
-Received: by mail-lj1-f195.google.com with SMTP id t17so5904932ljc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 01:51:36 -0700 (PDT)
+        Sun, 12 Apr 2020 05:13:01 -0400
+Received: by mail-pj1-f66.google.com with SMTP id nu11so2634150pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 02:13:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pUaWyJBANBIsSu7R/tcWw2JGAIRnPcaSbBQB9PvP+EE=;
-        b=tebMGg3/T7EnCmpjv9uu+uJzLAgBtO+1Vr0hkW97KsHIs2vgInARxQjy4sQ5s1lOU9
-         dyUbwL8eniOKOKutdRX1jszpB1KSqrdKReN/+5qFzU9JeW57wHGeufp2OKl54ojtYhjd
-         OlFTN/G5B9evz+5yTBtpiVmrilPU4JhdjErcuEeYeb70kK+7UGwLs3FKPRC6U4vvjlks
-         rwavAcGPBNGe50Tg3JTUaI5YIX69y0GUNBz/nGZteB3Yyh/4A8gR11aFroPTbgR/hjaO
-         Wo+xMWNcYpSSArbqdLAJcKrzK9VRykp0Zo2KhwZfHR3Kf1bUyK1HaLcz5UUJbeYZJ1dF
-         DR5w==
+        d=gmail.com; s=20161025;
+        h=from:date:to:subject:message-id:mail-followup-to:mime-version
+         :content-disposition:user-agent;
+        bh=LfvvcUpq2FDP8LIShcAOisvw6VyejprD1pNSIk/3HfM=;
+        b=OZIaB3Hp9mGYcRd9yIsPoQlX+8fyZAjTy4eW4wEY5bNHdn57ZS2Ls8C5H3GCr70Unt
+         EtByddlnJRhDXHXrgMayn/azIoDAAAA+MbcyZ47VWClI9fbDFjcOP8OiKDAjzWRhpFmY
+         7Pfy5gDiQKSYA3kWKzy/ErBOs73NrKDFBnkr6bsh3qBTGCMZyPoG5VHmamsr5ypQlw/2
+         LdcG8EuUyX3McHTUHRuZfwbAMqAOAt0xsFjXVBHj/QvuUsek/0RqcNRVzZnDPLSpcr8c
+         Ef3uEKLORRIRHyTTLlv+Ir5djdHK5ciOKEZqphPpJsu3pFghDREYaac68f9WiUl/0roN
+         OqiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pUaWyJBANBIsSu7R/tcWw2JGAIRnPcaSbBQB9PvP+EE=;
-        b=m5wrd/Rk9l3V7+pi8jhvDBjNMFW9lE+nDiMVi812eb6FRzAo8T7bu2V85CTjqngnVR
-         8KmFRHDS6hzPNEbNxQTxIIIChhDBGm3uQoElHDIe6evdAD+O4KEnNbNRadqxsxepXiw1
-         6E/68nW01VuimQlTlHU/On2LRBb2V0z/f+FxlyKjU8cR18j+OEuyweZjN/d1OeAP4Hl6
-         3hkp0KD4E6TfKuG4iOHZebNZE/7KiEcJUipH/7pi6cBE6zlEHdvLjS6H/US+qeBrdkod
-         iekYgbIIikh9B7uxyIfhFxox9EwOQDpBUmBsoRzvpLe6dW/lApYnrc0xmKlabnhJvidS
-         Dumw==
-X-Gm-Message-State: AGi0Puaru/CdVFTPKA76MBQkMd9/GEnKpkwESw98nkz3I3PMHQt8WTV7
-        lnKBN2elgCq/wlRnNm7PKdWUgaFoMSBXMzz8jemoOg2gKz4=
-X-Google-Smtp-Source: APiQypJHGvxCXtrEW6SrynlvYzXZK5Z6Ab3LG5+qUTAVclUsUTIdEB9LH6XDqMt3XPcsEr3E8tuIzalu61iDCm4YVzw=
-X-Received: by 2002:a2e:a495:: with SMTP id h21mr7498580lji.123.1586681495507;
- Sun, 12 Apr 2020 01:51:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200411115437.795556138@linuxfoundation.org>
-In-Reply-To: <20200411115437.795556138@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 12 Apr 2020 14:21:24 +0530
-Message-ID: <CA+G9fYt1VxRP3ssQrO1zvCO9hdLO+eqC_X0i8kkos3DQesge5A@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/38] 4.14.176-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
+        h=x-gm-message-state:from:date:to:subject:message-id:mail-followup-to
+         :mime-version:content-disposition:user-agent;
+        bh=LfvvcUpq2FDP8LIShcAOisvw6VyejprD1pNSIk/3HfM=;
+        b=Z/ikp0qZGX2gFKc2KXe9rQhR5OeBGaNNhHJGxLljWzicS3vVzyLA6FRJU2SYYOMhhy
+         r+mo3xQLV+74zj8vK99XVYOTeN73F1vrhm5sjSVFXFuR7yI3VSUr6E5d26h/acuRPX2x
+         +SuBZrwkK6v/eKIB4bfSt+Ldaax0+5gYAV951Syu1A73toRSJiyRDfGKDnXiBlhzpOQA
+         OhA+V5p0N3bKvuEOknNqMLvGNKr7QzSmYDv9yLyriGOD2Qu40KbmiwVWwt9RKC6Vzmf1
+         yBczegfJPY53wLeXR5PVJ35XV24AjDnhbv4NSZAAZou/nYhFDkCgVT/56O7H6HVkEntk
+         g7oA==
+X-Gm-Message-State: AGi0PuZp5lsh8pa6N1xb3fNIkTGhL9jiPIercOXmOeqxNFMntGluMq1s
+        eoOQrXZk1Zu9Q6D0fJHBrsM=
+X-Google-Smtp-Source: APiQypK2+SbPWYDwAaMikOSsmCED4pKg8K/I5TQ0zYj+iHsrwsi33Mv5xyj5Pqz9/a991qhcHGv0Cg==
+X-Received: by 2002:a17:902:6b01:: with SMTP id o1mr12665327plk.100.1586682779821;
+        Sun, 12 Apr 2020 02:12:59 -0700 (PDT)
+Received: from open-light-1.localdomain ([66.98.113.28])
+        by smtp.gmail.com with ESMTPSA id w192sm4621946pfc.126.2020.04.12.02.12.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 12 Apr 2020 02:12:58 -0700 (PDT)
+From:   liliangleo <liliang.opensource@gmail.com>
+X-Google-Original-From: liliangleo <liliangleo@didiglobal.com>
+Date:   Sun, 12 Apr 2020 05:07:32 -0400
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Alex Williamson <alex.williamson@redhat.com>
+Subject: [RFC PATCH 0/4] mm: Add PG_zero support
+Message-ID: <20200412090728.GA19572@open-light-1.localdomain>
+Mail-Followup-To: Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Apr 2020 at 17:45, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.176 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.176-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Zero out the page content usually happens when allocating pages,
+this is a time consuming operation, it makes pin and mlock
+operation very slowly, especially for a large batch of memory.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+This patch introduce a new feature for zero out pages before page
+allocation, it can help to speed up page allocation.
 
-Summary
-------------------------------------------------------------------------
+The idea is very simple, zero out free pages when the system is
+not busy and mark the page with PG_zero, when allocating a page,
+if the page need to be filled with zero, check the flag in the
+struct page, if it's marked as PG_zero, zero out can be skipped,
+it can save cpu time and speed up page allocation.
 
-kernel: 4.14.176-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 42fb2965c7ca26057bc47af5ef45f170bbf2cade
-git describe: v4.14.175-39-g42fb2965c7ca
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.14-oe/bu=
-ild/v4.14.175-39-g42fb2965c7ca
+This serial is based on the feature 'free page reporting' which
+introduced by Alexander Duyck 
 
+We can benefit from this feature in the flowing case:
+    1. User space mlock a large chunk of memory
+    2. VFIO pin pages for DMA
+    3. Allocating transparent huge page
+    4. Speed up page fault process
 
-No regressions (compared to build v4.14.175)
+My original intention for adding this feature is to shorten
+VM creation time when VFIO device is attached, it works good 
+and the VM creation time is reduced obviously. 
 
-No fixes (compared to build v4.14.175)
+Creating a VM [64G RAM, 32 CPUs] with GPU passthrough
+=====================================================
+QEMU use 4K pages, THP is off
+                  round1      round2      round3
+w/o this patch:    23.5s       24.7s       24.6s 
+w/ this patch:     10.2s       10.3s       11.2s
 
+QEMU use 4K pages, THP is on
+                  round1      round2      round3
+w/o this patch:    17.9s       14.8s       14.9s 
+w/ this patch:     1.9s        1.8s        1.9s
+=====================================================
 
-Ran 32276 total tests in the following environments and test suites.
+Look forward to your feedbacks.
 
-Environments
---------------
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15 - arm
-- x86_64
-- x86-kasan
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: David Hildenbrand <david@redhat.com>  
+Cc: Michal Hocko <mhocko@kernel.org> 
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: liliangleo <liliangleo@didiglobal.com>
 
-Test Suites
------------
-* build
-* install-android-platform-tools-r2600
-* install-android-platform-tools-r2800
-* kselftest
-* libhugetlbfs
-* linux-log-parser
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* perf
-* v4l2-compliance
-* kvm-unit-tests
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* network-basic-tests
-* ltp-open-posix-tests
-* spectre-meltdown-checker-test
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
+liliangleo (4):
+  mm: reduce the impaction of page reporing worker
+  mm: Add batch size for free page reporting
+  mm: add sys fs configuration for page reporting
+  mm: Add PG_zero support
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+ include/linux/highmem.h        |  31 ++++++-
+ include/linux/page-flags.h     |  18 +++-
+ include/trace/events/mmflags.h |   7 ++
+ mm/Kconfig                     |  10 +++
+ mm/Makefile                    |   1 +
+ mm/huge_memory.c               |   3 +-
+ mm/page_alloc.c                |   2 +
+ mm/page_reporting.c            | 181 +++++++++++++++++++++++++++++++++++++++--
+ mm/page_reporting.h            |  16 +++-
+ mm/zero_page.c                 | 151 ++++++++++++++++++++++++++++++++++
+ mm/zero_page.h                 |  13 +++
+ 11 files changed, 416 insertions(+), 17 deletions(-)
+ create mode 100644 mm/zero_page.c
+ create mode 100644 mm/zero_page.h
+
+-- 
+2.14.1
+
