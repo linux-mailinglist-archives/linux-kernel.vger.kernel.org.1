@@ -2,122 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C63FF1A5DC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 11:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636B01A5DD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 11:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbgDLJdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 05:33:42 -0400
-Received: from mout.gmx.net ([212.227.15.18]:55903 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725878AbgDLJdm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 05:33:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586684015;
-        bh=OuyR1SN5A5h2iXjX9bvJx44wlsxA9cn/XSDx5oHn6/c=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=lpMW0V8G6XcGecBwRmCD+XKo/oYEbK1jW5SSVK1DX91e+QsxgivojoZqnsqULMTtr
-         zjt8rOtO7gNCExuJt42ssvylbXCjrnuRnLC3KAk4hx73nSCy7l8EaapLeYC+ESmcz0
-         4GDvF8lMMQ2yvoWh1M+hFMvPJUB55Ln7KMIfytrI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.196]) by mail.gmx.com
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1N95e9-1jAyPw2hkt-0164bK; Sun, 12 Apr 2020 11:33:35 +0200
-From:   Oscar Carter <oscar.carter@gmx.com>
-To:     Forest Bond <forest@alittletooquiet.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Oscar Carter <oscar.carter@gmx.com>,
-        Quentin Deslandes <quentin.deslandes@itdev.co.uk>,
-        Malcolm Priestley <tvboxspy@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: vt6656: Use BIT() macro instead of bit shift operator
-Date:   Sun, 12 Apr 2020 11:33:11 +0200
-Message-Id: <20200412093311.5279-1-oscar.carter@gmx.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
+        id S1726818AbgDLJhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 05:37:50 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:45385 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725832AbgDLJhu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Apr 2020 05:37:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1586684271; x=1618220271;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-transfer-encoding:mime-version:subject;
+  bh=FgZO8pxUZGALjDJ81M+76TTc4tj9QTK3LKdaztb4PFU=;
+  b=CBhxTckAI7MJqmMH90/EI9L9Taz7GBYeqUmwkMtdA0PxQcRbvzEYRirv
+   C8YcZ32M7XmXsWH31bE3PKdmoUOR5r6fSzdpo/mKbg3Fp68Nry734wJPo
+   ORdFy03eNFiDLtiEqECFvEUaboi73/t2MisxwjsLRbTQAnFL1ghWRyGm/
+   0=;
+IronPort-SDR: pzbsOi3X3Ao8axIdhhiCdVsB/4MT1EbhQzz78Yk7oM/2IrQsiblEgMBPxpBhJ8O8SYvrcTXQF9
+ bUZ4aVk45nNw==
+X-IronPort-AV: E=Sophos;i="5.72,374,1580774400"; 
+   d="scan'208";a="28239324"
+Subject: RE: Re: [PATCH] ena: Speed up initialization 90x by reducing poll delays
+Thread-Topic: Re: [PATCH] ena: Speed up initialization 90x by reducing poll delays
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-397e131e.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 12 Apr 2020 09:37:49 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-397e131e.us-west-2.amazon.com (Postfix) with ESMTPS id 5FB14A2620;
+        Sun, 12 Apr 2020 09:37:48 +0000 (UTC)
+Received: from EX13D10EUB002.ant.amazon.com (10.43.166.66) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 12 Apr 2020 09:37:48 +0000
+Received: from EX13D11EUB003.ant.amazon.com (10.43.166.58) by
+ EX13D10EUB002.ant.amazon.com (10.43.166.66) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Sun, 12 Apr 2020 09:37:46 +0000
+Received: from EX13D11EUB003.ant.amazon.com ([10.43.166.58]) by
+ EX13D11EUB003.ant.amazon.com ([10.43.166.58]) with mapi id 15.00.1497.006;
+ Sun, 12 Apr 2020 09:37:46 +0000
+From:   "Jubran, Samih" <sameehj@amazon.com>
+To:     Josh Triplett <josh@joshtriplett.org>
+CC:     "Machulsky, Zorik" <zorik@amazon.com>,
+        "Belgazal, Netanel" <netanel@amazon.com>,
+        "Kiyanovski, Arthur" <akiyano@amazon.com>,
+        "Tzalik, Guy" <gtzalik@amazon.com>,
+        "Bshara, Saeed" <saeedb@amazon.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Thread-Index: AdX3p3qv2ZVxWOLdSTS1k/4T+/7WlwBi2jwABd6e1pA=
+Date:   Sun, 12 Apr 2020 09:37:22 +0000
+Deferred-Delivery: Sun, 12 Apr 2020 09:36:51 +0000
+Message-ID: <1679d519016c4984b67eeb510d50e4b4@EX13D11EUB003.ant.amazon.com>
+References: <eb427583ff2444dcae18e1e37fb27918@EX13D11EUB003.ant.amazon.com>
+ <20200313122824.GA1389@localhost>
+In-Reply-To: <20200313122824.GA1389@localhost>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.166.225]
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:uYug2iKdckrToWPIQh7BOyJSXAU1uzmY+Mp54Bl5+tSZAgW4rIy
- iI0IZy4KnG5AxUd9WfMi7ihzD9V/kSTpoSmW4zhSXcJuuIxvNVspAEn2zq+p6+WXPDXftxi
- dUe4vwbWQyytQ7KACioxoEl+JOodSPbcdI8YyO1gJLwPJzdfewvs7JG7mGVJm8gSHRxQ9BI
- Pl0NXGpmK6SyOBHQX1+1w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:p3IeFuTvofw=:CEXVJDtGbPfVnKNjwgPfpy
- MDvPaYZxi0ccytxvlFj+b37LyK9Y8YYbqIKqn75cMSZ242cwG04ATXM4RRuBxjv2TGHGhKlTc
- RkaQXAsl5ST8UruoPDzgte9Ku+mBaHEsNdAsFn5O2IqNy0KF+fvYn7qGB2/hfHqqrKRX8uOmA
- 2aRM67aNyIuOF1D8yLY1DmcyyVr039vNR8h6Sa8/XQS2kSkbIO2EHm87hIrEpsPdOUc0hgu4u
- 1WxzrNv8fMwIcVMjVbJfyFzf0wMFesu5Xx4sQ0Rall/fOlVBphskh371nfHS75sNvNPDjlcVV
- +dtNBRSuP4J5WBBa4Ti6kyaTTeiTHRNa1AFcoI/FBXjA2td7XRlwINdIhfnFyNIRRsTJo/R1v
- YSAB8h0WkLb5xZ1C8TyZFhBaYVZpGQyO06DQ90LQZCj7Ivj63crhrWgdapbsp4tbNC3xY4kGa
- kLHpeMzVSYC1oLR2rirYSNOUkmhId8du9JqFc13E1fZHB7O4AFsW6VOBdKK1eQM7JatZwwGKH
- iXuqbK6FRWDVgZTMZEt2GFA8Auc2Io8qlejRCbtbF2qVe/bnwdP3VVhm19OgFvH+Fc9wtYNGy
- LxrS+l7wYVGS3LIiG62j+GJ4WxL4MN/tGjyVheyzHioQv7V7BuXxsyb/FDn+oaittF/AJq+H/
- qR52UBeXjUpA7/qPHvjTRQ6s7VIpJqZH/PvgDU6eyxRTQJy5Z5c80CTB0dv4auMbK5TLn3PuU
- zHIVMJOSs0NAT0L3WevQk9cY7mHoUFF+asBdjIL3H75hZhSG18e6IQ163WYUwutr3knKVbGSi
- Ol392UuvkrkRBB6WFaX07uF2NjuGuq6m1eKhKWeIQCpAqQmLeXkVcV2RQ4w0lRLQnhKaOLX0J
- ZRHZYCwbUGnuvdeaGRJqAQMNzuVLRTnRU8xlnf8HJwZbR7yFYgghEKvjGoQFCmUyiCOKIZuLS
- Cw8VWo1+j2lTz2qUq0NNL7Wjx4ZTN1IQkQIOS13aOs23yJYxBGQpjuodsFmhEiKQKPus1+Zbv
- x7MtKKWvAkoCmosq9Bh8UsLS3l4s0MUROozkGf43qLtFa9XJSro2uVYoxfJgpcv1psviemLuw
- cU0LbNmjZ+mv7na+iYMyLlUbzvTcRRhOWL3aU6IsHfZGkhDHqA//Q6mJW5JUAr0XqaMfm6ro5
- vVVu5wlcaIozD7u411x/I6wwtpj6pVw0urlY0NV0uGb7M4YRUIswTLOtk6dk3YbCeTed7Yt+6
- QDpNvDaZ0elQnOyFb
+MIME-Version: 1.0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the BIT() macro instead of the bit left shift operator. So the code
-is more clear.
+Hi Josh,
 
-It's safe to remove the casting to u16 type because the value obtained
-never exceeds 16 bits. So the casting is unnecessary.
+I wanted to let you know that we are still looking into your patch.=20
+After some careful considerations we have decided to set the value of=20
+ENA_POLL_US to 100us. The rationale behind this choice is that the=20
+device might take up to 1ms to complete the reset operation and we=20
+don't want to bombard device. We do agree with most of your patch=20
+and we will be sending one based on it for review.
 
-Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-=2D--
- drivers/staging/vt6656/card.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks,
+Sameeh
 
-diff --git a/drivers/staging/vt6656/card.c b/drivers/staging/vt6656/card.c
-index dc3ab10eb630..14e6c71f122c 100644
-=2D-- a/drivers/staging/vt6656/card.c
-+++ b/drivers/staging/vt6656/card.c
-@@ -92,7 +92,7 @@ static u16 vnt_get_cck_rate(struct vnt_private *priv, u1=
-6 rate_idx)
- 	u16 ui =3D rate_idx;
-
- 	while (ui > RATE_1M) {
--		if (priv->basic_rates & (1 << ui))
-+		if (priv->basic_rates & BIT(ui))
- 			return ui;
- 		ui--;
- 	}
-@@ -129,7 +129,7 @@ static u16 vnt_get_ofdm_rate(struct vnt_private *priv,=
- u16 rate_idx)
- 	}
-
- 	while (ui > RATE_11M) {
--		if (priv->basic_rates & (1 << ui)) {
-+		if (priv->basic_rates & BIT(ui)) {
- 			dev_dbg(&priv->usb->dev, "%s rate: %d\n",
- 				__func__, ui);
- 			return ui;
-@@ -420,7 +420,7 @@ void vnt_update_top_rates(struct vnt_private *priv)
-
- 	/*Determines the highest basic rate.*/
- 	for (i =3D RATE_54M; i >=3D RATE_6M; i--) {
--		if (priv->basic_rates & (u16)(1 << i)) {
-+		if (priv->basic_rates & BIT(i)) {
- 			top_ofdm =3D i;
- 			break;
- 		}
-@@ -429,7 +429,7 @@ void vnt_update_top_rates(struct vnt_private *priv)
- 	priv->top_ofdm_basic_rate =3D top_ofdm;
-
- 	for (i =3D RATE_11M;; i--) {
--		if (priv->basic_rates & (u16)(1 << i)) {
-+		if (priv->basic_rates & BIT(i)) {
- 			top_cck =3D i;
- 			break;
- 		}
-=2D-
-2.20.1
-
+> -----Original Message-----
+> From: Josh Triplett <josh@joshtriplett.org>
+> Sent: Friday, March 13, 2020 2:28 PM
+> To: Jubran, Samih <sameehj@amazon.com>
+> Cc: Machulsky, Zorik <zorik@amazon.com>; Belgazal, Netanel
+> <netanel@amazon.com>; Kiyanovski, Arthur <akiyano@amazon.com>;
+> Tzalik, Guy <gtzalik@amazon.com>; Bshara, Saeed <saeedb@amazon.com>;
+> netdev@vger.kernel.org; linux-kernel@vger.kernel.org
+> Subject: RE: [EXTERNAL]Re: [PATCH] ena: Speed up initialization 90x by
+> reducing poll delays
+>=20
+> CAUTION: This email originated from outside of the organization. Do not c=
+lick
+> links or open attachments unless you can confirm the sender and know the
+> content is safe.
+>=20
+>=20
+>=20
+> On Wed, Mar 11, 2020 at 01:24:17PM +0000, Jubran, Samih wrote:
+> > Hi Josh,
+> >
+> > Thanks for taking the time to write this patch. I have faced a bug whil=
+e
+> testing it that I haven't pinpointed yet the root cause of the issue, but=
+ it
+> seems to me like a race in the netlink infrastructure.
+> >
+> > Here is the bug scenario:
+> > 1. created ac  c5.24xlarge instance in AWS in v_virginia region using
+> > the default amazon Linux 2 AMI 2. apply your patch won top of net-next
+> > v5.2 and install the kernel (currently I'm able to boot net-next v5.2
+> > only, higher versions of net-next suffer from errors during boot time)
+> > 3. run "rmmod ena && insmod ena.ko" twice
+> >
+> > Result:
+> > The interface is not in up state
+> >
+> > Expected result:
+> > The interface should be in up state
+> >
+> > What I know so far:
+> > * ena_probe() seems to finish with no errors whatsoever
+> > * adding prints / delays to ena_probe() causes the bug to vanish or
+> > less likely to occur depending on the amount of delays I add
+> > * ena_up() is not called at all when the bug occurs, so it's something
+> > to do with netlink not invoking dev_open()
+> >
+> > Did you face such issues? Do you have any idea what might be causing th=
+is?
+>=20
+> I haven't observed anything like this. I didn't test with Amazon Linux 2,
+> though.
+>=20
+> To rule out some possibilities, could you try disabling *all* userspace
+> networking bits, so that userspace does nothing with a newly discovered
+> interface, and then testing again? (The interface wouldn't be "up" in tha=
+t
+> case, but it should still have a link detected.)
+>=20
+> If that works, then I wonder if the userspace used in Amazon Linux 2 migh=
+t
+> have some kind of race where it's still using the previous incarnation of=
+ the
+> device when you rmmod and insmod? Perhaps the previous delays made it
+> difficult or impossible to trigger that race?
+>=20
+> - Josh Triplett
