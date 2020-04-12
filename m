@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 087401A5EE1
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 16:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24F31A5EE5
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 16:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgDLOLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 10:11:14 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:43148 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726139AbgDLOLO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 10:11:14 -0400
-Received: by mail-il1-f199.google.com with SMTP id o9so7720679ila.10
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 07:11:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=73xQG11pagPgCICtXY2EiAPlDki56JGVb2G/W2gPtpw=;
-        b=PnJ/iPrbjCgXCzA/9myx6Oad9Jbh9Ya4muL4V21P+G9RIbuHcU4CO53jOQnpR8jVV4
-         AauyYDngoto/Vwzuk5dqHiMnP67OodSrpEusQKzUKhfK7xznGUqaiKsAiE62VGWtldeb
-         ZDM7Kdl/LrBnZkDbEbPwSFqAmPuWrrzPAw6417xG4mYmftbk+zCmyP+RYOSIFgeIk5hl
-         UAb8LLmrjhauX1GqI9b4jy5Bqe4m6V6PCAneQpUsqxQ+UgEDvGkNRe5FqM16J5uWkQGh
-         6BSWY93saHkSwye6G4oLVzxAdKOT/Ve+9pW9nryfCKaMlTrGjn9yorTZ7oOTY20Pq3Gt
-         7I9w==
-X-Gm-Message-State: AGi0PuZ3sy8F1H9ZHYsX9H5Yt05BzmCCixhTcQVt+z2bFSwFdQGjWWkA
-        Pn8qGs4i6zO4UhIoHMC6w1mnsIEDHneCJ5zmn6Hb6qaHuwBg
-X-Google-Smtp-Source: APiQypJNgeXiWcgYp+NUapQFGn3xzuFCCkC4aRZxSFeZJxsGPY1nw7qj/FfTZXe6ys7i9Parky9Vh1Dddg/myTeGca5tdsJG0zUJ
+        id S1727080AbgDLOL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 10:11:26 -0400
+Received: from mga07.intel.com ([134.134.136.100]:57266 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726805AbgDLOL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Apr 2020 10:11:26 -0400
+IronPort-SDR: 7jqYE0Hh2SrjJnTWDHl1/XOTjdYluOn4wHPcNMqQ83w0r72Z6+RNIqej9IIeUoUrfKnyb/vmN4
+ mEI1eBOZ9Utg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2020 07:11:23 -0700
+IronPort-SDR: YcF9grRNMDlNiy+jJV6ObXJCi7szAvUALbUtLto5Lo6282uVrQe3ew4QxGUyba7qEbbivq1+ls
+ 5wT6Yk3yOGKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,374,1580803200"; 
+   d="scan'208";a="287651096"
+Received: from apresura-mobl.ger.corp.intel.com (HELO localhost) ([10.252.61.246])
+  by fmsmga002.fm.intel.com with ESMTP; 12 Apr 2020 07:11:21 -0700
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Nikita Sobolev <Nikita.Sobolev@synopsys.com>,
+        Tadeusz Struk <tadeusz.struk@intel.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] selftests/tpm: Fix runtime error
+Date:   Sun, 12 Apr 2020 17:11:17 +0300
+Message-Id: <20200412141118.70688-1-jarkko.sakkinen@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:52d:: with SMTP id h13mr794798ils.18.1586700672492;
- Sun, 12 Apr 2020 07:11:12 -0700 (PDT)
-Date:   Sun, 12 Apr 2020 07:11:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f2ecd605a31889d0@google.com>
-Subject: KASAN: null-ptr-deref Read in init_emulate_ctxt
-From:   syzbot <syzbot+4a946e65aa25edfdb55f@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+There is some random clutter in test_smoke.sh:
 
-syzbot found the following crash on:
+  ./test_smoke.sh: line 3: self.flags: command not found
 
-HEAD commit:    f5e94d10 Merge tag 'drm-next-2020-04-08' of git://anongit...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e6d61be00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ca75979eeebf06c2
-dashboard link: https://syzkaller.appspot.com/bug?extid=4a946e65aa25edfdb55f
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+Remove it.
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+4a946e65aa25edfdb55f@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in init_emulate_ctxt+0x497/0x4a0 arch/x86/kvm/x86.c:6424
-Read of size 8 at addr 0000000000000005 by task syz-executor.2/9707
-
-CPU: 1 PID: 9707 Comm: syz-executor.2 Not tainted 5.6.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- __kasan_report.cold+0x5/0x4d mm/kasan/report.c:515
- kasan_report+0x33/0x50 mm/kasan/common.c:625
- init_emulate_ctxt+0x497/0x4a0 arch/x86/kvm/x86.c:6424
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 9707 Comm: syz-executor.2 Tainted: G    B             5.6.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- end_report+0x4d/0x53 mm/kasan/report.c:103
- __kasan_report.cold+0xd/0x4d mm/kasan/report.c:518
- kasan_report+0x33/0x50 mm/kasan/common.c:625
- init_emulate_ctxt+0x497/0x4a0 arch/x86/kvm/x86.c:6424
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Fixes: b32694cd0724 ("Kernel selftests: tpm2: check for tpm support")
+Cc: Nikita Sobolev <Nikita.Sobolev@synopsys.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I rely on these tests and this was not even cc'd to me and obviously
+was untested. There is neither reviewed-by nor tested-by tags in the
+commit (not to mention some cosmetic things like short summary
+formatted wrong and the extra newline character).
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Please do not do this next time. Thanks.
+ tools/testing/selftests/tpm2/test_smoke.sh | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
+index b630c7b5950a..e55d3e400666 100755
+--- a/tools/testing/selftests/tpm2/test_smoke.sh
++++ b/tools/testing/selftests/tpm2/test_smoke.sh
+@@ -1,11 +1,9 @@
+ #!/bin/bash
+ # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
+-self.flags = flags
+ 
+ # Kselftest framework requirement - SKIP code is 4.
+ ksft_skip=4
+ 
+-
+ if [ -f /dev/tpm0 ] ; then
+ 	python -m unittest -v tpm2_tests.SmokeTest
+ 	python -m unittest -v tpm2_tests.AsyncTest
+-- 
+2.25.1
+
