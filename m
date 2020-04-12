@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 666F11A5DBF
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 11:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4541A5DCA
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 11:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbgDLJ0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 05:26:13 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:3994 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725832AbgDLJ0N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 05:26:13 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.19]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee55e92de9da03-1fbc8; Sun, 12 Apr 2020 17:25:51 +0800 (CST)
-X-RM-TRANSID: 2ee55e92de9da03-1fbc8
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.1.172.56])
-        by rmsmtp-syy-appsvr10-12010 (RichMail) with SMTP id 2eea5e92de9c9bf-68f8a;
-        Sun, 12 Apr 2020 17:25:51 +0800 (CST)
-X-RM-TRANSID: 2eea5e92de9c9bf-68f8a
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     khalasa@piap.pl, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Shengju Zhang <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] net: ethernet: ixp4xx: Add error handling in ixp4xx_eth_probe()
-Date:   Sun, 12 Apr 2020 17:27:28 +0800
-Message-Id: <20200412092728.8396-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726876AbgDLJdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 05:33:53 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:52362 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725878AbgDLJdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Apr 2020 05:33:52 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CABDA1A11EB;
+        Sun, 12 Apr 2020 11:33:51 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 56D2E1A11D1;
+        Sun, 12 Apr 2020 11:33:48 +0200 (CEST)
+Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id A7126402B4;
+        Sun, 12 Apr 2020 17:33:43 +0800 (SGT)
+From:   Biwen Li <biwen.li@oss.nxp.com>
+To:     shawnguo@kernel.org, ran.wang_1@nxp.com, robh+dt@kernel.org,
+        mark.rutland@arm.com
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiafei.pan@nxp.com, Biwen Li <biwen.li@nxp.com>
+Subject: [RESEND,v1 1/4] arm64: dts: lx2160a: add ftm_alarm0 DT node
+Date:   Sun, 12 Apr 2020 17:29:53 +0800
+Message-Id: <20200412092956.27859-1-biwen.li@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function ixp4xx_eth_probe() does not perform sufficient error
-checking after executing devm_ioremap_resource(),which can result
-in crashes if a critical error path is encountered.
+From: Biwen Li <biwen.li@nxp.com>
 
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-Signed-off-by: Shengju Zhang <zhangshengju@cmss.chinamobile.com>
+The patch adds ftm_alarm0 DT node for Soc LX2160A
+FlexTimer1 module is used to wakeup the system in deep sleep
+
+Signed-off-by: Biwen Li <biwen.li@nxp.com>
 ---
- drivers/net/ethernet/xscale/ixp4xx_eth.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/drivers/net/ethernet/xscale/ixp4xx_eth.c b/drivers/net/ethernet/xscale/ixp4xx_eth.c
-index 269596c15..2e5202923 100644
---- a/drivers/net/ethernet/xscale/ixp4xx_eth.c
-+++ b/drivers/net/ethernet/xscale/ixp4xx_eth.c
-@@ -1387,6 +1387,8 @@ static int ixp4xx_eth_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	regs_phys = res->start;
- 	port->regs = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(port->regs))
-+		return PTR_ERR(port->regs);
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index e5ee5591e52b..e0d8d68ce070 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -16,6 +16,10 @@
+ 	#address-cells = <2>;
+ 	#size-cells = <2>;
  
- 	switch (port->id) {
- 	case IXP4XX_ETH_NPEA:
++	aliases {
++		rtc1 = &ftm_alarm0;
++	};
++
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -768,6 +772,20 @@
+ 			timeout-sec = <30>;
+ 		};
+ 
++		rcpm: rcpm@1e34040 {
++			compatible = "fsl,lx2160a-rcpm", "fsl,qoriq-rcpm-2.1+";
++			reg = <0x0 0x1e34040 0x0 0x1c>;
++			#fsl,rcpm-wakeup-cells = <7>;
++			little-endian;
++		};
++
++		ftm_alarm0: timer@2800000 {
++			compatible = "fsl,lx2160a-ftm-alarm";
++			reg = <0x0 0x2800000 0x0 0x10000>;
++			fsl,rcpm-wakeup = <&rcpm 0x0 0x0 0x0 0x0 0x4000 0x0 0x0>;
++			interrupts = <0 44 4>;
++		};
++
+ 		usb0: usb@3100000 {
+ 			compatible = "snps,dwc3";
+ 			reg = <0x0 0x3100000 0x0 0x10000>;
 -- 
-2.20.1.windows.1
-
-
+2.17.1
 
