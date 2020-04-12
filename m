@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 073A01A5FB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 20:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE791A5FB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 20:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727549AbgDLSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 14:15:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727494AbgDLSPG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727505AbgDLSPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 12 Apr 2020 14:15:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727233AbgDLSPF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 12 Apr 2020 14:15:05 -0400
+X-Greylist: delayed 313 seconds by postgrey-1.27 at vger.kernel.org; Sun, 12 Apr 2020 14:15:05 EDT
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F192C0A88B7;
-        Sun, 12 Apr 2020 11:09:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03DAC0A88B8;
+        Sun, 12 Apr 2020 11:09:58 -0700 (PDT)
 Received: from localhost.localdomain (unknown [157.50.0.25])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CFA6206DA;
-        Sun, 12 Apr 2020 18:09:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E80E4206E9;
+        Sun, 12 Apr 2020 18:09:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586714993;
-        bh=KvvVL4O/277aJbdbXBvwqPERBOm9+Bv6KLT8QTuv4zM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=w+3hJt5/xqWcvDyO97BZEb7+ZEa7zW4Mbf5oiloYlbd4WzthZF/hm1ykeDka3C5w+
-         rHcMPFBC82G3Vrd48IF1ABsAKL8i7DaTXzEs2IIKlrQQ+NiD57WKPlUimhh3DR69ZJ
-         /QWLrfeWOkTcCxbPXNtaGpeMhV+jg5jDKpp3Dpu8=
+        s=default; t=1586714998;
+        bh=BUxT5IqaNvB9TgDMR7VN/qHcX2xgt0z3BHmRoAVi8ac=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=tKZgTR5H9n/+i9uvei5y+H4cpl7/P9LBuQV/mbHcvLwYjnhiUvBzUgKziqmln0BMf
+         WMtSvMLCAXeyZryxOSU5YTztOHiOm75PVTsi6C8yxESQTxhFRuDVfYk9Uf0/68c/DM
+         B+ujRUPVFg89VKeOKHTM6wPiy+vAQohRPyOCk3b0=
 From:   mani@kernel.org
 To:     gregkh@linuxfoundation.org, robh+dt@kernel.org,
         mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
@@ -34,10 +35,12 @@ Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Manivannan Sadhasivam <mani@kernel.org>
-Subject: [PATCH 0/2] Add software flow control support for STM32 UART
-Date:   Sun, 12 Apr 2020 23:39:21 +0530
-Message-Id: <20200412180923.30774-1-mani@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: serial: Add binding for software flow control in STM32 UART
+Date:   Sun, 12 Apr 2020 23:39:22 +0530
+Message-Id: <20200412180923.30774-2-mani@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200412180923.30774-1-mani@kernel.org>
+References: <20200412180923.30774-1-mani@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -45,31 +48,52 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Manivannan Sadhasivam <mani@kernel.org>
 
-Hello,
+Add devicetree binding for software flow control in STM32 UART
+controller. While at it, let's also fix one schema error reported by
+`make dtbs_check`.
 
-This patchset adds software flow control support for STM32 UART controller.
-This is necessary for the upcoming STM32MP1 based board called Stinger96
-IoT-Box. On that board, a bluetooth chip is connected to one of the UART
-controller but the CTS/RTS lines got swapped mistakenly. So in order to
-workaround that hardware bug and also to support the usecase of using only
-Tx/Rx pins, this patchset adds software flow control support.
+Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+---
 
-This patchset has been validated w/ Stinger96 IoT-Box connected to Murata
-WiFi-BT combo chip.
+Rob: Still the `dtbs_check` validation fails. This is due to the
+`linux,rs485-enabled-at-boot-time` property. I don't have any idea on how
+to fix this.
 
-Thanks,
-Mani
+ .../devicetree/bindings/serial/st,stm32-uart.yaml | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-Manivannan Sadhasivam (2):
-  dt-bindings: serial: Add binding for software flow control in STM32
-    UART
-  tty: serial: Add software flow control support for STM32 USART
-
- .../bindings/serial/st,stm32-uart.yaml        |  15 +-
- drivers/tty/serial/stm32-usart.c              | 143 +++++++++++++++++-
- drivers/tty/serial/stm32-usart.h              |   4 +
- 3 files changed, 155 insertions(+), 7 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+index 238c44192d31..ea5797a1b403 100644
+--- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
++++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+@@ -38,13 +38,26 @@ properties:
+     description: enable hardware flow control
+     $ref: /schemas/types.yaml#/definitions/flag
+ 
++  st,sw-flow-ctrl:
++    description: enable software flow control
++    $ref: /schemas/types.yaml#/definitions/flag
++
++  rts-gpios:
++    description: RTS pin used if st,sw-flow-ctrl is true
++    maxItems: 1
++
++  cts-gpios:
++    description: CTS pin used if st,sw-flow-ctrl is true
++    maxItems: 1
++
+   dmas:
+     minItems: 1
+     maxItems: 2
+ 
+   dma-names:
+     items:
+-      enum: [ rx, tx ]
++      - const: rx
++      - const: tx
+     minItems: 1
+     maxItems: 2
+ 
 -- 
 2.17.1
 
