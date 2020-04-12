@@ -2,139 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 680131A5BE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 04:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F221A5BF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 12 Apr 2020 04:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726911AbgDLCGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 11 Apr 2020 22:06:53 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:53915 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726182AbgDLCGw (ORCPT
+        id S1726884AbgDLCIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 11 Apr 2020 22:08:32 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:36674 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726155AbgDLCIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 11 Apr 2020 22:06:52 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id 352327D2;
-        Sat, 11 Apr 2020 22:06:51 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sat, 11 Apr 2020 22:06:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=ILg74KFQ4/u/i
-        LEbpVIGKPDUn0lqkuyVDFTjVVQFF4M=; b=Z2VROd3cksLy59OFEYAZL9M8LDtvZ
-        KMcHoTfCidG1Wyu37u1nOaBA+b5S+JMJ0UBe9BbSYTpnjLw+IbuL/UK1X3conhTF
-        Ur7JYC77svy+8dPKTQAvcPawgLGooTHe9qNvy5Vx5aSmV/XNmOadiO747XkehKHG
-        VPKE4ygSyn37VUMwdRR4UKU58zaN9jEZqMpoaOnY7ObKQNOjfy5Up+G/O3N2nn6a
-        4u0cYeS3yknd9irbeUiIBM04JK/dquR99xKnAS+9Nd8vDoWs3sFOUpujiXEYQOt/
-        Era4ByWmgz3UFN9i4f7KFEc243/M2FbVfR1AyjZGwFkZxOUqnv2xApNPw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=ILg74KFQ4/u/iLEbpVIGKPDUn0lqkuyVDFTjVVQFF4M=; b=g9KvwmYn
-        eJ/kAe+B4GnCJRJwnteJYQcvOgjCM6OU0BUSDNW61hwzlZZXfVmKqrTWDedFx5YL
-        2j/8Qiq6qS8XOGadu68rb9owF123hw9Pl/lsX2GG+5v5Dmde7Pjhu4ln0sc8rcTZ
-        GilG681ThX+ScC+79R81y58dUJNzqnF3xVIjCi6KpOHqUWfx3GIJI6aDF5H8vNvw
-        RcLPwSgmBd9mscJ6NoBGWu/L05Y41VLBdbrWD+NurvV0Pui3HZEpoS9vnj8uQR+r
-        GcpPzpiJRfoZqW016jUvhUwmhlLz7ET8fLaSgbPSlewsQ8foJ32QuId4lxzcJ+wG
-        YzwT+mltb7StnQ==
-X-ME-Sender: <xms:uneSXnd3s7H2zgZMTUWaXQSosb54exS7z_YfnSjrSBahd6sD-bpZuA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrvdehgdehvdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeetlhhishhtrghirhcuhfhrrghntghishcuoegrlhhishhtrghi
-    rhesrghlihhsthgrihhrvdefrdhmvgeqnecukfhppeejfedrleefrdekgedrvddtkeenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishht
-    rghirhesrghlihhsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:uneSXilz-yxPtpaS9JqNFRCE037pq-2EUteiN20Jp1vyyDPGkf7s-g>
-    <xmx:uneSXkJZqEE-xL8dRDQRjJYEZIPNakMdx2wGe81VzFG-nsw-4BDGVg>
-    <xmx:uneSXo3GlwI2ejJrwEX4fYIUNlX13p2FRimucRXHEirHzzACum3ffg>
-    <xmx:uneSXo7pROq4Uixu48QJ9uELZQuqiBMiIudDmpGL5CTcKwe43uyCBXITU2c>
-Received: from alistair-xps-14z.alistair23.me (c-73-93-84-208.hsd1.ca.comcast.net [73.93.84.208])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8824C3280069;
-        Sat, 11 Apr 2020 22:06:49 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marcel@holtmann.org, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org, mripard@kernel.org, wens@csie.org
-Cc:     anarsoul@gmail.com, devicetree@vger.kernel.org,
-        alistair23@gmail.com, linux-arm-kernel@lists.infradead.org,
-        Alistair Francis <alistair@alistair23.me>
-Subject: [PATCH v3 3/3] arm64: allwinner: Enable Bluetooth and WiFi on sopine baseboard
-Date:   Sat, 11 Apr 2020 19:06:44 -0700
-Message-Id: <20200412020644.355142-3-alistair@alistair23.me>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200412020644.355142-1-alistair@alistair23.me>
-References: <20200412020644.355142-1-alistair@alistair23.me>
+        Sat, 11 Apr 2020 22:08:32 -0400
+Received: by mail-pf1-f193.google.com with SMTP id n10so2945470pff.3;
+        Sat, 11 Apr 2020 19:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2XTiPR3NjTU2y5mQ5J0Pv6fdfmC7aqoQXGxB8xurXAY=;
+        b=lDpwEbYHC9at0O1/B5PbecUoT+1zLNbJJBOjARMz1vPiPAZBxvUrVH5hV342v8CaFt
+         a+I5t0MMp3yKWm1/XhdBCF5fMcDcvldG3YzNzo+98u9VjmM3qkmwU2LEH1R5FVaSneic
+         7+y6w8ZmazEseq6ypQ+mk1+A5Yc9E34zL7pYLna9QbmUpef2c50w7XcQPXQXgPs9c84L
+         YuZFpYEZ1xgZfskMHnj0FcLrXcK3dxQEc9RdlUv+5pH0JvRJHiFGrlGfuJwKfUeRJVPG
+         xtDq/X8ZmLWtOjlWR5J0H7sDNy2S02+b8TZnC5h3QRrLCz80U5KzDaIU5uriOG0mmL0J
+         KDVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2XTiPR3NjTU2y5mQ5J0Pv6fdfmC7aqoQXGxB8xurXAY=;
+        b=OTJ/iBXtjWw8awhgZpkpWaRvRufMonYE+ODCHOCIZgcwvtcC/KdSRlkA/CURGxnQNY
+         vR9aEfYRMx8UgYcvmrL33OOuAsI3/m35Q2Q5S61tLApwu9YzVtZawF8l9oanvruP6rmf
+         bVWJ1aAjcrbMbKg+J5V13oucLy2geojs7PLKpHOmxbUp6W6Eqb7TyYsvCiNI80nAqMd7
+         c59aTMMG5JlC0Kn33PPHe6mE0ebE6EPw3eFSRCWr6kT3pKeYphqxOfkrPUrlxRilJ2A7
+         4T6PUXbNloXA6KzblscOfqukY5y9i+P3jyJJiWea6tu3CaARkghZUwBylZwiduJSPZ58
+         P2gQ==
+X-Gm-Message-State: AGi0PuZfZRk/YAj4KjF61ukPIbuJZUN7RP3JJFfK7Rq6IywAcPoSGGSI
+        KvfJUSVgzGJ7aCKqnsJZrzQ=
+X-Google-Smtp-Source: APiQypJ60bO+ukorWl/8JR2FaX5qNy91w61uKW994f9Dy9yVPv9w6abyS3PWd2+Up8uTp/PFc4Ngxw==
+X-Received: by 2002:a62:cf82:: with SMTP id b124mr7362893pfg.124.1586657312126;
+        Sat, 11 Apr 2020 19:08:32 -0700 (PDT)
+Received: from Asurada (c-73-162-191-63.hsd1.ca.comcast.net. [73.162.191.63])
+        by smtp.gmail.com with ESMTPSA id b16sm5148188pfb.71.2020.04.11.19.08.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 11 Apr 2020 19:08:31 -0700 (PDT)
+Date:   Sat, 11 Apr 2020 19:08:14 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 5/7] ASoC: fsl_asrc: Move common definition to
+ fsl_asrc_common
+Message-ID: <20200412020814.GA5984@Asurada>
+References: <cover.1585726761.git.shengjiu.wang@nxp.com>
+ <93531963f028aabf9176173de3c6038a200acb89.1585726761.git.shengjiu.wang@nxp.com>
+ <20200406234819.GB20945@Asurada-Nvidia.nvidia.com>
+ <CAA+D8AM69bhorQKikQGwwFRqgBYN8V2pXBW5JLZyFCVHWKkNGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA+D8AM69bhorQKikQGwwFRqgBYN8V2pXBW5JLZyFCVHWKkNGg@mail.gmail.com>
+User-Agent: Mutt/1.5.22 (2013-10-16)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sopine board has an optional RTL8723BS WiFi + BT module that can be
-connected to UART1. Add this to the device tree so that it will work
-for users if connected.
+On Sat, Apr 11, 2020 at 01:49:43PM +0800, Shengjiu Wang wrote:
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
----
- .../allwinner/sun50i-a64-sopine-baseboard.dts | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+> > > diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+> > > index b15946e03380..5cf0468ce6e3 100644
+> > > --- a/sound/soc/fsl/fsl_asrc_dma.c
+> > > +++ b/sound/soc/fsl/fsl_asrc_dma.c
+> >
+> > > @@ -311,11 +311,12 @@ static int fsl_asrc_dma_startup(struct snd_soc_component *component,
+> > >               return ret;
+> > >       }
+> > >
+> > > -     pair = kzalloc(sizeof(struct fsl_asrc_pair), GFP_KERNEL);
+> > > +     pair = kzalloc(sizeof(struct fsl_asrc_pair) + PAIR_PRIVAT_SIZE, GFP_KERNEL);
+> >
+> > If we only use the PAIR_PRIVATE_SIZE here, maybe we can put the
+> > define in this file too, rather than in the header file.
+> >
+> > And could fit 80 characters:
+> >
+> > +       pair = kzalloc(sizeof(*pair) + PAIR_PRIVAT_SIZE, GFP_KERNEL);
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-index 2f6ea9f3f6a2..34357ba143cb 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine-baseboard.dts
-@@ -42,6 +42,11 @@ reg_vcc1v8: vcc1v8 {
- 		regulator-min-microvolt = <1800000>;
- 		regulator-max-microvolt = <1800000>;
- 	};
-+
-+	wifi_pwrseq: wifi_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&r_pio 0 2 GPIO_ACTIVE_LOW>; /* PL2 */
-+	};
- };
- 
- &ac_power_supply {
-@@ -103,6 +108,17 @@ ext_rgmii_phy: ethernet-phy@1 {
- 	};
- };
- 
-+&mmc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mmc1_pins>;
-+	vmmc-supply = <&reg_dldo4>;
-+	vqmmc-supply = <&reg_eldo1>;
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	non-removable;
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
- &mmc2 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc2_pins>;
-@@ -174,6 +190,19 @@ &uart0 {
- 	status = "okay";
- };
- 
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
-+	uart-has-rtscts = <1>;
-+	status = "okay";
-+
-+	bluetooth {
-+		compatible = "realtek,rtl8723bs-bt";
-+		device-wake-gpios = <&r_pio 0 5 GPIO_ACTIVE_HIGH>; /* PL5 */
-+		host-wake-gpios = <&r_pio 0 6 GPIO_ACTIVE_HIGH>; /* PL6 */
-+	};
-+};
-+
- /* On Pi-2 connector */
- &uart2 {
- 	pinctrl-names = "default";
--- 
-2.26.0
+> I will use a function pointer
+>     int (*get_pair_priv_size)(void)
 
+Since it's the size of pair or cts structure, could be just a
+size_t variable?
