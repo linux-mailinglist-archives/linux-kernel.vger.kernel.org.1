@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 261CD1A61BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 05:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC681A61C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 05:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728552AbgDMD3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Apr 2020 23:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:50304 "EHLO
+        id S1728563AbgDMDdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Apr 2020 23:33:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:50954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728460AbgDMD3f (ORCPT
+        with ESMTP id S1727513AbgDMDdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Apr 2020 23:29:35 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804B2C0A3BE0;
-        Sun, 12 Apr 2020 20:29:35 -0700 (PDT)
-IronPort-SDR: hE7V3V4VpnrkDfnrrC8jxXwcBy+UZT+IP6Q5iCTaZnAduiBIBmMRIXkTTaVW9XsMGo2ERBMKJV
- nDvOGRmi0q/w==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2020 20:29:34 -0700
-IronPort-SDR: kaY6tSE5sav4RYffzh5Gz8m+KI24+vSEUaId10rWnW/z77yZuUjZQe137BBTWyM9T41eTMKCJy
- 8agcj2vT/LvQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,377,1580803200"; 
-   d="scan'208";a="453023852"
-Received: from araj-mobl1.jf.intel.com ([10.255.32.166])
-  by fmsmga005.fm.intel.com with ESMTP; 12 Apr 2020 20:29:31 -0700
-Date:   Sun, 12 Apr 2020 20:29:31 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     "Raj, Ashok" <ashok.raj@linux.intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Tian, Jun J" <jun.j.tian@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Wu, Hao" <hao.wu@intel.com>, Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH v1 2/2] vfio/pci: Emulate PASID/PRI capability for VFs
-Message-ID: <20200413032930.GB18479@araj-mobl1.jf.intel.com>
-References: <1584880394-11184-1-git-send-email-yi.l.liu@intel.com>
- <1584880394-11184-3-git-send-email-yi.l.liu@intel.com>
- <20200402165954.48d941ee@w520.home>
- <A2975661238FB949B60364EF0F2C25743A2204FE@SHSMSX104.ccr.corp.intel.com>
- <20200403112545.6c115ba3@w520.home>
- <AADFC41AFE54684AB9EE6CBC0274A5D19D80E13D@SHSMSX104.ccr.corp.intel.com>
- <20200407095801.648b1371@w520.home>
- <20200408040021.GS67127@otc-nc-03>
- <20200408101940.3459943d@w520.home>
- <20200413031043.GA18183@araj-mobl1.jf.intel.com>
+        Sun, 12 Apr 2020 23:33:08 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50B56C0A3BE0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Apr 2020 20:33:08 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E24C530E;
+        Sun, 12 Apr 2020 20:33:07 -0700 (PDT)
+Received: from [10.163.1.49] (unknown [10.163.1.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 089B43F6C4;
+        Sun, 12 Apr 2020 20:33:04 -0700 (PDT)
+Subject: Re: [PATCH 1/6] arm64/cpufeature: Introduce ID_PFR2 CPU register
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+References: <1580215149-21492-1-git-send-email-anshuman.khandual@arm.com>
+ <1580215149-21492-2-git-send-email-anshuman.khandual@arm.com>
+ <20200409125431.GB13078@willie-the-truck>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <8b905244-c296-3859-b515-711550bef3a2@arm.com>
+Date:   Mon, 13 Apr 2020 09:02:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413031043.GA18183@araj-mobl1.jf.intel.com>
-User-Agent: Mutt/1.9.1 (2017-09-22)
+In-Reply-To: <20200409125431.GB13078@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex
-
-Going through the PCIe Spec, there seems a lot of such capabilities
-that are different between PF and VF. Some that make sense
-and some don't.
 
 
-On Sun, Apr 12, 2020 at 08:10:43PM -0700, Raj, Ashok wrote:
+On 04/09/2020 06:24 PM, Will Deacon wrote:
+> On Tue, Jan 28, 2020 at 06:09:04PM +0530, Anshuman Khandual wrote:
+>> This adds basic building blocks required for ID_PFR2 CPU register which
+>> provides information about the AArch32 programmers model which must be
+>> interpreted along with ID_PFR0 and ID_PFR1 CPU registers.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: James Morse <james.morse@arm.com>
+>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: kvmarm@lists.cs.columbia.edu
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>  arch/arm64/include/asm/cpu.h    |  1 +
+>>  arch/arm64/include/asm/sysreg.h |  4 ++++
+>>  arch/arm64/kernel/cpufeature.c  | 11 +++++++++++
+>>  arch/arm64/kernel/cpuinfo.c     |  1 +
+>>  arch/arm64/kvm/sys_regs.c       |  2 +-
+>>  5 files changed, 18 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm64/include/asm/cpu.h b/arch/arm64/include/asm/cpu.h
+>> index b4a40535a3d8..464e828a994d 100644
+>> --- a/arch/arm64/include/asm/cpu.h
+>> +++ b/arch/arm64/include/asm/cpu.h
+>> @@ -46,6 +46,7 @@ struct cpuinfo_arm64 {
+>>  	u32		reg_id_mmfr3;
+>>  	u32		reg_id_pfr0;
+>>  	u32		reg_id_pfr1;
+>> +	u32		reg_id_pfr2;
+>>  
+>>  	u32		reg_mvfr0;
+>>  	u32		reg_mvfr1;
+>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+>> index b91570ff9db1..054aab7ebf1b 100644
+>> --- a/arch/arm64/include/asm/sysreg.h
+>> +++ b/arch/arm64/include/asm/sysreg.h
+>> @@ -151,6 +151,7 @@
+>>  #define SYS_MVFR0_EL1			sys_reg(3, 0, 0, 3, 0)
+>>  #define SYS_MVFR1_EL1			sys_reg(3, 0, 0, 3, 1)
+>>  #define SYS_MVFR2_EL1			sys_reg(3, 0, 0, 3, 2)
+>> +#define SYS_ID_PFR2_EL1			sys_reg(3, 0, 0, 3, 4)
+>>  
+>>  #define SYS_ID_AA64PFR0_EL1		sys_reg(3, 0, 0, 4, 0)
+>>  #define SYS_ID_AA64PFR1_EL1		sys_reg(3, 0, 0, 4, 1)
+>> @@ -717,6 +718,9 @@
+>>  #define ID_ISAR6_DP_SHIFT		4
+>>  #define ID_ISAR6_JSCVT_SHIFT		0
+>>  
+>> +#define ID_PFR2_SSBS_SHIFT		4
+>> +#define ID_PFR2_CSV3_SHIFT		0
+>> +
+>>  #define MVFR0_FPROUND_SHIFT		28
+>>  #define MVFR0_FPSHVEC_SHIFT		24
+>>  #define MVFR0_FPSQRT_SHIFT		20
+>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+>> index 0b6715625cf6..c1e837fc8f97 100644
+>> --- a/arch/arm64/kernel/cpufeature.c
+>> +++ b/arch/arm64/kernel/cpufeature.c
+>> @@ -348,6 +348,12 @@ static const struct arm64_ftr_bits ftr_id_pfr0[] = {
+>>  	ARM64_FTR_END,
+>>  };
+>>  
+>> +static const struct arm64_ftr_bits ftr_id_pfr2[] = {
+>> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR2_SSBS_SHIFT, 4, 0),
+>> +	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_PFR2_CSV3_SHIFT, 4, 0),
 > 
-> > 
-> > I agree though, I don't know why the SIG would preclude implementing
-> > per VF control of these features.  Thanks,
-> > 
+> Why is CSV3 strict here, but not when we see if in aa64pfr0? I think it
+> should be non-strict in both cases.
 
-For e.g. 
-
-VF doesn't have I/O and Mem space enables, but has BME
-Interrupt Status
-Correctable Error Reporting
-Almost all of Device Control Register.
-
-So it seems like there is a ton of them we have to deal with today for 
-VF's. How do we manage to emulate them without any support for them 
-in VF's? 
-
+Sure, will do.
 
 > 
-> Cheers,
-> Ashok
+> Will
+> 
