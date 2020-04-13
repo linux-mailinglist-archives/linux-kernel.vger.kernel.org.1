@@ -2,118 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471881A6856
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EC61A685F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730870AbgDMOu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:50:27 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:28251 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729311AbgDMOuZ (ORCPT
+        id S1730882AbgDMOvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:51:05 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:60958 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730888AbgDMOu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:50:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586789423;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=FEtIYVJIpib0M0PusMaXJ2aHzJiehmLRM7Ty7t9FWBg=;
-        b=XS1Jz86aEiEcFECbrEDmqLHTkOGMqStrQE+1K/O5AcDzx2+YeS406k73UneD1Ut5RWx5AK
-        VAYxNjDe2kFbyCHGBSgLFYVaKj2Wwwt0xcFV+lHxyuKTaCkG690jfWR4Q/1DacJUky5uVu
-        xy7VhMJ6KnhzQj14aIhytihg+21Yl5I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204--_H3N8V-Pwmh2DH0fsaWsA-1; Mon, 13 Apr 2020 10:50:19 -0400
-X-MC-Unique: -_H3N8V-Pwmh2DH0fsaWsA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 13 Apr 2020 10:50:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586789456; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=uvf3bpTwOKniLL1tkFEZ8lUYaBxnlGE9DNXjmA347Xc=;
+ b=JVE0Oy/nbYlWJ2cLaPDvDLUAfV066FdCQDNMkvnkmXf9zUeA08NlACv4BRhWZy1UZ2z2PdNJ
+ BibB5/HMk3DptM0ViEtYVolDnwGEB99e5CvecAMiAncPyiZ8QujRhmoprcaDv9WynkXRILhO
+ oIJaQ/M0oY6qo6qsQxeWZQZRU0k=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e947c4a.7f33307f5ab0-smtp-out-n01;
+ Mon, 13 Apr 2020 14:50:50 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 85830C433BA; Mon, 13 Apr 2020 14:50:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9B5C1005509;
-        Mon, 13 Apr 2020 14:50:17 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-224.rdu2.redhat.com [10.10.112.224])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ABEB1272A5;
-        Mon, 13 Apr 2020 14:50:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] afs: Fixes
+        (Authenticated sender: kgunda)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A50E3C433F2;
+        Mon, 13 Apr 2020 14:50:47 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2940558.1586789415.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 13 Apr 2020 15:50:15 +0100
-Message-ID: <2940559.1586789415@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 13 Apr 2020 20:20:47 +0530
+From:   kgunda@codeaurora.org
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Rob Herring <robh@kernel.org>, bjorn.andersson@linaro.org,
+        jingoohan1@gmail.com, b.zolnierkie@samsung.com,
+        dri-devel@lists.freedesktop.org, jacek.anaszewski@gmail.com,
+        pavel@ucw.cz, mark.rutland@arm.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>, linux-arm-msm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH V4 1/4] backlight: qcom-wled: convert the wled bindings to
+ .yaml format
+In-Reply-To: <20200406085024.GF30614@dell>
+References: <1584985618-25689-1-git-send-email-kgunda@codeaurora.org>
+ <1584985618-25689-2-git-send-email-kgunda@codeaurora.org>
+ <20200331175401.GA9791@bogus>
+ <ac8f25113a3bb233c11fd7cd9e62c2cf@codeaurora.org>
+ <20200403114651.m6rholzufzqinanc@holly.lan> <20200406085024.GF30614@dell>
+Message-ID: <4fb0643342e512a248f57198cbafe50c@codeaurora.org>
+X-Sender: kgunda@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-Here are some fixes for the afs filesystem:
-
- (1) Fix the decoding of fetched file status records do that in advances
-     the xdr pointer under all circumstances.
-
- (2) Fix the decoding of a fetched file status record that indicates an
-     inline abort code (ie. an error) so that it sets the flag saying that
-     it got an error.
-
- (3) Fix the decoding of the result of the rename operation so that it
-     doesn't skip the decoding of the second fetched file status (ie. that
-     of the dest dir) in the case that the source and dest dirs were the
-     same as this causes the xdr pointer not to be advanced, leading to
-     incorrect decoding of subsequent parts of the reply.
-
- (4) Fix the dump of a bad YFSFetchStatus record to dump the full length.
-
- (5) Fix a race between local editing of directory contents and accessing
-     the dir for reading or d_revalidate by using the same lock in both.
-
- (6) Fix afs_d_revalidate() to not accidentally reverse the version on a
-     dentry when it's meant to be bringing it forward.
-
-David
----
-The following changes since commit 8f3d9f354286745c751374f5f1fcafee6b3f313=
-6:
-
-  Linux 5.7-rc1 (2020-04-12 12:35:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git tags=
-/afs-fixes-20200413
-
-for you to fetch changes up to 40fc81027f892284ce31f8b6de1e497f5b47e71f:
-
-  afs: Fix afs_d_validate() to set the right directory version (2020-04-13=
- 15:09:01 +0100)
-
-----------------------------------------------------------------
-AFS fixes
-
-----------------------------------------------------------------
-David Howells (6):
-      afs: Fix missing XDR advance in xdr_decode_{AFS,YFS}FSFetchStatus()
-      afs: Fix decoding of inline abort codes from version 1 status record=
-s
-      afs: Fix rename operation status delivery
-      afs: Fix length of dump of bad YFSFetchStatus record
-      afs: Fix race between post-modification dir edit and readdir/d_reval=
-idate
-      afs: Fix afs_d_validate() to set the right directory version
-
- fs/afs/dir.c       | 108 +++++++++++++++++++++++++++++++++---------------=
------
- fs/afs/dir_silly.c |  22 +++++++----
- fs/afs/fsclient.c  |  27 ++++++++------
- fs/afs/yfsclient.c |  26 +++++++------
- 4 files changed, 112 insertions(+), 71 deletions(-)
-
+On 2020-04-06 14:20, Lee Jones wrote:
+> On Fri, 03 Apr 2020, Daniel Thompson wrote:
+> 
+>> On Fri, Apr 03, 2020 at 04:45:49PM +0530, kgunda@codeaurora.org wrote:
+>> > On 2020-03-31 23:24, Rob Herring wrote:
+>> > > On Mon, Mar 23, 2020 at 11:16:55PM +0530, Kiran Gunda wrote:
+>> > > > diff --git
+>> > > > a/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+>> > > > b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+>> > > > new file mode 100644
+>> > > > index 0000000..8a388bf
+>> > > > --- /dev/null
+>> > > > +++ b/Documentation/devicetree/bindings/leds/backlight/qcom-wled.yaml
+>> > > > @@ -0,0 +1,184 @@
+>> > > > +# SPDX-License-Identifier: GPL-2.0-only
+>> > > > +%YAML 1.2
+>> > > > +---
+>> > > > +$id: http://devicetree.org/schemas/leds/backlight/qcom-wled.yaml#
+>> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> > > > +
+>> > > > +title: Binding for Qualcomm Technologies, Inc. WLED driver
+>> > > > +
+>> > > > +maintainers:
+>> > > > +  - Lee Jones <lee.jones@linaro.org>
+>> > >
+>> > > Should be the h/w owner (you), not who applies patches.
+>> > >
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> > <snip>
+>> > will address in next post.
+>> 
+>> If you agree on all points raised I doubt there is any need for a 
+>> point
+>> by point reply since everyone who reads it will have to scroll down
+>> simply to find out that you agree on all points.
+>> 
+>> Better just to acknowledge the feedback and reply to the first one
+>> saying you'll agree on all points and will address all feedback in the
+>> next revision (and then trim the reply to keep it short).
+> 
+> Or better still, just submit the next revision with all the fixes. :)
+Noted.
