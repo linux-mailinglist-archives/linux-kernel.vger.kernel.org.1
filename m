@@ -2,122 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D50C1A6B4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0801A6B5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732754AbgDMRUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 13:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732579AbgDMRUu (ORCPT
+        id S1732805AbgDMRaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 13:30:00 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:44490 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732781AbgDMR37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 13:20:50 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98C5C0A3BDC;
-        Mon, 13 Apr 2020 10:20:49 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id k11so10316307wrp.5;
-        Mon, 13 Apr 2020 10:20:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kWgwtw6mnshP7OT2kiE97Ap+wsoZZptwcvaDrs1tDsI=;
-        b=bVh1MHnIU7qEHoYKTXnX8K/41raLAhstyBAr9OgkIlaMU8CkeYDVbSuj2MVqY6E5dC
-         qLA+7Z8aDDgXtfRRRqEt0JirV+9D3Kq0As4DptSjqE9XC0ru6jAEs0RursW6IqmT1Zig
-         sI5edIfwkeSg6nTxBG35L3EVBdv/yJQ/xXc/2hlNlq1c87BhsJFy0UQbTYqwrCW9wi+m
-         +UMcaGJA1UvnpJqFD/eQh1Kb4j9Rttzq1LN53LMaa6FQiRsPQtUzk7u8/c6uuQi/fWnZ
-         FUJhWMCikBA3WxTFmBgTIrX+2cTVVd4s1z5j5ATbYWQ5BQnVkFcCL7dNGbK7P1nIsN/d
-         axFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kWgwtw6mnshP7OT2kiE97Ap+wsoZZptwcvaDrs1tDsI=;
-        b=Ryse9ZksgEQsHvy42kpIfmiCut9nMkbLvkhedcFApneXqfMbKjjRGT2dBss9OhBdKY
-         clNF4UZtfNhAfHFfPHQ9n5RZ9i5SogpdMPcsSWcnF0uE19hI+yrbJUGpiwQCVBZk51Qz
-         rzsKLAE+RNZgsrdmhF3WrDAkFgxJGbpESOB/1bnNGlAc+B4v6wCNlPxi3E/JtsUuYKXb
-         L+7BfTYC6iWdMVnGM2ZIzfl0V9xvv6RjIOPg7u8rEQ2XPkzqSncdRyOA5YFPMmw/beFY
-         a+7b+mTzXy/GN+KpRdFiai7kHFrEvwKgvu7NB8A0e5eFZrn8oXHiy35eYfiaPmwAUup1
-         u2Rg==
-X-Gm-Message-State: AGi0PubrV/S4wvGM7Ky18UmX0W9CSLYZMUFXsHFtE6Db3as99yGKwGOK
-        D4G6qV3F1sqd1H+yJQlZ4WM=
-X-Google-Smtp-Source: APiQypIs6QMkRZ3InN+DdxIArcJcpkp8vBmkZ8YZyLT4LbLHkZc845IeZsR13A1TTF2jkLK0weALmQ==
-X-Received: by 2002:a5d:698f:: with SMTP id g15mr5867707wru.135.1586798448730;
-        Mon, 13 Apr 2020 10:20:48 -0700 (PDT)
-Received: from linux-gy6r.site ([213.195.113.243])
-        by smtp.gmail.com with ESMTPSA id d13sm6835546wmb.39.2020.04.13.10.20.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 10:20:48 -0700 (PDT)
-Subject: Re: [PATCH v7 5/5] media: mtk-mdp: Use correct aliases name
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Daniel Kurtz <djkurtz@chromium.org>
-References: <20200210063523.133333-1-hsinyi@chromium.org>
- <20200210063523.133333-6-hsinyi@chromium.org>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-X-Pep-Version: 2.0
-Message-ID: <7f08c5a8-8635-7e97-9585-601ac9c21ded@gmail.com>
-Date:   Mon, 13 Apr 2020 19:20:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 13 Apr 2020 13:29:59 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DHSdR2169183;
+        Mon, 13 Apr 2020 17:28:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : references : date : in-reply-to : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=VpPjezWpp2fBFTqgtsqL0SE6+xEpZn+3Xh+uCrF62mM=;
+ b=NzuAhNnNqhibFcFoUT9UGE4LtMix29o8B4Yr7517akm0XQyxEERazgy9AUiEXuB4DWYF
+ VK7c4rlCgFMDS+35naW/MEsUdhnpU8PKH8GXmX2+qmm9GwrLQ3K6KLwnmfm6OCnTEuti
+ hwBQlgmiKDebzrr24HO/vbETeAcG7Ls2msx0Q+lr1Sb1lkvw68bphC+mMF0moq3tQWRB
+ i2EfttRo8LLbr0lPp7ceeKcYY3qZwVJFnCApqMYw8JCrjbnAmIB8R6TFDhh1113ahTsM
+ mnQ3qhrg3J2SjJhLuvfvJsaNI04UJHh/QD1rJMwqmNOgcwC/1a1YBiM1Oahhu4b0DfD+ Gw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 30b5aqyveh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 17:28:51 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DHRhOM100879;
+        Mon, 13 Apr 2020 17:28:50 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 30bqceq8bq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 17:28:50 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03DHSmb1020744;
+        Mon, 13 Apr 2020 17:28:49 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Apr 2020 10:28:48 -0700
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     <john.garry@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <chenxiang66@hisilicon.com>,
+        <b.zolnierkie@samsung.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] scsi: hisi_sas: Fix build error without SATA_HOST
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+References: <20200402063021.34672-1-yuehaibing@huawei.com>
+        <20200402085812.32948-1-yuehaibing@huawei.com>
+Date:   Mon, 13 Apr 2020 13:28:45 -0400
+In-Reply-To: <20200402085812.32948-1-yuehaibing@huawei.com>
+        (yuehaibing@huawei.com's message of "Thu, 2 Apr 2020 16:58:12 +0800")
+Message-ID: <yq1wo6jxpki.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1.92 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20200210063523.133333-6-hsinyi@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004130133
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
+ clxscore=1011 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004130133
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Yue Haibing,
 
-On 2/10/20 7:35 AM, Hsin-Yi Wang wrote:
-> aliases property name must include only lowercase and '-'. Fix in dts
-> and driver.
->=20
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
->  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/me=
-dia/platform/mtk-mdp/mtk_mdp_comp.c
-> index 9afe8161a8c0..0c4788af78dd 100644
-> --- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-> +++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
+> If SATA_HOST is n, build fails:
+>
+> drivers/scsi/hisi_sas/hisi_sas_main.o: In function
+> `hisi_sas_fill_ata_reset_cmd': hisi_sas_main.c:(.text+0x2500):
+> undefined reference to `ata_tf_to_fis'
+>
+> Select SATA_HOST to fix this.
 
-When resubmitting this, please make sure to use
-scripts/get_maintainer.pl
+Applied to 5.7/scsi-fixes. Thanks!
 
-The To and CC list are missing the relevant people and mailinglists,
-porbably that's why you never got a response. The patch is trivial feel
-free to add:
-
-Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
-
-> @@ -15,10 +15,10 @@
-> =20
-> =20
->  static const char * const mtk_mdp_comp_stem[MTK_MDP_COMP_TYPE_MAX] =3D=
- {
-> -	"mdp_rdma",
-> -	"mdp_rsz",
-> -	"mdp_wdma",
-> -	"mdp_wrot",
-> +	"mdp-rdma",
-> +	"mdp-rsz",
-> +	"mdp-wdma",
-> +	"mdp-wrot",
->  };
-> =20
->  struct mtk_mdp_comp_match {
->=20
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
