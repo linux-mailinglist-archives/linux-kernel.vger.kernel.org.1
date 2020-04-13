@@ -2,134 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55051A690A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48A7F1A690C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730583AbgDMPmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 11:42:10 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50214 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728597AbgDMPmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 11:42:06 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DFfQA2159209;
-        Mon, 13 Apr 2020 15:41:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=M+fw6loVbLw+pCfTuALSNfRjDhUb4+yvgsGLlCVk5Fs=;
- b=zDJ+M4Tw9m/l22rkzmZsDkRUxK87Wux34oSU0QkE6E1xZzS3Z5KlscvzW/MzAYuuywDT
- QA2KdS3PSns31YJpkMTOPDLvwwiD4GLw2yBu14VvLX17delmSsaEHe4CO5rBhXrRAGa4
- 4BktgErvib3Xq13XidEfUsYf17LQiBsh6AZ8sQqATVfdJrWre8tIwSv0rcknWC+3a2jU
- DiCNktnL17F/2X9n3olA/T+mgF6JkrbDmybQ/Zb9VQGkBeR2ejjXBh01kAuSY5Lpmfh7
- QhGVWm+b5HGq00USdAVEhdhyelvoUQYGfQBRG3yhmbzRw0xTvAJ/zJJq0Si7MTkEL27O jQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 30b5aqy8mg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Apr 2020 15:41:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DFb4A0072355;
-        Mon, 13 Apr 2020 15:41:48 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 30bqkxjkx1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Apr 2020 15:41:48 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03DFfirl012491;
-        Mon, 13 Apr 2020 15:41:44 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 13 Apr 2020 08:41:43 -0700
-Date:   Mon, 13 Apr 2020 08:41:42 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     ira.weiny@intel.com
-Cc:     linux-kernel@vger.kernel.org, Dave Chinner <dchinner@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH V7 1/9] fs/xfs: Remove unnecessary initialization of
- i_rwsem
-Message-ID: <20200413154142.GS6742@magnolia>
-References: <20200413054046.1560106-1-ira.weiny@intel.com>
- <20200413054046.1560106-2-ira.weiny@intel.com>
+        id S1730634AbgDMPnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 11:43:31 -0400
+Received: from mail-db8eur05on2098.outbound.protection.outlook.com ([40.107.20.98]:11649
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728597AbgDMPn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 11:43:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n6rlkU/kHKD4TEIjrwx2IH7AjTKQ2RbTwXM9WYARisp+pV/46RWfAaYvdL8RbfWN3wyIr+j4UMCNwbFYoqllFKotos8WNTvaGb5FkaryUbOZaAu5di8zJc0EE5JwV7qouElyYlIrzBLPwZOrZZe/lDfRteuCbdLGOi3COMiEnR1Xvicnd+1qo5gbyiIMDkr/Rbtx6RAnaU3u1vJ0EPWwysDXLnczoRY49ZbbG6zrrvKv1lFY+q9SOgB4HQADPN9tTXyTQyScZLVsVA0FLbZgIiQJwaZZgal2F4EvRFIWV/MPB7OVZhjOJTWNpd6NLlOAUmXm0N0T9HXn2TktM829sQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ddXb6IjnAUTvKtR+n8DdiwhMh0/iXKbtFOQnU3kBXc=;
+ b=UmGNU8eQHAgiRHyYbN5F7Ud2ROrrHJHv5AmbqHsmhu8l1bJeQI5zLrLNtGmVnQnidtdMwGUDhuTDuJuiRVMTBtgN9tAxySrZIoAh02VrrrEEvbVkJo4Ulit4d7Qx3NJvkkfUDCXCdy4u6CKl/+RyEJk+Sc7lVCY5m1EbzqXQ8d0vgQHfoTlme1Ty3IO9fHdAf8kEjApIcgHVY+/2FIHMlVvKKmbOSH8KE9ZU55YX2W99+IbLCqDBDiwjwwo7koxGBp7ZTOl4dWTb31KkkL80ewz0H12OH3557HBcLQN2eOWJoqiSADGSm+KqfxJoCdwJ0aaaQFVIHn1BuPa5qxblrQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=criteo.com; dmarc=pass action=none header.from=criteo.com;
+ dkim=pass header.d=criteo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=criteo.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ddXb6IjnAUTvKtR+n8DdiwhMh0/iXKbtFOQnU3kBXc=;
+ b=ZnMPCZNyIw6xoCqwVolpfxLLhGdTjOjSRj4bnnLPoXxWCSdtITsYjniXS9qjL+yhwbbZ7LAO3iRIhUk5PHbrrmi+GBxjOKay4dQTMbfuNVGs6/vecAfZaHUmnks5L1I3/yVNO2cK+tZ/b3qcEFTcWFKgJ5AvEsnBhjHgLL3AZpU=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=v.minet@criteo.com; 
+Received: from AM6PR04MB4230.eurprd04.prod.outlook.com (2603:10a6:209:41::33)
+ by AM6PR04MB6599.eurprd04.prod.outlook.com (2603:10a6:20b:fd::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.17; Mon, 13 Apr
+ 2020 15:43:23 +0000
+Received: from AM6PR04MB4230.eurprd04.prod.outlook.com
+ ([fe80::f151:2536:ba90:6629]) by AM6PR04MB4230.eurprd04.prod.outlook.com
+ ([fe80::f151:2536:ba90:6629%5]) with mapi id 15.20.2900.028; Mon, 13 Apr 2020
+ 15:43:23 +0000
+From:   Vincent Minet <v.minet@criteo.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Vincent Minet <v.minet@criteo.com>
+Subject: [PATCH] umh: fix memory leak on execve failure
+Date:   Mon, 13 Apr 2020 17:42:44 +0200
+Message-Id: <20200413154244.18583-1-v.minet@criteo.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: PR2PR09CA0010.eurprd09.prod.outlook.com
+ (2603:10a6:101:16::22) To AM6PR04MB4230.eurprd04.prod.outlook.com
+ (2603:10a6:209:41::33)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413054046.1560106-2-ira.weiny@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 phishscore=0 malwarescore=0 spamscore=0
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004130118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
- clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
- mlxlogscore=999 suspectscore=1 adultscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
- definitions=main-2004130118
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (5.196.75.236) by PR2PR09CA0010.eurprd09.prod.outlook.com (2603:10a6:101:16::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.15 via Frontend Transport; Mon, 13 Apr 2020 15:43:22 +0000
+X-Originating-IP: [5.196.75.236]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6532f9b9-13c0-4b69-f9c0-08d7dfc1660c
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6599:|AM6PR04MB6599:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB659977074E5484FC385E2A9590DD0@AM6PR04MB6599.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 037291602B
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4230.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(4636009)(366004)(136003)(376002)(346002)(396003)(39850400004)(36756003)(6486002)(8936002)(66946007)(66476007)(478600001)(6916009)(2906002)(6666004)(8676002)(81156014)(66556008)(16526019)(26005)(86362001)(186003)(52116002)(5660300002)(54906003)(316002)(2616005)(956004)(55236004)(6506007)(107886003)(4326008)(6512007)(1076003)(69590400007);DIR:OUT;SFP:1102;
+Received-SPF: None (protection.outlook.com: criteo.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tzXq3Ff5BnbIgxmDkgRQgWK0L3PuZj/ysOLlpzquOpFAp3QROKAvZh46llUYpoPuWQ3g9N8HAZnAuDHAkdBSz7gJgAhLt0TZD3NgrfwvQ+JaMV3F5Dl2kNP/BD36huF52bFQMMw1HeE71R+9U7pbuAxGjEVRzuFgTduKRH9i1GXD5vzKwwky3c3qlin8OYXYmF1wCora1ZXewX5LXtJ2lnj1HHnqnL9TJmCTS5hxx9m6T12aPKjS6Wd1sTtq729i3agwzIrE7rXWZmYYNHMw7J7zLMY1AmllzEg2njoEpodtJ1XtMU5rc0fdfyJrPupRlM6RXdKkr3gg0s1ToEU4kIpSV43Eqx1IfOaKoh+AZEwAnkxngIA5ZJISQzsM36zMH3J5w/v/eoAB1L//Dlm0uqCxaBdOYFac2HxhOfVQ92x5T9Is5+5eMH4Con5YgqbbIJigrGO0YTP5TspsarpyCf1b5y4dBOJ8zoo2exPcgvmAVTHSPqVPNvqZSgnUrnmu
+X-MS-Exchange-AntiSpam-MessageData: 4oFjgn+HuaEjKhhjo8H8fKSdA0eqTa2BHZJUgOO+ITs18FanXB+9qZnS872JS3YbcO5MC2ikTsC2w3oE2BPaHXIhNf2ypdcwqu4mNNgD9ETN9mLf0aXl6rbC1KvNhx1yRmMCfd8v7w94IVSNVk69YQ==
+X-OriginatorOrg: criteo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6532f9b9-13c0-4b69-f9c0-08d7dfc1660c
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2020 15:43:23.2681
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2a35d8fd-574d-48e3-927c-8c398e225a01
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2P5RF1PRmC1HRwB8nBHybNE6aS/AgMFS1UDA3W8YuZlpHBcL6/YR3mXtwHm4jpQYJboQS6fl2uOvv5LwCDh23Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6599
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 10:40:38PM -0700, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
-> 
-> An earlier call of xfs_reinit_inode() from xfs_iget_cache_hit() already
-> handles initialization of i_rwsem.
-> 
-> Doing so again is unneeded.
-> 
-> Reviewed-by: Dave Chinner <dchinner@redhat.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+If a UMH process created by fork_usermode_blob() fails to execute,
+a pair of struct file allocated by umh_pipe_setup() will leak.
 
-Seems reasonable to me,
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Under normal conditions, the caller (like bpfilter) needs to manage the
+lifetime of the UMH and its two pipes. But when fork_usermode_blob()
+fails, the caller doesn't really have a way to know what needs to be
+done. It seems better to do the cleanup ourselves in this case.
 
---D
+Fixes: 449325b52b7a ("umh: introduce fork_usermode_blob() helper")
+Signed-off-by: Vincent Minet <v.minet@criteo.com>
+---
+ kernel/umh.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> 
-> ---
-> Changes from V4:
-> 	Update commit message to make it clear the xfs_iget_cache_hit()
-> 	is actually doing the initialization via xfs_reinit_inode()
-> 
-> New for V4:
-> 
-> NOTE: This was found while ensuring the new i_aops_sem was properly
-> handled.  It seems like this is a layering violation so I think it is
-> worth cleaning up so as to not confuse others.
-> ---
->  fs/xfs/xfs_icache.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/xfs/xfs_icache.c b/fs/xfs/xfs_icache.c
-> index 8dc2e5414276..836a1f09be03 100644
-> --- a/fs/xfs/xfs_icache.c
-> +++ b/fs/xfs/xfs_icache.c
-> @@ -419,6 +419,7 @@ xfs_iget_cache_hit(
->  		spin_unlock(&ip->i_flags_lock);
->  		rcu_read_unlock();
->  
-> +		ASSERT(!rwsem_is_locked(&inode->i_rwsem));
->  		error = xfs_reinit_inode(mp, inode);
->  		if (error) {
->  			bool wake;
-> @@ -452,9 +453,6 @@ xfs_iget_cache_hit(
->  		ip->i_sick = 0;
->  		ip->i_checked = 0;
->  
-> -		ASSERT(!rwsem_is_locked(&inode->i_rwsem));
-> -		init_rwsem(&inode->i_rwsem);
-> -
->  		spin_unlock(&ip->i_flags_lock);
->  		spin_unlock(&pag->pag_ici_lock);
->  	} else {
-> -- 
-> 2.25.1
-> 
+diff --git a/kernel/umh.c b/kernel/umh.c
+index 7f255b5a8845..20d51e0957e0 100644
+--- a/kernel/umh.c
++++ b/kernel/umh.c
+@@ -475,6 +475,12 @@ static void umh_clean_and_save_pid(struct subprocess_info *info)
+ {
+ 	struct umh_info *umh_info = info->data;
+ 
++	/* cleanup if umh_pipe_setup() was successful but exec failed */
++	if (info->pid && info->retval) {
++		fput(umh_info->pipe_to_umh);
++		fput(umh_info->pipe_from_umh);
++	}
++
+ 	argv_free(info->argv);
+ 	umh_info->pid = info->pid;
+ }
+-- 
+2.26.0
+
