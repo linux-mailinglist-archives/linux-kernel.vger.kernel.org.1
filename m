@@ -2,220 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4BD1A642A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5401A6441
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbgDMIff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 04:35:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:40938 "EHLO
+        id S1728086AbgDMIf3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Apr 2020 04:35:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:40890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729277AbgDMILB (ORCPT
+        with ESMTP id S1729270AbgDMIK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 04:11:01 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [5.9.137.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40211C00860E;
-        Mon, 13 Apr 2020 01:04:59 -0700 (PDT)
-Received: from zn.tnic (p200300EC2F06C9001913BA8A68E69387.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:c900:1913:ba8a:68e6:9387])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AB4B41EC0C5C;
-        Mon, 13 Apr 2020 10:04:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1586765097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=NtPO5LzemSA3ICkOs6m1ba4SCa7L4ISc43jbxALQ8Eo=;
-        b=LiW9TWY65xGpOpMp70AGqFiT+xVtj2UulV/4AIQ88A2mmw52OenPNvt84zJTmXQ7bqMzGL
-        zhBkQqATm2LMmz85N6xLixb3fl93koLptHv/GK7iGITPLXQOTiYA/vG270sn9ouOu+R2FU
-        JQU+EnPno3Dy9bJNMibbKFZ/Eah3XRc=
-Date:   Mon, 13 Apr 2020 10:04:52 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     David Miller <davem@davemloft.net>, leon@kernel.org
-Cc:     kuba@kernel.org, thomas.lendacky@amd.com,
-        keyur@os.amperecomputing.com, pcnet32@frontier.com,
-        vfalico@gmail.com, j.vosburgh@gmail.com, linux-acenic@sunsite.dk,
-        mripard@kernel.org, heiko@sntech.de, mark.einon@gmail.com,
-        chris.snook@gmail.com, linux-rockchip@lists.infradead.org,
-        iyappan@os.amperecomputing.com, irusskikh@marvell.com,
-        dave@thedillows.org, netanel@amazon.com,
-        quan@os.amperecomputing.com, jcliburn@gmail.com,
-        LinoSanfilippo@gmx.de, linux-arm-kernel@lists.infradead.org,
-        andreas@gaisler.com, andy@greyhouse.net, netdev@vger.kernel.org,
-        thor.thayer@linux.intel.com, linux-kernel@vger.kernel.org,
-        ionut@badula.org, akiyano@amazon.com, jes@trained-monkey.org,
-        nios2-dev@lists.rocketboards.org, wens@csie.org
-Subject: Re: [PATCH] net/3com/3c515: Fix MODULE_ARCH_VERMAGIC redefinition
-Message-ID: <20200413080452.GA3772@zn.tnic>
-References: <20200413045555.GE334007@unreal>
- <20200412.220739.516022706077351913.davem@davemloft.net>
- <20200413052637.GG334007@unreal>
- <20200412.223604.1160930629964379276.davem@davemloft.net>
+        Mon, 13 Apr 2020 04:10:57 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46C1C008614;
+        Mon, 13 Apr 2020 01:05:41 -0700 (PDT)
+IronPort-SDR: ha4EJ32RX904sG6UZcb/TKC/t7FXcD/RHkwXSEvnyeAMJWvTZoQvL2VupYozyzFtfx9h+3WFrG
+ dvgxMtdZ4sEQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 01:05:41 -0700
+IronPort-SDR: Zrv3vmGuHm3eVd7+E73kIdPVJuY98wnKxI2PNWS7zhNYGZiZWxiEd7FpvamAYsWAmgUyW4j2DH
+ 9iF03aO0xusw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="331770783"
+Received: from fmsmsx103.amr.corp.intel.com ([10.18.124.201])
+  by orsmga001.jf.intel.com with ESMTP; 13 Apr 2020 01:05:40 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ FMSMSX103.amr.corp.intel.com (10.18.124.201) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Mon, 13 Apr 2020 01:05:38 -0700
+Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 13 Apr 2020 01:05:38 -0700
+Received: from shsmsx103.ccr.corp.intel.com (10.239.4.69) by
+ fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 13 Apr 2020 01:05:37 -0700
+Received: from shsmsx104.ccr.corp.intel.com ([169.254.5.225]) by
+ SHSMSX103.ccr.corp.intel.com ([169.254.4.146]) with mapi id 14.03.0439.000;
+ Mon, 13 Apr 2020 16:05:35 +0800
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     "Raj, Ashok" <ashok.raj@linux.intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>
+CC:     "Raj, Ashok" <ashok.raj@intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "Tian, Jun J" <jun.j.tian@intel.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        "Wu, Hao" <hao.wu@intel.com>, Don Dutile <ddutile@redhat.com>
+Subject: RE: [PATCH v1 2/2] vfio/pci: Emulate PASID/PRI capability for VFs
+Thread-Topic: [PATCH v1 2/2] vfio/pci: Emulate PASID/PRI capability for VFs
+Thread-Index: AQHWAEVGCz5QQWvL/U+nYnlD7MiZ7Khl/jEAgACVNICAAJ/EgIAF8c6ggAA/A4CAAMnRgIAAzpAAgAb/OoCAAMrPQIAAC1kA
+Date:   Mon, 13 Apr 2020 08:05:33 +0000
+Message-ID: <AADFC41AFE54684AB9EE6CBC0274A5D19D81A31F@SHSMSX104.ccr.corp.intel.com>
+References: <1584880394-11184-1-git-send-email-yi.l.liu@intel.com>
+ <1584880394-11184-3-git-send-email-yi.l.liu@intel.com>
+ <20200402165954.48d941ee@w520.home>
+ <A2975661238FB949B60364EF0F2C25743A2204FE@SHSMSX104.ccr.corp.intel.com>
+ <20200403112545.6c115ba3@w520.home>
+ <AADFC41AFE54684AB9EE6CBC0274A5D19D80E13D@SHSMSX104.ccr.corp.intel.com>
+ <20200407095801.648b1371@w520.home> <20200408040021.GS67127@otc-nc-03>
+ <20200408101940.3459943d@w520.home>
+ <20200413031043.GA18183@araj-mobl1.jf.intel.com> 
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-version: 11.2.0.6
+dlp-reaction: no-action
+x-originating-ip: [10.239.127.40]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200412.223604.1160930629964379276.davem@davemloft.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 10:36:04PM -0700, David Miller wrote:
-> From: Leon Romanovsky <leon@kernel.org>
-> Date: Mon, 13 Apr 2020 08:26:37 +0300
+> From: Tian, Kevin
+> Sent: Monday, April 13, 2020 3:55 PM
 > 
-> > How do you want us to handle it? Boris resend, me to send, you to fix?
+> > From: Raj, Ashok <ashok.raj@linux.intel.com>
+> > Sent: Monday, April 13, 2020 11:11 AM
+> >
+> > On Wed, Apr 08, 2020 at 10:19:40AM -0600, Alex Williamson wrote:
+> > > On Tue, 7 Apr 2020 21:00:21 -0700
+> > > "Raj, Ashok" <ashok.raj@intel.com> wrote:
+> > >
+> > > > Hi Alex
+> > > >
+> > > > + Bjorn
+> > >
+> > >  + Don
+> > >
+> > > > FWIW I can't understand why PCI SIG went different ways with ATS,
+> > > > where its enumerated on PF and VF. But for PASID and PRI its only
+> > > > in PF.
+> > > >
+> > > > I'm checking with our internal SIG reps to followup on that.
+> > > >
+> > > > On Tue, Apr 07, 2020 at 09:58:01AM -0600, Alex Williamson wrote:
+> > > > > > Is there vendor guarantee that hidden registers will locate at the
+> > > > > > same offset between PF and VF config space?
+> > > > >
+> > > > > I'm not sure if the spec really precludes hidden registers, but the
+> > > > > fact that these registers are explicitly outside of the capability
+> > > > > chain implies they're only intended for device specific use, so I'd say
+> > > > > there are no guarantees about anything related to these registers.
+> > > >
+> > > > As you had suggested in the other thread, we could consider
+> > > > using the same offset as in PF, but even that's a better guess
+> > > > still not reliable.
+> > > >
+> > > > The other option is to maybe extend driver ops in the PF to expose
+> > > > where the offsets should be. Sort of adding the quirk in the
+> > > > implementation.
+> > > >
+> > > > I'm not sure how prevalent are PASID and PRI in VF devices. If SIG is
+> > resisting
+> > > > making VF's first class citizen, we might ask them to add some verbiage
+> > > > to suggest leave the same offsets as PF open to help emulation software.
+> > >
+> > > Even if we know where to expose these capabilities on the VF, it's not
+> > > clear to me how we can actually virtualize the capability itself.  If
+> > > the spec defines, for example, an enable bit as r/w then software that
+> > > interacts with that register expects the bit is settable.  There's no
+> > > protocol for "try to set the bit and re-read it to see if the hardware
+> > > accepted it".  Therefore a capability with a fixed enable bit
+> > > representing the state of the PF, not settable by the VF, is
+> > > disingenuous to the spec.
+> >
+> > I think we are all in violent agreement. A lot of times the pci spec gets
+> > defined several years ahead of real products and no one remembers
+> > the justification on why they restricted things the way they did.
+> >
+> > Maybe someone early product wasn't quite exposing these features to the
+> > VF
+> > and hence the spec is bug compatible :-)
+> >
+> > >
+> > > If what we're trying to do is expose that PASID and PRI are enabled on
+> > > the PF to a VF driver, maybe duplicating the PF capabilities on the VF
+> > > without the ability to control it is not the right approach.  Maybe we
+> >
+> > As long as the capability enable is only provided when the PF has enabled
+> > the feature. Then it seems the hardware seems to do the right thing.
+> >
+> > Assume we expose PASID/PRI only when PF has enabled it. It will be the
+> > case since the PF driver needs to exist, and IOMMU would have set the
+> > PASID/PRI/ATS on PF.
+> >
+> > If the emulation is purely spoofing the capability. Once vIOMMU driver
+> > enables PASID, the context entries for the VF are completely independent
+> > from the PF context entries.
+> >
+> > vIOMMU would enable PASID, and we just spoof the PASID capability.
+> >
+> > If vIOMMU or guest for some reason does disable_pasid(), then the
+> > vIOMMU driver can disaable PASID on the VF context entries. So the VF
+> > although the capability is blanket enabled on PF, IOMMU gaurantees the
+> > transactions are blocked.
+> >
+> >
+> > In the interim, it seems like the intent of the virtual capability
+> > can be honored via help from the IOMMU for the controlling aspect..
+> >
+> > Did i miss anything?
 > 
-> Anyone other than me can do it ;-)
+> Above works for emulating the enable bit (under the assumption that
+> PF driver won't disable pasid when vf is assigned). However, there are
+> also "Execute permission enable" and "Privileged mode enable" bits in
+> PASID control registers. I don't know how those bits could be cleanly
+> emulated when the guest writes a value different from PF's...
 
-Ok, here's what I'm thinking: that vermagic.h is normally automatically
-included in the *mod.c as part of the module creation, see add_header()
-in modpost.c.
+sent too quick. the IOMMU also includes control bits for allowing/
+blocking execute requests and supervisor requests. We can rely on 
+IOMMU to block those requests to emulate the disabled cases of
+all three control bits in the pasid cap.
 
-So then perhaps drivers should not use it directly due to the current
-inclusion order:
+Thanks
+Kevin
 
-linux/module.h includes asm/module.h and that arch-specific header
-defines MODULE_VERMAGIC* for the respective arch.
-
-linux/vermagic.h defines all those fallbacks for those MODULE_VERMAGIC*
-things and if the inclusion order is swapped - we get the redefinition
-warning.
-
-Yesterday I tried the below - basically get rid of all the remaining
-includers of linux/vermagic.h but two are left:
-
-drivers/net/ethernet/hisilicon/hns3/hns3_enet.c:18:#include <linux/vermagic.h>
-drivers/net/ethernet/netronome/nfp/nfp_main.c:17:#include <linux/vermagic.h>
-
-because both use VERMAGIC_STRING directly.
-
-So,
-
-* one could either allow that and sort the inclusion order so that, for
-example, asm/module.h includes linux/vermagic.h and thus the fallbacks
-are there present.
-
-or
-
-* remove all uses of VERMAGIC_STRING from the drivers, add a header
-guard which prevents people from using it directly and leave
-VERMAGIC_STRING only to the internal module machinery in the kernel.
-
-Judging by how only a handful of old drivers are even using that,
-perhaps not too far fetched.
-
-In any case, this needs a maintainer decision.
-
-Leon, if you wanna do it whatever you guys end up agreeing on, just go
-ahead and submit the patches - it's not like I don't have anything else
-on the TODO :-) Just add a Reported-by: me and that should be enough.
-
-If you're busy too, lemme know and I'll put it on my todo then.
-
-Thx.
-
-diff --git a/drivers/net/bonding/bonding_priv.h b/drivers/net/bonding/bonding_priv.h
-index 45b77bc8c7b3..48cdf3a49a7d 100644
---- a/drivers/net/bonding/bonding_priv.h
-+++ b/drivers/net/bonding/bonding_priv.h
-@@ -14,7 +14,7 @@
- 
- #ifndef _BONDING_PRIV_H
- #define _BONDING_PRIV_H
--#include <linux/vermagic.h>
-+#include <generated/utsrelease.h>
- 
- #define DRV_NAME	"bonding"
- #define DRV_DESCRIPTION	"Ethernet Channel Bonding Driver"
-diff --git a/drivers/net/ethernet/3com/3c509.c b/drivers/net/ethernet/3com/3c509.c
-index b762176a1406..139d0120f511 100644
---- a/drivers/net/ethernet/3com/3c509.c
-+++ b/drivers/net/ethernet/3com/3c509.c
-@@ -85,7 +85,6 @@
- #include <linux/device.h>
- #include <linux/eisa.h>
- #include <linux/bitops.h>
--#include <linux/vermagic.h>
- 
- #include <linux/uaccess.h>
- #include <asm/io.h>
-diff --git a/drivers/net/ethernet/3com/3c515.c b/drivers/net/ethernet/3com/3c515.c
-index 90312fcd6319..47b4215bb93b 100644
---- a/drivers/net/ethernet/3com/3c515.c
-+++ b/drivers/net/ethernet/3com/3c515.c
-@@ -22,7 +22,6 @@
- 
- */
- 
--#include <linux/vermagic.h>
- #define DRV_NAME		"3c515"
- 
- #define CORKSCREW 1
-diff --git a/drivers/net/ethernet/adaptec/starfire.c b/drivers/net/ethernet/adaptec/starfire.c
-index 2db42211329f..a64191fc2af9 100644
---- a/drivers/net/ethernet/adaptec/starfire.c
-+++ b/drivers/net/ethernet/adaptec/starfire.c
-@@ -45,7 +45,6 @@
- #include <asm/processor.h>		/* Processor type for cache alignment. */
- #include <linux/uaccess.h>
- #include <asm/io.h>
--#include <linux/vermagic.h>
- 
- /*
-  * The current frame processor firmware fails to checksum a fragment
-diff --git a/drivers/net/ethernet/pensando/ionic/ionic_main.c b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-index 588c62e9add7..3ed150512091 100644
---- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
-+++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-@@ -6,7 +6,7 @@
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/utsname.h>
--#include <linux/vermagic.h>
-+#include <generated/utsrelease.h>
- 
- #include "ionic.h"
- #include "ionic_bus.h"
-diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
-index 65c23ef6408d..b3c05ff05783 100644
---- a/drivers/power/supply/test_power.c
-+++ b/drivers/power/supply/test_power.c
-@@ -16,7 +16,7 @@
- #include <linux/power_supply.h>
- #include <linux/errno.h>
- #include <linux/delay.h>
--#include <linux/vermagic.h>
-+#include <generated/utsrelease.h>
- 
- enum test_power_id {
- 	TEST_AC,
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 89d0b1827aaf..adab97e500cf 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -17,7 +17,6 @@
- #include <linux/phy.h>
- #include <linux/bitops.h>
- #include <linux/uaccess.h>
--#include <linux/vermagic.h>
- #include <linux/vmalloc.h>
- #include <linux/sfp.h>
- #include <linux/slab.h>
-@@ -29,6 +28,8 @@
- #include <net/flow_offload.h>
- #include <linux/ethtool_netlink.h>
- 
-+#include <generated/utsrelease.h>
-+
- #include "common.h"
- 
- /*
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> Similar problem also exists when talking about PRI emulation, e.g.
+> to enable PRI the software usually waits until the 'stopped' bit
+> is set (indicating all previously issued requests have completed). How
+> to emulate this bit accurately when one guest toggles the enable bit
+> while the PF and other VFs are actively issuing page requests through
+> the shared page request interface? from pcie spec I didn't find a way
+> to catch when all previously-issued requests from a specific VF have
+> completed. Can a conservative big-enough timeout value help here?
+> I don't know... similar puzzle also exists for emulating the 'reset'
+> control bit which is supposed to clear the pending request state for
+> the whole page request interface.
+> 
+> I feel the main problem in pcie spec is that, while they invent SR-IOV
+> to address I/O virtualization requirement (where strict isolation is
+> required), they blurred the boundary by leaving some shared resource
+> cross PF and VFs which imply sort of cooperation between PF and VF
+> drivers. On bare metal such cooperation is easy to build, by enabling/
+> disabling a capability en mass, by using the same set of setting, etc.
+> However it doesn't consider the virtualization case where a VF is
+> assigned to the guest which considers the VF as a standard PCI/PCIe
+> endpoint thus such cooperation is missing. A vendor capability could
+> help fix the gap here but making it adopted by major guest OSes will
+> take time. But honestly speaking I don't know other good alternative
+> now... :/
+> 
+> >
+> > > need new capabilities exposing these as slave features that cannot be
+> > > controlled?  We could define our own vendor capability for this, but of
+> > > course we have both the where to put it in config space issue, as well
+> > > as the issue of trying to push an ad-hoc standard.  vfio could expose
+> > > these as device features rather than emulating capabilities, but that
+> > > still leaves a big gap between vfio in the hypervisor and the driver in
+> > > the guest VM.  That might still help push the responsibility and policy
+> > > for how to expose it to the VM as a userspace problem though.
+> >
+> > I think this is a good long term solution, but if the vIOMMU implenentations
+> > can carry us for the time being, we can probably defer them unless
+> > we are stuck.
+> >
+> > >
+> > > I agree though, I don't know why the SIG would preclude implementing
+> > > per VF control of these features.  Thanks,
+> > >
+> >
+> > Cheers,
+> > Ashok
+> 
+> Thanks
+> Kevin
