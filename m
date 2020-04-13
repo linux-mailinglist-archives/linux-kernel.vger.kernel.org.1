@@ -2,178 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063011A6AD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A5F1A6AC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732326AbgDMRBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 13:01:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
+        id S1732299AbgDMRB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 13:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732295AbgDMRBd (ORCPT
+        by vger.kernel.org with ESMTP id S1732280AbgDMRBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 13:01:33 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74ABC0A3BDC;
-        Mon, 13 Apr 2020 10:01:32 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id i10so10844446wrv.10;
-        Mon, 13 Apr 2020 10:01:32 -0700 (PDT)
+        Mon, 13 Apr 2020 13:01:22 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537A2C008748
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:01:20 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id i10so10843556wrv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 10:01:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=Y+OjZtirFhjkKohAUaG6BdVWbAOuDBo2mD5OAId8HZs=;
-        b=bhljM/45ZDJuZwpwJOb8QMjCZbnOZWPwXXJxlZtz0k8J78lyk63TMhqsI2IwWSibjY
-         RID2Cm5+ZEN13Xg4k+c30cv4cJAtDvJacnIbjdsjzoNB0ZZ2O9lrbtipsk2xP7mNwmdr
-         CMPnkCStQX4m84ySBmtfT9w2f9sA6d8L8pQFdfZ4CoihS06PKjWsQ4NO30P/boCyZa6T
-         jrcw3BJ6mIc9KSEjPrtgpzdk91dpL/AWRXRegYPqD3i7TmEX+W6u8bAHhCRcQ3zgfEwF
-         ClsJ9kncLd3QpUgx6qTFNScUmHL4unzU8Q1i/+BMwG1CWVhYoqL0T9Ls7vs1DJnYbJt5
-         xqLQ==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ifz7eEgQDkI/yAEt03RoeGqs19nYSssxU5j/gJ4Dim0=;
+        b=Kpa31S9WV4DB2epJ0brmlqCYF1LhiH7z0L6PGh4Wbzcd03Fn0R+4GpBmxvFEB7UwNs
+         tfXfQdPF8/Hp/4af5lAokIt68Wyxat3WatIWk7ZEitiTrGuHw2acegBAEv0i/7Hn0iuy
+         ZSPISg9Pl1NZZW2DtFYy5nSyOoczsqC5qAUIGoV9LT7y7SwQGQZ5a4RcFT1bcdGDEYKv
+         7CH50QYVjnEq1z3Mvr4EV4bIV4wAY6Btp5ypPFZETulZ0qzAG6e0LAgVC6tKR3VCE58z
+         Y9E0wIaZm1/uVvZIw3Nc8wtYDlya9c8AWTu7VRTCXRgJRDBptbDHNrPZtl608d5u+QJY
+         2vwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=Y+OjZtirFhjkKohAUaG6BdVWbAOuDBo2mD5OAId8HZs=;
-        b=r47w7rR5h+H12sL16oLcZDA/Du3DrtvcnyBeVAjWFDQX+74PLtgqRN0SU7R8iWe2+A
-         1dvwoonW26RcQADuQieKJg5Q8M8q1WD89iI1/3EBYm899Tg40KDSjEvSw9a4aoHpvrng
-         /1tgTRXaobHCDkcMuie/EU1gLXgEZG5mtQU5DO8l2ByVaJO+deXiZOxjPXICXFGFTUSE
-         fJ6CXvnhxxuTXJ76GsVurN1o3JmgBjuBWwo0N1i5tp3cCbD89BbRj2ubHuo8z2Wvks9r
-         dZgp7DVCasKGNfkJna8tgoY3w3Kmh3nlEsjsTLReS7u8axeON+yvz2DcKBLbVZqfuiR8
-         EWaw==
-X-Gm-Message-State: AGi0PuaUUN44Q4H+HucioJyGJUhp4WfRLCe+uvvbcvLYE1b1NSKXSwIw
-        dW46mIq1eIw5sLG0QN+Eojw=
-X-Google-Smtp-Source: APiQypI9T8YXRsMySBlE238yvwAkH42wDN8DfS1TphylQPTaiG+dN9P9IJvuuprZXh4MbcrBMzk9Yw==
-X-Received: by 2002:a5d:4dcb:: with SMTP id f11mr8423368wru.174.1586797291380;
-        Mon, 13 Apr 2020 10:01:31 -0700 (PDT)
-Received: from [192.168.43.75] ([109.126.129.227])
-        by smtp.gmail.com with ESMTPSA id t2sm8633601wmt.15.2020.04.13.10.01.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 10:01:30 -0700 (PDT)
-Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
- target handling
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
-        josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
-References: <20200413162758.97252-1-tj@kernel.org>
- <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <6f69d35c-c593-f140-c351-c7fd2c13069e@gmail.com>
-Date:   Mon, 13 Apr 2020 20:00:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ifz7eEgQDkI/yAEt03RoeGqs19nYSssxU5j/gJ4Dim0=;
+        b=jEsgAdrukZwMv7MJmkEEquFCPIjvKLRyKQpUKR9U5ck6Jg0TbjIydwudvivIEyqutH
+         weF5VuIHTmjAC9svGeMIihLMeJgF4j74xwvd4rv8sGTv8FnBnj1AyimZdll1pXBU6jrO
+         B8ByV+onWllqioXmKZLTENk74AA0mBYggToLYk5tCdMP6GZQq3OLVsi1iYCDWwFu0MxU
+         6EHA2ZYWi8kkHnPMoCQPnusAW9hrDaZWJGqxGxahf9tBk8tmtjERSg+sHzV07q8DSST0
+         d6iRv7GYWaeu6FVG/IDY2FMayEJUUm4TxTSYwdtyumSBra6G9Jtm3/4nRB9X+9gEZ0V+
+         MYFw==
+X-Gm-Message-State: AGi0PuaQD8kDmzYtqxayZUosL1CUTv2w9UGhB6u5yCDjGgyGxg2m3QpU
+        Srhwtp/hwvmJatcz29+alPkxuw==
+X-Google-Smtp-Source: APiQypI5L7HxfafpOR4GRvpAW8MC8kqY/R8iWGtx4F0odEFkYwngaQANZQgPqx5hNnsILB/TjEYY0w==
+X-Received: by 2002:adf:e3ca:: with SMTP id k10mr2020584wrm.53.1586797278826;
+        Mon, 13 Apr 2020 10:01:18 -0700 (PDT)
+Received: from localhost.localdomain ([2001:470:1f1b:192:29fe:7bf:41fe:904d])
+        by smtp.googlemail.com with ESMTPSA id q187sm15443268wma.41.2020.04.13.10.01.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 10:01:18 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     andrew@lunn.ch, f.fainelli@gmail.com, hkallweit1@gmail.com,
+        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        mark.rutland@arm.com, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Robert Marko <robert.marko@sartura.hr>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Luka Perkov <luka.perkov@sartura.hr>
+Subject: [PATCH 1/3] net: phy: mdio: add IPQ40xx MDIO driver
+Date:   Mon, 13 Apr 2020 19:01:05 +0200
+Message-Id: <20200413170107.246509-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-In-Reply-To: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf
-Content-Type: multipart/mixed; boundary="YJcycZrC01yeR1rFUGN2cbIOj36u3pt4d";
- protected-headers="v1"
-From: Pavel Begunkov <asml.silence@gmail.com>
-To: Tejun Heo <tj@kernel.org>, axboe@kernel.dk
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
- josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
-Message-ID: <6f69d35c-c593-f140-c351-c7fd2c13069e@gmail.com>
-Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
- target handling
-References: <20200413162758.97252-1-tj@kernel.org>
- <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
-In-Reply-To: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
+This patch adds the driver for the MDIO interface
+inside of Qualcomm IPQ40xx series SoC-s.
 
---YJcycZrC01yeR1rFUGN2cbIOj36u3pt4d
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: Luka Perkov <luka.perkov@sartura.hr>
+---
+ drivers/net/phy/Kconfig        |   7 ++
+ drivers/net/phy/Makefile       |   1 +
+ drivers/net/phy/mdio-ipq40xx.c | 180 +++++++++++++++++++++++++++++++++
+ 3 files changed, 188 insertions(+)
+ create mode 100644 drivers/net/phy/mdio-ipq40xx.c
 
-On 13/04/2020 19:56, Pavel Begunkov wrote:
-> On 13/04/2020 19:27, Tejun Heo wrote:
->> Changes from v1[1]
->>
->> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
->>   rq->stats_sectors instead as suggested by Pavel Begunkov.
->=20
-> rq->stats_sectors is set only when there is QUEUE_FLAG_STATS, see
-> blk_mq_start_request(). I don't see blk-iocost requiring it. Did I miss=
- something?
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 9dabe03a668c..614d08635012 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -157,6 +157,13 @@ config MDIO_I2C
+ 
+ 	  This is library mode.
+ 
++config MDIO_IPQ40XX
++	tristate "Qualcomm IPQ40xx MDIO interface"
++	depends on HAS_IOMEM && OF
++	help
++	  This driver supports the MDIO interface found in Qualcomm
++	  IPQ40xx series Soc-s.
++
+ config MDIO_MOXART
+ 	tristate "MOXA ART MDIO interface support"
+ 	depends on ARCH_MOXART || COMPILE_TEST
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index fe5badf13b65..c89fc187fd74 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -36,6 +36,7 @@ obj-$(CONFIG_MDIO_CAVIUM)	+= mdio-cavium.o
+ obj-$(CONFIG_MDIO_GPIO)		+= mdio-gpio.o
+ obj-$(CONFIG_MDIO_HISI_FEMAC)	+= mdio-hisi-femac.o
+ obj-$(CONFIG_MDIO_I2C)		+= mdio-i2c.o
++obj-$(CONFIG_MDIO_IPQ40XX)	+= mdio-ipq40xx.o
+ obj-$(CONFIG_MDIO_MOXART)	+= mdio-moxart.o
+ obj-$(CONFIG_MDIO_MSCC_MIIM)	+= mdio-mscc-miim.o
+ obj-$(CONFIG_MDIO_OCTEON)	+= mdio-octeon.o
+diff --git a/drivers/net/phy/mdio-ipq40xx.c b/drivers/net/phy/mdio-ipq40xx.c
+new file mode 100644
+index 000000000000..8068f1e6a077
+--- /dev/null
++++ b/drivers/net/phy/mdio-ipq40xx.c
+@@ -0,0 +1,180 @@
++// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
++/* Copyright (c) 2015, The Linux Foundation. All rights reserved. */
++
++#include <linux/delay.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/io.h>
++#include <linux/of_address.h>
++#include <linux/of_mdio.h>
++#include <linux/phy.h>
++#include <linux/platform_device.h>
++
++#define MDIO_CTRL_0_REG		0x40
++#define MDIO_CTRL_1_REG		0x44
++#define MDIO_CTRL_2_REG		0x48
++#define MDIO_CTRL_3_REG		0x4c
++#define MDIO_CTRL_4_REG		0x50
++#define MDIO_CTRL_4_ACCESS_BUSY		BIT(16)
++#define MDIO_CTRL_4_ACCESS_START		BIT(8)
++#define MDIO_CTRL_4_ACCESS_CODE_READ		0
++#define MDIO_CTRL_4_ACCESS_CODE_WRITE	1
++#define CTRL_0_REG_DEFAULT_VALUE	0x150FF
++
++#define IPQ40XX_MDIO_RETRY	1000
++#define IPQ40XX_MDIO_DELAY	10
++
++struct ipq40xx_mdio_data {
++	struct mii_bus	*mii_bus;
++	void __iomem	*membase;
++	struct device	*dev;
++};
++
++static int ipq40xx_mdio_wait_busy(struct ipq40xx_mdio_data *am)
++{
++	int i;
++
++	for (i = 0; i < IPQ40XX_MDIO_RETRY; i++) {
++		unsigned int busy;
++
++		busy = readl(am->membase + MDIO_CTRL_4_REG) &
++			MDIO_CTRL_4_ACCESS_BUSY;
++		if (!busy)
++			return 0;
++
++		/* BUSY might take to be cleard by 15~20 times of loop */
++		udelay(IPQ40XX_MDIO_DELAY);
++	}
++
++	dev_err(am->dev, "%s: MDIO operation timed out\n", am->mii_bus->name);
++
++	return -ETIMEDOUT;
++}
++
++static int ipq40xx_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
++{
++	struct ipq40xx_mdio_data *am = bus->priv;
++	int value = 0;
++	unsigned int cmd = 0;
++
++	lockdep_assert_held(&bus->mdio_lock);
++
++	if (ipq40xx_mdio_wait_busy(am))
++		return -ETIMEDOUT;
++
++	/* issue the phy address and reg */
++	writel((mii_id << 8) | regnum, am->membase + MDIO_CTRL_1_REG);
++
++	cmd = MDIO_CTRL_4_ACCESS_START | MDIO_CTRL_4_ACCESS_CODE_READ;
++
++	/* issue read command */
++	writel(cmd, am->membase + MDIO_CTRL_4_REG);
++
++	/* Wait read complete */
++	if (ipq40xx_mdio_wait_busy(am))
++		return -ETIMEDOUT;
++
++	/* Read data */
++	value = readl(am->membase + MDIO_CTRL_3_REG);
++
++	return value;
++}
++
++static int ipq40xx_mdio_write(struct mii_bus *bus, int mii_id, int regnum,
++							 u16 value)
++{
++	struct ipq40xx_mdio_data *am = bus->priv;
++	unsigned int cmd = 0;
++
++	lockdep_assert_held(&bus->mdio_lock);
++
++	if (ipq40xx_mdio_wait_busy(am))
++		return -ETIMEDOUT;
++
++	/* issue the phy address and reg */
++	writel((mii_id << 8) | regnum, am->membase + MDIO_CTRL_1_REG);
++
++	/* issue write data */
++	writel(value, am->membase + MDIO_CTRL_2_REG);
++
++	cmd = MDIO_CTRL_4_ACCESS_START | MDIO_CTRL_4_ACCESS_CODE_WRITE;
++	/* issue write command */
++	writel(cmd, am->membase + MDIO_CTRL_4_REG);
++
++	/* Wait write complete */
++	if (ipq40xx_mdio_wait_busy(am))
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
++static int ipq40xx_mdio_probe(struct platform_device *pdev)
++{
++	struct ipq40xx_mdio_data *am;
++	struct resource *res;
++
++	am = devm_kzalloc(&pdev->dev, sizeof(*am), GFP_KERNEL);
++	if (!am)
++		return -ENOMEM;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "no iomem resource found\n");
++		return -ENXIO;
++	}
++
++	am->membase = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(am->membase)) {
++		dev_err(&pdev->dev, "unable to ioremap registers\n");
++		return PTR_ERR(am->membase);
++	}
++
++	am->mii_bus = devm_mdiobus_alloc(&pdev->dev);
++	if (!am->mii_bus)
++		return  -ENOMEM;
++
++	writel(CTRL_0_REG_DEFAULT_VALUE, am->membase + MDIO_CTRL_0_REG);
++
++	am->mii_bus->name = "ipq40xx_mdio";
++	am->mii_bus->read = ipq40xx_mdio_read;
++	am->mii_bus->write = ipq40xx_mdio_write;
++	am->mii_bus->priv = am;
++	am->mii_bus->parent = &pdev->dev;
++	snprintf(am->mii_bus->id, MII_BUS_ID_SIZE, "%s", dev_name(&pdev->dev));
++
++	am->dev = &pdev->dev;
++	platform_set_drvdata(pdev, am);
++
++	return of_mdiobus_register(am->mii_bus, pdev->dev.of_node);
++}
++
++static int ipq40xx_mdio_remove(struct platform_device *pdev)
++{
++	struct ipq40xx_mdio_data *am = platform_get_drvdata(pdev);
++
++	mdiobus_unregister(am->mii_bus);
++
++	return 0;
++}
++
++static const struct of_device_id ipq40xx_mdio_dt_ids[] = {
++	{ .compatible = "qcom,ipq40xx-mdio" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ipq40xx_mdio_dt_ids);
++
++static struct platform_driver ipq40xx_mdio_driver = {
++	.probe = ipq40xx_mdio_probe,
++	.remove = ipq40xx_mdio_remove,
++	.driver = {
++		.name = "ipq40xx-mdio",
++		.of_match_table = ipq40xx_mdio_dt_ids,
++	},
++};
++
++module_platform_driver(ipq40xx_mdio_driver);
++
++MODULE_DESCRIPTION("IPQ40XX MDIO interface driver");
++MODULE_AUTHOR("Qualcomm Atheros");
++MODULE_LICENSE("Dual BSD/GPL");
+-- 
+2.26.0
 
-And there is no reason to not initialise it unconditionally.
-
---=20
-Pavel Begunkov
-
-
---YJcycZrC01yeR1rFUGN2cbIOj36u3pt4d--
-
---ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+6JuPTjTbx479o3OWt5b1Glr+6UFAl6Umq0ACgkQWt5b1Glr
-+6U03A/+I2I+IhvRJKZaVJ/TYjRLBm1UKE5ljXXgHE/tb96RkjvEh1NlKCGhNKn1
-Sd/8fIT0QJW23aZVFUYPwVAYUKkzbmyhUX9bE2nYjq2A7OckDshVBvrKpjzVAH1w
-8SBzWFKysTSAPdyGLN2V3/cRn8ioBAGTpZd57WQJs8668WYGKWgxovbrc/s/mkWx
-jF9e8PN5ZYg24clRLMK+5T0Z3w5K2VwNitmCiGXzj8K8sxPNz/v6a6p/cpSNKfZ4
-6eo+oOhg8o9wGRMiZtA2H9fE2wrY7xcg2sF8vLkvKq6pVz6yI29wk+FbLvQuYJYc
-Uhjy0USJV2Mp4ErgLzGD2iZIicPgCQUZoTm5Jgqyp4NWJUoOAquULy1pSm8hYdiX
-JOuDcKuo+7S/PMSDUwZiwUYAJfPScy/OxOrYiCiE5letmpty5JV1J79bZ32XGVyA
-/dVFVHrTPz1sCAS1F/RMAsERwsa7uXg1DUPelQifAr1wGJ81bQMfrtGbCR4/QU2P
-VsyuhDadwS22FmMX4eJKdsCLkAUOX8hhPj2TpDVgYrpB2O4i+hnruPp8oGcHeGsG
-2zeMHq5Ld9Ma5rTXlXhUNANsHGRONkg0lWUEF5CJ5/ViwEbfCZ9Tqu3fKBv6sJ7t
-NjrTqzZp5B4AdBb0AejSDIkmq4c9Y7tj102TsDs2vVFehf4p99w=
-=39Mc
------END PGP SIGNATURE-----
-
---ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf--
