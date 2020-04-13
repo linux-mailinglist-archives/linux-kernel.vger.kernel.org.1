@@ -2,142 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B851A6BE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE17F1A6BF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387641AbgDMSHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 14:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387625AbgDMSHt (ORCPT
+        id S2387665AbgDMSLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 14:11:22 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59019 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387625AbgDMSLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 14:07:49 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87CD9C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:07:49 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id v23so4868861pfm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:07:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XGx7qFwHLiVd4V1d68uSwgIpjNRKonWDkoXdUUpJdmU=;
-        b=MsUxuzO8lWza4IDAgKmbcE58BeSxidJVPD8d41B6WQkHuYQiWuox58R4hrZyfYImH+
-         aG62uSXK90iOIw6wd/xPilPwCkapK+hPKP4pFn2CfMlIMYGiCND/S1J0Yz5/uj9vWZQb
-         +ANK8Thwg3DqA4R5z5sF3HQGcwVTb0rUo/pFXkUlb0Tqp2xl8GlvruWuLqK6sveKzvOW
-         cYbOgQhjtNcauJqQtCifBfn8eB+bn0G0UVG00DSR6GDHK9UMn+wHcd3K0TYWEfysj7lE
-         QmdDQ02RPvWbZA6bOpV62Sd/ZLNdk4hQ8NCmKN5QRVwhadATPJocCJgmmEtl2lfWLwZr
-         m6Fg==
+        Mon, 13 Apr 2020 14:11:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586801479;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JNPtJ8c/6eKA9KomFbmLXvT7+P5Oxb4zf/a4YOxSAA0=;
+        b=OeRBeq++pn62iYpN+RAQ4DaNLbVCijjXtuZphqkgDjsZBSzHSWTVSKuN7bmLS90jMEN4pU
+        hbAUJrJgvwwbBZHntuDM1ZlhrqbnYOxdtVziJx7SKhsy96kdAqO+Z/Uuo52s+Dt0wNtiaK
+        h8O6w1bOVZrc4p2uXtNpMO2lvv7Dn5o=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-T8XlfXr4MnezN3ulka_p_w-1; Mon, 13 Apr 2020 14:11:18 -0400
+X-MC-Unique: T8XlfXr4MnezN3ulka_p_w-1
+Received: by mail-wr1-f72.google.com with SMTP id w12so7080975wrl.23
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:11:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XGx7qFwHLiVd4V1d68uSwgIpjNRKonWDkoXdUUpJdmU=;
-        b=S5uW6IBVagFbSnOCco76/1fmg+Z3hxVhzHoLRZWdE0y5805D7NlHoS4ccB9bWBIbhF
-         tnPgcV/yILh7Wd5hqaC9bWN+5XJDIN55Il0akT+yAZLzsyBVhXE7vwtJGNI5/OwlCiqy
-         D5iOKOONxh0i0nNeSxPQPaoZW1KU5lZ2E2kw0fcbvcujKP+L3PTLZiI2UadXx+6iuttX
-         1SON3QPuyyfOonNVEiVHb3eQs/LEhAYvQFxriz+TtAGqn3M22ffUeglkT4frnCw7QMgA
-         9bCWdhTfRBtoddcrmlQBFUvHC54VSfcs6C+WmuYC8ut8INxVQoYunQl/oF/K36y9qt2V
-         9C4A==
-X-Gm-Message-State: AGi0PuY9E5o0npM4G8U2LvsOh29rWM3XqAsACWEI9yFHC/sxGs7TrNlu
-        pXOHHi+Z7HJ8EC/jPbWc+bs+ZSPVt18J1d2Wu4Rv9w==
-X-Google-Smtp-Source: APiQypL5Itwso83J6130zSW1Vy0Vx1a7F1inJTmOwekbLOse4lUtOAVtXjT8lXgdWc+kouQdtpbj0NenWGIEDGqpSkQ=
-X-Received: by 2002:a63:6604:: with SMTP id a4mr17243102pgc.381.1586801268806;
- Mon, 13 Apr 2020 11:07:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JNPtJ8c/6eKA9KomFbmLXvT7+P5Oxb4zf/a4YOxSAA0=;
+        b=fdepBn+rkfKOP6MWxW9O/y+lPv6OaLTjdCEiE/uaNZwYtfU+WRQfqnsQwACCcoyFhh
+         j1FPLaVTQc7qCet9h629rjCIvBo0lFf2sQo4451ebZjfgLxmz0bCzY0POl9LjPNi5TLS
+         cRXFnli4RW7L3Js7OoPRHr9X5dDTPq2C+RufOVWQdC9mq3FXOce6ZKjQdCf7Ez2sNfkO
+         Mf0/buPx/VdhAUvDPzzdnFAsrPx1hB0jE2CKXHnryJX09oLBSVBctqpgRJdQXvwGj3/m
+         6x2h3lEHLzaA660HqeOmmkBhMHoh+AyJJq6sDE9EYCre26W4OMlRd0MhvCw1691K7/O5
+         S/bA==
+X-Gm-Message-State: AGi0Pua59qpv3tZQrnmavgohB6qN6oCP29QnUPj2XXNUW9YEOE+vQl+e
+        CyXYaxmEOgWbQPxS4KOEerETSX8YTN5HaKXGNEs7F0UnQOOJEGCpPiIlrWjSii3xLH96B9JTtnV
+        Z6e/T9pXlqRVrU+xGybcfFX4I
+X-Received: by 2002:a5d:400f:: with SMTP id n15mr19758040wrp.344.1586801476915;
+        Mon, 13 Apr 2020 11:11:16 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIEWIf8yN5ITV/kXEWxKi8eoPvVfgHAhrsr1nqOLbuFlRfLczNT6LewjXD8xCJdaxf1ANDKoQ==
+X-Received: by 2002:a5d:400f:: with SMTP id n15mr19758023wrp.344.1586801476691;
+        Mon, 13 Apr 2020 11:11:16 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id 74sm2584923wrk.30.2020.04.13.11.11.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Apr 2020 11:11:15 -0700 (PDT)
+Subject: Re: [PATCH] tpm/tpm_tis: Free IRQ if probing fails
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-integrity@vger.kernel.org, stable@vger.kernel.org,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200412170412.324200-1-jarkko.sakkinen@linux.intel.com>
+ <b909aaee-3fff-4dca-40f4-4c5348474426@redhat.com>
+ <20200413180732.GA11147@linux.intel.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7df7f8bd-c65e-1435-7e82-b9f4ecd729de@redhat.com>
+Date:   Mon, 13 Apr 2020 20:11:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200413033811.75074-1-maskray@google.com>
-In-Reply-To: <20200413033811.75074-1-maskray@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 13 Apr 2020 11:07:37 -0700
-Message-ID: <CAKwvOdkwpAJp2aw+PFybi11rjxvk5tc5zOhaFw9=Xim0k73DAQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: Delete the space separator in __emit_inst
-To:     Fangrui Song <maskray@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ilie Halip <ilie.halip@gmail.com>,
-        Jian Cai <jiancai@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200413180732.GA11147@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 8:38 PM 'Fangrui Song' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
->
-> Many instances of __emit_inst(x) expand to a directive. In a few places
-> it is used as a macro argument, e.g.
->
->   arch/arm64/include/asm/sysreg.h
->   #define __emit_inst(x)                       .inst (x)
->
->   arch/arm64/include/asm/sysreg.h
->   #define SET_PSTATE_PAN(x)            __emit_inst(0xd500401f | PSTATE_PAN | ((!!x) << PSTATE_Imm_shift))
->
->   arch/arm64/kvm/hyp/entry.S
->   ALTERNATIVE(nop, SET_PSTATE_PAN(1), ARM64_HAS_PAN, CONFIG_ARM64_PAN)
->
-> Clang integrated assembler parses `.inst (x)` as two arguments passing
-> to a macro. We delete the space separator so that `.inst(x)` will be
-> parsed as one argument.
->
-> Note, GNU as parsing `.inst (x)` as one argument is unintentional (for
-> example the x86 backend will parse the construct as two arguments).
-> See https://sourceware.org/bugzilla/show_bug.cgi?id=25750#c10
+Hi,
 
-Thanks for the patch and for leading the discussion with the binutils
-developers on this curious parsing case.
+On 4/13/20 8:07 PM, Jarkko Sakkinen wrote:
+> On Mon, Apr 13, 2020 at 12:04:25PM +0200, Hans de Goede wrote:
+>> Hi Jarkko,
+>>
+>> On 4/12/20 7:04 PM, Jarkko Sakkinen wrote:
+>>> Call devm_free_irq() if we have to revert to polling in order not to
+>>> unnecessarily reserve the IRQ for the life-cycle of the driver.
+>>>
+>>> Cc: stable@vger.kernel.org # 4.5.x
+>>> Reported-by: Hans de Goede <hdegoede@redhat.com>
+>>> Fixes: e3837e74a06d ("tpm_tis: Refactor the interrupt setup")
+>>> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+>>> ---
+>>>    drivers/char/tpm/tpm_tis_core.c | 5 ++++-
+>>>    1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
+>>> index 27c6ca031e23..ae6868e7b696 100644
+>>> --- a/drivers/char/tpm/tpm_tis_core.c
+>>> +++ b/drivers/char/tpm/tpm_tis_core.c
+>>> @@ -1062,9 +1062,12 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
+>>>    		if (irq) {
+>>>    			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
+>>>    						 irq);
+>>> -			if (!(chip->flags & TPM_CHIP_FLAG_IRQ))
+>>> +			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
+>>>    				dev_err(&chip->dev, FW_BUG
+>>>    					"TPM interrupt not working, polling instead\n");
+>>> +				devm_free_irq(chip->dev.parent, priv->irq,
+>>> +					      chip);
+>>> +			}
+>>
+>> My initial plan was actually to do something similar, but if the probe code
+>> is actually ever fixed to work as intended again then this will lead to a
+>> double free as then the IRQ-test path of tpm_tis_send() will have called
+>> disable_interrupts() which already calls devm_free_irq().
+>>
+>> You could check for chip->irq != 0 here to avoid that.
+>>
+>> But it all is rather messy, which is why I went with the "#if 0" approach
+>> in my patch.
+> 
+> I think it is right way to fix it. It is a bug independent of the issue
+> we are experiencing.
+> 
+> However, what you are suggesting should be done in addition. Do you have
+> a patch in place or do you want me to refine mine?
 
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/939
-> Cc: clang-built-linux@googlegroups.com
-> Signed-off-by: Fangrui Song <maskray@google.com>
+I do not have a patch ready for this, if you can refine yours that would
+be great.
 
-Shouldn't this have:
-Suggested-by: Ilie Halip <ilie.halip@gmail.com>
-Since Ilie sugguested this in
-https://github.com/ClangBuiltLinux/linux/issues/939#issuecomment-601776123?
+Regards,
 
-> ---
->  arch/arm64/include/asm/sysreg.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index ebc622432831..af21e2ec5e3e 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -49,7 +49,9 @@
->  #ifndef CONFIG_BROKEN_GAS_INST
->
->  #ifdef __ASSEMBLY__
-> -#define __emit_inst(x)                 .inst (x)
-> +// The space separator is omitted so that __emit_inst(x) can be parsed as
-> +// either a directive or a macro argument.
-> +#define __emit_inst(x)                 .inst(x)
->  #else
->  #define __emit_inst(x)                 ".inst " __stringify((x)) "\n\t"
+Hans
 
-What happens if someone starts using `__emit_inst` from inline
-assembly, and passes that subexpression to a macro?  There are no
-users today in arch/arm64/, but I think it's better to change both.
-
-With this applied on -next, and testing via:
-$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1
--j71 defconfig
-$ qemu-system-aarch64 -kernel arch/arm64/boot/Image.gz -machine virt
--cpu cortex-a57 -nographic --append "console=ttyAMA0" -m 2048 -initrd
-<path to my buildroot.cpio>
-
-I was able to build and boot, modulo:
-https://github.com/ClangBuiltLinux/linux/issues/988 (new)
-https://github.com/ClangBuiltLinux/linux/issues/716
-https://github.com/ClangBuiltLinux/linux/issues/510 (more specific to
-LLD than AS)
-so we're pretty close to being able to assemble an arm64 defconfig with Clang.
--- 
-Thanks,
-~Nick Desaulniers
