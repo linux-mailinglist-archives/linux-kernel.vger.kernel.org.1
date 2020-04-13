@@ -2,227 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9522C1A6AB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402CD1A6AA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732236AbgDMQ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 12:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
+        id S1732213AbgDMQ4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 12:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732216AbgDMQ5e (ORCPT
+        by vger.kernel.org with ESMTP id S1731673AbgDMQ4l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:57:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4075EC0A3BDC;
-        Mon, 13 Apr 2020 09:57:34 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id s8so10842068wrt.7;
-        Mon, 13 Apr 2020 09:57:34 -0700 (PDT)
+        Mon, 13 Apr 2020 12:56:41 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E075C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 09:56:41 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id nu11so4024414pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 09:56:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=Xk2BsSDKDhxiXf1W9gwjsfp/DxSiKFq+bcaV0hQZsPk=;
-        b=Ek6w3+2LwAgiEFDyJrzJ5+hBEeixOiDyTWppwlRHynKI7HKyY00VBh54AtmkM/tBT/
-         HXgnDqaRJLaacub59m4ZAc8rIviUGL+EQAXy92qTwWo5CZ1vfpUeNZZX3/7Ide5puFIT
-         Kg+AeTnkWlOwIFcQUYsUNJBC97RbveeDwLjyX18UgS+LAxOdjASYYAPjizDBWTIH22xy
-         7a07z57tP6vAEbV8ngk8wuWHoAk6boUQQljYzOlGG/nbehfLgm0l0MTftg2tp45F1ECa
-         vZCOtBbB/JbCFOrVcerRRIvoWd1SwAPF3IXGFk4hWVoh/d8+wEravjuDH/1xGD9lOvU7
-         Z80g==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cYxFIXZ3Oep1Nvg46stgQrEWlEoqYyS7FyRUU0yEbnU=;
+        b=cpz7mxbaVIihtI5Z2YQX63QZSHlMrnt6mjLjQt4nECoY7LWSqS3j3C6FJLqaWAUTt8
+         r1EasPcYfH5L8KnX3osbiglmPu0cAXo/keN6VU3SFKFiOM+lUrae6/gVrANEfhsxhUl1
+         vEIPuDPIYQRZUynqGirnxTVSCbnm6ubZ8tSlc/GYJWQTiiEUYbDBg6PSnGOMJHgSGse+
+         88WJuipwslDyXizj/qa6+Glxm1ZTPsKc2GA5xSPtpM+GuliOYNQ0cZPVZ9OYqX2XRfTP
+         kLo6Ngr6CUfCa8Dfq7PRetr0K/16m06xVAVMcGQFdBwM3EL5dm1j3VLXF/C6lhebhOtC
+         cllA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=Xk2BsSDKDhxiXf1W9gwjsfp/DxSiKFq+bcaV0hQZsPk=;
-        b=iAiGzkdhmhhel9FmT4nLQxL+oTsWZfpcICNezJkwc0EpiQS7KRjrwhsMOWeu7dkMmu
-         wnDO6BBeD2dtqCuaSDlfgx16cd2A1/UCYQvRVG/whYw6XwZWurEeKXN1J7wQoImDe9KA
-         mN72Wk6DFvuKDb/SFmE2CR9RjXkwd5dLidKmuT7zZLrcYpHW7Ch2z0gDUdlCVESLpS7H
-         Yvv/kVEX805MtcD6i9Kt6TEJlkQ2J3ULwTXnJwSYpbvRTwACZRuYh8qyhsB4qRuS0IZj
-         5xb18Y8t6qyibdnjVxB+uMh009WDjkFkug7ydPMRgF3CQHRGlHP7rEl0pN6/fWivW8Ao
-         WqtA==
-X-Gm-Message-State: AGi0PuaZZeVvDnAuC/Fxy9kPQxkyRIh2XmS9KoChRy5mVHExhWAnvP1O
-        pCwbc9Q9dAnRJ0l+DcShYr2cC7eNwXU=
-X-Google-Smtp-Source: APiQypISXbG9dV2fcRgzor6zakpBuK4UFfevcf7Gl4GEg01N/eKgMDCWdKixZp165gs6Dd+lmJyz5g==
-X-Received: by 2002:adf:f750:: with SMTP id z16mr18108334wrp.115.1586797052925;
-        Mon, 13 Apr 2020 09:57:32 -0700 (PDT)
-Received: from [192.168.43.75] ([109.126.129.227])
-        by smtp.gmail.com with ESMTPSA id d7sm15565513wrr.77.2020.04.13.09.57.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 09:57:32 -0700 (PDT)
-Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
- target handling
-To:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
-        josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
-References: <20200413162758.97252-1-tj@kernel.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
-Date:   Mon, 13 Apr 2020 19:56:26 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cYxFIXZ3Oep1Nvg46stgQrEWlEoqYyS7FyRUU0yEbnU=;
+        b=UvQWMu6GFhiOnjlOMTk5lb1jRuxaPMXF9BMi01gMQ7pDjiaJue4sw+hD8U7xru3gkx
+         HbvozPE3GLjwBHM1bzioBhO8qMVl/kmZskhm3RfoYLrzdAHy6y6S/298Lj500SBYl3Ih
+         px5KHrH6srCblxXb0PdIFKsxaTO+XBFIG/n7i0nTPHaP2cB3googY3T8Ouv/oP0pWJBy
+         NTwXfzgcGL5sb0QHV8ww56lVy8P9HbsDuGKA8eNGrdf2cU66XHtmQa4fvoazcYn3QJIE
+         gPcYIoYzgkuNyT3bKYGnw1xOhBqLiD6EnJIJchECCV4rqEZTYAOSTue4uF049MkkeAQa
+         kRCA==
+X-Gm-Message-State: AGi0PuaHJdKr0EkJYt2h7zjja7CzEz5xoQASD/K5sXPjnAZ/Ku+YZGyF
+        h3ghoGQ1kphdEdQMs5YFRGd1Uw==
+X-Google-Smtp-Source: APiQypKvDNVn1PLsRgvoEtqETwrmavvjWo5FoLCjth7E4O2lzzM+yCFNAxkNp0Dov2d38drJoFC5zQ==
+X-Received: by 2002:a17:902:cf87:: with SMTP id l7mr6464052ply.307.1586797000706;
+        Mon, 13 Apr 2020 09:56:40 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id o125sm8225592pgo.74.2020.04.13.09.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 09:56:39 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 10:56:38 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     saiprakash.ranjan@codeaurora.org, mike.leach@linaro.org,
+        swboyd@chromium.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] coresight: tmc: Read TMC mode only when TMC hw is enabled
+Message-ID: <20200413165638.GA28804@xps15>
+References: <20200409113538.5008-1-saiprakash.ranjan@codeaurora.org>
+ <9a792e3e-5a17-156d-4b59-4a3ec8f9993e@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a792e3e-5a17-156d-4b59-4a3ec8f9993e@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q
-Content-Type: multipart/mixed; boundary="naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO";
- protected-headers="v1"
-From: Pavel Begunkov <asml.silence@gmail.com>
-To: Tejun Heo <tj@kernel.org>, axboe@kernel.dk
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
- josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
-Message-ID: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
-Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
- target handling
-References: <20200413162758.97252-1-tj@kernel.org>
-In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
+On Mon, Apr 13, 2020 at 12:17:21AM +0100, Suzuki K Poulose wrote:
+> Hi Sai,
+> 
+> On 04/09/2020 12:35 PM, Sai Prakash Ranjan wrote:
+> > Reading TMC mode register in tmc_read_prepare_etb without
+> > enabling the TMC hardware leads to async exceptions like
+> > the one in the call trace below. This can happen if the
+> > user tries to read the TMC etf data via device node without
+> > setting up source and the sink first which enables the TMC
+> > hardware in the path. So make sure that the TMC is enabled
+> > before we try to read TMC data.
+> 
+> So, one can trigger the same SError by simply :
+> 
+> $ cat /sys/bus/coresight/device/tmc_etb0/mgmt/mode
 
---naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+A true TMC-ETB is a rarity nowadays... What boards was this tested on?  I don't
+know if it is how the IP behaves or how things are connected on Sai's specific
+board but doing echo'ing tmc_etf0/mgmt/mode on my Juno R0 doesn't give rise to
+any problems.  That certainly doesn't mean it can't happen on another platform.  
 
-On 13/04/2020 19:27, Tejun Heo wrote:
-> Changes from v1[1]
->=20
-> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
->   rq->stats_sectors instead as suggested by Pavel Begunkov.
+> 
+> 
+> And also :
+> 
+> > 
+> >   Kernel panic - not syncing: Asynchronous SError Interrupt
+> >   CPU: 7 PID: 2605 Comm: hexdump Tainted: G S                5.4.30 #122
+> >   Call trace:
+> >    dump_backtrace+0x0/0x188
+> >    show_stack+0x20/0x2c
+> >    dump_stack+0xdc/0x144
+> >    panic+0x168/0x36c
+> >    panic+0x0/0x36c
+> >    arm64_serror_panic+0x78/0x84
+> >    do_serror+0x130/0x138
+> >    el1_error+0x84/0xf8
+> >    tmc_read_prepare_etb+0x88/0xb8
+> >    tmc_open+0x40/0xd8
+> >    misc_open+0x120/0x158
+> >    chrdev_open+0xb8/0x1a4
+> >    do_dentry_open+0x268/0x3a0
+> >    vfs_open+0x34/0x40
+> >    path_openat+0x39c/0xdf4
+> >    do_filp_open+0x90/0x10c
+> >    do_sys_open+0x150/0x3e8
+> >    __arm64_compat_sys_openat+0x28/0x34
+> >    el0_svc_common+0xa8/0x160
+> >    el0_svc_compat_handler+0x2c/0x38
+> >    el0_svc_compat+0x8/0x10
+> > 
+> > Fixes: 4525412a5046 ("coresight: tmc: making prepare/unprepare functions generic")
+> > Reported-by: Stephen Boyd <swboyd@chromium.org>
+> > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> > ---
+> >   drivers/hwtracing/coresight/coresight-tmc.c | 5 +++++
+> >   drivers/hwtracing/coresight/coresight-tmc.h | 1 +
+> >   2 files changed, 6 insertions(+)
+> > 
+> > diff --git a/drivers/hwtracing/coresight/coresight-tmc.c b/drivers/hwtracing/coresight/coresight-tmc.c
+> > index 1cf82fa58289..7bae69748ab7 100644
+> > --- a/drivers/hwtracing/coresight/coresight-tmc.c
+> > +++ b/drivers/hwtracing/coresight/coresight-tmc.c
+> > @@ -62,11 +62,13 @@ void tmc_flush_and_stop(struct tmc_drvdata *drvdata)
+> >   void tmc_enable_hw(struct tmc_drvdata *drvdata)
+> >   {
+> > +	drvdata->enable = true;
+> >   	writel_relaxed(TMC_CTL_CAPT_EN, drvdata->base + TMC_CTL);
+> >   }
+> >   void tmc_disable_hw(struct tmc_drvdata *drvdata)
+> >   {
+> > +	drvdata->enable = false;
+> >   	writel_relaxed(0x0, drvdata->base + TMC_CTL);
+> >   }
+> > @@ -102,6 +104,9 @@ static int tmc_read_prepare(struct tmc_drvdata *drvdata)
+> >   {
+> >   	int ret = 0;
+> > +	if (!drvdata->enable)
+> > +		return -EINVAL;
+> > +
 
-rq->stats_sectors is set only when there is QUEUE_FLAG_STATS, see
-blk_mq_start_request(). I don't see blk-iocost requiring it. Did I miss s=
-omething?
+Proceeding this way would mean that ETB and ETF internal memory buffers can't be
+read unless the device is enabled and collecting trace.  That is not practical
+because 1) it changes the way the sysfs interface works on all boards where
+there isn't a problem and 2) it makes it very difficult to capture the correct
+data.
 
->=20
-> This patchset improves the following two iocost control behaviors.
->=20
-> * iocost was failing to punish heavy shared IO generators (file metadat=
-a, memory
->   reclaim) through use_delay mechanism - use_delay automatically decays=
- which
->   works well for iolatency but doesn't match how iocost behaves. This l=
-ed to
->   e.g. memory bombs which generate a lot of swap IOs to use over their =
-allotted
->   amount. This is fixed by adding non-decaying use_delay mechanism.
->=20
-> * The same latency targets were being applied regardless of the IO size=
-s. While
->   this works fine for loose targets, it gets in the way when trying to =
-tigthen
->   them - a latency target adequate for a 4k IO is too short for a 1 meg=
- IO.
->   iocost now discounts the size portion of cost when testing whether a =
-given IO
->   met or missed its latency target.
->=20
-> While at it, it also makes minor changse to iocost_monitor.py.
->=20
-> This patchset contains the following five patches.
->=20
->  0001-blk-iocost-switch-to-fixed-non-auto-decaying-use_del.patch
->  0002-blk-iocost-account-for-IO-size-when-testing-latencie.patch
->  0003-iocost_monitor-exit-successfully-if-interval-is-zero.patch
->  0004-iocost_monitor-drop-string-wrap-around-numbers-when-.patch
->=20
-> and is also available in the following git branch.
->=20
->  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-del=
-ay-latency-v2
->=20
-> diffstat follows. Thanks.
->=20
->  block/Kconfig                  |    1=20
->  block/blk-cgroup.c             |    6 ++++
->  block/blk-iocost.c             |   56 +++++++++++++++++++++++++++++---=
----------
->  include/linux/blk-cgroup.h     |   43 ++++++++++++++++++++++++-------
->  tools/cgroup/iocost_monitor.py |   48 +++++++++++++++++++-------------=
----
->  5 files changed, 106 insertions(+), 48 deletions(-)
->=20
-> --
-> tejun
->=20
-> [1] http://lkml.kernel.org/r/20200408201450.3959560-1-tj@kernel.org
->=20
+When the device is __not__ enabled, does reading any of the registers under
+"/sys/bus/coresight/devices/tmc_etbX/mgmt/" also cause a problem or is it just
+'mode'?
 
---=20
-Pavel Begunkov
+Thanks,
+Mathieu
 
-
---naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO--
-
---hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+6JuPTjTbx479o3OWt5b1Glr+6UFAl6Umb8ACgkQWt5b1Glr
-+6UL3Q//cYxPSPCP602xbhfwteRZw+0SsyigabnibOPeoindiN7zG1pRZqRqVdBA
-s0H7GfBW8f+DhVSPlgKYSYu4XQMwLRo1/adRJMeLtRvNh8b0CCdENXafKcMty5hK
-y0r9/PeMV/xlYb+aRUYFVwwMfX/B35nPnJ0NydCZz6ZYRFgkFz/27YppfsZY1tyk
-SBj+jWmBZgGmQoqoPwoCF8HN0KVb/8UIfx3be5b3KGAaB+pcYz26MJjKFufwap6r
-31oNhC3GcXSR5GrlsJauwYB5641H3IdP+1a4jg6cvrGN0+h/THVB98JwgImmz6WJ
-tWe6uiYXvDCrSdC9QNIJqIv3FiXaF/8pJMv4utJICPcB5xkq0cvz1yx+Zdca6o0b
-ybD/7AAcXMOaWbKYxffji/jpChJM0kPdUhDNr79MLoNr7fUusoocxRmPwkWG+jBe
-by8O/pGMsKOz3JXELwtWysQy0y/HqQSVYW8x58tdKXj0ACxSKwJqAgDzS5xdOJ1Y
-qgauGp4Kx3SwvE0oqV0bC5TKXVxS0q1PCg1XTKicnT7QjQqXYYJdZLf2PkDlqmEE
-Ug0P0dfH/ucNAXtv6lz/xfIgvfJnOtg+AHTBE1ol3gSRRbGccCVmrAxwYVcO+wFQ
-fVayxegf7IY55PMAPMuNMVCovTih6+DgOgOnc3czO3Y0mi3MYzI=
-=D3I7
------END PGP SIGNATURE-----
-
---hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q--
+> 
+> Does this check always guarantee that the TMC is enabled when
+> we actually get to reading the MODE ? This needs to be done
+> under the spinlock.
+> 
+> Cheers
+> Suzuki
+> 
+> 
+> 
