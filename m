@@ -2,639 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0991A654D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2521A1A6567
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbgDMKl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S1728812AbgDMKtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:49:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728711AbgDMKl6 (ORCPT
+        by vger.kernel.org with ESMTP id S1728779AbgDMKtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:41:58 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17050C008748
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 03:41:57 -0700 (PDT)
-Received: from ramsan ([84.195.182.253])
-        by michel.telenet-ops.be with bizsmtp
-        id SAhu220055USYZQ06AhuoZ; Mon, 13 Apr 2020 12:41:55 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan with esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jNwXK-0000Er-5Y; Mon, 13 Apr 2020 12:41:54 +0200
-Received: from geert by rox.of.borg with local (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1jNwXK-0007ww-3W; Mon, 13 Apr 2020 12:41:54 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] m68k: defconfig: Update defconfigs for v5.7-rc1
-Date:   Mon, 13 Apr 2020 12:41:53 +0200
-Message-Id: <20200413104153.30517-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.17.1
+        Mon, 13 Apr 2020 06:49:42 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63685C0A3BE2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 03:42:06 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id h69so1745142pgc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 03:42:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TH0pnk/VsEjeKOC3kLKQXMgD8PcclZox9CcihSHYeO8=;
+        b=ALTaZ7vQ3z2TO2h3fMvvjaw59xOJ+QUedKzDupvltJmlP/eokCYBVVq2qvdfbtnnoU
+         kDRx0t/+bdLzv/BRgkp3LLvdMjzEBkvqUE/vbxppn156S4gQDaJbU/zDSDUt0MI/Qxtp
+         E1lD1din+dmGo6GAweUClBrAXracPUhmz9Fgpp2yQezF9xkeLJPvYAk2YZwxarKJISQd
+         nQBURZWHuUysrCReP1xcHpn0fgULzIt9fZmgW9BtjJ6QJGdXLrjMxddXX0ffL2Dd9Rdn
+         bbI3eI7mDlqxuGFPcecGpuc0uBE69XP8V6gqV+6f51Sp5Ldz3CDvEPF1OZ1KR9/RBApP
+         QzSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TH0pnk/VsEjeKOC3kLKQXMgD8PcclZox9CcihSHYeO8=;
+        b=L3lNL2kOSotKGLi20G4BmPJZwSMUObVnU32PmrwJSICi5UT239jXMmx/h1FyjVD8TB
+         LYX0hTsflmxzUZb2oitQiGM3xpRLhsR+1sJACAlwt9BLuMsmkPvPscinbTAdtQ5mzmGb
+         B61ce9d5UVEsJ2BWaq7QICDOEtpkkEEa4UBkumfAHZ0EjrImXtJeu9/xbn9VcK8X0OLF
+         uOfoAGVXlLpKZSAieWn9VTyo2neDWnoKuWom0EY2ULJAYEzkdW0MSrPeyXciDcZTa3uc
+         X0LL4znN5hDFi86J0w1n85dBwjEUbfDEhA2XxTfeoAXBHhCe1u4NVpl8WVzLwgFcQoqS
+         nx4g==
+X-Gm-Message-State: AGi0PuZOQ+FpDwsfDWJTVEvcOpi+5q1CEQdi5MPRVBHahzBgOhwnlm/4
+        lMSJOc61My8t2HVGXYfMedD6SA==
+X-Google-Smtp-Source: APiQypJp4dRx7UGBG7jKvk1NdYEZoA5TT+7A5HupoMRC9VvFfosYqFcq7QC1HTsAlLZ7t6XoF80H6w==
+X-Received: by 2002:a62:3086:: with SMTP id w128mr17316837pfw.63.1586774525783;
+        Mon, 13 Apr 2020 03:42:05 -0700 (PDT)
+Received: from localhost ([122.171.118.46])
+        by smtp.gmail.com with ESMTPSA id x71sm8287035pfd.129.2020.04.13.03.42.04
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 13 Apr 2020 03:42:04 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 16:12:03 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rajendra Nayak <rnayak@codeaurora.org>
+Cc:     sboyd@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/21] opp: Manage empty OPP tables with clk handle
+Message-ID: <20200413104203.gyb7icsxbhnvjbvx@vireshk-i7>
+References: <1586353607-32222-1-git-send-email-rnayak@codeaurora.org>
+ <1586353607-32222-2-git-send-email-rnayak@codeaurora.org>
+ <20200409075724.7t3bt3oxaxoygldb@vireshk-i7>
+ <78dcbda6-12d1-7a88-b1f9-a03fb0ba9b87@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <78dcbda6-12d1-7a88-b1f9-a03fb0ba9b87@codeaurora.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  - Enable modular build of Bare UDP Encapsulation, exFAT filesystem
-    support, and lockup and min heap test modules,
-  - Remove CONFIG_NF_TABLES_SET=m (removed in commit e32a4dc6512ce3c1
-    ("netfilter: nf_tables: make sets built-in")),
-  - Disable CONFIG_VHOST_MENU (should default to n).
+On 13-04-20, 16:04, Rajendra Nayak wrote:
+> FWIK, no one should call a _of_add_opp_table_v2 in cases where there is no OPP in DT?
+> The 'empty' OPP table from what I understand will be created by dev_pm_opp_set_clkname.
+> A good case to look at is the PATCH 13/21 in this series. The driver I am modifying
+> is used on sdm845/sc7180 and a host of other older qualcomm SoCs. Since i am adding
+> support for perf state voting using OPP only on sdm845/sc7180 I want the existing
+> platforms to just do what they were doing. Now thats not possible unless I start
+> adding a bunch of if/else around every opp call in the driver to distinguish between
+> the two.
+> 
+> I am a little surprised since I though the idea of doing something like this came from
+> you :) (or perhaps Stephen, I somehow can't recollect)
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- arch/m68k/configs/amiga_defconfig    | 6 +++++-
- arch/m68k/configs/apollo_defconfig   | 6 +++++-
- arch/m68k/configs/atari_defconfig    | 6 +++++-
- arch/m68k/configs/bvme6000_defconfig | 6 +++++-
- arch/m68k/configs/hp300_defconfig    | 6 +++++-
- arch/m68k/configs/mac_defconfig      | 6 +++++-
- arch/m68k/configs/multi_defconfig    | 6 +++++-
- arch/m68k/configs/mvme147_defconfig  | 6 +++++-
- arch/m68k/configs/mvme16x_defconfig  | 6 +++++-
- arch/m68k/configs/q40_defconfig      | 6 +++++-
- arch/m68k/configs/sun3_defconfig     | 6 +++++-
- arch/m68k/configs/sun3x_defconfig    | 6 +++++-
- 12 files changed, 60 insertions(+), 12 deletions(-)
+Me only as I start remembering it now :)
 
-diff --git a/arch/m68k/configs/amiga_defconfig b/arch/m68k/configs/amiga_defconfig
-index 5b3a273ae3da388e..888b75e7fd79071f 100644
---- a/arch/m68k/configs/amiga_defconfig
-+++ b/arch/m68k/configs/amiga_defconfig
-@@ -100,7 +100,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -381,6 +380,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -452,6 +452,7 @@ CONFIG_RTC_CLASS=y
- CONFIG_RTC_DRV_MSM6242=m
- CONFIG_RTC_DRV_RP5C01=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -472,6 +473,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -619,9 +621,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/apollo_defconfig b/arch/m68k/configs/apollo_defconfig
-index 0bf0907a7c801cbe..45303846b65950e3 100644
---- a/arch/m68k/configs/apollo_defconfig
-+++ b/arch/m68k/configs/apollo_defconfig
-@@ -96,7 +96,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -360,6 +359,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -408,6 +408,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -428,6 +429,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -575,9 +577,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/atari_defconfig b/arch/m68k/configs/atari_defconfig
-index bdc79b6e8ca7bc5d..62430e40e8599463 100644
---- a/arch/m68k/configs/atari_defconfig
-+++ b/arch/m68k/configs/atari_defconfig
-@@ -103,7 +103,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -375,6 +374,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -440,6 +440,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -460,6 +461,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -608,9 +610,11 @@ CONFIG_GLOB_SELFTEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/bvme6000_defconfig b/arch/m68k/configs/bvme6000_defconfig
-index aa59c242e7155ae3..071839ca6a5955a8 100644
---- a/arch/m68k/configs/bvme6000_defconfig
-+++ b/arch/m68k/configs/bvme6000_defconfig
-@@ -93,7 +93,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -358,6 +357,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -401,6 +401,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -421,6 +422,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -568,9 +570,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/hp300_defconfig b/arch/m68k/configs/hp300_defconfig
-index 308cd93929a9f676..37ac7b019ec162e3 100644
---- a/arch/m68k/configs/hp300_defconfig
-+++ b/arch/m68k/configs/hp300_defconfig
-@@ -95,7 +95,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -359,6 +358,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -410,6 +410,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -430,6 +431,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -577,9 +579,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/mac_defconfig b/arch/m68k/configs/mac_defconfig
-index 0bc210ace8700223..60877986626013be 100644
---- a/arch/m68k/configs/mac_defconfig
-+++ b/arch/m68k/configs/mac_defconfig
-@@ -94,7 +94,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -375,6 +374,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -432,6 +432,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -452,6 +453,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -599,9 +601,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/multi_defconfig b/arch/m68k/configs/multi_defconfig
-index 3b3b832dee805c8b..0abb53c38c20da1e 100644
---- a/arch/m68k/configs/multi_defconfig
-+++ b/arch/m68k/configs/multi_defconfig
-@@ -114,7 +114,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -419,6 +418,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -518,6 +518,7 @@ CONFIG_RTC_DRV_MSM6242=m
- CONFIG_RTC_DRV_RP5C01=m
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -538,6 +539,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -685,9 +687,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/mvme147_defconfig b/arch/m68k/configs/mvme147_defconfig
-index e3633c66926f44dd..cb14c234d3adb335 100644
---- a/arch/m68k/configs/mvme147_defconfig
-+++ b/arch/m68k/configs/mvme147_defconfig
-@@ -92,7 +92,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -357,6 +356,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -400,6 +400,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -420,6 +421,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -567,9 +569,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/mvme16x_defconfig b/arch/m68k/configs/mvme16x_defconfig
-index 88b3f7f9f146a13e..e8a1920aded799b0 100644
---- a/arch/m68k/configs/mvme16x_defconfig
-+++ b/arch/m68k/configs/mvme16x_defconfig
-@@ -93,7 +93,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -358,6 +357,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -401,6 +401,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -421,6 +422,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -568,9 +570,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/q40_defconfig b/arch/m68k/configs/q40_defconfig
-index 3dd5b536921e75bb..2cbf416fc725b6ca 100644
---- a/arch/m68k/configs/q40_defconfig
-+++ b/arch/m68k/configs/q40_defconfig
-@@ -94,7 +94,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -365,6 +364,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -419,6 +419,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -439,6 +440,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -586,9 +588,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/sun3_defconfig b/arch/m68k/configs/sun3_defconfig
-index 715e015ed270f5ae..fed3cc7abcc447f5 100644
---- a/arch/m68k/configs/sun3_defconfig
-+++ b/arch/m68k/configs/sun3_defconfig
-@@ -90,7 +90,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -355,6 +354,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -403,6 +403,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -423,6 +424,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -570,8 +572,10 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
-diff --git a/arch/m68k/configs/sun3x_defconfig b/arch/m68k/configs/sun3x_defconfig
-index f9ff129ac7c20031..0954fde256e6a5b5 100644
---- a/arch/m68k/configs/sun3x_defconfig
-+++ b/arch/m68k/configs/sun3x_defconfig
-@@ -90,7 +90,6 @@ CONFIG_NF_CONNTRACK_SANE=m
- CONFIG_NF_CONNTRACK_SIP=m
- CONFIG_NF_CONNTRACK_TFTP=m
- CONFIG_NF_TABLES=m
--CONFIG_NF_TABLES_SET=m
- CONFIG_NF_TABLES_INET=y
- CONFIG_NF_TABLES_NETDEV=y
- CONFIG_NFT_NUMGEN=m
-@@ -355,6 +354,7 @@ CONFIG_IPVLAN=m
- CONFIG_IPVTAP=m
- CONFIG_VXLAN=m
- CONFIG_GENEVE=m
-+CONFIG_BAREUDP=m
- CONFIG_GTP=m
- CONFIG_MACSEC=m
- CONFIG_NETCONSOLE=m
-@@ -402,6 +402,7 @@ CONFIG_RTC_CLASS=y
- # CONFIG_RTC_NVMEM is not set
- CONFIG_RTC_DRV_GENERIC=m
- # CONFIG_VIRTIO_MENU is not set
-+# CONFIG_VHOST_MENU is not set
- # CONFIG_IOMMU_SUPPORT is not set
- CONFIG_DAX=m
- CONFIG_EXT4_FS=y
-@@ -422,6 +423,7 @@ CONFIG_ZISOFS=y
- CONFIG_UDF_FS=m
- CONFIG_MSDOS_FS=m
- CONFIG_VFAT_FS=m
-+CONFIG_EXFAT_FS=m
- CONFIG_PROC_KCORE=y
- CONFIG_PROC_CHILDREN=y
- CONFIG_TMPFS=y
-@@ -569,9 +571,11 @@ CONFIG_XZ_DEC_TEST=m
- CONFIG_STRING_SELFTEST=m
- # CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
- CONFIG_MAGIC_SYSRQ=y
-+CONFIG_TEST_LOCKUP=m
- CONFIG_WW_MUTEX_SELFTEST=m
- CONFIG_EARLY_PRINTK=y
- CONFIG_TEST_LIST_SORT=m
-+CONFIG_TEST_MIN_HEAP=m
- CONFIG_TEST_SORT=m
- CONFIG_REED_SOLOMON_TEST=m
- CONFIG_ATOMIC64_SELFTEST=m
+> to avoid all the if/else conditions
+> I had when I initially posted some of these changes.
+> Btw, you had this patch reviewed when this was posted a long while back too [1]
+> 
+> [1] https://patchwork.kernel.org/patch/11027217/
+
+That's an year back, in my defence :)
+
+But anyway, I wasn't opposed to the idea now as well. I was just making sure all
+things are handled well :)
+
 -- 
-2.17.1
-
+viresh
