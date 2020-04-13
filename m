@@ -2,221 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C7F1A6983
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 768F11A698B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731333AbgDMQM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 12:12:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731261AbgDMQM4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:12:56 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C22EA2063A;
-        Mon, 13 Apr 2020 16:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586794375;
-        bh=PiJCskkBH4HQmJKrq6l2BUxAKLvdz6RRfLLB9w3jJOM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R0+4nAcRn19VFnyDoemwSPHdWrk2+ibRP2cCMe54Ax+eEkaLOH/HHthNQdQxqFWlI
-         BAb45HSy3I0sObAAk4VaxQVGh4R1oi7KiL93fGwWboPEoSi0u5TbGzhxRpLn+1hqCF
-         nvGmpWTb4eC43ldhTNkcfJIGviC5qh1UWrHtbkeo=
-Date:   Mon, 13 Apr 2020 17:12:51 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alexandru.tachici@analog.com>
-Subject: Re: [PATCH v3 1/2] iio: adc: ad7192: fix null pointer de-reference
- crash during probe
-Message-ID: <20200413171251.5407db5b@archlinux>
-In-Reply-To: <20200413082044.81101-1-alexandru.ardelean@analog.com>
-References: <20200413082044.81101-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1731360AbgDMQNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 12:13:23 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43654 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731324AbgDMQNW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 12:13:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DG9KIE074193;
+        Mon, 13 Apr 2020 16:13:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=pRlzUa2jPSF0xbUlpi8T8m4jAqIOXlsYcpu3wjGQeSE=;
+ b=K+8h+hxSxg6CohR39pL50YxsgUbvKJc/wS2qj1BEr32dY0GevVJqvjxyUxSh3w/lBUAl
+ CdACgHHyvu/nZaWvGTFl3OUsEy64txnWxJ+cLAGaiZYJ0NslmBXaiW+QmDB9DTlFlKfP
+ 3UZDqlUayGqfbq+13b9krDlykPbRcBGj6uIH+ig1MStNBbZsgG2x+GB5yqHNZfS+tIYK
+ 2CyxRbNdHDAGkQiHa+fCTtCoO299kKjuK8nd6DG5uB+mPrNcqpIYLuELiaJ7VP7EHUPS
+ MDtyGGIgO5h934bEmWt4pgM1MjNHbaOkwZpKk2RNVpL50PMnBJZRjiPPSoAmVN7F17XY /A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 30b6hpfd8w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 16:13:09 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DG7nRH046589;
+        Mon, 13 Apr 2020 16:13:09 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 30bqceh4kb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 16:13:09 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03DGD7O1018514;
+        Mon, 13 Apr 2020 16:13:08 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Apr 2020 09:13:07 -0700
+Date:   Mon, 13 Apr 2020 09:13:06 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V7 7/9] fs: Define I_DONTCACNE in VFS layer
+Message-ID: <20200413161306.GY6742@magnolia>
+References: <20200413054046.1560106-1-ira.weiny@intel.com>
+ <20200413054046.1560106-8-ira.weiny@intel.com>
+ <20200413160929.GW6742@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413160929.GW6742@magnolia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 mlxlogscore=999
+ bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004130123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 phishscore=0 suspectscore=3
+ lowpriorityscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004130123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Apr 2020 11:20:43 +0300
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+On Mon, Apr 13, 2020 at 09:09:29AM -0700, Darrick J. Wong wrote:
+> > Subject: [PATCH V7 7/9] fs: Define I_DONTCACNE in VFS layer
+> 
+> CACNE -> CACHE.
+> 
+> On Sun, Apr 12, 2020 at 10:40:44PM -0700, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > DAX effective mode changes (setting of S_DAX) require inode eviction.
+> > 
+> > Define a flag which can be set to inform the VFS layer that inodes
+> > should not be cached.  This will expedite the eviction of those nodes
+> > requiring reload.
+> > 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >  include/linux/fs.h | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index a818ced22961..e2db71d150c3 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -2151,6 +2151,8 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+> >   *
+> >   * I_CREATING		New object's inode in the middle of setting up.
+> >   *
+> > + * I_DONTCACHE		Do not cache the inode
+> 
+> "Do not cache" is a bit vague, how about:
+> 
+> "Evict the inode when the last reference is dropped.
+> Do not put it on the LRU list."
+> 
+> Also, shouldn't xfs_ioctl_setattr be setting I_DONTCACHE if someone
+> changes FS_XFLAG_DAX (and there are no mount option overrides)?  I don't
+> see any user of I_DONTCACHE in this series.
 
-> When the 'spi_device_id' table was removed, it omitted to cleanup/fix the
-> assignment:
->    'indio_dev->name = spi_get_device_id(spi)->name;'
-> 
-> After that patch 'spi_get_device_id(spi)' returns NULL, so this crashes
-> during probe with null de-ref.
-> 
-> This change fixes this by introducing an ad7192_chip_info struct, and
-> defines all part-names [that should be assigned to indio_dev->name] in a
-> 'ad7192_chip_info_tbl' table.
-> 
-> With this change, the old 'st->devid' is also moved to be a
-> 'chip_info->chip_id'. And the old 'ID_AD719X' macros have been renamed to
-> 'CHIPID_AD719X'. Tld identifiers have been re-purposed to be enum/index
-> values in the new 'ad7192_chip_info_tbl'.
-> 
-> This should fix the bug, and maintain the ABI for the 'indio_dev->name'
-> field.
-> 
-> Fixes: 66614ab2be38 ("staging: iio: adc: ad7192: removed spi_device_id")
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Applied to the fixes-togreg branch of iio.git.
+Oops, brain fart, ignore this question ^^^^.
 
-Thanks,
+--D
 
-Jonathan
-
-> ---
+> (Also also, please convert XFS_IDONTCACHE, since it's a straightforward
+> conversion...)
 > 
-> Changelog v2 -> v3:
-> * reworked patch to introduce a chip_info struct for the part-name
-> * added 2nd patch to move of-table closer to the end of the file; this
->   patch is more cosmetic; has no fixes tag, but is on top of the previous
+> --D
 > 
-> Changelog v1 -> v2:
-> * fix colon for Fixes tag
-> * updated commit title a bit; to make it longer
-> 
->  drivers/iio/adc/ad7192.c | 61 ++++++++++++++++++++++++++++++----------
->  1 file changed, 46 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-> index 8ec28aa8fa8a..7e8662c5cb0e 100644
-> --- a/drivers/iio/adc/ad7192.c
-> +++ b/drivers/iio/adc/ad7192.c
-> @@ -125,10 +125,10 @@
->  #define AD7193_CH_AINCOM	0x600 /* AINCOM - AINCOM */
->  
->  /* ID Register Bit Designations (AD7192_REG_ID) */
-> -#define ID_AD7190		0x4
-> -#define ID_AD7192		0x0
-> -#define ID_AD7193		0x2
-> -#define ID_AD7195		0x6
-> +#define CHIPID_AD7190		0x4
-> +#define CHIPID_AD7192		0x0
-> +#define CHIPID_AD7193		0x2
-> +#define CHIPID_AD7195		0x6
->  #define AD7192_ID_MASK		0x0F
->  
->  /* GPOCON Register Bit Designations (AD7192_REG_GPOCON) */
-> @@ -161,7 +161,20 @@ enum {
->     AD7192_SYSCALIB_FULL_SCALE,
->  };
->  
-> +enum {
-> +	ID_AD7190,
-> +	ID_AD7192,
-> +	ID_AD7193,
-> +	ID_AD7195,
-> +};
-> +
-> +struct ad7192_chip_info {
-> +	unsigned int			chip_id;
-> +	const char			*name;
-> +};
-> +
->  struct ad7192_state {
-> +	const struct ad7192_chip_info	*chip_info;
->  	struct regulator		*avdd;
->  	struct regulator		*dvdd;
->  	struct clk			*mclk;
-> @@ -172,7 +185,6 @@ struct ad7192_state {
->  	u32				conf;
->  	u32				scale_avail[8][2];
->  	u8				gpocon;
-> -	u8				devid;
->  	u8				clock_sel;
->  	struct mutex			lock;	/* protect sensor state */
->  	u8				syscalib_mode[8];
-> @@ -348,7 +360,7 @@ static int ad7192_setup(struct ad7192_state *st, struct device_node *np)
->  
->  	id &= AD7192_ID_MASK;
->  
-> -	if (id != st->devid)
-> +	if (id != st->chip_info->chip_id)
->  		dev_warn(&st->sd.spi->dev, "device ID query failed (0x%X)\n",
->  			 id);
->  
-> @@ -363,7 +375,7 @@ static int ad7192_setup(struct ad7192_state *st, struct device_node *np)
->  		st->mode |= AD7192_MODE_REJ60;
->  
->  	refin2_en = of_property_read_bool(np, "adi,refin2-pins-enable");
-> -	if (refin2_en && st->devid != ID_AD7195)
-> +	if (refin2_en && st->chip_info->chip_id != CHIPID_AD7195)
->  		st->conf |= AD7192_CONF_REFSEL;
->  
->  	st->conf &= ~AD7192_CONF_CHOP;
-> @@ -859,11 +871,30 @@ static const struct iio_chan_spec ad7193_channels[] = {
->  	IIO_CHAN_SOFT_TIMESTAMP(14),
->  };
->  
-> +static const struct ad7192_chip_info ad7192_chip_info_tbl[] = {
-> +	[ID_AD7190] = {
-> +		.chip_id = CHIPID_AD7190,
-> +		.name = "ad7190",
-> +	},
-> +	[ID_AD7192] = {
-> +		.chip_id = CHIPID_AD7192,
-> +		.name = "ad7192",
-> +	},
-> +	[ID_AD7193] = {
-> +		.chip_id = CHIPID_AD7193,
-> +		.name = "ad7193",
-> +	},
-> +	[ID_AD7195] = {
-> +		.chip_id = CHIPID_AD7195,
-> +		.name = "ad7195",
-> +	},
-> +};
-> +
->  static int ad7192_channels_config(struct iio_dev *indio_dev)
->  {
->  	struct ad7192_state *st = iio_priv(indio_dev);
->  
-> -	switch (st->devid) {
-> +	switch (st->chip_info->chip_id) {
->  	case ID_AD7193:
->  		indio_dev->channels = ad7193_channels;
->  		indio_dev->num_channels = ARRAY_SIZE(ad7193_channels);
-> @@ -878,10 +909,10 @@ static int ad7192_channels_config(struct iio_dev *indio_dev)
->  }
->  
->  static const struct of_device_id ad7192_of_match[] = {
-> -	{ .compatible = "adi,ad7190", .data = (void *)ID_AD7190 },
-> -	{ .compatible = "adi,ad7192", .data = (void *)ID_AD7192 },
-> -	{ .compatible = "adi,ad7193", .data = (void *)ID_AD7193 },
-> -	{ .compatible = "adi,ad7195", .data = (void *)ID_AD7195 },
-> +	{ .compatible = "adi,ad7190", .data = &ad7192_chip_info_tbl[ID_AD7190] },
-> +	{ .compatible = "adi,ad7192", .data = &ad7192_chip_info_tbl[ID_AD7192] },
-> +	{ .compatible = "adi,ad7193", .data = &ad7192_chip_info_tbl[ID_AD7193] },
-> +	{ .compatible = "adi,ad7195", .data = &ad7192_chip_info_tbl[ID_AD7195] },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(of, ad7192_of_match);
-> @@ -938,16 +969,16 @@ static int ad7192_probe(struct spi_device *spi)
->  	}
->  
->  	spi_set_drvdata(spi, indio_dev);
-> -	st->devid = (unsigned long)of_device_get_match_data(&spi->dev);
-> +	st->chip_info = of_device_get_match_data(&spi->dev);
->  	indio_dev->dev.parent = &spi->dev;
-> -	indio_dev->name = spi_get_device_id(spi)->name;
-> +	indio_dev->name = st->chip_info->name;
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  
->  	ret = ad7192_channels_config(indio_dev);
->  	if (ret < 0)
->  		goto error_disable_dvdd;
->  
-> -	if (st->devid == ID_AD7195)
-> +	if (st->chip_info->chip_id == CHIPID_AD7195)
->  		indio_dev->info = &ad7195_info;
->  	else
->  		indio_dev->info = &ad7192_info;
-
+> > + *
+> >   * Q: What is the difference between I_WILL_FREE and I_FREEING?
+> >   */
+> >  #define I_DIRTY_SYNC		(1 << 0)
+> > @@ -2173,6 +2175,7 @@ static inline void kiocb_clone(struct kiocb *kiocb, struct kiocb *kiocb_src,
+> >  #define I_WB_SWITCH		(1 << 13)
+> >  #define I_OVL_INUSE		(1 << 14)
+> >  #define I_CREATING		(1 << 15)
+> > +#define I_DONTCACHE		(1 << 16)
+> >  
+> >  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
+> >  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
+> > @@ -3042,7 +3045,8 @@ extern int inode_needs_sync(struct inode *inode);
+> >  extern int generic_delete_inode(struct inode *inode);
+> >  static inline int generic_drop_inode(struct inode *inode)
+> >  {
+> > -	return !inode->i_nlink || inode_unhashed(inode);
+> > +	return !inode->i_nlink || inode_unhashed(inode) ||
+> > +		(inode->i_state & I_DONTCACHE);
+> >  }
+> >  
+> >  extern struct inode *ilookup5_nowait(struct super_block *sb,
+> > -- 
+> > 2.25.1
+> > 
