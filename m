@@ -2,71 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064041A652C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE811A6561
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbgDMK3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:29:19 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:35321 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727833AbgDMK3S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:29:18 -0400
-Received: by mail-ed1-f66.google.com with SMTP id c7so11401332edl.2;
-        Mon, 13 Apr 2020 03:29:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BbWHjSsUQrh2BcH16tvNHQAGyd0qaneJDULzKls8PTI=;
-        b=EACqoFiZ7YXHLwEmyEKf/nPegskQGdQBOonHclZldN6+NXmkU0B9/0omQdswXEroeh
-         ZSIBZ9wCtq5xpvymxh3Yod3KAvGMepCyOsRLkiHzwEprXSSwX+NdLCVCuGflwpQs/j5F
-         /NaFz5c7uCdeec6CIAOeKErmCPaMT26o6/7KE9Walu/q9ZhDXYy4bE38L0kgEWZPViEk
-         FvMRMnCzIepQJIXTCe6BJIwKOUgpNWf6wDHD9zB7+c+pK7QFVf4agdSLks2qFHupaW7j
-         0mZ7zEHVVB22kUfrQnfI9c/yxjov7Tnm8gdUJ2PtUMwse61u9kE6fqqXUsiJAqSPVxds
-         pywA==
-X-Gm-Message-State: AGi0PuaUrW1S8Nz0KPCdOU23OLRtd4AwLvnqoTwKagbq3doSR6SPQuTX
-        aqyW9a5RPAm7yoZ8iJucJYY=
-X-Google-Smtp-Source: APiQypIedXmcxclTCvgH+IO52NsgOdHSPUM9V+iK7b0YTTiONfFblt3zVHInsMkfzBnfKdib4MGamw==
-X-Received: by 2002:a05:6402:16d5:: with SMTP id r21mr5822530edx.150.1586773757041;
-        Mon, 13 Apr 2020 03:29:17 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.125])
-        by smtp.googlemail.com with ESMTPSA id w3sm1557471ejf.21.2020.04.13.03.29.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 Apr 2020 03:29:16 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 12:29:14 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        patches@opensource.cirrus.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] ARM: mach-s3c64xx: convert to use
- i2c_new_client_device()
-Message-ID: <20200413102914.GA14922@kozik-lap>
-References: <20200326211014.13591-1-wsa+renesas@sang-engineering.com>
- <20200326211014.13591-2-wsa+renesas@sang-engineering.com>
+        id S1728650AbgDMKbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:31:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727806AbgDMKbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 06:31:00 -0400
+Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C6FB52054F;
+        Mon, 13 Apr 2020 10:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586773859;
+        bh=h01TVcjgIHX6FUskz6JjMnvCNlJroUk4jJme6wnS/LE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RrcG67ZJ3fAFvV98m4dH/lsCLeCQwwZzOqvt0QqkgSnLtSWRpwJw/OUZITKOHL2OF
+         jUEqOPPAW0lzg8HIjIN87BNqQdLQIE2p+levrK3VTnqcr6RveBoc2R4sKQ83ZoI8L0
+         d+lqceYmVIy9MISfjBDFNYGYgIUGQD6FWtkBzA3g=
+Received: by mail-io1-f47.google.com with SMTP id m4so8845768ioq.6;
+        Mon, 13 Apr 2020 03:30:59 -0700 (PDT)
+X-Gm-Message-State: AGi0PuaOjnc36AyxV+BqVTLIeID8Geu36iPo2F6Ju5+FCoPUcVI0rSeW
+        Jt/FxbVQIMwFfW+bp9y9EFttM4lL85vdVmUOv/o=
+X-Google-Smtp-Source: APiQypLM+RPRw2HjmV6vMWpCCz4MDGssnyHG/JuEqFYXykihcZ7dZZiO4o2bl6Jdx+Ty9fIVUVnXLTXKPM1pK8qkJSU=
+X-Received: by 2002:a6b:ef03:: with SMTP id k3mr4297625ioh.203.1586773859224;
+ Mon, 13 Apr 2020 03:30:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200326211014.13591-2-wsa+renesas@sang-engineering.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200412024927.GA6884@dhcp-128-65.nay.redhat.com>
+In-Reply-To: <20200412024927.GA6884@dhcp-128-65.nay.redhat.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 13 Apr 2020 12:30:47 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGA-VJdzkWMtWjrXt5HCDmRxdG0YqsoiRUQQS8SL1=Txw@mail.gmail.com>
+Message-ID: <CAMj1kXGA-VJdzkWMtWjrXt5HCDmRxdG0YqsoiRUQQS8SL1=Txw@mail.gmail.com>
+Subject: Re: [PATCH] efi/earlycon: fix early printk for wider fonts
+To:     Dave Young <dyoung@redhat.com>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 10:10:14PM +0100, Wolfram Sang wrote:
-> Move away from the deprecated API and remove printing a stale 'ret'
-> value.
-> 
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+On Sun, 12 Apr 2020 at 04:49, Dave Young <dyoung@redhat.com> wrote:
+>
+> When I play with terminus fonts I noticed the efi early printk does
+> not work because the earlycon code assumes font width is 8.
+>
+> Here add the code to adapt with larger fonts.  Tested with all kinds
+> of kernel built-in fonts on my laptop. Also tested with a local draft
+> patch for 14x28 !bold terminus font.
+>
+> Signed-off-by: Dave Young <dyoung@redhat.com>
+
+Thanks Dave. I tested this with the 10x18 font, which is utterly
+broken for efifb unless I apply this patch.
+
+I'll queue this as a fix.
+
+
+
+
 > ---
->  arch/arm/mach-s3c64xx/mach-crag6410-module.c | 7 +++----
-
-Thanks, applied.
-
-Best regards,
-Krzysztof
-
+>  drivers/firmware/efi/earlycon.c |   14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>
+> --- linux-x86.orig/drivers/firmware/efi/earlycon.c
+> +++ linux-x86/drivers/firmware/efi/earlycon.c
+> @@ -114,14 +114,16 @@ static void efi_earlycon_write_char(u32
+>         const u32 color_black = 0x00000000;
+>         const u32 color_white = 0x00ffffff;
+>         const u8 *src;
+> -       u8 s8;
+> -       int m;
+> +       int m, n, bytes;
+> +       u8 x;
+>
+> -       src = font->data + c * font->height;
+> -       s8 = *(src + h);
+> +       bytes = BITS_TO_BYTES(font->width);
+> +       src = font->data + c * font->height * bytes + h * bytes;
+>
+> -       for (m = 0; m < 8; m++) {
+> -               if ((s8 >> (7 - m)) & 1)
+> +       for (m = 0; m < font->width; m++) {
+> +               n = m % 8;
+> +               x = *(src + m / 8);
+> +               if ((x >> (7 - n)) & 1)
+>                         *dst = color_white;
+>                 else
+>                         *dst = color_black;
+>
