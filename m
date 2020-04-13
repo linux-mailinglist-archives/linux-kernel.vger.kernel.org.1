@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7E71A657A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64A81A6574
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:03:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728909AbgDMLJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 07:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728090AbgDMLJl (ORCPT
+        id S1728881AbgDMLDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:03:06 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:57301 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728295AbgDMLDF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:09:41 -0400
-X-Greylist: delayed 524 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 07:09:41 EDT
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7901FC0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:00:57 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id i19so3837525qtp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Y9qeYS77awcXKXnbUv+cj5nzUb83V6esqPketlEQr3o=;
-        b=I+wFQ1ugWbjcai58iOdxd/U/dYdGxJB3G44RebhdeWHWX9FjPfo/VCwBpT5+4nkL1W
-         IV8BH9VUE0rLNBqscv4bvU3ilsFBLe3vMck+0rd7T17rnAg68VF5YflEbPvzNAOBJmWO
-         MDVoR6S/DXTKvm70FZNiCpH6F7UzykjCpidYVsjwlFqUhA58Um16S9TSzGarRGcQN6ED
-         4R2LDDrr6ZQWwikCcoCwTTx1hg/KPTRENyncbIjWUxMfCqx2onh4xawAvQX1L9Olrqsx
-         kH2e6xD92wXtDfYhSRxWjXjfS9XopU2GFVRUmublFwMwLnZHA5wi3U0JZJfY6kRksfB9
-         7hSQ==
+        Mon, 13 Apr 2020 07:03:05 -0400
+Received: by mail-io1-f71.google.com with SMTP id v3so9953934iod.23
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:03:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Y9qeYS77awcXKXnbUv+cj5nzUb83V6esqPketlEQr3o=;
-        b=RO+G3H7HOoc5sWnM2+lgPvF46aqcym0JKuhEGubDF6/yOUKGatXrnUmcO0xIkrFgyl
-         BbK0EfAphEFhmb0vhZC+vu+iUINg8j/YgpHiL2Acu3Al4bldZRpx7NS1QfPAv7Du8TO4
-         UdfMd+n4NRcgZ8JRCWng/wZve41kVOogb4N79ZhL9Mv2PlCD3yVolUch5whsFShGisrS
-         LQvhwxAMe4ZT8ONAvzJ2N0TRvicpbFCW8AunNtBkY7YdxAs5tfaI/eA2dl30Tfi7zfPy
-         ohQ2ORzesQWVEcpinjxrcUZfdeG5xbk3bdOe+Zncgk7JeKSOCwDQE1IVZUI+peRCG7oA
-         R9kg==
-X-Gm-Message-State: AGi0PubxDONLTO9u8BgfgKm0y8Xu/IAgPxCKYet3/carJTc/UDyzyuSc
-        qa6d7Vic0qnVEci6sRgasxLL3pwnhV0P6rQJMPo=
-X-Google-Smtp-Source: APiQypJb/7RuvfWWYtYBJa/4moWt11EYiaz99fHtesCE3DZp60+mDAkhS3240MhXzAd0/yd5E10btK8ZHLeIodM8+aw=
-X-Received: by 2002:ac8:7609:: with SMTP id t9mr10608932qtq.155.1586775656132;
- Mon, 13 Apr 2020 04:00:56 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=2IOvHbBUeIFh4zGFQjXxW5DQqukbUbAB0rjAVOkLv/w=;
+        b=lQawSWLvldvpAQYapAaDJbt0PxS4a+WCxZgI7JAunhcpos1mncFAGMGKQ7tUQP7xtr
+         gja0XHkYR4Nnt54KKuOfv3JiTu9mouJoB8tR5Zn+AoQ+Bkr3fb7qrUZgfGD5nfuhK8uC
+         zZQi/3KfTKLDvky9mCZ6IoWsapcIfX5ZcfE9SqZngY9t8d2vABpT8R76dugVbgNgfp7P
+         MyDXHqhML1BtTgoSuhaJnQHCPJHyngxnqcGsfN1lHsEZ55LgOKIYCOfzgpgCixnVrK/j
+         U4g/oXCw2rLwqOEJ6CXdA6bIgFH2K0XJY+8L/XLuK0OA6XP09oojTd+PhJ1PYcV9wpXQ
+         hyMA==
+X-Gm-Message-State: AGi0PubZW04gORyg4vgyulWlJczqaByiobPiNIWZmbWeLJ9aOxiQQ3Dx
+        IFEdRAdCyzuHQEAoE8f2mhVLB3pCPjSmbvKIH9L3RD7EV3oe
+X-Google-Smtp-Source: APiQypLicYJNdk15GuKhgeGZAg5xWK36DdcdM4+DwXTrzX3cEvE+bTGd6A8kvDoJZPtS1k1WvcOTKwpdKA0d2t1jNBkZKQ6dx5jB
 MIME-Version: 1.0
-Received: by 2002:a0c:aa84:0:0:0:0:0 with HTTP; Mon, 13 Apr 2020 04:00:55
- -0700 (PDT)
-Reply-To: mrsannabruun111@gmail.com
-From:   "Mrs. Anna H. Bruun" <dr.dimvikmichael112@gmail.com>
-Date:   Mon, 13 Apr 2020 11:00:55 +0000
-Message-ID: <CAAYSbLoKFjcgH0Aj7JVOdBUPSJPX=_E99D4e9XCHG_YTJ9PmVA@mail.gmail.com>
-Subject: GOOD DAY
-To:     undisclosed-recipients:;
+X-Received: by 2002:a92:d98c:: with SMTP id r12mr4971216iln.224.1586775784334;
+ Mon, 13 Apr 2020 04:03:04 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 04:03:04 -0700
+In-Reply-To: <0000000000003311fd05a327a060@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f6ae4905a32a0633@google.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in gfn_to_memslot
+From:   syzbot <syzbot+2e0179e5185bcd5b9440@syzkaller.appspotmail.com>
+To:     christoffer.dall@arm.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org, pbonzini@redhat.com,
+        peterx@redhat.com, sean.j.christopherson@intel.com,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+syzbot has bisected this bug to:
 
-Am Mrs. Anna H. Bruun I know that this message will be a surprise to
-you. Firstly, I am married to Mr. Patrick Bruun, A gold merchant who
-owns a small gold mine in Burkina Faso; He died of Cardiovascular
-Disease in mid-March 2011. During his lifetime, he deposited the sum
-of Eight million, Five hundred thousand Euros. in a bank in
-Ouagadougou the capital city of Burkina Faso in West Africa. The
-deposited money was from the sale of the shares, death benefits
-payment and entitlements of my deceased husband by his company.
+commit 36947254e5f981aeeedab1c7dfa35fc34d330e80
+Author: Sean Christopherson <sean.j.christopherson@intel.com>
+Date:   Tue Feb 18 21:07:32 2020 +0000
 
-I am sending this message to you praying that it will reach you in
-good health since I am not in good health condition in which I sleep
-every night without knowing if I may be alive to see the next day. I
-am suffering from long time cancer and presently I am partially
-suffering from a stroke illness which has become almost impossible for
-me to move around. I need your urgent answer to know if you will be
-able to execute this project, and I will give you more information on
-how the fund will be transferred to your bank account.
+    KVM: Dynamically size memslot array based on number of used slots
 
-Thanks
-Mrs. Anna H.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1099775de00000
+start commit:   4f8a3cc1 Merge tag 'x86-urgent-2020-04-12' of git://git.ke..
+git tree:       upstream
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=1299775de00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1499775de00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3bfbde87e8e65624
+dashboard link: https://syzkaller.appspot.com/bug?extid=2e0179e5185bcd5b9440
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e78c7de00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14cf613fe00000
+
+Reported-by: syzbot+2e0179e5185bcd5b9440@syzkaller.appspotmail.com
+Fixes: 36947254e5f9 ("KVM: Dynamically size memslot array based on number of used slots")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
