@@ -2,68 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493231A65FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4D81A65F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729280AbgDMLzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 07:55:06 -0400
-Received: from cmccmta1.chinamobile.com ([221.176.66.79]:40736 "EHLO
-        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727907AbgDMLzE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:55:04 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app03-12003 (RichMail) with SMTP id 2ee35e94530be9e-3a131; Mon, 13 Apr 2020 19:54:51 +0800 (CST)
-X-RM-TRANSID: 2ee35e94530be9e-3a131
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [172.20.21.224] (unknown[112.25.154.146])
-        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee35e94530b271-c5fbd;
-        Mon, 13 Apr 2020 19:54:51 +0800 (CST)
-X-RM-TRANSID: 2ee35e94530b271-c5fbd
-Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
-To:     minyard@acm.org
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
- <20200413113225.GB3587@minyard.net>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
-Date:   Mon, 13 Apr 2020 19:56:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1729238AbgDMLvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:51:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:60498 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729178AbgDMLvu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 07:51:50 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 79E6F4CF4FE89C54BBF1;
+        Mon, 13 Apr 2020 19:51:47 +0800 (CST)
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 13 Apr 2020 19:51:41 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH-next] bpf: Verifier, remove unneeded conversion to bool
+Date:   Mon, 13 Apr 2020 19:57:56 +0800
+Message-ID: <1586779076-101346-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-In-Reply-To: <20200413113225.GB3587@minyard.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Corey:
+This issue was detected by using the Coccinelle software:
 
-On 2020/4/13 19:32, Corey Minyard wrote:
-> On Wed, Apr 08, 2020 at 07:59:58PM +0800, Tang Bin wrote:
->> bt_bmc_probe() is only called with an openfirmware platform device.
->> Therefore there is no need to check that the passed in device is NULL or
->> that it has an openfirmware node.
-> I waited until after the merge window closed, this is queued for 5.8.
-Can I consider that the patch will be applied in 5.8？
->   I
-> changed the title to be "Avoid unnecessary check".
-You have modified it, which means I don't need to submit a new patch？
->   "Judgement",
-> although technically correct, has a legal or moral connotation.
+kernel/bpf/verifier.c:1259:16-21: WARNING: conversion to bool not needed here
 
-I'm sorry, I won't use that word again.
+The conversion to bool is unneeded, remove it
 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ kernel/bpf/verifier.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks for your instruction.
-
-Tang Bin
-
->
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 04c6630..38cfcf7 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1255,8 +1255,7 @@ static void __mark_reg_unknown(const struct bpf_verifier_env *env,
+ 	reg->type = SCALAR_VALUE;
+ 	reg->var_off = tnum_unknown;
+ 	reg->frameno = 0;
+-	reg->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks ?
+-		       true : false;
++	reg->precise = env->subprog_cnt > 1 || !env->allow_ptr_leaks;
+ 	__mark_reg_unbounded(reg);
+ }
+ 
+-- 
+2.6.2
 
