@@ -2,81 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B981A6CE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 21:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EBD1A6CEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 22:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388177AbgDMT7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 15:59:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45697 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388135AbgDMT7U (ORCPT
+        id S2388198AbgDMUB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 16:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388135AbgDMUBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 15:59:20 -0400
-Received: from ip5f5bd698.dynamic.kabel-deutschland.de ([95.91.214.152] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jO5Ej-0003pF-4y; Mon, 13 Apr 2020 19:59:17 +0000
-Date:   Mon, 13 Apr 2020 21:59:15 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Serge Hallyn <serge@hallyn.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Saravana Kannan <saravanak@google.com>,
-        Jan Kara <jack@suse.cz>, David Howells <dhowells@redhat.com>,
-        Seth Forshee <seth.forshee@canonical.com>,
-        David Rheinsberg <david.rheinsberg@gmail.com>,
-        Tom Gundersen <teg@jklm.no>,
-        Christian Kellner <ckellner@redhat.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@ubuntu.com>,
-        linux-doc@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 5/8] kernfs: let objects opt-in to propagating from the
- initial namespace
-Message-ID: <20200413195915.yo2l657nmtkwripb@wittgenstein>
-References: <20200408152151.5780-1-christian.brauner@ubuntu.com>
- <20200408152151.5780-6-christian.brauner@ubuntu.com>
- <20200413190239.GG60335@mtj.duckdns.org>
- <20200413193950.tokh5m7wsyrous3c@wittgenstein>
- <20200413194550.GJ60335@mtj.duckdns.org>
+        Mon, 13 Apr 2020 16:01:55 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A92C0A3BDC;
+        Mon, 13 Apr 2020 13:01:54 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id d17so4963584pgo.0;
+        Mon, 13 Apr 2020 13:01:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J3cCNpgRJA9avR4kz32VesjN9UmFQ5b6+1OU9lUWCYU=;
+        b=PJwMvVoXHoh4ZCGjOlCpUMNzvy6UrIjQWAHhMIjj+JVy8Pu82RfBsUSKYmE/Rf2mqN
+         qhfFm/q/wzwzjvL69WZlhzM+tYdCmkg8xvV92ag8NduUlZikQ3Qo7MkcM/aGSRaZbbm1
+         PR2isRezDgLdCJC5x3+1TtkUhf0BRkive2D9kL3EzKQAx01uFitZpemacjOiiim14BMp
+         tjGWSfV4s9rj3B5jnS7OnBZUjOIzfUMOk3OakXnSLWgFL9Z3FX27RCNxf7PHl6M0iI/V
+         +yipALkcxF2pRKWEcAZJmqTu5yyFZW6mySMJYsLgaA2xL+ZKQsP3zbkU7iAKVZfeGPR2
+         Wtzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J3cCNpgRJA9avR4kz32VesjN9UmFQ5b6+1OU9lUWCYU=;
+        b=hcbU4jkh7+TZLPMa3PISJiXHvs2MKz+L+Jx6LQl4TLE1xElOwxtMUxG4Zbgj7//yh6
+         JUSgoD4ua2G0pnPqICDNfYY+HqdjILl/9+B30CmAldq/NGP5u5aStbL1bU2O8D3nAMQ8
+         6IPr0bJhenp2N84N9IMyQxrQiYuo0HCJwgXrOnMTlSpw+k9BYECN1tJGKJeYfm95JIke
+         I56ulz215XNQ529zVcg6IxCcLlhnngUqe7Ro+OmYezynDQEVypCWT9pBESXGkR94sAvl
+         l0dP1AHc5g+c030WmEkk8dL9OxdG9/1oZ0OTZfmyGWykiK85KOa3vODjsyk3MNP3JwQD
+         GA0w==
+X-Gm-Message-State: AGi0PuZ7VqmGcNnVpF2WsXEX/bGKqIxTmfhUqMTifQUsQybPJVDUgWke
+        svoj6ABPfERd/parWL56oaKdhqbL6vGK9gfGpL4=
+X-Google-Smtp-Source: APiQypLkGIBDSBR9xdnow1niyB7RFnE2uJpuzzz/4DpzWuW9cHiK0axj6hAF/dmJp5AW88qWObxtfQMY8x9vdx7+l7M=
+X-Received: by 2002:a63:5511:: with SMTP id j17mr2845081pgb.4.1586808114381;
+ Mon, 13 Apr 2020 13:01:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200413194550.GJ60335@mtj.duckdns.org>
+References: <20200413173656.28522-1-sravanhome@gmail.com>
+In-Reply-To: <20200413173656.28522-1-sravanhome@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 13 Apr 2020 23:01:43 +0300
+Message-ID: <CAHp75VdLPorP735K1jGSm=XphZ1P3i2YLc-zHWf-S=fWsBOyVg@mail.gmail.com>
+Subject: Re: [PATCH v8 0/6] Add battery charger driver support for MP2629
+To:     Saravanan Sekar <sravanhome@gmail.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald <pmeerw@pmeerw.net>,
+        Sebastian Reichel <sre@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 03:45:50PM -0400, Tejun Heo wrote:
-> Hello,
-> 
-> On Mon, Apr 13, 2020 at 09:39:50PM +0200, Christian Brauner wrote:
-> > Another problem is that you might have two devices of the same class
-> > with the same name that belong to different namespaces and if you shown
-> > them all in the initial namespace you get clashes. This was one of the
-> > original reasons why network devices are only shown in the namespace
-> > they belong to but not in any other.
-> 
-> For example, pid namespace has the same issue but it doesn't solve the problem
-> by breaking up visibility at the root level - it makes everything visiable at
-> root but give per-ns aliases which are selectively visble depending on the
-> namespace. From administration POV, this is way easier and less error-prone to
-> deal with and I was hoping that we could head that way rather than netdev way
-> for new things.
+On Mon, Apr 13, 2020 at 8:37 PM Saravanan Sekar <sravanhome@gmail.com> wrote:
 
-Right, pid namespaces deal with a single random identifier about which
-userspace makes no assumptions other than that it's a positive number so
-generating aliases is fine. In addition pid namespaces are nicely
-hierarchical. I fear that we might introduce unneeded complexity if we
-go this way and start generating aliases for devices that userspace
-already knows about and has expectations of. We also still face some of
-the other problems I mentioned.
-I do think that what you say might make sense to explore in more detail
-for a new device class (or type under a given class) that userspace does
-not yet know about and were we don't regress anything.
+When somebody gives you a tag, take care and add that tag to all
+patches where it applies (if you don't drastically change the code, it
+applies to all mentioned in the corresponding reply).
+
+> changes in v8:
+>  - fixed order of call in probe/remove in iio adc
+>  - add ABI documentation for mp2629 power supply
+>
+> changes in v7:
+>  - fixed probe/remove order, managed and unmanaged call mix use in adc.
+>  - Documentation dual license, i2c node with controller address
+>
+> changes in v6:
+>  - removed includes types.h in mfd, of_device.h in adc.
+>  - fixed review comments parentheses, err check, kstrtouint
+>
+> changes in v5:
+>  - removed platfrom data stored in mfd and directly accessed mfd struct in child
+>  - fixed spell check and capitalization in mfd and documentation
+>
+> changes in v4:
+>  - fixed capitalization in mfg Kconfig and documentation
+>
+> changes in v3:
+>  - regmap for children passed using platform data and remove mfd driver info
+>    access directly from children
+>
+> changes in v2:
+>  - removed EXPORT_SYMBOL of register set/get helper
+>  - regmap bit filed used, fixed other review comments
+>
+> This patch series add support for Battery charger control driver for Monolithic
+> Power System's MP2629 chipset, includes MFD driver for ADC battery & input
+> power supply measurement and battery charger control driver.
+>
+> Thanks,
+> Saravanan
+>
+> Saravanan Sekar (6):
+>   dt-bindings: mfd: add document bindings for mp2629
+>   mfd: mp2629: Add support for mps battery charger
+>   iio: adc: mp2629: Add support for mp2629 ADC driver
+>   power: supply: Add support for mps mp2629 battery charger
+>   power: supply: mp2629: Add impedance compenstation config
+>   MAINTAINERS: Add entry for mp2629 Battery Charger driver
+>
+>  .../ABI/testing/sysfs-class-power-mp2629      |   8 +
+>  .../devicetree/bindings/mfd/mps,mp2629.yaml   |  60 ++
+>  MAINTAINERS                                   |   5 +
+>  drivers/iio/adc/Kconfig                       |  10 +
+>  drivers/iio/adc/Makefile                      |   1 +
+>  drivers/iio/adc/mp2629_adc.c                  | 208 ++++++
+>  drivers/mfd/Kconfig                           |   9 +
+>  drivers/mfd/Makefile                          |   2 +
+>  drivers/mfd/mp2629.c                          |  86 +++
+>  drivers/power/supply/Kconfig                  |  10 +
+>  drivers/power/supply/Makefile                 |   1 +
+>  drivers/power/supply/mp2629_charger.c         | 687 ++++++++++++++++++
+>  include/linux/mfd/mp2629.h                    |  28 +
+>  13 files changed, 1115 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-class-power-mp2629
+>  create mode 100644 Documentation/devicetree/bindings/mfd/mps,mp2629.yaml
+>  create mode 100644 drivers/iio/adc/mp2629_adc.c
+>  create mode 100644 drivers/mfd/mp2629.c
+>  create mode 100644 drivers/power/supply/mp2629_charger.c
+>  create mode 100644 include/linux/mfd/mp2629.h
+>
+> --
+> 2.17.1
+>
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
