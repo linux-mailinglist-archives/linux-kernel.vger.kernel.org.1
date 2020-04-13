@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB1BB1A6833
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2E71A6788
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730816AbgDMOdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:33:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53482 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728185AbgDMOdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:33:00 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD30A2072C;
-        Mon, 13 Apr 2020 14:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586788380;
-        bh=UgsFITWUZlPhGRKvUFEzShkg0Dx45Ysmuw2lAc+SDaM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cPUYRHSRHlx2GAXRo9nMBHjuEpgHckiq3M2LmlISBBRoqZH/M+444UvfX7V5w+lem
-         12kt52rKzHQvF8XkB9Ipm1InslQuuJvYlHydBBV5htlnSH2LJ9I4j3Ld5cQI5GOKbN
-         YtPX5TEJFVDVOOU5ObxpHQvBduqAQLhbnLZAPXlU=
-Date:   Mon, 13 Apr 2020 16:32:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Oscar Carter <oscar.carter@gmx.com>
-Cc:     devel@driverdev.osuosl.org, Malcolm Priestley <tvboxspy@gmail.com>,
-        Forest Bond <forest@alittletooquiet.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] staging: vt6656: Refactor the assignment of the
- phy->signal variable
-Message-ID: <20200413143258.GA3551837@kroah.com>
-References: <20200411122610.7901-1-oscar.carter@gmx.com>
- <20200411122610.7901-2-oscar.carter@gmx.com>
- <20200413125616.GA3127208@kroah.com>
- <20200413142517.GB3101@ubuntu>
+        id S1730334AbgDMOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:06:45 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:2311 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730285AbgDMOGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 10:06:43 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 11DA4C60BE33694BA829;
+        Mon, 13 Apr 2020 22:06:39 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
+ 22:06:31 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
+        <David1.Zhou@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] drm/radeon: remove defined but not used variables in ci_dpm.c
+Date:   Mon, 13 Apr 2020 22:33:00 +0800
+Message-ID: <20200413143300.23244-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200413142517.GB3101@ubuntu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 04:25:17PM +0200, Oscar Carter wrote:
-> On Mon, Apr 13, 2020 at 02:56:16PM +0200, Greg Kroah-Hartman wrote:
-> > On Sat, Apr 11, 2020 at 02:26:09PM +0200, Oscar Carter wrote:
-> > > Create a constant array with the values of the "phy->signal" for every
-> > > rate. Remove all "phy->signal" assignments inside the switch statement
-> > > and replace these with a single reading from the new vnt_phy_signal
-> > > array.
-> > >
-> > > The constant array can be of one dimension because the OR mask with
-> > > BIT(3) or BIT(4) allow obtain a second value according to the rate,
-> > > the preamble_type and the pkt_type.
-> > >
-> > > Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
-> > > ---
-> > >  drivers/staging/vt6656/baseband.c | 105 ++++++++----------------------
-> > >  1 file changed, 26 insertions(+), 79 deletions(-)
-> >
-> > This series did not apply to my tree, please rebase and resend.
-> 
-> Rebase the patchs is a normal process in the development or am I doing something
-> wrong ?
+Fix the following gcc warning:
 
-It's normal when multiple people are working on the same area with lots
-of patches flying around.  Not a problem, it doesn't bother me at all :)
+drivers/gpu/drm/radeon/ci_dpm.c:82:36: warning: ‘defaults_saturn_pro’
+defined but not used [-Wunused-const-variable=]
+ static const struct ci_pt_defaults defaults_saturn_pro =
+                                    ^~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/radeon/ci_dpm.c:68:36: warning: ‘defaults_bonaire_pro’
+defined but not used [-Wunused-const-variable=]
+ static const struct ci_pt_defaults defaults_bonaire_pro =
+                                    ^~~~~~~~~~~~~~~~~~~~
 
-thanks,
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ drivers/gpu/drm/radeon/ci_dpm.c | 14 --------------
+ 1 file changed, 14 deletions(-)
 
-greg k-h
+diff --git a/drivers/gpu/drm/radeon/ci_dpm.c b/drivers/gpu/drm/radeon/ci_dpm.c
+index a9257bed3484..134aa2b01f90 100644
+--- a/drivers/gpu/drm/radeon/ci_dpm.c
++++ b/drivers/gpu/drm/radeon/ci_dpm.c
+@@ -65,13 +65,6 @@ static const struct ci_pt_defaults defaults_bonaire_xt =
+ 	{ 0x17C, 0x172, 0x180, 0x1BC, 0x1B3, 0x1BD, 0x206, 0x200, 0x203, 0x25D, 0x25A, 0x255, 0x2C3, 0x2C5, 0x2B4 }
+ };
+ 
+-static const struct ci_pt_defaults defaults_bonaire_pro =
+-{
+-	1, 0xF, 0xFD, 0x19, 5, 45, 0, 0x65062,
+-	{ 0x8C,  0x23F, 0x244, 0xA6,  0x83,  0x85,  0x86,  0x86,  0x83,  0xDB,  0xDB,  0xDA,  0x67,  0x60,  0x5F  },
+-	{ 0x187, 0x193, 0x193, 0x1C7, 0x1D1, 0x1D1, 0x210, 0x219, 0x219, 0x266, 0x26C, 0x26C, 0x2C9, 0x2CB, 0x2CB }
+-};
+-
+ static const struct ci_pt_defaults defaults_saturn_xt =
+ {
+ 	1, 0xF, 0xFD, 0x19, 5, 55, 0, 0x70000,
+@@ -79,13 +72,6 @@ static const struct ci_pt_defaults defaults_saturn_xt =
+ 	{ 0x187, 0x187, 0x187, 0x1C7, 0x1C7, 0x1C7, 0x210, 0x210, 0x210, 0x266, 0x266, 0x266, 0x2C9, 0x2C9, 0x2C9 }
+ };
+ 
+-static const struct ci_pt_defaults defaults_saturn_pro =
+-{
+-	1, 0xF, 0xFD, 0x19, 5, 55, 0, 0x30000,
+-	{ 0x96,  0x21D, 0x23B, 0xA1,  0x85,  0x87,  0x83,  0x84,  0x81,  0xE6,  0xE6,  0xE6,  0x71,  0x6A,  0x6A  },
+-	{ 0x193, 0x19E, 0x19E, 0x1D2, 0x1DC, 0x1DC, 0x21A, 0x223, 0x223, 0x26E, 0x27E, 0x274, 0x2CF, 0x2D2, 0x2D2 }
+-};
+-
+ static const struct ci_pt_config_reg didt_config_ci[] =
+ {
+ 	{ 0x10, 0x000000ff, 0, 0x0, CISLANDS_CONFIGREG_DIDT_IND },
+-- 
+2.21.1
+
