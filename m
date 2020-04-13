@@ -2,119 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41A91A6BB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D73241A6BB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387474AbgDMRxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 13:53:16 -0400
-Received: from mga07.intel.com ([134.134.136.100]:64037 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387436AbgDMRxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 13:53:14 -0400
-IronPort-SDR: t2g3/hpXceWCV3dvARV/7paqcBkk2qwWjoCllt0933kIiIWgXi6XXdnjHHIkWeF0mbCgyTIVEC
- qmLE8dI+TgBg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 10:53:13 -0700
-IronPort-SDR: /pD+qqEVJyhvKrF+xLhve2wqF9TtJc3eBRc064PBww2RI7sVhodNcvf/DCnSkAyqA0u3zGjrOB
- 3s8V/zF8+Lxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="256247028"
-Received: from bewang-mobl1.amr.corp.intel.com (HELO [10.254.69.99]) ([10.254.69.99])
-  by orsmga006.jf.intel.com with ESMTP; 13 Apr 2020 10:53:12 -0700
-Subject: Re: i386: selftests: vm: compaction_test: BUG: kernel NULL pointer
- dereference, address: 00000000
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-mm <linux-mm@kvack.org>
-Cc:     lkft-triage@lists.linaro.org, Shuah Khan <shuah@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Leonardo Bras <leonardo@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Xu <peterx@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jules Irenge <jbi.octave@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Rik van Riel <riel@surriel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Minchan Kim <minchan@kernel.org>, Mel Gorman <mgorman@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Mateusz Nosek <mateusznosek0@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kees Cook <keescook@chromium.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <CA+G9fYsRGvkqtpdGv_aVr+Hn17KgYq04Q=EE=pB774qVxRqOeg@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-Message-ID: <bf5efd27-50bb-d2f1-abd3-cfbaff1bc5d4@intel.com>
-Date:   Mon, 13 Apr 2020 10:53:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S2387496AbgDMR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 13:57:17 -0400
+Received: from smtprelay0138.hostedemail.com ([216.40.44.138]:43278 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387436AbgDMR5P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 13:57:15 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id 106E9180A732A;
+        Mon, 13 Apr 2020 17:57:13 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:2:41:69:355:379:599:800:960:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1535:1593:1594:1605:1730:1747:1777:1792:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:4049:4118:4250:4321:5007:6119:6737:6997:7875:8603:9010:9592:10004:10848:11026:11232:11473:11657:11658:11914:12043:12048:12291:12296:12297:12438:12555:12679:12683:12740:12760:12895:13018:13019:13439:14659:21080:21451:21524:21627:21810:21990:30012:30029:30054:30055:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: toe75_5bd65cad73310
+X-Filterd-Recvd-Size: 7375
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf20.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 13 Apr 2020 17:57:10 +0000 (UTC)
+Message-ID: <c39854067e211fa6264faa82d0cd52d19466802d.camel@perches.com>
+Subject: Re: [PATCH] drm/i915/gvt: Use ARRAY_SIZE instead of hardcoded size
+From:   Joe Perches <joe@perches.com>
+To:     Jason Yan <yanaijie@huawei.com>, zhenyuw@linux.intel.com,
+        zhi.a.wang@intel.com, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 13 Apr 2020 10:55:03 -0700
+In-Reply-To: <20200413143224.22806-1-yanaijie@huawei.com>
+References: <20200413143224.22806-1-yanaijie@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYsRGvkqtpdGv_aVr+Hn17KgYq04Q=EE=pB774qVxRqOeg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/20 11:54 PM, Naresh Kamboju wrote:
-> On Linux mainline kernel 5.6.0 running kselftest vm compaction_test on i386
->  kernel running on x86_64 devices we have noticed this Kernel BUG followed by
-> Kernel panic.
+On Mon, 2020-04-13 at 22:32 +0800, Jason Yan wrote:
+> Fix the following coccicheck warning:
+> 
+> drivers/gpu/drm/i915/gvt/vgpu.c:127:30-31: WARNING: Use ARRAY_SIZE
+> 
+> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+> ---
+>  drivers/gpu/drm/i915/gvt/vgpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/gvt/vgpu.c b/drivers/gpu/drm/i915/gvt/vgpu.c
+> index 1d5ff88078bd..7d361623ff67 100644
+> --- a/drivers/gpu/drm/i915/gvt/vgpu.c
+> +++ b/drivers/gpu/drm/i915/gvt/vgpu.c
+> @@ -124,7 +124,7 @@ int intel_gvt_init_vgpu_types(struct intel_gvt *gvt)
+>  	 */
+>  	low_avail = gvt_aperture_sz(gvt) - HOST_LOW_GM_SIZE;
+>  	high_avail = gvt_hidden_sz(gvt) - HOST_HIGH_GM_SIZE;
+> -	num_types = sizeof(vgpu_types) / sizeof(vgpu_types[0]);
+> +	num_types = ARRAY_SIZE(vgpu_types);
+>  
+>  	gvt->types = kcalloc(num_types, sizeof(struct intel_vgpu_type),
+>  			     GFP_KERNEL);
 
-Any chance we could talk you into doing a bisect on this sucker?
+It's probably better to remove num_types altogether and just
+use ARRAY_SIZE in both places num_types is used.
 
-The "Bad swap file entry" message could be a lot of things.
+Perhaps refactoring the function a bit more is also better.
+
+Perhaps:
+
+o Use ARRAY_SIZE
+o Make vgpu_types static const to reduce data size and
+  move the definition into the function where it's used
+o Use temporaries to shorten the code indirections.
+
+---
+ drivers/gpu/drm/i915/gvt/vgpu.c | 92 +++++++++++++++++++++--------------------
+ 1 file changed, 47 insertions(+), 45 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/gvt/vgpu.c b/drivers/gpu/drm/i915/gvt/vgpu.c
+index 1d5ff8..e56f59d 100644
+--- a/drivers/gpu/drm/i915/gvt/vgpu.c
++++ b/drivers/gpu/drm/i915/gvt/vgpu.c
+@@ -77,26 +77,6 @@ void populate_pvinfo_page(struct intel_vgpu *vgpu)
+ #define VGPU_WEIGHT(vgpu_num)	\
+ 	(VGPU_MAX_WEIGHT / (vgpu_num))
+ 
+-static struct {
+-	unsigned int low_mm;
+-	unsigned int high_mm;
+-	unsigned int fence;
+-
+-	/* A vGPU with a weight of 8 will get twice as much GPU as a vGPU
+-	 * with a weight of 4 on a contended host, different vGPU type has
+-	 * different weight set. Legal weights range from 1 to 16.
+-	 */
+-	unsigned int weight;
+-	enum intel_vgpu_edid edid;
+-	char *name;
+-} vgpu_types[] = {
+-/* Fixed vGPU type table */
+-	{ MB_TO_BYTES(64), MB_TO_BYTES(384), 4, VGPU_WEIGHT(8), GVT_EDID_1024_768, "8" },
+-	{ MB_TO_BYTES(128), MB_TO_BYTES(512), 4, VGPU_WEIGHT(4), GVT_EDID_1920_1200, "4" },
+-	{ MB_TO_BYTES(256), MB_TO_BYTES(1024), 4, VGPU_WEIGHT(2), GVT_EDID_1920_1200, "2" },
+-	{ MB_TO_BYTES(512), MB_TO_BYTES(2048), 4, VGPU_WEIGHT(1), GVT_EDID_1920_1200, "1" },
+-};
+-
+ /**
+  * intel_gvt_init_vgpu_types - initialize vGPU type list
+  * @gvt : GVT device
+@@ -106,9 +86,32 @@ static struct {
+  */
+ int intel_gvt_init_vgpu_types(struct intel_gvt *gvt)
+ {
+-	unsigned int num_types;
+ 	unsigned int i, low_avail, high_avail;
+ 	unsigned int min_low;
++	static const struct vgpu_types {
++		unsigned int low_mm;
++		unsigned int high_mm;
++		unsigned int fence;
++
++		/* A vGPU with a weight of 8 will get twice as much GPU
++		 * as a vGPU with a weight of 4 on a contended host,
++		 * different vGPU type has different weight set.
++		 * Legal weights range from 1 to 16.
++		 */
++		unsigned int weight;
++		enum intel_vgpu_edid edid;
++		char *name;
++	} vgpu_types[] = {
++		/* Fixed vGPU type table */
++		{ MB_TO_BYTES(64), MB_TO_BYTES(384), 4,
++		  VGPU_WEIGHT(8), GVT_EDID_1024_768, "8" },
++		{ MB_TO_BYTES(128), MB_TO_BYTES(512), 4,
++		  VGPU_WEIGHT(4), GVT_EDID_1920_1200, "4" },
++		{ MB_TO_BYTES(256), MB_TO_BYTES(1024), 4,
++		  VGPU_WEIGHT(2), GVT_EDID_1920_1200, "2" },
++		{ MB_TO_BYTES(512), MB_TO_BYTES(2048), 4,
++		  VGPU_WEIGHT(1), GVT_EDID_1920_1200, "1" },
++	};
+ 
+ 	/* vGPU type name is defined as GVTg_Vx_y which contains
+ 	 * physical GPU generation type (e.g V4 as BDW server, V5 as
+@@ -124,45 +127,44 @@ int intel_gvt_init_vgpu_types(struct intel_gvt *gvt)
+ 	 */
+ 	low_avail = gvt_aperture_sz(gvt) - HOST_LOW_GM_SIZE;
+ 	high_avail = gvt_hidden_sz(gvt) - HOST_HIGH_GM_SIZE;
+-	num_types = sizeof(vgpu_types) / sizeof(vgpu_types[0]);
+ 
+-	gvt->types = kcalloc(num_types, sizeof(struct intel_vgpu_type),
+-			     GFP_KERNEL);
++	gvt->types = kcalloc(ARRAY_SIZE(vgpu_types),
++			     sizeof(struct intel_vgpu_type), GFP_KERNEL);
+ 	if (!gvt->types)
+ 		return -ENOMEM;
+ 
+ 	min_low = MB_TO_BYTES(32);
+-	for (i = 0; i < num_types; ++i) {
+-		if (low_avail / vgpu_types[i].low_mm == 0)
++	for (i = 0; i < ARRAY_SIZE(vgpu_types); i++) {
++		struct intel_vgpu_type *type = &gvt->types[i];
++		const struct vgpu_types *vgpu = &vgpu_types[i];
++
++		if (low_avail / vgpu->low_mm == 0)
+ 			break;
+ 
+-		gvt->types[i].low_gm_size = vgpu_types[i].low_mm;
+-		gvt->types[i].high_gm_size = vgpu_types[i].high_mm;
+-		gvt->types[i].fence = vgpu_types[i].fence;
++		type->low_gm_size = vgpu->low_mm;
++		type->high_gm_size = vgpu->high_mm;
++		type->fence = vgpu->fence;
+ 
+-		if (vgpu_types[i].weight < 1 ||
+-					vgpu_types[i].weight > VGPU_MAX_WEIGHT)
++		if (vgpu->weight < 1 || vgpu->weight > VGPU_MAX_WEIGHT)
+ 			return -EINVAL;
+ 
+-		gvt->types[i].weight = vgpu_types[i].weight;
+-		gvt->types[i].resolution = vgpu_types[i].edid;
+-		gvt->types[i].avail_instance = min(low_avail / vgpu_types[i].low_mm,
+-						   high_avail / vgpu_types[i].high_mm);
++		type->weight = vgpu->weight;
++		type->resolution = vgpu->edid;
++		type->avail_instance = min(low_avail / vgpu->low_mm,
++					   high_avail / vgpu->high_mm);
+ 
+ 		if (IS_GEN(gvt->gt->i915, 8))
+-			sprintf(gvt->types[i].name, "GVTg_V4_%s",
+-				vgpu_types[i].name);
++			sprintf(type->name, "GVTg_V4_%s", vgpu->name);
+ 		else if (IS_GEN(gvt->gt->i915, 9))
+-			sprintf(gvt->types[i].name, "GVTg_V5_%s",
+-				vgpu_types[i].name);
++			sprintf(type->name, "GVTg_V5_%s", vgpu->name);
+ 
+ 		gvt_dbg_core("type[%d]: %s avail %u low %u high %u fence %u weight %u res %s\n",
+-			     i, gvt->types[i].name,
+-			     gvt->types[i].avail_instance,
+-			     gvt->types[i].low_gm_size,
+-			     gvt->types[i].high_gm_size, gvt->types[i].fence,
+-			     gvt->types[i].weight,
+-			     vgpu_edid_str(gvt->types[i].resolution));
++			     i, type->name,
++			     type->avail_instance,
++			     type->low_gm_size,
++			     type->high_gm_size, type->fence,
++			     type->weight,
++			     vgpu_edid_str(type->resolution));
+ 	}
+ 
+ 	gvt->num_types = i;
+
+
+
+
