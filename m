@@ -1,93 +1,100 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 889B61A63D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:54:20 +0200 (CEST)
+Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
+	by mail.lfdr.de (Postfix) with ESMTP id 431181A641F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729493AbgDMHyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:54:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:37348 "EHLO
+        id S1729346AbgDMIU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 04:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:42982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727480AbgDMHyM (ORCPT
+        with ESMTP id S1727971AbgDMIU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:54:12 -0400
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5286C008651;
-        Mon, 13 Apr 2020 00:54:11 -0700 (PDT)
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2976A9A447D55784BA21;
-        Mon, 13 Apr 2020 15:54:09 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
- 15:53:58 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <kvalo@codeaurora.org>, <davem@davemloft.net>,
-        <yanaijie@huawei.com>, <libertas-dev@lists.infradead.org>,
-        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] libertas: make lbs_process_event() void
-Date:   Mon, 13 Apr 2020 16:20:22 +0800
-Message-ID: <20200413082022.22380-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        Mon, 13 Apr 2020 04:20:26 -0400
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5774FC008609;
+        Mon, 13 Apr 2020 01:20:26 -0700 (PDT)
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9230A20692;
+        Mon, 13 Apr 2020 08:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586766026;
+        bh=kzHqKn+GWCgegiJ0Zguzq9Vbi7lSJ5PufV6o8/thN4s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/z+tnRq+AR8mYl5YzlvWL3Fnn2ZZorEuOP2usEDvF0o6NaO7lVfLHfisxpQyWiaJ
+         6I4XzI7SPOZofWDKWzgLXLF534SIpiTzsJd5RJNgQwfbCDYuMZ49kSzA1xpqfC5Xcg
+         u9HM0XvQHif5P+ujd0RvURmNP0K2EtZAwictzMWY=
+Date:   Mon, 13 Apr 2020 10:20:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     nobuhiro1.iwamatsu@toshiba.co.jp
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        clew@codeaurora.org, aneela@codeaurora.org,
+        bjorn.andersson@linaro.org, lee.jones@linaro.org
+Subject: Re: [PATCH 4.14 36/38] rpmsg: glink: Remove chunk size word align
+ warning
+Message-ID: <20200413082023.GA2792388@kroah.com>
+References: <20200411115437.795556138@linuxfoundation.org>
+ <20200411115441.303886448@linuxfoundation.org>
+ <OSAPR01MB3667845337B13FB2398B8AB892DD0@OSAPR01MB3667.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OSAPR01MB3667845337B13FB2398B8AB892DD0@OSAPR01MB3667.jpnprd01.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+On Mon, Apr 13, 2020 at 05:16:05AM +0000, nobuhiro1.iwamatsu@toshiba.co.jp wrote:
+> Hi,
+> 
+> > -----Original Message-----
+> > From: stable-owner@vger.kernel.org [mailto:stable-owner@vger.kernel.org] On Behalf Of Greg Kroah-Hartman
+> > Sent: Saturday, April 11, 2020 9:09 PM
+> > To: linux-kernel@vger.kernel.org
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>; stable@vger.kernel.org; Chris Lew <clew@codeaurora.org>; Arun
+> > Kumar Neelakantam <aneela@codeaurora.org>; Bjorn Andersson <bjorn.andersson@linaro.org>; Lee Jones
+> > <lee.jones@linaro.org>
+> > Subject: [PATCH 4.14 36/38] rpmsg: glink: Remove chunk size word align warning
+> > 
+> > From: Chris Lew <clew@codeaurora.org>
+> > 
+> > commit f0beb4ba9b185d497c8efe7b349363700092aee0 upstream.
+> > 
+> > It is possible for the chunk sizes coming from the non RPM remote procs
+> > to not be word aligned. Remove the alignment warning and continue to
+> > read from the FIFO so execution is not stalled.
+> > 
+> > Signed-off-by: Chris Lew <clew@codeaurora.org>
+> > Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> This commit also seems to require the following commits:
+> 
+> commit 928002a5e9dab2ddc1a0fe3e00739e89be30dc6b
+> Author: Arun Kumar Neelakantam <aneela@codeaurora.org>
+> Date:   Wed Oct 3 17:08:20 2018 +0530
+> 
+>     rpmsg: glink: smem: Support rx peak for size less than 4 bytes
+>     
+>     The current rx peak function fails to read the data if size is
+>     less than 4bytes.
+>     
+>     Use memcpy_fromio to support data reads of size less than 4 bytes.
+>     
+>     Cc: stable@vger.kernel.org
+>     Fixes: f0beb4ba9b18 ("rpmsg: glink: Remove chunk size word align warning")
+>     Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
+>     Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> This fixes commit need to apply 4.19.
 
-drivers/net/wireless/marvell/libertas/cmdresp.c:225:5-8: Unneeded
-variable: "ret". Return "0" on line 355
+This fix is already in 4.19.y, so it's only needed for 4.14.y at this
+point in time, thanks!
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/net/wireless/marvell/libertas/cmd.h     | 2 +-
- drivers/net/wireless/marvell/libertas/cmdresp.c | 5 +----
- 2 files changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/libertas/cmd.h b/drivers/net/wireless/marvell/libertas/cmd.h
-index 80878561cb90..3c193074662b 100644
---- a/drivers/net/wireless/marvell/libertas/cmd.h
-+++ b/drivers/net/wireless/marvell/libertas/cmd.h
-@@ -76,7 +76,7 @@ void lbs_mac_event_disconnected(struct lbs_private *priv,
- 
- /* Events */
- 
--int lbs_process_event(struct lbs_private *priv, u32 event);
-+void lbs_process_event(struct lbs_private *priv, u32 event);
- 
- 
- /* Actual commands */
-diff --git a/drivers/net/wireless/marvell/libertas/cmdresp.c b/drivers/net/wireless/marvell/libertas/cmdresp.c
-index b73d08381398..cb515c5584c1 100644
---- a/drivers/net/wireless/marvell/libertas/cmdresp.c
-+++ b/drivers/net/wireless/marvell/libertas/cmdresp.c
-@@ -220,9 +220,8 @@ int lbs_process_command_response(struct lbs_private *priv, u8 *data, u32 len)
- 	return ret;
- }
- 
--int lbs_process_event(struct lbs_private *priv, u32 event)
-+void lbs_process_event(struct lbs_private *priv, u32 event)
- {
--	int ret = 0;
- 	struct cmd_header cmd;
- 
- 	switch (event) {
-@@ -351,6 +350,4 @@ int lbs_process_event(struct lbs_private *priv, u32 event)
- 		netdev_alert(priv->dev, "EVENT: unknown event id %d\n", event);
- 		break;
- 	}
--
--	return ret;
- }
--- 
-2.21.1
-
+greg k-h
