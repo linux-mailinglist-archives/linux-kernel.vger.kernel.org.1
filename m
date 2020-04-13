@@ -2,175 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C86D1A6769
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5731A6772
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730205AbgDMOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730187AbgDMOAA (ORCPT
+        id S1730245AbgDMOCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:02:49 -0400
+Received: from mail26.static.mailgun.info ([104.130.122.26]:20709 "EHLO
+        mail26.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730228AbgDMOCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:00:00 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFEDC0A3BDC;
-        Mon, 13 Apr 2020 06:59:59 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l25so9470958qkk.3;
-        Mon, 13 Apr 2020 06:59:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rX4VkdwVypW94mjbVabuOl84624Ra1qiPbXHO/h11D4=;
-        b=Chca8gnerzuFJzvgrAhZORgZgBxtohLRflSTKgcBbWjXsFdZo9clL8shm8GsxCGezc
-         amP0Z1PU1+DKqwy8ZNYp/ZC160ZXnZUQqgyfKl3+JLgRwJGYqihXpALk58L4jMeovSqF
-         4AqOECM3/LBlGRhwt4c/nNHgiPRbvyUdd+r/e3bP8L8OaI1lfpOtDp3SHtE3dpsCBYyX
-         LCxFpaPuDfJ38oNGHksLPok9j2FkmqOh8xfgkJNaEkij4ZDDq7mZxpvF/tx0GH/tG7u9
-         Xgq5eVluBt91EFpcF5O01cIFicdBVZKKusHAKPMvJZ7bek49oJwhO8b9EFlL16FtuVKr
-         /4oA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rX4VkdwVypW94mjbVabuOl84624Ra1qiPbXHO/h11D4=;
-        b=iD5vvCY5HRFGM7aOmpvfwcNF5o9DSzXd3yEKK5rrn5lmsUO705Aun2TfnjauXjBJYo
-         V3ugQ0h2KF4V+vEJSdp/FKpkARtZPbmwOCniqKK+YQRngCOC8sX+IdSKtPFj9QMKuSmK
-         Ik7HSzmQssb4G3Q7dqf49vgT79J3RY+bYL0FmXUGP1RBzeilv1a1scE2bwy8YvkA/EaB
-         QSvrOCQyJjeWLsfo+OW1N8O6NOQlyoZsZHoPlR5MwopNJp2qaYXz/rxzGk7YoMl/6vFg
-         Nly4Ie+uIIX2f9R82decbpXmwCLOIrnwEcjKM875kpvV7sXEQsqspP2EMyuHNeNssaxY
-         izZw==
-X-Gm-Message-State: AGi0PuavowWJLm/IIlr1kPUD0ohm7VJZvhpXZZgkfXsO4YYUAaLER613
-        A7k3yMhoFCawFvq6D94gPUi9+EGkS1w=
-X-Google-Smtp-Source: APiQypIYavolOE9CLL02qa+Qav8b7zB4ZsGHK6xpiGnKtCBbiACK4PuYiGE8V8BlscQYU9yRskNWnw==
-X-Received: by 2002:a37:70c6:: with SMTP id l189mr15659867qkc.158.1586786398471;
-        Mon, 13 Apr 2020 06:59:58 -0700 (PDT)
-Received: from quaco.ghostprotocols.net ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id n63sm8415934qka.80.2020.04.13.06.59.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 06:59:57 -0700 (PDT)
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-X-Google-Original-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A1929409A3; Mon, 13 Apr 2020 10:59:54 -0300 (-03)
-Date:   Mon, 13 Apr 2020 10:59:54 -0300
-To:     Andreas Gerstmayr <agerstmayr@redhat.com>
-Cc:     linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf script flamegraph: python2 support, update cli args
-Message-ID: <20200413135954.GA17690@kernel.org>
-References: <20200406151118.GC32649@kernel.org>
- <20200409165734.165260-1-agerstmayr@redhat.com>
+        Mon, 13 Apr 2020 10:02:46 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1586786565; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=N0n8kdCEFen4uzBPsMM4YzWOmJWKxXpHF1vXpG7UtR0=; b=R3fv68QrFiazsjg+ojzDv34lNU/ceojWWzO8Ptz+fIknjKRz5VD7MzbuvTK+PXie4NeNLy1E
+ lQ+pWaKDREnPJArDfdeZRayMu2IWnvHBSHZIyT0VV5F44F7lkeXNmDERDywm+PgtK4aFiCh3
+ 7pZYxLJzIR0dRwlpQTFlSzKE3zU=
+X-Mailgun-Sending-Ip: 104.130.122.26
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171])
+ by mxa.mailgun.org with ESMTP id 5e9470c2.7fc7948a5d50-smtp-out-n04;
+ Mon, 13 Apr 2020 14:01:38 -0000 (UTC)
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E20D4C432C2; Mon, 13 Apr 2020 14:01:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [10.226.58.28] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 15E67C433F2;
+        Mon, 13 Apr 2020 14:01:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 15E67C433F2
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v2 1/5] bus: mhi: core: Handle syserr during power_up
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Bhaumik Vasav Bhatt <bbhatt@codeaurora.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1586278230-29565-1-git-send-email-jhugo@codeaurora.org>
+ <1586278230-29565-2-git-send-email-jhugo@codeaurora.org>
+ <1768ba6e-12c2-7b4f-0f17-44fecc6473b9@codeaurora.org>
+ <11d9f35b-b911-7985-8846-0a45904ceed1@codeaurora.org>
+ <5c4efe13-42a4-e802-4070-5d9d30b8cac2@codeaurora.org>
+ <79feeb0b-0837-c5b6-087d-856c3e238c67@codeaurora.org>
+ <20200413133447.GA19124@Mani-XPS-13-9360>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <ee51ae8f-5826-5402-9178-3f2fba1358f8@codeaurora.org>
+Date:   Mon, 13 Apr 2020 08:01:36 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200409165734.165260-1-agerstmayr@redhat.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200413133447.GA19124@Mani-XPS-13-9360>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Apr 09, 2020 at 06:57:31PM +0200, Andreas Gerstmayr escreveu:
-> * removed --indent argument
-> * renamed -F to -f argument to be consistent with other arguments
-
-Ok, since I hadn't push the original patch, I've combined this one with
-it it so that in systems with python2 it starts working and we can
-bisect things from a good starting point.
-
-- Arnaldo
- 
-> Signed-off-by: Andreas Gerstmayr <agerstmayr@redhat.com>
-> ---
->  tools/perf/scripts/python/flamegraph.py | 24 +++++++++++-------------
->  1 file changed, 11 insertions(+), 13 deletions(-)
+On 4/13/2020 7:34 AM, Manivannan Sadhasivam wrote:
+> On Fri, Apr 10, 2020 at 03:39:57PM -0600, Jeffrey Hugo wrote:
+>> On 4/10/2020 2:37 PM, Bhaumik Vasav Bhatt wrote:
+>>> Hi Jeff,
+>>>
+>>> We will always have the mhi_intvec_handler registered and trigger your
+>>> wake_up state event when you write MHI RESET. BHI INTVEC IRQ using
+>>> mhi_cntrl->irq[0] is _not_ unregistered once you enter AMSS EE.
+>>
+>> I understand it is not unregistered.  However mhi_cntrl->irq[0] may be
+>> reserved for BHI, and thus only exercised by PBL EE.  Where as,
+>> mhi_cntrl->irq[1..N] may be only exercised by AMSS EE. mhi_intvec_handler is
+>> not called in response to mhi_cntrl->irq[1..N].
+>>
+>> Additionally, I re-reviewed the MHI spec, and I don't see where the spec
+>> requires the device to issue an interrupt upon completion of the RESET
+>> request.
+>>
+>> Under section 3.5, step 11 states -
+>>
+>> "The host must poll for the value of the RESET bit to detect the completion
+>> of the reset procedure by the device (RESET is set to 0)."
+>>
 > 
-> diff --git a/tools/perf/scripts/python/flamegraph.py b/tools/perf/scripts/python/flamegraph.py
-> index 5835d190ca42..61f3be9add6b 100755
-> --- a/tools/perf/scripts/python/flamegraph.py
-> +++ b/tools/perf/scripts/python/flamegraph.py
-> @@ -14,6 +14,7 @@
->  # Flame Graphs invented by Brendan Gregg <bgregg@netflix.com>
->  # Works in tandem with d3-flame-graph by Martin Spier <mspier@netflix.com>
->  
-> +from __future__ import print_function
->  import sys
->  import os
->  import argparse
-> @@ -43,11 +44,11 @@ class FlameGraphCLI:
->  
->          if self.args.format == "html" and \
->                  not os.path.isfile(self.args.template):
-> -            print(f"Flame Graph template {self.args.template} does not " +
-> -                  f"exist. Please install the js-d3-flame-graph (RPM) or " +
-> -                  f"libjs-d3-flame-graph (deb) package, specify an " +
-> -                  f"existing flame graph template (--template PATH) or " +
-> -                  f"another output format (--format FORMAT).",
-> +            print("Flame Graph template {} does not exist. Please install "
-> +                  "the js-d3-flame-graph (RPM) or libjs-d3-flame-graph (deb) "
-> +                  "package, specify an existing flame graph template "
-> +                  "(--template PATH) or another output format "
-> +                  "(--format FORMAT).".format(self.args.template),
->                    file=sys.stderr)
->              sys.exit(1)
->  
-> @@ -76,8 +77,7 @@ class FlameGraphCLI:
->          node.value += 1
->  
->      def trace_end(self):
-> -        json_str = json.dumps(self.stack, default=lambda x: x.toJSON(),
-> -                              indent=self.args.indent)
-> +        json_str = json.dumps(self.stack, default=lambda x: x.toJSON())
->  
->          if self.args.format == "html":
->              try:
-> @@ -85,7 +85,7 @@ class FlameGraphCLI:
->                      output_str = f.read().replace("/** @flamegraph_json **/",
->                                                    json_str)
->              except IOError as e:
-> -                print(f"Error reading template file: {e}", file=sys.stderr)
-> +                print("Error reading template file: {}".format(e), file=sys.stderr)
->                  sys.exit(1)
->              output_fn = self.args.output or "flamegraph.html"
->          else:
-> @@ -95,24 +95,22 @@ class FlameGraphCLI:
->          if output_fn == "-":
->              sys.stdout.write(output_str)
->          else:
-> -            print(f"dumping data to {output_fn}")
-> +            print("dumping data to {}".format(output_fn))
->              try:
->                  with open(output_fn, "w") as out:
->                      out.write(output_str)
->              except IOError as e:
-> -                print(f"Error writing output file: {e}", file=sys.stderr)
-> +                print("Error writing output file: {}".format(e), file=sys.stderr)
->                  sys.exit(1)
->  
->  
->  if __name__ == "__main__":
->      parser = argparse.ArgumentParser(description="Create flame graphs.")
-> -    parser.add_argument("-F", "--format",
-> +    parser.add_argument("-f", "--format",
->                          default="html", choices=["json", "html"],
->                          help="output file format")
->      parser.add_argument("-o", "--output",
->                          help="output file name")
-> -    parser.add_argument("--indent",
-> -                        type=int, help="JSON indentation")
->      parser.add_argument("--template",
->                          default="/usr/share/d3-flame-graph/d3-flamegraph-base.html",
->                          help="path to flamegraph HTML template")
-> -- 
-> 2.25.2
+> If this is the scenario then we need to change all of the wait_event_timeout()
+> implementation for MHI RESET in current stack to polling.
 > 
+> Or the interrupt generation is not defined in spec (sheet) but part of the
+> existing implementation?
+
+It probably could be considered part of the existing implementation, but 
+I'd like to hear from Hemant/Bhaumik.  Wherever we end up, I'd like to 
+have the spec match.
 
 -- 
-
-- Arnaldo
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
