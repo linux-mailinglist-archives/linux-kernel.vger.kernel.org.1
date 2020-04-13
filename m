@@ -2,64 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904AC1A6B87
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 19:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D95C41A659D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgDMLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 07:35:19 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58936 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728960AbgDMLfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:35:17 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id E76FF3C5A2E54BFF94E0;
-        Mon, 13 Apr 2020 19:35:11 +0800 (CST)
-Received: from huawei.com (10.175.102.37) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
- 19:35:03 +0800
-From:   Li Bin <huawei.libin@huawei.com>
-To:     <dgilbert@interlog.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <huawei.libin@huawei.com>, <xiexiuqi@huawei.com>
-Subject: [PATCH] scsi: sg: add sg_remove_request in sg_common_write
-Date:   Mon, 13 Apr 2020 19:29:21 +0800
-Message-ID: <1586777361-17339-1-git-send-email-huawei.libin@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        id S1729000AbgDMLcU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Apr 2020 07:32:20 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4890 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728886AbgDMLcU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 07:32:20 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03DBWICI043134
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:32:19 -0400
+Received: from e06smtp02.uk.ibm.com (e06smtp02.uk.ibm.com [195.75.94.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 30bae4hqk6-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 07:32:19 -0400
+Received: from localhost
+        by e06smtp02.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <linux-kernel@vger.kernel.org> from <naveen.n.rao@linux.vnet.ibm.com>;
+        Mon, 13 Apr 2020 12:31:28 +0100
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp02.uk.ibm.com (192.168.101.132) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Mon, 13 Apr 2020 12:31:26 +0100
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 03DBVoHY53739626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 11:31:50 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 914CEA4040;
+        Mon, 13 Apr 2020 11:31:50 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 165EAA4053;
+        Mon, 13 Apr 2020 11:31:50 +0000 (GMT)
+Received: from localhost (unknown [9.85.126.225])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 13 Apr 2020 11:31:49 +0000 (GMT)
+Date:   Mon, 13 Apr 2020 17:01:45 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH] tools headers: Move powerpc and s390 syscall table check
+ to check-headers.sh
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Hendrik Brueckner <brueckner@linux.vnet.ibm.com>,
+        Thomas Richter <tmricht@linux.vnet.ibm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20200220063740.785913-1-naveen.n.rao@linux.vnet.ibm.com>
+In-Reply-To: <20200220063740.785913-1-naveen.n.rao@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.102.37]
-X-CFilter-Loop: Reflected
+User-Agent: astroid/v0.15-13-gb675b421
+ (https://github.com/astroidmail/astroid)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8BIT
+X-TM-AS-GCONF: 00
+x-cbid: 20041311-0008-0000-0000-0000036FD553
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20041311-0009-0000-0000-00004A917FCA
+Message-Id: <1586777427.30yicdm2kt.naveen@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-13_04:2020-04-13,2020-04-13 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0 clxscore=1015
+ malwarescore=0 spamscore=0 priorityscore=1501 phishscore=0 mlxlogscore=864
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004130080
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the dxfer_len is greater than 256M that the request is invalid,
-it should call sg_remove_request in sg_common_write.
+Naveen N. Rao wrote:
+> It is good to know changes in headers and syscall tables across all
+> architectures so that the changes can be sync'ed at once. Move check for
+> arch-specific syscall table changes from tools/perf/arch for powerpc and
+> s390, to the generic check-headers.sh script, similar to how we do the
+> check for x86.
+> 
+> Suggested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> ---
 
-Fixes: f930c7043663 ("scsi: sg: only check for dxfer_len greater than 256M")
-Signed-off-by: Li Bin <huawei.libin@huawei.com>
----
- drivers/scsi/sg.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Arnaldo,
+Is this patch good? Do you want to see any changes in this?
 
-diff --git a/drivers/scsi/sg.c b/drivers/scsi/sg.c
-index 4e6af592..9c0ee19 100644
---- a/drivers/scsi/sg.c
-+++ b/drivers/scsi/sg.c
-@@ -793,8 +793,10 @@ static int get_sg_io_pack_id(int *pack_id, void __user *buf, size_t count)
- 			"sg_common_write:  scsi opcode=0x%02x, cmd_size=%d\n",
- 			(int) cmnd[0], (int) hp->cmd_len));
- 
--	if (hp->dxfer_len >= SZ_256M)
-+	if (hp->dxfer_len >= SZ_256M) {
-+		sg_remove_request(sfp, srp);
- 		return -EINVAL;
-+	}
- 
- 	k = sg_start_req(srp, cmnd);
- 	if (k) {
--- 
-1.7.12.4
+- Naveen
 
