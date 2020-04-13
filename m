@@ -2,369 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F65C1A6683
+	by mail.lfdr.de (Postfix) with ESMTP id CBBA81A6684
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729610AbgDMMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 08:52:32 -0400
-Received: from mga01.intel.com ([192.55.52.88]:29931 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728767AbgDMMwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 08:52:30 -0400
-IronPort-SDR: +Au6w+1OP9G73WQktfAMvO+wBRGi3tnw3ppAutVwlVl0GgASE2bX/k97KwMA8debm25yMzq0Ij
- kU119Q8wuDJg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 05:52:28 -0700
-IronPort-SDR: 9ylfgkNUYdkUzHqDLgCDh2/YdJWB5XdzWrT8G6ZxpXQhsyg2KYC6Jxjnu+Z7FcUmn2Sone+GHJ
- zjNqrDViq0rg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
-   d="scan'208";a="399597447"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 13 Apr 2020 05:52:25 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-        id 1228A308; Mon, 13 Apr 2020 15:52:22 +0300 (EEST)
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv3, RESEND 8/8] khugepaged: Introduce 'max_ptes_shared' tunable
-Date:   Mon, 13 Apr 2020 15:52:20 +0300
-Message-Id: <20200413125220.663-9-kirill.shutemov@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200413125220.663-1-kirill.shutemov@linux.intel.com>
-References: <20200413125220.663-1-kirill.shutemov@linux.intel.com>
+        id S1728786AbgDMMxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 08:53:19 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:53805 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728637AbgDMMxQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 08:53:16 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1jNyaK-000653-7Y; Mon, 13 Apr 2020 14:53:08 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:84b3:5dad:f81:bb88] (unknown [IPv6:2a03:f580:87bc:d400:84b3:5dad:f81:bb88])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id C4C7A4E18CC;
+        Mon, 13 Apr 2020 12:52:59 +0000 (UTC)
+Subject: Re: [PATCH] mailbox: imx: Support runtime PM
+To:     Anson Huang <Anson.Huang@nxp.com>, jassisinghbrar@gmail.com,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+References: <1586780730-6117-1-git-send-email-Anson.Huang@nxp.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
+ zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
+ QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
+ 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
+ Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
+ XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
+ nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
+ Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
+ eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
+ kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
+ ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
+ CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJcUsSbBQkM366zAAoJECte4hHF
+ iupUgkAP/2RdxKPZ3GMqag33jKwKAbn/fRqAFWqUH9TCsRH3h6+/uEPnZdzhkL4a9p/6OeJn
+ Z6NXqgsyRAOTZsSFcwlfxLNHVxBWm8pMwrBecdt4lzrjSt/3ws2GqxPsmza1Gs61lEdYvLST
+ Ix2vPbB4FAfE0kizKAjRZzlwOyuHOr2ilujDsKTpFtd8lV1nBNNn6HBIBR5ShvJnwyUdzuby
+ tOsSt7qJEvF1x3y49bHCy3uy+MmYuoEyG6zo9udUzhVsKe3hHYC2kfB16ZOBjFC3lH2U5An+
+ yQYIIPZrSWXUeKjeMaKGvbg6W9Oi4XEtrwpzUGhbewxCZZCIrzAH2hz0dUhacxB201Y/faY6
+ BdTS75SPs+zjTYo8yE9Y9eG7x/lB60nQjJiZVNvZ88QDfVuLl/heuIq+fyNajBbqbtBT5CWf
+ mOP4Dh4xjm3Vwlz8imWW/drEVJZJrPYqv0HdPbY8jVMpqoe5jDloyVn3prfLdXSbKPexlJaW
+ 5tnPd4lj8rqOFShRnLFCibpeHWIumqrIqIkiRA9kFW3XMgtU6JkIrQzhJb6Tc6mZg2wuYW0d
+ Wo2qvdziMgPkMFiWJpsxM9xPk9BBVwR+uojNq5LzdCsXQ2seG0dhaOTaaIDWVS8U/V8Nqjrl
+ 6bGG2quo5YzJuXKjtKjZ4R6k762pHJ3tnzI/jnlc1sXz
+Message-ID: <eb0eae78-35e9-1496-0869-94b48270f544@pengutronix.de>
+Date:   Mon, 13 Apr 2020 14:52:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <1586780730-6117-1-git-send-email-Anson.Huang@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'max_ptes_shared' specifies how many pages can be shared across multiple
-processes. Exceeding the number would block the collapse::
+On 4/13/20 2:25 PM, Anson Huang wrote:
+> Some power hungry sub-systems like VPU has its own MUs which also
+> use mailbox driver, current mailbox driver uses platform driver
+> model and MU's power will be ON after driver probed and left ON
+> there, it may cause the whole sub-system can NOT enter lower power
+> mode, take VPU driver for example, it has runtime PM support, but
+> due to its MU always ON, the VPU sub-system will be always ON and
+> consume many power during kernel idle.
+> 
+> To save power in kernel idle, mailbox driver needs to support
+> runtime PM in order to power off MU when it is unused. However,
+> the runtime suspend/resume can ONLY be implemented in mailbox's
+> .shutdown/.startup callback, so its consumer needs to call
+> mbox_request_channel()/mbox_free_channel() in consumer driver's
+> runtime PM callback, then the MU's power will be ON/OFF along with
+> consumer's runtime PM status.
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> ---
+>  drivers/mailbox/imx-mailbox.c | 27 ++++++++++++++++++++++++++-
+>  1 file changed, 26 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+> index 7906624..97bf0ac 100644
+> --- a/drivers/mailbox/imx-mailbox.c
+> +++ b/drivers/mailbox/imx-mailbox.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/mailbox_controller.h>
+>  #include <linux/module.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/slab.h>
+>  
+>  #define IMX_MU_xSR_GIPn(x)	BIT(28 + (3 - (x)))
+> @@ -287,6 +288,7 @@ static int imx_mu_startup(struct mbox_chan *chan)
+>  	struct imx_mu_con_priv *cp = chan->con_priv;
+>  	int ret;
+>  
+> +	pm_runtime_get_sync(priv->dev);
+>  	if (cp->type == IMX_MU_TYPE_TXDB) {
+>  		/* Tx doorbell don't have ACK support */
+>  		tasklet_init(&cp->txdb_tasklet, imx_mu_txdb_tasklet,
+> @@ -323,6 +325,7 @@ static void imx_mu_shutdown(struct mbox_chan *chan)
+>  
+>  	if (cp->type == IMX_MU_TYPE_TXDB) {
+>  		tasklet_kill(&cp->txdb_tasklet);
+> +		pm_runtime_put_sync(priv->dev);
+>  		return;
+>  	}
+>  
+> @@ -341,6 +344,7 @@ static void imx_mu_shutdown(struct mbox_chan *chan)
+>  	}
+>  
+>  	free_irq(priv->irq, chan);
+> +	pm_runtime_put_sync(priv->dev);
+>  }
+>  
+>  static const struct mbox_chan_ops imx_mu_ops = {
+> @@ -508,7 +512,27 @@ static int imx_mu_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, priv);
+>  
+> -	return devm_mbox_controller_register(dev, &priv->mbox);
+> +	ret = devm_mbox_controller_register(dev, &priv->mbox);
+> +	if (ret)
+> +		return ret;
+> +
+> +	pm_runtime_enable(dev);
+> +
 
-	/sys/kernel/mm/transparent_hugepage/khugepaged/max_ptes_shared
+First registering at the system and then setting up the power management
+looks racy. Don't know if this is serialized by some other means.
 
-A higher value may increase memory footprint for some workloads.
+> +	ret = pm_runtime_get_sync(dev);
+> +	if (ret < 0) {
+> +		pm_runtime_put_noidle(dev);
+> +		goto disable_runtime_pm;
+> +	}
+> +
+> +	ret = pm_runtime_put_sync(dev);
+> +	if (ret < 0)
+> +		goto disable_runtime_pm;
+> +
+> +	return 0;
 
-By default, at least half of pages has to be not shared.
+Marc
 
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
----
- Documentation/admin-guide/mm/transhuge.rst |  7 ++
- include/trace/events/huge_memory.h         |  3 +-
- mm/khugepaged.c                            | 52 ++++++++++++--
- tools/testing/selftests/vm/khugepaged.c    | 83 ++++++++++++++++++++++
- 4 files changed, 140 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
-index bd5714547cee..a10f6a50d48f 100644
---- a/Documentation/admin-guide/mm/transhuge.rst
-+++ b/Documentation/admin-guide/mm/transhuge.rst
-@@ -220,6 +220,13 @@ memory. A lower value can prevent THPs from being
- collapsed, resulting fewer pages being collapsed into
- THPs, and lower memory access performance.
- 
-+``max_ptes_shared`` specifies how many pages can be shared across multiple
-+processes. Exceeding the number would block the collapse::
-+
-+	/sys/kernel/mm/transparent_hugepage/khugepaged/max_ptes_shared
-+
-+A higher value may increase memory footprint for some workloads.
-+
- Boot parameter
- ==============
- 
-diff --git a/include/trace/events/huge_memory.h b/include/trace/events/huge_memory.h
-index d82a0f4e824d..53532f5925c3 100644
---- a/include/trace/events/huge_memory.h
-+++ b/include/trace/events/huge_memory.h
-@@ -12,6 +12,8 @@
- 	EM( SCAN_SUCCEED,		"succeeded")			\
- 	EM( SCAN_PMD_NULL,		"pmd_null")			\
- 	EM( SCAN_EXCEED_NONE_PTE,	"exceed_none_pte")		\
-+	EM( SCAN_EXCEED_SWAP_PTE,	"exceed_swap_pte")		\
-+	EM( SCAN_EXCEED_SHARED_PTE,	"exceed_shared_pte")		\
- 	EM( SCAN_PTE_NON_PRESENT,	"pte_non_present")		\
- 	EM( SCAN_PAGE_RO,		"no_writable_page")		\
- 	EM( SCAN_LACK_REFERENCED_PAGE,	"lack_referenced_page")		\
-@@ -30,7 +32,6 @@
- 	EM( SCAN_DEL_PAGE_LRU,		"could_not_delete_page_from_lru")\
- 	EM( SCAN_ALLOC_HUGE_PAGE_FAIL,	"alloc_huge_page_failed")	\
- 	EM( SCAN_CGROUP_CHARGE_FAIL,	"ccgroup_charge_failed")	\
--	EM( SCAN_EXCEED_SWAP_PTE,	"exceed_swap_pte")		\
- 	EM( SCAN_TRUNCATED,		"truncated")			\
- 	EMe(SCAN_PAGE_HAS_PRIVATE,	"page_has_private")		\
- 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 11d500396d85..0730014620e2 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -28,6 +28,8 @@ enum scan_result {
- 	SCAN_SUCCEED,
- 	SCAN_PMD_NULL,
- 	SCAN_EXCEED_NONE_PTE,
-+	SCAN_EXCEED_SWAP_PTE,
-+	SCAN_EXCEED_SHARED_PTE,
- 	SCAN_PTE_NON_PRESENT,
- 	SCAN_PAGE_RO,
- 	SCAN_LACK_REFERENCED_PAGE,
-@@ -46,7 +48,6 @@ enum scan_result {
- 	SCAN_DEL_PAGE_LRU,
- 	SCAN_ALLOC_HUGE_PAGE_FAIL,
- 	SCAN_CGROUP_CHARGE_FAIL,
--	SCAN_EXCEED_SWAP_PTE,
- 	SCAN_TRUNCATED,
- 	SCAN_PAGE_HAS_PRIVATE,
- };
-@@ -71,6 +72,7 @@ static DECLARE_WAIT_QUEUE_HEAD(khugepaged_wait);
-  */
- static unsigned int khugepaged_max_ptes_none __read_mostly;
- static unsigned int khugepaged_max_ptes_swap __read_mostly;
-+static unsigned int khugepaged_max_ptes_shared __read_mostly;
- 
- #define MM_SLOTS_HASH_BITS 10
- static __read_mostly DEFINE_HASHTABLE(mm_slots_hash, MM_SLOTS_HASH_BITS);
-@@ -290,15 +292,43 @@ static struct kobj_attribute khugepaged_max_ptes_swap_attr =
- 	__ATTR(max_ptes_swap, 0644, khugepaged_max_ptes_swap_show,
- 	       khugepaged_max_ptes_swap_store);
- 
-+static ssize_t khugepaged_max_ptes_shared_show(struct kobject *kobj,
-+					     struct kobj_attribute *attr,
-+					     char *buf)
-+{
-+	return sprintf(buf, "%u\n", khugepaged_max_ptes_shared);
-+}
-+
-+static ssize_t khugepaged_max_ptes_shared_store(struct kobject *kobj,
-+					      struct kobj_attribute *attr,
-+					      const char *buf, size_t count)
-+{
-+	int err;
-+	unsigned long max_ptes_shared;
-+
-+	err  = kstrtoul(buf, 10, &max_ptes_shared);
-+	if (err || max_ptes_shared > HPAGE_PMD_NR-1)
-+		return -EINVAL;
-+
-+	khugepaged_max_ptes_shared = max_ptes_shared;
-+
-+	return count;
-+}
-+
-+static struct kobj_attribute khugepaged_max_ptes_shared_attr =
-+	__ATTR(max_ptes_shared, 0644, khugepaged_max_ptes_shared_show,
-+	       khugepaged_max_ptes_shared_store);
-+
- static struct attribute *khugepaged_attr[] = {
- 	&khugepaged_defrag_attr.attr,
- 	&khugepaged_max_ptes_none_attr.attr,
-+	&khugepaged_max_ptes_swap_attr.attr,
-+	&khugepaged_max_ptes_shared_attr.attr,
- 	&pages_to_scan_attr.attr,
- 	&pages_collapsed_attr.attr,
- 	&full_scans_attr.attr,
- 	&scan_sleep_millisecs_attr.attr,
- 	&alloc_sleep_millisecs_attr.attr,
--	&khugepaged_max_ptes_swap_attr.attr,
- 	NULL,
- };
- 
-@@ -360,6 +390,7 @@ int __init khugepaged_init(void)
- 	khugepaged_pages_to_scan = HPAGE_PMD_NR * 8;
- 	khugepaged_max_ptes_none = HPAGE_PMD_NR - 1;
- 	khugepaged_max_ptes_swap = HPAGE_PMD_NR / 8;
-+	khugepaged_max_ptes_shared = HPAGE_PMD_NR / 2;
- 
- 	return 0;
- }
-@@ -567,7 +598,7 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- {
- 	struct page *page = NULL;
- 	pte_t *_pte;
--	int none_or_zero = 0, result = 0, referenced = 0;
-+	int none_or_zero = 0, shared = 0, result = 0, referenced = 0;
- 	bool writable = false;
- 
- 	for (_pte = pte; _pte < pte+HPAGE_PMD_NR;
-@@ -595,6 +626,12 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 
- 		VM_BUG_ON_PAGE(!PageAnon(page), page);
- 
-+		if (page_mapcount(page) > 1 &&
-+				++shared > khugepaged_max_ptes_shared) {
-+			result = SCAN_EXCEED_SHARED_PTE;
-+			goto out;
-+		}
-+
- 		if (PageCompound(page)) {
- 			struct page *p;
- 			page = compound_head(page);
-@@ -1178,7 +1215,8 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
- {
- 	pmd_t *pmd;
- 	pte_t *pte, *_pte;
--	int ret = 0, none_or_zero = 0, result = 0, referenced = 0;
-+	int ret = 0, result = 0, referenced = 0;
-+	int none_or_zero = 0, shared = 0;
- 	struct page *page = NULL;
- 	unsigned long _address;
- 	spinlock_t *ptl;
-@@ -1228,6 +1266,12 @@ static int khugepaged_scan_pmd(struct mm_struct *mm,
- 			goto out_unmap;
- 		}
- 
-+		if (page_mapcount(page) > 1 &&
-+				++shared > khugepaged_max_ptes_shared) {
-+			result = SCAN_EXCEED_SHARED_PTE;
-+			goto out_unmap;
-+		}
-+
- 		page = compound_head(page);
- 
- 		/*
-diff --git a/tools/testing/selftests/vm/khugepaged.c b/tools/testing/selftests/vm/khugepaged.c
-index 34d945e71e2e..7c7283cc7dcc 100644
---- a/tools/testing/selftests/vm/khugepaged.c
-+++ b/tools/testing/selftests/vm/khugepaged.c
-@@ -77,6 +77,7 @@ struct khugepaged_settings {
- 	unsigned int scan_sleep_millisecs;
- 	unsigned int max_ptes_none;
- 	unsigned int max_ptes_swap;
-+	unsigned int max_ptes_shared;
- 	unsigned long pages_to_scan;
- };
- 
-@@ -276,6 +277,7 @@ static void write_settings(struct settings *settings)
- 			khugepaged->scan_sleep_millisecs);
- 	write_num("khugepaged/max_ptes_none", khugepaged->max_ptes_none);
- 	write_num("khugepaged/max_ptes_swap", khugepaged->max_ptes_swap);
-+	write_num("khugepaged/max_ptes_shared", khugepaged->max_ptes_shared);
- 	write_num("khugepaged/pages_to_scan", khugepaged->pages_to_scan);
- }
- 
-@@ -312,6 +314,7 @@ static void save_settings(void)
- 			read_num("khugepaged/scan_sleep_millisecs"),
- 		.max_ptes_none = read_num("khugepaged/max_ptes_none"),
- 		.max_ptes_swap = read_num("khugepaged/max_ptes_swap"),
-+		.max_ptes_shared = read_num("khugepaged/max_ptes_shared"),
- 		.pages_to_scan = read_num("khugepaged/pages_to_scan"),
- 	};
- 	success("OK");
-@@ -843,12 +846,90 @@ static void collapse_fork_compound(void)
- 			fail("Fail");
- 		fill_memory(p, 0, page_size);
- 
-+		write_num("khugepaged/max_ptes_shared", hpage_pmd_nr - 1);
- 		if (wait_for_scan("Collapse PTE table full of compound pages in child", p))
- 			fail("Timeout");
- 		else if (check_huge(p))
- 			success("OK");
- 		else
- 			fail("Fail");
-+		write_num("khugepaged/max_ptes_shared",
-+				default_settings.khugepaged.max_ptes_shared);
-+
-+		validate_memory(p, 0, hpage_pmd_size);
-+		munmap(p, hpage_pmd_size);
-+		exit(exit_status);
-+	}
-+
-+	wait(&wstatus);
-+	exit_status += WEXITSTATUS(wstatus);
-+
-+	printf("Check if parent still has huge page...");
-+	if (check_huge(p))
-+		success("OK");
-+	else
-+		fail("Fail");
-+	validate_memory(p, 0, hpage_pmd_size);
-+	munmap(p, hpage_pmd_size);
-+}
-+
-+static void collapse_max_ptes_shared()
-+{
-+	int max_ptes_shared = read_num("khugepaged/max_ptes_shared");
-+	int wstatus;
-+	void *p;
-+
-+	p = alloc_mapping();
-+
-+	printf("Allocate huge page...");
-+	madvise(p, hpage_pmd_size, MADV_HUGEPAGE);
-+	fill_memory(p, 0, hpage_pmd_size);
-+	if (check_huge(p))
-+		success("OK");
-+	else
-+		fail("Fail");
-+
-+	printf("Share huge page over fork()...");
-+	if (!fork()) {
-+		/* Do not touch settings on child exit */
-+		skip_settings_restore = true;
-+		exit_status = 0;
-+
-+		if (check_huge(p))
-+			success("OK");
-+		else
-+			fail("Fail");
-+
-+		printf("Trigger CoW in %d of %d...",
-+				hpage_pmd_nr - max_ptes_shared - 1, hpage_pmd_nr);
-+		fill_memory(p, 0, (hpage_pmd_nr - max_ptes_shared - 1) * page_size);
-+		if (!check_huge(p))
-+			success("OK");
-+		else
-+			fail("Fail");
-+
-+		if (wait_for_scan("Do not collapse with max_ptes_shared exeeded", p))
-+			fail("Timeout");
-+		else if (!check_huge(p))
-+			success("OK");
-+		else
-+			fail("Fail");
-+
-+		printf("Trigger CoW in %d of %d...",
-+				hpage_pmd_nr - max_ptes_shared, hpage_pmd_nr);
-+		fill_memory(p, 0, (hpage_pmd_nr - max_ptes_shared) * page_size);
-+		if (!check_huge(p))
-+			success("OK");
-+		else
-+			fail("Fail");
-+
-+
-+		if (wait_for_scan("Collapse with max_ptes_shared PTEs shared", p))
-+			fail("Timeout");
-+		else if (check_huge(p))
-+			success("OK");
-+		else
-+			fail("Fail");
- 
- 		validate_memory(p, 0, hpage_pmd_size);
- 		munmap(p, hpage_pmd_size);
-@@ -877,6 +958,7 @@ int main(void)
- 
- 	default_settings.khugepaged.max_ptes_none = hpage_pmd_nr - 1;
- 	default_settings.khugepaged.max_ptes_swap = hpage_pmd_nr / 8;
-+	default_settings.khugepaged.max_ptes_shared = hpage_pmd_nr / 2;
- 	default_settings.khugepaged.pages_to_scan = hpage_pmd_nr * 8;
- 
- 	save_settings();
-@@ -894,6 +976,7 @@ int main(void)
- 	collapse_compound_extreme();
- 	collapse_fork();
- 	collapse_fork_compound();
-+	collapse_max_ptes_shared();
- 
- 	restore_settings(0);
- }
 -- 
-2.26.0
-
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
