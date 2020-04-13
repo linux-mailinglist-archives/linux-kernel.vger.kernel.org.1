@@ -2,67 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2937F1A690F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64651A690B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbgDMPos convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Apr 2020 11:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53098 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728597AbgDMPor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 11:44:47 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95DE220656;
-        Mon, 13 Apr 2020 15:44:46 +0000 (UTC)
-Date:   Mon, 13 Apr 2020 11:44:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     =?UTF-8?B?5a6L54mn5pil?= <songmuchun@bytedance.com>
-Cc:     mingo@kernel.org, peterz@infradead.org, juri.lelli@redhat.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        dietmar.eggemann@arm.com, Benjamin Segall <bsegall@google.com>,
-        mgorman@suse.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: add __init to sched_init_granularity
- functions
-Message-ID: <20200413114444.5db76182@gandalf.local.home>
-In-Reply-To: <CAMZfGtUY_GLXZ4jV4s0UZqsVF0W57dzUh0wVGynXYCy3CMN4iA@mail.gmail.com>
-References: <20200406074750.56533-1-songmuchun@bytedance.com>
-        <CAMZfGtUY_GLXZ4jV4s0UZqsVF0W57dzUh0wVGynXYCy3CMN4iA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1730609AbgDMPnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 11:43:17 -0400
+Received: from cmccmta2.chinamobile.com ([221.176.66.80]:8074 "EHLO
+        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728597AbgDMPnQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 11:43:16 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee85e9488800f3-3c2e1; Mon, 13 Apr 2020 23:42:57 +0800 (CST)
+X-RM-TRANSID: 2ee85e9488800f3-3c2e1
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.0.102] (unknown[112.1.172.56])
+        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15e948880e98-3d466;
+        Mon, 13 Apr 2020 23:42:57 +0800 (CST)
+X-RM-TRANSID: 2ee15e948880e98-3d466
+Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
+To:     minyard@acm.org
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
+ <20200413113225.GB3587@minyard.net>
+ <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
+ <20200413142348.GD3587@minyard.net>
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+Message-ID: <3894dab2-0660-999c-6f4c-4b5b9ff57773@cmss.chinamobile.com>
+Date:   Mon, 13 Apr 2020 23:44:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200413142348.GD3587@minyard.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Apr 2020 23:07:03 +0800
-宋牧春 <songmuchun@bytedance.com> wrote:
+Hi Corey:
 
-> > -void sched_init_granularity(void)
-> > +void __init sched_init_granularity(void)
-> >  {
-> >         update_sysctl();
-> >  }
-> > --
-> > 2.11.0
-> >  
-> 
-> Ping guys. Any suggestions?
+On 2020/4/13 22:23, Corey Minyard wrote:
+>> Can I consider that the patch will be applied in 5.8？
+> It's in my queue, so that's the plan.
+>
+>>>    I
+>>> changed the title to be "Avoid unnecessary check".
+>> You have modified it, which means I don't need to submit a new patch？
+> Correct.
 
-Seems fine, but not that big of an issue as it's a very small function.
-
-ffffffff81136880 <sched_init_granularity>:
-ffffffff81136880:       e8 7b b3 ac 00          callq  ffffffff81c01c00 <__fentry__>
-                        ffffffff81136881: R_X86_64_PLT32        __fentry__-0x4
-ffffffff81136885:       e9 86 86 ff ff          jmpq   ffffffff8112ef10 <update_sysctl>
-ffffffff8113688a:       66 0f 1f 44 00 00       nopw   0x0(%rax,%rax,1)
+Thank you very much, I am waiting for the applied.
 
 
-But anyway, it can save 16 bytes of memory in the running kernel.
+Then, I have some questions to ask you:
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+     I have checked the file bt-bmc.c carefully, and found that there 
+are another two problems.Please help me analyze them, if you think it is 
+feasible, then I will submit the patch.
 
--- Steve
+     Q1: About Format Problem
+
+            In the 469~471 line, the first letter should be indented, 
+please check if the writing here is reasonable?
+
+
+     Q2: About the function bt_bmc_config_irq()
+
+           1）In the function bt_bmc_probe(), the return value of 
+bt_bmc_config_irq() made no judgement, whether it is suitable? （If your 
+view is don't need to judge, the following will change.）
+
+
+           2）According to the kernel interface of platform_get_irq(),the 
+return value is negative,
+
+                    if (!bt_bmc->irq)
+                         return -ENODEV;
+
+                so the check here is invalid.The standard way to write is:
+
+                      if (bt_bmc->irq < 0)
+                           return bt_bmc->irq;
+
+                But consider if failed, "bt_bmc->irq" must be assigned 
+to "0"，the easiest way is to delete the        403~404 line, handled 
+directly by the function devm_request_irq().
+
+
+         Q3：About dev_warm()
+
+                 KERN_WARNING is higher than KERN_INFO, the same to 
+dev_warn() and dev_info(). When the function bt_bmc_probe() uses 
+dev_info() to print error message, the dev_warm() in the line of 409 
+should be redundant.
+
+
+I am waiting for your replay, and thank you for your guidance.
+
+Tang Bin
+
+
+
