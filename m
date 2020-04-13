@@ -2,111 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439541A6539
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:31:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064041A652C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728653AbgDMKU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:20:57 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:58437 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728289AbgDMKUh (ORCPT
+        id S1728415AbgDMK3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:29:19 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:35321 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727833AbgDMK3S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:20:37 -0400
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <rhi@pengutronix.de>)
-        id 1jNwC6-0001Dz-1g; Mon, 13 Apr 2020 12:19:58 +0200
-Received: from rhi by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <rhi@pengutronix.de>)
-        id 1jNwC4-0003AX-KM; Mon, 13 Apr 2020 12:19:56 +0200
-Date:   Mon, 13 Apr 2020 12:19:56 +0200
-From:   Roland Hieber <rhi@pengutronix.de>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        Mon, 13 Apr 2020 06:29:18 -0400
+Received: by mail-ed1-f66.google.com with SMTP id c7so11401332edl.2;
+        Mon, 13 Apr 2020 03:29:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BbWHjSsUQrh2BcH16tvNHQAGyd0qaneJDULzKls8PTI=;
+        b=EACqoFiZ7YXHLwEmyEKf/nPegskQGdQBOonHclZldN6+NXmkU0B9/0omQdswXEroeh
+         ZSIBZ9wCtq5xpvymxh3Yod3KAvGMepCyOsRLkiHzwEprXSSwX+NdLCVCuGflwpQs/j5F
+         /NaFz5c7uCdeec6CIAOeKErmCPaMT26o6/7KE9Walu/q9ZhDXYy4bE38L0kgEWZPViEk
+         FvMRMnCzIepQJIXTCe6BJIwKOUgpNWf6wDHD9zB7+c+pK7QFVf4agdSLks2qFHupaW7j
+         0mZ7zEHVVB22kUfrQnfI9c/yxjov7Tnm8gdUJ2PtUMwse61u9kE6fqqXUsiJAqSPVxds
+         pywA==
+X-Gm-Message-State: AGi0PuaUrW1S8Nz0KPCdOU23OLRtd4AwLvnqoTwKagbq3doSR6SPQuTX
+        aqyW9a5RPAm7yoZ8iJucJYY=
+X-Google-Smtp-Source: APiQypIedXmcxclTCvgH+IO52NsgOdHSPUM9V+iK7b0YTTiONfFblt3zVHInsMkfzBnfKdib4MGamw==
+X-Received: by 2002:a05:6402:16d5:: with SMTP id r21mr5822530edx.150.1586773757041;
+        Mon, 13 Apr 2020 03:29:17 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.125])
+        by smtp.googlemail.com with ESMTPSA id w3sm1557471ejf.21.2020.04.13.03.29.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 13 Apr 2020 03:29:16 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 12:29:14 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-i2c@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        patches@opensource.cirrus.com,
         linux-arm-kernel@lists.infradead.org,
-        Clemens Gruber <clemens.gruber@pqgruber.com>,
-        Russell King <linux@armlinux.org.uk>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: imx: provide v7_cpu_resume() only on
- ARM_CPU_SUSPEND=y
-Message-ID: <20200413101956.47ggeq4q2hei76yz@pengutronix.de>
-References: <20200323081933.31497-1-a.fatoum@pengutronix.de>
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] ARM: mach-s3c64xx: convert to use
+ i2c_new_client_device()
+Message-ID: <20200413102914.GA14922@kozik-lap>
+References: <20200326211014.13591-1-wsa+renesas@sang-engineering.com>
+ <20200326211014.13591-2-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200323081933.31497-1-a.fatoum@pengutronix.de>
-User-Agent: NeoMutt/20180716
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: rhi@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200326211014.13591-2-wsa+renesas@sang-engineering.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 23, 2020 at 09:19:33AM +0100, Ahmad Fatoum wrote:
-> 512a928affd5 ("ARM: imx: build v7_cpu_resume() unconditionally")
-> introduced an unintended linker error for i.MX6 configurations that have
-> ARM_CPU_SUSPEND=n which can happen if neither CONFIG_PM, CONFIG_CPU_IDLE,
-> nor ARM_PSCI_FW are selected.
+On Thu, Mar 26, 2020 at 10:10:14PM +0100, Wolfram Sang wrote:
+> Move away from the deprecated API and remove printing a stale 'ret'
+> value.
 > 
-> Fix this by having v7_cpu_resume() compiled only when cpu_resume() it
-> calls is available as well.
-> 
-> The C declaration for the function remains unguarded to avoid future code
-> inadvertently using a stub and introducing a regression to the bug the
-> original commit fixed.
-> 
-> Cc: <stable@vger.kernel.org>
-> Fixes: 512a928affd5 ("ARM: imx: build v7_cpu_resume() unconditionally")
-> Reported-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-Tested-by: Roland Hieber <rhi@pengutronix.de>
-
-What's the status here? master is still broken on most of my builds, and
-there were no other comments at all :-(
-
- - Roland
-
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > ---
->  arch/arm/mach-imx/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm/mach-imx/Makefile b/arch/arm/mach-imx/Makefile
-> index 03506ce46149..e7364e6c8c6b 100644
-> --- a/arch/arm/mach-imx/Makefile
-> +++ b/arch/arm/mach-imx/Makefile
-> @@ -91,8 +91,10 @@ AFLAGS_suspend-imx6.o :=-Wa,-march=armv7-a
->  obj-$(CONFIG_SOC_IMX6) += suspend-imx6.o
->  obj-$(CONFIG_SOC_IMX53) += suspend-imx53.o
->  endif
-> +ifeq ($(CONFIG_ARM_CPU_SUSPEND),y)
->  AFLAGS_resume-imx6.o :=-Wa,-march=armv7-a
->  obj-$(CONFIG_SOC_IMX6) += resume-imx6.o
-> +endif
->  obj-$(CONFIG_SOC_IMX6) += pm-imx6.o
->  
->  obj-$(CONFIG_SOC_IMX1) += mach-imx1.o
-> -- 
-> 2.25.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>  arch/arm/mach-s3c64xx/mach-crag6410-module.c | 7 +++----
 
--- 
-Roland Hieber, Pengutronix e.K.          | r.hieber@pengutronix.de     |
-Steuerwalder Str. 21                     | https://www.pengutronix.de/ |
-31137 Hildesheim, Germany                | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686         | Fax:   +49-5121-206917-5555 |
+Thanks, applied.
+
+Best regards,
+Krzysztof
+
