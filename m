@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F4C1A6785
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1BB1A6833
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 16:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730325AbgDMOGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 10:06:31 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:39446 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730285AbgDMOG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 10:06:29 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id DAA1B5009B9C567DB427;
-        Mon, 13 Apr 2020 22:06:25 +0800 (CST)
-Received: from huawei.com (10.175.124.28) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
- 22:06:17 +0800
-From:   Jason Yan <yanaijie@huawei.com>
-To:     <alexander.deucher@amd.com>, <christian.koenig@amd.com>,
-        <David1.Zhou@amd.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <amd-gfx@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Jason Yan <yanaijie@huawei.com>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH] drm/radeon: remove defined but not used 'dte_data_tahiti_le'
-Date:   Mon, 13 Apr 2020 22:32:45 +0800
-Message-ID: <20200413143245.23107-1-yanaijie@huawei.com>
-X-Mailer: git-send-email 2.21.1
+        id S1730816AbgDMOdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 10:33:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728185AbgDMOdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 10:33:00 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD30A2072C;
+        Mon, 13 Apr 2020 14:32:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1586788380;
+        bh=UgsFITWUZlPhGRKvUFEzShkg0Dx45Ysmuw2lAc+SDaM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cPUYRHSRHlx2GAXRo9nMBHjuEpgHckiq3M2LmlISBBRoqZH/M+444UvfX7V5w+lem
+         12kt52rKzHQvF8XkB9Ipm1InslQuuJvYlHydBBV5htlnSH2LJ9I4j3Ld5cQI5GOKbN
+         YtPX5TEJFVDVOOU5ObxpHQvBduqAQLhbnLZAPXlU=
+Date:   Mon, 13 Apr 2020 16:32:58 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Oscar Carter <oscar.carter@gmx.com>
+Cc:     devel@driverdev.osuosl.org, Malcolm Priestley <tvboxspy@gmail.com>,
+        Forest Bond <forest@alittletooquiet.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] staging: vt6656: Refactor the assignment of the
+ phy->signal variable
+Message-ID: <20200413143258.GA3551837@kroah.com>
+References: <20200411122610.7901-1-oscar.carter@gmx.com>
+ <20200411122610.7901-2-oscar.carter@gmx.com>
+ <20200413125616.GA3127208@kroah.com>
+ <20200413142517.GB3101@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.124.28]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413142517.GB3101@ubuntu>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+On Mon, Apr 13, 2020 at 04:25:17PM +0200, Oscar Carter wrote:
+> On Mon, Apr 13, 2020 at 02:56:16PM +0200, Greg Kroah-Hartman wrote:
+> > On Sat, Apr 11, 2020 at 02:26:09PM +0200, Oscar Carter wrote:
+> > > Create a constant array with the values of the "phy->signal" for every
+> > > rate. Remove all "phy->signal" assignments inside the switch statement
+> > > and replace these with a single reading from the new vnt_phy_signal
+> > > array.
+> > >
+> > > The constant array can be of one dimension because the OR mask with
+> > > BIT(3) or BIT(4) allow obtain a second value according to the rate,
+> > > the preamble_type and the pkt_type.
+> > >
+> > > Signed-off-by: Oscar Carter <oscar.carter@gmx.com>
+> > > ---
+> > >  drivers/staging/vt6656/baseband.c | 105 ++++++++----------------------
+> > >  1 file changed, 26 insertions(+), 79 deletions(-)
+> >
+> > This series did not apply to my tree, please rebase and resend.
+> 
+> Rebase the patchs is a normal process in the development or am I doing something
+> wrong ?
 
-drivers/gpu/drm/radeon/si_dpm.c:255:33: warning: ‘dte_data_tahiti_le’
-defined but not used [-Wunused-const-variable=]
- static const struct si_dte_data dte_data_tahiti_le =
+It's normal when multiple people are working on the same area with lots
+of patches flying around.  Not a problem, it doesn't bother me at all :)
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Jason Yan <yanaijie@huawei.com>
----
- drivers/gpu/drm/radeon/si_dpm.c | 18 ------------------
- 1 file changed, 18 deletions(-)
+thanks,
 
-diff --git a/drivers/gpu/drm/radeon/si_dpm.c b/drivers/gpu/drm/radeon/si_dpm.c
-index 2cb85dbe728f..a167e1c36d24 100644
---- a/drivers/gpu/drm/radeon/si_dpm.c
-+++ b/drivers/gpu/drm/radeon/si_dpm.c
-@@ -252,24 +252,6 @@ static const struct si_dte_data dte_data_tahiti =
- 	false
- };
- 
--static const struct si_dte_data dte_data_tahiti_le =
--{
--	{ 0x1E8480, 0x7A1200, 0x2160EC0, 0x3938700, 0 },
--	{ 0x7D, 0x7D, 0x4E4, 0xB00, 0 },
--	0x5,
--	0xAFC8,
--	0x64,
--	0x32,
--	1,
--	0,
--	0x10,
--	{ 0x78, 0x7C, 0x82, 0x88, 0x8E, 0x94, 0x9A, 0xA0, 0xA6, 0xAC, 0xB0, 0xB4, 0xB8, 0xBC, 0xC0, 0xC4 },
--	{ 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700, 0x3938700 },
--	{ 0x2AF8, 0x2AF8, 0x29BB, 0x27F9, 0x2637, 0x2475, 0x22B3, 0x20F1, 0x1F2F, 0x1D6D, 0x1734, 0x1414, 0x10F4, 0xDD4, 0xAB4, 0x794 },
--	85,
--	true
--};
--
- static const struct si_dte_data dte_data_tahiti_pro =
- {
- 	{ 0x1E8480, 0x3D0900, 0x989680, 0x2625A00, 0x0 },
--- 
-2.21.1
-
+greg k-h
