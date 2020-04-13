@@ -2,199 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BD61A6A40
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1245A1A6A43
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731867AbgDMQwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 12:52:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43834 "EHLO mail.kernel.org"
+        id S1731881AbgDMQwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 12:52:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731855AbgDMQw1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:52:27 -0400
+        id S1731861AbgDMQwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 12:52:31 -0400
 Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBCEE208E0;
-        Mon, 13 Apr 2020 16:52:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F40820936;
+        Mon, 13 Apr 2020 16:52:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586796747;
-        bh=UX2AIXKQ6r0jvUhx10zLTeHYWqsG+eFORiDSNhAyhQA=;
+        s=default; t=1586796750;
+        bh=41LZqW8d5XmQTbyN0N2s8HTXUkkGdeEX8LK2FJmvOYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GlrHTkz1N9GPlgnmkybff5VRLAGkxc2YReLpbwGX3lqjTByORiqbOegVvzYcESOTM
-         W9Jo8wjwhFOuXqLj89zN4gL1JajS+sMmoRWIYRqtJUOoIMl6OlwLn9U31P2ket0NX2
-         luua50w8/OeXj3H4MKdDezEdOdzw9Ex2EIXURDU8=
+        b=aqDhael/cpL2+Li0ojNOUt6KrXK+PzepxDPKHGqHdTvqg+KL6AXbgdK8kghhOoihL
+         OU4y5tzttQt9Mz5qzpY/uZLISWh/pCRPaA0ElhXv9i9mej37hwQIALn9iX7SmfVbXO
+         IFm5ThRxXoHCU3a7IGY3dzmkF4k39WBcy7HdzM50=
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
 To:     Ingo Molnar <mingo@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>
 Cc:     Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
         Clark Williams <williams@redhat.com>,
         linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        =?UTF-8?q?Bj=C3=83=C2=B6rn=20T=C3=83=C2=B6pel?= 
-        <bjorn.topel@intel.com>, Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Martin KaFai Lau <kafai@fb.com>, Yonghong Song <yhs@fb.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH 03/26] perf annotate: Add basic support for bpf_image
-Date:   Mon, 13 Apr 2020 13:51:40 -0300
-Message-Id: <20200413165203.1816-4-acme@kernel.org>
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 04/26] tools arch x86: Sync the msr-index.h copy with the kernel sources
+Date:   Mon, 13 Apr 2020 13:51:41 -0300
+Message-Id: <20200413165203.1816-5-acme@kernel.org>
 X-Mailer: git-send-email 2.21.1
 In-Reply-To: <20200413165203.1816-1-acme@kernel.org>
 References: <20200413165203.1816-1-acme@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
 
-Add the DSO_BINARY_TYPE__BPF_IMAGE dso binary type to recognize BPF
-images that carry trampoline or dispatcher.
+To pick up the changes in:
 
-Upcoming patches will add support to read the image data, store it
-within the BPF feature in perf.data and display it for annotation
-purposes.
+  6650cdd9a8cc ("x86/split_lock: Enable split lock detection by kernel")
 
-Currently we only display following message:
+  Warning: Kernel ABI header at 'tools/arch/x86/include/asm/msr-index.h' differs from latest version at 'arch/x86/include/asm/msr-index.h'
+  diff -u tools/arch/x86/include/asm/msr-index.h arch/x86/include/asm/msr-index.h
 
-  # ./perf annotate bpf_trampoline_24456 --stdio
-   Percent |      Source code & Disassembly of . for cycles (504  ...
-  --------------------------------------------------------------- ...
-           :       to be implemented
+Which causes these changes in tooling:
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Song Liu <songliubraving@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andriin@fb.com>
-Cc: BjÃ¶rn TÃ¶pel <bjorn.topel@intel.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: David S. Miller <davem@redhat.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Martin KaFai Lau <kafai@fb.com>
-Cc: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/bpf/20200312195610.346362-16-jolsa@kernel.org
+  $ tools/perf/trace/beauty/tracepoints/x86_msr.sh > before
+  $ cp arch/x86/include/asm/msr-index.h tools/arch/x86/include/asm/msr-index.h
+  $ tools/perf/trace/beauty/tracepoints/x86_msr.sh > after
+  $ diff -u before after
+  --- before	2020-04-01 12:11:14.789344795 -0300
+  +++ after	2020-04-01 12:11:56.907798879 -0300
+  @@ -10,6 +10,7 @@
+   	[0x00000029] = "KNC_EVNTSEL1",
+   	[0x0000002a] = "IA32_EBL_CR_POWERON",
+   	[0x0000002c] = "EBC_FREQUENCY_ID",
+  +	[0x00000033] = "TEST_CTRL",
+   	[0x00000034] = "SMI_COUNT",
+   	[0x0000003a] = "IA32_FEAT_CTL",
+   	[0x0000003b] = "IA32_TSC_ADJUST",
+  @@ -27,6 +28,7 @@
+   	[0x000000c2] = "IA32_PERFCTR1",
+   	[0x000000cd] = "FSB_FREQ",
+   	[0x000000ce] = "PLATFORM_INFO",
+  +	[0x000000cf] = "IA32_CORE_CAPS",
+   	[0x000000e2] = "PKG_CST_CONFIG_CONTROL",
+   	[0x000000e7] = "IA32_MPERF",
+   	[0x000000e8] = "IA32_APERF",
+  $
+
+  $ make -C tools/perf O=/tmp/build/perf install-bin
+  <SNIP>
+    CC       /tmp/build/perf/trace/beauty/tracepoints/x86_msr.o
+    LD       /tmp/build/perf/trace/beauty/tracepoints/perf-in.o
+    LD       /tmp/build/perf/trace/beauty/perf-in.o
+    LD       /tmp/build/perf/perf-in.o
+    LINK     /tmp/build/perf/perf
+  <SNIP>
+
+Now one can do:
+
+	perf trace -e msr:* --filter=msr==IA32_CORE_CAPS
+
+or:
+
+	perf trace -e msr:* --filter='msr==IA32_CORE_CAPS || msr==TEST_CTRL'
+
+And see only those MSRs being accessed via:
+
+  # perf trace -v -e msr:* --filter='msr==IA32_CORE_CAPS || msr==TEST_CTRL'
+  New filter for msr:read_msr: (msr==0xcf || msr==0x33) && (common_pid != 8263 && common_pid != 23250)
+  New filter for msr:write_msr: (msr==0xcf || msr==0x33) && (common_pid != 8263 && common_pid != 23250)
+  New filter for msr:rdpmc: (msr==0xcf || msr==0x33) && (common_pid != 8263 && common_pid != 23250)
+
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/lkml/20200401153325.GC12534@kernel.org/
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/annotate.c | 20 ++++++++++++++++++++
- tools/perf/util/dso.c      |  1 +
- tools/perf/util/dso.h      |  1 +
- tools/perf/util/machine.c  | 11 +++++++++++
- tools/perf/util/symbol.c   |  1 +
- 5 files changed, 34 insertions(+)
+ tools/arch/x86/include/asm/msr-index.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index f1ea0d61eb5b..9760d58e979a 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -1821,6 +1821,24 @@ static int symbol__disassemble_bpf(struct symbol *sym __maybe_unused,
- }
- #endif // defined(HAVE_LIBBFD_SUPPORT) && defined(HAVE_LIBBPF_SUPPORT)
+diff --git a/tools/arch/x86/include/asm/msr-index.h b/tools/arch/x86/include/asm/msr-index.h
+index d5e517d1c3dd..12c9684d59ba 100644
+--- a/tools/arch/x86/include/asm/msr-index.h
++++ b/tools/arch/x86/include/asm/msr-index.h
+@@ -41,6 +41,10 @@
  
-+static int
-+symbol__disassemble_bpf_image(struct symbol *sym,
-+			      struct annotate_args *args)
-+{
-+	struct annotation *notes = symbol__annotation(sym);
-+	struct disasm_line *dl;
+ /* Intel MSRs. Some also available on other CPUs */
+ 
++#define MSR_TEST_CTRL				0x00000033
++#define MSR_TEST_CTRL_SPLIT_LOCK_DETECT_BIT	29
++#define MSR_TEST_CTRL_SPLIT_LOCK_DETECT		BIT(MSR_TEST_CTRL_SPLIT_LOCK_DETECT_BIT)
 +
-+	args->offset = -1;
-+	args->line = strdup("to be implemented");
-+	args->line_nr = 0;
-+	dl = disasm_line__new(args);
-+	if (dl)
-+		annotation_line__add(&dl->al, &notes->src->source);
+ #define MSR_IA32_SPEC_CTRL		0x00000048 /* Speculation Control */
+ #define SPEC_CTRL_IBRS			BIT(0)	   /* Indirect Branch Restricted Speculation */
+ #define SPEC_CTRL_STIBP_SHIFT		1	   /* Single Thread Indirect Branch Predictor (STIBP) bit */
+@@ -70,6 +74,11 @@
+  */
+ #define MSR_IA32_UMWAIT_CONTROL_TIME_MASK	(~0x03U)
+ 
++/* Abbreviated from Intel SDM name IA32_CORE_CAPABILITIES */
++#define MSR_IA32_CORE_CAPS			  0x000000cf
++#define MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT_BIT  5
++#define MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT	  BIT(MSR_IA32_CORE_CAPS_SPLIT_LOCK_DETECT_BIT)
 +
-+	free(args->line);
-+	return 0;
-+}
-+
- /*
-  * Possibly create a new version of line with tabs expanded. Returns the
-  * existing or new line, storage is updated if a new line is allocated. If
-@@ -1920,6 +1938,8 @@ static int symbol__disassemble(struct symbol *sym, struct annotate_args *args)
- 
- 	if (dso->binary_type == DSO_BINARY_TYPE__BPF_PROG_INFO) {
- 		return symbol__disassemble_bpf(sym, args);
-+	} else if (dso->binary_type == DSO_BINARY_TYPE__BPF_IMAGE) {
-+		return symbol__disassemble_bpf_image(sym, args);
- 	} else if (dso__is_kcore(dso)) {
- 		kce.kcore_filename = symfs_filename;
- 		kce.addr = map__rip_2objdump(map, sym->start);
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index 91f21239608b..f338990e0fe6 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -191,6 +191,7 @@ int dso__read_binary_type_filename(const struct dso *dso,
- 	case DSO_BINARY_TYPE__GUEST_KALLSYMS:
- 	case DSO_BINARY_TYPE__JAVA_JIT:
- 	case DSO_BINARY_TYPE__BPF_PROG_INFO:
-+	case DSO_BINARY_TYPE__BPF_IMAGE:
- 	case DSO_BINARY_TYPE__NOT_FOUND:
- 		ret = -1;
- 		break;
-diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-index 2db64b79617a..9553a1fd9e8a 100644
---- a/tools/perf/util/dso.h
-+++ b/tools/perf/util/dso.h
-@@ -40,6 +40,7 @@ enum dso_binary_type {
- 	DSO_BINARY_TYPE__GUEST_KCORE,
- 	DSO_BINARY_TYPE__OPENEMBEDDED_DEBUGINFO,
- 	DSO_BINARY_TYPE__BPF_PROG_INFO,
-+	DSO_BINARY_TYPE__BPF_IMAGE,
- 	DSO_BINARY_TYPE__NOT_FOUND,
- };
- 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 06aa4e4db63d..09845eae9c03 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -736,6 +736,12 @@ int machine__process_switch_event(struct machine *machine __maybe_unused,
- 	return 0;
- }
- 
-+static int is_bpf_image(const char *name)
-+{
-+	return strncmp(name, "bpf_trampoline_", sizeof("bpf_trampoline_") - 1) ||
-+	       strncmp(name, "bpf_dispatcher_", sizeof("bpf_dispatcher_") - 1);
-+}
-+
- static int machine__process_ksymbol_register(struct machine *machine,
- 					     union perf_event *event,
- 					     struct perf_sample *sample __maybe_unused)
-@@ -760,6 +766,11 @@ static int machine__process_ksymbol_register(struct machine *machine,
- 		map->end = map->start + event->ksymbol.len;
- 		maps__insert(&machine->kmaps, map);
- 		dso__set_loaded(dso);
-+
-+		if (is_bpf_image(event->ksymbol.name)) {
-+			dso->binary_type = DSO_BINARY_TYPE__BPF_IMAGE;
-+			dso__set_long_name(dso, "", false);
-+		}
- 	}
- 
- 	sym = symbol__new(map->map_ip(map, map->start),
-diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
-index 26bc6a0096ce..8f4300492dc7 100644
---- a/tools/perf/util/symbol.c
-+++ b/tools/perf/util/symbol.c
-@@ -1544,6 +1544,7 @@ static bool dso__is_compatible_symtab_type(struct dso *dso, bool kmod,
- 		return true;
- 
- 	case DSO_BINARY_TYPE__BPF_PROG_INFO:
-+	case DSO_BINARY_TYPE__BPF_IMAGE:
- 	case DSO_BINARY_TYPE__NOT_FOUND:
- 	default:
- 		return false;
+ #define MSR_PKG_CST_CONFIG_CONTROL	0x000000e2
+ #define NHM_C3_AUTO_DEMOTE		(1UL << 25)
+ #define NHM_C1_AUTO_DEMOTE		(1UL << 26)
 -- 
 2.21.1
 
