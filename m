@@ -2,317 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D011A6A48
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70BE1A6A9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbgDMQwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 12:52:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43962 "EHLO mail.kernel.org"
+        id S1732175AbgDMQy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 12:54:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731860AbgDMQwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:52:31 -0400
-Received: from localhost (unknown [104.132.1.66])
+        id S1731989AbgDMQx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 12:53:27 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF8D420780;
-        Mon, 13 Apr 2020 16:52:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 297EB20739;
+        Mon, 13 Apr 2020 16:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586796750;
-        bh=fIP1EnGc+dJREis2adfa0bXIZspf/NyorcPmYVK97Wk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QinK3yvxaKxBWs351Z56idas0VjMMWyagUdFrjGb4j40DoKBGcjeXY6XOsXJ4nMyu
-         eiy/5d0uwRnfJyB4EAfHtyw6IE1DvOciaJx73rwIWe2qKoe4Phmf2VMknHF0zAhops
-         Z/N41AVpPNqe5O+SpsovHcPeIVJdUW+J7sPg3pJU=
-Date:   Mon, 13 Apr 2020 09:52:29 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Sahitya Tummala <stummala@codeaurora.org>
-Cc:     Chao Yu <yuchao0@huawei.com>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] f2fs: fix long latency due to discard during umount
-Message-ID: <20200413165229.GA39092@google.com>
-References: <1585550730-1858-1-git-send-email-stummala@codeaurora.org>
- <20200331184655.GB198665@google.com>
- <20200401092201.GB20234@codeaurora.org>
- <20200403171943.GC68460@google.com>
- <20200408090024.GC20234@codeaurora.org>
- <20200409022928.GD110440@google.com>
- <20200409114756.GD20234@codeaurora.org>
+        s=default; t=1586796807;
+        bh=9aCew5Em0TLlBtgwNkxdemTfwApurfab/CKuSXy17DA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QFYoiIUJOsJoJ1b0IsZ3K2fwQ6oxstALKCknujolFwdEWElKhfUMEfn2qTXoSiqW5
+         wrongT7Dh6Mjr2YxCydedo2LCfTy0AksKfH0rlm7xp6HBqNlZcgBBmYRT3E2rmj53z
+         dMKbAOO4PwyI1hRrBX86tCi82uP11ok/aVXJCiWQ=
+Date:   Mon, 13 Apr 2020 17:53:23 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     mani@kernel.org
+Cc:     robh+dt@kernel.org, narcisaanamaria12@gmail.com, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: iio: chemical: Add binding for CCS811
+ VOC sensor
+Message-ID: <20200413175323.7f41b766@archlinux>
+In-Reply-To: <20200412183658.6755-2-mani@kernel.org>
+References: <20200412183658.6755-1-mani@kernel.org>
+        <20200412183658.6755-2-mani@kernel.org>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200409114756.GD20234@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/09, Sahitya Tummala wrote:
-> On Wed, Apr 08, 2020 at 07:29:28PM -0700, Jaegeuk Kim wrote:
-> > On 04/08, Sahitya Tummala wrote:
-> > > Hi Jaegeuk,
-> > > 
-> > > On Fri, Apr 03, 2020 at 10:19:43AM -0700, Jaegeuk Kim wrote:
-> > > > On 04/01, Sahitya Tummala wrote:
-> > > > > Hi Jaegeuk,
-> > > > > 
-> > > > > On Tue, Mar 31, 2020 at 11:46:55AM -0700, Jaegeuk Kim wrote:
-> > > > > > On 03/30, Sahitya Tummala wrote:
-> > > > > > > F2FS already has a default timeout of 5 secs for discards that
-> > > > > > > can be issued during umount, but it can take more than the 5 sec
-> > > > > > > timeout if the underlying UFS device queue is already full and there
-> > > > > > > are no more available free tags to be used. In that case, submit_bio()
-> > > > > > > will wait for the already queued discard requests to complete to get
-> > > > > > > a free tag, which can potentially take way more than 5 sec.
-> > > > > > > 
-> > > > > > > Fix this by submitting the discard requests with REQ_NOWAIT
-> > > > > > > flags during umount. This will return -EAGAIN for UFS queue/tag full
-> > > > > > > scenario without waiting in the context of submit_bio(). The FS can
-> > > > > > > then handle these requests by retrying again within the stipulated
-> > > > > > > discard timeout period to avoid long latencies.
-> > > > > > 
-> > > > > > Sorry, Sahitya, but, do we really need to do like this? How about just
-> > > > > > controlling # of outstanding discarding bios in __issue_discard_cmd()?
-> > > > > 
-> > > > > Do you mean something like this?
-> > > > > 
-> > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > > > > index 1a62b27..860dd43 100644
-> > > > > --- a/fs/f2fs/segment.c
-> > > > > +++ b/fs/f2fs/segment.c
-> > > > > @@ -1099,7 +1099,7 @@ static void __init_discard_policy(struct f2fs_sb_info *sbi,
-> > > > >         } else if (discard_type == DPOLICY_FSTRIM) {
-> > > > >                 dpolicy->io_aware = false;
-> > > > >         } else if (discard_type == DPOLICY_UMOUNT) {
-> > > > > -               dpolicy->max_requests = UINT_MAX;
-> > > > > +               dpolicy->max_requests = 30;
-> > > > 
-> > > > Can we use max queue depth of the block device?
-> > > 
-> > > I think it should be limited to 8 or 16 as Chao suggested, so that we can have
-> > > better control on the given timeout value? Thoughts?
-> > 
-> > Where is 8 or 16 coming from? What about SSD? Sorry, it's unclear to me.
-> 
-> With this patch we now wait for a batch of discard requests in __issue_discard_cmd()
-> with a upper timeout of 5 sec. So, I thought that having a smaller batch of
-> discard requests would help us to avoid queuing more requests and end up waiting
-> for more time in __wait_all_discard_cmd(). Today we have DEF_MAX_DISCARD_REQUEST
-> as 8 for default max discard requests. If it too less, may be for umount
-> we can use 16 instead. But the idea is to avoid more wait time.
+On Mon, 13 Apr 2020 00:06:56 +0530
+mani@kernel.org wrote:
 
-Ok, then, it seems we can just remove this line to use dpolicy->max_requests,
-and retry issuing all the discard commands like below. Later, I thnk it'd be
-fine to tune the max_requests based on bd_queue->queue_depth.
+> From: Manivannan Sadhasivam <mani@kernel.org>
+> 
+> This commit adds devicetree binding for AMS CCS811 VOC sensor.
+> 
+> Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+Great to see this driver getting some more attention.
 
+A few things inline
+
+Thanks,
+
+Jonathan
+
+> ---
+>  .../bindings/iio/chemical/ams,ccs811.yaml     | 50 +++++++++++++++++++
+>  1 file changed, 50 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
 > 
-> If you would like to propose to use max queue depth, we can get it from bdev as 
-> sbi->sb->s_bdev->bd_queue->queue_depth. Is it okay to use it in our FS? or you
-> think it should be hardcoded to 32 (as most UFS/eMMC devices will have this as
-> its queue depth)? Please let me know.
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > Thanks,
-> > > 
-> > > > 
-> > > > >                 dpolicy->io_aware = false;
-> > > > >                 /* we need to issue all to keep CP_TRIMMED_FLAG */
-> > > > >                 dpolicy->granularity = 1;
-> > > > > @@ -1470,12 +1470,14 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > >         struct list_head *pend_list;
-> > > > >         struct discard_cmd *dc, *tmp;
-> > > > >         struct blk_plug plug;
-> > > > > -       int i, issued = 0;
-> > > > > +       int i, issued;
-> > > > >         bool io_interrupted = false;
-> > > > > 
-> > > > >         if (dpolicy->timeout != 0)
-> > > > >                 f2fs_update_time(sbi, dpolicy->timeout);
-> > > > > 
-> > > > > +retry:
-> > > > > +       issued = 0;
-> > > > >         for (i = MAX_PLIST_NUM - 1; i >= 0; i--) {
-> > > > >                 if (dpolicy->timeout != 0 &&
-> > > > >                                 f2fs_time_over(sbi, dpolicy->timeout))
-> > > > > @@ -1522,6 +1524,11 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > >                         break;
-> > > > >         }
-> > > > > 
-> > > > > +       if (dpolicy->type == DPOLICY_UMOUNT && issued) {
-> > > > > +               __wait_all_discard_cmd(sbi, dpolicy);
-> > > > > +               goto retry;
-> > > > > +       }
-> > > > > +
-> > > > >         if (!issued && io_interrupted)
-> > > > >                 issued = -1;
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > > 
-> > > > > > > 
-> > > > > > > Signed-off-by: Sahitya Tummala <stummala@codeaurora.org>
-> > > > > > > ---
-> > > > > > > v3:
-> > > > > > > -Handle the regression reported by Chao with v2.
-> > > > > > > -simplify the logic to split the dc with multiple bios incase any bio returns
-> > > > > > >  EAGAIN and retry those new dc within 5 sec timeout.
-> > > > > > > 
-> > > > > > >  fs/f2fs/segment.c | 65 +++++++++++++++++++++++++++++++++++++++++++------------
-> > > > > > >  1 file changed, 51 insertions(+), 14 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > > > > > > index fb3e531..55d18c7 100644
-> > > > > > > --- a/fs/f2fs/segment.c
-> > > > > > > +++ b/fs/f2fs/segment.c
-> > > > > > > @@ -1029,13 +1029,16 @@ static void f2fs_submit_discard_endio(struct bio *bio)
-> > > > > > >  	struct discard_cmd *dc = (struct discard_cmd *)bio->bi_private;
-> > > > > > >  	unsigned long flags;
-> > > > > > >  
-> > > > > > > -	dc->error = blk_status_to_errno(bio->bi_status);
-> > > > > > > -
-> > > > > > >  	spin_lock_irqsave(&dc->lock, flags);
-> > > > > > > +	if (!dc->error)
-> > > > > > > +		dc->error = blk_status_to_errno(bio->bi_status);
-> > > > > > > +
-> > > > > > >  	dc->bio_ref--;
-> > > > > > > -	if (!dc->bio_ref && dc->state == D_SUBMIT) {
-> > > > > > > -		dc->state = D_DONE;
-> > > > > > > -		complete_all(&dc->wait);
-> > > > > > > +	if (!dc->bio_ref) {
-> > > > > > > +		if (dc->error || dc->state == D_SUBMIT) {
-> > > > > > > +			dc->state = D_DONE;
-> > > > > > > +			complete_all(&dc->wait);
-> > > > > > > +		}
-> > > > > > >  	}
-> > > > > > >  	spin_unlock_irqrestore(&dc->lock, flags);
-> > > > > > >  	bio_put(bio);
-> > > > > > > @@ -1124,10 +1127,13 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > > > >  	struct discard_cmd_control *dcc = SM_I(sbi)->dcc_info;
-> > > > > > >  	struct list_head *wait_list = (dpolicy->type == DPOLICY_FSTRIM) ?
-> > > > > > >  					&(dcc->fstrim_list) : &(dcc->wait_list);
-> > > > > > > -	int flag = dpolicy->sync ? REQ_SYNC : 0;
-> > > > > > > +	int flag;
-> > > > > > >  	block_t lstart, start, len, total_len;
-> > > > > > >  	int err = 0;
-> > > > > > >  
-> > > > > > > +	flag = dpolicy->sync ? REQ_SYNC : 0;
-> > > > > > > +	flag |= dpolicy->type == DPOLICY_UMOUNT ? REQ_NOWAIT : 0;
-> > > > > > > +
-> > > > > > >  	if (dc->state != D_PREP)
-> > > > > > >  		return 0;
-> > > > > > >  
-> > > > > > > @@ -1192,10 +1198,6 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > > > >  		dc->bio_ref++;
-> > > > > > >  		spin_unlock_irqrestore(&dc->lock, flags);
-> > > > > > >  
-> > > > > > > -		atomic_inc(&dcc->queued_discard);
-> > > > > > > -		dc->queued++;
-> > > > > > > -		list_move_tail(&dc->list, wait_list);
-> > > > > > > -
-> > > > > > >  		/* sanity check on discard range */
-> > > > > > >  		__check_sit_bitmap(sbi, lstart, lstart + len);
-> > > > > > >  
-> > > > > > > @@ -1203,6 +1205,29 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > > > >  		bio->bi_end_io = f2fs_submit_discard_endio;
-> > > > > > >  		bio->bi_opf |= flag;
-> > > > > > >  		submit_bio(bio);
-> > > > > > > +		if (flag & REQ_NOWAIT) {
-> > > > > > > +			if (dc->error == -EAGAIN) {
-> > > > > > > +				spin_lock_irqsave(&dc->lock, flags);
-> > > > > > > +				dc->len -= len;
-> > > > > > > +				if (!dc->len) {
-> > > > > > > +					dc->len = total_len;
-> > > > > > > +					dc->state = D_PREP;
-> > > > > > > +					reinit_completion(&dc->wait);
-> > > > > > > +				} else {
-> > > > > > > +					dcc->undiscard_blks -= total_len;
-> > > > > > > +					if (dc->state == D_PARTIAL)
-> > > > > > > +						dc->state = D_SUBMIT;
-> > > > > > > +				}
-> > > > > > > +				err = dc->error;
-> > > > > > > +				dc->error = 0;
-> > > > > > > +				spin_unlock_irqrestore(&dc->lock, flags);
-> > > > > > > +				break;
-> > > > > > > +			}
-> > > > > > > +		}
-> > > > > > > +
-> > > > > > > +		atomic_inc(&dcc->queued_discard);
-> > > > > > > +		dc->queued++;
-> > > > > > > +		list_move_tail(&dc->list, wait_list);
-> > > > > > >  
-> > > > > > >  		atomic_inc(&dcc->issued_discard);
-> > > > > > >  
-> > > > > > > @@ -1214,8 +1239,9 @@ static int __submit_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > > > >  		len = total_len;
-> > > > > > >  	}
-> > > > > > >  
-> > > > > > > -	if (!err && len)
-> > > > > > > -		__update_discard_tree_range(sbi, bdev, lstart, start, len);
-> > > > > > > +	if ((!err || err == -EAGAIN) && total_len && dc->start != start)
-> > > > > > > +		__update_discard_tree_range(sbi, bdev, lstart, start,
-> > > > > > > +					total_len);
-> > > > > > >  	return err;
-> > > > > > >  }
-> > > > > > >  
-> > > > > > > @@ -1470,12 +1496,15 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > > > >  	struct list_head *pend_list;
-> > > > > > >  	struct discard_cmd *dc, *tmp;
-> > > > > > >  	struct blk_plug plug;
-> > > > > > > -	int i, issued = 0;
-> > > > > > > +	int i, err, issued = 0;
-> > > > > > >  	bool io_interrupted = false;
-> > > > > > > +	bool retry;
-> > > > > > >  
-> > > > > > >  	if (dpolicy->timeout != 0)
-> > > > > > >  		f2fs_update_time(sbi, dpolicy->timeout);
-> > > > > > >  
-> > > > > > > +retry:
-> > > > > > > +	retry = false;
-> > > > > > >  	for (i = MAX_PLIST_NUM - 1; i >= 0; i--) {
-> > > > > > >  		if (dpolicy->timeout != 0 &&
-> > > > > > >  				f2fs_time_over(sbi, dpolicy->timeout))
-> > > > > > > @@ -1509,7 +1538,12 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > > > >  				break;
-> > > > > > >  			}
-> > > > > > >  
-> > > > > > > -			__submit_discard_cmd(sbi, dpolicy, dc, &issued);
-> > > > > > > +			err = __submit_discard_cmd(sbi, dpolicy, dc, &issued);
-> > > > > > > +			if (err == -EAGAIN) {
-> > > > > > > +				congestion_wait(BLK_RW_ASYNC,
-> > > > > > > +						DEFAULT_IO_TIMEOUT);
-> > > > > > > +				retry = true;
-> > > > > > > +			}
-> > > > > > >  
-> > > > > > >  			if (issued >= dpolicy->max_requests)
-> > > > > > >  				break;
-> > > > > > > @@ -1522,6 +1556,9 @@ static int __issue_discard_cmd(struct f2fs_sb_info *sbi,
-> > > > > > >  			break;
-> > > > > > >  	}
-> > > > > > >  
-> > > > > > > +	if (retry)
-> > > > > > > +		goto retry;
-> > > > > > > +
-> > > > > > >  	if (!issued && io_interrupted)
-> > > > > > >  		issued = -1;
-> > > > > > >  
-> > > > > > > -- 
-> > > > > > > Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-> > > > > > > Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
-> > > > > 
-> > > > > -- 
-> > > > > --
-> > > > > Sent by a consultant of the Qualcomm Innovation Center, Inc.
-> > > > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
-> > > 
-> > > -- 
-> > > --
-> > > Sent by a consultant of the Qualcomm Innovation Center, Inc.
-> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
-> 
-> -- 
-> --
-> Sent by a consultant of the Qualcomm Innovation Center, Inc.
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+> diff --git a/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> new file mode 100644
+> index 000000000000..564208af7b2b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/chemical/ams,ccs811.yaml
+> @@ -0,0 +1,50 @@
+> +# SPDX-License-Identifier: GPL-2.0
+
+Preferred that all new binding docs are dual licensed with BSD as well
+to allow there use by things other than the kernel.
+
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/chemical/ams,ccs811.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: AMS CCS811 VOC Sensor
+> +
+> +maintainers:
+> +  - Narcisa Vasile <narcisaanamaria12@gmail.com>
+> +
+> +description: |
+> +  Ultra-Low Power Digital Gas Sensor for Monitoring Indoor Air Quality.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ams,ccs811
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    description: GPIO connected to the nRESET line. This is an active low
+> +                 input to CCS811.
+> +    maxItems: 1
+> +
+> +  wakeup-gpios:
+> +    description: GPIO connected to the nWAKE line. This is an active low
+> +                 input to CCS811.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      ccs811@5b {
+Hmm. Not sure we have a generic name in the dt spec for voc sensor.
+Even so we should try for something appropriate.
+
+Could go with voc@5b?
+
+> +        compatible = "ams,ccs811";
+> +        reg = <0x5b>;
+> +        reset-gpios = <&gpioa 11 GPIO_ACTIVE_LOW>;
+> +        wakeup-gpios = <&gpioa 12 GPIO_ACTIVE_LOW>;
+> +      };
+> +    };
+> +
+> +...
+
