@@ -2,169 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AFF61A6ECD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 23:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333DA1A6EDF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 00:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389397AbgDMV7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 17:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
+        id S2389446AbgDMWG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 18:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389370AbgDMV7q (ORCPT
+        by vger.kernel.org with ESMTP id S2389432AbgDMWGm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 17:59:46 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52593C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:59:46 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id s202so5516985oih.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 14:59:46 -0700 (PDT)
+        Mon, 13 Apr 2020 18:06:42 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4D5C0A3BDC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 15:06:42 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id w26so5237577qvd.10
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 15:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=W1jvaZsL9ZNbOXIeEh7lh6mCadCp7P3SgOJXcY82jUs=;
-        b=fR6+SAhVIiQCOMsGgNSxsf0AzuYSlO1eFDjPc36hkq9egFeXVkSC+Y5Uvev6njDR/Z
-         Ccn1Qk4b/bVSW3N54wHlDfwO5stF2Z+ZoeeqFaM3B9RzwhxxrX0lkdNFXJeM8RmKRB7f
-         KcPBwp5rtzO3z26M0wP/bhXLfO6nD5heoI2PcpTC8ZEFJkV8XB+F/h+zJpLL/z/pXSJl
-         Fv/7/GqzAND4oNa+GL4wyFXfETrKBiMqSwgu1Y95NU/oTGsrkAzYDfFtRvbplAL0brYq
-         j2YfRlWISTyyZ55FjD58H33cMih8KQ1GvAYGZjUxnTh+y+lGxcTVbrXFZnSehM3gFtsA
-         lyyw==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MVAxxHzDK/qARg7NchMjhRdvGGEcCTTmLqMEP50fxqk=;
+        b=oYZb4MqSZ8X2CE6Y/k0aOzKLtL53RMFv1ShrKS9kAZLiSxbTQ/wZMM0ryIYVQLFhhT
+         e+ZSddaE+zEhC3DF1QKsjRDUtNgJGnhRe9rM4lDBtjD6CloNjrA2WJk1gHzfbJum7MKL
+         lKs4zbUC+eR3iJV6Uc1ONNr9Jby+bhRhWhjIU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=W1jvaZsL9ZNbOXIeEh7lh6mCadCp7P3SgOJXcY82jUs=;
-        b=BmkO1zTU37ENeiDcXX71TAo1k2Cz9hWSw8E3hl2QHOrthstklc6Np1rBB5fBH0DDvs
-         MI1/Lvze7TnXDysrjp+8jFAKwgzZu4q3aZxg8xIq5TaPhHE6V80wuADKd5irpkZEkWIX
-         4orjGkKbP7Y9Yi1uVJhHHXfnXD+dcEMlvdpSvmK9g8j2kp0Br0O+LoVTOxq8slZtoIH0
-         wDghdMQQtzqFbQpZw1ZPm8w/SZfb3K31uaWYBypYjuE5toYIZLBKP4MpIqK787YOY8i5
-         BkRkic9aDNGjWDBeg8gqLHDnjRYBkHxbhjTLhH2/bk6V1sF1FLB0ZvhQS3GyTBUiQogN
-         kb2A==
-X-Gm-Message-State: AGi0PuaA1FjiqB5yTmLtAcws4wqRK4STMfMwd4VCU+coHCcZxzYEFXkr
-        HT1iV7PuuISXzfaJBaDYiA==
-X-Google-Smtp-Source: APiQypJJP7mXCuB0qdrq9bZfxsXY+fRU5oTstHBquZb+OTyQGMHDxMDi/vWRtblvSWINL21tfwv6sA==
-X-Received: by 2002:aca:fd12:: with SMTP id b18mr13548979oii.158.1586815185429;
-        Mon, 13 Apr 2020 14:59:45 -0700 (PDT)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id n2sm2869446oom.18.2020.04.13.14.59.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 14:59:44 -0700 (PDT)
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:8b39:c3f3:f502:5c4e])
-        by serve.minyard.net (Postfix) with ESMTPSA id F0A4918016D;
-        Mon, 13 Apr 2020 21:59:42 +0000 (UTC)
-Date:   Mon, 13 Apr 2020 16:59:41 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3]ipmi:bt-bmc:Avoid unnecessary judgement
-Message-ID: <20200413215941.GF3587@minyard.net>
-Reply-To: minyard@acm.org
-References: <20200408115958.2848-1-tangbin@cmss.chinamobile.com>
- <20200413113225.GB3587@minyard.net>
- <47c06465-9ae5-42c2-ca00-5c666521bbde@cmss.chinamobile.com>
- <20200413142348.GD3587@minyard.net>
- <3894dab2-0660-999c-6f4c-4b5b9ff57773@cmss.chinamobile.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MVAxxHzDK/qARg7NchMjhRdvGGEcCTTmLqMEP50fxqk=;
+        b=b/i/BmPSIM/HtFtj5TK13cY//DDA0Gj+uRwBQRE9nWNdZKDx2VDttLFueIOA4axKpv
+         PUMrf4Mc61ZoiYEBxvs/hD3SIaHRu9v5yFSnVo3tt64xroQAlNrctsoWFhE+G1vbv4WK
+         wS7y3SdgiO0uF6juwIrNTx0EPwg1ugV0e/d/sOEfKs23CkgFoKAbgPM9MniyItBub6eF
+         BoZyHsfjR3RLOL42I7+h5TCdxag/M5x6THk3zb9G2B+VxolC1/0ZKdEuSlCbLBKxcG0n
+         77I0yFb+Vm2sPSq3LQd7xSPJzVTdOUXg/ogM5eCn+aV1VxUt/OhZ82aetz545nbHrxwX
+         GCOA==
+X-Gm-Message-State: AGi0Pub1epz4z1n3DgL2FJN2mgshSIo6CIoAb0oKbUoJKC+4imCK+gzU
+        BUvSTuNHTYR7/95e5/Z3gRWhwr/vzpg=
+X-Google-Smtp-Source: APiQypKU6geFrM1HjAUlkoAlnIDWYvGCD51cqQyM/wyIC4KJ/VAPdmYD3+wWL1aR25Qt2xo2rV0JAg==
+X-Received: by 2002:a0c:f709:: with SMTP id w9mr19218904qvn.159.1586815601060;
+        Mon, 13 Apr 2020 15:06:41 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id z18sm10059297qtz.77.2020.04.13.15.06.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Apr 2020 15:06:40 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id i2so6093100ybk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 15:06:40 -0700 (PDT)
+X-Received: by 2002:a9f:27ca:: with SMTP id b68mr10592105uab.8.1586815210988;
+ Mon, 13 Apr 2020 15:00:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3894dab2-0660-999c-6f4c-4b5b9ff57773@cmss.chinamobile.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200410151632.4.I8fba5961bf452ab92350654aa61957f23ecf0100@changeid>
+ <202004110744.nPoRwmTD%lkp@intel.com>
+In-Reply-To: <202004110744.nPoRwmTD%lkp@intel.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 13 Apr 2020 14:59:59 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=UC-dKgmamNKFn_SEqcEisW1p4Z9iy8Nn8UqUxRsskZ3A@mail.gmail.com>
+Message-ID: <CAD=FV=UC-dKgmamNKFn_SEqcEisW1p4Z9iy8Nn8UqUxRsskZ3A@mail.gmail.com>
+Subject: Re: [PATCH 4/7] kgdboc: Add earlycon_kgdboc to support early kgdb
+ using boot consoles
+To:     Daniel Thompson <daniel.thompson@linaro.org>,
+        Jason Wessel <jason.wessel@windriver.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kbuild-all@lists.01.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Jonathan Corbet <corbet@lwn.net>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, bp@alien8.de,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kbuild test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 11:44:49PM +0800, Tang Bin wrote:
-> Hi Corey:
-> 
-> On 2020/4/13 22:23, Corey Minyard wrote:
-> > > Can I consider that the patch will be applied in 5.8？
-> > It's in my queue, so that's the plan.
-> > 
-> > > >    I
-> > > > changed the title to be "Avoid unnecessary check".
-> > > You have modified it, which means I don't need to submit a new patch？
-> > Correct.
-> 
-> Thank you very much, I am waiting for the applied.
-> 
-> 
-> Then, I have some questions to ask you:
-> 
->     I have checked the file bt-bmc.c carefully, and found that there are
-> another two problems.Please help me analyze them, if you think it is
-> feasible, then I will submit the patch.
-> 
->     Q1: About Format Problem
-> 
->            In the 469~471 line, the first letter should be indented, please
-> check if the writing here is reasonable?
-> 
+Hi,
 
-I'm not sure how that happened.  It was that way from the original
-submitter and nobody noticed in review.  It's obviously wrong.
+On Fri, Apr 10, 2020 at 4:56 PM kbuild test robot <lkp@intel.com> wrote:
+>
+> Hi Douglas,
+>
+> I love your patch! Yet something to improve:
+>
+> [auto build test ERROR on arm64/for-next/core]
+> [also build test ERROR on tty/tty-testing v5.6 next-20200410]
+> [cannot apply to kgdb/kgdb-next]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+>
+> url:    https://github.com/0day-ci/linux/commits/Douglas-Anderson/kgdb-Support-late-serial-drivers-enable-early-debug-w-boot-consoles/20200411-062123
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+> config: microblaze-mmu_defconfig (attached as .config)
+> compiler: microblaze-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         GCC_VERSION=9.3.0 make.cross ARCH=microblaze
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/misc/kgdbts.c: In function 'configure_kgdbts':
+> >> drivers/misc/kgdbts.c:1080:8: error: too few arguments to function 'kgdb_register_io_module'
+>     1080 |  err = kgdb_register_io_module(&kgdbts_io_ops);
 
-> 
->     Q2: About the function bt_bmc_config_irq()
-> 
->           1）In the function bt_bmc_probe(), the return value of
-> bt_bmc_config_irq() made no judgement, whether it is suitable? （If your
-> view is don't need to judge, the following will change.）
-> 
+Sigh, I knew I'd forget something stupid.  I have a fix for this and
+have confirmed that "kgdbts" continues to work after I fix it.
+Running it also found splats similar to what I fixed for "kgdboc" in
+commit 81eaadcae81b ("kgdboc: disable the console lock when in kgdb").
+I'll att a commit to my next version to move that fix into the kgdb
+core and then remove it from "kgdboc".
 
-Hmm, that's probably not a big deal.  If it fails irqs are just not
-used.  It probably shouldn't return a value, though.
+I'm not setup to use kgdb over EHCI so I'll just fix that so it
+compiles and trust that it continues to work.
 
-> 
->           2）According to the kernel interface of platform_get_irq(),the
-> return value is negative,
-> 
->                    if (!bt_bmc->irq)
->                         return -ENODEV;
-> 
->                so the check here is invalid.The standard way to write is:
-> 
->                      if (bt_bmc->irq < 0)
->                           return bt_bmc->irq;
-> 
->                But consider if failed, "bt_bmc->irq" must be assigned to
-> "0"，the easiest way is to delete the        403~404 line, handled directly
-> by the function devm_request_irq().
+For now I'll hold up on sending a new version to await feedback on v1.
+If I don't hear anything after a little while I'll send a v2 with just
+these fixes.
 
-The problem you point out is real, the check should be < 0.
-
-You don't want it handled by devm_request_irq, that could result in logs
-that are invalid.
-
-Also, it should use platform_get_irq_optional() to avoid a spurrious log
-when there is no irq.
-
-> 
-> 
->         Q3：About dev_warm()
-> 
->                 KERN_WARNING is higher than KERN_INFO, the same to
-> dev_warn() and dev_info(). When the function bt_bmc_probe() uses dev_info()
-> to print error message, the dev_warm() in the line of 409 should be
-> redundant.
-
-That is all correct as it is.  If there is an irq specified and it can't
-be requested, that is a problem.  If there is no irq specified, that is
-fine, just info is good.
-
-Thanks,
-
--corey
-
-> 
-> 
-> I am waiting for your replay, and thank you for your guidance.
-> 
-> Tang Bin
-> 
-> 
-> 
+-Doug
