@@ -2,145 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FA51A687D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4401A6883
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 17:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbgDMPIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 11:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727959AbgDMPIu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 11:08:50 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE82C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 08:08:50 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k11so9867608wrp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 08:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lmXdNG7xBS4HYOxfe0aKo5VaQiBEjto7UlYRcKbMIBk=;
-        b=NJiZYCUSLiuhyUkWZ/51MM7ZoS/pr/Rjd/1JM/5+yC6o1ffI+oyOkWnnL0lCNS+IYY
-         nzovxt4dozYeB9UX6GZ5Gt91FQv3FrOLt+8JCpHubkXFcOJZsIVqi0IBYf4m65B8vJef
-         Sml9ddEQ7CBt2kOyMwuWspVjKzDftw5jAe4B01txMaU834r1cNQquq5MLrexj9PKuy+8
-         sN0vn6p6VieBkBAbioOn6DHP4GbqmUq6q5dThpw9wENcCCHc2e16KEU4NITIcyAwUcAh
-         Tsjr6j/zJpNcuMlncfgTyPZwBCDMYkSFaxVMiZMj1FrcMUBl3O7ke0g64DURYjaWUZiA
-         dNoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lmXdNG7xBS4HYOxfe0aKo5VaQiBEjto7UlYRcKbMIBk=;
-        b=nK7KCljJj8lzJaUTUfu7AJVh7KWsL+U/tvfFUzNNZVql/peUh7ssy78mfOu4o+61d0
-         opwc5oI0m7hT8SGWtoB8YVVu91bBWhaY4gB/DYApZywkfoE12YlzQ20yI7EuUq9A7s8w
-         2Z1tqJHAcbPoxz9ZCifuBQ9GGLr5OAAWr4KNJzo7FlVnT1rc+nktO+KGML+q0s0RzdPQ
-         falLBLkB1iA0X1Q5sMGEnxxWo/0AZnmkjAfXHw+lOZZko7Lxj2bn08zArAc1aeElGTRX
-         RTHEpvcSWxb2Nf+9XvyB50SQ+2IPQVCTb9Sh4HsW1ZG85yf3OcT8Ty9WsJcokC0scYjJ
-         0h8A==
-X-Gm-Message-State: AGi0PuZs5cYtSzrU1OqK5wAjtYVrF+GWGlm/TWQJdGvLl4XdPJVqqc+O
-        fjiteC5Agy/+KpuljXQkW1fd5K9vO1jk9fzdmgU=
-X-Google-Smtp-Source: APiQypKWKFV+YEIjqwbr/X00Qq4OT5SRvkZuOT0CS3Tzf7C520HWjeFaeOiqOB44PBaFnwKSzs96FrHRsavN2XY4UDg=
-X-Received: by 2002:adf:fe45:: with SMTP id m5mr10952707wrs.124.1586790529368;
- Mon, 13 Apr 2020 08:08:49 -0700 (PDT)
+        id S1729675AbgDMPMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 11:12:06 -0400
+Received: from mga18.intel.com ([134.134.136.126]:10948 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728109AbgDMPMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 11:12:03 -0400
+IronPort-SDR: ueho4ZPEHhnjcyGHYvE7m3YPjtdQFjeFC8Wyz1WzPD793IGU1wj8f9imEeeY3HxwXab5Oc85he
+ 1LPdzymQTSGg==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 08:12:02 -0700
+IronPort-SDR: 5ovm+3aNlY5JeFBIp9hCB57sR/i0YZc9XXs/RuhyVpRwbXl7IbEuP2IyUpzW3KpyM647xsdQE/
+ fjV2Ufjl/PXA==
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="453186629"
+Received: from ahduyck-mobl1.amr.corp.intel.com (HELO [10.254.29.128]) ([10.254.29.128])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 08:12:02 -0700
+Subject: Re: [RFC PATCH 4/4] mm: Add PG_zero support
+To:     Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <20200412090945.GA19582@open-light-1.localdomain>
+ <20200412101223.GK21484@bombadil.infradead.org>
+From:   Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Message-ID: <5eb37d79-6420-fcb9-2b4c-6cc6194afcd9@linux.intel.com>
+Date:   Mon, 13 Apr 2020 08:11:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200413082249.23271-1-yanaijie@huawei.com>
-In-Reply-To: <20200413082249.23271-1-yanaijie@huawei.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 13 Apr 2020 11:08:38 -0400
-Message-ID: <CADnq5_MkfeC+0pVqOOBfHMp3hA3-wHJN2fNcg0s10XAcFM+DTA@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: code clean up in dce80_hw_sequencer.c
-To:     Jason Yan <yanaijie@huawei.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Chunming Zhou <David1.Zhou@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Cheng, Tony" <Tony.Cheng@amd.com>,
-        Anthony Koo <Anthony.Koo@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200412101223.GK21484@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 13, 2020 at 5:29 AM Jason Yan <yanaijie@huawei.com> wrote:
->
-> Fix the following gcc warning:
->
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dce80/dce80_hw_sequencer.c:43:46=
-:
-> warning: =E2=80=98reg_offsets=E2=80=99 defined but not used [-Wunused-con=
-st-variable=3D]
->  static const struct dce80_hw_seq_reg_offsets reg_offsets[] =3D {
->                                               ^~~~~~~~~~~
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Jason Yan <yanaijie@huawei.com>
+On 4/12/2020 3:12 AM, Matthew Wilcox wrote:
+> On Sun, Apr 12, 2020 at 05:09:49AM -0400, liliangleo wrote:
+>> Zero out the page content usually happens when allocating pages,
+>> this is a time consuming operation, it makes pin and mlock
+>> operation very slowly, especially for a large batch of memory.
+>>
+>> This patch introduce a new feature for zero out pages before page
+>> allocation, it can help to speed up page allocation.
+>>
+>> The idea is very simple, zero out free pages when the system is
+>> not busy and mark the page with PG_zero, when allocating a page,
+>> if the page need to be filled with zero, check the flag in the
+>> struct page, if it's marked as PG_zero, zero out can be skipped,
+>> it can save cpu time and speed up page allocation.
+> 
+> We are very short on bits in the page flags.  If we can implement this
+> feature without using another one, this would be good.
+> 
+> If the bit is only set on pages which are PageBuddy(), we can definitely
+> find space for it as an alias of another bit.
 
-Applied.  Thanks!
 
-Alex
+I had considered doing something similar several months back because one 
+of the side effects in the VM is that most of the pages appear to have 
+been zeroed by page reporting. However the problem is that in order to 
+handle the zeroing case you have to push the flag outside the PageBuddy 
+region, and you cannot guarantee that the page is even expected to be 
+zeroed since it might have been zeroed before it was freed, so it is 
+just adding work of having to clear an extra flag some time after 
+allocation.
 
-> ---
->  .../amd/display/dc/dce80/dce80_hw_sequencer.c | 28 -------------------
->  1 file changed, 28 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_hw_sequencer.c b/=
-drivers/gpu/drm/amd/display/dc/dce80/dce80_hw_sequencer.c
-> index 893261c81854..d2ceebdbdf51 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_hw_sequencer.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_hw_sequencer.c
-> @@ -36,34 +36,6 @@
->  #include "dce/dce_8_0_d.h"
->  #include "dce/dce_8_0_sh_mask.h"
->
-> -struct dce80_hw_seq_reg_offsets {
-> -       uint32_t crtc;
-> -};
-> -
-> -static const struct dce80_hw_seq_reg_offsets reg_offsets[] =3D {
-> -{
-> -       .crtc =3D (mmCRTC0_CRTC_GSL_CONTROL - mmCRTC_GSL_CONTROL),
-> -},
-> -{
-> -       .crtc =3D (mmCRTC1_CRTC_GSL_CONTROL - mmCRTC_GSL_CONTROL),
-> -},
-> -{
-> -       .crtc =3D (mmCRTC2_CRTC_GSL_CONTROL - mmCRTC_GSL_CONTROL),
-> -},
-> -{
-> -       .crtc =3D (mmCRTC3_CRTC_GSL_CONTROL - mmCRTC_GSL_CONTROL),
-> -},
-> -{
-> -       .crtc =3D (mmCRTC4_CRTC_GSL_CONTROL - mmCRTC_GSL_CONTROL),
-> -},
-> -{
-> -       .crtc =3D (mmCRTC5_CRTC_GSL_CONTROL - mmCRTC_GSL_CONTROL),
-> -}
-> -};
-> -
-> -#define HW_REG_CRTC(reg, id)\
-> -       (reg + reg_offsets[id].crtc)
-> -
->  /***********************************************************************=
-********
->   * Private definitions
->   ***********************************************************************=
-*******/
-> --
-> 2.21.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+In addition, unlike madvising the page away there is a pretty 
+significant performance penalty for having to clear the page a second 
+time when the page is split or merged.
