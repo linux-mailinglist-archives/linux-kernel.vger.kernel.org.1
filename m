@@ -2,112 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E0F1A636C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:07:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F42C1A63A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729149AbgDMHHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 03:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:57002 "EHLO
+        id S1729285AbgDMH0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:60290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727544AbgDMHHH (ORCPT
+        with ESMTP id S1727612AbgDMH0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 03:07:07 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0816C008651;
-        Mon, 13 Apr 2020 00:07:05 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id 65so9217289wrl.1;
-        Mon, 13 Apr 2020 00:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=AAv/DZIIqObpFGeuaX2msSUs1tzPRF/Ik5oZ/oe4Msw=;
-        b=GxPUIOQc1pkI91EKUzGLU+h8wVXFyWA+PWpEfNbqlfBG6isc+YN+GtlVCFModDU+lU
-         3/xJ0tGwG8EnhevVYL1Xm1vzZxBEhJcOX0/0e+AJ+yqet4iyAXxQJDTcuTonUc140Hwv
-         5x/dbuMt4LhpHeRKNlAbMomCi2Z1qig2UJ7oGWp1AdmXAwse5kj1xiQWknMQDVAsDHaS
-         BGEzUPwQas933q7whObeYE30gOYv8dzjUrp3uPTeg8kEhDS0Hj7WGqAgbsN97IZaED+z
-         SllAMWJ516LMKa1PNwXKwG3FJqnAqRSR51jhKd7WJEspSjUQ/ZX0MQGVRHiMJqwV4iSr
-         IdfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=AAv/DZIIqObpFGeuaX2msSUs1tzPRF/Ik5oZ/oe4Msw=;
-        b=saNOb+C5mz0FP1Brds8n5OCQkJ4tdV92Y6dlQCNxxy8oFob9T64DZtoU4iYlebMlTZ
-         4CMbVtFFsel0Y7o0Jv0sEj33+LVSP+/iiwrM2hP3z+Yj/i+dJ9CzG1QbY73CjWIQp+da
-         gP6kKoUC9pmsQtvQEW1o1b9K/LgFE/yQyghrbe9FVdan4prEvq4d7SrhI4qTmgwUEMd4
-         ft5u5EYtPcoAJ3bBInqln75DA+WtOAtaj40RBIPHljPQlHos6m1XWdEP/ZZouKtOoIfP
-         cO+o03u/TaBJwAaqzz9OdiJ7KDpDFkVJIwCRZCP5DIqNk7kuBhtAOYMr8qZjcJ5g9SZN
-         EJpQ==
-X-Gm-Message-State: AGi0PuYlC24tNHgTv1nT7wPjyUGOGsFClUxL6KH+xcpaDSqgg8dBEJCN
-        sCUk+zyfSl74hAnZHF/5Bu4=
-X-Google-Smtp-Source: APiQypLTafHisWQ43wHE8ka6qzevNdAkeaCgrnVZbGgzHgnjRaYxOf9JhrdyAQuGeO8eF3HBAoDsWg==
-X-Received: by 2002:adf:cd12:: with SMTP id w18mr17078764wrm.311.1586761624661;
-        Mon, 13 Apr 2020 00:07:04 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2da9:2f00:c0be:812e:7fb0:ebe0])
-        by smtp.gmail.com with ESMTPSA id q18sm7173352wmj.11.2020.04.13.00.07.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 00:07:03 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Joe Perches <joe@perches.com>, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2] MAINTAINERS: correct typo in new NXP LAYERSCAPE GEN4
-Date:   Mon, 13 Apr 2020 09:06:49 +0200
-Message-Id: <20200413070649.7014-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 13 Apr 2020 03:26:15 -0400
+Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2657C008651;
+        Mon, 13 Apr 2020 00:26:14 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="5.72,377,1580745600"; 
+   d="scan'208";a="88939532"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 13 Apr 2020 15:26:13 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id A6AFD50A9999;
+        Mon, 13 Apr 2020 15:15:42 +0800 (CST)
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.83) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Mon, 13 Apr 2020 15:26:13 +0800
+Received: from Fedora-31.g08.fujitsu.local (10.167.220.31) by
+ G08CNEXCHPEKD02.g08.fujitsu.local (10.167.33.89) with Microsoft SMTP Server
+ id 14.3.439.0; Mon, 13 Apr 2020 15:26:09 +0800
+From:   Xiao Yang <yangx.jy@cn.fujitsu.com>
+To:     <rostedt@goodmis.org>, <mingo@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-trace-devel@vger.kernel.org>,
+        Xiao Yang <yangx.jy@cn.fujitsu.com>
+Subject: [PATCH] tracing: Fix the race between registering 'snapshot' event trigger and triggering 'snapshot' operation
+Date:   Mon, 13 Apr 2020 15:12:52 +0800
+Message-ID: <20200413071252.13720-1-yangx.jy@cn.fujitsu.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: A6AFD50A9999.ACC61
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@cn.fujitsu.com
+X-Spam-Status: No
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 3edeb49525bb ("dt-bindings: PCI: Add NXP Layerscape SoCs PCIe Gen4
-controller") includes a new entry in MAINTAINERS, but slipped in a typo in
-one of the file entries.
+Traced event can trigger 'snapshot' operation(i.e. calls snapshot_trigger()
+or snapshot_count_trigger()) when register_snapshot_trigger() has completed
+registration but doesn't allocate spare buffer for 'snapshot' event trigger.
+'snapshot' operation always detects the lack of allocated buffer in the rare
+case so make register_snapshot_trigger() allocate spare buffer first.
 
-Hence, since then, ./scripts/get_maintainer.pl --self-test complains:
+trigger-snapshot.tc in kselftest reproduces the issue on slow vm:
+-----------------------------------------------------------
+cat trace
+...
+ftracetest-3028  [002] ....   236.784290: sched_process_fork: comm=ftracetest pid=3028 child_comm=ftracetest child_pid=3036
+     <...>-2875  [003] ....   240.460335: tracing_snapshot_instance_cond: *** SNAPSHOT NOT ALLOCATED ***
+     <...>-2875  [003] ....   240.460338: tracing_snapshot_instance_cond: *** stopping trace here!   ***
+-----------------------------------------------------------
 
-  warning: no file matches F: \
-    drivers/pci/controller/mobibeil/pcie-layerscape-gen4.c
-
-Correct the typo in PCI DRIVER FOR NXP LAYERSCAPE GEN4 CONTROLLER.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
-Rob, please pick this patch (it is not urgent, though).
+ kernel/trace/trace_events_trigger.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-v1: https://lore.kernel.org/lkml/20200314142559.13505-1-lukas.bulwahn@gmail.com/
-  - already received: Reviewed-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-  - Bjorn Helgaas' suggestion to squash this into commit 3edeb49525bb
-    ("dt-bindings: PCI: Add NXP Layerscape SoCs PCIe Gen4 controller") before
-    merging upstream did not happen.
-
-v1 -> v2:
-  - v1 does not apply after reordering MAINTAINERS, i.e., commit 4400b7d68f6e
-    ("MAINTAINERS: sort entries by entry name") and commit 3b50142d8528
-    ("MAINTAINERS: sort field names for all entries").
-  - PATCH v2 applies on v5.7-rc1 now. Please pick v2 instead of v1.
-
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e64e5db31497..0fd27329e6f7 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12941,7 +12941,7 @@ L:	linux-pci@vger.kernel.org
- L:	linux-arm-kernel@lists.infradead.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/pci/layerscape-pcie-gen4.txt
--F:	drivers/pci/controller/mobibeil/pcie-layerscape-gen4.c
-+F:	drivers/pci/controller/mobiveil/pcie-layerscape-gen4.c
+diff --git a/kernel/trace/trace_events_trigger.c b/kernel/trace/trace_events_trigger.c
+index dd34a1b46a86..00e54cdcef3e 100644
+--- a/kernel/trace/trace_events_trigger.c
++++ b/kernel/trace/trace_events_trigger.c
+@@ -1088,9 +1088,13 @@ register_snapshot_trigger(char *glob, struct event_trigger_ops *ops,
+ 			  struct event_trigger_data *data,
+ 			  struct trace_event_file *file)
+ {
+-	int ret = register_trigger(glob, ops, data, file);
++	int alloc_ret, ret;
  
- PCI DRIVER FOR RENESAS R-CAR
- M:	Marek Vasut <marek.vasut+renesas@gmail.com>
+-	if (ret > 0 && tracing_alloc_snapshot_instance(file->tr) != 0) {
++	alloc_ret = tracing_alloc_snapshot_instance(file->tr);
++
++	ret = register_trigger(glob, ops, data, file);
++
++	if (ret > 0 && alloc_ret != 0) {
+ 		unregister_trigger(glob, ops, data, file);
+ 		ret = 0;
+ 	}
 -- 
-2.17.1
+2.25.1
+
+
 
