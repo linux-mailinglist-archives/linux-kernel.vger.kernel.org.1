@@ -2,148 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AAE1A6418
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52811A641D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728168AbgDMINZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 04:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41038 "EHLO
+        id S1729337AbgDMIQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 04:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:42114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727975AbgDMILL (ORCPT
+        with ESMTP id S1727971AbgDMIQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 04:11:11 -0400
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9E3C00860B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 01:11:10 -0700 (PDT)
-Received: by mail-il1-f199.google.com with SMTP id a15so9874427ild.14
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 01:11:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jkRD3ZLCGbnan/OLqHZy5Z7Id1+L0JF7pFHOJuXWPhg=;
-        b=RpSb3xM0+NEutg5nzXbO27WsZxfQZdHkwOGOmLZyTI06s8n9Stl3Yi2Suv11USrkl0
-         owdzrtfjlMfQAfqV8BS4CmMvj5KVZ6lpeFWJEMrAJRIcemQ5px42yoo6MQQ1cfx/PMAq
-         STglUcEdSUZZvtb2EJDdGO1fd6h5e7EkEKJ+cV0RVoPXsIMr8HPmHGja4F3dksivKWm6
-         xxShRd1MDPoFaE/lVXWMCQ1HOLJDQ5VEUQCtL9liUPBs+Oi0t5Eqcsh6kiyawflYq3Se
-         7+XPhtOojLu/gPQMNPTCP1vgDfXAZhb+Yhsm9CCFt5VlKyKU83JYIuQgAGLh89ig7GBO
-         IDKw==
-X-Gm-Message-State: AGi0PubO5hRbjVNc1uUC9ImsfDw+xeFhInEqv46rW+k2TPijePsDAgms
-        bIhatcuBBtu4xJC2fPMhQBoLulxMF91mjrkubefl2q1yOf0K
-X-Google-Smtp-Source: APiQypLfmW8Gz/2+IzV0DfXYXUiT489hPKS6/y+oTe8VDMFmIXSrDsXgDJxH6AcKDUigDQQJjQezYrJchYMOc4VL4SS0+3V/qR0M
+        Mon, 13 Apr 2020 04:16:19 -0400
+Received: from mx06.melco.co.jp (mx06.melco.co.jp [192.218.140.146])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B42EC00860B;
+        Mon, 13 Apr 2020 01:16:19 -0700 (PDT)
+Received: from mr06.melco.co.jp (mr06 [133.141.98.164])
+        by mx06.melco.co.jp (Postfix) with ESMTP id 13D123A4140;
+        Mon, 13 Apr 2020 17:16:17 +0900 (JST)
+Received: from mr06.melco.co.jp (unknown [127.0.0.1])
+        by mr06.imss (Postfix) with ESMTP id 4911fS74ZwzRjMR;
+        Mon, 13 Apr 2020 17:16:16 +0900 (JST)
+Received: from mf03_second.melco.co.jp (unknown [192.168.20.183])
+        by mr06.melco.co.jp (Postfix) with ESMTP id 4911fS6mF5zRjKP;
+        Mon, 13 Apr 2020 17:16:16 +0900 (JST)
+Received: from mf03.melco.co.jp (unknown [133.141.98.183])
+        by mf03_second.melco.co.jp (Postfix) with ESMTP id 4911fS6cfYzRkCv;
+        Mon, 13 Apr 2020 17:16:16 +0900 (JST)
+Received: from JPN01-OS2-obe.outbound.protection.outlook.com (unknown [104.47.92.59])
+        by mf03.melco.co.jp (Postfix) with ESMTP id 4911fS69rczRk8h;
+        Mon, 13 Apr 2020 17:16:16 +0900 (JST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ASqxjPJVFccHAldcb1dJBhtOd2Pg7icaSMNpu7v0sSVptiHa29ofTeye+Nvu3iP2hwnhyyasWUxardjPbqQ1WEwBUvdAQnllzhf+2tzwPG0TKTJ/y+9yMIxuggKil7dRfz1mgaTnHrWbXS2FlUPI5UqiHS0DyJgKkOFr6m+hdiKFy4Wa2N/o0IbcAtC+NZNo0IkBaQwYP88F1ukFEEXsSXseNlRsmuCCoQJkDbRM2HAcM14WvawEAvEQ4uyVTAiZpZtSsfWMJmQjAvb1w7oUtk0V70RwVjaSI3Dxw9T/Q44MlLLxmN3c9NkGwn8pqMzwCb9WPFSquDnDsWT5WXlDzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zht/yYmsPAY4Xs5tzCVoLHlW9PaYN10OQpTtmgxjyUQ=;
+ b=XYrcdev1n6bemJy+5JxLkVYx5bO7Cal36XQPoH7pvvNTno70CpKvqOygkDRxl4OfPH08M23WA89WXMP5iJB43oIujP7LVVXwKP8Qzh6Ns9DrzW/0wlehiZRXN6R4E/EPrfyaMZGYV1JuQRrGU8isEmv46o0WanvjhjoTXT2ituQ5sde7vHl3cPNy9SOBZB5qUpbXm+58HoKx8ikCdHGFpwErsR6KGjR+A/WwsyxLuZ5PHG31gNJmatf45MuRSA3LY/Jw+XCLwsQ3oV0friDyMXR4RZVbFBpNiCqi+7UGOZ1G+g2+oVpDFKesNk3+NRTGcGgtxugxlgY4wWGP6f8dMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dc.mitsubishielectric.co.jp; dmarc=pass action=none
+ header.from=dc.mitsubishielectric.co.jp; dkim=pass
+ header.d=dc.mitsubishielectric.co.jp; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mitsubishielectricgroup.onmicrosoft.com;
+ s=selector2-mitsubishielectricgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zht/yYmsPAY4Xs5tzCVoLHlW9PaYN10OQpTtmgxjyUQ=;
+ b=Gza5qcbvMIbRmfVMhr0j7N0aKVIfcWlrPikAi/D8LmkxVR+YxSsvgJmhlIWrk7n6zQc09ZeTmfYv7dpKq9ipZ3HvlK8ktgmUSeEN9eV05LbRGwkU96OXoW1tAu70AB2SXv9zxCvV2jnrxiAWjQZsdDNIKVShyb5+v2S57rjhPkA=
+Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com (52.133.161.22) by
+ TY1PR01MB1849.jpnprd01.prod.outlook.com (52.133.161.146) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2900.28; Mon, 13 Apr 2020 08:16:16 +0000
+Received: from TY1PR01MB1578.jpnprd01.prod.outlook.com
+ ([fe80::c5d6:a88e:62c6:4b96]) by TY1PR01MB1578.jpnprd01.prod.outlook.com
+ ([fe80::c5d6:a88e:62c6:4b96%3]) with mapi id 15.20.2878.022; Mon, 13 Apr 2020
+ 08:16:16 +0000
+From:   "Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp" 
+        <Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp>
+To:     =?utf-8?B?J1BhbGkgUm9ow6FyJw==?= <pali@kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
+CC:     "'linux-fsdevel@vger.kernel.org'" <linux-fsdevel@vger.kernel.org>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'namjae.jeon@samsung.com'" <namjae.jeon@samsung.com>,
+        "'sj1557.seo@samsung.com'" <sj1557.seo@samsung.com>
+Subject: RE: [PATCH 1/4] exfat: Simplify exfat_utf8_d_hash() for code points
+ above U+FFFF
+Thread-Topic: [PATCH 1/4] exfat: Simplify exfat_utf8_d_hash() for code points
+ above U+FFFF
+Thread-Index: AQHWCfgm33iC4HYp6U6hpobeaScABqhrVdFggAIevgCAARtD4IAAZbCAgAd0CHA=
+Date:   Mon, 13 Apr 2020 08:13:45 +0000
+Deferred-Delivery: Mon, 13 Apr 2020 08:16:00 +0000
+Message-ID: <TY1PR01MB15784063EED4CEC93A2B501390DD0@TY1PR01MB1578.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB15782019FA3094015950830590C70@TY1PR01MB1578.jpnprd01.prod.outlook.com>
+ <20200403204037.hs4ae6cl3osogrso@pali>
+ <TY1PR01MB1578D63C6F303DE805D75DAA90C20@TY1PR01MB1578.jpnprd01.prod.outlook.com>
+ <20200407100648.phkvxbmv2kootyt7@pali>
+ <TY1PR01MB1578892F886C62868F87663B90C00@TY1PR01MB1578.jpnprd01.prod.outlook.com>
+ <20200408090435.i3ufmbfinx5dyd7w@pali>
+In-Reply-To: <20200408090435.i3ufmbfinx5dyd7w@pali>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-melpop: 1
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Kohada.Tetsuhiro@dc.MitsubishiElectric.co.jp; 
+x-originating-ip: [121.80.0.162]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: adc98d28-5756-4de2-7ea6-08d7df82f021
+x-ms-traffictypediagnostic: TY1PR01MB1849:
+x-microsoft-antispam-prvs: <TY1PR01MB18499D4D2E3EF81220D93BAB90DD0@TY1PR01MB1849.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 037291602B
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1578.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10019020)(376002)(396003)(366004)(346002)(39860400002)(136003)(5660300002)(33656002)(2906002)(26005)(478600001)(186003)(8676002)(66556008)(66446008)(52536014)(9686003)(55016002)(54906003)(4326008)(110136005)(66946007)(8936002)(76116006)(64756008)(66476007)(6506007)(86362001)(7696005)(71200400001)(81156014)(316002)(6666004);DIR:OUT;SFP:1102;
+received-spf: None (protection.outlook.com: dc.MitsubishiElectric.co.jp does
+ not designate permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: esXop6033GcWd0Kpz+HDbMRC1IaQZFRCARSR6x0uvupPsV4qNGh4QTCsaoVvQppRjn8gpIrWMQD3wbhF5gk5BlS+WWJoIH+O+BA9m3+r1hPIoSo8qIdIAtrzWNSVOQb/Vq/HzQO8DYvFa5M0iNvQXoaqg/7XC2E7Lf1DNVspSH+nq3CM3aOChaxEFunJ3xPdE7ewqlKjldo9jHAcjM7nDnISn3fvCzfpmIYJQLNvEOJdp9+4sFdl6aSrbZPnfM6NEI8cjywBUh2gy2iTqlgbwEMDf8igbnqS5ZjyW6HCO0ik0IUpmuu6dqX1yrmIdQi8Y7zParrbJNfWtJK9ZFQaUKG4oueA4zDy6wG3CZMSeQqO1ep82PvNAPQQrzC6VhBZFQjB6CWhFhQL+e0ZOQu90JFBVBMFbJpRYmolMecsqceYdX8bkLGg5iZ26kObVCN0
+x-ms-exchange-antispam-messagedata: Rn3n6uSWga6aRdXuvl4JPX7PecqKpqzviOt7xHxpTfsbKL9qveA/2sFUrr1aCnL5CvrvCj26LqybTXFfZ7NXD0jSrbOAXae084uB4CLNA2j/fgx/NkEgjt7brrTi3In8I1HaOVyBZu7PdSXQTeQOUg==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-Received: by 2002:a6b:650f:: with SMTP id z15mr4529166iob.162.1586765470304;
- Mon, 13 Apr 2020 01:11:10 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 01:11:10 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003311fd05a327a060@google.com>
-Subject: KASAN: slab-out-of-bounds Read in gfn_to_memslot
-From:   syzbot <syzbot+2e0179e5185bcd5b9440@syzkaller.appspotmail.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: dc.MitsubishiElectric.co.jp
+X-MS-Exchange-CrossTenant-Network-Message-Id: adc98d28-5756-4de2-7ea6-08d7df82f021
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2020 08:16:16.2664
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c5a75b62-4bff-4c96-a720-6621ce9978e5
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZYg9gSuQL5/Mge3Expwkq1/YoMU2SAMQ0VgXRSjY8A8+aFLTlE6JjOJh9z0i7XW354MhLji7zatxVNsncUPbjQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY1PR01MB1849
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    4f8a3cc1 Merge tag 'x86-urgent-2020-04-12' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=104b9407e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3bfbde87e8e65624
-dashboard link: https://syzkaller.appspot.com/bug?extid=2e0179e5185bcd5b9440
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e78c7de00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14cf613fe00000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+2e0179e5185bcd5b9440@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in search_memslots include/linux/kvm_host.h:1051 [inline]
-BUG: KASAN: slab-out-of-bounds in __gfn_to_memslot include/linux/kvm_host.h:1063 [inline]
-BUG: KASAN: slab-out-of-bounds in gfn_to_memslot+0x275/0x470 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1597
-Read of size 8 at addr ffff888097b31468 by task syz-executor165/9960
-
-CPU: 0 PID: 9960 Comm: syz-executor165 Not tainted 5.6.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1e9/0x30e lib/dump_stack.c:118
- print_address_description+0x74/0x5c0 mm/kasan/report.c:382
- __kasan_report+0x103/0x1a0 mm/kasan/report.c:511
- kasan_report+0x4d/0x80 mm/kasan/common.c:625
-
-Allocated by task 9966:
- save_stack mm/kasan/common.c:49 [inline]
- set_track mm/kasan/common.c:57 [inline]
- __kasan_kmalloc+0x114/0x160 mm/kasan/common.c:495
- kmalloc_node include/linux/slab.h:578 [inline]
- kvmalloc_node+0x81/0x100 mm/util.c:574
- kvmalloc include/linux/mm.h:757 [inline]
- kvzalloc include/linux/mm.h:765 [inline]
- kvm_dup_memslots arch/x86/kvm/../../../virt/kvm/kvm_main.c:1101 [inline]
- kvm_set_memslot+0x124/0x15b0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1118
- __kvm_set_memory_region+0x1388/0x16c0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1300
- kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1321 [inline]
- kvm_vm_ioctl_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1333 [inline]
- kvm_vm_ioctl+0x930/0x2530 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3604
- vfs_ioctl fs/ioctl.c:47 [inline]
- ksys_ioctl fs/ioctl.c:763 [inline]
- __do_sys_ioctl fs/ioctl.c:772 [inline]
- __se_sys_ioctl+0xf9/0x160 fs/ioctl.c:770
- do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-Freed by task 8700:
- save_stack mm/kasan/common.c:49 [inline]
- set_track mm/kasan/common.c:57 [inline]
- kasan_set_free_info mm/kasan/common.c:317 [inline]
- __kasan_slab_free+0x125/0x190 mm/kasan/common.c:456
- __cache_free mm/slab.c:3426 [inline]
- kfree+0x10a/0x220 mm/slab.c:3757
- kvm_free_memslots arch/x86/kvm/../../../virt/kvm/kvm_main.c:601 [inline]
- kvm_destroy_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:810 [inline]
- kvm_put_kvm+0xa8d/0xcb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:828
- kvm_vm_release+0x42/0x50 arch/x86/kvm/../../../virt/kvm/kvm_main.c:851
- __fput+0x2ed/0x750 fs/file_table.c:280
- task_work_run+0x147/0x1d0 kernel/task_work.c:123
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_usermode_loop arch/x86/entry/common.c:165 [inline]
- prepare_exit_to_usermode+0x48e/0x600 arch/x86/entry/common.c:196
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-
-The buggy address belongs to the object at ffff888097b31000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 1128 bytes inside of
- 2048-byte region [ffff888097b31000, ffff888097b31800)
-The buggy address belongs to the page:
-page:ffffea00025ecc40 refcount:1 mapcount:0 mapping:00000000499db978 index:0x0
-flags: 0xfffe0000000200(slab)
-raw: 00fffe0000000200 ffffea00029ef288 ffffea0002a34408 ffff8880aa400e00
-raw: 0000000000000000 ffff888097b31000 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888097b31300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888097b31380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888097b31400: 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc
-                                                          ^
- ffff888097b31480: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888097b31500: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+PiBPbiBXZWRuZXNkYXkgMDggQXByaWwgMjAyMCAwMzo1OTowNiBLb2hhZGEuVGV0c3VoaXJvQGRj
+Lk1pdHN1YmlzaGlFbGVjdHJpYy5jby5qcCB3cm90ZToNCj4gPiA+IFNvIHBhcnRpYWxfbmFtZV9o
+YXNoKCkgbGlrZSBJIHVzZWQgaXQgaW4gdGhpcyBwYXRjaCBzZXJpZXMgaXMgZW5vdWdoPw0KPiA+
+DQo+ID4gSSB0aGluayBwYXJ0aWFsX25hbWVfaGFzaCgpIGlzIGVub3VnaCBmb3IgOC8xNi8yMWJp
+dCBjaGFyYWN0ZXJzLg0KPiANCj4gR3JlYXQhDQo+IA0KPiBBbCwgY291bGQgeW91IHBsZWFzZSB0
+YWtlIHRoaXMgcGF0Y2ggc2VyaWVzPw0KDQpJIHRoaW5rIGl0J3MgZ29vZC4NCg0KDQo+ID4gQW5v
+dGhlciBwb2ludCBhYm91dCB0aGUgZGlzY3JpbWluYXRpb24gb2YgMjFiaXQgY2hhcmFjdGVyczoN
+Cj4gPiBJIHRoaW5rIHRoYXQgY2hlY2tpbmcgaW4gZXhmYXRfdG91cHBlciAoKSBjYW4gYmUgbW9y
+ZSBzaW1wbGlmaWVkLg0KPiA+DQo+ID4gIGV4OiByZXR1cm4gYSA8IFBMQU5FX1NJWkUgJiYgc2Jp
+LT52b2xfdXRibFthXSA/IHNiaS0+dm9sX3V0YmxbYV0gOiBhOw0KPiANCj4gSSB3YXMgdGhpbmtp
+bmcgYWJvdXQgaXQsIGJ1dCBpdCBuZWVkcyBtb3JlIHJlZmFjdG9yaW5nLiBDdXJyZW50bHkNCj4g
+ZXhmYXRfdG91cHBlcigpIGlzIHVzZWQgb24gb3RoZXIgcGxhY2VzIGZvciBVVEYtMTYgKHUxNiBh
+cnJheSkgYW5kIHRoZXJlZm9yZSBpdCBjYW5ub3QgYmUgZXh0ZW5kZWQgdG8gdGFrZSBtb3JlIHRo
+ZW4gMTYNCj4gYml0IHZhbHVlLg0KDQpJ4oCZbSBhbHNvIGEgbGl0dGxlIHdvcnJpZWQgdGhhdCBl
+eGZhdF90b3VwcGVyKCkgaXMgZGVzaWduZWQgZm9yIG9ubHkgdXRmMTYuDQpDdXJyZW50bHksIGl0
+IGlzIGNvbnZlcnRpbmcgZnJvbSB1dGY4IHRvIHV0ZjMyIGluIHNvbWUgcGxhY2VzLCBhbmQgZnJv
+bSB1dGY4IHRvIHV0ZjE2IGluIG90aGVycy4NCkFub3RoZXIgd2F5IHdvdWxkIGJlIHRvIHVuaWZ5
+IHRvIHV0ZjE2Lg0KDQo+IEJ1dCBJIGFncmVlIHRoYXQgdGhpcyBpcyBhbm90aGVyIHN0ZXAgd2hp
+Y2ggY2FuIGJlIGltcHJvdmVkLg0KDQpZZXMuDQoNCg==
