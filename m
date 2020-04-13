@@ -2,105 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3C81A6980
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E491A6987
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 18:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731319AbgDMQMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 12:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731261AbgDMQMh (ORCPT
+        id S1731346AbgDMQNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 12:13:08 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:53116 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731324AbgDMQM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 12:12:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEEFC0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 09:12:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id kx8so3962247pjb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 09:12:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=fDNE3d6mNUJZ48JEkXp4cIY6H74jiPrBKw5gp9a7Fs8=;
-        b=I1Z5+kKh4OG4NI0RnJGh4hAXQSmKixqK0/ZtT+V/E1y/JONoKSMxkXDmwXpAfVUz9r
-         HCq5fTUca2UWzaCsujqnOn3cHKcVMzGblJQff89Fg7EH3KDqO6DIVF1otfjCeMdQBaD6
-         KalcJIn4NMTl2ImQ+5hoV6y+UX3RTtYPk9B0bw6zpyhoI9hA/tkcwcgcw4P0Ga187lUj
-         Jg6tkz81l7gS6mPJD2417aQ7CrsgOVbP+drlbhUTMHf/V1EKJVXODgFTGOYR51pYO9z6
-         9X7tuOo1wCT4rMAYQZO3Y5NiUPyd6ZADPhOYiTCDYn+4N/Esyx98Z9VllCXYO1QCuFXY
-         gIpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=fDNE3d6mNUJZ48JEkXp4cIY6H74jiPrBKw5gp9a7Fs8=;
-        b=QP+kb55dljOSZe3NxDMDdyh0HgNxXNDVw2Y/QHhKO/YJAFwF0VBH0LAOaNdj9SRnuh
-         iXtpe6LiIDbrA15jyJ2zudjKRS4hH53aLjaY//dBbOKIdk+intqbJGvHq+Ga9aN6DtWq
-         4hLuPbSuP4u1NG4rFwvldhSHYhOSbRFg06JQaKwPhzUvCDHQa1WoSuyU8rKFuYbgfTRB
-         pWwnTc5Y3gdSFdlUPgsjwxSoP4pyp8fxWqOumtwBEjs9kxG8Dl4A9zs684T2wXJ6A2d4
-         eA3JE5Q/zeFFUL6ETKs7ndfisHVfNmKoDq4DUORXlFk54jesc76HQ6YJJkAxSdObSfhc
-         1BfQ==
-X-Gm-Message-State: AGi0Puag2w9Jva/l2s52yjnqOf2guFhL1LduiOKvjtdjkPUwAu4cO5nP
-        7593id60z53tdbs5YPef9zs=
-X-Google-Smtp-Source: APiQypIGgX8jar649ulqr3NbnDbLLAjHgdD2FwNMz8+gXeP4m4l0ak10Ae1rKAmbur6uSwcAvJB7kQ==
-X-Received: by 2002:a17:90a:8c83:: with SMTP id b3mr21876434pjo.141.1586794356873;
-        Mon, 13 Apr 2020 09:12:36 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u15sm4415133pjm.47.2020.04.13.09.12.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 13 Apr 2020 09:12:36 -0700 (PDT)
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH] RISC-V: stacktrace: Declare sp_in_global outside ifdef
-Date:   Mon, 13 Apr 2020 09:12:34 -0700
-Message-Id: <20200413161234.78346-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        Mon, 13 Apr 2020 12:12:57 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DGAbB0021662;
+        Mon, 13 Apr 2020 16:12:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=pDenx9MnkyaPn+VTHPEtoLB3ox/bBPr6tmpD/F6AJME=;
+ b=ME8D1w29Vo+Sz2e4JfRvME2qTJ7E3cAaqIQiqdHfkZRIJxAWzglUVDhVPK/7AV6wOIo8
+ DHaW58HDKRAFjNt5kxBCICH8p79SeqLXXMiPGwJty3GABJSP+FTXTu0BkYU9nVcz/p21
+ MyShFRIs2a7LXWI+TAXiRE5WByfgtzXwfgLFsC3orY2/qlOk0TBLGmp+QWzR3Wf9GdGH
+ G+4PO5meEWagQEyv9SKlHtHuM+FvrzhJrbHUpq5ZioVWfuMY1qPNxpXVBI3zgdX6ak1L
+ i8tKSv2R1XzoQugEOcTKfq/Ex5D0y/8EE+z/KaXc8sC1pxw6LeuPHZLgj+RMIhIzo3u9 sg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 30b5aqyew8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 16:12:44 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 03DG82TC135790;
+        Mon, 13 Apr 2020 16:12:43 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 30bqpcdsfy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 13 Apr 2020 16:12:43 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 03DGCgJa006179;
+        Mon, 13 Apr 2020 16:12:42 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 13 Apr 2020 09:12:42 -0700
+Date:   Mon, 13 Apr 2020 09:12:40 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     ira.weiny@intel.com
+Cc:     linux-kernel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH V7 8/9] fs/xfs: Change xfs_ioctl_setattr_dax_invalidate()
+Message-ID: <20200413161240.GX6742@magnolia>
+References: <20200413054046.1560106-1-ira.weiny@intel.com>
+ <20200413054046.1560106-9-ira.weiny@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200413054046.1560106-9-ira.weiny@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ adultscore=0 bulkscore=0 spamscore=0 suspectscore=3 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2003020000 definitions=main-2004130123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9590 signatures=668686
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 impostorscore=0
+ clxscore=1015 priorityscore=1501 malwarescore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=3 adultscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004130123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-riscv:allnoconfig and riscv:tinyconfig fail to compile.
+On Sun, Apr 12, 2020 at 10:40:45PM -0700, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> We only support changing FS_XFLAG_DAX on directories.  Files get their
+> flag from the parent directory on creation only.  So no data
+> invalidation needs to happen.
+> 
+> Alter the xfs_ioctl_setattr_dax_invalidate() to be
+> xfs_ioctl_setattr_dax_validate().  xfs_ioctl_setattr_dax_validate() now
+> validates that any FS_XFLAG_DAX change is ok.
+> 
+> This also allows use to remove the join_flags logic.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes from v6:
+> 	Fix completely broken implementation and update commit message.
+> 	Use the new VFS layer I_DONTCACHE to facilitate inode eviction
+> 	and S_DAX changing on drop_caches
+> 
+> Changes from v5:
+> 	New patch
+> ---
+>  fs/xfs/xfs_ioctl.c | 102 +++++++--------------------------------------
+>  1 file changed, 16 insertions(+), 86 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+> index c6cd92ef4a05..ba42a5fb5b05 100644
+> --- a/fs/xfs/xfs_ioctl.c
+> +++ b/fs/xfs/xfs_ioctl.c
+> @@ -1145,63 +1145,23 @@ xfs_ioctl_setattr_xflags(
+>  }
+>  
+>  /*
+> - * If we are changing DAX flags, we have to ensure the file is clean and any
+> - * cached objects in the address space are invalidated and removed. This
+> - * requires us to lock out other IO and page faults similar to a truncate
+> - * operation. The locks need to be held until the transaction has been committed
+> - * so that the cache invalidation is atomic with respect to the DAX flag
+> - * manipulation.
+> + * Mark inodes with a changing FS_XFLAG_DAX, I_DONTCACHE
+>   */
+> -static int
+> +static void
+>  xfs_ioctl_setattr_dax_invalidate(
+>  	struct xfs_inode	*ip,
+> -	struct fsxattr		*fa,
+> -	int			*join_flags)
+> +	struct fsxattr		*fa)
+>  {
+> -	struct inode		*inode = VFS_I(ip);
+> -	struct super_block	*sb = inode->i_sb;
+> -	int			error;
+> -
+> -	*join_flags = 0;
+> -
+> -	/*
+> -	 * It is only valid to set the DAX flag on regular files and
+> -	 * directories on filesystems where the block size is equal to the page
+> -	 * size. On directories it serves as an inherited hint so we don't
+> -	 * have to check the device for dax support or flush pagecache.
+> -	 */
+> -	if (fa->fsx_xflags & FS_XFLAG_DAX) {
+> -		struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
+> -
+> -		if (!bdev_dax_supported(target->bt_bdev, sb->s_blocksize))
+> -			return -EINVAL;
+> -	}
+> -
+> -	/* If the DAX state is not changing, we have nothing to do here. */
+> -	if ((fa->fsx_xflags & FS_XFLAG_DAX) && IS_DAX(inode))
+> -		return 0;
+> -	if (!(fa->fsx_xflags & FS_XFLAG_DAX) && !IS_DAX(inode))
+> -		return 0;
+> +	struct inode            *inode = VFS_I(ip);
+>  
+>  	if (S_ISDIR(inode->i_mode))
+> -		return 0;
+> -
+> -	/* lock, flush and invalidate mapping in preparation for flag change */
+> -	xfs_ilock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
+> -	error = filemap_write_and_wait(inode->i_mapping);
+> -	if (error)
+> -		goto out_unlock;
+> -	error = invalidate_inode_pages2(inode->i_mapping);
+> -	if (error)
+> -		goto out_unlock;
+> -
+> -	*join_flags = XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL;
+> -	return 0;
+> -
+> -out_unlock:
+> -	xfs_iunlock(ip, XFS_MMAPLOCK_EXCL | XFS_IOLOCK_EXCL);
+> -	return error;
+> +		return;
 
-arch/riscv/kernel/stacktrace.c: In function 'walk_stackframe':
-arch/riscv/kernel/stacktrace.c:78:8: error: 'sp_in_global' undeclared
+We also need a check up here to skip the I_DONTCACHE setting if the
+admin has set a mount option to override the inode flag.
 
-sp_in_global is declared inside CONFIG_FRAME_POINTER but used outside
-of it.
+The rest looks good to me.
 
-Fixes: 52e7c52d2ded ("RISC-V: Stop relying on GCC's register allocator's hueristics")
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-Apologies for the noise if this has already been fixed somewhere.
+--D
 
- arch/riscv/kernel/stacktrace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-index 02087fe539c6..6c854875ac74 100644
---- a/arch/riscv/kernel/stacktrace.c
-+++ b/arch/riscv/kernel/stacktrace.c
-@@ -12,6 +12,8 @@
- #include <linux/stacktrace.h>
- #include <linux/ftrace.h>
- 
-+register unsigned long sp_in_global __asm__("sp");
-+
- #ifdef CONFIG_FRAME_POINTER
- 
- struct stackframe {
-@@ -19,8 +21,6 @@ struct stackframe {
- 	unsigned long ra;
- };
- 
--register unsigned long sp_in_global __asm__("sp");
--
- void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
- 			     bool (*fn)(unsigned long, void *), void *arg)
- {
--- 
-2.17.1
-
+> +	if (((fa->fsx_xflags & FS_XFLAG_DAX) &&
+> +	    !(ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)) ||
+> +	    (!(fa->fsx_xflags & FS_XFLAG_DAX) &&
+> +	     (ip->i_d.di_flags2 & XFS_DIFLAG2_DAX)))
+> +		inode->i_state |= I_DONTCACHE;
+>  }
+>  
+>  /*
+> @@ -1209,17 +1169,10 @@ xfs_ioctl_setattr_dax_invalidate(
+>   * have permission to do so. On success, return a clean transaction and the
+>   * inode locked exclusively ready for further operation specific checks. On
+>   * failure, return an error without modifying or locking the inode.
+> - *
+> - * The inode might already be IO locked on call. If this is the case, it is
+> - * indicated in @join_flags and we take full responsibility for ensuring they
+> - * are unlocked from now on. Hence if we have an error here, we still have to
+> - * unlock them. Otherwise, once they are joined to the transaction, they will
+> - * be unlocked on commit/cancel.
+>   */
+>  static struct xfs_trans *
+>  xfs_ioctl_setattr_get_trans(
+> -	struct xfs_inode	*ip,
+> -	int			join_flags)
+> +	struct xfs_inode	*ip)
+>  {
+>  	struct xfs_mount	*mp = ip->i_mount;
+>  	struct xfs_trans	*tp;
+> @@ -1236,8 +1189,7 @@ xfs_ioctl_setattr_get_trans(
+>  		goto out_unlock;
+>  
+>  	xfs_ilock(ip, XFS_ILOCK_EXCL);
+> -	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL | join_flags);
+> -	join_flags = 0;
+> +	xfs_trans_ijoin(tp, ip, XFS_ILOCK_EXCL);
+>  
+>  	/*
+>  	 * CAP_FOWNER overrides the following restrictions:
+> @@ -1258,8 +1210,6 @@ xfs_ioctl_setattr_get_trans(
+>  out_cancel:
+>  	xfs_trans_cancel(tp);
+>  out_unlock:
+> -	if (join_flags)
+> -		xfs_iunlock(ip, join_flags);
+>  	return ERR_PTR(error);
+>  }
+>  
+> @@ -1386,7 +1336,6 @@ xfs_ioctl_setattr(
+>  	struct xfs_dquot	*pdqp = NULL;
+>  	struct xfs_dquot	*olddquot = NULL;
+>  	int			code;
+> -	int			join_flags = 0;
+>  
+>  	trace_xfs_ioctl_setattr(ip);
+>  
+> @@ -1410,18 +1359,9 @@ xfs_ioctl_setattr(
+>  			return code;
+>  	}
+>  
+> -	/*
+> -	 * Changing DAX config may require inode locking for mapping
+> -	 * invalidation. These need to be held all the way to transaction commit
+> -	 * or cancel time, so need to be passed through to
+> -	 * xfs_ioctl_setattr_get_trans() so it can apply them to the join call
+> -	 * appropriately.
+> -	 */
+> -	code = xfs_ioctl_setattr_dax_invalidate(ip, fa, &join_flags);
+> -	if (code)
+> -		goto error_free_dquots;
+> +	xfs_ioctl_setattr_dax_invalidate(ip, fa);
+>  
+> -	tp = xfs_ioctl_setattr_get_trans(ip, join_flags);
+> +	tp = xfs_ioctl_setattr_get_trans(ip);
+>  	if (IS_ERR(tp)) {
+>  		code = PTR_ERR(tp);
+>  		goto error_free_dquots;
+> @@ -1552,7 +1492,6 @@ xfs_ioc_setxflags(
+>  	struct fsxattr		fa;
+>  	struct fsxattr		old_fa;
+>  	unsigned int		flags;
+> -	int			join_flags = 0;
+>  	int			error;
+>  
+>  	if (copy_from_user(&flags, arg, sizeof(flags)))
+> @@ -1569,18 +1508,9 @@ xfs_ioc_setxflags(
+>  	if (error)
+>  		return error;
+>  
+> -	/*
+> -	 * Changing DAX config may require inode locking for mapping
+> -	 * invalidation. These need to be held all the way to transaction commit
+> -	 * or cancel time, so need to be passed through to
+> -	 * xfs_ioctl_setattr_get_trans() so it can apply them to the join call
+> -	 * appropriately.
+> -	 */
+> -	error = xfs_ioctl_setattr_dax_invalidate(ip, &fa, &join_flags);
+> -	if (error)
+> -		goto out_drop_write;
+> +	xfs_ioctl_setattr_dax_invalidate(ip, &fa);
+>  
+> -	tp = xfs_ioctl_setattr_get_trans(ip, join_flags);
+> +	tp = xfs_ioctl_setattr_get_trans(ip);
+>  	if (IS_ERR(tp)) {
+>  		error = PTR_ERR(tp);
+>  		goto out_drop_write;
+> -- 
+> 2.25.1
+> 
