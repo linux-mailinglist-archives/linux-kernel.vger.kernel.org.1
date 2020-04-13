@@ -2,132 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8E01A64EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265E11A64F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 12:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728322AbgDMKEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 06:04:53 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:60148 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728130AbgDMKEl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 06:04:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586772280;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gvtpikoyRBKdoFcJ8GEU4zwmH9E/dKn5BixvwyCzFc4=;
-        b=Jt+OFGnKk4d16E/qOD+X7Vz8+deENVuQf1EA1HF/4vgvQLjRZyZc4etnTS9pIbvqS6SP5q
-        Sr6QYjVVCVtJJwNmfRLLKHS9iP8b7m8P/+lHWjzdZD1d4ki7H+6CTKkrqxOsbDTIHmEcUQ
-        n4mmL7sFwTgZQKLFlrLSjl1zv4E+uz4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-475-kV3_HmjJMSSrsk5-hkenyA-1; Mon, 13 Apr 2020 06:04:38 -0400
-X-MC-Unique: kV3_HmjJMSSrsk5-hkenyA-1
-Received: by mail-wr1-f69.google.com with SMTP id m15so6510584wrb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 03:04:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gvtpikoyRBKdoFcJ8GEU4zwmH9E/dKn5BixvwyCzFc4=;
-        b=sc+1fPionAIfvXUPpsPSVEI56dLpatx+/cKKe8TqNzJzVwO4jtJb8UxVGS6z0whm2y
-         hnau0A8qJ3S/7vuD6Jo2FbzTk2YQPph6uwD90aH5TiHVUZM4+upiR9tPl5XOIhOyGitm
-         Pdl5nHKmQ+gAqYy0mCpcc746nBS7GlwNuFY9e4SyylyIxXdhw0PGPEL84bhfqYIqWlMC
-         6T94CRYD/3/S+a4vn/R3/kMxGjqgknOOgaOtShNHM+xeHb48yPO9RDDQw2IxRbN7U/+T
-         O3guLn7Lp0/O1htUPvXhMiWq6q0YAxDbmigMZIHvAE9/HJWp4ozAHPWTDH5vtqCNl7MU
-         UFaQ==
-X-Gm-Message-State: AGi0PubjLEKuJjWhNGiAoYzdH/T1dLlssQnsbv7b1qDyC8qsorb9Dfe+
-        ZRLj/HJahzaceicWgeiLURXbnHftEWk/Admef5ovdw31ceMD6G0BZzQP3fLwZUq9qLJ9SBxhvw8
-        fTZ3FTVOlak+fvFAmQn7Bdhh1
-X-Received: by 2002:adf:c7c8:: with SMTP id y8mr17506956wrg.305.1586772277044;
-        Mon, 13 Apr 2020 03:04:37 -0700 (PDT)
-X-Google-Smtp-Source: APiQypKLf/U31JZjFRkBRGJHsrPosoMp6/myT/NeT+ZxS/TXQH3VpqNomwC6Nks6u5GBINnLmnW9Sg==
-X-Received: by 2002:adf:c7c8:: with SMTP id y8mr17506398wrg.305.1586772268328;
-        Mon, 13 Apr 2020 03:04:28 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id v131sm14332473wmb.19.2020.04.13.03.04.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 03:04:27 -0700 (PDT)
-Subject: Re: [PATCH] tpm/tpm_tis: Free IRQ if probing fails
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        linux-integrity@vger.kernel.org
-Cc:     stable@vger.kernel.org, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200412170412.324200-1-jarkko.sakkinen@linux.intel.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <b909aaee-3fff-4dca-40f4-4c5348474426@redhat.com>
-Date:   Mon, 13 Apr 2020 12:04:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728545AbgDMKFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 06:05:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:35123 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728359AbgDMKE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 06:04:59 -0400
+IronPort-SDR: ydX+iR/p+Nx/6q+8qSDLgdCCoi30FA9B2VvtLekQFS1NdXaQ1Jy0yLLhPNI+dTDbRMHZtoG6VH
+ UH2mT1suQzZQ==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 03:04:53 -0700
+IronPort-SDR: Je+nfy1gBfcmk8HF5V1CwbT8pCAFbQD+LTeJsKMDvyDhT0XYupO8D525qm0iwN/yhDKZnw4aZ8
+ 80wrKp9FK+7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="287838816"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 13 Apr 2020 03:04:51 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+        id 6BCE2DE; Mon, 13 Apr 2020 13:04:50 +0300 (EEST)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCH 0/6] thp/khugepaged improvements and CoW semantics
+Date:   Mon, 13 Apr 2020 13:04:41 +0300
+Message-Id: <20200413100447.20073-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200412170412.324200-1-jarkko.sakkinen@linux.intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jarkko,
+The patchset adds khugepaged selftest (anon-THP only for now), expands
+cases khugepaged can handle and switches anon-THP copy-on-write handling
+to 4k.
 
-On 4/12/20 7:04 PM, Jarkko Sakkinen wrote:
-> Call devm_free_irq() if we have to revert to polling in order not to
-> unnecessarily reserve the IRQ for the life-cycle of the driver.
-> 
-> Cc: stable@vger.kernel.org # 4.5.x
-> Reported-by: Hans de Goede <hdegoede@redhat.com>
-> Fixes: e3837e74a06d ("tpm_tis: Refactor the interrupt setup")
-> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> ---
->   drivers/char/tpm/tpm_tis_core.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_core.c
-> index 27c6ca031e23..ae6868e7b696 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -1062,9 +1062,12 @@ int tpm_tis_core_init(struct device *dev, struct tpm_tis_data *priv, int irq,
->   		if (irq) {
->   			tpm_tis_probe_irq_single(chip, intmask, IRQF_SHARED,
->   						 irq);
-> -			if (!(chip->flags & TPM_CHIP_FLAG_IRQ))
-> +			if (!(chip->flags & TPM_CHIP_FLAG_IRQ)) {
->   				dev_err(&chip->dev, FW_BUG
->   					"TPM interrupt not working, polling instead\n");
-> +				devm_free_irq(chip->dev.parent, priv->irq,
-> +					      chip);
-> +			}
+Please review and consider applying.
 
-My initial plan was actually to do something similar, but if the probe code
-is actually ever fixed to work as intended again then this will lead to a
-double free as then the IRQ-test path of tpm_tis_send() will have called
-disable_interrupts() which already calls devm_free_irq().
+v3:
+ - Fix handling compound pages in swap cache;
+ - Rework swaped vs. referenced check;
+ - Fix refcounting for compound pages;
+ - Drop Reviewed-by/Acked-by as patchset changed non-trivially;
+ - Typos;
+v2:
+ - Fix race in compound page handling;
+ - Add one more test-case for compound page case;
+ - Rework LRU add cache draining;
+ - Typos;
 
-You could check for chip->irq != 0 here to avoid that.
+Kirill A. Shutemov (6):
+  khugepaged: Add self test
+  khugepaged: Do not stop collapse if less than half PTEs are referenced
+  khugepaged: Drain all LRU caches before scanning pages
+  khugepaged: Drain LRU add pagevec after swapin
+  khugepaged: Allow to collapse a page shared across fork
+  khugepaged: Allow to collapse PTE-mapped compound pages
 
-But it all is rather messy, which is why I went with the "#if 0" approach
-in my patch.
+ mm/khugepaged.c                         | 172 +++--
+ tools/testing/selftests/vm/Makefile     |   1 +
+ tools/testing/selftests/vm/khugepaged.c | 899 ++++++++++++++++++++++++
+ 3 files changed, 1012 insertions(+), 60 deletions(-)
+ create mode 100644 tools/testing/selftests/vm/khugepaged.c
 
-Also we will currently ALWAYS hit the "TPM interrupt not working, polling instead"
-error because the TPM_CHIP_FLAG_IRQ never gets set. So if we are going to do an
-interim fix (and we should) we should really also silence that error.
-
-Regards,
-
-Hans
-
-p.s.
-
-I'm currently in contact with Lenovo trying to figure out what is going on
-here with the always firing IRQ on the X1 8th gen, I guess the fix for that
-might also help with the T490 issue.
-
-
+-- 
+2.26.0
 
