@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37F01A6BF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7E01A6C05
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387675AbgDMSN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 14:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387623AbgDMSN4 (ORCPT
+        id S2387692AbgDMSV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 14:21:59 -0400
+Received: from smtprelay0213.hostedemail.com ([216.40.44.213]:49966 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732988AbgDMSV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 14:13:56 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC99C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:13:56 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id m19so7237864lfq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:13:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yqrn/lvg8MKN3ZJAgVGn2Djp8dSZuTuTN4gwks6EVe4=;
-        b=AK0WRb2rySLprGYr7CAPSgeXCNnAUatM1AU+74gdeAF/7P8aEG6EI+bM0vz5uFAzJu
-         hPw6AOOr5NT3Bua/PoMqEoSGeDomSpnxfzm7gSGhETxUHe9jqJ/zM1HZfiFYg59ogWc4
-         ErzmFA3qU6zs7+PocOTTBiQoM7v3RvoMcLuNM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yqrn/lvg8MKN3ZJAgVGn2Djp8dSZuTuTN4gwks6EVe4=;
-        b=sB02OdPXX43+1pt0NLjcXmMaU1slvxfBNvGY7eK+DJbO/kLClCK008JLtSmeJp5Eaf
-         E9bezwkjAARa0xAbtWqyxJ2CspL+sTeng3JEYqgTlx4b+x1Ei+EIkiAPHg09M/0zf7Sx
-         xi9vz8U/6VJn0xH5qIszvbVJxPTHpJyJ/XZGZmKThuHkSmtRXA9fPVJooKb0fs58UJ5y
-         iMbVQPUvra0l+5XIe0pJ3rvx6dVF4zN6oh1e3oK2h2KSLw/qpJ8EAG6Ys1iVjEPoxyvc
-         5VgrD3pqLQwrseUoFVL4CcfwUv9zN3HF6uWqkChJrtD9B+x/Bq+eZZX/yo5JfmgZjFWQ
-         t6TQ==
-X-Gm-Message-State: AGi0Pub9NrgiKIQqCfHPVhetAWkSGkpJ6FMcK8PvtMpeV2qOwKfI0oFe
-        wrSpxsRzFT40wVxwL788Gx6WbRYRPGM=
-X-Google-Smtp-Source: APiQypIq2ba2wm09YiCAQVLHm3KNZAFWccl+W27CkRixmFouf50aRd5aEDzn3djWBJt6M1wShfJGSQ==
-X-Received: by 2002:a05:6512:6c8:: with SMTP id u8mr9161338lff.23.1586801634076;
-        Mon, 13 Apr 2020 11:13:54 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id w24sm7565872ljh.57.2020.04.13.11.13.51
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 11:13:52 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id 198so7280513lfo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 11:13:51 -0700 (PDT)
-X-Received: by 2002:a19:240a:: with SMTP id k10mr11275697lfk.30.1586801631427;
- Mon, 13 Apr 2020 11:13:51 -0700 (PDT)
+        Mon, 13 Apr 2020 14:21:57 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id D64AD181D330D;
+        Mon, 13 Apr 2020 18:21:55 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:2731:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3873:4250:4321:5007:6120:7901:7903:10004:10226:10400:10848:11026:11232:11473:11658:11914:12043:12048:12296:12297:12679:12740:12760:12895:13069:13255:13311:13357:13439:13972:14096:14097:14659:14721:21080:21324:21451:21627:21990:30012:30054:30070:30080:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: doll17_109959b0eed47
+X-Filterd-Recvd-Size: 2761
+Received: from XPS-9350.home (unknown [47.151.136.130])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 13 Apr 2020 18:21:53 +0000 (UTC)
+Message-ID: <6566837cdb0e8db522c53daba8baf49c2ca79376.camel@perches.com>
+Subject: Re: [PATCH v4 01/10] drivers: qcom: rpmh-rsc: Clean code
+ reading/writing TCS regs/cmds
+From:   Joe Perches <joe@perches.com>
+To:     Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maulik Shah <mkshah@codeaurora.org>
+Cc:     swboyd@chromium.org, mka@chromium.org,
+        Rajendra Nayak <rnayak@codeaurora.org>, evgreen@chromium.org,
+        Lina Iyer <ilina@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 13 Apr 2020 11:19:46 -0700
+In-Reply-To: <20200413100321.v4.1.I1b754137e8089e46cf33fc2ea270734ec3847ec4@changeid>
+References: <20200413170415.32463-1-dianders@chromium.org>
+         <20200413100321.v4.1.I1b754137e8089e46cf33fc2ea270734ec3847ec4@changeid>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-References: <20200413063317.7164-1-penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20200413063317.7164-1-penguin-kernel@I-love.SAKURA.ne.jp>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 13 Apr 2020 11:13:35 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgbMi2+VBN0SCEw9GeoiWgui034AOBwbt_dW9tdCa3Nig@mail.gmail.com>
-Message-ID: <CAHk-=wgbMi2+VBN0SCEw9GeoiWgui034AOBwbt_dW9tdCa3Nig@mail.gmail.com>
-Subject: Re: [PATCH v3] Add kernel config option for tweaking kernel behavior.
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Garrett <mjg59@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jiri Slaby <jslaby@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 11:34 PM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> Existing kernel config options are defined based on "whether you want to
-> enable this module/feature or not". And such granularity is sometimes
-> too rough-grained for fuzzing tools which try to find bugs inside each
-> module/feature.
+On Mon, 2020-04-13 at 10:04 -0700, Douglas Anderson wrote:
+> This patch makes two changes, both of which should be no-ops:
+> 
+> 1. Make read_tcs_reg() / read_tcs_cmd() symmetric to write_tcs_reg() /
+>    write_tcs_cmd().
+> 
+> 2. Change the order of operations in the above functions to make it
+>    more obvious to me what the math is doing.  Specifically first you
+>    want to find the right TCS, then the right register, and then
+>    multiply by the command ID if necessary.
 
-I still detest making this a hardcoded build-time config option.
+Though these operations are only used a couple times, perhaps
+it'd be useful to have static inlines for the calcs.
 
-A kernel parameter that sets a flag seems much simpler. More
-importantly, having it be something sanely named, and something you
-can set independently some other way, would allow a regular kernel to
-then run a fuzzer as root.
+> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
+[]
+> @@ -67,28 +67,33 @@
+>  #define CMD_STATUS_ISSUED		BIT(8)
+>  #define CMD_STATUS_COMPL		BIT(16)
 
-Some kind of "not even root" flag, which might be per-process and not
-possible to clear once set (so that your _normal_ system binaries
-could still do the root-only stuff, but then you could start a fuzzing
-process with that flag set, knowing that the fuzzing process - and
-it's children - are not able to do things).
+Maybe something like:
 
-Honestly, in a perfect world, it has nothing at all to do with
-fuzzing, and people could even have some local rules like "anybody who
-came in through ssh from the network will also have this flag set".
+static inline void __iomem *
+tcs_reg_addr(struct rsc_drv drv, int reg, int tcs_id)
+{
+	return drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg;
+}
 
-                 Linus
+static inline void __iomem *
+tcs_cmd_addr(struct rsc_drv drv, int reg, int tcs_id, int cmd_id)
+{
+	return tcs_reg_addr(drv, reg, tcs_id) + RSC_DRV_CMD_OFFSET * cmd_id;
+}
+
+> -static u32 read_tcs_reg(struct rsc_drv *drv, int reg, int tcs_id, int cmd_id)
+> +static u32 read_tcs_cmd(struct rsc_drv *drv, int reg, int tcs_id, int cmd_id)
+>  {
+> -	return readl_relaxed(drv->tcs_base + reg + RSC_DRV_TCS_OFFSET * tcs_id +
+> +	return readl_relaxed(drv->tcs_base + RSC_DRV_TCS_OFFSET * tcs_id + reg +
+>  			     RSC_DRV_CMD_OFFSET * cmd_id);
+
+	return readl_relaxed(tcs_cmd_addr(drv, reg, tcs_id, cmd_id));
+
+etc...
+
+
