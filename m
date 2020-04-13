@@ -2,95 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC87A1A64CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975961A64D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728458AbgDMJtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728015AbgDMJtl (ORCPT
+        id S1728477AbgDMJzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:55:09 -0400
+Received: from mailoutvs59.siol.net ([185.57.226.250]:50672 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727793AbgDMJzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:49:41 -0400
-X-Greylist: delayed 456 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 05:49:41 EDT
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44430C0A3BDC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:42:05 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id v9so1494514ljk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 02:42:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5EVtSWTpW2gBZAVG9ya8rnghhWuRsTFGgq4qSDI6w6g=;
-        b=SuIpP+w+r+qMR9OHa1Bp4wwQC6uIAMRhhzW1Rxk6cHq3gO6nqkA/hulf5DEzztSqHj
-         wJGe77kLD8NMfLQM2zJFSUm87BD9GW75pydTfyd8u5BIoeV6jtQXVV2/pHN2Ht9uU023
-         y/i/hZ7v/Hf4OlnIWGwLF9DBtOGONHZQ/Cg6tUC0fKaFhcdewe1idzlJfSm6ZGvqXG0Z
-         W2ZjDUDM39RS8HYJty0vc8/pmg/NR79rTnfgHGb1Eb2QCUFdazEtbTlht6CzuAdoHpyo
-         XRgBuPYVHrBfi/+Yira39hWBe8qpUKC3Vx2kOh3x+YSo0wLceegv8XcUif+My7kdIy5e
-         gWuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5EVtSWTpW2gBZAVG9ya8rnghhWuRsTFGgq4qSDI6w6g=;
-        b=Qj8vB+toSvTsIh95m8KIIED2q2uUY7mjmuGlj9OcqcbTne0sKEaVGjuyZK8byivU5d
-         s9gE9WNbXso92n+5B6oXEHjbNQ6W612ubMp1zE789ut0/fVA2UvIAhQsq3atYNe96Hzy
-         bw+DPR2wLyAg0ZF9isA1XIzx1oQledYgbwYgfFcgBkdIULzT7NEJoKM5UFxhqWC2+JvP
-         hSl6AMPFYMN8M/GOryA9QA2B5WyQpRULGLGYPjZkntJhJbliGFzLARSPyi6PC9UFPgnl
-         XOiw2W9v432JBcBEAM2iGdcoQmNgfQbK6SKOytpMVu4SL45wx6fjQaXmvaLbhPEQulRb
-         TzMg==
-X-Gm-Message-State: AGi0PubAks3HqZEMhIJGwIZdZCI1vKEXnOHli2Whbn+r7Jg87irBp+f9
-        7/xbDuX9+3M3oNFpljicdGhv3g==
-X-Google-Smtp-Source: APiQypIyIFcgHREegUey45rm8BQoRKlq4QMlIcs+yf0PgL2iZ92N/aJM6blxjp3mghWys2omt9d82w==
-X-Received: by 2002:a2e:140d:: with SMTP id u13mr1384446ljd.152.1586770923586;
-        Mon, 13 Apr 2020 02:42:03 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id a15sm6720609ljp.44.2020.04.13.02.42.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 02:42:02 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 7840210230F; Mon, 13 Apr 2020 12:42:04 +0300 (+03)
-Date:   Mon, 13 Apr 2020 12:42:04 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     akpm@linux-foundation.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Zi Yan <ziy@nvidia.com>, Yang Shi <yang.shi@linux.alibaba.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCHv2 5/8] khugepaged: Allow to callapse a page shared across
- fork
-Message-ID: <20200413094204.a2gpsjhugy5dznjy@box>
-References: <20200403112928.19742-1-kirill.shutemov@linux.intel.com>
- <20200403112928.19742-6-kirill.shutemov@linux.intel.com>
- <5a57635b-ed75-8f09-6f0c-5623f557fc55@nvidia.com>
- <20200410155543.i66uz6pbynfvkhak@box>
- <df772934-b5e5-8578-9b47-3f17bf9b8896@nvidia.com>
+        Mon, 13 Apr 2020 05:55:08 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id AE7DA522D78;
+        Mon, 13 Apr 2020 11:55:05 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id j0F5mj0SWgUP; Mon, 13 Apr 2020 11:55:05 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 665E1522D84;
+        Mon, 13 Apr 2020 11:55:05 +0200 (CEST)
+Received: from localhost.localdomain (89-212-178-211.dynamic.t-2.net [89.212.178.211])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Postfix) with ESMTPSA id E25A6522CFD;
+        Mon, 13 Apr 2020 11:55:03 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/sun4i: hdmi ddc clk: Fix size of m divider
+Date:   Mon, 13 Apr 2020 11:54:57 +0200
+Message-Id: <20200413095457.1176754-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <df772934-b5e5-8578-9b47-3f17bf9b8896@nvidia.com>
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 10, 2020 at 01:59:22PM -0700, John Hubbard wrote:
-> I think I understood what you were saying. The problem is that was ignoring
-> a couple of points, especially in an RDMA situation: 1) the page can be
-> pinned by various drivers, on behalf of other processes, even if the original
-> process is being torn down, and 2) it doesn't really matter which process pins
-> a page--the end result is that it's pinned.
+m divider in DDC clock register is 4 bits wide. Fix that.
 
-Well, no. It is critical that nobody gets new pins after this point on
-behalf of *this* process as we about change what is mapped on this virtual
-address range. We must avoid the situation that khugepaged screws
-legitimate GUP users and make what process see differs from what GUP see.
+Fixes: 9c5681011a0c ("drm/sun4i: Add HDMI support")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ drivers/gpu/drm/sun4i/sun4i_hdmi.h         | 2 +-
+ drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Pins on behalf of other processes after the point are not relevant to us.
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi.h b/drivers/gpu/drm/sun4i/s=
+un4i_hdmi.h
+index 7ad3f06c127e..00ca35f07ba5 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi.h
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi.h
+@@ -148,7 +148,7 @@
+ #define SUN4I_HDMI_DDC_CMD_IMPLICIT_WRITE	3
+=20
+ #define SUN4I_HDMI_DDC_CLK_REG		0x528
+-#define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0x7) << 3)
++#define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0xf) << 3)
+ #define SUN4I_HDMI_DDC_CLK_N(n)			((n) & 0x7)
+=20
+ #define SUN4I_HDMI_DDC_LINE_CTRL_REG	0x540
+diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c b/drivers/gpu/drm=
+/sun4i/sun4i_hdmi_ddc_clk.c
+index 2ff780114106..12430b9d4e93 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c
++++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c
+@@ -33,7 +33,7 @@ static unsigned long sun4i_ddc_calc_divider(unsigned lo=
+ng rate,
+ 	unsigned long best_rate =3D 0;
+ 	u8 best_m =3D 0, best_n =3D 0, _m, _n;
+=20
+-	for (_m =3D 0; _m < 8; _m++) {
++	for (_m =3D 0; _m < 16; _m++) {
+ 		for (_n =3D 0; _n < 8; _n++) {
+ 			unsigned long tmp_rate;
+=20
+--=20
+2.26.0
 
-I will keep the comment as is for now. As you can see I'm struggling
-communicating my point. Any better wording is welcome.
-
--- 
- Kirill A. Shutemov
