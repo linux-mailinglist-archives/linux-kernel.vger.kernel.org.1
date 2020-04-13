@@ -1,82 +1,83 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7162E1A6485
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:15:32 +0200 (CEST)
+Received: from vger.kernel.org (unknown [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8AB1A63EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 09:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729351AbgDMIWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 04:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:43320 "EHLO
+        id S1729592AbgDMHzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 03:55:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:37686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727971AbgDMIWE (ORCPT
+        with ESMTP id S1727480AbgDMHzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 04:22:04 -0400
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353FDC014CDB;
-        Mon, 13 Apr 2020 01:22:04 -0700 (PDT)
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7784520692;
-        Mon, 13 Apr 2020 08:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586766123;
-        bh=myCwX7QCUQ1jF+vQX9y7N4B7bRpg4u9sExHyAT0PwI0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MLL70XPoduJaJyvsD6kgwZyNb0YMq1Vs/8JKD/02q8F63Zz5kqWhUbSBJyao6AVbB
-         E7ufNDOY1luG5RR1jWKGpTMm2IhYdyztgpBeUgv2tOcjnPwT9h+H3cBDfZOIVPUGTT
-         clibTJq5Ht3fdEkPgpEPKhDAOKo3IUEj/YPn+Bl0=
-Date:   Mon, 13 Apr 2020 10:22:01 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        linux- stable <stable@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 5.6 00/38] 5.6.4-rc1 review
-Message-ID: <20200413082201.GC2792388@kroah.com>
-References: <20200411115459.324496182@linuxfoundation.org>
- <CA+G9fYuC0s59WRDmBzy7gx62snosjDAX6EigYSGmvX+46cRASw@mail.gmail.com>
+        Mon, 13 Apr 2020 03:55:45 -0400
+Received: from huawei.com (szxga07-in.huawei.com [45.249.212.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB360C008609
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 00:55:44 -0700 (PDT)
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 96D5C25496347253FFA5;
+        Mon, 13 Apr 2020 15:55:42 +0800 (CST)
+Received: from huawei.com (10.175.124.28) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Mon, 13 Apr 2020
+ 15:55:35 +0800
+From:   Jason Yan <yanaijie@huawei.com>
+To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <hpa@zytor.com>, <x86@kernel.org>, <peterz@infradead.org>,
+        <jpoimboe@redhat.com>, <shile.zhang@linux.alibaba.com>,
+        <yanaijie@huawei.com>, <linux-kernel@vger.kernel.org>
+CC:     Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH] x86/unwind/orc: make some symbols static
+Date:   Mon, 13 Apr 2020 16:22:03 +0800
+Message-ID: <20200413082203.22853-1-yanaijie@huawei.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+G9fYuC0s59WRDmBzy7gx62snosjDAX6EigYSGmvX+46cRASw@mail.gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.28]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 11:08:18AM +0530, Naresh Kamboju wrote:
-> On Sat, 11 Apr 2020 at 17:52, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > This is the start of the stable review cycle for the 5.6.4 release.
-> > There are 38 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Mon, 13 Apr 2020 11:51:28 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.6.4-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.6.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> 
-> Results from Linaro’s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
+Fix the following sparse warning:
 
-Thanks for testing all of these and letting me know.
+arch/x86/kernel/unwind_orc.c:19:5: warning: symbol 'cur_orc_ip_table'
+was not declared. Should it be static?
+arch/x86/kernel/unwind_orc.c:20:18: warning: symbol 'cur_orc_table' was
+not declared. Should it be static?
+arch/x86/kernel/unwind_orc.c:22:14: warning: symbol 'lookup_num_blocks'
+was not declared. Should it be static?
+arch/x86/kernel/unwind_orc.c:23:6: warning: symbol 'orc_init' was not
+declared. Should it be static?
 
-greg k-h
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Jason Yan <yanaijie@huawei.com>
+---
+ arch/x86/kernel/unwind_orc.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+index e9cc182aa97e..0dbabc469ce2 100644
+--- a/arch/x86/kernel/unwind_orc.c
++++ b/arch/x86/kernel/unwind_orc.c
+@@ -16,11 +16,11 @@ extern struct orc_entry __start_orc_unwind[];
+ extern struct orc_entry __stop_orc_unwind[];
+ 
+ static DEFINE_MUTEX(sort_mutex);
+-int *cur_orc_ip_table = __start_orc_unwind_ip;
+-struct orc_entry *cur_orc_table = __start_orc_unwind;
++static int *cur_orc_ip_table = __start_orc_unwind_ip;
++static struct orc_entry *cur_orc_table = __start_orc_unwind;
+ 
+-unsigned int lookup_num_blocks;
+-bool orc_init;
++static unsigned int lookup_num_blocks;
++static bool orc_init;
+ 
+ static inline unsigned long orc_ip(const int *ip)
+ {
+-- 
+2.21.1
+
