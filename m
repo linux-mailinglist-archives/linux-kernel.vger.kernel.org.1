@@ -2,74 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74AD51A64BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704241A64CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 11:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728413AbgDMJhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 05:37:53 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:27622 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728050AbgDMJhw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 05:37:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1586770671;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=SGRl8QigNCMEctxjQ4r6IljMkZq1Kqqri1Hlxh7uGgk=;
-        b=bhGuNrjgtxGCwGNlFmA1G3QHmBHCPrJbMacDXttZ+lHmFNQglU51WDqzZ/eRjCXmTC5HXo
-        bpqMHm9Gq+PBkuPHMUuRhXvWB280w3GUgKCbXlj5E8dRK7rP2yzU28pIoIW2G/BgV4b4cH
-        EJK+rHIxnVhrImhNcrSx4kpxuf+DER0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-gn_bCVhtP_KIDWurWq3pbg-1; Mon, 13 Apr 2020 05:37:46 -0400
-X-MC-Unique: gn_bCVhtP_KIDWurWq3pbg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DDE908018A1;
-        Mon, 13 Apr 2020 09:37:45 +0000 (UTC)
-Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-79.pek2.redhat.com [10.72.13.79])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A964E1001925;
-        Mon, 13 Apr 2020 09:37:40 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, eli@mellanox.com
-Subject: [PATCH] vdpa: fix comment of vdpa_register_device()
-Date:   Mon, 13 Apr 2020 17:37:38 +0800
-Message-Id: <20200413093738.28467-1-jasowang@redhat.com>
-MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
-Content-Transfer-Encoding: quoted-printable
+        id S1727996AbgDMJs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 05:48:57 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:45488 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727793AbgDMJs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 05:48:56 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4EA80200216;
+        Mon, 13 Apr 2020 11:48:54 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3636B201410;
+        Mon, 13 Apr 2020 11:48:49 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id F0284402B4;
+        Mon, 13 Apr 2020 17:48:42 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] dt-bindings: gpio: Convert i.MX to json-schema
+Date:   Mon, 13 Apr 2020 17:40:49 +0800
+Message-Id: <1586770849-15693-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function should be called only after a success calling for
-vdpa_alloc_device().
+Convert the i.MX GPIO binding to DT schema format using json-schema.
 
-Reported-by: Eli Cohen <eli@mellanox.com>
-Signed-off-by: Jason Wang <jasowang@redhat.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- drivers/vdpa/vdpa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/gpio/fsl-imx-gpio.txt      | 35 -----------
+ .../devicetree/bindings/gpio/fsl-imx-gpio.yaml     | 72 ++++++++++++++++++++++
+ 2 files changed, 72 insertions(+), 35 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
 
-diff --git a/drivers/vdpa/vdpa.c b/drivers/vdpa/vdpa.c
-index e9ed6a2b635b..ff6562f602e0 100644
---- a/drivers/vdpa/vdpa.c
-+++ b/drivers/vdpa/vdpa.c
-@@ -116,7 +116,7 @@ EXPORT_SYMBOL_GPL(__vdpa_alloc_device);
-=20
- /**
-  * vdpa_register_device - register a vDPA device
-- * Callers must have a succeed call of vdpa_init_device() before.
-+ * Callers must have a succeed call of vdpa_alloc_device() before.
-  * @vdev: the vdpa device to be registered to vDPA bus
-  *
-  * Returns an error when fail to add to vDPA bus
---=20
-2.20.1
+diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt
+deleted file mode 100644
+index b4cd9f90..0000000
+--- a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.txt
++++ /dev/null
+@@ -1,35 +0,0 @@
+-* Freescale i.MX/MXC GPIO controller
+-
+-Required properties:
+-- compatible : Should be "fsl,<soc>-gpio"
+-- reg : Address and length of the register set for the device
+-- interrupts : Should be the port interrupt shared by all 32 pins, if
+-  one number.  If two numbers, the first one is the interrupt shared
+-  by low 16 pins and the second one is for high 16 pins.
+-- gpio-controller : Marks the device node as a gpio controller.
+-- #gpio-cells : Should be two.  The first cell is the pin number and
+-  the second cell is used to specify the gpio polarity:
+-      0 = active high
+-      1 = active low
+-- interrupt-controller: Marks the device node as an interrupt controller.
+-- #interrupt-cells : Should be 2.  The first cell is the GPIO number.
+-  The second cell bits[3:0] is used to specify trigger type and level flags:
+-      1 = low-to-high edge triggered.
+-      2 = high-to-low edge triggered.
+-      4 = active high level-sensitive.
+-      8 = active low level-sensitive.
+-
+-Optional properties:
+-- clocks: the clock for clocking the GPIO silicon
+-
+-Example:
+-
+-gpio0: gpio@73f84000 {
+-	compatible = "fsl,imx51-gpio", "fsl,imx35-gpio";
+-	reg = <0x73f84000 0x4000>;
+-	interrupts = <50 51>;
+-	gpio-controller;
+-	#gpio-cells = <2>;
+-	interrupt-controller;
+-	#interrupt-cells = <2>;
+-};
+diff --git a/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+new file mode 100644
+index 0000000..465104c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/fsl-imx-gpio.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/fsl-imx-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale i.MX/MXC GPIO controller
++
++maintainers:
++  - Anson Huang <Anson.Huang@nxp.com>
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - fsl,imx1-gpio
++              - fsl,imx21-gpio
++              - fsl,imx31-gpio
++              - fsl,imx35-gpio
++              - fsl,imx7d-gpio
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    description: |
++      Should be the port interrupt shared by all 32 pins, if one number.
++      If two numbers, the first one is the interrupt shared by low 16 pins
++      and the second one is for high 16 pins.
++    minItems: 1
++    maxItems: 2
++
++  interrupt-controller: true
++
++  "#interrupt-cells":
++    const: 2
++
++  clocks:
++    description: |
++      The clock for clocking the GPIO silicon.
++    maxItems: 1
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-controller: true
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - "#interrupt-cells"
++  - "#gpio-cells"
++  - gpio-controller
++
++additionalProperties: false
++
++examples:
++  - |
++    gpio0: gpio@73f84000 {
++        compatible = "fsl,imx35-gpio";
++        reg = <0x73f84000 0x4000>;
++        interrupts = <50 51>;
++        gpio-controller;
++        #gpio-cells = <2>;
++        interrupt-controller;
++        #interrupt-cells = <2>;
++    };
++
++...
+-- 
+2.7.4
 
