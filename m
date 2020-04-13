@@ -2,83 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6547B1A65A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D63B1A65BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 13:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgDMLfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 07:35:12 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:58814 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728960AbgDMLfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 07:35:11 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id AD1E02C3D16DCE273A7E;
-        Mon, 13 Apr 2020 19:35:07 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 13 Apr 2020 19:35:06 +0800
-From:   Mao Wenan <maowenan@huawei.com>
-To:     <ast@kernel.org>, <daniel@iogearbox.net>, <kafai@fb.com>,
-        <songliubraving@fb.com>, <yhs@fb.com>, <andriin@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>
-CC:     <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] bpf: remove set but not used variable 'dst_known'
-Date:   Mon, 13 Apr 2020 19:37:03 +0800
-Message-ID: <20200413113703.194287-1-maowenan@huawei.com>
-X-Mailer: git-send-email 2.20.1
+        id S1729164AbgDMLto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 07:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729067AbgDMLtm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 07:49:42 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7CAC0085D8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id b8so4375749pfp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 04:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
+        b=HxOaFJZljqXQIeSLw7dw+YeTIVe76Yo57NkC3rYQjPPsruaWLZEetJYgTw7mDA7iYw
+         4KM/sQKuVdxfTyBgHy0QGrcgvhBAp/s2WR+7lhwMEms7c5U3ARzlxX4w9gHN6kyIVCTo
+         InVjjBwajQbgYMLlLr/dGAnfAOq75HLmi2bmQShdg5UrDH6ZNHdmpjirCjsFE3E+W3lI
+         4HPNdhIk9GHy3wOVy8qt79oLhQ3V0WJ+l2R8YfTk5No8OB207Mc1ssyzLdiNdU6iDIon
+         HSnId1sWR9JHq8BkscMOY+TVCS7WuDDdfTSRJRDObUGUY3pKdsd/NGq97n4qtv5szVJr
+         IEMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=qlKWExEze9qCqlwbpw1q4+d2Zjr4ETGVa64TcX+dTlk=;
+        b=kiCyalLwTZOKK5sqkgJZ2aTGKt/HCW1uf2lQlPNpEtS3PeBRUL5IU8HPJYBjMFCZg0
+         NQ3w5GrA1TQAU4PC9eucEKuBtchVsCrs36Iz37yv7gB4k9VFQiY9WRNj4A4qcT+wkC95
+         teXzhybTP1p9ytUgdHJmqyJgfvrhdw7B18+Ft2wa+aAbpmyPBGRuQTPOLO8Mz0ynWvMh
+         YayonKqwEwuUT9BZiyAwxn4uZfwcpv3JFNAMhauHu+dnCzG4fe+4nmCmZFlSRbEQlpCw
+         gwqV8XI32BEXnk6VFMt5UfP+Pi7qWuZEeINU1kuAneLY/IvRmq/hFeBHlyBYRuuUM8LS
+         cuyw==
+X-Gm-Message-State: AGi0PuYWxYmsMU4T0SQL7FqeAvNPTTQcrnm0gOfkP6yryxbHMop6Vdls
+        IRAUHQ2UMPwPHF6ssBOgd1Z1wt09DGrr5Ld0sgrLJW0=
+X-Google-Smtp-Source: APiQypJ8Xf5JZIaJmuakcegBHklRN/w3ObzOY1fG2hZhiF0393fUgrxf6qaSVcLD5pLEm/4TEQgoj9oGK8tQ5EeyGAU=
+X-Received: by 2002:a05:6e02:c8f:: with SMTP id b15mr14965961ile.35.1586778068198;
+ Mon, 13 Apr 2020 04:41:08 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:a02:5e49:0:0:0:0:0 with HTTP; Mon, 13 Apr 2020 04:41:07
+ -0700 (PDT)
+Reply-To: mgbenin903@gmail.com
+From:   Barrister Robert Richter UN-Attorney at Law Court-Benin 
+        <info.zennitbankplcnigerian@gmail.com>
+Date:   Mon, 13 Apr 2020 13:41:07 +0200
+Message-ID: <CABHzvrm3rWryg1yAooKeHwdxzrKD47PRAEfC+ay1A6i5z3Wdiw@mail.gmail.com>
+Subject: I have already sent you first payment US$5000.00 this morning through
+ MONEY Gram service.it is available to pick up in address now.
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes gcc '-Wunused-but-set-variable' warning:
+ATTN DEAR BENEFICIARY.
 
-kernel/bpf/verifier.c:5603:18: warning: variable ‘dst_known’
-set but not used [-Wunused-but-set-variable]
+GOOD NEWS.
 
-It is not used since commit f1174f77b50c ("bpf/verifier:
-rework value tracking")
+I have already sent you first payment US$5000.00 this morning through
+MONEY Gram service.it is available to pick up in address now.
 
-Signed-off-by: Mao Wenan <maowenan@huawei.com>
----
- kernel/bpf/verifier.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+So we advise you to Contact This Money Gram office to pick up your
+transfer $US5000.00 today.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 04c6630cc18f..c9f50969a689 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5600,7 +5600,7 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- {
- 	struct bpf_reg_state *regs = cur_regs(env);
- 	u8 opcode = BPF_OP(insn->code);
--	bool src_known, dst_known;
-+	bool src_known;
- 	s64 smin_val, smax_val;
- 	u64 umin_val, umax_val;
- 	s32 s32_min_val, s32_max_val;
-@@ -5622,7 +5622,6 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 
- 	if (alu32) {
- 		src_known = tnum_subreg_is_const(src_reg.var_off);
--		dst_known = tnum_subreg_is_const(dst_reg->var_off);
- 		if ((src_known &&
- 		     (s32_min_val != s32_max_val || u32_min_val != u32_max_val)) ||
- 		    s32_min_val > s32_max_val || u32_min_val > u32_max_val) {
-@@ -5634,7 +5633,6 @@ static int adjust_scalar_min_max_vals(struct bpf_verifier_env *env,
- 		}
- 	} else {
- 		src_known = tnum_is_const(src_reg.var_off);
--		dst_known = tnum_is_const(dst_reg->var_off);
- 		if ((src_known &&
- 		     (smin_val != smax_val || umin_val != umax_val)) ||
- 		    smin_val > smax_val || umin_val > umax_val) {
--- 
-2.17.1
 
+Note that your compensation payment funds is total amount $US2.800,000
+Million Dollars.We have instructed the Money Gram Agent,Mr. James
+Gadner to keep sending the transfer to you daily, but the maximum
+amount you will be receiving everyday is US$5000.00. Contact Agent now
+to pick up your first payment $US5000.00 immediately.
+
+Contact Person, Mr. James Gadner, Dir. Money Gram Benin.
+Email: mgbenin903@gmail.com
+Telephone Numbers: +229 62819378/ +229 98477762
+
+HERE IS YOUR PAYMENT DETAILS FOR THE FIRST =C2=A3US5000.00 SENT TODAY.
+
+Track View Website link:
+https://secure.moneygram.com/track
+Sender=E2=80=99s First name: David
+Sender=E2=80=99s Last Name: Joiner
+Money Transfer Control Number (MTCN) (REFERENCE)# 26046856
+
+Contact the Mmoney Gram Urgent and reconfirm your address to the
+office before, they will allow you to pick up the transfer today.
+
+HERE IS WHAT REQUIRED OF YOU.
+
+YOUR FULL NAME---------
+ADDRESS--------------
+COUNTRY-----------------------------
+TELEPHONE NUMBERS-----------------
+
+Note, I paid the transfer fee for you, but only you are required to
+send to the office is $75 only,Been Your Payment File activation fee,
+Send once you contact the office,before you can able to pick up your
+transfer today.
+
+Let me know once you pick up first payment today.
+
+Barrister Robert Richter UN-Attorney at Law Court-Benin
