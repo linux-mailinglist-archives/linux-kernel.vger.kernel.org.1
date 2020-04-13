@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D021A6429
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:35:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C421A641C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 10:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727810AbgDMIfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 04:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:40860 "EHLO
+        id S1729330AbgDMIQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 04:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:42070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729271AbgDMIK6 (ORCPT
+        with ESMTP id S1727971AbgDMIQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 04:10:58 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9635FC008616
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 01:05:57 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id o81so3042425wmo.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 01:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pF3os/zIvJX+FxOE+3LXE7wUPykZDFerUtI/+GJzXq4=;
-        b=eQUAZWLFUuw+i5lPKOUDRRGyhb4POIW1/mU/kKyDEUPZakUEZYiYBl9io2BD8+fUQc
-         8s9XF4/u392LD16GU6Zf8IiW2322rtyc4y/YIBfUdDDRj+6zh/fTbILbG84lQiiC9Dmk
-         AhPQChC6pumuVGguYWznU5KAP1KwgS7k68x09Jef7LlFdIVbALgGNB1uuzmQ7VeTIo7y
-         puluWgntI/gSdajBI2t9AcV2wXJHeqvbFLXQYhMW+a16Mu7eBEyIpTMEZ1yELCI2A/8M
-         6ABws4YNAmC3lqXYesPlebDNTLNWT5dJa1GsYyzipIO3wy7ntLjgcI9A8Ey+5nYFUXuH
-         k9CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pF3os/zIvJX+FxOE+3LXE7wUPykZDFerUtI/+GJzXq4=;
-        b=SszZI7y0W8yBVtUfOgwTj3PsKhVgHH21uwRt7a8E6CjACYcUU2ORqaegMAvv+4CBkI
-         Mzo19A5DE+ncU8Oh2wz1SDLyOAGq24SAmgmn5GeAhgvzdUKSlloZN1Y8gLCeu2C1bVQQ
-         TUhWGU4v5vfm8pMzh1Jcop6uJS20E2GSEailctgsj54tjlAnQs8q+tqYw9Z+CMuZgzFc
-         3PIaCJVk/YmaY77vTFzTEcooIPnLzHHqHgZ+9aECns9bxBij+dmJR58LiULQuZUmlrk+
-         2+GWrMapbtur+99REIGCkiYGmElsdXWh8hIgbk6Gf5lCVsrOJ4BSd3vYc0xKO9s8oPEf
-         /rzg==
-X-Gm-Message-State: AGi0PuZZCUHarxRZgICt6XzcKdyACac7Pzj7RwKWoeyMhrTlifmRKeuL
-        t0F/oxAUaBJgEUsikfRK9XSHl/Lw91+fqQ==
-X-Google-Smtp-Source: APiQypLNndLmyzXn/0Rdm9JTfoVXrXepFBHuEFg9lZbLD1HxF7imHbvanJtQQ4bhSGkLyndLHsN53w==
-X-Received: by 2002:a1c:8106:: with SMTP id c6mr17348218wmd.88.1586765156226;
-        Mon, 13 Apr 2020 01:05:56 -0700 (PDT)
-Received: from localhost.localdomain ([31.4.236.192])
-        by smtp.gmail.com with ESMTPSA id k3sm13669900wmf.16.2020.04.13.01.05.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 01:05:55 -0700 (PDT)
-From:   carlosteniswarrior@gmail.com
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Carlos Guerrero Alvarez <carlosteniswarrior@gmail.com>
-Subject: [PATCH] Staging: Comedi: Drivers: das08: Fixed some coding style issues
-Date:   Mon, 13 Apr 2020 10:05:55 +0200
-Message-Id: <20200413080555.29267-1-carlosteniswarrior@gmail.com>
-X-Mailer: git-send-email 2.26.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 13 Apr 2020 04:16:06 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB97C00860B
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 01:16:06 -0700 (PDT)
+IronPort-SDR: 5x/rSgGPJGvOiv9Fcn7nGN3Y1PazUWR1RISwSnpOO7Xj0c+Kpk1rAmWMnFNAe12U3sjtjexQk3
+ RdCQEQ+Jc6Mw==
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Apr 2020 01:16:06 -0700
+IronPort-SDR: LMtMC2kw108QPa4vZkYR1RcM22cb0TDcUaSzwuq3e3b9zFGeYHIfbCaV+ODipKT4ZoPeMi8wlc
+ XpDLiqh5W78w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.72,378,1580803200"; 
+   d="scan'208";a="245088427"
+Received: from brentlu-desk0.itwn.intel.com ([10.5.253.11])
+  by fmsmga008.fm.intel.com with ESMTP; 13 Apr 2020 01:16:04 -0700
+From:   Brent Lu <brent.lu@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Ben Zhang <benzh@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: bdw-rt5650: incorrect rate of PCM data
+Date:   Mon, 13 Apr 2020 16:09:18 +0800
+Message-Id: <1586765358-18474-1-git-send-email-brent.lu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed a coding style issue caused by some declarations that weren't separated.
+Implement a constrain to exclude 3-channel capture since only 2 and 4
+channel capture are supported on the platform.
 
-Signed-off-by: Carlos Guerrero Alvarez <carlosteniswarrior@gmail.com>
+Signed-off-by: Brent Lu <brent.lu@intel.com>
 ---
- drivers/staging/comedi/drivers/das08.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/bdw-rt5650.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
-diff --git a/drivers/staging/comedi/drivers/das08.c b/drivers/staging/comedi/drivers/das08.c
-index 65e5f2e6c122..f884f5841788 100644
---- a/drivers/staging/comedi/drivers/das08.c
-+++ b/drivers/staging/comedi/drivers/das08.c
-@@ -141,7 +141,9 @@ static const struct comedi_lrange *const das08_ai_lranges[] = {
- static const int das08_pgh_ai_gainlist[] = {
- 	8, 0, 10, 2, 12, 4, 14, 6, 1, 3, 5, 7
+diff --git a/sound/soc/intel/boards/bdw-rt5650.c b/sound/soc/intel/boards/bdw-rt5650.c
+index af2f502..eedbdad 100644
+--- a/sound/soc/intel/boards/bdw-rt5650.c
++++ b/sound/soc/intel/boards/bdw-rt5650.c
+@@ -83,6 +83,36 @@ static struct snd_soc_jack_pin mic_jack_pin = {
+ 	.mask	= SND_JACK_MICROPHONE,
  };
-+
- static const int das08_pgl_ai_gainlist[] = { 8, 0, 2, 4, 6, 1, 3, 5, 7 };
-+
- static const int das08_pgm_ai_gainlist[] = { 8, 0, 10, 12, 14, 9, 11, 13, 15 };
  
- static const int *const das08_ai_gainlists[] = {
++static const unsigned int channels[] = {
++	2, 4,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static int bdw_fe_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	/*
++	 * On this platform for PCM device we support,
++	 * 2 or 4 channel capture
++	 */
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		snd_pcm_hw_constraint_list(runtime, 0,
++					   SNDRV_PCM_HW_PARAM_CHANNELS,
++					   &constraints_channels);
++
++	return 0;
++}
++
++static const struct snd_soc_ops bdw_rt5650_fe_ops = {
++	.startup = bdw_fe_startup,
++};
++
+ static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			struct snd_pcm_hw_params *params)
+ {
+@@ -234,6 +264,7 @@ static struct snd_soc_dai_link bdw_rt5650_dais[] = {
+ 		.name = "System PCM",
+ 		.stream_name = "System Playback",
+ 		.dynamic = 1,
++		.ops = &bdw_rt5650_fe_ops,
+ #if !IS_ENABLED(CONFIG_SND_SOC_SOF_BROADWELL)
+ 		.init = bdw_rt5650_rtd_init,
+ #endif
 -- 
-2.26.0
+2.7.4
 
