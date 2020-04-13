@@ -2,206 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF1C1A6C20
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAC91A6C2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 20:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733066AbgDMSmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 14:42:32 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:34690 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728092AbgDMSma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 14:42:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=8e8HuFV0TGA3SZAvtjW3okIjD6ZadtQhQFCOyp+9cMM=; b=tDZBmoIpTl7imtNp7ZyIoz4CfS
-        Wl/q3Vm0T+vfA94P9I+K9gpJ2G2DapV2etrMetKrRA+PuoKoSYhlgLqOPlX9jrFWGGWx/ANlZ2IVQ
-        s/BSgP+sB5/TAukc20TyEfexZHf9fbiy3zx4kQZ7DCxvRI5AVMrYGM1kDXay8Q4CU74I=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.93)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jO42G-002Uln-2m; Mon, 13 Apr 2020 20:42:20 +0200
-Date:   Mon, 13 Apr 2020 20:42:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     f.fainelli@gmail.com, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Christian Lamparter <chunkeey@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>
-Subject: Re: [PATCH 1/3] net: phy: mdio: add IPQ40xx MDIO driver
-Message-ID: <20200413184219.GH557892@lunn.ch>
-References: <20200413170107.246509-1-robert.marko@sartura.hr>
+        id S2387750AbgDMSnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 14:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733067AbgDMSnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 14:43:03 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EFDC0A3BDC;
+        Mon, 13 Apr 2020 11:43:03 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w29so7583797qtv.3;
+        Mon, 13 Apr 2020 11:43:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9hdOyb+Q0mokX/44CwUiOk5xqFj7SYWIPZ+lCG7T0Eg=;
+        b=Kr9vO3PMsgCeOyFWhO3TclJuGWbs0fHJc2AQA/LmQCGhLqsm5iDtr/GcnANGo/OM3o
+         KoRhQfZLMOcf9LqLKw9VUUol0zQmx9m48N01HKzdS+cNkKFmU1R9ANNu48Io0ip4VsLA
+         xgWlYxpDYPP/kex3O9362IwKK1Qi0dcXIs7xJi8Trxi3tSqpdxfmUIuNvqTN+rq2uxqa
+         +gKc5WUlclLNcMNdYMeApePAtb7m9ZaAbOkV0i42+yd4fm3e/uhcE4ydDIj4aTJ+rPr0
+         x5YwDs2/H0omUWxqjCnnP1d5aANFrnG2xTJtU3wuna9/0xLMgy4id0Rl0koe65gBtn5M
+         JluA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9hdOyb+Q0mokX/44CwUiOk5xqFj7SYWIPZ+lCG7T0Eg=;
+        b=MCCMPRRTyaev8Ryqc16o7OFKXsnlQ5pUxtSCSibUUd/91zOP6YLjt+2tCucP4n2gA9
+         bNZJdaffB9FtbvzBcBWdQgwhWOh7T0s3gIVQvne0Fw1byhtS8rKR035hZuJ6t95aku8Z
+         mSarH0LIMO4MM/GHDz3ZD/dTW/ilqUekKyxgmHizyhfdsHOjii+bWjxSwx0Uj+tv7Jtg
+         q+FqoQS7dNclBj2Yavm0qiqsjZTS0riong86WkPQOUIrSl18R/88U64aibuBeStbXrRF
+         B+j4WqGLTp6SloNn1Lqt2UCBBkaVfgh4SMaGBEwaB+rDoqgTNA6X9C4wHWXT0spSe4hX
+         ZYHQ==
+X-Gm-Message-State: AGi0PuZFEDAv5Cb5eEzKrbcUXJ73Krwalr3IkyG43RC0dz9qUOAN3CCN
+        YTEictjqKlj4lu1fh71l9fA=
+X-Google-Smtp-Source: APiQypIPdW/QJJZqLP/TkerWlwHpaMuPK/bLBUC9J5nqxzuhhRMaFL7EwWWnl1+xrYlNcjysRl71yA==
+X-Received: by 2002:ac8:27f9:: with SMTP id x54mr12450620qtx.45.1586803382293;
+        Mon, 13 Apr 2020 11:43:02 -0700 (PDT)
+Received: from localhost ([199.96.181.106])
+        by smtp.gmail.com with ESMTPSA id z3sm9060905qtq.7.2020.04.13.11.43.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 11:43:01 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 14:43:00 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Odin Ugedal <odin@ugedal.com>
+Cc:     bpf@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Harish.Kasiviswanathan@amd.com,
+        guro@fb.com, amd-gfx@lists.freedesktop.org
+Subject: Re: [PATCH] device_cgroup: Cleanup cgroup eBPF device filter code
+Message-ID: <20200413184300.GE60335@mtj.duckdns.org>
+References: <20200403175528.225990-1-odin@ugedal.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413170107.246509-1-robert.marko@sartura.hr>
+In-Reply-To: <20200403175528.225990-1-odin@ugedal.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> --- a/drivers/net/phy/Makefile
-> +++ b/drivers/net/phy/Makefile
-> @@ -36,6 +36,7 @@ obj-$(CONFIG_MDIO_CAVIUM)	+= mdio-cavium.o
->  obj-$(CONFIG_MDIO_GPIO)		+= mdio-gpio.o
->  obj-$(CONFIG_MDIO_HISI_FEMAC)	+= mdio-hisi-femac.o
->  obj-$(CONFIG_MDIO_I2C)		+= mdio-i2c.o
-> +obj-$(CONFIG_MDIO_IPQ40XX)	+= mdio-ipq40xx.o
->  obj-$(CONFIG_MDIO_MOXART)	+= mdio-moxart.o
->  obj-$(CONFIG_MDIO_MSCC_MIIM)	+= mdio-mscc-miim.o
+On Fri, Apr 03, 2020 at 07:55:28PM +0200, Odin Ugedal wrote:
+> Original cgroup v2 eBPF code for filtering device access made it
+> possible to compile with CONFIG_CGROUP_DEVICE=n and still use the eBPF
+> filtering. Change 
+> commit 4b7d4d453fc4 ("device_cgroup: Export devcgroup_check_permission")
+> reverted this, making it required to set it to y.
+> 
+> Since the device filtering (and all the docs) for cgroup v2 is no longer
+> a "device controller" like it was in v1, someone might compile their
+> kernel with CONFIG_CGROUP_DEVICE=n. Then (for linux 5.5+) the eBPF
+> filter will not be invoked, and all processes will be allowed access
+> to all devices, no matter what the eBPF filter says.
 
-Hi Robert
+Applied to cgroup/for-5.7-fixes.
 
-That looks odd. What happened to the
+Thanks.
 
-obj-$(CONFIG_MDIO_IPQ8064)      += mdio-ipq8064.o
-
->  obj-$(CONFIG_MDIO_OCTEON)	+= mdio-octeon.o
-> diff --git a/drivers/net/phy/mdio-ipq40xx.c b/drivers/net/phy/mdio-ipq40xx.c
-> new file mode 100644
-> index 000000000000..8068f1e6a077
-> --- /dev/null
-> +++ b/drivers/net/phy/mdio-ipq40xx.c
-> @@ -0,0 +1,180 @@
-> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
-> +/* Copyright (c) 2015, The Linux Foundation. All rights reserved. */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/io.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_mdio.h>
-> +#include <linux/phy.h>
-> +#include <linux/platform_device.h>
-> +
-> +#define MDIO_CTRL_0_REG		0x40
-> +#define MDIO_CTRL_1_REG		0x44
-> +#define MDIO_CTRL_2_REG		0x48
-> +#define MDIO_CTRL_3_REG		0x4c
-> +#define MDIO_CTRL_4_REG		0x50
-
-Can we have better names than as. It seems like 3 is read data, 2 is
-write data, etc.
-
-> +#define MDIO_CTRL_4_ACCESS_BUSY		BIT(16)
-> +#define MDIO_CTRL_4_ACCESS_START		BIT(8)
-> +#define MDIO_CTRL_4_ACCESS_CODE_READ		0
-> +#define MDIO_CTRL_4_ACCESS_CODE_WRITE	1
-> +#define CTRL_0_REG_DEFAULT_VALUE	0x150FF
-
-No magic numbers please. Try to explain what each of these bits
-do. I'm guessing they are clock speed, preamble enable, maybe C22/C45?
-
-> +
-> +#define IPQ40XX_MDIO_RETRY	1000
-> +#define IPQ40XX_MDIO_DELAY	10
-> +
-> +struct ipq40xx_mdio_data {
-> +	struct mii_bus	*mii_bus;
-> +	void __iomem	*membase;
-> +	struct device	*dev;
-> +};
-> +
-> +static int ipq40xx_mdio_wait_busy(struct ipq40xx_mdio_data *am)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < IPQ40XX_MDIO_RETRY; i++) {
-> +		unsigned int busy;
-> +
-> +		busy = readl(am->membase + MDIO_CTRL_4_REG) &
-> +			MDIO_CTRL_4_ACCESS_BUSY;
-> +		if (!busy)
-> +			return 0;
-> +
-> +		/* BUSY might take to be cleard by 15~20 times of loop */
-> +		udelay(IPQ40XX_MDIO_DELAY);
-> +	}
-> +
-> +	dev_err(am->dev, "%s: MDIO operation timed out\n", am->mii_bus->name);
-
-dev_err() should give you enough to identify the device. No need to
-print am->mii_bus->name as well.
-
-> +
-> +	return -ETIMEDOUT;
-> +}
-> +
-> +static int ipq40xx_mdio_read(struct mii_bus *bus, int mii_id, int regnum)
-> +{
-> +	struct ipq40xx_mdio_data *am = bus->priv;
-> +	int value = 0;
-> +	unsigned int cmd = 0;
-> +
-> +	lockdep_assert_held(&bus->mdio_lock);
-
-Do you think the core is broken?
-
-Please check if the request is for a C45 read, and return -EOPNOTSUPP
-if so.
-
-
-> +
-> +	if (ipq40xx_mdio_wait_busy(am))
-> +		return -ETIMEDOUT;
-> +
-> +	/* issue the phy address and reg */
-> +	writel((mii_id << 8) | regnum, am->membase + MDIO_CTRL_1_REG);
-> +
-> +	cmd = MDIO_CTRL_4_ACCESS_START | MDIO_CTRL_4_ACCESS_CODE_READ;
-> +
-> +	/* issue read command */
-> +	writel(cmd, am->membase + MDIO_CTRL_4_REG);
-> +
-> +	/* Wait read complete */
-> +	if (ipq40xx_mdio_wait_busy(am))
-> +		return -ETIMEDOUT;
-> +
-> +	/* Read data */
-> +	value = readl(am->membase + MDIO_CTRL_3_REG);
-> +
-> +	return value;
-> +}
-> +
-> +static int ipq40xx_mdio_write(struct mii_bus *bus, int mii_id, int regnum,
-> +							 u16 value)
-> +{
-> +	struct ipq40xx_mdio_data *am = bus->priv;
-> +	unsigned int cmd = 0;
-> +
-> +	lockdep_assert_held(&bus->mdio_lock);
-> +
-> +	if (ipq40xx_mdio_wait_busy(am))
-> +		return -ETIMEDOUT;
-> +
-> +	/* issue the phy address and reg */
-> +	writel((mii_id << 8) | regnum, am->membase + MDIO_CTRL_1_REG);
-> +
-> +	/* issue write data */
-> +	writel(value, am->membase + MDIO_CTRL_2_REG);
-> +
-> +	cmd = MDIO_CTRL_4_ACCESS_START | MDIO_CTRL_4_ACCESS_CODE_WRITE;
-> +	/* issue write command */
-> +	writel(cmd, am->membase + MDIO_CTRL_4_REG);
-> +
-> +	/* Wait write complete */
-> +	if (ipq40xx_mdio_wait_busy(am))
-> +		return -ETIMEDOUT;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ipq40xx_mdio_probe(struct platform_device *pdev)
-> +{
-> +	struct ipq40xx_mdio_data *am;
-
-Why the name am? Generally priv is used. I could also understand bus,
-or even data, but am?
-
-   Andrew
+-- 
+tejun
