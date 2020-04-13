@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46081A6FB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 01:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31201A6FBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Apr 2020 01:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389896AbgDMXD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 19:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34434 "EHLO
+        id S2389927AbgDMXEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 19:04:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2389888AbgDMXDT (ORCPT
+        by vger.kernel.org with ESMTP id S1727968AbgDMXEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 19:03:19 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F95BC0A3BE2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 16:03:20 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id w3so3955174plz.5
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Apr 2020 16:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=HERDNU5OH+PvjNlr9iQyGhHNhXKozsGVzeIq4WUGW3k=;
-        b=hK+WqM+t96PiNuHXnWPqKHQPZc1JGNjJWJT5mEzKRTCelbFKPswB36sT0fKUvXoF6k
-         O2ceUOlo8V6WR/TmUKoHcnZZXePSwNxeVe/xlEr/Fbbu6mge5v6VoQBxguXpNmvImQ2a
-         uNEhY+bbLVSmRdItQ8b48Zd4wUUsA1+ogPBcQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=HERDNU5OH+PvjNlr9iQyGhHNhXKozsGVzeIq4WUGW3k=;
-        b=pbJIKtwP5WsNH/0KdGB2G85CoKngNWe/YFgSmJUxjFzHjG53Qx32sE5KvlDwyDJnjw
-         si3p/LQSm57hcfF6ZQy9/YzgNRDhrlS+Tpzxy0DlhjAPXhc9fwqZmDRmBiO7sWE/KV4K
-         QNGI40oH86shU/opIV0roCVBDAfBaSpyj1awwWE+DSGWgLdgTzRgURobQ7GYskkLlNUg
-         Co78CJiikOH9OFUgUEPs+tocHblr8kv9sKX29yvkJdPBT5o+Es2BZiwfxcBika4h4IkA
-         3C562kzSNSwyV8LPSr7/ZCjEHmJ2cdig/FhqTQrimv2C5qXzgOiSk2XkDQkkJhojEQ+E
-         +arw==
-X-Gm-Message-State: AGi0Pua6mHF5XgX1IzaK2fbTzFquHQxJq10qUI4MBIIcyHaiYIWCzAvD
-        DJSg0rjJIY/0B4sSGCU0w/ROHQ==
-X-Google-Smtp-Source: APiQypKf1Cahutocem0pTsNwiMfVJ7pWZwqfgLYmUySDTv+Vq+QdlltB30vGfcmlfX5PJ1948DUtXg==
-X-Received: by 2002:a17:90a:718c:: with SMTP id i12mr750180pjk.58.1586818999764;
-        Mon, 13 Apr 2020 16:03:19 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id s62sm9126455pfb.53.2020.04.13.16.03.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 16:03:19 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 13 Apr 2020 19:04:31 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3BFC0A3BDC;
+        Mon, 13 Apr 2020 16:04:31 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 9D25B2A0D6D
+Received: by earth.universe (Postfix, from userid 1000)
+        id 6CD7E3C08C7; Tue, 14 Apr 2020 01:04:28 +0200 (CEST)
+Date:   Tue, 14 Apr 2020 01:04:28 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Tang Bin <tangbin@cmss.chinamobile.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [PATCH v2] power:supply:88pm860x_battery:remove
+ redundant dev_err message
+Message-ID: <20200413230428.33zvqkw22sq25yk3@earth.universe>
+References: <20200406050757.13796-1-tangbin@cmss.chinamobile.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200413100321.v4.10.I2adf93809c692d0b673e1a86ea97c45644aa8d97@changeid>
-References: <20200413170415.32463-1-dianders@chromium.org> <20200413100321.v4.10.I2adf93809c692d0b673e1a86ea97c45644aa8d97@changeid>
-Subject: Re: [PATCH v4 10/10] drivers: qcom: rpmh-rsc: read_tcs_reg()/write_tcs_reg() are not for IRQ
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     mka@chromium.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        evgreen@chromium.org, Lina Iyer <ilina@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Maulik Shah <mkshah@codeaurora.org>
-Date:   Mon, 13 Apr 2020 16:03:18 -0700
-Message-ID: <158681899842.84447.11598381397445180535@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="n754yjdft2ijrfzm"
+Content-Disposition: inline
+In-Reply-To: <20200406050757.13796-1-tangbin@cmss.chinamobile.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Douglas Anderson (2020-04-13 10:04:15)
-> The RSC_DRV_IRQ_ENABLE, RSC_DRV_IRQ_STATUS, and RSC_DRV_IRQ_CLEAR
-> registers are not part of TCS 0.  Let's not pretend that they are by
-> using read_tcs_reg() and write_tcs_reg() and passing a bogus tcs_id of
-> 0.  We could introduce a new wrapper for these registers but it
-> wouldn't buy us much.  Let's just read/write directly.
+
+--n754yjdft2ijrfzm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Mon, Apr 06, 2020 at 01:07:57PM +0800, Tang Bin wrote:
+> In the pm860x_battery_probe(),when get irq failed, the function
+> platform_get_irq() can log an dev_err message,so remove redundant
+> message here.
 >=20
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
-> Tested-by: Maulik Shah <mkshah@codeaurora.org>
+> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
 > ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Thanks, queued.
+
+-- Sebastian
+
+> Changes from v1
+>  - changed the theme=E3=80=81commit message and the code,but the purpose =
+is the same.
+>    The original piece is:https://lore.kernel.org/linux-pm/20200402111222.=
+15204-1-tangbin@cmss.chinamobile.com/
+> ---
+>  drivers/power/supply/88pm860x_battery.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/88pm860x_battery.c b/drivers/power/supp=
+ly/88pm860x_battery.c
+> index 5ca047b3f..1308f3a18 100644
+> --- a/drivers/power/supply/88pm860x_battery.c
+> +++ b/drivers/power/supply/88pm860x_battery.c
+> @@ -919,16 +919,12 @@ static int pm860x_battery_probe(struct platform_dev=
+ice *pdev)
+>  		return -ENOMEM;
+> =20
+>  	info->irq_cc =3D platform_get_irq(pdev, 0);
+> -	if (info->irq_cc <=3D 0) {
+> -		dev_err(&pdev->dev, "No IRQ resource!\n");
+> +	if (info->irq_cc <=3D 0)
+>  		return -EINVAL;
+> -	}
+> =20
+>  	info->irq_batt =3D platform_get_irq(pdev, 1);
+> -	if (info->irq_batt <=3D 0) {
+> -		dev_err(&pdev->dev, "No IRQ resource!\n");
+> +	if (info->irq_batt <=3D 0)
+>  		return -EINVAL;
+> -	}
+> =20
+>  	info->chip =3D chip;
+>  	info->i2c =3D
+> --=20
+> 2.20.1.windows.1
+>=20
+>=20
+>=20
+
+--n754yjdft2ijrfzm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl6U7/wACgkQ2O7X88g7
++pp5nBAAny2GsOfJrY108fh07lXnJQeY4FG//WzaAuCsYhRaVTKhYaZaj5XYCoAe
+YZDQ23fwGosAja9aAdTaMSA63H6nMaWuLn2xlIsEe6ZGPiay6JJtp7+MIpfa/rts
+C8iiJcN+jk0atj35W+f8QK2aeYuqKr/w8ZmATX6d7rvgWE72319dkGadpjiNZc16
+Wi9SxfbQP+0LpKpQcx2Xoph8zWs7pKBVUzCdsYw3NJCJPfz06bi1+fk7eB2cTjJq
+/loSJm9dZ17UXSjVMWmdiIznJ/dVDD/xUVrE+jp+tq9pUOxoP69pj90nE7Ytniy9
+Y/5O1pbhj9byGCnbvZJq+fDp0jQSmw9ex4tGter9xUae3epfToM2JpvV5yCso9id
+a85Va7AFktr+zPxGqj5q1wKQuP0eCWZaa7lxQV5UgKPM8zVuGXWl5b5tat5VyiGO
+Ye8vSWJ5NeOsIghWYy0gTLciAu8opudLrDrN9tyBSlS3FDGRg4i7TTjeVLdAwoWN
+bsKfsc86WQQM/hAIezyL3tjFdWrZuwPqMK1SODxbt7x1nqd0pF5WLVk0x6larXaZ
+cYb6A57wBp7rdL3QbKERrWBP5Ee/Vg2Hzx7FFfO0V46iXWodsFQHbiSIvy0t5PQ8
+XFX+QURl8SsZpOb/icLFKJGBd9j9KRM6ylCYs6OVPrtHYrD6YZo=
+=Q76U
+-----END PGP SIGNATURE-----
+
+--n754yjdft2ijrfzm--
