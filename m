@@ -2,126 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515931A6652
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7BD1A6662
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 14:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgDMMWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 08:22:55 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:55336 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728344AbgDMMWz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 08:22:55 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6B73DF5F703402750F59;
-        Mon, 13 Apr 2020 20:22:52 +0800 (CST)
-Received: from linux-kDCJWP.huawei.com (10.175.104.212) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 13 Apr 2020 20:22:45 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>
-CC:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        "James Morse" <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jay Zhou <jianjay.zhou@huawei.com>,
-        <wanghaibin.wang@huawei.com>, Keqian Zhu <zhukeqian1@huawei.com>
-Subject: [PATCH v2] KVM/arm64: Support enabling dirty log gradually in small chunks
-Date:   Mon, 13 Apr 2020 20:20:23 +0800
-Message-ID: <20200413122023.52583-1-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.212]
-X-CFilter-Loop: Reflected
+        id S1729514AbgDMMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 08:33:34 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:45686 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728392AbgDMMdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 13 Apr 2020 08:33:33 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id C61851A16F6;
+        Mon, 13 Apr 2020 14:33:31 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 528DB1A0020;
+        Mon, 13 Apr 2020 14:33:28 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C7814402B4;
+        Mon, 13 Apr 2020 20:33:23 +0800 (SGT)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     jassisinghbrar@gmail.com, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] mailbox: imx: Support runtime PM
+Date:   Mon, 13 Apr 2020 20:25:30 +0800
+Message-Id: <1586780730-6117-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is already support of enabling dirty log graually in small chunks
-for x86 in commit 3c9bd4006bfc ("KVM: x86: enable dirty log gradually in
-small chunks"). This adds support for arm64.
+Some power hungry sub-systems like VPU has its own MUs which also
+use mailbox driver, current mailbox driver uses platform driver
+model and MU's power will be ON after driver probed and left ON
+there, it may cause the whole sub-system can NOT enter lower power
+mode, take VPU driver for example, it has runtime PM support, but
+due to its MU always ON, the VPU sub-system will be always ON and
+consume many power during kernel idle.
 
-x86 still writes protect all huge pages when DIRTY_LOG_INITIALLY_ALL_SET
-is eanbled. However, for arm64, both huge pages and normal pages can be
-write protected gradually by userspace.
+To save power in kernel idle, mailbox driver needs to support
+runtime PM in order to power off MU when it is unused. However,
+the runtime suspend/resume can ONLY be implemented in mailbox's
+.shutdown/.startup callback, so its consumer needs to call
+mbox_request_channel()/mbox_free_channel() in consumer driver's
+runtime PM callback, then the MU's power will be ON/OFF along with
+consumer's runtime PM status.
 
-Under the Huawei Kunpeng 920 2.6GHz platform, I did some tests on 128G
-Linux VMs with different page size. The memory pressure is 127G in each
-case. The time taken of memory_global_dirty_log_start in QEMU is listed
-below:
-
-Page Size      Before    After Optimization
-  4K            650ms         1.8ms
-  2M             4ms          1.8ms
-  1G             2ms          1.8ms
-
-Besides the time reduction, the biggest income is that we will minimize
-the performance side effect (because of dissloving huge pages and marking
-memslots dirty) on guest after enabling dirty log.
-
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 ---
- Documentation/virt/kvm/api.rst    |  2 +-
- arch/arm64/include/asm/kvm_host.h |  3 +++
- virt/kvm/arm/mmu.c                | 12 ++++++++++--
- 3 files changed, 14 insertions(+), 3 deletions(-)
+ drivers/mailbox/imx-mailbox.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index efbbe570aa9b..0017f63fa44f 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -5777,7 +5777,7 @@ will be initialized to 1 when created.  This also improves performance because
- dirty logging can be enabled gradually in small chunks on the first call
- to KVM_CLEAR_DIRTY_LOG.  KVM_DIRTY_LOG_INITIALLY_SET depends on
- KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE (it is also only available on
--x86 for now).
-+x86 and arm64 for now).
+diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+index 7906624..97bf0ac 100644
+--- a/drivers/mailbox/imx-mailbox.c
++++ b/drivers/mailbox/imx-mailbox.c
+@@ -12,6 +12,7 @@
+ #include <linux/mailbox_controller.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/slab.h>
  
- KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2 was previously available under the name
- KVM_CAP_MANUAL_DIRTY_LOG_PROTECT, but the implementation had bugs that make
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 32c8a675e5a4..a723f84fab83 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -46,6 +46,9 @@
- #define KVM_REQ_RECORD_STEAL	KVM_ARCH_REQ(3)
- #define KVM_REQ_RELOAD_GICv4	KVM_ARCH_REQ(4)
+ #define IMX_MU_xSR_GIPn(x)	BIT(28 + (3 - (x)))
+@@ -287,6 +288,7 @@ static int imx_mu_startup(struct mbox_chan *chan)
+ 	struct imx_mu_con_priv *cp = chan->con_priv;
+ 	int ret;
  
-+#define KVM_DIRTY_LOG_MANUAL_CAPS   (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE | \
-+				     KVM_DIRTY_LOG_INITIALLY_SET)
-+
- DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
++	pm_runtime_get_sync(priv->dev);
+ 	if (cp->type == IMX_MU_TYPE_TXDB) {
+ 		/* Tx doorbell don't have ACK support */
+ 		tasklet_init(&cp->txdb_tasklet, imx_mu_txdb_tasklet,
+@@ -323,6 +325,7 @@ static void imx_mu_shutdown(struct mbox_chan *chan)
  
- extern unsigned int kvm_sve_max_vl;
-diff --git a/virt/kvm/arm/mmu.c b/virt/kvm/arm/mmu.c
-index e3b9ee268823..1077f653a611 100644
---- a/virt/kvm/arm/mmu.c
-+++ b/virt/kvm/arm/mmu.c
-@@ -2265,8 +2265,16 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
- 	 * allocated dirty_bitmap[], dirty pages will be be tracked while the
- 	 * memory slot is write protected.
- 	 */
--	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES)
--		kvm_mmu_wp_memory_region(kvm, mem->slot);
-+	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
-+		/*
-+		 * If we're with initial-all-set, we don't need to write
-+		 * protect any pages because they're all reported as dirty.
-+		 * Huge pages and normal pages will be write protect gradually.
-+		 */
-+		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
-+			kvm_mmu_wp_memory_region(kvm, mem->slot);
-+		}
-+	}
+ 	if (cp->type == IMX_MU_TYPE_TXDB) {
+ 		tasklet_kill(&cp->txdb_tasklet);
++		pm_runtime_put_sync(priv->dev);
+ 		return;
+ 	}
+ 
+@@ -341,6 +344,7 @@ static void imx_mu_shutdown(struct mbox_chan *chan)
+ 	}
+ 
+ 	free_irq(priv->irq, chan);
++	pm_runtime_put_sync(priv->dev);
  }
  
- int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ static const struct mbox_chan_ops imx_mu_ops = {
+@@ -508,7 +512,27 @@ static int imx_mu_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, priv);
+ 
+-	return devm_mbox_controller_register(dev, &priv->mbox);
++	ret = devm_mbox_controller_register(dev, &priv->mbox);
++	if (ret)
++		return ret;
++
++	pm_runtime_enable(dev);
++
++	ret = pm_runtime_get_sync(dev);
++	if (ret < 0) {
++		pm_runtime_put_noidle(dev);
++		goto disable_runtime_pm;
++	}
++
++	ret = pm_runtime_put_sync(dev);
++	if (ret < 0)
++		goto disable_runtime_pm;
++
++	return 0;
++
++disable_runtime_pm:
++	pm_runtime_disable(dev);
++	return ret;
+ }
+ 
+ static int imx_mu_remove(struct platform_device *pdev)
+@@ -516,6 +540,7 @@ static int imx_mu_remove(struct platform_device *pdev)
+ 	struct imx_mu_priv *priv = platform_get_drvdata(pdev);
+ 
+ 	clk_disable_unprepare(priv->clk);
++	pm_runtime_disable(priv->dev);
+ 
+ 	return 0;
+ }
 -- 
-2.19.1
+2.7.4
 
