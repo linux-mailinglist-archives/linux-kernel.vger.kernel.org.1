@@ -2,100 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (unknown [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 823921A6271
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 07:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9521A6260
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Apr 2020 07:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgDMFgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Apr 2020 01:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41866 "EHLO
+        id S1728844AbgDMFeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Apr 2020 01:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:41434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727818AbgDMFgh (ORCPT
+        with ESMTP id S1727498AbgDMFeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Apr 2020 01:36:37 -0400
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CE0C008678;
-        Sun, 12 Apr 2020 22:26:41 -0700 (PDT)
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AC4F20731;
-        Mon, 13 Apr 2020 05:26:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1586755601;
-        bh=RDuc7TIH8NRC/WbymybrwwHyUdyFCCD5uyjfOff9Eag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dea8uqwiyJyiKbRypdML2SpeLc3PwNMe9X33+CmisXEPPv7uHhQti1XqpZRzkKFgG
-         vK7h/gWUwgtWfGRW1UWfmZ6uWAjuXXz6qpt2cZv/auuG8rRJ09ce2lO/MCKTGYcQ7c
-         jxZ0OgwkD3WWTSZsYwX3r0X4ox3HO+c3xUq5M+qM=
-Date:   Mon, 13 Apr 2020 08:26:37 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     bp@alien8.de, kuba@kernel.org, thomas.lendacky@amd.com,
-        keyur@os.amperecomputing.com, pcnet32@frontier.com,
-        vfalico@gmail.com, j.vosburgh@gmail.com, linux-acenic@sunsite.dk,
-        mripard@kernel.org, heiko@sntech.de, mark.einon@gmail.com,
-        chris.snook@gmail.com, linux-rockchip@lists.infradead.org,
-        iyappan@os.amperecomputing.com, irusskikh@marvell.com,
-        dave@thedillows.org, netanel@amazon.com,
-        quan@os.amperecomputing.com, jcliburn@gmail.com,
-        LinoSanfilippo@gmx.de, linux-arm-kernel@lists.infradead.org,
-        andreas@gaisler.com, andy@greyhouse.net, netdev@vger.kernel.org,
-        thor.thayer@linux.intel.com, linux-kernel@vger.kernel.org,
-        ionut@badula.org, akiyano@amazon.com, jes@trained-monkey.org,
-        nios2-dev@lists.rocketboards.org, wens@csie.org
-Subject: Re: [PATCH] net/3com/3c515: Fix MODULE_ARCH_VERMAGIC redefinition
-Message-ID: <20200413052637.GG334007@unreal>
-References: <20200411155623.GA22175@zn.tnic>
- <20200412.210341.1711540878857604145.davem@davemloft.net>
- <20200413045555.GE334007@unreal>
- <20200412.220739.516022706077351913.davem@davemloft.net>
+        Mon, 13 Apr 2020 01:34:16 -0400
+Received: from vultr.net.flygoat.com (vultr.net.flygoat.com [149.28.68.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC62C00860C;
+        Sun, 12 Apr 2020 22:34:10 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2001:da8:20f:4430:250:56ff:fe9a:7470])
+        by vultr.net.flygoat.com (Postfix) with ESMTPSA id 426DE20CF8;
+        Mon, 13 Apr 2020 05:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com; s=vultr;
+        t=1586756049; bh=KZzC8hDq/L5Ksu7mwvgHXdRRg3Pi1Gnhas1jIt28u50=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=P6bbNlDMWmSNeWxbTzqMAXSopRk5GTcT3hOk9EVI+P06pr2cQKJPJXaRNmAH1Cjr5
+         Tul/Y9bSZiZKuQk/Ecxj3mXfrGlw8KEXRRQSYFXCiDOT7g1HnDGRZJRlm2NnQfr3VD
+         v18Hr00bAcBGUtniaBxUttIrJp3YJ7n/UuwMy7kmZPtuGyD0v0NUWUmYc048QJ386l
+         xcuS+gS52dRLW/XkBJj2Km6jdBkTIko+4+PTZ/akTepf+Y3zO9dxylZLSaM89rMkpj
+         ih1/j7eteO0kf2zZ3Rnof/VFZnq1zHKOqIs6vFGUZdwMYCgCEvZoAW44AAaxjyd7Ft
+         MlSNG/TLRgGYA==
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Huacai Chen <chenhc@lemote.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Paul Burton <paulburton@kernel.org>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/5] PCI: OF: Don't remap iospace on unsupported platform
+Date:   Mon, 13 Apr 2020 13:32:09 +0800
+Message-Id: <20200413053222.3976680-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.26.0.rc2
+In-Reply-To: <20200330114239.1112759-1-jiaxun.yang@flygoat.com>
+References: <20200330114239.1112759-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200412.220739.516022706077351913.davem@davemloft.net>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 12, 2020 at 10:07:39PM -0700, David Miller wrote:
-> From: Leon Romanovsky <leon@kernel.org>
-> Date: Mon, 13 Apr 2020 07:55:55 +0300
->
-> > On Sun, Apr 12, 2020 at 09:03:41PM -0700, David Miller wrote:
-> >> From: Borislav Petkov <bp@alien8.de>
-> >> Date: Sat, 11 Apr 2020 17:56:23 +0200
-> >>
-> >> > From: Borislav Petkov <bp@suse.de>
-> >> >
-> >> > Change the include order so that MODULE_ARCH_VERMAGIC from the arch
-> >> > header arch/x86/include/asm/module.h gets used instead of the fallback
-> >> > from include/linux/vermagic.h and thus fix:
-> >> >
-> >> >   In file included from ./include/linux/module.h:30,
-> >> >                    from drivers/net/ethernet/3com/3c515.c:56:
-> >> >   ./arch/x86/include/asm/module.h:73: warning: "MODULE_ARCH_VERMAGIC" redefined
-> >> >      73 | # define MODULE_ARCH_VERMAGIC MODULE_PROC_FAMILY
-> >> >         |
-> >> >   In file included from drivers/net/ethernet/3com/3c515.c:25:
-> >> >   ./include/linux/vermagic.h:28: note: this is the location of the previous definition
-> >> >      28 | #define MODULE_ARCH_VERMAGIC ""
-> >> >         |
-> >> >
-> >> > Fixes: 6bba2e89a88c ("net/3com: Delete driver and module versions from 3com drivers")
-> >> > Signed-off-by: Borislav Petkov <bp@suse.de>
-> >>
-> >> I'm so confused, that commit in the Fixes: tag is _removing_ code but adding
-> >> new #include directives?!?!
-> >>
-> >> Is vermagic.h really needed in these files?
-> >
-> > You are completely right, it is not needed at all in those files.
->
-> Ok let's just remove it to fix this.
+There are some platforms doesn't support iospace remapping
+like MIPS. However, our PCI code will try to remap iospace
+unconditionally and reject io resources on these platforms.
 
-Thanks a lot.
+So we should remove iospace remapping check and use a range
+check instead on these platforms.
 
-How do you want us to handle it? Boris resend, me to send, you to fix?
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ drivers/pci/of.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Thanks
+diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+index 81ceeaa6f1d5..36e8761b66c6 100644
+--- a/drivers/pci/of.c
++++ b/drivers/pci/of.c
+@@ -547,12 +547,21 @@ int pci_parse_request_of_pci_ranges(struct device *dev,
+ 
+ 		switch (resource_type(res)) {
+ 		case IORESOURCE_IO:
++#if defined(PCI_IOBASE) && defined(CONFIG_MMU)
+ 			err = devm_pci_remap_iospace(dev, res, iobase);
+ 			if (err) {
+ 				dev_warn(dev, "error %d: failed to map resource %pR\n",
+ 					 err, res);
+ 				resource_list_destroy_entry(win);
+ 			}
++#else
++			/* Simply check if IO is inside the range */
++			if (res->end > IO_SPACE_LIMIT) {
++				dev_warn(dev, "resource %pR out of the IO range\n",
++					res);
++				resource_list_destroy_entry(win);
++			}
++#endif
+ 			break;
+ 		case IORESOURCE_MEM:
+ 			res_valid |= !(res->flags & IORESOURCE_PREFETCH);
+-- 
+2.26.0.rc2
+
